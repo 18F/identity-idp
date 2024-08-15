@@ -29,13 +29,27 @@ module AnalyticsEvents
   end
 
   # @identity.idp.previous_event_name Account Reset
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] user_id
   # @param [String, nil] message_id from AWS Pinpoint API
   # @param [String, nil] request_id from AWS Pinpoint API
   # An account reset was cancelled
-  def account_reset_cancel(user_id:, message_id: nil, request_id: nil, **extra)
+  def account_reset_cancel(
+    success:,
+    errors:,
+    user_id:,
+    error_details: nil,
+    message_id: nil,
+    request_id: nil,
+    **extra
+  )
     track_event(
       'Account Reset: cancel',
+      success:,
+      errors:,
+      error_details:,
       user_id:,
       message_id:,
       request_id:,
@@ -72,7 +86,7 @@ module AnalyticsEvents
   # @param [Integer, nil] account_age_in_days number of days since the account was confirmed
   # @param [Time] account_confirmed_at date that account creation was confirmed
   # (rounded) or nil if the account was not confirmed
-  # @param [Hash] mfa_method_counts
+  # @param [Hash] mfa_method_counts Hash of MFA method with the number of that method on the account
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # An account has been deleted through the account reset flow
@@ -179,11 +193,20 @@ module AnalyticsEvents
     track_event('Account Page Visited')
   end
 
-  # @param [Boolean] success
-  # @param [String] user_id account the email is linked to
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # @param [String] user_id User the email is linked to
   # A user has clicked the confirmation link in an email
-  def add_email_confirmation(user_id:, success: nil, **extra)
-    track_event('Add Email: Email Confirmation', user_id: user_id, success: success, **extra)
+  def add_email_confirmation(user_id:, success:, errors:, error_details: nil, **extra)
+    track_event(
+      'Add Email: Email Confirmation',
+      user_id:,
+      success:,
+      errors:,
+      error_details:,
+      **extra,
+    )
   end
 
   # @param [Boolean] success Whether form validation was successful
@@ -737,7 +760,6 @@ module AnalyticsEvents
 
   # @param [Boolean] success Whether form validation was successful
   # @param [Boolean] address_edited
-  # @param [Hash] pii_like_keypaths
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # User submitted an idv address
@@ -745,7 +767,6 @@ module AnalyticsEvents
     success:,
     errors:,
     address_edited: nil,
-    pii_like_keypaths: nil,
     error_details: nil,
     **extra
   )
@@ -754,7 +775,6 @@ module AnalyticsEvents
       success: success,
       errors: errors,
       address_edited: address_edited,
-      pii_like_keypaths: pii_like_keypaths,
       error_details: error_details,
       **extra,
     )
@@ -1567,7 +1587,6 @@ module AnalyticsEvents
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] user_id
   # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
-  # @param [Hash] pii_like_keypaths
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Boolean] liveness_checking_required Whether or not the selfie is required
   # @param ["present","missing"] id_issued_status Status of state_id_issued field presence
@@ -1583,7 +1602,6 @@ module AnalyticsEvents
     success:,
     errors:,
     remaining_submit_attempts:,
-    pii_like_keypaths:,
     flow_path:,
     liveness_checking_required:,
     attention_with_barcode:,
@@ -1609,7 +1627,6 @@ module AnalyticsEvents
       id_expiration_status:,
       submit_attempts:,
       remaining_submit_attempts:,
-      pii_like_keypaths:,
       flow_path:,
       front_image_fingerprint:,
       back_image_fingerprint:,
@@ -3360,7 +3377,7 @@ module AnalyticsEvents
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  # @param ["sms", "voice"] otp_delivery_preference
+  # @param ["sms", "voice"] otp_delivery_preference Channel used to send the message
   # @param [String] phone_type Pinpoint phone classification type
   # @param [Array<String>] types Phonelib parsed phone types
   # @param [String] carrier Pinpoint detected phone carrier
@@ -3497,12 +3514,12 @@ module AnalyticsEvents
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  # @param ["sms","voice"] otp_delivery_preference which channel the OTP was delivered by
+  # @param ["sms", "voice"] otp_delivery_preference Channel used to send the message
   # @param [String] country_code Abbreviated 2-letter country code associated with phone number
   # @param [String] area_code area code of phone number
   # @param [Boolean] rate_limit_exceeded whether or not the rate limit was exceeded by this attempt
   # @param [Hash] telephony_response response from Telephony gem
-  # @param [String] phone_fingerprint Fingerprint string identifying phone number
+  # @param [String] phone_fingerprint HMAC fingerprint of the phone number formatted as E.164
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
   # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
@@ -3553,11 +3570,11 @@ module AnalyticsEvents
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  # @param ["sms","voice"] otp_delivery_preference which channel the OTP was delivered by
+  # @param ["sms", "voice"] otp_delivery_preference Channel used to send the message
   # @param [String] country_code Abbreviated 2-letter country code associated with phone number
   # @param [String] area_code area code of phone number
   # @param [Boolean] rate_limit_exceeded whether or not the rate limit was exceeded by this attempt
-  # @param [String] phone_fingerprint the hmac fingerprint of the phone number formatted as e164
+  # @param [String] phone_fingerprint HMAC fingerprint of the phone number formatted as E.164
   # @param [Hash] telephony_response response from Telephony gem
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
@@ -3611,7 +3628,7 @@ module AnalyticsEvents
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Boolean] code_expired if the one-time code expired
   # @param [Boolean] code_matches
-  # @param [:sms,:voice] otp_delivery_preference
+  # @param ["sms", "voice"] otp_delivery_preference Channel used to send the message
   # @param [Integer] second_factor_attempts_count number of attempts to confirm this phone
   # @param [Time, nil] second_factor_locked_at timestamp when the phone was locked out
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
@@ -3698,7 +3715,7 @@ module AnalyticsEvents
   # document capture
   # @param [String] area_code Area code of phone number
   # @param [String] country_code Abbreviated 2-letter country code associated with phone number
-  # @param [String] phone_fingerprint Fingerprint of submitted phone number
+  # @param [String] phone_fingerprint HMAC fingerprint of the phone number formatted as E.164
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
   # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
@@ -4248,7 +4265,6 @@ module AnalyticsEvents
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  # @param [Hash] pii_like_keypaths
   # @param [DateTime] enqueued_at When was this letter enqueued
   # @param [Integer] which_letter Sorted by enqueue time, which letter had this code
   # @param [Integer] letter_count How many letters did the user enqueue for this profile
@@ -4262,7 +4278,6 @@ module AnalyticsEvents
   def idv_verify_by_mail_enter_code_submitted(
     success:,
     errors:,
-    pii_like_keypaths:,
     enqueued_at:,
     which_letter:,
     letter_count:,
@@ -4277,7 +4292,6 @@ module AnalyticsEvents
       success:,
       errors:,
       error_details:,
-      pii_like_keypaths:,
       enqueued_at:,
       which_letter:,
       letter_count:,
@@ -4441,20 +4455,20 @@ module AnalyticsEvents
   # @param [Boolean] success Whether authentication was successful
   # @param [Hash] errors Authentication error reasons, if unsuccessful
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  # @param ["authentication","reauthentication","confirmation"] context User session context
+  # @param ["authentication", "reauthentication", "confirmation"] context User session context
   # @param [Boolean] new_device Whether the user is authenticating from a new device
   # @param [String] multi_factor_auth_method Authentication method used
-  # @param [DateTime] multi_factor_auth_method_created_at time auth method was created
+  # @param [String] multi_factor_auth_method_created_at When the authentication method was created
   # @param [Integer] auth_app_configuration_id Database ID of authentication app configuration
   # @param [Integer] piv_cac_configuration_id Database ID of PIV/CAC configuration
   # @param [String] piv_cac_configuration_dn_uuid PIV/CAC X509 distinguished name UUID
-  # @param [Integer] key_id PIV/CAC key_id
+  # @param [String, nil] key_id PIV/CAC key_id from PKI service
   # @param [Integer] webauthn_configuration_id Database ID of WebAuthn configuration
   # @param [Integer] phone_configuration_id Database ID of phone configuration
   # @param [Boolean] confirmation_for_add_phone Whether authenticating while adding phone
   # @param [String] area_code Area code of phone number
   # @param [String] country_code Abbreviated 2-letter country code associated with phone number
-  # @param [String] phone_fingerprint the hmac fingerprint of the phone number formatted as e164
+  # @param [String] phone_fingerprint HMAC fingerprint of the phone number formatted as E.164
   # @param [String] frontend_error Name of error that occurred in frontend during submission
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
@@ -4475,7 +4489,6 @@ module AnalyticsEvents
     webauthn_configuration_id: nil,
     confirmation_for_add_phone: nil,
     phone_configuration_id: nil,
-    pii_like_keypaths: nil,
     area_code: nil,
     country_code: nil,
     phone_fingerprint: nil,
@@ -4499,7 +4512,6 @@ module AnalyticsEvents
       webauthn_configuration_id:,
       confirmation_for_add_phone:,
       phone_configuration_id:,
-      pii_like_keypaths:,
       area_code:,
       country_code:,
       phone_fingerprint:,
@@ -4576,7 +4588,7 @@ module AnalyticsEvents
     track_event('Multi-Factor Authentication: download backup code')
   end
 
-  # @param ["authentication","reauthentication","confirmation"] context user session context
+  # @param ["authentication", "reauthentication", "confirmation"] context User session context
   # User visited the page to enter a backup code as their MFA
   def multi_factor_auth_enter_backup_code_visit(context:, **extra)
     track_event(
@@ -4586,13 +4598,13 @@ module AnalyticsEvents
     )
   end
 
-  # @param ["authentication","reauthentication","confirmation"] context User session context
+  # @param ["authentication", "reauthentication", "confirmation"] context User session context
   # @param [String] multi_factor_auth_method
   # @param [Boolean] confirmation_for_add_phone
   # @param [Integer] phone_configuration_id
   # @param [String] area_code Area code of phone number
   # @param [String] country_code Abbreviated 2-letter country code associated with phone number
-  # @param [String] phone_fingerprint Fingerprint hash of phone number
+  # @param [String] phone_fingerprint HMAC fingerprint of the phone number formatted as E.164
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # Multi-Factor Authentication enter OTP visited
@@ -4623,7 +4635,7 @@ module AnalyticsEvents
     )
   end
 
-  # @param ["authentication","reauthentication","confirmation"] context user session context
+  # @param ["authentication", "reauthentication", "confirmation"] context User session context
   # User visited the page to enter a personal key as their mfa (legacy flow)
   def multi_factor_auth_enter_personal_key_visit(context:, **extra)
     track_event(
@@ -4634,7 +4646,7 @@ module AnalyticsEvents
   end
 
   # @identity.idp.previous_event_name 'Multi-Factor Authentication: enter PIV CAC visited'
-  # @param ["authentication","reauthentication","confirmation"] context user session context
+  # @param ["authentication", "reauthentication", "confirmation"] context User session context
   # @param ["piv_cac"] multi_factor_auth_method
   # @param [Integer, nil] piv_cac_configuration_id PIV/CAC configuration database ID
   # @param [Boolean] new_device Whether the user is authenticating from a new device
@@ -4656,29 +4668,32 @@ module AnalyticsEvents
     )
   end
 
-  # @param ["authentication","reauthentication","confirmation"] context user session context
+  # @param ["authentication", "reauthentication", "confirmation"] context User session context
   # User visited the page to enter a TOTP as their mfa
   def multi_factor_auth_enter_totp_visit(context:, **extra)
     track_event('Multi-Factor Authentication: enter TOTP visited', context: context, **extra)
   end
 
-  # @param ["authentication","reauthentication","confirmation"] context user session context
+  # @param ["authentication", "reauthentication", "confirmation"] context User session context
   # @param ["webauthn","webauthn_platform"] multi_factor_auth_method which webauthn method was used,
   # webauthn means a roaming authenticator like a yubikey, webauthn_platform means a platform
   # authenticator like face or touch ID
   # @param [Integer, nil] webauthn_configuration_id webauthn database ID
+  # @param [String] multi_factor_auth_method_created_at When the authentication method was created
   # User visited the page to authenticate with webauthn (yubikey, face ID or touch ID)
   def multi_factor_auth_enter_webauthn_visit(
     context:,
     multi_factor_auth_method:,
     webauthn_configuration_id:,
+    multi_factor_auth_method_created_at:,
     **extra
   )
     track_event(
       'Multi-Factor Authentication: enter webAuthn authentication visited',
-      context: context,
-      multi_factor_auth_method: multi_factor_auth_method,
-      webauthn_configuration_id: webauthn_configuration_id,
+      context:,
+      multi_factor_auth_method:,
+      webauthn_configuration_id:,
+      multi_factor_auth_method_created_at:,
       **extra,
     )
   end
@@ -4699,7 +4714,7 @@ module AnalyticsEvents
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] selection
   # @param [integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
-  # @param [Hash] mfa_method_counts
+  # @param [Hash] mfa_method_counts Hash of MFA method with the number of that method on the account
   def multi_factor_auth_option_list(
     success:,
     errors:,
@@ -4730,7 +4745,7 @@ module AnalyticsEvents
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  # @param [String] otp_delivery_preference
+  # @param ["sms", "voice"] otp_delivery_preference Channel used to send the message
   # @param [String] area_code
   # @param [String] carrier Pinpoint detected phone carrier
   # @param [String] country_code Abbreviated 2-letter country code associated with phone number
@@ -4770,16 +4785,19 @@ module AnalyticsEvents
   # @param [String] multi_factor_auth_method
   # @param [Boolean] in_account_creation_flow whether user is going through account creation flow
   # @param [integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
-  # @param [DateTime] multi_factor_auth_method_created_at time auth method was created
-  # @param ['authentication','reauthentication','confirmation'] context User session context
+  # @param [String] multi_factor_auth_method_created_at When the authentication method was created
+  # @param ["authentication", "reauthentication", "confirmation"] context User session context
   # @param [Boolean] confirmation_for_add_phone Whether authenticating while adding phone
   # @param [String] area_code Area code of phone number
   # @param [String] country_code Abbreviated 2-letter country code associated with phone number
-  # @param [String] phone_fingerprint The hmac fingerprint of the phone number formatted as e164
+  # @param [String] phone_fingerprint HMAC fingerprint of the phone number formatted as E.164
   # @param [Integer] phone_configuration_id Database ID of phone configuration
   # @param [Integer] auth_app_configuration_id Database ID of authentication app configuration
   # @param [Boolean] totp_secret_present Whether TOTP secret was present in form validation
   # @param [Boolean] new_device Whether the user is authenticating from a new device
+  # @param [String, nil] key_id PIV/CAC key_id from PKI service
+  # @param [Hash] mfa_method_counts Hash of MFA method with the number of that method on the account
+  # @param [Hash] authenticator_data_flags WebAuthn authenticator data flags
   def multi_factor_auth_setup(
     success:,
     multi_factor_auth_method:,
@@ -4797,6 +4815,9 @@ module AnalyticsEvents
     totp_secret_present: nil,
     auth_app_configuration_id: nil,
     new_device: nil,
+    key_id: nil,
+    mfa_method_counts: nil,
+    authenticator_data_flags: nil,
     **extra
   )
     track_event(
@@ -4817,6 +4838,9 @@ module AnalyticsEvents
       totp_secret_present:,
       auth_app_configuration_id:,
       new_device:,
+      key_id:,
+      mfa_method_counts:,
+      authenticator_data_flags:,
       **extra,
     )
   end
@@ -5046,19 +5070,42 @@ module AnalyticsEvents
   end
 
   # Tracks when an openid connect token request is made
-  # @param [String] client_id
-  # @param [String] user_id
+  # @param [Boolean] success Whether the form was submitted successfully.
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # @param [String] client_id Service provider issuer
+  # @param [String] user_id User ID associated with code
   # @param [String] code_digest hash of "code" param
   # @param [Integer, nil] expires_in time to expiration of token
   # @param [Integer, nil] ial ial level of identity
-  def openid_connect_token(client_id:, user_id:, code_digest:, expires_in:, ial:, **extra)
+  # @param [Boolean] code_verifier_present Whether code verifier parameter was present
+  # @param [Boolean, nil] service_provider_pkce Whether service provider is configured for PKCE. Nil
+  # if the service provider is unknown.
+  def openid_connect_token(
+    client_id:,
+    success:,
+    errors:,
+    user_id:,
+    code_digest:,
+    expires_in:,
+    ial:,
+    code_verifier_present:,
+    service_provider_pkce:,
+    error_details: nil,
+    **extra
+  )
     track_event(
       'OpenID Connect: token',
-      client_id: client_id,
-      user_id: user_id,
-      code_digest: code_digest,
-      expires_in: expires_in,
-      ial: ial,
+      success:,
+      errors:,
+      error_details:,
+      client_id:,
+      user_id:,
+      code_digest:,
+      expires_in:,
+      ial:,
+      code_verifier_present:,
+      service_provider_pkce:,
       **extra,
     )
   end
@@ -5068,7 +5115,7 @@ module AnalyticsEvents
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param ["authentication","reauthentication","confirmation"] context User session context
-  # @param [String] otp_delivery_preference (sms or voice)
+  # @param ["sms", "voice"] otp_delivery_preference Channel used to send the message
   # @param [Boolean] resend True if the user re-requested a code
   # @param [String] country_code Abbreviated 2-letter country code associated with phone number
   # @param [String] area_code Area code of phone number
@@ -5296,12 +5343,10 @@ module AnalyticsEvents
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  # @param [Hash] pii_like_keypaths
   # Personal key form submitted
   def personal_key_reactivation_submitted(
     success:,
     errors:,
-    pii_like_keypaths:,
     error_details: nil,
     **extra
   )
@@ -5310,7 +5355,6 @@ module AnalyticsEvents
       success:,
       errors:,
       error_details:,
-      pii_like_keypaths:,
       **extra,
     )
   end
@@ -5406,7 +5450,7 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name PIV/CAC login
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
-  # @param [String,nil] key_id PIV/CAC key_id from PKI service
+  # @param [String, nil] key_id PIV/CAC key_id from PKI service
   # @param [Boolean] new_device Whether the user is authenticating from a new device
   # tracks piv cac login event
   def piv_cac_login(success:, errors:, key_id:, new_device:, **extra)
@@ -5500,18 +5544,29 @@ module AnalyticsEvents
     track_event('Profile: Created new personal key')
   end
 
-  # @param [true] success this event always succeeds
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Integer] emails Number of email addresses the notification was sent to
   # @param [Array<String>] sms_message_ids AWS Pinpoint SMS message IDs for each phone number that
   # was notified
   # User has chosen to receive a new personal key, contains stats about notifications that
   # were sent to phone numbers and email addresses for the user
-  def profile_personal_key_create_notifications(success:, emails:, sms_message_ids:, **extra)
+  def profile_personal_key_create_notifications(
+    success:,
+    errors:,
+    emails:,
+    sms_message_ids:,
+    error_details: nil,
+    **extra
+  )
     track_event(
       'Profile: Created new personal key notifications',
-      success: success,
-      emails: emails,
-      sms_message_ids: sms_message_ids,
+      success:,
+      errors:,
+      error_details:,
+      emails:,
+      sms_message_ids:,
       **extra,
     )
   end
@@ -5529,12 +5584,27 @@ module AnalyticsEvents
   end
 
   # Tracks when a user triggered a rate limiter
-  # @param [String] limiter_type
+  # @param [String] limiter_type Name of the rate limiter configuration exceeded
+  # @param [String] country_code Abbreviated 2-letter country code associated with phone number
+  # @param [String] phone_fingerprint HMAC fingerprint of the phone number formatted as E.164
+  # @param ["authentication", "reauthentication", "confirmation"] context User session context
+  # @param ["sms", "voice"] otp_delivery_preference Channel used to send the message
   # @identity.idp.previous_event_name Throttler Rate Limit Triggered
-  def rate_limit_reached(limiter_type:, **extra)
+  def rate_limit_reached(
+    limiter_type:,
+    country_code: nil,
+    phone_fingerprint: nil,
+    context: nil,
+    otp_delivery_preference: nil,
+    **extra
+  )
     track_event(
       'Rate Limit Reached',
-      limiter_type: limiter_type,
+      limiter_type:,
+      country_code:,
+      phone_fingerprint:,
+      context:,
+      otp_delivery_preference:,
       **extra,
     )
   end
@@ -5917,24 +5987,30 @@ module AnalyticsEvents
     track_event(:sign_in_security_check_failed_visited)
   end
 
-  # @param [Boolean] success
-  # @param [Boolean] new_user
-  # @param [Boolean] has_other_auth_methods
-  # @param [Integer] phone_configuration_id
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # @param [Boolean] new_user Whether this is an incomplete user (no associated MFA methods)
+  # @param [Boolean] has_other_auth_methods Whether the user has other authentication methods
+  # @param [Integer] phone_configuration_id Phone configuration associated with request
   # tracks when a user opts into SMS
   def sms_opt_in_submitted(
     success:,
+    errors:,
     new_user:,
     has_other_auth_methods:,
     phone_configuration_id:,
+    error_details: nil,
     **extra
   )
     track_event(
       'SMS Opt-In: Submitted',
-      success: success,
-      new_user: new_user,
-      has_other_auth_methods: has_other_auth_methods,
-      phone_configuration_id: phone_configuration_id,
+      success:,
+      errors:,
+      error_details:,
+      new_user:,
+      has_other_auth_methods:,
+      phone_configuration_id:,
       **extra,
     )
   end
@@ -6023,10 +6099,9 @@ module AnalyticsEvents
 
   # @param [String] area_code Area code of phone number
   # @param [String] country_code Abbreviated 2-letter country code associated with phone number
-  # @param [String] phone_fingerprint the hmac fingerprint of the phone number formatted as e164
-  # @param [String] context the context of the OTP, either "authentication" for confirmed phones
-  # or "confirmation" for unconfirmed
-  # @param ["sms","voice"] otp_delivery_preference the channel used to send the message
+  # @param [String] phone_fingerprint HMAC fingerprint of the phone number formatted as E.164
+  # @param ["authentication", "reauthentication", "confirmation"] context User session context
+  # @param ["sms", "voice"] otp_delivery_preference Channel used to send the message
   # @param [Boolean] resend
   # @param [Hash] telephony_response
   # @param [:test, :pinpoint] adapter which adapter the OTP was delivered with
@@ -6324,16 +6399,16 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success
-  # @param [Hash] mfa_method_counts
+  # @param [Hash] mfa_method_counts Hash of MFA method with the number of that method on the account
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Boolean] second_mfa_reminder_conversion Whether it is a result of second MFA reminder.
-  # @param [Hash] pii_like_keypaths
+  # @param [Boolean] in_account_creation_flow Whether user is going through creation flow
   # Tracks when a user has completed MFA setup
   def user_registration_mfa_setup_complete(
     success:,
     mfa_method_counts:,
     enabled_mfa_methods_count:,
-    pii_like_keypaths:,
+    in_account_creation_flow: nil,
     second_mfa_reminder_conversion: nil,
     **extra
   )
@@ -6342,7 +6417,7 @@ module AnalyticsEvents
       success:,
       mfa_method_counts:,
       enabled_mfa_methods_count:,
-      pii_like_keypaths:,
+      in_account_creation_flow:,
       second_mfa_reminder_conversion:,
       **extra,
     )
@@ -6476,14 +6551,21 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Hash] platform_authenticator
+  # @param [Boolean] platform_authenticator Whether setup is for platform authenticator
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
+  # @param [Boolean] in_account_creation_flow Whether user is going through creation flow
   # Tracks when WebAuthn setup is visited
-  def webauthn_setup_visit(platform_authenticator:, enabled_mfa_methods_count:, **extra)
+  def webauthn_setup_visit(
+    platform_authenticator:,
+    enabled_mfa_methods_count:,
+    in_account_creation_flow:,
+    **extra
+  )
     track_event(
       'WebAuthn Setup Visited',
-      platform_authenticator: platform_authenticator,
-      enabled_mfa_methods_count: enabled_mfa_methods_count,
+      platform_authenticator:,
+      enabled_mfa_methods_count:,
+      in_account_creation_flow:,
       **extra,
     )
   end

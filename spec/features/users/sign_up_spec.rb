@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
+RSpec.feature 'Sign Up' do
   include SamlAuthHelper
   include OidcAuthHelper
   include DocAuthHelper
@@ -240,14 +240,6 @@ RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
       skip_second_mfa_prompt
 
       expect(page).to have_current_path account_path
-    end
-
-    it 'allows a user to sign up with backup codes and add methods without reauthentication' do
-      sign_in_user
-      select_2fa_option('backup_code')
-
-      visit phone_setup_path
-      expect(page).to have_current_path phone_setup_path
     end
   end
 

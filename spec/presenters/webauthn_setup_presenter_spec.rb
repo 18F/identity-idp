@@ -48,7 +48,7 @@ RSpec.describe WebauthnSetupPresenter do
           t('forms.webauthn_setup.learn_more'),
           help_center_redirect_path(
             category: 'get-started',
-            article: 'authentication-options',
+            article: 'authentication-methods',
             article_anchor: 'security-key',
             flow: :two_factor_authentication,
             step: :security_key_setup,

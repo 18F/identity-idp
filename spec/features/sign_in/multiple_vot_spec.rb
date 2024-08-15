@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'Sign in with multiple vectors of trust', allowed_extra_analytics: [:*] do
+RSpec.feature 'Sign in with multiple vectors of trust' do
   include SamlAuthHelper
   include OidcAuthHelper
   include IdvHelper
@@ -38,7 +38,9 @@ RSpec.feature 'Sign in with multiple vectors of trust', allowed_extra_analytics:
         expect(user_info[:vot]).to eq('C1.C2.P1')
       end
 
-      scenario 'identity proofing with biometric is required if user is not proofed', :js do
+      scenario 'identity proofing with biometric is required if user is not proofed',
+               :js,
+               allowed_extra_analytics: [:*] do
         user = create(:user, :fully_registered)
 
         visit_idp_from_oidc_sp_with_vtr(vtr: ['C1.C2.P1.Pb', 'C1.C2.P1'])
@@ -174,7 +176,9 @@ RSpec.feature 'Sign in with multiple vectors of trust', allowed_extra_analytics:
         expect(first_name).to_not be_blank
       end
 
-      scenario 'identity proofing with biometric is required if user is not proofed', :js do
+      scenario 'identity proofing with biometric is required if user is not proofed',
+               :js,
+               allowed_extra_analytics: [:*] do
         user = create(:user, :fully_registered)
 
         visit_saml_authn_request_url(
