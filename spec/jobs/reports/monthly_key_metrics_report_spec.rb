@@ -12,6 +12,7 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
 
   let(:expected_s3_paths) do
     [
+      "#{report_folder}/condensed_hop_results.csv",
       "#{report_folder}/account_reuse.csv",
       "#{report_folder}/account_deletion_rate.csv",
       "#{report_folder}/total_user_count.csv",
@@ -43,6 +44,11 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
       ['metric', 'num_users', 'percent'],
     ]
   end
+  let(:mock_monthly_idv_data) do
+    [
+      ['foo', 'bar'],
+    ]
+  end
 
   before do
     allow(Identity::Hostdata).to receive(:env).and_return('int')
@@ -59,6 +65,8 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
 
     allow(report.proofing_rate_report).to receive(:as_csv).
       and_return(mock_proofing_rate_data)
+    allow(report.monthly_idv_report).to receive(:as_csv).
+      and_return(mock_monthly_idv_data)
 
     allow(IdentityConfig.store).to receive(:team_daily_reports_emails).
       and_return(mock_daily_reports_emails)

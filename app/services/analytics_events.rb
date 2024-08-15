@@ -3643,7 +3643,7 @@ module AnalyticsEvents
   # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
-  # When a user attempts to confirm posession of a new phone number during the IDV process
+  # When a user attempts to confirm possession of a new phone number during the IDV process
   def idv_phone_confirmation_otp_submitted(
     success:,
     errors:,
