@@ -37,7 +37,6 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
           expect(@analytics).to have_logged_event(
             'Multi-Factor Authentication',
             success: true,
-            errors: {},
             multi_factor_auth_method: 'backup_code',
             multi_factor_auth_method_created_at: Time.zone.now.strftime('%s%L'),
             enabled_mfa_methods_count: 1,
@@ -94,7 +93,6 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
           expect(@analytics).to have_logged_event(
             'Multi-Factor Authentication',
             success: true,
-            errors: {},
             multi_factor_auth_method: 'backup_code',
             multi_factor_auth_method_created_at: Time.zone.now.strftime('%s%L'),
             enabled_mfa_methods_count: 1,
@@ -173,7 +171,7 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
         expect(@analytics).to have_logged_event(
           'Multi-Factor Authentication',
           success: false,
-          errors: {},
+          error_details: { backup_code: { invalid: true } },
           multi_factor_auth_method: 'backup_code',
           enabled_mfa_methods_count: 1,
           new_device: true,

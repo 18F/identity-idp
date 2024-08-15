@@ -10,45 +10,35 @@ RSpec.describe BackupCodeVerificationForm do
   end
 
   describe '#submit' do
-    let(:params) do
-      {
-        backup_code: code,
-      }
-    end
+    let(:params) { { backup_code: code } }
 
     context 'with a valid backup code' do
       let(:code) { backup_codes.first }
-      let(:expected_response) do
-        {
-          success: true,
-          errors: {},
-          multi_factor_auth_method_created_at: backup_code_config.created_at.strftime('%s%L'),
-        }
-      end
 
-      it 'returns succcess' do
-        expect(result).to eq(expected_response)
+      it 'returns success' do
+        expect(result).to eq(
+          success: true,
+          multi_factor_auth_method_created_at: backup_code_config.created_at.strftime('%s%L'),
+        )
       end
 
       it 'marks code as used' do
-        expect { subject }.to change {
-                                backup_code_config.reload.used_at
-                              }.from(nil).to kind_of(Time)
+        expect { subject }.
+          to change { backup_code_config.reload.used_at }.
+          from(nil).
+          to kind_of(Time)
       end
     end
 
     context 'with an invalid backup code' do
       let(:code) { 'invalid' }
-      let(:expected_response) do
-        {
-          success: false,
-          errors: {},
-          multi_factor_auth_method_created_at: nil,
-        }
-      end
 
       it 'returns failure' do
-        expect(result).to eq(expected_response)
+        expect(result).to eq(
+          success: false,
+          error_details: { backup_code: { invalid: true } },
+          multi_factor_auth_method_created_at: nil,
+        )
       end
     end
   end
