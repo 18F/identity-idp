@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe 'sign_up/completions/show.html.erb' do
   let(:user) { create(:user, :fully_registered) }
   let(:service_provider) { create(:service_provider) }
+  let(:selected_email_id) { user.email_addresses.first.id }
   let(:decrypted_pii) { {} }
   let(:requested_attributes) { [:email] }
   let(:ial2_requested) { false }
@@ -22,10 +23,11 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
     CompletionsPresenter.new(
       current_user: user,
       current_sp: service_provider,
-      decrypted_pii: decrypted_pii,
-      requested_attributes: requested_attributes,
-      ial2_requested: ial2_requested,
-      completion_context: completion_context,
+      decrypted_pii:,
+      requested_attributes:,
+      ial2_requested:,
+      completion_context:,
+      selected_email_id:,
     )
   end
 
