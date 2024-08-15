@@ -54,7 +54,7 @@ class OpenidConnectUserInfoPresenter
   end
 
   def email_from_sp_identity
-    if identity.email_address_id
+    if identity.email_address_id && validate_saved_email_id?
       return EmailAddress.find(identity.email_address_id).email
     end
     email_context.last_sign_in_email_address.email
@@ -187,5 +187,10 @@ class OpenidConnectUserInfoPresenter
 
   def out_of_band_session_accessor
     @out_of_band_session_accessor ||= OutOfBandSessionAccessor.new(identity.rails_session_id)
+  end
+
+  def validate_saved_email_id?
+    saved_email = identity.email_address_id
+    EmailAddress.exists?(saved_email)
   end
 end

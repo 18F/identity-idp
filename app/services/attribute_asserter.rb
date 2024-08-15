@@ -221,6 +221,7 @@ class AttributeAsserter
     return nil unless IdentityConfig.store.feature_select_email_to_share_enabled
     sp = service_provider.issuer
     identity = user.identities.find_by(service_provider: sp)
+    return nil unless EmailAddress.exists?(identity.email_address_id)
     email_id = identity&.email_address_id
     return user.email_addresses.find(email_id).email if email_id.is_a? Integer
   end
