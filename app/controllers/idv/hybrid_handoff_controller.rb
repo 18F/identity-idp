@@ -61,7 +61,9 @@ module Idv
         next_steps: [:link_sent, :document_capture, :socure_document_capture],
         preconditions: ->(idv_session:, user:) {
                          idv_session.idv_consent_given? &&
-                         self.selected_remote(idv_session: idv_session)
+                           (self.selected_remote(idv_session: idv_session) || # from opt-in screen
+                             # back from ipp doc capture screen
+                             idv_session.skip_doc_auth_from_handoff)
                        },
         undo_step: ->(idv_session:, user:) do
           idv_session.flow_path = nil
