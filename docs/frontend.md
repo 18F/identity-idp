@@ -404,7 +404,7 @@ Font files are optimized to remove unused character data. If a new character is 
 3. Scrape content for character data:
    1. `make lint_font_glyphs`
 4. Subset the original Public Sans fonts to include only used character data:
-   1. `glyphhanger app/assets/fonts/glyphs.txt --formats=woff2 --subset="tmp/public-sans-v2/fonts/ttf/PublicSans-*.ttf"`
+   1. `glyphhanger --formats=woff2 --subset="tmp/public-sans-v2/fonts/ttf/PublicSans-*.ttf" --whitelist="$(cat app/assets/fonts/glyphs.txt)"`
 5. Replace font files with new subset fonts:
    1. `cd tmp/public-sans-v2/fonts/ttf`
    2. `find . -name "*-subset.woff2" -exec sh -c 'cp $1 "../../../../app/assets/fonts/public-sans/${1%-subset.woff2}.woff2"' _ {} \;`

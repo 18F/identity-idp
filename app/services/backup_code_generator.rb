@@ -23,11 +23,6 @@ class BackupCodeGenerator
     codes
   end
 
-  # @return [Boolean]
-  def verify(plaintext_code)
-    if_valid_consume_code_return_config_created_at(plaintext_code).present?
-  end
-
   # @return [BackupCodeConfiguration, nil]
   def if_valid_consume_code_return_config_created_at(plaintext_code)
     return unless plaintext_code.present?
