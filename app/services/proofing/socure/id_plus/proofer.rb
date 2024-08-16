@@ -31,7 +31,7 @@ module Proofing
         end
 
         # @param [Hash] applicant
-        # @returns [Proofing::Resolution::Result]
+        # @return [Proofing::Resolution::Result]
         def proof(applicant)
           input = Input.new(applicant)
 
@@ -62,7 +62,7 @@ module Proofing
         end
 
         # @param [Proofing::Socure::IdPlus::Response] response
-        # @returns [Proofing::Resolution::Result]
+        # @return [Proofing::Resolution::Result]
         def build_result_from_response(response)
           Proofing::Resolution::Result.new(
             success: all_required_attributes_verified?(response),
@@ -75,7 +75,7 @@ module Proofing
         end
 
         # @param [Proofing::Socure::IdPlus::Response] response
-        # @returns [Hash]
+        # @return [Hash]
         def reason_codes_as_errors(response)
           {
             reason_codes: response.kyc_reason_codes.sort,
