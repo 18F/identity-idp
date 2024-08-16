@@ -26,14 +26,14 @@ RSpec.describe Proofing::Socure::IdPlus::Request do
     )
   end
 
-  subject do
+  subject(:request) do
     described_class.new(config:, input:)
   end
 
   describe '#body' do
     it 'looks right' do
       freeze_time do
-        expect(JSON.parse(subject.body, symbolize_names: true)).to eql(
+        expect(JSON.parse(request.body, symbolize_names: true)).to eql(
           {
             modules: [
               'kyc',
@@ -68,7 +68,7 @@ RSpec.describe Proofing::Socure::IdPlus::Request do
 
   describe '#headers' do
     it 'look right' do
-      expect(subject.headers).to eql(
+      expect(request.headers).to eql(
         'Content-Type' => 'application/json',
         'Authorization' => "SocureApiKey #{api_key}",
       )
@@ -108,7 +108,7 @@ RSpec.describe Proofing::Socure::IdPlus::Request do
     end
 
     it 'includes API key' do
-      subject.send_request
+      request.send_request
 
       expect(WebMock).to have_requested(
         :post, 'https://example.org/api/3.0/EmailAuthScore'
@@ -116,21 +116,21 @@ RSpec.describe Proofing::Socure::IdPlus::Request do
     end
 
     it 'includes JSON serialized body' do
-      subject.send_request
+      request.send_request
 
       expect(WebMock).to have_requested(
         :post, 'https://example.org/api/3.0/EmailAuthScore'
-      ).with(body: subject.body)
+      ).with(body: request.body)
     end
 
     context 'when service returns HTTP 200 response' do
       it 'method returns a Proofing::Socure::IdPlus::Response' do
-        res = subject.send_request
+        res = request.send_request
         expect(res).to be_a(Proofing::Socure::IdPlus::Response)
       end
 
       it 'response has kyc data' do
-        res = subject.send_request
+        res = request.send_request
         expect(res.kyc_field_validations).to be
         expect(res.kyc_reason_codes).to be
       end
@@ -159,7 +159,7 @@ RSpec.describe Proofing::Socure::IdPlus::Request do
 
       it 'raises RequestError' do
         expect do
-          subject.send_request
+          request.send_request
         end.to raise_error(
           Proofing::Socure::IdPlus::RequestError,
           'Request-specific error message goes here (400)',
@@ -168,7 +168,7 @@ RSpec.describe Proofing::Socure::IdPlus::Request do
 
       it 'includes reference_id on RequestError' do
         expect do
-          subject.send_request
+          request.send_request
         end.to raise_error(
           Proofing::Socure::IdPlus::RequestError,
         ) do |err|
@@ -197,7 +197,7 @@ RSpec.describe Proofing::Socure::IdPlus::Request do
 
       it 'raises RequestError' do
         expect do
-          subject.send_request
+          request.send_request
         end.to raise_error(
           Proofing::Socure::IdPlus::RequestError,
           'Request-specific error message goes here (401)',
@@ -216,7 +216,7 @@ RSpec.describe Proofing::Socure::IdPlus::Request do
 
       it 'raises RequestError' do
         expect do
-          subject.send_request
+          request.send_request
         end.to raise_error(Proofing::Socure::IdPlus::RequestError)
       end
     end
@@ -228,7 +228,7 @@ RSpec.describe Proofing::Socure::IdPlus::Request do
       end
 
       it 'raises a ProofingTimeoutError' do
-        expect { subject.send_request }.to raise_error Proofing::TimeoutError
+        expect { request.send_request }.to raise_error Proofing::TimeoutError
       end
     end
 
@@ -239,7 +239,7 @@ RSpec.describe Proofing::Socure::IdPlus::Request do
       end
 
       it 'raises a RequestError' do
-        expect { subject.send_request }.to raise_error Proofing::Socure::IdPlus::RequestError
+        expect { request.send_request }.to raise_error Proofing::Socure::IdPlus::RequestError
       end
     end
   end
