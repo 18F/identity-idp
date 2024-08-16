@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'SocureWebhooks', type: :request do
+RSpec.describe SocureWebhookController do
   describe 'POST /api/webhooks/socure/event' do
     it 'returns OK' do
       post '/api/webhooks/socure/event'
