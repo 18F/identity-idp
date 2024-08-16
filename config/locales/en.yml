@@ -719,6 +719,7 @@ errors.manage_authenticator.remove_only_method_error: You cannot remove your onl
 errors.manage_authenticator.unique_name_error: Name already in use. Please use a different name.
 errors.max_password_attempts_reached: You’ve entered too many incorrect passwords. You can reset your password using the “Forgot your password?” link.
 errors.messages.already_confirmed: was already confirmed, please try signing in
+errors.messages.backup_code_limited: You tried too many times, please try again in %{timeout}.
 errors.messages.blank: Please fill in this field.
 errors.messages.blank_cert_element_req: We cannot detect a certificate in your request.
 errors.messages.confirmation_code_incorrect: Incorrect verification code

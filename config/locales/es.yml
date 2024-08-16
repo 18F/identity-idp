@@ -730,6 +730,7 @@ errors.manage_authenticator.remove_only_method_error: No puede eliminar su únic
 errors.manage_authenticator.unique_name_error: Ese nombre ya está en uso. Use un nombre diferente.
 errors.max_password_attempts_reached: Ingresó demasiadas contraseñas incorrectas. Puede restablecer su contraseña usando el vínculo “¿Olvidó su contraseña?”.
 errors.messages.already_confirmed: ya estaba confirmado, intente iniciar una sesión
+errors.messages.backup_code_limited: Lo intentó demasiadas veces; vuelva a intentarlo en %{timeout}.
 errors.messages.blank: Llene este campo.
 errors.messages.blank_cert_element_req: No podemos detectar un certificado en su solicitud.
 errors.messages.confirmation_code_incorrect: Código de verificación incorrecto

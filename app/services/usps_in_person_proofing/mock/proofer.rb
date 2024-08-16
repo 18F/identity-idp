@@ -40,8 +40,14 @@ module UspsInPersonProofing
         end
       end
 
-      def request_proofing_results(_enrollment)
-        JSON.parse(Fixtures.request_passed_proofing_results_response)
+      def request_proofing_results(enrollment)
+        if enrollment.days_to_due_date.negative? && enrollment.enhanced_ipp?
+          body = JSON.parse(Fixtures.request_expired_enhanced_ipp_results_response)
+          response = { body: body, status: 400 }
+          raise Faraday::BadRequestError.new('Bad request error', response)
+        else
+          JSON.parse(Fixtures.request_passed_proofing_results_response)
+        end
       end
     end
   end

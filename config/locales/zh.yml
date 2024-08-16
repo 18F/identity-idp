@@ -730,6 +730,7 @@ errors.manage_authenticator.remove_only_method_error: 你不能去掉自己唯�
 errors.manage_authenticator.unique_name_error: 名字已在使用。请使用一个不同的名字。
 errors.max_password_attempts_reached: 你输入了太多不正确的密码。你可以使用“忘了密码？”链接来重设密码。
 errors.messages.already_confirmed: 已确认，请尝试登录
+errors.messages.backup_code_limited: 你尝试了太多次。请在 %{timeout}后再试。
 errors.messages.blank: 请填写这一字段。
 errors.messages.blank_cert_element_req: 我们在你的请求中探查不到证书。
 errors.messages.confirmation_code_incorrect: 验证码不对。你打字打对了吗？

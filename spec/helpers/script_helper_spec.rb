@@ -109,7 +109,7 @@ RSpec.describe ScriptHelper do
 
       context 'with attributes' do
         before do
-          javascript_packs_tag_once('track-errors', async: true)
+          javascript_packs_tag_once('track-errors', defer: true)
           allow(Rails.application.config.asset_sources).to receive(:get_sources).
             with('track-errors').and_return(['/track-errors.js'])
           allow(Rails.application.config.asset_sources).to receive(:get_assets).
@@ -121,7 +121,7 @@ RSpec.describe ScriptHelper do
           output = render_javascript_pack_once_tags
 
           expect(output).to have_css(
-            "script[src^='/track-errors.js'][async]",
+            "script[src^='/track-errors.js'][defer]",
             count: 1,
             visible: :all,
           )

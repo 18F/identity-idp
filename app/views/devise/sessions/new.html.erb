@@ -102,7 +102,7 @@
   <!-- <%= t('notices.dap_participation') %> -->
   <%= javascript_packs_tag_once(
         'https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=GSA&subagency=TTS',
-        async: true,
+        defer: true,
         id: '_fed_an_ua_tag',
         preload_links_header: false,
       ) %>
