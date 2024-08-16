@@ -1,26 +1,26 @@
-import { useDefineProperty } from '@18f/identity-test-helpers';
+import { Worker } from 'node:worker_threads';
+import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 describe('digital analytics program', () => {
-  const defineProperty = useDefineProperty();
-
-  it('initializes gracefully with the expected page markup', async () => {
-    // The DAP script interchangeably references values on `window` and as unprefixed globals. Our
-    // test environment doesn't currently support passthrough values from global to window, so the
-    // following simulates the expected behavior in the browser.
-    defineProperty(global, 'dataLayer', {
-      configurable: true,
-      get() {
-        return (window as any).dataLayer;
-      },
+  it('parses without syntax error', async () => {
+    // Future: Replace with Promise.withResolvers once supported
+    // See: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/withResolvers
+    let resolve;
+    const promise = new Promise((_resolve) => {
+      resolve = _resolve;
     });
 
-    document.body.innerHTML =
-      '<script src="dap.js?agency=GSA&subagency=TTS" id="_fed_an_ua_tag"></script>';
+    // Reference: https://github.com/nodejs/node/issues/30682
+    const toDataUrl = (source: string) =>
+      new URL(`data:text/javascript,${encodeURIComponent(source)}`);
+    const url = pathToFileURL(join(__dirname, './digital-analytics-program.js'));
+    const code = `await import(${JSON.stringify(url)});`;
+    new Worker(toDataUrl(code)).on('error', (error) => {
+      expect(error).not.to.be.instanceOf(SyntaxError);
+      resolve();
+    });
 
-    // Ignore reason: The tests currently run as a sort of faked ESM, so while the package isn't
-    // technically a module, the import statement below is converted automatically to CommonJS.
-    //
-    // @ts-ignore
-    await import('./digital-analytics-program.js');
+    await promise;
   });
 });
