@@ -128,6 +128,34 @@ RSpec.describe ScriptHelper do
         end
       end
 
+      context 'with url parameters' do
+        before do
+          javascript_packs_tag_once('digital-analytics-program', url_params: { agency: 'gsa' })
+          allow(Rails.application.config.asset_sources).to receive(:get_sources).
+            with('digital-analytics-program').and_return(['/digital-analytics-program.js'])
+          allow(Rails.application.config.asset_sources).to receive(:get_assets).
+            with('application', 'document-capture', 'digital-analytics-program').
+            and_return([])
+        end
+
+        it 'includes url parameters in script url for the pack' do
+          output = render_javascript_pack_once_tags
+
+          expect(output).to have_css(
+            "script[src^='/digital-analytics-program.js?agency=gsa']:not([url_params])",
+            count: 1,
+            visible: :all,
+          )
+
+          # URL parameters should not be added to other scripts
+          expect(output).to have_css(
+            "script[src^='/application.js']",
+            count: 1,
+            visible: :all,
+          )
+        end
+      end
+
       context 'local development crossorigin sources' do
         let(:webpack_port) { '3035' }
 
