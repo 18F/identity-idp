@@ -259,7 +259,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
 
           before do
             enrollment_records = InPersonEnrollment.where(id: pending_enrollments.map(&:id))
-            # Below sets in_person_verification_pending_at 
+            # Below sets in_person_verification_pending_at
             # on the profile associated with each pending enrollment
             enrollment_records.each do |enrollment|
               profile = enrollment.profile
