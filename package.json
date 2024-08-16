@@ -9,7 +9,7 @@
     "app/javascript/packages/*"
   ],
   "scripts": {
-    "postinstall": "yarn --cwd app/javascript/packages/analytics run download-dap",
+    "postinstall": "yarn --cwd ./app/javascript/packages/analytics install",
     "typecheck": "tsc",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:css": "stylelint 'app/assets/stylesheets/**/*.scss' 'app/javascript/**/*.scss' 'app/components/*.scss'",
