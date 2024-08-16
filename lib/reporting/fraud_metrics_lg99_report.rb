@@ -145,17 +145,16 @@ module Reporting
     end
 
     def user_days_proofed_to_suspension_avg
-      user_data = User.where(uuid: data[Events::SUSPENDED_USERS]).joins(:profiles).
-        where.not(profiles: { verified_at: nil }).
-        group('users.id').
+      user_data = User.where(uuid: data[Events::SUSPENDED_USERS]).includes(:profiles).
+        merge(Profile.active).
         pluck(
-          'MAX(profiles.verified_at)',
+          :activated_at,
           :suspended_at,
         )
 
       return 'n/a' if user_data.empty?
 
-      difference = user_data.map { |profiled_at, suspended_at| suspended_at - profiled_at }
+      difference = user_data.map { |activated_at, suspended_at| suspended_at - activated_at }
       (difference.sum / difference.size).seconds.in_days.round(2)
     end
 
