@@ -11,7 +11,7 @@ RSpec.describe Reporting::ProofingRateReport do
 
   describe '#as_csv' do
     before do
-      allow(report).to receive(:reduced_reports).and_return(
+      allow(report).to receive(:reports).and_return(
         [
           instance_double(
             'Reporting::IdentityVerificationReport',
@@ -89,7 +89,7 @@ RSpec.describe Reporting::ProofingRateReport do
       before do
         stub_const('CloudwatchClient::DEFAULT_WAIT_DURATION', 0)
 
-        allow(report).to receive(:reduced_reports).and_call_original
+        allow(report).to receive(:reports).and_call_original
 
         Aws.config[:cloudwatchlogs] = {
           stub_responses: {
@@ -134,7 +134,7 @@ RSpec.describe Reporting::ProofingRateReport do
         it 'calls IdentityVerificationReport with separate slices, but merges them' do
           allow(Reporting::IdentityVerificationReport).to receive(:new).and_call_original
 
-          expect(report.reduced_reports.map(&:time_range)).to eq(
+          expect(report.reports.map(&:time_range)).to eq(
             [
               (end_date - 30.days).beginning_of_day..end_date,
               (end_date - 60.days).beginning_of_day..end_date,

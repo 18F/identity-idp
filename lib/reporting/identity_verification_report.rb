@@ -259,7 +259,6 @@ module Reporting
       data[Events::FRAUD_REVIEW_PASSED].count
     end
 
-    # Currently copypasta'd right out of TotalUserCountReport...
     def verified_user_count
       @verified_user_count ||= Reports::BaseReport.transaction_with_timeout do
         Profile.where(active: true).where('verified_at <= ?', time_range.end).count

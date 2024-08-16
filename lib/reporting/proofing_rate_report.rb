@@ -159,11 +159,12 @@ if __FILE__ == $PROGRAM_NAME
              end
   progress = !ARGV.include?('--no-progress')
   verbose = ARGV.include?('--verbose')
+  parallel = !ARGV.include?('--no-parallel')
 
   puts Reporting::ProofingRateReport.new(
     end_date: end_date,
     progress: progress,
-    parallel: false,
+    parallel: parallel,
     verbose: verbose,
   ).to_csv
 end
