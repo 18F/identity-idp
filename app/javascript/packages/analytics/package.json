@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "build": "make build"
+    "postinstall": "make digital-analytics-program.js"
   },
   "exports": {
     ".": "./index.ts",
