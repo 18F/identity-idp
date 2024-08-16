@@ -271,6 +271,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       status: :expired,
       status_check_completed_at: Time.zone.now,
     )
+    enrollment.profile.deactivate(:verification_cancelled)
 
     if fraud_result_pending?(enrollment)
       analytics(user: enrollment.user).idv_ipp_deactivated_for_never_visiting_post_office(

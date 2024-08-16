@@ -877,6 +877,14 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
               )
             end
 
+            it 'deactivates the associated profile' do
+              job.perform(Time.zone.now)
+
+              expect(pending_enrollment.profile).not_to be_active
+              expect(pending_enrollment.profile.in_person_verification_pending_at).to be_nil
+              expect(pending_enrollment.profile.deactivation_reason).to eq('verification_cancelled')
+            end
+
             context 'when the in_person_stop_expiring_enrollments flag is true' do
               before do
                 allow(IdentityConfig.store).to(
