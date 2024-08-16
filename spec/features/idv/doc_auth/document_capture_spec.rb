@@ -43,14 +43,14 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
         message = strip_tags(t('doc_auth.errors.doc_type_not_supported_heading'))
         expect(page).to have_content(message)
         detail_message = strip_tags(t('doc_auth.errors.doc.doc_type_check'))
-        security_message = strip_tags(
+        warning_message = strip_tags(
           t(
             'idv.failure.attempts_html',
             count: IdentityConfig.store.doc_auth_max_attempts - 1,
           ),
         )
         expect(page).to have_content(detail_message)
-        expect(page).to have_content(security_message)
+        expect(page).to have_content(warning_message)
         expect(page).to have_current_path(idv_document_capture_path)
         click_try_again
         expect(page).to have_current_path(idv_document_capture_path)
@@ -1014,13 +1014,13 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
             message = strip_tags(t('doc_auth.errors.selfie_not_live_or_poor_quality_heading'))
             expect(page).to have_content(message)
             detail_message = strip_tags(t('doc_auth.errors.alerts.selfie_not_live_or_poor_quality'))
-            security_message = strip_tags(
+            warning_message = strip_tags(
               t(
                 'idv.failure.attempts_html',
                 count: IdentityConfig.store.doc_auth_max_attempts - 1,
               ),
             )
-            expect(page).to have_content(detail_message << "\n" << security_message)
+            expect(page).to have_content(detail_message << "\n" << warning_message)
             review_issues_header = strip_tags(
               t('doc_auth.errors.selfie_not_live_or_poor_quality_heading'),
             )
@@ -1052,13 +1052,13 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
             message = strip_tags(t('doc_auth.errors.selfie_not_live_or_poor_quality_heading'))
             expect(page).to have_content(message)
             detail_message = strip_tags(t('doc_auth.errors.alerts.selfie_not_live_or_poor_quality'))
-            security_message = strip_tags(
+            warning_message = strip_tags(
               t(
                 'idv.failure.attempts_html',
                 count: IdentityConfig.store.doc_auth_max_attempts - 1,
               ),
             )
-            expect(page).to have_content(detail_message << "\n" << security_message)
+            expect(page).to have_content(detail_message << "\n" << warning_message)
             review_issues_header = strip_tags(
               t('doc_auth.errors.selfie_not_live_or_poor_quality_heading'),
             )
@@ -1090,13 +1090,13 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
             message = strip_tags(t('doc_auth.errors.selfie_fail_heading'))
             expect(page).to have_content(message)
             detail_message = strip_tags(t('doc_auth.errors.general.selfie_failure'))
-            security_message = strip_tags(
+            warning_message = strip_tags(
               t(
                 'idv.failure.attempts_html',
                 count: IdentityConfig.store.doc_auth_max_attempts - 1,
               ),
             )
-            expect(page).to have_content(detail_message << "\n" << security_message)
+            expect(page).to have_content(detail_message << "\n" << warning_message)
             review_issues_header = strip_tags(
               t('doc_auth.errors.selfie_fail_heading'),
             )
@@ -1129,14 +1129,14 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
             message = strip_tags(t('doc_auth.errors.selfie_not_live_or_poor_quality_heading'))
             expect(page).to have_content(message)
             detail_message = strip_tags(t('doc_auth.errors.alerts.selfie_not_live_or_poor_quality'))
-            security_message = strip_tags(
+            warning_message = strip_tags(
               t(
                 'idv.failure.attempts_html',
                 count: IdentityConfig.store.doc_auth_max_attempts - 1,
               ),
             )
 
-            expect(page).to have_content(detail_message << "\n" << security_message)
+            expect(page).to have_content(detail_message << "\n" << warning_message)
             review_issues_header = strip_tags(
               t('doc_auth.errors.selfie_not_live_or_poor_quality_heading'),
             )
