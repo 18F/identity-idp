@@ -82,33 +82,31 @@ module Proofing
         end
 
         def body
-          @body ||= begin
-            {
-              modules: ['kyc'],
-              firstName: input.first_name,
-              surName: input.last_name,
-              country: 'US',
+          @body ||= {
+            modules: ['kyc'],
+            firstName: input.first_name,
+            surName: input.last_name,
+            country: 'US',
 
-              physicalAddress: input.address1,
-              physicalAddress2: input.address2,
-              city: input.city,
-              state: input.state,
-              zip: input.zipcode,
+            physicalAddress: input.address1,
+            physicalAddress2: input.address2,
+            city: input.city,
+            state: input.state,
+            zip: input.zipcode,
 
-              nationalId: input.ssn,
-              dob: input.dob&.to_date&.to_s,
+            nationalId: input.ssn,
+            dob: input.dob&.to_date&.to_s,
 
-              userConsent: true,
-              consentTimestamp: 5.minutes.ago.iso8601,
+            userConsent: true,
+            consentTimestamp: 5.minutes.ago.iso8601,
 
-              email: input.email,
-              mobileNumber: input.phone,
+            email: input.email,
+            mobileNumber: input.phone,
 
-              # > The country or jurisdiction from where the transaction originates,
-              # > specified in ISO-2 country codes format
-              countryOfOrigin: 'US',
-            }.to_json
-          end
+            # > The country or jurisdiction from where the transaction originates,
+            # > specified in ISO-2 country codes format
+            countryOfOrigin: 'US',
+          }.to_json
         end
 
         def headers
