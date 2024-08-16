@@ -18,16 +18,12 @@ module Proofing
 
         def response_body
           return @response_body if defined?(@response_body)
-          @response_body = if wrapped.respond_to?(:response_body)
-                             wrapped.response_body
-                           end
+          @response_body = wrapped.try(:response_body)
         end
 
         def response_status
           return @response_status if defined?(@response_status)
-          @response_status = if wrapped.respond_to?(:response_status)
-                               wrapped.response_status
-                             end
+          @response_status = wrapped.try(:response_status)
         end
 
         private
