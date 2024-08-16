@@ -9,7 +9,7 @@
     "app/javascript/packages/*"
   ],
   "scripts": {
-    "postinstall": "yarn workspace @18f/identity-analytics run postinstall",
+    "postinstall": "yarn --cwd app/javascript/packages/analytics run postinstall",
     "typecheck": "tsc",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:css": "stylelint 'app/assets/stylesheets/**/*.scss' 'app/javascript/**/*.scss' 'app/components/*.scss'",
