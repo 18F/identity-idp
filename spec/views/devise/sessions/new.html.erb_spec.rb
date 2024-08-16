@@ -182,7 +182,7 @@ RSpec.describe 'devise/sessions/new.html.erb' do
       it 'does not render DAP analytics' do
         allow(view).to receive(:javascript_packs_tag_once)
         expect(view).not_to receive(:javascript_packs_tag_once).
-          with(a_string_matching('https://dap.digitalgov.gov/'), async: true, id: '_fed_an_ua_tag')
+          with(a_string_matching('https://dap.digitalgov.gov/'), defer: true, id: '_fed_an_ua_tag')
 
         render
       end
@@ -195,7 +195,7 @@ RSpec.describe 'devise/sessions/new.html.erb' do
         allow(view).to receive(:javascript_packs_tag_once)
         expect(view).to receive(:javascript_packs_tag_once).with(
           a_string_matching('https://dap.digitalgov.gov/'),
-          async: true,
+          defer: true,
           preload_links_header: false,
           id: '_fed_an_ua_tag',
         )
