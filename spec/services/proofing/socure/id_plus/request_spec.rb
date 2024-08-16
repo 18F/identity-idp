@@ -8,15 +8,10 @@ RSpec.describe Proofing::Socure::IdPlus::Request do
       timeout:,
     )
   end
-
   let(:api_key) { 'super-$ecret' }
-
   let(:base_url) { 'https://example.org/' }
-
   let(:timeout) { 5 }
-
   let(:user) { build(:user) }
-
   let(:input) do
     Proofing::Socure::IdPlus::Input.new(
       email: user.email,
