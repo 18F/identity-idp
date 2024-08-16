@@ -85,7 +85,7 @@ module Proofing
         # @param [Proofing::Socure::IdPlus::Response] response
         def verified_attributes(response)
           VERIFIED_ATTRIBUTE_MAP.each_with_object([]) do |(attr_name, field_names), result|
-            if Array.wrap(field_names).all? { |f| response.kyc_field_validations[f] }
+            if Array(field_names).all? { |f| response.kyc_field_validations[f] }
               result << attr_name
             end
           end.to_set
