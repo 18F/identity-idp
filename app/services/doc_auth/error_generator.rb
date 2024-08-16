@@ -218,7 +218,7 @@ module DocAuth
     end
   end
 
-  class GeneralErrorHandler < ErrorHandler
+  class UnknownErrorHandler < ErrorHandler
     def initialize(config:)
       @config = config
     end
@@ -333,7 +333,7 @@ module DocAuth
       end
 
       # catch all route, technically should not happen
-      unknown_error_handler = GeneralErrorHandler.new(config: config)
+      unknown_error_handler = UnknownErrorHandler.new(config: config)
       unknown_error_handler.handle(response_info).to_h
     end
 
