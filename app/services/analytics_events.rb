@@ -4188,20 +4188,6 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks when the Socure web hook is hit
-  # @param [String] type
-  # @param [Integer,nil] submit_attempts_remaining (previously called "attempts_remaining")
-  def idv_socure_webhook_hit(
-    body:,
-    **extra
-  )
-    track_event(
-      'IdV: Socure webhook hit',
-      body:,
-      **extra,
-    )
-  end
-
   # @param [String] step
   # @param [String] location
   # @param [Hash,nil] proofing_components User's current proofing components
