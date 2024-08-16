@@ -144,8 +144,9 @@ module Reports
               iaa_results = by_iaa_and_year_month[ [iaa_key, year_month] ]
               issuer_results = year_months_data[year_month]
               year_month_start = Date.strptime(year_month, '%Y%m')
-              iaa_start_date = iaa_results ? Date.parse(iaa_results.first[:iaa_start_date]) : 'n/a'
-              iaa_end_date = iaa_results ? Date.parse(iaa_results.first[:iaa_end_date]) : 'n/a'
+              iaa_start_date = iaa_results ?
+               Date.parse(iaa_results.first&.dig(:iaa_start_date)) : 'n/a'
+              iaa_end_date = iaa_results ? Date.parse(iaa_results.first&.dig(:iaa_end_date)) : 'n/a'
 
               partner_results = by_partner_results.find do |result|
                 result[:year_month] == year_month && result[:issuers]&.include?(issuer)
