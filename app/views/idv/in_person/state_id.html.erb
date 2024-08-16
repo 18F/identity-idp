@@ -46,7 +46,7 @@
     <%= render ValidatedFieldComponent.new(
           name: :first_name,
           form: f,
-          input_html: { value: pii[:first_name] },
+          input_html: { value: pii[:first_name], autocomplete: 'given-name' },
           label: t('in_person_proofing.form.state_id.first_name'),
           label_html: { class: 'usa-label' },
           maxlength: 255,
@@ -58,7 +58,7 @@
     <%= render ValidatedFieldComponent.new(
           name: :last_name,
           form: f,
-          input_html: { value: pii[:last_name] },
+          input_html: { value: pii[:last_name], autocomplete: 'family-name' },
           label: t('in_person_proofing.form.state_id.last_name'),
           label_html: { class: 'usa-label' },
           maxlength: 255,
@@ -144,7 +144,7 @@
           form: f,
           hint: state_id_number_hint,
           hint_html: { class: ['jurisdiction-extras'] },
-          input_html: { value: pii[:state_id_number] },
+          input_html: { value: pii[:state_id_number], autocomplete: 'section-off' },
           label: t('in_person_proofing.form.state_id.state_id_number'),
           label_html: { class: 'usa-label' },
           maxlength: 255,

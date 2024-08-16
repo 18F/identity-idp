@@ -53,7 +53,7 @@
     <%= render ValidatedFieldComponent.new(
           name: :first_name,
           form: f,
-          input_html: { value: pii[:first_name] },
+          input_html: { value: pii[:first_name], autocomplete: 'given-name' },
           label: t('in_person_proofing.form.state_id.first_name'),
           label_html: { class: 'usa-label' },
           maxlength: 255,
