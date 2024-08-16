@@ -11,7 +11,7 @@ module Proofing
 
         # @return [Hash<Symbol,Boolean>]
         def kyc_field_validations
-          @field_validations ||= kyc('fieldValidations').
+          @kyc_field_validations ||= kyc('fieldValidations').
             each_with_object({}) do |(field, valid), obj|
               obj[field.to_sym] = valid.round == 1
             end.freeze

@@ -55,8 +55,11 @@ RSpec.describe Proofing::Socure::IdPlus::Request do
 
             userConsent: true,
 
-            # XXX: This should be set to the time the user submitted agreement
-            consentTimestamp: Time.zone.now.to_date.to_s,
+            # XXX: This should be set to the time the user submitted agreement,
+            #      which we are not currently tracking. The "5.minutes.ago" is
+            #      because Socure will reject times "in the future", so we avoid
+            #      our clocks being out of sync with theirs.
+            consentTimestamp: 5.minutes.ago.iso8601,
           },
         )
       end

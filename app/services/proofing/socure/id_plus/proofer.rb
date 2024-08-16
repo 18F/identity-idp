@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Proofing
   module Socure
     module IdPlus
@@ -28,7 +30,7 @@ module Proofing
           @config = config
         end
 
-        # @param [] applicant
+        # @param [Hash] applicant
         # @returns [Proofing::Resolution::Result]
         def proof(applicant)
           input = Input.new(applicant)
