@@ -87,7 +87,7 @@ module Reporting
     def reports
       @reports ||= begin
         reports = parallel? ? parallel_reports : single_threaded_reports
-        
+
         reports.reduce([]) do |acc, report|
           if acc.empty?
             acc << report

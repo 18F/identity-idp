@@ -33,7 +33,7 @@ module Reporting
         precision: 2,
         table: as_csv,
         filename: 'condensed_hop_results', # FIXME, ask May
-        )
+      )
     end
 
     # Should I cargo cult in the ThrottlingException from above? Can we extract that?
@@ -90,7 +90,7 @@ module Reporting
           issuers: nil, # all issuers
           time_range: range,
           cloudwatch_client: cloudwatch_client,
-          )
+        )
       end
     end
 
@@ -99,7 +99,7 @@ module Reporting
         ensure_complete_logs: true,
         progress: progress?,
         logger: verbose? ? Logger.new(STDERR) : nil,
-        )
+      )
     end
   end
 end
