@@ -15,7 +15,6 @@ class DeleteUserEmailForm
   def submit
     success = valid? && email_address_destroyed
     notify_subscribers if success
-    delete_identity_email_id if success
     FormResponse.new(success: success, errors: errors)
   end
 
@@ -36,14 +35,5 @@ class DeleteUserEmailForm
     PushNotification::HttpPush.deliver(email_changed)
     recovery_information_changed = PushNotification::RecoveryInformationChangedEvent.new(user: user)
     PushNotification::HttpPush.deliver(recovery_information_changed)
-  end
-
-  def delete_identity_email_id
-    if user.identities.present?
-      user.identities.where(email_address_id: email_address.id).each do |identity|
-        identity.email_address_id = nil
-        identity.save
-      end
-    end
   end
 end

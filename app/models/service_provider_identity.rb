@@ -20,7 +20,7 @@ class ServiceProviderIdentity < ApplicationRecord
   has_one :agency, through: :service_provider_record
 
   has_one :email_address,
-          dependent: nil
+          dependent: :nullify
 
   scope :not_deleted, -> { where(deleted_at: nil) }
 

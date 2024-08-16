@@ -54,10 +54,19 @@ class OpenidConnectUserInfoPresenter
   end
 
   def email_from_sp_identity
-    if identity.email_address_id && validate_saved_email_id?
-      return EmailAddress.find(identity.email_address_id).email
+    if identity.email_address_id && find_email_address.present?
+      return email_address.email
     end
     email_context.last_sign_in_email_address.email
+  end
+
+  def find_email_address
+    begin
+      email_address = EmailAddress.find(identity.email_address_id)
+    rescue ActiveRecord::RecordNotFound
+      email_address = nil
+    end
+    email_address
   end
 
   def all_emails_from_sp_identity(identity)
@@ -187,10 +196,5 @@ class OpenidConnectUserInfoPresenter
 
   def out_of_band_session_accessor
     @out_of_band_session_accessor ||= OutOfBandSessionAccessor.new(identity.rails_session_id)
-  end
-
-  def validate_saved_email_id?
-    saved_email = identity.email_address_id
-    EmailAddress.exists?(saved_email)
   end
 end

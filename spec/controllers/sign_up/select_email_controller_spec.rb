@@ -1,6 +1,22 @@
 require 'rails_helper'
 
 RSpec.describe SignUp::SelectEmailController do
+  describe 'before_actions' do
+    it 'requires the user be logged in and authenticated' do
+      expect(subject).to have_actions(
+        :before,
+        :confirm_two_factor_authenticated,
+      )
+    end
+
+    it 'requires the user be in the completions flow' do
+      expect(subject).to have_actions(
+        :before,
+        :verify_needs_completions_screen,
+      )
+    end
+  end
+
   describe '#create' do
     let(:email) { 'michael.motorist@email.com' }
     let(:email2) { 'michael.motorist2@email.com' }
