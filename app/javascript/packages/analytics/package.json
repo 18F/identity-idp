@@ -2,7 +2,16 @@
   "name": "@18f/identity-analytics",
   "private": true,
   "version": "1.0.0",
+  "scripts": {
+    "build": "make build"
+  },
+  "exports": {
+    ".": "./index.ts",
+    "./click-observer-element": "./click-observer-element.ts",
+    "./digital-analytics-program": "./digital-analytics-program.js"
+  },
   "sideEffects": [
-    "./click-observer-element.ts"
+    "./click-observer-element.ts",
+    "./digital-analytics-program.js"
   ]
 }

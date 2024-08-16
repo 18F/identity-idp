@@ -194,7 +194,8 @@ RSpec.describe 'devise/sessions/new.html.erb' do
       it 'renders DAP analytics' do
         allow(view).to receive(:javascript_packs_tag_once)
         expect(view).to receive(:javascript_packs_tag_once).with(
-          a_string_matching('https://dap.digitalgov.gov/'),
+          'digital-analytics-program',
+          url_params: { agency: 'GSA', subagency: 'TTS' },
           defer: true,
           preload_links_header: false,
           id: '_fed_an_ua_tag',

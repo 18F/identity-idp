@@ -2,8 +2,8 @@
 
 # rubocop:disable Rails/HelperInstanceVariable
 module ScriptHelper
-  def javascript_packs_tag_once(*names, **attributes)
-    @scripts = @scripts.to_h.merge(names.index_with(attributes))
+  def javascript_packs_tag_once(*names, **attributes_and_url_params)
+    @scripts = @scripts.to_h.merge(names.index_with(attributes_and_url_params))
     nil
   end
 
@@ -14,10 +14,12 @@ module ScriptHelper
       javascript_packs_tag_once(...)
       return if @scripts.blank?
       concat javascript_assets_tag
-      @scripts.each do |name, attributes|
+      @scripts.each do |name, attributes_and_url_params|
+        url_params = attributes_and_url_params.delete(:url_params)
+        attributes = attributes_and_url_params
         asset_sources.get_sources(name).each do |source|
           concat javascript_include_tag(
-            source,
+            UriService.add_params(source, url_params),
             **attributes,
             crossorigin: local_crossorigin_sources? ? true : nil,
             integrity: asset_sources.get_integrity(source),
