@@ -8,21 +8,24 @@ module Reporting
   class MonthlyIdvReport
     attr_reader :end_date
 
-    def initialize(end_date:)
+    def initialize(end_date:, verbose: false, progress: false, parallel: false)
       @end_date = end_date.in_time_zone('UTC')
+      @verbose = verbose
+      @progress = progress
+      @parallel = parallel
     end
 
     # Make all of these actually configurable...
     def verbose?
-      true
+      @verbose
     end
 
     def progress?
-      true
+      @progress
     end
 
     def parallel?
-      true
+      @parallel
     end
 
     def monthly_idv_report_emailable_report
@@ -50,6 +53,11 @@ module Reporting
       csv << ['% rate of workflow completed', *reports.map(&:idv_final_resolution_rate)]
 
       csv << ['# of users verified (total)', *reports.map(&:verified_user_count)]
+    rescue Aws::CloudWatchLogs::Errors::ThrottlingException => err
+      [
+        ['Error', 'Message'],
+        [err.class.name, err.message],
+      ]
     end
 
     def reports
