@@ -130,7 +130,11 @@ RSpec.describe ScriptHelper do
 
       context 'with url parameters' do
         before do
-          javascript_packs_tag_once('digital-analytics-program', url_params: { agency: 'gsa' })
+          javascript_packs_tag_once(
+            'digital-analytics-program',
+            url_params: { agency: 'gsa' },
+            async: true,
+          )
           allow(Rails.application.config.asset_sources).to receive(:get_sources).
             with('digital-analytics-program').and_return(['/digital-analytics-program.js'])
           allow(Rails.application.config.asset_sources).to receive(:get_assets).
@@ -142,7 +146,7 @@ RSpec.describe ScriptHelper do
           output = render_javascript_pack_once_tags
 
           expect(output).to have_css(
-            "script[src^='/digital-analytics-program.js?agency=gsa']:not([url_params])",
+            "script[src^='/digital-analytics-program.js?agency=gsa'][async]:not([url_params])",
             count: 1,
             visible: :all,
           )
