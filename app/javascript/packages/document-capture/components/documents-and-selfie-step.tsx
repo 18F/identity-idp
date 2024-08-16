@@ -97,7 +97,7 @@ type DefaultSideProps = Pick<
   'registerField' | 'onChange' | 'errors' | 'onError'
 >;
 
-export function DocumentsAndSelfieStep({
+export default function DocumentsAndSelfieStep({
   value = {},
   onChange = () => {},
   errors = [],
