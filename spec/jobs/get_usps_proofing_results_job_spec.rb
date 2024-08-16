@@ -259,6 +259,12 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
 
           before do
             enrollment_records = InPersonEnrollment.where(id: pending_enrollments.map(&:id))
+            # Below sets in_person_verification_pending_at 
+            # on the profile associated with each pending enrollment
+            enrollment_records.each do |enrollment|
+              profile = enrollment.profile
+              profile.update(in_person_verification_pending_at: enrollment.created_at)
+            end
             allow(InPersonEnrollment).to receive(:needs_usps_status_check).
               and_return(enrollment_records)
             allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
@@ -880,6 +886,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
             it 'deactivates the associated profile' do
               job.perform(Time.zone.now)
 
+              pending_enrollment.reload
               expect(pending_enrollment.profile).not_to be_active
               expect(pending_enrollment.profile.in_person_verification_pending_at).to be_nil
               expect(pending_enrollment.profile.deactivation_reason).to eq('verification_cancelled')
@@ -904,6 +911,14 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                     job_name: 'GetUspsProofingResultsJob',
                   ),
                 )
+              end
+
+              it 'does not deactivate the profile' do
+                job.perform(Time.zone.now)
+
+                pending_enrollment.reload
+                expect(pending_enrollment.profile.in_person_verification_pending_at).to_not be_nil
+                expect(pending_enrollment.profile.deactivation_reason).to be_nil
               end
             end
           end
