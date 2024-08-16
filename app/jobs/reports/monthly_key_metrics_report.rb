@@ -25,7 +25,6 @@ module Reports
       end
 
       reports.each do |report|
-        next if Rails.env.development? # we don't have s3 access locally
         upload_to_s3(report.table, report_name: report.filename)
       end
 

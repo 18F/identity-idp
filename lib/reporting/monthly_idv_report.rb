@@ -15,7 +15,6 @@ module Reporting
       @parallel = parallel
     end
 
-    # Make all of these actually configurable...
     def verbose?
       @verbose
     end
@@ -31,7 +30,7 @@ module Reporting
     def monthly_idv_report_emailable_report
       EmailableReport.new(
         title: 'Proofing Rate Metrics',
-        subtitle: 'Condensed 🆕',
+        subtitle: 'Condensed (NEW)',
         float_as_percent: true,
         precision: 2,
         table: as_csv,
@@ -39,7 +38,6 @@ module Reporting
       )
     end
 
-    # Should I cargo cult in the ThrottlingException from above? Can we extract that?
     def as_csv
       csv = []
 
