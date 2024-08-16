@@ -8,7 +8,7 @@ module Reporting
   class ProofingRateReport
     DATE_INTERVALS = [30, 60, 90].freeze
 
-    attr_reader :end_date, :wait_duration, :by_month
+    attr_reader :end_date, :wait_duration
 
     def initialize(
       end_date:,
