@@ -48,9 +48,11 @@ module SignUp
     end
 
     def last_email
-      session_selected_email_id = session[:selected_email_id] ||
-                                  EmailContext.new(current_user).last_sign_in_email_address.id
-      EmailAddress.find(session_selected_email_id).email
+      begin
+        EmailAddress.find(session[:selected_email_id])
+      rescue ActiveRecord::RecordNotFound
+        EmailContext.new(current_user).last_sign_in_email_address.email
+      end
     end
 
     def verify_needs_completions_screen

@@ -38,9 +38,11 @@ class DisplayablePiiFormatter
   private
 
   def email
-    session_selected_email_id = @selected_email_id ||
-                                EmailContext.new(current_user).last_sign_in_email_address.id
-    EmailAddress.find(session_selected_email_id).email
+    if @selected_email_id
+      current_user.confirmed_email_addresses.find(@selected_email_id).email
+    else
+      EmailContext.new(current_user).last_sign_in_email_address.email
+    end
   end
 
   def all_emails
