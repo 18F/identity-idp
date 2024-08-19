@@ -321,9 +321,9 @@ RSpec.describe CompletionsPresenter do
 
         it 'builds hash with sorted keys' do
           expect(pii.keys).to eq %i[
+            email
             full_name
             phone
-            email
           ]
         end
       end
@@ -345,10 +345,10 @@ RSpec.describe CompletionsPresenter do
 
         it 'builds hash with sorted keys' do
           expect(pii.keys).to eq %i[
+            all_emails
             full_name
             address
             phone
-            all_emails
             birthdate
             social_security_number
             x509_subject
