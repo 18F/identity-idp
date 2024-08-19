@@ -47,7 +47,6 @@ const LEGACY_FILE_EXCEPTIONS = [
   'spec/javascript/packages/document-capture/components/document-capture-review-issues-spec.jsx',
   'spec/javascript/packages/document-capture/components/document-capture-spec.jsx',
   'spec/javascript/packages/document-capture/components/document-capture-warning-spec.jsx',
-  'spec/javascript/packages/document-capture/components/documents-step-spec.jsx',
   'spec/javascript/packages/document-capture/components/file-image-spec.jsx',
   'spec/javascript/packages/document-capture/components/file-input-spec.jsx',
   'spec/javascript/packages/document-capture/components/review-issues-step-spec.jsx',
