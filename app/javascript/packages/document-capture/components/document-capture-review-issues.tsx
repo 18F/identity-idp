@@ -4,7 +4,7 @@ import { FormStepsButton } from '@18f/identity-form-steps';
 import { Cancel } from '@18f/identity-verify-flow';
 import { useI18n, HtmlTextWithStrongNoWrap } from '@18f/identity-react-i18n';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
-import UnknownError from './unknown-error';
+import GeneralError from './general-error';
 import TipList from './tip-list';
 import { SelfieCaptureContext } from '../context';
 import {
@@ -53,7 +53,7 @@ function DocumentCaptureReviewIssues({
       {isSelfieCaptureEnabled && (
         <DocumentCaptureSubheaderOne isSelfieCaptureEnabled={isSelfieCaptureEnabled} />
       )}
-      <UnknownError
+      <GeneralError
         unknownFieldErrors={unknownFieldErrors}
         isFailedDocType={isFailedDocType}
         isFailedSelfie={isFailedSelfie}

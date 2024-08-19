@@ -6,7 +6,7 @@ import { Link } from '@18f/identity-components';
 import formatHTML from '@18f/identity-react-i18n/format-html';
 import MarketingSiteContext from '../context/marketing-site';
 
-interface UnknownErrorProps extends ComponentProps<'p'> {
+interface GeneralErrorProps extends ComponentProps<'p'> {
   unknownFieldErrors: FormStepError<{ front: string; back: string }>[];
   isFailedDocType: boolean;
   isFailedSelfie: boolean;
@@ -40,7 +40,7 @@ function getError({ unknownFieldErrors }: GetErrorArguments) {
   return err;
 }
 
-function UnknownError({
+function GeneralError({
   unknownFieldErrors = [],
   isFailedDocType = false,
   isFailedSelfie = false,
@@ -48,7 +48,7 @@ function UnknownError({
   altFailedDocTypeMsg = null,
   altIsFailedSelfieDontIncludeAttempts = false,
   hasDismissed,
-}: UnknownErrorProps) {
+}: GeneralErrorProps) {
   const { t } = useI18n();
   const { getHelpCenterURL } = useContext(MarketingSiteContext);
   const helpCenterLink = getHelpCenterURL({
@@ -107,4 +107,4 @@ function UnknownError({
   return <p />;
 }
 
-export default UnknownError;
+export default GeneralError;
