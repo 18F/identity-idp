@@ -34,7 +34,7 @@ module Reporting
         float_as_percent: true,
         precision: 2,
         table: as_csv,
-        filename: 'condensed_hop_results', # FIXME, ask May
+        filename: 'condensed_idv',
       )
     end
 
