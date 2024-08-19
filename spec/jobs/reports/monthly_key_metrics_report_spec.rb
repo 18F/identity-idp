@@ -12,7 +12,7 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
 
   let(:expected_s3_paths) do
     [
-      "#{report_folder}/condensed_hop_results.csv",
+      "#{report_folder}/condensed_idv.csv",
       "#{report_folder}/account_reuse.csv",
       "#{report_folder}/account_deletion_rate.csv",
       "#{report_folder}/total_user_count.csv",

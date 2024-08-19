@@ -40,7 +40,7 @@ RSpec.describe Reporting::MonthlyIdvReport do
             successfully_verified_users: 3333,
             blanket_proofing_rate: 0.3333,
             idv_final_resolution: 3333,
-            idv_final_resolution_rate: 0.2222,
+            idv_final_resolution_rate: 0.3333,
             verified_user_count: 3333,
           ),
         ],
