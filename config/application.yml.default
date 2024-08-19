@@ -48,6 +48,10 @@ aws_kms_session_key_id: alias/login-dot-gov-test-keymaker
 aws_logo_bucket: ''
 aws_region: 'us-west-2'
 backup_code_cost: '2000$8$1$'
+backup_code_user_id_per_ip_attempt_window_exponential_factor: 1.1
+backup_code_user_id_per_ip_attempt_window_in_minutes: 720
+backup_code_user_id_per_ip_attempt_window_max_minutes: 43_200
+backup_code_user_id_per_ip_max_attempts: 50
 biometric_ial_enabled: true
 broken_personal_key_window_finish: '2021-09-22T00:00:00Z'
 broken_personal_key_window_start: '2021-07-29T00:00:00Z'
@@ -57,12 +61,23 @@ component_previews_enabled: false
 compromised_password_randomizer_threshold: 900
 compromised_password_randomizer_value: 1000
 country_phone_number_overrides: '{}'
+database_host: ''
+database_name: ''
+database_password: ''
 database_pool_idp: 5
+database_read_replica_host: ''
+database_readonly_password: ''
+database_readonly_username: ''
 database_socket: ''
 database_sslmode: 'verify-full'
 database_statement_timeout: 2_500
 database_timeout: 5_000
+database_username: ''
+database_worker_jobs_host: ''
+database_worker_jobs_name: ''
+database_worker_jobs_password: ''
 database_worker_jobs_sslmode: 'verify-full'
+database_worker_jobs_username: ''
 deleted_user_accounts_report_configs: '[]'
 deliver_mail_async: false
 development_mailer_deliver_method: letter_opener
@@ -81,6 +96,9 @@ doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 3
 doc_auth_selfie_desktop_test_mode: false
 doc_auth_supported_country_codes: '["US", "GU", "VI", "AS", "MP", "PR", "USA" ,"GUM", "VIR", "ASM", "MNP", "PRI"]'
+doc_auth_vendor_randomize: false
+doc_auth_vendor_randomize_alternate_vendor: ''
+doc_auth_vendor_randomize_percent: 0
 doc_capture_polling_enabled: true
 doc_capture_request_valid_for_minutes: 15
 drop_off_report_config: '[{"emails":["ursula@example.com"],"issuers": ["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]}]'
@@ -208,6 +226,7 @@ min_password_score: 3
 minimum_wait_before_another_usps_letter_in_hours: 24
 mx_timeout: 3
 new_device_alert_delay_in_minutes: 5
+newrelic_license_key: ''
 openid_connect_content_security_form_action_enabled: false
 openid_connect_redirect: client_side_js
 openid_connect_redirect_issuer_override_map: '{}'
@@ -368,7 +387,6 @@ development:
   aamva_public_key: 123abc
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
-  aws_logo_bucket: ''
   check_user_password_compromised_enabled: true
   component_previews_embed_frame_ancestors: '["http://localhost:4000"]'
   component_previews_enabled: true
@@ -376,22 +394,8 @@ development:
   compromised_password_randomizer_value: 1
   dashboard_api_token: test_token
   dashboard_url: http://localhost:3001/api/service_providers
-  database_host: ''
-  database_name: ''
-  database_password: ''
-  database_read_replica_host: ''
-  database_readonly_password: ''
-  database_readonly_username: ''
-  database_username: ''
-  database_worker_jobs_host: ''
-  database_worker_jobs_name: ''
-  database_worker_jobs_password: ''
-  database_worker_jobs_username: ''
   doc_auth_selfie_desktop_test_mode: true
   doc_auth_vendor: 'mock'
-  doc_auth_vendor_randomize: false
-  doc_auth_vendor_randomize_alternate_vendor: ''
-  doc_auth_vendor_randomize_percent: 0
   domain_name: localhost:3000
   enable_rate_limiting: false
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
@@ -403,8 +407,6 @@ development:
   in_person_send_proofing_notifications_enabled: true
   logins_per_ip_limit: 5
   logo_upload_enabled: true
-  max_bad_passwords: 5
-  newrelic_license_key: ''
   otp_delivery_blocklist_findtime: 5
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
   phone_recaptcha_score_threshold: 0.5
@@ -445,27 +447,12 @@ production:
   attribute_encryption_key:
   attribute_encryption_key_queue: '[]'
   available_locales: 'en,es,fr'
-  aws_logo_bucket: ''
   biometric_ial_enabled: false
   dashboard_api_token: ''
   dashboard_url: https://dashboard.demo.login.gov
-  database_host: ''
-  database_name: ''
-  database_password: ''
-  database_read_replica_host: ''
-  database_readonly_password: ''
-  database_readonly_username: ''
-  database_username: ''
-  database_worker_jobs_host: ''
-  database_worker_jobs_name: ''
-  database_worker_jobs_password: ''
-  database_worker_jobs_username: ''
   disable_email_sending: false
   disable_logout_get_request: false
   doc_auth_vendor: 'acuant'
-  doc_auth_vendor_randomize: false
-  doc_auth_vendor_randomize_alternate_vendor: ''
-  doc_auth_vendor_randomize_percent: 0
   domain_name: login.gov
   email_registrations_per_ip_track_only_mode: true
   enable_test_routes: false
@@ -479,7 +466,6 @@ production:
   logins_per_ip_limit: 20
   logins_per_ip_period: 20
   logins_per_ip_track_only_mode: true
-  newrelic_license_key: ''
   openid_connect_content_security_form_action_enabled: true
   openid_connect_redirect: server_side
   otp_delivery_blocklist_findtime: 5
@@ -506,7 +492,6 @@ production:
   telephony_adapter: pinpoint
   use_kms: true
   usps_auth_token_refresh_job_enabled: true
-  usps_confirmation_max_days: 30
   usps_upload_sftp_directory: ''
   usps_upload_sftp_host: ''
   usps_upload_sftp_password: ''
@@ -520,23 +505,9 @@ test:
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
   dashboard_api_token: 123ABC
   dashboard_url: https://dashboard.demo.login.gov
-  database_host: ''
-  database_name: ''
-  database_password: ''
-  database_read_replica_host: ''
-  database_readonly_password: ''
-  database_readonly_username: ''
-  database_username: ''
-  database_worker_jobs_host: ''
-  database_worker_jobs_name: ''
-  database_worker_jobs_password: ''
-  database_worker_jobs_username: ''
   doc_auth_max_attempts: 4
   doc_auth_selfie_desktop_test_mode: true
   doc_auth_vendor: 'mock'
-  doc_auth_vendor_randomize: false
-  doc_auth_vendor_randomize_alternate_vendor: ''
-  doc_auth_vendor_randomize_percent: 0
   doc_capture_polling_enabled: false
   domain_name: www.example.com
   email_registrations_per_ip_limit: 3
@@ -547,9 +518,7 @@ test:
   lockout_period_in_minutes: 5
   logins_per_email_and_ip_limit: 2
   logins_per_ip_limit: 3
-  max_bad_passwords: 5
   max_mail_events: 2
-  newrelic_license_key: ''
   otp_delivery_blocklist_findtime: 1
   otp_delivery_blocklist_maxretry: 2
   otp_min_attempts_remaining_warning_count: 1
@@ -561,10 +530,8 @@ test:
   phone_confirmation_max_attempts: 5
   phone_setups_per_ip_limit: 3
   phone_setups_per_ip_period: 10
-  phone_setups_per_ip_track_only_mode: false
   piv_cac_verify_token_secret: 3ac13bfa23e22adae321194c083e783faf89469f6f85dcc0802b27475c94b5c3891b5657bd87d0c1ad65de459166440512f2311018db90d57b15d8ab6660748f
   poll_rate_for_verify_in_seconds: 0
-  prometheus_exporter: false
   raise_on_missing_title: true
   reg_confirmed_email_max_attempts: 3
   reg_unconfirmed_email_max_attempts: 4

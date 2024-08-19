@@ -621,6 +621,7 @@ RSpec.describe FakeAnalytics do
         client_image_metrics: nil,
         flow_path: nil,
         liveness_checking_required: nil,
+        issue_year: nil,
         'DocumentName' => 'some_name',
       )
 

@@ -5,7 +5,7 @@ import { FormStepError } from '@18f/identity-form-steps';
 import type { I18n } from '@18f/identity-i18n';
 import Warning from './warning';
 import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
-import UnknownError from './unknown-error';
+import GeneralError from './general-error';
 import { InPersonContext } from '../context';
 import AnalyticsContext from '../context/analytics';
 import SelfieCaptureContext from '../context/selfie-capture';
@@ -124,7 +124,7 @@ function DocumentCaptureWarning({
       >
         <div ref={subheadingRef}>{!!subheading && subheading}</div>
         <div ref={errorMessageDisplayedRef}>
-          <UnknownError
+          <GeneralError
             unknownFieldErrors={unknownFieldErrors}
             isFailedDocType={isFailedDocType}
             isFailedSelfie={isFailedSelfie}

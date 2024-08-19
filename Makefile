@@ -113,7 +113,7 @@ lint_erb: ## Lints ERB files
 	bundle exec erblint app/views app/components
 
 lint_yaml: normalize_yaml ## Lints YAML files
-	(! git diff --name-only | grep "^config/.*\.yml$$") || (echo "Error: Run 'make normalize_yaml' to normalize YAML"; exit 1)
+	(! git diff --name-only | grep "^config/.*\.yml") || (echo "Error: Run 'make normalize_yaml' to normalize YAML"; exit 1)
 
 lint_font_glyphs: ## Lints to validate content glyphs match expectations from fonts
 	scripts/yaml_characters \
