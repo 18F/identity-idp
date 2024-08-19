@@ -4,11 +4,11 @@ class CompletionsPresenter
   attr_reader :current_user, :current_sp, :decrypted_pii, :requested_attributes, :completion_context
 
   SORTED_IAL2_ATTRIBUTE_MAPPING = [
+    [[:email], :email],
+    [[:all_emails], :all_emails],
     [%i[given_name family_name], :full_name],
     [[:address], :address],
     [[:phone], :phone],
-    [[:email], :email],
-    [[:all_emails], :all_emails],
     [[:birthdate], :birthdate],
     [[:social_security_number], :social_security_number],
     [[:x509_subject], :x509_subject],
