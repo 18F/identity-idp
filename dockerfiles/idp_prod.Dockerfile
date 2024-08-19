@@ -75,7 +75,8 @@ RUN bundle binstubs --all
 # yarn install
 COPY ./package.json ./package.json
 COPY ./yarn.lock ./yarn.lock
-RUN yarn install --production=true --frozen-lockfile --cache-folder .yarn-cache
+COPY ./app/javascript/packages/build-sass ./app/javascript/packages/build-sass
+RUN ls -al node_modules/@18f && yarn install --production=true --frozen-lockfile --cache-folder .yarn-cache
 
 # Add the application code
 COPY ./lib ./lib
@@ -105,7 +106,7 @@ COPY ./config/application.yml.default.prod $RAILS_ROOT/config/application.yml
 
 # Precompile assets
 COPY ./app/javascript/packages/build-sass $RAILS_ROOT/node_modules/@18f/identity-build-sass
-RUN ls -al node_modules/@18f && SKIP_YARN_INSTALL=true bundle exec rake assets:precompile && rm -r node_modules/ && rm -r .yarn-cache/
+RUN SKIP_YARN_INSTALL=true bundle exec rake assets:precompile && rm -r node_modules/ && rm -r .yarn-cache/
 
 # get service_providers.yml and related files
 ARG SERVICE_PROVIDERS_KEY
