@@ -55,18 +55,18 @@ class OpenidConnectUserInfoPresenter
 
   def email_from_sp_identity
     if identity.email_address_id && find_email_address.present?
-      return email_address.email
+      return @email_address.email
     end
     email_context.last_sign_in_email_address.email
   end
 
   def find_email_address
     begin
-      email_address = EmailAddress.find(identity.email_address_id)
+      @email_address = EmailAddress.find(identity.email_address_id)
     rescue ActiveRecord::RecordNotFound
-      email_address = nil
+      @email_address = nil
     end
-    email_address
+    @email_address
   end
 
   def all_emails_from_sp_identity(identity)
