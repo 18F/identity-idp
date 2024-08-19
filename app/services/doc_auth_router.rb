@@ -198,7 +198,7 @@ module DocAuthRouter
   def self.doc_auth_vendor_for_bucket(bucket)
     bucket == :alternate_vendor ?
       IdentityConfig.store.doc_auth_vendor_randomize_alternate_vendor :
-      IdentityConfig.store.doc_auth_vendor
+      IdentityConfig.store.doc_auth_vendor_default
   end
 
   def self.doc_auth_vendor(

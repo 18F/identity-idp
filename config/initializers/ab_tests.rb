@@ -58,4 +58,18 @@ module AbTests
   ) do |service_provider:, session:, user:, user_session:, **|
     document_capture_session_uuid_discriminator(service_provider:, session:, user:, user_session:)
   end.freeze
+
+  # This test is in place to allow a graceful transition from TrueID being the sole vendor to a
+  # multi-vendor configuration. This test will eventually replace the DOC_AUTH_VENDOR test.
+  SOCURE = AbTest.new(
+    experiment_name: 'Socure',
+    should_log: /^idv/i,
+    buckets: {
+      socure: IdentityConfig.store.doc_auth_vendor_switching_enabled ?
+        IdentityConfig.store.doc_auth_vendor_socure_percent :
+        0,
+    },
+  ) do |service_provider:, session:, user:, user_session:, **|
+    document_capture_session_uuid_discriminator(service_provider:, session:, user:, user_session:)
+  end
 end

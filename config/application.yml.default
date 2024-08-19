@@ -100,6 +100,8 @@ doc_auth_supported_country_codes: '["US", "GU", "VI", "AS", "MP", "PR", "USA" ,"
 doc_auth_vendor_randomize: false
 doc_auth_vendor_randomize_alternate_vendor: ''
 doc_auth_vendor_randomize_percent: 0
+doc_auth_vendor_switching_enabled: false
+doc_auth_vendor_socure_percent: 0
 doc_capture_polling_enabled: true
 doc_capture_request_valid_for_minutes: 15
 drop_off_report_config: '[{"emails":["ursula@example.com"],"issuers": ["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]}]'
@@ -396,6 +398,7 @@ development:
   dashboard_url: http://localhost:3001/api/service_providers
   doc_auth_selfie_desktop_test_mode: true
   doc_auth_vendor: 'mock'
+  doc_auth_vendor_default: 'mock'
   domain_name: localhost:3000
   enable_rate_limiting: false
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
@@ -452,7 +455,8 @@ production:
   dashboard_url: https://dashboard.demo.login.gov
   disable_email_sending: false
   disable_logout_get_request: false
-  doc_auth_vendor: 'acuant'
+  doc_auth_vendor: 'lexisnexis'
+  doc_auth_vendor_default: 'lexisnexis'
   domain_name: login.gov
   email_registrations_per_ip_track_only_mode: true
   enable_test_routes: false
@@ -507,6 +511,7 @@ test:
   doc_auth_max_attempts: 4
   doc_auth_selfie_desktop_test_mode: true
   doc_auth_vendor: 'mock'
+  doc_auth_vendor_default: 'mock'
   doc_capture_polling_enabled: false
   domain_name: www.example.com
   email_registrations_per_ip_limit: 3
