@@ -192,6 +192,9 @@ brakeman: ## Runs brakeman code security check
 public/packs/manifest.json: yarn.lock $(shell find app/javascript -type f) ## Builds JavaScript assets
 	yarn build:js
 
+app/javascript/packages/analytics: ## Runs Makefile tasks in analytics JavaScript package
+	$(MAKE) -C $@
+
 browsers.json: yarn.lock .browserslistrc ## Generates browsers.json browser support file
 	yarn generate-browsers-json
 
