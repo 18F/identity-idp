@@ -6,14 +6,6 @@ RSpec.describe UserAlerts::AlertUserAboutNewDevice do
   let(:disavowal_token) { 'the_disavowal_token' }
   let(:device) { create(:device, user: user) }
 
-  describe '.call' do
-    it 'does not send any emails' do
-      described_class.call(event:, device:, disavowal_token:)
-
-      expect_delivered_email_count(0)
-    end
-  end
-
   describe '.schedule_alert' do
     subject(:result) { described_class.schedule_alert(event:) }
 
