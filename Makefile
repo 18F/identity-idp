@@ -194,8 +194,7 @@ public/packs/manifest.json: yarn.lock $(shell find app/javascript -type f) ## Bu
 	yarn build:js
 
 app/javascript/packages/analytics: vendor/digital-analytics-program-$(DAP_SHA).js ## Runs Makefile tasks in analytics JavaScript package
-	cp $^ $@
-	$(MAKE) -C $@
+	if test -d $@; then cp $^ $@ && $(MAKE) -C $@; fi
 
 vendor/digital-analytics-program-$(DAP_SHA).js:
 	curl https://raw.githubusercontent.com/digital-analytics-program/gov-wide-code/$(DAP_SHA)/Universal-Federated-Analytics.js --silent --output $@
