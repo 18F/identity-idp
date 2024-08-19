@@ -64,20 +64,20 @@ country_phone_number_overrides: '{}'
 database_host: ''
 database_name: ''
 database_password: ''
+database_pool_idp: 5
 database_read_replica_host: ''
 database_readonly_password: ''
 database_readonly_username: ''
-database_username: ''
-database_worker_jobs_host: ''
-database_worker_jobs_name: ''
-database_worker_jobs_password: ''
-database_worker_jobs_username: ''
-database_pool_idp: 5
 database_socket: ''
 database_sslmode: 'verify-full'
 database_statement_timeout: 2_500
 database_timeout: 5_000
+database_username: ''
+database_worker_jobs_host: ''
+database_worker_jobs_name: ''
+database_worker_jobs_password: ''
 database_worker_jobs_sslmode: 'verify-full'
+database_worker_jobs_username: ''
 deleted_user_accounts_report_configs: '[]'
 deliver_mail_async: false
 development_mailer_deliver_method: letter_opener
@@ -115,7 +115,6 @@ enable_usps_verification: true
 event_disavowal_expiration_hours: 240
 feature_idv_force_gpo_verification_enabled: false
 feature_idv_hybrid_flow_enabled: true
-feature_new_device_alert_aggregation_enabled: true
 geo_data_file_path: 'geo_data/GeoLite2-City.mmdb'
 get_usps_proofing_results_job_cron: '0/30 * * * *'
 get_usps_proofing_results_job_reprocess_delay_minutes: 5
@@ -457,7 +456,6 @@ production:
   email_registrations_per_ip_track_only_mode: true
   enable_test_routes: false
   enable_usps_verification: false
-  feature_new_device_alert_aggregation_enabled: false
   hmac_fingerprinter_key:
   hmac_fingerprinter_key_queue: '[]'
   idv_sp_required: true

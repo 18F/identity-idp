@@ -1902,10 +1902,6 @@ user_mailer.new_device_sign_in_before_2fa.info_p2: Si reconoce esta actividad, n
 user_mailer.new_device_sign_in_before_2fa.info_p3_html: La autenticación de dos factores protege su cuenta contra un acceso no autorizado. Si no fue usted, %{reset_password_link_html}.
 user_mailer.new_device_sign_in_before_2fa.reset_password: restablezca de inmediato su contraseña.
 user_mailer.new_device_sign_in_before_2fa.subject: Nuevo inicio de sesión con su cuenta de %{app_name}
-user_mailer.new_device_sign_in.disavowal_link: restablezca su contraseña
-user_mailer.new_device_sign_in.help_html: Si usted no hizo este cambio, %{disavowal_link_html}. Para obtener más ayuda, visite %{app_name_html} %{help_link_html} o %{contact_link_html}.
-user_mailer.new_device_sign_in.info: Su cuenta de %{app_name} acaba de ser usada para iniciar sesión en un nuevo dispositivo.
-user_mailer.new_device_sign_in.subject: Nuevo inicio de sesión con su cuenta de %{app_name}
 user_mailer.password_changed.disavowal_link: restablezca su contraseña
 user_mailer.password_changed.help_html: Si usted no hizo este cambio, %{disavowal_link_html}. Para obtener más ayuda, visite %{app_name_html} %{help_link_html} o %{contact_link_html}.
 user_mailer.password_changed.intro_html: Tiene una contraseña nueva para su cuenta de %{app_name_html}.

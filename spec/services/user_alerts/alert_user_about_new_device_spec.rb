@@ -7,74 +7,20 @@ RSpec.describe UserAlerts::AlertUserAboutNewDevice do
   let(:device) { create(:device, user: user) }
 
   describe '.call' do
-    context 'aggregated new device alerts enabled' do
-      before do
-        allow(IdentityConfig.store).to receive(
-          :feature_new_device_alert_aggregation_enabled,
-        ).and_return(true)
-      end
+    it 'does not send any emails' do
+      described_class.call(event:, device:, disavowal_token:)
 
-      it 'does not send any emails' do
-        described_class.call(event:, device:, disavowal_token:)
-
-        expect_delivered_email_count(0)
-      end
-    end
-
-    context 'aggregated new device alerts disabled' do
-      before do
-        allow(IdentityConfig.store).to receive(
-          :feature_new_device_alert_aggregation_enabled,
-        ).and_return(false)
-      end
-
-      it 'sends an email to all confirmed email addresses' do
-        user.email_addresses.destroy_all
-        confirmed_email_addresses = create_list(:email_address, 2, user: user)
-        create(:email_address, user: user, confirmed_at: nil)
-
-        described_class.call(event:, device:, disavowal_token:)
-
-        expect_delivered_email_count(2)
-        expect_delivered_email(
-          to: [confirmed_email_addresses[0].email],
-          subject: t('user_mailer.new_device_sign_in.subject', app_name: APP_NAME),
-          body: [disavowal_token],
-        )
-        expect_delivered_email(
-          to: [confirmed_email_addresses[1].email],
-          subject: t('user_mailer.new_device_sign_in.subject', app_name: APP_NAME),
-          body: [disavowal_token],
-        )
-      end
+      expect_delivered_email_count(0)
     end
   end
 
   describe '.schedule_alert' do
     subject(:result) { described_class.schedule_alert(event:) }
 
-    context 'aggregated new device alerts enabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:feature_new_device_alert_aggregation_enabled).
-          and_return(true)
-      end
-
-      it 'sets the user sign_in_new_device_at value to time of the given event' do
-        expect { result }.to change { user.reload.sign_in_new_device_at&.change(usec: 0) }.
-          from(nil).
-          to(event.created_at.change(usec: 0))
-      end
-    end
-
-    context 'aggregated new device alerts disabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:feature_new_device_alert_aggregation_enabled).
-          and_return(false)
-      end
-
-      it 'does not set sign_in_new_device_at value' do
-        expect { result }.not_to change { user.reload.sign_in_new_device_at&.change(usec: 0) }
-      end
+    it 'sets the user sign_in_new_device_at value to time of the given event' do
+      expect { result }.to change { user.reload.sign_in_new_device_at&.change(usec: 0) }.
+        from(nil).
+        to(event.created_at.change(usec: 0))
     end
   end
 

@@ -65,10 +65,9 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
       context 'when authenticating without new device sign in' do
         let(:user) { create(:user) }
 
-        context 'when alert aggregation feature is disabled' do
+        context 'with an existing device' do
           before do
-            allow(IdentityConfig.store).to receive(:feature_new_device_alert_aggregation_enabled).
-              and_return(false)
+            allow(controller).to receive(:new_device?).and_return(false)
           end
 
           it 'does not send an alert' do
@@ -78,79 +77,60 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
           end
         end
 
-        context 'when alert aggregation feature is enabled' do
+        context 'with a new device' do
           before do
-            allow(IdentityConfig.store).to receive(:feature_new_device_alert_aggregation_enabled).
-              and_return(true)
+            allow(controller).to receive(:new_device?).and_return(true)
           end
 
-          context 'with an existing device' do
-            before do
-              allow(controller).to receive(:new_device?).and_return(false)
+          it 'sends the new device alert using 2fa event date' do
+            expect(UserAlerts::AlertUserAboutNewDevice).to receive(:send_alert) do |**args|
+              expect(user.reload.sign_in_new_device_at.change(usec: 0)).to eq(
+                args[:disavowal_event].created_at.change(usec: 0),
+              )
+              expect(args[:user]).to eq(user)
+              expect(args[:disavowal_event]).to be_kind_of(Event)
+              expect(args[:disavowal_token]).to be_kind_of(String)
             end
+            result
+          end
 
-            it 'does not send an alert' do
-              expect(UserAlerts::AlertUserAboutNewDevice).to_not receive(:send_alert)
-
+          context 'sign_in_notification_timeframe_expired missing' do
+            it 'tracks analytics event for missing timeframe_expired' do
+              stub_analytics
               result
+
+              expect(@analytics).to have_logged_event(
+                :sign_in_notification_timeframe_expired_absent,
+              )
             end
           end
 
-          context 'with a new device' do
+          context 'sign_in_notification_timeframe_expired present' do
             before do
-              allow(controller).to receive(:new_device?).and_return(true)
+              create(
+                :event,
+                user:,
+                event_type: :sign_in_notification_timeframe_expired,
+                created_at: 10.minutes.ago,
+              )
             end
 
-            it 'sends the new device alert using 2fa event date' do
-              expect(UserAlerts::AlertUserAboutNewDevice).to receive(:send_alert) do |**args|
+            around do |ex|
+              freeze_time { ex.run }
+            end
+
+            it 'creates a new user event with disavowal' do
+              expect(UserAlerts::AlertUserAboutNewDevice).to receive(:send_alert) do
                 expect(user.reload.sign_in_new_device_at.change(usec: 0)).to eq(
-                  args[:disavowal_event].created_at.change(usec: 0),
+                  10.minutes.ago,
                 )
-                expect(args[:user]).to eq(user)
-                expect(args[:disavowal_event]).to be_kind_of(Event)
-                expect(args[:disavowal_token]).to be_kind_of(String)
               end
+              stub_analytics
               result
-            end
 
-            context 'sign_in_notification_timeframe_expired missing' do
-              it 'tracks analytics event for missing timeframe_expired' do
-                stub_analytics
-                result
-
-                expect(@analytics).to have_logged_event(
-                  :sign_in_notification_timeframe_expired_absent,
-                )
-              end
-            end
-
-            context 'sign_in_notification_timeframe_expired present' do
-              before do
-                create(
-                  :event,
-                  user:,
-                  event_type: :sign_in_notification_timeframe_expired,
-                  created_at: 10.minutes.ago,
-                )
-              end
-
-              around do |ex|
-                freeze_time { ex.run }
-              end
-
-              it 'creates a new user event with disavowal' do
-                expect(UserAlerts::AlertUserAboutNewDevice).to receive(:send_alert) do
-                  expect(user.reload.sign_in_new_device_at.change(usec: 0)).to eq(
-                    10.minutes.ago,
-                  )
-                end
-                stub_analytics
-                result
-
-                expect(@analytics).to_not have_logged_event(
-                  :sign_in_notification_timeframe_expired_absent,
-                )
-              end
+              expect(@analytics).to_not have_logged_event(
+                :sign_in_notification_timeframe_expired_absent,
+              )
             end
           end
         end
@@ -159,10 +139,9 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
       context 'when authenticating with new device sign in' do
         let(:user) { create(:user, sign_in_new_device_at: Time.zone.now) }
 
-        context 'when alert aggregation feature is disabled' do
+        context 'with an existing device' do
           before do
-            allow(IdentityConfig.store).to receive(:feature_new_device_alert_aggregation_enabled).
-              and_return(false)
+            allow(controller).to receive(:new_device?).and_return(false)
           end
 
           it 'does not send an alert' do
@@ -172,35 +151,16 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
           end
         end
 
-        context 'when alert aggregation feature is enabled' do
+        context 'with a new device' do
           before do
-            allow(IdentityConfig.store).to receive(:feature_new_device_alert_aggregation_enabled).
-              and_return(true)
+            allow(controller).to receive(:new_device?).and_return(true)
           end
 
-          context 'with an existing device' do
-            before do
-              allow(controller).to receive(:new_device?).and_return(false)
-            end
+          it 'sends the new device alert' do
+            expect(UserAlerts::AlertUserAboutNewDevice).to receive(:send_alert).
+              with(user:, disavowal_event: kind_of(Event), disavowal_token: kind_of(String))
 
-            it 'does not send an alert' do
-              expect(UserAlerts::AlertUserAboutNewDevice).to_not receive(:send_alert)
-
-              result
-            end
-          end
-
-          context 'with a new device' do
-            before do
-              allow(controller).to receive(:new_device?).and_return(true)
-            end
-
-            it 'sends the new device alert' do
-              expect(UserAlerts::AlertUserAboutNewDevice).to receive(:send_alert).
-                with(user:, disavowal_event: kind_of(Event), disavowal_token: kind_of(String))
-
-              result
-            end
+            result
           end
         end
       end
