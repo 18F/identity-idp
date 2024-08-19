@@ -141,7 +141,7 @@ COPY --chown=app:app certs.example $RAILS_ROOT/certs
 COPY --chown=app:app config/service_providers.localdev.yml $RAILS_ROOT/config/service_providers.yml
 
 # Precompile assets
-RUN bundle exec rake assets:precompile --trace
+RUN SKIP_YARN_INSTALL=true bundle exec rake assets:precompile
 
 ARG ARG_CI_COMMIT_BRANCH="branch_placeholder"
 ARG ARG_CI_COMMIT_SHA="sha_placeholder"
