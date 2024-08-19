@@ -43,7 +43,7 @@ class ReportMailer < ActionMailer::Base
     @message = message
 
     @reports = reports.map(&:dup).each_with_index do |report, index|
-      report.title ||= "Table #{index + 1}"
+      report.title ||= report.subtitle || "Table #{index + 1}"
     end
 
     case attachment_format

@@ -16,6 +16,7 @@ module Reporting
   EmailableReport = Struct.new(
     :table,
     :filename,
+    :subtitle,
     :title,
     :float_as_percent,
     :precision,
