@@ -104,7 +104,7 @@ COPY public/ban-robots.txt $RAILS_ROOT/public/robots.txt
 COPY ./config/application.yml.default.prod $RAILS_ROOT/config/application.yml
 
 # Precompile assets
-RUN --mount=type=bind,source=app/javascript/packages/build-sass,target=node_modules/@18f/identity-build-sass \
+RUN --mount=type=bind,source=./app/javascript/packages/build-sass,target=./node_modules/@18f/identity-build-sass \
     SKIP_YARN_INSTALL=true ls -al node_modules/@18f && bundle exec rake assets:precompile && rm -r node_modules/ && rm -r .yarn-cache/
 
 # get service_providers.yml and related files
