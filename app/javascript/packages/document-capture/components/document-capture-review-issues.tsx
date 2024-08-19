@@ -4,14 +4,14 @@ import { FormStepsButton } from '@18f/identity-form-steps';
 import { Cancel } from '@18f/identity-verify-flow';
 import { useI18n, HtmlTextWithStrongNoWrap } from '@18f/identity-react-i18n';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
-import UnknownError from './unknown-error';
+import GeneralError from './general-error';
 import TipList from './tip-list';
 import { SelfieCaptureContext } from '../context';
 import {
   DocumentCaptureSubheaderOne,
   SelfieCaptureWithHeader,
   DocumentFrontAndBackCapture,
-} from './documents-step';
+} from './documents-and-selfie-step';
 import type { ReviewIssuesStepValue } from './review-issues-step';
 
 interface DocumentCaptureReviewIssuesProps extends FormStepComponentProps<ReviewIssuesStepValue> {
@@ -53,7 +53,7 @@ function DocumentCaptureReviewIssues({
       {isSelfieCaptureEnabled && (
         <DocumentCaptureSubheaderOne isSelfieCaptureEnabled={isSelfieCaptureEnabled} />
       )}
-      <UnknownError
+      <GeneralError
         unknownFieldErrors={unknownFieldErrors}
         isFailedDocType={isFailedDocType}
         isFailedSelfie={isFailedSelfie}
