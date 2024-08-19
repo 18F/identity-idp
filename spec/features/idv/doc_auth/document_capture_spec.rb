@@ -1135,7 +1135,6 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 count: IdentityConfig.store.doc_auth_max_attempts - 1,
               ),
             )
-
             expect(page).to have_content("#{detail_message}\n#{warning_message}")
             review_issues_header = strip_tags(
               t('doc_auth.errors.selfie_not_live_or_poor_quality_heading'),
