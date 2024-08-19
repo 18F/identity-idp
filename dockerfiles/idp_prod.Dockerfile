@@ -75,6 +75,7 @@ RUN bundle binstubs --all
 # Yarn install
 COPY ./package.json ./package.json
 COPY ./yarn.lock ./yarn.lock
+COPY ./Makefile ./Makefile
 # Workspace packages are installed by Yarn via symlink to the original source, and need to be present
 COPY ./app/javascript/packages ./app/javascript/packages
 RUN yarn install --production=true --frozen-lockfile --cache-folder .yarn-cache
@@ -91,7 +92,6 @@ COPY ./public ./public
 COPY ./scripts ./scripts
 COPY ./spec ./spec
 COPY ./Rakefile ./Rakefile
-COPY ./Makefile ./Makefile
 COPY ./babel.config.js ./babel.config.js
 COPY ./webpack.config.js ./webpack.config.js
 COPY ./.browserslistrc ./.browserslistrc
