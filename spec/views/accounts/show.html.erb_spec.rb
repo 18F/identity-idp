@@ -111,6 +111,24 @@ RSpec.describe 'accounts/show.html.erb' do
     end
   end
 
+  context 'when current user has an in_person_enrollment that expired' do
+    let(:vtr) { ['Pe'] }
+    let(:sp_name) { 'sinatra-test-app' }
+    let(:user) { build(:user, :with_pending_in_person_enrollment) }
+
+    before do
+      # Expire the in_person_enrollment and associated profile
+      in_person_enrollment = user.in_person_enrollments.first
+      in_person_enrollment.update!(status: :expired, status_check_completed_at: Time.zone.now)
+      profile = user.profiles.first
+      profile.deactivate_due_to_ipp_expiration
+    end
+
+    it 'renders the idv partial' do
+      expect(render).to render_template(partial: 'accounts/_identity_verification')
+    end
+  end
+
   context 'phone listing and adding' do
     context 'user has no phone' do
       let(:user) do
