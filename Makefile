@@ -9,6 +9,7 @@ HOST ?= localhost
 PORT ?= 3000
 GZIP_COMMAND ?= gzip
 ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
+DAP_SHA ?= 7c14bb3
 
 .PHONY: \
 	analytics_events \
@@ -49,8 +50,6 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	setup \
 	test \
 	update_pinpoint_supported_countries
-
-FORCE:
 
 help: ## Show this help
 	@echo "--- Help ---"
@@ -194,8 +193,15 @@ brakeman: ## Runs brakeman code security check
 public/packs/manifest.json: yarn.lock $(shell find app/javascript -type f) ## Builds JavaScript assets
 	yarn build:js
 
-app/javascript/packages/analytics: FORCE ## Runs Makefile tasks in analytics JavaScript package
+app/javascript/packages/analytics: vendor/digital-analytics-program-$(DAP_SHA).js ## Runs Makefile tasks in analytics JavaScript package
+	cp $^ $@
 	$(MAKE) -C $@
+
+vendor/digital-analytics-program-$(DAP_SHA).js:
+	curl https://raw.githubusercontent.com/digital-analytics-program/gov-wide-code/$(DAP_SHA)/Universal-Federated-Analytics.js --silent --output $@
+
+vendor/digital-analytics-program.js: vendor/digital-analytics-program-$(DAP_SHA).js
+	mv $^ $@
 
 browsers.json: yarn.lock .browserslistrc ## Generates browsers.json browser support file
 	yarn generate-browsers-json

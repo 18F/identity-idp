@@ -9,6 +9,7 @@
     "app/javascript/packages/*"
   ],
   "scripts": {
+    "postinstall": "make vendor/digital-analytics-program.js",
     "typecheck": "tsc",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:css": "stylelint 'app/assets/stylesheets/**/*.scss' 'app/javascript/**/*.scss' 'app/components/*.scss'",
