@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'reporting/monthly_idv_report'
 
 RSpec.describe Reporting::MonthlyIdvReport do
-  let(:end_date) { Date.new(2024, 9, 1).yesterday.end_of_day }
+  let(:end_date) { Date.new(2024, 9, 1).in_time_zone('UTC').yesterday.end_of_day }
   let(:parallel) { true }
 
   subject(:idv_report) do
