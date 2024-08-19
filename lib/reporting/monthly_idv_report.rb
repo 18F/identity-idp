@@ -45,7 +45,7 @@ module Reporting
       csv << ['IDV started', *reports.map(&:idv_started)]
 
       csv << ['# of successfully verified users', *reports.map(&:successfully_verified_users)]
-      csv << ['% IDV started to successfully verified', *reports.map(&:blanket_proofing_rates)]
+      csv << ['% IDV started to successfully verified', *reports.map(&:blanket_proofing_rate)]
 
       csv << ['# of workflow completed', *reports.map(&:idv_final_resolution)]
       csv << ['% rate of workflow completed', *reports.map(&:idv_final_resolution_rate)]
@@ -86,9 +86,9 @@ module Reporting
 
     def monthly_subreports
       ranges = [
-        (end_date - 3.months).all_month,
         (end_date - 2.months).all_month,
         (end_date - 1.month).all_month,
+        end_date.all_month,
       ]
 
       ranges.map do |range|

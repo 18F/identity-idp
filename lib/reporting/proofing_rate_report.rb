@@ -62,10 +62,10 @@ module Reporting
       csv << ['IDV Rejected (Non-Fraud)', *reports.map(&:idv_doc_auth_rejected)]
       csv << ['IDV Rejected (Fraud)', *reports.map(&:idv_fraud_rejected)]
 
-      csv << ['Blanket Proofing Rate (IDV Started to Successfully Verified)', *reports.map(&:blanket_proofing_rates)]
-      csv << ['Intent Proofing Rate (Welcome Submitted to Successfully Verified)', *reports.map(&:intent_proofing_rates)]
-      csv << ['Actual Proofing Rate (Image Submitted to Successfully Verified)', *reports.map(&:actual_proofing_rates)]
-      csv << ['Industry Proofing Rate (Verified minus IDV Rejected)', *reports.map(&:industry_proofing_rates)]
+      csv << ['Blanket Proofing Rate (IDV Started to Successfully Verified)', *reports.map(&:blanket_proofing_rate)]
+      csv << ['Intent Proofing Rate (Welcome Submitted to Successfully Verified)', *reports.map(&:intent_proofing_rate)]
+      csv << ['Actual Proofing Rate (Image Submitted to Successfully Verified)', *reports.map(&:actual_proofing_rate)]
+      csv << ['Industry Proofing Rate (Verified minus IDV Rejected)', *reports.map(&:industry_proofing_rate)]
 
       csv
     rescue Aws::CloudWatchLogs::Errors::ThrottlingException => err
