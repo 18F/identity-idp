@@ -265,16 +265,14 @@ RSpec.describe CompletionsPresenter do
   end
 
   describe '#pii' do
+    subject(:pii) { presenter.pii }
+
     context 'ial1' do
       context 'with a subset of attributes requested' do
         let(:requested_attributes) { [:email] }
 
         it 'properly scopes and resolve attributes' do
-          expect(presenter.pii).to eq(
-            {
-              email: current_user.email,
-            },
-          )
+          expect(pii).to eq(email: current_user.email)
         end
       end
 
@@ -282,24 +280,27 @@ RSpec.describe CompletionsPresenter do
         let(:requested_attributes) { [:email, :all_emails] }
 
         it 'only displays all_emails' do
-          expect(presenter.pii).to eq(
-            {
-              all_emails: [current_user.email],
-            },
-          )
+          expect(pii).to eq(all_emails: [current_user.email])
         end
       end
 
       context 'with all attributes requested' do
         it 'properly scopes and resolve attributes' do
-          expect(presenter.pii).to eq(
-            {
-              all_emails: [current_user.email],
-              verified_at: nil,
-              x509_issuer: nil,
-              x509_subject: nil,
-            },
+          expect(pii).to eq(
+            all_emails: [current_user.email],
+            verified_at: nil,
+            x509_issuer: nil,
+            x509_subject: nil,
           )
+        end
+
+        it 'builds hash with sorted keys' do
+          expect(pii.keys).to eq %i[
+            all_emails
+            x509_subject
+            x509_issuer
+            verified_at
+          ]
         end
       end
     end
@@ -311,31 +312,49 @@ RSpec.describe CompletionsPresenter do
         let(:requested_attributes) { [:email, :given_name, :phone] }
 
         it 'properly scopes and resolve attributes' do
-          expect(presenter.pii).to eq(
-            {
-              email: current_user.email,
-              full_name: 'Testy Testerson',
-              phone: '+1 202-212-1000',
-            },
+          expect(pii).to eq(
+            email: current_user.email,
+            full_name: 'Testy Testerson',
+            phone: '+1 202-212-1000',
           )
+        end
+
+        it 'builds hash with sorted keys' do
+          expect(pii.keys).to eq %i[
+            full_name
+            phone
+            email
+          ]
         end
       end
 
       context 'with all attributes requested' do
         it 'properly scopes and resolve attributes' do
-          expect(presenter.pii).to eq(
-            {
-              full_name: 'Testy Testerson',
-              address: '123 main st apt 123 Washington, DC 20405',
-              phone: '+1 202-212-1000',
-              all_emails: [current_user.email],
-              birthdate: 'January 1, 1990',
-              social_security_number: '900-12-3456',
-              verified_at: nil,
-              x509_subject: nil,
-              x509_issuer: nil,
-            },
+          expect(pii).to eq(
+            full_name: 'Testy Testerson',
+            address: '123 main st apt 123 Washington, DC 20405',
+            phone: '+1 202-212-1000',
+            all_emails: [current_user.email],
+            birthdate: 'January 1, 1990',
+            social_security_number: '900-12-3456',
+            verified_at: nil,
+            x509_subject: nil,
+            x509_issuer: nil,
           )
+        end
+
+        it 'builds hash with sorted keys' do
+          expect(pii.keys).to eq %i[
+            full_name
+            address
+            phone
+            all_emails
+            birthdate
+            social_security_number
+            x509_subject
+            x509_issuer
+            verified_at
+          ]
         end
       end
     end
