@@ -73,9 +73,9 @@ RUN bundle install --jobs $(nproc)
 RUN bundle binstubs --all
 
 # yarn install
-RUN --mount=type=bind,source=package.json,target=. \
-    --mount=type=bind,source=yarn.lock,target=. \
-    --mount=type=bind,source=app/javascript/packages,target=. \
+COPY ./package.json ./package.json
+COPY ./yarn.lock ./yarn.lock
+RUN --mount=type=bind,source=app/javascript/packages,target=. \
     yarn install --production=true --frozen-lockfile --cache-folder .yarn-cache
 
 # Add the application code
