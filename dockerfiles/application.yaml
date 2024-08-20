@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ENVIRONMENT}}
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: 'git@gitlab.login.gov:lg-public/identity-eks-control.git'
+    targetRevision: sshelton/update-reviewapp
+    path: cluster-reviewapp/review-apps
+    kustomize:
+      images:
+      # Swap in review images
+      - name: identity-idp/idp
+        newName: 217680906704.dkr.ecr.us-west-2.amazonaws.com/identity-idp/review
+        newTag: {{IDP_CONTAINER_TAG}}
+      - name: identity-dashboard/review
+        newName: 217680906704.dkr.ecr.us-west-2.amazonaws.com/identity-dashboard/review
+        newTag: {{DASHBOARD_CONTAINER_TAG}}
+      namePrefix: "{{ENVIRONMENT}}-"
+      commonLabels:
+        env: {{ENVIRONMENT}}
+        branch: {{SANITIZED_BRANCH_NAME}}
+      variables:
+        - name: CI_ENVIRONMENT_SLUG
+          value: {{ENVIRONMENT}}
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: review-apps
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
