@@ -6,7 +6,7 @@ module SignUp
     before_action :verify_needs_completions_screen
 
     def show
-      @sp_name = sp_name
+      @sp_name = current_sp.friendly_name || sp.agency&.name
       @user_emails = user_emails
       @last_sign_in_email_address = last_email
       @select_email_form = build_select_email_form
@@ -22,14 +22,6 @@ module SignUp
       else
         flash[:error] = result.first_error_message
         redirect_to sign_up_select_email_path
-      end
-    end
-
-    def sp_name
-      if current_sp
-        @sp_name ||= current_sp.friendly_name || sp.agency&.name
-      else
-        @sp_name = APP_NAME
       end
     end
 
