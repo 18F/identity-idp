@@ -73,8 +73,7 @@ Vagrantfile
 /tmp/*
 /.tmp/
 /.vscode/
-/vendor/*
-!/vendor/.gitkeep
+/vendor/bundle
 .yardoc
 /doc/
 
