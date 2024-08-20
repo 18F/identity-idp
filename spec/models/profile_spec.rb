@@ -47,13 +47,10 @@ RSpec.describe Profile do
   end
 
   describe '#in_person_verification_pending?' do
-    it 'returns true if the in_person_verification_pending_at is present' do
-      profile = create(
-        :profile,
-        :in_person_verification_pending,
-        user: user,
-      )
+    let(:profile) { create(:profile, :in_person_verification_pending, user:) }
+    subject(:result) { profile.in_person_verification_pending? }
 
+    it 'returns true if the in_person_verification_pending_at is present' do
       allow(profile).to receive(:update!).and_raise(RuntimeError)
 
       expect(profile.activated_at).to be_nil
@@ -65,6 +62,14 @@ RSpec.describe Profile do
       expect(profile.gpo_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil
+    end
+
+    context 'enrollment expired' do
+      before do
+        profile.in_person_enrollment.update(status: :expired)
+      end
+
+      it { is_expected.to eq(false) }
     end
   end
 

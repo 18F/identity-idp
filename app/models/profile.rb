@@ -184,7 +184,7 @@ class Profile < ApplicationRecord
   end
 
   def in_person_verification_pending?
-    in_person_verification_pending_at.present?
+    in_person_verification_pending_at.present? && !in_person_enrollment.expired?
   end
 
   def deactivate_due_to_gpo_expiration
