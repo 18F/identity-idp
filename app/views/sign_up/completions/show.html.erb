@@ -1,6 +1,12 @@
 <% self.title = @presenter.heading %>
+
 <div class="text-center">
-  <%= image_tag asset_url(@presenter.image_name), width: 140, alt: @presenter.image_alt, class: 'margin-bottom-2' %>
+  <%= image_tag(
+        asset_url('user-signup.svg'),
+        width: 140,
+        alt: t('sign_up.completed.smiling_image_alt'),
+        class: 'margin-bottom-2',
+      ) %>
 </div>
 
 <%= render PageHeadingComponent.new(class: 'text-center') do %>
