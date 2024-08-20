@@ -1478,6 +1478,7 @@ module AnalyticsEvents
   # @param [Boolean] selfie_quality_good Selfie quality result
   # @param [String] workflow LexisNexis TrueID workflow
   # @param [String] birth_year Birth year from document
+  # @param [Integer] issue_year Year document was issued
   # @option extra [String] 'DocumentName'
   # @option extra [String] 'DocAuthResult'
   # @option extra [String] 'DocIssuerCode'
@@ -1505,6 +1506,7 @@ module AnalyticsEvents
     client_image_metrics:,
     flow_path:,
     liveness_checking_required:,
+    issue_year:,
     billed: nil,
     doc_auth_result: nil,
     vendor_request_time_in_ms: nil,
@@ -1578,6 +1580,7 @@ module AnalyticsEvents
       selfie_quality_good:,
       workflow:,
       birth_year:,
+      issue_year:,
       **extra,
     )
   end
@@ -3643,7 +3646,7 @@ module AnalyticsEvents
   # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
-  # When a user attempts to confirm posession of a new phone number during the IDV process
+  # When a user attempts to confirm possession of a new phone number during the IDV process
   def idv_phone_confirmation_otp_submitted(
     success:,
     errors:,

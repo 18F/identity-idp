@@ -275,6 +275,14 @@ class RateLimiter
           IdentityConfig.store.sign_in_user_id_per_ip_attempt_window_exponential_factor,
         attempt_window_max: IdentityConfig.store.sign_in_user_id_per_ip_attempt_window_max_minutes,
       },
+      backup_code_user_id_per_ip: {
+        max_attempts: IdentityConfig.store.backup_code_user_id_per_ip_max_attempts,
+        attempt_window: IdentityConfig.store.backup_code_user_id_per_ip_attempt_window_in_minutes,
+        attempt_window_exponential_factor:
+          IdentityConfig.store.backup_code_user_id_per_ip_attempt_window_exponential_factor,
+        attempt_window_max:
+          IdentityConfig.store.backup_code_user_id_per_ip_attempt_window_max_minutes,
+      },
     }.with_indifferent_access
   end
 

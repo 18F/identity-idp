@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'ssn step mock proofer', :js, allowed_extra_analytics: [:*] do
+RSpec.feature 'ssn step mock proofer', :js do
   include IdvStepHelper
   include DocAuthHelper
 

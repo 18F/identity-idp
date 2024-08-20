@@ -430,6 +430,9 @@ trigger_devops:
     - kubectl config get-contexts
     - export CONTEXT=$(kubectl config get-contexts | grep reviewapp | awk '{print $1}' | head -1)
     - kubectl config use-context "$CONTEXT"
+    - export SANITIZED_BRANCH_NAME=$(echo "$CI_COMMIT_REF_NAME" | tr '/' '-' | tr -c '[:alnum:]-_' '-' | sed 's/-*$//')
+    - echo "${CI_COMMIT_REF_NAME}"
+    - echo "${SANITIZED_BRANCH_NAME}"
     - |-
       export IDP_CONFIG=$(cat <<EOF
       {
@@ -532,6 +535,7 @@ trigger_devops:
     - >-
       helm upgrade --install --namespace review-apps
       --debug
+      --set global.labels.branch="${SANITIZED_BRANCH_NAME}"
       --set env="reviewapps-$CI_ENVIRONMENT_SLUG"
       --set idp.image.repository="${ECR_REGISTRY}/identity-idp/review"
       --set idp.image.tag="${CI_COMMIT_SHA}"

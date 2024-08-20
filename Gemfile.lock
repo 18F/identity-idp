@@ -479,7 +479,7 @@ GEM
     profanity_filter (0.1.1)
     prometheus_exporter (2.1.0)
       webrick
-    propshaft (0.7.0)
+    propshaft (0.9.1)
       actionpack (>= 7.0.0)
       activesupport (>= 7.0.0)
       rack
