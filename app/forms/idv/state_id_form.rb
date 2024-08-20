@@ -33,6 +33,7 @@ module Idv
         success: validation_success,
         errors: cleaned_errors,
         extra: extra_analytics_attributes(params),
+        serialize_error_details_only: false,
       )
     end
 

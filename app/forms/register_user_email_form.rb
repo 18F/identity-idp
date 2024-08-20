@@ -61,7 +61,12 @@ class RegisterUserEmailForm
     self.success = valid?
     process_successful_submission(request_id) if success
 
-    FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
+    FormResponse.new(
+      success:,
+      errors:,
+      extra: extra_analytics_attributes,
+      serialize_error_details_only: false,
+    )
   end
 
   def email_taken?

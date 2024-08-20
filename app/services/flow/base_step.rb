@@ -53,7 +53,7 @@ module Flow
     end
 
     def form_submit
-      FormResponse.new(success: true)
+      FormResponse.new(success: true, serialize_error_details_only: false)
     end
 
     def flow_params

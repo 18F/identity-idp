@@ -48,6 +48,7 @@ module Idv
           id_issued_status: pii_from_doc[:state_id_issued].present? ? 'present' : 'missing',
           id_expiration_status: pii_from_doc[:state_id_expiration].present? ? 'present' : 'missing',
         },
+        serialize_error_details_only: false,
       )
       response.pii_from_doc = pii_from_doc
       response

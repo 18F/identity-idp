@@ -15,7 +15,7 @@ module DocAuth
         @selfie_required = selfie_required
         super(
           success: success?,
-          errors: errors,
+          errors:,
           pii_from_doc: pii_from_doc,
           doc_type_supported: id_type_supported?,
           selfie_live: selfie_live?,
@@ -98,7 +98,7 @@ module DocAuth
         errors = { network: true }
         DocAuth::Response.new(
           success: false,
-          errors: errors,
+          errors:,
           exception: Faraday::TimeoutError.new,
           extra: { vendor: 'Mock' },
         )

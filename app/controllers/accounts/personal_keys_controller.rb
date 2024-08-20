@@ -63,6 +63,7 @@ module Accounts
           emails: emails.count,
           sms_message_ids: telephony_responses.map { |resp| resp.to_h[:message_id] },
         },
+        serialize_error_details_only: false,
       )
     end
   end

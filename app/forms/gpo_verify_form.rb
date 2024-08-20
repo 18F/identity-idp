@@ -39,7 +39,7 @@ class GpoVerifyForm
     end
     FormResponse.new(
       success: result,
-      errors: errors,
+      errors:,
       extra: {
         profile_age_in_seconds: pending_profile&.profile_age_in_seconds,
         enqueued_at: gpo_confirmation_code&.code_sent_at,
@@ -50,6 +50,7 @@ class GpoVerifyForm
         pending_in_person_enrollment: !!pending_profile&.in_person_enrollment&.pending?,
         fraud_check_failed: fraud_check_failed,
       },
+      serialize_error_details_only: false,
     )
   end
 

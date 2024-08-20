@@ -69,7 +69,7 @@ RSpec.feature 'Two Factor Authentication' do
         allow(opt_out_manager).
           to receive(:opt_in_phone_number).
           with(phone_configuration.formatted_phone).
-          and_return(FormResponse.new(success: true))
+          and_return(FormResponse.new(success: true, serialize_error_details_only: false))
         allow_any_instance_of(TwoFactorAuthentication::SmsOptInController).
           to receive(:opt_out_manager).and_return(opt_out_manager)
       end

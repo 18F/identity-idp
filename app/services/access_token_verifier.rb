@@ -22,6 +22,7 @@ class AccessTokenVerifier
         client_id: @identity&.service_provider,
         ial: @identity&.ial,
       },
+      serialize_error_details_only: false,
     )
 
     [response, @identity]

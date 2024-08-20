@@ -21,7 +21,7 @@ class VerifyPersonalKeyForm
 
     reset_sensitive_fields if !success
 
-    FormResponse.new(success: valid?, errors: errors, extra: extra)
+    FormResponse.new(success: valid?, errors:, extra:, serialize_error_details_only: false)
   end
 
   # @return [Pii::Attributes,nil]

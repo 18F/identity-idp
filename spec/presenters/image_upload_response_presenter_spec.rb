@@ -37,6 +37,7 @@ RSpec.describe ImageUploadResponsePresenter do
             front: t('doc_auth.errors.not_a_file'),
           },
           extra: {},
+          serialize_error_details_only: false,
         )
       end
 
@@ -118,6 +119,7 @@ RSpec.describe ImageUploadResponsePresenter do
             limit: t('doc_auth.errors.rate_limited_heading'),
           },
           extra: extra_attributes,
+          serialize_error_details_only: false,
         )
       end
 
@@ -171,6 +173,7 @@ RSpec.describe ImageUploadResponsePresenter do
             hints: true,
           },
           extra: extra_attributes,
+          serialize_error_details_only: false,
         )
       end
 
@@ -199,6 +202,7 @@ RSpec.describe ImageUploadResponsePresenter do
               hints: true,
             },
             extra: { doc_auth_result: 'Failed', remaining_submit_attempts: 3 },
+            serialize_error_details_only: false,
           )
         end
 
@@ -231,6 +235,7 @@ RSpec.describe ImageUploadResponsePresenter do
               hints: true,
             },
             extra: extra_attributes,
+            serialize_error_details_only: false,
           )
         end
 
@@ -286,6 +291,7 @@ RSpec.describe ImageUploadResponsePresenter do
               name: 'Missing',
             },
             extra: extra_attributes,
+            serialize_error_details_only: false,
           )
         end
         it 'processes multiple pii errors' do
@@ -304,6 +310,7 @@ RSpec.describe ImageUploadResponsePresenter do
               dob_min_age: 'age too young',
             },
             extra: extra_attributes,
+            serialize_error_details_only: false,
           )
         end
         it 'processes the pii error' do

@@ -36,7 +36,12 @@ class WebauthnSetupForm
       PushNotification::HttpPush.deliver(event)
     end
 
-    FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
+    FormResponse.new(
+      success:,
+      errors:,
+      extra: extra_analytics_attributes,
+      serialize_error_details_only: false,
+    )
   end
 
   # this gives us a hook to override the domain embedded in the attestation test object

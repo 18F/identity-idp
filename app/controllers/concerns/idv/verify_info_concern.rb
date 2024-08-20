@@ -256,6 +256,7 @@ module Idv
         success: result[:success],
         errors: result[:errors],
         extra: extra.merge(proofing_results: result.except(:errors, :success)),
+        serialize_error_details_only: false,
       )
     end
 

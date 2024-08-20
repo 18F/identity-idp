@@ -20,7 +20,12 @@ class EditPhoneForm
     ingest_submitted_params(params)
     success = valid?
     update_phone_configuration if success
-    FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
+    FormResponse.new(
+      success:,
+      errors:,
+      extra: extra_analytics_attributes,
+      serialize_error_details_only: false,
+    )
   end
 
   def delivery_preference_sms?

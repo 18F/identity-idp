@@ -251,7 +251,7 @@ RSpec.describe Idv::ImageUploadsController do
         exception = DocAuth::RequestError.new(message, status)
         response = DocAuth::Response.new(
           success: false,
-          errors: errors,
+          errors:,
           exception: exception,
           extra: { vendor: 'Mock' },
         )

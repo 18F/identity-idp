@@ -17,7 +17,7 @@ module Idv
     end
 
     def successful_response
-      FormResponse.new(success: true)
+      FormResponse.new(success: true, serialize_error_details_only: false)
     end
 
     # copied from Flow::Failure module
@@ -25,7 +25,7 @@ module Idv
       flash[:error] = message
       form_response_params = { success: false, errors: { message: message } }
       form_response_params[:extra] = extra unless extra.nil?
-      FormResponse.new(**form_response_params)
+      FormResponse.new(**form_response_params, serialize_error_details_only: false)
     end
 
     def extract_pii_from_doc(user, store_in_session: false)

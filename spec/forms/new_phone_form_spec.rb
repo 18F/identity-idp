@@ -384,7 +384,9 @@ RSpec.describe NewPhoneForm do
       let(:phone) { '3065550100' }
       let(:international_code) { 'CA' }
       let(:params) { super().merge(recaptcha_token:) }
-      let(:recaptcha_form_response) { FormResponse.new(success: true) }
+      let(:recaptcha_form_response) do
+        FormResponse.new(success: true, serialize_error_details_only: false)
+      end
       let(:recaptcha_assessment_id) { 'projects/project-id/assessments/assessment-id' }
 
       subject(:result) { form.submit(params) }
@@ -398,7 +400,9 @@ RSpec.describe NewPhoneForm do
       end
 
       context 'with valid recaptcha result' do
-        let(:recaptcha_form_response) { FormResponse.new(success: true) }
+        let(:recaptcha_form_response) do
+          FormResponse.new(success: true, serialize_error_details_only: false)
+        end
 
         it 'is valid' do
           expect(result.success?).to eq(true)

@@ -5,7 +5,7 @@ RSpec.describe FrontendErrorLogger do
 
   before do
     allow_any_instance_of(FrontendErrorForm).to receive(:submit).
-      and_return(FormResponse.new(success: valid))
+      and_return(FormResponse.new(success: valid, serialize_error_details_only: false))
   end
 
   describe '.track_event' do

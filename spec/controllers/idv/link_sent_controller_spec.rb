@@ -223,8 +223,9 @@ RSpec.describe Idv::LinkSentController, allowed_extra_analytics: [:*] do
 
         before do
           expect(FormResponse).to receive(:new).with(
-            { success: false,
-              errors: { message: error_message } },
+            success: false,
+            errors: { message: error_message },
+            serialize_error_details_only: false,
           )
         end
 

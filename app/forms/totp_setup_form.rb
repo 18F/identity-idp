@@ -21,7 +21,12 @@ class TotpSetupForm
 
     process_valid_submission if success
 
-    FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
+    FormResponse.new(
+      success:,
+      errors:,
+      extra: extra_analytics_attributes,
+      serialize_error_details_only: false,
+    )
   end
 
   private

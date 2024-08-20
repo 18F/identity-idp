@@ -276,7 +276,12 @@ RSpec.describe FormResponse do
   describe '#extra' do
     it 'returns the extra hash' do
       extra = { foo: 'bar' }
-      response = FormResponse.new(success: true, errors: {}, extra: extra)
+      response = FormResponse.new(
+        success: true,
+        errors: {},
+        extra:,
+        serialize_error_details_only: false,
+      )
 
       expect(response.extra).to eq extra
     end

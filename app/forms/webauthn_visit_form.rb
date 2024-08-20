@@ -19,7 +19,10 @@ class WebauthnVisitForm
   def submit(params)
     @platform_authenticator = params[:platform].to_s == 'true'
     check_params(params)
-    FormResponse.new(success: errors.empty?, errors: errors, extra: extra_analytics_attributes)
+    FormResponse.new(
+      success: errors.empty?, errors:, extra: extra_analytics_attributes,
+      serialize_error_details_only: false
+    )
   end
 
   def platform_authenticator?

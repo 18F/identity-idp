@@ -198,7 +198,7 @@ RSpec.describe FrontendLogController do
 
         it 'notices the error to NewRelic instead of analytics logger' do
           allow_any_instance_of(FrontendErrorForm).to receive(:submit).
-            and_return(FormResponse.new(success: true))
+            and_return(FormResponse.new(success: true, serialize_error_details_only: false))
           expect(NewRelic::Agent).to receive(:notice_error).with(
             FrontendErrorLogger::FrontendError.new,
             custom_params: {

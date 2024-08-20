@@ -17,7 +17,10 @@ module Idv
       else
         increment_second_factor_attempts
       end
-      FormResponse.new(success: success, extra: extra_analytics_attributes)
+      FormResponse.new(
+        success: success, extra: extra_analytics_attributes,
+        serialize_error_details_only: false
+      )
     end
 
     private

@@ -47,6 +47,7 @@ module Proofing
               },
             },
           },
+          serialize_error_details_only: false,
         )
       end
 

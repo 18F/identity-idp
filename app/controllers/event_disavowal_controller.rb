@@ -9,6 +9,7 @@ class EventDisavowalController < ApplicationController
     result = FormResponse.new(
       success: true,
       extra: EventDisavowal::BuildDisavowedEventAnalyticsAttributes.call(disavowed_event),
+      serialize_error_details_only: false,
     )
     analytics.event_disavowal(**result.to_h)
     @forbidden_passwords = forbidden_passwords

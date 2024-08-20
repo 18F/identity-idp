@@ -51,7 +51,12 @@ class SecurityEventForm
       end
     end
 
-    FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
+    FormResponse.new(
+      success:,
+      errors:,
+      extra: extra_analytics_attributes,
+      serialize_error_details_only: false,
+    )
   end
 
   def error_code

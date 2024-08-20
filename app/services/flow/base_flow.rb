@@ -78,7 +78,7 @@ module Flow
     end
 
     def successful_response
-      FormResponse.new(success: true)
+      FormResponse.new(success: true, serialize_error_details_only: false)
     end
 
     delegate :flash, :session, :current_user, :current_sp, :params, :request,

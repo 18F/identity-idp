@@ -18,6 +18,7 @@ module AccountReset
       FormResponse.new(
         success: true,
         extra: extra_analytics_attributes,
+        serialize_error_details_only: false,
       )
     end
 

@@ -15,7 +15,7 @@ class DeleteUserEmailForm
   def submit
     success = valid? && email_address_destroyed
     notify_subscribers if success
-    FormResponse.new(success: success, errors: errors)
+    FormResponse.new(success:, errors:, serialize_error_details_only: false)
   end
 
   private

@@ -20,7 +20,7 @@ class VerifyPasswordForm
 
     extra[:personal_key] = reencrypt_pii if success
 
-    FormResponse.new(success: success, errors: errors, extra: extra)
+    FormResponse.new(success:, errors:, extra:, serialize_error_details_only: false)
   end
 
   private

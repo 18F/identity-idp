@@ -41,6 +41,7 @@ module Idv
       FormResponse.new(
         success: false,
         extra: extra_analytics_attributes,
+        serialize_error_details_only: false,
       )
     end
 
@@ -90,6 +91,7 @@ module Idv
     def otp_sent_response
       FormResponse.new(
         success: telephony_response.success?, extra: extra_analytics_attributes,
+        serialize_error_details_only: false
       )
     end
 

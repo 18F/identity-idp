@@ -22,10 +22,11 @@ module Idv
 
       FormResponse.new(
         success: valid?,
-        errors: errors,
+        errors:,
         extra: {
           pii_like_keypaths: [[:errors, :zipcode], [:error_details, :zipcode]],
         },
+        serialize_error_details_only: false,
       )
     end
 

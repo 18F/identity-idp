@@ -18,7 +18,7 @@ class PersonalKeyForm
 
     reset_sensitive_fields unless success
 
-    FormResponse.new(success:, errors:)
+    FormResponse.new(success:, errors:, serialize_error_details_only: false)
   end
 
   private

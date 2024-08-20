@@ -24,7 +24,7 @@ module Idv
     def submit(params)
       @selection = params[:selection]
 
-      FormResponse.new(success: valid?, errors: errors)
+      FormResponse.new(success: valid?, errors:, serialize_error_details_only: false)
     end
   end
 end

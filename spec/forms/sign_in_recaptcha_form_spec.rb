@@ -28,7 +28,7 @@ RSpec.describe SignInRecaptchaForm do
   it 'passes instance variables to form' do
     recaptcha_form = instance_double(
       RecaptchaMockForm,
-      submit: FormResponse.new(success: true),
+      submit: FormResponse.new(success: true, serialize_error_details_only: false),
     )
     expect(RecaptchaMockForm).to receive(:new).
       with(
@@ -56,7 +56,7 @@ RSpec.describe SignInRecaptchaForm do
     it 'validates using form instance of the given class' do
       recaptcha_form = instance_double(
         RecaptchaForm,
-        submit: FormResponse.new(success: true),
+        submit: FormResponse.new(success: true, serialize_error_details_only: false),
       )
       expect(RecaptchaForm).to receive(:new).and_return(recaptcha_form)
       expect(recaptcha_form).to receive(:submit)

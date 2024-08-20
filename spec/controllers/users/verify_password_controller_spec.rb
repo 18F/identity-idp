@@ -68,7 +68,14 @@ RSpec.describe Users::VerifyPasswordController do
         end
 
         context 'with valid password' do
-          let(:response_ok) { FormResponse.new(success: true, errors: {}, extra: recovery_hash) }
+          let(:response_ok) do
+            FormResponse.new(
+              success: true,
+              errors: {},
+              extra: recovery_hash,
+              serialize_error_details_only: false,
+            )
+          end
 
           before do
             allow(form).to receive(:submit).and_return(response_ok)
@@ -92,7 +99,9 @@ RSpec.describe Users::VerifyPasswordController do
         end
 
         context 'without valid password' do
-          let(:response_bad) { FormResponse.new(success: false, errors: {}) }
+          let(:response_bad) do
+            FormResponse.new(success: false, errors: {}, serialize_error_details_only: false)
+          end
 
           render_views
 

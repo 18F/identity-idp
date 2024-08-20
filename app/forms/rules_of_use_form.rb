@@ -26,7 +26,7 @@ class RulesOfUseForm
       self.success = false
     end
 
-    FormResponse.new(success: success, errors: errors)
+    FormResponse.new(success:, errors:, serialize_error_details_only: false)
   end
 
   private

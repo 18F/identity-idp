@@ -79,8 +79,9 @@ module Idv
 
       response = Idv::DocAuthFormResponse.new(
         success: success,
-        errors: errors,
+        errors:,
         extra: extra_attributes,
+        serialize_error_details_only: false,
       )
 
       analytics.idv_doc_auth_submitted_image_upload_form(**response.to_h)

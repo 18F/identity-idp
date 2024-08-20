@@ -17,8 +17,9 @@ class UserPivCacVerificationForm
 
     FormResponse.new(
       success: success,
-      errors: errors,
+      errors:,
       extra: extra_analytics_attributes,
+      serialize_error_details_only: false,
     )
   end
 

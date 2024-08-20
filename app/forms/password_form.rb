@@ -14,7 +14,12 @@ class PasswordForm
     @password_confirmation = params[:password_confirmation]
     @request_id = params.fetch(:request_id, '')
 
-    FormResponse.new(success: valid?, errors: errors, extra: extra_analytics_attributes)
+    FormResponse.new(
+      success: valid?,
+      errors:,
+      extra: extra_analytics_attributes,
+      serialize_error_details_only: false,
+    )
   end
 
   private

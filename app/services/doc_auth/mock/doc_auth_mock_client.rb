@@ -140,7 +140,7 @@ module DocAuth
         exception = DocAuth::RequestError.new(message, status)
         DocAuth::Response.new(
           success: false,
-          errors: errors,
+          errors:,
           exception: exception,
           extra: { vendor: 'Mock' },
         )

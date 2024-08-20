@@ -52,8 +52,10 @@ module Idv
 
       delete_async
       FormResponse.new(
-        success: success, errors: idv_result[:errors],
-        extra: extra_analytics_attributes
+        success: success,
+        errors: idv_result[:errors],
+        extra: extra_analytics_attributes,
+        serialize_error_details_only: false,
       )
     end
 
@@ -122,7 +124,7 @@ module Idv
 
     def rate_limited_result
       @analytics.rate_limit_reached(limiter_type: :proof_address, step_name: :phone)
-      FormResponse.new(success: false)
+      FormResponse.new(success: false, serialize_error_details_only: false)
     end
 
     def failed_due_to_timeout_or_exception?

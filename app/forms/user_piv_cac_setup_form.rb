@@ -20,8 +20,9 @@ class UserPivCacSetupForm
     errors = error_type ? { type: error_type } : {}
     FormResponse.new(
       success: success && process_valid_submission,
-      errors: errors,
+      errors:,
       extra: extra_analytics_attributes,
+      serialize_error_details_only: false,
     )
   end
 

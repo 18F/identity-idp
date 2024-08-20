@@ -85,8 +85,17 @@ RSpec.describe Users::VerifyPersonalKeyController do
     let(:personal_key_bad_params) { { personal_key: 'baaad' } }
     let(:personal_key_error) { { personal_key: [error_text] } }
     let(:failure_properties) { { success: false } }
-    let(:response_ok) { FormResponse.new(success: true, errors: {}) }
-    let(:response_bad) { FormResponse.new(success: false, errors: personal_key_error, extra: {}) }
+    let(:response_ok) do
+      FormResponse.new(success: true, errors: {}, serialize_error_details_only: false)
+    end
+    let(:response_bad) do
+      FormResponse.new(
+        success: false,
+        errors: personal_key_error,
+        extra: {},
+        serialize_error_details_only: false,
+      )
+    end
 
     context 'with a valid form' do
       it 'redirects to the next step of the account recovery flow' do

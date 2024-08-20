@@ -21,7 +21,7 @@ class UserPivCacLoginForm
     errors = error_type ? { type: error_type } : {}
     response_hash = { success: success, errors: errors }
     response_hash[:extra] = { key_id: key_id }
-    FormResponse.new(**response_hash)
+    FormResponse.new(**response_hash, serialize_error_details_only: false)
   end
 
   private

@@ -11,6 +11,7 @@ class TotpVerificationForm
     FormResponse.new(
       success: cfg.present?,
       extra: extra_analytics_attributes(cfg),
+      serialize_error_details_only: false,
     )
   end
 

@@ -128,6 +128,7 @@ module Idv
           destination: :link_sent,
           flow_path: idv_session.flow_path,
         },
+        serialize_error_details_only: false,
       )
     end
 
@@ -189,6 +190,7 @@ module Idv
           destination: destination,
           flow_path: idv_session.flow_path,
         },
+        serialize_error_details_only: false,
       )
     end
 
@@ -214,7 +216,7 @@ module Idv
       flash[:error] = message
       form_response_params = { success: false, errors: { message: message } }
       form_response_params[:extra] = extra unless extra.nil?
-      FormResponse.new(**form_response_params)
+      FormResponse.new(**form_response_params, serialize_error_details_only: false)
     end
 
     def formatted_destination_phone

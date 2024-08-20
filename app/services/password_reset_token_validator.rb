@@ -11,7 +11,12 @@ class PasswordResetTokenValidator
   end
 
   def submit
-    FormResponse.new(success: valid?, errors: errors, extra: { user_id: user&.uuid })
+    FormResponse.new(
+      success: valid?,
+      errors:,
+      extra: { user_id: user&.uuid },
+      serialize_error_details_only: false,
+    )
   end
 
   private

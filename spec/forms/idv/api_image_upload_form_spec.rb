@@ -439,7 +439,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
       let(:failed_response) do
         DocAuth::Response.new(
           success: false,
-          errors: errors,
+          errors:,
           extra: {
             remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
             doc_auth_result: 'Failed',
@@ -557,6 +557,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
             id_issued_status: 'missing',
             id_expiration_status: 'missing',
           },
+          serialize_error_details_only: false,
         )
       end
 

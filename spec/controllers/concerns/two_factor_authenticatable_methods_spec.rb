@@ -174,7 +174,9 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
         errors.add(:code, 'pattern_mismatch', type: :pattern_mismatch)
         errors
       end
-      let(:form_response) { FormResponse.new(success: false, errors:) }
+      let(:form_response) do
+        FormResponse.new(success: false, errors:, serialize_error_details_only: false)
+      end
 
       it 'tracks multi-factor authentication event' do
         stub_analytics
