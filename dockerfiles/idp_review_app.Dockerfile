@@ -95,9 +95,9 @@ RUN bundle config set --local without 'deploy development doc test'
 RUN bundle install --jobs $(nproc)
 RUN bundle binstubs --all
 
-COPY ./package.json ./package.json
-COPY ./yarn.lock ./yarn.lock
-COPY ./app/javascript/packages ./app/javascript/packages
+COPY --chown=app:app ./package.json ./package.json
+COPY --chown=app:app ./yarn.lock ./yarn.lock
+COPY --chown=app:app ./app/javascript/packages ./app/javascript/packages
 RUN yarn install --production=true --frozen-lockfile --cache-folder .yarn-cache
 
 # Add the application code
