@@ -76,7 +76,7 @@ RUN bundle binstubs --all
 COPY ./package.json ./package.json
 COPY ./yarn.lock ./yarn.lock
 COPY ./app/javascript/packages ./app/javascript/packages
-RUN yarn install --production=true --frozen-lockfile --cache-folder .yarn-cache && ls -al node_modules/@18f
+RUN yarn install --production=true --frozen-lockfile --cache-folder .yarn-cache
 
 # Add the application code
 COPY ./lib ./lib
