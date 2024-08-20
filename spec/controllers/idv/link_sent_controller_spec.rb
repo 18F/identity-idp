@@ -133,7 +133,7 @@ RSpec.describe Idv::LinkSentController, allowed_extra_analytics: [:*] do
     # See https://github.com/18F/identity-idp/pull/11091#discussion_r1718831233
     it 'does not delete the TMx session ID' do
       subject.idv_session.ssn = '900-12-1234'
-      subject.idv_session.threatmetrix_session_id
+      subject.idv_session.threatmetrix_session_id = 'super-cool-test-value'
 
       put :update
 
