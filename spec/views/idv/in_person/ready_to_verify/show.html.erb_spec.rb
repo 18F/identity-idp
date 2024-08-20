@@ -179,7 +179,7 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
       expect(rendered).to have_content(t('in_person_proofing.body.barcode.questions')).once
       expect(rendered).to have_link(
         t('in_person_proofing.body.barcode.learn_more'),
-        href: MarketingSite.help_center_article_url(
+        href: help_center_redirect_url(
           category: 'verify-your-identity',
           article: 'verify-your-identity-in-person',
         ),
@@ -260,7 +260,7 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
       expect(rendered).to have_content(t('in_person_proofing.body.barcode.questions')).once
       expect(rendered).to have_link(
         t('in_person_proofing.body.barcode.learn_more'),
-        href: MarketingSite.help_center_article_url(
+        href: help_center_redirect_url(
           category: 'verify-your-identity',
           article: 'verify-your-identity-in-person',
         ),
