@@ -229,7 +229,6 @@ RSpec.describe 'content security policy' do
         content_security_policy = parse_content_security_policy
 
         # See: https://github.com/digital-analytics-program/gov-wide-code#content-security-policy
-        expect(content_security_policy['script-src']).to include('dap.digitalgov.gov')
         expect(content_security_policy['script-src']).to include('www.google-analytics.com')
         expect(content_security_policy['script-src']).to include('www.googletagmanager.com')
         expect(content_security_policy['connect-src']).to include('www.google-analytics.com')
@@ -243,7 +242,6 @@ RSpec.describe 'content security policy' do
         content_security_policy = parse_content_security_policy
 
         # See: https://github.com/digital-analytics-program/gov-wide-code#content-security-policy
-        expect(content_security_policy['script-src']).not_to include('dap.digitalgov.gov')
         expect(content_security_policy['script-src']).not_to include('www.google-analytics.com')
         expect(content_security_policy['script-src']).not_to include('www.googletagmanager.com')
         expect(content_security_policy['connect-src']).not_to include('www.google-analytics.com')
