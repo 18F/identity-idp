@@ -72,11 +72,20 @@ RSpec.describe Reporting::ProtocolsReport do
         'issuer' => 'Issuer3',
       },
     ]
+    aal3_issuers_query_response = [
+      {
+        'issuer' => 'Issuer1',
+      },
+      {
+        'issuer' => 'Issuer3',
+      },
+    ]
 
     stub_multiple_cloudwatch_logs(
       protocol_query_response,
       saml_signature_query_response,
       loa_issuers_query_response,
+      aal3_issuers_query_response,
     )
   end
 
@@ -202,10 +211,20 @@ RSpec.describe Reporting::ProtocolsReport do
         ['Incorrectly signing SAML authentication requests', string_or_num(strings, 1), 'Issuer1'],
       ],
       [
-        ['Count of issuers using LOA', 'List of issuers with the issue'],
         [
+          'Deprecated Parameter',
+          'Count of issuers using the parameter',
+          'List of issuers using the parameter',
+        ],
+        [
+          'LOA',
           string_or_num(strings, 3),
           'Issuer1, Issuer2, Issuer3',
+        ],
+        [
+          'AAL3',
+          string_or_num(strings, 2),
+          'Issuer1, Issuer3',
         ],
       ],
     ]
