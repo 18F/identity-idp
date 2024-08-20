@@ -125,6 +125,22 @@ RSpec.describe Idv::LinkSentController, allowed_extra_analytics: [:*] do
       expect(subject.idv_session.applicant).to be_nil
     end
 
+    # This is a regression spec that was introduced for a bug that occured
+    # when calling `undo_step` on the SSN controller step info caused the
+    # TMx session ID to be deleted when this step was resubmitted
+    #
+    # See https://cm-jira.usa.gov/browse/LG-14127
+    # See https://github.com/18F/identity-idp/pull/11091#discussion_r1718831233
+    it 'does not delete the TMx session ID' do
+      subject.idv_session.ssn = '900-12-1234'
+      subject.idv_session.threatmetrix_session_id
+
+      put :update
+
+      expect(subject.idv_session.ssn).to be_nil
+      expect(subject.idv_session.threatmetrix_session_id).to_not be_nil
+    end
+
     it 'sends analytics_submitted event' do
       put :update
 
