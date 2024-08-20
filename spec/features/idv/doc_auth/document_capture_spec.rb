@@ -198,6 +198,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
   context 'selfie check' do
     let(:selfie_check_enabled) { true }
+
     before do
       allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
     end
@@ -1108,6 +1109,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
             expect(page).to have_content(inline_error)
           end
         end
+
         context 'with Attention with Barcode' do
           it 'try again and page show selfie fail inline error message' do
             visit_idp_from_oidc_sp_with_ial2(biometric_comparison_required: true)
@@ -1181,12 +1183,15 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
           end
         end
       end
+
       context 'on desktop' do
         let(:desktop_selfie_mode) { false }
+
         before do
           allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).
             and_return(desktop_selfie_mode)
         end
+
         describe 'when desktop selfie not allowed' do
           it 'can only proceed to link sent page' do
             perform_in_browser(:desktop) do
@@ -1203,6 +1208,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
             end
           end
         end
+
         describe 'when desktop selfie is allowed' do
           let(:desktop_selfie_mode) { true }
           it 'proceed to the next page with valid info, including a selfie image' do
@@ -1239,12 +1245,14 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
           context 'when ipp is enabled' do
             let(:in_person_doc_auth_button_enabled) { true }
             let(:sp_ipp_enabled) { true }
+
             before do
               allow(IdentityConfig.store).to receive(:in_person_doc_auth_button_enabled).
                 and_return(in_person_doc_auth_button_enabled)
               allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).with(anything).
                 and_return(sp_ipp_enabled)
             end
+
             describe 'when ipp is selected' do
               it 'proceed to the next page and start ipp' do
                 perform_in_browser(:desktop) do
@@ -1285,6 +1293,7 @@ end
 RSpec.feature 'direct access to IPP on desktop', :js, allowed_extra_analytics: [:*] do
   include IdvStepHelper
   include DocAuthHelper
+
   context 'direct access to IPP before handoff page' do
     let(:in_person_proofing_enabled) { true }
     let(:sp_ipp_enabled) { true }
@@ -1322,11 +1331,14 @@ RSpec.feature 'direct access to IPP on desktop', :js, allowed_extra_analytics: [
         expect(page).to have_current_path(idv_agreement_path)
       end
     end
+
     context 'when selfie is enabled' do
       it_behaves_like 'does not allow direct ipp access'
     end
+
     context 'when selfie is disabled' do
       let(:biometric_comparison_required) { false }
+
       it_behaves_like 'does not allow direct ipp access'
     end
   end
