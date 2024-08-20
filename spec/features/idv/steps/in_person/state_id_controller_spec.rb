@@ -1,17 +1,17 @@
 require 'rails_helper'
 
-RSpec.describe 'doc auth IPP state ID step', js: true, allowed_extra_analytics: [:*] do
+RSpec.describe 'state id controller enabled', js: true, allowed_extra_analytics: [:*] do
   include IdvStepHelper
   include InPersonHelper
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-    allow(IdentityConfig.store).to receive(:in_person_state_id_controller_enabled).and_return(false)
+    allow(IdentityConfig.store).to receive(:in_person_state_id_controller_enabled).and_return(true)
   end
 
   context 'when visiting state id for the first time' do
     it 'displays correct heading and button text', allow_browser_log: true do
-      complete_steps_before_state_id_step
+      complete_steps_before_state_id_controller
 
       expect(page).to have_content(t('forms.buttons.continue'))
       expect(page).to have_content(
@@ -22,7 +22,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true, allowed_extra_analytics: 
     end
 
     it 'allows the user to cancel and start over', allow_browser_log: true do
-      complete_steps_before_state_id_step
+      complete_steps_before_state_id_controller
 
       expect(page).not_to have_content('forms.buttons.back')
 
@@ -32,17 +32,17 @@ RSpec.describe 'doc auth IPP state ID step', js: true, allowed_extra_analytics: 
     end
 
     it 'allows the user to cancel and return', allow_browser_log: true do
-      complete_steps_before_state_id_step
+      complete_steps_before_state_id_controller
 
       expect(page).not_to have_content('forms.buttons.back')
 
       click_link t('links.cancel')
       click_on t('idv.cancel.actions.keep_going')
-      expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
+      expect(page).to have_current_path(idv_in_person_proofing_state_id_path, wait: 10)
     end
 
     it 'allows user to submit valid inputs on form', allow_browser_log: true do
-      complete_steps_before_state_id_step
+      complete_steps_before_state_id_controller
       fill_out_state_id_form_ok(same_address_as_id: true)
       click_idv_continue
 
@@ -64,7 +64,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true, allowed_extra_analytics: 
 
   context 'updating state id page' do
     it 'has form fields that are pre-populated', allow_browser_log: true do
-      complete_steps_before_state_id_step
+      complete_steps_before_state_id_controller
 
       fill_out_state_id_form_ok(same_address_as_id: true)
       click_idv_continue
@@ -74,7 +74,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true, allowed_extra_analytics: 
       click_button t('idv.buttons.change_state_id_label')
 
       # state id page has fields that are pre-populated
-      expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
+      expect(page).to have_current_path(idv_in_person_proofing_state_id_path, wait: 10)
       expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
       expect(page).to have_field(
         t('in_person_proofing.form.state_id.first_name'),
@@ -134,7 +134,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true, allowed_extra_analytics: 
 
       it 'does not update their previous selection of "Yes,
         I live at the address on my state-issued ID"' do
-        complete_state_id_step(user, same_address_as_id: true)
+        complete_state_id_controller(user, same_address_as_id: true)
         # skip address step
         complete_ssn_step(user)
         # expect to be on verify page
@@ -166,7 +166,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true, allowed_extra_analytics: 
       end
 
       it 'does not update their previous selection of "No, I live at a different address"' do
-        complete_state_id_step(user, same_address_as_id: false)
+        complete_state_id_controller(user, same_address_as_id: false)
         # expect to be on address page
         expect(page).to have_content(t('in_person_proofing.headings.address'))
         # complete address step
@@ -200,7 +200,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true, allowed_extra_analytics: 
       end
 
       it 'updates their previous selection from "Yes" TO "No, I live at a different address"' do
-        complete_state_id_step(user, same_address_as_id: true)
+        complete_state_id_controller(user, same_address_as_id: true)
         # skip address step
         complete_ssn_step(user)
         # click update state ID button on the verify page
@@ -235,7 +235,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true, allowed_extra_analytics: 
 
       it 'updates their previous selection from "No" TO "Yes,
         I live at the address on my state-issued ID"' do
-        complete_state_id_step(user, same_address_as_id: false)
+        complete_state_id_controller(user, same_address_as_id: false)
         # expect to be on address page
         expect(page).to have_content(t('in_person_proofing.headings.address'))
         # complete address step
@@ -273,7 +273,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true, allowed_extra_analytics: 
 
   context 'Validation' do
     it 'validates zip code input', allow_browser_log: true do
-      complete_steps_before_state_id_step
+      complete_steps_before_state_id_controller
 
       fill_out_state_id_form_ok(same_address_as_id: true)
       fill_in t('in_person_proofing.form.state_id.zipcode'), with: ''
@@ -299,7 +299,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true, allowed_extra_analytics: 
     end
 
     it 'shows error for dob under minimum age', allow_browser_log: true do
-      complete_steps_before_state_id_step
+      complete_steps_before_state_id_controller
 
       fill_in t('components.memorable_date.month'), with: '1'
       fill_in t('components.memorable_date.day'), with: '1'
@@ -332,7 +332,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true, allowed_extra_analytics: 
 
     it 'shows validation errors',
        allow_browser_log: true do
-      complete_steps_before_state_id_step
+      complete_steps_before_state_id_controller
 
       fill_out_state_id_form_ok
       fill_in t('in_person_proofing.form.state_id.first_name'), with: 'T0mmy "Lee"'
@@ -396,7 +396,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true, allowed_extra_analytics: 
   context 'State selection' do
     it 'shows address hint when user selects state that has a specific hint',
        allow_browser_log: true do
-      complete_steps_before_state_id_step
+      complete_steps_before_state_id_controller
 
       # state id page
       select 'Puerto Rico',
@@ -433,7 +433,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true, allowed_extra_analytics: 
 
     it 'shows id number hint when user selects issuing state that has a specific hint',
        allow_browser_log: true do
-      complete_steps_before_state_id_step
+      complete_steps_before_state_id_controller
 
       # expect default hint to be present
       expect(page).to have_content(t('in_person_proofing.form.state_id.state_id_number_hint'))

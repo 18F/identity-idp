@@ -16,11 +16,11 @@ module TwoFactorAuthentication
         service_provider: current_sp,
         remember_device_default: remember_device_default,
       )
-      @backup_code_form = BackupCodeVerificationForm.new(current_user)
+      @backup_code_form = BackupCodeVerificationForm.new(user: current_user, request:)
     end
 
     def create
-      @backup_code_form = BackupCodeVerificationForm.new(current_user)
+      @backup_code_form = BackupCodeVerificationForm.new(user: current_user, request:)
       result = @backup_code_form.submit(backup_code_params)
       handle_result(result)
     end

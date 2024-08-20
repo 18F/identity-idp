@@ -32,8 +32,8 @@ module Reporting
       time_range:,
       verbose: false,
       progress: false,
-      slice: 3.hours,
-      threads: 5
+      slice: 6.hours,
+      threads: 1
     )
       @time_range = time_range
       @verbose = verbose

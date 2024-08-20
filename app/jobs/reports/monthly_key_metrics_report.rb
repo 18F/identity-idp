@@ -2,6 +2,7 @@
 
 require 'csv'
 require 'reporting/proofing_rate_report'
+require 'reporting/monthly_idv_report'
 
 module Reports
   class MonthlyKeyMetricsReport < BaseReport
@@ -68,6 +69,7 @@ module Reports
       @reports ||= [
         active_users_count_report.active_users_count_emailable_report,
         total_user_count_report.total_user_count_emailable_report,
+        monthly_idv_report.monthly_idv_report_emailable_report,
         proofing_rate_report.proofing_rate_emailable_report,
         account_deletion_rate_report.account_deletion_emailable_report,
         account_reuse_report.account_reuse_emailable_report,
@@ -111,6 +113,10 @@ module Reports
 
     def agency_and_sp_report
       @agency_and_sp_report ||= Reporting::AgencyAndSpReport.new(report_date)
+    end
+
+    def monthly_idv_report
+      @monthly_idv_report ||= Reporting::MonthlyIdvReport.new(end_date: report_date)
     end
 
     def upload_to_s3(report_body, report_name: nil)

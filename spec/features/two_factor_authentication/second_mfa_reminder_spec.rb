@@ -8,7 +8,6 @@ RSpec.feature 'Second MFA Reminder' do
 
   before do
     allow(IdentityConfig.store).to receive(:second_mfa_reminder_sign_in_count).and_return(2)
-    allow(IdentityConfig.store).to receive(:second_mfa_reminder_account_age_in_days).and_return(5)
     IdentityLinker.new(user, service_provider).link_identity(verified_attributes: %w[openid email])
   end
 
@@ -46,7 +45,11 @@ RSpec.feature 'Second MFA Reminder' do
     end
 
     context 'after age threshold' do
-      before { travel 6.days }
+      before do
+        user.update(
+          created_at: (IdentityConfig.store.second_mfa_reminder_account_age_in_days + 1).days.ago,
+        )
+      end
 
       it 'prompts the user on sign in and allows them to add an authentication method' do
         sign_in_user(user)
@@ -57,31 +60,34 @@ RSpec.feature 'Second MFA Reminder' do
 
         expect(page).to have_current_path(authentication_methods_setup_url)
       end
-    end
 
-    context 'user already acknowledged reminder' do
-      before do
-        travel 6.days
-        sign_in_user(user)
-        fill_in_code_with_last_phone_otp
-        click_submit_default
-        click_button t('users.second_mfa_reminder.continue', sp_name: APP_NAME)
-        first(:button, t('links.sign_out')).click
-      end
+      context 'user already acknowledged reminder' do
+        before do
+          sign_in_user(user)
+          fill_in_code_with_last_phone_otp
+          click_submit_default
+          click_button t('users.second_mfa_reminder.continue', sp_name: APP_NAME)
+          first(:button, t('links.sign_out')).click
+        end
 
-      it 'does not prompt the user on sign in' do
-        sign_in_user(user)
+        it 'does not prompt the user on sign in' do
+          sign_in_user(user)
 
-        expect(page).to have_current_path(account_path)
+          expect(page).to have_current_path(account_path)
+        end
       end
     end
   end
 
   context 'user with multiple mfas who would otherwise be candidate' do
-    let(:user) { create(:user, :fully_registered, :with_phone, :with_authentication_app) }
-
-    before do
-      travel 6.days
+    let(:user) do
+      create(
+        :user,
+        :fully_registered,
+        :with_phone,
+        :with_authentication_app,
+        created_at: (IdentityConfig.store.second_mfa_reminder_account_age_in_days + 1).days.ago,
+      )
     end
 
     it 'does not prompt the user on sign in' do
