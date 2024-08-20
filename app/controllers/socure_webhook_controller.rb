@@ -15,6 +15,10 @@ class SocureWebhookController < ApplicationController
 
   def token_valid?
     authorization_header = request.headers['Authorization']&.split&.last
-    authorization_header == IdentityConfig.store.socure_webhook_secret_key
+    ActiveSupport::SecurityUtils.secure_compare(
+      authorization_header,
+      IdentityConfig.store.socure_webhook_secret_key,
+    )
+
   end
 end
