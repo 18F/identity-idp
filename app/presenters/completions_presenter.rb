@@ -106,7 +106,7 @@ class CompletionsPresenter
   end
 
   def multiple_emails?
-    current_user.confirmed_email_addresses.any?
+    current_user.confirmed_email_addresses.count > 1
   end
 
   private
