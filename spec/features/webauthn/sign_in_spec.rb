@@ -90,7 +90,6 @@ RSpec.feature 'webauthn sign in' do
       before do
         email ||= user.email_addresses.first.email
         password = user.password
-        allow(UserMailer).to receive(:new_device_sign_in).and_call_original
         visit new_user_session_path
         set_hidden_field('platform_authenticator_available', 'false')
         fill_in_credentials_and_submit(email, password)

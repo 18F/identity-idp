@@ -1903,10 +1903,6 @@ user_mailer.new_device_sign_in_before_2fa.info_p2: 如果你知道该活动，�
 user_mailer.new_device_sign_in_before_2fa.info_p3_html: 双重身份验证保护你账户不受未经授权的访问。如果不是你，请马上 %{reset_password_link_html}.
 user_mailer.new_device_sign_in_before_2fa.reset_password: 重设密码
 user_mailer.new_device_sign_in_before_2fa.subject: 你 %{app_name} 账户有新的登录
-user_mailer.new_device_sign_in.disavowal_link: 重设你的密码
-user_mailer.new_device_sign_in.help_html: 如果你没做此更改， %{disavowal_link_html}。要得到更多帮助，请访问 %{app_name_html} %{help_link_html} 或者 %{contact_link_html}。
-user_mailer.new_device_sign_in.info: 你的 %{app_name} 帐号刚刚在一个新设备上用于登录。
-user_mailer.new_device_sign_in.subject: 用你 %{app_name} 账户进行的新登录
 user_mailer.password_changed.disavowal_link: 重设你的密码
 user_mailer.password_changed.help_html: 如果你没做此更改， %{disavowal_link_html}。要得到更多帮助，请访问 %{app_name_html} %{help_link_html} 或者 %{contact_link_html}。
 user_mailer.password_changed.intro_html: 你的 %{app_name_html} 账户有了新密码。

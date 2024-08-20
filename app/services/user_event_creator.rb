@@ -84,7 +84,6 @@ class UserEventCreator
         event, disavowal_token = create_user_event_with_disavowal(event_type, user, device)
         [device, event, disavowal_token]
       end
-      send_new_device_notification(event:, device:, disavowal_token:)
       [event, disavowal_token]
     else
       Device.transaction do
@@ -109,10 +108,6 @@ class UserEventCreator
       last_used_at: Time.zone.now,
       last_ip: request.remote_ip,
     )
-  end
-
-  def send_new_device_notification(event:, device:, disavowal_token:)
-    UserAlerts::AlertUserAboutNewDevice.call(event:, device:, disavowal_token:)
   end
 
   # @return [Array(Event, String)] an (event, disavowal_token) tuple
