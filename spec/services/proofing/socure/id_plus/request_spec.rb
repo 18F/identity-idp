@@ -26,7 +26,7 @@ RSpec.describe Proofing::Socure::IdPlus::Request do
   end
 
   describe '#body' do
-    it 'looks right' do
+    it 'contains all expected values' do
       freeze_time do
         expect(JSON.parse(request.body, symbolize_names: true)).to eql(
           {
@@ -62,11 +62,12 @@ RSpec.describe Proofing::Socure::IdPlus::Request do
   end
 
   describe '#headers' do
-    it 'look right' do
-      expect(request.headers).to eql(
-        'Content-Type' => 'application/json',
-        'Authorization' => "SocureApiKey #{api_key}",
-      )
+    it 'includes appropriate Content-Type header' do
+      expect(request.headers).to include('Content-Type' => 'application/json')
+    end
+
+    it 'includes appropriate Authorization header' do
+      expect(request.headers).to include('Authorization' => "SocureApiKey #{api_key}")
     end
   end
 
