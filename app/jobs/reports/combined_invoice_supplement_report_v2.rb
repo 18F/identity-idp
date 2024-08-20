@@ -143,12 +143,14 @@ module Reports
             year_months.each do |year_month|
               iaa_results = by_iaa_and_year_month[ [iaa_key, year_month] ]
               if !iaa_results
-                logger.warn({
-                  level: 'warning',
-                  name: 'missing iaa_results',
-                  iaa: iaa_key,
-                  year_month: year_month,
-                }.to_json)
+                logger.warn(
+                  {
+                    level: 'warning',
+                    name: 'missing iaa_results',
+                    iaa: iaa_key,
+                    year_month: year_month,
+                  }.to_json,
+                )
                 next
               end
 
