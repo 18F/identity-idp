@@ -72,9 +72,10 @@ RUN bundle config set --local without 'deploy development doc test'
 RUN bundle install --jobs $(nproc)
 RUN bundle binstubs --all
 
-# yarn install
+# Yarn install
 COPY ./package.json ./package.json
 COPY ./yarn.lock ./yarn.lock
+# Workspace packages are installed by Yarn via symlink to the original source, and need to be present
 COPY ./app/javascript/packages ./app/javascript/packages
 RUN yarn install --production=true --frozen-lockfile --cache-folder .yarn-cache
 
