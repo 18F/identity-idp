@@ -578,6 +578,56 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
     end
   end
 
+  describe '#combine_by_iaa_month' do
+    let(:service_provider) { create(:service_provider) }
+
+    let(:by_iaa_results) do
+      [
+        {
+          key: 'IAA123',
+          year_month: '202408',
+          iaa_start_date: '2024-08-01',
+          iaa_end_date: '2025-07-31',
+        },
+      ]
+    end
+
+    let(:by_issuer_results) do
+      [
+        {
+          iaa: 'IAA123',
+          issuer: service_provider.issuer,
+          year_month: '202408',
+        },
+        {
+          iaa: 'IAA123',
+          issuer: service_provider.issuer,
+          year_month: '202409',
+        },
+      ]
+    end
+
+    let(:by_partner_results) do
+      []
+    end
+
+    let(:by_issuer_profile_age_results) do
+      []
+    end
+
+    it 'does not error if by_iaa_results is missing an entry' do
+      csv_data = report.combine_by_iaa_month(
+        by_iaa_results:,
+        by_issuer_results:,
+        by_partner_results:,
+        by_issuer_profile_age_results:,
+      )
+
+      csv = CSV.parse(csv_data, headers: true)
+      expect(csv.length).to be
+    end
+  end
+
   def build_iaa_order(order_number:, date_range:, iaa_gtc:)
     create(
       :iaa_order,
