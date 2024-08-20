@@ -144,9 +144,9 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
     let(:subject) { described_class.new(time_range:, **opts) }
     let(:default_args) do
       {
-        num_threads: 5,
+        num_threads: 1,
         ensure_complete_logs: true,
-        slice_interval: 3.hours,
+        slice_interval: 6.hours,
         progress: false,
         logger: nil,
       }
