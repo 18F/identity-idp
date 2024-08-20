@@ -626,6 +626,24 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
       csv = CSV.parse(csv_data, headers: true)
       expect(csv.length).to be
     end
+
+    it 'logs a warning for which IAA and which month for debugging' do
+      expect(Rails.logger).to receive(:warn) do |msg|
+        expect(JSON.parse(msg, symbolize_names: true)).to eq(
+          level: 'warning',
+          name: 'missing iaa_results',
+          iaa: 'IAA123',
+          year_month: '202409',
+        )
+      end
+
+      report.combine_by_iaa_month(
+        by_iaa_results:,
+        by_issuer_results:,
+        by_partner_results:,
+        by_issuer_profile_age_results:,
+      )
+    end
   end
 
   def build_iaa_order(order_number:, date_range:, iaa_gtc:)

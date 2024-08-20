@@ -142,6 +142,16 @@ module Reports
 
             year_months.each do |year_month|
               iaa_results = by_iaa_and_year_month[ [iaa_key, year_month] ]
+              if !iaa_results
+                logger.warn({
+                  level: 'warning',
+                  name: 'missing iaa_results',
+                  iaa: iaa_key,
+                  year_month: year_month,
+                }.to_json)
+                next
+              end
+
               issuer_results = year_months_data[year_month]
               year_month_start = Date.strptime(year_month, '%Y%m')
               iaa_start_date = Date.parse(iaa_results.first[:iaa_start_date])
