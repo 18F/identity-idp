@@ -383,7 +383,7 @@ module IdentityConfig
     config.add(:sign_in_user_id_per_ip_max_attempts, type: :integer)
     config.add(:sign_in_recaptcha_score_threshold, type: :float)
     config.add(:skip_encryption_allowed_list, type: :json)
-    config.add(:socure_webhook_secret_key, type: string)
+    config.add(:socure_webhook_secret_key, type: :string)
     config.add(:sp_handoff_bounce_max_seconds, type: :integer)
     config.add(:sp_issuer_user_counts_report_configs, type: :json)
     config.add(:state_tracking_enabled, type: :boolean)
