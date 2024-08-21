@@ -1,5 +1,5 @@
 73a74
-> GA4Object.async = true;
+> GA4Object.defer = true;
 785d785
 < var piiRegex = [];
 900c900
