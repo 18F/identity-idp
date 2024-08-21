@@ -7,6 +7,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
   include ActionView::Helpers::DateHelper
 
   let(:max_attempts) { IdentityConfig.store.doc_auth_max_attempts }
+
   before(:each) do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(@fake_analytics)
     allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return(@sp_name)
@@ -61,11 +62,13 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
     context 'attention barcode with invalid pii is uploaded', allow_browser_log: true do
       let(:desktop_selfie_mode) { false }
+
       # test disabled desktop selfie mode allows upload for doc auth w/o selfie
       before do
         allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).
           and_return(desktop_selfie_mode)
       end
+
       it 'try again and page show doc type inline error message' do
         attach_images(
           Rails.root.join(
@@ -1211,6 +1214,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
         describe 'when desktop selfie is allowed' do
           let(:desktop_selfie_mode) { true }
+
           it 'proceed to the next page with valid info, including a selfie image' do
             perform_in_browser(:desktop) do
               visit_idp_from_oidc_sp_with_ial2(biometric_comparison_required: true)
