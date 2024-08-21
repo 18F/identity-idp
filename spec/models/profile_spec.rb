@@ -64,7 +64,20 @@ RSpec.describe Profile do
       expect(profile.verified_at).to be_nil
     end
 
-    context 'enrollment expired' do
+    context 'with unlinked establishing enrollment' do
+      # When marking profile as pending in-person proofing, the enrollment hasn't yet been linked to
+      # the profile.
+      #
+      # See: Idv::Session#create_profile_from_applicant_with_password
+
+      before do
+        profile.in_person_enrollment.update(status: :establishing, profile: nil)
+      end
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'with expired enrollment' do
       before do
         profile.in_person_enrollment.update(status: :expired)
       end
