@@ -12,11 +12,21 @@ RSpec.describe Idv::AcuantConcern, :controller do
   let(:default_sdk_version) { IdentityConfig.store.idv_acuant_sdk_version_default }
   let(:alternate_sdk_version) { IdentityConfig.store.idv_acuant_sdk_version_alternate }
 
+  let(:ab_test_bucket) { nil }
+
   subject(:variables) { controller.acuant_sdk_upgrade_a_b_testing_variables }
 
   before do
     allow(controller).to receive(:document_capture_session_uuid).
       and_return(session_uuid)
+
+    # ACUANT_SDK is frozen, so we have to work with a copy of it
+    ab_test = AbTests::ACUANT_SDK.dup
+    allow(ab_test).to receive(:bucket).and_return(ab_test_bucket)
+    stub_const(
+      'AbTests::ACUANT_SDK',
+      ab_test,
+    )
   end
 
   context 'with acuant sdk upgrade A/B testing disabled' do
@@ -30,10 +40,7 @@ RSpec.describe Idv::AcuantConcern, :controller do
 
     context 'and A/B test specifies the older acuant version' do
       before do
-        stub_const(
-          'AbTests::ACUANT_SDK',
-          FakeAbTestBucket.new.tap { |ab| ab.assign(session_uuid => 0) },
-        )
+        allow(AbTests::ACUANT_SDK).to receive(:bucket).and_return(nil)
       end
 
       it 'passes correct variables and acuant version when older is specified' do
@@ -52,12 +59,7 @@ RSpec.describe Idv::AcuantConcern, :controller do
     end
 
     context 'and A/B test specifies the newer acuant version' do
-      before do
-        stub_const(
-          'AbTests::ACUANT_SDK',
-          FakeAbTestBucket.new.tap { |ab| ab.assign(session_uuid => :use_alternate_sdk) },
-        )
-      end
+      let(:ab_test_bucket) { :use_alternate_sdk }
 
       it 'passes correct variables and acuant version when newer is specified' do
         expect(variables[:acuant_sdk_upgrade_a_b_testing_enabled]).to eq(true)
@@ -67,12 +69,7 @@ RSpec.describe Idv::AcuantConcern, :controller do
     end
 
     context 'and A/B test specifies the older acuant version' do
-      before do
-        stub_const(
-          'AbTests::ACUANT_SDK',
-          FakeAbTestBucket.new.tap { |ab| ab.assign(session_uuid => 0) },
-        )
-      end
+      let(:ab_test_bucket) { :default }
 
       it 'passes correct variables and acuant version when older is specified' do
         expect(variables[:acuant_sdk_upgrade_a_b_testing_enabled]).to eq(true)

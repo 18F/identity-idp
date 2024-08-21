@@ -42,6 +42,7 @@ module Idv
       def extra_view_variables
         {
           flow_path: 'hybrid',
+          mock_client: doc_auth_vendor == 'mock',
           document_capture_session_uuid: document_capture_session_uuid,
           failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
           doc_auth_selfie_capture: resolved_authn_context_result.biometric_comparison?,

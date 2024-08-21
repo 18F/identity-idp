@@ -28,6 +28,7 @@ class Analytics
 
     analytics_hash.merge!(request_attributes) if request
     analytics_hash.merge!(sp_request_attributes) if sp_request_attributes
+    analytics_hash.merge!(ab_test_attributes(event))
 
     ahoy.track(event, analytics_hash)
 
@@ -69,6 +70,32 @@ class Analytics
     end
 
     attributes.merge!(browser_attributes)
+  end
+
+  def ab_test_attributes(event)
+    user_session = session.dig('warden.user.user.session')
+    ab_tests = AbTests.all.each_with_object({}) do |(test_id, test), obj|
+      next if !test.include_in_analytics_event?(event)
+
+      bucket = test.bucket(
+        request:,
+        service_provider: sp,
+        session:,
+        user:,
+        user_session:,
+      )
+      if !bucket.blank?
+        obj[test_id.downcase] = {
+          bucket:,
+        }
+      end
+    end
+
+    ab_tests.empty? ?
+      {} :
+      {
+        ab_tests: ab_tests,
+      }
   end
 
   def browser
