@@ -38,10 +38,7 @@ FactoryBot.define do
     trait :in_person_verification_pending do
       in_person_verification_pending_at { 15.days.ago }
       idv_level { :legacy_in_person }
-
-      after(:build) do |profile|
-        build(:in_person_enrollment, :pending, profile:)
-      end
+      in_person_enrollment { association :in_person_enrollment, :pending, user: }
     end
 
     trait :fraud_pending_reason do

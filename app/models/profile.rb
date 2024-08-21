@@ -63,7 +63,8 @@ class Profile < ApplicationRecord
   end
 
   def self.in_person_verification_pending
-    where.not(in_person_verification_pending_at: nil)
+    where.not(in_person_verification_pending_at: nil).
+      joins(:in_person_enrollment).where.not(in_person_enrollment: { status: :expired })
   end
 
   # Instance methods
