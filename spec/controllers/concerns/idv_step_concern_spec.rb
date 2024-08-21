@@ -227,7 +227,7 @@ RSpec.describe 'IdvStepConcern' do
     end
 
     context 'with pending in person enrollment' do
-      let(:user) { create(:user, :with_pending_in_person_enrollment, :fully_registered) }
+      let(:user) { create(:user, :with_pending_in_person_enrollment) }
 
       before do
         allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)

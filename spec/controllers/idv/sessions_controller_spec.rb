@@ -52,7 +52,7 @@ RSpec.describe Idv::SessionsController do
     end
 
     context 'with in person enrollment' do
-      let(:user) { build(:user, :with_pending_in_person_enrollment) }
+      let(:user) { create(:user, :with_pending_in_person_enrollment) }
 
       it 'logs idv_start_over event with extra analytics attributes for barcode step' do
         delete :destroy, params: { step: 'barcode', location: '' }
@@ -101,7 +101,7 @@ RSpec.describe Idv::SessionsController do
     end
 
     context 'with in person enrollment' do
-      let(:user) { build(:user, :with_pending_in_person_enrollment) }
+      let(:user) { create(:user, :with_pending_in_person_enrollment) }
 
       before do
         allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)

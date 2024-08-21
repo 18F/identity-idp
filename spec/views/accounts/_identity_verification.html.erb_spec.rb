@@ -47,7 +47,7 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
     let(:ipp_sp_name) { 'IPP SP' }
     let(:ipp_sp_issuer) { 'urn:gov:gsa:openidconnect:sp:ipp_sp' }
     let(:ipp_sp) { create(:service_provider, issuer: ipp_sp_issuer, friendly_name: ipp_sp_name) }
-    let(:user) { build(:user, :with_pending_in_person_enrollment) }
+    let(:user) { create(:user, :with_pending_in_person_enrollment) }
 
     before do
       ipp_sp
@@ -82,7 +82,7 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
     end
 
     context 'with user pending ipp verification' do
-      let(:user) { build(:user, :with_pending_in_person_enrollment) }
+      let(:user) { create(:user, :with_pending_in_person_enrollment) }
 
       it 'shows pending badge' do
         expect(rendered).to have_content(t('account.index.verification.pending_badge'))

@@ -221,7 +221,7 @@ RSpec.describe Idv::CancellationsController do
       end
 
       context 'with in person enrollment' do
-        let(:user) { build(:user, :with_pending_in_person_enrollment) }
+        let(:user) { create(:user, :with_pending_in_person_enrollment) }
 
         before do
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
