@@ -102,22 +102,6 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
           ),
         )
       end
-
-      it 'shows info alert instructing user to go to the post office to complete verification' do
-        expect(rendered).to have_css('.usa-alert.usa-alert--info')
-        expect(rendered).to have_content(
-          strip_tags(
-            t(
-              'account.index.verification.in_person_instructions_html',
-              deadline: @presenter.formatted_ipp_due_date,
-            ),
-          ),
-        )
-        expect(rendered).to have_link(
-          t('account.index.verification.show_bar_code', app_name: APP_NAME),
-          href: idv_in_person_ready_to_verify_url,
-        )
-      end
     end
 
     context 'with user pending gpo verification' do

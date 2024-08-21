@@ -59,15 +59,6 @@
       <%= link_to(t('account.index.verification.reactivate_button'), idv_verify_by_mail_enter_code_path) %>
     </p>
   <% end %>
-<% elsif @presenter.pending_ipp? %>
-  <%= render AlertComponent.new(type: :info, text_tag: 'div') do %>
-    <p>
-      <%= t('account.index.verification.in_person_instructions_html', deadline: @presenter.formatted_ipp_due_date) %>
-    </p>
-    <p>
-      <%= link_to(t('account.index.verification.show_bar_code', app_name: APP_NAME), idv_in_person_ready_to_verify_url) %>
-    </p>
-  <% end %>
 <% elsif !@presenter.active_profile_for_authn_context? %>
   <%= render AlertComponent.new(type: :warning, text_tag: 'div') do %>
     <p>
