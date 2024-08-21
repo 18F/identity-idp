@@ -1642,8 +1642,8 @@ module AnalyticsEvents
 
   # User visits IdV verify step waiting on a resolution proofing job result
   # @identity.idp.previous_event_name IdV: doc auth verify visited
-  def idv_doc_auth_verify_polling_wait_visited(**extra)
-    track_event(:idv_doc_auth_verify_polling_wait_visited, **extra)
+  def idv_doc_auth_verify_polling_wait_visited
+    track_event(:idv_doc_auth_verify_polling_wait_visited)
   end
 
   # rubocop:disable Layout/LineLength

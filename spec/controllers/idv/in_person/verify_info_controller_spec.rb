@@ -154,7 +154,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController, allowed_extra_analytics: [:*
       end
     end
 
-    context 'when the reolution proofing job result is missing' do
+    context 'when the resolution proofing job result is missing' do
       let(:async_state) do
         ProofingSessionAsyncResult.new(status: ProofingSessionAsyncResult::MISSING)
       end
