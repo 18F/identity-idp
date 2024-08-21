@@ -142,6 +142,151 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
         end
       end
 
+      context 'with an IAA with a single issuer in April 2020 and extra year_month' do
+        let(:partner_account1) { create(:partner_account) }
+        let(:iaa1_range) { DateTime.new(2020, 4, 15).utc..DateTime.new(2021, 4, 14).utc }
+
+        let(:gtc1) do
+          create(
+            :iaa_gtc,
+            gtc_number: 'gtc1234',
+            partner_account: partner_account1,
+            start_date: iaa1_range.begin,
+            end_date: iaa1_range.end,
+          )
+        end
+
+        let(:iaa1) { 'iaa1' }
+
+        let(:iaa1_sp) do
+          create(
+            :service_provider,
+            iaa: iaa1,
+            iaa_start_date: iaa1_range.begin,
+            iaa_end_date: iaa1_range.end,
+          )
+        end
+
+        let(:iaa_order1) do
+          build_iaa_order(order_number: 1, date_range: iaa1_range, iaa_gtc: gtc1)
+        end
+
+        let(:inside_iaa1) { iaa1_range.begin + 1.day }
+
+        let(:user1) { create(:user, profiles: [profile1]) }
+        let(:profile1) { build(:profile, verified_at: DateTime.new(2018, 6, 1).utc) }
+
+        let(:user2) { create(:user, profiles: [profile2]) }
+        let(:profile2) { build(:profile, verified_at: DateTime.new(2018, 6, 1).utc) }
+
+        let(:csv) { CSV.parse(report.perform(Time.zone.today), headers: true) }
+
+        let(:extra_year_month) do
+          [{
+            issuer: iaa1_sp.issuer,
+            iaa: 'gtc1234-0002',
+            iaa_end_date: iaa1_range.end,
+            iaa_start_date: iaa1_range.begin,
+            ial: :all,
+            unique_users: 2,
+            year_month: '202005',
+          }]
+        end
+
+        before do
+          iaa_order1.integrations << build_integration(
+            issuer: iaa1_sp.issuer,
+            partner_account: partner_account1,
+          )
+          iaa_order1.save
+
+          allow(Db::MonthlySpAuthCount::TotalMonthlyAuthCountsWithinIaaWindow).to receive(:call).
+            and_wrap_original do |original_method, **kwargs|
+              result = original_method.call(**kwargs)
+              extra_year_month + result
+            end
+
+          # 1 new unique user in month 1 at IAA 1 sp @ IAL 1
+          7.times do
+            create_sp_return_log(
+              user: user1,
+              issuer: iaa1_sp.issuer,
+              ial: 1,
+              returned_at: inside_iaa1,
+            )
+          end
+
+          # 2 new unique users in month 1 at IAA 1 sp @ IAL 2 with profile age 2
+          # user1 is both IAL1 and IAL2
+          [user1, user2].each do |user|
+            create_sp_return_log(
+              user: user,
+              issuer: iaa1_sp.issuer,
+              ial: 2,
+              returned_at: inside_iaa1,
+            )
+          end
+        end
+
+        fit 'checks authentication counts in ial1 + ial2 & checks partner single issuer cases' do
+          expect(csv.length).to eq(2)
+          aggregate_failures do
+            row = csv.find { |r| r['issuer'] == iaa1_sp.issuer }
+            expect(row['iaa_order_number']).to eq('gtc1234-0002')
+            expect(row['partner']).to be_nil
+            expect(row['iaa_start_date']).to eq('n/a')
+            expect(row['iaa_end_date']).to eq('n/a')
+
+            expect(row['issuer']).to eq(iaa1_sp.issuer)
+            expect(row['friendly_name']).to eq(iaa1_sp.friendly_name)
+
+            expect(row['year_month']).to eq('202005')
+            expect(row['year_month_readable']).to eq('May 2020')
+
+            expect(row['iaa_ial1_unique_users'].to_i).to eq(0)
+            expect(row['iaa_ial2_unique_users'].to_i).to eq(0)
+            expect(row['iaa_unique_users'].to_i).to eq(0)
+            expect(row['partner_ial2_unique_user_events_year1'].to_i).to eq(0)
+            expect(row['partner_ial2_unique_user_events_year2'].to_i).to eq(0)
+            expect(row['partner_ial2_unique_user_events_year3'].to_i).to eq(0)
+            expect(row['partner_ial2_unique_user_events_year4'].to_i).to eq(0)
+            expect(row['partner_ial2_unique_user_events_year5'].to_i).to eq(0)
+            expect(row['partner_ial2_unique_user_events_year_greater_than_5'].to_i).to eq(0)
+            expect(row['partner_ial2_unique_user_events_unknown'].to_i).to eq(0)
+            expect(row['partner_ial2_new_unique_user_events_year1'].to_i).to eq(0)
+            expect(row['partner_ial2_new_unique_user_events_year2'].to_i).to eq(0)
+            expect(row['partner_ial2_new_unique_user_events_year3'].to_i).to eq(0)
+            expect(row['partner_ial2_new_unique_user_events_year4'].to_i).to eq(0)
+            expect(row['partner_ial2_new_unique_user_events_year5'].to_i).to eq(0)
+            expect(row['partner_ial2_new_unique_user_events_year_greater_than_5'].to_i).to eq(0)
+            expect(row['partner_ial2_new_unique_user_events_unknown'].to_i).to eq(0)
+
+            expect(row['issuer_ial2_unique_user_events_year1'].to_i).to eq(0)
+            expect(row['issuer_ial2_unique_user_events_year2'].to_i).to eq(0)
+            expect(row['issuer_ial2_unique_user_events_year3'].to_i).to eq(0)
+            expect(row['issuer_ial2_unique_user_events_year4'].to_i).to eq(0)
+            expect(row['issuer_ial2_unique_user_events_year5'].to_i).to eq(0)
+            expect(row['issuer_ial2_unique_user_events_year_greater_than_5'].to_i).to eq(0)
+            expect(row['issuer_ial2_unique_user_events_unknown'].to_i).to eq(0)
+            expect(row['issuer_ial2_new_unique_user_events_year1'].to_i).to eq(0)
+            expect(row['issuer_ial2_new_unique_user_events_year2'].to_i).to eq(0)
+            expect(row['issuer_ial2_new_unique_user_events_year3'].to_i).to eq(0)
+            expect(row['issuer_ial2_new_unique_user_events_year4'].to_i).to eq(0)
+            expect(row['issuer_ial2_new_unique_user_events_year5'].to_i).to eq(0)
+            expect(row['issuer_ial2_new_unique_user_events_year_greater_than_5'].to_i).to eq(0)
+            expect(row['issuer_ial2_new_unique_user_events_unknown'].to_i).to eq(0)
+
+            expect(row['issuer_ial1_total_auth_count'].to_i).to eq(0)
+            expect(row['issuer_ial2_total_auth_count'].to_i).to eq(0)
+            expect(row['issuer_ial1_plus_2_total_auth_count'].to_i).to eq(0)
+
+            expect(row['issuer_ial1_unique_users'].to_i).to eq(0)
+            expect(row['issuer_ial2_unique_users'].to_i).to eq(0)
+            expect(row['issuer_unique_users'].to_i).to eq(2)
+          end
+        end
+      end
+
       context 'with an IAA with two issuers in September 2020' do
         let(:partner_account2) { create(:partner_account) }
         let(:iaa2_range) { DateTime.new(2020, 9, 1).utc..DateTime.new(2021, 8, 30).utc }

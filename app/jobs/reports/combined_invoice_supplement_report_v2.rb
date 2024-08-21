@@ -139,15 +139,13 @@ module Reports
           issuer_year_months.each do |issuer, year_months_data|
             friendly_name = ServiceProvider.find_by(issuer: issuer).friendly_name
             year_months = year_months_data.keys.sort
-
             year_months.each do |year_month|
               iaa_results = by_iaa_and_year_month[ [iaa_key, year_month] ]
               issuer_results = year_months_data[year_month]
               year_month_start = Date.strptime(year_month, '%Y%m')
               iaa_start_date = iaa_results ?
-               Date.parse(iaa_results.first&.dig(:iaa_start_date)) : 'n/a'
+                Date.parse(iaa_results.first&.dig(:iaa_start_date)) : 'n/a'
               iaa_end_date = iaa_results ? Date.parse(iaa_results.first&.dig(:iaa_end_date)) : 'n/a'
-
               partner_results = by_partner_results.find do |result|
                 result[:year_month] == year_month && result[:issuers]&.include?(issuer)
               end || {}
@@ -217,7 +215,7 @@ module Reports
     end
 
     def extract(arr, key, ial:)
-      arr.find { |elem| elem[:ial] == ial && elem[key] }&.dig(key) || 0
+      arr&.find { |elem| elem[:ial] == ial && elem[key] }&.dig(key) || 0
     end
   end
 end
