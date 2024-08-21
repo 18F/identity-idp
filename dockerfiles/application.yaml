@@ -132,7 +132,7 @@ spec:
         - target:
             kind: StatefulSet
             name: idp-pg
-          patch: |
+          patch: |-
             spec:
               volumeClaimTemplates:
                 - metadata:
@@ -150,7 +150,7 @@ spec:
         - target:
             kind: StatefulSet
             name: pivcac-pg
-          patch: |
+          patch: |-
             spec:
               volumeClaimTemplates:
                 - metadata:
@@ -168,7 +168,7 @@ spec:
         - target:
             kind: StatefulSet
             name: dashboard-pg
-          patch: |
+          patch: |-
             spec:
               volumeClaimTemplates:
                 - metadata:
@@ -186,7 +186,7 @@ spec:
         - target:
             kind: Rollout
             name: idp-rollout
-          patch: |
+          patch: |-
             spec:
               template:
                 spec:
@@ -200,7 +200,7 @@ spec:
         - target:
             kind: Deployment
             name: worker
-          patch: |
+          patch: |-
             spec:
               template:
                 spec:
@@ -214,7 +214,7 @@ spec:
         - target:
             kind: Deployment
             name: pivcac
-          patch: |
+          patch: |-
             spec:
               template:
                 spec:
@@ -228,7 +228,7 @@ spec:
         - target:
             kind: Deployment
             name: dashboard
-          patch: |
+          patch: |-
             spec:
               template:
                 spec:
@@ -255,54 +255,53 @@ spec:
             kind: Ingress
             name: idp
           patch: |-
-          # IDP Ingress
-          ---
-          apiVersion: networking.k8s.io/v1
-          kind: Ingress
-          metadata:
-            name: idp
-            labels:
-              app: idp
-            annotations:
-              alb.ingress.kubernetes.io/group.name: review-app
-          spec:
-            rules:
-              - host: {{ENVIRONMENT}}.reviewapps.identitysandbox.gov
-                http:
-                  paths:
-                    - path: /
-                      pathType: Prefix
-                      backend:
-                        service:
-                          name: idp
-                          port:
-                            name: use-annotation
+            # IDP Ingress
+            apiVersion: networking.k8s.io/v1
+            kind: Ingress
+            metadata:
+              name: idp
+              labels:
+                app: idp
+              annotations:
+                alb.ingress.kubernetes.io/group.name: review-app
+            spec:
+              rules:
+                - host: {{ENVIRONMENT}}.reviewapps.identitysandbox.gov
+                  http:
+                    paths:
+                      - path: /
+                        pathType: Prefix
+                        backend:
+                          service:
+                            name: idp
+                            port:
+                              name: use-annotation
+
         - target:
             kind: Ingress
             name: dashboard
           patch: |-
-          # DASHBOARD Ingress
-          ---
-          apiVersion: networking.k8s.io/v1
-          kind: Ingress
-          metadata:
-            name: dashboard
-            labels:
-              app: dashboard
-            annotations:
-              alb.ingress.kubernetes.io/group.name: review-app-dashboard
-          spec:
-            rules:
-              - host: {{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov
-                http:
-                  paths:
-                    - path: /
-                      pathType: Prefix
-                      backend:
-                        service:
-                          name: dashboard
-                          port:
-                            number: 3001
+            # DASHBOARD Ingress
+            apiVersion: networking.k8s.io/v1
+            kind: Ingress
+            metadata:
+              name: dashboard
+              labels:
+                app: dashboard
+              annotations:
+                alb.ingress.kubernetes.io/group.name: review-app-dashboard
+            spec:
+              rules:
+                - host: {{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov
+                  http:
+                    paths:
+                      - path: /
+                        pathType: Prefix
+                        backend:
+                          service:
+                            name: dashboard
+                            port:
+                              number: 3001
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: review-apps
