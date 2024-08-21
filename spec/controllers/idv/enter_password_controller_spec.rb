@@ -488,7 +488,7 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
               context: 'authentication',
               enrollment_id: enrollment.id,
               exception_class: 'UspsInPersonProofing::Exception::RequestEnrollException',
-              exception_message: 'Sponsor for sponsorID 5 not found',
+              exception_message: 'Sponsor for sponsorID [FILTERED] not found',
               original_exception_class: 'Faraday::BadRequestError',
               reason: 'Request exception',
             )
@@ -587,7 +587,7 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
                 context: 'authentication',
                 enrollment_id: enrollment.id,
                 exception_class: 'UspsInPersonProofing::Exception::RequestEnrollException',
-                exception_message: 'Sponsor for sponsorID 5 not found',
+                exception_message: 'Sponsor for sponsorID [FILTERED] not found',
                 original_exception_class: 'Faraday::BadRequestError',
                 reason: 'Request exception',
               )
