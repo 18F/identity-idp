@@ -215,7 +215,9 @@ FactoryBot.define do
 
     trait :with_pending_in_person_enrollment do
       fully_registered
-      profiles { [association(:profile, :in_person_verification_pending, user: instance)] }
+      profiles do
+        [association(:profile, :with_pii, :in_person_verification_pending, user: instance)]
+      end
     end
 
     trait :with_pending_gpo_profile do
