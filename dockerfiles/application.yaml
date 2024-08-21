@@ -15,15 +15,6 @@ spec:
       commonLabels:
         env: {{ENVIRONMENT}}
         branch: {{SANITIZED_BRANCH_NAME}}
-      images:
-      - name: identity-idp/idp
-        newName: 217680906704.dkr.ecr.us-west-2.amazonaws.com/identity-idp/review
-        newTag: {{IDP_CONTAINER_TAG}}
-      - name: identity-dashboard/review
-        newName: 217680906704.dkr.ecr.us-west-2.amazonaws.com/identity-dashboard/review
-        newTag: {{DASHBOARD_CONTAINER_TAG}}
-      - name: identity-pki/review
-        newTag: {{PIVCAC_CONTAINER_TAG}}
       components:
       - library/idp
       - library/dashboard
@@ -92,6 +83,7 @@ spec:
                 spec:
                   containers:
                     - name: idp
+                      image: 217680906704.dkr.ecr.us-west-2.amazonaws.com/identity-idp/review:{{IDP_CONTAINER_TAG}}
                       env:
                         - name: KUBERNETES_REVIEW_APP
                           value: "true"
@@ -133,6 +125,7 @@ spec:
                 spec:
                   containers:
                     - name: worker
+                      image: 217680906704.dkr.ecr.us-west-2.amazonaws.com/identity-idp/review:{{IDP_CONTAINER_TAG}}
                       env:
                         - name: KUBERNETES_REVIEW_APP
                           value: "true"
@@ -170,6 +163,7 @@ spec:
                 spec:
                   containers:
                     - name: pivcac
+                      image: 217680906704.dkr.ecr.us-west-2.amazonaws.com/identity-pki/review:{{PIVCAC_CONTAINER_TAG}}
                       env:
                         - name: KUBERNETES_REVIEW_APP
                           value: "true"
@@ -195,6 +189,7 @@ spec:
                 spec:
                   containers:
                     - name: dashboard
+                      image: 217680906704.dkr.ecr.us-west-2.amazonaws.com/identity-dashboard/review:{{DASHBOARD_CONTAINER_TAG}}
                       env:
                         - name: KUBERNETES_REVIEW_APP
                           value: "true"
