@@ -437,10 +437,10 @@ trigger_devops:
     #TODO put in kustomize based deploy
     # Dynamically populate review environment settings
     - sed -i "s|{{ENVIRONMENT}}|${CI_ENVIRONMENT_SLUG}|g" ${APPLICATION_MANIFEST}
-    - sed -i "s|{{IDP_CONTAINER_TAG}}|${CI_COMMIT_SHA}|g" ${APPLICATION_MANIFEST}
     - sed -i "s|{{SANITIZED_BRANCH_NAME}}|${SANITIZED_BRANCH_NAME}|g" ${APPLICATION_MANIFEST}
-    - sed -i "s|{{DASHBOARD_CONTAINER_TAG}}|${DASHBOARD_CONTAINER_TAG}|g" ${APPLICATION_MANIFEST}
-    - sed -i "s|{{PKI_IMAGE_TAG}}|${PIVCAC_CONTAINER_TAG}|g" ${APPLICATION_MANIFEST}
+    - sed -i "s|{{IDP_CONTAINER_TAG}}|${CI_COMMIT_SHA}|g" ${APPLICATION_MANIFEST}
+    - sed -i "s|{{DASHBOARD_CONTAINER_TAG}}|${DASHBOARD_IMAGE_TAG}|g" ${APPLICATION_MANIFEST}
+    - sed -i "s|{{PIVCAC_CONTAINER_TAG}}|${PKI_IMAGE_TAG}|g" ${APPLICATION_MANIFEST}
     - cat ${APPLICATION_MANIFEST}
     # Apply our ArgoCD Application
     - kubectl apply -f ${APPLICATION_MANIFEST}
