@@ -146,11 +146,11 @@ module SamlIdpAuthConcern
 
   def email_address_id
     return nil unless IdentityConfig.store.feature_select_email_to_share_enabled
-    return session[:selected_email_id] if session[:selected_email_id].present?
+    return user_session[:selected_email_id] if user_session[:selected_email_id].present?
     identity = current_user.identities.find_by(service_provider: sp_session['issuer'])
     email_id = identity&.email_address_id
     return email_id if email_id.is_a? Integer
-    return EmailContext.new(current_user).last_sign_in_email_address.id
+    EmailContext.new(current_user).last_sign_in_email_address.id
   end
 
   def identity_needs_verification?

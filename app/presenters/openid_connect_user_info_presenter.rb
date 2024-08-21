@@ -54,8 +54,9 @@ class OpenidConnectUserInfoPresenter
   end
 
   def email_from_sp_identity
-    if identity.email_address_id && find_email_address.present?
-      return @email_address.email
+    if identity.email_address_id &&
+       (email_address = EmailAddress.find_by(id: identity.email_address_id))
+      return email_address.email
     end
     email_context.last_sign_in_email_address.email
   end
