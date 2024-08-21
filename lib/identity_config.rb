@@ -164,6 +164,7 @@ module IdentityConfig
     config.add(:idv_min_age_years, type: :integer)
     config.add(:idv_send_link_attempt_window_in_minutes, type: :integer)
     config.add(:idv_send_link_max_attempts, type: :integer)
+    config.add(:idv_socure_shadow_mode_enabled, type: :boolean)
     config.add(:idv_sp_required, type: :boolean)
     config.add(:in_person_completion_survey_url, type: :string)
     config.add(:in_person_doc_auth_button_enabled, type: :boolean)
