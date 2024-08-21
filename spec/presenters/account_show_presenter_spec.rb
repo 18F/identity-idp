@@ -153,7 +153,7 @@ RSpec.describe AccountShowPresenter do
     it { is_expected.to eq(false) }
 
     context 'with user pending ipp verification' do
-      let(:user) { build(:user, :with_pending_in_person_enrollment) }
+      let(:user) { create(:user, :with_pending_in_person_enrollment) }
 
       it { is_expected.to eq(true) }
     end
@@ -232,7 +232,7 @@ RSpec.describe AccountShowPresenter do
     end
 
     context 'with user pending ipp verification' do
-      let(:user) { build(:user, :with_pending_in_person_enrollment) }
+      let(:user) { create(:user, :with_pending_in_person_enrollment) }
 
       it { is_expected.to eq(true) }
     end
@@ -245,7 +245,7 @@ RSpec.describe AccountShowPresenter do
   end
 
   describe '#formatted_ipp_due_date' do
-    let(:user) { build(:user, :with_pending_in_person_enrollment) }
+    let(:user) { create(:user, :with_pending_in_person_enrollment) }
 
     subject(:formatted_ipp_due_date) { presenter.formatted_ipp_due_date }
 
