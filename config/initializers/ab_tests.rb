@@ -71,5 +71,5 @@ module AbTests
     },
   ) do |service_provider:, session:, user:, user_session:, **|
     document_capture_session_uuid_discriminator(service_provider:, session:, user:, user_session:)
-  end
+  end.freeze
 end

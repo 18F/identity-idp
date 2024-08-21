@@ -7,7 +7,7 @@ RSpec.describe AbTests do
         {
           ACUANT_SDK: an_instance_of(AbTest),
           DOC_AUTH_VENDOR: an_instance_of(AbTest),
-
+          SOCURE: an_instance_of(AbTest),
         },
       )
     end

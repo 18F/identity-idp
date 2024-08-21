@@ -100,8 +100,8 @@ doc_auth_supported_country_codes: '["US", "GU", "VI", "AS", "MP", "PR", "USA" ,"
 doc_auth_vendor_randomize: false
 doc_auth_vendor_randomize_alternate_vendor: ''
 doc_auth_vendor_randomize_percent: 0
-doc_auth_vendor_switching_enabled: false
 doc_auth_vendor_socure_percent: 0
+doc_auth_vendor_switching_enabled: false
 doc_capture_polling_enabled: true
 doc_capture_request_valid_for_minutes: 15
 drop_off_report_config: '[{"emails":["ursula@example.com"],"issuers": ["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]}]'
