@@ -1536,6 +1536,7 @@ module AnalyticsEvents
     selfie_quality_good: nil,
     workflow: nil,
     birth_year: nil,
+    selfie_attempts: nil,
     **extra
   )
     track_event(
@@ -1581,6 +1582,7 @@ module AnalyticsEvents
       workflow:,
       birth_year:,
       issue_year:,
+      selfie_attempts:,
       **extra,
     )
   end
