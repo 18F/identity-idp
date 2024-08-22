@@ -722,6 +722,7 @@ errors.manage_authenticator.remove_only_method_error: You cannot remove your onl
 errors.manage_authenticator.unique_name_error: Name already in use. Please use a different name.
 errors.max_password_attempts_reached: You’ve entered too many incorrect passwords. You can reset your password using the “Forgot your password?” link.
 errors.messages.already_confirmed: was already confirmed, please try signing in
+errors.messages.automated_request: We’re sorry, but your computer or network may be sending automated queries. To protect our users, we can’t process your request right now.
 errors.messages.backup_code_limited: You tried too many times, please try again in %{timeout}.
 errors.messages.blank: Please fill in this field.
 errors.messages.blank_cert_element_req: We cannot detect a certificate in your request.
@@ -737,7 +738,6 @@ errors.messages.inclusion: is not included in the list
 errors.messages.invalid_calling_area: Calls to that phone number are not supported. Please try SMS if you have an SMS-capable phone.
 errors.messages.invalid_phone_number.international: Enter a phone number with the correct number of digits.
 errors.messages.invalid_phone_number.us: Enter a 10 digit phone number.
-errors.messages.invalid_recaptcha_token: We’re sorry, but your computer or network may be sending automated queries. To protect our users, we can’t process your request right now.
 errors.messages.invalid_sms_number: The phone number entered doesn’t support text messaging. Try the Phone call option.
 errors.messages.invalid_voice_number: Invalid phone number. Check that you’ve entered the correct country code or area code.
 errors.messages.missing_field: Please fill in this field.

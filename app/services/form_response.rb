@@ -39,10 +39,13 @@ class FormResponse
     end
   end
 
-  def first_error_message(key = nil)
+  def first_error_message(*keys)
     return if errors.blank?
-    key ||= errors.keys.first
-    errors[key].first
+    keys = errors.keys if keys.blank?
+    keys.each do |key|
+      return errors[key].first if errors[key].present?
+    end
+    nil
   end
 
   def ==(other)

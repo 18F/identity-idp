@@ -131,7 +131,7 @@ RSpec.describe Users::PhoneSetupController do
           )
 
           expect(response).to render_template(:index)
-          expect(flash[:error]).to eq(t('errors.messages.invalid_recaptcha_token'))
+          expect(flash[:error]).to eq(t('errors.messages.automated_request'))
         end
       end
     end
@@ -237,6 +237,46 @@ RSpec.describe Users::PhoneSetupController do
           ),
         )
         expect(subject.user_session[:context]).to eq 'confirmation'
+      end
+    end
+
+    context 'with CloudFront matched automated request header' do
+      before do
+        request.headers['CloudFront-Matched-Automated'] = 1
+      end
+
+      it 'submits form with header as invalid' do
+        sign_in(user)
+        stub_analytics
+
+        post(
+          :create,
+          params: {
+            new_phone_form: {
+              phone: '703-555-0100',
+              international_code: 'US',
+            },
+          },
+        )
+
+        expect(@analytics).to have_logged_event(
+          'Multi-Factor Authentication: phone setup',
+          success: false,
+          errors: {
+            cloudfront_matched_automated_request: [t('errors.messages.automated_request')],
+          },
+          error_details: {
+            cloudfront_matched_automated_request: { invalid: true },
+          },
+          otp_delivery_preference: 'sms',
+          area_code: '703',
+          carrier: 'Test Mobile Carrier',
+          country_code: 'US',
+          phone_type: :mobile,
+          types: [:fixed_or_mobile],
+        )
+        expect(flash[:error]).to eq(t('errors.messages.automated_request'))
+        expect(response).to render_template(:index)
       end
     end
   end

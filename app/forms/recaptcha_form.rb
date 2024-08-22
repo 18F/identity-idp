@@ -66,12 +66,12 @@ class RecaptchaForm
 
   def validate_token_exists
     return if exempt? || recaptcha_token.present?
-    errors.add(:recaptcha_token, :blank, message: t('errors.messages.invalid_recaptcha_token'))
+    errors.add(:recaptcha_token, :blank, message: t('errors.messages.automated_request'))
   end
 
   def validate_recaptcha_result
     return if @recaptcha_result.blank? || recaptcha_result_valid?(@recaptcha_result)
-    errors.add(:recaptcha_token, :invalid, message: t('errors.messages.invalid_recaptcha_token'))
+    errors.add(:recaptcha_token, :invalid, message: t('errors.messages.automated_request'))
   end
 
   def recaptcha_result

@@ -733,6 +733,7 @@ errors.manage_authenticator.remove_only_method_error: No puede eliminar su únic
 errors.manage_authenticator.unique_name_error: Ese nombre ya está en uso. Use un nombre diferente.
 errors.max_password_attempts_reached: Ingresó demasiadas contraseñas incorrectas. Puede restablecer su contraseña usando el vínculo “¿Olvidó su contraseña?”.
 errors.messages.already_confirmed: ya estaba confirmado, intente iniciar una sesión
+errors.messages.automated_request: Lo sentimos, pero es posible que tu computadora o red te estén enviando consultas automáticas. Para proteger a nuestros usuarios, no podemos procesar tu solicitud en este momento.
 errors.messages.backup_code_limited: Lo intentó demasiadas veces; vuelva a intentarlo en %{timeout}.
 errors.messages.blank: Llene este campo.
 errors.messages.blank_cert_element_req: No podemos detectar un certificado en su solicitud.
@@ -748,7 +749,6 @@ errors.messages.inclusion: no figura en la lista
 errors.messages.invalid_calling_area: No se admiten llamadas a ese número de teléfono. Intente enviar un SMS si tiene un teléfono compatible con SMS.
 errors.messages.invalid_phone_number.international: Ingrese un número de teléfono con el número correcto de dígitos.
 errors.messages.invalid_phone_number.us: Ingrese un número de teléfono de 10 dígitos.
-errors.messages.invalid_recaptcha_token: Lo sentimos, pero es posible que tu computadora o red te estén enviando consultas automáticas. Para proteger a nuestros usuarios, no podemos procesar tu solicitud en este momento.
 errors.messages.invalid_sms_number: El número de teléfono ingresado no admite mensajes de texto. Intente la opción de llamada telefónica.
 errors.messages.invalid_voice_number: Número de teléfono no válido. Verifique haber ingresado el código de país o de área correcto.
 errors.messages.missing_field: Llene este campo.

@@ -38,7 +38,11 @@ module Users
       if result.success?
         handle_create_success(@new_phone_form.phone)
       else
-        flash.now[:error] = result.first_error_message(:recaptcha_token)
+        flash.now[:error] = result.first_error_message(
+          :cloudfront_matched_automated_request,
+          :recaptcha_token,
+        )
+
         render :index
       end
     end
@@ -130,6 +134,8 @@ module Users
         :otp_make_default_number,
         :recaptcha_token,
         :recaptcha_mock_score,
+      ).merge(
+        cloudfront_matched_automated_request: request.headers['CloudFront-Matched-Automated'],
       )
     end
   end

@@ -15,6 +15,7 @@ class NewPhoneForm
   validate :validate_not_voip
   validate :validate_not_duplicate
   validate :validate_not_premium_rate
+  validate :validate_cloudfront_matched_automated_request
   validate :validate_recaptcha_token
   validate :validate_allowed_carrier
 
@@ -23,6 +24,7 @@ class NewPhoneForm
               :otp_delivery_preference,
               :otp_make_default_number,
               :setup_voice_preference,
+              :cloudfront_matched_automated_request,
               :recaptcha_token,
               :recaptcha_mock_score,
               :recaptcha_assessment_id
@@ -130,6 +132,15 @@ class NewPhoneForm
     end
   end
 
+  def validate_cloudfront_matched_automated_request
+    return if cloudfront_matched_automated_request.blank?
+    errors.add(
+      :cloudfront_matched_automated_request,
+      :invalid,
+      message: I18n.t('errors.messages.automated_request'),
+    )
+  end
+
   def validate_recaptcha_token
     return if !validate_recaptcha_token?
     _response, assessment_id = recaptcha_form.submit(recaptcha_token)
@@ -171,6 +182,7 @@ class NewPhoneForm
     @otp_make_default_number = true if default_prefs
     @recaptcha_token = params[:recaptcha_token]
     @recaptcha_mock_score = params[:recaptcha_mock_score].to_f if params.key?(:recaptcha_mock_score)
+    @cloudfront_matched_automated_request = params[:cloudfront_matched_automated_request]
   end
 
   def confirmed_phone?

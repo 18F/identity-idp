@@ -112,20 +112,21 @@ RSpec.describe FormResponse do
   end
 
   describe '#first_error_message' do
-    let(:key) { nil }
-    subject(:first_error_message) { form_response.first_error_message(*[key].compact) }
+    let(:keys) { [] }
+    let(:errors) { ActiveModel::Errors.new(build_stubbed(:user)) }
+    subject(:first_error_message) { form_response.first_error_message(*keys) }
 
     context 'with no errors' do
-      let(:errors) { {} }
-
       it { expect(first_error_message).to be_nil }
     end
 
     context 'with errors' do
-      let(:errors) { { email: ['invalid', 'too_short'], language: ['blank'] } }
+      before do
+        errors.add(:email_language, :invalid, message: 'invalid')
+      end
 
       context 'without specified key' do
-        let(:key) { nil }
+        let(:keys) { [] }
 
         it 'returns the first error of the first field' do
           expect(first_error_message).to eq('invalid')
@@ -133,11 +134,25 @@ RSpec.describe FormResponse do
       end
 
       context 'with specified key' do
-        let(:key) { :language }
+        let(:keys) { [:email_language] }
 
         it 'returns the first error of the specified field' do
-          expect(first_error_message).to eq('blank')
+          expect(first_error_message).to eq('invalid')
         end
+      end
+
+      context 'with multiple specified keys' do
+        let(:keys) { [:unmatched, :email_language, :unmatched] }
+
+        it 'returns the first error of the first matching key' do
+          expect(first_error_message).to eq('invalid')
+        end
+      end
+
+      context 'with multiple specified keys not matching any error' do
+        let(:keys) { [:unmatched, :unmatched] }
+
+        it { expect(first_error_message).to be_nil }
       end
     end
   end

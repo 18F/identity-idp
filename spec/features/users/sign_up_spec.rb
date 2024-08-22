@@ -179,7 +179,7 @@ RSpec.feature 'Sign Up' do
     fill_in t('components.captcha_submit_button.mock_score_label'), with: '0.5'
     click_send_one_time_code
     expect(page).to have_current_path(phone_setup_path, wait: 5)
-    expect(page).to have_content(t('errors.messages.invalid_recaptcha_token'))
+    expect(page).to have_content(t('errors.messages.automated_request'))
   end
 
   context 'with js', js: true do
