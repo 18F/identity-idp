@@ -48,6 +48,13 @@ class SocureShadowModeProofingJob < ApplicationJob
       resolution_result: proofing_result.to_h,
       socure_result: socure_result.to_h,
       user_id: user.uuid,
+      pii_like_keypaths: [
+        [:errors, :ssn],
+        [:resolution_result, :context, :stages, :resolution, :errors, :ssn],
+        [:resolution_result, :context, :stages, :residential_address, :errors, :ssn],
+        [:resolution_result, :context, :stages, :threatmetrix, :response_body, :first_name],
+        [:resolution_result, :context, :stages, :state_id, :state_id_jurisdiction],
+      ],
     )
   end
 
