@@ -15,258 +15,256 @@ spec:
       commonLabels:
         env: {{ENVIRONMENT}}
         branch: {{SANITIZED_BRANCH_NAME}}
+      # ArgoCD does not support patchesStrategicMerge
       patches:
         # Patch for IDP StatefulSet
         - target:
             kind: StatefulSet
             name: idp-pg
           patch: |-
-            spec:
-              volumeClaimTemplates:
-              - metadata:
-                  name: {{ENVIRONMENT}}-idp-data
-        #       template:
-        #         spec:
-        #           containers:
-        #             - name: postgres
-        #               volumeMounts:
-        #                 - name: {{ENVIRONMENT}}-idp-data
-        #                   mountPath: /var/lib/postgresql/data
-        #                   subPath: postgres
-        # # Patch for PIVCAC StatefulSet
-        # - target:
-        #     kind: StatefulSet
-        #     name: pivcac-pg
-        #   patch: |-
-        #     spec:
-        #       volumeClaimTemplates:
-        #         - metadata:
-        #             name: {{ENVIRONMENT}}-pivcac-data
-        #       template:
-        #         spec:
-        #           containers:
-        #             - name: postgres
-        #               volumeMounts:
-        #                 - name: {{ENVIRONMENT}}-pivcac-data
-        #                   mountPath: /var/lib/postgresql/data
-        #                   subPath: postgres
-        # # Patch for Dashboard StatefulSet
-        # - target:
-        #     kind: StatefulSet
-        #     name: dashboard-pg
-        #   patch: |-
-        #     spec:
-        #       volumeClaimTemplates:
-        #         - metadata:
-        #             name: {{ENVIRONMENT}}-dashboard-data
-        #       template:
-        #         spec:
-        #           containers:
-        #             - name: postgres
-        #               volumeMounts:
-        #                 - name: {{ENVIRONMENT}}-dashboard-data
-        #                   mountPath: /var/lib/postgresql/data
-        #                   subPath: postgres
-        # # Patch application environments for IDP
-        # - target:
-        #     kind: Rollout
-        #     name: idp-rollout
-        #   patch: |-
-        #     spec:
-        #       template:
-        #         spec:
-        #           containers:
-        #             - name: idp
-        #               image: 217680906704.dkr.ecr.us-west-2.amazonaws.com/identity-idp/review:{{IDP_CONTAINER_TAG}}
-        #               env:
-        #                 - name: KUBERNETES_REVIEW_APP
-        #                   value: "true"
-        #                 - name: POSTGRES_SSLMODE
-        #                   value: "prefer"
-        #                 - name: POSTGRES_NAME
-        #                   value: "idp"
-        #                 - name: POSTGRES_HOST
-        #                   value: "{{ENVIRONMENT}}-idp-pg.review-apps"
-        #                 - name: POSTGRES_WORKER_NAME
-        #                   value: "idp-worker-jobs"
-        #                 - name: POSTGRES_WORKER_HOST
-        #                   value: "{{ENVIRONMENT}}-idp-pg.review-apps"
-        #                 - name: ASSET_HOST
-        #                   value: "https://{{ENVIRONMENT}}.reviewapps.identitysandbox.gov"
-        #                 - name: DASHBOARD_URL
-        #                   value: "https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov"
-        #                 - name: DOMAIN_NAME
-        #                   value: "{{ENVIRONMENT}}.reviewapps.identitysandbox.gov"
-        #                 - name: LOGIN_ENV
-        #                   value: "{{ENVIRONMENT}}"
-        #                 - name: LOGIN_HOST_ROLE
-        #                   value: "idp"
-        #                 - name: LOGIN_SKIP_REMOTE_CONFIG
-        #                   value: "true"
-        #                 - name: PIV_CAC_SERVICE_URL
-        #                   value: "https://{{ENVIRONMENT}}.pivcac.reviewapps.identitysandbox.gov/"
-        #                 - name: PIV_CAC_VERIFY_TOKEN_URL
-        #                   value: "https://{{ENVIRONMENT}}.pivcac.reviewapps.identitysandbox.gov/"
-        #               volumeMounts: [] # Using environment
-        #           volumes: []
-        # # Patch application environments for Worker
-        # - target:
-        #     kind: Deployment
-        #     name: worker
-        #   patch: |-
-        #     spec:
-        #       template:
-        #         spec:
-        #           containers:
-        #             - name: worker
-        #               image: 217680906704.dkr.ecr.us-west-2.amazonaws.com/identity-idp/review:{{IDP_CONTAINER_TAG}}
-        #               env:
-        #                 - name: KUBERNETES_REVIEW_APP
-        #                   value: "true"
-        #                 - name: POSTGRES_SSLMODE
-        #                   value: "prefer"
-        #                 - name: POSTGRES_NAME
-        #                   value: "idp"
-        #                 - name: POSTGRES_HOST
-        #                   value: "{{ENVIRONMENT}}-idp-pg.review-apps"
-        #                 - name: POSTGRES_WORKER_NAME
-        #                   value: "idp-worker-jobs"
-        #                 - name: POSTGRES_WORKER_HOST
-        #                   value: "{{ENVIRONMENT}}-idp-pg.review-apps"
-        #                 - name: LOGIN_ENV
-        #                   value: "{{ENVIRONMENT}}"
-        #                 - name: LOGIN_HOST_ROLE
-        #                   value: "worker"
-        #                 - name: LOGIN_SKIP_REMOTE_CONFIG
-        #                   value: "true"
-        #                 - name: PIV_CAC_SERVICE_URL
-        #                   value: "https://{{ENVIRONMENT}}.pivcac.reviewapps.identitysandbox.gov/"
-        #                 - name: PIV_CAC_VERIFY_TOKEN_URL
-        #                   value: "https://{{ENVIRONMENT}}.pivcac.reviewapps.identitysandbox.gov/"
-        #                 - name: DOMAIN_NAME
-        #                   value: "{{ENVIRONMENT}}.reviewapps.identitysandbox.gov"
-        #               volumeMounts: [] # Using environment
-        #           volumes: []
-        # # Patch application environments for PIVCAC
-        # - target:
-        #     kind: Deployment
-        #     name: pivcac
-        #   patch: |-
-        #     spec:
-        #       template:
-        #         spec:
-        #           containers:
-        #             - name: pivcac
-        #               image: 217680906704.dkr.ecr.us-west-2.amazonaws.com/identity-pki/review:{{PIVCAC_CONTAINER_TAG}}
-        #               env:
-        #                 - name: KUBERNETES_REVIEW_APP
-        #                   value: "true"
-        #                 - name: CLIENT_CERT_S3_BUCKET
-        #                   value: "login-gov-pivcac-public-cert-reviewapps.894947205914-us-west-2"
-        #                 - name: POSTGRES_NAME
-        #                   value: "identity_pki_production"
-        #                 - name: POSTGRES_HOST
-        #                   value: "{{ENVIRONMENT}}-pivcac-pg.review-apps"
-        #                 - name: IDP_HOST
-        #                   value: "{{ENVIRONMENT}}.reviewapps.identitysandbox.gov"
-        #                 - name: DOMAIN_NAME
-        #                   value: "{{ENVIRONMENT}}.pivcac.reviewapps.identitysandbox.gov"
-        #               volumeMounts: [] # Using environment
-        #           volumes: []
-        # # Patch application environments for Dashboard
-        # - target:
-        #     kind: Deployment
-        #     name: dashboard
-        #   patch: |-
-        #     spec:
-        #       template:
-        #         spec:
-        #           containers:
-        #             - name: dashboard
-        #               image: 217680906704.dkr.ecr.us-west-2.amazonaws.com/identity-dashboard/review:{{DASHBOARD_CONTAINER_TAG}}
-        #               env:
-        #                 - name: KUBERNETES_REVIEW_APP
-        #                   value: "true"
-        #                 - name: POSTGRES_NAME
-        #                   value: "dashboard"
-        #                 - name: POSTGRES_HOST
-        #                   value: "{{ENVIRONMENT}}-dashboard-pg.review-apps"
-        #                 - name: POSTGRES_SSLMODE
-        #                   value: "prefer"
-        #                 - name: NEW_RELIC_ENABLED
-        #                   value: "false"
-        #                 - name: SAML_SP_ISSUER
-        #                   value: "https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov"
-        #                 - name: IDP_URL
-        #                   value: "https://{{ENVIRONMENT}}.reviewapps.identitysandbox.gov"
-        #                 - name: IDP_SP_URL
-        #                   value: "https://{{ENVIRONMENT}}.reviewapps.identitysandbox.gov"
-        #                 - name: POST_LOGOUT_URL
-        #                   value: "https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov"
-        #                 - name: DOMAIN_NAME
-        #                   value: "https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov"
-        #               volumeMounts: [] # Using environment
-        #           volumes: []
-        # # Patch rollout canary metrics
-        # - target:
-        #     kind: Rollout
-        #     name: idp-rollout
-        #   patch: |-
-        #     - op: replace
-        #       path: /spec/strategy/canary/analysis/args/0/value
-        #       value: {{ENVIRONMENT}}-idp_reviewapps_svc_3000
-        #     - op: replace
-        #       path: /spec/strategy/canary/steps/2/analysis/args/0/value
-        #       value: {{ENVIRONMENT}}-idp_reviewapps_svc_3000
-        # # Patch ingress names
-        # - target:
-        #     kind: Ingress
-        #     name: idp
-        #   patch: |-
-        #     apiVersion: networking.k8s.io/v1
-        #     kind: Ingress
-        #     metadata:
-        #       name: idp
-        #       labels:
-        #         app: idp
-        #       annotations:
-        #         alb.ingress.kubernetes.io/group.name: review-app
-        #     spec:
-        #       rules:
-        #         - host: {{ENVIRONMENT}}.reviewapps.identitysandbox.gov
-        #           http:
-        #             paths:
-        #               - path: /
-        #                 pathType: Prefix
-        #                 backend:
-        #                   service:
-        #                     name: idp
-        #                     port:
-        #                       name: use-annotation
-        # - target:
-        #     kind: Ingress
-        #     name: dashboard
-        #   patch: |-
-        #     apiVersion: networking.k8s.io/v1
-        #     kind: Ingress
-        #     metadata:
-        #       name: dashboard
-        #       labels:
-        #         app: dashboard
-        #       annotations:
-        #         alb.ingress.kubernetes.io/group.name: review-app-dashboard
-        #     spec:
-        #       rules:
-        #         - host: {{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov
-        #           http:
-        #             paths:
-        #               - path: /
-        #                 pathType: Prefix
-        #                 backend:
-        #                   service:
-        #                     name: dashboard
-        #                     port:
-        #                       number: 3001
+            - op: replace
+              path: /spec/volumeClaimTemplates/0/metadata/name
+              value: {{ENVIRONMENT}}-idp-data
+            - op: replace
+              path: /spec/template/spec/containers/0/volumeMounts/0/name
+              value: {{ENVIRONMENT}}-idp-data
+            - op: replace
+              path: /spec/template/spec/containers/0/volumeMounts/0/mountPath
+              value: /var/lib/postgresql/data
+            - op: replace
+              path: /spec/template/spec/containers/0/volumeMounts/0/subPath
+              value: postgres
+        # Patch for PIVCAC StatefulSet
+        - target:
+            kind: StatefulSet
+            name: pivcac-pg
+          patch: |-
+            - op: replace
+              path: /spec/volumeClaimTemplates/0/metadata/name
+              value: {{ENVIRONMENT}}-pivcac-data
+            - op: replace
+              path: /spec/template/spec/containers/0/volumeMounts/0/name
+              value: {{ENVIRONMENT}}-pivcac-data
+            - op: replace
+              path: /spec/template/spec/containers/0/volumeMounts/0/mountPath
+              value: /var/lib/postgresql/data
+            - op: replace
+              path: /spec/template/spec/containers/0/volumeMounts/0/subPath
+              value: postgres
+        # Patch for Dashboard StatefulSet
+        - target:
+            kind: StatefulSet
+            name: dashboard-pg
+          patch: |-
+            - op: replace
+              path: /spec/volumeClaimTemplates/0/metadata/name
+              value: {{ENVIRONMENT}}-dashboard-data
+            - op: replace
+              path: /spec/template/spec/containers/0/volumeMounts/0/name
+              value: {{ENVIRONMENT}}-dashboard-data
+            - op: replace
+              path: /spec/template/spec/containers/0/volumeMounts/0/mountPath
+              value: /var/lib/postgresql/data
+            - op: replace
+              path: /spec/template/spec/containers/0/volumeMounts/0/subPath
+              value: postgres
+        # Patch application environments for IDP
+        - target:
+            kind: Rollout
+            name: idp-rollout
+          patch: |-
+            - op: replace
+              path: /spec/template/spec/containers/0/image
+              value: {{ECR_REGISTRY}}/identity-idp/review:{{IDP_CONTAINER_TAG}}
+            - op: add
+              path: /spec/template/spec/containers/0/env/0
+              value: {name: "KUBERNETES_REVIEW_APP", value: "true"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/1
+              value: {name: "POSTGRES_SSLMODE", value: "prefer"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/2
+              value: {name: "POSTGRES_NAME", value: "idp"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/3
+              value: {name: "POSTGRES_HOST", value: "{{ENVIRONMENT}}-idp-pg.review-apps"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/4
+              value: {name: "POSTGRES_WORKER_NAME", value: "idp-worker-jobs"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/5
+              value: {name: "POSTGRES_WORKER_HOST", value: "{{ENVIRONMENT}}-idp-pg.review-apps"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/6
+              value: {name: "ASSET_HOST", value: "https://{{ENVIRONMENT}}.reviewapps.identitysandbox.gov"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/7
+              value: {name: "DASHBOARD_URL", value: "https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/8
+              value: {name: "DOMAIN_NAME", value: "{{ENVIRONMENT}}.reviewapps.identitysandbox.gov"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/9
+              value: {name: "LOGIN_ENV", value: "{{ENVIRONMENT}}"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/10
+              value: {name: "LOGIN_HOST_ROLE", value: "idp"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/11
+              value: {name: "LOGIN_SKIP_REMOTE_CONFIG", value: "true"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/12
+              value: {name: "PIV_CAC_SERVICE_URL", value: "https://{{ENVIRONMENT}}.pivcac.reviewapps.identitysandbox.gov/"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/13
+              value: {name: "PIV_CAC_VERIFY_TOKEN_URL", value: "https://{{ENVIRONMENT}}.pivcac.reviewapps.identitysandbox.gov/"}
+        # Patch application environments for Worker
+        - target:
+            kind: Deployment
+            name: worker
+          patch: |-
+            - op: replace
+              path: /spec/template/spec/containers/0/image
+              value: {{ECR_REGISTRY}}/identity-idp/review:{{IDP_CONTAINER_TAG}}
+            - op: add
+              path: /spec/template/spec/containers/0/env/0
+              value: {name: "KUBERNETES_REVIEW_APP", value: "true"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/1
+              value: {name: "POSTGRES_SSLMODE", value: "prefer"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/2
+              value: {name: "POSTGRES_NAME", value: "idp"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/3
+              value: {name: "POSTGRES_HOST", value: "{{ENVIRONMENT}}-idp-pg.review-apps"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/4
+              value: {name: "POSTGRES_WORKER_NAME", value: "idp-worker-jobs"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/5
+              value: {name: "POSTGRES_WORKER_HOST", value: "{{ENVIRONMENT}}-idp-pg.review-apps"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/6
+              value: {name: "LOGIN_ENV", value: "{{ENVIRONMENT}}"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/7
+              value: {name: "LOGIN_HOST_ROLE", value: "worker"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/8
+              value: {name: "LOGIN_SKIP_REMOTE_CONFIG", value: "true"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/9
+              value: {name: "PIV_CAC_SERVICE_URL", value: "https://{{ENVIRONMENT}}.pivcac.reviewapps.identitysandbox.gov/"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/10
+              value: {name: "PIV_CAC_VERIFY_TOKEN_URL", value: "https://{{ENVIRONMENT}}.pivcac.reviewapps.identitysandbox.gov/"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/11
+              value: {name: "DOMAIN_NAME", value: "{{ENVIRONMENT}}.reviewapps.identitysandbox.gov"}
+        # Patch application environments for PIVCAC
+        - target:
+            kind: Deployment
+            name: pivcac
+          patch: |-
+            - op: replace
+              path: /spec/template/spec/containers/0/image
+              value: {{ECR_REGISTRY}}/identity-pki/review:{{PIVCAC_CONTAINER_TAG}}
+            - op: add
+              path: /spec/template/spec/containers/0/env/0
+              value: {name: "KUBERNETES_REVIEW_APP", value: "true"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/1
+              value: {name: "CLIENT_CERT_S3_BUCKET", value: "login-gov-pivcac-public-cert-reviewapps.894947205914-us-west-2"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/2
+              value: {name: "POSTGRES_NAME", value: "identity_pki_production"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/3
+              value: {name: "POSTGRES_HOST", value: "{{ENVIRONMENT}}-pivcac-pg.review-apps"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/4
+              value: {name: "IDP_HOST", value: "{{ENVIRONMENT}}.reviewapps.identitysandbox.gov"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/5
+              value: {name: "DOMAIN_NAME", value: "{{ENVIRONMENT}}.pivcac.reviewapps.identitysandbox.gov"}
+        # Patch application environments for Dashboard
+        - target:
+            kind: Deployment
+            name: dashboard
+          patch: |-
+            - op: replace
+              path: /spec/template/spec/containers/0/image
+              value: {{ECR_REGISTRY}}/identity-dashboard/review:{{DASHBOARD_CONTAINER_TAG}}
+            - op: add
+              path: /spec/template/spec/containers/0/env/0
+              value: {name: "KUBERNETES_REVIEW_APP", value: "true"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/1
+              value: {name: "POSTGRES_NAME", value: "dashboard"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/2
+              value: {name: "POSTGRES_HOST", value: "{{ENVIRONMENT}}-dashboard-pg.review-apps"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/3
+              value: {name: "POSTGRES_SSLMODE", value: "prefer"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/4
+              value: {name: "NEW_RELIC_ENABLED", value: "false"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/5
+              value: {name: "SAML_SP_ISSUER", value: "https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/6
+              value: {name: "IDP_URL", value: "https://{{ENVIRONMENT}}.reviewapps.identitysandbox.gov"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/7
+              value: {name: "IDP_SP_URL", value: "https://{{ENVIRONMENT}}.reviewapps.identitysandbox.gov"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/8
+              value: {name: "POST_LOGOUT_URL", value: "https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov"}
+            - op: add
+              path: /spec/template/spec/containers/0/env/9
+              value: {name: "DOMAIN_NAME", value: "https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov"}
+        # Patch rollout canary metrics
+        - target:
+            kind: Rollout
+            name: idp-rollout
+          patch: |-
+            - op: replace
+              path: /spec/strategy/canary/analysis/args/0/value
+              value: {{ENVIRONMENT}}-idp_reviewapps_svc_3000
+            - op: replace
+              path: /spec/strategy/canary/steps/2/analysis/args/0/value
+              value: {{ENVIRONMENT}}-idp_reviewapps_svc_3000
+        # Patch ingress names
+        - target:
+            kind: Ingress
+            name: idp
+          patch: |-
+            - op: replace
+              path: /metadata/annotations/alb.ingress.kubernetes.io~1group.name
+              value: review-app
+            - op: replace
+              path: /spec/rules/0/host
+              value: {{ENVIRONMENT}}.reviewapps.identitysandbox.gov
+            - op: replace
+              path: /spec/rules/0/http/paths/0/backend/service/name
+              value: {{ENVIRONMENT}}-idp
+        - target:
+            kind: Ingress
+            name: dashboard
+          patch: |-
+            - op: replace
+              path: /metadata/annotations/alb.ingress.kubernetes.io~1group.name
+              value: review-app-dashboard
+            - op: replace
+              path: /spec/rules/0/host
+              value: {{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov
+            - op: replace
+              path: /spec/rules/0/http/paths/0/backend/service/name
+              value: {{ENVIRONMENT}}-dashboard
+            
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: review-apps

@@ -441,6 +441,7 @@ trigger_devops:
     - sed -i "s|{{IDP_CONTAINER_TAG}}|${CI_COMMIT_SHA}|g" ${APPLICATION_MANIFEST}
     - sed -i "s|{{DASHBOARD_CONTAINER_TAG}}|${DASHBOARD_IMAGE_TAG}|g" ${APPLICATION_MANIFEST}
     - sed -i "s|{{PIVCAC_CONTAINER_TAG}}|${PKI_IMAGE_TAG}|g" ${APPLICATION_MANIFEST}
+    - sed -i "s|{{ECR_REGISTRY}}|${ECR_REGISTRY}|g" ${APPLICATION_MANIFEST}
     - cat ${APPLICATION_MANIFEST}
     # Apply our ArgoCD Application
     - kubectl apply -f ${APPLICATION_MANIFEST} -n argocd
