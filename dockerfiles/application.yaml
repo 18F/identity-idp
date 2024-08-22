@@ -210,8 +210,6 @@ spec:
             - op: replace
               path: /spec/template/spec/volumes/0/configMap/name
               value: {{ENVIRONMENT}}-idp-application-yml
-            - op: remove
-              path: /spec/template/spec/containers/0/env
             - op: replace
               path: /spec/template/spec/containers/0/envFrom/0/configMapRef/name
               value: {{ENVIRONMENT}}-idp-config
@@ -222,8 +220,6 @@ spec:
             - op: replace
               path: /spec/template/spec/volumes/0/configMap/name
               value: {{ENVIRONMENT}}-idp-application-yml
-            - op: remove
-              path: /spec/template/spec/containers/0/env
             - op: replace
               path: /spec/template/spec/containers/0/envFrom/0/configMapRef/name
               value: {{ENVIRONMENT}}-idp-config
@@ -234,8 +230,6 @@ spec:
             - op: replace
               path: /spec/template/spec/volumes/0/configMap/name
               value: {{ENVIRONMENT}}-idp-application-yml
-            - op: remove
-              path: /spec/template/spec/containers/0/env
             - op: replace
               path: /spec/template/spec/containers/0/envFrom/0/configMapRef/name
               value: {{ENVIRONMENT}}-idp-config
@@ -247,8 +241,6 @@ spec:
             - op: replace
               path: /spec/template/spec/volumes/0/configMap/name
               value: {{ENVIRONMENT}}-idp-application-yml
-            - op: remove
-              path: /spec/template/spec/containers/0/env
             - op: replace
               path: /spec/template/spec/containers/0/envFrom/0/configMapRef/name
               value: {{ENVIRONMENT}}-idp-config
@@ -259,8 +251,6 @@ spec:
             - op: replace
               path: /spec/template/spec/volumes/0/configMap/name
               value: {{ENVIRONMENT}}-idp-application-yml
-            - op: remove
-              path: /spec/template/spec/containers/0/env
             - op: replace
               path: /spec/template/spec/containers/0/envFrom/0/configMapRef/name
               value: {{ENVIRONMENT}}-idp-config
@@ -271,8 +261,6 @@ spec:
             - op: replace
               path: /spec/template/spec/volumes/0/configMap/name
               value: {{ENVIRONMENT}}-idp-application-yml
-            - op: remove
-              path: /spec/template/spec/containers/0/env
             - op: replace
               path: /spec/template/spec/containers/0/envFrom/0/configMapRef/name
               value: {{ENVIRONMENT}}-idp-config
@@ -284,8 +272,6 @@ spec:
             - op: replace
               path: /spec/template/spec/volumes/0/configMap/name
               value: {{ENVIRONMENT}}-dashboard-application-yml
-            - op: remove
-              path: /spec/template/spec/containers/0/env
             - op: replace
               path: /spec/template/spec/containers/0/envFrom/0/configMapRef/name
               value: {{ENVIRONMENT}}-dashboard-config
@@ -296,8 +282,6 @@ spec:
             - op: replace
               path: /spec/template/spec/volumes/0/configMap/name
               value: {{ENVIRONMENT}}-dashboard-application-yml
-            - op: remove
-              path: /spec/template/spec/containers/0/env
             - op: replace
               path: /spec/template/spec/containers/0/envFrom/0/configMapRef/name
               value: {{ENVIRONMENT}}-dashboard-config
@@ -308,8 +292,6 @@ spec:
             - op: replace
               path: /spec/template/spec/volumes/0/configMap/name
               value: {{ENVIRONMENT}}-dashboard-application-yml
-            - op: remove
-              path: /spec/template/spec/containers/0/env
             - op: replace
               path: /spec/template/spec/containers/0/envFrom/0/configMapRef/name
               value: {{ENVIRONMENT}}-dashboard-config
