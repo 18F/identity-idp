@@ -802,22 +802,22 @@ RSpec.describe AttributeAsserter do
           allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
             and_return(%w[email phone first_name])
           create(:email_address, user:, email: 'email@example.com')
-  
+
           ident = user.identities.last
           ident.email_address_id = user.email_addresses.first.id
           ident.save
           subject.build
-  
+
           user.email_addresses.first.delete
-  
+
           subject.build
         end
-  
+
         it 'defers to user alternate email' do
           expect(get_asserted_attribute(user, :email)).
             to eq 'email@example.com'
         end
-      end  
+      end
 
       context 'with a nil email id' do
         let(:subject) do
@@ -834,13 +834,13 @@ RSpec.describe AttributeAsserter do
           user.identities << identity
           allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
             and_return(%w[email phone first_name])
-  
+
           ident = user.identities.last
           ident.email_address_id = nil
           ident.save
           subject.build
         end
-  
+
         it 'defers to user alternate email' do
           expect(get_asserted_attribute(user, :email)).
             to eq user.email_addresses.last.email
