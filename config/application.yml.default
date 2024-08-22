@@ -431,7 +431,7 @@ development:
   show_unsupported_passkey_platform_authentication_setup: true
   sign_in_recaptcha_score_threshold: 0.3
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost"]'
-  socure_idplus_base_url: 'https://sandbox.socure.us/api/3.0/EmailAuthScore'
+  socure_idplus_base_url: 'https://sandbox.socure.us'
   state_tracking_enabled: true
   telephony_adapter: test
   use_dashboard_service_providers: true
