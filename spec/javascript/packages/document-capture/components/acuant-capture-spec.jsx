@@ -1370,7 +1370,7 @@ describe('document-capture/components/acuant-capture', () => {
       captureAttempts: 1,
     });
     expect(trackEvent).to.have.been.calledWith('IdV: test image clicked', {
-      clickSource: 'upload',
+      clickSource: 'button',
       isDrop: false,
       liveness_checking_required: false,
       captureAttempts: 1,
