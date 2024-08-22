@@ -140,6 +140,7 @@ RSpec.describe SocureShadowModeProofingJob do
             transaction_id: 'a1234b56-e789-0123-4fga-56b7c890d123',
             vendor_name: 'socure_kyc',
             vendor_workflow: nil,
+            verified_attributes: %i[address first_name last_name phone ssn dob].to_set,
           },
         )
       end

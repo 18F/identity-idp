@@ -70,7 +70,8 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
       can_pass_with_additional_verification: false,
       attributes_requiring_additional_verification: [],
       vendor_name: 'ResolutionMock',
-      vendor_workflow: nil }
+      vendor_workflow: nil,
+      verified_attributes: nil }
   end
 
   let(:base_proofing_results) do
@@ -94,7 +95,8 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
                                  timed_out: false,
                                  transaction_id: '',
                                  vendor_name: 'ResidentialAddressNotRequired',
-                                 vendor_workflow: nil },
+                                 vendor_workflow: nil,
+                                 verified_attributes: nil },
           state_id: state_id_resolution,
           threatmetrix: threatmetrix_response,
         },
@@ -123,7 +125,8 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
                                  can_pass_with_additional_verification: false,
                                  attributes_requiring_additional_verification: [],
                                  vendor_name: 'ResolutionMock',
-                                 vendor_workflow: nil },
+                                 vendor_workflow: nil,
+                                 verified_attributes: nil },
           state_id: state_id_resolution,
           threatmetrix: threatmetrix_response,
         },
