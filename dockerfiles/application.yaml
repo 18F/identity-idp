@@ -9,18 +9,12 @@ spec:
   source:
     repoURL: 'git@gitlab.login.gov:lg-public/identity-eks-control.git'
     targetRevision: sshelton/update-reviewapp
-    path: .
+    path: cluster-reviewapp/envs/reviewapps
     kustomize:
       namePrefix: "{{ENVIRONMENT}}-"
       commonLabels:
         env: {{ENVIRONMENT}}
         branch: {{SANITIZED_BRANCH_NAME}}
-      components:
-      - library/idp
-      - library/dashboard
-      - cluster-reviewapp/env/idp/postgres.yml
-      - cluster-reviewapp/env/dashboard/postgres.yml
-      - cluster-reviewapp/env/dashboard/postgres.yml
       patches:
         # Patch for IDP StatefulSet
         - target:
