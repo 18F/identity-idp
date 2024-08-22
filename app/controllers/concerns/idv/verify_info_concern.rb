@@ -135,6 +135,7 @@ module Idv
       end
 
       if current_async_state.in_progress?
+        analytics.idv_doc_auth_verify_polling_wait_visited
         render 'shared/wait'
         return
       end
@@ -142,6 +143,7 @@ module Idv
       return if confirm_not_rate_limited_after_doc_auth
 
       if current_async_state.none?
+        analytics.idv_doc_auth_verify_visited(**analytics_arguments)
         render :show
       elsif current_async_state.missing?
         analytics.idv_proofing_resolution_result_missing

@@ -1640,6 +1640,12 @@ module AnalyticsEvents
     )
   end
 
+  # User visits IdV verify step waiting on a resolution proofing job result
+  # @identity.idp.previous_event_name IdV: doc auth verify visited
+  def idv_doc_auth_verify_polling_wait_visited
+    track_event(:idv_doc_auth_verify_polling_wait_visited)
+  end
+
   # rubocop:disable Layout/LineLength
   # @param ab_tests [Hash] Object that holds A/B test data (legacy A/B tests may include attributes outside the scope of this object)
   # @param acuant_sdk_upgrade_ab_test_bucket [String] A/B test bucket for Acuant document capture SDK upgrades
