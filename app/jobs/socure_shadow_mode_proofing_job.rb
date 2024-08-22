@@ -45,7 +45,7 @@ class SocureShadowModeProofingJob < ApplicationJob
     socure_result = proofer.proof(applicant)
 
     analytics.idv_socure_shadow_mode_proofing_result(
-      resolution_result: proofing_result.to_h,
+      resolution_result: format_proofing_result_for_logs(proofing_result),
       socure_result: socure_result.to_h,
       user_id: user.uuid,
       pii_like_keypaths: [
@@ -68,6 +68,15 @@ class SocureShadowModeProofingJob < ApplicationJob
       sp: service_provider_issuer,
       session: {},
     )
+  end
+
+  def format_proofing_result_for_logs(proofing_result)
+    proofing_result.to_h.then do |hash|
+      hash[:context][:stages][:threatmetrix].delete(:response_body)
+      hash
+    rescue
+      hash
+    end
   end
 
   def load_proofing_result(document_capture_session_result_id:)
