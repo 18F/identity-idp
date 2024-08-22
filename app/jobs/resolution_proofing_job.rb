@@ -29,6 +29,7 @@ class ResolutionProofingJob < ApplicationJob
     proofing_components: nil
   )
     timer = JobHelpers::Timer.new
+    sleep(rand(5) + 2)
 
     user = User.find_by(id: user_id)
 
