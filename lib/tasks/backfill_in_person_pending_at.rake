@@ -80,12 +80,12 @@ namespace :profiles do
   # Usage:
   #
   # Print pending updates
-  # bundle exec rake profiles:backfill_expired_in_person_verification_pending_at
+  # bundle exec rake profiles:backfill_expired_pending_in_person_verification
   #
   # Commit updates
-  # bundle exec rake profiles:backfill_expired_in_person_verification_pending_at UPDATE_PROFILES=true
+  # bundle exec rake profiles:backfill_expired_pending_in_person_verification UPDATE_PROFILES=true
   #
-  task backfill_expired_in_person_verification_pending_at: :environment do |_task, _args|
+  task backfill_expired_pending_in_person_verification: :environment do |_task, _args|
     ActiveRecord::Base.connection.execute('SET statement_timeout = 60000')
 
     update_profiles = ENV['UPDATE_PROFILES'] == 'true'
@@ -114,9 +114,9 @@ namespace :profiles do
   # Rollback the above:
   #
   # export BACKFILL_OUTPUT='<backfill_output>'
-  # bundle exec rake profiles:rollback_backfill_expired_in_person_verification_pending_at
+  # bundle exec rake profiles:rollback_backfill_expired_pending_in_person_verification
   #
-  task rollback_backfill_expired_in_person_verification_pending_at: :environment do |_task, _args|
+  task rollback_backfill_expired_pending_in_person_verification: :environment do |_task, _args|
     ActiveRecord::Base.connection.execute('SET statement_timeout = 60000')
 
     profile_data = ENV['BACKFILL_OUTPUT'].split("\n").map do |profile_row|
