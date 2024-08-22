@@ -29,6 +29,7 @@ class ResolutionProofingJob < ApplicationJob
     should_proof_state_id: false # rubocop:disable Lint/UnusedMethodArgument
   )
     timer = JobHelpers::Timer.new
+    sleep(rand(5) + 2)
 
     raise_stale_job! if stale_job?(enqueued_at)
 

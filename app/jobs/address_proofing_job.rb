@@ -10,6 +10,7 @@ class AddressProofingJob < ApplicationJob
   # rubocop:disable Lint/UnusedMethodArgument
   def perform(issuer:, result_id:, encrypted_arguments:, trace_id:, user_id: nil)
     timer = JobHelpers::Timer.new
+    sleep(rand(5) + 2)
 
     raise_stale_job! if stale_job?(enqueued_at)
 
