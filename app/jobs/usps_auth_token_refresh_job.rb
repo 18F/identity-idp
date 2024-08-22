@@ -4,6 +4,7 @@ class UspsAuthTokenRefreshJob < ApplicationJob
   queue_as :default
 
   def perform
+    sleep(rand(5) + 2)
     analytics.idv_usps_auth_token_refresh_job_started
 
     usps_proofer.retrieve_token!
