@@ -97,6 +97,14 @@ module UspsIppHelper
     )
   end
 
+  def stub_request_enroll_bad_sponsor_id_request_response
+    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant}).to_return(
+      status: 400,
+      body: UspsInPersonProofing::Mock::Fixtures.request_enroll_bad_sponsor_id_request_response,
+      headers: { 'content-type' => 'application/json' },
+    )
+  end
+
   def stub_request_enroll_internal_server_error_response
     stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant}).to_return(
       status: 500,
