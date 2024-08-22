@@ -121,7 +121,7 @@ module Proofing
       end
 
       def should_proof_state_id_with_aamva?
-        return false unless aamva_supports_state_id_jurisdiction?
+        return false unless aamva_supports_state_id_jurisdiction? && !state_in_maintenance_window?
         # If the user is in in-person-proofing and they have changed their address then
         # they are not eligible for get-to-yes
         if !ipp_enrollment_in_progress? || same_address_as_id?
@@ -134,6 +134,12 @@ module Proofing
       def aamva_supports_state_id_jurisdiction?
         state_id_jurisdiction = applicant_pii[:state_id_jurisdiction]
         IdentityConfig.store.aamva_supported_jurisdictions.include?(state_id_jurisdiction)
+      end
+
+      def state_in_maintenance_window?
+        Idv::AamvaStateMaintenanceWindow.in_maintenance_window?(
+          applicant_pii[:state_id_jurisdiction],
+        )
       end
 
       def proof_id_with_aamva_if_needed

@@ -876,7 +876,7 @@ module AnalyticsEvents
   # @param [String] acuant_version
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Boolean] isDrop
-  # @param [Boolean] click_source
+  # @param [Boolean] source
   # @param [Boolean] use_alternate_sdk
   # @param [Number] captureAttempts count of image capturing attempts
   # @param [String] liveness_checking_required Whether or not the selfie is required
@@ -885,7 +885,7 @@ module AnalyticsEvents
     acuant_version:,
     flow_path:,
     isDrop:,
-    click_source:,
+    source:,
     use_alternate_sdk:,
     captureAttempts:,
     liveness_checking_required:,
@@ -897,7 +897,7 @@ module AnalyticsEvents
       acuant_version: acuant_version,
       flow_path: flow_path,
       isDrop: isDrop,
-      click_source: click_source,
+      source: source,
       use_alternate_sdk: use_alternate_sdk,
       liveness_checking_required: liveness_checking_required,
       captureAttempts: captureAttempts,
@@ -2127,7 +2127,7 @@ module AnalyticsEvents
   # @param [String] acuant_version
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Boolean] isDrop
-  # @param [String] click_source
+  # @param [String] source
   # @param [String] use_alternate_sdk
   # @param [Number] captureAttempts count of image capturing attempts
   # @param [Boolean] liveness_checking_required
@@ -2136,7 +2136,7 @@ module AnalyticsEvents
     acuant_version:,
     flow_path:,
     isDrop:,
-    click_source:,
+    source:,
     use_alternate_sdk:,
     captureAttempts:,
     liveness_checking_required: nil,
@@ -2148,7 +2148,7 @@ module AnalyticsEvents
       acuant_version: acuant_version,
       flow_path: flow_path,
       isDrop: isDrop,
-      click_source: click_source,
+      source: source,
       use_alternate_sdk: use_alternate_sdk,
       liveness_checking_required: liveness_checking_required,
       captureAttempts: captureAttempts,
@@ -4143,7 +4143,7 @@ module AnalyticsEvents
   # @param [String] acuant_version
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Boolean] isDrop
-  # @param [String] click_source
+  # @param [String] source
   # @param [String] use_alternate_sdk
   # @param [Number] captureAttempts
   # @param [Boolean] liveness_checking_required
@@ -4155,7 +4155,7 @@ module AnalyticsEvents
     acuant_version:,
     flow_path:,
     isDrop:,
-    click_source:,
+    source:,
     use_alternate_sdk:,
     captureAttempts:,
     liveness_checking_required: nil,
@@ -4170,7 +4170,7 @@ module AnalyticsEvents
       acuant_version: acuant_version,
       flow_path: flow_path,
       isDrop: isDrop,
-      click_source: click_source,
+      source: source,
       use_alternate_sdk: use_alternate_sdk,
       captureAttempts: captureAttempts,
       liveness_checking_required: liveness_checking_required,
