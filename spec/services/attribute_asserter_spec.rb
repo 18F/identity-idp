@@ -778,6 +778,75 @@ RSpec.describe AttributeAsserter do
           to eq user.email_addresses.last.email
       end
     end
+
+    context 'select email to send to partner feature is disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(
+          :feature_select_email_to_share_enabled,
+        ).and_return(false)
+      end
+
+      context 'with a deleted email' do
+        let(:subject) do
+          described_class.new(
+            user: user,
+            name_id_format: name_id_format,
+            service_provider: service_provider,
+            authn_request: authn_request,
+            decrypted_pii: decrypted_pii,
+            user_session: user_session,
+          )
+        end
+        before do
+          user.identities << identity
+          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
+            and_return(%w[email phone first_name])
+          create(:email_address, user:, email: 'email@example.com')
+  
+          ident = user.identities.last
+          ident.email_address_id = user.email_addresses.first.id
+          ident.save
+          subject.build
+  
+          user.email_addresses.first.delete
+  
+          subject.build
+        end
+  
+        it 'defers to user alternate email' do
+          expect(get_asserted_attribute(user, :email)).
+            to eq 'email@example.com'
+        end
+      end  
+
+      context 'with a nil email id' do
+        let(:subject) do
+          described_class.new(
+            user: user,
+            name_id_format: name_id_format,
+            service_provider: service_provider,
+            authn_request: authn_request,
+            decrypted_pii: decrypted_pii,
+            user_session: user_session,
+          )
+        end
+        before do
+          user.identities << identity
+          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
+            and_return(%w[email phone first_name])
+  
+          ident = user.identities.last
+          ident.email_address_id = nil
+          ident.save
+          subject.build
+        end
+  
+        it 'defers to user alternate email' do
+          expect(get_asserted_attribute(user, :email)).
+            to eq user.email_addresses.last.email
+        end
+      end
+    end
   end
 
   describe 'aal attributes handling' do

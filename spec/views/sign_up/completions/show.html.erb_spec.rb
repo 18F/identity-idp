@@ -85,13 +85,7 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
     end
   end
 
-  context 'select email to send to partner and select email feature is enabled' do
-    before do
-      allow(IdentityConfig.store).to receive(
-        :feature_select_email_to_share_enabled,
-      ).and_return(true)
-    end
-
+  context 'select email to send to partner' do
     it 'does not show a link to select different email' do
       create(:email_address, user: user)
       user.reload
