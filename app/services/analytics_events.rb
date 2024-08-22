@@ -876,7 +876,7 @@ module AnalyticsEvents
   # @param [String] acuant_version
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Boolean] isDrop
-  # @param [Boolean] source
+  # @param [Boolean] click_source
   # @param [Boolean] use_alternate_sdk
   # @param [Number] captureAttempts count of image capturing attempts
   # @param [String] liveness_checking_required Whether or not the selfie is required
@@ -2121,7 +2121,7 @@ module AnalyticsEvents
   # @param [String] acuant_version
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Boolean] isDrop
-  # @param [String] source
+  # @param [String] click_source
   # @param [String] use_alternate_sdk
   # @param [Number] captureAttempts count of image capturing attempts
   # @param [Boolean] liveness_checking_required
@@ -4137,7 +4137,7 @@ module AnalyticsEvents
   # @param [String] acuant_version
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Boolean] isDrop
-  # @param [String] source
+  # @param [String] click_source
   # @param [String] use_alternate_sdk
   # @param [Number] captureAttempts
   # @param [Boolean] liveness_checking_required
