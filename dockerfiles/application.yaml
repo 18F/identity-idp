@@ -23,8 +23,8 @@ spec:
           patch: |-
             spec:
               volumeClaimTemplates:
-                - metadata:
-                    name: {{ENVIRONMENT}}-idp-data
+              - metadata:
+                  name: {{ENVIRONMENT}}-idp-data
               template:
                 spec:
                   containers:
