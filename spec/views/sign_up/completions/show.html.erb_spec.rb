@@ -61,24 +61,50 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
     )
   end
 
-  context 'select email to send to partner' do
+  context 'select email to send to partner and select email feature is disabled' do
+    before do
+      allow(IdentityConfig.store).to receive(
+        :feature_select_email_to_share_enabled,
+      ).and_return(false)
+    end
+
+    it 'does not show a link to select different email' do
+      create(:email_address, user: user)
+      user.reload
+      render
+
+      expect(rendered).to_not include(t('help_text.requested_attributes.change_email_link'))
+      expect(rendered).to_not include(t('account.index.email_add'))
+    end
+
+    it 'does not show a link to add another email' do
+      render
+
+      expect(rendered).to_not include(t('help_text.requested_attributes.change_email_link'))
+      expect(rendered).to_not include(t('account.index.email_add'))
+    end
+  end
+
+  context 'select email to send to partner and select email feature is enabled' do
     before do
       allow(IdentityConfig.store).to receive(
         :feature_select_email_to_share_enabled,
       ).and_return(true)
     end
 
-    it 'shows a link to select different email' do
+    it 'does not show a link to select different email' do
       create(:email_address, user: user)
       user.reload
       render
 
       expect(rendered).to include(t('help_text.requested_attributes.change_email_link'))
+      expect(rendered).to_not include(t('account.index.email_add'))
     end
 
-    it 'shows a link to add another email' do
+    it 'does not show a link to add another email' do
       render
 
+      expect(rendered).to_not include(t('help_text.requested_attributes.change_email_link'))
       expect(rendered).to include(t('account.index.email_add'))
     end
   end
