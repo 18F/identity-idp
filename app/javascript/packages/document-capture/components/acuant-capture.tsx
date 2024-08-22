@@ -432,17 +432,17 @@ function AcuantCapture(
   }
 
   /**
-   * Given a clickSource, returns a higher-order function that, when called, will log an event
+   * Given a click_source, returns a higher-order function that, when called, will log an event
    * before calling the original function.
    */
-  function withLoggedClick(clickSource: string, metadata: { isDrop: boolean } = { isDrop: false }) {
+  function withLoggedClick(click_source: string, metadata: { isDrop: boolean } = { isDrop: false }) {
     return <T extends (...args: any[]) => any>(fn: T) =>
       (...args: Parameters<T>) => {
         if (!isSuppressingClickLogging.current) {
           trackEvent(
             name === 'selfie' ? 'idv_selfie_image_clicked' : `IdV: ${name} image clicked`,
             {
-              clickSource,
+              click_source,
               ...metadata,
               liveness_checking_required: isSelfieCaptureEnabled,
               captureAttempts,

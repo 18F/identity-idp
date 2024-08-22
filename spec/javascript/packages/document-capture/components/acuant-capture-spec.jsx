@@ -1358,19 +1358,19 @@ describe('document-capture/components/acuant-capture', () => {
 
     expect(trackEvent.callCount).to.be.at.least(3);
     expect(trackEvent).to.have.been.calledWith('IdV: test image clicked', {
-      clickSource: 'placeholder',
+      click_source: 'placeholder',
       isDrop: false,
       liveness_checking_required: false,
       captureAttempts: 1,
     });
     expect(trackEvent).to.have.been.calledWith('IdV: test image clicked', {
-      clickSource: 'button',
+      click_source: 'button',
       isDrop: false,
       liveness_checking_required: false,
       captureAttempts: 1,
     });
     expect(trackEvent).to.have.been.calledWith('IdV: test image clicked', {
-      clickSource: 'button',
+      click_source: 'button',
       isDrop: false,
       liveness_checking_required: false,
       captureAttempts: 1,
@@ -1391,7 +1391,7 @@ describe('document-capture/components/acuant-capture', () => {
     fireEvent.drop(input);
 
     expect(trackEvent).to.have.been.calledWith('IdV: test image clicked', {
-      clickSource: 'placeholder',
+      click_source: 'placeholder',
       isDrop: true,
       liveness_checking_required: false,
       captureAttempts: 1,
