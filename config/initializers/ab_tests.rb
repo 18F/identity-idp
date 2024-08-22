@@ -35,12 +35,14 @@ module AbTests
     constants.index_with { |test_name| const_get(test_name) }
   end
 
+  # This "test" will permanently be in place to allow a graceful transition from TrueID being the
+  # sole vendor to a multi-vendor configuration.
   DOC_AUTH_VENDOR = AbTest.new(
     experiment_name: 'Doc Auth Vendor',
     should_log: /^idv/i,
     buckets: {
-      alternate_vendor: IdentityConfig.store.doc_auth_vendor_randomize ?
-        IdentityConfig.store.doc_auth_vendor_randomize_percent :
+      socure: IdentityConfig.store.doc_auth_vendor_switching_enabled ?
+        IdentityConfig.store.doc_auth_vendor_socure_percent :
         0,
     }.compact,
   ) do |service_provider:, session:, user:, user_session:, **|
@@ -53,20 +55,6 @@ module AbTests
     buckets: {
       use_alternate_sdk: IdentityConfig.store.idv_acuant_sdk_upgrade_a_b_testing_enabled ?
         IdentityConfig.store.idv_acuant_sdk_upgrade_a_b_testing_percent :
-        0,
-    },
-  ) do |service_provider:, session:, user:, user_session:, **|
-    document_capture_session_uuid_discriminator(service_provider:, session:, user:, user_session:)
-  end.freeze
-
-  # This test is in place to allow a graceful transition from TrueID being the sole vendor to a
-  # multi-vendor configuration. This test will eventually replace the DOC_AUTH_VENDOR test.
-  SOCURE = AbTest.new(
-    experiment_name: 'Socure',
-    should_log: /^idv/i,
-    buckets: {
-      socure: IdentityConfig.store.doc_auth_vendor_switching_enabled ?
-        IdentityConfig.store.doc_auth_vendor_socure_percent :
         0,
     },
   ) do |service_provider:, session:, user:, user_session:, **|

@@ -97,9 +97,6 @@ doc_auth_max_submission_attempts_before_native_camera: 3
 doc_auth_selfie_desktop_test_mode: false
 doc_auth_separate_pages_enabled: false
 doc_auth_supported_country_codes: '["US", "GU", "VI", "AS", "MP", "PR", "USA" ,"GUM", "VIR", "ASM", "MNP", "PRI"]'
-doc_auth_vendor_randomize: false
-doc_auth_vendor_randomize_alternate_vendor: ''
-doc_auth_vendor_randomize_percent: 0
 doc_auth_vendor_socure_percent: 0
 doc_auth_vendor_switching_enabled: false
 doc_capture_polling_enabled: true

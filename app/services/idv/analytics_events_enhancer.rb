@@ -25,7 +25,6 @@ module Idv
       idv_doc_auth_hybrid_handoff_visited
       idv_doc_auth_link_sent_submitted
       idv_doc_auth_link_sent_visited
-      idv_doc_auth_randomizer_defaulted
       idv_doc_auth_redo_ssn_submitted
       idv_doc_auth_ssn_submitted
       idv_doc_auth_ssn_visited
