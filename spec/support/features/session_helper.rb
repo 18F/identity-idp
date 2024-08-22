@@ -49,7 +49,6 @@ module Features
     end
 
     def signin(email, password)
-      allow(UserMailer).to receive(:new_device_sign_in).and_call_original
       visit new_user_session_path
       set_hidden_field('platform_authenticator_available', 'true')
       fill_in_credentials_and_submit(email, password)
@@ -57,7 +56,6 @@ module Features
     end
 
     def signin_with_piv(user = user_with_piv_cac)
-      allow(UserMailer).to receive(:new_device_sign_in).and_call_original
       visit new_user_session_path
       click_on t('account.login.piv_cac')
       fill_in_piv_cac_credentials_and_submit(user)
@@ -75,7 +73,6 @@ module Features
     end
 
     def signin_with_bad_piv
-      allow(UserMailer).to receive(:new_device_sign_in).and_call_original
       visit new_user_session_path
       click_on t('account.login.piv_cac')
       fill_in_bad_piv_cac_credentials_and_submit

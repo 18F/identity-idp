@@ -49,7 +49,7 @@ module Reporting
         overview_table,
         protocols_table,
         saml_signature_issues_table,
-        loa_acr_requests_table,
+        deprecated_parameters_table,
       ]
     end
 
@@ -68,8 +68,8 @@ module Reporting
           table: saml_signature_issues_table,
         ),
         Reporting::EmailableReport.new(
-          title: 'LOA ACR Requests',
-          table: loa_acr_requests_table,
+          title: 'Deprecated Parameter Usage',
+          table: deprecated_parameters_table,
         ),
       ]
     end
@@ -246,26 +246,34 @@ module Reporting
       ]
     end
 
-    def loa_acr_requests_table
+    def deprecated_parameters_table
       [
-        ['Count of issuers using LOA', 'List of issuers with the issue'],
         [
+          'Deprecated Parameter',
+          'Count of issuers using the parameter',
+          'List of issuers using the parameter',
+        ],
+        [
+          'LOA',
           loa_issuers_data.length,
           loa_issuers_data.join(', '),
+        ],
+        [
+          'AAL3',
+          aal3_issuers_data.length,
+          aal3_issuers_data.join(', '),
         ],
       ]
     end
 
     def loa_issuers_data
-      @loa_issuers_data ||= begin
-        cloudwatch_client.fetch(
-          query: loa_issuers_query,
-          from: time_range.begin,
-          to: time_range.end,
-        ).
-          map { |slice| slice['issuer'] }.
-          uniq
-      end
+      @loa_issuers_data ||= cloudwatch_client.fetch(
+        query: loa_issuers_query,
+        from: time_range.begin,
+        to: time_range.end,
+      ).
+        map { |slice| slice['issuer'] }.
+        uniq
     end
 
     def loa_issuers_query
@@ -281,6 +289,36 @@ module Reporting
         | filter
           name IN %{event}
           AND (authn like /ns\\/assurance\\/loa/ OR acr like /ns\\/assurance\\/loa/)
+          AND properties.event_properties.success= 1
+        | display issuer
+        | sort issuer
+        | dedup issuer
+      QUERY
+    end
+
+    def aal3_issuers_data
+      @aal3_issuers_data ||= cloudwatch_client.fetch(
+        query: aal3_issuers_query,
+        from: time_range.begin,
+        to: time_range.end,
+      ).
+        map { |slice| slice['issuer'] }.
+        uniq
+    end
+
+    def aal3_issuers_query
+      params = {
+        event: quote([SAML_AUTH_EVENT, OIDC_AUTH_EVENT]),
+      }
+
+      format(<<~QUERY, params)
+        fields
+          coalesce(properties.event_properties.service_provider, properties.event_properties.client_id) as issuer,
+          properties.event_properties.acr_values as acr
+        | parse @message '"authn_context":[*]' as authn
+        | filter
+          name IN %{event}
+          AND (authn like /aal\\/3/ or acr like /aal\\/3/)
           AND properties.event_properties.success= 1
         | display issuer
         | sort issuer

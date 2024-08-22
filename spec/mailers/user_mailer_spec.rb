@@ -160,50 +160,6 @@ RSpec.describe UserMailer, type: :mailer do
     it_behaves_like 'an email that respects user email locale preference'
   end
 
-  describe '#new_device_sign_in' do
-    date = 'February 25, 2019 15:02'
-    location = 'Washington, DC'
-    device_name = 'Chrome ABC on macOS 123'
-    disavowal_token = 'asdf1234'
-    let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).new_device_sign_in(
-        date: date,
-        location: location,
-        device_name: device_name,
-        disavowal_token: disavowal_token,
-      )
-    end
-
-    it_behaves_like 'a system email'
-
-    it 'sends to the current email' do
-      expect(mail.to).to eq [user.email]
-    end
-
-    it 'renders the subject' do
-      expect(mail.subject).to eq t('user_mailer.new_device_sign_in.subject', app_name: APP_NAME)
-    end
-
-    it 'renders the body' do
-      expect(mail.html_part.body).
-        to have_content(
-          strip_tags(
-            t(
-              'user_mailer.new_device_sign_in.info',
-              date: date,
-              location: location,
-              device_name: device_name,
-              app_name: APP_NAME,
-            ),
-          ),
-        )
-      expect(mail.html_part.body).to include(
-        '/events/disavow?disavowal_token=asdf1234',
-      )
-      expect_email_body_to_have_help_and_contact_links
-    end
-  end
-
   describe '#new_device_sign_in_before_2fa' do
     let(:event) { create(:event, event_type: :sign_in_before_2fa, user:, device: create(:device)) }
     subject(:mail) do

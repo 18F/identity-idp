@@ -3,11 +3,15 @@
 module Idv
   class ProofingComponents
     def initialize(
-        user:,
-        idv_session:
-      )
-      @user = user
+      idv_session:,
+      session:,
+      user:,
+      user_session:
+    )
       @idv_session = idv_session
+      @session = session
+      @user = user
+      @user_session = user_session
     end
 
     def document_check
@@ -15,7 +19,11 @@ module Idv
         Idp::Constants::Vendors::USPS
       elsif idv_session.remote_document_capture_complete?
         DocAuthRouter.doc_auth_vendor(
-          discriminator: idv_session.document_capture_session_uuid,
+          request: nil,
+          service_provider: idv_session.service_provider,
+          session:,
+          user_session:,
+          user:,
         )
       end
     end
@@ -65,6 +73,6 @@ module Idv
 
     private
 
-    attr_reader :user, :idv_session
+    attr_reader :idv_session, :session, :user, :user_session
   end
 end

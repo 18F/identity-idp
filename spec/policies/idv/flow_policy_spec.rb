@@ -46,7 +46,6 @@ RSpec.describe 'Idv::FlowPolicy' do
         idv_session.had_barcode_attention_error = true
 
         idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
-        idv_session.threatmetrix_session_id = SecureRandom.uuid
 
         idv_session.address_edited = true
       end
@@ -68,7 +67,6 @@ RSpec.describe 'Idv::FlowPolicy' do
         expect(idv_session.had_barcode_attention_error).to be_nil
 
         expect(idv_session.ssn).to be_nil
-        expect(idv_session.threatmetrix_session_id).to be_nil
 
         expect(idv_session.address_edited).to be_nil
       end
@@ -90,7 +88,6 @@ RSpec.describe 'Idv::FlowPolicy' do
         idv_session.had_barcode_attention_error = true
 
         idv_session.ssn = nil
-        idv_session.threatmetrix_session_id = SecureRandom.uuid
 
         idv_session.address_edited = true
 
@@ -141,8 +138,6 @@ RSpec.describe 'Idv::FlowPolicy' do
 
           idv_session.had_barcode_read_failure
           idv_session.had_barcode_attention_error
-
-          idv_session.threatmetrix_session_id
         }
       end
     end

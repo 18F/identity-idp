@@ -161,7 +161,7 @@
       <%= render ClickObserverComponent.new(event_name: 'IdV: user clicked what to bring link on ready to verify page') do %>
       <%= new_tab_link_to(
             t('in_person_proofing.body.barcode.learn_more'),
-            MarketingSite.help_center_article_url(
+            help_center_redirect_url(
               category: 'verify-your-identity',
               article: 'verify-your-identity-in-person',
             ),
@@ -192,7 +192,7 @@
       <%= render ClickObserverComponent.new(event_name: 'IdV: user clicked what to bring link on ready to verify page') do %>
         <%= new_tab_link_to(
               t('in_person_proofing.body.barcode.learn_more'),
-              MarketingSite.help_center_article_url(
+              help_center_redirect_url(
                 category: 'verify-your-identity',
                 article: 'verify-your-identity-in-person',
               ),

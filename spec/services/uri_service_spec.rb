@@ -72,5 +72,27 @@ RSpec.describe UriService do
 
       expect(uri).to eq('https://example.com/foo/bar/?query=value#fragment')
     end
+
+    context 'with a uri object' do
+      let(:params_to_add) {}
+      let(:original_uri) { URI('https://example.com/foo/bar/') }
+      subject(:uri) { UriService.add_params(original_uri, params_to_add) }
+
+      context 'without parameters to add' do
+        let(:params_to_add) { nil }
+
+        it 'returns the original uri as a string' do
+          expect(uri).to eq('https://example.com/foo/bar/')
+        end
+      end
+
+      context 'with parameters to add' do
+        let(:params_to_add) { { query: 'value' } }
+
+        it 'returns a string of the original uri with parameters added' do
+          expect(uri).to eq('https://example.com/foo/bar/?query=value')
+        end
+      end
+    end
   end
 end
