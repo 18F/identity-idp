@@ -1,4 +1,4 @@
-import { arrayBufferToBase64 } from './converters';
+import { arrayBufferToBase64, arrayBufferToBase16 } from './converters';
 
 /**
  * Response object with properties as possibly undefined where browser support varies.
@@ -35,6 +35,8 @@ interface EnrollResult {
   attestationObject: string;
 
   clientDataJSON: string;
+  
+  aaguid: string,
 
   authenticatorDataFlagsValue?: number;
 
@@ -109,11 +111,13 @@ async function enrollWebauthnDevice({
   const authenticatorDataFlagsValue = authenticatorData
     ? new Uint8Array(authenticatorData)[32]
     : undefined;
+  const aaguid = arrayBufferToBase16(authenticatorData.slice(37,37 + 16))
 
   return {
     webauthnId: arrayBufferToBase64(credential.rawId),
     attestationObject: arrayBufferToBase64(response.attestationObject),
     clientDataJSON: arrayBufferToBase64(response.clientDataJSON),
+    aaguid,
     authenticatorDataFlagsValue,
     transports: response.getTransports?.(),
   };

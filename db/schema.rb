@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_22_122355) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_22_182932) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -656,6 +656,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_22_122355) do
     t.boolean "platform_authenticator"
     t.string "transports", array: true
     t.jsonb "authenticator_data_flags"
+    t.string "aaguid"
     t.index ["user_id"], name: "index_webauthn_configurations_on_user_id"
   end
 

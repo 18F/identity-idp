@@ -155,6 +155,7 @@ module Users
 
     def confirm_params
       params.permit(
+        :aaguid,
         :attestation_object,
         :authenticator_data_value,
         :client_data_json,

@@ -35,6 +35,7 @@
   <%= hidden_field_tag :client_data_json, '', id: 'client_data_json' %>
   <%= hidden_field_tag :authenticator_data_value, '', id: 'authenticator_data_value' %>
   <%= hidden_field_tag :transports, '', id: 'transports' %>
+  <%= hidden_field_tag :aaguid, '', id: 'aaguid' %>
 
   <%= hidden_field_tag :platform_authenticator, @platform_authenticator, id: 'platform_authenticator' %>
   <% if !@platform_authenticator %>
