@@ -180,13 +180,20 @@ module Idv
       end
     end
 
+    def scrub_message(message)
+      filtered_message = message.dup
+      filtered_message.gsub!(/sponsorID \d+/i, 'sponsorID [FILTERED]')
+      filtered_message
+    end
+
+
     def handle_request_enroll_exception(err)
       analytics.idv_in_person_usps_request_enroll_exception(
         context: context,
         enrollment_id: err.enrollment_id,
         exception_class: err.class.to_s,
         original_exception_class: err.exception_class,
-        exception_message: err.message,
+        exception_message: scrub_message(err.message),
         reason: 'Request exception',
       )
       flash[:error] = t('idv.failure.exceptions.internal_error')
