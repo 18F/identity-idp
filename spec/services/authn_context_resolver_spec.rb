@@ -346,10 +346,10 @@ RSpec.describe AuthnContextResolver do
       end
 
       context 'if requesting biometric comparison' do
-        let(:bio_value) { 'required' }
+        let(:bio_value) { Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF }
         let(:acr_values) do
           [
-            "http://idmanagement.gov/ns/assurance/ial/2?bio=#{bio_value}",
+            bio_value,
             'http://idmanagement.gov/ns/assurance/aal/1',
           ].join(' ')
         end
@@ -390,7 +390,7 @@ RSpec.describe AuthnContextResolver do
         end
 
         context 'with biometric comparison is preferred' do
-          let(:bio_value) { 'preferred' }
+          let(:bio_value) { Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF }
 
           context 'when the user is already verified' do
             context 'without biometric comparison' do

@@ -7,6 +7,7 @@ require 'idp/constants'
 module Saml
   module Idp
     module Constants
+      ACR_URN_PREFIX = 'urn:acr.login.gov'
       LOA1_AUTHN_CONTEXT_CLASSREF = 'http://idmanagement.gov/ns/assurance/loa/1'
       LOA3_AUTHN_CONTEXT_CLASSREF = 'http://idmanagement.gov/ns/assurance/loa/3'
 
@@ -14,8 +15,8 @@ module Saml
       IAL1_AUTHN_CONTEXT_CLASSREF = "#{IAL_AUTHN_CONTEXT_PREFIX}/1".freeze
       IAL2_AUTHN_CONTEXT_CLASSREF = "#{IAL_AUTHN_CONTEXT_PREFIX}/2".freeze
       IALMAX_AUTHN_CONTEXT_CLASSREF = "#{IAL_AUTHN_CONTEXT_PREFIX}/0".freeze
-      IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF = "#{IAL_AUTHN_CONTEXT_PREFIX}/2?bio=preferred".freeze
-      IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF = "#{IAL_AUTHN_CONTEXT_PREFIX}/2?bio=required".freeze
+      IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF = "#{ACR_URN_PREFIX}:verified-facial-match-preferred".freeze
+      IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF = "#{ACR_URN_PREFIX}:verified-facial-match-required".freeze
 
       PASSWORD_AUTHN_CONTEXT_CLASSREFS = %w[
         urn:oasis:names:tc:SAML:2.0:ac:classes:Password

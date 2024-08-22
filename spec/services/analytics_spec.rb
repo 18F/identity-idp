@@ -322,7 +322,9 @@ RSpec.describe Analytics do
             aal2: true,
             biometric_comparison: true,
             two_pieces_of_fair_evidence: true,
-            component_values: { 'ial/2?bio=required' => true },
+            component_values: {
+              Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF => true,
+            },
             identity_proofing: true,
             component_separator: ' ',
           },
