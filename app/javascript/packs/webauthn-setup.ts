@@ -68,11 +68,6 @@ function webauthn() {
           (document.getElementById('authenticator_data_value') as HTMLInputElement).value =
             `${result.authenticatorDataFlagsValue}`;
         }
-
-        if (result.aaguid) {
-          (document.getElementById('aaguid') as HTMLInputElement).value =
-            `${result.aaguid}`;
-        }
         if (result.transports) {
           (document.getElementById('transports') as HTMLInputElement).value =
             result.transports.join();

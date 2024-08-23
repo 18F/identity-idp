@@ -77,7 +77,6 @@ class WebauthnSetupForm
       WebauthnConfiguration::VALID_TRANSPORTS.include?(transport)
     end
     @protocol = params[:protocol]
-    @aaguid = params[:aaguid]
   end
 
   def name_is_unique
@@ -109,7 +108,7 @@ class WebauthnSetupForm
       attestation_object: Base64.decode64(@attestation_object),
       client_data_json: Base64.decode64(@client_data_json),
     )
-
+    @aaguid = attestation_response.authenticator_data.aaguid
     begin
       attestation_response.valid?(@challenge.pack('c*'), original_origin)
     rescue StandardError
