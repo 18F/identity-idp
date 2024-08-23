@@ -7,23 +7,19 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
   include ActionView::Helpers::DateHelper
 
   let(:max_attempts) { IdentityConfig.store.doc_auth_max_attempts }
+  let(:fake_analytics) { FakeAnalytics.new }
 
   before(:each) do
-    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(@fake_analytics)
+    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return(@sp_name)
   end
 
   before(:all) do
-    @user = user_with_2fa
-    @fake_analytics = FakeAnalytics.new
     @sp_name = 'Test SP'
+    @user = user_with_2fa
   end
 
-  after(:all) do
-    @user.destroy
-    @fake_analytics = ''
-    @sp_name = ''
-  end
+  after(:all) { @user.destroy }
 
   context 'standard desktop flow' do
     before do
@@ -119,16 +115,14 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
       it 'logs the rate limited analytics event for doc_auth' do
         attach_and_submit_images
-        expect(@fake_analytics).to have_logged_event(
+        expect(fake_analytics).to have_logged_event(
           'Rate Limit Reached',
           limiter_type: :idv_doc_auth,
         )
       end
 
       context 'successfully processes image on last attempt' do
-        before do
-          DocAuth::Mock::DocAuthMockClient.reset!
-        end
+        before { DocAuth::Mock::DocAuthMockClient.reset! }
 
         it 'proceeds to the next page with valid info' do
           expect(page).to have_current_path(idv_document_capture_url)
@@ -1155,6 +1149,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
         context 'when selfie check is not enabled (flag off, and/or in production)' do
           let(:selfie_check_enabled) { false }
+
           it 'proceeds to the next page with valid info, excluding a selfie image' do
             perform_in_browser(:mobile) do
               visit_idp_from_oidc_sp_with_ial2
@@ -1298,8 +1293,7 @@ RSpec.feature 'direct access to IPP on desktop', :js, allowed_extra_analytics: [
   include IdvStepHelper
   include DocAuthHelper
 
-  context 'direct access to IPP before handoff page' do
-    let(:in_person_proofing_enabled) { true }
+  context 'before handoff page' do
     let(:sp_ipp_enabled) { true }
     let(:in_person_proofing_opt_in_enabled) { true }
     let(:biometric_comparison_required) { true }
@@ -1307,19 +1301,13 @@ RSpec.feature 'direct access to IPP on desktop', :js, allowed_extra_analytics: [
 
     before do
       service_provider = create(:service_provider, :active, :in_person_proofing_enabled)
-      unless sp_ipp_enabled
-        service_provider.in_person_proofing_enabled = false
-        service_provider.save!
-      end
       allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).and_return(false)
-      allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(
-        in_person_proofing_enabled,
-      )
+      allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
       allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(
         in_person_proofing_opt_in_enabled,
       )
       allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
-        and_return(sp_ipp_enabled)
+        and_return(false)
       visit_idp_from_sp_with_ial2(
         :oidc,
         **{ client_id: service_provider.issuer,
@@ -1327,23 +1315,22 @@ RSpec.feature 'direct access to IPP on desktop', :js, allowed_extra_analytics: [
       )
       sign_in_via_branded_page(user)
       complete_doc_auth_steps_before_agreement_step
-    end
 
-    shared_examples 'does not allow direct ipp access' do
-      it 'redirects back to agreement page' do
-        visit idv_document_capture_path(step: 'hybrid_handoff')
-        expect(page).to have_current_path(idv_agreement_path)
-      end
+      visit idv_document_capture_path(step: 'hybrid_handoff')
     end
 
     context 'when selfie is enabled' do
-      it_behaves_like 'does not allow direct ipp access'
+      it 'redirects back to agreement page' do
+        expect(page).to have_current_path(idv_agreement_path)
+      end
     end
 
     context 'when selfie is disabled' do
       let(:biometric_comparison_required) { false }
 
-      it_behaves_like 'does not allow direct ipp access'
+      it 'redirects back to agreement page' do
+        expect(page).to have_current_path(idv_agreement_path)
+      end
     end
   end
 end
