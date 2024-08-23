@@ -41,3 +41,4 @@ production:
   enable_usps_verification: true
   seed_agreements_data: false
   socure_webhook_secret_key: 'this-is-a-secret'
+  socure_webhook_secret_key_queue: ['this-is-an-old-secret']

@@ -18,9 +18,23 @@ class SocureWebhookController < ApplicationController
 
     return false if authorization_header.nil?
 
+    verify_current_key(authorization_header: authorization_header) ||
+      verify_queue(authorization_header: authorization_header)
+  end
+
+  def verify_current_key(authorization_header:)
     ActiveSupport::SecurityUtils.secure_compare(
       authorization_header,
       IdentityConfig.store.socure_webhook_secret_key,
     )
+  end
+
+  def verify_queue(authorization_header:)
+    IdentityConfig.store.socure_webhook_secret_key_queue.any? do |key|
+      ActiveSupport::SecurityUtils.secure_compare(
+        authorization_header,
+        key,
+      )
+    end
   end
 end
