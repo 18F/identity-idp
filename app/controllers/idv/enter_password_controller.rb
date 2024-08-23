@@ -186,7 +186,6 @@ module Idv
       filtered_message
     end
 
-
     def handle_request_enroll_exception(err)
       analytics.idv_in_person_usps_request_enroll_exception(
         context: context,
