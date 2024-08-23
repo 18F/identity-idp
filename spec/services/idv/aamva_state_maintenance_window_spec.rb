@@ -23,7 +23,7 @@ RSpec.describe Idv::AamvaStateMaintenanceWindow do
 
       it 'is false outside of the maintenance window' do
         Time.use_zone(tz) do
-          travel_to(Time.zone.parse('today 08:00')) do
+          travel_to(Time.zone.parse('June 2, 2024 at 8am')) do
             expect(subject).to eq(false)
           end
         end
