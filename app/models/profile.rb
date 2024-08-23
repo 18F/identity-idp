@@ -64,7 +64,7 @@ class Profile < ApplicationRecord
 
   def self.in_person_verification_pending
     where.not(in_person_verification_pending_at: nil).
-      left_outer_joins(:in_person_enrollment).where.not(in_person_enrollment: { status: :expired })
+      left_outer_joins(:in_person_enrollment).where(in_person_enrollment: { status: :pending })
   end
 
   # Instance methods
@@ -185,7 +185,7 @@ class Profile < ApplicationRecord
   end
 
   def in_person_verification_pending?
-    in_person_verification_pending_at.present? && !in_person_enrollment&.expired?
+    in_person_verification_pending_at.present? && in_person_enrollment&.pending?
   end
 
   def deactivate_due_to_gpo_expiration
