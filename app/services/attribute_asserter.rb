@@ -221,7 +221,7 @@ class AttributeAsserter
     return nil unless IdentityConfig.store.feature_select_email_to_share_enabled
     identity = principal.active_identity_for(service_provider)
     email_id = identity&.email_address_id
-    principal.confirmed_email_addresses.find_by(id: email_id)&.email if identity.email_address_id
+    principal.confirmed_email_addresses.find_by(id: email_id)&.email if email_id
   end
 
   def bundle

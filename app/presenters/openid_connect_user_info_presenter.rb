@@ -189,13 +189,4 @@ class OpenidConnectUserInfoPresenter
   def out_of_band_session_accessor
     @out_of_band_session_accessor ||= OutOfBandSessionAccessor.new(identity.rails_session_id)
   end
-
-  def find_email_address
-    begin
-      @email_address = EmailAddress.find(identity.email_address_id)
-    rescue ActiveRecord::RecordNotFound
-      @email_address = nil
-    end
-    @email_address
-  end
 end
