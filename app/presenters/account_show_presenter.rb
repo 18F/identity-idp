@@ -63,7 +63,16 @@ class AccountShowPresenter
   end
 
   def pending_ipp?
-    !!user.pending_profile&.in_person_verification_pending?
+    in_person_enrollment = user&.in_person_enrollments&.first
+    if in_person_enrollment&.expired?
+      user.pending_in_person_enrollment.present?
+    elsif in_person_enrollment&.cancelled?
+      user.pending_in_person_enrollment.present?
+    elsif in_person_enrollment&.failed?
+      user.pending_in_person_enrollment.present?
+    else
+      !!user.pending_profile&.in_person_verification_pending?
+    end
   end
 
   def pending_gpo?
