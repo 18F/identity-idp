@@ -2,6 +2,9 @@
 
 module Idv
   class AamvaStateMaintenanceWindow
+    # _All_ AAMVA maintenance windows are expressed in 'ET' (LG-14028)
+    TZ = 'America/New_York'
+
     MAINTENANCE_WINDOWS = {
       'CA' => [
         # Daily, 4:00 - 5:30 am. ET.
@@ -131,33 +134,32 @@ module Idv
       ],
     }.freeze
 
+    PARSED_MAINTENANCE_WINDOWS = MAINTENANCE_WINDOWS.transform_values do |windows|
+      Time.use_zone(TZ) do
+        windows.collect do |window|
+          cron = Fugit.parse_cron(window[:cron])
+          { cron: cron, duration: window[:duration] }
+        end
+      end
+    end.freeze
+
     class << self
-      # _All_ AAMVA maintenance windows are expressed in 'ET' (LG-14028)
-      TZ = 'America/New_York'
-
       def in_maintenance_window?(state)
-        return false unless (windows = windows_for_state(state))
-
         Time.use_zone(TZ) do
-          windows.any? { |window| window.cover?(Time.zone.now) }
+          windows_for_state(state).any? { |window| window.cover?(Time.zone.now) }
         end
       end
 
       # private
 
       def windows_for_state(state)
-        return [] unless MAINTENANCE_WINDOWS[state]
+        return [] unless PARSED_MAINTENANCE_WINDOWS[state]
 
         Time.use_zone(TZ) do
-          MAINTENANCE_WINDOWS[state].collect do |window|
-            cron = Fugit.parse_cron(window[:cron])
-            prev_instance = cron.previous_time.to_t
-            # We don't need to consider the _next_ window, because it is in the future.
-            # And we're never in the future yet.
-            # next_instance = cron.next_time.to_t
-
-            (prev_instance..(prev_instance + window[:duration].minutes))
-          end.flatten
+          PARSED_MAINTENANCE_WINDOWS[state].collect do |window|
+            previous = window[:cron].previous_time.to_t
+            (previous..(previous + window[:duration].minutes))
+          end
         end
       end
     end
