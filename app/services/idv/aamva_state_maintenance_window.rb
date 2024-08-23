@@ -150,8 +150,6 @@ module Idv
         end
       end
 
-      # private
-
       def windows_for_state(state)
         return [] unless PARSED_MAINTENANCE_WINDOWS[state]
 

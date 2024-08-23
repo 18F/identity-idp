@@ -39,8 +39,6 @@ RSpec.describe Idv::AamvaStateMaintenanceWindow do
     end
   end
 
-  # This should maybe be private, but for now it's handy to be able to fetch.
-  # And I can see applications for it.
   describe '.windows_for_state' do
     subject { described_class.windows_for_state(state) }
 
