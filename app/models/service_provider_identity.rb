@@ -19,8 +19,7 @@ class ServiceProviderIdentity < ApplicationRecord
   # rubocop:enable Rails/InverseOf
   has_one :agency, through: :service_provider_record
 
-  has_one :email_address,
-          dependent: :nullify
+  belongs_to :email_address
 
   scope :not_deleted, -> { where(deleted_at: nil) }
 
