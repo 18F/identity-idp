@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class CompletionsPresenter
+  include ActionView::Helpers::TranslationHelper
+
   attr_reader :current_user, :current_sp, :decrypted_pii, :requested_attributes, :completion_context
 
   SORTED_IAL2_ATTRIBUTE_MAPPING = [
@@ -72,33 +74,18 @@ class CompletionsPresenter
   end
 
   def intro
-    if ial2_requested?
-      if consent_has_expired?
-        I18n.t(
-          'help_text.requested_attributes.ial2_consent_reminder_html',
-          sp: sp_name,
-        )
-      elsif reverified_after_consent?
-        I18n.t(
-          'help_text.requested_attributes.ial2_reverified_consent_info',
-          sp: sp_name,
-        )
-      else
-        I18n.t(
-          'help_text.requested_attributes.ial2_intro_html',
-          sp: sp_name,
-        )
-      end
-    elsif consent_has_expired?
-      I18n.t(
-        'help_text.requested_attributes.ial1_consent_reminder_html',
-        sp: sp_name,
+    if consent_has_expired?
+      safe_join(
+        [
+          t('help_text.requested_attributes.consent_reminder_html', sp: sp_name),
+          t('help_text.requested_attributes.intro_html', sp: sp_name),
+        ],
+        ' ',
       )
+    elsif ial2_requested? && reverified_after_consent?
+      t('help_text.requested_attributes.ial2_reverified_consent_info', sp: sp_name)
     else
-      I18n.t(
-        'help_text.requested_attributes.ial1_intro_html',
-        sp: sp_name,
-      )
+      t('help_text.requested_attributes.intro_html', sp: sp_name)
     end
   end
 
