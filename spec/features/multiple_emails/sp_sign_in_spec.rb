@@ -42,7 +42,7 @@ RSpec.feature 'signing into an SP with multiple emails enabled' do
       expect(current_path).to eq(sign_up_completed_path)
       click_agree_and_continue
       decoded_id_token = fetch_oidc_id_token_info
-      expect(decoded_id_token[:email]).to eq(emails.last)
+      expect(decoded_id_token[:email]).to eq(emails.first)
     end
 
     scenario 'signing in with OIDC after deleting email linked to identity' do
@@ -115,7 +115,7 @@ RSpec.feature 'signing into an SP with multiple emails enabled' do
 
       xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
       email_from_saml_response = xmldoc.attribute_value_for('email')
-      expect(email_from_saml_response).to eq(emails.last)
+      expect(email_from_saml_response).to eq(emails.first)
     end
 
     scenario 'signing in with SAML after deleting email linked to identity' do
