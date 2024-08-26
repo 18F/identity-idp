@@ -236,7 +236,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       proofed_at: proofed_at,
       status_check_completed_at: Time.zone.now,
     )
-
+    enrollment.profile.deactivate_due_to_ipp_expiration
     # send SMS and email
     send_enrollment_status_sms_notification(enrollment: enrollment)
     send_failed_email(enrollment.user, enrollment)
@@ -325,8 +325,10 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def handle_unexpected_response(enrollment, response_message, reason:, cancel: true)
-    enrollment.cancelled! if cancel
-
+    if cancel
+      enrollment.cancelled! 
+      enrollment.profile.deactivate_due_to_ipp_expiration
+    end
     analytics(user: enrollment.user).
       idv_in_person_usps_proofing_results_job_unexpected_response(
         **enrollment_analytics_attributes(enrollment, complete: cancel),
@@ -352,7 +354,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       proofed_at: proofed_at,
       status_check_completed_at: Time.zone.now,
     )
-
+    enrollment.profile.deactivate_due_to_ipp_expiration
     # send SMS and email
     send_enrollment_status_sms_notification(enrollment: enrollment)
     if response['fraudSuspected']
@@ -442,6 +444,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       proofed_at: proofed_at,
       status_check_completed_at: Time.zone.now,
     )
+    enrollment.profile.deactivate_due_to_ipp_expiration
     # send SMS and email
     send_enrollment_status_sms_notification(enrollment: enrollment)
     send_failed_email(enrollment.user, enrollment)
