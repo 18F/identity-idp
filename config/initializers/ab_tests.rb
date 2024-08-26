@@ -62,4 +62,17 @@ module AbTests
   ) do |service_provider:, session:, user:, user_session:, **|
     document_capture_session_uuid_discriminator(service_provider:, session:, user:, user_session:)
   end.freeze
+
+  RECAPTCHA_SIGN_IN = AbTest.new(
+    experiment_name: 'reCAPTCHA at Sign-In',
+    should_log: Set.new(
+      [
+        'Email and Password Authentication',
+        'User Suspension: Suspended',
+        :user_suspension_confirmed,
+        'IdV: doc auth verify proofing results',
+      ],
+    ),
+    buckets: { sign_in_recaptcha: IdentityConfig.store.sign_in_recaptcha_percent_tested },
+  ).freeze
 end

@@ -97,10 +97,12 @@ module Users
 
     def valid_captcha_result?
       return @valid_captcha_result if defined?(@valid_captcha_result)
+      email = auth_params[:email]
       @valid_captcha_result = SignInRecaptchaForm.new(**recaptcha_form_args).submit(
-        email: auth_params[:email],
+        email:,
         recaptcha_token: params.require(:user)[:recaptcha_token],
         device_cookie: cookies[:device],
+        ab_test_bucket: ab_test_bucket(:RECAPTCHA_SIGN_IN, user: User.find_with_email(email)),
       ).success?
     end
 
