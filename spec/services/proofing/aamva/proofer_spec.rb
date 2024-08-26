@@ -302,7 +302,7 @@ RSpec.describe Proofing::Aamva::Proofer do
 
       it 'sets jurisdiction_in_maintenance_window to true' do
         result = subject.proof(state_id_data)
-        expect(result.jurisdiction_in_maintenance_window).to eq(true)
+        expect(result.jurisdiction_in_maintenance_window?).to eq(true)
       end
     end
 
@@ -314,7 +314,7 @@ RSpec.describe Proofing::Aamva::Proofer do
 
       it 'sets jurisdiction_in_maintenance_window to false' do
         result = subject.proof(state_id_data)
-        expect(result.jurisdiction_in_maintenance_window).to eq(false)
+        expect(result.jurisdiction_in_maintenance_window?).to eq(false)
       end
     end
   end
