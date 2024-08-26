@@ -31,12 +31,7 @@ class SocureShadowModeProofingJob < ApplicationJob
 
     proofing_result = load_proofing_result(document_capture_session_result_id:)
     if !proofing_result
-      analytics.idv_socure_shadow_mode_proofing_result_missing(
-        # NOTE: user_id in Analytics parlance is *actually* the uuid. Passing it
-        #       here will make sure that properties.user_id is set correctly on
-        #       the logged event
-        user_id: user.uuid,
-      )
+      analytics.idv_socure_shadow_mode_proofing_result_missing
       return
     end
 

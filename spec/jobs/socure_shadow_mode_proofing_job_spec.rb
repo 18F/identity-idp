@@ -290,7 +290,6 @@ RSpec.describe SocureShadowModeProofingJob do
 
         expect(analytics).to have_logged_event(
           :idv_socure_shadow_mode_proofing_result_missing,
-          user_id: user.uuid,
         )
       end
     end
