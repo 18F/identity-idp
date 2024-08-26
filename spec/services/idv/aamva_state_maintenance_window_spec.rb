@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Idv::AamvaStateMaintenanceWindow do
   let(:tz) { 'America/New_York' }
+  let(:eastern_time) { ActiveSupport::TimeZone[tz] }
 
   before do
     travel_to Date.new(2024, 6, 2)
@@ -14,18 +15,14 @@ RSpec.describe Idv::AamvaStateMaintenanceWindow do
 
     context 'for a state with a defined outage window' do
       it 'is true during the maintenance window' do
-        Time.use_zone(tz) do
-          travel_to(Time.parse('June 2, 2024 at 1am')) do
-            expect(subject).to eq(true)
-          end
+        travel_to(eastern_time.parse('June 2, 2024 at 1am')) do
+          expect(subject).to eq(true)
         end
       end
 
       it 'is false outside of the maintenance window' do
-        Time.use_zone(tz) do
-          travel_to(Time.zone.parse('June 2, 2024 at 8am')) do
-            expect(subject).to eq(false)
-          end
+        travel_to(eastern_time.parse('June 2, 2024 at 8am')) do
+          expect(subject).to eq(false)
         end
       end
     end

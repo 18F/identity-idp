@@ -136,7 +136,7 @@ module Idv
 
     PARSED_MAINTENANCE_WINDOWS = MAINTENANCE_WINDOWS.transform_values do |windows|
       Time.use_zone(TZ) do
-        windows.collect do |window|
+        windows.map do |window|
           cron = Fugit.parse_cron(window[:cron])
           { cron: cron, duration_minutes: window[:duration_minutes] }
         end
@@ -151,10 +151,8 @@ module Idv
       end
 
       def windows_for_state(state)
-        return [] unless PARSED_MAINTENANCE_WINDOWS[state]
-
         Time.use_zone(TZ) do
-          PARSED_MAINTENANCE_WINDOWS[state].collect do |window|
+          PARSED_MAINTENANCE_WINDOWS.fetch(state, []).map do |window|
             previous = window[:cron].previous_time.to_t
             (previous..(previous + window[:duration_minutes].minutes))
           end
