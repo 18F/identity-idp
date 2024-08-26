@@ -157,7 +157,13 @@ RSpec.describe MarketingSite do
     let(:category) {}
     let(:article) {}
     let(:article_anchor) {}
-    let(:url) { MarketingSite.help_center_article_url(category: category, article: article) }
+    let(:service_provider_issuer) { nil }
+    let(:url) do
+      MarketingSite.help_center_article_url(
+        category: category,
+        article: article,
+      )
+    end
 
     context 'with invalid article' do
       let(:category) { 'foo' }
@@ -170,20 +176,20 @@ RSpec.describe MarketingSite do
 
     context 'with valid article' do
       let(:category) { 'verify-your-identity' }
-      let(:article) { 'accepted-state-issued-identification' }
+      let(:article) { 'accepted-identification-documents' }
 
       it_behaves_like 'a marketing site URL'
 
       it 'returns article URL' do
         expect(url).to eq(
-          'https://www.login.gov/help/verify-your-identity/accepted-state-issued-identification/',
+          'https://www.login.gov/help/verify-your-identity/accepted-identification-documents/',
         )
       end
     end
 
     context 'with anchor' do
       let(:category) { 'verify-your-identity' }
-      let(:article) { 'accepted-state-issued-identification' }
+      let(:article) { 'accepted-identification-documents' }
       let(:article_anchor) { 'test-anchor-url' }
       let(:url) do
         MarketingSite.help_center_article_url(category:, article:, article_anchor:)
@@ -193,7 +199,7 @@ RSpec.describe MarketingSite do
 
       it 'returns article URL' do
         expect(url).to eq(
-          'https://www.login.gov/help/verify-your-identity/accepted-state-issued-identification/#test-anchor-url',
+          'https://www.login.gov/help/verify-your-identity/accepted-identification-documents/#test-anchor-url',
         )
       end
     end
@@ -213,7 +219,7 @@ RSpec.describe MarketingSite do
 
     context 'with valid article' do
       let(:category) { 'verify-your-identity' }
-      let(:article) { 'accepted-state-issued-identification' }
+      let(:article) { 'accepted-identification-documents' }
 
       it { expect(result).to eq(true) }
 

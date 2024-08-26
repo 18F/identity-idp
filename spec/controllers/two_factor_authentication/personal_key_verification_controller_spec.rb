@@ -1,7 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController,
-               allowed_extra_analytics: [:*] do
+RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
   let(:personal_key) { { personal_key: 'foo' } }
   let(:payload) { { personal_key_form: personal_key } }
 
@@ -20,12 +19,13 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController,
       user = build(:user, :with_personal_key, password: ControllerHelper::VALID_PASSWORD)
       stub_sign_in_before_2fa(user)
       stub_analytics
-      analytics_hash = { context: 'authentication' }
-
-      expect(@analytics).to receive(:track_event).
-        with('Multi-Factor Authentication: enter personal key visited', analytics_hash)
 
       get :show
+
+      expect(@analytics).to have_logged_event(
+        'Multi-Factor Authentication: enter personal key visited',
+        context: 'authentication',
+      )
     end
 
     it 'redirects to the two_factor_options page if user is IAL2' do
@@ -72,6 +72,7 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController,
           'Multi-Factor Authentication',
           success: true,
           errors: {},
+          enabled_mfa_methods_count: 1,
           multi_factor_auth_method: 'personal-key',
           multi_factor_auth_method_created_at:,
           new_device: true,
@@ -213,6 +214,7 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController,
           success: false,
           errors: { personal_key: [t('errors.messages.personal_key_incorrect')] },
           error_details: { personal_key: { personal_key_incorrect: true } },
+          enabled_mfa_methods_count: 1,
           multi_factor_auth_method: 'personal-key',
           multi_factor_auth_method_created_at: personal_key_generated_at.strftime('%s%L'),
           new_device: true,

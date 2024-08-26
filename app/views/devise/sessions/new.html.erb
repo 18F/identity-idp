@@ -77,14 +77,22 @@
   <p class="margin-y-1">
     <%= new_tab_link_to(
           t('notices.privacy.security_and_privacy_practices'),
-          MarketingSite.security_and_privacy_practices_url,
+          policy_redirect_url(
+            policy: :security_and_privacy_practices,
+            flow: :sign_in,
+            step: :sign_in,
+          ),
         ) %>
   </p>
 
   <p class="margin-y-1">
     <%= new_tab_link_to(
           t('notices.privacy.privacy_act_statement'),
-          MarketingSite.privacy_act_statement_url,
+          policy_redirect_url(
+            policy: :privacy_act_statement,
+            flow: :sign_in,
+            step: :sign_in,
+          ),
         ) %>
   </p>
 <% end %>
@@ -93,8 +101,9 @@
 <% if IdentityConfig.store.participate_in_dap %>
   <!-- <%= t('notices.dap_participation') %> -->
   <%= javascript_packs_tag_once(
-        'https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=GSA&subagency=TTS',
-        async: true,
+        'digital-analytics-program',
+        url_params: { agency: 'GSA', subagency: 'TTS' },
+        defer: true,
         id: '_fed_an_ua_tag',
         preload_links_header: false,
       ) %>

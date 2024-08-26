@@ -70,7 +70,7 @@ class ServiceProviderRequestProxy
     REDIS_POOL.with do |client|
       client.setex(
         key(uuid),
-        IdentityConfig.store.service_provider_request_ttl_hours.hours.to_i,
+        IdentityConfig.store.service_provider_request_ttl_hours.hours.in_seconds,
         obj.to_json,
       )
     end

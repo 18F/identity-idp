@@ -22,7 +22,8 @@ module Proofing
         reference: '',
         failed_result_can_pass_with_additional_verification: false,
         attributes_requiring_additional_verification: [],
-        vendor_workflow: nil
+        vendor_workflow: nil,
+        verified_attributes: nil
       )
         @success = success
         @errors = errors
@@ -35,6 +36,7 @@ module Proofing
         @attributes_requiring_additional_verification =
           attributes_requiring_additional_verification
         @vendor_workflow = vendor_workflow
+        @verified_attributes = verified_attributes
       end
 
       def success?

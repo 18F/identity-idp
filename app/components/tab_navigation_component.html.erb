@@ -5,8 +5,8 @@
         <%= render ButtonComponent.new(
               url: route[:path],
               big: true,
-              outline: !is_current_path?(route[:path]),
-              aria: { current: is_current_path?(route[:path]) ? 'page' : nil },
+              outline: !current_path?(route[:path]),
+              aria: { current: current_path?(route[:path]) ? 'page' : nil },
             ).with_content(route[:text]) %>
       </li>
     <% end %>

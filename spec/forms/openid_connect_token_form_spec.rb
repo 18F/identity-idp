@@ -412,7 +412,7 @@ RSpec.describe OpenidConnectTokenForm do
         OutOfBandSessionAccessor.new(
           identity.rails_session_id,
         ).put_empty_user_session(
-          5.minutes.to_i,
+          5.minutes.in_seconds,
         )
       end
 

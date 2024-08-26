@@ -32,19 +32,12 @@ RSpec.describe Users::PivCacLoginController do
           expect(@analytics).to have_logged_event(
             :piv_cac_login,
             errors: {},
-            key_id: nil,
             success: false,
           )
         end
 
         it 'redirects to the error url' do
           expect(response).to redirect_to(login_piv_cac_error_url(error: 'token.bad'))
-        end
-
-        it 'records unsuccessful 2fa event' do
-          expect(controller).to receive(:create_user_event).with(:sign_in_unsuccessful_2fa)
-
-          response
         end
       end
 
@@ -89,7 +82,6 @@ RSpec.describe Users::PivCacLoginController do
               errors: {
                 type: 'user.not_found',
               },
-              key_id: nil,
               success: false,
             )
           end
@@ -129,8 +121,8 @@ RSpec.describe Users::PivCacLoginController do
             expect(@analytics).to have_logged_event(
               :piv_cac_login,
               errors: {},
-              key_id: nil,
               success: true,
+              new_device: true,
             )
           end
 
@@ -174,6 +166,25 @@ RSpec.describe Users::PivCacLoginController do
               presented: true,
             }
             expect(controller.user_session[:decrypted_x509]).to eq session_info.to_json
+          end
+
+          context 'with authenticated device' do
+            let(:user) { create(:user, :with_authenticated_device) }
+
+            before do
+              cookies[:device] = user.devices.last.cookie_uuid
+            end
+
+            it 'tracks the login attempt' do
+              response
+
+              expect(@analytics).to have_logged_event(
+                :piv_cac_login,
+                errors: {},
+                success: true,
+                new_device: false,
+              )
+            end
           end
 
           context 'when the user has not accepted the most recent terms of use' do

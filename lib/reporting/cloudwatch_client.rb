@@ -47,7 +47,7 @@ module Reporting
     # @param [#to_s] query
     # @param [Time] from
     # @param [Time] to
-    # @param [Array<Range<Time>>] time_slices Pass an to use specific slices
+    # @param [Array<Range<Time>>] time_slices Pass a list of time ranges to use specific slices
     # @raise [ArgumentError] raised when incorrect time parameters are received
     # @overload fetch(query:, from:, to:)
     #   The block-less form returns the array of *all* results at the end
@@ -97,7 +97,7 @@ module Reporting
             response = fetch_one(query:, start_time:, end_time:)
             with_progress_bar(&:increment)
 
-            if ensure_complete_logs? && has_more_results?(response.results.size)
+            if ensure_complete_logs? && more_results?(response.results.size)
               log(:info, "more results, bisecting: start_time=#{start_time} end_time=#{end_time}")
               mid = midpoint(start_time:, end_time:)
 
@@ -228,7 +228,7 @@ module Reporting
 
     # somehow sample responses returned 10,001 rows when we request 10,000
     # so we check for more than the limit
-    def has_more_results?(size)
+    def more_results?(size)
       size >= MAX_RESULTS_LIMIT
     end
 
@@ -250,8 +250,12 @@ module Reporting
       end
 
       if time_slices.present?
-        time_slices
-      elsif slice_interval
+        return time_slices
+      end
+
+      raise ArgumentError, '`:from` must be a Time or equivalent' if !from.respond_to?(:to_i)
+      raise ArgumentError, '`:to` must be a Time or equivalent' if !to.respond_to?(:to_i)
+      if slice_interval
         slices = []
         low = from
         high = to

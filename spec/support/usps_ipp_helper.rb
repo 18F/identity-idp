@@ -121,16 +121,30 @@ module UspsIppHelper
     )
   end
 
-  def stub_request_expired_proofing_results
+  def stub_request_expired_enhanced_ipp_proofing_results
     stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
-      **request_expired_proofing_results_args,
+      **request_expired_enhanced_ipp_results_args,
     )
   end
 
-  def request_expired_proofing_results_args
+  def request_expired_enhanced_ipp_results_args
     {
       status: 400,
-      body: UspsInPersonProofing::Mock::Fixtures.request_expired_proofing_results_response,
+      body: UspsInPersonProofing::Mock::Fixtures.request_expired_enhanced_ipp_results_response,
+      headers: { 'content-type' => 'application/json' },
+    }
+  end
+
+  def stub_request_expired_id_ipp_proofing_results
+    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
+      **request_expired_id_ipp_results_args,
+    )
+  end
+
+  def request_expired_id_ipp_results_args
+    {
+      status: 400,
+      body: UspsInPersonProofing::Mock::Fixtures.request_expired_id_ipp_results_response,
       headers: { 'content-type' => 'application/json' },
     }
   end
@@ -239,6 +253,15 @@ module UspsIppHelper
     )
   end
 
+  def stub_request_passed_proofing_secondary_id_type_results_ial_2
+    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
+      status: 200,
+      body: UspsInPersonProofing::Mock::
+        Fixtures.request_passed_proofing_secondary_id_type_results_response_ial_2,
+      headers: { 'content-type' => 'application/json' },
+    )
+  end
+
   def stub_request_passed_proofing_unsupported_status_results
     stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
       status: 200,
@@ -326,21 +349,6 @@ module UspsIppHelper
       status: 200,
       body: 'invalid',
     )
-  end
-
-  def stub_request_enrollment_code
-    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/requestEnrollmentCode}).to_return(
-      status: 200,
-      body: UspsInPersonProofing::Mock::Fixtures.request_enrollment_code_response,
-      headers: { 'content-type' => 'application/json' },
-    )
-  end
-
-  def stub_request_enrollment_code_with_forbidden_error
-    stub_request(
-      :post,
-      %r{/ivs-ippaas-api/IPPRest/resources/rest/requestEnrollmentCode},
-    ).to_raise(Faraday::ForbiddenError)
   end
 
   private

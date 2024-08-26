@@ -82,7 +82,7 @@ class Profile < ApplicationRecord
   def pending_reasons
     [
       *(:gpo_verification_pending if gpo_verification_pending?),
-      *(:fraud_check_pending if has_fraud_deactivation_reason?),
+      *(:fraud_check_pending if fraud_deactivation_reason?),
       *(:in_person_verification_pending if in_person_verification_pending?),
     ]
   end
@@ -179,7 +179,7 @@ class Profile < ApplicationRecord
     update!(active: false, deactivation_reason: reason)
   end
 
-  def has_fraud_deactivation_reason?
+  def fraud_deactivation_reason?
     fraud_review_pending? || fraud_rejection?
   end
 
@@ -193,6 +193,14 @@ class Profile < ApplicationRecord
       active: false,
       gpo_verification_pending_at: nil,
       gpo_verification_expired_at: Time.zone.now,
+    )
+  end
+
+  def deactivate_due_to_ipp_expiration
+    update!(
+      active: false,
+      deactivation_reason: :verification_cancelled,
+      in_person_verification_pending_at: nil,
     )
   end
 

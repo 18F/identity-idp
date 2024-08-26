@@ -7,7 +7,7 @@ import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import type { FormStep } from '@18f/identity-form-steps';
 import { getConfigValue } from '@18f/identity-config';
 import { UploadFormEntriesError } from '../services/upload';
-import DocumentsStep from './documents-step';
+import DocumentsAndSelfieStep from './documents-and-selfie-step';
 import InPersonPrepareStep from './in-person-prepare-step';
 import InPersonLocationPostOfficeSearchStep from './in-person-location-post-office-search-step';
 import InPersonLocationFullAddressEntryPostOfficeSearchStep from './in-person-location-full-address-entry-post-office-search-step';
@@ -39,14 +39,59 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
   const { inPersonFullAddressEntryEnabled, inPersonURL, skipDocAuth, skipDocAuthFromHandoff } =
     useContext(InPersonContext);
-  const appName = getConfigValue('appName');
-
   useDidUpdateEffect(onStepChange, [stepName]);
   useEffect(() => {
     if (stepName) {
       trackVisitEvent(stepName);
     }
   }, [stepName]);
+  const appName = getConfigValue('appName');
+  const inPersonLocationPostOfficeSearchForm = inPersonFullAddressEntryEnabled
+    ? InPersonLocationFullAddressEntryPostOfficeSearchStep
+    : InPersonLocationPostOfficeSearchStep;
+
+  // Define different states to be used in human readable array declaration
+  const documentFormStep: FormStep = {
+    name: 'documents',
+    form: DocumentsAndSelfieStep,
+    title: t('doc_auth.headings.document_capture'),
+  };
+  const reviewFormStep: FormStep = {
+    name: 'review',
+    form:
+      submissionError instanceof UploadFormEntriesError
+        ? withProps({
+            remainingSubmitAttempts: submissionError.remainingSubmitAttempts,
+            isResultCodeInvalid: submissionError.isResultCodeInvalid,
+            isFailedResult: submissionError.isFailedResult,
+            isFailedDocType: submissionError.isFailedDocType,
+            isFailedSelfie: submissionError.isFailedSelfie,
+            isFailedSelfieLivenessOrQuality:
+              submissionError.selfieNotLive || submissionError.selfieNotGoodQuality,
+            captureHints: submissionError.hints,
+            pii: submissionError.pii,
+            failedImageFingerprints: submissionError.failed_image_fingerprints,
+          })(ReviewIssuesStep)
+        : ReviewIssuesStep,
+    title: t('doc_auth.errors.rate_limited_heading'),
+  };
+
+  // In Person Steps
+  const prepareFormStep: FormStep = {
+    name: 'prepare',
+    form: InPersonPrepareStep,
+    title: t('in_person_proofing.headings.prepare'),
+  };
+  const locationFormStep: FormStep = {
+    name: 'location',
+    form: inPersonLocationPostOfficeSearchForm,
+    title: t('in_person_proofing.headings.po_search.location'),
+  };
+  const hybridFormStep: FormStep = {
+    name: 'switch_back',
+    form: InPersonSwitchBackStep,
+    title: t('in_person_proofing.headings.switch_back'),
+  };
 
   /**
    * Clears error state and sets form values for submission.
@@ -80,62 +125,16 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
     initialValues = formValues;
   }
 
-  const inPersonLocationPostOfficeSearchForm = inPersonFullAddressEntryEnabled
-    ? InPersonLocationFullAddressEntryPostOfficeSearchStep
-    : InPersonLocationPostOfficeSearchStep;
-
   const inPersonSteps: FormStep[] =
     inPersonURL === undefined
       ? []
-      : ([
-          {
-            name: 'prepare',
-            form: InPersonPrepareStep,
-            title: t('in_person_proofing.headings.prepare'),
-          },
-          {
-            name: 'location',
-            form: inPersonLocationPostOfficeSearchForm,
-            title: t('in_person_proofing.headings.po_search.location'),
-          },
-          flowPath === 'hybrid' && {
-            name: 'switch_back',
-            form: InPersonSwitchBackStep,
-            title: t('in_person_proofing.headings.switch_back'),
-          },
-        ].filter(Boolean) as FormStep[]);
+      : ([prepareFormStep, locationFormStep, flowPath === 'hybrid' && hybridFormStep].filter(
+          Boolean,
+        ) as FormStep[]);
 
   const defaultSteps: FormStep[] = submissionError
-    ? (
-        [
-          {
-            name: 'review',
-            form:
-              submissionError instanceof UploadFormEntriesError
-                ? withProps({
-                    remainingSubmitAttempts: submissionError.remainingSubmitAttempts,
-                    isResultCodeInvalid: submissionError.isResultCodeInvalid,
-                    isFailedResult: submissionError.isFailedResult,
-                    isFailedDocType: submissionError.isFailedDocType,
-                    isFailedSelfie: submissionError.isFailedSelfie,
-                    isFailedSelfieLivenessOrQuality:
-                      submissionError.selfieNotLive || submissionError.selfieNotGoodQuality,
-                    captureHints: submissionError.hints,
-                    pii: submissionError.pii,
-                    failedImageFingerprints: submissionError.failed_image_fingerprints,
-                  })(ReviewIssuesStep)
-                : ReviewIssuesStep,
-            title: t('errors.doc_auth.rate_limited_heading'),
-          },
-        ] as FormStep[]
-      ).concat(inPersonSteps)
-    : ([
-        {
-          name: 'documents',
-          form: DocumentsStep,
-          title: t('doc_auth.headings.document_capture'),
-        },
-      ].filter(Boolean) as FormStep[]);
+    ? ([reviewFormStep] as FormStep[]).concat(inPersonSteps)
+    : ([documentFormStep] as FormStep[]);
 
   // If the user got here by opting-in to in-person proofing, when skipDocAuth === true,
   // then set steps to inPersonSteps

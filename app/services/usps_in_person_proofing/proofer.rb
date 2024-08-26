@@ -73,42 +73,22 @@ module UspsInPersonProofing
     end
 
     # Makes HTTP request to retrieve proofing status
-    # Requires the applicant's enrollment code and unique ID.
+    # Requires the applicant's InPersonEnrollment.
     # When proofing is complete the API returns 200 status.
     # If the applicant has not been to the post office, has proofed recently,
     # or there is another issue, the API returns a 400 status with an error message.
-    # @param unique_id [String]
-    # @param enrollment_code [String]
+    # param enrollment [InPersonEnrollment]
     # @return [Hash] API response
-    def request_proofing_results(unique_id, enrollment_code)
+    def request_proofing_results(enrollment)
       url = "#{root_url}/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults"
       request_body = {
-        sponsorID: sponsor_id,
-        uniqueID: unique_id,
-        enrollmentCode: enrollment_code,
+        sponsorID: enrollment.sponsor_id.to_i,
+        uniqueID: enrollment.unique_id,
+        enrollmentCode: enrollment.enrollment_code,
       }
 
       faraday.post(url, request_body, dynamic_headers) do |req|
         req.options.context = { service_name: 'usps_proofing_results' }
-      end.body
-    end
-
-    # Makes HTTP request to retrieve enrollment code
-    # If an applicant has a currently valid enrollment code, it will be returned.
-    # If they do not, a new one will be generated and returned. USPS sends the applicant an email
-    # with instructions and the enrollment code.
-    # Requires the applicant's unique ID.
-    # @param unique_id [String]
-    # @return [Hash] API response
-    def request_enrollment_code(unique_id)
-      url = "#{root_url}/ivs-ippaas-api/IPPRest/resources/rest/requestEnrollmentCode"
-      request_body = {
-        sponsorID: sponsor_id,
-        uniqueID: unique_id,
-      }
-
-      faraday.post(url, request_body, dynamic_headers) do |req|
-        req.options.context = { service_name: 'usps_enrollment_code' }
       end.body
     end
 

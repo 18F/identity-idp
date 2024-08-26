@@ -8,7 +8,7 @@ variables:
   FF_SCRIPT_SECTIONS: 'true'
   JUNIT_OUTPUT: 'true'
   ECR_REGISTRY: '${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
-  IDP_CI_SHA: 'sha256:0cea6ebf8fa4d693177f46ae9a8c24e6030245f3c795753269b7910178d5cfdd'
+  IDP_CI_SHA: 'sha256:5c4953f8efba18b7a6d6a9a961cb77ba7143059cbb2176499432b4275fbe67db'
   PKI_IMAGE_TAG: 'main'
   DASHBOARD_IMAGE_TAG: 'main'
 
@@ -182,6 +182,7 @@ build-idp-image:
       --cache-repo="${ECR_REGISTRY}/identity-idp/idp/cache"
       --cache-ttl=168h
       --cache=true
+      --snapshot-mode=redo
       --compressed-caching=false
       --build-arg "http_proxy=${http_proxy}"
       --build-arg "https_proxy=${https_proxy}"
@@ -191,6 +192,8 @@ build-idp-image:
       --build-arg "ARG_CI_COMMIT_SHA=${CI_COMMIT_SHA}"
       --build-arg "LARGE_FILES_TOKEN=${LARGE_FILES_TOKEN}"
       --build-arg "LARGE_FILES_USER=${LARGE_FILES_USER}"
+      --build-arg "SERVICE_PROVIDERS_KEY=${SERVICE_PROVIDERS_KEY}"
+
 
 check_changelog:
   stage: test
@@ -226,7 +229,7 @@ migrate:
     POSTGRES_HOST_AUTH_METHOD: trust
     RAILS_ENV: test
   services:
-    - name: postgres:13.9
+    - name: public.ecr.aws/docker/library/postgres:13.9
       alias: db-postgres
       command: ['--fsync=false', '--synchronous_commit=false', '--full_page_writes=false']
   script:
@@ -258,10 +261,10 @@ specs:
     POSTGRES_HOST_AUTH_METHOD: trust
     RAILS_ENV: test
   services:
-    - name: postgres:13.9
+    - name: public.ecr.aws/docker/library/postgres:13.9
       alias: db-postgres
       command: ['--fsync=false', '--synchronous_commit=false', '--full_page_writes=false']
-    - name: redis:7.0
+    - name: public.ecr.aws/docker/library/redis:7.0
       alias: db-redis
   artifacts:
     expire_in: 31d
@@ -288,7 +291,7 @@ specs:
     - cp -a keys.example keys
     - cp -a certs.example certs
     - cp pwned_passwords/pwned_passwords.txt.sample pwned_passwords/pwned_passwords.txt
-    - "echo -e \"test:\n  redis_url: 'redis://redis:6379/0'\n  redis_throttle_url: 'redis://redis:6379/1'\" > config/application.yml"
+    - "echo -e \"test:\n  redis_url: 'redis://db-redis:6379/0'\n  redis_throttle_url: 'redis://db-redis:6379/1'\" > config/application.yml"
     - bundle exec rake db:create db:migrate --trace
     - bundle exec rake db:seed
     - bundle exec rake knapsack:rspec["--format documentation --format RspecJunitFormatter --out rspec.xml --format json --out rspec_json/${CI_NODE_INDEX}.json"]
@@ -428,6 +431,9 @@ trigger_devops:
     - kubectl config get-contexts
     - export CONTEXT=$(kubectl config get-contexts | grep reviewapp | awk '{print $1}' | head -1)
     - kubectl config use-context "$CONTEXT"
+    - export SANITIZED_BRANCH_NAME=$(echo "$CI_COMMIT_REF_NAME" | tr '/' '-' | tr -c '[:alnum:]-_' '-' | sed 's/-*$//')
+    - echo "${CI_COMMIT_REF_NAME}"
+    - echo "${SANITIZED_BRANCH_NAME}"
     - |-
       cat <<EOF > $CI_ENVIRONMENT_SLUG.yaml
       apiVersion: argoproj.io/v1alpha1
@@ -586,22 +592,22 @@ trigger_devops:
     - echo "To access the rails console, first run 'aws-vault exec sandbox-power -- aws eks update-kubeconfig --name reviewapp'"
     - echo "Then run aws-vault exec sandbox-power -- kubectl exec -it service/$CI_ENVIRONMENT_SLUG-login-chart-idp -n review-apps -- /app/bin/rails console"
     - echo "Address of IDP review app:"
-    - echo https://$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov
+    - echo https://$CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov
     - echo "Address of PIVCAC review app:"
-    - echo https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapp.identitysandbox.gov
+    - echo https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapps.identitysandbox.gov
     - echo "Address of Dashboard review app:"
-    - echo https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapp.identitysandbox.gov
+    - echo https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapps.identitysandbox.gov
 
 review-app:
   stage: review
   allow_failure: true
   needs:
     - job: build-review-image
-  resource_group: $CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov
+  resource_group: $CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov
   extends: .deploy
   environment:
     name: review/$CI_COMMIT_REF_NAME
-    url: https://$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov
+    url: https://$CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov
     on_stop: stop-review-app
     auto_stop_in: 2 days
   rules:
@@ -610,7 +616,7 @@ review-app:
       when: never
 
 stop-review-app:
-  resource_group: $CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov
+  resource_group: $CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov
   script:
     - export CONTEXT=$(kubectl config get-contexts | grep reviewapp | awk '{print $1}' | head -1)
     - kubectl config use-context "$CONTEXT"
@@ -634,12 +640,12 @@ deploy_production:
   allow_failure: true
   needs:
     - job: build-review-image
-  resource_group: $CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov
+  resource_group: $CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov
   extends: .deploy
   environment:
     name: production
     deployment_tier: production
-    url: https://$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov
+    url: https://$CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov
   rules:
     - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
 
@@ -864,7 +870,7 @@ pinpoint_check_scheduled:
           --channel "#login-appdev" \
           --webhook "${SLACK_WEBHOOK}" \
           --raise \
-          --text "Pinpoint supported countries check in GitLab failed.\nBuild Results: ${CI_JOB_URL}.\nCheck results locally with 'make lint_country_dialing_codes'"
+          --text "$(printf "Pinpoint supported countries check in GitLab failed.\nBuild Results: ${CI_JOB_URL}.\nCheck results locally with 'make lint_country_dialing_codes'")""
       fi
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
@@ -888,7 +894,7 @@ audit_packages_scheduled:
           --channel "#login-appdev" \
           --webhook "${SLACK_WEBHOOK}" \
           --raise \
-          --text "Dependencies audit in GitLab failed.\nBuild Results: ${CI_JOB_URL}\nCheck results locally with 'make audit'"
+          --text "$(printf "Dependencies audit in GitLab failed.\nBuild Results: ${CI_JOB_URL}\nCheck results locally with 'make audit'")"
       fi
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"

@@ -96,6 +96,7 @@ RSpec.describe Reporting::ActiveUsersCountReport do
 
       expected_table = [
         ['Active Users (APG)', 'IAL1', 'IDV', 'Total', 'Range start', 'Range end'],
+        ['Current month', 0, 0, 0, Date.new(2023, 3, 1), Date.new(2023, 3, 31)],
         ['Fiscal year Q1', 0, 0, 0, Date.new(2022, 10, 1), Date.new(2022, 12, 31)],
         ['Fiscal year Q2 cumulative', 2, 0, 2, Date.new(2022, 10, 1), Date.new(2023, 3, 31)],
         ['Fiscal year Q3 cumulative', 2, 0, 2, Date.new(2022, 10, 1), Date.new(2023, 3, 31)],
@@ -106,7 +107,7 @@ RSpec.describe Reporting::ActiveUsersCountReport do
 
       emailable_report = report.active_users_count_apg_emailable_report
 
-      expect(Db::Identity::SpActiveUserCounts).to have_received(:overall_apg).exactly(2).times
+      expect(Db::Identity::SpActiveUserCounts).to have_received(:overall_apg).exactly(3).times
 
       aggregate_failures do
         emailable_report.table.zip(expected_table).each do |actual, expected|

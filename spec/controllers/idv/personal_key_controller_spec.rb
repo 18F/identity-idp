@@ -180,7 +180,7 @@ RSpec.describe Idv::PersonalKeyController do
         :confirm_idv_needed,
         :confirm_personal_key_acknowledged_if_needed,
         :confirm_no_pending_in_person_enrollment,
-        :handle_fraud,
+        :confirm_no_pending_profile,
       )
     end
 
@@ -446,7 +446,6 @@ RSpec.describe Idv::PersonalKeyController do
             fraud_review_pending: false,
             fraud_rejection: false,
             in_person_verification_pending: false,
-            deactivation_reason: nil,
           ),
         )
       end
@@ -494,7 +493,6 @@ RSpec.describe Idv::PersonalKeyController do
             fraud_review_pending: false,
             fraud_rejection: false,
             in_person_verification_pending: false,
-            proofing_components: nil,
           ),
         )
       end
@@ -523,7 +521,6 @@ RSpec.describe Idv::PersonalKeyController do
               fraud_review_pending: false,
               fraud_rejection: false,
               in_person_verification_pending: false,
-              proofing_components: nil,
             ),
           )
         end
@@ -551,7 +548,6 @@ RSpec.describe Idv::PersonalKeyController do
               fraud_rejection: false,
               address_verification_method: 'phone',
               in_person_verification_pending: false,
-              deactivation_reason: nil,
             ),
           )
         end

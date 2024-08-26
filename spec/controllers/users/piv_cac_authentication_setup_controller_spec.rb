@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Users::PivCacAuthenticationSetupController, allowed_extra_analytics: [:*] do
+RSpec.describe Users::PivCacAuthenticationSetupController do
   describe 'before_actions' do
     it 'includes appropriate before_actions' do
       expect(subject).to have_actions(
@@ -90,13 +90,14 @@ RSpec.describe Users::PivCacAuthenticationSetupController, allowed_extra_analyti
 
           it 'tracks the analytic event of visited' do
             stub_analytics
-            expect(@analytics).to receive(:track_event).
-              with(:piv_cac_setup_visited, {
-                in_account_creation_flow: false,
-                enabled_mfa_methods_count: 1,
-              })
 
             get :new
+
+            expect(@analytics).to have_logged_event(
+              :piv_cac_setup_visited,
+              in_account_creation_flow: false,
+              enabled_mfa_methods_count: 1,
+            )
           end
         end
 

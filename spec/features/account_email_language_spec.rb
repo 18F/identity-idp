@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Account email language', allowed_extra_analytics: [:*] do
+RSpec.describe 'Account email language' do
   let(:user) { user_with_2fa }
 
   let(:original_email_language) { 'es' }

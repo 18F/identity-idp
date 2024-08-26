@@ -2,18 +2,12 @@
 
 module Idv
   module AcuantConcern
-    def acuant_sdk_ab_test_analytics_args
-      return {} if document_capture_session_uuid.blank?
-
-      {
-        acuant_sdk_upgrade_ab_test_bucket:
-          AbTests::ACUANT_SDK.bucket(document_capture_session_uuid),
-      }
-    end
+    include AbTestingConcern
 
     def acuant_sdk_upgrade_a_b_testing_variables
-      bucket = AbTests::ACUANT_SDK.bucket(document_capture_session_uuid)
-      testing_enabled = IdentityConfig.store.idv_acuant_sdk_upgrade_a_b_testing_enabled
+      bucket = ab_test_bucket(:ACUANT_SDK)
+      testing_enabled = IdentityConfig.store.idv_acuant_sdk_upgrade_a_b_testing_enabled &&
+                        bucket.present?
       use_alternate_sdk = (bucket == :use_alternate_sdk)
 
       if use_alternate_sdk

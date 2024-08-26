@@ -5,62 +5,65 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
     include TwoFactorAuthenticatableMethods
   end
 
-  describe '#handle_valid_verification_for_authentication_context' do
+  describe '#handle_verification_for_authentication_context' do
+    let(:form_response) { FormResponse.new(success: true) }
     let(:user) { create(:user) }
     let(:auth_method) { TwoFactorAuthenticatable::AuthMethod::REMEMBER_DEVICE }
 
     subject(:result) do
-      controller.handle_valid_verification_for_authentication_context(auth_method:)
+      controller.handle_verification_for_authentication_context(
+        result: form_response,
+        auth_method:,
+      )
     end
 
     before do
       stub_sign_in_before_2fa(user)
     end
 
-    it 'tracks authentication event' do
-      stub_analytics
+    context 'successful verification' do
+      let(:form_response) { FormResponse.new(success: true) }
 
-      result
+      it 'tracks multi-factor authentication event' do
+        stub_analytics
 
-      expect(@analytics).to have_logged_event(
-        'User marked authenticated',
-        authentication_type: :valid_2fa,
-      )
-    end
+        result
 
-    it 'authenticates user session auth methods' do
-      expect(controller.auth_methods_session).to receive(:authenticate!).with(auth_method)
-
-      result
-    end
-
-    it 'creates a new user event with disavowal' do
-      expect { result }.to change { user.reload.events.count }.from(0).to(1)
-      expect(user.events.last.event_type).to eq('sign_in_after_2fa')
-      expect(user.events.last.disavowal_token_fingerprint).to be_present
-    end
-
-    context 'when authenticating without new device sign in' do
-      let(:user) { create(:user) }
-
-      context 'when alert aggregation feature is disabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:feature_new_device_alert_aggregation_enabled).
-            and_return(false)
-        end
-
-        it 'does not send an alert' do
-          expect(UserAlerts::AlertUserAboutNewDevice).to_not receive(:send_alert)
-
-          result
-        end
+        expect(@analytics).to have_logged_event(
+          'Multi-Factor Authentication',
+          success: true,
+          errors: {},
+          multi_factor_auth_method: TwoFactorAuthenticatable::AuthMethod::REMEMBER_DEVICE,
+          enabled_mfa_methods_count: 0,
+          new_device: true,
+        )
       end
 
-      context 'when alert aggregation feature is enabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:feature_new_device_alert_aggregation_enabled).
-            and_return(true)
-        end
+      it 'tracks authentication event' do
+        stub_analytics
+
+        result
+
+        expect(@analytics).to have_logged_event(
+          'User marked authenticated',
+          authentication_type: :valid_2fa,
+        )
+      end
+
+      it 'authenticates user session auth methods' do
+        expect(controller.auth_methods_session).to receive(:authenticate!).with(auth_method)
+
+        result
+      end
+
+      it 'creates a new user event with disavowal' do
+        expect { result }.to change { user.reload.events.count }.from(0).to(1)
+        expect(user.events.last.event_type).to eq('sign_in_after_2fa')
+        expect(user.events.last.disavowal_token_fingerprint).to be_present
+      end
+
+      context 'when authenticating without new device sign in' do
+        let(:user) { create(:user) }
 
         context 'with an existing device' do
           before do
@@ -132,29 +135,9 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
           end
         end
       end
-    end
 
-    context 'when authenticating with new device sign in' do
-      let(:user) { create(:user, sign_in_new_device_at: Time.zone.now) }
-
-      context 'when alert aggregation feature is disabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:feature_new_device_alert_aggregation_enabled).
-            and_return(false)
-        end
-
-        it 'does not send an alert' do
-          expect(UserAlerts::AlertUserAboutNewDevice).to_not receive(:send_alert)
-
-          result
-        end
-      end
-
-      context 'when alert aggregation feature is enabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:feature_new_device_alert_aggregation_enabled).
-            and_return(true)
-        end
+      context 'when authenticating with new device sign in' do
+        let(:user) { create(:user, sign_in_new_device_at: Time.zone.now) }
 
         context 'with an existing device' do
           before do
@@ -180,6 +163,38 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
             result
           end
         end
+      end
+    end
+
+    context 'failed verification' do
+      let(:user) { create(:user, :fully_registered) }
+      let(:auth_method) { TwoFactorAuthenticatable::AuthMethod::SMS }
+      let(:errors) do
+        errors = ActiveModel::Errors.new(build_stubbed(:phone_configuration))
+        errors.add(:code, 'pattern_mismatch', type: :pattern_mismatch)
+        errors
+      end
+      let(:form_response) { FormResponse.new(success: false, errors:) }
+
+      it 'tracks multi-factor authentication event' do
+        stub_analytics
+
+        result
+
+        expect(@analytics).to have_logged_event(
+          'Multi-Factor Authentication',
+          success: false,
+          errors: { code: ['pattern_mismatch'] },
+          error_details: { code: { pattern_mismatch: true } },
+          multi_factor_auth_method: TwoFactorAuthenticatable::AuthMethod::SMS,
+          enabled_mfa_methods_count: 1,
+          new_device: true,
+        )
+      end
+
+      it 'records unsuccessful 2fa event' do
+        expect { result }.to change { user.events.count }.by(1)
+        expect(user.events.last.event_type).to eq('sign_in_unsuccessful_2fa')
       end
     end
   end

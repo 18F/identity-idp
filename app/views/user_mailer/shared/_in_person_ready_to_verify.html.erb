@@ -1,8 +1,8 @@
 <% if @presenter.outage_message_enabled? %>
-<table class="warning-alert margin-y-4">
+<table class="usa-alert usa-alert--warning margin-y-4">
   <tr>
     <td style="width:16px;">
-      <%= image_tag('email/warning.png', width: 16, height: 16, alt: '') %>
+      <%= image_tag('email/warning.png', width: 16, height: 14, alt: '', style: 'margin-top: 5px;') %>
     </td>
     <td>
       <%= render 'shared/outage_alert', date: @presenter.formatted_outage_expected_update_date, email_date: @presenter.formatted_outage_emailed_by_date %>
@@ -10,8 +10,17 @@
   </tr>
 </table>
   <h1>
-    <%= t('in_person_proofing.headings.barcode') %>
+    <%= @presenter.barcode_heading_text %>
   </h1>
+<% end %>
+
+<%# Tag for GSA Enhanced Pilot Barcode %>
+<% if @is_enhanced_ipp %>
+  <div class="text-center margin-y-4">
+    <span class="usa-tag usa-tag--informative">
+      <%= t('in_person_proofing.body.barcode.eipp_tag') %>
+    </span>
+  </div>
 <% end %>
 
 <%# Barcode %>
@@ -25,11 +34,11 @@
       ) %>
 </div>
 
-<%# Alert box %>
-<table class="info-alert margin-y-4 radius-lg">
+<%# Alert %>
+<table class="usa-alert usa-alert--info margin-y-4">
   <tr>
     <td style="width:16px;">
-      <%= image_tag('email/info.png', width: 16, height: 16, alt: '') %>
+      <%= image_tag('email/info.png', width: 16, height: 16, alt: '', style: 'margin-top: 4px;') %>
     </td>
     <td>
       <p class="margin-bottom-1"><strong><%= t('in_person_proofing.body.barcode.deadline', deadline: @presenter.formatted_due_date) %></strong></p>
@@ -38,17 +47,18 @@
   </tr>
 </table>
 
-<%# Enhanced IPP Only - What to bring section %>
+<%# Enhanced IPP Only - What to bring to the Post Office %>
 <% if @is_enhanced_ipp %>
   <section class="border-1px radius-lg border-primary-light padding-4 margin-bottom-4">
     <%# What to bring to the Post Office %>
     <h2 class="margin-bottom-2"><%= t('in_person_proofing.headings.barcode_what_to_bring') %></h2>
-    <p class="margin-bottom-2"><%= t('in_person_proofing.body.barcode.what_to_bring') %></p>
+    <p class="margin-bottom-2"><%= t('in_person_proofing.body.barcode.eipp_what_to_bring') %></p>
 
-    <%# Option 1: Bring a Real ID %>
+    <%# Option 1: Bring a REAL ID %>
+    <%# A. REAL ID with current address %>
     <h3 class="margin-bottom-2"><%= t('in_person_proofing.process.eipp_bring_id.heading') %></h3>
     <div>
-      <table>
+      <table class="margin-bottom-3">
         <tbody>
           <tr>
             <td align="left" style="width:110px;">
@@ -58,13 +68,13 @@
                     height: 80,
                     alt: t('in_person_proofing.process.eipp_bring_id.image_alt_text'),
                     role: 'img',
-                    class: 'margin-bottom-3',
                   ) %>
             </td>
             <td style="width:24px;">
             </td>
             <td>
-              <p class="margin-bottom-3"><%= t('in_person_proofing.process.eipp_bring_id.info') %></p>
+              <p class="text-bold margin-bottom-0"><%= t('in_person_proofing.process.eipp_bring_id_with_current_address.heading') %></p>
+              <p class="margin-bottom-0"><%= t('in_person_proofing.process.eipp_bring_id.info') %></p>
             </td>
           </tr>
         </tbody>
@@ -72,11 +82,42 @@
     </div>
     <hr class="margin-bottom-3 border-primary-light border-top-0 margin-top-0">
 
-    <%# Option 2: Bring a standard State ID... %>
-    <h3 class="margin-bottom-2"><%= t('in_person_proofing.process.eipp_what_to_bring.heading') %></h3>
-    <p class="margin-bottom-3"><%= t('in_person_proofing.process.eipp_what_to_bring.info') %></p>
+    <%# B. REAL ID + two support documents %>
+    <div>
+      <table class="margin-bottom-3">
+        <tbody>
+          <tr>
+            <td align="left" style="width:110px;">
+              <%= image_tag(
+                    asset_url('email/real-id-and-fair-evidence-documents.png'),
+                    width: 110,
+                    height: 107,
+                    alt: t('in_person_proofing.process.real_id_and_supporting_docs.image_alt_text'),
+                    role: 'img',
+                  ) %>
+            </td>
+            <td style="width:24px;">
+            </td>
+            <td>
+              <p class="text-bold margin-bottom-0"><%= t('in_person_proofing.process.real_id_and_supporting_docs.heading') %></p>
+              <p class="margin-bottom-0"><%= t('in_person_proofing.process.real_id_and_supporting_docs.info') %></p>
+              <ul class="usa-list margin-top-0">
+                <% t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').each do |doc| %>
+                  <li><%= doc %></li>
+                <% end %>
+              </ul>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <hr class="margin-bottom-3 border-primary-light border-top-0 margin-top-0">
 
-    <%# A. State ID + Passport %>
+    <%# Option 2: Bring a standard state-issued ID plus supporting documents %>
+    <h3 class="margin-bottom-2"><%= t('in_person_proofing.process.eipp_bring_id_plus_documents.heading') %></h3>
+    <p class="margin-bottom-3"><%= t('in_person_proofing.process.eipp_bring_id_plus_documents.info') %></p>
+
+    <%# A. State-issued ID + Passport %>
     <table class="margin-bottom-3">
       <tbody>
         <tr>
@@ -93,14 +134,14 @@
           </td>
           <td>
             <p class="text-bold margin-bottom-0"><%= t('in_person_proofing.process.eipp_state_id_passport.heading') %></p>
-            <p class=""><%= t('in_person_proofing.process.eipp_state_id_passport.info') %></p>
+            <p><%= t('in_person_proofing.process.eipp_state_id_passport.info') %></p>
           </td>
         </tr>
       </tbody>
     </table>
     <hr class="margin-bottom-3 border-primary-light border-top-0 margin-top-0">
 
-    <%# B. State ID + Military ID %>
+    <%# B. State-issued ID + military ID %>
     <table class="margin-bottom-3">
       <tbody>
         <tr>
@@ -117,14 +158,14 @@
           </td>
           <td>
             <p class="text-bold margin-bottom-0"><%= t('in_person_proofing.process.eipp_state_id_military_id.heading') %></p>
-            <p class=""><%= t('in_person_proofing.process.eipp_state_id_military_id.info') %></p>
+            <p><%= t('in_person_proofing.process.eipp_state_id_military_id.info') %></p>
           </td>
         </tr>
       </tbody>
     </table>
     <hr class="margin-bottom-3 border-primary-light border-top-0 margin-top-0">
 
-    <%# C. State ID + two supporting documents %>
+    <%# C. State-issued ID + two supporting documents %>
     <table class="margin-bottom-2">
       <tbody>
         <tr>
@@ -144,7 +185,7 @@
             <p class="margin-bottom-0"><%= t('in_person_proofing.process.eipp_state_id_supporting_docs.info') %></p>
             <ul class="usa-list margin-top-0">
               <% t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').each do |doc| %>
-                <li><%= doc %></li> 
+                <li><%= doc %></li>
               <% end %>
             </ul>
           </td>
@@ -195,7 +236,7 @@
       </td>
     </tr>
   </table>
-  
+
   <% if !@is_enhanced_ipp %>
     <p class="margin-bottom-0 padding-bottom-4">
       <%= t('in_person_proofing.body.barcode.questions') %>

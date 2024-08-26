@@ -90,20 +90,24 @@ RSpec.describe Idv::GpoVerifyByMailPolicy do
       context 'the 2 pieces of fair evidence requirement is present' do
         let(:two_pieces_of_fair_evidence) { true }
 
-        it 'returns false when the feature flag is enabled' do
-          allow(IdentityConfig.store).to receive(
-            :no_verify_by_mail_for_biometric_comparison_enabled,
-          ).and_return(true)
-
+        it 'returns false' do
           expect(subject.send_letter_available?).to eq(false)
         end
+      end
 
-        it 'returns true when the feature flag is disabled' do
-          allow(IdentityConfig.store).to receive(
-            :no_verify_by_mail_for_biometric_comparison_enabled,
-          ).and_return(false)
+      context 'user has a pending in-person enrollment' do
+        let!(:in_person_enrollment) { create(:in_person_enrollment, :pending, user: user) }
 
-          expect(subject.send_letter_available?).to eq(true)
+        it 'returns false' do
+          expect(subject.send_letter_available?).to eq(false)
+        end
+      end
+
+      context 'user has an establishing in-person enrollment' do
+        let!(:in_person_enrollment) { create(:in_person_enrollment, :establishing, user: user) }
+
+        it 'returns false' do
+          expect(subject.send_letter_available?).to eq(false)
         end
       end
     end

@@ -73,10 +73,9 @@ RSpec.describe AccountsController do
 
         sign_in user
 
-        expect(@analytics).to receive(:track_event).with('Account Page Visited')
-
         get :show
 
+        expect(@analytics).to have_logged_event('Account Page Visited')
         expect(response).to_not be_redirect
       end
     end
@@ -95,6 +94,7 @@ RSpec.describe AccountsController do
         presenter = AccountShowPresenter.new(
           decrypted_pii: nil,
           sp_session_request_url: nil,
+          authn_context: nil,
           sp_name: nil,
           user: user,
           locked_for_session: false,
@@ -104,23 +104,6 @@ RSpec.describe AccountsController do
         get :show
 
         expect(response).to_not be_redirect
-      end
-    end
-
-    context 'when a profile is pending' do
-      render_views
-      it 'renders the pending profile banner' do
-        user = create(
-          :user,
-          :fully_registered,
-          profiles: [build(:profile, gpo_verification_pending_at: 1.day.ago)],
-        )
-
-        sign_in user
-        get :show
-
-        expect(response).to render_template(:show)
-        expect(response).to render_template(partial: 'accounts/_pending_profile_gpo')
       end
     end
 
@@ -149,6 +132,7 @@ RSpec.describe AccountsController do
           presenter = AccountShowPresenter.new(
             decrypted_pii: nil,
             sp_session_request_url: nil,
+            authn_context: nil,
             sp_name: nil,
             user: user,
             locked_for_session: false,

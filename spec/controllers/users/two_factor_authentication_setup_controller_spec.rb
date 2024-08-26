@@ -128,22 +128,20 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
       stub_sign_in_before_2fa
       stub_analytics
 
-      result = {
-        enabled_mfa_methods_count: 0,
-        selection: ['voice', 'auth_app'],
-        success: true,
-        selected_mfa_count: 2,
-        errors: {},
-      }
-
-      expect(@analytics).to receive(:track_event).
-        with('User Registration: 2FA Setup', result)
-
       patch :create, params: {
         two_factor_options_form: {
           selection: ['voice', 'auth_app'],
         },
       }
+
+      expect(@analytics).to have_logged_event(
+        'User Registration: 2FA Setup',
+        enabled_mfa_methods_count: 0,
+        selection: ['voice', 'auth_app'],
+        success: true,
+        selected_mfa_count: 2,
+        errors: {},
+      )
     end
 
     context 'when multi selection with phone first' do

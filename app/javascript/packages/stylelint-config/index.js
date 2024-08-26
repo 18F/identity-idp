@@ -4,6 +4,7 @@ module.exports = {
     'at-rule-empty-line-before': null,
     'color-function-notation': null,
     'declaration-empty-line-before': null,
+    'declaration-no-important': true,
     'no-descending-specificity': null,
     'rule-empty-line-before': null,
     'scss/comment-no-empty': null,

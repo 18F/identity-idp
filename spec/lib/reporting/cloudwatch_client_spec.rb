@@ -111,6 +111,29 @@ RSpec.describe Reporting::CloudwatchClient do
       end
     end
 
+    context 'bad time types are passed' do
+      let(:good_datetime) { Time.zone.now }
+      let(:bad_date) { Time.zone.today }
+      it 'raises with an invalid :from' do
+        expect do
+          client.fetch(
+            query:,
+            from: bad_date - 1.day,
+            to: good_datetime,
+          )
+        end.to raise_error(ArgumentError, /\bfrom\b.* must be a Time/)
+      end
+
+      it 'raises with an invalid :to' do
+        expect do
+          client.fetch(
+            query:,
+            from: good_datetime - 1.day,
+            to: bad_date,
+          )
+        end.to raise_error(ArgumentError, /\bto\b.* must be a Time/)
+      end
+    end
     it 'converts results into hashes, without @ptr' do
       stub_single_page
 

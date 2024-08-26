@@ -8,6 +8,13 @@ module UspsInPersonProofing
         return unless enrollment
 
         enrollment.current_address_matches_id = pii['same_address_as_id']
+
+        if enrollment.sponsor_id.nil?
+          enrollment.sponsor_id = is_enhanced_ipp ?
+            IdentityConfig.store.usps_eipp_sponsor_id :
+            IdentityConfig.store.usps_ipp_sponsor_id
+        end
+
         enrollment.save!
 
         # Send state ID address to USPS
@@ -19,12 +26,6 @@ module UspsInPersonProofing
 
         enrollment_code = create_usps_enrollment(enrollment, pii, is_enhanced_ipp)
         return unless enrollment_code
-
-        if is_enhanced_ipp
-          enrollment.sponsor_id = IdentityConfig.store.usps_eipp_sponsor_id
-        else
-          enrollment.sponsor_id = IdentityConfig.store.usps_ipp_sponsor_id
-        end
 
         # update the enrollment to status pending
         enrollment.enrollment_code = enrollment_code
@@ -39,6 +40,7 @@ module UspsInPersonProofing
           service_provider: enrollment.service_provider&.issuer,
           opted_in_to_in_person_proofing: opt_in,
           tmx_status: enrollment.profile&.tmx_status,
+          enhanced_ipp: enrollment.enhanced_ipp?,
         )
 
         send_ready_to_verify_email(user, enrollment, is_enhanced_ipp: is_enhanced_ipp)
@@ -118,6 +120,8 @@ module UspsInPersonProofing
       end
 
       def localized_hours(hours)
+        return nil if hours.nil?
+
         if hours == 'Closed'
           I18n.t('in_person_proofing.body.barcode.retail_hours_closed')
         elsif hours.include?(' - ') # Hyphen

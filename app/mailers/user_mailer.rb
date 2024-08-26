@@ -112,19 +112,6 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def new_device_sign_in(date:, location:, device_name:, disavowal_token:)
-    with_user_locale(user) do
-      @login_date = date
-      @login_location = location
-      @device_name = device_name
-      @disavowal_token = disavowal_token
-      mail(
-        to: email_address.email,
-        subject: t('user_mailer.new_device_sign_in.subject', app_name: APP_NAME),
-      )
-    end
-  end
-
   # @param [Array<Hash>] events Array of sign-in Event records (event types "sign_in_before_2fa",
   # "sign_in_after_2fa", "sign_in_unsuccessful_2fa")
   # @param [String] disavowal_token Token to generate URL for disavowing event
@@ -271,7 +258,12 @@ class UserMailer < ActionMailer::Base
     with_user_locale(user) do
       @header = t('user_mailer.in_person_completion_survey.header')
       @privacy_url = MarketingSite.security_and_privacy_practices_url
-      @survey_url = IdentityConfig.store.in_person_completion_survey_url
+      if locale == :en
+        @survey_url = IdentityConfig.store.in_person_opt_in_available_completion_survey_url
+      else
+        @survey_url = IdentityConfig.store.in_person_completion_survey_url
+      end
+
       mail(
         to: email_address.email,
         subject: t('user_mailer.in_person_completion_survey.subject', app_name: APP_NAME),
@@ -322,10 +314,12 @@ class UserMailer < ActionMailer::Base
       code: enrollment.enrollment_code,
     ).image_data
 
+    @is_enhanced_ipp = enrollment.enhanced_ipp?
     with_user_locale(user) do
       @presenter = Idv::InPerson::ReadyToVerifyPresenter.new(
         enrollment: enrollment,
         barcode_image_url: attachments['barcode.png'].url,
+        is_enhanced_ipp: @is_enhanced_ipp,
       )
       @header = t(
         'user_mailer.in_person_ready_to_verify_reminder.heading',

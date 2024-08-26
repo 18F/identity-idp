@@ -90,14 +90,15 @@ RSpec.describe ApplicationController do
     it 'tracks the InvalidAuthenticityToken event and does not sign the user out' do
       sign_in_as_user
       expect(subject.current_user).to be_present
-
       stub_analytics
-      event_properties = { controller: 'anonymous#index', user_signed_in: true }
-      expect(@analytics).to receive(:track_event).
-        with('Invalid Authenticity Token', event_properties)
 
       get :index
 
+      expect(@analytics).to have_logged_event(
+        'Invalid Authenticity Token',
+        controller: 'anonymous#index',
+        user_signed_in: true,
+      )
       expect(flash[:error]).to eq t('errors.general')
       expect(response).to redirect_to(root_url)
       expect(subject.current_user).to be_present
@@ -146,14 +147,16 @@ RSpec.describe ApplicationController do
       request.env['HTTP_REFERER'] = referer
       sign_in_as_user
       expect(subject.current_user).to be_present
-
       stub_analytics
-      event_properties = { controller: 'anonymous#index', user_signed_in: true, referer: referer }
-      expect(@analytics).to receive(:track_event).
-        with('Unsafe Redirect', event_properties)
 
       get :index
 
+      expect(@analytics).to have_logged_event(
+        'Unsafe Redirect',
+        controller: 'anonymous#index',
+        user_signed_in: true,
+        referer:,
+      )
       expect(flash[:error]).to eq t('errors.general')
       expect(response).to redirect_to(root_url)
       expect(subject.current_user).to be_present

@@ -103,7 +103,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     enrollment_outcomes[:enrollments_checked] += 1
 
     response = proofer.request_proofing_results(
-      enrollment.unique_id, enrollment.enrollment_code
+      enrollment,
     )
   rescue Faraday::BadRequestError => err
     # 400 status code. This is used for some status updates and some common client errors
@@ -121,9 +121,11 @@ class GetUspsProofingResultsJob < ApplicationJob
     enrollment.update(status_check_attempted_at: status_check_attempted_at)
   end
 
-  def passed_with_unsupported_secondary_id_type?(response)
-    return response['secondaryIdType'].present? &&
-           SUPPORTED_SECONDARY_ID_TYPES.exclude?(response['secondaryIdType'])
+  def passed_with_unsupported_secondary_id_type?(enrollment, response)
+    return false if enrollment.enhanced_ipp?
+
+    response['secondaryIdType'].present? &&
+      SUPPORTED_SECONDARY_ID_TYPES.exclude?(response['secondaryIdType'])
   end
 
   def analytics(user: AnonymousUser.new)
@@ -222,14 +224,12 @@ class GetUspsProofingResultsJob < ApplicationJob
   def handle_unsupported_id_type(enrollment, response)
     proofed_at = parse_usps_timestamp(response['transactionEndDateTime'])
     enrollment_outcomes[:enrollments_failed] += 1
-    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
-      **enrollment_analytics_attributes(enrollment, complete: true),
-      **response_analytics_attributes(response),
-      passed: false,
-      primary_id_type: response['primaryIdType'],
+    log_enrollment_updated_analytics(
+      enrollment: enrollment,
+      enrollment_passed: false,
+      enrollment_completed: true,
+      response: response,
       reason: 'Unsupported ID type',
-      job_name: self.class.name,
-      tmx_status: enrollment.profile&.tmx_status,
     )
     enrollment.update(
       status: :failed,
@@ -260,18 +260,18 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   def handle_expired_status_update(enrollment, response, response_message)
     enrollment_outcomes[:enrollments_expired] += 1
-    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
-      **enrollment_analytics_attributes(enrollment, complete: true),
-      **response_analytics_attributes(response[:body]),
-      passed: false,
+    log_enrollment_updated_analytics(
+      enrollment: enrollment,
+      enrollment_passed: false,
+      enrollment_completed: true,
+      response: response[:body],
       reason: 'Enrollment has expired',
-      job_name: self.class.name,
-      tmx_status: enrollment.profile&.tmx_status,
     )
     enrollment.update(
       status: :expired,
       status_check_completed_at: Time.zone.now,
     )
+    enrollment.profile.deactivate_due_to_ipp_expiration
 
     if fraud_result_pending?(enrollment)
       analytics(user: enrollment.user).idv_ipp_deactivated_for_never_visiting_post_office(
@@ -339,13 +339,12 @@ class GetUspsProofingResultsJob < ApplicationJob
   def handle_failed_status(enrollment, response)
     proofed_at = parse_usps_timestamp(response['transactionEndDateTime'])
     enrollment_outcomes[:enrollments_failed] += 1
-    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
-      **enrollment_analytics_attributes(enrollment, complete: true),
-      **response_analytics_attributes(response),
-      passed: false,
+    log_enrollment_updated_analytics(
+      enrollment: enrollment,
+      enrollment_passed: false,
+      enrollment_completed: true,
+      response: response,
       reason: 'Failed status',
-      job_name: self.class.name,
-      tmx_status: enrollment.profile&.tmx_status,
     )
 
     enrollment.update(
@@ -376,13 +375,12 @@ class GetUspsProofingResultsJob < ApplicationJob
   def handle_successful_status_update(enrollment, response)
     proofed_at = parse_usps_timestamp(response['transactionEndDateTime'])
     enrollment_outcomes[:enrollments_passed] += 1
-    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
-      **enrollment_analytics_attributes(enrollment, complete: true),
-      **response_analytics_attributes(response),
-      passed: true,
+    log_enrollment_updated_analytics(
+      enrollment: enrollment,
+      enrollment_passed: true,
+      enrollment_completed: true,
+      response: response,
       reason: 'Successful status update',
-      job_name: self.class.name,
-      tmx_status: enrollment.profile&.tmx_status,
     )
     enrollment.update(
       status: :passed,
@@ -407,13 +405,12 @@ class GetUspsProofingResultsJob < ApplicationJob
   def handle_passed_with_fraud_review_pending(enrollment, response)
     proofed_at = parse_usps_timestamp(response['transactionEndDateTime'])
     enrollment_outcomes[:enrollments_passed] += 1
-    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
-      **enrollment_analytics_attributes(enrollment, complete: true),
-      **response_analytics_attributes(response),
-      passed: true,
+    log_enrollment_updated_analytics(
+      enrollment: enrollment,
+      enrollment_passed: true,
+      enrollment_completed: true,
+      response: response,
       reason: 'Passed with fraud pending',
-      job_name: self.class.name,
-      tmx_status: enrollment.profile&.tmx_status,
     )
     enrollment.update(
       status: :passed,
@@ -433,13 +430,12 @@ class GetUspsProofingResultsJob < ApplicationJob
   def handle_unsupported_secondary_id(enrollment, response)
     proofed_at = parse_usps_timestamp(response['transactionEndDateTime'])
     enrollment_outcomes[:enrollments_failed] += 1
-    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
-      **enrollment_analytics_attributes(enrollment, complete: true),
-      **response_analytics_attributes(response),
-      passed: false,
+    log_enrollment_updated_analytics(
+      enrollment: enrollment,
+      enrollment_passed: false,
+      enrollment_completed: true,
+      response: response,
       reason: 'Provided secondary proof of address',
-      job_name: self.class.name,
-      tmx_status: enrollment.profile&.tmx_status,
     )
     enrollment.update(
       status: :failed,
@@ -461,6 +457,12 @@ class GetUspsProofingResultsJob < ApplicationJob
       enrollment.profile&.fraud_pending_reason.present?
   end
 
+  # By-pass Primary ID check if enrollment is Enhanced IPP else check for supporting doc type
+  def passed_with_primary_id_check?(enrollment, response)
+    enrollment.enhanced_ipp? ||
+      SUPPORTED_ID_TYPES.include?(response['primaryIdType'])
+  end
+
   def process_enrollment_response(enrollment, response)
     unless response.is_a?(Hash)
       handle_response_is_not_a_hash(enrollment)
@@ -477,9 +479,9 @@ class GetUspsProofingResultsJob < ApplicationJob
     when IPP_STATUS_PASSED
       if fraud_result_pending?(enrollment)
         handle_passed_with_fraud_review_pending(enrollment, response)
-      elsif passed_with_unsupported_secondary_id_type?(response)
+      elsif passed_with_unsupported_secondary_id_type?(enrollment, response)
         handle_unsupported_secondary_id(enrollment, response)
-      elsif SUPPORTED_ID_TYPES.include?(response['primaryIdType'])
+      elsif passed_with_primary_id_check?(enrollment, response)
         handle_successful_status_update(enrollment, response)
       else
         handle_unsupported_id_type(enrollment, response)
@@ -607,6 +609,19 @@ class GetUspsProofingResultsJob < ApplicationJob
       response_message: response['responseMessage'],
       response_present: true,
     }
+  end
+
+  def log_enrollment_updated_analytics(enrollment:, enrollment_passed:, enrollment_completed:,
+                                       response:, reason:)
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
+      **enrollment_analytics_attributes(enrollment, complete: enrollment_completed),
+      **response_analytics_attributes(response),
+      passed: enrollment_passed,
+      reason: reason,
+      job_name: self.class.name,
+      tmx_status: enrollment.profile&.tmx_status,
+      enhanced_ipp: enrollment.enhanced_ipp?,
+    )
   end
 
   def parse_usps_timestamp(usps_timestamp)

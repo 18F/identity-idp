@@ -4,9 +4,12 @@ cron_5m = '0/5 * * * *'
 cron_12m = '0/12 * * * *'
 cron_1h = '0 * * * *'
 cron_24h = '0 0 * * *'
+cron_24h_and_a_bit = '12 0 * * *' # 0000 UTC + 12 min, staggered from whatever else runs at 0000 UTC
 cron_24h_1am = '0 1 * * *' # 1am UTC is 8pm EST/9pm EDT
 gpo_cron_24h = '0 10 * * *' # 10am UTC is 5am EST/6am EDT
-cron_every_monday = 'every Monday at 0:00 UTC' # equivalent to '0 0 * * 1'
+cron_every_monday = 'every Monday at 0:25 UTC' # equivalent to '25 0 * * 1'
+cron_every_monday_1am = 'every Monday at 1:00 UTC' # equivalent to '0 1 * * 1'
+cron_every_monday_2am = 'every Monday at 2:00 UTC' # equivalent to '0 2 * * 1'
 
 if defined?(Rails::Console)
   Rails.logger.info 'job_configurations: console detected, skipping schedule'
@@ -27,15 +30,11 @@ else
         args: -> { [Time.zone.now] },
       },
       # Send new device alert notifications
-      create_new_device_alert_send_emails: (
-        if IdentityConfig.store.feature_new_device_alert_aggregation_enabled
-          {
-            class: 'CreateNewDeviceAlert',
-            cron: cron_5m,
-            args: -> { [Time.zone.now] },
-          }
-        end
-      ),
+      create_new_device_alert_send_emails: {
+        class: 'CreateNewDeviceAlert',
+        cron: cron_5m,
+        args: -> { [Time.zone.now] },
+      },
       # Send Total Monthly Auths Report to S3
       total_monthly_auths: {
         class: 'Reports::TotalMonthlyAuthsReport',
@@ -179,9 +178,10 @@ else
       # Send Identity Verification report to S3
       identity_verification_report: {
         class: 'Reports::IdentityVerificationReport',
-        cron: cron_24h,
+        cron: cron_24h_and_a_bit,
         args: -> { [Time.zone.yesterday] },
       },
+      # Refresh USPS auth tokens
       usps_auth_token_refresh: (if IdentityConfig.store.usps_auth_token_refresh_job_enabled
                                   {
                                     class: 'UspsAuthTokenRefreshJob',
@@ -215,19 +215,25 @@ else
       weekly_authentication_report: {
         class: 'Reports::AuthenticationReport',
         cron: cron_every_monday,
-        args: -> { [Time.zone.yesterday] },
+        args: -> { [Time.zone.yesterday.end_of_day] },
       },
       # Send fraud metrics to Team Judy
       fraud_metrics_report: {
         class: 'Reports::FraudMetricsReport',
-        cron: cron_24h,
+        cron: cron_24h_and_a_bit,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
       # Previous week's drop of report
       weekly_drop_off_report: {
         class: 'Reports::DropOffReport',
-        cron: cron_every_monday,
-        args: -> { [Time.zone.yesterday] },
+        cron: cron_every_monday_1am,
+        args: -> { [Time.zone.yesterday.end_of_day] },
+      },
+      # Previous week's protocols report
+      weekly_protocols_report: {
+        class: 'Reports::ProtocolsReport',
+        cron: cron_every_monday_2am,
+        args: -> { [Time.zone.yesterday.end_of_day] },
       },
     }.compact
   end

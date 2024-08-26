@@ -16,61 +16,58 @@ RSpec.describe AccountReset::DeleteAccountController do
       create_list(:webauthn_configuration, 2, user: user)
       create_account_reset_request_for(user)
       grant_request(user)
-
       session[:granted_token] = AccountResetRequest.first.granted_token
-      properties = {
-        user_id: user.uuid,
-        success: true,
-        errors: {},
-        error_details: nil,
-        mfa_method_counts: { backup_codes: 10, webauthn: 2, phone: 2 },
-        pii_like_keypaths: [[:mfa_method_counts, :phone]],
-        account_age_in_days: 0,
-        account_confirmed_at: user.confirmed_at,
-      }
-      expect(@analytics).
-        to receive(:track_event).with('Account Reset: delete', properties)
 
       delete :delete
 
+      expect(@analytics).to have_logged_event(
+        'Account Reset: delete',
+        user_id: user.uuid,
+        success: true,
+        errors: {},
+        mfa_method_counts: {
+          backup_codes: BackupCodeGenerator::NUMBER_OF_CODES,
+          webauthn: 2,
+          phone: 2,
+        },
+        account_age_in_days: 0,
+        account_confirmed_at: user.confirmed_at,
+      )
       expect(response).to redirect_to account_reset_confirm_delete_account_url
     end
 
     it 'redirects to root if the token does not match one in the DB' do
       session[:granted_token] = 'foo'
-      properties = {
+
+      delete :delete
+
+      expect(@analytics).to have_logged_event(
+        'Account Reset: delete',
         user_id: 'anonymous-uuid',
         success: false,
         errors: invalid_token_error,
         error_details: { token: { granted_token_invalid: true } },
         mfa_method_counts: {},
-        pii_like_keypaths: [[:mfa_method_counts, :phone]],
         account_age_in_days: 0,
         account_confirmed_at: kind_of(Time),
-      }
-      expect(@analytics).to receive(:track_event).with('Account Reset: delete', properties)
-
-      delete :delete
-
+      )
       expect(response).to redirect_to(root_url)
       expect(flash[:error]).to eq(invalid_token_message)
     end
 
     it 'displays a flash and redirects to root if the token is missing' do
-      properties = {
+      delete :delete
+
+      expect(@analytics).to have_logged_event(
+        'Account Reset: delete',
         user_id: 'anonymous-uuid',
         success: false,
         errors: { token: [t('errors.account_reset.granted_token_missing', app_name: APP_NAME)] },
         error_details: { token: { blank: true } },
         mfa_method_counts: {},
-        pii_like_keypaths: [[:mfa_method_counts, :phone]],
         account_age_in_days: 0,
         account_confirmed_at: kind_of(Time),
-      }
-      expect(@analytics).to receive(:track_event).with('Account Reset: delete', properties)
-
-      delete :delete
-
+      )
       expect(response).to redirect_to(root_url)
       expect(flash[:error]).to eq t(
         'errors.account_reset.granted_token_missing',
@@ -83,23 +80,21 @@ RSpec.describe AccountReset::DeleteAccountController do
       create_account_reset_request_for(user)
       grant_request(user)
 
-      properties = {
-        user_id: user.uuid,
-        success: false,
-        errors: { token: [t('errors.account_reset.granted_token_expired', app_name: APP_NAME)] },
-        error_details: { token: { granted_token_expired: true } },
-        mfa_method_counts: {},
-        pii_like_keypaths: [[:mfa_method_counts, :phone]],
-        account_age_in_days: 2,
-        account_confirmed_at: kind_of(Time),
-      }
-      expect(@analytics).to receive(:track_event).with('Account Reset: delete', properties)
-
       travel_to(Time.zone.now + 2.days) do
         session[:granted_token] = AccountResetRequest.first.granted_token
         delete :delete
       end
 
+      expect(@analytics).to have_logged_event(
+        'Account Reset: delete',
+        user_id: user.uuid,
+        success: false,
+        errors: { token: [t('errors.account_reset.granted_token_expired', app_name: APP_NAME)] },
+        error_details: { token: { granted_token_expired: true } },
+        mfa_method_counts: {},
+        account_age_in_days: 2,
+        account_confirmed_at: kind_of(Time),
+      )
       expect(response).to redirect_to(root_url)
       expect(flash[:error]).to eq(
         t('errors.account_reset.granted_token_expired', app_name: APP_NAME),
@@ -109,17 +104,15 @@ RSpec.describe AccountReset::DeleteAccountController do
 
   describe '#show' do
     it 'redirects to root if the token does not match one in the DB' do
-      properties = {
+      get :show, params: { token: 'FOO' }
+
+      expect(@analytics).to have_logged_event(
+        'Account Reset: granted token validation',
         user_id: 'anonymous-uuid',
         success: false,
         errors: invalid_token_error,
         error_details: { token: { granted_token_invalid: true } },
-      }
-      expect(@analytics).to receive(:track_event).
-        with('Account Reset: granted token validation', properties)
-
-      get :show, params: { token: 'FOO' }
-
+      )
       expect(response).to redirect_to(root_url)
       expect(flash[:error]).to eq(invalid_token_message)
     end
@@ -129,19 +122,17 @@ RSpec.describe AccountReset::DeleteAccountController do
       create_account_reset_request_for(user)
       grant_request(user)
 
-      properties = {
-        user_id: user.uuid,
-        success: false,
-        errors: { token: [t('errors.account_reset.granted_token_expired', app_name: APP_NAME)] },
-        error_details: { token: { granted_token_expired: true } },
-      }
-      expect(@analytics).to receive(:track_event).
-        with('Account Reset: granted token validation', properties)
-
       travel_to(Time.zone.now + 2.days) do
         get :show, params: { token: AccountResetRequest.first.granted_token }
       end
 
+      expect(@analytics).to have_logged_event(
+        'Account Reset: granted token validation',
+        user_id: user.uuid,
+        success: false,
+        errors: { token: [t('errors.account_reset.granted_token_expired', app_name: APP_NAME)] },
+        error_details: { token: { granted_token_expired: true } },
+      )
       expect(response).to redirect_to(root_url)
       expect(flash[:error]).to eq(
         t('errors.account_reset.granted_token_expired', app_name: APP_NAME),

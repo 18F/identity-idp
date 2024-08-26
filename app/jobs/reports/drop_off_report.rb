@@ -8,12 +8,14 @@ module Reports
 
     attr_accessor :report_date
 
+    # Generate a drop off report for the week including the passed timestamp
+    # @param [DateTime]
     def perform(report_date)
       self.report_date = report_date
 
       subject = "Drop Off Report - #{report_date.to_date}"
       configs.each do |config|
-        reports = [report_maker(config['issuers']).as_emailable_reports]
+        reports = [report_maker(config['issuers']).as_emailable_reports].flatten
         config['emails'].each do |email|
           ReportMailer.tables_report(
             email: email,

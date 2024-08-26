@@ -34,9 +34,9 @@
   <p>
   <%= t('in_person_proofing.body.state_id.questions') %>
   <%= link_to(
-        MarketingSite.help_center_article_url(
+        help_center_redirect_url(
           category: 'verify-your-identity',
-          article: 'accepted-state-issued-identification',
+          article: 'accepted-identification-documents',
         ),
         class: 'display-inline',
       ) do %>
@@ -106,7 +106,7 @@
   <div class="margin-bottom-4">
     <%= render ValidatedFieldComponent.new(
           name: :state_id_jurisdiction,
-          collection: us_states_territories,
+          collection: @presenter.usps_states_territories,
           form: f,
           hint: t('in_person_proofing.form.state_id.state_id_jurisdiction_hint'),
           input_html: { class: 'jurisdiction-state-selector' },
@@ -160,7 +160,7 @@
   <h2> <%= t('in_person_proofing.headings.id_address') %> </h2>
     <%= render ValidatedFieldComponent.new(
           name: :identity_doc_address_state,
-          collection: us_states_territories,
+          collection: @presenter.usps_states_territories,
           form: f,
           input_html: { class: 'address-state-selector' },
           label: t('in_person_proofing.form.state_id.identity_doc_address_state'),

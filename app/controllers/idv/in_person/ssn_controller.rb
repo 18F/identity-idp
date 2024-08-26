@@ -64,10 +64,7 @@ module Idv
           controller: self,
           next_steps: [:ipp_verify_info],
           preconditions: ->(idv_session:, user:) { idv_session.ipp_document_capture_complete? },
-          undo_step: ->(idv_session:, user:) do
-            idv_session.ssn = nil
-            idv_session.threatmetrix_session_id = nil
-          end,
+          undo_step: ->(idv_session:, user:) { idv_session.ssn = nil },
         )
       end
 

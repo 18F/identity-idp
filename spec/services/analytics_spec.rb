@@ -61,6 +61,12 @@ RSpec.describe Analytics do
       analytics.track_event('Trackable Event')
     end
 
+    it 'does not track nil values' do
+      expect(ahoy).to receive(:track).with('Trackable Event', analytics_attributes)
+
+      analytics.track_event('Trackable Event', { example: nil })
+    end
+
     it 'does not track unique events and paths when an event fails' do
       expect(ahoy).to receive(:track).with(
         'Trackable Event',
@@ -137,6 +143,56 @@ RSpec.describe Analytics do
         )
       end.to_not raise_error
     end
+
+    context 'with A/B tests' do
+      let(:ab_tests) do
+        {
+          FOO_TEST: AbTest.new(
+            experiment_name: 'Test 1',
+            buckets: {
+              bucket_a: 50,
+              bucket_b: 50,
+            },
+            should_log:,
+          ) do |user:, **|
+            user.id
+          end,
+        }
+      end
+
+      let(:should_log) {}
+
+      before do
+        allow(AbTests).to receive(:all).and_return(ab_tests)
+      end
+
+      it 'includes ab_tests in logged event' do
+        expect(ahoy).to receive(:track).with(
+          'Trackable Event',
+          analytics_attributes.merge(
+            ab_tests: {
+              foo_test: {
+                bucket: anything,
+              },
+            },
+          ),
+        )
+
+        analytics.track_event('Trackable Event')
+      end
+
+      context 'when should_log says not to' do
+        let(:should_log) { /some other event/ }
+        it 'does not include ab_test in logged event' do
+          expect(ahoy).to receive(:track).with(
+            'Trackable Event',
+            analytics_attributes,
+          )
+
+          analytics.track_event('Trackable Event')
+        end
+      end
+    end
   end
 
   it 'tracks session duration' do
@@ -167,6 +223,7 @@ RSpec.describe Analytics do
             aal2: true,
             component_values: { 'C1' => true, 'C2' => true, 'P1' => true },
             identity_proofing: true,
+            component_separator: '.',
           },
         }
       end
@@ -181,21 +238,26 @@ RSpec.describe Analytics do
 
     context 'phishing resistant and requiring biometric comparison' do
       let(:session) { { sp: { vtr: ['Ca.Pb'] } } }
+      let(:component_values) do
+        {
+          'C1' => true,
+          'C2' => true,
+          'Ca' => true,
+          'P1' => true,
+          'Pb' => true,
+        }
+      end
+
       let(:expected_attributes) do
         {
           sp_request: {
             aal2: true,
             biometric_comparison: true,
             two_pieces_of_fair_evidence: true,
-            component_values: {
-              'C1' => true,
-              'C2' => true,
-              'Ca' => true,
-              'P1' => true,
-              'Pb' => true,
-            },
+            component_values:,
             identity_proofing: true,
             phishing_resistant: true,
+            component_separator: '.',
           },
         }
       end
@@ -210,12 +272,13 @@ RSpec.describe Analytics do
   end
 
   context 'with SP request acr_values saved in the session' do
-    context 'legacy IAL1' do
+    context 'IAL1' do
       let(:session) { { sp: { acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF } } }
       let(:expected_attributes) do
         {
           sp_request: {
             component_values: { 'ial/1' => true },
+            component_separator: ' ',
           },
         }
       end
@@ -228,7 +291,7 @@ RSpec.describe Analytics do
       end
     end
 
-    context 'legacy IAL2' do
+    context 'IAL2' do
       let(:session) { { sp: { acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF } } }
       let(:expected_attributes) do
         {
@@ -236,6 +299,7 @@ RSpec.describe Analytics do
             aal2: true,
             component_values: { 'ial/2' => true },
             identity_proofing: true,
+            component_separator: ' ',
           },
         }
       end
@@ -248,13 +312,39 @@ RSpec.describe Analytics do
       end
     end
 
-    context 'legacy IALMAX' do
+    context 'IAL2 with biometric' do
+      let(:session) do
+        { sp: { acr_values: Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF } }
+      end
+      let(:expected_attributes) do
+        {
+          sp_request: {
+            aal2: true,
+            biometric_comparison: true,
+            two_pieces_of_fair_evidence: true,
+            component_values: { 'ial/2?bio=required' => true },
+            identity_proofing: true,
+            component_separator: ' ',
+          },
+        }
+      end
+
+      it 'includes the sp_request' do
+        expect(ahoy).to receive(:track).
+          with('Trackable Event', hash_including(expected_attributes))
+
+        analytics.track_event('Trackable Event')
+      end
+    end
+
+    context 'acr_values IALMAX' do
       let(:session) { { sp: { acr_values: Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF } } }
       let(:expected_attributes) do
         {
           sp_request: {
             aal2: true,
             component_values: { 'ial/0' => true },
+            component_separator: ' ',
             ialmax: true,
           },
         }

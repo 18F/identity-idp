@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'SAML requests using VTR', allowed_extra_analytics: [:*] do
+RSpec.feature 'SAML requests using VTR' do
   include SamlAuthHelper
   include IdvHelper
   include DocAuthHelper
@@ -116,22 +116,19 @@ RSpec.feature 'SAML requests using VTR', allowed_extra_analytics: [:*] do
     expect(page).to have_content(t('two_factor_authentication.two_factor_hspd12_choice_intro'))
 
     # User must setup PIV/CAC before continuing
-    visit setup_piv_cac_path
-    nonce = piv_cac_nonce_from_form_action
-    visit_piv_cac_service(
-      setup_piv_cac_url,
-      nonce: nonce,
-      uuid: SecureRandom.uuid,
-      subject: 'SomeIgnoredSubject',
-    )
+    select_2fa_option('piv_cac')
+    fill_in t('instructions.mfa.piv_cac.step_1'), with: 'Card'
+    click_on t('forms.piv_cac_setup.submit')
+    follow_piv_cac_redirect
 
-    click_submit_default
     click_agree_and_continue
     click_submit_default
     expect_successful_saml_redirect
   end
 
-  scenario 'sign in with VTR request for idv requires idv', :js do
+  scenario 'sign in with VTR request for idv requires idv',
+           :js,
+           allowed_extra_analytics: [:*] do
     user = create(:user, :fully_registered)
 
     visit_saml_authn_request_url(
@@ -153,7 +150,8 @@ RSpec.feature 'SAML requests using VTR', allowed_extra_analytics: [:*] do
     expect_successful_saml_redirect
   end
 
-  scenario 'sign in with VTR request for idv includes proofed attributes' do
+  scenario 'sign in with VTR request for idv includes proofed attributes',
+           allowed_extra_analytics: [:*] do
     pii = {
       first_name: 'Jonathan',
       ssn: '900-66-6666',
@@ -191,7 +189,9 @@ RSpec.feature 'SAML requests using VTR', allowed_extra_analytics: [:*] do
     expect(ssn).to eq(pii[:ssn])
   end
 
-  scenario 'sign in with VTR request for idv with biometric requires idv with biometric', :js do
+  scenario 'sign in with VTR request for idv with biometric requires idv with biometric',
+           :js,
+           allowed_extra_analytics: [:*] do
     user = create(:user, :proofed)
     user.active_profile.update!(idv_level: :legacy_unsupervised)
 

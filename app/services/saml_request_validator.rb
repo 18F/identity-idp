@@ -22,10 +22,6 @@ class SamlRequestValidator
     FormResponse.new(success: valid?, errors: errors, extra: extra_analytics_attributes)
   end
 
-  def biometric_comparison_requested?
-    !!parsed_vectors_of_trust&.any?(&:biometric_comparison?)
-  end
-
   private
 
   attr_accessor :service_provider, :authn_context, :authn_context_comparison, :nameid_format
@@ -65,7 +61,8 @@ class SamlRequestValidator
     if !valid_authn_context? ||
        (identity_proofing_requested? && service_provider&.ial != 2) ||
        (ial_max_requested? &&
-        !IdentityConfig.store.allowed_ialmax_providers.include?(service_provider&.issuer))
+        !IdentityConfig.store.allowed_ialmax_providers.include?(service_provider&.issuer)) ||
+       (biometric_ial_requested? && !service_provider.biometric_ial_allowed?)
       errors.add(:authn_context, :unauthorized_authn_context, type: :unauthorized_authn_context)
     end
   end
@@ -117,6 +114,10 @@ class SamlRequestValidator
 
   def ial_max_requested?
     Array(authn_context).include?(Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF)
+  end
+
+  def biometric_ial_requested?
+    Array(authn_context).any? { |ial| Saml::Idp::Constants::BIOMETRIC_IAL_CONTEXTS.include? ial }
   end
 
   def authorized_email_nameid_format

@@ -11,7 +11,6 @@ class TwoFactorOptionsPresenter
               :user_agent
 
   delegate :two_factor_enabled?, to: :mfa_policy
-  delegate :has_gov_or_mil_email?, to: :user, prefix: :user
 
   def initialize(
     user_agent:,
@@ -40,11 +39,16 @@ class TwoFactorOptionsPresenter
       TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter,
       TwoFactorAuthentication::SetUpAuthAppSelectionPresenter,
       TwoFactorAuthentication::SetUpPhoneSelectionPresenter,
-      TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter,
       TwoFactorAuthentication::SetUpWebauthnSelectionPresenter,
       TwoFactorAuthentication::SetUpPivCacSelectionPresenter,
+      TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter,
     ].map do |klass|
-      klass.new(user:, piv_cac_required:, phishing_resistant_required:, user_agent:)
+      klass.new(
+        user:,
+        piv_cac_required: piv_cac_required?,
+        phishing_resistant_required: phishing_resistant_only?,
+        user_agent:,
+      )
     end.
       partition(&:recommended?).
       flatten
@@ -107,11 +111,13 @@ class TwoFactorOptionsPresenter
   private
 
   def piv_cac_required?
-    @piv_cac_required
+    @piv_cac_required &&
+      !mfa_policy.piv_cac_mfa_enabled?
   end
 
   def phishing_resistant_only?
-    @phishing_resistant_required && !mfa_policy.phishing_resistant_mfa_enabled?
+    @phishing_resistant_required &&
+      !mfa_policy.phishing_resistant_mfa_enabled?
   end
 
   def mfa_policy

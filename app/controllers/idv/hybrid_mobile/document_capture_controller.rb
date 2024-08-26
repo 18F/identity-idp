@@ -10,6 +10,7 @@ module Idv
       before_action :check_valid_document_capture_session
       before_action :override_csp_to_allow_acuant
       before_action :confirm_document_capture_needed, only: :show
+      before_action :set_usps_form_presenter
 
       def show
         analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)
@@ -41,6 +42,7 @@ module Idv
       def extra_view_variables
         {
           flow_path: 'hybrid',
+          mock_client: doc_auth_vendor == 'mock',
           document_capture_session_uuid: document_capture_session_uuid,
           failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
           doc_auth_selfie_capture: resolved_authn_context_result.biometric_comparison?,
@@ -86,6 +88,10 @@ module Idv
         return unless document_capture_session.requested_at
 
         document_capture_session.requested_at > stored_result.captured_at
+      end
+
+      def set_usps_form_presenter
+        @presenter = Idv::InPerson::UspsFormPresenter.new
       end
     end
   end

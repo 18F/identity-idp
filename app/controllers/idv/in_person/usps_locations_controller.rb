@@ -26,8 +26,7 @@ module Idv
           city: search_params['city'], state: search_params['state'],
           zip_code: search_params['zip_code']
         )
-        is_enhanced_ipp = resolved_authn_context_result.enhanced_ipp?
-        locations = proofer.request_facilities(candidate, is_enhanced_ipp)
+        locations = proofer.request_facilities(candidate, authn_context_enhanced_ipp?)
         if locations.length > 0
           analytics.idv_in_person_locations_searched(
             success: true,
@@ -46,13 +45,34 @@ module Idv
         enrollment.update!(
           selected_location_details: update_params.as_json,
           issuer: current_sp&.issuer,
+          doc_auth_result: document_capture_session&.last_doc_auth_result,
+          sponsor_id: enrollment_sponsor_id,
         )
+
         add_proofing_component
 
         render json: { success: true }, status: :ok
       end
 
       private
+
+      def idv_session
+        if user_session && current_user
+          @idv_session ||= Idv::Session.new(
+            user_session: user_session,
+            current_user: current_user,
+            service_provider: current_sp,
+          )
+        end
+      end
+
+      def document_capture_session
+        if idv_session&.document_capture_session_uuid # standard flow
+          DocumentCaptureSession.find_by(uuid: idv_session.document_capture_session_uuid)
+        else # hybrid flow
+          super
+        end
+      end
 
       def proofer
         @proofer ||= EnrollmentHelper.usps_proofer
@@ -101,6 +121,16 @@ module Idv
           status: :establishing,
           profile: nil,
         )
+      end
+
+      def enrollment_sponsor_id
+        authn_context_enhanced_ipp? ?
+          IdentityConfig.store.usps_eipp_sponsor_id :
+          IdentityConfig.store.usps_ipp_sponsor_id
+      end
+
+      def authn_context_enhanced_ipp?
+        resolved_authn_context_result.enhanced_ipp?
       end
 
       def search_params

@@ -32,8 +32,8 @@ module InPersonHelper
   GOOD_IDENTITY_DOC_ZIPCODE =
     (Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_zipcode]).freeze
 
-  def fill_out_state_id_form_ok(same_address_as_id: false)
-    fill_in t('in_person_proofing.form.state_id.first_name'), with: GOOD_FIRST_NAME
+  def fill_out_state_id_form_ok(same_address_as_id: false, first_name: GOOD_FIRST_NAME)
+    fill_in t('in_person_proofing.form.state_id.first_name'), with: first_name
     fill_in t('in_person_proofing.form.state_id.last_name'), with: GOOD_LAST_NAME
     year, month, day = GOOD_DOB.split('-')
     fill_in t('components.memorable_date.month'), with: month
@@ -120,10 +120,22 @@ module InPersonHelper
     click_on t('forms.buttons.continue')
   end
 
-  def complete_state_id_step(_user = nil, same_address_as_id: true)
+  def complete_state_id_step(_user = nil, same_address_as_id: true, first_name: GOOD_FIRST_NAME)
     # Wait for page to load before attempting to fill out form
     expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
-    fill_out_state_id_form_ok(same_address_as_id: same_address_as_id)
+    fill_out_state_id_form_ok(same_address_as_id: same_address_as_id, first_name:)
+    click_idv_continue
+    unless same_address_as_id
+      expect(page).to have_current_path(idv_in_person_address_path, wait: 10)
+      expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
+    end
+  end
+
+  def complete_state_id_controller(_user = nil, same_address_as_id: true,
+                                   first_name: GOOD_FIRST_NAME)
+    # Wait for page to load before attempting to fill out form
+    expect(page).to have_current_path(idv_in_person_proofing_state_id_path, wait: 10)
+    fill_out_state_id_form_ok(same_address_as_id: same_address_as_id, first_name:)
     click_idv_continue
     unless same_address_as_id
       expect(page).to have_current_path(idv_in_person_address_path, wait: 10)
@@ -153,6 +165,15 @@ module InPersonHelper
     complete_location_step
 
     expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
+  end
+
+  def complete_steps_before_state_id_controller
+    sign_in_and_2fa_user
+    begin_in_person_proofing
+    complete_prepare_step
+    complete_location_step
+
+    expect(page).to have_current_path(idv_in_person_proofing_state_id_path, wait: 10)
   end
 
   def complete_all_in_person_proofing_steps(user = user_with_2fa, tmx_status = nil,
@@ -189,16 +210,6 @@ module InPersonHelper
       '.step-indicator__step',
       text: t('step_indicator.flows.idv.find_a_post_office'),
     )
-  end
-
-  def expect_in_person_gpo_step_indicator_current_step(text)
-    # Ensure that GPO letter step is shown in the step indicator.
-    expect(page).to have_css(
-      '.step-indicator__step',
-      text: t('step_indicator.flows.idv.verify_address'),
-    )
-
-    expect_in_person_step_indicator_current_step(text)
   end
 
   def make_pii(same_address_as_id: 'true')

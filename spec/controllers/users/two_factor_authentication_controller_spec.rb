@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics: [:*] do
+RSpec.describe Users::TwoFactorAuthenticationController do
   include ActionView::Helpers::DateHelper
   include UserAgentHelper
 
@@ -121,13 +121,16 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
         }
 
         travel_to(time1 + 1.second) do
-          expect(@analytics).to receive(:track_event).
-            with('User marked authenticated', { authentication_type: :device_remembered })
-          expect(@analytics).to receive(:track_event).with(
+          get :show
+
+          expect(@analytics).to have_logged_event(
+            'User marked authenticated',
+            { authentication_type: :device_remembered },
+          )
+          expect(@analytics).to have_logged_event(
             'Remembered device used for authentication',
             { cookie_created_at: time1, cookie_age_seconds: 1 },
           )
-          get :show
         end
 
         expect(Telephony::Test::Message.messages.length).to eq(0)
@@ -323,31 +326,27 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
       it 'tracks the analytics events' do
         stub_analytics
 
-        analytics_hash = {
+        get :send_code, params: {
+          otp_delivery_selection_form: { **otp_preference_sms, resend: 'true' },
+        }
+
+        expect(@analytics).to have_logged_event(
+          'OTP: Delivery Selection',
           success: true,
           errors: {},
-          error_details: nil,
           **otp_preference_sms,
           resend: true,
           context: 'authentication',
           country_code: 'US',
           area_code: '202',
-          pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
-        }
-
-        expect(@analytics).to receive(:track_event).
-          ordered.
-          with('OTP: Delivery Selection', analytics_hash)
-        expect(@analytics).to receive(:track_event).
-          ordered.
-          with('Telephony: OTP sent', hash_including(
+        )
+        expect(@analytics).to have_logged_event(
+          'Telephony: OTP sent',
+          hash_including(
             resend: true, success: true, **otp_preference_sms,
             adapter: :test
-          ))
-
-        get :send_code, params: {
-          otp_delivery_selection_form: { **otp_preference_sms, resend: 'true' },
-        }
+          ),
+        )
       end
 
       it 'calls OtpRateLimiter#exceeded_otp_send_limit? and #increment' do
@@ -492,24 +491,24 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
       it 'tracks the event' do
         stub_analytics
 
-        analytics_hash = {
+        get :send_code, params: {
+          otp_delivery_selection_form: { otp_delivery_preference: 'voice',
+                                         otp_make_default_number: nil },
+        }
+
+        expect(@analytics).to have_logged_event(
+          'OTP: Delivery Selection',
           success: true,
           errors: {},
-          error_details: nil,
           otp_delivery_preference: 'voice',
           resend: false,
           context: 'authentication',
           country_code: 'US',
           area_code: '202',
-          pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
-        }
-
-        expect(@analytics).to receive(:track_event).
-          ordered.
-          with('OTP: Delivery Selection', analytics_hash)
-        expect(@analytics).to receive(:track_event).
-          ordered.
-          with('Telephony: OTP sent', hash_including(
+        )
+        expect(@analytics).to have_logged_event(
+          'Telephony: OTP sent',
+          hash_including(
             success: true,
             otp_delivery_preference: 'voice',
             adapter: :test,
@@ -517,12 +516,8 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
             telephony_response: hash_including(
               origination_phone_number: Telephony::Test::VoiceSender::ORIGINATION_PHONE_NUMBER,
             ),
-          ))
-
-        get :send_code, params: {
-          otp_delivery_selection_form: { otp_delivery_preference: 'voice',
-                                         otp_make_default_number: nil },
-        }
+          ),
+        )
       end
 
       context 'when selecting specific phone configuration' do

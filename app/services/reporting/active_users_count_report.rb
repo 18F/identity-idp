@@ -74,6 +74,7 @@ module Reporting
 
       [
         ['Active Users (APG)', 'IAL1', 'IDV', 'Total', 'Range start', 'Range end'],
+        monthly_active_users_apg.as_csv(title: 'Current month'),
         q1.as_csv(title: 'Fiscal year Q1'),
         q2.as_csv(title: 'Fiscal year Q2 cumulative'),
         q3.as_csv(title: 'Fiscal year Q3 cumulative'),
@@ -87,6 +88,19 @@ module Reporting
         ReportRow.from_hash_time_range(
           time_range: monthly_range,
           hash: Db::Identity::SpActiveUserCounts.overall(
+            monthly_range.begin,
+            monthly_range.end,
+          ).first,
+        )
+      end
+    end
+
+    # @return [ReportRow]
+    def monthly_active_users_apg
+      @monthly_active_users_apg ||= Reports::BaseReport.transaction_with_timeout do
+        ReportRow.from_hash_time_range(
+          time_range: monthly_range,
+          hash: Db::Identity::SpActiveUserCounts.overall_apg(
             monthly_range.begin,
             monthly_range.end,
           ).first,

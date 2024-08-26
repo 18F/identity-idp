@@ -13,7 +13,14 @@ RSpec.describe Idv::StateIdForm do
     ).permit(:year, :month, :day)
   end
   let(:too_young_dob) do
-    (Time.zone.today - IdentityConfig.store.idv_min_age_years.years + 1.day).to_s
+    dob = Time.zone.today - IdentityConfig.store.idv_min_age_years.years + 1.day
+    ActionController::Parameters.new(
+      {
+        year: dob.year,
+        month: dob.month,
+        day: dob.mday,
+      },
+    )
   end
   let(:good_params) do
     {
@@ -64,11 +71,28 @@ RSpec.describe Idv::StateIdForm do
   let(:pii) { nil }
   describe '#submit' do
     context 'when the form is valid' do
+      let(:form_response) do
+        FormResponse.new(
+          success: true,
+          errors: {},
+          extra: { birth_year: valid_dob[:year],
+                   document_zip_code: good_params[:identity_doc_zipcode].slice(0, 5) },
+        )
+      end
+
       it 'returns a successful form response' do
+        expect(subject.submit(good_params)).to eq(form_response)
+      end
+
+      it 'logs extra analytics attributes' do
         result = subject.submit(good_params)
-        expect(result).to be_kind_of(FormResponse)
-        expect(result.success?).to eq(true)
-        expect(result.errors).to be_empty
+
+        expect(result.extra).to eq(
+          {
+            birth_year: valid_dob[:year],
+            document_zip_code: good_params[:identity_doc_zipcode].slice(0, 5),
+          },
+        )
       end
     end
 

@@ -222,6 +222,53 @@ RSpec.describe SamlRequestValidator do
           )
         end
       end
+
+      shared_examples 'allows biometric IAL only if sp is authorized' do |biometric_ial|
+        let(:authn_context) { [biometric_ial] }
+
+        context "when the IAL requested is #{biometric_ial}" do
+          context 'when the service provider is allowed to use biometric ials' do
+            before do
+              allow_any_instance_of(ServiceProvider).to receive(:biometric_ial_allowed?).
+                and_return(true)
+            end
+
+            it 'returns a successful response' do
+              expect(response.to_h).to include(
+                success: true,
+                errors: {},
+                **extra,
+              )
+            end
+          end
+
+          context 'when the service provider is not allowed to use biometric ials' do
+            before do
+              allow_any_instance_of(ServiceProvider).to receive(:biometric_ial_allowed?).
+                and_return(false)
+            end
+
+            it 'fails with an unauthorized error' do
+              errors = {
+                authn_context: [t('errors.messages.unauthorized_authn_context')],
+              }
+
+              expect(response.to_h).to include(
+                success: false,
+                errors: errors,
+                error_details: hash_including(*errors.keys),
+                **extra,
+              )
+            end
+          end
+        end
+      end
+
+      it_behaves_like 'allows biometric IAL only if sp is authorized',
+                      Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
+
+      it_behaves_like 'allows biometric IAL only if sp is authorized',
+                      Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF
     end
 
     context 'invalid authn context and invalid sp and authorized nameID format' do
@@ -353,40 +400,6 @@ RSpec.describe SamlRequestValidator do
           **extra,
         )
       end
-    end
-  end
-
-  describe '#biometric_comparison_requested?' do
-    let(:sp) { ServiceProvider.find_by(issuer: 'http://localhost:3000') }
-    let(:name_id_format) { Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT }
-    let(:authn_context) { [] }
-
-    subject(:validator) do
-      validator = SamlRequestValidator.new
-      validator.call(
-        service_provider: sp,
-        authn_context: authn_context,
-        nameid_format: name_id_format,
-      )
-      validator
-    end
-
-    context 'biometric comparison was requested' do
-      let(:authn_context) { ['C1.C2.P1.Pb'] }
-
-      it { expect(subject.biometric_comparison_requested?).to eq(true) }
-    end
-
-    context 'biometric comparison was not requested' do
-      let(:authn_context) { ['C1.C2.P1'] }
-
-      it { expect(subject.biometric_comparison_requested?).to eq(false) }
-    end
-
-    context 'biometric comparison requested with multiple vectors of trust' do
-      let(:authn_context) { ['C1.C2.P1', 'C1.C2.P1.Pb'] }
-
-      it { expect(subject.biometric_comparison_requested?).to eq(true) }
     end
   end
 end

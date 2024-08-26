@@ -29,7 +29,7 @@ RSpec.describe 'two_factor_authentication/sms_opt_in/error.html.erb' do
       t('two_factor_authentication.learn_more'),
       href: help_center_redirect_path(
         category: 'get-started',
-        article: 'authentication-options',
+        article: 'authentication-methods',
         flow: :two_factor_authentication,
         step: :sms_opt_in,
       ),

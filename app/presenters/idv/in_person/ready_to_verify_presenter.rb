@@ -31,7 +31,7 @@ module Idv
       def selected_location_hours(prefix)
         return unless selected_location_details
         hours = selected_location_details["#{prefix}_hours"]
-        UspsInPersonProofing::EnrollmentHelper.localized_hours(hours) if hours
+        UspsInPersonProofing::EnrollmentHelper.localized_hours(hours)
       end
 
       def service_provider
@@ -47,7 +47,7 @@ module Idv
       end
 
       def outage_message_enabled?
-        IdentityConfig.store.in_person_outage_message_enabled == true && outage_dates_present?
+        IdentityConfig.store.in_person_outage_message_enabled && outage_dates_present?
       end
 
       def formatted_outage_expected_update_date

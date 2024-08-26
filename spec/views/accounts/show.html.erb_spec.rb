@@ -1,8 +1,17 @@
 require 'rails_helper'
 
 RSpec.describe 'accounts/show.html.erb' do
+  let(:authn_context) { Vot::Parser::Result.no_sp_result }
   let(:user) { create(:user, :fully_registered, :with_personal_key) }
-
+  let(:vtr) { ['C2'] }
+  let(:authn_context) do
+    AuthnContextResolver.new(
+      user:,
+      service_provider: nil,
+      vtr: vtr,
+      acr_values: nil,
+    ).result
+  end
   before do
     allow(view).to receive(:current_user).and_return(user)
     allow(view).to receive(:user_session).and_return({})
@@ -12,6 +21,7 @@ RSpec.describe 'accounts/show.html.erb' do
         decrypted_pii: nil,
         user: user,
         sp_session_request_url: nil,
+        authn_context:,
         sp_name: nil,
         locked_for_session: false,
       ),
@@ -22,6 +32,14 @@ RSpec.describe 'accounts/show.html.erb' do
     expect(view).to receive(:title=).with(t('titles.account'))
 
     render
+  end
+
+  context 'when current user has a verified account' do
+    let(:user) { build(:user, :proofed) }
+
+    it 'renders idv partial' do
+      expect(render).to render_template(partial: 'accounts/_identity_verification')
+    end
   end
 
   context 'when current user has password_reset_profile' do
@@ -59,25 +77,55 @@ RSpec.describe 'accounts/show.html.erb' do
     end
   end
 
-  context 'when current user has pending_profile' do
+  context 'when current user has gpo pending profile' do
+    let(:user) { create(:user, :with_pending_gpo_profile) }
+
+    it 'renders idv partial' do
+      expect(render).to render_template(partial: 'accounts/_identity_verification')
+    end
+  end
+
+  context 'when current user has gpo pending profile deactivated for password reset' do
+    let(:user) { create(:user, :with_pending_gpo_profile) }
+
+    it 'does not render idv partial' do
+      user.profiles.first.update!(deactivation_reason: :password_reset)
+      expect(render).to_not render_template(partial: 'accounts/_identity_verification')
+    end
+  end
+
+  context 'when current user has ipp pending profile' do
+    let(:user) { build(:user, :with_pending_in_person_enrollment) }
+
+    it 'renders idv partial' do
+      expect(render).to render_template(partial: 'accounts/_identity_verification')
+    end
+  end
+
+  context 'when current user has ipp pending profile deactivated for password reset' do
+    let(:user) { create(:user, :with_pending_in_person_enrollment) }
+
+    it 'does not render idv partial' do
+      user.profiles.first.update!(deactivation_reason: :password_reset)
+      expect(render).to_not render_template(partial: 'accounts/_identity_verification')
+    end
+  end
+
+  context 'when current user has an in_person_enrollment that expired' do
+    let(:vtr) { ['Pe'] }
+    let(:sp_name) { 'sinatra-test-app' }
+    let(:user) { build(:user, :with_pending_in_person_enrollment) }
+
     before do
-      pending = create(
-        :profile,
-        gpo_verification_pending_at: 2.days.ago,
-        created_at: 2.days.ago,
-        user: user,
-      )
-      allow(user).to receive(:pending_profile).and_return(pending)
+      # Expire the in_person_enrollment and associated profile
+      in_person_enrollment = user.in_person_enrollments.first
+      in_person_enrollment.update!(status: :expired, status_check_completed_at: Time.zone.now)
+      profile = user.profiles.first
+      profile.deactivate_due_to_ipp_expiration
     end
 
-    it 'contains a link to activate profile' do
-      render
-
-      expect(rendered).
-        to have_link(
-          t('account.index.verification.reactivate_button'),
-          href: idv_verify_by_mail_enter_code_path,
-        )
+    it 'renders the idv partial' do
+      expect(render).to render_template(partial: 'accounts/_identity_verification')
     end
   end
 
@@ -168,6 +216,7 @@ RSpec.describe 'accounts/show.html.erb' do
           decrypted_pii: nil,
           user: user,
           sp_session_request_url: sp.return_to_sp_url,
+          authn_context:,
           sp_name: sp.friendly_name,
           locked_for_session: false,
         ),

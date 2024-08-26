@@ -17,12 +17,16 @@ module Idv
     def initialize(
       params,
       service_provider:,
+      doc_auth_vendor:,
+      acuant_sdk_upgrade_ab_test_bucket:,
       analytics: nil,
       uuid_prefix: nil,
       liveness_checking_required: false
     )
       @params = params
       @service_provider = service_provider
+      @doc_auth_vendor = doc_auth_vendor
+      @acuant_sdk_upgrade_ab_test_bucket = acuant_sdk_upgrade_ab_test_bucket
       @analytics = analytics
       @readable = {}
       @uuid_prefix = uuid_prefix
@@ -37,6 +41,10 @@ module Idv
 
       if form_response.success?
         client_response = post_images_to_client
+
+        document_capture_session.update!(
+          last_doc_auth_result: client_response.extra[:doc_auth_result],
+        )
 
         if client_response.success?
           doc_pii_response = validate_pii_from_doc(client_response)
@@ -57,7 +65,7 @@ module Idv
     private
 
     attr_reader :params, :analytics, :service_provider, :form_response, :uuid_prefix,
-                :liveness_checking_required
+                :liveness_checking_required, :acuant_sdk_upgrade_ab_test_bucket
 
     def increment_rate_limiter!
       return unless document_capture_session
@@ -298,7 +306,7 @@ module Idv
     def limit_if_rate_limited
       return unless rate_limited?
 
-      errors.add(:limit, t('errors.doc_auth.rate_limited_heading'), type: :rate_limited)
+      errors.add(:limit, t('doc_auth.errors.rate_limited_heading'), type: :rate_limited)
     end
 
     def track_rate_limited
@@ -311,7 +319,7 @@ module Idv
 
     def doc_auth_client
       @doc_auth_client ||= DocAuthRouter.client(
-        vendor_discriminator: document_capture_session_uuid,
+        vendor: @doc_auth_vendor,
         warn_notifier: proc do |attrs|
           analytics&.doc_auth_warning(
             **attrs,
@@ -344,6 +352,7 @@ module Idv
       update_funnel(client_response)
       birth_year = client_response.pii_from_doc&.dob&.to_date&.year
       zip_code = client_response.pii_from_doc&.zipcode&.to_s&.strip&.slice(0, 5)
+      issue_year = client_response.pii_from_doc&.state_id_issued&.to_date&.year
       analytics.idv_doc_auth_submitted_image_upload_vendor(
         **client_response.to_h.merge(
           birth_year: birth_year,
@@ -352,17 +361,16 @@ module Idv
           flow_path: params[:flow_path],
           vendor_request_time_in_ms: vendor_request_time_in_ms,
           zip_code: zip_code,
+          issue_year: issue_year,
         ).except(:classification_info).
         merge(acuant_sdk_upgrade_ab_test_data),
       )
     end
 
     def acuant_sdk_upgrade_ab_test_data
-      return {} unless IdentityConfig.store.idv_acuant_sdk_upgrade_a_b_testing_enabled
       {
-        acuant_sdk_upgrade_ab_test_bucket:
-          AbTests::ACUANT_SDK.bucket(document_capture_session.uuid),
-      }
+        acuant_sdk_upgrade_ab_test_bucket:,
+      }.compact
     end
 
     def acuant_sdk_captured?

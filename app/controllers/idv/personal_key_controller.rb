@@ -16,8 +16,7 @@ module Idv
     # standard before_actions and handle them in our own special way below.
     skip_before_action :confirm_idv_needed
     skip_before_action :confirm_personal_key_acknowledged_if_needed
-    skip_before_action :confirm_no_pending_in_person_enrollment
-    skip_before_action :handle_fraud
+    skip_before_action :confirm_no_pending_profile
 
     def show
       analytics.idv_personal_key_visited(

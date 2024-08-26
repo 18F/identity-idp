@@ -39,20 +39,16 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
         let!(:webauthn_configuration) { create(:webauthn_configuration, user:) }
 
         before do
-          allow(@analytics).to receive(:track_event)
+          stub_analytics
         end
 
         it 'tracks an analytics event' do
           get :show, params: { platform: true }
-          result = {
+
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication: enter webAuthn authentication visited',
             context: 'authentication',
             multi_factor_auth_method: 'webauthn_platform',
-            webauthn_configuration_id: nil,
-            multi_factor_auth_method_created_at: nil,
-          }
-          expect(@analytics).to have_received(:track_event).with(
-            'Multi-Factor Authentication: enter webAuthn authentication visited',
-            result,
           )
         end
 
@@ -158,6 +154,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
             context: 'authentication',
             multi_factor_auth_method: 'webauthn',
             success: true,
+            enabled_mfa_methods_count: 1,
             webauthn_configuration_id: webauthn_configuration.id,
             multi_factor_auth_method_created_at: webauthn_configuration.created_at.strftime('%s%L'),
             new_device: true,
@@ -216,6 +213,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
               context: 'authentication',
               multi_factor_auth_method: 'webauthn_platform',
               success: true,
+              enabled_mfa_methods_count: 1,
               webauthn_configuration_id: webauthn_configuration.id,
               multi_factor_auth_method_created_at: webauthn_configuration.created_at.
                 strftime('%s%L'),
@@ -247,6 +245,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
           multi_factor_auth_method: 'webauthn',
           success: false,
           error_details: { authenticator_data: { invalid_authenticator_data: true } },
+          enabled_mfa_methods_count: 1,
           webauthn_configuration_id: webauthn_configuration.id,
           multi_factor_auth_method_created_at: webauthn_configuration.created_at.strftime('%s%L'),
           new_device: true,
@@ -310,6 +309,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
               webauthn_error: { present: true },
             },
             context: UserSessionContext::AUTHENTICATION_CONTEXT,
+            enabled_mfa_methods_count: 2,
             multi_factor_auth_method: 'webauthn_platform',
             multi_factor_auth_method_created_at:
               second_webauthn_platform_configuration.created_at.strftime('%s%L'),

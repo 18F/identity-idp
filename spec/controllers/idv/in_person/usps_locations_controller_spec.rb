@@ -146,9 +146,6 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
           success: false,
           errors: 'No USPS locations found',
           result_total: 0,
-          exception_class: nil,
-          exception_message: nil,
-          response_status_code: nil,
         )
       end
     end
@@ -165,38 +162,8 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
         expect(@analytics).to have_logged_event(
           'IdV: in person proofing location search submitted',
           success: true,
-          errors: nil,
           result_total: 3,
-          exception_class: nil,
-          exception_message: nil,
-          response_status_code: nil,
         )
-      end
-
-      context 'with non-English locale' do
-        let(:locale) { 'fr' }
-
-        it 'returns content in selected locale' do
-          json = response.body
-
-          expect(json).to include(
-            I18n.t('in_person_proofing.body.barcode.retail_hours_closed', locale: locale),
-          )
-          I18n.locale = locale
-          facilities = JSON.parse(json)
-
-          facilities.zip(locations).each do |facility, location|
-            expect(facility['weekday_hours']).to eq(
-              UspsInPersonProofing::EnrollmentHelper.localized_hours(location[:weekday_hours]),
-            )
-            expect(facility['saturday_hours']).to eq(
-              UspsInPersonProofing::EnrollmentHelper.localized_hours(location[:saturday_hours]),
-            )
-            expect(facility['sunday_hours']).to eq(
-              UspsInPersonProofing::EnrollmentHelper.localized_hours(location[:sunday_hours]),
-            )
-          end
-        end
       end
     end
 
@@ -216,8 +183,6 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
           exception_message: timeout_error.message,
           response_body_present:
           timeout_error.response_body.present?,
-          response_body: timeout_error.response_body,
-          response_status_code: timeout_error.response_status,
         )
 
         status = response.status
@@ -241,8 +206,6 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
           exception_message: server_error.message,
           response_body_present:
           server_error.response_body.present?,
-          response_body: server_error.response_body,
-          response_status_code: server_error.response_status,
         )
 
         status = response.status
@@ -274,8 +237,6 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
           exception_message: exception.message,
           response_body_present:
           exception.response_body.present?,
-          response_body: exception.response_body,
-          response_status_code: exception.response_status,
         )
 
         facilities = JSON.parse(response.body)
@@ -293,23 +254,60 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
   end
 
   describe '#update' do
+    let(:enrollment) { InPersonEnrollment.last }
+    let(:sp) { create(:service_provider, ial: 2) }
     subject(:response) { put :update, params: selected_location }
 
-    it 'writes the passed location to in-person enrollment' do
-      response
+    context 'when the user is going through ID-IPP' do
+      it 'creates an in person enrollment' do
+        expect { response }.to change { InPersonEnrollment.count }.from(0).to(1)
+        expect(enrollment.user).to eq(user)
+        expect(enrollment.status).to eq('establishing')
+        expect(enrollment.profile).to be_nil
+        expect(enrollment.sponsor_id).to eq(IdentityConfig.store.usps_ipp_sponsor_id)
+        expect(enrollment.selected_location_details).to eq(
+          selected_location[:usps_location].as_json,
+        )
+        expect(enrollment.service_provider).to eq(sp)
+      end
 
-      enrollment = user.reload.establishing_in_person_enrollment
+      it 'updates proofing component vendor' do
+        expect(user.proofing_component&.document_check).to be_nil
 
-      expect(enrollment.selected_location_details).to eq(selected_location[:usps_location].as_json)
-      expect(enrollment.service_provider).to be_nil
+        response
+
+        expect(user.proofing_component.document_check).to eq Idp::Constants::Vendors::USPS
+      end
     end
 
-    it 'updates proofing component vendor' do
-      expect(user.proofing_component&.document_check).to be_nil
+    context 'when the user is going through EIPP' do
+      let(:vtr) { ['C1.C2.P1.Pe'] }
+      let(:enhanced_ipp_sp_session) { { vtr: vtr, acr_values: nil } }
 
-      response
+      before do
+        allow(controller).to receive(:sp_session).and_return(enhanced_ipp_sp_session)
+        allow(controller).to receive(:sp_from_sp_session).and_return(sp)
+      end
 
-      expect(user.proofing_component.document_check).to eq Idp::Constants::Vendors::USPS
+      it 'creates an in person enrollment' do
+        expect { response }.to change { InPersonEnrollment.count }.from(0).to(1)
+        expect(enrollment.user).to eq(user)
+        expect(enrollment.status).to eq('establishing')
+        expect(enrollment.profile).to be_nil
+        expect(enrollment.sponsor_id).to eq(IdentityConfig.store.usps_eipp_sponsor_id)
+        expect(enrollment.selected_location_details).to eq(
+          selected_location[:usps_location].as_json,
+        )
+        expect(enrollment.service_provider).to eq(sp)
+      end
+
+      it 'updates proofing component vendor' do
+        expect(user.proofing_component&.document_check).to be_nil
+
+        response
+
+        expect(user.proofing_component.document_check).to eq Idp::Constants::Vendors::USPS
+      end
     end
 
     context 'when unauthenticated' do
@@ -348,7 +346,24 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
         expect(enrollment.selected_location_details).to eq(
           selected_location[:usps_location].as_json,
         )
-        expect(enrollment.service_provider).to be_nil
+        expect(enrollment.service_provider).to eq(sp)
+      end
+    end
+
+    context 'with failed doc_auth_result' do
+      before do
+        allow(controller).to receive(:document_capture_session).and_return(
+          OpenStruct.new({ last_doc_auth_result: 'Failed' }),
+        )
+      end
+
+      it 'updates the doc_auth_result in the enrollment' do
+        response
+
+        enrollment = user.reload.establishing_in_person_enrollment
+
+        expect(enrollment.selected_location_details).to_not be_nil
+        expect(enrollment.doc_auth_result).to eq('Failed')
       end
     end
 

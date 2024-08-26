@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'Sign in', allowed_extra_analytics: [:*] do
+RSpec.feature 'Sign in' do
   include SessionTimeoutWarningHelper
   include ActionView::Helpers::DateHelper
   include PersonalKeyHelper
@@ -32,20 +32,6 @@ RSpec.feature 'Sign in', allowed_extra_analytics: [:*] do
       to have_link t('devise.failure.not_found_in_database_link_text', href: link_url)
   end
 
-  scenario 'user opts to not add piv/cac card' do
-    perform_steps_to_get_to_add_piv_cac_during_sign_up
-    click_on t('forms.piv_cac_setup.no_thanks')
-    expect(current_path).to eq sign_up_completed_path
-  end
-
-  context 'without an associated service provider' do
-    scenario 'user opts to not add piv/cac card' do
-      perform_steps_to_get_to_add_piv_cac_during_sign_up(sp: nil)
-      click_on t('forms.piv_cac_setup.no_thanks')
-      expect(current_path).to eq account_path
-    end
-  end
-
   scenario 'user is suspended, gets show please call page after 2fa' do
     user = create(:user, :fully_registered, :suspended)
     service_provider = ServiceProvider.find_by(issuer: OidcAuthHelper::OIDC_IAL1_ISSUER)
@@ -59,22 +45,6 @@ RSpec.feature 'Sign in', allowed_extra_analytics: [:*] do
     click_submit_default
 
     expect(current_path).to eq(user_please_call_path)
-  end
-
-  scenario 'user opts to add piv/cac card' do
-    perform_steps_to_get_to_add_piv_cac_during_sign_up
-    nonce = piv_cac_nonce_from_form_action
-    visit_piv_cac_service(
-      current_url,
-      nonce: nonce,
-      dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
-      uuid: SecureRandom.uuid,
-      subject: 'SomeIgnoredSubject',
-    )
-
-    expect(current_path).to eq login_add_piv_cac_success_path
-    click_continue
-    expect(current_path).to eq sign_up_completed_path
   end
 
   scenario 'user with old terms of use can accept and continue to IAL1 SP' do
@@ -132,36 +102,6 @@ RSpec.feature 'Sign in', allowed_extra_analytics: [:*] do
     expect(oidc_redirect_url).to start_with service_provider.redirect_uris.first
   end
 
-  scenario 'user opts to add piv/cac card but gets an error' do
-    perform_steps_to_get_to_add_piv_cac_during_sign_up
-    nonce = piv_cac_nonce_from_form_action
-    visit_piv_cac_service(
-      current_url,
-      nonce: nonce,
-      dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
-      uuid: SecureRandom.uuid,
-      error: 'certificate.bad',
-      subject: 'SomeIgnoredSubject',
-    )
-
-    expect(page).to have_current_path(login_piv_cac_error_path(error: 'certificate.bad'))
-  end
-
-  scenario 'user opts to add piv/cac card and has piv cac redirect in CSP' do
-    allow(Identity::Hostdata).to receive(:env).and_return('test')
-    allow(Identity::Hostdata).to receive(:domain).and_return('example.com')
-
-    perform_steps_to_get_to_add_piv_cac_during_sign_up
-
-    expected_form_action = <<-STR.squish
-      form-action https://*.pivcac.test.example.com 'self'
-      http://localhost:7654 https://example.com
-    STR
-
-    expect(page.response_headers['Content-Security-Policy']).
-      to(include(expected_form_action))
-  end
-
   scenario 'User with gov/mil email directed to recommended PIV page' do
     user = create(:user, :with_phone, { email: 'example@example.gov' })
 
@@ -192,14 +132,8 @@ RSpec.feature 'Sign in', allowed_extra_analytics: [:*] do
     allow(FeatureManagement).to receive(:development_and_identity_pki_disabled?).and_return(false)
 
     stub_piv_cac_service
-    nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_login.submit')))
-    visit_piv_cac_service(
-      current_url,
-      nonce: nonce,
-      dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
-      uuid: SecureRandom.uuid,
-      subject: 'SomeIgnoredSubject',
-    )
+    click_on t('forms.piv_cac_login.submit')
+    follow_piv_cac_redirect
 
     expect(page).to have_current_path(login_piv_cac_error_path(error: 'user.not_found'))
     visit sign_up_email_path
@@ -968,6 +902,52 @@ RSpec.feature 'Sign in', allowed_extra_analytics: [:*] do
     end
   end
 
+  context 'reCAPTCHA check fails' do
+    let(:user) { create(:user, :fully_registered) }
+
+    before do
+      allow(FeatureManagement).to receive(:sign_in_recaptcha_enabled?).and_return(true)
+      allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).and_return(true)
+      allow(IdentityConfig.store).to receive(:sign_in_recaptcha_score_threshold).and_return(0.2)
+    end
+
+    it 'redirects user to security check failed page' do
+      visit new_user_session_path
+
+      asserted_expected_user = false
+      fake_analytics = FakeAnalytics.new
+      allow_any_instance_of(ApplicationController).to receive(:analytics).
+        and_wrap_original do |original|
+          original_analytics = original.call
+          if original_analytics.request.params[:controller] == 'users/sessions' &&
+             original_analytics.request.params[:action] == 'create'
+            expect(original_analytics.user).to eq(user)
+            asserted_expected_user = true
+          end
+
+          fake_analytics
+        end
+
+      fill_in :user_recaptcha_mock_score, with: '0.1'
+      fill_in_credentials_and_submit(user.email, user.password)
+      expect(asserted_expected_user).to eq(true)
+      expect(fake_analytics).to have_logged_event(
+        'reCAPTCHA verify result received',
+        recaptcha_result: {
+          assessment_id: kind_of(String),
+          success: true,
+          score: 0.1,
+          errors: [],
+          reasons: [],
+        },
+        evaluated_as_valid: false,
+        score_threshold: 0.2,
+        form_class: 'RecaptchaMockForm',
+      )
+      expect(current_path).to eq sign_in_security_check_failed_path
+    end
+  end
+
   context 'check_password_compromised feature toggle is true' do
     before do
       allow(FeatureManagement).to receive(:check_password_enabled?).and_return(true)
@@ -981,13 +961,31 @@ RSpec.feature 'Sign in', allowed_extra_analytics: [:*] do
           allow(IdentityConfig.store).to receive(:compromised_password_randomizer_threshold).
             and_return(2)
         end
-        it 'should bring user to compromised password page' do
-          visit new_user_session_path
+        it 'should bring user to manage password page with warning' do
+          visit_idp_from_sp_with_ial1(:oidc)
           fill_in_credentials_and_submit(user.email, user.password)
           fill_in_code_with_last_phone_otp
           click_submit_default
 
-          expect(current_path).to eq user_password_compromised_path
+          expect(current_path).to eq manage_password_path
+        end
+
+        it 'should redirect user to after_sign_in_path after editing password' do
+          visit_idp_from_sp_with_ial1(:oidc)
+          fill_in_credentials_and_submit(user.email, user.password)
+          fill_in_code_with_last_phone_otp
+          click_submit_default
+
+          expect(current_path).to eq manage_password_path
+
+          password = 'salty pickles'
+          fill_in t('forms.passwords.edit.labels.password'), with: password
+          fill_in t('components.password_confirmation.confirm_label'), with: password
+          click_button t('forms.passwords.edit.buttons.submit')
+
+          click_agree_and_continue
+
+          expect(oidc_redirect_url).to start_with('http://localhost:7654/auth/result')
         end
       end
 
@@ -1093,35 +1091,6 @@ RSpec.feature 'Sign in', allowed_extra_analytics: [:*] do
       response = page.driver.post(action_url)
       expect(response).to be_redirect
     end
-  end
-
-  def perform_steps_to_get_to_add_piv_cac_during_sign_up(sp: :oidc)
-    user = create(:user, :fully_registered, :with_phone)
-    if sp
-      visit_idp_from_sp_with_ial1(sp)
-    else
-      visit new_user_session_path
-    end
-    click_on t('account.login.piv_cac')
-    allow(FeatureManagement).to receive(:development_and_identity_pki_disabled?).and_return(false)
-
-    stub_piv_cac_service
-    nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_login.submit')))
-    visit_piv_cac_service(
-      current_url,
-      nonce: nonce,
-      dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
-      uuid: SecureRandom.uuid,
-      subject: 'SomeIgnoredSubject',
-    )
-
-    expect(page).to have_current_path(login_piv_cac_error_path(error: 'user.not_found'))
-    visit new_user_session_path
-    fill_in_credentials_and_submit(user.email, user.password)
-    fill_in_code_with_last_phone_otp
-    click_submit_default
-    expect(current_path).to eq login_add_piv_cac_prompt_path
-    fill_in 'name', with: 'Card 1'
   end
 
   def with_forgery_protection

@@ -5,53 +5,8 @@ RSpec.describe 'New device tracking' do
 
   let(:user) { create(:user, :fully_registered) }
 
-  context 'user has existing devices and aggregated new device alerts is disabled' do
+  context 'user has existing devices' do
     let(:user) { create(:user, :with_authenticated_device) }
-    before do
-      allow(IdentityConfig.store).to receive(
-        :feature_new_device_alert_aggregation_enabled,
-      ).and_return(false)
-    end
-
-    it 'sends a user notification on signin' do
-      sign_in_live_with_2fa(user)
-
-      expect(user.reload.devices.length).to eq 2
-
-      device = user.devices.order(created_at: :desc).first
-
-      expect_delivered_email_count(1)
-      expect_delivered_email(
-        to: [user.email_addresses.first.email],
-        subject: t('user_mailer.new_device_sign_in.subject', app_name: APP_NAME),
-        body: [device.last_used_at.in_time_zone('Eastern Time (US & Canada)').
-              strftime('%B %-d, %Y %H:%M Eastern Time'),
-               'From 127.0.0.1 (IP address potentially located in United States)'],
-      )
-    end
-
-    context 'from existing device' do
-      before do
-        Capybara.current_session.driver.browser.current_session.cookie_jar[:device] =
-          user.devices.first.cookie_uuid
-      end
-
-      it 'does not send a user notification on sign in' do
-        sign_in_live_with_2fa(user)
-
-        expect(user.reload.devices.length).to eq 1
-        expect_delivered_email_count(0)
-      end
-    end
-  end
-
-  context 'user has existing devices and aggregated new device alerts is enabled' do
-    let(:user) { create(:user, :with_authenticated_device) }
-    before do
-      allow(IdentityConfig.store).to receive(
-        :feature_new_device_alert_aggregation_enabled,
-      ).and_return(true)
-    end
 
     it 'sends a user notification on signin' do
       sign_in_live_with_2fa(user)
@@ -217,16 +172,32 @@ RSpec.describe 'New device tracking' do
         expect_delivered_email_count(0)
       end
     end
+
+    context 'reauthenticating after new account creation' do
+      before do
+        sign_up_and_2fa_ial1_user
+        reset_email
+        expire_reauthn_window
+      end
+
+      it 'does not send a new device sign-in notification' do
+        within('.sidenav') { click_on t('account.navigation.add_phone_number') }
+        expect(page).to have_current_path(login_two_factor_options_path)
+        click_on t('forms.buttons.continue')
+        fill_in_code_with_last_phone_otp
+        click_submit_default
+
+        expect_delivered_email_count(0)
+      end
+    end
   end
 
   context 'user does not have existing devices' do
     it 'should not send any notifications' do
-      allow(UserMailer).to receive(:new_device_sign_in).and_call_original
-
       sign_in_user(user)
 
       expect(user.devices.length).to eq 1
-      expect(UserMailer).not_to have_received(:new_device_sign_in)
+      expect_delivered_email_count(0)
     end
   end
 

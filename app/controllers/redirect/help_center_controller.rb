@@ -12,7 +12,7 @@ module Redirect
 
     def validate_help_center_article_params
       return if MarketingSite.valid_help_center_article?(**article_params)
-      redirect_to root_url
+      redirect_to_and_log MarketingSite.help_url
     end
 
     def article_params

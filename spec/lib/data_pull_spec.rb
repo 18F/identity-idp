@@ -188,9 +188,15 @@ RSpec.describe DataPull do
     subject(:subtask) { DataPull::UuidConvert.new }
 
     describe '#run' do
-      let(:agency_identities) { create_list(:agency_identity, 2).sort_by(&:uuid) }
+      let(:service_providers) { create_list(:service_provider, 2) }
+      let(:users) { create_list(:user, 2) }
+      let(:external_uuids) do
+        users.zip(service_providers).map do |user, service_provider|
+          IdentityLinker.new(user, service_provider).link_identity.uuid
+        end.sort
+      end
 
-      let(:args) { [*agency_identities.map(&:uuid), 'does-not-exist'] }
+      let(:args) { [*external_uuids, 'does-not-exist'] }
       let(:include_missing) { true }
       let(:config) { ScriptBase::Config.new(include_missing:) }
       subject(:result) { subtask.run(args:, config:) }
@@ -198,14 +204,63 @@ RSpec.describe DataPull do
       it 'converts the agency agency identities to internal UUIDs', aggregate_failures: true do
         expect(result.table).to eq(
           [
-            ['partner_uuid', 'source', 'internal_uuid'],
-            *agency_identities.map { |a| [a.uuid, a.agency.name, a.user.uuid] },
-            ['does-not-exist', '[NOT FOUND]', '[NOT FOUND]'],
+            ['partner_uuid', 'source', 'internal_uuid', 'deleted'],
+            *external_uuids.map do |external_uuid|
+              identity = AgencyIdentity.find_by(uuid: external_uuid)
+
+              [
+                identity.uuid,
+                identity.agency.name,
+                identity.user.uuid,
+                nil,
+              ]
+            end,
+            ['does-not-exist', '[NOT FOUND]', '[NOT FOUND]', nil],
           ],
         )
 
         expect(result.subtask).to eq('uuid-convert')
-        expect(result.uuids).to match_array(agency_identities.map(&:user).map(&:uuid))
+        expect(result.uuids).to match_array(users.map(&:uuid))
+      end
+
+      context 'when users have been deleted' do
+        before do
+          user = AgencyIdentity.find_by(uuid: external_uuids.last).user
+          DeletedUser.create_from_user(user)
+          user.destroy
+        end
+
+        it 'still includes them and marks them as deleted' do
+          expect(result.table).to eq(
+            [
+              ['partner_uuid', 'source', 'internal_uuid', 'deleted'],
+              external_uuids.first.then do |external_uuid|
+                identity = AgencyIdentity.find_by(uuid: external_uuid)
+
+                [
+                  identity.uuid,
+                  identity.agency.name,
+                  identity.user.uuid,
+                  nil,
+                ]
+              end,
+              external_uuids.last.then do |external_uuid|
+                identity = ServiceProviderIdentity.find_by(uuid: external_uuid)
+
+                [
+                  identity.uuid,
+                  identity.agency.name,
+                  DeletedUser.find_by(user_id: identity.user_id).uuid,
+                  true,
+                ]
+              end,
+              ['does-not-exist', '[NOT FOUND]', '[NOT FOUND]', nil],
+            ],
+          )
+
+          expect(result.subtask).to eq('uuid-convert')
+          expect(result.uuids).to match_array(users.map(&:uuid))
+        end
       end
     end
   end

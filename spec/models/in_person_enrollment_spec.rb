@@ -457,6 +457,26 @@ RSpec.describe InPersonEnrollment, type: :model do
         end
       end
     end
+
+    context 'eipp enrollment' do
+      let(:eipp_validity_in_days) { 7 }
+      before do
+        allow(IdentityConfig.store).
+          to(
+            receive(:in_person_eipp_enrollment_validity_in_days).
+            and_return(eipp_validity_in_days),
+          )
+      end
+      it 'days_to_due_date returns the number of days left until the due date' do
+        freeze_time do
+          enrollment = create(
+            :in_person_enrollment, :enhanced_ipp,
+            enrollment_established_at: (eipp_validity_in_days - 2).days.ago
+          )
+          expect(enrollment.days_to_due_date).to eq(2)
+        end
+      end
+    end
   end
 
   describe 'eligible_for_notification?' do
@@ -489,6 +509,28 @@ RSpec.describe InPersonEnrollment, type: :model do
       expect(expired_enrollment.eligible_for_notification?).to eq(false)
       expect(passed_enrollment_without_notification.eligible_for_notification?).to eq(false)
       expect(failed_enrollment_without_notification.eligible_for_notification?).to eq(false)
+    end
+  end
+
+  describe 'enhanced_ipp?' do
+    context 'when the enrollment sponsor ID is equal to the EIPP sponsor ID' do
+      let(:enrollment) do
+        create(:in_person_enrollment, :enhanced_ipp)
+      end
+
+      it 'returns true' do
+        expect(enrollment.enhanced_ipp?).to be true
+      end
+    end
+
+    context 'when the enrollment sponsor ID does not equal the EIPP sponsor ID' do
+      let(:enrollment) do
+        create(:in_person_enrollment)
+      end
+
+      it 'returns false' do
+        expect(enrollment.enhanced_ipp?).to be false
+      end
     end
   end
 end

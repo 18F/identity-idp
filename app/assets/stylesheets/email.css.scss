@@ -5,6 +5,8 @@
 @use 'variables/app' as *;
 @use 'variables/email' as *;
 
+@forward 'usa-tag';
+
 .gray {
   &:active,
   &:hover,
@@ -73,10 +75,6 @@ h6 {
   width: 50%;
 }
 
-.half {
-  width: 50%;
-}
-
 .footer {
   background: $secondary-color;
 
@@ -119,35 +117,25 @@ h6 {
   }
 }
 
-@media only screen and (max-width: #{$global-breakpoint}) {
-  table.body .columns,
-  table.body .column {
-    padding-left: $global-gutter-small !important;
-    padding-right: $global-gutter-small !important;
-  }
-}
-
-.info-alert,
-.warning-alert {
-  padding: 0 units(0.5);
+.usa-alert {
+  border-left: units($theme-alert-bar-width) solid;
 
   td {
-    padding: units(1.5);
-    padding-right: units(1);
+    padding: units(1.5) 0;
 
-    & + td {
-      padding-left: 0;
-      padding-right: units(1.5);
+    &:first-child {
+      padding-left: $alert-icon-optical-padding;
+      padding-right: units(1);
     }
   }
-}
 
-.info-alert {
-  background-color: color('info-lighter');
-}
+  &.usa-alert--info {
+    @include alert-status-wrapper-styles('info');
+  }
 
-.warning-alert {
-  background-color: color('warning-lighter');
+  &.usa-alert--warning {
+    @include alert-status-wrapper-styles('warning');
+  }
 }
 
 .process-list td {

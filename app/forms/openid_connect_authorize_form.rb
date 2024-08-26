@@ -129,22 +129,6 @@ class OpenidConnectAuthorizeForm
       Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
   end
 
-  def biometric_comparison_requested?
-    !!parsed_vectors_of_trust&.any?(&:biometric_comparison?)
-  end
-
-  def parsed_vectors_of_trust
-    return @parsed_vectors_of_trust if defined?(@parsed_vectors_of_trust)
-
-    @parsed_vectors_of_trust = begin
-      if vtr.is_a?(Array) && !vtr.empty?
-        vtr.map { |vot| Vot::Parser.new(vector_of_trust: vot).parse }
-      end
-    rescue Vot::Parser::ParseException
-      nil
-    end
-  end
-
   private
 
   attr_reader :identity, :success
@@ -158,6 +142,18 @@ class OpenidConnectAuthorizeForm
     return false if identity_proofing_requested_or_default? || param_value.blank?
     return true if verified_at_requested? && !identity_proofing_service_provider?
     @scope != param_value.split(' ').compact
+  end
+
+  def parsed_vectors_of_trust
+    return @parsed_vectors_of_trust if defined?(@parsed_vectors_of_trust)
+
+    @parsed_vectors_of_trust = begin
+      if vtr.is_a?(Array) && !vtr.empty?
+        vtr.map { |vot| Vot::Parser.new(vector_of_trust: vot).parse }
+      end
+    rescue Vot::Parser::ParseException
+      nil
+    end
   end
 
   def parse_to_values(param_value, possible_values)
@@ -300,7 +296,8 @@ class OpenidConnectAuthorizeForm
 
   def validate_privileges
     if (identity_proofing_requested? && !identity_proofing_service_provider?) ||
-       (ialmax_requested? && !ialmax_allowed_for_sp?)
+       (ialmax_requested? && !ialmax_allowed_for_sp?) ||
+       (biometric_ial_requested? && !service_provider.biometric_ial_allowed?)
       errors.add(
         :acr_values, t('openid_connect.authorization.errors.no_auth'),
         type: :no_auth
@@ -336,6 +333,10 @@ class OpenidConnectAuthorizeForm
 
   def ialmax_requested?
     Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[ial_values.sort.max] == 0
+  end
+
+  def biometric_ial_requested?
+    ial_values.any? { |ial| Saml::Idp::Constants::BIOMETRIC_IAL_CONTEXTS.include? ial }
   end
 
   def highest_level_aal(aal_values)

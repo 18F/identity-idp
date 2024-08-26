@@ -20,30 +20,27 @@ RSpec.describe SignUp::PasswordsController do
 
     context 'with valid password' do
       let!(:user) { create(:user, :unconfirmed, confirmation_token: token) }
-      let(:analytics_hash) do
-        {
-          success: true,
-          errors: {},
-          error_details: nil,
-          user_id: user.uuid,
-        }
-      end
 
       before do
         stub_analytics
       end
 
       it 'tracks analytics' do
-        expect(@analytics).to receive(:track_event).with(
-          'User Registration: Email Confirmation',
-          analytics_hash.merge({ error_details: nil }),
-        )
-        expect(@analytics).to receive(:track_event).with(
-          'Password Creation',
-          analytics_hash.merge({ request_id_present: false }),
-        )
-
         subject
+
+        expect(@analytics).to have_logged_event(
+          'User Registration: Email Confirmation',
+          success: true,
+          errors: {},
+          user_id: user.uuid,
+        )
+        expect(@analytics).to have_logged_event(
+          'Password Creation',
+          success: true,
+          errors: {},
+          user_id: user.uuid,
+          request_id_present: false,
+        )
       end
 
       it 'confirms the user' do
@@ -52,6 +49,17 @@ RSpec.describe SignUp::PasswordsController do
         user.reload
         expect(user.valid_password?('NewVal!dPassw0rd')).to eq true
         expect(user.confirmed?).to eq true
+      end
+
+      it 'initializes user session' do
+        response
+
+        expect(controller.user_session).to match(
+          'unique_session_id' => kind_of(String),
+          'last_request_at' => kind_of(Numeric),
+          new_device: false,
+          in_account_creation_flow: true,
+        )
       end
     end
 
@@ -72,7 +80,6 @@ RSpec.describe SignUp::PasswordsController do
           expect(@analytics).to have_logged_event(
             'User Registration: Email Confirmation',
             errors: {},
-            error_details: nil,
             success: true,
             user_id: user.uuid,
           )
@@ -107,7 +114,6 @@ RSpec.describe SignUp::PasswordsController do
           expect(@analytics).to have_logged_event(
             'User Registration: Email Confirmation',
             errors: {},
-            error_details: nil,
             success: true,
             user_id: user.uuid,
           )
@@ -130,7 +136,7 @@ RSpec.describe SignUp::PasswordsController do
     context 'with an with an invalid confirmation_token' do
       let(:token) { 'new token' }
       let(:invalid_confirmation_sent_at) do
-        Time.zone.now - (IdentityConfig.store.add_email_link_valid_for_hours.hours.to_i + 1)
+        Time.zone.now - (IdentityConfig.store.add_email_link_valid_for_hours.hours.in_seconds + 1)
       end
       let!(:user) do
         create(
@@ -161,7 +167,7 @@ RSpec.describe SignUp::PasswordsController do
 
     it 'rejects when confirmation_token is invalid' do
       invalid_confirmation_sent_at =
-        Time.zone.now - (IdentityConfig.store.add_email_link_valid_for_hours.hours.to_i + 1)
+        Time.zone.now - (IdentityConfig.store.add_email_link_valid_for_hours.hours.in_seconds + 1)
       create(
         :user,
         :unconfirmed,

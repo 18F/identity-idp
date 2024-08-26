@@ -85,7 +85,7 @@ module Reporting
 
     def identity_verification_emailable_report
       EmailableReport.new(
-        title: 'Identity Verification Metrics',
+        subtitle: 'Identity Verification Metrics',
         table: as_csv,
         filename: 'identity_verification_metrics',
       )
@@ -122,10 +122,10 @@ module Reporting
       csv << ['Successfully Verified - With mailed code', gpo_verification_submitted]
       csv << ['Successfully Verified - In Person', usps_enrollment_status_updated]
       csv << ['Successfully Verified - Passed fraud review', fraud_review_passed]
-      csv << ['Blanket Proofing Rate (IDV Started to Successfully Verified)', blanket_proofing_rates]
-      csv << ['Intent Proofing Rate (Welcome Submitted to Successfully Verified)', intent_proofing_rates]
-      csv << ['Actual Proofing Rate (Image Submitted to Successfully Verified)', actual_proofing_rates]
-      csv << ['Industry Proofing Rate (Verified minus IDV Rejected)', industry_proofing_rates]
+      csv << ['Blanket Proofing Rate (IDV Started to Successfully Verified)', blanket_proofing_rate]
+      csv << ['Intent Proofing Rate (Welcome Submitted to Successfully Verified)', intent_proofing_rate]
+      csv << ['Actual Proofing Rate (Image Submitted to Successfully Verified)', actual_proofing_rate]
+      csv << ['Industry Proofing Rate (Verified minus IDV Rejected)', industry_proofing_rate]
     end
     # rubocop:enable Layout/LineLength
 
@@ -152,19 +152,19 @@ module Reporting
       )
     end
 
-    def blanket_proofing_rates
+    def blanket_proofing_rate
       successfully_verified_users.to_f / idv_started
     end
 
-    def intent_proofing_rates
+    def intent_proofing_rate
       successfully_verified_users.to_f / idv_doc_auth_welcome_submitted
     end
 
-    def actual_proofing_rates
+    def actual_proofing_rate
       successfully_verified_users.to_f / idv_doc_auth_image_vendor_submitted
     end
 
-    def industry_proofing_rates
+    def industry_proofing_rate
       successfully_verified_users.to_f / (successfully_verified_users + idv_doc_auth_rejected)
     end
 
@@ -202,6 +202,10 @@ module Reporting
 
     def idv_final_resolution_gpo_in_person_fraud_review
       data[Results::IDV_FINAL_RESOLUTION_GPO_IN_PERSON_FRAUD_REVIEW].count
+    end
+
+    def idv_final_resolution_rate
+      idv_final_resolution.to_f / idv_started
     end
 
     def gpo_verification_submitted
@@ -253,6 +257,12 @@ module Reporting
 
     def fraud_review_passed
       data[Events::FRAUD_REVIEW_PASSED].count
+    end
+
+    def verified_user_count
+      @verified_user_count ||= Reports::BaseReport.transaction_with_timeout do
+        Profile.where(active: true).where('verified_at <= ?', time_range.end).count
+      end
     end
 
     # rubocop:disable Layout/LineLength

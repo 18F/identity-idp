@@ -211,6 +211,42 @@ RSpec.describe OpenidConnectAuthorizeForm do
       end
     end
 
+    shared_examples 'allows biometric IAL only if sp is authorized' do |biometric_ial|
+      let(:acr_values) { biometric_ial }
+
+      context "when the IAL requested is #{biometric_ial}" do
+        context 'when the service provider is allowed to use biometric ials' do
+          before do
+            allow_any_instance_of(ServiceProvider).to receive(:biometric_ial_allowed?).
+              and_return(true)
+          end
+
+          it 'succeeds validation' do
+            expect(form).to be_valid
+          end
+        end
+
+        context 'when the service provider is not allowed to use biometric ials' do
+          before do
+            allow_any_instance_of(ServiceProvider).to receive(:biometric_ial_allowed?).
+              and_return(false)
+          end
+
+          it 'fails with a not authorized error' do
+            expect(form).not_to be_valid
+            expect(form.errors[:acr_values]).
+              to include(t('openid_connect.authorization.errors.no_auth'))
+          end
+        end
+      end
+    end
+
+    it_behaves_like 'allows biometric IAL only if sp is authorized',
+                    Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF
+
+    it_behaves_like 'allows biometric IAL only if sp is authorized',
+                    Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
+
     context 'with aal but not ial requested via acr_values' do
       let(:acr_values) { Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF }
       let(:vtr) { nil }
@@ -668,39 +704,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
     context 'when the identity has not been linked' do
       it 'returns nil' do
         expect(form.success_redirect_uri).to be_nil
-      end
-    end
-  end
-
-  describe '#biometric_comparison_requested?' do
-    it 'returns false by default' do
-      expect(subject.biometric_comparison_requested?).to eql(false)
-    end
-
-    context 'biometric requested via VTR' do
-      let(:acr_values) { nil }
-      let(:vtr) { ['C1.P1.Pb'].to_json }
-
-      it 'returns true' do
-        expect(subject.biometric_comparison_requested?).to eql(true)
-      end
-    end
-
-    context 'VTR used but biometric not requested' do
-      let(:acr_values) { nil }
-      let(:vtr) { ['C1.P1'].to_json }
-
-      it 'returns false' do
-        expect(subject.biometric_comparison_requested?).to eql(false)
-      end
-    end
-
-    context 'multiple VTR including biometric comparison' do
-      let(:acr_values) { nil }
-      let(:vtr) { ['C1.P1', 'C1.P1.Pb'].to_json }
-
-      it 'returns false' do
-        expect(subject.biometric_comparison_requested?).to eql(true)
       end
     end
   end

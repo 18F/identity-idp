@@ -61,20 +61,6 @@ RSpec.describe UserEventCreator do
         expect(event.device.last_ip).to eq(ip_address)
         expect(event.device.last_used_at).to be_within(1).of(Time.zone.now)
       end
-
-      it 'alerts the user if they have other devices' do
-        allow(UserAlerts::AlertUserAboutNewDevice).to receive(:call)
-        create(:device, user: user)
-
-        event, _disavowal_token = subject.create_user_event(event_type, user)
-
-        expect(event).to be_a(Event)
-        expect(UserAlerts::AlertUserAboutNewDevice).to have_received(:call).with(
-          event: user.events.first,
-          device: user.events.first.device,
-          disavowal_token: instance_of(String),
-        )
-      end
     end
 
     context 'when no device exists' do
@@ -105,20 +91,6 @@ RSpec.describe UserEventCreator do
             from(nil).
             to(lambda { |value| value == Device.last.cookie_uuid })
         end
-      end
-
-      it 'alerts the user if they have other devices' do
-        allow(UserAlerts::AlertUserAboutNewDevice).to receive(:call)
-        create(:device, user: user)
-
-        event, _disavowal_token = subject.create_user_event(event_type, user)
-
-        expect(event).to be_a(Event)
-        expect(UserAlerts::AlertUserAboutNewDevice).to have_received(:call).with(
-          event: user.events.first,
-          device: user.events.first.device,
-          disavowal_token: instance_of(String),
-        )
       end
     end
   end

@@ -40,15 +40,6 @@ class UserMailerPreview < ActionMailer::Preview
       personal_key_sign_in(disavowal_token: SecureRandom.hex)
   end
 
-  def new_device_sign_in
-    UserMailer.with(user: user, email_address: email_address_record).new_device_sign_in(
-      date: 'February 25, 2019 15:02',
-      location: 'Washington, DC',
-      device_name: 'Chrome 123 on macOS',
-      disavowal_token: SecureRandom.hex,
-    )
-  end
-
   def new_device_sign_in_after_2fa
     UserMailer.with(user: user, email_address: email_address_record).new_device_sign_in_after_2fa(
       events: [
@@ -166,20 +157,20 @@ class UserMailerPreview < ActionMailer::Preview
 
   def in_person_deadline_passed
     UserMailer.with(user: user, email_address: email_address_record).in_person_deadline_passed(
-      enrollment: in_person_enrollment,
+      enrollment: in_person_enrollment_id_ipp,
     )
   end
 
   def in_person_ready_to_verify
     UserMailer.with(user: user, email_address: email_address_record).in_person_ready_to_verify(
-      enrollment: in_person_enrollment,
+      enrollment: in_person_enrollment_id_ipp,
       is_enhanced_ipp: false,
     )
   end
 
   def in_person_ready_to_verify_enhanced_ipp_enabled
     UserMailer.with(user: user, email_address: email_address_record).in_person_ready_to_verify(
-      enrollment: in_person_enrollment,
+      enrollment: in_person_enrollment_enhanced_ipp,
       is_enhanced_ipp: true,
     )
   end
@@ -189,31 +180,40 @@ class UserMailerPreview < ActionMailer::Preview
       user: user,
       email_address: email_address_record,
     ).in_person_ready_to_verify_reminder(
-      enrollment: in_person_enrollment,
+      enrollment: in_person_enrollment_id_ipp,
+    )
+  end
+
+  def in_person_ready_to_verify_reminder_enhanced_ipp_enabled
+    UserMailer.with(
+      user: user,
+      email_address: email_address_record,
+    ).in_person_ready_to_verify_reminder(
+      enrollment: in_person_enrollment_enhanced_ipp,
     )
   end
 
   def in_person_verified
     UserMailer.with(user: user, email_address: email_address_record).in_person_verified(
-      enrollment: in_person_enrollment,
+      enrollment: in_person_enrollment_id_ipp,
     )
   end
 
   def in_person_failed
     UserMailer.with(user: user, email_address: email_address_record).in_person_failed(
-      enrollment: in_person_enrollment,
+      enrollment: in_person_enrollment_id_ipp,
     )
   end
 
   def in_person_failed_fraud
     UserMailer.with(user: user, email_address: email_address_record).in_person_failed_fraud(
-      enrollment: in_person_enrollment,
+      enrollment: in_person_enrollment_id_ipp,
     )
   end
 
   def in_person_please_call
     UserMailer.with(user: user, email_address: email_address_record).in_person_please_call(
-      enrollment: in_person_enrollment,
+      enrollment: in_person_enrollment_id_ipp,
     )
   end
 
@@ -295,7 +295,7 @@ class UserMailerPreview < ActionMailer::Preview
     unsaveable(EmailAddress.new(email: email_address))
   end
 
-  def in_person_enrollment
+  def in_person_enrollment_id_ipp
     unsaveable(
       InPersonEnrollment.new(
         user: user,
@@ -317,6 +317,34 @@ class UserMailerPreview < ActionMailer::Preview
           'saturday_hours' => '9:00 AM - 12:00 PM',
           'sunday_hours' => 'Closed',
         },
+        sponsor_id: IdentityConfig.store.usps_ipp_sponsor_id,
+      ),
+    )
+  end
+
+  def in_person_enrollment_enhanced_ipp
+    unsaveable(
+      InPersonEnrollment.new(
+        user: user,
+        profile: unsaveable(Profile.new(user: user)),
+        enrollment_code: '2048702198804358',
+        created_at: Time.zone.now - 2.hours,
+        service_provider: ServiceProvider.new(
+          friendly_name: 'Test Service Provider',
+          issuer: SecureRandom.uuid,
+        ),
+        status_updated_at: Time.zone.now - 1.hour,
+        current_address_matches_id: params['current_address_matches_id'] == 'true',
+        selected_location_details: {
+          'name' => 'BALTIMORE',
+          'street_address' => '900 E FAYETTE ST RM 118',
+          'formatted_city_state_zip' => 'BALTIMORE, MD 21233-9715',
+          'phone' => '555-123-6409',
+          'weekday_hours' => '8:30 AM - 4:30 PM',
+          'saturday_hours' => '9:00 AM - 12:00 PM',
+          'sunday_hours' => 'Closed',
+        },
+        sponsor_id: IdentityConfig.store.usps_eipp_sponsor_id,
       ),
     )
   end

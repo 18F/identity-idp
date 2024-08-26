@@ -28,9 +28,9 @@ RSpec.describe TwoFactorOptionsPresenter do
         TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter,
         TwoFactorAuthentication::SetUpAuthAppSelectionPresenter,
         TwoFactorAuthentication::SetUpPhoneSelectionPresenter,
-        TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter,
         TwoFactorAuthentication::SetUpWebauthnSelectionPresenter,
         TwoFactorAuthentication::SetUpPivCacSelectionPresenter,
+        TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter,
       ]
     end
 
@@ -51,6 +51,56 @@ RSpec.describe TwoFactorOptionsPresenter do
       end
     end
 
+    context 'when a phishing-resistant SP but already has phishing-resistant mfa' do
+      let(:user) do
+        create(
+          :user, :fully_registered, :with_webauthn
+        )
+      end
+      let(:presenter) do
+        described_class.new(
+          user_agent: user_agent, user: user,
+          phishing_resistant_required: true
+        )
+      end
+
+      it 'displays all options' do
+        expect(presenter.options.map(&:class)).to eq [
+          TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter,
+          TwoFactorAuthentication::SetUpAuthAppSelectionPresenter,
+          TwoFactorAuthentication::SetUpPhoneSelectionPresenter,
+          TwoFactorAuthentication::SetUpWebauthnSelectionPresenter,
+          TwoFactorAuthentication::SetUpPivCacSelectionPresenter,
+          TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter,
+        ]
+      end
+    end
+
+    context 'with a PIV only SP but already has PIV mfa' do
+      let(:user) do
+        create(
+          :user, :fully_registered, :with_piv_or_cac
+        )
+      end
+      let(:presenter) do
+        described_class.new(
+          user_agent: user_agent, user: user,
+          piv_cac_required: true
+        )
+      end
+
+      it 'displays all options' do
+        expect(presenter.options.map(&:class)).to eq [
+          TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter,
+          TwoFactorAuthentication::SetUpAuthAppSelectionPresenter,
+          TwoFactorAuthentication::SetUpPhoneSelectionPresenter,
+          TwoFactorAuthentication::SetUpWebauthnSelectionPresenter,
+          TwoFactorAuthentication::SetUpPivCacSelectionPresenter,
+          TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter,
+        ]
+      end
+    end
+
     context 'when hide_phone_mfa_signup is enabled' do
       before do
         allow(IdentityConfig.store).to receive(:hide_phone_mfa_signup).and_return(true)
@@ -60,9 +110,9 @@ RSpec.describe TwoFactorOptionsPresenter do
         expect(presenter.options.map(&:class)).to eq [
           TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter,
           TwoFactorAuthentication::SetUpAuthAppSelectionPresenter,
-          TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter,
           TwoFactorAuthentication::SetUpWebauthnSelectionPresenter,
           TwoFactorAuthentication::SetUpPivCacSelectionPresenter,
+          TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter,
         ]
       end
     end
@@ -77,9 +127,9 @@ RSpec.describe TwoFactorOptionsPresenter do
           TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter,
           TwoFactorAuthentication::SetUpAuthAppSelectionPresenter,
           TwoFactorAuthentication::SetUpPhoneSelectionPresenter,
-          TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter,
           TwoFactorAuthentication::SetUpWebauthnSelectionPresenter,
           TwoFactorAuthentication::SetUpPivCacSelectionPresenter,
+          TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter,
         ]
       end
     end
@@ -91,9 +141,9 @@ RSpec.describe TwoFactorOptionsPresenter do
         TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter,
         TwoFactorAuthentication::SetUpAuthAppSelectionPresenter,
         TwoFactorAuthentication::SetUpPhoneSelectionPresenter,
-        TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter,
         TwoFactorAuthentication::SetUpWebauthnSelectionPresenter,
         TwoFactorAuthentication::SetUpPivCacSelectionPresenter,
+        TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter,
       ]
     end
 
@@ -109,8 +159,8 @@ RSpec.describe TwoFactorOptionsPresenter do
           TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter,
           TwoFactorAuthentication::SetUpAuthAppSelectionPresenter,
           TwoFactorAuthentication::SetUpPhoneSelectionPresenter,
-          TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter,
           TwoFactorAuthentication::SetUpWebauthnSelectionPresenter,
+          TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter,
         ]
       end
     end

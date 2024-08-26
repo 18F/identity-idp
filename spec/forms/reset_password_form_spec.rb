@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe ResetPasswordForm, type: :model do
-  subject { ResetPasswordForm.new(build_stubbed(:user, uuid: '123')) }
+  subject { ResetPasswordForm.new(user: build_stubbed(:user, uuid: '123')) }
 
   let(:password) { 'a good and powerful password' }
   let(:password_confirmation) { password }
@@ -20,7 +20,7 @@ RSpec.describe ResetPasswordForm, type: :model do
         user = build_stubbed(:user, uuid: '123')
         allow(user).to receive(:reset_password_period_valid?).and_return(false)
 
-        form = ResetPasswordForm.new(user)
+        form = ResetPasswordForm.new(user: user)
 
         password = 'valid password'
 
@@ -47,7 +47,7 @@ RSpec.describe ResetPasswordForm, type: :model do
         user = build_stubbed(:user, uuid: '123')
         allow(user).to receive(:reset_password_period_valid?).and_return(true)
 
-        form = ResetPasswordForm.new(user)
+        form = ResetPasswordForm.new(user: user)
 
         password = 'invalid'
 
@@ -81,7 +81,7 @@ RSpec.describe ResetPasswordForm, type: :model do
         user = create(:user, uuid: '123')
         allow(user).to receive(:reset_password_period_valid?).and_return(true)
 
-        form = ResetPasswordForm.new(user)
+        form = ResetPasswordForm.new(user: user)
         password = 'valid password'
 
         result = nil
@@ -108,7 +108,7 @@ RSpec.describe ResetPasswordForm, type: :model do
         user = build_stubbed(:user, uuid: '123')
         allow(user).to receive(:reset_password_period_valid?).and_return(false)
 
-        form = ResetPasswordForm.new(user)
+        form = ResetPasswordForm.new(user: user)
 
         password = 'short'
 
@@ -143,7 +143,7 @@ RSpec.describe ResetPasswordForm, type: :model do
       it 'returns a hash with errors' do
         user = User.new
 
-        form = ResetPasswordForm.new(user)
+        form = ResetPasswordForm.new(user: user)
         errors = {
           password: [
             t('errors.attributes.password.too_short.other', count: Devise.password_length.first),
@@ -178,7 +178,7 @@ RSpec.describe ResetPasswordForm, type: :model do
         user = profile.user
         user.update(reset_password_sent_at: Time.zone.now)
 
-        form = ResetPasswordForm.new(user)
+        form = ResetPasswordForm.new(user: user)
 
         result = form.submit(params)
 
@@ -193,7 +193,7 @@ RSpec.describe ResetPasswordForm, type: :model do
         user = create(:user)
         user.update(reset_password_sent_at: Time.zone.now)
 
-        form = ResetPasswordForm.new(user)
+        form = ResetPasswordForm.new(user: user)
 
         result = form.submit(params)
 
@@ -208,7 +208,7 @@ RSpec.describe ResetPasswordForm, type: :model do
         user = profile.user
         user.update(reset_password_sent_at: Time.zone.now)
 
-        form = ResetPasswordForm.new(user)
+        form = ResetPasswordForm.new(user: user)
         result = form.submit(params)
 
         expect(result.success?).to eq(true)
@@ -224,7 +224,7 @@ RSpec.describe ResetPasswordForm, type: :model do
         user = create(:user)
         user.update(reset_password_sent_at: Time.zone.now)
 
-        form = ResetPasswordForm.new(user)
+        form = ResetPasswordForm.new(user: user)
 
         result = form.submit(params)
 
@@ -244,7 +244,7 @@ RSpec.describe ResetPasswordForm, type: :model do
                           confirmed_at: Time.zone.now
         )
 
-        form = ResetPasswordForm.new(user)
+        form = ResetPasswordForm.new(user: user)
 
         result = form.submit(params)
 

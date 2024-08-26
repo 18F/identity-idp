@@ -42,12 +42,11 @@ account.connected_apps.associated: Connecté %{timestamp}
 account.connected_apps.description: Avec votre compte %{app_name}, vous pouvez vous connecter en toute sécurité à plusieurs comptes de l’administration en ligne. Vous trouverez ci-dessous une liste de tous vos comptes actuellement connectés.
 account.email_language.default: '%{language} (par défaut)'
 account.email_language.edit_title: Modifier la langue dans laquelle vous préférez recevoir les e-mails
-account.email_language.languages_list: '%{app_name} vous permet de recevoir des communications par e-mail en %{list}.'
+account.email_language.languages_list: Vous recevrez des e-mails de %{app_name} dans la langue de votre choix.
 account.email_language.name.en: English
 account.email_language.name.es: Español
 account.email_language.name.fr: Français
 account.email_language.name.zh: 中文 (简体)
-account.email_language.sentence_connector: ou
 account.email_language.updated: Votre langue de préférence pour les e-mails a été mise à jour.
 account.forget_all_browsers.longer_description: Une fois que vous aurez choisi d’« oublier tous les navigateurs », nous aurons besoin d’informations supplémentaires pour savoir que c’est bien vous qui vous connectez à votre compte. Nous vous demanderons une méthode d’authentification multi-facteurs (comme un code SMS/texto ou une clé de sécurité) chaque fois que vous souhaiterez accéder à votre compte.
 account.index.auth_app_add: Ajouter une appli
@@ -72,9 +71,27 @@ account.index.reactivation.instructions: Votre profil a été récemment désact
 account.index.reactivation.link: Réactiver votre profil maintenant.
 account.index.sign_in_location_and_ip: De %{ip} (adresse IP éventuellement située dans %{location})
 account.index.unknown_location: lieu inconnu
-account.index.verification.instructions: Votre compte nécessite un code de vérification pour être vérifié.
-account.index.verification.reactivate_button: Saisissez le code que vous avez reçu par la poste
+account.index.verification.continue_idv: Poursuivre la vérification d’identité
+account.index.verification.finish_verifying_html: Terminez la procédure de vérification d’identité pour pouvoir accéder à <strong>%{sp_name}</strong>.
+account.index.verification.finish_verifying_no_sp: Terminer la procédure de vérification d’identité pour pouvoir accéder à tous les organismes partenaires de %{app_name}.
+account.index.verification.identity_verification: Vérification de l’identité
+account.index.verification.in_person_instructions_html: Vous devez vous rendre à un bureau de poste participant d’ici le <strong>%{deadline}</strong> pour terminer la procédure de vérification de votre identité.
+account.index.verification.instructions: Saisissez votre code de vérification pour terminer la procédure de vérification d’identité.
+account.index.verification.learn_more_link: En savoir plus sur la vérification de votre identité
+account.index.verification.nonbiometric_verified_html: Vous avez confirmé votre identité sur %{app_name} le <strong>%{date}</strong> avec votre pièce d’identité d’État.
+account.index.verification.pending_badge: En cours
+account.index.verification.pending_badge_tooltip: Votre identité est en cours de vérification.
+account.index.verification.reactivate_button: Saisissez le code de vérification que vous avez reçu par la poste.
+account.index.verification.show_bar_code: Me montrer mon code-barre %{app_name}
 account.index.verification.success: Nous avons vérifié vos informations
+account.index.verification.unverified_badge: Non vérifiée
+account.index.verification.unverified_badge_tooltip: Terminer la vérification de votre identité.
+account.index.verification.verified_badge: Vérifiée
+account.index.verification.verified_badge_tooltip: Votre identité a été vérifiée.
+account.index.verification.verified_biometric_badge_tooltip: Votre identité et votre photo ont été vérifiées.
+account.index.verification.verify_with_biometric_html: Pour accéder à <strong>%{sp_name}</strong>, confirmez à nouveau votre identité à l’aide d’une photo de vous-même.
+account.index.verification.you_verified_your_biometric_identity: Vous avez confirmé votre identité à l’aide des informations ci-dessous et d’une photo de vous-même, ce qui vous permet d’accéder à tous les organismes partenaires de %{app_name}.
+account.index.verification.you_verified_your_identity_html: Vous avez confirmé votre identité auprès de <strong>%{sp_name}</strong> à l’aide des informations ci-dessous.
 account.index.webauthn: Clé de sécurité
 account.index.webauthn_add: Ajouter une clé de sécurité
 account.index.webauthn_platform: Déverrouillage facial ou tactile
@@ -88,7 +105,7 @@ account.login.piv_cac: Connectez-vous avec votre identifiant d’employé.
 account.login.tab_navigation: Onglets de création de compte
 account.navigation.add_authentication_apps: Ajouter des applis d’authentification
 account.navigation.add_email: Ajouter une adresse e-mail
-account.navigation.add_federal_id: Ajouter un identifiant d’employé fédéral
+account.navigation.add_federal_id: Ajouter votre carte d’employé fédéral
 account.navigation.add_phone_number: Ajouter un numéro de téléphone
 account.navigation.add_platform_authenticator: Ajouter le déverrouillage facial ou tactile
 account.navigation.add_security_key: Ajouter une clé de sécurité
@@ -505,9 +522,12 @@ doc_auth.errors.camera.blocked: Votre appareil photo est bloqué
 doc_auth.errors.camera.blocked_detail_html: '<strong>Autorisez l’accès à votre caméra pour prendre des photos pour %{app_name}.</strong><span>Essayez à nouveau de prendre des photos en autorisant %{app_name} à accéder à votre appareil. Si cela ne marche pas, pensez à vérifier les paramètres de votre appareil en matière d’autorisations d’accès.</span>'
 doc_auth.errors.camera.failed: L’appareil photo n’a pas réussi à démarrer, veuillez réessayer.
 doc_auth.errors.card_type: Réessayez avec votre permis de conduire ou carte d’identité d’un État.
+doc_auth.errors.consent_form: Avant de pouvoir continuer, vous devez nous donner la permission. Veuillez cocher la case ci-dessous, puis cliquez sur Suite.
+doc_auth.errors.doc_type_not_supported_heading: Nous n’acceptons que les permis de conduire ou les cartes d’identité délivrées par un État
 doc_auth.errors.doc.doc_type_check: Votre permis de conduire ou votre carte d’identité doit être délivré par un État ou un territoire des États-Unis. Nous n’acceptons pas d’autres pièces d’identité, comme les passeports ou les cartes d’identité militaires.
 doc_auth.errors.doc.resubmit_failed_image: Vous avez déjà essayé cette image et elle a échoué. Veuillez essayer d’ajouter une image différente.
 doc_auth.errors.doc.wrong_id_type_html: Nous n’acceptons qu’un permis de conduire ou une carte d’identité délivré par un État ou un territoire des États-Unis. Nous n’acceptons pas d’autres pièces d’identité, comme les passeports ou les cartes d’identité militaires. <a>En savoir plus sur les pièces d’identité acceptées</a>
+doc_auth.errors.document_capture_canceled: Vous avez annulé le téléchargement de vos photos d’identité sur votre téléphone.
 doc_auth.errors.dpi.failed_short: Image trop petite ou floue, veuillez réessayer.
 doc_auth.errors.dpi.top_msg: Nous n’avons pas pu lire votre pièce d’identité. Il se peut que votre image soit de trop petite taille ou que votre pièce d’identité soit trop petite ou floue sur la photo. Assurez-vous que votre pièce d’identité remplisse le cadre de l’image, puis essayez de prendre une nouvelle photo.
 doc_auth.errors.dpi.top_msg_plural: Nous n’avons pas pu lire votre pièce d’identité. Il se peut que votre image soit de trop petite taille ou que votre pièce d’identité soit trop petite ou floue sur les photos. Assurez-vous que votre pièce d’identité remplisse le cadre de l’image, puis essayez de prendre une nouvelle photo.
@@ -522,6 +542,7 @@ doc_auth.errors.general.selfie_failure_help_link_text: Consultez plus de conseil
 doc_auth.errors.glare.failed_short: L’image a des reflets, veuillez réessayer.
 doc_auth.errors.glare.top_msg: Nous n’avons pas pu lire votre pièce d’identité. Il se peut que votre photo présente des reflets. Assurez-vous que le flash de votre appareil photo soit désactivé, puis essayez de prendre une nouvelle photo.
 doc_auth.errors.glare.top_msg_plural: Nous n’avons pas pu lire votre pièce d’identité. Il se peut que votre photo présente des reflets. Assurez-vous que le flash de votre appareil photo soit désactivé, puis essayez de prendre une nouvelle photo.
+doc_auth.errors.how_to_verify_form: Sélectionnez un moyen de vérifier votre identité.
 doc_auth.errors.http.image_load.failed_short: Le fichier image n’est pas pris en charge, veuillez réessayer.
 doc_auth.errors.http.image_load.top_msg: Le fichier image que vous avez ajouté n’est pas pris en charge. Veuillez prendre de nouvelles photos de votre pièce d’identité et réessayer.
 doc_auth.errors.http.image_size.failed_short: Le fichier image n’est pas pris en charge, veuillez réessayer.
@@ -529,7 +550,14 @@ doc_auth.errors.http.image_size.top_msg: La taille de votre image est trop grand
 doc_auth.errors.http.pixel_depth.failed_short: Le fichier image n’est pas pris en charge, veuillez réessayer.
 doc_auth.errors.http.pixel_depth.top_msg: La profondeur de pixel de votre fichier image n’est pas prise en charge. Veuillez prendre de nouvelles photos de votre pièce d’identité et réessayer. La profondeur de pixel de l’image prise en charge est de 24 bits RGB.
 doc_auth.errors.not_a_file: La sélection n’était pas un fichier valide.
+doc_auth.errors.phone_step_incomplete: Vous devez aller sur votre téléphone et télécharger des photos de votre pièce d’identité avant de continuer. Nous vous avons envoyé un lien avec des instructions.
 doc_auth.errors.pii.birth_date_min_age: Votre anniversaire ne correspond pas à l’âge minimum requis.
+doc_auth.errors.rate_limited_heading: Nous n’avons pas pu vérifier votre pièce d’identité.
+doc_auth.errors.rate_limited_subheading: Essayez de prendre de nouvelles photos.
+doc_auth.errors.rate_limited_text_html: Pour votre sécurité, nous limitons le nombre de fois où vous pouvez tenter de vérifier un document en ligne. <strong>Réessayez dans %{timeout}.</strong>
+doc_auth.errors.selfie_fail_heading: Nous n’avons pas pu faire correspondre votre photo à celle figurant sur votre pièce d’identité.
+doc_auth.errors.selfie_not_live_or_poor_quality_heading: Nous n’avons pas pu vérifier votre photo
+doc_auth.errors.send_link_limited: Vous avez essayé trop de fois, veuillez réessayer dans %{timeout}. Vous pouvez également revenir en arrière et choisir d’utiliser votre ordinateur à la place.
 doc_auth.errors.sharpness.failed_short: L’image est floue, veuillez réessayer.
 doc_auth.errors.sharpness.top_msg: Nous n’avons pas pu lire votre pièce d’identité. Il se peut que votre photo soit trop floue ou trop sombre. Essayez de prendre une nouvelle photo dans un endroit bien éclairé.
 doc_auth.errors.sharpness.top_msg_plural: Nous n’avons pas pu lire votre pièce d’identité. Il se peut que vos photos soient trop floues ou trop sombres. Essayez de prendre de nouvelles photos dans un endroit bien éclairé.
@@ -611,6 +639,11 @@ doc_auth.info.selfie_capture_status.face_close_to_border: Trop près du cadre
 doc_auth.info.selfie_capture_status.face_not_found: Visage non trouvé
 doc_auth.info.selfie_capture_status.face_too_small: Visage trop petit
 doc_auth.info.selfie_capture_status.too_many_faces: Trop de visages
+doc_auth.info.selfie_capture.action.capture: Prendre une photo
+doc_auth.info.selfie_capture.action.close: éteindre
+doc_auth.info.selfie_capture.action.retake: nouvelle photo
+doc_auth.info.selfie_capture.action.submit: Utiliser cette photo
+doc_auth.info.selfie_capture.intro: Caméra prête à prendre la photo
 doc_auth.info.ssn: Nous avons besoin de votre numéro de sécurité sociale pour confirmer vos nom, date de naissance et adresse.
 doc_auth.info.stepping_up_html: Veuillez confirmer à nouveau votre identité pour accéder à ce service. %{link_html}
 doc_auth.info.tag: Recommandation
@@ -678,17 +711,6 @@ errors.attributes.password.too_short.one: Le mot de passe doit comporter au moin
 errors.attributes.password.too_short.other: Le mot de passe doit comporter au moins %{count} caractères
 errors.capture_doc.invalid_link: Ce lien a expiré ou n’est pas valide. Veuillez demander un autre lien pour vérifier votre identité sur un téléphone mobile.
 errors.confirm_password_incorrect: Mot de passe incorrect.
-errors.doc_auth.consent_form: Avant de pouvoir continuer, vous devez nous donner la permission. Veuillez cocher la case ci-dessous, puis cliquez sur Suite.
-errors.doc_auth.doc_type_not_supported_heading: Nous n’acceptons que les permis de conduire ou les cartes d’identité délivrées par un État
-errors.doc_auth.document_capture_canceled: Vous avez annulé le téléchargement de vos photos d’identité sur votre téléphone.
-errors.doc_auth.how_to_verify_form: Sélectionnez un moyen de vérifier votre identité.
-errors.doc_auth.phone_step_incomplete: Vous devez aller sur votre téléphone et télécharger des photos de votre pièce d’identité avant de continuer. Nous vous avons envoyé un lien avec des instructions.
-errors.doc_auth.rate_limited_heading: Nous n’avons pas pu vérifier votre pièce d’identité.
-errors.doc_auth.rate_limited_subheading: Essayez de prendre de nouvelles photos.
-errors.doc_auth.rate_limited_text_html: Pour votre sécurité, nous limitons le nombre de fois où vous pouvez tenter de vérifier un document en ligne. <strong>Réessayez dans %{timeout}.</strong>
-errors.doc_auth.selfie_fail_heading: Nous n’avons pas pu faire correspondre votre photo à celle figurant sur votre pièce d’identité.
-errors.doc_auth.selfie_not_live_or_poor_quality_heading: Nous n’avons pas pu vérifier votre photo
-errors.doc_auth.send_link_limited: Vous avez essayé trop de fois, veuillez réessayer dans %{timeout}. Vous pouvez également revenir en arrière et choisir d’utiliser votre ordinateur à la place.
 errors.enter_code.rate_limited_html: Vous avez saisi un code de vérification inexact à trop de reprises. <strong>Réessayez dans %{timeout}.</strong>
 errors.general: Oups, une erreur s’est produite. Veuillez réessayer.
 errors.invalid_totp: Code non valide. Veuillez réessayer.
@@ -697,6 +719,7 @@ errors.manage_authenticator.remove_only_method_error: Vous ne pouvez pas supprim
 errors.manage_authenticator.unique_name_error: Ce nom est déjà pris. Veuillez utiliser un nom différent.
 errors.max_password_attempts_reached: Vous avez saisi des mots de passe inexacts à trop de reprises. Vous pouvez réinitialiser votre mot de passe en utilisant le lien « Mot de passe oublié ? »
 errors.messages.already_confirmed: a déjà été confirmé, veuillez essayer de vous connecter
+errors.messages.backup_code_limited: Vous avez essayé trop de fois, veuillez réessayer dans %{timeout}.
 errors.messages.blank: Veuillez remplir ce champ.
 errors.messages.blank_cert_element_req: Nous ne pouvons pas détecter un certificat sur votre demande.
 errors.messages.confirmation_code_incorrect: Code de vérification incorrect
@@ -717,7 +740,7 @@ errors.messages.invalid_voice_number: Numéro de téléphone non valide. Vérifi
 errors.messages.missing_field: Veuillez remplir ce champ.
 errors.messages.no_pending_profile: Aucun profil en attente de vérification
 errors.messages.not_a_number: n’est pas un chiffre
-errors.messages.otp_format: Saisissez l’intégralité de votre code à usage unique sans espaces ni caractères spéciaux
+errors.messages.otp_format: Entrez le code à usage unique envoyé sur votre téléphone. N’utilisez pas d’espaces ou de caractères spéciaux.
 errors.messages.password_incorrect: Mot de passe incorrect
 errors.messages.password_mismatch: Vos mots de passe ne correspondent pas
 errors.messages.personal_key_incorrect: Clé personnelle incorrecte
@@ -744,7 +767,7 @@ errors.messages.wrong_length.one: n’est pas de la bonne longueur (devrait êtr
 errors.messages.wrong_length.other: n’est pas de la bonne longueur (devrait être de %{count} caractères)
 errors.piv_cac_setup.unique_name: Ce nom est déjà pris. Veuillez choisir un autre nom.
 errors.registration.terms: Avant de pouvoir continuer, vous devez nous donner la permission. Veuillez cocher la case ci-dessous, puis cliquez sur Suite.
-errors.sign_in.bad_password_limit: Vous avez dépassé le nombre maximal de tentatives de connexion.
+errors.sign_in.bad_password_limit: Vous avez dépassé le nombre maximal de tentatives de connexion. Vous devez attendre %{time_left} avant de réessayer.
 errors.two_factor_auth_setup.must_select_additional_option: Sélectionnez une méthode d’authentification supplémentaire.
 errors.two_factor_auth_setup.must_select_option: Sélectionnez une méthode d’authentification.
 errors.verify_personal_key.rate_limited: Vous avez essayé trop de fois, veuillez réessayer dans %{timeout}.
@@ -796,7 +819,7 @@ forms.backup_code_reminder.body_info: Si vous perdez l’accès à votre méthod
 forms.backup_code_reminder.have_codes: J’ai mes codes
 forms.backup_code_reminder.heading: Avez-vous toujours vos codes de sauvegarde ?
 forms.backup_code_reminder.need_new_codes: J’ai besoin d’un nouvel ensemble de codes de sauvegarde
-forms.backup_code.caution_codes: Chaque code ne peut être utilisé qu’une seule fois. Nous vous donnerons de nouveaux codes une fois que vous aurez utilisé les dix fournis.
+forms.backup_code.caution_codes: Chaque code ne peut être utilisé qu’une seule fois. Nous vous donnerons de nouveaux codes une fois que vous aurez utilisé les %{count} fournis.
 forms.backup_code.caution_delete: Si vous supprimez vos codes de sauvegarde, vous ne pourrez plus les utiliser pour vous connecter.
 forms.backup_code.confirm_delete: Êtes-vous sûr de vouloir supprimer vos codes de sauvegarde?
 forms.backup_code.generate: Obtenir des codes
@@ -840,12 +863,13 @@ forms.personal_key.instructions: Veuillez confirmer que vous avez une copie de v
 forms.personal_key.required_checkbox: J’ai conservé ma clé personnelle en lieu sûr.
 forms.personal_key.title: Saisir votre clé personnelle
 forms.phone.buttons.delete: Supprimer le numéro de téléphone
-forms.piv_cac_login.submit: Insérez votre PIV/CAC
-forms.piv_cac_mfa.submit: Présentez la carte PIV/CAC
+forms.piv_cac_login.submit: Insérer la carte PIV/CAC
+forms.piv_cac_mfa.submit: Insérer la carte PIV/CAC
 forms.piv_cac_setup.nickname: Surnom de la carte PIV/CAC
 forms.piv_cac_setup.no_thanks: Non, merci
 forms.piv_cac_setup.piv_cac_intro_html: Nous vous demanderons de présenter votre carte PIV/CAC <strong>chaque fois que vous vous connecterez sur</strong> dans le cadre de l’authentification à deux facteurs.<br><br>Après avoir cliqué sur « Ajouter une carte PIV/CAC », votre navigateur vous demandera de saisir le NIP de votre PIV/CAC et de choisir un certificat.
-forms.piv_cac_setup.submit: Ajouter une carte PIV/CAC
+forms.piv_cac_setup.submit: Insérer la carte PIV/CAC
+forms.piv_cac_setup.try_again: Réessayer
 forms.registration.labels.email: Saisissez votre adresse e-mail
 forms.registration.labels.email_language: Sélectionnez votre langue de préférence pour les e-mails
 forms.ssn.show: Afficher le numéro de sécurité sociale
@@ -887,8 +911,6 @@ headings.account.login_info: Votre compte
 headings.account.reactivate: Réactiver votre compte
 headings.account.two_factor: Vos méthodes d’authentification
 headings.account.unphishable: Non hameçonnable
-headings.account.verified_account: Compte vérifié
-headings.account.verified_information: Informations vérifiées
 headings.add_email: Ajouter une nouvelle adresse e-mail
 headings.add_info.phone: Ajouter un numéro de téléphone
 headings.cancellations.login_cancel_prompt: Êtes-vous sûr de vouloir annuler et quitter %{app_name}?
@@ -901,16 +923,16 @@ headings.passwords.change: Changer votre mot de passe
 headings.passwords.confirm: Confirmer votre mot de passe actuel pour continuer
 headings.passwords.confirm_for_personal_key: Saisir le mot de passe et obtenir une nouvelle clé personnelle
 headings.passwords.forgot: Mot de passe oublié ?
-headings.piv_cac_login.account_not_found: Votre carte PIV/CAC n’est pas connectée à un compte
-headings.piv_cac_login.add: Configurer votre PIV ou votre CAC comme méthode d’authentification à deux facteurs pour pouvoir l’utiliser pour vous connecter.
-headings.piv_cac_login.new: Vous connecter avec votre PIV/CAC
+headings.piv_cac_login.account_not_found: Votre carte d’employé fédéral n’est pas associée à un compte
+headings.piv_cac_login.add: Utilisez votre lecteur de carte à puce pour configurer votre carte PIV (personal identity verification, vérification d’identité personnelle) ou CAC (common access card, carte d’accès commun). Vous pouvez utiliser l’une ou l’autre carte comme méthode d’authentification à deux facteurs pour vous connecter.
+headings.piv_cac_login.new: Insérer votre carte d’employé fédéral
 headings.piv_cac_login.success: Votre carte PIV/CAC a bien été configurée comme méthode d’authentification.
 headings.piv_cac_setup.already_associated: La carte PIV/CAC que vous avez présentée est associée à un autre utilisateur.
 headings.piv_cac_setup.new: Utilisez votre carte PIV/CAC pour sécuriser votre compte.
 headings.piv_cac.certificate.bad: Le certificat PIV/CAC sélectionné n’est pas valide.
 headings.piv_cac.certificate.expired: Le certificat PIV/CAC sélectionné a expiré.
 headings.piv_cac.certificate.invalid: Le certificat PIV/CAC sélectionné n’est pas valide.
-headings.piv_cac.certificate.none: Nous ne pouvons pas détecter de certificat sur votre carte PIV/CAC.
+headings.piv_cac.certificate.none: Nous ne détectons pas de certificat sur votre carte d’employé fédéral.
 headings.piv_cac.certificate.not_auth_cert: Veuillez choisir un autre certificat pour votre carte PIV/CAC.
 headings.piv_cac.certificate.revoked: Le certificat PIV/CAC sélectionné a été révoqué de votre carte.
 headings.piv_cac.certificate.unverified: Le certificat PIV/CAC sélectionné n’est pas valide.
@@ -940,8 +962,7 @@ help_text.requested_attributes.email: Adresse e-mail
 help_text.requested_attributes.full_name: Nom complet
 help_text.requested_attributes.ial1_consent_reminder_html: Vous devez consentir chaque année au partage de vos informations avec <strong>%{sp}</strong>. Nous partagerons vos informations avec <strong>%{sp}</strong> pour connecter votre compte.
 help_text.requested_attributes.ial1_intro_html: Nous partagerons vos informations avec <strong>%{sp}</strong> pour connecter votre compte.
-help_text.requested_attributes.ial2_consent_reminder_html: "<strong>%{sp}</stro\
-  ng> a besoin de savoir qui vous êtes pour se connecter à votre compte. Vous devez consentir chaque année à partager vos informations vérifiées avec <strong>%{sp}</strong>. Nous partagerons ces informations :"
+help_text.requested_attributes.ial2_consent_reminder_html: '<strong>%{sp}</strong> a besoin de savoir qui vous êtes pour se connecter à votre compte. Vous devez consentir chaque année à partager vos informations vérifiées avec <strong>%{sp}</strong>. Nous partagerons ces informations :'
 help_text.requested_attributes.ial2_intro_html: '<strong>%{sp}</strong> a besoin de savoir qui vous êtes pour connecter votre compte. Nous partagerons ces informations avec %{sp} :'
 help_text.requested_attributes.ial2_reverified_consent_info: 'Étant donné que vous avez revérifié votre identité, nous avons besoin de votre autorisation pour partager ces informations avec %{sp} :'
 help_text.requested_attributes.phone: Numéro de téléphone
@@ -1013,6 +1034,7 @@ idv.failure.phone.rate_limited.body: Pour des raisons de sécurité, nous limito
 idv.failure.phone.rate_limited.gpo.button: Vérifier par courrier
 idv.failure.phone.rate_limited.heading: Nous n’avons pas pu confirmer votre identité par téléphone
 idv.failure.phone.rate_limited.option_try_again_later_html: Annuler et recommencer après <strong>%{time_left}</strong>
+idv.failure.phone.rate_limited.option_try_again_later_no_gpo_html: Vous pourrez réessayer d’ici <strong>%{time_left}</strong>.
 idv.failure.phone.rate_limited.option_verify_by_mail_html: Vérifier par courrier, ce qui prend <strong>5 à 10 jours</strong>.
 idv.failure.phone.rate_limited.options_header: 'Vous pouvez :'
 idv.failure.phone.timeout: Notre demande de vérification de vos renseignements a expiré. Veuillez réessayer.
@@ -1098,13 +1120,13 @@ idv.messages.gpo.start_over_link_text: recommencer et vérifier avec votre nouve
 idv.messages.gpo.timeframe_html: Vous recevrez une lettre avec un <strong>code de vérification</strong> dans un délai de <strong>5 à 10 jours</strong>.
 idv.messages.otp_delivery_method_description: Si vous avez saisi une ligne fixe ci-dessus, veuillez sélectionner « Appel téléphonique » ci-dessous.
 idv.messages.phone.alert_html: '<strong>Saisissez un numéro de téléphone qui est :</strong>'
-idv.messages.phone.description: Nous vérifierons ce numéro dans nos données et vous enverrons un code à usage unique. L’objectif est d’aider à vérifier votre identité.
+idv.messages.phone.description: Nous vérifierons votre numéro dans nos données enregistrées et vous enverrons un code à usage unique afin de confirmer votre identité.
 idv.messages.phone.failed_number.alert_text: Nous n’avons pas pu vous associer à ce numéro.
 idv.messages.phone.failed_number.gpo_alert_html: Essayez un <strong>autre</strong> numéro ou %{link_html}.
 idv.messages.phone.failed_number.gpo_verify_link: vérifiez par courrier
 idv.messages.phone.failed_number.try_again_html: Essayez un <strong>autre</strong> numéro.
 idv.messages.phone.rules:
-  - Basé aux Etats-Unis (y compris les territoires américains)
+  - Basé aux Etats-Unis
   - Votre numéro principal (celui que vous utilisez le plus souvent)
 idv.messages.return_to_profile: '‹ Revenir à votre profil %{app_name}'
 idv.messages.sessions.enter_password_message: Lorsque vous ressaisirez votre mot de passe, %{app_name} protégera les informations que vous nous aurez données pour que vous seul puissiez y accéder.
@@ -1115,7 +1137,6 @@ idv.titles.activated: Votre identité a déjà été vérifiée
 idv.titles.come_back_later: Votre lettre est en route
 idv.titles.enter_password: Révisez et validez
 idv.titles.mail.verify: Vérifiez votre adresse
-idv.titles.otp_delivery_method: Comment devrions-nous envoyer un code ?
 idv.titles.session.enter_password: Ressaisissez votre mot de passe %{app_name}
 idv.titles.session.enter_password_letter: Ressaisissez votre mot de passe %{app_name} pour envoyer votre lettre
 idv.titles.unavailable: Nous travaillons à la résolution d’une erreur
@@ -1163,7 +1184,9 @@ in_person_proofing.body.barcode.cancel_link_text: Annuler votre code-barres
 in_person_proofing.body.barcode.close_window: Vous pouvez maintenant fermer cette fenêtre
 in_person_proofing.body.barcode.deadline: Vous devez vous rendre dans un bureau de poste participant avant le %{deadline}
 in_person_proofing.body.barcode.deadline_restart: Si vous y allez après cette date limite, vos informations ne seront pas sauvegardées et vous devrez recommencer le processus.
-in_person_proofing.body.barcode.email_sent: Nous avons envoyé ces informations à l’adresse e-mail que vous avez utilisée pour vous connecter.
+in_person_proofing.body.barcode.eipp_tag: Code-barres pilote amélioré de la GSA
+in_person_proofing.body.barcode.eipp_what_to_bring: 'Selon la pièce d’identité dont vous disposez, il pourra vous être demandé de présenter des documents complémentaires. Étudiez attentivement les options suivantes:'
+in_person_proofing.body.barcode.email_sent: Nous avons envoyé votre code-barre et les informations ci-dessous à l’adresse e-mail que vous avez utilisée pour vous connecter
 in_person_proofing.body.barcode.learn_more: En savoir davantage sur ce qu’il faut apporter.
 in_person_proofing.body.barcode.location_details: Détails de l’emplacement
 in_person_proofing.body.barcode.questions: Des questions ?
@@ -1171,7 +1194,6 @@ in_person_proofing.body.barcode.retail_hours: Heures d’ouverture
 in_person_proofing.body.barcode.retail_hours_closed: Fermé
 in_person_proofing.body.barcode.return_to_partner_html: Vous pouvez maintenant %{link_html} afin d’effectuer toutes les étapes suivantes auxquelles vous pouvez accéder jusqu’à ce que votre identité ait été vérifiée.
 in_person_proofing.body.barcode.return_to_partner_link: vous déconnecter et retourner à %{sp_name}
-in_person_proofing.body.barcode.what_to_bring: 'Selon le type de pièce d’identité ou de permis de conduire dont vous disposez, il pourra vous être demandé de produire des documents complémentaires. Étudiez attentivement les options suivantes:'
 in_person_proofing.body.barcode.what_to_expect: À quoi s’attendre au bureau de poste
 in_person_proofing.body.cta.button: Essayer en personne
 in_person_proofing.body.cta.prompt_detail: Vous pourrez peut-être confirmer votre identité dans un bureau de poste participant près de chez vous.
@@ -1266,18 +1288,21 @@ in_person_proofing.headings.update_state_id: Mettez à jour les informations fig
 in_person_proofing.process.barcode.caption_label: Code d’inscription
 in_person_proofing.process.barcode.heading: Montrez votre code-barres %{app_name}
 in_person_proofing.process.barcode.info: Le préposé doit scanner votre code-barres en haut de cette page. Vous pouvez imprimer cette page ou la montrer sur votre appareil mobile.
-in_person_proofing.process.eipp_bring_id.heading: 'Option 1: Apporter une pièce d’identité Real ID'
+in_person_proofing.process.eipp_bring_id_plus_documents.heading: 'Option 2: Apporter une pièce d’identité délivrée par l’État ainsi que des documents complémentaires'
+in_person_proofing.process.eipp_bring_id_plus_documents.info: 'Vous pouvez présenter votre permis de conduire standard ou une carte d’identité délivrée par un État, en l’accompagnant de documents complémentaires parmi ceux figurant aux options A, B ou C. UNE seule option doit être choisie:'
+in_person_proofing.process.eipp_bring_id_with_current_address.heading: A. REAL ID avec adresse actuelle
+in_person_proofing.process.eipp_bring_id.heading: 'Option 1: Apporter une pièce d’identité REAL ID'
 in_person_proofing.process.eipp_bring_id.image_alt_text: Real ID
-in_person_proofing.process.eipp_bring_id.info: Si vous présentez une carte d’identité ou un permis de conduire d’un État de type Real ID, vous n’avez pas besoin de présenter des documents complémentaires.
-in_person_proofing.process.eipp_state_id_military_id.heading: B. Pièce d’identité d’un État + carte d’identité militaire
+in_person_proofing.process.eipp_bring_id.info: Si vous présentez un permis de conduire ou une carte d’identité REAL ID et que l’adresse y figurant est votre adresse actuelle, il est inutile de produire des documents complémentaires.
+in_person_proofing.process.eipp_state_id_military_id.heading: B. Pièce d’identité délivrée par l’État + carte d’identité militaire
 in_person_proofing.process.eipp_state_id_military_id.image_alt_text: Pièce d’identité d’un État et carte d’identité militaire
-in_person_proofing.process.eipp_state_id_military_id.info: Présentez une pièce d’identité ou un permis de conduire d’État accompagné d’une carte d’identité militaire.
-in_person_proofing.process.eipp_state_id_passport.heading: A. Pièce d’identité d’un État + passeport
+in_person_proofing.process.eipp_state_id_military_id.info: Présenter un permis de conduire standard ou une carte d’identité délivrée par un État, accompagné d’une carte d’identité militaire.
+in_person_proofing.process.eipp_state_id_passport.heading: A. Pièce d’identité délivrée par l’État + passeport
 in_person_proofing.process.eipp_state_id_passport.image_alt_text: Pièce d’identité d’un État et passeport
-in_person_proofing.process.eipp_state_id_passport.info: Présentez une pièce d’identité ou un permis de conduire d’État accompagné d’un passeport ou d’une carte-passeport.
-in_person_proofing.process.eipp_state_id_supporting_docs.heading: C. Pièce d’identité d’État + deux documents complémentaires
+in_person_proofing.process.eipp_state_id_passport.info: Présenter un permis de conduire standard ou une carte d’identité délivrée par un État, accompagné d’un passeport ou d’une carte-passeport.
+in_person_proofing.process.eipp_state_id_supporting_docs.heading: C. Pièce d’identité délivrée par l’État + deux documents complémentaires
 in_person_proofing.process.eipp_state_id_supporting_docs.image_alt_text: Pièce d’identité d’État et deux documents complémentaires
-in_person_proofing.process.eipp_state_id_supporting_docs.info: 'Présentez une pièce d’identité ou un permis de conduire d’État ainsi que deux documents complémentaires parmi ceux qui figurent sur la liste suivante:'
+in_person_proofing.process.eipp_state_id_supporting_docs.info: 'Présenter un permis de conduire standard ou une carte d’identité délivrée par un État, ainsi que deux documents complémentaires parmi ceux qui figurent sur la liste suivante:'
 in_person_proofing.process.eipp_state_id_supporting_docs.info_list:
   - Bail locatif
   - Contrat d’emprunt immobilier
@@ -1286,12 +1311,13 @@ in_person_proofing.process.eipp_state_id_supporting_docs.info_list:
   - Carte d’immatriculation d’un véhicule
   - Attestation d’assurance habitation
   - Attestation d’assurance automobile/deux roues
-in_person_proofing.process.eipp_what_to_bring.heading: 'Option 2: Apporter une carte d’identité ou un permis de conduire d’un État standard ainsi que des documents complémentaires'
-in_person_proofing.process.eipp_what_to_bring.info: 'Vous pouvez présenter votre carte d’identité ou permis de conduire d’État ainsi que des documents complémentaires parmi les options A, B et C ci-dessous. UNE seule option doit être choisie:'
+in_person_proofing.process.real_id_and_supporting_docs.heading: B. REAL ID + de deux documents complémentaires
+in_person_proofing.process.real_id_and_supporting_docs.image_alt_text: REAL ID et deux documents
+in_person_proofing.process.real_id_and_supporting_docs.info: 'Si l’adresse figurant sur votre REAL ID n’est pas votre adresse actuelle, veuillez présenter le document REAL ID accompagné de deux documents complémentaires parmi ceux de la liste ci-dessous :'
 in_person_proofing.process.state_id.heading: Présentez votre permis de conduire ou votre carte d’identité de l’État
 in_person_proofing.process.state_id.heading_eipp: Présenter votre pièce d’identité et les documents complémentaires
 in_person_proofing.process.state_id.info: Ce document ne doit pas être périmé. Nous n’acceptons actuellement aucune autre pièce d’identité, comme les passeports et les cartes d’identité militaires.
-in_person_proofing.process.state_id.info_eipp: Le préposé numérisera votre pièce d’identité. Ce document ne doit pas être périmé. Selon le type de carte d’identité ou de permis de conduire que vous présentez, il pourra être nécessaire de présenter des documents complémentaires. Vous trouverez les impératifs à respecter dans la section À apporter au bureau de poste.
+in_person_proofing.process.state_id.info_eipp: Le préposé numérisera votre pièce d’identité. Ce document ne doit pas être périmé. Selon le type de pièce d’identité que vous présentez, il pourra vous être demandé de produire des documents complémentaires. Vous trouverez les exigences à respecter dans la section « Qu’apporter au bureau de poste ».
 in_person_proofing.process.what_to_do.heading: Faites la queue
 in_person_proofing.process.what_to_do.info: Dites au préposé du bureau de poste que vous êtes là pour confirmer votre identité auprès de %{app_name}.
 instructions.account.reactivate.begin: Commençons.
@@ -1304,17 +1330,17 @@ instructions.forgot_password.close_window: Vous pourrez fermer cette fenêtre de
 instructions.go_back_to_mobile_app: Pour continuer, veuillez retourner à l’appli %{friendly_name} et vous connecter.
 instructions.mfa.authenticator.confirm_code_html: Saisissez le code à partir de votre appli d’authentification. Si vous avez plusieurs comptes configurés dans votre appli, saisissez le code correspondant à %{app_name_html}.
 instructions.mfa.authenticator.manual_entry: Ou saisissez ce code manuellement dans votre appli d’authentification
-instructions.mfa.piv_cac.account_not_found_html: '<p><strong>%{sign_in}</strong> avec votre adresse e-mail et votre mot de passe. Ensuite, ajoutez votre carte PIV/CAC à votre compte.</p> <p><strong>Vous n’avez pas de compte %{app_name}?</strong> %{create_account}</p>'
+instructions.mfa.piv_cac.account_not_found_html: '<p>%{sign_in} à l’aide de votre adresse e-mail et de votre mot de passe. Introduisez ensuite la carte PIV/CAC dans un lecteur de carte à puce pour l’ajouter à votre compte.</p><p>Vous n’avez pas de compte %{app_name}? %{create_account}</p>'
 instructions.mfa.piv_cac.add_from_sign_in_html: '<strong> Instructions : </strong> Insérez votre carte PIV ou CAC dans <strong>AJOUTER PIV/CAC</strong>. Vous devrez <strong>choisir un certificat</strong> (le bon a probablement le nom que vous lui avez donné) et <strong>saisir votre NIP</strong> (votre NIP a été créé lors de la configuration de votre carte PIV/CAC).'
 instructions.mfa.piv_cac.already_associated_html: Veuillez choisir un certificat associé à une autre carte PIV/CAC ; contactez votre administrateur afin de vérifier que votre carte PIV/CAC est bien à jour. Si vous pensez qu’il s’agit d’une erreur, veuillez %{try_again_html}.
 instructions.mfa.piv_cac.back_to_sign_in: Retourner vous connecter
-instructions.mfa.piv_cac.confirm_piv_cac: Veuillez présenter la carte PIV/CAC que vous avez associée à votre compte.
-instructions.mfa.piv_cac.did_not_work_html: Veuillez %{please_try_again_html}. Si ce problème persiste, contactez l’administrateur de votre organisme.
+instructions.mfa.piv_cac.confirm_piv_cac: Introduisez la carte PIV/CAC que vous avez associée à votre compte dans un lecteur de carte à puce.
+instructions.mfa.piv_cac.did_not_work_html: Veuillez vous assurer que votre carte PIV/CAC est correctement introduite dans votre lecteur de carte à puce et %{please_try_again_html}. Si ce problème persiste, contactez l’administrateur de votre organisme.
 instructions.mfa.piv_cac.http_failure: Le serveur a mis trop de temps à répondre. Veuillez réessayer.
-instructions.mfa.piv_cac.no_certificate_html: Veuillez vous assurer que votre carte PIV/CAC est connectée et %{try_again_html}. Si ce problème persiste, contactez l’administrateur de votre organisme.
+instructions.mfa.piv_cac.no_certificate_html: Veuillez vous assurer que votre carte PIV/CAC est correctement introduite dans votre lecteur de carte à puce et %{try_again_html}. Si ce problème persiste, contactez l’administrateur de votre organisme.
 instructions.mfa.piv_cac.not_auth_cert_html: Le certificat que vous avez sélectionné n’est pas valide pour ce compte. Veuillez %{please_try_again_html} avec un autre certificat. Si ce problème persiste, contactez l’administrateur de votre organisme.
 instructions.mfa.piv_cac.please_try_again: réessayer
-instructions.mfa.piv_cac.sign_in_html: Assurez-vous que <strong>vous disposez d’un compte %{app_name}</strong> et que <strong>vous avez configuré votre carte PIV/CAC</strong> en tant que méthode d’authentification à deux facteurs.
+instructions.mfa.piv_cac.sign_in: Assurez-vous que vous disposez d’un compte %{app_name} et que vous avez configuré votre carte PIV (personal identity verification, vérification d’identité personnelle) ou CAC (common access card, carte d’accès commun) comme méthode d’authentification à deux facteurs.
 instructions.mfa.piv_cac.step_1: Donnez-lui un surnom
 instructions.mfa.piv_cac.step_1_info: Si vous ajoutez plus d’une carte PIV/CAC, vous saurez laquelle.
 instructions.mfa.piv_cac.step_2: Insérez votre PIV/CAC dans votre lecteur de carte
@@ -1393,7 +1419,7 @@ notices.forgot_password.no_email_sent_explanation_start: Vous n’avez pas reçu
 notices.forgot_password.resend_email_success: Nous avons envoyé un autre e-mail de réinitialisation de mot de passe.
 notices.password_changed: Vous avez changé votre mot de passe.
 notices.phone_confirmed: Un téléphone a été ajouté à votre compte.
-notices.piv_cac_configured: Une carte PIV/CAC a été ajoutée à votre compte.
+notices.piv_cac_configured: Ajouter votre carte d’employé fédéral.
 notices.privacy.privacy_act_statement: Déclaration relative à la loi sur la confidentialité
 notices.privacy.security_and_privacy_practices: Déclaration relatives à la loi sur les pratiques de sécurité et la confidentialité
 notices.resend_confirmation_email.success: Nous avons envoyé un autre e-mail de confirmation.
@@ -1471,6 +1497,13 @@ risc.security_event.errors.typ_error: l’en-tête typ doit être %{expected_typ
 saml_idp.auth.error.title: Erreur
 saml_idp.shared.saml_post_binding.heading: Valider pour continuer
 saml_idp.shared.saml_post_binding.no_js: JavaScript semble être désactivé dans votre navigateur. Normalement, cette étape se produit automatiquement, mais comme vous avez désactivé JavaScript, veuillez cliquer sur le bouton « Valider » pour poursuivre la connexion ou la déconnexion.
+security_check_failed.contact: Contactez l’assistance %{app_name}
+security_check_failed.details: Nous ne reconnaissons pas l’appareil ou le navigateur à partir duquel vous vous connectez.
+security_check_failed.info_p1: 'Utilisez le même appareil et le même navigateur que ceux avec lesquels vous aviez créé votre compte %{app_name}.'
+security_check_failed.info_p2_html: Essayez <a href="%{piv_cac_url}">de vous connecter avec votre carte d’employé fédéral</a> si vous êtes employé fédéral.
+security_check_failed.info_p3: Désactivez tout éventuel VPN ou bloqueur de publicité et videz votre cache.
+security_check_failed.learn_more: En savoir plus sur les tests de sécurité de %{app_name}
+security_check_failed.title: Échec du test de sécurité
 service_providers.errors.generic_sp_name: Cet organisme
 service_providers.errors.inactive.button_text: Voir mon compte %{app_name}
 service_providers.errors.inactive.heading: '%{sp_name} n’utilise plus %{app_name}'
@@ -1563,11 +1596,11 @@ titles.openid_connect.logout: Déconnexion OpenID Connect
 titles.passwords.change: Changer le mot de passe de votre compte
 titles.passwords.forgot: Réinitialiser le mot de passe
 titles.personal_key: Juste au cas où
-titles.piv_cac_login.add: Ajouter votre carte PIV ou CAC
+titles.piv_cac_login.add: Ajouter votre carte d’employé fédéral
 titles.piv_cac_login.new: Utiliser votre carte PIV/CAC pour vous connecter à votre compte
 titles.piv_cac_setup.new: Utiliser votre carte PIV/CAC pour sécuriser votre compte
-titles.piv_cac_setup.upsell: Renforcer la sécurité de votre compte avec une carte d’employé fédéral
-titles.present_piv_cac: Présenter votre carte PIV/CAC
+titles.piv_cac_setup.upsell: Ajouter votre carte d’employé fédéral pour vous connecter plus rapidement et en toute sécurité
+titles.present_piv_cac: Insérer votre carte d’employé fédéral
 titles.present_webauthn: Brancher votre clé de sécurité physique
 titles.reactivate_account: Réactiver votre compte
 titles.registrations.new: Créer votre compte
@@ -1587,8 +1620,7 @@ titles.verify_email: Consulter vos e-mails
 titles.visitors.index: Bienvenue
 titles.webauthn_setup: Ajouter votre clé de sécurité
 two_factor_authentication.aal2_request.phishing_resistant_html: '<strong>%{sp_name}</strong> nécessite une méthode d’authentification de haute sécurité, telle que le déverrouillage facial ou tactile, une clé de sécurité ou une carte d’employé fédéral.'
-two_factor_authentication.aal2_request.piv_cac_only_html: "<strong>%{sp_name}</\
-  strong> nécessite votre carte d’employé fédéral, qui est une méthode d’authentification de haute sécurité."
+two_factor_authentication.aal2_request.piv_cac_only_html: '<strong>%{sp_name}</strong> nécessite votre carte d’employé fédéral, qui est une méthode d’authentification de haute sécurité.'
 two_factor_authentication.account_reset.cancel_link: Annuler votre demande
 two_factor_authentication.account_reset.link: supprimer votre compte
 two_factor_authentication.account_reset.pending: Vous avez actuellement une demande en attente pour supprimer votre compte. Il faut compter %{interval} à partir du moment où vous avez fait la demande pour terminer le processus. Veuillez vérifier plus tard.
@@ -1610,7 +1642,7 @@ two_factor_authentication.backup_codes.warning_html: '<strong>Vous n’avez conf
 two_factor_authentication.choose_another_option: '‹ Choisir une autre méthode d’authentification'
 two_factor_authentication.confirm_backup_code_setup_content_html:
   - <strong>Les codes de sauvegarde sont la méthode d’authentification la moins recommandée,</strong> car les codes peuvent facilement se perdre. Essayez une option plus sûre, comme une application d’authentification ou une clé de sécurité.
-  - Nous vous donnerons dix codes que vous pourrez télécharger, imprimer, copier ou noter. Vous saisirez un code chaque fois que vous vous connecterez.
+  - Nous vous donnerons %{number_of_codes} codes que vous pourrez télécharger, imprimer, copier ou noter. Vous saisirez un code chaque fois que vous vous connecterez.
 two_factor_authentication.confirm_backup_code_setup_title: 'Êtes-vous sûr de vouloir utiliser des codes de sauvegarde ?'
 two_factor_authentication.form_legend: Choisissez vos méthodes d’authentification
 two_factor_authentication.header_text: Saisissez votre code à usage unique
@@ -1677,11 +1709,11 @@ two_factor_authentication.phone_verification.troubleshooting.change_number: Util
 two_factor_authentication.phone_verification.troubleshooting.code_not_received: Je n’ai pas reçu mon code à usage unique
 two_factor_authentication.phone.delete.failure: Impossible de supprimer votre téléphone.
 two_factor_authentication.phone.delete.success: Votre téléphone a été supprimé.
-two_factor_authentication.piv_cac_header_text: Présenter votre carte PIV/CAC
+two_factor_authentication.piv_cac_header_text: Insérer votre carte d’employé fédéral
 two_factor_authentication.piv_cac_upsell.add_piv: Ajouter une carte PIV/CAC
 two_factor_authentication.piv_cac_upsell.choose_other_method: Choisir plutôt d’autres méthodes
-two_factor_authentication.piv_cac_upsell.existing_user_info: Comme vous utilisez une adresse e-mail avec le suffixe %{email_type}, nous vous recommandons d’ajouter votre carte d’employé fédéral parmi vos méthodes d’authentification. Ceci renforcera considérablement la sécurité de votre compte.
-two_factor_authentication.piv_cac_upsell.new_user_info: Comme vous utilisez une adresse e-mail avec le suffixe %{email_type}, nous vous recommandons d’ajouter votre carte d’employé fédéral parmi vos méthodes d’authentification. Ceci permet d’ajouter une couche supplémentaire de sécurité à votre compte.
+two_factor_authentication.piv_cac_upsell.explain: Ceci permettra de renforcer la sécurité de votre compte et de sauter l’étape de saisie de votre e-mail et mot de passe quand vous vous connecterez.
+two_factor_authentication.piv_cac_upsell.recommendation: Si votre employeur vous a délivré une carte PIV/CAC, vous vous recommandons de l’ajouter parmi vos méthodes d’authentification.
 two_factor_authentication.piv_cac_upsell.skip: Ignorer
 two_factor_authentication.piv_cac.change_nickname: Changer de pseudo
 two_factor_authentication.piv_cac.delete: Supprimer cette méthode
@@ -1704,7 +1736,7 @@ two_factor_authentication.two_factor_choice: Configuration de la méthode d’au
 two_factor_authentication.two_factor_choice_options.auth_app: Application d’authentification
 two_factor_authentication.two_factor_choice_options.auth_app_info: Télécharger ou utiliser une appli d’authentification de votre choix pour générer des codes sécurisés.
 two_factor_authentication.two_factor_choice_options.backup_code: Codes de sauvegarde
-two_factor_authentication.two_factor_choice_options.backup_code_info: Une liste de 10 codes que vous pouvez imprimer ou enregistrer sur votre appareil. Lorsque vous utilisez le dernier code, nous générerons une nouvelle liste. Gardez à l’esprit que les codes de sauvegarde sont faciles à perdre.
+two_factor_authentication.two_factor_choice_options.backup_code_info: Une liste de %{count} codes que vous pouvez imprimer ou enregistrer sur votre appareil. Comme les codes de sauvegarde se perdent facilement, ne choisir cette option qu’en dernier recours.
 two_factor_authentication.two_factor_choice_options.configurations_added.one: '%{count} ajouté'
 two_factor_authentication.two_factor_choice_options.configurations_added.other: '%{count} ajouté'
 two_factor_authentication.two_factor_choice_options.no_count_configuration_added: Ajouté
@@ -1756,10 +1788,10 @@ user_mailer.account_reset_cancel.intro_html: Cet e-mail confirme que vous avez a
 user_mailer.account_reset_cancel.subject: Demande annulée
 user_mailer.account_reset_complete.intro_html: Le présent e-mail confirme que vous avez supprimé votre compte %{app_name_html}.
 user_mailer.account_reset_complete.subject: Compte supprimé
-user_mailer.account_reset_granted.button: Oui, continuer la suppression
+user_mailer.account_reset_granted.button: Confirmer la suppression du compte
 user_mailer.account_reset_granted.cancel_link_text: veuillez annuler
 user_mailer.account_reset_granted.help_html: Si vous ne souhaitez pas supprimer votre compte, %{cancel_account_reset_html}.
-user_mailer.account_reset_granted.intro_html: Votre délai d’attente de %{waiting_period} est terminé. Veuillez terminer l’étape 2 du processus.<br><br> Si vous ne parvenez pas à localiser vos méthodes d’authentification, sélectionnez “confirmer la suppression” pour supprimer votre compte %{app_name}.<br><br> À l’avenir, si vous devez accéder aux sites Web gouvernementaux participants qui utilisent %{app_name}, vous pouvez créer un nouveau compte %{app_name} en utilisant la même adresse e-mail après la suppression de votre compte.<br><br>
+user_mailer.account_reset_granted.intro_html: Votre délai d’attente de %{waiting_period} est terminé. Veuillez terminer l’étape 2 du processus.<br><br> Si vous ne parvenez pas à localiser vos méthodes d’authentification, sélectionnez « Confirmer la suppression du compte » pour supprimer votre compte %{app_name}.<br><br> À l’avenir, si vous devez accéder aux sites Web gouvernementaux participants qui utilisent %{app_name}, vous pouvez créer un nouveau compte %{app_name} en utilisant la même adresse e-mail après la suppression de votre compte.<br><br>
 user_mailer.account_reset_granted.subject: Supprimer votre compte %{app_name}
 user_mailer.account_reset_request.cancel: Vous ne voulez pas supprimer votre compte ? Connectez-vous à votre compte %{app_name} pour annuler.
 user_mailer.account_reset_request.header: Votre compte sera supprimé dans %{interval}
@@ -1809,7 +1841,7 @@ user_mailer.in_person_failed_suspected_fraud.body.help_center_html: Si vous avez
 user_mailer.in_person_failed_suspected_fraud.body.intro: Vous avez tenté de confirmer votre identité par le biais de %{app_name}, mais votre identité n’a pas pu être confirmée au bureau de poste de %{location} le %{date}.
 user_mailer.in_person_failed_suspected_fraud.greeting: Bonjour,
 user_mailer.in_person_failed_suspected_fraud.subject: Votre identité n’a pas pu être vérifiée en personne
-user_mailer.in_person_failed.body.with_cta: Cliquez sur le bouton ou copiez le lien ci-dessous pour réessayer de confirmer votre identité en ligne par le biais de %{sp_or_app_name}. Si vous rencontrez toujours des difficultés, veuillez contacter l’organisme auquel vous essayez d’accéder.
+user_mailer.in_person_failed.body.with_cta: Cliquez sur le bouton ou copiez le lien ci-dessous pour réessayer de confirmer votre identité par le biais de %{sp_or_app_name}. Si vous rencontrez toujours des difficultés, veuillez contacter l’organisme auquel vous essayez d’accéder.
 user_mailer.in_person_failed.body.without_cta: Veuillez réessayer de confirmer votre identité sur le site Web de %{sp_name}. Si vous rencontrez toujours des difficultés, veuillez contacter l’organisme auquel vous essayez d’accéder.
 user_mailer.in_person_failed.intro: Votre identité n’a pas pu être vérifiée au bureau de poste de %{location} le %{date}.
 user_mailer.in_person_failed.subject: Votre identité n’a pas pu être vérifiée en personne
@@ -1858,10 +1890,6 @@ user_mailer.new_device_sign_in_before_2fa.info_p2: Si vous reconnaissez cette ac
 user_mailer.new_device_sign_in_before_2fa.info_p3_html: L’authentification à deux facteurs protège votre compte des accès non autorisés. Si vous n’êtes pas à l’origine de cette action, %{reset_password_link_html}.
 user_mailer.new_device_sign_in_before_2fa.reset_password: veuillez réinitialiser immédiatement votre mot de passe.
 user_mailer.new_device_sign_in_before_2fa.subject: Nouvelle connexion avec votre compte %{app_name}
-user_mailer.new_device_sign_in.disavowal_link: réinitialisez votre mot de passe
-user_mailer.new_device_sign_in.help_html: Si vous n’avez pas effectué ce changement, %{disavowal_link_html}. Pour plus d’aide, veuillez visiter le %{help_link_html} de %{app_name_html} ou %{contact_link_html}.
-user_mailer.new_device_sign_in.info: Votre compte %{app_name} vient d’être utilisé pour une connexion sur un nouvel appareil.
-user_mailer.new_device_sign_in.subject: Nouvelle connexion avec votre compte %{app_name}
 user_mailer.password_changed.disavowal_link: réinitialisez votre mot de passe
 user_mailer.password_changed.help_html: Si vous n’avez pas effectué ce changement, %{disavowal_link_html}. Pour plus d’aide, veuillez visiter le %{help_link_html} de %{app_name_html} ou %{contact_link_html}.
 user_mailer.password_changed.intro_html: Vous avez un nouveau mot de passe pour votre compte %{app_name_html}.
@@ -1910,6 +1938,7 @@ users.delete.bullet_4: Nous informerons les organismes auxquels vous accédez av
 users.delete.heading: Êtes-vous sûr de vouloir supprimer votre compte ?
 users.delete.instructions: Saisissez votre mot de passe pour confirmer que vous souhaitez supprimer votre compte.
 users.delete.subheading: 'Si vous supprimez votre compte :'
+users.password_compromised.warning: Nous avons trouvé votre mot de passe dans le cadre d’une fuite de données sur un autre site Web ou une application. %{app_name} vous demande de modifier votre mot de passe pour protéger votre compte.
 users.personal_key.accessible_labels.code_example: Un exemple de clé personnelle à 16 caractères
 users.personal_key.accessible_labels.preview: Aperçu de clé personnelle
 users.personal_key.confirmation_error: Vous avez saisi une clé personnelle erronée.

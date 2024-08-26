@@ -11,11 +11,29 @@ module TwoFactorAuthenticatableMethods
     @auth_methods_session ||= AuthMethodsSession.new(user_session:)
   end
 
+  def handle_verification_for_authentication_context(result:, auth_method:, extra_analytics: nil)
+    analytics.multi_factor_auth(
+      **result.to_h,
+      multi_factor_auth_method: auth_method,
+      enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
+      new_device: new_device?,
+      **extra_analytics.to_h,
+    )
+
+    if result.success?
+      handle_valid_verification_for_authentication_context(auth_method:)
+    else
+      handle_invalid_verification_for_authentication_context
+    end
+  end
+
+  private
+
   def handle_valid_verification_for_authentication_context(auth_method:)
     mark_user_session_authenticated(auth_method:, authentication_type: :valid_2fa)
     disavowal_event, disavowal_token = create_user_event_with_disavowal(:sign_in_after_2fa)
 
-    if IdentityConfig.store.feature_new_device_alert_aggregation_enabled && new_device?
+    if new_device?
       if current_user.sign_in_new_device_at.blank?
         if sign_in_notification_timeframe_expired_event.present?
           current_user.update(
@@ -37,8 +55,6 @@ module TwoFactorAuthenticatableMethods
     set_new_device_session(false)
     reset_second_factor_attempts_count
   end
-
-  private
 
   def authenticate_user
     authenticate_user!(force: true)
@@ -111,11 +127,7 @@ module TwoFactorAuthenticatableMethods
   # Method will be renamed in the next refactor.
   # You can pass in any "type" with a corresponding I18n key in
   # two_factor_authentication.invalid_#{type}
-  def handle_invalid_otp(type:, context: nil)
-    if context == UserSessionContext::AUTHENTICATION_CONTEXT
-      handle_invalid_verification_for_authentication_context
-    end
-
+  def handle_invalid_otp(type:)
     update_invalid_user
 
     flash.now[:error] = invalid_otp_error(type)

@@ -19,6 +19,8 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
       service_provider: build(:service_provider, issuer: 'test_issuer'),
       analytics: fake_analytics,
       liveness_checking_required: liveness_checking_required,
+      doc_auth_vendor: 'mock',
+      acuant_sdk_upgrade_ab_test_bucket:,
     )
   end
 
@@ -51,6 +53,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
   let!(:document_capture_session) { DocumentCaptureSession.create!(user: create(:user)) }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:fake_analytics) { FakeAnalytics.new }
+  let(:acuant_sdk_upgrade_ab_test_bucket) {}
 
   describe '#valid?' do
     context 'with all valid images' do
@@ -87,7 +90,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
         form.submit
 
         expect(form.valid?).to eq(false)
-        expect(form.errors[:limit]).to eq([I18n.t('errors.doc_auth.rate_limited_heading')])
+        expect(form.errors[:limit]).to eq([I18n.t('doc_auth.errors.rate_limited_heading')])
       end
     end
 
@@ -169,14 +172,11 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
           'IdV: doc auth image upload form submitted',
           success: true,
           errors: {},
-          error_details: nil,
           submit_attempts: 1,
           remaining_submit_attempts: 3,
           user_id: document_capture_session.user.uuid,
-          flow_path: anything,
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
-          selfie_image_fingerprint: nil,
           liveness_checking_required: boolean,
         )
 
@@ -185,8 +185,6 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
           async: false,
           submit_attempts: 1,
           attention_with_barcode: false,
-          address_line2_present: nil,
-          alert_failure_count: nil,
           billed: true,
           client_image_metrics: {
             back: {
@@ -204,14 +202,8 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
               fileName: front_image_file_name,
             },
           },
-          image_metrics: nil,
-          conversation_id: nil,
-          request_id: nil,
           doc_auth_result: 'Passed',
-          decision_product_status: nil,
           errors: {},
-          exception: nil,
-          flow_path: anything,
           remaining_submit_attempts: 3,
           state: 'MT',
           state_id_type: 'drivers_license',
@@ -220,24 +212,16 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
           vendor_request_time_in_ms: a_kind_of(Float),
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
-          selfie_image_fingerprint: nil,
           doc_type_supported: boolean,
           liveness_checking_required: boolean,
-          log_alert_results: nil,
-          portrait_match_results: nil,
-          processed_alerts: nil,
-          product_status: nil,
-          reference: nil,
           selfie_live: boolean,
           selfie_quality_good: boolean,
           doc_auth_success: boolean,
           selfie_status: anything,
-          vendor: nil,
-          transaction_status: nil,
-          transaction_reason_code: nil,
           workflow: 'test_non_liveness_workflow',
           birth_year: 1938,
           zip_code: '59010',
+          issue_year: 2019,
         )
       end
 
@@ -268,11 +252,9 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
             'IdV: doc auth image upload form submitted',
             success: true,
             errors: {},
-            error_details: nil,
             submit_attempts: 1,
             remaining_submit_attempts: 3,
             user_id: document_capture_session.user.uuid,
-            flow_path: anything,
             front_image_fingerprint: an_instance_of(String),
             back_image_fingerprint: an_instance_of(String),
             selfie_image_fingerprint: an_instance_of(String),
@@ -281,8 +263,6 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
 
           expect(fake_analytics).to have_logged_event(
             'IdV: doc auth image upload vendor submitted',
-            address_line2_present: nil,
-            alert_failure_count: nil,
             async: false,
             submit_attempts: 1,
             attention_with_barcode: false,
@@ -309,20 +289,10 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
                 width: 10,
               },
             },
-            conversation_id: nil,
-            request_id: nil,
-            decision_product_status: nil,
             doc_auth_result: 'Passed',
             errors: {},
-            exception: nil,
-            flow_path: anything,
-            image_metrics: nil,
             liveness_checking_required: boolean,
-            log_alert_results: nil,
             portrait_match_results: anything,
-            processed_alerts: nil,
-            product_status: nil,
-            reference: nil,
             remaining_submit_attempts: 3,
             state: 'MT',
             state_id_type: 'drivers_license',
@@ -337,12 +307,10 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
             selfie_quality_good: boolean,
             doc_auth_success: boolean,
             selfie_status: :success,
-            vendor: nil,
-            transaction_status: nil,
-            transaction_reason_code: nil,
             workflow: 'test_liveness_workflow',
             birth_year: 1938,
             zip_code: '59010',
+            issue_year: 2019,
           )
         end
 
@@ -356,6 +324,29 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
           expect(response.selfie_status).to eq(:success)
           expect(response.errors).to eq({})
           expect(response.attention_with_barcode?).to eq(false)
+        end
+      end
+
+      context 'when acuant a/b test is enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:idv_acuant_sdk_upgrade_a_b_testing_enabled).
+            and_return(true)
+          allow(IdentityConfig.store).to receive(:idv_acuant_sdk_upgrade_a_b_testing_percent).
+            and_return(50)
+        end
+
+        it 'returns the expected response' do
+          response = form.submit
+
+          expect(response).to be_a_kind_of DocAuth::Response
+          expect(response.success?).to eq(true)
+          expect(response.doc_auth_success?).to eq(true)
+          expect(response.selfie_status).to eq(:not_processed)
+          expect(response.errors).to eq({})
+          expect(response.attention_with_barcode?).to eq(false)
+          expect(response.pii_from_doc).to eq(
+            Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT),
+          )
         end
       end
     end
@@ -401,14 +392,11 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
           'IdV: doc auth image upload form submitted',
           success: true,
           errors: {},
-          error_details: nil,
           submit_attempts: 1,
           remaining_submit_attempts: 3,
           user_id: document_capture_session.user.uuid,
-          flow_path: anything,
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
-          selfie_image_fingerprint: nil,
           liveness_checking_required: boolean,
         )
       end
@@ -452,7 +440,10 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
         DocAuth::Response.new(
           success: false,
           errors: errors,
-          extra: { remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1 },
+          extra: {
+            remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+            doc_auth_result: 'Failed',
+          },
         )
       end
       let(:doc_auth_client) { double(DocAuth::LexisNexis::LexisNexisClient) }
@@ -470,7 +461,16 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
         expect(response.selfie_status).to eq(:not_processed)
         expect(response.attention_with_barcode?).to eq(false)
         expect(response.pii_from_doc).to eq(nil)
+      end
+
+      it 'saves the doc_auth_result to document_capture_session' do
+        response = form.submit
+        session = DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
+
+        expect(response).to be_a_kind_of DocAuth::Response
+        expect(response.success?).to eq(false)
         expect(response.doc_auth_success?).to eq(false)
+        expect(session.last_doc_auth_result).to eq('Failed')
       end
 
       it 'includes remaining_submit_attempts' do
@@ -498,7 +498,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
         expect(fake_analytics).to have_logged_event(
           'IdV: doc auth image upload vendor submitted',
           hash_including(
-            doc_auth_result: nil,
+            doc_auth_result: 'Failed',
             errors: { front: 'glare' },
             success: false,
             doc_type_supported: boolean,
@@ -554,6 +554,8 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
           extra: {
             pii_like_keypaths: pii_like_keypaths,
             attention_with_barcode: false,
+            id_issued_status: 'missing',
+            id_expiration_status: 'missing',
           },
         )
       end
@@ -594,10 +596,8 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
           submit_attempts: 1,
           remaining_submit_attempts: 3,
           user_id: document_capture_session.user.uuid,
-          flow_path: anything,
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
-          selfie_image_fingerprint: nil,
           liveness_checking_required: boolean,
           side: 'both',
         )
@@ -623,10 +623,8 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
             submit_attempts: 1,
             remaining_submit_attempts: 3,
             user_id: document_capture_session.user.uuid,
-            flow_path: anything,
             front_image_fingerprint: an_instance_of(String),
             back_image_fingerprint: an_instance_of(String),
-            selfie_image_fingerprint: nil,
             liveness_checking_required: boolean,
             side: 'both',
           )
