@@ -534,6 +534,7 @@ module AnalyticsEvents
     event_id: nil,
     event_type: nil,
     event_ip: nil,
+    user_id: nil,
     **extra
   )
     track_event(
@@ -548,6 +549,7 @@ module AnalyticsEvents
       event_id:,
       event_type:,
       event_ip:,
+      user_id:,
       **extra,
     )
   end
@@ -575,6 +577,7 @@ module AnalyticsEvents
     event_id: nil,
     event_type: nil,
     event_ip: nil,
+    user_id: nil,
     **extra
   )
     track_event(
@@ -589,6 +592,7 @@ module AnalyticsEvents
       event_id:,
       event_type:,
       event_ip:,
+      user_id:,
       **extra,
     )
   end
