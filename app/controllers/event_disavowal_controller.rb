@@ -10,7 +10,7 @@ class EventDisavowalController < ApplicationController
       success: true,
       extra: EventDisavowal::BuildDisavowedEventAnalyticsAttributes.call(disavowed_event),
     )
-    analytics.event_disavowal(user_id: disavowed_event.user_id, **result.to_h)
+    analytics.event_disavowal(**result.to_h)
     @forbidden_passwords = forbidden_passwords
   end
 
