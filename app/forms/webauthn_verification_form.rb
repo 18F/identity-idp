@@ -92,12 +92,12 @@ class WebauthnVerificationForm
                     client_data_json.blank? ||
                     signature.blank? ||
                     challenge.blank?
-    @authenticator_assertion_response = WebAuthn::AuthenticatorAssertionResponse.new(
+
+    WebAuthn::AuthenticatorAssertionResponse.new(
       authenticator_data: Base64.decode64(authenticator_data),
       client_data_json: Base64.decode64(client_data_json),
       signature: Base64.decode64(signature),
-    )
-    @authenticator_assertion_response.valid?(
+    ).valid?(
       challenge.pack('c*'),
       original_origin,
       public_key: Base64.decode64(public_key),
@@ -166,7 +166,7 @@ class WebauthnVerificationForm
     {
       webauthn_configuration_id: webauthn_configuration&.id,
       frontend_error: webauthn_error.presence,
-      webauthn_configuration_aaguid: webauthn_configuration&.aaguid,
+      webauthn_configuration_aaguid: webauthn_configuration.aaguid,
     }.compact
   end
 end

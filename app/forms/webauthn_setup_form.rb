@@ -108,8 +108,9 @@ class WebauthnSetupForm
       attestation_object: Base64.decode64(@attestation_object),
       client_data_json: Base64.decode64(@client_data_json),
     )
-    @aaguid = attestation_response.authenticator_data.aaguid
+
     begin
+      @aaguid = attestation_response.authenticator_data.aaguid
       attestation_response.valid?(@challenge.pack('c*'), original_origin)
     rescue StandardError
       false
