@@ -130,7 +130,7 @@ RSpec.describe 'accounts/show.html.erb' do
   context 'when current user has an in_person_enrollment that was cancelled' do
     let(:vtr) { ['Pe'] }
     let(:sp_name) { 'sinatra-test-app' }
-    let(:user) { build(:user, :with_pending_in_person_enrollment) }
+    let(:user) { create(:user, :with_pending_in_person_enrollment) }
 
     before do
       # Make the in_person_enrollment and associated profile cancelled
