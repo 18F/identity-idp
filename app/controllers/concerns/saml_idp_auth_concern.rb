@@ -150,7 +150,6 @@ module SamlIdpAuthConcern
     identity = current_user.identities.find_by(service_provider: sp_session['issuer'])
     email_id = identity&.email_address_id
     return email_id if email_id.is_a? Integer
-    # EmailContext.new(current_user).last_sign_in_email_address.id
   end
 
   def identity_needs_verification?
