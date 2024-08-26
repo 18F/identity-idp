@@ -66,11 +66,8 @@ class SocureShadowModeProofingJob < ApplicationJob
   end
 
   def format_proofing_result_for_logs(proofing_result)
-    proofing_result.to_h.then do |hash|
-      hash[:context][:stages][:threatmetrix].delete(:response_body)
-      hash
-    rescue
-      hash
+    proofing_result.to_h.tap do |hash|
+      hash.dig(:context, :stages, :threatmetrix)&.delete(:response_body)
     end
   end
 
