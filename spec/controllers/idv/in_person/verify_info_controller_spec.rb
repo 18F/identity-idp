@@ -48,6 +48,13 @@ RSpec.describe Idv::InPerson::VerifyInfoController, allowed_extra_analytics: [:*
         :confirm_ssn_step_complete,
       )
     end
+
+    it 'confirms idv/in_person data is present' do
+      expect(subject).to have_actions(
+        :before,
+        :confirm_pii_data_present,
+      )
+    end
   end
 
   before do
@@ -169,6 +176,29 @@ RSpec.describe Idv::InPerson::VerifyInfoController, allowed_extra_analytics: [:*
         expect(response).to render_template :show
         expect(controller.flash[:error]).to eq(I18n.t('idv.failure.timeout'))
         expect(@analytics).to have_logged_event('IdV: proofing resolution result missing')
+      end
+    end
+
+    context 'when idv/in_person data is present' do
+      before do
+        subject.user_session['idv/in_person'] = flow_session
+      end
+
+      it 'renders the show template without errors' do
+        get :show
+
+        expect(response).to render_template :show
+      end
+    end
+
+    context 'when idv/in_person data is missing' do
+      before do
+        subject.user_session['idv/in_person'] = {}
+      end
+
+      it 'redirects to idv_path' do
+        get :show
+        expect(response).to redirect_to(idv_path)
       end
     end
   end
