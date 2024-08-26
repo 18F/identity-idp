@@ -5,7 +5,7 @@ RSpec.describe Idv::AamvaStateMaintenanceWindow do
   let(:eastern_time) { ActiveSupport::TimeZone[tz] }
 
   before do
-    travel_to Date.new(2024, 6, 2)
+    travel_to eastern_time.parse('2024-06-02T00:00:00')
   end
 
   describe '#in_maintenance_window?' do
@@ -51,10 +51,10 @@ RSpec.describe Idv::AamvaStateMaintenanceWindow do
       let(:state) { 'CA' }
       let(:expected_windows) do
         [
-          Time.parse('2024-06-01 04:00:00 -0400')..Time.parse('2024-06-01 05:30:00 -0400'),
-          Time.parse('2024-05-27 01:00:00 -0400')..Time.parse('2024-05-27 01:45:00 -0400'),
-          Time.parse('2024-05-06 01:00:00 -0400')..Time.parse('2024-05-06 04:30:00 -0400'),
-          Time.parse('2024-05-20 01:00:00 -0400')..Time.parse('2024-05-20 04:30:00 -0400'),
+          eastern_time.parse('2024-06-01 04:00:00')..eastern_time.parse('2024-06-01 05:30:00'),
+          eastern_time.parse('2024-05-27 01:00:00')..eastern_time.parse('2024-05-27 01:45:00'),
+          eastern_time.parse('2024-05-06 01:00:00')..eastern_time.parse('2024-05-06 04:30:00'),
+          eastern_time.parse('2024-05-20 01:00:00')..eastern_time.parse('2024-05-20 04:30:00'),
         ]
       end
 
