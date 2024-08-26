@@ -42,12 +42,11 @@ account.connected_apps.associated: 'Conectado: %{timestamp}'
 account.connected_apps.description: Con su cuenta de %{app_name}, puede conectarse de manera segura a muchas cuentas del gobierno en línea. Esta es una lista de todas las cuentas que tiene conectadas actualmente.
 account.email_language.default: '%{language} (predeterminado)'
 account.email_language.edit_title: Editar la preferencia de idioma del correo electrónico
-account.email_language.languages_list: '%{app_name} le permite recibir su comunicación por correo electrónico en %{list}.'
+account.email_language.languages_list: Recibirá mensajes de correo electrónico de %{app_name} en el idioma que elija.
 account.email_language.name.en: English
 account.email_language.name.es: Español
 account.email_language.name.fr: Français
 account.email_language.name.zh: 中文 (简体)
-account.email_language.sentence_connector: o
 account.email_language.updated: Se actualizó su preferencia de idioma del correo electrónico.
 account.forget_all_browsers.longer_description: Una vez que elija “Olvidar todos los navegadores”, necesitaremos más información para saber que realmente es usted quien está iniciando sesión en su cuenta. Le pediremos un método de autenticación multifactor (como código de texto o de SMS, o una clave de seguridad) cada vez que desee acceder a su cuenta.
 account.index.auth_app_add: Agregar aplicación
@@ -731,6 +730,7 @@ errors.manage_authenticator.remove_only_method_error: No puede eliminar su únic
 errors.manage_authenticator.unique_name_error: Ese nombre ya está en uso. Use un nombre diferente.
 errors.max_password_attempts_reached: Ingresó demasiadas contraseñas incorrectas. Puede restablecer su contraseña usando el vínculo “¿Olvidó su contraseña?”.
 errors.messages.already_confirmed: ya estaba confirmado, intente iniciar una sesión
+errors.messages.backup_code_limited: Lo intentó demasiadas veces; vuelva a intentarlo en %{timeout}.
 errors.messages.blank: Llene este campo.
 errors.messages.blank_cert_element_req: No podemos detectar un certificado en su solicitud.
 errors.messages.confirmation_code_incorrect: Código de verificación incorrecto
@@ -1902,10 +1902,6 @@ user_mailer.new_device_sign_in_before_2fa.info_p2: Si reconoce esta actividad, n
 user_mailer.new_device_sign_in_before_2fa.info_p3_html: La autenticación de dos factores protege su cuenta contra un acceso no autorizado. Si no fue usted, %{reset_password_link_html}.
 user_mailer.new_device_sign_in_before_2fa.reset_password: restablezca de inmediato su contraseña.
 user_mailer.new_device_sign_in_before_2fa.subject: Nuevo inicio de sesión con su cuenta de %{app_name}
-user_mailer.new_device_sign_in.disavowal_link: restablezca su contraseña
-user_mailer.new_device_sign_in.help_html: Si usted no hizo este cambio, %{disavowal_link_html}. Para obtener más ayuda, visite %{app_name_html} %{help_link_html} o %{contact_link_html}.
-user_mailer.new_device_sign_in.info: Su cuenta de %{app_name} acaba de ser usada para iniciar sesión en un nuevo dispositivo.
-user_mailer.new_device_sign_in.subject: Nuevo inicio de sesión con su cuenta de %{app_name}
 user_mailer.password_changed.disavowal_link: restablezca su contraseña
 user_mailer.password_changed.help_html: Si usted no hizo este cambio, %{disavowal_link_html}. Para obtener más ayuda, visite %{app_name_html} %{help_link_html} o %{contact_link_html}.
 user_mailer.password_changed.intro_html: Tiene una contraseña nueva para su cuenta de %{app_name_html}.

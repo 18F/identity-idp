@@ -4,7 +4,7 @@
 # avoid having build-essential and the large-files token be in the
 # main image.
 #########################################################################
-FROM ruby:3.3.1-slim as builder
+FROM ruby:3.3.4-slim as builder
 
 # Set environment variables
 ENV RAILS_ROOT /app
@@ -72,9 +72,11 @@ RUN bundle config set --local without 'deploy development doc test'
 RUN bundle install --jobs $(nproc)
 RUN bundle binstubs --all
 
-# yarn install
-COPY package.json $RAILS_ROOT/package.json
-COPY yarn.lock $RAILS_ROOT/yarn.lock
+# Yarn install
+COPY ./package.json ./package.json
+COPY ./yarn.lock ./yarn.lock
+# Workspace packages are installed by Yarn via symlink to the original source, and need to be present
+COPY ./app/javascript/packages ./app/javascript/packages
 RUN yarn install --production=true --frozen-lockfile --cache-folder .yarn-cache
 
 # Add the application code
@@ -104,7 +106,7 @@ COPY public/ban-robots.txt $RAILS_ROOT/public/robots.txt
 COPY ./config/application.yml.default.prod $RAILS_ROOT/config/application.yml
 
 # Precompile assets
-RUN bundle exec rake assets:precompile --trace
+RUN SKIP_YARN_INSTALL=true bundle exec rake assets:precompile && rm -r node_modules/ && rm -r .yarn-cache/
 
 # get service_providers.yml and related files
 ARG SERVICE_PROVIDERS_KEY
@@ -136,7 +138,7 @@ RUN openssl req -x509 -sha256 -nodes -newkey rsa:2048 -days 1825 \
 #########################################################################
 # This is the main image.
 #########################################################################
-FROM ruby:3.3.1-slim
+FROM ruby:3.3.4-slim as main
 
 # Set environment variables
 ENV RAILS_ROOT /app
@@ -179,7 +181,6 @@ RUN apt-get update -qq && \
     libxml2-dev \
     libxslt1-dev \
     libcurl4-openssl-dev \
-    software-properties-common \
     libffi-dev \
     libpq-dev \
     unzip && \

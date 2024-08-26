@@ -292,6 +292,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_09_152808) do
     t.text "requested_aal_value"
     t.string "vtr"
     t.string "acr_values"
+    t.bigint "email_address_id"
     t.index ["access_token"], name: "index_identities_on_access_token", unique: true
     t.index ["session_uuid"], name: "index_identities_on_session_uuid", unique: true
     t.index ["user_id", "service_provider"], name: "index_identities_on_user_id_and_service_provider", unique: true

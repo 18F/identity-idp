@@ -42,12 +42,11 @@ account.connected_apps.associated: 已连接 %{timestamp}
 account.connected_apps.description: 使用你的 %{app_name} 账户，你可以安全地连接到网上多个政府账户。以下列出了你目前已连接的所有账户。
 account.email_language.default: '%{language} （默认）'
 account.email_language.edit_title: 编辑电邮语言选择
-account.email_language.languages_list: '%{app_name} 允许你以 %{list}接受电邮沟通。'
+account.email_language.languages_list: 您将收到%{app_name}用您选择的语言发送的电子邮件。
 account.email_language.name.en: English
 account.email_language.name.es: Español
 account.email_language.name.fr: Français
 account.email_language.name.zh: 中文 (简体)
-account.email_language.sentence_connector: 或者
 account.email_language.updated: 你的电邮语言选择已更新。
 account.forget_all_browsers.longer_description: 你选择“忘掉所有浏览器”后，我们将需要额外信息来知道的确是你在登录你自己的账户。每次你要访问自己的账户时，我们都会向你要一个多因素身份证实方法（比如短信/SMS 代码或安全密钥）
 account.index.auth_app_add: 添加应用程序
@@ -731,6 +730,7 @@ errors.manage_authenticator.remove_only_method_error: 你不能去掉自己唯�
 errors.manage_authenticator.unique_name_error: 名字已在使用。请使用一个不同的名字。
 errors.max_password_attempts_reached: 你输入了太多不正确的密码。你可以使用“忘了密码？”链接来重设密码。
 errors.messages.already_confirmed: 已确认，请尝试登录
+errors.messages.backup_code_limited: 你尝试了太多次。请在 %{timeout}后再试。
 errors.messages.blank: 请填写这一字段。
 errors.messages.blank_cert_element_req: 我们在你的请求中探查不到证书。
 errors.messages.confirmation_code_incorrect: 验证码不对。你打字打对了吗？
@@ -1903,10 +1903,6 @@ user_mailer.new_device_sign_in_before_2fa.info_p2: 如果你知道该活动，�
 user_mailer.new_device_sign_in_before_2fa.info_p3_html: 双重身份验证保护你账户不受未经授权的访问。如果不是你，请马上 %{reset_password_link_html}.
 user_mailer.new_device_sign_in_before_2fa.reset_password: 重设密码
 user_mailer.new_device_sign_in_before_2fa.subject: 你 %{app_name} 账户有新的登录
-user_mailer.new_device_sign_in.disavowal_link: 重设你的密码
-user_mailer.new_device_sign_in.help_html: 如果你没做此更改， %{disavowal_link_html}。要得到更多帮助，请访问 %{app_name_html} %{help_link_html} 或者 %{contact_link_html}。
-user_mailer.new_device_sign_in.info: 你的 %{app_name} 帐号刚刚在一个新设备上用于登录。
-user_mailer.new_device_sign_in.subject: 用你 %{app_name} 账户进行的新登录
 user_mailer.password_changed.disavowal_link: 重设你的密码
 user_mailer.password_changed.help_html: 如果你没做此更改， %{disavowal_link_html}。要得到更多帮助，请访问 %{app_name_html} %{help_link_html} 或者 %{contact_link_html}。
 user_mailer.password_changed.intro_html: 你的 %{app_name_html} 账户有了新密码。

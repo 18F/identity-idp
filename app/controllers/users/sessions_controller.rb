@@ -245,7 +245,6 @@ module Users
       policy = current_content_security_policy
       policy.script_src(
         *policy.script_src,
-        'dap.digitalgov.gov',
         'www.google-analytics.com',
         'www.googletagmanager.com',
       )

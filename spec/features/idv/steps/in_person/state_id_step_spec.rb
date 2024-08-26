@@ -6,6 +6,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true, allowed_extra_analytics: 
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+    allow(IdentityConfig.store).to receive(:in_person_state_id_controller_enabled).and_return(false)
   end
 
   context 'when visiting state id for the first time' do
@@ -132,7 +133,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true, allowed_extra_analytics: 
       end
 
       it 'does not update their previous selection of "Yes,
-      I live at the address on my state-issued ID"' do
+        I live at the address on my state-issued ID"' do
         complete_state_id_step(user, same_address_as_id: true)
         # skip address step
         complete_ssn_step(user)
@@ -233,7 +234,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true, allowed_extra_analytics: 
       end
 
       it 'updates their previous selection from "No" TO "Yes,
-      I live at the address on my state-issued ID"' do
+        I live at the address on my state-issued ID"' do
         complete_state_id_step(user, same_address_as_id: false)
         # expect to be on address page
         expect(page).to have_content(t('in_person_proofing.headings.address'))
@@ -282,11 +283,17 @@ RSpec.describe 'doc auth IPP state ID step', js: true, allowed_extra_analytics: 
       # enter valid characters, but invalid length
       fill_in t('in_person_proofing.form.state_id.zipcode'), with: '123'
       click_idv_continue
-      expect(page).to have_css('.usa-error-message', text: t('idv.errors.pattern_mismatch.zipcode'))
+      expect(page).to have_css(
+        '.usa-error-message',
+        text: t('idv.errors.pattern_mismatch.zipcode'),
+      )
 
       # enter a valid zip and make sure we can continue
       fill_in t('in_person_proofing.form.state_id.zipcode'), with: '123456789'
-      expect(page).to have_field(t('in_person_proofing.form.state_id.zipcode'), with: '12345-6789')
+      expect(page).to have_field(
+        t('in_person_proofing.form.state_id.zipcode'),
+        with: '12345-6789',
+      )
       click_idv_continue
       expect(page).to have_current_path(idv_in_person_ssn_url)
     end

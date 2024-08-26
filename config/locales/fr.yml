@@ -42,12 +42,11 @@ account.connected_apps.associated: Connecté %{timestamp}
 account.connected_apps.description: Avec votre compte %{app_name}, vous pouvez vous connecter en toute sécurité à plusieurs comptes de l’administration en ligne. Vous trouverez ci-dessous une liste de tous vos comptes actuellement connectés.
 account.email_language.default: '%{language} (par défaut)'
 account.email_language.edit_title: Modifier la langue dans laquelle vous préférez recevoir les e-mails
-account.email_language.languages_list: '%{app_name} vous permet de recevoir des communications par e-mail en %{list}.'
+account.email_language.languages_list: Vous recevrez des e-mails de %{app_name} dans la langue de votre choix.
 account.email_language.name.en: English
 account.email_language.name.es: Español
 account.email_language.name.fr: Français
 account.email_language.name.zh: 中文 (简体)
-account.email_language.sentence_connector: ou
 account.email_language.updated: Votre langue de préférence pour les e-mails a été mise à jour.
 account.forget_all_browsers.longer_description: Une fois que vous aurez choisi d’« oublier tous les navigateurs », nous aurons besoin d’informations supplémentaires pour savoir que c’est bien vous qui vous connectez à votre compte. Nous vous demanderons une méthode d’authentification multi-facteurs (comme un code SMS/texto ou une clé de sécurité) chaque fois que vous souhaiterez accéder à votre compte.
 account.index.auth_app_add: Ajouter une appli
@@ -720,6 +719,7 @@ errors.manage_authenticator.remove_only_method_error: Vous ne pouvez pas supprim
 errors.manage_authenticator.unique_name_error: Ce nom est déjà pris. Veuillez utiliser un nom différent.
 errors.max_password_attempts_reached: Vous avez saisi des mots de passe inexacts à trop de reprises. Vous pouvez réinitialiser votre mot de passe en utilisant le lien « Mot de passe oublié ? »
 errors.messages.already_confirmed: a déjà été confirmé, veuillez essayer de vous connecter
+errors.messages.backup_code_limited: Vous avez essayé trop de fois, veuillez réessayer dans %{timeout}.
 errors.messages.blank: Veuillez remplir ce champ.
 errors.messages.blank_cert_element_req: Nous ne pouvons pas détecter un certificat sur votre demande.
 errors.messages.confirmation_code_incorrect: Code de vérification incorrect
@@ -1890,10 +1890,6 @@ user_mailer.new_device_sign_in_before_2fa.info_p2: Si vous reconnaissez cette ac
 user_mailer.new_device_sign_in_before_2fa.info_p3_html: L’authentification à deux facteurs protège votre compte des accès non autorisés. Si vous n’êtes pas à l’origine de cette action, %{reset_password_link_html}.
 user_mailer.new_device_sign_in_before_2fa.reset_password: veuillez réinitialiser immédiatement votre mot de passe.
 user_mailer.new_device_sign_in_before_2fa.subject: Nouvelle connexion avec votre compte %{app_name}
-user_mailer.new_device_sign_in.disavowal_link: réinitialisez votre mot de passe
-user_mailer.new_device_sign_in.help_html: Si vous n’avez pas effectué ce changement, %{disavowal_link_html}. Pour plus d’aide, veuillez visiter le %{help_link_html} de %{app_name_html} ou %{contact_link_html}.
-user_mailer.new_device_sign_in.info: Votre compte %{app_name} vient d’être utilisé pour une connexion sur un nouvel appareil.
-user_mailer.new_device_sign_in.subject: Nouvelle connexion avec votre compte %{app_name}
 user_mailer.password_changed.disavowal_link: réinitialisez votre mot de passe
 user_mailer.password_changed.help_html: Si vous n’avez pas effectué ce changement, %{disavowal_link_html}. Pour plus d’aide, veuillez visiter le %{help_link_html} de %{app_name_html} ou %{contact_link_html}.
 user_mailer.password_changed.intro_html: Vous avez un nouveau mot de passe pour votre compte %{app_name_html}.

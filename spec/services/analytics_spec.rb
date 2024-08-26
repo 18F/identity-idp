@@ -61,6 +61,12 @@ RSpec.describe Analytics do
       analytics.track_event('Trackable Event')
     end
 
+    it 'does not track nil values' do
+      expect(ahoy).to receive(:track).with('Trackable Event', analytics_attributes)
+
+      analytics.track_event('Trackable Event', { example: nil })
+    end
+
     it 'does not track unique events and paths when an event fails' do
       expect(ahoy).to receive(:track).with(
         'Trackable Event',
@@ -136,6 +142,56 @@ RSpec.describe Analytics do
           some_uuid: '12345678-1234-1234-1234-123456789012',
         )
       end.to_not raise_error
+    end
+
+    context 'with A/B tests' do
+      let(:ab_tests) do
+        {
+          FOO_TEST: AbTest.new(
+            experiment_name: 'Test 1',
+            buckets: {
+              bucket_a: 50,
+              bucket_b: 50,
+            },
+            should_log:,
+          ) do |user:, **|
+            user.id
+          end,
+        }
+      end
+
+      let(:should_log) {}
+
+      before do
+        allow(AbTests).to receive(:all).and_return(ab_tests)
+      end
+
+      it 'includes ab_tests in logged event' do
+        expect(ahoy).to receive(:track).with(
+          'Trackable Event',
+          analytics_attributes.merge(
+            ab_tests: {
+              foo_test: {
+                bucket: anything,
+              },
+            },
+          ),
+        )
+
+        analytics.track_event('Trackable Event')
+      end
+
+      context 'when should_log says not to' do
+        let(:should_log) { /some other event/ }
+        it 'does not include ab_test in logged event' do
+          expect(ahoy).to receive(:track).with(
+            'Trackable Event',
+            analytics_attributes,
+          )
+
+          analytics.track_event('Trackable Event')
+        end
+      end
     end
   end
 

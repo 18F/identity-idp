@@ -1,4 +1,4 @@
-FROM ruby:3.3.1-slim
+FROM ruby:3.3.4-slim
 
 # Set environment variables
 ENV RAILS_ROOT /app
@@ -95,8 +95,11 @@ RUN bundle config set --local without 'deploy development doc test'
 RUN bundle install --jobs $(nproc)
 RUN bundle binstubs --all
 
-COPY package.json $RAILS_ROOT/package.json
-COPY yarn.lock $RAILS_ROOT/yarn.lock
+# Yarn install
+COPY --chown=app:app ./package.json ./package.json
+COPY --chown=app:app ./yarn.lock ./yarn.lock
+# Workspace packages are installed by Yarn via symlink to the original source, and need to be present
+COPY --chown=app:app ./app/javascript/packages ./app/javascript/packages
 RUN yarn install --production=true --frozen-lockfile --cache-folder .yarn-cache
 
 # Add the application code
@@ -141,7 +144,7 @@ COPY --chown=app:app certs.example $RAILS_ROOT/certs
 COPY --chown=app:app config/service_providers.localdev.yml $RAILS_ROOT/config/service_providers.yml
 
 # Precompile assets
-RUN bundle exec rake assets:precompile --trace
+RUN SKIP_YARN_INSTALL=true bundle exec rake assets:precompile
 
 ARG ARG_CI_COMMIT_BRANCH="branch_placeholder"
 ARG ARG_CI_COMMIT_SHA="sha_placeholder"

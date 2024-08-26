@@ -19,6 +19,8 @@ module Reporting
     module Events
       IDV_PLEASE_CALL_VISITED = 'IdV: Verify please call visited'
       IDV_SETUP_ERROR_VISITED = 'IdV: Verify setup errors visited'
+      SUSPENDED_USERS = 'User Suspension: Suspended'
+      REINSTATED_USERS = 'User Suspension: Reinstated'
 
       def self.all_events
         constants.map { |c| const_get(c) }
@@ -30,8 +32,8 @@ module Reporting
       time_range:,
       verbose: false,
       progress: false,
-      slice: 3.hours,
-      threads: 5
+      slice: 6.hours,
+      threads: 1
     )
       @time_range = time_range
       @verbose = verbose
@@ -60,6 +62,11 @@ module Reporting
       [
         ['Metric', 'Total'],
         ['Unique users seeing LG-99', lg99_unique_users_count.to_s],
+        ['Unique users suspended', unique_suspended_users_count.to_s],
+        ['Average Days Creation to Suspension', user_days_to_suspension_avg.to_s],
+        ['Average Days Proofed to Suspension', user_days_proofed_to_suspension_avg.to_s],
+        ['Unique users reinstated', unique_reinstated_users_count.to_s],
+        ['Average Days to Reinstatement', user_days_to_reinstatement_avg.to_s],
       ]
     rescue Aws::CloudWatchLogs::Errors::ThrottlingException => err
       [
@@ -121,8 +128,49 @@ module Reporting
     end
 
     def lg99_unique_users_count
-      @lg99_unique_users_count ||=
-        (data[Events::IDV_PLEASE_CALL_VISITED] + data[Events::IDV_SETUP_ERROR_VISITED]).count
+      @lg99_unique_users_count ||= (data[Events::IDV_PLEASE_CALL_VISITED] +
+        data[Events::IDV_SETUP_ERROR_VISITED]).count
+    end
+
+    def unique_suspended_users_count
+      @unique_suspended_users_count ||= data[Events::SUSPENDED_USERS].count
+    end
+
+    def user_days_to_suspension_avg
+      user_data = User.where(uuid: data[Events::SUSPENDED_USERS]).pluck(:created_at, :suspended_at)
+      return 'n/a' if user_data.empty?
+
+      difference = user_data.map { |created_at, suspended_at| suspended_at - created_at }
+      (difference.sum / difference.size).seconds.in_days.round(2)
+    end
+
+    def user_days_proofed_to_suspension_avg
+      user_data = User.where(uuid: data[Events::SUSPENDED_USERS]).includes(:profiles).
+        merge(Profile.active).
+        pluck(
+          :activated_at,
+          :suspended_at,
+        )
+
+      return 'n/a' if user_data.empty?
+
+      difference = user_data.map { |activated_at, suspended_at| suspended_at - activated_at }
+      (difference.sum / difference.size).seconds.in_days.round(2)
+    end
+
+    def unique_reinstated_users_count
+      @unique_reinstated_users_count ||= data[Events::REINSTATED_USERS].count
+    end
+
+    def user_days_to_reinstatement_avg
+      user_data = User.where(uuid: data[Events::REINSTATED_USERS]).pluck(
+        :suspended_at,
+        :reinstated_at,
+      )
+      return 'n/a' if user_data.empty?
+
+      difference = user_data.map { |suspended_at, reinstated_at| reinstated_at - suspended_at }
+      (difference.sum / difference.size).seconds.in_days.round(2)
     end
   end
 end

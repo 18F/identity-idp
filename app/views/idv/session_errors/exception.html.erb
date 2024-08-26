@@ -8,7 +8,7 @@
       },
       options: [
         {
-          url: MarketingSite.contact_url,
+          url: contact_redirect_url,
           text: t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
           new_tab: true,
         },
@@ -17,7 +17,7 @@
       <p>
         <%= t(
               'idv.failure.exceptions.text_html',
-              link_html: link_to(t('idv.failure.exceptions.link'), MarketingSite.contact_url),
+              link_html: link_to(t('idv.failure.exceptions.link'), contact_redirect_url),
             ) %>
       </p>
     <% end %>

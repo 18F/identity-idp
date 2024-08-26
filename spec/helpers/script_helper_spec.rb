@@ -109,7 +109,7 @@ RSpec.describe ScriptHelper do
 
       context 'with attributes' do
         before do
-          javascript_packs_tag_once('track-errors', async: true)
+          javascript_packs_tag_once('track-errors', defer: true)
           allow(Rails.application.config.asset_sources).to receive(:get_sources).
             with('track-errors').and_return(['/track-errors.js'])
           allow(Rails.application.config.asset_sources).to receive(:get_assets).
@@ -121,7 +121,39 @@ RSpec.describe ScriptHelper do
           output = render_javascript_pack_once_tags
 
           expect(output).to have_css(
-            "script[src^='/track-errors.js'][async]",
+            "script[src^='/track-errors.js'][defer]",
+            count: 1,
+            visible: :all,
+          )
+        end
+      end
+
+      context 'with url parameters' do
+        before do
+          javascript_packs_tag_once(
+            'digital-analytics-program',
+            url_params: { agency: 'gsa' },
+            async: true,
+          )
+          allow(Rails.application.config.asset_sources).to receive(:get_sources).
+            with('digital-analytics-program').and_return(['/digital-analytics-program.js'])
+          allow(Rails.application.config.asset_sources).to receive(:get_assets).
+            with('application', 'document-capture', 'digital-analytics-program').
+            and_return([])
+        end
+
+        it 'includes url parameters in script url for the pack' do
+          output = render_javascript_pack_once_tags
+
+          expect(output).to have_css(
+            "script[src^='/digital-analytics-program.js?agency=gsa'][async]:not([url_params])",
+            count: 1,
+            visible: :all,
+          )
+
+          # URL parameters should not be added to other scripts
+          expect(output).to have_css(
+            "script[src^='/application.js']",
             count: 1,
             visible: :all,
           )

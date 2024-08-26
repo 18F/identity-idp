@@ -63,7 +63,11 @@ RSpec.describe 'devise/sessions/new.html.erb' do
 
     expect(rendered).to have_link(
       t('notices.privacy.privacy_act_statement'),
-      href: MarketingSite.privacy_act_statement_url,
+      href: policy_redirect_url(
+        policy: :privacy_act_statement,
+        flow: :sign_in,
+        step: :sign_in,
+      ),
     ) { |link| link[:target] == '_blank' && link[:rel] == 'noopener noreferrer' }
   end
 
@@ -178,7 +182,7 @@ RSpec.describe 'devise/sessions/new.html.erb' do
       it 'does not render DAP analytics' do
         allow(view).to receive(:javascript_packs_tag_once)
         expect(view).not_to receive(:javascript_packs_tag_once).
-          with(a_string_matching('https://dap.digitalgov.gov/'), async: true, id: '_fed_an_ua_tag')
+          with(a_string_matching('https://dap.digitalgov.gov/'), defer: true, id: '_fed_an_ua_tag')
 
         render
       end
@@ -190,8 +194,9 @@ RSpec.describe 'devise/sessions/new.html.erb' do
       it 'renders DAP analytics' do
         allow(view).to receive(:javascript_packs_tag_once)
         expect(view).to receive(:javascript_packs_tag_once).with(
-          a_string_matching('https://dap.digitalgov.gov/'),
-          async: true,
+          'digital-analytics-program',
+          url_params: { agency: 'GSA', subagency: 'TTS' },
+          defer: true,
           preload_links_header: false,
           id: '_fed_an_ua_tag',
         )

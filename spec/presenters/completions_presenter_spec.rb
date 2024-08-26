@@ -146,30 +146,6 @@ RSpec.describe CompletionsPresenter do
     end
   end
 
-  describe '#image_name' do
-    context 'ial2 sign in' do
-      let(:ial2_requested) { true }
-
-      it 'renders the ial2 image' do
-        expect(presenter.image_name).to eq('user-signup-ial2.svg')
-      end
-    end
-
-    context 'ial1 sign in' do
-      let(:ial2_requested) { false }
-
-      it 'renders the ial1 image' do
-        expect(presenter.image_name).to eq('user-signup-ial1.svg')
-      end
-    end
-  end
-
-  describe '#image_alt' do
-    it 'returns image alt test' do
-      expect(presenter.image_alt).to eq(I18n.t('sign_up.completed.smiling_image_alt'))
-    end
-  end
-
   describe '#intro' do
     describe 'ial1' do
       context 'consent has expired since the last sign in' do
@@ -265,16 +241,14 @@ RSpec.describe CompletionsPresenter do
   end
 
   describe '#pii' do
+    subject(:pii) { presenter.pii }
+
     context 'ial1' do
       context 'with a subset of attributes requested' do
         let(:requested_attributes) { [:email] }
 
         it 'properly scopes and resolve attributes' do
-          expect(presenter.pii).to eq(
-            {
-              email: current_user.email,
-            },
-          )
+          expect(pii).to eq(email: current_user.email)
         end
       end
 
@@ -282,24 +256,27 @@ RSpec.describe CompletionsPresenter do
         let(:requested_attributes) { [:email, :all_emails] }
 
         it 'only displays all_emails' do
-          expect(presenter.pii).to eq(
-            {
-              all_emails: [current_user.email],
-            },
-          )
+          expect(pii).to eq(all_emails: [current_user.email])
         end
       end
 
       context 'with all attributes requested' do
         it 'properly scopes and resolve attributes' do
-          expect(presenter.pii).to eq(
-            {
-              all_emails: [current_user.email],
-              verified_at: nil,
-              x509_issuer: nil,
-              x509_subject: nil,
-            },
+          expect(pii).to eq(
+            all_emails: [current_user.email],
+            verified_at: nil,
+            x509_issuer: nil,
+            x509_subject: nil,
           )
+        end
+
+        it 'builds hash with sorted keys' do
+          expect(pii.keys).to eq %i[
+            all_emails
+            x509_subject
+            x509_issuer
+            verified_at
+          ]
         end
       end
     end
@@ -311,31 +288,49 @@ RSpec.describe CompletionsPresenter do
         let(:requested_attributes) { [:email, :given_name, :phone] }
 
         it 'properly scopes and resolve attributes' do
-          expect(presenter.pii).to eq(
-            {
-              email: current_user.email,
-              full_name: 'Testy Testerson',
-              phone: '+1 202-212-1000',
-            },
+          expect(pii).to eq(
+            email: current_user.email,
+            full_name: 'Testy Testerson',
+            phone: '+1 202-212-1000',
           )
+        end
+
+        it 'builds hash with sorted keys' do
+          expect(pii.keys).to eq %i[
+            email
+            full_name
+            phone
+          ]
         end
       end
 
       context 'with all attributes requested' do
         it 'properly scopes and resolve attributes' do
-          expect(presenter.pii).to eq(
-            {
-              full_name: 'Testy Testerson',
-              address: '123 main st apt 123 Washington, DC 20405',
-              phone: '+1 202-212-1000',
-              all_emails: [current_user.email],
-              birthdate: 'January 1, 1990',
-              social_security_number: '900-12-3456',
-              verified_at: nil,
-              x509_subject: nil,
-              x509_issuer: nil,
-            },
+          expect(pii).to eq(
+            full_name: 'Testy Testerson',
+            address: '123 main st apt 123 Washington, DC 20405',
+            phone: '+1 202-212-1000',
+            all_emails: [current_user.email],
+            birthdate: 'January 1, 1990',
+            social_security_number: '900-12-3456',
+            verified_at: nil,
+            x509_subject: nil,
+            x509_issuer: nil,
           )
+        end
+
+        it 'builds hash with sorted keys' do
+          expect(pii.keys).to eq %i[
+            all_emails
+            full_name
+            address
+            phone
+            birthdate
+            social_security_number
+            x509_subject
+            x509_issuer
+            verified_at
+          ]
         end
       end
     end

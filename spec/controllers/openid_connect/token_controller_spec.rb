@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe OpenidConnect::TokenController, allowed_extra_analytics: [:*] do
+RSpec.describe OpenidConnect::TokenController do
   include Rails.application.routes.url_helpers
 
   describe '#create' do
@@ -63,7 +63,6 @@ RSpec.describe OpenidConnect::TokenController, allowed_extra_analytics: [:*] do
             errors: {},
             code_digest: kind_of(String),
             code_verifier_present: false,
-            service_provider_pkce: nil,
             expires_in: 0,
             ial: 1,
           }
@@ -96,9 +95,7 @@ RSpec.describe OpenidConnect::TokenController, allowed_extra_analytics: [:*] do
             errors: hash_including(:grant_type),
             code_digest: kind_of(String),
             code_verifier_present: false,
-            service_provider_pkce: nil,
             error_details: hash_including(:grant_type),
-            expires_in: nil,
             ial: 1,
           }
         )

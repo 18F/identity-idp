@@ -65,8 +65,6 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
       {
         step: 'hybrid_handoff',
         analytics_id: 'Doc Auth',
-        redo_document_capture: nil,
-        skip_hybrid_handoff: nil,
         selfie_check_required: sp_selfie_enabled,
       }.merge(ab_test_args)
     end
@@ -300,8 +298,6 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
           flow_path: 'hybrid',
           step: 'hybrid_handoff',
           analytics_id: 'Doc Auth',
-          redo_document_capture: nil,
-          skip_hybrid_handoff: nil,
           selfie_check_required: sp_selfie_enabled,
           telephony_response: {
             errors: {},
@@ -358,8 +354,6 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
           flow_path: 'standard',
           step: 'hybrid_handoff',
           analytics_id: 'Doc Auth',
-          redo_document_capture: nil,
-          skip_hybrid_handoff: nil,
           selfie_check_required: sp_selfie_enabled,
         }.merge(ab_test_args)
       end

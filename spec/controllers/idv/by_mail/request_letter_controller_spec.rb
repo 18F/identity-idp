@@ -103,7 +103,6 @@ RSpec.describe Idv::ByMail::RequestLetterController,
         hash_including(
           resend: false,
           phone_step_attempts: 1,
-          first_letter_requested_at: nil,
           hours_since_first_letter: 0,
           **ab_test_args,
         ),

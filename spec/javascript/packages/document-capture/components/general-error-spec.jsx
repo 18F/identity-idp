@@ -1,13 +1,13 @@
-import UnknownError from '@18f/identity-document-capture/components/unknown-error';
+import GeneralError from '@18f/identity-document-capture/components/general-error';
 import { toFormEntryError } from '@18f/identity-document-capture/services/upload';
 import { within } from '@testing-library/dom';
 import { render } from '../../../support/document-capture';
 
-describe('UnknownError', () => {
+describe('GeneralError', () => {
   context('there is no doc type failure', () => {
     it('render an empty paragraph when no errors', () => {
       const { container } = render(
-        <UnknownError unknownFieldErrors={[]} isFailedDocType={false} />,
+        <GeneralError unknownFieldErrors={[]} isFailedDocType={false} />,
       );
       expect(container.querySelector('p')).to.be.ok();
     });
@@ -15,7 +15,7 @@ describe('UnknownError', () => {
     context('hasDismissed is true', () => {
       it('renders error message with errors and a help center link', () => {
         const { container } = render(
-          <UnknownError
+          <GeneralError
             unknownFieldErrors={[
               {
                 field: 'general',
@@ -36,7 +36,7 @@ describe('UnknownError', () => {
     context('hasDismissed is false', () => {
       it('renders error message with errors but no link', () => {
         const { container, queryByRole } = render(
-          <UnknownError
+          <GeneralError
             unknownFieldErrors={[
               {
                 field: 'general',
@@ -62,7 +62,7 @@ describe('UnknownError', () => {
   context('there is a doc type failure', () => {
     it('renders error message with errors and is a doc type failure', () => {
       const { container } = render(
-        <UnknownError
+        <GeneralError
           unknownFieldErrors={[
             {
               field: 'general',
@@ -78,7 +78,7 @@ describe('UnknownError', () => {
 
     it('renders alternative error message with errors and is a doc type failure', () => {
       const { container } = render(
-        <UnknownError
+        <GeneralError
           unknownFieldErrors={[
             {
               field: 'general',
@@ -97,7 +97,7 @@ describe('UnknownError', () => {
   context('there is a selfie quality/liveness failure', () => {
     it('renders error message with errors', () => {
       const { container } = render(
-        <UnknownError
+        <GeneralError
           unknownFieldErrors={[
             {
               field: 'general',
@@ -112,7 +112,7 @@ describe('UnknownError', () => {
 
     it('renders alternative error message without retry information', () => {
       const { container } = render(
-        <UnknownError
+        <GeneralError
           unknownFieldErrors={[
             {
               field: 'general',
@@ -130,7 +130,7 @@ describe('UnknownError', () => {
   context('there is a selfie facematch failure', () => {
     it('renders error message with errors', () => {
       const { container } = render(
-        <UnknownError
+        <GeneralError
           unknownFieldErrors={[
             {
               field: 'general',
@@ -145,7 +145,7 @@ describe('UnknownError', () => {
 
     it('renders alternative error message without retry information', () => {
       const { container } = render(
-        <UnknownError
+        <GeneralError
           unknownFieldErrors={[
             {
               field: 'general',

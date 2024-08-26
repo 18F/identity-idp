@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Accounts::PersonalKeysController, allowed_extra_analytics: [:*] do
+RSpec.describe Accounts::PersonalKeysController do
   describe 'before_actions' do
     it 'require recent reauthn' do
       expect(subject).to have_actions(
@@ -47,15 +47,15 @@ RSpec.describe Accounts::PersonalKeysController, allowed_extra_analytics: [:*] d
     it 'tracks CSRF errors' do
       stub_sign_in
       stub_analytics
-      analytics_hash = {
-        controller: 'accounts/personal_keys#create',
-        user_signed_in: true,
-      }
       allow(controller).to receive(:create).and_raise(ActionController::InvalidAuthenticityToken)
 
       post :create
 
-      expect(@analytics).to have_logged_event('Invalid Authenticity Token', analytics_hash)
+      expect(@analytics).to have_logged_event(
+        'Invalid Authenticity Token',
+        controller: 'accounts/personal_keys#create',
+        user_signed_in: true,
+      )
       expect(response).to redirect_to new_user_session_url
       expect(flash[:error]).to eq t('errors.general')
     end

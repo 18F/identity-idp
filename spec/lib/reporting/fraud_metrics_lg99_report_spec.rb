@@ -7,8 +7,24 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
     [
       ['Metric', 'Total'],
       ['Unique users seeing LG-99', '5'],
+      ['Unique users suspended', '2'],
+      ['Average Days Creation to Suspension', '1.5'],
+      ['Average Days Proofed to Suspension', '2.0'],
+      ['Unique users reinstated', '1'],
+      ['Average Days to Reinstatement', '3.0'],
     ]
   end
+  let!(:user6) do
+    create(
+      :user,
+      :proofed,
+      :reinstated,
+      uuid: 'user6',
+      suspended_at: 3.days.from_now,
+      reinstated_at: 6.days.from_now,
+    )
+  end
+  let!(:user7) { create(:user, :proofed, :suspended, uuid: 'user7') }
 
   subject(:report) { Reporting::FraudMetricsLg99Report.new(time_range:) }
 
@@ -29,8 +45,14 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
 
         { 'user_id' => 'user5', 'name' => 'IdV: Verify please call visited' },
         { 'user_id' => 'user5', 'name' => 'IdV: Verify setup errors visited' },
+
+        { 'user_id' => 'user6', 'name' => 'User Suspension: Suspended' },
+        { 'user_id' => 'user6', 'name' => 'User Suspension: Reinstated' },
+
+        { 'user_id' => 'user7', 'name' => 'User Suspension: Suspended' },
       ],
     )
+    user7.profiles.verified.last.update(created_at: 1.day.ago, activated_at: 1.day.ago) if user7
   end
 
   describe '#lg99_metrics_table' do
@@ -39,6 +61,57 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
         report.lg99_metrics_table.zip(expected_lg99_metrics_table).each do |actual, expected|
           expect(actual).to eq(expected)
         end
+      end
+    end
+  end
+
+  describe '#user_days_to_suspension_avg' do
+    context 'when there are suspended users' do
+      it 'returns average time to suspension' do
+        expect(report.user_days_to_suspension_avg).to eq(1.5)
+      end
+    end
+
+    context 'when there are no users' do
+      let(:user6) { nil }
+      let(:user7) { nil }
+
+      it 'returns n/a' do
+        expect(report.user_days_to_suspension_avg).to eq('n/a')
+      end
+    end
+  end
+
+  describe '#user_days_to_reinstatement_avg' do
+    context 'where there are reinstated users' do
+      it 'returns average time to reinstatement' do
+        expect(report.user_days_to_reinstatement_avg).to eq(3.0)
+      end
+    end
+
+    context 'when there are no users' do
+      let(:user6) { nil }
+      let(:user7) { nil }
+
+      it 'returns n/a' do
+        expect(report.user_days_to_reinstatement_avg).to eq('n/a')
+      end
+    end
+  end
+
+  describe '#user_days_proofed_to_suspended_avg' do
+    context 'when there are suspended users' do
+      it 'returns average time proofed to suspension' do
+        expect(report.user_days_proofed_to_suspension_avg).to eq(2.0)
+      end
+    end
+
+    context 'when there are no users' do
+      let(:user6) { nil }
+      let(:user7) { nil }
+
+      it 'returns n/a' do
+        expect(report.user_days_proofed_to_suspension_avg).to eq('n/a')
       end
     end
   end
@@ -71,9 +144,9 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
     let(:subject) { described_class.new(time_range:, **opts) }
     let(:default_args) do
       {
-        num_threads: 5,
+        num_threads: 1,
         ensure_complete_logs: true,
-        slice_interval: 3.hours,
+        slice_interval: 6.hours,
         progress: false,
         logger: nil,
       }

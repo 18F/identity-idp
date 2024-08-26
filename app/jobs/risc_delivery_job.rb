@@ -14,14 +14,28 @@ class RiscDeliveryJob < ApplicationJob
     *NETWORK_ERRORS,
     wait: :polynomially_longer,
     attempts: 2,
-  ) do |_job, _exception|
-    # Don't bubble up the exception when retries are exhausted
+  ) do |job, exception|
+    args = job.arguments.first
+    job.track_event(
+      success: false,
+      error: exception.message,
+      event_type: args[:event_type],
+      issuer: args[:issuer],
+      user: args[:user],
+    )
   end
 
   retry_on RedisRateLimiter::LimitError,
            wait: :polynomially_longer,
-           attempts: 10 do |_job, _exception|
-             # Don't bubble up the exception when retries are exhausted
+           attempts: 10 do |job, exception|
+             args = job.arguments.first
+             job.track_event(
+               success: false,
+               error: exception.message,
+               event_type: args[:event_type],
+               issuer: args[:issuer],
+               user: args[:user],
+             )
            end
 
   def self.warning_error_classes
@@ -55,26 +69,6 @@ class RiscDeliveryJob < ApplicationJob
       issuer:,
       status: response.status,
       success: response.success?,
-      user:,
-    )
-  rescue *NETWORK_ERRORS => err
-    raise err if self.executions < 2
-
-    track_event(
-      error: err.message,
-      event_type:,
-      issuer:,
-      success: false,
-      user:,
-    )
-  rescue RedisRateLimiter::LimitError => err
-    raise err if self.executions < 10
-
-    track_event(
-      error: err.message,
-      event_type:,
-      issuer:,
-      success: false,
       user:,
     )
   end

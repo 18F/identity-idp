@@ -20,33 +20,35 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:,
       response = JSON.parse(response_json)
       expect(job_analytics).to have_logged_event(
         'GetUspsProofingResultsJob: Enrollment status updated',
-        assurance_level: response['assuranceLevel'],
-        enrollment_code: pending_enrollment.enrollment_code,
-        enrollment_id: pending_enrollment.id,
-        failure_reason: response['failureReason'],
-        fraud_suspected: response['fraudSuspected'],
-        issuer: pending_enrollment.issuer,
-        minutes_since_last_status_check: 15.0,
-        minutes_since_last_status_check_completed: 17.0,
-        minutes_since_last_status_update: 2.days.in_minutes,
-        minutes_to_completion: 3.days.in_minutes,
-        minutes_since_established: 3.days.in_minutes,
-        passed: passed,
-        primary_id_type: response['primaryIdType'],
-        proofing_city: response['proofingCity'],
-        proofing_post_office: response['proofingPostOffice'],
-        proofing_state: response['proofingState'],
-        reason: anything,
-        response_message: response['responseMessage'],
-        response_present: true,
-        scan_count: response['scanCount'],
-        secondary_id_type: response['secondaryIdType'],
-        status: response['status'],
-        transaction_end_date_time: anything,
-        transaction_start_date_time: anything,
-        job_name: 'GetUspsProofingResultsJob',
-        tmx_status: :threatmetrix_pass,
-        enhanced_ipp: enhanced_ipp_enrollment,
+        hash_including(
+          {
+            assurance_level: response['assuranceLevel'],
+            enrollment_code: pending_enrollment.enrollment_code,
+            enrollment_id: pending_enrollment.id,
+            failure_reason: response['failureReason'],
+            fraud_suspected: response['fraudSuspected'],
+            issuer: pending_enrollment.issuer,
+            minutes_since_last_status_check: 15.0,
+            minutes_since_last_status_check_completed: 17.0,
+            minutes_since_last_status_update: 2.days.in_minutes,
+            minutes_to_completion: 3.days.in_minutes,
+            minutes_since_established: 3.days.in_minutes,
+            passed: passed,
+            primary_id_type: response['primaryIdType'],
+            proofing_city: response['proofingCity'],
+            proofing_post_office: response['proofingPostOffice'],
+            proofing_state: response['proofingState'],
+            reason: anything,
+            response_message: response['responseMessage'],
+            response_present: true,
+            scan_count: response['scanCount'],
+            secondary_id_type: response['secondaryIdType'],
+            status: response['status'],
+            job_name: 'GetUspsProofingResultsJob',
+            tmx_status: :threatmetrix_pass,
+            enhanced_ipp: enhanced_ipp_enrollment,
+          }.compact,
+        ),
       )
     end
   end
@@ -57,22 +59,28 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:,
       if email_type == 'deadline passed'
         expect(job_analytics).to have_logged_event(
           'GetUspsProofingResultsJob: deadline passed email initiated',
-          enrollment_code: pending_enrollment.enrollment_code,
-          enrollment_id: pending_enrollment.id,
-          wait_until: anything,
-          service_provider: pending_enrollment.issuer,
-          timestamp: Time.zone.now,
-          job_name: 'GetUspsProofingResultsJob',
+          hash_including(
+            {
+              enrollment_code: pending_enrollment.enrollment_code,
+              enrollment_id: pending_enrollment.id,
+              service_provider: pending_enrollment.issuer,
+              timestamp: Time.zone.now,
+              job_name: 'GetUspsProofingResultsJob',
+            }.compact,
+          ),
         )
       else
         expect(job_analytics).to have_logged_event(
           'GetUspsProofingResultsJob: Success or failure email initiated',
-          email_type: email_type,
-          enrollment_code: pending_enrollment.enrollment_code,
-          wait_until: anything,
-          service_provider: pending_enrollment.issuer,
-          timestamp: Time.zone.now,
-          job_name: 'GetUspsProofingResultsJob',
+          hash_including(
+            {
+              email_type: email_type,
+              enrollment_code: pending_enrollment.enrollment_code,
+              service_provider: pending_enrollment.issuer,
+              timestamp: Time.zone.now,
+              job_name: 'GetUspsProofingResultsJob',
+            }.compact,
+          ),
         )
       end
     end
@@ -110,14 +118,16 @@ RSpec.shared_examples 'enrollment_encountering_an_exception' do |exception_class
     expect(job_analytics).to have_logged_event(
       'GetUspsProofingResultsJob: Exception raised',
       hash_including(
-        enrollment_code: pending_enrollment.enrollment_code,
-        enrollment_id: pending_enrollment.id,
-        exception_class: exception_class,
-        exception_message: exception_message,
-        reason: reason,
-        response_message: response_message,
-        response_status_code: response_status_code,
-        job_name: 'GetUspsProofingResultsJob',
+        {
+          enrollment_code: pending_enrollment.enrollment_code,
+          enrollment_id: pending_enrollment.id,
+          exception_class: exception_class,
+          exception_message: exception_message,
+          reason: reason,
+          response_message: response_message,
+          response_status_code: response_status_code,
+          job_name: 'GetUspsProofingResultsJob',
+        }.compact,
       ),
     )
   end
@@ -249,6 +259,12 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
 
           before do
             enrollment_records = InPersonEnrollment.where(id: pending_enrollments.map(&:id))
+            # Below sets in_person_verification_pending_at
+            # on the profile associated with each pending enrollment
+            enrollment_records.each do |enrollment|
+              profile = enrollment.profile
+              profile.update(in_person_verification_pending_at: enrollment.created_at)
+            end
             allow(InPersonEnrollment).to receive(:needs_usps_status_check).
               and_return(enrollment_records)
             allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
@@ -356,7 +372,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
               request_in_progress_proofing_results_args,
               { status: 500 },
               request_failed_proofing_results_args,
-              request_expired_proofing_results_args,
+              request_expired_id_ipp_results_args,
             ).and_raise(Faraday::TimeoutError).and_raise(Faraday::ConnectionFailed)
 
             job.perform(Time.zone.now)
@@ -517,7 +533,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
             end
 
             it 'sends deadline passed email on response with expired status' do
-              stub_request_expired_proofing_results
+              stub_request_expired_id_ipp_proofing_results
               user = pending_enrollment.user
               expect(pending_enrollment.deadline_passed_sent).to be false
               freeze_time do
@@ -535,7 +551,6 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                   enrollment_id: pending_enrollment.id,
                   service_provider: pending_enrollment.issuer,
                   timestamp: anything,
-                  wait_until: nil,
                   job_name: 'GetUspsProofingResultsJob',
                 )
               end
@@ -842,7 +857,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
 
           context 'when an enrollment expires' do
             before(:each) do
-              stub_request_expired_proofing_results
+              stub_request_expired_id_ipp_proofing_results
             end
 
             it_behaves_like(
@@ -851,7 +866,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
               email_type: 'deadline passed',
               enrollment_status: InPersonEnrollment::STATUS_EXPIRED,
               response_json: UspsInPersonProofing::Mock::Fixtures.
-                request_expired_proofing_results_response,
+              request_expired_id_ipp_results_response,
             )
 
             it 'logs that the enrollment expired' do
@@ -862,12 +877,19 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                 'GetUspsProofingResultsJob: Enrollment status updated',
                 hash_including(
                   reason: 'Enrollment has expired',
-                  transaction_end_date_time: nil,
-                  transaction_start_date_time: nil,
                   job_name: 'GetUspsProofingResultsJob',
                   enhanced_ipp: false,
                 ),
               )
+            end
+
+            it 'deactivates the associated profile' do
+              job.perform(Time.zone.now)
+
+              pending_enrollment.reload
+              expect(pending_enrollment.profile).not_to be_active
+              expect(pending_enrollment.profile.in_person_verification_pending_at).to be_nil
+              expect(pending_enrollment.profile.deactivation_reason).to eq('verification_cancelled')
             end
 
             context 'when the in_person_stop_expiring_enrollments flag is true' do
@@ -889,6 +911,14 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                     job_name: 'GetUspsProofingResultsJob',
                   ),
                 )
+              end
+
+              it 'does not deactivate the profile' do
+                job.perform(Time.zone.now)
+
+                pending_enrollment.reload
+                expect(pending_enrollment.profile.in_person_verification_pending_at).to_not be_nil
+                expect(pending_enrollment.profile.deactivation_reason).to be_nil
               end
             end
           end
@@ -1222,7 +1252,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
               end
 
               it 'does not set the fraud related fields of an expired enrollment' do
-                stub_request_expired_proofing_results
+                stub_request_expired_id_ipp_proofing_results
 
                 job.perform(Time.zone.now)
                 profile = pending_enrollment.reload.profile
@@ -1347,7 +1377,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
               end
 
               it 'deactivates and sets fraud related fields of an expired enrollment' do
-                stub_request_expired_proofing_results
+                stub_request_expired_id_ipp_proofing_results
 
                 job.perform(Time.zone.now)
 
@@ -1442,7 +1472,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
 
           context 'enrollment is expired' do
             it 'deletes the notification phone configuration without sending an sms' do
-              stub_request_expired_proofing_results
+              stub_request_expired_id_ipp_proofing_results
 
               expect(pending_enrollment.notification_phone_configuration).to_not be_nil
 
@@ -1524,7 +1554,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
         end
 
         context <<~STR.squish do
-          When an Enhanced IPP enrollment passess proofing
+          When an Enhanced IPP enrollment passes proofing
           with unsupported ID,enrollment by-passes the
           Primary ID check and
         STR
@@ -1578,7 +1608,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
           end
         end
 
-        context 'By passes the Secondary ID check when enrollment is Enhanced IPP' do
+        context 'Bypasses the Secondary ID check when enrollment is Enhanced IPP' do
           before do
             stub_request_passed_proofing_secondary_id_type_results_ial_2
           end
@@ -1592,6 +1622,57 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
             request_passed_proofing_secondary_id_type_results_response_ial_2,
             enhanced_ipp_enrollment: true,
           )
+        end
+
+        context 'when an enrollment expires' do
+          before(:each) do
+            stub_request_expired_enhanced_ipp_proofing_results
+          end
+
+          it_behaves_like(
+            'enrollment_with_a_status_update',
+            passed: false,
+            email_type: 'deadline passed',
+            enrollment_status: InPersonEnrollment::STATUS_EXPIRED,
+            response_json: UspsInPersonProofing::Mock::Fixtures.
+            request_expired_enhanced_ipp_results_response,
+            enhanced_ipp_enrollment: true,
+          )
+
+          it 'logs that the enrollment expired' do
+            job.perform(Time.zone.now)
+
+            expect(pending_enrollment.proofed_at).to eq(nil)
+            expect(job_analytics).to have_logged_event(
+              'GetUspsProofingResultsJob: Enrollment status updated',
+              hash_including(
+                reason: 'Enrollment has expired',
+                job_name: 'GetUspsProofingResultsJob',
+                enhanced_ipp: true,
+              ),
+            )
+          end
+
+          context 'when the in_person_stop_expiring_enrollments flag is true' do
+            before do
+              allow(IdentityConfig.store).to(
+                receive(:in_person_stop_expiring_enrollments).and_return(true),
+              )
+            end
+
+            it 'treats the enrollment as incomplete' do
+              job.perform(Time.zone.now)
+
+              expect(pending_enrollment.status).to eq(InPersonEnrollment::STATUS_PENDING)
+              expect(job_analytics).to have_logged_event(
+                'GetUspsProofingResultsJob: Enrollment incomplete',
+                hash_including(
+                  response_message: 'More than 7 days have passed since opt-in to IPP',
+                  job_name: 'GetUspsProofingResultsJob',
+                ),
+              )
+            end
+          end
         end
       end
     end

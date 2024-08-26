@@ -394,6 +394,24 @@ RSpec.describe User do
     end
   end
 
+  describe '#has_establishing_in_person_enrollment?' do
+    context 'when the user has an establishing in person enrollment' do
+      before do
+        create(:in_person_enrollment, :establishing, user: subject)
+      end
+
+      it 'returns true' do
+        expect(subject.has_establishing_in_person_enrollment?).to be(true)
+      end
+    end
+
+    context 'when the user does not have an establishing in person enrollment' do
+      it 'returns false' do
+        expect(subject.has_establishing_in_person_enrollment?).to be(false)
+      end
+    end
+  end
+
   describe 'deleting identities' do
     it 'does not delete identities when the user is destroyed preventing uuid reuse' do
       user = create(:user, :fully_registered)
@@ -1297,7 +1315,7 @@ RSpec.describe User do
 
   describe '#visible_email_addresses' do
     let(:user) { create(:user) }
-    let(:confirmed_email_address) { user.email_addresses.detect(&:confirmed?) }
+    let(:confirmed_email_address) { user.email_addresses.find(&:confirmed?) }
     let!(:unconfirmed_expired_email_address) do
       create(
         :email_address,
