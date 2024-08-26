@@ -92,7 +92,7 @@ module OpenidConnect
       return nil unless IdentityConfig.store.feature_select_email_to_share_enabled
       return user_session[:selected_email_id] if user_session[:selected_email_id].present?
       identity = current_user.identities.find_by(service_provider: sp_session['issuer'])
-      identity&.email_address_id || EmailContext.new(current_user).last_sign_in_email_address.id
+      identity&.email_address_id
     end
 
     def ial_context

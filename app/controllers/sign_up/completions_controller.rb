@@ -21,6 +21,8 @@ module SignUp
       track_completion_event('agency-page')
       update_verified_attributes
       send_in_person_completion_survey
+      user_session[:selected_email_id] = EmailContext.new(current_user).
+        last_sign_in_email_address.id
       if decider.go_back_to_mobile_app?
         sign_user_out_and_instruct_to_go_back_to_mobile_app
       else

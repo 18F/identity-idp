@@ -28,7 +28,6 @@ module VerifySpAttributesConcern
       verified_attributes: sp_session[:requested_attributes],
       last_consented_at: Time.zone.now,
       clear_deleted_at: true,
-      email_address_id: user_session[:selected_email_id],
     )
   end
 
