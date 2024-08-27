@@ -118,6 +118,7 @@ module IdentityConfig
     config.add(:doc_auth_supported_country_codes, type: :json)
     config.add(:doc_auth_vendor, type: :string)
     config.add(:doc_auth_vendor_default, type: :string)
+    config.add(:doc_auth_vendor_lexis_nexis_percent, type: :integer)
     config.add(:doc_auth_vendor_socure_percent, type: :integer)
     config.add(:doc_auth_vendor_switching_enabled, type: :boolean)
     config.add(:doc_capture_polling_enabled, type: :boolean)

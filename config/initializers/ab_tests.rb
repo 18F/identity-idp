@@ -40,10 +40,12 @@ module AbTests
   DOC_AUTH_VENDOR = AbTest.new(
     experiment_name: 'Doc Auth Vendor',
     should_log: /^idv/i,
+    default_bucket: :lexis_nexis,
     buckets: {
       socure: IdentityConfig.store.doc_auth_vendor_switching_enabled ?
-        IdentityConfig.store.doc_auth_vendor_socure_percent :
-        0,
+        IdentityConfig.store.doc_auth_vendor_socure_percent : 0,
+      lexis_nexis: IdentityConfig.store.doc_auth_vendor_switching_enabled ?
+        IdentityConfig.store.doc_auth_vendor_lexis_nexis_percent : 0,
     }.compact,
   ) do |service_provider:, session:, user:, user_session:, **|
     document_capture_session_uuid_discriminator(service_provider:, session:, user:, user_session:)

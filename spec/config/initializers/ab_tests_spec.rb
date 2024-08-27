@@ -119,6 +119,8 @@ RSpec.describe AbTests do
           and_return(true)
         allow(IdentityConfig.store).to receive(:doc_auth_vendor_socure_percent).
           and_return(50)
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_lexis_nexis_percent).
+          and_return(30)
       }
     end
 
