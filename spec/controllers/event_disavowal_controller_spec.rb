@@ -22,7 +22,7 @@ RSpec.describe EventDisavowalController do
 
         expect(@analytics).to have_logged_event(
           'Event disavowal visited',
-          build_analytics_hash(user_id: event.user_id),
+          build_analytics_hash(user_id: event.user.uuid),
         )
       end
 
@@ -31,7 +31,7 @@ RSpec.describe EventDisavowalController do
 
         expect(@analytics).to have_logged_event(
           'Event disavowal visited',
-          build_analytics_hash(user_id: event.user_id),
+          build_analytics_hash(user_id: event.user.uuid),
         )
         expect(assigns(:forbidden_passwords)).to all(be_a(String))
       end
@@ -79,7 +79,7 @@ RSpec.describe EventDisavowalController do
 
         expect(@analytics).to have_logged_event(
           'Event disavowal password reset',
-          build_analytics_hash(user_id: event.user_id),
+          build_analytics_hash(user_id: event.user.uuid),
         )
       end
     end
