@@ -77,7 +77,7 @@ module Proofing
     private
 
     def redacted_response_body
-      return if response_body.nil?
+      return response_body if response_body.blank?
 
       Proofing::LexisNexis::Ddp::ResponseRedacter.redact(response_body)
     end
