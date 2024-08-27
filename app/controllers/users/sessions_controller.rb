@@ -42,7 +42,7 @@ module Users
       handle_valid_authentication
     ensure
       handle_invalid_authentication if rate_limit_password_failure && !current_user
-      track_authentication_attempt(auth_params[:email])
+      track_authentication_attempt
     end
 
     def destroy
@@ -98,13 +98,19 @@ module Users
 
     def valid_captcha_result?
       return @valid_captcha_result if defined?(@valid_captcha_result)
-      email = auth_params[:email]
-      @valid_captcha_result = SignInRecaptchaForm.new(**recaptcha_form_args).submit(
-        email:,
+      recaptcha_form = SignInRecaptchaForm.new(**recaptcha_form_args)
+      result = recaptcha_form.submit(
+        email: auth_params[:email],
         recaptcha_token: params.require(:user)[:recaptcha_token],
         device_cookie: cookies[:device],
-        ab_test_bucket: ab_test_bucket(:RECAPTCHA_SIGN_IN, user: User.find_with_email(email)),
-      ).success?
+        ab_test_bucket: ab_test_bucket(:RECAPTCHA_SIGN_IN, user: user_from_params),
+      )
+      @captcha_validation_performed = !recaptcha_form.exempt?
+      @valid_captcha_result = result.success?
+    end
+
+    def captcha_validation_performed?
+      @captcha_validation_performed == true
     end
 
     def process_failed_captcha
@@ -143,6 +149,10 @@ module Users
       end
     end
 
+    def user_from_params
+      User.find_with_email(auth_params[:email])
+    end
+
     def auth_params
       params.require(:user).permit(:email, :password)
     end
@@ -172,14 +182,15 @@ module Users
         user_id: current_user.id,
         email: auth_params[:email],
       )
+      user_session[:captcha_validation_performed_at_sign_in] = captcha_validation_performed?
       user_session[:platform_authenticator_available] =
         params[:platform_authenticator_available] == 'true'
       check_password_compromised
       redirect_to next_url_after_valid_authentication
     end
 
-    def track_authentication_attempt(email)
-      user = User.find_with_email(email) || AnonymousUser.new
+    def track_authentication_attempt
+      user = user_from_params || AnonymousUser.new
 
       success = current_user.present? && !user_locked_out?(user) && valid_captcha_result?
       analytics.email_and_password_auth(
@@ -187,6 +198,7 @@ module Users
         user_id: user.uuid,
         user_locked_out: user_locked_out?(user),
         rate_limited: rate_limited?,
+        captcha_validation_performed: captcha_validation_performed?,
         valid_captcha_result: valid_captcha_result?,
         bad_password_count: session[:bad_password_count].to_i,
         sp_request_url_present: sp_session[:request_url].present?,
@@ -205,7 +217,7 @@ module Users
 
     def rate_limiter
       return @rate_limiter if defined?(@rate_limiter)
-      user = User.find_with_email(auth_params[:email])
+      user = user_from_params
       return @rate_limiter = nil unless user
       @rate_limiter = RateLimiter.new(
         rate_limit_type: :sign_in_user_id_per_ip,

@@ -23,6 +23,10 @@ class SignInRecaptchaForm
     FormResponse.new(success:, errors:, serialize_error_details_only: true)
   end
 
+  def exempt?
+    !score_threshold.positive?
+  end
+
   private
 
   def validate_recaptcha_result
