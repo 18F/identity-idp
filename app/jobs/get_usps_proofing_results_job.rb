@@ -236,7 +236,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       proofed_at: proofed_at,
       status_check_completed_at: Time.zone.now,
     )
-    enrollment.profile.deactivate_due_to_ipp_expiration
+    enrollment.profile.deactivate_due_to_in_person_verification_cancelled
     # send SMS and email
     send_enrollment_status_sms_notification(enrollment: enrollment)
     send_failed_email(enrollment.user, enrollment)
@@ -271,7 +271,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       status: :expired,
       status_check_completed_at: Time.zone.now,
     )
-    enrollment.profile.deactivate_due_to_ipp_expiration
+    enrollment.profile.deactivate_due_to_in_person_verification_cancelled
 
     if fraud_result_pending?(enrollment)
       analytics(user: enrollment.user).idv_ipp_deactivated_for_never_visiting_post_office(
@@ -327,7 +327,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   def handle_unexpected_response(enrollment, response_message, reason:, cancel: true)
     if cancel
       enrollment.cancelled!
-      enrollment.profile.deactivate_due_to_ipp_expiration
+      enrollment.profile.deactivate_due_to_in_person_verification_cancelled
     end
     analytics(user: enrollment.user).
       idv_in_person_usps_proofing_results_job_unexpected_response(
@@ -354,7 +354,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       proofed_at: proofed_at,
       status_check_completed_at: Time.zone.now,
     )
-    enrollment.profile.deactivate_due_to_ipp_expiration
+    enrollment.profile.deactivate_due_to_in_person_verification_cancelled
     # send SMS and email
     send_enrollment_status_sms_notification(enrollment: enrollment)
     if response['fraudSuspected']
@@ -444,7 +444,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       proofed_at: proofed_at,
       status_check_completed_at: Time.zone.now,
     )
-    enrollment.profile.deactivate_due_to_ipp_expiration
+    enrollment.profile.deactivate_due_to_in_person_verification_cancelled
     # send SMS and email
     send_enrollment_status_sms_notification(enrollment: enrollment)
     send_failed_email(enrollment.user, enrollment)
