@@ -68,9 +68,10 @@ module AbTests
     should_log: Set.new(
       [
         'Email and Password Authentication',
-        'User Suspension: Suspended',
-        :user_suspension_confirmed,
         'IdV: doc auth verify proofing results',
+        'reCAPTCHA verify result received',
+        :user_suspension_confirmed,
+        'User Suspension: Suspended',
       ],
     ),
     buckets: { sign_in_recaptcha: IdentityConfig.store.sign_in_recaptcha_percent_tested },
