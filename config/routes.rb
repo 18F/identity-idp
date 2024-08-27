@@ -16,7 +16,9 @@ Rails.application.routes.draw do
   post '/api/usps_locations' => 'idv/in_person/public/usps_locations#index'
   match '/api/usps_locations' => 'idv/in_person/public/usps_locations#options', via: :options
 
-  post '/api/webhooks/socure/event' => 'socure_webhook#create'
+  if FeatureManagement.socure_webhook_enabled?
+    post '/api/webhooks/socure/event' => 'socure_webhook#create'
+  end
 
   namespace :api do
     namespace :internal do

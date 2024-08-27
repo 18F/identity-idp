@@ -40,5 +40,31 @@ RSpec.describe SocureWebhookController do
 
       expect(response).to have_http_status(:unauthorized)
     end
+
+    context 'when hosted in upper environment' do
+      let(:hosted_env) { nil }
+      before do
+        request.headers['Authorization'] = socure_secret_key
+        allow(Identity::Hostdata).to receive(:env).and_return(hosted_env)
+        Rails.application.reload_routes!
+      end
+      context 'when hosted env is staging' do
+        let(:hosted_env) { 'staging' }
+        it 'the webhooks route does not exist' do
+          expect {
+            post :create
+          }.to raise_error(ActionController::UrlGenerationError)
+        end
+      end
+
+      context 'when hosted env is prod' do
+        let(:hosted_env) { 'prod' }
+        it 'the webhooks route does not exist' do
+          expect {
+            post :create
+          }.to raise_error(ActionController::UrlGenerationError)
+        end
+      end
+    end
   end
 end

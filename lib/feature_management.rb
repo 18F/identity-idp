@@ -159,4 +159,10 @@ class FeatureManagement
       outage_status.any_phone_vendor_outage? ||
       outage_status.phone_finder_outage?
   end
+
+  def self.socure_webhook_enabled?
+    return false if Identity::Hostdata.env == 'prod'
+    return false if Identity::Hostdata.env == 'staging'
+    true
+  end
 end
