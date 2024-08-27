@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe AbTest do
-  subject do
+  subject(:ab_test) do
     AbTest.new(
       experiment_name: 'test',
       buckets:,
@@ -33,7 +33,7 @@ RSpec.describe AbTest do
   let(:user_session) { {} }
 
   let(:bucket) do
-    subject.bucket(
+    ab_test.bucket(
       request:,
       service_provider:,
       session:,
@@ -46,7 +46,7 @@ RSpec.describe AbTest do
     it 'divides random uuids into the buckets with no automatic default' do
       results = {}
       1000.times do
-        b = subject.bucket(
+        b = ab_test.bucket(
           request:,
           service_provider:,
           session:,
@@ -86,7 +86,7 @@ RSpec.describe AbTest do
           build(:user, uuid: 'some-random-uuid')
         end
         it 'uses uuid as discriminator' do
-          expect(subject).to receive(:percent).with('some-random-uuid').once.and_call_original
+          expect(ab_test).to receive(:percent).with('some-random-uuid').once.and_call_original
           expect(bucket).to eql(:foo)
         end
       end
@@ -141,7 +141,7 @@ RSpec.describe AbTest do
       let(:buckets) { { foo: 'foo', bar: 'bar' } }
 
       it 'raises a RuntimeError' do
-        expect { subject }.to raise_error(RuntimeError, 'invalid bucket data structure')
+        expect { ab_test }.to raise_error(RuntimeError, 'invalid bucket data structure')
       end
     end
 
@@ -149,7 +149,7 @@ RSpec.describe AbTest do
       let(:buckets) { { foo: 60, bar: 60 } }
 
       it 'raises a RuntimeError' do
-        expect { subject }.to raise_error(RuntimeError, 'bucket percentages exceed 100')
+        expect { ab_test }.to raise_error(RuntimeError, 'bucket percentages exceed 100')
       end
     end
 
@@ -157,7 +157,7 @@ RSpec.describe AbTest do
       let(:buckets) { [[:foo, 10], [:bar, 20]] }
 
       it 'raises a RuntimeError' do
-        expect { subject }.to raise_error(RuntimeError, 'invalid bucket data structure')
+        expect { ab_test }.to raise_error(RuntimeError, 'invalid bucket data structure')
       end
     end
   end
@@ -165,7 +165,7 @@ RSpec.describe AbTest do
   describe '#include_in_analytics_event?' do
     let(:event_name) { 'My cool event' }
 
-    let(:return_value) { subject.include_in_analytics_event?(event_name) }
+    subject(:return_value) { ab_test.include_in_analytics_event?(event_name) }
 
     context 'when should_log is nil' do
       it 'returns true' do
@@ -185,6 +185,32 @@ RSpec.describe AbTest do
         it 'returns false' do
           expect(return_value).to eql(false)
         end
+      end
+    end
+
+    context 'when object responding to `include?` is used' do
+      context 'and it matches' do
+        let(:should_log) do
+          Class.new do
+            def include?(event_name)
+              event_name == 'My cool event'
+            end
+          end.new
+        end
+
+        it { is_expected.to eq(true) }
+      end
+
+      context 'and it does not match' do
+        let(:should_log) do
+          Class.new do
+            def include?(event_name)
+              event_name == 'My not cool event'
+            end
+          end.new
+        end
+
+        it { is_expected.to eq(false) }
       end
     end
 
