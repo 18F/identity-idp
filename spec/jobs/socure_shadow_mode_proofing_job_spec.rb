@@ -275,8 +275,9 @@ RSpec.describe SocureShadowModeProofingJob do
         end
 
         it 'does not squash the error' do
-          # The Proofer converts errors raised during requests into results
-          # with the `exception` property set. Any other error
+          # If the Proofer encounters an error while _making_ a request, that
+          # will be returned as a Result with the `exception` property set.
+          # Other errors will be raised as normal.
           expect { perform }.to raise_error
         end
       end
