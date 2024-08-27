@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe AbTests do
+  include AbTestsHelper
+
   describe '#all' do
     it 'returns all registered A/B tests' do
       expect(AbTests.all.values).to all(be_kind_of(AbTest))
@@ -155,12 +157,5 @@ RSpec.describe AbTests do
     end
 
     it_behaves_like 'an A/B test that uses document_capture_session_uuid as a discriminator'
-  end
-
-  def reload_ab_tests
-    AbTests.all.each do |(name, _)|
-      AbTests.send(:remove_const, name)
-    end
-    load('config/initializers/ab_tests.rb')
   end
 end
