@@ -76,7 +76,10 @@ module AbTests
     ),
     buckets: { sign_in_recaptcha: IdentityConfig.store.sign_in_recaptcha_percent_tested },
   ) do |user:, user_session:, **|
-    return nil if user_session[:captcha_validation_performed_at_sign_in] == false
-    user.uuid
+    if user_session[:captcha_validation_performed_at_sign_in] == false
+      nil
+    else
+      user.uuid
+    end
   end.freeze
 end
