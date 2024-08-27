@@ -1081,9 +1081,6 @@ Style/ClassEqualityComparison:
 Style/ClassMethods:
   Enabled: true
 
-Style/CollectionMethods:
-  Enabled: true
-
 Style/ColonMethodCall:
   Enabled: true
 

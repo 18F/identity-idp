@@ -106,7 +106,9 @@ module Reports
     end
 
     def active_users_count_report
-      @active_users_count_report ||= Reporting::ActiveUsersCountReport.new(report_date)
+      @active_users_count_report ||= Reporting::ActiveUsersCountReport.new(
+        report_date,
+      )
     end
 
     def agency_and_sp_report

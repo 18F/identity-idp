@@ -1315,7 +1315,7 @@ RSpec.describe User do
 
   describe '#visible_email_addresses' do
     let(:user) { create(:user) }
-    let(:confirmed_email_address) { user.email_addresses.find(&:confirmed?) }
+    let(:confirmed_email_address) { user.email_addresses.detect(&:confirmed?) }
     let!(:unconfirmed_expired_email_address) do
       create(
         :email_address,

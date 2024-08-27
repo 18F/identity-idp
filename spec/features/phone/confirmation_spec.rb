@@ -85,7 +85,7 @@ RSpec.describe 'phone otp confirmation' do
   end
 
   def phone_configuration
-    user.reload.phone_configurations.find do |phone_configuration|
+    user.reload.phone_configurations.detect do |phone_configuration|
       phone_configuration.phone == formatted_phone
     end
   end

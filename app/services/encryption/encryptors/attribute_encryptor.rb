@@ -50,7 +50,7 @@ module Encryption
       end
 
       def all_keys
-        [current_key].concat(old_keys.map { |hash| hash['key'] })
+        [current_key].concat(old_keys.collect { |hash| hash['key'] })
       end
 
       def old_keys

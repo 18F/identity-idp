@@ -135,7 +135,7 @@ module Reporting
     end
 
     def totals(key)
-      data.reduce(0) { |sum, slice| slice[key].to_i + sum }
+      data.inject(0) { |sum, slice| slice[key].to_i + sum }
     end
 
     def multi_factor_auth_table

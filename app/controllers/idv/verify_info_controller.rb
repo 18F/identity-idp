@@ -16,6 +16,7 @@ module Idv
       @ssn = idv_session.ssn
       @pii = pii
 
+      analytics.idv_doc_auth_verify_visited(**analytics_arguments)
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
         call('verify', :view, true)
 

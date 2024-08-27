@@ -335,8 +335,6 @@ sign_in_user_id_per_ip_attempt_window_exponential_factor: 1.1
 sign_in_user_id_per_ip_attempt_window_in_minutes: 720
 sign_in_user_id_per_ip_attempt_window_max_minutes: 43_200
 sign_in_user_id_per_ip_max_attempts: 50
-socure_webhook_secret_key: ''
-socure_webhook_secret_key_queue: '[]'
 sp_handoff_bounce_max_seconds: 2
 sp_issuer_user_counts_report_configs: '[]'
 team_ada_email: ''
@@ -427,8 +425,6 @@ development:
   show_unsupported_passkey_platform_authentication_setup: true
   sign_in_recaptcha_score_threshold: 0.3
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost"]'
-  socure_webhook_secret_key: 'secret-key'
-  socure_webhook_secret_key_queue: '["old-key-one", "old-key-two"]'
   state_tracking_enabled: true
   telephony_adapter: test
   use_dashboard_service_providers: true
@@ -552,8 +548,6 @@ test:
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   short_term_phone_otp_max_attempts: 100
   skip_encryption_allowed_list: '[]'
-  socure_webhook_secret_key: 'secret-key'
-  socure_webhook_secret_key_queue: '["old-key-one", "old-key-two"]'
   state_tracking_enabled: true
   team_ada_email: 'ada@example.com'
   team_all_login_emails: '["b@example.com", "c@example.com"]'
