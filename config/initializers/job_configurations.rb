@@ -4,9 +4,10 @@ cron_5m = '0/5 * * * *'
 cron_12m = '0/12 * * * *'
 cron_1h = '0 * * * *'
 cron_24h = '0 0 * * *'
+cron_24h_and_a_bit = '12 0 * * *' # 0000 UTC + 12 min, staggered from whatever else runs at 0000 UTC
 cron_24h_1am = '0 1 * * *' # 1am UTC is 8pm EST/9pm EDT
 gpo_cron_24h = '0 10 * * *' # 10am UTC is 5am EST/6am EDT
-cron_every_monday = 'every Monday at 0:00 UTC' # equivalent to '0 0 * * 1'
+cron_every_monday = 'every Monday at 0:25 UTC' # equivalent to '25 0 * * 1'
 cron_every_monday_1am = 'every Monday at 1:00 UTC' # equivalent to '0 1 * * 1'
 cron_every_monday_2am = 'every Monday at 2:00 UTC' # equivalent to '0 2 * * 1'
 
@@ -177,7 +178,7 @@ else
       # Send Identity Verification report to S3
       identity_verification_report: {
         class: 'Reports::IdentityVerificationReport',
-        cron: cron_24h,
+        cron: cron_24h_and_a_bit,
         args: -> { [Time.zone.yesterday] },
       },
       # Refresh USPS auth tokens
@@ -219,7 +220,7 @@ else
       # Send fraud metrics to Team Judy
       fraud_metrics_report: {
         class: 'Reports::FraudMetricsReport',
-        cron: cron_24h,
+        cron: cron_24h_and_a_bit,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
       # Previous week's drop of report
