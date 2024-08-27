@@ -295,12 +295,8 @@ RSpec.describe Users::SessionsController, devise: true do
         allow(FeatureManagement).to receive(:sign_in_recaptcha_enabled?).and_return(true)
         allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).and_return(true)
         allow(IdentityConfig.store).to receive(:sign_in_recaptcha_score_threshold).and_return(0.2)
-        allow(IdentityConfig.store).to receive(:sign_in_recaptcha_percent_tested).and_return(100)
-        reload_ab_tests
-      end
-
-      after do
-        reload_ab_tests
+        allow(controller).to receive(:ab_test_bucket).with(:RECAPTCHA_SIGN_IN, kind_of(Hash)).
+          and_return(:sign_in_recaptcha)
       end
 
       it 'tracks unsuccessful authentication for failed reCAPTCHA' do
