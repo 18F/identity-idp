@@ -25,7 +25,7 @@ RSpec.describe User do
 
   it 'does not send an email when #create is called' do
     expect do
-      User.create(email: 'nobody@nobody.com')
+      create(:user, email: 'nobody@nobody.com')
     end.to change(ActionMailer::Base.deliveries, :count).by(0)
   end
 
@@ -60,7 +60,7 @@ RSpec.describe User do
     it 'uses a DB index to enforce uniqueness' do
       user1 = create(:user)
       user1.save
-      user2 = create(:user, email: "mkuniqu.#{user1.email}")
+      user2 = create(:user, email: "mkuniqu.#{user1.email_addresses.first}")
       user2.uuid = user1.uuid
 
       expect { user2.save }.

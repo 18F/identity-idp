@@ -14,8 +14,6 @@ class User < ApplicationRecord
     authentication_keys: [:email],
   )
 
-  include EncryptableAttribute
-
   # IMPORTANT this comes *after* devise() call.
   include UserAccessKeyOverrides
   include UserEncryptedAttributeOverrides
@@ -65,7 +63,7 @@ class User < ApplicationRecord
           class_name: 'InPersonEnrollment', foreign_key: :user_id, inverse_of: :user,
           dependent: :destroy
 
-  attr_accessor :asserted_attributes, :email
+  attr_accessor :asserted_attributes
 
   def confirmed_email_addresses
     email_addresses.where.not(confirmed_at: nil).order('last_sign_in_at DESC NULLS LAST')

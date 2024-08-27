@@ -6,7 +6,8 @@ FactoryBot.define do
 
     transient do
       with { {} }
-      sequence(:email) { |n| "user#{n}@example.com" }
+      sequence(:email_sequence) { |n| "user#{n}@example.com" }
+      email { |e| e.email_sequence }
       confirmed_at { Time.zone.now }
       confirmation_token { nil }
       confirmation_sent_at { 5.minutes.ago }
@@ -25,7 +26,6 @@ FactoryBot.define do
         confirmation_sent_at: evaluator.confirmation_sent_at,
         confirmation_token: evaluator.confirmation_token,
       )
-      user.email = evaluator.email
       user.confirmed_at = evaluator.confirmed_at
     end
 
@@ -38,7 +38,6 @@ FactoryBot.define do
         confirmation_sent_at: evaluator.confirmation_sent_at,
         confirmation_token: evaluator.confirmation_token,
       )
-      user.email = evaluator.email
       user.confirmed_at = evaluator.confirmed_at
     end
 
