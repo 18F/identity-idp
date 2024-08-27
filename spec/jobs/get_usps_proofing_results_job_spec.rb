@@ -1452,7 +1452,6 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
               profile.update(in_person_verification_pending_at: enrollment.created_at)
             end
             pending_enrollment.reload
-            # binding.pry
             allow(InPersonEnrollment).to receive(:needs_usps_status_check).
               and_return(enrollment_records)
             allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
