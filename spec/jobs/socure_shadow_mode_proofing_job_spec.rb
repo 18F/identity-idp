@@ -283,7 +283,7 @@ RSpec.describe SocureShadowModeProofingJob do
       end
     end
 
-    context 'when document_capture_session_result_id is not valid' do
+    context 'when document capture session result is not present in redis' do
       let(:document_capture_session_result_id) { 'some-id-that-is-not-valid' }
 
       it 'logs an idv_socure_shadow_mode_proofing_result_missing event' do
