@@ -49,7 +49,7 @@ RSpec.describe SocureWebhookController do
       let(:socure_webhook_enabled) { false }
       it 'the webhook route does not exist' do
         request.headers['Authorization'] = socure_secret_key
-        expect{ post :create }.to raise_error(ActionController::UrlGenerationError)
+        expect { post :create }.to raise_error(ActionController::UrlGenerationError)
       end
     end
   end
