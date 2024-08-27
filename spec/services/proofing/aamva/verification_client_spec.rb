@@ -167,7 +167,7 @@ RSpec.describe Proofing::Aamva::VerificationClient do
         it 'throws an error which complains about the invalid response' do
           expect { response }.to raise_error(
             Proofing::Aamva::VerificationError,
-            /Missing end tag for '\/h1'/,
+            /No close tag for \/h1/,
           )
         end
 

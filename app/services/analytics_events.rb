@@ -521,12 +521,10 @@ module AnalyticsEvents
   # @param [Integer, nil] event_id events table id
   # @param [String, nil] event_type (see Event#event_type)
   # @param [String, nil] event_ip ip address for the event
-  # @param [String, nil] user_id UUID of the user
   # Tracks disavowed event
   def event_disavowal(
     success:,
     errors:,
-    user_id:,
     error_details: nil,
     event_created_at: nil,
     disavowed_device_last_used_at: nil,
@@ -549,7 +547,6 @@ module AnalyticsEvents
       event_id:,
       event_type:,
       event_ip:,
-      user_id:,
       **extra,
     )
   end
@@ -564,12 +561,10 @@ module AnalyticsEvents
   # @param [Integer, nil] event_id events table id
   # @param [String, nil] event_type (see Event#event_type)
   # @param [String, nil] event_ip ip address for the event
-  # @param [String, nil] user_id UUID of the user
   # Event disavowal password reset was performed
   def event_disavowal_password_reset(
     success:,
     errors:,
-    user_id:,
     error_details: nil,
     event_created_at: nil,
     disavowed_device_last_used_at: nil,
@@ -592,7 +587,6 @@ module AnalyticsEvents
       event_id:,
       event_type:,
       event_ip:,
-      user_id:,
       **extra,
     )
   end
@@ -882,7 +876,7 @@ module AnalyticsEvents
   # @param [String] acuant_version
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Boolean] isDrop
-  # @param [Boolean] click_source
+  # @param [Boolean] source
   # @param [Boolean] use_alternate_sdk
   # @param [Number] captureAttempts count of image capturing attempts
   # @param [String] liveness_checking_required Whether or not the selfie is required
@@ -891,7 +885,7 @@ module AnalyticsEvents
     acuant_version:,
     flow_path:,
     isDrop:,
-    click_source:,
+    source:,
     use_alternate_sdk:,
     captureAttempts:,
     liveness_checking_required:,
@@ -903,7 +897,7 @@ module AnalyticsEvents
       acuant_version: acuant_version,
       flow_path: flow_path,
       isDrop: isDrop,
-      click_source: click_source,
+      source: source,
       use_alternate_sdk: use_alternate_sdk,
       liveness_checking_required: liveness_checking_required,
       captureAttempts: captureAttempts,
@@ -1646,12 +1640,6 @@ module AnalyticsEvents
     )
   end
 
-  # User visits IdV verify step waiting on a resolution proofing job result
-  # @identity.idp.previous_event_name IdV: doc auth verify visited
-  def idv_doc_auth_verify_polling_wait_visited
-    track_event(:idv_doc_auth_verify_polling_wait_visited)
-  end
-
   # rubocop:disable Layout/LineLength
   # @param ab_tests [Hash] Object that holds A/B test data (legacy A/B tests may include attributes outside the scope of this object)
   # @param acuant_sdk_upgrade_ab_test_bucket [String] A/B test bucket for Acuant document capture SDK upgrades
@@ -2133,7 +2121,7 @@ module AnalyticsEvents
   # @param [String] acuant_version
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Boolean] isDrop
-  # @param [String] click_source
+  # @param [String] source
   # @param [String] use_alternate_sdk
   # @param [Number] captureAttempts count of image capturing attempts
   # @param [Boolean] liveness_checking_required
@@ -2142,7 +2130,7 @@ module AnalyticsEvents
     acuant_version:,
     flow_path:,
     isDrop:,
-    click_source:,
+    source:,
     use_alternate_sdk:,
     captureAttempts:,
     liveness_checking_required: nil,
@@ -2154,7 +2142,7 @@ module AnalyticsEvents
       acuant_version: acuant_version,
       flow_path: flow_path,
       isDrop: isDrop,
-      click_source: click_source,
+      source: source,
       use_alternate_sdk: use_alternate_sdk,
       liveness_checking_required: liveness_checking_required,
       captureAttempts: captureAttempts,
@@ -4149,7 +4137,7 @@ module AnalyticsEvents
   # @param [String] acuant_version
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Boolean] isDrop
-  # @param [String] click_source
+  # @param [String] source
   # @param [String] use_alternate_sdk
   # @param [Number] captureAttempts
   # @param [Boolean] liveness_checking_required
@@ -4161,7 +4149,7 @@ module AnalyticsEvents
     acuant_version:,
     flow_path:,
     isDrop:,
-    click_source:,
+    source:,
     use_alternate_sdk:,
     captureAttempts:,
     liveness_checking_required: nil,
@@ -4176,7 +4164,7 @@ module AnalyticsEvents
       acuant_version: acuant_version,
       flow_path: flow_path,
       isDrop: isDrop,
-      click_source: click_source,
+      source: source,
       use_alternate_sdk: use_alternate_sdk,
       captureAttempts: captureAttempts,
       liveness_checking_required: liveness_checking_required,

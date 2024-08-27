@@ -182,7 +182,7 @@ RSpec::Matchers.define :have_unique_ids do
 
   failure_message do |page|
     page_ids = ids(page)
-    duplicate = page_ids.find { |id| page_ids.count(id) > 1 }
+    duplicate = page_ids.detect { |id| page_ids.count(id) > 1 }
     "Expected no duplicate element IDs. Found duplicate: #{duplicate}"
   end
 end

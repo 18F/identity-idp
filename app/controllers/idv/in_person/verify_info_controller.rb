@@ -10,7 +10,6 @@ module Idv
       include VerifyInfoConcern
 
       before_action :confirm_not_rate_limited_after_doc_auth, except: [:show]
-      before_action :confirm_pii_data_present
       before_action :confirm_ssn_step_complete
 
       def show
@@ -18,6 +17,7 @@ module Idv
         @ssn = idv_session.ssn
         @pii = pii
 
+        analytics.idv_doc_auth_verify_visited(**analytics_arguments)
         Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
           call('verify', :view, true) # specify in_person?
 
@@ -74,8 +74,7 @@ module Idv
       end
 
       def pii
-        pii_from_user = user_session.dig('idv/in_person', :pii_from_user) || {}
-        pii_from_user.merge(ssn: idv_session.ssn)
+        user_session.dig('idv/in_person', :pii_from_user).merge(ssn: idv_session.ssn)
       end
 
       # override IdvSessionConcern
@@ -95,12 +94,6 @@ module Idv
       def confirm_ssn_step_complete
         return if pii.present? && idv_session.ssn.present?
         redirect_to prev_url
-      end
-
-      def confirm_pii_data_present
-        unless user_session.dig('idv/in_person').present?
-          redirect_to idv_path
-        end
       end
     end
   end

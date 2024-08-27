@@ -70,16 +70,8 @@ module Proofing
         timed_out: timed_out?,
         transaction_id: transaction_id,
         review_status: review_status,
-        response_body: redacted_response_body,
+        response_body: Proofing::LexisNexis::Ddp::ResponseRedacter.redact(response_body),
       }
-    end
-
-    private
-
-    def redacted_response_body
-      return response_body if response_body.blank?
-
-      Proofing::LexisNexis::Ddp::ResponseRedacter.redact(response_body)
     end
   end
 end

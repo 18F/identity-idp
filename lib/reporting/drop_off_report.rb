@@ -49,14 +49,9 @@ module Reporting
       OLD_IDV_ENTER_PASSWORD_SUBMITTED = 'IdV: review complete'
       IDV_PERSONAL_KEY_SUBMITTED = 'IdV: personal key submitted'
       IDV_FINAL_RESOLUTION = 'IdV: final resolution'
-      IPP_ENROLLMENT_UPDATE = 'GetUspsProofingResultsJob: Enrollment status updated'
 
       def self.all_events
         constants.map { |c| const_get(c) }
-      end
-
-      def self.must_pass_events
-        [IPP_ENROLLMENT_UPDATE]
       end
     end
 
@@ -68,7 +63,7 @@ module Reporting
       [
         Reporting::EmailableReport.new(
           title: 'Step Definitions',
-          table: STEP_DEFINITIONS,
+          table: step_definition_table,
         ),
         Reporting::EmailableReport.new(
           title: 'Overview',
@@ -239,10 +234,6 @@ module Reporting
           'Workflow Complete - Total Pending',
           idv_final_resolution_total_pending,
         ],
-        [
-          'Successfully verified via in-person proofing',
-          ipp_verification_total,
-        ],
       ]
     end
 
@@ -255,65 +246,59 @@ module Reporting
       data[Results::IDV_FINAL_RESOLUTION_VERIFIED].count
     end
 
-    def ipp_verification_total
-      @ipp_verification_total ||= data[Events::IPP_ENROLLMENT_UPDATE].count
+    def step_definition_table
+      [
+        ['Step', 'Definition'],
+        [
+          'Welcome (page viewed)',
+          'Start of proofing process',
+        ],
+        [
+          'User agreement (page viewer)',
+          'Users who clicked "Continue" on the welcome page',
+        ],
+        [
+          'Capture Document (page viewed)',
+          'Users who check the consent checkbox and click "Continue"',
+        ],
+        [
+          'Document submitted (event)',
+          'Users who upload a front and back image and click "Submit"	',
+        ],
+        [
+          'SSN (page view)',
+          'Users whose ID is authenticated by Acuant',
+        ],
+        [
+          'Verify Info (page view)',
+          'Users who enter an SSN and continue',
+        ],
+        [
+          'Verify submit (event)',
+          'Users who verify their information and submit it for Identity Verification (LN)',
+        ],
+        [
+          'Phone finder (page view)',
+          'Users who successfuly had their identities verified by LN',
+        ],
+        [
+          'Encrypt account: enter password (page view)',
+          'Users who were able to complete the physicality check using PhoneFinder',
+        ],
+        [
+          'Personal key input (page view)',
+          'Users who enter their password to encrypt their PII',
+        ],
+        [
+          'Verified (event)',
+          'Users who confirm their personal key and complete setting up their verified account',
+        ],
+        [
+          'Workflow Complete - Total Pending',
+          'Total count of users who are pending IDV',
+        ],
+      ]
     end
-
-    STEP_DEFINITIONS = [
-      ['Step', 'Definition'],
-      [
-        'Welcome (page viewed)',
-        'Start of proofing process',
-      ],
-      [
-        'User agreement (page viewer)',
-        'Users who clicked "Continue" on the welcome page',
-      ],
-      [
-        'Capture Document (page viewed)',
-        'Users who check the consent checkbox and click "Continue"',
-      ],
-      [
-        'Document submitted (event)',
-        'Users who upload a front and back image and click "Submit"	',
-      ],
-      [
-        'SSN (page view)',
-        'Users whose ID is authenticated by Acuant',
-      ],
-      [
-        'Verify Info (page view)',
-        'Users who enter an SSN and continue',
-      ],
-      [
-        'Verify submit (event)',
-        'Users who verify their information and submit it for Identity Verification (LN)',
-      ],
-      [
-        'Phone finder (page view)',
-        'Users who successfuly had their identities verified by LN',
-      ],
-      [
-        'Encrypt account: enter password (page view)',
-        'Users who were able to complete the physicality check using PhoneFinder',
-      ],
-      [
-        'Personal key input (page view)',
-        'Users who enter their password to encrypt their PII',
-      ],
-      [
-        'Verified (event)',
-        'Users who confirm their personal key and complete setting up their verified account',
-      ],
-      [
-        'Workflow Complete - Total Pending',
-        'Total count of users who are pending IDV',
-      ],
-      [
-        'Successfully verified via in-person proofing',
-        'The count of users who successfully verified their identity in-person at a USPS location within the report period', # rubocop:disable Layout/LineLength
-      ],
-    ].freeze
 
     def idv_started
       data[Events::IDV_DOC_AUTH_WELCOME].count
@@ -367,7 +352,7 @@ module Reporting
 
     def as_tables
       [
-        STEP_DEFINITIONS,
+        step_definition_table,
         overview_table,
         dropoff_metrics_table,
       ]
@@ -385,12 +370,10 @@ module Reporting
 
     # @return [Float]
     def percent(numerator:, denominator:)
-      result = (numerator.to_f / denominator.to_f)
-      result.nan? ? 0 : result
+      (numerator.to_f / denominator.to_f)
     end
 
-    def fetch_results(query: nil)
-      query ||= self.query
+    def fetch_results
       cloudwatch_client.fetch(query:, from: time_range.begin, to: time_range.end)
     end
 
@@ -398,22 +381,20 @@ module Reporting
       params = {
         issuers: issuers.present? && quote(issuers),
         event_names: quote(Events.all_events),
-        must_pass_event_names: quote(Events.must_pass_events),
       }
 
       format(<<~QUERY, params)
         fields
             name
           , properties.user_id AS user_id
-          , coalesce(properties.event_properties.success, properties.event_properties.passed, 0) AS success
+          , coalesce(properties.event_properties.success, 0) AS success
           , coalesce(properties.event_properties.fraud_review_pending, 0) AS fraud_review_pending
           , coalesce(properties.event_properties.gpo_verification_pending, 0) AS gpo_verification_pending
           , coalesce(properties.event_properties.in_person_verification_pending, 0) AS in_person_verification_pending
           , ispresent(properties.event_properties.deactivation_reason) AS has_other_deactivation_reason
           , !fraud_review_pending and !gpo_verification_pending and !in_person_verification_pending and !has_other_deactivation_reason AS identity_verified
+        #{issuers.present? ? '| filter properties.service_provider IN %{issuers}' : ''}
         | filter name in %{event_names}
-        #{issuers.present? ? '| filter properties.service_provider IN %{issuers} or properties.event_properties.issuer IN %{issuers}' : ''}
-        | filter (name in %{must_pass_event_names} and properties.event_properties.passed = 1) or (name not in %{must_pass_event_names})
         | limit 10000
       QUERY
     end

@@ -4,37 +4,6 @@ class SocureWebhookController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def create
-    if token_valid?
-      render json: { message: 'Secret token is valid.' }
-    else
-      render status: :unauthorized, json: { message: 'Invalid secret token.' }
-    end
-  end
-
-  private
-
-  def token_valid?
-    authorization_header = request.headers['Authorization']&.split&.last
-
-    return false if authorization_header.nil?
-
-    verify_current_key(authorization_header: authorization_header) ||
-      verify_queue(authorization_header: authorization_header)
-  end
-
-  def verify_current_key(authorization_header:)
-    ActiveSupport::SecurityUtils.secure_compare(
-      authorization_header,
-      IdentityConfig.store.socure_webhook_secret_key,
-    )
-  end
-
-  def verify_queue(authorization_header:)
-    IdentityConfig.store.socure_webhook_secret_key_queue.any? do |key|
-      ActiveSupport::SecurityUtils.secure_compare(
-        authorization_header,
-        key,
-      )
-    end
+    render json: { message: 'Got here.' }
   end
 end
