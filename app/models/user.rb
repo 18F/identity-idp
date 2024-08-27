@@ -65,8 +65,9 @@ class User < ApplicationRecord
 
   attr_accessor :asserted_attributes
 
+  # @return [String, nil]
   def first_email
-    user.confirmed_email_addresses.first.email
+    confirmed_email_addresses.first&.email
   end
 
   def confirmed_email_addresses

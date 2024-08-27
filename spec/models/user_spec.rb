@@ -1693,4 +1693,31 @@ RSpec.describe User do
       expect(user.second_last_signed_in_at).to eq(event2.reload.created_at)
     end
   end
+
+  describe '#first_email' do
+    it 'returns the first confirmed email' do
+      user = create(
+        :user,
+        email_addresses: [
+          build(:email_address, email: 'first@example.com'),
+          build(:email_address, email: 'second@example.com'),
+        ],
+      )
+
+      expect(user.first_email).to eq('first@example.com')
+    end
+
+    it 'is nil with no confirmed emails' do
+      user = create(
+        :user,
+        email_addresses: [
+          build(:email_address, :unconfirmed, email: 'first@example.com'),
+          build(:email_address, :unconfirmed, email: 'second@example.com'),
+        ],
+      )
+
+      expect(user.first_email).to be_nil
+    end
+
+  end
 end
