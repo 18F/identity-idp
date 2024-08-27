@@ -153,7 +153,8 @@ module Users
     end
 
     def user_from_params
-      User.find_with_email(auth_params[:email])
+      return @user_from_params if defined?(@user_from_params)
+      @user_from_params = User.find_with_email(auth_params[:email])
     end
 
     def auth_params
