@@ -526,6 +526,7 @@ module AnalyticsEvents
   def event_disavowal(
     success:,
     errors:,
+    user_id:,
     error_details: nil,
     event_created_at: nil,
     disavowed_device_last_used_at: nil,
@@ -534,7 +535,6 @@ module AnalyticsEvents
     event_id: nil,
     event_type: nil,
     event_ip: nil,
-    user_id:,
     **extra
   )
     track_event(
@@ -569,6 +569,7 @@ module AnalyticsEvents
   def event_disavowal_password_reset(
     success:,
     errors:,
+    user_id:,
     error_details: nil,
     event_created_at: nil,
     disavowed_device_last_used_at: nil,
@@ -577,7 +578,6 @@ module AnalyticsEvents
     event_id: nil,
     event_type: nil,
     event_ip: nil,
-    user_id:,
     **extra
   )
     track_event(
