@@ -176,7 +176,7 @@ RSpec.describe SocureShadowModeProofingJob do
         )
     end
 
-    context 'when document_capture_session_result_id is valid' do
+    context 'when document capture session result is present in redis' do
       it 'makes a proofing call' do
         expect(job.proofer).to receive(:proof).and_call_original
         perform
