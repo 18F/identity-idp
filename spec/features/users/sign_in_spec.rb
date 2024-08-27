@@ -885,6 +885,7 @@ RSpec.feature 'Sign in' do
       allow(FeatureManagement).to receive(:sign_in_recaptcha_enabled?).and_return(true)
       allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).and_return(true)
       allow(IdentityConfig.store).to receive(:sign_in_recaptcha_score_threshold).and_return(0.2)
+      allow(IdentityConfig.store).to receive(:sign_in_recaptcha_percent_tested).and_return(100)
     end
 
     it 'redirects user to security check failed page' do
