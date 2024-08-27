@@ -46,15 +46,6 @@ RSpec.describe Idv::VerifyInfoController, allowed_extra_analytics: [:*] do
   end
 
   describe '#show' do
-    let(:analytics_name) { 'IdV: doc auth verify visited' }
-    let(:analytics_args) do
-      {
-        analytics_id: 'Doc Auth',
-        flow_path: 'standard',
-        step: 'verify',
-      }.merge(ab_test_args)
-    end
-
     it 'renders the show template' do
       get :show
 
@@ -64,7 +55,14 @@ RSpec.describe Idv::VerifyInfoController, allowed_extra_analytics: [:*] do
     it 'sends analytics_visited event' do
       get :show
 
-      expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+      expect(@analytics).to have_logged_event(
+        'IdV: doc auth verify visited',
+        {
+          analytics_id: 'Doc Auth',
+          flow_path: 'standard',
+          step: 'verify',
+        }.merge(ab_test_args),
+      )
     end
 
     it 'updates DocAuthLog verify_view_count' do
@@ -126,6 +124,8 @@ RSpec.describe Idv::VerifyInfoController, allowed_extra_analytics: [:*] do
         get :show
 
         expect(response).to redirect_to idv_session_errors_ssn_failure_url
+
+        expect(@analytics).to have_logged_event('Rate Limit Reached', limiter_type: :proof_ssn)
       end
     end
 
@@ -141,6 +141,8 @@ RSpec.describe Idv::VerifyInfoController, allowed_extra_analytics: [:*] do
         get :show
 
         expect(response).to redirect_to idv_session_errors_failure_url
+
+        expect(@analytics).to have_logged_event('Rate Limit Reached', limiter_type: :idv_resolution)
       end
     end
 
@@ -292,7 +294,13 @@ RSpec.describe Idv::VerifyInfoController, allowed_extra_analytics: [:*] do
 
           expect(@analytics).to have_logged_event(
             'IdV: doc auth verify proofing results',
-            hash_including(**analytics_args, success: true, analytics_id: 'Doc Auth'),
+            hash_including(
+              {
+                analytics_id: 'Doc Auth',
+                flow_path: 'standard',
+                step: 'verify',
+              }.merge(ab_test_args),
+            ),
           )
         end
       end
@@ -324,6 +332,41 @@ RSpec.describe Idv::VerifyInfoController, allowed_extra_analytics: [:*] do
             remaining_submit_attempts: kind_of(Numeric),
           )
         end
+      end
+    end
+
+    context 'when the resolution proofing job has not completed' do
+      let(:async_state) do
+        ProofingSessionAsyncResult.new(status: ProofingSessionAsyncResult::IN_PROGRESS)
+      end
+
+      before do
+        allow(controller).to receive(:load_async_state).and_return(async_state)
+      end
+
+      it 'renders the wait template' do
+        get :show
+
+        expect(response).to render_template 'shared/wait'
+        expect(@analytics).to have_logged_event(:idv_doc_auth_verify_polling_wait_visited)
+      end
+    end
+
+    context 'when the reolution proofing job result is missing' do
+      let(:async_state) do
+        ProofingSessionAsyncResult.new(status: ProofingSessionAsyncResult::MISSING)
+      end
+
+      before do
+        allow(controller).to receive(:load_async_state).and_return(async_state)
+      end
+
+      it 'renders a timeout error' do
+        get :show
+
+        expect(response).to render_template :show
+        expect(controller.flash[:error]).to eq(I18n.t('idv.failure.timeout'))
+        expect(@analytics).to have_logged_event('IdV: proofing resolution result missing')
       end
     end
   end

@@ -117,4 +117,31 @@ RSpec.describe Proofing::DdpResult do
       end
     end
   end
+
+  describe '#to_h' do
+    context 'when response_body is present' do
+      it 'is redacted' do
+        response_body = { first_name: 'Jonny Proofs' }
+        result = Proofing::DdpResult.new(response_body:)
+
+        expect(result.to_h[:response_body]).to eq({ first_name: '[redacted]' })
+      end
+    end
+
+    context 'when response_body is nil' do
+      it 'is nil' do
+        result = Proofing::DdpResult.new(response_body: nil)
+
+        expect(result.to_h[:response_body]).to be_nil
+      end
+    end
+
+    context 'when response_body is empty' do
+      it 'responds with an empty string is the response body is empty' do
+        result = Proofing::DdpResult.new(response_body: '')
+
+        expect(result.to_h[:response_body]).to eq('')
+      end
+    end
+  end
 end

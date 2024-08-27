@@ -19,7 +19,7 @@ module Flow
 
     def next_step
       return @redirect if @redirect
-      step, _klass = steps.detect do |_step, klass|
+      step, _klass = steps.find do |_step, klass|
         !@flow_session[klass.to_s]
       end
       step
