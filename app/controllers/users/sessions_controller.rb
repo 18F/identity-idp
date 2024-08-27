@@ -98,19 +98,22 @@ module Users
 
     def valid_captcha_result?
       return @valid_captcha_result if defined?(@valid_captcha_result)
-      recaptcha_form = SignInRecaptchaForm.new(**recaptcha_form_args)
-      result = recaptcha_form.submit(
-        email: auth_params[:email],
+      @valid_captcha_result = recaptcha_form.submit(
         recaptcha_token: params.require(:user)[:recaptcha_token],
+      ).success?
+    end
+
+    def recaptcha_form
+      @recaptcha_form ||= SignInRecaptchaForm.new(
+        email: auth_params[:email],
         device_cookie: cookies[:device],
         ab_test_bucket: ab_test_bucket(:RECAPTCHA_SIGN_IN, user: user_from_params),
+        **recaptcha_form_args,
       )
-      @captcha_validation_performed = !recaptcha_form.exempt?
-      @valid_captcha_result = result.success?
     end
 
     def captcha_validation_performed?
-      @captcha_validation_performed == true
+      !recaptcha_form.exempt?
     end
 
     def process_failed_captcha
