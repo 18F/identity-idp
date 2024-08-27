@@ -65,15 +65,13 @@ module AbTests
 
   RECAPTCHA_SIGN_IN = AbTest.new(
     experiment_name: 'reCAPTCHA at Sign-In',
-    should_log: Set.new(
-      [
-        'Email and Password Authentication',
-        'IdV: doc auth verify proofing results',
-        'reCAPTCHA verify result received',
-        :user_suspension_confirmed,
-        'User Suspension: Suspended',
-      ],
-    ),
+    should_log: [
+      'Email and Password Authentication',
+      'IdV: doc auth verify proofing results',
+      'reCAPTCHA verify result received',
+      :user_suspension_confirmed,
+      'User Suspension: Suspended',
+    ].to_set,
     buckets: { sign_in_recaptcha: IdentityConfig.store.sign_in_recaptcha_percent_tested },
   ) do |user:, user_session:, **|
     if user_session&.[](:captcha_validation_performed_at_sign_in) == false
