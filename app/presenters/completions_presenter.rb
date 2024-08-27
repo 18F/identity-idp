@@ -2,6 +2,7 @@
 
 class CompletionsPresenter
   include ActionView::Helpers::TranslationHelper
+  include ActionView::Helpers::TagHelper
 
   attr_reader :current_user, :current_sp, :decrypted_pii, :requested_attributes, :completion_context
 
@@ -77,15 +78,21 @@ class CompletionsPresenter
     if consent_has_expired?
       safe_join(
         [
-          t('help_text.requested_attributes.consent_reminder_html', sp: sp_name),
-          t('help_text.requested_attributes.intro_html', sp: sp_name),
+          t(
+            'help_text.requested_attributes.consent_reminder_html',
+            sp_html: content_tag(:strong, sp_name),
+          ),
+          t('help_text.requested_attributes.intro_html', sp_html: content_tag(:strong, sp_name)),
         ],
         ' ',
       )
     elsif ial2_requested? && reverified_after_consent?
-      t('help_text.requested_attributes.ial2_reverified_consent_info', sp: sp_name)
+      t(
+        'help_text.requested_attributes.ial2_reverified_consent_info_html',
+        sp_html: content_tag(:strong, sp_name),
+      )
     else
-      t('help_text.requested_attributes.intro_html', sp: sp_name)
+      t('help_text.requested_attributes.intro_html', sp_html: content_tag(:strong, sp_name))
     end
   end
 

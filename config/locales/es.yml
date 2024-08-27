@@ -969,11 +969,11 @@ headings.webauthn_setup.new: Inserte su clave de seguridad
 help_text.requested_attributes.address: Dirección
 help_text.requested_attributes.all_emails: Direcciones de correo electrónico en su cuenta
 help_text.requested_attributes.birthdate: Fecha de nacimiento
-help_text.requested_attributes.consent_reminder_html: Debe dar su consentimiento cada año para divulgar su información a <strong>%{sp}</strong>.
+help_text.requested_attributes.consent_reminder_html: Debe dar su consentimiento cada año para divulgar su información a %{sp_html}.
 help_text.requested_attributes.email: Dirección de correo electrónico
 help_text.requested_attributes.full_name: Nombre completo
-help_text.requested_attributes.ial2_reverified_consent_info: 'Como volvió a verificar su identidad, necesitamos su permiso para divulgar esta información a %{sp}:'
-help_text.requested_attributes.intro_html: 'Divulgaremos esta información a <strong>%{sp}</strong>:'
+help_text.requested_attributes.ial2_reverified_consent_info_html: 'Como volvió a verificar su identidad, necesitamos su permiso para divulgar esta información a %{sp_html}:'
+help_text.requested_attributes.intro_html: 'Divulgaremos esta información a %{sp_html}:'
 help_text.requested_attributes.phone: Número de teléfono
 help_text.requested_attributes.social_security_number: Número de Seguro Social
 help_text.requested_attributes.verified_at: Actualizado en

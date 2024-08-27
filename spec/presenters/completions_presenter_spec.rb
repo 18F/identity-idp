@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe CompletionsPresenter do
   include ActionView::Helpers::OutputSafetyHelper
+  include ActionView::Helpers::TagHelper
 
   let(:identities) do
     [
@@ -151,7 +152,10 @@ RSpec.describe CompletionsPresenter do
   describe '#intro' do
     it 'renders the standard intro message' do
       expect(presenter.intro).to eq(
-        t('help_text.requested_attributes.intro_html', sp: current_sp.friendly_name),
+        t(
+          'help_text.requested_attributes.intro_html',
+          sp_html: content_tag(:strong, current_sp.friendly_name),
+        ),
       )
     end
 
@@ -173,11 +177,11 @@ RSpec.describe CompletionsPresenter do
             [
               t(
                 'help_text.requested_attributes.consent_reminder_html',
-                sp: current_sp.friendly_name,
+                sp_html: content_tag(:strong, current_sp.friendly_name),
               ),
               t(
                 'help_text.requested_attributes.intro_html',
-                sp: current_sp.friendly_name,
+                sp_html: content_tag(:strong, current_sp.friendly_name),
               ),
             ],
             ' ',
@@ -207,11 +211,11 @@ RSpec.describe CompletionsPresenter do
               [
                 t(
                   'help_text.requested_attributes.consent_reminder_html',
-                  sp: current_sp.friendly_name,
+                  sp_html: content_tag(:strong, current_sp.friendly_name),
                 ),
                 t(
                   'help_text.requested_attributes.intro_html',
-                  sp: current_sp.friendly_name,
+                  sp_html: content_tag(:strong, current_sp.friendly_name),
                 ),
               ],
               ' ',
@@ -235,8 +239,8 @@ RSpec.describe CompletionsPresenter do
         it 'renders the reverified IAL2 consent intro message' do
           expect(presenter.intro).to eq(
             t(
-              'help_text.requested_attributes.ial2_reverified_consent_info',
-              sp: current_sp.friendly_name,
+              'help_text.requested_attributes.ial2_reverified_consent_info_html',
+              sp_html: content_tag(:strong, current_sp.friendly_name),
             ),
           )
         end

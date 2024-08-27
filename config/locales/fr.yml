@@ -958,11 +958,11 @@ headings.webauthn_setup.new: Insérer votre clé de sécurité
 help_text.requested_attributes.address: Adresse
 help_text.requested_attributes.all_emails: Adresses e-mail sur votre compte
 help_text.requested_attributes.birthdate: Date de naissance
-help_text.requested_attributes.consent_reminder_html: Vous devez consentir chaque année au partage de vos informations avec <strong>%{sp}</strong>.
+help_text.requested_attributes.consent_reminder_html: Vous devez consentir chaque année au partage de vos informations avec %{sp_html}.
 help_text.requested_attributes.email: Adresse e-mail
 help_text.requested_attributes.full_name: Nom complet
-help_text.requested_attributes.ial2_reverified_consent_info: 'Étant donné que vous avez revérifié votre identité, nous avons besoin de votre autorisation pour partager ces informations avec %{sp} :'
-help_text.requested_attributes.intro_html: 'Nous partagerons ces informations avec <strong>%{sp}</strong>:'
+help_text.requested_attributes.ial2_reverified_consent_info_html: 'Étant donné que vous avez revérifié votre identité, nous avons besoin de votre autorisation pour partager ces informations avec %{sp_html} :'
+help_text.requested_attributes.intro_html: 'Nous partagerons ces informations avec %{sp_html}:'
 help_text.requested_attributes.phone: Numéro de téléphone
 help_text.requested_attributes.social_security_number: Numéro de sécurité sociale
 help_text.requested_attributes.verified_at: Mis à jour le
