@@ -135,7 +135,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
       it 'contains mock-client-data in metadata' do
         render_partial
         expect(rendered).not_to have_css(
-          "#document-capture-form[data-mock-client]",
+          '#document-capture-form[data-mock-client]',
         )
       end
     end
@@ -145,7 +145,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
       it 'contains mock-client-data in metadata' do
         render_partial
         expect(rendered).to have_css(
-          "#document-capture-form[data-mock-client]",
+          '#document-capture-form[data-mock-client]',
         )
       end
     end
