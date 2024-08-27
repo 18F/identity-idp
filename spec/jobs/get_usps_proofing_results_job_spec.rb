@@ -826,7 +826,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                 request_passed_proofing_unsupported_id_results_response,
             )
 
-            it 'updates the profile' do
+            it 'deactivates the associated profile' do
               expect(pending_enrollment.profile.in_person_verification_pending_at).not_to be_nil
               job.perform Time.zone.now
               pending_enrollment.reload
@@ -896,10 +896,11 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
             end
 
             it 'deactivates the associated profile' do
+              expect(pending_enrollment.profile.in_person_verification_pending_at).not_to be_nil
               job.perform(Time.zone.now)
 
               pending_enrollment.reload
-              expect(pending_enrollment.profile).not_to be_active
+              expect(pending_enrollment.profile.active).to be false
               expect(pending_enrollment.profile.in_person_verification_pending_at).to be_nil
               expect(pending_enrollment.profile.deactivation_reason).to eq('verification_cancelled')
             end
@@ -1002,7 +1003,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                 )
               end
 
-              it 'updates the profile' do
+              it 'deactivates the associated profile' do
                 expect(pending_enrollment.profile.in_person_verification_pending_at).not_to be_nil
                 job.perform(Time.zone.now)
                 pending_enrollment.reload
@@ -1398,7 +1399,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                   end
                 end
 
-                it 'updates the profile' do
+                it 'deactivates the associated profile' do
                   expect(pending_enrollment.profile.in_person_verification_pending_at).not_to be_nil
 
                   job.perform(Time.zone.now)
@@ -1475,7 +1476,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                 request_passed_proofing_secondary_id_type_results_response,
             )
 
-            it 'updates the profile' do
+            it 'deactivates the associated profile' do
               expect(pending_enrollment.profile.in_person_verification_pending_at).not_to be_nil
               job.perform(Time.zone.now)
               pending_enrollment.reload
