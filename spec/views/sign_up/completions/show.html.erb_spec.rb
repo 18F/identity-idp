@@ -45,7 +45,7 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
       view_context.strip_tags(
         t(
           'help_text.requested_attributes.intro_html',
-          sp: service_provider.friendly_name,
+          sp_html: content_tag(:strong, service_provider.friendly_name),
         ),
       ),
     )
