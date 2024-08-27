@@ -9,6 +9,7 @@ module Users
     include Api::CsrfTokenConcern
     include ForcedReauthenticationConcern
     include NewDeviceConcern
+    include AbTestingConcern
 
     rescue_from ActionController::InvalidAuthenticityToken, with: :redirect_to_signin
 
