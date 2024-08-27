@@ -562,7 +562,6 @@ RSpec.describe 'FeatureManagement' do
 
       context 'in production' do
         let(:hosted_env) { 'prod' }
-
         it 'is false' do
           expect(socure_webhook_enabled?).to be_falsey
         end

@@ -51,18 +51,14 @@ RSpec.describe SocureWebhookController do
       context 'when hosted env is staging' do
         let(:hosted_env) { 'staging' }
         it 'the webhooks route does not exist' do
-          expect {
-            post :create
-          }.to raise_error(ActionController::UrlGenerationError)
+          expect{ post :create }.to raise_error(ActionController::UrlGenerationError)
         end
       end
 
       context 'when hosted env is prod' do
         let(:hosted_env) { 'prod' }
         it 'the webhooks route does not exist' do
-          expect {
-            post :create
-          }.to raise_error(ActionController::UrlGenerationError)
+          expect{ post :create }.to raise_error(ActionController::UrlGenerationError)
         end
       end
     end
