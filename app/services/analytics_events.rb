@@ -521,7 +521,7 @@ module AnalyticsEvents
   # @param [Integer, nil] event_id events table id
   # @param [String, nil] event_type (see Event#event_type)
   # @param [String, nil] event_ip ip address for the event
-  # @param [Int, nil] user_id id address for the user
+  # @param [String, nil] user_id UUID of the user
   # Tracks disavowed event
   def event_disavowal(
     success:,
@@ -564,7 +564,7 @@ module AnalyticsEvents
   # @param [Integer, nil] event_id events table id
   # @param [String, nil] event_type (see Event#event_type)
   # @param [String, nil] event_ip ip address for the event
-  # @param [Int, nil] user_id id address for the user
+  # @param [String, nil] user_id UUID of the user
   # Event disavowal password reset was performed
   def event_disavowal_password_reset(
     success:,
