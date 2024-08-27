@@ -537,42 +537,4 @@ RSpec.describe 'FeatureManagement' do
       end
     end
   end
-
-  describe '#socure_webhook_enabled?' do
-    subject(:socure_webhook_enabled?) { FeatureManagement.socure_webhook_enabled? }
-
-    context 'in local development' do
-      it 'is true' do
-        expect(socure_webhook_enabled?).to be_truthy
-      end
-    end
-
-    context 'in a deployed environment' do
-      let(:hosted_env) { nil }
-      before do
-        allow(Identity::Hostdata).to receive(:env).and_return(hosted_env)
-      end
-
-      context 'in staging env' do
-        let(:hosted_env) { 'staging' }
-        it 'is false' do
-          expect(socure_webhook_enabled?).to be_falsey
-        end
-      end
-
-      context 'in production' do
-        let(:hosted_env) { 'prod' }
-        it 'is false' do
-          expect(socure_webhook_enabled?).to be_falsey
-        end
-      end
-
-      context 'in neither prod nor staging env' do
-        let(:hosted_env) { 'development' }
-        it 'is true' do
-          expect(socure_webhook_enabled?).to be_truthy
-        end
-      end
-    end
-  end
 end

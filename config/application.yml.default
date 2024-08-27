@@ -427,6 +427,7 @@ development:
   show_unsupported_passkey_platform_authentication_setup: true
   sign_in_recaptcha_score_threshold: 0.3
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost"]'
+  socure_webhook_enabled: false
   socure_webhook_secret_key: 'secret-key'
   socure_webhook_secret_key_queue: '["old-key-one", "old-key-two"]'
   state_tracking_enabled: true
@@ -552,6 +553,7 @@ test:
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   short_term_phone_otp_max_attempts: 100
   skip_encryption_allowed_list: '[]'
+  socure_webhook_enabled: false
   socure_webhook_secret_key: 'secret-key'
   socure_webhook_secret_key_queue: '["old-key-one", "old-key-two"]'
   state_tracking_enabled: true

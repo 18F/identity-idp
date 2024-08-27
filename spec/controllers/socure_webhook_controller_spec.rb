@@ -6,12 +6,16 @@ RSpec.describe SocureWebhookController do
   describe 'POST /api/webhooks/socure/event' do
     let(:socure_secret_key) { 'this-is-a-secret' }
     let(:socure_secret_key_queue) { ['this-is-an-old-secret', 'this-is-an-older-secret'] }
+    let(:socure_webhook_enabled) { true }
 
     before do
       allow(IdentityConfig.store).to receive(:socure_webhook_secret_key).
         and_return(socure_secret_key)
       allow(IdentityConfig.store).to receive(:socure_webhook_secret_key_queue).
         and_return(socure_secret_key_queue)
+      allow(IdentityConfig.store).to receive(:socure_webhook_enabled).
+        and_return(socure_webhook_enabled)
+      Rails.application.reload_routes!
     end
 
     it 'returns OK with a correct secret key' do
@@ -41,25 +45,11 @@ RSpec.describe SocureWebhookController do
       expect(response).to have_http_status(:unauthorized)
     end
 
-    context 'when hosted in upper environment' do
-      let(:hosted_env) { nil }
-      before do
+    context 'when socure webhook disabled' do
+      let(:socure_webhook_enabled) { false }
+      it 'the webhook route does not exist' do
         request.headers['Authorization'] = socure_secret_key
-        allow(Identity::Hostdata).to receive(:env).and_return(hosted_env)
-        Rails.application.reload_routes!
-      end
-      context 'when hosted env is staging' do
-        let(:hosted_env) { 'staging' }
-        it 'the webhooks route does not exist' do
-          expect{ post :create }.to raise_error(ActionController::UrlGenerationError)
-        end
-      end
-
-      context 'when hosted env is prod' do
-        let(:hosted_env) { 'prod' }
-        it 'the webhooks route does not exist' do
-          expect{ post :create }.to raise_error(ActionController::UrlGenerationError)
-        end
+        expect{ post :create }.to raise_error(ActionController::UrlGenerationError)
       end
     end
   end
