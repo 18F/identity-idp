@@ -10,7 +10,7 @@ RSpec.describe Proofing::Socure::IdPlus::Input do
   subject do
     described_class.new(
       **state_id.to_h.slice(*described_class.members),
-      email: user.email,
+      email: user.first_email,
     )
   end
 
@@ -31,7 +31,7 @@ RSpec.describe Proofing::Socure::IdPlus::Input do
 
         phone: '12025551212',
         ssn: '900-66-1234',
-        email: user.email,
+        email: user.first_email,
       },
     )
   end

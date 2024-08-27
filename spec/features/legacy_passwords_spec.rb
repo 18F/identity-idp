@@ -12,7 +12,7 @@ RSpec.feature 'legacy passwords' do
       Encryption::PasswordVerifier.new.stale_digest?(user.encrypted_password_digest),
     ).to eq(true)
 
-    signin(user.email, 'legacy password')
+    signin(user.first_email, 'legacy password')
 
     expect(page).to have_current_path(
       login_otp_path(otp_delivery_preference: :sms),
@@ -30,7 +30,7 @@ RSpec.feature 'legacy passwords' do
       encrypted_password_digest_multi_region: nil,
     )
 
-    signin(user.email, 'a different password')
+    signin(user.first_email, 'a different password')
 
     expect(page).to have_current_path(new_user_session_path)
     expect(page).to have_content(

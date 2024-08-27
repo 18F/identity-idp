@@ -248,7 +248,7 @@ RSpec.feature 'IdV Outage Spec', allowed_extra_analytics: [:*] do
         reset_password(user, new_password)
 
         visit new_user_session_path
-        signin(user.email, new_password)
+        signin(user.first_email, new_password)
         fill_in_code_with_last_phone_otp
         click_submit_default
 

@@ -297,7 +297,7 @@ RSpec.describe CompletionsPresenter do
 
         it 'properly scopes and resolve attributes' do
           expect(pii).to eq(
-            email: current_user.email,
+            email: current_user.first_email,
             full_name: 'Testy Testerson',
             phone: '+1 202-212-1000',
           )

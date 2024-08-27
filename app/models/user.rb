@@ -65,6 +65,10 @@ class User < ApplicationRecord
 
   attr_accessor :asserted_attributes
 
+  def first_email
+    user.confirmed_email_addresses.first.email
+  end
+
   def confirmed_email_addresses
     email_addresses.where.not(confirmed_at: nil).order('last_sign_in_at DESC NULLS LAST')
   end

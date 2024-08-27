@@ -9,7 +9,7 @@ RSpec.feature 'Password recovery via personal key for a GPO-verified user',
   scenario 'lets them reactivate their profile with their personal key', email: true do
     user = create(:user, :fully_registered, :with_pending_gpo_profile)
     visit new_user_session_path
-    fill_in_credentials_and_submit(user.email, user.password)
+    fill_in_credentials_and_submit(user.first_email, user.password)
     fill_in I18n.t('components.one_time_code_input.label'), with: last_phone_otp
     click_submit_default
 

@@ -6,7 +6,7 @@ RSpec.feature 'SP return logs' do
   it 'updates user id after user authenticates so we can track any user back to issuer', :email do
     user = create(:user, :with_phone)
     visit_idp_from_sp_with_ial1(:oidc)
-    fill_in_credentials_and_submit(user.email, user.password)
+    fill_in_credentials_and_submit(user.first_email, user.password)
     click_button t('forms.buttons.submit.default')
     fill_in 'code', with: user.reload.direct_otp
     click_button t('forms.buttons.submit.default')

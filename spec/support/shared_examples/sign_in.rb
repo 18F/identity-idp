@@ -4,7 +4,7 @@ RSpec.shared_examples 'signing in with the site in Spanish' do |sp|
 
     user = create(:user, :fully_registered)
     visit_idp_from_sp_with_ial1(sp)
-    fill_in_credentials_and_submit(user.email, user.password)
+    fill_in_credentials_and_submit(user.first_email, user.password)
     continue_as(user.email)
 
     fill_in_code_with_last_phone_otp
@@ -39,7 +39,7 @@ RSpec.shared_examples 'signing in from service provider' do |sp|
 
       visit_idp_from_sp_with_ial1(sp)
       travel_to Time.zone.now + 15.seconds
-      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_credentials_and_submit(user.first_email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default
       click_submit_default if current_path == complete_saml_path
@@ -96,7 +96,7 @@ RSpec.shared_examples 'signing in as IAL2 with personal key' do |sp|
     _profile = create(:profile, :active, :verified, :with_pii, user: user)
 
     visit_idp_from_sp_with_ial2(sp)
-    fill_in_credentials_and_submit(user.email, user.password)
+    fill_in_credentials_and_submit(user.first_email, user.password)
     click_link t('two_factor_authentication.login_options_link_text')
 
     expect(page).
@@ -159,7 +159,7 @@ RSpec.shared_examples 'signing in as IAL2 after resetting password' do |sp|
     fill_in t('components.password_confirmation.confirm_label'),
             with: new_password
     click_button t('forms.passwords.edit.buttons.submit')
-    fill_in_credentials_and_submit(user.email, new_password)
+    fill_in_credentials_and_submit(user.first_email, new_password)
     fill_in_code_with_last_phone_otp
     click_submit_default
     click_submit_default if current_path == complete_saml_path
@@ -208,7 +208,7 @@ RSpec.shared_examples 'signing in with wrong credentials' do |sp|
       user = create(:user, :fully_registered)
       visit_idp_from_sp_with_ial1(sp)
       sp_request_id = ServiceProviderRequestProxy.last.uuid
-      fill_in_credentials_and_submit(user.email, 'password')
+      fill_in_credentials_and_submit(user.first_email, 'password')
 
       link_url = new_user_password_url(locale: 'es', request_id: sp_request_id)
       expect(page).
@@ -277,7 +277,7 @@ RSpec.shared_examples 'signing in as proofed account with broken personal key' d
             raise "unknown sp_ial=#{sp_ial}"
           end
 
-          fill_in_credentials_and_submit(user.email, user.password)
+          fill_in_credentials_and_submit(user.first_email, user.password)
           fill_in_code_with_last_phone_otp
           click_submit_default
 

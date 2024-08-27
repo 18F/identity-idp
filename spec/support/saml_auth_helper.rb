@@ -227,7 +227,7 @@ module SamlAuthHelper
   end
 
   def login_and_confirm_sp(user, protocol)
-    fill_in_credentials_and_submit(user.email, user.password)
+    fill_in_credentials_and_submit(user.first_email, user.password)
     fill_in_code_with_last_phone_otp
     protocol == :saml ? click_submit_default_twice : click_submit_default
 

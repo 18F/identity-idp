@@ -20,7 +20,7 @@ RSpec.feature 'IAL2 Single Sign On', allowed_extra_analytics: [:*] do
 
   def perform_id_verification_with_gpo_without_confirming_code(user)
     visit saml_ial2_request_url
-    fill_in_credentials_and_submit(user.email, user.password)
+    fill_in_credentials_and_submit(user.first_email, user.password)
     uncheck(t('forms.messages.remember_device'))
     fill_in_code_with_last_phone_otp
     click_submit_default

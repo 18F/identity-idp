@@ -106,7 +106,7 @@ RSpec.feature 'Password recovery via personal key' do
       fill_in t('components.password_confirmation.confirm_label'),
               with: new_password
       click_button t('forms.passwords.edit.buttons.submit')
-      fill_in_credentials_and_submit(user.email, new_password)
+      fill_in_credentials_and_submit(user.first_email, new_password)
       fill_in_code_with_last_phone_otp
       click_submit_default
 

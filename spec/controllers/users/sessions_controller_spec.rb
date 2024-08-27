@@ -40,7 +40,7 @@ RSpec.describe Users::SessionsController, devise: true do
       let(:user) { create(:user, :fully_registered) }
 
       subject(:response) do
-        post :create, params: { user: { email: user.email, password: user.password } }
+        post :create, params: { user: { email: user.first_email, password: user.password } }
       end
 
       it 'tracks the successful authentication for existing user' do
@@ -95,7 +95,7 @@ RSpec.describe Users::SessionsController, devise: true do
         expect(cookies[:device]).to be_present
 
         travel_to 10.minutes.from_now do
-          response = post :create, params: { user: { email: user.email, password: user.password } }
+          response = post :create, params: { user: { email: user.first_email, password: user.password } }
 
           device_cookie = response.headers['set-cookie'].find { |c| c.start_with?('device=') }
           second_expires = Time.zone.parse(CGI::Cookie.parse(device_cookie)['expires'].first)
@@ -182,22 +182,22 @@ RSpec.describe Users::SessionsController, devise: true do
 
       travel_to (3.hours + 1.minute).ago do
         2.times do
-          post :create, params: { user: { email: user.email, password: 'incorrect' } }
+          post :create, params: { user: { email: user.first_email, password: 'incorrect' } }
         end
       end
 
-      post :create, params: { user: { email: user.email, password: 'incorrect' } }
+      post :create, params: { user: { email: user.first_email, password: 'incorrect' } }
       expect(flash[:error]).to be_blank
 
       4.times do
-        post :create, params: { user: { email: user.email, password: 'incorrect' } }
+        post :create, params: { user: { email: user.first_email, password: 'incorrect' } }
       end
 
       travel_to (12.hours - 1.minute).from_now do
-        post :create, params: { user: { email: user.email, password: 'incorrect' } }
+        post :create, params: { user: { email: user.first_email, password: 'incorrect' } }
         expect(flash[:error]).to be_blank
 
-        post :create, params: { user: { email: user.email, password: 'incorrect' } }
+        post :create, params: { user: { email: user.first_email, password: 'incorrect' } }
         expect(flash[:error]).to eq(
           t(
             'errors.sign_in.bad_password_limit',
@@ -291,7 +291,7 @@ RSpec.describe Users::SessionsController, devise: true do
       allow(IdentityConfig.store).to receive(:sign_in_recaptcha_score_threshold).and_return(0.2)
       stub_analytics
 
-      post :create, params: { user: { email: user.email, password: user.password, score: 0.1 } }
+      post :create, params: { user: { email: user.first_email, password: user.password, score: 0.1 } }
 
       expect(@analytics).to have_logged_event(
         'Email and Password Authentication',
@@ -313,7 +313,7 @@ RSpec.describe Users::SessionsController, devise: true do
       allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).and_return(true)
       allow(IdentityConfig.store).to receive(:sign_in_recaptcha_score_threshold).and_return(0.2)
 
-      post :create, params: { user: { email: user.email, password: user.password, score: 0.1 } }
+      post :create, params: { user: { email: user.first_email, password: user.password, score: 0.1 } }
 
       expect(response).to redirect_to sign_in_security_check_failed_url
     end
@@ -390,13 +390,13 @@ RSpec.describe Users::SessionsController, devise: true do
 
           it 'updates user attribute password_compromised_checked_at' do
             expect(user.password_compromised_checked_at).to be_falsey
-            post :create, params: { user: { email: user.email, password: user.password } }
+            post :create, params: { user: { email: user.first_email, password: user.password } }
             user.reload
             expect(user.password_compromised_checked_at).to be_truthy
           end
 
           it 'stores in session redirect to check compromise' do
-            post :create, params: { user: { email: user.email, password: user.password } }
+            post :create, params: { user: { email: user.first_email, password: user.password } }
             expect(controller.session[:redirect_to_change_password]).to be_truthy
           end
         end
@@ -409,12 +409,12 @@ RSpec.describe Users::SessionsController, devise: true do
           end
 
           it 'does not store anything in user_session' do
-            post :create, params: { user: { email: user.email, password: user.password } }
+            post :create, params: { user: { email: user.first_email, password: user.password } }
             expect(user.password_compromised_checked_at).to be_falsey
           end
 
           it 'does not update the user ' do
-            post :create, params: { user: { email: user.email, password: user.password } }
+            post :create, params: { user: { email: user.first_email, password: user.password } }
             expect(controller.session[:redirect_to_change_password]).to be_falsey
           end
         end
@@ -435,13 +435,13 @@ RSpec.describe Users::SessionsController, devise: true do
 
           it 'updates user attribute password_compromised_checked_at' do
             expect(user.password_compromised_checked_at).to be_falsey
-            post :create, params: { user: { email: user.email, password: user.password } }
+            post :create, params: { user: { email: user.first_email, password: user.password } }
             user.reload
             expect(user.password_compromised_checked_at).to be_truthy
           end
 
           it 'stores in session false to attempt to redirect password compromised' do
-            post :create, params: { user: { email: user.email, password: user.password } }
+            post :create, params: { user: { email: user.first_email, password: user.password } }
             expect(controller.session[:redirect_to_change_password]).to be_falsey
           end
         end
@@ -454,12 +454,12 @@ RSpec.describe Users::SessionsController, devise: true do
           end
 
           it 'does not store anything in user_session' do
-            post :create, params: { user: { email: user.email, password: user.password } }
+            post :create, params: { user: { email: user.first_email, password: user.password } }
             expect(user.password_compromised_checked_at).to be_falsey
           end
 
           it 'does not update the user ' do
-            post :create, params: { user: { email: user.email, password: user.password } }
+            post :create, params: { user: { email: user.first_email, password: user.password } }
             expect(controller.session[:redirect_to_change_password]).to be_falsey
           end
         end
@@ -516,7 +516,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
         stub_analytics
 
-        post :create, params: { user: { email: user.email, password: user.password } }
+        post :create, params: { user: { email: user.first_email, password: user.password } }
 
         expect(@analytics).to have_logged_event(
           'Email and Password Authentication',
@@ -544,7 +544,7 @@ RSpec.describe Users::SessionsController, devise: true do
       stub_analytics
       allow(controller).to receive(:create).and_raise(ActionController::InvalidAuthenticityToken)
 
-      post :create, params: { user: { email: user.email, password: user.password } }
+      post :create, params: { user: { email: user.first_email, password: user.password } }
 
       expect(@analytics).to have_logged_event(
         'Invalid Authenticity Token',
@@ -560,7 +560,7 @@ RSpec.describe Users::SessionsController, devise: true do
       allow(controller).to receive(:create).and_raise(ActionController::InvalidAuthenticityToken)
 
       request.env['HTTP_REFERER'] = '@@@'
-      post :create, params: { user: { email: user.email, password: user.password } }
+      post :create, params: { user: { email: user.first_email, password: user.password } }
 
       expect(@analytics).to have_logged_event(
         'Invalid Authenticity Token',
@@ -618,7 +618,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
     it 'does not allow signing in with the wrong password' do
       user = create(:user)
-      post :create, params: { user: { email: user.email, password: 'invalidpass' } }
+      post :create, params: { user: { email: user.first_email, password: 'invalidpass' } }
 
       expect(flash[:alert]).
         to eq t(
@@ -641,7 +641,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
         stub_analytics
 
-        post :create, params: { user: { email: user.email, password: user.password } }
+        post :create, params: { user: { email: user.first_email, password: user.password } }
 
         expect(@analytics).to have_logged_event(
           'Email and Password Authentication',
@@ -668,7 +668,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
         stub_analytics
 
-        post :create, params: { user: { email: user.email, password: user.password } }
+        post :create, params: { user: { email: user.first_email, password: user.password } }
 
         expect(@analytics).to have_logged_event(
           'Email and Password Authentication',
@@ -696,7 +696,7 @@ RSpec.describe Users::SessionsController, devise: true do
       end
 
       it 'redirects to 2fa since there is no pending account reset rewquests' do
-        post :create, params: { user: { email: user.email, password: user.password } }
+        post :create, params: { user: { email: user.first_email, password: user.password } }
         expect(response).to redirect_to user_two_factor_authentication_url
       end
     end
@@ -712,7 +712,7 @@ RSpec.describe Users::SessionsController, devise: true do
       end
 
       it 'redirects to rules of use url' do
-        post :create, params: { user: { email: user.email, password: user.password } }
+        post :create, params: { user: { email: user.first_email, password: user.password } }
         expect(response).to redirect_to rules_of_use_url
       end
     end
@@ -731,21 +731,21 @@ RSpec.describe Users::SessionsController, devise: true do
       end
 
       it 'redirects to the rules of user url' do
-        post :create, params: { user: { email: user.email, password: user.password } }
+        post :create, params: { user: { email: user.first_email, password: user.password } }
         expect(response).to redirect_to rules_of_use_url
       end
     end
 
     it 'redirects to 2FA if there are no pending account reset requests' do
       user = create(:user, :fully_registered)
-      post :create, params: { user: { email: user.email, password: user.password } }
+      post :create, params: { user: { email: user.first_email, password: user.password } }
       expect(response).to redirect_to user_two_factor_authentication_url
     end
 
     it 'redirects to the reset pending page if there are pending account reset requests' do
       user = create(:user, :fully_registered)
       create_account_reset_request_for(user)
-      post :create, params: { user: { email: user.email, password: user.password } }
+      post :create, params: { user: { email: user.first_email, password: user.password } }
       expect(response).to redirect_to account_reset_pending_url
     end
   end

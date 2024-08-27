@@ -125,7 +125,7 @@ RSpec.feature 'Password Recovery' do
       fill_in t('components.password_confirmation.confirm_label'),
               with: password
       click_button t('forms.passwords.edit.buttons.submit')
-      fill_in_credentials_and_submit(@user.email, 'a real secure password')
+      fill_in_credentials_and_submit(@user.first_email, 'a real secure password')
       click_button t('forms.buttons.submit.default')
       fill_in 'code', with: @user.reload.direct_otp
       click_button t('forms.buttons.submit.default')
@@ -233,7 +233,7 @@ RSpec.feature 'Password Recovery' do
         fill_in t('components.password_confirmation.confirm_label'), with: '1234'
         click_button t('forms.passwords.edit.buttons.submit')
 
-        signin(@user.email, '1234')
+        signin(@user.first_email, '1234')
         expect(current_path).to eq new_user_session_path
       end
 

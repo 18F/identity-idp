@@ -510,7 +510,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
       let(:params) do
         {
           password_reset_email_form: {
-            email: user.email,
+            email: user.first_email,
           },
         }
       end

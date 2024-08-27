@@ -112,8 +112,8 @@ RSpec.feature 'Internationalization' do
       click_link t('i18n.locale.es')
 
       I18n.with_locale(:es) do
-        fill_in_credentials_and_submit(user.email, user.password)
-        continue_as(user.email, user.password)
+        fill_in_credentials_and_submit(user.first_email, user.password)
+        continue_as(user.first_email, user.password)
         uncheck(t('forms.messages.remember_device'))
         fill_in_code_with_last_phone_otp
         click_submit_default

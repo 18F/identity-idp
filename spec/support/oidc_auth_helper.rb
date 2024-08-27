@@ -5,7 +5,7 @@ module OidcAuthHelper
 
   def sign_in_oidc_user(user)
     visit_idp_from_ial1_oidc_sp
-    fill_in_credentials_and_submit(user.email, user.password)
+    fill_in_credentials_and_submit(user.first_email, user.password)
     click_submit_default
   end
 

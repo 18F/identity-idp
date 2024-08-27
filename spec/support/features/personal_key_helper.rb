@@ -2,7 +2,7 @@ module PersonalKeyHelper
   def reset_password_and_sign_back_in(user, password = 'a really long password')
     reset_password(user, password)
     visit_idp_from_sp_with_ial2(:oidc)
-    fill_in_credentials_and_submit(user.email, password)
+    fill_in_credentials_and_submit(user.first_email, password)
   end
 
   def reset_password(_user, password = 'a really long password')

@@ -113,7 +113,7 @@ RSpec.describe 'redirect_uri validation' do
     it 'displays error instead of redirecting' do
       user = create(:user, :fully_registered)
       visit_idp_from_sp_with_ial1_with_valid_redirect_uri
-      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_credentials_and_submit(user.first_email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default
       click_continue
@@ -145,7 +145,7 @@ RSpec.describe 'redirect_uri validation' do
     it 'considers the request valid and redirects to the one requested' do
       user = create(:user, :fully_registered)
       visit_idp_from_sp_with_ial1_with_second_valid_redirect_uri
-      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_credentials_and_submit(user.first_email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default
       click_agree_and_continue
@@ -170,7 +170,7 @@ RSpec.describe 'redirect_uri validation' do
         to have_content t('openid_connect.authorization.errors.redirect_uri_no_match')
 
       visit new_user_session_path
-      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_credentials_and_submit(user.first_email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default
       click_continue

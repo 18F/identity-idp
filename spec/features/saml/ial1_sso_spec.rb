@@ -35,7 +35,7 @@ RSpec.feature 'IAL1 Single Sign On' do
       request_url = saml_authn_request_url
 
       visit request_url
-      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_credentials_and_submit(user.first_email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default_twice
       click_agree_and_continue
@@ -77,7 +77,7 @@ RSpec.feature 'IAL1 Single Sign On' do
       sp_request_id = ServiceProviderRequestProxy.last.uuid
       allow(IdentityConfig.store).to receive(:session_check_delay).and_return(0)
       allow(IdentityConfig.store).to receive(:session_check_frequency).and_return(1)
-      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_credentials_and_submit(user.first_email, user.password)
 
       Warden.on_next_request do |proxy|
         session = proxy.env['rack.session']
@@ -88,7 +88,7 @@ RSpec.feature 'IAL1 Single Sign On' do
       allow(IdentityConfig.store).to receive(:session_check_delay).and_call_original
       allow(IdentityConfig.store).to receive(:session_check_frequency).and_call_original
 
-      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_credentials_and_submit(user.first_email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default
 
@@ -199,7 +199,7 @@ RSpec.feature 'IAL1 Single Sign On' do
       user = create(:user, :fully_registered)
 
       visit saml_authn_request_url
-      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_credentials_and_submit(user.first_email, user.password)
       sp_request_id = ServiceProviderRequestProxy.last.uuid
       sp = ServiceProvider.find_by(issuer: 'http://localhost:3000')
       click_link t('links.cancel')
@@ -223,7 +223,7 @@ RSpec.feature 'IAL1 Single Sign On' do
       )
 
       visit saml_authn_request
-      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_credentials_and_submit(user.first_email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default
 

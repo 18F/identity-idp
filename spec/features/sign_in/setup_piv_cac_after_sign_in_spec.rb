@@ -73,7 +73,7 @@ RSpec.describe 'Setup PIV/CAC after sign-in' do
     click_on t('instructions.mfa.piv_cac.back_to_sign_in')
 
     # Sign in with username and password
-    fill_in_credentials_and_submit(user.email, user.password)
+    fill_in_credentials_and_submit(user.first_email, user.password)
 
     # Reauthenticate
     expect(page).to have_content(t('two_factor_authentication.login_intro_reauthentication'))
@@ -97,7 +97,7 @@ RSpec.describe 'Setup PIV/CAC after sign-in' do
     user = create(:user, :fully_registered, :with_phone)
     sign_in_with_piv_cac_user_not_found(sp:)
     click_on t('instructions.mfa.piv_cac.back_to_sign_in')
-    fill_in_credentials_and_submit(user.email, user.password)
+    fill_in_credentials_and_submit(user.first_email, user.password)
     fill_in_code_with_last_phone_otp
     click_submit_default
     expect(current_path).to eq login_add_piv_cac_prompt_path

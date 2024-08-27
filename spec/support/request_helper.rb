@@ -6,7 +6,7 @@ module RequestHelper
   end
 
   def sign_in_user(user = user_with_2fa)
-    post new_user_session_path, params: { user: { email: user.email, password: user.password } }
+    post new_user_session_path, params: { user: { email: user.first_email, password: user.password } }
     get otp_send_path, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
     follow_redirect!
     post login_two_factor_path, params: {

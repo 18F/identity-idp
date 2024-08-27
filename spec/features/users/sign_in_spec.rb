@@ -40,7 +40,7 @@ RSpec.feature 'Sign in' do
     )
 
     visit_idp_from_sp_with_ial1(:oidc)
-    fill_in_credentials_and_submit(user.email, user.password)
+    fill_in_credentials_and_submit(user.first_email, user.password)
     fill_in_code_with_last_phone_otp
     click_submit_default
 
@@ -106,7 +106,7 @@ RSpec.feature 'Sign in' do
     user = create(:user, :with_phone, { email: 'example@example.gov' })
 
     visit new_user_session_path
-    fill_in_credentials_and_submit(user.email, user.password)
+    fill_in_credentials_and_submit(user.first_email, user.password)
     fill_in_code_with_last_phone_otp
     click_submit_default
     expect(page).to have_current_path(login_piv_cac_recommended_path)
@@ -118,7 +118,7 @@ RSpec.feature 'Sign in' do
     user = create(:user, :with_phone, { email: 'example@example.gov' })
 
     visit new_user_session_path
-    fill_in_credentials_and_submit(user.email, user.password)
+    fill_in_credentials_and_submit(user.first_email, user.password)
     fill_in_code_with_last_phone_otp
     click_submit_default
     expect(page).to have_current_path(login_piv_cac_recommended_path)
@@ -311,10 +311,10 @@ RSpec.feature 'Sign in' do
           drop: true,
         )
 
-        fill_in_credentials_and_submit(user.email, user.password)
+        fill_in_credentials_and_submit(user.first_email, user.password)
         expect(page).to have_content t('errors.general')
 
-        fill_in_credentials_and_submit(user.email, user.password)
+        fill_in_credentials_and_submit(user.first_email, user.password)
         expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
       end
     end
@@ -483,7 +483,7 @@ RSpec.feature 'Sign in' do
       user = create(:user, :fully_registered)
 
       visit new_user_session_path(request_id: 'invalid')
-      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_credentials_and_submit(user.first_email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default
       expect(current_path).to eq account_path
@@ -495,7 +495,7 @@ RSpec.feature 'Sign in' do
         user = create(:user, :fully_registered)
 
         visit new_user_session_path(request_id: 'invalid')
-        fill_in_credentials_and_submit(user.email, user.password)
+        fill_in_credentials_and_submit(user.first_email, user.password)
         click_submit_default
 
         expect(current_path).to eq account_path
@@ -521,7 +521,7 @@ RSpec.feature 'Sign in' do
       allow_any_instance_of(Users::SessionsController).
         to receive(:create).and_raise(ActionController::InvalidAuthenticityToken)
 
-      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_credentials_and_submit(user.first_email, user.password)
 
       expect(current_url).to eq new_user_session_url(request_id: '123')
       expect(page).to have_content t('errors.general')
@@ -537,7 +537,7 @@ RSpec.feature 'Sign in' do
         :user, :fully_registered,
         otp_delivery_preference: 'voice', with: { phone: '+61 02 1234 5678' }
       )
-      signin(user.email, user.password)
+      signin(user.first_email, user.password)
 
       expect(Telephony::Test::Call.calls.length).to eq(0)
       expect(Telephony::Test::Message.messages.length).to eq(1)
@@ -555,7 +555,7 @@ RSpec.feature 'Sign in' do
         :user, :fully_registered,
         otp_delivery_preference: 'voice', with: { phone: '+213 09 1234 5678' }
       )
-      signin(user.email, user.password)
+      signin(user.first_email, user.password)
 
       expect(Telephony::Test::Call.calls.length).to eq(0)
       expect(Telephony::Test::Message.messages.length).to eq(0)
@@ -579,7 +579,7 @@ RSpec.feature 'Sign in' do
         :user, :fully_registered,
         otp_delivery_preference: 'sms', with: { phone: unsupported_country_phone_number }
       )
-      signin(user.email, user.password)
+      signin(user.first_email, user.password)
       visit login_two_factor_path(otp_delivery_preference: 'voice')
 
       expect(Telephony::Test::Call.calls.length).to eq(0)
@@ -600,7 +600,7 @@ RSpec.feature 'Sign in' do
         :user, :fully_registered,
         otp_delivery_preference: 'sms', with: { phone: unsupported_country_phone_number }
       )
-      signin(user.email, user.password)
+      signin(user.first_email, user.password)
       visit otp_send_path(
         otp_delivery_selection_form: { otp_delivery_preference: 'voice', resend: true },
       )
@@ -623,7 +623,7 @@ RSpec.feature 'Sign in' do
         :user, :fully_registered,
         otp_delivery_preference: 'voice', with: { phone: unsupported_country_phone_number }
       )
-      signin(user.email, user.password)
+      signin(user.first_email, user.password)
       visit otp_send_path(
         otp_delivery_selection_form: { otp_delivery_preference: 'voice', resend: true },
       )
@@ -659,7 +659,7 @@ RSpec.feature 'Sign in' do
   context 'user signs in and chooses another authentication method' do
     it 'signs out the user if they choose to cancel' do
       user = create(:user, :fully_registered)
-      signin(user.email, user.password)
+      signin(user.first_email, user.password)
       accept_rules_of_use_and_continue_if_displayed
       click_link t('two_factor_authentication.login_options_link_text')
       click_on t('links.cancel')
@@ -672,7 +672,7 @@ RSpec.feature 'Sign in' do
   context 'user signs in when accepted_terms_at is out of date', js: true do
     it 'validates terms checkbox and signs in successfully' do
       user = create(:user, :fully_registered, accepted_terms_at: nil)
-      signin(user.email, user.password)
+      signin(user.first_email, user.password)
 
       click_button t('forms.buttons.continue')
       expect(page).to have_css(':focus[name="rules_of_use_form[terms_accepted]"]', visible: :all)
@@ -689,7 +689,7 @@ RSpec.feature 'Sign in' do
     it 'does not redirect to the personal key page' do
       user = create(:user, :fully_registered)
       old_personal_key = PersonalKeyGenerator.new(user).create
-      signin(user.email, user.password)
+      signin(user.first_email, user.password)
       choose_another_security_option('personal_key')
       enter_personal_key(personal_key: old_personal_key)
       click_submit_default
@@ -703,7 +703,7 @@ RSpec.feature 'Sign in' do
       user = create(:user, :fully_registered)
       visit_idp_from_sp_with_ial1(:saml)
       visit_idp_from_sp_with_ial1(:oidc)
-      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_credentials_and_submit(user.first_email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default
       click_agree_and_continue
@@ -718,7 +718,7 @@ RSpec.feature 'Sign in' do
     it 'logs an SP bounce and displays the bounced error screen' do
       user = create(:user, :fully_registered)
       visit_idp_from_oidc_sp_with_loa1_prompt_login
-      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_credentials_and_submit(user.first_email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default
       click_agree_and_continue
@@ -762,7 +762,7 @@ RSpec.feature 'Sign in' do
       it 'returns ial1 info for a non-verified user' do
         user = create(:user, :fully_registered)
         visit_idp_from_oidc_sp_with_ialmax
-        fill_in_credentials_and_submit(user.email, user.password)
+        fill_in_credentials_and_submit(user.first_email, user.password)
         fill_in_code_with_last_phone_otp
         click_submit_default
 
@@ -780,7 +780,7 @@ RSpec.feature 'Sign in' do
           pii: { first_name: 'John', ssn: '111223333' }
         ).user
         visit_idp_from_oidc_sp_with_ialmax
-        fill_in_credentials_and_submit(user.email, user.password)
+        fill_in_credentials_and_submit(user.first_email, user.password)
         fill_in_code_with_last_phone_otp
         click_submit_default
 
@@ -822,7 +822,7 @@ RSpec.feature 'Sign in' do
             ],
           },
         )
-        fill_in_credentials_and_submit(user.email, user.password)
+        fill_in_credentials_and_submit(user.first_email, user.password)
         fill_in_code_with_last_phone_otp
         click_submit_default_twice
 
@@ -850,7 +850,7 @@ RSpec.feature 'Sign in' do
             ],
           },
         )
-        fill_in_credentials_and_submit(user.email, user.password)
+        fill_in_credentials_and_submit(user.first_email, user.password)
         fill_in_code_with_last_phone_otp
         click_submit_default
         click_submit_default
@@ -929,7 +929,7 @@ RSpec.feature 'Sign in' do
         end
 
       fill_in :user_recaptcha_mock_score, with: '0.1'
-      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_credentials_and_submit(user.first_email, user.password)
       expect(asserted_expected_user).to eq(true)
       expect(fake_analytics).to have_logged_event(
         'reCAPTCHA verify result received',
@@ -963,7 +963,7 @@ RSpec.feature 'Sign in' do
         end
         it 'should bring user to manage password page with warning' do
           visit_idp_from_sp_with_ial1(:oidc)
-          fill_in_credentials_and_submit(user.email, user.password)
+          fill_in_credentials_and_submit(user.first_email, user.password)
           fill_in_code_with_last_phone_otp
           click_submit_default
 
@@ -972,7 +972,7 @@ RSpec.feature 'Sign in' do
 
         it 'should redirect user to after_sign_in_path after editing password' do
           visit_idp_from_sp_with_ial1(:oidc)
-          fill_in_credentials_and_submit(user.email, user.password)
+          fill_in_credentials_and_submit(user.first_email, user.password)
           fill_in_code_with_last_phone_otp
           click_submit_default
 
@@ -997,7 +997,7 @@ RSpec.feature 'Sign in' do
         end
         it 'should continue without issue' do
           visit new_user_session_path
-          fill_in_credentials_and_submit(user.email, user.password)
+          fill_in_credentials_and_submit(user.first_email, user.password)
           fill_in_code_with_last_phone_otp
           click_submit_default
 
@@ -1016,7 +1016,7 @@ RSpec.feature 'Sign in' do
         end
         it 'should bring user to account page and set password compromised attr' do
           visit new_user_session_path
-          fill_in_credentials_and_submit(user.email, user.password)
+          fill_in_credentials_and_submit(user.first_email, user.password)
           fill_in_code_with_last_phone_otp
           click_submit_default
 
@@ -1034,7 +1034,7 @@ RSpec.feature 'Sign in' do
         end
         it 'should continue without issue and does not set password compromised attr' do
           visit new_user_session_path
-          fill_in_credentials_and_submit(user.email, user.password)
+          fill_in_credentials_and_submit(user.first_email, user.password)
           fill_in_code_with_last_phone_otp
           click_submit_default
 
@@ -1053,7 +1053,7 @@ RSpec.feature 'Sign in' do
 
     it 'forces user to add a piv/cac if they do not have one' do
       user = create(:user, :fully_registered)
-      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_credentials_and_submit(user.first_email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default
 
@@ -1065,7 +1065,7 @@ RSpec.feature 'Sign in' do
 
     it 'uses the piv cac if they have one' do
       user = create(:user, :with_phone, :with_piv_or_cac)
-      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_credentials_and_submit(user.first_email, user.password)
 
       expect(current_path).to eq login_two_factor_piv_cac_path
     end
@@ -1075,7 +1075,7 @@ RSpec.feature 'Sign in' do
     it 'should not blow up' do
       user = create(:user, :fully_registered)
       visit_idp_from_sp_with_ial1(:oidc)
-      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_credentials_and_submit(user.first_email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default
 

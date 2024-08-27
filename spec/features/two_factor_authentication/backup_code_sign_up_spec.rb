@@ -45,7 +45,7 @@ RSpec.feature 'sign up with backup code' do
     codes = BackupCodeGenerator.new(user).delete_and_regenerate
 
     BackupCodeGenerator::NUMBER_OF_CODES.times do |index|
-      signin(user.email, user.password)
+      signin(user.first_email, user.password)
       visit login_two_factor_options_path
       expect(page).to \
         have_content t('two_factor_authentication.login_options.backup_code_info')

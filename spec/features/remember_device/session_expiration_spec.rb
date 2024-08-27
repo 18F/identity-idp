@@ -38,9 +38,9 @@ RSpec.describe 'signing in with remember device and idling on the sign in page' 
       # Simulate refreshing the page with JS to avoid a CSRF error
       visit new_user_session_url(request_id: request_id)
 
-      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_credentials_and_submit(user.first_email, user.password)
 
-      continue_as(user.email, user.password)
+      continue_as(user.first_email, user.password)
 
       expect(oidc_redirect_url).to start_with('http://localhost:7654')
     end

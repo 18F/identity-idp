@@ -22,7 +22,7 @@ RSpec.describe 'Remember device checkbox' do
     it 'does not have remember device checked' do
       user = create(:user, :fully_registered)
       visit_idp_from_sp_with_ial1_aal2(:oidc)
-      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_credentials_and_submit(user.first_email, user.password)
       expect(page).to_not have_checked_field t('forms.messages.remember_device')
     end
   end
@@ -31,7 +31,7 @@ RSpec.describe 'Remember device checkbox' do
     it 'does have remember device checked' do
       user = create(:user, :fully_registered)
       visit_idp_from_sp_with_ial1(:oidc)
-      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_credentials_and_submit(user.first_email, user.password)
       expect(page).to have_checked_field t('forms.messages.remember_device')
     end
   end

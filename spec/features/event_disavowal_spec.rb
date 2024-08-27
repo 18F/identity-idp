@@ -77,7 +77,7 @@ RSpec.feature 'disavowing an action' do
   end
 
   scenario 'disavowing a personal key sign in' do
-    signin(user.email, user.password)
+    signin(user.first_email, user.password)
     choose_another_security_option(:personal_key)
     fill_in :personal_key_form_personal_key, with: user.personal_key
     click_submit_default
@@ -168,7 +168,7 @@ RSpec.feature 'disavowing an action' do
 
     expect(page).to have_content(t('devise.passwords.updated_not_active'))
 
-    signin(user.email, 'NewVal!dPassw0rd')
+    signin(user.first_email, 'NewVal!dPassw0rd')
 
     # We should be on the MFA screen because we logged in with the new password
     expect(page).to have_content(t('two_factor_authentication.header_text'))
@@ -225,7 +225,7 @@ RSpec.feature 'disavowing an action' do
 
     expect(page).to have_content(t('devise.passwords.updated_not_active'))
 
-    signin(user.email, 'NewVal!dPassw0rd')
+    signin(user.first_email, 'NewVal!dPassw0rd')
 
     # We should be on the MFA screen because we logged in with the new password
     if user.piv_cac_configurations.any?

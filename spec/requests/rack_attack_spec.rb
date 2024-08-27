@@ -149,7 +149,7 @@ RSpec.describe 'throttling requests' do
         post(
           new_user_session_path,
           params: {
-            'user[email]' => user.email,
+            'user[email]' => user.first_email,
             'user[password]' => user.password,
           },
           headers: { REMOTE_ADDR: '1.2.3.4' },

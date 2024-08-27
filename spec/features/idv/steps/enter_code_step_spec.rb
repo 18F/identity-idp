@@ -87,8 +87,8 @@ RSpec.feature 'idv enter letter code step', allowed_extra_analytics: [:*] do
 
   it 'renders an error with the enter code ui if an incorrect code is entered' do
     visit new_user_session_path
-    fill_in_credentials_and_submit(user.email, user.password)
-    continue_as(user.email, user.password)
+    fill_in_credentials_and_submit(user.first_email, user.password)
+    continue_as(user.first_email, user.password)
     uncheck(t('forms.messages.remember_device'))
     fill_in_code_with_last_phone_otp
     click_submit_default
@@ -109,8 +109,8 @@ RSpec.feature 'idv enter letter code step', allowed_extra_analytics: [:*] do
       verify_no_rate_limit_banner
       expect(current_path).to eql(new_user_session_path)
 
-      fill_in_credentials_and_submit(user.email, user.password)
-      continue_as(user.email, user.password)
+      fill_in_credentials_and_submit(user.first_email, user.password)
+      continue_as(user.first_email, user.password)
       uncheck(t('forms.messages.remember_device'))
       fill_in_code_with_last_phone_otp
       click_submit_default

@@ -19,7 +19,7 @@ RSpec.describe 'Account Reset Request: Delete Account', email: true do
 
   context 'as an IAL1 user' do
     it 'allows the user to delete their account after 24 hours' do
-      signin(user_email, user.password)
+      signin(user.first_email, user.password)
       click_link t('two_factor_authentication.login_options_link_text')
       click_link t('two_factor_authentication.account_reset.link')
       expect(page).
@@ -62,7 +62,7 @@ RSpec.describe 'Account Reset Request: Delete Account', email: true do
           strip_tags(
             t(
               'account_reset.confirm_delete_account.info_html',
-              email: user_email,
+              email: user.first_email,
               link: t('account_reset.confirm_delete_account.link_text'),
             ),
           ),
@@ -85,7 +85,7 @@ RSpec.describe 'Account Reset Request: Delete Account', email: true do
       identity = IdentityLinker.new(user, service_provider).link_identity
       agency_identity = AgencyIdentityLinker.new(identity).link_identity
 
-      signin(user_email, user.password)
+      signin(user.first_email, user.password)
       click_link t('two_factor_authentication.login_options_link_text')
       click_link t('two_factor_authentication.account_reset.link')
 
@@ -150,7 +150,7 @@ RSpec.describe 'Account Reset Request: Delete Account', email: true do
     let(:user) { create(:user, :with_backup_code, :with_authentication_app) }
 
     it 'does not tell the user that an SMS was sent to their registered phone' do
-      signin(user_email, user.password)
+      signin(user.first_email, user.password)
       click_link t('two_factor_authentication.login_options_link_text')
       click_link t('two_factor_authentication.account_reset.link')
       expect(page).

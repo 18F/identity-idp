@@ -14,7 +14,7 @@ RSpec.describe Proofing::Socure::IdPlus::Request do
   let(:user) { build(:user) }
   let(:input) do
     Proofing::Socure::IdPlus::Input.new(
-      email: user.email,
+      email: user.first_email,
       **Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.slice(
         *Proofing::Socure::IdPlus::Input.members,
       ),
@@ -45,7 +45,7 @@ RSpec.describe Proofing::Socure::IdPlus::Request do
             nationalId: Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:ssn],
             countryOfOrigin: 'US',
 
-            email: user.email,
+            email: user.first_email,
             mobileNumber: Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:phone],
 
             userConsent: true,
