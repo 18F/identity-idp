@@ -969,13 +969,11 @@ headings.webauthn_setup.new: Inserte su clave de seguridad
 help_text.requested_attributes.address: Dirección
 help_text.requested_attributes.all_emails: Direcciones de correo electrónico en su cuenta
 help_text.requested_attributes.birthdate: Fecha de nacimiento
+help_text.requested_attributes.consent_reminder_html: Debe dar su consentimiento cada año para divulgar su información a %{sp_html}.
 help_text.requested_attributes.email: Dirección de correo electrónico
 help_text.requested_attributes.full_name: Nombre completo
-help_text.requested_attributes.ial1_consent_reminder_html: Debe dar su consentimiento cada año para divulgar su información a <strong>%{sp}</strong>. Divulgaremos su información a <strong>%{sp}</strong> para conectar su cuenta.
-help_text.requested_attributes.ial1_intro_html: Divulgaremos su información a <strong>%{sp}</strong> para conectar su cuenta.
-help_text.requested_attributes.ial2_consent_reminder_html: 'Para conectar su cuenta, <strong>%{sp}</strong> necesita saber quién es usted. Debe dar su consentimiento cada año para divulgar su información verificada a <strong>%{sp}</strong>. Divulgaremos esta información:'
-help_text.requested_attributes.ial2_intro_html: 'Para conectar su cuenta, <strong>%{sp}</strong> necesita saber quién es usted. Divulgaremos esta información a %{sp}:'
-help_text.requested_attributes.ial2_reverified_consent_info: 'Como volvió a verificar su identidad, necesitamos su permiso para divulgar esta información a %{sp}:'
+help_text.requested_attributes.ial2_reverified_consent_info_html: 'Como volvió a verificar su identidad, necesitamos su permiso para divulgar esta información a %{sp_html}:'
+help_text.requested_attributes.intro_html: 'Divulgaremos esta información a %{sp_html}:'
 help_text.requested_attributes.phone: Número de teléfono
 help_text.requested_attributes.social_security_number: Número de Seguro Social
 help_text.requested_attributes.verified_at: Actualizado en
