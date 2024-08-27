@@ -326,7 +326,7 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   def handle_unexpected_response(enrollment, response_message, reason:, cancel: true)
     if cancel
-      enrollment.cancelled! 
+      enrollment.cancelled!
       enrollment.profile.deactivate_due_to_ipp_expiration
     end
     analytics(user: enrollment.user).

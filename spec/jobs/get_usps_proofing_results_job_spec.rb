@@ -1009,7 +1009,8 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
 
                 expect(pending_enrollment.profile.in_person_verification_pending_at).to be_nil
                 expect(pending_enrollment.profile.active).to be false
-                expect(pending_enrollment.profile.deactivation_reason).to eq('verification_cancelled')
+                expect(pending_enrollment.profile.deactivation_reason).
+                  to eq('verification_cancelled')
               end
             end
 
@@ -1404,7 +1405,8 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                   pending_enrollment.reload
                   expect(pending_enrollment.profile.in_person_verification_pending_at).to be_nil
                   expect(pending_enrollment.profile.active).to be false
-                  expect(pending_enrollment.profile.deactivation_reason).to eq('verification_cancelled')
+                  expect(pending_enrollment.profile.deactivation_reason).
+                    to eq('verification_cancelled')
                 end
 
                 it 'deactivates and sets fraud related fields of an expired enrollment' do
@@ -1420,7 +1422,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                     :idv_ipp_deactivated_for_never_visiting_post_office,
                   )
                 end
-              end 
+              end
             end
           end
         end
@@ -1477,7 +1479,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
               expect(pending_enrollment.profile.in_person_verification_pending_at).not_to be_nil
               job.perform(Time.zone.now)
               pending_enrollment.reload
-  
+
               expect(pending_enrollment.profile.in_person_verification_pending_at).to be_nil
               expect(pending_enrollment.profile.active).to be false
               expect(pending_enrollment.profile.deactivation_reason).to eq('verification_cancelled')
@@ -1563,7 +1565,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
             end
           end
 
-          context 'enrollment has failed proofing' do  
+          context 'enrollment has failed proofing' do
             it 'invokes the SendProofingNotificationJob for the enrollment' do
               stub_request_failed_proofing_results
 
