@@ -166,6 +166,7 @@ class WebauthnVerificationForm
     {
       webauthn_configuration_id: webauthn_configuration&.id,
       frontend_error: webauthn_error.presence,
+      webauthn_aaguid: webauthn_configuration&.aaguid,
     }.compact
   end
 end
