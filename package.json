@@ -41,7 +41,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "source-map-loader": "^4.0.0",
-    "webpack": "^5.91.0",
+    "webpack": "^5.94.0",
     "webpack-assets-manifest": "^5.2.1",
     "webpack-cli": "^5.1.4"
   },
