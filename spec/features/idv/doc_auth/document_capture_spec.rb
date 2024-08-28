@@ -263,9 +263,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 submit_images
 
                 expect_rate_limited_header
-
-                review_issues_subheading = strip_tags(t('doc_auth.errors.rate_limited_subheading'))
-                expect(page).not_to have_selector('h2', text: review_issues_subheading)
+                expect_rate_limited_sub_header_not_present
 
                 review_issues_body_message = strip_tags(t('doc_auth.errors.general.no_liveness'))
                 expect(page).to have_content(review_issues_body_message)
@@ -347,9 +345,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 submit_images
 
                 expect_rate_limited_header
-
-                review_issues_subheading = strip_tags(t('doc_auth.errors.rate_limited_subheading'))
-                expect(page).not_to have_selector('h2', text: review_issues_subheading)
+                expect_rate_limited_sub_header_not_present
 
                 review_issues_body_message = strip_tags(
                   t('doc_auth.errors.general.multiple_front_id_failures'),
@@ -400,9 +396,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 submit_images
 
                 expect_rate_limited_header
-
-                review_issues_subheading = strip_tags(t('doc_auth.errors.rate_limited_subheading'))
-                expect(page).not_to have_selector('h2', text: review_issues_subheading)
+                expect_rate_limited_sub_header_not_present
 
                 review_issues_body_message = strip_tags(
                   t('doc_auth.errors.general.multiple_back_id_failures'),
@@ -1193,6 +1187,11 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
   def expect_rate_limited_header
     review_issues_h1_heading = strip_tags(t('doc_auth.errors.rate_limited_heading'))
     expect(page).to have_content(review_issues_h1_heading)
+  end
+
+  def expect_rate_limited_header_not_present
+    review_issues_subheading = strip_tags(t('doc_auth.errors.rate_limited_subheading'))
+    expect(page).not_to have_selector('h2', text: review_issues_subheading)
   end
 
   def expect_costing_for_document
