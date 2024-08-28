@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'Piv recommended after Sign in', allowed_extra_analytics: [:*] do
+RSpec.feature 'Piv recommended after Sign in' do
   context 'use_fed_domain_class set to true' do
     let!(:federal_email_domain) { create(:federal_email_domain, name: 'gsa.gov') }
 
