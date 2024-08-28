@@ -259,14 +259,6 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
 
           before do
             enrollment_records = InPersonEnrollment.where(id: pending_enrollments.map(&:id))
-            # Below sets in_person_verification_pending_at
-            # on the profile associated with each pending enrollment
-            enrollment_records.each do |enrollment|
-              profile = enrollment.profile
-              profile.update(in_person_verification_pending_at: enrollment.created_at)
-            end
-            pending_enrollment.reload
-
             allow(InPersonEnrollment).to receive(:needs_usps_status_check).
               and_return(enrollment_records)
             allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
@@ -1445,13 +1437,6 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
 
           before do
             enrollment_records = InPersonEnrollment.where(id: pending_enrollments.map(&:id))
-            # Below sets in_person_verification_pending_at
-            # on the profile associated with each pending enrollment
-            enrollment_records.each do |enrollment|
-              profile = enrollment.profile
-              profile.update(in_person_verification_pending_at: enrollment.created_at)
-            end
-            pending_enrollment.reload
             allow(InPersonEnrollment).to receive(:needs_usps_status_check).
               and_return(enrollment_records)
             allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
