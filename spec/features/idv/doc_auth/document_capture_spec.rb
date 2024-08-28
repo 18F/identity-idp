@@ -264,17 +264,8 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
                 expect_rate_limited_header
                 expect_rate_limited_sub_header_not_present
-
-                review_issues_body_message = strip_tags(t('doc_auth.errors.general.no_liveness'))
-                expect(page).to have_content(review_issues_body_message)
-
-                review_issues_rate_limit_warning = strip_tags(
-                  t(
-                    'idv.failure.attempts_html',
-                    count: max_attempts - 1,
-                  ),
-                )
-                expect(page).to have_content(review_issues_rate_limit_warning)
+                expect_review_issues_body_message('doc_auth.errors.general.no_liveness')
+                expect_rate_limit_warning(max_attempts - 1)
 
                 click_try_again
                 expect(page).to have_current_path(idv_document_capture_path)
@@ -346,16 +337,8 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
                 expect_rate_limited_header
                 expect_rate_limited_sub_header_not_present
-
-                review_issues_body_message = strip_tags(
-                  t('doc_auth.errors.general.multiple_front_id_failures'),
-                )
-                expect(page).to have_content(review_issues_body_message)
-
-                review_issues_rate_limit_warning = strip_tags(
-                  t('idv.failure.attempts_html', count: max_attempts - 3),
-                )
-                expect(page).to have_content(review_issues_rate_limit_warning)
+                expect_review_issues_body_message('doc_auth.errors.general.multiple_front_id_failures')
+                expect_rate_limit_warning(max_attempts - 3)
 
                 click_try_again
                 expect(page).to have_current_path(idv_document_capture_path)
@@ -397,16 +380,8 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
                 expect_rate_limited_header
                 expect_rate_limited_sub_header_not_present
-
-                review_issues_body_message = strip_tags(
-                  t('doc_auth.errors.general.multiple_back_id_failures'),
-                )
-                expect(page).to have_content(review_issues_body_message)
-
-                review_issues_rate_limit_warning = strip_tags(
-                  t('idv.failure.attempts_html', count: max_attempts - 4),
-                )
-                expect(page).to have_content(review_issues_rate_limit_warning)
+                expect_review_issues_body_message('doc_auth.errors.general.multiple_back_id_failures')
+                expect_rate_limit_warning(max_attempts - 4)
 
                 click_try_again
                 expect(page).to have_current_path(idv_document_capture_path)
@@ -488,14 +463,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
                 review_page_body_copy = strip_tags(t('doc_auth.errors.dpi.top_msg'))
                 expect(page).to have_content(review_page_body_copy)
-
-                review_issues_rate_limit_warning = strip_tags(
-                  t(
-                    'idv.failure.attempts_html',
-                    count: max_attempts - 1,
-                  ),
-                )
-                expect(page).to have_content(review_issues_rate_limit_warning)
+                expect_rate_limit_warning(max_attempts - 1)
 
                 click_try_again
                 expect(page).to have_current_path(idv_document_capture_path)
@@ -542,10 +510,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 )
                 expect(page).to have_content(review_page_body_copy)
 
-                review_issues_rate_limit_warning = strip_tags(
-                  t('idv.failure.attempts_html', count: max_attempts - 2),
-                )
-                expect(page).to have_content(review_issues_rate_limit_warning)
+                expect_rate_limit_warning(max_attempts - 2)
 
                 click_try_again
                 expect(page).to have_current_path(idv_document_capture_path)
@@ -586,10 +551,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 review_page_body_copy = strip_tags(t('doc_auth.errors.dpi.top_msg'))
                 expect(page).to have_content(review_page_body_copy)
 
-                review_issues_rate_limit_warning = strip_tags(
-                  t('idv.failure.attempts_html', count: max_attempts - 3),
-                )
-                expect(page).to have_content(review_issues_rate_limit_warning)
+                expect_rate_limit_warning(max_attempts - 3)
 
                 click_try_again
                 expect(page).to have_current_path(idv_document_capture_path)
@@ -630,10 +592,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 review_page_body_copy = strip_tags(t('doc_auth.errors.dpi.top_msg'))
                 expect(page).to have_content(review_page_body_copy)
 
-                review_issues_rate_limit_warning = strip_tags(
-                  t('idv.failure.attempts_html', count: max_attempts - 4),
-                )
-                expect(page).to have_content(review_issues_rate_limit_warning)
+                expect_rate_limit_warning(max_attempts - 4)
 
                 click_try_again
                 expect(page).to have_current_path(idv_document_capture_path)
@@ -674,10 +633,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 review_page_body_copy = strip_tags(t('doc_auth.errors.general.selfie_failure'))
                 expect(page).to have_content(review_page_body_copy)
 
-                review_issues_rate_limit_warning = strip_tags(
-                  t('idv.failure.attempts_html', count: max_attempts - 5),
-                )
-                expect(page).to have_content(review_issues_rate_limit_warning)
+                expect_rate_limit_warning(max_attempts - 5)
 
                 click_try_again
                 expect(page).to have_current_path(idv_document_capture_path)
@@ -722,10 +678,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 )
                 expect(page).to have_content(review_page_body_copy)
 
-                review_issues_rate_limit_warning = strip_tags(
-                  t('idv.failure.attempts_html', count: max_attempts - 6),
-                )
-                expect(page).to have_content(review_issues_rate_limit_warning)
+                expect_rate_limit_warning(max_attempts - 6)
 
                 click_try_again
                 expect(page).to have_current_path(idv_document_capture_path)
@@ -770,10 +723,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 )
                 expect(page).to have_content(review_page_body_copy)
 
-                review_issues_rate_limit_warning = strip_tags(
-                  t('idv.failure.attempts_html', count: max_attempts - 7),
-                )
-                expect(page).to have_content(review_issues_rate_limit_warning)
+                expect_rate_limit_warning(max_attempts - 7)
 
                 click_try_again
                 expect(page).to have_current_path(idv_document_capture_path)
@@ -816,10 +766,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 review_page_body_copy = strip_tags(t('doc_auth.errors.general.no_liveness'))
                 expect(page).to have_content(review_page_body_copy)
 
-                review_issues_rate_limit_warning = strip_tags(
-                  t('idv.failure.attempts_html', count: max_attempts - 8),
-                )
-                expect(page).to have_content(review_issues_rate_limit_warning).once
+                expect_rate_limit_warning(max_attempts - 8)
 
                 click_try_again
                 expect(page).to have_current_path(idv_document_capture_path)
@@ -864,10 +811,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 )
                 expect(page).to have_content(review_page_body_copy)
 
-                review_issues_rate_limit_warning = strip_tags(
-                  t('idv.failure.attempts_html', count: max_attempts - 9),
-                )
-                expect(page).to have_content(review_issues_rate_limit_warning)
+                expect_rate_limit_warning(max_attempts - 9)
 
                 click_try_again
                 expect(page).to have_current_path(idv_document_capture_path)
@@ -908,10 +852,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 review_page_body_copy = strip_tags(t('doc_auth.errors.alerts.address_check'))
                 expect(page).to have_content(review_page_body_copy)
 
-                review_issues_rate_limit_warning = strip_tags(
-                  t('idv.failure.attempts_html', count: max_attempts - 10),
-                )
-                expect(page).to have_content(review_issues_rate_limit_warning)
+                expect_rate_limit_warning(max_attempts - 10)
 
                 click_try_again
                 expect(page).to have_current_path(idv_document_capture_path)
@@ -954,10 +895,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 review_page_body_copy = strip_tags(t('doc_auth.errors.general.selfie_failure'))
                 expect(page).to have_content(review_page_body_copy)
 
-                review_issues_rate_limit_warning = strip_tags(
-                  t('idv.failure.attempts_html', count: max_attempts - 11),
-                )
-                expect(page).to have_content(review_issues_rate_limit_warning)
+                expect_rate_limit_warning(max_attempts - 11)
 
                 click_try_again
                 expect(page).to have_current_path(idv_document_capture_path)
@@ -1189,9 +1127,24 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
     expect(page).to have_content(review_issues_h1_heading)
   end
 
-  def expect_rate_limited_header_not_present
+  def expect_rate_limited_sub_header_not_present
     review_issues_subheading = strip_tags(t('doc_auth.errors.rate_limited_subheading'))
     expect(page).not_to have_selector('h2', text: review_issues_subheading)
+  end
+
+  def expect_review_issues_body_message(translation_key)
+    review_issues_body_message = strip_tags(t(translation_key))
+    expect(page).to have_content(review_issues_body_message)
+  end
+
+  def expect_rate_limit_warning(expected_remaining_attempts)
+    review_issues_rate_limit_warning = strip_tags(
+      t(
+        'idv.failure.attempts_html',
+        count: expected_remaining_attempts,
+      ),
+    )
+    expect(page).to have_content(review_issues_rate_limit_warning)
   end
 
   def expect_costing_for_document
