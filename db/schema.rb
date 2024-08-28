@@ -10,11 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema[7.1].define(version: 2024_08_22_182932) do
-=======
 ActiveRecord::Schema[7.1].define(version: 2024_08_28_182041) do
->>>>>>> 8d039ecaab (changelog: Internal, Authentication, add aaguid to webauthn configuration)
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
