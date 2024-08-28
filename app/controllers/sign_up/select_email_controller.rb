@@ -41,7 +41,7 @@ module SignUp
 
     def last_email
       if user_session[:selected_email_id]
-        EmailAddress.find(user_session[:selected_email_id]).email
+        user_emails.find(user_session[:selected_email_id]).email
       else
         EmailContext.new(current_user).last_sign_in_email_address.email
       end
