@@ -272,16 +272,8 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
                 expect_resubmit_page_h1_copy
                 expect_resubmit_page_body_copy('doc_auth.errors.general.no_liveness')
-
-                resubmit_page_inline_error_messages = strip_tags(
-                  t('doc_auth.errors.general.fallback_field_level'),
-                )
-                expect(page).to have_content(resubmit_page_inline_error_messages).twice
-
-                resubmit_page_inline_selfie_error_message = strip_tags(
-                  t('doc_auth.errors.general.selfie_failure'),
-                )
-                expect(page).not_to have_content(resubmit_page_inline_selfie_error_message)
+                expect_resubmit_page_inline_error_messages(2)
+                expect_resubmit_page_inline_selfie_error_message(false)
 
                 # Wrong doc type is uploaded
                 attach_images(
@@ -342,16 +334,8 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
                 expect_resubmit_page_h1_copy
                 expect_resubmit_page_body_copy('doc_auth.errors.general.multiple_front_id_failures')
-
-                resubmit_page_inline_error_messages = strip_tags(
-                  t('doc_auth.errors.general.fallback_field_level'),
-                )
-                expect(page).to have_content(resubmit_page_inline_error_messages).once
-
-                resubmit_page_inline_selfie_error_message = strip_tags(
-                  t('doc_auth.errors.general.selfie_failure'),
-                )
-                expect(page).not_to have_content(resubmit_page_inline_selfie_error_message)
+                expect_resubmit_page_inline_error_messages(1)
+                expect_resubmit_page_inline_selfie_error_message(false)
 
                 # when there are multiple back doc auth errors
 
@@ -380,16 +364,8 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
                 expect_resubmit_page_h1_copy
                 expect_resubmit_page_body_copy('doc_auth.errors.general.multiple_back_id_failures')
-
-                resubmit_page_inline_error_messages = strip_tags(
-                  t('doc_auth.errors.general.fallback_field_level'),
-                )
-                expect(page).to have_content(resubmit_page_inline_error_messages).once
-
-                resubmit_page_inline_selfie_error_message = strip_tags(
-                  t('doc_auth.errors.general.selfie_failure'),
-                )
-                expect(page).not_to have_content(resubmit_page_inline_selfie_error_message)
+                expect_resubmit_page_inline_error_messages(1)
+                expect_resubmit_page_inline_selfie_error_message(false)
 
                 # attention barcode with invalid pii is uploaded
                 attach_images(
@@ -460,11 +436,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
                 expect_resubmit_page_h1_copy
                 expect_resubmit_page_body_copy('doc_auth.errors.dpi.top_msg')
-
-                resubmit_page_inline_selfie_error_message = strip_tags(
-                  t('doc_auth.errors.general.selfie_failure'),
-                )
-                expect(page).not_to have_content(resubmit_page_inline_selfie_error_message)
+                expect_resubmit_page_inline_selfie_error_message(false)
 
                 expect(page).to have_current_path(idv_document_capture_url)
 
@@ -501,11 +473,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
                 expect_resubmit_page_h1_copy
                 expect_resubmit_page_body_copy('doc_auth.errors.alerts.selfie_not_live_or_poor_quality')
-
-                resubmit_page_inline_selfie_error_message = strip_tags(
-                  t('doc_auth.errors.general.selfie_failure'),
-                )
-                expect(page).to have_content(resubmit_page_inline_selfie_error_message)
+                expect_resubmit_page_inline_selfie_error_message(true)
 
                 # when there are both doc auth errors and liveness errors
 
@@ -540,10 +508,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
                 inline_error_message = strip_tags(t('doc_auth.errors.dpi.failed_short'))
                 expect(page).to have_content(inline_error_message)
-                resubmit_page_inline_selfie_error_message = strip_tags(
-                  t('doc_auth.errors.general.selfie_failure'),
-                )
-                expect(page).not_to have_content(resubmit_page_inline_selfie_error_message)
+                expect_resubmit_page_inline_selfie_error_message(false)
 
                 # when there are both doc auth errors and face match errors
 
@@ -578,10 +543,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
                 inline_error_message = strip_tags(t('doc_auth.errors.dpi.failed_short'))
                 expect(page).to have_content(inline_error_message)
-                resubmit_page_inline_selfie_error_message = strip_tags(
-                  t('doc_auth.errors.general.selfie_failure'),
-                )
-                expect(page).not_to have_content(resubmit_page_inline_selfie_error_message)
+                expect_resubmit_page_inline_selfie_error_message(false)
 
                 # when doc auth result and liveness pass but face match fails
 
@@ -618,10 +580,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                   t('doc_auth.errors.general.multiple_front_id_failures'),
                 )
                 expect(page).to have_content(inline_error_message)
-                resubmit_page_inline_selfie_error_message = strip_tags(
-                  t('doc_auth.errors.general.selfie_failure'),
-                )
-                expect(page).to have_content(resubmit_page_inline_selfie_error_message)
+                expect_resubmit_page_inline_selfie_error_message(true)
 
                 # when there is a doc auth error on one side of the ID and face match errors
 
@@ -658,10 +617,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
                 inline_error_message = strip_tags(t('doc_auth.errors.general.fallback_field_level'))
                 expect(page).to have_content(inline_error_message)
-                resubmit_page_inline_selfie_error_message = strip_tags(
-                  t('doc_auth.errors.general.selfie_failure'),
-                )
-                expect(page).not_to have_content(resubmit_page_inline_selfie_error_message)
+                expect_resubmit_page_inline_selfie_error_message(false)
 
                 # when there is a doc auth error on one side of the ID and a liveness error
 
@@ -698,10 +654,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
                 inline_error_message = strip_tags(t('doc_auth.errors.general.fallback_field_level'))
                 expect(page).to have_content(inline_error_message)
-                resubmit_page_inline_selfie_error_message = strip_tags(
-                  t('doc_auth.errors.general.selfie_failure'),
-                )
-                expect(page).not_to have_content(resubmit_page_inline_selfie_error_message)
+                expect_resubmit_page_inline_selfie_error_message(false)
 
                 # when doc auth result is "attention" and face match errors
 
@@ -736,10 +689,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
                 inline_error_message = strip_tags(t('doc_auth.errors.general.fallback_field_level'))
                 expect(page).to have_content(inline_error_message)
-                resubmit_page_inline_selfie_error_message = strip_tags(
-                  t('doc_auth.errors.general.selfie_failure'),
-                )
-                expect(page).not_to have_content(resubmit_page_inline_selfie_error_message)
+                expect_resubmit_page_inline_selfie_error_message(false)
 
                 # when doc auth passes but there are both liveness errors and face match errors
 
@@ -775,11 +725,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
                 expect_resubmit_page_h1_copy
                 expect_resubmit_page_body_copy('doc_auth.errors.alerts.selfie_not_live_or_poor_quality')
-
-                resubmit_page_inline_selfie_error_message = strip_tags(
-                  t('doc_auth.errors.general.selfie_failure'),
-                )
-                expect(page).to have_content(resubmit_page_inline_selfie_error_message)
+                expect_resubmit_page_inline_selfie_error_message(true)
 
                 # when doc auth, liveness, and face match pass but PII validation fails
 
@@ -816,10 +762,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                   t('doc_auth.errors.general.multiple_front_id_failures'),
                 )
                 expect(page).to have_content(inline_error_message)
-                resubmit_page_inline_selfie_error_message = strip_tags(
-                  t('doc_auth.errors.general.selfie_failure'),
-                )
-                expect(page).not_to have_content(resubmit_page_inline_selfie_error_message)
+                expect_resubmit_page_inline_selfie_error_message(false)
 
                 # when there are both face match errors and pii errors
 
@@ -856,10 +799,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                   t('doc_auth.errors.general.multiple_front_id_failures'),
                 )
                 expect(page).to have_content(inline_error_message)
-                resubmit_page_inline_selfie_error_message = strip_tags(
-                  t('doc_auth.errors.general.selfie_failure'),
-                )
-                expect(page).to have_content(resubmit_page_inline_selfie_error_message)
+                expect_resubmit_page_inline_selfie_error_message(true)
 
                 # selfie match failure
                 visit_idp_from_oidc_sp_with_ial2(biometric_comparison_required: true)
@@ -1101,6 +1041,24 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
   def expect_resubmit_page_body_copy(translation_key)
     resubmit_page_body_copy = strip_tags(t(translation_key))
     expect(page).to have_content(resubmit_page_body_copy)
+  end
+
+  def expect_resubmit_page_inline_error_messages(expected_count)
+    resubmit_page_inline_error_messages = strip_tags(
+      t('doc_auth.errors.general.fallback_field_level'),
+    )
+    expect(page).to have_content(resubmit_page_inline_error_messages).exactly(expected_count)
+  end
+
+  def expect_resubmit_page_inline_selfie_error_message(should_be_present)
+    resubmit_page_inline_selfie_error_message = strip_tags(
+      t('doc_auth.errors.general.selfie_failure'),
+    )
+    if should_be_present
+      expect(page).to have_content(resubmit_page_inline_selfie_error_message)
+    else
+      expect(page).not_to have_content(resubmit_page_inline_selfie_error_message)
+    end
   end
 
   def expect_costing_for_document
