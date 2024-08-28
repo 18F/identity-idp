@@ -20,6 +20,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
   let(:skip_doc_auth_from_handoff) { false }
   let(:opted_in_to_in_person_proofing) { false }
   let(:presenter) { Idv::InPerson::UspsFormPresenter.new }
+  let(:mock_client) { false }
 
   before do
     decorated_sp_session = instance_double(
@@ -55,7 +56,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
       skip_doc_auth_from_how_to_verify: skip_doc_auth_from_how_to_verify,
       skip_doc_auth_from_handoff: skip_doc_auth_from_handoff,
       opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
-      mock_client: nil,
+      mock_client: mock_client,
     }
   end
 
@@ -126,6 +127,25 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
         render_partial
         expect(rendered).to have_css(
           "#document-capture-form[data-doc-auth-selfie-capture='false']",
+        )
+      end
+    end
+
+    context 'when not using doc auth mock client' do
+      it 'contains mock-client-data in metadata' do
+        render_partial
+        expect(rendered).not_to have_css(
+          '#document-capture-form[data-mock-client]',
+        )
+      end
+    end
+
+    context 'when using doc auth mock client' do
+      let(:mock_client) { true }
+      it 'contains mock-client-data in metadata' do
+        render_partial
+        expect(rendered).to have_css(
+          '#document-capture-form[data-mock-client]',
         )
       end
     end

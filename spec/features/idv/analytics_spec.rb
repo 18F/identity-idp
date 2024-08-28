@@ -57,7 +57,8 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
       verified_attributes: [],
       state: 'MT',
       state_id_jurisdiction: 'ND',
-      state_id_number: '#############' }
+      state_id_number: '#############',
+      jurisdiction_in_maintenance_window: false }
   end
 
   let(:resolution_block) do
@@ -771,7 +772,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
           timed_out: false,
           transaction_id: nil,
           review_status: 'pass',
-          response_body: { error: 'TMx response body was empty' } }
+          response_body: nil }
       end
 
       it 'records all of the events' do
@@ -847,7 +848,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
           timed_out: false,
           transaction_id: nil,
           review_status: 'pass',
-          response_body: { error: 'TMx response body was empty' } }
+          response_body: nil }
       end
 
       it 'records all of the events' do
@@ -892,7 +893,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
           timed_out: false,
           transaction_id: nil,
           review_status: 'pass',
-          response_body: { error: 'TMx response body was empty' } }
+          response_body: nil }
       end
 
       it 'records all of the events' do
@@ -949,7 +950,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
           timed_out: false,
           transaction_id: nil,
           review_status: 'pass',
-          response_body: { error: 'TMx response body was empty' } }
+          response_body: nil }
       end
 
       it 'records all of the events', allow_browser_log: true do
@@ -1019,7 +1020,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
           timed_out: false,
           transaction_id: nil,
           review_status: 'pass',
-          response_body: { error: 'TMx response body was empty' } }
+          response_body: nil }
       end
 
       it 'records all of the events' do

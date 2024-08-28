@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe TwoFactorAuthentication::SetUpPivCacSelectionPresenter do
   let(:user) { create(:user) }
+  let!(:federal_domain) { create(:federal_email_domain, name: 'gsa.gov') }
   subject(:presenter) { described_class.new(user:) }
 
   describe '#type' do
@@ -42,7 +43,7 @@ RSpec.describe TwoFactorAuthentication::SetUpPivCacSelectionPresenter do
     end
 
     context 'with a confirmed email address ending in .gov or .mil' do
-      let(:user) { create(:user, email: 'example@example.gov') }
+      let(:user) { create(:user, email: 'example@gsa.gov') }
 
       it { expect(recommended).to eq(true) }
     end
