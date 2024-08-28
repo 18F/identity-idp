@@ -271,9 +271,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect(page).to have_current_path(idv_document_capture_path)
 
                 expect_resubmit_page_h1_copy
-
-                resubmit_page_body_copy = strip_tags(t('doc_auth.errors.general.no_liveness'))
-                expect(page).to have_content(resubmit_page_body_copy)
+                expect_resubmit_page_body_copy('doc_auth.errors.general.no_liveness')
 
                 resubmit_page_inline_error_messages = strip_tags(
                   t('doc_auth.errors.general.fallback_field_level'),
@@ -343,11 +341,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect(page).to have_current_path(idv_document_capture_path)
 
                 expect_resubmit_page_h1_copy
-
-                resubmit_page_body_copy = strip_tags(
-                  t('doc_auth.errors.general.multiple_front_id_failures'),
-                )
-                expect(page).to have_content(resubmit_page_body_copy)
+                expect_resubmit_page_body_copy('doc_auth.errors.general.multiple_front_id_failures')
 
                 resubmit_page_inline_error_messages = strip_tags(
                   t('doc_auth.errors.general.fallback_field_level'),
@@ -385,11 +379,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect(page).to have_current_path(idv_document_capture_path)
 
                 expect_resubmit_page_h1_copy
-
-                resubmit_page_body_copy = strip_tags(
-                  t('doc_auth.errors.general.multiple_back_id_failures'),
-                )
-                expect(page).to have_content(resubmit_page_body_copy)
+                expect_resubmit_page_body_copy('doc_auth.errors.general.multiple_back_id_failures')
 
                 resubmit_page_inline_error_messages = strip_tags(
                   t('doc_auth.errors.general.fallback_field_level'),
@@ -469,9 +459,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect(page).to have_content(inline_error_message)
 
                 expect_resubmit_page_h1_copy
-
-                resubmit_page_body_copy = strip_tags(t('doc_auth.errors.dpi.top_msg'))
-                expect(page).to have_content(resubmit_page_body_copy)
+                expect_resubmit_page_body_copy('doc_auth.errors.dpi.top_msg')
 
                 resubmit_page_inline_selfie_error_message = strip_tags(
                   t('doc_auth.errors.general.selfie_failure'),
@@ -512,11 +500,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect(page).to have_current_path(idv_document_capture_path)
 
                 expect_resubmit_page_h1_copy
-
-                resubmit_page_body_copy = strip_tags(
-                  t('doc_auth.errors.alerts.selfie_not_live_or_poor_quality'),
-                )
-                expect(page).to have_content(resubmit_page_body_copy)
+                expect_resubmit_page_body_copy('doc_auth.errors.alerts.selfie_not_live_or_poor_quality')
 
                 resubmit_page_inline_selfie_error_message = strip_tags(
                   t('doc_auth.errors.general.selfie_failure'),
@@ -552,9 +536,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect(page).to have_current_path(idv_document_capture_path)
 
                 expect_resubmit_page_h1_copy
-
-                resubmit_page_body_copy = strip_tags(t('doc_auth.errors.dpi.top_msg'))
-                expect(page).to have_content(resubmit_page_body_copy)
+                expect_resubmit_page_body_copy('doc_auth.errors.dpi.top_msg')
 
                 inline_error_message = strip_tags(t('doc_auth.errors.dpi.failed_short'))
                 expect(page).to have_content(inline_error_message)
@@ -592,9 +574,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect(page).to have_current_path(idv_document_capture_path)
 
                 expect_resubmit_page_h1_copy
-
-                resubmit_page_body_copy = strip_tags(t('doc_auth.errors.dpi.top_msg'))
-                expect(page).to have_content(resubmit_page_body_copy)
+                expect_resubmit_page_body_copy('doc_auth.errors.dpi.top_msg')
 
                 inline_error_message = strip_tags(t('doc_auth.errors.dpi.failed_short'))
                 expect(page).to have_content(inline_error_message)
@@ -632,9 +612,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect(page).to have_current_path(idv_document_capture_path)
 
                 expect_resubmit_page_h1_copy
-
-                resubmit_page_body_copy = strip_tags(t('doc_auth.errors.general.selfie_failure'))
-                expect(page).to have_content(resubmit_page_body_copy)
+                expect_resubmit_page_body_copy('doc_auth.errors.general.selfie_failure')
 
                 inline_error_message = strip_tags(
                   t('doc_auth.errors.general.multiple_front_id_failures'),
@@ -676,11 +654,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect(page).to have_current_path(idv_document_capture_path)
 
                 expect_resubmit_page_h1_copy
-
-                resubmit_page_body_copy = strip_nbsp(
-                  t('doc_auth.errors.alerts.barcode_content_check'),
-                )
-                expect(page).to have_content(resubmit_page_body_copy)
+                expect_resubmit_page_body_copy('doc_auth.errors.alerts.barcode_content_check')
 
                 inline_error_message = strip_tags(t('doc_auth.errors.general.fallback_field_level'))
                 expect(page).to have_content(inline_error_message)
@@ -720,11 +694,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect(page).to have_current_path(idv_document_capture_path)
 
                 expect_resubmit_page_h1_copy
-
-                resubmit_page_body_copy = strip_nbsp(
-                  t('doc_auth.errors.alerts.barcode_content_check'),
-                )
-                expect(page).to have_content(resubmit_page_body_copy)
+                expect_resubmit_page_body_copy('doc_auth.errors.alerts.barcode_content_check')
 
                 inline_error_message = strip_tags(t('doc_auth.errors.general.fallback_field_level'))
                 expect(page).to have_content(inline_error_message)
@@ -762,9 +732,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect(page).to have_current_path(idv_document_capture_path)
 
                 expect_resubmit_page_h1_copy
-
-                resubmit_page_body_copy = strip_tags(t('doc_auth.errors.general.no_liveness'))
-                expect(page).to have_content(resubmit_page_body_copy)
+                expect_resubmit_page_body_copy('doc_auth.errors.general.no_liveness')
 
                 inline_error_message = strip_tags(t('doc_auth.errors.general.fallback_field_level'))
                 expect(page).to have_content(inline_error_message)
@@ -806,11 +774,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect(page).to have_current_path(idv_document_capture_path)
 
                 expect_resubmit_page_h1_copy
-
-                resubmit_page_body_copy = strip_tags(
-                  t('doc_auth.errors.alerts.selfie_not_live_or_poor_quality'),
-                )
-                expect(page).to have_content(resubmit_page_body_copy)
+                expect_resubmit_page_body_copy('doc_auth.errors.alerts.selfie_not_live_or_poor_quality')
 
                 resubmit_page_inline_selfie_error_message = strip_tags(
                   t('doc_auth.errors.general.selfie_failure'),
@@ -846,9 +810,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect(page).to have_current_path(idv_document_capture_path)
 
                 expect_resubmit_page_h1_copy
-
-                resubmit_page_body_copy = strip_tags(t('doc_auth.errors.alerts.address_check'))
-                expect(page).to have_content(resubmit_page_body_copy)
+                expect_resubmit_page_body_copy('doc_auth.errors.alerts.address_check')
 
                 inline_error_message = strip_tags(
                   t('doc_auth.errors.general.multiple_front_id_failures'),
@@ -888,9 +850,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect(page).to have_current_path(idv_document_capture_path)
 
                 expect_resubmit_page_h1_copy
-
-                resubmit_page_body_copy = strip_tags(t('doc_auth.errors.general.selfie_failure'))
-                expect(page).to have_content(resubmit_page_body_copy)
+                expect_resubmit_page_body_copy('doc_auth.errors.general.selfie_failure')
 
                 inline_error_message = strip_tags(
                   t('doc_auth.errors.general.multiple_front_id_failures'),
@@ -1136,6 +1096,11 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
   def expect_resubmit_page_h1_copy
     resubmit_page_h1_copy = strip_tags(t('doc_auth.headings.review_issues'))
     expect(page).to have_content(resubmit_page_h1_copy)
+  end
+
+  def expect_resubmit_page_body_copy(translation_key)
+    resubmit_page_body_copy = strip_tags(t(translation_key))
+    expect(page).to have_content(resubmit_page_body_copy)
   end
 
   def expect_costing_for_document
