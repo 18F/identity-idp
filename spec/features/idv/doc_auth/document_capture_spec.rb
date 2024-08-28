@@ -270,8 +270,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 click_try_again
                 expect(page).to have_current_path(idv_document_capture_path)
 
-                resubmit_page_h1_copy = strip_tags(t('doc_auth.headings.review_issues'))
-                expect(page).to have_content(resubmit_page_h1_copy)
+                expect_resubmit_page_h1_copy
 
                 resubmit_page_body_copy = strip_tags(t('doc_auth.errors.general.no_liveness'))
                 expect(page).to have_content(resubmit_page_body_copy)
@@ -343,8 +342,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 click_try_again
                 expect(page).to have_current_path(idv_document_capture_path)
 
-                resubmit_page_h1_copy = strip_tags(t('doc_auth.headings.review_issues'))
-                expect(page).to have_content(resubmit_page_h1_copy)
+                expect_resubmit_page_h1_copy
 
                 resubmit_page_body_copy = strip_tags(
                   t('doc_auth.errors.general.multiple_front_id_failures'),
@@ -386,8 +384,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 click_try_again
                 expect(page).to have_current_path(idv_document_capture_path)
 
-                resubmit_page_h1_copy = strip_tags(t('doc_auth.headings.review_issues'))
-                expect(page).to have_content(resubmit_page_h1_copy)
+                expect_resubmit_page_h1_copy
 
                 resubmit_page_body_copy = strip_tags(
                   t('doc_auth.errors.general.multiple_back_id_failures'),
@@ -471,8 +468,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 inline_error_message = strip_tags(t('doc_auth.errors.dpi.failed_short'))
                 expect(page).to have_content(inline_error_message)
 
-                resubmit_page_h1_copy = strip_tags(t('doc_auth.headings.review_issues'))
-                expect(page).to have_content(resubmit_page_h1_copy)
+                expect_resubmit_page_h1_copy
 
                 resubmit_page_body_copy = strip_tags(t('doc_auth.errors.dpi.top_msg'))
                 expect(page).to have_content(resubmit_page_body_copy)
@@ -515,8 +511,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 click_try_again
                 expect(page).to have_current_path(idv_document_capture_path)
 
-                resubmit_page_h1_copy = strip_tags(t('doc_auth.headings.review_issues'))
-                expect(page).to have_content(resubmit_page_h1_copy)
+                expect_resubmit_page_h1_copy
 
                 resubmit_page_body_copy = strip_tags(
                   t('doc_auth.errors.alerts.selfie_not_live_or_poor_quality'),
@@ -556,8 +551,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 click_try_again
                 expect(page).to have_current_path(idv_document_capture_path)
 
-                resubmit_page_h1_copy = strip_tags(t('doc_auth.headings.review_issues'))
-                expect(page).to have_content(resubmit_page_h1_copy)
+                expect_resubmit_page_h1_copy
 
                 resubmit_page_body_copy = strip_tags(t('doc_auth.errors.dpi.top_msg'))
                 expect(page).to have_content(resubmit_page_body_copy)
@@ -597,8 +591,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 click_try_again
                 expect(page).to have_current_path(idv_document_capture_path)
 
-                resubmit_page_h1_copy = strip_tags(t('doc_auth.headings.review_issues'))
-                expect(page).to have_content(resubmit_page_h1_copy)
+                expect_resubmit_page_h1_copy
 
                 resubmit_page_body_copy = strip_tags(t('doc_auth.errors.dpi.top_msg'))
                 expect(page).to have_content(resubmit_page_body_copy)
@@ -638,8 +631,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 click_try_again
                 expect(page).to have_current_path(idv_document_capture_path)
 
-                resubmit_page_h1_copy = strip_tags(t('doc_auth.headings.review_issues'))
-                expect(page).to have_content(resubmit_page_h1_copy)
+                expect_resubmit_page_h1_copy
 
                 resubmit_page_body_copy = strip_tags(t('doc_auth.errors.general.selfie_failure'))
                 expect(page).to have_content(resubmit_page_body_copy)
@@ -683,8 +675,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 click_try_again
                 expect(page).to have_current_path(idv_document_capture_path)
 
-                resubmit_page_h1_copy = strip_tags(t('doc_auth.headings.review_issues'))
-                expect(page).to have_content(resubmit_page_h1_copy)
+                expect_resubmit_page_h1_copy
 
                 resubmit_page_body_copy = strip_nbsp(
                   t('doc_auth.errors.alerts.barcode_content_check'),
@@ -728,8 +719,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 click_try_again
                 expect(page).to have_current_path(idv_document_capture_path)
 
-                resubmit_page_h1_copy = strip_tags(t('doc_auth.headings.review_issues'))
-                expect(page).to have_content(resubmit_page_h1_copy)
+                expect_resubmit_page_h1_copy
 
                 resubmit_page_body_copy = strip_nbsp(
                   t('doc_auth.errors.alerts.barcode_content_check'),
@@ -771,8 +761,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 click_try_again
                 expect(page).to have_current_path(idv_document_capture_path)
 
-                resubmit_page_h1_copy = strip_tags(t('doc_auth.headings.review_issues'))
-                expect(page).to have_content(resubmit_page_h1_copy)
+                expect_resubmit_page_h1_copy
 
                 resubmit_page_body_copy = strip_tags(t('doc_auth.errors.general.no_liveness'))
                 expect(page).to have_content(resubmit_page_body_copy)
@@ -816,8 +805,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 click_try_again
                 expect(page).to have_current_path(idv_document_capture_path)
 
-                resubmit_page_h1_copy = strip_tags(t('doc_auth.headings.review_issues'))
-                expect(page).to have_content(resubmit_page_h1_copy)
+                expect_resubmit_page_h1_copy
 
                 resubmit_page_body_copy = strip_tags(
                   t('doc_auth.errors.alerts.selfie_not_live_or_poor_quality'),
@@ -857,8 +845,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 click_try_again
                 expect(page).to have_current_path(idv_document_capture_path)
 
-                resubmit_page_h1_copy = strip_tags(t('doc_auth.headings.review_issues'))
-                expect(page).to have_content(resubmit_page_h1_copy)
+                expect_resubmit_page_h1_copy
 
                 resubmit_page_body_copy = strip_tags(t('doc_auth.errors.alerts.address_check'))
                 expect(page).to have_content(resubmit_page_body_copy)
@@ -900,8 +887,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 click_try_again
                 expect(page).to have_current_path(idv_document_capture_path)
 
-                resubmit_page_h1_copy = strip_tags(t('doc_auth.headings.review_issues'))
-                expect(page).to have_content(resubmit_page_h1_copy)
+                expect_resubmit_page_h1_copy
 
                 resubmit_page_body_copy = strip_tags(t('doc_auth.errors.general.selfie_failure'))
                 expect(page).to have_content(resubmit_page_body_copy)
@@ -1145,6 +1131,11 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
       ),
     )
     expect(page).to have_content(review_issues_rate_limit_warning)
+  end
+
+  def expect_resubmit_page_h1_copy
+    resubmit_page_h1_copy = strip_tags(t('doc_auth.headings.review_issues'))
+    expect(page).to have_content(resubmit_page_h1_copy)
   end
 
   def expect_costing_for_document
