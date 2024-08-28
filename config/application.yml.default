@@ -116,6 +116,7 @@ enable_usps_verification: true
 event_disavowal_expiration_hours: 240
 feature_idv_force_gpo_verification_enabled: false
 feature_idv_hybrid_flow_enabled: true
+feature_select_email_to_share_enabled: true
 geo_data_file_path: 'geo_data/GeoLite2-City.mmdb'
 get_usps_proofing_results_job_cron: '0/30 * * * *'
 get_usps_proofing_results_job_reprocess_delay_minutes: 5
@@ -464,6 +465,7 @@ production:
   email_registrations_per_ip_track_only_mode: true
   enable_test_routes: false
   enable_usps_verification: false
+  feature_select_email_to_share_enabled: false
   hmac_fingerprinter_key:
   hmac_fingerprinter_key_queue: '[]'
   idv_sp_required: true
