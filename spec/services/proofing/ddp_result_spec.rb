@@ -124,7 +124,7 @@ RSpec.describe Proofing::DdpResult do
         response_body = { first_name: 'Jonny Proofs' }
         result = Proofing::DdpResult.new(response_body:)
 
-        expect(result.to_h[:response_body]).to eq({ first_name: '[redacted]' })
+        expect(result.to_h[:response_body]).to eq({})
       end
     end
 
