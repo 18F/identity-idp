@@ -116,6 +116,7 @@ enable_usps_verification: true
 event_disavowal_expiration_hours: 240
 feature_idv_force_gpo_verification_enabled: false
 feature_idv_hybrid_flow_enabled: true
+feature_select_email_to_share_enabled: true
 geo_data_file_path: 'geo_data/GeoLite2-City.mmdb'
 get_usps_proofing_results_job_cron: '0/30 * * * *'
 get_usps_proofing_results_job_reprocess_delay_minutes: 5
@@ -339,6 +340,7 @@ sign_in_user_id_per_ip_max_attempts: 50
 socure_idplus_api_key: ''
 socure_idplus_base_url: ''
 socure_idplus_timeout_in_seconds: 5
+socure_webhook_enabled: false
 socure_webhook_secret_key: ''
 socure_webhook_secret_key_queue: '[]'
 sp_handoff_bounce_max_seconds: 2
@@ -353,6 +355,7 @@ test_ssn_allowed_list: ''
 totp_code_interval: 30
 unauthorized_scope_enabled: false
 use_dashboard_service_providers: false
+use_fed_domain_class: false
 use_kms: false
 use_vot_in_sp_requests: true
 usps_auth_token_refresh_job_enabled: false
@@ -435,6 +438,7 @@ development:
   state_tracking_enabled: true
   telephony_adapter: test
   use_dashboard_service_providers: true
+  use_fed_domain_class: true
   usps_eipp_sponsor_id: '222222222222222'
   usps_ipp_sponsor_id: '111111111111111'
   usps_ipp_transliteration_enabled: true
@@ -464,6 +468,7 @@ production:
   email_registrations_per_ip_track_only_mode: true
   enable_test_routes: false
   enable_usps_verification: false
+  feature_select_email_to_share_enabled: false
   hmac_fingerprinter_key:
   hmac_fingerprinter_key_queue: '[]'
   idv_sp_required: true
@@ -566,6 +571,7 @@ test:
   telephony_adapter: test
   test_ssn_allowed_list: '999999999'
   totp_code_interval: 3
+  use_fed_domain_class: true
   usps_eipp_sponsor_id: '222222222222222'
   usps_ipp_root_url: 'http://localhost:1000'
   usps_ipp_sponsor_id: '111111111111111'
