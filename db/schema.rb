@@ -226,6 +226,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_28_182041) do
     t.index ["user_id", "created_at"], name: "index_events_on_user_id_and_created_at"
   end
 
+  create_table "federal_email_domains", force: :cascade do |t|
+    t.citext "name", null: false
+    t.index ["name"], name: "index_federal_email_domains_on_name", unique: true
+  end
+
   create_table "fraud_review_requests", force: :cascade do |t|
     t.integer "user_id"
     t.string "uuid"
