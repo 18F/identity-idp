@@ -15,7 +15,6 @@ RSpec.describe SocureWebhookController do
         and_return(socure_secret_key_queue)
       allow(IdentityConfig.store).to receive(:socure_webhook_enabled).
         and_return(socure_webhook_enabled)
-      Rails.application.reload_routes!
     end
 
     it 'returns OK with a correct secret key' do
@@ -49,7 +48,9 @@ RSpec.describe SocureWebhookController do
       let(:socure_webhook_enabled) { false }
       it 'the webhook route does not exist' do
         request.headers['Authorization'] = socure_secret_key
-        expect { post :create }.to raise_error(ActionController::UrlGenerationError)
+        post :create
+
+        expect(response).to be_not_found
       end
     end
   end
