@@ -266,10 +266,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect_rate_limited_sub_header_not_present
                 expect_review_issues_body_message('doc_auth.errors.general.no_liveness')
                 expect_rate_limit_warning(max_attempts - 1)
-
-                click_try_again
-                expect(page).to have_current_path(idv_document_capture_path)
-
+                expect_to_try_again
                 expect_resubmit_page_h1_copy
                 expect_resubmit_page_body_copy('doc_auth.errors.general.no_liveness')
                 expect_resubmit_page_inline_error_messages(2)
@@ -302,8 +299,8 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect(page).to have_content(detail_message)
                 expect(page).to have_content(warning_message)
                 expect(page).to have_current_path(idv_document_capture_path)
-                click_try_again
-                expect(page).to have_current_path(idv_document_capture_path)
+                expect_to_try_again
+
                 inline_error = strip_tags(t('doc_auth.errors.card_type'))
                 expect(page).to have_content(inline_error)
 
@@ -328,10 +325,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect_rate_limited_sub_header_not_present
                 expect_review_issues_body_message('doc_auth.errors.general.multiple_front_id_failures')
                 expect_rate_limit_warning(max_attempts - 3)
-
-                click_try_again
-                expect(page).to have_current_path(idv_document_capture_path)
-
+                expect_to_try_again
                 expect_resubmit_page_h1_copy
                 expect_resubmit_page_body_copy('doc_auth.errors.general.multiple_front_id_failures')
                 expect_resubmit_page_inline_error_messages(1)
@@ -358,10 +352,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect_rate_limited_sub_header_not_present
                 expect_review_issues_body_message('doc_auth.errors.general.multiple_back_id_failures')
                 expect_rate_limit_warning(max_attempts - 4)
-
-                click_try_again
-                expect(page).to have_current_path(idv_document_capture_path)
-
+                expect_to_try_again
                 expect_resubmit_page_h1_copy
                 expect_resubmit_page_body_copy('doc_auth.errors.general.multiple_back_id_failures')
                 expect_resubmit_page_inline_error_messages(1)
@@ -427,9 +418,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 review_page_body_copy = strip_tags(t('doc_auth.errors.dpi.top_msg'))
                 expect(page).to have_content(review_page_body_copy)
                 expect_rate_limit_warning(max_attempts - 1)
-
-                click_try_again
-                expect(page).to have_current_path(idv_document_capture_path)
+                expect_to_try_again
 
                 inline_error_message = strip_tags(t('doc_auth.errors.dpi.failed_short'))
                 expect(page).to have_content(inline_error_message)
@@ -467,10 +456,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect(page).to have_content(review_page_body_copy)
 
                 expect_rate_limit_warning(max_attempts - 2)
-
-                click_try_again
-                expect(page).to have_current_path(idv_document_capture_path)
-
+                expect_to_try_again
                 expect_resubmit_page_h1_copy
                 expect_resubmit_page_body_copy('doc_auth.errors.alerts.selfie_not_live_or_poor_quality')
                 expect_resubmit_page_inline_selfie_error_message(true)
@@ -499,10 +485,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect(page).to have_content(review_page_body_copy)
 
                 expect_rate_limit_warning(max_attempts - 3)
-
-                click_try_again
-                expect(page).to have_current_path(idv_document_capture_path)
-
+                expect_to_try_again
                 expect_resubmit_page_h1_copy
                 expect_resubmit_page_body_copy('doc_auth.errors.dpi.top_msg')
 
@@ -534,10 +517,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect(page).to have_content(review_page_body_copy)
 
                 expect_rate_limit_warning(max_attempts - 4)
-
-                click_try_again
-                expect(page).to have_current_path(idv_document_capture_path)
-
+                expect_to_try_again
                 expect_resubmit_page_h1_copy
                 expect_resubmit_page_body_copy('doc_auth.errors.dpi.top_msg')
 
@@ -569,10 +549,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect(page).to have_content(review_page_body_copy)
 
                 expect_rate_limit_warning(max_attempts - 5)
-
-                click_try_again
-                expect(page).to have_current_path(idv_document_capture_path)
-
+                expect_to_try_again
                 expect_resubmit_page_h1_copy
                 expect_resubmit_page_body_copy('doc_auth.errors.general.selfie_failure')
 
@@ -608,10 +585,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect(page).to have_content(review_page_body_copy)
 
                 expect_rate_limit_warning(max_attempts - 6)
-
-                click_try_again
-                expect(page).to have_current_path(idv_document_capture_path)
-
+                expect_to_try_again
                 expect_resubmit_page_h1_copy
                 expect_resubmit_page_body_copy('doc_auth.errors.alerts.barcode_content_check')
 
@@ -645,10 +619,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect(page).to have_content(review_page_body_copy)
 
                 expect_rate_limit_warning(max_attempts - 7)
-
-                click_try_again
-                expect(page).to have_current_path(idv_document_capture_path)
-
+                expect_to_try_again
                 expect_resubmit_page_h1_copy
                 expect_resubmit_page_body_copy('doc_auth.errors.alerts.barcode_content_check')
 
@@ -680,10 +651,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect(page).to have_content(review_page_body_copy)
 
                 expect_rate_limit_warning(max_attempts - 8)
-
-                click_try_again
-                expect(page).to have_current_path(idv_document_capture_path)
-
+                expect_to_try_again
                 expect_resubmit_page_h1_copy
                 expect_resubmit_page_body_copy('doc_auth.errors.general.no_liveness')
 
@@ -719,10 +687,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect(page).to have_content(review_page_body_copy)
 
                 expect_rate_limit_warning(max_attempts - 9)
-
-                click_try_again
-                expect(page).to have_current_path(idv_document_capture_path)
-
+                expect_to_try_again
                 expect_resubmit_page_h1_copy
                 expect_resubmit_page_body_copy('doc_auth.errors.alerts.selfie_not_live_or_poor_quality')
                 expect_resubmit_page_inline_selfie_error_message(true)
@@ -751,10 +716,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect(page).to have_content(review_page_body_copy)
 
                 expect_rate_limit_warning(max_attempts - 10)
-
-                click_try_again
-                expect(page).to have_current_path(idv_document_capture_path)
-
+                expect_to_try_again
                 expect_resubmit_page_h1_copy
                 expect_resubmit_page_body_copy('doc_auth.errors.alerts.address_check')
 
@@ -788,10 +750,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect(page).to have_content(review_page_body_copy)
 
                 expect_rate_limit_warning(max_attempts - 11)
-
-                click_try_again
-                expect(page).to have_current_path(idv_document_capture_path)
-
+                expect_to_try_again
                 expect_resubmit_page_h1_copy
                 expect_resubmit_page_body_copy('doc_auth.errors.general.selfie_failure')
 
@@ -834,8 +793,8 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 )
                 expect(page).to have_content(review_issues_header)
                 expect(page).to have_current_path(idv_document_capture_path)
-                click_try_again
-                expect(page).to have_current_path(idv_document_capture_path)
+                expect_to_try_again
+
                 inline_error = strip_tags(t('doc_auth.errors.general.selfie_failure'))
                 expect(page).to have_content(inline_error)
 
@@ -868,8 +827,8 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 )
                 expect(page).to have_content(review_issues_header)
                 expect(page).to have_current_path(idv_document_capture_path)
-                click_try_again
-                expect(page).to have_current_path(idv_document_capture_path)
+                expect_to_try_again
+
                 inline_error = strip_tags(t('doc_auth.errors.general.selfie_failure'))
                 expect(page).to have_content(inline_error)
               end
@@ -1059,6 +1018,11 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
     else
       expect(page).not_to have_content(resubmit_page_inline_selfie_error_message)
     end
+  end
+
+  def expect_to_try_again
+    click_try_again
+    expect(page).to have_current_path(idv_document_capture_path)
   end
 
   def expect_costing_for_document
