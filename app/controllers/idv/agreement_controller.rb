@@ -37,6 +37,7 @@ module Idv
 
       if result.success?
         idv_session.idv_consent_given = true
+        idv_session.idv_consent_given_at = Time.zone.now
 
         if IdentityConfig.store.in_person_proofing_opt_in_enabled &&
            IdentityConfig.store.in_person_proofing_enabled

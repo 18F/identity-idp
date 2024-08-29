@@ -43,9 +43,9 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
     expect(text).to_not include(service_provider.agency.name)
     expect(text).to include(
       view_context.strip_tags(
-        I18n.t(
-          'help_text.requested_attributes.ial1_intro_html',
-          sp: service_provider.friendly_name,
+        t(
+          'help_text.requested_attributes.intro_html',
+          sp_html: content_tag(:strong, service_provider.friendly_name),
         ),
       ),
     )
