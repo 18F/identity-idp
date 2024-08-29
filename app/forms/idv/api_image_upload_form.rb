@@ -354,7 +354,7 @@ module Idv
       zip_code = client_response.pii_from_doc&.zipcode&.to_s&.strip&.slice(0, 5)
       issue_year = client_response.pii_from_doc&.state_id_issued&.to_date&.year
       captured_result = document_capture_session&.load_result
-      selfie_attempts = (captured_result&.failed_selfie_image_fingerprints || []).length() + 1 # TODO: check logic
+      selfie_attempts = (captured_result&.failed_selfie_image_fingerprints || []).length() + 1
       analytics.idv_doc_auth_submitted_image_upload_vendor(
         **client_response.to_h.merge(
           birth_year: birth_year,
