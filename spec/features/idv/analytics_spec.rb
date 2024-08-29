@@ -57,8 +57,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
       verified_attributes: [],
       state: 'MT',
       state_id_jurisdiction: 'ND',
-      state_id_number: '#############',
-      jurisdiction_in_maintenance_window: false }
+      state_id_number: '#############' }
   end
 
   let(:resolution_block) do

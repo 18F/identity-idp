@@ -692,7 +692,6 @@ doc_auth.tips.review_issues_id_text1: Did you use a dark background?
 doc_auth.tips.review_issues_id_text2: Did you take the photo on a flat surface?
 doc_auth.tips.review_issues_id_text3: Is the flash on your camera off?
 doc_auth.tips.review_issues_id_text4: Are all details sharp and clearly visible?
-email_address.not_found: 'Email not found'
 email_addresses.add.duplicate: This email address is already registered to your account.
 email_addresses.add.limit: You’ve added the maximum number of email addresses.
 email_addresses.delete.bullet1: You won’t be able to sign in to %{app_name} (or any of the government applications linked to your account) using this email address
@@ -959,18 +958,18 @@ headings.webauthn_setup.new: Insert your security key
 help_text.requested_attributes.address: Address
 help_text.requested_attributes.all_emails: Email addresses on your account
 help_text.requested_attributes.birthdate: Date of birth
-help_text.requested_attributes.change_email_link: Change
-help_text.requested_attributes.consent_reminder_html: You must consent each year to share your information with %{sp_html}.
 help_text.requested_attributes.email: Email address
 help_text.requested_attributes.full_name: Full name
-help_text.requested_attributes.ial2_reverified_consent_info_html: 'Because you verified your identity again, we need your permission to share this information with %{sp_html}:'
-help_text.requested_attributes.intro_html: 'We’ll share this information with %{sp_html}:'
+help_text.requested_attributes.ial1_consent_reminder_html: You must consent each year to share your information with <strong>%{sp}</strong>. We’ll share your information with <strong>%{sp}</strong> to connect your account.
+help_text.requested_attributes.ial1_intro_html: We’ll share your information with <strong>%{sp}</strong> to connect your account.
+help_text.requested_attributes.ial2_consent_reminder_html: '<strong>%{sp}</strong> needs to know who you are to connect to your account. You must consent each year to share your verified information with <strong>%{sp}</strong>. We’ll share this information:'
+help_text.requested_attributes.ial2_intro_html: '<strong>%{sp}</strong> needs to know who you are to connect your account. We’ll share this information with %{sp}:'
+help_text.requested_attributes.ial2_reverified_consent_info: 'Because you verified your identity again, we need your permission to share this information with %{sp}:'
 help_text.requested_attributes.phone: Phone number
 help_text.requested_attributes.social_security_number: Social Security number
 help_text.requested_attributes.verified_at: Updated on
 help_text.requested_attributes.x509_issuer: PIV/CAC Issuer
 help_text.requested_attributes.x509_subject: PIV/CAC Identity
-help_text.select_preferred_email: You may change which email you share with %{sp} since you have multiple emails associated with your %{app_name} account.
 i18n.language: Language
 i18n.locale.en: English
 i18n.locale.es: Español
@@ -1607,7 +1606,6 @@ titles.reactivate_account: Reactivate your account
 titles.registrations.new: Create your account
 titles.revoke_consent: Revoke Consent
 titles.rules_of_use: Rules of Use
-titles.select_email: Select your preferred email
 titles.sign_up.completion_consent_expired_ial1: It’s been a year since you gave us consent to share your information
 titles.sign_up.completion_consent_expired_ial2: It’s been a year since you gave us consent to share your verified identity
 titles.sign_up.completion_first_sign_in: Continue to %{sp}

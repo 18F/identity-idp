@@ -19,7 +19,7 @@ module TwoFactorAuthentication
     end
 
     def recommended?
-      user.confirmed_email_addresses.any?(&:fed_or_mil_email?)
+      user.confirmed_email_addresses.any?(&:gov_or_mil?)
     end
 
     def desktop_only?

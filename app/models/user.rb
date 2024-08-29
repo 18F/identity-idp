@@ -79,8 +79,8 @@ class User < ApplicationRecord
     email_addresses.where.not(confirmed_at: nil).any?
   end
 
-  def has_fed_or_mil_email?
-    confirmed_email_addresses.any?(&:fed_or_mil_email?)
+  def has_gov_or_mil_email?
+    confirmed_email_addresses.any?(&:gov_or_mil?)
   end
 
   def accepted_rules_of_use_still_valid?

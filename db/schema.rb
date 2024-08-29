@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_28_182041) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_22_122355) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -224,11 +224,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_28_182041) do
     t.index ["device_id", "created_at"], name: "index_events_on_device_id_and_created_at"
     t.index ["disavowal_token_fingerprint"], name: "index_events_on_disavowal_token_fingerprint"
     t.index ["user_id", "created_at"], name: "index_events_on_user_id_and_created_at"
-  end
-
-  create_table "federal_email_domains", force: :cascade do |t|
-    t.citext "name", null: false
-    t.index ["name"], name: "index_federal_email_domains_on_name", unique: true
   end
 
   create_table "fraud_review_requests", force: :cascade do |t|
@@ -656,7 +651,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_28_182041) do
     t.boolean "platform_authenticator"
     t.string "transports", array: true
     t.jsonb "authenticator_data_flags"
-    t.string "aaguid"
     t.index ["user_id"], name: "index_webauthn_configurations_on_user_id"
   end
 

@@ -49,7 +49,7 @@ module Proofing
         ).send_verification_request(
           applicant: aamva_applicant,
         )
-        build_result_from_response(response, applicant[:state])
+        build_result_from_response(response)
       rescue => exception
         failed_result = Proofing::StateIdResult.new(
           success: false, errors: {}, exception: exception, vendor_name: 'aamva:state_id',
@@ -61,7 +61,7 @@ module Proofing
 
       private
 
-      def build_result_from_response(verification_response, jurisdiction)
+      def build_result_from_response(verification_response)
         Proofing::StateIdResult.new(
           success: verification_response.success?,
           errors: parse_verification_errors(verification_response),
@@ -70,12 +70,11 @@ module Proofing
           transaction_id: verification_response.transaction_locator_id,
           requested_attributes: requested_attributes(verification_response).index_with(1),
           verified_attributes: verified_attributes(verification_response),
-          jurisdiction_in_maintenance_window: jurisdiction_in_maintenance_window?(jurisdiction),
         )
       end
 
       def parse_verification_errors(verification_response)
-        errors = Hash.new { |h, k| h[k] = [] }
+        errors = errors = Hash.new { |h, k| h[k] = [] }
 
         return errors if verification_response.success?
 
@@ -119,10 +118,6 @@ module Proofing
           return # noop
         end
         NewRelic::Agent.notice_error(result.exception)
-      end
-
-      def jurisdiction_in_maintenance_window?(state)
-        Idv::AamvaStateMaintenanceWindow.in_maintenance_window?(state)
       end
     end
   end

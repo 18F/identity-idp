@@ -6,15 +6,12 @@ RSpec.describe SocureWebhookController do
   describe 'POST /api/webhooks/socure/event' do
     let(:socure_secret_key) { 'this-is-a-secret' }
     let(:socure_secret_key_queue) { ['this-is-an-old-secret', 'this-is-an-older-secret'] }
-    let(:socure_webhook_enabled) { true }
 
     before do
       allow(IdentityConfig.store).to receive(:socure_webhook_secret_key).
         and_return(socure_secret_key)
       allow(IdentityConfig.store).to receive(:socure_webhook_secret_key_queue).
         and_return(socure_secret_key_queue)
-      allow(IdentityConfig.store).to receive(:socure_webhook_enabled).
-        and_return(socure_webhook_enabled)
     end
 
     it 'returns OK with a correct secret key' do
@@ -42,16 +39,6 @@ RSpec.describe SocureWebhookController do
       post :create
 
       expect(response).to have_http_status(:unauthorized)
-    end
-
-    context 'when socure webhook disabled' do
-      let(:socure_webhook_enabled) { false }
-      it 'the webhook route does not exist' do
-        request.headers['Authorization'] = socure_secret_key
-        post :create
-
-        expect(response).to be_not_found
-      end
     end
   end
 end

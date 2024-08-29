@@ -2,8 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Users::PivCacRecommendedController do
   describe 'New user' do
-    let(:user) { create(:user, email: 'example@gsa.gov') }
-    let!(:federal_domain) { create(:federal_email_domain, name: 'gsa.gov') }
+    let(:user) { create(:user, email: 'example@example.gov') }
     before do
       stub_sign_in_before_2fa(user)
       stub_analytics
@@ -29,10 +28,10 @@ RSpec.describe Users::PivCacRecommendedController do
   end
 
   describe 'Sign in flow' do
-    let(:user) { create(:user, :with_phone, { email: 'example@gsa.gov' }) }
-    let!(:federal_domain) { create(:federal_email_domain, name: 'gsa.gov') }
+    let(:user) { create(:user, :with_phone, { email: 'example@example.gov' }) }
     before do
       stub_analytics
+
       stub_sign_in(user)
       user.reload
     end
@@ -50,8 +49,7 @@ RSpec.describe Users::PivCacRecommendedController do
   end
 
   context '#confirm' do
-    let(:user) { create(:user, email: 'example@gsa.gov') }
-    let!(:federal_domain) { create(:federal_email_domain, name: 'gsa.gov') }
+    let(:user) { create(:user, email: 'example@example.gov') }
     before do
       stub_sign_in_before_2fa(user)
       stub_analytics
@@ -79,8 +77,7 @@ RSpec.describe Users::PivCacRecommendedController do
   end
 
   context '#skip' do
-    let(:user) { create(:user, email: 'example@gsa.gov') }
-    let!(:federal_domain) { create(:federal_email_domain, name: 'gsa.gov') }
+    let(:user) { create(:user, email: 'example@example.gov') }
     before do
       stub_sign_in_before_2fa(user)
       stub_analytics

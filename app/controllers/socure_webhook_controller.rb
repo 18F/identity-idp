@@ -1,11 +1,7 @@
 # frozen_string_literal: true
 
 class SocureWebhookController < ApplicationController
-  include RenderConditionConcern
-
   skip_before_action :verify_authenticity_token
-
-  check_or_render_not_found -> { IdentityConfig.store.socure_webhook_enabled }
 
   def create
     if token_valid?

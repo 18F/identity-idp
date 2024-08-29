@@ -196,7 +196,7 @@ class Profile < ApplicationRecord
     )
   end
 
-  def deactivate_due_to_in_person_verification_cancelled
+  def deactivate_due_to_ipp_expiration
     update!(
       active: false,
       deactivation_reason: :verification_cancelled,
