@@ -158,4 +158,65 @@ RSpec.describe AbTests do
 
     it_behaves_like 'an A/B test that uses document_capture_session_uuid as a discriminator'
   end
+
+  describe 'RECAPTCHA_SIGN_IN' do
+    let(:user) { nil }
+    let(:user_session) { {} }
+
+    subject(:bucket) do
+      AbTests::RECAPTCHA_SIGN_IN.bucket(
+        request: nil,
+        service_provider: nil,
+        session: nil,
+        user:,
+        user_session:,
+      )
+    end
+
+    context 'when A/B test is disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:sign_in_recaptcha_percent_tested).and_return(0)
+        reload_ab_tests
+      end
+
+      context 'when it would otherwise assign a bucket' do
+        let(:user) { build(:user) }
+
+        it 'does not return a bucket' do
+          expect(bucket).to be_nil
+        end
+      end
+    end
+
+    context 'when A/B test is enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:sign_in_recaptcha_percent_tested).and_return(100)
+        reload_ab_tests
+      end
+
+      context 'with no associated user' do
+        let(:user) { nil }
+
+        it 'does not return a bucket' do
+          expect(bucket).to be_nil
+        end
+      end
+
+      context 'with an associated user' do
+        let(:user) { build(:user) }
+
+        it 'returns a bucket' do
+          expect(bucket).not_to be_nil
+        end
+
+        context 'with user session indicating recaptcha was not performed at sign-in' do
+          let(:user_session) { { captcha_validation_performed_at_sign_in: false } }
+
+          it 'does not return a bucket' do
+            expect(bucket).to be_nil
+          end
+        end
+      end
+    end
+  end
 end
