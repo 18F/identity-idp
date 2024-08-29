@@ -245,8 +245,8 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 use_selfie_image('ial2_test_credential_multiple_doc_auth_failures_both_sides.yml')
                 submit_images
 
-                expect_rate_limited_header
-                expect_rate_limited_sub_header_not_present
+                expect_rate_limited_header(true)
+                expect_rate_limited_sub_header_present(false)
                 expect_review_issues_body_message('doc_auth.errors.general.no_liveness')
                 expect_rate_limit_warning(max_attempts - 1)
                 expect_to_try_again
@@ -261,12 +261,16 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 use_selfie_image('ial2_test_portrait_match_success.yml')
                 submit_images
 
+                expect_rate_limited_header(false)
+                expect_rate_limited_sub_header_present(true)
                 expect_review_issues_body_message('doc_auth.errors.doc_type_not_supported_heading')
                 expect_review_issues_body_message('doc_auth.errors.doc.doc_type_check')
                 expect_rate_limit_warning(max_attempts - 2)
                 expect_to_try_again
 
+                expect_resubmit_page_h1_copy
                 expect_review_issues_body_message('doc_auth.errors.card_type')
+                expect_resubmit_page_inline_selfie_error_message(false)
 
                 # when there are multiple front doc auth errors
                 use_id_image('ial2_test_credential_multiple_doc_auth_failures_front_side_only.yml')
@@ -275,8 +279,8 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 )
                 submit_images
 
-                expect_rate_limited_header
-                expect_rate_limited_sub_header_not_present
+                expect_rate_limited_header(true)
+                expect_rate_limited_sub_header_present(false)
                 expect_review_issues_body_message(
                   'doc_auth.errors.general.multiple_front_id_failures',
                 )
@@ -295,8 +299,8 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 )
                 submit_images
 
-                expect_rate_limited_header
-                expect_rate_limited_sub_header_not_present
+                expect_rate_limited_header(true)
+                expect_rate_limited_sub_header_present(false)
                 expect_review_issues_body_message(
                   'doc_auth.errors.general.multiple_back_id_failures',
                 )
@@ -728,14 +732,22 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
     end
   end
 
-  def expect_rate_limited_header
+  def expect_rate_limited_header(expected_to_be_present)
     review_issues_h1_heading = strip_tags(t('doc_auth.errors.rate_limited_heading'))
-    expect(page).to have_content(review_issues_h1_heading)
+    if expected_to_be_present
+      expect(page).to have_content(review_issues_h1_heading)
+    else
+      expect(page).not_to have_content(review_issues_h1_heading)
+    end
   end
 
-  def expect_rate_limited_sub_header_not_present
+  def expect_rate_limited_sub_header_present(expected_to_be_present)
     review_issues_subheading = strip_tags(t('doc_auth.errors.rate_limited_subheading'))
-    expect(page).not_to have_selector('h2', text: review_issues_subheading)
+    if expected_to_be_present
+      expect(page).to have_selector('h2', text: review_issues_subheading)
+    else
+      expect(page).not_to have_selector('h2', text: review_issues_subheading)
+    end
   end
 
   def expect_review_issues_body_message(translation_key)
