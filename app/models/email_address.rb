@@ -11,7 +11,7 @@ class EmailAddress < ApplicationRecord
   # rubocop:disable Rails/HasManyOrHasOneDependent
   has_one :suspended_email
   # rubocop:enable Rails/HasManyOrHasOneDependent
-  has_many :identities, class_name: 'ServiceProviderIdentity', dependent: :nullify
+  has_many :identities, class_name: 'ServiceProviderIdentity'
 
   scope :confirmed, -> { where('confirmed_at IS NOT NULL') }
 
