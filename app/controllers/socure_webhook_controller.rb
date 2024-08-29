@@ -9,6 +9,7 @@ class SocureWebhookController < ApplicationController
 
   def create
     if token_valid?
+      log_webhook_receipt
       render json: { message: 'Secret token is valid.' }
     else
       render status: :unauthorized, json: { message: 'Invalid secret token.' }
@@ -40,5 +41,17 @@ class SocureWebhookController < ApplicationController
         key,
       )
     end
+  end
+
+  def log_webhook_receipt
+    event = socure_params[:event]
+    analytics.idv_doc_auth_socure_webhook_received(
+      event_type: event[:eventType],
+      reference_id: event[:referenceId],
+    )
+  end
+
+  def socure_params
+    params.permit(event: [:eventType, :referenceId])
   end
 end

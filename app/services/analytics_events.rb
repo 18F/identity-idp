@@ -1333,6 +1333,12 @@ module AnalyticsEvents
     track_event('IdV: doc auth redo_ssn submitted', **extra)
   end
 
+  # @param [String] event_type The eventType received from Socure
+  # @param [String] reference_id The referenceId received from Socure
+  def idv_doc_auth_socure_webhook_received(event_type:, reference_id:, **extra)
+    track_event(:idv_doc_auth_socure_webhook_received, event_type:, reference_id:, **extra)
+  end
+
   # User submits IdV Social Security number step
   # @identity.idp.previous_event_name IdV: in person proofing ssn submitted
   # @param [Boolean] success Whether form validation was successful
