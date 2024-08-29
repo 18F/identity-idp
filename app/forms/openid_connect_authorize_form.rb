@@ -94,8 +94,7 @@ class OpenidConnectAuthorizeForm
   def link_identity_to_service_provider(
     current_user:,
     ial:,
-    rails_session_id:,
-    email_address_id:
+    rails_session_id:
   )
     identity_linker = IdentityLinker.new(current_user, service_provider)
     @identity = identity_linker.link_identity(
@@ -107,7 +106,6 @@ class OpenidConnectAuthorizeForm
       requested_aal_value: requested_aal_value,
       scope: scope.join(' '),
       code_challenge: code_challenge,
-      email_address_id: email_address_id,
     )
   end
 

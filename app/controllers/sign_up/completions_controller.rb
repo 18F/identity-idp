@@ -21,10 +21,6 @@ module SignUp
       track_completion_event('agency-page')
       update_verified_attributes
       send_in_person_completion_survey
-      if user_session[:selected_email_id].nil?
-        user_session[:selected_email_id] = EmailContext.new(current_user).
-          last_sign_in_email_address.id
-      end
       if decider.go_back_to_mobile_app?
         sign_user_out_and_instruct_to_go_back_to_mobile_app
       else
@@ -53,7 +49,6 @@ module SignUp
         requested_attributes: decorated_sp_session.requested_attributes.map(&:to_sym),
         ial2_requested: ial2_requested?,
         completion_context: needs_completion_screen_reason,
-        selected_email_id: user_session[:selected_email_id],
       )
     end
 
