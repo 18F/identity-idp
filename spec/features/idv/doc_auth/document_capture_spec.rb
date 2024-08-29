@@ -116,12 +116,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
         expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
 
         # doc auth is successful while liveness is not req'd
-        attach_images(
-          Rails.root.join(
-            'spec', 'fixtures',
-            'ial2_test_credential_no_liveness.yml'
-          ),
-        )
+        use_id_image('ial2_test_credential_no_liveness.yml')
         submit_images
 
         expect(page).to have_current_path(idv_ssn_url)
@@ -223,11 +218,11 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
             before do
               allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
               allow(IdentityConfig.store).to receive(
-                                               :in_person_proofing_opt_in_enabled,
-                                             ).and_return(true)
+                :in_person_proofing_opt_in_enabled,
+              ).and_return(true)
               allow_any_instance_of(ServiceProvider).to receive(
-                                                          :in_person_proofing_enabled,
-                                                        ).and_return(true)
+                :in_person_proofing_enabled,
+              ).and_return(true)
               allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(99)
               perform_in_browser(:mobile) do
                 visit_idp_from_sp_with_ial2(
@@ -245,21 +240,9 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
             it 'shows the correct error message for the given error' do
               # when there are multiple doc auth errors on front and back
-
               perform_in_browser(:mobile) do
-                attach_images(
-                  Rails.root.join(
-                    'spec', 'fixtures',
-                    'ial2_test_credential_multiple_doc_auth_failures_both_sides.yml'
-                  ),
-                )
-                attach_selfie(
-                  Rails.root.join(
-                    'spec', 'fixtures',
-                    'ial2_test_credential_multiple_doc_auth_failures_both_sides.yml'
-                  ),
-                )
-
+                use_id_image('ial2_test_credential_multiple_doc_auth_failures_both_sides.yml')
+                use_selfie_image('ial2_test_credential_multiple_doc_auth_failures_both_sides.yml')
                 submit_images
 
                 expect_rate_limited_header
@@ -267,63 +250,36 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect_review_issues_body_message('doc_auth.errors.general.no_liveness')
                 expect_rate_limit_warning(max_attempts - 1)
                 expect_to_try_again
+
                 expect_resubmit_page_h1_copy
                 expect_resubmit_page_body_copy('doc_auth.errors.general.no_liveness')
                 expect_resubmit_page_inline_error_messages(2)
                 expect_resubmit_page_inline_selfie_error_message(false)
 
                 # Wrong doc type is uploaded
-                attach_images(
-                  Rails.root.join(
-                    'spec', 'fixtures',
-                    'ial2_test_credential_wrong_doc_type.yml'
-                  ),
-                )
-                attach_selfie(
-                  Rails.root.join(
-                    'spec', 'fixtures',
-                    'ial2_test_portrait_match_success.yml'
-                  ),
-                )
+                use_id_image('ial2_test_credential_wrong_doc_type.yml')
+                use_selfie_image('ial2_test_portrait_match_success.yml')
                 submit_images
-                message = strip_tags(t('doc_auth.errors.doc_type_not_supported_heading'))
-                expect(page).to have_content(message)
-                detail_message = strip_tags(t('doc_auth.errors.doc.doc_type_check'))
 
-                warning_message = strip_tags(
-                  t(
-                    'idv.failure.attempts_html',
-                    count: IdentityConfig.store.doc_auth_max_attempts - 2,
-                  ),
-                )
-                expect(page).to have_content(detail_message)
-                expect(page).to have_content(warning_message)
-                expect(page).to have_current_path(idv_document_capture_path)
+                expect_review_issues_body_message('doc_auth.errors.doc_type_not_supported_heading')
+                expect_review_issues_body_message('doc_auth.errors.doc.doc_type_check')
+                expect_rate_limit_warning(max_attempts - 2)
                 expect_to_try_again
 
-                inline_error = strip_tags(t('doc_auth.errors.card_type'))
-                expect(page).to have_content(inline_error)
+                expect_review_issues_body_message('doc_auth.errors.card_type')
 
                 # when there are multiple front doc auth errors
-
-                attach_images(
-                  Rails.root.join(
-                    'spec', 'fixtures',
-                    'ial2_test_credential_multiple_doc_auth_failures_front_side_only.yml'
-                  ),
+                use_id_image('ial2_test_credential_multiple_doc_auth_failures_front_side_only.yml')
+                use_selfie_image(
+                  'ial2_test_credential_multiple_doc_auth_failures_front_side_only.yml',
                 )
-                attach_selfie(
-                  Rails.root.join(
-                    'spec', 'fixtures',
-                    'ial2_test_credential_multiple_doc_auth_failures_front_side_only.yml'
-                  ),
-                )
-
                 submit_images
 
                 expect_rate_limited_header
                 expect_rate_limited_sub_header_not_present
-                expect_review_issues_body_message('doc_auth.errors.general.multiple_front_id_failures')
+                expect_review_issues_body_message(
+                  'doc_auth.errors.general.multiple_front_id_failures',
+                )
                 expect_rate_limit_warning(max_attempts - 3)
                 expect_to_try_again
                 expect_resubmit_page_h1_copy
@@ -333,24 +289,17 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
                 # when there are multiple back doc auth errors
 
-                attach_images(
-                  Rails.root.join(
-                    'spec', 'fixtures',
-                    'ial2_test_credential_multiple_doc_auth_failures_back_side_only.yml'
-                  ),
+                use_id_image('ial2_test_credential_multiple_doc_auth_failures_back_side_only.yml')
+                use_selfie_image(
+                  'ial2_test_credential_multiple_doc_auth_failures_back_side_only.yml',
                 )
-                attach_selfie(
-                  Rails.root.join(
-                    'spec', 'fixtures',
-                    'ial2_test_credential_multiple_doc_auth_failures_back_side_only.yml'
-                  ),
-                )
-
                 submit_images
 
                 expect_rate_limited_header
                 expect_rate_limited_sub_header_not_present
-                expect_review_issues_body_message('doc_auth.errors.general.multiple_back_id_failures')
+                expect_review_issues_body_message(
+                  'doc_auth.errors.general.multiple_back_id_failures',
+                )
                 expect_rate_limit_warning(max_attempts - 4)
                 expect_to_try_again
                 expect_resubmit_page_h1_copy
@@ -359,26 +308,19 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect_resubmit_page_inline_selfie_error_message(false)
 
                 # attention barcode with invalid pii is uploaded
-                attach_images(
-                  Rails.root.join(
-                    'spec', 'fixtures',
-                    'ial2_test_credential_barcode_attention_no_address.yml'
-                  ),
-                )
-                attach_selfie(
-                  Rails.root.join(
-                    'spec', 'fixtures',
-                    'ial2_test_portrait_match_success.yml'
-                  ),
-                )
+                use_id_image('ial2_test_credential_barcode_attention_no_address.yml')
+                use_selfie_image('ial2_test_portrait_match_success.yml')
                 submit_images
 
                 expect(page).to have_content(t('doc_auth.errors.alerts.address_check'))
                 expect(page).to have_current_path(idv_document_capture_path)
 
                 click_try_again
+
+                # And finally, after lots of errors, we can still succeed
                 attach_images
                 submit_images
+
                 expect(page).to have_current_path(idv_ssn_path)
               end
             end
@@ -397,26 +339,10 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
             it 'shows the correct error message for the given error' do
               perform_in_browser(:mobile) do
                 # when the only error is a doc auth error
-                attach_images(
-                  Rails.root.join(
-                    'spec', 'fixtures',
-                    'ial2_test_credential_doc_auth_fail_selfie_pass.yml'
-                  ),
-                )
-                attach_selfie(
-                  Rails.root.join(
-                    'spec', 'fixtures',
-                    'ial2_test_credential_doc_auth_fail_selfie_pass.yml'
-                  ),
-                )
-
+                use_id_image('ial2_test_credential_doc_auth_fail_selfie_pass.yml')
+                use_selfie_image('ial2_test_credential_doc_auth_fail_selfie_pass.yml')
                 submit_images
 
-                review_page_h1_copy = strip_tags(t('doc_auth.errors.rate_limited_heading'))
-                expect(page).to have_content(review_page_h1_copy)
-
-                review_page_body_copy = strip_tags(t('doc_auth.errors.dpi.top_msg'))
-                expect(page).to have_content(review_page_body_copy)
                 expect_rate_limit_warning(max_attempts - 1)
                 expect_to_try_again
 
@@ -430,19 +356,8 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect(page).to have_current_path(idv_document_capture_url)
 
                 # when doc auth result passes but liveness fails
-                attach_images(
-                  Rails.root.join(
-                    'spec', 'fixtures',
-                    'ial2_test_credential_no_liveness.yml'
-                  ),
-                )
-                attach_selfie(
-                  Rails.root.join(
-                    'spec', 'fixtures',
-                    'ial2_test_credential_no_liveness.yml'
-                  ),
-                )
-
+                use_id_image('ial2_test_credential_no_liveness.yml')
+                use_selfie_image('ial2_test_credential_no_liveness.yml')
                 submit_images
 
                 review_page_h1_copy = strip_tags(
@@ -458,24 +373,15 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect_rate_limit_warning(max_attempts - 2)
                 expect_to_try_again
                 expect_resubmit_page_h1_copy
-                expect_resubmit_page_body_copy('doc_auth.errors.alerts.selfie_not_live_or_poor_quality')
+                expect_resubmit_page_body_copy(
+                  'doc_auth.errors.alerts.selfie_not_live_or_poor_quality',
+                )
                 expect_resubmit_page_inline_selfie_error_message(true)
 
                 # when there are both doc auth errors and liveness errors
 
-                attach_images(
-                  Rails.root.join(
-                    'spec', 'fixtures',
-                    'ial2_test_credential_doc_auth_fail_and_no_liveness.yml'
-                  ),
-                )
-                attach_selfie(
-                  Rails.root.join(
-                    'spec', 'fixtures',
-                    'ial2_test_credential_doc_auth_fail_and_no_liveness.yml'
-                  ),
-                )
-
+                use_id_image('ial2_test_credential_doc_auth_fail_and_no_liveness.yml')
+                use_selfie_image('ial2_test_credential_doc_auth_fail_and_no_liveness.yml')
                 submit_images
 
                 review_page_h1_copy = strip_tags(t('doc_auth.errors.rate_limited_heading'))
@@ -494,20 +400,8 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect_resubmit_page_inline_selfie_error_message(false)
 
                 # when there are both doc auth errors and face match errors
-
-                attach_images(
-                  Rails.root.join(
-                    'spec', 'fixtures',
-                    'ial2_test_credential_doc_auth_fail_face_match_fail.yml'
-                  ),
-                )
-                attach_selfie(
-                  Rails.root.join(
-                    'spec', 'fixtures',
-                    'ial2_test_credential_doc_auth_fail_face_match_fail.yml'
-                  ),
-                )
-
+                use_id_image('ial2_test_credential_doc_auth_fail_face_match_fail.yml')
+                use_selfie_image('ial2_test_credential_doc_auth_fail_face_match_fail.yml')
                 submit_images
 
                 review_page_h1_copy = strip_tags(t('doc_auth.errors.rate_limited_heading'))
@@ -526,20 +420,8 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect_resubmit_page_inline_selfie_error_message(false)
 
                 # when doc auth result and liveness pass but face match fails
-
-                attach_images(
-                  Rails.root.join(
-                    'spec', 'fixtures',
-                    'ial2_test_portrait_match_failure.yml'
-                  ),
-                )
-                attach_selfie(
-                  Rails.root.join(
-                    'spec', 'fixtures',
-                    'ial2_test_portrait_match_failure.yml'
-                  ),
-                )
-
+                use_id_image('ial2_test_portrait_match_failure.yml')
+                use_selfie_image('ial2_test_portrait_match_failure.yml')
                 submit_images
 
                 review_page_h1_copy = strip_tags(t('doc_auth.errors.selfie_fail_heading'))
@@ -560,20 +442,8 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect_resubmit_page_inline_selfie_error_message(true)
 
                 # when there is a doc auth error on one side of the ID and face match errors
-
-                attach_images(
-                  Rails.root.join(
-                    'spec', 'fixtures',
-                    'ial2_test_credential_back_fail_doc_auth_face_match_errors.yml'
-                  ),
-                )
-                attach_selfie(
-                  Rails.root.join(
-                    'spec', 'fixtures',
-                    'ial2_test_credential_back_fail_doc_auth_face_match_errors.yml'
-                  ),
-                )
-
+                use_id_image('ial2_test_credential_back_fail_doc_auth_face_match_errors.yml')
+                use_selfie_image('ial2_test_credential_back_fail_doc_auth_face_match_errors.yml')
                 submit_images
 
                 review_page_h1_copy = strip_tags(t('doc_auth.errors.rate_limited_heading'))
@@ -595,19 +465,8 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
                 # when there is a doc auth error on one side of the ID and a liveness error
 
-                attach_images(
-                  Rails.root.join(
-                    'spec', 'fixtures',
-                    'ial2_test_credential_back_fail_doc_auth_liveness_errors.yml'
-                  ),
-                )
-                attach_selfie(
-                  Rails.root.join(
-                    'spec', 'fixtures',
-                    'ial2_test_credential_back_fail_doc_auth_liveness_errors.yml'
-                  ),
-                )
-
+                use_id_image('ial2_test_credential_back_fail_doc_auth_liveness_errors.yml')
+                use_selfie_image('ial2_test_credential_back_fail_doc_auth_liveness_errors.yml')
                 submit_images
 
                 review_page_h1_copy = strip_tags(t('doc_auth.errors.rate_limited_heading'))
@@ -628,20 +487,8 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect_resubmit_page_inline_selfie_error_message(false)
 
                 # when doc auth result is "attention" and face match errors
-
-                attach_images(
-                  Rails.root.join(
-                    'spec', 'fixtures',
-                    'ial2_test_credential_doc_auth_attention_face_match_fail.yml'
-                  ),
-                )
-                attach_selfie(
-                  Rails.root.join(
-                    'spec', 'fixtures',
-                    'ial2_test_credential_doc_auth_attention_face_match_fail.yml'
-                  ),
-                )
-
+                use_id_image('ial2_test_credential_doc_auth_attention_face_match_fail.yml')
+                use_selfie_image('ial2_test_credential_doc_auth_attention_face_match_fail.yml')
                 submit_images
 
                 review_page_h1_copy = strip_tags(t('doc_auth.errors.rate_limited_heading'))
@@ -660,20 +507,8 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect_resubmit_page_inline_selfie_error_message(false)
 
                 # when doc auth passes but there are both liveness errors and face match errors
-
-                attach_images(
-                  Rails.root.join(
-                    'spec', 'fixtures',
-                    'ial2_test_credential_liveness_fail_face_match_fail.yml'
-                  ),
-                )
-                attach_selfie(
-                  Rails.root.join(
-                    'spec', 'fixtures',
-                    'ial2_test_credential_liveness_fail_face_match_fail.yml'
-                  ),
-                )
-
+                use_id_image('ial2_test_credential_liveness_fail_face_match_fail.yml')
+                use_selfie_image('ial2_test_credential_liveness_fail_face_match_fail.yml')
                 submit_images
 
                 review_page_h1_copy = strip_tags(
@@ -689,24 +524,14 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect_rate_limit_warning(max_attempts - 9)
                 expect_to_try_again
                 expect_resubmit_page_h1_copy
-                expect_resubmit_page_body_copy('doc_auth.errors.alerts.selfie_not_live_or_poor_quality')
+                expect_resubmit_page_body_copy(
+                  'doc_auth.errors.alerts.selfie_not_live_or_poor_quality',
+                )
                 expect_resubmit_page_inline_selfie_error_message(true)
 
                 # when doc auth, liveness, and face match pass but PII validation fails
-
-                attach_images(
-                  Rails.root.join(
-                    'spec', 'fixtures',
-                    'ial2_test_credential_doc_auth_selfie_pass_pii_fail.yml'
-                  ),
-                )
-                attach_selfie(
-                  Rails.root.join(
-                    'spec', 'fixtures',
-                    'ial2_test_credential_doc_auth_selfie_pass_pii_fail.yml'
-                  ),
-                )
-
+                use_id_image('ial2_test_credential_doc_auth_selfie_pass_pii_fail.yml')
+                use_selfie_image('ial2_test_credential_doc_auth_selfie_pass_pii_fail.yml')
                 submit_images
 
                 review_page_h1_copy = strip_tags(t('doc_auth.errors.rate_limited_heading'))
@@ -727,20 +552,8 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect_resubmit_page_inline_selfie_error_message(false)
 
                 # when there are both face match errors and pii errors
-
-                attach_images(
-                  Rails.root.join(
-                    'spec', 'fixtures',
-                    'ial2_test_credential_face_match_fail_and_pii_fail.yml'
-                  ),
-                )
-                attach_selfie(
-                  Rails.root.join(
-                    'spec', 'fixtures',
-                    'ial2_test_credential_face_match_fail_and_pii_fail.yml'
-                  ),
-                )
-
+                use_id_image('ial2_test_credential_face_match_fail_and_pii_fail.yml')
+                use_selfie_image('ial2_test_credential_face_match_fail_and_pii_fail.yml')
                 submit_images
 
                 review_page_h1_copy = strip_tags(t('doc_auth.errors.selfie_fail_heading'))
@@ -760,68 +573,16 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 expect(page).to have_content(inline_error_message)
                 expect_resubmit_page_inline_selfie_error_message(true)
 
-                # selfie match failure
-                visit_idp_from_oidc_sp_with_ial2(biometric_comparison_required: true)
-                sign_in_and_2fa_user(@user)
-                complete_doc_auth_steps_before_document_capture_step
-                attach_images(
-                  Rails.root.join(
-                    'spec', 'fixtures',
-                    'ial2_test_portrait_match_failure.yml'
-                  ),
-                )
-                attach_selfie(
-                  Rails.root.join(
-                    'spec', 'fixtures',
-                    'ial2_test_portrait_match_failure.yml'
-                  ),
-                )
-                submit_images
-                message = strip_tags(t('doc_auth.errors.selfie_fail_heading'))
-                expect(page).to have_content(message)
-                detail_message = strip_tags(t('doc_auth.errors.general.selfie_failure'))
-                warning_message = strip_tags(
-                  t(
-                    'idv.failure.attempts_html',
-                    count: max_attempts - 12,
-                  ),
-                )
-
-                expect(page).to have_content("#{detail_message}\n#{warning_message}")
-                review_issues_header = strip_tags(
-                  t('doc_auth.errors.selfie_fail_heading'),
-                )
-                expect(page).to have_content(review_issues_header)
-                expect(page).to have_current_path(idv_document_capture_path)
-                expect_to_try_again
-
-                inline_error = strip_tags(t('doc_auth.errors.general.selfie_failure'))
-                expect(page).to have_content(inline_error)
-
                 # with Attention with Barcode
-                attach_images(
-                  Rails.root.join(
-                    'spec', 'fixtures',
-                    'ial2_test_credential_barcode_attention_liveness_fail.yml'
-                  ),
-                )
-                attach_selfie(
-                  Rails.root.join(
-                    'spec', 'fixtures',
-                    'ial2_test_credential_barcode_attention_liveness_fail.yml'
-                  ),
-                )
+                use_id_image('ial2_test_credential_barcode_attention_liveness_fail.yml')
+                use_selfie_image('ial2_test_credential_barcode_attention_liveness_fail.yml')
                 submit_images
-                message = strip_tags(t('doc_auth.errors.selfie_not_live_or_poor_quality_heading'))
-                expect(page).to have_content(message)
-                detail_message = strip_tags(t('doc_auth.errors.alerts.selfie_not_live_or_poor_quality'))
-                warning_message = strip_tags(
-                  t(
-                    'idv.failure.attempts_html',
-                    count: max_attempts - 13,
-                  ),
+
+                expect_review_issues_body_message(
+                  'doc_auth.errors.alerts.selfie_not_live_or_poor_quality',
                 )
-                expect(page).to have_content("#{detail_message}\n#{warning_message}")
+                expect_rate_limit_warning(max_attempts - 12)
+
                 review_issues_header = strip_tags(
                   t('doc_auth.errors.selfie_not_live_or_poor_quality_heading'),
                 )
@@ -1023,6 +784,14 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
   def expect_to_try_again
     click_try_again
     expect(page).to have_current_path(idv_document_capture_path)
+  end
+
+  def use_id_image(filename)
+    attach_images Rails.root.join('spec', 'fixtures', filename)
+  end
+
+  def use_selfie_image(filename)
+    attach_selfie Rails.root.join('spec', 'fixtures', filename)
   end
 
   def expect_costing_for_document
