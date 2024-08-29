@@ -703,6 +703,7 @@ doc_auth.tips.review_issues_id_text1: '¿Usó un fondo de color oscuro?'
 doc_auth.tips.review_issues_id_text2: '¿Tomó la foto en una superficie plana?'
 doc_auth.tips.review_issues_id_text3: '¿Está apagado el flash de su cámara?'
 doc_auth.tips.review_issues_id_text4: '¿Todos los detalles se ven con precisión y claridad?'
+email_address.not_found: El correo electrónico no encontrado
 email_addresses.add.duplicate: Esta dirección de correo electrónico ya está registrada en su cuenta.
 email_addresses.add.limit: Agregó el número máximo de direcciones de correo electrónico.
 email_addresses.delete.bullet1: Si usa esta dirección de correo electrónico, no podrá iniciar sesión en %{app_name} (ni en ninguna de las aplicaciones gubernamentales vinculadas a su cuenta).
@@ -969,18 +970,18 @@ headings.webauthn_setup.new: Inserte su clave de seguridad
 help_text.requested_attributes.address: Dirección
 help_text.requested_attributes.all_emails: Direcciones de correo electrónico en su cuenta
 help_text.requested_attributes.birthdate: Fecha de nacimiento
+help_text.requested_attributes.change_email_link: Cambiar
+help_text.requested_attributes.consent_reminder_html: Debe dar su consentimiento cada año para divulgar su información a %{sp_html}.
 help_text.requested_attributes.email: Dirección de correo electrónico
 help_text.requested_attributes.full_name: Nombre completo
-help_text.requested_attributes.ial1_consent_reminder_html: Debe dar su consentimiento cada año para divulgar su información a <strong>%{sp}</strong>. Divulgaremos su información a <strong>%{sp}</strong> para conectar su cuenta.
-help_text.requested_attributes.ial1_intro_html: Divulgaremos su información a <strong>%{sp}</strong> para conectar su cuenta.
-help_text.requested_attributes.ial2_consent_reminder_html: 'Para conectar su cuenta, <strong>%{sp}</strong> necesita saber quién es usted. Debe dar su consentimiento cada año para divulgar su información verificada a <strong>%{sp}</strong>. Divulgaremos esta información:'
-help_text.requested_attributes.ial2_intro_html: 'Para conectar su cuenta, <strong>%{sp}</strong> necesita saber quién es usted. Divulgaremos esta información a %{sp}:'
-help_text.requested_attributes.ial2_reverified_consent_info: 'Como volvió a verificar su identidad, necesitamos su permiso para divulgar esta información a %{sp}:'
+help_text.requested_attributes.ial2_reverified_consent_info_html: 'Como volvió a verificar su identidad, necesitamos su permiso para divulgar esta información a %{sp_html}:'
+help_text.requested_attributes.intro_html: 'Divulgaremos esta información a %{sp_html}:'
 help_text.requested_attributes.phone: Número de teléfono
 help_text.requested_attributes.social_security_number: Número de Seguro Social
 help_text.requested_attributes.verified_at: Actualizado en
 help_text.requested_attributes.x509_issuer: Emisor de la tarjeta PIV o CAC
 help_text.requested_attributes.x509_subject: Identidad de la tarjeta PIV o CAC
+help_text.select_preferred_email: Puede cambiar el correo electrónico que comparte con %{sp} ya que tiene varios correos electrónicos asociados a su cuenta de %{app_name}.
 i18n.language: Idioma
 i18n.locale.en: English
 i18n.locale.es: Español
@@ -1618,6 +1619,7 @@ titles.reactivate_account: Reactive su cuenta
 titles.registrations.new: Cree su cuenta
 titles.revoke_consent: Revocar consentimiento
 titles.rules_of_use: Reglas de uso
+titles.select_email: Seleccione el correo electrónico que prefiera
 titles.sign_up.completion_consent_expired_ial1: Hace un año que nos dio su consentimiento para divulgar su información
 titles.sign_up.completion_consent_expired_ial2: Hace un año que nos dio su consentimiento para divulgar su identidad verificada
 titles.sign_up.completion_first_sign_in: Continuar con %{sp}
