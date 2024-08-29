@@ -222,7 +222,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
           birth_year: 1938,
           zip_code: '59010',
           issue_year: 2019,
-          selfie_attempts: 1,
+          selfie_attempts: 0,
         )
       end
 
