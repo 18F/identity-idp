@@ -238,7 +238,7 @@ RSpec.describe Idv::AgreementController, allowed_extra_analytics: [:*] do
       it 'does not set IDV consent flags' do
         put :update, params: params
 
-        expect(subject.idv_session.idv_consent_given).to be_nil
+        expect(subject.idv_session.idv_consent_given?).to eq(false)
         expect(subject.idv_session.idv_consent_given_at).to be_nil
       end
     end

@@ -27,7 +27,7 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
     allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
     subject.idv_session.welcome_visited = true
-    subject.idv_session.idv_consent_given = true
+    subject.idv_session.idv_consent_given_at = Time.zone.now
     subject.idv_session.flow_path = 'standard'
     subject.idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
     subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:ssn]

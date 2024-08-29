@@ -91,7 +91,7 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
 
     context 'agreement step is not complete' do
       before do
-        subject.idv_session.idv_consent_given = nil
+        subject.idv_session.idv_consent_given_at = nil
       end
 
       it 'redirects to idv_agreement_url' do
