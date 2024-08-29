@@ -60,9 +60,7 @@ module Reports
     end
 
     def reports
-      @reports ||= [
-        fraud_metrics_lg99_report.as_emailable_reports,
-      ]
+      @reports ||= fraud_metrics_lg99_report.as_emailable_reports
     end
 
     def fraud_metrics_lg99_report

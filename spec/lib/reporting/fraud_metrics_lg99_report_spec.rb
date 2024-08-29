@@ -149,7 +149,7 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
   end
 
   describe '#as_emailable_reports' do
-    let(:expected_report) do
+    let(:expected_reports) do
       [
         Reporting::EmailableReport.new(
           title: 'Monthly LG-99 Metrics Jan-2022',
@@ -169,7 +169,7 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
       ]
     end
     it 'return expected table for email' do
-      expect(report.as_emailable_reports).to eq expected_report
+      expect(report.as_emailable_reports).to eq expected_reports
     end
   end
 
