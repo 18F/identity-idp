@@ -32,7 +32,7 @@ RSpec.describe Idv::ProofingComponents do
     let(:pii_from_doc) { Idp::Constants::MOCK_IDV_APPLICANT }
 
     before do
-      allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return('test_vendor')
+      allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return('test_vendor')
       idv_session.mark_verify_info_step_complete!
       idv_session.address_verification_mechanism = 'gpo'
       allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?).
@@ -78,7 +78,7 @@ RSpec.describe Idv::ProofingComponents do
 
     context 'doc auth' do
       before do
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return('test_vendor')
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return('test_vendor')
       end
       context 'before doc auth complete' do
         it 'returns nil' do

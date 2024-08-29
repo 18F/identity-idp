@@ -368,5 +368,47 @@ RSpec.describe OpenidConnectUserInfoPresenter do
         end
       end
     end
+
+    context 'with a deleted email' do
+      let(:identity) do
+        build(
+          :service_provider_identity,
+          rails_session_id: rails_session_id,
+          user: create(:user, :fully_registered, :with_multiple_emails),
+          scope: scope,
+        )
+      end
+
+      before do
+        identity.email_address_id = identity.user.email_addresses.first.id
+        identity.user.email_addresses.first.delete
+      end
+
+      it 'defers to user alternate email' do
+        expect(identity.user.reload.email_addresses.first.id).
+          to_not eq(identity.email_address_id)
+        expect(identity.user.reload.email_addresses.count).to be 1
+        expect(user_info[:email]).to eq(identity.user.email_addresses.last.email)
+      end
+    end
+
+    context 'with nil email id' do
+      let(:identity) do
+        build(
+          :service_provider_identity,
+          rails_session_id: rails_session_id,
+          user: create(:user, :fully_registered),
+          scope: scope,
+        )
+      end
+
+      before do
+        identity.email_address_id = nil
+      end
+
+      it 'adds the signed in email id to the identity' do
+        expect(user_info[:email]).to eq(identity.user.email_addresses.last.email)
+      end
+    end
   end
 end

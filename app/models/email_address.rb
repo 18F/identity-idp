@@ -11,6 +11,7 @@ class EmailAddress < ApplicationRecord
   # rubocop:disable Rails/HasManyOrHasOneDependent
   has_one :suspended_email
   # rubocop:enable Rails/HasManyOrHasOneDependent
+  has_many :identities, class_name: 'ServiceProviderIdentity', dependent: :nullify
 
   scope :confirmed, -> { where('confirmed_at IS NOT NULL') }
 
@@ -29,8 +30,25 @@ class EmailAddress < ApplicationRecord
     Time.zone.now > expiration_time
   end
 
-  def gov_or_mil?
-    email.end_with?('.gov', '.mil')
+  def domain
+    Mail::Address.new(email).domain
+  end
+
+  def fed_or_mil_email?
+    fed_email? || mil_email?
+  end
+
+  def fed_email?
+    if IdentityConfig.store.use_fed_domain_class
+      return false unless domain
+      FederalEmailDomain.fed_domain?(domain)
+    else
+      email.end_with?('.gov')
+    end
+  end
+
+  def mil_email?
+    email.end_with?('.mil')
   end
 
   class << self

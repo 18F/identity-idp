@@ -60,6 +60,18 @@ RSpec.describe DeleteUserEmailForm do
 
         submit
       end
+
+      it 'removes associated identity email address id' do
+        user.identities << ServiceProviderIdentity.create(
+          service_provider: 'http://localhost:3000',
+          last_authenticated_at: Time.zone.now,
+        )
+        user.identities.last.email_address_id = email_address.id
+
+        submit
+
+        expect(user.identities.last.email_address_id).to be(nil)
+      end
     end
 
     context 'with a email of a different user' do

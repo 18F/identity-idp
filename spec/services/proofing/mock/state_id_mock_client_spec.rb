@@ -24,6 +24,7 @@ RSpec.describe Proofing::Mock::StateIdMockClient do
           transaction_id: transaction_id,
           vendor_name: 'StateIdMock',
           verified_attributes: [],
+          jurisdiction_in_maintenance_window: false,
         )
       end
     end
@@ -49,6 +50,7 @@ RSpec.describe Proofing::Mock::StateIdMockClient do
           transaction_id: transaction_id,
           vendor_name: 'StateIdMock',
           verified_attributes: [],
+          jurisdiction_in_maintenance_window: false,
         )
       end
     end
@@ -72,6 +74,7 @@ RSpec.describe Proofing::Mock::StateIdMockClient do
           transaction_id: transaction_id,
           vendor_name: 'StateIdMock',
           verified_attributes: [],
+          jurisdiction_in_maintenance_window: false,
         )
       end
     end

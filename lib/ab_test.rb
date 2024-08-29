@@ -5,7 +5,7 @@ class AbTest
 
   MAX_SHA = (16 ** 64) - 1
 
-  # @param [Proc<String>,RegExp,string,Boolean,nil] should_log Controls whether bucket data for this
+  # @param [Proc<String>,Regexp,string,Boolean,nil] should_log Controls whether bucket data for this
   #                                                            A/B test is logged with specific
   #                                                            events.
   # @yieldparam [ActionDispatch::Request] request
