@@ -7,11 +7,21 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
     [
       ['Metric', 'Total'],
       ['Unique users seeing LG-99', '5'],
-      ['Unique users suspended', '2'],
-      ['Average Days Creation to Suspension', '1.5'],
-      ['Average Days Proofed to Suspension', '2.0'],
-      ['Unique users reinstated', '1'],
-      ['Average Days to Reinstatement', '3.0'],
+    ]
+  end
+  let(:expected_suspended_metrics_table) do
+    [
+      ['Metric', 'Total', 'Range Start', 'Range End'],
+      ['Unique users suspended', '2', time_range.begin.to_s, time_range.end.to_s],
+      ['Average Days Creation to Suspension', '1.5', time_range.begin.to_s, time_range.end.to_s],
+      ['Average Days Proofed to Suspension', '2.0', time_range.begin.to_s, time_range.end.to_s],
+    ]
+  end
+  let(:expected_reinstated_metrics_table) do
+    [
+      ['Metric', 'Total', 'Range Start', 'Range End'],
+      ['Unique users reinstated', '1', time_range.begin.to_s, time_range.end.to_s],
+      ['Average Days to Reinstatement', '3.0', time_range.begin.to_s, time_range.end.to_s],
     ]
   end
   let!(:user6) do
@@ -61,6 +71,28 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
         report.lg99_metrics_table.zip(expected_lg99_metrics_table).each do |actual, expected|
           expect(actual).to eq(expected)
         end
+      end
+    end
+  end
+
+  describe '#suspended_metrics_table' do
+    it 'renders a suspended metrics table' do
+      aggregate_failures do
+        report.suspended_metrics_table.zip(expected_suspended_metrics_table).
+          each do |actual, expected|
+            expect(actual).to eq(expected)
+          end
+      end
+    end
+  end
+
+  describe '#reinstated_metrics_table' do
+    it 'renders a reinstated metrics table' do
+      aggregate_failures do
+        report.reinstated_metrics_table.zip(expected_reinstated_metrics_table).
+          each do |actual, expected|
+            expect(actual).to eq(expected)
+          end
       end
     end
   end
@@ -118,25 +150,62 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
 
   describe '#as_emailable_reports' do
     let(:expected_report) do
-      Reporting::EmailableReport.new(
-        title: 'LG-99 Metrics',
-        filename: 'lg99_metrics',
-        table: expected_lg99_metrics_table,
-      )
+      [
+        Reporting::EmailableReport.new(
+          title: 'Monthly LG-99 Metrics Jan-2022',
+          filename: 'lg99_metrics',
+          table: expected_lg99_metrics_table,
+        ),
+        Reporting::EmailableReport.new(
+          title: 'Monthly Suspended User Metrics Jan-2022',
+          filename: 'suspended_metrics',
+          table: expected_suspended_metrics_table,
+        ),
+        Reporting::EmailableReport.new(
+          title: 'Monthly Reinstated User Metrics Jan-2022',
+          filename: 'reinstated_metrics',
+          table: expected_reinstated_metrics_table,
+        ),
+      ]
     end
     it 'return expected table for email' do
       expect(report.as_emailable_reports).to eq expected_report
     end
   end
 
-  describe '#to_csv' do
-    it 'renders a csv report' do
+  describe '#to_csvs' do
+    it 'generates a csv' do
+      csv_string_list = report.to_csvs
+      expect(csv_string_list.count).to be 3
+
+      csvs = csv_string_list.map { |csv| CSV.parse(csv) }
+
       aggregate_failures do
-        report.lg99_metrics_table.zip(expected_lg99_metrics_table).each do |actual, expected|
+        csvs.map(&:to_a).zip(expected_tables).each do |actual, expected|
           expect(actual).to eq(expected)
         end
       end
     end
+  end
+
+  def expected_tables
+    [
+      [
+        ['Metric', 'Total'],
+        ['Unique users seeing LG-99', '5'],
+      ],
+      [
+        ['Metric', 'Total', 'Range Start', 'Range End'],
+        ['Unique users suspended', '2', time_range.begin.to_s, time_range.end.to_s],
+        ['Average Days Creation to Suspension', '1.5', time_range.begin.to_s, time_range.end.to_s],
+        ['Average Days Proofed to Suspension', '2.0', time_range.begin.to_s, time_range.end.to_s],
+      ],
+      [
+        ['Metric', 'Total', 'Range Start', 'Range End'],
+        ['Unique users reinstated', '1', time_range.begin.to_s, time_range.end.to_s],
+        ['Average Days to Reinstatement', '3.0', time_range.begin.to_s, time_range.end.to_s],
+      ],
+    ]
   end
 
   describe '#cloudwatch_client' do
