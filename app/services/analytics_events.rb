@@ -5845,7 +5845,7 @@ module AnalyticsEvents
   # @param [String] endpoint
   # @param [Boolean] idv
   # @param [Boolean] finish_profile
-  # @param [Integer] requested_ial
+  # @param [String] requested_ial
   # @param [Boolean] request_signed
   # @param [String] matching_cert_serial
   # matches the request certificate in a successful, signed request
@@ -5890,7 +5890,7 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Integer] requested_ial
+  # @param [String] requested_ial
   # @param [Array] authn_context
   # @param [String, nil] requested_aal_authn_context
   # @param [String, nil] requested_vtr_authn_contexts
