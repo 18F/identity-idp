@@ -130,10 +130,6 @@ module SamlIdpAuthConcern
     end
   end
 
-  def requested_ial_authn_context
-    saml_request.requested_ial_authn_context || default_ial_context
-  end
-
   def link_identity_from_session_data
     IdentityLinker.
       new(current_user, saml_request_service_provider).
