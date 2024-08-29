@@ -9,7 +9,7 @@ RSpec.describe Idv::AddressController do
     stub_sign_in(user)
     stub_analytics
     subject.idv_session.welcome_visited = true
-    subject.idv_session.idv_consent_given = true
+    subject.idv_session.idv_consent_given_at = Time.zone.now
     subject.idv_session.flow_path = 'standard'
     subject.idv_session.pii_from_doc = pii_from_doc
   end

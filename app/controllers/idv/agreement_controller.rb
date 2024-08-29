@@ -18,7 +18,7 @@ module Idv
       )
 
       @consent_form = Idv::ConsentForm.new(
-        idv_consent_given: idv_session.idv_consent_given,
+        idv_consent_given: idv_session.idv_consent_given?,
       )
     end
 
@@ -27,7 +27,7 @@ module Idv
       skip_to_capture if params[:skip_hybrid_handoff]
 
       @consent_form = Idv::ConsentForm.new(
-        idv_consent_given: idv_session.idv_consent_given,
+        idv_consent_given: idv_session.idv_consent_given?,
       )
       result = @consent_form.submit(consent_form_params)
 
@@ -36,7 +36,6 @@ module Idv
       )
 
       if result.success?
-        idv_session.idv_consent_given = true
         idv_session.idv_consent_given_at = Time.zone.now
 
         if IdentityConfig.store.in_person_proofing_opt_in_enabled &&
@@ -57,7 +56,7 @@ module Idv
         next_steps: [:hybrid_handoff, :document_capture, :how_to_verify],
         preconditions: ->(idv_session:, user:) { idv_session.welcome_visited },
         undo_step: ->(idv_session:, user:) do
-          idv_session.idv_consent_given = nil
+          idv_session.idv_consent_given_at = nil
           idv_session.skip_hybrid_handoff = nil
         end,
       )

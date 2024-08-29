@@ -12,7 +12,7 @@ module FlowPolicyHelper
     when :welcome
       idv_session.welcome_visited = true
     when :agreement
-      idv_session.idv_consent_given = true
+      idv_session.idv_consent_given_at = Time.zone.now
     when :how_to_verify
       idv_session.skip_doc_auth = false
       idv_session.skip_doc_auth_from_how_to_verify = false

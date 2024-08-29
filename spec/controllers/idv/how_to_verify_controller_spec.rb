@@ -18,7 +18,7 @@ RSpec.describe Idv::HowToVerifyController, allowed_extra_analytics: [:*] do
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
     allow(subject.idv_session).to receive(:service_provider).and_return(service_provider)
     subject.idv_session.welcome_visited = true
-    subject.idv_session.idv_consent_given = true
+    subject.idv_session.idv_consent_given_at = Time.zone.now
   end
 
   describe 'before_actions' do
@@ -133,7 +133,7 @@ RSpec.describe Idv::HowToVerifyController, allowed_extra_analytics: [:*] do
 
     context 'agreement step not completed' do
       before do
-        subject.idv_session.idv_consent_given = nil
+        subject.idv_session.idv_consent_given_at = nil
       end
 
       it 'redirects to agreement path' do

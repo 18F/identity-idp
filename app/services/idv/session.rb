@@ -12,7 +12,6 @@ module Idv
       gpo_code_verified
       had_barcode_attention_error
       had_barcode_read_failure
-      idv_consent_given
       idv_consent_given_at
       idv_phone_step_document_capture_session_uuid
       mail_only_warning_shown
@@ -289,6 +288,11 @@ module Idv
 
     def desktop_selfie_test_mode_enabled?
       IdentityConfig.store.doc_auth_selfie_desktop_test_mode
+    end
+
+    def idv_consent_given?
+      !!(session[:idv_consent_given_at] &&
+        session[:idv_consent_given_at] > (Time.zone.now - 1.month))
     end
 
     private
