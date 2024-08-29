@@ -16,9 +16,6 @@ FactoryBot.define do
       enrollment_established_at { Time.zone.now }
       status { :pending }
       status_updated_at { Time.zone.now }
-      profile do
-        association(:profile, :in_person_verification_pending, user: user)
-      end
     end
 
     trait :expired do

@@ -97,9 +97,9 @@ doc_auth_max_submission_attempts_before_native_camera: 3
 doc_auth_selfie_desktop_test_mode: false
 doc_auth_separate_pages_enabled: false
 doc_auth_supported_country_codes: '["US", "GU", "VI", "AS", "MP", "PR", "USA" ,"GUM", "VIR", "ASM", "MNP", "PRI"]'
-doc_auth_vendor_lexis_nexis_percent: 100 # note, LN is currently the default vendor
-doc_auth_vendor_socure_percent: 0
-doc_auth_vendor_switching_enabled: false
+doc_auth_vendor_randomize: false
+doc_auth_vendor_randomize_alternate_vendor: ''
+doc_auth_vendor_randomize_percent: 0
 doc_capture_polling_enabled: true
 doc_capture_request_valid_for_minutes: 15
 drop_off_report_config: '[{"emails":["ursula@example.com"],"issuers": ["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]}]'
@@ -116,7 +116,6 @@ enable_usps_verification: true
 event_disavowal_expiration_hours: 240
 feature_idv_force_gpo_verification_enabled: false
 feature_idv_hybrid_flow_enabled: true
-feature_select_email_to_share_enabled: true
 geo_data_file_path: 'geo_data/GeoLite2-City.mmdb'
 get_usps_proofing_results_job_cron: '0/30 * * * *'
 get_usps_proofing_results_job_reprocess_delay_minutes: 5
@@ -336,7 +335,6 @@ sign_in_user_id_per_ip_attempt_window_exponential_factor: 1.1
 sign_in_user_id_per_ip_attempt_window_in_minutes: 720
 sign_in_user_id_per_ip_attempt_window_max_minutes: 43_200
 sign_in_user_id_per_ip_max_attempts: 50
-socure_webhook_enabled: false
 socure_webhook_secret_key: ''
 socure_webhook_secret_key_queue: '[]'
 sp_handoff_bounce_max_seconds: 2
@@ -351,7 +349,6 @@ test_ssn_allowed_list: ''
 totp_code_interval: 30
 unauthorized_scope_enabled: false
 use_dashboard_service_providers: false
-use_fed_domain_class: false
 use_kms: false
 use_vot_in_sp_requests: true
 usps_auth_token_refresh_job_enabled: false
@@ -401,7 +398,6 @@ development:
   dashboard_url: http://localhost:3001/api/service_providers
   doc_auth_selfie_desktop_test_mode: true
   doc_auth_vendor: 'mock'
-  doc_auth_vendor_default: 'mock'
   domain_name: localhost:3000
   enable_rate_limiting: false
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
@@ -436,7 +432,6 @@ development:
   state_tracking_enabled: true
   telephony_adapter: test
   use_dashboard_service_providers: true
-  use_fed_domain_class: true
   usps_eipp_sponsor_id: '222222222222222'
   usps_ipp_sponsor_id: '111111111111111'
   usps_ipp_transliteration_enabled: true
@@ -461,13 +456,11 @@ production:
   dashboard_url: https://dashboard.demo.login.gov
   disable_email_sending: false
   disable_logout_get_request: false
-  doc_auth_vendor: 'lexisnexis'
-  doc_auth_vendor_default: 'lexisnexis'
+  doc_auth_vendor: 'acuant'
   domain_name: login.gov
   email_registrations_per_ip_track_only_mode: true
   enable_test_routes: false
   enable_usps_verification: false
-  feature_select_email_to_share_enabled: false
   hmac_fingerprinter_key:
   hmac_fingerprinter_key_queue: '[]'
   idv_sp_required: true
@@ -518,7 +511,6 @@ test:
   doc_auth_max_attempts: 4
   doc_auth_selfie_desktop_test_mode: true
   doc_auth_vendor: 'mock'
-  doc_auth_vendor_default: 'mock'
   doc_capture_polling_enabled: false
   domain_name: www.example.com
   email_registrations_per_ip_limit: 3
@@ -571,7 +563,6 @@ test:
   telephony_adapter: test
   test_ssn_allowed_list: '999999999'
   totp_code_interval: 3
-  use_fed_domain_class: true
   usps_eipp_sponsor_id: '222222222222222'
   usps_ipp_root_url: 'http://localhost:1000'
   usps_ipp_sponsor_id: '111111111111111'

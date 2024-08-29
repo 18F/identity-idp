@@ -1,9 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe CompletionsPresenter do
-  include ActionView::Helpers::OutputSafetyHelper
-  include ActionView::Helpers::TagHelper
-
   let(:identities) do
     [
       build(
@@ -15,7 +12,6 @@ RSpec.describe CompletionsPresenter do
   end
   let(:current_user) { create(:user, :fully_registered, identities: identities) }
   let(:current_sp) { create(:service_provider, friendly_name: 'Friendly service provider') }
-  let(:selected_email_id) { current_user.email_addresses.first.id }
   let(:decrypted_pii) do
     Pii::Attributes.new(
       first_name: 'Testy',
@@ -42,13 +38,12 @@ RSpec.describe CompletionsPresenter do
 
   subject(:presenter) do
     described_class.new(
-      current_user:,
-      current_sp:,
-      decrypted_pii:,
-      requested_attributes:,
-      ial2_requested:,
-      completion_context:,
-      selected_email_id:,
+      current_user: current_user,
+      current_sp: current_sp,
+      decrypted_pii: decrypted_pii,
+      requested_attributes: requested_attributes,
+      ial2_requested: ial2_requested,
+      completion_context: completion_context,
     )
   end
 
@@ -152,49 +147,7 @@ RSpec.describe CompletionsPresenter do
   end
 
   describe '#intro' do
-    it 'renders the standard intro message' do
-      expect(presenter.intro).to eq(
-        t(
-          'help_text.requested_attributes.intro_html',
-          sp_html: content_tag(:strong, current_sp.friendly_name),
-        ),
-      )
-    end
-
-    context 'consent has expired since the last sign in' do
-      let(:identities) do
-        [
-          build(
-            :service_provider_identity,
-            service_provider: current_sp.issuer,
-            last_consented_at: 2.years.ago,
-          ),
-        ]
-      end
-      let(:completion_context) { :consent_expired }
-
-      it 'renders the expired consent intro message' do
-        expect(presenter.intro).to eq(
-          safe_join(
-            [
-              t(
-                'help_text.requested_attributes.consent_reminder_html',
-                sp_html: content_tag(:strong, current_sp.friendly_name),
-              ),
-              t(
-                'help_text.requested_attributes.intro_html',
-                sp_html: content_tag(:strong, current_sp.friendly_name),
-              ),
-            ],
-            ' ',
-          ),
-        )
-      end
-    end
-
-    describe 'ial2' do
-      let(:ial2_requested) { true }
-
+    describe 'ial1' do
       context 'consent has expired since the last sign in' do
         let(:identities) do
           [
@@ -207,20 +160,47 @@ RSpec.describe CompletionsPresenter do
         end
         let(:completion_context) { :consent_expired }
 
-        it 'renders the expired consent intro message' do
+        it 'renders the expired IAL1 consent intro message' do
           expect(presenter.intro).to eq(
-            safe_join(
-              [
-                t(
-                  'help_text.requested_attributes.consent_reminder_html',
-                  sp_html: content_tag(:strong, current_sp.friendly_name),
-                ),
-                t(
-                  'help_text.requested_attributes.intro_html',
-                  sp_html: content_tag(:strong, current_sp.friendly_name),
-                ),
-              ],
-              ' ',
+            I18n.t(
+              'help_text.requested_attributes.ial1_consent_reminder_html',
+              sp: current_sp.friendly_name,
+            ),
+          )
+        end
+      end
+
+      context 'when consent has not expired' do
+        it 'renders the standard intro message' do
+          expect(presenter.intro).to eq(
+            I18n.t(
+              'help_text.requested_attributes.ial1_intro_html',
+              sp: current_sp.friendly_name,
+            ),
+          )
+        end
+      end
+    end
+
+    describe 'ial2' do
+      let(:ial2_requested) { true }
+      context 'consent has expired since the last sign in' do
+        let(:identities) do
+          [
+            build(
+              :service_provider_identity,
+              service_provider: current_sp.issuer,
+              last_consented_at: 2.years.ago,
+            ),
+          ]
+        end
+        let(:completion_context) { :consent_expired }
+
+        it 'renders the expired IAL2 consent intro message' do
+          expect(presenter.intro).to eq(
+            I18n.t(
+              'help_text.requested_attributes.ial2_consent_reminder_html',
+              sp: current_sp.friendly_name,
             ),
           )
         end
@@ -237,12 +217,22 @@ RSpec.describe CompletionsPresenter do
           ]
         end
         let(:completion_context) { :reverified_after_consent }
-
         it 'renders the reverified IAL2 consent intro message' do
           expect(presenter.intro).to eq(
-            t(
-              'help_text.requested_attributes.ial2_reverified_consent_info_html',
-              sp_html: content_tag(:strong, current_sp.friendly_name),
+            I18n.t(
+              'help_text.requested_attributes.ial2_reverified_consent_info',
+              sp: current_sp.friendly_name,
+            ),
+          )
+        end
+      end
+
+      context 'when consent has not expired' do
+        it 'renders the standard intro message' do
+          expect(presenter.intro).to eq(
+            I18n.t(
+              'help_text.requested_attributes.ial2_intro_html',
+              sp: current_sp.friendly_name,
             ),
           )
         end

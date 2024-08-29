@@ -703,7 +703,6 @@ doc_auth.tips.review_issues_id_text1: 你是否使用了暗色背景？
 doc_auth.tips.review_issues_id_text2: 是否在平坦平面上拍的照？
 doc_auth.tips.review_issues_id_text3: 你相机的闪光灯是否关闭？
 doc_auth.tips.review_issues_id_text4: 是否所有细节都清晰可见？
-email_address.not_found: 未找到电子邮件
 email_addresses.add.duplicate: 该电邮地址已注册到你的账户。
 email_addresses.add.limit: 你添加的电邮地址数目已达最多。
 email_addresses.delete.bullet1: 使用该电邮地址你无法登录进入 %{app_name} （或任何其他与你账户关联的政府应用程序）。
@@ -972,18 +971,18 @@ headings.webauthn_setup.new: 插入您的安全密钥
 help_text.requested_attributes.address: 地址
 help_text.requested_attributes.all_emails: 你账户上的电邮地址
 help_text.requested_attributes.birthdate: 生日
-help_text.requested_attributes.change_email_link: 更改
-help_text.requested_attributes.consent_reminder_html: 你每年都必须授权同意与 %{sp_html} 分享信息。
 help_text.requested_attributes.email: 电邮地址
 help_text.requested_attributes.full_name: 姓名
-help_text.requested_attributes.ial2_reverified_consent_info_html: '因为你重新验证了身份，我们需要得到你的许可才能与 %{sp_html} 分享该信息。'
-help_text.requested_attributes.intro_html: 我们会与 %{sp_html} 分享这些信息：
+help_text.requested_attributes.ial1_consent_reminder_html: 你每年都必须授权同意与 <strong>%{sp}</strong> 分享信息。我们将与 <strong>%{sp}</strong> 分享你的信息来连接你账户。
+help_text.requested_attributes.ial1_intro_html: 我们将与 <strong>%{sp}</strong> 分享你的信息来连接你账户。
+help_text.requested_attributes.ial2_consent_reminder_html: '<strong>%{sp}</strong> 需要知道你是谁才能连接你的账户。你每年都必须授权同意与 <strong>%{sp}</strong> 分享已验证过的你的信息。我们会分享这些信息：'
+help_text.requested_attributes.ial2_intro_html: '<strong>%{sp}</strong> 需要知道你是谁才能连接你的账户。我们会与 %{sp} 分享这些信息：'
+help_text.requested_attributes.ial2_reverified_consent_info: '因为你重新验证了身份，我们需要得到你的许可才能与 %{sp} 分享该信息。'
 help_text.requested_attributes.phone: 电话号码
 help_text.requested_attributes.social_security_number: 社会保障号码
 help_text.requested_attributes.verified_at: 更新是在
 help_text.requested_attributes.x509_issuer: PIV/CAC 发放方
 help_text.requested_attributes.x509_subject: PIV/CAC 身份
-help_text.select_preferred_email: 因为你有多个电邮与 %{app_name} 账户相关，你可以更改与我们 %{sp} 构分享哪个。
 i18n.language: 语言
 i18n.locale.en: English
 i18n.locale.es: Español
@@ -1620,7 +1619,6 @@ titles.reactivate_account: 重新激活你账户
 titles.registrations.new: 设立账户
 titles.revoke_consent: 撤销同意
 titles.rules_of_use: 使用规则
-titles.select_email: 选择你比较愿意分享的电邮
 titles.sign_up.completion_consent_expired_ial1: 从你上次授权我们分享你的信息已经一年了。
 titles.sign_up.completion_consent_expired_ial2: 从你上次授权我们分享你验证过的身份已经一年了。
 titles.sign_up.completion_first_sign_in: 继续到 %{sp}

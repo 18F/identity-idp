@@ -25,8 +25,7 @@ class IdentityLinker
     scope: nil,
     verified_attributes: nil,
     last_consented_at: nil,
-    clear_deleted_at: nil,
-    email_address_id: nil
+    clear_deleted_at: nil
   )
     return unless user && service_provider.present?
 
@@ -44,7 +43,6 @@ class IdentityLinker
         rails_session_id: rails_session_id,
         scope: scope,
         verified_attributes: combined_verified_attributes(verified_attributes),
-        email_address_id: email_address_id,
       ).tap do |hash|
         hash[:last_consented_at] = last_consented_at if last_consented_at
         hash[:deleted_at] = nil if clear_deleted_at

@@ -121,7 +121,7 @@ RSpec.describe 'accounts/show.html.erb' do
       in_person_enrollment = user.in_person_enrollments.first
       in_person_enrollment.update!(status: :expired, status_check_completed_at: Time.zone.now)
       profile = user.profiles.first
-      profile.deactivate_due_to_in_person_verification_cancelled
+      profile.deactivate_due_to_ipp_expiration
     end
 
     it 'renders the idv partial' do

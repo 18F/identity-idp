@@ -8,7 +8,6 @@ RSpec.describe Proofing::StateIdResult do
   let(:transaction_id) { 'ABCD1234' }
   let(:requested_attributes) { { dob: 1, first_name: 1 } }
   let(:verified_attributes) { [:dob, :first_name] }
-  let(:jurisdiction_in_maintenance_window) { false }
 
   subject do
     described_class.new(
@@ -19,7 +18,6 @@ RSpec.describe Proofing::StateIdResult do
       transaction_id:,
       requested_attributes:,
       verified_attributes:,
-      jurisdiction_in_maintenance_window:,
     )
   end
 
@@ -36,7 +34,6 @@ RSpec.describe Proofing::StateIdResult do
           transaction_id: 'ABCD1234',
           requested_attributes: { dob: 1, first_name: 1 },
           verified_attributes: [:dob, :first_name],
-          jurisdiction_in_maintenance_window: false,
         },
       )
     end

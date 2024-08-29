@@ -11,6 +11,7 @@ class TwoFactorOptionsPresenter
               :user_agent
 
   delegate :two_factor_enabled?, to: :mfa_policy
+
   def initialize(
     user_agent:,
     user: nil,

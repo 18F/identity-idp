@@ -1001,10 +1001,10 @@ RSpec.describe Profile do
     end
   end
 
-  describe '#deactivate_due_to_in_person_verification_cancelled' do
+  describe '#deactivate_due_to_ipp_expiration' do
     let(:profile) { create(:profile, :in_person_verification_pending) }
     it 'updates the profile' do
-      profile.deactivate_due_to_in_person_verification_cancelled
+      profile.deactivate_due_to_ipp_expiration
 
       expect(profile.active).to be false
       expect(profile.deactivation_reason).to eq('verification_cancelled')

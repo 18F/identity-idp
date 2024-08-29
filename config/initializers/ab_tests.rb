@@ -35,17 +35,13 @@ module AbTests
     constants.index_with { |test_name| const_get(test_name) }
   end
 
-  # This "test" will permanently be in place to allow a graceful transition from TrueID being the
-  # sole vendor to a multi-vendor configuration.
   DOC_AUTH_VENDOR = AbTest.new(
     experiment_name: 'Doc Auth Vendor',
     should_log: /^idv/i,
-    default_bucket: :lexis_nexis,
     buckets: {
-      socure: IdentityConfig.store.doc_auth_vendor_switching_enabled ?
-        IdentityConfig.store.doc_auth_vendor_socure_percent : 0,
-      lexis_nexis: IdentityConfig.store.doc_auth_vendor_switching_enabled ?
-        IdentityConfig.store.doc_auth_vendor_lexis_nexis_percent : 0,
+      alternate_vendor: IdentityConfig.store.doc_auth_vendor_randomize ?
+        IdentityConfig.store.doc_auth_vendor_randomize_percent :
+        0,
     }.compact,
   ) do |service_provider:, session:, user:, user_session:, **|
     document_capture_session_uuid_discriminator(service_provider:, session:, user:, user_session:)
