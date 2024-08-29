@@ -120,6 +120,8 @@ RSpec.describe 'accounts/show.html.erb' do
       # Make the in_person_enrollment and associated profile failed
       in_person_enrollment = user.in_person_enrollments.first
       in_person_enrollment.update!(status: :failed, status_check_completed_at: Time.zone.now)
+      profile = user.profiles.first
+      profile.deactivate_due_to_in_person_verification_cancelled
     end
 
     it 'renders the idv partial' do
@@ -136,6 +138,8 @@ RSpec.describe 'accounts/show.html.erb' do
       # Make the in_person_enrollment and associated profile cancelled
       in_person_enrollment = user.in_person_enrollments.first
       in_person_enrollment.update!(status: :cancelled, status_check_completed_at: Time.zone.now)
+      profile = user.profiles.first
+      profile.deactivate_due_to_in_person_verification_cancelled
     end
 
     it 'renders the idv partial' do
