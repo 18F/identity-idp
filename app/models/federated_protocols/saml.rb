@@ -2,6 +2,9 @@
 
 module FederatedProtocols
   class Saml
+    IAL_PREFIX = %r{^http://idmanagement.gov/ns/assurance/ial}
+    AAL_PREFIX = %r{^http://idmanagement.gov/ns/assurance/aal|urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo}
+
     def initialize(request)
       @request = request
     end
@@ -19,11 +22,15 @@ module FederatedProtocols
     end
 
     def requested_ial_authn_context
-      request.requested_ial_authn_context
+      request.requested_authn_contexts.find do |classref|
+        IAL_PREFIX.match?(classref)
+      end
     end
 
     def aal
-      request.requested_aal_authn_context
+      request.requested_authn_contexts.find do |classref|
+        AAL_PREFIX.match?(classref)
+      end
     end
 
     def acr_values
