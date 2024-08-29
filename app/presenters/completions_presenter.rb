@@ -4,8 +4,7 @@ class CompletionsPresenter
   include ActionView::Helpers::TranslationHelper
   include ActionView::Helpers::TagHelper
 
-  attr_reader :current_user, :current_sp, :decrypted_pii, :requested_attributes,
-              :completion_context, :selected_email_id
+  attr_reader :current_user, :current_sp, :decrypted_pii, :requested_attributes, :completion_context
 
   SORTED_IAL2_ATTRIBUTE_MAPPING = [
     [[:email], :email],
@@ -34,8 +33,7 @@ class CompletionsPresenter
     decrypted_pii:,
     requested_attributes:,
     ial2_requested:,
-    completion_context:,
-    selected_email_id:
+    completion_context:
   )
     @current_user = current_user
     @current_sp = current_sp
@@ -43,7 +41,6 @@ class CompletionsPresenter
     @requested_attributes = requested_attributes
     @ial2_requested = ial2_requested
     @completion_context = completion_context
-    @selected_email_id = selected_email_id
   end
 
   def ial2_requested?
@@ -105,10 +102,6 @@ class CompletionsPresenter
     end
   end
 
-  def multiple_emails?
-    current_user.confirmed_email_addresses.many?
-  end
-
   private
 
   def first_time_signing_in?
@@ -119,7 +112,6 @@ class CompletionsPresenter
     @displayable_pii ||= DisplayablePiiFormatter.new(
       current_user: current_user,
       pii: decrypted_pii,
-      selected_email_id: @selected_email_id,
     ).format
   end
 

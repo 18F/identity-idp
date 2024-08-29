@@ -48,8 +48,6 @@ RSpec.describe DisplayablePiiFormatter do
     )
   end
 
-  let(:selected_email_id) { current_user.email_addresses.first.id }
-
   let(:pii) do
     {
       first_name: first_name,
@@ -65,13 +63,7 @@ RSpec.describe DisplayablePiiFormatter do
     }
   end
 
-  subject(:formatter) do
-    described_class.new(
-      current_user:,
-      pii:,
-      selected_email_id:,
-    )
-  end
+  subject(:formatter) { described_class.new(current_user: current_user, pii: pii) }
 
   describe '#format' do
     context 'ial1' do
