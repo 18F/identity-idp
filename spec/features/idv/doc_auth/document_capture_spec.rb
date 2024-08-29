@@ -210,36 +210,9 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
         end
 
         context 'documents or selfie with error is uploaded' do
-          context 'IPP enabled' do
-            let(:ipp_service_provider) do
-              create(:service_provider, :active, :in_person_proofing_enabled)
-            end
-
-            before do
-              allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-              allow(IdentityConfig.store).to receive(
-                :in_person_proofing_opt_in_enabled,
-              ).and_return(true)
-              allow_any_instance_of(ServiceProvider).to receive(
-                :in_person_proofing_enabled,
-              ).and_return(true)
-              allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(99)
-              perform_in_browser(:mobile) do
-                visit_idp_from_sp_with_ial2(
-                  :oidc,
-                  **{ client_id: ipp_service_provider.issuer,
-                      biometric_comparison_required: true },
-                )
-                sign_in_and_2fa_user(@user)
-                complete_up_to_how_to_verify_step_for_opt_in_ipp(
-                  biometric_comparison_required: true,
-                )
-                complete_verify_step
-              end
-            end
-
+          shared_examples 'it has correct error display' do
+            # when there are multiple doc auth errors on front and back
             it 'shows the correct error message for the given error' do
-              # when there are multiple doc auth errors on front and back
               perform_in_browser(:mobile) do
                 use_id_image('ial2_test_credential_multiple_doc_auth_failures_both_sides.yml')
                 use_selfie_image('ial2_test_credential_multiple_doc_auth_failures_both_sides.yml')
@@ -330,6 +303,37 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
             end
           end
 
+          context 'IPP enabled' do
+            let(:ipp_service_provider) do
+              create(:service_provider, :active, :in_person_proofing_enabled)
+            end
+
+            before do
+              allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+              allow(IdentityConfig.store).to receive(
+                :in_person_proofing_opt_in_enabled,
+              ).and_return(true)
+              allow_any_instance_of(ServiceProvider).to receive(
+                :in_person_proofing_enabled,
+              ).and_return(true)
+              allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(99)
+              perform_in_browser(:mobile) do
+                visit_idp_from_sp_with_ial2(
+                  :oidc,
+                  **{ client_id: ipp_service_provider.issuer,
+                      biometric_comparison_required: true },
+                )
+                sign_in_and_2fa_user(@user)
+                complete_up_to_how_to_verify_step_for_opt_in_ipp(
+                  biometric_comparison_required: true,
+                )
+                complete_verify_step
+              end
+            end
+
+            it_should_behave_like 'it has correct error display'
+          end
+
           context 'IPP not enabled' do
             before do
               allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(99)
@@ -340,264 +344,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
               end
             end
 
-            it 'shows the correct error message for the given error' do
-              perform_in_browser(:mobile) do
-                # when the only error is a doc auth error
-                use_id_image('ial2_test_credential_doc_auth_fail_selfie_pass.yml')
-                use_selfie_image('ial2_test_credential_doc_auth_fail_selfie_pass.yml')
-                submit_images
-
-                expect_rate_limit_warning(max_attempts - 1)
-                expect_to_try_again
-
-                inline_error_message = strip_tags(t('doc_auth.errors.dpi.failed_short'))
-                expect(page).to have_content(inline_error_message)
-
-                expect_resubmit_page_h1_copy
-                expect_resubmit_page_body_copy('doc_auth.errors.dpi.top_msg')
-                expect_resubmit_page_inline_selfie_error_message(false)
-
-                expect(page).to have_current_path(idv_document_capture_url)
-
-                # when doc auth result passes but liveness fails
-                use_id_image('ial2_test_credential_no_liveness.yml')
-                use_selfie_image('ial2_test_credential_no_liveness.yml')
-                submit_images
-
-                review_page_h1_copy = strip_tags(
-                  t('doc_auth.errors.selfie_not_live_or_poor_quality_heading'),
-                )
-                expect(page).to have_content(review_page_h1_copy)
-
-                review_page_body_copy = strip_tags(
-                  t('doc_auth.errors.alerts.selfie_not_live_or_poor_quality'),
-                )
-                expect(page).to have_content(review_page_body_copy)
-
-                expect_rate_limit_warning(max_attempts - 2)
-                expect_to_try_again
-                expect_resubmit_page_h1_copy
-                expect_resubmit_page_body_copy(
-                  'doc_auth.errors.alerts.selfie_not_live_or_poor_quality',
-                )
-                expect_resubmit_page_inline_selfie_error_message(true)
-
-                # when there are both doc auth errors and liveness errors
-
-                use_id_image('ial2_test_credential_doc_auth_fail_and_no_liveness.yml')
-                use_selfie_image('ial2_test_credential_doc_auth_fail_and_no_liveness.yml')
-                submit_images
-
-                review_page_h1_copy = strip_tags(t('doc_auth.errors.rate_limited_heading'))
-                expect(page).to have_content(review_page_h1_copy)
-
-                review_page_body_copy = strip_tags(t('doc_auth.errors.dpi.top_msg'))
-                expect(page).to have_content(review_page_body_copy)
-
-                expect_rate_limit_warning(max_attempts - 3)
-                expect_to_try_again
-                expect_resubmit_page_h1_copy
-                expect_resubmit_page_body_copy('doc_auth.errors.dpi.top_msg')
-
-                inline_error_message = strip_tags(t('doc_auth.errors.dpi.failed_short'))
-                expect(page).to have_content(inline_error_message)
-                expect_resubmit_page_inline_selfie_error_message(false)
-
-                # when there are both doc auth errors and face match errors
-                use_id_image('ial2_test_credential_doc_auth_fail_face_match_fail.yml')
-                use_selfie_image('ial2_test_credential_doc_auth_fail_face_match_fail.yml')
-                submit_images
-
-                review_page_h1_copy = strip_tags(t('doc_auth.errors.rate_limited_heading'))
-                expect(page).to have_content(review_page_h1_copy)
-
-                review_page_body_copy = strip_tags(t('doc_auth.errors.dpi.top_msg'))
-                expect(page).to have_content(review_page_body_copy)
-
-                expect_rate_limit_warning(max_attempts - 4)
-                expect_to_try_again
-                expect_resubmit_page_h1_copy
-                expect_resubmit_page_body_copy('doc_auth.errors.dpi.top_msg')
-
-                inline_error_message = strip_tags(t('doc_auth.errors.dpi.failed_short'))
-                expect(page).to have_content(inline_error_message)
-                expect_resubmit_page_inline_selfie_error_message(false)
-
-                # when doc auth result and liveness pass but face match fails
-                use_id_image('ial2_test_portrait_match_failure.yml')
-                use_selfie_image('ial2_test_portrait_match_failure.yml')
-                submit_images
-
-                review_page_h1_copy = strip_tags(t('doc_auth.errors.selfie_fail_heading'))
-                expect(page).to have_content(review_page_h1_copy)
-
-                review_page_body_copy = strip_tags(t('doc_auth.errors.general.selfie_failure'))
-                expect(page).to have_content(review_page_body_copy)
-
-                expect_rate_limit_warning(max_attempts - 5)
-                expect_to_try_again
-                expect_resubmit_page_h1_copy
-                expect_resubmit_page_body_copy('doc_auth.errors.general.selfie_failure')
-
-                inline_error_message = strip_tags(
-                  t('doc_auth.errors.general.multiple_front_id_failures'),
-                )
-                expect(page).to have_content(inline_error_message)
-                expect_resubmit_page_inline_selfie_error_message(true)
-
-                # when there is a doc auth error on one side of the ID and face match errors
-                use_id_image('ial2_test_credential_back_fail_doc_auth_face_match_errors.yml')
-                use_selfie_image('ial2_test_credential_back_fail_doc_auth_face_match_errors.yml')
-                submit_images
-
-                review_page_h1_copy = strip_tags(t('doc_auth.errors.rate_limited_heading'))
-                expect(page).to have_content(review_page_h1_copy)
-
-                review_page_body_copy = strip_nbsp(
-                  t('doc_auth.errors.alerts.barcode_content_check'),
-                )
-                expect(page).to have_content(review_page_body_copy)
-
-                expect_rate_limit_warning(max_attempts - 6)
-                expect_to_try_again
-                expect_resubmit_page_h1_copy
-                expect_resubmit_page_body_copy('doc_auth.errors.alerts.barcode_content_check')
-
-                inline_error_message = strip_tags(t('doc_auth.errors.general.fallback_field_level'))
-                expect(page).to have_content(inline_error_message)
-                expect_resubmit_page_inline_selfie_error_message(false)
-
-                # when there is a doc auth error on one side of the ID and a liveness error
-
-                use_id_image('ial2_test_credential_back_fail_doc_auth_liveness_errors.yml')
-                use_selfie_image('ial2_test_credential_back_fail_doc_auth_liveness_errors.yml')
-                submit_images
-
-                review_page_h1_copy = strip_tags(t('doc_auth.errors.rate_limited_heading'))
-                expect(page).to have_content(review_page_h1_copy)
-
-                review_page_body_copy = strip_nbsp(
-                  t('doc_auth.errors.alerts.barcode_content_check'),
-                )
-                expect(page).to have_content(review_page_body_copy)
-
-                expect_rate_limit_warning(max_attempts - 7)
-                expect_to_try_again
-                expect_resubmit_page_h1_copy
-                expect_resubmit_page_body_copy('doc_auth.errors.alerts.barcode_content_check')
-
-                inline_error_message = strip_tags(t('doc_auth.errors.general.fallback_field_level'))
-                expect(page).to have_content(inline_error_message)
-                expect_resubmit_page_inline_selfie_error_message(false)
-
-                # when doc auth result is "attention" and face match errors
-                use_id_image('ial2_test_credential_doc_auth_attention_face_match_fail.yml')
-                use_selfie_image('ial2_test_credential_doc_auth_attention_face_match_fail.yml')
-                submit_images
-
-                review_page_h1_copy = strip_tags(t('doc_auth.errors.rate_limited_heading'))
-                expect(page).to have_content(review_page_h1_copy)
-
-                review_page_body_copy = strip_tags(t('doc_auth.errors.general.no_liveness'))
-                expect(page).to have_content(review_page_body_copy)
-
-                expect_rate_limit_warning(max_attempts - 8)
-                expect_to_try_again
-                expect_resubmit_page_h1_copy
-                expect_resubmit_page_body_copy('doc_auth.errors.general.no_liveness')
-
-                inline_error_message = strip_tags(t('doc_auth.errors.general.fallback_field_level'))
-                expect(page).to have_content(inline_error_message)
-                expect_resubmit_page_inline_selfie_error_message(false)
-
-                # when doc auth passes but there are both liveness errors and face match errors
-                use_id_image('ial2_test_credential_liveness_fail_face_match_fail.yml')
-                use_selfie_image('ial2_test_credential_liveness_fail_face_match_fail.yml')
-                submit_images
-
-                review_page_h1_copy = strip_tags(
-                  t('doc_auth.errors.selfie_not_live_or_poor_quality_heading'),
-                )
-                expect(page).to have_content(review_page_h1_copy)
-
-                review_page_body_copy = strip_tags(
-                  t('doc_auth.errors.alerts.selfie_not_live_or_poor_quality'),
-                )
-                expect(page).to have_content(review_page_body_copy)
-
-                expect_rate_limit_warning(max_attempts - 9)
-                expect_to_try_again
-                expect_resubmit_page_h1_copy
-                expect_resubmit_page_body_copy(
-                  'doc_auth.errors.alerts.selfie_not_live_or_poor_quality',
-                )
-                expect_resubmit_page_inline_selfie_error_message(true)
-
-                # when doc auth, liveness, and face match pass but PII validation fails
-                use_id_image('ial2_test_credential_doc_auth_selfie_pass_pii_fail.yml')
-                use_selfie_image('ial2_test_credential_doc_auth_selfie_pass_pii_fail.yml')
-                submit_images
-
-                review_page_h1_copy = strip_tags(t('doc_auth.errors.rate_limited_heading'))
-                expect(page).to have_content(review_page_h1_copy)
-
-                review_page_body_copy = strip_tags(t('doc_auth.errors.alerts.address_check'))
-                expect(page).to have_content(review_page_body_copy)
-
-                expect_rate_limit_warning(max_attempts - 10)
-                expect_to_try_again
-                expect_resubmit_page_h1_copy
-                expect_resubmit_page_body_copy('doc_auth.errors.alerts.address_check')
-
-                inline_error_message = strip_tags(
-                  t('doc_auth.errors.general.multiple_front_id_failures'),
-                )
-                expect(page).to have_content(inline_error_message)
-                expect_resubmit_page_inline_selfie_error_message(false)
-
-                # when there are both face match errors and pii errors
-                use_id_image('ial2_test_credential_face_match_fail_and_pii_fail.yml')
-                use_selfie_image('ial2_test_credential_face_match_fail_and_pii_fail.yml')
-                submit_images
-
-                review_page_h1_copy = strip_tags(t('doc_auth.errors.selfie_fail_heading'))
-                expect(page).to have_content(review_page_h1_copy)
-
-                review_page_body_copy = strip_tags(t('doc_auth.errors.general.selfie_failure'))
-                expect(page).to have_content(review_page_body_copy)
-
-                expect_rate_limit_warning(max_attempts - 11)
-                expect_to_try_again
-                expect_resubmit_page_h1_copy
-                expect_resubmit_page_body_copy('doc_auth.errors.general.selfie_failure')
-
-                inline_error_message = strip_tags(
-                  t('doc_auth.errors.general.multiple_front_id_failures'),
-                )
-                expect(page).to have_content(inline_error_message)
-                expect_resubmit_page_inline_selfie_error_message(true)
-
-                # with Attention with Barcode
-                use_id_image('ial2_test_credential_barcode_attention_liveness_fail.yml')
-                use_selfie_image('ial2_test_credential_barcode_attention_liveness_fail.yml')
-                submit_images
-
-                expect_review_issues_body_message(
-                  'doc_auth.errors.alerts.selfie_not_live_or_poor_quality',
-                )
-                expect_rate_limit_warning(max_attempts - 12)
-
-                review_issues_header = strip_tags(
-                  t('doc_auth.errors.selfie_not_live_or_poor_quality_heading'),
-                )
-                expect(page).to have_content(review_issues_header)
-                expect(page).to have_current_path(idv_document_capture_path)
-                expect_to_try_again
-
-                inline_error = strip_tags(t('doc_auth.errors.general.selfie_failure'))
-                expect(page).to have_content(inline_error)
-              end
-            end
+            it_should_behave_like 'it has correct error display'
           end
         end
 
