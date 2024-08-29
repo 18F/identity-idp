@@ -354,8 +354,9 @@ module Idv
       zip_code = client_response.pii_from_doc&.zipcode&.to_s&.strip&.slice(0, 5)
       issue_year = client_response.pii_from_doc&.state_id_issued&.to_date&.year
       captured_result = document_capture_session&.load_result
-      selfie_image_fingerprint_add_count = (selfie_image_fingerprint ? 1 : 0)
-      selfie_attempts = (captured_result&.failed_selfie_image_fingerprints || []).length + selfie_image_fingerprint_add_count
+      processed_selfie_count = (selfie_image_fingerprint ? 1 : 0)
+      past_selfie_count = (captured_result&.failed_selfie_image_fingerprints || []).length
+      selfie_attempts = past_selfie_count + processed_selfie_count
       analytics.idv_doc_auth_submitted_image_upload_vendor(
         **client_response.to_h.merge(
           birth_year: birth_year,
