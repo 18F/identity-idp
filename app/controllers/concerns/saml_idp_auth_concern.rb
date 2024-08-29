@@ -125,7 +125,7 @@ module SamlIdpAuthConcern
     if saml_request.requested_vtr_authn_contexts.present?
       resolved_authn_context_result.expanded_component_values
     else
-      saml_request.requested_aal_authn_context ||
+      FederatedProtocols::Saml.new(saml_request).aal ||
         default_aal_context
     end
   end
