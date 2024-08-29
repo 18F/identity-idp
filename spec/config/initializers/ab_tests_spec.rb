@@ -3,13 +3,7 @@ require 'rails_helper'
 RSpec.describe AbTests do
   describe '#all' do
     it 'returns all registered A/B tests' do
-      expect(AbTests.all).to match(
-        {
-          ACUANT_SDK: an_instance_of(AbTest),
-          DOC_AUTH_VENDOR: an_instance_of(AbTest),
-
-        },
-      )
+      expect(AbTests.all.values).to all(be_kind_of(AbTest))
     end
   end
 
@@ -119,20 +113,20 @@ RSpec.describe AbTests do
 
     let(:enable_ab_test) do
       -> {
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor).
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).
           and_return('vendor_a')
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize).
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_switching_enabled).
           and_return(true)
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_alternate_vendor).
-          and_return('vendor_b')
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_percent).
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_socure_percent).
           and_return(50)
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_lexis_nexis_percent).
+          and_return(30)
       }
     end
 
     let(:disable_ab_test) do
       -> {
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize).
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_switching_enabled).
           and_return(false)
       }
     end

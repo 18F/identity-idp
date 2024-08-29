@@ -1315,7 +1315,7 @@ RSpec.describe User do
 
   describe '#visible_email_addresses' do
     let(:user) { create(:user) }
-    let(:confirmed_email_address) { user.email_addresses.detect(&:confirmed?) }
+    let(:confirmed_email_address) { user.email_addresses.find(&:confirmed?) }
     let!(:unconfirmed_expired_email_address) do
       create(
         :email_address,
@@ -1691,6 +1691,43 @@ RSpec.describe User do
       _event3 = create(:event, user: user, event_type: 'sign_in_after_2fa')
 
       expect(user.second_last_signed_in_at).to eq(event2.reload.created_at)
+    end
+  end
+
+  describe '#has_fed_or_mil_email?' do
+    before do
+      allow(IdentityConfig.store).to receive(:use_fed_domain_class).and_return(false)
+    end
+
+    context 'with a valid fed email in domain file' do
+      let(:user) { create(:user, email: 'example@example.gov') }
+      it 'should return true' do
+        expect(user.has_fed_or_mil_email?).to eq(true)
+      end
+    end
+
+    context 'with use_fed_domain_class set to false and random .gov email' do
+      let(:user) { create(:user, email: 'example@example.gov') }
+      before do
+        allow(IdentityConfig.store).to receive(:use_fed_domain_class).and_return(false)
+      end
+      it 'should return true' do
+        expect(user.has_fed_or_mil_email?).to eq(true)
+      end
+    end
+
+    context 'with a valid mil email' do
+      let(:user) { create(:user, email: 'example@example.mil') }
+      it 'should return true' do
+        expect(user.has_fed_or_mil_email?).to eq(true)
+      end
+    end
+
+    context 'with an invalid fed or mil email' do
+      let(:user) { create(:user, email: 'example@example.com') }
+      it 'should return false' do
+        expect(user.has_fed_or_mil_email?).to eq(false)
+      end
     end
   end
 end

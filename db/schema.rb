@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_07_202012) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_28_182041) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -226,6 +226,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_07_202012) do
     t.index ["user_id", "created_at"], name: "index_events_on_user_id_and_created_at"
   end
 
+  create_table "federal_email_domains", force: :cascade do |t|
+    t.citext "name", null: false
+    t.index ["name"], name: "index_federal_email_domains_on_name", unique: true
+  end
+
   create_table "fraud_review_requests", force: :cascade do |t|
     t.integer "user_id"
     t.string "uuid"
@@ -287,6 +292,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_07_202012) do
     t.text "requested_aal_value"
     t.string "vtr"
     t.string "acr_values"
+    t.bigint "email_address_id"
     t.index ["access_token"], name: "index_identities_on_access_token", unique: true
     t.index ["session_uuid"], name: "index_identities_on_session_uuid", unique: true
     t.index ["user_id", "service_provider"], name: "index_identities_on_user_id_and_service_provider", unique: true
@@ -650,6 +656,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_07_202012) do
     t.boolean "platform_authenticator"
     t.string "transports", array: true
     t.jsonb "authenticator_data_flags"
+    t.string "aaguid"
     t.index ["user_id"], name: "index_webauthn_configurations_on_user_id"
   end
 
