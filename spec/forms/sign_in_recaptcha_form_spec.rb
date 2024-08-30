@@ -1,15 +1,24 @@
 require 'rails_helper'
+require 'query_tracker'
 
 RSpec.describe SignInRecaptchaForm do
   let(:user) { create(:user, :with_authenticated_device) }
   let(:score_threshold_config) { 0.2 }
   let(:analytics) { FakeAnalytics.new }
   let(:email) { user.first_email }
+  let(:ab_test_bucket) { :sign_in_recaptcha }
   let(:recaptcha_token) { 'token' }
   let(:device_cookie) { Random.hex }
   let(:score) { 1.0 }
   subject(:form) do
-    described_class.new(form_class: RecaptchaMockForm, analytics:, score:)
+    described_class.new(
+      email:,
+      device_cookie:,
+      ab_test_bucket:,
+      form_class: RecaptchaMockForm,
+      analytics:,
+      score:,
+    )
   end
   before do
     allow(IdentityConfig.store).to receive(:sign_in_recaptcha_score_threshold).
@@ -30,12 +39,15 @@ RSpec.describe SignInRecaptchaForm do
       ).
       and_return(recaptcha_form)
 
-    form.submit(email:, recaptcha_token:, device_cookie:)
+    form.submit(recaptcha_token:)
   end
 
   context 'with custom recaptcha form class' do
     subject(:form) do
       described_class.new(
+        email:,
+        device_cookie:,
+        ab_test_bucket:,
         analytics:,
         form_class: RecaptchaForm,
       )
@@ -49,19 +61,62 @@ RSpec.describe SignInRecaptchaForm do
       expect(RecaptchaForm).to receive(:new).and_return(recaptcha_form)
       expect(recaptcha_form).to receive(:submit)
 
-      form.submit(email:, recaptcha_token:, device_cookie:)
+      form.submit(recaptcha_token:)
+    end
+  end
+
+  describe '#exempt?' do
+    subject(:exempt?) { form.exempt? }
+
+    it { is_expected.to eq(false) }
+
+    context 'when not part of a/b test' do
+      let(:ab_test_bucket) { nil }
+
+      it { is_expected.to eq(true) }
+
+      it { expect(queries_database?).to eq(false) }
+    end
+
+    context 'score threshold configured at zero' do
+      let(:score_threshold_config) { 0.0 }
+
+      it { is_expected.to eq(true) }
+
+      it { expect(queries_database?).to eq(false) }
+    end
+
+    context 'existing device for user' do
+      let(:device_cookie) { user.devices.first.cookie_uuid }
+
+      it { is_expected.to eq(true) }
+
+      it { expect(queries_database?).to eq(true) }
+    end
+
+    def queries_database?
+      user
+      QueryTracker.track { exempt? }.present?
     end
   end
 
   describe '#submit' do
     let(:recaptcha_form_success) { false }
-    subject(:response) { form.submit(email:, recaptcha_token:, device_cookie:) }
+    subject(:response) { form.submit(recaptcha_token:) }
 
     context 'recaptcha form validates as unsuccessful' do
       let(:score) { 0.0 }
 
       context 'existing device for user' do
         let(:device_cookie) { user.devices.first.cookie_uuid }
+
+        it 'is successful' do
+          expect(response.to_h).to eq(success: true)
+        end
+      end
+
+      context 'when not part of a/b test' do
+        let(:ab_test_bucket) { nil }
 
         it 'is successful' do
           expect(response.to_h).to eq(success: true)

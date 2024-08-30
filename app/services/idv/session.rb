@@ -13,6 +13,7 @@ module Idv
       had_barcode_attention_error
       had_barcode_read_failure
       idv_consent_given
+      idv_consent_given_at
       idv_phone_step_document_capture_session_uuid
       mail_only_warning_shown
       opted_in_to_in_person_proofing

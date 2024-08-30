@@ -5,10 +5,14 @@ module NavigationHelper
   # sidenav links.
 
   def find_sidenav_delete_account_link
-    find('.sidenav').find_link(t('account.links.delete_account'), href: account_delete_path)
+    within_sidenav { find_link(t('account.links.delete_account'), href: account_delete_path) }
   end
 
   def find_sidenav_forget_browsers_link
-    find('.sidenav').find_link(t('account.navigation.forget_browsers'))
+    within_sidenav { find_link(t('account.navigation.forget_browsers')) }
+  end
+
+  def within_sidenav(&block)
+    within('.sidenav', &block)
   end
 end

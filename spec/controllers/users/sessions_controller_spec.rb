@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe Users::SessionsController, devise: true do
   include ActionView::Helpers::DateHelper
   include ActionView::Helpers::UrlHelper
+  include AbTestsHelper
 
   let(:mock_valid_site) { 'http://example.com' }
 
@@ -55,6 +56,7 @@ RSpec.describe Users::SessionsController, devise: true do
           user_locked_out: false,
           rate_limited: false,
           valid_captcha_result: true,
+          captcha_validation_performed: false,
           bad_password_count: 0,
           sp_request_url_present: false,
           remember_device: false,
@@ -129,6 +131,7 @@ RSpec.describe Users::SessionsController, devise: true do
             user_locked_out: false,
             rate_limited: false,
             valid_captcha_result: true,
+            captcha_validation_performed: false,
             bad_password_count: 0,
             sp_request_url_present: false,
             remember_device: false,
@@ -212,6 +215,7 @@ RSpec.describe Users::SessionsController, devise: true do
           user_locked_out: false,
           rate_limited: true,
           valid_captcha_result: true,
+          captcha_validation_performed: false,
           bad_password_count: 8,
           sp_request_url_present: false,
           remember_device: false,
@@ -235,6 +239,7 @@ RSpec.describe Users::SessionsController, devise: true do
         user_locked_out: false,
         rate_limited: false,
         valid_captcha_result: true,
+        captcha_validation_performed: false,
         bad_password_count: 1,
         sp_request_url_present: false,
         remember_device: false,
@@ -255,6 +260,7 @@ RSpec.describe Users::SessionsController, devise: true do
         user_locked_out: false,
         rate_limited: false,
         valid_captcha_result: true,
+        captcha_validation_performed: false,
         bad_password_count: 1,
         sp_request_url_present: false,
         remember_device: false,
@@ -279,47 +285,51 @@ RSpec.describe Users::SessionsController, devise: true do
         user_locked_out: true,
         rate_limited: false,
         valid_captcha_result: true,
+        captcha_validation_performed: false,
         bad_password_count: 0,
         sp_request_url_present: false,
         remember_device: false,
       )
     end
 
-    it 'tracks unsuccessful authentication for failed reCAPTCHA' do
-      user = create(:user, :fully_registered)
+    context 'with reCAPTCHA validation enabled' do
+      before do
+        allow(FeatureManagement).to receive(:sign_in_recaptcha_enabled?).and_return(true)
+        allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).and_return(true)
+        allow(IdentityConfig.store).to receive(:sign_in_recaptcha_score_threshold).and_return(0.2)
+        allow(controller).to receive(:ab_test_bucket).with(:RECAPTCHA_SIGN_IN, kind_of(Hash)).
+          and_return(:sign_in_recaptcha)
+      end
 
-      allow(FeatureManagement).to receive(:sign_in_recaptcha_enabled?).and_return(true)
-      allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).and_return(true)
-      allow(IdentityConfig.store).to receive(:sign_in_recaptcha_score_threshold).and_return(0.2)
-      stub_analytics
+      it 'tracks unsuccessful authentication for failed reCAPTCHA' do
+        user = create(:user, :fully_registered)
 
-      post :create,
-           params: { user: { email: user.first_email, password: user.password, score: 0.1 } }
+        stub_analytics
+        post :create,
+             params: { user: { email: user.first_email, password: user.password, score: 0.1 } }
 
-      expect(@analytics).to have_logged_event(
-        'Email and Password Authentication',
-        success: false,
-        user_id: user.uuid,
-        user_locked_out: false,
-        rate_limited: false,
-        valid_captcha_result: false,
-        bad_password_count: 0,
-        remember_device: false,
-        sp_request_url_present: false,
-      )
-    end
+        expect(@analytics).to have_logged_event(
+          'Email and Password Authentication',
+          success: false,
+          user_id: user.uuid,
+          user_locked_out: false,
+          rate_limited: false,
+          valid_captcha_result: false,
+          captcha_validation_performed: true,
+          bad_password_count: 0,
+          remember_device: false,
+          sp_request_url_present: false,
+        )
+      end
 
-    it 'redirects unsuccessful authentication for failed reCAPTCHA to failed page' do
-      user = create(:user, :fully_registered)
+      it 'redirects unsuccessful authentication for failed reCAPTCHA to failed page' do
+        user = create(:user, :fully_registered)
 
-      allow(FeatureManagement).to receive(:sign_in_recaptcha_enabled?).and_return(true)
-      allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).and_return(true)
-      allow(IdentityConfig.store).to receive(:sign_in_recaptcha_score_threshold).and_return(0.2)
+        post :create,
+             params: { user: { email: user.first_email, password: user.password, score: 0.1 } }
 
-      post :create,
-           params: { user: { email: user.first_email, password: user.password, score: 0.1 } }
-
-      expect(response).to redirect_to sign_in_security_check_failed_url
+        expect(response).to redirect_to sign_in_security_check_failed_url
+      end
     end
 
     it 'tracks count of multiple unsuccessful authentication attempts' do
@@ -339,6 +349,7 @@ RSpec.describe Users::SessionsController, devise: true do
         user_locked_out: false,
         rate_limited: false,
         valid_captcha_result: true,
+        captcha_validation_performed: false,
         bad_password_count: 2,
         sp_request_url_present: false,
         remember_device: false,
@@ -358,6 +369,7 @@ RSpec.describe Users::SessionsController, devise: true do
         user_locked_out: false,
         rate_limited: false,
         valid_captcha_result: true,
+        captcha_validation_performed: false,
         bad_password_count: 1,
         sp_request_url_present: true,
         remember_device: false,
@@ -529,6 +541,7 @@ RSpec.describe Users::SessionsController, devise: true do
           user_locked_out: false,
           rate_limited: false,
           valid_captcha_result: true,
+          captcha_validation_performed: false,
           bad_password_count: 0,
           sp_request_url_present: false,
           remember_device: false,
@@ -654,6 +667,7 @@ RSpec.describe Users::SessionsController, devise: true do
           user_locked_out: false,
           rate_limited: false,
           valid_captcha_result: true,
+          captcha_validation_performed: false,
           bad_password_count: 0,
           sp_request_url_present: false,
           remember_device: true,
@@ -681,6 +695,7 @@ RSpec.describe Users::SessionsController, devise: true do
           user_locked_out: false,
           rate_limited: false,
           valid_captcha_result: true,
+          captcha_validation_performed: false,
           bad_password_count: 0,
           sp_request_url_present: false,
           remember_device: true,

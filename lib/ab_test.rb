@@ -5,7 +5,7 @@ class AbTest
 
   MAX_SHA = (16 ** 64) - 1
 
-  # @param [Proc<String>,RegExp,string,Boolean,nil] should_log Controls whether bucket data for this
+  # @param [Proc<String>,Regexp,string,Boolean,nil] should_log Controls whether bucket data for this
   #                                                            A/B test is logged with specific
   #                                                            events.
   # @yieldparam [ActionDispatch::Request] request
@@ -60,6 +60,8 @@ class AbTest
   def include_in_analytics_event?(event_name)
     if should_log.is_a?(Regexp)
       should_log.match?(event_name)
+    elsif should_log.respond_to?(:include?)
+      should_log.include?(event_name)
     elsif !should_log.nil?
       raise 'Unexpected value used for should_log'
     else
