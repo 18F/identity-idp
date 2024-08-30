@@ -3,6 +3,8 @@
 class EmailAddress < ApplicationRecord
   include EncryptableAttribute
 
+  before_destroy :nil_identity_email_address_id
+
   encrypted_attribute_without_setter(name: :email)
 
   belongs_to :user, inverse_of: :email_addresses
@@ -32,6 +34,19 @@ class EmailAddress < ApplicationRecord
 
   def gov_or_mil?
     email.end_with?('.gov', '.mil')
+  end
+
+  private
+
+  # Remove email id from all user identities
+  # when the email is destroyed.
+  def nil_identity_email_address_id
+    # rubocop:disable Rails/SkipsModelValidations
+    ServiceProviderIdentity.where(
+      user_id: user_id,
+      email_address_id: id,
+    ).update_all(email_address_id: nil)
+    # rubocop:enable Rails/SkipsModelValidations
   end
 
   class << self
