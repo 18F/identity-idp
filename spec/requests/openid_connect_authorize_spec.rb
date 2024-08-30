@@ -29,7 +29,8 @@ RSpec.describe 'user signs in partially and visits openid_connect/authorize' do
     state = SecureRandom.hex
     nonce = SecureRandom.hex
 
-    post new_user_session_path, params: { user: { email: user.first_email, password: user.password } }
+    post new_user_session_path,
+         params: { user: { email: user.first_email, password: user.password } }
     follow_redirect!
     params = {
       client_id: client_id,

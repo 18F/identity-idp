@@ -66,8 +66,16 @@ class User < ApplicationRecord
   attr_accessor :asserted_attributes
 
   # @return [String, nil]
-  def first_email
-    confirmed_email_addresses.first&.email
+  def first_email(confirmed: true)
+    (
+      confirmed ? confirmed_email_addresses : email_addresses
+    ).first&.email
+  end
+
+  alias_method :email, :first_email
+
+  def email=(_value)
+    # no-op to make Devise happy
   end
 
   def confirmed_email_addresses

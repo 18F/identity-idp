@@ -1718,6 +1718,5 @@ RSpec.describe User do
 
       expect(user.first_email).to be_nil
     end
-
   end
 end

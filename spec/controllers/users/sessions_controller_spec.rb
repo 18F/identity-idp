@@ -95,7 +95,8 @@ RSpec.describe Users::SessionsController, devise: true do
         expect(cookies[:device]).to be_present
 
         travel_to 10.minutes.from_now do
-          response = post :create, params: { user: { email: user.first_email, password: user.password } }
+          response = post :create,
+                          params: { user: { email: user.first_email, password: user.password } }
 
           device_cookie = response.headers['set-cookie'].find { |c| c.start_with?('device=') }
           second_expires = Time.zone.parse(CGI::Cookie.parse(device_cookie)['expires'].first)
@@ -224,7 +225,8 @@ RSpec.describe Users::SessionsController, devise: true do
       stub_analytics
       expect(SCrypt::Engine).to receive(:hash_secret).once.and_call_original
 
-      post :create, params: { user: { email: user.first_email.upcase, password: 'invalid_password' } }
+      post :create,
+           params: { user: { email: user.first_email.upcase, password: 'invalid_password' } }
 
       expect(@analytics).to have_logged_event(
         'Email and Password Authentication',
@@ -291,7 +293,8 @@ RSpec.describe Users::SessionsController, devise: true do
       allow(IdentityConfig.store).to receive(:sign_in_recaptcha_score_threshold).and_return(0.2)
       stub_analytics
 
-      post :create, params: { user: { email: user.first_email, password: user.password, score: 0.1 } }
+      post :create,
+           params: { user: { email: user.first_email, password: user.password, score: 0.1 } }
 
       expect(@analytics).to have_logged_event(
         'Email and Password Authentication',
@@ -313,7 +316,8 @@ RSpec.describe Users::SessionsController, devise: true do
       allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).and_return(true)
       allow(IdentityConfig.store).to receive(:sign_in_recaptcha_score_threshold).and_return(0.2)
 
-      post :create, params: { user: { email: user.first_email, password: user.password, score: 0.1 } }
+      post :create,
+           params: { user: { email: user.first_email, password: user.password, score: 0.1 } }
 
       expect(response).to redirect_to sign_in_security_check_failed_url
     end
