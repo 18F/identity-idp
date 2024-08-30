@@ -5,7 +5,7 @@ module Idv
     include ActiveModel::Model
     include ActionView::Helpers::TranslationHelper
 
-    validates_presence_of :front
+    # validates_presence_of :front
     validates_presence_of :back
     validates_presence_of :selfie, if: :liveness_checking_required
     validates_presence_of :document_capture_session
@@ -115,7 +115,7 @@ module Idv
     end
 
     def front_image_bytes
-      @front_image_bytes ||= front.read
+      @front_image_bytes ||= front&.read
     end
 
     def back_image_bytes

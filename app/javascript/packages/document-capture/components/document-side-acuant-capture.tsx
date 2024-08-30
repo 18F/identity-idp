@@ -64,11 +64,11 @@ function DocumentSideAcuantCapture({
       /* i18n-tasks-use t('doc_auth.headings.document_capture_back') */
       /* i18n-tasks-use t('doc_auth.headings.document_capture_front') */
       /* i18n-tasks-use t('doc_auth.headings.document_capture_selfie') */
-      label={t(`doc_auth.headings.document_capture_${side}`)}
+      label={'Front of your passport'} //{t(`doc_auth.headings.document_capture_${side}`)}
       /* i18n-tasks-use t('doc_auth.headings.back') */
       /* i18n-tasks-use t('doc_auth.headings.front') */
       /* i18n-tasks-use t('doc_auth.headings.selfie') */
-      bannerText={t(`doc_auth.headings.${side}`)}
+      bannerText={'Front of your passport'} // {t(`doc_auth.headings.${side}`)}
       value={value}
       onChange={(nextValue, metadata) => {
         onChange({

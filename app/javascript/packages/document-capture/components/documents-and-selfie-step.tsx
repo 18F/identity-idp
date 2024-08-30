@@ -67,7 +67,7 @@ export function DocumentFrontAndBackCapture({
   value: Record<string, ImageValue>;
 }) {
   type DocumentSide = 'front' | 'back';
-  const documentsSides: DocumentSide[] = ['front', 'back'];
+  const documentsSides: DocumentSide[] = ['back']; // ['front', 'back'];
   return (
     <>
       {documentsSides.map((side) => (
@@ -112,7 +112,7 @@ export default function DocumentsAndSelfieStep({
 
   const pageHeaderText = isSelfieCaptureEnabled
     ? t('doc_auth.headings.document_capture_with_selfie')
-    : t('doc_auth.headings.document_capture');
+    : 'Add a photo of your passport'; // t('doc_auth.headings.document_capture');
 
   const defaultSideProps: DefaultSideProps = {
     registerField,

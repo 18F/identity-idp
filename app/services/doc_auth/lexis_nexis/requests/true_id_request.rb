@@ -38,10 +38,10 @@ module DocAuth
         def body
           document = {
             Document: {
-              Front: encode(front_image),
-              Back: encode(back_image),
+              Front: encode(front_image || back_image), # encode(front_image),
+              Back: front_image ? encode(back_image) : nil,
               Selfie: (encode(selfie_image) if liveness_checking_required),
-              DocumentType: 'DriversLicense',
+              DocumentType: front_image ? 'DriversLicense' : 'Passport',
             }.compact,
           }
 
