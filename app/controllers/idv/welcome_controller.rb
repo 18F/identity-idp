@@ -9,6 +9,7 @@ module Idv
     before_action :confirm_not_rate_limited
 
     def show
+      idv_session.proofing_started_at ||= Time.zone.now.iso8601
       analytics.idv_doc_auth_welcome_visited(**analytics_arguments)
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
