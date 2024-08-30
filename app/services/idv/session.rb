@@ -291,8 +291,7 @@ module Idv
     end
 
     def idv_consent_given?
-      !!(session[:idv_consent_given_at] &&
-        session[:idv_consent_given_at] > (Time.zone.now - 1.month))
+      !!session[:idv_consent_given_at]
     end
 
     private

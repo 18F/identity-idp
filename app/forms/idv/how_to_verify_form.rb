@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+se# frozen_string_literal: true
 
 module Idv
   class HowToVerifyForm
