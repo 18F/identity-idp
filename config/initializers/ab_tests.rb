@@ -69,8 +69,7 @@ module AbTests
       'Email and Password Authentication',
       'IdV: doc auth verify proofing results',
       'reCAPTCHA verify result received',
-      :user_suspension_confirmed,
-      'User Suspension: Suspended',
+      :idv_enter_password_submitted,
     ].to_set,
     buckets: { sign_in_recaptcha: IdentityConfig.store.sign_in_recaptcha_percent_tested },
   ) do |user:, user_session:, **|
