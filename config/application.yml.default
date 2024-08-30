@@ -97,9 +97,11 @@ doc_auth_max_submission_attempts_before_native_camera: 3
 doc_auth_selfie_desktop_test_mode: false
 doc_auth_separate_pages_enabled: false
 doc_auth_supported_country_codes: '["US", "GU", "VI", "AS", "MP", "PR", "USA" ,"GUM", "VIR", "ASM", "MNP", "PRI"]'
-doc_auth_vendor_randomize: false
-doc_auth_vendor_randomize_alternate_vendor: ''
-doc_auth_vendor_randomize_percent: 0
+doc_auth_vendor: 'mock'
+doc_auth_vendor_default: 'mock'
+doc_auth_vendor_lexis_nexis_percent: 100 # note, LN is currently the default vendor
+doc_auth_vendor_socure_percent: 0
+doc_auth_vendor_switching_enabled: false
 doc_capture_polling_enabled: true
 doc_capture_request_valid_for_minutes: 15
 drop_off_report_config: '[{"emails":["ursula@example.com"],"issuers": ["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]}]'
@@ -116,7 +118,6 @@ enable_usps_verification: true
 event_disavowal_expiration_hours: 240
 feature_idv_force_gpo_verification_enabled: false
 feature_idv_hybrid_flow_enabled: true
-feature_select_email_to_share_enabled: true
 geo_data_file_path: 'geo_data/GeoLite2-City.mmdb'
 get_usps_proofing_results_job_cron: '0/30 * * * *'
 get_usps_proofing_results_job_reprocess_delay_minutes: 5
@@ -332,6 +333,7 @@ short_term_phone_otp_max_attempt_window_in_seconds: 10
 short_term_phone_otp_max_attempts: 2
 show_unsupported_passkey_platform_authentication_setup: false
 show_user_attribute_deprecation_warnings: false
+sign_in_recaptcha_percent_tested: 0
 sign_in_recaptcha_score_threshold: 0.0
 sign_in_user_id_per_ip_attempt_window_exponential_factor: 1.1
 sign_in_user_id_per_ip_attempt_window_in_minutes: 720
@@ -404,7 +406,6 @@ development:
   dashboard_api_token: test_token
   dashboard_url: http://localhost:3001/api/service_providers
   doc_auth_selfie_desktop_test_mode: true
-  doc_auth_vendor: 'mock'
   domain_name: localhost:3000
   enable_rate_limiting: false
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
@@ -432,6 +433,7 @@ development:
   secret_key_base: development_secret_key_base
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   show_unsupported_passkey_platform_authentication_setup: true
+  sign_in_recaptcha_percent_tested: 100
   sign_in_recaptcha_score_threshold: 0.3
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost"]'
   socure_idplus_base_url: 'https://sandbox.socure.us'
@@ -463,12 +465,10 @@ production:
   dashboard_url: https://dashboard.demo.login.gov
   disable_email_sending: false
   disable_logout_get_request: false
-  doc_auth_vendor: 'acuant'
   domain_name: login.gov
   email_registrations_per_ip_track_only_mode: true
   enable_test_routes: false
   enable_usps_verification: false
-  feature_select_email_to_share_enabled: false
   hmac_fingerprinter_key:
   hmac_fingerprinter_key_queue: '[]'
   idv_sp_required: true
@@ -518,7 +518,6 @@ test:
   dashboard_url: https://dashboard.demo.login.gov
   doc_auth_max_attempts: 4
   doc_auth_selfie_desktop_test_mode: true
-  doc_auth_vendor: 'mock'
   doc_capture_polling_enabled: false
   domain_name: www.example.com
   email_registrations_per_ip_limit: 3

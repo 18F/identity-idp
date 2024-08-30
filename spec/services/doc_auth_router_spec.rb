@@ -19,44 +19,6 @@ RSpec.describe DocAuthRouter do
     end
   end
 
-  describe '.doc_auth_vendor' do
-    def reload_ab_test_initializer!
-      # undefine the AB tests instances so we can re-initialize them with different config values
-      AbTests.constants.each do |const_name|
-        AbTests.class_eval { remove_const(const_name) }
-      end
-      load Rails.root.join('config', 'initializers', 'ab_tests.rb').to_s
-    end
-
-    let(:doc_auth_vendor) { 'test1' }
-    let(:doc_auth_vendor_randomize_alternate_vendor) { 'test2' }
-    let(:analytics) { FakeAnalytics.new }
-    let(:doc_auth_vendor_randomize_percent) { 57 }
-    let(:doc_auth_vendor_randomize) { true }
-
-    before do
-      allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(doc_auth_vendor)
-      allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_alternate_vendor).
-        and_return(doc_auth_vendor_randomize_alternate_vendor)
-
-      allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_percent).
-        and_return(doc_auth_vendor_randomize_percent)
-      allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize).
-        and_return(doc_auth_vendor_randomize)
-
-      reload_ab_test_initializer!
-    end
-
-    after do
-      allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_percent).
-        and_call_original
-      allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize).
-        and_call_original
-
-      reload_ab_test_initializer!
-    end
-  end
-
   describe DocAuthRouter::DocAuthErrorTranslatorProxy do
     subject(:proxy) do
       DocAuthRouter::DocAuthErrorTranslatorProxy.new(DocAuth::Mock::DocAuthMockClient.new)
