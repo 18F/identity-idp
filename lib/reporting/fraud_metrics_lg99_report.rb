@@ -125,24 +125,6 @@ module Reporting
       ]
     end
 
-    def as_tables
-      [
-        lg99_metrics_table,
-        suspended_metrics_table,
-        reinstated_metrics_table,
-      ]
-    end
-
-    def to_csvs
-      as_tables.map do |table|
-        CSV.generate do |csv|
-          table.each do |row|
-            csv << row
-          end
-        end
-      end
-    end
-
     def stats_month
       time_range.begin.strftime('%b-%Y')
     end

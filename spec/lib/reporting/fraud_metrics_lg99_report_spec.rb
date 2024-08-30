@@ -174,41 +174,6 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
     end
   end
 
-  describe '#to_csvs' do
-    it 'generates a csv' do
-      csv_string_list = report.to_csvs
-      expect(csv_string_list.count).to be 3
-
-      csvs = csv_string_list.map { |csv| CSV.parse(csv) }
-
-      aggregate_failures do
-        csvs.map(&:to_a).zip(expected_tables).each do |actual, expected|
-          expect(actual).to eq(expected)
-        end
-      end
-    end
-  end
-
-  def expected_tables
-    [
-      [
-        ['Metric', 'Total', 'Range Start', 'Range End'],
-        ['Unique users seeing LG-99', '5', time_range.begin.to_s, time_range.end.to_s],
-      ],
-      [
-        ['Metric', 'Total', 'Range Start', 'Range End'],
-        ['Unique users suspended', '2', time_range.begin.to_s, time_range.end.to_s],
-        ['Average Days Creation to Suspension', '1.5', time_range.begin.to_s, time_range.end.to_s],
-        ['Average Days Proofed to Suspension', '2.0', time_range.begin.to_s, time_range.end.to_s],
-      ],
-      [
-        ['Metric', 'Total', 'Range Start', 'Range End'],
-        ['Unique users reinstated', '1', time_range.begin.to_s, time_range.end.to_s],
-        ['Average Days to Reinstatement', '3.0', time_range.begin.to_s, time_range.end.to_s],
-      ],
-    ]
-  end
-
   describe '#cloudwatch_client' do
     let(:opts) { {} }
     let(:subject) { described_class.new(time_range:, **opts) }
