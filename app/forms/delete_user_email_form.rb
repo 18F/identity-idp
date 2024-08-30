@@ -20,10 +20,17 @@ class DeleteUserEmailForm
 
   private
 
+  # Remove email id from all user identities
+  # when the email is destroyed.
   def email_address_destroyed
     return false unless EmailPolicy.new(@user).can_delete_email?(@email_address)
     result = EmailAddress.transaction do
-      ServiceProviderIdentity.where(user_id: email_address.user_id, email_address_id: email_address.id).update_all(email_address_id: nil)
+      # rubocop:disable Rails/SkipsModelValidations
+      ServiceProviderIdentity.where(
+        user_id: email_address.user_id,
+        email_address_id: email_address.id,
+      ).update_all(email_address_id: nil)
+      # rubocop:enable Rails/SkipsModelValidations
       email_address.destroy
     end
     return false if result == false
