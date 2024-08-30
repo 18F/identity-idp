@@ -5,8 +5,9 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
   let(:time_range) { Date.new(2022, 1, 1).in_time_zone('UTC').all_month }
   let(:expected_lg99_metrics_table) do
     [
-      ['Metric', 'Total'],
-      ['Unique users seeing LG-99', '5'],
+      ['Metric', 'Total', 'Range Start', 'Range End'],
+      ['Unique users seeing LG-99', '5', time_range.begin.to_s,
+       time_range.end.to_s],
     ]
   end
   let(:expected_suspended_metrics_table) do
@@ -191,8 +192,8 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
   def expected_tables
     [
       [
-        ['Metric', 'Total'],
-        ['Unique users seeing LG-99', '5'],
+        ['Metric', 'Total', 'Range Start', 'Range End'],
+        ['Unique users seeing LG-99', '5', time_range.begin.to_s, time_range.end.to_s],
       ],
       [
         ['Metric', 'Total', 'Range Start', 'Range End'],

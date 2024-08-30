@@ -72,8 +72,9 @@ module Reporting
 
     def lg99_metrics_table
       [
-        ['Metric', 'Total'],
-        ['Unique users seeing LG-99', lg99_unique_users_count.to_s],
+        ['Metric', 'Total', 'Range Start', 'Range End'],
+        ['Unique users seeing LG-99', lg99_unique_users_count.to_s, time_range.begin.to_s,
+         time_range.end.to_s],
       ]
     rescue Aws::CloudWatchLogs::Errors::ThrottlingException => err
       [

@@ -29,8 +29,9 @@ RSpec.describe Reports::FraudMetricsReport do
 
   let(:mock_identity_verification_lg99_data) do
     [
-      ['Metric', 'Total'],
-      ['Unique users seeing LG-99', 5],
+      ['Metric', 'Total', 'Range Start', 'Range End'],
+      ['Unique users seeing LG-99', 5, time_range.begin.to_s,
+       time_range.end.to_s],
     ]
   end
   let(:mock_suspended_metrics_table) do
