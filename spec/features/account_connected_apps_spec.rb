@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe 'Account connected applications' do
+  include NavigationHelper
+
   let(:user) { create(:user, :fully_registered, created_at: Time.zone.now - 100.days) }
   let(:identity_with_link) do
     create(
@@ -30,13 +32,15 @@ RSpec.describe 'Account connected applications' do
   before do
     sign_in_and_2fa_user(user)
     build_account_connected_apps
-    visit account_connected_accounts_path
+    within_sidenav { click_on t('account.navigation.connected_accounts') }
   end
 
   scenario 'viewing account connected applications' do
     expect(page).to have_content(t('headings.account.connected_accounts'))
 
-    visit account_history_path
+    expect(identity_without_link_timestamp).to appear_before(identity_with_link_timestamp)
+
+    within_sidenav { click_on t('account.navigation.history') }
     expect(page).to have_content(
       t('event_types.authenticated_at', service_provider: identity_without_link.display_name),
     )
@@ -51,31 +55,29 @@ RSpec.describe 'Account connected applications' do
     expect(page).to have_link(
       identity_with_link.display_name, href: 'http://localhost:3000'
     )
-
-    visit account_connected_accounts_path
-    expect(identity_without_link_timestamp).to appear_before(identity_with_link_timestamp)
   end
 
   scenario 'revoking consent from an SP' do
     identity_to_revoke = identity_with_link
 
-    visit account_history_path
-    expect(page).to have_content(
-      t('event_types.authenticated_at', service_provider: identity_to_revoke.display_name),
-    )
-
-    visit account_connected_accounts_path
-    within(find('.profile-info-box')) do
-      within(find('.grid-row', text: identity_to_revoke.service_provider_record.friendly_name)) do
-        click_link(t('account.revoke_consent.link_title'))
-      end
+    within('.profile-info-box .grid-row', text: identity_to_revoke.display_name) do
+      click_link(t('account.revoke_consent.link_title'))
     end
 
-    expect(page).to have_content(identity_to_revoke.service_provider_record.friendly_name)
+    expect(page).to have_content(identity_to_revoke.display_name)
+
+    # Canceling should return to the Connected Accounts page
+    click_on t('links.cancel')
+    expect(page).to have_current_path(account_connected_accounts_path)
+
+    # Revoke again and confirm revocation
+    within('.profile-info-box .grid-row', text: identity_to_revoke.display_name) do
+      click_link(t('account.revoke_consent.link_title'))
+    end
     click_on t('forms.buttons.continue')
 
     # Accounts page should no longer list this app in the applications section
-    expect(page).to_not have_content(identity_to_revoke.service_provider_record.friendly_name)
+    expect(page).to_not have_content(identity_to_revoke.display_name)
   end
 
   def build_account_connected_apps

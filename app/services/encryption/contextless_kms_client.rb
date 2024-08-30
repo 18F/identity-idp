@@ -18,14 +18,14 @@ module Encryption
       KMS: 'KMSx',
     }.freeze
 
-    def encrypt(plaintext)
-      KmsLogger.log(:encrypt, key_id: IdentityConfig.store.aws_kms_key_id)
+    def encrypt(plaintext, log_context: nil)
+      KmsLogger.log(:encrypt, key_id: IdentityConfig.store.aws_kms_key_id, log_context: log_context)
       return encrypt_kms(plaintext) if FeatureManagement.use_kms?
       encrypt_local(plaintext)
     end
 
-    def decrypt(ciphertext)
-      KmsLogger.log(:decrypt, key_id: IdentityConfig.store.aws_kms_key_id)
+    def decrypt(ciphertext, log_context: nil)
+      KmsLogger.log(:decrypt, key_id: IdentityConfig.store.aws_kms_key_id, log_context: log_context)
       return decrypt_kms(ciphertext) if use_kms?(ciphertext)
       decrypt_local(ciphertext)
     end

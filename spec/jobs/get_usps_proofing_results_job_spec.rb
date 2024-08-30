@@ -259,12 +259,6 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
 
           before do
             enrollment_records = InPersonEnrollment.where(id: pending_enrollments.map(&:id))
-            # Below sets in_person_verification_pending_at
-            # on the profile associated with each pending enrollment
-            enrollment_records.each do |enrollment|
-              profile = enrollment.profile
-              profile.update(in_person_verification_pending_at: enrollment.created_at)
-            end
             allow(InPersonEnrollment).to receive(:needs_usps_status_check).
               and_return(enrollment_records)
             allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
@@ -824,6 +818,16 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                 request_passed_proofing_unsupported_id_results_response,
             )
 
+            it 'deactivates the associated profile' do
+              expect(pending_enrollment.profile.in_person_verification_pending_at).not_to be_nil
+              job.perform Time.zone.now
+              pending_enrollment.reload
+
+              expect(pending_enrollment.profile.in_person_verification_pending_at).to be_nil
+              expect(pending_enrollment.profile.active).to be false
+              expect(pending_enrollment.profile.deactivation_reason).to eq('verification_cancelled')
+            end
+
             it 'logs a message about the unsupported ID' do
               expected_wait_until = nil
               freeze_time do
@@ -884,10 +888,11 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
             end
 
             it 'deactivates the associated profile' do
+              expect(pending_enrollment.profile.in_person_verification_pending_at).not_to be_nil
               job.perform(Time.zone.now)
 
               pending_enrollment.reload
-              expect(pending_enrollment.profile).not_to be_active
+              expect(pending_enrollment.profile.active).to be false
               expect(pending_enrollment.profile.in_person_verification_pending_at).to be_nil
               expect(pending_enrollment.profile.deactivation_reason).to eq('verification_cancelled')
             end
@@ -988,6 +993,17 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                     job_name: 'GetUspsProofingResultsJob',
                   ),
                 )
+              end
+
+              it 'deactivates the associated profile' do
+                expect(pending_enrollment.profile.in_person_verification_pending_at).not_to be_nil
+                job.perform(Time.zone.now)
+                pending_enrollment.reload
+
+                expect(pending_enrollment.profile.in_person_verification_pending_at).to be_nil
+                expect(pending_enrollment.profile.active).to be false
+                expect(pending_enrollment.profile.deactivation_reason).
+                  to eq('verification_cancelled')
               end
             end
 
@@ -1348,57 +1364,84 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                     ),
                   )
                 end
-
-                context 'when the enrollment has failed' do
-                  before do
-                    stub_request_failed_proofing_results
-                  end
-
-                  it 'sends proofing failed email on response with failed status' do
-                    user = pending_enrollment.user
-
-                    freeze_time do
-                      expect do
-                        job.perform(Time.zone.now)
-                      end.to have_enqueued_mail(UserMailer, :in_person_failed).with(
-                        params: { user: user, email_address: user.email_addresses.first },
-                        args: [{ enrollment: pending_enrollment }],
-                      )
-                      expect(job_analytics).to have_logged_event(
-                        'GetUspsProofingResultsJob: Success or failure email initiated',
-                        hash_including(
-                          email_type: 'Failed',
-                          job_name: 'GetUspsProofingResultsJob',
-                        ),
-                      )
-                    end
-                  end
-                end
               end
 
-              it 'deactivates and sets fraud related fields of an expired enrollment' do
-                stub_request_expired_id_ipp_proofing_results
+              context 'when the enrollment has failed' do
+                before do
+                  stub_request_failed_proofing_results
+                end
 
-                job.perform(Time.zone.now)
+                it 'sends proofing failed email on response with failed status' do
+                  user = pending_enrollment.user
 
-                profile = pending_enrollment.reload.profile
-                expect(profile).not_to be_active
-                expect(profile.fraud_review_pending_at).to be_nil
-                expect(profile.fraud_rejection_at).not_to be_nil
-                expect(job_analytics).to have_logged_event(
-                  :idv_ipp_deactivated_for_never_visiting_post_office,
-                )
+                  freeze_time do
+                    expect do
+                      job.perform(Time.zone.now)
+                    end.to have_enqueued_mail(UserMailer, :in_person_failed).with(
+                      params: { user: user, email_address: user.email_addresses.first },
+                      args: [{ enrollment: pending_enrollment }],
+                    )
+                    expect(job_analytics).to have_logged_event(
+                      'GetUspsProofingResultsJob: Success or failure email initiated',
+                      hash_including(
+                        email_type: 'Failed',
+                        job_name: 'GetUspsProofingResultsJob',
+                      ),
+                    )
+                  end
+                end
+
+                it 'deactivates the associated profile' do
+                  expect(pending_enrollment.profile.in_person_verification_pending_at).not_to be_nil
+
+                  job.perform(Time.zone.now)
+                  pending_enrollment.reload
+                  expect(pending_enrollment.profile.in_person_verification_pending_at).to be_nil
+                  expect(pending_enrollment.profile.active).to be false
+                  expect(pending_enrollment.profile.deactivation_reason).
+                    to eq('verification_cancelled')
+                end
+
+                it 'deactivates and sets fraud related fields of an expired enrollment' do
+                  stub_request_expired_id_ipp_proofing_results
+
+                  job.perform(Time.zone.now)
+
+                  profile = pending_enrollment.reload.profile
+                  expect(profile).not_to be_active
+                  expect(profile.fraud_review_pending_at).to be_nil
+                  expect(profile.fraud_rejection_at).not_to be_nil
+                  expect(job_analytics).to have_logged_event(
+                    :idv_ipp_deactivated_for_never_visiting_post_office,
+                  )
+                end
               end
             end
           end
         end
 
         describe 'Proofed with secondary id' do
-          let(:pending_enrollment) do
-            create(
-              :in_person_enrollment, :pending
-            )
+          let!(:pending_enrollments) do
+            ['BALTIMORE', 'FRIENDSHIP', 'WASHINGTON', 'ARLINGTON', 'DEANWOOD'].map do |name|
+              create(
+                :in_person_enrollment,
+                :pending,
+                :with_notification_phone_configuration,
+                issuer: 'http://localhost:3000',
+                selected_location_details: { name: name },
+                sponsor_id: usps_ipp_sponsor_id,
+              )
+            end
           end
+          let(:pending_enrollment) { pending_enrollments.first }
+
+          before do
+            enrollment_records = InPersonEnrollment.where(id: pending_enrollments.map(&:id))
+            allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+              and_return(enrollment_records)
+            allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+          end
+
           before do
             allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
           end
@@ -1417,6 +1460,16 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                 request_passed_proofing_secondary_id_type_results_response,
             )
 
+            it 'deactivates the associated profile' do
+              expect(pending_enrollment.profile.in_person_verification_pending_at).not_to be_nil
+              job.perform(Time.zone.now)
+              pending_enrollment.reload
+
+              expect(pending_enrollment.profile.in_person_verification_pending_at).to be_nil
+              expect(pending_enrollment.profile.active).to be false
+              expect(pending_enrollment.profile.deactivation_reason).to eq('verification_cancelled')
+            end
+
             it 'logs a message about enrollment with secondary ID' do
               allow(IdentityConfig.store).to receive(
                 :in_person_send_proofing_notifications_enabled,
@@ -1428,6 +1481,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                 end.to have_enqueued_job(InPerson::SendProofingNotificationJob).
                   with(pending_enrollment.id).at(1.hour.from_now).on_queue(:intentionally_delayed)
               end
+
               expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
               expect(pending_enrollment.profile.active).to eq(false)
               expect(job_analytics).to have_logged_event(
