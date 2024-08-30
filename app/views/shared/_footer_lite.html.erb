@@ -1,6 +1,9 @@
 <footer class="footer">
   <%= new_tab_link_to('https://www.gsa.gov', class: 'footer__agency-logo') do %>
-    <%= image_tag(asset_url('sp-logos/square-gsa.svg'), size: 20, alt: '', class: 'margin-right-05', aria: { hidden: true }) %>
+    <%= picture_tag(aria: { hidden: true }, class: 'margin-right-05') do %>
+      <%= tag.source(media: '(min-width: 1024px)', srcset: asset_url('sp-logos/square-gsa.svg')) %>
+      <%= image_tag(asset_url('sp-logos/square-gsa-dark.svg'), size: 20, alt: '') %>
+    <% end %>
     <%= t('shared.footer_lite.gsa') %>
   <% end %>
   <%= render LanguagePickerComponent.new(class: 'footer__language-picker') %>
@@ -12,7 +15,10 @@
   </div>
   <div class="footer__links">
     <%= new_tab_link_to('https://www.gsa.gov', class: 'footer__agency-logo') do %>
-      <%= image_tag(asset_url('sp-logos/square-gsa-dark.svg'), size: 20, alt: '', class: 'margin-right-05', aria: { hidden: true }) %>
+      <%= picture_tag(aria: { hidden: true }, class: 'margin-right-05') do %>
+        <%= tag.source(media: '(max-width: 1023px)', srcset: asset_url('sp-logos/square-gsa-dark.svg')) %>
+        <%= image_tag(asset_url('sp-logos/square-gsa.svg'), size: 20, alt: '') %>
+      <% end %>
       <%= t('shared.footer_lite.gsa') %>
     <% end %>
   </div>
