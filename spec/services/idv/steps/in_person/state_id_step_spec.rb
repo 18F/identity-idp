@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Idv::Steps::InPerson::StateIdStep do
   include InPersonHelper
   let(:submitted_values) { {} }
-  let(:params) { ActionController::Parameters.new({ state_id: submitted_values }) }
+  let(:params) { ActionController::Parameters.new({ identity_doc: submitted_values }) }
   let(:user) { build(:user) }
   let(:formatted_dob) { InPersonHelper::GOOD_DOB }
   let(:dob) do
@@ -37,7 +37,7 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
       let(:first_name) { 'Natalya' }
       let(:last_name) { 'Rostova' }
       let(:identity_doc_address_state) { 'Nevada' }
-      let(:state_id_number) { 'ABC123234' }
+      let(:id_number) { 'ABC123234' }
       let(:identity_doc_zipcode) { InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE }
       let(:submitted_values) do
         {
@@ -45,7 +45,7 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
           last_name: last_name,
           dob: dob,
           identity_doc_address_state: identity_doc_address_state,
-          state_id_number: state_id_number,
+          id_number: id_number,
           identity_doc_zipcode: identity_doc_zipcode,
         }
       end
@@ -67,14 +67,15 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
         expect(pii_from_user[:last_name]).to eq last_name
         expect(pii_from_user[:dob]).to eq formatted_dob
         expect(pii_from_user[:identity_doc_address_state]).to eq identity_doc_address_state
-        expect(pii_from_user[:state_id_number]).to eq state_id_number
+        # param from form as id_number but is renamed to state_id_number on update
+        expect(pii_from_user[:state_id_number]).to eq id_number
         expect(pii_from_user[:identity_doc_zipcode]).to eq identity_doc_zipcode
       end
     end
 
     context 'when same_address_as_id is...' do
       let(:pii_from_user) { flow.flow_session[:pii_from_user] }
-      let(:params) { ActionController::Parameters.new({ state_id: submitted_values }) }
+      let(:params) { ActionController::Parameters.new({ identity_doc: submitted_values }) }
       # residential
       let(:address1) { InPersonHelper::GOOD_ADDRESS1 }
       let(:address2) { InPersonHelper::GOOD_ADDRESS2 }
@@ -241,7 +242,7 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
 
     context 'skip address step?' do
       let(:pii_from_user) { flow.flow_session[:pii_from_user] }
-      let(:params) { ActionController::Parameters.new({ state_id: submitted_values }) }
+      let(:params) { ActionController::Parameters.new({ identity_doc: submitted_values }) }
       let(:enrollment) { InPersonEnrollment.new }
       let(:identity_doc_address_state) { 'Nevada' }
       let(:identity_doc_city) { 'Twin Peaks' }

@@ -133,8 +133,7 @@ RSpec.describe Idv::InPerson::StateIdController, allowed_extra_analytics: [:*] d
     let(:city) { InPersonHelper::GOOD_CITY }
     let(:state) { InPersonHelper::GOOD_STATE }
     let(:zipcode) { InPersonHelper::GOOD_ZIPCODE }
-    # identity_doc_
-    let(:state_id_number) { 'ABC123234' }
+    let(:id_number) { 'ABC123234' }
     let(:state_id_jurisdiction) { 'AL' }
     let(:identity_doc_address1) { InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1 }
     let(:identity_doc_address2) { InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2 }
@@ -143,7 +142,7 @@ RSpec.describe Idv::InPerson::StateIdController, allowed_extra_analytics: [:*] d
     let(:identity_doc_zipcode) { InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE }
     context 'with values submitted' do
       let(:invalid_params) do
-        { state_id: {
+        { identity_doc: {
           first_name: 'S@ndy!',
           last_name:,
           same_address_as_id: 'true', # value on submission
@@ -151,14 +150,14 @@ RSpec.describe Idv::InPerson::StateIdController, allowed_extra_analytics: [:*] d
           identity_doc_address2:,
           identity_doc_city:,
           state_id_jurisdiction:,
-          state_id_number:,
+          id_number:,
           identity_doc_address_state:,
           identity_doc_zipcode:,
           dob:,
         } }
       end
       let(:params) do
-        { state_id: {
+        { identity_doc: {
           first_name:,
           last_name:,
           same_address_as_id: 'true', # value on submission
@@ -166,7 +165,7 @@ RSpec.describe Idv::InPerson::StateIdController, allowed_extra_analytics: [:*] d
           identity_doc_address2:,
           identity_doc_city:,
           state_id_jurisdiction:,
-          state_id_number:,
+          id_number:,
           identity_doc_address_state:,
           identity_doc_zipcode:,
           dob:,
@@ -228,7 +227,8 @@ RSpec.describe Idv::InPerson::StateIdController, allowed_extra_analytics: [:*] d
         expect(pii_from_user[:dob]).to eq formatted_dob
         expect(pii_from_user[:identity_doc_zipcode]).to eq identity_doc_zipcode
         expect(pii_from_user[:identity_doc_address_state]).to eq identity_doc_address_state
-        expect(pii_from_user[:state_id_number]).to eq state_id_number
+        # param from form as id_number but is renamed to state_id_number on update
+        expect(pii_from_user[:state_id_number]).to eq id_number
       end
     end
 
@@ -238,7 +238,7 @@ RSpec.describe Idv::InPerson::StateIdController, allowed_extra_analytics: [:*] d
       context 'changed from "true" to "false"' do
         let(:params) do
           {
-            state_id: {
+            identity_doc: {
               first_name:,
               last_name:,
               same_address_as_id: 'false', # value on submission
@@ -246,7 +246,7 @@ RSpec.describe Idv::InPerson::StateIdController, allowed_extra_analytics: [:*] d
               identity_doc_address2:,
               identity_doc_city:,
               state_id_jurisdiction:,
-              state_id_number:,
+              id_number:,
               identity_doc_address_state:,
               identity_doc_zipcode:,
               dob:,
@@ -296,7 +296,7 @@ RSpec.describe Idv::InPerson::StateIdController, allowed_extra_analytics: [:*] d
 
       context 'changed from "false" to "true"' do
         let(:params) do
-          { state_id: {
+          { identity_doc: {
             first_name:,
             last_name:,
             same_address_as_id: 'true', # value on submission
@@ -304,7 +304,7 @@ RSpec.describe Idv::InPerson::StateIdController, allowed_extra_analytics: [:*] d
             identity_doc_address2:,
             identity_doc_city:,
             state_id_jurisdiction:,
-            state_id_number:,
+            id_number:,
             identity_doc_address_state:,
             identity_doc_zipcode:,
             dob:,
@@ -335,7 +335,7 @@ RSpec.describe Idv::InPerson::StateIdController, allowed_extra_analytics: [:*] d
 
       context 'not changed from "false"' do
         let(:params) do
-          { state_id: {
+          { identity_doc: {
             dob:,
             same_address_as_id: 'false',
             address1:,
