@@ -1861,6 +1861,7 @@ module AnalyticsEvents
   # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
+  # @param [Integer,nil] proofing_workflow_time_in_seconds The time since starting proofing
   # @identity.idp.previous_event_name  IdV: review info visited
   def idv_enter_password_submitted(
     success:,
@@ -1874,6 +1875,7 @@ module AnalyticsEvents
     proofing_components: nil,
     active_profile_idv_level: nil,
     pending_profile_idv_level: nil,
+    proofing_workflow_time_in_seconds: nil,
     **extra
   )
     track_event(
@@ -1889,6 +1891,7 @@ module AnalyticsEvents
       proofing_components:,
       active_profile_idv_level:,
       pending_profile_idv_level:,
+      proofing_workflow_time_in_seconds:,
       **extra,
     )
   end
@@ -1949,6 +1952,7 @@ module AnalyticsEvents
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # @param [Array,nil] profile_history Array of user's profiles (oldest to newest).
+  # @param [Integer,nil] proofing_workflow_time_in_seconds The time since starting proofing
   # @see Reporting::IdentityVerificationReport#query This event is used by the identity verification
   #       report. Changes here should be reflected there.
   # Tracks the last step of IDV, indicates the user successfully proofed
@@ -1965,6 +1969,7 @@ module AnalyticsEvents
     active_profile_idv_level: nil,
     pending_profile_idv_level: nil,
     profile_history: nil,
+    proofing_workflow_time_in_seconds: nil,
     **extra
   )
     track_event(
@@ -1981,6 +1986,7 @@ module AnalyticsEvents
       active_profile_idv_level:,
       pending_profile_idv_level:,
       profile_history:,
+      proofing_workflow_time_in_seconds:,
       **extra,
     )
   end
