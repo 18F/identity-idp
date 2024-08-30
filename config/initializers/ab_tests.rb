@@ -62,4 +62,21 @@ module AbTests
   ) do |service_provider:, session:, user:, user_session:, **|
     document_capture_session_uuid_discriminator(service_provider:, session:, user:, user_session:)
   end.freeze
+
+  RECAPTCHA_SIGN_IN = AbTest.new(
+    experiment_name: 'reCAPTCHA at Sign-In',
+    should_log: [
+      'Email and Password Authentication',
+      'IdV: doc auth verify proofing results',
+      'reCAPTCHA verify result received',
+      :idv_enter_password_submitted,
+    ].to_set,
+    buckets: { sign_in_recaptcha: IdentityConfig.store.sign_in_recaptcha_percent_tested },
+  ) do |user:, user_session:, **|
+    if user_session&.[](:captcha_validation_performed_at_sign_in) == false
+      nil
+    else
+      user&.uuid
+    end
+  end.freeze
 end
