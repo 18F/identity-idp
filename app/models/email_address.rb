@@ -36,19 +36,6 @@ class EmailAddress < ApplicationRecord
     email.end_with?('.gov', '.mil')
   end
 
-  private
-
-  # Remove email id from all user identities
-  # when the email is destroyed.
-  def nil_identity_email_address_id
-    # rubocop:disable Rails/SkipsModelValidations
-    ServiceProviderIdentity.where(
-      user_id: user_id,
-      email_address_id: id,
-    ).update_all(email_address_id: nil)
-    # rubocop:enable Rails/SkipsModelValidations
-  end
-
   class << self
     def find_with_email(email)
       return nil if !email.is_a?(String) || email.empty?
@@ -88,5 +75,18 @@ class EmailAddress < ApplicationRecord
     def create_fingerprints(email)
       [Pii::Fingerprinter.fingerprint(email), *Pii::Fingerprinter.previous_fingerprints(email)]
     end
+  end
+
+  private
+
+  # Remove email id from all user identities
+  # when the email is destroyed.
+  def nil_identity_email_address_id
+    # rubocop:disable Rails/SkipsModelValidations
+    ServiceProviderIdentity.where(
+      user_id: user_id,
+      email_address_id: id,
+    ).update_all(email_address_id: nil)
+    # rubocop:enable Rails/SkipsModelValidations
   end
 end
