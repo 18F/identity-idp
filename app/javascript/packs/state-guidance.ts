@@ -57,8 +57,6 @@ function onIdentityDocJurisdictionSelection() {
 
 document.getElementById('idv_form_state')?.addEventListener('change', onStateSelectionChange);
 
-document.addEventListener('DOMContentLoaded', () => {
-  onStateSelectionChange();
-  onIdentityDocStateSelection();
-  onIdentityDocJurisdictionSelection();
-});
+onStateSelectionChange();
+onIdentityDocStateSelection();
+onIdentityDocJurisdictionSelection();

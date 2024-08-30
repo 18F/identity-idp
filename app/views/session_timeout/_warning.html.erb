@@ -49,9 +49,7 @@
         t('continue', scope: modal_presenter.translation_scope),
       ) %>
   <%= render ButtonComponent.new(
-        action: ->(**tag_options, &block) do
-          button_to(logout_path, **tag_options, &block)
-        end,
+        url: logout_path,
         method: :delete,
         big: true,
         full_width: true,

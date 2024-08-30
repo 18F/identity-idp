@@ -15,6 +15,7 @@ module Users
     before_action :validate_existing_platform_authenticator
 
     helper_method :in_multi_mfa_selection_flow?
+    helper_method :mobile?
 
     def new
       form = WebauthnVisitForm.new(
@@ -40,13 +41,6 @@ module Users
       save_challenge_in_session
       @exclude_credentials = exclude_credentials
       @need_to_set_up_additional_mfa = need_to_set_up_additional_mfa?
-      if !result.success?
-        if @platform_authenticator
-          irs_attempts_api_tracker.mfa_enroll_webauthn_platform(success: false)
-        else
-          irs_attempts_api_tracker.mfa_enroll_webauthn_roaming(success: false)
-        end
-      end
 
       if result.errors.present?
         analytics.webauthn_setup_submitted(
@@ -65,7 +59,7 @@ module Users
         user_session: user_session,
         device_name: DeviceName.from_user_agent(request.user_agent),
       )
-      result = form.submit(request.protocol, confirm_params)
+      result = form.submit(confirm_params)
       @platform_authenticator = form.platform_authenticator?
       @presenter = WebauthnSetupPresenter.new(
         current_user: current_user,
@@ -77,12 +71,6 @@ module Users
       )
       properties = result.to_h.merge(analytics_properties)
       analytics.multi_factor_auth_setup(**properties)
-
-      if @platform_authenticator
-        irs_attempts_api_tracker.mfa_enroll_webauthn_platform(success: result.success?)
-      else
-        irs_attempts_api_tracker.mfa_enroll_webauthn_roaming(success: result.success?)
-      end
 
       if result.success?
         process_valid_webauthn(form)
@@ -173,7 +161,7 @@ module Users
         :name,
         :platform_authenticator,
         :transports,
-      )
+      ).merge(protocol: request.protocol)
     end
   end
 end

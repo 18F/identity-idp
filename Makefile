@@ -12,6 +12,7 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 
 .PHONY: \
 	analytics_events \
+	audit \
 	brakeman \
 	build_artifact \
 	check \
@@ -19,19 +20,18 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	clobber_assets \
 	clobber_logs \
 	watch_events \
-	docker_setup \
 	download_acuant_sdk \
-	fast_setup \
-	fast_test \
 	help \
 	lint \
 	lint_analytics_events \
 	lint_analytics_events_sorted \
 	lint_country_dialing_codes \
+	lint_database_schema_files \
 	lint_erb \
+	lint_font_glyphs \
 	lint_lockfiles \
+	lint_new_typescript_files \
 	lint_optimized_assets \
-	lint_tracker_events \
 	lint_yaml \
 	lint_yarn_workspaces \
 	lint_asset_bundle_size \
@@ -59,12 +59,6 @@ all: check
 setup $(CONFIG): config/application.yml.default ## Runs setup scripts (updates packages, dependencies, databases, etc)
 	bin/setup
 
-fast_setup: ## Abbreviated setup script that skips linking some files
-	bin/fast_setup
-
-docker_setup: ## Setup script for Docker development
-	bin/docker_setup
-
 check: lint test ## Runs lint tests and spec tests
 
 lint: ## Runs all lint tests
@@ -79,15 +73,10 @@ else
 endif
 	@echo "--- analytics_events ---"
 	make lint_analytics_events
-	make lint_tracker_events
 	make lint_analytics_events_sorted
 	@echo "--- brakeman ---"
 	make brakeman
-	@echo "--- bundler-audit ---"
-	bundle exec bundler-audit check --update
 	# JavaScript
-	@echo "--- yarn audit ---"
-	yarn audit --groups dependencies; test $$? -le 7
 	@echo "--- eslint ---"
 	yarn run lint
 	@echo "--- typescript ---"
@@ -95,8 +84,12 @@ endif
 	# Other
 	@echo "--- lint yaml ---"
 	make lint_yaml
+	@echo "--- lint font glyphs ---"
+	make lint_font_glyphs
 	@echo "--- lint Yarn workspaces ---"
 	make lint_yarn_workspaces
+	@echo "--- lint new TypeScript files ---"
+	make lint_new_typescript_files
 	@echo "--- lint lockfiles ---"
 	make lint_lockfiles
 	@echo "--- check assets are optimized ---"
@@ -110,11 +103,26 @@ endif
 	@echo "--- lint migrations ---"
 	make lint_migrations
 
+audit: ## Checks packages for vulnerabilities
+	@echo "--- bundler-audit ---"
+	bundle exec bundler-audit check --update
+	@echo "--- yarn audit ---"
+	yarn audit --groups dependencies; test $$? -le 7
+
 lint_erb: ## Lints ERB files
 	bundle exec erblint app/views app/components
 
 lint_yaml: normalize_yaml ## Lints YAML files
-	(! git diff --name-only | grep "^config/.*\.yml$$") || (echo "Error: Run 'make normalize_yaml' to normalize YAML"; exit 1)
+	(! git diff --name-only | grep "^config/.*\.yml") || (echo "Error: Run 'make normalize_yaml' to normalize YAML"; exit 1)
+
+lint_font_glyphs: ## Lints to validate content glyphs match expectations from fonts
+	scripts/yaml_characters \
+		--exclude-locale=zh \
+		--exclude-gem-path=faker \
+		--exclude-gem-path=good_job \
+		--exclude-gem-path=i18n-tasks \
+		> app/assets/fonts/glyphs.txt
+	(! git diff --name-only | grep "glyphs\.txt$$") || (echo "Error: New character data found. Follow 'Fonts' instructions in 'docs/frontend.md' to regenerate fonts."; exit 1)
 
 lint_yarn_workspaces: ## Lints Yarn workspace packages
 	scripts/validate-workspaces.mjs
@@ -126,8 +134,8 @@ lint_asset_bundle_size: ## Lints JavaScript and CSS compiled bundle size
 	@# and you have no options to split that from the common bundles. If you need to increase this
 	@# budget and accept the fact that this will force end-users to endure longer load times, you
 	@# should set the new budget to within a few thousand bytes of the production-compiled size.
-	find app/assets/builds/application.css -size -220000c | grep .
-	find public/packs/js/application-*.digested.js -size -5000c | grep .
+	find app/assets/builds/application.css -size -105000c | grep .
+	find public/packs/application-*.digested.js -size -5000c | grep .
 
 lint_migrations:
 	scripts/migration_check
@@ -139,8 +147,13 @@ lint_gemfile_lock: Gemfile Gemfile.lock ## Lints the Gemfile and its lockfile
 lint_yarn_lock: package.json yarn.lock ## Lints the package.json and its lockfile
 	@yarn install --ignore-scripts
 	@(! git diff --name-only | grep yarn.lock) || (echo "Error: There are uncommitted changes after running 'yarn install'"; exit 1)
+	@yarn yarn-deduplicate
+	@(! git diff --name-only | grep yarn.lock) || (echo "Error: There are duplicate JS dependencies that were removed after running 'yarn yarn-deduplicate'"; exit 1)
 
 lint_lockfiles: lint_gemfile_lock lint_yarn_lock ## Lints to ensure lockfiles are in sync
+
+lint_new_typescript_files:
+	scripts/enforce-typescript-files.mjs
 
 lint_readme: README.md ## Lints README.md
 	(! git diff --name-only | grep "^README.md$$") || (echo "Error: Run 'make README.md' to regenerate the README.md"; exit 1)
@@ -190,10 +203,6 @@ test_serial: export RAILS_ENV := test
 test_serial: $(CONFIG) ## Runs RSpec and yarn tests serially
 	bundle exec rake spec && yarn test
 
-fast_test: export RAILS_ENV := test
-fast_test: ## Abbreviated test run, runs RSpec tests without accessibility specs
-	bundle exec rspec --exclude-pattern "**/features/accessibility/*_spec.rb"
-
 tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt: ## Self-signed cert for local HTTPS development
 	mkdir -p tmp
 	openssl req \
@@ -219,6 +228,7 @@ run-https: tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt ## Runs the developme
 normalize_yaml: ## Normalizes YAML files (alphabetizes keys, fixes line length, smart quotes)
 	yarn normalize-yaml .rubocop.yml --disable-sort-keys --disable-smart-punctuation
 	find ./config/locales/transliterate -type f -name '*.yml' -exec yarn normalize-yaml --disable-sort-keys --disable-smart-punctuation {} \;
+	yarn normalize-yaml --disable-smart-punctuation --ignore-key-sort development,production,test config/application.yml.default
 	find ./config/locales/telephony -type f -name '*.yml' | xargs yarn normalize-yaml --disable-smart-punctuation
 	find ./config/locales -not \( -path "./config/locales/telephony*" -o -path "./config/locales/transliterate/*" \) -type f -name '*.yml' | \
 	xargs yarn normalize-yaml \
@@ -249,6 +259,10 @@ update_pinpoint_supported_countries: ## Updates list of countries supported by P
 
 lint_country_dialing_codes: update_pinpoint_supported_countries ## Checks that countries supported by Pinpoint for voice and SMS are up to date
 	(! git diff --name-only | grep config/country_dialing_codes.yml) || (echo "Error: Run 'make update_pinpoint_supported_countries' to update country codes"; exit 1)
+
+lint_database_schema_files: ## Checks that database schema files have not changed
+	(! git diff --name-only | grep db/schema.rb) || (echo "Error: db/schema.rb does not match after running migrations"; exit 1)
+	(! git diff --name-only | grep db/worker_jobs_schema.rb) || (echo "Error: db/worker_jobs_schema.rb does not match after running migrations"; exit 1)
 
 build_artifact $(ARTIFACT_DESTINATION_FILE): ## Builds zipped tar file artifact with IDP source code and Ruby/JS dependencies
 	@echo "Building artifact into $(ARTIFACT_DESTINATION_FILE)"
@@ -285,14 +299,11 @@ lint_analytics_events_sorted:
 	@test "$(shell grep '^  def ' app/services/analytics_events.rb)" = "$(shell grep '^  def ' app/services/analytics_events.rb | sort)" \
 		|| (echo '\033[1;31mError: methods in analytics_events.rb are not sorted alphabetically\033[0m' && exit 1)
 
-lint_tracker_events: .yardoc ## Checks that all methods on AnalyticsEvents are documented
-	bundle exec ruby lib/analytics_events_documenter.rb --class-name="IrsAttemptsApi::TrackerEvents" --check --skip-extra-params $<
-
 public/api/_analytics-events.json: .yardoc .yardoc/objects/root.dat
 	mkdir -p public/api
 	bundle exec ruby lib/analytics_events_documenter.rb --class-name="AnalyticsEvents" --json $< > $@
 
-.yardoc .yardoc/objects/root.dat: app/services/analytics_events.rb app/services/irs_attempts_api/tracker_events.rb
+.yardoc .yardoc/objects/root.dat: app/services/analytics_events.rb
 	bundle exec yard doc \
 		--fail-on-warning \
 		--type-tag identity.idp.previous_event_name:"Previous Event Name" \

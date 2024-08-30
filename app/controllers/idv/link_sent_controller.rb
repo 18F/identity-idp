@@ -61,7 +61,6 @@ module Idv
         step: 'link_sent',
         analytics_id: 'Doc Auth',
         flow_path: 'hybrid',
-        irs_reproofing: irs_reproofing?,
       }.merge(ab_test_analytics_buckets)
     end
 
@@ -74,11 +73,11 @@ module Idv
     def render_document_capture_cancelled
       redirect_to idv_hybrid_handoff_url
       idv_session.flow_path = nil
-      failure(I18n.t('errors.doc_auth.document_capture_canceled'))
+      failure(I18n.t('doc_auth.errors.document_capture_canceled'))
     end
 
     def render_step_incomplete_error
-      failure(I18n.t('errors.doc_auth.phone_step_incomplete'))
+      failure(I18n.t('doc_auth.errors.phone_step_incomplete'))
     end
 
     def take_photo_with_phone_successful?

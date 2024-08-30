@@ -21,4 +21,14 @@ RSpec.describe 'shared/_personal_key.html.erb' do
       expect(data_uri.read).to eq(personal_key)
     end
   end
+
+  it 'has link to help center' do
+    expect(rendered).to have_link(
+      t('forms.personal_key_partial.acknowledgement.help_link_text'),
+      href: help_center_redirect_url(
+        category: 'manage-your-account',
+        article: 'personal-key',
+      ),
+    )
+  end
 end

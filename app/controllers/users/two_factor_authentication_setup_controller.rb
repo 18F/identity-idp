@@ -7,6 +7,7 @@ module Users
 
     before_action :authenticate_user
     before_action :confirm_user_authenticated_for_2fa_setup
+    before_action :check_if_possible_piv_user
 
     delegate :enabled_mfa_methods_count, to: :mfa_context
 
@@ -15,17 +16,13 @@ module Users
       @presenter = two_factor_options_presenter
       analytics.user_registration_2fa_setup_visit(
         enabled_mfa_methods_count:,
-        gov_or_mil_email: gov_or_mil_email?,
+        gov_or_mil_email: fed_or_mil_email?,
       )
     end
 
     def create
       result = submit_form
       analytics.user_registration_2fa_setup(**result.to_h)
-      irs_attempts_api_tracker.mfa_enroll_options_selected(
-        success: result.success?,
-        mfa_device_types: @two_factor_options_form.selection,
-      )
 
       if result.success?
         process_valid_form
@@ -47,8 +44,8 @@ module Users
 
     private
 
-    def gov_or_mil_email?
-      current_user.confirmed_email_addresses.any?(&:gov_or_mil?)
+    def fed_or_mil_email?
+      current_user.confirmed_email_addresses.any?(&:fed_or_mil_email?)
     end
 
     def mfa_context
@@ -73,12 +70,7 @@ module Users
 
     def process_valid_form
       user_session[:mfa_selections] = @two_factor_options_form.selection
-
-      if user_session[:mfa_selections].first.present?
-        redirect_to confirmation_path(user_session[:mfa_selections].first)
-      else
-        redirect_to after_mfa_setup_path
-      end
+      redirect_to(first_mfa_selection_path || after_mfa_setup_path)
     end
 
     def two_factor_options_form_params

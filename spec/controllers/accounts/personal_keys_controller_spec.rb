@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Accounts::PersonalKeysController, allowed_extra_analytics: [:*] do
+RSpec.describe Accounts::PersonalKeysController do
   describe 'before_actions' do
     it 'require recent reauthn' do
       expect(subject).to have_actions(
@@ -16,9 +16,9 @@ RSpec.describe Accounts::PersonalKeysController, allowed_extra_analytics: [:*] d
       stub_sign_in(create(:user, :with_phone))
       stub_analytics
 
-      expect(@analytics).to receive(:track_event).with('Profile: Visited new personal key')
-
       get :new
+
+      expect(@analytics).to have_logged_event('Profile: Visited new personal key')
     end
   end
 
@@ -32,14 +32,14 @@ RSpec.describe Accounts::PersonalKeysController, allowed_extra_analytics: [:*] d
         with(subject.current_user).and_return(generator)
 
       expect(generator).to receive(:create)
-      expect(@analytics).to receive(:track_event).with('Profile: Created new personal key')
-      expect(@analytics).to receive(:track_event).with(
-        'Profile: Created new personal key notifications',
-        hash_including(emails: 1, sms_message_ids: ['fake-message-id']),
-      )
 
       post :create
 
+      expect(@analytics).to have_logged_event('Profile: Created new personal key')
+      expect(@analytics).to have_logged_event(
+        'Profile: Created new personal key notifications',
+        hash_including(emails: 1, sms_message_ids: ['fake-message-id']),
+      )
       expect(response).to redirect_to manage_personal_key_path
       expect(flash[:info]).to eq(t('account.personal_key.old_key_will_not_work'))
     end
@@ -47,17 +47,15 @@ RSpec.describe Accounts::PersonalKeysController, allowed_extra_analytics: [:*] d
     it 'tracks CSRF errors' do
       stub_sign_in
       stub_analytics
-      analytics_hash = {
-        controller: 'accounts/personal_keys#create',
-        user_signed_in: true,
-      }
       allow(controller).to receive(:create).and_raise(ActionController::InvalidAuthenticityToken)
-
-      expect(@analytics).to receive(:track_event).
-        with('Invalid Authenticity Token', analytics_hash)
 
       post :create
 
+      expect(@analytics).to have_logged_event(
+        'Invalid Authenticity Token',
+        controller: 'accounts/personal_keys#create',
+        user_signed_in: true,
+      )
       expect(response).to redirect_to new_user_session_url
       expect(flash[:error]).to eq t('errors.general')
     end

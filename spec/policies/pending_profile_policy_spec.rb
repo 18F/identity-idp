@@ -4,12 +4,12 @@ RSpec.describe PendingProfilePolicy do
   let(:user) { create(:user) }
   let(:resolved_authn_context_result) do
     AuthnContextResolver.new(
+      user: user,
       service_provider: nil,
       vtr: vtr,
       acr_values: acr_values,
-    ).resolve
+    ).result
   end
-  let(:biometric_comparison_requested) { nil }
   let(:vtr) { nil }
   let(:acr_values) { nil }
 
@@ -17,7 +17,6 @@ RSpec.describe PendingProfilePolicy do
     described_class.new(
       user: user,
       resolved_authn_context_result: resolved_authn_context_result,
-      biometric_comparison_requested: biometric_comparison_requested,
     )
   end
 
@@ -27,7 +26,6 @@ RSpec.describe PendingProfilePolicy do
       before do
         create(:profile, :active, :verified, idv_level: :legacy_unsupervised, user: user)
         create(:profile, :verify_by_mail_pending, idv_level: idv_level, user: user)
-        allow(FeatureManagement).to receive(:idv_allow_selfie_check?).and_return(true)
       end
 
       context 'with resolved authn context result' do
@@ -38,9 +36,8 @@ RSpec.describe PendingProfilePolicy do
         end
       end
 
-      context 'with biometric_comparison_requested param set to true' do
-        let(:biometric_comparison_requested) { true }
-        let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
+      context 'with biometric comparison requested ACR value' do
+        let(:acr_values) { Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF }
 
         it 'has a usable pending profile' do
           expect(policy.user_has_pending_profile?).to eq(true)

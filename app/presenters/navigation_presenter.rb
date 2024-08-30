@@ -56,7 +56,7 @@ class NavigationPresenter
           ),
         ]
       ),
-      NavItem.new(I18n.t('account.navigation.customer_support'), MarketingSite.help_url, []),
+      NavItem.new(I18n.t('account.navigation.customer_support'), help_center_redirect_url, []),
     ]
   end
 
@@ -64,7 +64,7 @@ class NavigationPresenter
     if TwoFactorAuthentication::BackupCodePolicy.new(user).configured?
       backup_code_regenerate_path
     else
-      backup_code_create_path
+      backup_code_setup_path
     end
   end
 end

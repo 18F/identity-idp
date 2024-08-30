@@ -7,6 +7,7 @@ module Idv
     include StepIndicatorConcern
     include PhoneOtpRateLimitable
     include PhoneOtpSendable
+    include Idv::VerifyByMailConcern
 
     attr_reader :idv_form
 
@@ -35,11 +36,15 @@ module Idv
         analytics.idv_phone_of_record_visited(
           **ab_test_analytics_buckets,
         )
-        render :new, locals: { gpo_letter_available: gpo_letter_available }
+        render(
+          :new, locals: { gpo_letter_available: gpo_verify_by_mail_policy.send_letter_available? }
+        )
       elsif async_state.missing?
         analytics.proofing_address_result_missing
         flash.now[:error] = I18n.t('idv.failure.timeout')
-        render :new, locals: { gpo_letter_available: gpo_letter_available }
+        render(
+          :new, locals: { gpo_letter_available: gpo_verify_by_mail_policy.send_letter_available? }
+        )
       end
     end
 
@@ -51,16 +56,14 @@ module Idv
         call(:verify_phone, :update, result.success?)
 
       analytics.idv_phone_confirmation_form_submitted(**result.to_h, **ab_test_analytics_buckets)
-      irs_attempts_api_tracker.idv_phone_submitted(
-        success: result.success?,
-        phone_number: step_params[:phone],
-      )
       if result.success?
         submit_proofing_attempt
         redirect_to idv_phone_path
       else
         flash.now[:error] = result.first_error_message
-        render :new, locals: { gpo_letter_available: gpo_letter_available }
+        render(
+          :new, locals: { gpo_letter_available: gpo_verify_by_mail_policy.send_letter_available? }
+        )
       end
     end
 
@@ -115,12 +118,6 @@ module Idv
       analytics.idv_phone_confirmation_otp_sent(
         **result.to_h.merge(adapter: Telephony.config.adapter),
       )
-
-      irs_attempts_api_tracker.idv_phone_otp_sent(
-        phone_number: @idv_phone,
-        success: result.success?,
-        otp_delivery_method: idv_session.previous_phone_step_params[:otp_delivery_preference],
-      )
       if result.success?
         redirect_to idv_otp_verification_url
       else
@@ -149,7 +146,6 @@ module Idv
         idv_session: idv_session,
         trace_id: amzn_trace_id,
         analytics: analytics,
-        attempts_tracker: irs_attempts_api_tracker,
       )
     end
 
@@ -203,16 +199,16 @@ module Idv
       end
     end
 
-    def is_req_from_frontend?
+    def frontend_request?
       request.headers['HTTP_X_FORM_STEPS_WAIT'] == '1'
     end
 
-    def is_req_from_verify_step?
+    def verify_step_request?
       request.referer == idv_verify_info_url
     end
 
     def should_keep_flash_success?
-      is_req_from_frontend? && is_req_from_verify_step?
+      frontend_request? && verify_step_request?
     end
 
     def new_phone_added?
@@ -234,12 +230,6 @@ module Idv
       )
     end
 
-    def gpo_letter_available
-      return @gpo_letter_available if defined?(@gpo_letter_available)
-      @gpo_letter_available ||= FeatureManagement.gpo_verification_enabled? &&
-                                !Idv::GpoMail.new(current_user).rate_limited?
-    end
-
     # Migrated from otp_delivery_method_controller
     def otp_sent_tracker_error(result)
       if send_phone_confirmation_otp_rate_limited?
@@ -257,6 +247,7 @@ module Idv
         phone: original_session.phone,
         sent_at: original_session.sent_at,
         delivery_method: original_session.delivery_method,
+        user: current_user,
       )
     end
   end

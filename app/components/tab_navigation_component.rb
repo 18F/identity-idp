@@ -9,7 +9,7 @@ class TabNavigationComponent < BaseComponent
     @tag_options = tag_options
   end
 
-  def is_current_path?(path)
+  def current_path?(path)
     recognized_path = Rails.application.routes.recognize_path(path, method: request.method)
     request.params[:controller] == recognized_path[:controller] &&
       request.params[:action] == recognized_path[:action]

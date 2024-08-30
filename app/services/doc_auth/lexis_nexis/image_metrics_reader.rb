@@ -11,7 +11,7 @@ module DocAuth
         true_id_product[:ParameterDetails].each do |detail|
           next unless detail[:Group] == 'IMAGE_METRICS_RESULT'
 
-          inner_val = detail.dig(:Values).collect { |value| value.dig(:Value) }
+          inner_val = detail.dig(:Values).map { |value| value.dig(:Value) }
           image_metrics[detail[:Name]] = inner_val
         end
 

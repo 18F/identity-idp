@@ -5,8 +5,10 @@ ruby "~> #{File.read(File.join(__dir__, '.ruby-version')).strip}"
 
 gem 'rails', '~> 7.1.3'
 
-gem 'activerecord-postgis-adapter', '~> 9.0'
 gem 'ahoy_matey', '~> 3.0'
+# pod identity requires 3.188.0
+# https://docs.aws.amazon.com/eks/latest/userguide/pod-id-minimum-sdk.html
+gem 'aws-sdk-core', '>= 3.188.0'
 gem 'aws-sdk-kms', '~> 1.4'
 gem 'aws-sdk-cloudwatchlogs', require: false
 gem 'aws-sdk-pinpoint'
@@ -30,12 +32,12 @@ gem 'dotiw', '>= 4.0.1'
 gem 'faraday', '~> 2'
 gem 'faker'
 gem 'faraday-retry'
+gem 'fugit'
 gem 'foundation_emails'
 gem 'good_job', '~> 3.0'
-gem 'hashie', '~> 4.1'
 gem 'http_accept_language'
-gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v3.4.3'
-gem 'identity-logging', github: '18F/identity-logging', tag: 'v0.1.0'
+gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v4.0.0'
+gem 'identity-logging', github: '18F/identity-logging', tag: 'v0.1.1'
 gem 'identity_validations', github: '18F/identity-validations', tag: 'v0.7.2'
 gem 'jsbundling-rails', '~> 1.1.2'
 gem 'jwe'
@@ -49,6 +51,7 @@ gem 'maxminddb'
 gem 'multiset'
 gem 'net-sftp'
 gem 'newrelic_rpm', '~> 9.0'
+gem 'numbers_and_words', '~> 0.11.12'
 gem 'prometheus_exporter'
 gem 'puma', '~> 6.0'
 gem 'pg'
@@ -65,17 +68,17 @@ gem 'redacted_struct'
 gem 'redis', '>= 3.2.0'
 gem 'redis-session-store', github: '18F/redis-session-store', tag: 'v1.0.1-18f'
 gem 'retries'
-gem 'rotp', '~> 6.1'
+gem 'rexml', '~> 3.3'
+gem 'rotp', '~> 6.3', '>= 6.3.0'
 gem 'rqrcode'
 gem 'ruby-progressbar'
 gem 'ruby-saml'
 gem 'safe_target_blank', '>= 1.0.2'
-gem 'saml_idp', github: '18F/saml_idp', tag: '0.19.2-18f'
+gem 'saml_idp', github: '18F/saml_idp', tag: '0.21.8-18f'
 gem 'scrypt'
 gem 'simple_form', '>= 5.0.2'
 gem 'stringex', require: false
 gem 'strong_migrations', '>= 0.4.2'
-gem 'subprocess', require: false
 gem 'terminal-table', require: false
 # until a release includes https://github.com/hallelujah/valid_email/pull/126
 gem 'valid_email', '>= 0.1.3', github: 'hallelujah/valid_email', ref: '486b860'
@@ -102,7 +105,7 @@ group :development, :test do
   gem 'brakeman', require: false
   gem 'bullet', '~> 7.0'
   gem 'capybara-webmock', git: 'https://github.com/hashrocket/capybara-webmock.git', ref: 'd3f3b7c'
-  gem 'erb_lint', '~> 0.4.0', require: false
+  gem 'erb_lint', '~> 0.5.0', require: false
   gem 'i18n-tasks', '~> 1.0'
   gem 'knapsack'
   gem 'listen'
@@ -113,7 +116,7 @@ group :development, :test do
   gem 'pry-doc'
   gem 'pry-rails'
   gem 'psych'
-  gem 'rspec', '~> 3.12.0'
+  gem 'rspec', '~> 3.13.0'
   gem 'rspec-rails', '~> 6.0'
   gem 'rubocop', '~> 1.62.0', require: false
   gem 'rubocop-performance', '~> 1.20.2', require: false

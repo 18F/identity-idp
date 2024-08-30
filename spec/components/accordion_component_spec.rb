@@ -21,8 +21,8 @@ RSpec.describe AccordionComponent, type: :component do
   it 'assigns a unique id' do
     second_rendered = render_inline(described_class.new)
 
-    rendered_id = rendered.css('.usa-accordion__container').first['id']
-    second_rendered_id = second_rendered.css('.usa-accordion__container').first['id']
+    rendered_id = rendered.css('.usa-accordion__content').first['id']
+    second_rendered_id = second_rendered.css('.usa-accordion__content').first['id']
 
     expect(rendered_id).to be_present
     expect(second_rendered_id).to be_present

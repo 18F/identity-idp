@@ -46,9 +46,6 @@ module Idv
       analytics.idv_doc_auth_ssn_submitted(
         **analytics_arguments.merge(form_response.to_h),
       )
-      irs_attempts_api_tracker.idv_ssn_submitted(
-        ssn: params[:doc_auth][:ssn],
-      )
 
       if form_response.success?
         idv_session.ssn = params[:doc_auth][:ssn]
@@ -65,17 +62,14 @@ module Idv
         controller: self,
         next_steps: [:verify_info],
         preconditions: ->(idv_session:, user:) { idv_session.remote_document_capture_complete? },
-        undo_step: ->(idv_session:, user:) do
-          idv_session.ssn = nil
-          idv_session.threatmetrix_session_id = nil
-        end,
+        undo_step: ->(idv_session:, user:) { idv_session.ssn = nil },
       )
     end
 
     private
 
     def next_url
-      if idv_session.pii_from_doc[:state] == 'PR' && !ssn_presenter.updating_ssn?
+      if idv_session.pii_from_doc.state == 'PR' && !ssn_presenter.updating_ssn?
         idv_address_url
       else
         idv_verify_info_url
@@ -87,7 +81,6 @@ module Idv
         flow_path: idv_session.flow_path,
         step: 'ssn',
         analytics_id: 'Doc Auth',
-        irs_reproofing: irs_reproofing?,
       }.merge(ab_test_analytics_buckets)
     end
   end

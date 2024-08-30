@@ -18,7 +18,7 @@ class Analytics
     attributes.delete(:pii_like_keypaths)
     update_session_events_and_paths_visited_for_analytics(event) if attributes[:success] != false
     analytics_hash = {
-      event_properties: attributes.except(:user_id),
+      event_properties: attributes.except(:user_id).compact,
       new_event: first_event_this_session?,
       path: request&.path,
       session_duration: session_duration,
@@ -28,6 +28,7 @@ class Analytics
 
     analytics_hash.merge!(request_attributes) if request
     analytics_hash.merge!(sp_request_attributes) if sp_request_attributes
+    analytics_hash.merge!(ab_test_attributes(event))
 
     ahoy.track(event, analytics_hash)
 
@@ -52,13 +53,6 @@ class Analytics
     session[:first_event]
   end
 
-  def track_mfa_submit_event(attributes)
-    multi_factor_auth(
-      **attributes,
-      pii_like_keypaths: [[:errors, :personal_key], [:error_details, :personal_key]],
-    )
-  end
-
   def request_attributes
     attributes = {
       user_ip: request.remote_ip,
@@ -76,6 +70,32 @@ class Analytics
     end
 
     attributes.merge!(browser_attributes)
+  end
+
+  def ab_test_attributes(event)
+    user_session = session.dig('warden.user.user.session')
+    ab_tests = AbTests.all.each_with_object({}) do |(test_id, test), obj|
+      next if !test.include_in_analytics_event?(event)
+
+      bucket = test.bucket(
+        request:,
+        service_provider: sp,
+        session:,
+        user:,
+        user_session:,
+      )
+      if !bucket.blank?
+        obj[test_id.downcase] = {
+          bucket:,
+        }
+      end
+    end
+
+    ab_tests.empty? ?
+      {} :
+      {
+        ab_tests: ab_tests,
+      }
   end
 
   def browser
@@ -128,10 +148,11 @@ class Analytics
     service_provider = ServiceProvider.find_by(issuer: sp)
 
     @resolved_authn_context_result = AuthnContextResolver.new(
+      user: user,
       service_provider:,
       vtr: session[:sp][:vtr],
       acr_values: session[:sp][:acr_values],
-    ).resolve
+    ).result
   rescue Vot::Parser::ParseException
     return
   end

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'Email sign up', allowed_extra_analytics: [:*] do
+RSpec.feature 'Email sign up' do
   scenario 'Load testing feature is on' do
     allow(IdentityConfig.store).to receive(:enable_load_testing_mode).and_return(true)
     email = 'test@example.com'

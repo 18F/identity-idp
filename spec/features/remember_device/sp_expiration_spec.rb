@@ -83,7 +83,7 @@ RSpec.shared_examples 'expiring remember device for an sp config' do |expiration
   end
 end
 
-RSpec.feature 'remember device sp expiration', allowed_extra_analytics: [:*] do
+RSpec.feature 'remember device sp expiration' do
   include SamlAuthHelper
 
   aal1_remember_device_expiration =

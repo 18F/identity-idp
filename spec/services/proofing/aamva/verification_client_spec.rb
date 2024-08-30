@@ -2,18 +2,15 @@ require 'rails_helper'
 
 RSpec.describe Proofing::Aamva::VerificationClient do
   let(:applicant) do
-    applicant = Proofing::Aamva::Applicant.from_proofer_applicant(
+    Proofing::Aamva::Applicant.from_proofer_applicant(
       uuid: '1234-4567-abcd-efgh',
       first_name: 'Testy',
       last_name: 'McTesterson',
       dob: '10/29/1942',
-    )
-    applicant.state_id_data.merge!(
       state_id_number: '123456789',
       state_id_jurisdiction: 'CA',
       state_id_type: 'drivers_license',
     )
-    applicant
   end
 
   subject(:verification_client) { described_class.new(AamvaFixtures.example_config) }
@@ -28,7 +25,7 @@ RSpec.describe Proofing::Aamva::VerificationClient do
       verification_stub = stub_request(:post, AamvaFixtures.example_config.verification_url).
         to_return(body: AamvaFixtures.verification_response, status: 200).
         with do |request|
-          xml_text_at_path(request.body, '//ns:token').gsub(/\s/, '') == 'ThisIsTheToken'
+          xml_text_at_path(request.body, '//dldv:token').gsub(/\s/, '') == 'ThisIsTheToken'
         end
 
       verification_client.send_verification_request(
@@ -151,7 +148,7 @@ RSpec.describe Proofing::Aamva::VerificationClient do
         it 'throws a SOAP exception' do
           expect { response }.to raise_error(
             Proofing::Aamva::VerificationError,
-            /No close tag for \/br/,
+            /Malformed XML/,
           )
         end
       end
@@ -170,7 +167,7 @@ RSpec.describe Proofing::Aamva::VerificationClient do
         it 'throws an error which complains about the invalid response' do
           expect { response }.to raise_error(
             Proofing::Aamva::VerificationError,
-            /No close tag for \/h1/,
+            /Missing end tag for '\/h1'/,
           )
         end
 

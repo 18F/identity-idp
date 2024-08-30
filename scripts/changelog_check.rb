@@ -178,7 +178,7 @@ def format_changelog(changelog_entries)
 
     next if category_changes.empty?
     changelog.concat("## #{category}\n")
-    category_changes.each do |group, entries|
+    category_changes.each do |_group, entries|
       change = entries.first.change
       subcategory = entries.first.subcategory
       pr_numbers = entries.map(&:pr_number).compact.sort

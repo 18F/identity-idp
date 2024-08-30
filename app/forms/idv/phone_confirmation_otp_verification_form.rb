@@ -2,12 +2,11 @@
 
 module Idv
   class PhoneConfirmationOtpVerificationForm
-    attr_reader :user, :user_phone_confirmation_session, :irs_attempts_api_tracker, :code
+    attr_reader :user, :user_phone_confirmation_session, :code
 
-    def initialize(user:, user_phone_confirmation_session:, irs_attempts_api_tracker:)
+    def initialize(user:, user_phone_confirmation_session:)
       @user = user
       @user_phone_confirmation_session = user_phone_confirmation_session
-      @irs_attempts_api_tracker = irs_attempts_api_tracker
     end
 
     def submit(code:)
@@ -29,15 +28,11 @@ module Idv
     end
 
     def clear_second_factor_attempts
-      UpdateUser.new(user: user, attributes: { second_factor_attempts_count: 0 }).call
+      user.update!(second_factor_attempts_count: 0)
     end
 
     def increment_second_factor_attempts
       user.increment_second_factor_attempts_count!
-
-      if user.max_login_attempts?
-        irs_attempts_api_tracker.idv_phone_otp_submitted_rate_limited(phone_number: user_phone)
-      end
     end
 
     def user_phone
@@ -48,6 +43,7 @@ module Idv
       {
         code_expired: user_phone_confirmation_session.expired?,
         code_matches: user_phone_confirmation_session.matches_code?(code),
+        otp_delivery_preference: user_phone_confirmation_session.delivery_method,
         second_factor_attempts_count: user.second_factor_attempts_count,
         second_factor_locked_at: user.second_factor_locked_at,
       }

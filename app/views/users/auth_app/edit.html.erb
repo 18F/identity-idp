@@ -6,7 +6,6 @@
       @form,
       as: :form,
       method: :put,
-      html: { autocomplete: 'off' },
       url: auth_app_path(id: @form.configuration.id),
     ) do |f| %>
   <%= render ValidatedFieldComponent.new(
@@ -22,15 +21,9 @@
 <% end %>
 
 <%= render ButtonComponent.new(
-      action: ->(**tag_options, &block) do
-        button_to(
-          auth_app_path(id: @form.configuration.id),
-          form: { aria: { label: t('two_factor_authentication.auth_app.delete') } },
-          **tag_options,
-          &block
-        )
-      end,
+      url: auth_app_path(id: @form.configuration.id),
       method: :delete,
+      form: { aria: { label: t('two_factor_authentication.auth_app.delete') } },
       big: true,
       wide: true,
       danger: true,

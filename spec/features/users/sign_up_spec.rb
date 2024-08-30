@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
+RSpec.feature 'Sign Up' do
   include SamlAuthHelper
   include OidcAuthHelper
   include DocAuthHelper
@@ -121,7 +121,6 @@ RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
       expect(fake_analytics).to have_logged_event(
         'Multi-Factor Authentication Setup',
         success: true,
-        errors: nil,
         multi_factor_auth_method: 'backup_codes',
         in_account_creation_flow: true,
         enabled_mfa_methods_count: 2,
@@ -170,7 +169,7 @@ RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
   end
 
   scenario 'signing up using phone with a reCAPTCHA challenge', :js do
-    allow(IdentityConfig.store).to receive(:phone_recaptcha_mock_validator).and_return(true)
+    allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).and_return(true)
     allow(IdentityConfig.store).to receive(:phone_recaptcha_score_threshold).and_return(0.6)
 
     sign_up_and_set_password
@@ -179,9 +178,8 @@ RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
     fill_in t('two_factor_authentication.phone_label'), with: '+61 0491 570 006'
     fill_in t('components.captcha_submit_button.mock_score_label'), with: '0.5'
     click_send_one_time_code
-    expect(page).to have_content(t('titles.spam_protection'), wait: 5)
-    expect(page).to have_link(t('two_factor_authentication.login_options_link_text'))
-    expect(page).not_to have_link(t('links.cancel'))
+    expect(page).to have_current_path(phone_setup_path, wait: 5)
+    expect(page).to have_content(t('errors.messages.invalid_recaptcha_token'))
   end
 
   context 'with js', js: true do
@@ -243,14 +241,6 @@ RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
 
       expect(page).to have_current_path account_path
     end
-
-    it 'allows a user to sign up with backup codes and add methods without reauthentication' do
-      sign_in_user
-      select_2fa_option('backup_code')
-
-      visit phone_setup_path
-      expect(page).to have_current_path phone_setup_path
-    end
   end
 
   context 'user accesses password screen with already confirmed token', email: true do
@@ -271,7 +261,7 @@ RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
     it 'returns them to the resend email confirmation page' do
       visit sign_up_enter_password_path(confirmation_token: 'foo', request_id: 'bar')
 
-      expect(page).to have_current_path(sign_up_email_resend_path)
+      expect(page).to have_current_path(sign_up_register_path)
 
       expect(page).
         to have_content t('errors.messages.confirmation_invalid_token')
@@ -474,21 +464,24 @@ RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
   end
 
   it 'logs expected analytics events for end-to-end sign-up' do
-    analytics = FakeAnalytics.new
-    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(analytics)
+    freeze_time do
+      analytics = FakeAnalytics.new
+      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(analytics)
 
-    visit_idp_from_sp_with_ial1(:oidc)
-    register_user
-    click_agree_and_continue
+      visit_idp_from_sp_with_ial1(:oidc)
+      travel_to Time.zone.now + 15.seconds
+      register_user
+      click_agree_and_continue
 
-    expect(analytics).to have_logged_event(
-      'SP redirect initiated',
-      ial: 1,
-      billed_ial: 1,
-      sign_in_flow: 'create_account',
-      acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-      vtr: nil,
-    )
+      expect(analytics).to have_logged_event(
+        'SP redirect initiated',
+        ial: 1,
+        sign_in_duration_seconds: 15,
+        billed_ial: 1,
+        sign_in_flow: 'create_account',
+        acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+      )
+    end
   end
 
   describe 'visiting the homepage by clicking the logo image' do
@@ -514,6 +507,121 @@ RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
         click_link APP_NAME, href: new_user_session_path
 
         expect(current_path).to eq authentication_methods_setup_path
+      end
+    end
+  end
+
+  describe 'User Directed to Piv Cac recommended' do
+    context 'set config use_fed_domain_class to false' do
+      let(:email) { 'test@test.gov' }
+      before do
+        allow(IdentityConfig.store).to receive(:use_fed_domain_class).and_return(false)
+      end
+
+      it 'should land user on piv cac suggestion page' do
+        confirm_email(email)
+        submit_form_with_valid_password
+        expect(current_path).to eq login_piv_cac_recommended_path
+      end
+
+      context 'user can skip piv cac prompt' do
+        it 'should skip piv cac prompt and land on mfa screen' do
+          confirm_email(email)
+          submit_form_with_valid_password
+          expect(current_path).to eq login_piv_cac_recommended_path
+          click_button t('two_factor_authentication.piv_cac_upsell.choose_other_method')
+
+          expect(current_path).to eq authentication_methods_setup_path
+        end
+      end
+
+      context 'user who selects to add piv is directed to piv screen' do
+        it 'should be directed straight to piv add screen' do
+          confirm_email(email)
+          submit_form_with_valid_password
+          expect(current_path).to eq login_piv_cac_recommended_path
+          click_button t('two_factor_authentication.piv_cac_upsell.add_piv')
+
+          expect(current_path).to eq setup_piv_cac_path
+        end
+      end
+    end
+
+    context 'set config use_fed_domain_class to true' do
+      let!(:federal_email_domain) { create(:federal_email_domain, name: 'gsa.gov') }
+      let(:email) { 'test@gsa.gov' }
+
+      before do
+        allow(IdentityConfig.store).to receive(:use_fed_domain_class).and_return(true)
+      end
+      context 'valid fed email' do
+        it 'should land user on piv cac suggestion page when fed government' do
+          confirm_email(email)
+          submit_form_with_valid_password
+          expect(current_path).to eq login_piv_cac_recommended_path
+        end
+
+        context 'user can skip piv cac prompt' do
+          it 'should skip piv cac prompt and land on mfa screen' do
+            confirm_email(email)
+            submit_form_with_valid_password
+            expect(current_path).to eq login_piv_cac_recommended_path
+            click_button t('two_factor_authentication.piv_cac_upsell.choose_other_method')
+
+            expect(current_path).to eq authentication_methods_setup_path
+          end
+        end
+
+        context 'user who selects to add piv is directed to piv screen' do
+          it 'should be directed straight to piv add screen' do
+            confirm_email(email)
+            submit_form_with_valid_password
+            expect(current_path).to eq login_piv_cac_recommended_path
+            click_button t('two_factor_authentication.piv_cac_upsell.add_piv')
+
+            expect(current_path).to eq setup_piv_cac_path
+          end
+        end
+      end
+
+      context 'any mil email' do
+        let(:email) { 'test@example.mil' }
+        it 'should land user on piv cac suggestion page when fed government' do
+          confirm_email(email)
+          submit_form_with_valid_password
+          expect(current_path).to eq login_piv_cac_recommended_path
+        end
+
+        context 'user can skip piv cac prompt' do
+          it 'should skip piv cac prompt and land on mfa screen' do
+            confirm_email(email)
+            submit_form_with_valid_password
+            expect(current_path).to eq login_piv_cac_recommended_path
+            click_button t('two_factor_authentication.piv_cac_upsell.choose_other_method')
+
+            expect(current_path).to eq authentication_methods_setup_path
+          end
+        end
+
+        context 'user who selects to add piv is directed to piv screen' do
+          it 'should be directed straight to piv add screen' do
+            confirm_email(email)
+            submit_form_with_valid_password
+            expect(current_path).to eq login_piv_cac_recommended_path
+            click_button t('two_factor_authentication.piv_cac_upsell.add_piv')
+
+            expect(current_path).to eq setup_piv_cac_path
+          end
+        end
+      end
+
+      context 'invalid fed email' do
+        let(:email) { 'test@example.gov' }
+        it 'should land user on piv cac suggestion page when fed government' do
+          confirm_email(email)
+          submit_form_with_valid_password
+          expect(current_path).to eq authentication_methods_setup_path
+        end
       end
     end
   end

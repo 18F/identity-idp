@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::SsnController do
+RSpec.describe Idv::SsnController, allowed_extra_analytics: [:*] do
   include FlowPolicyHelper
 
   let(:ssn) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn] }
@@ -15,8 +15,6 @@ RSpec.describe Idv::SsnController do
     stub_sign_in(user)
     stub_up_to(:document_capture, idv_session: subject.idv_session)
     stub_analytics
-    stub_attempts_tracker
-    allow(@analytics).to receive(:track_event)
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
@@ -55,7 +53,6 @@ RSpec.describe Idv::SsnController do
       {
         analytics_id: 'Doc Auth',
         flow_path: 'standard',
-        irs_reproofing: false,
         step: 'ssn',
       }.merge(ab_test_args)
     end
@@ -69,7 +66,7 @@ RSpec.describe Idv::SsnController do
     it 'sends analytics_visited event' do
       get :show
 
-      expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+      expect(@analytics).to have_logged_event(analytics_name, analytics_args)
     end
 
     it 'updates DocAuthLog ssn_view_count' do
@@ -131,11 +128,9 @@ RSpec.describe Idv::SsnController do
         {
           analytics_id: 'Doc Auth',
           flow_path: 'standard',
-          irs_reproofing: false,
           step: 'ssn',
           success: true,
           errors: {},
-          pii_like_keypaths: [[:errors, :ssn], [:error_details, :ssn]],
         }.merge(ab_test_args)
       end
 
@@ -146,7 +141,7 @@ RSpec.describe Idv::SsnController do
 
       context 'with a Puerto Rico address and pii_from_doc in idv_session' do
         it 'redirects to address controller after user enters their SSN' do
-          subject.idv_session.pii_from_doc[:state] = 'PR'
+          subject.idv_session.pii_from_doc = subject.idv_session.pii_from_doc.with(state: 'PR')
 
           put :update, params: params
 
@@ -155,7 +150,7 @@ RSpec.describe Idv::SsnController do
 
         it 'redirects to the verify info controller if a user is updating their SSN' do
           subject.idv_session.ssn = ssn
-          subject.idv_session.pii_from_doc[:state] = 'PR'
+          subject.idv_session.pii_from_doc = subject.idv_session.pii_from_doc.with(state: 'PR')
 
           put :update, params: params
 
@@ -166,13 +161,6 @@ RSpec.describe Idv::SsnController do
       it 'invalidates future steps' do
         expect(subject).to receive(:clear_future_steps!)
 
-        put :update, params: params
-      end
-
-      it 'logs attempts api event' do
-        expect(@irs_attempts_api_tracker).to receive(:idv_ssn_submitted).with(
-          ssn: ssn,
-        )
         put :update, params: params
       end
 
@@ -195,14 +183,12 @@ RSpec.describe Idv::SsnController do
         {
           analytics_id: 'Doc Auth',
           flow_path: 'standard',
-          irs_reproofing: false,
           step: 'ssn',
           success: false,
           errors: {
             ssn: [t('idv.errors.pattern_mismatch.ssn')],
           },
           error_details: { ssn: { invalid: true } },
-          pii_like_keypaths: [[:same_address_as_id], [:errors, :ssn], [:error_details, :ssn]],
         }.merge(ab_test_args)
       end
 
@@ -212,7 +198,7 @@ RSpec.describe Idv::SsnController do
         put :update, params: params
 
         expect(response).to have_rendered('idv/shared/ssn')
-        expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+        expect(@analytics).to have_logged_event(analytics_name, analytics_args)
         expect(response.body).to include(t('idv.errors.pattern_mismatch.ssn'))
       end
     end

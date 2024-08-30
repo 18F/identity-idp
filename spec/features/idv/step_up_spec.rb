@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'IdV step up flow', allowed_extra_analytics: [:*] do
+RSpec.describe 'IdV step up flow' do
   include IdvStepHelper
   include InPersonHelper
 
@@ -9,10 +9,6 @@ RSpec.describe 'IdV step up flow', allowed_extra_analytics: [:*] do
 
   let(:user) do
     create(:user, :proofed, password: RequestHelper::VALID_PASSWORD)
-  end
-
-  before do
-    allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
   end
 
   scenario 'User with active profile can redo idv when selfie required', js: true do

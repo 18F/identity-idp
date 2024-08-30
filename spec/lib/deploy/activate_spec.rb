@@ -5,11 +5,21 @@ RSpec.describe Deploy::Activate do
   let(:root) { @root }
 
   around(:each) do |ex|
+    snapshot = Identity::Hostdata.instance_variables.index_with do |name|
+      Identity::Hostdata.instance_variable_get(name)
+    end
+
     Identity::Hostdata.reset!
 
     Dir.mktmpdir do |dir|
       @root = dir
       ex.run
+    end
+  ensure
+    Identity::Hostdata.reset! # clear any new variables set by the specs
+
+    snapshot.each do |name, value|
+      Identity::Hostdata.instance_variable_set(name, value)
     end
   end
 

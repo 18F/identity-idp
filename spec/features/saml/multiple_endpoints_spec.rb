@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'multiple saml endpoints', allowed_extra_analytics: [:*] do
+RSpec.describe 'multiple saml endpoints' do
   include SamlAuthHelper
   include IdvHelper
 
@@ -90,37 +90,6 @@ RSpec.describe 'multiple saml endpoints', allowed_extra_analytics: [:*] do
       expect(auth_node.attributes['Location']).to include(
         ['/api/saml/auth', endpoint_suffix].join(''),
       )
-    end
-
-    it 'does not include logout urls if configured' do
-      allow(IdentityConfig.store).to receive(:include_slo_in_saml_metadata).
-        and_return(false)
-      document = REXML::Document.new(page.html)
-      logout_nodes = REXML::XPath.match(document, '//SingleLogoutService')
-      expect(logout_nodes.count).to be_zero
-    end
-
-    context 'when configured to include logout endpoints' do
-      before do
-        allow(IdentityConfig.store).to receive(:include_slo_in_saml_metadata).
-          and_return(true)
-      end
-
-      it 'includes the front-channel logout url' do
-        visit endpoint_metadata_path
-        document = REXML::Document.new(page.html)
-        logout_nodes = REXML::XPath.match(document, '//SingleLogoutService')
-        expect(logout_nodes.count { |n| n['Location'].match?(%r{/api/saml/logout\d{4}}) }).
-          to eq(2)
-      end
-
-      it 'includes the remote logout url' do
-        visit endpoint_metadata_path
-        document = REXML::Document.new(page.html)
-        logout_nodes = REXML::XPath.match(document, '//SingleLogoutService')
-        expect(logout_nodes.count { |n| n['Location'].match?(%r{/api/saml/remotelogout\d{4}}) }).
-          to eq(1)
-      end
     end
   end
 end

@@ -13,7 +13,6 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
   end
   let(:in_person_proofing) { false }
   let(:ipp_opt_in_enabled) { false }
-  let(:doc_auth_selfie_capture_enabled) { false }
   let(:sp_selfie_enabled) { false }
 
   before do
@@ -22,17 +21,20 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
     stub_sign_in(user)
     stub_up_to(:agreement, idv_session: subject.idv_session)
     stub_analytics
-    stub_attempts_tracker
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
     allow(subject.idv_session).to receive(:service_provider).and_return(service_provider)
-    allow(subject.decorated_sp_session).to receive(:selfie_required?).
-      and_return(sp_selfie_enabled && doc_auth_selfie_capture_enabled)
+
+    resolved_authn_context_result = sp_selfie_enabled ?
+                                      Vot::Parser.new(vector_of_trust: 'Pb').parse :
+                                      Vot::Parser.new(vector_of_trust: 'P1').parse
+
+    allow(subject).to receive(:resolved_authn_context_result).
+      and_return(resolved_authn_context_result)
+
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { in_person_proofing }
     allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) {
                                      ipp_opt_in_enabled
                                    }
-    allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).
-      and_return(doc_auth_selfie_capture_enabled)
   end
 
   describe '#step_info' do
@@ -63,10 +65,7 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
       {
         step: 'hybrid_handoff',
         analytics_id: 'Doc Auth',
-        redo_document_capture: nil,
-        skip_hybrid_handoff: nil,
-        irs_reproofing: false,
-        selfie_check_required: sp_selfie_enabled && doc_auth_selfie_capture_enabled,
+        selfie_check_required: sp_selfie_enabled,
       }.merge(ab_test_args)
     end
 
@@ -212,6 +211,7 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
           allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).
             and_return(false)
           subject.idv_session.skip_doc_auth = nil
+          subject.idv_session.skip_doc_auth_from_how_to_verify = nil
         end
 
         it 'redirects to how to verify' do
@@ -235,6 +235,7 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
           allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).
             and_return(false)
           subject.idv_session.skip_doc_auth = true
+          subject.idv_session.skip_doc_auth_from_how_to_verify = true
           subject.idv_session.skip_hybrid_handoff = true
         end
 
@@ -249,6 +250,7 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
         before do
           subject.idv_session.service_provider.in_person_proofing_enabled = false
           subject.idv_session.skip_doc_auth = nil
+          subject.idv_session.skip_doc_auth_from_how_to_verify = nil
         end
 
         it 'renders the show template' do
@@ -260,9 +262,9 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
     end
 
     context 'with selfie enabled system wide' do
-      let(:doc_auth_selfie_capture_enabled) { true }
       describe 'when selfie is enabled for sp' do
         let(:sp_selfie_enabled) { true }
+
         it 'pass on correct flags and states and logs correct info' do
           get :show
           expect(response).to render_template :show
@@ -270,8 +272,10 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
           expect(subject.idv_session.selfie_check_required).to eq(true)
         end
       end
+
       describe 'when selfie is disabled for sp' do
         let(:sp_selfie_enabled) { false }
+
         it 'pass on correct flags and states and logs correct info' do
           get :show
           expect(response).to render_template :show
@@ -294,10 +298,7 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
           flow_path: 'hybrid',
           step: 'hybrid_handoff',
           analytics_id: 'Doc Auth',
-          redo_document_capture: nil,
-          skip_hybrid_handoff: nil,
-          selfie_check_required: sp_selfie_enabled && doc_auth_selfie_capture_enabled,
-          irs_reproofing: false,
+          selfie_check_required: sp_selfie_enabled,
           telephony_response: {
             errors: {},
             message_id: 'fake-message-id',
@@ -353,10 +354,7 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
           flow_path: 'standard',
           step: 'hybrid_handoff',
           analytics_id: 'Doc Auth',
-          redo_document_capture: nil,
-          skip_hybrid_handoff: nil,
-          irs_reproofing: false,
-          selfie_check_required: doc_auth_selfie_capture_enabled && sp_selfie_enabled,
+          selfie_check_required: sp_selfie_enabled,
         }.merge(ab_test_args)
       end
 
@@ -370,14 +368,6 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
         put :update, params: params
 
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
-      end
-
-      it 'sends irs_attempts_api_tracking' do
-        expect(@irs_attempts_api_tracker).to receive(
-          :idv_document_upload_method_selected,
-        ).with({ upload_method: 'desktop' })
-
-        put :update, params: { type: 'desktop' }
       end
     end
   end

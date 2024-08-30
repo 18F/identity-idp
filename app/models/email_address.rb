@@ -23,18 +23,31 @@ class EmailAddress < ApplicationRecord
     confirmed_at.present?
   end
 
-  def stale_email_fingerprint?
-    Pii::Fingerprinter.stale?(email, email_fingerprint)
-  end
-
   def confirmation_period_expired?
     expiration_time = confirmation_sent_at +
                       IdentityConfig.store.add_email_link_valid_for_hours.hours
     Time.zone.now > expiration_time
   end
 
-  def gov_or_mil?
-    email.end_with?('.gov', '.mil')
+  def domain
+    Mail::Address.new(email).domain
+  end
+
+  def fed_or_mil_email?
+    fed_email? || mil_email?
+  end
+
+  def fed_email?
+    if IdentityConfig.store.use_fed_domain_class
+      return false unless domain
+      FederalEmailDomain.fed_domain?(domain)
+    else
+      email.end_with?('.gov')
+    end
+  end
+
+  def mil_email?
+    email.end_with?('.mil')
   end
 
   class << self

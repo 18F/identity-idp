@@ -26,7 +26,7 @@ class AddressProofingJob < ApplicationJob
 
     service_provider = ServiceProvider.find_by(issuer: issuer)
     Db::SpCost::AddSpCost.call(
-      service_provider, 2, :lexis_nexis_address, transaction_id: proofer_result.transaction_id
+      service_provider, :lexis_nexis_address, transaction_id: proofer_result.transaction_id
     )
 
     document_capture_session = DocumentCaptureSession.new(result_id: result_id)

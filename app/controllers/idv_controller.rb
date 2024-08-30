@@ -5,6 +5,7 @@ class IdvController < ApplicationController
   include AccountReactivationConcern
   include VerifyProfileConcern
   include RateLimitConcern
+  include Idv::VerifyByMailConcern
 
   before_action :confirm_two_factor_authenticated
   before_action :profile_needs_reactivation?, only: [:index]
@@ -32,11 +33,11 @@ class IdvController < ApplicationController
   private
 
   def already_verified?
-    if decorated_sp_session.selfie_required?
-      return current_user.identity_verified_with_selfie?
+    if resolved_authn_context_result.biometric_comparison?
+      current_user.identity_verified_with_biometric_comparison?
+    else
+      current_user.active_profile.present?
     end
-
-    return current_user.active_profile.present?
   end
 
   def verify_identity

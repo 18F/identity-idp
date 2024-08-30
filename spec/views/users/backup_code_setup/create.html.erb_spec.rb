@@ -1,11 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe 'users/backup_code_setup/create.html.erb' do
-  let(:user) { build(:user, :fully_registered) }
+  let(:number_of_codes) { 10 }
 
   before do
-    allow(view).to receive(:current_user).and_return(user)
-    @codes = BackupCodeGenerator.new(user).create
+    allow(view).to receive(:in_multi_mfa_selection_flow?).and_return(false)
+    stub_const('BackupCodeGenerator::NUMBER_OF_CODES', number_of_codes)
+    @codes = BackupCodeGenerator.new(nil).send(:generate_new_codes)
   end
 
   it 'has a localized title' do
@@ -31,7 +32,10 @@ RSpec.describe 'users/backup_code_setup/create.html.erb' do
 
     expect(rendered).to have_selector(
       '.usa-alert',
-      text: t('forms.backup_code.caution_codes'),
+      text: t(
+        'forms.backup_code.caution_codes',
+        count: ReadableNumber.of(BackupCodeGenerator::NUMBER_OF_CODES),
+      ),
     )
   end
 
@@ -55,5 +59,35 @@ RSpec.describe 'users/backup_code_setup/create.html.erb' do
     render
 
     expect(rendered).to have_button t('forms.buttons.continue')
+  end
+
+  it 'displays all backup codes' do
+    render
+
+    expect(rendered).to have_css('code', count: number_of_codes)
+  end
+
+  context 'with odd number of generated backup codes' do
+    let(:number_of_codes) { 5 }
+
+    it 'displays all backup codes' do
+      render
+
+      expect(rendered).to have_css('code', count: number_of_codes)
+    end
+  end
+
+  context 'during account creation' do
+    before do
+      allow(view).to receive(:in_multi_mfa_selection_flow?).and_return(true)
+    end
+
+    it 'shows a link to cancel backup code creation and choose another mfa option' do
+      render
+
+      expect(rendered).to have_button t(
+        'two_factor_authentication.choose_another_option',
+      )
+    end
   end
 end

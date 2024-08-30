@@ -18,7 +18,7 @@ body {
   flex-direction: column;
   font-size: 0.75rem;
 
-  @include at-media('tablet') {
+  @include at-media('desktop') {
     @include u-bg('primary-darker');
     flex-direction: row;
   }
@@ -27,7 +27,7 @@ body {
     @include u-padding-y(1);
     text-decoration: none;
 
-    @include at-media('tablet') {
+    @include at-media('desktop') {
       @include u-padding-y(0);
       &,
       &:visited {
@@ -39,6 +39,23 @@ body {
       }
     }
   }
+
+  > .footer__agency-logo:first-child {
+    display: none;
+
+    @include at-media('desktop') {
+      display: inline-flex;
+    }
+  }
+}
+
+.footer__agency-logo {
+  display: inline-flex;
+  align-items: center;
+
+  &.usa-link--external::after {
+    margin-top: 0;
+  }
 }
 
 .site-wrap {
@@ -47,26 +64,49 @@ body {
 
 .footer__language-picker {
   @include at-media-max('tablet') {
-    @include u-border-bottom(1px, 'primary-light');
-
     &.language-picker {
       width: 100%;
     }
   }
 
   @include at-media('tablet') {
+    @include u-margin-y(1);
+  }
+
+  @include at-media('desktop') {
     @include u-margin-x(2);
-    @include u-margin-y(0.5);
   }
 }
 
 .footer__links {
-  @include u-padding-x(1);
+  @include u-border-top(1px, 'primary-light');
   display: flex;
   flex-wrap: wrap;
+  width: 100%;
+  justify-content: center;
 
-  @include at-media('tablet') {
+  @include at-media('desktop') {
     @include u-padding-y(1);
-    @include u-padding-x(0);
+    @include u-margin-top(0);
+    @include u-border-top(0);
+    width: auto;
+  }
+
+  & + .footer__links {
+    @include u-border-top(0);
+  }
+
+  a:not(:last-child) {
+    @include u-margin-right(1);
+
+    @include at-media('tablet') {
+      @include u-margin-right(2);
+    }
+  }
+
+  .footer__agency-logo {
+    @include at-media('desktop') {
+      display: none;
+    }
   }
 }

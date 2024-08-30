@@ -16,9 +16,11 @@ module Idv
 
     before_action :redirect_if_flow_completed
 
+    before_action :set_usps_form_presenter
+
     FLOW_STATE_MACHINE_SETTINGS = {
       step_url: :idv_in_person_step_url,
-      final_url: :idv_in_person_proofing_address_url,
+      final_url: :idv_in_person_address_url,
       flow: Idv::Flows::InPersonFlow,
       analytics_id: 'In Person Proofing',
     }.freeze
@@ -31,6 +33,10 @@ module Idv
 
     def redirect_if_flow_completed
       flow_finish if idv_session.applicant
+    end
+
+    def set_usps_form_presenter
+      @presenter = Idv::InPerson::UspsFormPresenter.new
     end
   end
 end

@@ -14,10 +14,29 @@ class RiscDeliveryJob < ApplicationJob
     *NETWORK_ERRORS,
     wait: :polynomially_longer,
     attempts: 2,
-  )
+  ) do |job, exception|
+    args = job.arguments.first
+    job.track_event(
+      success: false,
+      error: exception.message,
+      event_type: args[:event_type],
+      issuer: args[:issuer],
+      user: args[:user],
+    )
+  end
+
   retry_on RedisRateLimiter::LimitError,
            wait: :polynomially_longer,
-           attempts: 10
+           attempts: 10 do |job, exception|
+             args = job.arguments.first
+             job.track_event(
+               success: false,
+               error: exception.message,
+               event_type: args[:event_type],
+               issuer: args[:issuer],
+               user: args[:user],
+             )
+           end
 
   def self.warning_error_classes
     NETWORK_ERRORS + [RedisRateLimiter::LimitError]
@@ -39,7 +58,7 @@ class RiscDeliveryJob < ApplicationJob
         'Content-Type' => 'application/secevent+jwt',
       ) do |req|
         req.options.context = {
-          service_name: inline? ? 'risc_http_push_direct' : 'risc_http_push_async',
+          service_name: 'risc_http_push_async',
         }
       end
     end
@@ -50,26 +69,6 @@ class RiscDeliveryJob < ApplicationJob
       issuer:,
       status: response.status,
       success: response.success?,
-      user:,
-    )
-  rescue *NETWORK_ERRORS => err
-    raise err if self.executions < 2 && !inline?
-
-    track_event(
-      error: err.message,
-      event_type:,
-      issuer:,
-      success: false,
-      user:,
-    )
-  rescue RedisRateLimiter::LimitError => err
-    raise err if self.executions < 10 && !inline?
-
-    track_event(
-      error: err.message,
-      event_type:,
-      issuer:,
-      success: false,
       user:,
     )
   end
@@ -97,10 +96,6 @@ class RiscDeliveryJob < ApplicationJob
     end
   end
 
-  def inline?
-    queue_adapter.is_a?(ActiveJob::QueueAdapters::InlineAdapter)
-  end
-
   def track_event(event_type:, issuer:, success:, user:, error: nil, status: nil)
     analytics(user).risc_security_event_pushed(
       client_id: issuer,
@@ -108,7 +103,6 @@ class RiscDeliveryJob < ApplicationJob
       event_type:,
       status:,
       success:,
-      transport: inline? ? 'direct' : 'async',
     )
   end
 

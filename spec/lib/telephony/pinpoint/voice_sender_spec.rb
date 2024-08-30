@@ -26,6 +26,13 @@ RSpec.describe Telephony::Pinpoint::VoiceSender do
     )
   end
 
+  describe 'LANGUAGE_CODE_TO_VOICE_ID' do
+    it 'contains a key for every available locale' do
+      expect(
+        Telephony::Pinpoint::VoiceSender::LANGUAGE_CODE_TO_VOICE_ID.keys.sort,
+      ).to eq I18n.available_locales.sort
+    end
+  end
   describe '#deliver' do
     let(:pinpoint_response) do
       double(message_id: 'fake-message-id')

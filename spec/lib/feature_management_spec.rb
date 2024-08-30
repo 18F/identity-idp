@@ -376,75 +376,102 @@ RSpec.describe 'FeatureManagement' do
     end
   end
 
-  describe '.phone_recaptcha_enabled?' do
-    let(:recaptcha_site_key_v2) { '' }
-    let(:recaptcha_site_key_v3) { '' }
-    let(:recaptcha_secret_key_v2) { '' }
-    let(:recaptcha_secret_key_v3) { '' }
+  describe '.recaptcha_enabled?' do
+    let(:recaptcha_site_key) { '' }
+    let(:recaptcha_secret_key) { '' }
     let(:recaptcha_enterprise_api_key) { '' }
     let(:recaptcha_enterprise_project_id) { '' }
-    let(:phone_recaptcha_score_threshold) { 0.0 }
 
-    subject(:phone_recaptcha_enabled) { FeatureManagement.phone_recaptcha_enabled? }
+    subject(:recaptcha_enabled) { FeatureManagement.recaptcha_enabled? }
 
     before do
-      allow(IdentityConfig.store).to receive(:recaptcha_site_key_v2).
-        and_return(recaptcha_site_key_v2)
-      allow(IdentityConfig.store).to receive(:recaptcha_site_key_v3).
-        and_return(recaptcha_site_key_v3)
-      allow(IdentityConfig.store).to receive(:recaptcha_secret_key_v2).
-        and_return(recaptcha_secret_key_v2)
-      allow(IdentityConfig.store).to receive(:recaptcha_secret_key_v3).
-        and_return(recaptcha_secret_key_v3)
-      allow(IdentityConfig.store).to receive(:phone_recaptcha_score_threshold).
-        and_return(phone_recaptcha_score_threshold)
+      allow(IdentityConfig.store).to receive(:recaptcha_site_key).
+        and_return(recaptcha_site_key)
+      allow(IdentityConfig.store).to receive(:recaptcha_secret_key).
+        and_return(recaptcha_secret_key)
       allow(IdentityConfig.store).to receive(:recaptcha_enterprise_api_key).
         and_return(recaptcha_enterprise_api_key)
       allow(IdentityConfig.store).to receive(:recaptcha_enterprise_project_id).
         and_return(recaptcha_enterprise_project_id)
     end
 
-    it { expect(phone_recaptcha_enabled).to eq(false) }
+    it { is_expected.to eq(false) }
 
-    context 'with configured recaptcha v2 site key' do
-      let(:recaptcha_site_key_v2) { 'key' }
+    context 'with configured recaptcha site key' do
+      let(:recaptcha_site_key) { 'key' }
 
-      it { expect(phone_recaptcha_enabled).to eq(false) }
+      it { is_expected.to eq(false) }
 
-      context 'with configured recaptcha v3 site key' do
-        let(:recaptcha_site_key_v3) { 'key' }
+      context 'with configured recaptcha secret key' do
+        let(:recaptcha_secret_key) { 'key' }
 
-        it { expect(phone_recaptcha_enabled).to eq(false) }
+        it { is_expected.to eq(true) }
+      end
 
-        context 'with configured default success rate threshold greater than 0' do
-          let(:phone_recaptcha_score_threshold) { 1.0 }
+      context 'with configured recaptcha enterprise api key' do
+        let(:recaptcha_enterprise_api_key) { 'key' }
 
-          it { expect(phone_recaptcha_enabled).to eq(false) }
+        it { is_expected.to eq(false) }
 
-          context 'with configured recaptcha v2 secret key' do
-            let(:recaptcha_secret_key_v2) { 'key' }
+        context 'with configured recaptcha enterprise project id' do
+          let(:recaptcha_enterprise_project_id) { 'project-id' }
 
-            it { expect(phone_recaptcha_enabled).to eq(false) }
-
-            context 'with configured recaptcha v2 secret key' do
-              let(:recaptcha_secret_key_v3) { 'key' }
-
-              it { expect(phone_recaptcha_enabled).to eq(true) }
-            end
-          end
-
-          context 'with configured recaptcha enterprise api key' do
-            let(:recaptcha_enterprise_api_key) { 'key' }
-
-            it { expect(phone_recaptcha_enabled).to eq(false) }
-
-            context 'with configured recaptcha enterprise project id' do
-              let(:recaptcha_enterprise_project_id) { 'project-id' }
-
-              it { expect(phone_recaptcha_enabled).to eq(true) }
-            end
-          end
+          it { is_expected.to eq(true) }
         end
+      end
+    end
+  end
+
+  describe '.phone_recaptcha_enabled?' do
+    let(:recaptcha_enabled) { false }
+    let(:phone_recaptcha_score_threshold) { 0.0 }
+
+    subject(:phone_recaptcha_enabled) { FeatureManagement.phone_recaptcha_enabled? }
+
+    before do
+      allow(FeatureManagement).to receive(:recaptcha_enabled?).and_return(recaptcha_enabled)
+      allow(IdentityConfig.store).to receive(:phone_recaptcha_score_threshold).
+        and_return(phone_recaptcha_score_threshold)
+    end
+
+    it { is_expected.to eq(false) }
+
+    context 'with configured default success rate threshold greater than 0' do
+      let(:phone_recaptcha_score_threshold) { 1.0 }
+
+      it { is_expected.to eq(false) }
+
+      context 'with recaptcha enabled' do
+        let(:recaptcha_enabled) { true }
+
+        it { is_expected.to eq(true) }
+      end
+    end
+  end
+
+  describe '.sign_in_recaptcha_enabled?' do
+    let(:recaptcha_enabled) { false }
+    let(:sign_in_recaptcha_score_threshold) { 0.0 }
+
+    subject(:sign_in_recaptcha_enabled) { FeatureManagement.sign_in_recaptcha_enabled? }
+
+    before do
+      allow(FeatureManagement).to receive(:recaptcha_enabled?).and_return(recaptcha_enabled)
+      allow(IdentityConfig.store).to receive(:sign_in_recaptcha_score_threshold).
+        and_return(sign_in_recaptcha_score_threshold)
+    end
+
+    it { is_expected.to eq(false) }
+
+    context 'with configured default success rate threshold greater than 0' do
+      let(:sign_in_recaptcha_score_threshold) { 1.0 }
+
+      it { is_expected.to eq(false) }
+
+      context 'with recaptcha enabled' do
+        let(:recaptcha_enabled) { true }
+
+        it { is_expected.to eq(true) }
       end
     end
   end
@@ -506,39 +533,6 @@ RSpec.describe 'FeatureManagement' do
         let(:"vendor_status_#{service}") { :full_outage }
         it 'returns false' do
           expect(FeatureManagement.idv_available?).to eql(false)
-        end
-      end
-    end
-  end
-
-  describe '#idv_allow_selfie_check?' do
-    before do
-      allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).
-        and_return(selfie_capture_enabled)
-    end
-
-    context 'selfies are disabled' do
-      let(:selfie_capture_enabled) { false }
-
-      it 'says to block biometric requests' do
-        expect(FeatureManagement.idv_allow_selfie_check?).to eq(false)
-      end
-    end
-
-    context 'selfies are enabled' do
-      let(:selfie_capture_enabled) { true }
-
-      it 'says to allow biometric requests' do
-        expect(FeatureManagement.idv_allow_selfie_check?).to eq(true)
-      end
-
-      context 'in production' do
-        before do
-          allow(Identity::Hostdata).to receive(:env).and_return('prod')
-        end
-
-        it 'says to block biometric requests' do
-          expect(FeatureManagement.idv_allow_selfie_check?).to eq(false)
         end
       end
     end

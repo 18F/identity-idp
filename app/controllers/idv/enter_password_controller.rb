@@ -5,6 +5,7 @@ module Idv
     include Idv::AvailabilityConcern
     include IdvStepConcern
     include StepIndicatorConcern
+    include VerifyByMailConcern
 
     before_action :confirm_step_allowed
     before_action :confirm_no_profile_yet
@@ -31,7 +32,6 @@ module Idv
 
     def create
       clear_future_steps!
-      irs_attempts_api_tracker.idv_password_entered(success: true)
 
       init_profile
 
@@ -51,6 +51,7 @@ module Idv
         gpo_verification_pending: idv_session.profile.gpo_verification_pending?,
         in_person_verification_pending: idv_session.profile.in_person_verification_pending?,
         deactivation_reason: idv_session.profile.deactivation_reason,
+        proofing_workflow_time_in_seconds: idv_session.proofing_workflow_time_in_seconds,
         **ab_test_analytics_buckets,
       )
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
@@ -62,6 +63,7 @@ module Idv
         gpo_verification_pending: idv_session.profile.gpo_verification_pending?,
         in_person_verification_pending: idv_session.profile.in_person_verification_pending?,
         deactivation_reason: idv_session.profile.deactivation_reason,
+        proofing_workflow_time_in_seconds: idv_session.proofing_workflow_time_in_seconds,
         **ab_test_analytics_buckets,
       )
 
@@ -70,8 +72,8 @@ module Idv
     end
 
     def step_indicator_step
-      return :secure_account unless idv_session.verify_by_mail?
-      :get_a_letter
+      return :re_enter_password unless idv_session.verify_by_mail?
+      :verify_address
     end
 
     def self.step_info
@@ -115,30 +117,19 @@ module Idv
         fraud_rejection: fraud_rejection?,
         **ab_test_analytics_buckets,
       )
-      irs_attempts_api_tracker.idv_password_entered(success: false)
 
       flash[:error] = t('idv.errors.incorrect_password')
       redirect_to idv_enter_password_url
     end
 
-    def gpo_mail_service
-      @gpo_mail_service ||= Idv::GpoMail.new(current_user)
-    end
-
     def init_profile
-      idv_session.create_profile_from_applicant_with_password(password)
-
+      idv_session.create_profile_from_applicant_with_password(
+        password,
+        resolved_authn_context_result.enhanced_ipp?,
+      )
       if idv_session.verify_by_mail?
-        current_user.send_email_to_all_addresses(:letter_reminder)
-        analytics.idv_gpo_address_letter_enqueued(
-          enqueued_at: Time.zone.now,
-          resend: false,
-          phone_step_attempts: gpo_mail_service.phone_step_attempts,
-          first_letter_requested_at: first_letter_requested_at,
-          hours_since_first_letter:
-            gpo_mail_service.hours_since_first_letter(first_letter_requested_at),
-          **ab_test_analytics_buckets,
-        )
+        current_user.send_email_to_all_addresses(:verify_by_mail_letter_requested)
+        log_letter_enqueued_analytics(resend: false)
       end
 
       if idv_session.profile.active?

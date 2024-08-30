@@ -48,10 +48,6 @@ module Idv
         analytics.idv_doc_auth_ssn_submitted(
           **analytics_arguments.merge(form_response.to_h),
         )
-        # This event is not currently logging but should be kept as decided in LG-10110
-        irs_attempts_api_tracker.idv_ssn_submitted(
-          ssn: params[:doc_auth][:ssn],
-        )
 
         if form_response.success?
           idv_session.ssn = params[:doc_auth][:ssn]
@@ -68,10 +64,7 @@ module Idv
           controller: self,
           next_steps: [:ipp_verify_info],
           preconditions: ->(idv_session:, user:) { idv_session.ipp_document_capture_complete? },
-          undo_step: ->(idv_session:, user:) do
-            idv_session.ssn = nil
-            idv_session.threatmetrix_session_id = nil
-          end,
+          undo_step: ->(idv_session:, user:) { idv_session.ssn = nil },
         )
       end
 
@@ -96,14 +89,13 @@ module Idv
           flow_path: idv_session.flow_path,
           step: 'ssn',
           analytics_id: 'In Person Proofing',
-          irs_reproofing: irs_reproofing?,
         }.merge(ab_test_analytics_buckets).
           merge(**extra_analytics_properties)
       end
 
       def confirm_in_person_address_step_complete
         return if flow_session[:pii_from_user] && flow_session[:pii_from_user][:address1].present?
-        redirect_to idv_in_person_proofing_address_url
+        redirect_to idv_in_person_address_url
       end
     end
   end

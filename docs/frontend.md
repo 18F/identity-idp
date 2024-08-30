@@ -125,8 +125,11 @@ yarn add -W webpack
 
 As much as possible, try to use the same version of a dependency when it is used across multiple
 workspace packages. Otherwise, it can inflate the size of the compiled bundles and have a negative
-performance impact on users. Similarly, consider using a tool like [`yarn-deduplicate`](https://github.com/scinos/yarn-deduplicate)
-to deduplicate resolved package versions within the Yarn lockfile.
+performance impact on users.
+
+We use [`yarn-deduplicate`](https://github.com/scinos/yarn-deduplicate)
+to deduplicate resolved package versions within the Yarn lockfile, and enforce it with
+the `make lint_yarn_lock` check.
 
 ### Localization
 
@@ -209,8 +212,9 @@ Each component should have a name that is used consistently in its implementatio
 describes its purpose. This should be reflected in file names and the code itself.
 
 - ViewComponent classes should be named `[ExampleName]Component`
-- ViewComponent files should be named `app/components/[example_name]_component.rb`
-- Stylesheet files should be named `app/assets/stylesheets/components/_[example-name].scss`
+- ViewComponent classes should be defined in `app/components/[example_name]_component.rb`
+- ViewComponent stylesheets should be named `app/components/[example_name].scss`
+- ViewComponent scripts should be named `app/components/[example_name].ts`
 - Stylesheet selectors should use `[example-name]` as the ["block name" in BEM](https://en.bem.info/methodology/naming-convention/#two-dashes-style)
 - React components should be named `<[ExampleName] />`
 - React component files should be named `app/javascript/packages/[example-name]/[example-name].tsx`
@@ -220,8 +224,9 @@ describes its purpose. This should be reflected in file names and the code itsel
 For example, consider a **Password Input** component:
 
 - A ViewComponent implementation would be named `PasswordInputComponent`
-- A ViewComponent file would be named `app/components/password_input_component.rb`
-- A stylesheet file would be named `app/assets/stylesheets/componewnts/_password-input.scss`
+- A ViewComponent classes would be defined in `app/components/password_input_component.rb`
+- A ViewComponent stylesheet would be named `app/components/password_input_component.scss`
+- A ViewComponent script would be named `app/components/password_input_component.ts`
 - A stylesheet selector would be named `.password-input`, with child elements prefixed as `.password-input__`
 - A React component would be named `<PasswordInput />`
 - A React component file would be named `app/javascript/packages/password-input/password-input.tsx`
@@ -374,9 +379,9 @@ Note that NewRelic creates links in stack traces which are invalid, since they i
 Debugging these stack traces can be difficult, since files in production are minified, and the stack traces include line numbers and columns for minified files. With the following steps, you can find a reference to the original code:
 
 1. Download the minified JavaScript file referenced in the stack trace
-   - Example: https://secure.login.gov/packs/js/document-capture-e41c853e.digested.js
+   - Example: https://secure.login.gov/packs/document-capture-e41c853e.digested.js
 2. Download the sourcemap file for the JavaScript by appending `.map` to the previous URL
-   - Example: https://secure.login.gov/packs/js/document-capture-e41c853e.digested.js.map
+   - Example: https://secure.login.gov/packs/document-capture-e41c853e.digested.js.map
 3. Install the [`sourcemap-lookup` npm package](https://www.npmjs.com/package/sourcemap-lookup)
    - `npm i -g sourcemap-lookup`
 4. Open a terminal window to the directory where you downloaded the files in steps 1 and 2
@@ -387,6 +392,24 @@ Debugging these stack traces can be difficult, since files in production are min
    - Example: `sourcemap-lookup document-capture-e41c853e.digested.js:2:172098 --source-path=/path/to/identity-idp/`
 
 The output of the `sourcemap-lookup` command should include "Original Position" and "Code Section" of the code which triggered the error.
+
+## Fonts
+
+Font files are optimized to remove unused character data. If a new character is added to content, the font files must be regenerated:
+
+1. [Download Public Sans](https://public-sans.digital.gov/) and extract it to your project's `tmp/` directory
+2. Install [glyphhanger](https://github.com/zachleat/glyphhanger) and its dependencies:
+   1. `npm install -g glyphhanger`
+   2. `pip install fonttools brotli`
+3. Scrape content for character data:
+   1. `make lint_font_glyphs`
+4. Subset the original Public Sans fonts to include only used character data:
+   1. `glyphhanger --formats=woff2 --subset="tmp/public-sans-v2/fonts/ttf/PublicSans-*.ttf" --whitelist="$(cat app/assets/fonts/glyphs.txt)"`
+5. Replace font files with new subset fonts:
+   1. `cd tmp/public-sans-v2/fonts/ttf`
+   2. `find . -name "*-subset.woff2" -exec sh -c 'cp $1 "../../../../app/assets/fonts/public-sans/${1%-subset.woff2}.woff2"' _ {} \;`
+
+At this point, your working directory should reflect changes to all of the files within `app/assets/fonts/public-sans`, and new or removed characters in `app/assets/fonts/glyphs.txt`. These changes should be committed to resolve the lint failure for character data.
 
 ## Devices
 

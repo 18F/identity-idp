@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Users::PhoneSetupController, allowed_extra_analytics: [:*] do
+RSpec.describe Users::PhoneSetupController do
   let(:mfa_selections) { ['voice'] }
   before do
     allow(IdentityConfig.store).to receive(:phone_service_check).and_return(true)
@@ -25,9 +25,6 @@ RSpec.describe Users::PhoneSetupController, allowed_extra_analytics: [:*] do
       end
 
       it 'renders the index view' do
-        expect(@analytics).to receive(:track_event).
-          with('User Registration: phone setup visited',
-               { enabled_mfa_methods_count: 0 })
         expect(NewPhoneForm).to receive(:new).with(
           user:,
           analytics: kind_of(Analytics),
@@ -36,6 +33,10 @@ RSpec.describe Users::PhoneSetupController, allowed_extra_analytics: [:*] do
 
         get :index
 
+        expect(@analytics).to have_logged_event(
+          'User Registration: phone setup visited',
+          { enabled_mfa_methods_count: 0 },
+        )
         expect(response).to render_template(:index)
       end
     end
@@ -58,9 +59,17 @@ RSpec.describe Users::PhoneSetupController, allowed_extra_analytics: [:*] do
 
     it 'tracks an event when the number is invalid' do
       sign_in(user)
-
       stub_analytics
-      result = {
+
+      post :create, params: {
+        new_phone_form: {
+          phone: '703-555-010',
+          international_code: 'US',
+        },
+      }
+
+      expect(@analytics).to have_logged_event(
+        'Multi-Factor Authentication: phone setup',
         success: false,
         errors: {
           phone: [
@@ -75,38 +84,55 @@ RSpec.describe Users::PhoneSetupController, allowed_extra_analytics: [:*] do
           },
         },
         otp_delivery_preference: 'sms',
-        area_code: nil,
         carrier: 'Test Mobile Carrier',
-        country_code: nil,
         phone_type: :mobile,
         types: [],
-        pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
-      }
-
-      expect(@analytics).to receive(:track_event).
-        with('Multi-Factor Authentication: phone setup', result)
-
-      post :create, params: {
-        new_phone_form: {
-          phone: '703-555-010',
-          international_code: 'US',
-        },
-      }
-
+      )
       expect(response).to render_template(:index)
+      expect(flash[:error]).to be_blank
     end
 
-    context 'with recoverable recaptcha error' do
-      it 'renders spam protection template' do
-        stub_sign_in
+    context 'with recaptcha enabled' do
+      before do
+        allow(FeatureManagement).to receive(:phone_recaptcha_enabled?).and_return(true)
+        allow(IdentityConfig.store).to receive(:phone_recaptcha_country_score_overrides).
+          and_return({})
+        allow(IdentityConfig.store).to receive(:phone_recaptcha_score_threshold).and_return(0.6)
+      end
 
-        allow(controller).to receive(:recoverable_recaptcha_error?) do |result|
-          result.is_a?(FormResponse)
+      context 'with recaptcha success' do
+        it 'assigns assessment id to user session' do
+          recaptcha_token = 'token'
+          stub_sign_in
+
+          post(
+            :create,
+            params: {
+              new_phone_form: {
+                phone: '3065550100',
+                international_code: 'CA',
+                recaptcha_token:,
+                recaptcha_mock_score: '0.7',
+              },
+            },
+          )
+
+          expect(controller.user_session[:phone_recaptcha_assessment_id]).to be_kind_of(String)
         end
+      end
 
-        post :create, params: { new_phone_form: { international_code: 'CA' } }
+      context 'with recaptcha error' do
+        it 'renders form with error message' do
+          stub_sign_in
 
-        expect(response).to render_template(:spam_protection)
+          post(
+            :create,
+            params: { new_phone_form: { phone: '3065550100', international_code: 'CA' } },
+          )
+
+          expect(response).to render_template(:index)
+          expect(flash[:error]).to eq(t('errors.messages.invalid_recaptcha_token'))
+        end
       end
     end
 
@@ -115,9 +141,18 @@ RSpec.describe Users::PhoneSetupController, allowed_extra_analytics: [:*] do
 
       it 'prompts to confirm the number' do
         sign_in(user)
-
         stub_analytics
-        result = {
+
+        post(
+          :create,
+          params: {
+            new_phone_form: { phone: '703-555-0100',
+                              international_code: 'US' },
+          },
+        )
+
+        expect(@analytics).to have_logged_event(
+          'Multi-Factor Authentication: phone setup',
           success: true,
           errors: {},
           otp_delivery_preference: 'voice',
@@ -126,27 +161,13 @@ RSpec.describe Users::PhoneSetupController, allowed_extra_analytics: [:*] do
           country_code: 'US',
           phone_type: :mobile,
           types: [:fixed_or_mobile],
-          pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
-        }
-
-        expect(@analytics).to receive(:track_event).
-          with('Multi-Factor Authentication: phone setup', result)
-
-        post(
-          :create,
-          params: {
-            new_phone_form: { phone: '703-555-0100',
-                              international_code: 'US' },
-          },
         )
-
         expect(response).to redirect_to(
           otp_send_path(
             otp_delivery_selection_form: { otp_delivery_preference: 'voice',
                                            otp_make_default_number: false },
           ),
         )
-
         expect(subject.user_session[:context]).to eq 'confirmation'
       end
     end
@@ -154,23 +175,7 @@ RSpec.describe Users::PhoneSetupController, allowed_extra_analytics: [:*] do
     context 'with SMS' do
       it 'prompts to confirm the number' do
         sign_in(user)
-
         stub_analytics
-
-        result = {
-          success: true,
-          errors: {},
-          otp_delivery_preference: 'sms',
-          area_code: '703',
-          carrier: 'Test Mobile Carrier',
-          country_code: 'US',
-          phone_type: :mobile,
-          types: [:fixed_or_mobile],
-          pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
-        }
-
-        expect(@analytics).to receive(:track_event).
-          with('Multi-Factor Authentication: phone setup', result)
 
         post(
           :create,
@@ -180,23 +185,8 @@ RSpec.describe Users::PhoneSetupController, allowed_extra_analytics: [:*] do
           },
         )
 
-        expect(response).to redirect_to(
-          otp_send_path(
-            otp_delivery_selection_form: { otp_delivery_preference: 'sms',
-                                           otp_make_default_number: false },
-          ),
-        )
-
-        expect(subject.user_session[:context]).to eq 'confirmation'
-      end
-    end
-
-    context 'without selection' do
-      it 'prompts to confirm via SMS by default' do
-        sign_in(user)
-
-        stub_analytics
-        result = {
+        expect(@analytics).to have_logged_event(
+          'Multi-Factor Authentication: phone setup',
           success: true,
           errors: {},
           otp_delivery_preference: 'sms',
@@ -205,11 +195,21 @@ RSpec.describe Users::PhoneSetupController, allowed_extra_analytics: [:*] do
           country_code: 'US',
           phone_type: :mobile,
           types: [:fixed_or_mobile],
-          pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
-        }
+        )
+        expect(response).to redirect_to(
+          otp_send_path(
+            otp_delivery_selection_form: { otp_delivery_preference: 'sms',
+                                           otp_make_default_number: false },
+          ),
+        )
+        expect(subject.user_session[:context]).to eq 'confirmation'
+      end
+    end
 
-        expect(@analytics).to receive(:track_event).
-          with('Multi-Factor Authentication: phone setup', result)
+    context 'without selection' do
+      it 'prompts to confirm via SMS by default' do
+        sign_in(user)
+        stub_analytics
 
         patch(
           :create,
@@ -219,13 +219,23 @@ RSpec.describe Users::PhoneSetupController, allowed_extra_analytics: [:*] do
           },
         )
 
+        expect(@analytics).to have_logged_event(
+          'Multi-Factor Authentication: phone setup',
+          success: true,
+          errors: {},
+          otp_delivery_preference: 'sms',
+          area_code: '703',
+          carrier: 'Test Mobile Carrier',
+          country_code: 'US',
+          phone_type: :mobile,
+          types: [:fixed_or_mobile],
+        )
         expect(response).to redirect_to(
           otp_send_path(
             otp_delivery_selection_form: { otp_delivery_preference: 'sms',
                                            otp_make_default_number: false },
           ),
         )
-
         expect(subject.user_session[:context]).to eq 'confirmation'
       end
     end
@@ -258,6 +268,28 @@ RSpec.describe Users::PhoneSetupController, allowed_extra_analytics: [:*] do
 
           get :index
         end
+      end
+    end
+  end
+
+  describe 'after actions' do
+    before { stub_sign_in }
+
+    it 'does not add recaptcha resource hints' do
+      expect(subject).not_to receive(:add_recaptcha_resource_hints)
+
+      get :index
+    end
+
+    context 'recaptcha enabled' do
+      before do
+        allow(FeatureManagement).to receive(:phone_recaptcha_enabled?).and_return(true)
+      end
+
+      it 'adds recaptcha resource hints' do
+        expect(subject).to receive(:add_recaptcha_resource_hints)
+
+        get :index
       end
     end
   end

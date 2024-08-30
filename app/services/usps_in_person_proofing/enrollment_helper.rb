@@ -3,11 +3,18 @@
 module UspsInPersonProofing
   class EnrollmentHelper
     class << self
-      def schedule_in_person_enrollment(user, pii, opt_in = nil)
+      def schedule_in_person_enrollment(user:, pii:, is_enhanced_ipp:, opt_in: nil)
         enrollment = user.establishing_in_person_enrollment
         return unless enrollment
 
         enrollment.current_address_matches_id = pii['same_address_as_id']
+
+        if enrollment.sponsor_id.nil?
+          enrollment.sponsor_id = is_enhanced_ipp ?
+            IdentityConfig.store.usps_eipp_sponsor_id :
+            IdentityConfig.store.usps_ipp_sponsor_id
+        end
+
         enrollment.save!
 
         # Send state ID address to USPS
@@ -17,7 +24,7 @@ module UspsInPersonProofing
             transform_keys(SECONDARY_ID_ADDRESS_MAP)
         end
 
-        enrollment_code = create_usps_enrollment(enrollment, pii)
+        enrollment_code = create_usps_enrollment(enrollment, pii, is_enhanced_ipp)
         return unless enrollment_code
 
         # update the enrollment to status pending
@@ -33,15 +40,17 @@ module UspsInPersonProofing
           service_provider: enrollment.service_provider&.issuer,
           opted_in_to_in_person_proofing: opt_in,
           tmx_status: enrollment.profile&.tmx_status,
+          enhanced_ipp: enrollment.enhanced_ipp?,
         )
 
-        send_ready_to_verify_email(user, enrollment)
+        send_ready_to_verify_email(user, enrollment, is_enhanced_ipp: is_enhanced_ipp)
       end
 
-      def send_ready_to_verify_email(user, enrollment)
+      def send_ready_to_verify_email(user, enrollment, is_enhanced_ipp:)
         user.confirmed_email_addresses.each do |email_address|
           UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
             enrollment: enrollment,
+            is_enhanced_ipp: is_enhanced_ipp,
           ).deliver_now_or_later
         end
       end
@@ -52,7 +61,7 @@ module UspsInPersonProofing
       # @param [Pii::Attributes] pii The PII associated with the in-person enrollment
       # @return [String] The enrollment code
       # @raise [Exception::RequestEnrollException] Raised with a problem creating the enrollment
-      def create_usps_enrollment(enrollment, pii)
+      def create_usps_enrollment(enrollment, pii, is_enhanced_ipp)
         # Use the enrollment's unique_id value if it exists, otherwise use the deprecated
         # #usps_unique_id value in order to remain backwards-compatible. LG-7024 will remove this
         unique_id = enrollment.unique_id || enrollment.usps_unique_id
@@ -71,7 +80,7 @@ module UspsInPersonProofing
         )
 
         proofer = usps_proofer
-        response = proofer.request_enroll(applicant)
+        response = proofer.request_enroll(applicant, is_enhanced_ipp)
         response.enrollment_code
       rescue Faraday::BadRequestError => err
         handle_bad_request_error(err, enrollment)
@@ -91,6 +100,42 @@ module UspsInPersonProofing
           UspsInPersonProofing::Mock::Proofer.new
         else
           UspsInPersonProofing::Proofer.new
+        end
+      end
+
+      def localized_location(location)
+        {
+          address: location.address,
+          city: location.city,
+          distance: location.distance,
+          name: location.name,
+          saturday_hours: EnrollmentHelper.localized_hours(location.saturday_hours),
+          state: location.state,
+          sunday_hours: EnrollmentHelper.localized_hours(location.sunday_hours),
+          weekday_hours: EnrollmentHelper.localized_hours(location.weekday_hours),
+          zip_code_4: location.zip_code_4,
+          zip_code_5: location.zip_code_5,
+          is_pilot: location.is_pilot,
+        }
+      end
+
+      def localized_hours(hours)
+        return nil if hours.nil?
+
+        if hours == 'Closed'
+          I18n.t('in_person_proofing.body.barcode.retail_hours_closed')
+        elsif hours.include?(' - ') # Hyphen
+          hours.
+            split(' - '). # Hyphen
+            map { |time| Time.zone.parse(time).strftime(I18n.t('time.formats.event_time')) }.
+            join(' – ') # Endash
+        elsif hours.include?(' – ') # Endash
+          hours.
+            split(' – '). # Endash
+            map { |time| Time.zone.parse(time).strftime(I18n.t('time.formats.event_time')) }.
+            join(' – ') # Endash
+        else
+          hours
         end
       end
 

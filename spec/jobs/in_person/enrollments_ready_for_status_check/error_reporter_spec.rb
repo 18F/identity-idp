@@ -22,7 +22,7 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::ErrorReporter do
   def it_generates_and_records_the_error
     expect(analytics).to have_received(
       :idv_in_person_proofing_enrollments_ready_for_status_check_job_ingestion_error,
-    ).once do |exception_class:, exception_message:, **extra|
+    ).once do |exception_class:, exception_message:, **_extra|
       expect(exception_class).to eq(expected_error_class)
       expect(exception_message).to eq(expected_message)
     end

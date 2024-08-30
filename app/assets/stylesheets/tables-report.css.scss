@@ -10,7 +10,7 @@
 
 .usa-alert.usa-alert--info.usa-alert--email {
   .usa-alert__body {
-    &:before {
+    &::before {
       background-image: url('email/info.png');
     }
   }

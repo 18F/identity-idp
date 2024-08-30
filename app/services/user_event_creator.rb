@@ -81,16 +81,9 @@ class UserEventCreator
     if user.fully_registered? && user.has_devices? && disavowal_token.nil?
       device, event, disavowal_token = Device.transaction do
         device = create_device_for_user(user)
-        event, disavowal_token = create_user_event_with_disavowal(
-          event_type, user, device
-        )
+        event, disavowal_token = create_user_event_with_disavowal(event_type, user, device)
         [device, event, disavowal_token]
       end
-      send_new_device_notification(
-        user: user,
-        device: device,
-        disavowal_token: disavowal_token,
-      )
       [event, disavowal_token]
     else
       Device.transaction do
@@ -108,23 +101,13 @@ class UserEventCreator
   def create_device_for_user(user)
     cookie_uuid = cookies[:device].presence || SecureRandom.hex(COOKIE_LENGTH / 2)
 
-    device = Device.create!(
+    Device.create!(
       user: user,
       user_agent: request.user_agent.to_s,
       cookie_uuid: cookie_uuid,
       last_used_at: Time.zone.now,
       last_ip: request.remote_ip,
     )
-    assign_device_cookie(device.cookie_uuid)
-    device
-  end
-
-  def assign_device_cookie(device_cookie)
-    cookies.permanent[:device] = device_cookie unless device_cookie == cookies[:device]
-  end
-
-  def send_new_device_notification(user:, device:, disavowal_token:)
-    UserAlerts::AlertUserAboutNewDevice.call(user, device, disavowal_token)
   end
 
   # @return [Array(Event, String)] an (event, disavowal_token) tuple
@@ -139,6 +122,8 @@ class UserEventCreator
       event_type: event_type,
       disavowal_token_fingerprint: disavowal_token_fingerprint,
     )
+
+    cookies.permanent[:device] = device.cookie_uuid if device
 
     [event, disavowal_token]
   end

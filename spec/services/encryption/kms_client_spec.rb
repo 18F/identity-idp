@@ -141,10 +141,10 @@ RSpec.describe Encryption::KmsClient do
       before do
         contextless_client = Encryption::ContextlessKmsClient.new
         allow(contextless_client).to receive(:decrypt).
-          with('KMSx123abc').
+          with('KMSx123abc', log_context: encryption_context).
           and_return('plaintext')
         allow(contextless_client).to receive(:decrypt).
-          with('123abc').
+          with('123abc', log_context: encryption_context).
           and_return('plaintext')
         allow(Encryption::ContextlessKmsClient).to receive(:new).and_return(contextless_client)
       end

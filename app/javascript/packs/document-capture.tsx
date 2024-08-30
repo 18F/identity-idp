@@ -10,7 +10,6 @@ import {
   FailedCaptureAttemptsContextProvider,
   MarketingSiteContextProvider,
   InPersonContext,
-  FeatureFlagContext,
   SelfieCaptureContext,
 } from '@18f/identity-document-capture';
 import { isCameraCapableMobile } from '@18f/identity-device';
@@ -32,7 +31,6 @@ interface AppRootData {
   acuantVersion: string;
   flowPath: FlowPath;
   cancelUrl: string;
-  exitUrl: string;
   idvInPersonUrl?: string;
   optedInToInPersonProofing: string;
   securityAndPrivacyHowItWorksUrl: string;
@@ -40,8 +38,9 @@ interface AppRootData {
   skipDocAuthFromHandoff: string;
   howToVerifyURL: string;
   previousStepUrl: string;
-  uiExitQuestionSectionEnabled: string;
   docAuthSelfieDesktopTestMode: string;
+  locationsUrl: string;
+  addressSearchUrl: string;
 }
 
 const appRoot = document.getElementById('document-capture-form')!;
@@ -81,7 +80,7 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     acuant_sdk_upgrade_a_b_testing_enabled: acuantSdkUpgradeABTestingEnabled,
     use_alternate_sdk: useAlternateSdk,
     acuant_version: acuantVersion,
-    opted_in_to_in_person_proofing: optedInToInPersonProofing,
+    opted_in_to_in_person_proofing: optedInToInPersonProofing === 'true',
   });
 };
 
@@ -97,7 +96,6 @@ const {
   acuantVersion,
   flowPath,
   cancelUrl: cancelURL,
-  exitUrl: exitURL,
   accountUrl: accountURL,
   idvInPersonUrl: inPersonURL,
   securityAndPrivacyHowItWorksUrl: securityAndPrivacyHowItWorksURL,
@@ -110,8 +108,9 @@ const {
   skipDocAuthFromHandoff,
   howToVerifyUrl,
   previousStepUrl,
-  uiExitQuestionSectionEnabled = '',
   docAuthSelfieDesktopTestMode,
+  locationsUrl: locationsURL,
+  addressSearchUrl: addressSearchURL,
 } = appRoot.dataset as DOMStringMap & AppRootData;
 
 let parsedUsStatesTerritories = [];
@@ -127,8 +126,8 @@ const App = composeComponents(
     {
       value: {
         inPersonURL,
-        locationsURL: new URL('/verify/in_person/usps_locations', window.location.href).toString(),
-        addressSearchURL: new URL('/api/addresses', window.location.href).toString(),
+        locationsURL,
+        addressSearchURL,
         inPersonOutageMessageEnabled: inPersonOutageMessageEnabled === 'true',
         inPersonOutageExpectedUpdateDate,
         inPersonFullAddressEntryEnabled: inPersonFullAddressEntryEnabled === 'true',
@@ -174,7 +173,6 @@ const App = composeComponents(
       value: {
         accountURL,
         cancelURL,
-        exitURL,
         currentStep: 'document_capture',
       },
     },
@@ -199,14 +197,6 @@ const App = composeComponents(
     {
       maxCaptureAttemptsBeforeNativeCamera: Number(maxCaptureAttemptsBeforeNativeCamera),
       maxSubmissionAttemptsBeforeNativeCamera: Number(maxSubmissionAttemptsBeforeNativeCamera),
-    },
-  ],
-  [
-    FeatureFlagContext.Provider,
-    {
-      value: {
-        exitQuestionSectionEnabled: String(uiExitQuestionSectionEnabled) === 'true',
-      },
     },
   ],
   [

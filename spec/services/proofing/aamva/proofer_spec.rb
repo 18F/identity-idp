@@ -67,6 +67,20 @@ RSpec.describe Proofing::Aamva::Proofer do
           ].to_set,
         )
       end
+
+      it 'includes requested_attributes' do
+        result = subject.proof(state_id_data)
+        expect(result.requested_attributes).to eq(
+          {
+            dob: 1,
+            state_id_number: 1,
+            state_id_type: 1,
+            last_name: 1,
+            first_name: 1,
+            address: 1,
+          },
+        )
+      end
     end
 
     context 'when verification is unsuccessful' do
@@ -98,6 +112,20 @@ RSpec.describe Proofing::Aamva::Proofer do
           ].to_set,
         )
       end
+
+      it 'includes requested_attributes' do
+        result = subject.proof(state_id_data)
+        expect(result.requested_attributes).to eq(
+          {
+            dob: 1,
+            state_id_number: 1,
+            state_id_type: 1,
+            last_name: 1,
+            first_name: 1,
+            address: 1,
+          },
+        )
+      end
     end
 
     context 'when verification attributes are missing' do
@@ -127,6 +155,43 @@ RSpec.describe Proofing::Aamva::Proofer do
             address
           ].to_set,
         )
+      end
+
+      it 'includes requested_attributes' do
+        result = subject.proof(state_id_data)
+        expect(result.requested_attributes).to eq(
+          {
+            state_id_number: 1,
+            state_id_type: 1,
+            last_name: 1,
+            first_name: 1,
+            address: 1,
+          },
+        )
+      end
+    end
+
+    context 'when issue / expiration present' do
+      let(:state_id_data) do
+        {
+          state_id_number: '1234567890',
+          state_id_jurisdiction: 'VA',
+          state_id_type: 'drivers_license',
+          state_id_issued: '2023-04-05',
+          state_id_expiration: '2030-01-02',
+        }
+      end
+
+      it 'includes them' do
+        expect(Proofing::Aamva::Request::VerificationRequest).to receive(:new).with(
+          hash_including(
+            applicant: satisfy do |a|
+              expect(a.state_id_data.state_id_issued).to eql('2023-04-05')
+              expect(a.state_id_data.state_id_expiration).to eql('2030-01-02')
+            end,
+          ),
+        )
+        subject.proof(state_id_data)
       end
     end
 
@@ -226,6 +291,30 @@ RSpec.describe Proofing::Aamva::Proofer do
           expect(result.mva_timeout?).to eq(true)
           expect(result.mva_exception?).to eq(true)
         end
+      end
+    end
+
+    context 'when the DMV is in a defined maintenance window' do
+      before do
+        expect(Idv::AamvaStateMaintenanceWindow).to receive(:in_maintenance_window?).
+          and_return(true)
+      end
+
+      it 'sets jurisdiction_in_maintenance_window to true' do
+        result = subject.proof(state_id_data)
+        expect(result.jurisdiction_in_maintenance_window?).to eq(true)
+      end
+    end
+
+    context 'when the DMV is not in a defined maintenance window' do
+      before do
+        expect(Idv::AamvaStateMaintenanceWindow).to receive(:in_maintenance_window?).
+          and_return(false)
+      end
+
+      it 'sets jurisdiction_in_maintenance_window to false' do
+        result = subject.proof(state_id_data)
+        expect(result.jurisdiction_in_maintenance_window?).to eq(false)
       end
     end
   end

@@ -50,9 +50,21 @@ interface AcuantSelfieCameraContextProps {
    */
   onImageCaptureFeedback: (text: string) => void;
   /**
+   * Selfie taken, ready for accept or retake
+   */
+  onSelfieTaken: () => void;
+  /**
+   * Selfie captured by user initiated retake
+   */
+  onSelfieRetaken: () => void;
+  /**
    * React children node
    */
   children: ReactNode;
+  /**
+   * Face detection is initialized and ready.
+   */
+  onImageCaptureInitialized: () => void;
 }
 
 interface FaceCaptureCallback {
@@ -71,14 +83,22 @@ interface FaceDetectionStates {
   TOO_MANY_FACES: string;
   FACE_TOO_SMALL: string;
   FACE_CLOSE_TO_BORDER: string;
+  CLOSE_TEXT: string;
+  RETAKE_TEXT: string;
+  INTRO_TEXT: string;
+  SUBMIT_ALT: string;
+  CAPTURE_ALT: string;
 }
 
 function AcuantSelfieCamera({
+  onImageCaptureInitialized = () => {},
   onImageCaptureSuccess = () => {},
   onImageCaptureFailure = () => {},
   onImageCaptureOpen = () => {},
   onImageCaptureClose = () => {},
   onImageCaptureFeedback = () => {},
+  onSelfieTaken = () => {},
+  onSelfieRetaken = () => {},
   children,
 }: AcuantSelfieCameraContextProps) {
   const { isReady, setIsActive } = useContext(AcuantContext);
@@ -89,6 +109,7 @@ function AcuantSelfieCamera({
         // This callback is triggered when the face detector is ready.
         // Until then, no actions are executed and the user sees only the camera stream.
         // You can opt to display an alert before the callback is triggered.
+        onImageCaptureInitialized();
       },
       onDetection: (text) => {
         onImageCaptureFeedback(text);
@@ -97,10 +118,12 @@ function AcuantSelfieCamera({
       },
       onOpened: () => {
         // Camera has opened
+        onImageCaptureFeedback('');
         onImageCaptureOpen();
       },
       onClosed: () => {
         // Camera has closed
+        onImageCaptureFeedback('');
         onImageCaptureClose();
       },
       onError: (error) => {
@@ -110,9 +133,11 @@ function AcuantSelfieCamera({
       },
       onPhotoTaken: () => {
         // The photo has been taken and it's showing a preview with a button to accept or retake the image.
+        onSelfieTaken();
       },
       onPhotoRetake: () => {
         // Triggered when retake button is tapped
+        onSelfieRetaken();
       },
       onCaptured: (base64Image) => {
         // Triggered when accept button is tapped
@@ -125,6 +150,11 @@ function AcuantSelfieCamera({
       TOO_MANY_FACES: t('doc_auth.info.selfie_capture_status.too_many_faces'),
       FACE_TOO_SMALL: t('doc_auth.info.selfie_capture_status.face_too_small'),
       FACE_CLOSE_TO_BORDER: t('doc_auth.info.selfie_capture_status.face_close_to_border'),
+      CLOSE_TEXT: t('doc_auth.info.selfie_capture.action.close'),
+      RETAKE_TEXT: t('doc_auth.info.selfie_capture.action.retake'),
+      INTRO_TEXT: t('doc_auth.info.selfie_capture.intro'),
+      SUBMIT_ALT: t('doc_auth.info.selfie_capture.action.submit'),
+      CAPTURE_ALT: t('doc_auth.info.selfie_capture.action.capture'),
     };
     const cleanupSelfieCamera = () => {
       window.AcuantPassiveLiveness.end();

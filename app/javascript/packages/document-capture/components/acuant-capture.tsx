@@ -28,6 +28,7 @@ import FileInput from './file-input';
 import UploadContext from '../context/upload';
 import useCookie from '../hooks/use-cookie';
 import useCounter from '../hooks/use-counter';
+import { useLogCameraInfo } from '../hooks/use-log-camera-info';
 
 type AcuantImageAssessment = 'success' | 'glare' | 'blurry' | 'unsupported';
 type ImageSource = 'acuant' | 'upload';
@@ -338,12 +339,17 @@ function AcuantCapture(
   const { isMobile } = useContext(DeviceContext);
   const { t, formatHTML } = useI18n();
   const [captureAttempts, incrementCaptureAttempts] = useCounter(1);
+  const selfieAttempts = useRef(0);
   const [acuantFailureCookie, setAcuantFailureCookie, refreshAcuantFailureCookie] =
     useCookie('AcuantCameraHasFailed');
   const [imageCaptureText, setImageCaptureText] = useState('');
   // There's some pretty significant changes to this component when it's used for
   // selfie capture vs document image capture. This controls those changes.
   const selfieCapture = name === 'selfie';
+  // When it's the back of the ID we want to log information about the camera
+  // This hook does that.
+  const isBackOfId = name === 'back';
+  useLogCameraInfo({ isBackOfId, hasStartedCropping });
 
   const {
     failedCaptureAttempts,
@@ -388,6 +394,7 @@ function AcuantCapture(
     const enhancedPayload = {
       ...payload,
       captureAttempts,
+      selfie_attempts: selfieAttempts.current,
       acuantCaptureMode: payload.source === 'upload' ? null : acuantCaptureMode,
       liveness_checking_required: isSelfieCaptureEnabled,
     };
@@ -425,18 +432,22 @@ function AcuantCapture(
   }
 
   /**
-   * Given a click source, returns a higher-order function that, when called, will log an event
+   * Given a clickSource, returns a higher-order function that, when called, will log an event
    * before calling the original function.
    */
-  function withLoggedClick(source: string, metadata: { isDrop: boolean } = { isDrop: false }) {
+  function withLoggedClick(clickSource: string, metadata: { isDrop: boolean } = { isDrop: false }) {
     return <T extends (...args: any[]) => any>(fn: T) =>
       (...args: Parameters<T>) => {
         if (!isSuppressingClickLogging.current) {
-          trackEvent(`IdV: ${name} image clicked`, {
-            source,
-            ...metadata,
-            liveness_checking_required: isSelfieCaptureEnabled,
-          });
+          trackEvent(
+            name === 'selfie' ? 'idv_selfie_image_clicked' : `IdV: ${name} image clicked`,
+            {
+              click_source: clickSource,
+              ...metadata,
+              liveness_checking_required: isSelfieCaptureEnabled,
+              captureAttempts,
+            },
+          );
         }
 
         return fn(...args);
@@ -512,14 +523,19 @@ function AcuantCapture(
   }
 
   function onSelfieCaptureOpen() {
-    trackEvent('idv_sdk_selfie_image_capture_opened', { captureAttempts });
+    trackEvent('idv_sdk_selfie_image_capture_opened', {
+      captureAttempts,
+      selfie_attempts: selfieAttempts.current,
+    });
 
     setImageCaptureText('');
-    setIsCapturingEnvironment(true);
   }
 
   function onSelfieCaptureClosed() {
-    trackEvent('idv_sdk_selfie_image_capture_closed_without_photo', { captureAttempts });
+    trackEvent('idv_sdk_selfie_image_capture_closed_without_photo', {
+      captureAttempts,
+      selfie_attempts: selfieAttempts.current,
+    });
 
     setImageCaptureText('');
     setIsCapturingEnvironment(false);
@@ -533,7 +549,10 @@ function AcuantCapture(
       failedImageResubmission: false,
     });
 
-    trackEvent('idv_selfie_image_added', { captureAttempts });
+    trackEvent('idv_selfie_image_added', {
+      captureAttempts,
+      selfie_attempts: selfieAttempts.current,
+    });
 
     onChangeAndResetError(image, analyticsPayload);
     onResetFailedCaptureAttempts();
@@ -545,7 +564,12 @@ function AcuantCapture(
       sdk_error_code: error.code,
       sdk_error_message: error.message,
       captureAttempts,
+      selfie_attempts: selfieAttempts.current,
     });
+
+    if (fullScreenRef.current?.focusTrap) {
+      suspendFocusTrapForAnticipatedFocus(fullScreenRef.current.focusTrap);
+    }
 
     // Internally, Acuant sets a cookie to bail on guided capture if initialization had
     // previously failed for any reason, including declined permission. Since the cookie
@@ -562,6 +586,13 @@ function AcuantCapture(
       window.location.reload();
     }
     setIsCapturingEnvironment(false);
+  }
+
+  function onSelfieRetaken() {
+    trackEvent('idv_sdk_selfie_image_re_taken', {
+      captureAttempts,
+      selfie_attempts: selfieAttempts.current,
+    });
   }
 
   function onAcuantImageCaptureSuccess(nextCapture: AcuantSuccessResponse) {
@@ -606,6 +637,7 @@ function AcuantCapture(
       fingerprint: null,
       failedImageResubmission: false,
       liveness_checking_required: false,
+      selfie_attempts: selfieAttempts.current,
     });
 
     trackEvent(
@@ -678,6 +710,21 @@ function AcuantCapture(
     setImageCaptureText(text);
   }
 
+  function onSelfieTaken() {
+    selfieAttempts.current += 1;
+    trackEvent('idv_sdk_selfie_image_taken', {
+      captureAttempts,
+      selfie_attempts: selfieAttempts.current,
+    });
+  }
+
+  function onImageCaptureInitialized() {
+    trackEvent('idv_sdk_selfie_image_capture_initialized', {
+      captureAttempts,
+      selfie_attempts: selfieAttempts.current,
+    });
+  }
+
   return (
     <div className={[className, 'document-capture-acuant-capture'].filter(Boolean).join(' ')}>
       {isCapturingEnvironment && !selfieCapture && (
@@ -704,6 +751,9 @@ function AcuantCapture(
           onImageCaptureOpen={onSelfieCaptureOpen}
           onImageCaptureClose={onSelfieCaptureClosed}
           onImageCaptureFeedback={onImageCaptureFeedback}
+          onImageCaptureInitialized={onImageCaptureInitialized}
+          onSelfieTaken={onSelfieTaken}
+          onSelfieRetaken={onSelfieRetaken}
         >
           <FullScreen
             ref={fullScreenRef}
@@ -760,7 +810,7 @@ function AcuantCapture(
               <span className="padding-left-1 padding-right-1">{children}</span>
             ),
             'lg-upload': ({ children }) => (
-              <Button isUnstyled onClick={withLoggedClick('upload')(forceUpload)}>
+              <Button isUnstyled onClick={withLoggedClick('button')(forceUpload)}>
                 {children}
               </Button>
             ),

@@ -11,10 +11,14 @@ class OtpPreferenceUpdater
   def call
     return false unless user
     return false unless phone_configuration_changed?
-    user_attributes = { otp_delivery_preference: preference,
-                        phone_id: phone_id,
-                        otp_make_default_number: default }
-    UpdateUser.new(user: user, attributes: user_attributes).call
+    UpdateUserPhoneConfiguration.update!(
+      user: user,
+      attributes: {
+        otp_delivery_preference: preference,
+        phone_id: phone_id,
+        otp_make_default_number: default,
+      },
+    )
   end
 
   private

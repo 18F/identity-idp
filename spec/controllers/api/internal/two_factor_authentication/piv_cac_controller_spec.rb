@@ -27,7 +27,6 @@ RSpec.describe Api::Internal::TwoFactorAuthentication::PivCacController do
         :piv_cac_update_name_submitted,
         success: true,
         configuration_id: configuration.id.to_s,
-        error_details: nil,
       )
     end
 
@@ -118,7 +117,6 @@ RSpec.describe Api::Internal::TwoFactorAuthentication::PivCacController do
         :piv_cac_delete_submitted,
         success: true,
         configuration_id: configuration.id.to_s,
-        error_details: nil,
       )
     end
 

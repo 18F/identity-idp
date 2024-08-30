@@ -22,9 +22,12 @@ RSpec.describe AccessTokenVerifier do
       let(:http_authorization_header) { nil }
 
       it 'is not successful' do
-        expect(result.success?).to eq(false)
-        expect(result.errors[:access_token]).
+        response, result_identity = result
+
+        expect(response.success?).to eq(false)
+        expect(response.errors[:access_token]).
           to include(t('openid_connect.user_info.errors.no_authorization'))
+        expect(result_identity).to be_nil
       end
     end
 
@@ -32,9 +35,12 @@ RSpec.describe AccessTokenVerifier do
       let(:http_authorization_header) { 'BOOOO ABCDEF' }
 
       it 'is not successful' do
-        expect(result.success?).to eq(false)
-        expect(result.errors[:access_token]).
+        response, result_identity = result
+
+        expect(response.success?).to eq(false)
+        expect(response.errors[:access_token]).
           to include(t('openid_connect.user_info.errors.malformed_authorization'))
+        expect(result_identity).to be_nil
       end
     end
 
@@ -42,8 +48,25 @@ RSpec.describe AccessTokenVerifier do
       let(:access_token) { 'ABDEF' }
 
       it 'is not successful' do
-        expect(result.success?).to eq(false)
-        expect(result.errors[:access_token]).to be_present
+        response, result_identity = result
+
+        expect(response.success?).to eq(false)
+        expect(response.errors[:access_token]).to be_present
+        expect(result_identity).to be_nil
+      end
+    end
+
+    context 'with a bearer token for an expired session' do
+      before { OutOfBandSessionAccessor.new(identity.rails_session_id).destroy }
+
+      let(:access_token) { identity.access_token }
+
+      it 'is not successful' do
+        response, result_identity = result
+
+        expect(response.success?).to eq(false)
+        expect(response.errors[:access_token]).to be_present
+        expect(result_identity).to be_nil
       end
     end
 
@@ -59,40 +82,11 @@ RSpec.describe AccessTokenVerifier do
       end
 
       it 'is successful' do
-        expect(result.success?).to eq(true)
-        expect(result.errors).to be_blank
-      end
-    end
-  end
+        response, result_identity = result
 
-  describe '#identity' do
-    context 'with a valid access_token' do
-      before do
-        identity.save!
-        OutOfBandSessionAccessor.new(identity.rails_session_id).put_empty_user_session(5)
-      end
-      let(:access_token) { identity.access_token }
-
-      it 'returns the identity record' do
-        expect(verifier.identity).to eq(identity)
-      end
-    end
-
-    context 'with a bad access token' do
-      let(:access_token) { 'eyyyy' }
-
-      it 'errors' do
-        expect(verifier.identity).to be_nil
-      end
-    end
-
-    context 'with an expired access_token' do
-      before { OutOfBandSessionAccessor.new(identity.rails_session_id).destroy }
-
-      let(:access_token) { identity.access_token }
-
-      it 'errors' do
-        expect(verifier.identity).to be_nil
+        expect(response.success?).to eq(true)
+        expect(response.errors).to be_blank
+        expect(result_identity).to eq(identity)
       end
     end
   end

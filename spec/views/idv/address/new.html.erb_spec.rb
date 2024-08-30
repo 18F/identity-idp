@@ -4,7 +4,8 @@ RSpec.describe 'idv/address/new' do
   let(:parsed_page) { Nokogiri::HTML.parse(rendered) }
 
   before do
-    assign(:presenter, Idv::AddressPresenter.new(pii: {}))
+    assign(:presenter, Idv::AddressPresenter.new)
+    assign(:address_form, Idv::AddressForm.new({}))
     render
   end
 

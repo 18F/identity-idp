@@ -17,6 +17,7 @@ class SamlIdpController < ApplicationController
   include AuthorizationCountConcern
   include BillableEventTrackable
   include SecureHeadersConcern
+  include SignInDurationConcern
 
   prepend_before_action :skip_session_load, only: [:metadata, :remotelogout]
   prepend_before_action :skip_session_expiration, only: [:metadata, :remotelogout]
@@ -36,7 +37,7 @@ class SamlIdpController < ApplicationController
       return redirect_to reactivate_account_url if user_needs_to_reactivate_account?
       return redirect_to url_for_pending_profile_reason if user_has_pending_profile?
       return redirect_to idv_url if identity_needs_verification?
-      return redirect_to idv_url if selfie_needed?
+      return redirect_to idv_url if biometric_comparison_needed?
     end
     return redirect_to sign_up_completed_url if needs_completion_screen_reason
     if auth_count == 1 && first_visit_for_sp?
@@ -112,9 +113,9 @@ class SamlIdpController < ApplicationController
     redirect_to capture_password_url
   end
 
-  def selfie_needed?
-    decorated_sp_session.selfie_required? &&
-      !current_user.identity_verified_with_selfie?
+  def biometric_comparison_needed?
+    resolved_authn_context_result.biometric_comparison? &&
+      !current_user.identity_verified_with_biometric_comparison?
   end
 
   def set_devise_failure_redirect_for_concurrent_session_logout
@@ -129,7 +130,13 @@ class SamlIdpController < ApplicationController
       requested_ial: requested_ial,
       request_signed: saml_request.signed?,
       matching_cert_serial: saml_request.service_provider.matching_cert&.serial&.to_s,
+      requested_nameid_format: saml_request.name_id_format,
     )
+
+    if result.success? && saml_request.signed?
+      analytics_payload[:cert_error_details] = saml_request.cert_errors
+    end
+
     analytics.saml_auth(**analytics_payload)
   end
 
@@ -140,7 +147,7 @@ class SamlIdpController < ApplicationController
       requested_ial: requested_ial,
       authn_context: saml_request&.requested_authn_contexts,
       requested_aal_authn_context: saml_request&.requested_aal_authn_context,
-      requested_vtr_authn_context: saml_request&.requested_vtr_authn_context,
+      requested_vtr_authn_contexts: saml_request&.requested_vtr_authn_contexts.presence,
       force_authn: saml_request&.force_authn?,
       final_auth_request: sp_session[:final_auth_request],
       service_provider: saml_request&.issuer,
@@ -150,7 +157,7 @@ class SamlIdpController < ApplicationController
 
   def requested_ial
     requested_ial_acr = FederatedProtocols::Saml.new(saml_request).ial
-    requested_ial_component = Vot::LegacyComponentValues.by_name[requested_ial_acr]
+    requested_ial_component = Vot::AcrComponentValues.by_name[requested_ial_acr]
     return 'ialmax' if requested_ial_component&.requirements&.include?(:ialmax)
 
     saml_request&.requested_ial_authn_context || 'none'
@@ -186,6 +193,7 @@ class SamlIdpController < ApplicationController
       sign_in_flow: session[:sign_in_flow],
       vtr: sp_session[:vtr],
       acr_values: sp_session[:acr_values],
+      sign_in_duration_seconds:,
     )
     track_billing_events
   end

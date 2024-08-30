@@ -36,11 +36,10 @@ module Idv
         @flow.analytics.rate_limit_reached(
           limiter_type: :idv_doc_auth,
         )
-        @flow.irs_attempts_api_tracker.idv_document_upload_rate_limited
         redirect_to rate_limited_url
         DocAuth::Response.new(
           success: false,
-          errors: { limit: I18n.t('errors.doc_auth.rate_limited_heading') },
+          errors: { limit: I18n.t('doc_auth.errors.rate_limited_heading') },
         )
       end
 
@@ -48,25 +47,8 @@ module Idv
         idv_session_errors_rate_limited_url
       end
 
-      # Ideally we would not have to re-implement the EffectiveUser mixin
-      # but flow_session sometimes != controller#session
-      def effective_user
-        current_user || User.find(user_id_from_token)
-      end
-
       def user_id
         current_user ? current_user.id : user_id_from_token
-      end
-
-      def add_cost(token, transaction_id: nil)
-        Db::SpCost::AddSpCost.call(current_sp, 2, token, transaction_id: transaction_id)
-      end
-
-      def add_costs(result)
-        Db::AddDocumentVerificationAndSelfieCosts.
-          new(user_id: user_id,
-              service_provider: current_sp).
-          call(result)
       end
 
       def sp_session

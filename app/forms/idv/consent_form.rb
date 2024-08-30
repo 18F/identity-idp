@@ -7,7 +7,7 @@ module Idv
     attr_reader :idv_consent_given
 
     validates :idv_consent_given,
-              acceptance: { message: proc { I18n.t('errors.doc_auth.consent_form') } }
+              acceptance: { message: proc { I18n.t('doc_auth.errors.consent_form') } }
 
     def initialize(idv_consent_given: false)
       @idv_consent_given = idv_consent_given

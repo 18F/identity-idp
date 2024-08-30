@@ -8,22 +8,16 @@
   <div class="grid-row margin-top-5">
     <div class="tablet:grid-col-9">
       <%= render ButtonComponent.new(
-            action: ->(**tag_options, &block) do
-              button_to(
-                second_mfa_reminder_path,
-                **tag_options,
-                params: { add_method: true },
-                &block
-              )
-            end,
+            url: second_mfa_reminder_path,
+            method: :post,
+            params: { add_method: true },
             big: true,
             full_width: true,
             class: 'margin-bottom-2',
           ).with_content(t('users.second_mfa_reminder.add_method')) %>
       <%= render ButtonComponent.new(
-            action: ->(**tag_options, &block) do
-              button_to(second_mfa_reminder_path, **tag_options, &block)
-            end,
+            url: second_mfa_reminder_path,
+            method: :post,
             outline: true,
             big: true,
             full_width: true,

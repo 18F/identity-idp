@@ -73,7 +73,7 @@ module Encryption
     def verify(password:, digest_pair:, user_uuid:)
       digest = digest_pair.multi_or_single_region_ciphertext
       password_digest = PasswordDigest.parse_from_string(digest)
-      return verify_uak_digest(password, digest) if stale_digest?(digest)
+      return verify_uak_digest(password, digest) if password_digest.uak_password_digest?
 
       verify_password_against_digest(
         password: password,

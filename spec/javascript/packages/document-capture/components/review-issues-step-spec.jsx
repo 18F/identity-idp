@@ -5,7 +5,6 @@ import {
   AnalyticsContext,
   InPersonContext,
   FailedCaptureAttemptsContextProvider,
-  FeatureFlagContext,
   SelfieCaptureContext,
 } from '@18f/identity-document-capture';
 import { I18n } from '@18f/identity-i18n';
@@ -35,7 +34,7 @@ describe('document-capture/components/review-issues-step', () => {
         value={
           new I18n({
             strings: {
-              'errors.doc_auth.rate_limited_heading': 'We couldn’t verify your ID',
+              'doc_auth.errors.rate_limited_heading': 'We couldn’t verify your ID',
             },
           })
         }
@@ -81,7 +80,7 @@ describe('document-capture/components/review-issues-step', () => {
       </I18nContext.Provider>,
     );
 
-    expect(getByText('errors.doc_auth.rate_limited_heading')).to.be.ok();
+    expect(getByText('doc_auth.errors.rate_limited_heading')).to.be.ok();
     expect(getByText('3 attempts', { selector: 'strong' })).to.be.ok();
     expect(getByText('remaining')).to.be.ok();
     expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
@@ -115,7 +114,7 @@ describe('document-capture/components/review-issues-step', () => {
       </InPersonContext.Provider>,
     );
 
-    expect(getByText('errors.doc_auth.rate_limited_heading')).to.be.ok();
+    expect(getByText('doc_auth.errors.rate_limited_heading')).to.be.ok();
     expect(getByText('3 attempts', { selector: 'strong' })).to.be.ok();
     expect(getByText('remaining')).to.be.ok();
     expect(getByRole('button', { name: 'idv.failure.button.try_online' })).to.be.ok();
@@ -157,7 +156,7 @@ describe('document-capture/components/review-issues-step', () => {
       </I18nContext.Provider>,
     );
 
-    expect(getByText('errors.doc_auth.rate_limited_heading')).to.be.ok();
+    expect(getByText('doc_auth.errors.rate_limited_heading')).to.be.ok();
     expect(getByText('One attempt remaining')).to.be.ok();
     expect(getByText('An unknown error occurred')).to.be.ok();
     expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
@@ -224,44 +223,6 @@ describe('document-capture/components/review-issues-step', () => {
     });
   });
 
-  it('does not render sp help troubleshooting option for errored review', () => {
-    const { queryByRole } = render(
-      <InPersonContext.Provider value={{ inPersonURL: null }}>
-        <ServiceProviderContextProvider
-          value={{
-            name: 'Example App',
-            failureToProofURL: 'https://example.com/?step=document_capture',
-          }}
-        >
-          <ReviewIssuesStep {...DEFAULT_PROPS} />
-        </ServiceProviderContextProvider>
-      </InPersonContext.Provider>,
-    );
-
-    expect(
-      queryByRole('link', { name: 'idv.troubleshooting.options.get_help_at_sp links.new_tab' }),
-    ).to.not.exist();
-  });
-
-  it('does render sp help troubleshooting option for errored review if in person url present', () => {
-    const { getByRole } = render(
-      <InPersonContext.Provider value={{ inPersonURL: 'http://example.com' }}>
-        <ServiceProviderContextProvider
-          value={{
-            name: 'Example App',
-            failureToProofURL: 'https://example.com/?step=document_capture',
-          }}
-        >
-          <ReviewIssuesStep {...DEFAULT_PROPS} />
-        </ServiceProviderContextProvider>
-      </InPersonContext.Provider>,
-    );
-
-    expect(
-      getByRole('link', { name: 'idv.troubleshooting.options.get_help_at_sp links.new_tab' }).href,
-    ).to.equal('https://example.com/?step=document_capture&location=post_submission_warning');
-  });
-
   it('renders alternative error messages with in person and doc type is not supported', async () => {
     const { getByRole, getByText, getByLabelText } = render(
       <InPersonContext.Provider value={{ inPersonURL: 'http://example.com' }}>
@@ -269,11 +230,11 @@ describe('document-capture/components/review-issues-step', () => {
           value={
             new I18n({
               strings: {
-                'idv.warning.attempts_html': {
-                  one: '<strong>One attempt</strong> remaining',
-                  other: '<strong>%{count} attempts</strong> remaining',
+                'idv.failure.attempts_html': {
+                  one: '<strong>One attempt</strong> remaining to add your ID online',
+                  other: '<strong>%{count} attempts</strong> remaining to add your ID online',
                 },
-                'errors.doc_auth.doc_type_not_supported_heading': 'doc type not supported',
+                'doc_auth.errors.doc_type_not_supported_heading': 'doc type not supported',
                 'doc_auth.errors.doc.wrong_id_type_html':
                   "We only accept a driver's license or a state ID card at this time.",
               },
@@ -324,11 +285,11 @@ describe('document-capture/components/review-issues-step', () => {
           value={
             new I18n({
               strings: {
-                'idv.warning.attempts_html': {
-                  one: '<strong>One attempt</strong> remaining',
-                  other: '<strong>%{count} attempts</strong> remaining',
+                'idv.failure.attempts_html': {
+                  one: '<strong>One attempt</strong> remaining to add your ID online',
+                  other: '<strong>%{count} attempts</strong> remaining to add your ID online',
                 },
-                'errors.doc_auth.doc_type_not_supported_heading': 'doc type not supported',
+                'doc_auth.errors.doc_type_not_supported_heading': 'doc type not supported',
                 'doc_auth.errors.doc.wrong_id_type_html':
                   "We only accept a driver's license or a state ID card at this time.",
               },
@@ -369,24 +330,6 @@ describe('document-capture/components/review-issues-step', () => {
     ).to.be.ok();
     expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
     expect(getByLabelText('doc_auth.headings.document_capture_back')).to.be.ok();
-  });
-
-  it('renders optional questions', async () => {
-    const App = composeComponents(
-      [
-        FeatureFlagContext.Provider,
-        {
-          value: {
-            exitQuestionSectionEnabled: true,
-          },
-        },
-      ],
-      [ReviewIssuesStep, DEFAULT_PROPS],
-    );
-    const { getByText, getByRole } = render(<App />);
-    await userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
-    expect(getByRole('heading', { name: 'doc_auth.exit_survey.header', level: 2 })).to.be.ok();
-    expect(getByText('doc_auth.exit_survey.optional.button')).to.be.ok();
   });
 
   context('service provider context', () => {

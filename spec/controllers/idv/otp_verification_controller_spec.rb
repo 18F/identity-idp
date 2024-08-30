@@ -9,16 +9,13 @@ RSpec.describe Idv::OtpVerificationController,
   let(:user_phone_confirmation) { false }
   let(:phone_confirmation_otp_code) { '777777' }
   let(:phone_confirmation_otp_sent_at) { Time.zone.now }
-  let(:phone_confirmation_session_properties) do
-    {
-      code: phone_confirmation_otp_code,
-      phone: phone,
-      delivery_method: :sms,
-    }
-  end
+  let(:delivery_method) { :sms }
   let(:user_phone_confirmation_session) do
     Idv::PhoneConfirmationSession.new(
-      **phone_confirmation_session_properties,
+      code: phone_confirmation_otp_code,
+      phone: phone,
+      delivery_method: delivery_method,
+      user: user,
       sent_at: phone_confirmation_otp_sent_at,
     )
   end
@@ -28,7 +25,6 @@ RSpec.describe Idv::OtpVerificationController,
 
   before do
     stub_analytics
-    stub_attempts_tracker
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
 
     sign_in(user)
@@ -36,7 +32,7 @@ RSpec.describe Idv::OtpVerificationController,
     subject.idv_session.welcome_visited = true
     subject.idv_session.idv_consent_given = true
     subject.idv_session.flow_path = 'standard'
-    subject.idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT
+    subject.idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
     subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:ssn]
     subject.idv_session.resolution_successful = true
     subject.idv_session.applicant[:phone] = phone
@@ -140,13 +136,7 @@ RSpec.describe Idv::OtpVerificationController,
       end
 
       context 'the user uses voice otp' do
-        let(:phone_confirmation_session_properties) do
-          {
-            code: phone_confirmation_otp_code,
-            phone: phone,
-            delivery_method: :voice,
-          }
-        end
+        let(:delivery_method) { :voice }
 
         it 'does not save the phone number if the feature flag is off' do
           put :update, params: otp_code_param
@@ -170,68 +160,18 @@ RSpec.describe Idv::OtpVerificationController,
     it 'tracks an analytics event' do
       put :update, params: otp_code_param
 
-      expected_result = {
-        success: true,
-        errors: {},
-        code_expired: false,
-        code_matches: true,
-        second_factor_attempts_count: 0,
-        second_factor_locked_at: nil,
-        **ab_test_args,
-      }
-
       expect(@analytics).to have_logged_event(
         'IdV: phone confirmation otp submitted',
-        hash_including(expected_result),
+        hash_including(
+          success: true,
+          errors: {},
+          code_expired: false,
+          code_matches: true,
+          otp_delivery_preference: :sms,
+          second_factor_attempts_count: 0,
+          **ab_test_args,
+        ),
       )
-    end
-
-    describe 'track irs analytics event' do
-      let(:phone_property) { { phone_number: phone } }
-      context 'when the phone otp code is valid' do
-        it 'captures success event' do
-          expect(@irs_attempts_api_tracker).to receive(:idv_phone_otp_submitted).with(
-            success: true,
-            **phone_property,
-          )
-
-          put :update, params: otp_code_param
-        end
-      end
-
-      context 'when the phone otp code is invalid' do
-        let(:invalid_otp_code_param) { { code: '000' } }
-        it 'captures failure event' do
-          expect(@irs_attempts_api_tracker).to receive(:idv_phone_otp_submitted).with(
-            success: false,
-            **phone_property,
-          )
-
-          put :update, params: invalid_otp_code_param
-        end
-      end
-
-      context 'when the phone otp code has expired' do
-        let(:expired_phone_confirmation_otp_sent_at) do
-          # Set time to a long time ago
-          phone_confirmation_otp_sent_at - 900000000
-        end
-        let(:user_phone_confirmation_session) do
-          Idv::PhoneConfirmationSession.new(
-            **phone_confirmation_session_properties,
-            sent_at: expired_phone_confirmation_otp_sent_at,
-          )
-        end
-
-        it 'captures failure event' do
-          expect(@irs_attempts_api_tracker).to receive(:idv_phone_otp_submitted).with(
-            success: false,
-            **phone_property,
-          )
-
-          put :update, params: otp_code_param
-        end
-      end
     end
   end
 end

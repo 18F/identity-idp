@@ -3,7 +3,7 @@
 class ResendEmailConfirmationForm
   include ActiveModel::Model
 
-  attr_reader :email
+  attr_reader :email, :terms_accepted
 
   def self.model_name
     ActiveModel::Name.new(self, nil, 'User')
@@ -11,6 +11,7 @@ class ResendEmailConfirmationForm
 
   def initialize(params = {})
     @email = params[:email]
+    @terms_accepted = params[:terms_accepted]
   end
 
   def resend

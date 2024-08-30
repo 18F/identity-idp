@@ -9,12 +9,15 @@ RSpec.describe ServiceProviderMfaPolicy do
   let(:resolved_authn_context_result) do
     Vot::Parser::Result.new(
       component_values: [],
+      component_separator: ' ',
       aal2?: aal2,
       hspd12?: hspd12,
       phishing_resistant?: phishing_resistant,
       identity_proofing?: false,
       biometric_comparison?: false,
+      two_pieces_of_fair_evidence?: false,
       ialmax?: false,
+      enhanced_ipp?: false,
     )
   end
   let(:auth_methods_session) { AuthMethodsSession.new(user_session: {}) }

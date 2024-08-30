@@ -8,9 +8,8 @@ RSpec.describe Reporting::DropOffReport do
   subject(:report) { Reporting::DropOffReport.new(issuers: [issuer], time_range:) }
 
   before do
-    cloudwatch_client = double(
-      'Reporting::CloudwatchClient',
-      fetch: [
+    stub_multiple_cloudwatch_logs(
+      [
         # finishes funnel
         { 'user_id' => 'user1', 'name' => 'IdV: doc auth welcome visited' },
         { 'user_id' => 'user1', 'name' => 'IdV: doc auth welcome submitted' },
@@ -23,6 +22,7 @@ RSpec.describe Reporting::DropOffReport do
         { 'user_id' => 'user1', 'name' => 'idv_enter_password_visited' },
         { 'user_id' => 'user1', 'name' => 'idv_enter_password_submitted' },
         { 'user_id' => 'user1', 'name' => 'IdV: personal key submitted' },
+        { 'user_id' => 'user1', 'identity_verified' => '1', 'name' => 'IdV: final resolution' },
 
         # gets through phone finder, then drops
         { 'user_id' => 'user2', 'name' => 'IdV: doc auth welcome visited' },
@@ -50,10 +50,71 @@ RSpec.describe Reporting::DropOffReport do
         # bails after viewing the user agreement
         { 'user_id' => 'user5', 'name' => 'IdV: doc auth welcome visited' },
         { 'user_id' => 'user5', 'name' => 'IdV: doc auth welcome submitted' },
+
+        # finishes funnel but has to wait for GPO letter
+        { 'user_id' => 'user6', 'name' => 'IdV: doc auth welcome visited' },
+        { 'user_id' => 'user6', 'name' => 'IdV: doc auth welcome submitted' },
+        { 'user_id' => 'user6', 'name' => 'IdV: doc auth image upload vendor submitted' },
+        { 'user_id' => 'user6', 'name' => 'IdV: doc auth document_capture visited' },
+        { 'user_id' => 'user6', 'name' => 'IdV: doc auth ssn visited' },
+        { 'user_id' => 'user6', 'name' => 'IdV: doc auth verify visited' },
+        { 'user_id' => 'user6', 'name' => 'IdV: doc auth verify submitted' },
+        { 'user_id' => 'user6',
+          'gpo_verification_pending' => '1',
+          'name' => 'IdV: phone of record visited' },
+        { 'user_id' => 'user6', 'name' => 'idv_enter_password_visited' },
+        { 'user_id' => 'user6', 'name' => 'idv_enter_password_submitted' },
+        { 'user_id' => 'user6', 'name' => 'IdV: personal key submitted' },
+        { 'user_id' => 'user6', 'identity_verified' => '0', 'name' => 'IdV: final resolution' },
+
+        # finishes funnel but has to wait for IPP
+        { 'user_id' => 'user7', 'name' => 'IdV: doc auth welcome visited' },
+        { 'user_id' => 'user7', 'name' => 'IdV: doc auth welcome submitted' },
+        { 'user_id' => 'user7', 'name' => 'IdV: doc auth image upload vendor submitted' },
+        { 'user_id' => 'user7', 'name' => 'IdV: doc auth document_capture visited' },
+        { 'user_id' => 'user7', 'name' => 'IdV: doc auth ssn visited' },
+        { 'user_id' => 'user7', 'name' => 'IdV: doc auth verify visited' },
+        { 'user_id' => 'user7',
+          'in_person_verification_pending' => '1',
+          'name' => 'IdV: doc auth verify submitted' },
+        { 'user_id' => 'user7', 'name' => 'IdV: phone of record visited' },
+        { 'user_id' => 'user7', 'name' => 'idv_enter_password_visited' },
+        { 'user_id' => 'user7', 'name' => 'idv_enter_password_submitted' },
+        { 'user_id' => 'user7', 'name' => 'IdV: personal key submitted' },
+        { 'user_id' => 'user7', 'name' => 'IdV: final resolution' },
+
+        # finishes funnel but has to wait for fraud review
+        { 'user_id' => 'user8', 'name' => 'IdV: doc auth welcome visited' },
+        { 'user_id' => 'user8', 'name' => 'IdV: doc auth welcome submitted' },
+        { 'user_id' => 'user8', 'name' => 'IdV: doc auth image upload vendor submitted' },
+        { 'user_id' => 'user8', 'name' => 'IdV: doc auth document_capture visited' },
+        { 'user_id' => 'user8', 'name' => 'IdV: doc auth ssn visited' },
+        { 'user_id' => 'user8', 'name' => 'IdV: doc auth verify visited' },
+        { 'user_id' => 'user8',
+          'fraud_review_pending' => '1',
+          'name' => 'IdV: doc auth verify submitted' },
+        { 'user_id' => 'user8', 'name' => 'IdV: phone of record visited' },
+        { 'user_id' => 'user8', 'name' => 'idv_enter_password_visited' },
+        { 'user_id' => 'user8', 'name' => 'idv_enter_password_submitted' },
+        { 'user_id' => 'user8', 'name' => 'IdV: personal key submitted' },
+        { 'user_id' => 'user8', 'name' => 'IdV: final resolution' },
+      ],
+      [
+        # IPP successes
+        { 'user_id' => 'user9',
+          'name' => 'GetUspsProofingResultsJob: Enrollment status updated',
+          'success' => '1' },
+        { 'user_id' => 'user10',
+          'name' => 'GetUspsProofingResultsJob: Enrollment status updated',
+          'success' => '1' },
+        { 'user_id' => 'user11',
+          'name' => 'GetUspsProofingResultsJob: Enrollment status updated',
+          'success' => '1' },
+        { 'user_id' => 'user12',
+          'name' => 'GetUspsProofingResultsJob: Enrollment status updated',
+          'success' => '1' },
       ],
     )
-
-    allow(report).to receive(:cloudwatch_client).and_return(cloudwatch_client)
   end
 
   describe '#as_tables' do
@@ -132,10 +193,41 @@ RSpec.describe Reporting::DropOffReport do
     end
   end
 
-  def expected_tables(strings: false)
+  context 'no available events' do
+    before do
+      stub_multiple_cloudwatch_logs([], [])
+    end
+
+    it 'tries its best' do
+      expect(report.as_tables).to eq(empty_tables)
+      expect(report.as_emailable_reports.map(&:table)).to eq(empty_tables)
+    end
+  end
+
+  def empty_tables(strings: false)
+    data = [
+      [0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0],
+      [0],
+    ]
+    expected_tables(strings:, values: data)
+  end
+
+  def expected_tables(strings: false, values: nil)
+    iterator = values&.each
     [
-      # these two tables are static
-      report.step_definition_table,
+      # the first two tables are relatively static
+      Reporting::DropOffReport::STEP_DEFINITIONS,
       [
         ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
         ['Report Generated', Date.today.to_s], # rubocop:disable Rails/Date
@@ -144,18 +236,55 @@ RSpec.describe Reporting::DropOffReport do
       [
         ['Step', 'Unique user count', 'Users lost', 'Dropoff from last step',
          'Users left from start'],
-        ['Welcome (page viewed)'] + string_or_num(strings, 5),
-        ['User agreement (page viewed)'] + string_or_num(strings, 5, 0, 0.0, 1.0),
-        ['Capture Document (page viewed)'] + string_or_num(strings, 4, 1, 0.2, 0.8),
-        ['Document submitted (event)'] + string_or_num(strings, 4, 0, 0.0, 0.8),
-        ['SSN (page view)'] + string_or_num(strings, 3, 1, 0.25, 0.6),
-        ['Verify Info (page view)'] + string_or_num(strings, 2, 1, 0.3333333333333333, 0.4),
-        ['Verify submit (event)'] + string_or_num(strings, 2, 0, 0.0, 0.4),
-        ['Phone finder (page view)'] + string_or_num(strings, 2, 0, 0.0, 0.4),
-        ['Encrypt account: enter password (page view)'] + string_or_num(strings, 1, 1, 0.5, 0.2),
-        ['Personal key input (page view)'] + string_or_num(strings, 1, 0, 0.0, 0.2),
-        ['Verified (event)'] + string_or_num(strings, 1, 0, 0.0, 0.2),
-        ['Workflow Complete - Total Pending'] + string_or_num(strings, 0),
+        ['Welcome (page viewed)'] + string_or_num(strings, *(values ? iterator.next : [8])),
+        ['User agreement (page viewed)'] + string_or_num(
+          strings,
+          *(values ? iterator.next : [8, 0, 0.0, 1.0]),
+        ),
+        ['Capture Document (page viewed)'] + string_or_num(
+          strings,
+          *(values ? iterator.next : [7, 1, 0.125, 0.875]),
+        ),
+        ['Document submitted (event)'] + string_or_num(
+          strings,
+          *(values ? iterator.next : [7, 0, 0.0, 0.875]),
+        ),
+        ['SSN (page view)'] + string_or_num(
+          strings,
+          *(values ? iterator.next : [6, 1, 1.0 / 7, 0.75]),
+        ),
+        ['Verify Info (page view)'] + string_or_num(
+          strings,
+          *(values ? iterator.next : [5, 1, 1.0 / 6, 0.625]),
+        ),
+        ['Verify submit (event)'] + string_or_num(
+          strings,
+          *(values ? iterator.next : [5, 0, 0.0, 0.625]),
+        ),
+        ['Phone finder (page view)'] + string_or_num(
+          strings,
+          *(values ? iterator.next : [5, 0, 0.0, 0.625]),
+        ),
+        ['Encrypt account: enter password (page view)'] + string_or_num(
+          strings,
+          *(values ? iterator.next : [4, 1, 0.2, 0.5]),
+        ),
+        ['Personal key input (page view)'] + string_or_num(
+          strings,
+          *(values ? iterator.next : [4, 0, 0.0, 0.5]),
+        ),
+        ['Verified (event)'] + string_or_num(
+          strings,
+          *(values ? iterator.next : [4, 0, 0.0, 0.5]),
+        ),
+        ['Workflow Complete - Total Pending'] + string_or_num(
+          strings,
+          *(values ? iterator.next : [3]),
+        ),
+        ['Successfully verified via in-person proofing'] + string_or_num(
+          strings,
+          *(values ? iterator.next : [4]),
+        ),
       ],
     ]
   end

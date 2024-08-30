@@ -1,4 +1,4 @@
-export default /** @type {import('yaml').visitor} */ ({
+export default /** @type {import('./').Visitor} */ ({ ignoreKeySort }) => ({
   Map(_key, node) {
     node.items.sort(
       /**
@@ -6,7 +6,16 @@ export default /** @type {import('yaml').visitor} */ ({
        * @param {import('yaml').Pair<any>} b
        * @return {number}
        */
-      (a, b) => a.key.toString().localeCompare(b.key.toString()),
+      (a, b) => {
+        const aKey = a.key.toString();
+        const bKey = b.key.toString();
+
+        if (ignoreKeySort && (ignoreKeySort.includes(aKey) || ignoreKeySort.includes(bKey))) {
+          return 0;
+        }
+
+        return aKey.localeCompare(bKey);
+      },
     );
   },
 });

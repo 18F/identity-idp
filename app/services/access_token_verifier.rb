@@ -11,17 +11,20 @@ class AccessTokenVerifier
     @identity = nil
   end
 
+  # @return [Array(FormResponse, ServiceProviderIdentity), Array(FormResponse, nil)]
   def submit
-    FormResponse.new(
-      success: valid?, errors: errors, extra: {
-        client_id: identity&.service_provider,
-        ial: identity&.ial,
-      }
-    )
-  end
+    success = valid?
 
-  def identity
-    valid? ? @identity : nil
+    response = FormResponse.new(
+      success:,
+      errors:,
+      extra: {
+        client_id: @identity&.service_provider,
+        ial: @identity&.ial,
+      },
+    )
+
+    [response, @identity]
   end
 
   private
@@ -56,7 +59,7 @@ class AccessTokenVerifier
     end
 
     bearer, access_token = header.split(' ', 2)
-    if bearer != 'Bearer'
+    if bearer != 'Bearer' || access_token.blank?
       errors.add(
         :access_token, t('openid_connect.user_info.errors.malformed_authorization'),
         type: :malformed_authorization

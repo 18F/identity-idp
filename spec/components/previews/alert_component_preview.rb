@@ -24,18 +24,14 @@ class AlertComponentPreview < BaseComponentPreview
     render(AlertComponent.new(message: 'An emergency message', type: :emergency))
   end
 
-  def other
-    render(AlertComponent.new(message: 'An other message', type: :other))
-  end
-
   def with_custom_text_tag
     render(AlertComponent.new(type: :success, message: 'A custom message', text_tag: 'div'))
   end
   # @!endgroup
 
   # @param message text
-  # @param type select [info, success, warning, error, emergency, other]
-  def workbench(message: 'An important message', type: :info)
-    render(AlertComponent.new(message:, type:))
+  # @param type select [~, info, success, warning, error, emergency]
+  def workbench(message: 'An important message', type: nil)
+    render(AlertComponent.new(message:, type: type&.to_sym))
   end
 end

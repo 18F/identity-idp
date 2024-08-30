@@ -3,6 +3,9 @@
   "version": "2.0.0",
   "private": false,
   "description": "ESLint plugin and shareable configurations for Login.gov JavaScript standards",
+  "exports": {
+    ".": "./index.js"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/18f/identity-idp.git",

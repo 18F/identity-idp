@@ -9,7 +9,6 @@ module SamlIdpAuthConcern
     # rubocop:disable Rails/LexicallyScopedActionFilter
     before_action :validate_and_create_saml_request_object, only: :auth
     before_action :validate_service_provider_and_authn_context, only: :auth
-    before_action :block_biometric_requests_in_production, only: :auth
     before_action :check_sp_active, only: :auth
     before_action :log_external_saml_auth_request, only: [:auth]
     # this must take place _before_ the store_saml_request action or the SAML
@@ -21,13 +20,6 @@ module SamlIdpAuthConcern
   end
 
   private
-
-  def block_biometric_requests_in_production
-    if @saml_request_validator.parsed_vector_of_trust&.biometric_comparison? &&
-       !FeatureManagement.idv_allow_selfie_check?
-      render_not_acceptable
-    end
-  end
 
   def sign_out_if_forceauthn_is_true_and_user_is_signed_in
     if !saml_request.force_authn?
@@ -130,9 +122,12 @@ module SamlIdpAuthConcern
   end
 
   def response_authn_context
-    saml_request.requested_vtr_authn_context ||
+    if saml_request.requested_vtr_authn_contexts.present?
+      resolved_authn_context_result.expanded_component_values
+    else
       saml_request.requested_aal_authn_context ||
-      default_aal_context
+        default_aal_context
+    end
   end
 
   def requested_ial_authn_context
@@ -149,9 +144,7 @@ module SamlIdpAuthConcern
   end
 
   def identity_needs_verification?
-    resolved_authn_context_result.identity_proofing? &&
-      (current_user.identity_not_verified? ||
-       current_user.reproof_for_irs?(service_provider: current_sp))
+    resolved_authn_context_result.identity_proofing? && current_user.identity_not_verified?
   end
 
   def active_identity
@@ -202,14 +195,17 @@ module SamlIdpAuthConcern
        saml_request_service_provider&.skip_encryption_allowed
       nil
     elsif saml_request_service_provider&.encrypt_responses?
-      cert = saml_request.service_provider.matching_cert ||
-             saml_request_service_provider&.ssl_certs&.first
       {
-        cert: cert,
+        cert: encryption_cert,
         block_encryption: saml_request_service_provider&.block_encryption,
         key_transport: 'rsa-oaep-mgf1p',
       }
     end
+  end
+
+  def encryption_cert
+    saml_request.matching_cert ||
+      saml_request_service_provider&.ssl_certs&.first
   end
 
   def saml_response_signature_options

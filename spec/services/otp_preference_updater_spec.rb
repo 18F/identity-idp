@@ -20,7 +20,7 @@ RSpec.describe OtpPreferenceUpdater do
                                   delivery_preference: 'sms'
           )
           updater = OtpPreferenceUpdater.new(user: user, preference: 'sms', phone_id: phone.id)
-          expect(UpdateUser).to_not receive(:new)
+          expect(UpdateUserPhoneConfiguration).to_not receive(:update!)
           updater.call
         end
       end
@@ -37,11 +37,8 @@ RSpec.describe OtpPreferenceUpdater do
                          otp_make_default_number: nil,
                          phone_id: 1 }
 
-          updated_user = instance_double(UpdateUser)
-          allow(UpdateUser).to receive(:new).
-            with(user: user, attributes: attributes).and_return(updated_user)
-
-          expect(updated_user).to receive(:call)
+          expect(UpdateUserPhoneConfiguration).to receive(:update!).
+            with(user: user, attributes: attributes)
 
           updater.call
         end
@@ -56,7 +53,7 @@ RSpec.describe OtpPreferenceUpdater do
           phone_id: 1,
         )
 
-        expect(UpdateUser).to_not receive(:new)
+        expect(UpdateUserPhoneConfiguration).to_not receive(:update!)
 
         updater.call
       end

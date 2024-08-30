@@ -6,7 +6,7 @@
 #
 # Arguments sent to UserMailer must not include personally-identifiable information (PII).
 # This includes email addresses. All arguments to UserMailer are stored in the database when the
-# email is being sent asynchronusly by ActiveJob and we must not put PII in the database in
+# email is being sent asynchronously by ActiveJob and we must not put PII in the database in
 # plaintext.
 #
 # Example:
@@ -38,6 +38,8 @@ class UserMailer < ActionMailer::Base
     ),
   )
 
+  layout 'mailer'
+
   def validate_user_and_email_address
     @user = params.fetch(:user)
     @email_address = params.fetch(:email_address)
@@ -56,10 +58,10 @@ class UserMailer < ActionMailer::Base
     )
   end
 
-  def email_confirmation_instructions(token, request_id:, instructions:)
+  def email_confirmation_instructions(token, request_id:)
     with_user_locale(user) do
       presenter = ConfirmationEmailPresenter.new(user, view_context)
-      @first_sentence = instructions || presenter.first_sentence
+      @first_sentence = presenter.first_sentence
       @confirmation_period = presenter.confirmation_period
       @request_id = request_id
       @locale = locale_url_param
@@ -67,21 +69,6 @@ class UserMailer < ActionMailer::Base
       mail(
         to: email_address.email,
         subject: t('user_mailer.email_confirmation_instructions.subject'),
-      )
-    end
-  end
-
-  def unconfirmed_email_instructions(token, request_id:, instructions:)
-    with_user_locale(user) do
-      presenter = ConfirmationEmailPresenter.new(user, view_context)
-      @first_sentence = instructions || presenter.first_sentence
-      @confirmation_period = presenter.confirmation_period
-      @request_id = request_id
-      @locale = locale_url_param
-      @token = token
-      mail(
-        to: email_address.email,
-        subject: t('user_mailer.email_confirmation_instructions.email_not_found'),
       )
     end
   end
@@ -122,19 +109,6 @@ class UserMailer < ActionMailer::Base
     with_user_locale(user) do
       @disavowal_token = disavowal_token
       mail(to: email_address.email, subject: t('user_mailer.personal_key_sign_in.subject'))
-    end
-  end
-
-  def new_device_sign_in(date:, location:, device_name:, disavowal_token:)
-    with_user_locale(user) do
-      @login_date = date
-      @login_location = location
-      @device_name = device_name
-      @disavowal_token = disavowal_token
-      mail(
-        to: email_address.email,
-        subject: t('user_mailer.new_device_sign_in.subject', app_name: APP_NAME),
-      )
     end
   end
 
@@ -230,7 +204,7 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def letter_reminder
+  def verify_by_mail_letter_requested
     with_user_locale(user) do
       mail(to: email_address.email, subject: t('user_mailer.letter_reminder.subject'))
     end
@@ -284,7 +258,12 @@ class UserMailer < ActionMailer::Base
     with_user_locale(user) do
       @header = t('user_mailer.in_person_completion_survey.header')
       @privacy_url = MarketingSite.security_and_privacy_practices_url
-      @survey_url = IdentityConfig.store.in_person_completion_survey_url
+      if locale == :en
+        @survey_url = IdentityConfig.store.in_person_opt_in_available_completion_survey_url
+      else
+        @survey_url = IdentityConfig.store.in_person_completion_survey_url
+      end
+
       mail(
         to: email_address.email,
         subject: t('user_mailer.in_person_completion_survey.subject', app_name: APP_NAME),
@@ -306,7 +285,7 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def in_person_ready_to_verify(enrollment:)
+  def in_person_ready_to_verify(enrollment:, is_enhanced_ipp:)
     attachments.inline['barcode.png'] = BarcodeOutputter.new(
       code: enrollment.enrollment_code,
     ).image_data
@@ -315,11 +294,14 @@ class UserMailer < ActionMailer::Base
       @hide_title = IdentityConfig.store.in_person_outage_message_enabled &&
                     IdentityConfig.store.in_person_outage_emailed_by_date.present? &&
                     IdentityConfig.store.in_person_outage_expected_update_date.present?
-      @header = t('in_person_proofing.headings.barcode')
+      @header = is_enhanced_ipp ?
+        t('in_person_proofing.headings.barcode_eipp') : t('in_person_proofing.headings.barcode')
       @presenter = Idv::InPerson::ReadyToVerifyPresenter.new(
         enrollment: enrollment,
         barcode_image_url: attachments['barcode.png'].url,
+        is_enhanced_ipp: is_enhanced_ipp,
       )
+      @is_enhanced_ipp = is_enhanced_ipp
       mail(
         to: email_address.email,
         subject: t('user_mailer.in_person_ready_to_verify.subject', app_name: APP_NAME),
@@ -332,10 +314,12 @@ class UserMailer < ActionMailer::Base
       code: enrollment.enrollment_code,
     ).image_data
 
+    @is_enhanced_ipp = enrollment.enhanced_ipp?
     with_user_locale(user) do
       @presenter = Idv::InPerson::ReadyToVerifyPresenter.new(
         enrollment: enrollment,
         barcode_image_url: attachments['barcode.png'].url,
+        is_enhanced_ipp: @is_enhanced_ipp,
       )
       @header = t(
         'user_mailer.in_person_ready_to_verify_reminder.heading',
@@ -405,19 +389,6 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def in_person_outage_notification(enrollment:)
-    with_user_locale(user) do
-      @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
-        enrollment: enrollment,
-        url_options: url_options,
-      )
-      mail(
-        to: email_address.email,
-        subject: t('user_mailer.in_person_outage_notification.subject', app_name: APP_NAME),
-      )
-    end
-  end
-
   def account_rejected
     with_user_locale(user) do
       mail(
@@ -439,7 +410,7 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def gpo_reminder
+  def verify_by_mail_reminder
     with_user_locale(user) do
       @gpo_verification_pending_at = I18n.l(
         user.gpo_verification_pending_profile.gpo_verification_pending_at,

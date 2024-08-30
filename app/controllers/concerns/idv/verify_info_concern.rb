@@ -24,15 +24,8 @@ module Idv
 
       idv_session.verify_info_step_document_capture_session_uuid = document_capture_session.uuid
 
-      # proof_resolution job expects these values
-      agent_pii = pii.merge(
-        uuid: current_user.uuid,
-        uuid_prefix: ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id,
-        ssn: idv_session.ssn,
-      )
-      Idv::Agent.new(agent_pii).proof_resolution(
+      Idv::Agent.new(pii).proof_resolution(
         document_capture_session,
-        should_proof_state_id: aamva_state?,
         trace_id: amzn_trace_id,
         user_id: current_user.id,
         threatmetrix_session_id: idv_session.threatmetrix_session_id,
@@ -47,10 +40,6 @@ module Idv
 
     def ipp_enrollment_in_progress?
       current_user.has_in_person_enrollment?
-    end
-
-    def aamva_state?
-      IdentityConfig.store.aamva_supported_jurisdictions.include?(pii['state_id_jurisdiction'])
     end
 
     def resolution_rate_limiter
@@ -97,13 +86,11 @@ module Idv
 
     def idv_failure_log_rate_limited(rate_limit_type)
       if rate_limit_type == :proof_ssn
-        irs_attempts_api_tracker.idv_verification_rate_limited(limiter_context: 'multi-session')
         analytics.rate_limit_reached(
           limiter_type: :proof_ssn,
           step_name: STEP_NAME,
         )
       elsif rate_limit_type == :idv_resolution
-        irs_attempts_api_tracker.idv_verification_rate_limited(limiter_context: 'single-session')
         analytics.rate_limit_reached(
           limiter_type: :idv_resolution,
           step_name: STEP_NAME,
@@ -148,6 +135,7 @@ module Idv
       end
 
       if current_async_state.in_progress?
+        analytics.idv_doc_auth_verify_polling_wait_visited
         render 'shared/wait'
         return
       end
@@ -155,6 +143,7 @@ module Idv
       return if confirm_not_rate_limited_after_doc_auth
 
       if current_async_state.none?
+        analytics.idv_doc_auth_verify_visited(**analytics_arguments)
         render :show
       elsif current_async_state.missing?
         analytics.idv_proofing_resolution_result_missing
@@ -162,15 +151,12 @@ module Idv
         render :show
 
         delete_async
-
-        log_idv_verification_submitted_event(
-          success: false,
-        )
       end
     end
 
     def async_state_done(current_async_state)
-      add_proofing_costs(current_async_state.result)
+      create_fraud_review_request_if_needed(current_async_state.result)
+
       form_response = idv_result_to_form_response(
         result: current_async_state.result,
         state: pii[:state],
@@ -190,14 +176,6 @@ module Idv
           ],
         },
       )
-      log_idv_verification_submitted_event(
-        success: form_response.success?,
-      )
-
-      form_response.extra[:ssn_is_unique] = DuplicateSsnFinder.new(
-        ssn: idv_session.ssn,
-        user: current_user,
-      ).ssn_is_unique?
 
       summarize_result_and_rate_limit(form_response)
       delete_async
@@ -281,19 +259,17 @@ module Idv
       )
     end
 
-    def log_idv_verification_submitted_event(success: false)
-      pii_from_doc = pii || {}
-      irs_attempts_api_tracker.idv_verification_submitted(
-        success: success,
-        document_state: pii_from_doc[:state],
-        document_number: pii_from_doc[:state_id_number],
-        document_issued: pii_from_doc[:state_id_issued],
-        document_expiration: pii_from_doc[:state_id_expiration],
-        first_name: pii_from_doc[:first_name],
-        last_name: pii_from_doc[:last_name],
-        date_of_birth: pii_from_doc[:dob],
-        address: pii_from_doc[:address1],
-        ssn: idv_session.ssn,
+    def create_fraud_review_request_if_needed(result)
+      return unless FeatureManagement.proofing_device_profiling_collecting_enabled?
+
+      threatmetrix_result = result.dig(:context, :stages, :threatmetrix)
+      return unless threatmetrix_result
+
+      return if threatmetrix_result[:review_status] == 'pass'
+
+      FraudReviewRequest.create(
+        user: current_user,
+        login_session_id: Digest::SHA1.hexdigest(current_user.unique_session_id.to_s),
       )
     end
 
@@ -303,40 +279,8 @@ module Idv
       idv_session.applicant['uuid'] = current_user.uuid
     end
 
-    def add_proofing_costs(results)
-      results[:context][:stages].each do |stage, hash|
-        if stage == :resolution
-          # transaction_id comes from ConversationId
-          add_cost(:lexis_nexis_resolution, transaction_id: hash[:transaction_id])
-        elsif stage == :residential_address
-          next if pii[:same_address_as_id] == 'true'
-          next if hash[:vendor_name] == 'ResidentialAddressNotRequired'
-          add_cost(:lexis_nexis_resolution, transaction_id: hash[:transaction_id])
-        elsif stage == :state_id
-          next if hash[:exception].present?
-          next if hash[:vendor_name] == 'UnsupportedJurisdiction'
-          # transaction_id comes from TransactionLocatorId
-          add_cost(:aamva, transaction_id: hash[:transaction_id])
-          track_aamva
-        elsif stage == :threatmetrix
-          # transaction_id comes from request_id
-          tmx_id = hash[:transaction_id]
-          log_irs_tmx_fraud_check_event(hash, current_user) if tmx_id
-          add_cost(:threatmetrix, transaction_id: tmx_id) if tmx_id
-        end
-      end
-    end
-
-    def track_aamva
-      return unless IdentityConfig.store.state_tracking_enabled
-      doc_auth_log = DocAuthLog.find_by(user_id: current_user.id)
-      return unless doc_auth_log
-      doc_auth_log.aamva = true
-      doc_auth_log.save!
-    end
-
     def add_cost(token, transaction_id: nil)
-      Db::SpCost::AddSpCost.call(current_sp, 2, token, transaction_id: transaction_id)
+      Db::SpCost::AddSpCost.call(current_sp, token, transaction_id: transaction_id)
     end
   end
 end

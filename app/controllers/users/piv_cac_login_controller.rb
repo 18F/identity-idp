@@ -5,6 +5,7 @@ module Users
     include PivCacConcern
     include VerifySpAttributesConcern
     include TwoFactorAuthenticatableMethods
+    include NewDeviceConcern
 
     def new
       if params.key?(:token)
@@ -46,14 +47,14 @@ module Users
 
     def process_piv_cac_login
       result = piv_cac_login_form.submit
-      analytics.piv_cac_login(**result.to_h)
       clear_piv_cac_information
       clear_piv_cac_nonce
       if result.success?
-        process_valid_submission
+        process_valid_submission(result)
       else
         process_invalid_submission
       end
+      analytics.piv_cac_login(**result.to_h, new_device: @new_device)
     end
 
     def piv_cac_login_form
@@ -64,7 +65,7 @@ module Users
       )
     end
 
-    def process_valid_submission
+    def process_valid_submission(result)
       user = piv_cac_login_form.user
       sign_in(:user, user)
 
@@ -74,7 +75,9 @@ module Users
         presented: true,
       )
 
-      handle_valid_verification_for_authentication_context(
+      @new_device = set_new_device_session(nil)
+      handle_verification_for_authentication_context(
+        result:,
         auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC,
       )
       redirect_to next_step
@@ -91,7 +94,6 @@ module Users
     end
 
     def process_invalid_submission
-      handle_invalid_verification_for_authentication_context
       session[:needs_to_setup_piv_cac_after_sign_in] = true if piv_cac_login_form.valid_token?
 
       process_token_with_error

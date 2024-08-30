@@ -40,7 +40,7 @@ module DocAuth
             Document: {
               Front: encode(front_image),
               Back: encode(back_image),
-              Selfie: (encode(selfie_image) if include_liveness?),
+              Selfie: (encode(selfie_image) if liveness_checking_required),
               DocumentType: 'DriversLicense',
             }.compact,
           }
@@ -52,7 +52,7 @@ module DocAuth
           LexisNexis::Responses::TrueIdResponse.new(
             http_response,
             config,
-            include_liveness?,
+            liveness_checking_required,
             request_context,
           )
         end
@@ -75,11 +75,11 @@ module DocAuth
 
         def workflow
           if @images_cropped
-            include_liveness? ?
+            liveness_checking_required ?
               config.trueid_liveness_nocropping_workflow :
               config.trueid_noliveness_nocropping_workflow
           else
-            include_liveness? ?
+            liveness_checking_required ?
               config.trueid_liveness_cropping_workflow :
               config.trueid_noliveness_cropping_workflow
           end
@@ -99,11 +99,6 @@ module DocAuth
 
         def timeout
           IdentityConfig.store.lexisnexis_trueid_timeout
-        end
-
-        def include_liveness?
-          FeatureManagement.idv_allow_selfie_check? &&
-            liveness_checking_required
         end
       end
     end

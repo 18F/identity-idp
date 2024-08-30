@@ -15,13 +15,14 @@ module FlowPolicyHelper
       idv_session.idv_consent_given = true
     when :how_to_verify
       idv_session.skip_doc_auth = false
+      idv_session.skip_doc_auth_from_how_to_verify = false
     when :hybrid_handoff
       idv_session.flow_path = 'standard'
     when :link_sent
       idv_session.flow_path = 'hybrid'
-      idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT.dup
+      idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
     when :document_capture
-      idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT.dup
+      idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
     when :ssn
       idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
     when :ipp_ssn

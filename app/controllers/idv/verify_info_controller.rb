@@ -16,7 +16,6 @@ module Idv
       @ssn = idv_session.ssn
       @pii = pii
 
-      analytics.idv_doc_auth_verify_visited(**analytics_arguments)
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
         call('verify', :view, true)
 
@@ -74,12 +73,14 @@ module Idv
         flow_path: flow_path,
         step: 'verify',
         analytics_id: 'Doc Auth',
-        irs_reproofing: irs_reproofing?,
       }.merge(ab_test_analytics_buckets)
     end
 
     def pii
-      idv_session.pii_from_doc
+      idv_session.pii_from_doc.to_h.merge(
+        ssn: idv_session.ssn,
+        **idv_session.updated_user_address.to_h,
+      ).with_indifferent_access
     end
   end
 end

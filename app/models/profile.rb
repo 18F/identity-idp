@@ -36,6 +36,7 @@ class Profile < ApplicationRecord
     legacy_unsupervised: 1,
     legacy_in_person: 2,
     unsupervised_with_selfie: 3,
+    in_person: 4,
   }
 
   attr_reader :personal_key
@@ -81,7 +82,7 @@ class Profile < ApplicationRecord
   def pending_reasons
     [
       *(:gpo_verification_pending if gpo_verification_pending?),
-      *(:fraud_check_pending if has_fraud_deactivation_reason?),
+      *(:fraud_check_pending if fraud_deactivation_reason?),
       *(:in_person_verification_pending if in_person_verification_pending?),
     ]
   end
@@ -110,6 +111,7 @@ class Profile < ApplicationRecord
 
   def tmx_status
     return nil unless IdentityConfig.store.in_person_proofing_enforce_tmx
+    return nil unless FeatureManagement.proofing_device_profiling_decisioning_enabled?
 
     fraud_pending_reason || :threatmetrix_pass
   end
@@ -136,8 +138,6 @@ class Profile < ApplicationRecord
       )
       activate
     end
-
-    track_fraud_review_adjudication(decision: 'pass') if active?
   end
 
   def activate_after_fraud_review_unnecessary
@@ -179,7 +179,7 @@ class Profile < ApplicationRecord
     update!(active: false, deactivation_reason: reason)
   end
 
-  def has_fraud_deactivation_reason?
+  def fraud_deactivation_reason?
     fraud_review_pending? || fraud_rejection?
   end
 
@@ -193,6 +193,14 @@ class Profile < ApplicationRecord
       active: false,
       gpo_verification_pending_at: nil,
       gpo_verification_expired_at: Time.zone.now,
+    )
+  end
+
+  def deactivate_due_to_in_person_verification_cancelled
+    update!(
+      active: false,
+      deactivation_reason: :verification_cancelled,
+      in_person_verification_pending_at: nil,
     )
   end
 
@@ -226,9 +234,6 @@ class Profile < ApplicationRecord
       active: false,
       fraud_review_pending_at: nil,
       fraud_rejection_at: Time.zone.now,
-    )
-    track_fraud_review_adjudication(
-      decision: notify_user ? 'manual_reject' : 'automatic_reject',
     )
     UserAlerts::AlertUserAboutAccountRejected.call(user) if notify_user
   end
@@ -297,23 +302,10 @@ class Profile < ApplicationRecord
     values.join(':')
   end
 
-  def irs_attempts_api_tracker
-    @irs_attempts_api_tracker ||= IrsAttemptsApi::Tracker.new
-  end
-
   private
 
   def confirm_that_profile_can_be_activated!
     raise reason_not_to_activate if reason_not_to_activate
-  end
-
-  def track_fraud_review_adjudication(decision:)
-    fraud_review_request = user.fraud_review_requests.last
-    irs_attempts_api_tracker.fraud_review_adjudicated(
-      decision: decision,
-      cached_irs_session_id: fraud_review_request&.irs_session_id,
-      cached_login_session_id: fraud_review_request&.login_session_id,
-    )
   end
 
   def personal_key_generator

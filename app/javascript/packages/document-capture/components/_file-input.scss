@@ -10,14 +10,14 @@
   outline-offset: 2px;
 }
 
-.usa-file-input:not(.usa-file-input--has-value):not(.usa-file-input--value-pending)
+.usa-file-input:not(.usa-file-input--has-value, .usa-file-input--value-pending)
   .usa-file-input__target,
 .usa-form-group--error .usa-file-input .usa-file-input__target,
 .usa-form-group--success .usa-file-input .usa-file-input__target {
   border-width: 3px;
 }
 
-.usa-file-input:not(.usa-file-input--has-value):not(.usa-file-input--value-pending) {
+.usa-file-input:not(.usa-file-input--has-value, .usa-file-input--value-pending) {
   .usa-file-input__target {
     border-color: color('primary');
     border-radius: 0.375rem;

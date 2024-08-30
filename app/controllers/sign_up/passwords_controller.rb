@@ -3,6 +3,7 @@
 module SignUp
   class PasswordsController < ApplicationController
     include UnconfirmedUserConcern
+    include NewDeviceConcern
 
     before_action :find_user_with_confirmation_token
     before_action :confirm_user_needs_sign_up_confirmation
@@ -42,9 +43,6 @@ module SignUp
 
     def track_analytics(result)
       analytics.password_creation(**result.to_h)
-      irs_attempts_api_tracker.user_registration_password_submitted(
-        success: result.success?,
-      )
     end
 
     def permitted_params
@@ -56,17 +54,17 @@ module SignUp
     def process_successful_password_creation
       password = permitted_params[:password]
       now = Time.zone.now
-      UpdateUser.new(
-        user: @user,
-        attributes: { password: password, confirmed_at: now },
-      ).call
+      @user.update!(
+        password: password,
+        confirmed_at: now,
+      )
       @user.email_addresses.take.update(confirmed_at: now)
 
       sign_in_and_redirect_user
     end
 
     def password_form
-      @password_form ||= PasswordForm.new(@user)
+      @password_form ||= PasswordForm.new(user: @user)
     end
 
     def process_unsuccessful_password_creation
@@ -79,6 +77,7 @@ module SignUp
 
     def sign_in_and_redirect_user
       sign_in @user
+      set_new_device_session(false)
       user_session[:in_account_creation_flow] = true
       if current_user.accepted_rules_of_use_still_valid?
         redirect_to authentication_methods_setup_url

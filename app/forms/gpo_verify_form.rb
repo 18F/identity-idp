@@ -9,15 +9,16 @@ class GpoVerifyForm
   validate :validate_pending_profile
 
   attr_accessor :otp, :pii, :pii_attributes
-  attr_reader :user
+  attr_reader :user, :resolved_authn_context_result
 
-  def initialize(user:, pii:, otp: nil)
+  def initialize(user:, pii:, resolved_authn_context_result:, otp: nil)
     @user = user
     @pii = pii
+    @resolved_authn_context_result = resolved_authn_context_result
     @otp = otp
   end
 
-  def submit
+  def submit(is_enhanced_ipp)
     result = valid?
     fraud_check_failed = pending_profile&.fraud_pending_reason.present?
 
@@ -25,7 +26,7 @@ class GpoVerifyForm
       pending_profile&.remove_gpo_deactivation_reason
 
       if user.has_establishing_in_person_enrollment_safe?
-        schedule_in_person_enrollment_and_deactivate_profile
+        schedule_in_person_enrollment_and_deactivate_profile(is_enhanced_ipp)
       elsif fraud_check_failed && threatmetrix_enabled?
         pending_profile&.deactivate_for_fraud_review
       elsif fraud_check_failed
@@ -63,8 +64,12 @@ class GpoVerifyForm
     pending_profile.gpo_confirmation_codes.first_with_otp(otp)
   end
 
-  def schedule_in_person_enrollment_and_deactivate_profile
-    UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(user, pii)
+  def schedule_in_person_enrollment_and_deactivate_profile(is_enhanced_ipp)
+    UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
+      user:,
+      pii:,
+      is_enhanced_ipp:,
+    )
     pending_profile&.deactivate_for_in_person_verification
   end
 
@@ -85,7 +90,11 @@ class GpoVerifyForm
   def validate_otp_not_expired
     return unless gpo_confirmation_code.present? && gpo_confirmation_code.expired?
 
-    errors.add :otp, :gpo_otp_expired, type: :gpo_otp_expired
+    if user_can_request_another_letter?
+      errors.add :otp, :gpo_otp_expired
+    else
+      errors.add :otp, :gpo_otp_expired_and_cannot_request_another
+    end
   end
 
   def validate_pending_profile
@@ -116,5 +125,10 @@ class GpoVerifyForm
   def activate_profile
     pending_profile&.remove_gpo_deactivation_reason
     pending_profile&.activate
+  end
+
+  def user_can_request_another_letter?
+    policy = Idv::GpoVerifyByMailPolicy.new(user, resolved_authn_context_result)
+    policy.resend_letter_available?
   end
 end

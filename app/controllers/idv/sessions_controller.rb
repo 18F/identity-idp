@@ -9,8 +9,8 @@ module Idv
 
     def destroy
       cancel_processing
-      clear_session
       log_analytics
+      clear_session
       redirect_to idv_url
     end
 

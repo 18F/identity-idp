@@ -14,22 +14,18 @@ RSpec.describe Idv::ByMail::EnterCodeRateLimitedController do
     stub_sign_in(user)
     stub_user_with_pending_profile(user)
     stub_analytics
-    stub_attempts_tracker
     RateLimiter.new(rate_limit_type: :verify_gpo_key, user: user).increment_to_limited!
   end
 
   describe '#index' do
     it 'renders the rate limited page' do
-      expect(@analytics).to receive(:track_event).with(
-        'Rate Limit Reached',
-        limiter_type: :verify_gpo_key,
-      ).once
-
-      expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_rate_limited).once
-
       get :index
 
       expect(response).to render_template :index
+      expect(@analytics).to have_logged_event(
+        'Rate Limit Reached',
+        limiter_type: :verify_gpo_key,
+      )
     end
   end
 end

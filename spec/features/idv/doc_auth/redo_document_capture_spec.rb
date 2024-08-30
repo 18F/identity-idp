@@ -114,10 +114,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
 
   shared_examples_for 'image re-upload allowed' do
     it 'allows user to submit the same image again' do
-      expect(fake_analytics).to have_logged_event(
-        'IdV: doc auth document_capture visited',
-        hash_including(redo_document_capture: nil),
-      )
+      expect(fake_analytics).to have_logged_event('IdV: doc auth document_capture visited')
       expect(fake_analytics).to have_logged_event(
         'IdV: doc auth image upload form submitted',
         hash_including(remaining_submit_attempts: 3),
@@ -135,10 +132,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
 
   shared_examples_for 'image re-upload not allowed' do
     it 'stops user submitting the same image again' do
-      expect(fake_analytics).to have_logged_event(
-        'IdV: doc auth document_capture visited',
-        hash_including(redo_document_capture: nil),
-      )
+      expect(fake_analytics).to have_logged_event('IdV: doc auth document_capture visited')
       expect(fake_analytics).to have_logged_event(
         'IdV: doc auth image upload form submitted',
         hash_including(remaining_submit_attempts: 3, submit_attempts: 1),
@@ -153,12 +147,9 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
     end
   end
 
-  shared_examples_for 'selfie image re-upload not allowed' do
+  shared_examples_for 'document and selfie images re-upload not allowed' do
     it 'stops user submitting the same images again' do
-      expect(fake_analytics).to have_logged_event(
-        'IdV: doc auth document_capture visited',
-        hash_including(redo_document_capture: nil),
-      )
+      expect(fake_analytics).to have_logged_event('IdV: doc auth document_capture visited')
       expect(fake_analytics).to have_logged_event(
         'IdV: doc auth image upload form submitted',
         hash_including(remaining_submit_attempts: 3, submit_attempts: 1),
@@ -240,14 +231,11 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
   end
 
   context 'when selfie is enabled' do
-    context 'error due to data issue with 2xx status code', allow_browser_log: true do
+    context 'when doc auth is success and face match fails (2xx)', allow_browser_log: true do
       before do
-        expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
-          and_return(true)
-        allow_any_instance_of(FederatedProtocols::Oidc).
-          to receive(:biometric_comparison_required?).and_return(true)
+        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
         allow_any_instance_of(DocAuth::Response).to receive(:selfie_status).and_return(:fail)
-        start_idv_from_sp
+        start_idv_from_sp(biometric_comparison_required: true)
         sign_in_and_2fa_user
         complete_doc_auth_steps_before_document_capture_step
         mock_doc_auth_success_face_match_fail
@@ -258,24 +246,21 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
         sleep(10)
       end
 
-      it_behaves_like 'selfie image re-upload not allowed'
+      it_behaves_like 'document and selfie images re-upload not allowed'
 
       it 'shows current existing header' do
         expect_doc_capture_page_header(t('doc_auth.headings.review_issues'))
       end
     end
 
-    context 'when doc auth is success and portait match fails', allow_browser_log: true do
+    context 'when doc auth passes and portrait match is not live', allow_browser_log: true do
       before do
-        expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
-          and_return(true)
-        allow_any_instance_of(FederatedProtocols::Oidc).
-          to receive(:biometric_comparison_required?).and_return(true)
+        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
 
-        start_idv_from_sp
+        start_idv_from_sp(biometric_comparison_required: true)
         sign_in_and_2fa_user
         complete_doc_auth_steps_before_document_capture_step
-        mock_doc_auth_success_face_match_fail
+        mock_doc_auth_pass_and_portrait_match_not_live
         attach_images
         attach_selfie
         submit_images
@@ -284,10 +269,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
       end
 
       it 'stops user submitting the same images again' do
-        expect(fake_analytics).to have_logged_event(
-          'IdV: doc auth document_capture visited',
-          hash_including(redo_document_capture: nil),
-        )
+        expect(fake_analytics).to have_logged_event('IdV: doc auth document_capture visited')
         expect(fake_analytics).to have_logged_event(
           'IdV: doc auth image upload form submitted',
           hash_including(remaining_submit_attempts: 3, submit_attempts: 1),
@@ -309,19 +291,16 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
         expect(page).to have_css(
           '.usa-error-message[role="alert"]',
           text: t('doc_auth.errors.doc.resubmit_failed_image'),
-          count: 3,
+          count: 1,
         )
       end
     end
 
     context 'when doc auth fails and portrait match pass', allow_browser_log: true do
       before do
-        expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
-          and_return(true)
-        allow_any_instance_of(FederatedProtocols::Oidc).
-          to receive(:biometric_comparison_required?).and_return(true)
+        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
 
-        start_idv_from_sp
+        start_idv_from_sp(biometric_comparison_required: true)
         sign_in_and_2fa_user
         complete_doc_auth_steps_before_document_capture_step
         mock_doc_auth_failure_face_match_pass
@@ -333,10 +312,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
       end
 
       it 'stops user submitting the same images again' do
-        expect(fake_analytics).to have_logged_event(
-          'IdV: doc auth document_capture visited',
-          hash_including(redo_document_capture: nil),
-        )
+        expect(fake_analytics).to have_logged_event('IdV: doc auth document_capture visited')
         expect(fake_analytics).to have_logged_event(
           'IdV: doc auth image upload form submitted',
           hash_including(remaining_submit_attempts: 3, submit_attempts: 1),
@@ -364,15 +340,12 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
 
     context 'when doc auth and portrait match fail', allow_browser_log: true do
       before do
-        expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
-          and_return(true)
-        allow_any_instance_of(FederatedProtocols::Oidc).
-          to receive(:biometric_comparison_required?).and_return(true)
+        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
         allow_any_instance_of(DocAuth::Response).to receive(:selfie_status).and_return(:fail)
-        start_idv_from_sp
+        start_idv_from_sp(biometric_comparison_required: true)
         sign_in_and_2fa_user
         complete_doc_auth_steps_before_document_capture_step
-        mock_doc_auth_success_face_match_fail
+        mock_doc_auth_fail_face_match_fail
         attach_images
         attach_selfie
         submit_images
@@ -380,20 +353,17 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
         sleep(10)
       end
 
-      it_behaves_like 'selfie image re-upload not allowed'
+      it_behaves_like 'document and selfie images re-upload not allowed'
     end
 
     context 'when pii validation fails', allow_browser_log: true do
       before do
-        expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
-          and_return(true)
-        allow_any_instance_of(FederatedProtocols::Oidc).
-          to receive(:biometric_comparison_required?).and_return(true)
+        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
         pii = Idp::Constants::MOCK_IDV_APPLICANT.dup
-        pii.delete(:address1)
+        pii[:address1] = nil
         allow_any_instance_of(DocAuth::LexisNexis::Responses::TrueIdResponse).
-          to receive(:pii_from_doc).and_return(pii)
-        start_idv_from_sp
+          to receive(:pii_from_doc).and_return(Pii::StateId.new(**pii))
+        start_idv_from_sp(biometric_comparison_required: true)
         sign_in_and_2fa_user
         complete_doc_auth_steps_before_document_capture_step
         mock_doc_auth_pass_face_match_pass_no_address1
@@ -418,10 +388,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
       end
 
       it 'stops user submitting the same images again' do
-        expect(fake_analytics).to have_logged_event(
-          'IdV: doc auth document_capture visited',
-          hash_including(redo_document_capture: nil),
-        )
+        expect(fake_analytics).to have_logged_event('IdV: doc auth document_capture visited')
         expect(fake_analytics).to have_logged_event(
           'IdV: doc auth image upload form submitted',
           hash_including(remaining_submit_attempts: 3, submit_attempts: 1),

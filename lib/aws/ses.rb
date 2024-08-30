@@ -18,7 +18,7 @@ module Aws
         response
       end
 
-      alias deliver! deliver
+      alias_method :deliver!, :deliver
 
       private
 

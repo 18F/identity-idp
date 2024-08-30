@@ -5,7 +5,7 @@ module DocAuth
     def log_alerts(alerts)
       log_alert_results = {}
 
-      alerts.each do |key, key_alerts|
+      alerts.each do |_key, key_alerts|
         key_alerts.each do |alert|
           alert_name_key = alert[:name].
             downcase.

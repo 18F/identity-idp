@@ -22,7 +22,6 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController, allowed_extra_analy
 
   before do
     stub_analytics
-    stub_attempts_tracker
 
     session[:doc_capture_user_id] = user&.id
     session[:document_capture_session_uuid] = document_capture_session_uuid
@@ -56,10 +55,9 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController, allowed_extra_analy
         {
           analytics_id: 'Doc Auth',
           flow_path: 'hybrid',
-          irs_reproofing: false,
           step: 'document_capture',
-          liveness_checking_required: false,
-          selfie_check_required: boolean,
+          selfie_check_required: false,
+          liveness_checking_required: boolean,
         }.merge(ab_test_args)
       end
 
@@ -76,25 +74,24 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController, allowed_extra_analy
         expect(response).to render_template :show
       end
 
-      context 'when a selfie is requested' do
+      context 'when selfie is required' do
         before do
-          allow(subject).to receive(:decorated_sp_session).
-            and_return(double('decorated_session', { selfie_required?: true, sp_name: 'sp' }))
+          authn_context_result = Vot::Parser.new(vector_of_trust: 'Pb').parse
+          allow(subject).to receive(:resolved_authn_context_result).and_return(authn_context_result)
         end
-        context 'when selfie is required by sp session' do
-          it 'requests FE to display selfie' do
-            expect(subject).to receive(:render).with(
-              :show,
-              locals: hash_including(
-                document_capture_session_uuid: document_capture_session_uuid,
-                doc_auth_selfie_capture: true,
-              ),
-            ).and_call_original
 
-            get :show
+        it 'requests FE to display selfie' do
+          expect(subject).to receive(:render).with(
+            :show,
+            locals: hash_including(
+              document_capture_session_uuid: document_capture_session_uuid,
+              doc_auth_selfie_capture: true,
+            ),
+          ).and_call_original
 
-            expect(response).to render_template :show
-          end
+          get :show
+
+          expect(response).to render_template :show
         end
       end
 
@@ -181,7 +178,6 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController, allowed_extra_analy
           errors: {},
           analytics_id: 'Doc Auth',
           flow_path: 'hybrid',
-          irs_reproofing: false,
           step: 'document_capture',
           liveness_checking_required: false,
           selfie_check_required: boolean,

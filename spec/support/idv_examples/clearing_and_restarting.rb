@@ -1,6 +1,7 @@
 RSpec.shared_examples 'clearing and restarting idv' do
   it 'allows the user to retry verification with phone', js: true do
-    click_on t('idv.messages.clear_and_start_over')
+    click_on t('idv.gpo.address_accordion.title')
+    click_on t('idv.gpo.address_accordion.cta_link')
     click_idv_continue
 
     expect(user.reload.pending_profile?).to eq(false)
@@ -15,7 +16,8 @@ RSpec.shared_examples 'clearing and restarting idv' do
   end
 
   it 'allows the user to retry verification with gpo', js: true do
-    click_on t('idv.messages.clear_and_start_over')
+    click_on t('idv.gpo.address_accordion.title')
+    click_on t('idv.gpo.address_accordion.cta_link')
     click_idv_continue
 
     expect(user.reload.pending_profile?).to eq(false)
@@ -40,12 +42,13 @@ RSpec.shared_examples 'clearing and restarting idv' do
   end
 
   it 'deletes decrypted PII from the session and does not display it on the account page' do
-    click_on t('idv.messages.clear_and_start_over')
+    click_on t('idv.gpo.address_accordion.title')
+    click_on t('idv.gpo.address_accordion.cta_link')
     click_idv_continue
 
     visit account_path
 
-    expect(page).to_not have_content(t('headings.account.verified_information'))
+    expect(page).to_not have_content(t('account.index.verification.verified_badge'))
     expect(page).to_not have_content(t('account.verified_information.address'))
     expect(page).to_not have_content(t('account.verified_information.dob'))
     expect(page).to_not have_content(t('account.verified_information.full_name'))

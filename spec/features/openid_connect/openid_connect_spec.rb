@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'query_tracker'
 
-RSpec.describe 'OpenID Connect', allowed_extra_analytics: [:*] do
+RSpec.describe 'OpenID Connect' do
   include IdvHelper
   include OidcAuthHelper
   include SamlAuthHelper
@@ -601,7 +601,9 @@ RSpec.describe 'OpenID Connect', allowed_extra_analytics: [:*] do
       to include('Verified within value must be at least 30 days or older')
   end
 
-  it 'sends the user through idv again via verified_within param', js: true do
+  it 'sends the user through idv again via verified_within param',
+     :js,
+     allowed_extra_analytics: [:*] do
     client_id = 'urn:gov:gsa:openidconnect:sp:server'
     allow(IdentityConfig.store).to receive(:allowed_verified_within_providers).
       and_return([client_id])

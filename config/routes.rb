@@ -2,7 +2,6 @@
 
 Rails.application.routes.draw do
   # Non i18n routes. Alphabetically sorted.
-  get '/api/analytics-events' => 'analytics_events#index'
   get '/api/country-support' => 'country_support#index'
   get '/api/health' => 'health/health#index'
   get '/api/health/database' => 'health/database#index'
@@ -16,6 +15,8 @@ Rails.application.routes.draw do
 
   post '/api/usps_locations' => 'idv/in_person/public/usps_locations#index'
   match '/api/usps_locations' => 'idv/in_person/public/usps_locations#options', via: :options
+
+  post '/api/webhooks/socure/event' => 'socure_webhook#create'
 
   namespace :api do
     namespace :internal do
@@ -53,10 +54,6 @@ Rails.application.routes.draw do
   post '/api/service_provider' => 'service_provider#update'
   post '/api/verify/images' => 'idv/image_uploads#create'
   post '/api/logger' => 'frontend_log#create'
-
-  get '/openid_connect/authorize' => 'openid_connect/authorization#index'
-  get '/openid_connect/logout' => 'openid_connect/logout#index'
-  delete '/openid_connect/logout' => 'openid_connect/logout#delete'
 
   get '/robots.txt' => 'robots#index'
   get '/no_js/detect.css' => 'no_js#index', as: :no_js_detect_css
@@ -142,8 +139,9 @@ Rails.application.routes.draw do
 
       get 'login/add_piv_cac/prompt' => 'users/piv_cac_setup_from_sign_in#prompt'
       post 'login/add_piv_cac/prompt' => 'users/piv_cac_setup_from_sign_in#decline'
-      get 'login/add_piv_cac/success' => 'users/piv_cac_setup_from_sign_in#success'
-      post 'login/add_piv_cac/success' => 'users/piv_cac_setup_from_sign_in#next'
+      get 'login/piv_cac_recommended' => 'users/piv_cac_recommended#show'
+      post 'login/piv_cac_recommended/add' => 'users/piv_cac_recommended#confirm'
+      post 'login/piv_cac_recommended/skip' => 'users/piv_cac_recommended#skip'
     end
 
     if IdentityConfig.store.enable_test_routes
@@ -156,7 +154,7 @@ Rails.application.routes.draw do
         post '/saml/decode_slo_request' => 'saml_test#decode_slo_request'
 
         get '/oidc/login' => 'oidc_test#index'
-        get '/oidc' => 'oidc_test#start'
+        get '/oidc' => redirect('/test/oidc/auth_request', status: 302)
         get '/oidc/auth_request' => 'oidc_test#auth_request'
         get '/oidc/auth_result' => 'oidc_test#auth_result'
         get '/oidc/logout' => 'oidc_test#logout'
@@ -186,6 +184,8 @@ Rails.application.routes.draw do
           as: :test_device_profiling_iframe
       post '/test/device_profiling' => 'test/device_profiling#create'
     end
+
+    get '/sign_in_security_check_failed' => 'sign_in_security_check_failed#show'
 
     get '/auth_method_confirmation' => 'mfa_confirmation#show'
     post '/auth_method_confirmation/skip' => 'mfa_confirmation#skip'
@@ -272,6 +272,11 @@ Rails.application.routes.draw do
     get '/account/personal_key' => 'accounts/personal_keys#new', as: :create_new_personal_key
     post '/account/personal_key' => 'accounts/personal_keys#create'
 
+    get '/openid_connect/authorize' => 'openid_connect/authorization#index'
+    get '/openid_connect/logout' => 'openid_connect/logout#show'
+    post '/openid_connect/logout' => 'openid_connect/logout#create'
+    delete '/openid_connect/logout' => 'openid_connect/logout#delete'
+
     get '/otp/send' => 'users/two_factor_authentication#send_code'
 
     get '/authentication_methods_setup' => 'users/two_factor_authentication_setup#index'
@@ -282,8 +287,9 @@ Rails.application.routes.draw do
         as: :user_two_factor_authentication # route name is used by two_factor_authentication gem
     get '/backup_code_refreshed' => 'users/backup_code_setup#refreshed'
     get '/backup_code_reminder' => 'users/backup_code_setup#reminder'
+    get '/backup_code_confirm_setup' => 'users/backup_code_setup#new'
+    post '/backup_code_setup' => 'users/backup_code_setup#create'
     get '/backup_code_setup' => 'users/backup_code_setup#index'
-    patch '/backup_code_setup' => 'users/backup_code_setup#create', as: :backup_code_create
     patch '/backup_code_continue' => 'users/backup_code_setup#continue'
     get '/backup_code_regenerate' => 'users/backup_code_setup#edit'
     get '/backup_code_delete' => 'users/backup_code_setup#confirm_delete'
@@ -297,7 +303,6 @@ Rails.application.routes.draw do
         as: :sign_up_create_email_confirmation
     get '/sign_up/enter_email' => 'sign_up/registrations#new', as: :sign_up_email
     post '/sign_up/enter_email' => 'sign_up/registrations#create', as: :sign_up_register
-    get '/sign_up/enter_email/resend' => 'sign_up/email_resend#new', as: :sign_up_email_resend
     get '/sign_up/enter_password' => 'sign_up/passwords#new'
     get '/sign_up/verify_email' => 'sign_up/emails#show', as: :sign_up_verify_email
     get '/sign_up/completed' => 'sign_up/completions#show', as: :sign_up_completed
@@ -315,6 +320,7 @@ Rails.application.routes.draw do
     get '/redirect/help_center' => 'redirect/help_center#show', as: :help_center_redirect
     get '/redirect/contact/' => 'redirect/contact#show', as: :contact_redirect
     get '/redirect/policy/' => 'redirect/policy#show', as: :policy_redirect
+    get '/sign_up/completed/cancel/' => 'completions_cancellation#show'
 
     match '/sign_out' => 'sign_out#destroy', via: %i[get post delete]
 
@@ -348,7 +354,7 @@ Rails.application.routes.draw do
       put '/hybrid_handoff' => 'hybrid_handoff#update'
       get '/link_sent' => 'link_sent#show'
       put '/link_sent' => 'link_sent#update'
-      get '/link_sent/poll' => 'capture_doc_status#show', as: :capture_doc_status
+      get '/link_sent/poll' => 'link_sent_poll#show'
       get '/ssn' => 'ssn#show'
       put '/ssn' => 'ssn#update'
       get '/verify_info' => 'verify_info#show'
@@ -378,7 +384,6 @@ Rails.application.routes.draw do
       get '/cancel/' => 'cancellations#new', as: :cancel
       put '/cancel' => 'cancellations#update'
       delete '/cancel' => 'cancellations#destroy'
-      get '/exit' => 'cancellations#exit', as: :exit
       get '/address' => 'address#new'
       post '/address' => 'address#update'
       get '/capture_doc' => 'hybrid_mobile/entry#show'
@@ -386,14 +391,16 @@ Rails.application.routes.draw do
           # sometimes underscores get messed up when linked to via SMS
           as: :capture_doc_dashes
 
-      get '/in_person_proofing/address' => 'in_person/address#show'
-      put '/in_person_proofing/address' => 'in_person/address#update'
+      get '/in_person_proofing/state_id' => 'in_person/state_id#show'
+      put '/in_person_proofing/state_id' => 'in_person/state_id#update'
 
       get '/in_person' => 'in_person#index'
       get '/in_person/ready_to_verify' => 'in_person/ready_to_verify#show',
           as: :in_person_ready_to_verify
       post '/in_person/usps_locations' => 'in_person/usps_locations#index'
       put '/in_person/usps_locations' => 'in_person/usps_locations#update'
+      get '/in_person/address' => 'in_person/address#show'
+      put '/in_person/address' => 'in_person/address#update'
       get '/in_person/ssn' => 'in_person/ssn#show'
       put '/in_person/ssn' => 'in_person/ssn#update'
       get '/in_person/verify_info' => 'in_person/verify_info#show'
@@ -413,10 +420,8 @@ Rails.application.routes.draw do
       if FeatureManagement.gpo_verification_enabled?
         get '/by_mail/request_letter' => 'by_mail/request_letter#index', as: :request_letter
         put '/by_mail/request_letter' => 'by_mail/request_letter#create'
-
-        # Temporary routes + redirects supporting GPO route renaming
-        get '/usps' => redirect('/verify/by_mail/request_letter')
-        put '/usps' => 'by_mail/request_letter#create'
+        get '/by_mail/resend_letter' => 'by_mail/resend_letter#new', as: :resend_letter
+        put '/by_mail/resend_letter' => 'by_mail/resend_letter#create'
       end
 
       get '/by_mail/letter_enqueued' => 'by_mail/letter_enqueued#show', as: :letter_enqueued

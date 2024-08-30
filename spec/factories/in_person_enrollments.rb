@@ -5,6 +5,7 @@ FactoryBot.define do
     selected_location_details { { name: 'BALTIMORE' } }
     unique_id { InPersonEnrollment.generate_unique_id }
     user { association :user, :fully_registered }
+    sponsor_id { IdentityConfig.store.usps_ipp_sponsor_id }
 
     trait :establishing do
       status { :establishing }
@@ -15,6 +16,9 @@ FactoryBot.define do
       enrollment_established_at { Time.zone.now }
       status { :pending }
       status_updated_at { Time.zone.now }
+      profile do
+        association(:profile, :in_person_verification_pending, user: user)
+      end
     end
 
     trait :expired do
@@ -40,6 +44,14 @@ FactoryBot.define do
 
     trait :with_notification_phone_configuration do
       association :notification_phone_configuration
+    end
+
+    trait :enhanced_ipp do
+      sponsor_id { IdentityConfig.store.usps_eipp_sponsor_id }
+    end
+
+    trait :with_nil_sponsor_id do
+      sponsor_id { nil }
     end
   end
 end

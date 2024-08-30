@@ -11,7 +11,10 @@ module TwoFactorAuthentication
     end
 
     def info
-      t('two_factor_authentication.two_factor_choice_options.backup_code_info')
+      t(
+        'two_factor_authentication.two_factor_choice_options.backup_code_info',
+        count: ReadableNumber.of(BackupCodeGenerator::NUMBER_OF_CODES),
+      )
     end
 
     def phishing_resistant?

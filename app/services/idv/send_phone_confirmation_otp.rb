@@ -61,12 +61,20 @@ module Idv
     end
 
     def send_otp
+      length, format = case delivery_method
+                       when :voice
+                         ['ten', 'digit']
+                       else
+                         ['six', 'character']
+                       end
+
       idv_session.user_phone_confirmation_session = user_phone_confirmation_session.regenerate_otp
       @telephony_response = Telephony.send_confirmation_otp(
         otp: code,
         to: phone,
         expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
-        otp_format: I18n.t('telephony.format_type.character'),
+        otp_format: I18n.t("telephony.format_type.#{format}"),
+        otp_length: I18n.t("telephony.format_length.#{length}"),
         channel: delivery_method,
         domain: IdentityConfig.store.domain_name,
         country_code: parsed_phone.country,

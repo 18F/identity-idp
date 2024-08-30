@@ -4,7 +4,7 @@ class PasswordForm
   include ActiveModel::Model
   include FormPasswordValidator
 
-  def initialize(user)
+  def initialize(user:)
     @user = user
     @validate_confirmation = true
   end

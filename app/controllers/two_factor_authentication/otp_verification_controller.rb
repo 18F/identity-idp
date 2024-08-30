@@ -4,6 +4,7 @@ module TwoFactorAuthentication
   class OtpVerificationController < ApplicationController
     include TwoFactorAuthenticatable
     include MfaSetupConcern
+    include NewDeviceConcern
 
     before_action :check_sp_required_mfa
     before_action :confirm_multiple_factors_enabled
@@ -22,21 +23,27 @@ module TwoFactorAuthentication
     def create
       result = otp_verification_form.submit
       post_analytics(result)
+
+      if UserSessionContext.authentication_or_reauthentication_context?(context)
+        handle_verification_for_authentication_context(
+          result:,
+          auth_method: params[:otp_delivery_preference],
+          extra_analytics: analytics_properties,
+        )
+      end
+
       if result.success?
         handle_remember_device_preference(params[:remember_device])
 
         if UserSessionContext.confirmation_context?(context)
           handle_valid_confirmation_otp
         else
-          handle_valid_verification_for_authentication_context(
-            auth_method: params[:otp_delivery_preference],
-          )
           redirect_to after_sign_in_path_for(current_user)
         end
 
         reset_otp_session_data
       else
-        handle_invalid_otp(context: context, type: 'otp')
+        handle_invalid_otp(type: 'otp')
       end
     end
 
@@ -67,6 +74,10 @@ module TwoFactorAuthentication
       analytics.multi_factor_auth_added_phone(
         enabled_mfa_methods_count: MfaContext.new(current_user).enabled_mfa_methods_count,
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
+        recaptcha_annotation: RecaptchaAnnotator.annotate(
+          assessment_id: user_session.delete(:phone_recaptcha_assessment_id),
+          reason: RecaptchaAnnotator::AnnotationReasons::PASSED_TWO_FACTOR,
+        ),
       )
       Funnel::Registration::AddMfa.call(current_user.id, 'phone', analytics)
     end
@@ -128,26 +139,8 @@ module TwoFactorAuthentication
     end
 
     def post_analytics(result)
-      properties = result.to_h.merge(analytics_properties, new_device: user_session[:new_device])
+      properties = result.to_h.merge(analytics_properties)
       analytics.multi_factor_auth_setup(**properties) if context == 'confirmation'
-
-      analytics.track_mfa_submit_event(properties)
-
-      if UserSessionContext.reauthentication_context?(context)
-        irs_attempts_api_tracker.mfa_login_phone_otp_submitted(
-          reauthentication: true,
-          success: properties[:success],
-        )
-      elsif UserSessionContext.authentication_or_reauthentication_context?(context)
-        irs_attempts_api_tracker.mfa_login_phone_otp_submitted(
-          reauthentication: false,
-          success: properties[:success],
-        )
-      elsif UserSessionContext.confirmation_context?(context)
-        irs_attempts_api_tracker.mfa_enroll_phone_otp_submitted(
-          success: properties[:success],
-        )
-      end
     end
 
     def analytics_properties
@@ -223,13 +216,13 @@ module TwoFactorAuthentication
     end
 
     def update_phone_attributes
-      UpdateUser.new(
+      UpdateUserPhoneConfiguration.update!(
         user: current_user,
         attributes: { phone_id: user_session[:phone_id],
                       phone: user_session[:unconfirmed_phone],
                       phone_confirmed_at: Time.zone.now,
                       otp_make_default_number: selected_otp_make_default_number },
-      ).call
+      )
     end
 
     def phone_changed

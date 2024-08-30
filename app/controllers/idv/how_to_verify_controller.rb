@@ -7,23 +7,20 @@ module Idv
     include RenderConditionConcern
 
     before_action :confirm_step_allowed
+    before_action :set_how_to_verify_presenter
 
     check_or_render_not_found -> { self.class.enabled? }
 
     def show
-      @selection = if idv_session.skip_doc_auth == false
-                     Idv::HowToVerifyForm::REMOTE
-      elsif idv_session.skip_doc_auth == true
-        Idv::HowToVerifyForm::IPP
-      end
-
       analytics.idv_doc_auth_how_to_verify_visited(**analytics_arguments)
-      @idv_how_to_verify_form = Idv::HowToVerifyForm.new(selection: @selection)
+      @idv_how_to_verify_form = Idv::HowToVerifyForm.new
     end
 
     def update
       clear_future_steps!
-      result = Idv::HowToVerifyForm.new.submit(how_to_verify_form_params)
+      @idv_how_to_verify_form = Idv::HowToVerifyForm.new
+      result = @idv_how_to_verify_form.submit(how_to_verify_form_params)
+
       if how_to_verify_form_params[:selection] == []
         sendable_form_params = {}
       else
@@ -38,17 +35,17 @@ module Idv
         if how_to_verify_form_params['selection'] == Idv::HowToVerifyForm::REMOTE
           idv_session.opted_in_to_in_person_proofing = false
           idv_session.skip_doc_auth = false
+          idv_session.skip_doc_auth_from_how_to_verify = false
           redirect_to idv_hybrid_handoff_url
         else
           idv_session.opted_in_to_in_person_proofing = true
           idv_session.flow_path = 'standard'
           idv_session.skip_doc_auth = true
+          idv_session.skip_doc_auth_from_how_to_verify = true
           redirect_to idv_document_capture_url
         end
-
       else
-        flash[:error] = result.first_error_message
-        redirect_to idv_how_to_verify_url
+        render :show, locals: { error: result.first_error_message }
       end
     end
 
@@ -69,6 +66,7 @@ module Idv
         end,
         undo_step: ->(idv_session:, user:) {
                      idv_session.skip_doc_auth = nil
+                     idv_session.skip_doc_auth_from_how_to_verify = nil
                      idv_session.opted_in_to_in_person_proofing = nil
                    },
       )
@@ -81,7 +79,6 @@ module Idv
         step: 'how_to_verify',
         analytics_id: 'Doc Auth',
         skip_hybrid_handoff: idv_session.skip_hybrid_handoff,
-        irs_reproofing: irs_reproofing?,
       }.merge(ab_test_analytics_buckets)
     end
 
@@ -89,6 +86,11 @@ module Idv
       params.require(:idv_how_to_verify_form).permit(:selection, selection: [])
     rescue ActionController::ParameterMissing
       ActionController::Parameters.new(selection: [])
+    end
+
+    def set_how_to_verify_presenter
+      @selfie_required = idv_session.selfie_check_required
+      @presenter = Idv::HowToVerifyPresenter.new(selfie_check_required: @selfie_required)
     end
   end
 end

@@ -13,11 +13,7 @@
 </p>
 
 <%= t('users.rules_of_use.details_html', app_name: APP_NAME) %>
-<%= simple_form_for(
-      @rules_of_use_form,
-      html: { autocomplete: 'off' },
-      url: rules_of_use_path,
-    ) do |f| %>
+<%= simple_form_for(@rules_of_use_form, url: rules_of_use_path) do |f| %>
   <%= render ValidatedFieldComponent.new(
         form: f,
         name: :terms_accepted,

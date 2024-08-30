@@ -3,6 +3,7 @@
 module Idv
   module InPerson
     class ReadyToVerifyPresenter
+      include ActionView::Helpers::TranslationHelper
       # WILLFIX: With LG-6881, confirm timezone or use deadline from enrollment response.
       USPS_SERVER_TIMEZONE = ActiveSupport::TimeZone['America/New_York'].dup.freeze
 
@@ -10,10 +11,11 @@ module Idv
 
       delegate :selected_location_details, :enrollment_code, to: :enrollment
 
-      def initialize(enrollment:, barcode_image_url: nil, sp_name: nil)
+      def initialize(enrollment:, barcode_image_url: nil, sp_name: nil, is_enhanced_ipp: false)
         @enrollment = enrollment
         @barcode_image_url = barcode_image_url
         @sp_name = sp_name
+        @is_enhanced_ipp = is_enhanced_ipp
       end
 
       # Reminder is exclusive of the day the email is sent (1 less than days_to_due_date)
@@ -29,7 +31,7 @@ module Idv
       def selected_location_hours(prefix)
         return unless selected_location_details
         hours = selected_location_details["#{prefix}_hours"]
-        return localized_hours(hours) if hours
+        UspsInPersonProofing::EnrollmentHelper.localized_hours(hours)
       end
 
       def service_provider
@@ -45,7 +47,7 @@ module Idv
       end
 
       def outage_message_enabled?
-        IdentityConfig.store.in_person_outage_message_enabled == true && outage_dates_present?
+        IdentityConfig.store.in_person_outage_message_enabled && outage_dates_present?
       end
 
       def formatted_outage_expected_update_date
@@ -65,6 +67,30 @@ module Idv
         false
       end
 
+      def barcode_heading_text
+        if @is_enhanced_ipp
+          t('in_person_proofing.headings.barcode_eipp')
+        else
+          t('in_person_proofing.headings.barcode')
+        end
+      end
+
+      def state_id_heading_text
+        if @is_enhanced_ipp
+          t('in_person_proofing.process.state_id.heading_eipp')
+        else
+          t('in_person_proofing.process.state_id.heading')
+        end
+      end
+
+      def state_id_info
+        if @is_enhanced_ipp
+          t('in_person_proofing.process.state_id.info_eipp')
+        else
+          t('in_person_proofing.process.state_id.info')
+        end
+      end
+
       private
 
       attr_reader :enrollment
@@ -79,18 +105,6 @@ module Idv
 
       def format_outage_date(date)
         I18n.l(date.to_date, format: :short)
-      end
-
-      def localized_hours(hours)
-        case hours
-        when 'Closed'
-          I18n.t('in_person_proofing.body.barcode.retail_hours_closed')
-        else
-          hours.
-            split(' - '). # Hyphen
-            map { |time| Time.zone.parse(time).strftime(I18n.t('time.formats.event_time')) }.
-            join(' – ') # Endash
-        end
       end
 
       def sp_return_url_resolver

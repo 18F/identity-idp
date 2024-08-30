@@ -4,7 +4,6 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
   let(:user) { create(:user) }
   let(:sp) { nil }
   let(:in_person_proofing_enabled) { true }
-  let(:empty_locations) { [] }
   let(:address) do
     UspsInPersonProofing::Applicant.new(
       address: '1600 Pennsylvania Ave',
@@ -39,10 +38,12 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
   end
 
   describe '#index' do
+    let(:locale) { nil }
     let(:proofer) { double('Proofer') }
     let(:locations) do
       [
-        { address: '3118 WASHINGTON BLVD',
+        UspsInPersonProofing::PostOffice.new(
+          address: '3118 WASHINGTON BLVD',
           city: 'ARLINGTON',
           distance: '6.02 mi',
           name: 'ARLINGTON',
@@ -51,8 +52,10 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
           sunday_hours: 'Closed',
           weekday_hours: '9:00 AM - 5:00 PM',
           zip_code_4: '9998',
-          zip_code_5: '22201' },
-        { address: '4005 WISCONSIN AVE NW',
+          zip_code_5: '22201',
+        ),
+        UspsInPersonProofing::PostOffice.new(
+          address: '4005 WISCONSIN AVE NW',
           city: 'WASHINGTON',
           distance: '6.59 mi',
           name: 'FRIENDSHIP',
@@ -61,8 +64,10 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
           sunday_hours: '10:00 AM - 4:00 PM',
           weekday_hours: '8:00 AM - 6:00 PM',
           zip_code_4: '9997',
-          zip_code_5: '20016' },
-        { address: '6900 WISCONSIN AVE STE 100',
+          zip_code_5: '20016',
+        ),
+        UspsInPersonProofing::PostOffice.new(
+          address: '6900 WISCONSIN AVE STE 100',
           city: 'CHEVY CHASE',
           distance: '8.99 mi',
           name: 'BETHESDA',
@@ -71,19 +76,13 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
           sunday_hours: 'Closed',
           weekday_hours: '9:00 AM - 5:00 PM',
           zip_code_4: '9996',
-          zip_code_5: '20815' },
-      ]
-    end
-    let(:pilot_locations) do
-      [
-        { name: 'Location 1' },
-        { name: 'Location 2' },
-        { name: 'Location 3' },
-        { name: 'Location 4' },
+          zip_code_5: '20815',
+        ),
       ]
     end
     subject(:response) do
-      post :index, params: { address: { street_address: '1600 Pennsylvania Ave',
+      post :index, params: { locale: locale,
+                             address: { street_address: '1600 Pennsylvania Ave',
                                         city: 'Washington',
                                         state: 'DC',
                                         zip_code: '20500' } }
@@ -91,6 +90,28 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
 
     before do
       allow(UspsInPersonProofing::Proofer).to receive(:new).and_return(proofer)
+    end
+
+    context 'with a user going through enhanced ipp' do
+      let(:vtr) { ['C1.C2.P1.Pe'] }
+      let(:enhanced_ipp_sp_session) { { vtr: vtr, acr_values: nil } }
+      let(:user) { build(:user) }
+      let(:sp) { build(:service_provider, ial: 2) }
+
+      before do
+        allow(controller).to receive(:sp_session).and_return(enhanced_ipp_sp_session)
+        allow(controller).to receive(:sp_from_sp_session).and_return(sp)
+      end
+
+      it 'requests enhanced ipp locations' do
+        expect(AuthnContextResolver).to receive(:new).with(
+          user: user, service_provider: sp,
+          vtr: vtr, acr_values: nil
+        ).and_call_original
+        expect(proofer).to receive(:request_facilities).with(address, true)
+
+        subject
+      end
     end
 
     context 'with a nil address in params' do
@@ -114,7 +135,8 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
 
     context 'no addresses found by usps' do
       before do
-        allow(proofer).to receive(:request_facilities).with(address).and_return(empty_locations)
+        allow(proofer).to receive(:request_facilities).with(address, false).
+          and_return([])
       end
 
       it 'logs analytics with error when successful response is empty' do
@@ -124,16 +146,13 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
           success: false,
           errors: 'No USPS locations found',
           result_total: 0,
-          exception_class: nil,
-          exception_message: nil,
-          response_status_code: nil,
         )
       end
     end
 
     context 'with successful fetch' do
       before do
-        allow(proofer).to receive(:request_facilities).with(address).and_return(locations)
+        allow(proofer).to receive(:request_facilities).with(address, false).and_return(locations)
       end
 
       it 'returns a successful response' do
@@ -143,11 +162,7 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
         expect(@analytics).to have_logged_event(
           'IdV: in person proofing location search submitted',
           success: true,
-          errors: nil,
           result_total: 3,
-          exception_class: nil,
-          exception_message: nil,
-          response_status_code: nil,
         )
       end
     end
@@ -156,7 +171,7 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
       let(:timeout_error) { Faraday::TimeoutError.new }
 
       before do
-        allow(proofer).to receive(:request_facilities).with(address).and_raise(timeout_error)
+        allow(proofer).to receive(:request_facilities).with(address, false).and_raise(timeout_error)
       end
 
       it 'returns an unprocessible entity client error' do
@@ -168,8 +183,6 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
           exception_message: timeout_error.message,
           response_body_present:
           timeout_error.response_body.present?,
-          response_body: timeout_error.response_body,
-          response_status_code: timeout_error.response_status,
         )
 
         status = response.status
@@ -181,7 +194,7 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
       let(:server_error) { Faraday::ServerError.new }
 
       before do
-        allow(proofer).to receive(:request_facilities).with(address).and_raise(server_error)
+        allow(proofer).to receive(:request_facilities).with(address, false).and_raise(server_error)
       end
 
       it 'returns an unprocessible entity client error' do
@@ -193,8 +206,6 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
           exception_message: server_error.message,
           response_body_present:
           server_error.response_body.present?,
-          response_body: server_error.response_body,
-          response_status_code: server_error.response_status,
         )
 
         status = response.status
@@ -213,7 +224,8 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
       end
 
       before do
-        allow(proofer).to receive(:request_facilities).with(fake_address).and_raise(exception)
+        allow(proofer).to receive(:request_facilities).with(fake_address, false).
+          and_raise(exception)
       end
 
       it 'returns no locations' do
@@ -225,8 +237,6 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
           exception_message: exception.message,
           response_body_present:
           exception.response_body.present?,
-          response_body: exception.response_body,
-          response_status_code: exception.response_status,
         )
 
         facilities = JSON.parse(response.body)
@@ -244,23 +254,60 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
   end
 
   describe '#update' do
+    let(:enrollment) { InPersonEnrollment.last }
+    let(:sp) { create(:service_provider, ial: 2) }
     subject(:response) { put :update, params: selected_location }
 
-    it 'writes the passed location to in-person enrollment' do
-      response
+    context 'when the user is going through ID-IPP' do
+      it 'creates an in person enrollment' do
+        expect { response }.to change { InPersonEnrollment.count }.from(0).to(1)
+        expect(enrollment.user).to eq(user)
+        expect(enrollment.status).to eq('establishing')
+        expect(enrollment.profile).to be_nil
+        expect(enrollment.sponsor_id).to eq(IdentityConfig.store.usps_ipp_sponsor_id)
+        expect(enrollment.selected_location_details).to eq(
+          selected_location[:usps_location].as_json,
+        )
+        expect(enrollment.service_provider).to eq(sp)
+      end
 
-      enrollment = user.reload.establishing_in_person_enrollment
+      it 'updates proofing component vendor' do
+        expect(user.proofing_component&.document_check).to be_nil
 
-      expect(enrollment.selected_location_details).to eq(selected_location[:usps_location].as_json)
-      expect(enrollment.service_provider).to be_nil
+        response
+
+        expect(user.proofing_component.document_check).to eq Idp::Constants::Vendors::USPS
+      end
     end
 
-    it 'updates proofing component vendor' do
-      expect(user.proofing_component&.document_check).to be_nil
+    context 'when the user is going through EIPP' do
+      let(:vtr) { ['C1.C2.P1.Pe'] }
+      let(:enhanced_ipp_sp_session) { { vtr: vtr, acr_values: nil } }
 
-      response
+      before do
+        allow(controller).to receive(:sp_session).and_return(enhanced_ipp_sp_session)
+        allow(controller).to receive(:sp_from_sp_session).and_return(sp)
+      end
 
-      expect(user.proofing_component.document_check).to eq Idp::Constants::Vendors::USPS
+      it 'creates an in person enrollment' do
+        expect { response }.to change { InPersonEnrollment.count }.from(0).to(1)
+        expect(enrollment.user).to eq(user)
+        expect(enrollment.status).to eq('establishing')
+        expect(enrollment.profile).to be_nil
+        expect(enrollment.sponsor_id).to eq(IdentityConfig.store.usps_eipp_sponsor_id)
+        expect(enrollment.selected_location_details).to eq(
+          selected_location[:usps_location].as_json,
+        )
+        expect(enrollment.service_provider).to eq(sp)
+      end
+
+      it 'updates proofing component vendor' do
+        expect(user.proofing_component&.document_check).to be_nil
+
+        response
+
+        expect(user.proofing_component.document_check).to eq Idp::Constants::Vendors::USPS
+      end
     end
 
     context 'when unauthenticated' do
@@ -285,21 +332,38 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
 
     context 'with hybrid user' do
       let(:user) { nil }
-      let(:effective_user) { create(:user) }
+      let(:hybrid_user) { create(:user) }
 
       before do
-        session[:doc_capture_user_id] = effective_user.id
+        session[:doc_capture_user_id] = hybrid_user.id
       end
 
       it 'writes the passed location to in-person enrollment associated with effective user' do
         response
 
-        enrollment = effective_user.reload.establishing_in_person_enrollment
+        enrollment = hybrid_user.reload.establishing_in_person_enrollment
 
         expect(enrollment.selected_location_details).to eq(
           selected_location[:usps_location].as_json,
         )
-        expect(enrollment.service_provider).to be_nil
+        expect(enrollment.service_provider).to eq(sp)
+      end
+    end
+
+    context 'with failed doc_auth_result' do
+      before do
+        allow(controller).to receive(:document_capture_session).and_return(
+          OpenStruct.new({ last_doc_auth_result: 'Failed' }),
+        )
+      end
+
+      it 'updates the doc_auth_result in the enrollment' do
+        response
+
+        enrollment = user.reload.establishing_in_person_enrollment
+
+        expect(enrollment.selected_location_details).to_not be_nil
+        expect(enrollment.doc_auth_result).to eq('Failed')
       end
     end
 

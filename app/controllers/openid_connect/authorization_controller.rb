@@ -9,9 +9,10 @@ module OpenidConnect
     include AuthorizationCountConcern
     include BillableEventTrackable
     include ForcedReauthenticationConcern
+    include OpenidConnectRedirectConcern
+    include SignInDurationConcern
 
     before_action :build_authorize_form_from_params, only: [:index]
-    before_action :block_biometric_requests_in_production, only: [:index]
     before_action :set_devise_failure_redirect_for_concurrent_session_logout
     before_action :pre_validate_authorize_form, only: [:index]
     before_action :sign_out_if_prompt_param_is_login_and_user_is_signed_in, only: [:index]
@@ -26,11 +27,11 @@ module OpenidConnect
     before_action :prompt_for_password_if_ial2_request_and_pii_locked, only: [:index]
 
     def index
-      if @authorize_form.ial2_or_greater?
+      if resolved_authn_context_result.identity_proofing?
         return redirect_to reactivate_account_url if user_needs_to_reactivate_account?
         return redirect_to url_for_pending_profile_reason if user_has_pending_profile?
         return redirect_to idv_url if identity_needs_verification?
-        return redirect_to idv_url if selfie_needed?
+        return redirect_to idv_url if biometric_comparison_needed?
       end
       return redirect_to sign_up_completed_url if needs_completion_screen_reason
       link_identity_to_service_provider
@@ -51,20 +52,7 @@ module OpenidConnect
       @pending_profile_policy ||= PendingProfilePolicy.new(
         user: current_user,
         resolved_authn_context_result: resolved_authn_context_result,
-        biometric_comparison_requested: biometric_comparison_requested?,
       )
-    end
-
-    def block_biometric_requests_in_production
-      if biometric_comparison_requested? &&
-         !FeatureManagement.idv_allow_selfie_check?
-        render_not_acceptable
-      end
-    end
-
-    def biometric_comparison_requested?
-      @authorize_form.parsed_vector_of_trust&.biometric_comparison? ||
-        params['biometric_comparison_required'] == 'true'
     end
 
     def check_sp_active
@@ -73,7 +61,7 @@ module OpenidConnect
     end
 
     def check_sp_handoff_bounced
-      return unless SpHandoffBounce::IsBounced.call(sp_session)
+      return unless sp_handoff_bouncer.bounced?
       analytics.sp_handoff_bounced_detected
       redirect_to bounced_url
       true
@@ -92,16 +80,34 @@ module OpenidConnect
     end
 
     def link_identity_to_service_provider
-      @authorize_form.link_identity_to_service_provider(current_user, session.id)
+      @authorize_form.link_identity_to_service_provider(
+        current_user: current_user,
+        ial: resolved_authn_context_int_ial,
+        rails_session_id: session.id,
+      )
     end
 
     def ial_context
-      @authorize_form.ial_context
+      IalContext.new(
+        ial: resolved_authn_context_int_ial,
+        service_provider: @authorize_form.service_provider,
+        user: current_user,
+      )
+    end
+
+    def resolved_authn_context_int_ial
+      if resolved_authn_context_result.ialmax?
+        0
+      elsif resolved_authn_context_result.identity_proofing?
+        2
+      else
+        1
+      end
     end
 
     def handle_successful_handoff
       track_events
-      SpHandoffBounce::AddHandoffTimeToSession.call(sp_session)
+      sp_handoff_bouncer.add_handoff_time!
 
       redirect_user(
         @authorize_form.success_redirect_uri,
@@ -121,15 +127,14 @@ module OpenidConnect
     end
 
     def identity_needs_verification?
-      (@authorize_form.ial2_requested? &&
+      resolved_authn_context_result.identity_proofing? &&
         (current_user.identity_not_verified? ||
-        decorated_sp_session.requested_more_recent_verification?)) ||
-        current_user.reproof_for_irs?(service_provider: current_sp)
+        decorated_sp_session.requested_more_recent_verification?)
     end
 
-    def selfie_needed?
-      decorated_sp_session.selfie_required? &&
-        !current_user.identity_verified_with_selfie?
+    def biometric_comparison_needed?
+      resolved_authn_context_result.biometric_comparison? &&
+        !current_user.identity_verified_with_biometric_comparison?
     end
 
     def build_authorize_form_from_params
@@ -137,7 +142,11 @@ module OpenidConnect
     end
 
     def secure_headers_override
-      return unless IdentityConfig.store.openid_connect_content_security_form_action_enabled
+      return if form_action_csp_disabled_and_not_server_side_redirect?(
+        issuer: @authorize_form.service_provider.issuer,
+        user_uuid: current_user&.uuid,
+      )
+
       csp_uris = SecureHeadersAllowList.csp_with_sp_redirect_uris(
         @authorize_form.redirect_uri,
         @authorize_form.service_provider.redirect_uris,
@@ -205,34 +214,19 @@ module OpenidConnect
     end
 
     def track_events
-      event_ial_context = IalContext.new(
-        ial: @authorize_form.ial,
-        service_provider: @authorize_form.service_provider,
-        user: current_user,
-      )
-
       analytics.sp_redirect_initiated(
-        ial: event_ial_context.ial,
-        billed_ial: event_ial_context.bill_for_ial_1_or_2,
+        ial: ial_context.ial,
+        billed_ial: ial_context.bill_for_ial_1_or_2,
         sign_in_flow: session[:sign_in_flow],
         vtr: sp_session[:vtr],
         acr_values: sp_session[:acr_values],
+        sign_in_duration_seconds:,
       )
       track_billing_events
     end
 
     def redirect_user(redirect_uri, issuer, user_uuid)
-      user_redirect_method_override =
-        IdentityConfig.store.openid_connect_redirect_uuid_override_map[user_uuid]
-
-      sp_redirect_method_override =
-        IdentityConfig.store.openid_connect_redirect_issuer_override_map[issuer]
-
-      redirect_method =
-        user_redirect_method_override || sp_redirect_method_override ||
-        IdentityConfig.store.openid_connect_redirect
-
-      case redirect_method
+      case oidc_redirect_method(issuer: issuer, user_uuid: user_uuid)
       when 'client_side'
         @oidc_redirect_uri = redirect_uri
         render(
@@ -251,6 +245,10 @@ module OpenidConnect
           allow_other_host: true,
         )
       end
+    end
+
+    def sp_handoff_bouncer
+      @sp_handoff_bouncer ||= SpHandoffBouncer.new(sp_session)
     end
   end
 end

@@ -5,48 +5,70 @@ module TwoFactorAuthenticatableMethods
   include RememberDeviceConcern
   include SecureHeadersConcern
   include MfaSetupConcern
+  include NewDeviceConcern
 
   def auth_methods_session
     @auth_methods_session ||= AuthMethodsSession.new(user_session:)
   end
 
+  def handle_verification_for_authentication_context(result:, auth_method:, extra_analytics: nil)
+    analytics.multi_factor_auth(
+      **result.to_h,
+      multi_factor_auth_method: auth_method,
+      enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
+      new_device: new_device?,
+      **extra_analytics.to_h,
+    )
+
+    if result.success?
+      handle_valid_verification_for_authentication_context(auth_method:)
+    else
+      handle_invalid_verification_for_authentication_context
+    end
+  end
+
   private
+
+  def handle_valid_verification_for_authentication_context(auth_method:)
+    mark_user_session_authenticated(auth_method:, authentication_type: :valid_2fa)
+    disavowal_event, disavowal_token = create_user_event_with_disavowal(:sign_in_after_2fa)
+
+    if new_device?
+      if current_user.sign_in_new_device_at.blank?
+        if sign_in_notification_timeframe_expired_event.present?
+          current_user.update(
+            sign_in_new_device_at: sign_in_notification_timeframe_expired_event.created_at,
+          )
+        else
+          current_user.update(sign_in_new_device_at: disavowal_event.created_at)
+          analytics.sign_in_notification_timeframe_expired_absent
+        end
+      end
+
+      UserAlerts::AlertUserAboutNewDevice.send_alert(
+        user: current_user,
+        disavowal_event:,
+        disavowal_token:,
+      )
+    end
+
+    set_new_device_session(false)
+    reset_second_factor_attempts_count
+  end
 
   def authenticate_user
     authenticate_user!(force: true)
   end
 
-  def handle_second_factor_locked_user(type:, context: nil)
+  def handle_second_factor_locked_user(type:)
     analytics.multi_factor_auth_max_attempts
     event = PushNotification::MfaLimitAccountLockedEvent.new(user: current_user)
     PushNotification::HttpPush.deliver(event)
-
-    if context && type
-      if UserSessionContext.authentication_or_reauthentication_context?(context)
-        irs_attempts_api_tracker.mfa_login_rate_limited(mfa_device_type: type)
-      elsif UserSessionContext.confirmation_context?(context)
-        irs_attempts_api_tracker.mfa_enroll_rate_limited(mfa_device_type: type)
-      end
-    end
-
     handle_max_attempts(type + '_login_attempts')
   end
 
-  def handle_too_many_otp_sends(phone: nil, context: nil)
+  def handle_too_many_otp_sends
     analytics.multi_factor_auth_max_sends
-
-    if context && phone
-      if UserSessionContext.authentication_or_reauthentication_context?(context)
-        irs_attempts_api_tracker.mfa_login_phone_otp_sent_rate_limited(
-          phone_number: phone,
-        )
-      elsif UserSessionContext.confirmation_context?(context)
-        irs_attempts_api_tracker.mfa_enroll_phone_otp_sent_rate_limited(
-          phone_number: phone,
-        )
-      end
-    end
-
     handle_max_attempts('otp_requests')
   end
 
@@ -82,13 +104,19 @@ module TwoFactorAuthenticatableMethods
   def reset_attempt_count_if_user_no_longer_locked_out
     return unless current_user.no_longer_locked_out?
 
-    UpdateUser.new(
-      user: current_user,
-      attributes: {
-        second_factor_attempts_count: 0,
-        second_factor_locked_at: nil,
-      },
-    ).call
+    current_user.update!(
+      second_factor_attempts_count: 0,
+      second_factor_locked_at: nil,
+    )
+  end
+
+  def sign_in_notification_timeframe_expired_event
+    return @sign_in_notification_timeframe_expired_event if defined?(
+      @sign_in_notification_timeframe_expired_event
+    )
+    @sign_in_notification_timeframe_expired_event = current_user.events.where(
+      event_type: 'sign_in_notification_timeframe_expired',
+    ).order(created_at: :desc).limit(1).take
   end
 
   def handle_remember_device_preference(remember_device_preference)
@@ -99,17 +127,13 @@ module TwoFactorAuthenticatableMethods
   # Method will be renamed in the next refactor.
   # You can pass in any "type" with a corresponding I18n key in
   # two_factor_authentication.invalid_#{type}
-  def handle_invalid_otp(type:, context: nil)
-    if context == UserSessionContext::AUTHENTICATION_CONTEXT
-      handle_invalid_verification_for_authentication_context
-    end
-
+  def handle_invalid_otp(type:)
     update_invalid_user
 
     flash.now[:error] = invalid_otp_error(type)
 
     if current_user.locked_out?
-      handle_second_factor_locked_user(context: context, type: type)
+      handle_second_factor_locked_user(type:)
     else
       render_show_after_invalid
     end
@@ -163,15 +187,8 @@ module TwoFactorAuthenticatableMethods
     reset_second_factor_attempts_count
   end
 
-  def handle_valid_verification_for_authentication_context(auth_method:)
-    mark_user_session_authenticated(auth_method:, authentication_type: :valid_2fa)
-    create_user_event(:sign_in_after_2fa)
-
-    reset_second_factor_attempts_count
-  end
-
   def reset_second_factor_attempts_count
-    UpdateUser.new(user: current_user, attributes: { second_factor_attempts_count: 0 }).call
+    current_user.update!(second_factor_attempts_count: 0)
   end
 
   def mark_user_session_authenticated(auth_method:, authentication_type:)

@@ -13,9 +13,7 @@
 
   <div class="margin-y-5">
     <%= render ButtonComponent.new(
-          action: ->(**tag_options, &block) do
-            button_to(idv_session_path(step: :request_letter), **tag_options, &block)
-          end,
+          url: idv_session_path(step: :request_letter),
           method: :delete,
           big: true,
           wide: true,

@@ -24,8 +24,10 @@ RSpec.describe AlertIconComponent, type: :component do
     expect(rendered).to have_css('[alt="custom alt text"]')
   end
 
-  it 'raises an ArgumentError if an invalid icon name is given' do
-    expect { described_class.new(icon_name: :invalid_icon_name) }.to raise_error(ArgumentError)
+  it 'validates icon name' do
+    expect do
+      render_inline(described_class.new(icon_name: :invalid_icon_name))
+    end.to raise_error(ActiveModel::ValidationError)
   end
 
   it 'renders with the explicitly passed in width and height values' do

@@ -1,21 +1,3 @@
-/**
- * Set of text-like input types, used in determining whether the width of the error message should
- * be constrained to match the width of the input.
- */
-const TEXT_LIKE_INPUT_TYPES = new Set([
-  'date',
-  'datetime-local',
-  'email',
-  'month',
-  'number',
-  'password',
-  'search',
-  'tel',
-  'text',
-  'time',
-  'url',
-]);
-
 class ValidatedFieldElement extends HTMLElement {
   errorStrings: Partial<ValidityState> = {};
 
@@ -139,11 +121,6 @@ class ValidatedFieldElement extends HTMLElement {
       this.errorMessage = this.ownerDocument.createElement('div');
       this.errorMessage.classList.add('usa-error-message');
       this.errorMessage.id = this.errorId;
-
-      if (this.input && TEXT_LIKE_INPUT_TYPES.has(this.input.type)) {
-        this.errorMessage.style.maxWidth = `${this.input.offsetWidth}px`;
-      }
-
       this.inputWrapper?.appendChild(this.errorMessage);
     }
 

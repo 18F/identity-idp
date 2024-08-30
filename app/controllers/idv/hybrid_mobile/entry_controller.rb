@@ -9,8 +9,6 @@ module Idv
       include HybridMobileConcern
 
       def show
-        track_document_capture_session_id_usage
-
         return handle_invalid_document_capture_session if !validate_document_capture_session_id
 
         return handle_invalid_document_capture_session if !validate_document_capture_user_id
@@ -33,10 +31,6 @@ module Idv
 
       def request_id
         params.fetch(:request_id, '')
-      end
-
-      def track_document_capture_session_id_usage
-        irs_attempts_api_tracker.idv_phone_upload_link_used
       end
 
       def update_sp_session

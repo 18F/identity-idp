@@ -49,7 +49,6 @@ module Features
     end
 
     def signin(email, password)
-      allow(UserMailer).to receive(:new_device_sign_in).and_call_original
       visit new_user_session_path
       set_hidden_field('platform_authenticator_available', 'true')
       fill_in_credentials_and_submit(email, password)
@@ -57,32 +56,23 @@ module Features
     end
 
     def signin_with_piv(user = user_with_piv_cac)
-      allow(UserMailer).to receive(:new_device_sign_in).and_call_original
       visit new_user_session_path
       click_on t('account.login.piv_cac')
       fill_in_piv_cac_credentials_and_submit(user)
     end
 
     def signin_with_piv_error(error)
-      user = user_with_piv_cac
       visit new_user_session_path
       click_on t('account.login.piv_cac')
 
       allow(FeatureManagement).to receive(:development_and_identity_pki_disabled?).and_return(false)
 
-      stub_piv_cac_service
-      nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_login.submit')))
-      visit_piv_cac_service(
-        current_url,
-        nonce: nonce,
-        uuid: user.piv_cac_configurations.first.x509_dn_uuid,
-        subject: 'SomeIgnoredSubject',
-        error: error,
-      )
+      stub_piv_cac_service(error:)
+      click_on t('forms.piv_cac_login.submit')
+      follow_piv_cac_redirect
     end
 
     def signin_with_bad_piv
-      allow(UserMailer).to receive(:new_device_sign_in).and_call_original
       visit new_user_session_path
       click_on t('account.login.piv_cac')
       fill_in_bad_piv_cac_credentials_and_submit
@@ -93,14 +83,9 @@ module Features
                                                  piv_cac_configurations&.first&.x509_dn_uuid)
       allow(FeatureManagement).to receive(:development_and_identity_pki_disabled?).and_return(false)
 
-      stub_piv_cac_service
-      nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_login.submit')))
-      visit_piv_cac_service(
-        current_url,
-        nonce: nonce,
-        uuid: uuid,
-        subject: 'SomeIgnoredSubject',
-      )
+      stub_piv_cac_service(uuid:)
+      click_on t('forms.piv_cac_login.submit')
+      follow_piv_cac_redirect
     end
 
     def fill_in_bad_piv_cac_credentials_and_submit
@@ -137,15 +122,9 @@ module Features
     end
 
     def sign_up
-      user = create(:user, :unconfirmed)
+      email = Faker::Internet.safe_email
+      sign_up_with(email)
       confirm_last_user
-      user
-    end
-
-    def sign_up_with_backup_codes
-      user = create(:user, :unconfirmed, :with_backup_code)
-      confirm_last_user
-      user
     end
 
     def sign_up_and_set_password
@@ -153,13 +132,6 @@ module Features
       user.password = VALID_PASSWORD
       fill_in t('forms.password'), with: user.password
       fill_in t('components.password_confirmation.confirm_label'), with: user.password
-      click_button t('forms.buttons.continue')
-      user
-    end
-
-    def sign_up_with_backup_codes_and_set_password
-      user = sign_up_with_backup_codes
-      fill_in t('forms.password'), with: VALID_PASSWORD
       click_button t('forms.buttons.continue')
       user
     end
@@ -229,7 +201,10 @@ module Features
     end
 
     def user_with_totp_2fa
-      create(:user, :fully_registered, :with_authentication_app, password: VALID_PASSWORD)
+      create(
+        :user, :fully_registered, :with_authentication_app, password: VALID_PASSWORD,
+                                                            email_language: 'en'
+      )
     end
 
     def user_with_phishing_resistant_2fa
@@ -245,15 +220,18 @@ module Features
     end
 
     def confirm_last_user
+      user = User.last
       @raw_confirmation_token, = Devise.token_generator.generate(EmailAddress, :confirmation_token)
 
-      User.last.email_addresses.first.update(
+      user.email_addresses.first.update(
         confirmation_token: @raw_confirmation_token, confirmation_sent_at: Time.zone.now,
       )
 
       visit sign_up_create_email_confirmation_path(
         confirmation_token: @raw_confirmation_token,
       )
+
+      user
     end
 
     def click_send_one_time_code
@@ -266,17 +244,6 @@ module Features
       fill_in_code_with_last_phone_otp
       click_submit_default
       user
-    end
-
-    def sign_in_live_with_piv_cac(user = user_with_piv_cac)
-      sign_in_user(user)
-      allow(FeatureManagement).to receive(:development_and_identity_pki_disabled?).and_return(true)
-      visit login_two_factor_piv_cac_path
-      stub_piv_cac_service
-      visit_piv_cac_service(
-        dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
-        uuid: user.piv_cac_configurations.first.x509_dn_uuid,
-      )
     end
 
     def fill_in_code_with_last_phone_otp
@@ -296,7 +263,7 @@ module Features
     end
 
     def click_submit_default
-      click_button t('forms.buttons.submit.default')
+      click_on t('forms.buttons.submit.default')
     end
 
     def click_submit_default_twice
@@ -317,11 +284,6 @@ module Features
       click_button t('sign_up.agree_and_continue')
     end
 
-    def enter_correct_otp_code_for_user(user)
-      fill_in 'code', with: user.reload.direct_otp
-      click_submit_default
-    end
-
     def perform_in_browser(name)
       old_session = Capybara.session_name
       Capybara.session_name = name
@@ -329,18 +291,7 @@ module Features
       Capybara.session_name = old_session
     end
 
-    def sign_in_with_totp_enabled_user
-      user = build(:user, :fully_registered, :with_authentication_app, password: VALID_PASSWORD)
-      sign_in_user(user)
-      fill_in 'code', with: generate_totp_code(@secret)
-      click_submit_default
-    end
-
     def acknowledge_and_confirm_personal_key
-      click_acknowledge_personal_key
-    end
-
-    def click_acknowledge_personal_key
       checkbox_header = t('forms.personal_key.required_checkbox')
       find('label', text: /#{checkbox_header}/).click
       click_continue
@@ -413,7 +364,8 @@ module Features
 
       attempt_to_confirm_email_with_invalid_token(sp_request_id)
 
-      expect(current_url).to eq sign_up_email_resend_url(request_id: sp_request_id)
+      expect(page).to have_current_path sign_up_register_path(request_id: sp_request_id)
+      expect(page).to have_content t('errors.messages.confirmation_invalid_token')
 
       submit_resend_email_confirmation_form_with_correct_email(email)
 
@@ -478,7 +430,8 @@ module Features
 
     def submit_resend_email_confirmation_form_with_correct_email(email)
       fill_in t('forms.registration.labels.email'), with: email
-      click_button t('forms.buttons.resend_confirmation')
+      check t('sign_up.terms', app_name: APP_NAME)
+      click_submit_default
     end
 
     def click_confirmation_link_in_email(email)
@@ -558,15 +511,6 @@ module Features
       click_button 'Submit'
     end
 
-    def set_up_2fa_with_backup_codes
-      select_2fa_option('backup_code')
-
-      expect(page).to have_current_path backup_code_setup_path
-
-      check t('forms.backup_code.saved')
-      click_button 'Continue'
-    end
-
     def register_user_with_piv_cac(email = 'test@test.com')
       confirm_email_and_password(email)
       expect(page).to have_current_path authentication_methods_setup_path
@@ -581,16 +525,9 @@ module Features
     def set_up_2fa_with_piv_cac
       stub_piv_cac_service
       select_2fa_option('piv_cac')
-
-      expect(page).to have_current_path setup_piv_cac_path
-
-      nonce = piv_cac_nonce_from_form_action
-      visit_piv_cac_service(
-        setup_piv_cac_url,
-        nonce: nonce,
-        uuid: SecureRandom.uuid,
-        subject: 'SomeIgnoredSubject',
-      )
+      fill_in t('instructions.mfa.piv_cac.step_1'), with: 'Card'
+      click_on t('forms.piv_cac_setup.submit')
+      follow_piv_cac_redirect
     end
 
     def skip_second_mfa_prompt
@@ -603,7 +540,7 @@ module Features
       click_submit_default
     end
 
-    def stub_piv_cac_service
+    def stub_piv_cac_service(error: nil, uuid: Random.uuid)
       allow(IdentityConfig.store).to receive(:identity_pki_disabled).and_return(false)
       allow(IdentityConfig.store).to receive(:piv_cac_service_url).
         and_return('http://piv.example.com/')
@@ -614,36 +551,34 @@ module Features
           body: CGI.unescape(request.body.sub(/^token=/, '')),
         }
       end
+
+      stub_request(:post, 'piv.example.com').
+        with(query: hash_including('nonce', 'redirect_uri')).
+        to_return do |request|
+          query = UriService.params(request.uri)
+          {
+            status: 302,
+            headers: {
+              location: UriService.add_params(
+                query['redirect_uri'],
+                token: {
+                  dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
+                  uuid:,
+                  subject: 'SomeIgnoredSubject',
+                  nonce: query['nonce'],
+                  error:,
+                }.compact.to_json,
+              ),
+            },
+          }
+        end
     end
 
-    def visit_piv_cac_service(idp_url, token_data)
-      visit(idp_url + '?token=' + CGI.escape(token_data.to_json))
-    end
-
-    def visit_login_two_factor_piv_cac_and_get_nonce
-      visit login_two_factor_piv_cac_path
-      get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_mfa.submit')))
-    end
-
-    # This is a bit convoluted because we generate a nonce when we visit the
-    # link. The link provides a redirect to the piv/cac service with the nonce.
-    # This way, even if JavaScript fetches the link to grab the nonce, a new nonce
-    # is generated when the user clicks on the link.
-    def get_piv_cac_nonce_from_link(link)
-      go_back = current_path
-      visit link['href']
-      nonce = Rack::Utils.parse_nested_query(URI(current_url).query)['nonce']
-      visit go_back
-      nonce
-    end
-
-    def piv_cac_nonce_from_form_action
-      go_back = current_path
-      fill_in 'name', with: 'Card ' + SecureRandom.uuid
-      click_button t('forms.piv_cac_setup.submit')
-      nonce = Rack::Utils.parse_nested_query(URI(current_url).query)['nonce']
-      visit go_back
-      nonce
+    def follow_piv_cac_redirect
+      # RackTest won't do an external redirect to the stubbed PKI service, but we can manually
+      # submit a request to the `current_url` and get the redirect header.
+      redirect_url = Faraday.post(current_url).headers['location']
+      visit redirect_url
     end
 
     def link_identity(user, service_provider, ial = nil)
@@ -683,20 +618,9 @@ module Features
       expect(current_path).to eq edit_user_password_path
     end
 
-    def fill_reset_password_form
-      fill_in t('forms.passwords.edit.labels.password'), with: 'newVal!dPassw0rd'
-      click_button t('forms.passwords.edit.buttons.submit')
-
-      expect(current_path).to eq new_user_session_path
-    end
-
     def expect_branded_experience
       # Check for branded experience as being the header containing the Login.gov and partner logos
       expect(page).to have_css(".page-header--basic img[alt='#{APP_NAME}'] ~ img")
-    end
-
-    def acknowledge_backup_code_confirmation
-      click_on t('two_factor_authentication.backup_codes.saved_backup_codes')
     end
 
     def set_hidden_field(id, value)

@@ -163,6 +163,39 @@ export function isValidForAccepts(mimeType: string, accept?: string[]): boolean 
   );
 }
 
+interface AriaDescribedbyArguments {
+  hint: string | undefined;
+  hintId: string;
+  shownErrorMessage: ReactNode | string | undefined;
+  errorId: string;
+  successMessage: string | undefined;
+  successId: string;
+}
+function getAriaDescribedby({
+  hint,
+  hintId,
+  shownErrorMessage,
+  errorId,
+  successMessage,
+  successId,
+}: AriaDescribedbyArguments) {
+  // Error and success messages can't appear together, but either
+  // error or success messages can appear with a hint message.
+  const errorMessageShown = !!shownErrorMessage;
+  const successMessageShown = !errorMessageShown && successMessage;
+  const optionalHintId = hint ? hintId : undefined;
+
+  if (errorMessageShown) {
+    return optionalHintId ? `${errorId} ${optionalHintId}` : errorId;
+  }
+  if (successMessageShown) {
+    return optionalHintId ? `${successId} ${optionalHintId}` : successId;
+  }
+  // if (!errorMessageShown && !successMessageShown) is the intent,
+  // leaving it like this so it's also the default.
+  return optionalHintId;
+}
+
 function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
   const {
     label,
@@ -214,6 +247,8 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
   }, [value]);
   const inputId = `file-input-${instanceId}`;
   const hintId = `${inputId}-hint`;
+  const errorId = `${inputId}-error`;
+  const successId = `${inputId}-success`;
   const innerHintId = `${hintId}-inner`;
   const labelId = `${inputId}-label`;
   const showInnerHint: boolean = !value && !isValuePending && !isMobile;
@@ -290,6 +325,15 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
     successMessage = fileLoadedText;
   }
 
+  const ariaDescribedby = getAriaDescribedby({
+    hint,
+    hintId,
+    shownErrorMessage,
+    errorId,
+    successMessage,
+    successId,
+  });
+
   return (
     <div
       className={[
@@ -323,8 +367,11 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
           {hint}
         </span>
       )}
-      <StatusMessage status={Status.ERROR}>{shownErrorMessage}</StatusMessage>
+      <StatusMessage status={Status.ERROR} id={errorId}>
+        {shownErrorMessage}
+      </StatusMessage>
       <StatusMessage
+        id={successId}
         status={Status.SUCCESS}
         className={
           successMessage === fileLoadingText || successMessage === fileLoadedText
@@ -398,7 +445,7 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
             onClick={onClick}
             onDrop={onDrop}
             accept={accept ? accept.join() : undefined}
-            aria-describedby={hint ? hintId : undefined}
+            aria-describedby={ariaDescribedby}
           />
         </div>
       </div>

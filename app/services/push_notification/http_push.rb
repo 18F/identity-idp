@@ -40,18 +40,12 @@ module PushNotification
     def deliver_one(service_provider)
       deliver_local(service_provider) if IdentityConfig.store.risc_notifications_local_enabled
 
-      job_arguments = {
+      RiscDeliveryJob.perform_later(
         push_notification_url: service_provider.push_notification_url,
         jwt: jwt(service_provider),
         event_type: event.event_type,
         issuer: service_provider.issuer,
-      }
-
-      if IdentityConfig.store.risc_notifications_active_job_enabled
-        RiscDeliveryJob.perform_later(**job_arguments)
-      else
-        RiscDeliveryJob.perform_now(**job_arguments)
-      end
+      )
     end
 
     def deliver_local(service_provider)

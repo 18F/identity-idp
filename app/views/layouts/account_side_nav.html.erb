@@ -1,13 +1,6 @@
 <% content_for(:header) do %>
-  <%= render 'accounts/nav_auth', enable_mobile_nav: true, greeting: @presenter.header_personalization %>
+  <%= render 'accounts/nav_auth', greeting: @presenter.header_personalization %>
 <% end %>
-
-<% content_for(:mobile_nav) do %>
-  <%= render 'accounts/mobile_nav' %>
-<% end %>
-
-<%= stylesheet_tag_once('navigation') %>
-<%= javascript_packs_tag_once('navigation') %>
 
 <%= extends_layout :application, body_class: 'site', disable_card: true, user_main_tag: false do %>
   <div class="grid-row grid-gap">

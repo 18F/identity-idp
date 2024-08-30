@@ -5,6 +5,10 @@ class FakeRequest
     @headers = headers
   end
 
+  def ip
+    '127.0.0.1'
+  end
+
   def remote_ip
     '127.0.0.1'
   end

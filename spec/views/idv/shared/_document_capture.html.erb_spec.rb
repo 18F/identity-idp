@@ -16,8 +16,11 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
 
   let(:acuant_version) { '1.3.3.7' }
   let(:skip_doc_auth) { false }
+  let(:skip_doc_auth_from_how_to_verify) { false }
   let(:skip_doc_auth_from_handoff) { false }
   let(:opted_in_to_in_person_proofing) { false }
+  let(:presenter) { Idv::InPerson::UspsFormPresenter.new }
+  let(:mock_client) { false }
 
   before do
     decorated_sp_session = instance_double(
@@ -35,6 +38,8 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
         issuer == in_person_proofing_enabled_issuer
       end
     end
+
+    assign(:presenter, presenter)
   end
 
   subject(:render_partial) do
@@ -48,8 +53,10 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
       acuant_version: acuant_version,
       doc_auth_selfie_capture: selfie_capture_enabled,
       skip_doc_auth: skip_doc_auth,
+      skip_doc_auth_from_how_to_verify: skip_doc_auth_from_how_to_verify,
       skip_doc_auth_from_handoff: skip_doc_auth_from_handoff,
       opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
+      mock_client: mock_client,
     }
   end
 
@@ -103,7 +110,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
     it 'sends selfie_capture_enabled to the frontend' do
       render_partial
       expect(rendered).to have_css(
-        "#document-capture-form[data-doc-auth-selfie-capture='false']",
+        "#document-capture-form[data-doc-auth-selfie-capture='true']",
       )
     end
 
@@ -114,25 +121,32 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
       )
     end
 
-    context 'when selfie FF enabled' do
-      before do
-        expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
-          and_return(selfie_capture_enabled)
-      end
-      it 'does send doc_auth_selfie_capture to the FE' do
+    context 'when doc_auth_selfie_capture is false' do
+      let(:selfie_capture_enabled) { false }
+      it 'does not send doc_auth_selfie_capture to the FE' do
         render_partial
         expect(rendered).to have_css(
-          "#document-capture-form[data-doc-auth-selfie-capture='true']",
+          "#document-capture-form[data-doc-auth-selfie-capture='false']",
         )
       end
-      context 'when hosted in prod env' do
-        let(:selfie_capture_enabled) { false }
-        it 'does not send doc_auth_selfie_capture to the FE' do
-          render_partial
-          expect(rendered).to have_css(
-            "#document-capture-form[data-doc-auth-selfie-capture='false']",
-          )
-        end
+    end
+
+    context 'when not using doc auth mock client' do
+      it 'contains mock-client-data in metadata' do
+        render_partial
+        expect(rendered).not_to have_css(
+          '#document-capture-form[data-mock-client]',
+        )
+      end
+    end
+
+    context 'when using doc auth mock client' do
+      let(:mock_client) { true }
+      it 'contains mock-client-data in metadata' do
+        render_partial
+        expect(rendered).to have_css(
+          '#document-capture-form[data-mock-client]',
+        )
       end
     end
   end

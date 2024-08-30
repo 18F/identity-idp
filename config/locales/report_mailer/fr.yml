@@ -1,7 +1,0 @@
----
-fr:
-  report_mailer:
-    deleted_accounts_report:
-      issuers: Émetteurs
-      name: Nom
-      subject: Rapport sur les comptes supprimés

@@ -89,6 +89,10 @@ class FeatureManagement
     Rails.env.development? && IdentityConfig.store.identity_pki_local_dev
   end
 
+  def self.check_password_enabled?
+    IdentityConfig.store.check_user_password_compromised_enabled
+  end
+
   def self.doc_capture_polling_enabled?
     IdentityConfig.store.doc_capture_polling_enabled
   end
@@ -102,13 +106,17 @@ class FeatureManagement
   end
 
   def self.phone_recaptcha_enabled?
-    return false if IdentityConfig.store.recaptcha_site_key_v2.blank? ||
-                    IdentityConfig.store.recaptcha_site_key_v3.blank? ||
-                    !IdentityConfig.store.phone_recaptcha_score_threshold.positive?
+    IdentityConfig.store.phone_recaptcha_score_threshold.positive? && recaptcha_enabled?
+  end
 
-    recaptcha_enterprise? || (
-      IdentityConfig.store.recaptcha_secret_key_v2.present? &&
-      IdentityConfig.store.recaptcha_secret_key_v3.present?
+  def self.sign_in_recaptcha_enabled?
+    IdentityConfig.store.sign_in_recaptcha_score_threshold.positive? && recaptcha_enabled?
+  end
+
+  def self.recaptcha_enabled?
+    IdentityConfig.store.recaptcha_site_key.present? && (
+      recaptcha_enterprise? ||
+      IdentityConfig.store.recaptcha_secret_key.present?
     )
   end
 
@@ -150,9 +158,5 @@ class FeatureManagement
     IdentityConfig.store.feature_idv_force_gpo_verification_enabled ||
       outage_status.any_phone_vendor_outage? ||
       outage_status.phone_finder_outage?
-  end
-
-  def self.idv_allow_selfie_check?
-    !(Identity::Hostdata.env == 'prod') && IdentityConfig.store.doc_auth_selfie_capture_enabled
   end
 end

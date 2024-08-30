@@ -20,11 +20,11 @@ class OpenidConnectUserInfoPresenter
     }
 
     info[:all_emails] = all_emails_from_sp_identity(identity) if scoper.all_emails_requested?
-    info.merge!(ial2_attributes) if scoper.ial2_scopes_requested? && ial2_data.present?
+    info.merge!(ial2_attributes) if identity_proofing_requested_for_verified_user?
     info.merge!(x509_attributes) if scoper.x509_scopes_requested?
     info[:verified_at] = verified_at if scoper.verified_at_requested?
     if identity.vtr.nil?
-      info[:ial] = Saml::Idp::Constants::AUTHN_CONTEXT_IAL_TO_CLASSREF[identity.ial]
+      info[:ial] = authn_context_resolver.asserted_ial_acr
       info[:aal] = identity.requested_aal_value
     else
       info[:vot] = vot_values
@@ -41,9 +41,12 @@ class OpenidConnectUserInfoPresenter
   private
 
   def vot_values
-    vot = JSON.parse(identity.vtr).first
-    parsed_vot = Vot::Parser.new(vector_of_trust: vot).parse
-    parsed_vot.expanded_component_values
+    AuthnContextResolver.new(
+      user: identity.user,
+      vtr: JSON.parse(identity.vtr),
+      service_provider: identity&.service_provider_record,
+      acr_values: nil,
+    ).result.expanded_component_values
   end
 
   def uuid_from_sp_identity(identity)
@@ -78,7 +81,7 @@ class OpenidConnectUserInfoPresenter
     {
       x509_subject: stringify_attr(x509_data.subject),
       x509_issuer: stringify_attr(x509_data.issuer),
-      x509_presented:,
+      x509_presented: !!x509_data.presented.raw,
     }
   end
 
@@ -125,13 +128,26 @@ class OpenidConnectUserInfoPresenter
   end
 
   def ial2_data
-    @ial2_data ||= begin
-      if (ial2_session? || ialmax_session?) && active_profile.present?
-        out_of_band_session_accessor.load_pii(active_profile.id)
-      else
-        Pii::Attributes.new_from_hash({})
-      end
-    end
+    @ial2_data ||= out_of_band_session_accessor.load_pii(active_profile.id) ||
+                   Pii::Attributes.new_from_hash({})
+  end
+
+  def identity_proofing_requested_for_verified_user?
+    return false unless active_profile.present?
+    resolved_authn_context_result.identity_proofing? || resolved_authn_context_result.ialmax?
+  end
+
+  def resolved_authn_context_result
+    authn_context_resolver.result
+  end
+
+  def authn_context_resolver
+    @authn_context_resolver ||= AuthnContextResolver.new(
+      user: identity.user,
+      service_provider: identity&.service_provider_record,
+      vtr: identity.vtr.presence && JSON.parse(identity.vtr),
+      acr_values: identity.acr_values,
+    )
   end
 
   def ial2_session?
@@ -154,16 +170,6 @@ class OpenidConnectUserInfoPresenter
 
   def x509_session?
     identity.piv_cac_enabled?
-  end
-
-  def x509_presented
-    if IdentityConfig.store.x509_presented_hash_attribute_requested_issuers.include?(
-      identity&.service_provider,
-    )
-      x509_data.presented
-    else
-      !!x509_data.presented.raw
-    end
   end
 
   def active_profile

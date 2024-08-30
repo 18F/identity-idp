@@ -29,10 +29,10 @@ describe('VerifyFlowStepIndicator', () => {
   it('renders step indicator for the current step', () => {
     const { getByText } = render(<VerifyFlowStepIndicator currentStep="personal_key" />);
 
-    const current = getByText('step_indicator.flows.idv.secure_account');
+    const current = getByText('step_indicator.flows.idv.re_enter_password');
     expect(current.closest('.step-indicator__step--current')).to.exist();
 
-    const previous = getByText('step_indicator.flows.idv.verify_phone_or_address');
+    const previous = getByText('step_indicator.flows.idv.verify_phone');
     expect(previous.closest('.step-indicator__step--complete')).to.exist();
   });
 

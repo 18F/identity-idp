@@ -38,7 +38,9 @@ module Encryption
     end
 
     def decrypt(ciphertext, encryption_context)
-      return decrypt_contextless_kms(ciphertext) if self.class.looks_like_contextless?(ciphertext)
+      if self.class.looks_like_contextless?(ciphertext)
+        return decrypt_contextless_kms(ciphertext, encryption_context)
+      end
       KmsLogger.log(:decrypt, context: encryption_context, key_id: kms_key_id)
       return decrypt_kms(ciphertext, encryption_context) if use_kms?(ciphertext)
       decrypt_local(ciphertext, encryption_context)
@@ -135,8 +137,8 @@ module Encryption
       )
     end
 
-    def decrypt_contextless_kms(ciphertext)
-      ContextlessKmsClient.new.decrypt(ciphertext)
+    def decrypt_contextless_kms(ciphertext, encryption_context)
+      ContextlessKmsClient.new.decrypt(ciphertext, log_context: encryption_context)
     end
 
     # chunk plaintext into ~4096 byte chunks, but not less than 1024 bytes in a chunk if chunking.

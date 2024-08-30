@@ -18,10 +18,10 @@ RSpec.describe ReactivateAccountController do
 
       it 'renders the index template' do
         stub_analytics
-        expect(@analytics).to receive(:track_event).with('Reactivate Account Visited')
 
         get :index
 
+        expect(@analytics).to have_logged_event('Reactivate Account Visited')
         expect(subject).to render_template(:index)
       end
     end
@@ -41,9 +41,9 @@ RSpec.describe ReactivateAccountController do
 
     it 'redirects user to idv_url' do
       stub_analytics
-      expect(@analytics).to receive(:track_event).with('Reactivate Account Submitted')
       put :update
 
+      expect(@analytics).to have_logged_event('Reactivate Account Submitted')
       expect(subject.user_session[:acknowledge_personal_key]).to be_nil
       expect(response).to redirect_to idv_url
     end

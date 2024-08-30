@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe MfaSetupConcern, allowed_extra_analytics: [:*] do
+RSpec.describe MfaSetupConcern do
   controller ApplicationController do
     include MfaSetupConcern
   end
@@ -30,7 +30,7 @@ RSpec.describe MfaSetupConcern, allowed_extra_analytics: [:*] do
         expect(@analytics).to have_logged_event(
           'User Registration: MFA Setup Complete',
           success: true,
-          mfa_method_counts: { phone: 1, backup_codes: 10 },
+          mfa_method_counts: { phone: 1, backup_codes: BackupCodeGenerator::NUMBER_OF_CODES },
           enabled_mfa_methods_count: 2,
           second_mfa_reminder_conversion: true,
           in_account_creation_flow: false,

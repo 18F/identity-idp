@@ -19,7 +19,7 @@ module Reporting
         '% of accounts',
       ]
 
-      total_reuse_report.each do |key, entity_summary|
+      total_reuse_report.each do |_key, entity_summary|
         entity_details = entity_summary[:details_section]
 
         entity_details[:detail_rows].each do |detail_row|

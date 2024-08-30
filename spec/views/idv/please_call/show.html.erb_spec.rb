@@ -14,7 +14,7 @@ RSpec.describe 'idv/please_call/show.html.erb' do
   it 'shows step indicator with pending status on secure account' do
     expect(view.content_for(:pre_flash_content)).to have_css(
       '.step-indicator__step--current',
-      text: t('step_indicator.flows.idv.secure_account'),
+      text: t('step_indicator.flows.idv.re_enter_password'),
     )
   end
 

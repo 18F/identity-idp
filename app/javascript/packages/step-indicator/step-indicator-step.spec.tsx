@@ -14,7 +14,6 @@ describe('StepIndicatorStep', () => {
       expect(status).to.be.ok();
       expect(step.classList.contains('step-indicator__step--current')).to.be.true();
       expect(step.classList.contains('step-indicator__step--complete')).to.be.false();
-      expect(status.classList.contains('step-indicator__step-subtitle')).to.be.false();
       expect(status.classList.contains('usa-sr-only')).to.be.true();
     });
   });
@@ -31,7 +30,6 @@ describe('StepIndicatorStep', () => {
       expect(status).to.be.ok();
       expect(step.classList.contains('step-indicator__step--current')).to.be.false();
       expect(step.classList.contains('step-indicator__step--complete')).to.be.true();
-      expect(status.classList.contains('step-indicator__step-subtitle')).to.be.false();
       expect(status.classList.contains('usa-sr-only')).to.be.true();
     });
   });
@@ -50,7 +48,6 @@ describe('StepIndicatorStep', () => {
       expect(status).to.be.ok();
       expect(step.classList.contains('step-indicator__step--current')).to.be.false();
       expect(step.classList.contains('step-indicator__step--complete')).to.be.false();
-      expect(status.classList.contains('step-indicator__step-subtitle')).to.be.false();
       expect(status.classList.contains('usa-sr-only')).to.be.true();
     });
   });

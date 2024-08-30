@@ -118,7 +118,7 @@ module Reporting
     def cloudwatch_client
       @cloudwatch_client ||= Reporting::CloudwatchClient.new(
         num_threads: @threads,
-        ensure_complete_logs: true,
+        ensure_complete_logs: false,
         slice_interval: @slice,
         progress: progress?,
         logger: verbose? ? Logger.new(STDERR) : nil,
@@ -135,7 +135,7 @@ module Reporting
     end
 
     def totals(key)
-      data.inject(0) { |sum, slice| slice[key].to_i + sum }
+      data.reduce(0) { |sum, slice| slice[key].to_i + sum }
     end
 
     def multi_factor_auth_table

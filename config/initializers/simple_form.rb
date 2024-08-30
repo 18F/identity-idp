@@ -2,11 +2,10 @@
 
 # rubocop:disable Metrics/BlockLength
 SimpleForm.setup do |config|
-  require Rails.root.join('lib', 'extensions', 'simple_form', 'error_notification')
-  require Rails.root.join('lib', 'extensions', 'simple_form', 'components', 'submit_component')
-  require Rails.root.join(
-    'lib', 'extensions', 'simple_form', 'components', 'html5_no_aria_required'
-  )
+  require 'extensions/simple_form/active_view_extensions/form_helper'
+  require 'extensions/simple_form/components/html5_no_aria_required'
+  require 'extensions/simple_form/components/submit_component'
+  require 'extensions/simple_form/error_notification'
 
   config.button_class = 'usa-button'
   config.boolean_label_class = nil

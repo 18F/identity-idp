@@ -6,6 +6,7 @@ RSpec.describe 'Idv::FlowPolicy' do
   include FlowPolicyHelper
 
   let(:user) { create(:user) }
+  let(:is_enhanced_ipp) { false }
 
   let(:user_session) { { 'idv/in_person' => {} } }
 
@@ -40,12 +41,11 @@ RSpec.describe 'Idv::FlowPolicy' do
         idv_session.flow_path = 'standard'
         idv_session.phone_for_mobile_flow = '201-555-1212'
 
-        idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT
+        idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
         idv_session.had_barcode_read_failure = true
         idv_session.had_barcode_attention_error = true
 
         idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
-        idv_session.threatmetrix_session_id = SecureRandom.uuid
 
         idv_session.address_edited = true
       end
@@ -67,7 +67,6 @@ RSpec.describe 'Idv::FlowPolicy' do
         expect(idv_session.had_barcode_attention_error).to be_nil
 
         expect(idv_session.ssn).to be_nil
-        expect(idv_session.threatmetrix_session_id).to be_nil
 
         expect(idv_session.address_edited).to be_nil
       end
@@ -89,7 +88,6 @@ RSpec.describe 'Idv::FlowPolicy' do
         idv_session.had_barcode_attention_error = true
 
         idv_session.ssn = nil
-        idv_session.threatmetrix_session_id = SecureRandom.uuid
 
         idv_session.address_edited = true
 
@@ -140,8 +138,6 @@ RSpec.describe 'Idv::FlowPolicy' do
 
           idv_session.had_barcode_read_failure
           idv_session.had_barcode_attention_error
-
-          idv_session.threatmetrix_session_id
         }
       end
     end
@@ -312,12 +308,13 @@ RSpec.describe 'Idv::FlowPolicy' do
     end
 
     context 'preconditions for personal_key are present' do
+      let(:is_enhanced_ipp) { false }
       let(:password) { 'sekrit phrase' }
       context 'user has a verify by mail pending profile' do
         it 'returns personal_key' do
           stub_up_to(:request_letter, idv_session: idv_session)
           idv_session.gpo_code_verified = true
-          idv_session.create_profile_from_applicant_with_password('password')
+          idv_session.create_profile_from_applicant_with_password('password', is_enhanced_ipp)
 
           expect(subject.info_for_latest_step.key).to eq(:personal_key)
           expect(subject.controller_allowed?(controller: Idv::PersonalKeyController)).to be
@@ -325,9 +322,10 @@ RSpec.describe 'Idv::FlowPolicy' do
       end
 
       context 'user has a newly activated profile' do
+        let(:is_enhanced_ipp) { false }
         it 'returns personal_key' do
           stub_up_to(:otp_verification, idv_session: idv_session)
-          idv_session.create_profile_from_applicant_with_password('password')
+          idv_session.create_profile_from_applicant_with_password('password', is_enhanced_ipp)
 
           expect(subject.info_for_latest_step.key).to eq(:personal_key)
           expect(subject.controller_allowed?(controller: Idv::PersonalKeyController)).to be

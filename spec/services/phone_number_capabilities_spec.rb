@@ -174,7 +174,7 @@ RSpec.describe PhoneNumberCapabilities do
   it 'has valid configuration' do
     # we should never have supports_voice as false and supports_voice_unconfirmed as true
 
-    PhoneNumberCapabilities::INTERNATIONAL_CODES.each do |country, support|
+    PhoneNumberCapabilities::INTERNATIONAL_CODES.each do |_country, support|
       expect(support['supports_voice']).to eq true if support['supports_voice_unconfirmed']
     end
   end

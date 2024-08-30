@@ -24,14 +24,13 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
   before do
     stub_analytics
     stub_sign_in(user)
-    stub_attempts_tracker
-    allow(@irs_attempts_api_tracker).to receive(:track_event)
     allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
     subject.idv_session.welcome_visited = true
+    subject.idv_session.proofing_started_at = 5.minutes.ago.iso8601
     subject.idv_session.idv_consent_given = true
     subject.idv_session.flow_path = 'standard'
-    subject.idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT
+    subject.idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
     subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:ssn]
     subject.idv_session.resolution_successful = true
     subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE
@@ -103,13 +102,6 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
         expect(flash[:error]).to eq t('idv.errors.incorrect_password')
         expect(response).to redirect_to idv_enter_password_path
       end
-
-      it 'tracks irs password entered event (idv_password_entered)' do
-        expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
-          :idv_password_entered,
-          success: false,
-        )
-      end
     end
 
     context 'user provides correct password' do
@@ -139,7 +131,7 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
       it 'uses the correct step indicator step' do
         indicator_step = subject.step_indicator_step
 
-        expect(indicator_step).to eq(:secure_account)
+        expect(indicator_step).to eq(:re_enter_password)
       end
 
       context 'user is in gpo flow' do
@@ -170,7 +162,7 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
         it 'uses the correct step indicator step' do
           indicator_step = subject.step_indicator_step
 
-          expect(indicator_step).to eq(:get_a_letter)
+          expect(indicator_step).to eq(:verify_address)
         end
       end
 
@@ -286,14 +278,13 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
             fraud_rejection: false,
             gpo_verification_pending: false,
             in_person_verification_pending: false,
-            deactivation_reason: nil,
             **ab_test_args,
           ),
         )
       end
     end
 
-    it 'redirects to personal key path' do
+    it 'redirects to personal key path', :freeze_time do
       put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
       expect(@analytics).to have_logged_event(
@@ -304,7 +295,7 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
           fraud_rejection: false,
           gpo_verification_pending: false,
           in_person_verification_pending: false,
-          deactivation_reason: anything,
+          proofing_workflow_time_in_seconds: 5.minutes.to_i,
           **ab_test_args,
         ),
       )
@@ -322,24 +313,59 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
       expect(response).to redirect_to idv_personal_key_path
     end
 
-    it 'tracks irs password entered event (idv_password_entered)' do
-      put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+    context 'when the vector of trust is undefined' do
+      it 'creates Profile with applicant attributes' do
+        put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
-      expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
-        :idv_password_entered,
-        success: true,
-      )
+        profile = subject.idv_session.profile
+        pii = profile.decrypt_pii(ControllerHelper::VALID_PASSWORD)
+
+        expect(pii.zipcode).to eq subject.idv_session.applicant[:zipcode]
+
+        expect(pii.first_name).to eq subject.idv_session.applicant[:first_name]
+      end
     end
 
-    it 'creates Profile with applicant attributes' do
-      put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+    context 'when the vector of trust is defined' do
+      context 'when the vector of trust is not Enhanced IPP' do
+        before do
+          resolved_authn_context_result = Vot::Parser.new(vector_of_trust: 'Pb').parse
 
-      profile = subject.idv_session.profile
-      pii = profile.decrypt_pii(ControllerHelper::VALID_PASSWORD)
+          allow(controller).to receive(:resolved_authn_context_result).
+            and_return(resolved_authn_context_result)
+        end
 
-      expect(pii.zipcode).to eq subject.idv_session.applicant[:zipcode]
+        it 'creates Profile with applicant attributes' do
+          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
-      expect(pii.first_name).to eq subject.idv_session.applicant[:first_name]
+          profile = subject.idv_session.profile
+          pii = profile.decrypt_pii(ControllerHelper::VALID_PASSWORD)
+
+          expect(pii.zipcode).to eq subject.idv_session.applicant[:zipcode]
+
+          expect(pii.first_name).to eq subject.idv_session.applicant[:first_name]
+        end
+      end
+
+      context 'when the vector of trust is Enhanced IPP' do
+        before do
+          resolved_authn_context_result = Vot::Parser.new(vector_of_trust: 'Pe').parse
+
+          allow(controller).to receive(:resolved_authn_context_result).
+            and_return(resolved_authn_context_result)
+        end
+
+        it 'creates Profile with applicant attributes' do
+          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+          profile = subject.idv_session.profile
+          pii = profile.decrypt_pii(ControllerHelper::VALID_PASSWORD)
+
+          expect(pii.zipcode).to eq subject.idv_session.applicant[:zipcode]
+
+          expect(pii.first_name).to eq subject.idv_session.applicant[:first_name]
+        end
+      end
     end
 
     context 'user picked phone confirmation' do
@@ -787,7 +813,6 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
                       fraud_rejection: false,
                       gpo_verification_pending: false,
                       in_person_verification_pending: false,
-                      deactivation_reason: nil,
                       **ab_test_args,
                     ),
                   )
@@ -799,7 +824,6 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
                       fraud_rejection: false,
                       gpo_verification_pending: false,
                       in_person_verification_pending: false,
-                      deactivation_reason: nil,
                       **ab_test_args,
                     ),
                   )
@@ -906,6 +930,30 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
         it 'does not mint a GPO pending profile' do
           expect(user.reload.gpo_verification_pending_profile).to be_nil
         end
+      end
+    end
+
+    context 'user is going through enhanced ipp' do
+      let(:is_enhanced_ipp) { true }
+      let!(:enrollment) do
+        create(:in_person_enrollment, :establishing, user: user, profile: nil)
+      end
+      before do
+        authn_context_result = Vot::Parser.new(vector_of_trust: 'Pe').parse
+        allow(controller).to(
+          receive(:resolved_authn_context_result).and_return(authn_context_result),
+        )
+      end
+      it 'passes the correct param to the enrollment helper method' do
+        expect(UspsInPersonProofing::EnrollmentHelper).to receive(:schedule_in_person_enrollment).
+          with(
+            user: user,
+            pii: Pii::Attributes.new_from_hash(applicant),
+            is_enhanced_ipp: is_enhanced_ipp,
+            opt_in: nil,
+          )
+
+        put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
       end
     end
   end

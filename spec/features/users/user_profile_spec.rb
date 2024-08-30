@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'User profile', allowed_extra_analytics: [:*] do
+RSpec.feature 'User profile' do
   include IdvStepHelper
   include NavigationHelper
   include PersonalKeyHelper
@@ -16,7 +16,7 @@ RSpec.feature 'User profile', allowed_extra_analytics: [:*] do
       let(:profile) { create(:profile, :active, :verified, pii: { ssn: '111', dob: '1920-01-01' }) }
 
       it 'shows a "Verified Account" badge with no tooltip' do
-        expect(page).to have_content(t('headings.account.verified_account'))
+        expect(page).to have_content(t('account.index.verification.verified_badge'))
       end
     end
   end
@@ -158,7 +158,9 @@ RSpec.feature 'User profile', allowed_extra_analytics: [:*] do
         expect(current_path).to eq(account_path)
       end
 
-      it 'allows the user reactivate their profile by reverifying', js: true do
+      it 'allows the user reactivate their profile by reverifying',
+         :js,
+         allowed_extra_analytics: [:*] do
         profile = create(:profile, :active, :verified, pii: { ssn: '1234', dob: '1920-01-01' })
         user = profile.user
 

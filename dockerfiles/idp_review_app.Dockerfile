@@ -1,4 +1,4 @@
-FROM ruby:3.3.0-slim
+FROM ruby:3.3.4-slim
 
 # Set environment variables
 ENV RAILS_ROOT /app
@@ -22,7 +22,6 @@ ENV POSTGRES_WORKER_NAME idp-worker-jobs
 ENV POSTGRES_WORKER_HOST postgres-worker
 ENV POSTGRES_WORKER_USERNAME postgres
 ENV POSTGRES_WORKER_PASSWORD postgres
-ENV REDIS_IRS_ATTEMPTS_API_URL redis://redis:6379/2
 ENV REDIS_THROTTLE_URL redis://redis:6379/1
 ENV REDIS_URL redis://redis:6379
 ENV ASSET_HOST http://localhost:3000
@@ -63,7 +62,7 @@ RUN apt-get update && apt-get install -y yarn=1.22.5-1
 
 # Download RDS Combined CA Bundle
 RUN mkdir -p /usr/local/share/aws \
-  && curl https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem > /usr/local/share/aws/rds-combined-ca-bundle.pem \
+  && curl https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem > /usr/local/share/aws/rds-combined-ca-bundle.pem \
   && chmod 644 /usr/local/share/aws/rds-combined-ca-bundle.pem
 
 # Create a new user and set up the working directory
@@ -96,8 +95,11 @@ RUN bundle config set --local without 'deploy development doc test'
 RUN bundle install --jobs $(nproc)
 RUN bundle binstubs --all
 
-COPY package.json $RAILS_ROOT/package.json
-COPY yarn.lock $RAILS_ROOT/yarn.lock
+# Yarn install
+COPY --chown=app:app ./package.json ./package.json
+COPY --chown=app:app ./yarn.lock ./yarn.lock
+# Workspace packages are installed by Yarn via symlink to the original source, and need to be present
+COPY --chown=app:app ./app/javascript/packages ./app/javascript/packages
 RUN yarn install --production=true --frozen-lockfile --cache-folder .yarn-cache
 
 # Add the application code
@@ -142,7 +144,7 @@ COPY --chown=app:app certs.example $RAILS_ROOT/certs
 COPY --chown=app:app config/service_providers.localdev.yml $RAILS_ROOT/config/service_providers.yml
 
 # Precompile assets
-RUN bundle exec rake assets:precompile --trace
+RUN SKIP_YARN_INSTALL=true bundle exec rake assets:precompile
 
 ARG ARG_CI_COMMIT_BRANCH="branch_placeholder"
 ARG ARG_CI_COMMIT_SHA="sha_placeholder"

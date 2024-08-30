@@ -8,6 +8,8 @@ module Users
     include Ial2ProfileConcern
     include Api::CsrfTokenConcern
     include ForcedReauthenticationConcern
+    include NewDeviceConcern
+    include AbTestingConcern
 
     rescue_from ActionController::InvalidAuthenticityToken, with: :redirect_to_signin
 
@@ -24,20 +26,23 @@ module Users
         issuer: decorated_sp_session.sp_issuer,
       )
       analytics.sign_in_page_visit(flash: flash[:alert])
+      session[:sign_in_page_visited_at] = Time.zone.now.to_s
       super
     end
 
     def create
       session[:sign_in_flow] = :sign_in
-      return process_locked_out_session if session_bad_password_count_max_exceeded?
+      return process_rate_limited if session_bad_password_count_max_exceeded?
       return process_locked_out_user if current_user && user_locked_out?(current_user)
+      return process_rate_limited if rate_limited?
+      return process_failed_captcha if !valid_captcha_result?
 
       rate_limit_password_failure = true
       self.resource = warden.authenticate!(auth_options)
       handle_valid_authentication
     ensure
-      increment_session_bad_password_count if rate_limit_password_failure && !current_user
-      track_authentication_attempt(auth_params[:email])
+      handle_invalid_authentication if rate_limit_password_failure && !current_user
+      track_authentication_attempt
     end
 
     def destroy
@@ -45,9 +50,6 @@ module Users
         redirect_to root_path
       else
         analytics.logout_initiated(sp_initiated: false, oidc: false)
-        irs_attempts_api_tracker.logout_initiated(
-          success: true,
-        )
         super
       end
     end
@@ -71,12 +73,67 @@ module Users
       session[:max_bad_passwords_at] ||= Time.zone.now.to_i
     end
 
-    def process_locked_out_session
-      irs_attempts_api_tracker.login_rate_limited(email: auth_params[:email])
-      warden.logout(:user)
+    def process_rate_limited
+      sign_out(:user)
       warden.lock!
-      flash[:error] = t('errors.sign_in.bad_password_limit')
+
+      flash[:error] = t(
+        'errors.sign_in.bad_password_limit',
+        time_left: locked_out_time_remaining,
+      )
       redirect_to root_url
+    end
+
+    def locked_out_time_remaining
+      if session[:max_bad_passwords_at]
+        locked_at = session[:max_bad_passwords_at]
+        window = IdentityConfig.store.max_bad_passwords_window_in_seconds.seconds
+        time_lockout_expires = Time.zone.at(locked_at) + window
+      else
+        time_lockout_expires = rate_limiter&.expires_at || Time.zone.now
+      end
+
+      distance_of_time_in_words(Time.zone.now, time_lockout_expires, true)
+    end
+
+    def valid_captcha_result?
+      return @valid_captcha_result if defined?(@valid_captcha_result)
+      @valid_captcha_result = recaptcha_form.submit(
+        recaptcha_token: params.require(:user)[:recaptcha_token],
+      ).success?
+    end
+
+    def recaptcha_form
+      @recaptcha_form ||= SignInRecaptchaForm.new(
+        email: auth_params[:email],
+        device_cookie: cookies[:device],
+        ab_test_bucket: ab_test_bucket(:RECAPTCHA_SIGN_IN, user: user_from_params),
+        **recaptcha_form_args,
+      )
+    end
+
+    def captcha_validation_performed?
+      !recaptcha_form.exempt?
+    end
+
+    def process_failed_captcha
+      sign_out(:user)
+      warden.lock!
+      redirect_to sign_in_security_check_failed_url
+    end
+
+    def recaptcha_form_args
+      args = { analytics: }
+      if IdentityConfig.store.recaptcha_mock_validator
+        args.merge(
+          form_class: RecaptchaMockForm,
+          score: params.require(:user)[:recaptcha_mock_score].to_f,
+        )
+      elsif FeatureManagement.recaptcha_enterprise?
+        args.merge(form_class: RecaptchaEnterpriseForm)
+      else
+        args
+      end
     end
 
     def redirect_to_signin
@@ -95,6 +152,11 @@ module Users
       end
     end
 
+    def user_from_params
+      return @user_from_params if defined?(@user_from_params)
+      @user_from_params = User.find_with_email(auth_params[:email])
+    end
+
     def auth_params
       params.require(:user).permit(:email, :password)
     end
@@ -108,45 +170,63 @@ module Users
       render_full_width('two_factor_authentication/_locked', locals: { presenter: presenter })
     end
 
+    def handle_invalid_authentication
+      rate_limiter&.increment!
+      increment_session_bad_password_count
+    end
+
     def handle_valid_authentication
+      rate_limiter&.reset!
       sign_in(resource_name, resource)
       cache_profiles(auth_params[:password])
-      user_session[:new_device] = current_user.new_device?(cookie_uuid: cookies[:device])
-      create_user_event(:sign_in_before_2fa)
+      set_new_device_session(nil)
+      event, = create_user_event(:sign_in_before_2fa)
+      UserAlerts::AlertUserAboutNewDevice.schedule_alert(event:) if new_device?
       EmailAddress.update_last_sign_in_at_on_user_id_and_email(
         user_id: current_user.id,
         email: auth_params[:email],
       )
+      user_session[:captcha_validation_performed_at_sign_in] = captcha_validation_performed?
       user_session[:platform_authenticator_available] =
         params[:platform_authenticator_available] == 'true'
+      check_password_compromised
       redirect_to next_url_after_valid_authentication
     end
 
-    def track_authentication_attempt(email)
-      user = User.find_with_email(email) || AnonymousUser.new
+    def track_authentication_attempt
+      user = user_from_params || AnonymousUser.new
 
-      success = user_signed_in_and_not_locked_out?(user)
+      success = current_user.present? && !user_locked_out?(user) && valid_captcha_result?
       analytics.email_and_password_auth(
         success: success,
         user_id: user.uuid,
         user_locked_out: user_locked_out?(user),
+        rate_limited: rate_limited?,
+        captcha_validation_performed: captcha_validation_performed?,
+        valid_captcha_result: valid_captcha_result?,
         bad_password_count: session[:bad_password_count].to_i,
         sp_request_url_present: sp_session[:request_url].present?,
         remember_device: remember_device_cookie.present?,
+        new_device: success ? new_device? : nil,
       )
-      irs_attempts_api_tracker.login_email_and_password_auth(
-        email: email,
-        success: success,
-      )
-    end
-
-    def user_signed_in_and_not_locked_out?(user)
-      return false unless current_user
-      !user_locked_out?(user)
     end
 
     def user_locked_out?(user)
       user.locked_out?
+    end
+
+    def rate_limited?
+      !!rate_limiter&.limited?
+    end
+
+    def rate_limiter
+      return @rate_limiter if defined?(@rate_limiter)
+      user = user_from_params
+      return @rate_limiter = nil unless user
+      @rate_limiter = RateLimiter.new(
+        rate_limit_type: :sign_in_user_id_per_ip,
+        target: [user.id, request.ip].join('-'),
+      )
     end
 
     def store_sp_metadata_in_session
@@ -180,29 +260,45 @@ module Users
 
     def override_csp_for_google_analytics
       return unless IdentityConfig.store.participate_in_dap
+      # See: https://github.com/digital-analytics-program/gov-wide-code#content-security-policy
       policy = current_content_security_policy
       policy.script_src(
         *policy.script_src,
-        'dap.digitalgov.gov',
         'www.google-analytics.com',
-        '*.googletagmanager.com',
+        'www.googletagmanager.com',
       )
       policy.connect_src(
         *policy.connect_src,
-        '*.google-analytics.com',
-        '*.analytics.google.com',
-        '*.googletagmanager.com',
-      )
-      policy.img_src(
-        *policy.img_src,
-        '*.google-analytics.com',
-        '*.googletagmanager.com',
+        'www.google-analytics.com',
       )
       request.content_security_policy = policy
     end
 
     def sign_in_params
       params[resource_name]&.permit(:email) if request.post?
+    end
+
+    def check_password_compromised
+      return if current_user.password_compromised_checked_at.present? ||
+                !eligible_for_password_lookup?
+
+      session[:redirect_to_change_password] =
+        PwnedPasswords::LookupPassword.call(auth_params[:password])
+      update_user_password_compromised_checked_at
+    end
+
+    def eligible_for_password_lookup?
+      FeatureManagement.check_password_enabled? &&
+        randomize_check_password?
+    end
+
+    def update_user_password_compromised_checked_at
+      current_user.update!(password_compromised_checked_at: Time.zone.now)
+    end
+
+    def randomize_check_password?
+      SecureRandom.random_number(IdentityConfig.store.compromised_password_randomizer_value) >=
+        IdentityConfig.store.compromised_password_randomizer_threshold
     end
   end
 

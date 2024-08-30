@@ -8,9 +8,7 @@
 
 <div class="margin-y-5">
   <%= render SpinnerButtonComponent.new(
-        action: ->(**tag_options, &block) do
-          link_to(@presenter.piv_cac_service_link, **tag_options, &block)
-        end,
+        url: @presenter.piv_cac_service_link,
         big: true,
         wide: true,
       ).with_content(@presenter.piv_cac_capture_text) %>

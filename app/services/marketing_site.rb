@@ -6,17 +6,17 @@ class MarketingSite
   BASE_URL = URI('https://www.login.gov').freeze
 
   HELP_CENTER_ARTICLES = %w[
-    get-started/authentication-options
+    get-started/authentication-methods
     manage-your-account/add-or-change-your-authentication-method
     manage-your-account/personal-key
     trouble-signing-in/face-or-touch-unlock
+    trouble-signing-in/security-check-failed
     verify-your-identity/accepted-identification-documents
-    verify-your-identity/accepted-state-issued-identification
     verify-your-identity/how-to-add-images-of-your-state-issued-id
     verify-your-identity/verify-your-identity-in-person
     verify-your-identity/phone-number
     verify-your-identity/verify-your-address-by-mail
-    verify-your-identity/how-to-verify-your-identity
+    verify-your-identity/overview
   ].to_set.freeze
 
   def self.locale_segment
@@ -60,8 +60,8 @@ class MarketingSite
     URI.join(BASE_URL, locale_segment, 'help/').to_s
   end
 
-  def self.security_url
-    URI.join(BASE_URL, locale_segment, 'security/').to_s
+  def self.accessibility_statement_url
+    URI.join(BASE_URL, locale_segment, 'accessibility/').to_s
   end
 
   def self.help_center_article_url(category:, article:, article_anchor: '')

@@ -10,6 +10,7 @@ class WebauthnSetupForm
             :name,
             presence: { message: proc { |object| object.send(:generic_error_message) } }
   validate :name_is_unique
+  validate :validate_attestation_response
 
   attr_reader :attestation_response
 
@@ -22,12 +23,13 @@ class WebauthnSetupForm
     @name = nil
     @platform_authenticator = false
     @authenticator_data_flags = nil
+    @protocol = nil
     @device_name = device_name
   end
 
-  def submit(protocol, params)
+  def submit(params)
     consume_parameters(params)
-    success = valid? && valid_attestation_response?(protocol)
+    success = valid?
     if success
       create_webauthn_configuration
       event = PushNotification::RecoveryInformationChangedEvent.new(user: user)
@@ -59,7 +61,7 @@ class WebauthnSetupForm
 
   private
 
-  attr_reader :success, :transports, :invalid_transports
+  attr_reader :success, :transports, :invalid_transports, :protocol
   attr_accessor :user, :challenge, :attestation_object, :client_data_json,
                 :name, :platform_authenticator, :authenticator_data_flags, :device_name
 
@@ -74,6 +76,7 @@ class WebauthnSetupForm
     @transports, @invalid_transports = params[:transports]&.split(',')&.partition do |transport|
       WebauthnConfiguration::VALID_TRANSPORTS.include?(transport)
     end
+    @protocol = params[:protocol]
   end
 
   def name_is_unique
@@ -94,32 +97,22 @@ class WebauthnSetupForm
     end
   end
 
+  def validate_attestation_response
+    return if valid_attestation_response?(protocol)
+    errors.add(:attestation_object, :invalid, message: general_error_message)
+  end
+
   def valid_attestation_response?(protocol)
+    original_origin = "#{protocol}#{self.class.domain_name}"
     @attestation_response = ::WebAuthn::AuthenticatorAttestationResponse.new(
       attestation_object: Base64.decode64(@attestation_object),
       client_data_json: Base64.decode64(@client_data_json),
     )
-    safe_response("#{protocol}#{self.class.domain_name}")
-  end
 
-  def safe_response(original_origin)
-    response = @attestation_response.valid?(@challenge.pack('c*'), original_origin)
-    add_attestation_error unless response
-    response
-  rescue StandardError
-    add_attestation_error
-    false
-  end
-
-  def add_attestation_error
-    if @platform_authenticator
-      errors.add :name, I18n.t('errors.webauthn_platform_setup.general_error'),
-                 type: :attestation_error
-    else
-      errors.add :name, I18n.t(
-        'errors.webauthn_setup.general_error_html',
-        link_html: I18n.t('errors.webauthn_setup.additional_methods_link'),
-      ), type: :attestation_error
+    begin
+      attestation_response.valid?(@challenge.pack('c*'), original_origin)
+    rescue StandardError
+      false
     end
   end
 
@@ -149,6 +142,17 @@ class WebauthnSetupForm
       transports: transports.presence,
       authenticator_data_flags: authenticator_data_flags,
     )
+  end
+
+  def general_error_message
+    if platform_authenticator
+      I18n.t('errors.webauthn_platform_setup.general_error')
+    else
+      I18n.t(
+        'errors.webauthn_setup.general_error_html',
+        link_html: I18n.t('errors.webauthn_setup.additional_methods_link'),
+      )
+    end
   end
 
   def mfa_user

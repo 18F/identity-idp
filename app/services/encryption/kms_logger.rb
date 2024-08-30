@@ -2,11 +2,12 @@
 
 module Encryption
   class KmsLogger
-    def self.log(action, key_id:, context: nil)
+    def self.log(action, key_id:, context: nil, log_context: nil)
       output = {
         kms: {
           action: action,
           encryption_context: context,
+          log_context: log_context,
           key_id: key_id,
         },
         log_filename: Idp::Constants::KMS_LOG_FILENAME,

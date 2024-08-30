@@ -5,12 +5,13 @@ import { FormStepError } from '@18f/identity-form-steps';
 import type { I18n } from '@18f/identity-i18n';
 import Warning from './warning';
 import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
-import UnknownError from './unknown-error';
+import GeneralError from './general-error';
 import { InPersonContext } from '../context';
 import AnalyticsContext from '../context/analytics';
 import SelfieCaptureContext from '../context/selfie-capture';
 
 interface DocumentCaptureWarningProps {
+  isResultCodeInvalid: boolean;
   isFailedDocType: boolean;
   isFailedResult: boolean;
   isFailedSelfie: boolean;
@@ -21,52 +22,46 @@ interface DocumentCaptureWarningProps {
   hasDismissed: boolean;
 }
 
-const DISPLAY_ATTEMPTS = 3;
-
 type GetHeadingArguments = {
+  isResultCodeInvalid: boolean;
   isFailedDocType: boolean;
   isFailedSelfie: boolean;
   isFailedSelfieLivenessOrQuality: boolean;
   t: typeof I18n.prototype.t;
 };
 function getHeading({
+  isResultCodeInvalid,
   isFailedDocType,
   isFailedSelfie,
   isFailedSelfieLivenessOrQuality,
   t,
 }: GetHeadingArguments) {
   if (isFailedDocType) {
-    return t('errors.doc_auth.doc_type_not_supported_heading');
+    return t('doc_auth.errors.doc_type_not_supported_heading');
+  }
+  if (isResultCodeInvalid) {
+    return t('doc_auth.errors.rate_limited_heading');
   }
   if (isFailedSelfieLivenessOrQuality) {
-    return t('errors.doc_auth.selfie_not_live_or_poor_quality_heading');
+    return t('doc_auth.errors.selfie_not_live_or_poor_quality_heading');
   }
   if (isFailedSelfie) {
-    return t('errors.doc_auth.selfie_fail_heading');
+    return t('doc_auth.errors.selfie_fail_heading');
   }
-  return t('errors.doc_auth.rate_limited_heading');
+  return t('doc_auth.errors.rate_limited_heading');
 }
 
-function getSubheading({
-  nonIppOrFailedResult,
-  isFailedDocType,
-  isFailedSelfieLivenessOrQuality,
-  isFailedSelfie,
-  t,
-}) {
-  const showSubheading =
-    !nonIppOrFailedResult &&
-    !isFailedDocType &&
-    !isFailedSelfieLivenessOrQuality &&
-    !isFailedSelfie;
+function getSubheading({ nonIppOrFailedResult, t }) {
+  const showSubheading = !nonIppOrFailedResult;
 
   if (showSubheading) {
-    return <h2>{t('errors.doc_auth.rate_limited_subheading')}</h2>;
+    return <h2>{t('doc_auth.errors.rate_limited_subheading')}</h2>;
   }
   return undefined;
 }
 
 function DocumentCaptureWarning({
+  isResultCodeInvalid,
   isFailedDocType,
   isFailedResult,
   isFailedSelfie,
@@ -83,6 +78,7 @@ function DocumentCaptureWarning({
 
   const nonIppOrFailedResult = !inPersonURL || isFailedResult;
   const heading = getHeading({
+    isResultCodeInvalid,
     isFailedDocType,
     isFailedSelfie,
     isFailedSelfieLivenessOrQuality,
@@ -93,9 +89,6 @@ function DocumentCaptureWarning({
     : t('idv.failure.button.try_online');
   const subheading = getSubheading({
     nonIppOrFailedResult,
-    isFailedDocType,
-    isFailedSelfieLivenessOrQuality,
-    isFailedSelfie,
     t,
   });
   const subheadingRef = useRef<HTMLDivElement>(null);
@@ -125,34 +118,25 @@ function DocumentCaptureWarning({
         troubleshootingOptions={
           <DocumentCaptureTroubleshootingOptions
             location="post_submission_warning"
-            showAlternativeProofingOptions={!isFailedResult}
-            showSPOption={!nonIppOrFailedResult}
             heading={t('components.troubleshooting_options.ipp_heading')}
           />
         }
       >
         <div ref={subheadingRef}>{!!subheading && subheading}</div>
         <div ref={errorMessageDisplayedRef}>
-          <UnknownError
+          <GeneralError
             unknownFieldErrors={unknownFieldErrors}
-            remainingSubmitAttempts={remainingSubmitAttempts}
             isFailedDocType={isFailedDocType}
             isFailedSelfie={isFailedSelfie}
             isFailedSelfieLivenessOrQuality={isFailedSelfieLivenessOrQuality}
             hasDismissed={hasDismissed}
           />
         </div>
-
-        {!isFailedDocType &&
-          !isFailedSelfie &&
-          !isFailedSelfieLivenessOrQuality &&
-          remainingSubmitAttempts <= DISPLAY_ATTEMPTS && (
-            <p>
-              <HtmlTextWithStrongNoWrap
-                text={t('idv.failure.attempts_html', { count: remainingSubmitAttempts })}
-              />
-            </p>
-          )}
+        <p>
+          <HtmlTextWithStrongNoWrap
+            text={t('idv.failure.attempts_html', { count: remainingSubmitAttempts })}
+          />
+        </p>
       </Warning>
       {nonIppOrFailedResult && <Cancel />}
     </>

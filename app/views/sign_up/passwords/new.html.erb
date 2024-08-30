@@ -5,12 +5,7 @@
 <p class="margin-top-2 margin-bottom-0" id="password-description">
   <%= t('instructions.password.info.lead_html', min_length: Devise.password_length.first) %>
 </p>
-<%= simple_form_for(
-      @password_form,
-      url: sign_up_create_password_path,
-      method: :post,
-      html: { autocomplete: 'off' },
-    ) do |f| %>
+<%= simple_form_for(@password_form, url: sign_up_create_password_path) do |f| %>
   <%= text_field_tag('username', @email_address.email, hidden: true, autocomplete: 'username') %>
   <%= render PasswordConfirmationComponent.new(
         form: f,

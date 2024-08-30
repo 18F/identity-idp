@@ -60,13 +60,13 @@ module Reporting
 
     def verified_user_count
       Reports::BaseReport.transaction_with_timeout do
-        Profile.where(active: true).where('activated_at <= ?', end_date).count
+        Profile.where(active: true).where('verified_at <= ?', end_date).count
       end
     end
 
     def new_verified_user_count
       Reports::BaseReport.transaction_with_timeout do
-        Profile.where(active: true).where(activated_at: current_month).count
+        Profile.where(active: true).where(verified_at: current_month).count
       end
     end
 
@@ -79,7 +79,7 @@ module Reporting
     def annual_verified_user_count
       Reports::BaseReport.transaction_with_timeout do
         Profile.where(active: true).
-          where(activated_at: annual_start_date..annual_end_date).
+          where(verified_at: annual_start_date..annual_end_date).
           count
       end
     end

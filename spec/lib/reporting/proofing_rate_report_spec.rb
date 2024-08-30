@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'reporting/proofing_rate_report'
 
 RSpec.describe Reporting::ProofingRateReport do
-  let(:end_date) { Date.new(2022, 1, 1).in_time_zone('UTC').beginning_of_day }
+  let(:end_date) { Date.new(2022, 1, 1).in_time_zone('UTC').end_of_day }
   let(:parallel) { true }
 
   subject(:report) do
@@ -15,33 +15,45 @@ RSpec.describe Reporting::ProofingRateReport do
         [
           instance_double(
             'Reporting::IdentityVerificationReport',
+            blanket_proofing_rate: 0.25,
+            intent_proofing_rate: 0.3333333333333333,
+            actual_proofing_rate: 0.5,
+            industry_proofing_rate: 0.5,
             idv_started: 4,
             idv_doc_auth_welcome_submitted: 3,
             idv_doc_auth_image_vendor_submitted: 2,
             successfully_verified_users: 1,
             idv_doc_auth_rejected: 1,
             idv_fraud_rejected: 0,
-            time_range: (end_date - 30.days)..end_date,
+            time_range: (end_date - 30.days).beginning_of_day..end_date,
           ),
           instance_double(
             'Reporting::IdentityVerificationReport',
+            blanket_proofing_rate: 0.4,
+            intent_proofing_rate: 0.5,
+            actual_proofing_rate: 0.6666666666666666,
+            industry_proofing_rate: 0.6666666666666666,
             idv_started: 5,
             idv_doc_auth_welcome_submitted: 4,
             idv_doc_auth_image_vendor_submitted: 3,
             successfully_verified_users: 2,
             idv_doc_auth_rejected: 1,
             idv_fraud_rejected: 1,
-            time_range: (end_date - 60.days)..end_date,
+            time_range: (end_date - 60.days).beginning_of_day..end_date,
           ),
           instance_double(
             'Reporting::IdentityVerificationReport',
+            blanket_proofing_rate: 0.5,
+            intent_proofing_rate: 0.6,
+            actual_proofing_rate: 0.75,
+            industry_proofing_rate: 0.75,
             idv_started: 6,
             idv_doc_auth_welcome_submitted: 5,
             idv_doc_auth_image_vendor_submitted: 4,
             successfully_verified_users: 3,
             idv_doc_auth_rejected: 1,
             idv_fraud_rejected: 2,
-            time_range: (end_date - 90.days)..end_date,
+            time_range: (end_date - 90.days).beginning_of_day..end_date,
           ),
         ],
       )
@@ -124,26 +136,26 @@ RSpec.describe Reporting::ProofingRateReport do
 
           expect(report.reports.map(&:time_range)).to eq(
             [
-              (end_date - 30.days)..end_date,
-              (end_date - 60.days)..end_date,
-              (end_date - 90.days)..end_date,
+              (end_date - 30.days).beginning_of_day..end_date,
+              (end_date - 60.days).beginning_of_day..end_date,
+              (end_date - 90.days).beginning_of_day..end_date,
             ],
           )
 
           expect(Reporting::IdentityVerificationReport).to have_received(:new).with(
-            time_range: (end_date - 30.days)..end_date,
+            time_range: (end_date - 30.days).beginning_of_day..end_date,
             issuers: nil,
             cloudwatch_client: report.cloudwatch_client,
           ).once
 
           expect(Reporting::IdentityVerificationReport).to have_received(:new).with(
-            time_range: (end_date - 60.days)..(end_date - 30.days),
+            time_range: (end_date - 60.days).beginning_of_day..(end_date - 30.days).end_of_day,
             issuers: nil,
             cloudwatch_client: report.cloudwatch_client,
           ).once
 
           expect(Reporting::IdentityVerificationReport).to have_received(:new).with(
-            time_range: (end_date - 90.days)..(end_date - 60.days),
+            time_range: (end_date - 90.days).beginning_of_day..(end_date - 60.days).end_of_day,
             issuers: nil,
             cloudwatch_client: report.cloudwatch_client,
           ).once

@@ -74,7 +74,6 @@ IdentityIdp/ImageSizeLinter:
     - app/views/shared/_nav_branded.html.erb
     - app/views/sign_up/completions/show.html.erb
     - app/views/users/two_factor_authentication_setup/index.html.erb
-    - app/views/users/webauthn_setup/new.html.erb
 
 IdentityIdp/RedirectBackLinter:
   Enabled: true
@@ -620,6 +619,10 @@ Lint/UnusedMethodArgument:
   Enabled: true
   AllowUnusedKeywordArguments: false
 
+Lint/UnusedBlockArgument:
+  Enabled: true
+  AllowUnusedKeywordArguments: true
+
 Lint/UriEscapeUnescape:
   Enabled: true
 
@@ -686,6 +689,15 @@ Naming/MemoizedInstanceVariableName:
 
 Naming/MethodParameterName:
   MinNameLength: 2
+
+Naming/PredicateName:
+  Enabled: true
+  AllowedMethods:
+    - is_a?
+  ForbiddenPrefixes:
+    # overriding to allow "has_"
+    - is_
+    - have_
 
 Naming/VariableName:
   Exclude:
@@ -1020,6 +1032,10 @@ Security/YAMLLoad:
   Enabled: true
   SafeAutoCorrect: false
 
+Style/Alias:
+  Enabled: true
+  EnforcedStyle: prefer_alias_method
+
 Style/AndOr:
   Description: Use &&/|| instead of and/or.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#no-and-or-or
@@ -1063,6 +1079,9 @@ Style/ClassEqualityComparison:
   Enabled: true
 
 Style/ClassMethods:
+  Enabled: true
+
+Style/CollectionMethods:
   Enabled: true
 
 Style/ColonMethodCall:

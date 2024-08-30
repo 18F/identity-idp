@@ -106,10 +106,7 @@ RSpec.feature 'how to verify step', js: true, allowed_extra_analytics: [:*] do
         include InPersonHelper
 
         let(:biometric_comparison_required) { false }
-        before do
-          allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).
-            and_return(true)
-        end
+
         it 'goes to direct IPP if selected and can come back' do
           expect(page).to have_current_path(idv_how_to_verify_path)
           expect(page).to have_content(t('doc_auth.headings.how_to_verify'))

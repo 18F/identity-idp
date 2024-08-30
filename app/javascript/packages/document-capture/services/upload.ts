@@ -38,6 +38,8 @@ export class UploadFormEntriesError extends FormError {
 
   remainingSubmitAttempts = Infinity;
 
+  isResultCodeInvalid = false;
+
   isFailedResult = false;
 
   isFailedDocType = false;
@@ -125,6 +127,8 @@ const upload: UploadImplementation = async function (payload, { method = 'POST',
     if (result.hints) {
       error.hints = result.hints;
     }
+
+    error.isResultCodeInvalid = result.result_code_invalid;
 
     error.isFailedResult = !!result.result_failed;
 

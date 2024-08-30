@@ -2,6 +2,12 @@ module WebAuthnHelper
   include JavascriptDriverHelper
   include ActionView::Helpers::UrlHelper
 
+  def click_setup
+    if page.has_button?(t('forms.webauthn_setup.set_up'))
+      click_button t('forms.webauthn_setup.set_up')
+    end
+  end
+
   def mock_webauthn_setup_challenge
     allow(WebAuthn::Credential).to receive(:options_for_create).and_return(
       instance_double(
@@ -25,7 +31,7 @@ module WebAuthnHelper
   end
 
   def mock_submit_without_pressing_button_on_hardware_key_on_setup
-    click_continue
+    click_setup
   end
 
   def mock_press_button_on_hardware_key_on_setup
@@ -40,7 +46,7 @@ module WebAuthnHelper
     if javascript_enabled?
       page.evaluate_script('document.querySelector("form").submit()')
     else
-      click_continue
+      click_continue || click_setup
     end
   end
 

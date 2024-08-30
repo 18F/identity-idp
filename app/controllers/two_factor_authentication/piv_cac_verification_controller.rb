@@ -4,15 +4,16 @@ module TwoFactorAuthentication
   class PivCacVerificationController < ApplicationController
     include TwoFactorAuthenticatable
     include PivCacConcern
+    include NewDeviceConcern
 
     before_action :confirm_piv_cac_enabled, only: :show
     before_action :reset_attempt_count_if_user_no_longer_locked_out, only: :show
 
     def show
-      analytics.multi_factor_auth_enter_piv_cac(**analytics_properties)
       if params[:token]
         process_token
       else
+        analytics.multi_factor_auth_enter_piv_cac(**analytics_properties)
         @presenter = presenter_for_two_factor_authentication_method
       end
     end
@@ -29,14 +30,14 @@ module TwoFactorAuthentication
 
     def process_token
       result = piv_cac_verification_form.submit
-      analytics.track_mfa_submit_event(
-        result.to_h.merge(analytics_properties),
-      )
-      irs_attempts_api_tracker.mfa_login_piv_cac(
-        success: result.success?,
-        subject_dn: piv_cac_verification_form.x509_dn,
-      )
       session[:sign_in_flow] = :sign_in
+
+      handle_verification_for_authentication_context(
+        result:,
+        auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC,
+        extra_analytics: analytics_properties,
+      )
+
       if result.success?
         handle_valid_piv_cac
       else
@@ -52,15 +53,12 @@ module TwoFactorAuthentication
         presented: true,
       )
 
-      handle_valid_verification_for_authentication_context(
-        auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC,
-      )
       redirect_to after_sign_in_path_for(current_user)
     end
 
     def handle_invalid_piv_cac
       clear_piv_cac_information
-      handle_invalid_otp(context: context, type: 'piv_cac')
+      handle_invalid_otp(type: 'piv_cac')
     end
 
     # This overrides the method in TwoFactorAuthenticatable so that we
@@ -105,7 +103,7 @@ module TwoFactorAuthentication
         context: context,
         multi_factor_auth_method: 'piv_cac',
         piv_cac_configuration_id: piv_cac_verification_form&.piv_cac_configuration&.id,
-        new_device: user_session[:new_device],
+        new_device: new_device?,
       }
     end
   end

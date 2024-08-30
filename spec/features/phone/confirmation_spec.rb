@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'phone otp confirmation', allowed_extra_analytics: [:*] do
+RSpec.describe 'phone otp confirmation' do
   let(:phone) { '2025551234' }
   let(:formatted_phone) { PhoneFormatter.format(phone) }
 
@@ -85,7 +85,7 @@ RSpec.describe 'phone otp confirmation', allowed_extra_analytics: [:*] do
   end
 
   def phone_configuration
-    user.reload.phone_configurations.detect do |phone_configuration|
+    user.reload.phone_configurations.find do |phone_configuration|
       phone_configuration.phone == formatted_phone
     end
   end

@@ -16,8 +16,7 @@ module Idv
     # standard before_actions and handle them in our own special way below.
     skip_before_action :confirm_idv_needed
     skip_before_action :confirm_personal_key_acknowledged_if_needed
-    skip_before_action :confirm_no_pending_in_person_enrollment
-    skip_before_action :handle_fraud
+    skip_before_action :confirm_no_pending_profile
 
     def show
       analytics.idv_personal_key_visited(
@@ -88,8 +87,6 @@ module Idv
       @personal_key_generated_at = current_user.personal_key_generated_at
 
       idv_session.personal_key = @code
-
-      irs_attempts_api_tracker.idv_personal_key_generated
     end
 
     def personal_key
@@ -133,5 +130,13 @@ module Idv
       user_session[:stored_location] = request.original_fullpath
       redirect_to fix_broken_personal_key_url
     end
+
+    def step_indicator_step
+      return :secure_account if idv_session.verify_by_mail?
+      return :go_to_the_post_office if in_person_proofing?
+
+      StepIndicatorComponent::ALL_STEPS_COMPLETE
+    end
+    helper_method :step_indicator_step
   end
 end

@@ -58,33 +58,15 @@ RSpec.describe Reporting::CloudwatchClient do
 
     subject(:fetch) { client.fetch(query:, from:, to:, time_slices:) }
 
-    # Helps mimic Array<Aws::CloudWatchLogs::Types::ResultField>
-    # @return [Array<Hash>]
-    def to_result_fields(hsh)
-      hsh.map do |key, value|
-        { field: key, value: value }
-      end
-    end
-
     def stub_single_page
-      query_id = SecureRandom.hex
-
-      Aws.config[:cloudwatchlogs] = {
-        stub_responses: {
-          start_query: { query_id: query_id },
-          get_query_results: {
-            status: 'Complete',
-            results: [
-              # rubocop:disable Layout/LineLength
-              to_result_fields('@message' => 'aaa', '@timestamp' => now.iso8601, '@ptr' => SecureRandom.hex),
-              to_result_fields('@message' => 'bbb', '@timestamp' => now.iso8601, '@ptr' => SecureRandom.hex),
-              to_result_fields('@message' => 'ccc', '@timestamp' => now.iso8601, '@ptr' => SecureRandom.hex),
-              to_result_fields('@message' => 'ddd', '@timestamp' => now.iso8601, '@ptr' => SecureRandom.hex),
-              # rubocop:enable Layout/LineLength
-            ],
-          },
-        },
-      }
+      stub_cloudwatch_logs(
+        [
+          { '@message' => 'aaa', '@timestamp' => now.iso8601, '@ptr' => SecureRandom.hex },
+          { '@message' => 'bbb', '@timestamp' => now.iso8601, '@ptr' => SecureRandom.hex },
+          { '@message' => 'ccc', '@timestamp' => now.iso8601, '@ptr' => SecureRandom.hex },
+          { '@message' => 'ddd', '@timestamp' => now.iso8601, '@ptr' => SecureRandom.hex },
+        ],
+      )
     end
 
     context ':slice_interval is falsy' do
@@ -129,6 +111,29 @@ RSpec.describe Reporting::CloudwatchClient do
       end
     end
 
+    context 'bad time types are passed' do
+      let(:good_datetime) { Time.zone.now }
+      let(:bad_date) { Time.zone.today }
+      it 'raises with an invalid :from' do
+        expect do
+          client.fetch(
+            query:,
+            from: bad_date - 1.day,
+            to: good_datetime,
+          )
+        end.to raise_error(ArgumentError, /\bfrom\b.* must be a Time/)
+      end
+
+      it 'raises with an invalid :to' do
+        expect do
+          client.fetch(
+            query:,
+            from: good_datetime - 1.day,
+            to: bad_date,
+          )
+        end.to raise_error(ArgumentError, /\bto\b.* must be a Time/)
+      end
+    end
     it 'converts results into hashes, without @ptr' do
       stub_single_page
 
@@ -220,6 +225,14 @@ RSpec.describe Reporting::CloudwatchClient do
         results = fetch
 
         expect(results.size).to eq(999)
+      end
+
+      context 'query is missing a limit' do
+        let(:query) { 'fields @message | stats count(*) by bin(1d)' }
+
+        it 'raises' do
+          expect { fetch }.to raise_error(ArgumentError, /query is missing '| limit 10000'/)
+        end
       end
     end
 

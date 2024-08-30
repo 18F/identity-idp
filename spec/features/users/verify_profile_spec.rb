@@ -21,7 +21,7 @@ RSpec.feature 'verify profile with OTP', allowed_extra_analytics: [:*] do
     it 'shows step indicator progress with current step' do
       sign_in_live_with_2fa(user)
 
-      expect_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
+      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_address'))
     end
 
     scenario 'valid OTP' do
@@ -42,7 +42,7 @@ RSpec.feature 'verify profile with OTP', allowed_extra_analytics: [:*] do
       fill_in t('idv.gpo.form.otp_label'), with: otp
       click_button t('idv.gpo.form.submit')
 
-      expect(page).to have_content t('errors.messages.gpo_otp_expired')
+      expect(page).to have_content t('errors.messages.gpo_otp_expired_and_cannot_request_another')
       expect(current_path).to eq idv_verify_by_mail_enter_code_path
     end
 

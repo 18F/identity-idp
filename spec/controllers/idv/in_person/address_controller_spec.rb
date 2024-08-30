@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::InPerson::AddressController do
+RSpec.describe Idv::InPerson::AddressController, allowed_extra_analytics: [:*] do
   include FlowPolicyHelper
   include InPersonHelper
 
@@ -16,7 +16,6 @@ RSpec.describe Idv::InPerson::AddressController do
     }
     subject.idv_session.ssn = nil
     stub_analytics
-    allow(@analytics).to receive(:track_event)
   end
 
   describe '#step_info' do
@@ -26,12 +25,35 @@ RSpec.describe Idv::InPerson::AddressController do
   end
 
   describe 'before_actions' do
-    context '#confirm_in_person_state_id_step_complete' do
-      it 'redirects to state id page if not complete' do
-        subject.user_session['idv/in_person'][:pii_from_user].delete(:identity_doc_address1)
-        get :show
+    it 'includes correct before_actions' do
+      expect(subject).to have_actions(
+        :before,
+        :set_usps_form_presenter,
+      )
+    end
 
-        expect(response).to redirect_to idv_in_person_step_url(step: :state_id)
+    context '#confirm_in_person_state_id_step_complete' do
+      context 'in_person_state_id_controller_enabled is enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_state_id_controller_enabled).
+            and_return(true)
+        end
+
+        it 'redirects to state id page if not complete' do
+          subject.user_session['idv/in_person'][:pii_from_user].delete(:identity_doc_address1)
+          get :show
+
+          expect(response).to redirect_to idv_in_person_proofing_state_id_url
+        end
+      end
+
+      context 'in_person_state_id_controller_enabled is not enabled' do
+        it 'redirects to state id page if not complete' do
+          subject.user_session['idv/in_person'][:pii_from_user].delete(:identity_doc_address1)
+          get :show
+
+          expect(response).to redirect_to idv_in_person_step_url(step: :state_id)
+        end
       end
     end
 
@@ -52,15 +74,8 @@ RSpec.describe Idv::InPerson::AddressController do
       {
         analytics_id: 'In Person Proofing',
         flow_path: 'standard',
-        irs_reproofing: false,
-        opted_in_to_in_person_proofing: nil,
         step: 'address',
-        lexisnexis_instant_verify_workflow_ab_test_bucket: :default,
-        pii_like_keypaths: [[:same_address_as_id],
-                            [:proofing_results, :context, :stages, :state_id,
-                             :state_id_jurisdiction]],
         same_address_as_id: false,
-        skip_hybrid_handoff: nil,
       }
     end
 
@@ -81,9 +96,7 @@ RSpec.describe Idv::InPerson::AddressController do
     it 'logs idv_in_person_proofing_address_visited' do
       get :show
 
-      expect(@analytics).to have_received(
-        :track_event,
-      ).with(analytics_name, analytics_args)
+      expect(@analytics).to have_logged_event(analytics_name, analytics_args)
     end
 
     it 'has correct extra_view_variables' do
@@ -96,6 +109,11 @@ RSpec.describe Idv::InPerson::AddressController do
         :address1,
       )
     end
+
+    it 'has non-nil presenter' do
+      get :show
+      expect(assigns(:presenter)).to be_kind_of(Idv::InPerson::UspsFormPresenter)
+    end
   end
 
   describe '#update' do
@@ -103,7 +121,7 @@ RSpec.describe Idv::InPerson::AddressController do
       let(:address1) { '1 FAKE RD' }
       let(:address2) { 'APT 1B' }
       let(:city) { 'GREAT FALLS' }
-      let(:zipcode) { '59010' }
+      let(:zipcode) { '59010-4444' }
       let(:state) { 'Montana' }
       let(:params) do
         { in_person_address: {
@@ -121,14 +139,9 @@ RSpec.describe Idv::InPerson::AddressController do
           errors: {},
           analytics_id: 'In Person Proofing',
           flow_path: 'standard',
-          irs_reproofing: false,
           step: 'address',
-          lexisnexis_instant_verify_workflow_ab_test_bucket: :default,
-          pii_like_keypaths: [[:same_address_as_id],
-                              [:proofing_results, :context, :stages, :state_id,
-                               :state_id_jurisdiction]],
           same_address_as_id: false,
-          skip_hybrid_handoff: nil,
+          current_address_zip_code: '59010',
         }
       end
 
@@ -144,12 +157,10 @@ RSpec.describe Idv::InPerson::AddressController do
         )
       end
 
-      it 'logs idv_in_person_proofing_address_visited' do
+      it 'logs idv_in_person_proofing_address_submitted with 5-digit zipcode' do
         put :update, params: params
 
-        expect(@analytics).to have_received(
-          :track_event,
-        ).with(analytics_name, analytics_args)
+        expect(@analytics).to have_logged_event(analytics_name, analytics_args)
       end
 
       context 'when updating the residential address' do
@@ -210,22 +221,22 @@ RSpec.describe Idv::InPerson::AddressController do
           errors: {},
           analytics_id: 'In Person Proofing',
           flow_path: 'standard',
-          irs_reproofing: false,
           step: 'address',
-          lexisnexis_instant_verify_workflow_ab_test_bucket: :default,
-          pii_like_keypaths: [[:same_address_as_id],
-                              [:proofing_results, :context, :stages, :state_id,
-                               :state_id_jurisdiction]],
           same_address_as_id: false,
-          skip_hybrid_handoff: nil,
+          current_address_zip_code: '59010',
         }
       end
 
-      it 'does not proceed to next page' do
+      before do
         put :update, params: params
+      end
 
+      it 'does not proceed to next page' do
         expect(response).to have_rendered(:show)
-        expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+      end
+
+      it 'logs idv_in_person_proofing_address_submitted without zipcode' do
+        expect(@analytics).to have_logged_event(analytics_name, analytics_args)
       end
     end
   end

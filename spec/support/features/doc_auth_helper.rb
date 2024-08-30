@@ -89,16 +89,24 @@ module DocAuthHelper
     complete_doc_auth_steps_before_hybrid_handoff_step(expect_accessible: expect_accessible)
     # JavaScript-enabled mobile devices will skip directly to document capture, so stop as complete.
     return if page.current_path == idv_document_capture_path
+    if IdentityConfig.store.in_person_proofing_opt_in_enabled
+      click_on t('forms.buttons.continue_remote')
+    end
     complete_hybrid_handoff_step
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
 
-  def complete_up_to_how_to_verify_step_for_opt_in_ipp(remote: true)
+  def complete_up_to_how_to_verify_step_for_opt_in_ipp(remote: true,
+                                                       biometric_comparison_required: false)
     complete_doc_auth_steps_before_welcome_step
     complete_welcome_step
     complete_agreement_step
     if remote
-      click_on t('forms.buttons.continue_remote')
+      if biometric_comparison_required
+        click_on t('forms.buttons.continue_remote_selfie')
+      else
+        click_on t('forms.buttons.continue_remote')
+      end
     else
       click_on t('forms.buttons.continue_ipp')
     end
@@ -259,6 +267,38 @@ module DocAuthHelper
       Faraday::Response,
       status: 200,
       body: LexisNexisFixtures.true_id_response_failure_with_face_match_pass,
+    )
+    DocAuth::Mock::DocAuthMockClient.mock_response!(
+      method: :get_results,
+      response: DocAuth::LexisNexis::Responses::TrueIdResponse.new(
+        failure_response,
+        DocAuth::LexisNexis::Config.new,
+        true, # liveness_checking_enabled
+      ),
+    )
+  end
+
+  def mock_doc_auth_fail_face_match_fail
+    failure_response = instance_double(
+      Faraday::Response,
+      status: 200,
+      body: LexisNexisFixtures.true_id_response_failure_with_face_match_fail,
+    )
+    DocAuth::Mock::DocAuthMockClient.mock_response!(
+      method: :get_results,
+      response: DocAuth::LexisNexis::Responses::TrueIdResponse.new(
+        failure_response,
+        DocAuth::LexisNexis::Config.new,
+        true, # liveness_checking_enabled
+      ),
+    )
+  end
+
+  def mock_doc_auth_pass_and_portrait_match_not_live
+    failure_response = instance_double(
+      Faraday::Response,
+      status: 200,
+      body: LexisNexisFixtures.true_id_response_success_with_portrait_match_not_live,
     )
     DocAuth::Mock::DocAuthMockClient.mock_response!(
       method: :get_results,

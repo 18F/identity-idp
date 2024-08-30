@@ -15,16 +15,13 @@ RSpec.describe Idv::HybridMobile::EntryController do
 
     before do
       stub_analytics
-      stub_attempts_tracker
     end
 
     context 'with no session' do
       before do
         get :show
       end
-      it 'logs that phone upload link was used' do
-        expect(@irs_attempts_api_tracker.events).to have_key(:idv_phone_upload_link_used)
-      end
+
       it 'redirects to the root url' do
         expect(response).to redirect_to root_url
       end
@@ -34,9 +31,7 @@ RSpec.describe Idv::HybridMobile::EntryController do
       before do
         get :show, params: { 'document-capture-session': 'foo' }
       end
-      it 'logs that phone upload link was used' do
-        expect(@irs_attempts_api_tracker.events).to have_key(:idv_phone_upload_link_used)
-      end
+
       it 'logs an analytics event' do
         expect(@analytics).to have_logged_event(
           'Doc Auth',
@@ -58,10 +53,6 @@ RSpec.describe Idv::HybridMobile::EntryController do
         end
       end
 
-      it 'logs that phone upload link was used' do
-        expect(@irs_attempts_api_tracker.events).to have_key(:idv_phone_upload_link_used)
-      end
-
       it 'redirects to the root url' do
         expect(response).to redirect_to root_url
       end
@@ -75,10 +66,6 @@ RSpec.describe Idv::HybridMobile::EntryController do
       before do
         allow(controller).to receive(:session).and_return(session)
         get :show, params: { 'document-capture-session': session_uuid }
-      end
-
-      it 'logs that phone upload link was used' do
-        expect(@irs_attempts_api_tracker.events).to have_key(:idv_phone_upload_link_used)
       end
 
       it 'redirects to the first step' do
@@ -136,10 +123,6 @@ RSpec.describe Idv::HybridMobile::EntryController do
       before do
         session[:doc_capture_user_id] = user.id
         get :show
-      end
-
-      it 'logs that phone upload link was used' do
-        expect(@irs_attempts_api_tracker.events).to have_key(:idv_phone_upload_link_used)
       end
 
       it 'redirects to the first step' do

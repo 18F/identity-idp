@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Idv::ResendOtpController do
-  let(:user) { build(:user) }
+  let(:user) { create(:user) }
 
   let(:phone) { '+1 (225) 555-5000' }
   let(:user_phone_confirmation) { false }
@@ -10,6 +10,7 @@ RSpec.describe Idv::ResendOtpController do
     Idv::PhoneConfirmationSession.start(
       phone: phone,
       delivery_method: delivery_method,
+      user: user,
     )
   end
 
@@ -51,32 +52,22 @@ RSpec.describe Idv::ResendOtpController do
     it 'tracks an analytics event' do
       post :create
 
-      expected_result = {
-        success: true,
-        phone_fingerprint: Pii::Fingerprinter.fingerprint(Phonelib.parse(phone).e164),
-        errors: {},
-        otp_delivery_preference: :sms,
-        country_code: 'US',
-        area_code: '225',
-        rate_limit_exceeded: false,
-        telephony_response: instance_of(Telephony::Response),
-      }
-
       expect(@analytics).to have_logged_event(
         'IdV: phone confirmation otp resent',
-        hash_including(expected_result),
+        hash_including(
+          success: true,
+          phone_fingerprint: Pii::Fingerprinter.fingerprint(Phonelib.parse(phone).e164),
+          errors: {},
+          otp_delivery_preference: :sms,
+          country_code: 'US',
+          area_code: '225',
+          rate_limit_exceeded: false,
+          telephony_response: instance_of(Telephony::Response),
+        ),
       )
     end
 
     context 'Telephony raises an exception' do
-      let(:telephony_error_analytics_hash) do
-        {
-          error: 'Telephony::TelephonyError',
-          message: 'error message',
-          context: 'idv',
-          country: 'US',
-        }
-      end
       let(:telephony_error) do
         Telephony::TelephonyError.new('error message')
       end
@@ -103,7 +94,11 @@ RSpec.describe Idv::ResendOtpController do
           ),
         )
         expect(@analytics).to have_logged_event(
-          'Vendor Phone Validation failed', telephony_error_analytics_hash
+          'Vendor Phone Validation failed',
+          error: 'Telephony::TelephonyError',
+          message: 'error message',
+          context: 'idv',
+          country: 'US',
         )
       end
     end

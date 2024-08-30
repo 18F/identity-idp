@@ -6,7 +6,7 @@ module OidcAuthHelper
   def sign_in_oidc_user(user)
     visit_idp_from_ial1_oidc_sp
     fill_in_credentials_and_submit(user.email, user.password)
-    click_continue
+    click_submit_default
   end
 
   def visit_idp_from_ial1_oidc_sp(**args)
@@ -92,16 +92,19 @@ module OidcAuthHelper
     ial2_params = {
       client_id: client_id,
       response_type: 'code',
-      acr_values: acr_values,
       scope: 'openid email profile:name social_security_number',
       redirect_uri: 'http://localhost:7654/auth/result',
       state: state,
       nonce: nonce,
     }
     ial2_params[:prompt] = prompt if prompt
+
     if biometric_comparison_required
-      ial2_params[:biometric_comparison_required] = 'true'
+      ial2_params[:vtr] = ['C1.P1.Pb'].to_json
+    else
+      ial2_params[:acr_values] = acr_values
     end
+
     ial2_params
   end
 
@@ -148,7 +151,7 @@ module OidcAuthHelper
   end
 
   def extract_redirect_url
-    page.find_link(t('forms.buttons.continue'))[:href]
+    page.find_link(t('forms.buttons.submit.default'))[:href]
   end
 
   def oidc_redirect_url

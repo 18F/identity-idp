@@ -28,13 +28,7 @@
   </p>
 
   <% c.with_action_button(
-       action: ->(**tag_options, &block) do
-         link_to(
-           return_to_sp_failure_to_proof_path(step: :unavailable, location: :unavailable),
-           **tag_options,
-           &block
-         )
-       end,
+       url: return_to_sp_failure_to_proof_path(step: :unavailable, location: :unavailable),
        big: true,
        wide: true,
      ).with_content(t('idv.unavailable.exit_button', app_name: APP_NAME)) %>

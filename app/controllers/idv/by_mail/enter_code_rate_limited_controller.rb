@@ -11,7 +11,6 @@ module Idv
       before_action :confirm_verification_needed
 
       def index
-        irs_attempts_api_tracker.idv_gpo_verification_rate_limited
         analytics.rate_limit_reached(
           limiter_type: :verify_gpo_key,
         )

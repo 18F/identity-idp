@@ -6,7 +6,6 @@ module SignUp
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_identity_verified, if: :identity_proofing_required?
-    before_action :confirm_selfie_captured, if: :selfie_required?
     before_action :apply_secure_headers_override, only: [:show, :update]
     before_action :verify_needs_completions_screen
 
@@ -38,10 +37,6 @@ module SignUp
       redirect_to idv_url if current_user.identity_not_verified?
     end
 
-    def confirm_selfie_captured
-      redirect_to idv_url if !current_user.identity_verified_with_selfie?
-    end
-
     def verify_needs_completions_screen
       return_to_account unless needs_completion_screen_reason
     end
@@ -63,10 +58,6 @@ module SignUp
 
     def ial2_requested?
       resolved_authn_context_result.identity_proofing_or_ialmax? && current_user.identity_verified?
-    end
-
-    def selfie_required?
-      decorated_sp_session.selfie_required?
     end
 
     def return_to_account
@@ -93,11 +84,15 @@ module SignUp
         ialmax: resolved_authn_context_result.ialmax?,
         service_provider_name: decorated_sp_session.sp_name,
         sp_session_requested_attributes: sp_session[:requested_attributes],
-        sp_request_requested_attributes: service_provider_request.requested_attributes,
         page_occurence: page_occurence,
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
         needs_completion_screen_reason: needs_completion_screen_reason,
       }
+
+      if (last_enrollment = current_user.in_person_enrollments.last)
+        attributes[:in_person_proofing_status] = last_enrollment.status
+        attributes[:doc_auth_result] = last_enrollment.doc_auth_result
+      end
 
       if page_occurence.present? && DisposableEmailDomain.disposable?(email_domain)
         attributes[:disposable_email_domain] = email_domain

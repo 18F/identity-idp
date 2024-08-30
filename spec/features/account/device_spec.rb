@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Devices', allowed_extra_analytics: [:*] do
+RSpec.describe 'Devices' do
   let(:user) { create(:user, :fully_registered) }
   before do
     user = create(:user, :fully_registered, otp_delivery_preference: 'sms')

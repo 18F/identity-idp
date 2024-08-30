@@ -8,9 +8,9 @@ module Proofing
 
     attr_reader :errors,
                 :exception,
-                :success,
                 :vendor_name,
                 :transaction_id,
+                :requested_attributes,
                 :verified_attributes
 
     def initialize(
@@ -19,18 +19,22 @@ module Proofing
       exception: nil,
       vendor_name: nil,
       transaction_id: '',
-      verified_attributes: []
+      requested_attributes: {},
+      verified_attributes: [],
+      jurisdiction_in_maintenance_window: false
     )
       @success = success
       @errors = errors
       @exception = exception
       @vendor_name = vendor_name
       @transaction_id = transaction_id
+      @requested_attributes = requested_attributes
       @verified_attributes = verified_attributes
+      @jurisdiction_in_maintenance_window = jurisdiction_in_maintenance_window
     end
 
     def success?
-      success
+      !!@success
     end
 
     def timed_out?
@@ -53,16 +57,22 @@ module Proofing
       mva_unavailable? || mva_system_error? || mva_timeout?
     end
 
+    def jurisdiction_in_maintenance_window?
+      !!@jurisdiction_in_maintenance_window
+    end
+
     def to_h
       {
         success: success?,
         errors: errors,
         exception: exception,
         mva_exception: mva_exception?,
+        requested_attributes: requested_attributes,
         timed_out: timed_out?,
         transaction_id: transaction_id,
         vendor_name: vendor_name,
         verified_attributes: verified_attributes,
+        jurisdiction_in_maintenance_window: jurisdiction_in_maintenance_window?,
       }
     end
   end

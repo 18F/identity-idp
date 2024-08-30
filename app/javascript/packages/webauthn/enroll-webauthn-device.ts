@@ -15,6 +15,8 @@ interface AuthenticatorAttestationResponseBrowserSupport
   getAuthenticatorData: AuthenticatorAttestationResponse['getAuthenticatorData'] | undefined;
 }
 
+type PublicKeyCredentialHintType = 'client-device' | 'security-key' | 'hybrid';
+
 interface EnrollOptions {
   user: PublicKeyCredentialUserEntity;
 
@@ -23,6 +25,8 @@ interface EnrollOptions {
   excludeCredentials: PublicKeyCredentialDescriptor[];
 
   authenticatorAttachment?: AuthenticatorAttachment;
+
+  hints?: Array<PublicKeyCredentialHintType>;
 }
 
 interface EnrollResult {
@@ -35,6 +39,10 @@ interface EnrollResult {
   authenticatorDataFlagsValue?: number;
 
   transports?: string[];
+}
+
+interface PublicKeyCredentialCreationOptionsWithHints extends PublicKeyCredentialCreationOptions {
+  hints?: Array<PublicKeyCredentialHintType>;
 }
 
 /**
@@ -76,6 +84,7 @@ async function enrollWebauthnDevice({
   challenge,
   excludeCredentials,
   authenticatorAttachment,
+  hints,
 }: EnrollOptions): Promise<EnrollResult> {
   const credential = (await navigator.credentials.create({
     publicKey: {
@@ -85,13 +94,14 @@ async function enrollWebauthnDevice({
       pubKeyCredParams: SUPPORTED_ALGORITHMS.map((alg) => ({ alg, type: 'public-key' })),
       timeout: 800000,
       attestation: 'none',
+      hints,
       authenticatorSelection: {
         // Prevents user from needing to use PIN with Security Key
         userVerification: 'discouraged',
         authenticatorAttachment,
       },
       excludeCredentials,
-    },
+    } as PublicKeyCredentialCreationOptionsWithHints,
   })) as PublicKeyCredential;
 
   const response = credential.response as AuthenticatorAttestationResponseBrowserSupport;

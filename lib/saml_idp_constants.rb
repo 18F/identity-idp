@@ -14,6 +14,8 @@ module Saml
       IAL1_AUTHN_CONTEXT_CLASSREF = "#{IAL_AUTHN_CONTEXT_PREFIX}/1".freeze
       IAL2_AUTHN_CONTEXT_CLASSREF = "#{IAL_AUTHN_CONTEXT_PREFIX}/2".freeze
       IALMAX_AUTHN_CONTEXT_CLASSREF = "#{IAL_AUTHN_CONTEXT_PREFIX}/0".freeze
+      IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF = "#{IAL_AUTHN_CONTEXT_PREFIX}/2?bio=preferred".freeze
+      IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF = "#{IAL_AUTHN_CONTEXT_PREFIX}/2?bio=required".freeze
 
       PASSWORD_AUTHN_CONTEXT_CLASSREFS = %w[
         urn:oasis:names:tc:SAML:2.0:ac:classes:Password
@@ -30,18 +32,23 @@ module Saml
 
       NAME_ID_FORMAT_PERSISTENT = 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
       NAME_ID_FORMAT_EMAIL = 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'
+      NAME_ID_FORMAT_UNSPECIFIED = 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified'
       VALID_NAME_ID_FORMATS = [NAME_ID_FORMAT_PERSISTENT, NAME_ID_FORMAT_EMAIL].freeze
 
       REQUESTED_ATTRIBUTES_CLASSREF = 'http://idmanagement.gov/ns/requested_attributes?ReqAttr='
 
       VALID_AUTHN_CONTEXTS = IdentityConfig.store.valid_authn_contexts.freeze
       IAL2_AUTHN_CONTEXTS = [IAL2_AUTHN_CONTEXT_CLASSREF, LOA3_AUTHN_CONTEXT_CLASSREF].freeze
+      BIOMETRIC_IAL_CONTEXTS = [IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF,
+                                IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF].freeze
 
       AUTHN_CONTEXT_CLASSREF_TO_IAL = {
         LOA1_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::IAL1,
         LOA3_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::IAL2,
         IAL1_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::IAL1,
         IAL2_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::IAL2,
+        IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::IAL2,
+        IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::IAL2,
         IALMAX_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::IAL_MAX,
       }.freeze
 

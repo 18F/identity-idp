@@ -2,7 +2,6 @@ import { useContext } from 'react';
 import { TroubleshootingOptions } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
 import type { TroubleshootingOption } from '@18f/identity-components/troubleshooting-options';
-import ServiceProviderContext from '../context/service-provider';
 import MarketingSiteContext from '../context/marketing-site';
 
 interface InPersonTroubleshootingOptionsProps {
@@ -23,7 +22,6 @@ function InPersonTroubleshootingOptions({
 }: InPersonTroubleshootingOptionsProps) {
   const { t } = useI18n();
   const { getHelpCenterURL } = useContext(MarketingSiteContext);
-  const { name: spName, getFailureToProofURL } = useContext(ServiceProviderContext);
 
   return (
     <TroubleshootingOptions
@@ -46,11 +44,6 @@ function InPersonTroubleshootingOptions({
               location,
             }),
             text: t('idv.troubleshooting.options.learn_more_verify_by_phone_in_person'),
-            isExternal: true,
-          },
-          spName && {
-            url: getFailureToProofURL(location),
-            text: t('idv.troubleshooting.options.get_help_at_sp', { sp_name: spName }),
             isExternal: true,
           },
         ].filter(Boolean) as TroubleshootingOption[]

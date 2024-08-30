@@ -44,8 +44,6 @@ RSpec.describe Idv::AgreementController, allowed_extra_analytics: [:*] do
       {
         step: 'agreement',
         analytics_id: 'Doc Auth',
-        skip_hybrid_handoff: nil,
-        irs_reproofing: false,
       }.merge(ab_test_args)
     end
 
@@ -110,8 +108,6 @@ RSpec.describe Idv::AgreementController, allowed_extra_analytics: [:*] do
         errors: {},
         step: 'agreement',
         analytics_id: 'Doc Auth',
-        skip_hybrid_handoff: nil,
-        irs_reproofing: false,
       }.merge(ab_test_args)
     end
 
@@ -164,6 +160,12 @@ RSpec.describe Idv::AgreementController, allowed_extra_analytics: [:*] do
           put :update, params: params
 
           expect(response).to redirect_to(idv_hybrid_handoff_url)
+        end
+
+        it 'sets an idv_consent_given_at timestamp' do
+          put :update, params: params
+
+          expect(subject.idv_session.idv_consent_given_at).to be_within(3.seconds).of(Time.zone.now)
         end
       end
 
@@ -228,9 +230,16 @@ RSpec.describe Idv::AgreementController, allowed_extra_analytics: [:*] do
         }.compact
       end
 
-      it 'redirects to idv agreement' do
+      it 'renders the form again' do
         put :update, params: params
-        expect(response).to redirect_to(idv_agreement_url)
+        expect(response).to render_template('idv/agreement/show')
+      end
+
+      it 'does not set IDV consent flags' do
+        put :update, params: params
+
+        expect(subject.idv_session.idv_consent_given).to be_nil
+        expect(subject.idv_session.idv_consent_given_at).to be_nil
       end
     end
   end

@@ -11,8 +11,12 @@ module RecaptchaConcern
     'https://recaptcha.google.com/recaptcha/',
   ].freeze
 
-  def recoverable_recaptcha_error?(result)
-    result.errors.keys == [:recaptcha_token]
+  def add_recaptcha_resource_hints
+    response.headers['Link'] = [
+      response.headers['Link'],
+      '<https://www.google.com>;rel=preconnect',
+      '<https://www.gstatic.com>;rel=preconnect;crossorigin',
+    ].compact.join(',')
   end
 
   def allow_csp_recaptcha_src

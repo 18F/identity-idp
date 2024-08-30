@@ -28,9 +28,8 @@
 <% end %>
 
 <%= render ButtonComponent.new(
-      action: ->(**tag_options, &block) do
-        button_to(login_add_piv_cac_prompt_path, **tag_options, method: :post, &block)
-      end,
+      url: login_add_piv_cac_prompt_path,
+      method: :post,
       big: true,
       wide: true,
       outline: true,

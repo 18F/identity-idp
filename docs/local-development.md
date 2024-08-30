@@ -23,8 +23,6 @@ If not using macOS:
     - [rbenv](https://github.com/rbenv/rbenv) (lets you install and switch between different versions of Ruby)
     - Ruby. Choose the version [in the `.ruby-version` file](../.ruby-version)
     - [PostgreSQL](http://www.postgresql.org/download/)
-    - [PostGIS](https://postgis.net/documentation/getting_started/#installing-postgis)
-        - Note: if you run into errors installing `postgis` or creating the database, check [the troubleshooting docs](./troubleshooting.md#errors-related-to-the-databse).
     - [Redis 7+](http://redis.io/)
     - [Node.js v20](https://nodejs.org)
     - [Yarn](https://yarnpkg.com/en/)
@@ -79,30 +77,31 @@ different options of the authentication request, such as AAL or IAL.
 
 ### Running tests locally
 
-  Login.gov uses the following tools for our testing:
+Login.gov uses the following tools for our testing:
 
-  - [RSpec](https://relishapp.com/rspec/rspec-core/docs/command-line)
-  - [Mocha documentation](https://mochajs.org/)
+- [RSpec](https://relishapp.com/rspec/rspec-core/docs/command-line)
+- [Mocha documentation](https://mochajs.org/)
 
-  To run our full test suite locally, use the following command:
+To run our full test suite locally, use the following command:
 
-  ```
-  $ make test
-  ```
+```
+$ make test
+```
 
-  Use the following command to run a subset of our test suite, excluding slower tests:
+Running the full test suite takes a very long time, so usually you'll want to run the individual
+test files or folders you're interested in:
 
-  ```
-  $ make fast_test
-  ```
+```
+$ bundle exec rspec spec/i18n_spec.rb
+```
 
-  Check out our Makefile commands and learn more about how you can customize this command to run specific tests using rspec: https://github.com/18F/identity-idp/blob/main/Makefile#L41
+Check out our Makefile commands and learn more about how you can customize this command to run specific tests using rspec: https://github.com/18F/identity-idp/blob/main/Makefile#L41
 
-  To test a specific spec file with rspec, you may need to add the following configuration to `/config/application.yml` so the tests do not crash:
-  ```
-  test:
-    rack_timeout_service_timeout_seconds: 9_999_999_999
-  ```
+To test a specific spec file with rspec, you may need to add the following configuration to `/config/application.yml` so the tests do not crash:
+```
+test:
+  rack_timeout_service_timeout_seconds: 9_999_999_999
+```
 
 #### Showing the Browser
 

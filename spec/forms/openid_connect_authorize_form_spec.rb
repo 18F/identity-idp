@@ -15,7 +15,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
       code_challenge: code_challenge,
       code_challenge_method: code_challenge_method,
       verified_within: verified_within,
-      biometric_comparison_required: biometric_comparison_required,
     )
   end
 
@@ -31,7 +30,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
   let(:code_challenge) { nil }
   let(:code_challenge_method) { nil }
   let(:verified_within) { nil }
-  let(:biometric_comparison_required) { nil }
 
   before do
     allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
@@ -212,6 +210,42 @@ RSpec.describe OpenidConnectAuthorizeForm do
         end
       end
     end
+
+    shared_examples 'allows biometric IAL only if sp is authorized' do |biometric_ial|
+      let(:acr_values) { biometric_ial }
+
+      context "when the IAL requested is #{biometric_ial}" do
+        context 'when the service provider is allowed to use biometric ials' do
+          before do
+            allow_any_instance_of(ServiceProvider).to receive(:biometric_ial_allowed?).
+              and_return(true)
+          end
+
+          it 'succeeds validation' do
+            expect(form).to be_valid
+          end
+        end
+
+        context 'when the service provider is not allowed to use biometric ials' do
+          before do
+            allow_any_instance_of(ServiceProvider).to receive(:biometric_ial_allowed?).
+              and_return(false)
+          end
+
+          it 'fails with a not authorized error' do
+            expect(form).not_to be_valid
+            expect(form.errors[:acr_values]).
+              to include(t('openid_connect.authorization.errors.no_auth'))
+          end
+        end
+      end
+    end
+
+    it_behaves_like 'allows biometric IAL only if sp is authorized',
+                    Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF
+
+    it_behaves_like 'allows biometric IAL only if sp is authorized',
+                    Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
 
     context 'with aal but not ial requested via acr_values' do
       let(:acr_values) { Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF }
@@ -418,160 +452,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
     end
   end
 
-  describe '#ial' do
-    context 'with vtr param' do
-      let(:acr_values) { nil }
-
-      context 'when proofing is requested' do
-        let(:vtr) { ['C1.P1'].to_json }
-
-        it { expect(form.ial).to eq(2) }
-      end
-
-      context 'when proofing is not requested' do
-        let(:vtr) { ['C1'].to_json }
-
-        it { expect(form.ial).to eq(1) }
-      end
-    end
-
-    context 'with acr_values param' do
-      let(:vtr) { nil }
-
-      context 'when IAL1 passed' do
-        let(:acr_values) { Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF }
-
-        it 'returns 1' do
-          expect(form.ial).to eq(1)
-        end
-      end
-
-      context 'when IAL2 passed' do
-        let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
-
-        it 'returns 2' do
-          expect(form.ial).to eq(2)
-        end
-      end
-
-      context 'when IALMAX passed' do
-        let(:acr_values) { Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF }
-
-        it 'returns 0' do
-          expect(form.ial).to eq(0)
-        end
-      end
-
-      context 'when LOA1 passed' do
-        let(:acr_values) { Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF }
-
-        it 'returns 1' do
-          expect(form.ial).to eq(1)
-        end
-      end
-
-      context 'when LOA3 passed' do
-        let(:acr_values) { Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF }
-
-        it 'returns 2' do
-          expect(form.ial).to eq(2)
-        end
-      end
-    end
-  end
-
-  describe '#aal' do
-    context 'with vtr param' do
-      let(:acr_values) { nil }
-
-      context 'when AAL2 is requested' do
-        let(:vtr) { ['C2'].to_json }
-
-        it { expect(form.aal).to eq(2) }
-      end
-
-      context 'when AAL2 is not requested' do
-        let(:vtr) { ['C1'].to_json }
-
-        it { expect(form.aal).to eq(1) }
-      end
-    end
-
-    context 'with acr_values param' do
-      let(:vtr) { nil }
-
-      context 'when no AAL passed' do
-        let(:acr_values) { Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF }
-
-        it 'returns 0' do
-          expect(form.aal).to eq(0)
-        end
-      end
-
-      context 'when DEFAULT_AAL passed' do
-        let(:acr_values) { Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF }
-
-        it 'returns 0' do
-          expect(form.aal).to eq(0)
-        end
-      end
-
-      context 'when AAL2 passed' do
-        let(:acr_values) { Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF }
-
-        it 'returns 2' do
-          expect(form.aal).to eq(2)
-        end
-      end
-
-      context 'when AAL2_PHISHING_RESISTANT passed' do
-        let(:acr_values) { Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF }
-
-        it 'returns 2' do
-          expect(form.aal).to eq(2)
-        end
-      end
-
-      context 'when AAL2_HSPD12 passed' do
-        let(:acr_values) { Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF }
-
-        it 'returns 2' do
-          expect(form.aal).to eq(2)
-        end
-      end
-
-      context 'when AAL3 passed' do
-        let(:acr_values) { Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF }
-
-        it 'returns 3' do
-          expect(form.aal).to eq(3)
-        end
-      end
-
-      context 'when AAL3_HSPD12 passed' do
-        let(:acr_values) { Saml::Idp::Constants::AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF }
-
-        it 'returns 3' do
-          expect(form.aal).to eq(3)
-        end
-      end
-
-      context 'when IAL and AAL passed' do
-        aal2 = Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
-        ial2 = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
-
-        let(:acr_values) do
-          "#{aal2} #{ial2}"
-        end
-
-        it 'returns ial and aal' do
-          expect(form.aal).to eq(2)
-          expect(form.ial).to eq(2)
-        end
-      end
-    end
-  end
-
   describe '#requested_aal_value' do
     context 'with ACR values' do
       let(:vtr) { nil }
@@ -760,53 +640,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
     end
   end
 
-  describe '#ial2_requested?' do
-    subject(:ial2_requested?) { form.ial2_requested? }
-
-    context 'with vtr params' do
-      let(:acr_values) { nil }
-
-      context 'when identity proofing is requested' do
-        let(:vtr) { ['P1'].to_json }
-        it { expect(ial2_requested?).to eq(true) }
-      end
-
-      context 'when identity proofing is not requested' do
-        let(:vtr) { ['C1'].to_json }
-        it { expect(ial2_requested?).to eq(false) }
-      end
-    end
-
-    context 'with acr_values param' do
-      let(:vtr) { nil }
-
-      context 'with ial1' do
-        let(:acr_values) { Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF }
-        it { expect(ial2_requested?).to eq(false) }
-      end
-
-      context 'with ial2' do
-        let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
-        it { expect(ial2_requested?).to eq(true) }
-      end
-
-      context 'with ial1 and ial2' do
-        let(:acr_values) do
-          [
-            Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-            Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-          ].join(' ')
-        end
-        it { expect(ial2_requested?).to eq(true) }
-      end
-
-      context 'with a malformed ial' do
-        let(:acr_values) { 'foobarbaz' }
-        it { expect(ial2_requested?).to eq(false) }
-      end
-    end
-  end
-
   describe '#client_id' do
     it 'returns the form client_id' do
       form = OpenidConnectAuthorizeForm.new(client_id: 'foobar')
@@ -824,7 +657,11 @@ RSpec.describe OpenidConnectAuthorizeForm do
       let(:code_challenge_method) { 'S256' }
 
       it 'records the code_challenge on the identity' do
-        form.link_identity_to_service_provider(user, rails_session_id)
+        form.link_identity_to_service_provider(
+          current_user: user,
+          ial: 1,
+          rails_session_id: rails_session_id,
+        )
 
         identity = user.identities.where(service_provider: client_id).first
 
@@ -843,7 +680,11 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
     context 'when the identity has been linked' do
       before do
-        form.link_identity_to_service_provider(user, rails_session_id)
+        form.link_identity_to_service_provider(
+          current_user: user,
+          ial: 1,
+          rails_session_id: rails_session_id,
+        )
       end
 
       it 'returns a redirect URI with the code from the identity session_uuid' do

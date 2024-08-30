@@ -6,12 +6,13 @@ export enum Status {
 }
 
 interface StatusMessageProps {
+  id: string;
   status: Status;
   className?: string;
   children?: ReactNode;
 }
 
-function StatusMessage({ status, className, children }: StatusMessageProps) {
+function StatusMessage({ id, status, className, children }: StatusMessageProps) {
   const classes = [
     status === Status.ERROR && 'usa-error-message',
     status === Status.SUCCESS && 'usa-success-message',
@@ -24,7 +25,7 @@ function StatusMessage({ status, className, children }: StatusMessageProps) {
   const role = status === Status.ERROR ? 'alert' : 'status';
 
   return (
-    <span role={role} className={classes}>
+    <span role={role} className={classes} id={id}>
       {children}
     </span>
   );

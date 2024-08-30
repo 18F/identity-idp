@@ -18,7 +18,8 @@
 <%= simple_form_for(
       current_user,
       url: idv_enter_password_path,
-      html: { autocomplete: 'off', method: :put, class: 'margin-top-4' },
+      method: :put,
+      html: { class: 'margin-top-4' },
     ) do |f| %>
   <%= render PasswordToggleComponent.new(
         form: f,

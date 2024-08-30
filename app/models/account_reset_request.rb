@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class AccountResetRequest < ApplicationRecord
-  self.ignored_columns = %w[reported_fraud_at]
-
   belongs_to :user
   # rubocop:disable Rails/InverseOf
   belongs_to :requesting_service_provider,

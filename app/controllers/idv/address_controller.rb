@@ -11,14 +11,15 @@ module Idv
     def new
       analytics.idv_address_visit
 
-      @presenter = AddressPresenter.new(pii: idv_session.pii_from_doc)
+      @address_form = build_address_form
+      @presenter = AddressPresenter.new
     end
 
     def update
       clear_future_steps!
-      form_result = idv_form.submit(profile_params)
-      analytics.idv_address_submitted(**form_result.to_h)
-      capture_address_edited(form_result)
+      @address_form = build_address_form
+      form_result = @address_form.submit(profile_params)
+      track_submit_event(form_result)
       if form_result.success?
         success
       else
@@ -33,34 +34,53 @@ module Idv
         action: :new,
         next_steps: [:verify_info],
         preconditions: ->(idv_session:, user:) { idv_session.remote_document_capture_complete? },
-        undo_step: ->(idv_session:, user:) {},
+        undo_step: ->(idv_session:, user:) { idv_session.updated_user_address = nil },
       )
     end
 
     private
 
-    def idv_form
-      Idv::AddressForm.new(idv_session.pii_from_doc)
+    def build_address_form
+      Idv::AddressForm.new(
+        idv_session.updated_user_address || address_from_document,
+      )
+    end
+
+    def address_from_document
+      Pii::Address.new(
+        address1: idv_session.pii_from_doc.address1,
+        address2: idv_session.pii_from_doc.address2,
+        city: idv_session.pii_from_doc.city,
+        state: idv_session.pii_from_doc.state,
+        zipcode: idv_session.pii_from_doc.zipcode,
+      )
     end
 
     def success
-      profile_params.each do |key, value|
-        idv_session.pii_from_doc[key] = value
-      end
+      idv_session.address_edited = address_edited?
+      idv_session.updated_user_address = @address_form.updated_user_address
       redirect_to idv_verify_info_url
     end
 
     def failure
-      redirect_to idv_address_url
+      @presenter = AddressPresenter.new
+      render :new
+    end
+
+    def track_submit_event(form_result)
+      analytics.idv_address_submitted(
+        **form_result.to_h.merge(
+          address_edited: address_edited?,
+        ),
+      )
+    end
+
+    def address_edited?
+      address_from_document != @address_form.updated_user_address
     end
 
     def profile_params
       params.require(:idv_form).permit(Idv::AddressForm::ATTRIBUTES)
-    end
-
-    def capture_address_edited(result)
-      address_edited = result.to_h[:address_edited]
-      idv_session.address_edited = true if address_edited
     end
   end
 end

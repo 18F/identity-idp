@@ -52,26 +52,23 @@ RSpec.describe 'devise/sessions/new.html.erb' do
   it 'includes a link to security / privacy page and privacy statement act' do
     render
 
-    expect(rendered).
-      to have_link(
-        t('notices.privacy.security_and_privacy_practices'),
-        href: MarketingSite.security_and_privacy_practices_url,
-      )
-    expect(rendered).
-      to have_selector(
-        "a[href='#{MarketingSite.security_and_privacy_practices_url}']\
-[target='_blank'][rel='noopener noreferrer']",
-      )
+    expect(rendered).to have_link(
+      t('notices.privacy.security_and_privacy_practices'),
+      href: policy_redirect_url(
+        policy: :security_and_privacy_practices,
+        flow: :sign_in,
+        step: :sign_in,
+      ),
+    ) { |link| link[:target] == '_blank' && link[:rel] == 'noopener noreferrer' }
 
-    expect(rendered).
-      to have_link(
-        t('notices.privacy.privacy_act_statement'),
-        href: MarketingSite.privacy_act_statement_url,
-      )
-    expect(rendered).to have_selector(
-      "a[href='#{MarketingSite.privacy_act_statement_url}']\
-[target='_blank'][rel='noopener noreferrer']",
-    )
+    expect(rendered).to have_link(
+      t('notices.privacy.privacy_act_statement'),
+      href: policy_redirect_url(
+        policy: :privacy_act_statement,
+        flow: :sign_in,
+        step: :sign_in,
+      ),
+    ) { |link| link[:target] == '_blank' && link[:rel] == 'noopener noreferrer' }
   end
 
   context 'when SP is present' do
@@ -138,7 +135,10 @@ RSpec.describe 'devise/sessions/new.html.erb' do
       it 'does not have an sp alert for service providers without alert messages' do
         render
 
-        expect(rendered).to_not have_selector('.usa-alert')
+        expect(rendered).to_not have_selector(
+          '.usa-alert',
+          text: 'custom sign in help text for Awesome Application!',
+        )
       end
     end
   end
@@ -182,7 +182,7 @@ RSpec.describe 'devise/sessions/new.html.erb' do
       it 'does not render DAP analytics' do
         allow(view).to receive(:javascript_packs_tag_once)
         expect(view).not_to receive(:javascript_packs_tag_once).
-          with(a_string_matching('https://dap.digitalgov.gov/'), async: true, id: '_fed_an_ua_tag')
+          with(a_string_matching('https://dap.digitalgov.gov/'), defer: true, id: '_fed_an_ua_tag')
 
         render
       end
@@ -193,10 +193,56 @@ RSpec.describe 'devise/sessions/new.html.erb' do
 
       it 'renders DAP analytics' do
         allow(view).to receive(:javascript_packs_tag_once)
-        expect(view).to receive(:javascript_packs_tag_once).
-          with(a_string_matching('https://dap.digitalgov.gov/'), async: true, id: '_fed_an_ua_tag')
+        expect(view).to receive(:javascript_packs_tag_once).with(
+          'digital-analytics-program',
+          url_params: { agency: 'GSA', subagency: 'TTS' },
+          defer: true,
+          preload_links_header: false,
+          id: '_fed_an_ua_tag',
+        )
 
         render
+      end
+    end
+  end
+
+  describe 'submit button' do
+    let(:sign_in_recaptcha_enabled) { false }
+    let(:recaptcha_mock_validator) { false }
+
+    subject(:rendered) { render }
+
+    before do
+      allow(FeatureManagement).to receive(:sign_in_recaptcha_enabled?).
+        and_return(sign_in_recaptcha_enabled)
+      allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).
+        and_return(recaptcha_mock_validator)
+    end
+
+    context 'recaptcha at sign in is disabled' do
+      let(:sign_in_recaptcha_enabled) { false }
+
+      it 'renders default sign-in submit button' do
+        expect(rendered).to have_button(t('links.sign_in'))
+        expect(rendered).not_to have_css('lg-captcha-submit-button')
+      end
+
+      context 'recaptcha mock validator is enabled' do
+        let(:recaptcha_mock_validator) { true }
+
+        it 'renders captcha sign-in submit button' do
+          expect(rendered).to have_button(t('links.sign_in'))
+          expect(rendered).to have_css('lg-captcha-submit-button')
+        end
+      end
+    end
+
+    context 'recaptcha at sign in is enabled' do
+      let(:sign_in_recaptcha_enabled) { true }
+
+      it 'renders captcha sign-in submit button' do
+        expect(rendered).to have_button(t('links.sign_in'))
+        expect(rendered).to have_css('lg-captcha-submit-button')
       end
     end
   end

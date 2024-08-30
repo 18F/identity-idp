@@ -14,11 +14,9 @@ class AlertIconComponent < BaseComponent
 
   attr_reader :tag_options, :icon_name
 
+  validates_inclusion_of :icon_name, in: ICON_SOURCE.keys
+
   def initialize(icon_name: :warning, **tag_options)
-    if !ICON_SOURCE.key?(icon_name)
-      raise ArgumentError,
-            "`icon_name` #{icon_name} is invalid, expected one of #{ICON_SOURCE.keys}"
-    end
     @icon_name = icon_name
     @tag_options = tag_options
   end

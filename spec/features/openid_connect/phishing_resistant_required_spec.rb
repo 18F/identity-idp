@@ -1,7 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Phishing-resistant authentication required in an OIDC context',
-               allowed_extra_analytics: [:*] do
+RSpec.describe 'Phishing-resistant authentication required in an OIDC context' do
   include OidcAuthHelper
   include WebAuthnHelper
 

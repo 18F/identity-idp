@@ -2,8 +2,10 @@ require 'rails_helper'
 
 RSpec.describe Users::PivCacLoginController do
   describe 'GET new' do
+    let(:user) {}
+
     before do
-      stub_analytics
+      stub_analytics(user:)
     end
 
     context 'without a token' do
@@ -30,19 +32,12 @@ RSpec.describe Users::PivCacLoginController do
           expect(@analytics).to have_logged_event(
             :piv_cac_login,
             errors: {},
-            key_id: nil,
             success: false,
           )
         end
 
         it 'redirects to the error url' do
           expect(response).to redirect_to(login_piv_cac_error_url(error: 'token.bad'))
-        end
-
-        it 'records unsuccessful 2fa event' do
-          expect(controller).to receive(:create_user_event).with(:sign_in_unsuccessful_2fa)
-
-          response
         end
       end
 
@@ -60,16 +55,19 @@ RSpec.describe Users::PivCacLoginController do
           }.with_indifferent_access
         end
 
+        subject(:response) { get :new, params: { token: } }
+
         before do
-          subject.piv_session[:piv_cac_nonce] = nonce
-          subject.session[:sp] = sp_session
+          controller.piv_session[:piv_cac_nonce] = nonce
+          controller.session[:sp] = sp_session
 
           allow(PivCacService).to receive(:decode_token).with(token) { data }
-          get :new, params: { token: token }
         end
 
         context 'without a valid user' do
-          before do
+          it 'calls decode_token twice' do
+            response
+
             # valid_token? is being called twice, once to determine if it's a valid submission
             # and once to set the session variable in process_invalid_submission
             # good opportunity for a refactor
@@ -77,18 +75,21 @@ RSpec.describe Users::PivCacLoginController do
           end
 
           it 'tracks the login attempt' do
+            response
+
             expect(@analytics).to have_logged_event(
               :piv_cac_login,
               errors: {
                 type: 'user.not_found',
               },
-              key_id: nil,
               success: false,
             )
           end
 
           it 'sets the session variable' do
-            expect(subject.session[:needs_to_setup_piv_cac_after_sign_in]).to be true
+            response
+
+            expect(controller.session[:needs_to_setup_piv_cac_after_sign_in]).to be true
           end
 
           it 'redirects to the error url' do
@@ -108,24 +109,28 @@ RSpec.describe Users::PivCacLoginController do
             }.with_indifferent_access
           end
 
-          before do
+          it 'calls decode_token' do
+            response
+
             expect(PivCacService).to have_received(:decode_token).with(token) { data }
-            sign_in user
           end
 
           it 'tracks the login attempt' do
+            response
+
             expect(@analytics).to have_logged_event(
               :piv_cac_login,
               errors: {},
-              key_id: nil,
               success: true,
+              new_device: true,
             )
           end
 
           it 'sets the session correctly' do
+            response
+
             expect(controller.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).
               to eq false
-
             expect(controller.auth_methods_session.auth_events).to match(
               [
                 {
@@ -136,7 +141,16 @@ RSpec.describe Users::PivCacLoginController do
             )
           end
 
+          it 'sets and then unsets new device session value' do
+            expect(controller).to receive(:set_new_device_session).with(nil).ordered
+            expect(controller).to receive(:set_new_device_session).with(false).ordered
+
+            response
+          end
+
           it 'tracks the user_marked_authed event' do
+            response
+
             expect(@analytics).to have_logged_event(
               'User marked authenticated',
               authentication_type: :valid_2fa,
@@ -144,12 +158,33 @@ RSpec.describe Users::PivCacLoginController do
           end
 
           it 'saves the piv_cac session information' do
+            response
+
             session_info = {
               subject: data[:subject],
               issuer: data[:issuer],
               presented: true,
             }
             expect(controller.user_session[:decrypted_x509]).to eq session_info.to_json
+          end
+
+          context 'with authenticated device' do
+            let(:user) { create(:user, :with_authenticated_device) }
+
+            before do
+              cookies[:device] = user.devices.last.cookie_uuid
+            end
+
+            it 'tracks the login attempt' do
+              response
+
+              expect(@analytics).to have_logged_event(
+                :piv_cac_login,
+                errors: {},
+                success: true,
+                new_device: false,
+              )
+            end
           end
 
           context 'when the user has not accepted the most recent terms of use' do
@@ -164,6 +199,8 @@ RSpec.describe Users::PivCacLoginController do
 
           describe 'it handles the otp_context' do
             it 'tracks the user_marked_authed event' do
+              response
+
               expect(@analytics).to have_logged_event(
                 'User marked authenticated',
                 authentication_type: :valid_2fa,

@@ -4,30 +4,16 @@ RSpec.feature 'Password recovery via personal key for a GPO-verified user',
               allowed_extra_analytics: [:*] do
   include IdvStepHelper
 
-  let(:email) { 'cool_beagle@example.org' }
-  let(:password) { '!1a Z@6s' * 16 } # default password from user factory
   let(:new_password) { 'some really awesome new password' }
 
-  let(:user) { create(:user, :fully_registered, email: email, password: password) }
-
-  before do
-    allow(FeatureManagement).to receive(:reveal_gpo_code?).and_return(true)
-  end
-
-  scenario 'lets them reactivate their profile with their personal key', email: true, js: true do
-    complete_idv_steps_with_gpo_before_confirmation_step(user)
-    click_on t('doc_auth.buttons.continue')
-
-    gpo_code = page.get_rack_session_key('last_gpo_confirmation_code')
-    page.go_back # get_rack_session_key navigates away.
-
-    click_on t('links.sign_out')
-
-    fill_in_credentials_and_submit(email, password)
+  scenario 'lets them reactivate their profile with their personal key', email: true do
+    user = create(:user, :fully_registered, :with_pending_gpo_profile)
+    visit new_user_session_path
+    fill_in_credentials_and_submit(user.email, user.password)
     fill_in I18n.t('components.one_time_code_input.label'), with: last_phone_otp
     click_submit_default
 
-    fill_in 'gpo_verify_form_otp', with: gpo_code
+    fill_in 'gpo_verify_form_otp', with: 'ABCDE12345'
     click_on t('idv.gpo.form.submit')
 
     personal_key = scrape_personal_key

@@ -20,7 +20,14 @@ class ServiceProvider < ApplicationRecord
            primary_key: 'issuer',
            dependent: :destroy
 
-  # Do not define validations in this model.
+  has_one :integration,
+          inverse_of: :service_provider,
+          foreign_key: 'issuer',
+          primary_key: 'issuer',
+          class_name: 'Agreements::Integration',
+          dependent: nil
+
+  # Do not define validations in this model
   # See https://github.com/18F/identity_validations
   include IdentityValidations::ServiceProviderValidation
 
@@ -61,6 +68,11 @@ class ServiceProvider < ApplicationRecord
 
     @allowed_list ||= config
     @allowed_list.include? issuer
+  end
+
+  def biometric_ial_allowed?
+    IdentityConfig.store.biometric_ial_enabled &&
+      IdentityConfig.store.allowed_biometric_ial_providers.include?(issuer)
   end
 
   private

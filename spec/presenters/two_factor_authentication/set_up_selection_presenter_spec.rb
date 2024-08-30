@@ -17,7 +17,7 @@ RSpec.describe TwoFactorAuthentication::SetUpSelectionPresenter do
     it 'renders captured block content' do
       view_context = ActionController::Base.new.view_context
 
-      expect(view_context).to receive(:capture) do |*args, &block|
+      expect(view_context).to receive(:capture) do |*_args, &block|
         expect(block.call).to eq('content')
       end
 

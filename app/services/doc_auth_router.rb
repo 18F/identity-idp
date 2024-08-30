@@ -58,10 +58,9 @@ module DocAuthRouter
       'doc_auth.errors.alerts.ref_control_number_check',
     # i18n-tasks-use t('doc_auth.errors.general.selfie_failure')
     DocAuth::Errors::SELFIE_FAILURE => 'doc_auth.errors.general.selfie_failure',
-    # i18n-tasks-use t('doc_auth.errors.alerts.selfie_not_live')
-    DocAuth::Errors::SELFIE_NOT_LIVE => 'doc_auth.errors.alerts.selfie_not_live',
-    # i18n-tasks-use t('doc_auth.errors.alerts.selfie_poor_quality')
-    DocAuth::Errors::SELFIE_POOR_QUALITY => 'doc_auth.errors.alerts.selfie_poor_quality',
+    # i18n-tasks-use t('doc_auth.errors.alerts.selfie_not_live_or_poor_quality')
+    DocAuth::Errors::SELFIE_NOT_LIVE_OR_POOR_QUALITY =>
+      'doc_auth.errors.alerts.selfie_not_live_or_poor_quality',
     # i18n-tasks-use t('doc_auth.errors.alerts.sex_check')
     DocAuth::Errors::SEX_CHECK => 'doc_auth.errors.alerts.sex_check',
     # i18n-tasks-use t('doc_auth.errors.alerts.visible_color_check')
@@ -160,8 +159,8 @@ module DocAuthRouter
 
   # rubocop:disable Layout/LineLength
   # @param [Proc,nil] warn_notifier proc takes a hash, and should log that hash to events.log
-  def self.client(vendor_discriminator: nil, warn_notifier: nil, analytics: nil)
-    case doc_auth_vendor(discriminator: vendor_discriminator, analytics: analytics)
+  def self.client(vendor:, warn_notifier: nil)
+    case vendor
     when Idp::Constants::Vendors::LEXIS_NEXIS, 'lexisnexis' # Use constant once configured in prod
       DocAuthErrorTranslatorProxy.new(
         DocAuth::LexisNexis::LexisNexisClient.new(
@@ -191,19 +190,37 @@ module DocAuthRouter
         ),
       )
     else
-      raise "#{doc_auth_vendor(discriminator: vendor_discriminator)} is not a valid doc auth vendor"
+      raise "#{vendor} is not a valid doc auth vendor"
     end
   end
   # rubocop:enable Layout/LineLength
 
-  def self.doc_auth_vendor(discriminator: nil, analytics: nil)
-    case AbTests::DOC_AUTH_VENDOR.bucket(discriminator)
-    when :alternate_vendor
-      IdentityConfig.store.doc_auth_vendor_randomize_alternate_vendor
-    else
-      analytics&.idv_doc_auth_randomizer_defaulted if discriminator.blank?
-
-      IdentityConfig.store.doc_auth_vendor
+  def self.doc_auth_vendor_for_bucket(bucket)
+    case bucket
+    when :socure
+      Idp::Constants::Vendors::SOCURE
+    when :lexis_nexis
+      Idp::Constants::Vendors::LEXIS_NEXIS
+    else # e.g., nil
+      IdentityConfig.store.doc_auth_vendor_default
     end
+  end
+
+  def self.doc_auth_vendor(
+    request:,
+    service_provider:,
+    session:,
+    user:,
+    user_session:
+  )
+    bucket = AbTests::DOC_AUTH_VENDOR.bucket(
+      request:,
+      service_provider:,
+      session:,
+      user:,
+      user_session:,
+    )
+
+    doc_auth_vendor_for_bucket(bucket)
   end
 end

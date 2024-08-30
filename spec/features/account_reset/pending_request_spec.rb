@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'Pending account reset request sign in', allowed_extra_analytics: [:*] do
+RSpec.feature 'Pending account reset request sign in' do
   it 'gives the option to cancel the request on sign in' do
     allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(999)
 
@@ -31,7 +31,7 @@ RSpec.feature 'Pending account reset request sign in', allowed_extra_analytics: 
     expect(page).to have_content(t('account_reset.pending.header'))
 
     click_on t('account_reset.pending.cancel_request')
-    click_on t('forms.buttons.continue')
+    click_on t('account_reset.pending.cancel_request')
     expect(page).to have_content(t('account_reset.pending.canceled'))
 
     click_on t('links.continue_sign_in')

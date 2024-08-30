@@ -13,7 +13,6 @@ RSpec.describe PhoneInputComponent, type: :component do
   let(:confirmed_phone) { true }
   let(:required) { nil }
   let(:delivery_methods) { nil }
-  let(:captcha_exempt_countries) { nil }
   let(:tag_options) { {} }
   let(:options) do
     {
@@ -22,7 +21,6 @@ RSpec.describe PhoneInputComponent, type: :component do
       confirmed_phone:,
       required:,
       delivery_methods:,
-      captcha_exempt_countries:,
       **tag_options,
     }.compact
   end
@@ -132,20 +130,6 @@ RSpec.describe PhoneInputComponent, type: :component do
         visible: false,
         text: t('two_factor_authentication.otp_delivery_preference.voice_unsupported'),
       )
-    end
-  end
-
-  describe '[data-captcha-exempt-countries] attribute' do
-    it 'is not assigned' do
-      expect(rendered).not_to have_css('[data-captcha-exempt-countries]')
-    end
-
-    context 'with captcha exempted countries' do
-      let(:captcha_exempt_countries) { [:US] }
-
-      it 'is assigned as a serialized array' do
-        expect(rendered).to have_css('[data-captcha-exempt-countries="[\"US\"]"]')
-      end
     end
   end
 

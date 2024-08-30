@@ -10,15 +10,12 @@
   </ul>
 
   <% c.with_action_button(
-       action: ->(**tag_options, &block) do
-         link_to(idv_enter_password_path, **tag_options, &block)
-       end,
+       url: idv_enter_password_path,
      ) { t('idv.forgot_password.try_again') } %>
 
   <% c.with_action_button(
-       action: ->(**tag_options, &block) do
-         button_to(idv_forgot_password_path, method: :post, **tag_options, &block)
-       end,
+       url: idv_forgot_password_path,
+       method: :post,
        outline: true,
      ) { t('idv.forgot_password.reset_password') } %>
 <% end %>

@@ -27,20 +27,12 @@ module UnconfirmedUserConcern
       errors: { email: [t('errors.messages.already_confirmed')] },
       user_id: @user.uuid,
     )
-    irs_attempts_api_tracker.user_registration_email_confirmation(
-      email: @email_address.email,
-      success: false,
-    )
   end
 
   def stop_if_invalid_token
     result = email_confirmation_token_validator.submit
     analytics.user_registration_email_confirmation(**result.to_h)
     return if result.success?
-    irs_attempts_api_tracker.user_registration_email_confirmation(
-      email: @email_address&.email,
-      success: false,
-    )
     process_unsuccessful_confirmation
   end
 
@@ -62,7 +54,7 @@ module UnconfirmedUserConcern
   def process_unsuccessful_confirmation
     @confirmation_token = params[:confirmation_token]
     flash[:error] = unsuccessful_confirmation_error
-    redirect_to sign_up_email_resend_url(request_id: params[:_request_id])
+    redirect_to sign_up_register_url(request_id: params[:_request_id])
   end
 
   def unsuccessful_confirmation_error

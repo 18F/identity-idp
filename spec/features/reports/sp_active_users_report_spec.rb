@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'sp active users report', allowed_extra_analytics: [:*] do
+RSpec.feature 'sp active users report' do
   include SamlAuthHelper
   include OidcAuthHelper
   include IdvHelper

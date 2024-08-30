@@ -81,6 +81,7 @@ module DataRequests
         <<~QUERY
           fields @timestamp, @message
           | filter properties.user_id = '#{uuid}' and name != 'IRS Attempt API: Event metadata'
+          | limit #{Reporting::CloudwatchClient::MAX_RESULTS_LIMIT}
         QUERY
       end
 

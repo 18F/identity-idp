@@ -13,21 +13,23 @@ module Idv
       had_barcode_attention_error
       had_barcode_read_failure
       idv_consent_given
+      idv_consent_given_at
       idv_phone_step_document_capture_session_uuid
       mail_only_warning_shown
       opted_in_to_in_person_proofing
       personal_key
       personal_key_acknowledged
       phone_for_mobile_flow
-      pii_from_doc
       previous_phone_step_params
       profile_id
+      proofing_started_at
       redo_document_capture
       resolution_successful
       selfie_check_performed
       selfie_check_required
       skip_doc_auth
       skip_doc_auth_from_handoff
+      skip_doc_auth_from_how_to_verify
       skip_hybrid_handoff
       ssn
       threatmetrix_review_status
@@ -62,7 +64,16 @@ module Idv
       VALID_SESSION_ATTRIBUTES.include?(attr_name_sym) || super
     end
 
-    def create_profile_from_applicant_with_password(user_password)
+    def create_profile_from_applicant_with_password(user_password, is_enhanced_ipp)
+      if user_has_unscheduled_in_person_enrollment?
+        UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
+          user: current_user,
+          pii: Pii::Attributes.new_from_hash(applicant),
+          is_enhanced_ipp: is_enhanced_ipp,
+          opt_in: opt_in_param,
+        )
+      end
+
       profile_maker = build_profile_maker(user_password)
       profile = profile_maker.save_profile(
         fraud_pending_reason: threatmetrix_fraud_pending_reason,
@@ -85,12 +96,6 @@ module Idv
 
       if profile.gpo_verification_pending?
         create_gpo_entry(profile_maker.pii_attributes, profile)
-      elsif profile.in_person_verification_pending?
-        UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
-          current_user,
-          profile_maker.pii_attributes,
-          opt_in_param,
-        )
       end
     end
 
@@ -169,18 +174,52 @@ module Idv
       session[:failed_phone_step_params] ||= []
     end
 
+    def pii_from_doc=(new_pii_from_doc)
+      if new_pii_from_doc.blank?
+        session[:pii_from_doc] = nil
+      else
+        session[:pii_from_doc] = new_pii_from_doc.to_h
+      end
+    end
+
+    def pii_from_doc
+      return nil if session[:pii_from_doc].blank?
+      Pii::StateId.new(**session[:pii_from_doc].slice(*Pii::StateId.members))
+    end
+
+    def updated_user_address=(updated_user_address)
+      if updated_user_address.blank?
+        session[:updated_user_address] = nil
+      else
+        session[:updated_user_address] = updated_user_address.to_h
+      end
+    end
+
+    def updated_user_address
+      return nil if session[:updated_user_address].blank?
+      Pii::Address.new(**session[:updated_user_address])
+    end
+
     def add_failed_phone_step_number(phone)
       parsed_phone = Phonelib.parse(phone)
       phone_e164 = parsed_phone.e164
       failed_phone_step_numbers << phone_e164 if !failed_phone_step_numbers.include?(phone_e164)
     end
 
-    def has_pii_from_user_in_flow_session
+    def proofing_workflow_time_in_seconds
+      Time.zone.now - Time.zone.parse(proofing_started_at) if proofing_started_at.present?
+    end
+
+    def pii_from_user_in_flow_session
       user_session.dig('idv/in_person', :pii_from_user)
     end
 
+    def has_pii_from_user_in_flow_session?
+      !!pii_from_user_in_flow_session
+    end
+
     def invalidate_in_person_pii_from_user!
-      if has_pii_from_user_in_flow_session
+      if has_pii_from_user_in_flow_session?
         user_session['idv/in_person'][:pii_from_user] = nil
         # Mark the FSM step as incomplete so that it can be re-entered.
         user_session['idv/in_person'].delete('Idv::Steps::InPerson::StateIdStep')
@@ -188,16 +227,16 @@ module Idv
     end
 
     def remote_document_capture_complete?
-      pii_from_doc
+      pii_from_doc.present?
     end
 
     def ipp_document_capture_complete?
-      has_pii_from_user_in_flow_session &&
+      has_pii_from_user_in_flow_session? &&
         user_session['idv/in_person'][:pii_from_user].has_key?(:address1)
     end
 
     def ipp_state_id_complete?
-      has_pii_from_user_in_flow_session &&
+      has_pii_from_user_in_flow_session? &&
         user_session['idv/in_person'][:pii_from_user].has_key?(:identity_doc_address1)
     end
 
@@ -259,7 +298,7 @@ module Idv
 
     private
 
-    attr_accessor :user_session
+    attr_reader :user_session
 
     def set_idv_session
       user_session[:idv] = new_idv_session unless user_session.key?(:idv)
@@ -291,6 +330,10 @@ module Idv
       when 'review'
         'threatmetrix_review'
       end
+    end
+
+    def user_has_unscheduled_in_person_enrollment?
+      current_user.has_establishing_in_person_enrollment?
     end
   end
 end

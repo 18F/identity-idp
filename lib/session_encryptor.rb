@@ -161,7 +161,7 @@ class SessionEncryptor
       if IdentityConfig.store.session_encryptor_alert_enabled
         NewRelic::Agent.notice_error(
           exception, custom_params: {
-            session_structure: hash.deep_transform_values { |v| nil },
+            session_structure: hash.deep_transform_values { |_v| nil },
           }
         )
       else

@@ -32,11 +32,18 @@ RSpec.describe BlockLinkComponent, type: :component do
   context 'with a component' do
     before do
       stub_const(
-        'TestComponent', Class.new(BaseComponent) do
-                           def call
-                             content_tag(:div, 'from test component', class: 'style')
-                           end
-                         end
+        'TestComponent',
+        Class.new(BaseComponent) do
+          attr_reader :tag_options
+
+          def initialize(**tag_options)
+            @tag_options = tag_options
+          end
+
+          def call
+            content_tag(:div, 'from test component', class: 'style')
+          end
+        end,
       )
     end
 

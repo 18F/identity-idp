@@ -5,11 +5,9 @@ RSpec.describe UserEventCreator do
   let(:ip_address) { '4.4.4.4' }
   let(:existing_device_cookie) { 'existing_device_cookie' }
   let(:cookie_jar) do
-    {
-      device: existing_device_cookie,
-    }.with_indifferent_access.tap do |cookie_jar|
-      allow(cookie_jar).to receive(:permanent).and_return({})
-    end
+    cookie_jar = ActionDispatch::Cookies::CookieJar.new(Rails.configuration.action_dispatch)
+    cookie_jar.permanent[:device] = existing_device_cookie if existing_device_cookie
+    cookie_jar
   end
   let(:request) do
     double(
@@ -41,6 +39,12 @@ RSpec.describe UserEventCreator do
         expect(device.last_ip).to eq(ip_address)
         expect(device.last_used_at).to be_within(1).of(Time.zone.now)
       end
+
+      it 'refreshes the permanent cookie' do
+        expect(cookie_jar.permanent).to receive(:[]=).with(:device, existing_device_cookie)
+
+        subject.create_user_event(event_type, user)
+      end
     end
 
     context 'when a device exists that is not associated with the user' do
@@ -56,17 +60,6 @@ RSpec.describe UserEventCreator do
         expect(event.device.id).to_not eq(device.reload.id)
         expect(event.device.last_ip).to eq(ip_address)
         expect(event.device.last_used_at).to be_within(1).of(Time.zone.now)
-      end
-
-      it 'alerts the user if they have other devices' do
-        allow(UserAlerts::AlertUserAboutNewDevice).to receive(:call)
-        create(:device, user: user)
-
-        event, _disavowal_token = subject.create_user_event(event_type, user)
-
-        expect(event).to be_a(Event)
-        expect(UserAlerts::AlertUserAboutNewDevice).to have_received(:call).
-          with(user, user.events.first.device, instance_of(String))
       end
     end
 
@@ -92,17 +85,12 @@ RSpec.describe UserEventCreator do
 
           expect(event.device.cookie_uuid.length).to eq(UserEventCreator::COOKIE_LENGTH)
         end
-      end
 
-      it 'alerts the user if they have other devices' do
-        allow(UserAlerts::AlertUserAboutNewDevice).to receive(:call)
-        create(:device, user: user)
-
-        event, _disavowal_token = subject.create_user_event(event_type, user)
-
-        expect(event).to be_a(Event)
-        expect(UserAlerts::AlertUserAboutNewDevice).to have_received(:call).
-          with(user, user.events.first.device, instance_of(String))
+        it 'saves the cookie permanently' do
+          expect { subject.create_user_event(event_type, user) }.to change { cookie_jar[:device] }.
+            from(nil).
+            to(lambda { |value| value == Device.last.cookie_uuid })
+        end
       end
     end
   end

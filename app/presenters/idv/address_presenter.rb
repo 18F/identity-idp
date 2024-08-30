@@ -2,14 +2,6 @@
 
 module Idv
   class AddressPresenter
-    def initialize(pii:)
-      @pii = pii
-    end
-
-    def pii
-      @pii
-    end
-
     def address_line1_hint
       "#{I18n.t('forms.example')} 150 Calle A Apt 3"
     end

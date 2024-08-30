@@ -87,6 +87,38 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
     validate_return_to_sp
   end
 
+  scenario 'Verify by mail' do
+    visit_idp_from_sp_with_ial2(sp)
+    user = sign_up_and_2fa_ial1_user
+    complete_all_doc_auth_steps
+
+    enter_gpo_flow
+    test_go_back_from_request_letter
+    complete_request_letter
+    complete_enter_password_step(user)
+
+    try_to_go_back_from_letter_enqueued
+    validate_letter_enqueued_page
+    complete_letter_enqueued
+    validate_return_to_sp
+
+    visit sign_out_url
+    user.reload
+
+    visit_idp_from_sp_with_ial2(sp)
+
+    sign_in_live_with_2fa(user)
+
+    complete_gpo_verification(user)
+    expect(user.identity_verified?).to be(true)
+
+    acknowledge_and_confirm_personal_key
+    validate_idv_completed_page(user)
+    click_agree_and_continue
+
+    validate_return_to_sp
+  end
+
   context 'with an sp that allows in person proofing' do
     before do
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
@@ -95,36 +127,18 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
         update(in_person_proofing_enabled: true)
     end
 
-    scenario 'In person proofing verify by mail', allow_browser_log: true do
+    scenario 'In person proofing', allow_browser_log: true do
       visit_idp_from_sp_with_ial2(sp)
       user = sign_up_and_2fa_ial1_user
 
       begin_in_person_proofing
       complete_all_in_person_proofing_steps(user)
       test_restart_in_person_flow(user)
-
-      enter_gpo_flow
-      test_go_back_from_request_letter
-      complete_request_letter
+      complete_otp_verification_page(user)
 
       test_go_back_in_person_flow
+
       complete_enter_password_step(user)
-
-      try_to_go_back_from_letter_enqueued
-      validate_letter_enqueued_page
-      complete_letter_enqueued
-      validate_return_to_sp
-
-      visit sign_out_url
-      user.reload
-
-      visit_idp_from_sp_with_ial2(sp)
-
-      sign_in_live_with_2fa(user)
-
-      complete_gpo_verification(user)
-      expect(user.identity_verified?).to be(false)
-
       acknowledge_and_confirm_personal_key
 
       expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
@@ -255,7 +269,6 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
     expect(page).to have_content(t('doc_auth.forms.doc_success'))
     expect(user.proofing_component.resolution_check).to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
     expect(user.proofing_component.source_check).to eq(Idp::Constants::Vendors::AAMVA)
-    expect(DocAuthLog.find_by(user_id: user.id).aamva).to eq(true)
   end
 
   def validate_phone_page
@@ -323,9 +336,9 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
 
   def validate_letter_enqueued_page
     expect(page).to have_current_path(idv_letter_enqueued_path)
-    expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
+    expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_address'))
     expect(page).to have_content(t('idv.titles.come_back_later'))
-    expect(page).not_to have_content(t('step_indicator.flows.idv.verify_phone_or_address'))
+    expect(page).not_to have_content(t('step_indicator.flows.idv.verify_phone'))
   end
 
   def validate_personal_key_page
@@ -342,14 +355,14 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
     expect(page).to have_content(t('idv.messages.confirm'))
     expect(page).to have_css(
       '.step-indicator__step--complete',
-      text: t('step_indicator.flows.idv.verify_phone_or_address'),
+      text: t('step_indicator.flows.idv.verify_phone'),
     )
     expect(page).to have_css(
       '.step-indicator__step--complete',
-      text: t('step_indicator.flows.idv.secure_account'),
+      text: t('step_indicator.flows.idv.re_enter_password'),
     )
     expect(page).not_to have_css('.step-indicator__step--current')
-    expect(page).not_to have_content(t('step_indicator.flows.idv.get_a_letter'))
+    expect(page).not_to have_content(t('step_indicator.flows.idv.verify_address'))
 
     # Refreshing shows same page (BUT with new personal key, we should warn the user)
     visit current_path
@@ -488,7 +501,7 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
     go_back
     expect(page).to have_current_path(idv_phone_path)
     go_back
-    expect(page).to have_current_path(idv_in_person_verify_info_path)
+    expect(page).to have_current_path(idv_verify_info_path)
     2.times { go_forward }
     expect(page).to have_current_path(idv_request_letter_path)
   end

@@ -88,10 +88,11 @@ export function useAcuant() {
         // @ts-ignore
         initialize: (_credentials, _endpoint, { onSuccess, onFail }) =>
           isSuccess ? onSuccess() : onFail(401, 'Server returned a 401 (missing credentials).'),
-        startWorkers: sinon.stub().callsArg(0),
+        start: sinon.stub().callsArg(0),
         START_FAIL_CODE: 'start-fail-code',
         REPEAT_FAIL_CODE: 'repeat-fail-code',
         SEQUENCE_BREAK_CODE: 'sequence-break-code',
+        setUnexpectedErrorCallback: sinon.stub(),
       };
       // @ts-ignore
       window.AcuantCamera = { isCameraSupported, triggerCapture };

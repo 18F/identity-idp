@@ -13,6 +13,6 @@ module Mailable
   end
 
   def attach_images
-    attachments.inline['logo.png'] = File.read('app/assets/images/logo.png')
+    attachments.inline['logo.png'] = File.read('app/assets/images/email/logo.png')
   end
 end

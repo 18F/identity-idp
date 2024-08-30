@@ -394,6 +394,24 @@ RSpec.describe User do
     end
   end
 
+  describe '#has_establishing_in_person_enrollment?' do
+    context 'when the user has an establishing in person enrollment' do
+      before do
+        create(:in_person_enrollment, :establishing, user: subject)
+      end
+
+      it 'returns true' do
+        expect(subject.has_establishing_in_person_enrollment?).to be(true)
+      end
+    end
+
+    context 'when the user does not have an establishing in person enrollment' do
+      it 'returns false' do
+        expect(subject.has_establishing_in_person_enrollment?).to be(false)
+      end
+    end
+  end
+
   describe 'deleting identities' do
     it 'does not delete identities when the user is destroyed preventing uuid reuse' do
       user = create(:user, :fully_registered)
@@ -567,7 +585,7 @@ RSpec.describe User do
   end
 
   describe '#accepted_rules_of_use_still_valid?' do
-    let(:rules_of_use_horizon_years) { 6 }
+    let(:rules_of_use_horizon_years) { 5 }
     let(:rules_of_use_updated_at) { 1.day.ago }
     let(:accepted_terms_at) { nil }
     let(:user) { create(:user, :fully_registered, accepted_terms_at: accepted_terms_at) }
@@ -601,9 +619,9 @@ RSpec.describe User do
     end
 
     context 'with a user who accepted the rules of use more than 6 years ago' do
-      let(:rules_of_use_horizon_years) { 6 }
-      let(:rules_of_use_updated_at) { 7.years.ago }
-      let(:accepted_terms_at) { 6.years.ago - 1.day }
+      let(:rules_of_use_horizon_years) { 5 }
+      let(:rules_of_use_updated_at) { 6.years.ago }
+      let(:accepted_terms_at) { 5.years.ago - 1.day }
 
       it 'should return a falsey value' do
         expect(user.accepted_rules_of_use_still_valid?).to be_falsey
@@ -963,7 +981,7 @@ RSpec.describe User do
       context 'user is not already suspended' do
         let(:mock_session_id) { SecureRandom.uuid }
         before do
-          UpdateUser.new(user: user, attributes: { unique_session_id: mock_session_id }).call
+          user.update!(unique_session_id: mock_session_id)
         end
 
         it 'creates SuspendedEmail records for each email address' do
@@ -1000,7 +1018,7 @@ RSpec.describe User do
           OutOfBandSessionAccessor.new(mock_session_id).put_pii(
             profile_id: 123,
             pii: { first_name: 'Mario' },
-            expiration: 5.minutes.to_i,
+            expiration: 5.minutes.in_seconds,
           )
 
           expect(OutOfBandSessionAccessor.new(mock_session_id).exists?).to eq true
@@ -1297,7 +1315,7 @@ RSpec.describe User do
 
   describe '#visible_email_addresses' do
     let(:user) { create(:user) }
-    let(:confirmed_email_address) { user.email_addresses.detect(&:confirmed?) }
+    let(:confirmed_email_address) { user.email_addresses.find(&:confirmed?) }
     let!(:unconfirmed_expired_email_address) do
       create(
         :email_address,
@@ -1415,7 +1433,7 @@ RSpec.describe User do
     end
   end
 
-  describe '#identity_verified_with_selfie?' do
+  describe '#identity_verified_with_biometric_comparison?' do
     let(:user) { create(:user) }
     let(:active_profile) do
       create(
@@ -1428,17 +1446,23 @@ RSpec.describe User do
     it 'returns true if user has an active profile with selfie' do
       active_profile.idv_level = :unsupervised_with_selfie
       active_profile.save
-      expect(user.identity_verified_with_selfie?).to eq true
+      expect(user.identity_verified_with_biometric_comparison?).to eq true
     end
 
     it 'returns false if user has an active profile without selfie' do
-      expect(user.identity_verified_with_selfie?).to eq false
+      expect(user.identity_verified_with_biometric_comparison?).to eq false
+    end
+
+    it 'return true if user has an active in-person profile' do
+      active_profile.idv_level = :in_person
+      active_profile.save
+      expect(user.identity_verified_with_biometric_comparison?).to eq true
     end
 
     context 'user does not have active profile' do
       let(:active_profile) { nil }
       it 'returns false' do
-        expect(user.identity_verified_with_selfie?).to eq false
+        expect(user.identity_verified_with_biometric_comparison?).to eq false
       end
     end
   end
@@ -1534,52 +1558,47 @@ RSpec.describe User do
     end
   end
 
-  describe '#new_device?' do
-    let(:user_agent) { 'A computer on the internet' }
-    let(:ip_address) { '4.4.4.4' }
-    let(:existing_device_cookie) { 'existing_device_cookie' }
-    let(:cookie_jar) do
-      {
-        device: existing_device_cookie,
-      }.with_indifferent_access.tap do |cookie_jar|
-        allow(cookie_jar).to receive(:permanent).and_return({})
-      end
-    end
-    let(:request) do
-      double(
-        remote_ip: ip_address,
-        user_agent: user_agent,
-        cookie_jar: cookie_jar,
-      )
-    end
+  describe '#authenticated_device?' do
     let(:user) { create(:user, :fully_registered) }
-    let(:device) { create(:device, user: user, cookie_uuid: existing_device_cookie) }
+    let(:device) { create(:device, user:) }
+    let(:cookie_uuid) { device.cookie_uuid }
+    subject(:result) { user.authenticated_device?(cookie_uuid:) }
 
-    context 'with existing device' do
+    context 'with blank cookie uuid' do
+      let(:cookie_uuid) { nil }
+
+      it { expect(result).to eq(false) }
+    end
+
+    context 'with cookie uuid not matching user device' do
+      let(:cookie_uuid) { 'invalid' }
+
+      it { expect(result).to eq(false) }
+    end
+
+    context 'with existing device without sign_in_after_2fa event' do
       before do
-        # Memoize user and device before specs run
-        user
-        device
+        create(:event, device:, event_type: :sign_in_before_2fa)
       end
-      it 'does not expect a device to be new' do
-        cookies = request.cookie_jar
-        device_present = user.new_device?(cookie_uuid: cookies[:device])
-        expect(device_present).to eq(false)
+
+      it { expect(result).to eq(false) }
+
+      context 'with account_created event' do
+        before do
+          create(:event, device:, event_type: :account_created)
+        end
+
+        it { expect(result).to eq(true) }
       end
     end
 
-    context 'with new device' do
-      let(:device) { create(:device, user: user, cookie_uuid: 'non_existing_device_cookie') }
+    context 'with existing device with sign_in_after_2fa event' do
       before do
-        # Memoize user and device before specs run
-        user
-        device
+        create(:event, device:, event_type: :sign_in_before_2fa)
+        create(:event, device:, event_type: :sign_in_after_2fa)
       end
-      it 'expects a new device' do
-        cookies = request.cookie_jar
-        device_present = user.new_device?(cookie_uuid: cookies[:device])
-        expect(device_present).to eq(true)
-      end
+
+      it { expect(result).to eq(true) }
     end
   end
 
@@ -1675,36 +1694,39 @@ RSpec.describe User do
     end
   end
 
-  describe '#reproof_for_irs?' do
-    let(:service_provider) { create(:service_provider) }
-
-    it 'returns false if the service provider is not an attempts API service provider' do
-      user = create(:user, :proofed)
-
-      expect(user.reproof_for_irs?(service_provider: service_provider)).to be_falsy
+  describe '#has_fed_or_mil_email?' do
+    before do
+      allow(IdentityConfig.store).to receive(:use_fed_domain_class).and_return(false)
     end
 
-    context 'an attempts API service provider' do
-      let(:service_provider) { create(:service_provider, :irs) }
-
-      it 'returns false if the user has not proofed before' do
-        user = create(:user)
-
-        expect(user.reproof_for_irs?(service_provider: service_provider)).to be_falsy
+    context 'with a valid fed email in domain file' do
+      let(:user) { create(:user, email: 'example@example.gov') }
+      it 'should return true' do
+        expect(user.has_fed_or_mil_email?).to eq(true)
       end
+    end
 
-      it 'returns false if the active profile initiating SP was an attempts API SP' do
-        user = create(:user, :proofed)
-
-        user.active_profile.update!(initiating_service_provider: service_provider)
-
-        expect(user.reproof_for_irs?(service_provider: service_provider)).to be_falsy
+    context 'with use_fed_domain_class set to false and random .gov email' do
+      let(:user) { create(:user, email: 'example@example.gov') }
+      before do
+        allow(IdentityConfig.store).to receive(:use_fed_domain_class).and_return(false)
       end
+      it 'should return true' do
+        expect(user.has_fed_or_mil_email?).to eq(true)
+      end
+    end
 
-      it 'returns true if the active profile initiating SP was not an attempts API SP' do
-        user = create(:user, :proofed)
+    context 'with a valid mil email' do
+      let(:user) { create(:user, email: 'example@example.mil') }
+      it 'should return true' do
+        expect(user.has_fed_or_mil_email?).to eq(true)
+      end
+    end
 
-        expect(user.reproof_for_irs?(service_provider: service_provider)).to be_truthy
+    context 'with an invalid fed or mil email' do
+      let(:user) { create(:user, email: 'example@example.com') }
+      it 'should return false' do
+        expect(user.has_fed_or_mil_email?).to eq(false)
       end
     end
   end

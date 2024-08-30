@@ -1,73 +1,20 @@
 require 'rails_helper'
 
-RSpec.describe DocAuthRouter, allowed_extra_analytics: [:*] do
+RSpec.describe DocAuthRouter do
   describe '.client' do
-    before do
-      allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(doc_auth_vendor)
-    end
-
     context 'for lexisnexis' do
-      let(:doc_auth_vendor) { Idp::Constants::Vendors::LEXIS_NEXIS }
-
+      subject do
+        DocAuthRouter.client(vendor: 'lexisnexis')
+      end
       it 'is a translation-proxied lexisnexis client' do
-        expect(DocAuthRouter.client).to be_a(DocAuthRouter::DocAuthErrorTranslatorProxy)
-        expect(DocAuthRouter.client.client).to be_a(DocAuth::LexisNexis::LexisNexisClient)
+        expect(subject).to be_a(DocAuthRouter::DocAuthErrorTranslatorProxy)
+        expect(subject.client).to be_a(DocAuth::LexisNexis::LexisNexisClient)
       end
     end
 
     context 'other config' do
-      let(:doc_auth_vendor) { 'unknown' }
-
       it 'errors' do
-        expect { DocAuthRouter.client }.to raise_error(RuntimeError)
-      end
-    end
-  end
-
-  describe '.doc_auth_vendor' do
-    def reload_ab_test_initializer!
-      # undefine the AB tests instances so we can re-initialize them with different config values
-      AbTests.constants.each do |const_name|
-        AbTests.class_eval { remove_const(const_name) }
-      end
-      load Rails.root.join('config', 'initializers', 'ab_tests.rb').to_s
-    end
-
-    let(:doc_auth_vendor) { 'test1' }
-    let(:doc_auth_vendor_randomize_alternate_vendor) { 'test2' }
-    let(:analytics) { FakeAnalytics.new }
-    let(:doc_auth_vendor_randomize_percent) { 57 }
-    let(:doc_auth_vendor_randomize) { true }
-
-    before do
-      allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(doc_auth_vendor)
-      allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_alternate_vendor).
-        and_return(doc_auth_vendor_randomize_alternate_vendor)
-
-      allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_percent).
-        and_return(doc_auth_vendor_randomize_percent)
-      allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize).
-        and_return(doc_auth_vendor_randomize)
-
-      reload_ab_test_initializer!
-    end
-
-    after do
-      allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_percent).
-        and_call_original
-      allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize).
-        and_call_original
-
-      reload_ab_test_initializer!
-    end
-
-    context 'with a nil discriminator' do
-      it 'is the default vendor, and logs analytics events' do
-        expect(analytics).to receive(:idv_doc_auth_randomizer_defaulted)
-
-        result = DocAuthRouter.doc_auth_vendor(discriminator: nil, analytics: analytics)
-
-        expect(result).to eq(doc_auth_vendor)
+        expect { DocAuthRouter.client(vendor: 'unknown') }.to raise_error(RuntimeError)
       end
     end
   end

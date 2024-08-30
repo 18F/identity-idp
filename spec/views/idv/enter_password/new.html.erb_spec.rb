@@ -11,7 +11,7 @@ RSpec.describe 'idv/enter_password/new.html.erb' do
       allow(view).to receive(:current_user).and_return(user)
       allow(view).to receive(:step_indicator_steps).
         and_return(Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS)
-      allow(view).to receive(:step_indicator_step).and_return(:secure_account)
+      allow(view).to receive(:step_indicator_step).and_return(:re_enter_password)
     end
 
     context 'user goes through phone finder' do
@@ -34,7 +34,7 @@ RSpec.describe 'idv/enter_password/new.html.erb' do
       it 'shows the step indicator' do
         expect(view.content_for(:pre_flash_content)).to have_css(
           '.step-indicator__step--current',
-          text: t('step_indicator.flows.idv.secure_account'),
+          text: t('step_indicator.flows.idv.re_enter_password'),
         )
       end
     end

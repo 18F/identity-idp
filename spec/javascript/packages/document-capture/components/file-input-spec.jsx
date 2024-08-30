@@ -268,6 +268,100 @@ describe('document-capture/components/file-input', () => {
     expect(queryByAriaLabel).to.exist();
   });
 
+  it('has aria-describedby set to null by default', () => {
+    const { getByLabelText } = render(<FileInput label="File" />);
+    const input = getByLabelText('File');
+    expect(input.getAttribute('aria-describedby')).to.be.null();
+  });
+
+  it('has aria-describedby set to hintId when hint shown and neither success or error shown', () => {
+    const { getByLabelText, container } = render(<FileInput label="File" hint="Must be small" />);
+
+    const labelElement = container.querySelector('.usa-hint');
+    const hintId = labelElement.getAttribute('id');
+    const input = getByLabelText('File');
+    expect(input.getAttribute('aria-describedby')).to.be.equal(hintId);
+  });
+
+  it('has aria-describedby set to errorId when only error message shown', () => {
+    const props = { fileUpdatedText: 'File updated', label: 'File', errorMessage: 'Oops!' };
+    const { getByLabelText, container } = render(<FileInput {...props} />);
+
+    // Extract the id of the error message
+    const errorMessageElement = container.querySelector('.usa-error-message');
+    const errorId = errorMessageElement.getAttribute('id');
+
+    // Now check that the aria-describedby is what we expect
+    const input = getByLabelText('File');
+    expect(input.getAttribute('aria-describedby')).to.be.equal(errorId);
+  });
+
+  it('has aria-describedby set to successId when only success message shown', () => {
+    const file2 = new window.File([file], 'file2.jpg');
+    const props = { fileUpdatedText: 'File updated', label: 'File' };
+    const { getByText, getByLabelText, container, rerender } = render(<FileInput {...props} />);
+
+    // The success message doesn't appear until the second file is uploaded successfully (AKA updated)
+    rerender(<FileInput {...props} value={file} />);
+    expect(() => getByText('File updated')).to.throw();
+
+    // Mock uploading the second file successfully
+    rerender(<FileInput {...props} value={file2} />);
+    expect(getByText('File updated')).to.be.ok();
+
+    // Extract the id of the success message
+    const successMessageElement = container.querySelector('.usa-success-message');
+    const successId = successMessageElement.getAttribute('id');
+
+    // Now check that the aria-describedby is what we expect
+    const input = getByLabelText('File');
+    expect(input.getAttribute('aria-describedby')).to.be.equal(successId);
+  });
+
+  it('has aria-describedby set to combination of errorId and hintId when hint and error shown', () => {
+    const props = {
+      fileUpdatedText: 'File updated',
+      label: 'File',
+      hint: 'Must be small',
+      errorMessage: 'Oops!',
+    };
+    const { getByLabelText, container } = render(<FileInput {...props} />);
+
+    // Extract the ids of the hint and error message
+    const labelElement = container.querySelector('.usa-hint');
+    const hintId = labelElement.getAttribute('id');
+    const errorMessageElement = container.querySelector('.usa-error-message');
+    const errorId = errorMessageElement.getAttribute('id');
+
+    // Now check that the aria-describedby is what we expect
+    const input = getByLabelText('File');
+    expect(input.getAttribute('aria-describedby')).to.be.equal(`${errorId} ${hintId}`);
+  });
+
+  it('has aria-describedby set to combination of successId and hintId when hint and success shown', () => {
+    const file2 = new window.File([file], 'file2.jpg');
+    const props = { fileUpdatedText: 'File updated', label: 'File', hint: 'Must be small' };
+    const { getByText, getByLabelText, container, rerender } = render(<FileInput {...props} />);
+
+    // The success message doesn't appear until the second file is uploaded successfully (AKA updated)
+    rerender(<FileInput {...props} value={file} />);
+    expect(() => getByText('File updated')).to.throw();
+
+    // Mock uploading the second file successfully
+    rerender(<FileInput {...props} value={file2} />);
+    expect(getByText('File updated')).to.be.ok();
+
+    // Extract the ids of the hint and success message
+    const labelElement = container.querySelector('.usa-hint');
+    const hintId = labelElement.getAttribute('id');
+    const successMessageElement = container.querySelector('.usa-success-message');
+    const successId = successMessageElement.getAttribute('id');
+
+    // Now check that the aria-describedby is what we expect
+    const input = getByLabelText('File');
+    expect(input.getAttribute('aria-describedby')).to.be.equal(`${successId} ${hintId}`);
+  });
+
   it('calls onClick when clicked', async () => {
     const onClick = sinon.stub();
     const { getByLabelText } = render(<FileInput label="File" onClick={onClick} />);

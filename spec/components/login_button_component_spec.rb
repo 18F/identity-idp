@@ -11,7 +11,9 @@ RSpec.describe LoginButtonComponent, type: :component do
   end
 
   it 'renders button text' do
-    expect(rendered).to have_text('Sign in with Login.gov')
+    rendered
+    element = page.find_css('.login-button').first
+    expect(element.text.squish).to have_text('Sign in with Login.gov')
   end
 
   it 'renders with design system classes and default color' do
@@ -42,10 +44,10 @@ RSpec.describe LoginButtonComponent, type: :component do
     end
   end
 
-  it 'raises error for unknown color' do
+  it 'validates color' do
     expect do
       render_inline LoginButtonComponent.new(color: 'foo')
-    end.to raise_error(ArgumentError)
+    end.to raise_error(ActiveModel::ValidationError)
   end
 
   context 'with tag options' do

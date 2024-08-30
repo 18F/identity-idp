@@ -1,17 +1,17 @@
 require 'rails_helper'
 
 RSpec.describe RecaptchaConcern, type: :controller do
-  controller ApplicationController do
-    include RecaptchaConcern
-
-    before_action :allow_csp_recaptcha_src
-
-    def index
-      render plain: ''
-    end
-  end
-
   describe '#allow_csp_recaptcha_src' do
+    controller ApplicationController do
+      include RecaptchaConcern
+
+      before_action :allow_csp_recaptcha_src
+
+      def index
+        render plain: ''
+      end
+    end
+
     it 'overrides csp to add directives for recaptcha' do
       get :index
 
@@ -21,32 +21,50 @@ RSpec.describe RecaptchaConcern, type: :controller do
     end
   end
 
-  describe '#recoverable_recaptcha_error?' do
-    let(:form) { NewPhoneForm.new(user: build_stubbed(:user)) }
-    let(:errors) { ActiveModel::Errors.new(form) }
-    let(:result) { FormResponse.new(success: true, errors:) }
+  describe '#add_recaptcha_resource_hints' do
+    controller ApplicationController do
+      include RecaptchaConcern
 
-    subject(:recoverable_recaptcha_error) { controller.recoverable_recaptcha_error?(result) }
+      after_action :add_recaptcha_resource_hints
 
-    it { expect(recoverable_recaptcha_error).to eq(false) }
-
-    context 'with recaptcha token error' do
-      before do
-        errors.add(
-          :recaptcha_token,
-          t('errors.messages.invalid_recaptcha_token'),
-          type: :invalid_recaptcha_token,
-        )
-      end
-
-      it { expect(recoverable_recaptcha_error).to eq(true) }
-
-      context 'with error unrelated to recaptcha token' do
-        before do
-          errors.add(:phone, :blank, message: t('errors.messages.blank'))
+      def index
+        if params[:add_link]
+          response.headers['Link'] = '<https://example.com>;rel=preconnect'
         end
 
-        it { expect(recoverable_recaptcha_error).to eq(false) }
+        render plain: ''
+      end
+    end
+
+    subject(:response) { get :index }
+    let(:processed_links) do
+      response.headers['Link'].split(',').map { |link| link.split(';').map(&:chomp) }
+    end
+
+    it 'adds resource hints for recaptcha to response headers' do
+      response
+
+      expect(processed_links).to match_array(
+        [
+          ['<https://www.google.com>', 'rel=preconnect'],
+          ['<https://www.gstatic.com>', 'rel=preconnect', 'crossorigin'],
+        ],
+      )
+    end
+
+    context 'with existing link header' do
+      subject(:response) { get :index, params: { add_link: '' } }
+
+      it 'appends new resource hints' do
+        response
+
+        expect(processed_links).to match_array(
+          [
+            ['<https://example.com>', 'rel=preconnect'],
+            ['<https://www.google.com>', 'rel=preconnect'],
+            ['<https://www.gstatic.com>', 'rel=preconnect', 'crossorigin'],
+          ],
+        )
       end
     end
   end

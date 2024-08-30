@@ -7,7 +7,7 @@
 <%= tag.div id: 'document-capture-form', data: {
       app_name: APP_NAME,
       liveness_required: nil,
-      mock_client: (DocAuthRouter.doc_auth_vendor(discriminator: document_capture_session_uuid) == 'mock').presence,
+      mock_client: mock_client.presence,
       help_center_redirect_url: help_center_redirect_url(
         flow: :idv,
         step: :document_capture,
@@ -26,7 +26,6 @@
       sp_name: sp_name,
       flow_path: flow_path,
       cancel_url: idv_cancel_path(step: :document_capture),
-      exit_url: idv_exit_path,
       account_url: account_path,
       failure_to_proof_url: failure_to_proof_url,
       opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
@@ -35,14 +34,16 @@
       in_person_full_address_entry_enabled: IdentityConfig.store.in_person_full_address_entry_enabled,
       in_person_outage_message_enabled: IdentityConfig.store.in_person_outage_message_enabled,
       in_person_outage_expected_update_date: IdentityConfig.store.in_person_outage_expected_update_date,
-      us_states_territories: us_states_territories,
-      doc_auth_selfie_capture: FeatureManagement.idv_allow_selfie_check? && doc_auth_selfie_capture,
+      us_states_territories: @presenter.usps_states_territories,
+      doc_auth_selfie_capture: doc_auth_selfie_capture,
       doc_auth_selfie_desktop_test_mode: IdentityConfig.store.doc_auth_selfie_desktop_test_mode,
       skip_doc_auth: skip_doc_auth,
+      skip_doc_auth_from_how_to_verify: skip_doc_auth_from_how_to_verify,
       skip_doc_auth_from_handoff: skip_doc_auth_from_handoff,
       how_to_verify_url: idv_how_to_verify_url,
       previous_step_url: @previous_step_url,
-      ui_exit_question_section_enabled: IdentityConfig.store.doc_auth_exit_question_section_enabled,
+      locations_url: idv_in_person_usps_locations_url,
+      address_search_url: '',
     } %>
   <%= simple_form_for(
         :doc_auth,

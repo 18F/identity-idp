@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe FormResponse do
+  let(:success) { true }
+  let(:errors) { {} }
+  subject(:form_response) { FormResponse.new(success:, errors:) }
+
   describe '#success?' do
     context 'when the success argument is true' do
       it 'returns true' do
@@ -104,6 +108,37 @@ RSpec.describe FormResponse do
 
       combined_response = response1.merge(response2)
       expect(combined_response.success?).to eq(false)
+    end
+  end
+
+  describe '#first_error_message' do
+    let(:key) { nil }
+    subject(:first_error_message) { form_response.first_error_message(*[key].compact) }
+
+    context 'with no errors' do
+      let(:errors) { {} }
+
+      it { expect(first_error_message).to be_nil }
+    end
+
+    context 'with errors' do
+      let(:errors) { { email: ['invalid', 'too_short'], language: ['blank'] } }
+
+      context 'without specified key' do
+        let(:key) { nil }
+
+        it 'returns the first error of the first field' do
+          expect(first_error_message).to eq('invalid')
+        end
+      end
+
+      context 'with specified key' do
+        let(:key) { :language }
+
+        it 'returns the first error of the specified field' do
+          expect(first_error_message).to eq('blank')
+        end
+      end
     end
   end
 

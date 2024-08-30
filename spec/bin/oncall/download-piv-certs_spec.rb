@@ -68,15 +68,6 @@ RSpec.describe DownloadPivCerts do
       end
     end
 
-    let(:cloudwatch_client) do
-      instance_double(
-        'Reporting::CloudwatchClient',
-        fetch: [
-          { 'user_id' => 'abc123', 'key_id' => 'key123' },
-        ],
-      )
-    end
-
     before do
       Aws.config[:sts] = {
         stub_responses: {
@@ -99,7 +90,11 @@ RSpec.describe DownloadPivCerts do
         },
       }
 
-      allow(instance).to receive(:cloudwatch_client).and_return(cloudwatch_client)
+      stub_cloudwatch_logs(
+        [
+          { 'user_id' => 'abc123', 'key_id' => 'key123' },
+        ],
+      )
     end
 
     it 'writes certs to the tmpdir' do

@@ -4,13 +4,10 @@ module Idv
   module DocumentCaptureConcern
     extend ActiveSupport::Concern
 
+    include DocAuthVendorConcern
+
     def save_proofing_components(user)
       return unless user
-
-      doc_auth_vendor = DocAuthRouter.doc_auth_vendor(
-        discriminator: document_capture_session_uuid,
-        analytics: analytics,
-      )
 
       component_attributes = {
         document_check: doc_auth_vendor,
@@ -49,7 +46,8 @@ module Idv
     end
 
     def selfie_requirement_met?
-      !decorated_sp_session.selfie_required? || stored_result.selfie_check_performed?
+      !resolved_authn_context_result.biometric_comparison? ||
+        stored_result.selfie_check_performed?
     end
 
     private

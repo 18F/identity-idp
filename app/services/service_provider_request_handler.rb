@@ -63,12 +63,9 @@ class ServiceProviderRequestHandler
   def attributes
     {
       issuer: protocol.issuer,
-      ial: protocol.ial,
-      aal: protocol.aal,
       acr_values: protocol.acr_values,
       vtr: protocol.vtr,
       requested_attributes: protocol.requested_attributes,
-      biometric_comparison_required: protocol.biometric_comparison_required?,
       uuid: request_id,
       url: url,
     }

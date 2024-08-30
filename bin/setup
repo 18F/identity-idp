@@ -74,6 +74,6 @@ Dir.chdir APP_ROOT do
   run "make clobber_logs"
 
   puts "\n== Restarting application server =="
-  run "mkdir -p tmp"
+  run "mkdir -p tmp/pids"
   run "touch tmp/restart.txt"
 end

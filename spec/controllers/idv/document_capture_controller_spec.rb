@@ -21,7 +21,6 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
   end
 
   # selfie related test flags
-  let(:doc_auth_selfie_capture_enabled) { false }
   let(:sp_selfie_enabled) { false }
   let(:flow_path) { 'standard' }
 
@@ -30,8 +29,12 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
     stub_up_to(:hybrid_handoff, idv_session: subject.idv_session)
     stub_analytics
     subject.idv_session.document_capture_session_uuid = document_capture_session_uuid
-    allow(controller.decorated_sp_session).to receive(:selfie_required?).
-      and_return(doc_auth_selfie_capture_enabled && sp_selfie_enabled)
+
+    vot = sp_selfie_enabled ? 'Pb' : 'P1'
+    resolved_authn_context = Vot::Parser.new(vector_of_trust: vot).parse
+
+    allow(controller).to receive(:resolved_authn_context_result).
+      and_return(resolved_authn_context)
     subject.idv_session.flow_path = flow_path
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
@@ -40,10 +43,11 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
     it 'returns a valid StepInfo object' do
       expect(Idv::DocumentCaptureController.step_info).to be_valid
     end
+
     context 'when selfie feature is enabled system wide' do
-      let(:doc_auth_selfie_capture_enabled) { true }
       describe 'with sp selfie disabled' do
         let(:sp_selfie_enabled) { false }
+
         it 'does not satisfy precondition' do
           expect(Idv::DocumentCaptureController.step_info.preconditions.is_a?(Proc))
           expect(subject).to receive(:render).
@@ -52,16 +56,21 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
           expect(response).to render_template :show
         end
       end
+
       describe 'with sp selfie enabled' do
         let(:sp_selfie_enabled) { true }
+
         before do
           allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).
             and_return(false)
         end
+
         it 'does satisfy precondition' do
           expect(Idv::DocumentCaptureController.step_info.preconditions.is_a?(Proc))
           expect(subject).not_to receive(:render).with(:show, locals: an_instance_of(Hash))
+
           get :show
+
           expect(response).to redirect_to(idv_hybrid_handoff_path)
         end
       end
@@ -82,6 +91,13 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
         :check_for_mail_only_outage,
       )
     end
+
+    it 'includes setup_usps_form_presenter before_action' do
+      expect(subject).to have_actions(
+        :before,
+        :set_usps_form_presenter,
+      )
+    end
   end
 
   describe '#show' do
@@ -90,13 +106,15 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
       {
         analytics_id: 'Doc Auth',
         flow_path: 'standard',
-        redo_document_capture: nil,
-        skip_hybrid_handoff: nil,
-        irs_reproofing: false,
         step: 'document_capture',
         liveness_checking_required: false,
-        selfie_check_required: sp_selfie_enabled && doc_auth_selfie_capture_enabled,
+        selfie_check_required: sp_selfie_enabled,
       }.merge(ab_test_args)
+    end
+
+    it 'has non-nil presenter' do
+      get :show
+      expect(assigns(:presenter)).to be_kind_of(Idv::InPerson::UspsFormPresenter)
     end
 
     it 'renders the show template' do
@@ -114,7 +132,6 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
     end
 
     context 'when a selfie is requested' do
-      let(:doc_auth_selfie_capture_enabled) { true }
       let(:sp_selfie_enabled) { true }
       let(:desktop_selfie_enabled) { false }
       before do
@@ -200,13 +217,6 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
       end
     end
 
-    it 'does not use effective user outside of analytics_user in ApplicationControler' do
-      allow(subject).to receive(:analytics_user).and_return(subject.current_user)
-      expect(subject).not_to receive(:effective_user)
-
-      get :show
-    end
-
     context 'user is rate limited' do
       it 'redirects to rate limited page' do
         user = create(:user)
@@ -262,14 +272,18 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
     end
 
     context 'ipp disabled for sp' do
+      let(:sp_selfie_enabled) { true }
+
       before do
         allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).and_return(false)
         allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).with(anything).and_return(false)
-        allow(subject.decorated_sp_session).to receive(:selfie_required?).and_return(true)
       end
+
       it 'redirect back when accessed from handoff' do
         subject.idv_session.skip_hybrid_handoff = nil
+
         get :show, params: { step: 'hybrid_handoff' }
+
         expect(response).to redirect_to(idv_hybrid_handoff_url)
         expect(subject.idv_session.skip_doc_auth_from_handoff).to_not eq(true)
       end
@@ -284,12 +298,9 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
         errors: {},
         analytics_id: 'Doc Auth',
         flow_path: 'standard',
-        redo_document_capture: nil,
-        skip_hybrid_handoff: nil,
-        irs_reproofing: false,
         step: 'document_capture',
         liveness_checking_required: false,
-        selfie_check_required: sp_selfie_enabled && doc_auth_selfie_capture_enabled,
+        selfie_check_required: sp_selfie_enabled,
       }.merge(ab_test_args)
     end
     let(:result) { { success: true, errors: {} } }

@@ -31,6 +31,7 @@ Flags:
 - `--out-dir`: The output directory
 - `--watch`: Run in watch mode, recompiling files on change
 - `--load-path`: Include additional path in Sass path resolution
+- `--verbose` (`-v`): Output verbose debugging details
 
 ### API
 

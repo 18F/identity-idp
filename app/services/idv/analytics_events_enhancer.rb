@@ -25,7 +25,6 @@ module Idv
       idv_doc_auth_hybrid_handoff_visited
       idv_doc_auth_link_sent_submitted
       idv_doc_auth_link_sent_visited
-      idv_doc_auth_randomizer_defaulted
       idv_doc_auth_redo_ssn_submitted
       idv_doc_auth_ssn_submitted
       idv_doc_auth_ssn_visited
@@ -38,7 +37,6 @@ module Idv
       idv_doc_auth_warning_visited
       idv_doc_auth_welcome_submitted
       idv_doc_auth_welcome_visited
-      idv_exit_optional_questions
       idv_front_image_added
       idv_front_image_clicked
       idv_gpo_confirm_start_over_before_letter_visited
@@ -90,7 +88,6 @@ module Idv
       idv_link_sent_capture_doc_polling_complete
       idv_link_sent_capture_doc_polling_started
       idv_mail_only_warning_visited
-      idv_mobile_device_and_camera_check
       idv_native_camera_forced
       idv_not_verified_visited
       idv_phone_use_different
@@ -185,8 +182,24 @@ module Idv
     end
 
     def proofing_components
-      return if !user&.respond_to?(:proofing_component) || !user.proofing_component
-      ProofingComponentsLogging.new(user.proofing_component)
+      return if !user
+
+      user_session = session&.dig('warden.user.user.session') || {}
+
+      idv_session = Idv::Session.new(
+        user_session:,
+        current_user: user,
+        service_provider: sp,
+      )
+
+      proofing_components_hash = ProofingComponents.new(
+        idv_session:,
+        session:,
+        user:,
+        user_session:,
+      ).to_h
+
+      proofing_components_hash.empty? ? nil : proofing_components_hash
     end
   end
 end

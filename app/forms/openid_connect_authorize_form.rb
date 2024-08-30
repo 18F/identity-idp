@@ -23,7 +23,6 @@ class OpenidConnectAuthorizeForm
     :vtr,
     :scope,
     :verified_within,
-    :biometric_comparison_required,
     *SIMPLE_ATTRS,
   ].freeze
 
@@ -66,7 +65,6 @@ class OpenidConnectAuthorizeForm
     @prompt ||= 'select_account'
     @scope = parse_to_values(params[:scope], scopes)
     @unauthorized_scope = check_for_unauthorized_scope(params)
-    @biometric_comparison_required = params[:biometric_comparison_required].to_s == 'true'
 
     if verified_within_allowed?
       @duration_parser = DurationParser.new(params[:verified_within])
@@ -93,13 +91,16 @@ class OpenidConnectAuthorizeForm
     @service_provider = ServiceProvider.find_by(issuer: client_id)
   end
 
-  def link_identity_to_service_provider(current_user, rails_session_id)
+  def link_identity_to_service_provider(
+    current_user:,
+    ial:,
+    rails_session_id:
+  )
     identity_linker = IdentityLinker.new(current_user, service_provider)
     @identity = identity_linker.link_identity(
       nonce: nonce,
       rails_session_id: rails_session_id,
-      ial: ial_context.ial,
-      aal: aal,
+      ial: ial,
       acr_values: acr_values&.join(' '),
       vtr: vtr,
       requested_aal_value: requested_aal_value,
@@ -119,57 +120,13 @@ class OpenidConnectAuthorizeForm
     acr_values.filter { |acr| acr.include?('ial') || acr.include?('loa') }
   end
 
-  def ial_context
-    @ial_context ||= IalContext.new(ial: ial, service_provider: service_provider)
-  end
-
-  def ial
-    if parsed_vector_of_trust&.identity_proofing?
-      2
-    elsif parsed_vector_of_trust.present?
-      1
-    else
-      Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[ial_values.sort.max]
-    end
-  end
-
   def aal_values
     acr_values.filter { |acr| acr.include?('aal') }
-  end
-
-  def aal
-    if parsed_vector_of_trust&.aal2?
-      2
-    elsif parsed_vector_of_trust.present?
-      1
-    else
-      Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_AAL[requested_aal_value]
-    end
   end
 
   def requested_aal_value
     highest_level_aal(aal_values) ||
       Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
-  end
-
-  def_delegators :ial_context,
-                 :ial2_or_greater?,
-                 :ial2_requested?
-
-  def biometric_comparison_required?
-    @biometric_comparison_required
-  end
-
-  def parsed_vector_of_trust
-    return @parsed_vector_of_trust if defined?(@parsed_vector_of_trust)
-
-    @parsed_vector_of_trust = begin
-      if vtr.is_a?(Array) && !vtr.empty?
-        Vot::Parser.new(vector_of_trust: vtr.first).parse
-      end
-    rescue Vot::Parser::ParseException
-      nil
-    end
   end
 
   private
@@ -182,9 +139,21 @@ class OpenidConnectAuthorizeForm
 
   def check_for_unauthorized_scope(params)
     param_value = params[:scope]
-    return false if ial2_or_greater? || param_value.blank?
-    return true if verified_at_requested? && !ial_context.ial2_service_provider?
+    return false if identity_proofing_requested_or_default? || param_value.blank?
+    return true if verified_at_requested? && !identity_proofing_service_provider?
     @scope != param_value.split(' ').compact
+  end
+
+  def parsed_vectors_of_trust
+    return @parsed_vectors_of_trust if defined?(@parsed_vectors_of_trust)
+
+    @parsed_vectors_of_trust = begin
+      if vtr.is_a?(Array) && !vtr.empty?
+        vtr.map { |vot| Vot::Parser.new(vector_of_trust: vot).parse }
+      end
+    rescue Vot::Parser::ParseException
+      nil
+    end
   end
 
   def parse_to_values(param_value, possible_values)
@@ -219,7 +188,7 @@ class OpenidConnectAuthorizeForm
 
   def validate_vtr
     return if vtr.blank?
-    return if parsed_vector_of_trust.present?
+    return if parsed_vectors_of_trust.present?
     errors.add(
       :vtr, t('openid_connect.authorization.errors.no_valid_vtr'),
       type: :no_valid_vtr
@@ -319,21 +288,55 @@ class OpenidConnectAuthorizeForm
   end
 
   def scopes
-    if ial_context.ialmax_requested? || ial2_or_greater?
+    if identity_proofing_requested_or_default?
       return OpenidConnectAttributeScoper::VALID_SCOPES
     end
     OpenidConnectAttributeScoper::VALID_IAL1_SCOPES
   end
 
   def validate_privileges
-    if (ial2_requested? && !ial_context.ial2_service_provider?) ||
-       (ial_context.ialmax_requested? &&
-        !IdentityConfig.store.allowed_ialmax_providers.include?(client_id))
+    if (identity_proofing_requested? && !identity_proofing_service_provider?) ||
+       (ialmax_requested? && !ialmax_allowed_for_sp?) ||
+       (biometric_ial_requested? && !service_provider.biometric_ial_allowed?)
       errors.add(
         :acr_values, t('openid_connect.authorization.errors.no_auth'),
         type: :no_auth
       )
     end
+  end
+
+  def identity_proofing_requested_or_default?
+    identity_proofing_requested? ||
+      ialmax_requested? ||
+      sp_defaults_to_identity_proofing?
+  end
+
+  def sp_defaults_to_identity_proofing?
+    vtr.blank? && ial_values.blank? && identity_proofing_service_provider?
+  end
+
+  def identity_proofing_requested?
+    if parsed_vectors_of_trust.present?
+      parsed_vectors_of_trust.any?(&:identity_proofing?)
+    else
+      Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[ial_values.sort.max] == 2
+    end
+  end
+
+  def identity_proofing_service_provider?
+    service_provider&.ial.to_i >= 2
+  end
+
+  def ialmax_allowed_for_sp?
+    IdentityConfig.store.allowed_ialmax_providers.include?(client_id)
+  end
+
+  def ialmax_requested?
+    Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[ial_values.sort.max] == 0
+  end
+
+  def biometric_ial_requested?
+    ial_values.any? { |ial| Saml::Idp::Constants::BIOMETRIC_IAL_CONTEXTS.include? ial }
   end
 
   def highest_level_aal(aal_values)

@@ -7,15 +7,11 @@
     <p><%= t('idv.cancel.description.hybrid') %></p>
 
     <% c.with_action_button(
-         action: ->(**tag_options, &block) do
-           button_to(idv_cancel_path(step: params[:step], location: 'cancel'), **tag_options, &block)
-         end,
+         url: idv_cancel_path(step: params[:step], location: 'cancel'),
          method: :delete,
        ).with_content(t('forms.buttons.cancel')) %>
     <% c.with_action_button(
-         action: ->(**tag_options, &block) do
-           button_to(idv_cancel_path(step: params[:step]), **tag_options, &block)
-         end,
+         url: idv_cancel_path(step: params[:step]),
          method: :put,
          outline: true,
        ).with_content(t('links.go_back')) %>
@@ -28,9 +24,7 @@
 
     <div class="margin-top-4">
       <%= render ButtonComponent.new(
-            action: ->(**tag_options, &block) do
-              button_to(idv_session_path(step: params[:step]), **tag_options, &block)
-            end,
+            url: idv_session_path(step: params[:step]),
             method: :delete,
             big: true,
             wide: true,
@@ -39,9 +33,7 @@
       %>
       <div class="margin-top-2">
         <%= render ButtonComponent.new(
-              action: ->(**tag_options, &block) do
-                button_to(idv_cancel_path(step: params[:step]), **tag_options, &block)
-              end,
+              url: idv_cancel_path(step: params[:step]),
               method: :put,
               big: true,
               wide: true,
@@ -61,9 +53,7 @@
 
     <div class="margin-top-4">
       <%= render SpinnerButtonComponent.new(
-            action: ->(**tag_options, &block) do
-              button_to(idv_cancel_path(step: params[:step], location: 'cancel'), **tag_options, &block)
-            end,
+            url: idv_cancel_path(step: params[:step], location: 'cancel'),
             method: :delete,
             big: true,
             wide: true,

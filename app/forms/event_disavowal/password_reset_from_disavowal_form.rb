@@ -28,8 +28,7 @@ module EventDisavowal
     end
 
     def update_user
-      attributes = { password: password }
-      UpdateUser.new(user: user, attributes: attributes).call
+      user.update!(password: password)
     end
 
     def mark_profile_inactive

@@ -14,7 +14,7 @@ class UpdateEmailLanguageForm
   def submit(params)
     @email_language = params[:email_language]
 
-    UpdateUser.new(user: user, attributes: { email_language: email_language }).call if valid?
+    user.update!(email_language: email_language) if valid?
 
     FormResponse.new(
       success: valid?,

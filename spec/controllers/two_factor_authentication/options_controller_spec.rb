@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe TwoFactorAuthentication::OptionsController, allowed_extra_analytics: [:*] do
+RSpec.describe TwoFactorAuthentication::OptionsController do
   describe '#index' do
     it 'renders the page' do
       sign_in_before_2fa
@@ -14,10 +14,9 @@ RSpec.describe TwoFactorAuthentication::OptionsController, allowed_extra_analyti
       sign_in_before_2fa
       stub_analytics
 
-      expect(@analytics).to receive(:track_event).
-        with('Multi-Factor Authentication: option list visited')
-
       get :index
+
+      expect(@analytics).to have_logged_event('Multi-Factor Authentication: option list visited')
     end
   end
 
@@ -77,19 +76,20 @@ RSpec.describe TwoFactorAuthentication::OptionsController, allowed_extra_analyti
     end
 
     it 'tracks analytics event' do
-      stub_sign_in_before_2fa
+      user = build(:user, :with_phone, :with_piv_or_cac)
+      stub_sign_in_before_2fa(user)
       stub_analytics
 
-      result = {
+      post :create, params: { two_factor_options_form: { selection: 'sms' } }
+
+      expect(@analytics).to have_logged_event(
+        'Multi-Factor Authentication: option list',
         selection: 'sms',
         success: true,
         errors: {},
-      }
-
-      expect(@analytics).to receive(:track_event).
-        with('Multi-Factor Authentication: option list', result)
-
-      post :create, params: { two_factor_options_form: { selection: 'sms' } }
+        enabled_mfa_methods_count: 2,
+        mfa_method_counts: { phone: 1, piv_cac: 1 },
+      )
     end
   end
 end

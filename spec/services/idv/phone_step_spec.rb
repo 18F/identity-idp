@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Idv::PhoneStep, allowed_extra_analytics: [:*] do
-  before { stub_attempts_tracker }
-
   let(:user) { create(:user) }
   let(:service_provider) do
     create(
@@ -37,7 +35,6 @@ RSpec.describe Idv::PhoneStep, allowed_extra_analytics: [:*] do
     Proofing::Mock::AddressMockClient::PROOFER_TIMEOUT_PHONE_NUMBER
   end
   let(:trace_id) { SecureRandom.uuid }
-  let(:attempts_tracker) { @irs_attempts_api_tracker }
   let(:analytics) { FakeAnalytics.new }
 
   subject do
@@ -45,7 +42,6 @@ RSpec.describe Idv::PhoneStep, allowed_extra_analytics: [:*] do
       idv_session: idv_session,
       trace_id: trace_id,
       analytics: analytics,
-      attempts_tracker: attempts_tracker,
     )
   end
 
@@ -129,13 +125,6 @@ RSpec.describe Idv::PhoneStep, allowed_extra_analytics: [:*] do
       expect do
         subject.submit(phone: fail_phone)
       end.to(change { rate_limiter.fetch_state!.attempts }.by(1))
-    end
-
-    it 'logs a rate limited attempts_tracker event' do
-      rate_limiter.increment_to_limited!
-
-      expect(@irs_attempts_api_tracker).to receive(:idv_phone_otp_sent_rate_limited)
-      subject.submit(phone: bad_phone)
     end
 
     it 'marks the phone as unconfirmed if it matches 2FA phone' do

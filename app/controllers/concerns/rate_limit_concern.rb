@@ -29,7 +29,7 @@ module RateLimitConcern
   private
 
   def confirm_not_rate_limited_for_phone_and_letter_address_verification
-    if idv_attempter_rate_limited?(:proof_address) && Idv::GpoMail.new(current_user).rate_limited?
+    if idv_attempter_rate_limited?(:proof_address) && gpo_verify_by_mail_policy.rate_limited?
       rate_limit_redirect!(:proof_address)
       return true
     end
@@ -37,18 +37,10 @@ module RateLimitConcern
 
   def rate_limit_redirect!(rate_limit_type)
     if idv_attempter_rate_limited?(rate_limit_type)
-      track_rate_limited_event(rate_limit_type)
+      analytics.rate_limit_reached(limiter_type: rate_limit_type)
       rate_limited_redirect(rate_limit_type)
       return true
     end
-  end
-
-  def track_rate_limited_event(rate_limit_type)
-    analytics_args = { limiter_type: rate_limit_type }
-    limiter_context = rate_limit_type == :proof_ssn ? 'multi-session' : 'single-session'
-
-    irs_attempts_api_tracker.idv_verification_rate_limited(limiter_context: limiter_context)
-    analytics.rate_limit_reached(**analytics_args)
   end
 
   def rate_limited_redirect(rate_limit_type)

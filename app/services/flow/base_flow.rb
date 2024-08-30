@@ -19,7 +19,7 @@ module Flow
 
     def next_step
       return @redirect if @redirect
-      step, _klass = steps.detect do |_step, klass|
+      step, _klass = steps.find do |_step, klass|
         !@flow_session[klass.to_s]
       end
       step
@@ -82,6 +82,6 @@ module Flow
     end
 
     delegate :flash, :session, :current_user, :current_sp, :params, :request,
-             :poll_with_meta_refresh, :analytics, :irs_attempts_api_tracker, to: :@controller
+             :poll_with_meta_refresh, :analytics, to: :@controller
   end
 end

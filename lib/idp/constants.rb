@@ -2,7 +2,6 @@
 
 module Idp
   module Constants
-    AVAILABLE_LOCALES = %w[en es fr].freeze
     UUID_REGEX = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/
 
     KMS_LOG_FILENAME = 'kms.log'
@@ -13,6 +12,7 @@ module Idp
     module Vendors
       ACUANT = 'acuant'
       LEXIS_NEXIS = 'lexis_nexis'
+      SOCURE = 'socure'
       MOCK = 'mock'
       USPS = 'usps'
       AAMVA = 'aamva'
@@ -100,15 +100,14 @@ module Idp
       first_name: 'FAKEY',
       last_name: 'MCFAKERSON',
       middle_name: nil,
-      phone: nil,
       state: 'MT',
       state_id_expiration: '2099-12-31',
       state_id_issued: '2019-12-31',
       state_id_jurisdiction: MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION,
       state_id_number: '1111111111111',
       state_id_type: 'drivers_license',
-      zipcode: '59010',
-      same_address_as_id: nil,
+      zipcode: '59010-1234',
+      issuing_country_code: 'US',
     }.freeze
 
     MOCK_IPP_APPLICANT = {
@@ -118,7 +117,7 @@ module Idp
       identity_doc_address1: '123 Way St',
       identity_doc_address2: '2nd Address Line',
       identity_doc_city: 'Best City',
-      identity_doc_zipcode: '12345',
+      identity_doc_zipcode: '12345-4321',
       state_id_jurisdiction: 'Virginia',
       identity_doc_address_state: 'VA',
       state_id_number: '1111111111111',
@@ -135,7 +134,7 @@ module Idp
       identity_doc_address1: '123 Way St',
       identity_doc_address2: '2nd Address Line',
       identity_doc_city: 'Best City',
-      identity_doc_zipcode: '12345',
+      identity_doc_zipcode: '12345-4321',
       identity_doc_address_state: 'VA',
       same_address_as_id: 'false',
     ).freeze

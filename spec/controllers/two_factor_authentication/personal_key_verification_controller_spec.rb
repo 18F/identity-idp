@@ -1,7 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController,
-               allowed_extra_analytics: [:*] do
+RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
   let(:personal_key) { { personal_key: 'foo' } }
   let(:payload) { { personal_key_form: personal_key } }
 
@@ -20,12 +19,13 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController,
       user = build(:user, :with_personal_key, password: ControllerHelper::VALID_PASSWORD)
       stub_sign_in_before_2fa(user)
       stub_analytics
-      analytics_hash = { context: 'authentication' }
-
-      expect(@analytics).to receive(:track_event).
-        with('Multi-Factor Authentication: enter personal key visited', analytics_hash)
 
       get :show
+
+      expect(@analytics).to have_logged_event(
+        'Multi-Factor Authentication: enter personal key visited',
+        context: 'authentication',
+      )
     end
 
     it 'redirects to the two_factor_options page if user is IAL2' do
@@ -47,28 +47,14 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController,
       let(:payload) { { personal_key_form: personal_key } }
       it 'tracks the valid authentication event' do
         personal_key
+        multi_factor_auth_method_created_at = user.reload.
+          encrypted_recovery_code_digest_generated_at.strftime('%s%L')
         sign_in_before_2fa(user)
         stub_analytics
 
-        analytics_hash = {
-          success: true,
-          errors: {},
-          multi_factor_auth_method: 'personal-key',
-          multi_factor_auth_method_created_at: user.reload.
-            encrypted_recovery_code_digest_generated_at.strftime('%s%L'),
-          new_device: nil,
-        }
-
-        expect(@analytics).to receive(:track_mfa_submit_event).
-          with(analytics_hash)
-
-        expect(@analytics).to receive(:track_event).with(
-          'Personal key: Alert user about sign in',
-          hash_including(emails: 1, sms_message_ids: ['fake-message-id']),
-        )
-
-        expect(@analytics).to receive(:track_event).
-          with('User marked authenticated', authentication_type: :valid_2fa)
+        expect(controller).to receive(:handle_valid_verification_for_authentication_context).
+          with(auth_method: TwoFactorAuthenticatable::AuthMethod::PERSONAL_KEY).
+          and_call_original
 
         freeze_time do
           post :create, params: payload
@@ -81,6 +67,24 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController,
           )
           expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
         end
+
+        expect(@analytics).to have_logged_event(
+          'Multi-Factor Authentication',
+          success: true,
+          errors: {},
+          enabled_mfa_methods_count: 1,
+          multi_factor_auth_method: 'personal-key',
+          multi_factor_auth_method_created_at:,
+          new_device: true,
+        )
+        expect(@analytics).to have_logged_event(
+          'Personal key: Alert user about sign in',
+          hash_including(emails: 1, sms_message_ids: ['fake-message-id']),
+        )
+        expect(@analytics).to have_logged_event(
+          'User marked authenticated',
+          authentication_type: :valid_2fa,
+        )
       end
 
       context 'with enable_additional_mfa_redirect_for_personal_key_mfa? set to true' do
@@ -108,32 +112,22 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController,
           expect(response).to redirect_to(account_path)
         end
       end
-    end
 
-    context 'with new device session value' do
-      let(:user) { create(:user, :with_phone) }
-      let(:personal_key) { { personal_key: PersonalKeyGenerator.new(user).create } }
-      let(:payload) { { personal_key_form: personal_key } }
+      context 'with existing device' do
+        before do
+          allow(controller).to receive(:new_device?).and_return(false)
+        end
 
-      it 'tracks new device value' do
-        personal_key
-        sign_in_before_2fa(user)
-        stub_analytics
-        subject.user_session[:new_device] = false
-        analytics_hash = {
-          success: true,
-          errors: {},
-          multi_factor_auth_method: 'personal-key',
-          multi_factor_auth_method_created_at: user.reload.
-            encrypted_recovery_code_digest_generated_at.strftime('%s%L'),
-          new_device: false,
-        }
+        it 'tracks new device value' do
+          stub_analytics
+          stub_sign_in_before_2fa(user)
 
-        expect(@analytics).to receive(:track_mfa_submit_event).
-          with(analytics_hash)
-
-        freeze_time do
           post :create, params: payload
+
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication',
+            hash_including(new_device: false),
+          )
         end
       end
     end
@@ -209,29 +203,23 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController,
         personal_key_generated_at = controller.current_user.
           encrypted_recovery_code_digest_generated_at
         stub_analytics
-        stub_attempts_tracker
-
-        properties = {
-          success: false,
-          errors: { personal_key: [t('errors.messages.personal_key_incorrect')] },
-          error_details: { personal_key: { personal_key_incorrect: true } },
-          multi_factor_auth_method: 'personal-key',
-          multi_factor_auth_method_created_at: personal_key_generated_at.strftime('%s%L'),
-          new_device: nil,
-        }
-
-        expect(@analytics).to receive(:track_mfa_submit_event).
-          with(properties)
-        expect(@analytics).to receive(:track_event).
-          with('Multi-Factor Authentication: max attempts reached')
-
-        expect(@irs_attempts_api_tracker).to receive(:mfa_login_rate_limited).
-          with(mfa_device_type: 'personal_key')
 
         expect(PushNotification::HttpPush).to receive(:deliver).
           with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
 
         post :create, params: payload
+
+        expect(@analytics).to have_logged_event(
+          'Multi-Factor Authentication',
+          success: false,
+          errors: { personal_key: [t('errors.messages.personal_key_incorrect')] },
+          error_details: { personal_key: { personal_key_incorrect: true } },
+          enabled_mfa_methods_count: 1,
+          multi_factor_auth_method: 'personal-key',
+          multi_factor_auth_method_created_at: personal_key_generated_at.strftime('%s%L'),
+          new_device: true,
+        )
+        expect(@analytics).to have_logged_event('Multi-Factor Authentication: max attempts reached')
       end
 
       it 'records unsuccessful 2fa event' do

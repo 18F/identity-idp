@@ -25,6 +25,8 @@ class User < ApplicationRecord
   MAX_RECENT_EVENTS = 5
   MAX_RECENT_DEVICES = 5
 
+  BIOMETRIC_COMPARISON_IDV_LEVELS = %w[unsupervised_with_selfie in_person].to_set.freeze
+
   enum otp_delivery_preference: { sms: 0, voice: 1 }
 
   # rubocop:disable Rails/HasManyOrHasOneDependent
@@ -51,6 +53,7 @@ class User < ApplicationRecord
   has_many :sign_in_restrictions, dependent: :destroy
   has_many :in_person_enrollments, dependent: :destroy
   has_many :fraud_review_requests, dependent: :destroy
+  has_many :gpo_confirmation_codes, through: :profiles
 
   has_one :pending_in_person_enrollment,
           -> { where(status: :pending).order(created_at: :desc) },
@@ -76,6 +79,10 @@ class User < ApplicationRecord
     email_addresses.where.not(confirmed_at: nil).any?
   end
 
+  def has_fed_or_mil_email?
+    confirmed_email_addresses.any?(&:fed_or_mil_email?)
+  end
+
   def accepted_rules_of_use_still_valid?
     if self.accepted_terms_at.present?
       self.accepted_terms_at > IdentityConfig.store.rules_of_use_updated_at &&
@@ -94,6 +101,10 @@ class User < ApplicationRecord
 
   def active_identities
     identities.where('session_uuid IS NOT ?', nil).order(last_authenticated_at: :asc) || []
+  end
+
+  def active_profile?
+    active_profile.present?
   end
 
   def active_profile
@@ -222,6 +233,11 @@ class User < ApplicationRecord
 
   def has_in_person_enrollment?
     pending_in_person_enrollment.present? || establishing_in_person_enrollment.present?
+  end
+
+  # @return [Boolean] Whether the user has an establishing in person enrollment.
+  def has_establishing_in_person_enrollment?
+    establishing_in_person_enrollment.present?
   end
 
   # Trust `pending_profile` rather than enrollment associations
@@ -356,18 +372,12 @@ class User < ApplicationRecord
     !identity_verified?
   end
 
-  def identity_verified?(service_provider: nil)
-    active_profile.present? && !reproof_for_irs?(service_provider: service_provider)
+  def identity_verified?
+    active_profile.present?
   end
 
-  def identity_verified_with_selfie?
-    active_profile&.idv_level == 'unsupervised_with_selfie'
-  end
-
-  def reproof_for_irs?(service_provider:)
-    return false unless service_provider&.irs_attempts_api_enabled
-    return false unless active_profile.present?
-    !active_profile.initiating_service_provider&.irs_attempts_api_enabled
+  def identity_verified_with_biometric_comparison?
+    BIOMETRIC_COMPARISON_IDV_LEVELS.include?(active_profile&.idv_level)
   end
 
   # This user's most recently activated profile that has also been deactivated
@@ -418,8 +428,12 @@ class User < ApplicationRecord
     !recent_devices.empty?
   end
 
-  def new_device?(cookie_uuid:)
-    !cookie_uuid || !devices.exists?(cookie_uuid:)
+  def authenticated_device?(cookie_uuid:)
+    return false if cookie_uuid.blank?
+    devices.joins(:events).exists?(
+      cookie_uuid:,
+      events: { event_type: [:account_created, :sign_in_after_2fa] },
+    )
   end
 
   # Returns the number of times the user has signed in, corresponding to the `sign_in_before_2fa`

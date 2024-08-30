@@ -31,6 +31,9 @@ RSpec.configure do |config|
   config.profile_examples = RSPEC_RUNNING_IN_PARALLEL ? 10 : 0
 end
 
+require 'retries'
+Retries.sleep_enabled = false
+
 require 'webmock/rspec'
 WebMock.disable_net_connect!(
   allow: [

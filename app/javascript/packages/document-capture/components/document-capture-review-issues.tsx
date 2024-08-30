@@ -2,17 +2,16 @@ import { useContext } from 'react';
 import { PageHeading } from '@18f/identity-components';
 import { FormStepsButton } from '@18f/identity-form-steps';
 import { Cancel } from '@18f/identity-verify-flow';
-import { useI18n } from '@18f/identity-react-i18n';
+import { useI18n, HtmlTextWithStrongNoWrap } from '@18f/identity-react-i18n';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
-import UnknownError from './unknown-error';
+import GeneralError from './general-error';
 import TipList from './tip-list';
-import { FeatureFlagContext, SelfieCaptureContext } from '../context';
-import DocumentCaptureAbandon from './document-capture-abandon';
+import { SelfieCaptureContext } from '../context';
 import {
   DocumentCaptureSubheaderOne,
   SelfieCaptureWithHeader,
   DocumentFrontAndBackCapture,
-} from './documents-step';
+} from './documents-and-selfie-step';
 import type { ReviewIssuesStepValue } from './review-issues-step';
 
 interface DocumentCaptureReviewIssuesProps extends FormStepComponentProps<ReviewIssuesStepValue> {
@@ -39,7 +38,6 @@ function DocumentCaptureReviewIssues({
   hasDismissed,
 }: DocumentCaptureReviewIssuesProps) {
   const { t } = useI18n();
-  const { exitQuestionSectionEnabled } = useContext(FeatureFlagContext);
   const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
 
   const defaultSideProps = {
@@ -52,10 +50,11 @@ function DocumentCaptureReviewIssues({
   return (
     <>
       <PageHeading>{t('doc_auth.headings.review_issues')}</PageHeading>
-      <DocumentCaptureSubheaderOne isSelfieCaptureEnabled={isSelfieCaptureEnabled} />
-      <UnknownError
+      {isSelfieCaptureEnabled && (
+        <DocumentCaptureSubheaderOne isSelfieCaptureEnabled={isSelfieCaptureEnabled} />
+      )}
+      <GeneralError
         unknownFieldErrors={unknownFieldErrors}
-        remainingSubmitAttempts={remainingSubmitAttempts}
         isFailedDocType={isFailedDocType}
         isFailedSelfie={isFailedSelfie}
         isFailedSelfieLivenessOrQuality={isFailedSelfieLivenessOrQuality}
@@ -63,6 +62,11 @@ function DocumentCaptureReviewIssues({
         altFailedDocTypeMsg={isFailedDocType ? t('doc_auth.errors.doc.wrong_id_type_html') : null}
         hasDismissed={hasDismissed}
       />
+      <p>
+        <HtmlTextWithStrongNoWrap
+          text={t('idv.failure.attempts_html', { count: remainingSubmitAttempts })}
+        />
+      </p>
       {!isFailedDocType && captureHints && (
         <TipList
           titleClassName="margin-bottom-0 margin-top-2"
@@ -80,7 +84,6 @@ function DocumentCaptureReviewIssues({
         <SelfieCaptureWithHeader defaultSideProps={defaultSideProps} selfieValue={value.selfie} />
       )}
       <FormStepsButton.Submit />
-      {exitQuestionSectionEnabled && <DocumentCaptureAbandon />}
       <Cancel />
     </>
   );

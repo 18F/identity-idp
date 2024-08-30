@@ -19,10 +19,12 @@ RSpec.describe Proofing::Mock::StateIdMockClient do
           errors: {},
           exception: nil,
           mva_exception: nil,
+          requested_attributes: {},
           timed_out: false,
           transaction_id: transaction_id,
           vendor_name: 'StateIdMock',
           verified_attributes: [],
+          jurisdiction_in_maintenance_window: false,
         )
       end
     end
@@ -43,10 +45,12 @@ RSpec.describe Proofing::Mock::StateIdMockClient do
           },
           exception: nil,
           mva_exception: nil,
+          requested_attributes: {},
           timed_out: false,
           transaction_id: transaction_id,
           vendor_name: 'StateIdMock',
           verified_attributes: [],
+          jurisdiction_in_maintenance_window: false,
         )
       end
     end
@@ -65,10 +69,12 @@ RSpec.describe Proofing::Mock::StateIdMockClient do
           errors: {},
           exception: an_instance_of(Proofing::TimeoutError),
           mva_exception: true,
+          requested_attributes: {},
           timed_out: true,
           transaction_id: transaction_id,
           vendor_name: 'StateIdMock',
           verified_attributes: [],
+          jurisdiction_in_maintenance_window: false,
         )
       end
     end

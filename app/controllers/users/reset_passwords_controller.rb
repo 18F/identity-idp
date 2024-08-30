@@ -31,11 +31,8 @@ module Users
         result = PasswordResetTokenValidator.new(token_user).submit
 
         analytics.password_reset_token(**result.to_h)
-        irs_attempts_api_tracker.forgot_password_email_confirmed(
-          success: result.success?,
-        )
         if result.success?
-          @reset_password_form = ResetPasswordForm.new(build_user)
+          @reset_password_form = ResetPasswordForm.new(user: build_user)
           @forbidden_passwords = forbidden_passwords(token_user.email_addresses)
         else
           handle_invalid_or_expired_token(result)
@@ -46,14 +43,11 @@ module Users
     # PUT /resource/password
     def update
       self.resource = user_matching_token(user_params[:reset_password_token])
-      @reset_password_form = ResetPasswordForm.new(resource)
+      @reset_password_form = ResetPasswordForm.new(user: resource)
 
       result = @reset_password_form.submit(user_params)
 
       analytics.password_reset_password(**result.to_h)
-      irs_attempts_api_tracker.forgot_password_new_password_submitted(
-        success: result.success?,
-      )
 
       if result.success?
         session.delete(:reset_password_token)
@@ -90,7 +84,11 @@ module Users
     end
 
     def handle_valid_email
-      create_account_if_email_not_found
+      RequestPasswordReset.new(
+        email: email,
+        request_id: request_id,
+        analytics: analytics,
+      ).perform
 
       session[:email] = email
       resend_confirmation = email_params[:resend]
@@ -101,24 +99,6 @@ module Users
     def store_token_in_session
       return if session[:reset_password_token]
       session[:reset_password_token] = params[:reset_password_token]
-    end
-
-    def create_account_if_email_not_found
-      user, result = RequestPasswordReset.new(
-        email: email,
-        request_id: request_id,
-        analytics: analytics,
-        irs_attempts_api_tracker: irs_attempts_api_tracker,
-      ).perform
-
-      return unless result
-
-      analytics.user_registration_email(**result.to_h)
-      irs_attempts_api_tracker.user_registration_email_submitted(
-        email: email,
-        success: result.success?,
-      )
-      create_user_event(:account_created, user)
     end
 
     def handle_invalid_or_expired_token(result)

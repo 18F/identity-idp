@@ -3,19 +3,19 @@
     {
       "warning_type": "Dynamic Render Path",
       "warning_code": 15,
-      "fingerprint": "406a2c5ea3d852268958d2db11c146841491b6e87cee9c583dd35f5f41898fb7",
+      "fingerprint": "0550ef2573eae747e7e4bb6f31851ed77713409b74f7abe48c15a6a82801babb",
       "check_name": "Render",
       "message": "Render path contains parameter value",
       "file": "app/views/idv/cancellations/new.html.erb",
-      "line": 43,
+      "line": 31,
       "link": "https://brakemanscanner.org/docs/warning_types/dynamic_render_path/",
-      "code": "render(action => ButtonComponent.new(:action => (lambda do\n button_to(idv_cancel_path(:step => params[:step]), { **tag_options }, &block)\n end), :method => :put, :big => true, :wide => true, :outline => true, :form => ({ :\"aria-label\" => t(\"idv.cancel.actions.keep_going\") })).with_content(t(\"idv.cancel.actions.keep_going\")), {})",
+      "code": "render(action => ButtonComponent.new(:url => idv_session_path(:step => params[:step]), :method => :delete, :big => true, :wide => true, :form => ({ :\"aria-label\" => t(\"idv.cancel.actions.start_over\") })).with_content(t(\"idv.cancel.actions.start_over\")), {})",
       "render_path": [
         {
           "type": "controller",
           "class": "Idv::CancellationsController",
           "method": "new",
-          "line": 13,
+          "line": 16,
           "file": "app/controllers/idv/cancellations_controller.rb",
           "rendered": {
             "name": "idv/cancellations/new",
@@ -37,19 +37,19 @@
     {
       "warning_type": "Dynamic Render Path",
       "warning_code": 15,
-      "fingerprint": "8b51f403181f74421f5681ada1096371e1f55fb03d0127db01b5e5da7dda3c51",
+      "fingerprint": "278d16995e8a645908c9a043314cfeebd8cb094bce766ad5101c62ff08853de6",
       "check_name": "Render",
       "message": "Render path contains parameter value",
       "file": "app/views/idv/cancellations/new.html.erb",
-      "line": 32,
+      "line": 60,
       "link": "https://brakemanscanner.org/docs/warning_types/dynamic_render_path/",
-      "code": "render(action => ButtonComponent.new(:action => (lambda do\n button_to(idv_session_path(:step => params[:step]), { **tag_options }, &block)\n end), :method => :delete, :big => true, :wide => true, :form => ({ :\"aria-label\" => t(\"idv.cancel.actions.start_over\") })).with_content(t(\"idv.cancel.actions.start_over\")), {})",
+      "code": "render(action => SpinnerButtonComponent.new(:url => idv_cancel_path(:step => params[:step], :location => \"cancel\"), :method => :delete, :big => true, :wide => true, :outline => true, :form => ({ :\"aria-label\" => CancellationsPresenter.new(:sp_name => decorated_sp_session.sp_name, :url_options => url_options).exit_action_text, :data => ({ :form_steps_wait => \"\" }) })).with_content(CancellationsPresenter.new(:sp_name => decorated_sp_session.sp_name, :url_options => url_options).exit_action_text), {})",
       "render_path": [
         {
           "type": "controller",
           "class": "Idv::CancellationsController",
           "method": "new",
-          "line": 13,
+          "line": 16,
           "file": "app/controllers/idv/cancellations_controller.rb",
           "rendered": {
             "name": "idv/cancellations/new",
@@ -71,19 +71,19 @@
     {
       "warning_type": "Dynamic Render Path",
       "warning_code": 15,
-      "fingerprint": "f7d01c6318e6ce369f9fe9bf59b6a3a323034b4b826e2a52a9a87b581d468598",
+      "fingerprint": "341d99a0fdaf75dff50ea66c9da1b973cb36fc1aac2221480deff6e30d11540a",
       "check_name": "Render",
       "message": "Render path contains parameter value",
       "file": "app/views/idv/cancellations/new.html.erb",
-      "line": 65,
+      "line": 40,
       "link": "https://brakemanscanner.org/docs/warning_types/dynamic_render_path/",
-      "code": "render(action => SpinnerButtonComponent.new(:action => (lambda do\n button_to(idv_cancel_path(:step => params[:step], :location => \"cancel\"), { **tag_options }, &block)\n end), :method => :delete, :big => true, :wide => true, :outline => true, :form => ({ :\"aria-label\" => CancellationsPresenter.new(:sp_name => decorated_sp_session.sp_name, :url_options => url_options).exit_action_text, :data => ({ :form_steps_wait => \"\" }) })).with_content(CancellationsPresenter.new(:sp_name => decorated_sp_session.sp_name, :url_options => url_options).exit_action_text), {})",
+      "code": "render(action => ButtonComponent.new(:url => idv_cancel_path(:step => params[:step]), :method => :put, :big => true, :wide => true, :outline => true, :form => ({ :\"aria-label\" => t(\"idv.cancel.actions.keep_going\") })).with_content(t(\"idv.cancel.actions.keep_going\")), {})",
       "render_path": [
         {
           "type": "controller",
           "class": "Idv::CancellationsController",
           "method": "new",
-          "line": 13,
+          "line": 16,
           "file": "app/controllers/idv/cancellations_controller.rb",
           "rendered": {
             "name": "idv/cancellations/new",
@@ -103,6 +103,6 @@
       "note": ""
     }
   ],
-  "updated": "2023-11-02 09:34:28 -0400",
-  "brakeman_version": "6.0.1"
+  "updated": "2024-04-19 08:20:16 -0400",
+  "brakeman_version": "6.1.0"
 }

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'webauthn sign in', allowed_extra_analytics: [:*] do
+RSpec.feature 'webauthn sign in' do
   include WebAuthnHelper
 
   before do
@@ -15,13 +15,18 @@ RSpec.feature 'webauthn sign in', allowed_extra_analytics: [:*] do
     )
   end
 
-  it 'allows the user to sign in if webauthn is successful' do
-    mock_webauthn_verification_challenge
+  context 'with javascript enabled', :js do
+    # While JavaScript tests are slower to run, these tests provide increased confidence in the
+    # real-world behavior of WebAuthn browser interaction for the critical pathways.
 
-    sign_in_user(user)
-    mock_successful_webauthn_authentication { click_webauthn_authenticate_button }
+    it 'allows the user to sign in if webauthn is successful' do
+      mock_webauthn_verification_challenge
 
-    expect(page).to have_current_path(account_path)
+      sign_in_user(user)
+      mock_successful_webauthn_authentication { click_webauthn_authenticate_button }
+
+      expect(page).to have_current_path(account_path)
+    end
   end
 
   it 'does not allow the user to sign in if the challenge/secret is incorrect' do
@@ -44,7 +49,7 @@ RSpec.feature 'webauthn sign in', allowed_extra_analytics: [:*] do
     expect(page).to have_current_path(login_two_factor_webauthn_path)
   end
 
-  it 'does not show error after successful challenge/secret reattempt', :js do
+  it 'does not show error after successful challenge/secret reattempt' do
     mock_webauthn_verification_challenge
 
     sign_in_user(user)
@@ -57,7 +62,7 @@ RSpec.feature 'webauthn sign in', allowed_extra_analytics: [:*] do
     expect(page).to_not have_content(general_error)
   end
 
-  it 'maintains correct platform attachment content if cancelled', :js do
+  it 'maintains correct platform attachment content if cancelled' do
     mock_webauthn_verification_challenge
 
     sign_in_user(user)
@@ -71,7 +76,7 @@ RSpec.feature 'webauthn sign in', allowed_extra_analytics: [:*] do
       create(:user, :with_webauthn_platform, with: { credential_id:, credential_public_key: })
     end
 
-    it 'maintains correct platform attachment content if cancelled', :js do
+    it 'maintains correct platform attachment content if cancelled' do
       mock_webauthn_verification_challenge
 
       sign_in_user(user)
@@ -85,7 +90,6 @@ RSpec.feature 'webauthn sign in', allowed_extra_analytics: [:*] do
       before do
         email ||= user.email_addresses.first.email
         password = user.password
-        allow(UserMailer).to receive(:new_device_sign_in).and_call_original
         visit new_user_session_path
         set_hidden_field('platform_authenticator_available', 'false')
         fill_in_credentials_and_submit(email, password)

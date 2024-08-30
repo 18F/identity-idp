@@ -6,12 +6,7 @@
   <%= t('instructions.password.password_key') %>
 </p>
 
-<%= simple_form_for(
-      @reset_password_form,
-      url: user_password_path,
-      html: { autocomplete: 'off',
-              method: :put },
-    ) do |f| %>
+<%= simple_form_for(@reset_password_form, url: user_password_path, method: :put) do |f| %>
   <%= f.input :reset_password_token, as: :hidden %>
   <%= f.full_error :reset_password_token %>
   <%= render PasswordConfirmationComponent.new(

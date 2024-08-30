@@ -6,7 +6,6 @@
       @form,
       as: :form,
       method: :put,
-      html: { autocomplete: 'off' },
       url: piv_cac_path(id: @form.configuration.id),
     ) do |f| %>
   <%= render ValidatedFieldComponent.new(
@@ -21,15 +20,9 @@
 <% end %>
 
 <%= render ButtonComponent.new(
-      action: ->(**tag_options, &block) do
-        button_to(
-          piv_cac_path(id: @form.configuration.id),
-          form: { aria: { label: @presenter.delete_button_label } },
-          **tag_options,
-          &block
-        )
-      end,
+      url: piv_cac_path(id: @form.configuration.id),
       method: :delete,
+      form: { aria: { label: @presenter.delete_button_label } },
       big: true,
       wide: true,
       danger: true,

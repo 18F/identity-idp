@@ -5,6 +5,13 @@ require 'time'
 module Telephony
   module Pinpoint
     class VoiceSender
+      DEFAULT_VOICE_ID = ['en-US', 'Joey'].freeze
+      LANGUAGE_CODE_TO_VOICE_ID = {
+        en: DEFAULT_VOICE_ID,
+        fr: ['fr-FR', 'Mathieu'],
+        es: ['es-US', 'Miguel'],
+        zh: ['cmn-CN', 'Zhiyu'],
+      }.freeze
       # One connection pool per config (aka per-region)
       # rubocop:disable Style/MutableConstant
       CLIENT_POOL = Hash.new do |h, voice_config|
@@ -98,16 +105,7 @@ module Telephony
       end
 
       def language_code_and_voice_id
-        case I18n.locale.to_sym
-        when :en
-          ['en-US', 'Joey']
-        when :fr
-          ['fr-FR', 'Mathieu']
-        when :es
-          ['es-US', 'Miguel']
-        else
-          ['en-US', 'Joey']
-        end
+        LANGUAGE_CODE_TO_VOICE_ID.fetch(I18n.locale.to_sym, DEFAULT_VOICE_ID)
       end
     end
   end

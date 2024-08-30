@@ -19,6 +19,10 @@ module UspsInPersonProofing
         load_response_fixture('request_facilities_response.json')
       end
 
+      def self.request_enhanced_ipp_facilities_response
+        load_response_fixture('request_enhanced_ipp_facilities_response.json')
+      end
+
       def self.request_facilities_response_with_unordered_distance
         load_response_fixture('request_facilities_response_with_unordered_distance.json')
       end
@@ -37,6 +41,10 @@ module UspsInPersonProofing
 
       def self.request_enroll_response
         load_response_fixture('request_enroll_response.json')
+      end
+
+      def self.request_enroll_response_enhanced_ipp
+        load_response_fixture('request_enroll_response_enhanced_ipp.json')
       end
 
       def self.request_enroll_bad_request_response
@@ -69,8 +77,18 @@ module UspsInPersonProofing
         )
       end
 
-      def self.request_expired_proofing_results_response
-        load_response_fixture('request_expired_proofing_results_response.json')
+      def self.request_passed_proofing_secondary_id_type_results_response_ial_2
+        load_response_fixture(
+          'request_passed_proofing_secondary_id_type_results_response_ial_2.json',
+        )
+      end
+
+      def self.request_expired_enhanced_ipp_results_response
+        load_response_fixture('request_expired_enhanced_ipp_results_response.json')
+      end
+
+      def self.request_expired_id_ipp_results_response
+        load_response_fixture('request_expired_id_ipp_results_response.json')
       end
 
       def self.request_unexpected_expired_proofing_results_response
@@ -99,10 +117,6 @@ module UspsInPersonProofing
 
       def self.request_in_progress_proofing_results_response
         load_response_fixture('request_in_progress_proofing_results_response.json')
-      end
-
-      def self.request_enrollment_code_response
-        load_response_fixture('request_enrollment_code_response.json')
       end
 
       def self.load_response_fixture(filename)

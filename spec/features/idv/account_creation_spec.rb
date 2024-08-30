@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'IAL2 account creation', allowed_extra_analytics: [:*] do
+RSpec.describe 'IAL2 account creation' do
   include IdvHelper
   include DocAuthHelper
   include SamlAuthHelper

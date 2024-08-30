@@ -5,7 +5,6 @@ RSpec.feature 'verify_info step and verify_info_concern', :js, allowed_extra_ana
   include DocAuthHelper
 
   let(:fake_analytics) { FakeAnalytics.new }
-  let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:user) { user_with_2fa }
 
   # values from Idp::Constants::MOCK_IDV_APPLICANT
@@ -24,8 +23,6 @@ RSpec.feature 'verify_info step and verify_info_concern', :js, allowed_extra_ana
 
   before do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
-    allow_any_instance_of(ApplicationController).to receive(:irs_attempts_api_tracker).
-      and_return(fake_attempts_tracker)
     sign_in_and_2fa_user(user)
     complete_doc_auth_steps_before_ssn_step
   end
@@ -83,12 +80,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js, allowed_extra_ana
       expect(page).to have_text('900-45-6789')
     end
 
-    it 'logs analytics and attempts tracker events on submit' do
-      expect(fake_attempts_tracker).to receive(:idv_verification_submitted).with(
-        success: true,
-        **fake_pii_details,
-        ssn: DocAuthHelper::GOOD_SSN,
-      )
+    it 'logs analytics event on submit' do
       complete_verify_step
 
       expect(fake_analytics).to have_logged_event(
@@ -99,11 +91,6 @@ RSpec.feature 'verify_info step and verify_info_concern', :js, allowed_extra_ana
   end
 
   it 'does not proceed to the next page if resolution fails' do
-    expect(fake_attempts_tracker).to receive(:idv_verification_submitted).with(
-      success: false,
-      **fake_pii_details,
-      ssn: DocAuthHelper::SSN_THAT_FAILS_RESOLUTION,
-    )
     fill_out_ssn_form_with_ssn_that_fails_resolution
     click_idv_continue
     complete_verify_step
@@ -116,11 +103,6 @@ RSpec.feature 'verify_info step and verify_info_concern', :js, allowed_extra_ana
   end
 
   it 'does not proceed to the next page if resolution raises an exception' do
-    expect(fake_attempts_tracker).to receive(:idv_verification_submitted).with(
-      success: false,
-      **fake_pii_details,
-      ssn: DocAuthHelper::SSN_THAT_RAISES_EXCEPTION,
-    )
     fill_out_ssn_form_with_ssn_that_raises_exception
 
     click_idv_continue
@@ -150,9 +132,6 @@ RSpec.feature 'verify_info step and verify_info_concern', :js, allowed_extra_ana
 
     # proof_ssn_max_attempts is 10, vs 5 for resolution, so it doesn't get triggered
     it 'rate limits resolution and continues when it expires' do
-      expect(fake_attempts_tracker).to receive(:idv_verification_rate_limited).at_least(1).times.
-        with({ limiter_context: 'single-session' })
-
       (max_resolution_attempts - 2).times do
         complete_verify_step
         expect(page).to have_current_path(idv_session_errors_warning_path)
@@ -164,7 +143,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js, allowed_extra_ana
       expect(page).to have_current_path(idv_session_errors_warning_path)
       expect(page).to have_content(
         strip_tags(
-          t('idv.warning.attempts_html.one'),
+          t('idv.failure.attempts_html.one'),
         ),
       )
       click_try_again
@@ -221,8 +200,6 @@ RSpec.feature 'verify_info step and verify_info_concern', :js, allowed_extra_ana
     end
 
     it 'rate limits ssn and continues when it expires' do
-      expect(fake_attempts_tracker).to receive(:idv_verification_rate_limited).at_least(1).times.
-        with({ limiter_context: 'multi-session' })
       complete_verify_step
       expect(page).to have_current_path(idv_session_errors_ssn_failure_path)
       expect(fake_analytics).to have_logged_event(
@@ -247,7 +224,6 @@ RSpec.feature 'verify_info step and verify_info_concern', :js, allowed_extra_ana
     end
 
     it 'continues to next step if ssn successful on last attempt' do
-      expect(fake_attempts_tracker).not_to receive(:idv_verification_rate_limited)
       click_link t('idv.buttons.change_ssn_label')
 
       expect(page).to have_current_path(idv_ssn_path)
@@ -273,34 +249,20 @@ RSpec.feature 'verify_info step and verify_info_concern', :js, allowed_extra_ana
     let(:mock_state_id_jurisdiction) do
       [Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction]]
     end
-    let(:proof_resolution_args) do
-      {
-        trace_id: anything,
-        threatmetrix_session_id: anything,
-        request_ip: kind_of(String),
-        ipp_enrollment_in_progress: false,
-      }
-    end
 
     context 'when the user lives in an AAMVA supported state' do
       it 'performs a resolution and state ID check' do
         allow(IdentityConfig.store).to receive(:aamva_supported_jurisdictions).and_return(
           mock_state_id_jurisdiction,
         )
-        expect_any_instance_of(Idv::Agent).
-          to receive(:proof_resolution).
-          with(
-            anything,
-            should_proof_state_id: true,
-            user_id: user.id,
-            **proof_resolution_args,
-          ).
-          and_call_original
+        expect_any_instance_of(Proofing::Mock::StateIdMockClient).to receive(:proof).with(
+          hash_including(
+            **Idp::Constants::MOCK_IDV_APPLICANT,
+          ),
+        ).and_call_original
 
         complete_ssn_step
         complete_verify_step
-
-        expect(DocAuthLog.find_by(user_id: user.id).aamva).not_to be_nil
       end
     end
 
@@ -310,20 +272,10 @@ RSpec.feature 'verify_info step and verify_info_concern', :js, allowed_extra_ana
           IdentityConfig.store.aamva_supported_jurisdictions -
             mock_state_id_jurisdiction,
         )
-        expect_any_instance_of(Idv::Agent).
-          to receive(:proof_resolution).
-          with(
-            anything,
-            should_proof_state_id: false,
-            user_id: user.id,
-            **proof_resolution_args,
-          ).
-          and_call_original
+        expect_any_instance_of(Proofing::Mock::StateIdMockClient).to_not receive(:proof)
 
         complete_ssn_step
         complete_verify_step
-
-        expect(DocAuthLog.find_by(user_id: user.id).aamva).to be_nil
       end
     end
   end
@@ -342,24 +294,6 @@ RSpec.feature 'verify_info step and verify_info_concern', :js, allowed_extra_ana
       allow(DocumentCaptureSession).to receive(:find_by).and_call_original
       complete_verify_step
       expect(page).to have_current_path(idv_phone_path)
-    end
-
-    it 'tracks attempts tracker event with failure reason' do
-      expect(fake_attempts_tracker).to receive(:idv_verification_submitted).with(
-        success: false,
-        **fake_pii_details,
-        ssn: DocAuthHelper::GOOD_SSN,
-      )
-      sign_in_and_2fa_user(user)
-      complete_doc_auth_steps_before_verify_step
-
-      allow(DocumentCaptureSession).to receive(:find_by).
-        and_return(nil)
-
-      complete_verify_step
-      expect(page).to have_content(t('idv.failure.timeout'))
-      expect(page).to have_current_path(idv_verify_info_path)
-      allow(DocumentCaptureSession).to receive(:find_by).and_call_original
     end
   end
 

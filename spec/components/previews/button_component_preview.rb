@@ -34,16 +34,6 @@ class ButtonComponentPreview < BaseComponentPreview
   def danger
     render(ButtonComponent.new(danger: true).with_content('Button'))
   end
-
-  def with_custom_action
-    render(
-      ButtonComponent.new(
-        action: ->(**tag_options, &block) do
-          content_tag(:'lg-custom-button', **tag_options, &block)
-        end,
-      ).with_content('Button'),
-    )
-  end
   # @!endgroup
 
   # rubocop:disable Layout/LineLength

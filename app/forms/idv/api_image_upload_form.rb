@@ -14,16 +14,22 @@ module Idv
     validate :validate_duplicate_images, if: :image_resubmission_check?
     validate :limit_if_rate_limited
 
-    def initialize(params, service_provider:, analytics: nil,
-                   uuid_prefix: nil, irs_attempts_api_tracker: nil,
-                   store_encrypted_images: false, liveness_checking_required: false)
+    def initialize(
+      params,
+      service_provider:,
+      doc_auth_vendor:,
+      acuant_sdk_upgrade_ab_test_bucket:,
+      analytics: nil,
+      uuid_prefix: nil,
+      liveness_checking_required: false
+    )
       @params = params
       @service_provider = service_provider
+      @doc_auth_vendor = doc_auth_vendor
+      @acuant_sdk_upgrade_ab_test_bucket = acuant_sdk_upgrade_ab_test_bucket
       @analytics = analytics
       @readable = {}
       @uuid_prefix = uuid_prefix
-      @irs_attempts_api_tracker = irs_attempts_api_tracker
-      @store_encrypted_images = store_encrypted_images
       @liveness_checking_required = liveness_checking_required
     end
 
@@ -35,6 +41,10 @@ module Idv
 
       if form_response.success?
         client_response = post_images_to_client
+
+        document_capture_session.update!(
+          last_doc_auth_result: client_response.extra[:doc_auth_result],
+        )
 
         if client_response.success?
           doc_pii_response = validate_pii_from_doc(client_response)
@@ -49,14 +59,13 @@ module Idv
 
       failed_fingerprints = store_failed_images(client_response, doc_pii_response)
       response.extra[:failed_image_fingerprints] = failed_fingerprints
-      track_event(response)
       response
     end
 
     private
 
     attr_reader :params, :analytics, :service_provider, :form_response, :uuid_prefix,
-                :irs_attempts_api_tracker, :liveness_checking_required
+                :liveness_checking_required, :acuant_sdk_upgrade_ab_test_bucket
 
     def increment_rate_limiter!
       return unless document_capture_session
@@ -95,8 +104,8 @@ module Idv
       end
 
       response.extra.merge!(extra_attributes)
-      response.extra[:state] = response.pii_from_doc[:state]
-      response.extra[:state_id_type] = response.pii_from_doc[:state_id_type]
+      response.extra[:state] = response.pii_from_doc.to_h[:state]
+      response.extra[:state_id_type] = response.pii_from_doc.to_h[:state_id_type]
 
       update_analytics(
         client_response: response,
@@ -119,7 +128,7 @@ module Idv
 
     def validate_pii_from_doc(client_response)
       response = Idv::DocPiiForm.new(
-        pii: client_response.pii_from_doc,
+        pii: client_response.pii_from_doc.to_h,
         attention_with_barcode: client_response.attention_with_barcode?,
       ).submit
       response.extra.merge!(extra_attributes)
@@ -297,12 +306,11 @@ module Idv
     def limit_if_rate_limited
       return unless rate_limited?
 
-      errors.add(:limit, t('errors.doc_auth.rate_limited_heading'), type: :rate_limited)
+      errors.add(:limit, t('doc_auth.errors.rate_limited_heading'), type: :rate_limited)
     end
 
     def track_rate_limited
       analytics.rate_limit_reached(limiter_type: :idv_doc_auth)
-      irs_attempts_api_tracker.idv_document_upload_rate_limited
     end
 
     def document_capture_session_uuid
@@ -311,7 +319,7 @@ module Idv
 
     def doc_auth_client
       @doc_auth_client ||= DocAuthRouter.client(
-        vendor_discriminator: document_capture_session_uuid,
+        vendor: @doc_auth_vendor,
         warn_notifier: proc do |attrs|
           analytics&.doc_auth_warning(
             **attrs,
@@ -342,42 +350,27 @@ module Idv
     def update_analytics(client_response:, vendor_request_time_in_ms:)
       add_costs(client_response)
       update_funnel(client_response)
+      birth_year = client_response.pii_from_doc&.dob&.to_date&.year
+      zip_code = client_response.pii_from_doc&.zipcode&.to_s&.strip&.slice(0, 5)
+      issue_year = client_response.pii_from_doc&.state_id_issued&.to_date&.year
       analytics.idv_doc_auth_submitted_image_upload_vendor(
         **client_response.to_h.merge(
+          birth_year: birth_year,
           client_image_metrics: image_metadata,
           async: false,
           flow_path: params[:flow_path],
           vendor_request_time_in_ms: vendor_request_time_in_ms,
+          zip_code: zip_code,
+          issue_year: issue_year,
         ).except(:classification_info).
         merge(acuant_sdk_upgrade_ab_test_data),
       )
     end
 
-    def store_encrypted_images_if_required
-      return unless store_encrypted_images?
-
-      encrypted_document_storage_writer.encrypt_and_write_document(
-        front_image: front_image_bytes,
-        front_image_content_type: front.content_type,
-        back_image: back_image_bytes,
-        back_image_content_type: back.content_type,
-      )
-    end
-
-    def store_encrypted_images?
-      @store_encrypted_images
-    end
-
-    def encrypted_document_storage_writer
-      @encrypted_document_storage_writer ||= EncryptedDocumentStorage::DocumentWriter.new
-    end
-
     def acuant_sdk_upgrade_ab_test_data
-      return {} unless IdentityConfig.store.idv_acuant_sdk_upgrade_a_b_testing_enabled
       {
-        acuant_sdk_upgrade_ab_test_bucket:
-          AbTests::ACUANT_SDK.bucket(document_capture_session.uuid),
-      }
+        acuant_sdk_upgrade_ab_test_bucket:,
+      }.compact
     end
 
     def acuant_sdk_captured?
@@ -449,26 +442,6 @@ module Idv
 
     def rate_limited?
       rate_limiter.limited? if document_capture_session
-    end
-
-    def track_event(response)
-      pii_from_doc = response.pii_from_doc || {}
-      stored_image_result = store_encrypted_images_if_required
-
-      irs_attempts_api_tracker.idv_document_upload_submitted(
-        success: response.success?,
-        document_state: pii_from_doc[:state],
-        document_number: pii_from_doc[:state_id_number],
-        document_issued: pii_from_doc[:state_id_issued],
-        document_expiration: pii_from_doc[:state_id_expiration],
-        document_front_image_filename: stored_image_result&.front_filename,
-        document_back_image_filename: stored_image_result&.back_filename,
-        document_image_encryption_key: stored_image_result&.encryption_key,
-        first_name: pii_from_doc[:first_name],
-        last_name: pii_from_doc[:last_name],
-        date_of_birth: pii_from_doc[:dob],
-        address: pii_from_doc[:address1],
-      )
     end
 
     ##

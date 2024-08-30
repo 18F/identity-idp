@@ -1,9 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe(
-  Users::TwoFactorAuthenticationSetupController,
-  allowed_extra_analytics: [:user_registration_2fa_setup],
-) do
+RSpec.describe Users::TwoFactorAuthenticationSetupController do
   describe 'GET index' do
     let(:user) { create(:user) }
 
@@ -22,17 +19,72 @@ RSpec.describe(
       )
     end
 
-    context 'with user having gov or mil email' do
-      let(:user) { create(:user, email: 'example@example.gov') }
+    context 'with user having gov or mil email and use_fed_domain_class set to false' do
+      let(:user) do
+        create(:user, email: 'example@example.gov', piv_cac_recommended_dismissed_at: Time.zone.now)
+      end
+      let!(:federal_domain) { create(:federal_email_domain, name: 'gsa.gov') }
 
-      it 'tracks the visit in analytics' do
-        get :index
+      before do
+        allow(IdentityConfig.store).to receive(:use_fed_domain_class).and_return(false)
+      end
 
-        expect(@analytics).to have_logged_event(
-          'User Registration: 2FA Setup visited',
-          enabled_mfa_methods_count: 0,
-          gov_or_mil_email: true,
-        )
+      context 'having already visited the PIV interstitial page' do
+        it 'tracks the visit in analytics' do
+          get :index
+
+          expect(@analytics).to have_logged_event(
+            'User Registration: 2FA Setup visited',
+            enabled_mfa_methods_count: 0,
+            gov_or_mil_email: true,
+          )
+        end
+      end
+
+      context 'directed to page without having visited PIV interstitial page' do
+        let(:user) do
+          create(:user, email: 'example@example.gov')
+        end
+
+        it 'redirects user to piv_recommended_path' do
+          get :index
+
+          expect(response).to redirect_to(login_piv_cac_recommended_url)
+        end
+      end
+    end
+
+    context 'with user having gov or mil email and use_fed_domain_class set to true' do
+      before do
+        allow(IdentityConfig.store).to receive(:use_fed_domain_class).and_return(true)
+      end
+
+      let!(:federal_domain) { create(:federal_email_domain, name: 'gsa.gov') }
+      let(:user) do
+        create(:user, email: 'example@gsa.gov', piv_cac_recommended_dismissed_at: Time.zone.now)
+      end
+      context 'having already visited the PIV interstitial page' do
+        it 'tracks the visit in analytics' do
+          get :index
+
+          expect(@analytics).to have_logged_event(
+            'User Registration: 2FA Setup visited',
+            enabled_mfa_methods_count: 0,
+            gov_or_mil_email: true,
+          )
+        end
+      end
+
+      context 'directed to page without having visited PIV interstitial page' do
+        let(:user) do
+          create(:user, email: 'example@gsa.gov')
+        end
+
+        it 'redirects user to piv_recommended_path' do
+          get :index
+
+          expect(response).to redirect_to(login_piv_cac_recommended_url)
+        end
       end
     end
 
@@ -116,37 +168,20 @@ RSpec.describe(
       stub_sign_in_before_2fa
       stub_analytics
 
-      result = {
+      patch :create, params: {
+        two_factor_options_form: {
+          selection: ['voice', 'auth_app'],
+        },
+      }
+
+      expect(@analytics).to have_logged_event(
+        'User Registration: 2FA Setup',
         enabled_mfa_methods_count: 0,
         selection: ['voice', 'auth_app'],
         success: true,
         selected_mfa_count: 2,
         errors: {},
-      }
-
-      expect(@analytics).to receive(:track_event).
-        with('User Registration: 2FA Setup', result)
-
-      patch :create, params: {
-        two_factor_options_form: {
-          selection: ['voice', 'auth_app'],
-        },
-      }
-    end
-
-    it 'tracks IRS attempts event' do
-      stub_sign_in_before_2fa
-      stub_attempts_tracker
-
-      expect(@irs_attempts_api_tracker).to receive(:track_event).
-        with(:mfa_enroll_options_selected, success: true,
-                                           mfa_device_types: ['voice', 'auth_app'])
-
-      patch :create, params: {
-        two_factor_options_form: {
-          selection: ['voice', 'auth_app'],
-        },
-      }
+      )
     end
 
     context 'when multi selection with phone first' do

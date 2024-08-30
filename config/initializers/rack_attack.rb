@@ -8,9 +8,14 @@ module Rack
       IPAddr.new(x)
     end.freeze
 
-    EMAIL_REGISTRATION_PATHS = ['/sign_up/enter_email', '/en/sign_up/enter_email',
-                                '/es/sign_up/enter_email', '/fr/sign_up/enter_email'].freeze
-    SIGN_IN_PATHS = ['/', '/en', '/es', '/fr'].freeze
+    EMAIL_REGISTRATION_PATHS =
+      IdentityConfig.store.available_locales.reduce(['/sign_up/enter_email']) do |paths, locale|
+        paths << "/#{locale}/sign_up/enter_email"
+      end.freeze
+
+    SIGN_IN_PATHS = IdentityConfig.store.available_locales.reduce(['/']) do |paths, locale|
+      paths << "/#{locale}"
+    end.freeze
 
     # If the app is behind a load balancer, `ip` will return the IP of the
     # load balancer instead of the actual IP the request came from, and since

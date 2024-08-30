@@ -30,7 +30,7 @@ RSpec.describe TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter 
       let(:user) { create(:user, :with_webauthn_platform) }
 
       it 'renders a WebauthnInputComponent with passkey_supported_only false' do
-        expect(view_context).to receive(:render) do |component, &block|
+        expect(view_context).to receive(:render) do |component|
           expect(component.passkey_supported_only?).to be(true)
         end
 

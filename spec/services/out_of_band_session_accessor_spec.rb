@@ -17,10 +17,10 @@ RSpec.describe OutOfBandSessionAccessor do
       store.put_pii(
         profile_id: profile_id,
         pii: { first_name: 'Fakey' },
-        expiration: 5.minutes.to_i,
+        expiration: 5.minutes.in_seconds,
       )
 
-      expect(store.ttl).to be_within(1).of(5.minutes.to_i)
+      expect(store.ttl).to be_within(1).of(5.minutes.in_seconds)
     end
   end
 
@@ -29,7 +29,7 @@ RSpec.describe OutOfBandSessionAccessor do
       store.put_pii(
         profile_id: profile_id,
         pii: { dob: '1970-01-01' },
-        expiration: 5.minutes.to_i,
+        expiration: 5.minutes.in_seconds,
       )
 
       pii = store.load_pii(profile_id)
@@ -40,7 +40,7 @@ RSpec.describe OutOfBandSessionAccessor do
 
   describe '#load_x509' do
     it 'loads X509 attributes from the session' do
-      store.put_x509({ subject: 'O=US, OU=DoD, CN=John.Doe.1234' }, 5.minutes.to_i)
+      store.put_x509({ subject: 'O=US, OU=DoD, CN=John.Doe.1234' }, 5.minutes.in_seconds)
 
       x509 = store.load_x509
       expect(x509).to be_kind_of(X509::Attributes)
@@ -53,7 +53,7 @@ RSpec.describe OutOfBandSessionAccessor do
       store.put_pii(
         profile_id: profile_id,
         pii: { first_name: 'Fakey' },
-        expiration: 5.minutes.to_i,
+        expiration: 5.minutes.in_seconds,
       )
       store.destroy
 

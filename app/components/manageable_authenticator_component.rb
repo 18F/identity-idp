@@ -8,6 +8,8 @@ class ManageableAuthenticatorComponent < BaseComponent
               :custom_strings,
               :tag_options
 
+  validate :validate_configuration_methods
+
   def initialize(
     configuration:,
     user_session:,
@@ -16,10 +18,6 @@ class ManageableAuthenticatorComponent < BaseComponent
     custom_strings: {},
     **tag_options
   )
-    if ![:name, :id, :created_at].all? { |method| configuration.respond_to?(method) }
-      raise ArgumentError, '`configuration` must respond to `name`, `id`, `created_at`'
-    end
-
     @configuration = configuration
     @user_session = user_session
     @manage_api_url = manage_api_url
@@ -43,6 +41,17 @@ class ManageableAuthenticatorComponent < BaseComponent
   delegate :reauthenticate_at, to: :auth_methods_session
 
   private
+
+  def validate_configuration_methods
+    [:name, :id, :created_at].each do |method|
+      next if configuration.respond_to?(method)
+      errors.add(
+        :configuration,
+        :missing_method,
+        message: "`configuration` must respond to `#{method}`",
+      )
+    end
+  end
 
   def auth_methods_session
     @auth_methods_session ||= AuthMethodsSession.new(user_session:)

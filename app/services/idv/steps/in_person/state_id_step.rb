@@ -37,7 +37,7 @@ module Idv
           redirect_to idv_in_person_verify_info_url if updating_state_id?
 
           if pii_from_user[:same_address_as_id] == 'false'
-            redirect_to idv_in_person_proofing_address_url
+            redirect_to idv_in_person_address_url
           end
         end
 

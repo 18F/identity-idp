@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 class IconComponent < BaseComponent
+  attr_reader :icon, :size, :tag_options
+
   # See: https://github.com/uswds/uswds/tree/develop/src/img/usa-icons
-  ICONS = %i[
+  validates_inclusion_of :icon, in: %i[
     accessibility_new
     accessible_forward
     account_balance
@@ -246,11 +248,7 @@ class IconComponent < BaseComponent
     zoom_out_map
   ].to_set.freeze
 
-  attr_reader :icon, :size, :tag_options
-
   def initialize(icon:, size: nil, **tag_options)
-    raise ArgumentError, "`icon` #{icon} is not a valid icon" if !ICONS.include?(icon)
-
     @icon = icon
     @size = size
     @tag_options = tag_options

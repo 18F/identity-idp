@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics: [:*] do
+RSpec.describe Users::TwoFactorAuthenticationController do
   include ActionView::Helpers::DateHelper
   include UserAgentHelper
 
@@ -121,13 +121,16 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
         }
 
         travel_to(time1 + 1.second) do
-          expect(@analytics).to receive(:track_event).
-            with('User marked authenticated', { authentication_type: :device_remembered })
-          expect(@analytics).to receive(:track_event).with(
+          get :show
+
+          expect(@analytics).to have_logged_event(
+            'User marked authenticated',
+            { authentication_type: :device_remembered },
+          )
+          expect(@analytics).to have_logged_event(
             'Remembered device used for authentication',
             { cookie_created_at: time1, cookie_age_seconds: 1 },
           )
-          get :show
         end
 
         expect(Telephony::Test::Message.messages.length).to eq(0)
@@ -289,7 +292,7 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
       before do
         @user = create(:user, :with_phone)
         sign_in_before_2fa(@user)
-        @old_otp = subject.current_user.direct_otp
+        @old_otp = controller.current_user.direct_otp
         allow(Telephony).to receive(:send_authentication_otp).and_call_original
       end
 
@@ -323,7 +326,12 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
       it 'tracks the analytics events' do
         stub_analytics
 
-        analytics_hash = {
+        get :send_code, params: {
+          otp_delivery_selection_form: { **otp_preference_sms, resend: 'true' },
+        }
+
+        expect(@analytics).to have_logged_event(
+          'OTP: Delivery Selection',
           success: true,
           errors: {},
           **otp_preference_sms,
@@ -331,30 +339,14 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
           context: 'authentication',
           country_code: 'US',
           area_code: '202',
-          pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
-        }
-
-        expect(@analytics).to receive(:track_event).
-          ordered.
-          with('OTP: Delivery Selection', analytics_hash)
-        expect(@analytics).to receive(:track_event).
-          ordered.
-          with('Telephony: OTP sent', hash_including(
+        )
+        expect(@analytics).to have_logged_event(
+          'Telephony: OTP sent',
+          hash_including(
             resend: true, success: true, **otp_preference_sms,
             adapter: :test
-          ))
-
-        get :send_code, params: {
-          otp_delivery_selection_form: { **otp_preference_sms, resend: 'true' },
-        }
-      end
-
-      it 'tracks the verification attempt event' do
-        stub_attempts_tracker
-        expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_sent).
-          with(reauthentication: false, **success_parameters)
-
-        get :send_code, params: otp_delivery_form_sms
+          ),
+        )
       end
 
       it 'calls OtpRateLimiter#exceeded_otp_send_limit? and #increment' do
@@ -376,10 +368,6 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
         allow(OtpRateLimiter).to receive(:exceeded_otp_send_limit?).
           and_return(true)
 
-        stub_attempts_tracker
-        expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_sent_rate_limited).
-          with(**valid_phone_number)
-
         freeze_time do
           (IdentityConfig.store.otp_delivery_blocklist_maxretry + 1).times do
             get :send_code, params: {
@@ -394,6 +382,41 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
         end
       end
 
+      context 'with recaptcha phone assessment id in session' do
+        let(:assessment_id) { 'projects/project-id/assessments/assessment-id' }
+
+        subject(:response) do
+          get :send_code, params: {
+            otp_delivery_selection_form: {
+              **otp_preference_sms,
+              otp_make_default_number: nil,
+            },
+          }
+        end
+
+        before do
+          stub_analytics
+          controller.user_session[:phone_recaptcha_assessment_id] = assessment_id
+        end
+
+        it 'annotates recaptcha assessment with initiated 2fa' do
+          recaptcha_annotation = {
+            assessment_id:,
+            reason: RecaptchaAnnotator::AnnotationReasons::INITIATED_TWO_FACTOR,
+          }
+          expect(RecaptchaAnnotator).to receive(:annotate).once.
+            with(**recaptcha_annotation).
+            and_return(recaptcha_annotation)
+
+          response
+
+          expect(@analytics).to have_logged_event(
+            'Telephony: OTP sent',
+            hash_including(recaptcha_annotation:),
+          )
+        end
+      end
+
       context 'when the phone has been marked as opted out in the DB' do
         before do
           PhoneNumberOptOut.mark_opted_out(@user.phone_configurations.first.phone)
@@ -402,15 +425,6 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
         it 'does not send an OTP' do
           expect(Telephony).to_not receive(:send_authentication_otp)
           expect(Telephony).to_not receive(:send_confirmation_otp)
-
-          get :send_code, params: otp_delivery_form_sms
-        end
-
-        it 'tracks the attempt event with failure reason' do
-          stub_attempts_tracker
-
-          expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_sent).
-            with(reauthentication: false, **default_parameters, success: false)
 
           get :send_code, params: otp_delivery_form_sms
         end
@@ -477,7 +491,13 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
       it 'tracks the event' do
         stub_analytics
 
-        analytics_hash = {
+        get :send_code, params: {
+          otp_delivery_selection_form: { otp_delivery_preference: 'voice',
+                                         otp_make_default_number: nil },
+        }
+
+        expect(@analytics).to have_logged_event(
+          'OTP: Delivery Selection',
           success: true,
           errors: {},
           otp_delivery_preference: 'voice',
@@ -485,15 +505,10 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
           context: 'authentication',
           country_code: 'US',
           area_code: '202',
-          pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
-        }
-
-        expect(@analytics).to receive(:track_event).
-          ordered.
-          with('OTP: Delivery Selection', analytics_hash)
-        expect(@analytics).to receive(:track_event).
-          ordered.
-          with('Telephony: OTP sent', hash_including(
+        )
+        expect(@analytics).to have_logged_event(
+          'Telephony: OTP sent',
+          hash_including(
             success: true,
             otp_delivery_preference: 'voice',
             adapter: :test,
@@ -501,12 +516,8 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
             telephony_response: hash_including(
               origination_phone_number: Telephony::Test::VoiceSender::ORIGINATION_PHONE_NUMBER,
             ),
-          ))
-
-        get :send_code, params: {
-          otp_delivery_selection_form: { otp_delivery_preference: 'voice',
-                                         otp_make_default_number: nil },
-        }
+          ),
+        )
       end
 
       context 'when selecting specific phone configuration' do
@@ -549,6 +560,7 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
           expiration: 10,
           channel: :sms,
           otp_format: 'digit',
+          otp_length: '6',
           domain: IdentityConfig.store.domain_name,
           country_code: 'US',
           extra_metadata: {
@@ -559,26 +571,16 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
         )
       end
 
-      it 'tracks the enrollment attempt event' do
-        sign_in_before_2fa(@user)
-        subject.user_session[:context] = 'confirmation'
-        subject.user_session[:unconfirmed_phone] = @unconfirmed_phone
-
-        stub_attempts_tracker
-        expect(@irs_attempts_api_tracker).to receive(:mfa_enroll_phone_otp_sent).
-          with({ phone_number: '+12025551213', success: true, otp_delivery_method: 'sms' })
-
-        get :send_code, params: otp_delivery_form_sms
-      end
-
       it 'rate limits confirmation OTPs on sign up' do
+        parsed_phone = Phonelib.parse(@unconfirmed_phone)
+        stub_analytics
         sign_in_before_2fa(@user)
         subject.user_session[:context] = 'confirmation'
         allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(999)
 
         freeze_time do
-          (IdentityConfig.store.phone_confirmation_max_attempts + 1).times do
-            subject.user_session[:unconfirmed_phone] = '+1 (202) 555-1213'
+          IdentityConfig.store.phone_confirmation_max_attempts.times do
+            subject.user_session[:unconfirmed_phone] = @unconfirmed_phone
             get :send_code, params: otp_delivery_form_sms
           end
 
@@ -594,6 +596,50 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
           )
           expect(response).to redirect_to authentication_methods_setup_url
         end
+        expect(@analytics).to have_logged_event(
+          'Rate Limit Reached',
+          country_code: parsed_phone.country,
+          limiter_type: :phone_confirmation,
+          phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+        )
+      end
+
+      it 'rate limits between OTPs' do
+        parsed_phone = Phonelib.parse(@unconfirmed_phone)
+        stub_analytics
+        sign_in_before_2fa(@user)
+        subject.user_session[:context] = 'confirmation'
+        allow(IdentityConfig.store).to receive(:short_term_phone_otp_max_attempts).and_return(2)
+        allow(IdentityConfig.store).to receive(:short_term_phone_otp_max_attempt_window_in_seconds).
+          and_return(5)
+
+        freeze_time do
+          IdentityConfig.store.short_term_phone_otp_max_attempts.times do
+            subject.user_session[:unconfirmed_phone] = @unconfirmed_phone
+            get :send_code, params: otp_delivery_form_sms
+          end
+
+          timeout = distance_of_time_in_words(
+            RateLimiter.attempt_window_in_minutes(:short_term_phone_otp).minutes,
+          )
+
+          expect(flash[:error]).to eq(
+            I18n.t(
+              'errors.messages.phone_confirmation_limited',
+              timeout: timeout,
+            ),
+          )
+          expect(response).to redirect_to login_two_factor_url(otp_delivery_preference: 'sms')
+        end
+
+        expect(@analytics).to have_logged_event(
+          'Rate Limit Reached',
+          context: 'confirmation',
+          country_code: parsed_phone.country,
+          limiter_type: :short_term_phone_otp,
+          otp_delivery_preference: 'sms',
+          phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+        )
       end
 
       it 'marks the user as locked out after too many attempts on sign up' do
@@ -605,10 +651,6 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
 
         allow(OtpRateLimiter).to receive(:exceeded_otp_send_limit?).
           and_return(true)
-
-        stub_attempts_tracker
-        expect(@irs_attempts_api_tracker).to receive(:mfa_enroll_phone_otp_sent_rate_limited).
-          with(phone_number: '+12025551213')
 
         freeze_time do
           (IdentityConfig.store.otp_delivery_blocklist_maxretry + 1).times do

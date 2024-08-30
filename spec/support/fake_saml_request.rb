@@ -38,7 +38,7 @@ class FakeSamlRequest
     Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
   end
 
-  def requested_vtr_authn_context
+  def requested_vtr_authn_contexts
     nil
   end
 

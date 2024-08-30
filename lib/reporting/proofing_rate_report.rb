@@ -38,7 +38,7 @@ module Reporting
 
     def proofing_rate_emailable_report
       EmailableReport.new(
-        title: 'Proofing Rate Metrics',
+        subtitle: 'Detail',
         float_as_percent: true,
         precision: 2,
         table: as_csv,
@@ -62,10 +62,10 @@ module Reporting
       csv << ['IDV Rejected (Non-Fraud)', *reports.map(&:idv_doc_auth_rejected)]
       csv << ['IDV Rejected (Fraud)', *reports.map(&:idv_fraud_rejected)]
 
-      csv << ['Blanket Proofing Rate (IDV Started to Successfully Verified)', *blanket_proofing_rates(reports)]
-      csv << ['Intent Proofing Rate (Welcome Submitted to Successfully Verified)', *intent_proofing_rates(reports)]
-      csv << ['Actual Proofing Rate (Image Submitted to Successfully Verified)', *actual_proofing_rates(reports)]
-      csv << ['Industry Proofing Rate (Verified minus IDV Rejected)', *industry_proofing_rates(reports)]
+      csv << ['Blanket Proofing Rate (IDV Started to Successfully Verified)', *reports.map(&:blanket_proofing_rate)]
+      csv << ['Intent Proofing Rate (Welcome Submitted to Successfully Verified)', *reports.map(&:intent_proofing_rate)]
+      csv << ['Actual Proofing Rate (Image Submitted to Successfully Verified)', *reports.map(&:actual_proofing_rate)]
+      csv << ['Industry Proofing Rate (Verified minus IDV Rejected)', *reports.map(&:industry_proofing_rate)]
 
       csv
     rescue Aws::CloudWatchLogs::Errors::ThrottlingException => err
@@ -86,34 +86,7 @@ module Reporting
 
     def reports
       @reports ||= begin
-        sub_reports = [0, *DATE_INTERVALS].each_cons(2).map do |slice_end, slice_start|
-          Reporting::IdentityVerificationReport.new(
-            issuers: nil, # all issuers
-            time_range: Range.new(
-              (end_date - slice_start.days).beginning_of_day,
-              (end_date - slice_end.days).beginning_of_day,
-            ),
-            cloudwatch_client: cloudwatch_client,
-          )
-        end
-
-        reports = if parallel?
-                    threads = sub_reports.map do |report|
-                      Thread.new do
-                        report.tap(&:data)
-                      end.tap do |thread|
-                        thread.report_on_exception = false
-                      end
-                    end
-
-                    Reporting::UnknownProgressBar.wrap(show_bar: progress?) do
-                      threads.map(&:value)
-                    end
-                  else
-                    Reporting::UnknownProgressBar.wrap(show_bar: progress?) do
-                      sub_reports.each(&:data)
-                    end
-                  end
+        reports = parallel? ? parallel_reports : single_threaded_reports
 
         reports.reduce([]) do |acc, report|
           if acc.empty?
@@ -125,37 +98,23 @@ module Reporting
       end
     end
 
-    # @param [Array<Reporting::IdentityVerificationReport>] reports
-    # @return [Array<Float>]
-    def blanket_proofing_rates(reports)
-      reports.map do |report|
-        report.successfully_verified_users.to_f / report.idv_started
+    def single_threaded_reports
+      Reporting::UnknownProgressBar.wrap(show_bar: progress?) do
+        trailing_days_subreports.each(&:data)
       end
     end
 
-    # @param [Array<Reporting::IdentityVerificationReport>] reports
-    # @return [Array<Float>]
-    def intent_proofing_rates(reports)
-      reports.map do |report|
-        report.successfully_verified_users.to_f / report.idv_doc_auth_welcome_submitted
+    def parallel_reports
+      threads = trailing_days_subreports.map do |report|
+        Thread.new do
+          report.tap(&:data)
+        end.tap do |thread|
+          thread.report_on_exception = false
+        end
       end
-    end
 
-    # @param [Array<Reporting::IdentityVerificationReport>] reports
-    # @return [Array<Float>]
-    def actual_proofing_rates(reports)
-      reports.map do |report|
-        report.successfully_verified_users.to_f / report.idv_doc_auth_image_vendor_submitted
-      end
-    end
-
-    # @param [Array<Reporting::IdentityVerificationReport>] reports
-    # @return [Array<Float>]
-    def industry_proofing_rates(reports)
-      reports.map do |report|
-        report.successfully_verified_users.to_f / (
-          report.successfully_verified_users + report.idv_doc_auth_rejected
-        )
+      Reporting::UnknownProgressBar.wrap(show_bar: progress?) do
+        threads.map(&:value)
       end
     end
 
@@ -166,6 +125,27 @@ module Reporting
         logger: verbose? ? Logger.new(STDERR) : nil,
         wait_duration: wait_duration,
       )
+    end
+
+    def trailing_days_subreports
+      [0, *DATE_INTERVALS].each_cons(2).map do |slice_end, slice_start|
+        time_range = if slice_end.zero?
+                       Range.new(
+                         (end_date - slice_start.days).beginning_of_day,
+                         (end_date - slice_end.days).end_of_day,
+                       )
+                     else
+                       Range.new(
+                         (end_date - slice_start.days).beginning_of_day,
+                         (end_date - slice_end.days).end_of_day - 1.day,
+                       )
+                     end
+        Reporting::IdentityVerificationReport.new(
+          issuers: nil, # all issuers
+          time_range: time_range,
+          cloudwatch_client: cloudwatch_client,
+        )
+      end
     end
   end
 end
@@ -184,8 +164,8 @@ if __FILE__ == $PROGRAM_NAME
   puts Reporting::ProofingRateReport.new(
     end_date: end_date,
     progress: progress,
-    verbose: verbose,
     parallel: parallel,
+    verbose: verbose,
   ).to_csv
 end
 # rubocop:enable Rails/Output

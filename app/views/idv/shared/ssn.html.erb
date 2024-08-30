@@ -64,12 +64,7 @@ locals:
   </div>
 <% end %>
 
-<%= simple_form_for(
-      @ssn_presenter.ssn_form,
-      url: url_for,
-      method: :put,
-      html: { autocomplete: 'off' },
-    ) do |f| %>
+<%= simple_form_for(@ssn_presenter.ssn_form, url: url_for, method: :put) do |f| %>
   <div class="tablet:grid-col-8">
     <%= render 'shared/ssn_field', f: f %>
   </div>

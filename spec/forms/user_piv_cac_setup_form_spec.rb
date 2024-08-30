@@ -20,12 +20,13 @@ RSpec.describe UserPivCacSetupForm do
           'uuid' => x509_dn_uuid,
           'subject' => 'x509-subject',
           'nonce' => nonce,
+          'key_id' => 'foo',
         }
       end
 
       it 'returns FormResponse with success: true' do
         result = instance_double(FormResponse)
-        extra = { multi_factor_auth_method: 'piv_cac' }
+        extra = { multi_factor_auth_method: 'piv_cac', key_id: 'foo' }
 
         expect(FormResponse).to receive(:new).
           with(success: true, errors: {}, extra: extra).and_return(result)
@@ -47,7 +48,7 @@ RSpec.describe UserPivCacSetupForm do
 
         it 'returns FormResponse with success: true' do
           result = instance_double(FormResponse)
-          extra = { multi_factor_auth_method: 'piv_cac' }
+          extra = { multi_factor_auth_method: 'piv_cac', key_id: 'foo' }
 
           expect(FormResponse).to receive(:new).
             with(success: true, errors: {}, extra: extra).and_return(result)
@@ -62,7 +63,7 @@ RSpec.describe UserPivCacSetupForm do
 
         it 'returns FormResponse with success: false' do
           result = instance_double(FormResponse)
-          extra = { multi_factor_auth_method: 'piv_cac', key_id: nil }
+          extra = { multi_factor_auth_method: 'piv_cac', key_id: 'foo' }
 
           expect(FormResponse).to receive(:new).
             with(success: false, errors: { type: 'piv_cac.already_associated' },
@@ -115,7 +116,7 @@ RSpec.describe UserPivCacSetupForm do
 
       it 'returns FormResponse with success: false' do
         result = instance_double(FormResponse)
-        extra = { multi_factor_auth_method: 'piv_cac' }
+        extra = { multi_factor_auth_method: 'piv_cac', key_id: nil }
 
         expect(FormResponse).to receive(:new).
           with(success: false, errors: {}, extra: extra).and_return(result)

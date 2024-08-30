@@ -3,7 +3,7 @@
 
 <%= simple_form_for(
       @edit_phone_form,
-      html: { autocomplete: 'off', method: :put },
+      method: :put,
       url: manage_phone_path(id: @phone_configuration.id),
     ) do |f| %>
 
