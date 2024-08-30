@@ -60,7 +60,7 @@ RSpec.describe 'Account connected applications' do
   scenario 'revoking consent from an SP' do
     identity_to_revoke = identity_with_link
 
-    within('.profile-info-box .grid-row', text: identity_to_revoke.display_name) do
+    within('li', text: identity_to_revoke.display_name) do
       click_link(t('account.revoke_consent.link_title'))
     end
 
@@ -71,7 +71,7 @@ RSpec.describe 'Account connected applications' do
     expect(page).to have_current_path(account_connected_accounts_path)
 
     # Revoke again and confirm revocation
-    within('.profile-info-box .grid-row', text: identity_to_revoke.display_name) do
+    within('li', text: identity_to_revoke.display_name) do
       click_link(t('account.revoke_consent.link_title'))
     end
     click_on t('forms.buttons.continue')

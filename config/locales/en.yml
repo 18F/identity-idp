@@ -38,7 +38,7 @@ account_reset.request.info:
 account_reset.request.no_cancel: Cancel
 account_reset.request.title: Account deletion and reset
 account_reset.request.yes_continue: Yes, continue deletion
-account.connected_apps.associated: Connected %{timestamp}
+account.connected_apps.associated_html: Connected %{timestamp}
 account.connected_apps.description: With your %{app_name} account, you can securely connect to multiple government accounts online. Below is a list of all the accounts you currently have connected.
 account.email_language.default: '%{language} (default)'
 account.email_language.edit_title: Edit email language preference
