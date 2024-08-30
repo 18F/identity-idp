@@ -22,7 +22,11 @@ class DeleteUserEmailForm
 
   def email_address_destroyed
     return false unless EmailPolicy.new(@user).can_delete_email?(@email_address)
-    return false if email_address.destroy == false
+    result = EmailAddress.transaction do
+      ServiceProviderIdentity.where(user_id: email_address.user_id, email_address_id: email_address.id).update_all(email_address_id: nil)
+      email_address.destroy
+    end
+    return false if result == false
     user.email_addresses.reload
     true
   end
