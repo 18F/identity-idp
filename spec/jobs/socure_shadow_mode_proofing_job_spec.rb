@@ -27,8 +27,6 @@ RSpec.describe SocureShadowModeProofingJob do
     )
   end
 
-  let(:service_provider_issuer) {}
-
   let(:user) { create(:user) }
 
   let(:user_uuid) { user.uuid }
@@ -128,7 +126,7 @@ RSpec.describe SocureShadowModeProofingJob do
       job.perform(
         document_capture_session_result_id:,
         encrypted_arguments:,
-        service_provider_issuer:,
+        service_provider_issuer: nil,
         user_email:,
         user_uuid:,
       )
@@ -360,15 +358,14 @@ RSpec.describe SocureShadowModeProofingJob do
     it 'creates an Analytics instance with user and sp configured' do
       analytics = job.create_analytics(
         user:,
-        service_provider_issuer:,
+        service_provider_issuer: 'some-issuer',
       )
-      expect(analytics.sp).to eql(service_provider_issuer)
+      expect(analytics.sp).to eql('some-issuer')
       expect(analytics.user).to eql(user)
     end
   end
 
   describe '#proofer' do
-    let(:service_provider_issuer) { 'some-issuer' }
     it 'returns a configured proofer' do
       allow(IdentityConfig.store).to receive(:socure_idplus_api_key).and_return('an-api-key')
       allow(IdentityConfig.store).to receive(:socure_idplus_base_url).and_return('https://example.org')
