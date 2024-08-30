@@ -5,13 +5,13 @@ RSpec.describe 'accounts/_nav_auth.html.erb' do
 
   before do
     @user = build_stubbed(:user, :with_backup_code)
-    allow(view).to receive(:greeting).and_return(@user.email)
+    allow(view).to receive(:greeting).and_return(@user.first_email)
     allow(view).to receive(:current_user).and_return(@user)
     render partial: 'accounts/nav_auth'
   end
 
   it 'contains welcome message' do
-    expect(rendered).to have_content "Welcome #{@user.email}", normalize_ws: true
+    expect(rendered).to have_content "Welcome #{@user.first_email}", normalize_ws: true
   end
 
   it 'does not contain link to cancel the auth process' do

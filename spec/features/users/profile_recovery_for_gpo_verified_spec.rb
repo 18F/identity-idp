@@ -22,7 +22,7 @@ RSpec.feature 'Password recovery via personal key for a GPO-verified user',
 
     click_on t('links.sign_out')
 
-    trigger_reset_password_and_click_email_link(user.email)
+    trigger_reset_password_and_click_email_link(user.first_email)
     reset_password_and_sign_back_in(user, new_password)
     fill_in_code_with_last_phone_otp
     click_submit_default

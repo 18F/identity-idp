@@ -244,7 +244,7 @@ RSpec.feature 'IdV Outage Spec', allowed_extra_analytics: [:*] do
       it 'prevents a user who reset their password from reactivating profile with no personal key',
          email: true do
         personal_key_from_pii(user, pii)
-        trigger_reset_password_and_click_email_link(user.email)
+        trigger_reset_password_and_click_email_link(user.first_email)
         reset_password(user, new_password)
 
         visit new_user_session_path

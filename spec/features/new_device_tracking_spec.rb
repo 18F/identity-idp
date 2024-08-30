@@ -207,12 +207,12 @@ RSpec.describe 'New device tracking' do
     it 'does not send an email' do
       perform_in_browser(:one) do
         visit_idp_from_sp_with_ial1(:oidc)
-        sign_up_user_from_sp_without_confirming_email(user.email)
+        sign_up_user_from_sp_without_confirming_email(user.first_email)
       end
 
       perform_in_browser(:two) do
         expect do
-          confirm_email_in_a_different_browser(user.email)
+          confirm_email_in_a_different_browser(user.first_email)
         end.not_to change { ActionMailer::Base.deliveries.count }
       end
     end

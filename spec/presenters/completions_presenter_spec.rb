@@ -256,7 +256,7 @@ RSpec.describe CompletionsPresenter do
         let(:requested_attributes) { [:email] }
 
         it 'properly scopes and resolve attributes' do
-          expect(pii).to eq(email: current_user.email)
+          expect(pii).to eq(email: current_user.first_email)
         end
       end
 
@@ -264,14 +264,14 @@ RSpec.describe CompletionsPresenter do
         let(:requested_attributes) { [:email, :all_emails] }
 
         it 'only displays all_emails' do
-          expect(pii).to eq(all_emails: [current_user.email])
+          expect(pii).to eq(all_emails: [current_user.first_email])
         end
       end
 
       context 'with all attributes requested' do
         it 'properly scopes and resolve attributes' do
           expect(pii).to eq(
-            all_emails: [current_user.email],
+            all_emails: [current_user.first_email],
             verified_at: nil,
             x509_issuer: nil,
             x509_subject: nil,
@@ -318,7 +318,7 @@ RSpec.describe CompletionsPresenter do
             full_name: 'Testy Testerson',
             address: '123 main st apt 123 Washington, DC 20405',
             phone: '+1 202-212-1000',
-            all_emails: [current_user.email],
+            all_emails: [current_user.first_email],
             birthdate: 'January 1, 1990',
             social_security_number: '900-12-3456',
             verified_at: nil,

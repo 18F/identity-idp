@@ -323,7 +323,7 @@ RSpec.feature 'Sign in' do
       allow(Devise).to receive(:timeout_in).and_return(1)
       user = create(:user)
       visit root_path
-      fill_in t('account.index.email'), with: user.email
+      fill_in t('account.index.email'), with: user.first_email
       fill_in 'Password', with: user.password
 
       expect(page).to have_content(
@@ -464,7 +464,7 @@ RSpec.feature 'Sign in' do
   context 'KMS is on and user enters incorrect password' do
     it 'redirects to root_path with user-friendly error message, not a 500 error' do
       user = create(:user)
-      email = user.email
+      email = user.first_email
       allow(FeatureManagement).to receive(:use_kms?).and_return(true)
       stub_aws_kms_client_invalid_ciphertext
 
@@ -767,7 +767,7 @@ RSpec.feature 'Sign in' do
         click_submit_default
 
         expect(current_path).to eq sign_up_completed_path
-        expect(page).to have_content(user.email)
+        expect(page).to have_content(user.first_email)
 
         click_agree_and_continue
 
@@ -827,7 +827,7 @@ RSpec.feature 'Sign in' do
         click_submit_default_twice
 
         expect(current_path).to eq sign_up_completed_path
-        expect(page).to have_content(user.email)
+        expect(page).to have_content(user.first_email)
 
         click_agree_and_continue
 
@@ -1080,7 +1080,7 @@ RSpec.feature 'Sign in' do
       click_submit_default
 
       expect(current_path).to eq sign_up_completed_path
-      expect(page).to have_content(user.email)
+      expect(page).to have_content(user.first_email)
 
       agree_and_continue_button = find_button(t('sign_up.agree_and_continue'))
       action_url = agree_and_continue_button.ancestor('form')[:action]

@@ -164,7 +164,7 @@ RSpec.feature 'User profile' do
         profile = create(:profile, :active, :verified, pii: { ssn: '1234', dob: '1920-01-01' })
         user = profile.user
 
-        trigger_reset_password_and_click_email_link(user.email)
+        trigger_reset_password_and_click_email_link(user.first_email)
         reset_password_and_sign_back_in(user, user_password)
         click_submit_default
         fill_in_code_with_last_phone_otp

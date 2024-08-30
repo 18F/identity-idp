@@ -545,7 +545,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         user = create(:user, :fully_registered)
         create(:profile, :active, :verified, user: user)
 
-        params = { password_reset_email_form: { email: user.email } }
+        params = { password_reset_email_form: { email: user.first_email } }
         put :create, params: params
 
         expect(@analytics).to have_logged_event(

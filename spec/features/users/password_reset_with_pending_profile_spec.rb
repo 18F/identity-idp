@@ -14,7 +14,7 @@ RSpec.feature 'reset password with pending profile' do
     )
     create(:gpo_confirmation_code, profile: profile)
 
-    trigger_reset_password_and_click_email_link(user.email)
+    trigger_reset_password_and_click_email_link(user.first_email)
 
     html_body = ActionMailer::Base.deliveries.last.html_part.body.decoded
     expect(html_body).to include(
@@ -23,7 +23,7 @@ RSpec.feature 'reset password with pending profile' do
   end
 
   scenario 'password reset email does not include warning without pending profile' do
-    trigger_reset_password_and_click_email_link(user.email)
+    trigger_reset_password_and_click_email_link(user.first_email)
 
     html_body = ActionMailer::Base.deliveries.last.html_part.body.decoded
     expect(html_body).to_not include(

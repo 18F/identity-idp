@@ -34,7 +34,7 @@ RSpec.describe SendSignUpEmailConfirmation do
       subject.call(request_id: request_id)
 
       expect(user.reload.email_addresses.count).to eq(1)
-      expect(email_address.reload.email).to eq(user.email)
+      expect(email_address.reload.email).to eq(user.first_email)
       expect(email_address.confirmation_token).to eq(confirmation_token)
       expect(email_address.confirmation_sent_at).to be_within(5.seconds).of(Time.zone.now)
       expect(email_address.confirmed_at).to eq(nil)

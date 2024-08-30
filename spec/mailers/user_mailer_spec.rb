@@ -127,7 +127,7 @@ RSpec.describe UserMailer, type: :mailer do
     it_behaves_like 'an email that respects user email locale preference'
 
     it 'sends to the current email' do
-      expect(mail.to).to eq [user.email]
+      expect(mail.to).to eq [user.first_email]
     end
 
     it 'renders the subject' do
@@ -195,7 +195,7 @@ RSpec.describe UserMailer, type: :mailer do
     it_behaves_like 'an email that respects user email locale preference'
 
     it 'sends to the current email' do
-      expect(mail.to).to eq [user.email]
+      expect(mail.to).to eq [user.first_email]
     end
 
     it 'renders the subject' do
@@ -218,7 +218,7 @@ RSpec.describe UserMailer, type: :mailer do
     it_behaves_like 'an email that respects user email locale preference'
 
     it 'sends to the current email' do
-      expect(mail.to).to eq [user.email]
+      expect(mail.to).to eq [user.first_email]
     end
 
     it 'renders the subject' do

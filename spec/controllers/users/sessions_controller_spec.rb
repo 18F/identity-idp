@@ -149,7 +149,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
       it 'renders an error letting user know they are locked out for a period of time',
          :freeze_time do
-        post :create, params: { user: { email: user.email.upcase, password: user.password } }
+        post :create, params: { user: { email: user.first_email.upcase, password: user.password } }
         current_time = Time.zone.now
         time_in_hours = distance_of_time_in_words(
           current_time,
@@ -224,7 +224,7 @@ RSpec.describe Users::SessionsController, devise: true do
       stub_analytics
       expect(SCrypt::Engine).to receive(:hash_secret).once.and_call_original
 
-      post :create, params: { user: { email: user.email.upcase, password: 'invalid_password' } }
+      post :create, params: { user: { email: user.first_email.upcase, password: 'invalid_password' } }
 
       expect(@analytics).to have_logged_event(
         'Email and Password Authentication',
@@ -268,7 +268,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
       stub_analytics
 
-      post :create, params: { user: { email: user.email.upcase, password: user.password } }
+      post :create, params: { user: { email: user.first_email.upcase, password: user.password } }
 
       expect(@analytics).to have_logged_event(
         'Email and Password Authentication',
@@ -326,8 +326,8 @@ RSpec.describe Users::SessionsController, devise: true do
 
       stub_analytics
 
-      post :create, params: { user: { email: user.email.upcase, password: 'invalid' } }
-      post :create, params: { user: { email: user.email.upcase, password: 'invalid' } }
+      post :create, params: { user: { email: user.first_email.upcase, password: 'invalid' } }
+      post :create, params: { user: { email: user.first_email.upcase, password: 'invalid' } }
       expect(@analytics).to have_logged_event(
         'Email and Password Authentication',
         success: false,
@@ -366,7 +366,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
         expect(SCrypt::Engine).to receive(:hash_secret).once.and_call_original
 
-        post :create, params: { user: { email: user.email.upcase, password: user.password } }
+        post :create, params: { user: { email: user.first_email.upcase, password: user.password } }
       end
     end
 
@@ -477,7 +477,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
         expect(SCrypt::Engine).to receive(:hash_secret).twice.and_call_original
 
-        post :create, params: { user: { email: user.email.upcase, password: user.password } }
+        post :create, params: { user: { email: user.first_email.upcase, password: user.password } }
       end
 
       it 'caches unverified PII pending confirmation' do
@@ -488,7 +488,7 @@ RSpec.describe Users::SessionsController, devise: true do
           user: user, pii: { ssn: '1234' }
         )
 
-        post :create, params: { user: { email: user.email.upcase, password: user.password } }
+        post :create, params: { user: { email: user.first_email.upcase, password: user.password } }
 
         cached_pii = Pii::Cacher.new(user, controller.user_session).fetch(user.pending_profile.id)
         expect(cached_pii).to eq(Pii::Attributes.new(ssn: '1234'))
@@ -498,7 +498,7 @@ RSpec.describe Users::SessionsController, devise: true do
         user = create(:user, :fully_registered)
         create(:profile, :active, :verified, user: user, pii: { ssn: '1234' })
 
-        post :create, params: { user: { email: user.email.upcase, password: user.password } }
+        post :create, params: { user: { email: user.first_email.upcase, password: user.password } }
 
         cached_pii = Pii::Cacher.new(user, controller.user_session).fetch(user.active_profile.id)
         expect(cached_pii).to eq(Pii::Attributes.new(ssn: '1234'))

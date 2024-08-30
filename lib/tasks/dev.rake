@@ -24,7 +24,7 @@ namespace :dev do
     profile.verified_at = Time.zone.now
     profile.activate
 
-    Rails.logger.warn "email=#{ial2_user.email} personal_key=#{personal_key}"
+    Rails.logger.warn "email=#{ial2_user.first_email} personal_key=#{personal_key}"
   end
 
   # protip: set SCRYPT_COST env vars to '800$8$1$'

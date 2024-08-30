@@ -43,7 +43,7 @@ RSpec.feature 'Visitor signs up with email address' do
     scenario 'sends email saying someone tried to sign up with their email address' do
       user = create(:user)
 
-      expect { sign_up_with(user.email) }.
+      expect { sign_up_with(user.first_email) }.
         to change { ActionMailer::Base.deliveries.count }.by(1)
 
       expect(last_email.html_part.body).to have_content(

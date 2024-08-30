@@ -543,7 +543,7 @@ RSpec.describe 'OpenID Connect' do
                     'HTTP_AUTHORIZATION' => "Bearer #{access_token}"
 
     userinfo_response = JSON.parse(page.body).with_indifferent_access
-    expect(userinfo_response[:email]).to eq(user.email)
+    expect(userinfo_response[:email]).to eq(user.first_email)
     expect(userinfo_response[:verified_at]).to eq(profile.verified_at.to_i)
   end
 
@@ -645,7 +645,7 @@ RSpec.describe 'OpenID Connect' do
                       'HTTP_AUTHORIZATION' => "Bearer #{access_token}"
 
       userinfo_response = JSON.parse(page.body).with_indifferent_access
-      expect(userinfo_response[:email]).to eq(user.email)
+      expect(userinfo_response[:email]).to eq(user.first_email)
       expect(userinfo_response[:verified_at]).to be > 60.days.ago.to_i
       expect(userinfo_response[:verified_at]).to eq(user.active_profile.verified_at.to_i)
     end
@@ -788,7 +788,7 @@ RSpec.describe 'OpenID Connect' do
       )
 
       sign_in_live_with_2fa(user)
-      continue_as(user.email)
+      continue_as(user.first_email)
 
       redirect_uri2 = URI(oidc_redirect_url)
       expect(redirect_uri2.to_s).to start_with('gov.gsa.openidconnect.test://result')
@@ -1176,7 +1176,7 @@ RSpec.describe 'OpenID Connect' do
     else
       visit_idp_from_ial2_oidc_sp(prompt: prompt, state: state, nonce: nonce, client_id: client_id)
     end
-    continue_as(user.email) if user
+    continue_as(user.first_email) if user
     if redirs_to
       expect(URI(oidc_redirect_url).path).to eq(redirs_to)
       return
@@ -1231,7 +1231,7 @@ RSpec.describe 'OpenID Connect' do
     expect(decoded_id_token[:nonce]).to eq(nonce)
     expect(decoded_id_token[:aud]).to eq(client_id)
     expect(decoded_id_token[:iss]).to eq(root_url)
-    expect(decoded_id_token[:email]).to eq(user.email)
+    expect(decoded_id_token[:email]).to eq(user.first_email)
     expect(decoded_id_token[:given_name]).to eq('John')
     expect(decoded_id_token[:social_security_number]).to eq('111223333')
 
@@ -1252,7 +1252,7 @@ RSpec.describe 'OpenID Connect' do
 
     userinfo_response = JSON.parse(page.body).with_indifferent_access
     expect(userinfo_response[:sub]).to eq(sub)
-    expect(userinfo_response[:email]).to eq(user.email)
+    expect(userinfo_response[:email]).to eq(user.first_email)
     expect(userinfo_response[:given_name]).to eq('John')
     expect(userinfo_response[:social_security_number]).to eq('111223333')
 

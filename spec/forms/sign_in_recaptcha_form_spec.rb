@@ -4,7 +4,7 @@ RSpec.describe SignInRecaptchaForm do
   let(:user) { create(:user, :with_authenticated_device) }
   let(:score_threshold_config) { 0.2 }
   let(:analytics) { FakeAnalytics.new }
-  let(:email) { user.email }
+  let(:email) { user.first_email }
   let(:recaptcha_token) { 'token' }
   let(:device_cookie) { Random.hex }
   let(:score) { 1.0 }

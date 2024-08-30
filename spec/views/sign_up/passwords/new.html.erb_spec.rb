@@ -35,9 +35,9 @@ RSpec.describe 'sign_up/passwords/new.html.erb' do
     # Reference:
     # - https://www.chromium.org/developers/design-documents/create-amazing-password-forms/#use-hidden-fields-for-implicit-information
     # - https://www.chromium.org/developers/design-documents/form-styles-that-chromium-understands/
-    expect(user.email).to be_present
+    expect(user.first_email).to be_present
     expect(rendered).to have_css(
-      "input[type='text'][name='username'][value='#{user.email}'][autocomplete='username']",
+      "input[type='text'][name='username'][value='#{user.first_email}'][autocomplete='username']",
       visible: false,
     )
   end

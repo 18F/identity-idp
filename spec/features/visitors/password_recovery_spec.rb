@@ -12,7 +12,7 @@ RSpec.feature 'Password Recovery' do
 
       visit root_path
       click_link t('links.passwords.forgot')
-      fill_in t('account.index.email'), with: user.email
+      fill_in t('account.index.email'), with: user.first_email
 
       expect(PushNotification::HttpPush).to receive(:deliver).
         with(PushNotification::RecoveryActivatedEvent.new(user: user))
@@ -44,12 +44,12 @@ RSpec.feature 'Password Recovery' do
       reset_email
 
       visit new_user_password_path
-      fill_in t('account.index.email'), with: user.email
+      fill_in t('account.index.email'), with: user.first_email
       click_button t('forms.buttons.continue')
 
       expect_delivered_email_count(1)
       expect_delivered_email(
-        to: [user.email],
+        to: [user.first_email],
         subject: t('anonymous_mailer.password_reset_missing_user.subject'),
       )
     end
@@ -61,7 +61,7 @@ RSpec.feature 'Password Recovery' do
       confirm_last_user
       reset_email
       visit sign_up_email_path
-      fill_in t('forms.registration.labels.email'), with: user.email
+      fill_in t('forms.registration.labels.email'), with: user.first_email
       check t('sign_up.terms', app_name: APP_NAME)
       click_submit_default
       open_last_email
@@ -76,7 +76,7 @@ RSpec.feature 'Password Recovery' do
   context 'user has confirmed email and set a password, then resets password', email: true do
     before do
       @user = create(:user)
-      trigger_reset_password_and_click_email_link(@user.email)
+      trigger_reset_password_and_click_email_link(@user.first_email)
     end
 
     it 'keeps user signed out after they successfully reset their password' do
@@ -99,7 +99,7 @@ RSpec.feature 'Password Recovery' do
     before do
       user = create(:user)
       visit new_user_password_path
-      fill_in t('account.index.email'), with: user.email
+      fill_in t('account.index.email'), with: user.first_email
       click_button t('forms.buttons.continue')
       visit edit_user_password_path(reset_password_token: 'invalid_token')
     end
@@ -116,7 +116,7 @@ RSpec.feature 'Password Recovery' do
   context 'user with 2FA confirmation resets password', email: true do
     before do
       @user = create(:user, :fully_registered)
-      trigger_reset_password_and_click_email_link(@user.email)
+      trigger_reset_password_and_click_email_link(@user.first_email)
     end
 
     it 'redirects user to profile after signing back in' do
@@ -148,7 +148,7 @@ RSpec.feature 'Password Recovery' do
       perform_in_browser(:one) do
         visit_idp_from_sp_with_ial1(:oidc)
         click_link t('links.passwords.forgot')
-        fill_in t('account.index.email'), with: @user.email
+        fill_in t('account.index.email'), with: @user.first_email
         click_button t('forms.buttons.continue')
       end
 
@@ -190,7 +190,7 @@ RSpec.feature 'Password Recovery' do
         expect(page).to have_content(t('devise.passwords.updated_not_active'))
         expect_branded_experience
 
-        fill_in t('account.index.email'), with: @user.email
+        fill_in t('account.index.email'), with: @user.first_email
         fill_in t('components.password_toggle.label'), with: 'NewVal!dPassw0rd'
         click_button t('links.sign_in')
         fill_in_code_with_last_phone_otp
@@ -261,7 +261,7 @@ RSpec.feature 'Password Recovery' do
     user = create(:user, :fully_registered)
 
     visit new_user_password_path
-    fill_in t('account.index.email'), with: user.email
+    fill_in t('account.index.email'), with: user.first_email
     click_button t('forms.buttons.continue')
 
     user.reset_password_sent_at =
@@ -281,7 +281,7 @@ RSpec.feature 'Password Recovery' do
 
   it 'rate limits reset passwords requests' do
     user = create(:user, :fully_registered)
-    email = user.email
+    email = user.first_email
 
     max_attempts = IdentityConfig.store.reset_password_email_max_attempts
     (max_attempts - 1).times do |i|

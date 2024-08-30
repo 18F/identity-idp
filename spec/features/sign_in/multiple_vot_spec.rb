@@ -106,7 +106,7 @@ RSpec.feature 'Sign in with multiple vectors of trust' do
           vtr: ['C1.C2.P1', 'C1.C2'],
           scope: 'openid email profile:name',
         )
-        trigger_reset_password_and_click_email_link(user.email)
+        trigger_reset_password_and_click_email_link(user.first_email)
         reset_password(user, 'new even better password')
         user.password = 'new even better password'
         sign_in_live_with_2fa(user)
@@ -274,7 +274,7 @@ RSpec.feature 'Sign in with multiple vectors of trust' do
             ],
           },
         )
-        trigger_reset_password_and_click_email_link(user.email)
+        trigger_reset_password_and_click_email_link(user.first_email)
         reset_password(user, 'new even better password')
         user.password = 'new even better password'
         sign_in_live_with_2fa(user)

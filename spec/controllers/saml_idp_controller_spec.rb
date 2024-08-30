@@ -1719,7 +1719,7 @@ RSpec.describe SamlIdpController do
           expect(response.status).to eq(200)
           expect(name_id.attributes['Format'].value).
             to eq(Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL)
-          expect(name_id.children.first.to_s).to eq(user.email)
+          expect(name_id.children.first.to_s).to eq(user.first_email)
           expect(@analytics).to have_logged_event(
             'SAML Auth',
             hash_including(

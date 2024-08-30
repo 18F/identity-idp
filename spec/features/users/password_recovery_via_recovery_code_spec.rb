@@ -14,7 +14,7 @@ RSpec.feature 'Password recovery via personal key' do
   scenario 'resets password and reactivates profile with personal key', email: true do
     personal_key = personal_key_from_pii(user, pii)
 
-    trigger_reset_password_and_click_email_link(user.email)
+    trigger_reset_password_and_click_email_link(user.first_email)
 
     reset_password_and_sign_back_in(user, new_password)
     fill_in_code_with_last_phone_otp
@@ -34,7 +34,7 @@ RSpec.feature 'Password recovery via personal key' do
 
   scenario 'resets password and reactivates profile with no personal key', email: true, js: true do
     personal_key_from_pii(user, pii)
-    trigger_reset_password_and_click_email_link(user.email)
+    trigger_reset_password_and_click_email_link(user.first_email)
     reset_password_and_sign_back_in(user, new_password)
     fill_in_code_with_last_phone_otp
     click_submit_default
@@ -65,7 +65,7 @@ RSpec.feature 'Password recovery via personal key' do
   scenario 'resets password, not allowed to use personal key as 2fa', email: true do
     _personal_key = personal_key_from_pii(user, pii)
 
-    trigger_reset_password_and_click_email_link(user.email)
+    trigger_reset_password_and_click_email_link(user.first_email)
     reset_password_and_sign_back_in(user, new_password)
     click_link t('two_factor_authentication.login_options_link_text')
 
@@ -76,7 +76,7 @@ RSpec.feature 'Password recovery via personal key' do
   context 'account recovery alternative paths' do
     before do
       personal_key_from_pii(user, pii)
-      trigger_reset_password_and_click_email_link(user.email)
+      trigger_reset_password_and_click_email_link(user.first_email)
       reset_password_and_sign_back_in(user, new_password)
       fill_in_code_with_last_phone_otp
       click_submit_default
@@ -101,7 +101,7 @@ RSpec.feature 'Password recovery via personal key' do
     it 'redirects to SP without prompting to reactivate account' do
       user = create(:user, :proofed)
       visit_idp_from_sp_with_ial1(:oidc)
-      trigger_reset_password_and_click_email_link(user.email)
+      trigger_reset_password_and_click_email_link(user.first_email)
       fill_in t('forms.passwords.edit.labels.password'), with: new_password
       fill_in t('components.password_confirmation.confirm_label'),
               with: new_password

@@ -56,7 +56,7 @@ RSpec.describe GpoReminderJob do
 
     it 'sends only one reminder email, to the correct user' do
       expect { perform }.to change { ActionMailer::Base.deliveries.count }.by(1)
-      expect(ActionMailer::Base.deliveries.last.to.first).to eq(due_for_reminder_user.email)
+      expect(ActionMailer::Base.deliveries.last.to.first).to eq(due_for_reminder_user.first_email)
       expect(job_analytics).to have_logged_event(
         'IdV: gpo reminder email sent',
         user_id: due_for_reminder_user.uuid,

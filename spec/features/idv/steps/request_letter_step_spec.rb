@@ -21,7 +21,7 @@ RSpec.feature 'idv request letter step', allowed_extra_analytics: [:*] do
 
     it 'shows the user the request letter page' do
       visit_idp_from_ial2_oidc_sp
-      trigger_reset_password_and_click_email_link(user.email)
+      trigger_reset_password_and_click_email_link(user.first_email)
       reset_password_and_sign_back_in(user)
       fill_in_code_with_last_phone_otp
       click_submit_default
@@ -39,7 +39,7 @@ RSpec.feature 'idv request letter step', allowed_extra_analytics: [:*] do
 
     it 'shows the user the GPO code entry screen' do
       visit_idp_from_ial2_oidc_sp
-      trigger_reset_password_and_click_email_link(user.email)
+      trigger_reset_password_and_click_email_link(user.first_email)
       reset_password_and_sign_back_in(user, new_password)
       fill_in_code_with_last_phone_otp
       click_submit_default

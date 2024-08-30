@@ -5,7 +5,7 @@ RSpec.shared_examples 'signing in with the site in Spanish' do |sp|
     user = create(:user, :fully_registered)
     visit_idp_from_sp_with_ial1(sp)
     fill_in_credentials_and_submit(user.first_email, user.password)
-    continue_as(user.email)
+    continue_as(user.first_email)
 
     fill_in_code_with_last_phone_otp
     sp == :saml ? click_submit_default_twice : click_submit_default
@@ -154,7 +154,7 @@ RSpec.shared_examples 'signing in as IAL2 after resetting password' do |sp|
   it 'redirects to SP after reactivating account' do
     user = create(:user, :proofed)
     visit_idp_from_sp_with_ial2(sp)
-    trigger_reset_password_and_click_email_link(user.email)
+    trigger_reset_password_and_click_email_link(user.first_email)
     fill_in t('forms.passwords.edit.labels.password'), with: new_password
     fill_in t('components.password_confirmation.confirm_label'),
             with: new_password

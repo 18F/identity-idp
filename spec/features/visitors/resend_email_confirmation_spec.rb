@@ -8,10 +8,10 @@ RSpec.feature 'Visit requests confirmation instructions again during sign up' do
   end
 
   scenario 'user can resend their confirmation instructions via email' do
-    fill_in t('forms.registration.labels.email'), with: user.email
+    fill_in t('forms.registration.labels.email'), with: user.first_email
     check t('sign_up.terms', app_name: APP_NAME)
     click_submit_default
 
-    expect(unread_emails_for(user.email)).to be_present
+    expect(unread_emails_for(user.first_email)).to be_present
   end
 end

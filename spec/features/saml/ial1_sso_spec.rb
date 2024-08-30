@@ -139,7 +139,7 @@ RSpec.feature 'IAL1 Single Sign On' do
       visit saml_authn_request
 
       expect(current_url).to match(user_authorization_confirmation_path)
-      continue_as(user.email)
+      continue_as(user.first_email)
 
       expect(current_url).to eq(complete_saml_url)
     end
