@@ -31,6 +31,10 @@ module UspsInPersonProofing
         load_response_fixture('request_facilities_response_with_duplicates.json')
       end
 
+      def self.request_facilities_response_with_sponsor_error
+        load_response_fixture('request_facilities_response_with_sponsor_error.json')
+      end
+
       def self.request_show_usps_location_response
         load_response_fixture('request_show_usps_location_response.json')
       end

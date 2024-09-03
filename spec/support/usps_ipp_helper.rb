@@ -67,6 +67,14 @@ module UspsIppHelper
     ).to_raise(Faraday::ForbiddenError)
   end
 
+  def stub_request_facilities_with_sponsor_error
+    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getIppFacilityList}).to_return(
+      status: 400,
+      body: UspsInPersonProofing::Mock::Fixtures.request_facilities_response_with_sponsor_error,
+      headers: { 'content-type' => 'application/json' },
+    )
+  end
+
   def stub_request_enroll
     stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant}).to_return(
       status: 200,
