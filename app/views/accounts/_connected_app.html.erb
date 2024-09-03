@@ -12,10 +12,12 @@
         timestamp_html: render(TimeComponent.new(time: identity.created_at)),
       ) %>
 
-  <div class="margin-y-1">
-    <%= render ButtonComponent.new(
-          url: service_provider_revoke_url(identity.service_provider_id),
-          outline: true,
-        ).with_content(t('account.revoke_consent.link_title')) %>
-  </div>
+  <% if identity.service_provider_id %>
+    <div class="margin-y-1">
+      <%= render ButtonComponent.new(
+            url: service_provider_revoke_url(identity.service_provider_id),
+            outline: true,
+          ).with_content(t('account.revoke_consent.link_title')) %>
+    </div>
+  <% end %>
 </div>
