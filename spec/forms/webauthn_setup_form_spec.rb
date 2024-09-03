@@ -7,9 +7,10 @@ RSpec.describe WebauthnSetupForm do
   let(:user_session) { { webauthn_challenge: webauthn_challenge } }
   let(:device_name) { 'Chrome 119 on macOS' }
   let(:domain_name) { 'localhost:3000' }
+  let(:attestation) { attestation_object }
   let(:params) do
     {
-      attestation_object: attestation_object,
+      attestation_object: attestation,
       client_data_json: setup_client_data_json,
       name: 'mykey',
       platform_authenticator: false,
@@ -26,42 +27,51 @@ RSpec.describe WebauthnSetupForm do
 
   describe '#submit' do
     context 'when the input is valid' do
-      it 'returns FormResponse with success: true and creates a webauthn configuration' do
-        extra_attributes = {
-          enabled_mfa_methods_count: 1,
-          mfa_method_counts: { webauthn: 1 },
-          multi_factor_auth_method: 'webauthn',
-          authenticator_data_flags: {
-            up: true,
-            uv: false,
-            be: true,
-            bs: true,
-            at: false,
-            ed: true,
-          },
-          pii_like_keypaths: [[:mfa_method_counts, :phone]],
-        }
+      context 'security key' do
+        it 'returns FormResponse with success: true and creates a webauthn configuration' do
+          extra_attributes = {
+            enabled_mfa_methods_count: 1,
+            mfa_method_counts: { webauthn: 1 },
+            multi_factor_auth_method: 'webauthn',
+            authenticator_data_flags: {
+              up: true,
+              uv: false,
+              be: true,
+              bs: true,
+              at: false,
+              ed: true,
+            },
+            pii_like_keypaths: [[:mfa_method_counts, :phone]],
+          }
 
-        expect(subject.submit(params).to_h).to eq(
-          success: true,
-          errors: {},
-          **extra_attributes,
-        )
+          expect(subject.submit(params).to_h).to eq(
+            success: true,
+            errors: {},
+            **extra_attributes,
+          )
 
-        user.reload
+          user.reload
 
-        expect(user.webauthn_configurations.roaming_authenticators.count).to eq(1)
-        expect(user.webauthn_configurations.roaming_authenticators.first.transports).to eq(['usb'])
-      end
+          expect(user.webauthn_configurations.roaming_authenticators.count).to eq(1)
+          expect(user.webauthn_configurations.roaming_authenticators.first.transports).
+            to eq(['usb'])
+        end
 
-      it 'sends a recovery information changed event' do
-        expect(PushNotification::HttpPush).to receive(:deliver).
-          with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
+        it 'sends a recovery information changed event' do
+          expect(PushNotification::HttpPush).to receive(:deliver).
+            with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
 
-        subject.submit(params)
+          subject.submit(params)
+        end
+
+        it 'does not contains uuid' do
+          result = subject.submit(params)
+          expect(result.extra[:aaguid]).to eq nil
+        end
       end
 
       context 'with platform authenticator' do
+        let(:attestation) { platform_auth_attestation_object }
         let(:params) do
           super().merge(platform_authenticator: true, transports: 'internal,hybrid')
         end
@@ -113,6 +123,11 @@ RSpec.describe WebauthnSetupForm do
 
             expect(result.to_h[:authenticator_data_flags]).to be_nil
           end
+        end
+
+        it 'contains uuid' do
+          result = subject.submit(params)
+          expect(result.extra[:aaguid]).to eq aaguid
         end
       end
 

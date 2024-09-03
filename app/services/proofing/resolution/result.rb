@@ -61,6 +61,7 @@ module Proofing
             attributes_requiring_additional_verification,
           vendor_name: vendor_name,
           vendor_workflow: vendor_workflow,
+          verified_attributes: verified_attributes,
         }
       end
 

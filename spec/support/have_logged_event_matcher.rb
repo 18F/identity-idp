@@ -22,6 +22,15 @@ class HaveLoggedEventMatcher
     end
   end
 
+  def failure_message_when_negated
+    adjective = attributes_matcher_description(expected_attributes) ? 'matching ' : ''
+    [
+      "Expected that FakeAnalytics would not have received #{adjective}event",
+      expected_event_name.inspect,
+      has_expected_count? ? count_failure_reason('it was received').strip : nil,
+    ].compact.join(' ')
+  end
+
   def matches?(actual)
     @actual = actual
 

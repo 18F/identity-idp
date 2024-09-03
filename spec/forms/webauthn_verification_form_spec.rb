@@ -10,6 +10,7 @@ RSpec.describe WebauthnVerificationForm do
   let(:screen_lock_error) { nil }
   let(:platform_authenticator) { false }
   let(:client_data_json) { verification_client_data_json }
+  let(:webauthn_aaguid) { nil }
   let!(:webauthn_configuration) do
     return if !user
     create(
@@ -18,6 +19,7 @@ RSpec.describe WebauthnVerificationForm do
       credential_id: credential_id,
       credential_public_key: credential_public_key,
       platform_authenticator: platform_authenticator,
+      aaguid: webauthn_aaguid,
     )
   end
 
@@ -45,20 +47,24 @@ RSpec.describe WebauthnVerificationForm do
     subject(:result) { form.submit }
 
     context 'when the input is valid' do
-      it 'returns successful result' do
-        expect(result.to_h).to eq(
-          success: true,
-          webauthn_configuration_id: webauthn_configuration.id,
-        )
+      context 'security key' do
+        it 'returns successful result' do
+          expect(result.to_h).to eq(
+            success: true,
+            webauthn_configuration_id: webauthn_configuration.id,
+          )
+        end
       end
 
       context 'for platform authenticator' do
         let(:platform_authenticator) { true }
+        let(:webauthn_aaguid) { aaguid }
 
         it 'returns successful result' do
           expect(result.to_h).to eq(
             success: true,
             webauthn_configuration_id: webauthn_configuration.id,
+            webauthn_aaguid: aaguid,
           )
         end
       end

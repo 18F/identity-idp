@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Reports::FraudMetricsReport do
   let(:report_date) { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
+  let(:time_range) { report_date.all_month }
   subject(:report) { Reports::FraudMetricsReport.new(report_date) }
 
   let(:name) { 'fraud-metrics-report' }
@@ -13,6 +14,8 @@ RSpec.describe Reports::FraudMetricsReport do
   let(:expected_s3_paths) do
     [
       "#{report_folder}/lg99_metrics.csv",
+      "#{report_folder}/suspended_metrics.csv",
+      "#{report_folder}/reinstated_metrics.csv",
     ]
   end
 
@@ -26,8 +29,29 @@ RSpec.describe Reports::FraudMetricsReport do
 
   let(:mock_identity_verification_lg99_data) do
     [
-      ['Metric', 'Total'],
-      ['Unique users seeing LG-99', 5],
+      ['Metric', 'Total', 'Range Start', 'Range End'],
+      ['Unique users seeing LG-99', 5, time_range.begin.to_s,
+       time_range.end.to_s],
+    ]
+  end
+  let(:mock_suspended_metrics_table) do
+    [
+      ['Metric', 'Total', 'Range Start', 'Range End'],
+      ['Unique users suspended', 2, time_range.begin.to_s,
+       time_range.end.to_s],
+      ['Average Days Creation to Suspension', 1.5, time_range.begin.to_s,
+       time_range.end.to_s],
+      ['Average Days Proofed to Suspension', 2.0, time_range.begin.to_s,
+       time_range.end.to_s],
+    ]
+  end
+  let(:mock_reinstated_metrics_table) do
+    [
+      ['Metric', 'Total', 'Range Start', 'Range End'],
+      ['Unique users reinstated', 1, time_range.begin.to_s,
+       time_range.end.to_s],
+      ['Average Days to Reinstatement', 3.0, time_range.begin.to_s,
+       time_range.end.to_s],
     ]
   end
 
@@ -54,6 +78,12 @@ RSpec.describe Reports::FraudMetricsReport do
 
     allow(report.fraud_metrics_lg99_report).to receive(:lg99_metrics_table).
       and_return(mock_identity_verification_lg99_data)
+
+    allow(report.fraud_metrics_lg99_report).to receive(:suspended_metrics_table).
+      and_return(mock_suspended_metrics_table)
+
+    allow(report.fraud_metrics_lg99_report).to receive(:reinstated_metrics_table).
+      and_return(mock_reinstated_metrics_table)
   end
 
   it 'sends out a report to just to team agnes' do
