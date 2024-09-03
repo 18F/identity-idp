@@ -119,14 +119,13 @@ class OpenidConnectAuthorizeForm
   end
 
   def requested_aal_value
-    highest_level_aal || default_aal_acr
+    highest_level_aal ||
+      Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
   end
 
   private
 
-  # @return [ServiceProviderIdentity]
-  attr_reader :identity
-  attr_reader :success
+  attr_reader :identity, :success
 
   def code
     identity&.session_uuid
@@ -349,22 +348,5 @@ class OpenidConnectAuthorizeForm
 
   def verified_within_allowed?
     IdentityConfig.store.allowed_verified_within_providers.include?(client_id)
-  end
-
-  def request_authn_context_resolver
-    @request_authn_context_resolver ||= AuthnContextResolver.new(
-      service_provider: service_provider,
-      user: nil,
-      vtr: nil,
-      acr_values: acr_values,
-    )
-  end
-
-  def requested_authn_context
-    @requested_authn_context ||= request_authn_context_resolver.result
-  end
-
-  def default_aal_acr
-    request_authn_context_resolver.default_aal_acr
   end
 end
