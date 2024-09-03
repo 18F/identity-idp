@@ -675,12 +675,14 @@ module AnalyticsEvents
   # @param [Hash] errors Errors resulting from form validation
   # @param [String] exception
   # @param [String] profile_fraud_review_pending_at
+  # @param [Integer] profile_age_in_seconds How many seconds have passed since profile created
   # The user was passed by manual fraud review
   def fraud_review_passed(
     success:,
     errors:,
     exception:,
     profile_fraud_review_pending_at:,
+    profile_age_in_seconds:,
     **extra
   )
     track_event(
@@ -689,6 +691,7 @@ module AnalyticsEvents
       errors: errors,
       exception: exception,
       profile_fraud_review_pending_at: profile_fraud_review_pending_at,
+      profile_age_in_seconds: profile_age_in_seconds,
       **extra,
     )
   end
@@ -697,12 +700,14 @@ module AnalyticsEvents
   # @param [Hash] errors Errors resulting from form validation
   # @param [String] exception
   # @param [String] profile_fraud_review_pending_at
+  # @param [Integer] profile_age_in_seconds How many seconds have passed since profile created
   # The user was rejected by manual fraud review
   def fraud_review_rejected(
     success:,
     errors:,
     exception:,
     profile_fraud_review_pending_at:,
+    profile_age_in_seconds:,
     **extra
   )
     track_event(
@@ -711,6 +716,7 @@ module AnalyticsEvents
       errors: errors,
       exception: exception,
       profile_fraud_review_pending_at: profile_fraud_review_pending_at,
+      profile_age_in_seconds: profile_age_in_seconds,
       **extra,
     )
   end
@@ -2943,6 +2949,8 @@ module AnalyticsEvents
   # @param [Boolean] fraud_suspected
   # @param [Boolean] passed did this enrollment pass or fail?
   # @param [String] reason why did this enrollment pass or fail?
+  # @param [String] tmx_status the tmx_status of the enrollment profile profile
+  # @param [Integer] profile_age_in_seconds How many seconds have passed since profile created
   def idv_in_person_usps_proofing_results_job_enrollment_updated(
     enrollment_code:,
     enrollment_id:,
@@ -2950,6 +2958,8 @@ module AnalyticsEvents
     fraud_suspected:,
     passed:,
     reason:,
+    tmx_status:,
+    profile_age_in_seconds:,
     **extra
   )
     track_event(
@@ -2960,6 +2970,8 @@ module AnalyticsEvents
       fraud_suspected: fraud_suspected,
       passed: passed,
       reason: reason,
+      tmx_status: tmx_status,
+      profile_age_in_seconds: profile_age_in_seconds,
       **extra,
     )
   end
@@ -4306,6 +4318,7 @@ module AnalyticsEvents
   # @param [DateTime] enqueued_at When was this letter enqueued
   # @param [Integer] which_letter Sorted by enqueue time, which letter had this code
   # @param [Integer] letter_count How many letters did the user enqueue for this profile
+  # @param [Integer] profile_age_in_seconds How many seconds have passed since profile created
   # @param [Integer] submit_attempts Number of attempts to enter a correct code
   #                  (previously called "attempts")
   # @param [Boolean] pending_in_person_enrollment
@@ -4319,6 +4332,7 @@ module AnalyticsEvents
     enqueued_at:,
     which_letter:,
     letter_count:,
+    profile_age_in_seconds:,
     submit_attempts:,
     pending_in_person_enrollment:,
     fraud_check_failed:,
@@ -4333,6 +4347,7 @@ module AnalyticsEvents
       enqueued_at:,
       which_letter:,
       letter_count:,
+      profile_age_in_seconds:,
       submit_attempts:,
       pending_in_person_enrollment:,
       fraud_check_failed:,

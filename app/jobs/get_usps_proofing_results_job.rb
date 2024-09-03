@@ -623,6 +623,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       reason: reason,
       job_name: self.class.name,
       tmx_status: enrollment.profile&.tmx_status,
+      profile_age_in_seconds: enrollment.profile&.profile_age_in_seconds,
       enhanced_ipp: enrollment.enhanced_ipp?,
     )
   end
