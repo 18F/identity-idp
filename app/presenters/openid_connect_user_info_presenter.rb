@@ -45,7 +45,7 @@ class OpenidConnectUserInfoPresenter
   end
 
   def asserted_aal_value
-    identity.requested_aal_value.presence || authn_context_resolver.asserted_aal_acr
+    identity.requested_aal_value.presence
   end
 
   def vot_values

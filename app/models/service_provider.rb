@@ -41,6 +41,8 @@ class ServiceProvider < ApplicationRecord
     },
   )
 
+  attr_reader :ial
+
   IAA_INTERNAL = 'LGINTERNAL'
 
   scope(:internal, -> { where(iaa: IAA_INTERNAL) })
