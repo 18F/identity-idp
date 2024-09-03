@@ -6,6 +6,5 @@
   "summary_risk_score": "-6",
   "tmx_risk_rating": "neutral",
   "fraudpoint.score": "500",
-  "first_name": "[redacted]",
   "tmx_summary_reason_code": ["Identity_Negative_History"]
 }

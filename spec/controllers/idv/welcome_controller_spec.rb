@@ -64,13 +64,28 @@ RSpec.describe Idv::WelcomeController, allowed_extra_analytics: [:*] do
       )
     end
 
-    context 'welcome already visited' do
-      it 'does not redirect to agreement' do
-        subject.idv_session.welcome_visited = true
+    it 'sets the proofing started timestamp', :freeze_time do
+      get :show
 
+      expect(subject.idv_session.proofing_started_at).to eq(Time.zone.now.iso8601)
+    end
+
+    context 'welcome already visited' do
+      before do
+        subject.idv_session.welcome_visited = true
+        subject.idv_session.proofing_started_at = 5.minutes.ago.iso8601
+      end
+
+      it 'does not redirect to agreement' do
         get :show
 
         expect(response).to render_template('idv/welcome/show')
+      end
+
+      it 'does not overwrite the proofing started timestamp' do
+        get :show
+
+        expect(subject.idv_session.proofing_started_at).to eq(5.minutes.ago.iso8601)
       end
 
       context 'and verify info already completed' do

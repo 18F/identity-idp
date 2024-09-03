@@ -337,7 +337,17 @@ class AccessibleName
 end
 
 def expect_page_to_have_no_accessibility_violations(page, validate_markup: true)
-  expect(page).to be_axe_clean.according_to(:wcag22aa, :"best-practice")
+  expect(page).to be_axe_clean.according_to(
+    :wcag2a,
+    :wcag2aa,
+    :wcag21a,
+    :wcag21aa,
+    :wcag22a,
+    :wcag22aa,
+    :"best-practice",
+  ).excluding(
+    '.iti__selected-flag', # See: LG-14382
+  )
   expect(page).to have_unique_ids
   expect(page).to have_valid_idrefs
   expect(page).to label_required_fields

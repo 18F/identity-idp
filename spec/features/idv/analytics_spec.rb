@@ -14,8 +14,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
     { client: nil,
       errors: {},
       exception: nil,
-      response_body: { first_name: '[redacted]',
-                       "fraudpoint.score": '500',
+      response_body: { "fraudpoint.score": '500',
                        request_id: '1234',
                        request_result: 'success',
                        review_status: 'pass',
@@ -71,7 +70,8 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
       can_pass_with_additional_verification: false,
       attributes_requiring_additional_verification: [],
       vendor_name: 'ResolutionMock',
-      vendor_workflow: nil }
+      vendor_workflow: nil,
+      verified_attributes: nil }
   end
 
   let(:base_proofing_results) do
@@ -95,7 +95,8 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
                                  timed_out: false,
                                  transaction_id: '',
                                  vendor_name: 'ResidentialAddressNotRequired',
-                                 vendor_workflow: nil },
+                                 vendor_workflow: nil,
+                                 verified_attributes: nil },
           state_id: state_id_resolution,
           threatmetrix: threatmetrix_response,
         },
@@ -124,7 +125,8 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
                                  can_pass_with_additional_verification: false,
                                  attributes_requiring_additional_verification: [],
                                  vendor_name: 'ResolutionMock',
-                                 vendor_workflow: nil },
+                                 vendor_workflow: nil,
+                                 verified_attributes: nil },
           state_id: state_id_resolution,
           threatmetrix: threatmetrix_response,
         },
@@ -226,12 +228,12 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         proofing_components: lexis_nexis_address_proofing_components,
       },
       :idv_enter_password_submitted => {
-        success: true, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: false,
+        success: true, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: false, proofing_workflow_time_in_seconds: 0.0,
         active_profile_idv_level: 'legacy_unsupervised',
         proofing_components: lexis_nexis_address_proofing_components
       },
       'IdV: final resolution' => {
-        success: true, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: false,
+        success: true, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: false, proofing_workflow_time_in_seconds: 0.0,
         active_profile_idv_level: 'legacy_unsupervised',
         profile_history: match_array(kind_of(Idv::ProfileLogging)),
         proofing_components: lexis_nexis_address_proofing_components
@@ -341,12 +343,12 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         proofing_components: lexis_nexis_address_proofing_components,
       },
       :idv_enter_password_submitted => {
-        success: true, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: false,
+        success: true, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: false, proofing_workflow_time_in_seconds: 0.0,
         active_profile_idv_level: 'legacy_unsupervised',
         proofing_components: lexis_nexis_address_proofing_components
       },
       'IdV: final resolution' => {
-        success: true, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: false,
+        success: true, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: false, proofing_workflow_time_in_seconds: 0.0,
         active_profile_idv_level: 'legacy_unsupervised',
         profile_history: match_array(kind_of(Idv::ProfileLogging)),
         proofing_components: lexis_nexis_address_proofing_components
@@ -442,11 +444,11 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         proofing_components: gpo_letter_proofing_components
       },
       :idv_enter_password_submitted => {
-        success: true, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: true, in_person_verification_pending: false,
+        success: true, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: true, in_person_verification_pending: false, proofing_workflow_time_in_seconds: 0.0,
         proofing_components: gpo_letter_proofing_components
       },
       'IdV: final resolution' => {
-        success: true, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: true, in_person_verification_pending: false,
+        success: true, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: true, in_person_verification_pending: false, proofing_workflow_time_in_seconds: 0.0,
         # NOTE: pending_profile_idv_level should be set here, a nil value is cached for current_user.pending_profile.
         profile_history: match_array(kind_of(Idv::ProfileLogging)),
         proofing_components: gpo_letter_proofing_components
@@ -558,11 +560,11 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' },
       },
       :idv_enter_password_submitted => {
-        success: true, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: true,
+        success: true, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: true, proofing_workflow_time_in_seconds: 0.0,
         proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
       },
       'IdV: final resolution' => {
-        success: true, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: true,
+        success: true, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: true, proofing_workflow_time_in_seconds: 0.0,
         # NOTE: pending_profile_idv_level should be set here, a nil value is cached for current_user.pending_profile.
         profile_history: match_array(kind_of(Idv::ProfileLogging)),
         proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
@@ -680,12 +682,12 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         proofing_components: lexis_nexis_address_proofing_components,
       },
       :idv_enter_password_submitted => {
-        success: true, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: false,
+        success: true, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: false, proofing_workflow_time_in_seconds: 0.0,
         active_profile_idv_level: 'unsupervised_with_selfie',
         proofing_components: lexis_nexis_address_proofing_components
       },
       'IdV: final resolution' => {
-        success: true, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: false,
+        success: true, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: false, proofing_workflow_time_in_seconds: 0.0,
         active_profile_idv_level: 'unsupervised_with_selfie',
         profile_history: match_array(kind_of(Idv::ProfileLogging)),
         proofing_components: lexis_nexis_address_proofing_components
@@ -979,9 +981,6 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
 
   context 'Happy selfie path' do
     before do
-      allow_any_instance_of(FederatedProtocols::Oidc).
-        to receive(:biometric_comparison_required?).
-        and_return(true)
       allow_any_instance_of(DocAuth::Response).to receive(:selfie_status).and_return(:success)
 
       perform_in_browser(:desktop) do

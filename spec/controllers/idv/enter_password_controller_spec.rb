@@ -28,6 +28,7 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
     subject.idv_session.welcome_visited = true
     subject.idv_session.idv_consent_given_at = Time.zone.now
+    subject.idv_session.proofing_started_at = 5.minutes.ago.iso8601
     subject.idv_session.flow_path = 'standard'
     subject.idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
     subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:ssn]
@@ -283,7 +284,7 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
       end
     end
 
-    it 'redirects to personal key path' do
+    it 'redirects to personal key path', :freeze_time do
       put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
       expect(@analytics).to have_logged_event(
@@ -294,6 +295,7 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
           fraud_rejection: false,
           gpo_verification_pending: false,
           in_person_verification_pending: false,
+          proofing_workflow_time_in_seconds: 5.minutes.to_i,
           **ab_test_args,
         ),
       )

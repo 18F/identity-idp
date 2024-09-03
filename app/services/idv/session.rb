@@ -21,6 +21,7 @@ module Idv
       phone_for_mobile_flow
       previous_phone_step_params
       profile_id
+      proofing_started_at
       redo_document_capture
       resolution_successful
       selfie_check_performed
@@ -202,6 +203,10 @@ module Idv
       parsed_phone = Phonelib.parse(phone)
       phone_e164 = parsed_phone.e164
       failed_phone_step_numbers << phone_e164 if !failed_phone_step_numbers.include?(phone_e164)
+    end
+
+    def proofing_workflow_time_in_seconds
+      Time.zone.now - Time.zone.parse(proofing_started_at) if proofing_started_at.present?
     end
 
     def pii_from_user_in_flow_session

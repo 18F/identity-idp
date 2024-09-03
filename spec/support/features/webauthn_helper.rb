@@ -172,6 +172,15 @@ module WebAuthnHelper
     HEREDOC
   end
 
+  def platform_auth_attestation_object
+    <<~HEREDOC.chomp
+      o2NmbXRkbm9uZWdhdHRTdG10oGhhdXRoRGF0YVikSZYN5YgOjGh0NBcPZHZgW4/krrmihjLHmVzz
+      uoMdl2NFAAAAAK3OAAI1vMYKZIsLJfHwVQMAIOa31Ugh6EPoj4z6b+ibq6rVF1CZ9ygzSNvMrFmY
+      aPLtpQECAyYgASFYIO6a1uIfDkbqg/pm7bHZG0oRGyCEuWZrCWd2v/2IqXCaIlggKQEHbAiyBZxS
+      1HSBwwdjNCE4prYoHdzJWQILvDrIySo=
+    HEREDOC
+  end
+
   def setup_client_data_json
     <<~HEREDOC.chomp
       eyJjaGFsbGVuZ2UiOiJncjEycndSVVVIWnFvNkZFSV9ZbEFnIiwibmV3X2tleXNfbWF5X2JlX2
@@ -196,6 +205,10 @@ module WebAuthnHelper
 
   def authenticator_data
     'SZYN5YgOjGh0NBcPZHZgW4/krrmihjLHmVzzuoMdl2MBAAAAcQ=='
+  end
+
+  def aaguid
+    'adce0002-35bc-c60a-648b-0b25f1f05503'
   end
 
   def signature

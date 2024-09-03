@@ -51,6 +51,7 @@ module Idv
         gpo_verification_pending: idv_session.profile.gpo_verification_pending?,
         in_person_verification_pending: idv_session.profile.in_person_verification_pending?,
         deactivation_reason: idv_session.profile.deactivation_reason,
+        proofing_workflow_time_in_seconds: idv_session.proofing_workflow_time_in_seconds,
         **ab_test_analytics_buckets,
       )
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
@@ -62,6 +63,7 @@ module Idv
         gpo_verification_pending: idv_session.profile.gpo_verification_pending?,
         in_person_verification_pending: idv_session.profile.in_person_verification_pending?,
         deactivation_reason: idv_session.profile.deactivation_reason,
+        proofing_workflow_time_in_seconds: idv_session.proofing_workflow_time_in_seconds,
         **ab_test_analytics_buckets,
       )
 
