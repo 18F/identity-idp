@@ -205,6 +205,15 @@ module Idv
       rate_limiter.attempts if document_capture_session
     end
 
+    def processed_selfie_attempts
+      return 0 if document_capture_session.nil?
+
+      captured_result = document_capture_session&.load_result
+      processed_selfie_count = (selfie_image_fingerprint ? 1 : 0)
+      past_selfie_count = (captured_result&.failed_selfie_image_fingerprints || []).length
+      past_selfie_count + processed_selfie_count
+    end
+
     def determine_response(form_response:, client_response:, doc_pii_response:)
       # image validation failed
       return form_response unless form_response.success?
@@ -353,10 +362,6 @@ module Idv
       birth_year = client_response.pii_from_doc&.dob&.to_date&.year
       zip_code = client_response.pii_from_doc&.zipcode&.to_s&.strip&.slice(0, 5)
       issue_year = client_response.pii_from_doc&.state_id_issued&.to_date&.year
-      captured_result = document_capture_session&.load_result
-      processed_selfie_count = (selfie_image_fingerprint ? 1 : 0)
-      past_selfie_count = (captured_result&.failed_selfie_image_fingerprints || []).length
-      selfie_attempts = past_selfie_count + processed_selfie_count
       analytics.idv_doc_auth_submitted_image_upload_vendor(
         **client_response.to_h.merge(
           birth_year: birth_year,
@@ -366,7 +371,7 @@ module Idv
           vendor_request_time_in_ms: vendor_request_time_in_ms,
           zip_code: zip_code,
           issue_year: issue_year,
-          selfie_attempts: selfie_attempts,
+          selfie_attempts: processed_selfie_attempts,
         ).except(:classification_info).
         merge(acuant_sdk_upgrade_ab_test_data),
       )
