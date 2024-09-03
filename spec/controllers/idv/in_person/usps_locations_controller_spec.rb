@@ -251,6 +251,35 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
         expect(response.status).to eq(404)
       end
     end
+
+    context 'with 400 error from USPS for sponsor id failure' do
+      let(:response_message) { 'Sponsor for sponsorID 5 not found' }
+      let(:response_body) { { responseMessage: response_message } }
+      let(:error_response) { { body: response_body, status: 400 } }
+      let(:sponsor_id_error) { Faraday::BadRequestError.new(response_message, error_response) }
+      let(:filtered_message) { 'Sponsor for sponsorID [FILTERED] not found' }
+
+      before do
+        allow(proofer).to receive(:request_facilities).and_raise(sponsor_id_error)
+      end
+
+      it 'returns an unprocessible entity client error with scrubbed analytics event' do
+        subject
+
+        expect(@analytics).to have_logged_event(
+          'Request USPS IPP locations: request failed',
+          api_status_code: 422,
+          exception_class: sponsor_id_error.class,
+          exception_message: filtered_message,
+          response_body_present: true,
+          response_body: { responseMessage: filtered_message },
+          response_status_code: 400,
+        )
+
+        status = response.status
+        expect(status).to eq 422
+      end
+    end
   end
 
   describe '#update' do

@@ -17,6 +17,7 @@ module Idv
       rescue_from ActionController::InvalidAuthenticityToken,
                   Faraday::Error,
                   StandardError,
+                  Faraday::BadRequestError,
                   with: :handle_error
 
       # retrieve the list of nearby IPP Post Office locations with a POST request
@@ -91,6 +92,20 @@ module Idv
         end
       end
 
+      def scrub_message(message)
+        filtered_message = message.dup
+        filtered_message.gsub!(/sponsorID \d+/i, 'sponsorID [FILTERED]')
+        filtered_message
+      end
+
+      def scrub_body(body)
+        return nil if body.nil?
+
+        filtered_body = body.dup
+        filtered_body[:responseMessage] = scrub_message(filtered_body[:responseMessage])
+        filtered_body
+      end
+
       def handle_error(err)
         remapped_error = case err
                          when ActionController::InvalidAuthenticityToken,
@@ -103,9 +118,9 @@ module Idv
         analytics.idv_in_person_locations_request_failure(
           api_status_code: Rack::Utils.status_code(remapped_error),
           exception_class: err.class,
-          exception_message: err.message,
+          exception_message: scrub_message(err.message),
           response_body_present: err.respond_to?(:response_body) && err.response_body.present?,
-          response_body: err.respond_to?(:response_body) && err.response_body,
+          response_body: err.respond_to?(:response_body) && scrub_body(err.response_body),
           response_status_code: err.respond_to?(:response_status) && err.response_status,
         )
         render json: {}, status: remapped_error
