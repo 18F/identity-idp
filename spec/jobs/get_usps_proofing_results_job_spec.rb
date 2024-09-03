@@ -1418,6 +1418,32 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
               end
             end
           end
+
+          context 'when there is a bad sponsor id' do
+            before(:each) do
+              stub_request_proofing_results_with_responses(
+                {
+                  status: 400,
+                  body: { 'responseMessage' => 'Sponsor for sponsorID 5 not found' }.to_json,
+                  headers: { 'content-type': 'application/json' },
+                },
+              )
+            end
+
+            it_behaves_like(
+              'enrollment_encountering_an_exception',
+              exception_class: 'Faraday::BadRequestError',
+              exception_message: 'the server responded with status 400',
+              response_message: 'Sponsor for sponsorID [FILTERED] not found',
+              response_status_code: 400,
+            )
+
+            it 'logs the error to NewRelic' do
+              expect(NewRelic::Agent).to receive(:notice_error).
+                with(instance_of(Faraday::BadRequestError)).at_least(1).times
+              job.perform(Time.zone.now)
+            end
+          end
         end
 
         describe 'Proofed with secondary id' do

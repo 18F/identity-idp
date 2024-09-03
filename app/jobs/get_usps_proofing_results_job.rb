@@ -8,6 +8,8 @@ class GetUspsProofingResultsJob < ApplicationJob
   IPP_EXPIRED_ERROR_MESSAGE = /More than (?<days>\d+) days have passed since opt-in to IPP/
   IPP_INVALID_ENROLLMENT_CODE_MESSAGE = 'Enrollment code %s does not exist'
   IPP_INVALID_APPLICANT_MESSAGE = 'Applicant %s does not exist'
+  IPP_BAD_SPONSOR_ID_MESSAGE = /sponsorID \d is not registered as an IPP client/
+  IPP_SPONSOR_ID_NOT_FOUND_MESSAGE = /Sponsor for sponsorID \d not found/
   SUPPORTED_ID_TYPES = [
     "State driver's license",
     "State non-driver's identification card",
@@ -143,6 +145,10 @@ class GetUspsProofingResultsJob < ApplicationJob
     error_rate
   end
 
+  def scrub_message(message)
+    message&.gsub(/\s+/, ' ')&.strip
+  end
+
   def handle_bad_request_error(err, enrollment)
     response_body = err.response_body
     response_message = response_body&.[]('responseMessage')
@@ -163,6 +169,8 @@ class GetUspsProofingResultsJob < ApplicationJob
       handle_unexpected_response(
         enrollment, response_message, reason: 'Invalid applicant unique id'
       )
+    elsif response_message&.match(IPP_BAD_SPONSOR_ID_MESSAGE) || response_message&.match(IPP_SPONSOR_ID_NOT_FOUND_MESSAGE)
+      handle_sponsor_id_error(err, enrollment)
     else
       handle_client_or_server_error(err, enrollment)
     end
@@ -173,6 +181,39 @@ class GetUspsProofingResultsJob < ApplicationJob
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
       **enrollment_analytics_attributes(enrollment, complete: false),
       **response_analytics_attributes(err.response_body),
+      exception_class: err.class.to_s,
+      exception_message: err.message,
+      reason: 'Request exception',
+      response_status_code: err.response_status,
+      job_name: self.class.name,
+    )
+
+    if err.is_a?(Faraday::TimeoutError) || err.is_a?(Faraday::ConnectionFailed)
+      enrollment_outcomes[:enrollments_network_error] += 1
+    else
+      enrollment_outcomes[:enrollments_errored] += 1
+    end
+  end
+
+  def scrub_message(message)
+    filtered_message = message.dup
+    filtered_message.gsub!(/sponsorID \d+/i, 'sponsorID [FILTERED]')
+    filtered_message
+  end
+
+  def scrub_body(body)
+    return nil if body.nil?
+
+    filtered_body = body.dup
+    filtered_body['responseMessage'] = scrub_message(filtered_body['responseMessage'])
+    filtered_body
+  end
+
+  def handle_sponsor_id_error(err, enrollment)
+    NewRelic::Agent.notice_error(err)
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
+      **enrollment_analytics_attributes(enrollment, complete: false),
+      **response_analytics_attributes(scrub_body(err.response_body)),
       exception_class: err.class.to_s,
       exception_message: err.message,
       reason: 'Request exception',
