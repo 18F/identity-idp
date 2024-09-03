@@ -68,7 +68,7 @@ module Vot
     ).freeze
 
     ## Authentication ACR values
-    DEFAULT = AcrComponentValue.new(
+    DEFAULT_AAL = AcrComponentValue.new(
       name: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
       description: 'Legacy default authentication',
       implied_component_values: [],
