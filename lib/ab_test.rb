@@ -60,6 +60,8 @@ class AbTest
   def include_in_analytics_event?(event_name)
     if should_log.is_a?(Regexp)
       should_log.match?(event_name)
+    elsif should_log.respond_to?(:include?)
+      should_log.include?(event_name)
     elsif !should_log.nil?
       raise 'Unexpected value used for should_log'
     else

@@ -9,6 +9,7 @@ RSpec.feature 'Sign in' do
   include SpAuthHelper
   include IdvHelper
   include DocAuthHelper
+  include AbTestsHelper
 
   context 'service provider is on the ialmax allow list' do
     before do
@@ -885,6 +886,12 @@ RSpec.feature 'Sign in' do
       allow(FeatureManagement).to receive(:sign_in_recaptcha_enabled?).and_return(true)
       allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).and_return(true)
       allow(IdentityConfig.store).to receive(:sign_in_recaptcha_score_threshold).and_return(0.2)
+      allow(IdentityConfig.store).to receive(:sign_in_recaptcha_percent_tested).and_return(100)
+      reload_ab_tests
+    end
+
+    after do
+      reload_ab_tests
     end
 
     it 'redirects user to security check failed page' do

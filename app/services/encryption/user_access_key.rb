@@ -45,7 +45,7 @@ module Encryption
       self.masked_ciphertext = Base64.strict_decode64(encryption_key_arg)
       z1_padded = z1.dup.rjust(masked_ciphertext.length, '0')
       encrypted_random_r = xor(z1_padded, masked_ciphertext)
-      self.random_r = kms_client.decrypt(encrypted_random_r)
+      self.random_r = kms_client.decrypt(encrypted_random_r, log_context: 'user-access-key')
       self.cek = OpenSSL::Digest::SHA256.hexdigest(z2 + random_r)
       self
     end

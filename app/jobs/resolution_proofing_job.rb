@@ -73,6 +73,16 @@ class ResolutionProofingJob < ApplicationJob
       device_profiling_success: callback_log_data&.device_profiling_success,
       timing: timer.results,
     )
+
+    if IdentityConfig.store.idv_socure_shadow_mode_enabled
+      SocureShadowModeProofingJob.perform_later(
+        document_capture_session_result_id: document_capture_session.result_id,
+        encrypted_arguments:,
+        service_provider_issuer:,
+        user_email: user_email_for_proofing(user),
+        user_uuid: user.uuid,
+      )
+    end
   end
 
   private
@@ -89,7 +99,7 @@ class ResolutionProofingJob < ApplicationJob
   )
     result = progressive_proofer.proof(
       applicant_pii: applicant_pii,
-      user_email: user.confirmed_email_addresses.first.email,
+      user_email: user_email_for_proofing(user),
       threatmetrix_session_id: threatmetrix_session_id,
       request_ip: request_ip,
       ipp_enrollment_in_progress: ipp_enrollment_in_progress,
@@ -107,6 +117,10 @@ class ResolutionProofingJob < ApplicationJob
       result: result.adjudicated_result.to_h,
       state_id_success: result.state_id_result.success?,
     )
+  end
+
+  def user_email_for_proofing(user)
+    user.confirmed_email_addresses.first.email
   end
 
   def log_threatmetrix_info(threatmetrix_result, user)

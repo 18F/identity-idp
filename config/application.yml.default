@@ -143,6 +143,7 @@ idv_max_attempts: 5
 idv_min_age_years: 13
 idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
+idv_socure_shadow_mode_enabled: false
 idv_sp_required: false
 in_person_completion_survey_url: 'https://login.gov'
 in_person_doc_auth_button_enabled: true
@@ -332,11 +333,15 @@ short_term_phone_otp_max_attempt_window_in_seconds: 10
 short_term_phone_otp_max_attempts: 2
 show_unsupported_passkey_platform_authentication_setup: false
 show_user_attribute_deprecation_warnings: false
+sign_in_recaptcha_percent_tested: 0
 sign_in_recaptcha_score_threshold: 0.0
 sign_in_user_id_per_ip_attempt_window_exponential_factor: 1.1
 sign_in_user_id_per_ip_attempt_window_in_minutes: 720
 sign_in_user_id_per_ip_attempt_window_max_minutes: 43_200
 sign_in_user_id_per_ip_max_attempts: 50
+socure_idplus_api_key: ''
+socure_idplus_base_url: ''
+socure_idplus_timeout_in_seconds: 5
 socure_webhook_enabled: false
 socure_webhook_secret_key: ''
 socure_webhook_secret_key_queue: '[]'
@@ -428,10 +433,10 @@ development:
   secret_key_base: development_secret_key_base
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   show_unsupported_passkey_platform_authentication_setup: true
+  sign_in_recaptcha_percent_tested: 100
   sign_in_recaptcha_score_threshold: 0.3
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost"]'
-  socure_webhook_secret_key: 'secret-key'
-  socure_webhook_secret_key_queue: '["old-key-one", "old-key-two"]'
+  socure_idplus_base_url: 'https://sandbox.socure.us'
   state_tracking_enabled: true
   telephony_adapter: test
   use_dashboard_service_providers: true

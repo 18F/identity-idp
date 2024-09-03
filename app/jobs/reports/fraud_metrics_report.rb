@@ -29,7 +29,7 @@ module Reports
 
       ReportMailer.tables_report(
         email: email_addresses,
-        subject: "Fraud Metrics Report - #{date.to_date}",
+        subject: "Fraud Metrics Report - #{report_date.to_date}",
         reports: reports,
         message: preamble,
         attachment_format: :xlsx,
@@ -60,9 +60,7 @@ module Reports
     end
 
     def reports
-      @reports ||= [
-        fraud_metrics_lg99_report.as_emailable_reports,
-      ]
+      @reports ||= fraud_metrics_lg99_report.as_emailable_reports
     end
 
     def fraud_metrics_lg99_report

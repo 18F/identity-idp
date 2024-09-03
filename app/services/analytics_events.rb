@@ -430,7 +430,8 @@ module AnalyticsEvents
   # @param [String] user_id
   # @param [Boolean] user_locked_out if the user is currently locked out of their second factor
   # @param [Boolean] rate_limited Whether the user has exceeded user IP rate limiting
-  # @param [Boolean] valid_captcha_result Whether user passed the reCAPTCHA check
+  # @param [Boolean] valid_captcha_result Whether user passed the reCAPTCHA check or was exempt
+  # @param [Boolean] captcha_validation_performed Whether a reCAPTCHA check was performed
   # @param [String] bad_password_count represents number of prior login failures
   # @param [Boolean] sp_request_url_present if was an SP request URL in the session
   # @param [Boolean] remember_device if the remember device cookie was present
@@ -443,6 +444,7 @@ module AnalyticsEvents
     user_locked_out:,
     rate_limited:,
     valid_captcha_result:,
+    captcha_validation_performed:,
     bad_password_count:,
     sp_request_url_present:,
     remember_device:,
@@ -456,6 +458,7 @@ module AnalyticsEvents
       user_locked_out:,
       rate_limited:,
       valid_captcha_result:,
+      captcha_validation_performed:,
       bad_password_count:,
       sp_request_url_present:,
       remember_device:,
@@ -1858,6 +1861,7 @@ module AnalyticsEvents
   # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
+  # @param [Integer,nil] proofing_workflow_time_in_seconds The time since starting proofing
   # @identity.idp.previous_event_name  IdV: review info visited
   def idv_enter_password_submitted(
     success:,
@@ -1871,6 +1875,7 @@ module AnalyticsEvents
     proofing_components: nil,
     active_profile_idv_level: nil,
     pending_profile_idv_level: nil,
+    proofing_workflow_time_in_seconds: nil,
     **extra
   )
     track_event(
@@ -1886,6 +1891,7 @@ module AnalyticsEvents
       proofing_components:,
       active_profile_idv_level:,
       pending_profile_idv_level:,
+      proofing_workflow_time_in_seconds:,
       **extra,
     )
   end
@@ -1946,6 +1952,7 @@ module AnalyticsEvents
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # @param [Array,nil] profile_history Array of user's profiles (oldest to newest).
+  # @param [Integer,nil] proofing_workflow_time_in_seconds The time since starting proofing
   # @see Reporting::IdentityVerificationReport#query This event is used by the identity verification
   #       report. Changes here should be reflected there.
   # Tracks the last step of IDV, indicates the user successfully proofed
@@ -1962,6 +1969,7 @@ module AnalyticsEvents
     active_profile_idv_level: nil,
     pending_profile_idv_level: nil,
     profile_history: nil,
+    proofing_workflow_time_in_seconds: nil,
     **extra
   )
     track_event(
@@ -1978,6 +1986,7 @@ module AnalyticsEvents
       active_profile_idv_level:,
       pending_profile_idv_level:,
       profile_history:,
+      proofing_workflow_time_in_seconds:,
       **extra,
     )
   end
@@ -4193,6 +4202,28 @@ module AnalyticsEvents
       submit_attempts_remaining: submit_attempts_remaining,
       **extra,
     )
+  end
+
+  # Logs a Socure KYC result alongside a resolution result for later comparison.
+  # @param [Hash] socure_result Result from Socure KYC API call
+  # @param [Hash] resolution_result Result from resolution proofing
+  def idv_socure_shadow_mode_proofing_result(
+    socure_result:,
+    resolution_result:,
+    **extra
+  )
+    track_event(
+      :idv_socure_shadow_mode_proofing_result,
+      resolution_result: resolution_result.to_h,
+      socure_result: socure_result.to_h,
+      **extra,
+    )
+  end
+
+  # Indicates that no proofing result was found when SocureShadowModeProofingJob
+  # attempted to look for one.
+  def idv_socure_shadow_mode_proofing_result_missing(**extra)
+    track_event(:idv_socure_shadow_mode_proofing_result_missing, **extra)
   end
 
   # @param [String] step

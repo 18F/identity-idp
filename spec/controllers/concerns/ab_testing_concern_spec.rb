@@ -68,5 +68,21 @@ RSpec.describe AbTestingConcern do
         end.to raise_error RuntimeError, 'Unknown A/B test: NOT_A_REAL_TEST'
       end
     end
+
+    context 'with user keyword argument' do
+      let(:other_user) { build(:user) }
+
+      it 'returns bucket determined using given user' do
+        expect(ab_test).to receive(:bucket).with(
+          user: other_user,
+          request:,
+          service_provider: service_provider.issuer,
+          session:,
+          user_session:,
+        ).and_call_original
+
+        subject.ab_test_bucket(:TEST_TEST, user: other_user)
+      end
+    end
   end
 end
