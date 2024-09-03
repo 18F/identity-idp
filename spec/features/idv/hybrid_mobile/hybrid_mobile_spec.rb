@@ -362,10 +362,6 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start, allowed_extra_analyti
   end
 
   context 'barcode read error on desktop, redo document capture on mobile' do
-    before do
-      allow_any_instance_of(FederatedProtocols::Oidc).
-        to receive(:biometric_comparison_required?).and_return(true)
-    end
     it 'continues to ssn on desktop when user selects Continue', js: true do
       user = nil
 
