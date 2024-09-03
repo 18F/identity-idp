@@ -23,11 +23,17 @@ module Saml
       ].freeze
       DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF = 'urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo'
       AAL_AUTHN_CONTEXT_PREFIX = 'http://idmanagement.gov/ns/assurance/aal'
+
+      # @deprecated Use {#DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF}
       AAL1_AUTHN_CONTEXT_CLASSREF = "#{AAL_AUTHN_CONTEXT_PREFIX}/1".freeze
       AAL2_AUTHN_CONTEXT_CLASSREF = "#{AAL_AUTHN_CONTEXT_PREFIX}/2".freeze
       AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF = "#{AAL_AUTHN_CONTEXT_PREFIX}/2?phishing_resistant=true".freeze
       AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF = "#{AAL_AUTHN_CONTEXT_PREFIX}/2?hspd12=true".freeze
+
+      # @deprecated We do not support NIST SP 800-63-3 AAL3
       AAL3_AUTHN_CONTEXT_CLASSREF = "#{AAL_AUTHN_CONTEXT_PREFIX}/3".freeze
+
+      # @deprecated We do not support NIST SP 800-63-3 AAL3
       AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF = "#{AAL_AUTHN_CONTEXT_PREFIX}/3?hspd12=true".freeze
 
       NAME_ID_FORMAT_PERSISTENT = 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -38,9 +44,13 @@ module Saml
       REQUESTED_ATTRIBUTES_CLASSREF = 'http://idmanagement.gov/ns/requested_attributes?ReqAttr='
 
       VALID_AUTHN_CONTEXTS = IdentityConfig.store.valid_authn_contexts.freeze
-      IAL2_AUTHN_CONTEXTS = [IAL2_AUTHN_CONTEXT_CLASSREF, LOA3_AUTHN_CONTEXT_CLASSREF].freeze
       BIOMETRIC_IAL_CONTEXTS = [IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF,
                                 IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF].freeze
+      IAL2_AUTHN_CONTEXTS = [
+        IAL2_AUTHN_CONTEXT_CLASSREF,
+        LOA3_AUTHN_CONTEXT_CLASSREF,
+        *BIOMETRIC_IAL_CONTEXTS,
+      ].freeze
 
       AUTHN_CONTEXT_CLASSREF_TO_IAL = {
         LOA1_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::IAL1,

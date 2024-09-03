@@ -7,7 +7,7 @@ class AuthnContextResolver
     @user = user
     @service_provider = service_provider
     @vtr = vtr
-    @acr_values = acr_values
+    @acr_values = Vot::AcrComponentValues.build(acr_values)
   end
 
   def result
@@ -19,7 +19,7 @@ class AuthnContextResolver
   end
 
   def asserted_ial_acr
-    return Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF unless user.active_profile.present?
+    return Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF unless user&.identity_verified?
 
     if result.biometric_comparison?
       Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
@@ -121,16 +121,21 @@ class AuthnContextResolver
   end
 
   def acr_aal_component_values
-    acr_result_without_sp_defaults.component_values.filter do |component_value|
-      component_value.name.include?('aal') ||
-        component_value.name == Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
-    end
+    @acr_aal_component_values ||=
+      Vot::AcrComponentValues.order_by_priority(
+        Vot::AcrComponentValues.aal_component_values(
+          acr_result_without_sp_defaults.component_values,
+        ),
+      )
   end
 
   def acr_ial_component_values
-    acr_result_without_sp_defaults.component_values.filter do |component_value|
-      component_value.name.include?('ial') || component_value.name.include?('loa')
-    end
+    @acr_ial_component_values ||=
+      Vot::AcrComponentValues.order_by_priority(
+        Vot::AcrComponentValues.ial_component_values(
+          acr_result_without_sp_defaults.component_values,
+        ),
+      )
   end
 
   def biometric_is_required?(result)

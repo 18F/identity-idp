@@ -35,7 +35,7 @@ module FederatedProtocols
     end
 
     def acr_values
-      [aal, ial].compact.join(' ')
+      Vot::AcrComponentValues.build([ial, aal])
     end
 
     def vtr

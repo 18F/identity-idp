@@ -213,6 +213,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
     shared_examples 'allows biometric IAL only if sp is authorized' do |biometric_ial|
       let(:acr_values) { biometric_ial }
+      let(:vtr) { nil }
 
       context "when the IAL requested is #{biometric_ial}" do
         context 'when the service provider is allowed to use biometric ials' do
@@ -455,6 +456,29 @@ RSpec.describe OpenidConnectAuthorizeForm do
   describe '#requested_aal_value' do
     context 'with ACR values' do
       let(:vtr) { nil }
+      context 'when no AAL value is passed' do
+        context 'when identity proofing is requested' do
+          let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
+
+          it 'returns AAL2' do
+            expect(form.requested_aal_value).to eq(
+              Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+            )
+          end
+          context 'when SP default AAL is 3' do
+            before do
+              allow_any_instance_of(ServiceProvider).to receive(:default_aal).
+                and_return(3)
+            end
+
+            it 'returns AAL3' do
+              expect(form.requested_aal_value).to eq(
+                Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
+              )
+            end
+          end
+        end
+      end
       context 'when AAL2 passed' do
         let(:acr_values) { Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF }
 
@@ -581,8 +605,10 @@ RSpec.describe OpenidConnectAuthorizeForm do
         let(:verified_within) { '45d' }
 
         it 'parses the value as a number of days' do
-          expect(form.valid?).to eq(true)
-          expect(form.verified_within).to eq(45.days)
+          aggregate_failures 'verified within verified_within' do
+            expect(form.valid?).to eq(true)
+            expect(form.verified_within).to eq(45.days)
+          end
         end
       end
 

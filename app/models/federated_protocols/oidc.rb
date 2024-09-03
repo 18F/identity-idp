@@ -11,15 +11,15 @@ module FederatedProtocols
     end
 
     def ial
-      request.ial_values.sort.max
+      request.ial_values.first
     end
 
     def aal
-      request.aal_values.sort.max
+      request.aal_values.first
     end
 
     def acr_values
-      [aal, ial].compact.join(' ')
+      Vot::AcrComponentValues.build([ial, aal])
     end
 
     def vtr
