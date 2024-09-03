@@ -38,7 +38,7 @@ account_reset.request.info:
 account_reset.request.no_cancel: 取消
 account_reset.request.title: 账户删除和重设
 account_reset.request.yes_continue: 是的，继续删除
-account.connected_apps.associated: 已连接 %{timestamp}
+account.connected_apps.associated_html: 已连接 %{timestamp_html}
 account.connected_apps.description: 使用你的 %{app_name} 账户，你可以安全地连接到网上多个政府账户。以下列出了你目前已连接的所有账户。
 account.email_language.default: '%{language} （默认）'
 account.email_language.edit_title: 编辑电邮语言选择
