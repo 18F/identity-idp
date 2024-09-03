@@ -2,9 +2,6 @@ require 'saml_idp/xml_security'
 require 'saml_idp/service_provider'
 module SamlIdp
   class Request
-    IAL_PREFIX = %r{^http://idmanagement.gov/ns/assurance/ial}
-    LOA_PREFIX = %r{^http://idmanagement.gov/ns/assurance/loa}
-    AAL_PREFIX = %r{^http://idmanagement.gov/ns/assurance/aal|urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo}
     VTR_REGEXP = /\A[A-Z][a-z0-9](\.[A-Z][a-z0-9])*\z/
 
     def self.from_deflated_request(raw, options = {})
@@ -88,18 +85,6 @@ module SamlIdp
       else
         []
       end
-    end
-
-    def requested_ial_authn_context
-      requested_authn_contexts.select do |classref|
-        IAL_PREFIX.match?(classref) || LOA_PREFIX.match?(classref)
-      end.first
-    end
-
-    def requested_aal_authn_context
-      requested_authn_contexts.select do |classref|
-        AAL_PREFIX.match?(classref)
-      end.first
     end
 
     def requested_vtr_authn_contexts
