@@ -8,9 +8,23 @@ import {
 import { PageHeading } from '@18f/identity-components';
 import { Cancel } from '@18f/identity-verify-flow';
 import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
-import DocumentSideAcuantCapture from './document-side-acuant-capture';
+import DocumentsStep from './documents-step';
+import { SelfieStepComponent } from './selfie-step';
 import TipList from './tip-list';
 import { DeviceContext, SelfieCaptureContext, UploadContext } from '../context';
+
+export type ImageValue = Blob | string | null | undefined;
+export interface DocumentsAndSelfieStepValue {
+  front: ImageValue;
+  back: ImageValue;
+  selfie: ImageValue;
+  front_image_metadata?: string;
+  back_image_metadata?: string;
+}
+export type DefaultSideProps = Pick<
+  FormStepComponentProps<DocumentsAndSelfieStepValue>,
+  'registerField' | 'onChange' | 'errors' | 'onError'
+>;
 
 export function DocumentCaptureSubheaderOne({
   isSelfieCaptureEnabled,
@@ -26,77 +40,6 @@ export function DocumentCaptureSubheaderOne({
   );
 }
 
-export function SelfieCaptureWithHeader({
-  defaultSideProps,
-  selfieValue,
-}: {
-  defaultSideProps: DefaultSideProps;
-  selfieValue: ImageValue;
-}) {
-  const { t } = useI18n();
-  return (
-    <>
-      <hr className="margin-y-5" />
-      <h2>2. {t('doc_auth.headings.document_capture_subheader_selfie')}</h2>
-      <p>{t('doc_auth.info.selfie_capture_content')}</p>
-      <TipList
-        title={t('doc_auth.tips.document_capture_selfie_selfie_text')}
-        titleClassName="margin-bottom-0 text-bold"
-        items={[
-          t('doc_auth.tips.document_capture_selfie_text1'),
-          t('doc_auth.tips.document_capture_selfie_text2'),
-          t('doc_auth.tips.document_capture_selfie_text3'),
-          t('doc_auth.tips.document_capture_selfie_text4'),
-        ]}
-      />
-      <DocumentSideAcuantCapture
-        {...defaultSideProps}
-        key="selfie"
-        side="selfie"
-        value={selfieValue}
-      />
-    </>
-  );
-}
-
-export function DocumentFrontAndBackCapture({
-  defaultSideProps,
-  value,
-}: {
-  defaultSideProps: DefaultSideProps;
-  value: Record<string, ImageValue>;
-}) {
-  type DocumentSide = 'front' | 'back';
-  const documentsSides: DocumentSide[] = ['front', 'back'];
-  return (
-    <>
-      {documentsSides.map((side) => (
-        <DocumentSideAcuantCapture
-          {...defaultSideProps}
-          key={side}
-          side={side}
-          value={value[side]}
-        />
-      ))}
-    </>
-  );
-}
-
-type ImageValue = Blob | string | null | undefined;
-
-interface DocumentsAndSelfieStepValue {
-  front: ImageValue;
-  back: ImageValue;
-  selfie: ImageValue;
-  front_image_metadata?: string;
-  back_image_metadata?: string;
-}
-
-type DefaultSideProps = Pick<
-  FormStepComponentProps<DocumentsAndSelfieStepValue>,
-  'registerField' | 'onChange' | 'errors' | 'onError'
->;
-
 export default function DocumentsAndSelfieStep({
   value = {},
   onChange = () => {},
@@ -109,6 +52,7 @@ export default function DocumentsAndSelfieStep({
   const { isLastStep } = useContext(FormStepsContext);
   const { flowPath } = useContext(UploadContext);
   const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
+  const docAuthSeparatePagesEnabled = true; // TODO: find out how to retrieve feature flag: doc_auth_separate_pages_enabled
 
   const pageHeaderText = isSelfieCaptureEnabled
     ? t('doc_auth.headings.document_capture_with_selfie')
@@ -136,9 +80,9 @@ export default function DocumentsAndSelfieStep({
           t('doc_auth.tips.document_capture_id_text3'),
         ].concat(!isMobile ? [t('doc_auth.tips.document_capture_id_text4')] : [])}
       />
-      <DocumentFrontAndBackCapture defaultSideProps={defaultSideProps} value={value} />
-      {isSelfieCaptureEnabled && (
-        <SelfieCaptureWithHeader defaultSideProps={defaultSideProps} selfieValue={value.selfie} />
+      <DocumentsStep defaultSideProps={defaultSideProps} value={value} />
+      {isSelfieCaptureEnabled && !docAuthSeparatePagesEnabled && (
+        <SelfieStepComponent defaultSideProps={defaultSideProps} selfieValue={value.selfie} />
       )}
       {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
       <Cancel />

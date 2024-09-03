@@ -8,6 +8,7 @@ import type { FormStep } from '@18f/identity-form-steps';
 import { getConfigValue } from '@18f/identity-config';
 import { UploadFormEntriesError } from '../services/upload';
 import DocumentsAndSelfieStep from './documents-and-selfie-step';
+import SelfieStep from './selfie-step';
 import InPersonPrepareStep from './in-person-prepare-step';
 import InPersonLocationPostOfficeSearchStep from './in-person-location-post-office-search-step';
 import InPersonLocationFullAddressEntryPostOfficeSearchStep from './in-person-location-full-address-entry-post-office-search-step';
@@ -21,7 +22,7 @@ import { RetrySubmissionError } from './submission-complete';
 import SuspenseErrorBoundary from './suspense-error-boundary';
 import SubmissionInterstitial from './submission-interstitial';
 import withProps from '../higher-order/with-props';
-import { InPersonContext } from '../context';
+import { InPersonContext, SelfieCaptureContext } from '../context';
 
 interface DocumentCaptureProps {
   /**
@@ -37,6 +38,8 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   const { t } = useI18n();
   const { flowPath } = useContext(UploadContext);
   const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
+  const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
+  const docAuthSeparatePagesEnabled = true; // TODO: find out how to retrieve feature flag: doc_auth_separate_pages_enabled
   const { inPersonFullAddressEntryEnabled, inPersonURL, skipDocAuth, skipDocAuthFromHandoff } =
     useContext(InPersonContext);
   useDidUpdateEffect(onStepChange, [stepName]);
@@ -56,6 +59,15 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
     form: DocumentsAndSelfieStep,
     title: t('doc_auth.headings.document_capture'),
   };
+  const selfieFormStep: FormStep = {
+    name: 'documents',
+    form: SelfieStep,
+    title: t('doc_auth.headings.selfie_capture_content'), // TODO: find what content to put here
+  };
+  var documentsFormSteps: FormStep[] = (isSelfieCaptureEnabled && docAuthSeparatePagesEnabled)
+    ? [documentFormStep, selfieFormStep]
+    : [documentFormStep];
+  
   const reviewFormStep: FormStep = {
     name: 'review',
     form:
@@ -134,7 +146,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
 
   const defaultSteps: FormStep[] = submissionError
     ? ([reviewFormStep] as FormStep[]).concat(inPersonSteps)
-    : ([documentFormStep] as FormStep[]);
+    : documentsFormSteps;
 
   // If the user got here by opting-in to in-person proofing, when skipDocAuth === true,
   // then set steps to inPersonSteps

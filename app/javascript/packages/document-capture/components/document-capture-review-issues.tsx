@@ -9,9 +9,9 @@ import TipList from './tip-list';
 import { SelfieCaptureContext } from '../context';
 import {
   DocumentCaptureSubheaderOne,
-  SelfieCaptureWithHeader,
-  DocumentFrontAndBackCapture,
 } from './documents-and-selfie-step';
+import DocumentsStep from './documents-step';
+import { SelfieStepComponent } from './selfie-step';
 import type { ReviewIssuesStepValue } from './review-issues-step';
 
 interface DocumentCaptureReviewIssuesProps extends FormStepComponentProps<ReviewIssuesStepValue> {
@@ -79,9 +79,9 @@ function DocumentCaptureReviewIssues({
           ]}
         />
       )}
-      <DocumentFrontAndBackCapture defaultSideProps={defaultSideProps} value={value} />
+      <DocumentsStep defaultSideProps={defaultSideProps} value={value} />
       {isSelfieCaptureEnabled && (
-        <SelfieCaptureWithHeader defaultSideProps={defaultSideProps} selfieValue={value.selfie} />
+        <SelfieStepComponent defaultSideProps={defaultSideProps} selfieValue={value.selfie} />
       )}
       <FormStepsButton.Submit />
       <Cancel />
