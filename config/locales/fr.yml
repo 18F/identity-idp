@@ -38,7 +38,7 @@ account_reset.request.info:
 account_reset.request.no_cancel: Annuler
 account_reset.request.title: Suppression et réinitialisation de compte
 account_reset.request.yes_continue: Oui, continuer la suppression
-account.connected_apps.associated_html: Connecté %{timestamp}
+account.connected_apps.associated_html: Connecté %{timestamp_html}
 account.connected_apps.description: Avec votre compte %{app_name}, vous pouvez vous connecter en toute sécurité à plusieurs comptes de l’administration en ligne. Vous trouverez ci-dessous une liste de tous vos comptes actuellement connectés.
 account.email_language.default: '%{language} (par défaut)'
 account.email_language.edit_title: Modifier la langue dans laquelle vous préférez recevoir les e-mails

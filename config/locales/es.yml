@@ -38,7 +38,7 @@ account_reset.request.info:
 account_reset.request.no_cancel: Cancelar
 account_reset.request.title: Eliminación y restablecimiento de cuenta
 account_reset.request.yes_continue: Sí, continuar con la eliminación
-account.connected_apps.associated_html: 'Conectado: %{timestamp}'
+account.connected_apps.associated_html: 'Conectado: %{timestamp_html}'
 account.connected_apps.description: Con su cuenta de %{app_name}, puede conectarse de manera segura a muchas cuentas del gobierno en línea. Esta es una lista de todas las cuentas que tiene conectadas actualmente.
 account.email_language.default: '%{language} (predeterminado)'
 account.email_language.edit_title: Editar la preferencia de idioma del correo electrónico
