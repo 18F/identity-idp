@@ -41,6 +41,7 @@ class GpoVerifyForm
       success: result,
       errors: errors,
       extra: {
+        profile_age_in_seconds: pending_profile&.profile_age_in_seconds,
         enqueued_at: gpo_confirmation_code&.code_sent_at,
         which_letter: which_letter,
         letter_count: letter_count,
