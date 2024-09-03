@@ -283,15 +283,15 @@ module Vot
     end
 
     def self.build(values)
-      values.is_a?(String) && values || values.is_a?(Enumerable) && to_names(values).join(DELIM)
+      to_names(values).join(DELIM)
     end
 
     def self.ial?(value)
-      value.present? && IAL_COMPONENTS_BY_NAME.has_key?(to_name(value))
+      value.present? && IAL_COMPONENTS_BY_NAME_HASH.has_key?(to_name(value))
     end
 
     def self.aal?(value)
-      value.present? && AAL_COMPONENTS.has_key?(to_name(value))
+      value.present? && AAL_COMPONENTS_BY_NAME_HASH.has_key?(to_name(value))
     end
 
     def self.acr?(value)
