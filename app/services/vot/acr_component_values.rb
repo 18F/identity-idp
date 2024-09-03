@@ -16,6 +16,10 @@ module Vot
         @requirements = requirements.inquiry.freeze
       end
 
+      def eql?(other)
+        name.eql?(other.name)
+      end
+
       def <=>(other)
         Vot::AcrComponentValues::ACRS_BY_PRIORITY_LIST.index(name) <=> Vot::AcrComponentValues::ACRS_BY_PRIORITY_LIST.index(other.name)
       end
