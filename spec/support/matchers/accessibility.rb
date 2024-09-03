@@ -345,6 +345,8 @@ def expect_page_to_have_no_accessibility_violations(page, validate_markup: true)
     :wcag22a,
     :wcag22aa,
     :"best-practice",
+  ).excluding(
+    '.iti__selected-flag', # See: LG-14382
   )
   expect(page).to have_unique_ids
   expect(page).to have_valid_idrefs
