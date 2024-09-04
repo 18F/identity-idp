@@ -6115,6 +6115,26 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when service provider consent is revoked
+  # @param [String] issuer issuer of the service provider consent to be revoked
+  def sp_revoke_consent_revoked(issuer:, **extra)
+    track_event(
+      'SP Revoke Consent: Revoked',
+      issuer: issuer,
+      **extra,
+    )
+  end
+
+  # Tracks when the page to revoke consent (unlink from) a service provider visited
+  # @param [String] issuer which issuer
+  def sp_revoke_consent_visited(issuer:, **extra)
+    track_event(
+      'SP Revoke Consent: Visited',
+      issuer: issuer,
+      **extra,
+    )
+  end
+
   # User visited form to change email shared with service provider
   # @param [String, nil] needs_completion_screen_reason Reason for the consent screen being shown,
   # if user is changing email in consent flow
@@ -6138,26 +6158,6 @@ module AnalyticsEvents
       success:,
       error_details:,
       needs_completion_screen_reason:,
-      **extra,
-    )
-  end
-
-  # Tracks when service provider consent is revoked
-  # @param [String] issuer issuer of the service provider consent to be revoked
-  def sp_revoke_consent_revoked(issuer:, **extra)
-    track_event(
-      'SP Revoke Consent: Revoked',
-      issuer: issuer,
-      **extra,
-    )
-  end
-
-  # Tracks when the page to revoke consent (unlink from) a service provider visited
-  # @param [String] issuer which issuer
-  def sp_revoke_consent_visited(issuer:, **extra)
-    track_event(
-      'SP Revoke Consent: Visited',
-      issuer: issuer,
       **extra,
     )
   end
