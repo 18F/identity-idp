@@ -1099,7 +1099,7 @@ RSpec.describe Profile do
   end
 
   describe '#profile_age_in_seconds' do
-    it 'logs the time since the created at timestamp', :freeze_time do
+    it 'logs the time since the created_at timestamp', :freeze_time do
       profile = create(:profile, created_at: 5.minutes.ago)
 
       expect(profile.profile_age_in_seconds).to eq(5.minutes.to_i)
