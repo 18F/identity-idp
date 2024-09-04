@@ -9,11 +9,14 @@ RSpec.describe 'visitor signs up with email language preference' do
     )
     expect(field).to be_present
     expect(field[:lang]).to eq(I18n.default_locale.to_s)
+    fields = [field]
     (I18n.available_locales - [I18n.default_locale]).each do |locale|
       field = page.find_field(t("i18n.locale.#{locale}"))
       expect(field).to be_present
       expect(field[:lang]).to eq(locale.to_s)
+      fields << field
     end
+    expect(fields).to be_logically_grouped(t('forms.registration.labels.email_language'))
 
     visit sign_up_email_path(:es)
 
