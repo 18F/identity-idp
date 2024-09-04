@@ -3,6 +3,8 @@
 class EmailAddress < ApplicationRecord
   include EncryptableAttribute
 
+  before_destroy :reset_linked_identities
+
   encrypted_attribute_without_setter(name: :email)
 
   belongs_to :user, inverse_of: :email_addresses
@@ -10,6 +12,8 @@ class EmailAddress < ApplicationRecord
   validates :email_fingerprint, presence: true
   # rubocop:disable Rails/HasManyOrHasOneDependent
   has_one :suspended_email
+
+  has_many :identities, class_name: 'ServiceProviderIdentity'
   # rubocop:enable Rails/HasManyOrHasOneDependent
 
   scope :confirmed, -> { where('confirmed_at IS NOT NULL') }
@@ -89,5 +93,18 @@ class EmailAddress < ApplicationRecord
     def create_fingerprints(email)
       [Pii::Fingerprinter.fingerprint(email), *Pii::Fingerprinter.previous_fingerprints(email)]
     end
+  end
+
+  private
+
+  # Remove email id from all user identities
+  # when the email is destroyed.
+  def reset_linked_identities
+    # rubocop:disable Rails/SkipsModelValidations
+    ServiceProviderIdentity.where(
+      user_id: user_id,
+      email_address_id: id,
+    ).update_all(email_address_id: nil)
+    # rubocop:enable Rails/SkipsModelValidations
   end
 end
