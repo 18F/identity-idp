@@ -70,7 +70,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   const selfieFormStep: FormStep = {
     name: 'selfies',
     form: SelfieStep,
-    title: '', // TODO: find what content to put here
+    title: '', // TODO: replace with yml selfie_capture (Ticket LG-14392)
   };
   var documentsFormSteps: FormStep[] = (isSelfieCaptureEnabled && docAuthSeparatePagesEnabled)
     ? [documentFormStep, selfieFormStep]
