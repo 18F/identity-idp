@@ -78,7 +78,7 @@ class UserEventCreator
 
   # @return [Array(Event, String)] an (event, disavowal_token) tuple
   def create_event_for_new_device(event_type:, user:, disavowal_token:)
-    if user.fully_registered? && user.has_devices? && disavowal_token.nil?
+    if disavowal_token.nil? && user.fully_registered? && user.has_devices?
       device, event, disavowal_token = Device.transaction do
         device = create_device_for_user(user)
         event, disavowal_token = create_user_event_with_disavowal(event_type, user, device)
