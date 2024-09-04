@@ -14,11 +14,7 @@
         ) %>
     <br />
     <strong>
-      <% if identity.email_address_id %>
-        <%= identity.email_address.email %>
-      <% else %>
-        <%= t('account.connected_apps.email_not_selected') %>
-      <% end %>
+      <%= identity.email_address&.email || t('account.connected_apps.email_not_selected') %>
     </strong>
     <%= link_to(
           t('help_text.requested_attributes.change_email_link'),
