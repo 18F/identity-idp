@@ -986,6 +986,13 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
 
                 expect(pending_enrollment.reload.cancelled?).to be_truthy
                 expect(job_analytics).to have_logged_event(
+                  'GetUspsProofingResultsJob: Enrollment status updated',
+                  hash_including(
+                    passed: false,
+                    reason: 'Invalid enrollment code',
+                  ),
+                )
+                expect(job_analytics).to have_logged_event(
                   'GetUspsProofingResultsJob: Unexpected response received',
                   hash_including(
                     reason: 'Invalid enrollment code',
@@ -1023,6 +1030,13 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                 job.perform(Time.zone.now)
 
                 expect(pending_enrollment.reload.cancelled?).to be_truthy
+                expect(job_analytics).to have_logged_event(
+                  'GetUspsProofingResultsJob: Enrollment status updated',
+                  hash_including(
+                    passed: false,
+                    reason: 'Invalid applicant unique id',
+                  ),
+                )
                 expect(job_analytics).to have_logged_event(
                   'GetUspsProofingResultsJob: Unexpected response received',
                   hash_including(
