@@ -198,6 +198,10 @@ Rails.application.routes.draw do
 
     get '/account' => 'accounts#show'
     get '/account/connected_accounts' => 'accounts/connected_accounts#show'
+    get '/account/connected_accounts/:identity_id/selected_email' => 'accounts/connected_accounts/selected_email#edit',
+        as: :edit_connected_account_selected_email
+    patch '/account/connected_accounts/:identity_id/selected_email' => 'accounts/connected_accounts/selected_email#update',
+          as: :connected_account_selected_email
     post '/account/reauthentication' => 'accounts#reauthentication'
     get '/account/devices/:id/events' => 'events#show', as: :account_events
     get '/account/delete' => 'users/delete#show', as: :account_delete

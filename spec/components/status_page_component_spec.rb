@@ -59,6 +59,14 @@ RSpec.describe StatusPageComponent, type: :component do
     expect(rendered).to have_link('Option', href: '/')
   end
 
+  it 'renders page footer' do
+    rendered = render_inline(StatusPageComponent.new) do |c|
+      c.with_footer.with_content('Footer')
+    end
+
+    expect(rendered).to have_content('Footer')
+  end
+
   it 'validates status' do
     expect do
       render_inline StatusPageComponent.new(status: :foo)

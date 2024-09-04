@@ -32,7 +32,7 @@ module SignUp
     private
 
     def build_select_email_form
-      SelectEmailForm.new(current_user)
+      SelectEmailForm.new(user: current_user)
     end
 
     def form_params

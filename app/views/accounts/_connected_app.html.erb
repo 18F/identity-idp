@@ -7,10 +7,29 @@
     <% end %>
   </h2>
 
-  <%= t(
-        'account.connected_apps.associated_html',
-        timestamp_html: render(TimeComponent.new(time: identity.created_at)),
-      ) %>
+  <% if IdentityConfig.store.feature_select_email_to_share_enabled %>
+    <%= t(
+          'account.connected_apps.associated_attributes_html',
+          timestamp_html: render(TimeComponent.new(time: identity.created_at)),
+        ) %>
+    <br />
+    <strong>
+      <% if identity.email_address_id %>
+        <%= identity.email_address.email %>
+      <% else %>
+        <%= t('account.connected_apps.email_not_selected') %>
+      <% end %>
+    </strong>
+    <%= link_to(
+          t('help_text.requested_attributes.change_email_link'),
+          edit_connected_account_selected_email_path(identity_id: identity.id),
+        ) %>
+  <% else %>
+    <%= t(
+          'account.connected_apps.associated_html',
+          timestamp_html: render(TimeComponent.new(time: identity.created_at)),
+        ) %>
+  <% end %>
 
   <% if identity.service_provider_id %>
     <div class="margin-y-1">
