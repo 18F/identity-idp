@@ -70,10 +70,12 @@ module Encryption
       )
     end
 
-    def verify(password:, digest_pair:, user_uuid:)
+    def verify(password:, digest_pair:, user_uuid:, log_context:)
       digest = digest_pair.multi_or_single_region_ciphertext
       password_digest = PasswordDigest.parse_from_string(digest)
-      return verify_uak_digest(password, digest) if password_digest.uak_password_digest?
+      if password_digest.uak_password_digest?
+        return verify_uak_digest(password, digest, user_uuid, log_context)
+      end
 
       verify_password_against_digest(
         password: password,
@@ -122,8 +124,13 @@ module Encryption
       }
     end
 
-    def verify_uak_digest(password, digest)
-      UakPasswordVerifier.verify(password: password, digest: digest)
+    def verify_uak_digest(password, digest, user_uuid, log_context)
+      UakPasswordVerifier.verify(
+        password: password,
+        digest: digest,
+        user_uuid: user_uuid,
+        log_context: log_context,
+      )
     end
 
     add_method_tracer :create_digest_pair, "Custom/#{name}/create_digest_pair"
