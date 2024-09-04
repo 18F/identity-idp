@@ -76,7 +76,7 @@ module I18n
         { key: 'time.formats.event_timestamp', locales: %i[zh] },
         { key: 'time.formats.full_date', locales: %i[es] }, # format is the same in Spanish and English
         { key: 'time.formats.sms_date' }, # for us date format
-        { key: 'account.connected_apps.email_not_selected' }, # See: LG-?????
+        { key: 'account.connected_apps.email_not_selected' }, # See: LG-14398
       ].freeze
       # rubocop:enable Layout/LineLength
 
