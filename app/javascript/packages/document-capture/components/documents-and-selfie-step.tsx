@@ -34,11 +34,19 @@ export function DocumentCaptureSubheaderOne({
   const { t } = useI18n();
   return (
     <h2>
+      <hr className="margin-y-5" />
       {isSelfieCaptureEnabled && '1. '}
       {t('doc_auth.headings.document_capture_subheader_id')}
     </h2>
   );
 }
+const appRoot = document.getElementById('document-capture-form')!;
+
+function getDocAuthSeparatePagesEnabled() {
+  const { docAuthSeparatePagesEnabled } = appRoot.dataset;
+  return docAuthSeparatePagesEnabled === 'true';
+}
+
 
 export default function DocumentsAndSelfieStep({
   value = {},
@@ -49,11 +57,11 @@ export default function DocumentsAndSelfieStep({
 }: FormStepComponentProps<DocumentsAndSelfieStepValue>) {
   const { t } = useI18n();
   const { isMobile } = useContext(DeviceContext);
-  const { isLastStep } = useContext(FormStepsContext);
+  const { isLastStep, changeStepCanComplete } = useContext(FormStepsContext);
   const { flowPath } = useContext(UploadContext);
   const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
-  const docAuthSeparatePagesEnabled = true; // TODO: find out how to retrieve feature flag: doc_auth_separate_pages_enabled
-
+  const docAuthSeparatePagesEnabled = getDocAuthSeparatePagesEnabled();
+  changeStepCanComplete(!(isSelfieCaptureEnabled && docAuthSeparatePagesEnabled));
   const pageHeaderText = isSelfieCaptureEnabled
     ? t('doc_auth.headings.document_capture_with_selfie')
     : t('doc_auth.headings.document_capture');

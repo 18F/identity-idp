@@ -31,6 +31,14 @@ interface DocumentCaptureProps {
   onStepChange?: () => void;
 }
 
+const appRoot = document.getElementById('document-capture-form')!;
+
+function getDocAuthSeparatePagesEnabled() {
+  const { docAuthSeparatePagesEnabled } = appRoot.dataset;
+  return docAuthSeparatePagesEnabled === 'true';
+}
+
+
 function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   const [formValues, setFormValues] = useState<Record<string, any> | null>(null);
   const [submissionError, setSubmissionError] = useState<Error | undefined>(undefined);
@@ -39,7 +47,6 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   const { flowPath } = useContext(UploadContext);
   const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
   const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
-  const docAuthSeparatePagesEnabled = true; // TODO: find out how to retrieve feature flag: doc_auth_separate_pages_enabled
   const { inPersonFullAddressEntryEnabled, inPersonURL, skipDocAuth, skipDocAuthFromHandoff } =
     useContext(InPersonContext);
   useDidUpdateEffect(onStepChange, [stepName]);
@@ -48,6 +55,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
       trackVisitEvent(stepName);
     }
   }, [stepName]);
+  const docAuthSeparatePagesEnabled = getDocAuthSeparatePagesEnabled();
   const appName = getConfigValue('appName');
   const inPersonLocationPostOfficeSearchForm = inPersonFullAddressEntryEnabled
     ? InPersonLocationFullAddressEntryPostOfficeSearchStep
@@ -60,14 +68,13 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
     title: t('doc_auth.headings.document_capture'),
   };
   const selfieFormStep: FormStep = {
-    name: 'documents',
+    name: 'selfies',
     form: SelfieStep,
-    title: t('doc_auth.headings.selfie_capture_content'), // TODO: find what content to put here
+    title: '', // TODO: find what content to put here
   };
   var documentsFormSteps: FormStep[] = (isSelfieCaptureEnabled && docAuthSeparatePagesEnabled)
     ? [documentFormStep, selfieFormStep]
     : [documentFormStep];
-  
   const reviewFormStep: FormStep = {
     name: 'review',
     form:

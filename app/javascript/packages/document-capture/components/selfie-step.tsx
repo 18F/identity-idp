@@ -84,9 +84,8 @@ export default function SelfieStep({
     <>
       {flowPath === 'hybrid' && <HybridDocCaptureWarning className="margin-bottom-4" />}
       <PageHeading>{pageHeaderText}</PageHeading>
-      <DocumentCaptureSubheaderTwo />
       <SelfieStepComponent defaultSideProps={defaultSideProps} selfieValue={value.selfie} />
-      <FormStepsButton.Continue />
+      {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
       <Cancel />
     </>
   );
