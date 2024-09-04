@@ -5,7 +5,7 @@ class FormResponse
 
   alias_method :serialize_error_details_only?, :serialize_error_details_only
 
-  def initialize(success:, errors: {}, extra: {}, serialize_error_details_only: false)
+  def initialize(success:, serialize_error_details_only:, errors: {}, extra: {})
     @success = success
     @errors = errors.is_a?(ActiveModel::Errors) ? errors.messages.to_hash : errors
     @error_details = errors.details if errors.is_a?(ActiveModel::Errors)
