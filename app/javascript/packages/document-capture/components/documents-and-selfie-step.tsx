@@ -31,8 +31,12 @@ export function DocumentCaptureSubheaderOne({
 const appRoot = document.getElementById('document-capture-form')!;
 
 function getDocAuthSeparatePagesEnabled() {
-  if (appRoot == null) return false;
-  if (appRoot.dataset == null) return false;
+  if (appRoot == null) {
+    return false;
+  }
+  if (appRoot.dataset == null) {
+    return false;
+  }
 
   const { docAuthSeparatePagesEnabled } = appRoot.dataset;
   return docAuthSeparatePagesEnabled === 'true';
@@ -51,7 +55,9 @@ export default function DocumentsAndSelfieStep({
   const { flowPath } = useContext(UploadContext);
   const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
   const docAuthSeparatePagesEnabled = getDocAuthSeparatePagesEnabled();
-  changeStepCanComplete(!(isSelfieCaptureEnabled && docAuthSeparatePagesEnabled));
+  if (isSelfieCaptureEnabled && docAuthSeparatePagesEnabled) {
+    changeStepCanComplete(false);
+  }
   const pageHeaderText = isSelfieCaptureEnabled
     ? t('doc_auth.headings.document_capture_with_selfie')
     : t('doc_auth.headings.document_capture');
