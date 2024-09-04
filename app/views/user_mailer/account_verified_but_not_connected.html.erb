@@ -1,0 +1,47 @@
+<p class="lead">
+  <%= t(
+        'user_mailer.account_verified_but_not_connected.intro',
+        app_name: APP_NAME,
+        date: @date,
+      ) %>
+</p>
+
+<p class="lead">
+  <%= t(
+        'user_mailer.account_verified_but_not_connected.instructions_html',
+        sp_name: @sp_name,
+      ) %>
+</p>
+
+<p>
+  <%= link_to @sp_url, @sp_url %>
+</p>
+
+<table class="spacer">
+  <tbody>
+    <tr>
+      <td class="s10" height="10px">
+          &nbsp;
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="hr">
+  <tr>
+    <th>
+      &nbsp;
+    </th>
+  </tr>
+</table>
+
+<p>
+  <%= t(
+        'user_mailer.account_verified_but_not_connected.help_html',
+        change_password_link_html: link_to(
+          t('user_mailer.account_verified_but_not_connected.change_password_link'),
+          new_user_password_url,
+        ),
+        contact_link_html: link_to(t('user_mailer.account_verified_but_not_connected.contact_link'), MarketingSite.contact_url),
+      ) %>
+</p>

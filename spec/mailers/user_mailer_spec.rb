@@ -540,6 +540,35 @@ RSpec.describe UserMailer, type: :mailer do
     end
   end
 
+  describe '#account_verified_but_not_connected' do
+    let(:sp_name) { '' }
+    let(:sp_url) { 'https://www.example.com' }
+    let(:date_time) { Time.zone.now }
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).
+        account_verified_but_not_connected(date_time: date_time, sp_name: sp_name, sp_url: sp_url)
+    end
+
+    it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
+
+    it 'sends to the current email' do
+      expect(mail.to).to eq [email_address.email]
+    end
+
+    it 'renders the subject' do
+      expect(mail.subject).to eq t('user_mailer.account_verified.subject', sp_name: sp_name)
+    end
+
+    it 'links to the forgot password page' do
+      expect(mail.html_part.body).to have_selector("a[href='#{new_user_password_url}']")
+    end
+
+    it 'links to the sp URL' do
+      expect(mail.html_part.body).to have_selector("a[href='#{sp_url}']")
+    end
+  end
+
   context 'in person emails' do
     let(:current_address_matches_id) { false }
     let!(:enrollment) do

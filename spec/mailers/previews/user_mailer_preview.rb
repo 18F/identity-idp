@@ -150,6 +150,16 @@ class UserMailerPreview < ActionMailer::Preview
     )
   end
 
+  def account_verified_but_not_connected
+    UserMailer.with(
+      user: user, email_address: email_address_record,
+    ).account_verified_but_not_connected(
+      date_time: DateTime.now,
+      sp_name: 'Example App',
+      sp_url: 'https://www.example.com/',
+    )
+  end
+
   def in_person_completion_survey
     UserMailer.with(user: user, email_address: email_address_record).in_person_completion_survey
   end

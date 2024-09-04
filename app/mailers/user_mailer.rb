@@ -253,6 +253,18 @@ class UserMailer < ActionMailer::Base
     end
   end
 
+  def account_verified_but_not_connected(date_time:, sp_name:, sp_url:)
+    with_user_locale(user) do
+      @date = I18n.l(date_time, format: :event_date)
+      @sp_name = sp_name
+      @sp_url = sp_url
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.account_verified_but_not_connected.subject', sp_name: @sp_name),
+      )
+    end
+  end
+
   def in_person_completion_survey
     with_user_locale(user) do
       @header = t('user_mailer.in_person_completion_survey.header')
