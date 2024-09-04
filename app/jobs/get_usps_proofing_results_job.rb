@@ -158,11 +158,9 @@ class GetUspsProofingResultsJob < ApplicationJob
         handle_incomplete_status_update(enrollment, response_message)
       end
     elsif response_message == IPP_INVALID_ENROLLMENT_CODE_MESSAGE % enrollment.enrollment_code
-      handle_unexpected_response(enrollment, response_message, reason: 'Invalid enrollment code')
+      handle_invalid_enrollment_code(enrollment, err.response, response_message)
     elsif response_message == IPP_INVALID_APPLICANT_MESSAGE % enrollment.unique_id
-      handle_unexpected_response(
-        enrollment, response_message, reason: 'Invalid applicant unique id'
-      )
+      handle_invalid_applicant_unique_id(enrollment, err.response, response_message)
     else
       handle_client_or_server_error(err, enrollment)
     end
@@ -313,6 +311,28 @@ class GetUspsProofingResultsJob < ApplicationJob
         cancel: false,
       )
     end
+  end
+
+  def handle_invalid_enrollment_code(enrollment, response, response_message)
+    log_enrollment_updated_analytics(
+      enrollment: enrollment,
+      enrollment_passed: false,
+      enrollment_completed: false,
+      response: response[:body],
+      reason: 'Invalid enrollment code',
+    )
+    handle_unexpected_response(enrollment, response_message, reason: 'Invalid enrollment code')
+  end
+
+  def handle_invalid_applicant_unique_id(enrollment, response, response_message)
+    log_enrollment_updated_analytics(
+      enrollment: enrollment,
+      enrollment_passed: false,
+      enrollment_completed: false,
+      response: response[:body],
+      reason: 'Invalid applicant unique id',
+    )
+    handle_unexpected_response(enrollment, response_message, reason: 'Invalid applicant unique id')
   end
 
   def handle_fraud_review_pending(enrollment)
