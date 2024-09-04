@@ -10,13 +10,12 @@ import { Cancel } from '@18f/identity-verify-flow';
 import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import TipList from './tip-list';
-import { DeviceContext, SelfieCaptureContext, UploadContext } from '../context';
+import { UploadContext } from '../context';
 import {
   ImageValue,
   DefaultSideProps,
   DocumentsAndSelfieStepValue,
-} from './documents-and-selfie-step';
-import DocumentsStep from './documents-step';
+} from './documents-image-selfie-value';
 
 export function SelfieStepComponent({
   defaultSideProps,
@@ -69,7 +68,6 @@ export default function SelfieStep({
   registerField = () => undefined,
 }: FormStepComponentProps<DocumentsAndSelfieStepValue>) {
   const { t } = useI18n();
-  const { isMobile } = useContext(DeviceContext);
   const { isLastStep } = useContext(FormStepsContext);
   const { flowPath } = useContext(UploadContext);
   const pageHeaderText = t('doc_auth.headings.document_capture_with_selfie');

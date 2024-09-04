@@ -11,20 +11,8 @@ import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
 import DocumentsStep from './documents-step';
 import { SelfieStepComponent } from './selfie-step';
 import TipList from './tip-list';
+import { DefaultSideProps, DocumentsAndSelfieStepValue } from './documents-image-selfie-value';
 import { DeviceContext, SelfieCaptureContext, UploadContext } from '../context';
-
-export type ImageValue = Blob | string | null | undefined;
-export interface DocumentsAndSelfieStepValue {
-  front: ImageValue;
-  back: ImageValue;
-  selfie: ImageValue;
-  front_image_metadata?: string;
-  back_image_metadata?: string;
-}
-export type DefaultSideProps = Pick<
-  FormStepComponentProps<DocumentsAndSelfieStepValue>,
-  'registerField' | 'onChange' | 'errors' | 'onError'
->;
 
 export function DocumentCaptureSubheaderOne({
   isSelfieCaptureEnabled,
@@ -46,7 +34,6 @@ function getDocAuthSeparatePagesEnabled() {
   const { docAuthSeparatePagesEnabled } = appRoot.dataset;
   return docAuthSeparatePagesEnabled === 'true';
 }
-
 
 export default function DocumentsAndSelfieStep({
   value = {},

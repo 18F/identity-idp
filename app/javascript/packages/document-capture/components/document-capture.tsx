@@ -38,7 +38,6 @@ function getDocAuthSeparatePagesEnabled() {
   return docAuthSeparatePagesEnabled === 'true';
 }
 
-
 function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   const [formValues, setFormValues] = useState<Record<string, any> | null>(null);
   const [submissionError, setSubmissionError] = useState<Error | undefined>(undefined);
@@ -72,9 +71,10 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
     form: SelfieStep,
     title: '', // TODO: replace with yml selfie_capture (Ticket LG-14392)
   };
-  var documentsFormSteps: FormStep[] = (isSelfieCaptureEnabled && docAuthSeparatePagesEnabled)
-    ? [documentFormStep, selfieFormStep]
-    : [documentFormStep];
+  const documentsFormSteps: FormStep[] =
+    isSelfieCaptureEnabled && docAuthSeparatePagesEnabled
+      ? [documentFormStep, selfieFormStep]
+      : [documentFormStep];
   const reviewFormStep: FormStep = {
     name: 'review',
     form:

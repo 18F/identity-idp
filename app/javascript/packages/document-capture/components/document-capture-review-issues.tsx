@@ -7,9 +7,7 @@ import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import GeneralError from './general-error';
 import TipList from './tip-list';
 import { SelfieCaptureContext } from '../context';
-import {
-  DocumentCaptureSubheaderOne,
-} from './documents-and-selfie-step';
+import { DocumentCaptureSubheaderOne } from './documents-and-selfie-step';
 import DocumentsStep from './documents-step';
 import { SelfieStepComponent } from './selfie-step';
 import type { ReviewIssuesStepValue } from './review-issues-step';
