@@ -34,7 +34,8 @@ interface DocumentCaptureProps {
 const appRoot = document.getElementById('document-capture-form')!;
 
 function getDocAuthSeparatePagesEnabled() {
-  if (appRoot == null || appRoot.dataset == null) return false;
+  if (appRoot == null) return false;
+  if (appRoot.dataset == null) return false;
 
   const { docAuthSeparatePagesEnabled } = appRoot.dataset;
   return docAuthSeparatePagesEnabled === 'true';
