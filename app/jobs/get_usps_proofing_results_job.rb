@@ -145,10 +145,6 @@ class GetUspsProofingResultsJob < ApplicationJob
     error_rate
   end
 
-  def scrub_message(message)
-    message&.gsub(/\s+/, ' ')&.strip
-  end
-
   def handle_bad_request_error(err, enrollment)
     response_body = err.response_body
     response_message = response_body&.[]('responseMessage')
