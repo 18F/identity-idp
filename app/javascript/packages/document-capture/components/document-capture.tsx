@@ -31,20 +31,6 @@ interface DocumentCaptureProps {
   onStepChange?: () => void;
 }
 
-const appRoot = document.getElementById('document-capture-form')!;
-
-function getDocAuthSeparatePagesEnabled() {
-  if (appRoot == null) {
-    return false;
-  }
-  if (appRoot.dataset == null) {
-    return false;
-  }
-
-  const { docAuthSeparatePagesEnabled } = appRoot.dataset;
-  return docAuthSeparatePagesEnabled === 'true';
-}
-
 function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   const [formValues, setFormValues] = useState<Record<string, any> | null>(null);
   const [submissionError, setSubmissionError] = useState<Error | undefined>(undefined);
@@ -52,7 +38,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   const { t } = useI18n();
   const { flowPath } = useContext(UploadContext);
   const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
-  const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
+  const { isSelfieCaptureEnabled, docAuthSeparatePagesEnabled } = useContext(SelfieCaptureContext);
   const { inPersonFullAddressEntryEnabled, inPersonURL, skipDocAuth, skipDocAuthFromHandoff } =
     useContext(InPersonContext);
   useDidUpdateEffect(onStepChange, [stepName]);
@@ -61,7 +47,6 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
       trackVisitEvent(stepName);
     }
   }, [stepName]);
-  const docAuthSeparatePagesEnabled = getDocAuthSeparatePagesEnabled();
   const appName = getConfigValue('appName');
   const inPersonLocationPostOfficeSearchForm = inPersonFullAddressEntryEnabled
     ? InPersonLocationFullAddressEntryPostOfficeSearchStep

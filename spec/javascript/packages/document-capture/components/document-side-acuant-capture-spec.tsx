@@ -19,7 +19,11 @@ describe('DocumentSideAcuantCapture', () => {
           const { queryAllByText } = render(
             <DeviceContext.Provider value={{ isMobile: true }}>
               <SelfieCaptureContext.Provider
-                value={{ isSelfieCaptureEnabled: false, isSelfieDesktopTestMode: false }}
+                value={{
+                  isSelfieCaptureEnabled: false,
+                  isSelfieDesktopTestMode: false,
+                  docAuthSeparatePagesEnabled: false,
+                }}
               >
                 <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="front" />
                 <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="back" />
@@ -39,7 +43,11 @@ describe('DocumentSideAcuantCapture', () => {
           const { queryAllByText } = render(
             <DeviceContext.Provider value={{ isMobile: true }}>
               <SelfieCaptureContext.Provider
-                value={{ isSelfieCaptureEnabled: false, isSelfieDesktopTestMode: true }}
+                value={{
+                  isSelfieCaptureEnabled: false,
+                  isSelfieDesktopTestMode: true,
+                  docAuthSeparatePagesEnabled: false,
+                }}
               >
                 <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="front" />
                 <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="back" />
@@ -61,7 +69,11 @@ describe('DocumentSideAcuantCapture', () => {
           const { queryAllByText } = render(
             <DeviceContext.Provider value={{ isMobile: false }}>
               <SelfieCaptureContext.Provider
-                value={{ isSelfieCaptureEnabled: false, isSelfieDesktopTestMode: false }}
+                value={{
+                  isSelfieCaptureEnabled: false,
+                  isSelfieDesktopTestMode: false,
+                  docAuthSeparatePagesEnabled: false,
+                }}
               >
                 <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="front" />
                 <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="back" />
@@ -79,7 +91,11 @@ describe('DocumentSideAcuantCapture', () => {
           const { queryAllByText } = render(
             <DeviceContext.Provider value={{ isMobile: false }}>
               <SelfieCaptureContext.Provider
-                value={{ isSelfieCaptureEnabled: false, isSelfieDesktopTestMode: true }}
+                value={{
+                  isSelfieCaptureEnabled: false,
+                  isSelfieDesktopTestMode: true,
+                  docAuthSeparatePagesEnabled: false,
+                }}
               >
                 <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="front" />
                 <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="back" />
@@ -101,7 +117,11 @@ describe('DocumentSideAcuantCapture', () => {
           const { queryAllByText } = render(
             <DeviceContext.Provider value={{ isMobile: true }}>
               <SelfieCaptureContext.Provider
-                value={{ isSelfieCaptureEnabled: true, isSelfieDesktopTestMode: false }}
+                value={{
+                  isSelfieCaptureEnabled: true,
+                  isSelfieDesktopTestMode: false,
+                  docAuthSeparatePagesEnabled: false,
+                }}
               >
                 <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="front" />
                 <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="back" />
@@ -125,7 +145,11 @@ describe('DocumentSideAcuantCapture', () => {
           const { queryAllByText } = render(
             <DeviceContext.Provider value={{ isMobile: true }}>
               <SelfieCaptureContext.Provider
-                value={{ isSelfieCaptureEnabled: true, isSelfieDesktopTestMode: true }}
+                value={{
+                  isSelfieCaptureEnabled: true,
+                  isSelfieDesktopTestMode: true,
+                  docAuthSeparatePagesEnabled: false,
+                }}
               >
                 <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="front" />
                 <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="back" />
@@ -157,7 +181,11 @@ describe('DocumentSideAcuantCapture', () => {
           const { queryAllByText } = render(
             <DeviceContext.Provider value={{ isMobile: false }}>
               <SelfieCaptureContext.Provider
-                value={{ isSelfieCaptureEnabled: true, isSelfieDesktopTestMode: true }}
+                value={{
+                  isSelfieCaptureEnabled: true,
+                  isSelfieDesktopTestMode: true,
+                  docAuthSeparatePagesEnabled: false,
+                }}
               >
                 <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="front" />
                 <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="back" />

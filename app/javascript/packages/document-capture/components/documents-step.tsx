@@ -1,5 +1,5 @@
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
-import { ImageValue, DefaultSideProps } from './documents-image-selfie-value';
+import { ImageValue, DefaultSideProps } from '../interface/documents-image-selfie-value';
 
 export default function DocumentsStep({
   defaultSideProps,

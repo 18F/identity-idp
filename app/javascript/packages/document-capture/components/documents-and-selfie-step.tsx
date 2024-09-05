@@ -11,8 +11,12 @@ import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
 import DocumentsStep from './documents-step';
 import { SelfieStepComponent } from './selfie-step';
 import TipList from './tip-list';
-import { DefaultSideProps, DocumentsAndSelfieStepValue } from './documents-image-selfie-value';
+import {
+  DefaultSideProps,
+  DocumentsAndSelfieStepValue,
+} from '../interface/documents-image-selfie-value';
 import { DeviceContext, SelfieCaptureContext, UploadContext } from '../context';
+import { useFormChangeCompletion } from '../hooks/use-form-change-completion';
 
 export function DocumentCaptureSubheaderOne({
   isSelfieCaptureEnabled,
@@ -28,19 +32,6 @@ export function DocumentCaptureSubheaderOne({
     </h2>
   );
 }
-const appRoot = document.getElementById('document-capture-form')!;
-
-function getDocAuthSeparatePagesEnabled() {
-  if (appRoot == null) {
-    return false;
-  }
-  if (appRoot.dataset == null) {
-    return false;
-  }
-
-  const { docAuthSeparatePagesEnabled } = appRoot.dataset;
-  return docAuthSeparatePagesEnabled === 'true';
-}
 
 export default function DocumentsAndSelfieStep({
   value = {},
@@ -51,13 +42,10 @@ export default function DocumentsAndSelfieStep({
 }: FormStepComponentProps<DocumentsAndSelfieStepValue>) {
   const { t } = useI18n();
   const { isMobile } = useContext(DeviceContext);
-  const { isLastStep, changeStepCanComplete } = useContext(FormStepsContext);
+  const { isLastStep } = useContext(FormStepsContext);
   const { flowPath } = useContext(UploadContext);
-  const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
-  const docAuthSeparatePagesEnabled = getDocAuthSeparatePagesEnabled();
-  if (isSelfieCaptureEnabled && docAuthSeparatePagesEnabled) {
-    changeStepCanComplete(false);
-  }
+  const { isSelfieCaptureEnabled, docAuthSeparatePagesEnabled } = useContext(SelfieCaptureContext);
+  useFormChangeCompletion({ isSelfieCaptureEnabled, docAuthSeparatePagesEnabled });
   const pageHeaderText = isSelfieCaptureEnabled
     ? t('doc_auth.headings.document_capture_with_selfie')
     : t('doc_auth.headings.document_capture');

@@ -15,7 +15,7 @@ import {
   ImageValue,
   DefaultSideProps,
   DocumentsAndSelfieStepValue,
-} from './documents-image-selfie-value';
+} from '../interface/documents-image-selfie-value';
 
 export function SelfieStepComponent({
   defaultSideProps,
