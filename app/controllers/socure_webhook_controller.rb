@@ -4,30 +4,35 @@ class SocureWebhookController < ApplicationController
   include RenderConditionConcern
 
   skip_before_action :verify_authenticity_token
-
   check_or_render_not_found -> { IdentityConfig.store.socure_webhook_enabled }
+  before_action :check_token
+  before_action :check_socure_event
 
   def create
-    unless token_valid?
-      return render(status: :unauthorized, json: { message: 'Invalid secret token.' })
-    end
-    if socure_params[:event].blank?
-      return render(status: :bad_request, json: { message: 'Invalid event.' })
-    end
-
     log_webhook_receipt
     render json: { message: 'Secret token is valid.' }
   end
 
   private
 
+  def check_token
+    if !token_valid?
+      render status: :unauthorized, json: { message: 'Invalid secret token.' }
+    end
+  end
+
+  def check_socure_event
+    if socure_params[:event].blank?
+      render status: :bad_request, json: { message: 'Invalid event.' }
+    end
+  end
+
   def token_valid?
     authorization_header = request.headers['Authorization']&.split&.last
 
-    return false if authorization_header.nil?
-
-    verify_current_key(authorization_header: authorization_header) ||
-      verify_queue(authorization_header: authorization_header)
+    authorization_header.present? &&
+      (verify_current_key(authorization_header: authorization_header) ||
+        verify_queue(authorization_header: authorization_header))
   end
 
   def verify_current_key(authorization_header:)
