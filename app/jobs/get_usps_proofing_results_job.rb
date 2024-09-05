@@ -20,6 +20,8 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   queue_as :long_running
 
+  include IppHelper
+
   def perform(_now)
     return unless job_can_run?
 
@@ -190,20 +192,6 @@ class GetUspsProofingResultsJob < ApplicationJob
     else
       enrollment_outcomes[:enrollments_errored] += 1
     end
-  end
-
-  def scrub_message(message)
-    filtered_message = message.dup
-    filtered_message.gsub!(/sponsorID \d+/i, 'sponsorID [FILTERED]')
-    filtered_message
-  end
-
-  def scrub_body(body)
-    return nil if body.nil?
-
-    filtered_body = body.dup
-    filtered_body['responseMessage'] = scrub_message(filtered_body['responseMessage'])
-    filtered_body
   end
 
   def handle_sponsor_id_error(err, enrollment)

@@ -9,6 +9,7 @@ module Idv
       include Idv::HybridMobile::HybridMobileConcern
       include RenderConditionConcern
       include UspsInPersonProofing
+      include IppHelper
 
       check_or_render_not_found -> { InPersonConfig.enabled? }
 
@@ -90,17 +91,6 @@ module Idv
         locations.map do |location|
           EnrollmentHelper.localized_location(location)
         end
-      end
-
-      def scrub_message(message)
-        message.gsub(/sponsorID \d+/i, 'sponsorID [FILTERED]')
-      end
-
-      def scrub_body(body)
-        return nil if body.nil?
-
-        body[:responseMessage] = scrub_message(body[:responseMessage])
-        body
       end
 
       def handle_error(err)

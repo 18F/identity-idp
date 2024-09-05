@@ -6,6 +6,7 @@ module Idv
     include IdvStepConcern
     include StepIndicatorConcern
     include VerifyByMailConcern
+    include IppHelper
 
     before_action :confirm_step_allowed
     before_action :confirm_no_profile_yet
@@ -178,10 +179,6 @@ module Idv
       else
         idv_personal_key_url
       end
-    end
-
-    def scrub_message(message)
-      message.gsub(/sponsorID \d+/i, 'sponsorID [FILTERED]')
     end
 
     def handle_request_enroll_exception(err)
