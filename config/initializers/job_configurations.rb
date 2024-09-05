@@ -235,6 +235,11 @@ else
         cron: cron_every_monday_2am,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
+      # Outdated A/B test assignment clean-up
+      outdated_ab_test_assignment_cleanup: {
+        class: 'OutdatedAbTestAssignmentCleanupJob',
+        cron: cron_every_monday,
+      },
     }.compact
   end
   # rubocop:enable Metrics/BlockLength
