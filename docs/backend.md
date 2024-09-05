@@ -139,3 +139,36 @@ class MyController < ApplicationController
   end
 end
 ```
+
+## Database
+
+We make use of ActiveRecord for our ORM. It is important to remain mindful of what your
+code is doing to prevent unnecessary queries. For example, the following conditional
+should be rearranged:
+
+```ruby
+# Bad: potentially-unnecessary DB query
+if mfa_user.two_factor_enabled? && !in_mfa_selection_flow
+  # ...
+end
+```
+
+`mfa_user.two_factor_enabled?` will trigger a database query, while
+`in_mfa_selection_flow` is a variable already in memory. Therefore, rearranging the
+conditional to check the local variable first can save an unnecessary database query:
+
+```ruby
+# Good: avoids potentially-unnecessary DB query
+if !in_mfa_selection_flow && mfa_user.two_factor_enabled?
+  # ...
+end
+```
+
+### Eager loading
+
+In this example, the concern is specifically that the `two_factor_enabled?` method 
+issues a database query, fetching an association.
+
+An alternative approach to consider when dealing with associations is to make use
+of [eager loading](https://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations),
+which could allow fetching the associated records with a join in the same query.
