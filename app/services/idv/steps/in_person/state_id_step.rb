@@ -86,11 +86,24 @@ module Idv
 
         def pii
           data = flow_session[:pii_from_user]
-          data = data.merge(flow_params) if params.has_key?(:state_id)
+          if params.has_key?(:identity_doc) || params.has_key?(:state_id)
+            data = data.merge(flow_params)
+          end
           data.deep_symbolize_keys
         end
 
         def flow_params
+          if params.dig(:identity_doc).present?
+            # Transform the top-level params key to accept the renamed form
+            # for autofill handling workaround
+            params[:state_id] = params.delete(:identity_doc)
+
+            # Rename nested id_number to state_id_number
+            if params[:state_id][:id_number].present?
+              params[:state_id][:state_id_number] = params[:state_id].delete(:id_number)
+            end
+          end
+
           params.require(:state_id).permit(
             *Idv::StateIdForm::ATTRIBUTES,
             dob: [
