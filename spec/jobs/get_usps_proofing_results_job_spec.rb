@@ -1424,7 +1424,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
               stub_request_proofing_results_with_responses(
                 {
                   status: 400,
-                  body: { 'responseMessage' => 'Sponsor for sponsorID 5 not found' }.to_json,
+                  body: { 'responseMessage' => 'Sponsor for sponsorID 25 not found' }.to_json,
                   headers: { 'content-type': 'application/json' },
                 },
               )
@@ -1450,7 +1450,8 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
               stub_request_proofing_results_with_responses(
                 {
                   status: 400,
-                  body: { 'responseMessage' => 'sponsorID 5 is not registered as an IPP client' }.to_json,
+                  body: { 'responseMessage' => 'sponsorID 5 is not registered as an IPP client' }.
+                  to_json,
                   headers: { 'content-type': 'application/json' },
                 },
               )

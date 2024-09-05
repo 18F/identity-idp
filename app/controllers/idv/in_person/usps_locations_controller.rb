@@ -93,17 +93,14 @@ module Idv
       end
 
       def scrub_message(message)
-        filtered_message = message.dup
-        filtered_message.gsub!(/sponsorID \d+/i, 'sponsorID [FILTERED]')
-        filtered_message
+        message.gsub(/sponsorID \d+/i, 'sponsorID [FILTERED]')
       end
 
       def scrub_body(body)
         return nil if body.nil?
 
-        filtered_body = body.dup
-        filtered_body[:responseMessage] = scrub_message(filtered_body[:responseMessage])
-        filtered_body
+        body[:responseMessage] = scrub_message(body[:responseMessage])
+        body
       end
 
       def handle_error(err)

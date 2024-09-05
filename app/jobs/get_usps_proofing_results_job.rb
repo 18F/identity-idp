@@ -8,8 +8,8 @@ class GetUspsProofingResultsJob < ApplicationJob
   IPP_EXPIRED_ERROR_MESSAGE = /More than (?<days>\d+) days have passed since opt-in to IPP/
   IPP_INVALID_ENROLLMENT_CODE_MESSAGE = 'Enrollment code %s does not exist'
   IPP_INVALID_APPLICANT_MESSAGE = 'Applicant %s does not exist'
-  IPP_BAD_SPONSOR_ID_MESSAGE = /sponsorID \d is not registered as an IPP client/
-  IPP_SPONSOR_ID_NOT_FOUND_MESSAGE = /Sponsor for sponsorID \d not found/
+  IPP_BAD_SPONSOR_ID_MESSAGE = /sponsorID \d+ is not registered as an IPP client/
+  IPP_SPONSOR_ID_NOT_FOUND_MESSAGE = /Sponsor for sponsorID \d+ not found/
   SUPPORTED_ID_TYPES = [
     "State driver's license",
     "State non-driver's identification card",
@@ -165,7 +165,8 @@ class GetUspsProofingResultsJob < ApplicationJob
       handle_unexpected_response(
         enrollment, response_message, reason: 'Invalid applicant unique id'
       )
-    elsif response_message&.match(IPP_BAD_SPONSOR_ID_MESSAGE) || response_message&.match(IPP_SPONSOR_ID_NOT_FOUND_MESSAGE)
+    elsif response_message&.match(IPP_BAD_SPONSOR_ID_MESSAGE) ||
+          response_message&.match(IPP_SPONSOR_ID_NOT_FOUND_MESSAGE)
       handle_sponsor_id_error(err, enrollment)
     else
       handle_client_or_server_error(err, enrollment)

@@ -181,9 +181,7 @@ module Idv
     end
 
     def scrub_message(message)
-      filtered_message = message.dup
-      filtered_message.gsub!(/sponsorID \d+/i, 'sponsorID [FILTERED]')
-      filtered_message
+      message.gsub(/sponsorID \d+/i, 'sponsorID [FILTERED]')
     end
 
     def handle_request_enroll_exception(err)
