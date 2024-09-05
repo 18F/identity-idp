@@ -15,7 +15,11 @@ class ValidatedFieldElement extends HTMLElement {
   }
 
   get errorStrings(): Partial<ValidityState> {
-    return JSON.parse(this.querySelector('.validated-field__error-strings')?.textContent || '');
+    try {
+      return JSON.parse(this.querySelector('.validated-field__error-strings')?.textContent || '');
+    } catch {
+      return {};
+    }
   }
 
   get errorId(): string {

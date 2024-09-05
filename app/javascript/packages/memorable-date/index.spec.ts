@@ -71,7 +71,6 @@ describe('MemorableDateElement', () => {
             <lg-memorable-date id="test-memorable-date">
                 <script id="test-md-error-mappings" type="application/json" class="memorable-date__error-strings"></script>
                 <lg-validated-field error-id="test-md-error-message">
-                    <script type="application/json" class="validated-field__error-strings">{}</script>
                     <input type="text"
                         id="test-md-month"
                         required="required"
@@ -82,7 +81,6 @@ describe('MemorableDateElement', () => {
                         maxlength="2" />
                 </lg-validated-field>
                 <lg-validated-field error-id="test-md-error-message">
-                    <script type="application/json" class="validated-field__error-strings">{}</script>
                     <input type="text"
                         id="test-md-day"
                         required="required"
@@ -93,7 +91,6 @@ describe('MemorableDateElement', () => {
                         maxlength="2" />
                 </lg-validated-field>
                 <lg-validated-field error-id="test-md-error-message">
-                    <script type="application/json" class="validated-field__error-strings">{}</script>
                     <input type="text"
                         id="test-md-year"
                         required="required"
