@@ -116,7 +116,11 @@ class AccountShowPresenter
     end
   end
 
-  delegate :recent_events, :recent_devices, :connected_apps, to: :user
+  def connected_apps
+    user.connected_apps.includes([:service_provider_record, :email_address])
+  end
+
+  delegate :recent_events, :recent_devices, to: :user
 
   private
 

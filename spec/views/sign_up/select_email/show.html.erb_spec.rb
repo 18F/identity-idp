@@ -6,11 +6,10 @@ RSpec.describe 'sign_up/select_email/show.html.erb' do
   let(:user) { create(:user) }
 
   before do
-    user.email_addresses.create(email: email, confirmed_at: Time.zone.now)
-    user.email_addresses.create(email: email2, confirmed_at: Time.zone.now)
-    user.reload
-    @user_emails = user.email_addresses
-    @select_email_form = SelectEmailForm.new(user)
+    create(:email_address, email: email, user:)
+    create(:email_address, email: email2, user:)
+    @user_emails = user.confirmed_email_addresses
+    @select_email_form = SelectEmailForm.new(user:)
   end
 
   it 'shows all of the user\'s emails' do

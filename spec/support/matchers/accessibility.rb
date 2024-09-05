@@ -119,7 +119,9 @@ RSpec::Matchers.define :have_description do |description|
       map { |descriptor_id| page.find("##{descriptor_id}")&.text }
   end
 
-  match { |element| descriptors(element)&.include?(description) }
+  match do |element|
+    descriptors(element)&.any? { |descriptor| descriptor.strip == description }
+  end
 
   failure_message do |element|
     <<-STR.squish

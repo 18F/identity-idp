@@ -6150,6 +6150,33 @@ module AnalyticsEvents
     )
   end
 
+  # User submitted form to change email shared with service provider
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # @param [String, nil] needs_completion_screen_reason Reason for the consent screen being shown,
+  # if user is changing email in consent flow
+  def sp_select_email_submitted(
+    success:,
+    error_details: nil,
+    needs_completion_screen_reason: nil,
+    **extra
+  )
+    track_event(
+      :sp_select_email_submitted,
+      success:,
+      error_details:,
+      needs_completion_screen_reason:,
+      **extra,
+    )
+  end
+
+  # User visited form to change email shared with service provider
+  # @param [String, nil] needs_completion_screen_reason Reason for the consent screen being shown,
+  # if user is changing email in consent flow
+  def sp_select_email_visited(needs_completion_screen_reason: nil, **extra)
+    track_event(:sp_select_email_visited, needs_completion_screen_reason:, **extra)
+  end
+
   # @param [String] area_code Area code of phone number
   # @param [String] country_code Abbreviated 2-letter country code associated with phone number
   # @param [String] phone_fingerprint HMAC fingerprint of the phone number formatted as E.164
