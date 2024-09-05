@@ -133,6 +133,20 @@ describe('ValidatedField', () => {
     expect(input.classList.contains('my-custom-class')).to.be.true();
   });
 
+  it('renders updated error message on re-render', () => {
+    const { getByRole, getByText, rerender } = render(
+      <ValidatedField required messages={{ valueMissing: 'foo' }} />,
+    );
+
+    rerender(<ValidatedField required messages={{ valueMissing: 'bar' }} />);
+
+    const input = getByRole('textbox') as HTMLInputElement;
+
+    input.reportValidity();
+
+    expect(getByText('bar')).to.exist();
+  });
+
   it('exposes the function reportValidity', () => {
     const { getByRole } = render(<ValidatedField />);
 

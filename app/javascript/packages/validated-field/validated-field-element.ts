@@ -1,6 +1,4 @@
 class ValidatedFieldElement extends HTMLElement {
-  errorStrings: Partial<ValidityState> = {};
-
   input: HTMLInputElement | null;
 
   inputWrapper: HTMLElement | null;
@@ -11,16 +9,13 @@ class ValidatedFieldElement extends HTMLElement {
     this.input = this.querySelector('.validated-field__input');
     this.inputWrapper = this.querySelector('.validated-field__input-wrapper');
     this.errorMessage = this.ownerDocument.getElementById(this.errorId);
-    try {
-      Object.assign(
-        this.errorStrings,
-        JSON.parse(this.querySelector('.validated-field__error-strings')?.textContent || ''),
-      );
-    } catch {}
-
     this.input?.addEventListener('input', () => this.setErrorMessage());
     this.input?.addEventListener('input', () => this.setInputIsValid(true));
     this.input?.addEventListener('invalid', (event) => this.toggleErrorMessage(event));
+  }
+
+  get errorStrings(): Partial<ValidityState> {
+    return JSON.parse(this.querySelector('.validated-field__error-strings')?.textContent || '');
   }
 
   get errorId(): string {
