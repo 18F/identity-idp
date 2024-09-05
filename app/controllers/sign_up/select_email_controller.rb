@@ -2,6 +2,9 @@
 
 module SignUp
   class SelectEmailController < ApplicationController
+    include RenderConditionConcern
+
+    check_or_render_not_found -> { IdentityConfig.store.feature_select_email_to_share_enabled }
     before_action :confirm_two_factor_authenticated
     before_action :verify_needs_completions_screen
 
@@ -32,7 +35,7 @@ module SignUp
     private
 
     def build_select_email_form
-      SelectEmailForm.new(current_user)
+      SelectEmailForm.new(user: current_user)
     end
 
     def form_params

@@ -94,7 +94,7 @@ class TwoFactorOptionsPresenter
   def skip_path
     if show_cancel_return_to_sp?
       return_to_sp_cancel_path
-    elsif two_factor_enabled? && show_skip_additional_mfa_link?
+    elsif show_skip_additional_mfa_link? && two_factor_enabled?
       after_mfa_setup_path
     end
   end

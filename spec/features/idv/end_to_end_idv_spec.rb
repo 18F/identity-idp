@@ -209,7 +209,7 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
 
     # Check for expected content
     expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
-    expect(page).to have_content(t('doc_auth.headings.document_capture').tr(' ', ' '))
+    expect(page).to have_content(strip_nbsp(t('doc_auth.headings.document_capture')))
   end
 
   def validate_document_capture_submit(user)

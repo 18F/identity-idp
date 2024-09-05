@@ -14,6 +14,7 @@ module UserAccessKeyOverrides
       password: password,
       digest_pair: password_regional_digest_pair,
       user_uuid: uuid,
+      log_context: 'password-digest',
     )
     @password = password if result
     result
@@ -41,6 +42,7 @@ module UserAccessKeyOverrides
       password: normalized_personal_key,
       digest_pair: recovery_code_regional_digest_pair,
       user_uuid: uuid,
+      log_context: 'personal-key',
     )
   end
 

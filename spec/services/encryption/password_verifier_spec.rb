@@ -81,7 +81,10 @@ RSpec.describe Encryption::PasswordVerifier do
     it 'returns true if the password does match' do
       digest_pair = subject.create_digest_pair(password: password, user_uuid: user_uuid)
 
-      result = subject.verify(digest_pair: digest_pair, password: password, user_uuid: user_uuid)
+      result = subject.verify(
+        digest_pair: digest_pair, password: password, user_uuid: user_uuid,
+        log_context: nil
+      )
 
       expect(result).to eq(true)
     end
@@ -89,7 +92,10 @@ RSpec.describe Encryption::PasswordVerifier do
     it 'returns false if the password does not match' do
       digest_pair = subject.create_digest_pair(password: password, user_uuid: user_uuid)
 
-      result = subject.verify(digest_pair: digest_pair, password: 'qwerty', user_uuid: user_uuid)
+      result = subject.verify(
+        digest_pair: digest_pair, password: 'qwerty', user_uuid: user_uuid,
+        log_context: nil
+      )
 
       expect(result).to eq(false)
     end
@@ -102,6 +108,7 @@ RSpec.describe Encryption::PasswordVerifier do
         ),
         password: password,
         user_uuid: user_uuid,
+        log_context: nil,
       )
 
       expect(result).to eq(false)
@@ -117,6 +124,7 @@ RSpec.describe Encryption::PasswordVerifier do
         digest_pair: legacy_digest_pair,
         password: password,
         user_uuid: user_uuid,
+        log_context: nil,
       )
 
       expect(good_match_result).to eq(true)
@@ -125,6 +133,7 @@ RSpec.describe Encryption::PasswordVerifier do
         digest_pair: legacy_digest_pair,
         password: 'fake news',
         user_uuid: user_uuid,
+        log_context: nil,
       )
 
       expect(bad_match_result).to eq(false)
@@ -141,11 +150,13 @@ RSpec.describe Encryption::PasswordVerifier do
         password: password,
         digest_pair: test_digest_pair,
         user_uuid: user_uuid,
+        log_context: nil,
       )
       incorrect_password_result = subject.verify(
         password: 'this is a fake password lol',
         digest_pair: test_digest_pair,
         user_uuid: user_uuid,
+        log_context: nil,
       )
 
       expect(correct_password_result).to eq(true)

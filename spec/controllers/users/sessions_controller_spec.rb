@@ -7,6 +7,48 @@ RSpec.describe Users::SessionsController, devise: true do
 
   let(:mock_valid_site) { 'http://example.com' }
 
+  describe 'before_actions' do
+    describe 'recaptcha csp' do
+      it 'does not allow recaptcha in the csp' do
+        expect(subject).not_to receive(:allow_csp_recaptcha_src)
+
+        get :new
+      end
+
+      context 'recaptcha enabled' do
+        before do
+          allow(FeatureManagement).to receive(:sign_in_recaptcha_enabled?).and_return(true)
+        end
+
+        it 'allows recaptcha in the csp' do
+          expect(subject).to receive(:allow_csp_recaptcha_src)
+
+          get :new
+        end
+      end
+    end
+  end
+
+  describe 'after actions' do
+    it 'does not add recaptcha resource hints' do
+      expect(subject).not_to receive(:add_recaptcha_resource_hints)
+
+      get :new
+    end
+
+    context 'recaptcha enabled' do
+      before do
+        allow(FeatureManagement).to receive(:sign_in_recaptcha_enabled?).and_return(true)
+      end
+
+      it 'adds recaptcha resource hints' do
+        expect(subject).to receive(:add_recaptcha_resource_hints)
+
+        get :new
+      end
+    end
+  end
+
   describe 'GET /logout' do
     it 'does not log user out and redirects to root' do
       sign_in_as_user

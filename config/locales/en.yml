@@ -38,8 +38,10 @@ account_reset.request.info:
 account_reset.request.no_cancel: Cancel
 account_reset.request.title: Account deletion and reset
 account_reset.request.yes_continue: Yes, continue deletion
+account.connected_apps.associated_attributes_html: 'Connected %{timestamp_html} with:'
 account.connected_apps.associated_html: Connected %{timestamp_html}
 account.connected_apps.description: With your %{app_name} account, you can securely connect to multiple government accounts online. Below is a list of all the accounts you currently have connected.
+account.connected_apps.email_not_selected: Email not yet selected
 account.email_language.default: '%{language} (default)'
 account.email_language.edit_title: Edit email language preference
 account.email_language.languages_list: You will receive emails from %{app_name} in the language you choose.
@@ -499,7 +501,7 @@ doc_auth.buttons.take_picture: Take photo
 doc_auth.buttons.take_picture_retry: Retake photo
 doc_auth.buttons.upload_picture: Upload photo
 doc_auth.errors.alerts.address_check: We couldn’t read the address on your ID. Try taking new pictures.
-doc_auth.errors.alerts.barcode_content_check: We couldn’t read the barcode on the back of your ID. It could be because of a problem with the barcode, or the barcode is a new type that we don’t recognize yet. Use another state‑issued ID if you have one.
+doc_auth.errors.alerts.barcode_content_check: We couldn’t read the barcode on the back of your ID. It could be because of a problem with the barcode, or the barcode is a new type that we don’t recognize yet. Use another state‑issued ID if you have one.
 doc_auth.errors.alerts.barcode_read_check: We couldn’t read the barcode on the back of your ID. Try taking a new picture.
 doc_auth.errors.alerts.birth_date_checks: We couldn’t read the birth date on your ID. Try taking new pictures.
 doc_auth.errors.alerts.control_number_check: We couldn’t read the reference number on the back of your ID. Try taking a new picture.

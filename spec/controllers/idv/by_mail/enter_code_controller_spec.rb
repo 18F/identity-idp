@@ -201,6 +201,7 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
           pending_in_person_enrollment: false,
           fraud_check_failed: false,
           enqueued_at: pending_profile.gpo_confirmation_codes.last.code_sent_at,
+          profile_age_in_seconds: instance_of(Integer),
           which_letter: 1,
           letter_count: 1,
           submit_attempts: 1,
@@ -243,6 +244,7 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
             pending_in_person_enrollment: true,
             fraud_check_failed: false,
             enqueued_at: pending_profile.gpo_confirmation_codes.last.code_sent_at,
+            profile_age_in_seconds: instance_of(Integer),
             which_letter: 1,
             letter_count: 1,
             submit_attempts: 1,
@@ -271,6 +273,7 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
               pending_in_person_enrollment: false,
               fraud_check_failed: true,
               enqueued_at: pending_profile.gpo_confirmation_codes.last.code_sent_at,
+              profile_age_in_seconds: instance_of(Integer),
               which_letter: 1,
               letter_count: 1,
               submit_attempts: 1,
@@ -299,6 +302,7 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
               pending_in_person_enrollment: false,
               fraud_check_failed: true,
               enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
+              profile_age_in_seconds: instance_of(Integer),
               which_letter: 1,
               letter_count: 1,
               submit_attempts: 1,
@@ -332,6 +336,7 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
               pending_in_person_enrollment: false,
               fraud_check_failed: true,
               enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
+              profile_age_in_seconds: instance_of(Integer),
               which_letter: 1,
               letter_count: 1,
               submit_attempts: 1,
@@ -361,6 +366,7 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
           fraud_check_failed: false,
           letter_count: 1,
           submit_attempts: 1,
+          profile_age_in_seconds: instance_of(Integer),
           error_details: { otp: { confirmation_code_incorrect: true } },
         )
         expect(response).to render_template(:index)
@@ -394,6 +400,7 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
             fraud_check_failed: false,
             letter_count: 1,
             submit_attempts: 1,
+            profile_age_in_seconds: instance_of(Integer),
             error_details: { otp: { confirmation_code_incorrect: true } },
           }
           post(:create, params: { gpo_verify_form: { otp: bad_otp } })

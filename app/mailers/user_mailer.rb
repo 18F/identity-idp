@@ -242,8 +242,7 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  # remove disavowal_token after next deploy
-  def account_verified(date_time:, sp_name:, disavowal_token: nil) # rubocop:disable Lint/UnusedMethodArgument
+  def account_verified(date_time:, sp_name:)
     with_user_locale(user) do
       @date = I18n.l(date_time, format: :event_date)
       @sp_name = sp_name

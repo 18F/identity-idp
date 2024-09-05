@@ -2,58 +2,98 @@ require 'rails_helper'
 
 RSpec.describe SelectEmailForm do
   let(:user) { create(:user, :fully_registered, :with_multiple_emails) }
+  let(:identity) { nil }
+  let(:selected_email_id) {}
+  let(:params) { { selected_email_id: } }
+  subject(:form) { SelectEmailForm.new(**{ user:, identity: }.compact) }
+
   describe '#submit' do
-    it 'returns the email successfully' do
-      form = SelectEmailForm.new(user)
-      response = form.submit(selected_email_id: user.email_addresses.last.id)
+    subject(:response) { form.submit(params) }
 
-      expect(response.success?).to eq(true)
+    context 'with valid parameters' do
+      let(:selected_email_id) { user.confirmed_email_addresses.take.id }
+
+      it 'is successful' do
+        expect(response.to_h).to eq(success: true)
+      end
+
+      context 'with associated identity' do
+        let(:identity) { create(:service_provider_identity, :consented, user:) }
+
+        it 'updates linked email address' do
+          expect { response }.to change { identity.reload.email_address_id }.
+            from(nil).
+            to(selected_email_id)
+        end
+      end
     end
 
-    it 'returns an error when submitting an invalid email' do
-      form = SelectEmailForm.new(user)
-      response = form.submit(selected_email_id: nil)
+    context 'with an invalid email id' do
+      let(:selected_email_id) { nil }
 
-      expect(response.success?).to eq(false)
-    end
-
-    context 'with an unconfirmed email address added' do
-      before do
-        create(
-          :email_address,
-          email: 'michael.business@business.com',
-          user: user,
-          confirmed_at: nil,
-          confirmation_sent_at: 1.month.ago,
+      it 'is unsuccessful' do
+        expect(response.to_h).to eq(
+          success: false,
+          error_details: { selected_email_id: { not_found: true } },
         )
       end
 
-      it 'returns an error' do
-        form = SelectEmailForm.new(user)
-        response = form.submit(selected_email_id: user.email_addresses.last.id)
+      context 'with associated identity' do
+        let(:identity) do
+          create(
+            :service_provider_identity,
+            :consented,
+            user:,
+            email_address_id: user.confirmed_email_addresses.take.id,
+          )
+        end
 
-        expect(response.success?).to eq(false)
+        it 'does not update linked email address' do
+          expect { response }.not_to change { identity.reload.email_address_id }
+        end
+      end
+    end
+
+    context 'with an unconfirmed email address added' do
+      let(:selected_email_id) { user.email_addresses.find_by(confirmed_at: nil) }
+
+      before do
+        create(:email_address, :unconfirmed, user:)
+      end
+
+      it 'is unsuccessful' do
+        expect(response.to_h).to eq(
+          success: false,
+          error_details: { selected_email_id: { not_found: true } },
+        )
+      end
+
+      context 'with associated identity' do
+        let(:identity) { create(:service_provider_identity, :consented, user:) }
+
+        it 'does not update linked email address' do
+          expect { response }.not_to change { identity.reload.email_address_id }
+        end
       end
     end
 
     context 'with another user\'s email' do
       let(:user2) { create(:user, :fully_registered, :with_multiple_emails) }
-      before do
-        create(
-          :email_address,
-          email: 'michael.business@business.com',
-          user: user2,
-          confirmed_at: nil,
-          confirmation_sent_at: 1.month.ago,
+      let(:selected_email_id) { user2.confirmed_email_addresses.take.id }
+
+      it 'is unsuccessful' do
+        expect(response.to_h).to eq(
+          success: false,
+          error_details: { selected_email_id: { not_found: true } },
         )
-        @email2 = user2.email_addresses.last.id
       end
 
-      it 'returns an error' do
-        form = SelectEmailForm.new(user)
-        response = form.submit(selected_email_id: @email2)
+      context 'with associated identity' do
+        let(:identity) { create(:service_provider_identity, :consented, user:) }
 
-        expect(response.success?).to eq(false)
+        it 'does not update linked email address' do
+          expect { response }.not_to change { identity.reload.email_address_id }
+        end
       end
     end
   end
