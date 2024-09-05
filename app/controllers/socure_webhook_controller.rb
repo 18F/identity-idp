@@ -53,7 +53,6 @@ class SocureWebhookController < ApplicationController
 
   def log_webhook_receipt
     event = socure_params[:event]
-    return if event.blank?
 
     analytics.idv_doc_auth_socure_webhook_received(
       created_at: event[:created],
