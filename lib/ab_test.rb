@@ -49,8 +49,6 @@ class AbTest
     user_session:,
     persisted_read_only: false
   )
-    return nil if no_percentages?
-
     discriminator = resolve_discriminator(
       request:, service_provider:, session:, user:,
       user_session:
@@ -59,6 +57,8 @@ class AbTest
 
     persisted_value = AbTestAssignment.bucket(experiment:, discriminator:) if persist
     return persisted_value if persisted_value || (persist && persisted_read_only)
+
+    return nil if no_percentages?
 
     user_value = percent(discriminator)
 
