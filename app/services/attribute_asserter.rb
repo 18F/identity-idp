@@ -42,7 +42,7 @@ class AttributeAsserter
       add_vot(attrs)
     else
       add_aal(attrs)
-      add_ial(attrs) if authn_request.requested_ial_authn_context || !service_provider.ial.nil?
+      add_ial(attrs)
     end
 
     add_x509(attrs) if bundle.include?(:x509_presented) && x509_data
@@ -145,7 +145,7 @@ class AttributeAsserter
   end
 
   def add_aal(attrs)
-    requested_context = authn_request.requested_aal_authn_context
+    requested_context = requested_aal_authn_context
     requested_aal_level = Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_AAL[requested_context]
     aal_level = requested_aal_level || service_provider.default_aal || ::Idp::Constants::DEFAULT_AAL
     context = Saml::Idp::Constants::AUTHN_CONTEXT_AAL_TO_CLASSREF[aal_level]
@@ -200,7 +200,10 @@ class AttributeAsserter
 
   def add_email(attrs)
     attrs[:email] = {
-      getter: ->(principal) { EmailContext.new(principal).last_sign_in_email_address.email },
+      getter: ->(principal) {
+        last_email_from_sp(principal) ||
+          EmailContext.new(principal).last_sign_in_email_address.email
+      },
       name_format: 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
       name_id_format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS,
     }
@@ -214,18 +217,29 @@ class AttributeAsserter
     }
   end
 
+  def last_email_from_sp(principal)
+    return nil unless IdentityConfig.store.feature_select_email_to_share_enabled
+    identity = principal.active_identity_for(service_provider)
+    email_id = identity&.email_address_id
+    principal.confirmed_email_addresses.find_by(id: email_id)&.email if email_id
+  end
+
   def bundle
     @bundle ||= (
       authn_request_bundle || service_provider.metadata[:attribute_bundle] || []
     ).map(&:to_sym)
   end
 
-  def authn_request_bundle
-    SamlRequestParser.new(authn_request).requested_attributes
+  def requested_ial_authn_context
+    FederatedProtocols::Saml.new(authn_request).requested_ial_authn_context
   end
 
-  def authn_context
-    authn_request.requested_ial_authn_context
+  def requested_aal_authn_context
+    FederatedProtocols::Saml.new(authn_request).aal
+  end
+
+  def authn_request_bundle
+    SamlRequestParser.new(authn_request).requested_attributes
   end
 
   def x509_data

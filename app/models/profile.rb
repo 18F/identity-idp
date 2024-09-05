@@ -302,6 +302,10 @@ class Profile < ApplicationRecord
     values.join(':')
   end
 
+  def profile_age_in_seconds
+    (Time.zone.now - created_at).round
+  end
+
   private
 
   def confirm_that_profile_can_be_activated!

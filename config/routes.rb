@@ -198,6 +198,10 @@ Rails.application.routes.draw do
 
     get '/account' => 'accounts#show'
     get '/account/connected_accounts' => 'accounts/connected_accounts#show'
+    get '/account/connected_accounts/:identity_id/selected_email' => 'accounts/connected_accounts/selected_email#edit',
+        as: :edit_connected_account_selected_email
+    patch '/account/connected_accounts/:identity_id/selected_email' => 'accounts/connected_accounts/selected_email#update',
+          as: :connected_account_selected_email
     post '/account/reauthentication' => 'accounts#reauthentication'
     get '/account/devices/:id/events' => 'events#show', as: :account_events
     get '/account/delete' => 'users/delete#show', as: :account_delete
@@ -304,6 +308,8 @@ Rails.application.routes.draw do
     get '/sign_up/enter_email' => 'sign_up/registrations#new', as: :sign_up_email
     post '/sign_up/enter_email' => 'sign_up/registrations#create', as: :sign_up_register
     get '/sign_up/enter_password' => 'sign_up/passwords#new'
+    get '/sign_up/select_email' => 'sign_up/select_email#show'
+    post '/sign_up/select_email' => 'sign_up/select_email#create'
     get '/sign_up/verify_email' => 'sign_up/emails#show', as: :sign_up_verify_email
     get '/sign_up/completed' => 'sign_up/completions#show', as: :sign_up_completed
     post '/sign_up/completed' => 'sign_up/completions#update'

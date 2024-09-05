@@ -54,7 +54,7 @@ class OpenidConnectUserInfoPresenter
   end
 
   def email_from_sp_identity
-    email_context.last_sign_in_email_address.email
+    identity.email_address&.email || email_context.last_sign_in_email_address.email
   end
 
   def all_emails_from_sp_identity(identity)

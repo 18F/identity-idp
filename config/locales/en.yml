@@ -38,8 +38,10 @@ account_reset.request.info:
 account_reset.request.no_cancel: Cancel
 account_reset.request.title: Account deletion and reset
 account_reset.request.yes_continue: Yes, continue deletion
-account.connected_apps.associated: Connected %{timestamp}
+account.connected_apps.associated_attributes_html: 'Connected %{timestamp_html} with:'
+account.connected_apps.associated_html: Connected %{timestamp_html}
 account.connected_apps.description: With your %{app_name} account, you can securely connect to multiple government accounts online. Below is a list of all the accounts you currently have connected.
+account.connected_apps.email_not_selected: Email not yet selected
 account.email_language.default: '%{language} (default)'
 account.email_language.edit_title: Edit email language preference
 account.email_language.languages_list: You will receive emails from %{app_name} in the language you choose.
@@ -692,6 +694,7 @@ doc_auth.tips.review_issues_id_text1: Did you use a dark background?
 doc_auth.tips.review_issues_id_text2: Did you take the photo on a flat surface?
 doc_auth.tips.review_issues_id_text3: Is the flash on your camera off?
 doc_auth.tips.review_issues_id_text4: Are all details sharp and clearly visible?
+email_address.not_found: 'Email not found'
 email_addresses.add.duplicate: This email address is already registered to your account.
 email_addresses.add.limit: You’ve added the maximum number of email addresses.
 email_addresses.delete.bullet1: You won’t be able to sign in to %{app_name} (or any of the government applications linked to your account) using this email address
@@ -958,6 +961,7 @@ headings.webauthn_setup.new: Insert your security key
 help_text.requested_attributes.address: Address
 help_text.requested_attributes.all_emails: Email addresses on your account
 help_text.requested_attributes.birthdate: Date of birth
+help_text.requested_attributes.change_email_link: Change
 help_text.requested_attributes.consent_reminder_html: You must consent each year to share your information with %{sp_html}.
 help_text.requested_attributes.email: Email address
 help_text.requested_attributes.full_name: Full name
@@ -968,6 +972,7 @@ help_text.requested_attributes.social_security_number: Social Security number
 help_text.requested_attributes.verified_at: Updated on
 help_text.requested_attributes.x509_issuer: PIV/CAC Issuer
 help_text.requested_attributes.x509_subject: PIV/CAC Identity
+help_text.select_preferred_email: You may change which email you share with %{sp} since you have multiple emails associated with your %{app_name} account.
 i18n.language: Language
 i18n.locale.en: English
 i18n.locale.es: Español
@@ -1604,6 +1609,7 @@ titles.reactivate_account: Reactivate your account
 titles.registrations.new: Create your account
 titles.revoke_consent: Revoke Consent
 titles.rules_of_use: Rules of Use
+titles.select_email: Select your preferred email
 titles.sign_up.completion_consent_expired_ial1: It’s been a year since you gave us consent to share your information
 titles.sign_up.completion_consent_expired_ial2: It’s been a year since you gave us consent to share your verified identity
 titles.sign_up.completion_first_sign_in: Continue to %{sp}

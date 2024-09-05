@@ -146,7 +146,7 @@ class SamlIdpController < ApplicationController
     analytics.saml_auth_request(
       requested_ial: requested_ial,
       authn_context: saml_request&.requested_authn_contexts,
-      requested_aal_authn_context: saml_request&.requested_aal_authn_context,
+      requested_aal_authn_context: FederatedProtocols::Saml.new(saml_request).aal,
       requested_vtr_authn_contexts: saml_request&.requested_vtr_authn_contexts.presence,
       force_authn: saml_request&.force_authn?,
       final_auth_request: sp_session[:final_auth_request],
@@ -156,11 +156,13 @@ class SamlIdpController < ApplicationController
   end
 
   def requested_ial
-    requested_ial_acr = FederatedProtocols::Saml.new(saml_request).ial
-    requested_ial_component = Vot::AcrComponentValues.by_name[requested_ial_acr]
-    return 'ialmax' if requested_ial_component&.requirements&.include?(:ialmax)
-
-    saml_request&.requested_ial_authn_context || 'none'
+    saml_protocol = FederatedProtocols::Saml.new(saml_request)
+    requested_ial_acr = saml_protocol.ial
+    if requested_ial_acr == ::Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF
+      return 'ialmax'
+    else
+      saml_protocol.requested_ial_authn_context.presence || 'none'
+    end
   end
 
   def handle_successful_handoff

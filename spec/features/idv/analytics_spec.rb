@@ -14,8 +14,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
     { client: nil,
       errors: {},
       exception: nil,
-      response_body: { first_name: '[redacted]',
-                       "fraudpoint.score": '500',
+      response_body: { "fraudpoint.score": '500',
                        request_id: '1234',
                        request_result: 'success',
                        review_status: 'pass',
@@ -982,9 +981,6 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
 
   context 'Happy selfie path' do
     before do
-      allow_any_instance_of(FederatedProtocols::Oidc).
-        to receive(:biometric_comparison_required?).
-        and_return(true)
       allow_any_instance_of(DocAuth::Response).to receive(:selfie_status).and_return(:success)
 
       perform_in_browser(:desktop) do

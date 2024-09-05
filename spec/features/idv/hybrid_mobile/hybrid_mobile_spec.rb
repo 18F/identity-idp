@@ -68,7 +68,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start, allowed_extra_analyti
       attach_and_submit_images
 
       expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
-      expect(page).to have_content(t('doc_auth.headings.capture_complete').tr(' ', ' '))
+      expect(page).to have_content(strip_nbsp(t('doc_auth.headings.capture_complete')))
       expect(page).to have_text(t('doc_auth.instructions.switch_back'))
       expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
 
@@ -161,7 +161,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start, allowed_extra_analyti
         submit_images
 
         expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
-        expect(page).to have_content(t('doc_auth.headings.capture_complete').tr(' ', ' '))
+        expect(page).to have_content(strip_nbsp(t('doc_auth.headings.capture_complete')))
         expect(page).to have_text(t('doc_auth.instructions.switch_back'))
         expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
 
@@ -275,7 +275,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start, allowed_extra_analyti
         attach_and_submit_images
 
         expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
-        expect(page).not_to have_content(t('doc_auth.headings.capture_complete').tr(' ', ' '))
+        expect(page).not_to have_content(strip_nbsp(t('doc_auth.headings.capture_complete')))
         expect(page).to have_text(t('doc_auth.instructions.switch_back'))
       end
 
@@ -308,7 +308,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start, allowed_extra_analyti
         click_idv_continue
 
         expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
-        expect(page).to have_content(t('doc_auth.headings.capture_complete').tr(' ', ' '))
+        expect(page).to have_content(strip_nbsp(t('doc_auth.headings.capture_complete')))
         expect(page).to have_text(t('doc_auth.instructions.switch_back'))
       end
 
@@ -362,10 +362,6 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start, allowed_extra_analyti
   end
 
   context 'barcode read error on desktop, redo document capture on mobile' do
-    before do
-      allow_any_instance_of(FederatedProtocols::Oidc).
-        to receive(:biometric_comparison_required?).and_return(true)
-    end
     it 'continues to ssn on desktop when user selects Continue', js: true do
       user = nil
 
