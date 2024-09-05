@@ -18,13 +18,6 @@ GIT
       rails (>= 6.1)
 
 GIT
-  remote: https://github.com/18F/identity-validations.git
-  revision: 21aa405b0ad413b88eecf30227132a2b8d6d6835
-  tag: v0.7.2
-  specs:
-    identity_validations (0.7.2)
-
-GIT
   remote: https://github.com/18F/redis-session-store.git
   revision: 9e3f8a22a1b5d1e835e5cba20c51e38b8965b836
   tag: v1.0.1-18f
@@ -44,6 +37,14 @@ GIT
       faraday
       nokogiri (>= 1.10.2)
       pkcs11
+
+GIT
+  remote: https://github.com/18f/identity-validations.git
+  revision: 614647f1eb8851780caaece7aa0cf33b3d959d94
+  branch: hmm/more-composable-validations
+  specs:
+    identity_validations (1.0)
+      activemodel (~> 7.1.3)
 
 GIT
   remote: https://github.com/hallelujah/valid_email.git

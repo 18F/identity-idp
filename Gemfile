@@ -38,7 +38,9 @@ gem 'good_job', '~> 3.0'
 gem 'http_accept_language'
 gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v4.0.0'
 gem 'identity-logging', github: '18F/identity-logging', tag: 'v0.1.1'
-gem 'identity_validations', github: '18F/identity-validations', tag: 'v0.7.2'
+gem 'identity_validations',
+    git: 'https://github.com/18f/identity-validations.git',
+    branch: 'hmm/more-composable-validations'
 gem 'jsbundling-rails', '~> 1.1.2'
 gem 'jwe'
 gem 'jwt'
