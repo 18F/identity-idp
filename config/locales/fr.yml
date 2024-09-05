@@ -38,8 +38,10 @@ account_reset.request.info:
 account_reset.request.no_cancel: Annuler
 account_reset.request.title: Suppression et réinitialisation de compte
 account_reset.request.yes_continue: Oui, continuer la suppression
+account.connected_apps.associated_attributes_html: 'Connecté %{timestamp_html} avec :'
 account.connected_apps.associated_html: Connecté %{timestamp_html}
 account.connected_apps.description: Avec votre compte %{app_name}, vous pouvez vous connecter en toute sécurité à plusieurs comptes de l’administration en ligne. Vous trouverez ci-dessous une liste de tous vos comptes actuellement connectés.
+account.connected_apps.email_not_selected: Email not yet selected
 account.email_language.default: '%{language} (par défaut)'
 account.email_language.edit_title: Modifier la langue dans laquelle vous préférez recevoir les e-mails
 account.email_language.languages_list: Vous recevrez des e-mails de %{app_name} dans la langue de votre choix.
@@ -692,6 +694,7 @@ doc_auth.tips.review_issues_id_text1: Avez-vous utilisé un arrière-plan de cou
 doc_auth.tips.review_issues_id_text2: Avez-vous pris la photo sur une surface plane ?
 doc_auth.tips.review_issues_id_text3: Le flash de votre appareil photo est-il éteint ?
 doc_auth.tips.review_issues_id_text4: Tous les détails sont-ils nets et clairement visibles ?
+email_address.not_found: Email non trouvé
 email_addresses.add.duplicate: Cette adresse e-mail est déjà enregistrée sur votre compte.
 email_addresses.add.limit: Vous avez ajouté le nombre maximum d’adresses e-mail.
 email_addresses.delete.bullet1: Vous ne pourrez pas vous connecter à %{app_name} (ni à aucune des applications de l’administration associées à votre compte) à l’aide de cette adresse e-mail
@@ -958,6 +961,7 @@ headings.webauthn_setup.new: Insérer votre clé de sécurité
 help_text.requested_attributes.address: Adresse
 help_text.requested_attributes.all_emails: Adresses e-mail sur votre compte
 help_text.requested_attributes.birthdate: Date de naissance
+help_text.requested_attributes.change_email_link: Modifier
 help_text.requested_attributes.consent_reminder_html: Vous devez consentir chaque année au partage de vos informations avec %{sp_html}.
 help_text.requested_attributes.email: Adresse e-mail
 help_text.requested_attributes.full_name: Nom complet
@@ -968,6 +972,7 @@ help_text.requested_attributes.social_security_number: Numéro de sécurité soc
 help_text.requested_attributes.verified_at: Mis à jour le
 help_text.requested_attributes.x509_issuer: Émetteur PIV/CAC
 help_text.requested_attributes.x509_subject: Identité PIV/CAC
+help_text.select_preferred_email: Vous pouvez modifier l’adresse e-mail que vous partagez avec %{sp} car vous possédez plusieurs adresses e-mail associées à votre compte %{app_name}.
 i18n.language: Langue
 i18n.locale.en: English
 i18n.locale.es: Español
@@ -1604,6 +1609,7 @@ titles.reactivate_account: Réactiver votre compte
 titles.registrations.new: Créer votre compte
 titles.revoke_consent: Révoquer le consentement
 titles.rules_of_use: Règles d’utilisation
+titles.select_email: Sélectionner l’adresse e-mail de votre choix
 titles.sign_up.completion_consent_expired_ial1: Cela fait un an que vous nous avez donné votre consentement pour partager vos informations
 titles.sign_up.completion_consent_expired_ial2: Cela fait un an que vous nous avez donné votre consentement pour partager votre identité vérifiée
 titles.sign_up.completion_first_sign_in: Continuer vers %{sp}

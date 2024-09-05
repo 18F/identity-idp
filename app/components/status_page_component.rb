@@ -12,6 +12,7 @@ class StatusPageComponent < BaseComponent
     ButtonComponent.new(**button_options, big: true, wide: true)
   end
   renders_one :troubleshooting_options, TroubleshootingOptionsComponent
+  renders_one :footer, PageFooterComponent
 
   attr_reader :status, :icon
 

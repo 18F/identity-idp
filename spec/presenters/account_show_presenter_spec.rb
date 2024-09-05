@@ -348,6 +348,22 @@ RSpec.describe AccountShowPresenter do
     end
   end
 
+  describe '#connected_apps' do
+    let(:user) { create(:user, identities: [create(:service_provider_identity)]) }
+    subject(:connected_apps) { presenter.connected_apps }
+
+    it 'delegates to user, eager-loading view-specific relations' do
+      expect(connected_apps).to be_present.
+        and eq(user.connected_apps).
+        and all(
+          satisfy do |app|
+            app.association(:service_provider_record).loaded? &&
+              app.association(:email_address).loaded?
+          end,
+        )
+    end
+  end
+
   describe '#backup_codes_generated_at' do
     it 'returns the created_at date of the oldest backup code' do
       user = create(:user)

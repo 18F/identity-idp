@@ -35,10 +35,12 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
 
       expect(page).to have_css(
         '[role="status"]',
-        text: t(
-          'doc_auth.headings.capture_scan_warning_html',
-          link_html: warning_link_text,
-        ).tr(' ', ' '),
+        text: strip_nbsp(
+          t(
+            'doc_auth.headings.capture_scan_warning_html',
+            link_html: warning_link_text,
+          ),
+        ),
       )
       click_link warning_link_text
 
@@ -86,10 +88,12 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
 
         expect(page).to have_css(
           '[role="status"]',
-          text: t(
-            'doc_auth.headings.capture_scan_warning_html',
-            link_html: warning_link_text,
-          ).tr(' ', ' '),
+          text: strip_nbsp(
+            t(
+              'doc_auth.headings.capture_scan_warning_html',
+              link_html: warning_link_text,
+            ),
+          ),
         )
         click_link warning_link_text
 

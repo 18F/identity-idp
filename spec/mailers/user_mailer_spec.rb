@@ -517,15 +517,11 @@ RSpec.describe UserMailer, type: :mailer do
   end
 
   describe '#account_verified' do
-    disavowal_token = 'i_am_disavowal_token'
     let(:sp_name) { '' }
     let(:date_time) { Time.zone.now }
     let(:mail) do
       UserMailer.with(user: user, email_address: email_address).
-        account_verified(
-          date_time: date_time, sp_name: sp_name,
-          disavowal_token: disavowal_token
-        )
+        account_verified(date_time: date_time, sp_name: sp_name)
     end
 
     it_behaves_like 'a system email'

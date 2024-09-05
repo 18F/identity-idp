@@ -169,6 +169,7 @@ RSpec.describe ActionAccount do
           'Fraud: Profile review rejected',
           success: true,
           profile_fraud_review_pending_at: profile_fraud_review_pending_at,
+          profile_age_in_seconds: instance_of(Integer),
         )
         expect(analytics).to have_logged_event(
           'Fraud: Profile review rejected',
@@ -223,6 +224,7 @@ RSpec.describe ActionAccount do
           'Fraud: Profile review passed',
           success: true,
           profile_fraud_review_pending_at: profile_fraud_review_pending_at,
+          profile_age_in_seconds: instance_of(Integer),
         )
         expect(analytics).to have_logged_event(
           'Fraud: Profile review passed',

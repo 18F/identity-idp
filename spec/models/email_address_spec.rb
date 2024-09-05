@@ -143,6 +143,24 @@ RSpec.describe EmailAddress do
     end
   end
 
+  describe 'destruction' do
+    let(:user) { create(:user) }
+    let(:email) { 'jd@example.com' }
+    let(:email_address) { create(:email_address, email: email) }
+
+    it 'removes associated identity email address id' do
+      user.identities << ServiceProviderIdentity.create(
+        service_provider: 'http://localhost:3000',
+        last_authenticated_at: Time.zone.now,
+        email_address_id: user.email_addresses.last.id,
+      )
+
+      user.email_addresses.last.destroy
+
+      expect(user.identities.last.email_address_id).to be(nil)
+    end
+  end
+
   describe '#fed_email?' do
     subject(:result) { email_address.fed_email? }
     let!(:federal_email_domain) { create(:federal_email_domain, name: 'gsa.gov') }

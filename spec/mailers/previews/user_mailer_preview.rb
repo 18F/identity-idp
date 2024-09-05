@@ -147,7 +147,6 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.with(user: user, email_address: email_address_record).account_verified(
       date_time: DateTime.now,
       sp_name: 'Example App',
-      disavowal_token: SecureRandom.hex,
     )
   end
 
