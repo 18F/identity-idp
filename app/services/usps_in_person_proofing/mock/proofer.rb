@@ -13,6 +13,11 @@ module UspsInPersonProofing
           body = JSON.parse(Fixtures.request_enroll_bad_request_response)
           response = { body: body, status: 400 }
           raise Faraday::BadRequestError.new('Bad request error', response)
+        when 'usps sponsor id error'
+          # usps 400 response for Sponsor ID is not External IPP client
+          body = JSON.parse(Fixtures.request_enroll_bad_sponsor_id_request_response)
+          response = { body: body, status: 400 }
+          raise Faraday::BadRequestError.new('Bad request error', response)
         when 'usps server error'
           # usps 500 response
           body = JSON.parse(Fixtures.internal_server_error_response)

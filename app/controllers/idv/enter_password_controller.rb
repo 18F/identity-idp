@@ -6,6 +6,7 @@ module Idv
     include IdvStepConcern
     include StepIndicatorConcern
     include VerifyByMailConcern
+    include IppHelper
 
     before_action :confirm_step_allowed
     before_action :confirm_no_profile_yet
@@ -186,7 +187,7 @@ module Idv
         enrollment_id: err.enrollment_id,
         exception_class: err.class.to_s,
         original_exception_class: err.exception_class,
-        exception_message: err.message,
+        exception_message: scrub_message(err.message),
         reason: 'Request exception',
       )
       flash[:error] = t('idv.failure.exceptions.internal_error')

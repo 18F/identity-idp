@@ -488,7 +488,37 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
               context: 'authentication',
               enrollment_id: enrollment.id,
               exception_class: 'UspsInPersonProofing::Exception::RequestEnrollException',
-              exception_message: 'Sponsor for sponsorID 5 not found',
+              exception_message: 'Sponsor for sponsorID [FILTERED] not found',
+              original_exception_class: 'Faraday::BadRequestError',
+              reason: 'Request exception',
+            )
+          end
+
+          it 'leaves the enrollment in establishing' do
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+            expect(InPersonEnrollment.count).to be(1)
+            enrollment = InPersonEnrollment.where(user_id: user.id).first
+            expect(enrollment.status).to eq(InPersonEnrollment::STATUS_ESTABLISHING)
+            expect(enrollment.user_id).to eq(user.id)
+            expect(enrollment.enrollment_code).to be_nil
+          end
+        end
+
+        context 'when there is a 4xx error for a bad sponsor id' do
+          before do
+            stub_request_enroll_bad_sponsor_id_request_response
+          end
+
+          it 'logs the response message' do
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+            expect(@analytics).to have_logged_event(
+              'USPS IPPaaS enrollment failed',
+              context: 'authentication',
+              enrollment_id: enrollment.id,
+              exception_class: 'UspsInPersonProofing::Exception::RequestEnrollException',
+              exception_message: 'sponsorID [FILTERED] is not registered as an IPP client',
               original_exception_class: 'Faraday::BadRequestError',
               reason: 'Request exception',
             )
@@ -587,7 +617,7 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
                 context: 'authentication',
                 enrollment_id: enrollment.id,
                 exception_class: 'UspsInPersonProofing::Exception::RequestEnrollException',
-                exception_message: 'Sponsor for sponsorID 5 not found',
+                exception_message: 'Sponsor for sponsorID [FILTERED] not found',
                 original_exception_class: 'Faraday::BadRequestError',
                 reason: 'Request exception',
               )
