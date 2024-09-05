@@ -10,6 +10,7 @@ module Users
     include ForcedReauthenticationConcern
     include NewDeviceConcern
     include AbTestingConcern
+    include RecaptchaConcern
 
     rescue_from ActionController::InvalidAuthenticityToken, with: :redirect_to_signin
 
@@ -18,6 +19,9 @@ module Users
     before_action :check_user_needs_redirect, only: [:new]
     before_action :apply_secure_headers_override, only: [:new, :create]
     before_action :clear_session_bad_password_count_if_window_expired, only: [:create]
+    before_action :allow_csp_recaptcha_src, if: :recaptcha_enabled?
+
+    after_action :add_recaptcha_resource_hints, if: :recaptcha_enabled?
 
     def new
       override_csp_for_google_analytics
@@ -110,6 +114,10 @@ module Users
         ab_test_bucket: ab_test_bucket(:RECAPTCHA_SIGN_IN, user: user_from_params),
         **recaptcha_form_args,
       )
+    end
+
+    def recaptcha_enabled?
+      FeatureManagement.sign_in_recaptcha_enabled?
     end
 
     def captcha_validation_performed?
