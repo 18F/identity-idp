@@ -39,7 +39,16 @@ class AbTest
   # @params [Hash] session
   # @param [User] user
   # @param [Hash] user_session
-  def bucket(request:, service_provider:, session:, user:, user_session:)
+  # @param [Boolean] persisted_read_only Avoid new bucket assignment if test is configured to be
+  # persisted but there is no persisted value.
+  def bucket(
+    request:,
+    service_provider:,
+    session:,
+    user:,
+    user_session:,
+    persisted_read_only: false
+  )
     return nil if no_percentages?
 
     discriminator = resolve_discriminator(
@@ -49,7 +58,7 @@ class AbTest
     return nil if discriminator.blank?
 
     persisted_value = AbTestAssignment.bucket(experiment:, discriminator:) if persist
-    return persisted_value if persisted_value
+    return persisted_value if persisted_value || (persist && persisted_read_only)
 
     user_value = percent(discriminator)
 
