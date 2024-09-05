@@ -1813,17 +1813,17 @@ user_mailer.account_reset_request.cancel: '¿No desea eliminar su cuenta? Inicie
 user_mailer.account_reset_request.header: Su cuenta será eliminada en %{interval}
 user_mailer.account_reset_request.intro_html: 'Como medida de seguridad, %{app_name} requiere un proceso de dos pasos para eliminar su cuenta:<br><br> Paso uno: Hay un período de espera de %{waiting_period} si perdió el acceso a sus métodos de autenticación y necesita eliminar su cuenta. Si encuentra sus métodos de autenticación, puede iniciar sesión en su cuenta %{app_name} para cancelar esta solicitud.<br><br> Paso dos: Tras el período de espera de %{waiting_period}, recibirás un correo electrónico en el que te pediremos que confirmes la eliminación de tu cuenta %{app_name}. Tu cuenta no se eliminará hasta que lo confirmes.'
 user_mailer.account_reset_request.subject: Cómo eliminar su cuenta de %{app_name}
+user_mailer.account_verified_but_not_connected.change_password_link: cambiar su contraseña
+user_mailer.account_verified_but_not_connected.contact_link: contacte con nosotros
+user_mailer.account_verified_but_not_connected.help_html: Si usted no efectuó esta acción, %{contact_link_html} e inicie sesión para %{change_password_link_html}.
+user_mailer.account_verified_but_not_connected.instructions_html: Vuelva a iniciar sesión en el sitio web de <strong>%{sp_name}</strong> para conectar su información verificada y acceder a los servicios.
+user_mailer.account_verified_but_not_connected.intro: Usted verificó su identidad con %{app_name} el %{date}.
+user_mailer.account_verified_but_not_connected.subject: '[Acción requerida] Conecte su información a %{sp_name}'
 user_mailer.account_verified.change_password_link: cambiar su contraseña
 user_mailer.account_verified.contact_link: contacte con nosotros
 user_mailer.account_verified.help_html: Si usted no efectuó esta acción, %{contact_link_html} e inicie sesión para %{change_password_link_html}.
 user_mailer.account_verified.intro_html: El %{date}, usted usó %{app_name} para:<ul><li>Verificar su identidad</li><li>Conectar su información verificada a %{sp_name}</li></ul>
 user_mailer.account_verified.subject: Usted verificó su identidad para %{sp_name}
-user_mailer.account_verified_but_not_connected.change_password_link: cambiar su contraseña
-user_mailer.account_verified_but_not_connected.contact_link: contacte con nosotros
-user_mailer.account_verified_but_not_connected.help_html: Si usted no efectuó esta acción, %{contact_link_html} e inicie sesión para %{change_password_link_html}.
-user_mailer.account_verified_but_not_connected.instructions_html: Vuelva a iniciar sesión en el sitio web de <strong>%{sp_name}</strong> para conectar su información verificada y acceder a los servicios.
-user_mailer.account_verified_but_not_connected.intro:  Usted verificó su identidad con %{app_name} el %{date}.
-user_mailer.account_verified_but_not_connected.subject: '[Acción requerida] Conecte su información a %{sp_name}'
 user_mailer.add_email_associated_with_another_account.help_html: Si no solicitó un nuevo correo electrónico o sospecha que hubo un error, visite %{help_link_html} de %{app_name_html} o %{contact_link_html}.
 user_mailer.add_email_associated_with_another_account.intro_html: Esta dirección de correo electrónico ya está asociada con una cuenta de %{app_name_html}, por lo que no podemos agregarla a otra cuenta. Primero, debe eliminarla o quitarla de la cuenta con la que está asociada. Para hacerlo, siga este vínculo e inicie sesión con esta dirección de correo electrónico. Si no está intentando agregar esta dirección de correo electrónico a una cuenta, puede ignorar este mensaje.
 user_mailer.add_email_associated_with_another_account.link_text: Ir a %{app_name}
