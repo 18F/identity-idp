@@ -34,6 +34,7 @@ production:
   log_to_stdout: true
   ruby_workers_idv_enabled: false
   idv_sp_required: false
+  sign_in_recaptcha_percent_tested: 50
   telephony_adapter: test
   doc_auth_vendor: 'mock'
   usps_auth_token_refresh_job_enabled: false
