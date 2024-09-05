@@ -3,7 +3,8 @@
 class AbTest
   include ::NewRelic::Agent::MethodTracer
 
-  attr_reader :buckets, :experiment_name, :default_bucket, :should_log, :report
+  attr_reader :buckets, :experiment_name, :default_bucket, :should_log, :report, :persist
+  alias_method :experiment, :experiment_name
 
   MAX_SHA = (16 ** 64) - 1
 
@@ -30,6 +31,7 @@ class AbTest
     should_log: nil,
     default_bucket: :default,
     report: nil,
+    persist: false,
     &discriminator
   )
     @buckets = buckets
@@ -38,6 +40,7 @@ class AbTest
     @default_bucket = default_bucket
     @should_log = should_log
     @report = ReportConfig.new(experiment_name:, **report.to_h) if report
+    @persist = persist
     raise 'invalid bucket data structure' unless valid_bucket_data_structure?
     ensure_numeric_percentages
     raise 'bucket percentages exceed 100' unless within_100_percent?
@@ -50,7 +53,16 @@ class AbTest
   # @param [Hash] session
   # @param [User] user
   # @param [Hash] user_session
-  def bucket(request:, service_provider:, session:, user:, user_session:)
+  # @param [Boolean] persisted_read_only Avoid new bucket assignment if test is configured to be
+  # persisted but there is no persisted value.
+  def bucket(
+    request:,
+    service_provider:,
+    session:,
+    user:,
+    user_session:,
+    persisted_read_only: false
+  )
     return nil if !active?
 
     discriminator = resolve_discriminator(
@@ -59,16 +71,26 @@ class AbTest
     )
     return nil if discriminator.blank?
 
+    persisted_value = AbTestAssignment.bucket(experiment:, discriminator:) if persist
+    return persisted_value if persisted_value || (persist && persisted_read_only)
+
     user_value = percent(discriminator)
+
+    bucket = @default_bucket
 
     min = 0
     buckets.keys.each do |key|
       max = min + buckets[key]
-      return key if user_value > min && user_value <= max
+      if user_value > min && user_value <= max
+        bucket = key
+        break
+      end
       min = max
     end
 
-    @default_bucket
+    AbTestAssignment.create(experiment:, discriminator:, bucket:) if persist
+
+    bucket
   end
 
   def include_in_analytics_event?(event_name)

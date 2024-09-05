@@ -35,17 +35,10 @@ RSpec.describe AbTest do
 
   let(:user_session) { {} }
 
-  let(:bucket) do
-    ab_test.bucket(
-      request:,
-      service_provider:,
-      session:,
-      user:,
-      user_session:,
-    )
-  end
-
   describe '#bucket' do
+    subject(:bucket) { ab_test.bucket(**bucket_options) }
+    let(:bucket_options) { { request:, service_provider:, session:, user:, user_session: } }
+
     it 'divides random uuids into the buckets with no automatic default' do
       results = {}
       1000.times do
@@ -161,6 +154,45 @@ RSpec.describe AbTest do
 
       it 'raises a RuntimeError' do
         expect { ab_test }.to raise_error(RuntimeError, 'invalid bucket data structure')
+      end
+    end
+
+    context 'with persisted ab test' do
+      let(:user) { create(:user) }
+      let(:discriminator) { nil }
+      let(:options) { super().merge(persist: true) }
+
+      context 'without existing assignment' do
+        it 'creates and returns new assignment' do
+          expect { bucket }.to change { AbTestAssignment.count }.by(1)
+          expect(bucket).to be_kind_of(Symbol)
+        end
+
+        context 'with persisted_read_only option' do
+          let(:bucket_options) { super().merge(persisted_read_only: true) }
+
+          it { is_expected.to be_nil }
+
+          it 'does not create a new assignment' do
+            expect { bucket }.not_to change { AbTestAssignment.count }
+          end
+        end
+      end
+
+      context 'with existing assignment' do
+        before do
+          create(
+            :ab_test_assignment,
+            experiment: ab_test.experiment,
+            discriminator: user.uuid,
+            bucket: 'foo',
+          )
+        end
+
+        it 'returns existing assignment without creating new' do
+          expect { bucket }.not_to change { AbTestAssignment.count }
+          expect(bucket).to eq(:foo)
+        end
       end
     end
   end

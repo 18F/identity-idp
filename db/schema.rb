@@ -10,11 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_01_06_232958) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_07_144037) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
+
+  create_table "ab_test_assignments", force: :cascade do |t|
+    t.string "experiment", null: false
+    t.string "discriminator", null: false
+    t.string "bucket", null: false
+    t.index ["experiment", "discriminator"], name: "index_ab_test_assignments_on_experiment_and_discriminator", unique: true
+  end
 
   create_table "account_reset_requests", force: :cascade do |t|
     t.integer "user_id", null: false, comment: "sensitive=false"
