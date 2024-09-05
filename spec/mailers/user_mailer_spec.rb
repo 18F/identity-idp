@@ -557,7 +557,10 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     it 'renders the subject' do
-      expect(mail.subject).to eq t('user_mailer.account_verified.subject', sp_name: sp_name)
+      expect(mail.subject).to eq t(
+        'user_mailer.account_verified_but_not_connected.subject',
+        sp_name: sp_name,
+      )
     end
 
     it 'links to the forgot password page' do
