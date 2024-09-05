@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import {
   FormStepComponentProps,
@@ -16,7 +16,6 @@ import {
   DocumentsAndSelfieStepValue,
 } from '../interface/documents-image-selfie-value';
 import { DeviceContext, SelfieCaptureContext, UploadContext } from '../context';
-import { useFormChangeCompletion } from '../hooks/use-form-change-completion';
 
 export function DocumentCaptureSubheaderOne({
   isSelfieCaptureEnabled,
@@ -42,10 +41,12 @@ export default function DocumentsAndSelfieStep({
 }: FormStepComponentProps<DocumentsAndSelfieStepValue>) {
   const { t } = useI18n();
   const { isMobile } = useContext(DeviceContext);
-  const { isLastStep } = useContext(FormStepsContext);
+  const { isLastStep, changeStepCanComplete } = useContext(FormStepsContext);
   const { flowPath } = useContext(UploadContext);
   const { isSelfieCaptureEnabled, docAuthSeparatePagesEnabled } = useContext(SelfieCaptureContext);
-  useFormChangeCompletion({ isSelfieCaptureEnabled, docAuthSeparatePagesEnabled });
+  useEffect(() => {
+    changeStepCanComplete(!(isSelfieCaptureEnabled && docAuthSeparatePagesEnabled));
+  }, [isSelfieCaptureEnabled, docAuthSeparatePagesEnabled, isLastStep, FormStepsContext]);
   const pageHeaderText = isSelfieCaptureEnabled
     ? t('doc_auth.headings.document_capture_with_selfie')
     : t('doc_auth.headings.document_capture');
