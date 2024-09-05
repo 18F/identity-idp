@@ -385,7 +385,6 @@ RSpec.describe Idv::ImageUploadsController do
           birth_year: 1938,
           zip_code: '59010',
           issue_year: 2019,
-          selfie_attempts: 0,
         )
 
         expect(@analytics).to have_logged_event(
@@ -512,7 +511,6 @@ RSpec.describe Idv::ImageUploadsController do
               selfie_quality_good: true,
               birth_year: 1938,
               zip_code: '12345',
-              selfie_attempts: 0,
             )
 
             expect(@analytics).to have_logged_event(
@@ -592,7 +590,6 @@ RSpec.describe Idv::ImageUploadsController do
               selfie_quality_good: true,
               birth_year: 1938,
               zip_code: '12345',
-              selfie_attempts: 0,
             )
 
             expect(@analytics).to have_logged_event(
@@ -672,7 +669,6 @@ RSpec.describe Idv::ImageUploadsController do
               selfie_quality_good: true,
               birth_year: 1938,
               zip_code: '12345',
-              selfie_attempts: 0,
             )
 
             expect(@analytics).to have_logged_event(
@@ -748,7 +744,6 @@ RSpec.describe Idv::ImageUploadsController do
               selfie_live: true,
               selfie_quality_good: true,
               zip_code: '12345',
-              selfie_attempts: 0,
             )
 
             expect(@analytics).to have_logged_event(
@@ -825,7 +820,6 @@ RSpec.describe Idv::ImageUploadsController do
               selfie_quality_good: true,
               birth_year: 1938,
               zip_code: '12345',
-              selfie_attempts: 0,
             )
 
             expect(@analytics).to have_logged_event(
@@ -924,7 +918,6 @@ RSpec.describe Idv::ImageUploadsController do
           liveness_checking_required: boolean,
           selfie_live: true,
           selfie_quality_good: true,
-          selfie_attempts: 0,
         )
 
         expect_funnel_update_counts(user, 1)
@@ -997,7 +990,6 @@ RSpec.describe Idv::ImageUploadsController do
           selfie_live: boolean,
           selfie_quality_good: boolean,
           workflow: an_instance_of(String),
-          selfie_attempts: 0,
         )
 
         expect_funnel_update_counts(user, 1)
