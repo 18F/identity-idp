@@ -66,7 +66,7 @@ module Idv
       if hybrid_session?
         cancel_document_capture_session
       else
-        cancel_in_person_enrollment_if_exists
+        cancel_establishing_in_person_enrollments
         idv_session = user_session[:idv]
         idv_session&.clear
         user_session['idv/in_person'] = {}
@@ -113,9 +113,8 @@ module Idv
       end
     end
 
-    def cancel_in_person_enrollment_if_exists
+    def cancel_establishing_in_person_enrollments
       return if !IdentityConfig.store.in_person_proofing_enabled
-      current_user.pending_in_person_enrollment&.update(status: :cancelled)
       UspsInPersonProofing::EnrollmentHelper.
         cancel_stale_establishing_enrollments_for_user(current_user)
     end

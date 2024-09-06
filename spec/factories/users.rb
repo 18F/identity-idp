@@ -220,6 +220,12 @@ FactoryBot.define do
       end
     end
 
+    trait :with_establishing_in_person_enrollment do
+      after :build do |user|
+        create(:in_person_enrollment, :establishing, user: user)
+      end
+    end
+
     trait :with_pending_gpo_profile do
       transient do
         code_sent_at { created_at }
