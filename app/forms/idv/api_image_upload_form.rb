@@ -380,7 +380,7 @@ module Idv
     def acuant_sdk_upgrade_ab_test_data
       {
         acuant_sdk_upgrade_ab_test_bucket:,
-      }.compact
+      }
     end
 
     def acuant_sdk_captured?
