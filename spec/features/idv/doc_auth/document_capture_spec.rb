@@ -10,7 +10,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
   let(:fake_analytics) { FakeAnalytics.new }
 
   before(:each) do
-    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+    stub_analytics
     allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return(@sp_name)
   end
 
