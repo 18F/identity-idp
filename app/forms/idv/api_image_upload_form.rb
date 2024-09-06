@@ -209,7 +209,7 @@ module Idv
       return {} if document_capture_session.nil? || !liveness_checking_required
 
       captured_result = document_capture_session&.load_result
-      processed_selfie_count = (selfie_image_fingerprint ? 1 : 0)
+      processed_selfie_count = selfie_image_fingerprint ? 1 : 0
       past_selfie_count = (captured_result&.failed_selfie_image_fingerprints || []).length
       { selfie_attempts: past_selfie_count + processed_selfie_count }
     end
