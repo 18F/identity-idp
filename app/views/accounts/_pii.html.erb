@@ -60,7 +60,7 @@
 <% unless locked_for_session %>
   <div class="grid-row bg-base-lightest padding-x-2 padding-y-1 fs-12p">
     <div class="grid-col-12">
-      <%= image_tag asset_url('lock.svg'), width: 8, height: 10, class: 'margin-right-1' %>
+      <%= image_tag asset_url('lock.svg'), width: 8, height: 10, class: 'margin-right-1', alt: '', aria: { hidden: true } %>
       <%= t('account.security.text') %>
     </div>
     <%= link_to t('account.security.link'), help_center_redirect_url %>

@@ -17,6 +17,6 @@ RSpec.describe 'accounts/_webauthn_roaming.html.erb' do
   end
 
   it 'renders a list of roaming authenticators' do
-    expect(rendered).to have_selector('[role="list"] [role="list-item"]', count: 2)
+    expect(rendered).to have_selector('[role="list"] [role="listitem"]', count: 2)
   end
 end
