@@ -6327,14 +6327,6 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks when the user is notified their password is compromised
-  def user_password_compromised_visited(**extra)
-    track_event(
-      :user_password_compromised_visited,
-      **extra,
-    )
-  end
-
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
