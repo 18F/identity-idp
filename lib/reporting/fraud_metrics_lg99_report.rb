@@ -187,7 +187,7 @@ module Reporting
       return 'n/a' if user_data.empty?
 
       difference = user_data.map { |created_at, suspended_at| suspended_at - created_at }
-      (difference.sum / difference.size).seconds.in_days.round(2)
+      (difference.sum / difference.size).seconds.in_days.round(1)
     end
 
     def user_days_proofed_to_suspension_avg
@@ -201,7 +201,7 @@ module Reporting
       return 'n/a' if user_data.empty?
 
       difference = user_data.map { |activated_at, suspended_at| suspended_at - activated_at }
-      (difference.sum / difference.size).seconds.in_days.round(2)
+      (difference.sum / difference.size).seconds.in_days.round(1)
     end
 
     def unique_reinstated_users_count
@@ -216,7 +216,7 @@ module Reporting
       return 'n/a' if user_data.empty?
 
       difference = user_data.map { |suspended_at, reinstated_at| reinstated_at - suspended_at }
-      (difference.sum / difference.size).seconds.in_days.round(2)
+      (difference.sum / difference.size).seconds.in_days.round(1)
     end
   end
 end

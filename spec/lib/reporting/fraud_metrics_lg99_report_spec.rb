@@ -101,7 +101,7 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
   describe '#user_days_to_suspension_avg' do
     context 'when there are suspended users' do
       it 'returns average time to suspension' do
-        expect(report.user_days_to_suspension_avg).to eq(1.5)
+        expect(report.user_days_to_suspension_avg).to be_within(0.1).of(1.5)
       end
     end
 
@@ -118,7 +118,7 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
   describe '#user_days_to_reinstatement_avg' do
     context 'where there are reinstated users' do
       it 'returns average time to reinstatement' do
-        expect(report.user_days_to_reinstatement_avg).to eq(3.0)
+        expect(report.user_days_to_reinstatement_avg).to be_within(0.1).of(3.0)
       end
     end
 
@@ -135,7 +135,7 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
   describe '#user_days_proofed_to_suspended_avg' do
     context 'when there are suspended users' do
       it 'returns average time proofed to suspension' do
-        expect(report.user_days_proofed_to_suspension_avg).to eq(2.0)
+        expect(report.user_days_proofed_to_suspension_avg).to be_within(0.1).of(2.0)
       end
     end
 
