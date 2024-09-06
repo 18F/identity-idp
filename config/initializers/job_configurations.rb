@@ -5,7 +5,6 @@ cron_12m = '0/12 * * * *'
 cron_1h = '0 * * * *'
 cron_24h = '0 0 * * *'
 cron_24h_and_a_bit = '12 0 * * *' # 0000 UTC + 12 min, staggered from whatever else runs at 0000 UTC
-cron_24h_1am = '0 1 * * *' # 1am UTC is 8pm EST/9pm EDT
 gpo_cron_24h = '0 10 * * *' # 10am UTC is 5am EST/6am EDT
 cron_every_monday = 'every Monday at 0:25 UTC' # equivalent to '25 0 * * 1'
 cron_every_monday_1am = 'every Monday at 1:00 UTC' # equivalent to '0 1 * * 1'
@@ -54,14 +53,9 @@ else
         args: -> { [Time.zone.today] },
       },
       # Combined Invoice Supplement Report to S3
-      combined_invoice_supplement_report: {
-        class: 'Reports::CombinedInvoiceSupplementReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
       combined_invoice_supplement_report_v2: {
         class: 'Reports::CombinedInvoiceSupplementReportV2',
-        cron: cron_24h_1am,
+        cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
       agreement_summary_report: {
