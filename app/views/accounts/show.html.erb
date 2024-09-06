@@ -14,12 +14,12 @@
 <% end %>
 
 <% if @presenter.show_idv_partial? %>
-  <div class="margin-bottom-4 card profile-info-box">
+  <div class="card">
     <%= render 'accounts/identity_verification' %>
   </div>
 <% end %>
 
-<div class="margin-bottom-4 card profile-info-box">
+<div class="card">
   <h2 class="margin-top-0 margin-bottom-4"><%= t('account.index.email_preferences') %></h2>
 
   <%= render 'emails' %>
@@ -35,7 +35,7 @@
   </div>
 </div>
 
-<div class="margin-bottom-4 card profile-info-box">
+<div class="card">
   <h2 class="margin-bottom-1 margin-top-0">
     <%= t('account.index.password') %>
   </h2>
@@ -50,43 +50,43 @@
 </div>
 
 <% if @presenter.show_manage_personal_key_partial? %>
-  <div class="margin-bottom-4 card profile-info-box">
+  <div class="card">
     <%= render 'accounts/manage_personal_key' %>
   </div>
 <% end %>
 
 <% if TwoFactorAuthentication::PhonePolicy.new(current_user).configured? %>
-  <div class="margin-bottom-4 card profile-info-box">
+  <div class="card">
     <%= render 'phone' %>
   </div>
 <% end %>
 
 <% if TwoFactorAuthentication::AuthAppPolicy.new(current_user).configured? %>
-  <div class="margin-bottom-4 card profile-info-box">
+  <div class="card">
     <%= render 'accounts/auth_apps' %>
   </div>
 <% end %>
 
 <% if TwoFactorAuthentication::WebauthnPolicy.new(current_user).platform_configured? %>
-  <div class="margin-bottom-4 card profile-info-box">
+  <div class="card">
     <%= render 'accounts/webauthn_platform' %>
   </div>
 <% end %>
 
 <% if TwoFactorAuthentication::WebauthnPolicy.new(current_user).roaming_configured? %>
-  <div class="margin-bottom-4 card profile-info-box">
+  <div class="card">
     <%= render 'accounts/webauthn_roaming' %>
   </div>
 <% end %>
 
 <% if TwoFactorAuthentication::PivCacPolicy.new(current_user).configured? %>
-  <div class="margin-bottom-4 card profile-info-box">
+  <div class="card">
     <%= render 'accounts/piv_cac' %>
   </div>
 <% end %>
 
 <% if TwoFactorAuthentication::BackupCodePolicy.new(current_user).configured? %>
-  <div class="margin-bottom-4 card profile-info-box">
+  <div class="card">
     <%= render 'accounts/backup_codes' %>
   </div>
 <% end %>

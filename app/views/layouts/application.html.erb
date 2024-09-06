@@ -10,7 +10,7 @@
         class: 'site-wrap bg-primary-lighter',
         id: local_assigns[:user_main_tag] == false ? nil : 'main-content',
       ) do %>
-    <div class="grid-container padding-y-4 tablet:padding-y-8 <%= local_assigns[:disable_card].present? ? '' : 'card' %>">
+    <div class="grid-container padding-y-4 tablet:padding-y-8 <%= local_assigns[:disable_card].present? ? '' : 'card padding-x-2 tablet:padding-x-10 tablet:margin-bottom-8' %>">
       <%= yield(:pre_flash_content) if content_for?(:pre_flash_content) %>
       <%= render FlashComponent.new(flash: flash) %>
       <%= yield %>
