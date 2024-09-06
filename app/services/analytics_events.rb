@@ -1510,6 +1510,7 @@ module AnalyticsEvents
   # @param [String] workflow LexisNexis TrueID workflow
   # @param [String] birth_year Birth year from document
   # @param [Integer] issue_year Year document was issued
+  # @param [Integer] selfie_attempts number of selfie attempts the user currently has processed
   # @option extra [String] 'DocumentName'
   # @option extra [String] 'DocAuthResult'
   # @option extra [String] 'DocIssuerCode'
@@ -1567,6 +1568,7 @@ module AnalyticsEvents
     selfie_quality_good: nil,
     workflow: nil,
     birth_year: nil,
+    selfie_attempts: nil,
     **extra
   )
     track_event(
@@ -1612,6 +1614,7 @@ module AnalyticsEvents
       workflow:,
       birth_year:,
       issue_year:,
+      selfie_attempts:,
       **extra,
     )
   end
