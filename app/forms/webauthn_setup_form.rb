@@ -175,6 +175,6 @@ class WebauthnSetupForm
       authenticator_data_flags: authenticator_data_flags,
       unknown_transports: invalid_transports.presence,
       aaguid: aaguid,
-    }.compact
+    }
   end
 end
