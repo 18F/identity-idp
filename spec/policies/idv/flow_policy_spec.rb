@@ -35,7 +35,7 @@ RSpec.describe 'Idv::FlowPolicy' do
         idv_session.welcome_visited = true
         idv_session.document_capture_session_uuid = SecureRandom.uuid
 
-        idv_session.idv_consent_given = true
+        idv_session.idv_consent_given_at = Time.zone.now
         idv_session.skip_hybrid_handoff = true
 
         idv_session.flow_path = 'standard'
@@ -56,7 +56,7 @@ RSpec.describe 'Idv::FlowPolicy' do
         expect(idv_session.welcome_visited).not_to be_nil
         expect(idv_session.document_capture_session_uuid).not_to be_nil
 
-        expect(idv_session.idv_consent_given).to be_nil
+        expect(idv_session.idv_consent_given_at).to be_nil
         expect(idv_session.skip_hybrid_handoff).to be_nil
 
         expect(idv_session.flow_path).to be_nil
@@ -77,7 +77,7 @@ RSpec.describe 'Idv::FlowPolicy' do
         idv_session.welcome_visited = true
         idv_session.document_capture_session_uuid = SecureRandom.uuid
 
-        idv_session.idv_consent_given = true
+        idv_session.idv_consent_given_at = Time.zone.now
         idv_session.skip_hybrid_handoff = true
 
         idv_session.flow_path = 'standard'
@@ -130,7 +130,8 @@ RSpec.describe 'Idv::FlowPolicy' do
         end.not_to change {
           idv_session.welcome_visited
           idv_session.document_capture_session_uuid
-          idv_session.idv_consent_given
+          idv_session.idv_consent_given_at
+          idv_session.idv_consent_given?
           idv_session.skip_hybrid_handoff
 
           idv_session.flow_path
