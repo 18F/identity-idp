@@ -6,15 +6,16 @@ RSpec.feature 'Accessibility on account pages', :js do
     # Create an interesting user with various states that affect content shown on account pages
     create(
       :user,
+      :proofed,
       :with_multiple_emails,
-      :with_webauthn,
-      :with_webauthn_platform,
+      # all mfas
+      :with_authentication_app,
+      :with_backup_code,
+      :with_personal_key,
       :with_phone,
       :with_piv_or_cac,
-      :with_personal_key,
-      :with_backup_code,
-      :with_authentication_app,
-      :proofed,
+      :with_webauthn,
+      :with_webauthn_platform,
     )
   end
 
