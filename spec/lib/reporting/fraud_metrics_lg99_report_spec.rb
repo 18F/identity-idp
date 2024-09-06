@@ -25,21 +25,11 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
       ['Average Days to Reinstatement', '3.0', time_range.begin.to_s, time_range.end.to_s],
     ]
   end
-  let!(:user6) do
-    create(
-      :user,
-      :proofed,
-      :reinstated,
-      uuid: 'user6',
-      suspended_at: 3.days.from_now,
-      reinstated_at: 6.days.from_now,
-    )
-  end
-  let!(:user7) { create(:user, :proofed, :suspended, uuid: 'user7') }
 
   subject(:report) { Reporting::FraudMetricsLg99Report.new(time_range:) }
 
   before do
+    travel_to Time.zone.now.beginning_of_day
     stub_cloudwatch_logs(
       [
         { 'user_id' => 'user1', 'name' => 'IdV: Verify please call visited' },
@@ -65,6 +55,18 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
     )
     user7.profiles.verified.last.update(created_at: 1.day.ago, activated_at: 1.day.ago) if user7
   end
+
+  let!(:user6) do
+    create(
+      :user,
+      :proofed,
+      :reinstated,
+      uuid: 'user6',
+      suspended_at: 3.days.from_now,
+      reinstated_at: 6.days.from_now,
+    )
+  end
+  let!(:user7) { create(:user, :proofed, :suspended, uuid: 'user7') }
 
   describe '#lg99_metrics_table' do
     it 'renders a lg99 metrics table' do
@@ -101,7 +103,7 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
   describe '#user_days_to_suspension_avg' do
     context 'when there are suspended users' do
       it 'returns average time to suspension' do
-        expect(report.user_days_to_suspension_avg).to be_within(0.1).of(1.5)
+        expect(report.user_days_to_suspension_avg).to eq(1.5)
       end
     end
 
@@ -118,7 +120,7 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
   describe '#user_days_to_reinstatement_avg' do
     context 'where there are reinstated users' do
       it 'returns average time to reinstatement' do
-        expect(report.user_days_to_reinstatement_avg).to be_within(0.1).of(3.0)
+        expect(report.user_days_to_reinstatement_avg).to eq(3.0)
       end
     end
 
@@ -135,7 +137,7 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
   describe '#user_days_proofed_to_suspended_avg' do
     context 'when there are suspended users' do
       it 'returns average time proofed to suspension' do
-        expect(report.user_days_proofed_to_suspension_avg).to be_within(0.1).of(2.0)
+        expect(report.user_days_proofed_to_suspension_avg).to eq(2.0)
       end
     end
 
