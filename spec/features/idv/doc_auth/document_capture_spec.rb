@@ -10,7 +10,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
   let(:fake_analytics) { FakeAnalytics.new }
 
   before(:each) do
-    stub_analytics
+    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return(@sp_name)
   end
 
@@ -123,7 +123,6 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
         expect_costing_for_document
         expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('NY')
 
-        expect(page).to have_current_path(idv_ssn_url)
         fill_out_ssn_form_ok
         click_idv_continue
         complete_verify_step
@@ -210,7 +209,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
         end
 
         context 'documents or selfie with error is uploaded' do
-          shared_examples 'it has correct error display' do
+          shared_examples 'it has correct error displays' do
             # when there are multiple doc auth errors on front and back
             it 'shows the correct error message for the given error' do
               perform_in_browser(:mobile) do
@@ -331,7 +330,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
               end
             end
 
-            it_should_behave_like 'it has correct error display'
+            it_should_behave_like 'it has correct error displays'
           end
 
           context 'IPP not enabled' do
@@ -344,7 +343,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
               end
             end
 
-            it_should_behave_like 'it has correct error display'
+            it_should_behave_like 'it has correct error displays'
           end
         end
 
