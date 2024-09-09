@@ -209,7 +209,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
         end
 
         context 'documents or selfie with error is uploaded' do
-          shared_examples 'it has correct error displays' do
+          shared_examples 'it has correct error displays' do |expect_take_new_pictures_message:|
             # when there are multiple doc auth errors on front and back
             it 'shows the correct error message for the given error' do
               perform_in_browser(:mobile) do
@@ -218,12 +218,14 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 submit_images
 
                 expect_rate_limited_header(true)
-                expect_rate_limited_sub_header_present(false)
+
+                expect_try_taking_new_pictures
                 expect_review_issues_body_message('doc_auth.errors.general.no_liveness')
                 expect_rate_limit_warning(max_attempts - 1)
-                expect_to_try_again
 
+                expect_to_try_again
                 expect_resubmit_page_h1_copy
+
                 expect_resubmit_page_body_copy('doc_auth.errors.general.no_liveness')
                 expect_resubmit_page_inline_error_messages(2)
                 expect_resubmit_page_inline_selfie_error_message(false)
@@ -234,13 +236,14 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 submit_images
 
                 expect_rate_limited_header(false)
-                expect_rate_limited_sub_header_present(true)
+                expect_try_taking_new_pictures(expect_take_new_pictures_message)
                 expect_review_issues_body_message('doc_auth.errors.doc_type_not_supported_heading')
                 expect_review_issues_body_message('doc_auth.errors.doc.doc_type_check')
                 expect_rate_limit_warning(max_attempts - 2)
-                expect_to_try_again
 
+                expect_to_try_again
                 expect_resubmit_page_h1_copy
+
                 expect_review_issues_body_message('doc_auth.errors.card_type')
                 expect_resubmit_page_inline_selfie_error_message(false)
 
@@ -252,19 +255,20 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 submit_images
 
                 expect_rate_limited_header(true)
-                expect_rate_limited_sub_header_present(false)
+                expect_try_taking_new_pictures(false)
                 expect_review_issues_body_message(
                   'doc_auth.errors.general.multiple_front_id_failures',
                 )
                 expect_rate_limit_warning(max_attempts - 3)
+
                 expect_to_try_again
                 expect_resubmit_page_h1_copy
+
                 expect_resubmit_page_body_copy('doc_auth.errors.general.multiple_front_id_failures')
                 expect_resubmit_page_inline_error_messages(1)
                 expect_resubmit_page_inline_selfie_error_message(false)
 
                 # when there are multiple back doc auth errors
-
                 use_id_image('ial2_test_credential_multiple_doc_auth_failures_back_side_only.yml')
                 use_selfie_image(
                   'ial2_test_credential_multiple_doc_auth_failures_back_side_only.yml',
@@ -272,13 +276,15 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 submit_images
 
                 expect_rate_limited_header(true)
-                expect_rate_limited_sub_header_present(false)
+                expect_try_taking_new_pictures(false)
                 expect_review_issues_body_message(
                   'doc_auth.errors.general.multiple_back_id_failures',
                 )
                 expect_rate_limit_warning(max_attempts - 4)
+
                 expect_to_try_again
                 expect_resubmit_page_h1_copy
+
                 expect_resubmit_page_body_copy('doc_auth.errors.general.multiple_back_id_failures')
                 expect_resubmit_page_inline_error_messages(1)
                 expect_resubmit_page_inline_selfie_error_message(false)
@@ -330,7 +336,8 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
               end
             end
 
-            it_should_behave_like 'it has correct error displays'
+            it_should_behave_like 'it has correct error displays',
+                                  expect_take_new_pictures_message: true
           end
 
           context 'IPP not enabled' do
@@ -343,7 +350,8 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
               end
             end
 
-            it_should_behave_like 'it has correct error displays'
+            it_should_behave_like 'it has correct error displays',
+                                  expect_take_new_pictures_message: false
           end
         end
 
@@ -487,12 +495,14 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
     end
   end
 
-  def expect_rate_limited_sub_header_present(expected_to_be_present)
-    review_issues_subheading = strip_tags(t('doc_auth.errors.rate_limited_subheading'))
+  def expect_try_taking_new_pictures(expected_to_be_present = true)
+    expected_message = strip_tags(
+      t('doc_auth.errors.rate_limited_subheading'),
+    )
     if expected_to_be_present
-      expect(page).to have_selector('h2', text: review_issues_subheading)
+      expect(page).to have_content expected_message
     else
-      expect(page).not_to have_selector('h2', text: review_issues_subheading)
+      expect(page).not_to have_content expected_message
     end
   end
 
