@@ -40,10 +40,10 @@ GIT
 
 GIT
   remote: https://github.com/18f/identity-validations.git
-  revision: 614647f1eb8851780caaece7aa0cf33b3d959d94
+  revision: 92b9c2b649afc624547d30d4d1e673148efde47e
   branch: hmm/more-composable-validations
   specs:
-    identity_validations (1.0)
+    identity_validations (0.8.0)
       activemodel (~> 7.1.3)
 
 GIT
