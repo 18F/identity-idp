@@ -345,6 +345,9 @@ sign_in_user_id_per_ip_max_attempts: 50
 socure_idplus_api_key: ''
 socure_idplus_base_url: ''
 socure_idplus_timeout_in_seconds: 5
+socure_document_request_endpoint: ''
+socure_id_secret_key: ''
+socure_verification_level: ''
 socure_webhook_enabled: false
 socure_webhook_secret_key: ''
 socure_webhook_secret_key_queue: '[]'
