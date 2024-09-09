@@ -95,7 +95,7 @@ module Idv
         type: params[:action],
       }
 
-      options[:submit_attempts_remaining] = based_on_limiter.remaining_count if based_on_limiter
+      options[:remaining_submit_attempts] = based_on_limiter.remaining_count if based_on_limiter
 
       analytics.idv_session_error_visited(**options)
     end
