@@ -220,8 +220,9 @@ RSpec.describe Idv::CancellationsController do
         expect(parsed_body).to eq({ redirect_url: account_path })
       end
 
-      context 'with in person enrollment' do
-        let(:user) { build(:user, :with_pending_in_person_enrollment) }
+      context 'with in establishing in-person enrollment' do
+        let(:user) { build(:user, :with_establishing_in_person_enrollment) }
+        let(:enrollment) { user.establishing_in_person_enrollment }
 
         before do
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
@@ -229,32 +230,41 @@ RSpec.describe Idv::CancellationsController do
             'idv/in_person' => { 'pii_from_user' => {},
                                  'Idv::Steps::InPerson::StateIdStep' => true },
           )
-        end
-
-        it 'cancels pending in person enrollment' do
-          pending_enrollment = user.pending_in_person_enrollment
-          expect(user.reload.pending_in_person_enrollment).to_not be_blank
           delete :destroy
-
-          pending_enrollment.reload
-          expect(pending_enrollment.status).to eq(InPersonEnrollment::STATUS_CANCELLED)
-          expect(user.reload.pending_in_person_enrollment).to be_blank
+          enrollment.reload
         end
 
         it 'cancels establishing in person enrollment' do
-          establishing_enrollment = create(:in_person_enrollment, :establishing, user: user)
-          expect(InPersonEnrollment.where(user: user, status: :establishing).count).to eq(1)
-          delete :destroy
-
-          establishing_enrollment.reload
-          expect(establishing_enrollment.status).to eq(InPersonEnrollment::STATUS_CANCELLED)
+          expect(enrollment.status).to eq(InPersonEnrollment::STATUS_CANCELLED)
           expect(InPersonEnrollment.where(user: user, status: :establishing).count).to eq(0)
         end
 
         it 'deletes in person flow data' do
-          expect(controller.user_session['idv/in_person']).not_to be_blank
-          delete :destroy
+          expect(controller.user_session['idv/in_person']).to be_blank
+        end
+      end
 
+      context 'with in pending in-person enrollment' do
+        let(:user) { build(:user, :with_pending_in_person_enrollment) }
+        let(:enrollment) { user.pending_in_person_enrollment }
+
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+          allow(controller).to receive(:user_session).and_return(
+            'idv/in_person' => { 'pii_from_user' => {},
+                                 'Idv::Steps::InPerson::StateIdStep' => true },
+          )
+
+          delete :destroy
+          enrollment.reload
+        end
+
+        it 'does not cancel pending in person enrollments' do
+          expect(enrollment.status).to eq(InPersonEnrollment::STATUS_PENDING)
+          expect(InPersonEnrollment.where(user: user, status: :pending).count).to eq(1)
+        end
+
+        it 'deletes in person flow data' do
           expect(controller.user_session['idv/in_person']).to be_blank
         end
       end
