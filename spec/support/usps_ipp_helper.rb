@@ -121,6 +121,18 @@ module UspsIppHelper
     )
   end
 
+  def stub_request_enroll_server_down_time_response
+    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant}).to_return(
+      status: 500,
+      body: UspsInPersonProofing::Mock::Fixtures.internal_server_error_response,
+      headers: { 'content-type' => 'application/json' },
+    ).times(2).to_return(
+      status: 200,
+      body: UspsInPersonProofing::Mock::Fixtures.request_enroll_response,
+      headers: { 'content-type' => 'application/json' },
+    )
+  end
+
   def stub_request_enroll_invalid_response
     stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant}).to_return(
       status: 200,

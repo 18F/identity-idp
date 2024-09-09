@@ -66,7 +66,7 @@ module UspsInPersonProofing
         request_body[:IPPAssuranceLevel] = '2.0'
       end
 
-      res = faraday.post(url, request_body, dynamic_headers) do |req|
+      res = faraday_retry.post(url, request_body, dynamic_headers) do |req|
         req.options.context = { service_name: 'usps_enroll' }
       end
       Response::RequestEnrollResponse.new(res.body)
@@ -118,6 +118,37 @@ module UspsInPersonProofing
 
     def faraday
       Faraday.new(headers: request_headers) do |conn|
+        conn.options.timeout = IdentityConfig.store.usps_ipp_request_timeout
+        conn.options.read_timeout = IdentityConfig.store.usps_ipp_request_timeout
+        conn.options.open_timeout = IdentityConfig.store.usps_ipp_request_timeout
+        conn.options.write_timeout = IdentityConfig.store.usps_ipp_request_timeout
+
+        # Log request metrics
+        conn.request :instrumentation, name: 'request_metric.faraday'
+
+        # Raise an error subclassing Faraday::Error on 4xx, 5xx, and malformed responses
+        # Note: The order of this matters for parsing the error response body.
+        conn.response :raise_error
+
+        # Convert body to JSON
+        conn.request :json
+
+        # Parse JSON responses
+        conn.response :json
+      end
+    end
+
+    def faraday_retry
+      Faraday.new(headers: request_headers) do |conn|
+        conn.request :retry, {
+          max: 3,
+          interval: 0.5,
+          backoff_factor: 2,
+          exceptions: Faraday::Retry::Middleware::DEFAULT_EXCEPTIONS + [Faraday::ServerError,
+                                                                        Faraday::ConnectionFailed],
+          methods: %i[post],
+        }
+
         conn.options.timeout = IdentityConfig.store.usps_ipp_request_timeout
         conn.options.read_timeout = IdentityConfig.store.usps_ipp_request_timeout
         conn.options.open_timeout = IdentityConfig.store.usps_ipp_request_timeout

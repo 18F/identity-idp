@@ -306,107 +306,163 @@ RSpec.describe UspsInPersonProofing::Proofer do
         and_return(usps_ipp_sponsor_id)
     end
 
-    it 'returns enrollment information' do
-      stub_request_enroll
+    context 'when the USPS optInIPPApplicant response is a success status' do
+      context 'when the enrollment is ID-IPP' do
+        let(:is_enhanced_ipp) { false }
 
-      enrollment = subject.request_enroll(applicant, is_enhanced_ipp)
-      expect(enrollment.enrollment_code).to be_present
-      expect(enrollment.response_message).to be_present
-    end
+        before do
+          stub_request_enroll
+          @response = subject.request_enroll(applicant, is_enhanced_ipp)
+        end
 
-    it 'returns 400 error' do
-      stub_request_enroll_bad_request_response
-
-      expect { subject.request_enroll(applicant, is_enhanced_ipp) }.to raise_error(
-        an_instance_of(Faraday::BadRequestError).
-        and(having_attributes(
-          response: include(
-            body: include(
-              'responseMessage' => 'Sponsor for sponsorID 5 not found',
-            ),
-          ),
-        )),
-      )
-    end
-
-    it 'returns 500 error' do
-      stub_request_enroll_internal_server_error_response
-
-      expect { subject.request_enroll(applicant, is_enhanced_ipp) }.to raise_error(
-        an_instance_of(Faraday::ServerError).
-        and(having_attributes(
-          response: include(
-            body: include(
-              'responseMessage' => 'An internal error occurred processing the request',
-            ),
-          ),
-        )),
-      )
-    end
-
-    it 'uses the usps_ipp_sponsor_id and IPPAssurance Level in calls to the USPS API' do
-      stub_request_enroll
-      subject.request_enroll(applicant, is_enhanced_ipp)
-
-      expect(WebMock).to have_requested(:post, request_url).
-        with(
-          body: hash_including(
-            {
+        it 'sends a request to the USPS optInIPPApplicant endpoint' do
+          expect(WebMock).to have_requested(
+            :post,
+            "#{root_url}/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant",
+          ).with(
+            body: {
+              uniqueID: applicant.unique_id,
+              firstName: applicant.first_name,
+              lastName: applicant.last_name,
+              streetAddress: applicant.address,
+              city: applicant.city,
+              state: applicant.state,
+              zipCode: applicant.zip_code,
+              emailAddress: applicant.email,
               sponsorID: usps_ipp_sponsor_id.to_i,
               IPPAssuranceLevel: ipp_assurance_level,
             },
-          ),
-        )
-    end
-
-    context 'when the auth token is expired' do
-      expires_at = nil
-      let(:expires_in) { 15.minutes }
-
-      before do
-        stub_request_enroll
-      end
-
-      before(:each) do
-        subject.retrieve_token!
-        expires_at = Time.zone.now + expires_in
-      end
-
-      it 'refreshes the auth token before making the request' do
-        subject.token
-        enrollment = nil
-        travel_to(expires_at) do
-          enrollment = subject.request_enroll(applicant, false)
+          )
         end
 
-        expect(WebMock).to have_requested(:post, "#{root_url}/oauth/authenticate").twice
+        it 'returns the enrollment response' do
+          expect(@response.enrollment_code).to be_present
+          expect(@response.response_message).to be_present
+        end
+      end
 
-        expect(enrollment.enrollment_code).to be_present
-        expect(enrollment.response_message).to be_present
+      context 'when the enrollment is enhanced ipp' do
+        let(:usps_eipp_sponsor_id) { '314159265359' }
+        let(:ipp_assurance_level) { '2.0' }
+        let(:is_enhanced_ipp) { true }
+
+        before do
+          allow(IdentityConfig.store).to receive(:usps_eipp_sponsor_id).
+            and_return(usps_eipp_sponsor_id)
+          stub_request_enroll
+          @response = subject.request_enroll(applicant, is_enhanced_ipp)
+        end
+
+        it 'sends a request to the USPS optInIPPApplicant endpoint' do
+          expect(WebMock).to have_requested(
+            :post,
+            "#{root_url}/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant",
+          ).with(
+            body: {
+              uniqueID: applicant.unique_id,
+              firstName: applicant.first_name,
+              lastName: applicant.last_name,
+              streetAddress: applicant.address,
+              city: applicant.city,
+              state: applicant.state,
+              zipCode: applicant.zip_code,
+              emailAddress: applicant.email,
+              sponsorID: usps_eipp_sponsor_id.to_i,
+              IPPAssuranceLevel: ipp_assurance_level,
+            },
+          )
+        end
+
+        it 'returns the enrollment response' do
+          expect(@response.enrollment_code).to be_present
+          expect(@response.response_message).to be_present
+        end
+      end
+
+      context 'when the auth token is expired' do
+        let(:expires_in) { 15.minutes }
+        let(:expires_at) { Time.zone.now + expires_in }
+
+        before do
+          stub_request_enroll
+          subject.retrieve_token!
+          subject.token
+          travel_to(expires_at) do
+            @response = subject.request_enroll(applicant, false)
+          end
+        end
+
+        it 'refreshes the auth token' do
+          expect(WebMock).to have_requested(:post, "#{root_url}/oauth/authenticate").twice
+        end
+
+        it 'returns the enrollment response' do
+          expect(@response.enrollment_code).to be_present
+          expect(@response.response_message).to be_present
+        end
       end
     end
 
-    context 'when the enrollment is enhanced ipp' do
-      let(:usps_eipp_sponsor_id) { '314159265359' }
-      let(:ipp_assurance_level) { '2.0' }
-      let(:is_enhanced_ipp) { true }
-      before do
-        allow(IdentityConfig.store).to receive(:usps_eipp_sponsor_id).
-          and_return(usps_eipp_sponsor_id)
-      end
-      it 'uses the enhanced ipp usps_eipp_sponsor_id & IPPAssuranceLevel in calls to USPS API' do
-        stub_request_enroll
-        subject.request_enroll(applicant, is_enhanced_ipp)
+    context 'when the USPS optInIPPApplicant response is a failure status' do
+      context 'when the response has a status code of 400' do
+        before do
+          stub_request_enroll_bad_request_response
+        end
 
-        expect(WebMock).to have_requested(:post, request_url).
-          with(
-            body: hash_including(
-              {
-                sponsorID: usps_eipp_sponsor_id.to_i,
-                IPPAssuranceLevel: ipp_assurance_level,
-              },
+        it 'throws a Faraday::BadRequestError' do
+          expect { subject.request_enroll(applicant, is_enhanced_ipp) }.to raise_error(
+            an_instance_of(Faraday::BadRequestError).
+            and(having_attributes(
+              response: include(
+                body: include(
+                  'responseMessage' => 'Sponsor for sponsorID 5 not found',
+                ),
+              ),
+            )),
+          )
+        end
+      end
+
+      context 'when the response has a status code of 500' do
+        before do
+          @mock = stub_request_enroll_internal_server_error_response
+
+          subject.request_enroll(applicant, is_enhanced_ipp)
+        rescue StandardError => err
+          @response = err
+        end
+
+        it 'retries the USPS optInIPPApplicant request 4 times' do
+          expect(@mock).to have_been_made.times(4)
+        end
+
+        it 'throws a Faraday::ServerError' do
+          expect(@response).to be_an_instance_of(Faraday::ServerError).and(
+            having_attributes(
+              response: include(
+                body: include(
+                  'responseMessage' => 'An internal error occurred processing the request',
+                ),
+              ),
             ),
           )
+        end
+      end
+    end
+
+    context 'when the USPS server has intermittant errors' do
+      before do
+        @mock = stub_request_enroll_server_down_time_response
+        @response = subject.request_enroll(applicant, is_enhanced_ipp)
+      end
+
+      it 'retries the USPS optInIPPApplicant request' do
+        expect(@mock).to have_been_made.times(3)
+      end
+
+      it 'returns the enrollment response' do
+        expect(@response.enrollment_code).to be_present
+        expect(@response.response_message).to be_present
       end
     end
   end
