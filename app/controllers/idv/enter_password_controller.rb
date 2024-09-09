@@ -134,11 +134,9 @@ module Idv
       end
 
       if idv_session.profile.active?
-        event, _disavowal_token = create_user_event(:account_verified)
+        create_user_event(:account_verified)
         UserAlerts::AlertUserAboutAccountVerified.call(
-          user: current_user,
-          date_time: event.created_at,
-          sp_name: decorated_sp_session.sp_name,
+          profile: idv_session.profile,
         )
       end
     end

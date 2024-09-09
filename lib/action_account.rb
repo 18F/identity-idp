@@ -254,14 +254,6 @@ class ActionAccount
   class ReviewPass
     include LogBase
 
-    def alert_verified(user:, date_time:)
-      UserAlerts::AlertUserAboutAccountVerified.call(
-        user: user,
-        date_time: date_time,
-        sp_name: nil,
-      )
-    end
-
     def run(args:, config:)
       uuids = args
 
@@ -286,10 +278,9 @@ class ActionAccount
           success = true
 
           if profile.active?
-            event, _disavowal_token = UserEventCreator.new(current_user: user).
+            UserEventCreator.new(current_user: user).
               create_out_of_band_user_event(:account_verified)
-
-            alert_verified(user: user, date_time: event.created_at)
+            UserAlerts::AlertUserAboutAccountVerified.call(profile: profile)
 
             log_texts << log_text[:profile_activated]
           else

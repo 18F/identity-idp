@@ -394,9 +394,13 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
       end
 
       it 'dispatches account verified alert' do
-        expect(UserAlerts::AlertUserAboutAccountVerified).to receive(:call)
+        allow(UserAlerts::AlertUserAboutAccountVerified).to receive(:call)
 
         put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+        expect(UserAlerts::AlertUserAboutAccountVerified).to have_received(:call).with(
+          profile: user.reload.active_profile,
+        )
       end
 
       it 'creates an `account_verified` event once per confirmation' do
