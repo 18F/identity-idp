@@ -1,0 +1,11 @@
+<% self.title = t('titles.doc_auth.doc_capture') %>
+<% if @url.present? %>
+  <a href="<%= @url %>">Open this link on your mobile device to open the Socure Capture App</a>
+<% else %>
+  <% if @reference_id.present? %>
+    <p>ReferenceId: <%= @reference_id %></p>
+  <% end %>
+  <% if @msg.present? %>
+    <p>ErrorMessage: <%= @msg %></p>
+  <% end %>
+<% end %>
