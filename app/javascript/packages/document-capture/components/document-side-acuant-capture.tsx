@@ -79,7 +79,7 @@ function DocumentSideAcuantCapture({
           onError(new Error(t('doc_auth.errors.doc.resubmit_failed_image')), { field: side });
           changeStepCanComplete(false);
         } else {
-          changeStepCanComplete(true);
+          changeStepCanComplete(undefined);
         }
       }}
       onCameraAccessDeclined={() => {

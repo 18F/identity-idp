@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import {
   FormStepComponentProps,
@@ -8,14 +8,15 @@ import {
 import { PageHeading } from '@18f/identity-components';
 import { Cancel } from '@18f/identity-verify-flow';
 import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
-import DocumentsStep from './documents-step';
 import { SelfieStepComponent } from './selfie-step';
 import TipList from './tip-list';
 import {
+  ImageValue,
   DefaultSideProps,
   DocumentsAndSelfieStepValue,
 } from '../interface/documents-image-selfie-value';
 import { DeviceContext, SelfieCaptureContext, UploadContext } from '../context';
+import DocumentSideAcuantCapture from './document-side-acuant-capture';
 
 export function DocumentCaptureSubheaderOne({
   isSelfieCaptureEnabled,
@@ -31,7 +32,28 @@ export function DocumentCaptureSubheaderOne({
     </h2>
   );
 }
-
+export function DocumentsStep({
+  defaultSideProps,
+  value,
+}: {
+  defaultSideProps: DefaultSideProps;
+  value: Record<string, ImageValue>;
+}) {
+  type DocumentSide = 'front' | 'back';
+  const documentsSides: DocumentSide[] = ['front', 'back'];
+  return (
+    <>
+      {documentsSides.map((side) => (
+        <DocumentSideAcuantCapture
+          {...defaultSideProps}
+          key={side}
+          side={side}
+          value={value[side]}
+        />
+      ))}
+    </>
+  );
+}
 export default function DocumentsAndSelfieStep({
   value = {},
   onChange = () => {},
@@ -41,16 +63,12 @@ export default function DocumentsAndSelfieStep({
 }: FormStepComponentProps<DocumentsAndSelfieStepValue>) {
   const { t } = useI18n();
   const { isMobile } = useContext(DeviceContext);
-  const { isLastStep, changeStepCanComplete } = useContext(FormStepsContext);
+  const { isLastStep } = useContext(FormStepsContext);
   const { flowPath } = useContext(UploadContext);
-  const { isSelfieCaptureEnabled, docAuthSeparatePagesEnabled } = useContext(SelfieCaptureContext);
-  useEffect(() => {
-    changeStepCanComplete(!(isSelfieCaptureEnabled && docAuthSeparatePagesEnabled));
-  }, [isSelfieCaptureEnabled, docAuthSeparatePagesEnabled, isLastStep, FormStepsContext]);
+  const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
   const pageHeaderText = isSelfieCaptureEnabled
     ? t('doc_auth.headings.document_capture_with_selfie')
     : t('doc_auth.headings.document_capture');
-
   const defaultSideProps: DefaultSideProps = {
     registerField,
     onChange,
@@ -74,7 +92,7 @@ export default function DocumentsAndSelfieStep({
         ].concat(!isMobile ? [t('doc_auth.tips.document_capture_id_text4')] : [])}
       />
       <DocumentsStep defaultSideProps={defaultSideProps} value={value} />
-      {isSelfieCaptureEnabled && !docAuthSeparatePagesEnabled && (
+      {isSelfieCaptureEnabled && (
         <SelfieStepComponent defaultSideProps={defaultSideProps} selfieValue={value.selfie} />
       )}
       {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}

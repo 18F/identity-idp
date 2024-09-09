@@ -8,7 +8,7 @@ import GeneralError from './general-error';
 import TipList from './tip-list';
 import { SelfieCaptureContext } from '../context';
 import { DocumentCaptureSubheaderOne } from './documents-and-selfie-step';
-import DocumentsStep from './documents-step';
+import { DocumentsCaptureStepComponent } from './documents-step';
 import { SelfieStepComponent } from './selfie-step';
 import type { ReviewIssuesStepValue } from './review-issues-step';
 
@@ -77,7 +77,7 @@ function DocumentCaptureReviewIssues({
           ]}
         />
       )}
-      <DocumentsStep defaultSideProps={defaultSideProps} value={value} />
+      <DocumentsCaptureStepComponent defaultSideProps={defaultSideProps} value={value} />
       {isSelfieCaptureEnabled && (
         <SelfieStepComponent defaultSideProps={defaultSideProps} selfieValue={value.selfie} />
       )}

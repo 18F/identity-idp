@@ -9,6 +9,7 @@ import { getConfigValue } from '@18f/identity-config';
 import { UploadFormEntriesError } from '../services/upload';
 import DocumentsAndSelfieStep from './documents-and-selfie-step';
 import SelfieStep from './selfie-step';
+import DocumentsStep from './documents-step';
 import InPersonPrepareStep from './in-person-prepare-step';
 import InPersonLocationPostOfficeSearchStep from './in-person-location-post-office-search-step';
 import InPersonLocationFullAddressEntryPostOfficeSearchStep from './in-person-location-full-address-entry-post-office-search-step';
@@ -53,10 +54,15 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
     : InPersonLocationPostOfficeSearchStep;
 
   // Define different states to be used in human readable array declaration
-  const documentFormStep: FormStep = {
-    name: 'documents',
+  const documentAndSelfieFormStep: FormStep = {
+    name: 'documentsAndSelfie',
     form: DocumentsAndSelfieStep,
     title: t('doc_auth.headings.document_capture'),
+  };
+  const documentFormStep: FormStep = {
+    name: 'documents',
+    form: DocumentsStep,
+    title: t('doc_auth.headings.document_capture'), // might want to change title to isolated doc capture heading
   };
   const selfieFormStep: FormStep = {
     name: 'selfies',
@@ -66,7 +72,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   const documentsFormSteps: FormStep[] =
     isSelfieCaptureEnabled && docAuthSeparatePagesEnabled
       ? [documentFormStep, selfieFormStep]
-      : [documentFormStep];
+      : [documentAndSelfieFormStep];
   const reviewFormStep: FormStep = {
     name: 'review',
     form:
