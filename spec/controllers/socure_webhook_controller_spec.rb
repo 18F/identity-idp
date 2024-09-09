@@ -36,19 +36,37 @@ RSpec.describe SocureWebhookController do
       stub_analytics
     end
 
-    it 'returns OK and logs an event with a correct secret key and body' do
-      request.headers['Authorization'] = socure_secret_key
-      post :create, params: webhook_body
+    context 'with a correct secret key and body' do
+      it 'returns OK and logs an event with a correct secret key and body' do
+        request.headers['Authorization'] = socure_secret_key
+        post :create, params: webhook_body
+        expect(response).to have_http_status(:ok)
+      end
 
-      expect(response).to have_http_status(:ok)
-      expect(@analytics).to have_logged_event(
-        :idv_doc_auth_socure_webhook_received,
-        created_at: '2020-01-01T00:00:00Z',
-        customer_user_id: '123',
-        event_type: 'TEST_WEBHOOK',
-        reference_id: 'abc',
-        user_id: '123',
-      )
+      it 'logs an event with a correct secret key and body' do
+        request.headers['Authorization'] = socure_secret_key
+        post :create, params: webhook_body
+        expect(@analytics).to have_logged_event(
+          :idv_doc_auth_socure_webhook_received,
+          created_at: '2020-01-01T00:00:00Z',
+          customer_user_id: '123',
+          event_type: 'TEST_WEBHOOK',
+          reference_id: 'abc',
+          user_id: '123',
+        )
+      end
+
+      xit 'retrieves the results' do
+        results_request = instance_double(Proofing::Socure::IdPlus::Request)
+        allow(results_request).to receive(:send_request)
+
+        allow(Proofing::Socure::IdPlus::Request).to receive(:new).and_return(results_request)
+
+        request.headers['Authorization'] = socure_secret_key
+        post :create, params: webhook_body
+
+        expect(results_request).to have_received(:send_request)
+      end
     end
 
     it 'returns OK with an older secret key' do

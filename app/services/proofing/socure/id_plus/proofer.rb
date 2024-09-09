@@ -35,7 +35,7 @@ module Proofing
         def proof(applicant)
           input = Input.new(applicant)
 
-          request = Request.new(config:, input:)
+          request = IdvRequest.new(config:, input:)
 
           response = request.send_request
 

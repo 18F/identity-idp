@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Proofing::Socure::IdPlus::Request do
+RSpec.describe Proofing::Socure::IdPlus::IdvRequest do
   let(:config) do
     Proofing::Socure::IdPlus::Config.new(
       api_key:,
