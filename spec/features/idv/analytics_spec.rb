@@ -509,10 +509,10 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         flow_path: 'standard', opted_in_to_in_person_proofing: false
       },
       'IdV: in person proofing state_id visited' => {
-        step: 'state_id', flow_path: 'standard', step_count: 1, analytics_id: 'In Person Proofing'
+        step: 'state_id', flow_path: 'standard', analytics_id: 'In Person Proofing'
       },
       'IdV: in person proofing state_id submitted' => {
-        success: true, flow_path: 'standard', step: 'state_id', step_count: 1, analytics_id: 'In Person Proofing', errors: {}, same_address_as_id: false, birth_year: '1938', document_zip_code: '12345'
+        success: true, flow_path: 'standard', step: 'state_id', analytics_id: 'In Person Proofing', errors: {}, same_address_as_id: false, birth_year: '1938', document_zip_code: '12345'
       },
       'IdV: in person proofing address visited' => {
         step: 'address', flow_path: 'standard', analytics_id: 'In Person Proofing', same_address_as_id: false

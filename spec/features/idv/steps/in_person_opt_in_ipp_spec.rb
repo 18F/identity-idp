@@ -40,7 +40,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true, allowed_extra_analy
         complete_location_step
 
         # state ID page
-        complete_state_id_step(user)
+        complete_state_id_controller(user)
 
         # ssn page
         select 'Reject', from: :mock_profiling_result
@@ -156,7 +156,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true, allowed_extra_analy
           ),
         ),
       )
-      complete_state_id_step(user)
+      complete_state_id_controller(user)
 
       # ssn page
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
@@ -341,7 +341,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true, allowed_extra_analy
           ),
         ),
       )
-      complete_state_id_step(user)
+      complete_state_id_controller(user)
 
       # ssn page
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))

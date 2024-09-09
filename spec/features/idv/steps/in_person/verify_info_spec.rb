@@ -11,6 +11,7 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true, allowed_extra_analytics: [:*
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+    allow(IdentityConfig.store).to receive(:in_person_state_id_controller_enabled).and_return(false)
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     allow(user).to receive(:enrollment).
       and_return(enrollment)

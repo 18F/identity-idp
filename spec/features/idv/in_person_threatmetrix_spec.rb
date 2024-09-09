@@ -82,7 +82,7 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true, allowed_extra_analyt
       complete_location_step(user)
 
       # state ID page
-      complete_state_id_step(user)
+      complete_state_id_controller(user)
 
       # ssn page
       complete_ssn_step(user, 'Reject')
@@ -170,7 +170,7 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true, allowed_extra_analyt
       begin_in_person_proofing(user)
       complete_prepare_step(user)
       complete_location_step
-      complete_state_id_step(user)
+      complete_state_id_controller(user)
 
       # ssn page
       complete_ssn_step(user, tmx_status)

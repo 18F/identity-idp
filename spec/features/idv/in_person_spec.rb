@@ -9,6 +9,7 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+    allow(IdentityConfig.store).to receive(:in_person_state_id_controller_enabled).and_return(true)
   end
 
   it 'works for a happy path', allow_browser_log: true do
@@ -38,7 +39,7 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
         ),
       ),
     )
-    complete_state_id_step(user)
+    complete_state_id_controller(user)
 
     # ssn page
     expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
@@ -290,7 +291,7 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
     end
 
     it 'shows the address page' do
-      complete_state_id_step(user, same_address_as_id: false)
+      complete_state_id_controller(user, same_address_as_id: false)
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
       expect(page).to have_content(t('in_person_proofing.headings.address'))
 
@@ -303,7 +304,7 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
     end
 
     it 'can update the address page form' do
-      complete_state_id_step(user, same_address_as_id: false)
+      complete_state_id_controller(user, same_address_as_id: false)
       complete_address_step(user, same_address_as_id: false)
       complete_ssn_step(user)
       # click update address link on the verify page
@@ -328,7 +329,7 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
     end
 
     it 'allows user to update their residential address as different from their state id' do
-      complete_state_id_step(user, same_address_as_id: true)
+      complete_state_id_controller(user, same_address_as_id: true)
       # skip address step b/c residential address is same as state id address
       complete_ssn_step(user)
 
@@ -367,6 +368,8 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
 
     before do
       allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).and_return(true)
+      allow(IdentityConfig.store).to receive(:in_person_state_id_controller_enabled).
+        and_return(true)
     end
 
     it 'allows the user to generate a barcode despite outage', allow_browser_log: true do
@@ -410,7 +413,7 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
       complete_location_step
 
       # state ID page
-      complete_state_id_step(user, same_address_as_id: false)
+      complete_state_id_controller(user, same_address_as_id: false)
 
       # address page
       complete_address_step(user, same_address_as_id: false)
@@ -506,7 +509,7 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
       complete_prepare_step(user)
       complete_location_step
       # Causes the schedule USPS enrollment request to throw a bad request error
-      complete_state_id_step(user, first_name: 'usps client error')
+      complete_state_id_controller(user, first_name: 'usps client error')
       complete_ssn_step(user)
       complete_verify_step(user)
       fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
