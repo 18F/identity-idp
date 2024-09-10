@@ -228,6 +228,7 @@ RSpec.describe SamlRequestValidator do
 
         context "when the IAL requested is #{biometric_ial}" do
           context 'when the service provider is allowed to use biometric ials' do
+            let(:sp) { create(:service_provider, :idv) }
             before do
               allow_any_instance_of(ServiceProvider).to receive(:biometric_ial_allowed?).
                 and_return(true)

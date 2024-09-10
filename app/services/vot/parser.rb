@@ -38,6 +38,10 @@ module Vot
       def expanded_component_values
         component_values.map(&:name).join(component_separator)
       end
+
+      def component_names
+        component_values.map(&:name)
+      end
     end.freeze
 
     attr_reader :vector_of_trust, :acr_values
@@ -107,17 +111,18 @@ module Vot
 
     def raise_unsupported_component_exception(component_value_name)
       if vector_of_trust.present?
-        raise ParseException, "#{vector_of_trust} contains unkown component #{component_value_name}"
+        raise ParseException,
+              "'#{vector_of_trust}' contains unkown component '#{component_value_name}'"
       else
-        raise ParseException, "#{acr_values} contains unkown acr value #{component_value_name}"
+        raise ParseException, "'#{acr_values}' contains unkown acr value '#{component_value_name}'"
       end
     end
 
     def raise_duplicate_component_exception
       if vector_of_trust.present?
-        raise ParseException, "#{vector_of_trust} contains duplicate components"
+        raise ParseException, "'#{vector_of_trust}' contains duplicate components"
       else
-        raise ParseException, "#{acr_values} ontains duplicate acr values"
+        raise ParseException, "'#{acr_values}' ontains duplicate acr values"
       end
     end
   end

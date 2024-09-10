@@ -23,6 +23,7 @@ RSpec.describe AttributeAsserter do
       ial: service_provider_ial,
       default_aal: service_provider_aal,
       metadata: {},
+      semantic_authn_contexts_allowed?: false,
     )
   end
 

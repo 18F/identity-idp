@@ -49,6 +49,33 @@ module Vot
       requirements: [:aal2, :ialmax],
     ).freeze
 
+    IAL_AUTH_ONLY = ComponentValue.new(
+      name: Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
+      description: 'IAL1 - no identity proofing (NIST SP 800-63-3)',
+      implied_component_values: [],
+      requirements: [],
+    ).freeze
+    IAL_VERIFIED = ComponentValue.new(
+      name: Saml::Idp::Constants::IAL_VERIFIED_ACR,
+      description: 'IAL2 - basic identity proofing, no biometrics (NIST SP 800-63-3)',
+      implied_component_values: [],
+      requirements: [:aal2, :identity_proofing],
+    ).freeze
+    IAL_VERIFIED_FACIAL_MATCH_PREFERRED = ComponentValue.new(
+      name: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_PREFERRED_ACR,
+      description: 'IAL2 - biometric-verified identity used if available (NIST SP 800-63-3)',
+      implied_component_values: [],
+      requirements: [:aal2, :identity_proofing, :biometric_comparison,
+                     :two_pieces_of_fair_evidence],
+    ).freeze
+    IAL_VERIFIED_FACIAL_MATCH_REQUIRED = ComponentValue.new(
+      name: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
+      description: 'IAL2 - require identity-proofing using facial match (NIST SP 800-63-3)',
+      implied_component_values: [],
+      requirements: [:aal2, :identity_proofing, :biometric_comparison,
+                     :two_pieces_of_fair_evidence],
+    ).freeze
+
     ## Authentication ACR values
     DEFAULT = ComponentValue.new(
       name: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
@@ -98,8 +125,22 @@ module Vot
       [component_value.name, component_value]
     end.to_h.freeze
 
+    DELIM = ' '
+
     def self.by_name
       NAME_HASH
+    end
+
+    # @param acr_values [String,Array<String>]
+    def self.any_semantic_acrs?(acr_values)
+      return false unless acr_values.present?
+      # @type [Array]
+      values = (
+                 acr_values.is_a?(String) && acr_values.presence.split(DELIM) ||
+                (acr_values.is_a?(Array) || acr_values.is_a?(Set)) && acr_values ||
+                [acr_values].compact
+               ).to_a
+      Saml::Idp::Constants::SEMANTIC_ACRS.intersect?(values)
     end
   end
 end
