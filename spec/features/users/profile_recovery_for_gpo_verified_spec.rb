@@ -1,7 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'Password recovery via personal key for a GPO-verified user',
-              allowed_extra_analytics: [:*] do
+RSpec.feature 'Password recovery via personal key for a GPO-verified user' do
   include IdvStepHelper
 
   let(:new_password) { 'some really awesome new password' }

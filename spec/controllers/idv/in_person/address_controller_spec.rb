@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::InPerson::AddressController, allowed_extra_analytics: [:*] do
+RSpec.describe Idv::InPerson::AddressController do
   include FlowPolicyHelper
   include InPersonHelper
 

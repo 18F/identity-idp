@@ -1092,6 +1092,7 @@ module AnalyticsEvents
   # view the "hybrid handoff" step next unless "skip_hybrid_handoff" param is true
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
@@ -1102,6 +1103,7 @@ module AnalyticsEvents
     errors:,
     step:,
     analytics_id:,
+    error_details: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
     **extra
@@ -1110,6 +1112,7 @@ module AnalyticsEvents
       'IdV: doc auth agreement submitted',
       success:,
       errors:,
+      error_details:,
       step:,
       analytics_id:,
       acuant_sdk_upgrade_ab_test_bucket:,
@@ -1141,8 +1144,25 @@ module AnalyticsEvents
     )
   end
 
-  def idv_doc_auth_capture_complete_visited(**extra)
-    track_event('IdV: doc auth capture_complete visited', **extra)
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [Boolean] liveness_checking_required Whether biometric selfie check is required
+  def idv_doc_auth_capture_complete_visited(
+    step:,
+    analytics_id:,
+    flow_path:,
+    liveness_checking_required:,
+    **extra
+  )
+    track_event(
+      'IdV: doc auth capture_complete visited',
+      step:,
+      analytics_id:,
+      flow_path:,
+      liveness_checking_required:,
+      **extra,
+    )
   end
 
   # User submits IdV document capture step
@@ -1158,6 +1178,7 @@ module AnalyticsEvents
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # SDK upgrades
+  # @param [Boolean] stored_result_present Whether a stored result was present
   def idv_doc_auth_document_capture_submitted(
     success:,
     errors:,
@@ -1169,6 +1190,7 @@ module AnalyticsEvents
     acuant_sdk_upgrade_ab_test_bucket: nil,
     redo_document_capture: nil,
     skip_hybrid_handoff: nil,
+    stored_result_present: nil,
     **extra
   )
     track_event(
@@ -1183,6 +1205,7 @@ module AnalyticsEvents
       selfie_check_required:,
       acuant_sdk_upgrade_ab_test_bucket:,
       flow_path:,
+      stored_result_present:,
       **extra,
     )
   end
@@ -1245,12 +1268,52 @@ module AnalyticsEvents
     )
   end
 
-  def idv_doc_auth_how_to_verify_submitted(**extra)
-    track_event(:idv_doc_auth_how_to_verify_submitted, **extra)
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  # @param [String] selection Selection form parameter
+  def idv_doc_auth_how_to_verify_submitted(
+    success:,
+    errors:,
+    step:,
+    analytics_id:,
+    skip_hybrid_handoff:,
+    selection: nil,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      :idv_doc_auth_how_to_verify_submitted,
+      success:,
+      errors:,
+      error_details:,
+      step:,
+      analytics_id:,
+      skip_hybrid_handoff:,
+      selection:,
+      **extra,
+    )
   end
 
-  def idv_doc_auth_how_to_verify_visited(**extra)
-    track_event(:idv_doc_auth_how_to_verify_visited, **extra)
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  def idv_doc_auth_how_to_verify_visited(
+    step:,
+    analytics_id:,
+    skip_hybrid_handoff:,
+    **extra
+  )
+    track_event(
+      :idv_doc_auth_how_to_verify_visited,
+      step:,
+      analytics_id:,
+      skip_hybrid_handoff:,
+      **extra,
+    )
   end
 
   # The "hybrid handoff" step: Desktop user has submitted their choice to
@@ -1269,6 +1332,7 @@ module AnalyticsEvents
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # SDK upgrades
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  # @param [Hash] telephony_response Response from Telephony gem
   def idv_doc_auth_hybrid_handoff_submitted(
     success:,
     errors:,
@@ -1280,6 +1344,7 @@ module AnalyticsEvents
     flow_path:,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
+    telephony_response: nil,
     **extra
   )
     track_event(
@@ -1294,6 +1359,7 @@ module AnalyticsEvents
       acuant_sdk_upgrade_ab_test_bucket:,
       destination:,
       flow_path:,
+      telephony_response:,
       **extra,
     )
   end
@@ -1329,17 +1395,52 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param ["hybrid","standard"] flow_path Document capture user flow
   # @identity.idp.previous_event_name IdV: doc auth send_link submitted
-  def idv_doc_auth_link_sent_submitted(**extra)
-    track_event('IdV: doc auth link_sent submitted', **extra)
+  def idv_doc_auth_link_sent_submitted(step:, analytics_id:, flow_path:, **extra)
+    track_event(
+      'IdV: doc auth link_sent submitted',
+      step:,
+      analytics_id:,
+      flow_path:,
+      **extra,
+    )
   end
 
-  def idv_doc_auth_link_sent_visited(**extra)
-    track_event('IdV: doc auth link_sent visited', **extra)
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  def idv_doc_auth_link_sent_visited(step:, analytics_id:, flow_path:, **extra)
+    track_event(
+      'IdV: doc auth link_sent visited',
+      step:,
+      analytics_id:,
+      flow_path:,
+      **extra,
+    )
   end
 
-  def idv_doc_auth_redo_ssn_submitted(**extra)
-    track_event('IdV: doc auth redo_ssn submitted', **extra)
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [Boolean] same_address_as_id
+  def idv_doc_auth_redo_ssn_submitted(
+    step:,
+    analytics_id:,
+    flow_path:,
+    same_address_as_id: nil,
+    **extra
+  )
+    track_event(
+      'IdV: doc auth redo_ssn submitted',
+      step:,
+      analytics_id:,
+      flow_path:,
+      same_address_as_id:,
+      **extra,
+    )
   end
 
   # @param [String] created_at The created timestamp received from Socure
@@ -1370,30 +1471,36 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name IdV: in person proofing ssn submitted
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  # @param [Boolean] same_address_as_id
   def idv_doc_auth_ssn_submitted(
     success:,
     errors:,
     step:,
     analytics_id:,
     flow_path:,
+    error_details: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
+    same_address_as_id: nil,
     **extra
   )
     track_event(
       'IdV: doc auth ssn submitted',
       success:,
       errors:,
+      error_details:,
       step:,
       analytics_id:,
       skip_hybrid_handoff:,
       acuant_sdk_upgrade_ab_test_bucket:,
       flow_path:,
+      same_address_as_id:,
       **extra,
     )
   end
@@ -1405,12 +1512,14 @@ module AnalyticsEvents
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  # @param [Boolean] same_address_as_id
   def idv_doc_auth_ssn_visited(
     step:,
     analytics_id:,
     flow_path:,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
+    same_address_as_id: nil,
     **extra
   )
     track_event(
@@ -1420,6 +1529,7 @@ module AnalyticsEvents
       skip_hybrid_handoff:,
       acuant_sdk_upgrade_ab_test_bucket:,
       flow_path:,
+      same_address_as_id:,
       **extra,
     )
   end
@@ -1698,6 +1808,7 @@ module AnalyticsEvents
   # @param flow_path [String] "hybrid" for hybrid handoff, "standard" otherwise
   # @param lexisnexis_instant_verify_workflow_ab_test_bucket [String] A/B test bucket for Lexis Nexis InstantVerify workflow testing
   # @param opted_in_to_in_person_proofing [Boolean] Whether this user explicitly opted into in-person proofing
+  # @param [Boolean] same_address_as_id
   # @param proofing_results [Hash]
   # @option proofing_results [String,nil] exception If an exception occurred during any phase of proofing its message is provided here
   # @option proofing_results [Boolean] timed_out true if any vendor API calls timed out during proofing
@@ -1768,6 +1879,7 @@ module AnalyticsEvents
     ssn_is_unique: nil,
     step: nil,
     success: nil,
+    same_address_as_id: nil,
     **extra
   )
     track_event(
@@ -1786,6 +1898,7 @@ module AnalyticsEvents
       ssn_is_unique:,
       step:,
       success:,
+      same_address_as_id:,
       **extra,
     )
   end
@@ -1798,12 +1911,14 @@ module AnalyticsEvents
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  # @param [Boolean] same_address_as_id
   def idv_doc_auth_verify_submitted(
     step:,
     analytics_id:,
     flow_path:,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
+    same_address_as_id: nil,
     **extra
   )
     track_event(
@@ -1813,6 +1928,7 @@ module AnalyticsEvents
       skip_hybrid_handoff:,
       acuant_sdk_upgrade_ab_test_bucket:,
       flow_path:,
+      same_address_as_id:,
       **extra,
     )
   end
@@ -1824,12 +1940,14 @@ module AnalyticsEvents
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  # @param [Boolean] same_address_as_id
   def idv_doc_auth_verify_visited(
     step:,
     analytics_id:,
     flow_path:,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
+    same_address_as_id: nil,
     **extra
   )
     track_event(
@@ -1839,6 +1957,7 @@ module AnalyticsEvents
       skip_hybrid_handoff:,
       acuant_sdk_upgrade_ab_test_bucket:,
       flow_path:,
+      same_address_as_id:,
       **extra,
     )
   end
@@ -2423,12 +2542,14 @@ module AnalyticsEvents
   end
 
   # Tracks if request to get USPS in-person proofing locations fails
+  # @param [Integer] api_status_code HTTP status code for API response
   # @param [String] exception_class
   # @param [String] exception_message
   # @param [Boolean] response_body_present
   # @param [Hash] response_body
   # @param [Integer] response_status_code
   def idv_in_person_locations_request_failure(
+    api_status_code:,
     exception_class:,
     exception_message:,
     response_body_present:,
@@ -2438,11 +2559,12 @@ module AnalyticsEvents
   )
     track_event(
       'Request USPS IPP locations: request failed',
-      exception_class: exception_class,
-      exception_message: exception_message,
-      response_body_present: response_body_present,
-      response_body: response_body,
-      response_status_code: response_status_code,
+      api_status_code:,
+      exception_class:,
+      exception_message:,
+      response_body_present:,
+      response_body:,
+      response_status_code:,
       **extra,
     )
   end
@@ -2502,21 +2624,24 @@ module AnalyticsEvents
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] step
   # @param [String] analytics_id
-  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  # @param [Boolean] same_address_as_id
   # address page visited
   def idv_in_person_proofing_address_visited(
-    flow_path: nil,
-    step: nil,
-    analytics_id: nil,
-    opted_in_to_in_person_proofing: nil,
+    flow_path:,
+    step:,
+    analytics_id:,
+    skip_hybrid_handoff: nil,
+    same_address_as_id: nil,
     **extra
   )
     track_event(
       'IdV: in person proofing address visited',
-      flow_path: flow_path,
-      step: step,
-      analytics_id: analytics_id,
-      opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
+      flow_path:,
+      step:,
+      analytics_id:,
+      skip_hybrid_handoff:,
+      same_address_as_id:,
       **extra,
     )
   end
@@ -2652,8 +2777,40 @@ module AnalyticsEvents
     )
   end
 
-  def idv_in_person_proofing_residential_address_submitted(**extra)
-    track_event('IdV: in person proofing residential address submitted', **extra)
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  # @param [Boolean, nil] same_address_as_id
+  # @param [String] current_address_zip_code ZIP code of given address
+  def idv_in_person_proofing_residential_address_submitted(
+    success:,
+    errors:,
+    flow_path:,
+    step:,
+    analytics_id:,
+    current_address_zip_code:,
+    error_details: nil,
+    skip_hybrid_handoff: nil,
+    same_address_as_id: nil,
+    **extra
+  )
+    track_event(
+      'IdV: in person proofing residential address submitted',
+      success:,
+      errors:,
+      flow_path:,
+      step:,
+      analytics_id:,
+      current_address_zip_code:,
+      error_details:,
+      skip_hybrid_handoff:,
+      same_address_as_id:,
+      **extra,
+    )
   end
 
   # @param ["hybrid","standard"] flow_path Document capture user flow
@@ -2664,14 +2821,18 @@ module AnalyticsEvents
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Boolean, nil] same_address_as_id
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [String] birth_year Birth year from document
+  # @param [String] document_zip_code ZIP code from document
   # User submitted state id
   def idv_in_person_proofing_state_id_submitted(
     success:,
     errors:,
+    flow_path:,
+    step:,
+    analytics_id:,
+    birth_year:,
+    document_zip_code:,
     error_details: nil,
-    flow_path: nil,
-    step: nil,
-    analytics_id: nil,
     same_address_as_id: nil,
     opted_in_to_in_person_proofing: nil,
     **extra
@@ -2684,6 +2845,8 @@ module AnalyticsEvents
       success:,
       errors:,
       error_details:,
+      birth_year:,
+      document_zip_code:,
       same_address_as_id:,
       opted_in_to_in_person_proofing:,
       **extra,
@@ -2756,7 +2919,7 @@ module AnalyticsEvents
   # @param [boolean] success sms notification successful or not
   # @param [String] enrollment_code enrollment_code
   # @param [String] enrollment_id enrollment_id
-  # @param [Hash] telephony_response response from Telephony gem
+  # @param [Hash] telephony_response Response from Telephony gem
   # @param [Hash] extra extra information
   def idv_in_person_send_proofing_notification_attempted(
     success:,
@@ -3159,22 +3322,25 @@ module AnalyticsEvents
   # @param [String] reason
   # @param [Integer] enrollment_id
   # @param [String] exception_class
+  # @param [String] original_exception_class
   # @param [String] exception_message
   def idv_in_person_usps_request_enroll_exception(
     context:,
     reason:,
     enrollment_id:,
     exception_class:,
+    original_exception_class:,
     exception_message:,
     **extra
   )
     track_event(
       'USPS IPPaaS enrollment failed',
-      context: context,
-      enrollment_id: enrollment_id,
-      exception_class: exception_class,
-      exception_message: exception_message,
-      reason: reason,
+      context:,
+      enrollment_id:,
+      exception_class:,
+      original_exception_class:,
+      exception_message:,
+      reason:,
       **extra,
     )
   end
@@ -3267,9 +3433,11 @@ module AnalyticsEvents
   end
 
   # Tracks when the user visits Mail only warning when vendor_status_sms is set to full_outage
-  def idv_mail_only_warning_visited(**extra)
+  # @param [String] analytics_id Current IdV flow identifier
+  def idv_mail_only_warning_visited(analytics_id:, **extra)
     track_event(
       'IdV: Mail only warning visited',
+      analytics_id:,
       **extra,
     )
   end
@@ -3581,7 +3749,7 @@ module AnalyticsEvents
   # @param [String] country_code Abbreviated 2-letter country code associated with phone number
   # @param [String] area_code area code of phone number
   # @param [Boolean] rate_limit_exceeded whether or not the rate limit was exceeded by this attempt
-  # @param [Hash] telephony_response response from Telephony gem
+  # @param [Hash] telephony_response Response from Telephony gem
   # @param [String] phone_fingerprint HMAC fingerprint of the phone number formatted as E.164
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
@@ -3638,7 +3806,7 @@ module AnalyticsEvents
   # @param [String] area_code area code of phone number
   # @param [Boolean] rate_limit_exceeded whether or not the rate limit was exceeded by this attempt
   # @param [String] phone_fingerprint HMAC fingerprint of the phone number formatted as E.164
-  # @param [Hash] telephony_response response from Telephony gem
+  # @param [Hash] telephony_response Response from Telephony gem
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
   # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
@@ -4395,13 +4563,19 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name IdV: GPO verification visited
   # Visited page used to enter address verification code received via US mail.
   # @param [String,nil] source The source for the visit (i.e., "gpo_reminder_email").
+  # @param [Boolean] otp_rate_limited Whether the user is rate-limited
+  # @param [Boolean] user_can_request_another_letter Whether user can request another letter
   def idv_verify_by_mail_enter_code_visited(
-    source: nil,
+    source:,
+    otp_rate_limited:,
+    user_can_request_another_letter:,
     **extra
   )
     track_event(
       'IdV: enter verify by mail code visited',
-      source: source,
+      source:,
+      otp_rate_limited:,
+      user_can_request_another_letter:,
       **extra,
     )
   end
@@ -6032,9 +6206,11 @@ module AnalyticsEvents
   # @param [String] jti
   # @param [String] user_id
   # @param [String] client_id
+  # @param [String] event_type
   def security_event_received(
     success:,
     errors:,
+    event_type:,
     error_code: nil,
     error_details: nil,
     jti: nil,
@@ -6047,6 +6223,7 @@ module AnalyticsEvents
       success:,
       errors:,
       error_details:,
+      event_type:,
       error_code:,
       jti:,
       user_id:,
@@ -6229,7 +6406,7 @@ module AnalyticsEvents
   # @param ["authentication", "reauthentication", "confirmation"] context User session context
   # @param ["sms", "voice"] otp_delivery_preference Channel used to send the message
   # @param [Boolean] resend
-  # @param [Hash] telephony_response
+  # @param [Hash] telephony_response Response from Telephony gem
   # @param [:test, :pinpoint] adapter which adapter the OTP was delivered with
   # @param [Boolean] success
   # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
@@ -6599,19 +6776,28 @@ module AnalyticsEvents
   # @param [Integer] enrollment_id
   # @param [Boolean] second_address_line_present
   # @param [String] service_provider
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [String] tmx_status the tmx_status of the enrollment profile profile
+  # @param [Boolean] enhanced_ipp Whether enrollment is for enhanced in-person proofing
   def usps_ippaas_enrollment_created(
     enrollment_code:,
     enrollment_id:,
     second_address_line_present:,
     service_provider:,
+    opted_in_to_in_person_proofing:,
+    tmx_status:,
+    enhanced_ipp:,
     **extra
   )
     track_event(
       'USPS IPPaaS enrollment created',
-      enrollment_code: enrollment_code,
-      enrollment_id: enrollment_id,
-      second_address_line_present: second_address_line_present,
-      service_provider: service_provider,
+      enrollment_code:,
+      enrollment_id:,
+      second_address_line_present:,
+      service_provider:,
+      opted_in_to_in_person_proofing:,
+      tmx_status:,
+      enhanced_ipp:,
       **extra,
     )
   end
