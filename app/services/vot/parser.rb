@@ -4,6 +4,10 @@ module Vot
   class Parser
     class ParseException < StandardError; end
 
+    class UnsupportedComponentsException < ParseException; end
+
+    class DuplicateComponentsException < ParseException; end
+
     Result = Data.define(
       :component_values,
       :component_separator,
@@ -111,18 +115,19 @@ module Vot
 
     def raise_unsupported_component_exception(component_value_name)
       if vector_of_trust.present?
-        raise ParseException,
+        raise UnsupportedComponentsException,
               "'#{vector_of_trust}' contains unknown component '#{component_value_name}'"
       else
-        raise ParseException, "'#{acr_values}' contains unknown acr value '#{component_value_name}'"
+        raise UnsupportedComponentsException,
+              "'#{acr_values}' contains unknown acr value '#{component_value_name}'"
       end
     end
 
     def raise_duplicate_component_exception
       if vector_of_trust.present?
-        raise ParseException, "'#{vector_of_trust}' contains duplicate components"
+        raise DuplicateComponentsException, "'#{vector_of_trust}' contains duplicate components"
       else
-        raise ParseException, "'#{acr_values}' contains duplicate acr values"
+        raise DuplicateComponentsException, "'#{acr_values}' contains duplicate acr values"
       end
     end
   end
