@@ -1342,6 +1342,30 @@ module AnalyticsEvents
     track_event('IdV: doc auth redo_ssn submitted', **extra)
   end
 
+  # @param [String] created_at The created timestamp received from Socure
+  # @param [String] customer_user_id The customerUserId received from Socure
+  # @param [String] event_type The eventType received from Socure
+  # @param [String] reference_id The referenceId received from Socure
+  # @param [String] user_id The customerUserId, repackaged as user_id
+  def idv_doc_auth_socure_webhook_received(
+    created_at:,
+    customer_user_id:,
+    event_type:,
+    reference_id:,
+    user_id:,
+    **extra
+  )
+    track_event(
+      :idv_doc_auth_socure_webhook_received,
+      created_at:,
+      customer_user_id:,
+      event_type:,
+      reference_id:,
+      user_id:,
+      **extra,
+    )
+  end
+
   # User submits IdV Social Security number step
   # @identity.idp.previous_event_name IdV: in person proofing ssn submitted
   # @param [Boolean] success Whether form validation was successful
@@ -1412,6 +1436,8 @@ module AnalyticsEvents
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
   # @param [String] selfie_image_fingerprint Fingerprint of selfie image data
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
+  # SDK upgrades
   # The document capture image uploaded was locally validated during the IDV process
   def idv_doc_auth_submitted_image_upload_form(
     success:,
@@ -1425,6 +1451,7 @@ module AnalyticsEvents
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
     selfie_image_fingerprint: nil,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
     **extra
   )
     track_event(
@@ -1440,6 +1467,7 @@ module AnalyticsEvents
       back_image_fingerprint:,
       liveness_checking_required:,
       selfie_image_fingerprint:,
+      acuant_sdk_upgrade_ab_test_bucket:,
       **extra,
     )
   end
@@ -1486,6 +1514,9 @@ module AnalyticsEvents
   # @param [String] workflow LexisNexis TrueID workflow
   # @param [String] birth_year Birth year from document
   # @param [Integer] issue_year Year document was issued
+  # @param [Integer] selfie_attempts number of selfie attempts the user currently has processed
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
+  # SDK upgrades
   # @option extra [String] 'DocumentName'
   # @option extra [String] 'DocAuthResult'
   # @option extra [String] 'DocIssuerCode'
@@ -1543,6 +1574,8 @@ module AnalyticsEvents
     selfie_quality_good: nil,
     workflow: nil,
     birth_year: nil,
+    selfie_attempts: nil,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
     **extra
   )
     track_event(
@@ -1588,6 +1621,8 @@ module AnalyticsEvents
       workflow:,
       birth_year:,
       issue_year:,
+      selfie_attempts:,
+      acuant_sdk_upgrade_ab_test_bucket:,
       **extra,
     )
   end
@@ -4517,6 +4552,7 @@ module AnalyticsEvents
   # @param [String] piv_cac_configuration_dn_uuid PIV/CAC X509 distinguished name UUID
   # @param [String, nil] key_id PIV/CAC key_id from PKI service
   # @param [Integer] webauthn_configuration_id Database ID of WebAuthn configuration
+  # @param [String] webauthn_aaguid AAGUID valule of WebAuthn configuration
   # @param [Integer] phone_configuration_id Database ID of phone configuration
   # @param [Boolean] confirmation_for_add_phone Whether authenticating while adding phone
   # @param [String] area_code Area code of phone number
@@ -4540,6 +4576,7 @@ module AnalyticsEvents
     piv_cac_configuration_dn_uuid: nil,
     key_id: nil,
     webauthn_configuration_id: nil,
+    webauthn_aaguid: nil,
     confirmation_for_add_phone: nil,
     phone_configuration_id: nil,
     area_code: nil,
@@ -4563,6 +4600,7 @@ module AnalyticsEvents
       piv_cac_configuration_dn_uuid:,
       key_id:,
       webauthn_configuration_id:,
+      webauthn_aaguid:,
       confirmation_for_add_phone:,
       phone_configuration_id:,
       area_code:,
@@ -4851,6 +4889,9 @@ module AnalyticsEvents
   # @param [String, nil] key_id PIV/CAC key_id from PKI service
   # @param [Hash] mfa_method_counts Hash of MFA method with the number of that method on the account
   # @param [Hash] authenticator_data_flags WebAuthn authenticator data flags
+  # @param [String, nil] aaguid AAGUID value of WebAuthn device
+  # @param [String[], nil] unknown_transports Array of unrecognized WebAuthn transports, intended to
+  # be used in case of future specification changes.
   def multi_factor_auth_setup(
     success:,
     multi_factor_auth_method:,
@@ -4871,6 +4912,8 @@ module AnalyticsEvents
     key_id: nil,
     mfa_method_counts: nil,
     authenticator_data_flags: nil,
+    aaguid: nil,
+    unknown_transports: nil,
     **extra
   )
     track_event(
@@ -4894,6 +4937,8 @@ module AnalyticsEvents
       key_id:,
       mfa_method_counts:,
       authenticator_data_flags:,
+      aaguid:,
+      unknown_transports:,
       **extra,
     )
   end
@@ -6278,14 +6323,6 @@ module AnalyticsEvents
     track_event(
       'User marked authenticated',
       authentication_type: authentication_type,
-      **extra,
-    )
-  end
-
-  # Tracks when the user is notified their password is compromised
-  def user_password_compromised_visited(**extra)
-    track_event(
-      :user_password_compromised_visited,
       **extra,
     )
   end

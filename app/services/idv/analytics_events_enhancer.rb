@@ -26,6 +26,7 @@ module Idv
       idv_doc_auth_link_sent_submitted
       idv_doc_auth_link_sent_visited
       idv_doc_auth_redo_ssn_submitted
+      idv_doc_auth_socure_webhook_received
       idv_doc_auth_ssn_submitted
       idv_doc_auth_ssn_visited
       idv_doc_auth_submitted_image_upload_form

@@ -197,8 +197,8 @@ RSpec.describe AbTests do
       context 'with no associated user' do
         let(:user) { nil }
 
-        it 'does not return a bucket' do
-          expect(bucket).to be_nil
+        it 'returns a bucket' do
+          expect(bucket).not_to be_nil
         end
       end
 

@@ -52,6 +52,8 @@ RSpec.describe WebauthnVerificationForm do
           expect(result.to_h).to eq(
             success: true,
             webauthn_configuration_id: webauthn_configuration.id,
+            frontend_error: nil,
+            webauthn_aaguid: nil,
           )
         end
       end
@@ -64,6 +66,7 @@ RSpec.describe WebauthnVerificationForm do
           expect(result.to_h).to eq(
             success: true,
             webauthn_configuration_id: webauthn_configuration.id,
+            frontend_error: nil,
             webauthn_aaguid: aaguid,
           )
         end
@@ -76,6 +79,8 @@ RSpec.describe WebauthnVerificationForm do
           expect(result.to_h).to eq(
             success: true,
             webauthn_configuration_id: webauthn_configuration.id,
+            frontend_error: nil,
+            webauthn_aaguid: nil,
           )
         end
       end
@@ -93,6 +98,8 @@ RSpec.describe WebauthnVerificationForm do
               authenticator_data: { invalid_authenticator_data: true },
             },
             webauthn_configuration_id: webauthn_configuration.id,
+            frontend_error: nil,
+            webauthn_aaguid: nil,
           )
         end
       end
@@ -107,6 +114,8 @@ RSpec.describe WebauthnVerificationForm do
               authenticator_data: { blank: true, invalid_authenticator_data: true },
             },
             webauthn_configuration_id: webauthn_configuration.id,
+            frontend_error: nil,
+            webauthn_aaguid: nil,
           )
         end
       end
@@ -122,6 +131,8 @@ RSpec.describe WebauthnVerificationForm do
               authenticator_data: { invalid_authenticator_data: true },
             },
             webauthn_configuration_id: webauthn_configuration.id,
+            frontend_error: nil,
+            webauthn_aaguid: nil,
           )
         end
       end
@@ -137,6 +148,8 @@ RSpec.describe WebauthnVerificationForm do
               authenticator_data: { invalid_authenticator_data: true },
             },
             webauthn_configuration_id: webauthn_configuration.id,
+            frontend_error: nil,
+            webauthn_aaguid: nil,
           )
         end
       end
@@ -148,6 +161,9 @@ RSpec.describe WebauthnVerificationForm do
           expect(result.to_h).to eq(
             success: false,
             error_details: { webauthn_configuration: { blank: true } },
+            webauthn_configuration_id: nil,
+            frontend_error: nil,
+            webauthn_aaguid: nil,
           )
         end
       end
@@ -161,6 +177,7 @@ RSpec.describe WebauthnVerificationForm do
             error_details: { webauthn_error: { present: true } },
             webauthn_configuration_id: webauthn_configuration.id,
             frontend_error: webauthn_error,
+            webauthn_aaguid: nil,
           )
         end
       end
@@ -176,6 +193,8 @@ RSpec.describe WebauthnVerificationForm do
                 screen_lock_error: { present: true },
               },
               webauthn_configuration_id: webauthn_configuration.id,
+              frontend_error: nil,
+              webauthn_aaguid: nil,
             )
           end
 
@@ -202,6 +221,8 @@ RSpec.describe WebauthnVerificationForm do
                   screen_lock_error: { present: true },
                 },
                 webauthn_configuration_id: webauthn_configuration.id,
+                frontend_error: nil,
+                webauthn_aaguid: nil,
               )
             end
 
@@ -227,6 +248,8 @@ RSpec.describe WebauthnVerificationForm do
                   screen_lock_error: { present: true },
                 },
                 webauthn_configuration_id: webauthn_configuration.id,
+                frontend_error: nil,
+                webauthn_aaguid: nil,
               )
             end
 
@@ -251,6 +274,8 @@ RSpec.describe WebauthnVerificationForm do
                   screen_lock_error: { present: true },
                 },
                 webauthn_configuration_id: webauthn_configuration.id,
+                frontend_error: nil,
+                webauthn_aaguid: nil,
               )
             end
 
@@ -277,6 +302,8 @@ RSpec.describe WebauthnVerificationForm do
             success: false,
             error_details: { authenticator_data: { invalid_authenticator_data: true } },
             webauthn_configuration_id: webauthn_configuration.id,
+            frontend_error: nil,
+            webauthn_aaguid: nil,
           )
         end
       end
@@ -292,6 +319,8 @@ RSpec.describe WebauthnVerificationForm do
             success: false,
             error_details: { authenticator_data: { invalid_authenticator_data: true } },
             webauthn_configuration_id: webauthn_configuration.id,
+            frontend_error: nil,
+            webauthn_aaguid: nil,
           )
         end
       end

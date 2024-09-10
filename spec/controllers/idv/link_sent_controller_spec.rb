@@ -10,7 +10,7 @@ RSpec.describe Idv::LinkSentController, allowed_extra_analytics: [:*] do
   before do
     stub_sign_in(user)
     subject.idv_session.welcome_visited = true
-    subject.idv_session.idv_consent_given = true
+    subject.idv_session.idv_consent_given_at = Time.zone.now
     subject.idv_session.flow_path = 'hybrid'
     stub_analytics
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
@@ -87,7 +87,7 @@ RSpec.describe Idv::LinkSentController, allowed_extra_analytics: [:*] do
       context 'flow_path is standard' do
         it 'redirects to idv_document_capture_url' do
           subject.idv_session.welcome_visited = true
-          subject.idv_session.idv_consent_given = true
+          subject.idv_session.idv_consent_given_at = Time.zone.now
           subject.idv_session.flow_path = 'standard'
 
           get :show

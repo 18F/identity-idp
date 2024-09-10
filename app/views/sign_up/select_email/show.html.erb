@@ -1,50 +1,43 @@
 <% self.title = t('titles.select_email') %>
 
 <%= render StatusPageComponent.new(status: :info, icon: :question) do |c| %>
-  <% c.with_header { t('titles.select_email') } %>
+  <% c.with_header(id: 'select-email-heading') { t('titles.select_email') } %>
+
   <p id="select-email-intro">
     <%= I18n.t('help_text.select_preferred_email', sp: @sp_name, app_name: APP_NAME) %>
   </p>
 
-  <%= simple_form_for('', url: sign_up_select_email_path) do |f| %>
-    <fieldset class="usa-fieldset" aria-labelledby="select-email-intro">
-      <div class="grid-row margin-bottom-neg-1">
-        <div class="grid-col-fill">
-          <div class="display-inline-block minw-full">
-            <% @user_emails.each do |email, index| %>
-              <div class="usa-radio">
-                <%= radio_button_tag(
-                      'select_email_form[selected_email_id]',
-                      email.id,
-                      email.email == @last_sign_in_email_address,
-                      class: 'usa-radio__input usa-radio__input--bordered',
-                    ) %>
-                    <%= label_tag(
-                          "select_email_form_selected_email_id_#{email.id}",
-                          class: 'usa-radio__label width-full',
-                        ) do %>
-                      <%= email.email %>
-                    <% end %>
-              </div>
-            <% end %>
-          </div>
-        </div>
-        <div class="grid-col-4 tablet:grid-col-6"></div>
-      </div>
-    </fieldset>
-    <%= f.submit t('help_text.requested_attributes.change_email_link'), class: 'margin-top-4' %>
+  <%= simple_form_for(@select_email_form, url: sign_up_select_email_path) do |f| %>
+    <%= f.input(
+          :selected_email_id,
+          as: :radio_buttons,
+          label: false,
+          wrapper_html: {
+            aria: {
+              labelledby: 'select-email-heading',
+              describedby: 'select-email-intro',
+            },
+          },
+          collection: @user_emails.map do |email|
+            [
+              email.email,
+              email.id,
+              checked: email.email == @last_sign_in_email_address,
+            ]
+          end,
+        ) %>
+    <%= f.submit t('help_text.requested_attributes.change_email_link'), class: 'margin-top-1' %>
   <% end %>
 
-    <%= render ButtonComponent.new(
-          url: add_email_path,
-          outline: true,
-          big: true,
-          wide: true,
-          class: 'margin-top-2',
-        ).with_content(t('account.index.email_add')) %>
-        
+  <%= render ButtonComponent.new(
+        url: add_email_path,
+        outline: true,
+        big: true,
+        wide: true,
+        class: 'margin-top-2',
+      ).with_content(t('account.index.email_add')) %>
+
   <%= render PageFooterComponent.new do %>
     <%= link_to t('forms.buttons.back'), sign_up_completed_path %>
   <% end %>
-
 <% end %>

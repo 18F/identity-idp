@@ -265,6 +265,20 @@ RSpec.describe UspsInPersonProofing::Proofer do
         expect_facility_fields_to_be_present(facilities[0])
       end
     end
+
+    context 'when there is a 4xx error for a bad sponsor id' do
+      it 'raises a Faraday::BadRequestError' do
+        stub_request_facilities_with_sponsor_error
+        expect { subject.request_facilities(location, is_enhanced_ipp) }.to raise_error do |error|
+          expect(error).to be_an_instance_of(Faraday::BadRequestError)
+          expect(error.response).to include(
+            body: include(
+              'responseMessage' => 'Sponsor for sponsorID 5 not found',
+            ),
+          )
+        end
+      end
+    end
   end
 
   describe '#request_enroll' do

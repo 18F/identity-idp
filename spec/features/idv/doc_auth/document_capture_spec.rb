@@ -731,7 +731,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 review_page_h1_copy = strip_tags(t('doc_auth.errors.rate_limited_heading'))
                 expect(page).to have_content(review_page_h1_copy)
 
-                review_page_body_copy = strip_tags(
+                review_page_body_copy = strip_nbsp(
                   t('doc_auth.errors.alerts.barcode_content_check'),
                 )
                 expect(page).to have_content(review_page_body_copy)
@@ -747,7 +747,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 resubmit_page_h1_copy = strip_tags(t('doc_auth.headings.review_issues'))
                 expect(page).to have_content(resubmit_page_h1_copy)
 
-                resubmit_page_body_copy = strip_tags(
+                resubmit_page_body_copy = strip_nbsp(
                   t('doc_auth.errors.alerts.barcode_content_check'),
                 )
                 expect(page).to have_content(resubmit_page_body_copy)
@@ -779,7 +779,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 review_page_h1_copy = strip_tags(t('doc_auth.errors.rate_limited_heading'))
                 expect(page).to have_content(review_page_h1_copy)
 
-                review_page_body_copy = strip_tags(
+                review_page_body_copy = strip_nbsp(
                   t('doc_auth.errors.alerts.barcode_content_check'),
                 )
                 expect(page).to have_content(review_page_body_copy)
@@ -795,7 +795,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 resubmit_page_h1_copy = strip_tags(t('doc_auth.headings.review_issues'))
                 expect(page).to have_content(resubmit_page_h1_copy)
 
-                resubmit_page_body_copy = strip_tags(
+                resubmit_page_body_copy = strip_nbsp(
                   t('doc_auth.errors.alerts.barcode_content_check'),
                 )
                 expect(page).to have_content(resubmit_page_body_copy)

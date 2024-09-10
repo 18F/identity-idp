@@ -9,7 +9,7 @@
 <div class="grid-row grid-gap margin-top-2 flex-align-stretch">
   <% [['Messages', @messages], ['Calls', @calls]].each do |title, messages| %>
     <div class="tablet:grid-col-6">
-      <div class="card padding-4 height-full">
+      <div class="card height-full">
         <h2 class="margin-0"><%= title %></h2>
 
         <% messages.each do |message| %>
