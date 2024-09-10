@@ -11,26 +11,22 @@ RSpec.describe Proofing::Socure::IdPlus::FetchResultsRequest do
   let(:api_key) { 'super-$ecret' }
   let(:base_url) { 'https://example.org/' }
   let(:timeout) { 5 }
-  let(:user) { build(:user) }
-  let(:results_id) { 'get this from the webhook request' }
+  let(:reference_id) { 'get this from the webhook request' }
 
   let(:config) do
-    { api_key: }
+    {
+      api_key:,
+      base_url:
+    }
   end
 
   subject(:request) do
-    described_class.new(config:, results_id:)
+    described_class.new(config:, reference_id:)
   end
 
-  xdescribe '#body' do
-    it 'contains all expected values' do
-      freeze_time do
-        expect(JSON.parse(request.body, symbolize_names: true)).to eql(
-          {
-            some_key: 'ferd is a ferd',
-          },
-        )
-      end
+  describe '#body' do
+    it 'is empty' do
+      expect(JSON.parse(request.body, symbolize_names: true)).to eql({})
     end
   end
 
@@ -44,35 +40,27 @@ RSpec.describe Proofing::Socure::IdPlus::FetchResultsRequest do
     end
   end
 
-  xdescribe '#send_request' do
+  describe '#send_request' do
+    let(:body) { {} }
+    let(:response_status) { 200 }
+
     before do
-      stub_request(:post, 'https://example.org/api/3.0/EmailAuthScore').
+      stub_request(:post, "https://example.org/api/3.0/transaction?referenceId=#{reference_id}").
         to_return(
+          status: response_status,
           headers: {
             'Content-Type' => 'application/json',
           },
-          body: JSON.generate(
-            {
-              another_key: 'yet more nonsense',
-            },
-          ),
+          body: JSON.generate(body),
         )
     end
 
-    it 'includes API key' do
+    it 'makes the request with the API key and reference id' do
       request.send_request
 
       expect(WebMock).to have_requested(
-                           :post, 'https://example.org/api/3.0/EmailAuthScore'
-                         ).with(headers: { 'Authorization' => "SocureApiKey #{api_key}" })
-    end
-
-    it 'includes JSON serialized body' do
-      request.send_request
-
-      expect(WebMock).to have_requested(
-                           :post, 'https://example.org/api/3.0/EmailAuthScore'
-                         ).with(body: request.body)
+        :post, "https://example.org/api/3.0/transaction?referenceId=#{reference_id}"
+      ).with(headers: { 'Authorization' => "SocureApiKey #{api_key}" })
     end
 
     xcontext 'when service returns HTTP 200 response' do
@@ -88,83 +76,68 @@ RSpec.describe Proofing::Socure::IdPlus::FetchResultsRequest do
       end
     end
 
-    xcontext 'when service returns an HTTP 400 response' do
-      before do
-        stub_request(:post, 'https://example.org/api/3.0/EmailAuthScore').
-          to_return(
-            status: 400,
-            headers: {
-              'Content-Type' => 'application/json',
-            },
-            body: JSON.generate(
-              {
-                status: 'Error',
-                referenceId: 'a-big-unique-reference-id',
-                data: {
-                  parameters: ['firstName'],
-                },
-                msg: 'Request-specific error message goes here',
-              },
-            ),
-          )
+    context 'when service returns an HTTP 400 response' do
+      let(:response_status) { 400 }
+      let(:body) do
+        {
+          status: 'Error',
+          referenceId: 'a-different-unique-reference-id',
+          msg: 'Another request-specific error message goes here',
+        }
       end
 
       it 'raises RequestError' do
         expect do
           request.send_request
         end.to raise_error(
-                 Proofing::Socure::IdPlus::RequestError,
-                 'Request-specific error message goes here (400)',
-               )
+          Proofing::Socure::IdPlus::RequestError,
+          'Another request-specific error message goes here (400)',
+        )
       end
 
       it 'includes reference_id on RequestError' do
         expect do
           request.send_request
         end.to raise_error(
-                 Proofing::Socure::IdPlus::RequestError,
-               ) do |err|
-          expect(err.reference_id).to eql('a-big-unique-reference-id')
+          Proofing::Socure::IdPlus::RequestError,
+        ) do |err|
+          expect(err.reference_id).to eql('a-different-unique-reference-id')
         end
       end
     end
 
-    xcontext 'when service returns an HTTP 401 reponse' do
-      before do
-        stub_request(:post, 'https://example.org/api/3.0/EmailAuthScore').
-          to_return(
-            status: 401,
-            headers: {
-              'Content-Type' => 'application/json',
-            },
-            body: JSON.generate(
-              {
-                status: 'Error',
-                referenceId: 'a-big-unique-reference-id',
-                msg: 'Request-specific error message goes here',
-              },
-            ),
-          )
+    context 'when service returns an HTTP 401 response' do
+      let(:response_status) { 401 }
+      let(:body) do
+        {
+          status: 'Error',
+          referenceId: 'a-big-unique-reference-id',
+          msg: 'Request-specific error message goes here',
+        }
       end
 
       it 'raises RequestError' do
         expect do
           request.send_request
         end.to raise_error(
-                 Proofing::Socure::IdPlus::RequestError,
-                 'Request-specific error message goes here (401)',
-               )
+          Proofing::Socure::IdPlus::RequestError,
+          'Request-specific error message goes here (401)',
+        )
+      end
+
+      it 'includes reference_id on RequestError' do
+        expect do
+          request.send_request
+        end.to raise_error(
+          Proofing::Socure::IdPlus::RequestError,
+        ) do |err|
+          expect(err.reference_id).to eql('a-big-unique-reference-id')
+        end
       end
     end
 
-    xcontext 'when service returns weird HTTP 500 response' do
-      before do
-        stub_request(:post, 'https://example.org/api/3.0/EmailAuthScore').
-          to_return(
-            status: 500,
-            body: 'It works!',
-          )
-      end
+    context 'when service returns weird HTTP 500 response' do
+      let(:response_status) { 500 }
 
       it 'raises RequestError' do
         expect do
@@ -173,9 +146,9 @@ RSpec.describe Proofing::Socure::IdPlus::FetchResultsRequest do
       end
     end
 
-    xcontext 'when request times out' do
+    context 'when request times out' do
       before do
-        stub_request(:post, 'https://example.org/api/3.0/EmailAuthScore').
+        stub_request(:post, "https://example.org/api/3.0/transaction?referenceId=#{reference_id}").
           to_timeout
       end
 
@@ -184,9 +157,9 @@ RSpec.describe Proofing::Socure::IdPlus::FetchResultsRequest do
       end
     end
 
-    xcontext 'when connection is reset' do
+    context 'when connection is reset' do
       before do
-        stub_request(:post, 'https://example.org/api/3.0/EmailAuthScore').
+        stub_request(:post, "https://example.org/api/3.0/transaction?referenceId=#{reference_id}").
           to_raise(Errno::ECONNRESET)
       end
 
