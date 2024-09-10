@@ -163,6 +163,6 @@ class FeatureManagement
   # Whether to use the valid Authn Context Classrefs that include
   # the newest ACR values
   def self.use_semantic_authn_contexts?
-    !!IdentityConfig.store.dig(:feature_valid_authn_contexts_semantic_enabled)
+    IdentityConfig.store.dig(:feature_valid_authn_contexts_semantic_enabled) ? true : false
   end
 end

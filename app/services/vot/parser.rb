@@ -112,9 +112,9 @@ module Vot
     def raise_unsupported_component_exception(component_value_name)
       if vector_of_trust.present?
         raise ParseException,
-              "'#{vector_of_trust}' contains unkown component '#{component_value_name}'"
+              "'#{vector_of_trust}' contains unknown component '#{component_value_name}'"
       else
-        raise ParseException, "'#{acr_values}' contains unkown acr value '#{component_value_name}'"
+        raise ParseException, "'#{acr_values}' contains unknown acr value '#{component_value_name}'"
       end
     end
 
@@ -122,7 +122,7 @@ module Vot
       if vector_of_trust.present?
         raise ParseException, "'#{vector_of_trust}' contains duplicate components"
       else
-        raise ParseException, "'#{acr_values}' ontains duplicate acr values"
+        raise ParseException, "'#{acr_values}' contains duplicate acr values"
       end
     end
   end

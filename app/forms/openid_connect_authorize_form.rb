@@ -313,7 +313,7 @@ class OpenidConnectAuthorizeForm
     if (identity_proofing_requested? && !identity_proofing_service_provider?) ||
        (ialmax_requested? && !ialmax_allowed_for_sp?) ||
        (biometric_ial_requested? && !service_provider.biometric_ial_allowed?) ||
-       (semantic_authn_contexts_requested? && !service_provider&.semantic_authn_contexts_allowed?)
+       (semantic_authn_contexts_requested? && !service_provider.semantic_authn_contexts_allowed?)
       errors.add(
         :acr_values, t('openid_connect.authorization.errors.no_auth'),
         type: :no_auth
