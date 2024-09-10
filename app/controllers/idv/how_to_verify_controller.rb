@@ -24,7 +24,7 @@ module Idv
       if how_to_verify_form_params[:selection] == []
         sendable_form_params = {}
       else
-        sendable_form_params = how_to_verify_form_params
+        sendable_form_params = how_to_verify_form_params.to_h.symbolize_keys
       end
 
       analytics.idv_doc_auth_how_to_verify_submitted(

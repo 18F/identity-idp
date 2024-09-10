@@ -1,6 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe Idv::HybridMobile::CaptureCompleteController, allowed_extra_analytics: [:*] do
+RSpec.describe Idv::HybridMobile::CaptureCompleteController,
+               allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
   let(:user) { create(:user) }
 
   let!(:document_capture_session) do

@@ -1,6 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe Idv::HowToVerifyController, allowed_extra_analytics: [:*] do
+RSpec.describe Idv::HowToVerifyController,
+               allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
   let(:user) { create(:user) }
   let(:enabled) { true }
   let(:ab_test_args) do
@@ -199,7 +200,7 @@ RSpec.describe Idv::HowToVerifyController, allowed_extra_analytics: [:*] do
         {
           step: 'how_to_verify',
           analytics_id: 'Doc Auth',
-          'selection' => selection,
+          selection:,
           error_details: { selection: { inclusion: true } },
           errors: { selection: ['Select a way to verify your identity.'] },
           success: false,
@@ -217,7 +218,7 @@ RSpec.describe Idv::HowToVerifyController, allowed_extra_analytics: [:*] do
           step: 'how_to_verify',
           errors: {},
           success: true,
-          'selection' => selection,
+          selection:,
         }.merge(ab_test_args)
       end
       it 'sets skip doc auth on idv session to false and redirects to hybrid handoff' do
@@ -243,7 +244,7 @@ RSpec.describe Idv::HowToVerifyController, allowed_extra_analytics: [:*] do
           step: 'how_to_verify',
           errors: {},
           success: true,
-          'selection' => selection,
+          selection:,
         }.merge(ab_test_args)
       end
       it 'sets skip doc auth on idv session to true and redirects to document capture' do

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::SsnController, allowed_extra_analytics: [:*] do
+RSpec.describe Idv::SsnController, allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
   include FlowPolicyHelper
 
   let(:ssn) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn] }
