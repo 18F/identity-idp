@@ -44,6 +44,7 @@ RSpec.feature 'legacy passwords' do
       encrypted_recovery_code_digest: Encryption::UakPasswordVerifier.digest('1111 2222 3333 4444'),
       encrypted_recovery_code_digest_multi_region: nil,
     )
+    original_recovery_code_digest = user.encrypted_recovery_code_digest
 
     expect(
       Encryption::PasswordVerifier.new.stale_digest?(user.encrypted_recovery_code_digest),
@@ -56,6 +57,8 @@ RSpec.feature 'legacy passwords' do
     user.reload
 
     expect(user.encrypted_recovery_code_digest).to be_present
+    expect(user.encrypted_recovery_code_digest_multi_region).to be_present
+    expect(user.encrypted_recovery_code_digest).to_not eq(original_recovery_code_digest)
   end
 
   scenario 'signing in with an incorrect uak personal key digest does not grant access' do
