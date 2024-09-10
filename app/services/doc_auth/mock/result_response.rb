@@ -28,7 +28,8 @@ module DocAuth
             classification_info: classification_info,
             workflow: workflow,
             liveness_checking_required: @selfie_required,
-          }.compact,
+            **@response_info.to_h,
+          },
         )
       end
 
@@ -69,8 +70,8 @@ module DocAuth
               mock_args[:passed] = passed.map!(&:symbolize_keys) if passed.present?
               mock_args[:liveness_enabled] = face_match_result ? true : false
               mock_args[:classification_info] = classification_info if classification_info.present?
-              fake_response_info = create_response_info(**mock_args)
-              ErrorGenerator.new(config).generate_doc_auth_errors(fake_response_info)
+              @response_info = create_response_info(**mock_args)
+              ErrorGenerator.new(config).generate_doc_auth_errors(@response_info)
             elsif file_data.include?(:general) # general is the key for errors from parsing
               file_data
             end
@@ -232,8 +233,7 @@ module DocAuth
           liveness_enabled: liveness_enabled,
           classification_info: classification_info,
           portrait_match_results: selfie_check_performed? ? portrait_match_results : nil,
-          extra: { liveness_checking_required: liveness_enabled },
-        }.compact
+        }
       end
     end
   end

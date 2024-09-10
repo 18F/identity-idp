@@ -971,7 +971,7 @@ RSpec.describe Idv::ImageUploadsController do
           attention_with_barcode: false,
           async: false,
           billed: true,
-          doc_auth_result: 'Caution',
+          doc_auth_result: 'Failed',
           user_id: user.uuid,
           submit_attempts: 1,
           remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -990,6 +990,27 @@ RSpec.describe Idv::ImageUploadsController do
           selfie_live: boolean,
           selfie_quality_good: boolean,
           workflow: an_instance_of(String),
+          alert_failure_count: 1,
+          liveness_enabled: false,
+          vendor: 'Mock',
+          processed_alerts: {
+            failed: [{ name: '2D Barcode Content', result: 'Attention' }],
+            passed: [],
+          },
+          image_metrics: {
+            back: {
+              'GlareMetric' => 100,
+              'HorizontalResolution' => 600,
+              'SharpnessMetric' => 100,
+              'VerticalResolution' => 600,
+            },
+            front: {
+              'GlareMetric' => 100,
+              'HorizontalResolution' => 600,
+              'SharpnessMetric' => 100,
+              'VerticalResolution' => 600,
+            },
+          },
         )
 
         expect_funnel_update_counts(user, 1)
