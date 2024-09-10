@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe GpoVerifyForm, allowed_extra_analytics: [:*] do
+RSpec.describe GpoVerifyForm do
   subject(:form) do
     GpoVerifyForm.new(
       user: user,
