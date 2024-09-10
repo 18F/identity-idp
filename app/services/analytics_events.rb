@@ -1602,7 +1602,8 @@ module AnalyticsEvents
   # @param [Boolean] attention_with_barcode Whether result was attention with barcode
   # @param [Boolean] doc_type_supported
   # @param [Boolean] doc_auth_success
-  # @param [String] liveness_checking_required Whether or not the selfie is required
+  # @param [Boolean] liveness_checking_required Whether or not the selfie is required
+  # @param [Boolean] liveness_enabled Whether or not the selfie result is included in response
   # @param [String] selfie_status
   # @param [String] vendor
   # @param [String] conversation_id
@@ -1686,6 +1687,7 @@ module AnalyticsEvents
     birth_year: nil,
     selfie_attempts: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
+    liveness_enabled: nil,
     **extra
   )
     track_event(
@@ -1733,6 +1735,7 @@ module AnalyticsEvents
       issue_year:,
       selfie_attempts:,
       acuant_sdk_upgrade_ab_test_bucket:,
+      liveness_enabled:,
       **extra,
     )
   end
@@ -2857,20 +2860,23 @@ module AnalyticsEvents
   # @param [String] step
   # @param [String] analytics_id
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [Boolean] same_address_as_id
   # State id page visited
   def idv_in_person_proofing_state_id_visited(
     flow_path: nil,
     step: nil,
     analytics_id: nil,
     opted_in_to_in_person_proofing: nil,
+    same_address_as_id: nil,
     **extra
   )
     track_event(
       'IdV: in person proofing state_id visited',
-      flow_path: flow_path,
-      step: step,
-      analytics_id: analytics_id,
-      opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
+      flow_path:,
+      step:,
+      analytics_id:,
+      opted_in_to_in_person_proofing:,
+      same_address_as_id:,
       **extra,
     )
   end
