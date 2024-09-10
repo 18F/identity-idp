@@ -45,7 +45,7 @@ module DocAuth
             failed = file_data.dig('failed_alerts')&.dup
             passed = file_data.dig('passed_alerts')
             face_match_result = file_data.dig('portrait_match_results', 'FaceMatchResult')
-            classification_info = file_data.dig('classification_info')
+            classification_info = file_data.dig('classification_info')&.symbolize_keys
             # Pass and doc type is ok
             has_fields = [
               doc_auth_result,
