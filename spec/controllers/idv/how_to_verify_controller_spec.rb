@@ -1,12 +1,8 @@
 require 'rails_helper'
 
-RSpec.describe Idv::HowToVerifyController,
-               allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
+RSpec.describe Idv::HowToVerifyController do
   let(:user) { create(:user) }
   let(:enabled) { true }
-  let(:ab_test_args) do
-    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
-  end
   let(:service_provider) do
     create(:service_provider, :active, :in_person_proofing_enabled)
   end
@@ -16,7 +12,6 @@ RSpec.describe Idv::HowToVerifyController,
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
     stub_sign_in(user)
     stub_analytics
-    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
     allow(subject.idv_session).to receive(:service_provider).and_return(service_provider)
     subject.idv_session.welcome_visited = true
     subject.idv_session.idv_consent_given_at = Time.zone.now
@@ -115,7 +110,7 @@ RSpec.describe Idv::HowToVerifyController,
       {
         step: 'how_to_verify',
         analytics_id: 'Doc Auth',
-      }.merge(ab_test_args)
+      }
     end
 
     it 'renders the show template' do
@@ -184,7 +179,7 @@ RSpec.describe Idv::HowToVerifyController,
           error_details: { selection: { blank: true } },
           errors: { selection: ['Select a way to verify your identity.'] },
           success: false,
-        }.merge(ab_test_args)
+        }
       end
 
       let(:params) { nil }
@@ -204,7 +199,7 @@ RSpec.describe Idv::HowToVerifyController,
           error_details: { selection: { inclusion: true } },
           errors: { selection: ['Select a way to verify your identity.'] },
           success: false,
-        }.merge(ab_test_args)
+        }
       end
 
       it_behaves_like 'invalid form submissions'
@@ -219,7 +214,7 @@ RSpec.describe Idv::HowToVerifyController,
           errors: {},
           success: true,
           selection:,
-        }.merge(ab_test_args)
+        }
       end
       it 'sets skip doc auth on idv session to false and redirects to hybrid handoff' do
         put :update, params: params
@@ -245,7 +240,7 @@ RSpec.describe Idv::HowToVerifyController,
           errors: {},
           success: true,
           selection:,
-        }.merge(ab_test_args)
+        }
       end
       it 'sets skip doc auth on idv session to true and redirects to document capture' do
         put :update, params: params

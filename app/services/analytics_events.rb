@@ -1098,11 +1098,13 @@ module AnalyticsEvents
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # SDK upgrades
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   def idv_doc_auth_agreement_submitted(
     success:,
     errors:,
     step:,
     analytics_id:,
+    opted_in_to_in_person_proofing: nil,
     error_details: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
@@ -1117,6 +1119,7 @@ module AnalyticsEvents
       analytics_id:,
       acuant_sdk_upgrade_ab_test_bucket:,
       skip_hybrid_handoff:,
+      opted_in_to_in_person_proofing:,
       **extra,
     )
   end
@@ -1127,9 +1130,11 @@ module AnalyticsEvents
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # SDK upgrades
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   def idv_doc_auth_agreement_visited(
     step:,
     analytics_id:,
+    opted_in_to_in_person_proofing: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
     **extra
@@ -1140,6 +1145,7 @@ module AnalyticsEvents
       analytics_id:,
       acuant_sdk_upgrade_ab_test_bucket:,
       skip_hybrid_handoff:,
+      opted_in_to_in_person_proofing:,
       **extra,
     )
   end
@@ -1179,6 +1185,7 @@ module AnalyticsEvents
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # SDK upgrades
   # @param [Boolean] stored_result_present Whether a stored result was present
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   def idv_doc_auth_document_capture_submitted(
     success:,
     errors:,
@@ -1187,6 +1194,7 @@ module AnalyticsEvents
     liveness_checking_required:,
     selfie_check_required:,
     flow_path:,
+    opted_in_to_in_person_proofing: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     redo_document_capture: nil,
     skip_hybrid_handoff: nil,
@@ -1205,6 +1213,7 @@ module AnalyticsEvents
       selfie_check_required:,
       acuant_sdk_upgrade_ab_test_bucket:,
       flow_path:,
+      opted_in_to_in_person_proofing:,
       stored_result_present:,
       **extra,
     )
@@ -1221,12 +1230,14 @@ module AnalyticsEvents
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # SDK upgrades
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   def idv_doc_auth_document_capture_visited(
     step:,
     analytics_id:,
     liveness_checking_required:,
     selfie_check_required:,
     flow_path:,
+    opted_in_to_in_person_proofing: nil,
     redo_document_capture: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
@@ -1241,6 +1252,7 @@ module AnalyticsEvents
       skip_hybrid_handoff:,
       liveness_checking_required:,
       selfie_check_required:,
+      opted_in_to_in_person_proofing:,
       acuant_sdk_upgrade_ab_test_bucket:,
       **extra,
     )
@@ -1275,12 +1287,14 @@ module AnalyticsEvents
   # @param [String] analytics_id Current IdV flow identifier
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [String] selection Selection form parameter
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   def idv_doc_auth_how_to_verify_submitted(
     success:,
     errors:,
     step:,
     analytics_id:,
     skip_hybrid_handoff:,
+    opted_in_to_in_person_proofing: nil,
     selection: nil,
     error_details: nil,
     **extra
@@ -1294,6 +1308,7 @@ module AnalyticsEvents
       analytics_id:,
       skip_hybrid_handoff:,
       selection:,
+      opted_in_to_in_person_proofing:,
       **extra,
     )
   end
@@ -1301,10 +1316,12 @@ module AnalyticsEvents
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   def idv_doc_auth_how_to_verify_visited(
     step:,
     analytics_id:,
     skip_hybrid_handoff:,
+    opted_in_to_in_person_proofing: nil,
     **extra
   )
     track_event(
@@ -1312,6 +1329,7 @@ module AnalyticsEvents
       step:,
       analytics_id:,
       skip_hybrid_handoff:,
+      opted_in_to_in_person_proofing:,
       **extra,
     )
   end
@@ -1333,6 +1351,7 @@ module AnalyticsEvents
   # SDK upgrades
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Hash] telephony_response Response from Telephony gem
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   def idv_doc_auth_hybrid_handoff_submitted(
     success:,
     errors:,
@@ -1342,6 +1361,7 @@ module AnalyticsEvents
     selfie_check_required:,
     destination:,
     flow_path:,
+    opted_in_to_in_person_proofing: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
     telephony_response: nil,
@@ -1357,6 +1377,7 @@ module AnalyticsEvents
       skip_hybrid_handoff:,
       selfie_check_required:,
       acuant_sdk_upgrade_ab_test_bucket:,
+      opted_in_to_in_person_proofing:,
       destination:,
       flow_path:,
       telephony_response:,
@@ -1374,11 +1395,13 @@ module AnalyticsEvents
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # SDK upgrades
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   def idv_doc_auth_hybrid_handoff_visited(
     step:,
     analytics_id:,
     redo_document_capture:,
     selfie_check_required:,
+    opted_in_to_in_person_proofing: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
     **extra
@@ -1389,6 +1412,7 @@ module AnalyticsEvents
       analytics_id:,
       redo_document_capture:,
       skip_hybrid_handoff:,
+      opted_in_to_in_person_proofing:,
       selfie_check_required:,
       acuant_sdk_upgrade_ab_test_bucket:,
       **extra,
@@ -1398,13 +1422,24 @@ module AnalyticsEvents
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
   # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # @identity.idp.previous_event_name IdV: doc auth send_link submitted
-  def idv_doc_auth_link_sent_submitted(step:, analytics_id:, flow_path:, **extra)
+  def idv_doc_auth_link_sent_submitted(
+    step:,
+    analytics_id:,
+    flow_path:,
+    opted_in_to_in_person_proofing: nil,
+    skip_hybrid_handoff: nil,
+    **extra
+  )
     track_event(
       'IdV: doc auth link_sent submitted',
       step:,
       analytics_id:,
       flow_path:,
+      opted_in_to_in_person_proofing:,
+      skip_hybrid_handoff:,
       **extra,
     )
   end
@@ -1412,12 +1447,23 @@ module AnalyticsEvents
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
   # @param ["hybrid","standard"] flow_path Document capture user flow
-  def idv_doc_auth_link_sent_visited(step:, analytics_id:, flow_path:, **extra)
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  def idv_doc_auth_link_sent_visited(
+    step:,
+    analytics_id:,
+    flow_path:,
+    opted_in_to_in_person_proofing: nil,
+    skip_hybrid_handoff: nil,
+    **extra
+  )
     track_event(
       'IdV: doc auth link_sent visited',
       step:,
       analytics_id:,
       flow_path:,
+      opted_in_to_in_person_proofing:,
+      skip_hybrid_handoff:,
       **extra,
     )
   end
@@ -1426,10 +1472,14 @@ module AnalyticsEvents
   # @param [String] analytics_id Current IdV flow identifier
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Boolean] same_address_as_id
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   def idv_doc_auth_redo_ssn_submitted(
     step:,
     analytics_id:,
     flow_path:,
+    opted_in_to_in_person_proofing: nil,
+    skip_hybrid_handoff: nil,
     same_address_as_id: nil,
     **extra
   )
@@ -1438,6 +1488,8 @@ module AnalyticsEvents
       step:,
       analytics_id:,
       flow_path:,
+      opted_in_to_in_person_proofing:,
+      skip_hybrid_handoff:,
       same_address_as_id:,
       **extra,
     )
@@ -1478,12 +1530,14 @@ module AnalyticsEvents
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Boolean] same_address_as_id
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   def idv_doc_auth_ssn_submitted(
     success:,
     errors:,
     step:,
     analytics_id:,
     flow_path:,
+    opted_in_to_in_person_proofing: nil,
     error_details: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
@@ -1500,6 +1554,7 @@ module AnalyticsEvents
       skip_hybrid_handoff:,
       acuant_sdk_upgrade_ab_test_bucket:,
       flow_path:,
+      opted_in_to_in_person_proofing:,
       same_address_as_id:,
       **extra,
     )
@@ -1513,10 +1568,12 @@ module AnalyticsEvents
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Boolean] same_address_as_id
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   def idv_doc_auth_ssn_visited(
     step:,
     analytics_id:,
     flow_path:,
+    opted_in_to_in_person_proofing: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
     same_address_as_id: nil,
@@ -1529,6 +1586,7 @@ module AnalyticsEvents
       skip_hybrid_handoff:,
       acuant_sdk_upgrade_ab_test_bucket:,
       flow_path:,
+      opted_in_to_in_person_proofing:,
       same_address_as_id:,
       **extra,
     )
@@ -1915,10 +1973,12 @@ module AnalyticsEvents
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Boolean] same_address_as_id
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   def idv_doc_auth_verify_submitted(
     step:,
     analytics_id:,
     flow_path:,
+    opted_in_to_in_person_proofing: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
     same_address_as_id: nil,
@@ -1931,6 +1991,7 @@ module AnalyticsEvents
       skip_hybrid_handoff:,
       acuant_sdk_upgrade_ab_test_bucket:,
       flow_path:,
+      opted_in_to_in_person_proofing:,
       same_address_as_id:,
       **extra,
     )
@@ -1944,10 +2005,12 @@ module AnalyticsEvents
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Boolean] same_address_as_id
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   def idv_doc_auth_verify_visited(
     step:,
     analytics_id:,
     flow_path:,
+    opted_in_to_in_person_proofing: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
     same_address_as_id: nil,
@@ -1960,6 +2023,7 @@ module AnalyticsEvents
       skip_hybrid_handoff:,
       acuant_sdk_upgrade_ab_test_bucket:,
       flow_path:,
+      opted_in_to_in_person_proofing:,
       same_address_as_id:,
       **extra,
     )
@@ -1981,11 +2045,19 @@ module AnalyticsEvents
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
-  def idv_doc_auth_welcome_submitted(step:, analytics_id:, skip_hybrid_handoff: nil, **extra)
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  def idv_doc_auth_welcome_submitted(
+    step:,
+    analytics_id:,
+    opted_in_to_in_person_proofing: nil,
+    skip_hybrid_handoff: nil,
+    **extra
+  )
     track_event(
       'IdV: doc auth welcome submitted',
       step:,
       analytics_id:,
+      opted_in_to_in_person_proofing:,
       skip_hybrid_handoff:,
       **extra,
     )
@@ -1995,12 +2067,20 @@ module AnalyticsEvents
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
-  def idv_doc_auth_welcome_visited(step:, analytics_id:, skip_hybrid_handoff: nil, **extra)
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  def idv_doc_auth_welcome_visited(
+    step:,
+    analytics_id:,
+    opted_in_to_in_person_proofing: nil,
+    skip_hybrid_handoff: nil,
+    **extra
+  )
     track_event(
       'IdV: doc auth welcome visited',
       step:,
       analytics_id:,
       skip_hybrid_handoff:,
+      opted_in_to_in_person_proofing:,
       **extra,
     )
   end
@@ -2025,6 +2105,7 @@ module AnalyticsEvents
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # @param [Integer,nil] proofing_workflow_time_in_seconds The time since starting proofing
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # @identity.idp.previous_event_name  IdV: review info visited
   def idv_enter_password_submitted(
     success:,
@@ -2032,6 +2113,7 @@ module AnalyticsEvents
     fraud_rejection:,
     gpo_verification_pending:,
     in_person_verification_pending:,
+    opted_in_to_in_person_proofing: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
     deactivation_reason: nil,
@@ -2050,6 +2132,7 @@ module AnalyticsEvents
       in_person_verification_pending:,
       skip_hybrid_handoff:,
       acuant_sdk_upgrade_ab_test_bucket:,
+      opted_in_to_in_person_proofing:,
       fraud_rejection:,
       proofing_components:,
       active_profile_idv_level:,
@@ -2073,9 +2156,11 @@ module AnalyticsEvents
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   #        used to verify the user's identity
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # User visited IDV password confirm page
   # @identity.idp.previous_event_name  IdV: review info visited
   def idv_enter_password_visited(
+    opted_in_to_in_person_proofing: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
     proofing_components: nil,
@@ -2086,6 +2171,7 @@ module AnalyticsEvents
   )
     track_event(
       :idv_enter_password_visited,
+      opted_in_to_in_person_proofing:,
       skip_hybrid_handoff:,
       acuant_sdk_upgrade_ab_test_bucket:,
       address_verification_method:,
@@ -2116,6 +2202,7 @@ module AnalyticsEvents
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # @param [Array,nil] profile_history Array of user's profiles (oldest to newest).
   # @param [Integer,nil] proofing_workflow_time_in_seconds The time since starting proofing
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # @see Reporting::IdentityVerificationReport#query This event is used by the identity verification
   #       report. Changes here should be reflected there.
   # Tracks the last step of IDV, indicates the user successfully proofed
@@ -2125,6 +2212,7 @@ module AnalyticsEvents
     fraud_rejection:,
     gpo_verification_pending:,
     in_person_verification_pending:,
+    opted_in_to_in_person_proofing: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
     deactivation_reason: nil,
@@ -2142,6 +2230,7 @@ module AnalyticsEvents
       fraud_rejection:,
       gpo_verification_pending:,
       in_person_verification_pending:,
+      opted_in_to_in_person_proofing:,
       skip_hybrid_handoff:,
       acuant_sdk_upgrade_ab_test_bucket:,
       deactivation_reason:,
@@ -2343,6 +2432,8 @@ module AnalyticsEvents
   # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # GPO letter was enqueued and the time at which it was enqueued
   def idv_gpo_address_letter_enqueued(
     enqueued_at:,
@@ -2350,6 +2441,8 @@ module AnalyticsEvents
     first_letter_requested_at:,
     hours_since_first_letter:,
     phone_step_attempts:,
+    opted_in_to_in_person_proofing: nil,
+    skip_hybrid_handoff: nil,
     proofing_components: nil,
     active_profile_idv_level: nil,
     pending_profile_idv_level: nil,
@@ -2357,14 +2450,16 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: USPS address letter enqueued',
-      enqueued_at: enqueued_at,
-      resend: resend,
-      first_letter_requested_at: first_letter_requested_at,
-      hours_since_first_letter: hours_since_first_letter,
-      phone_step_attempts: phone_step_attempts,
-      proofing_components: proofing_components,
-      active_profile_idv_level: active_profile_idv_level,
-      pending_profile_idv_level: pending_profile_idv_level,
+      enqueued_at:,
+      resend:,
+      first_letter_requested_at:,
+      hours_since_first_letter:,
+      phone_step_attempts:,
+      opted_in_to_in_person_proofing:,
+      skip_hybrid_handoff:,
+      proofing_components:,
+      active_profile_idv_level:,
+      pending_profile_idv_level:,
       **extra,
     )
   end
@@ -2384,12 +2479,16 @@ module AnalyticsEvents
   # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # GPO letter was requested
   def idv_gpo_address_letter_requested(
     resend:,
     first_letter_requested_at:,
     hours_since_first_letter:,
     phone_step_attempts:,
+    opted_in_to_in_person_proofing: nil,
+    skip_hybrid_handoff: nil,
     proofing_components: nil,
     active_profile_idv_level: nil,
     pending_profile_idv_level: nil,
@@ -2397,13 +2496,15 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: USPS address letter requested',
-      resend: resend,
+      resend:,
       first_letter_requested_at:,
       hours_since_first_letter:,
       phone_step_attempts:,
-      proofing_components: proofing_components,
-      active_profile_idv_level: active_profile_idv_level,
-      pending_profile_idv_level: pending_profile_idv_level,
+      opted_in_to_in_person_proofing:,
+      skip_hybrid_handoff:,
+      proofing_components:,
+      active_profile_idv_level:,
+      pending_profile_idv_level:,
       **extra,
     )
   end
@@ -2520,7 +2621,7 @@ module AnalyticsEvents
   def idv_in_person_location_submitted(
     selected_location:,
     flow_path:,
-    opted_in_to_in_person_proofing:,
+    opted_in_to_in_person_proofing: nil,
     **extra
   )
     track_event(
@@ -2826,6 +2927,7 @@ module AnalyticsEvents
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # @param [String] birth_year Birth year from document
   # @param [String] document_zip_code ZIP code from document
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # User submitted state id
   def idv_in_person_proofing_state_id_submitted(
     success:,
@@ -2835,6 +2937,7 @@ module AnalyticsEvents
     analytics_id:,
     birth_year:,
     document_zip_code:,
+    skip_hybrid_handoff: nil,
     error_details: nil,
     same_address_as_id: nil,
     opted_in_to_in_person_proofing: nil,
@@ -2850,6 +2953,7 @@ module AnalyticsEvents
       error_details:,
       birth_year:,
       document_zip_code:,
+      skip_hybrid_handoff:,
       same_address_as_id:,
       opted_in_to_in_person_proofing:,
       **extra,
@@ -2861,12 +2965,14 @@ module AnalyticsEvents
   # @param [String] analytics_id
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # @param [Boolean] same_address_as_id
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # State id page visited
   def idv_in_person_proofing_state_id_visited(
     flow_path: nil,
     step: nil,
     analytics_id: nil,
     opted_in_to_in_person_proofing: nil,
+    skip_hybrid_handoff: nil,
     same_address_as_id: nil,
     **extra
   )
@@ -2876,6 +2982,7 @@ module AnalyticsEvents
       step:,
       analytics_id:,
       opted_in_to_in_person_proofing:,
+      skip_hybrid_handoff:,
       same_address_as_id:,
       **extra,
     )
@@ -3589,8 +3696,10 @@ module AnalyticsEvents
   # @param [Boolean] encrypted_profiles_missing True if user's session had no encrypted pii
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # User visited IDV personal key page
   def idv_personal_key_visited(
+    opted_in_to_in_person_proofing: nil,
     proofing_components: nil,
     address_verification_method: nil,
     in_person_verification_pending: nil,
@@ -3601,12 +3710,13 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: personal key visited',
-      proofing_components: proofing_components,
-      address_verification_method: address_verification_method,
-      in_person_verification_pending: in_person_verification_pending,
-      encrypted_profiles_missing: encrypted_profiles_missing,
-      active_profile_idv_level: active_profile_idv_level,
-      pending_profile_idv_level: pending_profile_idv_level,
+      opted_in_to_in_person_proofing:,
+      proofing_components:,
+      address_verification_method:,
+      in_person_verification_pending:,
+      encrypted_profiles_missing:,
+      active_profile_idv_level:,
+      pending_profile_idv_level:,
       **extra,
     )
   end
@@ -3632,6 +3742,7 @@ module AnalyticsEvents
   # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # The user submitted their phone on the phone confirmation page
   def idv_phone_confirmation_form_submitted(
     success:,
@@ -3642,6 +3753,7 @@ module AnalyticsEvents
     carrier:,
     country_code:,
     area_code:,
+    opted_in_to_in_person_proofing: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
     error_details: nil,
@@ -3660,6 +3772,7 @@ module AnalyticsEvents
       carrier:,
       country_code:,
       area_code:,
+      opted_in_to_in_person_proofing:,
       skip_hybrid_handoff:,
       acuant_sdk_upgrade_ab_test_bucket:,
       otp_delivery_preference:,
@@ -3880,6 +3993,7 @@ module AnalyticsEvents
   # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # When a user attempts to confirm possession of a new phone number during the IDV process
   def idv_phone_confirmation_otp_submitted(
     success:,
@@ -3889,6 +4003,7 @@ module AnalyticsEvents
     otp_delivery_preference:,
     second_factor_attempts_count:,
     second_factor_locked_at:,
+    opted_in_to_in_person_proofing: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
     error_details: nil,
@@ -3907,6 +4022,7 @@ module AnalyticsEvents
       otp_delivery_preference:,
       second_factor_attempts_count:,
       second_factor_locked_at:,
+      opted_in_to_in_person_proofing:,
       skip_hybrid_handoff:,
       acuant_sdk_upgrade_ab_test_bucket:,
       proofing_components:,
@@ -3962,6 +4078,7 @@ module AnalyticsEvents
   # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # The vendor finished the process of confirming the users phone
   def idv_phone_confirmation_vendor_submitted(
     success:,
@@ -3972,6 +4089,7 @@ module AnalyticsEvents
     phone_fingerprint:,
     new_phone_added:,
     hybrid_handoff_phone_used:,
+    opted_in_to_in_person_proofing: nil,
     error_details: nil,
     proofing_components: nil,
     active_profile_idv_level: nil,
@@ -3989,6 +4107,7 @@ module AnalyticsEvents
       phone_fingerprint:,
       new_phone_added:,
       hybrid_handoff_phone_used:,
+      opted_in_to_in_person_proofing:,
       proofing_components:,
       active_profile_idv_level:,
       pending_profile_idv_level:,
@@ -4010,9 +4129,13 @@ module AnalyticsEvents
   # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # When a user gets an error during the phone finder flow of IDV
   def idv_phone_error_visited(
     type:,
+    opted_in_to_in_person_proofing: nil,
+    skip_hybrid_handoff: nil,
     proofing_components: nil,
     limiter_expires_at: nil,
     remaining_submit_attempts: nil,
@@ -4023,6 +4146,8 @@ module AnalyticsEvents
     track_event(
       'IdV: phone error visited',
       type:,
+      opted_in_to_in_person_proofing:,
+      skip_hybrid_handoff:,
       proofing_components:,
       limiter_expires_at:,
       remaining_submit_attempts:,
@@ -4044,8 +4169,10 @@ module AnalyticsEvents
   # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # User visited idv phone of record
   def idv_phone_of_record_visited(
+    opted_in_to_in_person_proofing: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
     proofing_components: nil,
@@ -4055,6 +4182,7 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: phone of record visited',
+      opted_in_to_in_person_proofing:,
       skip_hybrid_handoff:,
       acuant_sdk_upgrade_ab_test_bucket:,
       proofing_components:,

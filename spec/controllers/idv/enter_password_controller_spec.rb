@@ -1,7 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::EnterPasswordController,
-               allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
+RSpec.describe Idv::EnterPasswordController do
   include UspsIppHelper
 
   let(:user) do
@@ -18,15 +17,10 @@ RSpec.describe Idv::EnterPasswordController,
     subject.idv_session
   end
 
-  let(:ab_test_args) do
-    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
-  end
-
   before do
     stub_analytics
     stub_sign_in(user)
     allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
-    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
     subject.idv_session.welcome_visited = true
     subject.idv_session.idv_consent_given_at = Time.zone.now
     subject.idv_session.proofing_started_at = 5.minutes.ago.iso8601
@@ -279,7 +273,6 @@ RSpec.describe Idv::EnterPasswordController,
             fraud_rejection: false,
             gpo_verification_pending: false,
             in_person_verification_pending: false,
-            **ab_test_args,
           ),
         )
       end
@@ -297,7 +290,6 @@ RSpec.describe Idv::EnterPasswordController,
           gpo_verification_pending: false,
           in_person_verification_pending: false,
           proofing_workflow_time_in_seconds: 5.minutes.to_i,
-          **ab_test_args,
         ),
       )
       expect(@analytics).to have_logged_event(
@@ -848,7 +840,6 @@ RSpec.describe Idv::EnterPasswordController,
                       fraud_rejection: false,
                       gpo_verification_pending: false,
                       in_person_verification_pending: false,
-                      **ab_test_args,
                     ),
                   )
                   expect(@analytics).to have_logged_event(
@@ -859,7 +850,6 @@ RSpec.describe Idv::EnterPasswordController,
                       fraud_rejection: false,
                       gpo_verification_pending: false,
                       in_person_verification_pending: false,
-                      **ab_test_args,
                     ),
                   )
                 end
@@ -916,7 +906,6 @@ RSpec.describe Idv::EnterPasswordController,
             phone_step_attempts: 1,
             first_letter_requested_at: subject.idv_session.profile.gpo_verification_pending_at,
             hours_since_first_letter: 0,
-            **ab_test_args,
           ),
         )
       end
@@ -936,7 +925,6 @@ RSpec.describe Idv::EnterPasswordController,
               phone_step_attempts: RateLimiter.max_attempts(rate_limit_type),
               first_letter_requested_at: subject.idv_session.profile.gpo_verification_pending_at,
               hours_since_first_letter: 0,
-              **ab_test_args,
             ),
           )
         end

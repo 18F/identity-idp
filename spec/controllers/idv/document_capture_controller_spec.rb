@@ -1,7 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::DocumentCaptureController,
-               allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
+RSpec.describe Idv::DocumentCaptureController do
   include FlowPolicyHelper
 
   let(:document_capture_session_requested_at) { Time.zone.now }
@@ -16,10 +15,6 @@ RSpec.describe Idv::DocumentCaptureController,
   let(:document_capture_session_uuid) { document_capture_session&.uuid }
 
   let(:user) { create(:user) }
-
-  let(:ab_test_args) do
-    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
-  end
 
   # selfie related test flags
   let(:sp_selfie_enabled) { false }
@@ -37,7 +32,6 @@ RSpec.describe Idv::DocumentCaptureController,
     allow(controller).to receive(:resolved_authn_context_result).
       and_return(resolved_authn_context)
     subject.idv_session.flow_path = flow_path
-    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
   describe '#step_info' do
@@ -110,7 +104,7 @@ RSpec.describe Idv::DocumentCaptureController,
         step: 'document_capture',
         liveness_checking_required: false,
         selfie_check_required: sp_selfie_enabled,
-      }.merge(ab_test_args)
+      }
     end
 
     it 'has non-nil presenter' do
@@ -302,7 +296,7 @@ RSpec.describe Idv::DocumentCaptureController,
         step: 'document_capture',
         liveness_checking_required: false,
         selfie_check_required: sp_selfie_enabled,
-      }.merge(ab_test_args)
+      }
     end
     let(:result) { { success: true, errors: {} } }
 

@@ -1,14 +1,10 @@
 require 'rails_helper'
 
-RSpec.describe Idv::HybridHandoffController,
-               allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
+RSpec.describe Idv::HybridHandoffController do
   include FlowPolicyHelper
 
   let(:user) { create(:user) }
 
-  let(:ab_test_args) do
-    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
-  end
   let(:service_provider) do
     create(:service_provider, :active, :in_person_proofing_enabled)
   end
@@ -22,7 +18,6 @@ RSpec.describe Idv::HybridHandoffController,
     stub_sign_in(user)
     stub_up_to(:agreement, idv_session: subject.idv_session)
     stub_analytics
-    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
     allow(subject.idv_session).to receive(:service_provider).and_return(service_provider)
 
     resolved_authn_context_result = sp_selfie_enabled ?
@@ -67,7 +62,7 @@ RSpec.describe Idv::HybridHandoffController,
         step: 'hybrid_handoff',
         analytics_id: 'Doc Auth',
         selfie_check_required: sp_selfie_enabled,
-      }.merge(ab_test_args)
+      }
     end
 
     it 'renders the show template' do
@@ -306,7 +301,7 @@ RSpec.describe Idv::HybridHandoffController,
             request_id: 'fake-message-request-id',
             success: true,
           },
-        }.merge(ab_test_args)
+        }
       end
 
       let(:params) do
@@ -356,7 +351,7 @@ RSpec.describe Idv::HybridHandoffController,
           step: 'hybrid_handoff',
           analytics_id: 'Doc Auth',
           selfie_check_required: sp_selfie_enabled,
-        }.merge(ab_test_args)
+        }
       end
 
       let(:params) do
