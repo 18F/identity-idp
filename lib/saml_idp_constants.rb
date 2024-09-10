@@ -27,6 +27,7 @@ module Saml
         urn:oasis:names:tc:SAML:2.0:ac:classes:Password
         urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport
       ].freeze
+
       DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF = 'urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo'
       AAL_AUTHN_CONTEXT_PREFIX = 'http://idmanagement.gov/ns/assurance/aal'
       AAL1_AUTHN_CONTEXT_CLASSREF = "#{AAL_AUTHN_CONTEXT_PREFIX}/1".freeze
@@ -55,16 +56,19 @@ module Saml
         IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
         IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF,
       ].freeze
+
       BIOMETRIC_REQUIRED_IAL_CONTEXTS = [
         IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
         IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
       ].freeze
+
       IAL2_AUTHN_CONTEXTS = [
         *BIOMETRIC_IAL_CONTEXTS,
         IAL_VERIFIED_ACR,
         IAL2_AUTHN_CONTEXT_CLASSREF,
         LOA3_AUTHN_CONTEXT_CLASSREF,
       ].freeze
+
       AUTHN_CONTEXT_CLASSREF_TO_IAL = {
         LOA1_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::IAL1,
         LOA3_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::IAL2,
@@ -108,6 +112,7 @@ module Saml
         IAL_VERIFIED_FACIAL_MATCH_PREFERRED_ACR,
         IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
       ].freeze
+
       LEGACY_ACRS_TO_SEMANTIC_ACRS = {
         LOA1_AUTHN_CONTEXT_CLASSREF => IAL_AUTH_ONLY_ACR,
         LOA3_AUTHN_CONTEXT_CLASSREF => IAL_VERIFIED_ACR,
