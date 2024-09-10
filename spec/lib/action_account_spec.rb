@@ -204,6 +204,10 @@ RSpec.describe ActionAccount do
       subject(:result) { subtask.run(args:, config:) }
 
       it 'Pass a user that has a pending review', aggregate_failures: true do
+        expect(UserAlerts::AlertUserAboutAccountVerified).to receive(:call).with(
+          profile: user.pending_profile,
+        )
+
         profile_fraud_review_pending_at = user.pending_profile.fraud_review_pending_at
 
         # rubocop:disable Layout/LineLength

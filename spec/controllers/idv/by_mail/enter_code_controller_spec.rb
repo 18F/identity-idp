@@ -215,7 +215,9 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
       it 'dispatches account verified alert' do
         action
 
-        expect(UserAlerts::AlertUserAboutAccountVerified).to have_received(:call)
+        expect(UserAlerts::AlertUserAboutAccountVerified).to have_received(:call).with(
+          profile: user.active_profile,
+        )
       end
 
       context 'with establishing in person enrollment' do

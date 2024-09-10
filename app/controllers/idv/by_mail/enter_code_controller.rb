@@ -101,12 +101,10 @@ module Idv
 
       def prepare_for_personal_key
         unless account_not_ready_to_be_activated?
-          event, _disavowal_token = create_user_event(:account_verified)
+          create_user_event(:account_verified)
 
           UserAlerts::AlertUserAboutAccountVerified.call(
-            user: current_user,
-            date_time: event.created_at,
-            sp_name: decorated_sp_session.sp_name,
+            profile: current_user.active_profile,
           )
           flash[:success] = t('account.index.verification.success')
         end
