@@ -301,6 +301,7 @@ RSpec.describe AuthnContextResolver do
           acr_values: acr_values,
         )
       end
+
       let(:result) { subject.result }
 
       context 'if IAL ACR value is present' do
@@ -417,6 +418,7 @@ RSpec.describe AuthnContextResolver do
 
           context 'when the user has not yet been verified' do
             let(:user) { build(:user) }
+
             it 'asserts biometric comparison' do
               expect(result.identity_proofing?).to be true
               expect(result.biometric_comparison?).to be true
@@ -445,6 +447,7 @@ RSpec.describe AuthnContextResolver do
 
     context 'when no semantic ACR present' do
       let(:user) { build(:user) }
+
       it 'does not resolve legacy ACRs to semantic ACRs' do
         acr_values = [
           Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
@@ -471,6 +474,7 @@ RSpec.describe AuthnContextResolver do
         )
       end
     end
+
     context 'with no service provider' do
       it 'parses an ACR value into requirements' do
         acr_values = [
@@ -540,6 +544,7 @@ RSpec.describe AuthnContextResolver do
         expect(result.enhanced_ipp?).to eq(false)
       end
     end
+
     context 'with an IAL2 service provider' do
       let(:service_provider) { create(:service_provider, :idv) }
       subject do
@@ -550,7 +555,9 @@ RSpec.describe AuthnContextResolver do
           acr_values: acr_values&.join(' '),
         )
       end
+
       let(:result) { subject.result }
+
       context 'if IAL ACR value is present' do
         let(:acr_values) do
           [
@@ -586,8 +593,10 @@ RSpec.describe AuthnContextResolver do
             'http://idmanagement.gov/ns/assurance/aal/1',
           ]
         end
+
         context 'when user is not verified' do
           let(:user) { build(:user, :fully_registered) }
+
           it "asserts #{Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF}" do
             expect(subject.asserted_ial_acr).
               to eq(Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF)
@@ -595,8 +604,10 @@ RSpec.describe AuthnContextResolver do
             expect(result.aal2?).to be true
           end
         end
+
         context 'when user is verified' do
           let(:user) { build(:user, :proofed) }
+
           it "asserts #{Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF}" do
             expect(subject.asserted_ial_acr).
               to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
@@ -625,6 +636,7 @@ RSpec.describe AuthnContextResolver do
               expect(subject.asserted_ial_acr).
                 to eq(Saml::Idp::Constants::IAL_AUTH_ONLY_ACR)
             end
+
             it 'sets biometric_comparison to true' do
               expect(result.identity_proofing?).to be true
               expect(result.biometric_comparison?).to be true
@@ -692,6 +704,7 @@ RSpec.describe AuthnContextResolver do
 
           context 'when the user has not yet been verified' do
             let(:user) { build(:user) }
+
             it 'asserts biometric comparison' do
               expect(result.identity_proofing?).to be true
               expect(result.biometric_comparison?).to be true

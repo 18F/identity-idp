@@ -1390,6 +1390,7 @@ RSpec.describe SamlIdpController do
         let(:user_identity) do
           @user.identities.find_by(service_provider: saml_settings.issuer)
         end
+
         before do
           sign_in(@user)
           saml_get_auth(saml_settings)
@@ -1757,8 +1758,10 @@ RSpec.describe SamlIdpController do
 
           it_behaves_like 'sends the UUID', Saml::Idp::Constants::NAME_ID_FORMAT_UNSPECIFIED
         end
+
         context 'when the service provider is configured with use_legacy_name_id_behavior' do
           let(:use_legacy_name_id_behavior) { true }
+
           it 'sends the id, not the UUID' do
             generate_saml_response(user, auth_settings)
 
@@ -1780,8 +1783,10 @@ RSpec.describe SamlIdpController do
 
           it_behaves_like 'sends the UUID', nil
         end
+
         context 'when the service provider is configured with use_legacy_name_id_behavior' do
           let(:use_legacy_name_id_behavior) { true }
+
           it_behaves_like 'sends the UUID', nil
         end
       end
@@ -1804,6 +1809,7 @@ RSpec.describe SamlIdpController do
 
         context 'when the service provider is allowed to use email' do
           let(:email_allowed) { true }
+
           it_behaves_like 'sends the email', Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL
         end
       end
