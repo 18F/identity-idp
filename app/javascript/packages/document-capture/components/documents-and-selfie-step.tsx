@@ -9,14 +9,13 @@ import { PageHeading } from '@18f/identity-components';
 import { Cancel } from '@18f/identity-verify-flow';
 import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
 import { SelfieStepComponent } from './selfie-step';
+import { DocumentsCaptureStepComponent } from './documents-step';
 import TipList from './tip-list';
 import {
-  ImageValue,
   DefaultSideProps,
   DocumentsAndSelfieStepValue,
 } from '../interface/documents-image-selfie-value';
 import { DeviceContext, SelfieCaptureContext, UploadContext } from '../context';
-import DocumentSideAcuantCapture from './document-side-acuant-capture';
 
 export function DocumentCaptureSubheaderOne({
   isSelfieCaptureEnabled,
@@ -30,28 +29,6 @@ export function DocumentCaptureSubheaderOne({
       {isSelfieCaptureEnabled && '1. '}
       {t('doc_auth.headings.document_capture_subheader_id')}
     </h2>
-  );
-}
-export function DocumentsStep({
-  defaultSideProps,
-  value,
-}: {
-  defaultSideProps: DefaultSideProps;
-  value: Record<string, ImageValue>;
-}) {
-  type DocumentSide = 'front' | 'back';
-  const documentsSides: DocumentSide[] = ['front', 'back'];
-  return (
-    <>
-      {documentsSides.map((side) => (
-        <DocumentSideAcuantCapture
-          {...defaultSideProps}
-          key={side}
-          side={side}
-          value={value[side]}
-        />
-      ))}
-    </>
   );
 }
 export default function DocumentsAndSelfieStep({
@@ -91,7 +68,7 @@ export default function DocumentsAndSelfieStep({
           t('doc_auth.tips.document_capture_id_text3'),
         ].concat(!isMobile ? [t('doc_auth.tips.document_capture_id_text4')] : [])}
       />
-      <DocumentsStep defaultSideProps={defaultSideProps} value={value} />
+      <DocumentsCaptureStepComponent defaultSideProps={defaultSideProps} value={value} />
       {isSelfieCaptureEnabled && (
         <SelfieStepComponent defaultSideProps={defaultSideProps} selfieValue={value.selfie} />
       )}
