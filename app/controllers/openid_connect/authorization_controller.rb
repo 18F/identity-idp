@@ -24,6 +24,7 @@ module OpenidConnect
     before_action :redirect_to_sign_in, only: :index, unless: :user_signed_in?
     before_action :confirm_two_factor_authenticated, only: :index
     before_action :redirect_to_reauthenticate, only: :index, if: :remember_device_expired_for_sp?
+    before_action :redirect_to_reauthenticate_password, only: :index
     before_action :prompt_for_password_if_ial2_request_and_pii_locked, only: [:index]
 
     def index
@@ -205,6 +206,13 @@ module OpenidConnect
           is_forced_reauthentication: true,
         )
       end
+    end
+
+    def redirect_to_reauthenticate_password
+      return if meets_sp_reauthentication_requirements?(
+        issuer: @authorize_form.service_provider.issuer,
+      )
+      redirect_to capture_password_url
     end
 
     def prompt_for_password_if_ial2_request_and_pii_locked

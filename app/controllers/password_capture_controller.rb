@@ -4,6 +4,7 @@ class PasswordCaptureController < ApplicationController
   include Ial2ProfileConcern
   include TwoFactorAuthenticatableMethods
   include SecureHeadersConcern
+  include ForcedReauthenticationConcern
 
   before_action :confirm_two_factor_authenticated
   before_action :apply_secure_headers_override
@@ -40,6 +41,7 @@ class PasswordCaptureController < ApplicationController
   def handle_valid_password
     cache_profiles(password)
     session[:password_attempts] = 0
+    set_issuer_forced_reauthentication_success(issuer: decorated_sp_session.sp_issuer)
     redirect_to after_sign_in_path_for(current_user)
   end
 
