@@ -63,13 +63,13 @@ RSpec.describe Proofing::Socure::IdPlus::FetchResultsRequest do
       ).with(headers: { 'Authorization' => "SocureApiKey #{api_key}" })
     end
 
-    xcontext 'when service returns HTTP 200 response' do
+    context 'when service returns HTTP 200 response' do
       it 'method returns a Proofing::Socure::IdPlus::Response' do
         res = request.send_request
         expect(res).to be_a(Proofing::Socure::IdPlus::Response)
       end
 
-      xit 'check: do we need this? - response has kyc data' do
+      it 'response has kyc data' do
         res = request.send_request
         expect(res.kyc_field_validations).to be
         expect(res.kyc_reason_codes).to be
