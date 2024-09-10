@@ -280,6 +280,57 @@ RSpec.describe SamlRequestValidator do
 
       it_behaves_like 'allows biometric IAL only if sp is authorized',
                       Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF
+
+      shared_examples 'allows semantic IAL only if sp is authorized' do |semantic_ial|
+        let(:authn_context) { [semantic_ial] }
+
+        context "when the IAL requested is #{semantic_ial}" do
+          context 'when the service provider is allowed to use semantic ials' do
+            let(:sp) { create(:service_provider, :idv) }
+
+            before do
+              allow_any_instance_of(ServiceProvider).
+                to receive(:semantic_authn_contexts_allowed?).
+                and_return(true)
+            end
+
+            it 'returns a successful response' do
+              expect(response.to_h).to include(
+                success: true,
+                errors: {},
+                **extra,
+              )
+            end
+          end
+
+          context 'when the service provider is not allowed to use semantic ials' do
+            before do
+              allow_any_instance_of(ServiceProvider).
+                to receive(:semantic_authn_contexts_allowed?).
+                and_return(false)
+            end
+
+            it 'fails with an unauthorized error' do
+              errors = {
+                authn_context: [t('errors.messages.unauthorized_authn_context')],
+              }
+
+              expect(response.to_h).to include(
+                success: false,
+                errors: errors,
+                error_details: hash_including(*errors.keys),
+                **extra,
+              )
+            end
+          end
+        end
+      end
+
+      it_behaves_like 'allows semantic IAL only if sp is authorized',
+                      Saml::Idp::Constants::IAL_VERIFIED_ACR
+
+      it_behaves_like 'allows semantic IAL only if sp is authorized',
+                      Saml::Idp::Constants::IAL_AUTH_ONLY_ACR
     end
 
     context 'invalid authn context and invalid sp and authorized nameID format' do
