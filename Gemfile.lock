@@ -40,11 +40,11 @@ GIT
 
 GIT
   remote: https://github.com/18f/identity-validations.git
-  revision: 92b9c2b649afc624547d30d4d1e673148efde47e
+  revision: a728dc4c3e59c818c4404d70332e57b2eea6ef9b
   branch: hmm/more-composable-validations
   specs:
     identity_validations (0.8.0)
-      activemodel (~> 7.1.3)
+      activemodel (~> 7.1)
 
 GIT
   remote: https://github.com/hallelujah/valid_email.git
