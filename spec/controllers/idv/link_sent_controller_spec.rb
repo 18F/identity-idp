@@ -1,12 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe Idv::LinkSentController,
-               allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
+RSpec.describe Idv::LinkSentController do
   let(:user) { create(:user) }
-
-  let(:ab_test_args) do
-    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
-  end
 
   before do
     stub_sign_in(user)
@@ -14,7 +9,6 @@ RSpec.describe Idv::LinkSentController,
     subject.idv_session.idv_consent_given_at = Time.zone.now
     subject.idv_session.flow_path = 'hybrid'
     stub_analytics
-    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
   describe '#step_info' do
@@ -53,7 +47,7 @@ RSpec.describe Idv::LinkSentController,
         analytics_id: 'Doc Auth',
         flow_path: 'hybrid',
         step: 'link_sent',
-      }.merge(ab_test_args)
+      }
     end
 
     it 'renders the show template' do
@@ -115,7 +109,7 @@ RSpec.describe Idv::LinkSentController,
         analytics_id: 'Doc Auth',
         flow_path: 'hybrid',
         step: 'link_sent',
-      }.merge(ab_test_args)
+      }
     end
 
     it 'invalidates future steps' do

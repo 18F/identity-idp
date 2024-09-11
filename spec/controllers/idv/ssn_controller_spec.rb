@@ -1,21 +1,16 @@
 require 'rails_helper'
 
-RSpec.describe Idv::SsnController, allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
+RSpec.describe Idv::SsnController do
   include FlowPolicyHelper
 
   let(:ssn) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn] }
 
   let(:user) { create(:user) }
 
-  let(:ab_test_args) do
-    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
-  end
-
   before do
     stub_sign_in(user)
     stub_up_to(:document_capture, idv_session: subject.idv_session)
     stub_analytics
-    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
   describe '#step_info' do
@@ -54,7 +49,7 @@ RSpec.describe Idv::SsnController, allowed_extra_analytics: [:sample_bucket1, :s
         analytics_id: 'Doc Auth',
         flow_path: 'standard',
         step: 'ssn',
-      }.merge(ab_test_args)
+      }
     end
 
     it 'renders the show template' do
@@ -131,7 +126,7 @@ RSpec.describe Idv::SsnController, allowed_extra_analytics: [:sample_bucket1, :s
           step: 'ssn',
           success: true,
           errors: {},
-        }.merge(ab_test_args)
+        }
       end
 
       it 'updates idv_session.ssn' do
@@ -189,7 +184,7 @@ RSpec.describe Idv::SsnController, allowed_extra_analytics: [:sample_bucket1, :s
             ssn: [t('idv.errors.pattern_mismatch.ssn')],
           },
           error_details: { ssn: { invalid: true } },
-        }.merge(ab_test_args)
+        }
       end
 
       render_views

@@ -1,7 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::VerifyInfoController,
-               allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
+RSpec.describe Idv::VerifyInfoController do
   include FlowPolicyHelper
 
   let(:user) { create(:user) }
@@ -10,18 +9,13 @@ RSpec.describe Idv::VerifyInfoController,
       analytics_id: 'Doc Auth',
       flow_path: 'standard',
       step: 'verify',
-    }.merge(ab_test_args)
-  end
-
-  let(:ab_test_args) do
-    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
+    }
   end
 
   before do
     stub_sign_in(user)
     stub_up_to(:ssn, idv_session: subject.idv_session)
     stub_analytics
-    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
   describe '#step_info' do
@@ -62,7 +56,7 @@ RSpec.describe Idv::VerifyInfoController,
           analytics_id: 'Doc Auth',
           flow_path: 'standard',
           step: 'verify',
-        }.merge(ab_test_args),
+        },
       )
     end
 
@@ -300,7 +294,7 @@ RSpec.describe Idv::VerifyInfoController,
                 analytics_id: 'Doc Auth',
                 flow_path: 'standard',
                 step: 'verify',
-              }.merge(ab_test_args),
+              },
             ),
           )
         end

@@ -1,11 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::PhoneErrorsController,
-               allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
-  let(:ab_test_args) do
-    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
-  end
-
+RSpec.describe Idv::PhoneErrorsController do
   describe '#step_info' do
     it 'returns a valid StepInfo object' do
       expect(Idv::PhoneErrorsController.step_info).to be_valid
@@ -15,7 +10,6 @@ RSpec.describe Idv::PhoneErrorsController,
   before do
     allow(subject).to receive(:remaining_submit_attempts).and_return(5)
     stub_analytics
-    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
 
     if user
       stub_sign_in(user)
@@ -159,7 +153,6 @@ RSpec.describe Idv::PhoneErrorsController,
           'IdV: phone error visited',
           type: action,
           remaining_submit_attempts: 4,
-          **ab_test_args,
         )
       end
     end
@@ -212,7 +205,6 @@ RSpec.describe Idv::PhoneErrorsController,
           'IdV: phone error visited',
           type: action,
           remaining_submit_attempts: 4,
-          **ab_test_args,
         )
       end
     end
@@ -244,7 +236,6 @@ RSpec.describe Idv::PhoneErrorsController,
             'IdV: phone error visited',
             type: action,
             limiter_expires_at: attempted_at + rate_limit_window,
-            **ab_test_args,
           )
         end
       end
