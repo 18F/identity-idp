@@ -406,12 +406,16 @@ module AnalyticsEvents
   end
 
   # @param [String] message the warning
+  # @param [Array<String>] unknown_alerts Names of alerts not recognized by our code
+  # @param [Hash] response_info Response payload
   # Logged when there is a non-user-facing error in the doc auth process, such as an unrecognized
   # field from a vendor
-  def doc_auth_warning(message: nil, **extra)
+  def doc_auth_warning(message: nil, unknown_alerts: nil, response_info: nil, **extra)
     track_event(
       'Doc Auth Warning',
-      message: message,
+      message:,
+      unknown_alerts:,
+      response_info:,
       **extra,
     )
   end
@@ -2730,11 +2734,13 @@ module AnalyticsEvents
   # @param [String] analytics_id
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Boolean] same_address_as_id
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # address page visited
   def idv_in_person_proofing_address_visited(
     flow_path:,
     step:,
     analytics_id:,
+    opted_in_to_in_person_proofing: nil,
     skip_hybrid_handoff: nil,
     same_address_as_id: nil,
     **extra
@@ -2744,6 +2750,7 @@ module AnalyticsEvents
       flow_path:,
       step:,
       analytics_id:,
+      opted_in_to_in_person_proofing:,
       skip_hybrid_handoff:,
       same_address_as_id:,
       **extra,
@@ -2890,6 +2897,7 @@ module AnalyticsEvents
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Boolean, nil] same_address_as_id
   # @param [String] current_address_zip_code ZIP code of given address
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   def idv_in_person_proofing_residential_address_submitted(
     success:,
     errors:,
@@ -2897,6 +2905,7 @@ module AnalyticsEvents
     step:,
     analytics_id:,
     current_address_zip_code:,
+    opted_in_to_in_person_proofing: nil,
     error_details: nil,
     skip_hybrid_handoff: nil,
     same_address_as_id: nil,
@@ -2910,6 +2919,7 @@ module AnalyticsEvents
       step:,
       analytics_id:,
       current_address_zip_code:,
+      opted_in_to_in_person_proofing:,
       error_details:,
       skip_hybrid_handoff:,
       same_address_as_id:,
@@ -3006,16 +3016,21 @@ module AnalyticsEvents
   # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # The user visited the "ready to verify" page for the in person proofing flow
-  def idv_in_person_ready_to_verify_visit(proofing_components: nil,
-                                          active_profile_idv_level: nil,
-                                          pending_profile_idv_level: nil,
-                                          **extra)
+  def idv_in_person_ready_to_verify_visit(
+    opted_in_to_in_person_proofing: nil,
+    proofing_components: nil,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
+    **extra
+  )
     track_event(
       'IdV: in person ready to verify visited',
-      proofing_components: proofing_components,
-      active_profile_idv_level: active_profile_idv_level,
-      pending_profile_idv_level: pending_profile_idv_level,
+      opted_in_to_in_person_proofing:,
+      proofing_components:,
+      active_profile_idv_level:,
+      pending_profile_idv_level:,
       **extra,
     )
   end
