@@ -346,7 +346,7 @@ RSpec.describe 'dev rake tasks', allowed_extra_analytics: [:*] do
       stub_request(
         :post,
         %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant},
-      ).to_raise(Faraday::TimeoutError).times(8).then.
+      ).to_raise(Faraday::TimeoutError).times(6).then.
         to_return(
           status: 200,
           body: UspsInPersonProofing::Mock::Fixtures.request_enroll_response,
@@ -431,7 +431,7 @@ RSpec.describe 'dev rake tasks', allowed_extra_analytics: [:*] do
       stub_request(
         :post,
         %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant},
-      ).to_raise(Faraday::TimeoutError).times(8).then.
+      ).to_raise(Faraday::TimeoutError).times(6).then.
         to_return(
           status: 200,
           body: UspsInPersonProofing::Mock::Fixtures.request_enroll_response,

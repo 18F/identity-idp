@@ -432,8 +432,8 @@ RSpec.describe UspsInPersonProofing::Proofer do
           @response = err
         end
 
-        it 'retries the USPS optInIPPApplicant request 4 times' do
-          expect(@mock).to have_been_made.times(4)
+        it 'retries the USPS optInIPPApplicant request' do
+          expect(@mock).to have_been_made.times(3)
         end
 
         it 'throws a Faraday::ServerError' do

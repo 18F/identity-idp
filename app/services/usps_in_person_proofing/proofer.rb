@@ -141,8 +141,8 @@ module UspsInPersonProofing
     def faraday_retry
       Faraday.new(headers: request_headers) do |conn|
         conn.request :retry, {
-          max: 3,
-          interval: 0.5,
+          max: 2,
+          interval: 1,
           backoff_factor: 2,
           exceptions: Faraday::Retry::Middleware::DEFAULT_EXCEPTIONS + [Faraday::ServerError,
                                                                         Faraday::ConnectionFailed],
