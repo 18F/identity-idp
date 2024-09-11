@@ -1720,7 +1720,7 @@ module AnalyticsEvents
     flow_path:,
     liveness_checking_required:,
     issue_year:,
-    failed_image_fingerprints:,
+    failed_image_fingerprints: nil,
     billed: nil,
     doc_auth_result: nil,
     vendor_request_time_in_ms: nil,
