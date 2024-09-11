@@ -2864,6 +2864,7 @@ module AnalyticsEvents
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Boolean] same_address_as_id
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # User submitted state id on redo state id page
   def idv_in_person_proofing_redo_state_id_submitted(
     success:,
@@ -2873,6 +2874,7 @@ module AnalyticsEvents
     step: nil,
     analytics_id: nil,
     same_address_as_id: nil,
+    opted_in_to_in_person_proofing: nil,
     **extra
   )
     track_event(
@@ -2884,6 +2886,7 @@ module AnalyticsEvents
       errors:,
       error_details:,
       same_address_as_id:,
+      opted_in_to_in_person_proofing:,
       **extra,
     )
   end
