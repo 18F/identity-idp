@@ -209,7 +209,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
         end
 
         context 'documents or selfie with error is uploaded' do
-          shared_examples 'it has correct error displays' do |expect_take_new_pictures_message:|
+          shared_examples 'it has correct error displays' do
             # when there are multiple doc auth errors on front and back
             it 'shows the correct error message for the given error' do
               perform_in_browser(:mobile) do
@@ -236,7 +236,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 submit_images
 
                 expect_rate_limited_header(false)
-                expect_try_taking_new_pictures(expect_take_new_pictures_message)
+                expect_try_taking_new_pictures(false)
                 expect_review_issues_body_message('doc_auth.errors.doc_type_not_supported_heading')
                 expect_review_issues_body_message('doc_auth.errors.doc.doc_type_check')
                 expect_rate_limit_warning(max_attempts - 2)
@@ -336,8 +336,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
               end
             end
 
-            it_should_behave_like 'it has correct error displays',
-                                  expect_take_new_pictures_message: true
+            it_should_behave_like 'it has correct error displays'
           end
 
           context 'IPP not enabled' do
@@ -350,8 +349,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
               end
             end
 
-            it_should_behave_like 'it has correct error displays',
-                                  expect_take_new_pictures_message: false
+            it_should_behave_like 'it has correct error displays'
           end
         end
 
