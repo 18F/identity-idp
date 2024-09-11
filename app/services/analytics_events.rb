@@ -3480,6 +3480,34 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks USPS in-person proofing request retries
+  # @param [String] context The context request the retry was executed.
+  # @param [Integer] retry_attempt The current retry attempt.
+  # @param [Integer] retry_max The max number of retries that could occur.
+  # @param [Integer] status_code The status code received before retry.
+  # @param [String] exception_class The class name of the exception.
+  # @param [String] exception_message The exception message.
+  def idv_in_person_usps_request_retry(
+    context:,
+    retry_attempt:,
+    retry_max:,
+    status_code:,
+    exception_class:,
+    exception_message:,
+    **extra
+  )
+    track_event(
+      :idv_in_person_usps_request_retry,
+      context: context,
+      retry_attempt: retry_attempt,
+      retry_max: retry_max,
+      status_code: status_code,
+      expection_class: exception_class,
+      expection_message: exception_message,
+      **extra,
+    )
+  end
+
   # User visits IdV
   # @param [Hash,nil] proofing_components User's proofing components.
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.

@@ -426,26 +426,70 @@ RSpec.describe UspsInPersonProofing::Proofer do
       context 'when the response has a status code of 500' do
         before do
           @mock = stub_request_enroll_internal_server_error_response
-
-          subject.request_enroll(applicant, is_enhanced_ipp)
-        rescue StandardError => err
-          @response = err
         end
 
-        it 'retries the USPS optInIPPApplicant request' do
-          expect(@mock).to have_been_made.times(3)
-        end
+        context 'when analytics is passed into the proofer' do
+          let(:analytics) { instance_double(Analytics) }
+          subject { described_class.new(analytics) }
 
-        it 'throws a Faraday::ServerError' do
-          expect(@response).to be_an_instance_of(Faraday::ServerError).and(
-            having_attributes(
-              response: include(
-                body: include(
-                  'responseMessage' => 'An internal error occurred processing the request',
+          before do
+            allow(analytics).to receive(:idv_in_person_usps_request_retry)
+            subject.request_enroll(applicant, is_enhanced_ipp)
+          rescue StandardError => err
+            @response = err
+          end
+
+          it 'retries the USPS optInIPPApplicant request' do
+            expect(@mock).to have_been_made.times(3)
+          end
+
+          it 'logs USPS request retry analytics' do
+            expect(analytics).to have_received(:idv_in_person_usps_request_retry).
+              with(hash_including(
+                :retry_attempt,
+                :retry_max,
+                :exception_message,
+                context: 'usps_enroll',
+                status_code: 500,
+                exception_class: Faraday::ServerError,
+              )).exactly(2).times
+          end
+
+          it 'throws a Faraday::ServerError' do
+            expect(@response).to be_an_instance_of(Faraday::ServerError).and(
+              having_attributes(
+                response: include(
+                  body: include(
+                    'responseMessage' => 'An internal error occurred processing the request',
+                  ),
                 ),
               ),
-            ),
-          )
+            )
+          end
+        end
+
+        context 'when analytics is not passed into the proofer' do
+          before do
+            subject.request_enroll(applicant, is_enhanced_ipp)
+          rescue StandardError => err
+            @response = err
+          end
+
+          it 'retries the USPS optInIPPApplicant request' do
+            expect(@mock).to have_been_made.times(3)
+          end
+
+          it 'throws a Faraday::ServerError' do
+            expect(@response).to be_an_instance_of(Faraday::ServerError).and(
+              having_attributes(
+                response: include(
+                  body: include(
+                    'responseMessage' => 'An internal error occurred processing the request',
+                  ),
+                ),
+              ),
+            )
+          end
         end
       end
     end
@@ -453,17 +497,54 @@ RSpec.describe UspsInPersonProofing::Proofer do
     context 'when the USPS server has intermittant errors' do
       before do
         @mock = stub_request_enroll_server_down_time_response
-        @response = subject.request_enroll(applicant, is_enhanced_ipp)
       end
 
-      it 'retries the USPS optInIPPApplicant request' do
-        expect(@mock).to have_been_made.times(3)
+      context 'when analytics is passed into the proofer' do
+        let(:analytics) { instance_double(Analytics) }
+        subject { described_class.new(analytics) }
+
+        before do
+          allow(analytics).to receive(:idv_in_person_usps_request_retry)
+          @response = subject.request_enroll(applicant, is_enhanced_ipp)
+        end
+
+        it 'retries the USPS optInIPPApplicant request' do
+          expect(@mock).to have_been_made.times(2)
+        end
+
+        it 'logs USPS request retry analytics' do
+          expect(analytics).to have_received(:idv_in_person_usps_request_retry).
+            with(hash_including(
+              :retry_attempt,
+              :retry_max,
+              :exception_message,
+              context: 'usps_enroll',
+              status_code: 500,
+              exception_class: Faraday::ServerError,
+            )).exactly(1).times
+        end
+
+        it 'returns the enrollment response' do
+          expect(@response.enrollment_code).to be_present
+          expect(@response.response_message).to be_present
+        end
       end
 
-      it 'returns the enrollment response' do
-        expect(@response.enrollment_code).to be_present
-        expect(@response.response_message).to be_present
+      context 'when analytics is not passed into the proofer' do
+        before do
+          @response = subject.request_enroll(applicant, is_enhanced_ipp)
+        end
+
+        it 'retries the USPS optInIPPApplicant request' do
+          expect(@mock).to have_been_made.times(2)
+        end
+
+        it 'returns the enrollment response' do
+          expect(@response.enrollment_code).to be_present
+          expect(@response.response_message).to be_present
+        end
       end
+      # Add analytics tests to this
     end
   end
 

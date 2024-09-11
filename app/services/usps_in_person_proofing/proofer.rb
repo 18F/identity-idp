@@ -7,6 +7,12 @@ module UspsInPersonProofing
     AUTH_TOKEN_PREEMPTIVE_EXPIRY_MINUTES = 1.minute.freeze
     # Assurance Level to use for enhanced in-person proofing
     USPS_EIPP_ASSURANCE_LEVEL = '2.0'
+    USPS_RETRY_MAX = 2
+
+    # @param analytics [Analytics] An instance of the Analytics class.
+    def initialize(analytics = nil)
+      @analytics = analytics
+    end
 
     # Makes HTTP request to get nearby in-person proofing facilities
     # Requires address, city, state, zip code, and is_enhanced_ipp.
@@ -139,15 +145,27 @@ module UspsInPersonProofing
     end
 
     def faraday_retry
+      retry_options = {
+        max: USPS_RETRY_MAX,
+        interval: 1,
+        backoff_factor: 2,
+        exceptions: Faraday::Retry::Middleware::DEFAULT_EXCEPTIONS + [Faraday::ServerError,
+                                                                      Faraday::ConnectionFailed],
+        methods: %i[post],
+        retry_block: ->(env:, options:, retry_count:, exception:, will_retry_in:) do
+          @analytics&.idv_in_person_usps_request_retry(
+            context: env.request.context&.dig(:service_name),
+            retry_attempt: retry_count + 1,
+            retry_max: USPS_RETRY_MAX,
+            status_code: env.status,
+            exception_class: exception.class,
+            exception_message: exception.message,
+          )
+        end,
+      }
+
       Faraday.new(headers: request_headers) do |conn|
-        conn.request :retry, {
-          max: 2,
-          interval: 1,
-          backoff_factor: 2,
-          exceptions: Faraday::Retry::Middleware::DEFAULT_EXCEPTIONS + [Faraday::ServerError,
-                                                                        Faraday::ConnectionFailed],
-          methods: %i[post],
-        }
+        conn.request :retry, retry_options
 
         conn.options.timeout = IdentityConfig.store.usps_ipp_request_timeout
         conn.options.read_timeout = IdentityConfig.store.usps_ipp_request_timeout

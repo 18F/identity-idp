@@ -85,6 +85,7 @@ module Idv
       idv_in_person_usps_proofing_results_job_unexpected_response
       idv_in_person_usps_proofing_results_job_user_sent_to_fraud_review
       idv_in_person_usps_request_enroll_exception
+      idv_in_person_usps_request_retry
       idv_ipp_deactivated_for_never_visiting_post_office
       idv_link_sent_capture_doc_polling_complete
       idv_link_sent_capture_doc_polling_started

@@ -24,7 +24,10 @@ module UspsInPersonProofing
             transform_keys(SECONDARY_ID_ADDRESS_MAP)
         end
 
-        enrollment_code = create_usps_enrollment(enrollment, pii, is_enhanced_ipp)
+        enrollment_code = create_usps_enrollment(
+          enrollment, pii, is_enhanced_ipp,
+          analytics(user: user)
+        )
         return unless enrollment_code
 
         # update the enrollment to status pending
@@ -61,7 +64,7 @@ module UspsInPersonProofing
       # @param [Pii::Attributes] pii The PII associated with the in-person enrollment
       # @return [String] The enrollment code
       # @raise [Exception::RequestEnrollException] Raised with a problem creating the enrollment
-      def create_usps_enrollment(enrollment, pii, is_enhanced_ipp)
+      def create_usps_enrollment(enrollment, pii, is_enhanced_ipp, analytics)
         # Use the enrollment's unique_id value if it exists, otherwise use the deprecated
         # #usps_unique_id value in order to remain backwards-compatible. LG-7024 will remove this
         unique_id = enrollment.unique_id || enrollment.usps_unique_id
@@ -79,7 +82,7 @@ module UspsInPersonProofing
           },
         )
 
-        proofer = usps_proofer
+        proofer = usps_proofer(analytics)
         response = proofer.request_enroll(applicant, is_enhanced_ipp)
         response.enrollment_code
       rescue Faraday::BadRequestError => err
@@ -95,11 +98,11 @@ module UspsInPersonProofing
           each(&:cancelled!)
       end
 
-      def usps_proofer
+      def usps_proofer(analytics)
         if IdentityConfig.store.usps_mock_fallback
           UspsInPersonProofing::Mock::Proofer.new
         else
-          UspsInPersonProofing::Proofer.new
+          UspsInPersonProofing::Proofer.new(analytics)
         end
       end
 

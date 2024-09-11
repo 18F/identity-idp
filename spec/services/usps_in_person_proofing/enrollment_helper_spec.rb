@@ -349,6 +349,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
     let(:enrollment) { create(:in_person_enrollment, :with_service_provider) }
     let(:usps_eipp_sponsor_id) { '314159265359' }
     let(:is_enhanced_ipp) { true }
+    let(:analytics) { instance_double(Analytics) }
     let(:pii) do
       Pii::Attributes.new_from_hash(
         Idp::Constants::MOCK_IDV_APPLICANT,
@@ -386,7 +387,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
 
       it 'creates an enhanced ipp enrollment' do
         expect(proofer).to receive(:request_enroll).with(applicant, is_enhanced_ipp)
-        subject.create_usps_enrollment(enrollment, pii, is_enhanced_ipp)
+        subject.create_usps_enrollment(enrollment, pii, is_enhanced_ipp, analytics)
       end
 
       it 'saves sponsor_id on the enrollment to the usps_eipp_sponsor_id' do

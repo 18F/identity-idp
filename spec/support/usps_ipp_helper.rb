@@ -126,7 +126,7 @@ module UspsIppHelper
       status: 500,
       body: UspsInPersonProofing::Mock::Fixtures.internal_server_error_response,
       headers: { 'content-type' => 'application/json' },
-    ).times(2).to_return(
+    ).times(1).to_return(
       status: 200,
       body: UspsInPersonProofing::Mock::Fixtures.request_enroll_response,
       headers: { 'content-type' => 'application/json' },
