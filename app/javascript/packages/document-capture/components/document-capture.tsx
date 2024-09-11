@@ -148,10 +148,12 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
       : ([prepareFormStep, locationFormStep, flowPath === 'hybrid' && hybridFormStep].filter(
           Boolean,
         ) as FormStep[]);
-
-  const defaultSteps: FormStep[] = submissionError
-    ? ([reviewFormStep] as FormStep[])
-    : documentsFormSteps;
+  const reviewAfterFailedSteps = [reviewFormStep] as FormStep[];
+  const reviewWithInPersonSteps = reviewAfterFailedSteps.concat(inPersonSteps);
+  const afterSubmissionErrorSteps = docAuthSeparatePagesEnabled
+    ? reviewAfterFailedSteps
+    : reviewWithInPersonSteps;
+  const defaultSteps: FormStep[] = submissionError ? afterSubmissionErrorSteps : documentsFormSteps;
 
   // If the user got here by opting-in to in-person proofing, when skipDocAuth === true,
   // then set steps to inPersonSteps
