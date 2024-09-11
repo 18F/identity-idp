@@ -1687,6 +1687,8 @@ module AnalyticsEvents
   # @param [String] workflow LexisNexis TrueID workflow
   # @param [String] birth_year Birth year from document
   # @param [Integer] issue_year Year document was issued
+  # @param [Hash] failed_image_fingerprints Hash of document field with an array of failed image
+  # fingerprints for that field.
   # @param [Integer] selfie_attempts number of selfie attempts the user currently has processed
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # SDK upgrades
@@ -1718,6 +1720,7 @@ module AnalyticsEvents
     flow_path:,
     liveness_checking_required:,
     issue_year:,
+    failed_image_fingerprints:,
     billed: nil,
     doc_auth_result: nil,
     vendor_request_time_in_ms: nil,
@@ -1795,6 +1798,7 @@ module AnalyticsEvents
       workflow:,
       birth_year:,
       issue_year:,
+      failed_image_fingerprints:,
       selfie_attempts:,
       acuant_sdk_upgrade_ab_test_bucket:,
       liveness_enabled:,
