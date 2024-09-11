@@ -66,8 +66,8 @@ RSpec.describe Vot::Parser do
         vector_of_trust = 'C1.C2.Xx'
 
         expect { Vot::Parser.new(vector_of_trust:).parse }.to raise_exception(
-          Vot::Parser::ParseException,
-          'C1.C2.Xx contains unkown component Xx',
+          Vot::Parser::UnsupportedComponentsException,
+          /'Xx'$/,
         )
       end
     end
@@ -76,8 +76,7 @@ RSpec.describe Vot::Parser do
       it 'raises an exception' do
         vector_of_trust = 'C1.C1'
         expect { Vot::Parser.new(vector_of_trust:).parse }.to raise_exception(
-          Vot::Parser::ParseException,
-          'C1.C1 contains duplicate components',
+          Vot::Parser::DuplicateComponentsException,
         )
       end
 
