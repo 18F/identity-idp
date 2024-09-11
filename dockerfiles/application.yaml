@@ -282,7 +282,7 @@ spec:
             - op: replace
               path: /spec/template/spec/containers/0/envFrom/0/configMapRef/name
               value: {{ENVIRONMENT}}-dashboard-config
-        # Patch IDP image and configmaps
+        # Patch IDP image and configmaps and canary metrics
         - target:
             kind: Rollout
             name: idp-rollout
@@ -293,6 +293,12 @@ spec:
             - op: replace
               path: /spec/template/spec/volumes/0/configMap/name
               value: {{ENVIRONMENT}}-idp-application-yml
+            - op: replace
+              path: /spec/strategy/canary/analysis/args/0/value
+              value: {{ENVIRONMENT}}-idp_reviewapps_svc_3000
+            - op: replace
+              path: /spec/strategy/canary/steps/2/analysis/args/0/value
+              value: {{ENVIRONMENT}}-idp_reviewapps_svc_3000
         # Patch Worker Image and configmaps
         - target:
             kind: Deployment
@@ -324,20 +330,11 @@ spec:
               path: /spec/template/spec/containers/0/image
               value: {{ECR_REGISTRY}}/identity-dashboard/review:{{DASHBOARD_CONTAINER_TAG}}
             - op: replace
+              path: /spec/template/spec/initContainers/0/image
+              value: {{ECR_REGISTRY}}/identity-dashboard/review:{{DASHBOARD_CONTAINER_TAG}}
+            - op: replace
               path: /spec/template/spec/volumes/0/configMap/name
               value: {{ENVIRONMENT}}-dashboard-application-yml
-
-        # Patch rollout canary metrics
-        - target:
-            kind: Rollout
-            name: idp-rollout
-          patch: |-
-            - op: replace
-              path: /spec/strategy/canary/analysis/args/0/value
-              value: {{ENVIRONMENT}}-idp_reviewapps_svc_3000
-            - op: replace
-              path: /spec/strategy/canary/steps/2/analysis/args/0/value
-              value: {{ENVIRONMENT}}-idp_reviewapps_svc_3000
         # Patch ingress names
         - target:
             kind: Ingress
