@@ -8,8 +8,8 @@ import GeneralError from './general-error';
 import TipList from './tip-list';
 import { SelfieCaptureContext } from '../context';
 import { DocumentCaptureSubheaderOne } from './documents-and-selfie-step';
-import { DocumentsCaptureStepComponent } from './documents-step';
-import { SelfieStepComponent } from './selfie-step';
+import { DocumentsCaptureStep } from './documents-step';
+import { SelfieCaptureStep } from './selfie-step';
 import type { ReviewIssuesStepValue } from './review-issues-step';
 
 interface DocumentCaptureReviewIssuesProps extends FormStepComponentProps<ReviewIssuesStepValue> {
@@ -77,9 +77,9 @@ function DocumentCaptureReviewIssues({
           ]}
         />
       )}
-      <DocumentsCaptureStepComponent defaultSideProps={defaultSideProps} value={value} />
+      <DocumentsCaptureStep defaultSideProps={defaultSideProps} value={value} />
       {isSelfieCaptureEnabled && (
-        <SelfieStepComponent defaultSideProps={defaultSideProps} selfieValue={value.selfie} />
+        <SelfieCaptureStep defaultSideProps={defaultSideProps} selfieValue={value.selfie} />
       )}
       <FormStepsButton.Submit />
       <Cancel />

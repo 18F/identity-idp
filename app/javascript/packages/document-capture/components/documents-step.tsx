@@ -13,7 +13,7 @@ import {
 } from '../interface/documents-image-selfie-value';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 
-export function DocumentsCaptureStepComponent({
+export function DocumentsCaptureStep({
   defaultSideProps,
   value,
 }: {
@@ -81,7 +81,7 @@ export default function DocumentsStep({
           t('doc_auth.tips.document_capture_id_text3'),
         ].concat(!isMobile ? [t('doc_auth.tips.document_capture_id_text4')] : [])}
       />
-      <DocumentsCaptureStepComponent defaultSideProps={defaultSideProps} value={value} />
+      <DocumentsCaptureStep defaultSideProps={defaultSideProps} value={value} />
       <FormStepsButton.Continue />
       <Cancel />
     </>

@@ -8,8 +8,8 @@ import {
 import { PageHeading } from '@18f/identity-components';
 import { Cancel } from '@18f/identity-verify-flow';
 import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
-import { SelfieStepComponent } from './selfie-step';
-import { DocumentsCaptureStepComponent } from './documents-step';
+import { SelfieCaptureStep } from './selfie-step';
+import { DocumentsCaptureStep } from './documents-step';
 import TipList from './tip-list';
 import {
   DefaultSideProps,
@@ -68,9 +68,9 @@ export default function DocumentsAndSelfieStep({
           t('doc_auth.tips.document_capture_id_text3'),
         ].concat(!isMobile ? [t('doc_auth.tips.document_capture_id_text4')] : [])}
       />
-      <DocumentsCaptureStepComponent defaultSideProps={defaultSideProps} value={value} />
+      <DocumentsCaptureStep defaultSideProps={defaultSideProps} value={value} />
       {isSelfieCaptureEnabled && (
-        <SelfieStepComponent defaultSideProps={defaultSideProps} selfieValue={value.selfie} />
+        <SelfieCaptureStep defaultSideProps={defaultSideProps} selfieValue={value.selfie} />
       )}
       {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
       <Cancel />

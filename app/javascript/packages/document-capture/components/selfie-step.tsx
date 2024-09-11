@@ -17,7 +17,7 @@ import {
   DocumentsAndSelfieStepValue,
 } from '../interface/documents-image-selfie-value';
 
-export function SelfieStepComponent({
+export function SelfieCaptureStep({
   defaultSideProps,
   selfieValue,
 }: {
@@ -82,7 +82,7 @@ export default function SelfieStep({
     <>
       {flowPath === 'hybrid' && <HybridDocCaptureWarning className="margin-bottom-4" />}
       <PageHeading>{pageHeaderText}</PageHeading>
-      <SelfieStepComponent defaultSideProps={defaultSideProps} selfieValue={value.selfie} />
+      <SelfieCaptureStep defaultSideProps={defaultSideProps} selfieValue={value.selfie} />
       {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
       <Cancel />
     </>

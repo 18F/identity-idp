@@ -65,12 +65,12 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
     title: t('doc_auth.headings.document_capture'), // might want to change title to isolated doc capture heading
   };
   const selfieFormStep: FormStep = {
-    name: 'selfies',
+    name: 'selfie',
     form: SelfieStep,
     title: '', // TODO: replace with yml selfie_capture (Ticket LG-14392)
   };
   const documentsFormSteps: FormStep[] =
-    isSelfieCaptureEnabled && docAuthSeparatePagesEnabled
+    isSelfieCaptureEnabled && docAuthSeparatePagesEnabled && submissionError === undefined
       ? [documentFormStep, selfieFormStep]
       : [documentAndSelfieFormStep];
   const reviewFormStep: FormStep = {
@@ -150,7 +150,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
         ) as FormStep[]);
 
   const defaultSteps: FormStep[] = submissionError
-    ? ([reviewFormStep] as FormStep[]).concat(inPersonSteps)
+    ? ([reviewFormStep] as FormStep[])
     : documentsFormSteps;
 
   // If the user got here by opting-in to in-person proofing, when skipDocAuth === true,
