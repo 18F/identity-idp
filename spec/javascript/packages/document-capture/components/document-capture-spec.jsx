@@ -394,7 +394,7 @@ describe('document-capture/components/document-capture', () => {
     await userEvent.upload(frontImage, validUpload);
     await userEvent.upload(backImage, validUpload);
     await waitFor(() => frontImage.src && backImage.src);
-    await userEvent.click(getByText('forms.buttons.submit.default'));
+    await userEvent.click(getByText('forms.buttons.continue'));
     const selfie = queryByText('doc_auth.headings.document_capture_selfie');
     expect(selfie).to.exist();
   });
