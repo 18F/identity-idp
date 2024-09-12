@@ -366,4 +366,36 @@ describe('document-capture/components/document-capture', () => {
       });
     });
   });
+
+  it('does not show selfie on first page when doc auth seperated pages enabled', async () => {
+    const { queryByText } = render(
+      <SelfieCaptureContext.Provider
+        value={{ isSelfieCaptureEnabled: true, docAuthSeparatePagesEnabled: true }}
+      >
+        <DocumentCapture />
+      </SelfieCaptureContext.Provider>,
+    );
+
+    const selfie = queryByText('doc_auth.headings.document_capture_selfie');
+    expect(selfie).not.to.exist();
+  });
+
+  it('does show selfie on second page when doc auth seperated pages enabled', async () => {
+    const endpoint = '/upload';
+    const { getByLabelText, getByText, queryByText, findByText } = render(
+      <SelfieCaptureContext.Provider
+        value={{ isSelfieCaptureEnabled: true, docAuthSeparatePagesEnabled: true }}
+      >
+        <DocumentCapture />
+      </SelfieCaptureContext.Provider>,
+    );
+    const frontImage = getByLabelText('doc_auth.headings.document_capture_front');
+    const backImage = getByLabelText('doc_auth.headings.document_capture_back');
+    await userEvent.upload(frontImage, validUpload);
+    await userEvent.upload(backImage, validUpload);
+    await waitFor(() => frontImage.src && backImage.src);
+    await userEvent.click(getByText('forms.buttons.submit.default'));
+    const selfie = queryByText('doc_auth.headings.document_capture_selfie');
+    expect(selfie).to.exist();
+  });
 });
