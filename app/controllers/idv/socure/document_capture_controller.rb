@@ -17,7 +17,6 @@ module Idv
         document_request = DocAuth::Socure::Requests::DocumentRequest.new(
           document_capture_session_uuid: document_capture_session_uuid,
           redirect_url: idv_socure_document_capture_url,
-          verification_level: request.params['verification_level'],
           language: locale,
         )
 
