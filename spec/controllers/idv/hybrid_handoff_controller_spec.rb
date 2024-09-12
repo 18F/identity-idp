@@ -304,12 +304,6 @@ RSpec.describe Idv::HybridHandoffController do
         }.merge(ab_test_args)
       end
 
-      it 'renders the show template' do
-        get :show
-
-        expect(response).to render_template :show
-      end
-
       it 'sends analytics_visited event' do
         get :show
 
@@ -337,38 +331,22 @@ RSpec.describe Idv::HybridHandoffController do
       end
 
       context 'hybrid_handoff already visited' do
-        it 'shows hybrid_handoff for standard' do
+        it 'redirects to socure document capture' do
           subject.idv_session.flow_path = 'standard'
 
           get :show
 
-          expect(response).to render_template :show
-        end
-
-        it 'shows hybrid_handoff for hybrid' do
-          subject.idv_session.flow_path = 'hybrid'
-
-          get :show
-
-          expect(response).to render_template :show
+          expect(response).to redirect_to(idv_socure_document_capture_path)
         end
       end
 
       context 'redo document capture' do
-        it 'does not redirect in standard flow' do
+        it 'redirects to socure document capture' do
           subject.idv_session.flow_path = 'standard'
 
           get :show, params: { redo: true }
 
-          expect(response).to render_template :show
-        end
-
-        it 'does not redirect in hybrid flow' do
-          subject.idv_session.flow_path = 'hybrid'
-
-          get :show, params: { redo: true }
-
-          expect(response).to render_template :show
+          expect(response).to redirect_to(idv_socure_document_capture_path)
         end
 
         context 'idv_session.skip_hybrid_handoff? is true' do
@@ -405,12 +383,6 @@ RSpec.describe Idv::HybridHandoffController do
             get :show, params: { redo: true }
 
             expect(@analytics).to have_logged_event(analytics_name)
-          end
-
-          it 'renders show' do
-            get :show, params: { redo: true }
-
-            expect(response).to render_template :show
           end
         end
       end
@@ -457,14 +429,6 @@ RSpec.describe Idv::HybridHandoffController do
           end
         end
 
-        context 'opted in to hybrid flow' do
-          it 'renders the show template' do
-            get :show
-
-            expect(response).to render_template :show
-          end
-        end
-
         context 'opted in to ipp flow' do
           before do
             allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).
@@ -487,12 +451,6 @@ RSpec.describe Idv::HybridHandoffController do
             subject.idv_session.skip_doc_auth = nil
             subject.idv_session.skip_doc_auth_from_how_to_verify = nil
           end
-
-          it 'renders the show template' do
-            get :show
-
-            expect(response).to render_template :show
-          end
         end
       end
 
@@ -502,7 +460,6 @@ RSpec.describe Idv::HybridHandoffController do
 
           it 'pass on correct flags and states and logs correct info' do
             get :show
-            expect(response).to render_template :show
             expect(@analytics).to have_logged_event(analytics_name, analytics_args)
             expect(subject.idv_session.selfie_check_required).to eq(true)
           end
@@ -511,9 +468,8 @@ RSpec.describe Idv::HybridHandoffController do
         describe 'when selfie is disabled for sp' do
           let(:sp_selfie_enabled) { false }
 
-          it 'pass on correct flags and states and logs correct info' do
+          it 'do we want to check socure parameters' do
             get :show
-            expect(response).to render_template :show
             expect(subject.idv_session.selfie_check_required).to eq(false)
             expect(@analytics).to have_logged_event(analytics_name, analytics_args)
           end

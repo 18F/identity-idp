@@ -13,8 +13,6 @@ module Idv
     before_action :confirm_hybrid_handoff_needed, only: :show
 
     def show
-      puts "show: doc_auth_vendor: #{doc_auth_vendor}"
-
       case doc_auth_vendor
       when Idp::Constants::Vendors::SOCURE
         redirect_to idv_socure_document_capture_url
@@ -29,17 +27,16 @@ module Idv
 
         @selfie_required = idv_session.selfie_check_required
 
-        analytics.idv_doc_auth_hybrid_handoff_visited(**analytics_arguments)
-
-        Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).call(
-          'upload', :view,
-          true
-        )
-
         # reset if we visit or come back
         idv_session.skip_doc_auth_from_handoff = nil
         render :show, locals: extra_view_variables
       end
+
+      Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).call(
+        'upload', :view,
+        true
+      )
+      analytics.idv_doc_auth_hybrid_handoff_visited(**analytics_arguments)
     end
 
     def update
