@@ -11,6 +11,7 @@ import {
   AcuantContextProvider,
   DeviceContext,
   InPersonContext,
+  SelfieCaptureContext,
 } from '@18f/identity-document-capture';
 import DocumentCapture from '@18f/identity-document-capture/components/document-capture';
 import { FlowContext } from '@18f/identity-verify-flow';
@@ -367,7 +368,7 @@ describe('document-capture/components/document-capture', () => {
     });
   });
 
-  it('does not show selfie on first page when doc auth seperated pages enabled', async () => {
+  it('does not show selfie on first page when doc auth seperated pages enabled', () => {
     const { queryByText } = render(
       <SelfieCaptureContext.Provider
         value={{ isSelfieCaptureEnabled: true, docAuthSeparatePagesEnabled: true }}
@@ -381,8 +382,7 @@ describe('document-capture/components/document-capture', () => {
   });
 
   it('does show selfie on second page when doc auth seperated pages enabled', async () => {
-    const endpoint = '/upload';
-    const { getByLabelText, getByText, queryByText, findByText } = render(
+    const { getByLabelText, getByText, queryByText } = render(
       <SelfieCaptureContext.Provider
         value={{ isSelfieCaptureEnabled: true, docAuthSeparatePagesEnabled: true }}
       >
