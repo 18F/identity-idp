@@ -64,6 +64,9 @@ spec:
             name: worker-config
           patch: |-
             - op: add
+              path: /data/DASHBOARD_URL
+              value: "https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov"
+            - op: add
               path: /data/KUBERNETES_REVIEW_APP
               value: "true"
             - op: add
