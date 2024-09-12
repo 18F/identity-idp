@@ -6,32 +6,40 @@ module Idv
     include ActionView::Helpers::DateHelper
     include IdvStepConcern
     include StepIndicatorConcern
+    include DocAuthVendorConcern
 
     before_action :confirm_not_rate_limited
     before_action :confirm_step_allowed
     before_action :confirm_hybrid_handoff_needed, only: :show
 
     def show
-      @upload_disabled = idv_session.selfie_check_required &&
-                         !idv_session.desktop_selfie_test_mode_enabled?
+      puts "show: doc_auth_vendor: #{doc_auth_vendor}"
 
-      @direct_ipp_with_selfie_enabled = IdentityConfig.store.in_person_doc_auth_button_enabled &&
-                                        Idv::InPersonConfig.enabled_for_issuer?(
-                                          decorated_sp_session.sp_issuer,
-                                        )
+      case doc_auth_vendor
+      when Idp::Constants::Vendors::SOCURE
+        redirect_to idv_socure_document_capture_url
+      when Idp::Constants::Vendors::LEXIS_NEXIS
+        @upload_disabled = idv_session.selfie_check_required &&
+                           !idv_session.desktop_selfie_test_mode_enabled?
 
-      @selfie_required = idv_session.selfie_check_required
+        @direct_ipp_with_selfie_enabled = IdentityConfig.store.in_person_doc_auth_button_enabled &&
+                                          Idv::InPersonConfig.enabled_for_issuer?(
+                                            decorated_sp_session.sp_issuer,
+                                          )
 
-      analytics.idv_doc_auth_hybrid_handoff_visited(**analytics_arguments)
+        @selfie_required = idv_session.selfie_check_required
 
-      Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).call(
-        'upload', :view,
-        true
-      )
+        analytics.idv_doc_auth_hybrid_handoff_visited(**analytics_arguments)
 
-      # reset if we visit or come back
-      idv_session.skip_doc_auth_from_handoff = nil
-      render :show, locals: extra_view_variables
+        Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).call(
+          'upload', :view,
+          true
+        )
+
+        # reset if we visit or come back
+        idv_session.skip_doc_auth_from_handoff = nil
+        render :show, locals: extra_view_variables
+      end
     end
 
     def update
