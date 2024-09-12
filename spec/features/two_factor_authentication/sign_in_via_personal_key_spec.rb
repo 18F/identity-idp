@@ -6,7 +6,7 @@ RSpec.feature 'Signing in via one-time use personal key' do
       :user, :fully_registered, :with_phone, :with_personal_key,
       with: { phone: '+1 (202) 345-6789' }
     )
-    raw_key = PersonalKeyGenerator.new(user).create
+    raw_key = PersonalKeyGenerator.new(user).generate!
     old_key = user.reload.encrypted_recovery_code_digest
 
     sign_in_before_2fa(user)
@@ -39,7 +39,7 @@ RSpec.feature 'Signing in via one-time use personal key' do
         second_factor_attempts_count: IdentityConfig.store.login_otp_confirmation_max_attempts - 1,
       )
       sign_in_before_2fa(user)
-      personal_key = PersonalKeyGenerator.new(user).create
+      personal_key = PersonalKeyGenerator.new(user).generate!
       wrong_personal_key = personal_key.split('-').reverse.join
 
       choose_another_security_option('personal_key')

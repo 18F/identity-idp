@@ -31,7 +31,7 @@ RSpec.describe Accounts::PersonalKeysController do
       allow(PersonalKeyGenerator).to receive(:new).
         with(subject.current_user).and_return(generator)
 
-      expect(generator).to receive(:create)
+      expect(generator).to receive(:generate!)
 
       post :create
 

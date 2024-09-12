@@ -128,7 +128,7 @@ RSpec.shared_examples 'signing in as IAL1 with personal key after resetting pass
 
     set_new_browser_session
 
-    old_personal_key = PersonalKeyGenerator.new(user).create
+    old_personal_key = PersonalKeyGenerator.new(user).generate!
     visit_idp_from_sp_with_ial1(sp)
     trigger_reset_password_and_click_email_link(user.confirmed_email_addresses.first.email)
     fill_in t('forms.passwords.edit.labels.password'), with: new_password
@@ -318,7 +318,7 @@ end
 
 def ial1_sign_in_with_personal_key_goes_to_sp(sp)
   user = create_ial1_account_go_back_to_sp_and_sign_out(sp)
-  old_personal_key = PersonalKeyGenerator.new(user).create
+  old_personal_key = PersonalKeyGenerator.new(user).generate!
 
   Capybara.reset_sessions!
 
