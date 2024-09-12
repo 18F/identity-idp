@@ -815,6 +815,11 @@ RSpec.describe Idv::EnterPasswordController do
                     !review_status.nil? && review_status != 'pass'
                 end
                 let(:review_status) { review_status }
+                let(:fraud_pending_reason) do
+                  if fraud_review_pending?
+                    "threatmetrix_#{review_status}"
+                  end
+                end
                 let(:proofing_device_profiling_state) { proofing_device_profiling_state }
 
                 before do
@@ -835,21 +840,27 @@ RSpec.describe Idv::EnterPasswordController do
                   expect(@analytics).to have_logged_event(
                     :idv_enter_password_submitted,
                     hash_including(
-                      success: true,
-                      fraud_review_pending: fraud_review_pending?,
-                      fraud_rejection: false,
-                      gpo_verification_pending: false,
-                      in_person_verification_pending: false,
+                      {
+                        success: true,
+                        fraud_review_pending: fraud_review_pending?,
+                        fraud_pending_reason: fraud_pending_reason,
+                        fraud_rejection: false,
+                        gpo_verification_pending: false,
+                        in_person_verification_pending: false,
+                      }.compact,
                     ),
                   )
                   expect(@analytics).to have_logged_event(
                     'IdV: final resolution',
                     hash_including(
-                      success: true,
-                      fraud_review_pending: fraud_review_pending?,
-                      fraud_rejection: false,
-                      gpo_verification_pending: false,
-                      in_person_verification_pending: false,
+                      {
+                        success: true,
+                        fraud_review_pending: fraud_review_pending?,
+                        fraud_pending_reason: fraud_pending_reason,
+                        fraud_rejection: false,
+                        gpo_verification_pending: false,
+                        in_person_verification_pending: false,
+                      }.compact,
                     ),
                   )
                 end

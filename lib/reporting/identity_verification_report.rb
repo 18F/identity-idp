@@ -353,7 +353,7 @@ module Reporting
         | filter (name = %{fraud_review_passed} and properties.event_properties.success = 1)
                  or (name != %{fraud_review_passed})
         | fields
-            coalesce(properties.event_properties.fraud_review_pending, 0) AS fraud_review_pending
+            coalesce(properties.event_properties.fraud_review_pending, properties.event_properties.fraud_pending_reason, 0) AS fraud_review_pending
           , coalesce(properties.event_properties.gpo_verification_pending, 0) AS gpo_verification_pending
           , coalesce(properties.event_properties.in_person_verification_pending, 0) AS in_person_verification_pending
           , ispresent(properties.event_properties.deactivation_reason) AS has_other_deactivation_reason

@@ -49,6 +49,7 @@ module Idv
         success: true,
         fraud_review_pending: idv_session.profile.fraud_review_pending?,
         fraud_rejection: idv_session.profile.fraud_rejection?,
+        fraud_pending_reason: idv_session.profile.fraud_pending_reason,
         gpo_verification_pending: idv_session.profile.gpo_verification_pending?,
         in_person_verification_pending: idv_session.profile.in_person_verification_pending?,
         deactivation_reason: idv_session.profile.deactivation_reason,
@@ -61,6 +62,7 @@ module Idv
         success: true,
         fraud_review_pending: idv_session.profile.fraud_review_pending?,
         fraud_rejection: idv_session.profile.fraud_rejection?,
+        fraud_pending_reason: idv_session.profile.fraud_pending_reason,
         gpo_verification_pending: idv_session.profile.gpo_verification_pending?,
         in_person_verification_pending: idv_session.profile.in_person_verification_pending?,
         deactivation_reason: idv_session.profile.deactivation_reason,
@@ -116,6 +118,7 @@ module Idv
         in_person_verification_pending: current_user.in_person_pending_profile?,
         fraud_review_pending: fraud_review_pending?,
         fraud_rejection: fraud_rejection?,
+        fraud_pending_reason: nil,
         **ab_test_analytics_buckets,
       )
 

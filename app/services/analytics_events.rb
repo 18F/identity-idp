@@ -2097,6 +2097,7 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [Boolean] fraud_review_pending
   # @param [Boolean] fraud_rejection
+  # @param [String,nil] fraud_pending_reason The reason this profile is eligible for fraud review
   # @param [Boolean] gpo_verification_pending
   # @param [Boolean] in_person_verification_pending
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
@@ -2119,6 +2120,7 @@ module AnalyticsEvents
     success:,
     fraud_review_pending:,
     fraud_rejection:,
+    fraud_pending_reason:,
     gpo_verification_pending:,
     in_person_verification_pending:,
     opted_in_to_in_person_proofing: nil,
@@ -2136,6 +2138,7 @@ module AnalyticsEvents
       success:,
       deactivation_reason:,
       fraud_review_pending:,
+      fraud_pending_reason:,
       gpo_verification_pending:,
       in_person_verification_pending:,
       skip_hybrid_handoff:,
@@ -2194,6 +2197,7 @@ module AnalyticsEvents
   # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
   # @param [Boolean] fraud_review_pending Profile is under review for fraud
   # @param [Boolean] fraud_rejection Profile is rejected due to fraud
+  # @param [String,nil] fraud_pending_reason The reason this profile is eligible for fraud review
   # @param [Boolean] gpo_verification_pending Profile is awaiting gpo verification
   # @param [Boolean] in_person_verification_pending Profile is awaiting in person verification
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
@@ -2218,6 +2222,7 @@ module AnalyticsEvents
     success:,
     fraud_review_pending:,
     fraud_rejection:,
+    fraud_pending_reason:,
     gpo_verification_pending:,
     in_person_verification_pending:,
     opted_in_to_in_person_proofing: nil,
@@ -2236,6 +2241,7 @@ module AnalyticsEvents
       success:,
       fraud_review_pending:,
       fraud_rejection:,
+      fraud_pending_reason:,
       gpo_verification_pending:,
       in_person_verification_pending:,
       opted_in_to_in_person_proofing:,
