@@ -4,27 +4,30 @@ module DocAuth
   module Socure
     module Requests
       class DocumentRequest < DocAuth::Socure::Request
-        attr_reader :document_type, :redirect_url, :document_capture_session_uuid
-        attr_reader :verification_level, :language
+        attr_reader :document_type, :redirect_url, :document_capture_session_uuid, :language
 
         def initialize(
-          document_capture_session_uuid:, redirect_url:,
-          verification_level: nil,
+          document_capture_session_uuid:,
+          redirect_url:,
           language: :en,
           document_type: 'license'
         )
           @document_capture_session_uuid = document_capture_session_uuid
           @redirect_url = redirect_url
           @document_type = document_type
-          @verification_level = verification_level || IdentityConfig.store.socure_verification_level
           @language = language
         end
 
         private
 
+        def lang(language)
+          return language unless language == :zh
+          'zh-cn'
+        end
+
         def body
           redirect = {
-            method: 'GET',
+            method: 'POST',
             url: redirect_url,
           }
 
@@ -34,10 +37,9 @@ module DocAuth
             config: {
               documentType: document_type,
               redirect: redirect,
-              language: language,
+              language: lang(language),
             },
             customerUserId: document_capture_session_uuid,
-            verificationLevel: verification_level,
           }.to_json
         end
 
@@ -50,7 +52,6 @@ module DocAuth
         end
 
         def endpoint
-          # TODO: add this config
           IdentityConfig.store.socure_document_request_endpoint
         end
 

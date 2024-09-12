@@ -46,14 +46,14 @@ module DocAuth
       end
 
       def send_http_get_request
-        faraday.connection.get do |req|
+        faraday_connection.get do |req|
           req.options.context = { service_name: metric_name }
           req.params = params if params&.any?
         end
       end
 
       def send_http_post_request
-        faraday.connection.post do |req|
+        faraday_connection.post do |req|
           req.options.context = { service_name: metric_name }
           req.body = body
         end
@@ -97,7 +97,7 @@ module DocAuth
       def request_headers(extras = {})
         {
           'Content-Type': 'application/json',
-          Authorization: "SocureApiKey #{IdentityConfig.store.socure_id_secret_key}",
+          Authorization: "SocureApiKey #{IdentityConfig.store.socure_id_plus_secret_key}",
         }.merge(extras)
       end
 
