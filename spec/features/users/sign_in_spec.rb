@@ -665,7 +665,7 @@ RSpec.feature 'Sign in' do
     # this can happen if you submit the personal key form multiple times quickly
     it 'does not redirect to the personal key page' do
       user = create(:user, :fully_registered)
-      old_personal_key = PersonalKeyGenerator.new(user).create
+      old_personal_key = PersonalKeyGenerator.new(user).generate!
       signin(user.email, user.password)
       choose_another_security_option('personal_key')
       enter_personal_key(personal_key: old_personal_key)

@@ -48,7 +48,7 @@ RSpec.describe Users::PersonalKeysController do
       allow(PersonalKeyGenerator).to receive(:new).
         with(subject.current_user).and_return(generator)
 
-      expect(generator).to_not receive(:create)
+      expect(generator).to_not receive(:generate!)
 
       get :show
     end

@@ -66,7 +66,7 @@ module TwoFactorAuthentication
 
     def remove_personal_key
       # for now we will regenerate a key and not show it to them so retire personal key page shows
-      PersonalKeyGenerator.new(current_user).create
+      PersonalKeyGenerator.new(current_user).generate!
       user_session.delete(:personal_key)
     end
 

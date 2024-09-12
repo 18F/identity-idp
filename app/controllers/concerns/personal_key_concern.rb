@@ -14,7 +14,7 @@ module PersonalKeyConcern
       Pii::ReEncryptor.new(user: current_user, user_session: user_session).perform
       active_profile.personal_key
     else
-      PersonalKeyGenerator.new(current_user).create
+      PersonalKeyGenerator.new(current_user).generate!
     end
   end
 

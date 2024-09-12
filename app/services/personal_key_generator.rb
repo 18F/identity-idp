@@ -10,7 +10,7 @@ class PersonalKeyGenerator
     @length = length
   end
 
-  def create
+  def generate!
     user.personal_key = raw_personal_key
     user.save!
     raw_personal_key.tr(' ', '-')
