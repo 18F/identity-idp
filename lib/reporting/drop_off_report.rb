@@ -223,15 +223,15 @@ module Reporting
         ],
         [
           'Verified (event)',
-          idv_personal_key_submitted,
+          idv_final_resolution_verified,
           dropoff = idv_enter_password_submitted -
-                    idv_personal_key_submitted,
+                    idv_final_resolution_verified,
           percent(
             numerator: dropoff,
             denominator: idv_enter_password_submitted,
           ),
           percent(
-            numerator: idv_personal_key_submitted,
+            numerator: idv_final_resolution_verified,
             denominator: idv_started,
           ),
         ],
@@ -303,7 +303,7 @@ module Reporting
       ],
       [
         'Verified (event)',
-        'Users who confirm their personal key and complete setting up their verified account',
+        'Users who completed identity verification (including GPO, IPP, fraud)',
       ],
       [
         'Workflow Complete - Total Pending',
