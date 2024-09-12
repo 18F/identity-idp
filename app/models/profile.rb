@@ -279,7 +279,7 @@ class Profile < ApplicationRecord
 
   # @param [Pii::Attributes] pii
   def encrypt_recovery_pii(pii, personal_key: nil)
-    personal_key ||= personal_key_generator.create
+    personal_key ||= personal_key_generator.generate!
     encryptor = Encryption::Encryptors::PiiEncryptor.new(
       personal_key_generator.normalize(personal_key),
     )
