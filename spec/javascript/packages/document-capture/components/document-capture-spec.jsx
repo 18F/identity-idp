@@ -386,7 +386,7 @@ describe('document-capture/components/document-capture', () => {
       <SelfieCaptureContext.Provider
         value={{ isSelfieCaptureEnabled: true, docAuthSeparatePagesEnabled: true }}
       >
-        <DocumentCapture />
+        <DocumentCapture />g
       </SelfieCaptureContext.Provider>,
     );
     const frontImage = getByLabelText('doc_auth.headings.document_capture_front');
@@ -395,7 +395,7 @@ describe('document-capture/components/document-capture', () => {
     await userEvent.upload(backImage, validUpload);
     await waitFor(() => frontImage.src && backImage.src);
     await userEvent.click(getByText('forms.buttons.continue'));
-    const selfie = queryByText('doc_auth.headings.document_capture_selfie');
+    const selfie = queryByText('doc_auth.headings.document_capture_with_selfie');
     expect(selfie).to.exist();
   });
 });
