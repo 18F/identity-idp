@@ -398,4 +398,43 @@ describe('document-capture/components/document-capture', () => {
     const selfie = queryByText('doc_auth.headings.document_capture_with_selfie');
     expect(selfie).to.exist();
   });
+
+  it('does continue correct flow after failure and successful resubmission when doc auth seperated pages enabled', async () => {
+    const { getByLabelText, getByText, queryByText, getByRole } = render(
+      <SelfieCaptureContext.Provider
+        value={{ isSelfieCaptureEnabled: true, docAuthSeparatePagesEnabled: true }}
+      >
+        <DocumentCapture />g
+      </SelfieCaptureContext.Provider>,
+    );
+    // Page 1 Doc Capture Front Back ID
+    const frontImage = getByLabelText('doc_auth.headings.document_capture_front');
+    const invalidUpload = await getFixtureFile(
+      'ial2_test_credential_back_fail_doc_auth_face_match_errors.yml',
+    );
+    const backImage = getByLabelText('doc_auth.headings.document_capture_back');
+    await userEvent.upload(frontImage, validUpload);
+    await userEvent.upload(backImage, invalidUpload);
+    await waitFor(() => frontImage.src);
+    await userEvent.click(getByText('forms.buttons.continue'));
+    // Page 2 Selfie Capture
+    const selfie = queryByText('doc_auth.headings.document_capture_with_selfie');
+    expect(selfie).to.exist();
+    const selfieImage = getByLabelText('doc_auth.headings.document_capture_selfie');
+    await userEvent.upload(selfieImage, validUpload);
+    await waitFor(() => selfieImage.src);
+    await userEvent.click(getByText('forms.buttons.submit.default'));
+    // Error Page
+    await userEvent.click(getByRole('button', { name: 'idv.failure.button.try_online' }));
+    // Re Submission
+    const backImageFile = await getFixtureFile('doc_auth_images/id-back.jpg');
+    const resubmitFrontImage = getByLabelText('doc_auth.headings.document_capture_front');
+    const resubmitBackImage = getByLabelText('doc_auth.headings.document_capture_back');
+    await userEvent.upload(resubmitFrontImage, backImageFile);
+    await userEvent.upload(resubmitBackImage, backImageFile);
+    await userEvent.click(getByText('forms.buttons.submit.default'));
+    // Verified Page
+    const submissionSuccess = queryByText('doc_auth.headings.doc_auth.headings.capture_complete');
+    expect(submissionSuccess).to.exist();
+  });
 });
