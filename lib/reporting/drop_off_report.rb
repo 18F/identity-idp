@@ -47,7 +47,6 @@ module Reporting
       IDV_PENDING_GPO = 'IdV: USPS address letter enqueued'
       IDV_ENTER_PASSWORD_SUBMITTED = 'idv_enter_password_submitted'
       OLD_IDV_ENTER_PASSWORD_SUBMITTED = 'IdV: review complete'
-      IDV_PERSONAL_KEY_SUBMITTED = 'IdV: personal key submitted'
       IDV_FINAL_RESOLUTION = 'IdV: final resolution'
       IPP_ENROLLMENT_UPDATE = 'GetUspsProofingResultsJob: Enrollment status updated'
 
@@ -355,10 +354,6 @@ module Reporting
     def idv_enter_password_submitted
       (data[Events::IDV_ENTER_PASSWORD_SUBMITTED] +
         data[Events::OLD_IDV_ENTER_PASSWORD_SUBMITTED]).count
-    end
-
-    def idv_personal_key_submitted
-      data[Events::IDV_PERSONAL_KEY_SUBMITTED].count
     end
 
     def idv_pending_gpo
