@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::InPerson::SsnController, allowed_extra_analytics: [:*] do
+RSpec.describe Idv::InPerson::SsnController do
   let(:pii_from_user) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_NO_SSN.dup }
 
   let(:flow_session) do
@@ -11,15 +11,10 @@ RSpec.describe Idv::InPerson::SsnController, allowed_extra_analytics: [:*] do
 
   let(:user) { create(:user) }
 
-  let(:ab_test_args) do
-    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
-  end
-
   before do
     stub_sign_in(user)
     subject.user_session['idv/in_person'] = flow_session
     stub_analytics
-    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
     subject.idv_session.flow_path = 'standard'
   end
 
@@ -48,7 +43,7 @@ RSpec.describe Idv::InPerson::SsnController, allowed_extra_analytics: [:*] do
         flow_path: 'standard',
         step: 'ssn',
         same_address_as_id: true,
-      }.merge(ab_test_args)
+      }
     end
 
     it 'renders the show template' do
@@ -118,7 +113,7 @@ RSpec.describe Idv::InPerson::SsnController, allowed_extra_analytics: [:*] do
           success: true,
           errors: {},
           same_address_as_id: true,
-        }.merge(ab_test_args)
+        }
       end
 
       it 'sends analytics_submitted event' do
@@ -162,7 +157,7 @@ RSpec.describe Idv::InPerson::SsnController, allowed_extra_analytics: [:*] do
           },
           error_details: { ssn: { invalid: true } },
           same_address_as_id: true,
-        }.merge(ab_test_args)
+        }
       end
 
       render_views

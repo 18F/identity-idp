@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::InPerson::VerifyInfoController, allowed_extra_analytics: [:*] do
+RSpec.describe Idv::InPerson::VerifyInfoController do
   let(:pii_from_user) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.dup }
   let(:flow_session) do
     { pii_from_user: pii_from_user }
@@ -9,16 +9,11 @@ RSpec.describe Idv::InPerson::VerifyInfoController, allowed_extra_analytics: [:*
   let(:user) { create(:user, :with_phone, with: { phone: '+1 (415) 555-0130' }) }
   let(:service_provider) { create(:service_provider) }
 
-  let(:ab_test_args) do
-    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
-  end
-
   before do
     stub_sign_in(user)
     subject.idv_session.flow_path = 'standard'
     subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID[:ssn]
     subject.user_session['idv/in_person'] = flow_session
-    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
   describe '#step_info' do
@@ -78,7 +73,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController, allowed_extra_analytics: [:*
           flow_path: 'standard',
           step: 'verify',
           same_address_as_id: true,
-        }.merge(ab_test_args),
+        },
       )
     end
 
@@ -138,7 +133,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController, allowed_extra_analytics: [:*
               flow_path: 'standard',
               step: 'verify',
               same_address_as_id: true,
-            }.merge(ab_test_args),
+            },
           ),
         )
       end

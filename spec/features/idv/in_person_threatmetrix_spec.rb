@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'action_account'
 require 'axe-rspec'
 
-RSpec.describe 'In Person Proofing Threatmetrix', js: true, allowed_extra_analytics: [:*] do
+RSpec.describe 'In Person Proofing Threatmetrix', js: true do
   include InPersonHelper
 
   let(:sp) { :oidc }

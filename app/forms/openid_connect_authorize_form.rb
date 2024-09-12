@@ -30,7 +30,20 @@ class OpenidConnectAuthorizeForm
                       Saml::Idp::Constants::AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF,
                       Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
                       Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
-                      Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF].freeze
+                      Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+                      Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+                      Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF].freeze
+  IALS_BY_PRIORITY = [Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
+                      Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
+                      Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_PREFERRED_ACR,
+                      Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF,
+                      Saml::Idp::Constants::IAL_VERIFIED_ACR,
+                      Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+                      Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF,
+                      Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
+                      Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
+                      Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+                      Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF].freeze
 
   attr_reader(*ATTRS)
 
@@ -119,11 +132,11 @@ class OpenidConnectAuthorizeForm
   end
 
   def ial_values
-    acr_values.filter { |acr| acr.include?('ial') || acr.include?('loa') }
+    IALS_BY_PRIORITY & acr_values
   end
 
   def aal_values
-    acr_values.filter { |acr| acr.include?('aal') }
+    AALS_BY_PRIORITY & acr_values
   end
 
   def requested_aal_value
@@ -299,7 +312,8 @@ class OpenidConnectAuthorizeForm
   def validate_privileges
     if (identity_proofing_requested? && !identity_proofing_service_provider?) ||
        (ialmax_requested? && !ialmax_allowed_for_sp?) ||
-       (biometric_ial_requested? && !service_provider.biometric_ial_allowed?)
+       (biometric_ial_requested? && !service_provider.biometric_ial_allowed?) ||
+       (semantic_authn_contexts_requested? && !service_provider.semantic_authn_contexts_allowed?)
       errors.add(
         :acr_values, t('openid_connect.authorization.errors.no_auth'),
         type: :no_auth
@@ -347,5 +361,9 @@ class OpenidConnectAuthorizeForm
 
   def verified_within_allowed?
     IdentityConfig.store.allowed_verified_within_providers.include?(client_id)
+  end
+
+  def semantic_authn_contexts_requested?
+    Saml::Idp::Constants::SEMANTIC_ACRS.intersect?(acr_values)
   end
 end

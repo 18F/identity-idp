@@ -258,7 +258,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         )
 
         expect(response.selfie_check_performed?).to be(true)
-        expect(response.extra).to have_key(:portrait_match_results)
+        expect(response.extra[:portrait_match_results]).to be_present
       end
 
       it 'returns selfie status with default setting' do
@@ -271,7 +271,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
 
         expect(response.selfie_check_performed?).to be(true)
         expect(response.selfie_status).to eq(:success)
-        expect(response.extra).to_not have_key(:portrait_match_results)
+        expect(response.extra[:portrait_match_results]).to be_nil
       end
     end
 
@@ -291,7 +291,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         )
 
         expect(response.selfie_check_performed?).to be(false)
-        expect(response.extra).not_to have_key(:portrait_match_results)
+        expect(response.extra[:portrait_match_results]).to be_nil
       end
     end
   end

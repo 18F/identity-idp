@@ -2,8 +2,6 @@
 
 module FederatedProtocols
   class Saml
-    IAL_PREFIX = %r{^http://idmanagement.gov/ns/assurance/ial}
-    LOA_PREFIX = %r{^http://idmanagement.gov/ns/assurance/loa}
     AAL_PREFIX = %r{^http://idmanagement.gov/ns/assurance/aal|urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo}
 
     def initialize(request)
@@ -23,9 +21,7 @@ module FederatedProtocols
     end
 
     def requested_ial_authn_context
-      request.requested_authn_contexts.find do |classref|
-        IAL_PREFIX.match?(classref) || LOA_PREFIX.match?(classref)
-      end
+      (OpenidConnectAuthorizeForm::IALS_BY_PRIORITY & request.requested_authn_contexts).first
     end
 
     def aal

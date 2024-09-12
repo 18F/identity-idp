@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'state id controller enabled', js: true, allowed_extra_analytics: [:*] do
+RSpec.describe 'state id controller enabled', :js do
   include IdvStepHelper
   include InPersonHelper
 

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::HybridMobile::CaptureCompleteController, allowed_extra_analytics: [:*] do
+RSpec.describe Idv::HybridMobile::CaptureCompleteController do
   let(:user) { create(:user) }
 
   let!(:document_capture_session) do
@@ -20,17 +20,12 @@ RSpec.describe Idv::HybridMobile::CaptureCompleteController, allowed_extra_analy
     )
   end
 
-  let(:ab_test_args) do
-    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
-  end
-
   before do
     session[:doc_capture_user_id] = user&.id
     session[:document_capture_session_uuid] = document_capture_session_uuid
     stub_analytics
     allow(subject).to receive(:confirm_document_capture_session_complete).
       and_return(true)
-    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
   describe 'before_actions' do
@@ -50,7 +45,7 @@ RSpec.describe Idv::HybridMobile::CaptureCompleteController, allowed_extra_analy
         flow_path: 'hybrid',
         step: 'capture_complete',
         liveness_checking_required: false,
-      }.merge(ab_test_args)
+      }
     end
 
     it 'renders the show template' do

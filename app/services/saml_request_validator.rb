@@ -59,10 +59,10 @@ class SamlRequestValidator
 
   def authorized_authn_context
     if !valid_authn_context? ||
-       (identity_proofing_requested? && service_provider&.ial != 2) ||
-       (ial_max_requested? &&
-        !IdentityConfig.store.allowed_ialmax_providers.include?(service_provider&.issuer)) ||
-       (biometric_ial_requested? && !service_provider.biometric_ial_allowed?)
+       (identity_proofing_requested? && !service_provider.identity_proofing_allowed?) ||
+       (ial_max_requested? && !service_provider.ialmax_allowed?) ||
+       (biometric_ial_requested? && !service_provider.biometric_ial_allowed?) ||
+       (semantic_authn_contexts_requested? && !service_provider.semantic_authn_contexts_allowed?)
       errors.add(:authn_context, :unauthorized_authn_context, type: :unauthorized_authn_context)
     end
   end
@@ -118,6 +118,11 @@ class SamlRequestValidator
 
   def biometric_ial_requested?
     Array(authn_context).any? { |ial| Saml::Idp::Constants::BIOMETRIC_IAL_CONTEXTS.include? ial }
+  end
+
+  def semantic_authn_contexts_requested?
+    return false if vtr.present? || parsed_vectors_of_trust.present?
+    Saml::Idp::Constants::SEMANTIC_ACRS.intersect?(authn_context)
   end
 
   def authorized_email_nameid_format

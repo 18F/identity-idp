@@ -23,6 +23,7 @@ RSpec.describe AttributeAsserter do
       ial: service_provider_ial,
       default_aal: service_provider_aal,
       metadata: {},
+      semantic_authn_contexts_allowed?: false,
     )
   end
 
@@ -241,6 +242,7 @@ RSpec.describe AttributeAsserter do
 
       context 'when the user has been proofed with biometric' do
         let(:user) { create(:profile, :active, :verified, idv_level: :in_person).user }
+
         before do
           user.identities << identity
           subject.build
@@ -324,6 +326,7 @@ RSpec.describe AttributeAsserter do
 
           context 'the service provider is ial2' do
             let(:service_provider_ial) { 2 }
+
             it 'includes verified_at' do
               expect(user.asserted_attributes.keys).to eq %i[uuid email verified_at aal ial]
             end
@@ -601,6 +604,7 @@ RSpec.describe AttributeAsserter do
 
       context 'when the user has been proofed with biometric' do
         let(:user) { biometric_verified_user }
+
         before do
           user.identities << identity
           subject.build
@@ -636,6 +640,7 @@ RSpec.describe AttributeAsserter do
 
       context 'when the user has been proofed with biometric comparison' do
         let(:user) { biometric_verified_user }
+
         before do
           user.identities << identity
           subject.build
@@ -729,6 +734,7 @@ RSpec.describe AttributeAsserter do
           user_session: user_session,
         )
       end
+
       before do
         user.identities << identity
         allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
@@ -762,6 +768,7 @@ RSpec.describe AttributeAsserter do
           user_session: user_session,
         )
       end
+
       before do
         user.identities << identity
         allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
@@ -797,6 +804,7 @@ RSpec.describe AttributeAsserter do
             user_session: user_session,
           )
         end
+
         before do
           user.identities << identity
           allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
@@ -830,6 +838,7 @@ RSpec.describe AttributeAsserter do
             user_session: user_session,
           )
         end
+
         before do
           user.identities << identity
           allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
@@ -860,6 +869,7 @@ RSpec.describe AttributeAsserter do
     describe 'when no aal requested' do
       context 'default_aal is nil' do
         let(:authn_context) { [] }
+
         it 'asserts default aal' do
           expect(get_asserted_attribute(user, :aal)).to eq(
             Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,

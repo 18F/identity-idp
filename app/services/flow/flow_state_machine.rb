@@ -28,7 +28,6 @@ module Flow
 
       result = flow.handle(step)
 
-      increment_step_name_counts
       analytics.public_send(
         flow.step_handler_instance(step).analytics_submitted_event,
         **result.to_h.merge(analytics_properties),
@@ -54,7 +53,6 @@ module Flow
     end
 
     def track_step_visited
-      increment_step_name_counts
       analytics.public_send(
         flow.step_handler(current_step).analytics_visited_event,
         **analytics_properties,
@@ -188,7 +186,6 @@ module Flow
       {
         flow_path: flow.flow_path,
         step: current_step,
-        step_count: current_flow_step_counts[current_step_name],
         analytics_id: @analytics_id,
       }.merge(flow.extra_analytics_properties).
         merge(**opt_in_analytics_properties)
@@ -196,16 +193,6 @@ module Flow
 
     def current_step_name
       "#{current_step}_#{action_name}"
-    end
-
-    def current_flow_step_counts
-      current_session["#{@name}_flow_step_counts"] ||= {}
-      current_session["#{@name}_flow_step_counts"].default = 0
-      current_session["#{@name}_flow_step_counts"]
-    end
-
-    def increment_step_name_counts
-      current_flow_step_counts[current_step_name] += 1
     end
 
     def next_step

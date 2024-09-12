@@ -1,15 +1,11 @@
 require 'rails_helper'
 
-RSpec.describe Idv::InPerson::StateIdController, allowed_extra_analytics: [:*] do
+RSpec.describe Idv::InPerson::StateIdController do
   include FlowPolicyHelper
   include InPersonHelper
 
   let(:user) { build(:user) }
   let(:enrollment) { InPersonEnrollment.new }
-
-  let(:ab_test_args) do
-    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
-  end
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_state_id_controller_enabled).
@@ -22,7 +18,6 @@ RSpec.describe Idv::InPerson::StateIdController, allowed_extra_analytics: [:*] d
     subject.user_session['idv/in_person'] = { pii_from_user: {} }
     subject.idv_session.ssn = nil # This made specs pass. Might need more investigation.
     stub_analytics
-    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
   describe 'before_actions' do
@@ -76,7 +71,7 @@ RSpec.describe Idv::InPerson::StateIdController, allowed_extra_analytics: [:*] d
         analytics_id: 'In Person Proofing',
         flow_path: 'standard',
         step: 'state_id',
-      }.merge(ab_test_args)
+      }
     end
 
     it 'has non-nil presenter' do
@@ -182,7 +177,7 @@ RSpec.describe Idv::InPerson::StateIdController, allowed_extra_analytics: [:*] d
           same_address_as_id: true,
           birth_year: dob[:year],
           document_zip_code: identity_doc_zipcode&.slice(0, 5),
-        }.merge(ab_test_args)
+        }
       end
 
       it 'logs idv_in_person_proofing_state_id_submitted' do

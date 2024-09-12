@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::HybridMobile::DocumentCaptureController, allowed_extra_analytics: [:*] do
+RSpec.describe Idv::HybridMobile::DocumentCaptureController do
   let(:user) { create(:user) }
 
   let!(:document_capture_session) do
@@ -16,17 +16,11 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController, allowed_extra_analy
   let(:document_capture_session_result_captured_at) { Time.zone.now + 1.second }
   let(:document_capture_session_result_success) { true }
 
-  let(:ab_test_args) do
-    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
-  end
-
   before do
     stub_analytics
 
     session[:doc_capture_user_id] = user&.id
     session[:document_capture_session_uuid] = document_capture_session_uuid
-
-    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
   describe 'before_actions' do
@@ -58,7 +52,7 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController, allowed_extra_analy
           step: 'document_capture',
           selfie_check_required: false,
           liveness_checking_required: boolean,
-        }.merge(ab_test_args)
+        }
       end
 
       it 'renders the show template' do
@@ -181,7 +175,7 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController, allowed_extra_analy
           step: 'document_capture',
           liveness_checking_required: false,
           selfie_check_required: boolean,
-        }.merge(ab_test_args)
+        }
       end
 
       before do
