@@ -13,25 +13,19 @@ module Idv
     before_action :confirm_hybrid_handoff_needed, only: :show
 
     def show
-      case doc_auth_vendor
-      when Idp::Constants::Vendors::SOCURE
-        idv_session.flow_path = 'hybrid'
-        redirect_to idv_socure_document_capture_url
-      when Idp::Constants::Vendors::MOCK, Idp::Constants::Vendors::LEXIS_NEXIS
-        @upload_disabled = idv_session.selfie_check_required &&
-                           !idv_session.desktop_selfie_test_mode_enabled?
+      @upload_disabled = idv_session.selfie_check_required &&
+                            !idv_session.desktop_selfie_test_mode_enabled?
 
-        @direct_ipp_with_selfie_enabled = IdentityConfig.store.in_person_doc_auth_button_enabled &&
-                                          Idv::InPersonConfig.enabled_for_issuer?(
-                                            decorated_sp_session.sp_issuer,
-                                          )
+      @direct_ipp_with_selfie_enabled = IdentityConfig.store.in_person_doc_auth_button_enabled &&
+                                        Idv::InPersonConfig.enabled_for_issuer?(
+                                          decorated_sp_session.sp_issuer,
+                                        )
 
-        @selfie_required = idv_session.selfie_check_required
+      @selfie_required = idv_session.selfie_check_required
 
-        # reset if we visit or come back
-        idv_session.skip_doc_auth_from_handoff = nil
-        render :show, locals: extra_view_variables
-      end
+      # reset if we visit or come back
+      idv_session.skip_doc_auth_from_handoff = nil
+      render :show, locals: extra_view_variables
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).call(
         'upload', :view,
@@ -42,7 +36,6 @@ module Idv
 
     def update
       clear_future_steps!
-
 
       if params[:type] == 'mobile'
         handle_phone_submission
