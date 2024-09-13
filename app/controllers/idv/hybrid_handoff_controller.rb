@@ -15,8 +15,9 @@ module Idv
     def show
       case doc_auth_vendor
       when Idp::Constants::Vendors::SOCURE
+        idv_session.flow_path = 'hybrid'
         redirect_to idv_socure_document_capture_url
-      when Idp::Constants::Vendors::LEXIS_NEXIS
+      when Idp::Constants::Vendors::MOCK, Idp::Constants::Vendors::LEXIS_NEXIS
         @upload_disabled = idv_session.selfie_check_required &&
                            !idv_session.desktop_selfie_test_mode_enabled?
 
@@ -42,6 +43,7 @@ module Idv
     def update
       clear_future_steps!
 
+
       if params[:type] == 'mobile'
         handle_phone_submission
       else
@@ -64,7 +66,7 @@ module Idv
       Idv::StepInfo.new(
         key: :hybrid_handoff,
         controller: self,
-        next_steps: [:link_sent, :document_capture],
+        next_steps: [:link_sent, :document_capture, :socure_document_capture],
         preconditions: ->(idv_session:, user:) {
                          idv_session.idv_consent_given? &&
                            (self.selected_remote(idv_session: idv_session) || # from opt-in screen

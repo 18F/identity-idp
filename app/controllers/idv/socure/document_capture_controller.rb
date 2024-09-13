@@ -11,7 +11,7 @@ module Idv
 
       def show
         Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
-          call('document_capture', :view, true)
+          call('socure_document_capture', :view, true)
 
         # document request
         document_request = DocAuth::Socure::Requests::DocumentRequest.new(
