@@ -269,7 +269,6 @@ function FormSteps({
 
     didSubmitWithErrors.current = false;
   }, [activeErrors]);
-
   useEffect(() => {
     // reset stepName if it doesn't correspond to an existing step
     const stepsCheck = steps.map((step) => step?.name).filter(Boolean);
@@ -432,7 +431,7 @@ function FormSteps({
   };
 
   // wrap setter in a function to pass to FormStepsContext
-  const changeStepCanComplete = (isComplete: boolean) => {
+  const changeStepCanComplete = (isComplete?: boolean) => {
     setStepCanComplete(isComplete);
   };
 

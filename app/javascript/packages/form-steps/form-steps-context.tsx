@@ -10,7 +10,7 @@ interface FormStepsContextValue {
   /**
    * Allow a step to tell FormSteps it can complete the flow
    */
-  changeStepCanComplete: (isComplete: boolean) => void;
+  changeStepCanComplete: (isComplete?: boolean) => void;
 
   /**
    * Whether the current step is pending submission.

@@ -8,6 +8,8 @@ import type { FormStep } from '@18f/identity-form-steps';
 import { getConfigValue } from '@18f/identity-config';
 import { UploadFormEntriesError } from '../services/upload';
 import DocumentsAndSelfieStep from './documents-and-selfie-step';
+import SelfieStep from './selfie-step';
+import DocumentsStep from './documents-step';
 import InPersonPrepareStep from './in-person-prepare-step';
 import InPersonLocationPostOfficeSearchStep from './in-person-location-post-office-search-step';
 import InPersonLocationFullAddressEntryPostOfficeSearchStep from './in-person-location-full-address-entry-post-office-search-step';
@@ -21,7 +23,7 @@ import { RetrySubmissionError } from './submission-complete';
 import SuspenseErrorBoundary from './suspense-error-boundary';
 import SubmissionInterstitial from './submission-interstitial';
 import withProps from '../higher-order/with-props';
-import { InPersonContext } from '../context';
+import { InPersonContext, SelfieCaptureContext } from '../context';
 
 interface DocumentCaptureProps {
   /**
@@ -37,6 +39,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   const { t } = useI18n();
   const { flowPath } = useContext(UploadContext);
   const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
+  const { isSelfieCaptureEnabled, docAuthSeparatePagesEnabled } = useContext(SelfieCaptureContext);
   const { inPersonFullAddressEntryEnabled, inPersonURL, skipDocAuth, skipDocAuthFromHandoff } =
     useContext(InPersonContext);
   useDidUpdateEffect(onStepChange, [stepName]);
@@ -51,11 +54,25 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
     : InPersonLocationPostOfficeSearchStep;
 
   // Define different states to be used in human readable array declaration
-  const documentFormStep: FormStep = {
-    name: 'documents',
+  const documentAndSelfieFormStep: FormStep = {
+    name: 'documentsAndSelfie',
     form: DocumentsAndSelfieStep,
     title: t('doc_auth.headings.document_capture'),
   };
+  const documentFormStep: FormStep = {
+    name: 'documents',
+    form: DocumentsStep,
+    title: t('doc_auth.headings.document_capture'), // might want to change title to isolated doc capture heading
+  };
+  const selfieFormStep: FormStep = {
+    name: 'selfie',
+    form: SelfieStep,
+    title: '', // TODO: replace with yml selfie_capture (Ticket LG-14392)
+  };
+  const documentsFormSteps: FormStep[] =
+    isSelfieCaptureEnabled && docAuthSeparatePagesEnabled && submissionError === undefined
+      ? [documentFormStep, selfieFormStep]
+      : [documentAndSelfieFormStep];
   const reviewFormStep: FormStep = {
     name: 'review',
     form:
@@ -131,10 +148,12 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
       : ([prepareFormStep, locationFormStep, flowPath === 'hybrid' && hybridFormStep].filter(
           Boolean,
         ) as FormStep[]);
-
-  const defaultSteps: FormStep[] = submissionError
-    ? ([reviewFormStep] as FormStep[]).concat(inPersonSteps)
-    : ([documentFormStep] as FormStep[]);
+  const reviewAfterFailedSteps = [reviewFormStep] as FormStep[];
+  const reviewWithInPersonSteps = reviewAfterFailedSteps.concat(inPersonSteps);
+  const afterSubmissionErrorSteps = docAuthSeparatePagesEnabled
+    ? reviewAfterFailedSteps
+    : reviewWithInPersonSteps;
+  const defaultSteps: FormStep[] = submissionError ? afterSubmissionErrorSteps : documentsFormSteps;
 
   // If the user got here by opting-in to in-person proofing, when skipDocAuth === true,
   // then set steps to inPersonSteps
