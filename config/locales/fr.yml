@@ -1592,7 +1592,7 @@ titles.idv.phone: Vérifier votre numéro de téléphone
 titles.idv.reset_password: Réinitialiser le mot de passe
 titles.idv.verify_info: Vérifier vos informations
 titles.mfa_setup.face_touch_unlock_confirmation: Déverrouillage facial ou tactile ajouté
-titles.mfa_setup.suggest_second_mfa: Vous avez ajouté votre première méthode d’authentification ! Ajoutez-en une deuxième en guise de sauvegarde.
+titles.mfa_setup.suggest_second_mfa: Vous avez ajouté votre première méthode d’authentification! Ajoutez-en une deuxième en guise de sauvegarde.
 titles.no_auth_option: Aucune méthode de connexion trouvée
 titles.openid_connect.authorization: Autorisation OpenID Connect
 titles.openid_connect.logout: Déconnexion OpenID Connect
