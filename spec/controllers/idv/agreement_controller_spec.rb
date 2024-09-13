@@ -1,19 +1,14 @@
 require 'rails_helper'
 
-RSpec.describe Idv::AgreementController, allowed_extra_analytics: [:*] do
+RSpec.describe Idv::AgreementController do
   include FlowPolicyHelper
 
   let(:user) { create(:user) }
-
-  let(:ab_test_args) do
-    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
-  end
 
   before do
     stub_sign_in(user)
     stub_up_to(:welcome, idv_session: subject.idv_session)
     stub_analytics
-    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
   describe '#step_info' do
@@ -44,7 +39,7 @@ RSpec.describe Idv::AgreementController, allowed_extra_analytics: [:*] do
       {
         step: 'agreement',
         analytics_id: 'Doc Auth',
-      }.merge(ab_test_args)
+      }
     end
 
     it 'renders the show template' do
@@ -108,7 +103,7 @@ RSpec.describe Idv::AgreementController, allowed_extra_analytics: [:*] do
         errors: {},
         step: 'agreement',
         analytics_id: 'Doc Auth',
-      }.merge(ab_test_args)
+      }
     end
 
     let(:skip_hybrid_handoff) { nil }
@@ -238,7 +233,7 @@ RSpec.describe Idv::AgreementController, allowed_extra_analytics: [:*] do
       it 'does not set IDV consent flags' do
         put :update, params: params
 
-        expect(subject.idv_session.idv_consent_given).to be_nil
+        expect(subject.idv_session.idv_consent_given?).to eq(false)
         expect(subject.idv_session.idv_consent_given_at).to be_nil
       end
     end

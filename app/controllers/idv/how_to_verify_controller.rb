@@ -24,7 +24,7 @@ module Idv
       if how_to_verify_form_params[:selection] == []
         sendable_form_params = {}
       else
-        sendable_form_params = how_to_verify_form_params
+        sendable_form_params = how_to_verify_form_params.to_h.symbolize_keys
       end
 
       analytics.idv_doc_auth_how_to_verify_submitted(
@@ -61,7 +61,7 @@ module Idv
         next_steps: [:hybrid_handoff, :document_capture],
         preconditions: ->(idv_session:, user:) do
           self.enabled? &&
-          idv_session.idv_consent_given &&
+          idv_session.idv_consent_given? &&
           idv_session.service_provider&.in_person_proofing_enabled
         end,
         undo_step: ->(idv_session:, user:) {

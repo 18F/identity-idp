@@ -46,6 +46,7 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:,
             status: response['status'],
             job_name: 'GetUspsProofingResultsJob',
             tmx_status: :threatmetrix_pass,
+            profile_age_in_seconds: instance_of(Integer),
             enhanced_ipp: enhanced_ipp_enrollment,
           }.compact,
         ),
@@ -986,6 +987,13 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
 
                 expect(pending_enrollment.reload.cancelled?).to be_truthy
                 expect(job_analytics).to have_logged_event(
+                  'GetUspsProofingResultsJob: Enrollment status updated',
+                  hash_including(
+                    passed: false,
+                    reason: 'Invalid enrollment code',
+                  ),
+                )
+                expect(job_analytics).to have_logged_event(
                   'GetUspsProofingResultsJob: Unexpected response received',
                   hash_including(
                     reason: 'Invalid enrollment code',
@@ -1023,6 +1031,13 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                 job.perform(Time.zone.now)
 
                 expect(pending_enrollment.reload.cancelled?).to be_truthy
+                expect(job_analytics).to have_logged_event(
+                  'GetUspsProofingResultsJob: Enrollment status updated',
+                  hash_including(
+                    passed: false,
+                    reason: 'Invalid applicant unique id',
+                  ),
+                )
                 expect(job_analytics).to have_logged_event(
                   'GetUspsProofingResultsJob: Unexpected response received',
                   hash_including(
@@ -1416,6 +1431,59 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                   )
                 end
               end
+            end
+          end
+
+          context 'when there is a bad sponsor id - not found' do
+            before(:each) do
+              stub_request_proofing_results_with_responses(
+                {
+                  status: 400,
+                  body: { 'responseMessage' => 'Sponsor for sponsorID 25 not found' }.to_json,
+                  headers: { 'content-type': 'application/json' },
+                },
+              )
+            end
+
+            it_behaves_like(
+              'enrollment_encountering_an_exception',
+              exception_class: 'Faraday::BadRequestError',
+              exception_message: 'the server responded with status 400',
+              response_message: 'Sponsor for sponsorID [FILTERED] not found',
+              response_status_code: 400,
+            )
+
+            it 'logs the error to NewRelic' do
+              expect(NewRelic::Agent).to receive(:notice_error).
+                with(instance_of(Faraday::BadRequestError)).at_least(1).times
+              job.perform(Time.zone.now)
+            end
+          end
+
+          context 'when there is a bad sponsor id - invalid' do
+            before(:each) do
+              stub_request_proofing_results_with_responses(
+                {
+                  status: 400,
+                  body: { 'responseMessage' => 'sponsorID 5 is not registered as an IPP client' }.
+                  to_json,
+                  headers: { 'content-type': 'application/json' },
+                },
+              )
+            end
+
+            it_behaves_like(
+              'enrollment_encountering_an_exception',
+              exception_class: 'Faraday::BadRequestError',
+              exception_message: 'the server responded with status 400',
+              response_message: 'sponsorID [FILTERED] is not registered as an IPP client',
+              response_status_code: 400,
+            )
+
+            it 'logs the error to NewRelic' do
+              expect(NewRelic::Agent).to receive(:notice_error).
+                with(instance_of(Faraday::BadRequestError)).at_least(1).times
+              job.perform(Time.zone.now)
             end
           end
         end

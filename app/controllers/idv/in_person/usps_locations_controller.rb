@@ -9,6 +9,7 @@ module Idv
       include Idv::HybridMobile::HybridMobileConcern
       include RenderConditionConcern
       include UspsInPersonProofing
+      include IppHelper
 
       check_or_render_not_found -> { InPersonConfig.enabled? }
 
@@ -17,6 +18,7 @@ module Idv
       rescue_from ActionController::InvalidAuthenticityToken,
                   Faraday::Error,
                   StandardError,
+                  Faraday::BadRequestError,
                   with: :handle_error
 
       # retrieve the list of nearby IPP Post Office locations with a POST request
@@ -103,9 +105,9 @@ module Idv
         analytics.idv_in_person_locations_request_failure(
           api_status_code: Rack::Utils.status_code(remapped_error),
           exception_class: err.class,
-          exception_message: err.message,
+          exception_message: scrub_message(err.message),
           response_body_present: err.respond_to?(:response_body) && err.response_body.present?,
-          response_body: err.respond_to?(:response_body) && err.response_body,
+          response_body: err.respond_to?(:response_body) && scrub_body(err.response_body),
           response_status_code: err.respond_to?(:response_status) && err.response_status,
         )
         render json: {}, status: remapped_error

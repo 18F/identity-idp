@@ -296,6 +296,10 @@ module Idv
       IdentityConfig.store.doc_auth_selfie_desktop_test_mode
     end
 
+    def idv_consent_given?
+      !!session[:idv_consent_given_at]
+    end
+
     private
 
     attr_reader :user_session

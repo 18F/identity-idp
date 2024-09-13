@@ -92,9 +92,7 @@ SimpleForm.setup do |config|
                     item_wrapper_tag: nil,
                     item_label_class: item_label_class do |b|
       b.use :html5_no_aria_required
-      b.wrapper :legend, tag: 'legend', class: legend_class do |ba|
-        ba.use :label_text
-      end
+      b.optional :label, wrap_with: { tag: 'legend', class: legend_class }
       b.optional :hint, wrap_with: { tag: 'div', class: 'usa-hint margin-bottom-05' }
       b.wrapper :grid_row, tag: :div, class: 'grid-row margin-bottom-neg-1' do |gr|
         gr.wrapper :grid_column_radios, tag: :div, class: 'grid-col-fill' do |gc|

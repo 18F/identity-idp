@@ -35,10 +35,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: e52d679ab060531e12c19a27357aec4cd9b63546
-  tag: 0.21.8-18f
+  revision: 9b9e118e3811df70e4586a4b6585dbc69f928625
+  tag: 0.22.0-18f
   specs:
-    saml_idp (0.21.8.pre.18f)
+    saml_idp (0.22.0.pre.18f)
       activesupport
       builder
       faraday
@@ -197,11 +197,11 @@ GEM
       aws-sigv4 (~> 1.1)
     aws-sigv4 (1.9.1)
       aws-eventstream (~> 1, >= 1.0.2)
-    axe-core-api (4.9.1)
+    axe-core-api (4.10.0)
       dumb_delegator
       virtus
-    axe-core-rspec (4.9.1)
-      axe-core-api (= 4.9.1)
+    axe-core-rspec (4.10.0)
+      axe-core-api (= 4.10.0)
       dumb_delegator
       virtus
     axiom-types (0.1.1)
@@ -450,7 +450,7 @@ GEM
     net-ssh (6.1.0)
     newrelic_rpm (9.7.0)
     nio4r (2.7.3)
-    nokogiri (1.16.6)
+    nokogiri (1.16.7)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     numbers_and_words (0.11.12)
@@ -579,8 +579,7 @@ GEM
       actionpack (>= 5.0)
       railties (>= 5.0)
     retries (0.0.5)
-    rexml (3.3.6)
-      strscan
+    rexml (3.3.7)
     rotp (6.3.0)
     rouge (4.2.0)
     rqrcode (2.1.0)
@@ -641,8 +640,8 @@ GEM
       rubocop-capybara (~> 2.17)
       rubocop-factory_bot (~> 2.22)
     ruby-progressbar (1.13.0)
-    ruby-saml (1.13.0)
-      nokogiri (>= 1.10.5)
+    ruby-saml (1.17.0)
+      nokogiri (>= 1.13.10)
       rexml
     ruby-statistics (3.0.2)
     rubyzip (2.3.2)
@@ -684,7 +683,6 @@ GEM
     stringio (3.1.1)
     strong_migrations (2.0.0)
       activerecord (>= 6.1)
-    strscan (3.1.0)
     tableparser (1.0.1)
     terminal-table (3.0.2)
       unicode-display_width (>= 1.1.1, < 3)

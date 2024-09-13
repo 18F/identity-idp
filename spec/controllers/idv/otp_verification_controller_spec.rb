@@ -1,7 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::OtpVerificationController,
-               allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
+RSpec.describe Idv::OtpVerificationController do
   let(:user) { create(:user) }
 
   let(:phone) { '2255555000' }
@@ -19,18 +18,14 @@ RSpec.describe Idv::OtpVerificationController,
       sent_at: phone_confirmation_otp_sent_at,
     )
   end
-  let(:ab_test_args) do
-    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
-  end
 
   before do
     stub_analytics
-    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
 
     sign_in(user)
     stub_verify_steps_one_and_two(user)
     subject.idv_session.welcome_visited = true
-    subject.idv_session.idv_consent_given = true
+    subject.idv_session.idv_consent_given_at = Time.zone.now
     subject.idv_session.flow_path = 'standard'
     subject.idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
     subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:ssn]
@@ -169,7 +164,6 @@ RSpec.describe Idv::OtpVerificationController,
           code_matches: true,
           otp_delivery_preference: :sms,
           second_factor_attempts_count: 0,
-          **ab_test_args,
         ),
       )
     end

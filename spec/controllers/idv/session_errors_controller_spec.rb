@@ -190,7 +190,7 @@ RSpec.describe Idv::SessionErrorsController do
           'IdV: session error visited',
           hash_including(
             type: action.to_s,
-            submit_attempts_remaining: IdentityConfig.store.idv_max_attempts - 1,
+            remaining_submit_attempts: IdentityConfig.store.idv_max_attempts - 1,
           ),
         )
       end
@@ -271,7 +271,7 @@ RSpec.describe Idv::SessionErrorsController do
           'IdV: session error visited',
           hash_including(
             type: action.to_s,
-            submit_attempts_remaining: 0,
+            remaining_submit_attempts: 0,
           ),
         )
       end
@@ -313,7 +313,7 @@ RSpec.describe Idv::SessionErrorsController do
           'IdV: session error visited',
           hash_including(
             type: 'ssn_failure',
-            submit_attempts_remaining: 0,
+            remaining_submit_attempts: 0,
           ),
         )
       end
@@ -347,7 +347,7 @@ RSpec.describe Idv::SessionErrorsController do
           'IdV: session error visited',
           hash_including(
             type: action.to_s,
-            submit_attempts_remaining: 0,
+            remaining_submit_attempts: 0,
           ),
         )
       end

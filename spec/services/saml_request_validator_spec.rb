@@ -24,6 +24,7 @@ RSpec.describe SamlRequestValidator do
     end
 
     let(:use_vot_in_sp_requests) { true }
+
     before do
       allow(IdentityConfig.store).to receive(
         :use_vot_in_sp_requests,
@@ -43,6 +44,7 @@ RSpec.describe SamlRequestValidator do
 
       context 'ialmax authncontext and ialmax provider' do
         let(:authn_context) { [Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF] }
+
         before do
           expect(IdentityConfig.store).to receive(:allowed_ialmax_providers) { [sp.issuer] }
         end
@@ -59,6 +61,7 @@ RSpec.describe SamlRequestValidator do
 
     context 'valid authn context and invalid sp and authorized nameID format' do
       let(:sp) { ServiceProvider.find_by(issuer: 'foo') }
+
       it 'returns FormResponse with success: false' do
         errors = {
           service_provider: [t('errors.messages.unauthorized_service_provider')],
@@ -75,6 +78,7 @@ RSpec.describe SamlRequestValidator do
 
     context 'valid authn context and unauthorized nameid format' do
       let(:name_id_format) { Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL }
+
       it 'returns FormResponse with success: false' do
         errors = {
           nameid_format: [t('errors.messages.unauthorized_nameid_format')],
@@ -92,7 +96,9 @@ RSpec.describe SamlRequestValidator do
     context 'valid authn context and authorized email nameid format for SP' do
       let(:sp) { ServiceProvider.find_by(issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata') }
       let(:name_id_format) { Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL }
+
       before { sp.update!(email_nameid_format_allowed: true) }
+
       it 'returns FormResponse with success: true' do
         expect(response.to_h).to include(
           success: true,
@@ -103,7 +109,9 @@ RSpec.describe SamlRequestValidator do
 
       context 'ial2 authn context and ial2 sp' do
         let(:authn_context) { [Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF] }
+
         before { sp.update!(ial: 2) }
+
         it 'returns FormResponse with success: true for ial2 on ial:2 sp' do
           expect(response.to_h).to include(
             success: true,
@@ -175,6 +183,7 @@ RSpec.describe SamlRequestValidator do
     context 'invalid authn context and valid sp and authorized nameID format' do
       context 'unknown auth context' do
         let(:authn_context) { ['IAL1'] }
+
         it 'returns FormResponse with success: false' do
           errors = {
             authn_context: [t('errors.messages.unauthorized_authn_context')],
@@ -228,6 +237,8 @@ RSpec.describe SamlRequestValidator do
 
         context "when the IAL requested is #{biometric_ial}" do
           context 'when the service provider is allowed to use biometric ials' do
+            let(:sp) { create(:service_provider, :idv) }
+
             before do
               allow_any_instance_of(ServiceProvider).to receive(:biometric_ial_allowed?).
                 and_return(true)
@@ -269,6 +280,57 @@ RSpec.describe SamlRequestValidator do
 
       it_behaves_like 'allows biometric IAL only if sp is authorized',
                       Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF
+
+      shared_examples 'allows semantic IAL only if sp is authorized' do |semantic_ial|
+        let(:authn_context) { [semantic_ial] }
+
+        context "when the IAL requested is #{semantic_ial}" do
+          context 'when the service provider is allowed to use semantic ials' do
+            let(:sp) { create(:service_provider, :idv) }
+
+            before do
+              allow_any_instance_of(ServiceProvider).
+                to receive(:semantic_authn_contexts_allowed?).
+                and_return(true)
+            end
+
+            it 'returns a successful response' do
+              expect(response.to_h).to include(
+                success: true,
+                errors: {},
+                **extra,
+              )
+            end
+          end
+
+          context 'when the service provider is not allowed to use semantic ials' do
+            before do
+              allow_any_instance_of(ServiceProvider).
+                to receive(:semantic_authn_contexts_allowed?).
+                and_return(false)
+            end
+
+            it 'fails with an unauthorized error' do
+              errors = {
+                authn_context: [t('errors.messages.unauthorized_authn_context')],
+              }
+
+              expect(response.to_h).to include(
+                success: false,
+                errors: errors,
+                error_details: hash_including(*errors.keys),
+                **extra,
+              )
+            end
+          end
+        end
+      end
+
+      it_behaves_like 'allows semantic IAL only if sp is authorized',
+                      Saml::Idp::Constants::IAL_VERIFIED_ACR
+
+      it_behaves_like 'allows semantic IAL only if sp is authorized',
+                      Saml::Idp::Constants::IAL_AUTH_ONLY_ACR
     end
 
     context 'invalid authn context and invalid sp and authorized nameID format' do
@@ -292,6 +354,7 @@ RSpec.describe SamlRequestValidator do
 
     context 'valid authn context and sp and unauthorized nameID format' do
       let(:name_id_format) { Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL }
+
       it 'returns FormResponse with success: false with unauthorized nameid format' do
         errors = {
           nameid_format: [t('errors.messages.unauthorized_nameid_format')],
@@ -320,6 +383,7 @@ RSpec.describe SamlRequestValidator do
 
     context 'valid VTR for identity proofing with authorized SP for identity proofing' do
       let(:authn_context) { ['C1.P1'] }
+
       before { sp.update!(ial: 2) }
 
       it 'returns FormResponse with success true' do
@@ -333,6 +397,7 @@ RSpec.describe SamlRequestValidator do
 
     context 'valid VTR for identity proofing with unauthorized SP for identity proofing' do
       let(:authn_context) { ['C1.P1'] }
+
       before { sp.update!(ial: 1) }
 
       it 'returns FormResponse with success false' do
@@ -351,6 +416,7 @@ RSpec.describe SamlRequestValidator do
 
     context 'multiple VTR for identity proofing with unauthorized SP for identity proofing' do
       let(:authn_context) { ['C1', 'C1.P1'] }
+
       before { sp.update!(ial: 1) }
 
       it 'returns FormResponse with success false' do

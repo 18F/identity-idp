@@ -31,7 +31,7 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
     it 'redirects to the two_factor_options page if user is IAL2' do
       profile = create(:profile, :active, :verified, pii: { ssn: '1234' })
       user = profile.user
-      PersonalKeyGenerator.new(user).create
+      PersonalKeyGenerator.new(user).generate!
       stub_sign_in_before_2fa(user)
       get :show
 
@@ -43,7 +43,7 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
   describe '#create' do
     context 'when the user enters a valid personal key' do
       let(:user) { create(:user, :with_phone) }
-      let(:personal_key) { { personal_key: PersonalKeyGenerator.new(user).create } }
+      let(:personal_key) { { personal_key: PersonalKeyGenerator.new(user).generate! } }
       let(:payload) { { personal_key_form: personal_key } }
       it 'tracks the valid authentication event' do
         personal_key
@@ -134,7 +134,7 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
 
     it 'does generate a new personal key after the user signs in with their old one' do
       user = create(:user)
-      raw_key = PersonalKeyGenerator.new(user).create
+      raw_key = PersonalKeyGenerator.new(user).generate!
       old_key = user.reload.encrypted_recovery_code_digest
       stub_sign_in_before_2fa(user)
       post :create, params: { personal_key_form: { personal_key: raw_key } }
@@ -147,7 +147,7 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
     it 'redirects to the two_factor_options page if user is IAL2' do
       profile = create(:profile, :active, :verified, pii: { ssn: '1234' })
       user = profile.user
-      raw_key = PersonalKeyGenerator.new(user).create
+      raw_key = PersonalKeyGenerator.new(user).generate!
       stub_sign_in_before_2fa(user)
       post :create, params: { personal_key_form: { personal_key: raw_key } }
 

@@ -323,6 +323,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         classification_info: {},
         workflow: 'test_non_liveness_workflow',
         liveness_checking_required: false,
+        portrait_match_results: nil,
       )
       expect(response.doc_auth_success?).to eq(true)
       expect(response.selfie_status).to eq(:not_processed)
@@ -392,11 +393,33 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.pii_from_doc).to eq(nil)
       expect(response.attention_with_barcode?).to eq(false)
       expect(response.extra).to eq(
-        doc_auth_result: DocAuth::LexisNexis::ResultCodes::CAUTION.name,
+        doc_auth_result: DocAuth::LexisNexis::ResultCodes::FAILED.name,
         billed: true,
-        classification_info: {},
+        classification_info: nil,
         liveness_checking_required: false,
         workflow: 'test_non_liveness_workflow',
+        portrait_match_results: nil,
+        alert_failure_count: 1,
+        liveness_enabled: false,
+        vendor: 'Mock',
+        processed_alerts: {
+          failed: [{ name: '2D Barcode Read', result: 'Failed' }],
+          passed: [],
+        },
+        image_metrics: {
+          back: {
+            'GlareMetric' => 100,
+            'HorizontalResolution' => 100,
+            'SharpnessMetric' => 100,
+            'VerticalResolution' => 600,
+          },
+          front: {
+            'GlareMetric' => 100,
+            'HorizontalResolution' => 600,
+            'SharpnessMetric' => 100,
+            'VerticalResolution' => 600,
+          },
+        },
       )
     end
   end
@@ -421,9 +444,31 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.extra).to eq(
         doc_auth_result: DocAuth::LexisNexis::ResultCodes::FAILED.name,
         billed: true,
-        classification_info: {},
+        classification_info: nil,
         liveness_checking_required: false,
         workflow: 'test_non_liveness_workflow',
+        portrait_match_results: nil,
+        alert_failure_count: 1,
+        liveness_enabled: false,
+        vendor: 'Mock',
+        processed_alerts: {
+          failed: [{ name: '2D Barcode Read', result: 'Failed' }],
+          passed: [],
+        },
+        image_metrics: {
+          back: {
+            'GlareMetric' => 100,
+            'HorizontalResolution' => 600,
+            'SharpnessMetric' => 100,
+            'VerticalResolution' => 600,
+          },
+          front: {
+            'GlareMetric' => 100,
+            'HorizontalResolution' => 600,
+            'SharpnessMetric' => 100,
+            'VerticalResolution' => 600,
+          },
+        },
       )
     end
   end
@@ -480,6 +525,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         classification_info: {},
         liveness_checking_required: false,
         workflow: 'test_non_liveness_workflow',
+        portrait_match_results: nil,
       )
     end
   end
@@ -788,7 +834,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
 
     it 'returns the expected values' do
       expect(response.selfie_check_performed?).to eq(false)
-      expect(response.extra).not_to have_key(:portrait_match_results)
+      expect(response.extra[:portrait_match_results]).to be_nil
       expect(response.doc_auth_success?).to eq(true)
       expect(response.selfie_status).to eq(:not_processed)
       expect(response.extra[:liveness_checking_required]).to eq(false)

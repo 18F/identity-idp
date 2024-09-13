@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'state id controller enabled', js: true, allowed_extra_analytics: [:*] do
+RSpec.describe 'state id controller enabled', :js do
   include IdvStepHelper
   include InPersonHelper
 
@@ -15,9 +15,11 @@ RSpec.describe 'state id controller enabled', js: true, allowed_extra_analytics:
 
       expect(page).to have_content(t('forms.buttons.continue'))
       expect(page).to have_content(
-        t(
-          'in_person_proofing.headings.state_id_milestone_2',
-        ).tr(' ', ' '),
+        strip_nbsp(
+          t(
+            'in_person_proofing.headings.state_id_milestone_2',
+          ),
+        ),
       )
     end
 

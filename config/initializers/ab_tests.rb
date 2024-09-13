@@ -75,8 +75,10 @@ module AbTests
   ) do |user:, user_session:, **|
     if user_session&.[](:captcha_validation_performed_at_sign_in) == false
       nil
+    elsif user
+      user.uuid
     else
-      user&.uuid
+      SecureRandom.gen_random(1)
     end
   end.freeze
 end

@@ -279,7 +279,7 @@ class Profile < ApplicationRecord
 
   # @param [Pii::Attributes] pii
   def encrypt_recovery_pii(pii, personal_key: nil)
-    personal_key ||= personal_key_generator.create
+    personal_key ||= personal_key_generator.generate!
     encryptor = Encryption::Encryptors::PiiEncryptor.new(
       personal_key_generator.normalize(personal_key),
     )
@@ -300,6 +300,10 @@ class Profile < ApplicationRecord
 
     return unless values.all?(&:present?)
     values.join(':')
+  end
+
+  def profile_age_in_seconds
+    (Time.zone.now - created_at).round
   end
 
   private

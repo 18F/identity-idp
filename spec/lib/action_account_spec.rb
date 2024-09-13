@@ -169,6 +169,7 @@ RSpec.describe ActionAccount do
           'Fraud: Profile review rejected',
           success: true,
           profile_fraud_review_pending_at: profile_fraud_review_pending_at,
+          profile_age_in_seconds: instance_of(Integer),
         )
         expect(analytics).to have_logged_event(
           'Fraud: Profile review rejected',
@@ -203,6 +204,10 @@ RSpec.describe ActionAccount do
       subject(:result) { subtask.run(args:, config:) }
 
       it 'Pass a user that has a pending review', aggregate_failures: true do
+        expect(UserAlerts::AlertUserAboutAccountVerified).to receive(:call).with(
+          profile: user.pending_profile,
+        )
+
         profile_fraud_review_pending_at = user.pending_profile.fraud_review_pending_at
 
         # rubocop:disable Layout/LineLength
@@ -223,6 +228,7 @@ RSpec.describe ActionAccount do
           'Fraud: Profile review passed',
           success: true,
           profile_fraud_review_pending_at: profile_fraud_review_pending_at,
+          profile_age_in_seconds: instance_of(Integer),
         )
         expect(analytics).to have_logged_event(
           'Fraud: Profile review passed',

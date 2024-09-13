@@ -11,11 +11,11 @@ module FederatedProtocols
     end
 
     def ial
-      request.ial_values.sort.max
+      request.ial_values.first
     end
 
     def aal
-      request.aal_values.sort.max
+      request.aal_values.first
     end
 
     def acr_values
@@ -28,10 +28,6 @@ module FederatedProtocols
 
     def requested_attributes
       OpenidConnectAttributeScoper.new(request.scope).requested_attributes
-    end
-
-    def biometric_comparison_required?
-      request.biometric_comparison_required?
     end
 
     def service_provider

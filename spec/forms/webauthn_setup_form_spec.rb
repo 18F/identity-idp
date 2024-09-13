@@ -41,6 +41,8 @@ RSpec.describe WebauthnSetupForm do
               at: false,
               ed: true,
             },
+            unknown_transports: nil,
+            aaguid: nil,
             pii_like_keypaths: [[:mfa_method_counts, :phone]],
           }
 
@@ -161,6 +163,7 @@ RSpec.describe WebauthnSetupForm do
             },
             pii_like_keypaths: [[:mfa_method_counts, :phone]],
             unknown_transports: ['wrong'],
+            aaguid: nil,
           )
         end
       end
@@ -182,6 +185,8 @@ RSpec.describe WebauthnSetupForm do
             at: false,
             ed: true,
           },
+          unknown_transports: nil,
+          aaguid: nil,
           pii_like_keypaths: [[:mfa_method_counts, :phone]],
         }
 
@@ -231,6 +236,8 @@ RSpec.describe WebauthnSetupForm do
             at: false,
             ed: true,
           },
+          unknown_transports: nil,
+          aaguid: nil,
           pii_like_keypaths: [[:mfa_method_counts, :phone]],
         }
 

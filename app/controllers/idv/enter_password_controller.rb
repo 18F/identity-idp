@@ -6,6 +6,7 @@ module Idv
     include IdvStepConcern
     include StepIndicatorConcern
     include VerifyByMailConcern
+    include IppHelper
 
     before_action :confirm_step_allowed
     before_action :confirm_no_profile_yet
@@ -48,6 +49,7 @@ module Idv
         success: true,
         fraud_review_pending: idv_session.profile.fraud_review_pending?,
         fraud_rejection: idv_session.profile.fraud_rejection?,
+        fraud_pending_reason: idv_session.profile.fraud_pending_reason,
         gpo_verification_pending: idv_session.profile.gpo_verification_pending?,
         in_person_verification_pending: idv_session.profile.in_person_verification_pending?,
         deactivation_reason: idv_session.profile.deactivation_reason,
@@ -60,6 +62,7 @@ module Idv
         success: true,
         fraud_review_pending: idv_session.profile.fraud_review_pending?,
         fraud_rejection: idv_session.profile.fraud_rejection?,
+        fraud_pending_reason: idv_session.profile.fraud_pending_reason,
         gpo_verification_pending: idv_session.profile.gpo_verification_pending?,
         in_person_verification_pending: idv_session.profile.in_person_verification_pending?,
         deactivation_reason: idv_session.profile.deactivation_reason,
@@ -115,6 +118,7 @@ module Idv
         in_person_verification_pending: current_user.in_person_pending_profile?,
         fraud_review_pending: fraud_review_pending?,
         fraud_rejection: fraud_rejection?,
+        fraud_pending_reason: nil,
         **ab_test_analytics_buckets,
       )
 
@@ -133,11 +137,9 @@ module Idv
       end
 
       if idv_session.profile.active?
-        event, _disavowal_token = create_user_event(:account_verified)
+        create_user_event(:account_verified)
         UserAlerts::AlertUserAboutAccountVerified.call(
-          user: current_user,
-          date_time: event.created_at,
-          sp_name: decorated_sp_session.sp_name,
+          profile: idv_session.profile,
         )
       end
     end
@@ -186,7 +188,7 @@ module Idv
         enrollment_id: err.enrollment_id,
         exception_class: err.class.to_s,
         original_exception_class: err.exception_class,
-        exception_message: err.message,
+        exception_message: scrub_message(err.message),
         reason: 'Request exception',
       )
       flash[:error] = t('idv.failure.exceptions.internal_error')

@@ -187,6 +187,7 @@ class ActionAccount
         elsif FraudReviewChecker.new(user).fraud_review_eligible?
           profile = user.fraud_review_pending_profile
           profile_fraud_review_pending_at = profile.fraud_review_pending_at
+          profile_age_in_seconds = profile.profile_age_in_seconds
           profile.reject_for_fraud(notify_user: true)
           success = true
 
@@ -216,6 +217,7 @@ class ActionAccount
           errors: analytics_error_hash,
           exception: nil,
           profile_fraud_review_pending_at: profile_fraud_review_pending_at,
+          profile_age_in_seconds: profile_age_in_seconds,
         )
       end
 
@@ -236,6 +238,7 @@ class ActionAccount
           errors: { message: log_text[:missing_uuid] },
           exception: nil,
           profile_fraud_review_pending_at: nil,
+          profile_age_in_seconds: nil,
         )
       end
 
@@ -250,14 +253,6 @@ class ActionAccount
 
   class ReviewPass
     include LogBase
-
-    def alert_verified(user:, date_time:)
-      UserAlerts::AlertUserAboutAccountVerified.call(
-        user: user,
-        date_time: date_time,
-        sp_name: nil,
-      )
-    end
 
     def run(args:, config:)
       uuids = args
@@ -278,14 +273,14 @@ class ActionAccount
         elsif FraudReviewChecker.new(user).fraud_review_eligible?
           profile = user.fraud_review_pending_profile
           profile_fraud_review_pending_at = profile.fraud_review_pending_at
+          profile_age_in_seconds = profile.profile_age_in_seconds
           profile.activate_after_passing_review
           success = true
 
           if profile.active?
-            event, _disavowal_token = UserEventCreator.new(current_user: user).
+            UserEventCreator.new(current_user: user).
               create_out_of_band_user_event(:account_verified)
-
-            alert_verified(user: user, date_time: event.created_at)
+            UserAlerts::AlertUserAboutAccountVerified.call(profile: profile)
 
             log_texts << log_text[:profile_activated]
           else
@@ -316,6 +311,7 @@ class ActionAccount
           errors: analytics_error_hash,
           exception: nil,
           profile_fraud_review_pending_at: profile_fraud_review_pending_at,
+          profile_age_in_seconds: profile_age_in_seconds,
         )
       end
 
@@ -336,6 +332,7 @@ class ActionAccount
           errors: { message: log_text[:missing_uuid] },
           exception: nil,
           profile_fraud_review_pending_at: nil,
+          profile_age_in_seconds: nil,
         )
       end
 

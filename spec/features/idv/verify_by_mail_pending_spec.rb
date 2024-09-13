@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'a user that is pending verify by mail', allowed_extra_analytics: [:*] do
+RSpec.feature 'a user that is pending verify by mail' do
   include IdvStepHelper
 
   it 'requires them to enter code or cancel to enter the proofing flow' do

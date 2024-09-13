@@ -1,16 +1,11 @@
 require 'rails_helper'
 
-RSpec.describe Idv::WelcomeController, allowed_extra_analytics: [:*] do
+RSpec.describe Idv::WelcomeController do
   let(:user) { create(:user) }
-
-  let(:ab_test_args) do
-    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
-  end
 
   before do
     stub_sign_in(user)
     stub_analytics
-    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
   describe '#step_info' do
@@ -41,7 +36,7 @@ RSpec.describe Idv::WelcomeController, allowed_extra_analytics: [:*] do
       {
         step: 'welcome',
         analytics_id: 'Doc Auth',
-      }.merge(ab_test_args)
+      }
     end
 
     it 'renders the show template' do
@@ -121,7 +116,7 @@ RSpec.describe Idv::WelcomeController, allowed_extra_analytics: [:*] do
       {
         step: 'welcome',
         analytics_id: 'Doc Auth',
-      }.merge(ab_test_args)
+      }
     end
 
     it 'sends analytics_submitted event' do

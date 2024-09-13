@@ -16,7 +16,7 @@ RSpec.describe 'Account email language' do
     end
 
     it 'lets them view their current email language' do
-      within(page.find('.profile-info-box', text: t('i18n.language'))) do
+      within(page.find('.card', text: t('i18n.language'))) do
         expect(page).to have_content(t("account.email_language.name.#{original_email_language}"))
       end
     end
@@ -24,7 +24,7 @@ RSpec.describe 'Account email language' do
     context 'changing their email language' do
       let('chosen_email_language') { 'fr' }
       before do
-        within(page.find('.profile-info-box', text: t('i18n.language'))) do
+        within(page.find('.card', text: t('i18n.language'))) do
           click_link(t('forms.buttons.edit'))
         end
 
@@ -33,13 +33,13 @@ RSpec.describe 'Account email language' do
       end
 
       it 'reflects the updated language preference' do
-        within(page.find('.profile-info-box', text: t('i18n.language'))) do
+        within(page.find('.card', text: t('i18n.language'))) do
           expect(page).to have_content(t("account.email_language.name.#{chosen_email_language}"))
         end
       end
 
       it 'respects the language preference in emails, such as password reset emails' do
-        within(page.find('.profile-info-box', text: 'Password')) do
+        within(page.find('.card', text: 'Password')) do
           click_link(t('forms.buttons.edit'))
         end
 

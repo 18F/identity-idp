@@ -1,7 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'state id 50/50 state', js: true, allowed_extra_analytics: [:*],
-                                       allow_browser_log: true do
+RSpec.describe 'state id 50/50 state', :js, allow_browser_log: true do
   include IdvStepHelper
   include InPersonHelper
 

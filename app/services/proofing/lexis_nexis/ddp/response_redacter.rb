@@ -197,12 +197,7 @@ module Proofing
         def self.redact(hash)
           return { error: 'TMx response body was empty' } if hash.nil?
           return { error: 'TMx response body was malformed' } unless hash.is_a? Hash
-          filtered_response_h = hash.slice(*ALLOWED_RESPONSE_FIELDS)
-          unfiltered_keys = hash.keys - filtered_response_h.keys
-          unfiltered_keys.each do |key|
-            filtered_response_h[key] = '[redacted]'
-          end
-          filtered_response_h
+          hash.slice(*ALLOWED_RESPONSE_FIELDS)
         end
       end
     end

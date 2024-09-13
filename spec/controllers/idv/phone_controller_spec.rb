@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
+RSpec.describe Idv::PhoneController do
   include FlowPolicyHelper
 
   let(:max_attempts) { RateLimiter.max_attempts(:proof_address) }
@@ -241,13 +241,7 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
         with: { phone: '+1 (415) 555-0130' }
       )
     end
-    let(:ab_test_args) do
-      { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
-    end
 
-    before do
-      allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
-    end
     context 'when form is invalid' do
       let(:improbable_phone_message) { t('errors.messages.improbable_phone') }
       let(:improbable_otp_message) { 'is not included in the list' }
@@ -309,7 +303,6 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
             phone_type: :mobile,
             otp_delivery_preference: '🎷',
             types: [],
-            **ab_test_args,
           ),
         )
 
@@ -351,7 +344,6 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
             phone_type: :mobile,
             otp_delivery_preference: 'sms',
             types: [:fixed_or_mobile],
-            **ab_test_args,
           ),
         )
       end

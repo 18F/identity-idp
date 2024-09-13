@@ -38,6 +38,7 @@
 <% end %>
 
 <%= simple_form_for form,
+                    as: 'identity_doc', # Renaming form as a workaround for aggressive browser autofill assumptions
                     url: url_for,
                     method: 'put',
                     html: { class: 'margin-y-5' } do |f| %>
@@ -140,7 +141,7 @@
     <% end %>
 
     <%= render ValidatedFieldComponent.new(
-          name: :state_id_number,
+          name: :id_number, # Renaming field as a workaround for aggressive browser autofill assumptions
           form: f,
           hint: state_id_number_hint,
           hint_html: { class: ['jurisdiction-extras'] },

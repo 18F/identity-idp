@@ -17,4 +17,22 @@ module InteractionHelper
     # for now.
     raise e if !e.message.include?('Node with given id does not belong to the document')
   end
+
+  def assert_navigation(expected_navigation = true)
+    page.execute_script(<<~JS)
+      window.samePage = true;
+      addEventListener("beforeunload", () => delete window.samePage);
+    JS
+
+    yield
+
+    did_navigate = !page.evaluate_script('window.samePage')
+    error_message = if expected_navigation
+                      'Expected navigation or form submission, but page did not change'
+                    else
+                      'Expected no navigation or form submission, but page changed'
+                    end
+
+    expect(did_navigate).to eq(expected_navigation), error_message
+  end
 end

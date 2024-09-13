@@ -453,7 +453,7 @@ class User < ApplicationRecord
   end
 
   def connected_apps
-    identities.not_deleted.includes(:service_provider_record).order('created_at DESC')
+    identities.not_deleted.order('created_at DESC')
   end
 
   def delete_account_bullet_key

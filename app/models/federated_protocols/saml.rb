@@ -2,6 +2,8 @@
 
 module FederatedProtocols
   class Saml
+    AAL_PREFIX = %r{^http://idmanagement.gov/ns/assurance/aal|urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo}
+
     def initialize(request)
       @request = request
     end
@@ -14,12 +16,18 @@ module FederatedProtocols
       if ialmax_requested_with_authn_context_comparison?
         ::Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF
       else
-        request.requested_ial_authn_context || default_authn_context
+        requested_ial_authn_context || default_ial_authn_context
       end
     end
 
+    def requested_ial_authn_context
+      (OpenidConnectAuthorizeForm::IALS_BY_PRIORITY & request.requested_authn_contexts).first
+    end
+
     def aal
-      request.requested_aal_authn_context
+      request.requested_authn_contexts.find do |classref|
+        AAL_PREFIX.match?(classref)
+      end
     end
 
     def acr_values
@@ -43,15 +51,11 @@ module FederatedProtocols
       current_service_provider
     end
 
-    def biometric_comparison_required?
-      false
-    end
-
     private
 
     attr_reader :request
 
-    def default_authn_context
+    def default_ial_authn_context
       if current_service_provider&.ial
         ::Saml::Idp::Constants::AUTHN_CONTEXT_IAL_TO_CLASSREF[current_service_provider.ial]
       else
@@ -81,7 +85,7 @@ module FederatedProtocols
     def ialmax_requested_with_authn_context_comparison?
       return unless (current_service_provider&.ial || 1) > 1
 
-      acr_component_value = Vot::AcrComponentValues.by_name[request.requested_ial_authn_context]
+      acr_component_value = Vot::AcrComponentValues.by_name[requested_ial_authn_context]
       return unless acr_component_value.present?
 
       !acr_component_value.requirements.include?(:identity_proofing) &&

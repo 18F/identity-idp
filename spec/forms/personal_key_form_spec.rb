@@ -5,7 +5,7 @@ RSpec.describe PersonalKeyForm do
     context 'when the form is valid' do
       it 'returns FormResponse with success: true' do
         user = create(:user)
-        raw_code = PersonalKeyGenerator.new(user).create
+        raw_code = PersonalKeyGenerator.new(user).generate!
         old_code = user.reload.encrypted_recovery_code_digest
 
         form = PersonalKeyForm.new(user, raw_code)

@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'csv'
 
-RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
+RSpec.feature 'Analytics Regression', :js do
   include IdvStepHelper
   include InPersonHelper
 
@@ -14,8 +14,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
     { client: nil,
       errors: {},
       exception: nil,
-      response_body: { first_name: '[redacted]',
-                       "fraudpoint.score": '500',
+      response_body: { "fraudpoint.score": '500',
                        request_id: '1234',
                        request_result: 'success',
                        review_status: 'pass',
@@ -510,10 +509,10 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         flow_path: 'standard', opted_in_to_in_person_proofing: false
       },
       'IdV: in person proofing state_id visited' => {
-        step: 'state_id', flow_path: 'standard', step_count: 1, analytics_id: 'In Person Proofing'
+        step: 'state_id', flow_path: 'standard', analytics_id: 'In Person Proofing'
       },
       'IdV: in person proofing state_id submitted' => {
-        success: true, flow_path: 'standard', step: 'state_id', step_count: 1, analytics_id: 'In Person Proofing', errors: {}, same_address_as_id: false, birth_year: '1938', document_zip_code: '12345'
+        success: true, flow_path: 'standard', step: 'state_id', analytics_id: 'In Person Proofing', errors: {}, same_address_as_id: false, birth_year: '1938', document_zip_code: '12345'
       },
       'IdV: in person proofing address visited' => {
         step: 'address', flow_path: 'standard', analytics_id: 'In Person Proofing', same_address_as_id: false
@@ -982,9 +981,6 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
 
   context 'Happy selfie path' do
     before do
-      allow_any_instance_of(FederatedProtocols::Oidc).
-        to receive(:biometric_comparison_required?).
-        and_return(true)
       allow_any_instance_of(DocAuth::Response).to receive(:selfie_status).and_return(:success)
 
       perform_in_browser(:desktop) do

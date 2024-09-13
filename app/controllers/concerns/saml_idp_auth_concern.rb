@@ -125,13 +125,9 @@ module SamlIdpAuthConcern
     if saml_request.requested_vtr_authn_contexts.present?
       resolved_authn_context_result.expanded_component_values
     else
-      saml_request.requested_aal_authn_context ||
+      FederatedProtocols::Saml.new(saml_request).aal ||
         default_aal_context
     end
-  end
-
-  def requested_ial_authn_context
-    saml_request.requested_ial_authn_context || default_ial_context
   end
 
   def link_identity_from_session_data
@@ -140,7 +136,16 @@ module SamlIdpAuthConcern
       link_identity(
         ial: resolved_authn_context_int_ial,
         rails_session_id: session.id,
+        email_address_id: email_address_id,
       )
+  end
+
+  def email_address_id
+    return nil unless IdentityConfig.store.feature_select_email_to_share_enabled
+    return user_session[:selected_email_id] if user_session[:selected_email_id].present?
+    identity = current_user.identities.find_by(service_provider: sp_session['issuer'])
+    email_id = identity&.email_address_id
+    return email_id if email_id.is_a? Integer
   end
 
   def identity_needs_verification?

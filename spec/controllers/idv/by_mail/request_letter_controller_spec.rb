@@ -1,16 +1,10 @@
 require 'rails_helper'
 
-RSpec.describe Idv::ByMail::RequestLetterController,
-               allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
+RSpec.describe Idv::ByMail::RequestLetterController do
   let(:user) { create(:user) }
-
-  let(:ab_test_args) do
-    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
-  end
 
   before do
     stub_analytics
-    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
   describe '#step_info' do
@@ -104,7 +98,6 @@ RSpec.describe Idv::ByMail::RequestLetterController,
           resend: false,
           phone_step_attempts: 1,
           hours_since_first_letter: 0,
-          **ab_test_args,
         ),
       )
     end

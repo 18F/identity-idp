@@ -1,17 +1,11 @@
 require 'rails_helper'
 
-RSpec.describe Idv::ByMail::ResendLetterController,
-               allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
+RSpec.describe Idv::ByMail::ResendLetterController do
   let(:user) { create(:user) }
-
-  let(:ab_test_args) do
-    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
-  end
 
   before do
     stub_sign_in(user)
     stub_analytics
-    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
   describe '#new' do

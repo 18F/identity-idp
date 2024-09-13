@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
+RSpec.describe Idv::EnterPasswordController do
   include UspsIppHelper
 
   let(:user) do
@@ -17,18 +17,13 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
     subject.idv_session
   end
 
-  let(:ab_test_args) do
-    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
-  end
-
   before do
     stub_analytics
     stub_sign_in(user)
     allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
-    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
     subject.idv_session.welcome_visited = true
+    subject.idv_session.idv_consent_given_at = Time.zone.now
     subject.idv_session.proofing_started_at = 5.minutes.ago.iso8601
-    subject.idv_session.idv_consent_given = true
     subject.idv_session.flow_path = 'standard'
     subject.idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
     subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:ssn]
@@ -278,7 +273,6 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
             fraud_rejection: false,
             gpo_verification_pending: false,
             in_person_verification_pending: false,
-            **ab_test_args,
           ),
         )
       end
@@ -296,7 +290,6 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
           gpo_verification_pending: false,
           in_person_verification_pending: false,
           proofing_workflow_time_in_seconds: 5.minutes.to_i,
-          **ab_test_args,
         ),
       )
       expect(@analytics).to have_logged_event(
@@ -394,9 +387,13 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
       end
 
       it 'dispatches account verified alert' do
-        expect(UserAlerts::AlertUserAboutAccountVerified).to receive(:call)
+        allow(UserAlerts::AlertUserAboutAccountVerified).to receive(:call)
 
         put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+        expect(UserAlerts::AlertUserAboutAccountVerified).to have_received(:call).with(
+          profile: user.reload.active_profile,
+        )
       end
 
       it 'creates an `account_verified` event once per confirmation' do
@@ -488,7 +485,37 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
               context: 'authentication',
               enrollment_id: enrollment.id,
               exception_class: 'UspsInPersonProofing::Exception::RequestEnrollException',
-              exception_message: 'Sponsor for sponsorID 5 not found',
+              exception_message: 'Sponsor for sponsorID [FILTERED] not found',
+              original_exception_class: 'Faraday::BadRequestError',
+              reason: 'Request exception',
+            )
+          end
+
+          it 'leaves the enrollment in establishing' do
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+            expect(InPersonEnrollment.count).to be(1)
+            enrollment = InPersonEnrollment.where(user_id: user.id).first
+            expect(enrollment.status).to eq(InPersonEnrollment::STATUS_ESTABLISHING)
+            expect(enrollment.user_id).to eq(user.id)
+            expect(enrollment.enrollment_code).to be_nil
+          end
+        end
+
+        context 'when there is a 4xx error for a bad sponsor id' do
+          before do
+            stub_request_enroll_bad_sponsor_id_request_response
+          end
+
+          it 'logs the response message' do
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+            expect(@analytics).to have_logged_event(
+              'USPS IPPaaS enrollment failed',
+              context: 'authentication',
+              enrollment_id: enrollment.id,
+              exception_class: 'UspsInPersonProofing::Exception::RequestEnrollException',
+              exception_message: 'sponsorID [FILTERED] is not registered as an IPP client',
               original_exception_class: 'Faraday::BadRequestError',
               reason: 'Request exception',
             )
@@ -587,7 +614,7 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
                 context: 'authentication',
                 enrollment_id: enrollment.id,
                 exception_class: 'UspsInPersonProofing::Exception::RequestEnrollException',
-                exception_message: 'Sponsor for sponsorID 5 not found',
+                exception_message: 'Sponsor for sponsorID [FILTERED] not found',
                 original_exception_class: 'Faraday::BadRequestError',
                 reason: 'Request exception',
               )
@@ -788,6 +815,11 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
                     !review_status.nil? && review_status != 'pass'
                 end
                 let(:review_status) { review_status }
+                let(:fraud_pending_reason) do
+                  if fraud_review_pending?
+                    "threatmetrix_#{review_status}"
+                  end
+                end
                 let(:proofing_device_profiling_state) { proofing_device_profiling_state }
 
                 before do
@@ -808,23 +840,27 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
                   expect(@analytics).to have_logged_event(
                     :idv_enter_password_submitted,
                     hash_including(
-                      success: true,
-                      fraud_review_pending: fraud_review_pending?,
-                      fraud_rejection: false,
-                      gpo_verification_pending: false,
-                      in_person_verification_pending: false,
-                      **ab_test_args,
+                      {
+                        success: true,
+                        fraud_review_pending: fraud_review_pending?,
+                        fraud_pending_reason: fraud_pending_reason,
+                        fraud_rejection: false,
+                        gpo_verification_pending: false,
+                        in_person_verification_pending: false,
+                      }.compact,
                     ),
                   )
                   expect(@analytics).to have_logged_event(
                     'IdV: final resolution',
                     hash_including(
-                      success: true,
-                      fraud_review_pending: fraud_review_pending?,
-                      fraud_rejection: false,
-                      gpo_verification_pending: false,
-                      in_person_verification_pending: false,
-                      **ab_test_args,
+                      {
+                        success: true,
+                        fraud_review_pending: fraud_review_pending?,
+                        fraud_pending_reason: fraud_pending_reason,
+                        fraud_rejection: false,
+                        gpo_verification_pending: false,
+                        in_person_verification_pending: false,
+                      }.compact,
                     ),
                   )
                 end
@@ -881,7 +917,6 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
             phone_step_attempts: 1,
             first_letter_requested_at: subject.idv_session.profile.gpo_verification_pending_at,
             hours_since_first_letter: 0,
-            **ab_test_args,
           ),
         )
       end
@@ -901,7 +936,6 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
               phone_step_attempts: RateLimiter.max_attempts(rate_limit_type),
               first_letter_requested_at: subject.idv_session.profile.gpo_verification_pending_at,
               hours_since_first_letter: 0,
-              **ab_test_args,
             ),
           )
         end

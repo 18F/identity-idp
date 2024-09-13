@@ -19,15 +19,16 @@ class AuthnContextResolver
   end
 
   def asserted_ial_acr
-    return Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF unless user.active_profile.present?
+    return resolve_acr(Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF) unless
+      user&.identity_verified?
 
     if result.biometric_comparison?
-      Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
+      resolve_acr(Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF)
     elsif result.identity_proofing? ||
           result.ialmax?
-      Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
+      resolve_acr(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
     else
-      Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+      resolve_acr(Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF)
     end
   end
 
@@ -113,7 +114,7 @@ class AuthnContextResolver
   def result_with_sp_ial_defaults(result)
     if acr_ial_component_values.any?
       result
-    elsif service_provider&.ial.to_i >= 2
+    elsif service_provider&.identity_proofing_allowed?
       result.with(identity_proofing?: true, aal2?: true)
     else
       result
@@ -129,14 +130,21 @@ class AuthnContextResolver
 
   def acr_ial_component_values
     acr_result_without_sp_defaults.component_values.filter do |component_value|
-      component_value.name.include?('ial') || component_value.name.include?('loa')
+      Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL.include?(component_value.name)
     end
   end
 
+  def resolve_acr(acr)
+    return acr unless use_semantic_authn_contexts?
+    Saml::Idp::Constants::LEGACY_ACRS_TO_SEMANTIC_ACRS.fetch(acr, default_value: acr)
+  end
+
   def biometric_is_required?(result)
-    result.
-      component_values.
-      map(&:name).
-      include?(Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF)
+    Saml::Idp::Constants::BIOMETRIC_REQUIRED_IAL_CONTEXTS.intersect?(result.component_names)
+  end
+
+  def use_semantic_authn_contexts?
+    @use_semantic_authn_contexts ||= service_provider&.semantic_authn_contexts_allowed? &&
+                                     Vot::AcrComponentValues.any_semantic_acrs?(acr_values)
   end
 end

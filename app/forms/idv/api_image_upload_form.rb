@@ -205,6 +205,15 @@ module Idv
       rate_limiter.attempts if document_capture_session
     end
 
+    def processed_selfie_attempts_data
+      return {} if document_capture_session.nil? || !liveness_checking_required
+
+      captured_result = document_capture_session&.load_result
+      processed_selfie_count = selfie_image_fingerprint ? 1 : 0
+      past_selfie_count = (captured_result&.failed_selfie_image_fingerprints || []).length
+      { selfie_attempts: past_selfie_count + processed_selfie_count }
+    end
+
     def determine_response(form_response:, client_response:, doc_pii_response:)
       # image validation failed
       return form_response unless form_response.success?
@@ -363,14 +372,15 @@ module Idv
           zip_code: zip_code,
           issue_year: issue_year,
         ).except(:classification_info).
-        merge(acuant_sdk_upgrade_ab_test_data),
+        merge(acuant_sdk_upgrade_ab_test_data).
+        merge(processed_selfie_attempts_data),
       )
     end
 
     def acuant_sdk_upgrade_ab_test_data
       {
         acuant_sdk_upgrade_ab_test_bucket:,
-      }.compact
+      }
     end
 
     def acuant_sdk_captured?

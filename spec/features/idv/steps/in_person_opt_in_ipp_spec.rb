@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'axe-rspec'
 
-RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true, allowed_extra_analytics: [:*] do
+RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
   include IdvStepHelper
   include SpAuthHelper
   include InPersonHelper
@@ -111,7 +111,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true, allowed_extra_analy
         enrollment_code = JSON.parse(
           UspsInPersonProofing::Mock::Fixtures.request_enroll_response,
         )['enrollmentCode']
-        expect(page).to have_content(t('in_person_proofing.headings.barcode').tr(' ', ' '))
+        expect(page).to have_content(strip_nbsp(t('in_person_proofing.headings.barcode')))
         expect(page).to have_content(Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code))
         expect(page).to have_content(
           t('in_person_proofing.body.barcode.deadline', deadline: deadline),
@@ -150,9 +150,11 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true, allowed_extra_analy
         t('step_indicator.flows.idv.verify_info'),
       )
       expect(page).to have_content(
-        t(
-          'in_person_proofing.headings.state_id_milestone_2',
-        ).tr(' ', ' '),
+        strip_nbsp(
+          t(
+            'in_person_proofing.headings.state_id_milestone_2',
+          ),
+        ),
       )
       complete_state_id_step(user)
 
@@ -248,7 +250,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true, allowed_extra_analy
         UspsInPersonProofing::Mock::Fixtures.request_enroll_response,
       )['enrollmentCode']
       expect(page).to have_css("img[alt='#{APP_NAME}']")
-      expect(page).to have_content(t('in_person_proofing.headings.barcode').tr(' ', ' '))
+      expect(page).to have_content(strip_nbsp(t('in_person_proofing.headings.barcode')))
       expect(page).to have_content(Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code))
       expect(page).to have_content(
         t(
@@ -333,9 +335,11 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true, allowed_extra_analy
         t('step_indicator.flows.idv.verify_info'),
       )
       expect(page).to have_content(
-        t(
-          'in_person_proofing.headings.state_id_milestone_2',
-        ).tr(' ', ' '),
+        strip_nbsp(
+          t(
+            'in_person_proofing.headings.state_id_milestone_2',
+          ),
+        ),
       )
       complete_state_id_step(user)
 
@@ -408,7 +412,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true, allowed_extra_analy
         UspsInPersonProofing::Mock::Fixtures.request_enroll_response,
       )['enrollmentCode']
       expect(page).to have_css("img[alt='#{APP_NAME}']")
-      expect(page).to have_content(t('in_person_proofing.headings.barcode').tr(' ', ' '))
+      expect(page).to have_content(strip_nbsp(t('in_person_proofing.headings.barcode')))
       expect(page).to have_content(Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code))
       expect(page).to have_content(
         t(

@@ -51,7 +51,7 @@ class RecaptchaForm
   # @return [Array(Boolean, String), Array(Boolean, nil)]
   def submit(recaptcha_token)
     @recaptcha_token = recaptcha_token
-    @recaptcha_result = recaptcha_result if !exempt? && recaptcha_token.present?
+    @recaptcha_result = recaptcha_result if recaptcha_token.present? && !exempt?
 
     log_analytics(result: @recaptcha_result) if @recaptcha_result
     response = FormResponse.new(success: valid?, errors:, serialize_error_details_only: true)
