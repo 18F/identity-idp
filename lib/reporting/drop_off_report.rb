@@ -261,15 +261,15 @@ module Reporting
     STEP_DEFINITIONS = [
       ['Step', 'Definition'],
       [
-        'Welcome (page viewed)',
+        'Welcome (page view)',
         'Start of proofing process',
       ],
       [
-        'User agreement (page viewer)',
+        'User agreement (page view)',
         'Users who clicked "Continue" on the welcome page',
       ],
       [
-        'Capture Document (page viewed)',
+        'Capture Document (page view)',
         'Users who check the consent checkbox and click "Continue"',
       ],
       [
