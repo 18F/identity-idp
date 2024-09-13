@@ -302,7 +302,7 @@ module Reporting
       ],
       [
         'Verified (event)',
-        'Users who completed identity verification (including GPO, IPP, fraud)',
+        'Users who completed identity verification in a single, unsupervised session',
       ],
       [
         'Workflow Complete - Total Pending',
