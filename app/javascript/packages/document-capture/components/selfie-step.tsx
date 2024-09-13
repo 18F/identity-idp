@@ -50,16 +50,6 @@ export function SelfieCaptureStep({
   );
 }
 
-export function DocumentCaptureSubheaderTwo() {
-  const { t } = useI18n();
-  return (
-    <h2>
-      {'2. '}
-      {t('doc_auth.headings.document_capture_subheader_id')}
-    </h2>
-  );
-}
-
 export default function SelfieStep({
   value = {},
   onChange = () => {},
