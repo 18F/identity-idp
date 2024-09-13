@@ -468,7 +468,7 @@ RSpec.describe Idv::HybridHandoffController do
         describe 'when selfie is disabled for sp' do
           let(:sp_selfie_enabled) { false }
 
-          it 'do we want to check socure parameters' do
+          it 'sets selfie_check_required to false in the idv session and logs analytics' do
             get :show
             expect(subject.idv_session.selfie_check_required).to eq(false)
             expect(@analytics).to have_logged_event(analytics_name, analytics_args)

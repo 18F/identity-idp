@@ -180,8 +180,9 @@ RSpec.describe 'Idv::FlowPolicy' do
       it 'returns document_capture' do
         stub_up_to(:hybrid_handoff, idv_session: idv_session)
 
-        expect(subject.info_for_latest_step.key).to eq(:document_capture)
+        expect(subject.info_for_latest_step.key).to eq(:socure_document_capture)
         expect(subject.controller_allowed?(controller: Idv::DocumentCaptureController)).to be
+        expect(subject.controller_allowed?(controller: Idv::Socure::DocumentCaptureController)).to be
         expect(subject.controller_allowed?(controller: Idv::SsnController)).not_to be
       end
     end
