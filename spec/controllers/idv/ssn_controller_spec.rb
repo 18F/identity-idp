@@ -201,6 +201,8 @@ RSpec.describe Idv::SsnController do
     context 'when pii_from_doc is not present' do
       before do
         subject.idv_session.pii_from_doc = nil
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(Idp::Constants::Vendors::LEXIS_NEXIS)
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(Idp::Constants::Vendors::LEXIS_NEXIS)
       end
 
       it 'redirects to DocumentCaptureController on standard flow' do

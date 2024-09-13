@@ -32,6 +32,10 @@ RSpec.describe Idv::DocumentCaptureController do
     allow(controller).to receive(:resolved_authn_context_result).
       and_return(resolved_authn_context)
     subject.idv_session.flow_path = flow_path
+    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
+
+    allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(Idp::Constants::Vendors::LEXIS_NEXIS)
+    allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(Idp::Constants::Vendors::LEXIS_NEXIS)
   end
 
   describe '#step_info' do
@@ -105,6 +109,11 @@ RSpec.describe Idv::DocumentCaptureController do
         liveness_checking_required: false,
         selfie_check_required: sp_selfie_enabled,
       }
+    end
+
+    before do
+      allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(Idp::Constants::Vendors::LEXIS_NEXIS)
+      allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(Idp::Constants::Vendors::LEXIS_NEXIS)
     end
 
     it 'has non-nil presenter' do

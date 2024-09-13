@@ -14,9 +14,10 @@ module Idv
     before_action :set_usps_form_presenter
 
     def show
-      if doc_auth_is_socure?
+      case doc_auth_vendor
+      when Idp::Constants::Vendors::SOCURE
         redirect_to idv_socure_document_capture_url
-      else
+      when Idp::Constants::Vendors::LEXIS_NEXIS
         analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)
 
         Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
@@ -68,7 +69,7 @@ module Idv
       Idv::StepInfo.new(
         key: :document_capture,
         controller: self,
-        next_steps: [:socure_document_capture, :ssn, :ipp_ssn], # :ipp_state_id
+        next_steps: [:ssn, :ipp_ssn], # :ipp_state_id
         preconditions: ->(idv_session:, user:) {
                          idv_session.flow_path == 'standard' && (
                            # mobile
