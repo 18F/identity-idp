@@ -16,6 +16,8 @@ module AccountReset
 
       track_account_age
       track_mfa_method_counts
+      track_identity_verified_status
+      track_identity_verification_pending
 
       extra = extra_analytics_attributes
 
@@ -26,7 +28,8 @@ module AccountReset
 
     private
 
-    attr_reader :success, :account_age, :mfa_method_counts, :request, :analytics
+    attr_reader :success, :account_age, :mfa_method_counts, :request, :analytics, :verified_status,
+                :verification_method
 
     # @return [Integer, nil] number of days since the account was confirmed (rounded) or nil if
     # the account was not confirmed
@@ -37,6 +40,17 @@ module AccountReset
 
     def track_mfa_method_counts
       @mfa_method_counts = MfaContext.new(user).enabled_two_factor_configuration_counts_hash
+    end
+
+    def track_identity_verified_status
+      @verified_status = user.identity_verified?
+    end
+
+    def track_identity_verification_pending
+      return false unless success
+      @verification_method = user.pending_in_person_enrollment.present? && 'IPP' ||
+                             user.gpo_verification_pending_profile.present? && 'GPO' ||
+                             user.identity_verified_with_biometric_comparison? && 'Biometric' || nil
     end
 
     def handle_successful_submission
@@ -73,6 +87,8 @@ module AccountReset
         account_age_in_days: account_age,
         account_confirmed_at: user.confirmed_at,
         mfa_method_counts: mfa_method_counts,
+        identity_verified: verified_status,
+        identity_verification_method: verification_method,
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
       }
     end

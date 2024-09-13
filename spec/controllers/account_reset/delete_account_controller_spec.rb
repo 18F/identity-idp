@@ -30,6 +30,7 @@ RSpec.describe AccountReset::DeleteAccountController do
           webauthn: 2,
           phone: 2,
         },
+        identity_verified: false,
         account_age_in_days: 0,
         account_confirmed_at: user.confirmed_at,
       )
@@ -48,6 +49,7 @@ RSpec.describe AccountReset::DeleteAccountController do
         errors: invalid_token_error,
         error_details: { token: { granted_token_invalid: true } },
         mfa_method_counts: {},
+        identity_verified: false,
         account_age_in_days: 0,
         account_confirmed_at: kind_of(Time),
       )
@@ -65,6 +67,7 @@ RSpec.describe AccountReset::DeleteAccountController do
         errors: { token: [t('errors.account_reset.granted_token_missing', app_name: APP_NAME)] },
         error_details: { token: { blank: true } },
         mfa_method_counts: {},
+        identity_verified: false,
         account_age_in_days: 0,
         account_confirmed_at: kind_of(Time),
       )
@@ -92,6 +95,7 @@ RSpec.describe AccountReset::DeleteAccountController do
         errors: { token: [t('errors.account_reset.granted_token_expired', app_name: APP_NAME)] },
         error_details: { token: { granted_token_expired: true } },
         mfa_method_counts: {},
+        identity_verified: false,
         account_age_in_days: 2,
         account_confirmed_at: kind_of(Time),
       )
@@ -99,6 +103,136 @@ RSpec.describe AccountReset::DeleteAccountController do
       expect(flash[:error]).to eq(
         t('errors.account_reset.granted_token_expired', app_name: APP_NAME),
       )
+    end
+
+    it 'logs info about user verified account' do
+      user = create(
+        :user,
+        :fully_registered,
+        confirmed_at: Time.zone.now.round,
+        profiles: [build(:profile, :active, :verified, pii: { first_name: 'Jane' })],
+      )
+
+      create_list(:webauthn_configuration, 2, user: user)
+      create_account_reset_request_for(user)
+      grant_request(user)
+      session[:granted_token] = AccountResetRequest.first.granted_token
+
+      delete :delete
+
+      expect(@analytics).to have_logged_event(
+        'Account Reset: delete',
+        user_id: user.uuid,
+        success: true,
+        errors: {},
+        mfa_method_counts: {
+          phone: 1,
+          webauthn: 2,
+        },
+        identity_verified: true,
+        account_age_in_days: 0,
+        account_confirmed_at: user.confirmed_at,
+      )
+      expect(response).to redirect_to account_reset_confirm_delete_account_url
+    end
+
+    it 'logs info about user biometrically verified account' do
+      user = create(
+        :user,
+        :fully_registered,
+        confirmed_at: Time.zone.now.round,
+        profiles: [build(
+          :profile, :active, :verified, pii: { first_name: 'Jane' },
+                                        idv_level: :unsupervised_with_selfie
+        )],
+      )
+
+      create_list(:webauthn_configuration, 2, user: user)
+      create_account_reset_request_for(user)
+      grant_request(user)
+      session[:granted_token] = AccountResetRequest.first.granted_token
+
+      delete :delete
+
+      expect(@analytics).to have_logged_event(
+        'Account Reset: delete',
+        user_id: user.uuid,
+        success: true,
+        errors: {},
+        mfa_method_counts: {
+          phone: 1,
+          webauthn: 2,
+        },
+        identity_verified: true,
+        identity_verification_method: 'Biometric',
+        account_age_in_days: 0,
+        account_confirmed_at: user.confirmed_at,
+      )
+      expect(response).to redirect_to account_reset_confirm_delete_account_url
+    end
+
+    it 'logs info about user pending verify by mail account' do
+      user = create(
+        :user,
+        :fully_registered,
+        confirmed_at: Time.zone.now.round,
+        profiles: [build(:profile, :verify_by_mail_pending, pii: { first_name: 'Jane' })],
+      )
+
+      create_list(:webauthn_configuration, 2, user: user)
+      create_account_reset_request_for(user)
+      grant_request(user)
+      session[:granted_token] = AccountResetRequest.first.granted_token
+
+      delete :delete
+
+      expect(@analytics).to have_logged_event(
+        'Account Reset: delete',
+        user_id: user.uuid,
+        success: true,
+        errors: {},
+        mfa_method_counts: {
+          phone: 1,
+          webauthn: 2,
+        },
+        identity_verified: false,
+        identity_verification_method: 'GPO',
+        account_age_in_days: 0,
+        account_confirmed_at: user.confirmed_at,
+      )
+      expect(response).to redirect_to account_reset_confirm_delete_account_url
+    end
+
+    it 'logs info about user pending in person verification account' do
+      user = create(
+        :user,
+        :fully_registered,
+        :with_pending_in_person_enrollment,
+        confirmed_at: Time.zone.now.round,
+      )
+
+      create_list(:webauthn_configuration, 2, user: user)
+      create_account_reset_request_for(user)
+      grant_request(user)
+      session[:granted_token] = AccountResetRequest.first.granted_token
+
+      delete :delete
+
+      expect(@analytics).to have_logged_event(
+        'Account Reset: delete',
+        user_id: user.uuid,
+        success: true,
+        errors: {},
+        mfa_method_counts: {
+          phone: 1,
+          webauthn: 2,
+        },
+        identity_verified: false,
+        identity_verification_method: 'IPP',
+        account_age_in_days: 0,
+        account_confirmed_at: user.confirmed_at,
+      )
+      expect(response).to redirect_to account_reset_confirm_delete_account_url
     end
   end
 

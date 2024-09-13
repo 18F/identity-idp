@@ -87,6 +87,8 @@ module AnalyticsEvents
   # @param [Time] account_confirmed_at date that account creation was confirmed
   # (rounded) or nil if the account was not confirmed
   # @param [Hash] mfa_method_counts Hash of MFA method with the number of that method on the account
+  # @param [Boolean] identity_verified if the deletion occurs on a verified account
+  # @param [String, nil] identity_verification_method verification method used if applicable
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # An account has been deleted through the account reset flow
@@ -96,6 +98,8 @@ module AnalyticsEvents
     account_age_in_days:,
     account_confirmed_at:,
     mfa_method_counts:,
+    identity_verified:,
+    identity_verification_method:,
     errors:,
     error_details: nil,
     **extra
@@ -107,6 +111,8 @@ module AnalyticsEvents
       account_age_in_days:,
       account_confirmed_at:,
       mfa_method_counts:,
+      identity_verified:,
+      identity_verification_method:,
       errors:,
       error_details:,
       **extra,
