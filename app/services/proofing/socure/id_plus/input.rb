@@ -16,7 +16,9 @@ module Proofing
         :phone,
         :email,
         :ssn,
+        :consent_given_at,
         keyword_init: true,
+        allowed_members: [:consent_given_at],
       ).freeze
     end
   end

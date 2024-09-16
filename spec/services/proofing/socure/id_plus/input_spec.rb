@@ -4,7 +4,7 @@ RSpec.describe Proofing::Socure::IdPlus::Input do
   let(:user) { build(:user) }
 
   let(:state_id) do
-    Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE
+    Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(consent_given_at: '2024-09-01T00:00:00Z')
   end
 
   subject do
@@ -32,6 +32,8 @@ RSpec.describe Proofing::Socure::IdPlus::Input do
         phone: '12025551212',
         ssn: '900-66-1234',
         email: user.email,
+
+        consent_given_at: '2024-09-01T00:00:00Z',
       },
     )
   end

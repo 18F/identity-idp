@@ -15,7 +15,9 @@ RSpec.describe Proofing::Socure::IdPlus::Request do
   let(:input) do
     Proofing::Socure::IdPlus::Input.new(
       email: user.email,
-      **Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.slice(
+      **Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(
+        consent_given_at: '2024-09-01T00:00:00Z',
+      ).slice(
         *Proofing::Socure::IdPlus::Input.members,
       ),
     )
@@ -27,37 +29,30 @@ RSpec.describe Proofing::Socure::IdPlus::Request do
 
   describe '#body' do
     it 'contains all expected values' do
-      freeze_time do
-        expect(JSON.parse(request.body, symbolize_names: true)).to eql(
-          {
-            modules: [
-              'kyc',
-            ],
-            firstName: 'FAKEY',
-            surName: 'MCFAKERSON',
-            dob: '1938-10-06',
-            physicalAddress: '1 FAKE RD',
-            physicalAddress2: nil,
-            city: 'GREAT FALLS',
-            state: 'MT',
-            zip: '59010-1234',
-            country: 'US',
-            nationalId: Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:ssn],
-            countryOfOrigin: 'US',
+      expect(JSON.parse(request.body, symbolize_names: true)).to eql(
+        {
+          modules: [
+            'kyc',
+          ],
+          firstName: 'FAKEY',
+          surName: 'MCFAKERSON',
+          dob: '1938-10-06',
+          physicalAddress: '1 FAKE RD',
+          physicalAddress2: nil,
+          city: 'GREAT FALLS',
+          state: 'MT',
+          zip: '59010-1234',
+          country: 'US',
+          nationalId: Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:ssn],
+          countryOfOrigin: 'US',
 
-            email: user.email,
-            mobileNumber: Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:phone],
+          email: user.email,
+          mobileNumber: Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:phone],
 
-            userConsent: true,
-
-            # XXX: This should be set to the time the user submitted agreement,
-            #      which we are not currently tracking. The "5.minutes.ago" is
-            #      because Socure will reject times "in the future", so we avoid
-            #      our clocks being out of sync with theirs.
-            consentTimestamp: 5.minutes.ago.iso8601,
-          },
-        )
-      end
+          userConsent: true,
+          consentTimestamp: '2024-09-01T00:00:00Z'.to_time.iso8601,
+        },
+      )
     end
   end
 
