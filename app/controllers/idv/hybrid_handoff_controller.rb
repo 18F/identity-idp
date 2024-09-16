@@ -14,7 +14,7 @@ module Idv
 
     def show
       @upload_disabled = idv_session.selfie_check_required &&
-                            !idv_session.desktop_selfie_test_mode_enabled?
+                         !idv_session.desktop_selfie_test_mode_enabled?
 
       @direct_ipp_with_selfie_enabled = IdentityConfig.store.in_person_doc_auth_button_enabled &&
                                         Idv::InPersonConfig.enabled_for_issuer?(

@@ -34,8 +34,12 @@ RSpec.describe Idv::DocumentCaptureController do
     subject.idv_session.flow_path = flow_path
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
 
-    allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(Idp::Constants::Vendors::LEXIS_NEXIS)
-    allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(Idp::Constants::Vendors::LEXIS_NEXIS)
+    allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(
+      Idp::Constants::Vendors::LEXIS_NEXIS,
+    )
+    allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(
+      Idp::Constants::Vendors::LEXIS_NEXIS,
+    )
   end
 
   describe '#step_info' do
@@ -112,8 +116,12 @@ RSpec.describe Idv::DocumentCaptureController do
     end
 
     before do
-      allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(Idp::Constants::Vendors::LEXIS_NEXIS)
-      allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(Idp::Constants::Vendors::LEXIS_NEXIS)
+      allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(
+        Idp::Constants::Vendors::LEXIS_NEXIS,
+      )
+      allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(
+        Idp::Constants::Vendors::LEXIS_NEXIS,
+      )
     end
 
     it 'has non-nil presenter' do

@@ -42,16 +42,16 @@ RSpec.describe Idv::HybridHandoffController do
   describe 'before_actions' do
     it 'includes authentication before_action' do
       expect(subject).to have_actions(
-                           :before,
-                           :confirm_two_factor_authenticated,
-                         )
+        :before,
+        :confirm_two_factor_authenticated,
+      )
     end
 
     it 'includes outage before_action' do
       expect(subject).to have_actions(
-                           :before,
-                           :check_for_mail_only_outage,
-                         )
+        :before,
+        :check_for_mail_only_outage,
+      )
     end
   end
 
