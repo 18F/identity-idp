@@ -1,0 +1,66 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'json'
+
+data_file = 'your-json-file-here.json'
+
+imported_data = File.read(data_file)
+
+parsed_data = JSON.parse(imported_data)
+
+user_uuids = parsed_data.map { |user| user[:"properties.user_id"] }
+
+# collects user information per scenario and helps collect median information
+no_sp_users = Array.new
+single_sp_users = Array.new
+mulitple_sp_users = Array.new
+
+# collect information on service provider per scenario
+single_sp_list = Set.new
+multiple_sp_list = Set.new
+
+# count of service probiders
+single_sp_tally  = 0
+multiple_sp_tally = 0
+
+User.where(uuid: user_uuids).in_batches(of: 1_000) do |batch|
+  # array of users
+  no_sp_users = batch.select { |user| user.service_providers.blank? }
+  single_sp_users = batch.select { |user| user.service_providers.count == 1 }
+  multiple_sp_users = batch.select { |user| user.service_providers.count > 1 }
+
+  # list of service prooviders per scenario
+  single_sp_users.each { |user| single_sp_list << user.service_providers.map { |u| u.friendly_name } }
+  multiple_sp_users.each { |user| multiple_sp_list << user.service_providers.map { |u| u.friendly_name } }
+
+  # sp tally
+  single_sp_tally = single_sp_list.to_a.flatten.tally
+  multiple_sp_tally = multiple_sp_list.to_a.flatten.tally
+
+  sleep(0.2)
+end
+
+def median(dataset)
+  sorted = dataset.sort
+  len = sorted.length
+  (sorted[(len - 1) / 2] + sorted[len / 2]) / 2.0
+end
+
+p ' === Results ==='
+p "Total number in dataset: #{users.count}"
+
+p '=== Accounts with no service provider ==='
+p "Number of accounts: #{no_sp_tally}"
+p "Median number of logins: #{median(no_sp_users)}"
+
+p '=== Accounts with one service provider ==='
+p "Count of users with one service provider: #{single_sp_list.count}"
+p "Service providers associated with accounts with one SP added: #{single_sp_tally}"
+p "Median number of logins annually: #{median(single_sp_users)}"
+
+p '=== Accounts with multiple service providers'
+p "Count of users with multiple service providers: #{multiple_sp_list.count}"
+p "List of Service Providers #{multiple_sp_list}"
+p "Median number of logins annually: #{median(mulitple_sp_users)}"
+p "Service providers associated with accounts with multiple SP added: #{multiple_sp_tally}"
