@@ -1,11 +1,10 @@
 import { useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { FormStepComponentProps, FormStepsButton } from '@18f/identity-form-steps';
-import { PageHeading } from '@18f/identity-components';
 import { Cancel } from '@18f/identity-verify-flow';
 import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
 import TipList from './tip-list';
-import { DeviceContext, SelfieCaptureContext, UploadContext } from '../context';
+import { DeviceContext, UploadContext } from '../context';
 import {
   ImageValue,
   DefaultSideProps,
@@ -39,11 +38,10 @@ export function DocumentsCaptureStep({
 export function DocumentCaptureSubheaderOne() {
   const { t } = useI18n();
   return (
-    <h2>
+    <h1>
       <hr className="margin-y-5" />
-      {'1. '}
       {t('doc_auth.headings.document_capture_subheader_id')}
-    </h2>
+    </h1>
   );
 }
 
@@ -57,10 +55,6 @@ export default function DocumentsStep({
   const { t } = useI18n();
   const { isMobile } = useContext(DeviceContext);
   const { flowPath } = useContext(UploadContext);
-  const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
-  const pageHeaderText = isSelfieCaptureEnabled
-    ? t('doc_auth.headings.document_capture_with_selfie')
-    : t('doc_auth.headings.document_capture');
   const defaultSideProps: DefaultSideProps = {
     registerField,
     onChange,
@@ -70,7 +64,6 @@ export default function DocumentsStep({
   return (
     <>
       {flowPath === 'hybrid' && <HybridDocCaptureWarning className="margin-bottom-4" />}
-      <PageHeading>{pageHeaderText}</PageHeading>
       <DocumentCaptureSubheaderOne />
       <TipList
         titleClassName="margin-bottom-0 text-bold"
