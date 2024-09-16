@@ -24,7 +24,7 @@ multiple_sp_list = Set.new
 single_sp_tally  = 0
 multiple_sp_tally = 0
 
-User.where(uuid: user_uuids).in_batches(of: 1_000) do |batch|
+User.includes(:service_providers).where(uuid: user_uuids).in_batches(of: 1_000) do |batch|
   # array of users
   no_sp_users = batch.select { |user| user.service_providers.blank? }
   single_sp_users = batch.select { |user| user.service_providers.count == 1 }
