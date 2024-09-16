@@ -50,7 +50,7 @@ RSpec.describe Proofing::Socure::IdPlus::Request do
           mobileNumber: Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:phone],
 
           userConsent: true,
-          consentTimestamp: '2024-09-01T00:00:00Z'.to_time.iso8601,
+          consentTimestamp: '2024-09-01T00:00:00+00:00',
         },
       )
     end
