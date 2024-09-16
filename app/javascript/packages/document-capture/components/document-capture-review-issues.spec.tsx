@@ -123,25 +123,6 @@ describe('DocumentCaptureReviewIssues', () => {
     });
 
     it('renders for a doc type failure', () => {
-      const props = {
-        isFailedDocType: true,
-        unknownFieldErrors: [
-          {
-            field: 'general',
-            error: toFormEntryError({ field: 'network', message: 'general error' }),
-          },
-        ],
-        errors: [
-          {
-            field: 'front',
-            error: toFormEntryError({ field: 'front', message: 'front side doc type error' }),
-          },
-          {
-            field: 'back',
-            error: toFormEntryError({ field: 'back', message: 'back side doc type error' }),
-          },
-        ],
-      };
       const { getByText, getByLabelText, getByRole } = render(
         <InPersonContext.Provider
           value={{
@@ -157,7 +138,22 @@ describe('DocumentCaptureReviewIssues', () => {
           <DocumentCaptureReviewIssues
             {...{
               ...DEFAULT_OPTIONS,
-              ...props,
+              isFailedDocType: true,
+              unknownFieldErrors: [
+                {
+                  error: toFormEntryError({ field: 'network', message: 'general error' }),
+                },
+              ],
+              errors: [
+                {
+                  field: 'front',
+                  error: toFormEntryError({ field: 'front', message: 'front side doc type error' }),
+                },
+                {
+                  field: 'back',
+                  error: toFormEntryError({ field: 'back', message: 'back side doc type error' }),
+                },
+              ],
             }}
           />
         </InPersonContext.Provider>,
