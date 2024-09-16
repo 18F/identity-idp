@@ -3,7 +3,7 @@
 require 'reporting/mfa_report'
 
 module Reports
-  class MfaReportReport < BaseReport
+  class MfaReport < BaseReport
     REPORT_NAME = 'mfa-report'
 
     attr_accessor :report_date
@@ -16,7 +16,7 @@ module Reports
       subject = "Monthly MFA Report - #{report_date}"
 
       report_configs.each do |report_hash|
-        reports = monthly_mfa_emailable_reports
+        reports = monthly_mfa_emailable_reports(report_hash['issuers'])
 
         report_hash['emails'].each do |email|
           ReportMailer.tables_report(
@@ -32,9 +32,9 @@ module Reports
 
     private
 
-    def monthly_mfa_emailable_reports
+    def monthly_mfa_emailable_reports(issuers)
       Reporting::MfaReport.new(
-        issuers: nil,
+        issuers:,
         time_range: report_date.all_month,
       ).as_emailable_reports
     end
