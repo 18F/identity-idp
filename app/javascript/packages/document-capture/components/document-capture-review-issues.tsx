@@ -60,7 +60,7 @@ function DocumentCaptureReviewIssues({
         altFailedDocTypeMsg={isFailedDocType ? t('doc_auth.errors.doc.wrong_id_type_html') : null}
         hasDismissed={hasDismissed}
       />
-      {remainingSubmitAttempts !== Infinity && (
+      {Number.isFinite(remainingSubmitAttempts) && (
         <p>
           <HtmlTextWithStrongNoWrap
             text={t('idv.failure.attempts_html', { count: remainingSubmitAttempts })}
