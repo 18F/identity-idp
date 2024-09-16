@@ -5,7 +5,7 @@ RSpec.describe Users::EmailConfirmationsController do
     describe 'Valid email confirmation tokens' do
       it 'tracks a valid email confirmation token event' do
         user = create(:user)
-        new_email = Faker::Internet.safe_email
+        new_email = Faker::Internet.email
 
         expect(PushNotification::HttpPush).to receive(:deliver).once.
           with(PushNotification::EmailChangedEvent.new(
@@ -27,7 +27,7 @@ RSpec.describe Users::EmailConfirmationsController do
 
       it 'rejects an otherwise valid token for unconfirmed users' do
         user = create(:user, :unconfirmed, email_addresses: [])
-        new_email = Faker::Internet.safe_email
+        new_email = Faker::Internet.email
 
         add_email_form = AddUserEmailForm.new
         add_email_form.submit(user, email: new_email)
@@ -41,7 +41,7 @@ RSpec.describe Users::EmailConfirmationsController do
 
       it 'rejects expired tokens' do
         user = create(:user)
-        new_email = Faker::Internet.safe_email
+        new_email = Faker::Internet.email
 
         add_email_form = AddUserEmailForm.new
         add_email_form.submit(user, email: new_email)

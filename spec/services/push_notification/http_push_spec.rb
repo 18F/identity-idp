@@ -18,7 +18,7 @@ RSpec.describe PushNotification::HttpPush do
   let(:event) do
     PushNotification::IdentifierRecycledEvent.new(
       user: user,
-      email: Faker::Internet.safe_email,
+      email: Faker::Internet.email,
     )
   end
   let(:now) { Time.zone.now }
