@@ -58,6 +58,18 @@ spec:
             - op: add
               path: /data/PIV_CAC_VERIFY_TOKEN_URL
               value: "https://{{ENVIRONMENT}}.pivcac.reviewapps.identitysandbox.gov/"
+            - op: add
+              path: /data/NEW_RELIC_LOG
+              value: "stdout"
+            - op: add
+              path: /data/PIDFILE
+              value: "/dev/null"
+            - op: add
+              path: /data/ENABLE_BOOTSNAP
+              value: "false"
+            - op: add
+              path: /data/BOOTSNAP_READONLY
+              value: "true"
         # Patch ConfigMap for Worker
         - target:
             kind: ConfigMap
@@ -313,9 +325,6 @@ spec:
           patch: |-
             - op: replace
               path: /spec/template/spec/containers/0/image
-              value: {{ECR_REGISTRY}}/identity-idp/review:{{IDP_CONTAINER_TAG}}
-            - op: replace
-              path: /spec/template/spec/initContainers/0/image
               value: {{ECR_REGISTRY}}/identity-idp/review:{{IDP_CONTAINER_TAG}}
             - op: replace
               path: /spec/template/spec/volumes/0/configMap/name
