@@ -240,6 +240,10 @@ module Idv
         user_session['idv/in_person'][:pii_from_user].has_key?(:identity_doc_address1)
     end
 
+    def ssn_step_complete?
+      ssn.present?
+    end
+
     def verify_info_step_complete?
       resolution_successful
     end

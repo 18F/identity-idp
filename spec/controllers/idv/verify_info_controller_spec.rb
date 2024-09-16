@@ -143,7 +143,7 @@ RSpec.describe Idv::VerifyInfoController do
 
     context 'when proofing_device_profiling is enabled' do
       let(:threatmetrix_client_id) { 'threatmetrix_client' }
-
+      let(:review_status) { 'pass' }
       let(:idv_result) do
         {
           context: {
@@ -178,9 +178,18 @@ RSpec.describe Idv::VerifyInfoController do
         allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
       end
 
-      context 'when threatmetrix response is Pass' do
-        let(:review_status) { 'pass' }
+      context 'when idv_session is missing threatmetrix_session_id' do
+        before do
+          controller.idv_session.threatmetrix_session_id = nil
+          get :show
+        end
 
+        it 'redirects back to the SSN step' do
+          expect(response).to redirect_to(idv_ssn_url)
+        end
+      end
+
+      context 'when threatmetrix response is Pass' do
         it 'sets the review status in the idv session' do
           get :show
           expect(controller.idv_session.threatmetrix_review_status).to eq('pass')
@@ -234,6 +243,23 @@ RSpec.describe Idv::VerifyInfoController do
         it 'sets the review status in the idv session' do
           get :show
           expect(controller.idv_session.threatmetrix_review_status).to eq('review')
+        end
+      end
+    end
+
+    context 'when proofing_device_profiling is disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:disabled)
+      end
+
+      context 'when idv_session is missing threatmetrix_session_id' do
+        before do
+          controller.idv_session.threatmetrix_session_id = nil
+          get :show
+        end
+
+        it 'does not redirect back to the SSN step' do
+          expect(response).not_to redirect_to(idv_ssn_url)
         end
       end
     end

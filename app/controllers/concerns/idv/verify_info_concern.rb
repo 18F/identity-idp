@@ -6,6 +6,13 @@ module Idv
 
     STEP_NAME = 'verify_info'
 
+    class_methods do
+      def threatmetrix_session_id_present_or_not_required?(idv_session:)
+        return true unless FeatureManagement.proofing_device_profiling_decisioning_enabled?
+        idv_session.threatmetrix_session_id.present?
+      end
+    end
+
     def shared_update
       return if idv_session.verify_info_step_document_capture_session_uuid
       analytics.idv_doc_auth_verify_submitted(**analytics_arguments)
