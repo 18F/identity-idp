@@ -30,7 +30,7 @@ export function SelfieCaptureStep({
   return (
     <>
       <hr className="margin-y-5" />
-      <h2>2. {t('doc_auth.headings.document_capture_subheader_selfie')}</h2>
+      <h1>{t('doc_auth.headings.document_capture_subheader_selfie')}</h1>
       <p>{t('doc_auth.info.selfie_capture_content')}</p>
       <TipList
         title={t('doc_auth.tips.document_capture_selfie_selfie_text')}
