@@ -25,7 +25,13 @@ module Idv
 
       # reset if we visit or come back
       idv_session.skip_doc_auth_from_handoff = nil
-      render :show, locals: extra_view_variables
+
+      case doc_auth_vendor
+      when Idp::Constants::Vendors::LEXIS_NEXIS, Idp::Constants::Vendors::MOCK
+        render :show, locals: extra_view_variables
+      when Idp::Constants::Vendors::SOCURE
+        redirect_to idv_socure_document_capture_path
+      end
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).call(
         'upload', :view,
