@@ -23,33 +23,7 @@ RSpec.describe Reports::MfaReport do
   end
 
   describe '#perform' do
-    let(:reports) do
-        [
-            Reporting::EmailableReport.new(
-              title: 'Overview',
-              table: [            
-                ['Report Timeframe', '2023-11-01 00:00:00 UTC to 2023-11-30 23:59:59 UTC'],
-                ['Report Generated', '2023-12-01'],
-                ['Issuer', 'issuer1'],
-              ]
-            ),
-            Reporting::EmailableReport.new(
-              title: 'Multi Factor Authentication Metrics',
-              table: [
-                ['Multi Factor Authentication (MFA) method', 'Number of successful sign-ins'],
-                ['SMS', 'sms'],
-                ['Voice', 'voice'],
-                ['Security key', 'webauthn'],
-                ['Face or touch unlock', 'face/touch'],
-                ['PIV/CAC', 'piv_cac'],
-                ['Authentication app', 'totp'],
-                ['Backup codes', 'backup_code'],
-                ['Personal key', 'personal_key'],
-                ['Total number of phishing resistant methods', 'phishing_resistant'],
-              ]
-            ),
-        ]
-    end
+    let(:reports) { double('emailable_reports').as_null_object }
 
     let(:monthly_report) { double(Reporting::MfaReport, as_emailable_reports: reports) }
 
