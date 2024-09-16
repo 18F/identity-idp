@@ -602,6 +602,7 @@ doc_auth.headings.no_ssn: 没有社会保障号码？
 doc_auth.headings.review_issues: 检查一下你的图片并再试一次
 doc_auth.headings.secure_account: 保护你的账户安全
 doc_auth.headings.selfie: 照片
+doc_auth.headings.selfie_capture: 拍你本人照片
 doc_auth.headings.ssn: 输入你的社会保障号码
 doc_auth.headings.ssn_update: 更新你的社会保障号码
 doc_auth.headings.text_message: 我们给你的手机发了短信

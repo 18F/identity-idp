@@ -602,6 +602,7 @@ doc_auth.headings.no_ssn: '¿No tiene un número de Seguro Social?'
 doc_auth.headings.review_issues: Revise sus imágenes e inténtelo de nuevo
 doc_auth.headings.secure_account: Proteja su cuenta
 doc_auth.headings.selfie: Fotografía de su cara
+doc_auth.headings.selfie_capture: Capture una foto de usted
 doc_auth.headings.ssn: Ingrese su número de Seguro Social
 doc_auth.headings.ssn_update: Actualice su número de Seguro Social
 doc_auth.headings.text_message: Enviamos un mensaje a su teléfono
