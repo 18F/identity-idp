@@ -17,7 +17,7 @@ module Idv
       case doc_auth_vendor
       when Idp::Constants::Vendors::SOCURE
         redirect_to idv_socure_document_capture_url
-      when Idp::Constants::Vendors::LEXIS_NEXIS
+      when Idp::Constants::Vendors::LEXIS_NEXIS, Idp::Constants::Vendors::MOCK
         analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)
 
         Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
