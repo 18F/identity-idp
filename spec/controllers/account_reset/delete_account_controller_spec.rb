@@ -164,7 +164,7 @@ RSpec.describe AccountReset::DeleteAccountController do
           webauthn: 2,
         },
         identity_verified: true,
-        identity_verification_method: 'Biometric',
+        identity_verification_method: :biometric_comparison,
         account_age_in_days: 0,
         account_confirmed_at: user.confirmed_at,
       )
@@ -196,7 +196,7 @@ RSpec.describe AccountReset::DeleteAccountController do
           webauthn: 2,
         },
         identity_verified: false,
-        identity_verification_method: 'GPO',
+        identity_verification_method: :verify_by_mail,
         account_age_in_days: 0,
         account_confirmed_at: user.confirmed_at,
       )
@@ -228,7 +228,7 @@ RSpec.describe AccountReset::DeleteAccountController do
           webauthn: 2,
         },
         identity_verified: false,
-        identity_verification_method: 'IPP',
+        identity_verification_method: :in_person_proofing,
         account_age_in_days: 0,
         account_confirmed_at: user.confirmed_at,
       )
