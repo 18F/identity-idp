@@ -48,6 +48,11 @@ RSpec.describe Idv::InPerson::AddressController do
       end
 
       context 'in_person_state_id_controller_enabled is not enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_state_id_controller_enabled).
+            and_return(false)
+        end
+
         it 'redirects to state id page if not complete' do
           subject.user_session['idv/in_person'][:pii_from_user].delete(:identity_doc_address1)
           get :show
