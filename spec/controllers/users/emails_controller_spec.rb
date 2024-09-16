@@ -30,7 +30,7 @@ RSpec.describe Users::EmailsController do
         stub_sign_in(user)
 
         while EmailPolicy.new(user).can_add_email?
-          email = Faker::Internet.safe_email
+          email = Faker::Internet.email
           user.email_addresses.create(email: email, confirmed_at: Time.zone.now)
         end
       end
@@ -53,7 +53,7 @@ RSpec.describe Users::EmailsController do
 
     context 'valid email exists in session' do
       it 'sends email' do
-        email = Faker::Internet.safe_email
+        email = Faker::Internet.email
 
         post :add, params: { user: { email: email } }
 
