@@ -70,6 +70,15 @@ spec:
             - op: add
               path: /data/BOOTSNAP_READONLY
               value: "true"
+            - op: add
+              path: /data/REDIS_URL
+              value: "redis://{{ENVIRONMENT}}-redis.review-apps:6379"
+            - op: add
+              path: /data/REDIS_THROTTLE_URL
+              value: "redis://{{ENVIRONMENT}}-redis.review-apps:6379/1"
+            - op: add
+              path: /data/REDIS_IRS_ATTEMPTS_API_URL
+              value: "redis://{{ENVIRONMENT}}-redis.review-apps:6379/2"
         # Patch ConfigMap for Worker
         - target:
             kind: ConfigMap
