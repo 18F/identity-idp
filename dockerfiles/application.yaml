@@ -371,6 +371,17 @@ spec:
             - op: replace
               path: /spec/template/spec/volumes/0/configMap/name
               value: {{ENVIRONMENT}}-dashboard-application-yml
+        # Patch in lower pod number in IDP HPA
+        - target:
+            kind: HorizontalPodAutoscaler
+            name: idp
+          patch: |-
+            - op: replace
+              path: /spec/minReplicas
+              value: 1
+            - op: replace
+              path: /spec/maxReplicas
+              value: 2
         # Patch ingress names
         - target:
             kind: Ingress
