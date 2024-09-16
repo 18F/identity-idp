@@ -315,6 +315,9 @@ spec:
               path: /spec/template/spec/containers/0/image
               value: {{ECR_REGISTRY}}/identity-idp/review:{{IDP_CONTAINER_TAG}}
             - op: replace
+              path: /spec/template/spec/initContainers/0/image
+              value: {{ECR_REGISTRY}}/identity-idp/review:{{IDP_CONTAINER_TAG}}
+            - op: replace
               path: /spec/template/spec/volumes/0/configMap/name
               value: {{ENVIRONMENT}}-idp-application-yml
             - op: replace
