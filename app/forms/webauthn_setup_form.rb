@@ -110,7 +110,6 @@ class WebauthnSetupForm
     )
 
     begin
-      @aaguid = attestation_response.authenticator_data.aaguid
       attestation_response.valid?(@challenge.pack('c*'), original_origin)
     rescue StandardError
       false
@@ -159,6 +158,10 @@ class WebauthnSetupForm
 
   def mfa_user
     @mfa_user ||= MfaContext.new(user)
+  end
+
+  def aaguid
+    attestation_response&.authenticator_data&.aaguid
   end
 
   def extra_analytics_attributes
