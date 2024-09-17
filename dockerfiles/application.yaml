@@ -196,39 +196,6 @@ spec:
                       - 'https://dashboard.{{ENVIRONMENT}}.identitysandbox.gov/auth/logindotgov/callback'
                       - 'https://dashboard.{{ENVIRONMENT}}.identitysandbox.gov'
                     push_notification_url: 'https://dashboard.{{ENVIRONMENT}}.identitysandbox.gov/api/security_events'
-        # # Patch for IDP StatefulSet
-        # - target:
-        #     kind: StatefulSet
-        #     name: idp-pg
-        #   patch: |-
-        #     - op: replace
-        #       path: /spec/volumeClaimTemplates/0/metadata/name
-        #       value: {{ENVIRONMENT}}-idp-data
-        #     - op: replace
-        #       path: /spec/template/spec/containers/0/volumeMounts/0/name
-        #       value: {{ENVIRONMENT}}-idp-data
-        # # Patch for PIVCAC StatefulSet
-        # - target:
-        #     kind: StatefulSet
-        #     name: pivcac-pg
-        #   patch: |-
-        #     - op: replace
-        #       path: /spec/volumeClaimTemplates/0/metadata/name
-        #       value: {{ENVIRONMENT}}-pivcac-data
-        #     - op: replace
-        #       path: /spec/template/spec/containers/0/volumeMounts/0/name
-        #       value: {{ENVIRONMENT}}-pivcac-data
-        # # Patch for Dashboard StatefulSet
-        # - target:
-        #     kind: StatefulSet
-        #     name: dashboard-pg
-        #   patch: |-
-        #     - op: replace
-        #       path: /spec/volumeClaimTemplates/0/metadata/name
-        #       value: {{ENVIRONMENT}}-dashboard-data
-        #     - op: replace
-        #       path: /spec/template/spec/containers/0/volumeMounts/0/name
-        #       value: {{ENVIRONMENT}}-dashboard-data
         # Patch idp database setup jobs
         - target:
             kind: Job
@@ -237,12 +204,6 @@ spec:
             - op: replace
               path: /spec/template/spec/containers/0/image
               value: {{ECR_REGISTRY}}/identity-idp/review:{{IDP_CONTAINER_TAG}}
-            - op: replace
-              path: /spec/template/spec/volumes/0/configMap/name
-              value: {{ENVIRONMENT}}-idp-application-yml
-            - op: replace
-              path: /spec/template/spec/containers/0/envFrom/0/configMapRef/name
-              value: {{ENVIRONMENT}}-idp-config
         - target:
             kind: Job
             name: migrate-database
@@ -250,12 +211,6 @@ spec:
             - op: replace
               path: /spec/template/spec/containers/0/image
               value: {{ECR_REGISTRY}}/identity-idp/review:{{IDP_CONTAINER_TAG}}
-            - op: replace
-              path: /spec/template/spec/volumes/0/configMap/name
-              value: {{ENVIRONMENT}}-idp-application-yml
-            - op: replace
-              path: /spec/template/spec/containers/0/envFrom/0/configMapRef/name
-              value: {{ENVIRONMENT}}-idp-config
         - target:
             kind: Job
             name: seed-database
@@ -263,12 +218,6 @@ spec:
             - op: replace
               path: /spec/template/spec/containers/0/image
               value: {{ECR_REGISTRY}}/identity-idp/review:{{IDP_CONTAINER_TAG}}
-            - op: replace
-              path: /spec/template/spec/volumes/0/configMap/name
-              value: {{ENVIRONMENT}}-idp-application-yml
-            - op: replace
-              path: /spec/template/spec/containers/0/envFrom/0/configMapRef/name
-              value: {{ENVIRONMENT}}-idp-config
         # Patch dashboard database setup jobs
         - target:
             kind: Job
@@ -277,12 +226,6 @@ spec:
             - op: replace
               path: /spec/template/spec/containers/0/image
               value: {{ECR_REGISTRY}}/identity-dashboard/review:{{DASHBOARD_CONTAINER_TAG}}
-            - op: replace
-              path: /spec/template/spec/volumes/0/configMap/name
-              value: {{ENVIRONMENT}}-dashboard-application-yml
-            - op: replace
-              path: /spec/template/spec/containers/0/envFrom/0/configMapRef/name
-              value: {{ENVIRONMENT}}-dashboard-config
         - target:
             kind: Job
             name: migrate-dashboard-database
@@ -290,12 +233,6 @@ spec:
             - op: replace
               path: /spec/template/spec/containers/0/image
               value: {{ECR_REGISTRY}}/identity-dashboard/review:{{DASHBOARD_CONTAINER_TAG}}
-            - op: replace
-              path: /spec/template/spec/volumes/0/configMap/name
-              value: {{ENVIRONMENT}}-dashboard-application-yml
-            - op: replace
-              path: /spec/template/spec/containers/0/envFrom/0/configMapRef/name
-              value: {{ENVIRONMENT}}-dashboard-config
         - target:
             kind: Job
             name: seed-dashboard-database
@@ -303,13 +240,7 @@ spec:
             - op: replace
               path: /spec/template/spec/containers/0/image
               value: {{ECR_REGISTRY}}/identity-dashboard/review:{{DASHBOARD_CONTAINER_TAG}}
-            - op: replace
-              path: /spec/template/spec/volumes/0/configMap/name
-              value: {{ENVIRONMENT}}-dashboard-application-yml
-            - op: replace
-              path: /spec/template/spec/containers/0/envFrom/0/configMapRef/name
-              value: {{ENVIRONMENT}}-dashboard-config
-        # Patch IDP image and configmaps and canary metrics
+        # Patch IDP image
         - target:
             kind: Rollout
             name: idp-rollout
@@ -317,16 +248,7 @@ spec:
             - op: replace
               path: /spec/template/spec/containers/0/image
               value: {{ECR_REGISTRY}}/identity-idp/review:{{IDP_CONTAINER_TAG}}
-            - op: replace
-              path: /spec/template/spec/volumes/0/configMap/name
-              value: {{ENVIRONMENT}}-idp-application-yml
-            - op: replace
-              path: /spec/strategy/canary/analysis/args/0/value
-              value: {{ENVIRONMENT}}-idp_reviewapps_svc_3000
-            - op: replace
-              path: /spec/strategy/canary/steps/2/analysis/args/0/value
-              value: {{ENVIRONMENT}}-idp_reviewapps_svc_3000
-        # Patch Worker Image and configmaps
+        # Patch Worker Image
         - target:
             kind: Deployment
             name: worker
@@ -334,10 +256,7 @@ spec:
             - op: replace
               path: /spec/template/spec/containers/0/image
               value: {{ECR_REGISTRY}}/identity-idp/review:{{IDP_CONTAINER_TAG}}
-            - op: replace
-              path: /spec/template/spec/volumes/0/configMap/name
-              value: {{ENVIRONMENT}}-worker-application-yml
-        # Patch PIVCAC Image and configmaps
+        # Patch PIVCAC Image
         - target:
             kind: Deployment
             name: pivcac
@@ -345,10 +264,7 @@ spec:
             - op: replace
               path: /spec/template/spec/containers/0/image
               value: {{ECR_REGISTRY}}/identity-pki/review:{{PIVCAC_CONTAINER_TAG}}
-            - op: replace
-              path: /spec/template/spec/volumes/0/configMap/name
-              value: {{ENVIRONMENT}}-pivcac-application-yml
-        # Patch Dashboard Image configmaps
+        # Patch Dashboard Image
         - target:
             kind: Deployment
             name: dashboard
@@ -359,9 +275,6 @@ spec:
             - op: replace
               path: /spec/template/spec/initContainers/0/image
               value: {{ECR_REGISTRY}}/identity-dashboard/review:{{DASHBOARD_CONTAINER_TAG}}
-            - op: replace
-              path: /spec/template/spec/volumes/0/configMap/name
-              value: {{ENVIRONMENT}}-dashboard-application-yml
         # Patch in lower pod number in IDP HPA
         - target:
             kind: HorizontalPodAutoscaler
@@ -384,9 +297,6 @@ spec:
             - op: replace
               path: /spec/rules/0/host
               value: {{ENVIRONMENT}}.reviewapps.identitysandbox.gov
-            - op: replace
-              path: /spec/rules/0/http/paths/0/backend/service/name
-              value: {{ENVIRONMENT}}-idp
         - target:
             kind: Ingress
             name: dashboard
@@ -397,9 +307,6 @@ spec:
             - op: replace
               path: /spec/rules/0/host
               value: {{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov
-            - op: replace
-              path: /spec/rules/0/http/paths/0/backend/service/name
-              value: {{ENVIRONMENT}}-dashboard
             
   destination:
     server: 'https://kubernetes.default.svc'
