@@ -196,57 +196,39 @@ spec:
                       - 'https://dashboard.{{ENVIRONMENT}}.identitysandbox.gov/auth/logindotgov/callback'
                       - 'https://dashboard.{{ENVIRONMENT}}.identitysandbox.gov'
                     push_notification_url: 'https://dashboard.{{ENVIRONMENT}}.identitysandbox.gov/api/security_events'
-        # Patch for IDP StatefulSet
-        - target:
-            kind: StatefulSet
-            name: idp-pg
-          patch: |-
-            - op: replace
-              path: /spec/volumeClaimTemplates/0/metadata/name
-              value: {{ENVIRONMENT}}-idp-data
-            - op: replace
-              path: /spec/template/spec/containers/0/volumeMounts/0/name
-              value: {{ENVIRONMENT}}-idp-data
-            - op: replace
-              path: /spec/template/spec/containers/0/volumeMounts/0/mountPath
-              value: /var/lib/postgresql/data
-            - op: replace
-              path: /spec/template/spec/containers/0/volumeMounts/0/subPath
-              value: postgres
-        # Patch for PIVCAC StatefulSet
-        - target:
-            kind: StatefulSet
-            name: pivcac-pg
-          patch: |-
-            - op: replace
-              path: /spec/volumeClaimTemplates/0/metadata/name
-              value: {{ENVIRONMENT}}-pivcac-data
-            - op: replace
-              path: /spec/template/spec/containers/0/volumeMounts/0/name
-              value: {{ENVIRONMENT}}-pivcac-data
-            - op: replace
-              path: /spec/template/spec/containers/0/volumeMounts/0/mountPath
-              value: /var/lib/postgresql/data
-            - op: replace
-              path: /spec/template/spec/containers/0/volumeMounts/0/subPath
-              value: postgres
-        # Patch for Dashboard StatefulSet
-        - target:
-            kind: StatefulSet
-            name: dashboard-pg
-          patch: |-
-            - op: replace
-              path: /spec/volumeClaimTemplates/0/metadata/name
-              value: {{ENVIRONMENT}}-dashboard-data
-            - op: replace
-              path: /spec/template/spec/containers/0/volumeMounts/0/name
-              value: {{ENVIRONMENT}}-dashboard-data
-            - op: replace
-              path: /spec/template/spec/containers/0/volumeMounts/0/mountPath
-              value: /var/lib/postgresql/data
-            - op: replace
-              path: /spec/template/spec/containers/0/volumeMounts/0/subPath
-              value: postgres
+        # # Patch for IDP StatefulSet
+        # - target:
+        #     kind: StatefulSet
+        #     name: idp-pg
+        #   patch: |-
+        #     - op: replace
+        #       path: /spec/volumeClaimTemplates/0/metadata/name
+        #       value: {{ENVIRONMENT}}-idp-data
+        #     - op: replace
+        #       path: /spec/template/spec/containers/0/volumeMounts/0/name
+        #       value: {{ENVIRONMENT}}-idp-data
+        # # Patch for PIVCAC StatefulSet
+        # - target:
+        #     kind: StatefulSet
+        #     name: pivcac-pg
+        #   patch: |-
+        #     - op: replace
+        #       path: /spec/volumeClaimTemplates/0/metadata/name
+        #       value: {{ENVIRONMENT}}-pivcac-data
+        #     - op: replace
+        #       path: /spec/template/spec/containers/0/volumeMounts/0/name
+        #       value: {{ENVIRONMENT}}-pivcac-data
+        # # Patch for Dashboard StatefulSet
+        # - target:
+        #     kind: StatefulSet
+        #     name: dashboard-pg
+        #   patch: |-
+        #     - op: replace
+        #       path: /spec/volumeClaimTemplates/0/metadata/name
+        #       value: {{ENVIRONMENT}}-dashboard-data
+        #     - op: replace
+        #       path: /spec/template/spec/containers/0/volumeMounts/0/name
+        #       value: {{ENVIRONMENT}}-dashboard-data
         # Patch idp database setup jobs
         - target:
             kind: Job
