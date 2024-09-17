@@ -1733,6 +1733,7 @@ two_factor_authentication.recaptcha.google_policy_link: Privacy Policy
 two_factor_authentication.recaptcha.google_tos_link: Terms of Service
 two_factor_authentication.recaptcha.login_tos_link: Mobile Terms of Use
 two_factor_authentication.recommended: Recommended
+two_factor_authentication.sign_in.recaptcha.disclosure_statement_html: This site is protected by reCAPTCHA and the Google %{google_policy_link_html} and %{google_tos_link_html} apply.
 two_factor_authentication.totp_header_text: Enter your authentication app code
 two_factor_authentication.two_factor_aal3_choice: Additional authentication required
 two_factor_authentication.two_factor_aal3_choice_intro: This app requires a higher level of security. You need to verify your identity using a physical device such as a security key or government employee ID (PIV or CAC) to access your information.

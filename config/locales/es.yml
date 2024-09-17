@@ -1745,6 +1745,7 @@ two_factor_authentication.recaptcha.google_policy_link: Política de privacidad
 two_factor_authentication.recaptcha.google_tos_link: Condiciones de servicio
 two_factor_authentication.recaptcha.login_tos_link: Condiciones de uso del servicio móvil
 two_factor_authentication.recommended: Recomendado
+two_factor_authentication.sign_in.recaptcha.disclosure_statement_html: Este sitio está protegido por reCAPTCHA y se aplican %{google_policy_link_html} y %{google_tos_link_html} de Google.
 two_factor_authentication.totp_header_text: Ingrese su código de la aplicación de autenticación
 two_factor_authentication.two_factor_aal3_choice: Se requiere autenticación adicional
 two_factor_authentication.two_factor_aal3_choice_intro: Esta aplicación requiere un nivel más alto de seguridad. Debe verificar su identidad con un dispositivo físico, como una clave de seguridad o una identificación de empleado de gobierno (tarjeta PIV o CAC), para acceder a su información.

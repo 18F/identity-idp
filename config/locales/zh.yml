@@ -1746,6 +1746,7 @@ two_factor_authentication.recaptcha.google_policy_link: 隐私政策
 two_factor_authentication.recaptcha.google_tos_link: 服务条款
 two_factor_authentication.recaptcha.login_tos_link: 移动使用条款
 two_factor_authentication.recommended: 建议
+two_factor_authentication.sign_in.recaptcha.disclosure_statement_html: 该网站由 reCAPTCHA 保护而且谷歌的 %{google_policy_link_html} 和 %{google_tos_link_html} 都适用。
 two_factor_authentication.totp_header_text: 输入你的身份证实应用程序代码
 two_factor_authentication.two_factor_aal3_choice: 要求额外的身份证实
 two_factor_authentication.two_factor_aal3_choice_intro: 该应用程序要求更高的安全级别。要访问你信息，你需要使用一个实体设备 - 比如安全密钥或政府雇员身份证件(PIV 或 CAC) - 来验证你的身份。

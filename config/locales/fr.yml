@@ -1733,6 +1733,7 @@ two_factor_authentication.recaptcha.google_policy_link: politique de confidentia
 two_factor_authentication.recaptcha.google_tos_link: conditions de service
 two_factor_authentication.recaptcha.login_tos_link: conditions d’utilisation mobile
 two_factor_authentication.recommended: Recommandation
+two_factor_authentication.sign_in.recaptcha.disclosure_statement_html: Ce site est protégé par reCAPTCHA. Les %{google_policy_link_html} et %{google_tos_link_html} de Google s’appliquent.
 two_factor_authentication.totp_header_text: Saisir votre code d’appli d’authentification
 two_factor_authentication.two_factor_aal3_choice: Authentification supplémentaire requise
 two_factor_authentication.two_factor_aal3_choice_intro: Cette appli nécessite un niveau de sécurité plus élevé. Vous devez vérifier votre identité à l’aide d’un dispositif physique tel qu’une clé de sécurité ou une carte d’employé fédéral (PIV ou CAC) pour accéder à vos informations.
