@@ -397,6 +397,7 @@ RSpec.describe Idv::VerifyInfoController do
       expect(Idv::Agent).to receive(:new).with(
         hash_including(
           ssn: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn],
+          consent_given_at: controller.idv_session.idv_consent_given_at,
           **Idp::Constants::MOCK_IDV_APPLICANT,
         ),
       ).and_call_original
