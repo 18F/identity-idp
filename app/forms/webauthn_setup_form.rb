@@ -61,7 +61,7 @@ class WebauthnSetupForm
 
   private
 
-  attr_reader :success, :transports, :aaguid, :invalid_transports, :protocol
+  attr_reader :success, :transports, :invalid_transports, :protocol
   attr_accessor :user, :challenge, :attestation_object, :client_data_json,
                 :name, :platform_authenticator, :authenticator_data_flags, :device_name
 
