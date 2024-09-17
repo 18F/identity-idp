@@ -93,6 +93,7 @@ class Profile < ApplicationRecord
 
     now = Time.zone.now
     is_reproof = Profile.find_by(user_id: user_id, active: true)
+    is_biometric = biometric?(idv_level) && !biometric?(is_reproof.idv_level) if is_reproof
 
     attrs = {
       active: true,
@@ -105,6 +106,7 @@ class Profile < ApplicationRecord
       Profile.where(user_id: user_id).update_all(active: false)
       update!(attrs)
     end
+    track_biometric_reproof if is_biometric
     send_push_notifications if is_reproof
   end
   # rubocop:enable Rails/SkipsModelValidations
@@ -332,5 +334,18 @@ class Profile < ApplicationRecord
   def send_push_notifications
     event = PushNotification::ReproofCompletedEvent.new(user: user)
     PushNotification::HttpPush.deliver(event)
+  end
+
+  def biometric?(level)
+    ::User::BIOMETRIC_COMPARISON_IDV_LEVELS.include?(level)
+  end
+
+  def track_biometric_reproof
+    SpUpgradedBiometricProfile.create(
+      user_id: user_id,
+      upgraded_at: Time.zone.now,
+      idv_level: idv_level,
+      issuer: initiating_service_provider_issuer,
+    )
   end
 end

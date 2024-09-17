@@ -27,6 +27,9 @@ RSpec.configure do |config|
   # rspec --only-failures
   config.example_status_persistence_file_path = './tmp/rspec-examples.txt'
 
+  # allow .rspec to filter examples
+  config.run_all_when_everything_filtered = true
+
   # show the n slowest tests at the end of the test run
   config.profile_examples = RSPEC_RUNNING_IN_PARALLEL ? 10 : 0
 end

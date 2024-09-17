@@ -347,6 +347,50 @@ RSpec.describe Profile do
       expect(active_profile.verified_at).to be_present
     end
 
+    context 'when a user creates a biometric comparision profile' do
+      context 'when the user has an active profile' do
+        it 'creates a biometric upgrade record' do
+          profile.activate
+          biometric_profile = create(
+            :profile,
+            :biometric_proof,
+            user: user,
+          )
+
+          biometric_profile.activate
+
+          expect(SpUpgradedBiometricProfile.count).to eq(1)
+        end
+      end
+
+      context 'when the user has an active biometric profile' do
+        it 'does not create a biometric conversion record' do
+          create(:profile, :active, :biometric_proof, user: user)
+
+          biometric_reproof = create(:profile, :biometric_proof, user: user)
+          biometric_reproof.activate
+
+          expect(SpUpgradedBiometricProfile.count).to eq(0)
+        end
+      end
+
+      context 'when the user does not have an active profile' do
+        it 'does not create a biometric conversion record' do
+          profile = create(:profile, :biometric_proof, user: user)
+
+          profile.activate
+
+          expect(SpUpgradedBiometricProfile.count).to eq(0)
+        end
+      end
+    end
+
+    it 'does not create a biometric upgrade record for a non-biometric profile' do
+      profile.activate
+
+      expect(SpUpgradedBiometricProfile.count).to eq(0)
+    end
+
     it 'sends a reproof completed push event' do
       profile = create(:profile, :active, user: user)
       expect(PushNotification::HttpPush).to receive(:deliver).

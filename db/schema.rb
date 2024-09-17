@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_28_182041) do
+ActiveRecord::Schema[7.1].define(version: 2024_09_16_202940) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -583,6 +583,17 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_28_182041) do
     t.string "profile_requested_issuer"
     t.index "((returned_at)::date), issuer", name: "index_sp_return_logs_on_returned_at_date_issuer", where: "((billable = true) AND (returned_at IS NOT NULL))"
     t.index ["request_id"], name: "index_sp_return_logs_on_request_id", unique: true
+  end
+
+  create_table "sp_upgraded_biometric_profiles", force: :cascade do |t|
+    t.datetime "upgraded_at", null: false
+    t.bigint "user_id", null: false
+    t.string "idv_level", null: false
+    t.string "issuer", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["issuer", "upgraded_at"], name: "index_sp_upgraded_biometric_profiles_on_issuer_and_upgraded_at"
+    t.index ["user_id"], name: "index_sp_upgraded_biometric_profiles_on_user_id"
   end
 
   create_table "suspended_emails", force: :cascade do |t|
