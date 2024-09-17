@@ -68,7 +68,7 @@ module AccountReset
 
     def profile_components
       return nil if !user.identity_verified?
-      ProofingComponent.create_or_find_by(user: user)
+      user.active_profile.proofing_components if user.active_profile?
     end
 
     def extra_analytics_attributes
