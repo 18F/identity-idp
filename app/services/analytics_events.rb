@@ -6289,7 +6289,7 @@ module AnalyticsEvents
     finish_profile:,
     requested_ial:,
     request_signed:,
-    matching_cert_serial: nil,
+    matching_cert_serial:,
     error_details: nil,
     cert_error_details: nil,
     **extra
