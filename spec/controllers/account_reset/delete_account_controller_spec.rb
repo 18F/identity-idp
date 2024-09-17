@@ -106,7 +106,7 @@ RSpec.describe AccountReset::DeleteAccountController do
     end
 
     it 'logs info about user verified account' do
-      user = create(:user, :proofed)
+      user = create(:user, :proofed, confirmed_at: Time.zone.now.round)
       create_account_reset_request_for(user)
       grant_request(user)
       session[:granted_token] = AccountResetRequest.first.granted_token
