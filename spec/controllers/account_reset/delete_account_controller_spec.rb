@@ -106,14 +106,7 @@ RSpec.describe AccountReset::DeleteAccountController do
     end
 
     it 'logs info about user verified account' do
-      user = create(
-        :user,
-        :fully_registered,
-        confirmed_at: Time.zone.now.round,
-        profiles: [build(:profile, :active, :verified, pii: { first_name: 'Jane' })],
-      )
-
-      create_list(:webauthn_configuration, 2, user: user)
+      user = create(:user, :proofed)
       create_account_reset_request_for(user)
       grant_request(user)
       session[:granted_token] = AccountResetRequest.first.granted_token
@@ -125,10 +118,7 @@ RSpec.describe AccountReset::DeleteAccountController do
         user_id: user.uuid,
         success: true,
         errors: {},
-        mfa_method_counts: {
-          phone: 1,
-          webauthn: 2,
-        },
+        mfa_method_counts: { phone: 1 },
         identity_verified: true,
         account_age_in_days: 0,
         account_confirmed_at: user.confirmed_at,
@@ -137,17 +127,7 @@ RSpec.describe AccountReset::DeleteAccountController do
     end
 
     it 'logs info about user biometrically verified account' do
-      user = create(
-        :user,
-        :fully_registered,
-        confirmed_at: Time.zone.now.round,
-        profiles: [build(
-          :profile, :active, :verified, pii: { first_name: 'Jane' },
-                                        idv_level: :unsupervised_with_selfie
-        )],
-      )
-
-      create_list(:webauthn_configuration, 2, user: user)
+      user = create(:user, :proofed_with_selfie, :with_phone)
       create_account_reset_request_for(user)
       grant_request(user)
       session[:granted_token] = AccountResetRequest.first.granted_token
@@ -159,10 +139,7 @@ RSpec.describe AccountReset::DeleteAccountController do
         user_id: user.uuid,
         success: true,
         errors: {},
-        mfa_method_counts: {
-          phone: 1,
-          webauthn: 2,
-        },
+        mfa_method_counts: { phone: 1 },
         identity_verified: true,
         identity_verification_method: :biometric_comparison,
         account_age_in_days: 0,
@@ -172,14 +149,7 @@ RSpec.describe AccountReset::DeleteAccountController do
     end
 
     it 'logs info about user pending verify by mail account' do
-      user = create(
-        :user,
-        :fully_registered,
-        confirmed_at: Time.zone.now.round,
-        profiles: [build(:profile, :verify_by_mail_pending, pii: { first_name: 'Jane' })],
-      )
-
-      create_list(:webauthn_configuration, 2, user: user)
+      user = create(:user, :with_pending_gpo_profile, :with_phone)
       create_account_reset_request_for(user)
       grant_request(user)
       session[:granted_token] = AccountResetRequest.first.granted_token
@@ -191,10 +161,7 @@ RSpec.describe AccountReset::DeleteAccountController do
         user_id: user.uuid,
         success: true,
         errors: {},
-        mfa_method_counts: {
-          phone: 1,
-          webauthn: 2,
-        },
+        mfa_method_counts: { phone: 1 },
         identity_verified: false,
         identity_verification_method: :verify_by_mail,
         account_age_in_days: 0,
@@ -206,12 +173,9 @@ RSpec.describe AccountReset::DeleteAccountController do
     it 'logs info about user pending in person verification account' do
       user = create(
         :user,
-        :fully_registered,
         :with_pending_in_person_enrollment,
-        confirmed_at: Time.zone.now.round,
+        :with_phone,
       )
-
-      create_list(:webauthn_configuration, 2, user: user)
       create_account_reset_request_for(user)
       grant_request(user)
       session[:granted_token] = AccountResetRequest.first.granted_token
@@ -223,10 +187,7 @@ RSpec.describe AccountReset::DeleteAccountController do
         user_id: user.uuid,
         success: true,
         errors: {},
-        mfa_method_counts: {
-          phone: 1,
-          webauthn: 2,
-        },
+        mfa_method_counts: { phone: 1 },
         identity_verified: false,
         identity_verification_method: :in_person_proofing,
         account_age_in_days: 0,
