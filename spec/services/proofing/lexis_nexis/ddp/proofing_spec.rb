@@ -99,6 +99,9 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofer do
 
         expect(result.success?).to eq(true)
         expect(result.errors).to be_empty
+        expect(result.review_status).to eq('pass')
+        expect(result.session_id).to eq('super-cool-test-session-id')
+        expect(result.account_lex_id).to eq('super-cool-test-lex-id')
       end
     end
 
