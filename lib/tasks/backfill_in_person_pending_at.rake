@@ -100,10 +100,11 @@ namespace :profiles do
 
           warn "#{profile.id},#{profile.deactivation_reason},#{timestamp}"
           if update_profiles
-            profile.update!(
-              deactivation_reason: :verification_cancelled,
-              in_person_verification_pending_at: nil,
-            )
+            unless profile.deactivation_reason.present?
+              profile.deactivation_reason = :verification_cancelled
+            end
+            profile.in_person_verification_pending_at = nil
+            profile.save!
           end
         end
         sleep(0.5)

@@ -109,7 +109,7 @@ module InPersonHelper
 
     # pause for the location list to disappear
     wait_for_content_to_disappear do
-      expect(page).to have_no_css('.location-collection-item')
+      expect(page).to have_no_css('.location-collection-item', wait: 1)
     end
   end
 
@@ -163,7 +163,6 @@ module InPersonHelper
     begin_in_person_proofing
     complete_prepare_step
     complete_location_step
-
     expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
   end
 
@@ -180,7 +179,7 @@ module InPersonHelper
                                             same_address_as_id: true)
     complete_prepare_step(user)
     complete_location_step(user)
-    complete_state_id_step(user, same_address_as_id: same_address_as_id)
+    complete_state_id_controller(user, same_address_as_id: same_address_as_id)
     complete_address_step(user, same_address_as_id: same_address_as_id) unless same_address_as_id
     complete_ssn_step(user, tmx_status)
     complete_verify_step(user)
@@ -256,9 +255,9 @@ module InPersonHelper
 
   def perform_desktop_hybrid_steps(user = user_with_2fa, same_address_as_id: true)
     perform_in_browser(:desktop) do
-      expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
+      expect(page).to have_current_path(idv_in_person_proofing_state_id_path, wait: 10)
 
-      complete_state_id_step(user, same_address_as_id: same_address_as_id)
+      complete_state_id_controller(user, same_address_as_id: same_address_as_id)
       complete_address_step(user, same_address_as_id: same_address_as_id) unless same_address_as_id
       complete_ssn_step(user)
       complete_verify_step(user)

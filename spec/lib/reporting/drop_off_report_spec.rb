@@ -275,7 +275,7 @@ RSpec.describe Reporting::DropOffReport do
         ),
         ['Verified (event)'] + string_or_num(
           strings,
-          *(values ? iterator.next : [4, 0, 0.0, 0.5]),
+          *(values ? iterator.next : [1, 3, 0.75, 0.125]),
         ),
         ['Workflow Complete - Total Pending'] + string_or_num(
           strings,
