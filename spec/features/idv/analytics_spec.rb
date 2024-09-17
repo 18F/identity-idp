@@ -10,21 +10,25 @@ RSpec.feature 'Analytics Regression', :js do
   let(:proofing_device_profiling) { :enabled }
   let(:threatmetrix) { true }
   let(:idv_level) { 'in_person' }
+  let(:threatmetrix_response_body) do
+    {
+      account_lex_id: 'super-cool-test-lex-id',
+      'fraudpoint.score': '500',
+      request_id: '1234',
+      request_result: 'success',
+      review_status: 'pass',
+      risk_rating: 'trusted',
+      session_id: 'super-cool-test-session-id',
+      summary_risk_score: '-6',
+      tmx_risk_rating: 'neutral',
+      tmx_summary_reason_code: ['Identity_Negative_History'],
+    }
+  end
   let(:threatmetrix_response) do
     {
       client: nil,
       errors: {},
       exception: nil,
-      response_body: { "fraudpoint.score": '500',
-                       request_id: '1234',
-                       request_result: 'success',
-                       account_lex_id: 'super-cool-test-lex-id',
-                       session_id: 'super-cool-test-session-id',
-                       review_status: 'pass',
-                       risk_rating: 'trusted',
-                       summary_risk_score: '-6',
-                       tmx_risk_rating: 'neutral',
-                       tmx_summary_reason_code: ['Identity_Negative_History'] },
       review_status: 'pass',
       account_lex_id: 'super-cool-test-lex-id',
       session_id: 'super-cool-test-session-id',
@@ -216,6 +220,11 @@ RSpec.feature 'Analytics Regression', :js do
       'IdV: doc auth verify submitted' => {
         flow_path: 'standard', step: 'verify', analytics_id: 'Doc Auth'
       },
+      idv_doc_auth_verify_threatmetrix_response_body: (
+        if threatmetrix_response_body.present?
+          { response_body: threatmetrix_response_body }
+        end
+      ),
       'IdV: doc auth verify proofing results' => {
         success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', step: 'verify',
         proofing_results: base_proofing_results
@@ -273,7 +282,7 @@ RSpec.feature 'Analytics Regression', :js do
         active_profile_idv_level: 'legacy_unsupervised',
         proofing_components: lexis_nexis_address_proofing_components
       },
-    }
+    }.compact
   end
 
   let(:happy_hybrid_path_events) do
@@ -331,6 +340,11 @@ RSpec.feature 'Analytics Regression', :js do
       'IdV: doc auth verify submitted' => {
         flow_path: 'hybrid', step: 'verify', analytics_id: 'Doc Auth'
       },
+      idv_doc_auth_verify_threatmetrix_response_body: (
+        if threatmetrix_response_body.present?
+          { response_body: threatmetrix_response_body }
+        end
+      ),
       'IdV: doc auth verify proofing results' => {
         success: true, errors: {}, flow_path: 'hybrid', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', step: 'verify',
         proofing_results: base_proofing_results
@@ -388,7 +402,7 @@ RSpec.feature 'Analytics Regression', :js do
         active_profile_idv_level: 'legacy_unsupervised',
         proofing_components: lexis_nexis_address_proofing_components
       },
-    }
+    }.compact
   end
 
   let(:gpo_path_events) do
@@ -443,6 +457,11 @@ RSpec.feature 'Analytics Regression', :js do
       'IdV: doc auth verify submitted' => {
         flow_path: 'standard', step: 'verify', analytics_id: 'Doc Auth'
       },
+      idv_doc_auth_verify_threatmetrix_response_body: (
+        if threatmetrix_response_body.present?
+          { response_body: threatmetrix_response_body }
+        end
+      ),
       'IdV: doc auth verify proofing results' => {
         success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', step: 'verify',
         proofing_results: base_proofing_results
@@ -477,7 +496,7 @@ RSpec.feature 'Analytics Regression', :js do
         pending_profile_idv_level: 'legacy_unsupervised',
         proofing_components: gpo_letter_proofing_components,
       },
-    }
+    }.compact
   end
 
   let(:in_person_path_events) do
@@ -552,6 +571,11 @@ RSpec.feature 'Analytics Regression', :js do
       'IdV: doc auth verify submitted' => {
         analytics_id: 'In Person Proofing', step: 'verify', flow_path: 'standard', same_address_as_id: false
       },
+      idv_doc_auth_verify_threatmetrix_response_body: (
+        if threatmetrix_response_body.present?
+          { response_body: threatmetrix_response_body }
+        end
+      ),
       'IdV: doc auth verify proofing results' => {
         success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'In Person Proofing', step: 'verify', same_address_as_id: false,
         proofing_results: in_person_path_proofing_results
@@ -609,7 +633,7 @@ RSpec.feature 'Analytics Regression', :js do
       },
       'IdV: user clicked what to bring link on ready to verify page' => {},
       'IdV: user clicked sp link on ready to verify page' => {},
-    }
+    }.compact
   end
 
   let(:happy_mobile_selfie_path_events) do
@@ -670,6 +694,11 @@ RSpec.feature 'Analytics Regression', :js do
       'IdV: doc auth verify submitted' => {
         flow_path: 'standard', step: 'verify', analytics_id: 'Doc Auth'
       },
+      idv_doc_auth_verify_threatmetrix_response_body: (
+        if threatmetrix_response_body.present?
+          { response_body: threatmetrix_response_body }
+        end
+      ),
       'IdV: doc auth verify proofing results' => {
         success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', step: 'verify',
         proofing_results: base_proofing_results
@@ -727,7 +756,7 @@ RSpec.feature 'Analytics Regression', :js do
         active_profile_idv_level: 'unsupervised_with_selfie',
         proofing_components: lexis_nexis_address_proofing_components
       },
-    }
+    }.compact
   end
   # rubocop:enable Layout/LineLength
   # rubocop:enable Layout/MultilineHashKeyLineBreaks
@@ -786,6 +815,7 @@ RSpec.feature 'Analytics Regression', :js do
     context 'proofing_device_profiling disabled' do
       let(:proofing_device_profiling) { :disabled }
       let(:threatmetrix) { false }
+      let(:threatmetrix_response_body) { nil }
       let(:threatmetrix_response) do
         {
           client: 'tmx_disabled',
@@ -797,7 +827,6 @@ RSpec.feature 'Analytics Regression', :js do
           review_status: 'pass',
           account_lex_id: nil,
           session_id: nil,
-          response_body: nil,
         }
       end
 
@@ -866,6 +895,7 @@ RSpec.feature 'Analytics Regression', :js do
     context 'proofing_device_profiling disabled' do
       let(:proofing_device_profiling) { :disabled }
       let(:threatmetrix) { false }
+      let(:threatmetrix_response_body) { nil }
       let(:threatmetrix_response) do
         {
           client: 'tmx_disabled',
@@ -877,7 +907,6 @@ RSpec.feature 'Analytics Regression', :js do
           review_status: 'pass',
           account_lex_id: nil,
           session_id: nil,
-          response_body: nil,
         }
       end
 
@@ -915,6 +944,7 @@ RSpec.feature 'Analytics Regression', :js do
     context 'proofing_device_profiling disabled' do
       let(:proofing_device_profiling) { :disabled }
       let(:threatmetrix) { false }
+      let(:threatmetrix_response_body) { nil }
       let(:threatmetrix_response) do
         {
           client: 'tmx_disabled',
@@ -926,7 +956,6 @@ RSpec.feature 'Analytics Regression', :js do
           review_status: 'pass',
           account_lex_id: nil,
           session_id: nil,
-          response_body: nil,
         }
       end
 
@@ -976,6 +1005,7 @@ RSpec.feature 'Analytics Regression', :js do
       let(:proofing_device_profiling) { :disabled }
       let(:idv_level) { 'legacy_in_person' }
       let(:threatmetrix) { false }
+      let(:threatmetrix_response_body) { nil }
       let(:threatmetrix_response) do
         {
           client: 'tmx_disabled',
@@ -987,7 +1017,6 @@ RSpec.feature 'Analytics Regression', :js do
           review_status: 'pass',
           account_lex_id: nil,
           session_id: nil,
-          response_body: nil,
         }
       end
 
@@ -1047,6 +1076,7 @@ RSpec.feature 'Analytics Regression', :js do
     context 'proofing_device_profiling disabled' do
       let(:proofing_device_profiling) { :disabled }
       let(:threatmetrix) { false }
+      let(:threatmetrix_response_body) { nil }
       let(:threatmetrix_response) do
         {
           client: 'tmx_disabled',
@@ -1058,7 +1088,6 @@ RSpec.feature 'Analytics Regression', :js do
           review_status: 'pass',
           account_lex_id: nil,
           session_id: nil,
-          response_body: nil,
         }
       end
 
@@ -1108,6 +1137,7 @@ RSpec.feature 'Analytics Regression', :js do
     context 'proofing_device_profiling disabled' do
       let(:proofing_device_profiling) { :disabled }
       let(:threatmetrix) { false }
+      let(:threatmetrix_response_body) { nil }
       let(:threatmetrix_response) do
         {
           client: 'tmx_disabled',
@@ -1119,7 +1149,6 @@ RSpec.feature 'Analytics Regression', :js do
           review_status: 'pass',
           account_lex_id: nil,
           session_id: nil,
-          response_body: nil,
         }
       end
 

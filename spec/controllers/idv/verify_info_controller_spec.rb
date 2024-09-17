@@ -142,8 +142,9 @@ RSpec.describe Idv::VerifyInfoController do
     end
 
     context 'when proofing_device_profiling is enabled' do
-      let(:threatmetrix_client_id) { 'threatmetrix_client' }
       let(:review_status) { 'pass' }
+      let(:threatmetrix_session_id) { 'threatmetrix_session_id' }
+
       let(:idv_result) do
         {
           context: {
@@ -152,7 +153,7 @@ RSpec.describe Idv::VerifyInfoController do
                 transaction_id: 1,
                 review_status: review_status,
                 response_body: {
-                  client: threatmetrix_client_id,
+                  client: threatmetrix_session_id,
                   tmx_summary_reason_code: ['Identity_Negative_History'],
                 },
               },
@@ -226,13 +227,17 @@ RSpec.describe Idv::VerifyInfoController do
                 context: hash_including(
                   stages: hash_including(
                     threatmetrix: hash_including(
-                      response_body: hash_including(
-                        client: threatmetrix_client_id,
-                      ),
+                      review_status: review_status,
                     ),
                   ),
                 ),
               ),
+            ),
+          )
+          expect(@analytics).to have_logged_event(
+            :idv_doc_auth_verify_threatmetrix_response_body,
+            response_body: hash_including(
+              client: threatmetrix_session_id,
             ),
           )
         end

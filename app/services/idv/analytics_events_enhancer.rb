@@ -34,6 +34,7 @@ module Idv
       idv_doc_auth_submitted_pii_validation
       idv_doc_auth_verify_proofing_results
       idv_doc_auth_verify_submitted
+      idv_doc_auth_verify_threatmetrix_response_body
       idv_doc_auth_verify_visited
       idv_doc_auth_warning_visited
       idv_doc_auth_welcome_submitted

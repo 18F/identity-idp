@@ -203,6 +203,14 @@ module Idv
         flash[:success] = t('doc_auth.forms.doc_success')
         redirect_to next_step_url
       end
+
+      threatmetrix_reponse_body = delete_threatmetrix_response_body(form_response)
+      if threatmetrix_reponse_body.present?
+        analytics.idv_doc_auth_verify_threatmetrix_response_body(
+          response_body: threatmetrix_reponse_body,
+        )
+      end
+
       analytics.idv_doc_auth_verify_proofing_results(**analytics_arguments, **form_response.to_h)
     end
 
@@ -292,6 +300,18 @@ module Idv
       idv_session.applicant = pii
       idv_session.applicant[:ssn] = idv_session.ssn
       idv_session.applicant['uuid'] = current_user.uuid
+    end
+
+    def delete_threatmetrix_response_body(form_response)
+      threatmetrix_result = form_response.extra.dig(
+        :proofing_results,
+        :context,
+        :stages,
+        :threatmetrix,
+      )
+      return if threatmetrix_result.blank?
+
+      threatmetrix_result.delete(:response_body)
     end
 
     def add_cost(token, transaction_id: nil)
