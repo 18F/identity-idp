@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'devise/sessions/new.html.erb' do
   include UserAgentHelper
-  include Rails.application.routes.url_helpers
+  include LinkHelper
 
   before do
     allow(view).to receive(:resource).and_return(build_stubbed(:user))
@@ -246,22 +246,21 @@ RSpec.describe 'devise/sessions/new.html.erb' do
         expect(rendered).to have_css('lg-captcha-submit-button')
       end
 
+      before do
+        allow(FeatureManagement).to receive(:sign_in_recaptcha_enabled?).and_return(true)
+      end
+
       it 'renders recaptcha disclaimer text' do
         expect(rendered).to have_content(
           t(
-            'two_factor_authentication.recaptcha.disclosure_statement_html',
+            'two_factor_authentication.sign_in.recaptcha.disclosure_statement_html',
             app_name: APP_NAME,
             google_policy_link_html: new_tab_link_to(
               t('two_factor_authentication.recaptcha.google_policy_link'),
               GooglePolicySite.privacy_url,
             ),
             google_tos_link_html: new_tab_link_to(
-              t('two_factor_authentication.recaptcha.google_tos_link'),
-              GooglePolicySite.terms_url,
-            ),
-            login_tos_link_html: new_tab_link_to(
-              t('two_factor_authentication.recaptcha.login_tos_link'),
-              MarketingSite.rules_of_use_url,
+              t('two_factor_authentication.recaptcha.google_tos_link'), GooglePolicySite.terms_url
             ),
           ),
         )
