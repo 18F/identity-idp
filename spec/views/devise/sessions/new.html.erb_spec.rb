@@ -246,10 +246,6 @@ RSpec.describe 'devise/sessions/new.html.erb' do
         expect(rendered).to have_css('lg-captcha-submit-button')
       end
 
-      before do
-        allow(FeatureManagement).to receive(:sign_in_recaptcha_enabled?).and_return(true)
-      end
-
       it 'renders recaptcha disclaimer text' do
         expect(rendered).to have_content(
           t(
