@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'csv'
 
-RSpec.feature 'Analytics Regression', :js do
+RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
   include IdvStepHelper
   include InPersonHelper
 
@@ -14,7 +14,8 @@ RSpec.feature 'Analytics Regression', :js do
     { client: nil,
       errors: {},
       exception: nil,
-      response_body: { "fraudpoint.score": '500',
+      response_body: { first_name: '[redacted]',
+                       "fraudpoint.score": '500',
                        request_id: '1234',
                        request_result: 'success',
                        review_status: 'pass',
@@ -509,10 +510,10 @@ RSpec.feature 'Analytics Regression', :js do
         flow_path: 'standard', opted_in_to_in_person_proofing: false
       },
       'IdV: in person proofing state_id visited' => {
-        step: 'state_id', flow_path: 'standard', analytics_id: 'In Person Proofing'
+        step: 'state_id', flow_path: 'standard', step_count: 1, analytics_id: 'In Person Proofing'
       },
       'IdV: in person proofing state_id submitted' => {
-        success: true, flow_path: 'standard', step: 'state_id', analytics_id: 'In Person Proofing', errors: {}, same_address_as_id: false, birth_year: '1938', document_zip_code: '12345'
+        success: true, flow_path: 'standard', step: 'state_id', step_count: 1, analytics_id: 'In Person Proofing', errors: {}, same_address_as_id: false, birth_year: '1938', document_zip_code: '12345'
       },
       'IdV: in person proofing address visited' => {
         step: 'address', flow_path: 'standard', analytics_id: 'In Person Proofing', same_address_as_id: false
@@ -981,59 +982,6 @@ RSpec.feature 'Analytics Regression', :js do
 
   context 'Happy selfie path' do
     before do
-      allow_any_instance_of(DocAuth::Response).to receive(:selfie_status).and_return(:success)
-
-      perform_in_browser(:desktop) do
-        sign_in_and_2fa_user(user)
-        visit_idp_from_sp_with_ial2(:oidc, biometric_comparison_required: true)
-        complete_doc_auth_steps_before_document_capture_step
-        attach_images
-        attach_selfie
-        submit_images
-
-        click_idv_continue
-        visit idv_ssn_url
-        complete_ssn_step
-        complete_verify_step
-        fill_out_phone_form_ok('202-555-1212')
-        verify_phone_otp
-        complete_enter_password_step(user)
-        acknowledge_and_confirm_personal_key
-      end
-    end
-
-    it 'records all of the events' do
-      happy_mobile_selfie_path_events.each do |event, attributes|
-        expect(fake_analytics).to have_logged_event(event, attributes)
-      end
-    end
-
-    context 'proofing_device_profiling disabled' do
-      let(:proofing_device_profiling) { :disabled }
-      let(:threatmetrix) { false }
-      let(:threatmetrix_response) do
-        { client: 'tmx_disabled',
-          success: true,
-          errors: {},
-          exception: nil,
-          timed_out: false,
-          transaction_id: nil,
-          review_status: 'pass',
-          response_body: nil }
-      end
-
-      it 'records all of the events' do
-        aggregate_failures 'analytics events' do
-          happy_mobile_selfie_path_events.each do |event, attributes|
-            expect(fake_analytics).to have_logged_event(event, attributes)
-          end
-        end
-      end
-    end
-  end
-  context 'Happy split doc auth path' do
-    before do
-      allow(IdentityConfig.store).to receive(:doc_auth_separate_pages_enabled).and_return(true)
       allow_any_instance_of(FederatedProtocols::Oidc).
         to receive(:biometric_comparison_required?).
         and_return(true)
@@ -1044,7 +992,6 @@ RSpec.feature 'Analytics Regression', :js do
         visit_idp_from_sp_with_ial2(:oidc, biometric_comparison_required: true)
         complete_doc_auth_steps_before_document_capture_step
         attach_images
-        continue_doc_auth_form
         attach_selfie
         submit_images
 

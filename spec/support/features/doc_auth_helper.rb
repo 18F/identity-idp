@@ -101,14 +101,10 @@ module DocAuthHelper
     complete_doc_auth_steps_before_welcome_step
     complete_welcome_step
     complete_agreement_step
+    # binding.pry
     if remote
       if biometric_comparison_required
         click_on t('forms.buttons.continue_remote_selfie')
-        if IdentityConfig.store.doc_auth_separate_pages_enabled
-          attach_images
-          continue_doc_auth_form
-          attach_selfie
-        end
       else
         click_on t('forms.buttons.continue_remote')
       end

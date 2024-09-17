@@ -13,6 +13,7 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
   let(:biometric_comparison_required) { false }
 
   before do
+    allow(IdentityConfig.store).to receive(:doc_auth_separate_pages_enabled).and_return(true)
     if biometric_comparison_required
       visit_idp_from_oidc_sp_with_ial2(biometric_comparison_required: biometric_comparison_required)
     end

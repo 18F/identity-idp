@@ -53,11 +53,11 @@ module DocumentCaptureStepHelper
 
   def attach_and_submit_images_for_split_doc_auth(with_selfie: false)
     attach_images
-    continue_doc_auth_form
     if with_selfie
+      continue_doc_auth_form
       attach_selfie
-      submit_images
     end
+    submit_images
   end
 
   def attach_images(file = Rails.root.join('app', 'assets', 'images', 'email', 'logo.png'))
