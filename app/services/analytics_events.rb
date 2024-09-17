@@ -86,9 +86,16 @@ module AnalyticsEvents
   # @param [Integer, nil] account_age_in_days number of days since the account was confirmed
   # @param [Time] account_confirmed_at date that account creation was confirmed
   # (rounded) or nil if the account was not confirmed
+  # @param [Hash,nil] proofing_components User's current proofing components
+  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
+  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
+  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
+  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
+  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
+  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
   # @param [Hash] mfa_method_counts Hash of MFA method with the number of that method on the account
   # @param [Boolean] identity_verified if the deletion occurs on a verified account
-  # @param [String, nil] identity_verification_method verification method used if applicable
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # An account has been deleted through the account reset flow
@@ -99,8 +106,8 @@ module AnalyticsEvents
     account_confirmed_at:,
     mfa_method_counts:,
     identity_verified:,
-    identity_verification_method:,
     errors:,
+    proofing_components: nil,
     error_details: nil,
     **extra
   )
@@ -111,8 +118,8 @@ module AnalyticsEvents
       account_age_in_days:,
       account_confirmed_at:,
       mfa_method_counts:,
+      proofing_components: proofing_components,
       identity_verified:,
-      identity_verification_method:,
       errors:,
       error_details:,
       **extra,

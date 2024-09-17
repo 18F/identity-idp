@@ -107,6 +107,7 @@ RSpec.describe AccountReset::DeleteAccountController do
 
     it 'logs info about user verified account' do
       user = create(:user, :proofed)
+      proofing_components = ProofingComponent.create_or_find_by(user: user)
       create_account_reset_request_for(user)
       grant_request(user)
       session[:granted_token] = AccountResetRequest.first.granted_token
@@ -119,6 +120,7 @@ RSpec.describe AccountReset::DeleteAccountController do
         success: true,
         errors: {},
         mfa_method_counts: { phone: 1 },
+        proofing_components: proofing_components,
         identity_verified: true,
         account_age_in_days: 0,
         account_confirmed_at: user.confirmed_at,
@@ -128,6 +130,7 @@ RSpec.describe AccountReset::DeleteAccountController do
 
     it 'logs info about user biometrically verified account' do
       user = create(:user, :proofed_with_selfie, :with_phone)
+      proofing_components = ProofingComponent.create_or_find_by(user: user)
       create_account_reset_request_for(user)
       grant_request(user)
       session[:granted_token] = AccountResetRequest.first.granted_token
@@ -140,8 +143,8 @@ RSpec.describe AccountReset::DeleteAccountController do
         success: true,
         errors: {},
         mfa_method_counts: { phone: 1 },
+        proofing_components: proofing_components,
         identity_verified: true,
-        identity_verification_method: :biometric_comparison,
         account_age_in_days: 0,
         account_confirmed_at: user.confirmed_at,
       )
@@ -150,6 +153,7 @@ RSpec.describe AccountReset::DeleteAccountController do
 
     it 'logs info about user with a verified by mail account' do
       user = create(:user, :proofed_with_gpo)
+      proofing_components = ProofingComponent.create_or_find_by(user: user)
       create_account_reset_request_for(user)
       grant_request(user)
       session[:granted_token] = AccountResetRequest.first.granted_token
@@ -162,8 +166,8 @@ RSpec.describe AccountReset::DeleteAccountController do
         success: true,
         errors: {},
         mfa_method_counts: { phone: 1 },
+        proofing_components: proofing_components,
         identity_verified: true,
-        identity_verification_method: :verify_by_mail,
         account_age_in_days: 0,
         account_confirmed_at: user.confirmed_at,
       )
@@ -176,6 +180,7 @@ RSpec.describe AccountReset::DeleteAccountController do
         :proofed_in_person_enrollment,
         :with_phone,
       )
+      proofing_components = ProofingComponent.create_or_find_by(user: user)
       create_account_reset_request_for(user)
       grant_request(user)
       session[:granted_token] = AccountResetRequest.first.granted_token
@@ -188,8 +193,8 @@ RSpec.describe AccountReset::DeleteAccountController do
         success: true,
         errors: {},
         mfa_method_counts: { phone: 1 },
+        proofing_components: proofing_components,
         identity_verified: true,
-        identity_verification_method: :in_person_proofing,
         account_age_in_days: 0,
         account_confirmed_at: user.confirmed_at,
       )

@@ -39,17 +39,6 @@ module AccountReset
       @mfa_method_counts = MfaContext.new(user).enabled_two_factor_configuration_counts_hash
     end
 
-    def verification_method
-      return nil if !user.identity_verified?
-      if user.in_person_enrollments.present?
-        :in_person_proofing
-      elsif user.active_profile.gpo_confirmation_codes.present?
-        :verify_by_mail
-      elsif user.identity_verified_with_biometric_comparison?
-        :biometric_comparison
-      end
-    end
-
     def handle_successful_submission
       notify_user_via_email_of_deletion
       send_push_notifications
@@ -77,6 +66,11 @@ module AccountReset
     end
     # rubocop:enable IdentityIdp/MailLaterLinter
 
+    def profile_components
+      return nil if !user.identity_verified?
+      ProofingComponent.create_or_find_by(user: user)
+    end
+
     def extra_analytics_attributes
       {
         user_id: user.uuid,
@@ -84,8 +78,8 @@ module AccountReset
         account_age_in_days: account_age,
         account_confirmed_at: user.confirmed_at,
         mfa_method_counts: mfa_method_counts,
+        proofing_components: profile_components,
         identity_verified: user.identity_verified?,
-        identity_verification_method: verification_method,
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
       }
     end
