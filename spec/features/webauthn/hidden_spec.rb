@@ -94,11 +94,9 @@ RSpec.describe 'webauthn hide' do
 
         context 'with device that doesnt support authenticator' do
           it 'redirects to options page and allows them to choose authenticator' do
-            email = user.email_addresses.first.email
-
             visit new_user_session_path
             set_hidden_field('platform_authenticator_available', 'false')
-            fill_in_credentials_and_submit(email, user.password)
+            fill_in_credentials_and_submit(user.email, user.password)
 
             # Redirected to options page
             expect(current_path).to eq(login_two_factor_options_path)
@@ -116,11 +114,9 @@ RSpec.describe 'webauthn hide' do
             end
 
             it 'allows them to choose authenticator if they change from their default method' do
-              email = user.email_addresses.first.email
-
               visit new_user_session_path
               set_hidden_field('platform_authenticator_available', 'false')
-              fill_in_credentials_and_submit(email, user.password)
+              fill_in_credentials_and_submit(user.email, user.password)
 
               # Redirected to default MFA method
               expect(current_path).to eq(login_two_factor_piv_cac_path)
