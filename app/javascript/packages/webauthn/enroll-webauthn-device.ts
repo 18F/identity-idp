@@ -91,7 +91,7 @@ async function enrollWebauthnDevice({
       pubKeyCredParams: SUPPORTED_ALGORITHMS.map((alg) => ({ alg, type: 'public-key' })),
       timeout: 800000,
       attestation: 'none',
-      hints: platformAuthenticator ? ['client-device', 'hybrid'] : ['security-key'],
+      hints: platformAuthenticator ? undefined : ['security-key'],
       authenticatorSelection: {
         // A user is assumed to be AAL2 recently authenticated before being permitted to add an
         // authentication method to their account. Additionally, unless explicitly discouraged,

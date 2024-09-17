@@ -136,7 +136,7 @@ describe('enrollWebauthnDevice', () => {
 
         expect(navigator.credentials.create).to.have.been.calledWithMatch({
           publicKey: {
-            hints: ['client-device', 'hybrid'],
+            hints: undefined,
             authenticatorSelection: {
               authenticatorAttachment: 'platform',
             },
