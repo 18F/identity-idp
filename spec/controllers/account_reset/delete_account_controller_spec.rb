@@ -148,8 +148,8 @@ RSpec.describe AccountReset::DeleteAccountController do
       expect(response).to redirect_to account_reset_confirm_delete_account_url
     end
 
-    it 'logs info about user pending verify by mail account' do
-      user = create(:user, :with_pending_gpo_profile, :with_phone)
+    it 'logs info about user with a verified by mail account' do
+      user = create(:user, :proofed_with_gpo)
       create_account_reset_request_for(user)
       grant_request(user)
       session[:granted_token] = AccountResetRequest.first.granted_token
@@ -162,7 +162,7 @@ RSpec.describe AccountReset::DeleteAccountController do
         success: true,
         errors: {},
         mfa_method_counts: { phone: 1 },
-        identity_verified: false,
+        identity_verified: true,
         identity_verification_method: :verify_by_mail,
         account_age_in_days: 0,
         account_confirmed_at: user.confirmed_at,
@@ -173,7 +173,7 @@ RSpec.describe AccountReset::DeleteAccountController do
     it 'logs info about user pending in person verification account' do
       user = create(
         :user,
-        :with_pending_in_person_enrollment,
+        :proofed_in_person_enrollment,
         :with_phone,
       )
       create_account_reset_request_for(user)
@@ -188,7 +188,7 @@ RSpec.describe AccountReset::DeleteAccountController do
         success: true,
         errors: {},
         mfa_method_counts: { phone: 1 },
-        identity_verified: false,
+        identity_verified: true,
         identity_verification_method: :in_person_proofing,
         account_age_in_days: 0,
         account_confirmed_at: user.confirmed_at,

@@ -40,10 +40,10 @@ module AccountReset
     end
 
     def verification_method
-      return nil if user.uuid == 'anonymous-uuid'
-      if user.pending_in_person_enrollment.present?
+      return nil if !user.identity_verified?
+      if user.in_person_enrollments.present?
         :in_person_proofing
-      elsif user.gpo_verification_pending_profile.present?
+      elsif user.active_profile.gpo_confirmation_codes.present?
         :verify_by_mail
       elsif user.identity_verified_with_biometric_comparison?
         :biometric_comparison
