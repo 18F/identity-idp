@@ -93,15 +93,46 @@ RSpec.describe 'webauthn hide' do
         end
 
         context 'with device that doesnt support authenticator' do
-          it 'redirects to options page on sign in and shows the option' do
-            email ||= user.email_addresses.first.email
-            password = user.password
+          it 'redirects to options page and allows them to choose authenticator' do
+            email = user.email_addresses.first.email
+
             visit new_user_session_path
             set_hidden_field('platform_authenticator_available', 'false')
-            fill_in_credentials_and_submit(email, password)
-            continue_as(email, password)
+            fill_in_credentials_and_submit(email, user.password)
+            continue_as(email, user.password)
+
+            # Redirected to options page
             expect(current_path).to eq(login_two_factor_options_path)
+
+            # Can choose authenticator
             expect(webauthn_option_hidden?).to eq(false)
+            choose t('two_factor_authentication.login_options.webauthn_platform')
+            click_continue
+            expect(current_url).to eq(login_two_factor_webauthn_url(platform: true))
+          end
+
+          context 'if the webauthn credential is not their default mfa method when signing in' do
+            let(:user) do
+              create(:user, :fully_registered, :with_piv_or_cac, :with_webauthn_platform)
+            end
+
+            it 'allows them to choose authenticator if they change from their default method' do
+              email = user.email_addresses.first.email
+
+              visit new_user_session_path
+              set_hidden_field('platform_authenticator_available', 'false')
+              fill_in_credentials_and_submit(email, user.password)
+              continue_as(email, user.password)
+
+              # Redirected to default MFA method
+              expect(current_path).to eq(login_two_factor_piv_cac_path)
+
+              # Can change to authenticator if they choose
+              click_on t('two_factor_authentication.login_options_link_text')
+              choose t('two_factor_authentication.login_options.webauthn_platform')
+              click_continue
+              expect(current_url).to eq(login_two_factor_webauthn_url(platform: true))
+            end
           end
         end
       end
