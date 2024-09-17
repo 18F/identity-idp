@@ -76,7 +76,7 @@ RSpec.describe Idv::HybridMobile::EntryController do
         let(:idv_vendor) { Idp::Constants::Vendors::SOCURE }
 
         it 'redirects to the first step' do
-          expect(response).to redirect_to idv_socure_document_capture_url
+          expect(response).to redirect_to idv_hybrid_mobile_socure_document_capture_url
         end
 
         it 'logs an analytics event' do
@@ -141,7 +141,7 @@ RSpec.describe Idv::HybridMobile::EntryController do
           let(:idv_vendor) { Idp::Constants::Vendors::SOCURE }
 
           it 'redirects to the socure document capture screen' do
-            expect(response).to redirect_to idv_socure_document_capture_url
+            expect(response).to redirect_to idv_hybrid_mobile_socure_document_capture_url
           end
         end
 
@@ -167,7 +167,7 @@ RSpec.describe Idv::HybridMobile::EntryController do
         let(:idv_vendor) { Idp::Constants::Vendors::SOCURE }
 
         it 'redirects to the first step' do
-          expect(response).to redirect_to idv_socure_document_capture_url
+          expect(response).to redirect_to idv_hybrid_mobile_socure_document_capture_url
         end
       end
 

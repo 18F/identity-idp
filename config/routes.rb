@@ -358,6 +358,7 @@ Rails.application.routes.draw do
       get '/hybrid_mobile/document_capture' => 'hybrid_mobile/document_capture#show'
       put '/hybrid_mobile/document_capture' => 'hybrid_mobile/document_capture#update'
       get '/hybrid_mobile/capture_complete' => 'hybrid_mobile/capture_complete#show'
+      get '/hybrid_mobile/socure/document_capture' => 'hybrid_mobile/socure/document_capture#show', as: :hybrid_mobile_socure_document_capture
       get '/hybrid_handoff' => 'hybrid_handoff#show'
       put '/hybrid_handoff' => 'hybrid_handoff#update'
       get '/link_sent' => 'link_sent#show'

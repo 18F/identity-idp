@@ -16,7 +16,7 @@ module Idv
 
         case doc_auth_vendor
         when Idp::Constants::Vendors::SOCURE
-          redirect_to idv_socure_document_capture_url
+          redirect_to idv_hybrid_mobile_socure_document_capture_url
         when Idp::Constants::Vendors::MOCK, Idp::Constants::Vendors::LEXIS_NEXIS
           redirect_to idv_hybrid_mobile_document_capture_url
         end
