@@ -1,0 +1,3 @@
+module ThreatMetrixHelper
+
+end
