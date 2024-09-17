@@ -91,6 +91,8 @@ RSpec.describe Idv::HybridMobile::EntryController do
       end
 
       context 'doc auth vendor is lexis nexis' do
+        let(:idv_vendor) { Idp::Constants::Vendors::LEXIS_NEXIS }
+
         it 'redirects to the first step' do
           expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
         end
@@ -144,6 +146,8 @@ RSpec.describe Idv::HybridMobile::EntryController do
         end
 
         context 'doc auth vendor is lexis nexis' do
+          let(:idv_vendor) { Idp::Constants::Vendors::LEXIS_NEXIS }
+
           it 'redirects to the document capture screen' do
             expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
           end

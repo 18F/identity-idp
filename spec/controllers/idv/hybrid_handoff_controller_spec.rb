@@ -336,7 +336,7 @@ RSpec.describe Idv::HybridHandoffController do
 
           get :show
 
-          expect(response).to redirect_to(idv_socure_document_capture_path)
+          expect(response).to render_template :show
         end
       end
 
@@ -346,7 +346,7 @@ RSpec.describe Idv::HybridHandoffController do
 
           get :show, params: { redo: true }
 
-          expect(response).to redirect_to(idv_socure_document_capture_path)
+          expect(response).to render_template :show
         end
 
         context 'idv_session.skip_hybrid_handoff? is true' do
