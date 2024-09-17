@@ -11,21 +11,27 @@ RSpec.feature 'Analytics Regression', :js do
   let(:threatmetrix) { true }
   let(:idv_level) { 'in_person' }
   let(:threatmetrix_response) do
-    { client: nil,
+    {
+      client: nil,
       errors: {},
       exception: nil,
       response_body: { "fraudpoint.score": '500',
                        request_id: '1234',
                        request_result: 'success',
+                       account_lex_id: 'super-cool-test-lex-id',
+                       session_id: 'super-cool-test-session-id',
                        review_status: 'pass',
                        risk_rating: 'trusted',
                        summary_risk_score: '-6',
                        tmx_risk_rating: 'neutral',
                        tmx_summary_reason_code: ['Identity_Negative_History'] },
       review_status: 'pass',
+      account_lex_id: 'super-cool-test-lex-id',
+      session_id: 'super-cool-test-session-id',
       success: true,
       timed_out: false,
-      transaction_id: 'ddp-mock-transaction-id-123' }
+      transaction_id: 'ddp-mock-transaction-id-123',
+    }
   end
   let(:base_proofing_components) do
     {
@@ -767,14 +773,18 @@ RSpec.feature 'Analytics Regression', :js do
       let(:proofing_device_profiling) { :disabled }
       let(:threatmetrix) { false }
       let(:threatmetrix_response) do
-        { client: 'tmx_disabled',
+        {
+          client: 'tmx_disabled',
           success: true,
           errors: {},
           exception: nil,
           timed_out: false,
           transaction_id: nil,
           review_status: 'pass',
-          response_body: nil }
+          account_lex_id: nil,
+          session_id: nil,
+          response_body: nil,
+        }
       end
 
       it 'records all of the events' do
@@ -843,14 +853,18 @@ RSpec.feature 'Analytics Regression', :js do
       let(:proofing_device_profiling) { :disabled }
       let(:threatmetrix) { false }
       let(:threatmetrix_response) do
-        { client: 'tmx_disabled',
+        {
+          client: 'tmx_disabled',
           success: true,
           errors: {},
           exception: nil,
           timed_out: false,
           transaction_id: nil,
           review_status: 'pass',
-          response_body: nil }
+          account_lex_id: nil,
+          session_id: nil,
+          response_body: nil,
+        }
       end
 
       it 'records all of the events' do
@@ -888,14 +902,18 @@ RSpec.feature 'Analytics Regression', :js do
       let(:proofing_device_profiling) { :disabled }
       let(:threatmetrix) { false }
       let(:threatmetrix_response) do
-        { client: 'tmx_disabled',
+        {
+          client: 'tmx_disabled',
           success: true,
           errors: {},
           exception: nil,
           timed_out: false,
           transaction_id: nil,
           review_status: 'pass',
-          response_body: nil }
+          account_lex_id: nil,
+          session_id: nil,
+          response_body: nil,
+        }
       end
 
       it 'records all of the events' do
@@ -945,14 +963,18 @@ RSpec.feature 'Analytics Regression', :js do
       let(:idv_level) { 'legacy_in_person' }
       let(:threatmetrix) { false }
       let(:threatmetrix_response) do
-        { client: 'tmx_disabled',
+        {
+          client: 'tmx_disabled',
           success: true,
           errors: {},
           exception: nil,
           timed_out: false,
           transaction_id: nil,
           review_status: 'pass',
-          response_body: nil }
+          account_lex_id: nil,
+          session_id: nil,
+          response_body: nil,
+        }
       end
 
       it 'records all of the events', allow_browser_log: true do
@@ -1012,14 +1034,18 @@ RSpec.feature 'Analytics Regression', :js do
       let(:proofing_device_profiling) { :disabled }
       let(:threatmetrix) { false }
       let(:threatmetrix_response) do
-        { client: 'tmx_disabled',
+        {
+          client: 'tmx_disabled',
           success: true,
           errors: {},
           exception: nil,
           timed_out: false,
           transaction_id: nil,
           review_status: 'pass',
-          response_body: nil }
+          account_lex_id: nil,
+          session_id: nil,
+          response_body: nil,
+        }
       end
 
       it 'records all of the events' do
@@ -1069,14 +1095,18 @@ RSpec.feature 'Analytics Regression', :js do
       let(:proofing_device_profiling) { :disabled }
       let(:threatmetrix) { false }
       let(:threatmetrix_response) do
-        { client: 'tmx_disabled',
+        {
+          client: 'tmx_disabled',
           success: true,
           errors: {},
           exception: nil,
           timed_out: false,
           transaction_id: nil,
           review_status: 'pass',
-          response_body: nil }
+          account_lex_id: nil,
+          session_id: nil,
+          response_body: nil,
+        }
       end
 
       it 'records all of the events' do
