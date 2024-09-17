@@ -1,8 +1,7 @@
 import { isValidNumberForRegion, isValidNumber } from 'libphonenumber-js';
-import 'intl-tel-input/build/js/utils.js';
-import intlTelInput from 'intl-tel-input';
+import intlTelInput from 'intl-tel-input/intlTelInputWithUtils';
 import type { CountryCode } from 'libphonenumber-js';
-import type { Plugin as IntlTelInputPlugin, Options } from 'intl-tel-input';
+import type { Iti } from 'intl-tel-input';
 import { replaceVariables } from '@18f/identity-i18n';
 import { trackEvent } from '@18f/identity-analytics';
 
@@ -14,14 +13,6 @@ interface PhoneInputStrings {
   invalid_phone_international: string;
 
   unsupported_country: string;
-}
-
-interface IntlTelInput extends IntlTelInputPlugin {
-  flagsContainer: HTMLElement;
-
-  selectedFlag: HTMLElement;
-
-  options: Options;
 }
 
 const updateInternationalCodeInPhone = (phone, newCode) =>
@@ -40,7 +31,7 @@ export class PhoneInputElement extends HTMLElement {
 
   codeWrapper: Element | null;
 
-  iti: IntlTelInput;
+  iti: Iti;
 
   connectedCallback() {
     const textInput = this.querySelector<HTMLInputElement>('.phone-input__number');
@@ -103,7 +94,15 @@ export class PhoneInputElement extends HTMLElement {
    * @see https://w3c.github.io/aria/#combobox
    */
   get valueText(): HTMLElement {
-    return this.iti.selectedFlag.querySelector('.usa-sr-only')!;
+    return this.selectedCountry.querySelector('.iti__a11y-text')!;
+  }
+
+  get selectedCountry(): HTMLElement {
+    return this.querySelector('.iti__selected-country')!;
+  }
+
+  get countryList(): HTMLUListElement | null {
+    return this.querySelector('.iti__country-list')!;
   }
 
   /**
@@ -125,8 +124,8 @@ export class PhoneInputElement extends HTMLElement {
       this.codeInput.value = countryCode;
       // Move value text from title attribute to the flag's hidden text element.
       // See: https://github.com/jackocnr/intl-tel-input/blob/d54b127/src/js/intlTelInput.js#L1191-L1197
-      this.valueText.textContent = this.iti.selectedFlag.title;
-      this.iti.selectedFlag.removeAttribute('title');
+      this.valueText.textContent = this.selectedCountry.title;
+      this.selectedCountry.removeAttribute('title');
       if (fireChangeEvent) {
         this.codeInput.dispatchEvent(new CustomEvent('change', { bubbles: true }));
       }
@@ -137,21 +136,23 @@ export class PhoneInputElement extends HTMLElement {
     const { supportedCountryCodes, countryCodePairs } = this;
 
     const iti = intlTelInput(this.textInput, {
-      preferredCountries: ['US', 'CA'],
+      countryOrder: ['US', 'CA'],
       initialCountry: this.codeInput.value,
-      localizedCountries: countryCodePairs,
+      i18n: countryCodePairs,
       onlyCountries: supportedCountryCodes,
       autoPlaceholder: 'off',
-    }) as IntlTelInput;
+      formatAsYouType: false,
+      useFullscreenPopup: false,
+    });
 
     this.iti = iti;
 
     // Remove duplicate items in the country list
     const preferred: NodeListOf<HTMLLIElement> =
-      iti.countryList.querySelectorAll('.iti__preferred');
+      this.countryList!.querySelectorAll('.iti__preferred');
     preferred.forEach((listItem) => {
       const { countryCode } = listItem.dataset;
-      const duplicates: NodeListOf<HTMLLIElement> = iti.countryList.querySelectorAll(
+      const duplicates: NodeListOf<HTMLLIElement> = this.countryList!.querySelectorAll(
         `.iti__standard[data-country-code="${countryCode}"]`,
       );
       duplicates.forEach((duplicateListItem) => {
@@ -160,11 +161,9 @@ export class PhoneInputElement extends HTMLElement {
     });
 
     // Improve base accessibility of intl-tel-input
-    const valueText = document.createElement('div');
-    valueText.classList.add('usa-sr-only');
-    iti.selectedFlag.appendChild(valueText);
-    iti.selectedFlag.setAttribute('aria-label', this.strings.country_code_label);
-    iti.selectedFlag.removeAttribute('aria-owns');
+    this.selectedCountry.setAttribute('aria-haspopup', 'listbox');
+    this.selectedCountry.setAttribute('aria-label', this.strings.country_code_label);
+    this.selectedCountry.removeAttribute('aria-owns');
 
     this.syncCountryToCodeInput({ fireChangeEvent: false });
 
