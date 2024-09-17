@@ -18,15 +18,13 @@ interface AuthenticatorAttestationResponseBrowserSupport
 type PublicKeyCredentialHintType = 'client-device' | 'security-key' | 'hybrid';
 
 interface EnrollOptions {
+  platformAuthenticator?: boolean;
+
   user: PublicKeyCredentialUserEntity;
 
   challenge: BufferSource;
 
   excludeCredentials: PublicKeyCredentialDescriptor[];
-
-  authenticatorAttachment?: AuthenticatorAttachment;
-
-  hints?: Array<PublicKeyCredentialHintType>;
 }
 
 interface EnrollResult {
@@ -80,11 +78,10 @@ const SUPPORTED_ALGORITHMS: COSEAlgorithm[] = [
 ];
 
 async function enrollWebauthnDevice({
+  platformAuthenticator = false,
   user,
   challenge,
   excludeCredentials,
-  authenticatorAttachment,
-  hints,
 }: EnrollOptions): Promise<EnrollResult> {
   const credential = (await navigator.credentials.create({
     publicKey: {
@@ -94,11 +91,16 @@ async function enrollWebauthnDevice({
       pubKeyCredParams: SUPPORTED_ALGORITHMS.map((alg) => ({ alg, type: 'public-key' })),
       timeout: 800000,
       attestation: 'none',
-      hints,
+      hints: platformAuthenticator ? ['client-device', 'hybrid'] : ['security-key'],
       authenticatorSelection: {
-        // Prevents user from needing to use PIN with Security Key
+        // A user is assumed to be AAL2 recently authenticated before being permitted to add an
+        // authentication method to their account. Additionally, unless explicitly discouraged,
+        // Windows devices will prompt the user to add a PIN to their security key. When used as a
+        // single-factor authenticator in combination with a memorized secret (password), proving
+        // possession is sufficient, and a PIN ("something you know") is unnecessary friction that
+        // contributes to abandonment or loss of access.
         userVerification: 'discouraged',
-        authenticatorAttachment,
+        authenticatorAttachment: platformAuthenticator ? 'platform' : 'cross-platform',
       },
       excludeCredentials,
     } as PublicKeyCredentialCreationOptionsWithHints,

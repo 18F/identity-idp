@@ -61,8 +61,6 @@ describe('enrollWebauthnDevice', () => {
         user,
         challenge,
         excludeCredentials,
-        authenticatorAttachment: 'cross-platform',
-        hints: ['security-key'],
       });
 
       expect(navigator.credentials.create).to.have.been.calledWith({
@@ -130,16 +128,15 @@ describe('enrollWebauthnDevice', () => {
     context('platform authenticator', () => {
       it('enrolls a device with correct authenticatorAttachment', async () => {
         await enrollWebauthnDevice({
+          platformAuthenticator: true,
           user,
           challenge,
           excludeCredentials,
-          authenticatorAttachment: 'platform',
-          hints: ['client-device'],
         });
 
         expect(navigator.credentials.create).to.have.been.calledWithMatch({
           publicKey: {
-            hints: ['client-device'],
+            hints: ['client-device', 'hybrid'],
             authenticatorSelection: {
               authenticatorAttachment: 'platform',
             },
@@ -162,7 +159,6 @@ describe('enrollWebauthnDevice', () => {
         user,
         challenge,
         excludeCredentials,
-        authenticatorAttachment: 'cross-platform',
       });
 
       expect(result.transports).to.equal(undefined);
@@ -182,7 +178,6 @@ describe('enrollWebauthnDevice', () => {
         user,
         challenge,
         excludeCredentials,
-        authenticatorAttachment: 'cross-platform',
       });
 
       expect(result.authenticatorDataFlagsValue).to.equal(undefined);
