@@ -161,6 +161,7 @@ RSpec.feature 'document capture step', :js do
           fill_out_ssn_form_ok
           click_idv_continue
           complete_verify_step
+          # expect(page).to have_content(t('doc_auth.headings.document_capture_selfie'))
           expect(page).to have_current_path(idv_phone_url)
         end
       end
@@ -191,7 +192,9 @@ RSpec.feature 'document capture step', :js do
               expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
               expect_doc_capture_page_header(t('doc_auth.headings.document_capture_with_selfie'))
               expect_doc_capture_id_subheader
-              expect_doc_capture_selfie_subheader
+              if !IdentityConfig.store.doc_auth_separate_pages_enabled
+                expect_doc_capture_selfie_subheader
+              end
               attach_liveness_images
               submit_images
 
@@ -213,7 +216,9 @@ RSpec.feature 'document capture step', :js do
             # when there are multiple doc auth errors on front and back
             it 'shows the correct error message for the given error' do
               perform_in_browser(:mobile) do
+                wait_for_form_page_load
                 use_id_image('ial2_test_credential_multiple_doc_auth_failures_both_sides.yml')
+                continue_to_selfie_upload
                 use_selfie_image('ial2_test_credential_multiple_doc_auth_failures_both_sides.yml')
                 submit_images
 
@@ -332,6 +337,7 @@ RSpec.feature 'document capture step', :js do
                 complete_up_to_how_to_verify_step_for_opt_in_ipp(
                   biometric_comparison_required: true,
                 )
+                # expect(page).to have_content("tsadest")
                 complete_verify_step
               end
             end
@@ -431,7 +437,9 @@ RSpec.feature 'document capture step', :js do
               expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
               expect_doc_capture_page_header(t('doc_auth.headings.document_capture_with_selfie'))
               expect_doc_capture_id_subheader
-              expect_doc_capture_selfie_subheader
+              if !IdentityConfig.store.doc_auth_separate_pages_enabled
+                expect_doc_capture_selfie_subheader
+              end
               attach_liveness_images
               submit_images
 
@@ -521,7 +529,9 @@ RSpec.feature 'document capture step', :js do
       expect(page).to have_content(t('doc_auth.errors.rate_limited_heading'))
       click_try_again
       expect(page).to have_content(t('doc_auth.headings.review_issues'))
-      attach_liveness_images
+      # expect(page).to have_content('test')
+      attach_images
+      attach_selfie
       submit_images
       expect(page).to have_content(t('doc_auth.headings.capture_complete'))
     end
@@ -590,12 +600,19 @@ RSpec.feature 'document capture step', :js do
     end
   end
 
+  def continue_to_selfie_upload
+    if IdentityConfig.store.doc_auth_separate_pages_enabled
+      continue_doc_auth_form
+    end
+  end
+
   def expect_to_try_again
     click_try_again
     expect(page).to have_current_path(idv_document_capture_path)
   end
 
   def use_id_image(filename)
+    expect(page).to have_content('Front of your ID')
     attach_images Rails.root.join('spec', 'fixtures', filename)
   end
 

@@ -104,6 +104,11 @@ module DocAuthHelper
     if remote
       if biometric_comparison_required
         click_on t('forms.buttons.continue_remote_selfie')
+        if IdentityConfig.store.doc_auth_separate_pages_enabled
+          attach_images
+          continue_doc_auth_form
+          attach_selfie
+        end
       else
         click_on t('forms.buttons.continue_remote')
       end
@@ -113,6 +118,11 @@ module DocAuthHelper
   end
 
   def complete_document_capture_step(with_selfie: false)
+    if IdentityConfig.store.doc_auth_separate_pages_enabled
+      attach_and_submit_images_for_split_doc_auth(with_selfie: with_selfie)
+      return
+    end
+
     if with_selfie
       attach_liveness_images
     else
