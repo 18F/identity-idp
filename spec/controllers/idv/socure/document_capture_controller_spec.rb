@@ -6,13 +6,14 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
   let(:idv_vendor) { Idp::Constants::Vendors::SOCURE }
   let(:fake_socure_endpoint) { 'https://fake-socure.com' }
   let(:user) { create(:user) }
-  let(:stored_result) { { success: true, errors: {} } }
+  let(:stored_result) { nil }
 
   before do
     allow(IdentityConfig.store).to receive(:socure_document_request_endpoint).
       and_return(fake_socure_endpoint)
     allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(idv_vendor)
     allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(idv_vendor)
+
     allow(subject).to receive(:stored_result).and_return(stored_result)
   end
 
@@ -35,12 +36,14 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
     let(:request_class) { DocAuth::Socure::Requests::DocumentRequest }
 
     let(:expected_uuid) { 'document_capture_session_uuid' }
-    let(:expected_redirect_url) { idv_socure_document_capture_url }
     let(:expected_language) { :en }
     let(:response_body) { {} }
 
     before do
-      stub_request(:post, fake_socure_endpoint).to_return(status: 200, body: JSON.generate(response_body))
+      stub_request(:post, fake_socure_endpoint).to_return(
+        status: 200,
+        body: JSON.generate(response_body),
+      )
 
       stub_sign_in(user)
       stub_up_to(:hybrid_handoff, idv_session: subject.idv_session)
@@ -53,12 +56,11 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       let(:response_body) { { data: { url: response_redirect_url } } }
 
       before do
-        allow(request_class).to receive(:new).with(any_args).and_call_original
+        allow(request_class).to receive(:new).and_call_original
+        get(:show)
       end
 
       it 'creates a DocumentRequest' do
-        get(:show)
-
         expect(request_class).to have_received(:new).
           with(
             document_capture_session_uuid: expected_uuid,
@@ -68,24 +70,22 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       end
 
       it 'does the correct POST to Socure' do
-        expected_request_body = JSON.generate(
-          {
-            config: {
-              documentType: 'license',
-              redirect: {
-                method: 'POST',
-                url: expected_redirect_url,
-              },
-              language: expected_language,
-            },
-            customerUserId: expected_uuid,
-          },
-        )
-
-        get(:show)
-
         expect(WebMock).to have_requested(:post, fake_socure_endpoint).
-          with(body: expected_request_body)
+          with(
+            body: JSON.generate(
+              {
+                config: {
+                  documentType: 'license',
+                  redirect: {
+                    method: 'POST',
+                    url: idv_socure_document_capture_url,
+                  },
+                  language: expected_language,
+                },
+                customerUserId: expected_uuid,
+              },
+            ),
+          )
       end
 
       it 'redirects' do
@@ -113,19 +113,20 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
     let(:document_capture_session) do
       DocumentCaptureSession.create(
         user: user,
-        requested_at: Time.zone.now(),
+        requested_at: Time.zone.now,
       )
     end
 
     let(:result_success) { true }
-    let(:return_body) do
-      JSON.generate({ success: result_success })
-    end
+    let(:stored_result) { { success: result_success } }
 
     before do
-      stub_request(:post, fake_socure_endpoint).
-        to_return(body: return_body)
+      allow(stored_result).to receive(:success?).and_return(result_success)
+      allow(stored_result).to receive(:attention_with_barcode?).and_return(false)
+      allow(stored_result).to receive(:pii_from_doc).and_return({})
+      allow(stored_result).to receive(:selfie_check_performed?).and_return(false)
 
+      stub_request(:post, fake_socure_endpoint)
       stub_sign_in(user)
       stub_up_to(:hybrid_handoff, idv_session: subject.idv_session)
 
