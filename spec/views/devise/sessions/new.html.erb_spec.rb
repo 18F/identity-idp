@@ -228,6 +228,23 @@ RSpec.describe 'devise/sessions/new.html.erb' do
         expect(rendered).not_to have_css('lg-captcha-submit-button')
       end
 
+      it 'does not render the recaptcha disclaimer text' do
+        expect(rendered).not_to have_content(
+          strip_tags(
+            t(
+              'two_factor_authentication.sign_in.recaptcha.disclosure_statement_html',
+              google_policy_link_html: new_tab_link_to(
+                t('two_factor_authentication.recaptcha.google_policy_link'),
+                GooglePolicySite.privacy_url,
+              ),
+              google_tos_link_html: new_tab_link_to(
+                t('two_factor_authentication.recaptcha.google_tos_link'), GooglePolicySite.terms_url
+              ),
+            ),
+          ),
+        )
+      end
+
       context 'recaptcha mock validator is enabled' do
         let(:recaptcha_mock_validator) { true }
 
