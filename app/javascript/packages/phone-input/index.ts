@@ -106,10 +106,6 @@ export class PhoneInputElement extends HTMLElement {
     return this.iti.selectedFlag.querySelector('.usa-sr-only')!;
   }
 
-  get hasDropdown(): boolean {
-    return Boolean(this.supportedCountryCodes && this.supportedCountryCodes.length > 1);
-  }
-
   /**
    * Logs an event when the country code has been changed.
    */
@@ -127,12 +123,10 @@ export class PhoneInputElement extends HTMLElement {
     const countryCode = this.getSelectedCountryCode();
     if (countryCode) {
       this.codeInput.value = countryCode;
-      if (this.hasDropdown) {
-        // Move value text from title attribute to the flag's hidden text element.
-        // See: https://github.com/jackocnr/intl-tel-input/blob/d54b127/src/js/intlTelInput.js#L1191-L1197
-        this.valueText.textContent = this.iti.selectedFlag.title;
-        this.iti.selectedFlag.removeAttribute('title');
-      }
+      // Move value text from title attribute to the flag's hidden text element.
+      // See: https://github.com/jackocnr/intl-tel-input/blob/d54b127/src/js/intlTelInput.js#L1191-L1197
+      this.valueText.textContent = this.iti.selectedFlag.title;
+      this.iti.selectedFlag.removeAttribute('title');
       if (fireChangeEvent) {
         this.codeInput.dispatchEvent(new CustomEvent('change', { bubbles: true }));
       }
@@ -148,32 +142,29 @@ export class PhoneInputElement extends HTMLElement {
       localizedCountries: countryCodePairs,
       onlyCountries: supportedCountryCodes,
       autoPlaceholder: 'off',
-      allowDropdown: this.hasDropdown,
     }) as IntlTelInput;
 
     this.iti = iti;
 
-    if (this.hasDropdown) {
-      // Remove duplicate items in the country list
-      const preferred: NodeListOf<HTMLLIElement> =
-        iti.countryList.querySelectorAll('.iti__preferred');
-      preferred.forEach((listItem) => {
-        const { countryCode } = listItem.dataset;
-        const duplicates: NodeListOf<HTMLLIElement> = iti.countryList.querySelectorAll(
-          `.iti__standard[data-country-code="${countryCode}"]`,
-        );
-        duplicates.forEach((duplicateListItem) => {
-          duplicateListItem.parentNode?.removeChild(duplicateListItem);
-        });
+    // Remove duplicate items in the country list
+    const preferred: NodeListOf<HTMLLIElement> =
+      iti.countryList.querySelectorAll('.iti__preferred');
+    preferred.forEach((listItem) => {
+      const { countryCode } = listItem.dataset;
+      const duplicates: NodeListOf<HTMLLIElement> = iti.countryList.querySelectorAll(
+        `.iti__standard[data-country-code="${countryCode}"]`,
+      );
+      duplicates.forEach((duplicateListItem) => {
+        duplicateListItem.parentNode?.removeChild(duplicateListItem);
       });
+    });
 
-      // Improve base accessibility of intl-tel-input
-      const valueText = document.createElement('div');
-      valueText.classList.add('usa-sr-only');
-      iti.selectedFlag.appendChild(valueText);
-      iti.selectedFlag.setAttribute('aria-label', this.strings.country_code_label);
-      iti.selectedFlag.removeAttribute('aria-owns');
-    }
+    // Improve base accessibility of intl-tel-input
+    const valueText = document.createElement('div');
+    valueText.classList.add('usa-sr-only');
+    iti.selectedFlag.appendChild(valueText);
+    iti.selectedFlag.setAttribute('aria-label', this.strings.country_code_label);
+    iti.selectedFlag.removeAttribute('aria-owns');
 
     this.syncCountryToCodeInput({ fireChangeEvent: false });
 
