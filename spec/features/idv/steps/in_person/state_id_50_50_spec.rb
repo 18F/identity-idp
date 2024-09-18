@@ -71,11 +71,8 @@ RSpec.describe 'state id 50/50 state', :js, allow_browser_log: true do
         page.refresh
       end
 
-      it 'renders the 404 page' do
-        expect(page).to have_content(
-          "The page you were looking for doesn’t exist.\nYou might want to double-check your link" \
-          " and try again. (404)",
-        )
+      it 'renders the state ID controller page without error' do
+        expect(page).to have_current_path(idv_in_person_proofing_state_id_path, wait: 10)
       end
     end
 
