@@ -192,14 +192,22 @@ FactoryBot.define do
 
     trait :proofed do
       fully_registered
+      confirmed_at { Time.zone.now.round }
 
       after :build do |user|
-        create(:profile, :active, :verified, :with_pii, user: user)
+        create(
+          :profile,
+          :active,
+          :with_pii,
+          user: user,
+          proofing_components: { document_check: 'mock', document_type: 'state_id' },
+        )
       end
     end
 
     trait :proofed_with_selfie do
       fully_registered
+      confirmed_at { Time.zone.now.round }
 
       after :build do |user|
         create(
@@ -209,6 +217,7 @@ FactoryBot.define do
           :with_pii,
           idv_level: :unsupervised_with_selfie,
           user: user,
+          proofing_components: { document_check: 'mock', document_type: 'biometric' },
         )
       end
     end
@@ -223,13 +232,6 @@ FactoryBot.define do
     trait :with_establishing_in_person_enrollment do
       after :build do |user|
         create(:in_person_enrollment, :establishing, user: user)
-      end
-    end
-
-    trait :proofed_in_person_enrollment do
-      proofed
-      after :build do |user|
-        create(:in_person_enrollment, status: 'passed', user: user)
       end
     end
 
@@ -265,10 +267,34 @@ FactoryBot.define do
       end
     end
 
-    trait :proofed_with_gpo do
-      proofed
+    trait :proofed_in_person_enrollment do
+      fully_registered
+      confirmed_at { Time.zone.now.round }
+
       after :build do |user|
-        profile = user.active_profile
+        create(
+          :profile,
+          :active,
+          :with_pii,
+          user: user,
+          proofing_components: { document_check: 'mock', document_type: 'ipp' },
+        )
+        create(:in_person_enrollment, status: 'passed', user: user)
+      end
+    end
+
+    trait :proofed_with_gpo do
+      fully_registered
+      confirmed_at { Time.zone.now.round }
+
+      after :build do |user|
+        profile = create(
+          :profile,
+          :active,
+          :with_pii,
+          user: user,
+          proofing_components: { document_check: 'mock', document_type: 'gpo' },
+        )
         gpo_code = create(:gpo_confirmation_code)
         profile.gpo_confirmation_codes << gpo_code
         device = create(:device, user: user)

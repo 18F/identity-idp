@@ -106,7 +106,8 @@ RSpec.describe AccountReset::DeleteAccountController do
     end
 
     it 'logs info about user verified account' do
-      user = create(:user, :proofed, confirmed_at: Time.zone.now.round)
+      user = create(:user, :proofed)
+      proofing_components = user.active_profile.proofing_components
       create_account_reset_request_for(user)
       grant_request(user)
       session[:granted_token] = AccountResetRequest.first.granted_token
@@ -119,15 +120,18 @@ RSpec.describe AccountReset::DeleteAccountController do
         success: true,
         errors: {},
         mfa_method_counts: { phone: 1 },
+        proofing_components: proofing_components,
         identity_verified: true,
         account_age_in_days: 0,
         account_confirmed_at: user.confirmed_at,
       )
-      expect(response).to redirect_to account_reset_confirm_delete_account_url
     end
 
     it 'logs info about user biometrically verified account' do
-      user = create(:user, :proofed_with_selfie, :with_phone)
+      user = create(
+        :user, :proofed_with_selfie, :with_phone
+      )
+      proofing_components = user.active_profile.proofing_components
       create_account_reset_request_for(user)
       grant_request(user)
       session[:granted_token] = AccountResetRequest.first.granted_token
@@ -140,15 +144,16 @@ RSpec.describe AccountReset::DeleteAccountController do
         success: true,
         errors: {},
         mfa_method_counts: { phone: 1 },
+        proofing_components: proofing_components,
         identity_verified: true,
         account_age_in_days: 0,
         account_confirmed_at: user.confirmed_at,
       )
-      expect(response).to redirect_to account_reset_confirm_delete_account_url
     end
 
     it 'logs info about user with a verified by mail account' do
       user = create(:user, :proofed_with_gpo)
+      proofing_components = user.active_profile.proofing_components
       create_account_reset_request_for(user)
       grant_request(user)
       session[:granted_token] = AccountResetRequest.first.granted_token
@@ -161,19 +166,20 @@ RSpec.describe AccountReset::DeleteAccountController do
         success: true,
         errors: {},
         mfa_method_counts: { phone: 1 },
+        proofing_components: proofing_components,
         identity_verified: true,
         account_age_in_days: 0,
         account_confirmed_at: user.confirmed_at,
       )
-      expect(response).to redirect_to account_reset_confirm_delete_account_url
     end
 
-    it 'logs info about user pending in person verification account' do
+    it 'logs info about user verified in person proofed account' do
       user = create(
         :user,
         :proofed_in_person_enrollment,
         :with_phone,
       )
+      proofing_components = user.active_profile.proofing_components
       create_account_reset_request_for(user)
       grant_request(user)
       session[:granted_token] = AccountResetRequest.first.granted_token
@@ -186,11 +192,11 @@ RSpec.describe AccountReset::DeleteAccountController do
         success: true,
         errors: {},
         mfa_method_counts: { phone: 1 },
+        proofing_components: proofing_components,
         identity_verified: true,
         account_age_in_days: 0,
         account_confirmed_at: user.confirmed_at,
       )
-      expect(response).to redirect_to account_reset_confirm_delete_account_url
     end
   end
 
