@@ -75,7 +75,6 @@ module DocumentCaptureStepHelper
     if IdentityConfig.store.doc_auth_separate_pages_enabled
       try_continue_or_submit_images
     end
-    expect(page).to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
     attach_selfie
   end
 

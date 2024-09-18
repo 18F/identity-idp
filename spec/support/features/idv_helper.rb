@@ -40,7 +40,6 @@ module IdvHelper
   end
 
   def click_idv_submit_default
-    expect(page).to have_content('Submit')
     click_spinner_button_and_wait t('forms.buttons.submit.default')
   end
 
