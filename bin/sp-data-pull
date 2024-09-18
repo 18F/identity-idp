@@ -51,3 +51,21 @@ def median(dataset)
   len = sorted.length
   (sorted[(len - 1) / 2] + sorted[len / 2]) / 2.0
 end
+
+p ' === Results ==='
+p "Total number in dataset: #{user_uuids.count}"
+
+# These are not quite right atm
+p '=== Accounts with no service provider ==='
+p "Number of accounts: #{no_sp_users.count}"
+p "Median number of logins: #{median(no_sp_sign_ins_per_user)}"
+
+p '=== Accounts with one service provider ==='
+p "Count of users with one service provider: #{single_sp_users.count}"
+p "Service providers associated with accounts with one SP added: #{single_sp_tally}"
+p "Median number of logins annually: #{median(single_sp_sign_ins_per_user)}"
+
+p '=== Accounts with multiple service providers'
+p "Count of users with multiple service providers: #{multiple_sp_users.count}"
+p "List of Service Providers #{multiple_sp_list}"
+p "Median number of logins annually: #{median(multiple_sp_sign_ins_per_user)}"
