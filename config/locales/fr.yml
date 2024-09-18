@@ -1428,6 +1428,7 @@ notices.privacy.security_and_privacy_practices: Déclaration relatives à la loi
 notices.resend_confirmation_email.success: Nous avons envoyé un autre e-mail de confirmation.
 notices.session_cleared: Pour votre sécurité, nous effaçons les informations que vous avez saisies si vous ne passez pas à une nouvelle page dans les %{minutes} minutes.
 notices.session_timedout: Nous vous avons déconnecté. Pour votre sécurité, %{app_name} désactive votre session si vous n’êtes pas passé à une nouvelle page après %{minutes} minutes.
+notices.sign_in.recaptcha.disclosure_statement_html: Ce site est protégé par reCAPTCHA. Les %{google_policy_link_html} et %{google_tos_link_html} de Google s’appliquent.
 notices.signed_up_and_confirmed.first_paragraph_end: avec un lien pour confirmer votre adresse e-mail. Suivez le lien pour continuer à ajouter cet adresse e-mail à votre compte.
 notices.signed_up_and_confirmed.first_paragraph_start: Nous avons envoyé un e-mail à
 notices.signed_up_and_confirmed.no_email_sent_explanation_start: Vous n’avez pas reçu d’e-mail ?
@@ -1733,7 +1734,6 @@ two_factor_authentication.recaptcha.google_policy_link: politique de confidentia
 two_factor_authentication.recaptcha.google_tos_link: conditions de service
 two_factor_authentication.recaptcha.login_tos_link: conditions d’utilisation mobile
 two_factor_authentication.recommended: Recommandation
-two_factor_authentication.sign_in.recaptcha.disclosure_statement_html: Ce site est protégé par reCAPTCHA. Les %{google_policy_link_html} et %{google_tos_link_html} de Google s’appliquent.
 two_factor_authentication.totp_header_text: Saisir votre code d’appli d’authentification
 two_factor_authentication.two_factor_aal3_choice: Authentification supplémentaire requise
 two_factor_authentication.two_factor_aal3_choice_intro: Cette appli nécessite un niveau de sécurité plus élevé. Vous devez vérifier votre identité à l’aide d’un dispositif physique tel qu’une clé de sécurité ou une carte d’employé fédéral (PIV ou CAC) pour accéder à vos informations.
