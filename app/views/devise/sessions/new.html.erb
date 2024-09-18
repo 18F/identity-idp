@@ -95,7 +95,7 @@
           ),
         ) %>
   </p>
-  <% if FeatureManagement.sign_in_recaptcha_enabled? || true %>
+  <% if FeatureManagement.sign_in_recaptcha_enabled? %>
     <p class="margin-top-4">
       <%= t(
             'two_factor_authentication.sign_in.recaptcha.disclosure_statement_html',
