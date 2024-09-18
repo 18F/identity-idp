@@ -248,15 +248,16 @@ RSpec.describe 'devise/sessions/new.html.erb' do
 
       it 'renders recaptcha disclaimer text' do
         expect(rendered).to have_content(
-          t(
-            'two_factor_authentication.sign_in.recaptcha.disclosure_statement_html',
-            app_name: APP_NAME,
-            google_policy_link_html: new_tab_link_to(
-              t('two_factor_authentication.recaptcha.google_policy_link'),
-              GooglePolicySite.privacy_url,
-            ),
-            google_tos_link_html: new_tab_link_to(
-              t('two_factor_authentication.recaptcha.google_tos_link'), GooglePolicySite.terms_url
+          strip_tags(
+            t(
+              'two_factor_authentication.sign_in.recaptcha.disclosure_statement_html',
+              google_policy_link_html: new_tab_link_to(
+                t('two_factor_authentication.recaptcha.google_policy_link'),
+                GooglePolicySite.privacy_url,
+              ),
+              google_tos_link_html: new_tab_link_to(
+                t('two_factor_authentication.recaptcha.google_tos_link'), GooglePolicySite.terms_url
+              ),
             ),
           ),
         )
