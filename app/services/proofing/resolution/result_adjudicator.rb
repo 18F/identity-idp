@@ -4,7 +4,8 @@ module Proofing
   module Resolution
     class ResultAdjudicator
       attr_reader :resolution_result, :state_id_result, :device_profiling_result,
-                  :ipp_enrollment_in_progress, :residential_resolution_result, :same_address_as_id
+                  :ipp_enrollment_in_progress, :residential_resolution_result, :same_address_as_id,
+                  :applicant_pii
 
       def initialize(
         resolution_result:, # InstantVerify
@@ -13,7 +14,8 @@ module Proofing
         should_proof_state_id:,
         ipp_enrollment_in_progress:,
         device_profiling_result:,
-        same_address_as_id:
+        same_address_as_id:,
+        applicant_pii:
       )
         @resolution_result = resolution_result
         @state_id_result = state_id_result
@@ -22,6 +24,7 @@ module Proofing
         @device_profiling_result = device_profiling_result
         @residential_resolution_result = residential_resolution_result
         @same_address_as_id = same_address_as_id # this is a string, "true" or "false"
+        @applicant_pii = applicant_pii
       end
 
       def adjudicated_result
@@ -46,6 +49,7 @@ module Proofing
                 threatmetrix: device_profiling_result.to_h,
               },
             },
+            biographical_info: biographical_info,
           },
         )
       end
@@ -111,6 +115,21 @@ module Proofing
         passed_state_id_attributes = state_id_result.verified_attributes
 
         (failed_resolution_attributes.to_a - passed_state_id_attributes.to_a).empty?
+      end
+
+      def biographical_info
+        state_id_number = applicant_pii[:state_id_number]
+        redacted_state_id_number = if state_id_number.present?
+                                     StringRedacter.redact_alphanumeric(state_id_number)
+                                   end
+        {
+          birth_year: applicant_pii[:dob]&.to_date&.year,
+          state: applicant_pii[:state],
+          identity_doc_address_state: applicant_pii[:identity_doc_address_state],
+          state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
+          state_id_number: redacted_state_id_number,
+          same_address_as_id: applicant_pii[:same_address_as_id],
+        }
       end
     end
   end
