@@ -11,6 +11,7 @@ import {
   AcuantContextProvider,
   DeviceContext,
   InPersonContext,
+  SelfieCaptureContext,
 } from '@18f/identity-document-capture';
 import DocumentCapture from '@18f/identity-document-capture/components/document-capture';
 import { FlowContext } from '@18f/identity-verify-flow';
@@ -365,5 +366,18 @@ describe('document-capture/components/document-capture', () => {
         expect(step.closest('.step-indicator__step--current')).to.exist();
       });
     });
+  });
+
+  it('does not show selfie on first page when doc auth seperated pages enabled', () => {
+    const { queryByText } = render(
+      <SelfieCaptureContext.Provider
+        value={{ isSelfieCaptureEnabled: true, docAuthSeparatePagesEnabled: true }}
+      >
+        <DocumentCapture />
+      </SelfieCaptureContext.Provider>,
+    );
+
+    const selfie = queryByText('doc_auth.headings.document_capture_selfie');
+    expect(selfie).not.to.exist();
   });
 });

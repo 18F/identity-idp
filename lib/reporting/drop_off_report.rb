@@ -47,7 +47,6 @@ module Reporting
       IDV_PENDING_GPO = 'IdV: USPS address letter enqueued'
       IDV_ENTER_PASSWORD_SUBMITTED = 'idv_enter_password_submitted'
       OLD_IDV_ENTER_PASSWORD_SUBMITTED = 'IdV: review complete'
-      IDV_PERSONAL_KEY_SUBMITTED = 'IdV: personal key submitted'
       IDV_FINAL_RESOLUTION = 'IdV: final resolution'
       IPP_ENROLLMENT_UPDATE = 'GetUspsProofingResultsJob: Enrollment status updated'
 
@@ -223,15 +222,15 @@ module Reporting
         ],
         [
           'Verified (event)',
-          idv_personal_key_submitted,
+          idv_final_resolution_verified,
           dropoff = idv_enter_password_submitted -
-                    idv_personal_key_submitted,
+                    idv_final_resolution_verified,
           percent(
             numerator: dropoff,
             denominator: idv_enter_password_submitted,
           ),
           percent(
-            numerator: idv_personal_key_submitted,
+            numerator: idv_final_resolution_verified,
             denominator: idv_started,
           ),
         ],
@@ -262,15 +261,15 @@ module Reporting
     STEP_DEFINITIONS = [
       ['Step', 'Definition'],
       [
-        'Welcome (page viewed)',
+        'Welcome (page view)',
         'Start of proofing process',
       ],
       [
-        'User agreement (page viewer)',
+        'User agreement (page view)',
         'Users who clicked "Continue" on the welcome page',
       ],
       [
-        'Capture Document (page viewed)',
+        'Capture Document (page view)',
         'Users who check the consent checkbox and click "Continue"',
       ],
       [
@@ -303,7 +302,7 @@ module Reporting
       ],
       [
         'Verified (event)',
-        'Users who confirm their personal key and complete setting up their verified account',
+        'Users who completed identity verification in a single, unsupervised session',
       ],
       [
         'Workflow Complete - Total Pending',
@@ -355,10 +354,6 @@ module Reporting
     def idv_enter_password_submitted
       (data[Events::IDV_ENTER_PASSWORD_SUBMITTED] +
         data[Events::OLD_IDV_ENTER_PASSWORD_SUBMITTED]).count
-    end
-
-    def idv_personal_key_submitted
-      data[Events::IDV_PERSONAL_KEY_SUBMITTED].count
     end
 
     def idv_pending_gpo

@@ -42,6 +42,7 @@ function webauthn() {
       (document.getElementById('platform_authenticator') as HTMLInputElement).value === 'true';
 
     enrollWebauthnDevice({
+      platformAuthenticator,
       user: {
         id: longToByteArray(Number((document.getElementById('user_id') as HTMLInputElement).value)),
         name: (document.getElementById('user_email') as HTMLInputElement).value,
@@ -55,8 +56,6 @@ function webauthn() {
           .split(',')
           .filter(Boolean),
       ),
-      authenticatorAttachment: platformAuthenticator ? 'platform' : 'cross-platform',
-      hints: platformAuthenticator ? ['client-device', 'hybrid'] : ['security-key'],
     })
       .then((result) => {
         (document.getElementById('webauthn_id') as HTMLInputElement).value = result.webauthnId;

@@ -75,7 +75,10 @@ module Idv
 
       def pii
         pii_from_user = user_session.dig('idv/in_person', :pii_from_user) || {}
-        pii_from_user.merge(ssn: idv_session.ssn)
+        pii_from_user.merge(
+          consent_given_at: idv_session.idv_consent_given_at,
+          ssn: idv_session.ssn,
+        )
       end
 
       # override IdvSessionConcern
