@@ -103,7 +103,11 @@ module IdvStepConcern
   end
 
   def flow_policy
-    @flow_policy ||= Idv::FlowPolicy.new(idv_session: idv_session, user: current_user)
+    @flow_policy ||= Idv::FlowPolicy.new(
+      analytics: analytics,
+      idv_session: idv_session,
+      user: current_user,
+    )
   end
 
   def confirm_step_allowed

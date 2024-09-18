@@ -59,7 +59,7 @@ module Idv
         key: :how_to_verify,
         controller: self,
         next_steps: [:hybrid_handoff, :document_capture],
-        preconditions: ->(idv_session:, user:) do
+        preconditions: ->(idv_session:, user:, analytics:) do
           self.enabled? &&
           idv_session.idv_consent_given? &&
           idv_session.service_provider&.in_person_proofing_enabled

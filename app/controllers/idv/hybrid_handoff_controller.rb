@@ -60,7 +60,7 @@ module Idv
         key: :hybrid_handoff,
         controller: self,
         next_steps: [:link_sent, :document_capture],
-        preconditions: ->(idv_session:, user:) {
+        preconditions: ->(idv_session:, user:, analytics:) {
                          idv_session.idv_consent_given? &&
                            (self.selected_remote(idv_session: idv_session) || # from opt-in screen
                              # back from ipp doc capture screen

@@ -73,7 +73,7 @@ module Idv
         controller: self,
         action: :new,
         next_steps: [:otp_verification],
-        preconditions: ->(idv_session:, user:) do
+        preconditions: ->(idv_session:, user:, analytics:) do
           idv_session.verify_info_step_complete? && !idv_session.verify_by_mail?
         end,
         undo_step: ->(idv_session:, user:) do

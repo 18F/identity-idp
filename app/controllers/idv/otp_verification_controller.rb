@@ -40,7 +40,9 @@ module Idv
         key: :otp_verification,
         controller: self,
         next_steps: [:enter_password],
-        preconditions: ->(idv_session:, user:) { idv_session.phone_otp_sent? },
+        preconditions: ->(idv_session:, user:, analytics:) do
+          idv_session.phone_otp_sent?
+        end,
         undo_step: ->(idv_session:, user:) { idv_session.user_phone_confirmation = nil },
       )
     end

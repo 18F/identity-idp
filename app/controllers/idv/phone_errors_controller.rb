@@ -46,7 +46,9 @@ module Idv
         controller: self,
         action: :failure,
         next_steps: [FlowPolicy::FINAL],
-        preconditions: ->(idv_session:, user:) { idv_session.previous_phone_step_params.present? },
+        preconditions: ->(idv_session:, user:, analytics:) do
+          idv_session.previous_phone_step_params.present?
+        end,
         undo_step: ->(idv_session:, user:) {},
       )
     end

@@ -21,7 +21,9 @@ RSpec.describe 'Idv::FlowPolicy' do
   let(:user_phone_confirmation_session) { nil }
   let(:has_gpo_pending_profile) { nil }
 
-  subject { Idv::FlowPolicy.new(idv_session: idv_session, user: user) }
+  let(:analytics) { FakeAnalytics.new }
+
+  subject { Idv::FlowPolicy.new(analytics: analytics, idv_session: idv_session, user: user) }
 
   context '#controller_allowed?' do
     it 'allows the welcome step' do
@@ -141,6 +143,17 @@ RSpec.describe 'Idv::FlowPolicy' do
           idv_session.had_barcode_attention_error
         }
       end
+    end
+  end
+
+  context '#step_allowed?' do
+    it 'passes analytics to preconditions' do
+      expect(subject.steps[:root].preconditions).to receive(:call).with(
+        analytics: analytics,
+        idv_session: anything,
+        user: anything,
+      ).and_call_original
+      expect(subject.step_allowed?(key: :root)).to eql(true)
     end
   end
 

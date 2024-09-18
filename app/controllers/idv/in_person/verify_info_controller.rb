@@ -39,7 +39,7 @@ module Idv
           key: :ipp_verify_info,
           controller: self,
           next_steps: [:phone],
-          preconditions: ->(idv_session:, user:) do
+          preconditions: ->(idv_session:, user:, analytics:) do
             idv_session.ssn && idv_session.ipp_document_capture_complete?
           end,
           undo_step: ->(idv_session:, user:) do

@@ -54,7 +54,9 @@ module Idv
         key: :agreement,
         controller: self,
         next_steps: [:hybrid_handoff, :document_capture, :how_to_verify],
-        preconditions: ->(idv_session:, user:) { idv_session.welcome_visited },
+        preconditions: ->(idv_session:, user:, analytics:) do
+          idv_session.welcome_visited
+        end,
         undo_step: ->(idv_session:, user:) do
           idv_session.idv_consent_given_at = nil
           idv_session.skip_hybrid_handoff = nil

@@ -65,7 +65,7 @@ module Idv
         key: :document_capture,
         controller: self,
         next_steps: [:ssn, :ipp_ssn], # :ipp_state_id
-        preconditions: ->(idv_session:, user:) {
+        preconditions: ->(idv_session:, user:, analytics:) {
                          idv_session.flow_path == 'standard' && (
                            # mobile
                            idv_session.skip_doc_auth_from_handoff ||

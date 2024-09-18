@@ -79,7 +79,9 @@ module Idv
           key: :ipp_state_id,
           controller: self,
           next_steps: [:ipp_address, :ipp_ssn],
-          preconditions: ->(idv_session:, user:) { user.establishing_in_person_enrollment },
+          preconditions: ->(idv_session:, user:, analytics:) do
+            user.establishing_in_person_enrollment
+          end,
           undo_step: ->(idv_session:, user:) do
             pii_from_user[:identity_doc_address1] = nil
             pii_from_user[:identity_doc_address2] = nil

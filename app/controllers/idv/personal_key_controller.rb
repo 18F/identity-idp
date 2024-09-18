@@ -53,7 +53,7 @@ module Idv
         key: :personal_key,
         controller: self,
         next_steps: [FlowPolicy::FINAL],
-        preconditions: ->(idv_session:, user:) do
+        preconditions: ->(idv_session:, user:, analytics:) do
           idv_session.phone_or_address_step_complete? &&
             user.active_or_pending_profile &&
             !idv_session.personal_key_acknowledged

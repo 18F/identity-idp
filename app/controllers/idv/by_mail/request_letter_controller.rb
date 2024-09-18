@@ -33,7 +33,7 @@ module Idv
           controller: self,
           action: :index,
           next_steps: [:enter_password],
-          preconditions: ->(idv_session:, user:) do
+          preconditions: ->(idv_session:, user:, analytics:) do
             idv_session.verify_info_step_complete?
           end,
           undo_step: ->(idv_session:, user:) { idv_session.address_verification_mechanism = nil },

@@ -43,7 +43,9 @@ module Idv
         key: :link_sent,
         controller: self,
         next_steps: [:ssn],
-        preconditions: ->(idv_session:, user:) { idv_session.flow_path == 'hybrid' },
+        preconditions: ->(idv_session:, user:, analytics:) do
+          idv_session.flow_path == 'hybrid'
+        end,
         undo_step: ->(idv_session:, user:) do
           idv_session.pii_from_doc = nil
           idv_session.invalidate_in_person_pii_from_user!
