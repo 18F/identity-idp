@@ -86,8 +86,8 @@ production:
     host: <%= IdentityConfig.store.database_socket.present? ?  IdentityConfig.store.database_socket : IdentityConfig.store.database_host %>
     password: <%= IdentityConfig.store.database_password %>
     pool: <%= primary_pool %>
-    advisory_locks: <%= !IdentityConfig.store.database_socket.present? && !IdentityConfig.store.database_host.include?('pgbouncer') %>
-    prepared_statements: <%= !IdentityConfig.store.database_socket.present? && !IdentityConfig.store.database_host.include?('pgbouncer') %>
+    advisory_locks: <%= !IdentityConfig.store.database_socket.present? || IdentityConfig.store.database_primary_advisory_locks %>
+    prepared_statements: <%= !IdentityConfig.store.database_socket.present? || IdentityConfig.store.database_primary_prepared_statements %>
     sslmode: <%= IdentityConfig.store.database_sslmode %>
     sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
     migrations_paths: db/primary_migrate

@@ -98,6 +98,8 @@ module IdentityConfig
     config.add(:database_worker_jobs_password, type: :string)
     config.add(:database_worker_jobs_sslmode, type: :string)
     config.add(:database_worker_jobs_username, type: :string)
+    config.add(:database_primary_advisory_locks, type: :boolean)
+    config.add(:database_primary_prepared_statements, type: :boolean)
     config.add(:deleted_user_accounts_report_configs, type: :json)
     config.add(:deliver_mail_async, type: :boolean)
     config.add(:development_mailer_deliver_method, type: :symbol, enum: [:file, :letter_opener])
