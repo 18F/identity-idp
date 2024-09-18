@@ -94,7 +94,11 @@ RSpec.describe Idv::PersonalKeyController do
 
     describe '#preconditions' do
       let(:preconditions) do
-        step_info.preconditions.call(idv_session: idv_session, user: user)
+        step_info.preconditions.call(
+          analytics: @analytics,
+          idv_session: idv_session,
+          user: user,
+        )
       end
 
       context 'when all conditions met' do
