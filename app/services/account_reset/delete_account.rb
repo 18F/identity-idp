@@ -67,7 +67,7 @@ module AccountReset
     # rubocop:enable IdentityIdp/MailLaterLinter
 
     def profile_components
-      user.active_profile.proofing_components if user.identity_verified? && user.active_profile?
+      user.active_profile.proofing_components if user.active_profile?
     end
 
     def extra_analytics_attributes
