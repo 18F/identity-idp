@@ -5,6 +5,7 @@ module Idv
     class DocumentCaptureController < ApplicationController
       include Idv::AvailabilityConcern
       include IdvStepConcern
+      include DocumentCaptureConcern
 
       before_action :confirm_not_rate_limited
       before_action :confirm_step_allowed
@@ -45,8 +46,6 @@ module Idv
         # Not used in standard flow, here for data consistency with hybrid flow.
         document_capture_session.confirm_ocr
         result = handle_stored_result
-
-        analytics.idv_doc_auth_document_capture_submitted(**result.to_h.merge(analytics_arguments))
 
         Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
           call('document_capture', :update, true)
