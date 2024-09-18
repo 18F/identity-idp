@@ -2,6 +2,8 @@ import { render, screen, within } from '@testing-library/react';
 import DocumentCaptureReviewIssues from '@18f/identity-document-capture/components/document-capture-review-issues';
 import { InPersonContext } from '@18f/identity-document-capture/context';
 import { toFormEntryError } from '@18f/identity-document-capture/services/upload';
+import { I18nContext } from '@18f/identity-react-i18n';
+import { I18n } from '@18f/identity-i18n';
 import { expect } from 'chai';
 import { composeComponents } from '@18f/identity-compose-components';
 
@@ -9,19 +11,48 @@ describe('DocumentCaptureReviewIssues', () => {
   const DEFAULT_OPTIONS = {
     registerField: () => undefined,
     captureHints: true,
-    remainingAttempts: 2,
     value: {},
     onChange: () => undefined,
     onError: () => undefined,
+    isFailedSelfie: false,
+    isFailedDocType: false,
+    isFailedSelfieLivenessOrQuality: false,
+    remainingSubmitAttempts: Infinity,
+    unknownFieldErrors: [],
+    errors: [],
+    hasDismissed: false,
+    toPreviousStep: () => undefined,
   };
+
+  context('with default props', () => {
+    it('does not display infinity remaining attempts', () => {
+      const { queryByText } = render(
+        <I18nContext.Provider
+          value={
+            new I18n({
+              strings: {
+                'idv.failure.attempts_html': 'You have %{count} attempts remaining.',
+              },
+            })
+          }
+        >
+          <DocumentCaptureReviewIssues {...DEFAULT_OPTIONS} />
+        </I18nContext.Provider>,
+      );
+
+      expect(queryByText('You have Infinity attempts remaining.')).to.equal(null);
+    });
+  });
+
   context('with doc error', () => {
     it('renders for non doc type failure', () => {
       const props = {
         isFailedDocType: false,
+        remainingSubmitAttempts: 2,
         unknownFieldErrors: [
           {
             field: 'general',
-            error: toFormEntryError({ field: 'general', message: 'general error' }),
+            error: toFormEntryError({ field: 'network', message: 'general error' }),
           },
         ],
         errors: [
@@ -45,6 +76,16 @@ describe('DocumentCaptureReviewIssues', () => {
           },
         ],
         [
+          I18nContext.Provider,
+          {
+            value: new I18n({
+              strings: {
+                'idv.failure.attempts_html': 'You have %{count} attempts remaining.',
+              },
+            }),
+          },
+        ],
+        [
           DocumentCaptureReviewIssues,
           {
             ...DEFAULT_OPTIONS,
@@ -57,6 +98,8 @@ describe('DocumentCaptureReviewIssues', () => {
       expect(h1).to.be.ok();
 
       expect(getByText('general error')).to.be.ok();
+
+      expect(getByText('You have 2 attempts remaining.')).to.be.ok();
 
       // tips header
       expect(getByText('doc_auth.tips.review_issues_id_header_text')).to.be.ok();
@@ -80,31 +123,37 @@ describe('DocumentCaptureReviewIssues', () => {
     });
 
     it('renders for a doc type failure', () => {
-      const props = {
-        isFailedDocType: true,
-        unknownFieldErrors: [
-          {
-            field: 'general',
-            error: toFormEntryError({ field: 'general', message: 'general error' }),
-          },
-        ],
-        errors: [
-          {
-            field: 'front',
-            error: toFormEntryError({ field: 'front', message: 'front side doc type error' }),
-          },
-          {
-            field: 'back',
-            error: toFormEntryError({ field: 'back', message: 'back side doc type error' }),
-          },
-        ],
-      };
       const { getByText, getByLabelText, getByRole } = render(
-        <InPersonContext.Provider value={{ inPersonURL: '/verify/doc_capture' }}>
+        <InPersonContext.Provider
+          value={{
+            inPersonURL: '/verify/doc_capture',
+            locationsURL: '',
+            addressSearchURL: '',
+            inPersonFullAddressEntryEnabled: false,
+            inPersonOutageMessageEnabled: false,
+            optedInToInPersonProofing: false,
+            usStatesTerritories: [['Los Angeles', 'NY']],
+          }}
+        >
           <DocumentCaptureReviewIssues
             {...{
               ...DEFAULT_OPTIONS,
-              ...props,
+              isFailedDocType: true,
+              unknownFieldErrors: [
+                {
+                  error: toFormEntryError({ field: 'network', message: 'general error' }),
+                },
+              ],
+              errors: [
+                {
+                  field: 'front',
+                  error: toFormEntryError({ field: 'front', message: 'front side doc type error' }),
+                },
+                {
+                  field: 'back',
+                  error: toFormEntryError({ field: 'back', message: 'back side doc type error' }),
+                },
+              ],
             }}
           />
         </InPersonContext.Provider>,
