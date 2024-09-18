@@ -122,7 +122,7 @@ module Features
     end
 
     def sign_up
-      email = Faker::Internet.safe_email
+      email = Faker::Internet.email
       sign_up_with(email)
       confirm_last_user
     end

@@ -450,6 +450,21 @@ development:
     friendly_name: 'Example Sinatra App'
     in_person_proofing_enabled: true
 
+  'urn:gov:gsa:openidconnect:sp:sinatra_pkce':
+    agency_id: 1
+    ial: 2
+    push_notification_url: http://localhost:9292/api/push_notifications
+    return_to_sp_url: 'http://localhost:9292'
+    redirect_uris:
+      - 'http://localhost:9292/'
+      - 'http://localhost:9292/auth/result'
+      - 'http://localhost:9292/logout'
+    certs:
+      - 'sp_sinatra_demo'
+    friendly_name: 'Example Sinatra App with PKCE'
+    in_person_proofing_enabled: true
+    pkce: true
+
   'urn:gov:gsa:openidconnect:sp:expressjs':
     agency: 'GSA'
     certs:

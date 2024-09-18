@@ -338,15 +338,17 @@ module Users
     def redirect_url
       if !mobile? && TwoFactorAuthentication::PivCacPolicy.new(current_user).enabled?
         login_two_factor_piv_cac_url
+      elsif TwoFactorAuthentication::WebauthnPolicy.new(current_user).platform_enabled?
+        if user_session[:platform_authenticator_available] == false
+          login_two_factor_options_url
+        else
+          login_two_factor_webauthn_url(platform: true)
+        end
       elsif TwoFactorAuthentication::WebauthnPolicy.new(current_user).enabled?
-        login_two_factor_webauthn_url(webauthn_params)
+        login_two_factor_webauthn_url
       elsif TwoFactorAuthentication::AuthAppPolicy.new(current_user).enabled?
         login_two_factor_authenticator_url
       end
-    end
-
-    def webauthn_params
-      { platform: current_user.webauthn_configurations.platform_authenticators.present? }
     end
 
     def handle_too_many_short_term_otp_sends(method:, default:)

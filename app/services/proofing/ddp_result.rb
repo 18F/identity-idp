@@ -7,6 +7,8 @@ module Proofing
                   :success,
                   :transaction_id,
                   :review_status,
+                  :account_lex_id,
+                  :session_id,
                   :response_body,
                   :client
 
@@ -16,6 +18,8 @@ module Proofing
         context: {},
         exception: nil,
         transaction_id: nil,
+        account_lex_id: nil,
+        session_id: nil,
         review_status: nil,
         response_body: nil,
         client: nil
@@ -25,6 +29,8 @@ module Proofing
       @context = context
       @exception = exception
       @transaction_id = transaction_id
+      @account_lex_id = account_lex_id
+      @session_id = session_id
       @response_body = response_body
       @review_status = review_status
       @client = client
@@ -70,6 +76,8 @@ module Proofing
         timed_out: timed_out?,
         transaction_id: transaction_id,
         review_status: review_status,
+        account_lex_id: account_lex_id,
+        session_id: session_id,
         response_body: redacted_response_body,
       }
     end

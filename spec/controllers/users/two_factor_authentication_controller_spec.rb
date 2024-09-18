@@ -176,27 +176,38 @@ RSpec.describe Users::TwoFactorAuthenticationController do
       end
     end
 
-    context 'when user is webauthn enabled' do
+    context 'when user has webauthn' do
+      let(:user) { create(:user, :with_webauthn) }
+
       before do
-        stub_sign_in_before_2fa(create(:user, :with_webauthn))
+        stub_sign_in_before_2fa(user)
       end
 
-      it 'renders the :webauthn view' do
+      it 'redirects to webauthn verification' do
         get :show
 
-        expect(response).to redirect_to login_two_factor_webauthn_path(platform: false)
+        expect(response).to redirect_to login_two_factor_webauthn_path
       end
 
-      context 'when platform_authenticator' do
-        before do
-          controller.current_user.webauthn_configurations.
-            first.update!(platform_authenticator: true)
-        end
+      context 'when user has platform webauthn' do
+        let(:user) { create(:user, :with_webauthn_platform) }
 
-        it 'passes the platform parameter if the user has a platform autheticator' do
+        it 'redirects to webauthn verification with the platform parameter' do
           get :show
 
           expect(response).to redirect_to login_two_factor_webauthn_path(platform: true)
+        end
+
+        context 'when session value indicates no device platform support available' do
+          before do
+            controller.user_session[:platform_authenticator_available] = false
+          end
+
+          it 'redirects to mfa options page' do
+            get :show
+
+            expect(response).to redirect_to login_two_factor_options_path
+          end
         end
       end
     end
