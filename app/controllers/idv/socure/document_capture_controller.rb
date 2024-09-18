@@ -17,7 +17,7 @@ module Idv
         document_request = DocAuth::Socure::Requests::DocumentRequest.new(
           document_capture_session_uuid: document_capture_session_uuid,
           redirect_url: idv_socure_document_capture_url,
-          language: locale,
+          language: :en,
         )
 
         document_response = document_request.fetch
