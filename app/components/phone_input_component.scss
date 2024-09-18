@@ -18,16 +18,6 @@ lg-phone-input {
   .iti__dial-code {
     color: color('ink');
   }
-
-  .iti:not(.iti--allow-dropdown) input {
-    padding-left: 36px;
-    padding-right: 6px;
-  }
-
-  .iti:not(.iti--allow-dropdown) .iti__flag-container {
-    left: 0;
-    right: auto;
-  }
 }
 
 .phone-input__international-code-wrapper {
