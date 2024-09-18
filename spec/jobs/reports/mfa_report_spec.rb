@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Reports::MfaReport do
   let(:issuer) { 'issuer1' }
   let(:issuers) { [issuer] }
-  let(:report_date) { Date.new(2023, 12, 0o1) }
+  let(:report_date) { Date.new(2023, 12, 01).in_time_zone('UTC') }
   let(:email)  { 'partner.name@example.com' }
   let(:name) { 'Partner Name' }
 
@@ -46,6 +46,18 @@ RSpec.describe Reports::MfaReport do
       )
 
       subject.perform(report_date)
+    end
+  end
+
+  describe 'with empty logs' do
+    before do
+      stub_cloudwatch_logs([])
+    end
+
+    it 'sends an email with at least 1 attachment' do
+      subject.perform(report_date)
+      sent_mail = ActionMailer::Base.deliveries.last
+      expect(sent_mail.parts.attachments.count).to be >= 1
     end
   end
 end
