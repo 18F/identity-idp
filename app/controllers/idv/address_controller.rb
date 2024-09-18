@@ -33,7 +33,9 @@ module Idv
         controller: self,
         action: :new,
         next_steps: [:verify_info],
-        preconditions: ->(idv_session:, user:) { idv_session.remote_document_capture_complete? },
+        preconditions: ->(idv_session:, user:, analytics:) do
+          idv_session.remote_document_capture_complete?
+        end,
         undo_step: ->(idv_session:, user:) { idv_session.updated_user_address = nil },
       )
     end
