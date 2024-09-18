@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Reports::MfaReport do
   let(:issuer) { 'issuer1' }
   let(:issuers) { [issuer] }
-  let(:report_date) { Date.new(2023, 12, 01).in_time_zone('UTC') }
+  let(:report_date) { Date.new(2023, 12, 0o1).in_time_zone('UTC') }
   let(:email)  { 'partner.name@example.com' }
   let(:name) { 'Partner Name' }
 
