@@ -43,6 +43,11 @@ module Idv
       return true
     end
 
+    def log_event_for_missing_threatmetrix_session_id
+      return if self.class.threatmetrix_session_id_present_or_not_required?(idv_session:)
+      analytics.idv_verify_info_missing_threatmetrix_session_id if idv_session.ssn_step_complete?
+    end
+
     private
 
     def ipp_enrollment_in_progress?

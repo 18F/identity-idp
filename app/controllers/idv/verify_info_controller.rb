@@ -9,6 +9,7 @@ module Idv
     include Steps::ThreatMetrixStepHelper
 
     before_action :confirm_not_rate_limited_after_doc_auth, except: [:show]
+    before_action :log_event_for_missing_threatmetrix_session_id
     before_action :confirm_step_allowed
 
     def show

@@ -181,11 +181,30 @@ RSpec.describe Idv::VerifyInfoController do
       context 'when idv_session is missing threatmetrix_session_id' do
         before do
           controller.idv_session.threatmetrix_session_id = nil
-          get :show
         end
 
         it 'redirects back to the SSN step' do
+          get :show
           expect(response).to redirect_to(idv_ssn_url)
+        end
+
+        it 'logs an idv_verify_info_missing_threatmetrix_session_id event' do
+          get :show
+          expect(@analytics).to have_logged_event(
+            :idv_verify_info_missing_threatmetrix_session_id,
+          )
+        end
+
+        context 'when ssn is not present in idv_session' do
+          before do
+            controller.idv_session.ssn = nil
+          end
+          it 'does not log an idv_verify_info_missing_threatmetrix_session_id event' do
+            get :show
+            expect(@analytics).not_to have_logged_event(
+              :idv_verify_info_missing_threatmetrix_session_id,
+            )
+          end
         end
       end
 
