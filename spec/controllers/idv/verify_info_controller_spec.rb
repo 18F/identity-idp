@@ -269,6 +269,7 @@ RSpec.describe Idv::VerifyInfoController do
           resolution_result: Proofing::Resolution::Result.new(success: true),
           same_address_as_id: true,
           should_proof_state_id: true,
+          applicant_pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
         ).adjudicated_result.to_h
 
         document_capture_session.create_proofing_session
