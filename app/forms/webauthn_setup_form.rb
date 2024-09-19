@@ -162,8 +162,8 @@ class WebauthnSetupForm
 
   def aaguid
     attestation_response&.authenticator_data&.aaguid
-  rescue WebAuthn::AuthenticatorDataFormatError
-     nil
+  rescue StandardError
+    nil
   end
 
   def extra_analytics_attributes
