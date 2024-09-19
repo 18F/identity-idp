@@ -1439,6 +1439,7 @@ notices.privacy.security_and_privacy_practices: Prácticas de seguridad y declar
 notices.resend_confirmation_email.success: Enviamos otro correo electrónico de confirmación.
 notices.session_cleared: Por su seguridad, borramos lo que usted ingresó si usted no pasa a una página nueva en %{minutes} minutos.
 notices.session_timedout: Cerramos su sesión. Por su seguridad, %{app_name} cierra su sesión cuando usted no pasa a una página nueva en %{minutes} minutos.
+notices.sign_in.recaptcha.disclosure_statement_html: Este sitio está protegido por reCAPTCHA y se aplican %{google_policy_link_html} y %{google_tos_link_html} de Google.
 notices.signed_up_and_confirmed.first_paragraph_end: con un vínculo para confirmar su dirección de correo electrónico. Siga el vínculo para continuar agregando este correo electrónico a su cuenta.
 notices.signed_up_and_confirmed.first_paragraph_start: Enviamos un correo electrónico a
 notices.signed_up_and_confirmed.no_email_sent_explanation_start: '¿No recibió un correo electrónico?'

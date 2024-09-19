@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'devise/sessions/new.html.erb' do
   include UserAgentHelper
+  include LinkHelper
 
   before do
     allow(view).to receive(:resource).and_return(build_stubbed(:user))
@@ -227,6 +228,23 @@ RSpec.describe 'devise/sessions/new.html.erb' do
         expect(rendered).not_to have_css('lg-captcha-submit-button')
       end
 
+      it 'does not render the recaptcha disclaimer text' do
+        expect(rendered).not_to have_content(
+          strip_tags(
+            t(
+              'notices.sign_in.recaptcha.disclosure_statement_html',
+              google_policy_link_html: new_tab_link_to(
+                t('two_factor_authentication.recaptcha.google_policy_link'),
+                GooglePolicySite.privacy_url,
+              ),
+              google_tos_link_html: new_tab_link_to(
+                t('two_factor_authentication.recaptcha.google_tos_link'), GooglePolicySite.terms_url
+              ),
+            ),
+          ),
+        )
+      end
+
       context 'recaptcha mock validator is enabled' do
         let(:recaptcha_mock_validator) { true }
 
@@ -243,6 +261,23 @@ RSpec.describe 'devise/sessions/new.html.erb' do
       it 'renders captcha sign-in submit button' do
         expect(rendered).to have_button(t('links.sign_in'))
         expect(rendered).to have_css('lg-captcha-submit-button')
+      end
+
+      it 'renders recaptcha disclaimer text' do
+        expect(rendered).to have_content(
+          strip_tags(
+            t(
+              'notices.sign_in.recaptcha.disclosure_statement_html',
+              google_policy_link_html: new_tab_link_to(
+                t('two_factor_authentication.recaptcha.google_policy_link'),
+                GooglePolicySite.privacy_url,
+              ),
+              google_tos_link_html: new_tab_link_to(
+                t('two_factor_authentication.recaptcha.google_tos_link'), GooglePolicySite.terms_url
+              ),
+            ),
+          ),
+        )
       end
     end
   end
