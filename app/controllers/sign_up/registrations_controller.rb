@@ -3,6 +3,7 @@
 module SignUp
   class RegistrationsController < ApplicationController
     include ApplicationHelper # for ial2_requested?
+    include Idv::ThreatMetrixConcern
 
     before_action :confirm_two_factor_authenticated, only: [:destroy_confirm]
     before_action :require_no_authentication
