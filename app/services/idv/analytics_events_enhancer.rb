@@ -112,6 +112,7 @@ module Idv
       proofing_components
       active_profile_idv_level
       pending_profile_idv_level
+      app_identifier
     ].freeze
 
     METHODS_WITH_PROFILE_HISTORY = %i[
@@ -172,6 +173,18 @@ module Idv
 
     def pending_profile_idv_level
       user&.respond_to?(:pending_profile) && user&.pending_profile&.idv_level
+    end
+
+    def app_identifier
+      sp_session = session.fetch(:sp, {})
+
+      return if sp_session.blank? || sp_session['request_url'].blank?
+
+      redirect_uri = UriService.params(URI(sp_session['request_url']))['redirect_uri']
+
+      return if redirect_uri.blank?
+
+      UriService.params(URI(redirect_uri))['appIdentifier']
     end
 
     def profile_history

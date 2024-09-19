@@ -1955,11 +1955,17 @@ module AnalyticsEvents
     step: nil,
     success: nil,
     same_address_as_id: nil,
+    proofing_components: nil,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
+    app_identifier: nil,
     **extra
   )
     track_event(
       'IdV: doc auth verify proofing results',
+      app_identifier:,
       ab_tests:,
+      active_profile_idv_level:,
       acuant_sdk_upgrade_ab_test_bucket:,
       address_edited:,
       address_line2_present:,
@@ -1968,6 +1974,8 @@ module AnalyticsEvents
       flow_path:,
       lexisnexis_instant_verify_workflow_ab_test_bucket:,
       opted_in_to_in_person_proofing:,
+      pending_profile_idv_level:,
+      proofing_components:,
       proofing_results:,
       skip_hybrid_handoff:,
       ssn_is_unique:,
@@ -2231,6 +2239,7 @@ module AnalyticsEvents
     fraud_pending_reason:,
     gpo_verification_pending:,
     in_person_verification_pending:,
+    app_identifier: nil,
     opted_in_to_in_person_proofing: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
@@ -2244,6 +2253,7 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: final resolution',
+      app_identifier:,
       success:,
       fraud_review_pending:,
       fraud_rejection:,
@@ -3498,6 +3508,7 @@ module AnalyticsEvents
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # @param [Array,nil] profile_history Array of user's profiles (oldest to newest).
   def idv_intro_visit(
+    app_identifier: nil,
     proofing_components: nil,
     active_profile_idv_level: nil,
     pending_profile_idv_level: nil,
@@ -3506,10 +3517,11 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: intro visited',
-      proofing_components: proofing_components,
-      active_profile_idv_level: active_profile_idv_level,
-      pending_profile_idv_level: pending_profile_idv_level,
-      profile_history: profile_history,
+      app_identifier:,
+      proofing_components:,
+      active_profile_idv_level:,
+      pending_profile_idv_level:,
+      profile_history:,
       **extra,
     )
   end
@@ -4259,6 +4271,7 @@ module AnalyticsEvents
   # @param [Array,nil] profile_history Array of user's profiles (oldest to newest).
   # Tracks when the user reaches the verify please call page after failing proofing
   def idv_please_call_visited(
+    app_identifier: nil,
     proofing_components: nil,
     active_profile_idv_level: nil,
     pending_profile_idv_level: nil,
@@ -4267,10 +4280,11 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: Verify please call visited',
-      proofing_components: proofing_components,
-      active_profile_idv_level: active_profile_idv_level,
-      pending_profile_idv_level: pending_profile_idv_level,
-      profile_history: profile_history,
+      app_identifier:,
+      proofing_components:,
+      active_profile_idv_level:,
+      pending_profile_idv_level:,
+      profile_history:,
       **extra,
     )
   end
@@ -4630,6 +4644,7 @@ module AnalyticsEvents
   def idv_start_over(
     step:,
     location:,
+    app_identifier: nil,
     cancelled_enrollment: nil,
     enrollment_code: nil,
     enrollment_id: nil,
@@ -4641,15 +4656,16 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: start over',
-      step: step,
-      location: location,
-      proofing_components: proofing_components,
-      cancelled_enrollment: cancelled_enrollment,
-      enrollment_code: enrollment_code,
-      enrollment_id: enrollment_id,
-      active_profile_idv_level: active_profile_idv_level,
-      pending_profile_idv_level: pending_profile_idv_level,
-      profile_history: profile_history,
+      app_identifier:,
+      step:,
+      location:,
+      proofing_components:,
+      cancelled_enrollment:,
+      enrollment_code:,
+      enrollment_id:,
+      active_profile_idv_level:,
+      pending_profile_idv_level:,
+      profile_history:,
       **extra,
     )
   end
