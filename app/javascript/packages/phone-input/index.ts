@@ -124,7 +124,10 @@ export class PhoneInputElement extends HTMLElement {
     const iti = intlTelInput(this.textInput, {
       countryOrder: ['US', 'CA'],
       initialCountry: this.codeInput.value,
-      i18n: countryCodePairs,
+      i18n: {
+        ...countryCodePairs,
+        selectedCountryAriaLabel: this.strings.country_code_label,
+      },
       onlyCountries: supportedCountryCodes,
       autoPlaceholder: 'off',
       formatAsYouType: false,
@@ -148,7 +151,6 @@ export class PhoneInputElement extends HTMLElement {
 
     // Improve base accessibility of intl-tel-input
     this.selectedCountry.setAttribute('aria-haspopup', 'listbox');
-    this.selectedCountry.setAttribute('aria-label', this.strings.country_code_label);
 
     this.syncCountryToCodeInput({ fireChangeEvent: false });
 
