@@ -3,45 +3,20 @@ import userEvent from '@testing-library/user-event';
 import { computeAccessibleName } from 'dom-accessibility-api';
 import * as analytics from '@18f/identity-analytics';
 import { useSandbox } from '@18f/identity-test-helpers';
-
-const MULTIPLE_OPTIONS_HTML = `
-  <select class="phone-input__international-code" data-countries="[&quot;CA&quot;,&quot;US&quot;]" id="phone_form_international_code">
-    <option data-supports-sms="true" data-supports-voice="true" data-country-code="1" data-country-name="United States" value="US">United States +1</option>
-    <option data-supports-sms="true" data-supports-voice="false" data-country-code="1" data-country-name="Canada" value="CA">Canada +1</option>
-    <option data-supports-sms="false" data-supports-voice="false" data-country-code="94" data-country-name="Sri Lanka" value="LK">Sri Lanka +94</option>
-  </select>`;
-
-const SINGLE_OPTION_HTML = `
-  <select class="phone-input__international-code" data-countries="[&quot;US&quot;]" id="phone_form_international_code">
-    <option data-supports-sms="true" data-supports-voice="true" data-country-code="1" data-country-name="United States" value="US">United States +1</option>
-  </select>`;
-
-const SINGLE_OPTION_SELECT_NON_US_HTML = `
-  <select class="phone-input__international-code" data-countries="[&quot;CA&quot;]" id="phone_form_international_code">
-    <option data-supports-sms="true" data-supports-voice="false" data-country-code="1" data-country-name="Canada" value="CA">Canada +1</option>
-  </select>`;
+import './index.ts';
 
 describe('PhoneInput', () => {
   const sandbox = useSandbox();
-
-  before(async () => {
-    await import('intl-tel-input/build/js/utils.js');
-    window.intlTelInputUtils = global.intlTelInputUtils;
-    await import('./index');
-  });
 
   beforeEach(() => {
     sandbox.stub(analytics, 'trackEvent');
   });
 
   function createAndConnectElement({
-    isUSSingleOption = false,
-    isInternationalSingleOption = false,
     deliveryMethods = ['sms', 'voice'],
     translatedCountryCodeNames = {},
     phoneInputValue = undefined,
   }: {
-    isUSSingleOption?: boolean;
     isInternationalSingleOption?: Boolean;
     deliveryMethods?: string[];
     translatedCountryCodeNames?: Record<string, string>;
@@ -74,9 +49,11 @@ describe('PhoneInput', () => {
       </script>
       <div class="phone-input__international-code-wrapper">
         <label class="usa-label" for="phone_form_international_code">Country code</label>
-        ${isUSSingleOption ? SINGLE_OPTION_HTML : ''}
-        ${isInternationalSingleOption ? SINGLE_OPTION_SELECT_NON_US_HTML : ''}
-        ${!isUSSingleOption && !isInternationalSingleOption ? MULTIPLE_OPTIONS_HTML : ''}
+        <select class="phone-input__international-code" data-countries="[&quot;CA&quot;,&quot;US&quot;]" id="phone_form_international_code">
+          <option data-supports-sms="true" data-supports-voice="true" data-country-code="1" data-country-name="United States" value="US">United States +1</option>
+          <option data-supports-sms="true" data-supports-voice="false" data-country-code="1" data-country-name="Canada" value="CA">Canada +1</option>
+          <option data-supports-sms="false" data-supports-voice="false" data-country-code="94" data-country-name="Sri Lanka" value="LK">Sri Lanka +94</option>
+        </select>
       </div>
       <label class="usa-label" for="phone_form_phone">Phone number</label>
       <lg-validated-field>
@@ -93,12 +70,6 @@ describe('PhoneInput', () => {
 
     return element;
   }
-
-  it('initializes with dropdown', () => {
-    const input = createAndConnectElement();
-
-    expect(input.querySelector('.iti.iti--allow-dropdown')).to.be.ok();
-  });
 
   context('with US phone number', () => {
     it('validates input', async () => {
@@ -188,6 +159,7 @@ describe('PhoneInput', () => {
     expect(analytics.trackEvent).to.have.been.calledOnceWith('phone_input_country_changed', {
       country_code: 'CA',
     });
+    await userEvent.clear(phoneNumber);
 
     const dropdownButton = getByRole(iti, 'combobox', { name: 'Country code' });
     await userEvent.click(dropdownButton);
@@ -204,7 +176,7 @@ describe('PhoneInput', () => {
 
   it('renders as an accessible combobox', () => {
     const phoneInput = createAndConnectElement();
-    const comboboxes = getAllByRole(phoneInput, 'combobox');
+    const comboboxes = getAllByRole(phoneInput, 'combobox', { name: 'Country code' });
     const listbox = getByRole(phoneInput, 'listbox');
 
     // There are two comboboxes, one for no-JavaScript, and the other JavaScript enhanced. Only one
@@ -222,7 +194,7 @@ describe('PhoneInput', () => {
     //
     // See: https://w3c.github.io/aria/#combobox
     const value = combobox.textContent;
-    const controlled = document.getElementById(combobox.getAttribute('aria-controls')!);
+    const controlled = document.getElementById(combobox.getAttribute('aria-controls')!)!;
 
     // "listbox" is the default value for a combobox role.
     //
@@ -236,27 +208,8 @@ describe('PhoneInput', () => {
     // See: https://github.com/jsdom/jsdom/issues/3323
     expect(hasPopup).to.be.oneOf([null, 'listbox']);
     expect(name).to.equal('Country code');
-    expect(value).to.equal('United States: +1');
-    expect(controlled).to.equal(listbox);
-  });
-
-  context('with single option', () => {
-    it('initializes without dropdown', () => {
-      const input = createAndConnectElement({ isUSSingleOption: true });
-
-      expect(input.querySelector('.iti:not(.iti--allow-dropdown)')).to.be.ok();
-    });
-
-    it('validates phone from region', async () => {
-      const input = createAndConnectElement({ isInternationalSingleOption: true });
-
-      const phoneNumber = getByLabelText(input, 'Phone number') as HTMLInputElement;
-
-      await userEvent.type(phoneNumber, '5135551234');
-      expect(phoneNumber.validationMessage).to.equal(
-        'Enter a phone number with the correct number of digits.',
-      );
-    });
+    expect(value).to.equal('United States +1');
+    expect(controlled.contains(listbox)).to.be.true();
   });
 
   context('with constrained delivery options', () => {

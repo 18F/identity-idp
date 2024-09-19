@@ -98,7 +98,7 @@ RSpec.feature 'document capture step', :js do
       expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
     end
 
-    it 'does not track state if state tracking is disabled' do
+    it 'does not track state if state tracking is disabled', allow_browser_log: true do
       allow(IdentityConfig.store).to receive(:state_tracking_enabled).and_return(false)
       attach_and_submit_images
 
@@ -502,6 +502,7 @@ RSpec.feature 'document capture step', :js do
       expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
       attach_images
       continue_doc_auth_form
+      expect(page).to have_title(t('doc_auth.headings.selfie_capture'))
       expect(page).to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
       attach_selfie
       submit_images

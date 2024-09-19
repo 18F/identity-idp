@@ -53,6 +53,7 @@ module Proofing
           state_id_result: state_id_result,
           residential_resolution_result: residential_instant_verify_result,
           same_address_as_id: applicant_pii[:same_address_as_id],
+          applicant_pii: applicant_pii,
         )
       end
 

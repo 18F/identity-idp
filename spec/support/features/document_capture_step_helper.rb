@@ -19,15 +19,6 @@ module DocumentCaptureStepHelper
     wait_for_form_page_load
   end
 
-  def attach_and_submit_images_for_split_doc_auth(with_selfie: false)
-    attach_images
-    if with_selfie
-      continue_doc_auth_form
-      attach_selfie
-    end
-    submit_images
-  end
-
   def attach_and_submit_images
     attach_images
     submit_images

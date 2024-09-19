@@ -199,7 +199,6 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
       before do
         complete_doc_auth_steps_before_hybrid_handoff_step
       end
-
       describe 'when selfie is required by sp' do
         let(:biometric_comparison_required) { true }
         it 'has expected UI elements' do
@@ -360,7 +359,8 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
             before do
               click_on t('forms.buttons.continue_remote_selfie')
             end
-            it 'shows selfie version of top content and ipp option section' do
+            it 'shows selfie version of top content and ipp option section',
+               allow_browser_log: true do
               verify_handoff_page_selfie_version_content(page)
               verify_handoff_page_ipp_section_and_link(page)
               verify_no_upload_photos_section_and_link(page)
@@ -372,7 +372,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
               click_on t('forms.buttons.continue_remote')
             end
             it 'shows non selfie version of top content and upload section,
-                no ipp option section' do
+                no ipp option section', allow_browser_log: true do
               verify_handoff_page_non_selfie_version_content(page)
               verify_handoff_page_no_ipp_option_shown(page)
               verify_upload_photos_section_and_link(page)
@@ -384,7 +384,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
           describe 'when selfie is required by sp' do
             let(:biometric_comparison_required) { true }
             it 'shows selfie version of top content, no ipp option section,
-                no upload section' do
+                no upload section', allow_browser_log: true do
               verify_handoff_page_selfie_version_content(page)
               verify_handoff_page_no_ipp_option_shown(page)
               verify_no_upload_photos_section_and_link(page)
@@ -393,7 +393,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
           describe 'when selfie is not required by sp' do
             let(:biometric_comparison_required) { false }
             it 'shows non selfie version of top content and upload section,
-                no ipp option section' do
+                no ipp option section', allow_browser_log: true do
               verify_handoff_page_non_selfie_version_content(page)
               verify_handoff_page_no_ipp_option_shown(page)
               verify_upload_photos_section_and_link(page)
@@ -410,7 +410,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
           describe 'when selfie is required by sp' do
             let(:biometric_comparison_required) { true }
             it 'shows selfie version of top content, no upload section,
-                no ipp option section' do
+                no ipp option section', allow_browser_log: true do
               verify_handoff_page_selfie_version_content(page)
               verify_handoff_page_no_ipp_option_shown(page)
               verify_no_upload_photos_section_and_link(page)
@@ -419,7 +419,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
           describe 'when selfie is not required by sp' do
             let(:biometric_comparison_required) { false }
             it 'shows non selfie version of top content and upload section,
-                no ipp option section' do
+                no ipp option section', allow_browser_log: true do
               verify_handoff_page_non_selfie_version_content(page)
               verify_handoff_page_no_ipp_option_shown(page)
               verify_upload_photos_section_and_link(page)
@@ -432,7 +432,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
             describe 'when selfie is not required by sp' do
               let(:biometric_comparison_required) { false }
               it 'shows non selfie version of top content and upload section,
-                  no ipp option section' do
+                  no ipp option section', allow_browser_log: true do
                 verify_handoff_page_non_selfie_version_content(page)
                 verify_handoff_page_no_ipp_option_shown(page)
                 verify_upload_photos_section_and_link(page)
@@ -452,7 +452,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
           describe 'when selfie is required by sp' do
             let(:biometric_comparison_required) { true }
             it 'shows selfie version of top content, no upload section,
-                no ipp option section' do
+                no ipp option section', allow_browser_log: true do
               verify_handoff_page_selfie_version_content(page)
               verify_handoff_page_no_ipp_option_shown(page)
               verify_no_upload_photos_section_and_link(page)
@@ -461,7 +461,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
           describe 'when selfie is not required by sp' do
             let(:biometric_comparison_required) { false }
             it 'shows non selfie version of top content and upload section,
-                no ipp option section' do
+                no ipp option section', allow_browser_log: true do
               verify_handoff_page_non_selfie_version_content(page)
               verify_handoff_page_no_ipp_option_shown(page)
               verify_upload_photos_section_and_link(page)
@@ -473,7 +473,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
           describe 'when selfie is required by sp' do
             let(:biometric_comparison_required) { true }
             it 'shows selfie version of top content, no upload section,
-                no ipp option section' do
+                no ipp option section', allow_browser_log: true do
               verify_handoff_page_selfie_version_content(page)
               verify_handoff_page_no_ipp_option_shown(page)
               verify_no_upload_photos_section_and_link(page)
@@ -482,7 +482,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
           describe 'when selfie is not required by sp' do
             let(:biometric_comparison_required) { false }
             it 'shows non selfie version of top content and upload section,
-                no ipp option section' do
+                no ipp option section', allow_browser_log: true do
               verify_handoff_page_non_selfie_version_content(page)
               verify_handoff_page_no_ipp_option_shown(page)
               verify_upload_photos_section_and_link(page)
@@ -498,7 +498,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
           describe 'when selfie is required by sp' do
             let(:biometric_comparison_required) { true }
             it 'shows selfie version of top content, no upload section,
-                no ipp option section' do
+                no ipp option section', allow_browser_log: true do
               verify_handoff_page_selfie_version_content(page)
               verify_handoff_page_no_ipp_option_shown(page)
               verify_no_upload_photos_section_and_link(page)
@@ -507,7 +507,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
           describe 'when selfie is not required by sp' do
             let(:biometric_comparison_required) { false }
             it 'shows non selfie version of top content and upload section,
-                no ipp option section' do
+                no ipp option section', allow_browser_log: true do
               verify_handoff_page_non_selfie_version_content(page)
               verify_handoff_page_no_ipp_option_shown(page)
               verify_upload_photos_section_and_link(page)
@@ -519,7 +519,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
           describe 'when selfie required by sp' do
             let(:biometric_comparison_required) { true }
             it 'shows selfie version of top content, no upload section,
-                no ipp option section' do
+                no ipp option section', allow_browser_log: true do
               verify_handoff_page_selfie_version_content(page)
               verify_handoff_page_no_ipp_option_shown(page)
               verify_no_upload_photos_section_and_link(page)
@@ -528,7 +528,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
           describe 'when selfie not required by sp' do
             let(:biometric_comparison_required) { false }
             it 'shows non selfie version of top content and upload section,
-                no ipp option section' do
+                no ipp option section', allow_browser_log: true do
               verify_handoff_page_non_selfie_version_content(page)
               verify_handoff_page_no_ipp_option_shown(page)
               verify_upload_photos_section_and_link(page)

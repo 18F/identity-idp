@@ -133,6 +133,21 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
       end
     end
 
+    context 'address has unsupported characters' do
+      subject(:response) do
+        post :index, params: { locale: locale,
+                               address: { street_address: '1600, Pennsylvania Ave',
+                                          city: 'Washington',
+                                          state: 'DC',
+                                          zip_code: '20500' } }
+      end
+
+      it 'returns unprocessable entity' do
+        subject
+        expect(response.status).to eq 422
+      end
+    end
+
     context 'no addresses found by usps' do
       before do
         allow(proofer).to receive(:request_facilities).with(address, false).

@@ -62,12 +62,12 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   const documentFormStep: FormStep = {
     name: 'documents',
     form: DocumentsStep,
-    title: t('doc_auth.headings.document_capture'), // might want to change title to isolated doc capture heading
+    title: t('doc_auth.headings.document_capture'),
   };
   const selfieFormStep: FormStep = {
     name: 'selfie',
     form: SelfieStep,
-    title: '', // TODO: replace with yml selfie_capture (Ticket LG-14392)
+    title: t('doc_auth.headings.selfie_capture'),
   };
   const documentsFormSteps: FormStep[] =
     isSelfieCaptureEnabled && docAuthSeparatePagesEnabled && submissionError === undefined

@@ -49,6 +49,10 @@ class SocureShadowModeProofingJob < ApplicationJob
         [:resolution_result, :context, :stages, :residential_address, :errors, :ssn],
         [:resolution_result, :context, :stages, :threatmetrix, :response_body, :first_name],
         [:resolution_result, :context, :stages, :state_id, :state_id_jurisdiction],
+        [:resolution_result, :context, :stages, :state_id, :state_id_jurisdiction],
+        [:resolution_result, :biographical_info, :identity_doc_address_state],
+        [:resolution_result, :biographical_info, :state_id_jurisdiction],
+        [:resolution_result, :biographical_info, :same_address_as_id],
       ],
     )
   end

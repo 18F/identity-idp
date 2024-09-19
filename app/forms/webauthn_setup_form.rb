@@ -61,7 +61,7 @@ class WebauthnSetupForm
 
   private
 
-  attr_reader :success, :transports, :aaguid, :invalid_transports, :protocol
+  attr_reader :success, :transports, :invalid_transports, :protocol
   attr_accessor :user, :challenge, :attestation_object, :client_data_json,
                 :name, :platform_authenticator, :authenticator_data_flags, :device_name
 
@@ -110,7 +110,6 @@ class WebauthnSetupForm
     )
 
     begin
-      @aaguid = attestation_response.authenticator_data.aaguid
       attestation_response.valid?(@challenge.pack('c*'), original_origin)
     rescue StandardError
       false
@@ -159,6 +158,12 @@ class WebauthnSetupForm
 
   def mfa_user
     @mfa_user ||= MfaContext.new(user)
+  end
+
+  def aaguid
+    attestation_response&.authenticator_data&.aaguid
+  rescue StandardError
+    nil
   end
 
   def extra_analytics_attributes

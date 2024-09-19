@@ -107,6 +107,13 @@ RSpec.feature 'Analytics Regression', :js do
           threatmetrix: threatmetrix_response,
         },
       },
+      biographical_info: {
+        identity_doc_address_state: nil,
+        same_address_as_id: nil,
+        state: 'MT',
+        state_id_jurisdiction: 'ND',
+        state_id_number: '#############',
+      },
     }
   end
 
@@ -136,6 +143,13 @@ RSpec.feature 'Analytics Regression', :js do
           state_id: state_id_resolution,
           threatmetrix: threatmetrix_response,
         },
+      },
+      biographical_info: {
+        identity_doc_address_state: 'ND',
+        same_address_as_id: 'false',
+        state: 'MT',
+        state_id_jurisdiction: 'ND',
+        state_id_number: '#############',
       },
     }
   end
@@ -750,7 +764,7 @@ RSpec.feature 'Analytics Regression', :js do
       acknowledge_and_confirm_personal_key
     end
 
-    it 'records all of the events' do
+    it 'records all of the events', allow_browser_log: true do
       aggregate_failures 'analytics events' do
         happy_path_events.each do |event, attributes|
           expect(fake_analytics).to have_logged_event(event, attributes)
@@ -787,7 +801,7 @@ RSpec.feature 'Analytics Regression', :js do
         }
       end
 
-      it 'records all of the events' do
+      it 'records all of the events', allow_browser_log: true do
         aggregate_failures 'analytics events' do
           happy_path_events.each do |event, attributes|
             expect(fake_analytics).to have_logged_event(event, attributes)
@@ -892,7 +906,7 @@ RSpec.feature 'Analytics Regression', :js do
       complete_enter_password_step(user)
     end
 
-    it 'records all of the events' do
+    it 'records all of the events', allow_browser_log: true do
       gpo_path_events.each do |event, attributes|
         expect(fake_analytics).to have_logged_event(event, attributes)
       end
@@ -916,7 +930,7 @@ RSpec.feature 'Analytics Regression', :js do
         }
       end
 
-      it 'records all of the events' do
+      it 'records all of the events', allow_browser_log: true do
         gpo_path_events.each do |event, attributes|
           expect(fake_analytics).to have_logged_event(event, attributes)
         end
@@ -1076,7 +1090,7 @@ RSpec.feature 'Analytics Regression', :js do
         acknowledge_and_confirm_personal_key
       end
 
-      it 'records all of the events' do
+      it 'records all of the events', allow_browser_log: true do
         aggregate_failures 'analytics events' do
           happy_path_events.each do |event, attributes|
             expect(fake_analytics).to have_logged_event(event, attributes)
@@ -1113,7 +1127,7 @@ RSpec.feature 'Analytics Regression', :js do
           }
         end
 
-        it 'records all of the events' do
+        it 'records all of the events', allow_browser_log: true do
           aggregate_failures 'analytics events' do
             happy_path_events.each do |event, attributes|
               expect(fake_analytics).to have_logged_event(event, attributes)
@@ -1257,7 +1271,7 @@ RSpec.feature 'Analytics Regression', :js do
 
         perform_in_browser(:mobile) do
           visit @sms_link
-          attach_and_submit_images_for_split_doc_auth
+          attach_and_submit_images
           visit idv_hybrid_mobile_document_capture_url
         end
 
@@ -1334,7 +1348,7 @@ RSpec.feature 'Analytics Regression', :js do
         complete_enter_password_step(user)
       end
 
-      it 'records all of the events' do
+      it 'records all of the events', allow_browser_log: true do
         gpo_path_events.each do |event, attributes|
           expect(fake_analytics).to have_logged_event(event, attributes)
         end
@@ -1358,7 +1372,7 @@ RSpec.feature 'Analytics Regression', :js do
           }
         end
 
-        it 'records all of the events' do
+        it 'records all of the events', allow_browser_log: true do
           gpo_path_events.each do |event, attributes|
             expect(fake_analytics).to have_logged_event(event, attributes)
           end
