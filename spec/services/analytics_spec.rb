@@ -358,4 +358,81 @@ RSpec.describe Analytics do
       end
     end
   end
+
+  context 'with an SP request_url saved in the session' do
+    context 'no request_url' do
+      let(:session) { { sp: { acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF } } }
+
+      let(:expected_attributes) do
+        {
+          sp_request: {
+            component_values: { 'ial/1' => true },
+            component_separator: ' ',
+          },
+        }
+      end
+
+      it 'includes the sp_request' do
+        expect(ahoy).to receive(:track).
+          with('Trackable Event', hash_including(expected_attributes))
+
+        analytics.track_event('Trackable Event')
+      end
+    end
+
+    context 'a request_url without an app_identifier ' do
+      let(:session) do
+        {
+          sp: {
+            acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            request_url: 'http://localhost:3000/openid_connect/authorize?whatever=something_else',
+          },
+        }
+      end
+
+      let(:expected_attributes) do
+        {
+          sp_request: {
+            component_values: { 'ial/1' => true },
+            component_separator: ' ',
+          },
+        }
+      end
+
+      it 'includes the sp_request' do
+        expect(ahoy).to receive(:track).
+          with('Trackable Event', hash_including(expected_attributes))
+
+        analytics.track_event('Trackable Event')
+      end
+    end
+
+    context 'a request_url with an app_identifier ' do
+      let(:session) do
+        {
+          sp: {
+            acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            request_url: 'http://localhost:3000/openid_connect/authorize?app_identifier=NY',
+          },
+        }
+      end
+
+      let(:expected_attributes) do
+        {
+          sp_request: {
+            component_values: { 'ial/1' => true },
+            component_separator: ' ',
+            app_identifier: 'NY',
+          },
+        }
+      end
+
+      it 'includes the sp_request' do
+        expect(ahoy).to receive(:track).
+          with('Trackable Event', hash_including(expected_attributes))
+
+        analytics.track_event('Trackable Event')
+      end
+    end
+  end
 end
