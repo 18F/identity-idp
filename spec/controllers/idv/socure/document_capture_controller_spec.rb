@@ -105,8 +105,6 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         expect(controller.send(:instance_variable_get, :@url)).not_to be
       end
     end
-
-    it 'does analytics stuff'
   end
 
   describe '#update' do
@@ -166,7 +164,5 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         expect(response).to redirect_to(idv_socure_document_capture_url)
       end
     end
-
-    it 'does analytics stuff'
   end
 end
