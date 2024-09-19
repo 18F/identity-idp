@@ -29,8 +29,8 @@ RSpec.describe Idv::HybridHandoffController do
 
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { in_person_proofing }
     allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) {
-      ipp_opt_in_enabled
-    }
+                                     ipp_opt_in_enabled
+                                   }
   end
 
   describe '#step_info' do
@@ -56,423 +56,227 @@ RSpec.describe Idv::HybridHandoffController do
   end
 
   describe '#show' do
-    let(:idv_vendor) { nil }
-
-    before do
-      allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(idv_vendor)
-      allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(idv_vendor)
+    let(:analytics_name) { 'IdV: doc auth hybrid handoff visited' }
+    let(:analytics_args) do
+      {
+        step: 'hybrid_handoff',
+        analytics_id: 'Doc Auth',
+        selfie_check_required: sp_selfie_enabled,
+      }
     end
 
-    context 'vendor is lexis nexis' do
-      let(:idv_vendor) { Idp::Constants::Vendors::LEXIS_NEXIS }
+    it 'renders the show template' do
+      get :show
 
-      let(:analytics_name) { 'IdV: doc auth hybrid handoff visited' }
-      let(:analytics_args) do
-        {
-          step: 'hybrid_handoff',
-          analytics_id: 'Doc Auth',
-          selfie_check_required: sp_selfie_enabled,
-        }.merge(ab_test_args)
+      expect(response).to render_template :show
+    end
+
+    it 'sends analytics_visited event' do
+      get :show
+
+      expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+    end
+
+    it 'updates DocAuthLog upload_view_count' do
+      doc_auth_log = DocAuthLog.create(user_id: user.id)
+
+      expect { get :show }.to(
+        change { doc_auth_log.reload.upload_view_count }.from(0).to(1),
+      )
+    end
+
+    context 'agreement step is not complete' do
+      before do
+        subject.idv_session.idv_consent_given_at = nil
       end
 
-      it 'renders the show template' do
+      it 'redirects to idv_agreement_url' do
+        get :show
+
+        expect(response).to redirect_to(idv_agreement_url)
+      end
+    end
+
+    context 'hybrid_handoff already visited' do
+      it 'shows hybrid_handoff for standard' do
+        subject.idv_session.flow_path = 'standard'
+
         get :show
 
         expect(response).to render_template :show
       end
 
-      it 'sends analytics_visited event' do
+      it 'shows hybrid_handoff for hybrid' do
+        subject.idv_session.flow_path = 'hybrid'
+
         get :show
 
+        expect(response).to render_template :show
+      end
+    end
+
+    context 'redo document capture' do
+      it 'does not redirect in standard flow' do
+        subject.idv_session.flow_path = 'standard'
+
+        get :show, params: { redo: true }
+
+        expect(response).to render_template :show
+      end
+
+      it 'does not redirect in hybrid flow' do
+        subject.idv_session.flow_path = 'hybrid'
+
+        get :show, params: { redo: true }
+
+        expect(response).to render_template :show
+      end
+
+      context 'idv_session.skip_hybrid_handoff? is true' do
+        before do
+          subject.idv_session.skip_hybrid_handoff = true
+        end
+        it 'redirects to document_capture' do
+          subject.idv_session.flow_path = 'standard'
+          get :show, params: { redo: true }
+
+          expect(response).to redirect_to(idv_document_capture_url)
+        end
+      end
+
+      it 'adds redo_document_capture to analytics' do
+        get :show, params: { redo: true }
+
+        analytics_args[:redo_document_capture] = true
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
       end
 
-      it 'updates DocAuthLog upload_view_count' do
-        doc_auth_log = DocAuthLog.create(user_id: user.id)
-
-        expect { get :show }.to(
-          change { doc_auth_log.reload.upload_view_count }.from(0).to(1),
-        )
-      end
-
-      context 'agreement step is not complete' do
+      context 'user has already completed verify info' do
         before do
-          subject.idv_session.idv_consent_given = nil
+          stub_up_to(:verify_info, idv_session: subject.idv_session)
         end
 
-        it 'redirects to idv_agreement_url' do
-          get :show
+        it 'does set redo_document_capture to true in idv_session' do
+          get :show, params: { redo: true }
 
-          expect(response).to redirect_to(idv_agreement_url)
-        end
-      end
-
-      context 'hybrid_handoff already visited' do
-        it 'shows hybrid_handoff for standard' do
-          subject.idv_session.flow_path = 'standard'
-
-          get :show
-
-          expect(response).to render_template :show
+          expect(subject.idv_session.redo_document_capture).to be_truthy
         end
 
-        it 'shows hybrid_handoff for hybrid' do
-          subject.idv_session.flow_path = 'hybrid'
+        it 'does add redo_document_capture to analytics' do
+          get :show, params: { redo: true }
 
-          get :show
-
-          expect(response).to render_template :show
+          expect(@analytics).to have_logged_event(analytics_name)
         end
-      end
 
-      context 'redo document capture' do
-        it 'does not redirect in standard flow' do
-          subject.idv_session.flow_path = 'standard'
-
+        it 'renders show' do
           get :show, params: { redo: true }
 
           expect(response).to render_template :show
-        end
-
-        it 'does not redirect in hybrid flow' do
-          subject.idv_session.flow_path = 'hybrid'
-
-          get :show, params: { redo: true }
-
-          expect(response).to render_template :show
-        end
-
-        context 'idv_session.skip_hybrid_handoff? is true' do
-          before do
-            subject.idv_session.skip_hybrid_handoff = true
-          end
-          it 'redirects to document_capture' do
-            subject.idv_session.flow_path = 'standard'
-            get :show, params: { redo: true }
-
-            expect(response).to redirect_to(idv_document_capture_url)
-          end
-        end
-
-        it 'adds redo_document_capture to analytics' do
-          get :show, params: { redo: true }
-
-          analytics_args[:redo_document_capture] = true
-          expect(@analytics).to have_logged_event(analytics_name, analytics_args)
-        end
-
-        context 'user has already completed verify info' do
-          before do
-            stub_up_to(:verify_info, idv_session: subject.idv_session)
-          end
-
-          it 'does set redo_document_capture to true in idv_session' do
-            get :show, params: { redo: true }
-
-            expect(subject.idv_session.redo_document_capture).to be_truthy
-          end
-
-          it 'does add redo_document_capture to analytics' do
-            get :show, params: { redo: true }
-
-            expect(@analytics).to have_logged_event(analytics_name)
-          end
-
-          it 'renders show' do
-            get :show, params: { redo: true }
-
-            expect(response).to render_template :show
-          end
-        end
-      end
-
-      context 'hybrid flow is not available' do
-        before do
-          allow(FeatureManagement).to receive(:idv_allow_hybrid_flow?).and_return(false)
-        end
-
-        it 'redirects the user straight to document capture' do
-          get :show
-          expect(response).to redirect_to(idv_document_capture_url)
-        end
-        it 'does not set idv_session.skip_hybrid_handoff' do
-          expect do
-            get :show
-          end.not_to change {
-            subject.idv_session.skip_hybrid_handoff?
-          }.from(false)
-        end
-      end
-
-      context 'opt in ipp is enabled' do
-        let(:in_person_proofing) { true }
-        let(:ipp_opt_in_enabled) { true }
-        before do
-          stub_up_to(:how_to_verify, idv_session: subject.idv_session)
-          subject.idv_session.service_provider.in_person_proofing_enabled = true
-        end
-
-        context 'opt in selection is nil' do
-          before do
-            allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).
-              and_return(false)
-            subject.idv_session.skip_doc_auth = nil
-            subject.idv_session.skip_doc_auth_from_how_to_verify = nil
-          end
-
-          it 'redirects to how to verify' do
-            get :show
-
-            expect(response).not_to render_template :show
-            expect(response).to redirect_to(idv_how_to_verify_url)
-          end
-        end
-
-        context 'opted in to hybrid flow' do
-          it 'renders the show template' do
-            get :show
-
-            expect(response).to render_template :show
-          end
-        end
-
-        context 'opted in to ipp flow' do
-          before do
-            allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).
-              and_return(false)
-            subject.idv_session.skip_doc_auth = true
-            subject.idv_session.skip_doc_auth_from_how_to_verify = true
-            subject.idv_session.skip_hybrid_handoff = true
-          end
-
-          it 'redirects to the how to verify page' do
-            get :show
-
-            expect(response).to redirect_to(idv_how_to_verify_url)
-          end
-        end
-
-        context 'opt in ipp is not available on service provider' do
-          before do
-            subject.idv_session.service_provider.in_person_proofing_enabled = false
-            subject.idv_session.skip_doc_auth = nil
-            subject.idv_session.skip_doc_auth_from_how_to_verify = nil
-          end
-
-          it 'renders the show template' do
-            get :show
-
-            expect(response).to render_template :show
-          end
-        end
-      end
-
-      context 'with selfie enabled system wide' do
-        describe 'when selfie is enabled for sp' do
-          let(:sp_selfie_enabled) { true }
-
-          it 'pass on correct flags and states and logs correct info' do
-            get :show
-            expect(response).to render_template :show
-            expect(@analytics).to have_logged_event(analytics_name, analytics_args)
-            expect(subject.idv_session.selfie_check_required).to eq(true)
-          end
-        end
-
-        describe 'when selfie is disabled for sp' do
-          let(:sp_selfie_enabled) { false }
-
-          it 'pass on correct flags and states and logs correct info' do
-            get :show
-            expect(response).to render_template :show
-            expect(subject.idv_session.selfie_check_required).to eq(false)
-            expect(@analytics).to have_logged_event(analytics_name, analytics_args)
-          end
         end
       end
     end
 
-    context 'vendor is socure' do
-      let(:idv_vendor) { Idp::Constants::Vendors::SOCURE }
-
-      let(:analytics_name) { 'IdV: doc auth hybrid handoff visited' }
-      let(:analytics_args) do
-        {
-          step: 'hybrid_handoff',
-          analytics_id: 'Doc Auth',
-          selfie_check_required: sp_selfie_enabled,
-        }.merge(ab_test_args)
+    context 'hybrid flow is not available' do
+      before do
+        allow(FeatureManagement).to receive(:idv_allow_hybrid_flow?).and_return(false)
       end
 
-      it 'sends analytics_visited event' do
+      it 'redirects the user straight to document capture' do
         get :show
+        expect(response).to redirect_to(idv_document_capture_url)
+      end
+      it 'does not set idv_session.skip_hybrid_handoff' do
+        expect do
+          get :show
+        end.not_to change {
+          subject.idv_session.skip_hybrid_handoff?
+        }.from(false)
+      end
+    end
 
-        expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+    context 'opt in ipp is enabled' do
+      let(:in_person_proofing) { true }
+      let(:ipp_opt_in_enabled) { true }
+      before do
+        stub_up_to(:how_to_verify, idv_session: subject.idv_session)
+        subject.idv_session.service_provider.in_person_proofing_enabled = true
       end
 
-      it 'updates DocAuthLog upload_view_count' do
-        doc_auth_log = DocAuthLog.create(user_id: user.id)
-
-        expect { get :show }.to(
-          change { doc_auth_log.reload.upload_view_count }.from(0).to(1),
-        )
-      end
-
-      context 'agreement step is not complete' do
+      context 'opt in selection is nil' do
         before do
-          subject.idv_session.idv_consent_given = nil
+          allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).
+            and_return(false)
+          subject.idv_session.skip_doc_auth = nil
+          subject.idv_session.skip_doc_auth_from_how_to_verify = nil
         end
 
-        it 'redirects to idv_agreement_url' do
+        it 'redirects to how to verify' do
           get :show
 
-          expect(response).to redirect_to(idv_agreement_url)
+          expect(response).not_to render_template :show
+          expect(response).to redirect_to(idv_how_to_verify_url)
         end
       end
 
-      context 'hybrid_handoff already visited' do
-        it 'redirects to socure document capture' do
-          subject.idv_session.flow_path = 'standard'
-
+      context 'opted in to hybrid flow' do
+        it 'renders the show template' do
           get :show
 
           expect(response).to render_template :show
         end
       end
 
-      context 'redo document capture' do
-        it 'redirects to socure document capture' do
-          subject.idv_session.flow_path = 'standard'
+      context 'opted in to ipp flow' do
+        before do
+          allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).
+            and_return(false)
+          subject.idv_session.skip_doc_auth = true
+          subject.idv_session.skip_doc_auth_from_how_to_verify = true
+          subject.idv_session.skip_hybrid_handoff = true
+        end
 
-          get :show, params: { redo: true }
+        it 'redirects to the how to verify page' do
+          get :show
+
+          expect(response).to redirect_to(idv_how_to_verify_url)
+        end
+      end
+
+      context 'opt in ipp is not available on service provider' do
+        before do
+          subject.idv_session.service_provider.in_person_proofing_enabled = false
+          subject.idv_session.skip_doc_auth = nil
+          subject.idv_session.skip_doc_auth_from_how_to_verify = nil
+        end
+
+        it 'renders the show template' do
+          get :show
 
           expect(response).to render_template :show
         end
+      end
+    end
 
-        context 'idv_session.skip_hybrid_handoff? is true' do
-          before do
-            subject.idv_session.skip_hybrid_handoff = true
-          end
-          it 'redirects to document_capture' do
-            subject.idv_session.flow_path = 'standard'
-            get :show, params: { redo: true }
+    context 'with selfie enabled system wide' do
+      describe 'when selfie is enabled for sp' do
+        let(:sp_selfie_enabled) { true }
 
-            expect(response).to redirect_to(idv_document_capture_url)
-          end
-        end
-
-        it 'adds redo_document_capture to analytics' do
-          get :show, params: { redo: true }
-
-          analytics_args[:redo_document_capture] = true
+        it 'pass on correct flags and states and logs correct info' do
+          get :show
+          expect(response).to render_template :show
           expect(@analytics).to have_logged_event(analytics_name, analytics_args)
-        end
-
-        context 'user has already completed verify info' do
-          before do
-            stub_up_to(:verify_info, idv_session: subject.idv_session)
-          end
-
-          it 'does set redo_document_capture to true in idv_session' do
-            get :show, params: { redo: true }
-
-            expect(subject.idv_session.redo_document_capture).to be_truthy
-          end
-
-          it 'does add redo_document_capture to analytics' do
-            get :show, params: { redo: true }
-
-            expect(@analytics).to have_logged_event(analytics_name)
-          end
+          expect(subject.idv_session.selfie_check_required).to eq(true)
         end
       end
 
-      context 'hybrid flow is not available' do
-        before do
-          allow(FeatureManagement).to receive(:idv_allow_hybrid_flow?).and_return(false)
-        end
+      describe 'when selfie is disabled for sp' do
+        let(:sp_selfie_enabled) { false }
 
-        it 'redirects the user straight to document capture' do
+        it 'pass on correct flags and states and logs correct info' do
           get :show
-          expect(response).to redirect_to(idv_document_capture_url)
-        end
-        it 'does not set idv_session.skip_hybrid_handoff' do
-          expect do
-            get :show
-          end.not_to change {
-            subject.idv_session.skip_hybrid_handoff?
-          }.from(false)
-        end
-      end
-
-      context 'opt in ipp is enabled' do
-        let(:in_person_proofing) { true }
-        let(:ipp_opt_in_enabled) { true }
-        before do
-          stub_up_to(:how_to_verify, idv_session: subject.idv_session)
-          subject.idv_session.service_provider.in_person_proofing_enabled = true
-        end
-
-        context 'opt in selection is nil' do
-          before do
-            allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).
-              and_return(false)
-            subject.idv_session.skip_doc_auth = nil
-            subject.idv_session.skip_doc_auth_from_how_to_verify = nil
-          end
-
-          it 'redirects to how to verify' do
-            get :show
-
-            expect(response).not_to render_template :show
-            expect(response).to redirect_to(idv_how_to_verify_url)
-          end
-        end
-
-        context 'opted in to ipp flow' do
-          before do
-            allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).
-              and_return(false)
-            subject.idv_session.skip_doc_auth = true
-            subject.idv_session.skip_doc_auth_from_how_to_verify = true
-            subject.idv_session.skip_hybrid_handoff = true
-          end
-
-          it 'redirects to the how to verify page' do
-            get :show
-
-            expect(response).to redirect_to(idv_how_to_verify_url)
-          end
-        end
-
-        context 'opt in ipp is not available on service provider' do
-          before do
-            subject.idv_session.service_provider.in_person_proofing_enabled = false
-            subject.idv_session.skip_doc_auth = nil
-            subject.idv_session.skip_doc_auth_from_how_to_verify = nil
-          end
-        end
-      end
-
-      context 'with selfie enabled system wide' do
-        describe 'when selfie is enabled for sp' do
-          let(:sp_selfie_enabled) { true }
-
-          it 'pass on correct flags and states and logs correct info' do
-            get :show
-            expect(@analytics).to have_logged_event(analytics_name, analytics_args)
-            expect(subject.idv_session.selfie_check_required).to eq(true)
-          end
-        end
-
-        describe 'when selfie is disabled for sp' do
-          let(:sp_selfie_enabled) { false }
-
-          it 'sets selfie_check_required to false in the idv session and logs analytics' do
-            get :show
-            expect(subject.idv_session.selfie_check_required).to eq(false)
-            expect(@analytics).to have_logged_event(analytics_name, analytics_args)
-          end
+          expect(response).to render_template :show
+          expect(subject.idv_session.selfie_check_required).to eq(false)
+          expect(@analytics).to have_logged_event(analytics_name, analytics_args)
         end
       end
     end
