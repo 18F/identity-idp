@@ -126,7 +126,7 @@ module DocAuthHelper
   def complete_document_capture_step_with_yml(proofing_yml, expected_path: idv_ssn_url)
     attach_file I18n.t('doc_auth.headings.document_capture_front'), File.expand_path(proofing_yml)
     attach_file I18n.t('doc_auth.headings.document_capture_back'), File.expand_path(proofing_yml)
-    try_continue_or_submit_images
+    click_on I18n.t('forms.buttons.submit.default')
     expect(page).to have_current_path(expected_path, wait: 10)
   end
 
