@@ -70,7 +70,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
     title: '', // TODO: replace with yml selfie_capture (Ticket LG-14392)
   };
   const documentsFormSteps: FormStep[] =
-    docAuthSeparatePagesEnabled && submissionError === undefined
+    docAuthSeparatePagesEnabled && isSelfieCaptureEnabled && submissionError === undefined
       ? [documentFormStep, selfieFormStep]
       : [documentAndSelfieFormStep];
   const reviewFormStep: FormStep = {
