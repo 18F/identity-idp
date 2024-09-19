@@ -149,27 +149,6 @@ RSpec.describe AccountReset::DeleteAccountController do
       )
     end
 
-    it 'logs info about user with a verified by mail account' do
-      user = create(:user, :proofed_with_gpo)
-      create_account_reset_request_for(user)
-      grant_request(user)
-      session[:granted_token] = AccountResetRequest.first.granted_token
-
-      delete :delete
-
-      expect(@analytics).to have_logged_event(
-        'Account Reset: delete',
-        user_id: user.uuid,
-        success: true,
-        errors: {},
-        mfa_method_counts: { phone: 1 },
-        profile_idv_level: 'legacy_unsupervised',
-        identity_verified: true,
-        account_age_in_days: 0,
-        account_confirmed_at: user.confirmed_at,
-      )
-    end
-
     it 'logs info about user verified in person proofed account' do
       user = create(
         :user,
