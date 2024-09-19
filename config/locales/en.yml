@@ -591,6 +591,7 @@ doc_auth.headings.no_ssn: Don’t have a Social Security number?
 doc_auth.headings.review_issues: Check your images and try again
 doc_auth.headings.secure_account: Secure your account
 doc_auth.headings.selfie: Photo of your face
+doc_auth.headings.selfie_capture: Capture photo of yourself
 doc_auth.headings.ssn: Enter your Social Security number
 doc_auth.headings.ssn_update: Update your Social Security number
 doc_auth.headings.text_message: We sent a message to your phone
