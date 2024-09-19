@@ -1075,26 +1075,26 @@ RSpec.feature 'Analytics Regression', :js do
         complete_enter_password_step(user)
         acknowledge_and_confirm_personal_key
       end
-  
+
       it 'records all of the events' do
         aggregate_failures 'analytics events' do
           happy_path_events.each do |event, attributes|
             expect(fake_analytics).to have_logged_event(event, attributes)
           end
         end
-  
+
         aggregate_failures 'populates data for each step of the Daily Dropoff Report' do
           row = CSV.parse(
             Reports::DailyDropoffsReport.new.tap { |r| r.report_date = Time.zone.now }.report_body,
             headers: true,
           ).first
-  
+
           Reports::DailyDropoffsReport::STEPS.each do |step|
             expect(row[step].to_i).to(be > 0, "step #{step} was counted")
           end
         end
       end
-  
+
       context 'proofing_device_profiling disabled' do
         let(:proofing_device_profiling) { :disabled }
         let(:threatmetrix) { false }
@@ -1112,7 +1112,7 @@ RSpec.feature 'Analytics Regression', :js do
             response_body: nil,
           }
         end
-  
+
         it 'records all of the events' do
           aggregate_failures 'analytics events' do
             happy_path_events.each do |event, attributes|
@@ -1186,7 +1186,7 @@ RSpec.feature 'Analytics Regression', :js do
     context 'Happy selfie path' do
       before do
         allow_any_instance_of(DocAuth::Response).to receive(:selfie_status).and_return(:success)
-  
+
         perform_in_browser(:desktop) do
           sign_in_and_2fa_user(user)
           visit_idp_from_sp_with_ial2(:oidc, biometric_comparison_required: true)
@@ -1195,7 +1195,7 @@ RSpec.feature 'Analytics Regression', :js do
           try_continue_or_submit_images
           attach_selfie
           submit_images
-  
+
           click_idv_continue
           visit idv_ssn_url
           complete_ssn_step
@@ -1206,13 +1206,13 @@ RSpec.feature 'Analytics Regression', :js do
           acknowledge_and_confirm_personal_key
         end
       end
-  
+
       it 'records all of the events' do
         happy_mobile_selfie_path_events.each do |event, attributes|
           expect(fake_analytics).to have_logged_event(event, attributes)
         end
       end
-  
+
       context 'proofing_device_profiling disabled' do
         let(:proofing_device_profiling) { :disabled }
         let(:threatmetrix) { false }
@@ -1230,7 +1230,7 @@ RSpec.feature 'Analytics Regression', :js do
             response_body: nil,
           }
         end
-  
+
         it 'records all of the events' do
           aggregate_failures 'analytics events' do
             happy_mobile_selfie_path_events.each do |event, attributes|
@@ -1246,7 +1246,7 @@ RSpec.feature 'Analytics Regression', :js do
           @sms_link = config[:link]
           impl.call(**config)
         end.at_least(1).times
-  
+
         perform_in_browser(:desktop) do
           sign_in_and_2fa_user(user)
           visit_idp_from_sp_with_ial2(:oidc)
@@ -1254,13 +1254,13 @@ RSpec.feature 'Analytics Regression', :js do
           complete_agreement_step
           click_send_link
         end
-  
+
         perform_in_browser(:mobile) do
           visit @sms_link
           attach_and_submit_images_for_split_doc_auth
           visit idv_hybrid_mobile_document_capture_url
         end
-  
+
         perform_in_browser(:desktop) do
           click_idv_continue
           visit idv_ssn_url
@@ -1272,26 +1272,26 @@ RSpec.feature 'Analytics Regression', :js do
           acknowledge_and_confirm_personal_key
         end
       end
-  
+
       it 'records all of the events' do
         aggregate_failures 'analytics events' do
           happy_hybrid_path_events.each do |event, attributes|
             expect(fake_analytics).to have_logged_event(event, attributes)
           end
         end
-  
+
         aggregate_failures 'populates data for each step of the Daily Dropoff Report' do
           row = CSV.parse(
             Reports::DailyDropoffsReport.new.tap { |r| r.report_date = Time.zone.now }.report_body,
             headers: true,
           ).first
-  
+
           Reports::DailyDropoffsReport::STEPS.each do |step|
             expect(row[step].to_i).to(be > 0, "step #{step} was counted")
           end
         end
       end
-  
+
       context 'proofing_device_profiling disabled' do
         let(:proofing_device_profiling) { :disabled }
         let(:threatmetrix) { false }
@@ -1309,7 +1309,7 @@ RSpec.feature 'Analytics Regression', :js do
             response_body: nil,
           }
         end
-  
+
         it 'records all of the events' do
           aggregate_failures 'analytics events' do
             happy_hybrid_path_events.each do |event, attributes|
@@ -1333,13 +1333,13 @@ RSpec.feature 'Analytics Regression', :js do
         complete_request_letter
         complete_enter_password_step(user)
       end
-  
+
       it 'records all of the events' do
         gpo_path_events.each do |event, attributes|
           expect(fake_analytics).to have_logged_event(event, attributes)
         end
       end
-  
+
       context 'proofing_device_profiling disabled' do
         let(:proofing_device_profiling) { :disabled }
         let(:threatmetrix) { false }
@@ -1357,7 +1357,7 @@ RSpec.feature 'Analytics Regression', :js do
             response_body: nil,
           }
         end
-  
+
         it 'records all of the events' do
           gpo_path_events.each do |event, attributes|
             expect(fake_analytics).to have_logged_event(event, attributes)
@@ -1367,7 +1367,7 @@ RSpec.feature 'Analytics Regression', :js do
     end
     context 'in person path' do
       let(:return_sp_url) { 'https://example.com/some/idv/ipp/url' }
-  
+
       before do
         allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
         allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(false)
@@ -1378,7 +1378,7 @@ RSpec.feature 'Analytics Regression', :js do
           to receive(:sp_name).and_return(sp_friendly_name)
         allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx).
           and_return(true)
-  
+
         start_idv_from_sp(:saml)
         sign_in_and_2fa_user(user)
         begin_in_person_proofing(user)
@@ -1389,7 +1389,7 @@ RSpec.feature 'Analytics Regression', :js do
         visit_help_center
         visit_sp_from_in_person_ready_to_verify
       end
-  
+
       it 'records all of the events', allow_browser_log: true do
         max_wait = Time.zone.now + 5.seconds
         wait_for_event('IdV: user clicked what to bring link on ready to verify page', max_wait)
@@ -1398,7 +1398,7 @@ RSpec.feature 'Analytics Regression', :js do
           expect(fake_analytics).to have_logged_event(event, attributes)
         end
       end
-  
+
       context 'proofing_device_profiling disabled' do
         let(:proofing_device_profiling) { :disabled }
         let(:idv_level) { 'legacy_in_person' }
@@ -1417,7 +1417,7 @@ RSpec.feature 'Analytics Regression', :js do
             response_body: nil,
           }
         end
-  
+
         it 'records all of the events', allow_browser_log: true do
           max_wait = Time.zone.now + 5.seconds
           wait_for_event('IdV: user clicked what to bring link on ready to verify page', max_wait)
@@ -1427,7 +1427,7 @@ RSpec.feature 'Analytics Regression', :js do
           end
         end
       end
-  
+
       # wait for event to happen
       def wait_for_event(event, wait)
         frequency = 0.1.seconds

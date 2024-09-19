@@ -15,7 +15,9 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
     before do
       allow(IdentityConfig.store).to receive(:doc_auth_separate_pages_enabled).and_return(true)
       if biometric_comparison_required
-        visit_idp_from_oidc_sp_with_ial2(biometric_comparison_required: biometric_comparison_required)
+        visit_idp_from_oidc_sp_with_ial2(
+          biometric_comparison_required: biometric_comparison_required,
+        )
       end
       sign_in_and_2fa_user
       allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
@@ -176,18 +178,18 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
       end
 
       it 'sets requested_at on the capture session' do
-        document_capture_session_uuid = nil
+        doc_capture_session_uuid = nil
 
         expect(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
           params = Rack::Utils.parse_nested_query URI(config[:link]).query
-          document_capture_session_uuid = params['document-capture-session']
+          doc_capture_session_uuid = params['document-capture-session']
           impl.call(**config)
         end
 
         fill_in :doc_auth_phone, with: '415-555-0199'
         click_send_link
 
-        document_capture_session = DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
+        document_capture_session = DocumentCaptureSession.find_by(uuid: doc_capture_session_uuid)
         expect(document_capture_session).to be
         expect(document_capture_session).to have_attributes(requested_at: a_kind_of(Time))
       end
@@ -220,7 +222,8 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
             it 'proceeds to ipp if selected and can go back' do
               expect(page).to have_content(strip_tags(t('doc_auth.info.hybrid_handoff_ipp_html')))
               click_on t('in_person_proofing.headings.prepare')
-              expect(page).to have_current_path(idv_document_capture_path({ step: 'hybrid_handoff' }))
+              hybrid_step = { step: 'hybrid_handoff' }
+              expect(page).to have_current_path(idv_document_capture_path(hybrid_step))
               click_on t('forms.buttons.back')
               expect(page).to have_current_path(idv_hybrid_handoff_path)
             end
