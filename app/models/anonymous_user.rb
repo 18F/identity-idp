@@ -61,7 +61,7 @@ class AnonymousUser
     false
   end
 
-  def active_profile?
-    false
+  def active_profile
+    nil
   end
 end

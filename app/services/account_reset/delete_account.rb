@@ -66,10 +66,6 @@ module AccountReset
     end
     # rubocop:enable IdentityIdp/MailLaterLinter
 
-    def profile_components
-      user.active_profile.proofing_components if user.active_profile?
-    end
-
     def extra_analytics_attributes
       {
         user_id: user.uuid,
@@ -77,7 +73,7 @@ module AccountReset
         account_age_in_days: account_age,
         account_confirmed_at: user.confirmed_at,
         mfa_method_counts: mfa_method_counts,
-        proofing_components: profile_components,
+        profile_idv_level: user.active_profile&.idv_level,
         identity_verified: user.identity_verified?,
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
       }

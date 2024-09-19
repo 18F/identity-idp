@@ -200,7 +200,6 @@ FactoryBot.define do
           :active,
           :with_pii,
           user: user,
-          proofing_components: { document_check: 'mock', document_type: 'state_id' },
         )
       end
     end
@@ -217,7 +216,6 @@ FactoryBot.define do
           :with_pii,
           idv_level: :unsupervised_with_selfie,
           user: user,
-          proofing_components: { document_check: 'mock', document_type: 'biometric' },
         )
       end
     end
@@ -272,14 +270,15 @@ FactoryBot.define do
       confirmed_at { Time.zone.now.round }
 
       after :build do |user|
-        create(
+        profile = create(
           :profile,
-          :active,
           :with_pii,
+          :active,
+          :verified,
+          :in_person_verification_pending,
           user: user,
-          proofing_components: { document_check: 'mock', document_type: 'ipp' },
         )
-        create(:in_person_enrollment, status: 'passed', user: user)
+        create(:in_person_enrollment, :passed, user: user, profile: profile)
       end
     end
 
@@ -293,7 +292,6 @@ FactoryBot.define do
           :active,
           :with_pii,
           user: user,
-          proofing_components: { document_check: 'mock', document_type: 'gpo' },
         )
         gpo_code = create(:gpo_confirmation_code)
         profile.gpo_confirmation_codes << gpo_code
