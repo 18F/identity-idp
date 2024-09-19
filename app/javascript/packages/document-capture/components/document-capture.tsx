@@ -70,7 +70,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
     title: t('doc_auth.headings.selfie_capture'),
   };
   const documentsFormSteps: FormStep[] =
-    docAuthSeparatePagesEnabled && submissionError === undefined
+    docAuthSeparatePagesEnabled && isSelfieCaptureEnabled && submissionError === undefined
       ? [documentFormStep, selfieFormStep]
       : [documentAndSelfieFormStep];
   const reviewFormStep: FormStep = {
