@@ -39,8 +39,7 @@ export function DocumentCaptureSubheaderOne() {
   const { t } = useI18n();
   return (
     <h1>
-      <hr className="margin-y-5" />
-      {t('doc_auth.headings.document_capture_subheader_id')}
+      {t('doc_auth.headings.document_capture')}
     </h1>
   );
 }
