@@ -220,7 +220,8 @@ RSpec.describe WebauthnSetupForm do
 
     context 'when the attestation response raises an error' do
       before do
-        allow(WebAuthn::AttestationStatement).to receive(:from).and_raise(StandardError)
+        allow(WebAuthn::AttestationStatement).
+          to receive(:from).and_raise(WebAuthn::AuthenticatorDataFormatError)
       end
 
       it 'returns false with an error when the attestation response raises an error' do
