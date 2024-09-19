@@ -152,7 +152,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
         ) as FormStep[]);
   const reviewAfterFailedSteps = [reviewFormStep] as FormStep[];
   const reviewWithInPersonSteps = reviewAfterFailedSteps.concat(inPersonSteps);
-  let afterSubmissionErrorSteps =
+  const afterSubmissionErrorSteps =
     docAuthSeparatePagesEnabled && isSelfieCaptureEnabled && !isInPersonStepEnabled
       ? reviewAfterFailedSteps
       : reviewWithInPersonSteps;
