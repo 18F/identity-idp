@@ -93,11 +93,6 @@ module Idv
 
     private
 
-    def doc_auth_is_socure?
-      # ab testing
-      true
-    end
-
     def cancel_establishing_in_person_enrollments
       UspsInPersonProofing::EnrollmentHelper.
         cancel_stale_establishing_enrollments_for_user(current_user)

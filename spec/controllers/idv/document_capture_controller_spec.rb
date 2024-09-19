@@ -15,6 +15,7 @@ RSpec.describe Idv::DocumentCaptureController do
   let(:document_capture_session_uuid) { document_capture_session&.uuid }
 
   let(:user) { create(:user) }
+  let(:ab_test_args) { {} }
 
   # selfie related test flags
   let(:sp_selfie_enabled) { false }
