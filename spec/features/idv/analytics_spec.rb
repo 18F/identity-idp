@@ -108,7 +108,6 @@ RSpec.feature 'Analytics Regression', :js do
         },
       },
       biographical_info: {
-        birth_year: 1938,
         identity_doc_address_state: nil,
         same_address_as_id: nil,
         state: 'MT',
@@ -146,7 +145,6 @@ RSpec.feature 'Analytics Regression', :js do
         },
       },
       biographical_info: {
-        birth_year: 1938,
         identity_doc_address_state: 'ND',
         same_address_as_id: 'false',
         state: 'MT',
