@@ -4758,6 +4758,11 @@ module AnalyticsEvents
     )
   end
 
+  # The user ended up at the "Verify info" screen without a Threatmetrix session id.
+  def idv_verify_info_missing_threatmetrix_session_id(**extra)
+    track_event(:idv_verify_info_missing_threatmetrix_session_id, **extra)
+  end
+
   # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
   # @param [String] acuant_version
   # @param ["hybrid","standard"] flow_path Document capture user flow

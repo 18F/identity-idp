@@ -9,6 +9,7 @@ module Idv
     include Steps::ThreatMetrixStepHelper
 
     before_action :confirm_not_rate_limited_after_doc_auth, except: [:show]
+    before_action :log_event_for_missing_threatmetrix_session_id
     before_action :confirm_step_allowed
 
     def show
@@ -45,7 +46,9 @@ module Idv
         controller: self,
         next_steps: [:phone, :request_letter],
         preconditions: ->(idv_session:, user:) do
-          idv_session.ssn && idv_session.remote_document_capture_complete?
+          idv_session.remote_document_capture_complete? &&
+            idv_session.ssn_step_complete? &&
+              threatmetrix_session_id_present_or_not_required?(idv_session:)
         end,
         undo_step: ->(idv_session:, user:) do
           idv_session.resolution_successful = nil

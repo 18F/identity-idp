@@ -25,6 +25,7 @@ module FlowPolicyHelper
       idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
     when :ssn
       idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
+      idv_session.threatmetrix_session_id = 'a-random-session-id'
     when :ipp_ssn
       idv_session.send(:user_session)['idv/in_person'] = {
         pii_from_user: Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.dup,
