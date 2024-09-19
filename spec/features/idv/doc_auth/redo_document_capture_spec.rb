@@ -656,7 +656,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
           complete_doc_auth_steps_before_document_capture_step
           mock_doc_auth_success_face_match_fail
           attach_images
-          continue_doc_auth_form
+          click_continue
           attach_selfie
           submit_images
           click_try_again
@@ -679,7 +679,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
           complete_doc_auth_steps_before_document_capture_step
           mock_doc_auth_pass_and_portrait_match_not_live
           attach_images
-          continue_doc_auth_form
+          click_continue
           attach_selfie
           submit_images
           click_try_again
@@ -723,7 +723,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
           complete_doc_auth_steps_before_document_capture_step
           mock_doc_auth_failure_face_match_pass
           attach_images
-          continue_doc_auth_form
+          click_continue
           attach_selfie
           submit_images
           click_try_again
@@ -766,7 +766,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
           complete_doc_auth_steps_before_document_capture_step
           mock_doc_auth_fail_face_match_fail
           attach_images
-          continue_doc_auth_form
+          click_continue
           attach_selfie
           submit_images
           click_try_again
@@ -788,7 +788,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
           complete_doc_auth_steps_before_document_capture_step
           mock_doc_auth_pass_face_match_pass_no_address1
           attach_images
-          continue_doc_auth_form
+          click_continue
           attach_selfie
           submit_images
           click_try_again

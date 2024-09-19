@@ -501,7 +501,7 @@ RSpec.feature 'document capture step', :js do
       expect(page).to have_current_path(idv_document_capture_url)
       expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
       attach_images
-      continue_doc_auth_form
+      click_continue
       expect(page).to have_title(t('doc_auth.headings.selfie_capture'))
       expect(page).to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
       attach_selfie
@@ -515,7 +515,7 @@ RSpec.feature 'document capture step', :js do
           'ial2_test_credential_multiple_doc_auth_failures_both_sides.yml'
         ),
       )
-      continue_doc_auth_form
+      click_continue
       attach_selfie(
         Rails.root.join(
           'spec', 'fixtures',
@@ -853,7 +853,7 @@ RSpec.feature 'document capture step', :js do
                   complete_up_to_how_to_verify_step_for_opt_in_ipp(
                     biometric_comparison_required: true,
                   )
-                  continue_doc_auth_form
+                  click_continue
                 end
               end
 
@@ -1070,7 +1070,7 @@ RSpec.feature 'document capture step', :js do
 
   def continue_to_selfie_upload
     if IdentityConfig.store.doc_auth_separate_pages_enabled
-      continue_doc_auth_form
+      click_continue
     end
   end
 

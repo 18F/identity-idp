@@ -100,8 +100,8 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
       end
 
       it 'displays error if user selects a country to which we cannot send SMS', js: true do
-        page.find('div[aria-label="Country code"]').click
-        within(page.find('.iti__flag-container', visible: :all)) do
+        click_on t('components.phone_input.country_code_label')
+        within(page.find('.iti__country-container', visible: :all)) do
           find('span', text: 'Sri Lanka').click
         end
         focused_input = page.find('.phone-input__number:focus')
