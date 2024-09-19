@@ -24,9 +24,15 @@ single_sp_tally  = 0
 multiple_sp_tally = 0
 
 User.where(uuid: user_uuids).in_batches(of: 1_000) do |batch|
-  no_sp_users = batch.select { |user| user.service_providers.blank? }
-  single_sp_users = batch.select { |user| user.service_providers.count == 1 }
-  multiple_sp_users = batch.select { |user| user.service_providers.count > 1 }
+  no_sp_users = []
+  single_sp_users = []
+  multiple_sp_users = []
+  batch.each do |user|
+    sp_count = user.service_providers.count
+    no_sp_users << user if sp_count.zero?
+    single_sp_users << user if sp_count == 1
+    multiple_sp_users << user if sp_count > 1
+  end
 
   single_sp_users.each { |user| single_sp_list << user.service_providers.map { |u| u.friendly_name } }
   multiple_sp_users.each { |user| multiple_sp_list << user.service_providers.map { |u| u.friendly_name } }
