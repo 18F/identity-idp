@@ -37,11 +37,7 @@ export function DocumentsCaptureStep({
 
 export function DocumentCaptureSubheaderOne() {
   const { t } = useI18n();
-  return (
-    <h1>
-      {t('doc_auth.headings.document_capture')}
-    </h1>
-  );
+  return <h1>{t('doc_auth.headings.document_capture')}</h1>;
 }
 
 export default function DocumentsStep({
