@@ -9,14 +9,16 @@ RSpec.describe IppHelper do
 
     context 'when body is a String' do
       it 'scrubs the sponsorID from the message' do
-        expect(scrub_body(message)).to eq("This is a test message with sponsorID [FILTERED]")
+        expect(scrub_body(message)).to eq('This is a test message with sponsorID [FILTERED]')
       end
     end
 
     context 'when body is a Hash' do
       it 'scrubs the responseMessage' do
         body = { responseMessage: message }
-        expect(scrub_body(body)).to eq("responseMessage" => "This is a test message with sponsorID [FILTERED]")
+        expect(scrub_body(body)).to eq(
+          'responseMessage' => 'This is a test message with sponsorID [FILTERED]',
+        )
       end
     end
 
