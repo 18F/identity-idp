@@ -1,10 +1,9 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+# option to use a file. if you want to copy/paste, skip to line 9
 require 'json'
-
 data_file = 'your-json-file-here.json'
-
 imported_data = File.read(data_file)
 
 parsed_data = JSON.parse(imported_data)
@@ -14,7 +13,7 @@ user_uuids = parsed_data.map { |user| user[:"properties.user_id"] }
 # collects user information per scenario and helps collect median information
 no_sp_users = Array.new
 single_sp_users = Array.new
-mulitple_sp_users = Array.new
+multiple_sp_users = Array.new
 
 # collect information on service provider per scenario
 single_sp_list = Set.new
@@ -24,15 +23,14 @@ multiple_sp_list = Set.new
 single_sp_tally  = 0
 multiple_sp_tally = 0
 
-User.includes(:service_providers).where(uuid: user_uuids).in_batches(of: 1_000) do |batch|
-  # array of users
+User.where(uuid: user_uuids).in_batches(of: 1_000) do |batch|
   no_sp_users = batch.select { |user| user.service_providers.blank? }
   single_sp_users = batch.select { |user| user.service_providers.count == 1 }
-  mulitple_sp_users = batch.select { |user| user.service_providers.count > 1 }
+  multiple_sp_users = batch.select { |user| user.service_providers.count > 1 }
 
-  # list of service prooviders per scenario
   single_sp_users.each { |user| single_sp_list << user.service_providers.map { |u| u.friendly_name } }
-  mulitple_sp_users.each { |user| multiple_sp_list << user.service_providers.map { |u| u.friendly_name } }
+  multiple_sp_users.each { |user| multiple_sp_list << user.service_providers.map { |u| u.friendly_name } }
+
   sleep(0.2)
 end
 
@@ -44,7 +42,6 @@ multiple_sp_tally = multiple_sp_list.to_a.flatten.tally
 no_sp_sign_ins_per_user = no_sp_users.map { |user| user.events.where(event_type: :sign_in_before_2fa).count }
 single_sp_sign_ins_per_user = single_sp_users.map { |user| user.events.where(event_type: :sign_in_before_2fa).count }
 multiple_sp_sign_ins_per_user = multiple_sp_users.map { |user| user.events.where(event_type: :sign_in_before_2fa).count }
-
 
 def median(dataset)
   sorted = dataset.sort
@@ -62,10 +59,11 @@ p "Median number of logins: #{median(no_sp_sign_ins_per_user)}"
 
 p '=== Accounts with one service provider ==='
 p "Count of users with one service provider: #{single_sp_users.count}"
+p "List of Service Providers #{}"
 p "Service providers associated with accounts with one SP added: #{single_sp_tally}"
 p "Median number of logins annually: #{median(single_sp_sign_ins_per_user)}"
 
 p '=== Accounts with multiple service providers'
 p "Count of users with multiple service providers: #{multiple_sp_users.count}"
-p "List of Service Providers #{multiple_sp_list}"
+p "Service providers associated with accounts with one SP added: #{multiple_sp_tally}"
 p "Median number of logins annually: #{median(multiple_sp_sign_ins_per_user)}"
