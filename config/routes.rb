@@ -351,7 +351,7 @@ Rails.application.routes.draw do
       get '/document_capture' => 'document_capture#show'
       put '/document_capture' => 'document_capture#update'
       get '/socure/document_capture' => 'socure/document_capture#show'
-      post '/socure/document_capture' => 'socure/document_capture#update'
+      put '/socure/document_capture' => 'socure/document_capture#update'
       # This route is included in SMS messages sent to users who start the IdV hybrid flow. It
       # should be kept short, and should not include underscores ("_").
       get '/documents' => 'hybrid_mobile/entry#show', as: :hybrid_mobile_entry

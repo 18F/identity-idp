@@ -6,7 +6,6 @@ module Idv
     include ActionView::Helpers::DateHelper
     include IdvStepConcern
     include StepIndicatorConcern
-    include DocAuthVendorConcern
 
     before_action :confirm_not_rate_limited
     before_action :confirm_step_allowed
