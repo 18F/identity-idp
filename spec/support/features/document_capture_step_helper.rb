@@ -12,13 +12,6 @@ module DocumentCaptureStepHelper
     wait_for_form_page_load
   end
 
-  def continue_doc_auth_form
-    click_on 'Continue'
-
-    # Wait for the the loading interstitial to disappear before continuing
-    wait_for_form_page_load
-  end
-
   def attach_and_submit_images
     attach_images
     submit_images
@@ -37,7 +30,7 @@ module DocumentCaptureStepHelper
   )
     attach_images(file)
     if IdentityConfig.store.doc_auth_separate_pages_enabled
-      continue_doc_auth_form
+      click_continue
     end
     attach_selfie
   end

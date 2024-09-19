@@ -1149,7 +1149,7 @@ RSpec.feature 'Analytics Regression', :js do
           visit_idp_from_sp_with_ial2(:oidc, biometric_comparison_required: true)
           complete_doc_auth_steps_before_document_capture_step
           attach_images
-          continue_doc_auth_form
+          click_continue
           attach_selfie
           submit_images
 
@@ -1206,7 +1206,7 @@ RSpec.feature 'Analytics Regression', :js do
           visit_idp_from_sp_with_ial2(:oidc, biometric_comparison_required: true)
           complete_doc_auth_steps_before_document_capture_step
           attach_images
-          continue_doc_auth_form
+          click_continue
           attach_selfie
           submit_images
 
