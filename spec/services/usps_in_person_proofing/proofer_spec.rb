@@ -95,7 +95,7 @@ RSpec.describe UspsInPersonProofing::Proofer do
           zip_code: Faker::Address.zip_code,
           first_name: Faker::Name.first_name,
           last_name: Faker::Name.last_name,
-          email: Faker::Internet.safe_email,
+          email: Faker::Internet.email,
           unique_id: '123456789',
         )
         stub_request_token
@@ -291,7 +291,7 @@ RSpec.describe UspsInPersonProofing::Proofer do
         zip_code: Faker::Address.zip_code,
         first_name: Faker::Name.first_name,
         last_name: Faker::Name.last_name,
-        email: Faker::Internet.safe_email,
+        email: Faker::Internet.email,
         unique_id: '123456789',
       )
     end

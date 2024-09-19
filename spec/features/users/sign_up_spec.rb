@@ -37,7 +37,7 @@ RSpec.feature 'Sign Up' do
   end
 
   context 'picking a preferred email language on signup' do
-    let(:email) { Faker::Internet.safe_email }
+    let(:email) { Faker::Internet.email }
 
     it 'allows a user to pick a language when entering email' do
       visit sign_up_email_path
