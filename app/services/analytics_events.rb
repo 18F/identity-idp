@@ -1874,6 +1874,7 @@ module AnalyticsEvents
   end
 
   # rubocop:disable Layout/LineLength
+  # @param [String,nil] app_identifier an identifier to differentiate brokered apps
   # @param ab_tests [Hash] Object that holds A/B test data (legacy A/B tests may include attributes outside the scope of this object)
   # @param acuant_sdk_upgrade_ab_test_bucket [String] A/B test bucket for Acuant document capture SDK upgrades
   # @param address_edited [Boolean] Whether the user edited their address before submitting the "Verify your information" step
@@ -1955,9 +1956,6 @@ module AnalyticsEvents
     step: nil,
     success: nil,
     same_address_as_id: nil,
-    proofing_components: nil,
-    active_profile_idv_level: nil,
-    pending_profile_idv_level: nil,
     app_identifier: nil,
     **extra
   )
@@ -1965,7 +1963,6 @@ module AnalyticsEvents
       'IdV: doc auth verify proofing results',
       app_identifier:,
       ab_tests:,
-      active_profile_idv_level:,
       acuant_sdk_upgrade_ab_test_bucket:,
       address_edited:,
       address_line2_present:,
@@ -1974,8 +1971,6 @@ module AnalyticsEvents
       flow_path:,
       lexisnexis_instant_verify_workflow_ab_test_bucket:,
       opted_in_to_in_person_proofing:,
-      pending_profile_idv_level:,
-      proofing_components:,
       proofing_results:,
       skip_hybrid_handoff:,
       ssn_is_unique:,
@@ -2214,6 +2209,7 @@ module AnalyticsEvents
   # @param [String,nil] fraud_pending_reason The reason this profile is eligible for fraud review
   # @param [Boolean] gpo_verification_pending Profile is awaiting gpo verification
   # @param [Boolean] in_person_verification_pending Profile is awaiting in person verification
+  # @param [String,nil] app_identifier an identifier to differentiate brokered apps
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Hash,nil] proofing_components User's current proofing components
@@ -3503,6 +3499,7 @@ module AnalyticsEvents
   end
 
   # User visits IdV
+  # @param [String,nil] app_identifier an identifier to differentiate brokered apps
   # @param [Hash,nil] proofing_components User's proofing components.
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
@@ -4258,6 +4255,7 @@ module AnalyticsEvents
   end
 
   # @identity.idp.previous_event_name IdV: Verify setup errors visited
+  # @param [String,nil] app_identifier an identifier to differentiate brokered apps
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
   # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
@@ -4626,6 +4624,7 @@ module AnalyticsEvents
 
   # @param [String] step
   # @param [String] location
+  # @param [String,nil] app_identifier an identifier to differentiate brokered apps
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
   # @option proofing_components [String,nil] 'document_type' Type of ID used to verify

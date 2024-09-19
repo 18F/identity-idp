@@ -180,11 +180,7 @@ module Idv
 
       return if sp_session.blank? || sp_session['request_url'].blank?
 
-      redirect_uri = UriService.params(URI(sp_session['request_url']))['redirect_uri']
-
-      return if redirect_uri.blank?
-
-      UriService.params(URI(redirect_uri))['appIdentifier']
+      UriService.params(URI(sp_session['request_url']))['app_identifier']
     end
 
     def profile_history
