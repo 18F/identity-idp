@@ -176,7 +176,7 @@ module Idv
     end
 
     def app_identifier
-      sp_session = session.fetch(:sp, {})
+      sp_session = session&.fetch(:sp, {})
 
       return if sp_session.blank? || sp_session['request_url'].blank?
 
