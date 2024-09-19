@@ -498,6 +498,7 @@ RSpec.feature 'document capture step', :js do
       expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
       attach_images
       continue_doc_auth_form
+      expect(page).to have_title(t('doc_auth.headings.selfie_capture'))
       expect(page).to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
       attach_selfie
       submit_images

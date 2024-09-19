@@ -591,6 +591,7 @@ doc_auth.headings.no_ssn: Vous n’avez pas de numéro de sécurité sociale ?
 doc_auth.headings.review_issues: Vérifiez vos images et essayez à nouveau
 doc_auth.headings.secure_account: Sécuriser votre compte
 doc_auth.headings.selfie: Photo de votre visage
+doc_auth.headings.selfie_capture: Prenez-vous en photo
 doc_auth.headings.ssn: Saisir votre numéro de sécurité sociale
 doc_auth.headings.ssn_update: Mettre à jour votre numéro de sécurité sociale
 doc_auth.headings.text_message: Nous avons envoyé un message à votre téléphone
