@@ -65,7 +65,7 @@ module TwoFactorAuthentication
       )
 
       if result.success?
-        handle_remember_device_preference(backup_code_params[:remember_device])
+        handle_remember_device_preference(params[:remember_device], TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE)
         return handle_last_code if all_codes_used?
         handle_valid_backup_code
       else

@@ -12,6 +12,7 @@
     <%= render ManageableAuthenticatorComponent.new(
           configuration:,
           user_session:,
+          remember_device_cookie:,
           manage_url: edit_webauthn_path(id: configuration.id),
           manage_api_url: api_internal_two_factor_authentication_webauthn_path(id: configuration.id),
           custom_strings: {

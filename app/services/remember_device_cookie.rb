@@ -3,11 +3,12 @@
 class RememberDeviceCookie
   COOKIE_ROLE = 'remember_me'
 
-  attr_reader :user_id, :created_at
+  attr_reader :user_id, :created_at, :auth_method
 
-  def initialize(user_id:, created_at:)
+  def initialize(user_id:, created_at:, auth_method:)
     @user_id = user_id
     @created_at = created_at
+    @auth_method = auth_method
   end
 
   def self.from_json(json)
@@ -16,6 +17,7 @@ class RememberDeviceCookie
     new(
       user_id: parsed_json['user_id'],
       created_at: Time.zone.parse(parsed_json['created_at']),
+      auth_method: parsed_json['auth_method'],
     )
   end
 
@@ -28,6 +30,7 @@ class RememberDeviceCookie
   def to_json(*args)
     {
       user_id: user_id,
+      auth_method: auth_method,
       created_at: created_at.iso8601,
       role: COOKIE_ROLE,
       entropy: SecureRandom.base64(32),

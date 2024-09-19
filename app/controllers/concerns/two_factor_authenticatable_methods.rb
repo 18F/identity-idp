@@ -8,7 +8,7 @@ module TwoFactorAuthenticatableMethods
   include NewDeviceConcern
 
   def auth_methods_session
-    @auth_methods_session ||= AuthMethodsSession.new(user_session:)
+    @auth_methods_session ||= AuthMethodsSession.new(user: current_user, user_session:, remember_device_cookie:)
   end
 
   def handle_verification_for_authentication_context(result:, auth_method:, extra_analytics: nil)
@@ -119,9 +119,9 @@ module TwoFactorAuthenticatableMethods
     ).order(created_at: :desc).limit(1).take
   end
 
-  def handle_remember_device_preference(remember_device_preference)
+  def handle_remember_device_preference(remember_device_preference, tfa_method)
     save_user_opted_remember_device_pref(remember_device_preference)
-    save_remember_device_preference(remember_device_preference)
+    save_remember_device_preference(remember_device_preference, tfa_method)
   end
 
   # Method will be renamed in the next refactor.

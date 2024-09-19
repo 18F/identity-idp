@@ -15,6 +15,7 @@ class ManageableAuthenticatorComponent < BaseComponent
     user_session:,
     manage_api_url:,
     manage_url:,
+    remember_device_cookie:,
     custom_strings: {},
     **tag_options
   )
@@ -23,6 +24,7 @@ class ManageableAuthenticatorComponent < BaseComponent
     @manage_api_url = manage_api_url
     @manage_url = manage_url
     @custom_strings = custom_strings
+    @remember_device_cookie = remember_device_cookie
     @tag_options = tag_options
   end
 
@@ -43,7 +45,7 @@ class ManageableAuthenticatorComponent < BaseComponent
   private
 
   def validate_configuration_methods
-    [:name, :id, :created_at].each do |method|
+    [:name, :id, :created_at, :user].each do |method|
       next if configuration.respond_to?(method)
       errors.add(
         :configuration,
@@ -54,7 +56,7 @@ class ManageableAuthenticatorComponent < BaseComponent
   end
 
   def auth_methods_session
-    @auth_methods_session ||= AuthMethodsSession.new(user_session:)
+    @auth_methods_session ||= AuthMethodsSession.new(user: configuration.user, user_session:, remember_device_cookie: @remember_device_cookie)
   end
 
   def default_strings

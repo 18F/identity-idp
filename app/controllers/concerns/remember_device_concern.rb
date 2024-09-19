@@ -7,10 +7,10 @@ module RememberDeviceConcern
     cookies.encrypted[:user_opted_remember_device_preference] = remember_device_preference
   end
 
-  def save_remember_device_preference(remember_device_preference)
+  def save_remember_device_preference(remember_device_preference, auth_method)
     return if remember_device_preference != '1' && remember_device_preference != 'true'
     cookies.encrypted[:remember_device] = {
-      value: RememberDeviceCookie.new(user_id: current_user.id, created_at: Time.zone.now).to_json,
+      value: RememberDeviceCookie.new(user_id: current_user.id, created_at: Time.zone.now, auth_method: auth_method).to_json,
       expires: IdentityConfig.store.remember_device_expiration_hours_aal_1.hours.from_now,
     }
   end
@@ -54,25 +54,15 @@ module RememberDeviceConcern
   end
 
   def mfa_expiration_interval
-    aal_1_expiration = IdentityConfig.store.remember_device_expiration_hours_aal_1.hours
     aal_2_expiration = IdentityConfig.store.remember_device_expiration_minutes_aal_2.minutes
 
-    return aal_2_expiration if sp_aal > 1
-    return aal_2_expiration if sp_ial > 1
+    return aal_2_expiration if current_sp&.identity_proofing_allowed?
     return aal_2_expiration if resolved_authn_context_result&.aal2?
 
-    aal_1_expiration
+    IdentityConfig.store.remember_device_expiration_hours_aal_1.hours
   end
 
   private
-
-  def sp_aal
-    current_sp&.default_aal || 1
-  end
-
-  def sp_ial
-    current_sp&.ial || 1
-  end
 
   def expired_for_interval?(user, interval)
     return false unless has_remember_device_auth_event?

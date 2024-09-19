@@ -33,7 +33,7 @@ module TwoFactorAuthentication
       end
 
       if result.success?
-        handle_remember_device_preference(params[:remember_device])
+        handle_remember_device_preference(params[:remember_device], params[:otp_delivery_preference])
 
         if UserSessionContext.confirmation_context?(context)
           handle_valid_confirmation_otp

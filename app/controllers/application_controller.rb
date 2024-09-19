@@ -8,6 +8,7 @@ class ApplicationController < ActionController::Base
   include SecondMfaReminderConcern
   include TwoFactorAuthenticatableMethods
   include AbTestingConcern
+  include RememberDeviceConcern
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.

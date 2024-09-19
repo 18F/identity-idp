@@ -5,12 +5,20 @@ class AuthMethodsSession
 
   MAX_AUTH_EVENTS = 10
 
-  def initialize(user_session:)
+  def initialize(user:, user_session:, remember_device_cookie:)
+    @user = user
     @user_session = user_session
+    @remember_device_cookie = remember_device_cookie
   end
 
   def authenticate!(auth_method)
     user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION] = false
+    if @remember_device_cookie.valid_for_user?(user: @user, expiration_interval: IdentityConfig.store.remember_device_expiration_minutes_aal_2.minutes) &&
+        @remember_device_cookie.auth_method
+      user_session[:auth_events] = auth_events.push({auth_method: @remember_device_cookie.auth_method, at: @remember_device_cookie.created_at})
+    end
+
+    user_session[:auth_events]
     user_session[:auth_events] = auth_events.
       push({ auth_method:, at: Time.zone.now }).
       last(MAX_AUTH_EVENTS)
