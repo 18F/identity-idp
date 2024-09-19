@@ -44,6 +44,8 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
     )
   end
 
+  let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN }
+
   subject do
     described_class.new(
       resolution_result: resolution_result,
@@ -53,6 +55,7 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
       ipp_enrollment_in_progress: ipp_enrollment_in_progress,
       device_profiling_result: device_profiling_result,
       same_address_as_id: same_address_as_id,
+      applicant_pii: applicant_pii,
     )
   end
 
@@ -89,6 +92,40 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
           expect(result.success?).to eq(false)
           resolution_adjudication_reason = result.extra[:context][:resolution_adjudication_reason]
           expect(resolution_adjudication_reason).to eq(:fail_state_id)
+        end
+      end
+    end
+
+    describe 'biographical_info' do
+      context 'the applicant PII contains one address' do
+        it 'includes formatted PII' do
+          result = subject.adjudicated_result
+
+          expect(result.extra[:biographical_info]).to eq(
+            birth_year: 1938,
+            state: 'MT',
+            identity_doc_address_state: nil,
+            state_id_jurisdiction: 'ND',
+            state_id_number: '#############',
+            same_address_as_id: nil,
+          )
+        end
+      end
+
+      context 'the applicant PII contains a residential address and document address' do
+        let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID }
+
+        it 'includes formatted PII' do
+          result = subject.adjudicated_result
+
+          expect(result.extra[:biographical_info]).to eq(
+            birth_year: 1938,
+            state: 'MT',
+            identity_doc_address_state: 'MT',
+            state_id_jurisdiction: 'ND',
+            state_id_number: '#############',
+            same_address_as_id: 'true',
+          )
         end
       end
     end

@@ -107,6 +107,14 @@ RSpec.feature 'Analytics Regression', :js do
           threatmetrix: threatmetrix_response,
         },
       },
+      biographical_info: {
+        birth_year: 1938,
+        identity_doc_address_state: nil,
+        same_address_as_id: nil,
+        state: 'MT',
+        state_id_jurisdiction: 'ND',
+        state_id_number: '#############',
+      },
     }
   end
 
@@ -136,6 +144,14 @@ RSpec.feature 'Analytics Regression', :js do
           state_id: state_id_resolution,
           threatmetrix: threatmetrix_response,
         },
+      },
+      biographical_info: {
+        birth_year: 1938,
+        identity_doc_address_state: 'ND',
+        same_address_as_id: 'false',
+        state: 'MT',
+        state_id_jurisdiction: 'ND',
+        state_id_number: '#############',
       },
     }
   end
