@@ -141,7 +141,9 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   if (submissionError && formValues) {
     initialValues = formValues;
   }
-
+  // If the user got here by opting-in to in-person proofing, when skipDocAuth === true,
+  // then set steps to inPersonSteps
+  const isInPersonStepEnabled = skipDocAuth || skipDocAuthFromHandoff;
   const inPersonSteps: FormStep[] =
     inPersonURL === undefined
       ? []
@@ -150,14 +152,12 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
         ) as FormStep[]);
   const reviewAfterFailedSteps = [reviewFormStep] as FormStep[];
   const reviewWithInPersonSteps = reviewAfterFailedSteps.concat(inPersonSteps);
-  const afterSubmissionErrorSteps = docAuthSeparatePagesEnabled
-    ? reviewAfterFailedSteps
-    : reviewWithInPersonSteps;
+  let afterSubmissionErrorSteps =
+    docAuthSeparatePagesEnabled && isSelfieCaptureEnabled && !isInPersonStepEnabled
+      ? reviewAfterFailedSteps
+      : reviewWithInPersonSteps;
   const defaultSteps: FormStep[] = submissionError ? afterSubmissionErrorSteps : documentsFormSteps;
 
-  // If the user got here by opting-in to in-person proofing, when skipDocAuth === true,
-  // then set steps to inPersonSteps
-  const isInPersonStepEnabled = skipDocAuth || skipDocAuthFromHandoff;
   const steps: FormStep[] = isInPersonStepEnabled ? inPersonSteps : defaultSteps;
 
   // If the user got here by opting-in to in-person proofing, when skipDocAuth === true;

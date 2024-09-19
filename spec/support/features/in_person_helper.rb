@@ -179,8 +179,16 @@ module InPersonHelper
                                             same_address_as_id: true)
     complete_prepare_step(user)
     complete_location_step(user)
-    complete_state_id_controller(user, same_address_as_id: same_address_as_id)
-    complete_address_step(user, same_address_as_id: same_address_as_id) unless same_address_as_id
+    complete_state_id_controller(
+      user,
+      same_address_as_id: same_address_as_id,
+    )
+    unless same_address_as_id
+      complete_address_step(
+        user,
+        same_address_as_id: same_address_as_id,
+      )
+    end
     complete_ssn_step(user, tmx_status)
     complete_verify_step(user)
   end
