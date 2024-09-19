@@ -208,7 +208,7 @@ describe('PhoneInput', () => {
     // See: https://github.com/jsdom/jsdom/issues/3323
     expect(hasPopup).to.be.oneOf([null, 'listbox']);
     expect(name).to.equal('Country code');
-    expect(value).to.equal('United States: +1');
+    expect(value).to.equal('United States +1');
     expect(controlled.contains(listbox)).to.be.true();
   });
 
