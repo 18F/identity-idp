@@ -136,19 +136,6 @@ export class PhoneInputElement extends HTMLElement {
 
     this.iti = iti;
 
-    // Remove duplicate items in the country list
-    const preferred: NodeListOf<HTMLLIElement> =
-      this.countryList!.querySelectorAll('.iti__preferred');
-    preferred.forEach((listItem) => {
-      const { countryCode } = listItem.dataset;
-      const duplicates: NodeListOf<HTMLLIElement> = this.countryList!.querySelectorAll(
-        `.iti__standard[data-country-code="${countryCode}"]`,
-      );
-      duplicates.forEach((duplicateListItem) => {
-        duplicateListItem.parentNode?.removeChild(duplicateListItem);
-      });
-    });
-
     // Improve base accessibility of intl-tel-input
     this.selectedCountry.setAttribute('aria-haspopup', 'listbox');
 
