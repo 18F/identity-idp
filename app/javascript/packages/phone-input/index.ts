@@ -149,7 +149,6 @@ export class PhoneInputElement extends HTMLElement {
     // Improve base accessibility of intl-tel-input
     this.selectedCountry.setAttribute('aria-haspopup', 'listbox');
     this.selectedCountry.setAttribute('aria-label', this.strings.country_code_label);
-    this.selectedCountry.removeAttribute('aria-owns');
 
     this.syncCountryToCodeInput({ fireChangeEvent: false });
 
