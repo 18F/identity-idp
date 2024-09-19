@@ -35,9 +35,6 @@ module Idv
         end
 
         def update
-          clear_future_steps!
-          idv_session.redo_document_capture = nil # done with this redo
-
           # fetch result probably not needed local dev
           if (socure_document_uuid = request.params[:document_uuid])
             uploaded_documents_decision(socure_document_uuid)
@@ -47,9 +44,7 @@ module Idv
           document_capture_session.confirm_ocr
           result = handle_stored_result
 
-          analytics.idv_doc_auth_document_capture_submitted(**result.to_h.merge(analytics_arguments))
-
-          Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
+          Funnel::DocAuth::RegisterStep.new(document_capture_user.id, sp_session[:issuer]).
             call('document_capture', :update, true)
 
           cancel_establishing_in_person_enrollments
@@ -62,34 +57,11 @@ module Idv
           end
         end
 
-        def self.step_info
-          Idv::StepInfo.new(
-            key: :socure_document_capture,
-            controller: self,
-            next_steps: [:ssn, :ipp_ssn],
-            preconditions: ->(idv_session:, user:) {
-                            idv_session.flow_path == 'standard' && (
-                              # mobile
-                              idv_session.skip_doc_auth_from_handoff ||
-                              idv_session.skip_hybrid_handoff ||
-                                idv_session.skip_doc_auth ||
-                                idv_session.skip_doc_auth_from_how_to_verify ||
-                                !idv_session.selfie_check_required ||
-                                idv_session.desktop_selfie_test_mode_enabled?
-                            )
-                          },
-            undo_step: ->(idv_session:, user:) do
-              idv_session.pii_from_doc = nil
-              idv_session.invalidate_in_person_pii_from_user!
-            end,
-          )
-        end
-
         private
 
         def cancel_establishing_in_person_enrollments
           UspsInPersonProofing::EnrollmentHelper.
-            cancel_stale_establishing_enrollments_for_user(current_user)
+            cancel_stale_establishing_enrollments_for_user(document_capture_user)
         end
 
         def handle_stored_result
