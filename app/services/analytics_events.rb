@@ -118,7 +118,7 @@ module AnalyticsEvents
       account_age_in_days:,
       account_confirmed_at:,
       mfa_method_counts:,
-      proofing_components: proofing_components,
+      proofing_components:,
       identity_verified:,
       errors:,
       error_details:,
