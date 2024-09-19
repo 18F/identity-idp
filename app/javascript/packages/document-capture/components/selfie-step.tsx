@@ -5,7 +5,6 @@ import {
   FormStepsButton,
   FormStepsContext,
 } from '@18f/identity-form-steps';
-import { PageHeading } from '@18f/identity-components';
 import { Cancel } from '@18f/identity-verify-flow';
 import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
