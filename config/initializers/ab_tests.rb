@@ -78,7 +78,7 @@ module AbTests
     elsif user
       user.uuid
     else
-      SecureRandom.gen_random(1)
+      SecureRandom.alphanumeric(1)
     end
   end.freeze
 end
