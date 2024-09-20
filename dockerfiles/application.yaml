@@ -313,6 +313,13 @@ spec:
             - op: replace
               path: /spec/rules/0/host
               value: {{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov
+        - target:
+            kind: Ingress
+            name: pivcac
+          patch: |-
+            - op: replace
+              path: /spec/rules/0/host
+              value: {{ENVIRONMENT}}.pivcac.reviewapps.identitysandbox.gov
             
   destination:
     server: 'https://kubernetes.default.svc'
