@@ -5,3 +5,4 @@ vendor
 coverage
 doc
 app/javascript/packages/analytics/digital-analytics-program*.js
+lib/saml_idp/*.js
