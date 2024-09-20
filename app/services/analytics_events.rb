@@ -1268,6 +1268,45 @@ module AnalyticsEvents
     )
   end
 
+  # User visits IdV selfie capture step
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param [Boolean] redo_document_capture Whether user is redoing document capture after barcode
+  # warning
+  # @param [Boolean] liveness_checking_required Whether biometric selfie check is required
+  # @param [Boolean] selfie_check_required Whether biometric selfie check is required
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
+  # SDK upgrades
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  def idv_doc_auth_selfie_capture_visited(
+    step:,
+    analytics_id:,
+    liveness_checking_required:,
+    selfie_check_required:,
+    flow_path:,
+    opted_in_to_in_person_proofing: nil,
+    redo_document_capture: nil,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
+    skip_hybrid_handoff: nil,
+    **extra
+  )
+    track_event(
+      'IdV: doc auth selfie_capture visited',
+      flow_path:,
+      step:,
+      analytics_id:,
+      redo_document_capture:,
+      skip_hybrid_handoff:,
+      liveness_checking_required:,
+      selfie_check_required:,
+      opted_in_to_in_person_proofing:,
+      acuant_sdk_upgrade_ab_test_bucket:,
+      **extra,
+    )
+  end
+
   # @param [String] step_name which step the user was on
   # @param [Integer] remaining_submit_attempts how many attempts the user has left before
   #                  we rate limit them (previously called "remaining_attempts")

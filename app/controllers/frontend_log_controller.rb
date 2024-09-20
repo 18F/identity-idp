@@ -42,6 +42,7 @@ class FrontendLogController < ApplicationController
     'IdV: warning action triggered' => :idv_warning_action_triggered,
     'IdV: warning shown' => :idv_warning_shown,
     'Multi-Factor Authentication: download backup code' => :multi_factor_auth_backup_code_download,
+    'IdV: doc auth selfie_capture visited' => :idv_doc_auth_selfie_capture_visited,
   }.freeze
   # rubocop:enable Layout/LineLength
 

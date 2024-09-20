@@ -11,6 +11,7 @@ import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import TipList from './tip-list';
 import { UploadContext } from '../context';
+import { AnalyticsContext } from '../context';
 import {
   ImageValue,
   DefaultSideProps,
@@ -60,8 +61,9 @@ export default function SelfieStep({
   const { t } = useI18n();
   const { isLastStep } = useContext(FormStepsContext);
   const { flowPath } = useContext(UploadContext);
+  const { trackEvent } = useContext(AnalyticsContext);
   const pageHeaderText = t('doc_auth.headings.document_capture_with_selfie');
-
+  trackEvent('IdV: doc auth selfie_capture visited');
   const defaultSideProps: DefaultSideProps = {
     registerField,
     onChange,

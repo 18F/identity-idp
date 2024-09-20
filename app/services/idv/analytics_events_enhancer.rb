@@ -17,6 +17,7 @@ module Idv
       idv_doc_auth_capture_complete_visited
       idv_doc_auth_document_capture_submitted
       idv_doc_auth_document_capture_visited
+      idv_doc_auth_selfie_capture_visited
       idv_doc_auth_exception_visited
       idv_doc_auth_failed_image_resubmitted
       idv_doc_auth_how_to_verify_submitted
