@@ -240,6 +240,28 @@ spec:
             - op: replace
               path: /spec/template/spec/containers/0/image
               value: {{ECR_REGISTRY}}/identity-dashboard/review:{{DASHBOARD_CONTAINER_TAG}}
+        # Patch pivcac database jobs/update crl CronJob
+        - target:
+            kind: Job
+            name: create-pivcac-database
+          patch: |-
+            - op: replace
+              path: /spec/template/spec/containers/0/image
+              value: {{ECR_REGISTRY}}/identity-pivcac/review:{{DASHBOARD_CONTAINER_TAG}}
+        - target:
+            kind: Job
+            name: migrate-pivcac-database
+          patch: |-
+            - op: replace
+              path: /spec/template/spec/containers/0/image
+              value: {{ECR_REGISTRY}}/identity-pivcac/review:{{DASHBOARD_CONTAINER_TAG}}
+        - target:
+            kind: CronJob
+            name: update-pivcac-crls
+          patch: |-
+            - op: replace
+              path: /spec/jobTemplate/spec/template/spec/containers/0/image
+              value: {{ECR_REGISTRY}}/identity-pki/review:{{PIVCAC_CONTAINER_TAG}}
         # Patch IDP image
         - target:
             kind: Rollout
