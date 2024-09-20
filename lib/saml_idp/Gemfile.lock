@@ -235,6 +235,8 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
     rspec-support (3.13.1)
+    rspec_junit_formatter (0.6.0)
+      rspec-core (>= 2, < 4, != 2.12.0)
     rubocop (1.62.0)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
@@ -309,6 +311,7 @@ DEPENDENCIES
   rails (~> 7.1)
   rake
   rspec
+  rspec_junit_formatter
   rubocop (= 1.62.0)
   rubocop-rails (= 2.9)
   rubocop-rspec

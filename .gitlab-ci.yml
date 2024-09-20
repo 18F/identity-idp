@@ -33,6 +33,14 @@ default:
       - vendor/ruby
     policy: pull
 
+  - &saml_idp_ruby_cache
+    key:
+      files:
+        - lib/saml_idp/Gemfile.lock
+      paths:
+        - lib/saml_idp/vendor/ruby
+      policy: pull
+
   - &yarn_cache
     key:
       files:
@@ -295,6 +303,26 @@ specs:
     - bundle exec rake db:create db:migrate --trace
     - bundle exec rake db:seed
     - bundle exec rake knapsack:rspec["--format documentation --format RspecJunitFormatter --out rspec.xml --format json --out rspec_json/${CI_NODE_INDEX}.json"]
+
+specs_saml_idp:
+  stage: test
+  needs:
+    - job: install
+  cache:
+    - <<: *saml_idp_ruby_cache
+  artifacts:
+    expire_in: 31d
+    when: always
+    paths:
+      - lib/saml_idp/coverage/
+      - lib/saml_idp/rspec.xml
+      - lib/saml_idp/rspec_json/
+    reports:
+      junit: lib/saml_idp/rspec.xml
+  script:
+    - cd lib/saml_idp
+    - *bundle_install
+    - bundle exec rspec spec --format documentation --format RspecJunitFormatter --out rspec.xml --format json --out rspec_json/saml_idp.json
 
 lint:
   stage: test
