@@ -3,7 +3,6 @@ module SamlIdp
   class LogoutResponseBuilder < LogoutBuilder
     attr_accessor :response_id, :issuer_uri, :saml_slo_url, :saml_request_id, :algorithm
 
-    # rubocop:disable Metrics/ParameterLists
     def initialize(
       response_id,
       issuer_uri,
@@ -13,7 +12,6 @@ module SamlIdp
       x509_certificate = nil,
       secret_key = nil
     )
-      # rubocop:enable Metrics/ParameterLists
       self.response_id = response_id
       self.issuer_uri = issuer_uri
       self.saml_slo_url = saml_slo_url

@@ -1,6 +1,7 @@
 require 'builder'
 require 'saml_idp/algorithmable'
 require 'saml_idp/signable'
+
 module SamlIdp
   class AssertionBuilder
     include Algorithmable
@@ -189,3 +190,7 @@ module SamlIdp
     private :iso
   end
 end
+# rubocop:enable Metrics/MethodLength
+# rubocop:enable Metrics/ClassLength
+# rubocop:enable Metrics/BlockLength
+# rubocop:enable Layout/LineLength

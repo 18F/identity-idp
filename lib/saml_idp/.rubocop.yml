@@ -1,3 +1,5 @@
+inherit_from: ./.rubocop_todo.yml
+
 # This configuration only includes the cops that differ from the Rubocop
 # defaults, which can be found here:
 # https://github.com/bbatsov/rubocop/blob/master/config/default.yml
@@ -24,59 +26,22 @@ RSpec/Capybara/FeatureMethods:
   Enabled: false
 
 Metrics/AbcSize:
-  Description: A calculated magnitude based on number of assignments, branches, and
-    conditions.
-  Enabled: true
-  Max: 15
-  Exclude:
-  - spec/**/*
+  Enabled: false
 
 Metrics/BlockLength:
-  CountComments: false  # count full line comments?
-  Enabled: true
-  Max: 25
-  Exclude:
-    - 'Rakefile'
-    - '**/*.rake'
-    - 'spec/**/*.rb'
+  Enabled: false
 
 Metrics/ClassLength:
-  Description: Avoid classes longer than 100 lines of code.
-  Enabled: true
-  CountComments: false
-  Max: 100
-  Exclude:
-  - spec/**/*
+  Enabled: false
 
 Layout/LineLength:
-  Description: Limit lines to 100 characters.
-  StyleGuide: https://github.com/bbatsov/ruby-style-guide#80-character-limits
-  Enabled: true
-  Max: 100
-  AllowURI: true
-  URISchemes:
-  - http
-  - https
-  Exclude:
-  - spec/**/*
+  Enabled: false
 
 Metrics/MethodLength:
-  Description: Avoid methods longer than 10 lines of code.
-  StyleGuide: https://github.com/bbatsov/ruby-style-guide#short-methods
-  Enabled: true
-  CountComments: false
-  Max: 10
-  Exclude:
-  - spec/**/*
+  Enabled: false
 
 Metrics/ModuleLength:
-  CountComments: false
-  Max: 100
-  Description: Avoid modules longer than 100 lines of code.
-  Enabled: true
-  Exclude:
-  - spec/**/*
-  - lib/saml_idp/signable.rb
+  Enabled: false
 
 Metrics/ParameterLists:
   CountKeywordArgs: false
@@ -283,3 +248,4 @@ RSpec/NamedSubject:
 
 RSpec/ContextWording:
   Enabled: false
+

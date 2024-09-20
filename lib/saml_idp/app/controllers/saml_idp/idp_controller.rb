@@ -27,6 +27,7 @@ module SamlIdp
       end
       render template: 'saml_idp/idp/new'
     end
+    # rubocop:enable Metrics/MethodLength
 
     def logout
       idp_logout

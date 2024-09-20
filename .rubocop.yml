@@ -1,3 +1,5 @@
+# inherit_from: lib/saml_idp/.rubocop_todo.yml
+
 # This configuration only includes the cops that differ from the Rubocop
 # defaults, which can be found here:
 # https://github.com/bbatsov/rubocop/blob/master/config/default.yml
