@@ -5,7 +5,6 @@ import {
   FormStepsButton,
   FormStepsContext,
 } from '@18f/identity-form-steps';
-import { PageHeading } from '@18f/identity-components';
 import { Cancel } from '@18f/identity-verify-flow';
 import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
@@ -27,8 +26,7 @@ export function SelfieCaptureStep({
   const { t } = useI18n();
   return (
     <>
-      <hr className="margin-y-5" />
-      <h2>2. {t('doc_auth.headings.document_capture_subheader_selfie')}</h2>
+      <h1>{t('doc_auth.headings.document_capture_subheader_selfie')}</h1>
       <p>{t('doc_auth.info.selfie_capture_content')}</p>
       <TipList
         title={t('doc_auth.tips.document_capture_selfie_selfie_text')}
@@ -57,10 +55,8 @@ export default function SelfieStep({
   onError = () => {},
   registerField = () => undefined,
 }: FormStepComponentProps<DocumentsAndSelfieStepValue>) {
-  const { t } = useI18n();
   const { isLastStep } = useContext(FormStepsContext);
   const { flowPath } = useContext(UploadContext);
-  const pageHeaderText = t('doc_auth.headings.document_capture_with_selfie');
 
   const defaultSideProps: DefaultSideProps = {
     registerField,
@@ -71,7 +67,6 @@ export default function SelfieStep({
   return (
     <>
       {flowPath === 'hybrid' && <HybridDocCaptureWarning className="margin-bottom-4" />}
-      <PageHeading>{pageHeaderText}</PageHeading>
       <SelfieCaptureStep defaultSideProps={defaultSideProps} selfieValue={value.selfie} />
       {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
       <Cancel />
