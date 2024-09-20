@@ -73,6 +73,8 @@ module AccountReset
         account_age_in_days: account_age,
         account_confirmed_at: user.confirmed_at,
         mfa_method_counts: mfa_method_counts,
+        profile_idv_level: user.active_profile&.idv_level,
+        identity_verified: user.identity_verified?,
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
       }
     end

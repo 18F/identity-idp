@@ -30,6 +30,7 @@ RSpec.describe AccountReset::DeleteAccountController do
           webauthn: 2,
           phone: 2,
         },
+        identity_verified: false,
         account_age_in_days: 0,
         account_confirmed_at: user.confirmed_at,
       )
@@ -48,6 +49,7 @@ RSpec.describe AccountReset::DeleteAccountController do
         errors: invalid_token_error,
         error_details: { token: { granted_token_invalid: true } },
         mfa_method_counts: {},
+        identity_verified: false,
         account_age_in_days: 0,
         account_confirmed_at: kind_of(Time),
       )
@@ -65,6 +67,7 @@ RSpec.describe AccountReset::DeleteAccountController do
         errors: { token: [t('errors.account_reset.granted_token_missing', app_name: APP_NAME)] },
         error_details: { token: { blank: true } },
         mfa_method_counts: {},
+        identity_verified: false,
         account_age_in_days: 0,
         account_confirmed_at: kind_of(Time),
       )
@@ -92,12 +95,82 @@ RSpec.describe AccountReset::DeleteAccountController do
         errors: { token: [t('errors.account_reset.granted_token_expired', app_name: APP_NAME)] },
         error_details: { token: { granted_token_expired: true } },
         mfa_method_counts: {},
+        identity_verified: false,
         account_age_in_days: 2,
         account_confirmed_at: kind_of(Time),
       )
       expect(response).to redirect_to(root_url)
       expect(flash[:error]).to eq(
         t('errors.account_reset.granted_token_expired', app_name: APP_NAME),
+      )
+    end
+
+    it 'logs info about user verified account' do
+      user = create(:user, :proofed)
+      create_account_reset_request_for(user)
+      grant_request(user)
+      session[:granted_token] = AccountResetRequest.first.granted_token
+
+      delete :delete
+
+      expect(@analytics).to have_logged_event(
+        'Account Reset: delete',
+        user_id: user.uuid,
+        success: true,
+        errors: {},
+        mfa_method_counts: { phone: 1 },
+        profile_idv_level: 'legacy_unsupervised',
+        identity_verified: true,
+        account_age_in_days: 0,
+        account_confirmed_at: user.confirmed_at,
+      )
+    end
+
+    it 'logs info about user biometrically verified account' do
+      user = create(
+        :user, :proofed_with_selfie, :with_phone
+      )
+      create_account_reset_request_for(user)
+      grant_request(user)
+      session[:granted_token] = AccountResetRequest.first.granted_token
+
+      delete :delete
+
+      expect(@analytics).to have_logged_event(
+        'Account Reset: delete',
+        user_id: user.uuid,
+        success: true,
+        errors: {},
+        mfa_method_counts: { phone: 1 },
+        profile_idv_level: 'unsupervised_with_selfie',
+        identity_verified: true,
+        account_age_in_days: 0,
+        account_confirmed_at: user.confirmed_at,
+      )
+    end
+
+    it 'logs info about user verified in person proofed account' do
+      user = create(
+        :user,
+        :proofed_in_person_enrollment,
+        :with_phone,
+      )
+      create_account_reset_request_for(user)
+      grant_request(user)
+      session[:granted_token] = AccountResetRequest.first.granted_token
+
+      delete :delete
+
+      expect(@analytics).to have_logged_event(
+        'Account Reset: delete',
+        user_id: user.uuid,
+        success: true,
+        errors: {},
+        mfa_method_counts: { phone: 1 },
+        profile_idv_level: 'legacy_in_person',
+        identity_verified: true,
+        account_age_in_days: 0,
+        account_confirmed_at: user.confirmed_at,
       )
     end
   end

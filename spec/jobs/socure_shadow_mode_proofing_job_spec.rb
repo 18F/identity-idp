@@ -105,6 +105,13 @@ RSpec.describe SocureShadowModeProofingJob do
             },
           },
         },
+        biographical_info: {
+          identity_doc_address_state: nil,
+          same_address_as_id: nil,
+          state: 'MT',
+          state_id_jurisdiction: 'ND',
+          state_id_number: '#############',
+        },
         ssn_is_unique: true,
       },
     )
@@ -250,6 +257,13 @@ RSpec.describe SocureShadowModeProofingJob do
             ssn_is_unique: true,
             threatmetrix_review_status: 'pass',
             timed_out: false,
+            biographical_info: {
+              identity_doc_address_state: nil,
+              same_address_as_id: nil,
+              state: 'MT',
+              state_id_jurisdiction: 'ND',
+              state_id_number: '#############',
+            },
           },
           socure_result: {
             attributes_requiring_additional_verification: [],

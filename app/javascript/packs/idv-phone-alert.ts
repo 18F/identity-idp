@@ -5,8 +5,6 @@ const { iti, textInput: input } = document.querySelector('lg-phone-input') as Ph
 const failedPhoneNumbers: string[] = JSON.parse(alertElement.dataset.failedPhoneNumbers!);
 
 input.addEventListener('input', () => {
-  const isFailedPhoneNumber = failedPhoneNumbers.includes(
-    iti.getNumber(intlTelInputUtils.numberFormat.E164),
-  );
+  const isFailedPhoneNumber = failedPhoneNumbers.includes(iti.getNumber());
   alertElement.hidden = !isFailedPhoneNumber;
 });

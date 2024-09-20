@@ -590,7 +590,7 @@ doc_auth.headings.document_capture_back: 你身份证件的背面
 doc_auth.headings.document_capture_front: 你身份证件的正面
 doc_auth.headings.document_capture_selfie: 你面部照片
 doc_auth.headings.document_capture_subheader_id: 驾照或州政府颁发的身份证件
-doc_auth.headings.document_capture_subheader_selfie: 你本人照片
+doc_auth.headings.document_capture_subheader_selfie: 添加您面部照片
 doc_auth.headings.document_capture_with_selfie: 添加你身份证件和本人的照片
 doc_auth.headings.front: 驾照或州政府颁发身份证件的正面
 doc_auth.headings.how_to_verify: 选择你想如何验证身份
@@ -602,6 +602,7 @@ doc_auth.headings.no_ssn: 没有社会保障号码？
 doc_auth.headings.review_issues: 检查一下你的图片并再试一次
 doc_auth.headings.secure_account: 保护你的账户安全
 doc_auth.headings.selfie: 照片
+doc_auth.headings.selfie_capture: 拍你本人照片
 doc_auth.headings.ssn: 输入你的社会保障号码
 doc_auth.headings.ssn_update: 更新你的社会保障号码
 doc_auth.headings.text_message: 我们给你的手机发了短信
@@ -689,16 +690,16 @@ doc_auth.instructions.text2: 不需要你社会保障卡实体。
 doc_auth.instructions.text3: 我们把你的电话号码与个人信息匹配，并向你的电话发送一个一次性代码。
 doc_auth.instructions.text4: 你的密码对你个人信息进行存储并加密。
 doc_auth.tips.document_capture_hint: 必须是 JPG 或 PNG
-doc_auth.tips.document_capture_id_text1: 把你身份证件放在一个平坦、暗色的表面上。
-doc_auth.tips.document_capture_id_text2: 在光线明亮的地方拍照。
-doc_auth.tips.document_capture_id_text3: 避免身份证件上有炫光或阴影。
+doc_auth.tips.document_capture_id_text1: 使用水平和深色表面
+doc_auth.tips.document_capture_id_text2: 在光线明亮的地方拍照
+doc_auth.tips.document_capture_id_text3: 避免炫光或阴影
 doc_auth.tips.document_capture_id_text4: 文件大小应当至少 2 兆。
-doc_auth.tips.document_capture_selfie_id_header_text: 如何拍摄你身份证件的清晰照片
+doc_auth.tips.document_capture_selfie_id_header_text: 如何拍摄清晰照片
 doc_auth.tips.document_capture_selfie_selfie_text: 如何准备拍照
-doc_auth.tips.document_capture_selfie_text1: 摘掉可能盖住你面部的任何服饰。我们建议你摘掉眼镜和帽子。
-doc_auth.tips.document_capture_selfie_text2: 在光线明亮的地方拍照。
-doc_auth.tips.document_capture_selfie_text3: 面部表情保持中性。
-doc_auth.tips.document_capture_selfie_text4: 确保你整个面部都可以在绿色圆圈中看到。
+doc_auth.tips.document_capture_selfie_text1: 摘掉任何遮盖您面孔的东西，比如眼镜或帽子
+doc_auth.tips.document_capture_selfie_text2: 在光线明亮的地方拍照
+doc_auth.tips.document_capture_selfie_text3: 保持中性表情
+doc_auth.tips.document_capture_selfie_text4: 确保您整个面孔都可以在绿色圆圈里看到
 doc_auth.tips.mobile_phone_required: 要求有手机
 doc_auth.tips.review_issues_id_header_text: 请仔细查看你州政府颁发身份证件的图像：
 doc_auth.tips.review_issues_id_text1: 你是否使用了暗色背景？
@@ -1441,6 +1442,7 @@ notices.privacy.security_and_privacy_practices: 安全实践和隐私法声明
 notices.resend_confirmation_email.success: 我们发送了另外一个确认电邮。
 notices.session_cleared: 为了你的安全，如果你在 %{minutes} 分钟内不移动到一个新页面，我们会清除你输入的内容。
 notices.session_timedout: 我们已将你登出。为了你的安全，如果你在 %{minutes} 分钟内不移动到一个新页面，%{app_name} 会结束你此次访问。
+notices.sign_in.recaptcha.disclosure_statement_html: 该网站由 reCAPTCHA 保护而且谷歌的 %{google_policy_link_html} 和 %{google_tos_link_html} 都适用。
 notices.signed_up_and_confirmed.first_paragraph_end: 带有确认你的电邮地址的链接。点击链接去继续把这个电邮添加到你的账户。
 notices.signed_up_and_confirmed.first_paragraph_start: 我们已发电邮到
 notices.signed_up_and_confirmed.no_email_sent_explanation_start: 没有收到电邮？

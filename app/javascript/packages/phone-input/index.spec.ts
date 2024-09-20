@@ -3,15 +3,10 @@ import userEvent from '@testing-library/user-event';
 import { computeAccessibleName } from 'dom-accessibility-api';
 import * as analytics from '@18f/identity-analytics';
 import { useSandbox } from '@18f/identity-test-helpers';
+import './index.ts';
 
 describe('PhoneInput', () => {
   const sandbox = useSandbox();
-
-  before(async () => {
-    await import('intl-tel-input/build/js/utils.js');
-    window.intlTelInputUtils = global.intlTelInputUtils;
-    await import('./index');
-  });
 
   beforeEach(() => {
     sandbox.stub(analytics, 'trackEvent');
@@ -164,6 +159,7 @@ describe('PhoneInput', () => {
     expect(analytics.trackEvent).to.have.been.calledOnceWith('phone_input_country_changed', {
       country_code: 'CA',
     });
+    await userEvent.clear(phoneNumber);
 
     const dropdownButton = getByRole(iti, 'combobox', { name: 'Country code' });
     await userEvent.click(dropdownButton);
@@ -180,7 +176,7 @@ describe('PhoneInput', () => {
 
   it('renders as an accessible combobox', () => {
     const phoneInput = createAndConnectElement();
-    const comboboxes = getAllByRole(phoneInput, 'combobox');
+    const comboboxes = getAllByRole(phoneInput, 'combobox', { name: 'Country code' });
     const listbox = getByRole(phoneInput, 'listbox');
 
     // There are two comboboxes, one for no-JavaScript, and the other JavaScript enhanced. Only one
@@ -198,7 +194,7 @@ describe('PhoneInput', () => {
     //
     // See: https://w3c.github.io/aria/#combobox
     const value = combobox.textContent;
-    const controlled = document.getElementById(combobox.getAttribute('aria-controls')!);
+    const controlled = document.getElementById(combobox.getAttribute('aria-controls')!)!;
 
     // "listbox" is the default value for a combobox role.
     //
@@ -212,8 +208,8 @@ describe('PhoneInput', () => {
     // See: https://github.com/jsdom/jsdom/issues/3323
     expect(hasPopup).to.be.oneOf([null, 'listbox']);
     expect(name).to.equal('Country code');
-    expect(value).to.equal('United States: +1');
-    expect(controlled).to.equal(listbox);
+    expect(value).to.equal('United States +1');
+    expect(controlled.contains(listbox)).to.be.true();
   });
 
   context('with constrained delivery options', () => {

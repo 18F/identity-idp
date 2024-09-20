@@ -590,7 +590,7 @@ doc_auth.headings.document_capture_back: Reverso de su identificación
 doc_auth.headings.document_capture_front: Frente de su identificación
 doc_auth.headings.document_capture_selfie: Fotografía de su cara
 doc_auth.headings.document_capture_subheader_id: Licencia de conducir o identificación estatal
-doc_auth.headings.document_capture_subheader_selfie: Fotografía de su cara
+doc_auth.headings.document_capture_subheader_selfie: Añada una foto de su cara
 doc_auth.headings.document_capture_with_selfie: Agregue fotos de su identificación y una foto de usted
 doc_auth.headings.front: Frente de su licencia de conducir o identificación estatal
 doc_auth.headings.how_to_verify: Elija cómo desea verificar su identidad
@@ -602,6 +602,7 @@ doc_auth.headings.no_ssn: '¿No tiene un número de Seguro Social?'
 doc_auth.headings.review_issues: Revise sus imágenes e inténtelo de nuevo
 doc_auth.headings.secure_account: Proteja su cuenta
 doc_auth.headings.selfie: Fotografía de su cara
+doc_auth.headings.selfie_capture: Capture una foto de usted
 doc_auth.headings.ssn: Ingrese su número de Seguro Social
 doc_auth.headings.ssn_update: Actualice su número de Seguro Social
 doc_auth.headings.text_message: Enviamos un mensaje a su teléfono
@@ -689,15 +690,15 @@ doc_auth.instructions.text2: No necesita la tarjeta física del Seguro Social.
 doc_auth.instructions.text3: Revisamos que su número de teléfono coincida con su información personal y enviamos un código de un solo uso a su teléfono.
 doc_auth.instructions.text4: Su contraseña guarda y cifra su información personal.
 doc_auth.tips.document_capture_hint: Debe ser un archivo JPG o PNG
-doc_auth.tips.document_capture_id_text1: Coloque su identificación en una superficie plana y de color oscuro.
-doc_auth.tips.document_capture_id_text2: Tómese la foto en un lugar bien iluminado.
-doc_auth.tips.document_capture_id_text3: Evite que se vean reflejos o sombras en su identificación.
+doc_auth.tips.document_capture_id_text1: Use una superficie plana y de color oscuro.
+doc_auth.tips.document_capture_id_text2: Tome fotos en un lugar bien iluminado
+doc_auth.tips.document_capture_id_text3: Evite que se vean reflejos o sombras
 doc_auth.tips.document_capture_id_text4: El tamaño del archivo debe ser de al menos 2 MB.
-doc_auth.tips.document_capture_selfie_id_header_text: Cómo tomar fotos nítidas de su identificación
+doc_auth.tips.document_capture_selfie_id_header_text: Cómo tomar fotos nítidas
 doc_auth.tips.document_capture_selfie_selfie_text: Cómo prepararse para tomar su foto
-doc_auth.tips.document_capture_selfie_text1: Quite cualquier prenda o accesorio que pueda cubrirle la cara. Sugerimos que se quite los anteojos o el sombrero.
-doc_auth.tips.document_capture_selfie_text2: Tómese la foto en un lugar bien iluminado.
-doc_auth.tips.document_capture_selfie_text3: Mantenga una expresión neutral.
+doc_auth.tips.document_capture_selfie_text1: Quite cualquier prenda o accesorio que pueda cubrirle la cara, como anteojos o un sombrero.
+doc_auth.tips.document_capture_selfie_text2: Tómese la foto en un lugar bien iluminado
+doc_auth.tips.document_capture_selfie_text3: Mantenga una expresión neutral
 doc_auth.tips.document_capture_selfie_text4: Revise que se vea su rostro completo dentro del círculo verde.
 doc_auth.tips.mobile_phone_required: Se necesita un teléfono móvil
 doc_auth.tips.review_issues_id_header_text: 'Revise las imágenes de su identificación emitida por el estado:'
@@ -1439,6 +1440,7 @@ notices.privacy.security_and_privacy_practices: Prácticas de seguridad y declar
 notices.resend_confirmation_email.success: Enviamos otro correo electrónico de confirmación.
 notices.session_cleared: Por su seguridad, borramos lo que usted ingresó si usted no pasa a una página nueva en %{minutes} minutos.
 notices.session_timedout: Cerramos su sesión. Por su seguridad, %{app_name} cierra su sesión cuando usted no pasa a una página nueva en %{minutes} minutos.
+notices.sign_in.recaptcha.disclosure_statement_html: Este sitio está protegido por reCAPTCHA y se aplican %{google_policy_link_html} y %{google_tos_link_html} de Google.
 notices.signed_up_and_confirmed.first_paragraph_end: con un vínculo para confirmar su dirección de correo electrónico. Siga el vínculo para continuar agregando este correo electrónico a su cuenta.
 notices.signed_up_and_confirmed.first_paragraph_start: Enviamos un correo electrónico a
 notices.signed_up_and_confirmed.no_email_sent_explanation_start: '¿No recibió un correo electrónico?'

@@ -80,8 +80,8 @@ RSpec.describe 'Add a new phone number' do
     expect(error_message).to have_content(t('errors.messages.invalid_phone_number.us'))
 
     # Unsupported country should prompt as invalid and hide delivery options immediately
-    page.find('div[aria-label="Country code"]').click
-    within(page.find('.iti__flag-container', visible: :all)) do
+    click_on t('components.phone_input.country_code_label')
+    within(page.find('.iti__country-container', visible: :all)) do
       find('span', text: 'Sri Lanka').click
     end
     focused_input = page.find('.phone-input__number:focus')
@@ -106,8 +106,8 @@ RSpec.describe 'Add a new phone number' do
     expect(page.find(':focus')).to match_css('.phone-input__number')
 
     # Switching to supported country should re-show delivery options, but prompt as invalid number
-    page.find('div[aria-label="Country code"]').click
-    within(page.find('.iti__flag-container', visible: :all)) do
+    click_on t('components.phone_input.country_code_label')
+    within(page.find('.iti__country-container', visible: :all)) do
       find('span', text: 'United States').click
     end
     expect(page).to have_content(t('two_factor_authentication.otp_delivery_preference.title'))
@@ -162,7 +162,7 @@ RSpec.describe 'Add a new phone number' do
       expect(page).to have_content(I18n.t('errors.messages.phone_duplicate'))
 
       # Ensure that phone input initializes with the country flag maintained
-      expect(page).to have_css('.iti__selected-flag [class^="iti__flag iti__"]', visible: :all)
+      expect(page).to have_css('.iti__selected-country [class^="iti__flag iti__"]', visible: :all)
     end
   end
 
@@ -193,8 +193,8 @@ RSpec.describe 'Add a new phone number' do
     expect(page.find_field('Text message (SMS)', disabled: false, visible: :all)).to be_present
     expect(page.find_field('Phone call', disabled: false, visible: :all)).to be_present
 
-    page.find('div[aria-label="Country code"]').click
-    within(page.find('.iti__flag-container', visible: :all)) do
+    click_on t('components.phone_input.country_code_label')
+    within(page.find('.iti__country-container', visible: :all)) do
       find('span', text: 'Australia').click # a country where SMS is disabled currently
     end
 

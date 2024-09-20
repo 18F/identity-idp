@@ -15,6 +15,10 @@ lg-phone-input {
     }
   }
 
+  .iti__search-input {
+    @extend %block-input-styles;
+  }
+
   .iti__dial-code {
     color: color('ink');
   }

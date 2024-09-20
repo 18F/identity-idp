@@ -14,8 +14,19 @@ module Idv
       end
 
       def generate_threatmetrix_session_id(updating_ssn)
-        idv_session.threatmetrix_session_id = SecureRandom.uuid if !updating_ssn
+        if should_generate_new_threatmetrix_session_id?(updating_ssn)
+          idv_session.threatmetrix_session_id = SecureRandom.uuid
+        end
+
         idv_session.threatmetrix_session_id
+      end
+
+      def should_generate_new_threatmetrix_session_id?(updating_ssn)
+        if updating_ssn
+          idv_session.threatmetrix_session_id.blank?
+        else
+          true
+        end
       end
 
       # @return [Array<String>]
