@@ -37,9 +37,9 @@ default:
     key:
       files:
         - lib/saml_idp/Gemfile.lock
-      paths:
-        - lib/saml_idp/vendor/ruby
-      policy: pull
+    paths:
+      - lib/saml_idp/vendor/ruby
+    policy: pull
 
   - &yarn_cache
     key:
