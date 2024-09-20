@@ -1,0 +1,36 @@
+engines:
+  brakeman:
+    enabled: true
+  duplication:
+    enabled: true
+    config:
+      languages:
+        ruby:
+    exclude_paths:
+    - 'spec/**/*'
+    - 'lib/saml_idp/logout_response_builder.rb'
+    - 'lib/saml_idp/logout_request_builder.rb'
+  fixme:
+    enabled: true
+    exclude_paths:
+    - '.codeclimate.yml'
+    config:
+      strings:
+      # Removed TODO from this list, as we want to allow TODOs in the codebase
+      - FIXME
+      - HACK
+      - BUG
+      - XXX
+  reek:
+    enabled: true
+    exclude_paths:
+    - 'spec/**/*'
+  rubocop:
+    enabled: true
+
+ratings:
+  paths:
+  - app/**
+  - lib/**
+  - '**.rb'
+  - '**.go'

@@ -1,0 +1,12 @@
+.DS_Store
+.Gemfile
+.byebug_history
+/.bundle
+/.rvmrc
+/coverage
+/doc
+/pkg
+/tags
+/tmp
+vendor
+clacks*.gem

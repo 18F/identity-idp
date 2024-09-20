@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<samlp:AuthnRequest xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" ID="_2b07dcbe-544a-4443-8199-fa45d91c1698" Version="2.0" IssueInstant="2024-05-28T16:49:52.266403Z" Destination="https://secure.login.gov/api/saml/auth2024" ForceAuthn="false" IsPassive="false" ProtocolBinding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" AssertionConsumerServiceURL="https://pbgccommercialazureprod.b2clogin.com/pbgccommercialazureprod.onmicrosoft.com/B2C_1A_TrustFrameworkBase/samlp/sso/assertionconsumer">
+  <Issuer xmlns="urn:oasis:names:tc:SAML:2.0:assertion">localhost:3000</Issuer>
+  <samlp:RequestedAuthnContext>
+    <saml:AuthnContextClassRef>http://idmanagement.gov/ns/assurance/ial/2</saml:AuthnContextClassRef>
+    <saml:AuthnContextClassRef>http://idmanagement.gov/ns/requested_attributes?ReqAttr=email+phone+first_name+last_name+ssn</saml:AuthnContextClassRef>
+  </samlp:RequestedAuthnContext>
+  <uk:Signature xmlns="http://www.w3.org/2000/09/unknown-ns#">
+    <uk:SignedInfo>
+      <uk:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+      <uk:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+      <uk:Reference URI="#_2b07dcbe-544a-4443-8199-fa45d91c1698">
+        <uk:Transforms>
+          <uk:Transform/>
+          <uk:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+            <ec:InclusiveNamespaces xmlns:ec="http://www.w3.org/2001/10/xml-exc-c14n#" PrefixList="#default samlp saml ds xs xsi md un"/>
+          </uk:Transform>
+        </uk:Transforms>
+        <uk:DigestMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+        <uk:DigestValue>VrKrr8bvzcwLEgdKTiQSlh4k3NIvgGU9ToCLyqtRdz4=</uk:DigestValue>
+      </uk:Reference>
+    </uk:SignedInfo>
+    <SignatureValue>Ivayty+mxiLmJBnNoFn1JgC2Rvzz/rqYamdNczcEKub9hxUOi+RUQptGkXbz
+dSKunhxpYsKNzdJwhxDTZwzvDVZvRdFN4F5uKsRkdvAH+MpDJvDn5B+tOdJZ
+QbYMhMrYMUQOsQRFoO4SLPlv27fN0GuUi2Dh9+/4g8xRClck2fI=
+</SignatureValue>
+    <uk:KeyInfo>
+      <uk:X509Data>
+        <uk:X509Certificate>MIIDpTCCAw6gAwIBAgIJAPdYZm87tYApMA0GCSqGSIb3DQEBBQUAMIGUMQswCQYDVQQGEwJVUzELMAkGA1UECBMCTEExFDASBgNVBAcTC0JhdG9uIFJvdWdlMQwwCgYDVQQKEwMxOEYxEjAQBgNVBAsTCWxvZ2luLmdvdjEYMBYGA1UEAxMPSm9uYXRoYW4gSG9vcGVyMSYwJAYJKoZIhvcNAQkBFhdqb25hdGhhbi5ob29wZXJAZ3NhLmdvdjAeFw0xODAyMDUxODAxNTNaFw0yMDExMDIxODAxNTNaMIGUMQswCQYDVQQGEwJVUzELMAkGA1UECBMCTEExFDASBgNVBAcTC0JhdG9uIFJvdWdlMQwwCgYDVQQKEwMxOEYxEjAQBgNVBAsTCWxvZ2luLmdvdjEYMBYGA1UEAxMPSm9uYXRoYW4gSG9vcGVyMSYwJAYJKoZIhvcNAQkBFhdqb25hdGhhbi5ob29wZXJAZ3NhLmdvdjCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAt+2doF5XYts3vX29zP+JIappj0E22l0+ASEZ8DpNz8pKh4Yq0EZQHK19I5jrpjFOneKek5zQeKIHnAoYV1DERqFVoxchHe0BAsxuLOk+G/qrT8aeQim4QxJFzeNfPzL4ieoCJVNRHxWFoioLlS/TQYFloKCWFPEJ0lEHq2jOWYMCAwEAAaOB/DCB+TAdBgNVHQ4EFgQUMhqPwFtWU3Hb95krXKLNhTvW54YwgckGA1UdIwSBwTCBvoAUMhqPwFtWU3Hb95krXKLNhTvW54ahgZqkgZcwgZQxCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJMQTEUMBIGA1UEBxMLQmF0b24gUm91Z2UxDDAKBgNVBAoTAzE4RjESMBAGA1UECxMJbG9naW4uZ292MRgwFgYDVQQDEw9Kb25hdGhhbiBIb29wZXIxJjAkBgkqhkiG9w0BCQEWF2pvbmF0aGFuLmhvb3BlckBnc2EuZ292ggkA91hmbzu1gCkwDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0BAQUFAAOBgQA7BcbPj3RgcKgsv4XhEYr4YHt49rt3cn+B+HvSCbgykaUDdhr/hkRnjMSANnRlblvly/jf2kRizn789YhJ6Sj9V/x+ubZkmpne3doYzBpYLl4X2Hd144AuRCsSB69lZb4OuQsRDfCpLont1GqOomrLYrtWzMePsHmIAoe27Dfd3Q==</uk:X509Certificate>
+      </uk:X509Data>
+    </uk:KeyInfo>
+  </uk:Signature>
+</samlp:AuthnRequest>
