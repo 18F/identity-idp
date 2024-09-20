@@ -24,17 +24,6 @@ RSpec.describe Idv::InPerson::SsnController do
     end
   end
 
-  describe 'before_actions' do
-    context '#confirm_in_person_address_step_complete' do
-      it 'redirects if address page not completed' do
-        subject.user_session['idv/in_person'][:pii_from_user].delete(:address1)
-        get :show
-
-        expect(response).to redirect_to idv_in_person_address_url
-      end
-    end
-  end
-
   describe '#show' do
     let(:analytics_name) { 'IdV: doc auth ssn visited' }
     let(:analytics_args) do
@@ -72,31 +61,19 @@ RSpec.describe Idv::InPerson::SsnController do
 
     it 'does not change threatmetrix_session_id when updating ssn' do
       subject.idv_session.ssn = ssn
+      subject.idv_session.threatmetrix_session_id = 'a-random-id'
       expect { get :show }.not_to change { subject.idv_session.threatmetrix_session_id }
     end
 
     context 'with an ssn in idv_session' do
-      let(:referer) { idv_in_person_address_url }
       before do
         subject.idv_session.ssn = ssn
-        request.env['HTTP_REFERER'] = referer
       end
 
-      context 'referer is not verify_info' do
-        it 'redirects to verify_info' do
-          get :show
+      it 'renders normally' do
+        get :show
 
-          expect(response).to redirect_to(idv_in_person_verify_info_url)
-        end
-      end
-
-      context 'referer is verify_info' do
-        let(:referer) { idv_in_person_verify_info_url }
-        it 'does not redirect' do
-          get :show
-
-          expect(response).to render_template 'idv/shared/ssn'
-        end
+        expect(response).to render_template('idv/shared/ssn')
       end
     end
   end

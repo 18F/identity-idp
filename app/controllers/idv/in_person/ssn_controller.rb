@@ -10,8 +10,7 @@ module Idv
       include ThreatMetrixConcern
 
       before_action :confirm_not_rate_limited_after_doc_auth
-      before_action :confirm_in_person_address_step_complete
-      before_action :confirm_repeat_ssn, only: :show
+      before_action :confirm_step_allowed
       before_action :override_csp_for_threat_metrix
 
       attr_reader :ssn_presenter
@@ -74,12 +73,6 @@ module Idv
         user_session.fetch('idv/in_person', {})
       end
 
-      def confirm_repeat_ssn
-        return if !idv_session.ssn
-        return if request.referer == idv_in_person_verify_info_url
-        redirect_to idv_in_person_verify_info_url
-      end
-
       def next_url
         idv_in_person_verify_info_url
       end
@@ -91,11 +84,6 @@ module Idv
           analytics_id: 'In Person Proofing',
         }.merge(ab_test_analytics_buckets).
           merge(**extra_analytics_properties)
-      end
-
-      def confirm_in_person_address_step_complete
-        return if flow_session[:pii_from_user] && flow_session[:pii_from_user][:address1].present?
-        redirect_to idv_in_person_address_url
       end
     end
   end
