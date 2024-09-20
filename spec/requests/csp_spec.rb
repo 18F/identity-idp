@@ -24,7 +24,7 @@ RSpec.describe 'content security policy' do
           expect(content_security_policy['default-src']).to eq("'self'")
           expect(content_security_policy['base-uri']).to eq("'self'")
           expect(content_security_policy['child-src']).to eq("'self'")
-          expect(content_security_policy['connect-src']).to eq("'self'")
+          expect(content_security_policy['connect-src']).to eq("'self' https://verify.socure.us")
           expect(content_security_policy['font-src']).to eq("'self' data:")
           expect(content_security_policy['form-action']).to eq(
             "'self' http://localhost:7654 https://example.com http://www.example.com",
@@ -68,7 +68,7 @@ RSpec.describe 'content security policy' do
           expect(content_security_policy['default-src']).to eq("'self'")
           expect(content_security_policy['base-uri']).to eq("'self'")
           expect(content_security_policy['child-src']).to eq("'self'")
-          expect(content_security_policy['connect-src']).to eq("'self'")
+          expect(content_security_policy['connect-src']).to eq("'self' https://verify.socure.us")
           expect(content_security_policy['font-src']).to eq("'self' data:")
           expect(content_security_policy['form-action']).to eq(
             "'self'",
@@ -119,7 +119,7 @@ RSpec.describe 'content security policy' do
           expect(content_security_policy['default-src']).to eq("'self'")
           expect(content_security_policy['base-uri']).to eq("'self'")
           expect(content_security_policy['child-src']).to eq("'self'")
-          expect(content_security_policy['connect-src']).to eq("'self'")
+          expect(content_security_policy['connect-src']).to eq("'self' https://verify.socure.us")
           expect(content_security_policy['font-src']).to eq("'self' data:")
           expect(content_security_policy['form-action']).to eq(
             "'self' http://localhost:7654 https://example.com http://www.example.com",
@@ -163,7 +163,7 @@ RSpec.describe 'content security policy' do
           expect(content_security_policy['default-src']).to eq("'self'")
           expect(content_security_policy['base-uri']).to eq("'self'")
           expect(content_security_policy['child-src']).to eq("'self'")
-          expect(content_security_policy['connect-src']).to eq("'self'")
+          expect(content_security_policy['connect-src']).to eq("'self' https://verify.socure.us")
           expect(content_security_policy['font-src']).to eq("'self' data:")
           expect(content_security_policy['form-action']).to eq(
             "'self' http://localhost:7654 https://example.com http://www.example.com",
@@ -202,7 +202,7 @@ RSpec.describe 'content security policy' do
       expect(content_security_policy['default-src']).to eq("'self'")
       expect(content_security_policy['base-uri']).to eq("'self'")
       expect(content_security_policy['child-src']).to eq("'self'")
-      expect(content_security_policy['connect-src']).to eq("'self'")
+      expect(content_security_policy['connect-src']).to eq("'self' https://verify.socure.us")
       expect(content_security_policy['font-src']).to eq("'self' data:")
       expect(content_security_policy['form-action']).to eq("'self'")
       expect(content_security_policy['img-src']).to eq(
