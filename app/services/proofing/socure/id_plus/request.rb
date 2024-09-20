@@ -98,7 +98,7 @@ module Proofing
             dob: input.dob&.to_date&.to_s,
 
             userConsent: true,
-            consentTimestamp: 5.minutes.ago.iso8601,
+            consentTimestamp: input.consent_given_at&.to_time&.iso8601,
 
             email: input.email,
             mobileNumber: input.phone,

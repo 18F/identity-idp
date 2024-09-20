@@ -20,7 +20,7 @@ RSpec.describe ResetUserPassword do
     end
 
     it 'notifies the user via email to each of their confirmed email addresses' do
-      create(:email_address, user:, email: Faker::Internet.safe_email, confirmed_at: nil)
+      create(:email_address, user:, email: Faker::Internet.email, confirmed_at: nil)
       expect { call }.
         to(change { ActionMailer::Base.deliveries.count }.by(2))
 

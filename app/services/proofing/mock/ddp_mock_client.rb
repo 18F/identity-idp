@@ -39,6 +39,8 @@ module Proofing
         'ddp',
       ).freeze
       TRANSACTION_ID = 'ddp-mock-transaction-id-123'
+      ACCOUNT_LEX_ID = 'super-cool-test-lex-id'
+      SESSION_ID = 'super-cool-test-session-id'
 
       def initialize(response_fixture_file: 'successful_response.json')
         @response_fixture_file = File.expand_path(response_fixture_file, FIXTURES_DIR)
@@ -55,6 +57,8 @@ module Proofing
         return exception_result if review_status.nil?
 
         result.review_status = review_status
+        result.account_lex_id = ACCOUNT_LEX_ID
+        result.session_id = SESSION_ID
         result.response_body = response_body
 
         result.add_error(:review_status, review_status) unless review_status == 'pass'

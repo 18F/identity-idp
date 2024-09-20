@@ -129,7 +129,7 @@ class SamlIdpController < ApplicationController
       finish_profile: user_has_pending_profile?,
       requested_ial: requested_ial,
       request_signed: saml_request.signed?,
-      matching_cert_serial: saml_request.service_provider.matching_cert&.serial&.to_s,
+      matching_cert_serial:,
       requested_nameid_format: saml_request.name_id_format,
     )
 
@@ -138,6 +138,12 @@ class SamlIdpController < ApplicationController
     end
 
     analytics.saml_auth(**analytics_payload)
+  end
+
+  def matching_cert_serial
+    saml_request.matching_cert&.serial&.to_s
+  rescue SamlIdp::XMLSecurity::SignedDocument::ValidationError
+    nil
   end
 
   def log_external_saml_auth_request

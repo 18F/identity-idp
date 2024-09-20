@@ -36,6 +36,8 @@ module Proofing
           result.review_status = review_status
           result.add_error(:request_result, request_result) unless request_result == 'success'
           result.add_error(:review_status, review_status) unless review_status == 'pass'
+          result.account_lex_id = body['account_lex_id']
+          result.session_id = body['session_id']
 
           result.success = !result.errors?
           result.client = 'lexisnexis'

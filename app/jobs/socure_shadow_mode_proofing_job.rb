@@ -100,6 +100,7 @@ class SocureShadowModeProofingJob < ApplicationJob
         :phone,
         :dob,
         :ssn,
+        :consent_given_at,
       ),
       email: user_email,
     }

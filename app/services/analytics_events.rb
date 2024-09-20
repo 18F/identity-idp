@@ -1925,9 +1925,9 @@ module AnalyticsEvents
   # @option proofing_results [String,nil] context.stages.threatmetrix.exception If an exception was encountered making the request to the vendor, its message is provided here.
   # @option proofing_results [Boolean] context.stages.threatmetrix.timed_out Whether the request to the vendor timed out.
   # @option proofing_results [String] context.stages.threatmetrix.transaction_id Vendor-specific transaction ID for the request.
+  # @option proofing_results [String] context.stages.threatmetrix.session_id Session ID associated with the response.
+  # @option proofing_results [String] context.stages.threatmetrix.account_lex_id LexID associated with the response.
   # @option proofing_results [Hash] context.stages.threatmetrix.response_body JSON body of the response returned from the vendor. PII has been redacted.
-  # @option proofing_results [String] context.stages.threatmetrix.response_body.account_lex_id LexID associated with the response.
-  # @option proofing_results [String] context.stages.threatmetrix.response_body.session_id Session ID associated with the response.
   # @option proofing_results [String] context.stages.threatmetrix.review_status One of "pass", "review", "reject".
   # @param skip_hybrid_handoff [Boolean] Whether the user should skip hybrid handoff (i.e. because they are already on a mobile device)
   # @param ssn_is_unique [Boolean] Whether another Profile existed with the same SSN at the time the profile associated with the current IdV session was minted.

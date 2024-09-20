@@ -47,7 +47,7 @@ FactoryBot.define do
         until user.email_addresses.many?
           user.email_addresses << build(
             :email_address,
-            email: Faker::Internet.safe_email,
+            email: Faker::Internet.email,
             confirmed_at: user.confirmed_at,
             user_id: -1,
           )
@@ -57,7 +57,7 @@ FactoryBot.define do
         until user.email_addresses.many?
           user.email_addresses << build(
             :email_address,
-            email: Faker::Internet.safe_email,
+            email: Faker::Internet.email,
             confirmed_at: user.confirmed_at,
             user_id: -1,
           )

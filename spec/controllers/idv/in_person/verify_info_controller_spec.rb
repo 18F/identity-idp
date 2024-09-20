@@ -13,6 +13,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
     stub_sign_in(user)
     subject.idv_session.flow_path = 'standard'
     subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID[:ssn]
+    subject.idv_session.idv_consent_given_at = Time.zone.now.to_s
     subject.user_session['idv/in_person'] = flow_session
   end
 
@@ -216,6 +217,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
         hash_including(
           state_id_type: 'drivers_license',
           ssn: Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID[:ssn],
+          consent_given_at: subject.idv_session.idv_consent_given_at,
         ),
       ).and_call_original
 
@@ -264,7 +266,9 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
 
       it 'captures state id address fields in the pii' do
         expect(Idv::Agent).to receive(:new).with(
-          Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS,
+          Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS.merge(
+            consent_given_at: subject.idv_session.idv_consent_given_at,
+          ),
         ).and_call_original
         put :update
       end

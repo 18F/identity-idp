@@ -62,7 +62,7 @@ RSpec.feature 'taking an action that revokes remember device' do
                     elsif TwoFactorAuthentication::WebauthnPolicy.new(user).platform_enabled?
                       login_two_factor_webauthn_path(platform: true)
                     elsif TwoFactorAuthentication::WebauthnPolicy.new(user).enabled?
-                      login_two_factor_webauthn_path(platform: false)
+                      login_two_factor_webauthn_path
                     elsif TwoFactorAuthentication::AuthAppPolicy.new(user).enabled?
                       login_two_factor_authenticator_path
                     elsif TwoFactorAuthentication::PhonePolicy.new(user).enabled?

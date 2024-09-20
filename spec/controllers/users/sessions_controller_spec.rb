@@ -906,7 +906,7 @@ RSpec.describe Users::SessionsController, devise: true do
       render_views
 
       it 'does not prefill the form' do
-        email = Faker::Internet.safe_email
+        email = Faker::Internet.email
         password = SecureRandom.uuid
 
         get :new, params: { user: { email: email, password: password } }
