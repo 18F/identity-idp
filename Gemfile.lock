@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    saml_idp (0.22.0.pre.18f)
+    saml_idp (0.23.0.pre.18f)
       activesupport
       builder
       faraday
@@ -264,7 +264,7 @@ GEM
     rubocop-rspec_rails (2.28.3)
       rubocop (~> 1.40)
     ruby-progressbar (1.13.0)
-    ruby-saml (1.16.0)
+    ruby-saml (1.17.0)
       nokogiri (>= 1.13.10)
       rexml
     simplecov (0.22.0)
@@ -312,7 +312,7 @@ DEPENDENCIES
   rubocop (= 1.62.0)
   rubocop-rails (= 2.9)
   rubocop-rspec
-  ruby-saml (~> 1.16.0)
+  ruby-saml (~> 1.17.0)
   saml_idp!
   simplecov (~> 0.22.0)
   sqlite3

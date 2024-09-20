@@ -14,19 +14,13 @@ module SamlIdp
 
     delegate :config, to: :SamlIdp
 
-    attr_reader :matching_cert
-
     def valid?
       attributes.present?
     end
 
-    def valid_signature?(doc, require_signature = false, options = {})
-      @matching_cert = Array(certs).find do |cert|
-        doc.valid_signature?(fingerprint_cert(cert), options.merge(cert:))
-      end
-
+    def valid_signature?(matching_cert = nil, require_signature = false)
       if require_signature || should_validate_signature?
-        !!@matching_cert
+        matching_cert.present?
       else
         true
       end

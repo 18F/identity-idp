@@ -38,7 +38,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rubocop', '1.62.0'
   s.add_development_dependency 'rubocop-rails', '2.9'
   s.add_development_dependency 'rubocop-rspec'
-  s.add_development_dependency 'ruby-saml', '~> 1.16.0'
+  s.add_development_dependency 'ruby-saml', '~> 1.17.0'
   s.add_development_dependency 'simplecov', '~> 0.22.0'
   s.add_development_dependency 'sqlite3'
   s.add_development_dependency('timecop')

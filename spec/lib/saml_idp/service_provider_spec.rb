@@ -21,140 +21,61 @@ module SamlIdp
     end
 
     describe '#valid_signature' do
-      let(:raw_xml) do
+      let(:raw_request) { make_saml_request }
+
+      let(:request) do
         SamlIdp::Request.from_deflated_request(
-          make_saml_request
-        ).raw_xml
+          raw_request
+        )
       end
 
-      let(:doc) { Saml::XML::Document.parse(raw_xml) }
+      let(:matching_cert) { cert }
 
       describe 'the signature is not required' do
-        describe 'the service provider has no certs' do
+        describe 'a matching cert is passed in' do
           it 'returns true' do
-            expect(subject.valid_signature?(doc)).to be true
+            expect(subject.valid_signature?(matching_cert)).to be true
           end
         end
 
-        describe 'the service provider has certs' do
-          before { subject.certs = [cert] }
+        describe 'a matching cert is not passed in' do
+          let(:matching_cert) { nil }
 
           it 'returns true' do
-            expect(subject.valid_signature?(doc)).to be true
+            expect(subject.valid_signature?(matching_cert)).to be true
           end
         end
       end
 
       describe 'the signature is required' do
-        before { subject.validate_signature = true }
+        context 'validate_signature is set to true on the subject' do
+          before { subject.validate_signature = true }
 
-        describe 'a cert is not present in the document' do
-          let(:raw_xml) do
-            SamlIdp::Request.from_deflated_request(
-              signed_auth_request_options['SAMLRequest']
-            ).raw_xml
+          describe 'a matching cert is passed in' do
+            it 'returns true' do
+              expect(subject.valid_signature?(matching_cert)).to be true
+            end
           end
-          let(:options) { { get_params: signed_auth_request_options }.with_indifferent_access }
 
-          describe 'the service provider has no certs' do
+          describe 'a matching cert is not passed in' do
+            let(:matching_cert) { nil }
             it 'returns false' do
-              expect(subject.valid_signature?(doc, true, options)).to be false
-            end
-          end
-
-          describe 'the service provider has one or more certs' do
-            describe 'one valid cert' do
-              before { subject.certs = [cert] }
-
-              it 'returns true' do
-                expect(subject.valid_signature?(doc, true, options)).to be true
-              end
-            end
-
-            describe 'one invalid cert' do
-              before { subject.certs = [invalid_cert] }
-
-              it 'returns false' do
-                expect(subject.valid_signature?(doc, true, options)).to be false
-              end
-            end
-
-            describe 'multiple certs' do
-              before { subject.certs = [invalid_cert, cert] }
-
-              it 'returns true' do
-                expect(subject.valid_signature?(doc, true, options)).to be true
-              end
+              expect(subject.valid_signature?(matching_cert)).to be false
             end
           end
         end
 
-        describe 'a cert is present in the document' do
-          let(:raw_xml) do
-            SamlIdp::Request.from_deflated_request(
-              signed_auth_request
-            ).raw_xml
+        context 'require_signature is passed in via args' do
+          describe 'a matching cert is passed in' do
+            it 'returns true' do
+              expect(subject.valid_signature?(matching_cert, true)).to be true
+            end
           end
 
-          describe 'the service provider has no certs' do
+          describe 'a matching cert is not passed in' do
+            let(:matching_cert) { nil }
             it 'returns false' do
-              expect(subject.valid_signature?(doc, true)).to be false
-            end
-
-            describe 'the requirement is passed through the method' do
-              it 'returns false' do
-                expect(subject.valid_signature?(doc, true)).to be false
-              end
-            end
-          end
-
-          describe 'the service provider has one or more certs' do
-            describe 'one valid cert' do
-              before { subject.certs = [cert] }
-
-              it 'returns true' do
-                expect(subject.valid_signature?(doc)).to be true
-              end
-            end
-
-            describe 'one invalid cert' do
-              before { subject.certs = [invalid_cert] }
-
-              it 'returns false' do
-                expect(subject.valid_signature?(doc, true)).to be false
-              end
-            end
-
-            describe 'multiple certs' do
-              let(:other_cert) do
-                OpenSSL::X509::Certificate.new(custom_idp_x509_cert)
-              end
-
-              describe 'the valid cert is registered in the idp' do
-                before { subject.certs = [other_cert, invalid_cert, cert] }
-
-                it 'returns true' do
-                  expect(subject.valid_signature?(doc, true)).to be true
-                end
-
-                it 'matches the right cert' do
-                  subject.valid_signature?(doc)
-                  expect(subject.matching_cert).to eq cert
-                end
-              end
-
-              describe 'the valid cert is not registered in the idp' do
-                before { subject.certs = [other_cert, invalid_cert] }
-
-                it 'returns false' do
-                  expect(subject.valid_signature?(doc, true)).to be false
-                end
-
-                it 'matches the right cert' do
-                  subject.valid_signature?(doc)
-                  expect(subject.matching_cert).to be_nil
-                end
-              end
+              expect(subject.valid_signature?(matching_cert, true)).to be false
             end
           end
         end

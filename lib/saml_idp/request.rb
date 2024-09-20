@@ -190,7 +190,10 @@ module SamlIdp
     def valid_signature?
       # Force signatures for logout requests because there is no other
       # protection against a cross-site DoS.
-      service_provider.valid_signature?(document, logout_request?, options)
+      service_provider.valid_signature?(
+        matching_cert,
+        logout_request?
+      )
     end
 
     def service_provider?
