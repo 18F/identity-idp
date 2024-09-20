@@ -254,6 +254,9 @@ GEM
       rubocop (~> 1.41)
     rubocop-factory_bot (2.25.1)
       rubocop (~> 1.41)
+    rubocop-performance (1.22.1)
+      rubocop (>= 1.48.1, < 2.0)
+      rubocop-ast (>= 1.31.1, < 2.0)
     rubocop-rails (2.9.0)
       activesupport (>= 4.2.0)
       rack (>= 1.1)
@@ -313,6 +316,7 @@ DEPENDENCIES
   rspec
   rspec_junit_formatter
   rubocop (= 1.62.0)
+  rubocop-performance
   rubocop-rails (= 2.9)
   rubocop-rspec
   ruby-saml (~> 1.17.0)

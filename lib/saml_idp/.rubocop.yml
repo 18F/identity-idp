@@ -12,10 +12,10 @@ AllCops:
     - '**/*.rb'
     - '**/Gemfile'
     - '**/Rakefile'
-  TargetRubyVersion: <%= File.read(File.join(__dir__, '.ruby-version')).strip %>
+  TargetRubyVersion: <%= File.read(File.join(__dir__, '../../.ruby-version')).strip %>
   TargetRailsVersion: 7.1
   UseCache: true
-  NewCops: enable
+  NewCops: disable
 
 Rails:
   Enabled: true
@@ -58,6 +58,7 @@ Layout/LineLength:
   - http
   - https
   Exclude:
+  - spec/**/*
 
 Metrics/MethodLength:
   Description: Avoid methods longer than 10 lines of code.
@@ -275,4 +276,10 @@ Style/TrailingCommaInHashLiteral:
     - no_comma
 
 Style/SingleLineBlockParams:
+  Enabled: false
+
+RSpec/NamedSubject:
+  Enabled: false
+
+RSpec/ContextWording:
   Enabled: false
