@@ -335,22 +335,59 @@ RSpec.describe SocureShadowModeProofingJob do
       job.build_applicant(encrypted_arguments:, user_email:)
     end
 
-    it 'builds an applicant structure that looks right' do
-      expect(build_applicant).to eql(
-        {
-          first_name: 'FAKEY',
-          last_name: 'MCFAKERSON',
-          address1: '1 FAKE RD',
-          address2: nil,
-          city: 'GREAT FALLS',
-          state: 'MT',
-          zipcode: '59010-1234',
-          phone: '12025551212',
-          dob: '1938-10-06',
-          ssn: '900-66-1234',
-          email: user.email,
-        },
-      )
+    let(:expected_attributes) do
+      {
+        first_name: 'FAKEY',
+        last_name: 'MCFAKERSON',
+        address1: '1 FAKE RD',
+        address2: nil,
+        city: 'GREAT FALLS',
+        state: 'MT',
+        zipcode: '59010-1234',
+        dob: '1938-10-06',
+        ssn: '900-66-1234',
+        email: user.email,
+      }
+    end
+
+    context 'when the user has a phone directly passed in' do
+      # existing test
+      it 'builds an applicant structure that looks right' do
+        expect(build_applicant).to eql(
+          expected_attributes.merge(phone: '12025551212'),
+        )
+      end
+    end
+
+    context 'when the user only has an MFA phone' do
+      let(:applicant_pii_no_phone) do
+        Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(
+          best_effort_phone_number_for_socure: {
+            source: :hybrid_handoff,
+            phone: '12025556789',
+          },
+        )
+      end
+
+      let(:encrypted_arguments) do
+        Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
+          JSON.generate({ applicant_pii: applicant_pii_no_phone }),
+        )
+      end
+
+      # it shoehorns that in
+      it 'builds an applicant structure that looks right' do
+        expect(build_applicant).to eql(
+          expected_attributes.merge(
+            phone: '12025556789',
+            phone_source: 'hybrid_handoff',
+          ),
+        )
+      end
+    end
+
+    context 'when no phone is available for the user' do
+      # it just doesn't send a phone at all
     end
   end
 

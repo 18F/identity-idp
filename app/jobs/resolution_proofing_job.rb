@@ -40,7 +40,7 @@ class ResolutionProofingJob < ApplicationJob
     user = User.find_by(id: user_id)
     current_sp = ServiceProvider.find_by(issuer: service_provider_issuer)
 
-    applicant_pii = decrypted_args[:applicant_pii]
+    applicant_pii = decrypted_args[:applicant_pii].except(:best_effort_phone_number_for_socure)
     applicant_pii[:uuid_prefix] = current_sp&.app_id
     applicant_pii[:uuid] = user.uuid
 
