@@ -310,6 +310,8 @@ specs_saml_idp:
     - job: install
   cache:
     - <<: *saml_idp_ruby_cache
+  variables:
+    COVERAGE: 'true'
   artifacts:
     expire_in: 31d
     when: always
