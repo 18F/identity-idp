@@ -34,18 +34,6 @@ GIT
       redis (>= 4.3, < 6)
 
 GIT
-  remote: https://github.com/18F/saml_idp.git
-  revision: 9b9e118e3811df70e4586a4b6585dbc69f928625
-  tag: 0.22.0-18f
-  specs:
-    saml_idp (0.22.0.pre.18f)
-      activesupport
-      builder
-      faraday
-      nokogiri (>= 1.10.2)
-      pkcs11
-
-GIT
   remote: https://github.com/hallelujah/valid_email.git
   revision: 486b860fb40281d1ba99ec7621505abc5c9ad5bb
   ref: 486b860
@@ -75,6 +63,16 @@ GIT
   specs:
     rack-attack (6.7.0)
       rack (>= 1.0, < 4)
+
+PATH
+  remote: lib/saml_idp
+  specs:
+    saml_idp (0.23.0.pre.18f)
+      activesupport
+      builder
+      faraday
+      nokogiri (>= 1.10.2)
+      pkcs11
 
 GEM
   remote: https://rubygems.org/
