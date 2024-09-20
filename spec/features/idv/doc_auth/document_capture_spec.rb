@@ -216,7 +216,6 @@ RSpec.feature 'document capture step', :js do
             # when there are multiple doc auth errors on front and back
             it 'shows the correct error message for the given error' do
               perform_in_browser(:mobile) do
-                wait_for_form_page_load
                 use_id_image('ial2_test_credential_multiple_doc_auth_failures_both_sides.yml')
                 use_selfie_image('ial2_test_credential_multiple_doc_auth_failures_both_sides.yml')
                 submit_images
@@ -723,7 +722,6 @@ RSpec.feature 'document capture step', :js do
               # when there are multiple doc auth errors on front and back
               it 'shows the correct error message for the given error' do
                 perform_in_browser(:mobile) do
-                  wait_for_form_page_load
                   use_id_image('ial2_test_credential_multiple_doc_auth_failures_both_sides.yml')
                   continue_to_selfie_upload
                   use_selfie_image('ial2_test_credential_multiple_doc_auth_failures_both_sides.yml')
