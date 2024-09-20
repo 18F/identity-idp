@@ -26,12 +26,15 @@ module IaaReportingHelper
   )
 
   # @return [Array<IaaConfig>]
-  def iaas
+  def iaas(**options)
+    filtered_issuers = options[:filtered_issuers]
+
     Agreements::IaaGtc.
       includes(iaa_orders: { integration_usages: :integration }).
       flat_map do |gtc|
         gtc.iaa_orders.flat_map do |iaa_order|
           issuers = iaa_order.integration_usages.map { |usage| usage.integration.issuer }
+          issuers &= filtered_issuers if filtered_issuers
 
           if issuers.present?
             IaaConfig.new(
