@@ -24,8 +24,8 @@ class OpenidConnectUserInfoPresenter
     info.merge!(x509_attributes) if scoper.x509_scopes_requested?
     info[:verified_at] = verified_at if scoper.verified_at_requested?
     if identity.vtr.nil?
-      info[:ial] = authn_context_resolver.asserted_ial_acr
-      info[:aal] = identity.requested_aal_value
+      info[:ial] = asserted_ial_value
+      info[:aal] = asserted_aal_value
     else
       info[:vot] = vot_values
       info[:vtm] = IdentityConfig.store.vtm_url
@@ -39,6 +39,14 @@ class OpenidConnectUserInfoPresenter
   end
 
   private
+
+  def asserted_ial_value
+    authn_context_resolver.asserted_ial_acr
+  end
+
+  def asserted_aal_value
+    identity.requested_aal_value.presence || authn_context_resolver.asserted_aal_acr
+  end
 
   def vot_values
     AuthnContextResolver.new(

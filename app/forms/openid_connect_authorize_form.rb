@@ -72,11 +72,11 @@ class OpenidConnectAuthorizeForm
   validate :validate_verified_within_duration, if: :verified_within_allowed?
 
   def initialize(params)
-    @acr_values = parse_to_values(params[:acr_values], Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
+    @acr_values = parse_acr_values(params[:acr_values], Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
     @vtr = parse_vtr(params[:vtr])
     SIMPLE_ATTRS.each { |key| instance_variable_set(:"@#{key}", params[key]) }
     @prompt ||= 'select_account'
-    @scope = parse_to_values(params[:scope], scopes)
+    @scope = parse_scope(params[:scope], scopes)
     @unauthorized_scope = check_for_unauthorized_scope(params)
 
     if verified_within_allowed?
@@ -115,7 +115,7 @@ class OpenidConnectAuthorizeForm
       nonce: nonce,
       rails_session_id: rails_session_id,
       ial: ial,
-      acr_values: acr_values&.join(' '),
+      acr_values: Vot::AcrComponentValues.build(acr_values),
       vtr: vtr,
       requested_aal_value: requested_aal_value,
       scope: scope.join(' '),
@@ -140,13 +140,14 @@ class OpenidConnectAuthorizeForm
   end
 
   def requested_aal_value
-    highest_level_aal(aal_values) ||
-      Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
+    highest_level_aal || default_aal_acr
   end
 
   private
 
-  attr_reader :identity, :success
+  # @return [ServiceProviderIdentity]
+  attr_reader :identity
+  attr_reader :success
 
   def code
     identity&.session_uuid
@@ -171,9 +172,13 @@ class OpenidConnectAuthorizeForm
     end
   end
 
-  def parse_to_values(param_value, possible_values)
+  def parse_scope(param_value, possible_values)
     return [] if param_value.blank?
     param_value.split(' ').compact & possible_values
+  end
+
+  def parse_acr_values(param_value, possible_values = Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
+    Vot::AcrComponentValues.order_by_priority(param_value) & possible_values
   end
 
   def parse_vtr(param_value)
@@ -278,7 +283,7 @@ class OpenidConnectAuthorizeForm
       allow_prompt_login: service_provider&.allow_prompt_login,
       redirect_uri: result_uri,
       scope: scope&.sort&.join(' '),
-      acr_values: acr_values&.sort&.join(' '),
+      acr_values: Vot::AcrComponentValues.build(acr_values),
       vtr: vtr,
       unauthorized_scope: @unauthorized_scope,
       code_digest: code ? Digest::SHA256.hexdigest(code) : nil,
@@ -335,12 +340,13 @@ class OpenidConnectAuthorizeForm
     if parsed_vectors_of_trust.present?
       parsed_vectors_of_trust.any?(&:identity_proofing?)
     else
-      Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[ial_values.sort.max] == 2
+      Vot::AcrComponentValues.
+        includes_requirements?(highest_level_ial, :identity_proofing)
     end
   end
 
   def identity_proofing_service_provider?
-    service_provider&.ial.to_i >= 2
+    service_provider&.identity_proofing_allowed?
   end
 
   def ialmax_allowed_for_sp?
@@ -348,15 +354,19 @@ class OpenidConnectAuthorizeForm
   end
 
   def ialmax_requested?
-    Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[ial_values.sort.max] == 0
+    Vot::AcrComponentValues.includes_requirements?(highest_level_ial, :ialmax)
   end
 
   def biometric_ial_requested?
-    ial_values.any? { |ial| Saml::Idp::Constants::BIOMETRIC_IAL_CONTEXTS.include? ial }
+    Vot::AcrComponentValues.includes_requirements?(highest_level_ial, :biometric_comparison)
   end
 
-  def highest_level_aal(aal_values)
-    AALS_BY_PRIORITY.find { |aal| aal_values.include?(aal) }
+  def highest_level_ial
+    @highest_level_ial ||= Vot::AcrComponentValues.find_highest_priority(ial_values)
+  end
+
+  def highest_level_aal
+    @highest_level_aal ||= Vot::AcrComponentValues.find_highest_priority(aal_values)
   end
 
   def verified_within_allowed?
@@ -365,5 +375,22 @@ class OpenidConnectAuthorizeForm
 
   def semantic_authn_contexts_requested?
     Saml::Idp::Constants::SEMANTIC_ACRS.intersect?(acr_values)
+  end
+
+  def request_authn_context_resolver
+    @request_authn_context_resolver ||= AuthnContextResolver.new(
+      service_provider: service_provider,
+      user: nil,
+      vtr: nil,
+      acr_values: acr_values,
+    )
+  end
+
+  def requested_authn_context
+    @requested_authn_context ||= request_authn_context_resolver.result
+  end
+
+  def default_aal_acr
+    request_authn_context_resolver.default_aal_acr
   end
 end

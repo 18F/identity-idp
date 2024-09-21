@@ -1263,7 +1263,7 @@ RSpec.describe 'OpenID Connect' do
     else
       expect(userinfo_response[:ial]).to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
       expect(userinfo_response[:aal]).to eq(
-        Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+        Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
       )
       expect(userinfo_response).not_to have_key(:vot)
     end

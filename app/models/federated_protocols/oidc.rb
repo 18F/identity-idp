@@ -2,6 +2,7 @@
 
 module FederatedProtocols
   class Oidc
+    # @param request [OpenidConnectAuthorizeForm]
     def initialize(request)
       @request = request
     end
@@ -36,6 +37,7 @@ module FederatedProtocols
 
     private
 
+    # @return [OpenidConnectAuthorizeForm]
     attr_reader :request
   end
 end
