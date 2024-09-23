@@ -58,8 +58,9 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
+      # Idv Legacy Conversion Supplement Report to S3
       agreement_summary_report: {
-        class: 'Reports::AgreementSummaryReport',
+        class: 'Reports::IdvLegacyConversionSupplementReport',
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },

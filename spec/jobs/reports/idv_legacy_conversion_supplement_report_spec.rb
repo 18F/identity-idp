@@ -136,7 +136,6 @@ RSpec.describe Reports::IdvLegacyConversionSupplementReport do
             issuer: iaa2_sp2.issuer,
             partner_account: partner_account2,
           )
-          iaa_order2.save
 
           create(
             :sp_upgraded_biometric_profile,
@@ -189,6 +188,7 @@ RSpec.describe Reports::IdvLegacyConversionSupplementReport do
         let(:partner_account3) { create(:partner_account) }
 
         let(:iaa3_range) { DateTime.new(2020, 9, 1).utc..DateTime.new(2021, 8, 30).utc }
+        let(:expired_iaa_range) { DateTime.new(2019, 9, 1).utc..DateTime.new(2020, 8, 31).utc }
 
         let(:gtc3) do
           create(
@@ -215,6 +215,17 @@ RSpec.describe Reports::IdvLegacyConversionSupplementReport do
           build_iaa_order(order_number: 3, date_range: iaa3_range, iaa_gtc: gtc3)
         end
 
+        let(:iaa_order_expired) do
+          build_iaa_order(order_number: 2, date_range: expired_iaa_range, iaa_gtc: gtc3)
+        end
+
+        let(:integration_1) do
+          build_integration(
+            issuer: iaa3_sp1.issuer,
+            partner_account: partner_account3,
+          )
+        end
+
         let(:user1) { create(:user) }
 
         let(:user2) { create(:user) }
@@ -222,11 +233,8 @@ RSpec.describe Reports::IdvLegacyConversionSupplementReport do
         let(:csv) { CSV.parse(report.perform(Time.zone.today), headers: true) }
 
         before do
-          iaa_order3.integrations << build_integration(
-            issuer: iaa3_sp1.issuer,
-            partner_account: partner_account3,
-          )
-          iaa_order3.save
+          iaa_order3.integrations << integration_1
+
           create(
             :sp_upgraded_biometric_profile,
             issuer: iaa3_sp1.issuer, user_id: user1.id, upgraded_at: iaa3_range.begin + 1.day,
@@ -263,6 +271,30 @@ RSpec.describe Reports::IdvLegacyConversionSupplementReport do
                 iaa_order_number: 'gtc9101-0003',
                 iaa_start_date: '2020-09-01',
                 iaa_end_date: '2021-08-30',
+                issuer: iaa3_sp1.issuer,
+                year_month: '202010',
+                year_month_readable: 'October 2020',
+                user_count: '1',
+              },
+            )
+          end
+        end
+
+        context 'when there is an expired iaa with the same issuer' do
+          before do
+            iaa_order_expired.integrations << integration_1
+          end
+
+          it 'does not include the expired iaa in the report' do
+            expect(csv.length).to eq(2)
+
+            row = csv.find { |r| r['issuer'] == iaa3_sp1.issuer }
+
+            expect(row.to_h.symbolize_keys).not_to eq(
+              {
+                iaa_order_number: 'gtc9101-0002',
+                iaa_start_date: '2019-09-01',
+                iaa_end_date: '2020-08-31',
                 issuer: iaa3_sp1.issuer,
                 year_month: '202010',
                 year_month_readable: 'October 2020',
