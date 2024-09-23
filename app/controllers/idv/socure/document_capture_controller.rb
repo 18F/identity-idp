@@ -9,6 +9,7 @@ module Idv
 
       before_action :confirm_not_rate_limited
       before_action :confirm_step_allowed
+      before_action :secure_header_override
 
       def show
         Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
@@ -99,6 +100,15 @@ module Idv
           extra = { stored_result_present: stored_result.present? }
           failure(I18n.t('doc_auth.errors.general.network_error'), extra)
         end
+      end
+
+      def secure_headers_override
+        override_form_action_csp(
+          SecureHeadersAllowList.csp_with_sp_redirect_uris(
+            idv_hybrid_mobile_socure_document_capture_url,
+            ['https://verify.socure.us'],
+          ),
+        )
       end
     end
   end
