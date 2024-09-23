@@ -35,7 +35,7 @@ Rails.application.config.content_security_policy do |policy|
 
   policy.default_src :self
   policy.child_src :self # CSP 2.0 only; replaces frame_src
-  policy.form_action :self, 'https://verify.socure.us'
+  policy.form_action :self
   policy.block_all_mixed_content true # CSP 2.0 only;
   policy.connect_src(*connect_src.flatten.compact)
   policy.font_src(*font_src)
