@@ -55,7 +55,10 @@ module Reports
 
         results.each do |iaa|
           csv << [
-            IaaReportingHelper.key(iaa['gtc_number'], iaa['order_number']),
+            IaaReportingHelper.key(
+              gtc_number: iaa['gtc_number'],
+              order_number: iaa['order_number'],
+            ),
             iaa['start_date'],
             iaa['end_date'],
             iaa['issuer'],
