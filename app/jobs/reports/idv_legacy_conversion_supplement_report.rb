@@ -13,7 +13,7 @@ module Reports
 
     # @return [String] CSV report
     def build_csv
-      sql = <<~SQL
+      sql = <<-SQL
         SELECT
 	          iaa_orders.start_date
 	        , iaa_orders.end_date
