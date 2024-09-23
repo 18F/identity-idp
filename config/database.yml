@@ -87,7 +87,7 @@ production:
     password: <%= IdentityConfig.store.database_password %>
     pool: <%= primary_pool %>
     advisory_locks: false
-    prepared_statements: true
+    prepared_statements: false
     sslmode: <%= IdentityConfig.store.database_sslmode %>
     sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
     migrations_paths: db/primary_migrate
