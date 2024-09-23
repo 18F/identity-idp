@@ -579,7 +579,7 @@ doc_auth.headings.document_capture_back: Back of your ID
 doc_auth.headings.document_capture_front: Front of your ID
 doc_auth.headings.document_capture_selfie: Photo of your face
 doc_auth.headings.document_capture_subheader_id: Driver’s license or state ID card
-doc_auth.headings.document_capture_subheader_selfie: Photo of your face
+doc_auth.headings.document_capture_subheader_selfie: Add a photo of your face
 doc_auth.headings.document_capture_with_selfie: Add photos of your ID and a photo of yourself
 doc_auth.headings.front: Front of your driver’s license or state ID
 doc_auth.headings.how_to_verify: Choose how you want to verify your identity
@@ -591,6 +591,7 @@ doc_auth.headings.no_ssn: Don’t have a Social Security number?
 doc_auth.headings.review_issues: Check your images and try again
 doc_auth.headings.secure_account: Secure your account
 doc_auth.headings.selfie: Photo of your face
+doc_auth.headings.selfie_capture: Capture photo of yourself
 doc_auth.headings.ssn: Enter your Social Security number
 doc_auth.headings.ssn_update: Update your Social Security number
 doc_auth.headings.text_message: We sent a message to your phone
@@ -678,16 +679,16 @@ doc_auth.instructions.text2: You will not need your physical SSN card.
 doc_auth.instructions.text3: We match your phone number with your personal information and send a one-time code to your phone.
 doc_auth.instructions.text4: Your password saves and encrypts your personal information.
 doc_auth.tips.document_capture_hint: Must be a JPG or PNG
-doc_auth.tips.document_capture_id_text1: Place your ID on a flat and dark surface.
-doc_auth.tips.document_capture_id_text2: Take your photo in a well-lit place.
-doc_auth.tips.document_capture_id_text3: Avoid glare or shadows on your ID.
+doc_auth.tips.document_capture_id_text1: Use a flat and dark surface
+doc_auth.tips.document_capture_id_text2: Take photos in a well-lit place
+doc_auth.tips.document_capture_id_text3: Avoid glare or shadows
 doc_auth.tips.document_capture_id_text4: File size should be at least 2 MB.
-doc_auth.tips.document_capture_selfie_id_header_text: How to take clear photos of your ID
+doc_auth.tips.document_capture_selfie_id_header_text: How to take clear photos
 doc_auth.tips.document_capture_selfie_selfie_text: How to prepare for your photo
-doc_auth.tips.document_capture_selfie_text1: Remove any clothing items or accessories that might cover your face. We suggest removing your glasses or hat.
-doc_auth.tips.document_capture_selfie_text2: Take your photo in a well-lit place.
-doc_auth.tips.document_capture_selfie_text3: Keep your expression neutral.
-doc_auth.tips.document_capture_selfie_text4: Make sure your whole face is visible within the green circle.
+doc_auth.tips.document_capture_selfie_text1: Remove any items covering your face, like glasses or a hat
+doc_auth.tips.document_capture_selfie_text2: Take photo in a well-lit place
+doc_auth.tips.document_capture_selfie_text3: Keep your expression neutral
+doc_auth.tips.document_capture_selfie_text4: Make sure your whole face is visible within the green circle
 doc_auth.tips.mobile_phone_required: Mobile Phone Required
 doc_auth.tips.review_issues_id_header_text: 'Review the images of your state‑issued ID:'
 doc_auth.tips.review_issues_id_text1: Did you use a dark background?
@@ -1428,6 +1429,7 @@ notices.privacy.security_and_privacy_practices: Security Practices and Privacy A
 notices.resend_confirmation_email.success: We sent another confirmation email.
 notices.session_cleared: For your security, we clear what you entered if you don’t move to a new page within %{minutes} minutes.
 notices.session_timedout: We signed you out. For your security, %{app_name} ends your session when you haven’t moved to a new page for %{minutes} minutes.
+notices.sign_in.recaptcha.disclosure_statement_html: This site is protected by reCAPTCHA and the Google %{google_policy_link_html} and %{google_tos_link_html} apply.
 notices.signed_up_and_confirmed.first_paragraph_end: with a link to confirm your email address. Follow the link to continue adding this email to your account.
 notices.signed_up_and_confirmed.first_paragraph_start: We sent an email to
 notices.signed_up_and_confirmed.no_email_sent_explanation_start: Didn’t receive an email?

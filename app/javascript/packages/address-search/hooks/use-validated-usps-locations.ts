@@ -6,10 +6,10 @@ import { t } from '@18f/identity-i18n';
 
 export default function useValidatedUspsLocations(locationsURL: string) {
   const [locationQuery, setLocationQuery] = useState<LocationQuery | null>(null);
-  const validatedAddressFieldRef = useRef<HTMLFormElement>(null);
-  const validatedCityFieldRef = useRef<HTMLFormElement>(null);
-  const validatedStateFieldRef = useRef<HTMLFormElement>(null);
-  const validatedZipCodeFieldRef = useRef<HTMLFormElement>(null);
+  const validatedAddressFieldRef = useRef<HTMLInputElement>(null);
+  const validatedCityFieldRef = useRef<HTMLInputElement>(null);
+  const validatedStateFieldRef = useRef<HTMLInputElement>(null);
+  const validatedZipCodeFieldRef = useRef<HTMLInputElement>(null);
 
   const checkValidityAndDisplayErrors = (address, city, state, zipCode) => {
     let formIsValid = true;
@@ -48,7 +48,14 @@ export default function useValidatedUspsLocations(locationsURL: string) {
     validatedStateFieldRef.current?.reportValidity();
     validatedZipCodeFieldRef.current?.reportValidity();
 
-    return formIsValid && zipCodeIsValid;
+    const hasInvalidFields = [
+      validatedAddressFieldRef,
+      validatedCityFieldRef,
+      validatedStateFieldRef,
+      validatedZipCodeFieldRef,
+    ].some((fieldRef) => fieldRef.current?.validity?.valid === false);
+
+    return formIsValid && zipCodeIsValid && !hasInvalidFields;
   };
 
   const handleLocationSearch = useCallback(

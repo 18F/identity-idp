@@ -35,10 +35,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: 9b9e118e3811df70e4586a4b6585dbc69f928625
-  tag: 0.22.0-18f
+  revision: 23b69117593e9b9217910af1dd627febd8d18cf4
+  tag: 0.23.0-18f
   specs:
-    saml_idp (0.22.0.pre.18f)
+    saml_idp (0.23.0.pre.18f)
       activesupport
       builder
       faraday
@@ -498,7 +498,7 @@ GEM
     psych (5.1.2)
       stringio
     public_suffix (6.0.1)
-    puma (6.4.2)
+    puma (6.4.3)
       nio4r (~> 2.0)
     raabro (1.4.0)
     racc (1.8.1)
