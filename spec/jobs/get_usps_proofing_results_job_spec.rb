@@ -1698,7 +1698,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
           context 'the enrollment fails proofing with USPS' do
             let(:pending_enrollment) do
               create(
-                :in_person_enrollment, :pending,
+                :in_person_enrollment, :pending
               )
             end
 
@@ -1709,7 +1709,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
 
             it 'does not overwrite the deactivation_reason' do
               expect(pending_enrollment.profile.deactivation_reason).to be_nil
-               # to mimic pw reset
+              # to mimic pw reset
               pending_enrollment.profile.update(deactivation_reason: 'encryption_error')
               job.perform(Time.zone.now)
               pending_enrollment.reload
