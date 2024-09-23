@@ -4,7 +4,7 @@ require 'feature_management'
 
 # rubocop:disable Metrics/BlockLength
 Rails.application.config.content_security_policy do |policy|
-  connect_src = ["'self'", "https://verify.socure.us"]
+  connect_src = ["'self'"]
 
   font_src = [:self, :data, IdentityConfig.store.asset_host.presence].compact
 
