@@ -350,7 +350,9 @@ GEM
       fugit (>= 1.1)
       railties (>= 6.0.0)
       thor (>= 0.14.1)
-    google-protobuf (3.24.4)
+    google-protobuf (4.28.2)
+      bigdecimal
+      rake (>= 13)
     hashdiff (1.1.0)
     heapy (0.2.0)
       thor
@@ -464,7 +466,7 @@ GEM
       ast (~> 2.4.1)
       racc
     pg (1.5.6)
-    pg_query (4.2.3)
+    pg_query (5.1.0)
       google-protobuf (>= 3.22.3)
     phonelib (0.9.1)
     pkcs11 (0.3.4)
