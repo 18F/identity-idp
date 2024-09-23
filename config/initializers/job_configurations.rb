@@ -59,8 +59,13 @@ else
         args: -> { [Time.zone.today] },
       },
       # Idv Legacy Conversion Supplement Report to S3
-      agreement_summary_report: {
+      idv_legacy_conversion_supplement_report: {
         class: 'Reports::IdvLegacyConversionSupplementReport',
+        cron: cron_24h,
+        args: -> { [Time.zone.today] },
+      },
+      agreement_summary_report: {
+        class: 'Reports::AgreementSummaryReport',
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
