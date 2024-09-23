@@ -1,8 +1,7 @@
 import { isValidNumberForRegion, isValidNumber } from 'libphonenumber-js';
-import 'intl-tel-input/build/js/utils.js';
-import intlTelInput from 'intl-tel-input';
+import intlTelInput from 'intl-tel-input/intlTelInputWithUtils';
 import type { CountryCode } from 'libphonenumber-js';
-import type { Plugin as IntlTelInputPlugin, Options } from 'intl-tel-input';
+import type { Iti } from 'intl-tel-input';
 import { replaceVariables } from '@18f/identity-i18n';
 import { trackEvent } from '@18f/identity-analytics';
 
@@ -14,14 +13,6 @@ interface PhoneInputStrings {
   invalid_phone_international: string;
 
   unsupported_country: string;
-}
-
-interface IntlTelInput extends IntlTelInputPlugin {
-  flagsContainer: HTMLElement;
-
-  selectedFlag: HTMLElement;
-
-  options: Options;
 }
 
 const updateInternationalCodeInPhone = (phone, newCode) =>
@@ -40,7 +31,7 @@ export class PhoneInputElement extends HTMLElement {
 
   codeWrapper: Element | null;
 
-  iti: IntlTelInput;
+  iti: Iti;
 
   connectedCallback() {
     const textInput = this.querySelector<HTMLInputElement>('.phone-input__number');
@@ -95,19 +86,12 @@ export class PhoneInputElement extends HTMLElement {
     return this.#strings;
   }
 
-  /**
-   * Returns the element which represents the flag dropdown's currently selected value, which is
-   * rendered as a text element within the combobox. As defined by the ARIA specification, a
-   * combobox's value is determined by its contents if it is not an input element.
-   *
-   * @see https://w3c.github.io/aria/#combobox
-   */
-  get valueText(): HTMLElement {
-    return this.iti.selectedFlag.querySelector('.usa-sr-only')!;
+  get selectedCountry(): HTMLElement {
+    return this.querySelector('.iti__selected-country')!;
   }
 
-  get hasDropdown(): boolean {
-    return Boolean(this.supportedCountryCodes && this.supportedCountryCodes.length > 1);
+  get countryList(): HTMLUListElement | null {
+    return this.querySelector('.iti__country-list')!;
   }
 
   /**
@@ -127,12 +111,7 @@ export class PhoneInputElement extends HTMLElement {
     const countryCode = this.getSelectedCountryCode();
     if (countryCode) {
       this.codeInput.value = countryCode;
-      if (this.hasDropdown) {
-        // Move value text from title attribute to the flag's hidden text element.
-        // See: https://github.com/jackocnr/intl-tel-input/blob/d54b127/src/js/intlTelInput.js#L1191-L1197
-        this.valueText.textContent = this.iti.selectedFlag.title;
-        this.iti.selectedFlag.removeAttribute('title');
-      }
+      this.selectedCountry.removeAttribute('title');
       if (fireChangeEvent) {
         this.codeInput.dispatchEvent(new CustomEvent('change', { bubbles: true }));
       }
@@ -143,37 +122,22 @@ export class PhoneInputElement extends HTMLElement {
     const { supportedCountryCodes, countryCodePairs } = this;
 
     const iti = intlTelInput(this.textInput, {
-      preferredCountries: ['US', 'CA'],
+      countryOrder: ['US', 'CA'],
       initialCountry: this.codeInput.value,
-      localizedCountries: countryCodePairs,
+      i18n: {
+        ...countryCodePairs,
+        selectedCountryAriaLabel: this.strings.country_code_label,
+      },
       onlyCountries: supportedCountryCodes,
       autoPlaceholder: 'off',
-      allowDropdown: this.hasDropdown,
-    }) as IntlTelInput;
+      formatAsYouType: false,
+      useFullscreenPopup: false,
+    });
 
     this.iti = iti;
 
-    if (this.hasDropdown) {
-      // Remove duplicate items in the country list
-      const preferred: NodeListOf<HTMLLIElement> =
-        iti.countryList.querySelectorAll('.iti__preferred');
-      preferred.forEach((listItem) => {
-        const { countryCode } = listItem.dataset;
-        const duplicates: NodeListOf<HTMLLIElement> = iti.countryList.querySelectorAll(
-          `.iti__standard[data-country-code="${countryCode}"]`,
-        );
-        duplicates.forEach((duplicateListItem) => {
-          duplicateListItem.parentNode?.removeChild(duplicateListItem);
-        });
-      });
-
-      // Improve base accessibility of intl-tel-input
-      const valueText = document.createElement('div');
-      valueText.classList.add('usa-sr-only');
-      iti.selectedFlag.appendChild(valueText);
-      iti.selectedFlag.setAttribute('aria-label', this.strings.country_code_label);
-      iti.selectedFlag.removeAttribute('aria-owns');
-    }
+    // Improve base accessibility of intl-tel-input
+    this.selectedCountry.setAttribute('aria-haspopup', 'listbox');
 
     this.syncCountryToCodeInput({ fireChangeEvent: false });
 

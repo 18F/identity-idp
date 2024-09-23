@@ -6,6 +6,8 @@ import { setupServer } from 'msw/node';
 import { http, HttpResponse } from 'msw';
 import type { SetupServer } from 'msw/node';
 import { SWRConfig } from 'swr';
+import { I18n } from '@18f/identity-i18n';
+import { I18nContext } from '@18f/identity-react-i18n';
 import FullAddressSearch from './full-address-search';
 
 describe('FullAddressSearch', () => {
@@ -131,6 +133,62 @@ describe('FullAddressSearch', () => {
 
       const errors = await findAllByText('simple_form.required.text');
       expect(errors).to.have.lengthOf(4);
+    });
+
+    it('displays an error for unsupported characters in address field', async () => {
+      const handleLocationsFound = sandbox.stub();
+      const locationCache = new Map();
+      const { findByText, findByLabelText } = render(
+        <I18nContext.Provider
+          value={
+            new I18n({
+              strings: {
+                'in_person_proofing.form.address.errors.unsupported_chars':
+                  'Our system cannot read the following characters: %{char_list} . Please try again using substitutes for those characters.',
+              },
+            })
+          }
+        >
+          <SWRConfig value={{ provider: () => locationCache }}>
+            <FullAddressSearch
+              usStatesTerritories={usStatesTerritories}
+              onFoundLocations={handleLocationsFound}
+              locationsURL={locationsURL}
+              registerField={() => undefined}
+              handleLocationSelect={undefined}
+              disabled={false}
+            />
+          </SWRConfig>
+          ,
+        </I18nContext.Provider>,
+      );
+
+      await userEvent.type(
+        await findByLabelText('in_person_proofing.body.location.po_search.address_label'),
+        '20, main',
+      );
+      await userEvent.type(
+        await findByLabelText('in_person_proofing.body.location.po_search.city_label'),
+        'Endeavor',
+      );
+      await userEvent.selectOptions(
+        await findByLabelText('in_person_proofing.body.location.po_search.state_label'),
+        'DE',
+      );
+      await userEvent.type(
+        await findByLabelText('in_person_proofing.body.location.po_search.zipcode_label'),
+        '00010',
+      );
+      await userEvent.click(
+        await findByText('in_person_proofing.body.location.po_search.search_button'),
+      );
+
+      const error = await findByText(
+        'Our system cannot read the following characters: , . Please try again using substitutes for those characters.',
+      );
+
+      expect(error).to.exist();
+      expect(locationCache.size).to.equal(1);
     });
 
     it('displays an error for an invalid ZIP code length (length = 1)', async () => {

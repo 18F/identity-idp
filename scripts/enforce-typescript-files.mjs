@@ -44,7 +44,6 @@ const LEGACY_FILE_EXCEPTIONS = [
   'spec/javascript/packages/document-capture/components/acuant-selfie-camera-spec.jsx',
   'spec/javascript/packages/document-capture/components/acuant-selfie-capture-canvas-spec.jsx',
   'spec/javascript/packages/document-capture/components/callback-on-mount-spec.jsx',
-  'spec/javascript/packages/document-capture/components/document-capture-review-issues-spec.jsx',
   'spec/javascript/packages/document-capture/components/document-capture-spec.jsx',
   'spec/javascript/packages/document-capture/components/document-capture-warning-spec.jsx',
   'spec/javascript/packages/document-capture/components/file-image-spec.jsx',

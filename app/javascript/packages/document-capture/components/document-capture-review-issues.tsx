@@ -60,11 +60,13 @@ function DocumentCaptureReviewIssues({
         altFailedDocTypeMsg={isFailedDocType ? t('doc_auth.errors.doc.wrong_id_type_html') : null}
         hasDismissed={hasDismissed}
       />
-      <p>
-        <HtmlTextWithStrongNoWrap
-          text={t('idv.failure.attempts_html', { count: remainingSubmitAttempts })}
-        />
-      </p>
+      {Number.isFinite(remainingSubmitAttempts) && (
+        <p>
+          <HtmlTextWithStrongNoWrap
+            text={t('idv.failure.attempts_html', { count: remainingSubmitAttempts })}
+          />
+        </p>
+      )}
       {!isFailedDocType && captureHints && (
         <TipList
           titleClassName="margin-bottom-0 margin-top-2"

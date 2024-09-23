@@ -76,9 +76,43 @@ RSpec.describe Idv::SsnController do
       expect { get :show }.to change { subject.idv_session.threatmetrix_session_id }.from(nil)
     end
 
-    it 'does not change threatmetrix_session_id when updating ssn' do
-      subject.idv_session.ssn = ssn
-      expect { get :show }.not_to change { subject.idv_session.threatmetrix_session_id }
+    context 'when updating ssn' do
+      let(:threatmetrix_session_id) { 'original-session-id' }
+
+      before do
+        subject.idv_session.ssn = ssn
+        subject.idv_session.threatmetrix_session_id = threatmetrix_session_id
+      end
+      it 'does not change threatmetrix_session_id' do
+        expect { get :show }.not_to change { subject.idv_session.threatmetrix_session_id }
+      end
+
+      context 'but there is no threatmetrix_session_id in the session' do
+        let(:threatmetrix_session_id) { nil }
+
+        it 'sets a threatmetrix_session_id' do
+          expect { get :show }.to change { subject.idv_session.threatmetrix_session_id }
+        end
+      end
+    end
+
+    context 'proofing_device_profiling disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:disabled)
+      end
+
+      it 'still add a threatmetrix session id to idv_session' do
+        expect { get :show }.to change { subject.idv_session.threatmetrix_session_id }.from(nil)
+      end
+
+      context 'when idv_session has a threatmetrix_session_id' do
+        before do
+          subject.idv_session.threatmetrix_session_id = 'fake-session-id'
+        end
+        it 'changes the threatmetrix_session_id' do
+          expect { get :show }.to change { subject.idv_session.threatmetrix_session_id }
+        end
+      end
     end
 
     context 'with an ssn in idv_session' do

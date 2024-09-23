@@ -116,23 +116,6 @@ RSpec.describe TwoFactorOptionsPresenter do
         ]
       end
     end
-    context 'when platform_auth_set_up_enabled is enabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).
-          and_return(true)
-      end
-
-      it 'supplies all the options except webauthn' do
-        expect(presenter.options.map(&:class)).to eq [
-          TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter,
-          TwoFactorAuthentication::SetUpAuthAppSelectionPresenter,
-          TwoFactorAuthentication::SetUpPhoneSelectionPresenter,
-          TwoFactorAuthentication::SetUpWebauthnSelectionPresenter,
-          TwoFactorAuthentication::SetUpPivCacSelectionPresenter,
-          TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter,
-        ]
-      end
-    end
   end
 
   describe '#all_options_sorted' do

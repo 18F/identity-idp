@@ -4,6 +4,12 @@ require 'json'
 
 module Idv
   module InPerson
+    class UspsLocationsError < StandardError
+      def initialize
+        super('Unsupported characters in address field.')
+      end
+    end
+
     class UspsLocationsController < ApplicationController
       include Idv::AvailabilityConcern
       include Idv::HybridMobile::HybridMobileConcern
@@ -18,6 +24,7 @@ module Idv
       rescue_from ActionController::InvalidAuthenticityToken,
                   Faraday::Error,
                   StandardError,
+                  UspsLocationsError,
                   Faraday::BadRequestError,
                   with: :handle_error
 
@@ -28,6 +35,11 @@ module Idv
           city: search_params['city'], state: search_params['state'],
           zip_code: search_params['zip_code']
         )
+
+        unless candidate.has_valid_address?
+          raise UspsLocationsError.new
+        end
+
         locations = proofer.request_facilities(candidate, authn_context_enhanced_ipp?)
         if locations.length > 0
           analytics.idv_in_person_locations_searched(
@@ -96,7 +108,8 @@ module Idv
       def handle_error(err)
         remapped_error = case err
                          when ActionController::InvalidAuthenticityToken,
-                              Faraday::Error
+                              Faraday::Error,
+                              UspsLocationsError
                            :unprocessable_entity
                          else
                            :internal_server_error

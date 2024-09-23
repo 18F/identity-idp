@@ -35,10 +35,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: 9b9e118e3811df70e4586a4b6585dbc69f928625
-  tag: 0.22.0-18f
+  revision: 23b69117593e9b9217910af1dd627febd8d18cf4
+  tag: 0.23.0-18f
   specs:
-    saml_idp (0.22.0.pre.18f)
+    saml_idp (0.23.0.pre.18f)
       activesupport
       builder
       faraday
@@ -350,7 +350,9 @@ GEM
       fugit (>= 1.1)
       railties (>= 6.0.0)
       thor (>= 0.14.1)
-    google-protobuf (3.24.4)
+    google-protobuf (4.28.2)
+      bigdecimal
+      rake (>= 13)
     hashdiff (1.1.0)
     heapy (0.2.0)
       thor
@@ -464,7 +466,7 @@ GEM
       ast (~> 2.4.1)
       racc
     pg (1.5.6)
-    pg_query (4.2.3)
+    pg_query (5.1.0)
       google-protobuf (>= 3.22.3)
     phonelib (0.9.1)
     pkcs11 (0.3.4)
@@ -498,7 +500,7 @@ GEM
     psych (5.1.2)
       stringio
     public_suffix (6.0.1)
-    puma (6.4.2)
+    puma (6.4.3)
       nio4r (~> 2.0)
     raabro (1.4.0)
     racc (1.8.1)

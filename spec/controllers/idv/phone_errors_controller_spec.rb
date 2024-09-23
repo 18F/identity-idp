@@ -17,6 +17,7 @@ RSpec.describe Idv::PhoneErrorsController do
       subject.idv_session.idv_consent_given_at = Time.zone.now
       subject.idv_session.flow_path = 'standard'
       subject.idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
+      subject.idv_session.threatmetrix_session_id = 'random-session-id'
       subject.idv_session.ssn = '123-45-6789'
       subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE
       subject.idv_session.resolution_successful = true
