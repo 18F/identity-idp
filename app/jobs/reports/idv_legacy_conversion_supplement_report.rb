@@ -14,12 +14,15 @@ module Reports
     # @return [String] CSV report
     def build_csv
       sql = <<~SQL
-        SELECT iaa_orders.*,
-                iaa_gtcs.gtc_number AS gtc_number,
-                upgrade.issuer AS issuer,
-                sp.friendly_name AS friendly_name,
-                DATE_TRUNC('month', upgrade.upgraded_at) AS year_month,
-                count(distinct upgrade.user_id) AS user_count
+        SELECT
+	          iaa_orders.start_date
+	        , iaa_orders.end_date
+	        , iaa_orders.order_number
+	        , iaa_gtcs.gtc_number AS gtc_number
+	        , upgrade.issuer AS issuer
+	        , sp.friendly_name AS friendly_name
+	        , DATE_TRUNC('month', upgrade.upgraded_at) AS year_month
+	        , COUNT(DISTINCT upgrade.user_id) AS user_count
         FROM iaa_orders
         INNER JOIN integration_usages iu ON iu.iaa_order_id = iaa_orders.id
         INNER JOIN integrations ON integrations.id = iu.integration_id
