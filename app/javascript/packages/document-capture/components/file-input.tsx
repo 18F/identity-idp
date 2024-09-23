@@ -256,7 +256,7 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
   // they don't have a preview. This shows the name of the file in the upload
   // box (using the existing preview) when the file name ends with .yml
   const isYAMLFile: boolean = value instanceof window.File && value.name.endsWith('.yml');
-  const isIdCapture: boolean = !(label === t('doc_auth.headings.document_capture_selfie'));
+
   /**
    * In response to a file input change event, confirms that the file is valid before calling
    * `onChange`.
@@ -387,7 +387,6 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
           isDraggingOver && 'usa-file-input--drag',
           value && !isValuePending && 'usa-file-input--has-value',
           isValuePending && 'usa-file-input--value-pending',
-          isIdCapture && 'usa-file-input--is-id-capture',
         ]
           .filter(Boolean)
           .join(' ')}
