@@ -11,8 +11,6 @@ module Reports
       save_report(REPORT_NAME, csv, extension: 'csv')
     end
 
-    # @param [Array<IaaReportingHelper::IaaConfig>] iaas
-    # @param [Array<IaaReportingHelper::PartnerConfig>] partner_accounts
     # @return [String] CSV report
     def build_csv
       results = Agreements::IaaOrder.joins(:integrations, :iaa_gtc).joins(
@@ -30,6 +28,8 @@ module Reports
           DATE_TRUNC('month', sp.upgraded_at) AS year_month,
           count(distinct sp.user_id) AS user_count
         SQL
+      ).where(
+        'sp.upgraded_at BETWEEN iaa_orders.start_date AND iaa_orders.end_date',
       ).group('iaa_orders.id, sp.issuer, year_month, iaa_gtcs.gtc_number').
         order('iaa_orders.id, year_month')
 
