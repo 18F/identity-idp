@@ -93,7 +93,7 @@ class Profile < ApplicationRecord
 
     now = Time.zone.now
     is_reproof = Profile.find_by(user_id: user_id, active: true)
-    is_biometric = biometric?(idv_level) && !biometric?(is_reproof.idv_level) if is_reproof
+    is_biometric = is_reproof && biometric?(idv_level) && !biometric?(is_reproof.idv_level)
 
     attrs = {
       active: true,
