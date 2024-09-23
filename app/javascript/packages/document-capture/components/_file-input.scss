@@ -17,22 +17,11 @@
   border-width: 3px;
 }
 
-.usa-file-input:not(
-    .usa-file-input--has-value,
-    .usa-file-input--value-pending,
-    .usa-file-input--is-id-capture
-  )
-  .usa-file-input__target,
-.usa-form-group--error .usa-file-input .usa-file-input__target,
-.usa-form-group--success .usa-file-input .usa-file-input__target {
-  height: 21rem;
-  width: 12rem;
-}
-
 .usa-file-input:not(.usa-file-input--has-value, .usa-file-input--value-pending) {
   .usa-file-input__target {
     border-color: color('primary');
     border-radius: 0.375rem;
+
     &:hover {
       border-color: color('primary-dark');
     }
@@ -63,7 +52,6 @@
   display: block;
   letter-spacing: 0.4px;
   line-height: 1.5;
-
   // For content to appear as vertically centered, offset the larger line-height of the banner to
   // match the space below the drag text.
   margin-top: ((1.5rem - size('body', '2xs')) - ((1.625rem * 1.5) - 1.625rem)) * 0.5;
@@ -87,17 +75,7 @@
     width: 100%;
   }
 }
-.usa-file-input.usa-file-input--single-value:not(.usa-file-input--is-id-capture) {
-  .usa-file-input__preview {
-    width: 12rem;
-  }
-  .usa-file-input__target {
-    width: 12rem;
-  }
-  .usa-file-input__preview-image {
-    width: 12rem;
-  }
-}
+
 .usa-file-input__input:not([disabled]):focus {
   outline: 3px solid color('primary');
   outline-offset: 6px;
