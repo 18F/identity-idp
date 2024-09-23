@@ -1003,8 +1003,8 @@ RSpec.describe Profile do
 
   describe '#deactivate_due_to_in_person_verification_cancelled' do
     let(:profile) { create(:profile, :in_person_verification_pending) }
-    context 'updates the profile' do
-      it 'sets the deactivation reason' do
+    context 'when the profile does not have a deactivation reason' do
+      it 'updates the profile and sets the deactivation reason to "verification_cancelled"' do
         expect(profile.deactivation_reason).to be_nil
         profile.deactivate_due_to_in_person_verification_cancelled
 
@@ -1012,8 +1012,10 @@ RSpec.describe Profile do
         expect(profile.deactivation_reason).to eq('verification_cancelled')
         expect(profile.in_person_verification_pending_at).to be nil
       end
+    end
 
-      it 'does not override an existing deactivation reason' do
+    context 'when the profile has a deactivation reason' do
+      it 'updates the profile without overwriting the deactivation reason (encryption_error)' do
         profile.deactivation_reason = 'encryption_error'
         expect(profile.deactivation_reason).to_not be_nil
 
@@ -1024,7 +1026,7 @@ RSpec.describe Profile do
         expect(profile.in_person_verification_pending_at).to be nil
       end
 
-      it 'does not override an existing deactivation reason' do
+      it 'updates the profile without overwriting the deactivation reason (password_reset)' do
         profile.deactivation_reason = 'password_reset'
         expect(profile.deactivation_reason).to_not be_nil
 
