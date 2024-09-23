@@ -1,25 +1,12 @@
 module ThreatMetrixHelper
-  def threat_metrix_variables()
-    session_id = generate_threatmetrix_session_id(updating_ssn)
-
-    {
-      threatmetrix_session_id: session_id,
-      threatmetrix_javascript_urls: session_id && threatmetrix_javascript_urls(session_id),
-      threatmetrix_iframe_url: session_id && threatmetrix_iframe_url(session_id),
-    }
-  end
-
-  def generate_threatmetrix_session_id(updating_ssn)
-    idv_session.threatmetrix_session_id = SecureRandom.uuid if !updating_ssn
-    idv_session.threatmetrix_session_id
-  end
+  THREAT_METRIX_URL = 'https://h.online-metrix.net/fp'
 
   # @return [Array<String>]
   def threatmetrix_javascript_urls(session_id)
     sources = if IdentityConfig.store.lexisnexis_threatmetrix_mock_enabled
                 Rails.application.config.asset_sources.get_sources('mock-device-profiling')
               else
-                ['https://h.online-metrix.net/fp/tags.js']
+                ["#{THREAT_METRIX_URL}/tags.js"]
               end
 
     sources.map do |source|
@@ -35,7 +22,7 @@ module ThreatMetrixHelper
     source = if IdentityConfig.store.lexisnexis_threatmetrix_mock_enabled
                 Rails.application.routes.url_helpers.test_device_profiling_iframe_url
               else
-                'https://h.online-metrix.net/fp/tags'
+                "#{THREAT_METRIX_URL}/tags"
               end
 
     UriService.add_params(

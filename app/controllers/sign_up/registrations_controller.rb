@@ -3,7 +3,7 @@
 module SignUp
   class RegistrationsController < ApplicationController
     include ApplicationHelper # for ial2_requested?
-    include Idv::ThreatMetrixConcern
+    include ThreatMetrixHelper
 
     before_action :confirm_two_factor_authenticated, only: [:destroy_confirm]
     before_action :require_no_authentication
@@ -14,6 +14,7 @@ module SignUp
     def new
       @register_user_email_form = RegisterUserEmailForm.new(analytics:)
       analytics.user_registration_enter_email_visit
+      @threat_metrix_variables = threat_metrix_variables
       render :new, formats: :html
     end
 
@@ -64,6 +65,21 @@ module SignUp
       if ial2_requested? && !FeatureManagement.idv_available?
         redirect_to idv_unavailable_path(from: CREATE_ACCOUNT)
       end
+    end
+
+    def threat_metrix_variables
+      return unless IdentityConfig.account_creation_device_profiling_enabled
+      session_id = generate_threatmetrix_session_id
+  
+      {
+        threatmetrix_session_id: session_id,
+        threatmetrix_javascript_urls: session_id && threatmetrix_javascript_urls(session_id),
+        threatmetrix_iframe_url: session_id && threatmetrix_iframe_url(session_id),
+      }
+    end
+  
+    def generate_threatmetrix_session_id
+      session[:threatmetrix_session_id] = SecureRandom.uuid
     end
   end
 end

@@ -17,16 +17,16 @@
 
 <%= render PageHeadingComponent.new.with_content(t('headings.create_account_new_users')) %>
 
-<% if FeatureManagement.proofing_device_profiling_collecting_enabled? %>
-  <% if threatmetrix_session_id.present? %>
-    <% threatmetrix_javascript_urls.each do |threatmetrix_javascript_url| %>
+<% if IdentityConfig.account_creation_device_profiling_enabled %>
+  <% if @threat_metrix_variables[:threat_metrix_session_id].present? %>
+    <% @threat_metrix_variables[:threatmetrix_javascript_urls].each do |threatmetrix_javascript_url| %>
       <%= javascript_include_tag threatmetrix_javascript_url, nonce: true %>
     <% end %>
     <noscript>
       <%= content_tag(
             :iframe,
             '',
-            src: threatmetrix_iframe_url,
+            src: @threat_metrix_variables[:threatmetrix_iframe_url],
             style: 'width: 100px; height: 100px; border: 0; position: absolute; top: -5000px;',
           ) %>
     </noscript>
