@@ -13,28 +13,30 @@ module Reports
 
     # @return [String] CSV report
     def build_csv
-      results = Agreements::IaaOrder.joins(integrations: :service_provider).joins(:iaa_gtc).
-        joins(
-          <<-SQL,
-            INNER JOIN (
-              SELECT DISTINCT ON (user_id) *
-              FROM sp_upgraded_biometric_profiles
-            ) sp ON sp.issuer = integrations.issuer
-          SQL
-        ).select(
-          <<-SQL,
-            iaa_orders.*,
-            iaa_gtcs.gtc_number AS gtc_number,
-            sp.issuer AS issuer,
-            service_providers.friendly_name AS friendly_name,
-            DATE_TRUNC('month', sp.upgraded_at) AS year_month,
-            count(distinct sp.user_id) AS user_count
-          SQL
-        ).where(
-          'sp.upgraded_at BETWEEN iaa_orders.start_date AND iaa_orders.end_date',
-        ).group('iaa_orders.id, sp.issuer, year_month, iaa_gtcs.gtc_number,
-          service_providers.friendly_name').
-        order('iaa_orders.id, year_month')
+      sql = <<~SQL
+        SELECT iaa_orders.*,
+                iaa_gtcs.gtc_number AS gtc_number,
+                upgrade.issuer AS issuer,
+                sp.friendly_name AS friendly_name,
+                DATE_TRUNC('month', upgrade.upgraded_at) AS year_month,
+                count(distinct upgrade.user_id) AS user_count
+        FROM iaa_orders
+        INNER JOIN integration_usages iu ON iu.iaa_order_id = iaa_orders.id
+        INNER JOIN integrations ON integrations.id = iu.integration_id
+        INNER JOIN iaa_gtcs ON iaa_gtcs.id = iaa_orders.iaa_gtc_id
+        INNER JOIN service_providers sp ON sp.issuer = integrations.issuer
+        INNER JOIN (
+          SELECT DISTINCT ON (user_id) *
+          FROM sp_upgraded_biometric_profiles
+        ) upgrade ON upgrade.issuer = integrations.issuer
+        WHERE upgrade.upgraded_at BETWEEN iaa_orders.start_date AND iaa_orders.end_date
+        GROUP BY iaa_orders.id, upgrade.issuer, year_month, iaa_gtcs.gtc_number, sp.friendly_name
+        ORDER BY iaa_orders.id, year_month
+      SQL
+
+      results = transaction_with_timeout do
+        ActiveRecord::Base.connection.select_all(sql)
+      end
 
       CSV.generate do |csv|
         csv << [
@@ -50,21 +52,17 @@ module Reports
 
         results.each do |iaa|
           csv << [
-            "#{iaa.gtc_number}-#{format('%04d', iaa.order_number)}",
-            iaa.start_date,
-            iaa.end_date,
-            iaa.issuer,
-            iaa.friendly_name,
-            iaa.year_month.strftime('%Y%m'),
-            iaa.year_month.strftime('%B %Y'),
-            iaa.user_count,
+            IaaReportingHelper.key(iaa['gtc_number'], iaa['order_number']),
+            iaa['start_date'],
+            iaa['end_date'],
+            iaa['issuer'],
+            iaa['friendly_name'],
+            iaa['year_month'].strftime('%Y%m'),
+            iaa['year_month'].strftime('%B %Y'),
+            iaa['user_count'],
           ]
         end
       end
-    end
-
-    def extract(arr, key, ial:)
-      arr.find { |elem| elem[:ial] == ial && elem[key] }&.dig(key) || 0
     end
   end
 end

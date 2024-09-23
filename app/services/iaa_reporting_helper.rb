@@ -13,7 +13,7 @@ module IaaReportingHelper
   ) do
     # ex LG123567-0001
     def key
-      "#{gtc_number}-#{format('%04d', order_number)}"
+      IaaReportingHelper.key(gtc_number, order_number)
     end
   end
 
@@ -26,15 +26,12 @@ module IaaReportingHelper
   )
 
   # @return [Array<IaaConfig>]
-  def iaas(**options)
-    filtered_issuers = options[:filtered_issuers]
-
+  def iaas
     Agreements::IaaGtc.
       includes(iaa_orders: { integration_usages: :integration }).
       flat_map do |gtc|
         gtc.iaa_orders.flat_map do |iaa_order|
           issuers = iaa_order.integration_usages.map { |usage| usage.integration.issuer }
-          issuers &= filtered_issuers if filtered_issuers
 
           if issuers.present?
             IaaConfig.new(
@@ -76,5 +73,9 @@ module IaaReportingHelper
           )
         end
       end.compact
+  end
+
+  def key(gtc_number, order_number)
+    "#{gtc_number}-#{format('%04d', order_number)}"
   end
 end
