@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ThreatMetrixHelper
   THREAT_METRIX_URL = 'https://h.online-metrix.net/fp'
 
