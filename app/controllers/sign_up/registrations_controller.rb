@@ -70,14 +70,14 @@ module SignUp
     def threat_metrix_variables
       return unless IdentityConfig.store.account_creation_device_profiling_enabled
       session_id = generate_threatmetrix_session_id
-  
+
       {
         threatmetrix_session_id: session_id,
         threatmetrix_javascript_urls: session_id && threatmetrix_javascript_urls(session_id),
         threatmetrix_iframe_url: session_id && threatmetrix_iframe_url(session_id),
       }
     end
-  
+
     def generate_threatmetrix_session_id
       session[:threatmetrix_session_id] = SecureRandom.uuid
     end

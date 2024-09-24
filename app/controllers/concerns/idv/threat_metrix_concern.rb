@@ -6,7 +6,7 @@ module Idv
     THREAT_METRIX_WILDCARD_DOMAIN = '*.online-metrix.net'
 
     def override_csp_for_threat_metrix
-      return unless (FeatureManagement.proofing_device_profiling_collecting_enabled?
+      return unless FeatureManagement.proofing_device_profiling_collecting_enabled?
 
       threat_metrix_csp_overrides
     end
