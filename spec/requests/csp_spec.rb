@@ -88,8 +88,7 @@ RSpec.describe 'content security policy' do
 
           content_security_policy = parse_content_security_policy
 
-          expect(content_security_policy['form-action']).to eq("'self'",
-          )
+          expect(content_security_policy['form-action']).to eq("'self'")
         end
       end
     end
