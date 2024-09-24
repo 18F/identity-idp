@@ -121,11 +121,8 @@ RSpec.describe Reports::IdvLegacyConversionSupplementReport do
         end
 
         let(:inside_iaa2) { iaa2_range.begin + 1.day }
-
         let(:user1) { create(:user) }
-
         let(:user2) { create(:user) }
-
         let(:csv) { CSV.parse(report.perform(Time.zone.today), headers: true) }
 
         before do
@@ -230,9 +227,7 @@ RSpec.describe Reports::IdvLegacyConversionSupplementReport do
         end
 
         let(:user1) { create(:user) }
-
         let(:user2) { create(:user) }
-
         let(:csv) { CSV.parse(report.perform(Time.zone.today), headers: true) }
 
         before do
@@ -253,18 +248,14 @@ RSpec.describe Reports::IdvLegacyConversionSupplementReport do
           aggregate_failures do
             row = csv.find { |r| r['issuer'] == iaa3_sp1.issuer && r['year_month'] == '202009' }
 
-            expect(row.to_h.symbolize_keys).to eq(
-              {
-                iaa_order_number: 'gtc9101-0003',
-                iaa_start_date: '2020-09-01',
-                iaa_end_date: '2021-08-30',
-                issuer: iaa3_sp1.issuer,
-                friendly_name: iaa3_sp1.friendly_name,
-                year_month: '202009',
-                year_month_readable: 'September 2020',
-                user_count: '1',
-              },
-            )
+            expect(row['iaa_order_number']).to eq('gtc9101-0003')
+            expect(row['iaa_start_date']).to eq('2020-09-01')
+            expect(row['iaa_end_date']).to eq('2021-08-30')
+            expect(row['issuer']).to eq(iaa3_sp1.issuer)
+            expect(row['friendly_name']).to eq(iaa3_sp1.friendly_name)
+            expect(row['year_month']).to eq('202009')
+            expect(row['year_month_readable']).to eq('September 2020')
+            expect(row['user_count']).to eq('1')
           end
 
           aggregate_failures do

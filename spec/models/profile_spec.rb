@@ -357,9 +357,7 @@ RSpec.describe Profile do
             user: user,
           )
 
-          biometric_profile.activate
-
-          expect(SpUpgradedBiometricProfile.count).to eq(1)
+          expect { biometric_profile.activate }.to(change { SpUpgradedBiometricProfile.count }).by(1))
         end
       end
 
@@ -368,9 +366,7 @@ RSpec.describe Profile do
           create(:profile, :active, :biometric_proof, user: user)
 
           biometric_reproof = create(:profile, :biometric_proof, user: user)
-          biometric_reproof.activate
-
-          expect(SpUpgradedBiometricProfile.count).to eq(0)
+          expect { biometric_reproof.activate }.to_not(change { SpUpgradedBiometricProfile.count })
         end
       end
 
@@ -378,17 +374,13 @@ RSpec.describe Profile do
         it 'does not create a biometric conversion record' do
           profile = create(:profile, :biometric_proof, user: user)
 
-          profile.activate
-
-          expect(SpUpgradedBiometricProfile.count).to eq(0)
+          expect { biometric_reproof.activate }.to_not(change { SpUpgradedBiometricProfile.count })
         end
       end
     end
 
     it 'does not create a biometric upgrade record for a non-biometric profile' do
-      profile.activate
-
-      expect(SpUpgradedBiometricProfile.count).to eq(0)
+      expect { biometric_reproof.activate }.to_not(change { SpUpgradedBiometricProfile.count })
     end
 
     it 'sends a reproof completed push event' do

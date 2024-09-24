@@ -342,7 +342,7 @@ class Profile < ApplicationRecord
 
   def track_biometric_reproof
     SpUpgradedBiometricProfile.create(
-      user_id: user_id,
+      user: user,
       upgraded_at: Time.zone.now,
       idv_level: idv_level,
       issuer: initiating_service_provider_issuer,
