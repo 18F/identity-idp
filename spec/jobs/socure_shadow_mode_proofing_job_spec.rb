@@ -365,7 +365,6 @@ RSpec.describe SocureShadowModeProofingJob do
     end
 
     context 'when the user has a phone directly passed in' do
-      # existing test
       it 'builds an applicant structure that looks right' do
         expect(build_applicant).to eql(
           expected_attributes.merge(phone: '12025551212'),
@@ -389,7 +388,6 @@ RSpec.describe SocureShadowModeProofingJob do
         )
       end
 
-      # it shoehorns that in
       it 'builds an applicant structure that looks right' do
         expect(build_applicant).to eql(
           expected_attributes.merge(

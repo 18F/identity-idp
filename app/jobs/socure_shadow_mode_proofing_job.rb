@@ -107,7 +107,7 @@ class SocureShadowModeProofingJob < ApplicationJob
         :state,
         :zipcode,
         :phone,
-        :phone_source, # This shouldn't actually go to Socure
+        :phone_source,
         :dob,
         :ssn,
         :consent_given_at,
