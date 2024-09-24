@@ -172,8 +172,8 @@ describe('document-capture/components/documents-and-selfie-step', () => {
         level: 2,
       });
       const selfieHeader = getByRole('heading', {
-        name: 'doc_auth.headings.document_capture_subheader_selfie',
-        level: 1,
+        name: '2. doc_auth.headings.document_capture_subheader_selfie',
+        level: 2,
       });
       expect(front).to.be.ok();
       expect(back).to.be.ok();
