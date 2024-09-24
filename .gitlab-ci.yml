@@ -857,12 +857,10 @@ audit_packages_scheduled:
 deploy_eks:
   trigger:
     project: lg-public/identity-eks-control
-    # TODO change branch to main before merge
-    branch: lrappaport/deploy-eks
+    branch: main
   stage: deploy_eks
   variables:
     APP: idp
     IMAGE_TAG: $CI_COMMIT_SHA
-  # TODO uncomment before merge, this is for testing on branch
-  # rules:
-  #   - if: $CI_COMMIT_BRANCH == "main"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
