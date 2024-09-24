@@ -8,10 +8,6 @@ class PhoneInputComponentPreview < BaseComponentPreview
   def limited_country_selection
     render(PhoneInputComponent.new(form: form_builder, allowed_countries: ['US', 'CA', 'FR']))
   end
-
-  def single_country_selection
-    render(PhoneInputComponent.new(form: form_builder, allowed_countries: ['US']))
-  end
   # @!endgroup
 
   # @display form true

@@ -192,14 +192,21 @@ FactoryBot.define do
 
     trait :proofed do
       fully_registered
+      confirmed_at { Time.zone.now.round }
 
       after :build do |user|
-        create(:profile, :active, :verified, :with_pii, user: user)
+        create(
+          :profile,
+          :active,
+          :with_pii,
+          user: user,
+        )
       end
     end
 
     trait :proofed_with_selfie do
       fully_registered
+      confirmed_at { Time.zone.now.round }
 
       after :build do |user|
         create(
@@ -258,10 +265,34 @@ FactoryBot.define do
       end
     end
 
-    trait :proofed_with_gpo do
-      proofed
+    trait :proofed_in_person_enrollment do
+      fully_registered
+      confirmed_at { Time.zone.now.round }
+
       after :build do |user|
-        profile = user.active_profile
+        profile = create(
+          :profile,
+          :with_pii,
+          :active,
+          :verified,
+          :in_person_verification_pending,
+          user: user,
+        )
+        create(:in_person_enrollment, :passed, user: user, profile: profile)
+      end
+    end
+
+    trait :proofed_with_gpo do
+      fully_registered
+      confirmed_at { Time.zone.now.round }
+
+      after :build do |user|
+        profile = create(
+          :profile,
+          :active,
+          :with_pii,
+          user: user,
+        )
         gpo_code = create(:gpo_confirmation_code)
         profile.gpo_confirmation_codes << gpo_code
         device = create(:device, user: user)

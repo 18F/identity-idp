@@ -60,4 +60,8 @@ class AnonymousUser
   def identity_verified?
     false
   end
+
+  def active_profile
+    nil
+  end
 end

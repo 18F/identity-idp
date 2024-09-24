@@ -591,6 +591,7 @@ doc_auth.headings.no_ssn: Don’t have a Social Security number?
 doc_auth.headings.review_issues: Check your images and try again
 doc_auth.headings.secure_account: Secure your account
 doc_auth.headings.selfie: Photo of your face
+doc_auth.headings.selfie_capture: Capture photo of yourself
 doc_auth.headings.ssn: Enter your Social Security number
 doc_auth.headings.ssn_update: Update your Social Security number
 doc_auth.headings.text_message: We sent a message to your phone
@@ -1428,6 +1429,7 @@ notices.privacy.security_and_privacy_practices: Security Practices and Privacy A
 notices.resend_confirmation_email.success: We sent another confirmation email.
 notices.session_cleared: For your security, we clear what you entered if you don’t move to a new page within %{minutes} minutes.
 notices.session_timedout: We signed you out. For your security, %{app_name} ends your session when you haven’t moved to a new page for %{minutes} minutes.
+notices.sign_in.recaptcha.disclosure_statement_html: This site is protected by reCAPTCHA and the Google %{google_policy_link_html} and %{google_tos_link_html} apply.
 notices.signed_up_and_confirmed.first_paragraph_end: with a link to confirm your email address. Follow the link to continue adding this email to your account.
 notices.signed_up_and_confirmed.first_paragraph_start: We sent an email to
 notices.signed_up_and_confirmed.no_email_sent_explanation_start: Didn’t receive an email?

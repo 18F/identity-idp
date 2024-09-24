@@ -15,6 +15,9 @@
     "globalThis": true
   },
   "rules": {
+    // `no-unresolved` doesn't support package.json exports
+    // See: https://github.com/import-js/eslint-plugin-import/issues/1810
+    "import/no-unresolved": ["error", { "ignore": ["intl-tel-input"] }],
     "no-restricted-syntax": [
       "error",
       {

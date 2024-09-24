@@ -602,6 +602,7 @@ doc_auth.headings.no_ssn: 没有社会保障号码？
 doc_auth.headings.review_issues: 检查一下你的图片并再试一次
 doc_auth.headings.secure_account: 保护你的账户安全
 doc_auth.headings.selfie: 照片
+doc_auth.headings.selfie_capture: 拍你本人照片
 doc_auth.headings.ssn: 输入你的社会保障号码
 doc_auth.headings.ssn_update: 更新你的社会保障号码
 doc_auth.headings.text_message: 我们给你的手机发了短信
@@ -1441,6 +1442,7 @@ notices.privacy.security_and_privacy_practices: 安全实践和隐私法声明
 notices.resend_confirmation_email.success: 我们发送了另外一个确认电邮。
 notices.session_cleared: 为了你的安全，如果你在 %{minutes} 分钟内不移动到一个新页面，我们会清除你输入的内容。
 notices.session_timedout: 我们已将你登出。为了你的安全，如果你在 %{minutes} 分钟内不移动到一个新页面，%{app_name} 会结束你此次访问。
+notices.sign_in.recaptcha.disclosure_statement_html: 该网站由 reCAPTCHA 保护而且谷歌的 %{google_policy_link_html} 和 %{google_tos_link_html} 都适用。
 notices.signed_up_and_confirmed.first_paragraph_end: 带有确认你的电邮地址的链接。点击链接去继续把这个电邮添加到你的账户。
 notices.signed_up_and_confirmed.first_paragraph_start: 我们已发电邮到
 notices.signed_up_and_confirmed.no_email_sent_explanation_start: 没有收到电邮？
