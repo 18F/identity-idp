@@ -1043,12 +1043,39 @@ RSpec.describe Profile do
 
   describe '#deactivate_due_to_in_person_verification_cancelled' do
     let(:profile) { create(:profile, :in_person_verification_pending) }
-    it 'updates the profile' do
-      profile.deactivate_due_to_in_person_verification_cancelled
+    context 'when the profile does not have a deactivation reason' do
+      it 'updates the profile and sets the deactivation reason to "verification_cancelled"' do
+        expect(profile.deactivation_reason).to be_nil
+        profile.deactivate_due_to_in_person_verification_cancelled
 
-      expect(profile.active).to be false
-      expect(profile.deactivation_reason).to eq('verification_cancelled')
-      expect(profile.in_person_verification_pending_at).to be nil
+        expect(profile.active).to be false
+        expect(profile.deactivation_reason).to eq('verification_cancelled')
+        expect(profile.in_person_verification_pending_at).to be nil
+      end
+    end
+
+    context 'when the profile has a deactivation reason' do
+      it 'updates the profile without overwriting the deactivation reason (encryption_error)' do
+        profile.deactivation_reason = 'encryption_error'
+        expect(profile.deactivation_reason).to_not be_nil
+
+        profile.deactivate_due_to_in_person_verification_cancelled
+
+        expect(profile.active).to be false
+        expect(profile.deactivation_reason).to eq('encryption_error')
+        expect(profile.in_person_verification_pending_at).to be nil
+      end
+
+      it 'updates the profile without overwriting the deactivation reason (password_reset)' do
+        profile.deactivation_reason = 'password_reset'
+        expect(profile.deactivation_reason).to_not be_nil
+
+        profile.deactivate_due_to_in_person_verification_cancelled
+
+        expect(profile.active).to be false
+        expect(profile.deactivation_reason).to eq('password_reset')
+        expect(profile.in_person_verification_pending_at).to be nil
+      end
     end
   end
 

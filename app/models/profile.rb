@@ -202,8 +202,8 @@ class Profile < ApplicationRecord
   def deactivate_due_to_in_person_verification_cancelled
     update!(
       active: false,
-      deactivation_reason: :verification_cancelled,
       in_person_verification_pending_at: nil,
+      deactivation_reason: deactivation_reason.presence || :verification_cancelled,
     )
   end
 
