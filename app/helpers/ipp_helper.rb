@@ -8,8 +8,12 @@ module IppHelper
   def scrub_body(body)
     return nil if body.nil?
 
-    body = body.with_indifferent_access
-    body[:responseMessage] = scrub_message(body[:responseMessage])
-    body
+    if body.is_a?(String)
+      scrub_message(body)
+    else
+      body = body.with_indifferent_access
+      body[:responseMessage] = scrub_message(body[:responseMessage])
+      body
+    end
   end
 end
