@@ -16,9 +16,11 @@ import DocumentSideAcuantCapture from './document-side-acuant-capture';
 export function DocumentsCaptureStep({
   defaultSideProps,
   value,
+  isReviewStep = false,
 }: {
   defaultSideProps: DefaultSideProps;
   value: Record<string, ImageValue>;
+  isReviewStep: boolean;
 }) {
   type DocumentSide = 'front' | 'back';
   const documentsSides: DocumentSide[] = ['front', 'back'];
@@ -30,6 +32,7 @@ export function DocumentsCaptureStep({
           key={side}
           side={side}
           value={value[side]}
+          isReviewStep={isReviewStep}
         />
       ))}
     </>
@@ -58,6 +61,7 @@ export default function DocumentsStep({
   const { isMobile } = useContext(DeviceContext);
   const { flowPath } = useContext(UploadContext);
   const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
+  const isReviewStep = false;
   const pageHeaderText = isSelfieCaptureEnabled
     ? t('doc_auth.headings.document_capture_with_selfie')
     : t('doc_auth.headings.document_capture');
@@ -81,7 +85,11 @@ export default function DocumentsStep({
           t('doc_auth.tips.document_capture_id_text3'),
         ].concat(!isMobile ? [t('doc_auth.tips.document_capture_id_text4')] : [])}
       />
-      <DocumentsCaptureStep defaultSideProps={defaultSideProps} value={value} />
+      <DocumentsCaptureStep
+        defaultSideProps={defaultSideProps}
+        value={value}
+        isReviewStep={isReviewStep}
+      />
       <FormStepsButton.Continue />
       <Cancel />
     </>

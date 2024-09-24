@@ -22,6 +22,7 @@ interface DocumentSideAcuantCaptureProps {
   errors: FormStepError<{ front: string; back: string; selfie: string }>[];
   onError: OnErrorCallback;
   className?: string;
+  isReviewStep: boolean;
 }
 
 /**
@@ -52,13 +53,14 @@ function DocumentSideAcuantCapture({
   errors,
   onError,
   className,
+  isReviewStep = false,
 }: DocumentSideAcuantCaptureProps) {
   const error = errors.find(({ field }) => field === side)?.error;
   const { changeStepCanComplete } = useContext(FormStepsContext);
   const { isSelfieCaptureEnabled, isSelfieDesktopTestMode, docAuthSeparatePagesEnabled } =
     useContext(SelfieCaptureContext);
   const isUploadAllowed = isSelfieDesktopTestMode || !isSelfieCaptureEnabled;
-  const stepCanComplete = docAuthSeparatePagesEnabled ? undefined : true;
+  const stepCanComplete = docAuthSeparatePagesEnabled && !isReviewStep ? undefined : true;
   return (
     <AcuantCapture
       ref={registerField(side, { isRequired: true })}
