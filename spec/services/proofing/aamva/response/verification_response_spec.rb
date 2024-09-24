@@ -68,25 +68,37 @@ RSpec.describe Proofing::Aamva::Response::VerificationResponse do
     end
   end
 
-  describe '#success?' do
+  describe '#verification_results' do
     context 'when all attributes are verified' do
-      it { expect(subject.success?).to eq(true) }
-    end
-
-    context 'when required attributes are verified' do
-      let(:response_body) do
-        modify_match_indicator(
-          AamvaFixtures.verification_response,
-          'PersonLastNameFuzzyPrimaryMatchIndicator',
-          'false',
-        )
+      it 'returns a hash of values that were verified' do
+        expect(subject.verification_results).to eq(verification_results)
       end
-
-      it { expect(subject.success?).to eq(true) }
 
       context 'with a namespaced XML response' do
         let(:response_body) { AamvaFixtures.verification_response_namespaced_success }
-        it { expect(subject.success?).to eq(true) }
+        it 'returns a hash of values that were verified' do
+          expect(subject.verification_results).to eq(verification_results)
+        end
+      end
+    end
+
+    context 'when not all attributes are verified' do
+      let(:response_body) do
+        body = modify_match_indicator(
+          AamvaFixtures.verification_response,
+          'PersonBirthDateMatchIndicator',
+          'false',
+        )
+        delete_match_indicator(
+          body,
+          'PersonFirstNameExactMatchIndicator',
+        )
+      end
+
+      it 'returns a hash of values that were verified and values that were not' do
+        expected_result = verification_results.merge(dob: false, first_name: nil)
+
+        expect(subject.verification_results).to eq(expected_result)
       end
     end
 
@@ -111,34 +123,6 @@ RSpec.describe Proofing::Aamva::Response::VerificationResponse do
       end
 
       it { expect(subject.success?).to eq(false) }
-    end
-  end
-
-  describe '#verification_results' do
-    context 'when all attributes are verified' do
-      it 'returns a hash of values that were verified' do
-        expect(subject.verification_results).to eq(verification_results)
-      end
-    end
-
-    context 'when not all attributes are verified' do
-      let(:response_body) do
-        body = modify_match_indicator(
-          AamvaFixtures.verification_response,
-          'PersonBirthDateMatchIndicator',
-          'false',
-        )
-        delete_match_indicator(
-          body,
-          'PersonFirstNameExactMatchIndicator',
-        )
-      end
-
-      it 'returns a hash of values that were verified and values that were not' do
-        expected_result = verification_results.merge(dob: false, first_name: nil)
-
-        expect(subject.verification_results).to eq(expected_result)
-      end
     end
   end
 
