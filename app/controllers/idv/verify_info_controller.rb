@@ -79,21 +79,10 @@ module Idv
       }.merge(ab_test_analytics_buckets)
     end
 
-    # This likely belongs somewhere else; we'll figure that out later
-    def best_effort_phone
-      if idv_session.phone_for_mobile_flow
-        { source: :hybrid_handoff, phone: idv_session.phone_for_mobile_flow }
-      elsif current_user.default_phone_configuration
-        { source: :mfa, phone: current_user.default_phone_configuration.formatted_phone }
-      end
-    end
-
     def pii
       idv_session.pii_from_doc.to_h.merge(
         ssn: idv_session.ssn,
         consent_given_at: idv_session.idv_consent_given_at,
-        # This is only for Socure shadow mode and may not be entirely reliable, which is OK:
-        best_effort_phone_number_for_socure: best_effort_phone,
         **idv_session.updated_user_address.to_h,
       ).with_indifferent_access
     end
