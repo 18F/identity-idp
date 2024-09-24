@@ -92,7 +92,7 @@ class Profile < ApplicationRecord
     confirm_that_profile_can_be_activated!
 
     now = Time.zone.now
-    profile_to_deactivate = user.active_profile
+    profile_to_deactivate = Profile.find_by(user_id: user_id, active: true)
     is_reproof = profile_to_deactivate.present?
     is_biometric_upgrade = is_reproof && biometric? && !profile_to_deactivate.biometric?
 
