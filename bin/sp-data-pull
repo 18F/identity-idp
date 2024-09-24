@@ -1,8 +1,9 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-# option to use a file. if you want to copy/paste, skip to line 9
+# option to use a file. if you want to copy/paste, skip to line 10
 require 'json'
+
 data_file = 'your-json-file-here.json'
 imported_data = File.read(data_file)
 
@@ -23,9 +24,10 @@ multiple_sp_list = Set.new
 single_sp_tally  = 0
 multiple_sp_tally = 0
 
-# When working with large batches, run this so that batching doesn't time out
+# When working with large batches, run this so that batching doesn't time out. Increment timeout when using larger data sets
 ActiveRecord::Base.connection.execute 'SET statement_timeout = 200000' 
 
+# Runs through the data in batches, saves list of users and service providers
 User.where(uuid: user_uuids).in_batches(of: 1_000) do |batch|
   no_sp_users = []
   single_sp_users = []
@@ -43,15 +45,16 @@ User.where(uuid: user_uuids).in_batches(of: 1_000) do |batch|
   sleep(0.2)
 end
 
-# sp tally
+# counts number of service providers 
 single_sp_tally = single_sp_list.to_a.flatten.sort.tally
 multiple_sp_tally = multiple_sp_list.to_a.flatten.sort.tally
 
-# logins per user
+# number of logins for users based on number of service providers
 no_sp_sign_ins_per_user = no_sp_users.map { |user| user.events.where(event_type: :sign_in_before_2fa).count }
 single_sp_sign_ins_per_user = single_sp_users.map { |user| user.events.where(event_type: :sign_in_before_2fa).count }
 multiple_sp_sign_ins_per_user = multiple_sp_users.map { |user| user.events.where(event_type: :sign_in_before_2fa).count }
 
+# gets average of logins
 def login_average(dataset)
   dataset.sum / dataset.size.to_f
 end
