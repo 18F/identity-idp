@@ -1684,7 +1684,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
               stub_request_passed_proofing_results
             end
 
-            it 'does not overwrite the deactivation_reason' do
+            it 'overwrites the deactivation_reason' do
               expect(pending_enrollment.profile.deactivation_reason).to be_nil
               # to mimic pw reset
               pending_enrollment.profile.update(deactivation_reason: 'encryption_error')
