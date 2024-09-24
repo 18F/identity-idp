@@ -9,7 +9,9 @@ module IppHelper
     return nil if body.nil?
 
     body = body.with_indifferent_access
-    body[:responseMessage] = scrub_message(body[:responseMessage])
+    if body[:responseMessage].present?
+      body[:responseMessage] = scrub_message(body[:responseMessage])
+    end
     body
   end
 end
