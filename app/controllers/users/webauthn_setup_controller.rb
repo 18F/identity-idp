@@ -51,6 +51,8 @@ module Users
       end
 
       flash_error(result.errors) unless result.success?
+      session[:webauthn_attempts] = 0 if session[:webauthn_attempts].nil?
+      session[:webauthn_attempts] += 1
     end
 
     def confirm
@@ -141,6 +143,7 @@ module Users
     def analytics_properties
       {
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
+        webauthn_attempts: session[:webauthn_attempts] || nil,
       }
     end
 
