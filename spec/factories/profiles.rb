@@ -79,6 +79,11 @@ FactoryBot.define do
       end
     end
 
+    trait :biometric_proof do
+      idv_level { :in_person }
+      initiating_service_provider_issuer { 'urn:gov:gsa:openidconnect:inactive:sp:test' }
+    end
+
     after(:build) do |profile, evaluator|
       if evaluator.pii
         pii_attrs = Pii::Attributes.new_from_hash(evaluator.pii)
