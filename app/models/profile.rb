@@ -93,7 +93,7 @@ class Profile < ApplicationRecord
 
     now = Time.zone.now
     is_reproof = Profile.find_by(user_id: user_id, active: true)
-    is_biometric_upgrade = is_reproof && biometric?(idv_level) && !biometric?(is_reproof.idv_level)
+    is_biometric_upgrade = is_reproof && biometric? && !is_reproof.biometric?
 
     attrs = {
       active: true,
@@ -308,6 +308,10 @@ class Profile < ApplicationRecord
     (Time.zone.now - created_at).round
   end
 
+  def biometric?
+    ::User::BIOMETRIC_COMPARISON_IDV_LEVELS.include?(idv_level)
+  end
+
   private
 
   def confirm_that_profile_can_be_activated!
@@ -334,10 +338,6 @@ class Profile < ApplicationRecord
   def send_push_notifications
     event = PushNotification::ReproofCompletedEvent.new(user: user)
     PushNotification::HttpPush.deliver(event)
-  end
-
-  def biometric?(level)
-    ::User::BIOMETRIC_COMPARISON_IDV_LEVELS.include?(level)
   end
 
   def track_biometric_reproof
