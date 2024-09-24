@@ -44,8 +44,8 @@ User.where(uuid: user_uuids).in_batches(of: 1_000) do |batch|
 end
 
 # sp tally
-single_sp_tally = single_sp_list.to_a.uniq.flatten.tally
-multiple_sp_tally = multiple_sp_list.to_a.uniq.flatten.tally
+single_sp_tally = single_sp_list.to_a.flatten.sort.tally
+multiple_sp_tally = multiple_sp_list.to_a.flatten.sort.tally
 
 # logins per user
 no_sp_sign_ins_per_user = no_sp_users.map { |user| user.events.where(event_type: :sign_in_before_2fa).count }
