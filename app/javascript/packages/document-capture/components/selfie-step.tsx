@@ -20,9 +20,11 @@ import {
 export function SelfieCaptureStep({
   defaultSideProps,
   selfieValue,
+  isReviewStep,
 }: {
   defaultSideProps: DefaultSideProps;
   selfieValue: ImageValue;
+  isReviewStep: boolean;
 }) {
   const { t } = useI18n();
   return (
@@ -45,6 +47,7 @@ export function SelfieCaptureStep({
         key="selfie"
         side="selfie"
         value={selfieValue}
+        isReviewStep={isReviewStep}
       />
     </>
   );
@@ -60,6 +63,7 @@ export default function SelfieStep({
   const { t } = useI18n();
   const { isLastStep } = useContext(FormStepsContext);
   const { flowPath } = useContext(UploadContext);
+  const isReviewStep = false;
   const pageHeaderText = t('doc_auth.headings.document_capture_with_selfie');
 
   const defaultSideProps: DefaultSideProps = {
@@ -72,7 +76,11 @@ export default function SelfieStep({
     <>
       {flowPath === 'hybrid' && <HybridDocCaptureWarning className="margin-bottom-4" />}
       <PageHeading>{pageHeaderText}</PageHeading>
-      <SelfieCaptureStep defaultSideProps={defaultSideProps} selfieValue={value.selfie} />
+      <SelfieCaptureStep
+        defaultSideProps={defaultSideProps}
+        selfieValue={value.selfie}
+        isReviewStep={isReviewStep}
+      />
       {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
       <Cancel />
     </>
