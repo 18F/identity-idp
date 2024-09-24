@@ -102,9 +102,8 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
       end
 
       it 'allows redirects to socure' do
-        expect(response.headers['Content-Security-Policy']).to include(
-          'https://verify.socure.us',
-        )
+        form_action = response.request.content_security_policy.form_action
+        expect(form_action).to include('https://verify.socure.us')
       end
     end
 

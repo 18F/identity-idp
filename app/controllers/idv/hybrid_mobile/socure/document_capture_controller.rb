@@ -32,8 +32,6 @@ module Idv
           @msg = document_response['msg']
           @reference_id = document_response.dig('referenceId')
 
-          binding.pry
-
           redirect_to @url, allow_other_host: true if @url.present?
         end
 
@@ -80,11 +78,9 @@ module Idv
         end
 
         def apply_secure_headers_override
-          # response.headers.merge!({'content-security-policy' => 'form_action: https://verify.socure.us'})
-
           csp_headers = SecureHeadersAllowList.csp_with_sp_redirect_uris(
             idv_hybrid_mobile_socure_document_capture_url,
-            ['https://verify.socure.us'],
+            'https://verify.socure.us',
           )
           override_form_action_csp(csp_headers)
         end

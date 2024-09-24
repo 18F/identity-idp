@@ -103,14 +103,12 @@ module Idv
       end
 
       def apply_secure_headers_override
-        response.headers.merge!({'content-security-policy' => 'form_action: https://verify.socure.us'})
-
-        # override_form_action_csp(
-        #   SecureHeadersAllowList.csp_with_sp_redirect_uris(
-        #     idv_hybrid_mobile_socure_document_capture_url,
-        #     ['https://verify.socure.us'],
-        #   ),
-        # )
+        override_form_action_csp(
+          SecureHeadersAllowList.csp_with_sp_redirect_uris(
+            idv_socure_document_capture_url,
+            'https://verify.socure.us',
+          ),
+        )
       end
     end
   end

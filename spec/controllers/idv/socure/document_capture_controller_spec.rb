@@ -89,26 +89,19 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       end
 
       it 'redirects' do
-        get(:show)
-
         expect(response).to redirect_to(response_redirect_url)
       end
-    end
 
-    it 'allows redirects to socure' do
-      get(:show)
-
-      expect(response.headers['Content-Security-Policy']).to include(
-        'https://verify.socure.us',
-      )
+      it 'allows redirects to socure' do
+        form_action = response.request.content_security_policy.form_action
+        expect(form_action).to include('https://verify.socure.us')
+      end
     end
 
     context 'when we should not redirect because there is no url in the response' do
       let(:response_body) { {} }
 
       it 'does not redirect' do
-        get(:show)
-
         expect(response).not_to have_http_status(:redirect)
         expect(controller.send(:instance_variable_get, :@url)).not_to be
       end
