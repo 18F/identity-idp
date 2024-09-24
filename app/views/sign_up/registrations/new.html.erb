@@ -17,8 +17,8 @@
 
 <%= render PageHeadingComponent.new.with_content(t('headings.create_account_new_users')) %>
 
-<% if IdentityConfig.account_creation_device_profiling_enabled %>
-  <% if @threat_metrix_variables[:threat_metrix_session_id].present? %>
+<% if IdentityConfig.store.account_creation_device_profiling_enabled %>
+  <% if @threat_metrix_variables[:threatmetrix_session_id].present? %>
     <% @threat_metrix_variables[:threatmetrix_javascript_urls].each do |threatmetrix_javascript_url| %>
       <%= javascript_include_tag threatmetrix_javascript_url, nonce: true %>
     <% end %>

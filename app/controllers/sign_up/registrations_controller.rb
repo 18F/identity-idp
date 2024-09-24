@@ -68,7 +68,7 @@ module SignUp
     end
 
     def threat_metrix_variables
-      return unless IdentityConfig.account_creation_device_profiling_enabled
+      return unless IdentityConfig.store.account_creation_device_profiling_enabled
       session_id = generate_threatmetrix_session_id
   
       {
