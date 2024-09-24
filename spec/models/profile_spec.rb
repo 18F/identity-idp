@@ -357,7 +357,11 @@ RSpec.describe Profile do
             user: user,
           )
 
-          expect { biometric_profile.activate }.to change { SpUpgradedBiometricProfile.count }.by(1)
+          expect { biometric_profile.activate }.to(
+            change do
+              SpUpgradedBiometricProfile.count
+            end.by(1),
+          )
         end
       end
 
@@ -366,7 +370,7 @@ RSpec.describe Profile do
           create(:profile, :active, :biometric_proof, user: user)
 
           biometric_reproof = create(:profile, :biometric_proof, user: user)
-          expect { biometric_reproof.activate }.to_not change { SpUpgradedBiometricProfile.count }
+          expect { biometric_reproof.activate }.to_not(change { SpUpgradedBiometricProfile.count })
         end
       end
 
