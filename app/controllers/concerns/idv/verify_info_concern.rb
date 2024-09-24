@@ -31,8 +31,6 @@ module Idv
 
       idv_session.verify_info_step_document_capture_session_uuid = document_capture_session.uuid
 
-
-
       user_pii = pii
       user_pii[:best_effort_phone_number_for_socure] = best_effort_phone
 
