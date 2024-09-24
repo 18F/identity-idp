@@ -132,6 +132,9 @@ spec:
               path: /data/POSTGRES_NAME
               value: "identity_pki_production"
             - op: add
+              path: /data/POSTGRES_SSLMODE
+              value: "prefer"
+            - op: add
               path: /data/POSTGRES_HOST
               value: "{{ENVIRONMENT}}-pivcac-pg.review-apps"
             - op: add
