@@ -48,18 +48,6 @@ module Proofing
           raise VerificationError.new(error_message)
         end
 
-        def reasons
-          REQUIRED_VERIFICATION_ATTRIBUTES.map do |verification_attribute|
-            verification_result = verification_results[verification_attribute]
-            case verification_result
-            when false
-              "Failed to verify #{verification_attribute}"
-            when nil
-              "Response was missing #{verification_attribute}"
-            end
-          end.compact
-        end
-
         def success?
           REQUIRED_VERIFICATION_ATTRIBUTES.each do |verification_attribute|
             return false unless verification_results[verification_attribute]
