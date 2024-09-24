@@ -9,7 +9,7 @@ module Idv
         include Idv::HybridMobile::HybridMobileConcern
 
         before_action :check_valid_document_capture_session
-        before_action :secure_headers_override
+        before_action :apply_secure_headers_override
 
         def show
           Funnel::DocAuth::RegisterStep.new(document_capture_user.id, sp_session[:issuer]).
@@ -31,6 +31,8 @@ module Idv
           # useful for analytics
           @msg = document_response['msg']
           @reference_id = document_response.dig('referenceId')
+
+          binding.pry
 
           redirect_to @url, allow_other_host: true if @url.present?
         end
@@ -77,13 +79,14 @@ module Idv
           end
         end
 
-        def secure_headers_override
-          override_form_action_csp(
-            SecureHeadersAllowList.csp_with_sp_redirect_uris(
-              idv_hybrid_mobile_socure_document_capture_url,
-              ['https://verify.socure.us'],
-            ),
+        def apply_secure_headers_override
+          # response.headers.merge!({'content-security-policy' => 'form_action: https://verify.socure.us'})
+
+          csp_headers = SecureHeadersAllowList.csp_with_sp_redirect_uris(
+            idv_hybrid_mobile_socure_document_capture_url,
+            ['https://verify.socure.us'],
           )
+          override_form_action_csp(csp_headers)
         end
       end
     end

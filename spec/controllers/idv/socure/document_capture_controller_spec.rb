@@ -95,6 +95,14 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       end
     end
 
+    it 'allows redirects to socure' do
+      get(:show)
+
+      expect(response.headers['Content-Security-Policy']).to include(
+        'https://verify.socure.us',
+      )
+    end
+
     context 'when we should not redirect because there is no url in the response' do
       let(:response_body) { {} }
 

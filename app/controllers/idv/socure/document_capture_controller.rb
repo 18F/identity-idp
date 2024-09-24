@@ -9,7 +9,7 @@ module Idv
 
       before_action :confirm_not_rate_limited
       before_action :confirm_step_allowed
-      before_action :secure_header_override
+      before_action :apply_secure_headers_override
 
       def show
         Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
@@ -102,13 +102,15 @@ module Idv
         end
       end
 
-      def secure_headers_override
-        override_form_action_csp(
-          SecureHeadersAllowList.csp_with_sp_redirect_uris(
-            idv_hybrid_mobile_socure_document_capture_url,
-            ['https://verify.socure.us'],
-          ),
-        )
+      def apply_secure_headers_override
+        response.headers.merge!({'content-security-policy' => 'form_action: https://verify.socure.us'})
+
+        # override_form_action_csp(
+        #   SecureHeadersAllowList.csp_with_sp_redirect_uris(
+        #     idv_hybrid_mobile_socure_document_capture_url,
+        #     ['https://verify.socure.us'],
+        #   ),
+        # )
       end
     end
   end
