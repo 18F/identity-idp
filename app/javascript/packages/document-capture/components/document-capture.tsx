@@ -150,16 +150,13 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
       : ([prepareFormStep, locationFormStep, flowPath === 'hybrid' && hybridFormStep].filter(
           Boolean,
         ) as FormStep[]);
-  const reviewAfterFailedSteps = [reviewFormStep] as FormStep[];
-  const reviewWithInPersonSteps = reviewAfterFailedSteps.concat(inPersonSteps);
-  const afterSubmissionErrorSteps =
-    docAuthSeparatePagesEnabled && isSelfieCaptureEnabled && !isInPersonStepEnabled
-      ? reviewAfterFailedSteps
-      : reviewWithInPersonSteps;
-  const defaultSteps: FormStep[] = submissionError ? afterSubmissionErrorSteps : documentsFormSteps;
 
-  const steps: FormStep[] = isInPersonStepEnabled ? inPersonSteps : defaultSteps;
-
+  let steps = documentsFormSteps;
+  if (isInPersonStepEnabled) {
+    steps = inPersonSteps;
+  } else if (submissionError) {
+    steps = ([reviewFormStep] as FormStep[]).concat(inPersonSteps);
+  }
   // If the user got here by opting-in to in-person proofing, when skipDocAuth === true;
   // or opting-in ipp from handoff page, and selfie is required, when skipDocAuthFromHandoff === true
   // then set stepIndicatorPath to VerifyFlowPath.IN_PERSON
