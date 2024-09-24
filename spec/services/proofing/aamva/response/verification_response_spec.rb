@@ -101,29 +101,6 @@ RSpec.describe Proofing::Aamva::Response::VerificationResponse do
         expect(subject.verification_results).to eq(expected_result)
       end
     end
-
-    context 'when required attributes are not verified' do
-      let(:response_body) do
-        modify_match_indicator(
-          AamvaFixtures.verification_response,
-          'PersonBirthDateMatchIndicator',
-          'false',
-        )
-      end
-
-      it { expect(subject.success?).to eq(false) }
-    end
-
-    context 'when required attributes are missing' do
-      let(:response_body) do
-        delete_match_indicator(
-          AamvaFixtures.verification_response,
-          'PersonBirthDateMatchIndicator',
-        )
-      end
-
-      it { expect(subject.success?).to eq(false) }
-    end
   end
 
   describe '#transaction_locator_id' do

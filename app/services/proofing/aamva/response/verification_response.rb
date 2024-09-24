@@ -22,13 +22,6 @@ module Proofing
           'AddressZIP5MatchIndicator' => :zipcode,
         }.freeze
 
-        REQUIRED_VERIFICATION_ATTRIBUTES = %i[
-          state_id_number
-          dob
-          last_name
-          first_name
-        ].freeze
-
         attr_reader :verification_results, :transaction_locator_id
 
         def initialize(http_response)
@@ -46,14 +39,6 @@ module Proofing
 
           error_message = @errors.join('; ')
           raise VerificationError.new(error_message)
-        end
-
-        def success?
-          REQUIRED_VERIFICATION_ATTRIBUTES.each do |verification_attribute|
-            return false unless verification_results[verification_attribute]
-          end
-
-          true
         end
 
         private
