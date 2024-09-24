@@ -295,6 +295,9 @@ spec:
             - op: replace
               path: /spec/template/spec/containers/0/image
               value: {{ECR_REGISTRY}}/identity-pki/review:{{PIVCAC_CONTAINER_TAG}}
+            - op: replace
+              path: /spec/template/spec/containers/1/image
+              value: {{ECR_REGISTRY}}/identity-pivcac/nginx:{{PIVCAC_CONTAINER_TAG}}
         # Patch Dashboard Image
         - target:
             kind: Deployment
