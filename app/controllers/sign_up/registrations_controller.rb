@@ -16,7 +16,7 @@ module SignUp
     def new
       @register_user_email_form = RegisterUserEmailForm.new(analytics:)
       analytics.user_registration_enter_email_visit
-      @threat_metrix_variables = threat_metrix_variables
+      @threatmetrix_variables = threatmetrix_variables
       render :new, formats: :html
     end
 
@@ -69,7 +69,7 @@ module SignUp
       end
     end
 
-    def threat_metrix_variables
+    def threatmetrix_variables
       return unless IdentityConfig.store.account_creation_device_profiling_enabled
       session_id = generate_threatmetrix_session_id
 

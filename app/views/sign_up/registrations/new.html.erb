@@ -18,19 +18,7 @@
 <%= render PageHeadingComponent.new.with_content(t('headings.create_account_new_users')) %>
 
 <% if IdentityConfig.store.account_creation_device_profiling_enabled %>
-  <% if @threat_metrix_variables[:threatmetrix_session_id].present? %>
-    <% @threat_metrix_variables[:threatmetrix_javascript_urls].each do |threatmetrix_javascript_url| %>
-      <%= javascript_include_tag threatmetrix_javascript_url, nonce: true %>
-    <% end %>
-    <noscript>
-      <%= content_tag(
-            :iframe,
-            '',
-            src: @threat_metrix_variables[:threatmetrix_iframe_url],
-            style: 'width: 100px; height: 100px; border: 0; position: absolute; top: -5000px;',
-          ) %>
-    </noscript>
-  <% end %>
+  <%= render partial: 'shared/threat_metrix_profiling', locals: @threatmetrix_variables %>
 <% end %>
 
 <%= simple_form_for(@register_user_email_form, url: sign_up_register_path) do |f| %>

@@ -22,7 +22,7 @@ module ThreatMetrixHelper
 
   def threatmetrix_iframe_url(session_id)
     source = if IdentityConfig.store.lexisnexis_threatmetrix_mock_enabled
-                Rails.application.routes.url_helpers.test_device_profiling_iframe_url
+               Rails.application.routes.url_helpers.test_device_profiling_iframe_url
               else
                 "#{THREAT_METRIX_URL}/tags"
               end

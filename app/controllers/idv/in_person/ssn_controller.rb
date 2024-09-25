@@ -54,7 +54,8 @@ module Idv
           redirect_to next_url
         else
           flash[:error] = form_response.first_error_message
-          render 'idv/shared/ssn', locals: threatmetrix_view_variables(ssn_presenter.updating_ssn?)
+          @threatmetrix_view_variables = threatmetrix_view_variables(ssn_presenter.updating_ssn?)
+          render 'idv/shared/ssn'
         end
       end
 
