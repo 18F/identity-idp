@@ -1,117 +1,6 @@
 require 'rails_helper'
 require 'ostruct'
 
-# This helper method generates a set of tests for a specific attribute.
-# They assume that `verification_response` contains a DLDV XML response
-# where all attributes are present and valid, and `result` contains
-# the result from the proofer.
-# @param [Symbol] attribute_name
-# @param [String] match_indicator_name Tag name for the match indicator in the DLDV XML response
-# @param [Boolean] required Whether this attribute must verfy for overall success
-# @param [nil,Symbol] required_part_of The meta-attribute this attribute is required for
-#                                      (e.g. :address for :city)
-# @param [nil,Symbol] optional_part_of The meta-attribute this attribute is an optional part of
-#                                      (e.g. :address for :address2)
-def test_aamva_attribute(
-  attribute_name,
-  match_indicator_name:,
-  required: false,
-  required_part_of: nil,
-  optional_part_of: nil
-)
-  context 'when unverified' do
-    let(:verification_response) do
-      XmlHelper.modify_xml_at_xpath(
-        super(),
-        "//#{match_indicator_name}",
-        'false',
-      )
-    end
-
-    if required
-      it('makes the result not succeed') do
-        expect(result.success?).to be false
-      end
-    else
-      it 'does not stop result from succeeding' do
-        expect(result.success?).to be true
-      end
-    end
-
-    if required_part_of
-      it "does not stop #{required_part_of} appearing in requested_attributes" do
-        expect(result.requested_attributes).to include(required_part_of => 1)
-      end
-      it "makes #{required_part_of} not appear in verfied_attributes" do
-        expect(result.verified_attributes).not_to include(required_part_of)
-      end
-      it 'does not appear in requested_attributes' do
-        expect(result.requested_attributes).not_to include(attribute_name => 1)
-      end
-    elsif optional_part_of
-      it "does not stop #{optional_part_of} appearing in requested_attributes" do
-        expect(result.requested_attributes).to include(optional_part_of => 1)
-      end
-      it "does not stop #{optional_part_of} appearing in verfied_attributes" do
-        expect(result.requested_attributes).to include(optional_part_of)
-      end
-      it 'does not appear in requested_attributes' do
-        expect(result.requested_attributes).not_to include(attribute_name => 1)
-      end
-    else
-      it 'still appears in requested_attributes' do
-        expect(result.requested_attributes).to include(attribute_name => 1)
-      end
-    end
-    it 'does not appear in verified_attributes' do
-      expect(result.verified_attributes).not_to include(attribute_name)
-    end
-  end
-
-  context 'when missing' do
-    let(:verification_response) do
-      XmlHelper.delete_xml_at_xpath(
-        super(),
-        "//#{match_indicator_name}",
-      )
-    end
-
-    if required
-      it('makes the result not succeed') do
-        expect(result.success?).to be false
-      end
-    else
-      it 'makes the result still succeed' do
-        expect(result.success?).to be true
-      end
-    end
-
-    if required_part_of
-      it "makes #{required_part_of} not appear in requested_attributes" do
-        expect(result.requested_attributes).not_to include(required_part_of => 1)
-      end
-      it "makes #{required_part_of} not appear in verfied_attributes" do
-        expect(result.verified_attributes).not_to include(required_part_of)
-      end
-    elsif optional_part_of
-      it "does not stop #{optional_part_of} appearing in requested_attributes" do
-        expect(result.requested_attributes).to include(optional_part_of => 1)
-      end
-      it "does not stop #{optional_part_of} appearing in verfied_attributes" do
-        expect(result.requested_attributes).to include(optional_part_of)
-      end
-    end
-
-    it 'does not appear in requested_attributes' do
-      expect(result.requested_attributes).not_to include(attribute_name => 1)
-    end
-
-    it 'does not appear in verified_attributes' do
-      expect(result.verified_attributes).not_to include(attribute_name)
-    end
-  end
-end
-
 RSpec.describe Proofing::Aamva::Proofer do
   let(:aamva_applicant) do
     Aamva::Applicant.from_proofer_applicant(OpenStruct.new(state_id_data))
@@ -160,92 +49,159 @@ RSpec.describe Proofing::Aamva::Proofer do
         described_class.new(AamvaFixtures.example_config.to_h).proof(state_id_data)
       end
 
+      def self.test_must_be_verified
+        context 'when unverified' do
+          let(:verification_response) do
+            XmlHelper.modify_xml_at_xpath(
+              AamvaFixtures.verification_response,
+              "//#{match_indicator_name}",
+              'false',
+            )
+          end
+          it('makes the result not succeed') do
+            expect(result.success?).to be false
+          end
+        end
+      end
+
+      def self.test_cannot_be_missing
+        context 'when missing' do
+          let(:verification_response) do
+            XmlHelper.delete_xml_at_xpath(
+              AamvaFixtures.verification_response,
+              "//#{match_indicator_name}",
+            )
+          end
+
+          it('makes the result not succeed') do
+            expect(result.success?).to be false
+          end
+        end
+      end
+
+      def self.test_verification_not_required
+        context 'when unverified' do
+          let(:verification_response) do
+            XmlHelper.modify_xml_at_xpath(
+              AamvaFixtures.verification_response,
+              "//#{match_indicator_name}",
+              'false',
+            )
+          end
+          it('does not stop the result from succeeding') do
+            expect(result.success?).to be true
+          end
+        end
+      end
+
+      def self.test_can_be_missing
+        context 'when missing' do
+          let(:verification_response) do
+            XmlHelper.delete_xml_at_xpath(
+              AamvaFixtures.verification_response,
+              "//#{match_indicator_name}",
+            )
+          end
+          it('does not stop the result from succeeding') do
+            expect(result.success?).to be true
+          end
+        end
+      end
+
       describe '#address1' do
-        test_aamva_attribute(
-          :address1,
-          match_indicator_name: 'AddressLine1MatchIndicator',
-          required_part_of: :address,
-        )
+        let(:attribute) { :address1 }
+        let(:match_indicator_name) { 'AddressLine1MatchIndicator' }
+
+        test_verification_not_required
+        test_can_be_missing
       end
 
       describe '#address2' do
-        test_aamva_attribute(
-          :address2,
-          match_indicator_name: 'AddressLine2MatchIndicator',
-          optional_part_of: :address,
-        )
+        let(:attribute) { :address2 }
+        let(:match_indicator_name) { 'AddressLine2MatchIndicator' }
+
+        test_verification_not_required
+        test_can_be_missing
       end
 
       describe '#city' do
-        test_aamva_attribute(
-          :city,
-          match_indicator_name: 'AddressCityMatchIndicator',
-          required_part_of: :address,
-        )
+        let(:attribute) { :city }
+        let(:match_indicator_name) { 'AddressCityMatchIndicator' }
+
+        test_verification_not_required
+        test_can_be_missing
       end
 
       describe '#state' do
-        test_aamva_attribute(
-          :state,
-          match_indicator_name: 'AddressStateCodeMatchIndicator',
-          required_part_of: :address,
-        )
+        let(:attribute) { :city }
+        let(:match_indicator_name) { 'AddressStateCodeMatchIndicator' }
+
+        test_verification_not_required
+        test_can_be_missing
       end
+
       describe '#zipcode' do
-        test_aamva_attribute(
-          :zipcode,
-          match_indicator_name: 'AddressZIP5MatchIndicator',
-          required_part_of: :address,
-        )
+        let(:attribute) { :zipcode }
+        let(:match_indicator_name) { 'AddressZIP5MatchIndicator' }
+
+        test_verification_not_required
+        test_can_be_missing
       end
+
       describe '#dob' do
-        test_aamva_attribute(
-          :dob,
-          match_indicator_name: 'PersonBirthDateMatchIndicator',
-          required: true,
-        )
+        let(:attribute) { :dob }
+        let(:match_indicator_name) { 'PersonBirthDateMatchIndicator' }
+
+        test_must_be_verified
+        test_cannot_be_missing
       end
+
       describe '#state_id_issued' do
-        test_aamva_attribute(
-          :state_id_issued,
-          match_indicator_name: 'DriverLicenseIssueDateMatchIndicator',
-          required: false,
-        )
+        let(:attribute) { :state_id_issued }
+        let(:match_indicator_name) { 'DriverLicenseIssueDateMatchIndicator' }
+
+        test_verification_not_required
+        test_can_be_missing
       end
+
       describe '#state_id_number' do
-        test_aamva_attribute(
-          :state_id_number,
-          match_indicator_name: 'DriverLicenseNumberMatchIndicator',
-          required: true,
-        )
+        let(:attribute) { :state_id_number }
+        let(:match_indicator_name) { 'DriverLicenseNumberMatchIndicator' }
+
+        test_must_be_verified
+        test_cannot_be_missing
       end
+
       describe '#state_id_expiration' do
-        test_aamva_attribute(
-          :state_id_expiration,
-          match_indicator_name: 'DriverLicenseExpirationDateMatchIndicator',
-          required: false,
-        )
+        let(:attribute) { :state_id_expiration }
+        let(:match_indicator_name) { 'DriverLicenseExpirationDateMatchIndicator' }
+
+        test_verification_not_required
+        test_can_be_missing
       end
+
       describe '#state_id_type' do
-        test_aamva_attribute(
-          :state_id_type,
-          match_indicator_name: 'DocumentCategoryMatchIndicator',
-          required: false,
-        )
+        let(:attribute) { :state_id_type }
+        let(:match_indicator_name) { 'DocumentCategoryMatchIndicator' }
+
+        test_verification_not_required
+        test_can_be_missing
       end
+
       describe '#first_name' do
-        test_aamva_attribute(
-          :first_name,
-          match_indicator_name: 'PersonFirstNameExactMatchIndicator',
-          required: true,
-        )
+        let(:attribute) { :first_name }
+        let(:match_indicator_name) { 'PersonFirstNameExactMatchIndicator' }
+
+        test_must_be_verified
+        test_cannot_be_missing
       end
+
       describe '#last_name' do
-        test_aamva_attribute(
-          :last_name,
-          match_indicator_name: 'PersonLastNameExactMatchIndicator',
-          required: true,
-        )
+        let(:attribute) { :last_name }
+        let(:match_indicator_name) { 'PersonLastNameExactMatchIndicator' }
+
+        test_must_be_verified
+        test_cannot_be_missing
       end
     end
 
