@@ -79,12 +79,12 @@ function DocumentCaptureReviewIssues({
           ]}
         />
       )}
-      <DocumentsCaptureStep defaultSideProps={defaultSideProps} value={value} isReviewStep={true} />
+      <DocumentsCaptureStep defaultSideProps={defaultSideProps} value={value} isReviewStep />
       {isSelfieCaptureEnabled && (
         <SelfieCaptureStep
           defaultSideProps={defaultSideProps}
           selfieValue={value.selfie}
-          isReviewStep={true}
+          isReviewStep
         />
       )}
       <FormStepsButton.Submit />
