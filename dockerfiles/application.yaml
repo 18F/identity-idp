@@ -250,21 +250,21 @@ spec:
           patch: |-
             - op: replace
               path: /spec/template/spec/containers/0/image
-              value: {{ECR_REGISTRY}}/identity-pivcac/review:{{PIVCAC_CONTAINER_TAG}}
+              value: {{ECR_REGISTRY}}/identity-pivcac/pivcac:{{PIVCAC_CONTAINER_TAG}}
         - target:
             kind: Job
             name: migrate-pivcac-database
           patch: |-
             - op: replace
               path: /spec/template/spec/containers/0/image
-              value: {{ECR_REGISTRY}}/identity-pivcac/review:{{PIVCAC_CONTAINER_TAG}}
+              value: {{ECR_REGISTRY}}/identity-pivcac/pivcac:{{PIVCAC_CONTAINER_TAG}}
         - target:
             kind: CronJob
             name: update-pivcac-crls
           patch: |-
             - op: replace
               path: /spec/jobTemplate/spec/template/spec/containers/0/image
-              value: {{ECR_REGISTRY}}/identity-pivcac/review:{{PIVCAC_CONTAINER_TAG}}
+              value: {{ECR_REGISTRY}}/identity-pivcac/pivcac:{{PIVCAC_CONTAINER_TAG}}
         # Patch IDP image
         - target:
             kind: Rollout
@@ -294,7 +294,7 @@ spec:
           patch: |-
             - op: replace
               path: /spec/template/spec/containers/0/image
-              value: {{ECR_REGISTRY}}/identity-pivcac/review:{{PIVCAC_CONTAINER_TAG}}
+              value: {{ECR_REGISTRY}}/identity-pivcac/pivcac:{{PIVCAC_CONTAINER_TAG}}
             - op: replace
               path: /spec/template/spec/containers/1/image
               value: {{ECR_REGISTRY}}/identity-pivcac/nginx:{{PIVCAC_CONTAINER_TAG}}
