@@ -1110,56 +1110,20 @@ RSpec.feature 'Analytics Regression', :js do
     before do
       allow(IdentityConfig.store).to receive(:doc_auth_separate_pages_enabled).and_return(true)
     end
-    context 'biometric comparison not required - Happy path' do
-      before do
-        sign_in_and_2fa_user(user)
-        visit_idp_from_sp_with_ial2(:oidc)
-        complete_welcome_step
-        complete_agreement_step
-        complete_hybrid_handoff_step
-        complete_document_capture_step
-        complete_ssn_step
-        complete_verify_step
-        complete_phone_step(user)
-        complete_enter_password_step(user)
-        acknowledge_and_confirm_personal_key
-      end
-
-      it 'records all of the events' do
-        aggregate_failures 'analytics events' do
-          happy_path_events.each do |event, attributes|
-            expect(fake_analytics).to have_logged_event(event, attributes)
-          end
-        end
-
-        aggregate_failures 'populates data for each step of the Daily Dropoff Report' do
-          row = CSV.parse(
-            Reports::DailyDropoffsReport.new.tap { |r| r.report_date = Time.zone.now }.report_body,
-            headers: true,
-          ).first
-
-          Reports::DailyDropoffsReport::STEPS.each do |step|
-            expect(row[step].to_i).to(be > 0, "step #{step} was counted")
-          end
-        end
-      end
-
-      context 'proofing_device_profiling disabled' do
-        let(:proofing_device_profiling) { :disabled }
-        let(:threatmetrix) { false }
-        let(:threatmetrix_response) do
-          {
-            client: 'tmx_disabled',
-            success: true,
-            errors: {},
-            exception: nil,
-            timed_out: false,
-            transaction_id: nil,
-            review_status: 'pass',
-            account_lex_id: nil,
-            session_id: nil,
-            response_body: nil,
-          }
+    context 'Hybrid flow' do
+      context 'biometric comparison not required - Happy path' do
+        before do
+          sign_in_and_2fa_user(user)
+          visit_idp_from_sp_with_ial2(:oidc)
+          complete_welcome_step
+          complete_agreement_step
+          complete_hybrid_handoff_step
+          complete_document_capture_step
+          complete_ssn_step
+          complete_verify_step
+          complete_phone_step(user)
+          complete_enter_password_step(user)
+          acknowledge_and_confirm_personal_key
         end
 
         it 'records all of the events' do
@@ -1168,67 +1132,107 @@ RSpec.feature 'Analytics Regression', :js do
               expect(fake_analytics).to have_logged_event(event, attributes)
             end
           end
+
+          aggregate_failures 'populates data for each step of the Daily Dropoff Report' do
+            row = CSV.parse(
+              Reports::DailyDropoffsReport.new.tap do |r|
+                r.report_date = Time.zone.now
+              end.report_body,
+              headers: true,
+            ).first
+
+            Reports::DailyDropoffsReport::STEPS.each do |step|
+              expect(row[step].to_i).to(be > 0, "step #{step} was counted")
+            end
+          end
+        end
+
+        context 'proofing_device_profiling disabled' do
+          let(:proofing_device_profiling) { :disabled }
+          let(:threatmetrix) { false }
+          let(:threatmetrix_response) do
+            {
+              client: 'tmx_disabled',
+              success: true,
+              errors: {},
+              exception: nil,
+              timed_out: false,
+              transaction_id: nil,
+              review_status: 'pass',
+              account_lex_id: nil,
+              session_id: nil,
+              response_body: nil,
+            }
+          end
+
+          it 'records all of the events', allow_browser_log: true do
+            aggregate_failures 'analytics events' do
+              happy_path_events.each do |event, attributes|
+                expect(fake_analytics).to have_logged_event(event, attributes)
+              end
+            end
+          end
         end
       end
-    end
-    context 'biometric comparison required - Happy' do
-      before do
-        allow_any_instance_of(DocAuth::Response).to receive(:selfie_status).and_return(:success)
+      context 'biometric comparison required - Happy path' do
+        before do
+          allow_any_instance_of(DocAuth::Response).to receive(:selfie_status).and_return(:success)
 
-        perform_in_browser(:mobile) do
-          sign_in_and_2fa_user(user)
-          visit_idp_from_sp_with_ial2(:oidc, biometric_comparison_required: true)
-          complete_doc_auth_steps_before_document_capture_step
-          attach_images
-          click_continue
-          attach_selfie
-          submit_images
+          perform_in_browser(:mobile) do
+            sign_in_and_2fa_user(user)
+            visit_idp_from_sp_with_ial2(:oidc, biometric_comparison_required: true)
+            complete_doc_auth_steps_before_document_capture_step
+            attach_images
+            click_continue
+            attach_selfie
+            submit_images
 
-          click_idv_continue
-          visit idv_ssn_url
-          complete_ssn_step
-          complete_verify_step
-          fill_out_phone_form_ok('202-555-1212')
-          verify_phone_otp
-          complete_enter_password_step(user)
-          acknowledge_and_confirm_personal_key
-        end
-      end
-
-      it 'records all of the events' do
-        happy_mobile_selfie_path_events.each do |event, attributes|
-          expect(fake_analytics).to have_logged_event(event, attributes)
-        end
-      end
-
-      context 'proofing_device_profiling disabled' do
-        let(:proofing_device_profiling) { :disabled }
-        let(:threatmetrix) { false }
-        let(:threatmetrix_response) do
-          {
-            client: 'tmx_disabled',
-            success: true,
-            errors: {},
-            exception: nil,
-            timed_out: false,
-            transaction_id: nil,
-            review_status: 'pass',
-            account_lex_id: nil,
-            session_id: nil,
-            response_body: nil,
-          }
+            click_idv_continue
+            visit idv_ssn_url
+            complete_ssn_step
+            complete_verify_step
+            fill_out_phone_form_ok('202-555-1212')
+            verify_phone_otp
+            complete_enter_password_step(user)
+            acknowledge_and_confirm_personal_key
+          end
         end
 
         it 'records all of the events' do
-          aggregate_failures 'analytics events' do
-            happy_mobile_selfie_path_events.each do |event, attributes|
-              expect(fake_analytics).to have_logged_event(event, attributes)
+          happy_mobile_selfie_path_events.each do |event, attributes|
+            expect(fake_analytics).to have_logged_event(event, attributes)
+          end
+        end
+
+        context 'proofing_device_profiling disabled' do
+          let(:proofing_device_profiling) { :disabled }
+          let(:threatmetrix) { false }
+          let(:threatmetrix_response) do
+            {
+              client: 'tmx_disabled',
+              success: true,
+              errors: {},
+              exception: nil,
+              timed_out: false,
+              transaction_id: nil,
+              review_status: 'pass',
+              account_lex_id: nil,
+              session_id: nil,
+              response_body: nil,
+            }
+          end
+
+          it 'records all of the events' do
+            aggregate_failures 'analytics events' do
+              happy_mobile_selfie_path_events.each do |event, attributes|
+                expect(fake_analytics).to have_logged_event(event, attributes)
+              end
             end
           end
         end
       end
     end
-    context 'Happy hybrid path' do
+    context 'biometric comparison not required - Happy path' do
       before do
         allow(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
           @sms_link = config[:link]
