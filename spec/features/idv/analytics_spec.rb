@@ -1075,7 +1075,7 @@ RSpec.feature 'Analytics Regression', :js do
     before do
       allow(IdentityConfig.store).to receive(:doc_auth_separate_pages_enabled).and_return(true)
     end
-    context 'Happy path' do
+    context 'biometric comparison not required - Happy path' do
       before do
         sign_in_and_2fa_user(user)
         visit_idp_from_sp_with_ial2(:oidc)
