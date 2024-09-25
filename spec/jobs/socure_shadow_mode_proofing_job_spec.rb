@@ -182,20 +182,8 @@ RSpec.describe SocureShadowModeProofingJob do
     end
 
     context 'when document capture session result is present in redis' do
-      it 'makes a proofing call' do
-        expect(job.proofer).to receive(:proof).and_call_original
-        perform
-      end
-
-      it 'does not log an idv_socure_shadow_mode_proofing_result_missing event' do
-        perform
-        expect(analytics).not_to have_logged_event(:idv_socure_shadow_mode_proofing_result_missing)
-      end
-
-      it 'logs an event' do
-        perform
-        expect(analytics).to have_logged_event(
-          :idv_socure_shadow_mode_proofing_result,
+      let(:expected_event_body) do
+        {
           user_id: user.uuid,
           resolution_result: {
             success: true,
@@ -278,7 +266,50 @@ RSpec.describe SocureShadowModeProofingJob do
             vendor_workflow: nil,
             verified_attributes: %i[address first_name last_name phone ssn dob].to_set,
           },
+        }
+      end
+
+      it 'makes a proofing call' do
+        expect(job.proofer).to receive(:proof).and_call_original
+        perform
+      end
+
+      it 'does not log an idv_socure_shadow_mode_proofing_result_missing event' do
+        perform
+        expect(analytics).not_to have_logged_event(:idv_socure_shadow_mode_proofing_result_missing)
+      end
+
+      it 'logs an event' do
+        perform
+        expect(analytics).to have_logged_event(
+          :idv_socure_shadow_mode_proofing_result,
+          expected_event_body,
         )
+      end
+
+      context 'when the user has an MFA phone number' do
+        let(:applicant_pii) do
+          Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(
+            best_effort_phone_number_for_socure: {
+              source: :mfa,
+              phone: '1 202-555-0000',
+            },
+          )
+        end
+
+        let(:encrypted_arguments) do
+          Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
+            JSON.generate({ applicant_pii: applicant_pii }),
+          )
+        end
+
+        it 'logs an event with the phone number' do
+          perform
+          expect(analytics).to have_logged_event(
+            :idv_socure_shadow_mode_proofing_result,
+            expected_event_body.merge(phone_source: 'mfa'),
+          )
+        end
       end
 
       context 'when socure proofer raises an error' do
