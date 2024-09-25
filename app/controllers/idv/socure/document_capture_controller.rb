@@ -9,7 +9,6 @@ module Idv
 
       before_action :confirm_not_rate_limited
       before_action :confirm_step_allowed
-      before_action :apply_secure_headers_override
 
       def show
         Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
@@ -31,8 +30,6 @@ module Idv
         # useful for analytics
         @msg = document_response['msg']
         @reference_id = document_response.dig('referenceId')
-
-        redirect_to @url, allow_other_host: true if @url.present?
       end
 
       def update
@@ -100,15 +97,6 @@ module Idv
           extra = { stored_result_present: stored_result.present? }
           failure(I18n.t('doc_auth.errors.general.network_error'), extra)
         end
-      end
-
-      def apply_secure_headers_override
-        override_form_action_csp(
-          SecureHeadersAllowList.csp_with_sp_redirect_uris(
-            idv_socure_document_capture_url,
-            'https://verify.socure.us',
-          ),
-        )
       end
     end
   end
