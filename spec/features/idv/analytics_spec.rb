@@ -1187,11 +1187,11 @@ RSpec.feature 'Analytics Regression', :js do
         end
       end
     end
-    context 'Happy selfie path' do
+    context 'biometric comparison required - Happy' do
       before do
         allow_any_instance_of(DocAuth::Response).to receive(:selfie_status).and_return(:success)
 
-        perform_in_browser(:desktop) do
+        perform_in_browser(:mobile) do
           sign_in_and_2fa_user(user)
           visit_idp_from_sp_with_ial2(:oidc, biometric_comparison_required: true)
           complete_doc_auth_steps_before_document_capture_step
