@@ -1106,7 +1106,7 @@ RSpec.feature 'Analytics Regression', :js do
       end
     end
   end
-  context 'split doc auth' do
+  context 'doc_auth_separate_pages_enabled is true' do
     before do
       allow(IdentityConfig.store).to receive(:doc_auth_separate_pages_enabled).and_return(true)
       allow_any_instance_of(FederatedProtocols::Oidc).
