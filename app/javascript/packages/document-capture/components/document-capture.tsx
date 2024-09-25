@@ -155,7 +155,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   if (isInPersonStepEnabled) {
     steps = inPersonSteps;
   } else if (submissionError) {
-    steps = ([reviewFormStep] as FormStep[]).concat(inPersonSteps);
+    steps = [reviewFormStep, ...inPersonSteps];
   }
   // If the user got here by opting-in to in-person proofing, when skipDocAuth === true;
   // or opting-in ipp from handoff page, and selfie is required, when skipDocAuthFromHandoff === true
