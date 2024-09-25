@@ -38,10 +38,10 @@ module Reports
 
       ssn_signatures = todays_profiles.map(&:ssn_signature).uniq
 
-      profiles_connected_by_ssn = transaction_with_timeout do
+      profiles_connected_by_ssn = ssn_signatures.each_slice(1000).flat_map do |ssn_signature_slice|
         Profile.
           includes(:user).
-          where(ssn_signature: ssn_signatures).
+          where(ssn_signature: ssn_signature_slice).
           to_a
       end
 
