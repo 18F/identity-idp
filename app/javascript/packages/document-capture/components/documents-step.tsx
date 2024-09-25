@@ -61,7 +61,6 @@ export default function DocumentsStep({
   const { isMobile } = useContext(DeviceContext);
   const { flowPath } = useContext(UploadContext);
   const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
-  const isReviewStep = false;
   const pageHeaderText = isSelfieCaptureEnabled
     ? t('doc_auth.headings.document_capture_with_selfie')
     : t('doc_auth.headings.document_capture');
@@ -88,7 +87,7 @@ export default function DocumentsStep({
       <DocumentsCaptureStep
         defaultSideProps={defaultSideProps}
         value={value}
-        isReviewStep={isReviewStep}
+        isReviewStep={false}
       />
       <FormStepsButton.Continue />
       <Cancel />

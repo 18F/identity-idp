@@ -37,7 +37,6 @@ function DocumentCaptureReviewIssues({
 }: DocumentCaptureReviewIssuesProps) {
   const { t } = useI18n();
   const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
-  const isReviewStep = true;
 
   const defaultSideProps = {
     registerField,
@@ -80,16 +79,12 @@ function DocumentCaptureReviewIssues({
           ]}
         />
       )}
-      <DocumentsCaptureStep
-        defaultSideProps={defaultSideProps}
-        value={value}
-        isReviewStep={isReviewStep}
-      />
+      <DocumentsCaptureStep defaultSideProps={defaultSideProps} value={value} isReviewStep={true} />
       {isSelfieCaptureEnabled && (
         <SelfieCaptureStep
           defaultSideProps={defaultSideProps}
           selfieValue={value.selfie}
-          isReviewStep={isReviewStep}
+          isReviewStep={true}
         />
       )}
       <FormStepsButton.Submit />
