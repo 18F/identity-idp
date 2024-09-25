@@ -5247,7 +5247,7 @@ module AnalyticsEvents
   # @param [String, nil] key_id PIV/CAC key_id from PKI service
   # @param [Hash] mfa_method_counts Hash of MFA method with the number of that method on the account
   # @param [Hash] authenticator_data_flags WebAuthn authenticator data flags
-  # @param [Integer] webauthn_attempts number of setup attempts
+  # @param [Integer] mfa_attempts number of MFA setup attempts
   # @param [String, nil] aaguid AAGUID value of WebAuthn device
   # @param [String[], nil] unknown_transports Array of unrecognized WebAuthn transports, intended to
   # be used in case of future specification changes.
@@ -5271,7 +5271,7 @@ module AnalyticsEvents
     key_id: nil,
     mfa_method_counts: nil,
     authenticator_data_flags: nil,
-    webauthn_attempts: nil,
+    mfa_attempts: nil,
     aaguid: nil,
     unknown_transports: nil,
     **extra
@@ -5297,7 +5297,7 @@ module AnalyticsEvents
       key_id:,
       mfa_method_counts:,
       authenticator_data_flags:,
-      webauthn_attempts:,
+      mfa_attempts:,
       aaguid:,
       unknown_transports:,
       **extra,
