@@ -59,7 +59,22 @@ RSpec.describe Proofing::Aamva::VerificationClient do
     context 'when verification is successful' do
       it 'returns a successful response' do
         expect(response).to be_a Proofing::Aamva::Response::VerificationResponse
-        expect(response.success?).to eq(true)
+        expect(response.verification_results).to eq(
+          {
+            address1: true,
+            address2: nil,
+            city: true,
+            dob: true,
+            first_name: true,
+            last_name: true,
+            state: true,
+            state_id_expiration: nil,
+            state_id_issued: nil,
+            state_id_number: true,
+            state_id_type: true,
+            zipcode: true,
+          },
+        )
       end
     end
 
@@ -75,7 +90,22 @@ RSpec.describe Proofing::Aamva::VerificationClient do
 
         it 'returns an unsuccessful response with errors' do
           expect(response).to be_a Proofing::Aamva::Response::VerificationResponse
-          expect(response.success?).to eq(false)
+          expect(response.verification_results).to eq(
+            {
+              address1: true,
+              address2: nil,
+              city: true,
+              dob: false,
+              first_name: true,
+              last_name: true,
+              state: true,
+              state_id_expiration: nil,
+              state_id_issued: nil,
+              state_id_number: true,
+              state_id_type: true,
+              zipcode: true,
+            },
+          )
         end
       end
 

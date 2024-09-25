@@ -68,119 +68,17 @@ RSpec.describe Proofing::Aamva::Response::VerificationResponse do
     end
   end
 
-  describe '#reasons' do
-    context 'when all attributes are verified' do
-      it 'returns an empty array' do
-        expect(subject.reasons).to eq([])
-      end
-
-      context 'with a namespaced XML body' do
-        let(:response_body) { AamvaFixtures.verification_response_namespaced_success }
-
-        it 'returns an empty array' do
-          expect(subject.reasons).to eq([])
-        end
-      end
-    end
-
-    context 'when required attributes are verified' do
-      let(:response_body) do
-        modify_match_indicator(
-          AamvaFixtures.verification_response,
-          'PersonLastNameFuzzyPrimaryMatchIndicator',
-          'false',
-        )
-      end
-
-      it 'returns an empty array' do
-        expect(subject.reasons).to eq([])
-      end
-    end
-
-    context 'when required attributes are not verified' do
-      let(:response_body) do
-        body = modify_match_indicator(
-          AamvaFixtures.verification_response,
-          'PersonBirthDateMatchIndicator',
-          'false',
-        )
-        delete_match_indicator(
-          body,
-          'PersonFirstNameExactMatchIndicator',
-        )
-      end
-
-      it 'returns an array with the reasons verification failed' do
-        expect(subject.reasons).to eq(['Failed to verify dob', 'Response was missing first_name'])
-      end
-
-      context 'with a namespaced XML response' do
-        let(:response_body) { AamvaFixtures.verification_response_namespaced_failure }
-
-        it 'returns an array with the reasons verification failed' do
-          expect(subject.reasons).to eq(
-            [
-              'Failed to verify state_id_number',
-              'Response was missing dob',
-              'Response was missing last_name',
-              'Response was missing first_name',
-            ],
-          )
-        end
-      end
-    end
-  end
-
-  describe '#success?' do
-    context 'when all attributes are verified' do
-      it { expect(subject.success?).to eq(true) }
-    end
-
-    context 'when required attributes are verified' do
-      let(:response_body) do
-        modify_match_indicator(
-          AamvaFixtures.verification_response,
-          'PersonLastNameFuzzyPrimaryMatchIndicator',
-          'false',
-        )
-      end
-
-      it { expect(subject.success?).to eq(true) }
-
-      context 'with a namespaced XML response' do
-        let(:response_body) { AamvaFixtures.verification_response_namespaced_success }
-        it { expect(subject.success?).to eq(true) }
-      end
-    end
-
-    context 'when required attributes are not verified' do
-      let(:response_body) do
-        modify_match_indicator(
-          AamvaFixtures.verification_response,
-          'PersonBirthDateMatchIndicator',
-          'false',
-        )
-      end
-
-      it { expect(subject.success?).to eq(false) }
-    end
-
-    context 'when required attributes are missing' do
-      let(:response_body) do
-        delete_match_indicator(
-          AamvaFixtures.verification_response,
-          'PersonBirthDateMatchIndicator',
-        )
-      end
-
-      it { expect(subject.success?).to eq(false) }
-    end
-  end
-
   describe '#verification_results' do
     context 'when all attributes are verified' do
       it 'returns a hash of values that were verified' do
         expect(subject.verification_results).to eq(verification_results)
+      end
+
+      context 'with a namespaced XML response' do
+        let(:response_body) { AamvaFixtures.verification_response_namespaced_success }
+        it 'returns a hash of values that were verified' do
+          expect(subject.verification_results).to eq(verification_results)
+        end
       end
     end
 
