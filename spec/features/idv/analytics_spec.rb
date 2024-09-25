@@ -1126,7 +1126,7 @@ RSpec.feature 'Analytics Regression', :js do
         click_idv_continue
         visit idv_ssn_url
     end
-    context 'Happy path' do
+    context 'biometric comparison not required - Happy path' do
       before do
         sign_in_and_2fa_user(user)
         visit_idp_from_sp_with_ial2(:oidc)
