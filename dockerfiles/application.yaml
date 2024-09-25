@@ -138,6 +138,9 @@ spec:
               path: /data/POSTGRES_HOST
               value: "{{ENVIRONMENT}}-pivcac-pg.review-apps"
             - op: add
+              path: /data/PIDFILE
+              value: "/dev/null"
+            - op: add
               path: /data/IDP_HOST
               value: "{{ENVIRONMENT}}.reviewapps.identitysandbox.gov"
             - op: add
