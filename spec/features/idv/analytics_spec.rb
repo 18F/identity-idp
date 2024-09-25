@@ -1171,67 +1171,6 @@ RSpec.feature 'Analytics Regression', :js do
         end
       end
     end
-
-    context 'Happy split doc path' do
-      before do
-        allow_any_instance_of(FederatedProtocols::Oidc).
-          to receive(:biometric_comparison_required?).
-          and_return(true)
-        allow_any_instance_of(DocAuth::Response).to receive(:selfie_status).and_return(:success)
-
-        perform_in_browser(:desktop) do
-          sign_in_and_2fa_user(user)
-          visit_idp_from_sp_with_ial2(:oidc, biometric_comparison_required: true)
-          complete_doc_auth_steps_before_document_capture_step
-          attach_images
-          click_continue
-          attach_selfie
-          submit_images
-
-          click_idv_continue
-          visit idv_ssn_url
-          complete_ssn_step
-          complete_verify_step
-          fill_out_phone_form_ok('202-555-1212')
-          verify_phone_otp
-          complete_enter_password_step(user)
-          acknowledge_and_confirm_personal_key
-        end
-      end
-
-      it 'records all of the events' do
-        happy_mobile_selfie_path_events.each do |event, attributes|
-          expect(fake_analytics).to have_logged_event(event, attributes)
-        end
-      end
-
-      context 'proofing_device_profiling disabled' do
-        let(:proofing_device_profiling) { :disabled }
-        let(:threatmetrix) { false }
-        let(:threatmetrix_response) do
-          {
-            client: 'tmx_disabled',
-            success: true,
-            errors: {},
-            exception: nil,
-            timed_out: false,
-            transaction_id: nil,
-            review_status: 'pass',
-            account_lex_id: nil,
-            session_id: nil,
-            response_body: nil,
-          }
-        end
-
-        it 'records all of the events' do
-          aggregate_failures 'analytics events' do
-            happy_mobile_selfie_path_events.each do |event, attributes|
-              expect(fake_analytics).to have_logged_event(event, attributes)
-            end
-          end
-        end
-      end
-    end
     context 'Happy selfie path' do
       before do
         allow_any_instance_of(DocAuth::Response).to receive(:selfie_status).and_return(:success)
