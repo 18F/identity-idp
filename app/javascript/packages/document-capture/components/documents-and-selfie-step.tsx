@@ -43,7 +43,6 @@ export default function DocumentsAndSelfieStep({
   const { isLastStep } = useContext(FormStepsContext);
   const { flowPath } = useContext(UploadContext);
   const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
-  const isReviewStep = false;
   const pageHeaderText = isSelfieCaptureEnabled
     ? t('doc_auth.headings.document_capture_with_selfie')
     : t('doc_auth.headings.document_capture');
@@ -72,13 +71,13 @@ export default function DocumentsAndSelfieStep({
       <DocumentsCaptureStep
         defaultSideProps={defaultSideProps}
         value={value}
-        isReviewStep={isReviewStep}
+        isReviewStep={false}
       />
       {isSelfieCaptureEnabled && (
         <SelfieCaptureStep
           defaultSideProps={defaultSideProps}
           selfieValue={value.selfie}
-          isReviewStep={isReviewStep}
+          isReviewStep={false}
         />
       )}
       {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}

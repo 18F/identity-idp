@@ -53,7 +53,7 @@ function DocumentSideAcuantCapture({
   errors,
   onError,
   className,
-  isReviewStep = false,
+  isReviewStep,
 }: DocumentSideAcuantCaptureProps) {
   const error = errors.find(({ field }) => field === side)?.error;
   const { changeStepCanComplete } = useContext(FormStepsContext);
