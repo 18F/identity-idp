@@ -4,10 +4,8 @@ production:
   available_locales: 'en,es,fr,zh'
   asset_host: ['env', 'ASSET_HOST']
   component_previews_enabled: true
-  database_advisory_locks_enabled: false
   database_host: ['env', 'POSTGRES_HOST']
   database_name: ['env', 'POSTGRES_NAME']
-  database_prepared_statements_enabled: false
   database_password: ['env', 'POSTGRES_PASSWORD']
   database_sslmode: ['env', 'POSTGRES_SSLMODE']
   database_username: ['env', 'POSTGRES_USERNAME']
