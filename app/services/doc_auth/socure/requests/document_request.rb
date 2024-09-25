@@ -9,7 +9,7 @@ module DocAuth
         def initialize(
           document_capture_session_uuid:,
           redirect_url:,
-          language: :en,
+          language:,
           document_type: 'license'
         )
           @document_capture_session_uuid = document_capture_session_uuid

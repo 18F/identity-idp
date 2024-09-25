@@ -65,6 +65,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
       let(:response_body) { { data: { url: response_redirect_url } } }
 
       before do
+        I18n.locale = expected_language
         allow(request_class).to receive(:new).and_call_original
         get(:show)
       end
@@ -78,32 +79,59 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
           )
       end
 
-      it 'does the correct POST to Socure' do
-        expect(WebMock).to have_requested(:post, fake_socure_endpoint).
-          with(
-            body: JSON.generate(
-              {
-                config: {
-                  documentType: 'license',
-                  redirect: {
-                    method: 'POST',
-                    url: idv_hybrid_mobile_socure_document_capture_url,
+      context 'language is english' do
+        let(:expected_language) { :en }
+
+        it 'does the correct POST to Socure' do
+          expect(WebMock).to have_requested(:post, fake_socure_endpoint).
+            with(
+              body: JSON.generate(
+                {
+                  config: {
+                    documentType: 'license',
+                    redirect: {
+                      method: 'POST',
+                      url: idv_hybrid_mobile_socure_document_capture_url,
+                    },
+                    language: expected_language,
                   },
-                  language: expected_language,
+                  customerUserId: document_capture_session_uuid,
                 },
-                customerUserId: document_capture_session_uuid,
-              },
-            ),
-          )
+              ),
+            )
+        end
       end
 
-      it 'redirects' do
-        expect(response).to redirect_to(response_redirect_url)
+      context 'language is chinese and language should be zn-ch' do
+        let(:expected_language) { :zh }
+
+        it 'does the correct POST to Socure' do
+          expect(WebMock).to have_requested(:post, fake_socure_endpoint).
+            with(
+              body: JSON.generate(
+                {
+                  config: {
+                    documentType: 'license',
+                    redirect: {
+                      method: 'POST',
+                      url: idv_socure_document_capture_url,
+                    },
+                    language: 'zh-cn',
+                  },
+                  customerUserId: document_capture_session_uuid,
+                },
+              ),
+            )
+        end
       end
 
-      it 'allows redirects to socure' do
-        form_action = response.request.content_security_policy.form_action
-        expect(form_action).to include('https://verify.socure.us')
+      context 'renders the interstital page' do
+        render_views
+
+        it 'it includes the socure redirect url' do
+          expect(response).to have_http_status 200
+          expect(response.body).to include(response_redirect_url)
+        end
       end
     end
 
