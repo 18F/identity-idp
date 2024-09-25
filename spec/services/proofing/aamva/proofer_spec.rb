@@ -5,7 +5,13 @@ require 'ostruct'
 # They assume that `verification_response` contains a DLDV XML response
 # where all attributes are present and valid, and `result` contains
 # the result from the proofer.
-# @param [Symbol]
+# @param [Symbol] attribute_name
+# @param [String] match_indicator_name Tag name for the match indicator in the DLDV XML response
+# @param [Boolean] required Whether this attribute must verfy for overall success
+# @param [nil,Symbol] required_part_of The meta-attribute this attribute is required for
+#                                      (e.g. :address for :city)
+# @param [nil,Symbol] optional_part_of The meta-attribute this attribute is an optional part of
+#                                      (e.g. :address for :address2)
 def test_aamva_attribute(
   attribute_name,
   match_indicator_name:,
