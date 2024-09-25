@@ -38,10 +38,12 @@ module Reports
 
       ssn_signatures = todays_profiles.map(&:ssn_signature).uniq
 
-      profiles_connected_by_ssn = Profile.
-        includes(:user).
-        where(ssn_signature: ssn_signatures).
-        to_a
+      profiles_connected_by_ssn = transaction_with_timeout do
+        Profile.
+          includes(:user).
+          where(ssn_signature: ssn_signatures).
+          to_a
+      end
 
       profiles_connected_by_ssn.sort_by!(&:id).reverse!
 
