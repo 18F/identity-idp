@@ -4,7 +4,7 @@ module SignUp
   class RegistrationsController < ApplicationController
     include ApplicationHelper # for ial2_requested?
     include ThreatMetrixHelper
-    include Idv::ThreatMetrixConcern
+    include ThreatMetrixConcern
 
     before_action :confirm_two_factor_authenticated, only: [:destroy_confirm]
     before_action :require_no_authentication
@@ -75,13 +75,13 @@ module SignUp
 
       {
         threatmetrix_session_id: session_id,
-        threatmetrix_javascript_urls: session_id && threatmetrix_javascript_urls(session_id),
-        threatmetrix_iframe_url: session_id && threatmetrix_iframe_url(session_id),
+        threatmetrix_javascript_urls: threatmetrix_javascript_urls(session_id),
+        threatmetrix_iframe_url: threatmetrix_iframe_url(session_id),
       }
     end
 
     def generate_threatmetrix_session_id
-      session[:threatmetrix_session_id] = SecureRandom.uuid
+      session[:threatmetrix_session_id] ||= SecureRandom.uuid
     end
   end
 end
