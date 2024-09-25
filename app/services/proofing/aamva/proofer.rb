@@ -21,6 +21,13 @@ module Proofing
         ],
       ).freeze
 
+      REQUIRED_VERIFICATION_ATTRIBUTES = %i[
+        state_id_number
+        dob
+        last_name
+        first_name
+      ].freeze
+
       ADDRESS_ATTRIBUTES = [
         :address1,
         :address2,
@@ -63,7 +70,7 @@ module Proofing
 
       def build_result_from_response(verification_response, jurisdiction)
         Proofing::StateIdResult.new(
-          success: verification_response.success?,
+          success: successful?(verification_response),
           errors: parse_verification_errors(verification_response),
           exception: nil,
           vendor_name: 'aamva:state_id',
@@ -77,7 +84,7 @@ module Proofing
       def parse_verification_errors(verification_response)
         errors = Hash.new { |h, k| h[k] = [] }
 
-        return errors if verification_response.success?
+        return errors if successful?(verification_response)
 
         verification_response.verification_results.each do |attribute, v_result|
           attribute_key = attribute.to_sym
@@ -119,6 +126,14 @@ module Proofing
           return # noop
         end
         NewRelic::Agent.notice_error(result.exception)
+      end
+
+      def successful?(verification_response)
+        REQUIRED_VERIFICATION_ATTRIBUTES.each do |verification_attribute|
+          return false unless verification_response.verification_results[verification_attribute]
+        end
+
+        true
       end
 
       def jurisdiction_in_maintenance_window?(state)

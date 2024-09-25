@@ -16,6 +16,7 @@
           </MessageAddress>
         </ControlData>
         <DriverLicenseNumberMatchIndicator xmlns="http://aamva.org/niem/extensions/1.0">true</DriverLicenseNumberMatchIndicator>
+        <DocumentCategoryMatchIndicator xmlns="http://aamva.org/niem/extensions/1.0">true</DocumentCategoryMatchIndicator>
         <PersonBirthDateMatchIndicator xmlns="http://aamva.org/niem/extensions/1.0">true</PersonBirthDateMatchIndicator>
         <PersonLastNameExactMatchIndicator xmlns="http://aamva.org/niem/extensions/1.0">true</PersonLastNameExactMatchIndicator>
         <PersonFirstNameExactMatchIndicator xmlns="http://aamva.org/niem/extensions/1.0">true</PersonFirstNameExactMatchIndicator>
