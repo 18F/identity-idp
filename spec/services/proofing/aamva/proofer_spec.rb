@@ -1,6 +1,111 @@
 require 'rails_helper'
 require 'ostruct'
 
+# This helper method generates a set of tests for a specific attribute.
+# They assume that `verification_response` contains a DLDV XML response
+# where all attributes are present and valid, and `result` contains
+# the result from the proofer.
+# @param [Symbol]
+def test_aamva_attribute(
+  attribute_name,
+  match_indicator_name:,
+  required: false,
+  required_part_of: nil,
+  optional_part_of: nil
+)
+  context 'when unverified' do
+    let(:verification_response) do
+      XmlHelper.modify_xml_at_xpath(
+        super(),
+        "//#{match_indicator_name}",
+        'false',
+      )
+    end
+
+    if required
+      it('makes the result not succeed') do
+        expect(result.success?).to be false
+      end
+    else
+      it 'does not stop result from succeeding' do
+        expect(result.success?).to be true
+      end
+    end
+
+    if required_part_of
+      it "does not stop #{required_part_of} appearing in requested_attributes" do
+        expect(result.requested_attributes).to include(required_part_of => 1)
+      end
+      it "makes #{required_part_of} not appear in verfied_attributes" do
+        expect(result.verified_attributes).not_to include(required_part_of)
+      end
+      it 'does not appear in requested_attributes' do
+        expect(result.requested_attributes).not_to include(attribute_name => 1)
+      end
+    elsif optional_part_of
+      it "does not stop #{optional_part_of} appearing in requested_attributes" do
+        expect(result.requested_attributes).to include(optional_part_of => 1)
+      end
+      it "does not stop #{optional_part_of} appearing in verfied_attributes" do
+        expect(result.requested_attributes).to include(optional_part_of)
+      end
+      it 'does not appear in requested_attributes' do
+        expect(result.requested_attributes).not_to include(attribute_name => 1)
+      end
+    else
+      it 'still appears in requested_attributes' do
+        expect(result.requested_attributes).to include(attribute_name => 1)
+      end
+    end
+    it 'does not appear in verified_attributes' do
+      expect(result.verified_attributes).not_to include(attribute_name)
+    end
+  end
+
+  context 'when missing' do
+    let(:verification_response) do
+      XmlHelper.delete_xml_at_xpath(
+        super(),
+        "//#{match_indicator_name}",
+      )
+    end
+
+    if required
+      it('makes the result not succeed') do
+        expect(result.success?).to be false
+      end
+    else
+      it 'makes the result still succeed' do
+        expect(result.success?).to be true
+      end
+    end
+
+    if required_part_of
+      it "makes #{required_part_of} not appear in requested_attributes" do
+        expect(result.requested_attributes).not_to include(required_part_of => 1)
+      end
+      it "makes #{required_part_of} not appear in verfied_attributes" do
+        expect(result.verified_attributes).not_to include(required_part_of)
+      end
+    elsif optional_part_of
+      it "does not stop #{optional_part_of} appearing in requested_attributes" do
+        expect(result.requested_attributes).to include(optional_part_of => 1)
+      end
+      it "does not stop #{optional_part_of} appearing in verfied_attributes" do
+        expect(result.requested_attributes).to include(optional_part_of)
+      end
+    end
+
+    it 'does not appear in requested_attributes' do
+      expect(result.requested_attributes).not_to include(attribute_name => 1)
+    end
+
+    it 'does not appear in verified_attributes' do
+      expect(result.verified_attributes).not_to include(attribute_name)
+    end
+  end
+end
+
 RSpec.describe Proofing::Aamva::Proofer do
   let(:aamva_applicant) do
     Aamva::Applicant.from_proofer_applicant(OpenStruct.new(state_id_data))
@@ -14,7 +119,7 @@ RSpec.describe Proofing::Aamva::Proofer do
     }
   end
 
-  let(:verification_results) do
+  let(:verification_result) do
     {
       state_id_number: true,
       dob: true,
@@ -44,6 +149,100 @@ RSpec.describe Proofing::Aamva::Proofer do
   end
 
   describe '#proof' do
+    describe 'individual attributes' do
+      subject(:result) do
+        described_class.new(AamvaFixtures.example_config.to_h).proof(state_id_data)
+      end
+
+      describe '#address1' do
+        test_aamva_attribute(
+          :address1,
+          match_indicator_name: 'AddressLine1MatchIndicator',
+          required_part_of: :address,
+        )
+      end
+
+      describe '#address2' do
+        test_aamva_attribute(
+          :address2,
+          match_indicator_name: 'AddressLine2MatchIndicator',
+          optional_part_of: :address,
+        )
+      end
+
+      describe '#city' do
+        test_aamva_attribute(
+          :city,
+          match_indicator_name: 'AddressCityMatchIndicator',
+          required_part_of: :address,
+        )
+      end
+
+      describe '#state' do
+        test_aamva_attribute(
+          :state,
+          match_indicator_name: 'AddressStateCodeMatchIndicator',
+          required_part_of: :address,
+        )
+      end
+      describe '#zipcode' do
+        test_aamva_attribute(
+          :zipcode,
+          match_indicator_name: 'AddressZIP5MatchIndicator',
+          required_part_of: :address,
+        )
+      end
+      describe '#dob' do
+        test_aamva_attribute(
+          :dob,
+          match_indicator_name: 'PersonBirthDateMatchIndicator',
+          required: true,
+        )
+      end
+      describe '#state_id_issued' do
+        test_aamva_attribute(
+          :state_id_issued,
+          match_indicator_name: 'DriverLicenseIssueDateMatchIndicator',
+          required: false,
+        )
+      end
+      describe '#state_id_number' do
+        test_aamva_attribute(
+          :state_id_number,
+          match_indicator_name: 'DriverLicenseNumberMatchIndicator',
+          required: true,
+        )
+      end
+      describe '#state_id_expiration' do
+        test_aamva_attribute(
+          :state_id_expiration,
+          match_indicator_name: 'DriverLicenseExpirationDateMatchIndicator',
+          required: false,
+        )
+      end
+      describe '#state_id_type' do
+        test_aamva_attribute(
+          :state_id_type,
+          match_indicator_name: 'DocumentCategoryMatchIndicator',
+          required: false,
+        )
+      end
+      describe '#first_name' do
+        test_aamva_attribute(
+          :first_name,
+          match_indicator_name: 'PersonFirstNameExactMatchIndicator',
+          required: true,
+        )
+      end
+      describe '#last_name' do
+        test_aamva_attribute(
+          :last_name,
+          match_indicator_name: 'PersonLastNameExactMatchIndicator',
+          required: true,
+        )
+      end
+    end
+
     context 'when verification is successful' do
       it 'the result is successful' do
         result = subject.proof(state_id_data)
@@ -59,6 +258,8 @@ RSpec.describe Proofing::Aamva::Proofer do
         expect(result.verified_attributes).to eq(
           %i[
             dob
+            state_id_issued
+            state_id_expiration
             state_id_number
             state_id_type
             last_name
@@ -73,6 +274,8 @@ RSpec.describe Proofing::Aamva::Proofer do
         expect(result.requested_attributes).to eq(
           {
             dob: 1,
+            state_id_issued: 1,
+            state_id_expiration: 1,
             state_id_number: 1,
             state_id_type: 1,
             last_name: 1,
@@ -104,6 +307,8 @@ RSpec.describe Proofing::Aamva::Proofer do
 
         expect(result.verified_attributes).to eq(
           %i[
+            state_id_expiration
+            state_id_issued
             state_id_number
             state_id_type
             last_name
@@ -118,6 +323,8 @@ RSpec.describe Proofing::Aamva::Proofer do
         expect(result.requested_attributes).to eq(
           {
             dob: 1,
+            state_id_expiration: 1,
+            state_id_issued: 1,
             state_id_number: 1,
             state_id_type: 1,
             last_name: 1,
@@ -148,6 +355,8 @@ RSpec.describe Proofing::Aamva::Proofer do
 
         expect(result.verified_attributes).to eq(
           %i[
+            state_id_expiration
+            state_id_issued
             state_id_number
             state_id_type
             last_name
@@ -161,6 +370,8 @@ RSpec.describe Proofing::Aamva::Proofer do
         result = subject.proof(state_id_data)
         expect(result.requested_attributes).to eq(
           {
+            state_id_expiration: 1,
+            state_id_issued: 1,
             state_id_number: 1,
             state_id_type: 1,
             last_name: 1,
