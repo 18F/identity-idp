@@ -108,6 +108,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
             multi_factor_auth_method: 'totp',
             enabled_mfa_methods_count: 0,
             in_account_creation_flow: false,
+            mfa_attempts: 1,
           )
         end
       end
@@ -136,6 +137,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
             auth_app_configuration_id: next_auth_app_id,
             enabled_mfa_methods_count: 2,
             in_account_creation_flow: false,
+            mfa_attempts: 1,
           )
         end
       end
@@ -164,6 +166,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
             multi_factor_auth_method: 'totp',
             enabled_mfa_methods_count: 1,
             in_account_creation_flow: false,
+            mfa_attempts: 1,
           )
         end
       end
@@ -193,6 +196,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
             multi_factor_auth_method: 'totp',
             enabled_mfa_methods_count: 1,
             in_account_creation_flow: false,
+            mfa_attempts: 1,
           )
         end
       end
@@ -221,6 +225,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
             multi_factor_auth_method: 'totp',
             enabled_mfa_methods_count: 0,
             in_account_creation_flow: false,
+            mfa_attempts: 1,
           )
         end
       end
@@ -252,6 +257,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
               auth_app_configuration_id: next_auth_app_id,
               enabled_mfa_methods_count: 1,
               in_account_creation_flow: true,
+              mfa_attempts: 1,
             )
           end
         end
@@ -271,6 +277,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
               auth_app_configuration_id: next_auth_app_id,
               enabled_mfa_methods_count: 1,
               in_account_creation_flow: true,
+              mfa_attempts: 1,
             )
           end
         end
@@ -297,6 +304,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
             multi_factor_auth_method: 'totp',
             enabled_mfa_methods_count: 0,
             in_account_creation_flow: false,
+            mfa_attempts: 1,
           )
         end
       end
