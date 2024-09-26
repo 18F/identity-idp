@@ -56,6 +56,7 @@ module Proofing
         ).send_verification_request(
           applicant: aamva_applicant,
         )
+
         build_result_from_response(response, applicant[:state])
       rescue => exception
         failed_result = Proofing::StateIdResult.new(
