@@ -2011,6 +2011,19 @@ module AnalyticsEvents
     )
   end
 
+  # The JSON body of the response returned from Threatmetrix. PII has been removed.
+  # @param [Hash] response_body The response body returned by ThreatMetrix
+  def idv_doc_auth_verify_threatmetrix_response_body(
+    response_body: nil,
+    **extra
+  )
+    track_event(
+      :idv_doc_auth_verify_threatmetrix_response_body,
+      response_body: response_body,
+      **extra,
+    )
+  end
+
   # User visits IdV verify step
   # @identity.idp.previous_event_name IdV: in person proofing verify visited
   # @param [String] step Current IdV step
