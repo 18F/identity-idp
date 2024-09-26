@@ -134,7 +134,11 @@ class Analytics
       [v.name.sub('http://idmanagement.gov/ns/assurance/', ''), true]
     end.to_h
     attributes.reject! { |_key, value| value == false }
-    attributes.merge!(differentiator)
+
+    if differentiator.present?
+      attributes[:app_differentiator] = differentiator
+    end
+
     attributes.transform_keys! do |key|
       key.to_s.chomp('?').to_sym
     end
@@ -143,11 +147,12 @@ class Analytics
   end
 
   def differentiator
-    sp_request_url = session&.dig(:sp, :request_url)
-    return {} if sp_request_url.blank?
+    @differentiator ||= begin
+      sp_request_url = session&.dig(:sp, :request_url)
+      return nil if sp_request_url.blank?
 
-    app_differentiator = UriService.params(sp_request_url)['login_gov_app_differentiator']
-    app_differentiator.present? ? { app_differentiator: } : {}
+      UriService.params(sp_request_url)['login_gov_app_differentiator']
+    end
   end
 
   def resolved_authn_context_result
