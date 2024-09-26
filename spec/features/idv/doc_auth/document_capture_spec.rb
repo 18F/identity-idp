@@ -843,8 +843,17 @@ RSpec.feature 'document capture step', :js do
                   complete_up_to_how_to_verify_step_for_opt_in_ipp(
                     biometric_comparison_required: true,
                   )
-                  click_continue
                 end
+              end
+
+              it 'does not allow submission without selfie file' do
+                attach_images
+                continue_to_selfie_upload
+                expect(page).to have_title(t('doc_auth.headings.selfie_capture'))
+                click_idv_submit_default
+                expect(page).not_to have_content(t('doc_auth.headings.capture_complete'))
+                expect(page).not_to have_content(t('doc_auth.errors.rate_limited_heading'))
+                expect(page).to have_title(t('doc_auth.headings.selfie_capture'))
               end
 
               it_should_behave_like 'it has correct error displays'
