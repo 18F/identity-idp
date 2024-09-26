@@ -57,6 +57,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
 
       before do
         allow(request_class).to receive(:new).and_call_original
+        allow(I18n).to receive(:locale).and_return(expected_language)
         get(:show)
       end
 
@@ -71,8 +72,6 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
 
       context 'language is english' do
         let(:expected_language) { :en }
-
-        before { I18n.locale = expected_language }
 
         it 'does the correct POST to Socure' do
           expect(WebMock).to have_requested(:post, fake_socure_endpoint).
@@ -96,8 +95,6 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
 
       context 'language is chinese and language should be zn-ch' do
         let(:expected_language) { :zh }
-
-        before { I18n.locale = expected_language }
 
         it 'does the correct POST to Socure' do
           expect(WebMock).to have_requested(:post, fake_socure_endpoint).

@@ -3,9 +3,10 @@ require 'rails_helper'
 RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
   let(:document_capture_session_uuid) { 'abc123' }
   let(:redirect_url) { 'https://somewhere.com' }
+  let(:language) { :en }
 
   subject(:document_request) do
-    described_class.new(document_capture_session_uuid:, redirect_url:)
+    described_class.new(document_capture_session_uuid:, redirect_url:, language:)
   end
 
   describe 'a new request' do
@@ -15,24 +16,53 @@ RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
   end
 
   describe '#fetch' do
+    let(:language) { :en }
+    let(:document_type) { 'license' }
     let(:fake_socure_endpoint) { 'https://fake-socure.com/' }
     let(:fake_socure_response) { { 'url' => redirect_url } }
-    let(:expected_request_body) { { method: 'POST', url: redirect_url } }
+    let(:expected_request_body) do
+      {
+        config:
+        {
+          documentType: document_type,
+          redirect:
+          {
+            method: 'POST',
+            url: redirect_url,
+          },
+          language: language,
+        },
+        customerUserId: document_capture_session_uuid,
+      }
+    end
     let(:fake_socure_status) { 200 }
 
     before do
       allow(IdentityConfig.store).to receive(:socure_document_request_endpoint).
         and_return(fake_socure_endpoint)
-      stub_request(:post, fake_socure_endpoint).to_return(
-        status: fake_socure_status,
-        body: JSON.generate(fake_socure_response),
-      )
+      stub_request(:post, fake_socure_endpoint).
+        to_return(
+          status: fake_socure_status,
+          body: JSON.generate(fake_socure_response),
+        )
     end
 
     it 'fetches from the correct url' do
-      response = document_request.fetch
+      document_request.fetch
 
-      expect(response).to eq(fake_socure_response)
+      expect(WebMock).to have_requested(:post, fake_socure_endpoint).
+        with(body: JSON.generate(expected_request_body))
+    end
+
+    context 'when the language is Spanish' do
+      let(:language) { :es }
+
+      it 'fetches from the correct url' do
+        document_request.fetch
+
+        expect(WebMock).to have_requested(:post, fake_socure_endpoint).
+          with(body: JSON.generate(expected_request_body))
+      end
     end
 
     context 'we get a 403 back' do
