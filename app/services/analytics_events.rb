@@ -5001,10 +5001,12 @@ module AnalyticsEvents
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Boolean] in_account_creation_flow whether user is going through creation flow
   # @param ['piv_cac'] method_name Authentication method added
+  # @param [Integer] mfa_attempts number of MFA setup attempts
   def multi_factor_auth_added_piv_cac(
     enabled_mfa_methods_count:,
     in_account_creation_flow:,
     method_name: :piv_cac,
+    mfa_attempts: nil,
     **extra
   )
     track_event(
@@ -5012,6 +5014,7 @@ module AnalyticsEvents
       method_name:,
       enabled_mfa_methods_count:,
       in_account_creation_flow:,
+      mfa_attempts:,
       **extra,
     )
   end
@@ -5956,11 +5959,18 @@ module AnalyticsEvents
   # Tracks when user's piv cac setup
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
-  def piv_cac_setup_visited(in_account_creation_flow:, enabled_mfa_methods_count: nil, **extra)
+  # @param [Integer] mfa_attempts number of MFA setup attempts
+  def piv_cac_setup_visited(
+      in_account_creation_flow:,
+      enabled_mfa_methods_count: nil,
+      mfa_attempts: nil,
+      **extra
+    )
     track_event(
       :piv_cac_setup_visited,
       in_account_creation_flow:,
       enabled_mfa_methods_count:,
+      mfa_attempts:,
       **extra,
     )
   end
