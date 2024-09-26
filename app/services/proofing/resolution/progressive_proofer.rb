@@ -32,7 +32,7 @@ module Proofing
         ipp_enrollment_in_progress:,
         current_sp:
       )
-        @applicant_pii = applicant_pii
+        @applicant_pii = applicant_pii.except(:best_effort_phone_number_for_socure)
         @request_ip = request_ip
         @threatmetrix_session_id = threatmetrix_session_id
         @timer = timer

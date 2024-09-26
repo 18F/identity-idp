@@ -42,6 +42,7 @@ class SocureShadowModeProofingJob < ApplicationJob
     analytics.idv_socure_shadow_mode_proofing_result(
       resolution_result: format_proofing_result_for_logs(proofing_result),
       socure_result: socure_result.to_h,
+      phone_source: applicant[:phone_source],
       user_id: user.uuid,
       pii_like_keypaths: [
         [:errors, :ssn],
@@ -91,6 +92,10 @@ class SocureShadowModeProofingJob < ApplicationJob
     )
 
     applicant_pii = decrypted_arguments[:applicant_pii]
+    if applicant_pii[:phone].nil? && applicant_pii[:best_effort_phone_number_for_socure]
+      applicant_pii[:phone] = applicant_pii[:best_effort_phone_number_for_socure][:phone]
+      applicant_pii[:phone_source] = applicant_pii[:best_effort_phone_number_for_socure][:source]
+    end
 
     {
       **applicant_pii.slice(
@@ -102,6 +107,7 @@ class SocureShadowModeProofingJob < ApplicationJob
         :state,
         :zipcode,
         :phone,
+        :phone_source,
         :dob,
         :ssn,
         :consent_given_at,
