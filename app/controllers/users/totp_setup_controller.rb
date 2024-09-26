@@ -33,6 +33,7 @@ module Users
 
       if result.success?
         process_valid_code
+        session[:totp_attempts] = nil
       else
         process_invalid_code
       end
