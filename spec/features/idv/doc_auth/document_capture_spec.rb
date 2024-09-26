@@ -220,7 +220,7 @@ RSpec.feature 'document capture step', :js do
                 expect_rate_limited_header(true)
 
                 expect_try_taking_new_pictures
-                expect_review_body_message('doc_auth.errors.general.no_liveness')
+                expect_review_issues_body_message('doc_auth.errors.general.no_liveness')
                 expect_rate_limit_warning(max_attempts - 1)
 
                 expect_to_try_again
@@ -237,14 +237,14 @@ RSpec.feature 'document capture step', :js do
 
                 expect_rate_limited_header(false)
                 expect_try_taking_new_pictures(false)
-                expect_review_body_message('doc_auth.errors.doc_type_not_supported_heading')
-                expect_review_body_message('doc_auth.errors.doc.doc_type_check')
+                expect_review_issues_body_message('doc_auth.errors.doc_type_not_supported_heading')
+                expect_review_issues_body_message('doc_auth.errors.doc.doc_type_check')
                 expect_rate_limit_warning(max_attempts - 2)
 
                 expect_to_try_again
                 expect_resubmit_page_h1_copy
 
-                expect_review_body_message('doc_auth.errors.card_type')
+                expect_review_issues_body_message('doc_auth.errors.card_type')
                 expect_resubmit_page_inline_selfie_error_message(false)
 
                 # when there are multiple front doc auth errors
@@ -256,7 +256,7 @@ RSpec.feature 'document capture step', :js do
 
                 expect_rate_limited_header(true)
                 expect_try_taking_new_pictures(false)
-                expect_review_body_message(
+                expect_review_issues_body_message(
                   'doc_auth.errors.general.multiple_front_id_failures',
                 )
                 expect_rate_limit_warning(max_attempts - 3)
@@ -277,7 +277,7 @@ RSpec.feature 'document capture step', :js do
 
                 expect_rate_limited_header(true)
                 expect_try_taking_new_pictures(false)
-                expect_review_body_message(
+                expect_review_issues_body_message(
                   'doc_auth.errors.general.multiple_back_id_failures',
                 )
                 expect_rate_limit_warning(max_attempts - 4)
@@ -522,7 +522,6 @@ RSpec.feature 'document capture step', :js do
       expect(page).to have_content(t('doc_auth.errors.rate_limited_heading'))
       click_try_again
       expect(page).to have_content(t('doc_auth.headings.review_issues'))
-      # expect(page).to have_content('test')
       attach_images
       attach_selfie
       submit_images
@@ -727,7 +726,7 @@ RSpec.feature 'document capture step', :js do
                   expect_rate_limited_header(true)
 
                   expect_try_taking_new_pictures
-                  expect_review_body_message('doc_auth.errors.general.no_liveness')
+                  expect_review_issues_body_message('doc_auth.errors.general.no_liveness')
                   expect_rate_limit_warning(max_attempts - 1)
 
                   expect_to_try_again
@@ -745,14 +744,16 @@ RSpec.feature 'document capture step', :js do
                   expect_rate_limited_header(false)
                   expect_try_taking_new_pictures(false)
                   # eslint-disable-next-line
-                  expect_review_body_message('doc_auth.errors.doc_type_not_supported_heading')
-                  expect_review_body_message('doc_auth.errors.doc.doc_type_check')
+                  expect_review_issues_body_message(
+                    'doc_auth.errors.doc_type_not_supported_heading',
+                  )
+                  expect_review_issues_body_message('doc_auth.errors.doc.doc_type_check')
                   expect_rate_limit_warning(max_attempts - 2)
 
                   expect_to_try_again
                   expect_resubmit_page_h1_copy
 
-                  expect_review_body_message('doc_auth.errors.card_type')
+                  expect_review_issues_body_message('doc_auth.errors.card_type')
                   expect_resubmit_page_inline_selfie_error_message(false)
 
                   # when there are multiple front doc auth errors
@@ -766,7 +767,7 @@ RSpec.feature 'document capture step', :js do
 
                   expect_rate_limited_header(true)
                   expect_try_taking_new_pictures(false)
-                  expect_review_body_message(
+                  expect_review_issues_body_message(
                     'doc_auth.errors.general.multiple_front_id_failures',
                   )
                   expect_rate_limit_warning(max_attempts - 3)
@@ -791,7 +792,7 @@ RSpec.feature 'document capture step', :js do
 
                   expect_rate_limited_header(true)
                   expect_try_taking_new_pictures(false)
-                  expect_review_body_message(
+                  expect_review_issues_body_message(
                     'doc_auth.errors.general.multiple_back_id_failures',
                   )
                   expect_rate_limit_warning(max_attempts - 4)
@@ -1020,7 +1021,7 @@ RSpec.feature 'document capture step', :js do
     end
   end
 
-  def expect_review_body_message(translation_key)
+  def expect_review_issues_body_message(translation_key)
     review_issues_body_message = strip_tags(t(translation_key))
     expect(page).to have_content(review_issues_body_message)
   end
