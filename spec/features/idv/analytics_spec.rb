@@ -1327,6 +1327,7 @@ RSpec.feature 'Analytics Regression', :js do
         end
       end
     end
+<<<<<<< HEAD
     context 'GPO path' do
       before do
         sign_in_and_2fa_user(user)
@@ -1373,6 +1374,8 @@ RSpec.feature 'Analytics Regression', :js do
         end
       end
     end
+=======
+>>>>>>> 534ea7726 (Removing redundant code)
     context 'in person path' do
       let(:return_sp_url) { 'https://example.com/some/idv/ipp/url' }
 
