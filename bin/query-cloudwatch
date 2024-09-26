@@ -49,7 +49,7 @@ class QueryCloudwatch
       yield
     end
     
-    def handle_row(e)
+    def handle_row(row)
       stdout.puts row.to_json
     end
   end
@@ -66,7 +66,7 @@ class QueryCloudwatch
     end
     
     def handle_row(row)
-      stdout.puts e.values.to_csv
+      stdout.puts row.values.to_csv
     end
   end
 
