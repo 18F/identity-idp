@@ -758,6 +758,16 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                 job_name: 'GetUspsProofingResultsJob',
               )
             end
+
+            it 'deactivates the associated profile' do
+              expect(pending_enrollment.profile.deactivation_reason).to be_nil
+              job.perform(Time.zone.now)
+              pending_enrollment.reload
+
+              expect(pending_enrollment.profile.active).to be false
+              expect(pending_enrollment.profile.in_person_verification_pending_at).to be_nil
+              expect(pending_enrollment.profile.deactivation_reason).to eq('verification_cancelled')
+            end
           end
 
           context 'when an enrollment fails and fraud is suspected' do
@@ -820,6 +830,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
             )
 
             it 'deactivates the associated profile' do
+              expect(pending_enrollment.profile.deactivation_reason).to be_nil
               expect(pending_enrollment.profile.in_person_verification_pending_at).not_to be_nil
               job.perform Time.zone.now
               pending_enrollment.reload
@@ -889,6 +900,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
             end
 
             it 'deactivates the associated profile' do
+              expect(pending_enrollment.profile.deactivation_reason).to be_nil
               expect(pending_enrollment.profile.in_person_verification_pending_at).not_to be_nil
               job.perform(Time.zone.now)
 
@@ -1529,6 +1541,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
             )
 
             it 'deactivates the associated profile' do
+              expect(pending_enrollment.profile.deactivation_reason).to be_nil
               expect(pending_enrollment.profile.in_person_verification_pending_at).not_to be_nil
               job.perform(Time.zone.now)
               pending_enrollment.reload
@@ -1657,6 +1670,54 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
             end
           end
         end
+
+        describe 'the profile has deactivation_reason set to encryption_error' do
+          context 'the enrollment passes proofing with USPS' do
+            let(:pending_enrollment) do
+              create(
+                :in_person_enrollment, :pending, :with_notification_phone_configuration
+              )
+            end
+
+            before do
+              allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+              stub_request_passed_proofing_results
+            end
+
+            it 'overwrites the deactivation_reason' do
+              expect(pending_enrollment.profile.deactivation_reason).to be_nil
+              # to mimic pw reset
+              pending_enrollment.profile.update(deactivation_reason: 'encryption_error')
+              job.perform(Time.zone.now)
+              pending_enrollment.reload
+
+              expect(pending_enrollment.profile.deactivation_reason).to be_nil
+            end
+          end
+
+          context 'the enrollment fails proofing with USPS' do
+            let(:pending_enrollment) do
+              create(
+                :in_person_enrollment, :pending
+              )
+            end
+
+            before do
+              allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+              stub_request_failed_proofing_results
+            end
+
+            it 'does not overwrite the deactivation_reason' do
+              expect(pending_enrollment.profile.deactivation_reason).to be_nil
+              # to mimic pw reset
+              pending_enrollment.profile.update(deactivation_reason: 'encryption_error')
+              job.perform(Time.zone.now)
+              pending_enrollment.reload
+
+              expect(pending_enrollment.profile.deactivation_reason).to eq('encryption_error')
+            end
+          end
+        end
       end
 
       describe 'Enhanced In-Person Proofing' do
@@ -1773,6 +1834,16 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                 enhanced_ipp: true,
               ),
             )
+          end
+
+          it 'deactivates the associated profile' do
+            expect(pending_enrollment.profile.deactivation_reason).to be_nil
+            job.perform(Time.zone.now)
+            pending_enrollment.reload
+
+            expect(pending_enrollment.profile.active).to be false
+            expect(pending_enrollment.profile.in_person_verification_pending_at).to be_nil
+            expect(pending_enrollment.profile.deactivation_reason).to eq('verification_cancelled')
           end
 
           context 'when the in_person_stop_expiring_enrollments flag is true' do

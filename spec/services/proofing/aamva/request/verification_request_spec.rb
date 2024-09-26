@@ -113,9 +113,9 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
         stub_request(:post, config.verification_url).
           to_return(body: AamvaFixtures.verification_response, status: 200)
 
-        result = subject.send
+        response = subject.send
 
-        expect(result.success?).to eq(true)
+        expect(response).to be_an_instance_of(Proofing::Aamva::Response::VerificationResponse)
       end
 
       it 'sends state id jurisdiction to AAMVA' do

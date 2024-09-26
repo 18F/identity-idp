@@ -347,6 +347,46 @@ RSpec.describe Profile do
       expect(active_profile.verified_at).to be_present
     end
 
+    context 'when a user creates a biometric comparision profile' do
+      context 'when the user has an active profile' do
+        it 'creates a biometric upgrade record' do
+          profile.activate
+          biometric_profile = create(
+            :profile,
+            :biometric_proof,
+            user: user,
+          )
+
+          expect { biometric_profile.activate }.to(
+            change do
+              SpUpgradedBiometricProfile.count
+            end.by(1),
+          )
+        end
+      end
+
+      context 'when the user has an active biometric profile' do
+        it 'does not create a biometric conversion record' do
+          create(:profile, :active, :biometric_proof, user: user)
+
+          biometric_reproof = create(:profile, :biometric_proof, user: user)
+          expect { biometric_reproof.activate }.to_not(change { SpUpgradedBiometricProfile.count })
+        end
+      end
+
+      context 'when the user does not have an active profile' do
+        it 'does not create a biometric conversion record' do
+          profile = create(:profile, :biometric_proof, user: user)
+
+          expect { profile.activate }.to_not(change { SpUpgradedBiometricProfile.count })
+        end
+      end
+    end
+
+    it 'does not create a biometric upgrade record for a non-biometric profile' do
+      expect { profile.activate }.to_not(change { SpUpgradedBiometricProfile.count })
+    end
+
     it 'sends a reproof completed push event' do
       profile = create(:profile, :active, user: user)
       expect(PushNotification::HttpPush).to receive(:deliver).
@@ -1003,12 +1043,39 @@ RSpec.describe Profile do
 
   describe '#deactivate_due_to_in_person_verification_cancelled' do
     let(:profile) { create(:profile, :in_person_verification_pending) }
-    it 'updates the profile' do
-      profile.deactivate_due_to_in_person_verification_cancelled
+    context 'when the profile does not have a deactivation reason' do
+      it 'updates the profile and sets the deactivation reason to "verification_cancelled"' do
+        expect(profile.deactivation_reason).to be_nil
+        profile.deactivate_due_to_in_person_verification_cancelled
 
-      expect(profile.active).to be false
-      expect(profile.deactivation_reason).to eq('verification_cancelled')
-      expect(profile.in_person_verification_pending_at).to be nil
+        expect(profile.active).to be false
+        expect(profile.deactivation_reason).to eq('verification_cancelled')
+        expect(profile.in_person_verification_pending_at).to be nil
+      end
+    end
+
+    context 'when the profile has a deactivation reason' do
+      it 'updates the profile without overwriting the deactivation reason (encryption_error)' do
+        profile.deactivation_reason = 'encryption_error'
+        expect(profile.deactivation_reason).to_not be_nil
+
+        profile.deactivate_due_to_in_person_verification_cancelled
+
+        expect(profile.active).to be false
+        expect(profile.deactivation_reason).to eq('encryption_error')
+        expect(profile.in_person_verification_pending_at).to be nil
+      end
+
+      it 'updates the profile without overwriting the deactivation reason (password_reset)' do
+        profile.deactivation_reason = 'password_reset'
+        expect(profile.deactivation_reason).to_not be_nil
+
+        profile.deactivate_due_to_in_person_verification_cancelled
+
+        expect(profile.active).to be false
+        expect(profile.deactivation_reason).to eq('password_reset')
+        expect(profile.in_person_verification_pending_at).to be nil
+      end
     end
   end
 
