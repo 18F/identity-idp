@@ -165,6 +165,32 @@ RSpec.describe QueryCloudwatch do
       end
     end
 
+    context 'with --sqlite' do
+      let(:argv) { required_parameters + %w[--sqlite] }
+
+      it 'sets sqlite_database_file to events.db by default' do
+        config = parse!
+        expect(config.sqlite_database_file).to eql('events.db')
+      end
+
+      context 'with a database file' do
+        let(:argv) { required_parameters + %w[--sqlite foo.db] }
+        it 'sets sqlite_database_file appropriately' do
+          config = parse!
+          expect(config.sqlite_database_file).to eql('foo.db')
+        end
+      end
+
+      context 'with --count-distinct' do
+        let(:argv) { super() + %w[--count-distinct foo] }
+        it 'errors out' do
+          expect(QueryCloudwatch).to receive(:exit).with(1)
+          parse!
+          expect(stdout.string).to include("can't do --count-distinct with --sqlite")
+        end
+      end
+    end
+
     context 'with --slice' do
       let(:argv) { required_parameters + %w[--slice 3mon] }
 
