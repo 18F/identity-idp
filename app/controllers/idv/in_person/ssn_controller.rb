@@ -33,7 +33,9 @@ module Idv
         Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
           call('ssn', :view, true)
 
-        render 'idv/shared/ssn', locals: threatmetrix_view_variables(ssn_presenter.updating_ssn?)
+        @threatmetrix_view_variables = threatmetrix_view_variables(ssn_presenter.updating_ssn?)
+
+        render 'idv/shared/ssn'
       end
 
       def update
