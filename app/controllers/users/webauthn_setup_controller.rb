@@ -73,6 +73,7 @@ module Users
       )
       properties = result.to_h.merge(analytics_properties)
       analytics.multi_factor_auth_setup(**properties)
+      session[:webauthn_attempts] = nil if result.success?
 
       if result.success?
         process_valid_webauthn(form)
