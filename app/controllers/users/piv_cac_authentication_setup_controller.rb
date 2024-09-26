@@ -73,6 +73,7 @@ module Users
       analytics.multi_factor_auth_setup(**properties)
       if result.success?
         process_valid_submission
+        session[:piv_cac_attempts] = nil
       else
         process_invalid_submission
       end

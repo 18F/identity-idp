@@ -142,6 +142,7 @@ module TwoFactorAuthentication
     def post_analytics(result)
       properties = result.to_h.merge(analytics_properties)
       analytics.multi_factor_auth_setup(**properties) if context == 'confirmation'
+      session[:otp_attempts] = nil if result.success?
     end
 
     def analytics_properties
