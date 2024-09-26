@@ -20,6 +20,8 @@ module TwoFactorAuthentication
     end
 
     def create
+      session[:otp_attempts] = 0 if session[:otp_attempts].nil?
+      session[:otp_attempts] += 1
       result = otp_verification_form.submit
       post_analytics(result)
 
@@ -155,6 +157,7 @@ module TwoFactorAuthentication
         phone_configuration_id: phone_configuration&.id,
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
         enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
+        mfa_attempts: session[:otp_attempts] || nil,
       }
     end
 
