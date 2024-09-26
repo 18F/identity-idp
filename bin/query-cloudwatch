@@ -45,6 +45,8 @@ class QueryCloudwatch
       @stdout = stdout
     end
 
+    def abort; end
+
     def start; end
     
     def handle_row(e)
@@ -60,6 +62,8 @@ class QueryCloudwatch
     def initialize(stdout:)
       @stdout = stdout
     end
+
+    def abort; end
 
     def start; end
     
@@ -77,6 +81,15 @@ class QueryCloudwatch
     def initialize(filename:, stderr:)
       @filename = filename
       @stderr = stderr
+    end
+
+    def abort
+      if db
+        db.rollback if db.transaction_active?
+        db.interrupt
+        db.close
+        @db = nil
+      end
     end
 
     def start
@@ -167,12 +180,15 @@ class QueryCloudwatch
 
     output.start
     fetch { |row| output.handle_row(row) }
+    output.finish
 
   rescue Interrupt
     # catch interrupts (ctrl-c) and directly exit, this skips printing the backtrace
+    output.abort
     exit 1
-  ensure
-    output&.finish
+  rescue
+    output&.abort
+    raise
   end
 
 
