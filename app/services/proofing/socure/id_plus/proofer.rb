@@ -33,7 +33,7 @@ module Proofing
         # @param [Hash] applicant
         # @return [Proofing::Resolution::Result]
         def proof(applicant)
-          input = Input.new(applicant)
+          input = Input.new(applicant.except(:phone_source))
 
           request = Request.new(config:, input:)
 

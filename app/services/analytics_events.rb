@@ -4591,14 +4591,17 @@ module AnalyticsEvents
   # Logs a Socure KYC result alongside a resolution result for later comparison.
   # @param [Hash] socure_result Result from Socure KYC API call
   # @param [Hash] resolution_result Result from resolution proofing
+  # @param [String,nil] phone_source Whether the phone number is from MFA or hybrid handoff
   def idv_socure_shadow_mode_proofing_result(
     socure_result:,
     resolution_result:,
+    phone_source:,
     **extra
   )
     track_event(
       :idv_socure_shadow_mode_proofing_result,
       resolution_result: resolution_result.to_h,
+      phone_source:,
       socure_result: socure_result.to_h,
       **extra,
     )

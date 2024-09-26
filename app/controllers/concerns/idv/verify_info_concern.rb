@@ -31,7 +31,10 @@ module Idv
 
       idv_session.verify_info_step_document_capture_session_uuid = document_capture_session.uuid
 
-      Idv::Agent.new(pii).proof_resolution(
+      user_pii = pii
+      user_pii[:best_effort_phone_number_for_socure] = best_effort_phone
+
+      Idv::Agent.new(user_pii).proof_resolution(
         document_capture_session,
         trace_id: amzn_trace_id,
         user_id: current_user.id,
@@ -46,6 +49,14 @@ module Idv
     def log_event_for_missing_threatmetrix_session_id
       return if self.class.threatmetrix_session_id_present_or_not_required?(idv_session:)
       analytics.idv_verify_info_missing_threatmetrix_session_id if idv_session.ssn_step_complete?
+    end
+
+    def best_effort_phone
+      if idv_session.phone_for_mobile_flow
+        { source: :hybrid_handoff, phone: idv_session.phone_for_mobile_flow }
+      elsif current_user.default_phone_configuration
+        { source: :mfa, phone: current_user.default_phone_configuration.formatted_phone }
+      end
     end
 
     private
