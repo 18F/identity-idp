@@ -102,18 +102,13 @@ RSpec.describe Proofing::Aamva::Proofer do
         end
       end
 
-      def self.test_in_verified_attributes(logged_attribute = nil)
-        if logged_attribute
-          it "does not stop #{logged_attribute} from appearing in verified_attributes" do
-            expect(result.verified_attributes).to include(logged_attribute)
-          end
-          it 'does not itself appear in verified_attributes' do
-            expect(result.verified_attributes).not_to include(attribute)
-          end
-        else
-          it 'appears in verified_attributes' do
-            expect(result.verified_attributes).to include(attribute)
-          end
+      def self.test_in_verified_attributes(logged_attribute)
+        it "does not stop #{logged_attribute} from appearing in verified_attributes" do
+          expect(result.verified_attributes).to include(logged_attribute)
+        end
+
+        it 'does not itself appear in verified_attributes' do
+          expect(result.verified_attributes).not_to include(attribute)
         end
       end
 
