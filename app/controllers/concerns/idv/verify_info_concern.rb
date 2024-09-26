@@ -207,7 +207,7 @@ module Idv
         :proofing_results, :context, :stages, :threatmetrix, :response_body
       )
       if threatmetrix_reponse_body.present?
-        analytics.idv_doc_auth_verify_threatmetrix_response_body(
+        analytics.idv_threatmetrix_response_body(
           response_body: threatmetrix_reponse_body,
         )
       end

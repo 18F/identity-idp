@@ -139,7 +139,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
           ),
         )
         expect(@analytics).to have_logged_event(
-          :idv_doc_auth_verify_threatmetrix_response_body,
+          :idv_threatmetrix_response_body,
           response_body: {
             session_id: 'threatmetrix_session_id',
             tmx_summary_reason_code: ['Identity_Negative_History'],

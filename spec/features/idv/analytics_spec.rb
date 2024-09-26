@@ -221,7 +221,7 @@ RSpec.feature 'Analytics Regression', :js do
       'IdV: doc auth verify submitted' => {
         flow_path: 'standard', step: 'verify', analytics_id: 'Doc Auth'
       },
-      idv_doc_auth_verify_threatmetrix_response_body: (
+      idv_threatmetrix_response_body: (
         if threatmetrix_response_body.present?
           { response_body: threatmetrix_response_body }
         end
@@ -341,7 +341,7 @@ RSpec.feature 'Analytics Regression', :js do
       'IdV: doc auth verify submitted' => {
         flow_path: 'hybrid', step: 'verify', analytics_id: 'Doc Auth'
       },
-      idv_doc_auth_verify_threatmetrix_response_body: (
+      idv_threatmetrix_response_body: (
         if threatmetrix_response_body.present?
           { response_body: threatmetrix_response_body }
         end
@@ -458,7 +458,7 @@ RSpec.feature 'Analytics Regression', :js do
       'IdV: doc auth verify submitted' => {
         flow_path: 'standard', step: 'verify', analytics_id: 'Doc Auth'
       },
-      idv_doc_auth_verify_threatmetrix_response_body: (
+      idv_threatmetrix_response_body: (
         if threatmetrix_response_body.present?
           { response_body: threatmetrix_response_body }
         end
@@ -572,7 +572,7 @@ RSpec.feature 'Analytics Regression', :js do
       'IdV: doc auth verify submitted' => {
         analytics_id: 'In Person Proofing', step: 'verify', flow_path: 'standard', same_address_as_id: false
       },
-      idv_doc_auth_verify_threatmetrix_response_body: (
+      idv_threatmetrix_response_body: (
         if threatmetrix_response_body.present?
           { response_body: threatmetrix_response_body }
         end
@@ -695,7 +695,7 @@ RSpec.feature 'Analytics Regression', :js do
       'IdV: doc auth verify submitted' => {
         flow_path: 'standard', step: 'verify', analytics_id: 'Doc Auth'
       },
-      idv_doc_auth_verify_threatmetrix_response_body: (
+      idv_threatmetrix_response_body: (
         if threatmetrix_response_body.present?
           { response_body: threatmetrix_response_body }
         end

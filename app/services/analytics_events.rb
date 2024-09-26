@@ -2013,12 +2013,12 @@ module AnalyticsEvents
 
   # The JSON body of the response returned from Threatmetrix. PII has been removed.
   # @param [Hash] response_body The response body returned by ThreatMetrix
-  def idv_doc_auth_verify_threatmetrix_response_body(
+  def idv_threatmetrix_response_body(
     response_body: nil,
     **extra
   )
     track_event(
-      :idv_doc_auth_verify_threatmetrix_response_body,
+      :idv_threatmetrix_response_body,
       response_body: response_body,
       **extra,
     )
