@@ -380,7 +380,7 @@ RSpec.describe Analytics do
       end
     end
 
-    context 'a request_url without an app_identifier ' do
+    context 'a request_url without login_gov_app_differentiator ' do
       let(:session) do
         {
           sp: {
@@ -407,12 +407,13 @@ RSpec.describe Analytics do
       end
     end
 
-    context 'a request_url with an app_identifier ' do
+    context 'a request_url with login_gov_app_differentiator ' do
       let(:session) do
         {
           sp: {
             acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-            request_url: 'http://localhost:3000/openid_connect/authorize?app_identifier=NY',
+            request_url:
+              'http://localhost:3000/openid_connect/authorize?login_gov_app_differentiator=NY',
           },
         }
       end
@@ -422,7 +423,7 @@ RSpec.describe Analytics do
           sp_request: {
             component_values: { 'ial/1' => true },
             component_separator: ' ',
-            app_identifier: 'NY',
+            app_differentiator: 'NY',
           },
         }
       end
