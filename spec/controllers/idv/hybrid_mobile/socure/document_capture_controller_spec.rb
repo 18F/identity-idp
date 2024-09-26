@@ -65,7 +65,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
       let(:response_body) { { data: { url: response_redirect_url } } }
 
       before do
-        I18n.locale = expected_language
+        allow(I18n).to receive(:locale).and_return(expected_language)
         allow(request_class).to receive(:new).and_call_original
         get(:show)
       end
@@ -114,7 +114,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
                     documentType: 'license',
                     redirect: {
                       method: 'POST',
-                      url: idv_socure_document_capture_url,
+                      url: idv_hybrid_mobile_socure_document_capture_url,
                     },
                     language: 'zh-cn',
                   },
