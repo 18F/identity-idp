@@ -132,8 +132,6 @@ RSpec.feature 'document capture step', :js do
   end
 
   context 'selfie check' do
-    let(:selfie_check_enabled) { true }
-
     before do
       allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
     end
@@ -354,8 +352,6 @@ RSpec.feature 'document capture step', :js do
         end
 
         context 'when selfie check is not enabled (flag off, and/or in production)' do
-          let(:selfie_check_enabled) { false }
-
           it 'proceeds to the next page with valid info, excluding a selfie image' do
             perform_in_browser(:mobile) do
               visit_idp_from_oidc_sp_with_ial2
@@ -637,8 +633,6 @@ RSpec.feature 'document capture step', :js do
       end
     end
     context 'selfie check' do
-      let(:selfie_check_enabled) { true }
-
       before do
         allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
       end
@@ -871,8 +865,6 @@ RSpec.feature 'document capture step', :js do
           end
 
           context 'when selfie check is not enabled (flag off, and/or in production)' do
-            let(:selfie_check_enabled) { false }
-
             it 'proceeds to the next page with valid info, excluding a selfie image' do
               perform_in_browser(:mobile) do
                 visit_idp_from_oidc_sp_with_ial2
