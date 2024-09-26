@@ -147,6 +147,7 @@ class Analytics
   end
 
   def differentiator
+    return @differentiator if defined?(@differentiator)
     @differentiator ||= begin
       sp_request_url = session&.dig(:sp, :request_url)
       return nil if sp_request_url.blank?
