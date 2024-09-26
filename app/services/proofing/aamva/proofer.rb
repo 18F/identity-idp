@@ -28,6 +28,8 @@ module Proofing
         first_name
       ].freeze
 
+      REQUIRED_IF_PRESENT_ATTRIBUTES = [:state_id_expiration].freeze
+
       ADDRESS_ATTRIBUTES = [
         :address1,
         :address2,
@@ -132,6 +134,11 @@ module Proofing
       def successful?(verification_response)
         REQUIRED_VERIFICATION_ATTRIBUTES.each do |verification_attribute|
           return false unless verification_response.verification_results[verification_attribute]
+        end
+
+        REQUIRED_IF_PRESENT_ATTRIBUTES.each do |verification_attribute|
+          value = verification_response.verification_results[verification_attribute]
+          return false unless value.nil? || value == true
         end
 
         true
