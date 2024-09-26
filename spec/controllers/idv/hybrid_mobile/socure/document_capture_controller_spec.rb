@@ -62,7 +62,19 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
 
     context 'happy path' do
       let(:response_redirect_url) { 'https://boogie-woogie.com/dance' }
-      let(:response_body) { { data: { url: response_redirect_url } } }
+      let(:docv_transaction_token) { '176dnc45d-2e34-46f3-82217-6f540ae90673' }
+      let(:response_body) do
+        {
+          referenceId: '123ab45d-2e34-46f3-8d17-6f540ae90303',
+          data: {
+            eventId: 'zoYgIxEZUbXBoocYAnbb5DrT',
+            customerUserId: '121212',
+            docvTransactionToken: docv_transaction_token,
+            qrCode: 'data:image/png;base64,iVBO......K5CYII=',
+            url: response_redirect_url,
+          },
+        }
+      end
 
       before do
         allow(I18n).to receive(:locale).and_return(expected_language)
@@ -131,6 +143,11 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
         it 'it includes the socure redirect url' do
           expect(response).to have_http_status 200
           expect(response.body).to include(response_redirect_url)
+        end
+
+        it 'puts the docvTransactionToken into the document capture session' do
+          document_capture_session.reload
+          expect(document_capture_session.socure_docv_token).to eq(docv_transaction_token)
         end
       end
     end

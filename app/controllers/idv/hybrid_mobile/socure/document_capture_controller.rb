@@ -26,6 +26,10 @@ module Idv
           @document_response = document_response
           @url = document_response.dig('data', 'url')
 
+          document_capture_session = DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
+          document_capture_session.socure_docv_token = document_response.dig('data', 'docvTransactionToken')
+          document_capture_session.save
+
           # useful for analytics
           @msg = document_response['msg']
           @reference_id = document_response.dig('referenceId')

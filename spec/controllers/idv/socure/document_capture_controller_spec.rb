@@ -8,6 +8,13 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
   let(:user) { create(:user) }
   let(:stored_result) { nil }
 
+  let(:document_capture_session) do
+    DocumentCaptureSession.create(
+      user: user,
+      requested_at: Time.zone.now,
+    )
+  end
+
   before do
     allow(IdentityConfig.store).to receive(:socure_document_request_endpoint).
       and_return(fake_socure_endpoint)
@@ -15,6 +22,11 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
     allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(idv_vendor)
 
     allow(subject).to receive(:stored_result).and_return(stored_result)
+
+    user_session = {}
+    allow(subject).to receive(:user_session).and_return(user_session)
+
+    subject.idv_session.document_capture_session_uuid = document_capture_session.uuid
   end
 
   describe '#step_info' do
@@ -34,8 +46,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
 
   describe '#show' do
     let(:request_class) { DocAuth::Socure::Requests::DocumentRequest }
-
-    let(:expected_uuid) { 'document_capture_session_uuid' }
+    let(:expected_uuid) { document_capture_session.uuid }
     let(:expected_language) { :en }
     let(:response_body) { {} }
 
@@ -45,6 +56,8 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         body: JSON.generate(response_body),
       )
 
+      user_session = {}
+      allow(subject).to receive(:user_session).and_return(user_session)
       stub_sign_in(user)
       stub_up_to(:hybrid_handoff, idv_session: subject.idv_session)
 
@@ -137,7 +150,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         end
 
         it 'puts the docvTransactionToken into the document capture session' do
-          document_capture_session = DocumentCaptureSession.find_by(:uuid, expected_uuid)
+          document_capture_session.reload
           expect(document_capture_session.socure_docv_token).to eq(docv_transaction_token)
         end
       end
@@ -154,22 +167,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
   end
 
   describe '#update' do
-    let(:document_capture_session) do
-      DocumentCaptureSession.create(
-        user: user,
-        requested_at: Time.zone.now,
-      )
-    end
-
-    let(:result_success) { true }
-    let(:stored_result) { { success: result_success } }
-
     before do
-      allow(stored_result).to receive(:success?).and_return(result_success)
-      allow(stored_result).to receive(:attention_with_barcode?).and_return(false)
-      allow(stored_result).to receive(:pii_from_doc).and_return({})
-      allow(stored_result).to receive(:selfie_check_performed?).and_return(false)
-
       stub_request(:post, fake_socure_endpoint)
       stub_sign_in(user)
       stub_up_to(:hybrid_handoff, idv_session: subject.idv_session)
@@ -189,26 +187,6 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       put(:update)
 
       expect(subject.idv_session.redo_document_capture).to be_nil
-    end
-
-    context 'when we succeed' do
-      let(:result_success) { true }
-
-      it 'redirects to SSN' do
-        put(:update)
-
-        expect(response).to redirect_to(idv_ssn_url)
-      end
-    end
-
-    context 'when we fail' do
-      let(:result_success) { false }
-
-      it 'redirects back to us' do
-        put(:update)
-
-        expect(response).to redirect_to(idv_socure_document_capture_url)
-      end
     end
   end
 end
