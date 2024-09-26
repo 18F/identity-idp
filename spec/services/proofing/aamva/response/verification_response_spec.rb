@@ -13,15 +13,15 @@ RSpec.describe Proofing::Aamva::Response::VerificationResponse do
   end
   let(:verification_results) do
     {
-      state_id_expiration: nil,
-      state_id_issued: nil,
+      state_id_expiration: true,
+      state_id_issued: true,
       state_id_number: true,
       state_id_type: true,
       dob: true,
       last_name: true,
       first_name: true,
       address1: true,
-      address2: nil,
+      address2: true,
       city: true,
       state: true,
       zipcode: true,

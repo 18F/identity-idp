@@ -114,7 +114,15 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result_context_stages_state_id[:timed_out]).to eq(false)
         expect(result_context_stages_state_id[:transaction_id]).to eq('1234-abcd-efgh')
         expect(result_context_stages_state_id[:verified_attributes]).to match_array(
-          %w[address state_id_number state_id_type dob last_name first_name],
+          %w[
+            address
+            state_id_expiration
+            state_id_issued
+            state_id_number
+            state_id_type dob
+            last_name
+            first_name
+          ],
         )
 
         # result[:context][:stages][:threatmetrix]
@@ -198,7 +206,15 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result_context_stages_state_id[:vendor_name]).to eq('aamva:state_id')
         expect(result_context_stages_state_id[:success]).to eq(true)
         expect(result_context_stages_state_id[:verified_attributes]).to match_array(
-          %w[address state_id_number state_id_type dob last_name first_name],
+          %w[
+            address
+            state_id_expiration
+            state_id_issued
+            state_id_number
+            state_id_type dob
+            last_name
+            first_name
+          ],
         )
       end
     end
@@ -439,7 +455,15 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result_context_stages_state_id[:timed_out]).to eq(false)
         expect(result_context_stages_state_id[:transaction_id]).to eq('1234-abcd-efgh')
         expect(result_context_stages_state_id[:verified_attributes]).to match_array(
-          %w[address state_id_number state_id_type dob last_name first_name],
+          %w[
+            address
+            state_id_expiration
+            state_id_issued
+            state_id_number
+            state_id_type dob
+            last_name
+            first_name
+          ],
         )
 
         # result[:context][:stages][:threatmetrix]
