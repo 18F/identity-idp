@@ -62,10 +62,12 @@ component_previews_enabled: false
 compromised_password_randomizer_threshold: 900
 compromised_password_randomizer_value: 1000
 country_phone_number_overrides: '{}'
+database_advisory_locks_enabled: false
 database_host: ''
 database_name: ''
 database_password: ''
 database_pool_idp: 5
+database_prepared_statements_enabled: false
 database_read_replica_host: ''
 database_readonly_password: ''
 database_readonly_username: ''

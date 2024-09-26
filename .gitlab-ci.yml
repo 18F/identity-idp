@@ -63,7 +63,7 @@ stages:
   - after_test
   - review
   - scan
-  - deploy_production
+  - deploy_eks
 
 workflow:
   rules:
@@ -604,21 +604,6 @@ stop-review-app:
     - if: $CI_PIPELINE_SOURCE != "merge_request_event"
       when: never
 
-deploy_production:
-  stage: deploy_production
-  allow_failure: true
-  needs:
-    - job: build-review-image
-  resource_group: $CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov
-  extends: .deploy
-  environment:
-    name: production
-    deployment_tier: production
-    url: https://$CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov
-  rules:
-    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
-
-
 include:
   - template: Jobs/SAST.gitlab-ci.yml
   - template: Jobs/Dependency-Scanning.gitlab-ci.yml
@@ -867,3 +852,15 @@ audit_packages_scheduled:
       fi
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
+
+# EKS deployment
+deploy_eks:
+  trigger:
+    project: lg-public/identity-eks-control
+    branch: main
+  stage: deploy_eks
+  variables:
+    APP: idp
+    IMAGE_TAG: $CI_COMMIT_SHA
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
