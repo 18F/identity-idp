@@ -87,7 +87,9 @@ module AnalyticsEvents
   # @param [Time] account_confirmed_at date that account creation was confirmed
   # (rounded) or nil if the account was not confirmed
   # @param [Hash] mfa_method_counts Hash of MFA method with the number of that method on the account
+  # @param [Boolean] identity_verified if the deletion occurs on a verified account
   # @param [Hash] errors Errors resulting from form validation
+  # @param [String, nil] profile_idv_level shows how verified the user is
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # An account has been deleted through the account reset flow
   def account_reset_delete(
@@ -96,7 +98,9 @@ module AnalyticsEvents
     account_age_in_days:,
     account_confirmed_at:,
     mfa_method_counts:,
+    identity_verified:,
     errors:,
+    profile_idv_level: nil,
     error_details: nil,
     **extra
   )
@@ -107,6 +111,8 @@ module AnalyticsEvents
       account_age_in_days:,
       account_confirmed_at:,
       mfa_method_counts:,
+      profile_idv_level:,
+      identity_verified:,
       errors:,
       error_details:,
       **extra,
@@ -4585,14 +4591,17 @@ module AnalyticsEvents
   # Logs a Socure KYC result alongside a resolution result for later comparison.
   # @param [Hash] socure_result Result from Socure KYC API call
   # @param [Hash] resolution_result Result from resolution proofing
+  # @param [String,nil] phone_source Whether the phone number is from MFA or hybrid handoff
   def idv_socure_shadow_mode_proofing_result(
     socure_result:,
     resolution_result:,
+    phone_source:,
     **extra
   )
     track_event(
       :idv_socure_shadow_mode_proofing_result,
       resolution_result: resolution_result.to_h,
+      phone_source:,
       socure_result: socure_result.to_h,
       **extra,
     )
@@ -4756,6 +4765,11 @@ module AnalyticsEvents
       opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
       **extra,
     )
+  end
+
+  # The user ended up at the "Verify info" screen without a Threatmetrix session id.
+  def idv_verify_info_missing_threatmetrix_session_id(**extra)
+    track_event(:idv_verify_info_missing_threatmetrix_session_id, **extra)
   end
 
   # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled

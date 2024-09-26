@@ -133,6 +133,21 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
       end
     end
 
+    context 'address has unsupported characters' do
+      subject(:response) do
+        post :index, params: { locale: locale,
+                               address: { street_address: '1600, Pennsylvania Ave',
+                                          city: 'Washington',
+                                          state: 'DC',
+                                          zip_code: '20500' } }
+      end
+
+      it 'returns unprocessable entity' do
+        subject
+        expect(response.status).to eq 422
+      end
+    end
+
     context 'no addresses found by usps' do
       before do
         allow(proofer).to receive(:request_facilities).with(address, false).
@@ -302,6 +317,35 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
           exception_message: filtered_message,
           response_body_present: true,
           response_body: { responseMessage: filtered_message },
+          response_status_code: 400,
+        )
+
+        status = response.status
+        expect(status).to eq 422
+      end
+    end
+
+    context 'with 400 error without a response message' do
+      let(:response_message) { 'SponsorID 57 is not registered as an IPP client' }
+      let(:response_body) { { differentMessage: 'Something else is wrong' } }
+      let(:error_response) { { body: response_body, status: 400 } }
+      let(:sponsor_id_error) { Faraday::BadRequestError.new(response_message, error_response) }
+      let(:filtered_message) { 'sponsorID [FILTERED] is not registered as an IPP client' }
+
+      before do
+        allow(proofer).to receive(:request_facilities).and_raise(sponsor_id_error)
+      end
+
+      it 'returns an unprocessible entity client error with scrubbed analytics event' do
+        subject
+
+        expect(@analytics).to have_logged_event(
+          'Request USPS IPP locations: request failed',
+          api_status_code: 422,
+          exception_class: sponsor_id_error.class,
+          exception_message: filtered_message,
+          response_body_present: true,
+          response_body: response_body,
           response_status_code: 400,
         )
 

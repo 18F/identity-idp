@@ -13,7 +13,7 @@ module IaaReportingHelper
   ) do
     # ex LG123567-0001
     def key
-      "#{gtc_number}-#{format('%04d', order_number)}"
+      IaaReportingHelper.key(gtc_number:, order_number:)
     end
   end
 
@@ -73,5 +73,9 @@ module IaaReportingHelper
           )
         end
       end.compact
+  end
+
+  def key(gtc_number:, order_number:)
+    "#{gtc_number}-#{format('%04d', order_number)}"
   end
 end

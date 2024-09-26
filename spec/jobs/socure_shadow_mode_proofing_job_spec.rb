@@ -18,7 +18,7 @@ RSpec.describe SocureShadowModeProofingJob do
   end
 
   let(:applicant_pii) do
-    Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE
+    Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN
   end
 
   let(:encrypted_arguments) do
@@ -105,6 +105,13 @@ RSpec.describe SocureShadowModeProofingJob do
             },
           },
         },
+        biographical_info: {
+          identity_doc_address_state: nil,
+          same_address_as_id: nil,
+          state: 'MT',
+          state_id_jurisdiction: 'ND',
+          state_id_number: '#############',
+        },
         ssn_is_unique: true,
       },
     )
@@ -175,20 +182,8 @@ RSpec.describe SocureShadowModeProofingJob do
     end
 
     context 'when document capture session result is present in redis' do
-      it 'makes a proofing call' do
-        expect(job.proofer).to receive(:proof).and_call_original
-        perform
-      end
-
-      it 'does not log an idv_socure_shadow_mode_proofing_result_missing event' do
-        perform
-        expect(analytics).not_to have_logged_event(:idv_socure_shadow_mode_proofing_result_missing)
-      end
-
-      it 'logs an event' do
-        perform
-        expect(analytics).to have_logged_event(
-          :idv_socure_shadow_mode_proofing_result,
+      let(:expected_event_body) do
+        {
           user_id: user.uuid,
           resolution_result: {
             success: true,
@@ -250,6 +245,13 @@ RSpec.describe SocureShadowModeProofingJob do
             ssn_is_unique: true,
             threatmetrix_review_status: 'pass',
             timed_out: false,
+            biographical_info: {
+              identity_doc_address_state: nil,
+              same_address_as_id: nil,
+              state: 'MT',
+              state_id_jurisdiction: 'ND',
+              state_id_number: '#############',
+            },
           },
           socure_result: {
             attributes_requiring_additional_verification: [],
@@ -264,7 +266,50 @@ RSpec.describe SocureShadowModeProofingJob do
             vendor_workflow: nil,
             verified_attributes: %i[address first_name last_name phone ssn dob].to_set,
           },
+        }
+      end
+
+      it 'makes a proofing call' do
+        expect(job.proofer).to receive(:proof).and_call_original
+        perform
+      end
+
+      it 'does not log an idv_socure_shadow_mode_proofing_result_missing event' do
+        perform
+        expect(analytics).not_to have_logged_event(:idv_socure_shadow_mode_proofing_result_missing)
+      end
+
+      it 'logs an event' do
+        perform
+        expect(analytics).to have_logged_event(
+          :idv_socure_shadow_mode_proofing_result,
+          expected_event_body,
         )
+      end
+
+      context 'when the user has an MFA phone number' do
+        let(:applicant_pii) do
+          Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(
+            best_effort_phone_number_for_socure: {
+              source: :mfa,
+              phone: '1 202-555-0000',
+            },
+          )
+        end
+
+        let(:encrypted_arguments) do
+          Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
+            JSON.generate({ applicant_pii: applicant_pii }),
+          )
+        end
+
+        it 'logs an event with the phone number' do
+          perform
+          expect(analytics).to have_logged_event(
+            :idv_socure_shadow_mode_proofing_result,
+            expected_event_body.merge(phone_source: 'mfa'),
+          )
+        end
       end
 
       context 'when socure proofer raises an error' do
@@ -335,22 +380,71 @@ RSpec.describe SocureShadowModeProofingJob do
       job.build_applicant(encrypted_arguments:, user_email:)
     end
 
-    it 'builds an applicant structure that looks right' do
-      expect(build_applicant).to eql(
-        {
-          first_name: 'FAKEY',
-          last_name: 'MCFAKERSON',
-          address1: '1 FAKE RD',
-          address2: nil,
-          city: 'GREAT FALLS',
-          state: 'MT',
-          zipcode: '59010-1234',
+    let(:expected_attributes) do
+      {
+        first_name: 'FAKEY',
+        last_name: 'MCFAKERSON',
+        address1: '1 FAKE RD',
+        address2: nil,
+        city: 'GREAT FALLS',
+        state: 'MT',
+        zipcode: '59010-1234',
+        dob: '1938-10-06',
+        ssn: '900-66-1234',
+        email: user.email,
+      }
+    end
+
+    context 'when the user has a phone directly passed in' do
+      let(:applicant_pii) do
+        Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(
           phone: '12025551212',
-          dob: '1938-10-06',
-          ssn: '900-66-1234',
-          email: user.email,
-        },
-      )
+        )
+      end
+
+      let(:encrypted_arguments) do
+        Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
+          JSON.generate({ applicant_pii: }),
+        )
+      end
+
+      it 'builds an applicant structure with that phone number' do
+        expect(build_applicant).to eql(
+          expected_attributes.merge(phone: '12025551212'),
+        )
+      end
+    end
+
+    context 'when the user has a hybrid-handoff phone' do
+      let(:applicant_pii_no_phone) do
+        Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(
+          best_effort_phone_number_for_socure: {
+            source: :hybrid_handoff,
+            phone: '12025556789',
+          },
+        )
+      end
+
+      let(:encrypted_arguments) do
+        Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
+          JSON.generate({ applicant_pii: applicant_pii_no_phone }),
+        )
+      end
+
+      it 'builds an applicant using the hybrid handoff number' do
+        expect(build_applicant).to eql(
+          expected_attributes.merge(
+            phone: '12025556789',
+            phone_source: 'hybrid_handoff',
+          ),
+        )
+      end
+    end
+
+    context 'when no phone is available for the user' do
+      it 'does not set phone at all' do
+        expect(build_applicant).to eql(expected_attributes)
+      end
     end
   end
 

@@ -9,6 +9,7 @@ gpo_cron_24h = '0 10 * * *' # 10am UTC is 5am EST/6am EDT
 cron_every_monday = 'every Monday at 0:25 UTC' # equivalent to '25 0 * * 1'
 cron_every_monday_1am = 'every Monday at 1:00 UTC' # equivalent to '0 1 * * 1'
 cron_every_monday_2am = 'every Monday at 2:00 UTC' # equivalent to '0 2 * * 1'
+cron_monthly = '30 0 1 * *' # monthly, 0:30 UTC to not overlap with jobs running at 0000
 
 if defined?(Rails::Console)
   Rails.logger.info 'job_configurations: console detected, skipping schedule'
@@ -55,6 +56,12 @@ else
       # Combined Invoice Supplement Report to S3
       combined_invoice_supplement_report_v2: {
         class: 'Reports::CombinedInvoiceSupplementReportV2',
+        cron: cron_24h,
+        args: -> { [Time.zone.today] },
+      },
+      # Idv Legacy Conversion Supplement Report to S3
+      idv_legacy_conversion_supplement_report: {
+        class: 'Reports::IdvLegacyConversionSupplementReport',
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
@@ -217,7 +224,7 @@ else
         cron: cron_24h_and_a_bit,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
-      # Previous week's drop of report
+      # Previous week's drop off report
       weekly_drop_off_report: {
         class: 'Reports::DropOffReport',
         cron: cron_every_monday_1am,
@@ -227,6 +234,12 @@ else
       weekly_protocols_report: {
         class: 'Reports::ProtocolsReport',
         cron: cron_every_monday_2am,
+        args: -> { [Time.zone.yesterday.end_of_day] },
+      },
+      # Previous months's mfa report
+      monthly_mfa_report: {
+        class: 'Reports::MfaReport',
+        cron: cron_monthly,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
     }.compact

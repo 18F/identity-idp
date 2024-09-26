@@ -586,6 +586,17 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_26_153042) do
     t.index ["request_id"], name: "index_sp_return_logs_on_request_id", unique: true
   end
 
+  create_table "sp_upgraded_biometric_profiles", force: :cascade do |t|
+    t.datetime "upgraded_at", null: false
+    t.bigint "user_id", null: false
+    t.string "idv_level", null: false
+    t.string "issuer", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["issuer", "upgraded_at"], name: "index_sp_upgraded_biometric_profiles_on_issuer_and_upgraded_at"
+    t.index ["user_id"], name: "index_sp_upgraded_biometric_profiles_on_user_id"
+  end
+
   create_table "suspended_emails", force: :cascade do |t|
     t.bigint "email_address_id", null: false
     t.string "digested_base_email", null: false

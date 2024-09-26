@@ -4,7 +4,7 @@ import type { RegisterFieldCallback } from '@18f/identity-form-steps';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import { SpinnerButtonRefHandle, SpinnerButton } from '@18f/identity-spinner-button';
 import { ValidatedField } from '@18f/identity-validated-field';
-import { t } from '@18f/identity-i18n';
+import { useI18n } from '@18f/identity-react-i18n';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import useValidatedUspsLocations from '../hooks/use-validated-usps-locations';
 
@@ -30,6 +30,7 @@ export default function FullAddressSearchInput({
   registerField = () => undefined,
   usStatesTerritories,
 }: FullAddressSearchInputProps) {
+  const { t } = useI18n();
   const spinnerButtonRef = useRef<SpinnerButtonRefHandle>(null);
   const [addressValue, setAddressValue] = useState('');
   const [cityValue, setCityValue] = useState('');
@@ -82,12 +83,27 @@ export default function FullAddressSearchInput({
     [addressValue, cityValue, stateValue, zipCodeValue],
   );
 
+  const getErroneousAddressChars = () => {
+    const addressReStr = validatedAddressFieldRef.current?.pattern;
+
+    if (!addressReStr) {
+      return;
+    }
+
+    const addressRegex = new RegExp(addressReStr, 'g');
+    const errChars = addressValue.replace(addressRegex, '');
+    const uniqErrChars = [...new Set(errChars.split(''))].join('');
+    return uniqErrChars;
+  };
+
   return (
     <>
       <ValidatedField
         ref={validatedAddressFieldRef}
         messages={{
-          patternMismatch: t('simple_form.required.text'),
+          patternMismatch: t('in_person_proofing.form.address.errors.unsupported_chars', {
+            char_list: getErroneousAddressChars(),
+          }),
         }}
       >
         <TextInput
@@ -98,7 +114,7 @@ export default function FullAddressSearchInput({
           label={t('in_person_proofing.body.location.po_search.address_label')}
           disabled={disabled}
           maxLength={255}
-          pattern=".*\S.*$"
+          pattern="[A-Za-z0-9\-' .\/#]*"
         />
       </ValidatedField>
       <ValidatedField

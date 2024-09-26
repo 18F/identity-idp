@@ -78,9 +78,7 @@ RSpec.describe Idv::WelcomeController do
       end
 
       it 'does not overwrite the proofing started timestamp' do
-        get :show
-
-        expect(subject.idv_session.proofing_started_at).to eq(5.minutes.ago.iso8601)
+        expect { get :show }.to_not change { subject.idv_session.proofing_started_at }
       end
 
       context 'and verify info already completed' do

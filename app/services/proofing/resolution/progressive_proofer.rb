@@ -32,7 +32,7 @@ module Proofing
         ipp_enrollment_in_progress:,
         current_sp:
       )
-        @applicant_pii = applicant_pii
+        @applicant_pii = applicant_pii.except(:best_effort_phone_number_for_socure)
         @request_ip = request_ip
         @threatmetrix_session_id = threatmetrix_session_id
         @timer = timer
@@ -53,6 +53,7 @@ module Proofing
           state_id_result: state_id_result,
           residential_resolution_result: residential_instant_verify_result,
           same_address_as_id: applicant_pii[:same_address_as_id],
+          applicant_pii: applicant_pii,
         )
       end
 
