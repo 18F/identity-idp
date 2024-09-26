@@ -4905,6 +4905,7 @@ module AnalyticsEvents
   # @param [Boolean] new_device Whether the user is authenticating from a new device
   # @param [String] multi_factor_auth_method Authentication method used
   # @param [String] multi_factor_auth_method_created_at When the authentication method was created
+  # @param [Integer] mfa_attempts number of MFA setup attempts
   # @param [Integer] auth_app_configuration_id Database ID of authentication app configuration
   # @param [Integer] piv_cac_configuration_id Database ID of PIV/CAC configuration
   # @param [String] piv_cac_configuration_dn_uuid PIV/CAC X509 distinguished name UUID
@@ -4928,6 +4929,7 @@ module AnalyticsEvents
     errors: nil,
     error_details: nil,
     context: nil,
+    mfa_attempts: nil,
     multi_factor_auth_method_created_at: nil,
     auth_app_configuration_id: nil,
     piv_cac_configuration_id: nil,
@@ -4951,6 +4953,7 @@ module AnalyticsEvents
       error_details:,
       context:,
       new_device:,
+      mfa_attempts:,
       multi_factor_auth_method:,
       multi_factor_auth_method_created_at:,
       auth_app_configuration_id:,
@@ -5048,6 +5051,7 @@ module AnalyticsEvents
   end
 
   # @param ["authentication", "reauthentication", "confirmation"] context User session context
+  # @param [Integer] mfa_attempts number of MFA setup attempts
   # @param [String] multi_factor_auth_method
   # @param [Boolean] confirmation_for_add_phone
   # @param [Integer] phone_configuration_id
@@ -5067,11 +5071,13 @@ module AnalyticsEvents
     phone_fingerprint:,
     in_account_creation_flow:,
     enabled_mfa_methods_count:,
+    mfa_attempts: nil,
     **extra
   )
     track_event(
       'Multi-Factor Authentication: enter OTP visited',
       context:,
+      mfa_attempts:,
       multi_factor_auth_method:,
       confirmation_for_add_phone:,
       phone_configuration_id:,
