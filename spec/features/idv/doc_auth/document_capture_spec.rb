@@ -8,8 +8,6 @@ RSpec.feature 'document capture step', :js do
 
   let(:max_attempts) { IdentityConfig.store.doc_auth_max_attempts }
   let(:fake_analytics) { FakeAnalytics.new }
-  let(:front_id_failure) { t('doc_auth.errors.general.multiple_front_id_failures') }
-  let(:back_id_failure) { t('doc_auth.errors.general.multiple_back_id_failures') }
 
   before(:each) do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
@@ -163,7 +161,6 @@ RSpec.feature 'document capture step', :js do
           fill_out_ssn_form_ok
           click_idv_continue
           complete_verify_step
-          # expect(page).to have_content(t('doc_auth.headings.document_capture_selfie'))
           expect(page).to have_current_path(idv_phone_url)
         end
       end
