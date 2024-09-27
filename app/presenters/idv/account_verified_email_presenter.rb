@@ -19,7 +19,7 @@ module Idv
     # We'll show the CTA section as long as there's an SP at all, and just
     # conditionalize the URL.
     def show_cta?
-      service_provider
+      !service_provider || service_provider_homepage_url.present?
     end
 
     # copypasta

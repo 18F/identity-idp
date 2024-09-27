@@ -1,12 +1,11 @@
 <%= image_tag(
-      #asset_url('email/user-signup-ial2.png'),
       attachments['verified.png'].url,
-      # width: 110,
-      # height: 80,
-      alt: '', # this is decorative
+      width: 110,
+      height: 80,
+      alt: '',
       role: 'img',
       class: 'float-center padding-bottom-4',
-) %>
+    ) %>
 
 <h1><%= message.subject %></h1>
 
@@ -17,32 +16,40 @@
   <%= t('user_mailer.account_verified.intro_html', date: @date) %>
 </p>
 
-<% if @presenter.show_cta? %>
 <p>
-  <%= t('user_mailer.account_verified.next_step', sp_name: @presenter.sp_name) %>
+<% if @presenter.service_provider.present? %>
+  <% if @presenter.show_cta? %>
+    <%= t('user_mailer.account_verified.next_sign_in.with_sp.with_cta', sp_name: @presenter.service_provider.friendly_name) %>
+  <% else %>
+    <%= t('user_mailer.account_verified.next_sign_in.with_sp.without_cta', sp_name: @presenter.service_provider.friendly_name) %>
+  <% end %>
+<% else %>
+  <%= t('user_mailer.account_verified.next_sign_in.without_sp', app_name: APP_NAME) %>
+<% end %>
 </p>
 
-<table class="button expanded large radius">
-  <tbody>
-  <tr>
-    <td>
-      <table>
-        <tbody>
-        <tr>
-          <td>
-            <%= link_to t('user_mailer.account_verified.sign_in'), @presenter.sign_in_url,
-                        target: '_blank', class: 'btn-warn', rel: 'noopener' %>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    </td>
-  </tr>
-  </tbody>
-</table>
-<p>
-  <%= link_to(@presenter.sign_in_url, @presenter.sign_in_url, target: '_blank', rel: 'noopener') %>
-</p>
+<% if @presenter.show_cta? %>
+  <table class="button expanded large radius">
+    <tbody>
+    <tr>
+      <td>
+        <table>
+          <tbody>
+          <tr>
+            <td>
+              <%= link_to t('user_mailer.account_verified.sign_in'), @presenter.sign_in_url,
+                          target: '_blank', class: 'btn-warn', rel: 'noopener' %>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <p>
+    <%= link_to(@presenter.sign_in_url, @presenter.sign_in_url, target: '_blank', rel: 'noopener') %>
+  </p>
 <% end %>
 
 <p>
@@ -51,7 +58,7 @@
         change_password_link_html: link_to(
           t('user_mailer.account_verified.change_password_link'),
           new_user_password_url,
-          ),
+        ),
         contact_link_html: link_to(t('user_mailer.account_verified.contact_link'), MarketingSite.contact_url),
       )
   %>
