@@ -712,8 +712,15 @@ RSpec.feature 'document capture step', :js do
               # when there are multiple doc auth errors on front and back
               it 'shows the correct error message for the given error' do
                 perform_in_browser(:mobile) do
+                  click_continue
                   use_id_image('ial2_test_credential_multiple_doc_auth_failures_both_sides.yml')
                   continue_to_selfie_upload
+
+                  click_idv_submit_default
+                  expect(page).not_to have_content(t('doc_auth.headings.capture_complete'))
+                  expect(page).not_to have_content(t('doc_auth.errors.rate_limited_heading'))
+                  expect(page).to have_title(t('doc_auth.headings.selfie_capture'))
+
                   use_selfie_image('ial2_test_credential_multiple_doc_auth_failures_both_sides.yml')
                   submit_images
 
@@ -844,16 +851,6 @@ RSpec.feature 'document capture step', :js do
                     biometric_comparison_required: true,
                   )
                 end
-              end
-
-              it 'does not allow submission without selfie file' do
-                attach_images
-                continue_to_selfie_upload
-                expect(page).to have_title(t('doc_auth.headings.selfie_capture'))
-                click_idv_submit_default
-                expect(page).not_to have_content(t('doc_auth.headings.capture_complete'))
-                expect(page).not_to have_content(t('doc_auth.errors.rate_limited_heading'))
-                expect(page).to have_title(t('doc_auth.headings.selfie_capture'))
               end
 
               it_should_behave_like 'it has correct error displays'
