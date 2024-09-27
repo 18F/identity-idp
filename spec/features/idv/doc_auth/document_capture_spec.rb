@@ -714,8 +714,7 @@ RSpec.feature 'document capture step', :js do
                 perform_in_browser(:mobile) do
                   click_continue
                   use_id_image('ial2_test_credential_multiple_doc_auth_failures_both_sides.yml')
-                  continue_to_selfie_upload
-
+                  click_continue
                   click_idv_submit_default
                   expect(page).not_to have_content(t('doc_auth.headings.capture_complete'))
                   expect(page).not_to have_content(t('doc_auth.errors.rate_limited_heading'))
@@ -1059,12 +1058,6 @@ RSpec.feature 'document capture step', :js do
       expect(page).to have_content(resubmit_page_inline_selfie_error_message)
     else
       expect(page).not_to have_content(resubmit_page_inline_selfie_error_message)
-    end
-  end
-
-  def continue_to_selfie_upload
-    if IdentityConfig.store.doc_auth_separate_pages_enabled
-      click_continue
     end
   end
 
