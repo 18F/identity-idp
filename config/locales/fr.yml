@@ -1807,6 +1807,9 @@ user_mailer.account_verified.change_password_link: changer votre mot de passe
 user_mailer.account_verified.contact_link: nous contacter
 user_mailer.account_verified.greeting: Bonjour,
 user_mailer.account_verified.intro_html: Vous avez réussi à vérifier votre identité le %{date}.
+user_mailer.account_verified.next_sign_in.with_sp.with_cta: Maintenant, cliquez sur le bouton ou copiez le lien ci-dessous pour accéder à %{sp_name} et vous connecter.
+user_mailer.account_verified.next_sign_in.with_sp.without_cta: Vous pouvez désormais vous connecter depuis le site Web de %{sp_name}.
+user_mailer.account_verified.next_sign_in.without_sp: Maintenant, cliquez sur le bouton ou copiez le lien ci-dessous pour vous connecter à %{app_name}.
 user_mailer.account_verified.next_step: Maintenant, cliquez sur le bouton ou copiez le lien ci-dessous pour accéder à %{sp_name} et vous connecter.
 user_mailer.account_verified.sign_in: Se connecter
 user_mailer.account_verified.subject: Vous avez réussi à vérifier votre identité avec Login.gov

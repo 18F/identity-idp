@@ -1819,6 +1819,9 @@ user_mailer.account_verified.change_password_link: cambie su contraseña
 user_mailer.account_verified.contact_link: contáctenos
 user_mailer.account_verified.greeting: 'Hola:'
 user_mailer.account_verified.intro_html: El %{date}, verificó correctamente su identidad.
+user_mailer.account_verified.next_sign_in.with_sp.with_cta: A continuación, haga clic en el botón o copie el vínculo siguiente para acceder a %{sp_name} e iniciar sesión.
+user_mailer.account_verified.next_sign_in.with_sp.without_cta: Ya puede iniciar la sesión en el sitio web de %{sp_name}.
+user_mailer.account_verified.next_sign_in.without_sp: Luego, haga clic en el botón o copie el vínculo siguiente para iniciar sesión en %{app_name}.
 user_mailer.account_verified.next_step: A continuación, haga clic en el botón o copie el vínculo siguiente para acceder a %{sp_name} e iniciar sesión.
 user_mailer.account_verified.sign_in: Iniciar sesión
 user_mailer.account_verified.subject: Logró verificar su identidad con %{app_name}
