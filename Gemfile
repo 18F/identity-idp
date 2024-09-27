@@ -99,7 +99,6 @@ group :development do
   gem 'irb'
   gem 'letter_opener', '~> 1.8'
   gem 'rack-mini-profiler', '>= 1.1.3', require: false
-  gem 'sqlite3'
 end
 
 group :development, :test do
@@ -123,6 +122,7 @@ group :development, :test do
   gem 'rubocop-performance', '~> 1.20.2', require: false
   gem 'rubocop-rails', '>= 2.5.2', require: false
   gem 'rubocop-rspec', require: false
+  gem 'sqlite3', require: false
 end
 
 group :test do
