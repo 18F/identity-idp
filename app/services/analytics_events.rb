@@ -4657,6 +4657,19 @@ module AnalyticsEvents
     )
   end
 
+  # The JSON body of the response returned from Threatmetrix. PII has been removed.
+  # @param [Hash] response_body The response body returned by ThreatMetrix
+  def idv_threatmetrix_response_body(
+    response_body: nil,
+    **extra
+  )
+    track_event(
+      :idv_threatmetrix_response_body,
+      response_body: response_body,
+      **extra,
+    )
+  end
+
   # Track when USPS auth token refresh job completed
   def idv_usps_auth_token_refresh_job_completed(**extra)
     track_event(

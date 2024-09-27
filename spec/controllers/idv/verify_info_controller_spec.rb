@@ -235,6 +235,12 @@ RSpec.describe Idv::VerifyInfoController do
               ),
             ),
           )
+          expect(@analytics).to have_logged_event(
+            :idv_threatmetrix_response_body,
+            response_body: hash_including(
+              client: threatmetrix_client_id,
+            ),
+          )
         end
       end
 
