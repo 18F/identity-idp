@@ -137,7 +137,7 @@ class QueryCloudwatch
       @insert_statement ||= db.prepare(
         <<~SQL
           INSERT INTO 
-            events (id, timestamp, name, uuid, success, message, log_stream, log) 
+            events (id, timestamp, name, user_id, success, message, log_stream, log)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT (id) DO NOTHING
         SQL
