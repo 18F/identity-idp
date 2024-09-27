@@ -344,6 +344,22 @@ RSpec.describe QueryCloudwatch do
       end
 
       context 'with invalid json in @message' do
+        let(:message_1) { 'message 1 here, not at all json' }
+        let(:message_2) { 'message 2 here, not at all json' }
+
+        let(:query_results) do
+          [
+            [
+              { field: '@timestamp', value: '2024-01-11 22:26:50.336' },
+              { field: '@message', value: message_1 },
+            ],
+            [
+              { field: '@timestamp', value: '"2024-01-02 03:42:50.451",' },
+              { field: '@message', value: message_2 },
+            ],
+          ]
+        end
+
         it 'generates ids for events that start with NOID-' do
           run
           expect(db.get_first_value('SELECT COUNT(*) FROM events')).to eql(2)
@@ -363,6 +379,25 @@ RSpec.describe QueryCloudwatch do
             WARNING: For 2 events, @message did not contain valid JSON
             Wrote 2 rows to the 'events' table in events.db
           STR
+        end
+
+        context 'two messages are identitical' do
+          let(:query_results) do
+            [
+              [
+                { field: '@timestamp', value: '2024-01-11 22:26:50.336' },
+                { field: '@message', value: message_1 },
+              ],
+              [
+                { field: '@timestamp', value: '2024-01-11 22:26:50.336' },
+                { field: '@message', value: message_1 },
+              ],
+            ]
+          end
+          it 'only inserts 1 record' do
+            run
+            expect(db.get_first_value('SELECT COUNT(*) FROM events')).to eql(1)
+          end
         end
       end
 

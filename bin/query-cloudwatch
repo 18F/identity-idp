@@ -120,7 +120,7 @@ class QueryCloudwatch
 
       # NOTE: Order matters here
       row = {
-        id: json&.dig('id') || "NOID-#{SecureRandom.uuid}",
+        id: json&.dig('id') || generate_id(timestamp:,message:),
         timestamp:,
         name:json&.dig('name'),
         user_id: json&.dig('properties', 'user_id'),
@@ -168,6 +168,11 @@ class QueryCloudwatch
           );
         SQL
       )
+    end
+
+    def generate_id(timestamp:,message:)
+      hash = Digest::SHA256.hexdigest("#{timestamp}|#{message}")
+      "NOID-#{hash}"
     end
   end
 
