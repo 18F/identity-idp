@@ -78,7 +78,7 @@ class AccountShowPresenter
     I18n.l(user.pending_in_person_enrollment.due_date, format: :event_date)
   end
 
-  def formatted_nonbiometric_idv_date
+  def formatted_nonfacial_match_idv_date
     I18n.l(user.active_profile.created_at, format: :event_date)
   end
 

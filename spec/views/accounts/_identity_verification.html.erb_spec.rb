@@ -234,7 +234,7 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
             t(
               'account.index.verification.nonbiometric_verified_html',
               app_name: APP_NAME,
-              date: @presenter.formatted_nonbiometric_idv_date,
+              date: @presenter.formatted_nonfacial_match_idv_date,
             ),
           ),
         )

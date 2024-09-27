@@ -35,10 +35,10 @@ class AuthnContextResolver
   private
 
   def selected_vtr_parser_result_from_vtr_list
-    if biometric_proofing_vot.present? && user&.identity_verified_with_facial_match?
-      biometric_proofing_vot
-    elsif non_biometric_identity_proofing_vot.present? && user&.identity_verified?
-      non_biometric_identity_proofing_vot
+    if facial_match_proofing_vot.present? && user&.identity_verified_with_facial_match?
+      facial_match_proofing_vot
+    elsif non_facial_match_identity_proofing_vot.present? && user&.identity_verified?
+      non_facial_match_identity_proofing_vot
     elsif no_identity_proofing_vot.present?
       no_identity_proofing_vot
     else
@@ -52,11 +52,11 @@ class AuthnContextResolver
     end
   end
 
-  def biometric_proofing_vot
+  def facial_match_proofing_vot
     parsed_vectors_of_trust.find(&:facial_match?)
   end
 
-  def non_biometric_identity_proofing_vot
+  def non_facial_match_identity_proofing_vot
     parsed_vectors_of_trust.find do |vot_parser_result|
       vot_parser_result.identity_proofing? && !vot_parser_result.facial_match?
     end
