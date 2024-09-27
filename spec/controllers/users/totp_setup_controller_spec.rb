@@ -142,6 +142,37 @@ RSpec.describe Users::TotpSetupController, devise: true do
         end
       end
 
+      context 'when user presents correct code after submitting an incorrect code' do
+        before do
+          user = create(:user, :fully_registered)
+          secret = ROTP::Base32.random_base32
+          stub_sign_in(user)
+          stub_analytics
+
+          subject.user_session[:new_totp_secret] = 'abcdehij'
+
+          patch :confirm, params: { name: name, code: 123 }
+
+          subject.user_session[:new_totp_secret] = secret
+
+          patch :confirm, params: { name: name, code: generate_totp_code(secret) }
+        end
+
+        it 'logs correct events' do
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication Setup',
+            success: true,
+            errors: {},
+            totp_secret_present: true,
+            multi_factor_auth_method: 'totp',
+            auth_app_configuration_id: next_auth_app_id,
+            enabled_mfa_methods_count: 2,
+            in_account_creation_flow: false,
+            mfa_attempts: 2,
+          )
+        end
+      end
+
       context 'when user presents nil code' do
         before do
           user = create(:user, :fully_registered)
