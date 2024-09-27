@@ -240,7 +240,7 @@ RSpec.describe SamlRequestValidator do
             let(:sp) { create(:service_provider, :idv) }
 
             before do
-              allow_any_instance_of(ServiceProvider).to receive(:biometric_ial_allowed?).
+              allow_any_instance_of(ServiceProvider).to receive(:facial_match_ial_allowed?).
                 and_return(true)
             end
 
@@ -255,7 +255,7 @@ RSpec.describe SamlRequestValidator do
 
           context 'when the service provider is not allowed to use biometric ials' do
             before do
-              allow_any_instance_of(ServiceProvider).to receive(:biometric_ial_allowed?).
+              allow_any_instance_of(ServiceProvider).to receive(:facial_match_ial_allowed?).
                 and_return(false)
             end
 

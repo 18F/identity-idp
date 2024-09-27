@@ -217,7 +217,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
       context "when the IAL requested is #{biometric_ial}" do
         context 'when the service provider is allowed to use biometric ials' do
           before do
-            allow_any_instance_of(ServiceProvider).to receive(:biometric_ial_allowed?).
+            allow_any_instance_of(ServiceProvider).to receive(:facial_match_ial_allowed?).
               and_return(true)
           end
 
@@ -228,7 +228,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
         context 'when the service provider is not allowed to use biometric ials' do
           before do
-            allow_any_instance_of(ServiceProvider).to receive(:biometric_ial_allowed?).
+            allow_any_instance_of(ServiceProvider).to receive(:facial_match_ial_allowed?).
               and_return(false)
           end
 

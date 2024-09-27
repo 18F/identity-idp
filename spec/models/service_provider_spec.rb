@@ -81,7 +81,7 @@ RSpec.describe ServiceProvider do
     end
   end
 
-  describe '#biometric_ial_allowed?' do
+  describe '#facial_match_ial_allowed?' do
     context 'when the biometric ial feature is enabled' do
       before do
         allow(IdentityConfig.store).to receive(:biometric_ial_enabled).
@@ -95,7 +95,7 @@ RSpec.describe ServiceProvider do
         end
 
         it 'allows the service provider to use biometric IALs' do
-          expect(service_provider.biometric_ial_allowed?).to be(true)
+          expect(service_provider.facial_match_ial_allowed?).to be(true)
         end
       end
 
@@ -106,7 +106,7 @@ RSpec.describe ServiceProvider do
         end
 
         it 'does not allow the service provider to use biometric IALs' do
-          expect(service_provider.biometric_ial_allowed?).to be(false)
+          expect(service_provider.facial_match_ial_allowed?).to be(false)
         end
       end
     end
@@ -124,7 +124,7 @@ RSpec.describe ServiceProvider do
         end
 
         it 'does not allow the service provider to use biometric IALs' do
-          expect(service_provider.biometric_ial_allowed?).to be(false)
+          expect(service_provider.facial_match_ial_allowed?).to be(false)
         end
       end
     end

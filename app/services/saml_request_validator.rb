@@ -61,7 +61,7 @@ class SamlRequestValidator
     if !valid_authn_context? ||
        (identity_proofing_requested? && !service_provider.identity_proofing_allowed?) ||
        (ial_max_requested? && !service_provider.ialmax_allowed?) ||
-       (biometric_ial_requested? && !service_provider.biometric_ial_allowed?) ||
+       (biometric_ial_requested? && !service_provider.facial_match_ial_allowed?) ||
        (semantic_authn_contexts_requested? && !service_provider.semantic_authn_contexts_allowed?)
       errors.add(:authn_context, :unauthorized_authn_context, type: :unauthorized_authn_context)
     end
