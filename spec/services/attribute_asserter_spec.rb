@@ -4,7 +4,7 @@ RSpec.describe AttributeAsserter do
   include SamlAuthHelper
 
   let(:user) { create(:profile, :active, :verified).user }
-  let(:biometric_verified_user) { create(:profile, :active, :verified, idv_level: :in_person).user }
+  let(:facial_match_verified_user) { create(:profile, :active, :verified, idv_level: :in_person).user }
   let(:user_session) { {} }
   let(:identity) do
     build(
@@ -76,7 +76,7 @@ RSpec.describe AttributeAsserter do
         ]
       end
 
-      context 'when the user has been proofed without biometric' do
+      context 'when the user has been proofed without facial match' do
         context 'custom bundle includes email, phone, and first_name' do
           before do
             user.identities << identity
@@ -240,7 +240,7 @@ RSpec.describe AttributeAsserter do
         end
       end
 
-      context 'when the user has been proofed with biometric' do
+      context 'when the user has been proofed with facial match' do
         let(:user) { create(:profile, :active, :verified, idv_level: :in_person).user }
 
         before do
@@ -275,7 +275,7 @@ RSpec.describe AttributeAsserter do
     end
 
     context 'when an IAL1 request is made' do
-      context 'when the user has been proofed without biometric comparison' do
+      context 'when the user has been proofed without facial match comparison' do
         context 'custom bundle includes email, phone, and first_name' do
           before do
             user.identities << identity
@@ -444,7 +444,7 @@ RSpec.describe AttributeAsserter do
         end
       end
 
-      context 'when the user has been proofed with biometric comparison' do
+      context 'when the user has been proofed with facial match comparison' do
         let(:user) { create(:profile, :active, :verified, idv_level: :in_person).user }
 
         before do
@@ -593,7 +593,7 @@ RSpec.describe AttributeAsserter do
       end
     end
 
-    context 'when biometric IAL preferred is requested' do
+    context 'when facial match IAL preferred is requested' do
       let(:options) do
         {
           authn_context: [
@@ -602,34 +602,34 @@ RSpec.describe AttributeAsserter do
         }
       end
 
-      context 'when the user has been proofed with biometric' do
-        let(:user) { biometric_verified_user }
+      context 'when the user has been proofed with facial match' do
+        let(:user) { facial_match_verified_user }
 
         before do
           user.identities << identity
           subject.build
         end
 
-        it 'asserts IAL2 with biometric comparison' do
+        it 'asserts IAL2 with facial match comparison' do
           expected_ial = Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
           expect(get_asserted_attribute(user, :ial)).to eq expected_ial
         end
       end
 
-      context 'when the user has been proofed without biometric' do
+      context 'when the user has been proofed without facial match' do
         before do
           user.identities << identity
           subject.build
         end
 
-        it 'asserts IAL2 (without biometric comparison)' do
+        it 'asserts IAL2 (without facial match comparison)' do
           expected_ial = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
           expect(get_asserted_attribute(user, :ial)).to eq expected_ial
         end
       end
     end
 
-    context 'when biometric IAL required is requested' do
+    context 'when facial match IAL required is requested' do
       let(:options) do
         {
           authn_context: [
@@ -638,15 +638,15 @@ RSpec.describe AttributeAsserter do
         }
       end
 
-      context 'when the user has been proofed with biometric comparison' do
-        let(:user) { biometric_verified_user }
+      context 'when the user has been proofed with facial match comparison' do
+        let(:user) { facial_match_verified_user }
 
         before do
           user.identities << identity
           subject.build
         end
 
-        it 'asserts IAL2 with biometric comparison' do
+        it 'asserts IAL2 with facial match comparison' do
           expected_ial = Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
           expect(get_asserted_attribute(user, :ial)).to eq expected_ial
         end

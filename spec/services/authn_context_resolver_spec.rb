@@ -64,8 +64,8 @@ RSpec.describe AuthnContextResolver do
   end
 
   context 'when the user uses a vtr param with multiple vectors' do
-    context 'a biometric proofing vector and non-biometric proofing vector is present' do
-      it 'returns a biometric requirement if the user can satisfy it' do
+    context 'a facial match proofing vector and non-facial match proofing vector is present' do
+      it 'returns a facial match requirement if the user can satisfy it' do
         user = create(:user, :proofed)
         user.active_profile.update!(idv_level: 'unsupervised_with_selfie')
         vtr = ['C2.Pb', 'C2.P1']
@@ -82,7 +82,7 @@ RSpec.describe AuthnContextResolver do
         expect(result.identity_proofing?).to eq(true)
       end
 
-      it 'returns the non-biometric vector if the user has identity-proofed without biometric' do
+      it 'returns the non-facial match vector if the user has identity-proofed without facial match' do
         user = create(:user, :proofed)
         vtr = ['C2.Pb', 'C2.P1']
 
@@ -115,7 +115,7 @@ RSpec.describe AuthnContextResolver do
       end
     end
 
-    context 'a non-biometric identity proofing vector is present' do
+    context 'a non-facial match identity proofing vector is present' do
       it 'returns the identity-proofing requirement if the user can satisfy it' do
         user = create(:user, :proofed)
         vtr = ['C2.P1', 'C2']
@@ -346,7 +346,7 @@ RSpec.describe AuthnContextResolver do
         end
       end
 
-      context 'if requesting biometric comparison' do
+      context 'if requesting facial match comparison' do
         let(:bio_value) { 'required' }
         let(:acr_values) do
           [
@@ -355,7 +355,7 @@ RSpec.describe AuthnContextResolver do
           ].join(' ')
         end
 
-        context 'with biometric comparison is required' do
+        context 'with facial match comparison is required' do
           context 'when user is not verified' do
             it 'sets facial_match to true' do
               expect(result.identity_proofing?).to be true
@@ -366,7 +366,7 @@ RSpec.describe AuthnContextResolver do
           end
 
           context 'when the user is already verified' do
-            context 'without biometric comparison' do
+            context 'without facial match comparison' do
               let(:user) { build(:user, :proofed) }
 
               it 'asserts facial_match as true' do
@@ -377,10 +377,10 @@ RSpec.describe AuthnContextResolver do
               end
             end
 
-            context 'with biometric comparison' do
+            context 'with facial match comparison' do
               let(:user) { build(:user, :proofed_with_selfie) }
 
-              it 'asserts biometric comparison' do
+              it 'asserts facial match comparison' do
                 expect(result.identity_proofing?).to be true
                 expect(result.facial_match?).to be true
                 expect(result.two_pieces_of_fair_evidence?).to be true
@@ -390,14 +390,14 @@ RSpec.describe AuthnContextResolver do
           end
         end
 
-        context 'with biometric comparison is preferred' do
+        context 'with facial match comparison is preferred' do
           let(:bio_value) { 'preferred' }
 
           context 'when the user is already verified' do
-            context 'without biometric comparison' do
+            context 'without facial match comparison' do
               let(:user) { build(:user, :proofed) }
 
-              it 'falls back on proofing without biometric comparison' do
+              it 'falls back on proofing without facial match comparison' do
                 expect(result.identity_proofing?).to be true
                 expect(result.facial_match?).to be false
                 expect(result.two_pieces_of_fair_evidence?).to be false
@@ -405,10 +405,10 @@ RSpec.describe AuthnContextResolver do
               end
             end
 
-            context 'with biometric comparison' do
+            context 'with facial match comparison' do
               let(:user) { build(:user, :proofed_with_selfie) }
 
-              it 'asserts biometric comparison' do
+              it 'asserts facial match comparison' do
                 expect(result.identity_proofing?).to be true
                 expect(result.facial_match?).to be true
                 expect(result.aal2?).to be true
@@ -419,7 +419,7 @@ RSpec.describe AuthnContextResolver do
           context 'when the user has not yet been verified' do
             let(:user) { build(:user) }
 
-            it 'asserts biometric comparison' do
+            it 'asserts facial match comparison' do
               expect(result.identity_proofing?).to be true
               expect(result.facial_match?).to be true
               expect(result.aal2?).to be true
@@ -615,7 +615,7 @@ RSpec.describe AuthnContextResolver do
         end
       end
 
-      context 'if requesting biometric comparison' do
+      context 'if requesting facial match comparison' do
         let(:bio_value) { 'required' }
         let(:acr_values) do
           [
@@ -630,7 +630,7 @@ RSpec.describe AuthnContextResolver do
             and_return(true)
         end
 
-        context 'with biometric comparison is required' do
+        context 'with facial match comparison is required' do
           context 'when user is not verified' do
             it "asserts the resolved IAL as #{Saml::Idp::Constants::IAL_AUTH_ONLY_ACR}" do
               expect(subject.asserted_ial_acr).
@@ -647,7 +647,7 @@ RSpec.describe AuthnContextResolver do
           end
 
           context 'when the user is already verified' do
-            context 'without biometric comparison' do
+            context 'without facial match comparison' do
               let(:user) { build(:user, :proofed) }
 
               it 'asserts facial_match as true' do
@@ -659,10 +659,10 @@ RSpec.describe AuthnContextResolver do
               end
             end
 
-            context 'with biometric comparison' do
+            context 'with facial match comparison' do
               let(:user) { build(:user, :proofed_with_selfie) }
 
-              it 'asserts biometric comparison' do
+              it 'asserts facial match comparison' do
                 expect(result.identity_proofing?).to be true
                 expect(result.facial_match?).to be true
                 expect(result.two_pieces_of_fair_evidence?).to be true
@@ -673,14 +673,14 @@ RSpec.describe AuthnContextResolver do
           end
         end
 
-        context 'with biometric comparison is preferred' do
+        context 'with facial match comparison is preferred' do
           let(:bio_value) { 'preferred' }
 
           context 'when the user is already verified' do
-            context 'without biometric comparison' do
+            context 'without facial match comparison' do
               let(:user) { build(:user, :proofed) }
 
-              it 'falls back on proofing without biometric comparison' do
+              it 'falls back on proofing without facial match comparison' do
                 expect(result.identity_proofing?).to be true
                 expect(result.facial_match?).to be false
                 expect(result.two_pieces_of_fair_evidence?).to be false
@@ -689,10 +689,10 @@ RSpec.describe AuthnContextResolver do
               end
             end
 
-            context 'with biometric comparison' do
+            context 'with facial match comparison' do
               let(:user) { build(:user, :proofed_with_selfie) }
 
-              it 'asserts biometric comparison' do
+              it 'asserts facial match comparison' do
                 expect(result.identity_proofing?).to be true
                 expect(result.facial_match?).to be true
                 expect(result.two_pieces_of_fair_evidence?).to be true
@@ -705,7 +705,7 @@ RSpec.describe AuthnContextResolver do
           context 'when the user has not yet been verified' do
             let(:user) { build(:user) }
 
-            it 'asserts biometric comparison' do
+            it 'asserts facial match comparison' do
               expect(result.identity_proofing?).to be true
               expect(result.facial_match?).to be true
               expect(result.two_pieces_of_fair_evidence?).to be true

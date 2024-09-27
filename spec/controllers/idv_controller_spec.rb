@@ -56,7 +56,7 @@ RSpec.describe IdvController do
         expect(response).to redirect_to idv_activated_url
       end
 
-      context 'but user needs to redo idv with biometric' do
+      context 'but user needs to redo idv with facial match' do
         let(:current_sp) { create(:service_provider) }
 
         before do

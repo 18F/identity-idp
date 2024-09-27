@@ -21,7 +21,7 @@ RSpec.describe PendingProfilePolicy do
   end
 
   describe '#user_has_pending_profile?' do
-    context 'has an active non-biometric profile and biometric comparison is requested' do
+    context 'has an active non-facial match profile and facial match comparison is requested' do
       let(:idv_level) { :unsupervised_with_selfie }
       before do
         create(:profile, :active, :verified, idv_level: :legacy_unsupervised, user: user)
@@ -36,7 +36,7 @@ RSpec.describe PendingProfilePolicy do
         end
       end
 
-      context 'with biometric comparison requested ACR value' do
+      context 'with facial match comparison requested ACR value' do
         let(:acr_values) { Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF }
 
         it 'has a usable pending profile' do
@@ -45,7 +45,7 @@ RSpec.describe PendingProfilePolicy do
       end
     end
 
-    context 'no biometric comparison is requested' do
+    context 'no facial match comparison is requested' do
       let(:idv_level) { :legacy_unsupervised }
       let(:vtr) { ['C2'] }
       context 'user has pending profile' do
@@ -64,7 +64,7 @@ RSpec.describe PendingProfilePolicy do
         it { expect(policy.user_has_pending_profile?).to eq(false) }
       end
 
-      context 'user has active legacy profile with a pending fraud biometric profile' do
+      context 'user has active legacy profile with a pending fraud facial match profile' do
         before do
           create(:profile, :active, :verified, idv_level: idv_level, user: user)
           create(:profile, :fraud_review_pending, idv_level: :unsupervised_with_selfie, user: user)

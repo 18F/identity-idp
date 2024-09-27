@@ -347,17 +347,17 @@ RSpec.describe Profile do
       expect(active_profile.verified_at).to be_present
     end
 
-    context 'when a user creates a biometric comparision profile' do
+    context 'when a user creates a facial match comparision profile' do
       context 'when the user has an active profile' do
-        it 'creates a biometric upgrade record' do
+        it 'creates a facial match upgrade record' do
           profile.activate
-          biometric_profile = create(
+          facial_match_profile = create(
             :profile,
             :facial_match_proof,
             user: user,
           )
 
-          expect { biometric_profile.activate }.to(
+          expect { facial_match_profile.activate }.to(
             change do
               SpUpgradedBiometricProfile.count
             end.by(1),
@@ -365,17 +365,17 @@ RSpec.describe Profile do
         end
       end
 
-      context 'when the user has an active biometric profile' do
-        it 'does not create a biometric conversion record' do
+      context 'when the user has an active facial match profile' do
+        it 'does not create a facial match conversion record' do
           create(:profile, :active, :facial_match_proof, user: user)
 
-          biometric_reproof = create(:profile, :facial_match_proof, user: user)
-          expect { biometric_reproof.activate }.to_not(change { SpUpgradedBiometricProfile.count })
+          facial_match_reproof = create(:profile, :facial_match_proof, user: user)
+          expect { facial_match_reproof.activate }.to_not(change { SpUpgradedBiometricProfile.count })
         end
       end
 
       context 'when the user does not have an active profile' do
-        it 'does not create a biometric conversion record' do
+        it 'does not create a facial match conversion record' do
           profile = create(:profile, :facial_match_proof, user: user)
 
           expect { profile.activate }.to_not(change { SpUpgradedBiometricProfile.count })
@@ -383,7 +383,7 @@ RSpec.describe Profile do
       end
     end
 
-    it 'does not create a biometric upgrade record for a non-biometric profile' do
+    it 'does not create a facial match upgrade record for a non-facial match profile' do
       expect { profile.activate }.to_not(change { SpUpgradedBiometricProfile.count })
     end
 

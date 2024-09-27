@@ -110,7 +110,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
     end
   end
 
-  context 'when biometric confirmation is requested' do
+  context 'when facial match confirmation is requested' do
     it 'proofs and hands off to mobile', js: true do
       user = nil
 

@@ -236,7 +236,7 @@ RSpec.describe Analytics do
       end
     end
 
-    context 'phishing resistant and requiring biometric comparison' do
+    context 'phishing resistant and requiring facial match comparison' do
       let(:session) { { sp: { vtr: ['Ca.Pb'] } } }
       let(:component_values) do
         {
@@ -312,7 +312,7 @@ RSpec.describe Analytics do
       end
     end
 
-    context 'IAL2 with biometric' do
+    context 'IAL2 with facial match' do
       let(:session) do
         { sp: { acr_values: Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF } }
       end

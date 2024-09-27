@@ -80,30 +80,30 @@ RSpec.describe AccountShowPresenter do
 
     it { is_expected.to eq(false) }
 
-    context 'with non-biometric proofed user' do
+    context 'with non-facial match proofed user' do
       let(:user) { build(:user, :proofed) }
 
       it { is_expected.to eq(true) }
 
-      context 'with sp request for non-biometric' do
+      context 'with sp request for non-facial match' do
         let(:vtr) { ['C2.P1'] }
 
         it { is_expected.to eq(true) }
       end
 
-      context 'with sp request for biometric' do
+      context 'with sp request for facial match' do
         let(:vtr) { ['C2.Pb'] }
 
         it { is_expected.to eq(false) }
       end
     end
 
-    context 'with biometric proofed user' do
+    context 'with facial match proofed user' do
       let(:user) { build(:user, :proofed_with_selfie) }
 
       it { is_expected.to eq(true) }
 
-      context 'with sp request for biometric' do
+      context 'with sp request for facial match' do
         let(:vtr) { ['C2.Pb'] }
 
         it { is_expected.to eq(true) }
@@ -116,30 +116,30 @@ RSpec.describe AccountShowPresenter do
 
     it { is_expected.to eq(false) }
 
-    context 'with sp request for non-biometric' do
+    context 'with sp request for non-facial match' do
       let(:vtr) { ['C2.P1'] }
 
       it { is_expected.to eq(true) }
 
-      context 'with non-biometric proofed user' do
+      context 'with non-facial match proofed user' do
         let(:user) { build(:user, :proofed) }
 
         it { is_expected.to eq(false) }
       end
     end
 
-    context 'with sp request for biometric' do
+    context 'with sp request for facial match' do
       let(:vtr) { ['C2.Pb'] }
 
       it { is_expected.to eq(true) }
 
-      context 'with non-biometric proofed user' do
+      context 'with non-facial match proofed user' do
         let(:user) { build(:user, :proofed) }
 
         it { is_expected.to eq(true) }
       end
 
-      context 'with biometric proofed user' do
+      context 'with facial match proofed user' do
         let(:user) { build(:user, :proofed_with_selfie) }
 
         it { is_expected.to eq(false) }

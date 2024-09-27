@@ -61,7 +61,7 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
     end
   end
 
-  context 'with partner requesting non-biometric verification' do
+  context 'with partner requesting non-facial match verification' do
     let(:sp_name) { 'Example SP' }
     let(:vtr) { ['C2.P1'] }
 
@@ -152,7 +152,7 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
       end
     end
 
-    context 'with non-biometric proofed user' do
+    context 'with non-facial match proofed user' do
       let(:user) { build(:user, :proofed) }
 
       it 'shows verified badge' do
@@ -201,7 +201,7 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
     end
   end
 
-  context 'with partner requesting biometric verification' do
+  context 'with partner requesting facial match verification' do
     let(:sp_name) { 'Example SP' }
     let(:vtr) { ['C2.Pb'] }
 
@@ -221,7 +221,7 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
       end
     end
 
-    context 'with non-biometric proofed user' do
+    context 'with non-facial match proofed user' do
       let(:user) { build(:user, :proofed) }
 
       it 'shows unverified badge' do
@@ -261,7 +261,7 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
       end
     end
 
-    context 'with biometric proofed user' do
+    context 'with facial match proofed user' do
       let(:user) { build(:user, :proofed_with_selfie) }
 
       it 'shows verified badge' do
