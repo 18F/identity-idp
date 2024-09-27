@@ -35,7 +35,7 @@ class AuthnContextResolver
   private
 
   def selected_vtr_parser_result_from_vtr_list
-    if biometric_proofing_vot.present? && user&.identity_verified_with_biometric_comparison?
+    if biometric_proofing_vot.present? && user&.identity_verified_with_facial_match?
       biometric_proofing_vot
     elsif non_biometric_identity_proofing_vot.present? && user&.identity_verified?
       non_biometric_identity_proofing_vot
@@ -101,7 +101,7 @@ class AuthnContextResolver
   def decorate_acr_result_with_user_context(result)
     return result unless result.facial_match?
 
-    return result if user&.identity_verified_with_biometric_comparison? ||
+    return result if user&.identity_verified_with_facial_match? ||
                      biometric_is_required?(result)
 
     if user&.identity_verified?

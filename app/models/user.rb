@@ -376,7 +376,7 @@ class User < ApplicationRecord
     active_profile.present?
   end
 
-  def identity_verified_with_biometric_comparison?
+  def identity_verified_with_facial_match?
     BIOMETRIC_COMPARISON_IDV_LEVELS.include?(active_profile&.idv_level)
   end
 

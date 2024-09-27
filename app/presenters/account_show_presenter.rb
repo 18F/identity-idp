@@ -9,7 +9,7 @@ class AccountShowPresenter
               :authn_context,
               :sp_name
 
-  delegate :identity_verified_with_biometric_comparison?, to: :user
+  delegate :identity_verified_with_facial_match?, to: :user
 
   def initialize(
     decrypted_pii:,
@@ -54,7 +54,7 @@ class AccountShowPresenter
     return @active_profile_for_authn_context if defined?(@active_profile_for_authn_context)
 
     @active_profile_for_authn_context = active_profile? && (
-      !authn_context.facial_match? || identity_verified_with_biometric_comparison?
+      !authn_context.facial_match? || identity_verified_with_facial_match?
     )
   end
 

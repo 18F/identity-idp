@@ -34,7 +34,7 @@ class IdvController < ApplicationController
 
   def already_verified?
     if resolved_authn_context_result.facial_match?
-      current_user.identity_verified_with_biometric_comparison?
+      current_user.identity_verified_with_facial_match?
     else
       current_user.active_profile.present?
     end

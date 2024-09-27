@@ -26,14 +26,14 @@ RSpec.describe AccountShowPresenter do
     )
   end
 
-  describe 'identity_verified_with_biometric_comparison?' do
-    subject(:identity_verified_with_biometric_comparison?) do
-      presenter.identity_verified_with_biometric_comparison?
+  describe 'identity_verified_with_facial_match?' do
+    subject(:identity_verified_with_facial_match?) do
+      presenter.identity_verified_with_facial_match?
     end
 
     it 'delegates to user' do
-      expect(identity_verified_with_biometric_comparison?).to eq(
-        user.identity_verified_with_biometric_comparison?,
+      expect(identity_verified_with_facial_match?).to eq(
+        user.identity_verified_with_facial_match?,
       )
     end
   end

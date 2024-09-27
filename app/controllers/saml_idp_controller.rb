@@ -115,7 +115,7 @@ class SamlIdpController < ApplicationController
 
   def biometric_comparison_needed?
     resolved_authn_context_result.facial_match? &&
-      !current_user.identity_verified_with_biometric_comparison?
+      !current_user.identity_verified_with_facial_match?
   end
 
   def set_devise_failure_redirect_for_concurrent_session_logout

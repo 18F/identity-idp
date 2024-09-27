@@ -4,7 +4,7 @@
   </h2>
   <div class="grid-col-auto">
     <% if @presenter.active_profile_for_authn_context? %>
-      <%= render TooltipComponent.new(tooltip_text: @presenter.identity_verified_with_biometric_comparison? ? t('account.index.verification.verified_biometric_badge_tooltip') : t('account.index.verification.verified_badge_tooltip')) do %>
+      <%= render TooltipComponent.new(tooltip_text: @presenter.identity_verified_with_facial_match? ? t('account.index.verification.verified_biometric_badge_tooltip') : t('account.index.verification.verified_badge_tooltip')) do %>
         <%= render BadgeComponent.new(icon: :check_circle).with_content(t('account.index.verification.verified_badge')) %>
       <% end %>
     <% elsif @presenter.pending_gpo? || @presenter.pending_ipp? %>
@@ -22,7 +22,7 @@
 <% if @presenter.active_profile? || @presenter.pending_ipp? || @presenter.pending_gpo? %>
   <p>
     <% if @presenter.active_profile_for_authn_context? %>
-      <% if @presenter.identity_verified_with_biometric_comparison? %>
+      <% if @presenter.identity_verified_with_facial_match? %>
         <%= t('account.index.verification.you_verified_your_biometric_identity', app_name: APP_NAME) %>
       <% else %>
         <%= t('account.index.verification.you_verified_your_identity_html', sp_name: @presenter.user.active_profile.initiating_service_provider&.friendly_name || APP_NAME) %>
