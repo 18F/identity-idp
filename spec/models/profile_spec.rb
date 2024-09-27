@@ -353,7 +353,7 @@ RSpec.describe Profile do
           profile.activate
           biometric_profile = create(
             :profile,
-            :biometric_proof,
+            :facial_match_proof,
             user: user,
           )
 
@@ -367,16 +367,16 @@ RSpec.describe Profile do
 
       context 'when the user has an active biometric profile' do
         it 'does not create a biometric conversion record' do
-          create(:profile, :active, :biometric_proof, user: user)
+          create(:profile, :active, :facial_match_proof, user: user)
 
-          biometric_reproof = create(:profile, :biometric_proof, user: user)
+          biometric_reproof = create(:profile, :facial_match_proof, user: user)
           expect { biometric_reproof.activate }.to_not(change { SpUpgradedBiometricProfile.count })
         end
       end
 
       context 'when the user does not have an active profile' do
         it 'does not create a biometric conversion record' do
-          profile = create(:profile, :biometric_proof, user: user)
+          profile = create(:profile, :facial_match_proof, user: user)
 
           expect { profile.activate }.to_not(change { SpUpgradedBiometricProfile.count })
         end
