@@ -310,7 +310,7 @@ class Profile < ApplicationRecord
   end
 
   def biometric?
-    ::User::BIOMETRIC_COMPARISON_IDV_LEVELS.include?(idv_level)
+    ::User::FACIAL_MATCH_IDV_LEVELS.include?(idv_level)
   end
 
   private

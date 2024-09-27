@@ -352,7 +352,7 @@ class OpenidConnectAuthorizeForm
   end
 
   def facial_match_ial_requested?
-    ial_values.any? { |ial| Saml::Idp::Constants::BIOMETRIC_IAL_CONTEXTS.include? ial }
+    ial_values.any? { |ial| Saml::Idp::Constants::FACIAL_MATCH_IAL_CONTEXTS.include? ial }
   end
 
   def highest_level_aal(aal_values)

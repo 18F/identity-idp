@@ -117,7 +117,7 @@ class SamlRequestValidator
   end
 
   def biometric_ial_requested?
-    Array(authn_context).any? { |ial| Saml::Idp::Constants::BIOMETRIC_IAL_CONTEXTS.include? ial }
+    Array(authn_context).any? { |ial| Saml::Idp::Constants::FACIAL_MATCH_IAL_CONTEXTS.include? ial }
   end
 
   def semantic_authn_contexts_requested?

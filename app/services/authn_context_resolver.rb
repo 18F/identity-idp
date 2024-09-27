@@ -140,7 +140,7 @@ class AuthnContextResolver
   end
 
   def biometric_is_required?(result)
-    Saml::Idp::Constants::BIOMETRIC_REQUIRED_IAL_CONTEXTS.intersect?(result.component_names)
+    Saml::Idp::Constants::FACIAL_MATCH_REQUIRED_IAL_CONTEXTS.intersect?(result.component_names)
   end
 
   def use_semantic_authn_contexts?
