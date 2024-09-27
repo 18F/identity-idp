@@ -71,29 +71,34 @@ class QueryCloudwatch
   end
 
   class SqliteOutput
-    attr_reader :db, :filename, :stderr
+    attr_reader :filename, :invalid_message_json_count, :stderr
 
     def initialize(filename:, stderr:)
       @filename = filename
       @stderr = stderr
+      @invalid_message_json_count = 0
     end
 
     def start
-      @db = SQLite3::Database.new(filename)
       create_tables_if_needed
       db.transaction do
         yield
       end
     rescue
       db&.interrupt
+      raise
     ensure
       if db
+        if invalid_message_json_count > 0
+          stderr.puts <<~END
+            WARNING: For #{invalid_message_json_count} event#{invalid_message_json_count == 1 ? '' : 's'}, @message did not contain valid JSON
+          END
+        end
         stderr.puts <<~END
           Wrote #{db.total_changes.inspect} rows to the 'events' table in #{filename}
         END
-        db.close
       end
-      @db = nil
+      close_database
     end
 
     def handle_row(row)
@@ -103,34 +108,49 @@ class QueryCloudwatch
       timestamp = row['@timestamp']
       raise "Query must include @timestamp in output when using --sqlite" unless timestamp
 
-      json = JSON.parse(message)
-      
-      success = json.dig('properties', 'event_properties', 'success')
+      json = begin 
+        JSON.parse(message)
+      rescue
+        @invalid_message_json_count += 1
+        nil
+      end
+
+      success = json&.dig('properties', 'event_properties', 'success')
       success = success ? 1 : (success.nil? ? nil : 0)
 
-      insert_statement.execute(
-        # NOTE: Order matters here
-        {
-          id: json['id'],
-          timestamp:,
-          name: json['name'],
-          uuid: json.dig('properties', 'user_id'),
-          success:,
-          message:,
-        }.values
-      )
-    end
+      # NOTE: Order matters here
+      row = {
+        id: json&.dig('id') || "NOID-#{SecureRandom.uuid}",
+        timestamp:,
+        name:json&.dig('name'),
+        uuid: json&.dig('properties', 'user_id'),
+        success:,
+        message:,
+        log_stream: row.dig('@logStream'),
+        log: row.dig('@log'),
+      }
 
+      insert_statement.execute(row.values)
+    end
 
     def insert_statement
       @insert_statement ||= db.prepare(
         <<~SQL
           INSERT INTO 
-            events (id, timestamp, name, uuid, success, message) 
-            VALUES (?, ?, ?, ?, ?, ?)
+            events (id, timestamp, name, uuid, success, message, log_stream, log) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT (id) DO NOTHING
         SQL
       )
+    end
+
+    def db
+      @db ||= SQLite3::Database.new(filename)
+    end
+
+    def close_database
+      db&.close
+      @db = nil
     end
 
     def create_tables_if_needed
@@ -139,10 +159,12 @@ class QueryCloudwatch
           CREATE TABLE IF NOT EXISTS events (
             id TEXT PRIMARY KEY NOT NULL,
             timestamp TEXT NOT NULL,
-            name TEXT NOT NULL,
+            name TEXT NULL,
             uuid TEXT NULL,
             success INTEGER NULL,
-            message TEXT NOT NULL
+            message TEXT NOT NULL,
+            log_stream TEXT NULL,
+            log TEXT NULL
           );
         SQL
       )
