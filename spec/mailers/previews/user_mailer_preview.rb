@@ -146,7 +146,8 @@ class UserMailerPreview < ActionMailer::Preview
   def account_verified
     UserMailer.with(user: user, email_address: email_address_record).account_verified(
       date_time: DateTime.now,
-      sp_name: 'Example App',
+      app_name: APP_NAME,
+      sp: ServiceProvider.find_by_friendly_name('Example Sinatra App'),
     )
   end
 

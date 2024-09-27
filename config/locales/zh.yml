@@ -1816,10 +1816,13 @@ user_mailer.account_reset_request.cancel: 不想删除你的账户？登入你�
 user_mailer.account_reset_request.header: 你的账户会在%{interval}后删除。
 user_mailer.account_reset_request.intro_html: 作为一项安全措施，%{app_name} 要求一个两步流程来删除你的帐户：<br><br> 第一步：如果你丢失了身份证实方法但需删除账户，有一个%{waiting_period} 的等待期。如果你找到了身份证实方法，可以登录你的 %{app_name} 帐户来取消这个请求。<br><br> 第二步：%{waiting_period}等待期之后，你会收到一封电邮，请你确认要删除 %{app_name} 账户。只有经你确认后，你的账户才会被删除。
 user_mailer.account_reset_request.subject: 如何删除你的 %{app_name} 账户
+
 user_mailer.account_verified.change_password_link: 更改密码
 user_mailer.account_verified.contact_link: 联系我们
-user_mailer.account_verified.intro_html: 你于 %{date} 使用 %{app_name} 在 %{sp_name}成功验证了身份。如果你没有采取这一行动，请 %{contact_link_html} 并登录 %{change_password_link_html}。
-user_mailer.account_verified.subject: 你在 %{sp_name} 验证了身份。
+user_mailer.account_verified.greeting: 你好，
+user_mailer.account_verified.intro_html: 你于 %{date} 局成功地验证了身份。
+user_mailer.account_verified.subject: 你在 %{app_name} 成功地验证了身份
+
 user_mailer.add_email_associated_with_another_account.help_html: 如果你没有要求一封新电邮或怀疑有错， 请访问 %{app_name_html}的 %{help_link_html} 或者 %{contact_link_html}。
 user_mailer.add_email_associated_with_another_account.intro_html: 该电邮地址已与一个 %{app_name_html}账户相关联，所以我们不能把它加到另外一个账户上。你必须首先将其从与之相关的账户中删除或去掉。要做到这一点，点击以下链接并用该电邮地址登录。如果你没有试图将此电邮地址加到一个账户，可忽略这一信息。
 user_mailer.add_email_associated_with_another_account.link_text: 请到 %{app_name}

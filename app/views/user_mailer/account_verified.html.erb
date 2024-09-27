@@ -1,15 +1,57 @@
-<p class="lead">
+<%= image_tag(
+      #asset_url('email/user-signup-ial2.png'),
+      attachments['verified.png'].url,
+      # width: 110,
+      # height: 80,
+      alt: '', # this is decorative
+      role: 'img',
+      class: 'float-center padding-bottom-4',
+) %>
+
+<h1><%= message.subject %></h1>
+
+<p>
+  <%= t('user_mailer.account_verified.greeting') %>
+</p>
+<p>
+  <%= t('user_mailer.account_verified.intro_html', date: @date) %>
+</p>
+<p>
+  <%= t('user_mailer.account_verified.next_step', sp_name: @sp_name) %>
+</p>
+
+<table class="button expanded large radius">
+  <tbody>
+  <tr>
+    <td>
+      <table>
+        <tbody>
+        <tr>
+          <td>
+            <%= link_to t('user_mailer.account_verified.sign_in'), @sp_url,
+                        target: '_blank', class: 'btn-warn', rel: 'noopener' %>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </td>
+  </tr>
+  </tbody>
+</table>
+<p>
+  <%= link_to(@sp_url, @sp_url, target: '_blank', rel: 'noopener') %>
+</p>
+
+<p>
   <%= t(
-        'user_mailer.account_verified.intro_html',
-        sp_name: @sp_name,
-        app_name: APP_NAME,
-        date: @date,
+        'user_mailer.account_verified.warning_contact_us_html',
         change_password_link_html: link_to(
           t('user_mailer.account_verified.change_password_link'),
           new_user_password_url,
-        ),
+          ),
         contact_link_html: link_to(t('user_mailer.account_verified.contact_link'), MarketingSite.contact_url),
-      ) %>
+      )
+  %>
 </p>
 
 <table class="spacer">
