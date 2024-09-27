@@ -102,7 +102,7 @@ class AuthnContextResolver
     return result unless result.facial_match?
 
     return result if user&.identity_verified_with_facial_match? ||
-                     biometric_is_required?(result)
+                     facial_match_is_required?(result)
 
     if user&.identity_verified?
       result.with(facial_match?: false, two_pieces_of_fair_evidence?: false)
@@ -139,7 +139,7 @@ class AuthnContextResolver
     Saml::Idp::Constants::LEGACY_ACRS_TO_SEMANTIC_ACRS.fetch(acr, default_value: acr)
   end
 
-  def biometric_is_required?(result)
+  def facial_match_is_required?(result)
     Saml::Idp::Constants::FACIAL_MATCH_REQUIRED_IAL_CONTEXTS.intersect?(result.component_names)
   end
 
