@@ -14,7 +14,7 @@ RSpec.describe Proofing::Aamva::Proofer do
     }
   end
 
-  let(:verification_results) do
+  let(:verification_result) do
     {
       state_id_number: true,
       dob: true,
@@ -44,6 +44,302 @@ RSpec.describe Proofing::Aamva::Proofer do
   end
 
   describe '#proof' do
+    describe 'individual attributes' do
+      subject(:result) do
+        described_class.new(AamvaFixtures.example_config.to_h).proof(state_id_data)
+      end
+
+      def self.when_missing(&block)
+        context 'when missing' do
+          let(:verification_response) do
+            XmlHelper.delete_xml_at_xpath(
+              AamvaFixtures.verification_response,
+              "//#{match_indicator_name}",
+            )
+          end
+
+          instance_eval(&block)
+        end
+      end
+
+      def self.when_unverified(&block)
+        context 'when unverified' do
+          let(:verification_response) do
+            XmlHelper.modify_xml_at_xpath(
+              AamvaFixtures.verification_response,
+              "//#{match_indicator_name}",
+              'false',
+            )
+          end
+
+          instance_eval(&block)
+        end
+      end
+
+      def self.test_in_requested_attributes(logged_attribute = nil)
+        if logged_attribute
+          it "does not stop #{logged_attribute} from appearing in requested_attributes" do
+            expect(result.requested_attributes).to include(logged_attribute => 1)
+          end
+          it 'does not itself appear in requested_attributes' do
+            expect(result.requested_attributes).not_to include(attribute => 1)
+          end
+        else
+          it 'appears in requested_attributes' do
+            expect(result.requested_attributes).to include(attribute => 1)
+          end
+        end
+      end
+
+      def self.test_not_in_requested_attributes(logged_attribute = nil)
+        if logged_attribute
+          it "stops #{logged_attribute} from appearing in requested_attributes" do
+            expect(result.requested_attributes).not_to include(logged_attribute => 1)
+          end
+        end
+        it 'does not appear in requested_attributes' do
+          expect(result.requested_attributes).not_to include(attribute => 1)
+        end
+      end
+
+      def self.test_in_verified_attributes(logged_attribute)
+        it "does not stop #{logged_attribute} from appearing in verified_attributes" do
+          expect(result.verified_attributes).to include(logged_attribute)
+        end
+
+        it 'does not itself appear in verified_attributes' do
+          expect(result.verified_attributes).not_to include(attribute)
+        end
+      end
+
+      def self.test_not_in_verified_attributes(logged_attribute = nil)
+        if logged_attribute
+          it "stops #{logged_attribute} from appearing in verified_attributes" do
+            expect(result.verified_attributes).not_to include(logged_attribute)
+          end
+        end
+        it 'does not appear in verified_attributes' do
+          expect(result.verified_attributes).not_to include(attribute)
+        end
+      end
+
+      def self.test_still_successful
+        it 'the result is still successful' do
+          expect(result.success?).to be true
+        end
+      end
+
+      def self.test_not_successful
+        it 'the result is not successful' do
+          expect(result.success?).to be false
+        end
+      end
+
+      describe '#address1' do
+        let(:attribute) { :address1 }
+        let(:match_indicator_name) { 'AddressLine1MatchIndicator' }
+
+        when_unverified do
+          test_still_successful
+          test_in_requested_attributes(:address)
+          test_not_in_verified_attributes(:address)
+        end
+
+        when_missing do
+          test_still_successful
+          test_not_in_requested_attributes(:address)
+          test_not_in_verified_attributes(:address)
+        end
+      end
+
+      describe '#address2' do
+        let(:attribute) { :address2 }
+        let(:match_indicator_name) { 'AddressLine2MatchIndicator' }
+
+        when_unverified do
+          test_still_successful
+          test_in_requested_attributes(:address)
+          test_in_verified_attributes(:address)
+        end
+
+        when_missing do
+          test_still_successful
+          test_in_requested_attributes(:address)
+          test_in_verified_attributes(:address)
+        end
+      end
+
+      describe '#city' do
+        let(:attribute) { :city }
+        let(:match_indicator_name) { 'AddressCityMatchIndicator' }
+
+        when_unverified do
+          test_still_successful
+          test_in_requested_attributes(:address)
+          test_not_in_verified_attributes(:address)
+        end
+
+        when_missing do
+          test_still_successful
+          test_not_in_requested_attributes(:address)
+          test_not_in_verified_attributes(:address)
+        end
+      end
+
+      describe '#state' do
+        let(:attribute) { :city }
+        let(:match_indicator_name) { 'AddressStateCodeMatchIndicator' }
+
+        when_unverified do
+          test_still_successful
+          test_in_requested_attributes(:address)
+          test_not_in_verified_attributes(:address)
+        end
+
+        when_missing do
+          test_still_successful
+          test_not_in_requested_attributes(:address)
+          test_not_in_verified_attributes(:address)
+        end
+      end
+
+      describe '#zipcode' do
+        let(:attribute) { :zipcode }
+        let(:match_indicator_name) { 'AddressZIP5MatchIndicator' }
+
+        when_unverified do
+          test_still_successful
+          test_in_requested_attributes(:address)
+          test_not_in_verified_attributes(:address)
+        end
+
+        when_missing do
+          test_still_successful
+          test_not_in_requested_attributes(:address)
+          test_not_in_verified_attributes(:address)
+        end
+      end
+
+      describe '#dob' do
+        let(:attribute) { :dob }
+        let(:match_indicator_name) { 'PersonBirthDateMatchIndicator' }
+
+        when_unverified do
+          test_not_successful
+          test_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+
+        when_missing do
+          test_not_successful
+          test_not_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+      end
+
+      describe '#state_id_issued' do
+        let(:attribute) { :state_id_issued }
+        let(:match_indicator_name) { 'DriverLicenseIssueDateMatchIndicator' }
+
+        when_unverified do
+          test_still_successful
+          test_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+
+        when_missing do
+          test_still_successful
+          test_not_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+      end
+
+      describe '#state_id_number' do
+        let(:attribute) { :state_id_number }
+        let(:match_indicator_name) { 'DriverLicenseNumberMatchIndicator' }
+
+        when_unverified do
+          test_not_successful
+          test_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+
+        when_missing do
+          test_not_successful
+          test_not_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+      end
+
+      describe '#state_id_expiration' do
+        let(:attribute) { :state_id_expiration }
+        let(:match_indicator_name) { 'DriverLicenseExpirationDateMatchIndicator' }
+
+        when_unverified do
+          test_not_successful
+          test_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+
+        when_missing do
+          test_still_successful
+          test_not_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+      end
+
+      describe '#state_id_type' do
+        let(:attribute) { :state_id_type }
+        let(:match_indicator_name) { 'DocumentCategoryMatchIndicator' }
+
+        when_unverified do
+          test_still_successful
+          test_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+
+        when_missing do
+          test_still_successful
+          test_not_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+      end
+
+      describe '#first_name' do
+        let(:attribute) { :first_name }
+        let(:match_indicator_name) { 'PersonFirstNameExactMatchIndicator' }
+
+        when_unverified do
+          test_not_successful
+          test_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+
+        when_missing do
+          test_not_successful
+          test_not_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+      end
+
+      describe '#last_name' do
+        let(:attribute) { :last_name }
+        let(:match_indicator_name) { 'PersonLastNameExactMatchIndicator' }
+
+        when_unverified do
+          test_not_successful
+          test_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+
+        when_missing do
+          test_not_successful
+          test_not_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+      end
+    end
+
     context 'when verification is successful' do
       it 'the result is successful' do
         result = subject.proof(state_id_data)
@@ -59,6 +355,8 @@ RSpec.describe Proofing::Aamva::Proofer do
         expect(result.verified_attributes).to eq(
           %i[
             dob
+            state_id_issued
+            state_id_expiration
             state_id_number
             state_id_type
             last_name
@@ -73,6 +371,8 @@ RSpec.describe Proofing::Aamva::Proofer do
         expect(result.requested_attributes).to eq(
           {
             dob: 1,
+            state_id_issued: 1,
+            state_id_expiration: 1,
             state_id_number: 1,
             state_id_type: 1,
             last_name: 1,
@@ -104,6 +404,8 @@ RSpec.describe Proofing::Aamva::Proofer do
 
         expect(result.verified_attributes).to eq(
           %i[
+            state_id_expiration
+            state_id_issued
             state_id_number
             state_id_type
             last_name
@@ -118,6 +420,8 @@ RSpec.describe Proofing::Aamva::Proofer do
         expect(result.requested_attributes).to eq(
           {
             dob: 1,
+            state_id_expiration: 1,
+            state_id_issued: 1,
             state_id_number: 1,
             state_id_type: 1,
             last_name: 1,
@@ -148,6 +452,8 @@ RSpec.describe Proofing::Aamva::Proofer do
 
         expect(result.verified_attributes).to eq(
           %i[
+            state_id_expiration
+            state_id_issued
             state_id_number
             state_id_type
             last_name
@@ -161,6 +467,8 @@ RSpec.describe Proofing::Aamva::Proofer do
         result = subject.proof(state_id_data)
         expect(result.requested_attributes).to eq(
           {
+            state_id_expiration: 1,
+            state_id_issued: 1,
             state_id_number: 1,
             state_id_type: 1,
             last_name: 1,

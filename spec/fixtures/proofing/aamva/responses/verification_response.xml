@@ -8,6 +8,8 @@
     </MessageAddress>
   </ControlData>
   <DriverLicenseNumberMatchIndicator>true</DriverLicenseNumberMatchIndicator>
+  <DriverLicenseIssueDateMatchIndicator>true</DriverLicenseIssueDateMatchIndicator>
+  <DriverLicenseExpirationDateMatchIndicator>true</DriverLicenseExpirationDateMatchIndicator>
   <PersonBirthDateMatchIndicator>true</PersonBirthDateMatchIndicator>
   <PersonLastNameExactMatchIndicator>true</PersonLastNameExactMatchIndicator>
   <PersonLastNameFuzzyPrimaryMatchIndicator>true</PersonLastNameFuzzyPrimaryMatchIndicator>
@@ -17,6 +19,7 @@
   <PersonFirstNameFuzzyAlternateMatchIndicator>true</PersonFirstNameFuzzyAlternateMatchIndicator>
   <DocumentCategoryMatchIndicator>true</DocumentCategoryMatchIndicator>
   <AddressLine1MatchIndicator>true</AddressLine1MatchIndicator>
+  <AddressLine2MatchIndicator>true</AddressLine2MatchIndicator>
   <AddressCityMatchIndicator>true</AddressCityMatchIndicator>
   <AddressStateCodeMatchIndicator>true</AddressStateCodeMatchIndicator>
   <AddressZIP5MatchIndicator>true</AddressZIP5MatchIndicator>

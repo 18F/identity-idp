@@ -8,7 +8,8 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def signup_with_your_email
-    UserMailer.with(user: user, email_address: email_address_record).signup_with_your_email
+    UserMailer.with(user: user, email_address: email_address_record).
+      signup_with_your_email(request_id: SecureRandom.uuid)
   end
 
   def reset_password_instructions

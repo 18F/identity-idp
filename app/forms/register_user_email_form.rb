@@ -170,7 +170,7 @@ class RegisterUserEmailForm
       )
     else
       UserMailer.with(user: existing_user, email_address: email_address_record).
-        signup_with_your_email.deliver_now_or_later
+        signup_with_your_email(request_id: request_id).deliver_now_or_later
     end
   end
 
