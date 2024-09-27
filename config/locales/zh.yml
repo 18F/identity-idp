@@ -1819,13 +1819,13 @@ user_mailer.account_reset_request.subject: 如何删除你的 %{app_name} 账户
 user_mailer.account_verified.change_password_link: 更改密码
 user_mailer.account_verified.contact_link: 联系我们
 user_mailer.account_verified.greeting: 你好，
-user_mailer.account_verified.intro: 你于 %{date} 局成功地验证了身份。
+user_mailer.account_verified.intro: 你在 %{date} 成功地验证了身份。
 user_mailer.account_verified.next_sign_in.with_sp.with_cta: 接下来请点击按钮或复制下面的连接来访问 %{sp_name} 并登录。
 user_mailer.account_verified.next_sign_in.with_sp.without_cta: 你现在可以从 %{sp_name} 的网站登录。
 user_mailer.account_verified.next_sign_in.without_sp: 接下来请点击按钮或复制下面的连接来登录 %{app_name}。
 user_mailer.account_verified.sign_in: 登录
 user_mailer.account_verified.subject: 你在 %{app_name} 成功地验证了身份
-user_mailer.account_verified.warning_contact_us_html: 如果你没有试图验证身份，请登入 %{change_password_link_html}。要报告这件事，%{contact_link_html}。
+user_mailer.account_verified.warning_contact_us_html: 如果你没有试图验证过身份，请登录来%{change_password_link_html}。要报告这件事，%{contact_link_html}。
 user_mailer.add_email_associated_with_another_account.help_html: 如果你没有要求一封新电邮或怀疑有错， 请访问 %{app_name_html}的 %{help_link_html} 或者 %{contact_link_html}。
 user_mailer.add_email_associated_with_another_account.intro_html: 该电邮地址已与一个 %{app_name_html}账户相关联，所以我们不能把它加到另外一个账户上。你必须首先将其从与之相关的账户中删除或去掉。要做到这一点，点击以下链接并用该电邮地址登录。如果你没有试图将此电邮地址加到一个账户，可忽略这一信息。
 user_mailer.add_email_associated_with_another_account.link_text: 请到 %{app_name}
