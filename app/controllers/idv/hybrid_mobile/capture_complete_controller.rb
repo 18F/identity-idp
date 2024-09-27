@@ -24,7 +24,7 @@ module Idv
           flow_path: 'hybrid',
           step: 'capture_complete',
           analytics_id: 'Doc Auth',
-          liveness_checking_required: resolved_authn_context_result.biometric_comparison?,
+          liveness_checking_required: resolved_authn_context_result.facial_match?,
         }.merge(ab_test_analytics_buckets)
       end
     end

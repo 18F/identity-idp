@@ -22,7 +22,7 @@ class AuthnContextResolver
     return resolve_acr(Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF) unless
       user&.identity_verified?
 
-    if result.biometric_comparison?
+    if result.facial_match?
       resolve_acr(Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF)
     elsif result.identity_proofing? ||
           result.ialmax?
@@ -53,12 +53,12 @@ class AuthnContextResolver
   end
 
   def biometric_proofing_vot
-    parsed_vectors_of_trust.find(&:biometric_comparison?)
+    parsed_vectors_of_trust.find(&:facial_match?)
   end
 
   def non_biometric_identity_proofing_vot
     parsed_vectors_of_trust.find do |vot_parser_result|
-      vot_parser_result.identity_proofing? && !vot_parser_result.biometric_comparison?
+      vot_parser_result.identity_proofing? && !vot_parser_result.facial_match?
     end
   end
 
@@ -99,15 +99,15 @@ class AuthnContextResolver
   end
 
   def decorate_acr_result_with_user_context(result)
-    return result unless result.biometric_comparison?
+    return result unless result.facial_match?
 
     return result if user&.identity_verified_with_biometric_comparison? ||
                      biometric_is_required?(result)
 
     if user&.identity_verified?
-      result.with(biometric_comparison?: false, two_pieces_of_fair_evidence?: false)
+      result.with(facial_match?: false, two_pieces_of_fair_evidence?: false)
     else
-      result.with(biometric_comparison?: true)
+      result.with(facial_match?: true)
     end
   end
 

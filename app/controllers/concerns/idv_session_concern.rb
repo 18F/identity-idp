@@ -60,7 +60,7 @@ module IdvSessionConcern
   end
 
   def user_needs_biometric_comparison?
-    resolved_authn_context_result.biometric_comparison? &&
+    resolved_authn_context_result.facial_match? &&
       !idv_session_user.identity_verified_with_biometric_comparison?
   end
 end

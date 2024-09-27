@@ -25,7 +25,7 @@ class PendingProfilePolicy
   end
 
   def biometric_comparison_requested?
-    resolved_authn_context_result.biometric_comparison?
+    resolved_authn_context_result.facial_match?
   end
 
   def pending_legacy_profile?

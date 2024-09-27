@@ -31,7 +31,7 @@ module Vot
       name: Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
       description: 'IAL2 - require identity proofing with biometric comparison (NIST SP 800-63-3)',
       implied_component_values: [],
-      requirements: [:aal2, :identity_proofing, :biometric_comparison,
+      requirements: [:aal2, :identity_proofing, :facial_match,
                      :two_pieces_of_fair_evidence],
     ).freeze
     IAL2_BIO_PREFERRED = ComponentValue.new(
@@ -39,7 +39,7 @@ module Vot
       description:
         'IAL2 - use identity proofing with biometric comparison if completed (NIST SP 800-63-3)',
       implied_component_values: [],
-      requirements: [:aal2, :identity_proofing, :biometric_comparison,
+      requirements: [:aal2, :identity_proofing, :facial_match,
                      :two_pieces_of_fair_evidence],
     ).freeze
     IALMAX = ComponentValue.new(
@@ -65,14 +65,14 @@ module Vot
       name: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_PREFERRED_ACR,
       description: 'IAL2 - biometric-verified identity used if available (NIST SP 800-63-3)',
       implied_component_values: [],
-      requirements: [:aal2, :identity_proofing, :biometric_comparison,
+      requirements: [:aal2, :identity_proofing, :facial_match,
                      :two_pieces_of_fair_evidence],
     ).freeze
     IAL_VERIFIED_FACIAL_MATCH_REQUIRED = ComponentValue.new(
       name: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
       description: 'IAL2 - require identity-proofing using facial match (NIST SP 800-63-3)',
       implied_component_values: [],
-      requirements: [:aal2, :identity_proofing, :biometric_comparison,
+      requirements: [:aal2, :identity_proofing, :facial_match,
                      :two_pieces_of_fair_evidence],
     ).freeze
 

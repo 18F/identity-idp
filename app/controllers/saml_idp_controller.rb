@@ -114,7 +114,7 @@ class SamlIdpController < ApplicationController
   end
 
   def biometric_comparison_needed?
-    resolved_authn_context_result.biometric_comparison? &&
+    resolved_authn_context_result.facial_match? &&
       !current_user.identity_verified_with_biometric_comparison?
   end
 

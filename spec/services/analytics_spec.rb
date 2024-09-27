@@ -252,7 +252,7 @@ RSpec.describe Analytics do
         {
           sp_request: {
             aal2: true,
-            biometric_comparison: true,
+            facial_match: true,
             two_pieces_of_fair_evidence: true,
             component_values:,
             identity_proofing: true,
@@ -320,7 +320,7 @@ RSpec.describe Analytics do
         {
           sp_request: {
             aal2: true,
-            biometric_comparison: true,
+            facial_match: true,
             two_pieces_of_fair_evidence: true,
             component_values: { 'ial/2?bio=required' => true },
             identity_proofing: true,

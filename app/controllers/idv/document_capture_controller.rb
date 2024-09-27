@@ -54,7 +54,7 @@ module Idv
         skip_doc_auth_from_how_to_verify: idv_session.skip_doc_auth_from_how_to_verify,
         skip_doc_auth_from_handoff: idv_session.skip_doc_auth_from_handoff,
         opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing,
-        doc_auth_selfie_capture: resolved_authn_context_result.biometric_comparison?,
+        doc_auth_selfie_capture: resolved_authn_context_result.facial_match?,
       }.merge(
         acuant_sdk_upgrade_a_b_testing_variables,
       )
@@ -100,8 +100,8 @@ module Idv
         analytics_id: 'Doc Auth',
         redo_document_capture: idv_session.redo_document_capture,
         skip_hybrid_handoff: idv_session.skip_hybrid_handoff,
-        liveness_checking_required: resolved_authn_context_result.biometric_comparison?,
-        selfie_check_required: resolved_authn_context_result.biometric_comparison?,
+        liveness_checking_required: resolved_authn_context_result.facial_match?,
+        selfie_check_required: resolved_authn_context_result.facial_match?,
       }.merge(ab_test_analytics_buckets)
     end
 

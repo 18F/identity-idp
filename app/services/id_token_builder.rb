@@ -64,7 +64,7 @@ class IdTokenBuilder
   def acr
     return nil unless identity.acr_values.present?
 
-    if resolved_authn_context_result.biometric_comparison?
+    if resolved_authn_context_result.facial_match?
       Vot::AcrComponentValues::IAL2_BIO_REQUIRED.name
     elsif resolved_authn_context_result.ialmax?
       determine_ial_max_acr.name

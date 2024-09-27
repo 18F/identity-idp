@@ -27,7 +27,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
         allow(controller).to receive(:resolved_authn_context_result).and_return(resolution_result)
       end
 
-      context 'SP requires biometric_comparison' do
+      context 'SP requires facial_match' do
         let(:vot) { 'Pb' }
 
         context 'selfie check performed' do
@@ -47,7 +47,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
         end
       end
 
-      context 'SP does not require biometric_comparison' do
+      context 'SP does not require facial_match' do
         let(:vot) { 'P1' }
 
         context 'selfie check performed' do
