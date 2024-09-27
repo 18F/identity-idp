@@ -8,7 +8,11 @@ RSpec.describe UserMailer, type: :mailer do
   let(:is_enhanced_ipp) { false }
 
   describe '#validate_user_and_email_address' do
-    let(:mail) { UserMailer.with(user: user, email_address: email_address).signup_with_your_email }
+    let(:request_id) { '1234-abcd' }
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).
+        signup_with_your_email(request_id: request_id)
+    end
 
     context 'with user and email address match' do
       it 'does not raise an error' do
@@ -210,8 +214,10 @@ RSpec.describe UserMailer, type: :mailer do
   end
 
   describe '#signup_with_your_email' do
+    let(:request_id) { '1234-abcd' }
     let(:mail) do
-      UserMailer.with(user: user, email_address: user.email_addresses.first).signup_with_your_email
+      UserMailer.with(user: user, email_address: user.email_addresses.first).
+        signup_with_your_email(request_id: request_id)
     end
 
     it_behaves_like 'a system email'
