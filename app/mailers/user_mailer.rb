@@ -73,9 +73,9 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def signup_with_your_email
+  def signup_with_your_email(request_id:)
     with_user_locale(user) do
-      @root_url = root_url(locale: locale_url_param)
+      @root_url = root_url(locale: locale_url_param, request_id: request_id)
       mail(to: email_address.email, subject: t('mailer.email_reuse_notice.subject'))
     end
   end
