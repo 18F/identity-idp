@@ -617,6 +617,13 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
               post(
                 :create,
                 params: {
+                  code: '999',
+                  otp_delivery_preference: 'sms',
+                },
+              )
+              post(
+                :create,
+                params: {
                   code: subject.current_user.direct_otp,
                   otp_delivery_preference: 'sms',
                 },
@@ -624,6 +631,26 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
             end
             it 'resets second_factor_attempts_count' do
               expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
+            end
+
+            it 'tracks an event' do
+              expect(@analytics).to have_logged_event(
+                'Multi-Factor Authentication Setup',
+                success: false,
+                error_details: { code: { wrong_length: true, incorrect: true } },
+                confirmation_for_add_phone: true,
+                context: 'confirmation',
+                multi_factor_auth_method: 'sms',
+                phone_configuration_id: controller.current_user.default_phone_configuration.id,
+                multi_factor_auth_method_created_at: controller.current_user.
+                  default_phone_configuration.created_at.strftime('%s%L'),
+                area_code: parsed_phone.area_code,
+                country_code: parsed_phone.country,
+                phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+                enabled_mfa_methods_count: 1,
+                in_account_creation_flow: false,
+                mfa_attempts: 2,
+              )
             end
           end
         end
