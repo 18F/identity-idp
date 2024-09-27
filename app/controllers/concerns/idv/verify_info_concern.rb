@@ -203,6 +203,15 @@ module Idv
         },
       )
 
+      threatmetrix_reponse_body = form_response.extra.dig(
+        :proofing_results, :context, :stages, :threatmetrix, :response_body
+      )
+      if threatmetrix_reponse_body.present?
+        analytics.idv_threatmetrix_response_body(
+          response_body: threatmetrix_reponse_body,
+        )
+      end
+
       summarize_result_and_rate_limit(form_response)
       delete_async
 
