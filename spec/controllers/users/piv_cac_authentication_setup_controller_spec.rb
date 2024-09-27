@@ -109,8 +109,35 @@ RSpec.describe Users::PivCacAuthenticationSetupController do
           context 'with no additional MFAs chosen on setup' do
             let(:mfa_selections) { ['piv_cac'] }
             it 'redirects to suggest 2nd MFA page' do
+              stub_analytics
               get :new, params: { token: good_token }
               expect(response).to redirect_to(auth_method_confirmation_url)
+
+              expect(@analytics).to have_logged_event(
+                'Multi-Factor Authentication Setup',
+                enabled_mfa_methods_count: 1,
+                errors: {},
+                multi_factor_auth_method: 'piv_cac',
+                in_account_creation_flow: false,
+                success: true,
+                mfa_attempts: 1,
+              )
+            end
+
+            it 'logs mfa attempts commensurate to number of attempts' do
+              stub_analytics
+              get :new, params: { token: bad_token }
+              get :new, params: { token: good_token }
+
+              expect(@analytics).to have_logged_event(
+                'Multi-Factor Authentication Setup',
+                enabled_mfa_methods_count: 1,
+                errors: {},
+                multi_factor_auth_method: 'piv_cac',
+                in_account_creation_flow: false,
+                success: true,
+                mfa_attempts: 2,
+              )
             end
 
             it 'sets the piv/cac session information' do
