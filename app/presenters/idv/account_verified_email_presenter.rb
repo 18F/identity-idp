@@ -37,6 +37,10 @@ module Idv
       service_provider.friendly_name || APP_NAME
     end
 
+    def url_options
+      {}
+    end
+
     private
 
     # copypasta
