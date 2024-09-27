@@ -525,9 +525,10 @@ RSpec.describe UserMailer, type: :mailer do
   describe '#account_verified' do
     let(:sp_name) { '' }
     let(:date_time) { Time.zone.now }
+    let(:profile) { create(:profile) }
     let(:mail) do
       UserMailer.with(user: user, email_address: email_address).
-        account_verified(date_time: date_time, sp_name: sp_name)
+        account_verified(date_time: date_time, profile: profile)
     end
 
     it_behaves_like 'a system email'
@@ -538,7 +539,7 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     it 'renders the subject' do
-      expect(mail.subject).to eq t('user_mailer.account_verified.subject', sp_name: sp_name)
+      expect(mail.subject).to eq t('user_mailer.account_verified.subject', app_name: APP_NAME)
     end
 
     it 'links to the forgot password page' do
