@@ -16,8 +16,10 @@
 <p>
   <%= t('user_mailer.account_verified.intro_html', date: @date) %>
 </p>
+
+<% if @presenter.show_cta? %>
 <p>
-  <%= t('user_mailer.account_verified.next_step', sp_name: @sp_name) %>
+  <%= t('user_mailer.account_verified.next_step', sp_name: @presenter.sp_name) %>
 </p>
 
 <table class="button expanded large radius">
@@ -28,7 +30,7 @@
         <tbody>
         <tr>
           <td>
-            <%= link_to t('user_mailer.account_verified.sign_in'), @sp_url,
+            <%= link_to t('user_mailer.account_verified.sign_in'), @presenter.sign_in_url,
                         target: '_blank', class: 'btn-warn', rel: 'noopener' %>
           </td>
         </tr>
@@ -39,8 +41,9 @@
   </tbody>
 </table>
 <p>
-  <%= link_to(@sp_url, @sp_url, target: '_blank', rel: 'noopener') %>
+  <%= link_to(@presenter.sign_in_url, @presenter.sign_in_url, target: '_blank', rel: 'noopener') %>
 </p>
+<% end %>
 
 <p>
   <%= t(

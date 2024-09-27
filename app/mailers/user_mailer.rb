@@ -242,18 +242,15 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def account_verified(date_time:, app_name:, sp:)
+  def account_verified(date_time:, profile:)
     attachments.inline['verified.png'] = File.read('app/assets/images/email/user-signup-ial2.png')
     with_user_locale(user) do
+      @presenter = Idv::AccountVerifiedEmailPresenter.new(profile:)
       @hide_title = true
       @date = I18n.l(date_time, format: :event_date)
-      # What if sp is nil? Really we shouldn't send this at all, right?
-      @sp_name = sp.friendly_name || APP_NAME
-      @sp_url = sp.return_to_sp_url
-      @app_name = app_name
       mail(
         to: email_address.email,
-        subject: t('user_mailer.account_verified.subject', app_name: @app_name),
+        subject: t('user_mailer.account_verified.subject', app_name: APP_NAME),
       )
     end
   end
