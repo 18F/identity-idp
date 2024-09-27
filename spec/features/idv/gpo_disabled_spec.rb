@@ -44,7 +44,7 @@ RSpec.feature 'disabling GPO address verification' do
 
     it 'does not allow verify by mail with biometric comparison', :js do
       user = user_with_2fa
-      start_idv_from_sp(:oidc, biometric_comparison_required: true)
+      start_idv_from_sp(:oidc, facial_match_required: true)
       sign_in_and_2fa_user(user)
       complete_all_doc_auth_steps(with_selfie: true)
 
@@ -58,7 +58,7 @@ RSpec.feature 'disabling GPO address verification' do
 
     it 'does allow verify by mail without biometric comparison', :js do
       user = user_with_2fa
-      start_idv_from_sp(:oidc, biometric_comparison_required: false)
+      start_idv_from_sp(:oidc, facial_match_required: false)
       sign_in_and_2fa_user(user)
       complete_all_doc_auth_steps(with_selfie: false)
       click_on t('idv.troubleshooting.options.verify_by_mail')
