@@ -37,7 +37,7 @@ class SamlIdpController < ApplicationController
       return redirect_to reactivate_account_url if user_needs_to_reactivate_account?
       return redirect_to url_for_pending_profile_reason if user_has_pending_profile?
       return redirect_to idv_url if identity_needs_verification?
-      return redirect_to idv_url if biometric_comparison_needed?
+      return redirect_to idv_url if facial_match_needed?
     end
     return redirect_to sign_up_completed_url if needs_completion_screen_reason
     if auth_count == 1 && first_visit_for_sp?
@@ -113,7 +113,7 @@ class SamlIdpController < ApplicationController
     redirect_to capture_password_url
   end
 
-  def biometric_comparison_needed?
+  def facial_match_needed?
     resolved_authn_context_result.facial_match? &&
       !current_user.identity_verified_with_facial_match?
   end

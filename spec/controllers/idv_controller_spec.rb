@@ -61,7 +61,7 @@ RSpec.describe IdvController do
 
         before do
           session[:sp] =
-            { issuer: current_sp.issuer, vtr: ['C2.Pb'], biometric_comparison_required: true }
+            { issuer: current_sp.issuer, vtr: ['C2.Pb'] }
         end
 
         it 'redirects to welcome' do

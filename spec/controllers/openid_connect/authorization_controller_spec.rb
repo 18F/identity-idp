@@ -403,7 +403,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
               )
             end
 
-            context 'SP requests biometric_comparison_required' do
+            context 'SP requests required facial match' do
               let(:vtr) { ['Pb'].to_json }
 
               before do
@@ -1325,7 +1325,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
               )
             end
 
-            context 'SP requests biometric_comparison_required' do
+            context 'SP requests required facial match' do
               let(:vtr) { ['Pb'].to_json }
 
               before do
