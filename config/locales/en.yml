@@ -1806,11 +1806,10 @@ user_mailer.account_reset_request.subject: How to delete your %{app_name} accoun
 user_mailer.account_verified.change_password_link: change your password
 user_mailer.account_verified.contact_link: contact us
 user_mailer.account_verified.greeting: Hello,
-user_mailer.account_verified.intro_html: You successfully verified your identity on %{date}.
+user_mailer.account_verified.intro: You successfully verified your identity on %{date}.
 user_mailer.account_verified.next_sign_in.with_sp.with_cta: Next, click the button or copy the link below to access %{sp_name} and sign in.
 user_mailer.account_verified.next_sign_in.with_sp.without_cta: You can now sign in from %{sp_name}’s website.
 user_mailer.account_verified.next_sign_in.without_sp: Next, click the button or copy the link below to sign in to %{app_name}.
-user_mailer.account_verified.next_step: Next, click the button or copy the link below to access %{sp_name} and sign in.
 user_mailer.account_verified.sign_in: Sign in
 user_mailer.account_verified.subject: You successfully verified your identity with %{app_name}
 user_mailer.account_verified.warning_contact_us_html: If you did not attempt to verify your identity, please sign in to %{change_password_link_html}. To report this, %{contact_link_html}.
