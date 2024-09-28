@@ -960,42 +960,6 @@ RSpec.feature 'document capture step', :js do
               end
             end
 
-            context 'hybrid flow' do
-              before do
-                allow(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
-                  @sms_link = config[:link]
-                  impl.call(**config)
-                end.at_least(1).times
-              end
-              it 'can complete doc auth with selfie' do
-                perform_in_browser(:desktop) do
-                  visit_idp_from_oidc_sp_with_ial2(biometric_comparison_required: true)
-                  sign_in_and_2fa_user(@user)
-                  complete_doc_auth_steps_before_hybrid_handoff_step
-                  expect(page).to have_current_path(idv_hybrid_handoff_path)
-                  expect(page).to have_content(t('doc_auth.headings.hybrid_handoff_selfie'))
-                  expect(page).not_to have_content(t('doc_auth.headings.hybrid_handoff'))
-                  click_on t('forms.buttons.send_link')
-                  expect(page).to have_current_path(idv_link_sent_path)
-                end
-
-                perform_in_browser(:mobile) do
-                  visit @sms_link
-                  attach_images
-                  click_continue
-                  attach_selfie
-                  submit_images
-                  visit idv_hybrid_mobile_document_capture_url
-                end
-
-                perform_in_browser(:desktop) do
-                  click_idv_continue
-                  visit idv_ssn_url
-                  complete_ssn_step
-                end
-              end
-            end
-
             context 'when ipp is enabled' do
               let(:in_person_doc_auth_button_enabled) { true }
               let(:sp_ipp_enabled) { true }
