@@ -28,7 +28,7 @@
         <%= t('account.index.verification.you_verified_your_identity_html', sp_name: @presenter.user.active_profile.initiating_service_provider&.friendly_name || APP_NAME) %>
       <% end %>
     <% elsif @presenter.active_profile? %>
-      <%= t('account.index.verification.nonbiometric_verified_html', app_name: APP_NAME, date: @presenter.formatted_nonfacial_match_idv_date) %>
+      <%= t('account.index.verification.nonbiometric_verified_html', app_name: APP_NAME, date: @presenter.formatted_legacy_idv_date) %>
     <% elsif @presenter.sp_name || @presenter.user.pending_profile.initiating_service_provider %>
       <%= t('account.index.verification.finish_verifying_html', sp_name: @presenter.sp_name || @presenter.user.pending_profile.initiating_service_provider.friendly_name) %>
     <% else %>

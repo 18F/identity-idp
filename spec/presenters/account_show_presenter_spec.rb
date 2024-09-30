@@ -254,13 +254,13 @@ RSpec.describe AccountShowPresenter do
     end
   end
 
-  describe '#formatted_nonfacial_match_idv_date' do
+  describe '#formatted_legacy_idv_date' do
     let(:user) { build(:user, :proofed_with_selfie) }
 
-    subject(:formatted_nonfacial_match_idv_date) { presenter.formatted_nonfacial_match_idv_date }
+    subject(:formatted_legacy_idv_date) { presenter.formatted_legacy_idv_date }
 
     it 'formats a date string' do
-      expect { Date.parse(formatted_nonfacial_match_idv_date) }.not_to raise_error
+      expect { Date.parse(formatted_legacy_idv_date) }.not_to raise_error
     end
   end
 
