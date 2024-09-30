@@ -243,7 +243,7 @@ class UserMailer < ActionMailer::Base
   end
 
   def account_verified(date_time:, profile:)
-    attachments.inline['verified.png'] = File.read('app/assets/images/email/user-signup-ial2.png')
+    attachments.inline['verified.png'] = Rails.root.join('app/assets/images/email/user-signup-ial2.png').read
     with_user_locale(user) do
       @presenter = Idv::AccountVerifiedEmailPresenter.new(profile:)
       @hide_title = true
