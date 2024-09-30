@@ -4,7 +4,9 @@ RSpec.describe AttributeAsserter do
   include SamlAuthHelper
 
   let(:user) { create(:profile, :active, :verified).user }
-  let(:facial_match_verified_user) { create(:profile, :active, :verified, idv_level: :in_person).user }
+  let(:facial_match_verified_user) do
+    create(:profile, :active, :verified, idv_level: :in_person).user
+  end
   let(:user_session) { {} }
   let(:identity) do
     build(

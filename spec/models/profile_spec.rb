@@ -370,7 +370,11 @@ RSpec.describe Profile do
           create(:profile, :active, :facial_match_proof, user: user)
 
           facial_match_reproof = create(:profile, :facial_match_proof, user: user)
-          expect { facial_match_reproof.activate }.to_not(change { SpUpgradedBiometricProfile.count })
+          expect { facial_match_reproof.activate }.to_not(
+            change do
+              SpUpgradedBiometricProfile.count
+            end,
+          )
         end
       end
 

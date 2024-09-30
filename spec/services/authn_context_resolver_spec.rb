@@ -82,7 +82,7 @@ RSpec.describe AuthnContextResolver do
         expect(result.identity_proofing?).to eq(true)
       end
 
-      it 'returns the non-facial match vector if the user has identity-proofed without facial match' do
+      it 'returns non-facial match vector if user has identity-proofed without facial match' do
         user = create(:user, :proofed)
         vtr = ['C2.Pb', 'C2.P1']
 
