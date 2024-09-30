@@ -17,8 +17,8 @@ single_sp_users = Array.new
 multiple_sp_users = Array.new
 
 # collect information on service provider per scenario
-single_sp_list = Set.new
-multiple_sp_list = Set.new
+single_sp_list = Array.new
+multiple_sp_list = Array.new
 
 # count of service providers
 single_sp_tally  = 0
@@ -28,6 +28,7 @@ multiple_sp_tally = 0
 ActiveRecord::Base.connection.execute 'SET statement_timeout = 200000' 
 
 # Runs through the data in batches, saves list of users and service providers
+# Will take about a minute for large samples
 User.where(uuid: user_uuids).in_batches(of: 1_000) do |batch|
   no_sp_users = []
   single_sp_users = []
@@ -46,8 +47,8 @@ User.where(uuid: user_uuids).in_batches(of: 1_000) do |batch|
 end
 
 # counts number of service providers 
-single_sp_tally = single_sp_list.to_a.flatten.sort.tally
-multiple_sp_tally = multiple_sp_list.to_a.flatten.sort.tally
+single_sp_tally = single_sp_list.flatten.sort.tally
+multiple_sp_tally = multiple_sp_list.flatten.sort.tally
 
 # number of logins for users based on number of service providers
 no_sp_sign_ins_per_user = no_sp_users.map { |user| user.events.where(event_type: :sign_in_before_2fa).count }
@@ -64,15 +65,14 @@ puts "Total number in dataset: #{user_uuids.count}"
 
 puts "\n=== Accounts with no service provider ==="
 puts "Number of accounts: #{no_sp_users.count}"
-puts "Median number of logins: #{login_average(no_sp_sign_ins_per_user)}"
+puts "Average number of logins: #{login_average(no_sp_sign_ins_per_user)}"
 
 puts "\n=== Accounts with one service provider ==="
 puts "Count of users with one service provider: #{single_sp_users.count}"
-puts "List of Service Providers #{}"
 puts "\nService providers associated with accounts with one SP added: #{single_sp_tally}"
-puts "\nMedian number of logins annually: #{login_average(single_sp_sign_ins_per_user)}"
+puts "\Average number of logins annually: #{login_average(single_sp_sign_ins_per_user)}"
 
 puts "\n=== Accounts with multiple service providers"
 puts "Count of users with multiple service providers: #{multiple_sp_users.count}"
-puts "\nService providers associated with accounts with one SP added: #{multiple_sp_tally}"
-puts "\nMedian number of logins annually: #{login_average(multiple_sp_sign_ins_per_user)}"
+puts "\nService providers associated with accounts with multiple SP added: #{multiple_sp_tally}"
+puts "\Average number of logins annually: #{login_average(multiple_sp_sign_ins_per_user)}"
