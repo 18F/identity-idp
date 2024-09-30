@@ -18,6 +18,13 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
     end
 
     context 'renders the show template with' do
+      it('a step indicator with Getting started as the current step') do
+        expect(view.content_for(:pre_flash_content)).to have_css(
+          '.step-indicator__step--current',
+          text: t('step_indicator.flows.idv.getting_started'),
+        )
+      end
+
       it 'a title' do
         expect(rendered).to have_content(t('doc_auth.headings.how_to_verify'))
       end
@@ -65,6 +72,13 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
     end
 
     context 'renders the show template with' do
+      it('a step indicator with Getting started as the current step') do
+        expect(view.content_for(:pre_flash_content)).to have_css(
+          '.step-indicator__step--current',
+          text: t('step_indicator.flows.idv.getting_started'),
+        )
+      end
+
       it 'a title' do
         expect(rendered).to have_content(t('doc_auth.headings.how_to_verify'))
       end
