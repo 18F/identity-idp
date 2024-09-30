@@ -525,10 +525,10 @@ RSpec.describe UserMailer, type: :mailer do
   describe '#account_verified' do
     let(:sp_name) { '' }
     let(:date_time) { Time.zone.now }
-    let(:profile) { create(:profile) }
+    let(:profile) { create(:profile, :active) }
     let(:mail) do
       UserMailer.with(user: user, email_address: email_address).
-        account_verified(date_time: date_time, profile: profile)
+        account_verified(profile: profile)
     end
 
     it_behaves_like 'a system email'
