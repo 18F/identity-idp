@@ -20,7 +20,7 @@ module TwoFactorAuthentication
     end
 
     def create
-      session[:otp_attempts] = 0 if session[:otp_attempts].nil?
+      session[:otp_attempts] ||= 0
       session[:otp_attempts] += 1
       result = otp_verification_form.submit
       post_analytics(result)

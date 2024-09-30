@@ -51,7 +51,7 @@ module Users
       end
 
       flash_error(result.errors) unless result.success?
-      session[:webauthn_attempts] = 0 if session[:webauthn_attempts].nil?
+      session[:webauthn_attempts] ||= 0
       session[:webauthn_attempts] += 1
     end
 
