@@ -1803,10 +1803,16 @@ user_mailer.account_reset_request.cancel: Vous ne voulez pas supprimer votre com
 user_mailer.account_reset_request.header: Votre compte sera supprimé dans %{interval}
 user_mailer.account_reset_request.intro_html: 'Par mesure de sécurité, %{app_name} nécessite un processus en deux étapes pour supprimer votre compte: <br> <br> Étape 1: Il y a un delai d’attente de %{waiting_period} si vous avez perdu l’accès à vos méthodes d’authentification et devez supprimer votre compte. Si vous trouvez vos méthodes d’authentification, vous pouvez vous connecter à votre compte %{app_name} pour annuler cette demande. <br> <br> Deuxième étape: après la période d’attente de %{waiting_period}, vous recevrez un e-mail qui vous demandera de confirmer la suppression de votre compte %{app_name}. Votre compte ne sera pas supprimé tant que vous n’aurez pas confirmé.'
 user_mailer.account_reset_request.subject: Comment supprimer votre compte %{app_name}
-user_mailer.account_verified.change_password_link: changer votre mot de passe
-user_mailer.account_verified.contact_link: nous contacter
-user_mailer.account_verified.intro_html: Le %{date}, vous avez réussi à confirmer votre identité auprès de %{sp_name} à l’aide de %{app_name}. Si vous n’avez pas effectué cette action, veuillez %{contact_link_html} et vous connecter pour %{change_password_link_html}.
-user_mailer.account_verified.subject: Vous avez confirmé votre identité avec %{sp_name}.
+user_mailer.account_verified.change_password_link: réinitialiser votre mot de passe
+user_mailer.account_verified.contact_link: contactez le service d’assistance de %{app_name}
+user_mailer.account_verified.greeting: Bonjour,
+user_mailer.account_verified.intro: Vous avez réussi à confirmer votre identité le %{date}.
+user_mailer.account_verified.next_sign_in.with_sp.with_cta: Maintenant, cliquez sur le bouton ou copiez le lien ci-dessous pour accéder à %{sp_name} et vous connecter.
+user_mailer.account_verified.next_sign_in.with_sp.without_cta: Vous pouvez désormais vous connecter depuis le site Web de %{sp_name}.
+user_mailer.account_verified.next_sign_in.without_sp: Maintenant, cliquez sur le bouton ou copiez le lien ci-dessous pour vous connecter à %{app_name}.
+user_mailer.account_verified.sign_in: Se connecter
+user_mailer.account_verified.subject: Vous avez réussi à vérifier votre identité avec %{app_name}
+user_mailer.account_verified.warning_contact_us_html: Si vous n’avez pas essayé de confirmer votre identité, veuillez vous connecter pour %{change_password_link_html}. Pour signaler ce problème, %{contact_link_html}.
 user_mailer.add_email_associated_with_another_account.help_html: Si vous n’avez pas demandé de nouvel e-mail ou suspectez une erreur, veuillez visiter le %{help_link_html} de %{app_name_html} ou %{contact_link_html}.
 user_mailer.add_email_associated_with_another_account.intro_html: Cette adresse e-mail est déjà associée à un compte %{app_name_html}, nous ne pouvons donc pas l’ajouter à un autre compte. Vous devez d’abord la supprimer ou la retirer du compte auquel elle est associée. Pour ce faire, suivez le lien ci-dessous et connectez-vous avec cette adresse e-mail. Si vous n’essayez pas d’ajouter cette adresse e-mail à un compte, vous pouvez ignorer ce message.
 user_mailer.add_email_associated_with_another_account.link_text: Allez sur %{app_name}
