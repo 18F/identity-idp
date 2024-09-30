@@ -106,6 +106,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
                 transaction_id: 1,
                 review_status: review_status,
                 response_body: {
+                  session_id: 'threatmetrix_session_id',
                   tmx_summary_reason_code: ['Identity_Negative_History'],
                 },
               },
@@ -136,6 +137,13 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
               same_address_as_id: true,
             },
           ),
+        )
+        expect(@analytics).to have_logged_event(
+          :idv_threatmetrix_response_body,
+          response_body: {
+            session_id: 'threatmetrix_session_id',
+            tmx_summary_reason_code: ['Identity_Negative_History'],
+          },
         )
       end
     end
