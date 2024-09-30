@@ -369,5 +369,57 @@ RSpec.describe Users::WebauthnSetupController do
         end
       end
     end
+
+    context 'sign in and confirm' do
+      let(:params) do
+        {
+          attestation_object: attestation_object,
+          client_data_json: setup_client_data_json,
+          name: 'mykey',
+          transports: 'usb',
+          authenticator_data_value: '65',
+        }
+      end
+
+      before do
+        controller.user_session[:in_account_creation_flow] = true
+        allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
+        request.host = 'localhost:3000'
+        controller.user_session[:webauthn_challenge] = webauthn_challenge
+        session[:webauthn_attempts] = 1
+      end
+
+      it 'tracks the submission' do
+        Funnel::Registration::AddMfa.call(user.id, 'phone', @analytics)
+
+        patch :confirm, params: params
+
+        expect(@analytics).to have_logged_event(
+          'Multi-Factor Authentication Setup',
+          enabled_mfa_methods_count: 1,
+          mfa_method_counts: {
+            webauthn: 1,
+          },
+          multi_factor_auth_method: 'webauthn',
+          success: true,
+          errors: {},
+          in_account_creation_flow: true,
+          authenticator_data_flags: {
+            up: true,
+            uv: false,
+            be: false,
+            bs: false,
+            at: true,
+            ed: false,
+          },
+          mfa_attempts: 1,
+        )
+        expect(@analytics).to have_logged_event(
+          :webauthn_setup_submitted,
+          platform_authenticator: false,
+          success: true,
+        )
+      end
+    end
   end
 end
