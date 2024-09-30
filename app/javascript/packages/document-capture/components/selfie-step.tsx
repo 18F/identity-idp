@@ -70,7 +70,11 @@ export default function SelfieStep({
   return (
     <>
       {flowPath === 'hybrid' && <HybridDocCaptureWarning className="margin-bottom-4" />}
-      <SelfieCaptureStep defaultSideProps={defaultSideProps} selfieValue={value.selfie} isReviewStep={false}/>
+      <SelfieCaptureStep
+        defaultSideProps={defaultSideProps}
+        selfieValue={value.selfie}
+        isReviewStep={false}
+      />
       {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
       <Cancel />
     </>
