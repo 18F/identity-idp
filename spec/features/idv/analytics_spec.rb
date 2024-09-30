@@ -1150,6 +1150,7 @@ RSpec.feature 'Analytics Regression', :js do
         context 'proofing_device_profiling disabled' do
           let(:proofing_device_profiling) { :disabled }
           let(:threatmetrix) { false }
+          let(:threatmetrix_response_body) { nil }
           let(:threatmetrix_response) do
             {
               client: 'tmx_disabled',
@@ -1161,7 +1162,7 @@ RSpec.feature 'Analytics Regression', :js do
               review_status: 'pass',
               account_lex_id: nil,
               session_id: nil,
-              response_body: nil,
+              response_body: threatmetrix_response_body,
             }
           end
 
@@ -1207,6 +1208,7 @@ RSpec.feature 'Analytics Regression', :js do
         context 'proofing_device_profiling disabled' do
           let(:proofing_device_profiling) { :disabled }
           let(:threatmetrix) { false }
+          let(:threatmetrix_response_body) { nil }
           let(:threatmetrix_response) do
             {
               client: 'tmx_disabled',
@@ -1218,7 +1220,7 @@ RSpec.feature 'Analytics Regression', :js do
               review_status: 'pass',
               account_lex_id: nil,
               session_id: nil,
-              response_body: nil,
+              response_body: threatmetrix_response_body,
             }
           end
 
@@ -1249,7 +1251,7 @@ RSpec.feature 'Analytics Regression', :js do
 
         perform_in_browser(:mobile) do
           visit @sms_link
-          attach_and_submit_images_for_split_doc_auth
+          attach_and_submit_images
           visit idv_hybrid_mobile_document_capture_url
         end
 
@@ -1287,6 +1289,7 @@ RSpec.feature 'Analytics Regression', :js do
       context 'proofing_device_profiling disabled' do
         let(:proofing_device_profiling) { :disabled }
         let(:threatmetrix) { false }
+        let(:threatmetrix_response_body) { nil }
         let(:threatmetrix_response) do
           {
             client: 'tmx_disabled',
@@ -1298,7 +1301,7 @@ RSpec.feature 'Analytics Regression', :js do
             review_status: 'pass',
             account_lex_id: nil,
             session_id: nil,
-            response_body: nil,
+            response_body: threatmetrix_response_body,
           }
         end
 
@@ -1311,55 +1314,6 @@ RSpec.feature 'Analytics Regression', :js do
         end
       end
     end
-<<<<<<< HEAD
-    context 'GPO path' do
-      before do
-        sign_in_and_2fa_user(user)
-        visit_idp_from_sp_with_ial2(:oidc)
-        complete_welcome_step
-        complete_agreement_step
-        complete_hybrid_handoff_step
-        complete_document_capture_step
-        complete_ssn_step
-        complete_verify_step
-        enter_gpo_flow
-        complete_request_letter
-        complete_enter_password_step(user)
-      end
-
-      it 'records all of the events' do
-        gpo_path_events.each do |event, attributes|
-          expect(fake_analytics).to have_logged_event(event, attributes)
-        end
-      end
-
-      context 'proofing_device_profiling disabled' do
-        let(:proofing_device_profiling) { :disabled }
-        let(:threatmetrix) { false }
-        let(:threatmetrix_response) do
-          {
-            client: 'tmx_disabled',
-            success: true,
-            errors: {},
-            exception: nil,
-            timed_out: false,
-            transaction_id: nil,
-            review_status: 'pass',
-            account_lex_id: nil,
-            session_id: nil,
-            response_body: nil,
-          }
-        end
-
-        it 'records all of the events' do
-          gpo_path_events.each do |event, attributes|
-            expect(fake_analytics).to have_logged_event(event, attributes)
-          end
-        end
-      end
-    end
-=======
->>>>>>> 534ea7726 (Removing redundant code)
     context 'in person path' do
       let(:return_sp_url) { 'https://example.com/some/idv/ipp/url' }
 
@@ -1398,6 +1352,7 @@ RSpec.feature 'Analytics Regression', :js do
         let(:proofing_device_profiling) { :disabled }
         let(:idv_level) { 'legacy_in_person' }
         let(:threatmetrix) { false }
+        let(:threatmetrix_response_body) { nil }
         let(:threatmetrix_response) do
           {
             client: 'tmx_disabled',
@@ -1409,7 +1364,7 @@ RSpec.feature 'Analytics Regression', :js do
             review_status: 'pass',
             account_lex_id: nil,
             session_id: nil,
-            response_body: nil,
+            response_body: threatmetrix_response_body,
           }
         end
 
