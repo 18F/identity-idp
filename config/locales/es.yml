@@ -1816,7 +1816,7 @@ user_mailer.account_reset_request.header: Su cuenta será eliminada en %{interva
 user_mailer.account_reset_request.intro_html: 'Como medida de seguridad, %{app_name} requiere un proceso de dos pasos para eliminar su cuenta:<br><br> Paso uno: Hay un período de espera de %{waiting_period} si perdió el acceso a sus métodos de autenticación y necesita eliminar su cuenta. Si encuentra sus métodos de autenticación, puede iniciar sesión en su cuenta %{app_name} para cancelar esta solicitud.<br><br> Paso dos: Tras el período de espera de %{waiting_period}, recibirás un correo electrónico en el que te pediremos que confirmes la eliminación de tu cuenta %{app_name}. Tu cuenta no se eliminará hasta que lo confirmes.'
 user_mailer.account_reset_request.subject: Cómo eliminar su cuenta de %{app_name}
 user_mailer.account_verified.change_password_link: restablecer su contraseña
-user_mailer.account_verified.contact_link: contacte con el servicio de asistencia de Login.gov
+user_mailer.account_verified.contact_link: contacte con el servicio de asistencia de %{app_name}
 user_mailer.account_verified.greeting: 'Hola:'
 user_mailer.account_verified.intro: Verificó correctamente su identidad el %{date}.
 user_mailer.account_verified.next_sign_in.with_sp.with_cta: A continuación, haga clic en el botón o copie el vínculo siguiente para acceder a %{sp_name} e iniciar sesión.

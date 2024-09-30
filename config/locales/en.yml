@@ -1804,7 +1804,7 @@ user_mailer.account_reset_request.header: Your account will be deleted in %{inte
 user_mailer.account_reset_request.intro_html: 'As a security measure, %{app_name} requires a two-step process to delete your account:<br><br> Step One: There is a waiting period of %{waiting_period} if you have lost access to your authentication methods and need to delete your account. If you locate your authentication methods, you can sign in to your %{app_name} account to cancel this request.<br><br> Step Two: After the waiting period of %{waiting_period}, you will receive an email that will ask you to confirm the deletion of your %{app_name} account. Your account will not be deleted until you confirm.'
 user_mailer.account_reset_request.subject: How to delete your %{app_name} account
 user_mailer.account_verified.change_password_link: change your password
-user_mailer.account_verified.contact_link: contact us
+user_mailer.account_verified.contact_link: contact %{app_name} support
 user_mailer.account_verified.greeting: Hello,
 user_mailer.account_verified.intro: You successfully verified your identity on %{date}.
 user_mailer.account_verified.next_sign_in.with_sp.with_cta: Next, click the button or copy the link below to access %{sp_name} and sign in.

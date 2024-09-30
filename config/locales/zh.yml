@@ -1817,7 +1817,7 @@ user_mailer.account_reset_request.header: 你的账户会在%{interval}后删除
 user_mailer.account_reset_request.intro_html: 作为一项安全措施，%{app_name} 要求一个两步流程来删除你的帐户：<br><br> 第一步：如果你丢失了身份证实方法但需删除账户，有一个%{waiting_period} 的等待期。如果你找到了身份证实方法，可以登录你的 %{app_name} 帐户来取消这个请求。<br><br> 第二步：%{waiting_period}等待期之后，你会收到一封电邮，请你确认要删除 %{app_name} 账户。只有经你确认后，你的账户才会被删除。
 user_mailer.account_reset_request.subject: 如何删除你的 %{app_name} 账户
 user_mailer.account_verified.change_password_link: 更改密码
-user_mailer.account_verified.contact_link: 联系我们
+user_mailer.account_verified.contact_link: 请联系 %{app_name}支持
 user_mailer.account_verified.greeting: 你好，
 user_mailer.account_verified.intro: 你在 %{date} 成功地验证了身份。
 user_mailer.account_verified.next_sign_in.with_sp.with_cta: 接下来请点击按钮或复制下面的连接来访问 %{sp_name} 并登录。
