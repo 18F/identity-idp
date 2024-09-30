@@ -66,7 +66,7 @@ module Users
     end
 
     def process_piv_cac_setup
-      session[:piv_cac_attempts] = 0 if session[:piv_cac_attempts].nil?
+      session[:piv_cac_attempts] ||= 0
       session[:piv_cac_attempts] += 1
       result = user_piv_cac_form.submit
       properties = result.to_h.merge(analytics_properties)
