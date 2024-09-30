@@ -145,9 +145,15 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def account_verified
+    service_provider = ServiceProvider.find_by(friendly_name: 'Example Sinatra App')
     UserMailer.with(user: user, email_address: email_address_record).account_verified(
-      date_time: DateTime.now,
-      sp_name: 'Example App',
+      profile: unsaveable(
+        Profile.new(
+          user: user,
+          initiating_service_provider: service_provider,
+          verified_at: Time.zone.now,
+        ),
+      ),
     )
   end
 
