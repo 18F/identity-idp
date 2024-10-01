@@ -42,31 +42,6 @@ module Idv
         @reference_id = document_response.dig('referenceId')
       end
 
-      def update
-        clear_future_steps!
-        idv_session.redo_document_capture = nil # done with this redo
-
-        # fetch result probably not needed local dev
-        if (socure_document_uuid = request.params[:document_uuid])
-          uploaded_documents_decision(socure_document_uuid)
-        end
-
-        # Not used in standard flow, here for data consistency with hybrid flow.
-        document_capture_session.confirm_ocr
-        result = handle_stored_result
-
-        Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
-          call('document_capture', :update, true)
-
-        cancel_establishing_in_person_enrollments
-
-        if result.success?
-          redirect_to idv_ssn_url
-        else
-          redirect_to idv_socure_document_capture_url
-        end
-      end
-
       def self.step_info
         Idv::StepInfo.new(
           key: :socure_document_capture,
@@ -88,25 +63,6 @@ module Idv
             idv_session.invalidate_in_person_pii_from_user!
           end,
         )
-      end
-
-      private
-
-      def cancel_establishing_in_person_enrollments
-        UspsInPersonProofing::EnrollmentHelper.
-          cancel_stale_establishing_enrollments_for_user(current_user)
-      end
-
-      def handle_stored_result
-        if stored_result&.success? && selfie_requirement_met?
-          save_proofing_components(current_user)
-          extract_pii_from_doc(current_user, store_in_session: true)
-          flash[:success] = t('doc_auth.headings.capture_complete')
-          successful_response
-        else
-          extra = { stored_result_present: stored_result.present? }
-          failure(I18n.t('doc_auth.errors.general.network_error'), extra)
-        end
       end
     end
   end

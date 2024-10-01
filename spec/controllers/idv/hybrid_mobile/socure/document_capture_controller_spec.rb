@@ -163,42 +163,4 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
       end
     end
   end
-
-  describe '#update' do
-    let(:result_success) { true }
-    let(:stored_result) { { success: result_success } }
-
-    before do
-      allow(stored_result).to receive(:success?).and_return(result_success)
-      allow(stored_result).to receive(:attention_with_barcode?).and_return(false)
-      allow(stored_result).to receive(:pii_from_doc).and_return({})
-      allow(stored_result).to receive(:selfie_check_performed?).and_return(false)
-
-      stub_request(:post, fake_socure_endpoint)
-      stub_analytics
-
-      session[:doc_capture_user_id] = user&.id
-      session[:document_capture_session_uuid] = document_capture_session_uuid
-    end
-
-    context 'when we succeed' do
-      let(:result_success) { true }
-
-      it 'capture complete url' do
-        put(:update)
-
-        expect(response).to redirect_to(idv_hybrid_mobile_capture_complete_url)
-      end
-    end
-
-    context 'when we fail' do
-      let(:result_success) { false }
-
-      it 'redirects back to us' do
-        put(:update)
-
-        expect(response).to redirect_to(idv_hybrid_mobile_socure_document_capture_url)
-      end
-    end
-  end
 end

@@ -165,28 +165,4 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       end
     end
   end
-
-  describe '#update' do
-    before do
-      stub_request(:post, fake_socure_endpoint)
-      stub_sign_in(user)
-      stub_up_to(:hybrid_handoff, idv_session: subject.idv_session)
-
-      subject.idv_session.document_capture_session_uuid = document_capture_session.uuid
-    end
-
-    it 'invalidates the future steps' do
-      allow(subject).to receive(:clear_future_steps!)
-
-      put(:update)
-
-      expect(subject).to have_received(:clear_future_steps!)
-    end
-
-    it 'resets redo_document_capture' do
-      put(:update)
-
-      expect(subject.idv_session.redo_document_capture).to be_nil
-    end
-  end
 end
