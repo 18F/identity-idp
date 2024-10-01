@@ -63,7 +63,8 @@ module Idv
           idv_session.service_provider&.in_person_proofing_enabled
         end,
         undo_step: ->(idv_session:, user:) {
-                     idv_session.skip_doc_auth_from_how_to_verify = nil || idv_session.skip_doc_auth = nil
+                     idv_session.skip_doc_auth_from_how_to_verify = nil ||
+                      idv_session.skip_doc_auth = nil
                      idv_session.opted_in_to_in_person_proofing = nil
                    },
       )
