@@ -1109,25 +1109,9 @@ RSpec.feature 'Analytics Regression', :js do
   context 'doc_auth_separate_pages_enabled is true' do
     before do
       allow(IdentityConfig.store).to receive(:doc_auth_separate_pages_enabled).and_return(true)
-      allow_any_instance_of(FederatedProtocols::Oidc).
-        to receive(:facial_match_required?).
-        and_return(true)
-      allow_any_instance_of(DocAuth::Response).to receive(:selfie_status).and_return(:success)
-
-      perform_in_browser(:desktop) do
-        sign_in_and_2fa_user(user)
-        visit_idp_from_sp_with_ial2(:oidc, facial_match_required: true)
-        complete_doc_auth_steps_before_document_capture_step
-        attach_images
-        continue_doc_auth_form
-        attach_selfie
-        submit_images
-
-        click_idv_continue
-        visit idv_ssn_url
     end
     context 'Hybrid flow' do
-      context 'biometric comparison not required - Happy path' do
+      context 'facial comparison not required - Happy path' do
         before do
           sign_in_and_2fa_user(user)
           visit_idp_from_sp_with_ial2(:oidc)
@@ -1191,13 +1175,13 @@ RSpec.feature 'Analytics Regression', :js do
           end
         end
       end
-      context 'biometric comparison required - Happy path' do
+      context 'facial comparison required - Happy path' do
         before do
           allow_any_instance_of(DocAuth::Response).to receive(:selfie_status).and_return(:success)
 
           perform_in_browser(:mobile) do
             sign_in_and_2fa_user(user)
-            visit_idp_from_sp_with_ial2(:oidc, biometric_comparison_required: true)
+            visit_idp_from_sp_with_ial2(:oidc, facial_match_required: true)
             complete_doc_auth_steps_before_document_capture_step
             attach_images
             click_continue
@@ -1250,7 +1234,7 @@ RSpec.feature 'Analytics Regression', :js do
         end
       end
     end
-    context 'biometric comparison not required - Happy path' do
+    context 'facial comparison not required - Happy path' do
       before do
         allow(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
           @sms_link = config[:link]

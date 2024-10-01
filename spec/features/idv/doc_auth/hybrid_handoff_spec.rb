@@ -11,22 +11,12 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
     IdentityConfig.store.idv_send_link_attempt_window_in_minutes
   end
   let(:facial_match_required) { false }
-
-  before do
-    if facial_match_required
-      visit_idp_from_oidc_sp_with_ial2(facial_match_required: facial_match_required)
-    end
-    sign_in_and_2fa_user
-    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
-  end
-
-  let(:biometric_comparison_required) { false }
   context 'split doc auth', allow_browser_log: true do
     before do
       allow(IdentityConfig.store).to receive(:doc_auth_separate_pages_enabled).and_return(true)
-      if biometric_comparison_required
+      if facial_match_required
         visit_idp_from_oidc_sp_with_ial2(
-          biometric_comparison_required: biometric_comparison_required,
+          facial_match_required: facial_match_required,
         )
       end
       sign_in_and_2fa_user
@@ -211,7 +201,7 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
       end
 
       describe 'when selfie is required by sp' do
-        let(:biometric_comparison_required) { true }
+        let(:facial_match_required) { true }
         it 'has expected UI elements' do
           mobile_form = find('#form-to-submit-photos-through-mobile')
           expect(mobile_form).to have_name(t('forms.buttons.send_link'))
@@ -255,7 +245,7 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
       end
 
       describe 'when selfie is not required by sp' do
-        let(:biometric_comparison_required) { false }
+        let(:facial_match_required) { false }
         it 'has expected UI elements' do
           mobile_form = find('#form-to-submit-photos-through-mobile')
           desktop_form = find('#form-to-submit-photos-through-desktop')
