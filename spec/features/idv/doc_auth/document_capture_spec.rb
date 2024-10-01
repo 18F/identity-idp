@@ -689,9 +689,11 @@ RSpec.feature 'document capture step', :js do
                 expect(max_submission_attempts_before_native_camera.to_i).
                   to eq(ActiveSupport::Duration::SECONDS_PER_HOUR)
                 expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
-                expect_doc_capture_page_header(t('doc_auth.headings.document_capture_with_selfie'))
-                expect_doc_capture_id_subheader
-                attach_liveness_images
+                expect(page).to have_text(t('doc_auth.headings.document_capture'))
+                attach_images
+                click_continue
+                expect_doc_capture_selfie_subheader
+                attach_selfie
                 submit_images
 
                 expect(page).to have_current_path(idv_ssn_url)
@@ -943,9 +945,11 @@ RSpec.feature 'document capture step', :js do
                 click_on t('forms.buttons.upload_photos')
                 expect(page).to have_current_path(idv_document_capture_url)
                 expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
-                expect_doc_capture_page_header(t('doc_auth.headings.document_capture_with_selfie'))
-                expect_doc_capture_id_subheader
-                attach_liveness_images
+                expect(page).to have_text(t('doc_auth.headings.document_capture'))
+                attach_images
+                click_continue
+                expect_doc_capture_selfie_subheader
+                attach_selfie
                 submit_images
 
                 expect(page).to have_current_path(idv_ssn_url)
