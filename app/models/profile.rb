@@ -342,7 +342,7 @@ class Profile < ApplicationRecord
   end
 
   def track_facial_match_reproof
-    SpUpgradedBiometricProfile.create(
+    SpUpgradedFacialMatchProfile.create(
       user: user,
       upgraded_at: Time.zone.now,
       idv_level: idv_level,
