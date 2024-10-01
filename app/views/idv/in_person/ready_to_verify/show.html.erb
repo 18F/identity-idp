@@ -232,24 +232,21 @@
 <p><%= t('in_person_proofing.body.expect.info') %></p>
 
 <p class="margin-top-3 margin-bottom-4">
-  <% if @presenter.service_provider_homepage_url.present? %>
-    <%= render ClickObserverComponent.new(event_name: 'IdV: user clicked sp link on ready to verify page') do %>
-      <%= t(
-            'in_person_proofing.body.barcode.return_to_partner_html',
-            link_html: link_to(
-              t(
-                'in_person_proofing.body.barcode.return_to_partner_link',
-                sp_name: @presenter.sp_name,
-              ),
-              @presenter.service_provider_homepage_url,
-            ),
-          ) %>
-    <% end %>
-  <% else %>
+  <% if @presenter.service_provider_homepage_url.blank? %>  
     <%= t('in_person_proofing.body.barcode.close_window') %>
   <% end %>
 </p>
 
 <%= render PageFooterComponent.new do %>
   <%= link_to t('in_person_proofing.body.barcode.cancel_link_text'), idv_cancel_path(step: 'barcode') %>
+  <% if @presenter.service_provider_homepage_url.present? %>
+  <br />
+    <%= link_to(
+              t(
+                'in_person_proofing.body.barcode.return_to_partner_link',
+                sp_name: @presenter.sp_name,
+              ),
+              @presenter.service_provider_homepage_url,
+            ) %>
+         <% end %>
 <% end %>
