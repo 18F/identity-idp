@@ -21,8 +21,8 @@ module DocAuth
         private
 
         def lang(language)
-          return language unless language == :zh
-          'zh-cn'
+          return 'zh-cn' if language == :zh
+          language
         end
 
         def body
