@@ -4591,14 +4591,17 @@ module AnalyticsEvents
   # Logs a Socure KYC result alongside a resolution result for later comparison.
   # @param [Hash] socure_result Result from Socure KYC API call
   # @param [Hash] resolution_result Result from resolution proofing
+  # @param [String,nil] phone_source Whether the phone number is from MFA or hybrid handoff
   def idv_socure_shadow_mode_proofing_result(
     socure_result:,
     resolution_result:,
+    phone_source:,
     **extra
   )
     track_event(
       :idv_socure_shadow_mode_proofing_result,
       resolution_result: resolution_result.to_h,
+      phone_source:,
       socure_result: socure_result.to_h,
       **extra,
     )
@@ -4650,6 +4653,19 @@ module AnalyticsEvents
       active_profile_idv_level: active_profile_idv_level,
       pending_profile_idv_level: pending_profile_idv_level,
       profile_history: profile_history,
+      **extra,
+    )
+  end
+
+  # The JSON body of the response returned from Threatmetrix. PII has been removed.
+  # @param [Hash] response_body The response body returned by ThreatMetrix
+  def idv_threatmetrix_response_body(
+    response_body: nil,
+    **extra
+  )
+    track_event(
+      :idv_threatmetrix_response_body,
+      response_body: response_body,
       **extra,
     )
   end

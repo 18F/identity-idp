@@ -98,6 +98,7 @@ module Idv
       idv_sdk_selfie_image_capture_opened
       idv_selfie_image_added
       idv_session_error_visited
+      idv_threatmetrix_response_body
       idv_usps_auth_token_refresh_job_completed
       idv_usps_auth_token_refresh_job_network_error
       idv_usps_auth_token_refresh_job_started

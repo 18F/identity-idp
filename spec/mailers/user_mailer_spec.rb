@@ -8,7 +8,11 @@ RSpec.describe UserMailer, type: :mailer do
   let(:is_enhanced_ipp) { false }
 
   describe '#validate_user_and_email_address' do
-    let(:mail) { UserMailer.with(user: user, email_address: email_address).signup_with_your_email }
+    let(:request_id) { '1234-abcd' }
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).
+        signup_with_your_email(request_id: request_id)
+    end
 
     context 'with user and email address match' do
       it 'does not raise an error' do
@@ -210,8 +214,10 @@ RSpec.describe UserMailer, type: :mailer do
   end
 
   describe '#signup_with_your_email' do
+    let(:request_id) { '1234-abcd' }
     let(:mail) do
-      UserMailer.with(user: user, email_address: user.email_addresses.first).signup_with_your_email
+      UserMailer.with(user: user, email_address: user.email_addresses.first).
+        signup_with_your_email(request_id: request_id)
     end
 
     it_behaves_like 'a system email'
@@ -519,9 +525,10 @@ RSpec.describe UserMailer, type: :mailer do
   describe '#account_verified' do
     let(:sp_name) { '' }
     let(:date_time) { Time.zone.now }
+    let(:profile) { create(:profile, :active) }
     let(:mail) do
       UserMailer.with(user: user, email_address: email_address).
-        account_verified(date_time: date_time, sp_name: sp_name)
+        account_verified(profile: profile)
     end
 
     it_behaves_like 'a system email'
@@ -532,7 +539,7 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     it 'renders the subject' do
-      expect(mail.subject).to eq t('user_mailer.account_verified.subject', sp_name: sp_name)
+      expect(mail.subject).to eq t('user_mailer.account_verified.subject', app_name: APP_NAME)
     end
 
     it 'links to the forgot password page' do

@@ -73,9 +73,9 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def signup_with_your_email
+  def signup_with_your_email(request_id:)
     with_user_locale(user) do
-      @root_url = root_url(locale: locale_url_param)
+      @root_url = root_url(locale: locale_url_param, request_id: request_id)
       mail(to: email_address.email, subject: t('mailer.email_reuse_notice.subject'))
     end
   end
@@ -242,13 +242,16 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def account_verified(date_time:, sp_name:)
+  def account_verified(profile:)
+    attachments.inline['verified.png'] =
+      Rails.root.join('app/assets/images/email/user-signup-ial2.png').read
     with_user_locale(user) do
-      @date = I18n.l(date_time, format: :event_date)
-      @sp_name = sp_name
+      @presenter = Idv::AccountVerifiedEmailPresenter.new(profile:)
+      @hide_title = true
+      @date = I18n.l(profile.verified_at, format: :event_date)
       mail(
         to: email_address.email,
-        subject: t('user_mailer.account_verified.subject', sp_name: @sp_name),
+        subject: t('user_mailer.account_verified.subject', app_name: APP_NAME),
       )
     end
   end
