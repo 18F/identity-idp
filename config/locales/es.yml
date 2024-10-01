@@ -656,7 +656,7 @@ doc_auth.info.selfie_capture_status.too_many_faces: Demasiados rostros
 doc_auth.info.selfie_capture.action.capture: Tomar la foto
 doc_auth.info.selfie_capture.action.close: Cerrar
 doc_auth.info.selfie_capture.action.retake: Volver a tomar foto
-doc_auth.info.selfie_capture.action.submit: Usar esta foto
+doc_auth.info.selfie_capture.action.submit: Se tomó la foto. Enviar la foto.
 doc_auth.info.selfie_capture.intro: Cámara encendida, lista para tomar selfie
 doc_auth.info.ssn: Necesitamos su número de Seguro Social para verificar su nombre, fecha de nacimiento y dirección.
 doc_auth.info.stepping_up_html: Verifique de nuevo su identidad para acceder a este servicio. %{link_html}
