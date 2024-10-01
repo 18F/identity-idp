@@ -22,9 +22,6 @@ module Idv
 
       @selfie_required = idv_session.selfie_check_required
 
-      # reset if we visit or come back
-      idv_session.skip_doc_auth_from_handoff = nil
-
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).call(
         'upload', :view,
         true
