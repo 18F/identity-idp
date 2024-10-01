@@ -110,12 +110,12 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
     end
   end
 
-  context 'when biometric confirmation is requested' do
+  context 'when facial match confirmation is requested' do
     it 'proofs and hands off to mobile', js: true do
       user = nil
 
       perform_in_browser(:desktop) do
-        visit_idp_from_oidc_sp_with_ial2(biometric_comparison_required: true)
+        visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
 
         user = sign_up_and_2fa_ial1_user
 
@@ -431,7 +431,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
     user = create(:user, :with_authentication_app)
 
     perform_in_browser(:desktop) do
-      start_idv_from_sp(biometric_comparison_required: true)
+      start_idv_from_sp(facial_match_required: true)
       sign_in_and_2fa_user(user)
 
       complete_doc_auth_steps_before_hybrid_handoff_step

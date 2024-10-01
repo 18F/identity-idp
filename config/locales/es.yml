@@ -1815,10 +1815,16 @@ user_mailer.account_reset_request.cancel: '¿No desea eliminar su cuenta? Inicie
 user_mailer.account_reset_request.header: Su cuenta será eliminada en %{interval}
 user_mailer.account_reset_request.intro_html: 'Como medida de seguridad, %{app_name} requiere un proceso de dos pasos para eliminar su cuenta:<br><br> Paso uno: Hay un período de espera de %{waiting_period} si perdió el acceso a sus métodos de autenticación y necesita eliminar su cuenta. Si encuentra sus métodos de autenticación, puede iniciar sesión en su cuenta %{app_name} para cancelar esta solicitud.<br><br> Paso dos: Tras el período de espera de %{waiting_period}, recibirás un correo electrónico en el que te pediremos que confirmes la eliminación de tu cuenta %{app_name}. Tu cuenta no se eliminará hasta que lo confirmes.'
 user_mailer.account_reset_request.subject: Cómo eliminar su cuenta de %{app_name}
-user_mailer.account_verified.change_password_link: cambie su contraseña
-user_mailer.account_verified.contact_link: contáctenos
-user_mailer.account_verified.intro_html: El %{date}, verificó correctamente su identidad con %{sp_name} usando %{app_name}. Si usted no efectuó esta acción, vaya a %{contact_link_html} e inicie sesión para %{change_password_link_html}.
-user_mailer.account_verified.subject: Verificó su identidad con %{sp_name}
+user_mailer.account_verified.change_password_link: restablecer su contraseña
+user_mailer.account_verified.contact_link: contacte con el servicio de asistencia de %{app_name}
+user_mailer.account_verified.greeting: 'Hola:'
+user_mailer.account_verified.intro: Verificó correctamente su identidad el %{date}.
+user_mailer.account_verified.next_sign_in.with_sp.with_cta: A continuación, haga clic en el botón o copie el vínculo siguiente para acceder a %{sp_name} e iniciar sesión.
+user_mailer.account_verified.next_sign_in.with_sp.without_cta: Ya puede iniciar la sesión en el sitio web de %{sp_name}.
+user_mailer.account_verified.next_sign_in.without_sp: Luego, haga clic en el botón o copie el vínculo siguiente para iniciar sesión en %{app_name}.
+user_mailer.account_verified.sign_in: Iniciar sesión
+user_mailer.account_verified.subject: Logró verificar su identidad con %{app_name}
+user_mailer.account_verified.warning_contact_us_html: Si usted no intentó verificar su identidad, inicie sesión para %{change_password_link_html}. Para informar de esto, %{contact_link_html}.
 user_mailer.add_email_associated_with_another_account.help_html: Si no solicitó un nuevo correo electrónico o sospecha que hubo un error, visite %{help_link_html} de %{app_name_html} o %{contact_link_html}.
 user_mailer.add_email_associated_with_another_account.intro_html: Esta dirección de correo electrónico ya está asociada con una cuenta de %{app_name_html}, por lo que no podemos agregarla a otra cuenta. Primero, debe eliminarla o quitarla de la cuenta con la que está asociada. Para hacerlo, siga este vínculo e inicie sesión con esta dirección de correo electrónico. Si no está intentando agregar esta dirección de correo electrónico a una cuenta, puede ignorar este mensaje.
 user_mailer.add_email_associated_with_another_account.link_text: Ir a %{app_name}

@@ -46,7 +46,7 @@ module Idv
     end
 
     def selfie_requirement_met?
-      !resolved_authn_context_result.biometric_comparison? ||
+      !resolved_authn_context_result.facial_match? ||
         stored_result.selfie_check_performed?
     end
 

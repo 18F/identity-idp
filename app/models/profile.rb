@@ -94,7 +94,7 @@ class Profile < ApplicationRecord
     now = Time.zone.now
     profile_to_deactivate = Profile.find_by(user_id: user_id, active: true)
     is_reproof = profile_to_deactivate.present?
-    is_biometric_upgrade = is_reproof && biometric? && !profile_to_deactivate.biometric?
+    is_facial_match_upgrade = is_reproof && facial_match? && !profile_to_deactivate.facial_match?
 
     attrs = {
       active: true,
@@ -107,7 +107,7 @@ class Profile < ApplicationRecord
       Profile.where(user_id: user_id).update_all(active: false)
       update!(attrs)
     end
-    track_biometric_reproof if is_biometric_upgrade
+    track_facial_match_reproof if is_facial_match_upgrade
     send_push_notifications if is_reproof
   end
   # rubocop:enable Rails/SkipsModelValidations
@@ -309,8 +309,8 @@ class Profile < ApplicationRecord
     (Time.zone.now - created_at).round
   end
 
-  def biometric?
-    ::User::BIOMETRIC_COMPARISON_IDV_LEVELS.include?(idv_level)
+  def facial_match?
+    ::User::FACIAL_MATCH_IDV_LEVELS.include?(idv_level)
   end
 
   private
@@ -341,7 +341,7 @@ class Profile < ApplicationRecord
     PushNotification::HttpPush.deliver(event)
   end
 
-  def track_biometric_reproof
+  def track_facial_match_reproof
     SpUpgradedBiometricProfile.create(
       user: user,
       upgraded_at: Time.zone.now,

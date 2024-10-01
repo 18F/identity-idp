@@ -570,7 +570,7 @@ RSpec.describe SamlIdpController do
         end
       end
 
-      context 'the request requires identity proofing with a biometric' do
+      context 'the request requires identity proofing with a facial match' do
         let(:vtr_settings) do
           saml_settings(
             overrides: {
@@ -595,18 +595,18 @@ RSpec.describe SamlIdpController do
           )
         end
 
-        context 'the user has proofed without a biometric check' do
+        context 'the user has proofed without a facial match check' do
           before do
             user.active_profile.update!(idv_level: :legacy_unsupervised)
           end
 
-          it 'redirects to identity proofing for a user who is verified without a biometric' do
+          it 'redirects to identity proofing for a user who is verified without a facial match' do
             saml_get_auth(vtr_settings)
             expect(response).to redirect_to(idv_url)
             expect(controller.session[:sp][:vtr]).to eq(['C1.C2.P1.Pb'])
           end
 
-          context 'user has a pending biometric profile' do
+          context 'user has a pending facial match profile' do
             let(:vtr_settings) do
               saml_settings(
                 overrides: {
@@ -616,7 +616,7 @@ RSpec.describe SamlIdpController do
               )
             end
 
-            it 'does not redirect to proofing if sp does not request biometrics' do
+            it 'does not redirect to proofing if sp does not request facial match' do
               create(
                 :profile,
                 :verify_by_mail_pending,
@@ -645,7 +645,7 @@ RSpec.describe SamlIdpController do
           end
         end
 
-        context 'the user has proofed with a biometric check remotely' do
+        context 'the user has proofed with a facial match check remotely' do
           before do
             user.active_profile.update!(idv_level: :unsupervised_with_selfie)
           end
@@ -657,7 +657,7 @@ RSpec.describe SamlIdpController do
           end
         end
 
-        context 'the user has proofed with a biometric check in-person' do
+        context 'the user has proofed with a facial match check in-person' do
           before do
             user.active_profile.update!(idv_level: :in_person)
           end

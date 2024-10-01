@@ -403,7 +403,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
               )
             end
 
-            context 'SP requests biometric_comparison_required' do
+            context 'SP requests required facial match' do
               let(:vtr) { ['Pb'].to_json }
 
               before do
@@ -433,7 +433,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 end
               end
 
-              context 'selfie capture not enabled, biometric comparison not required' do
+              context 'selfie capture not enabled, facial match comparison not required' do
                 let(:vtr) { ['P1'].to_json }
 
                 it 'redirects to the service provider' do
@@ -443,7 +443,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
               end
             end
 
-            context 'SP has a vector of trust that includes a biometric comparison' do
+            context 'SP has a vector of trust that includes a facial match comparison' do
               let(:acr_values) { nil }
               let(:vtr) { ['Pb'].to_json }
 
@@ -475,7 +475,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 end
               end
 
-              context 'biometric comparison was performed in-person' do
+              context 'facial match comparison was performed in-person' do
                 it 'redirects to the redirect_uri immediately when pii is unlocked if client-side redirect is disabled' do
                   user.active_profile.idv_level = :in_person
 
@@ -487,7 +487,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
           end
 
-          context 'verified non-biometric profile with pending biometric profile' do
+          context 'verified non-facial match profile with pending facial match profile' do
             before do
               allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                 and_return('server_side')
@@ -498,7 +498,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
               allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
             end
 
-            context 'sp does not request biometrics' do
+            context 'sp does not request facial match' do
               let(:user) { create(:profile, :active, :verified).user }
 
               it 'redirects to the redirect_uri immediately when pii is unlocked if client-side redirect is disabled' do
@@ -520,7 +520,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
               end
             end
 
-            context 'sp requests biometrics' do
+            context 'sp requests facial match' do
               let(:user) { create(:profile, :active, :verified).user }
               let(:vtr)  { ['C1.C2.P1.Pb'].to_json }
 
@@ -1325,7 +1325,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
               )
             end
 
-            context 'SP requests biometric_comparison_required' do
+            context 'SP requests required facial match' do
               let(:vtr) { ['Pb'].to_json }
 
               before do
@@ -1355,7 +1355,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 end
               end
 
-              context 'selfie capture not enabled, biometric comparison not required' do
+              context 'selfie capture not enabled, facial match comparison not required' do
                 let(:vtr) { ['P1'].to_json }
 
                 it 'redirects to the service provider' do
@@ -1365,7 +1365,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
               end
             end
 
-            context 'SP has a vector of trust that includes a biometric comparison' do
+            context 'SP has a vector of trust that includes a facial match comparison' do
               let(:acr_values) { nil }
               let(:vtr) { ['Pb'].to_json }
 
@@ -1397,7 +1397,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 end
               end
 
-              context 'biometric comparison was performed in-person' do
+              context 'facial match comparison was performed in-person' do
                 it 'redirects to the redirect_uri immediately when pii is unlocked if client-side redirect is disabled' do
                   user.active_profile.idv_level = :in_person
 
@@ -1409,7 +1409,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
           end
 
-          context 'verified non-biometric profile with pending biometric profile' do
+          context 'verified non-facial match profile with pending facial match profile' do
             before do
               allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                 and_return('server_side')
@@ -1420,7 +1420,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
               allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
             end
 
-            context 'sp does not request biometrics' do
+            context 'sp does not request facial match' do
               let(:user) { create(:profile, :active, :verified).user }
 
               it 'redirects to the redirect_uri immediately when pii is unlocked if client-side redirect is disabled' do
@@ -1442,7 +1442,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
               end
             end
 
-            context 'sp requests biometrics' do
+            context 'sp requests facial match' do
               let(:user) { create(:profile, :active, :verified).user }
               let(:vtr)  { ['C1.C2.P1.Pb'].to_json }
 

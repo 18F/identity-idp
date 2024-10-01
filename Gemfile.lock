@@ -681,6 +681,8 @@ GEM
     simpleidn (0.2.1)
       unf (~> 0.1.4)
     smart_properties (1.17.0)
+    sqlite3 (2.1.0)
+      mini_portile2 (~> 2.8.0)
     stringex (2.8.5)
     stringio (3.1.1)
     strong_migrations (2.0.0)
@@ -862,6 +864,7 @@ DEPENDENCIES
   simplecov (~> 0.22.0)
   simplecov-cobertura
   simplecov_json_formatter
+  sqlite3
   stringex
   strong_migrations (>= 0.4.2)
   tableparser
