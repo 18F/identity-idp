@@ -1047,7 +1047,7 @@ idv.failure.exit.without_sp: 退出身份验证并到你的账户页面
 idv.failure.gpo.rate_limited.heading: 请稍后再试
 idv.failure.phone.heading: 我们无法将该电话号码与其他记录相匹配
 idv.failure.phone.jobfail: 出错了，我们现在无法处理你的请求。请再试一次。
-idv.failure.phone.rate_limited.body: 为了你的安全，我们限制你在网上尝试验证电话号码的次数。
+idv.failure.phone.rate_limited.body: 出于安全考虑，我们限制你在网上尝试验证电话号码的次数。
 idv.failure.phone.rate_limited.gpo.button: 通过普通邮件验证
 idv.failure.phone.rate_limited.heading: 我们无法通过电话验证你的身份。
 idv.failure.phone.rate_limited.option_try_again_later_html: 取消并在 <strong>%{time_left}</strong> 后再试
