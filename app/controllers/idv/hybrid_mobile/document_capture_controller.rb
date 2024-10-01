@@ -45,7 +45,7 @@ module Idv
           mock_client: doc_auth_vendor == 'mock',
           document_capture_session_uuid: document_capture_session_uuid,
           failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
-          doc_auth_selfie_capture: resolved_authn_context_result.biometric_comparison?,
+          doc_auth_selfie_capture: resolved_authn_context_result.facial_match?,
         }.merge(
           acuant_sdk_upgrade_a_b_testing_variables,
         )
@@ -58,8 +58,8 @@ module Idv
           flow_path: 'hybrid',
           step: 'document_capture',
           analytics_id: 'Doc Auth',
-          liveness_checking_required: resolved_authn_context_result.biometric_comparison?,
-          selfie_check_required: resolved_authn_context_result.biometric_comparison?,
+          liveness_checking_required: resolved_authn_context_result.facial_match?,
+          selfie_check_required: resolved_authn_context_result.facial_match?,
         }.merge(
           ab_test_analytics_buckets,
         )

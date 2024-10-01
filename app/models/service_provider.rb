@@ -78,7 +78,7 @@ class ServiceProvider < ApplicationRecord
     IdentityConfig.store.allowed_ialmax_providers.include?(issuer)
   end
 
-  def biometric_ial_allowed?
+  def facial_match_ial_allowed?
     IdentityConfig.store.biometric_ial_enabled &&
       IdentityConfig.store.allowed_biometric_ial_providers.include?(issuer)
   end

@@ -1055,7 +1055,7 @@ RSpec.feature 'Analytics Regression', :js do
 
       perform_in_browser(:desktop) do
         sign_in_and_2fa_user(user)
-        visit_idp_from_sp_with_ial2(:oidc, biometric_comparison_required: true)
+        visit_idp_from_sp_with_ial2(:oidc, facial_match_required: true)
         complete_doc_auth_steps_before_document_capture_step
         attach_images
         attach_selfie
@@ -1110,13 +1110,13 @@ RSpec.feature 'Analytics Regression', :js do
     before do
       allow(IdentityConfig.store).to receive(:doc_auth_separate_pages_enabled).and_return(true)
       allow_any_instance_of(FederatedProtocols::Oidc).
-        to receive(:biometric_comparison_required?).
+        to receive(:facial_match_required?).
         and_return(true)
       allow_any_instance_of(DocAuth::Response).to receive(:selfie_status).and_return(:success)
 
       perform_in_browser(:desktop) do
         sign_in_and_2fa_user(user)
-        visit_idp_from_sp_with_ial2(:oidc, biometric_comparison_required: true)
+        visit_idp_from_sp_with_ial2(:oidc, facial_match_required: true)
         complete_doc_auth_steps_before_document_capture_step
         attach_images
         continue_doc_auth_form

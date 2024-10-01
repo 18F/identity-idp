@@ -211,13 +211,13 @@ RSpec.describe OpenidConnectAuthorizeForm do
       end
     end
 
-    shared_examples 'allows biometric IAL only if sp is authorized' do |biometric_ial|
-      let(:acr_values) { biometric_ial }
+    shared_examples 'allows facial match IAL only if sp is authorized' do |facial_match_ial|
+      let(:acr_values) { facial_match_ial }
 
-      context "when the IAL requested is #{biometric_ial}" do
-        context 'when the service provider is allowed to use biometric ials' do
+      context "when the IAL requested is #{facial_match_ial}" do
+        context 'when the service provider is allowed to use facial match ials' do
           before do
-            allow_any_instance_of(ServiceProvider).to receive(:biometric_ial_allowed?).
+            allow_any_instance_of(ServiceProvider).to receive(:facial_match_ial_allowed?).
               and_return(true)
           end
 
@@ -226,9 +226,9 @@ RSpec.describe OpenidConnectAuthorizeForm do
           end
         end
 
-        context 'when the service provider is not allowed to use biometric ials' do
+        context 'when the service provider is not allowed to use facial match ials' do
           before do
-            allow_any_instance_of(ServiceProvider).to receive(:biometric_ial_allowed?).
+            allow_any_instance_of(ServiceProvider).to receive(:facial_match_ial_allowed?).
               and_return(false)
           end
 
@@ -241,10 +241,10 @@ RSpec.describe OpenidConnectAuthorizeForm do
       end
     end
 
-    it_behaves_like 'allows biometric IAL only if sp is authorized',
+    it_behaves_like 'allows facial match IAL only if sp is authorized',
                     Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF
 
-    it_behaves_like 'allows biometric IAL only if sp is authorized',
+    it_behaves_like 'allows facial match IAL only if sp is authorized',
                     Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
 
     context 'with aal but not ial requested via acr_values' do

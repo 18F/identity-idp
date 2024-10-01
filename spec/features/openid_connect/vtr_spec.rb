@@ -110,7 +110,8 @@ RSpec.feature 'OIDC requests using VTR' do
     expect(current_path).to eq(idv_welcome_path)
   end
 
-  scenario 'sign in with VTR request for idv with biometric requires idv with biometric', :js do
+  scenario 'sign in with VTR request for idv with facial match requires idv with facial match',
+           :js do
     user = create(:user, :fully_registered)
 
     visit_idp_from_oidc_sp_with_vtr(vtr: ['Pb'])

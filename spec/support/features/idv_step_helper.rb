@@ -13,9 +13,9 @@ module IdvStepHelper
     end
   end
 
-  def start_idv_from_sp(sp = :oidc, biometric_comparison_required: nil)
+  def start_idv_from_sp(sp = :oidc, facial_match_required: nil)
     if sp.present?
-      visit_idp_from_sp_with_ial2(sp, biometric_comparison_required:)
+      visit_idp_from_sp_with_ial2(sp, facial_match_required:)
     else
       visit root_path
     end
