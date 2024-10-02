@@ -270,7 +270,10 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
 
       it 'shows content confirming verified identity' do
         expect(rendered).to have_content(
-          t('account.index.verification.you_verified_your_facial_match_identity', app_name: APP_NAME),
+          t(
+            'account.index.verification.you_verified_your_facial_match_identity',
+            app_name: APP_NAME,
+          ),
         )
         expect(rendered).to have_link(
           t('account.index.verification.learn_more_link'),
