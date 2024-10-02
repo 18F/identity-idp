@@ -90,7 +90,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         expect(request_class).to have_received(:new).
           with(
             document_capture_session_uuid: expected_uuid,
-            redirect_url: nil,
+            redirect_url: idv_socure_document_capture_url,
             language: expected_language,
           )
       end
@@ -107,7 +107,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
                     documentType: 'license',
                     redirect: {
                       method: 'POST',
-                      url: nil,
+                      url: idv_socure_document_capture_url,
                     },
                     language: :en,
                   },
@@ -130,7 +130,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
                     documentType: 'license',
                     redirect: {
                       method: 'POST',
-                      url: nil,
+                      url: idv_socure_document_capture_url,
                     },
                     language: 'zh-cn',
                   },
