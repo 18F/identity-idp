@@ -140,7 +140,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   if (submissionError && formValues) {
     initialValues = formValues;
   }
-  // If the user got here by opting-in to in-person proofing, when skipDocAuth === true,
+  // If the user got here by opting-in to in-person proofing, when skipDocAuthFromHowToVerify === true,
   // then set steps to inPersonSteps
   const isInPersonStepEnabled = skipDocAuthFromHowToVerify || skipDocAuthFromHandoff;
   const inPersonSteps: FormStep[] =
