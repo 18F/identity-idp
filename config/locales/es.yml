@@ -80,7 +80,7 @@ account.index.verification.identity_verification: Verificación de identidad
 account.index.verification.in_person_instructions_html: Para terminar de verificar su identidad, debe acudir a una oficina de correos participante antes del <strong>%{deadline}</strong>.
 account.index.verification.instructions: Ingrese su código de verificación para terminar de verificar su identidad.
 account.index.verification.learn_more_link: Obtenga más información sobre la verificación de su identidad
-account.index.verification.nonbiometric_verified_html: El <strong>%{date}</strong>, usted verificó su identidad con %{app_name} usando su identificación estatal.
+account.index.verification.legacy_verified_html: El <strong>%{date}</strong>, usted verificó su identidad con %{app_name} usando su identificación estatal.
 account.index.verification.pending_badge: Pendiente
 account.index.verification.pending_badge_tooltip: La verificación de su identidad está pendiente
 account.index.verification.reactivate_button: Ingrese el código de verificación que recibió por correo de los EE. UU.
@@ -90,9 +90,9 @@ account.index.verification.unverified_badge: No verificada
 account.index.verification.unverified_badge_tooltip: Termine de verificar su identidad.
 account.index.verification.verified_badge: Verificada
 account.index.verification.verified_badge_tooltip: Se verificó su identidad.
-account.index.verification.verified_biometric_badge_tooltip: Se verificó tanto su identidad como su fotografía.
-account.index.verification.verify_with_biometric_html: Para acceder a la <strong>%{sp_name}</strong>, verifique su identidad de nuevo usando una foto de usted.
-account.index.verification.you_verified_your_biometric_identity: Usted verificó su identidad con la información siguiente y verificó una fotografía suya, lo cual le da acceso a todos los asociados de %{app_name}.
+account.index.verification.verified_facial_match_badge_tooltip: Se verificó tanto su identidad como su fotografía.
+account.index.verification.verify_with_facial_match_html: Para acceder a la <strong>%{sp_name}</strong>, verifique su identidad de nuevo usando una foto de usted.
+account.index.verification.you_verified_your_facial_match_identity: Usted verificó su identidad con la información siguiente y verificó una fotografía suya, lo cual le da acceso a todos los asociados de %{app_name}.
 account.index.verification.you_verified_your_identity_html: Usted verificó su identidad para <strong>%{sp_name}</strong> con la información siguiente.
 account.index.webauthn: Clave de seguridad
 account.index.webauthn_add: Agregar clave de seguridad

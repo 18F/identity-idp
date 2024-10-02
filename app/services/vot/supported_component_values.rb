@@ -34,7 +34,7 @@ module Vot
     ).freeze
     Pb = ComponentValue.new(
       name: 'Pb',
-      description: 'A biometric comparison is required as part of identity proofing',
+      description: 'A facial match is required as part of identity proofing',
       implied_component_values: ['P1'],
       requirements: [:facial_match, :two_pieces_of_fair_evidence],
     ).freeze
