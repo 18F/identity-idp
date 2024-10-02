@@ -38,7 +38,58 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
   end
 
   describe '#perform' do
-    context 'when the job is enabled' do
+    describe 'when the job is disabled' do
+      context 'when the ready job is enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(
+            :in_person_enrollments_ready_job_enabled,
+          ).and_return(true)
+        end
+
+        context 'when in person proofing is enabled' do
+          before do
+            allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+            subject.perform(current_time)
+          end
+
+          it 'does not log the job started analytic' do
+            expect(analytics).not_to have_received(:idv_in_person_usps_proofing_results_job_started)
+          end
+        end
+
+        context 'when in person proofing is disabled' do
+          before do
+            allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(false)
+            subject.perform(current_time)
+          end
+
+          it 'does not log the job started analytic' do
+            expect(analytics).not_to have_received(:idv_in_person_usps_proofing_results_job_started)
+          end
+        end
+      end
+
+      context 'when the ready job is disabled' do
+        before do
+          allow(IdentityConfig.store).to receive(
+            :in_person_enrollments_ready_job_enabled,
+          ).and_return(false)
+        end
+
+        context 'when in person proofing is disabled' do
+          before do
+            allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(false)
+            subject.perform(current_time)
+          end
+
+          it 'does not log the job started analytic' do
+            expect(analytics).not_to have_received(:idv_in_person_usps_proofing_results_job_started)
+          end
+        end
+      end
+    end
+
+    describe 'when the job is enabled' do
       before do
         allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
         allow(IdentityConfig.store).to receive(
@@ -61,9 +112,9 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
             enrollment_id: enrollment.id,
             minutes_since_last_status_check: enrollment.minutes_since_last_status_check,
             minutes_since_last_status_check_completed:
-                              enrollment.minutes_since_last_status_check_completed,
+              enrollment.minutes_since_last_status_check_completed,
             minutes_since_last_status_update:
-                              enrollment.minutes_since_last_status_update,
+              enrollment.minutes_since_last_status_update,
             minutes_since_established: enrollment.minutes_since_established,
             minutes_to_completion: enrollment.minutes_since_established,
             issuer: enrollment.issuer,
@@ -72,7 +123,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
 
         before do
           allow(InPersonEnrollment).to receive(:needs_usps_status_check).and_return(
-            InPersonEnrollment.where(status: :pending),
+            InPersonEnrollment.where(id: enrollment.id),
           )
           allow(UserMailer).to receive(:with).with(
             user: enrollment.user,
@@ -661,12 +712,13 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
             end
 
             context 'when the exception response message is IPP_INVALID_ENROLLMENT_CODE' do
+              let(:response_message) do
+                "Enrollment code #{enrollment.enrollment_code} does not exist"
+              end
+
               before do
                 stub_request_unexpected_invalid_enrollment_code(
-                  {
-                    'responseMessage' =>
-                    "Enrollment code #{enrollment.enrollment_code} does not exist",
-                  },
+                  { 'responseMessage' => response_message },
                 )
                 allow(analytics).to receive(
                   :idv_in_person_usps_proofing_results_job_enrollment_updated,
@@ -694,7 +746,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                   **enrollment_analytics,
                   minutes_to_completion: nil,
                   **response_analytics,
-                  response_message: "Enrollment code #{enrollment.enrollment_code} does not exist",
+                  response_message: response_message,
                   passed: false,
                   reason: 'Invalid enrollment code',
                   job_name: described_class.name,
@@ -745,11 +797,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
               let(:response_message) { "Applicant #{enrollment.unique_id} does not exist" }
 
               before do
-                stub_request_unexpected_invalid_applicant(
-                  {
-                    'responseMessage' => response_message,
-                  },
-                )
+                stub_request_unexpected_invalid_applicant({ 'responseMessage' => response_message })
                 allow(analytics).to receive(
                   :idv_in_person_usps_proofing_results_job_enrollment_updated,
                 )
@@ -2495,16 +2543,79 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
         end
 
         context 'when multiple pending InPersonEnrollments exist' do
+          let(:enrollments) do
+            [
+              create(:in_person_enrollment, :pending, :with_notification_phone_configuration),
+              create(:in_person_enrollment, :pending, :with_notification_phone_configuration),
+              create(:in_person_enrollment, :pending, :with_notification_phone_configuration),
+              create(:in_person_enrollment, :pending, :with_notification_phone_configuration),
+              create(:in_person_enrollment, :pending, :with_notification_phone_configuration),
+              create(:in_person_enrollment, :pending, :with_notification_phone_configuration),
+            ]
+          end
+
           before do
-            create(:in_person_enrollment, :pending, :with_notification_phone_configuration)
-            create(:in_person_enrollment, :pending, :with_notification_phone_configuration)
+            stub_request_proofing_results_with_responses(
+              request_failed_proofing_results_args,
+              request_in_progress_proofing_results_args,
+              request_passed_proofing_results_args,
+              { status: 500 },
+              request_expired_enhanced_ipp_results_args,
+            ).and_raise(Faraday::TimeoutError)
+            allow(InPersonEnrollment).to receive(:needs_usps_status_check).and_return(
+              InPersonEnrollment.where(id: enrollments.map(&:id)),
+            )
             allow(analytics).to receive(:idv_in_person_usps_proofing_results_job_exception)
+            allow(analytics).to receive(:idv_in_person_usps_proofing_results_job_enrollment_updated)
+            allow(analytics).to receive(:idv_in_person_usps_proofing_results_job_email_initiated)
+            allow(analytics).to receive(
+              :idv_in_person_usps_proofing_results_job_enrollment_incomplete,
+            )
+            allow(analytics).to receive(
+              :idv_in_person_usps_proofing_results_job_deadline_passed_email_initiated,
+            )
+            allow(analytics).to receive(
+              :idv_in_person_usps_proofing_results_job_unexpected_response,
+            )
+            allow(user_mailer).to receive(:in_person_failed).and_return(mail_deliverer)
+            allow(user_mailer).to receive(:in_person_verified).and_return(mail_deliverer)
+            allow(user_mailer).to receive(:in_person_deadline_passed).and_return(mail_deliverer)
+            allow(UserMailer).to receive(:with).with(
+              user: anything, email_address: anything,
+            ).and_return(user_mailer)
             allow(subject).to receive(:sleep).and_return(true)
             subject.perform(current_time)
           end
 
+          it 'logs the job started analytic' do
+            expect(analytics).to have_received(
+              :idv_in_person_usps_proofing_results_job_started,
+            ).with(
+              enrollments_count: 6,
+              reprocess_delay_minutes: 5,
+              job_name: described_class.name,
+            )
+          end
+
           it 'sleeps in between each pending enrollment' do
-            expect(subject).to have_received(:sleep).exactly(2).times
+            expect(subject).to have_received(:sleep).exactly(5).times
+          end
+
+          it 'logs the job completed analytic' do
+            expect(analytics).to have_received(
+              :idv_in_person_usps_proofing_results_job_completed,
+            ).with(
+              **default_job_completion_analytics,
+              enrollments_checked: 6,
+              enrollments_passed: 1,
+              enrollments_in_progress: 1,
+              enrollments_expired: 1,
+              enrollments_failed: 1,
+              enrollments_errored: 1,
+              enrollments_network_error: 1,
+              percent_enrollments_errored: 16.67,
+              percent_enrollments_network_error: 16.67,
+            )
           end
         end
       end
@@ -2529,21 +2640,6 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
             **default_job_completion_analytics,
           )
         end
-      end
-    end
-
-    context 'when the job is not configured to run' do
-      before do
-        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(false)
-        allow(IdentityConfig.store).to receive(
-          :in_person_enrollments_ready_job_enabled,
-        ).and_return(true)
-
-        subject.perform(current_time)
-      end
-
-      it 'does not log the job started analytic' do
-        expect(analytics).not_to have_received(:idv_in_person_usps_proofing_results_job_started)
       end
     end
   end

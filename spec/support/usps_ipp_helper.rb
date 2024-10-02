@@ -182,7 +182,7 @@ module UspsIppHelper
 
   def stub_request_unexpected_invalid_applicant(response_body_overrides = {})
     response = merge_into_response_body(
-      request_unexpected_invalid_enrollment_code_args,
+      request_unexpected_invalid_applicant_args,
       response_body_overrides,
     )
     stub_request(
