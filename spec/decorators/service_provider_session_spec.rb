@@ -171,7 +171,7 @@ RSpec.describe ServiceProviderSession do
     end
   end
 
-  describe '#cancel_link_url when adding email from dashboard' do
+  describe '#cancel_link_url when adding email to send to service provider' do
     subject(:decorator) do
       ServiceProviderSession.new(
         sp: sp,
@@ -188,7 +188,7 @@ RSpec.describe ServiceProviderSession do
 
     it 'returns view_context.new_user_session_url' do
       expect(decorator.cancel_link_url).
-        to eq 'https://www.example.com/'
+        to eq 'http://www.example.com/sign_up/completed'
     end
   end
 
