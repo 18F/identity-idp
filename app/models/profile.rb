@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Profile < ApplicationRecord
+  FACIAL_MATCH_IDV_LEVELS = %w[unsupervised_with_selfie in_person].to_set.freeze
+
   belongs_to :user
   # rubocop:disable Rails/InverseOf
   belongs_to :initiating_service_provider,
@@ -310,7 +312,7 @@ class Profile < ApplicationRecord
   end
 
   def facial_match?
-    ::User::FACIAL_MATCH_IDV_LEVELS.include?(idv_level)
+    FACIAL_MATCH_IDV_LEVELS.include?(idv_level)
   end
 
   private
