@@ -375,7 +375,7 @@ class User < ApplicationRecord
   end
 
   def identity_verified_with_facial_match?
-    identity_verified? && active_profile.facial_match?
+    active_profile.present? && active_profile.facial_match?
   end
 
   # This user's most recently activated profile that has also been deactivated
