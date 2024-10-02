@@ -359,7 +359,7 @@ RSpec.describe Profile do
 
           expect { facial_match_profile.activate }.to(
             change do
-              SpUpgradedBiometricProfile.count
+              SpUpgradedFacialMatchProfile.count
             end.by(1),
           )
         end
@@ -372,7 +372,7 @@ RSpec.describe Profile do
           facial_match_reproof = create(:profile, :facial_match_proof, user: user)
           expect { facial_match_reproof.activate }.to_not(
             change do
-              SpUpgradedBiometricProfile.count
+              SpUpgradedFacialMatchProfile.count
             end,
           )
         end
@@ -382,13 +382,13 @@ RSpec.describe Profile do
         it 'does not create a facial match conversion record' do
           profile = create(:profile, :facial_match_proof, user: user)
 
-          expect { profile.activate }.to_not(change { SpUpgradedBiometricProfile.count })
+          expect { profile.activate }.to_not(change { SpUpgradedFacialMatchProfile.count })
         end
       end
     end
 
     it 'does not create a facial match upgrade record for a non-facial match profile' do
-      expect { profile.activate }.to_not(change { SpUpgradedBiometricProfile.count })
+      expect { profile.activate }.to_not(change { SpUpgradedFacialMatchProfile.count })
     end
 
     it 'sends a reproof completed push event' do
