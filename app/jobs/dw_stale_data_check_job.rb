@@ -1,8 +1,7 @@
 require 'aws-sdk-s3'
 require 'csv'
 
-class DwStaleDataCheck < ApplicationJob
-
+class DwStaleDataCheckJob < ApplicationJob
   def perform(timestamp)
     data = fetch_table_max_ids_and_counts(timestamp)
     upload_to_s3(data, timestamp)
