@@ -13,6 +13,7 @@ module Users
     def show
       analytics.add_email_visit
       @add_user_email_form = AddUserEmailForm.new
+      @cancel_link_url = cancel_link_url
     end
 
     def add
@@ -60,6 +61,14 @@ module Users
       end
 
       redirect_to account_url
+    end
+
+    def cancel_link_url
+      if session[:sp].present?
+        sign_up_completed_url
+      else
+        decorated_sp_session.cancel_link_url
+      end
     end
 
     def verify

@@ -69,11 +69,7 @@ class ServiceProviderSession
   end
 
   def cancel_link_url
-    if sp_name.present?
-      sign_up_completed_url
-    else
-      view_context.new_user_session_url(request_id: sp_session[:request_id])
-    end
+    view_context.new_user_session_url(request_id: sp_session[:request_id])
   end
 
   def sp_alert(section)
