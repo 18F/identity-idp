@@ -22,9 +22,9 @@ usa-file-input:not(
     .usa-file-input--value-pending,
     .usa-file-input--is-id-capture
   )
-  .usa-file-input__target,
-.usa-form-group--error .usa-file-input .usa-file-input__target,
-.usa-form-group--success .usa-file-input .usa-file-input__target {
+  .usa-form-group--success
+  .usa-file-input
+  .usa-file-input__target {
   height: 21rem;
   width: 12rem;
 }
