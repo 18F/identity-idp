@@ -1,0 +1,11 @@
+{
+    "api_key": "test_api_key",
+    "org_id": "test_org_id",
+    "account_email": "test@example.com",
+    "event_type": "ACCOUNT_CREATION",
+    "policy": "test-policy",
+    "service_type": "all",
+    "session_id": "UNIQUE_SESSION_ID",
+    "input_ip_address": "127.0.0.1"
+  }
+  

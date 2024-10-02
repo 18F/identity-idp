@@ -7,8 +7,9 @@ module SignUp
     before_action :confirm_two_factor_authenticated
     before_action :confirm_identity_verified, if: :identity_proofing_required?
     before_action :apply_secure_headers_override, only: [:show, :update]
+    before_action :call_threatmetrix_if_in_account_creation
     before_action :verify_needs_completions_screen
-
+    
     def show
       analytics.user_registration_agency_handoff_page_visit(
         **analytics_attributes(''),
@@ -81,6 +82,10 @@ module SignUp
         friendly_name: decorated_sp_session.sp_name,
       )
       redirect_to new_user_session_url
+    end
+
+    def call_threatmetrix_if_in_account_creation
+      binding.pry
     end
 
     def analytics_attributes(page_occurence)
