@@ -39,7 +39,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
 
   describe '#perform' do
     describe 'when the job is disabled' do
-      context 'when the ready job is enabled' do
+      context 'when the in person enrollments ready job is enabled' do
         before do
           allow(IdentityConfig.store).to receive(
             :in_person_enrollments_ready_job_enabled,
@@ -69,7 +69,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
         end
       end
 
-      context 'when the ready job is disabled' do
+      context 'when the in person enrollments ready job is disabled' do
         before do
           allow(IdentityConfig.store).to receive(
             :in_person_enrollments_ready_job_enabled,
@@ -103,7 +103,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
         let(:send_proofing_notification_job) do
           double(InPerson::SendProofingNotificationJob)
         end
-        let!(:enrollment) do
+        let(:enrollment) do
           create(:in_person_enrollment, :pending, :with_notification_phone_configuration)
         end
         let(:enrollment_analytics) do
