@@ -130,9 +130,7 @@ class Analytics
     return if resolved_result.nil?
 
     attributes = resolved_result.to_h
-    attributes[:component_values] = resolved_result.component_values.map do |v|
-      [v.name.sub('http://idmanagement.gov/ns/assurance/', ''), true]
-    end.to_h
+    attributes[:component_values] = resolved_result.component_names
     attributes.reject! { |_key, value| value == false }
 
     if differentiator.present?

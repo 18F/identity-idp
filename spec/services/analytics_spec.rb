@@ -221,7 +221,7 @@ RSpec.describe Analytics do
         {
           sp_request: {
             aal2: true,
-            component_values: { 'C1' => true, 'C2' => true, 'P1' => true },
+            component_values: ['C1', 'C2', 'P1'],
             identity_proofing: true,
             component_separator: '.',
           },
@@ -238,15 +238,7 @@ RSpec.describe Analytics do
 
     context 'phishing resistant and requiring facial match comparison' do
       let(:session) { { sp: { vtr: ['Ca.Pb'] } } }
-      let(:component_values) do
-        {
-          'C1' => true,
-          'C2' => true,
-          'Ca' => true,
-          'P1' => true,
-          'Pb' => true,
-        }
-      end
+      let(:component_values) { ['C1', 'C2', 'Ca', 'P1', 'Pb'] }
 
       let(:expected_attributes) do
         {
@@ -277,7 +269,7 @@ RSpec.describe Analytics do
       let(:expected_attributes) do
         {
           sp_request: {
-            component_values: { 'ial/1' => true },
+            component_values: [Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF],
             component_separator: ' ',
           },
         }
@@ -297,7 +289,7 @@ RSpec.describe Analytics do
         {
           sp_request: {
             aal2: true,
-            component_values: { 'ial/2' => true },
+            component_values: [Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF],
             identity_proofing: true,
             component_separator: ' ',
           },
@@ -322,7 +314,7 @@ RSpec.describe Analytics do
             aal2: true,
             facial_match: true,
             two_pieces_of_fair_evidence: true,
-            component_values: { 'ial/2?bio=required' => true },
+            component_values: [Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF],
             identity_proofing: true,
             component_separator: ' ',
           },
@@ -336,14 +328,64 @@ RSpec.describe Analytics do
         analytics.track_event('Trackable Event')
       end
     end
+    context 'and requests facial match preferred' do
+      let(:session) do
+        { sp: { acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_PREFERRED_ACR } }
+      end
 
+      context 'when the verified user has proofed with facial match' do
+        let(:current_user) { build_stubbed(:user, :proofed_with_selfie) }
+        let(:expected_attributes) do
+          {
+            sp_request: {
+              aal2: true,
+              facial_match: true,
+              two_pieces_of_fair_evidence: true,
+              component_values: [Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_PREFERRED_ACR],
+              identity_proofing: true,
+              component_separator: ' ',
+            },
+          }
+        end
+
+        it 'successfully tracks the sp_request' do
+          expect(ahoy).to receive(:track).
+            with('Trackable Event', hash_including(expected_attributes))
+
+          analytics.track_event('Trackable Event')
+        end
+      end
+
+      context 'when the verified user has not proofed with facial match' do
+        let(:current_user) { build(:user) }
+        let(:expected_attributes) do
+          {
+            sp_request: {
+              aal2: true,
+              facial_match: false,
+              two_pieces_of_fair_evidence: false,
+              component_values: [Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_PREFERRED_ACR],
+              identity_proofing: true,
+              component_separator: ' ',
+            },
+          }
+        end
+
+        it 'can successfully track the sp_request' do
+          expect(ahoy).to receive(:track).
+            with('Trackable Event', hash_including(expected_attributes))
+
+          analytics.track_event('Trackable Event')
+        end
+      end
+    end
     context 'acr_values IALMAX' do
       let(:session) { { sp: { acr_values: Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF } } }
       let(:expected_attributes) do
         {
           sp_request: {
             aal2: true,
-            component_values: { 'ial/0' => true },
+            component_values: [Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF],
             component_separator: ' ',
             ialmax: true,
           },
@@ -366,7 +408,7 @@ RSpec.describe Analytics do
       let(:expected_attributes) do
         {
           sp_request: {
-            component_values: { 'ial/1' => true },
+            component_values: [Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF],
             component_separator: ' ',
           },
         }
@@ -393,7 +435,7 @@ RSpec.describe Analytics do
       let(:expected_attributes) do
         {
           sp_request: {
-            component_values: { 'ial/1' => true },
+            component_values: [Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF],
             component_separator: ' ',
           },
         }
@@ -421,7 +463,7 @@ RSpec.describe Analytics do
       let(:expected_attributes) do
         {
           sp_request: {
-            component_values: { 'ial/1' => true },
+            component_values: [Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF],
             component_separator: ' ',
             app_differentiator: 'NY',
           },
