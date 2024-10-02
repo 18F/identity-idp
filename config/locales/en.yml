@@ -80,7 +80,7 @@ account.index.verification.identity_verification: Identity verification
 account.index.verification.in_person_instructions_html: You must visit any participating Post Office by <strong>%{deadline}</strong> to verify your identity.
 account.index.verification.instructions: Enter your verification code to finish verifying your identity.
 account.index.verification.learn_more_link: Learn more about verifying your identity
-account.index.verification.nonbiometric_verified_html: You verified your identity with %{app_name} on <strong>%{date}</strong> using your state ID.
+account.index.verification.legacy_verified_html: You verified your identity with %{app_name} on <strong>%{date}</strong> using your state ID.
 account.index.verification.pending_badge: Pending
 account.index.verification.pending_badge_tooltip: Your identity is pending verification.
 account.index.verification.reactivate_button: Enter the verification code you received via US mail
@@ -90,9 +90,9 @@ account.index.verification.unverified_badge: Unverified
 account.index.verification.unverified_badge_tooltip: Finish verifying your identity.
 account.index.verification.verified_badge: Verified
 account.index.verification.verified_badge_tooltip: Your identity has been verified.
-account.index.verification.verified_biometric_badge_tooltip: Your identity and photo have both been verified.
-account.index.verification.verify_with_biometric_html: To access <strong>%{sp_name}</strong>, verify your identity again using a photo of yourself.
-account.index.verification.you_verified_your_biometric_identity: You have verified your identity with the information below and verified a photo of yourself which gives you access to all %{app_name} partners.
+account.index.verification.verified_facial_match_badge_tooltip: Your identity and photo have both been verified.
+account.index.verification.verify_with_facial_match_html: To access <strong>%{sp_name}</strong>, verify your identity again using a photo of yourself.
+account.index.verification.you_verified_your_facial_match_identity: You have verified your identity with the information below and verified a photo of yourself which gives you access to all %{app_name} partners.
 account.index.verification.you_verified_your_identity_html: You verified your identity for <strong>%{sp_name}</strong> with the information below.
 account.index.webauthn: Security key
 account.index.webauthn_add: Add security key

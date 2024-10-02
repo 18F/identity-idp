@@ -80,7 +80,7 @@ account.index.verification.identity_verification: Vérification de l’identité
 account.index.verification.in_person_instructions_html: Vous devez vous rendre à un bureau de poste participant d’ici le <strong>%{deadline}</strong> pour terminer la procédure de vérification de votre identité.
 account.index.verification.instructions: Saisissez votre code de vérification pour terminer la procédure de vérification d’identité.
 account.index.verification.learn_more_link: En savoir plus sur la vérification de votre identité
-account.index.verification.nonbiometric_verified_html: Vous avez confirmé votre identité sur %{app_name} le <strong>%{date}</strong> avec votre pièce d’identité d’État.
+account.index.verification.legacy_verified_html: Vous avez confirmé votre identité sur %{app_name} le <strong>%{date}</strong> avec votre pièce d’identité d’État.
 account.index.verification.pending_badge: En cours
 account.index.verification.pending_badge_tooltip: Votre identité est en cours de vérification.
 account.index.verification.reactivate_button: Saisissez le code de vérification que vous avez reçu par la poste.
@@ -90,9 +90,9 @@ account.index.verification.unverified_badge: Non vérifiée
 account.index.verification.unverified_badge_tooltip: Terminer la vérification de votre identité.
 account.index.verification.verified_badge: Vérifiée
 account.index.verification.verified_badge_tooltip: Votre identité a été vérifiée.
-account.index.verification.verified_biometric_badge_tooltip: Votre identité et votre photo ont été vérifiées.
-account.index.verification.verify_with_biometric_html: Pour accéder à <strong>%{sp_name}</strong>, confirmez à nouveau votre identité à l’aide d’une photo de vous-même.
-account.index.verification.you_verified_your_biometric_identity: Vous avez confirmé votre identité à l’aide des informations ci-dessous et d’une photo de vous-même, ce qui vous permet d’accéder à tous les organismes partenaires de %{app_name}.
+account.index.verification.verified_facial_match_badge_tooltip: Votre identité et votre photo ont été vérifiées.
+account.index.verification.verify_with_facial_match_html: Pour accéder à <strong>%{sp_name}</strong>, confirmez à nouveau votre identité à l’aide d’une photo de vous-même.
+account.index.verification.you_verified_your_facial_match_identity: Vous avez confirmé votre identité à l’aide des informations ci-dessous et d’une photo de vous-même, ce qui vous permet d’accéder à tous les organismes partenaires de %{app_name}.
 account.index.verification.you_verified_your_identity_html: Vous avez confirmé votre identité auprès de <strong>%{sp_name}</strong> à l’aide des informations ci-dessous.
 account.index.webauthn: Clé de sécurité
 account.index.webauthn_add: Ajouter une clé de sécurité
