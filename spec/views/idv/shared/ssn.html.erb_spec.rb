@@ -33,15 +33,11 @@ RSpec.describe 'idv/shared/ssn.html.erb' do
         step_indicator_steps: Idv::Flows::InPersonFlow::STEP_INDICATOR_STEPS
       ),
     )
-    assign(
-      :threatmetrix_view_variables,
-      {
-        threatmetrix_session_id: session_id,
-        threatmetrix_javascript_urls: [tags_js_url],
-        threatmetrix_iframe_url: tags_iframe_url,
-      },
-    )
-    render template: 'idv/shared/ssn'
+    render template: 'idv/shared/ssn', locals: {
+      threatmetrix_session_id: session_id,
+      threatmetrix_javascript_urls: [tags_js_url],
+      threatmetrix_iframe_url: tags_iframe_url,
+    }
   end
 
   context 'with a service provider' do

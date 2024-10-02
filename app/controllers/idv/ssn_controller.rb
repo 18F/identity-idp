@@ -30,9 +30,8 @@ module Idv
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
         call('ssn', :view, true)
-      @threatmetrix_view_variables = threatmetrix_view_variables(ssn_presenter.updating_ssn?)
 
-      render 'idv/shared/ssn'
+      render 'idv/shared/ssn', locals: threatmetrix_view_variables(ssn_presenter.updating_ssn?)
     end
 
     def update
@@ -53,8 +52,7 @@ module Idv
         redirect_to next_url
       else
         flash[:error] = form_response.first_error_message
-        @threatmetrix_view_variables = threatmetrix_view_variables(ssn_presenter.updating_ssn?)
-        render 'idv/shared/ssn'
+        render 'idv/shared/ssn', locals: threatmetrix_view_variables(ssn_presenter.updating_ssn?)
       end
     end
 
