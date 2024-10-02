@@ -156,7 +156,7 @@ module IdvHelper
     }
 
     if facial_match_required
-      params[:vtr] = ['C1.P1.Pb'].to_json
+      params[:acr_values] = Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_PREFERRED_ACR
     else
       params[:acr_values] = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
     end

@@ -100,7 +100,7 @@ module OidcAuthHelper
     ial2_params[:prompt] = prompt if prompt
 
     if facial_match_required
-      ial2_params[:vtr] = ['C1.P1.Pb'].to_json
+      ial2_params[:acr_values] = Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_PREFERRED_ACR
     else
       ial2_params[:acr_values] = acr_values
     end
