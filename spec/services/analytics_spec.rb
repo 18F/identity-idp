@@ -183,6 +183,7 @@ RSpec.describe Analytics do
 
       context 'when should_log says not to' do
         let(:should_log) { /some other event/ }
+
         it 'does not include ab_test in logged event' do
           expect(ahoy).to receive(:track).with(
             'Trackable Event',
@@ -263,19 +264,22 @@ RSpec.describe Analytics do
     end
   end
 
-  context 'with SP request acr_values saved in the session' do
-    context 'IAL1' do
-      let(:session) { { sp: { acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF } } }
-      let(:expected_attributes) do
-        {
-          sp_request: {
-            component_values: [Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF],
-            component_separator: ' ',
-          },
-        }
-      end
+  context 'when acr_values are saved in the session' do
+    let(:acr_values) { [] }
+    let(:sp_request) { {} }
+    let(:session) { { sp: { acr_values: acr_values.join(' ') } } }
+    let(:expected_attributes) do
+      {
+        sp_request: {
+          component_separator: ' ',
+          component_values: acr_values,
+          **sp_request,
+        },
+      }
+    end
 
-      it 'includes the sp_request' do
+    shared_examples 'commit trackable event' do
+      it 'then includes sp_request in the event' do
         expect(ahoy).to receive(:track).
           with('Trackable Event', hash_including(expected_attributes))
 
@@ -283,102 +287,125 @@ RSpec.describe Analytics do
       end
     end
 
-    context 'IAL2' do
-      let(:session) { { sp: { acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF } } }
-      let(:expected_attributes) do
+    shared_examples 'for all user scenarios' do |acr_values_list|
+      let(:acr_values) { acr_values_list }
+
+      context "using #{acr_values_list}" do
+        context 'when the user has not been identity verified' do
+          let(:current_user) { build(:user, :fully_registered) }
+
+          include_examples 'commit trackable event'
+        end
+
+        context 'when the identity verified user has not proofed with facial match' do
+          let(:current_user) { build(:user, :proofed) }
+
+          include_examples 'commit trackable event'
+        end
+
+        context 'when the identity verified user has proofed with facial match' do
+          let(:current_user) { build(:user, :proofed_with_selfie) }
+
+          include_examples 'commit trackable event'
+        end
+      end
+    end
+
+    context 'and does not require any identity proofing' do
+      include_examples 'for all user scenarios',
+                       [Saml::Idp::Constants::IAL_AUTH_ONLY_ACR]
+      include_examples 'for all user scenarios',
+                       [Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF]
+      include_examples 'for all user scenarios',
+                       [Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF]
+    end
+
+    context 'and selects any variant of identity proofing' do
+      let(:sp_request) do
         {
-          sp_request: {
-            aal2: true,
-            component_values: [Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF],
-            identity_proofing: true,
-            component_separator: ' ',
-          },
+          aal2: true,
+          identity_proofing: true,
         }
       end
 
-      it 'includes the sp_request' do
-        expect(ahoy).to receive(:track).
-          with('Trackable Event', hash_including(expected_attributes))
-
-        analytics.track_event('Trackable Event')
-      end
+      include_examples 'for all user scenarios',
+                       [Saml::Idp::Constants::IAL_VERIFIED_ACR]
+      include_examples 'for all user scenarios',
+                       [Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF]
+      include_examples 'for all user scenarios',
+                       [Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF]
     end
 
-    context 'IAL2 with facial match' do
-      let(:session) do
-        { sp: { acr_values: Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF } }
-      end
-      let(:expected_attributes) do
+    context 'and selects required facial match identity proofing' do
+      let(:sp_request) do
         {
-          sp_request: {
-            aal2: true,
-            facial_match: true,
-            two_pieces_of_fair_evidence: true,
-            component_values: [Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF],
-            identity_proofing: true,
-            component_separator: ' ',
-          },
+          aal2: true,
+          facial_match: true,
+          two_pieces_of_fair_evidence: true,
+          identity_proofing: true,
         }
       end
 
-      it 'includes the sp_request' do
-        expect(ahoy).to receive(:track).
-          with('Trackable Event', hash_including(expected_attributes))
+      include_examples 'for all user scenarios',
+                       [Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR]
 
-        analytics.track_event('Trackable Event')
-      end
+      include_examples 'for all user scenarios',
+                       [Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF]
     end
-    context 'and requests facial match preferred' do
-      let(:session) do
-        { sp: { acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_PREFERRED_ACR } }
-      end
 
-      context 'when the verified user has proofed with facial match' do
-        let(:current_user) { build_stubbed(:user, :proofed_with_selfie) }
-        let(:expected_attributes) do
-          {
-            sp_request: {
-              aal2: true,
-              facial_match: true,
-              two_pieces_of_fair_evidence: true,
-              component_values: [Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_PREFERRED_ACR],
-              identity_proofing: true,
-              component_separator: ' ',
-            },
-          }
-        end
+    context 'and selects optional facial match identity proofing' do
+      shared_examples 'with user scenarios' do |acr_values_list|
+        context "using #{acr_values_list}" do
+          let(:acr_values) { acr_values_list }
 
-        it 'successfully tracks the sp_request' do
-          expect(ahoy).to receive(:track).
-            with('Trackable Event', hash_including(expected_attributes))
+          context 'when the user has not been identity verified' do
+            let(:sp_request) do
+              {
+                aal2: true,
+                facial_match: true,
+                two_pieces_of_fair_evidence: true,
+                identity_proofing: true,
+              }
+            end
+            let(:current_user) { build(:user, :fully_registered) }
 
-          analytics.track_event('Trackable Event')
-        end
-      end
+            include_examples 'commit trackable event'
+          end
 
-      context 'when the verified user has not proofed with facial match' do
-        let(:current_user) { build(:user) }
-        let(:expected_attributes) do
-          {
-            sp_request: {
-              aal2: true,
-              facial_match: false,
-              two_pieces_of_fair_evidence: false,
-              component_values: [Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_PREFERRED_ACR],
-              identity_proofing: true,
-              component_separator: ' ',
-            },
-          }
-        end
+          context 'when the identity verified user has not proofed with facial match' do
+            let(:current_user) { build(:user, :proofed) }
+            let(:sp_request) do
+              {
+                aal2: true,
+                identity_proofing: true,
+              }
+            end
 
-        it 'can successfully track the sp_request' do
-          expect(ahoy).to receive(:track).
-            with('Trackable Event', hash_including(expected_attributes))
+            include_examples 'commit trackable event'
+          end
 
-          analytics.track_event('Trackable Event')
+          context 'when the identity verified user has proofed with facial match' do
+            let(:sp_request) do
+              {
+                aal2: true,
+                facial_match: true,
+                two_pieces_of_fair_evidence: true,
+                identity_proofing: true,
+              }
+            end
+            let(:current_user) { build(:user, :proofed_with_selfie) }
+
+            include_examples 'commit trackable event'
+          end
         end
       end
+
+      include_examples 'with user scenarios',
+                       [Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_PREFERRED_ACR]
+      include_examples 'with user scenarios',
+                       [Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF]
     end
+
     context 'acr_values IALMAX' do
       let(:session) { { sp: { acr_values: Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF } } }
       let(:expected_attributes) do
