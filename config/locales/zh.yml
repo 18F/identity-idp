@@ -567,7 +567,7 @@ doc_auth.errors.phone_step_incomplete: 在继续之前你必须使用手机上�
 doc_auth.errors.pii.birth_date_min_age: 你的生日不满足最低年龄要求。
 doc_auth.errors.rate_limited_heading: 我们无法验证你的身份证件。
 doc_auth.errors.rate_limited_subheading: 尝试再拍照片
-doc_auth.errors.rate_limited_text_html: 为了你的安全，我们限制你在网上尝试验证文件的次数。<strong> %{timeout} 后再试。</strong>
+doc_auth.errors.rate_limited_text_html: 为了防止欺诈，我们限制在网上尝试验证文件的次数。<strong> %{timeout}个小时以后再试。</strong>
 doc_auth.errors.selfie_fail_heading: 我们无法把你自己的照片与你的身份证件匹配
 doc_auth.errors.selfie_not_live_or_poor_quality_heading: 我们无法验证你自己的照片
 doc_auth.errors.send_link_limited: 你尝试了太多次。请在 %{timeout}后再试。你也可以返回并选择使用电脑。
@@ -1029,8 +1029,8 @@ idv.errors.incorrect_password: 你输入的密码不对。
 idv.errors.pattern_mismatch.ssn: 输入 9 位数的社会保障号码
 idv.errors.pattern_mismatch.zipcode: 输入 5 或 9 位的邮编
 idv.errors.pattern_mismatch.zipcode_five: 输入 5 位的邮编
-idv.failure.attempts_html.one: 出于安全考虑，你在网上添加身份证件只能再试<strong>一次</strong>了。
-idv.failure.attempts_html.other: 出于安全考虑，你在网上添加身份证件只能再试<strong>%{count} </strong>次了。
+idv.failure.attempts_html.one: 您可以再试<strong>1次。</strong> 然后您必须等6个小时才能再试。
+idv.failure.attempts_html.other: 您可以再试<strong>{count}次。</strong> 然后您必须等6个小时才能再试。
 idv.failure.button.try_online: 在网上再试一下
 idv.failure.button.warning: 再试一下。
 idv.failure.exceptions.in_person_outage_error_message.post_cta.body: 与此同时，你仍然可以在 %{app_name}开始亲身验证身份流程，然后去邮局。如果你迫切需要得到服务，请直接联系该政府机构。

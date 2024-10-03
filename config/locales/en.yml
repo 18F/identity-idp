@@ -556,7 +556,7 @@ doc_auth.errors.phone_step_incomplete: You must go to your phone and upload phot
 doc_auth.errors.pii.birth_date_min_age: Your birthday does not meet the minimum age requirement.
 doc_auth.errors.rate_limited_heading: We couldn’t verify your ID
 doc_auth.errors.rate_limited_subheading: Try taking new pictures
-doc_auth.errors.rate_limited_text_html: For your security, we limit the number of times you can attempt to verify a document online. <strong>Try again in %{timeout}.</strong>
+doc_auth.errors.rate_limited_text_html: To prevent fraud, we limit the number of times someone can attempt to verify a document online. <strong>Try again in %{timeout}.</strong>
 doc_auth.errors.selfie_fail_heading: We couldn’t match the photo of yourself to your ID
 doc_auth.errors.selfie_not_live_or_poor_quality_heading: We could not verify the photo of yourself
 doc_auth.errors.send_link_limited: You tried too many times, please try again in %{timeout}. You can also go back and choose to use your computer instead.
@@ -1016,8 +1016,8 @@ idv.errors.incorrect_password: The password you entered is not correct.
 idv.errors.pattern_mismatch.ssn: Enter a nine-digit Social Security number
 idv.errors.pattern_mismatch.zipcode: Enter a 5 or 9 digit ZIP Code
 idv.errors.pattern_mismatch.zipcode_five: Enter a 5 digit ZIP Code
-idv.failure.attempts_html.one: For security reasons, you have <strong>one attempt</strong> remaining to add your ID online.
-idv.failure.attempts_html.other: For security reasons, you have <strong>%{count} attempts</strong> remaining to add your ID online.
+idv.failure.attempts_html.one: You can try <strong>1 more time.</strong> Then, you must wait 6 hours before trying again. 
+idv.failure.attempts_html.other: You can try <strong>%{count} more times.</strong> Then, you must wait 6 hours before trying again.
 idv.failure.button.try_online: Try again online
 idv.failure.button.warning: Try again
 idv.failure.exceptions.in_person_outage_error_message.post_cta.body: In the meantime, you can still begin the in-person verification process on %{app_name} and then visit a Post Office. If you urgently need access to services, please contact your agency directly.

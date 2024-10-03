@@ -556,7 +556,7 @@ doc_auth.errors.phone_step_incomplete: Vous devez aller sur votre téléphone et
 doc_auth.errors.pii.birth_date_min_age: Votre anniversaire ne correspond pas à l’âge minimum requis.
 doc_auth.errors.rate_limited_heading: Nous n’avons pas pu vérifier votre pièce d’identité.
 doc_auth.errors.rate_limited_subheading: Essayez de prendre de nouvelles photos.
-doc_auth.errors.rate_limited_text_html: Pour votre sécurité, nous limitons le nombre de fois où vous pouvez tenter de vérifier un document en ligne. <strong>Réessayez dans %{timeout}.</strong>
+doc_auth.errors.rate_limited_text_html: Pour éviter la fraude, nous limitons le nombre de fois où vous pouvez tenter de confirmer votre identité en ligne. <strong>Réessayez d’ici %{timeout}.</strong>
 doc_auth.errors.selfie_fail_heading: Nous n’avons pas pu faire correspondre votre photo à celle figurant sur votre pièce d’identité.
 doc_auth.errors.selfie_not_live_or_poor_quality_heading: Nous n’avons pas pu vérifier votre photo
 doc_auth.errors.send_link_limited: Vous avez essayé trop de fois, veuillez réessayer dans %{timeout}. Vous pouvez également revenir en arrière et choisir d’utiliser votre ordinateur à la place.
@@ -1016,8 +1016,8 @@ idv.errors.incorrect_password: Le mot de passe que vous avez saisi est incorrect
 idv.errors.pattern_mismatch.ssn: Saisissez un numéro de sécurité sociale à neuf chiffres
 idv.errors.pattern_mismatch.zipcode: Saisissez un code postal à 5 ou 9 chiffres
 idv.errors.pattern_mismatch.zipcode_five: Saisissez un code postal à 5 chiffres
-idv.failure.attempts_html.one: Pour des raisons de sécurité, il vous reste <strong>une tentative</strong> pour ajouter votre pièce d’identité en ligne.
-idv.failure.attempts_html.other: Pour des raisons de sécurité, il vous reste <strong>%{count} tentatives</strong> pour ajouter votre pièce d’identité en ligne.
+idv.failure.attempts_html.one: Vous avez encore <strong>un essai.</strong> Vous devrez ensuite attendre 6 heures avant de réessayer.
+idv.failure.attempts_html.other: Vous pouvez encore essayer <strong>%{count} fois de plus.</strong> Ensuite, vous devrez ensuite attendre 6 heures avant de réessayer.
 idv.failure.button.try_online: Réessayer en ligne
 idv.failure.button.warning: Réessayer
 idv.failure.exceptions.in_person_outage_error_message.post_cta.body: En attendant, vous pouvez toujours commencer la procédure de vérification en personne sur %{app_name} avant de vous rendre dans un bureau de poste. Si vous avez un besoin urgent d’accès aux services, veuillez contacter directement l’organisme concerné.
