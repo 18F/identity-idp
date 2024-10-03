@@ -69,7 +69,7 @@ module SignUp
     end
 
     def threatmetrix_variables
-      return unless FeatureManagement.account_creation_device_profiling_collecting_enabled?
+      return {} unless FeatureManagement.account_creation_device_profiling_collecting_enabled?
       session_id = generate_threatmetrix_session_id
 
       {
