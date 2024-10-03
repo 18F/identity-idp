@@ -25,11 +25,11 @@ single_sp_tally  = 0
 multiple_sp_tally = 0
 
 # When working with large batches, run this so that batching doesn't time out. Increment timeout when using larger data sets
-ActiveRecord::Base.connection.execute 'SET statement_timeout = 200000' 
+ActiveRecord::Base.connection.execute 'SET statement_timeout = 200000'
 
 # Runs through the data in batches, saves list of users and service providers
 # Will take about a minute for large samples
-User.where(uuid: user_uuids).in_batches(of: 1_000) do |batch|
+User.where(uuid: user_uuids).in_batches(of: 10_000) do |batch|
   no_sp_users = []
   single_sp_users = []
   multiple_sp_users = []
