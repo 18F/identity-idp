@@ -222,7 +222,7 @@ module Reporting
       @successfully_verified_users ||= (
         data[Results::IDV_FINAL_RESOLUTION_VERIFIED] +
         data[Events::USPS_ENROLLMENT_STATUS_UPDATED] +
-        data[Events::FRAUD_REVIEW_PASSED] +
+        (data[Events::FRAUD_REVIEW_PASSED] & data[Results::IDV_FINAL_RESOLUTION_VERIFIED]) +
         data[Events::GPO_VERIFICATION_SUBMITTED] +
         data[Events::GPO_VERIFICATION_SUBMITTED_OLD]
       ).count
@@ -252,11 +252,11 @@ module Reporting
     end
 
     def idv_fraud_rejected
-      (data[Events::FRAUD_REVIEW_REJECT_AUTOMATIC] + data[Events::FRAUD_REVIEW_REJECT_MANUAL]).count
+      ((data[Events::FRAUD_REVIEW_REJECT_AUTOMATIC] + data[Events::FRAUD_REVIEW_REJECT_MANUAL]) & data[Events::IDV_FINAL_RESOLUTION]).count
     end
 
     def fraud_review_passed
-      data[Events::FRAUD_REVIEW_PASSED].count
+      (data[Events::FRAUD_REVIEW_PASSED] & data[Events::IDV_FINAL_RESOLUTION]).count
     end
 
     def verified_user_count
@@ -337,6 +337,13 @@ module Reporting
         ),
         idv_final_resolution: quote(Events::IDV_FINAL_RESOLUTION),
         fraud_review_passed: quote(Events::FRAUD_REVIEW_PASSED),
+        fraud_event_names: quote(
+          [
+            Events::FRAUD_REVIEW_PASSED,
+            Events::FRAUD_REVIEW_REJECT_AUTOMATIC,
+            Events::FRAUD_REVIEW_REJECT_MANUAL,
+          ],
+        ),
       }
 
       format(<<~QUERY, params)
@@ -344,14 +351,14 @@ module Reporting
             name
           , properties.user_id AS user_id
           , coalesce(properties.event_properties.success, 0) AS success
-        #{issuers.present? ? '| filter properties.service_provider IN %{issuers}' : ''}
         | filter name in %{event_names}
+        | filter (name = %{fraud_review_passed} and properties.event_properties.success = 1)
+                 or (name != %{fraud_review_passed})
         | filter (name = %{usps_enrollment_status_updated} and properties.event_properties.passed = 1 and properties.event_properties.tmx_status not in ['threatmetrix_review', 'threatmetrix_reject'])
                  or (name != %{usps_enrollment_status_updated})
         | filter (name in %{gpo_verification_submitted} and properties.event_properties.success = 1 and !properties.event_properties.pending_in_person_enrollment and !properties.event_properties.fraud_check_failed)
                  or (name not in %{gpo_verification_submitted})
-        | filter (name = %{fraud_review_passed} and properties.event_properties.success = 1)
-                 or (name != %{fraud_review_passed})
+        #{issuers.present? ? '| filter properties.service_provider IN %{issuers} OR name IN %{fraud_event_names}' : ''}
         | fields
             coalesce(properties.event_properties.fraud_review_pending, properties.event_properties.fraud_pending_reason, 0) AS fraud_review_pending
           , coalesce(properties.event_properties.gpo_verification_pending, 0) AS gpo_verification_pending
