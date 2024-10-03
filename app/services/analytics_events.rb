@@ -4356,14 +4356,21 @@ module AnalyticsEvents
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   #                  (previously called "attempt")
   # @param [Integer] selfie_attempts number of times SDK captured selfie, user may decide to retake
+  # @param [Boolean] liveness_checking_required Whether or not the selfie is required
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
-  def idv_sdk_selfie_image_capture_closed_without_photo(acuant_version:, captureAttempts: nil,
-                                                        selfie_attempts: nil, **extra)
+  def idv_sdk_selfie_image_capture_closed_without_photo(
+    acuant_version:,
+    captureAttempts: nil,
+    selfie_attempts: nil,
+    liveness_checking_required: true, # default to true to facilitate CW filtering
+    **extra
+  )
     track_event(
       :idv_sdk_selfie_image_capture_closed_without_photo,
-      acuant_version: acuant_version,
-      captureAttempts: captureAttempts,
-      selfie_attempts: selfie_attempts,
+      acuant_version:,
+      captureAttempts:,
+      selfie_attempts:,
+      liveness_checking_required:,
       **extra,
     )
   end
@@ -4378,6 +4385,7 @@ module AnalyticsEvents
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   #                  (previously called "attempt")
   # @param [Integer] selfie_attempts number of times SDK captured selfie, user may decide to retake
+  # @param [Boolean] liveness_checking_required Whether or not the selfie is required
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_sdk_selfie_image_capture_failed(
     acuant_version:,
@@ -4385,15 +4393,17 @@ module AnalyticsEvents
     sdk_error_message:,
     captureAttempts: nil,
     selfie_attempts: nil,
+    liveness_checking_required: true, # default to true to facilitate CW filtering
     **extra
   )
     track_event(
       :idv_sdk_selfie_image_capture_failed,
-      acuant_version: acuant_version,
-      sdk_error_code: sdk_error_code,
-      sdk_error_message: sdk_error_message,
-      captureAttempts: captureAttempts,
-      selfie_attempts: selfie_attempts,
+      acuant_version:,
+      sdk_error_code:,
+      sdk_error_message:,
+      captureAttempts:,
+      selfie_attempts:,
+      liveness_checking_required:,
       **extra,
     )
   end
@@ -4403,17 +4413,20 @@ module AnalyticsEvents
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   #                  (previously called "attempt")
   # @param [Integer] selfie_attempts number of times SDK captured selfie, user may decide to retake
+  # @param [Boolean] liveness_checking_required Whether or not the selfie is required
   def idv_sdk_selfie_image_capture_initialized(
     acuant_version:,
     captureAttempts: nil,
     selfie_attempts: nil,
+    liveness_checking_required: true, # default to true to facilitate CW filtering
     **extra
   )
     track_event(
       :idv_sdk_selfie_image_capture_initialized,
-      acuant_version: acuant_version,
-      captureAttempts: captureAttempts,
-      selfie_attempts: selfie_attempts,
+      acuant_version:,
+      captureAttempts:,
+      selfie_attempts:,
+      liveness_checking_required:,
       **extra,
     )
   end
@@ -4424,18 +4437,21 @@ module AnalyticsEvents
   # @param [String] acuant_version
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   # @param [Integer] selfie_attempts number of times SDK captured selfie, user may decide to retake
+  # @param [Boolean] liveness_checking_required Whether or not the selfie is required
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_sdk_selfie_image_capture_opened(
     acuant_version:,
     captureAttempts: nil,
     selfie_attempts: nil,
+    liveness_checking_required: true, # default to true to facilitate CW filtering
     **extra
   )
     track_event(
       :idv_sdk_selfie_image_capture_opened,
-      acuant_version: acuant_version,
-      captureAttempts: captureAttempts,
-      selfie_attempts: selfie_attempts,
+      acuant_version:,
+      captureAttempts:,
+      selfie_attempts:,
+      liveness_checking_required:,
       **extra,
     )
   end
@@ -4444,17 +4460,20 @@ module AnalyticsEvents
   # @param [String] acuant_version
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   # @param [Integer] selfie_attempts number of selfie captured by SDK
+  # @param [Boolean] liveness_checking_required Whether or not the selfie is required
   def idv_sdk_selfie_image_re_taken(
     acuant_version:,
     captureAttempts: nil,
     selfie_attempts: nil,
+    liveness_checking_required: true, # default to true to facilitate CW filtering
     **extra
   )
     track_event(
       :idv_sdk_selfie_image_re_taken,
-      acuant_version: acuant_version,
-      captureAttempts: captureAttempts,
-      selfie_attempts: selfie_attempts,
+      acuant_version:,
+      captureAttempts:,
+      selfie_attempts:,
+      liveness_checking_required:,
       **extra,
     )
   end
@@ -4463,17 +4482,20 @@ module AnalyticsEvents
   # @param [String] acuant_version
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   # @param [Integer] selfie_attempts number of selfie captured by SDK
+  # @param [Boolean] liveness_checking_required Whether or not the selfie is required
   def idv_sdk_selfie_image_taken(
     acuant_version:,
     captureAttempts: nil,
     selfie_attempts: nil,
+    liveness_checking_required: true, # default to true to facilitate CW filtering
     **extra
   )
     track_event(
       :idv_sdk_selfie_image_taken,
-      acuant_version: acuant_version,
-      captureAttempts: captureAttempts,
-      selfie_attempts: selfie_attempts,
+      acuant_version:,
+      captureAttempts:,
+      selfie_attempts:,
+      liveness_checking_required:,
       **extra,
     )
   end

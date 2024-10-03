@@ -26,14 +26,14 @@ RSpec.describe AccountShowPresenter do
     )
   end
 
-  describe 'identity_verified_with_biometric_comparison?' do
-    subject(:identity_verified_with_biometric_comparison?) do
-      presenter.identity_verified_with_biometric_comparison?
+  describe 'identity_verified_with_facial_match?' do
+    subject(:identity_verified_with_facial_match?) do
+      presenter.identity_verified_with_facial_match?
     end
 
     it 'delegates to user' do
-      expect(identity_verified_with_biometric_comparison?).to eq(
-        user.identity_verified_with_biometric_comparison?,
+      expect(identity_verified_with_facial_match?).to eq(
+        user.identity_verified_with_facial_match?,
       )
     end
   end
@@ -80,30 +80,30 @@ RSpec.describe AccountShowPresenter do
 
     it { is_expected.to eq(false) }
 
-    context 'with non-biometric proofed user' do
+    context 'with non-facial match proofed user' do
       let(:user) { build(:user, :proofed) }
 
       it { is_expected.to eq(true) }
 
-      context 'with sp request for non-biometric' do
+      context 'with sp request for non-facial match' do
         let(:vtr) { ['C2.P1'] }
 
         it { is_expected.to eq(true) }
       end
 
-      context 'with sp request for biometric' do
+      context 'with sp request for facial match' do
         let(:vtr) { ['C2.Pb'] }
 
         it { is_expected.to eq(false) }
       end
     end
 
-    context 'with biometric proofed user' do
+    context 'with facial match proofed user' do
       let(:user) { build(:user, :proofed_with_selfie) }
 
       it { is_expected.to eq(true) }
 
-      context 'with sp request for biometric' do
+      context 'with sp request for facial match' do
         let(:vtr) { ['C2.Pb'] }
 
         it { is_expected.to eq(true) }
@@ -116,30 +116,30 @@ RSpec.describe AccountShowPresenter do
 
     it { is_expected.to eq(false) }
 
-    context 'with sp request for non-biometric' do
+    context 'with sp request for non-facial match' do
       let(:vtr) { ['C2.P1'] }
 
       it { is_expected.to eq(true) }
 
-      context 'with non-biometric proofed user' do
+      context 'with non-facial match proofed user' do
         let(:user) { build(:user, :proofed) }
 
         it { is_expected.to eq(false) }
       end
     end
 
-    context 'with sp request for biometric' do
+    context 'with sp request for facial match' do
       let(:vtr) { ['C2.Pb'] }
 
       it { is_expected.to eq(true) }
 
-      context 'with non-biometric proofed user' do
+      context 'with non-facial match proofed user' do
         let(:user) { build(:user, :proofed) }
 
         it { is_expected.to eq(true) }
       end
 
-      context 'with biometric proofed user' do
+      context 'with facial match proofed user' do
         let(:user) { build(:user, :proofed_with_selfie) }
 
         it { is_expected.to eq(false) }
@@ -254,13 +254,13 @@ RSpec.describe AccountShowPresenter do
     end
   end
 
-  describe '#formatted_nonbiometric_idv_date' do
+  describe '#formatted_legacy_idv_date' do
     let(:user) { build(:user, :proofed_with_selfie) }
 
-    subject(:formatted_nonbiometric_idv_date) { presenter.formatted_nonbiometric_idv_date }
+    subject(:formatted_legacy_idv_date) { presenter.formatted_legacy_idv_date }
 
     it 'formats a date string' do
-      expect { Date.parse(formatted_nonbiometric_idv_date) }.not_to raise_error
+      expect { Date.parse(formatted_legacy_idv_date) }.not_to raise_error
     end
   end
 

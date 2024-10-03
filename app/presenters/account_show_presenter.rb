@@ -9,7 +9,7 @@ class AccountShowPresenter
               :authn_context,
               :sp_name
 
-  delegate :identity_verified_with_biometric_comparison?, to: :user
+  delegate :identity_verified_with_facial_match?, to: :user
 
   def initialize(
     decrypted_pii:,
@@ -54,7 +54,7 @@ class AccountShowPresenter
     return @active_profile_for_authn_context if defined?(@active_profile_for_authn_context)
 
     @active_profile_for_authn_context = active_profile? && (
-      !authn_context.biometric_comparison? || identity_verified_with_biometric_comparison?
+      !authn_context.facial_match? || identity_verified_with_facial_match?
     )
   end
 
@@ -78,7 +78,7 @@ class AccountShowPresenter
     I18n.l(user.pending_in_person_enrollment.due_date, format: :event_date)
   end
 
-  def formatted_nonbiometric_idv_date
+  def formatted_legacy_idv_date
     I18n.l(user.active_profile.created_at, format: :event_date)
   end
 

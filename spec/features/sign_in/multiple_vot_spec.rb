@@ -7,8 +7,8 @@ RSpec.feature 'Sign in with multiple vectors of trust' do
   include DocAuthHelper
 
   context 'with OIDC' do
-    context 'biometric and non-biometric proofing is acceptable' do
-      scenario 'identity proofing is not required if user is proofed with biometric' do
+    context 'facial match and non-facial match proofing is acceptable' do
+      scenario 'identity proofing is not required if user is proofed with facial match' do
         user = create(:user, :proofed_with_selfie)
 
         visit_idp_from_oidc_sp_with_vtr(vtr: ['C1.C2.P1.Pb', 'C1.C2.P1'])
@@ -23,7 +23,7 @@ RSpec.feature 'Sign in with multiple vectors of trust' do
         expect(user_info[:vot]).to eq('C1.C2.P1.Pb')
       end
 
-      scenario 'identity proofing is not required if user is proofed without biometric' do
+      scenario 'identity proofing is not required if user is proofed without facial match' do
         user = create(:user, :proofed)
 
         visit_idp_from_oidc_sp_with_vtr(vtr: ['C1.C2.P1.Pb', 'C1.C2.P1'])
@@ -38,7 +38,7 @@ RSpec.feature 'Sign in with multiple vectors of trust' do
         expect(user_info[:vot]).to eq('C1.C2.P1')
       end
 
-      scenario 'identity proofing with biometric is required if user is not proofed',
+      scenario 'identity proofing with facial match is required if user is not proofed',
                :js,
                allowed_extra_analytics: [:*] do
         user = create(:user, :fully_registered)
@@ -133,8 +133,8 @@ RSpec.feature 'Sign in with multiple vectors of trust' do
       end
     end
 
-    context 'biometric and non-biometric proofing is acceptable' do
-      scenario 'identity proofing is not required if user is proofed with biometric' do
+    context 'facial match and non-facial match proofing is acceptable' do
+      scenario 'identity proofing is not required if user is proofed with facial match' do
         user = create(:user, :proofed_with_selfie)
 
         visit_saml_authn_request_url(
@@ -155,7 +155,7 @@ RSpec.feature 'Sign in with multiple vectors of trust' do
         expect(first_name).to_not be_blank
       end
 
-      scenario 'identity proofing is not required if user is proofed without biometric' do
+      scenario 'identity proofing is not required if user is proofed without facial match' do
         user = create(:user, :proofed)
 
         visit_saml_authn_request_url(
@@ -176,7 +176,7 @@ RSpec.feature 'Sign in with multiple vectors of trust' do
         expect(first_name).to_not be_blank
       end
 
-      scenario 'identity proofing with biometric is required if user is not proofed',
+      scenario 'identity proofing with facial match is required if user is not proofed',
                :js,
                allowed_extra_analytics: [:*] do
         user = create(:user, :fully_registered)

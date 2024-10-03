@@ -142,7 +142,7 @@ module IdvHelper
     state: SecureRandom.hex,
     nonce: SecureRandom.hex,
     verified_within: nil,
-    biometric_comparison_required: nil
+    facial_match_required: nil
   )
     params = {
       client_id:,
@@ -155,7 +155,7 @@ module IdvHelper
       verified_within:,
     }
 
-    if biometric_comparison_required
+    if facial_match_required
       params[:vtr] = ['C1.P1.Pb'].to_json
     else
       params[:acr_values] = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF

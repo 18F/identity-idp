@@ -87,7 +87,7 @@ module OidcAuthHelper
     nonce: SecureRandom.hex,
     client_id: OIDC_ISSUER,
     acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-    biometric_comparison_required: false
+    facial_match_required: false
   )
     ial2_params = {
       client_id: client_id,
@@ -99,7 +99,7 @@ module OidcAuthHelper
     }
     ial2_params[:prompt] = prompt if prompt
 
-    if biometric_comparison_required
+    if facial_match_required
       ial2_params[:vtr] = ['C1.P1.Pb'].to_json
     else
       ial2_params[:acr_values] = acr_values

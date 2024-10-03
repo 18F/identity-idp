@@ -108,7 +108,7 @@ RSpec.describe IdTokenBuilder do
         end
       end
 
-      context 'ial2 with biometric comparison required' do
+      context 'ial2 with facial match comparison required' do
         before do
           identity.ial = 2
           identity.acr_values = Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
