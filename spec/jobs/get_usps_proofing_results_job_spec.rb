@@ -1005,6 +1005,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
 
             context 'when the exception response message is unhandled' do
               let(:response_message) { 'I am error' }
+
               before do
                 stub_request_proofing_results(
                   status_code: 400,
@@ -1181,10 +1182,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
           context 'when the exception is a Faraday::Error' do
             context 'when the exception is a Farraday::TimeoutError' do
               before do
-                stub_request(
-                  :post,
-                  %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults},
-                ).to_raise(Faraday::TimeoutError)
+                stub_request_proofing_results_with_timeout_error
                 allow(analytics).to receive(:idv_in_person_usps_proofing_results_job_exception)
                 subject.perform(current_time)
               end
