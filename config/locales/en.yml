@@ -80,7 +80,7 @@ account.index.verification.identity_verification: Identity verification
 account.index.verification.in_person_instructions_html: You must visit any participating Post Office by <strong>%{deadline}</strong> to verify your identity.
 account.index.verification.instructions: Enter your verification code to finish verifying your identity.
 account.index.verification.learn_more_link: Learn more about verifying your identity
-account.index.verification.nonbiometric_verified_html: You verified your identity with %{app_name} on <strong>%{date}</strong> using your state ID.
+account.index.verification.legacy_verified_html: You verified your identity with %{app_name} on <strong>%{date}</strong> using your state ID.
 account.index.verification.pending_badge: Pending
 account.index.verification.pending_badge_tooltip: Your identity is pending verification.
 account.index.verification.reactivate_button: Enter the verification code you received via US mail
@@ -90,9 +90,9 @@ account.index.verification.unverified_badge: Unverified
 account.index.verification.unverified_badge_tooltip: Finish verifying your identity.
 account.index.verification.verified_badge: Verified
 account.index.verification.verified_badge_tooltip: Your identity has been verified.
-account.index.verification.verified_biometric_badge_tooltip: Your identity and photo have both been verified.
-account.index.verification.verify_with_biometric_html: To access <strong>%{sp_name}</strong>, verify your identity again using a photo of yourself.
-account.index.verification.you_verified_your_biometric_identity: You have verified your identity with the information below and verified a photo of yourself which gives you access to all %{app_name} partners.
+account.index.verification.verified_facial_match_badge_tooltip: Your identity and photo have both been verified.
+account.index.verification.verify_with_facial_match_html: To access <strong>%{sp_name}</strong>, verify your identity again using a photo of yourself.
+account.index.verification.you_verified_your_facial_match_identity: You have verified your identity with the information below and verified a photo of yourself which gives you access to all %{app_name} partners.
 account.index.verification.you_verified_your_identity_html: You verified your identity for <strong>%{sp_name}</strong> with the information below.
 account.index.webauthn: Security key
 account.index.webauthn_add: Add security key
@@ -579,7 +579,7 @@ doc_auth.headings.document_capture_back: Back of your ID
 doc_auth.headings.document_capture_front: Front of your ID
 doc_auth.headings.document_capture_selfie: Photo of your face
 doc_auth.headings.document_capture_subheader_id: Driver’s license or state ID card
-doc_auth.headings.document_capture_subheader_selfie: Photo of your face
+doc_auth.headings.document_capture_subheader_selfie: Add a photo of your face
 doc_auth.headings.document_capture_with_selfie: Add photos of your ID and a photo of yourself
 doc_auth.headings.front: Front of your driver’s license or state ID
 doc_auth.headings.how_to_verify: Choose how you want to verify your identity
@@ -679,16 +679,16 @@ doc_auth.instructions.text2: You will not need your physical SSN card.
 doc_auth.instructions.text3: We match your phone number with your personal information and send a one-time code to your phone.
 doc_auth.instructions.text4: Your password saves and encrypts your personal information.
 doc_auth.tips.document_capture_hint: Must be a JPG or PNG
-doc_auth.tips.document_capture_id_text1: Place your ID on a flat and dark surface.
-doc_auth.tips.document_capture_id_text2: Take your photo in a well-lit place.
-doc_auth.tips.document_capture_id_text3: Avoid glare or shadows on your ID.
+doc_auth.tips.document_capture_id_text1: Use a flat and dark surface
+doc_auth.tips.document_capture_id_text2: Take photos in a well-lit place
+doc_auth.tips.document_capture_id_text3: Avoid glare or shadows
 doc_auth.tips.document_capture_id_text4: File size should be at least 2 MB.
-doc_auth.tips.document_capture_selfie_id_header_text: How to take clear photos of your ID
+doc_auth.tips.document_capture_selfie_id_header_text: How to take clear photos
 doc_auth.tips.document_capture_selfie_selfie_text: How to prepare for your photo
-doc_auth.tips.document_capture_selfie_text1: Remove any clothing items or accessories that might cover your face. We suggest removing your glasses or hat.
-doc_auth.tips.document_capture_selfie_text2: Take your photo in a well-lit place.
-doc_auth.tips.document_capture_selfie_text3: Keep your expression neutral.
-doc_auth.tips.document_capture_selfie_text4: Make sure your whole face is visible within the green circle.
+doc_auth.tips.document_capture_selfie_text1: Remove any items covering your face, like glasses or a hat
+doc_auth.tips.document_capture_selfie_text2: Take photo in a well-lit place
+doc_auth.tips.document_capture_selfie_text3: Keep your expression neutral
+doc_auth.tips.document_capture_selfie_text4: Make sure your whole face is visible within the green circle
 doc_auth.tips.mobile_phone_required: Mobile Phone Required
 doc_auth.tips.review_issues_id_header_text: 'Review the images of your state‑issued ID:'
 doc_auth.tips.review_issues_id_text1: Did you use a dark background?

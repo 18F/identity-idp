@@ -232,14 +232,14 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
         expect(rendered).to have_content(
           strip_tags(
             t(
-              'account.index.verification.nonbiometric_verified_html',
+              'account.index.verification.legacy_verified_html',
               app_name: APP_NAME,
               date: @presenter.formatted_legacy_idv_date,
             ),
           ),
         )
         expect(rendered).to have_content(
-          strip_tags(t('account.index.verification.verify_with_biometric_html', sp_name:)),
+          strip_tags(t('account.index.verification.verify_with_facial_match_html', sp_name:)),
         )
         expect(rendered).to have_link(
           t('account.index.verification.learn_more_link'),
@@ -270,7 +270,10 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
 
       it 'shows content confirming verified identity' do
         expect(rendered).to have_content(
-          t('account.index.verification.you_verified_your_biometric_identity', app_name: APP_NAME),
+          t(
+            'account.index.verification.you_verified_your_facial_match_identity',
+            app_name: APP_NAME,
+          ),
         )
         expect(rendered).to have_link(
           t('account.index.verification.learn_more_link'),

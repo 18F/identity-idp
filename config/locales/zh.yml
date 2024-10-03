@@ -80,7 +80,7 @@ account.index.verification.identity_verification: 身份验证
 account.index.verification.in_person_instructions_html: 你必须在 <strong>%{deadline}</strong> 之前去邮局完成验证你的身份。
 account.index.verification.instructions: 输入你的验证码来完成身份验证。
 account.index.verification.learn_more_link: 了解更多有关验证你身份的信息。
-account.index.verification.nonbiometric_verified_html: 你在 <strong>%{date}</strong> 使用州颁发的身份证件在%{app_name} 验证了身份。
+account.index.verification.legacy_verified_html: 你在 <strong>%{date}</strong> 使用州颁发的身份证件在%{app_name} 验证了身份。
 account.index.verification.pending_badge: 待验证
 account.index.verification.pending_badge_tooltip: 你的身份有待验证。
 account.index.verification.reactivate_button: 输入你通过邮局收到的验证码。
@@ -90,9 +90,9 @@ account.index.verification.unverified_badge: 未验证
 account.index.verification.unverified_badge_tooltip: 完成验证你的身份。
 account.index.verification.verified_badge: 已验证
 account.index.verification.verified_badge_tooltip: 你的身份已经验证。
-account.index.verification.verified_biometric_badge_tooltip: 你的身份和照片都已验证。
-account.index.verification.verify_with_biometric_html: 要访问 <strong>%{sp_name}</strong>，请使用你本人照片再次验证身份。
-account.index.verification.you_verified_your_biometric_identity: 你使用以下信息验证了身份并验证了一张你本人的照片，从而获得了访问%{app_name}所有合作伙伴机构的权限。
+account.index.verification.verified_facial_match_badge_tooltip: 你的身份和照片都已验证。
+account.index.verification.verify_with_facial_match_html: 要访问 <strong>%{sp_name}</strong>，请使用你本人照片再次验证身份。
+account.index.verification.you_verified_your_facial_match_identity: 你使用以下信息验证了身份并验证了一张你本人的照片，从而获得了访问%{app_name}所有合作伙伴机构的权限。
 account.index.verification.you_verified_your_identity_html: 你使用以下信息向 <strong>%{sp_name}</strong> 验证了身份。
 account.index.webauthn: 安全密钥
 account.index.webauthn_add: 添加安全密钥
@@ -590,7 +590,7 @@ doc_auth.headings.document_capture_back: 你身份证件的背面
 doc_auth.headings.document_capture_front: 你身份证件的正面
 doc_auth.headings.document_capture_selfie: 你面部照片
 doc_auth.headings.document_capture_subheader_id: 驾照或州政府颁发的身份证件
-doc_auth.headings.document_capture_subheader_selfie: 你本人照片
+doc_auth.headings.document_capture_subheader_selfie: 添加您面部照片
 doc_auth.headings.document_capture_with_selfie: 添加你身份证件和本人的照片
 doc_auth.headings.front: 驾照或州政府颁发身份证件的正面
 doc_auth.headings.how_to_verify: 选择你想如何验证身份
@@ -690,16 +690,16 @@ doc_auth.instructions.text2: 不需要你社会保障卡实体。
 doc_auth.instructions.text3: 我们把你的电话号码与个人信息匹配，并向你的电话发送一个一次性代码。
 doc_auth.instructions.text4: 你的密码对你个人信息进行存储并加密。
 doc_auth.tips.document_capture_hint: 必须是 JPG 或 PNG
-doc_auth.tips.document_capture_id_text1: 把你身份证件放在一个平坦、暗色的表面上。
-doc_auth.tips.document_capture_id_text2: 在光线明亮的地方拍照。
-doc_auth.tips.document_capture_id_text3: 避免身份证件上有炫光或阴影。
+doc_auth.tips.document_capture_id_text1: 使用水平和深色表面
+doc_auth.tips.document_capture_id_text2: 在光线明亮的地方拍照
+doc_auth.tips.document_capture_id_text3: 避免炫光或阴影
 doc_auth.tips.document_capture_id_text4: 文件大小应当至少 2 兆。
-doc_auth.tips.document_capture_selfie_id_header_text: 如何拍摄你身份证件的清晰照片
+doc_auth.tips.document_capture_selfie_id_header_text: 如何拍摄清晰照片
 doc_auth.tips.document_capture_selfie_selfie_text: 如何准备拍照
-doc_auth.tips.document_capture_selfie_text1: 摘掉可能盖住你面部的任何服饰。我们建议你摘掉眼镜和帽子。
-doc_auth.tips.document_capture_selfie_text2: 在光线明亮的地方拍照。
-doc_auth.tips.document_capture_selfie_text3: 面部表情保持中性。
-doc_auth.tips.document_capture_selfie_text4: 确保你整个面部都可以在绿色圆圈中看到。
+doc_auth.tips.document_capture_selfie_text1: 摘掉任何遮盖您面孔的东西，比如眼镜或帽子
+doc_auth.tips.document_capture_selfie_text2: 在光线明亮的地方拍照
+doc_auth.tips.document_capture_selfie_text3: 保持中性表情
+doc_auth.tips.document_capture_selfie_text4: 确保您整个面孔都可以在绿色圆圈里看到
 doc_auth.tips.mobile_phone_required: 要求有手机
 doc_auth.tips.review_issues_id_header_text: 请仔细查看你州政府颁发身份证件的图像：
 doc_auth.tips.review_issues_id_text1: 你是否使用了暗色背景？
