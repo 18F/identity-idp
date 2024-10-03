@@ -20,8 +20,7 @@ module TwoFactorAuthentication
     end
 
     def create
-      session[:otp_attempts] ||= 0
-      session[:otp_attempts] += 1
+      mfa_selection_attempt_count
       result = otp_verification_form.submit
       post_analytics(result)
 
@@ -142,7 +141,7 @@ module TwoFactorAuthentication
     def post_analytics(result)
       properties = result.to_h.merge(analytics_properties)
       analytics.multi_factor_auth_setup(**properties) if context == 'confirmation'
-      session[:otp_attempts] = nil if result.success?
+      reset_mfa_selection_attempt_count if result.success?
     end
 
     def analytics_properties
@@ -158,7 +157,7 @@ module TwoFactorAuthentication
         phone_configuration_id: phone_configuration&.id,
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
         enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
-        mfa_attempts: session[:otp_attempts] || nil,
+        mfa_attempts: session[:mfa_attempts] || nil,
       }
     end
 

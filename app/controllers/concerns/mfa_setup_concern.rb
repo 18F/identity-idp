@@ -64,6 +64,15 @@ module MfaSetupConcern
     user_session[:in_account_creation_flow] || false
   end
 
+  def mfa_selection_attempt_count
+    session[:mfa_attempts] ||= 0
+    session[:mfa_attempts] += 1
+  end
+
+  def reset_mfa_selection_attempt_count
+    session[:mfa_attempts] = nil
+  end
+
   def mfa_selection_count
     user_session[:mfa_selections]&.count || 0
   end

@@ -66,14 +66,13 @@ module Users
     end
 
     def process_piv_cac_setup
-      session[:piv_cac_attempts] ||= 0
-      session[:piv_cac_attempts] += 1
+      mfa_selection_attempt_count
       result = user_piv_cac_form.submit
       properties = result.to_h.merge(analytics_properties)
       analytics.multi_factor_auth_setup(**properties)
       if result.success?
         process_valid_submission
-        session[:piv_cac_attempts] = nil
+        reset_mfa_selection_attempt_count
       else
         process_invalid_submission
       end
@@ -94,7 +93,6 @@ module Users
         auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC,
       )
       flash[:success] = t('notices.piv_cac_configured')
-      @piv_cac_attempts = session[:piv_cac_attempts]
       save_piv_cac_information(
         subject: user_piv_cac_form.x509_dn,
         issuer: user_piv_cac_form.x509_issuer,
@@ -130,7 +128,7 @@ module Users
       {
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
         enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
-        mfa_attempts: session[:piv_cac_attempts] || nil,
+        mfa_attempts: session[:mfa_attempts] || nil,
       }
     end
 
