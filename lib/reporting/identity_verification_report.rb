@@ -218,11 +218,21 @@ module Reporting
       data[Events::USPS_ENROLLMENT_STATUS_UPDATED].count
     end
 
+    def passed_fraud_review_users
+      data[Events::FRAUD_REVIEW_PASSED] & data[Events::IDV_FINAL_RESOLUTION]
+    end
+
+    def did_not_pass_fraud_review_users
+      all_rejections =
+        data[Events::FRAUD_REVIEW_REJECT_AUTOMATIC] + data[Events::FRAUD_REVIEW_REJECT_MANUAL]
+      data[Events::IDV_FINAL_RESOLUTION] & all_rejections
+    end
+
     def successfully_verified_users
       @successfully_verified_users ||= (
         data[Results::IDV_FINAL_RESOLUTION_VERIFIED] +
         data[Events::USPS_ENROLLMENT_STATUS_UPDATED] +
-        (data[Events::FRAUD_REVIEW_PASSED] & data[Results::IDV_FINAL_RESOLUTION_VERIFIED]) +
+        passed_fraud_review_users +
         data[Events::GPO_VERIFICATION_SUBMITTED] +
         data[Events::GPO_VERIFICATION_SUBMITTED_OLD]
       ).count
@@ -252,11 +262,11 @@ module Reporting
     end
 
     def idv_fraud_rejected
-      ((data[Events::FRAUD_REVIEW_REJECT_AUTOMATIC] + data[Events::FRAUD_REVIEW_REJECT_MANUAL]) & data[Events::IDV_FINAL_RESOLUTION]).count
+      did_not_pass_fraud_review_users.count
     end
 
     def fraud_review_passed
-      (data[Events::FRAUD_REVIEW_PASSED] & data[Events::IDV_FINAL_RESOLUTION]).count
+      passed_fraud_review_users.count
     end
 
     def verified_user_count
