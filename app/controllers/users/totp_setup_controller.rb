@@ -26,14 +26,13 @@ module Users
 
     def confirm
       result = totp_setup_form.submit
-      session[:totp_attempts] ||= 0
-      session[:totp_attempts] += 1
+      mfa_selection_attempt_count
       properties = result.to_h.merge(analytics_properties)
       analytics.multi_factor_auth_setup(**properties)
 
       if result.success?
         process_valid_code
-        session[:totp_attempts] = nil
+        reset_mfa_selection_attempt_count
       else
         process_invalid_code
       end
@@ -120,7 +119,7 @@ module Users
       {
         in_account_creation_flow: in_account_creation_flow?,
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
-        mfa_attempts: session[:totp_attempts] || nil,
+        mfa_attempts: session[:mfa_attempts] || nil,
       }
     end
   end

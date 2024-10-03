@@ -51,8 +51,7 @@ module Users
       end
 
       flash_error(result.errors) unless result.success?
-      session[:webauthn_attempts] ||= 0
-      session[:webauthn_attempts] += 1
+      mfa_selection_attempt_count
     end
 
     def confirm
@@ -76,7 +75,7 @@ module Users
 
       if result.success?
         process_valid_webauthn(form)
-        session[:webauthn_attempts] = nil
+        reset_mfa_selection_attempt_count
       else
         flash.now[:error] = result.first_error_message
         render :new
@@ -144,7 +143,7 @@ module Users
     def analytics_properties
       {
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
-        mfa_attempts: session[:webauthn_attempts] || nil,
+        mfa_attempts: session[:mfa_attempts] || nil,
       }
     end
 
