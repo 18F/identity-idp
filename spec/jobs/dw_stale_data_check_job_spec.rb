@@ -3,11 +3,12 @@ require 'rails_helper'
 RSpec.describe DwStaleDataCheckJob, type: :job do
   let(:timestamp) { Time.zone.now.end_of_day }
   let(:job) { described_class.new }
+  let(:expected_bucket) { 'login-gov-analytics-export-test-1234-us-west-2' }
+  let(:expected_object_key) { "idp_max_ids/#{timestamp.strftime('%Y-%m-%d')}_idp_max_ids.csv" }
+  let(:expected_csv) { File.read(Rails.root.join('spec/fixtures/idp_max_ids.csv')) }
   let(:s3_bucket) { instance_double('Aws::S3::Bucket', name: expected_bucket) }
   let(:s3_object) { instance_double('Aws::S3::Object') }
   let(:s3_resource) { instance_double('Aws::S3::Resource', bucket: s3_bucket) }
-  let(:expected_bucket) { 'login-gov-analytics-export-test-1234-us-west-2' }
-  let(:expected_object_key) { "idp_max_ids/#{timestamp.strftime('%Y-%m-%d')}_idp_max_ids.csv" }
 
   before do
     allow(Identity::Hostdata).to receive_messages(
@@ -22,75 +23,59 @@ RSpec.describe DwStaleDataCheckJob, type: :job do
   end
 
   describe '#perform' do
-    context 'with actual database tables' do
+    context 'when actual database tables contain data' do
       it 'generates correct CSV from database tables' do
-        User.create!(id: 1, created_at: 1.day.ago)
-        User.create!(id: 2, created_at: 1.hour.ago)
+        create_users_with_timestamps
 
-        csv_data = nil
-        allow(s3_object).to receive(:put) do |args|
-          csv_data = args[:body]
-          true
-        end
+        csv_data = upload_csv_to_s3
 
-        job.perform(timestamp)
-
-        expected_csv = File.read(Rails.root.join('spec/fixtures/dw_state_data.csv'))
         expect(csv_data).to eq(expected_csv)
       end
     end
 
-    context 'with empty tables' do
-      it 'handles empty tables gracefully' do
-        csv_data = nil
-        expected_csv = "table_name,max_id,row_count\nusers,,0\n"
+    context 'when tables are empty' do
+      let(:expected_csv) { "table_name,max_id,row_count\nusers,,0\n" }
 
+      it 'handles empty tables gracefully' do
         allow(ActiveRecord::Base.connection).to receive(:tables).and_return(['users'])
-        allow(s3_object).to receive(:put) do |args|
-          csv_data = args[:body]
-          true
-        end
+
+        csv_data = upload_csv_to_s3
 
         expect { job.perform(timestamp) }.not_to raise_error
         expect(csv_data).to eq(expected_csv)
       end
     end
 
-    context 'with tables missing id column' do
+    context 'when tables are missing the id column' do
+      let(:expected_csv) { "table_name,max_id,row_count\n" }
+
       it 'skips tables without id column' do
-        csv_data = nil
         allow(ActiveRecord::Base.connection).to receive(:tables).and_return(['non_id_table'])
         allow(ActiveRecord::Base.connection).to receive(:columns).with('non_id_table').
           and_return([double(name: 'name')])
-        allow(s3_object).to receive(:put) do |args|
-          csv_data = args[:body]
-          true
-        end
+
+        csv_data = upload_csv_to_s3
 
         expect { job.perform(timestamp) }.not_to raise_error
-        expect(csv_data).to eq "table_name,max_id,row_count\n"
+        expect(csv_data).to eq(expected_csv)
       end
     end
 
-    context 'with S3 upload' do
-      it 'uploads data to S3' do
+    context 'when uploading to S3' do
+      it 'uploads data to S3 successfully' do
+        create_users_with_timestamps
+
         job.perform(timestamp)
 
-        expect(s3_object).to have_received(:put).with(body: anything).once
-
+        expect(s3_object).to have_received(:put).with(body: expected_csv).once
         expect(Aws::S3::Resource).to have_received(:new).once
-
         expect(s3_bucket.name).to eq(expected_bucket)
-
         expect(s3_bucket).to have_received(:object).with(expected_object_key).once
       end
 
-      it 'raises error if S3 upload fails' do
+      it 'raises an error if the S3 upload fails' do
         allow(s3_object).to receive(:put).and_raise(
-          Aws::S3::Errors::ServiceError.new(
-            nil,
-            'Failed to upload',
-          ),
+          Aws::S3::Errors::ServiceError.new(nil, 'Failed to upload'),
         )
 
         expect do
@@ -98,5 +83,22 @@ RSpec.describe DwStaleDataCheckJob, type: :job do
         end.to raise_error(Aws::S3::Errors::ServiceError, 'Failed to upload')
       end
     end
+  end
+
+  private
+
+  def create_users_with_timestamps
+    User.create!(id: 1, created_at: 1.day.ago)
+    User.create!(id: 2, created_at: 1.hour.ago)
+  end
+
+  def upload_csv_to_s3
+    csv_data = nil
+    allow(s3_object).to receive(:put) do |args|
+      csv_data = args[:body]
+      true
+    end
+    job.perform(timestamp)
+    csv_data
   end
 end
