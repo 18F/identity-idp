@@ -76,12 +76,8 @@
   }
 }
 .usa-file-input.usa-file-input--single-value:not(.usa-file-input--is-id-capture) {
-  .usa-file-input__preview {
-    width: 12rem;
-  }
-  .usa-file-input__target {
-    width: 12rem;
-  }
+  .usa-file-input__preview,
+  .usa-file-input__target,
   .usa-file-input__preview-image {
     width: 12rem;
   }
