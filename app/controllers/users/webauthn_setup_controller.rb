@@ -143,7 +143,7 @@ module Users
     def analytics_properties
       {
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
-        mfa_attempts: session[:mfa_attempts] || nil,
+        mfa_attempts: user_session[:mfa_attempts] || nil,
       }
     end
 
