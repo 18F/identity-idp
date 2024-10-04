@@ -37,13 +37,6 @@ RSpec.describe Reporting::IdentityVerificationReport do
         { 'user_id' => 'user3', 'name' => 'IdV: final resolution', 'fraud_review_pending' => '1' },
         { 'user_id' => 'user3', 'name' => 'Fraud: Profile review passed', 'success' => '1' },
 
-        # Fraud review user (rejected)
-        { 'user_id' => 'user3', 'name' => 'IdV: doc auth welcome visited' },
-        { 'user_id' => 'user3', 'name' => 'IdV: doc auth welcome submitted' },
-        { 'user_id' => 'user3', 'name' => 'IdV: doc auth image upload vendor submitted', 'success' => '1' },
-        { 'user_id' => 'user3', 'name' => 'IdV: final resolution', 'fraud_review_pending' => '1' },
-        { 'user_id' => 'user3', 'name' => 'Fraud: Profile review rejected', 'success' => '1' },
-
         # Success through address confirmation user
         { 'user_id' => 'user4', 'name' => 'IdV: GPO verification submitted' },
         { 'user_id' => 'user4', 'name' => 'Fraud: Profile review passed', 'success' => '1' },
@@ -59,6 +52,14 @@ RSpec.describe Reporting::IdentityVerificationReport do
         { 'user_id' => 'user6', 'name' => 'IdV: doc auth welcome visited' },
         { 'user_id' => 'user6', 'name' => 'IdV: doc auth welcome submitted' },
         { 'user_id' => 'user6', 'name' => 'IdV: doc auth image upload vendor submitted', 'doc_auth_failed_non_fraud' => '1' },
+
+        # Fraud review user (rejected)
+        { 'user_id' => 'user7', 'name' => 'IdV: doc auth welcome visited' },
+        { 'user_id' => 'user7', 'name' => 'IdV: doc auth welcome submitted' },
+        { 'user_id' => 'user7', 'name' => 'IdV: doc auth image upload vendor submitted', 'success' => '1' },
+        { 'user_id' => 'user7', 'name' => 'IdV: final resolution', 'fraud_review_pending' => '1' },
+        { 'user_id' => 'user7', 'name' => 'Fraud: Profile review rejected', 'success' => '1' },
+
       ],
     )
   end
@@ -72,13 +73,13 @@ RSpec.describe Reporting::IdentityVerificationReport do
         [],
         ['Metric', '# of Users'],
         [],
-        ['IDV started', 5],
-        ['Welcome Submitted', 5],
-        ['Image Submitted', 5],
+        ['IDV started', 6],
+        ['Welcome Submitted', 6],
+        ['Image Submitted', 6],
         [],
-        ['Workflow completed', 4],
+        ['Workflow completed', 5],
         ['Workflow completed - With Phone Number', 1],
-        ['Workflow completed - With Phone Number - Fraud Review', 1],
+        ['Workflow completed - With Phone Number - Fraud Review', 2],
         ['Workflow completed - GPO Pending', 1],
         ['Workflow completed - GPO Pending - Fraud Review', 0],
         ['Workflow completed - In-Person Pending', 1],
@@ -92,9 +93,9 @@ RSpec.describe Reporting::IdentityVerificationReport do
         ['Successfully Verified - With mailed code', 1],
         ['Successfully Verified - In Person', 1],
         ['Successfully Verified - Passed fraud review', 2],
-        ['Blanket Proofing Rate (IDV Started to Successfully Verified)', 0.8],
-        ['Intent Proofing Rate (Welcome Submitted to Successfully Verified)', 0.8],
-        ['Actual Proofing Rate (Image Submitted to Successfully Verified)', 0.8],
+        ['Blanket Proofing Rate (IDV Started to Successfully Verified)', 0.6666666666666666],
+        ['Intent Proofing Rate (Welcome Submitted to Successfully Verified)', 0.6666666666666666],
+        ['Actual Proofing Rate (Image Submitted to Successfully Verified)', 0.6666666666666666],
         ['Industry Proofing Rate (Verified minus IDV Rejected)', 0.8],
       ]
       # rubocop:enable Layout/LineLength
