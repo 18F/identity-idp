@@ -30,7 +30,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
         { 'user_id' => 'user2', 'name' => 'IdV: doc auth image upload vendor submitted', 'success' => '1' },
         { 'user_id' => 'user2', 'name' => 'IdV: final resolution', 'gpo_verification_pending' => '1' },
 
-        # Fraud review user (incomplete)
+        # Fraud review passed user
         { 'user_id' => 'user3', 'name' => 'IdV: doc auth welcome visited' },
         { 'user_id' => 'user3', 'name' => 'IdV: doc auth welcome submitted' },
         { 'user_id' => 'user3', 'name' => 'IdV: doc auth image upload vendor submitted', 'success' => '1' },
