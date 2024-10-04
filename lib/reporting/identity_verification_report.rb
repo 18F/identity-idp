@@ -219,7 +219,19 @@ module Reporting
     end
 
     def passed_fraud_review_users
-      data[Events::FRAUD_REVIEW_PASSED] & data[Events::IDV_FINAL_RESOLUTION]
+      # Fraud review events may not be tagged with the issuer.
+      # When we are filtering by SP, we only count fraud review events where
+      # there is another event for the user in the data that _is_ tagged
+      # with the issuer.
+
+      result = data[Events::FRAUD_REVIEW_PASSED]
+
+      issuers.each do |issuer|
+        users_with_events_for_issuer = data[sp_key(issuer)]
+        result &= users_with_events_for_issuer
+      end
+
+      result
     end
 
     def did_not_pass_fraud_review_users
@@ -282,7 +294,7 @@ module Reporting
     # @return [Hash<Set<String>>]
     def data
       @data ||= begin
-        event_users = Hash.new do |h, event_name|
+        users = Hash.new do |h, event_name|
           h[event_name] = Set.new
         end
 
@@ -293,38 +305,41 @@ module Reporting
           user_id = row['user_id']
           success = row['success']
 
-          event_users[event] << user_id
+          users[event] << user_id
+          users[sp_key(row)] << user_id if row['service_provider'].present?
 
           case event
           when Events::IDV_FINAL_RESOLUTION
-            event_users[Results::IDV_FINAL_RESOLUTION_VERIFIED] << user_id if row['identity_verified'] == '1'
+            users[Results::IDV_FINAL_RESOLUTION_VERIFIED] << user_id if row['identity_verified'] == '1'
 
             gpo_verification_pending = row['gpo_verification_pending'] == '1'
             in_person_verification_pending = row['in_person_verification_pending'] == '1'
             fraud_review_pending = row['fraud_review_pending'] == '1'
 
             if !gpo_verification_pending && !in_person_verification_pending
-              event_users[Results::IDV_FINAL_RESOLUTION_FRAUD_REVIEW] << user_id if fraud_review_pending
+              users[Results::IDV_FINAL_RESOLUTION_FRAUD_REVIEW] << user_id if fraud_review_pending
             elsif gpo_verification_pending && !in_person_verification_pending
-              event_users[Results::IDV_FINAL_RESOLUTION_GPO] << user_id if !fraud_review_pending
-              event_users[Results::IDV_FINAL_RESOLUTION_GPO_FRAUD_REVIEW] << user_id if fraud_review_pending
+              users[Results::IDV_FINAL_RESOLUTION_GPO] << user_id if !fraud_review_pending
+              users[Results::IDV_FINAL_RESOLUTION_GPO_FRAUD_REVIEW] << user_id if fraud_review_pending
             elsif !gpo_verification_pending && in_person_verification_pending
-              event_users[Results::IDV_FINAL_RESOLUTION_IN_PERSON] << user_id if !fraud_review_pending
-              event_users[Results::IDV_FINAL_RESOLUTION_IN_PERSON_FRAUD_REVIEW] << user_id if fraud_review_pending
+              users[Results::IDV_FINAL_RESOLUTION_IN_PERSON] << user_id if !fraud_review_pending
+              users[Results::IDV_FINAL_RESOLUTION_IN_PERSON_FRAUD_REVIEW] << user_id if fraud_review_pending
             elsif gpo_verification_pending && in_person_verification_pending
-              event_users[Results::IDV_FINAL_RESOLUTION_GPO_IN_PERSON] << user_id if !fraud_review_pending
-              event_users[Results::IDV_FINAL_RESOLUTION_GPO_IN_PERSON_FRAUD_REVIEW] << user_id if fraud_review_pending
+              users[Results::IDV_FINAL_RESOLUTION_GPO_IN_PERSON] << user_id if !fraud_review_pending
+              users[Results::IDV_FINAL_RESOLUTION_GPO_IN_PERSON_FRAUD_REVIEW] << user_id if fraud_review_pending
             end
           when Events::IDV_DOC_AUTH_IMAGE_UPLOAD
-            event_users[Results::IDV_REJECT_DOC_AUTH] << user_id if row['doc_auth_failed_non_fraud'] == '1'
+            users[Results::IDV_REJECT_DOC_AUTH] << user_id if row['doc_auth_failed_non_fraud'] == '1'
           when Events::IDV_DOC_AUTH_VERIFY_RESULTS
-            event_users[Results::IDV_REJECT_VERIFY] << user_id if success == '0'
+            users[Results::IDV_REJECT_VERIFY] << user_id if success == '0'
           when Events::IDV_PHONE_FINDER_RESULTS
-            event_users[Results::IDV_REJECT_PHONE_FINDER] << user_id if success == '0'
+            users[Results::IDV_REJECT_PHONE_FINDER] << user_id if success == '0'
+          when Events::FRAUD_REVIEW_PASSED, Events::FRAUD_REVIEW_REJECT_AUTOMATIC, Events::FRAUD_REVIEW_REJECT_MANUAL
+            users[sp_event_key(row:,event:)] << user_id if row['service_provider'].present?
           end
         end
 
-        event_users
+        users
       end
     end
     # rubocop:enable Metrics/BlockLength
@@ -361,6 +376,7 @@ module Reporting
             name
           , properties.user_id AS user_id
           , coalesce(properties.event_properties.success, 0) AS success
+          , properties.service_provider AS service_provider
         | filter name in %{event_names}
         | filter (name = %{fraud_review_passed} and properties.event_properties.success = 1)
                  or (name != %{fraud_review_passed})
@@ -389,6 +405,14 @@ module Reporting
         progress: progress?,
         logger: verbose? ? Logger.new(STDERR) : nil,
       )
+    end
+
+    def sp_key(row)
+      "sp:#{row.is_a?(Hash) ? row['service_provider'] : row.to_s}"
+    end
+
+    def sp_event_key(event:, row:)
+      "#{sp_key(row)}:#{event}}"
     end
   end
 end
