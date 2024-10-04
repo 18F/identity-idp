@@ -8,7 +8,7 @@ module Idv
         include DocumentCaptureConcern
         include Idv::HybridMobile::HybridMobileConcern
 
-        before_action :check_valid_document_capture_session
+        before_action :check_valid_document_capture_session, except: [:update]
 
         def show
           Funnel::DocAuth::RegisterStep.new(document_capture_user.id, sp_session[:issuer]).
@@ -38,6 +38,10 @@ module Idv
           # useful for analytics
           @msg = document_response['msg']
           @reference_id = document_response.dig('referenceId')
+        end
+
+        def update
+          render plain: 'stub to ensure Socure callback exists and the route works'
         end
       end
     end

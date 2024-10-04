@@ -163,4 +163,12 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
       end
     end
   end
+
+  describe '#update' do
+    it 'returns OK (200)' do
+      post(:update)
+
+      expect(response).to have_http_status(:ok)
+    end
+  end
 end

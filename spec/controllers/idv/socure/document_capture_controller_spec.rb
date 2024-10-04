@@ -56,8 +56,6 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         body: JSON.generate(response_body),
       )
 
-      user_session = {}
-      allow(subject).to receive(:user_session).and_return(user_session)
       stub_sign_in(user)
       stub_up_to(:hybrid_handoff, idv_session: subject.idv_session)
 
@@ -163,6 +161,14 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         expect(response).not_to have_http_status(:redirect)
         expect(controller.send(:instance_variable_get, :@url)).not_to be
       end
+    end
+  end
+
+  describe '#update' do
+    it 'returns OK (200)' do
+      post(:update)
+
+      expect(response).to have_http_status(:ok)
     end
   end
 end

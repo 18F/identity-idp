@@ -10,6 +10,14 @@ module Idv
       before_action :confirm_not_rate_limited
       before_action :confirm_step_allowed
 
+      # reconsider and maybe remove these when implementing the real
+      # update handler
+      skip_before_action :redirect_unless_idv_session_user, only: [:update]
+      skip_before_action :confirm_two_factor_authenticated, only: [:update]
+      skip_before_action :confirm_idv_needed, only: [:update]
+      skip_before_action :confirm_not_rate_limited, only: [:update]
+      skip_before_action :confirm_step_allowed, only: [:update]
+
       def show
         Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
           call('socure_document_capture', :view, true)
@@ -40,6 +48,10 @@ module Idv
         # useful for analytics
         @msg = document_response['msg']
         @reference_id = document_response.dig('referenceId')
+      end
+
+      def update
+        render plain: 'stub to ensure Socure callback exists and the route works'
       end
 
       def self.step_info
