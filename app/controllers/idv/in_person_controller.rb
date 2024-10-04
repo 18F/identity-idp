@@ -12,7 +12,7 @@ module Idv
 
     include IdvSessionConcern
     include Flow::FlowStateMachine
-    include Idv::ThreatMetrixConcern
+    include ThreatMetrixConcern
 
     before_action :redirect_if_flow_completed
 
