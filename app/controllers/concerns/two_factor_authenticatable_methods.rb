@@ -113,6 +113,15 @@ module TwoFactorAuthenticatableMethods
     save_remember_device_preference(remember_device_preference)
   end
 
+  def mfa_selection_attempt_count
+    user_session[:mfa_attempts] ||= 0
+    user_session[:mfa_attempts] += 1
+  end
+
+  def reset_mfa_selection_attempt_count
+    user_session.delete(:mfa_attempts)
+  end
+
   # Method will be renamed in the next refactor.
   # You can pass in any "type" with a corresponding I18n key in
   # two_factor_authentication.invalid_#{type}

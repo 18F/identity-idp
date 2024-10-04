@@ -157,7 +157,7 @@ module TwoFactorAuthentication
         phone_configuration_id: phone_configuration&.id,
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
         enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
-        mfa_attempts: session[:mfa_attempts] || nil,
+        mfa_attempts: user_session[:mfa_attempts] || nil,
       }
     end
 
