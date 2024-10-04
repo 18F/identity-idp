@@ -210,6 +210,9 @@ spec:
             - op: replace
               path: /spec/template/spec/containers/0/image
               value: {{ECR_REGISTRY}}/identity-idp/review:{{IDP_CONTAINER_TAG}}
+            - op: replace
+              path: /spec/template/spec/containers/0/imagePullPolicy
+              value: Always
         - target:
             kind: Job
             name: migrate-database
@@ -217,6 +220,9 @@ spec:
             - op: replace
               path: /spec/template/spec/containers/0/image
               value: {{ECR_REGISTRY}}/identity-idp/review:{{IDP_CONTAINER_TAG}}
+            - op: replace
+              path: /spec/template/spec/containers/0/imagePullPolicy
+              value: Always
         - target:
             kind: Job
             name: seed-database
@@ -224,6 +230,9 @@ spec:
             - op: replace
               path: /spec/template/spec/containers/0/image
               value: {{ECR_REGISTRY}}/identity-idp/review:{{IDP_CONTAINER_TAG}}
+            - op: replace
+              path: /spec/template/spec/containers/0/imagePullPolicy
+              value: Always
         # Patch dashboard database setup jobs
         - target:
             kind: Job
@@ -232,6 +241,9 @@ spec:
             - op: replace
               path: /spec/template/spec/containers/0/image
               value: {{ECR_REGISTRY}}/identity-dashboard/review:{{DASHBOARD_CONTAINER_TAG}}
+            - op: replace
+              path: /spec/template/spec/containers/0/imagePullPolicy
+              value: Always
         - target:
             kind: Job
             name: migrate-dashboard-database
@@ -239,6 +251,9 @@ spec:
             - op: replace
               path: /spec/template/spec/containers/0/image
               value: {{ECR_REGISTRY}}/identity-dashboard/review:{{DASHBOARD_CONTAINER_TAG}}
+            - op: replace
+              path: /spec/template/spec/containers/0/imagePullPolicy
+              value: Always
         - target:
             kind: Job
             name: seed-dashboard-database
@@ -246,6 +261,9 @@ spec:
             - op: replace
               path: /spec/template/spec/containers/0/image
               value: {{ECR_REGISTRY}}/identity-dashboard/review:{{DASHBOARD_CONTAINER_TAG}}
+            - op: replace
+              path: /spec/template/spec/containers/0/imagePullPolicy
+              value: Always
         # Patch pivcac database jobs/update crl CronJob
         - target:
             kind: Job
@@ -254,6 +272,9 @@ spec:
             - op: replace
               path: /spec/template/spec/containers/0/image
               value: {{ECR_REGISTRY}}/identity-pivcac/pivcac:{{PIVCAC_CONTAINER_TAG}}
+            - op: replace
+              path: /spec/template/spec/containers/0/imagePullPolicy
+              value: Always
         - target:
             kind: Job
             name: migrate-pivcac-database
@@ -261,6 +282,9 @@ spec:
             - op: replace
               path: /spec/template/spec/containers/0/image
               value: {{ECR_REGISTRY}}/identity-pivcac/pivcac:{{PIVCAC_CONTAINER_TAG}}
+            - op: replace
+              path: /spec/template/spec/containers/0/imagePullPolicy
+              value: Always
         - target:
             kind: CronJob
             name: update-pivcac-crls
@@ -268,6 +292,9 @@ spec:
             - op: replace
               path: /spec/jobTemplate/spec/template/spec/containers/0/image
               value: {{ECR_REGISTRY}}/identity-pivcac/pivcac:{{PIVCAC_CONTAINER_TAG}}
+            - op: replace
+              path: /spec/template/spec/containers/0/imagePullPolicy
+              value: Always
         # Patch IDP image
         - target:
             kind: Rollout
