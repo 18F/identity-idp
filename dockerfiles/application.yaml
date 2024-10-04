@@ -293,7 +293,7 @@ spec:
               path: /spec/jobTemplate/spec/template/spec/containers/0/image
               value: {{ECR_REGISTRY}}/identity-pivcac/pivcac:{{PIVCAC_CONTAINER_TAG}}
             - op: replace
-              path: /spec/template/spec/containers/0/imagePullPolicy
+              path: /spec/jobTemplate/spec/template/spec/containers/0/imagePullPolicy
               value: Always
         # Patch IDP image
         - target:
