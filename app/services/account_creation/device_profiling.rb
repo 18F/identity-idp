@@ -8,27 +8,27 @@ module AccountCreation
     def proof(
       request_ip:,
       threatmetrix_session_id:,
-      user_email:,
+      user_email:
     )
       @request_ip = request_ip
       @threatmetrix_session_id = threatmetrix_session_id
       @user_email = user_email
 
-      @device_profiling_result = profile_device
+      @device_profile = device_profile
     end
 
     private
 
-    attr_reader :device_profiling_result,
+    attr_reader :device_profile,
 
-    def profile_device
+    def device_profile
       return threatmetrix_id_missing_result if threatmetrix_session_id.blank?
-
+      ddp_params = {}
       ddp_params[:threatmetrix_session_id] = threatmetrix_session_id
       ddp_params[:email] = user_email
       ddp_params[:request_ip] = request_ip
 
-      lexisnexis_ddp_proofer.proof(ddp_pii)
+      lexisnexis_ddp_proofer.proof(ddp_params)
     end
 
     def threatmetrix_disabled_result
@@ -59,5 +59,6 @@ module AccountCreation
           )
         end
     end
+  end
 end
   

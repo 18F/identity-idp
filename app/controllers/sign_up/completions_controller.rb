@@ -85,7 +85,13 @@ module SignUp
     end
 
     def call_threatmetrix_if_in_account_creation
-      binding.pry
+      return unless FeatureManagement.account_creation_device_profiling_collecting_enabled?
+      return unless user_session[:in_account_creation_flow]
+      @device_profiling_result = AccountCreation::DeviceProfiling.new.proof(
+        request_ip: request&.remote_ip,
+        threatmetrix_session_id: session[:threatmetrix_session_id],
+        user_email: email_context.last_sign_in_email_address.email
+      )
     end
 
     def analytics_attributes(page_occurence)
@@ -116,6 +122,10 @@ module SignUp
         email_address = current_user.email_addresses.take.email
         Mail::Address.new(email_address).domain
       end
+    end
+
+    def email_context
+      @email_context ||= EmailContext.new(current_user)
     end
 
     def track_completion_event(last_page)
