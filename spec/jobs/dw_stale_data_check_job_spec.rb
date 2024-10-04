@@ -1,74 +1,102 @@
 require 'rails_helper'
-require 'aws-sdk-s3'
-require 'csv'
 
-RSpec.configure do |rspec|
-  rspec.expect_with :rspec do |c|
-    c.max_formatted_output_length = nil
+RSpec.describe DwStaleDataCheckJob, type: :job do
+  let(:timestamp) { Time.zone.now.end_of_day }
+  let(:job) { described_class.new }
+  let(:s3_bucket) { instance_double('Aws::S3::Bucket', name: expected_bucket) }
+  let(:s3_object) { instance_double('Aws::S3::Object') }
+  let(:s3_resource) { instance_double('Aws::S3::Resource', bucket: s3_bucket) }
+  let(:expected_bucket) { 'login-gov-analytics-export-test-1234-us-west-2' }
+  let(:expected_object_key) { "idp_max_ids/#{timestamp.strftime('%Y-%m-%d')}_idp_max_ids.csv" }
+
+  before do
+    allow(Identity::Hostdata).to receive_messages(
+      env: 'test',
+      aws_account_id: '1234',
+      aws_region: 'us-west-2',
+    )
+
+    allow(Aws::S3::Resource).to receive(:new).and_return(s3_resource)
+    allow(s3_bucket).to receive(:object).with(expected_object_key).and_return(s3_object)
+    allow(s3_object).to receive(:put).and_return(true)
   end
-end
 
-RSpec.describe DwStaleDataCheckJob do
   describe '#perform' do
-    let(:timestamp) { Time.zone.now.yesterday.end_of_day }
-    let(:job) { described_class.new }
-    let(:s3_client) { Aws::S3::Client.new(stub_responses: true) }
-    let(:bucket_name) { 'test-analytics-export-bucket' }
-    let(:object_key) { 'test_max_id_object_key' }
+    context 'with actual database tables' do
+      it 'generates correct CSV from database tables' do
+        User.create!(id: 1, created_at: 1.day.ago)
+        User.create!(id: 2, created_at: 1.hour.ago)
 
-    before do
-      # Stub S3 client responses
-      s3_client.stub_responses(:list_buckets, buckets: [{ name: bucket_name }])
-      s3_client.stub_responses(:list_objects_v2, contents: [])
-      s3_client.stub_responses(
-        :get_object,
-        body: StringIO.new("table_name, max_id, row_count\ntest_table,2,2"),
-      )
+        csv_data = nil
+        allow(s3_object).to receive(:put) do |args|
+          csv_data = args[:body]
+          true
+        end
 
-      # Clean the database
-      ActiveRecord::Base.connection.execute('TRUNCATE TABLE test_table RESTART IDENTITY')
-
-      # Insert test data
-      ActiveRecord::Base.connection.execute("INSERT INTO test_table (id, created_at) VALUES (1, '#{timestamp - 1.day}'), (2, '#{timestamp - 2.days}')")
-    end
-
-    it 'fetches the max ids and row counts from Active Record and uploads to S3' do
-      job.perform(timestamp)
-
-      response = s3_client.get_object(bucket: bucket_name, key: object_key)
-      csv_content = response.body.read
-      csv = CSV.parse(csv_content, headers: true)
-
-      expect(csv.headers).to include('table_name', 'max_id', 'row_count')
-      expect(csv[0]['table_name']).to eq('test_table')
-      expect(csv[0]['max_id']).to eq('2')
-      expect(csv[0]['row_count']).to eq('2')
-    end
-
-    it 'retries fetching data from Active Record if an error occurs' do
-      allow(ActiveRecord::Base.connection).to receive(:execute).and_raise(StandardError.new('test error')).twice.and_call_original
-
-      job.perform(timestamp)
-
-      response = s3_client.get_object(bucket: bucket_name, key: object_key)
-      csv_content = response.body.read
-      csv = CSV.parse(csv_content, headers: true)
-
-      expect(csv.headers).to include('table_name', 'max_id', 'row_count')
-      expect(csv[0]['table_name']).to eq('test_table')
-      expect(csv[0]['max_id']).to eq('2')
-      expect(csv[0]['row_count']).to eq('2')
-    end
-
-    it 'raises an error if fetching data fails after retries' do
-      allow(ActiveRecord::Base.connection).to receive(:execute).and_raise(StandardError.new('test error')).exactly(3).times.and_call_original
-
-      expect do
         job.perform(timestamp)
-      end.to raise_error(
-        RuntimeError,
-        /Failed to fetch table max ids and counts after 2 attempts/,
-      )
+
+        expected_csv = File.read(Rails.root.join('spec/fixtures/dw_state_data.csv'))
+        expect(csv_data).to eq(expected_csv)
+      end
+    end
+
+    context 'with empty tables' do
+      it 'handles empty tables gracefully' do
+        csv_data = nil
+        expected_csv = "table_name,max_id,row_count\nusers,,0\n"
+
+        allow(ActiveRecord::Base.connection).to receive(:tables).and_return(['users'])
+        allow(s3_object).to receive(:put) do |args|
+          csv_data = args[:body]
+          true
+        end
+
+        expect { job.perform(timestamp) }.not_to raise_error
+        expect(csv_data).to eq(expected_csv)
+      end
+    end
+
+    context 'with tables missing id column' do
+      it 'skips tables without id column' do
+        csv_data = nil
+        allow(ActiveRecord::Base.connection).to receive(:tables).and_return(['non_id_table'])
+        allow(ActiveRecord::Base.connection).to receive(:columns).with('non_id_table').
+          and_return([double(name: 'name')])
+        allow(s3_object).to receive(:put) do |args|
+          csv_data = args[:body]
+          true
+        end
+
+        expect { job.perform(timestamp) }.not_to raise_error
+        expect(csv_data).to eq "table_name,max_id,row_count\n"
+      end
+    end
+
+    context 'with S3 upload' do
+      it 'uploads data to S3' do
+        job.perform(timestamp)
+
+        expect(s3_object).to have_received(:put).with(body: anything).once
+
+        expect(Aws::S3::Resource).to have_received(:new).once
+
+        expect(s3_bucket.name).to eq(expected_bucket)
+
+        expect(s3_bucket).to have_received(:object).with(expected_object_key).once
+      end
+
+      it 'raises error if S3 upload fails' do
+        allow(s3_object).to receive(:put).and_raise(
+          Aws::S3::Errors::ServiceError.new(
+            nil,
+            'Failed to upload',
+          ),
+        )
+
+        expect do
+          job.perform(timestamp)
+        end.to raise_error(Aws::S3::Errors::ServiceError, 'Failed to upload')
+      end
     end
   end
 end
