@@ -276,12 +276,6 @@ spec:
             - op: replace
               path: /spec/template/spec/containers/0/image
               value: {{ECR_REGISTRY}}/identity-idp/review:{{IDP_CONTAINER_TAG}}
-            - op: replace
-              path: /spec/strategy/canary/analysis/args/0/value
-              value: {{ENVIRONMENT}}-idp_reviewapps_svc_3000
-            - op: replace
-              path: /spec/strategy/canary/steps/2/analysis/args/0/value
-              value: {{ENVIRONMENT}}-idp_reviewapps_svc_3000
         # Patch Worker Image
         - target:
             kind: Deployment
