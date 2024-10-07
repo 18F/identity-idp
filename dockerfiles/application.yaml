@@ -533,6 +533,9 @@ spec:
             - op: replace
               path: /spec/rules/0/host
               value: {{ENVIRONMENT}}.reviewapps.identitysandbox.gov
+            - op: replace
+              path: /spec/rules/0/http/paths/0/backend/service/port/name
+              value: https
         - target:
             kind: Ingress
             name: dashboard
