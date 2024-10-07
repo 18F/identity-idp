@@ -44,7 +44,10 @@ RSpec.feature 'disabling GPO address verification' do
 
     it 'does not allow verify by mail with facial match comparison', :js do
       user = user_with_2fa
-      start_idv_from_sp(:oidc, facial_match_required: true)
+      start_idv_from_sp(
+        :oidc,
+        acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
+      )
       sign_in_and_2fa_user(user)
       complete_all_doc_auth_steps(with_selfie: true)
 
@@ -58,7 +61,7 @@ RSpec.feature 'disabling GPO address verification' do
 
     it 'does allow verify by mail without facial match comparison', :js do
       user = user_with_2fa
-      start_idv_from_sp(:oidc, facial_match_required: false)
+      start_idv_from_sp(:oidc)
       sign_in_and_2fa_user(user)
       complete_all_doc_auth_steps(with_selfie: false)
       click_on t('idv.troubleshooting.options.verify_by_mail')

@@ -431,7 +431,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       user = create(:user, :with_authentication_app)
 
       perform_in_browser(:desktop) do
-        start_idv_from_sp(facial_match_required: true)
+        start_idv_from_sp(acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR)
         sign_in_and_2fa_user(user)
 
         complete_doc_auth_steps_before_hybrid_handoff_step

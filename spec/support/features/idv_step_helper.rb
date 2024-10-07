@@ -13,9 +13,9 @@ module IdvStepHelper
     end
   end
 
-  def start_idv_from_sp(sp = :oidc, facial_match_required: nil)
+  def start_idv_from_sp(sp = :oidc, acr_values: Saml::Idp::Constants::IAL_VERIFIED_ACR)
     if sp.present?
-      visit_idp_from_sp_with_ial2(sp, facial_match_required:)
+      visit_idp_from_sp_with_ial2(sp, acr_values:)
     else
       visit root_path
     end

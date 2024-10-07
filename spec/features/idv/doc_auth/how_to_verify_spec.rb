@@ -10,7 +10,10 @@ RSpec.feature 'how to verify step', js: true do
   let(:in_person_proofing_enabled) { true }
   let(:in_person_proofing_opt_in_enabled) { false }
   let(:service_provider_in_person_proofing_enabled) { true }
-  let(:facial_match_required) { false }
+  let(:acr_values) do
+    Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR
+  end
+
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) {
       in_person_proofing_enabled
@@ -18,11 +21,16 @@ RSpec.feature 'how to verify step', js: true do
     allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) {
       in_person_proofing_opt_in_enabled
     }
+    allow(IdentityConfig.store).to receive(:allowed_biometric_ial_providers).
+      and_return([ipp_service_provider.issuer])
+    allow(IdentityConfig.store).to receive(
+      :allowed_valid_authn_contexts_semantic_providers,
+    ).and_return([ipp_service_provider.issuer])
     allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
       and_return(service_provider_in_person_proofing_enabled)
     visit_idp_from_sp_with_ial2(
       :oidc, **{ client_id: ipp_service_provider.issuer,
-                 facial_match_required: facial_match_required }
+                 acr_values: }
     )
     sign_in_via_branded_page(user)
     complete_doc_auth_steps_before_agreement_step
@@ -88,6 +96,7 @@ RSpec.feature 'how to verify step', js: true do
   context 'when both ipp and opt-in ipp are enabled' do
     context 'and when sp has opted into ipp' do
       let(:in_person_proofing_opt_in_enabled) { true }
+      let(:acr_values) { Saml::Idp::Constants::IAL_VERIFIED_ACR }
 
       it 'displays expected content and navigates to choice' do
         expect(page).to have_current_path(idv_how_to_verify_path)
@@ -104,8 +113,6 @@ RSpec.feature 'how to verify step', js: true do
 
       context 'when selfie is enabled' do
         include InPersonHelper
-
-        let(:facial_match_required) { false }
 
         it 'goes to direct IPP if selected and can come back' do
           expect(page).to have_current_path(idv_how_to_verify_path)
@@ -156,6 +163,7 @@ RSpec.feature 'how to verify step', js: true do
 
     context 'Going back from Hybrid Handoff with opt in disabled midstream' do
       let(:in_person_proofing_opt_in_enabled) { true }
+      let(:acr_values) { Saml::Idp::Constants::IAL_VERIFIED_ACR }
       before do
         click_on t('forms.buttons.continue_remote')
       end
@@ -181,6 +189,7 @@ RSpec.feature 'how to verify step', js: true do
 
     context 'Going back from Hybrid Handoff with opt in enabled the whole time' do
       let(:in_person_proofing_opt_in_enabled) { true }
+      let(:acr_values) { Saml::Idp::Constants::IAL_VERIFIED_ACR }
       before do
         click_on t('forms.buttons.continue_remote')
       end

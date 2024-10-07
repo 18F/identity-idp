@@ -142,8 +142,7 @@ module IdvHelper
     state: SecureRandom.hex,
     nonce: SecureRandom.hex,
     verified_within: nil,
-    acr_values: Saml::Idp::Constants::IAL_VERIFIED_ACR,
-    facial_match_required: nil
+    acr_values: Saml::Idp::Constants::IAL_VERIFIED_ACR
   )
     params = {
       acr_values:,

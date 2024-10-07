@@ -361,8 +361,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
       visit_idp_from_sp_with_ial2(
         :oidc,
         **{ client_id: service_provider.issuer,
-            acr_values:,
-        },
+            acr_values: },
       )
       sign_in_via_branded_page(user)
       complete_doc_auth_steps_before_agreement_step

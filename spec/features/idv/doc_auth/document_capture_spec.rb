@@ -333,7 +333,7 @@ RSpec.feature 'document capture step', :js do
                 visit_idp_from_sp_with_ial2(
                   :oidc,
                   **{ client_id: ipp_service_provider.issuer,
-                      acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR },
+                      acr_values: },
                 )
                 sign_in_and_2fa_user(@user)
                 complete_up_to_how_to_verify_step_for_opt_in_ipp(
@@ -859,7 +859,7 @@ RSpec.feature 'document capture step', :js do
                   visit_idp_from_sp_with_ial2(
                     :oidc,
                     **{ client_id: ipp_service_provider.issuer,
-                        acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR },
+                        acr_values: },
                   )
                   sign_in_and_2fa_user(@user)
                   complete_up_to_how_to_verify_step_for_opt_in_ipp(
@@ -1131,7 +1131,7 @@ RSpec.feature 'direct access to IPP on desktop', :js do
       visit_idp_from_sp_with_ial2(
         :oidc,
         **{ client_id: service_provider.issuer,
-            facial_match_required: facial_match_required },
+            acr_values: },
       )
       sign_in_via_branded_page(user)
       complete_doc_auth_steps_before_agreement_step

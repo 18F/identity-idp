@@ -6,6 +6,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
   include DocCaptureHelper
 
   let(:fake_analytics) { FakeAnalytics.new }
+  let(:acr_values) { Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR }
 
   before do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
@@ -239,7 +240,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
       before do
         allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
         allow_any_instance_of(DocAuth::Response).to receive(:selfie_status).and_return(:fail)
-        start_idv_from_sp(facial_match_required: true)
+        start_idv_from_sp(acr_values:)
         sign_in_and_2fa_user
         complete_doc_auth_steps_before_document_capture_step
         mock_doc_auth_success_face_match_fail
@@ -261,7 +262,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
       before do
         allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
 
-        start_idv_from_sp(facial_match_required: true)
+        start_idv_from_sp(acr_values:)
         sign_in_and_2fa_user
         complete_doc_auth_steps_before_document_capture_step
         mock_doc_auth_pass_and_portrait_match_not_live
@@ -304,7 +305,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
       before do
         allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
 
-        start_idv_from_sp(facial_match_required: true)
+        start_idv_from_sp(acr_values:)
         sign_in_and_2fa_user
         complete_doc_auth_steps_before_document_capture_step
         mock_doc_auth_failure_face_match_pass
@@ -346,7 +347,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
       before do
         allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
         allow_any_instance_of(DocAuth::Response).to receive(:selfie_status).and_return(:fail)
-        start_idv_from_sp(facial_match_required: true)
+        start_idv_from_sp(acr_values:)
         sign_in_and_2fa_user
         complete_doc_auth_steps_before_document_capture_step
         mock_doc_auth_fail_face_match_fail
@@ -367,7 +368,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
         pii[:address1] = nil
         allow_any_instance_of(DocAuth::LexisNexis::Responses::TrueIdResponse).
           to receive(:pii_from_doc).and_return(Pii::StateId.new(**pii))
-        start_idv_from_sp(facial_match_required: true)
+        start_idv_from_sp(acr_values:)
         sign_in_and_2fa_user
         complete_doc_auth_steps_before_document_capture_step
         mock_doc_auth_pass_face_match_pass_no_address1
@@ -651,7 +652,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
         before do
           allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
           allow_any_instance_of(DocAuth::Response).to receive(:selfie_status).and_return(:fail)
-          start_idv_from_sp(facial_match_required: true)
+          start_idv_from_sp(acr_values:)
           sign_in_and_2fa_user
           complete_doc_auth_steps_before_document_capture_step
           mock_doc_auth_success_face_match_fail
@@ -674,7 +675,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
         before do
           allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
 
-          start_idv_from_sp(facial_match_required: true)
+          start_idv_from_sp(acr_values:)
           sign_in_and_2fa_user
           complete_doc_auth_steps_before_document_capture_step
           mock_doc_auth_pass_and_portrait_match_not_live
@@ -718,7 +719,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
         before do
           allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
 
-          start_idv_from_sp(facial_match_required: true)
+          start_idv_from_sp(acr_values:)
           sign_in_and_2fa_user
           complete_doc_auth_steps_before_document_capture_step
           mock_doc_auth_failure_face_match_pass
@@ -761,7 +762,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
         before do
           allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
           allow_any_instance_of(DocAuth::Response).to receive(:selfie_status).and_return(:fail)
-          start_idv_from_sp(facial_match_required: true)
+          start_idv_from_sp(acr_values:)
           sign_in_and_2fa_user
           complete_doc_auth_steps_before_document_capture_step
           mock_doc_auth_fail_face_match_fail
@@ -783,7 +784,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
           pii[:address1] = nil
           allow_any_instance_of(DocAuth::LexisNexis::Responses::TrueIdResponse).
             to receive(:pii_from_doc).and_return(Pii::StateId.new(**pii))
-          start_idv_from_sp(facial_match_required: true)
+          start_idv_from_sp(acr_values:)
           sign_in_and_2fa_user
           complete_doc_auth_steps_before_document_capture_step
           mock_doc_auth_pass_face_match_pass_no_address1
