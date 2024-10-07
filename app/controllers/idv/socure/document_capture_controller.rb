@@ -40,8 +40,8 @@ module Idv
         )
 
         document_capture_session.socure_docv_token = document_response.dig(
-          'data',
-          'docvTransactionToken',
+          :data,
+          :docvTransactionToken,
         )
         document_capture_session.save
 

@@ -24,14 +24,14 @@ module Idv
 
           @document_request = document_request
           @document_response = document_response
-          @url = document_response.dig('data', 'url')
+          @url = document_response.dig(:data, :url)
 
           document_capture_session = DocumentCaptureSession.find_by(
             uuid: document_capture_session_uuid,
           )
           document_capture_session.socure_docv_token = document_response.dig(
-            'data',
-            'docvTransactionToken',
+            :data,
+            :docvTransactionToken,
           )
           document_capture_session.save
 
