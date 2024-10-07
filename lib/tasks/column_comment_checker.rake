@@ -20,6 +20,7 @@ namespace :db do
     if missing_columns.any?
       puts 'Columns with sensitivity comments found:'
       missing_columns.each { |column| puts column }
+      exit(-1)
     else
       puts 'All columns have sensitivity comments.'
     end
