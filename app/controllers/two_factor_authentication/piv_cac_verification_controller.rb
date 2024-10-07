@@ -29,6 +29,7 @@ module TwoFactorAuthentication
     private
 
     def process_token
+      mfa_selection_attempt_count
       result = piv_cac_verification_form.submit
       session[:sign_in_flow] = :sign_in
 
@@ -104,6 +105,7 @@ module TwoFactorAuthentication
         multi_factor_auth_method: 'piv_cac',
         piv_cac_configuration_id: piv_cac_verification_form&.piv_cac_configuration&.id,
         new_device: new_device?,
+        mfa_attempts: user_session[:mfa_attempts] || nil,
       }
     end
   end
