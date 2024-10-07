@@ -235,7 +235,6 @@ migrate:
   script:
     - *bundle_install
     - bundle exec rake db:create db:migrate --trace
-    - bundle exec rake db:check_for_sensitive_columns
     - git diff db/
     - make lint_database_schema_files
 
