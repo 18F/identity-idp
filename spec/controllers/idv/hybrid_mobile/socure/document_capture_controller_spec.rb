@@ -61,7 +61,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
     end
 
     context 'happy path' do
-      let(:response_redirect_url) { 'https://boogie-woogie.com/dance' }
+      let(:response_redirect_url) { 'https://test.org/dance' }
       let(:docv_transaction_token) { '176dnc45d-2e34-46f3-82217-6f540ae90673' }
       let(:response_body) do
         {
