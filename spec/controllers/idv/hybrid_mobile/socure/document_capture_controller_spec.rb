@@ -142,7 +142,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
 
         it 'it includes the socure redirect url' do
           expect(response).to have_http_status 200
-          expect(response.body).to include(response_redirect_url)
+          expect(response.body).to have_link(href: response_redirect_url)
         end
 
         it 'puts the docvTransactionToken into the document capture session' do
