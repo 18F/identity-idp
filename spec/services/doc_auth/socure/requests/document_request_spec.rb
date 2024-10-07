@@ -1,26 +1,23 @@
 require 'rails_helper'
 
 RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
-  let(:document_capture_session_uuid) { 'abc123' }
-  let(:redirect_url) { 'https://somewhere.com' }
+  let(:document_capture_session_uuid) { 'fake uuid' }
+  let(:redirect_url) { 'https://idv.test' }
   let(:language) { :en }
 
   subject(:document_request) do
-    described_class.new(document_capture_session_uuid:, redirect_url:, language:)
-  end
-
-  describe 'a new request' do
-    it 'exists' do
-      expect(document_request).to be
-    end
+    described_class.new(
+      document_capture_session_uuid:,
+      redirect_url: redirect_url,
+      language:,
+    )
   end
 
   describe '#fetch' do
-    let(:language) { :en }
     let(:document_type) { 'license' }
     let(:fake_socure_endpoint) { 'https://fake-socure.com/' }
-    let(:expected_socure_document_capture_app_url) { 'https://verify.socure.us/something' }
-    let(:docv_transaction_token) { 'docv transaction token' }
+    let(:fake_socure_document_capture_app_url) { 'https://verify.socure.us/something' }
+    let(:docv_transaction_token) { 'fake docv transaction token' }
     let(:fake_socure_response) do
       {
         referenceId: 'socure-reference-id',
@@ -28,8 +25,8 @@ RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
           eventId: 'socure-event-id',
           customerUserId: document_capture_session_uuid,
           docvTransactionToken: docv_transaction_token,
-          qrCode: 'data:image/png;base64,iVBO......K5CYII=',
-          url: expected_socure_document_capture_app_url,
+          qrCode: 'qr-code',
+          url: fake_socure_document_capture_app_url,
         },
       }
     end
@@ -62,19 +59,22 @@ RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
     end
 
     it 'fetches from the correct url' do
-      response = document_request.fetch
+      document_request.fetch
 
       expect(WebMock).to have_requested(:post, fake_socure_endpoint).
         with(body: JSON.generate(expected_request_body))
+    end
 
-      expect(response.dig('data', 'url')).to eq(expected_socure_document_capture_app_url)
-      expect(response.dig('data', 'docvTransactionToken')).to eq(docv_transaction_token)
+    it 'passes the response through' do
+      response = document_request.fetch
+
+      expect(response).to eq(fake_socure_response)
     end
 
     context 'when the language is Spanish' do
       let(:language) { :es }
 
-      it 'fetches from the correct url' do
+      it 'includes the correct language in the request_body' do
         document_request.fetch
 
         expect(WebMock).to have_requested(:post, fake_socure_endpoint).

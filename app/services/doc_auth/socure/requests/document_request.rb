@@ -44,7 +44,7 @@ module DocAuth
         end
 
         def handle_http_response(http_response)
-          JSON.parse(http_response.body)
+          JSON.parse(http_response.body, symbolize_names: true)
         end
 
         def method
