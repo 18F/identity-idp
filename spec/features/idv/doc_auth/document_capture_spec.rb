@@ -8,6 +8,10 @@ RSpec.feature 'document capture step', :js do
 
   let(:max_attempts) { IdentityConfig.store.doc_auth_max_attempts }
   let(:fake_analytics) { FakeAnalytics.new }
+  let(:acr_values) do
+    Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR
+  end
+  let(:issuer) { 'urn:gov:gsa:openidconnect:sp:server' }
 
   before(:each) do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
@@ -177,7 +181,7 @@ RSpec.feature 'document capture step', :js do
         context 'with a passing selfie' do
           it 'proceeds to the next page with valid info, including a selfie image' do
             perform_in_browser(:mobile) do
-              visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
+              visit_idp_from_oidc_sp_with_ial2(acr_values:)
               sign_in_and_2fa_user(@user)
               complete_doc_auth_steps_before_document_capture_step
 
@@ -320,11 +324,16 @@ RSpec.feature 'document capture step', :js do
                 :in_person_proofing_enabled,
               ).and_return(true)
               allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(99)
+              allow(IdentityConfig.store).to receive(:allowed_biometric_ial_providers).
+                and_return([ipp_service_provider.issuer])
+              allow(IdentityConfig.store).to receive(
+                :allowed_valid_authn_contexts_semantic_providers,
+              ).and_return([ipp_service_provider.issuer])
               perform_in_browser(:mobile) do
                 visit_idp_from_sp_with_ial2(
                   :oidc,
                   **{ client_id: ipp_service_provider.issuer,
-                      facial_match_required: true },
+                      acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR },
                 )
                 sign_in_and_2fa_user(@user)
                 complete_up_to_how_to_verify_step_for_opt_in_ipp(
@@ -341,7 +350,7 @@ RSpec.feature 'document capture step', :js do
             before do
               allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(99)
               perform_in_browser(:mobile) do
-                visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
+                visit_idp_from_oidc_sp_with_ial2(acr_values:)
                 sign_in_and_2fa_user(@user)
                 complete_doc_auth_steps_before_document_capture_step
               end
@@ -395,7 +404,7 @@ RSpec.feature 'document capture step', :js do
         describe 'when desktop selfie not allowed' do
           it 'can only proceed to link sent page' do
             perform_in_browser(:desktop) do
-              visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
+              visit_idp_from_oidc_sp_with_ial2(acr_values:)
               sign_in_and_2fa_user(@user)
               complete_doc_auth_steps_before_hybrid_handoff_step
               # we still have option to continue
@@ -414,7 +423,7 @@ RSpec.feature 'document capture step', :js do
 
           it 'proceed to the next page with valid info, including a selfie image' do
             perform_in_browser(:desktop) do
-              visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
+              visit_idp_from_oidc_sp_with_ial2(acr_values:)
               sign_in_and_2fa_user(@user)
               complete_doc_auth_steps_before_hybrid_handoff_step
               # we still have option to continue on handoff, since it's desktop no skip_hand_off
@@ -457,7 +466,7 @@ RSpec.feature 'document capture step', :js do
             describe 'when ipp is selected' do
               it 'proceed to the next page and start ipp' do
                 perform_in_browser(:desktop) do
-                  visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
+                  visit_idp_from_oidc_sp_with_ial2(acr_values:)
                   sign_in_and_2fa_user(@user)
                   complete_doc_auth_steps_before_hybrid_handoff_step
                   # we still have option to continue on handoff, since it's desktop no skip_hand_off
@@ -485,7 +494,7 @@ RSpec.feature 'document capture step', :js do
       allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
       allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
       allow(IdentityConfig.store).to receive(:doc_auth_separate_pages_enabled).and_return(true)
-      visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
+      visit_idp_from_oidc_sp_with_ial2(acr_values:)
       sign_in_and_2fa_user(@user)
       complete_doc_auth_steps_before_document_capture_step
     end
@@ -679,7 +688,7 @@ RSpec.feature 'document capture step', :js do
           context 'with a passing selfie' do
             it 'proceeds to the next page with valid info, including a selfie image' do
               perform_in_browser(:mobile) do
-                visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
+                visit_idp_from_oidc_sp_with_ial2(acr_values:)
                 sign_in_and_2fa_user(@user)
                 complete_doc_auth_steps_before_document_capture_step
 
@@ -841,11 +850,16 @@ RSpec.feature 'document capture step', :js do
                   :in_person_proofing_enabled,
                 ).and_return(true)
                 allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(99)
+                allow(IdentityConfig.store).to receive(:allowed_biometric_ial_providers).
+                  and_return([ipp_service_provider.issuer])
+                allow(IdentityConfig.store).to receive(
+                  :allowed_valid_authn_contexts_semantic_providers,
+                ).and_return([ipp_service_provider.issuer])
                 perform_in_browser(:mobile) do
                   visit_idp_from_sp_with_ial2(
                     :oidc,
                     **{ client_id: ipp_service_provider.issuer,
-                        facial_match_required: true },
+                        acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR },
                   )
                   sign_in_and_2fa_user(@user)
                   complete_up_to_how_to_verify_step_for_opt_in_ipp(
@@ -861,7 +875,7 @@ RSpec.feature 'document capture step', :js do
               before do
                 allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(99)
                 perform_in_browser(:mobile) do
-                  visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
+                  visit_idp_from_oidc_sp_with_ial2(acr_values:)
                   sign_in_and_2fa_user(@user)
                   complete_doc_auth_steps_before_document_capture_step
                 end
@@ -915,7 +929,7 @@ RSpec.feature 'document capture step', :js do
           describe 'when desktop selfie not allowed' do
             it 'can only proceed to link sent page' do
               perform_in_browser(:desktop) do
-                visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
+                visit_idp_from_oidc_sp_with_ial2(acr_values:)
                 sign_in_and_2fa_user(@user)
                 complete_doc_auth_steps_before_hybrid_handoff_step
                 # we still have option to continue
@@ -934,7 +948,7 @@ RSpec.feature 'document capture step', :js do
 
             it 'proceed to the next page with valid info, including a selfie image' do
               perform_in_browser(:desktop) do
-                visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
+                visit_idp_from_oidc_sp_with_ial2(acr_values:)
                 sign_in_and_2fa_user(@user)
                 complete_doc_auth_steps_before_hybrid_handoff_step
                 # we still have option to continue on handoff, since it's desktop no skip_hand_off
@@ -978,7 +992,7 @@ RSpec.feature 'document capture step', :js do
               describe 'when ipp is selected' do
                 it 'proceed to the next page and start ipp' do
                   perform_in_browser(:desktop) do
-                    visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
+                    visit_idp_from_oidc_sp_with_ial2(acr_values:)
                     sign_in_and_2fa_user(@user)
                     complete_doc_auth_steps_before_hybrid_handoff_step
                     # still have option to continue handoff, since it's desktop no skip_hand_off
@@ -1107,6 +1121,11 @@ RSpec.feature 'direct access to IPP on desktop', :js do
       allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(
         in_person_proofing_opt_in_enabled,
       )
+      allow(IdentityConfig.store).to receive(:allowed_biometric_ial_providers).
+        and_return([service_provider.issuer])
+      allow(IdentityConfig.store).to receive(
+        :allowed_valid_authn_contexts_semantic_providers,
+      ).and_return([service_provider.issuer])
       allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
         and_return(false)
       visit_idp_from_sp_with_ial2(

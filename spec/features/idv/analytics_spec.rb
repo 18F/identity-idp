@@ -1055,7 +1055,10 @@ RSpec.feature 'Analytics Regression', :js do
 
       perform_in_browser(:desktop) do
         sign_in_and_2fa_user(user)
-        visit_idp_from_sp_with_ial2(:oidc, facial_match_required: true)
+        visit_idp_from_sp_with_ial2(
+          :oidc,
+          acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_PREFERRED_ACR,
+        )
         complete_doc_auth_steps_before_document_capture_step
         attach_images
         attach_selfie
@@ -1181,7 +1184,10 @@ RSpec.feature 'Analytics Regression', :js do
 
           perform_in_browser(:mobile) do
             sign_in_and_2fa_user(user)
-            visit_idp_from_sp_with_ial2(:oidc, facial_match_required: true)
+            visit_idp_from_sp_with_ial2(
+              :oidc,
+              acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_PREFERRED_ACR,
+            )
             complete_doc_auth_steps_before_document_capture_step
             attach_images
             click_continue

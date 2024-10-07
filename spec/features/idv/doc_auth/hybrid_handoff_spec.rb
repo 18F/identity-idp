@@ -11,14 +11,21 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
     IdentityConfig.store.idv_send_link_attempt_window_in_minutes
   end
   let(:facial_match_required) { false }
+  let(:acr_values) do
+    facial_match_required ?
+      Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR :
+      Saml::Idp::Constants::IAL_VERIFIED_ACR
+  end
+
   context 'split doc auth', allow_browser_log: true do
     before do
       allow(IdentityConfig.store).to receive(:doc_auth_separate_pages_enabled).and_return(true)
       if facial_match_required
         visit_idp_from_oidc_sp_with_ial2(
-          facial_match_required: facial_match_required,
+          acr_values:,
         )
       end
+
       sign_in_and_2fa_user
       allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     end
@@ -325,6 +332,11 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
     let(:in_person_proofing_opt_in_enabled) { true }
     let(:facial_match_required) { true }
     let(:user) { user_with_2fa }
+    let(:acr_values) do
+      facial_match_required ?
+        Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR :
+        Saml::Idp::Constants::IAL_VERIFIED_ACR
+    end
 
     before do
       service_provider = create(:service_provider, :active, :in_person_proofing_enabled)
@@ -341,10 +353,16 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
       )
       allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
         and_return(sp_ipp_enabled)
+      allow(IdentityConfig.store).to receive(:allowed_biometric_ial_providers).
+        and_return([service_provider.issuer])
+      allow(IdentityConfig.store).to receive(
+        :allowed_valid_authn_contexts_semantic_providers,
+      ).and_return([service_provider.issuer])
       visit_idp_from_sp_with_ial2(
         :oidc,
         **{ client_id: service_provider.issuer,
-            facial_match_required: facial_match_required },
+            acr_values:,
+        },
       )
       sign_in_via_branded_page(user)
       complete_doc_auth_steps_before_agreement_step

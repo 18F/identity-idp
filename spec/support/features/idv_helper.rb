@@ -142,9 +142,11 @@ module IdvHelper
     state: SecureRandom.hex,
     nonce: SecureRandom.hex,
     verified_within: nil,
+    acr_values: Saml::Idp::Constants::IAL_VERIFIED_ACR,
     facial_match_required: nil
   )
     params = {
+      acr_values:,
       client_id:,
       response_type: 'code',
       scope: 'openid email profile:name phone social_security_number',
@@ -154,12 +156,6 @@ module IdvHelper
       nonce:,
       verified_within:,
     }
-
-    if facial_match_required
-      params[:acr_values] = Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_PREFERRED_ACR
-    else
-      params[:acr_values] = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
-    end
 
     visit openid_connect_authorize_path(params)
   end
