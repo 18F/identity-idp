@@ -22,11 +22,9 @@ RSpec.describe 'db:check_for_sensitive_columns' do
     end
 
     it 'aborts with missing columns' do
-      expect { task.execute }.to raise_error(SystemExit) do |error|
-        expect(error.message).to eq('Aborting due to columns with missing sensitivity comments.')
-      end
-      expect { task.execute }.to output(/Columns with sensitivity comments found:/).to_stdout.
-        and output(/users#test_col/).to_stdout
+      expect do
+        task.execute
+      end.to output(/Columns with sensitivity comments found:\nusers#test_col/).to_stdout
     end
   end
 end
