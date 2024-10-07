@@ -8,6 +8,7 @@ module TwoFactorAuthentication
     before_action :confirm_totp_enabled
 
     def show
+      mfa_selection_attempt_count
       analytics.multi_factor_auth_enter_totp_visit(context: context)
 
       @presenter = presenter_for_two_factor_authentication_method
@@ -25,7 +26,7 @@ module TwoFactorAuthentication
         result:,
         auth_method: TwoFactorAuthenticatable::AuthMethod::TOTP,
       )
-
+      mfa_selection_attempt_count
       if result.success?
         handle_remember_device_preference(params[:remember_device])
         redirect_to after_sign_in_path_for(current_user)
