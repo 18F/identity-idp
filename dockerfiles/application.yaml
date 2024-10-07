@@ -79,10 +79,108 @@ spec:
             - op: add
               path: /data/REDIS_IRS_ATTEMPTS_API_URL
               value: "redis://{{ENVIRONMENT}}-redis.review-apps:6379/2"
+        - target:
+            kind: ConfigMap
+            name: idp-config-dbsetup
+          patch: |-
+            - op: add
+              path: /data/ASSET_HOST
+              value: "https://{{ENVIRONMENT}}.reviewapps.identitysandbox.gov"
+            - op: add
+              path: /data/DASHBOARD_URL
+              value: "https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov"
+            - op: add
+              path: /data/DOMAIN_NAME
+              value: "{{ENVIRONMENT}}.reviewapps.identitysandbox.gov"
+            - op: add
+              path: /data/KUBERNETES_REVIEW_APP
+              value: "true"
+            - op: add
+              path: /data/POSTGRES_HOST
+              value: "{{ENVIRONMENT}}-idp-pg.review-apps"
+            - op: add
+              path: /data/POSTGRES_NAME
+              value: "idp"
+            - op: add
+              path: /data/POSTGRES_SSLMODE
+              value: "prefer"
+            - op: add
+              path: /data/LOGIN_ENV
+              value: "{{ENVIRONMENT}}"
+            - op: add
+              path: /data/LOGIN_HOST_ROLE
+              value: "idp"
+            - op: add
+              path: /data/LOGIN_SKIP_REMOTE_CONFIG
+              value: "true"
+            - op: add
+              path: /data/PIV_CAC_SERVICE_URL
+              value: "https://{{ENVIRONMENT}}.pivcac.reviewapps.identitysandbox.gov/"
+            - op: add
+              path: /data/PIV_CAC_VERIFY_TOKEN_URL
+              value: "https://{{ENVIRONMENT}}.pivcac.reviewapps.identitysandbox.gov/"
+            - op: add
+              path: /data/NEW_RELIC_LOG
+              value: "stdout"
+            - op: add
+              path: /data/PIDFILE
+              value: "/dev/null"
+            - op: add
+              path: /data/ENABLE_BOOTSNAP
+              value: "false"
+            - op: add
+              path: /data/BOOTSNAP_READONLY
+              value: "true"
+            - op: add
+              path: /data/REDIS_URL
+              value: "redis://{{ENVIRONMENT}}-redis.review-apps:6379"
+            - op: add
+              path: /data/REDIS_THROTTLE_URL
+              value: "redis://{{ENVIRONMENT}}-redis.review-apps:6379/1"
+            - op: add
+              path: /data/REDIS_IRS_ATTEMPTS_API_URL
+              value: "redis://{{ENVIRONMENT}}-redis.review-apps:6379/2"
         # Patch ConfigMap for Worker
         - target:
             kind: ConfigMap
             name: worker-config
+          patch: |-
+            - op: add
+              path: /data/DASHBOARD_URL
+              value: "https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov"
+            - op: add
+              path: /data/KUBERNETES_REVIEW_APP
+              value: "true"
+            - op: add
+              path: /data/POSTGRES_SSLMODE
+              value: "prefer"
+            - op: add
+              path: /data/POSTGRES_NAME
+              value: "idp"
+            - op: add
+              path: /data/POSTGRES_HOST
+              value: "{{ENVIRONMENT}}-idp-pg.review-apps"
+            - op: add
+              path: /data/LOGIN_ENV
+              value: "{{ENVIRONMENT}}"
+            - op: add
+              path: /data/LOGIN_HOST_ROLE
+              value: "worker"
+            - op: add
+              path: /data/LOGIN_SKIP_REMOTE_CONFIG
+              value: "true"
+            - op: add
+              path: /data/PIV_CAC_SERVICE_URL
+              value: "https://{{ENVIRONMENT}}.pivcac.reviewapps.identitysandbox.gov/"
+            - op: add
+              path: /data/PIV_CAC_VERIFY_TOKEN_URL
+              value: "https://{{ENVIRONMENT}}.pivcac.reviewapps.identitysandbox.gov/"
+            - op: add
+              path: /data/DOMAIN_NAME
+              value: "{{ENVIRONMENT}}.reviewapps.identitysandbox.gov"
+        - target:
+            kind: ConfigMap
+            name: worker-config-dbsetup
           patch: |-
             - op: add
               path: /data/DASHBOARD_URL
@@ -146,10 +244,72 @@ spec:
             - op: add
               path: /data/DOMAIN_NAME
               value: "{{ENVIRONMENT}}.pivcac.reviewapps.identitysandbox.gov"
+        - target:
+            kind: ConfigMap
+            name: pivcac-config-dbsetup
+          patch: |-
+            - op: add
+              path: /data/KUBERNETES_REVIEW_APP
+              value: "true"
+            - op: add
+              path: /data/CLIENT_CERT_S3_BUCKET
+              value: "login-gov-pivcac-public-cert-reviewapps.894947205914-us-west-2"
+            - op: add
+              path: /data/POSTGRES_NAME
+              value: "identity_pki_production"
+            - op: add
+              path: /data/POSTGRES_SSLMODE
+              value: "prefer"
+            - op: add
+              path: /data/POSTGRES_HOST
+              value: "{{ENVIRONMENT}}-pivcac-pg.review-apps"
+            - op: add
+              path: /data/PIDFILE
+              value: "/dev/null"
+            - op: add
+              path: /data/IDP_HOST
+              value: "{{ENVIRONMENT}}.reviewapps.identitysandbox.gov"
+            - op: add
+              path: /data/DOMAIN_NAME
+              value: "{{ENVIRONMENT}}.pivcac.reviewapps.identitysandbox.gov"
         # Patch ConfigMap for Dashboard
         - target:
             kind: ConfigMap
             name: dashboard-config
+          patch: |-
+            - op: add
+              path: /data/KUBERNETES_REVIEW_APP
+              value: "true"
+            - op: add
+              path: /data/POSTGRES_NAME
+              value: "dashboard"
+            - op: add
+              path: /data/POSTGRES_HOST
+              value: "{{ENVIRONMENT}}-dashboard-pg.review-apps"
+            - op: add
+              path: /data/POSTGRES_SSLMODE
+              value: "prefer"
+            - op: add
+              path: /data/NEW_RELIC_ENABLED
+              value: "false"
+            - op: add
+              path: /data/SAML_SP_ISSUER
+              value: "https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov"
+            - op: add
+              path: /data/IDP_URL
+              value: "https://{{ENVIRONMENT}}.reviewapps.identitysandbox.gov"
+            - op: add
+              path: /data/IDP_SP_URL
+              value: "https://{{ENVIRONMENT}}.reviewapps.identitysandbox.gov"
+            - op: add
+              path: /data/POST_LOGOUT_URL
+              value: "https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov"
+            - op: add
+              path: /data/DOMAIN_NAME
+              value: "https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov"
+        - target:
+            kind: ConfigMap
+            name: dashboard-config-dbsetup
           patch: |-
             - op: add
               path: /data/KUBERNETES_REVIEW_APP
