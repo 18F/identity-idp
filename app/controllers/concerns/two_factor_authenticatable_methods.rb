@@ -18,6 +18,7 @@ module TwoFactorAuthenticatableMethods
       enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
       new_device: new_device?,
       **extra_analytics.to_h,
+      mfa_attempts: user_session[:mfa_attempts] || nil,
     )
 
     if result.success?
