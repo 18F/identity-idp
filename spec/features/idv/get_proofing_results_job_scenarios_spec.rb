@@ -68,7 +68,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_ana
       # When the user logs out
       logout(@user)
       # And the user visits USPS to complete their enrollment
-      # And USPS enrollment passes
+      # And USPS enrollment passed
       stub_request_passed_proofing_results
       # And GetUspsProofingResultsJob is performed
       perform_get_usps_proofing_results_job(@user)
@@ -208,7 +208,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_ana
       )
 
       # And the user visits USPS to complete their enrollment
-      # And USPS enrollment passes
+      # And USPS enrollment passed
       stub_request_passed_proofing_results
       # And GetUspsProofingResultsJob is performed
       perform_get_usps_proofing_results_job(@user)
@@ -316,7 +316,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_ana
       )
 
       # When the user visits USPS to complete their enrollment
-      # And USPS enrollment passes
+      # And USPS enrollment passed
       stub_request_passed_proofing_results
       # And GetUspsProofingResultsJob is performed
       perform_get_usps_proofing_results_job(@user)
@@ -381,7 +381,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_ana
       )
 
       # When the user visits USPS to complete their enrollment
-      # And USPS enrollment passes
+      # And USPS enrollment passed
       stub_request_passed_proofing_results
       # And GetUspsProofingResultsJob is performed
       perform_get_usps_proofing_results_job(@user)
@@ -557,7 +557,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_ana
       # When the user logs out
       logout(@user)
       # And the user visits USPS to complete their enrollment
-      # And USPS enrollment passes
+      # And USPS enrollment passed
       stub_request_passed_proofing_results
       # And GetUspsProofingResultsJob is performed
       perform_get_usps_proofing_results_job(@user)
@@ -637,7 +637,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_ana
       )
 
       # And the user visits USPS to complete their enrollment
-      # And USPS enrollment passes
+      # And USPS enrollment passed
       stub_request_passed_proofing_results
       # And GetUspsProofingResultsJob is performed
       perform_get_usps_proofing_results_job(@user)
