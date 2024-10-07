@@ -19,7 +19,7 @@ RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
     let(:language) { :en }
     let(:document_type) { 'license' }
     let(:fake_socure_endpoint) { 'https://fake-socure.com/' }
-    let(:socure_document_capture_url) { 'https://verify.socure.us/something' }
+    let(:expected_socure_document_capture_app_url) { 'https://verify.socure.us/something' }
     let(:docv_transaction_token) { 'docv transaction token' }
     let(:fake_socure_response) do
       {
@@ -29,7 +29,7 @@ RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
           customerUserId: document_capture_session_uuid,
           docvTransactionToken: docv_transaction_token,
           qrCode: 'data:image/png;base64,iVBO......K5CYII=',
-          url: socure_document_capture_url,
+          url: expected_socure_document_capture_app_url,
         },
       }
     end
@@ -67,7 +67,7 @@ RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
       expect(WebMock).to have_requested(:post, fake_socure_endpoint).
         with(body: JSON.generate(expected_request_body))
 
-      expect(response.dig('data', 'url')).to eq(socure_document_capture_url)
+      expect(response.dig('data', 'url')).to eq(expected_socure_document_capture_app_url)
       expect(response.dig('data', 'docvTransactionToken')).to eq(docv_transaction_token)
     end
 
