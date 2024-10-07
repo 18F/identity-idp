@@ -218,11 +218,14 @@ RSpec.describe Analytics do
   context 'with an SP request vtr saved in the session' do
     context 'identity verified' do
       let(:session) { { sp: { vtr: ['C1.P1'] } } }
+      let(:component_names) { ['C1', 'C2', 'P1'] }
+      let(:component_values) { component_names.index_with(true) }
       let(:expected_attributes) do
         {
           sp_request: {
             aal2: true,
-            component_values: ['C1', 'C2', 'P1'],
+            component_names:,
+            component_values:,
             identity_proofing: true,
             component_separator: '.',
           },
@@ -239,7 +242,8 @@ RSpec.describe Analytics do
 
     context 'phishing resistant and requiring facial match comparison' do
       let(:session) { { sp: { vtr: ['Ca.Pb'] } } }
-      let(:component_values) { ['C1', 'C2', 'Ca', 'P1', 'Pb'] }
+      let(:component_names) { ['C1', 'C2', 'Ca', 'P1', 'Pb'] }
+      let(:component_values) { component_names.index_with(true) }
 
       let(:expected_attributes) do
         {
@@ -248,6 +252,7 @@ RSpec.describe Analytics do
             facial_match: true,
             two_pieces_of_fair_evidence: true,
             component_values:,
+            component_names:,
             identity_proofing: true,
             phishing_resistant: true,
             component_separator: '.',
@@ -264,59 +269,76 @@ RSpec.describe Analytics do
     end
   end
 
-  context 'when acr_values are saved in the session' do
+  shared_context '#sp_request_attributes[acr_values]' do
     let(:acr_values) { [] }
     let(:sp_request) { {} }
-    let(:session) { { sp: { acr_values: acr_values.join(' ') } } }
+    let(:session) do
+      {
+        sp: {
+          acr_values: acr_values.join(' '),
+        },
+      }
+    end
     let(:expected_attributes) do
       {
         sp_request: {
           component_separator: ' ',
-          component_values: acr_values,
+          component_names: acr_values,
+          component_values: acr_values.map do |v|
+            v.sub("#{Saml::Idp::Constants::LEGACY_ACR_PREFIX}/", '')
+          end.index_with(true),
           **sp_request,
         },
       }
     end
 
-    shared_examples 'commit trackable event' do
-      it 'then includes sp_request in the event' do
+    shared_examples 'track event with :sp_request' do
+      it 'then #sp_request_attributes() matches :sp_request' do
+        expect(analytics.sp_request_attributes).to match(expected_attributes)
+      end
+
+      it 'then includes :sp_request in the event' do
         expect(ahoy).to receive(:track).
           with('Trackable Event', hash_including(expected_attributes))
 
         analytics.track_event('Trackable Event')
       end
     end
+  end
 
-    shared_examples 'for all user scenarios' do |acr_values_list|
+  context 'when acr_values are saved in the session' do
+    include_context '#sp_request_attributes[acr_values]'
+
+    shared_examples 'using acrs for all user scenarios' do |acr_values_list|
       let(:acr_values) { acr_values_list }
 
       context "using #{acr_values_list}" do
         context 'when the user has not been identity verified' do
           let(:current_user) { build(:user, :fully_registered) }
 
-          include_examples 'commit trackable event'
+          include_examples 'track event with :sp_request'
         end
 
         context 'when the identity verified user has not proofed with facial match' do
           let(:current_user) { build(:user, :proofed) }
 
-          include_examples 'commit trackable event'
+          include_examples 'track event with :sp_request'
         end
 
         context 'when the identity verified user has proofed with facial match' do
           let(:current_user) { build(:user, :proofed_with_selfie) }
 
-          include_examples 'commit trackable event'
+          include_examples 'track event with :sp_request'
         end
       end
     end
 
     context 'and does not require any identity proofing' do
-      include_examples 'for all user scenarios',
+      include_examples 'using acrs for all user scenarios',
                        [Saml::Idp::Constants::IAL_AUTH_ONLY_ACR]
-      include_examples 'for all user scenarios',
+      include_examples 'using acrs for all user scenarios',
                        [Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF]
-      include_examples 'for all user scenarios',
+      include_examples 'using acrs for all user scenarios',
                        [Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF]
     end
 
@@ -328,11 +350,11 @@ RSpec.describe Analytics do
         }
       end
 
-      include_examples 'for all user scenarios',
+      include_examples 'using acrs for all user scenarios',
                        [Saml::Idp::Constants::IAL_VERIFIED_ACR]
-      include_examples 'for all user scenarios',
+      include_examples 'using acrs for all user scenarios',
                        [Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF]
-      include_examples 'for all user scenarios',
+      include_examples 'using acrs for all user scenarios',
                        [Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF]
     end
 
@@ -346,10 +368,10 @@ RSpec.describe Analytics do
         }
       end
 
-      include_examples 'for all user scenarios',
+      include_examples 'using acrs for all user scenarios',
                        [Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR]
 
-      include_examples 'for all user scenarios',
+      include_examples 'using acrs for all user scenarios',
                        [Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF]
     end
 
@@ -369,7 +391,7 @@ RSpec.describe Analytics do
             end
             let(:current_user) { build(:user, :fully_registered) }
 
-            include_examples 'commit trackable event'
+            include_examples 'track event with :sp_request'
           end
 
           context 'when the identity verified user has not proofed with facial match' do
@@ -381,7 +403,7 @@ RSpec.describe Analytics do
               }
             end
 
-            include_examples 'commit trackable event'
+            include_examples 'track event with :sp_request'
           end
 
           context 'when the identity verified user has proofed with facial match' do
@@ -395,7 +417,7 @@ RSpec.describe Analytics do
             end
             let(:current_user) { build(:user, :proofed_with_selfie) }
 
-            include_examples 'commit trackable event'
+            include_examples 'track event with :sp_request'
           end
         end
       end
@@ -406,103 +428,51 @@ RSpec.describe Analytics do
                        [Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF]
     end
 
-    context 'acr_values IALMAX' do
-      let(:session) { { sp: { acr_values: Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF } } }
-      let(:expected_attributes) do
+    context 'and selects the IALMax step-up flow' do
+      let(:sp_request) do
         {
-          sp_request: {
-            aal2: true,
-            component_values: [Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF],
-            component_separator: ' ',
-            ialmax: true,
-          },
+          aal2: true,
+          ialmax: true,
         }
       end
 
-      it 'includes the sp_request' do
-        expect(ahoy).to receive(:track).
-          with('Trackable Event', hash_including(expected_attributes))
-
-        analytics.track_event('Trackable Event')
-      end
+      include_examples 'using acrs for all user scenarios',
+                       [Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF]
     end
   end
 
   context 'with an SP request_url saved in the session' do
+    include_context '#sp_request_attributes[acr_values]'
+    let(:acr_values) { [Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF] }
+    let(:request_url) { nil }
+    let(:session) do
+      {
+        sp: {
+          acr_values: acr_values.join(' '),
+          request_url:,
+        }.compact,
+      }
+    end
+
     context 'no request_url' do
-      let(:session) { { sp: { acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF } } }
-
-      let(:expected_attributes) do
-        {
-          sp_request: {
-            component_values: [Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF],
-            component_separator: ' ',
-          },
-        }
-      end
-
-      it 'includes the sp_request' do
-        expect(ahoy).to receive(:track).
-          with('Trackable Event', hash_including(expected_attributes))
-
-        analytics.track_event('Trackable Event')
-      end
+      include_examples 'track event with :sp_request'
     end
 
     context 'a request_url without login_gov_app_differentiator ' do
-      let(:session) do
-        {
-          sp: {
-            acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-            request_url: 'http://localhost:3000/openid_connect/authorize?whatever=something_else',
-          },
-        }
-      end
+      let(:request_url) { 'http://localhost:3000/openid_connect/authorize?whatever=something_else' }
 
-      let(:expected_attributes) do
-        {
-          sp_request: {
-            component_values: [Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF],
-            component_separator: ' ',
-          },
-        }
-      end
-
-      it 'includes the sp_request' do
-        expect(ahoy).to receive(:track).
-          with('Trackable Event', hash_including(expected_attributes))
-
-        analytics.track_event('Trackable Event')
-      end
+      include_examples 'track event with :sp_request'
     end
 
     context 'a request_url with login_gov_app_differentiator ' do
-      let(:session) do
+      let(:request_url) { 'http://localhost:3000/openid_connect/authorize?login_gov_app_differentiator=NY' }
+      let(:sp_request) do
         {
-          sp: {
-            acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-            request_url:
-              'http://localhost:3000/openid_connect/authorize?login_gov_app_differentiator=NY',
-          },
+          app_differentiator: 'NY',
         }
       end
 
-      let(:expected_attributes) do
-        {
-          sp_request: {
-            component_values: [Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF],
-            component_separator: ' ',
-            app_differentiator: 'NY',
-          },
-        }
-      end
-
-      it 'includes the sp_request' do
-        expect(ahoy).to receive(:track).
-          with('Trackable Event', hash_including(expected_attributes))
-
-        analytics.track_event('Trackable Event')
-      end
+      include_examples 'track event with :sp_request'
     end
   end
 end
