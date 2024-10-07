@@ -396,7 +396,7 @@ module IdentityConfig
     config.add(:sign_in_recaptcha_score_threshold, type: :float)
     config.add(:skip_encryption_allowed_list, type: :json)
     config.add(:socure_document_request_endpoint, type: :string)
-    config.add(:socure_id_plus_secret_key, type: :string)
+    config.add(:socure_idplus_api_key, type: :string)
     config.add(:socure_webhook_enabled, type: :boolean)
     config.add(:socure_webhook_secret_key, type: :string)
     config.add(:socure_webhook_secret_key_queue, type: :json)
