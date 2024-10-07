@@ -41,7 +41,7 @@ account_reset.request.yes_continue: Sí, continuar con la eliminación
 account.connected_apps.associated_attributes_html: 'Conectado el %{timestamp_html} con:'
 account.connected_apps.associated_html: 'Conectado: %{timestamp_html}'
 account.connected_apps.description: Con su cuenta de %{app_name}, puede conectarse de manera segura a muchas cuentas del gobierno en línea. Esta es una lista de todas las cuentas que tiene conectadas actualmente.
-account.connected_apps.email_not_selected: Email not yet selected
+account.connected_apps.email_not_selected: No se seleccionó correo electrónico aún
 account.email_language.default: '%{language} (predeterminado)'
 account.email_language.edit_title: Editar la preferencia de idioma del correo electrónico
 account.email_language.languages_list: Recibirá mensajes de correo electrónico de %{app_name} en el idioma que elija.
@@ -80,7 +80,7 @@ account.index.verification.identity_verification: Verificación de identidad
 account.index.verification.in_person_instructions_html: Para terminar de verificar su identidad, debe acudir a una oficina de correos participante antes del <strong>%{deadline}</strong>.
 account.index.verification.instructions: Ingrese su código de verificación para terminar de verificar su identidad.
 account.index.verification.learn_more_link: Obtenga más información sobre la verificación de su identidad
-account.index.verification.nonbiometric_verified_html: El <strong>%{date}</strong>, usted verificó su identidad con %{app_name} usando su identificación estatal.
+account.index.verification.legacy_verified_html: El <strong>%{date}</strong>, usted verificó su identidad con %{app_name} usando su identificación estatal.
 account.index.verification.pending_badge: Pendiente
 account.index.verification.pending_badge_tooltip: La verificación de su identidad está pendiente
 account.index.verification.reactivate_button: Ingrese el código de verificación que recibió por correo de los EE. UU.
@@ -90,9 +90,9 @@ account.index.verification.unverified_badge: No verificada
 account.index.verification.unverified_badge_tooltip: Termine de verificar su identidad.
 account.index.verification.verified_badge: Verificada
 account.index.verification.verified_badge_tooltip: Se verificó su identidad.
-account.index.verification.verified_biometric_badge_tooltip: Se verificó tanto su identidad como su fotografía.
-account.index.verification.verify_with_biometric_html: Para acceder a la <strong>%{sp_name}</strong>, verifique su identidad de nuevo usando una foto de usted.
-account.index.verification.you_verified_your_biometric_identity: Usted verificó su identidad con la información siguiente y verificó una fotografía suya, lo cual le da acceso a todos los asociados de %{app_name}.
+account.index.verification.verified_facial_match_badge_tooltip: Se verificó tanto su identidad como su fotografía.
+account.index.verification.verify_with_facial_match_html: Para acceder a la <strong>%{sp_name}</strong>, verifique su identidad de nuevo usando una foto de usted.
+account.index.verification.you_verified_your_facial_match_identity: Usted verificó su identidad con la información siguiente y verificó una fotografía suya, lo cual le da acceso a todos los asociados de %{app_name}.
 account.index.verification.you_verified_your_identity_html: Usted verificó su identidad para <strong>%{sp_name}</strong> con la información siguiente.
 account.index.webauthn: Clave de seguridad
 account.index.webauthn_add: Agregar clave de seguridad
@@ -567,7 +567,7 @@ doc_auth.errors.phone_step_incomplete: Debe ir a su teléfono y cargar fotos de 
 doc_auth.errors.pii.birth_date_min_age: Su fecha de nacimiento no cumple con el requisito de edad mínima.
 doc_auth.errors.rate_limited_heading: No pudimos verificar su identificación
 doc_auth.errors.rate_limited_subheading: Intente tomar nuevas fotos
-doc_auth.errors.rate_limited_text_html: Por su seguridad, limitamos el número de veces que puede intentar verificar un documento en línea. <strong>Vuelva a intentarlo en %{timeout}.</strong>
+doc_auth.errors.rate_limited_text_html: Para evitar fraudes, limitamos el número de veces que puede intentar la verificación de un documento en línea. <strong>Vuelva a intentarlo en %{timeout}.</strong>
 doc_auth.errors.selfie_fail_heading: No hemos podido cotejar su foto con su identificación.
 doc_auth.errors.selfie_not_live_or_poor_quality_heading: No pudimos verificar su foto
 doc_auth.errors.send_link_limited: Lo intentó demasiadas veces; vuelva a intentarlo en %{timeout}. También puede volver atrás y elegir utilizar su computadora.
@@ -590,7 +590,7 @@ doc_auth.headings.document_capture_back: Reverso de su identificación
 doc_auth.headings.document_capture_front: Frente de su identificación
 doc_auth.headings.document_capture_selfie: Fotografía de su cara
 doc_auth.headings.document_capture_subheader_id: Licencia de conducir o identificación estatal
-doc_auth.headings.document_capture_subheader_selfie: Fotografía de su cara
+doc_auth.headings.document_capture_subheader_selfie: Añada una foto de su cara
 doc_auth.headings.document_capture_with_selfie: Agregue fotos de su identificación y una foto de usted
 doc_auth.headings.front: Frente de su licencia de conducir o identificación estatal
 doc_auth.headings.how_to_verify: Elija cómo desea verificar su identidad
@@ -690,15 +690,15 @@ doc_auth.instructions.text2: No necesita la tarjeta física del Seguro Social.
 doc_auth.instructions.text3: Revisamos que su número de teléfono coincida con su información personal y enviamos un código de un solo uso a su teléfono.
 doc_auth.instructions.text4: Su contraseña guarda y cifra su información personal.
 doc_auth.tips.document_capture_hint: Debe ser un archivo JPG o PNG
-doc_auth.tips.document_capture_id_text1: Coloque su identificación en una superficie plana y de color oscuro.
-doc_auth.tips.document_capture_id_text2: Tómese la foto en un lugar bien iluminado.
-doc_auth.tips.document_capture_id_text3: Evite que se vean reflejos o sombras en su identificación.
+doc_auth.tips.document_capture_id_text1: Use una superficie plana y de color oscuro.
+doc_auth.tips.document_capture_id_text2: Tome fotos en un lugar bien iluminado
+doc_auth.tips.document_capture_id_text3: Evite que se vean reflejos o sombras
 doc_auth.tips.document_capture_id_text4: El tamaño del archivo debe ser de al menos 2 MB.
 doc_auth.tips.document_capture_selfie_id_header_text: Cómo tomar fotos nítidas de su identificación
 doc_auth.tips.document_capture_selfie_selfie_text: Cómo prepararse para tomar su foto
-doc_auth.tips.document_capture_selfie_text1: Quite cualquier prenda o accesorio que pueda cubrirle la cara. Sugerimos que se quite los anteojos o el sombrero.
-doc_auth.tips.document_capture_selfie_text2: Tómese la foto en un lugar bien iluminado.
-doc_auth.tips.document_capture_selfie_text3: Mantenga una expresión neutral.
+doc_auth.tips.document_capture_selfie_text1: Quite cualquier prenda o accesorio que pueda cubrirle la cara, como anteojos o un sombrero.
+doc_auth.tips.document_capture_selfie_text2: Tómese la foto en un lugar bien iluminado
+doc_auth.tips.document_capture_selfie_text3: Mantenga una expresión neutral
 doc_auth.tips.document_capture_selfie_text4: Revise que se vea su rostro completo dentro del círculo verde.
 doc_auth.tips.mobile_phone_required: Se necesita un teléfono móvil
 doc_auth.tips.review_issues_id_header_text: 'Revise las imágenes de su identificación emitida por el estado:'
@@ -1027,8 +1027,8 @@ idv.errors.incorrect_password: La contraseña que ingresó no es la correcta.
 idv.errors.pattern_mismatch.ssn: Ingrese un número de Seguro Social de nueve dígitos.
 idv.errors.pattern_mismatch.zipcode: Ingrese un código postal de 5 o 9 dígitos.
 idv.errors.pattern_mismatch.zipcode_five: Ingrese un código postal de 5 dígitos.
-idv.failure.attempts_html.one: Por motivos de seguridad, le queda <strong>un intento</strong> para añadir su identificación en línea.
-idv.failure.attempts_html.other: Por motivos de seguridad, le quedan <strong>%{count} intentos</strong> para añadir su identificación en línea.
+idv.failure.attempts_html.one: Puede intentarlo <strong>una vez más.</strong> Luego, debe esperar 6 horas antes de volver a intentarlo.
+idv.failure.attempts_html.other: Puede intentarlo <strong>%{count} veces más.</strong> Luego, debe esperar 6 horas antes de volver a intentarlo.
 idv.failure.button.try_online: Vuelva a intentarlo en línea
 idv.failure.button.warning: Vuelva a intentarlo
 idv.failure.exceptions.in_person_outage_error_message.post_cta.body: Mientras tanto, todavía puede iniciar el proceso de verificación en persona en %{app_name} y luego acudir a una oficina de correos. Si necesita acceso urgente a los servicios, contacte directamente con su agencia.

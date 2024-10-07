@@ -2,9 +2,9 @@
 
 require 'rails_helper'
 
-RSpec.describe Idv::ThreatMetrixConcern, type: :controller do
+RSpec.describe ThreatMetrixConcern, type: :controller do
   controller ApplicationController do
-    include Idv::ThreatMetrixConcern
+    include ThreatMetrixConcern
 
     before_action :override_csp_for_threat_metrix
 
