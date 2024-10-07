@@ -13,12 +13,16 @@ module SignUp
       @user_emails = user_emails
       @last_sign_in_email_address = last_email
       @select_email_form = build_select_email_form
+      analytics.sp_select_email_visited(needs_completion_screen_reason:)
     end
 
     def create
       @select_email_form = build_select_email_form
 
       result = @select_email_form.submit(form_params)
+
+      analytics.sp_select_email_submitted(**result.to_h)
+
       if result.success?
         user_session[:selected_email_id] = form_params[:selected_email_id]
         redirect_to sign_up_completed_path
