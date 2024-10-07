@@ -41,7 +41,7 @@ account_reset.request.yes_continue: 是的，继续删除
 account.connected_apps.associated_attributes_html: '在 %{timestamp_html} 用以下电邮做的连接：'
 account.connected_apps.associated_html: 已连接 %{timestamp_html}
 account.connected_apps.description: 使用你的 %{app_name} 账户，你可以安全地连接到网上多个政府账户。以下列出了你目前已连接的所有账户。
-account.connected_apps.email_not_selected: Email not yet selected
+account.connected_apps.email_not_selected: 尚未选择电邮
 account.email_language.default: '%{language} （默认）'
 account.email_language.edit_title: 编辑电邮语言选择
 account.email_language.languages_list: 您将收到%{app_name}用您选择的语言发送的电子邮件。
