@@ -78,7 +78,11 @@ RSpec.describe SignUp::SelectEmailController do
 
       response
 
-      expect(@analytics).to have_logged_event(:sp_select_email_submitted, success: true)
+      expect(@analytics).to have_logged_event(
+        :sp_select_email_submitted,
+        success: true,
+        needs_completion_screen_reason: :new_attributes,
+      )
     end
 
     context 'with a corrupted email selected_email_id form' do
@@ -99,6 +103,7 @@ RSpec.describe SignUp::SelectEmailController do
           :sp_select_email_submitted,
           success: false,
           error_details: { selected_email_id: { not_found: true } },
+          needs_completion_screen_reason: :new_attributes,
         )
       end
     end
