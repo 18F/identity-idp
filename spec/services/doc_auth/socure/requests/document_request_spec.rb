@@ -26,7 +26,7 @@ RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
         referenceId: 'socure-reference-id',
         data: {
           eventId: 'socure-event-id',
-          customerUserId: '121212',
+          customerUserId: document_capture_session_uuid,
           docvTransactionToken: docv_transaction_token,
           qrCode: 'data:image/png;base64,iVBO......K5CYII=',
           url: socure_document_capture_url,
