@@ -12,6 +12,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_ana
       and_return(sp_name)
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
     allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
+    allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx).and_return(true)
     stub_request_token
     ActiveJob::Base.queue_adapter = :test
   end
@@ -492,6 +493,186 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_ana
           in_person_verification_pending_at: nil,
         )
       end
+    end
+
+    scenario <<~EOS.squish do
+      User resets password and logs in before passed USPS proofing with fraud review pending
+    EOS
+      @user.in_person_enrollments.first.profile.update(
+        fraud_review_pending_at: 1.day.ago,
+        fraud_pending_reason: 'threatmetrix_review',
+        proofing_components: { threatmetrix_review_status: 'review' },
+      )
+
+      # Given the user has an InPersonEnrollment with status "pending"
+      expect(@user.in_person_enrollments.first).to have_attributes(
+        status: 'pending',
+      )
+      # And the user has a Profile that is deactivated pending in person verification and
+      # fraud review
+      expect(@user.in_person_enrollments.first.profile).to have_attributes(
+        active: false,
+        deactivation_reason: nil,
+        in_person_verification_pending_at: be_kind_of(Time),
+        fraud_pending_reason: 'threatmetrix_review',
+        fraud_review_pending_at: be_kind_of(Time),
+      )
+
+      # When the user resets their password
+      reset_password(@user, @new_password)
+
+      # Then the user has an InPersonEnrollment with status "pending"
+      expect(@user.in_person_enrollments.first).to have_attributes(
+        status: 'pending',
+      )
+      # And the user has a Profile that is deactivated pending in person verification and
+      # fraud review
+      expect(@user.in_person_enrollments.first.profile).to have_attributes(
+        active: false,
+        deactivation_reason: nil,
+        in_person_verification_pending_at: be_kind_of(Time),
+        fraud_pending_reason: 'threatmetrix_review',
+        fraud_review_pending_at: be_kind_of(Time),
+      )
+
+      # When the user logs in
+      login(@user, @new_password)
+
+      # Then the user is taken to the /verify/welcome page
+      expect(current_path).to eq(idv_welcome_path)
+      # And the user has an InPersonEnrollment with status "pending"
+      expect(@user.in_person_enrollments.first).to have_attributes(
+        status: 'pending',
+      )
+      # And the user has a Profile that is deactivated with reason "encryption_error" and
+      # pending in person verification and fraud review
+      expect(@user.in_person_enrollments.first.profile).to have_attributes(
+        active: false,
+        deactivation_reason: 'encryption_error',
+        in_person_verification_pending_at: be_kind_of(Time),
+        fraud_pending_reason: 'threatmetrix_review',
+        fraud_review_pending_at: be_kind_of(Time),
+      )
+
+      # When the user logs out
+      logout(@user)
+      # And the user visits USPS to complete their enrollment
+      # And USPS enrollment passes
+      stub_request_passed_proofing_results
+      # And GetUspsProofingResultsJob is performed
+      perform_get_usps_proofing_results_job(@user)
+
+      # And the user has an InPersonEnrollment with status "passed"
+      expect(@user.in_person_enrollments.first).to have_attributes(
+        status: 'passed',
+      )
+      # And the user has a Profile that is deactivated with reason "encryption_error" and
+      # pending fraud review
+      expect(@user.in_person_enrollments.first.profile).to have_attributes(
+        active: false,
+        deactivation_reason: 'encryption_error',
+        in_person_verification_pending_at: nil,
+        fraud_pending_reason: 'threatmetrix_review',
+        fraud_review_pending_at: be_kind_of(Time),
+      )
+
+      # When the user logs in
+      login(@user, @new_password)
+
+      # Then the user is taken to the /verify/welcome page
+      expect(current_path).to eq(idv_welcome_path)
+      # And the user has an InPersonEnrollment with status "passed"
+      expect(@user.in_person_enrollments.first).to have_attributes(
+        status: 'passed',
+      )
+      # And the user has a Profile that is deactivated with reason "encryption_error" and
+      # pending fraud review
+      expect(@user.in_person_enrollments.first.profile).to have_attributes(
+        active: false,
+        deactivation_reason: 'encryption_error',
+        in_person_verification_pending_at: nil,
+        fraud_pending_reason: 'threatmetrix_review',
+        fraud_review_pending_at: be_kind_of(Time),
+      )
+    end
+
+    scenario <<~EOS.squish do
+      User resets password without logging in before passing USPS proofing with fraud review pending
+    EOS
+      @user.in_person_enrollments.first.profile.update(
+        fraud_review_pending_at: 1.day.ago,
+        fraud_pending_reason: 'threatmetrix_review',
+        proofing_components: { threatmetrix_review_status: 'review' },
+      )
+
+      # Given the user has an InPersonEnrollment with status "pending"
+      expect(@user.in_person_enrollments.first).to have_attributes(
+        status: 'pending',
+      )
+      # And the user has a Profile that is deactivated pending in person verification and
+      # fraud review
+      expect(@user.in_person_enrollments.first.profile).to have_attributes(
+        active: false,
+        deactivation_reason: nil,
+        in_person_verification_pending_at: be_kind_of(Time),
+        fraud_pending_reason: 'threatmetrix_review',
+        fraud_review_pending_at: be_kind_of(Time),
+      )
+
+      # When the user resets their password
+      reset_password(@user, @new_password)
+
+      # Then the user has an InPersonEnrollment with status "pending"
+      expect(@user.in_person_enrollments.first).to have_attributes(
+        status: 'pending',
+      )
+      # And the user has a Profile that is deactivated pending in person verification and
+      # fraud review
+      expect(@user.in_person_enrollments.first.profile).to have_attributes(
+        active: false,
+        deactivation_reason: nil,
+        in_person_verification_pending_at: be_kind_of(Time),
+        fraud_pending_reason: 'threatmetrix_review',
+        fraud_review_pending_at: be_kind_of(Time),
+      )
+
+      # And the user visits USPS to complete their enrollment
+      # And USPS enrollment passes
+      stub_request_passed_proofing_results
+      # And GetUspsProofingResultsJob is performed
+      perform_get_usps_proofing_results_job(@user)
+
+      # Then the user has an InPersonEnrollment with status "passed"
+      expect(@user.in_person_enrollments.first).to have_attributes(
+        status: 'passed',
+      )
+      # And the user has a Profile that is deactivated pending fraud review
+      expect(@user.in_person_enrollments.first.profile).to have_attributes(
+        active: false,
+        deactivation_reason: nil,
+        in_person_verification_pending_at: nil,
+        fraud_pending_reason: 'threatmetrix_review',
+        fraud_review_pending_at: be_kind_of(Time),
+      )
+
+      # When the user logs in
+      login(@user, @new_password)
+
+      # Then the user is taken to the /verify/welcome page
+      expect(current_path).to eq(idv_welcome_path)
+      # And the user has an InPersonEnrollment with status "passed"
+      expect(@user.in_person_enrollments.first).to have_attributes(
+        status: 'passed',
+      )
+      # And the user has a Profile that is deactivated with reason "encryption_error" and
+      # pending fraud review
+      expect(@user.in_person_enrollments.first.profile).to have_attributes(
+        active: false,
+        deactivation_reason: 'encryption_error',
+        in_person_verification_pending_at: nil,
+        fraud_pending_reason: 'threatmetrix_review',
+        fraud_review_pending_at: be_kind_of(Time),
+      )
     end
   end
 
