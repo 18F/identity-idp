@@ -29,6 +29,8 @@ RSpec.describe DocAuth::Socure::Request do
       let(:response) { JSON.generate({ 'url' => 'https://localhost' }) }
       let(:response_status) { 200 }
 
+      # Because we have not implemented
+      # `#handle_http_response`. Remove when we do.
       it 'raises a NotImplementedError' do
         expect { request.fetch }.to raise_error NotImplementedError
       end
