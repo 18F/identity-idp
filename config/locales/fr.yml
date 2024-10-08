@@ -1197,7 +1197,7 @@ in_person_proofing.body.barcode.questions: Des questions ?
 in_person_proofing.body.barcode.retail_hours: Heures d’ouverture
 in_person_proofing.body.barcode.retail_hours_closed: Fermé
 in_person_proofing.body.barcode.return_to_partner_html: Vous pouvez maintenant %{link_html} afin d’effectuer toutes les étapes suivantes auxquelles vous pouvez accéder jusqu’à ce que votre identité ait été vérifiée.
-in_person_proofing.body.barcode.return_to_partner_link: vous déconnecter et retourner à %{sp_name}
+in_person_proofing.body.barcode.return_to_partner_link: Revenir à %{sp_name}
 in_person_proofing.body.barcode.what_to_expect: À quoi s’attendre au bureau de poste
 in_person_proofing.body.cta.button: Essayer en personne
 in_person_proofing.body.cta.prompt_detail: Vous pourrez peut-être confirmer votre identité dans un bureau de poste participant près de chez vous.
