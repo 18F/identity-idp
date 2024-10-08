@@ -70,9 +70,7 @@ RSpec.describe 'content security policy' do
           expect(content_security_policy['child-src']).to eq("'self'")
           expect(content_security_policy['connect-src']).to eq("'self'")
           expect(content_security_policy['font-src']).to eq("'self' data:")
-          expect(content_security_policy['form-action']).to eq(
-            "'self'",
-          )
+          expect(content_security_policy['form-action']).to eq("'self'")
           expect(content_security_policy['img-src']).to eq(
             "'self' data: login.gov https://s3.us-west-2.amazonaws.com",
           )
@@ -90,9 +88,7 @@ RSpec.describe 'content security policy' do
 
           content_security_policy = parse_content_security_policy
 
-          expect(content_security_policy['form-action']).to eq(
-            "'self'",
-          )
+          expect(content_security_policy['form-action']).to eq("'self'")
         end
       end
     end
