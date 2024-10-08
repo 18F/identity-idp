@@ -5,19 +5,15 @@ module Users
     include ReauthenticationRequiredConcern
 
     before_action :confirm_two_factor_authenticated
-    before_action :authorize_user_to_edit_email, except: %i[add show sp_show verify resend]
-    before_action :check_max_emails_per_account, only: %i[show sp_show add]
+    before_action :authorize_user_to_edit_email, except: %i[add show verify resend]
+    before_action :check_max_emails_per_account, only: %i[show add]
     before_action :retain_confirmed_emails, only: %i[delete]
     before_action :confirm_recently_authenticated_2fa
 
     def show
       analytics.add_email_visit
       @add_user_email_form = AddUserEmailForm.new
-    end
-
-    def sp_show
-      analytics.add_email_visit
-      @add_user_email_form = AddUserEmailForm.new
+      @cancel_link_url = cancel_link_url
     end
 
     def add
@@ -65,6 +61,18 @@ module Users
       end
 
       redirect_to account_url
+    end
+
+    def properties
+      ParseControllerFromReferer.new(request.referer).call
+    end
+
+    def cancel_link_url
+      if properties[:request_came_from] == 'sign_up/completions#show'
+        sign_up_completed_url
+      else
+        decorated_sp_session.cancel_link_url
+      end
     end
 
     def verify

@@ -19,9 +19,28 @@ RSpec.describe Users::EmailsController do
     end
 
     it 'renders the show view' do
-      get :sp_show
+      get :show
 
       expect(@analytics).to have_logged_event('Add Email Address Page Visited')
+
+      expect(controller.cancel_link_url).to eq(root_url)
+    end
+  end
+
+  context 'user visits add an email address from SP consent flow' do
+    let(:user) { create(:user) }
+    let(:current_sp) { create(:service_provider) }
+
+    before do
+      stub_sign_in(user)
+      session[:sp] =
+        { issuer: current_sp.issuer, vtr: ['C2.Pb'], biometric_comparison_required: true }
+    end
+
+    it 'renders the show view with a link back to continue SP consent' do
+      get :show
+
+      expect(controller.cancel_link_url).to eq(sign_up_completed_url)
     end
   end
 

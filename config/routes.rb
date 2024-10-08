@@ -250,7 +250,6 @@ Rails.application.routes.draw do
     patch '/manage/password' => 'users/passwords#update'
 
     get '/add/email' => 'users/emails#show'
-    get '/add/shared_email' => 'users/emails#sp_show'
     post '/add/email' => 'users/emails#add'
     get '/add/email/confirm' => 'users/email_confirmations#create', as: :add_email_confirmation
     get '/add/email/verify_email' => 'users/emails#verify', as: :add_email_verify_email
