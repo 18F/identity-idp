@@ -34,10 +34,12 @@ RSpec.describe AccountReset::CancelRequestForUser do
     end
 
     context 'with no existing pending request' do
-      it 'fails gracefully' do
+      it 'fails gracefully and does not send email' do
+        notify_user_of_cancellation = instance_double(AccountReset::NotifyUserOfRequestCancellation)
         other_user = create(:user)
         request = AccountReset::CancelRequestForUser.new(other_user)
         request.call
+        expect(AccountReset::NotifyUserOfRequestCancellation).to_not receive(:new)
       end
     end
   end

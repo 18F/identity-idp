@@ -29,9 +29,9 @@ module AccountReset
     end
 
     def pending_account_reset_request
-      @pending_account_reset_request ||= AccountReset::FindPendingRequestForUser.new(
+      @pending_account_reset_request ||= AccountReset::PendingRequestForUser.new(
         current_user,
-      ).call
+      ).get_account_reset_request
     end
   end
 end
