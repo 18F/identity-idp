@@ -235,7 +235,10 @@ module Reporting
     end
 
     def did_not_pass_fraud_review_users
-      result = data[Events::FRAUD_REVIEW_REJECT_AUTOMATIC] + data[Events::FRAUD_REVIEW_REJECT_MANUAL]
+      result = (
+        data[Events::FRAUD_REVIEW_REJECT_AUTOMATIC] +
+        data[Events::FRAUD_REVIEW_REJECT_MANUAL]
+      )
 
       issuers&.each do |issuer|
         users_with_events_for_issuer = data[sp_key(issuer)]

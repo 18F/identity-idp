@@ -248,7 +248,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
       context 'and fraud events are not tagged with sp information' do
         context 'but other events are tagged for the sp' do
           let(:service_provider_for_non_fraud_events) { issuer }
-          it 'is users who completed workflow and passed fraud review where any other event matches on issuer' do
+          it 'is users who completed workflow + passed fraud review and any event matches issuer' do
             expect(report.fraud_review_passed).to eql(2)
           end
         end
