@@ -61,12 +61,14 @@ module Users
       )
       result = form.submit(confirm_params)
       @platform_authenticator = form.platform_authenticator?
+      @desktop_ab_test_bucket = form.desktop_ab_test_bucket?
       @presenter = WebauthnSetupPresenter.new(
         current_user: current_user,
         user_fully_authenticated: user_fully_authenticated?,
         user_opted_remember_device_cookie: user_opted_remember_device_cookie,
         remember_device_default: remember_device_default,
         platform_authenticator: @platform_authenticator,
+        desktop_ab_test_bucket: @desktop_ab_test_bucket,
         url_options:,
       )
       properties = result.to_h.merge(analytics_properties)
@@ -86,7 +88,7 @@ module Users
       if platform_authenticator? && in_account_creation_flow? &&
          current_user.webauthn_configurations.platform_authenticators.present?
         redirect_to authentication_methods_setup_path
-     end
+      end
     end
 
     def platform_authenticator?
