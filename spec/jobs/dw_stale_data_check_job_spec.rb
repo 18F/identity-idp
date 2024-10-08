@@ -5,10 +5,17 @@ RSpec.describe DwStaleDataCheckJob, type: :job do
   let(:job) { described_class.new }
   let(:expected_bucket) { 'login-gov-analytics-export-test-1234-us-west-2' }
   let(:expected_object_key) { "idp_max_ids/#{timestamp.strftime('%Y-%m-%d')}_idp_max_ids.csv" }
-  let(:expected_csv) { File.read(Rails.root.join('spec/fixtures/idp_max_ids.csv')) }
+  let(:test_on_tables) { ['users'] }
   let(:s3_bucket) { instance_double('Aws::S3::Bucket', name: expected_bucket) }
   let(:s3_object) { instance_double('Aws::S3::Object') }
   let(:s3_resource) { instance_double('Aws::S3::Resource', bucket: s3_bucket) }
+
+  let(:expected_csv) do
+    <<~CSV
+      table_name,max_id,row_count
+      users,2,2
+    CSV
+  end
 
   before do
     allow(Identity::Hostdata).to receive_messages(
@@ -25,7 +32,8 @@ RSpec.describe DwStaleDataCheckJob, type: :job do
   describe '#perform' do
     context 'when actual database tables contain data' do
       it 'generates correct CSV from database tables' do
-        create_users_with_timestamps
+        allow(ActiveRecord::Base.connection).to receive(:tables).and_return(test_on_tables)
+        add_data_to_tables
 
         csv_data = upload_csv_to_s3
 
@@ -37,7 +45,7 @@ RSpec.describe DwStaleDataCheckJob, type: :job do
       let(:expected_csv) { "table_name,max_id,row_count\nusers,,0\n" }
 
       it 'handles empty tables gracefully' do
-        allow(ActiveRecord::Base.connection).to receive(:tables).and_return(['users'])
+        allow(ActiveRecord::Base.connection).to receive(:tables).and_return(test_on_tables)
 
         csv_data = upload_csv_to_s3
 
@@ -63,7 +71,8 @@ RSpec.describe DwStaleDataCheckJob, type: :job do
 
     context 'when uploading to S3' do
       it 'uploads data to S3 successfully' do
-        create_users_with_timestamps
+        allow(ActiveRecord::Base.connection).to receive(:tables).and_return(test_on_tables)
+        add_data_to_tables
 
         job.perform(timestamp)
 
@@ -87,7 +96,7 @@ RSpec.describe DwStaleDataCheckJob, type: :job do
 
   private
 
-  def create_users_with_timestamps
+  def add_data_to_tables
     User.create!(id: 1, created_at: 1.day.ago)
     User.create!(id: 2, created_at: 1.hour.ago)
   end
