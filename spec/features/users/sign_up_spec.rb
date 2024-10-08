@@ -515,15 +515,15 @@ RSpec.feature 'Sign Up' do
     let!(:federal_email_domain) { create(:federal_email_domain, name: 'gsa.gov') }
     let(:email) { 'test@gsa.gov' }
 
-    context 'valid fed email' do
-      it 'should land user on piv cac suggestion page when fed government' do
+    context 'when the user has a fed email' do
+      it 'should land user on piv cac suggestion page' do
         confirm_email(email)
         submit_form_with_valid_password
         expect(current_path).to eq login_piv_cac_recommended_path
       end
 
-      context 'user can skip piv cac prompt' do
-        it 'should skip piv cac prompt and land on mfa screen' do
+      context 'when the user chooses to skip adding piv' do
+        it 'should land on mfa screen' do
           confirm_email(email)
           submit_form_with_valid_password
           expect(current_path).to eq login_piv_cac_recommended_path
@@ -533,8 +533,8 @@ RSpec.feature 'Sign Up' do
         end
       end
 
-      context 'user who selects to add piv is directed to piv screen' do
-        it 'should be directed straight to piv add screen' do
+      context 'when the user chooses to add piv' do
+        it 'should land on piv add screen' do
           confirm_email(email)
           submit_form_with_valid_password
           expect(current_path).to eq login_piv_cac_recommended_path
@@ -545,16 +545,16 @@ RSpec.feature 'Sign Up' do
       end
     end
 
-    context 'any mil email' do
+    context 'when the user has a mil email' do
       let(:email) { 'test@example.mil' }
-      it 'should land user on piv cac suggestion page when fed government' do
+      it 'should land user on piv cac suggestion page' do
         confirm_email(email)
         submit_form_with_valid_password
         expect(current_path).to eq login_piv_cac_recommended_path
       end
 
-      context 'user can skip piv cac prompt' do
-        it 'should skip piv cac prompt and land on mfa screen' do
+      context 'when the user chooses to skip adding piv' do
+        it 'should land on mfa screen' do
           confirm_email(email)
           submit_form_with_valid_password
           expect(current_path).to eq login_piv_cac_recommended_path
@@ -564,8 +564,8 @@ RSpec.feature 'Sign Up' do
         end
       end
 
-      context 'user who selects to add piv is directed to piv screen' do
-        it 'should be directed straight to piv add screen' do
+      context 'when the user chooses to add piv' do
+        it 'should land on piv add screen' do
           confirm_email(email)
           submit_form_with_valid_password
           expect(current_path).to eq login_piv_cac_recommended_path
@@ -576,9 +576,9 @@ RSpec.feature 'Sign Up' do
       end
     end
 
-    context 'invalid fed email' do
+    context 'when the user does not have a fed or mil email' do
       let(:email) { 'test@example.gov' }
-      it 'should land user on piv cac suggestion page when fed government' do
+      it 'should skip piv cac recommendation page' do
         confirm_email(email)
         submit_form_with_valid_password
         expect(current_path).to eq authentication_methods_setup_path
