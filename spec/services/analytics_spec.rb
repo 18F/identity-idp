@@ -236,7 +236,7 @@ RSpec.describe Analytics do
       end
     end
 
-    context 'phishing resistant and requiring biometric comparison' do
+    context 'phishing resistant and requiring facial match comparison' do
       let(:session) { { sp: { vtr: ['Ca.Pb'] } } }
       let(:component_values) do
         {
@@ -252,7 +252,7 @@ RSpec.describe Analytics do
         {
           sp_request: {
             aal2: true,
-            biometric_comparison: true,
+            facial_match: true,
             two_pieces_of_fair_evidence: true,
             component_values:,
             identity_proofing: true,
@@ -312,7 +312,7 @@ RSpec.describe Analytics do
       end
     end
 
-    context 'IAL2 with biometric' do
+    context 'IAL2 with facial match' do
       let(:session) do
         { sp: { acr_values: Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF } }
       end
@@ -320,7 +320,7 @@ RSpec.describe Analytics do
         {
           sp_request: {
             aal2: true,
-            biometric_comparison: true,
+            facial_match: true,
             two_pieces_of_fair_evidence: true,
             component_values: { 'ial/2?bio=required' => true },
             identity_proofing: true,
@@ -346,6 +346,84 @@ RSpec.describe Analytics do
             component_values: { 'ial/0' => true },
             component_separator: ' ',
             ialmax: true,
+          },
+        }
+      end
+
+      it 'includes the sp_request' do
+        expect(ahoy).to receive(:track).
+          with('Trackable Event', hash_including(expected_attributes))
+
+        analytics.track_event('Trackable Event')
+      end
+    end
+  end
+
+  context 'with an SP request_url saved in the session' do
+    context 'no request_url' do
+      let(:session) { { sp: { acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF } } }
+
+      let(:expected_attributes) do
+        {
+          sp_request: {
+            component_values: { 'ial/1' => true },
+            component_separator: ' ',
+          },
+        }
+      end
+
+      it 'includes the sp_request' do
+        expect(ahoy).to receive(:track).
+          with('Trackable Event', hash_including(expected_attributes))
+
+        analytics.track_event('Trackable Event')
+      end
+    end
+
+    context 'a request_url without login_gov_app_differentiator ' do
+      let(:session) do
+        {
+          sp: {
+            acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            request_url: 'http://localhost:3000/openid_connect/authorize?whatever=something_else',
+          },
+        }
+      end
+
+      let(:expected_attributes) do
+        {
+          sp_request: {
+            component_values: { 'ial/1' => true },
+            component_separator: ' ',
+          },
+        }
+      end
+
+      it 'includes the sp_request' do
+        expect(ahoy).to receive(:track).
+          with('Trackable Event', hash_including(expected_attributes))
+
+        analytics.track_event('Trackable Event')
+      end
+    end
+
+    context 'a request_url with login_gov_app_differentiator ' do
+      let(:session) do
+        {
+          sp: {
+            acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            request_url:
+              'http://localhost:3000/openid_connect/authorize?login_gov_app_differentiator=NY',
+          },
+        }
+      end
+
+      let(:expected_attributes) do
+        {
+          sp_request: {
+            component_values: { 'ial/1' => true },
+            component_separator: ' ',
+            app_differentiator: 'NY',
           },
         }
       end

@@ -25,8 +25,6 @@ class User < ApplicationRecord
   MAX_RECENT_EVENTS = 5
   MAX_RECENT_DEVICES = 5
 
-  BIOMETRIC_COMPARISON_IDV_LEVELS = %w[unsupervised_with_selfie in_person].to_set.freeze
-
   enum otp_delivery_preference: { sms: 0, voice: 1 }
 
   # rubocop:disable Rails/HasManyOrHasOneDependent
@@ -376,8 +374,8 @@ class User < ApplicationRecord
     active_profile.present?
   end
 
-  def identity_verified_with_biometric_comparison?
-    BIOMETRIC_COMPARISON_IDV_LEVELS.include?(active_profile&.idv_level)
+  def identity_verified_with_facial_match?
+    active_profile.present? && active_profile.facial_match?
   end
 
   # This user's most recently activated profile that has also been deactivated

@@ -36,6 +36,11 @@ module IdentityConfig
     config.add(:aamva_supported_jurisdictions, type: :json)
     config.add(:aamva_verification_request_timeout, type: :float)
     config.add(:aamva_verification_url)
+    config.add(
+      :account_creation_device_profiling,
+      type: :symbol,
+      enum: [:disabled, :collect_only, :enabled],
+    )
     config.add(:account_reset_token_valid_for_days, type: :integer)
     config.add(:account_reset_wait_period_days, type: :integer)
     config.add(:account_reset_fraud_user_wait_period_days, type: :integer, allow_nil: true)

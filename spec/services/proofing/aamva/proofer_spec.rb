@@ -276,7 +276,7 @@ RSpec.describe Proofing::Aamva::Proofer do
         let(:match_indicator_name) { 'DriverLicenseExpirationDateMatchIndicator' }
 
         when_unverified do
-          test_still_successful
+          test_not_successful
           test_in_requested_attributes
           test_not_in_verified_attributes
         end

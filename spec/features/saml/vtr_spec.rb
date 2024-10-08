@@ -189,7 +189,7 @@ RSpec.feature 'SAML requests using VTR' do
     expect(ssn).to eq(pii[:ssn])
   end
 
-  scenario 'sign in with VTR request for idv with biometric requires idv with biometric',
+  scenario 'sign in with VTR request for idv with facial match requires idv with facial match',
            :js,
            allowed_extra_analytics: [:*] do
     user = create(:user, :proofed)

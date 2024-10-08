@@ -18,7 +18,7 @@ zh:
         %{app_name}: 你的一次性代码是 %{code}。此代码在 %{expiration} 分钟后作废。请勿与任何人分享此代码。
 
         @%{domain} #%{code}
-      voice: 你好！你的%{format_length}%{format_type} %{app_name} 一次性代码是%{code}。你的一次性代码是 ，%{code}。重复一下，你的一次性代码是 %{code}。此代码 %{expiration} 分钟后会作废。
+      voice: 你好！你的%{format_length}%{format_type} %{app_name} 一次性代码是，%{code}。你的一次性代码是 ，%{code}。重复一下，你的一次性代码是 %{code}。此代码 %{expiration} 分钟后会作废。
     doc_auth_link: |-
       %{app_name}: %{link} 你在验证身份以访问 %{sp_or_app_name}。拍张你身份证件的照片以继续。
     error:

@@ -41,7 +41,7 @@ account_reset.request.yes_continue: 是的，继续删除
 account.connected_apps.associated_attributes_html: '在 %{timestamp_html} 用以下电邮做的连接：'
 account.connected_apps.associated_html: 已连接 %{timestamp_html}
 account.connected_apps.description: 使用你的 %{app_name} 账户，你可以安全地连接到网上多个政府账户。以下列出了你目前已连接的所有账户。
-account.connected_apps.email_not_selected: Email not yet selected
+account.connected_apps.email_not_selected: 尚未选择电邮
 account.email_language.default: '%{language} （默认）'
 account.email_language.edit_title: 编辑电邮语言选择
 account.email_language.languages_list: 您将收到%{app_name}用您选择的语言发送的电子邮件。
@@ -80,7 +80,7 @@ account.index.verification.identity_verification: 身份验证
 account.index.verification.in_person_instructions_html: 你必须在 <strong>%{deadline}</strong> 之前去邮局完成验证你的身份。
 account.index.verification.instructions: 输入你的验证码来完成身份验证。
 account.index.verification.learn_more_link: 了解更多有关验证你身份的信息。
-account.index.verification.nonbiometric_verified_html: 你在 <strong>%{date}</strong> 使用州颁发的身份证件在%{app_name} 验证了身份。
+account.index.verification.legacy_verified_html: 你在 <strong>%{date}</strong> 使用州颁发的身份证件在%{app_name} 验证了身份。
 account.index.verification.pending_badge: 待验证
 account.index.verification.pending_badge_tooltip: 你的身份有待验证。
 account.index.verification.reactivate_button: 输入你通过邮局收到的验证码。
@@ -90,9 +90,9 @@ account.index.verification.unverified_badge: 未验证
 account.index.verification.unverified_badge_tooltip: 完成验证你的身份。
 account.index.verification.verified_badge: 已验证
 account.index.verification.verified_badge_tooltip: 你的身份已经验证。
-account.index.verification.verified_biometric_badge_tooltip: 你的身份和照片都已验证。
-account.index.verification.verify_with_biometric_html: 要访问 <strong>%{sp_name}</strong>，请使用你本人照片再次验证身份。
-account.index.verification.you_verified_your_biometric_identity: 你使用以下信息验证了身份并验证了一张你本人的照片，从而获得了访问%{app_name}所有合作伙伴机构的权限。
+account.index.verification.verified_facial_match_badge_tooltip: 你的身份和照片都已验证。
+account.index.verification.verify_with_facial_match_html: 要访问 <strong>%{sp_name}</strong>，请使用你本人照片再次验证身份。
+account.index.verification.you_verified_your_facial_match_identity: 你使用以下信息验证了身份并验证了一张你本人的照片，从而获得了访问%{app_name}所有合作伙伴机构的权限。
 account.index.verification.you_verified_your_identity_html: 你使用以下信息向 <strong>%{sp_name}</strong> 验证了身份。
 account.index.webauthn: 安全密钥
 account.index.webauthn_add: 添加安全密钥
@@ -567,7 +567,7 @@ doc_auth.errors.phone_step_incomplete: 在继续之前你必须使用手机上�
 doc_auth.errors.pii.birth_date_min_age: 你的生日不满足最低年龄要求。
 doc_auth.errors.rate_limited_heading: 我们无法验证你的身份证件。
 doc_auth.errors.rate_limited_subheading: 尝试再拍照片
-doc_auth.errors.rate_limited_text_html: 为了你的安全，我们限制你在网上尝试验证文件的次数。<strong> %{timeout} 后再试。</strong>
+doc_auth.errors.rate_limited_text_html: 为了防止欺诈，我们限制在网上尝试验证文件的次数。<strong> %{timeout}个小时以后再试。</strong>
 doc_auth.errors.selfie_fail_heading: 我们无法把你自己的照片与你的身份证件匹配
 doc_auth.errors.selfie_not_live_or_poor_quality_heading: 我们无法验证你自己的照片
 doc_auth.errors.send_link_limited: 你尝试了太多次。请在 %{timeout}后再试。你也可以返回并选择使用电脑。
@@ -590,7 +590,7 @@ doc_auth.headings.document_capture_back: 你身份证件的背面
 doc_auth.headings.document_capture_front: 你身份证件的正面
 doc_auth.headings.document_capture_selfie: 你面部照片
 doc_auth.headings.document_capture_subheader_id: 驾照或州政府颁发的身份证件
-doc_auth.headings.document_capture_subheader_selfie: 你本人照片
+doc_auth.headings.document_capture_subheader_selfie: 添加您面部照片
 doc_auth.headings.document_capture_with_selfie: 添加你身份证件和本人的照片
 doc_auth.headings.front: 驾照或州政府颁发身份证件的正面
 doc_auth.headings.how_to_verify: 选择你想如何验证身份
@@ -690,16 +690,16 @@ doc_auth.instructions.text2: 不需要你社会保障卡实体。
 doc_auth.instructions.text3: 我们把你的电话号码与个人信息匹配，并向你的电话发送一个一次性代码。
 doc_auth.instructions.text4: 你的密码对你个人信息进行存储并加密。
 doc_auth.tips.document_capture_hint: 必须是 JPG 或 PNG
-doc_auth.tips.document_capture_id_text1: 把你身份证件放在一个平坦、暗色的表面上。
-doc_auth.tips.document_capture_id_text2: 在光线明亮的地方拍照。
-doc_auth.tips.document_capture_id_text3: 避免身份证件上有炫光或阴影。
+doc_auth.tips.document_capture_id_text1: 使用水平和深色表面
+doc_auth.tips.document_capture_id_text2: 在光线明亮的地方拍照
+doc_auth.tips.document_capture_id_text3: 避免炫光或阴影
 doc_auth.tips.document_capture_id_text4: 文件大小应当至少 2 兆。
-doc_auth.tips.document_capture_selfie_id_header_text: 如何拍摄你身份证件的清晰照片
+doc_auth.tips.document_capture_selfie_id_header_text: 如何拍摄清晰照片
 doc_auth.tips.document_capture_selfie_selfie_text: 如何准备拍照
-doc_auth.tips.document_capture_selfie_text1: 摘掉可能盖住你面部的任何服饰。我们建议你摘掉眼镜和帽子。
-doc_auth.tips.document_capture_selfie_text2: 在光线明亮的地方拍照。
-doc_auth.tips.document_capture_selfie_text3: 面部表情保持中性。
-doc_auth.tips.document_capture_selfie_text4: 确保你整个面部都可以在绿色圆圈中看到。
+doc_auth.tips.document_capture_selfie_text1: 摘掉任何遮盖您面孔的东西，比如眼镜或帽子
+doc_auth.tips.document_capture_selfie_text2: 在光线明亮的地方拍照
+doc_auth.tips.document_capture_selfie_text3: 保持中性表情
+doc_auth.tips.document_capture_selfie_text4: 确保您整个面孔都可以在绿色圆圈里看到
 doc_auth.tips.mobile_phone_required: 要求有手机
 doc_auth.tips.review_issues_id_header_text: 请仔细查看你州政府颁发身份证件的图像：
 doc_auth.tips.review_issues_id_text1: 你是否使用了暗色背景？
@@ -1029,8 +1029,8 @@ idv.errors.incorrect_password: 你输入的密码不对。
 idv.errors.pattern_mismatch.ssn: 输入 9 位数的社会保障号码
 idv.errors.pattern_mismatch.zipcode: 输入 5 或 9 位的邮编
 idv.errors.pattern_mismatch.zipcode_five: 输入 5 位的邮编
-idv.failure.attempts_html.one: 出于安全考虑，你在网上添加身份证件只能再试<strong>一次</strong>了。
-idv.failure.attempts_html.other: 出于安全考虑，你在网上添加身份证件只能再试<strong>%{count} </strong>次了。
+idv.failure.attempts_html.one: 您可以再试<strong>1次。</strong> 然后您必须等6个小时才能再试。
+idv.failure.attempts_html.other: 您可以再试<strong>%{count}次。</strong> 然后您必须等6个小时才能再试。
 idv.failure.button.try_online: 在网上再试一下
 idv.failure.button.warning: 再试一下。
 idv.failure.exceptions.in_person_outage_error_message.post_cta.body: 与此同时，你仍然可以在 %{app_name}开始亲身验证身份流程，然后去邮局。如果你迫切需要得到服务，请直接联系该政府机构。
@@ -1047,7 +1047,7 @@ idv.failure.exit.without_sp: 退出身份验证并到你的账户页面
 idv.failure.gpo.rate_limited.heading: 请稍后再试
 idv.failure.phone.heading: 我们无法将该电话号码与其他记录相匹配
 idv.failure.phone.jobfail: 出错了，我们现在无法处理你的请求。请再试一次。
-idv.failure.phone.rate_limited.body: 为了你的安全，我们限制你在网上尝试验证电话号码的次数。
+idv.failure.phone.rate_limited.body: 出于安全考虑，我们限制你在网上尝试验证电话号码的次数。
 idv.failure.phone.rate_limited.gpo.button: 通过普通邮件验证
 idv.failure.phone.rate_limited.heading: 我们无法通过电话验证你的身份。
 idv.failure.phone.rate_limited.option_try_again_later_html: 取消并在 <strong>%{time_left}</strong> 后再试
@@ -1817,9 +1817,15 @@ user_mailer.account_reset_request.header: 你的账户会在%{interval}后删除
 user_mailer.account_reset_request.intro_html: 作为一项安全措施，%{app_name} 要求一个两步流程来删除你的帐户：<br><br> 第一步：如果你丢失了身份证实方法但需删除账户，有一个%{waiting_period} 的等待期。如果你找到了身份证实方法，可以登录你的 %{app_name} 帐户来取消这个请求。<br><br> 第二步：%{waiting_period}等待期之后，你会收到一封电邮，请你确认要删除 %{app_name} 账户。只有经你确认后，你的账户才会被删除。
 user_mailer.account_reset_request.subject: 如何删除你的 %{app_name} 账户
 user_mailer.account_verified.change_password_link: 更改密码
-user_mailer.account_verified.contact_link: 联系我们
-user_mailer.account_verified.intro_html: 你于 %{date} 使用 %{app_name} 在 %{sp_name}成功验证了身份。如果你没有采取这一行动，请 %{contact_link_html} 并登录 %{change_password_link_html}。
-user_mailer.account_verified.subject: 你在 %{sp_name} 验证了身份。
+user_mailer.account_verified.contact_link: 请联系 %{app_name}支持
+user_mailer.account_verified.greeting: 你好，
+user_mailer.account_verified.intro: 你在 %{date} 成功地验证了身份。
+user_mailer.account_verified.next_sign_in.with_sp.with_cta: 接下来请点击按钮或复制下面的连接来访问 %{sp_name} 并登录。
+user_mailer.account_verified.next_sign_in.with_sp.without_cta: 你现在可以从 %{sp_name} 的网站登录。
+user_mailer.account_verified.next_sign_in.without_sp: 接下来请点击按钮或复制下面的连接来登录 %{app_name}。
+user_mailer.account_verified.sign_in: 登录
+user_mailer.account_verified.subject: 你在 %{app_name} 成功地验证了身份
+user_mailer.account_verified.warning_contact_us_html: 如果你没有试图验证过身份，请登录来%{change_password_link_html}。要报告这件事，%{contact_link_html}。
 user_mailer.add_email_associated_with_another_account.help_html: 如果你没有要求一封新电邮或怀疑有错， 请访问 %{app_name_html}的 %{help_link_html} 或者 %{contact_link_html}。
 user_mailer.add_email_associated_with_another_account.intro_html: 该电邮地址已与一个 %{app_name_html}账户相关联，所以我们不能把它加到另外一个账户上。你必须首先将其从与之相关的账户中删除或去掉。要做到这一点，点击以下链接并用该电邮地址登录。如果你没有试图将此电邮地址加到一个账户，可忽略这一信息。
 user_mailer.add_email_associated_with_another_account.link_text: 请到 %{app_name}

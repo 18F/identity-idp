@@ -17,7 +17,7 @@ module Idv
 
     def send_letter_available?
       @send_letter_available ||= FeatureManagement.gpo_verification_enabled? &&
-                                 !disabled_for_biometric_comparison? &&
+                                 !disabled_for_facial_match? &&
                                  !disabled_for_ipp? &&
                                  !rate_limited?
     end
@@ -37,7 +37,7 @@ module Idv
 
     private
 
-    def disabled_for_biometric_comparison?
+    def disabled_for_facial_match?
       resolved_authn_context_result.two_pieces_of_fair_evidence?
     end
 

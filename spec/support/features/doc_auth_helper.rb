@@ -97,12 +97,12 @@ module DocAuthHelper
   end
 
   def complete_up_to_how_to_verify_step_for_opt_in_ipp(remote: true,
-                                                       biometric_comparison_required: false)
+                                                       facial_match_required: false)
     complete_doc_auth_steps_before_welcome_step
     complete_welcome_step
     complete_agreement_step
     if remote
-      if biometric_comparison_required
+      if facial_match_required
         click_on t('forms.buttons.continue_remote_selfie')
       else
         click_on t('forms.buttons.continue_remote')

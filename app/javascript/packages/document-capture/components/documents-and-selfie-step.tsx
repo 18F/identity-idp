@@ -68,9 +68,17 @@ export default function DocumentsAndSelfieStep({
           t('doc_auth.tips.document_capture_id_text3'),
         ].concat(!isMobile ? [t('doc_auth.tips.document_capture_id_text4')] : [])}
       />
-      <DocumentsCaptureStep defaultSideProps={defaultSideProps} value={value} />
+      <DocumentsCaptureStep
+        defaultSideProps={defaultSideProps}
+        value={value}
+        isReviewStep={false}
+      />
       {isSelfieCaptureEnabled && (
-        <SelfieCaptureStep defaultSideProps={defaultSideProps} selfieValue={value.selfie} />
+        <SelfieCaptureStep
+          defaultSideProps={defaultSideProps}
+          selfieValue={value.selfie}
+          isReviewStep={false}
+        />
       )}
       {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
       <Cancel />
