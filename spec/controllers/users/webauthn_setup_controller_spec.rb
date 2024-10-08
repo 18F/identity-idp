@@ -412,7 +412,10 @@ RSpec.describe Users::WebauthnSetupController do
             at: true,
             ed: false,
           },
-          mfa_attempts: 1,
+          mfa_attempts: {
+            attempts: 1,
+            auth_method: 'webauthn',
+          },
         )
         expect(@analytics).to have_logged_event(
           :webauthn_setup_submitted,

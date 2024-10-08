@@ -105,7 +105,7 @@ module TwoFactorAuthentication
         multi_factor_auth_method: 'piv_cac',
         piv_cac_configuration_id: piv_cac_verification_form&.piv_cac_configuration&.id,
         new_device: new_device?,
-        mfa_attempts: user_session[:mfa_attempts] || nil,
+        mfa_attempts: mfa_attempts_hash('piv_cac'),
       }
     end
   end

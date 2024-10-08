@@ -30,7 +30,7 @@ module TwoFactorAuthentication
           **analytics_properties,
           multi_factor_auth_method_created_at:
             webauthn_configuration_or_latest.created_at.strftime('%s%L'),
-          mfa_attempts: user_session[:mfa_attempts] || nil,
+          mfa_attempts: mfa_attempts_hash('webauthn'),
         },
       )
 

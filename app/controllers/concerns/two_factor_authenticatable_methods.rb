@@ -18,7 +18,7 @@ module TwoFactorAuthenticatableMethods
       enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
       new_device: new_device?,
       **extra_analytics.to_h,
-      mfa_attempts: user_session[:mfa_attempts] || nil,
+      mfa_attempts: mfa_attempts_hash(auth_method),
     )
 
     if result.success?
@@ -121,6 +121,14 @@ module TwoFactorAuthenticatableMethods
 
   def reset_mfa_selection_attempt_count
     user_session.delete(:mfa_attempts)
+  end
+
+  def mfa_attempts_hash(auth_method)
+    return nil if user_session[:mfa_attempts].nil?
+    {
+      attempts: user_session[:mfa_attempts],
+      auth_method: auth_method,
+    }
   end
 
   # Method will be renamed in the next refactor.
