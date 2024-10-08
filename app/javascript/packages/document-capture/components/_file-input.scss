@@ -17,18 +17,6 @@
   border-width: 3px;
 }
 
-usa-file-input:not(
-    .usa-file-input--has-value,
-    .usa-file-input--value-pending,
-    .usa-file-input--is-id-capture
-  )
-  .usa-form-group--success
-  .usa-file-input
-  .usa-file-input__target {
-  height: 21rem;
-  width: 12rem;
-}
-
 .usa-file-input:not(.usa-file-input--has-value, .usa-file-input--value-pending) {
   .usa-file-input__target {
     border-color: color('primary');
@@ -88,12 +76,8 @@ usa-file-input:not(
   }
 }
 .usa-file-input.usa-file-input--single-value:not(.usa-file-input--is-id-capture) {
-  .usa-file-input__preview {
-    width: 12rem;
-  }
-  .usa-file-input__target {
-    width: 12rem;
-  }
+  .usa-file-input__preview,
+  .usa-file-input__target,
   .usa-file-input__preview-image {
     width: 12rem;
   }
