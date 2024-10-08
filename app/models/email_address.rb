@@ -42,12 +42,7 @@ class EmailAddress < ApplicationRecord
   end
 
   def fed_email?
-    if IdentityConfig.store.use_fed_domain_class
-      return false unless domain
-      FederalEmailDomain.fed_domain?(domain)
-    else
-      email.end_with?('.gov')
-    end
+    FederalEmailDomain.fed_domain?(domain)
   end
 
   def mil_email?

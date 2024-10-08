@@ -512,13 +512,11 @@ RSpec.feature 'Sign Up' do
   end
 
   describe 'User Directed to Piv Cac recommended' do
-    context 'set config use_fed_domain_class to false' do
-      let(:email) { 'test@test.gov' }
-      before do
-        allow(IdentityConfig.store).to receive(:use_fed_domain_class).and_return(false)
-      end
+    let!(:federal_email_domain) { create(:federal_email_domain, name: 'gsa.gov') }
+    let(:email) { 'test@gsa.gov' }
 
-      it 'should land user on piv cac suggestion page' do
+    context 'valid fed email' do
+      it 'should land user on piv cac suggestion page when fed government' do
         confirm_email(email)
         submit_form_with_valid_password
         expect(current_path).to eq login_piv_cac_recommended_path
@@ -547,81 +545,43 @@ RSpec.feature 'Sign Up' do
       end
     end
 
-    context 'set config use_fed_domain_class to true' do
-      let!(:federal_email_domain) { create(:federal_email_domain, name: 'gsa.gov') }
-      let(:email) { 'test@gsa.gov' }
-
-      before do
-        allow(IdentityConfig.store).to receive(:use_fed_domain_class).and_return(true)
+    context 'any mil email' do
+      let(:email) { 'test@example.mil' }
+      it 'should land user on piv cac suggestion page when fed government' do
+        confirm_email(email)
+        submit_form_with_valid_password
+        expect(current_path).to eq login_piv_cac_recommended_path
       end
-      context 'valid fed email' do
-        it 'should land user on piv cac suggestion page when fed government' do
+
+      context 'user can skip piv cac prompt' do
+        it 'should skip piv cac prompt and land on mfa screen' do
           confirm_email(email)
           submit_form_with_valid_password
           expect(current_path).to eq login_piv_cac_recommended_path
-        end
+          click_button t('two_factor_authentication.piv_cac_upsell.choose_other_method')
 
-        context 'user can skip piv cac prompt' do
-          it 'should skip piv cac prompt and land on mfa screen' do
-            confirm_email(email)
-            submit_form_with_valid_password
-            expect(current_path).to eq login_piv_cac_recommended_path
-            click_button t('two_factor_authentication.piv_cac_upsell.choose_other_method')
-
-            expect(current_path).to eq authentication_methods_setup_path
-          end
-        end
-
-        context 'user who selects to add piv is directed to piv screen' do
-          it 'should be directed straight to piv add screen' do
-            confirm_email(email)
-            submit_form_with_valid_password
-            expect(current_path).to eq login_piv_cac_recommended_path
-            click_button t('two_factor_authentication.piv_cac_upsell.add_piv')
-
-            expect(current_path).to eq setup_piv_cac_path
-          end
-        end
-      end
-
-      context 'any mil email' do
-        let(:email) { 'test@example.mil' }
-        it 'should land user on piv cac suggestion page when fed government' do
-          confirm_email(email)
-          submit_form_with_valid_password
-          expect(current_path).to eq login_piv_cac_recommended_path
-        end
-
-        context 'user can skip piv cac prompt' do
-          it 'should skip piv cac prompt and land on mfa screen' do
-            confirm_email(email)
-            submit_form_with_valid_password
-            expect(current_path).to eq login_piv_cac_recommended_path
-            click_button t('two_factor_authentication.piv_cac_upsell.choose_other_method')
-
-            expect(current_path).to eq authentication_methods_setup_path
-          end
-        end
-
-        context 'user who selects to add piv is directed to piv screen' do
-          it 'should be directed straight to piv add screen' do
-            confirm_email(email)
-            submit_form_with_valid_password
-            expect(current_path).to eq login_piv_cac_recommended_path
-            click_button t('two_factor_authentication.piv_cac_upsell.add_piv')
-
-            expect(current_path).to eq setup_piv_cac_path
-          end
-        end
-      end
-
-      context 'invalid fed email' do
-        let(:email) { 'test@example.gov' }
-        it 'should land user on piv cac suggestion page when fed government' do
-          confirm_email(email)
-          submit_form_with_valid_password
           expect(current_path).to eq authentication_methods_setup_path
         end
+      end
+
+      context 'user who selects to add piv is directed to piv screen' do
+        it 'should be directed straight to piv add screen' do
+          confirm_email(email)
+          submit_form_with_valid_password
+          expect(current_path).to eq login_piv_cac_recommended_path
+          click_button t('two_factor_authentication.piv_cac_upsell.add_piv')
+
+          expect(current_path).to eq setup_piv_cac_path
+        end
+      end
+    end
+
+    context 'invalid fed email' do
+      let(:email) { 'test@example.gov' }
+      it 'should land user on piv cac suggestion page when fed government' do
+        confirm_email(email)
+        submit_form_with_valid_password
+        expect(current_path).to eq authentication_methods_setup_path
       end
     end
   end
