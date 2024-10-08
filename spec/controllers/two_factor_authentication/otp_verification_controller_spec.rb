@@ -62,7 +62,10 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
         country_code: parsed_phone.country,
         phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
         enabled_mfa_methods_count: 1,
-        mfa_attempts: 1,
+        mfa_attempts: {
+          attempts: 1,
+          auth_method: 'otp',
+        },
         in_account_creation_flow: false,
       )
     end
@@ -536,7 +539,10 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
               phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
               enabled_mfa_methods_count: 1,
               in_account_creation_flow: true,
-              mfa_attempts: 1,
+              mfa_attempts: {
+                attempts: 1,
+                auth_method: 'otp',
+              },
             )
           end
 
@@ -606,7 +612,10 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
               phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
               enabled_mfa_methods_count: 1,
               in_account_creation_flow: false,
-              mfa_attempts: 1,
+              mfa_attempts: {
+                attempts: 1,
+                auth_method: 'otp',
+              },
             )
           end
 
@@ -648,7 +657,10 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
                 phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
                 enabled_mfa_methods_count: 1,
                 in_account_creation_flow: false,
-                mfa_attempts: 2,
+                mfa_attempts: {
+                  attempts: 2,
+                  auth_method: 'otp',
+                },
               )
             end
           end
@@ -699,7 +711,10 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
               phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
               enabled_mfa_methods_count: 0,
               in_account_creation_flow: false,
-              mfa_attempts: 1,
+              mfa_attempts: {
+                attempts: 1,
+                auth_method: 'otp',
+              },
             )
 
             expect(controller).to have_received(:create_user_event).with(:phone_confirmed)

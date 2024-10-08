@@ -120,7 +120,10 @@ RSpec.describe Users::PivCacAuthenticationSetupController do
                 multi_factor_auth_method: 'piv_cac',
                 in_account_creation_flow: false,
                 success: true,
-                mfa_attempts: 1,
+                mfa_attempts: {
+                  attempts: 1,
+                  auth_method: 'piv_cac',
+                },
               )
             end
 
@@ -136,7 +139,10 @@ RSpec.describe Users::PivCacAuthenticationSetupController do
                 multi_factor_auth_method: 'piv_cac',
                 in_account_creation_flow: false,
                 success: true,
-                mfa_attempts: 2,
+                mfa_attempts: {
+                  attempts: 2,
+                  auth_method: 'piv_cac',
+                },
               )
             end
 
