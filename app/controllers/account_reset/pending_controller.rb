@@ -19,7 +19,10 @@ module AccountReset
 
     def cancel
       analytics.pending_account_reset_cancelled
-      AccountReset::CancelRequestForUser.new(current_user).call
+      AccountReset::PendingRequestForUser.new(current_user).cancel_account_reset_request!(
+        account_reset_request_id: pending_account_reset_request.id,
+        cancelled_at: Time.zone.now,
+      )
     end
 
     private
