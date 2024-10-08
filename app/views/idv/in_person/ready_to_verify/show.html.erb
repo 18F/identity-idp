@@ -237,16 +237,16 @@
   <% end %>
 </p>
 
-<%= render PageFooterComponent.new do %>
+<%= render PageFooterComponent.new(class: 'site') do %>
   <%= link_to t('in_person_proofing.body.barcode.cancel_link_text'), idv_cancel_path(step: 'barcode') %>
   <% if @presenter.service_provider_homepage_url.present? %>
   <br />
     <%= link_to(
-              t(
-                'in_person_proofing.body.barcode.return_to_partner_link',
-                sp_name: @presenter.sp_name,
-              ),
-              @presenter.service_provider_homepage_url,
-            ) %>
+          t(
+            'in_person_proofing.body.barcode.return_to_partner_link',
+            sp_name: @presenter.sp_name,
+          ),
+          @presenter.service_provider_homepage_url,
+        ) %>
          <% end %>
 <% end %>
