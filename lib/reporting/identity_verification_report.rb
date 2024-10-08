@@ -235,9 +235,14 @@ module Reporting
     end
 
     def did_not_pass_fraud_review_users
-      all_rejections =
-        data[Events::FRAUD_REVIEW_REJECT_AUTOMATIC] + data[Events::FRAUD_REVIEW_REJECT_MANUAL]
-      data[Events::IDV_FINAL_RESOLUTION] & all_rejections
+      result = data[Events::FRAUD_REVIEW_REJECT_AUTOMATIC] + data[Events::FRAUD_REVIEW_REJECT_MANUAL]
+
+      issuers.each do |issuer|
+        users_with_events_for_issuer = data[sp_key(issuer)]
+        result &= users_with_events_for_issuer
+      end
+
+      result
     end
 
     def successfully_verified_users
@@ -335,7 +340,7 @@ module Reporting
           when Events::IDV_PHONE_FINDER_RESULTS
             users[Results::IDV_REJECT_PHONE_FINDER] << user_id if success == '0'
           when Events::FRAUD_REVIEW_PASSED, Events::FRAUD_REVIEW_REJECT_AUTOMATIC, Events::FRAUD_REVIEW_REJECT_MANUAL
-            users[sp_event_key(row:,event:)] << user_id if row['service_provider'].present?
+            users[sp_event_key(row:, event:)] << user_id if row['service_provider'].present?
           end
         end
 
@@ -412,7 +417,7 @@ module Reporting
     end
 
     def sp_event_key(event:, row:)
-      "#{sp_key(row)}:#{event}}"
+      "#{sp_key(row)}:#{event}"
     end
   end
 end

@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'reporting/identity_verification_report'
 
 RSpec.describe Reporting::IdentityVerificationReport do
-  let(:issuer) { 'my:example:issuer' }
+  let(:issuer) { nil }
   let(:time_range) { Date.new(2022, 1, 1).all_day }
 
   let(:cloudwatch_logs) do
@@ -72,8 +72,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
       { 'user_id' => 'user7', 'name' => 'IdV: final resolution', 'fraud_review_pending' => '1' },
       { 'user_id' => 'user7', 'name' => 'Fraud: Profile review rejected', 'success' => '1' },
 
-      # GPO confirmation followed by fraud rejection
-      { 'user_id' => 'user8', 'name' => 'IdV: GPO verification submitted' },
+      # Just fraud rejection
       { 'user_id' => 'user8', 'name' => 'Fraud: Profile review rejected', 'success' => '1' },
     ]
   end
@@ -91,7 +90,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
       expected_csv = [
         ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
         ['Report Generated', Date.today.to_s], # rubocop:disable Rails/Date
-        ['Issuer', issuer],
+        issuer && ['Issuer', issuer],
         [],
         ['Metric', '# of Users'],
         [],
@@ -109,7 +108,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
         ['Workflow completed - GPO + In-Person Pending', 0],
         ['Workflow completed - GPO + In-Person Pending - Fraud Review', 0],
         [],
-        ['Fraud review rejected', 1],
+        ['Fraud review rejected', 2],
         ['Successfully Verified', 4],
         ['Successfully Verified - With phone number', 1],
         ['Successfully Verified - With mailed code', 1],
@@ -119,7 +118,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
         ['Intent Proofing Rate (Welcome Submitted to Successfully Verified)', 0.6666666666666666],
         ['Actual Proofing Rate (Image Submitted to Successfully Verified)', 0.6666666666666666],
         ['Industry Proofing Rate (Verified minus IDV Rejected)', 0.8],
-      ]
+      ].compact
       aggregate_failures do
         report.as_csv.zip(expected_csv).each do |actual, expected|
           expect(actual).to eq(expected)
@@ -135,7 +134,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
       expected_csv = [
         ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
         ['Report Generated', Date.today.to_s], # rubocop:disable Rails/Date
-        ['Issuer', issuer],
+        issuer && ['Issuer', issuer],
         [],
         ['Metric', '# of Users'],
         [],
@@ -153,7 +152,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
         ['Workflow completed - GPO + In-Person Pending', '0'],
         ['Workflow completed - GPO + In-Person Pending - Fraud Review', '0'],
         [],
-        ['Fraud review rejected', '1'],
+        ['Fraud review rejected', '2'],
         ['Successfully Verified', '4'],
         ['Successfully Verified - With phone number', '1'],
         ['Successfully Verified - With mailed code', '1'],
@@ -163,7 +162,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
         ['Intent Proofing Rate (Welcome Submitted to Successfully Verified)', '0.6666666666666666'],
         ['Actual Proofing Rate (Image Submitted to Successfully Verified)', '0.6666666666666666'],
         ['Industry Proofing Rate (Verified minus IDV Rejected)', '0.8'],
-      ]
+      ].compact
 
       aggregate_failures do
         csv.map(&:to_a).zip(expected_csv).each do |actual, expected|
@@ -195,11 +194,30 @@ RSpec.describe Reporting::IdentityVerificationReport do
         'IdV Reject: Phone Finder' => 1,
         'IdV Reject: Verify' => 1,
         'Fraud: Profile review passed' => 2,
-        'Fraud: Profile review rejected' => 1,
-
-        # per-sp events
-        'my:example:issuer-Fraud: Profile review passed' => 1,
+        'Fraud: Profile review rejected' => 2,
       )
+    end
+
+    context 'when an issuer is specified' do
+      let(:issuer) { 'my:example:issuer' }
+
+      context 'and events have service provider data' do
+        let(:cloudwatch_logs) do
+          super().map do |event|
+            event.merge(
+              'service_provider' => issuer,
+            )
+          end
+        end
+
+        it 'includes per-sp data' do
+          expect(report.data.transform_values(&:count)).to include(
+            'sp:my:example:issuer' => 8,
+            'sp:my:example:issuer:Fraud: Profile review passed' => 2,
+            'sp:my:example:issuer:Fraud: Profile review rejected' => 2,
+          )
+        end
+      end
     end
   end
 
@@ -216,11 +234,17 @@ RSpec.describe Reporting::IdentityVerificationReport do
     let(:cloudwatch_logs) do
       super().map do |event|
         is_fraud_event = event['name'].include?('Fraud')
-        event.merge('service_provider' => is_fraud_event ? service_provider_for_fraud_events : service_provider_for_non_fraud_events)
+        event.merge(
+          'service_provider' => is_fraud_event ?
+            service_provider_for_fraud_events :
+            service_provider_for_non_fraud_events,
+        )
       end
     end
 
     context 'when an issuer is specified' do
+      let(:issuer) { 'my:example:issuer' }
+
       context 'and fraud events are not tagged with sp information' do
         context 'but other events are tagged for the sp' do
           let(:service_provider_for_non_fraud_events) { issuer }
@@ -278,40 +302,103 @@ RSpec.describe Reporting::IdentityVerificationReport do
       end
     end
 
-    context 'when an issuer not specified' do
+    context 'when an issuer is not specified' do
       let(:issuer) { nil }
+
       it 'includes users who did not complete workflow and passed fraud review' do
         expect(report.fraud_review_passed).to eql(2)
-      end
-    end
-
-    context 'when issuer does not match the filter' do
-      let(:issuer) { 'my:other:issuer' }
-      it 'excludes fraud review events not tagged for the issuer' do
-        expect(report.fraud_review_passed).to eql(1)
       end
     end
   end
 
   describe '#idv_fraud_rejected' do
+    let(:service_provider_for_non_fraud_events) { nil }
+    let(:service_provider_for_fraud_events) { nil }
+
+    let(:cloudwatch_logs) do
+      super().map do |event|
+        is_fraud_event = event['name'].include?('Fraud')
+        event.merge(
+          'service_provider' => is_fraud_event ?
+            service_provider_for_fraud_events :
+            service_provider_for_non_fraud_events,
+        )
+      end
+    end
+
     context 'when an issuer is specified' do
-      it 'is the number of users who completed workflow and passed fraud review, including those events tagged with the issuer' do
-        expect(report.idv_fraud_rejected).to eql(2)
+      let(:issuer) { 'my:example:issuer' }
+
+      context 'and fraud events are not tagged with sp information' do
+        context 'but other events are tagged for the sp' do
+          let(:service_provider_for_non_fraud_events) { issuer }
+          it 'is the count of fraud rejected users where any other event matches on issuer' do
+            expect(report.idv_fraud_rejected).to eql(1)
+          end
+        end
+
+        context 'and other events are not tagged with an sp' do
+          it 'does not include any users' do
+            expect(report.idv_fraud_rejected).to eql(0)
+          end
+        end
+
+        context 'and other events are tagged for a different sp' do
+          let(:service_provider_for_non_fraud_events) { 'some:other:sp' }
+
+          it 'does not include any users' do
+            expect(report.idv_fraud_rejected).to eql(0)
+          end
+        end
+      end
+
+      context 'and fraud events are tagged with sp information' do
+        let(:service_provider_for_fraud_events) { issuer }
+
+        context 'but other events are not tagged at all' do
+          it 'counts all fraud events tagged for the sp' do
+            expect(report.idv_fraud_rejected).to eql(2)
+          end
+        end
+
+        context 'but other events are not tagged with the same SP' do
+          let(:service_provider_for_non_fraud_events) { 'some:other:sp' }
+          it 'still counts all fraud events tagged for the sp' do
+            expect(report.idv_fraud_rejected).to eql(2)
+          end
+        end
+
+        context 'but the fraud events are tagged for the wrong sp' do
+          let(:service_provider_for_fraud_events) { 'some:other:sp' }
+
+          context 'and other events are not tagged' do
+            it 'does not find any users' do
+              expect(report.idv_fraud_rejected).to eql(0)
+            end
+          end
+
+          context 'and other events are tagged for the right sp' do
+            let(:service_provider_for_non_fraud_events) { issuer }
+            it 'still finds those users' do
+              expect(report.idv_fraud_rejected).to eql(1)
+            end
+          end
+        end
       end
     end
 
-    context 'when an issuer not specified' do
+    context 'when an issuer is not specified' do
       let(:issuer) { nil }
-      it 'includes users who did not complete workflow and passed fraud review' do
-        expect(report.idv_fraud_rejected).to eql(2)
+
+      it 'includes users who did not complete workflow and failed fraud review' do
+        expect(report.fraud_review_passed).to eql(2)
       end
     end
+  end
 
-    context 'when issuer does not match the filter' do
-      let(:issuer) { 'my:other:issuer' }
-      it 'excludes fraud review events not tagged for the issuer' do
-        expect(report.idv_fraud_rejected).to eql(1)
-      end
+  describe '#successfully_verified_users' do
+    it 'is the count of users who verified or passed fraud review' do
+      expect(report.successfully_verified_users).to eql(4)
     end
   end
 
@@ -352,6 +439,8 @@ RSpec.describe Reporting::IdentityVerificationReport do
 
   describe '#query' do
     context 'with an issuer' do
+      let(:issuer) { 'my:example:issuer' }
+
       it 'includes an issuer filter' do
         result = subject.query
 
