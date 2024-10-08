@@ -32,5 +32,13 @@ RSpec.describe AccountReset::CancelRequestForUser do
 
       subject.call
     end
+
+    context 'with no existing pending request' do
+      it 'fails gracefully' do
+        other_user = create(:user)
+        request = AccountReset::CancelRequestForUser.new(other_user)
+        request.call
+      end
+    end
   end
 end
