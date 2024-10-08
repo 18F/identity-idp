@@ -39,6 +39,6 @@ fr:
       ten: dix
     format_type:
       character: caractères
-      digit: digit
+      digit: chiffres
     personal_key_regeneration_notice: Une nouvelle clé personnelle a été émise pour votre compte %{app_name}. Si cela ne vient pas de vous, réinitialisez votre mot de passe.
     personal_key_sign_in_notice: Votre clé personnelle vient d’être utilisée pour vous connecter à votre compte %{app_name}. Si cela ne vient pas de vous, réinitialisez votre mot de passe.

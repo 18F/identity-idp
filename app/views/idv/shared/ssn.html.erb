@@ -39,19 +39,12 @@ locals:
 </p>
 
 <% if FeatureManagement.proofing_device_profiling_collecting_enabled? %>
-  <% if threatmetrix_session_id.present? %>
-    <% threatmetrix_javascript_urls.each do |threatmetrix_javascript_url| %>
-      <%= javascript_include_tag threatmetrix_javascript_url, nonce: true %>
-    <% end %>
-    <noscript>
-      <%= content_tag(
-            :iframe,
-            '',
-            src: threatmetrix_iframe_url,
-            style: 'width: 100px; height: 100px; border: 0; position: absolute; top: -5000px;',
-          ) %>
-    </noscript>
-  <% end %>
+  <%= render partial: 'shared/threat_metrix_profiling',
+             locals: {
+               threatmetrix_session_id:,
+               threatmetrix_javascript_urls:,
+               threatmetrix_iframe_url:,
+             } %>
 <% end %>
 
 <% if IdentityConfig.store.proofer_mock_fallback %>

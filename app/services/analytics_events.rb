@@ -1163,7 +1163,7 @@ module AnalyticsEvents
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
   # @param ["hybrid","standard"] flow_path Document capture user flow
-  # @param [Boolean] liveness_checking_required Whether biometric selfie check is required
+  # @param [Boolean] liveness_checking_required Whether facial match check is required
   def idv_doc_auth_capture_complete_visited(
     step:,
     analytics_id:,
@@ -1186,8 +1186,8 @@ module AnalyticsEvents
   # @param [Hash] errors Errors resulting from form validation
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
-  # @param [Boolean] liveness_checking_required Whether biometric selfie check is required
-  # @param [Boolean] selfie_check_required Whether biometric selfie check is required
+  # @param [Boolean] liveness_checking_required Whether facial match check is required
+  # @param [Boolean] selfie_check_required Whether facial match check is required
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Boolean] redo_document_capture Whether user is redoing document capture after barcode
   # warning
@@ -1234,8 +1234,8 @@ module AnalyticsEvents
   # @param [String] analytics_id Current IdV flow identifier
   # @param [Boolean] redo_document_capture Whether user is redoing document capture after barcode
   # warning
-  # @param [Boolean] liveness_checking_required Whether biometric selfie check is required
-  # @param [Boolean] selfie_check_required Whether biometric selfie check is required
+  # @param [Boolean] liveness_checking_required Whether facial match check is required
+  # @param [Boolean] selfie_check_required Whether facial match check is required
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # SDK upgrades
@@ -1354,7 +1354,7 @@ module AnalyticsEvents
   # @param [String] analytics_id Current IdV flow identifier
   # @param [Boolean] redo_document_capture Whether user is redoing document capture after barcode
   # warning
-  # @param [Boolean] selfie_check_required Whether biometric selfie check is required
+  # @param [Boolean] selfie_check_required Whether facial match check is required
   # @param ["document_capture","send_link"] destination Where user is sent after submission
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
@@ -1401,7 +1401,7 @@ module AnalyticsEvents
   # @param [String] analytics_id Current IdV flow identifier
   # @param [Boolean] redo_document_capture Whether user is redoing document capture after barcode
   # warning
-  # @param [Boolean] selfie_check_required Whether biometric selfie check is required
+  # @param [Boolean] selfie_check_required Whether facial match check is required
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # SDK upgrades
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
