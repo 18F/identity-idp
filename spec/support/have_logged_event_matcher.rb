@@ -6,10 +6,12 @@ class HaveLoggedEventMatcher
 
   def initialize(
     expected_event_name: nil,
-    expected_attributes: nil
+    expected_attributes: nil,
+    block: nil
   )
     @expected_event_name = expected_event_name
     @expected_attributes = expected_attributes
+    @block = block
   end
 
   def failure_message
@@ -44,6 +46,8 @@ class HaveLoggedEventMatcher
           values_match?(expected_attributes, actual_attributes)
         end
       end
+
+    @block.call(matched_events) if @block.respond_to?(:call)
 
     if has_expected_count?
       expected_count_matches?(matched_events.length)
@@ -168,7 +172,7 @@ class HaveLoggedEventMatcher
 end
 
 module RSpec::Matchers
-  def have_logged_event(expected_event_name = nil, expected_attributes = nil)
-    HaveLoggedEventMatcher.new(expected_event_name:, expected_attributes:)
+  def have_logged_event(expected_event_name = nil, expected_attributes = nil, &block)
+    HaveLoggedEventMatcher.new(expected_event_name:, expected_attributes:, block:)
   end
 end

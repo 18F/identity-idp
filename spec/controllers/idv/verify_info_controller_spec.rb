@@ -349,6 +349,11 @@ RSpec.describe Idv::VerifyInfoController do
               },
             ),
           )
+          expect(@analytics).to have_logged_event { |events|
+            expect(events.count).to be(1)
+            event = events.first
+            expect(event.dig(:proofing_results, :context, :stages, :state_id, :state)).to eq('MT')
+          }
         end
       end
 
