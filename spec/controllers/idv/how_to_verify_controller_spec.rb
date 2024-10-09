@@ -219,7 +219,7 @@ RSpec.describe Idv::HowToVerifyController do
       it 'sets skip doc auth on idv session to false and redirects to hybrid handoff' do
         put :update, params: params
 
-        expect(subject.idv_session.skip_doc_auth).to be nil
+        expect(subject.idv_session.skip_doc_auth).to be false
         expect(subject.idv_session.skip_doc_auth_from_how_to_verify).to be false
         expect(response).to redirect_to(idv_hybrid_handoff_url)
       end
@@ -245,7 +245,7 @@ RSpec.describe Idv::HowToVerifyController do
       it 'sets skip doc auth on idv session to true and redirects to document capture' do
         put :update, params: params
 
-        expect(subject.idv_session.skip_doc_auth).to be nil
+        expect(subject.idv_session.skip_doc_auth).to be true
         expect(subject.idv_session.skip_doc_auth_from_how_to_verify).to be true
         expect(response).to redirect_to(idv_document_capture_url)
       end
