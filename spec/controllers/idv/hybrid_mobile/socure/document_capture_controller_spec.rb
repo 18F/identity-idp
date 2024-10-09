@@ -7,6 +7,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
   let(:fake_socure_endpoint) { 'https://fake-socure.com' }
   let(:user) { create(:user) }
   let(:stored_result) { nil }
+  let(:socure_enabled) { true }
 
   let(:document_capture_session) do
     DocumentCaptureSession.create(
@@ -17,6 +18,8 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
   let(:document_capture_session_uuid) { document_capture_session&.uuid }
 
   before do
+    allow(IdentityConfig.store).to receive(:socure_enabled).
+      and_return(socure_enabled)
     allow(IdentityConfig.store).to receive(:socure_document_request_endpoint).
       and_return(fake_socure_endpoint)
     allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(idv_vendor)
@@ -162,6 +165,15 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
         expect(controller.send(:instance_variable_get, :@url)).not_to be
       end
     end
+
+    context 'when socure is disabled' do
+      let(:socure_enabled) { false }
+      it 'the webhook route does not exist' do
+        get(:show)
+
+        expect(response).to be_not_found
+      end
+    end
   end
 
   describe '#update' do
@@ -169,6 +181,15 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
       post(:update)
 
       expect(response).to have_http_status(:ok)
+    end
+
+    context 'when socure is disabled' do
+      let(:socure_enabled) { false }
+      it 'the webhook route does not exist' do
+        post(:update)
+
+        expect(response).to be_not_found
+      end
     end
   end
 end
