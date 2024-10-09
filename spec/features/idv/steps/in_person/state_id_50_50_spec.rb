@@ -10,6 +10,11 @@ RSpec.describe 'state id 50/50 state', :js, allow_browser_log: true do
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
     allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(true)
+    allow(IdentityConfig.store).to receive(:allowed_biometric_ial_providers).
+      and_return([ipp_service_provider.issuer])
+    allow(IdentityConfig.store).to receive(
+      :allowed_valid_authn_contexts_semantic_providers,
+    ).and_return([ipp_service_provider.issuer])
   end
 
   context 'when navigating to state id page from PO search location page' do

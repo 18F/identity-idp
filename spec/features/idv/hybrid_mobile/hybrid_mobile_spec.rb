@@ -116,7 +116,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
         user = nil
 
         perform_in_browser(:desktop) do
-          visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
+          visit_idp_from_oidc_sp_with_ial2(acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR)
 
           user = sign_up_and_2fa_ial1_user
 
