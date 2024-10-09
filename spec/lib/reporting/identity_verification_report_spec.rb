@@ -88,6 +88,9 @@ RSpec.describe Reporting::IdentityVerificationReport do
         'fraud_review_pending' => '1',
       },
       { 'user_id' => 'user10', 'name' => 'Fraud: Profile review passed', 'success' => '1' },
+
+      # User who bounced on welcome screen
+      { 'user_id' => 'user11', 'name' => 'IdV: doc auth welcome visited' },
     ]
   end
 
@@ -108,7 +111,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
         [],
         ['Metric', '# of Users'],
         [],
-        ['IDV started', 6],
+        ['IDV started', 7],
         ['Welcome Submitted', 6],
         ['Image Submitted', 6],
         [],
@@ -128,7 +131,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
         ['Successfully Verified - With mailed code', 1],
         ['Successfully Verified - In Person', 1],
         ['Successfully Verified - Passed fraud review', 3],
-        ['Blanket Proofing Rate (IDV Started to Successfully Verified)', (5.0 / 6.0)],
+        ['Blanket Proofing Rate (IDV Started to Successfully Verified)', (5.0 / 7.0)],
         ['Intent Proofing Rate (Welcome Submitted to Successfully Verified)', (5.0 / 6.0)],
         ['Actual Proofing Rate (Image Submitted to Successfully Verified)', (5.0 / 6.0)],
         ['Industry Proofing Rate (Verified minus IDV Rejected)', (5.0 / 6.0)],
@@ -152,7 +155,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
         [],
         ['Metric', '# of Users'],
         [],
-        ['IDV started', '6'],
+        ['IDV started', '7'],
         ['Welcome Submitted', '6'],
         ['Image Submitted', '6'],
         [],
@@ -172,7 +175,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
         ['Successfully Verified - With mailed code', '1'],
         ['Successfully Verified - In Person', '1'],
         ['Successfully Verified - Passed fraud review', '3'],
-        ['Blanket Proofing Rate (IDV Started to Successfully Verified)', (5.0 / 6.0).to_s],
+        ['Blanket Proofing Rate (IDV Started to Successfully Verified)', (5.0 / 7.0).to_s],
         ['Intent Proofing Rate (Welcome Submitted to Successfully Verified)', (5.0 / 6.0).to_s],
         ['Actual Proofing Rate (Image Submitted to Successfully Verified)', (5.0 / 6.0).to_s],
         ['Industry Proofing Rate (Verified minus IDV Rejected)', (5.0 / 6.0).to_s],
@@ -194,7 +197,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
         'IdV: doc auth image upload vendor submitted' => 6,
         'IdV: doc auth verify proofing results' => 1,
         'IdV: doc auth welcome submitted' => 6,
-        'IdV: doc auth welcome visited' => 6,
+        'IdV: doc auth welcome visited' => 7,
         'IdV: final resolution' => 5,
         'IdV: GPO verification submitted' => 1,
         'IdV: phone confirmation vendor' => 1,
@@ -226,7 +229,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
 
         it 'includes per-sp data' do
           expect(report.data.transform_values(&:count)).to include(
-            'sp:my:example:issuer' => 10,
+            'sp:my:example:issuer' => 11,
             'sp:my:example:issuer:Fraud: Profile review passed' => 3,
             'sp:my:example:issuer:Fraud: Profile review rejected' => 3,
           )
