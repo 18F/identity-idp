@@ -11,6 +11,7 @@ variables:
   IDP_CI_SHA: 'sha256:5c4953f8efba18b7a6d6a9a961cb77ba7143059cbb2176499432b4275fbe67db'
   PKI_IMAGE_TAG: 'main'
   DASHBOARD_IMAGE_TAG: 'main'
+  APPLICATION_MANIFEST: dockerfiles/application.yaml
 
 default:
   image: '${ECR_REGISTRY}/idp/ci@${IDP_CI_SHA}'
@@ -433,129 +434,18 @@ trigger_devops:
     - export SANITIZED_BRANCH_NAME=$(echo "$CI_COMMIT_REF_NAME" | tr '/' '-' | tr -c '[:alnum:]-_' '-' | sed 's/-*$//')
     - echo "${CI_COMMIT_REF_NAME}"
     - echo "${SANITIZED_BRANCH_NAME}"
-    - |-
-      export IDP_CONFIG=$(cat <<EOF
-      {
-        "kubernetesReviewApp": "true",
-        "postgres": {
-          "sslmode": "prefer",
-          "name": "idp",
-          "host": "$CI_ENVIRONMENT_SLUG-login-chart-pg.review-apps"
-        },
-        "postgresWorker": {
-          "sslmode": "prefer",
-          "name": "idp",
-          "host": "$CI_ENVIRONMENT_SLUG-login-chart-pg.review-apps"
-        },
-        "railsOffline": "true",
-        "redis": {
-          "throttleUrl": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379/1",
-          "url": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379"
-        },
-        "assetHost": "https://$CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov",
-        "domainName": "$CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov",
-        "loginDatacenter": "true",
-        "loginDomain": "identitysandbox.gov",
-        "loginEnv": "$CI_ENVIRONMENT_SLUG",
-        "loginHostRole": "idp",
-        "loginSkipRemoteConfig": "true",
-        "pivcacServiceUrl": "https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapps.identitysandbox.gov/",
-        "pivcacVerifyTokenUrl": "https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapps.identitysandbox.gov/",
-        "dashboardUrl": "https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapps.identitysandbox.gov"
-      }
-      EOF
-      )
-    - |-
-      export WORKER_CONFIG=$(cat <<EOF
-      {
-        "kubernetesReviewApp": "true",
-        "postgres": {
-          "sslmode": "prefer",
-          "name": "idp",
-          "host": "$CI_ENVIRONMENT_SLUG-login-chart-pg.review-apps"
-        },
-        "postgresWorker": {
-          "sslmode": "prefer",
-          "name": "idp",
-          "host": "$CI_ENVIRONMENT_SLUG-login-chart-pg.review-apps"
-        },
-        "railsOffline": "true",
-        "redis": {
-          "throttleUrl": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379/1",
-          "url": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379"
-        },
-        "assetHost": "https://$CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov",
-        "domainName": "$CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov",
-        "loginDatacenter": "true",
-        "loginDomain": "identitysandbox.gov",
-        "loginEnv": "$CI_ENVIRONMENT_SLUG",
-        "loginHostRole": "worker",
-        "loginSkipRemoteConfig": "true",
-        "pivcacServiceUrl": "https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapps.identitysandbox.gov/",
-        "pivcacVerifyTokenUrl": "https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapps.identitysandbox.gov/"
-      }
-      EOF
-      )
-    - |-
-      export PIVCAC_CONFIG=$(cat <<EOF
-      {
-        "kubernetesReviewApp": "true",
-        "clientCertS3Bucket": "login-gov-pivcac-public-cert-reviewapps.894947205914-us-west-2",
-        "postgres": {
-          "sslmode": "prefer",
-          "name": "idp",
-          "host": "$CI_ENVIRONMENT_SLUG-login-chart-pivcac-pg.review-apps"
-        },
-        "idpHost": "$CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov",
-        "domainName": "$CI_ENVIRONMENT_SLUG.pivcac.reviewapps.identitysandbox.gov"
-      }
-      EOF
-      )
-    - |-
-      export DASHBOARD_CONFIG=$(cat <<EOF
-      {
-        "kubernetesReviewApp": "true",
-        "postgres": {
-          "sslmode": "prefer",
-          "name": "dashboard",
-          "host": "$CI_ENVIRONMENT_SLUG-login-chart-dashboard-pg.review-apps"
-        },
-        "newrelic": {
-          "enabled": "false"
-        },
-        "samlSpIssuer": "https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapps.identitysandbox.gov",
-        "idpUrl": "https://$CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov",
-        "idpSpUrl": "https://$CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov",
-        "postLogoutUrl": "https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapps.identitysandbox.gov",
-        "domainName": "$CI_ENVIRONMENT_SLUG-dashboard.reviewapps.identitysandbox.gov"
-      }
-      EOF
-      )
-    - git clone -b main --single-branch https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.login.gov/lg-public/identity-idp-helm-chart.git
-    - >-
-      helm upgrade --install --namespace review-apps
-      --debug
-      --set global.labels.branch="${SANITIZED_BRANCH_NAME}"
-      --set env="reviewapps-$CI_ENVIRONMENT_SLUG"
-      --set idp.image.repository="${ECR_REGISTRY}/identity-idp/review"
-      --set idp.image.tag="${CI_COMMIT_SHA}"
-      --set worker.image.repository="${ECR_REGISTRY}/identity-idp/review"
-      --set worker.image.tag="${CI_COMMIT_SHA}"
-      --set pivcac.image.repository="${ECR_REGISTRY}/identity-pivcac/review"
-      --set pivcac.image.tag="${PKI_IMAGE_TAG}"
-      --set pivcac.image.pullPolicy="Always"
-      --set dashboard.image.repository="${ECR_REGISTRY}/identity-dashboard/review"
-      --set dashboard.image.tag="${DASHBOARD_IMAGE_TAG}"
-      --set dashboard.image.pullPolicy="Always"
-      --set-json dashboard.config="$DASHBOARD_CONFIG"
-      --set-json dashboard.enabled=true
-      --set-json idp.config="$IDP_CONFIG"
-      --set-json worker.config="$WORKER_CONFIG"
-      --set-json pivcac.config="$PIVCAC_CONFIG"
-      --set-json idp.ingress.hosts="[{\"host\": \"$CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov\", \"paths\": [{\"path\": \"/\", \"pathType\": \"Prefix\"}]}]"
-      --set-json pivcac.ingress.hosts="[{\"host\": \"$CI_ENVIRONMENT_SLUG.pivcac.reviewapps.identitysandbox.gov\", \"paths\": [{\"path\": \"/\", \"pathType\": \"Prefix\"}]}]"
-      --set-json dashboard.ingress.hosts="[{\"host\": \"$CI_ENVIRONMENT_SLUG-dashboard.reviewapps.identitysandbox.gov\", \"paths\": [{\"path\": \"/\", \"pathType\": \"Prefix\"}]}]"
-      $CI_ENVIRONMENT_SLUG ./identity-idp-helm-chart
+    #TODO put in kustomize based deploy
+    # Dynamically populate review environment settings
+    - sed -i "s|{{ENVIRONMENT}}|${CI_ENVIRONMENT_SLUG}|g" ${APPLICATION_MANIFEST}
+    - sed -i "s|{{SANITIZED_BRANCH_NAME}}|${SANITIZED_BRANCH_NAME}|g" ${APPLICATION_MANIFEST}
+    - sed -i "s|{{IDP_CONTAINER_TAG}}|${CI_COMMIT_SHA}|g" ${APPLICATION_MANIFEST}
+    - sed -i "s|{{DASHBOARD_CONTAINER_TAG}}|${DASHBOARD_IMAGE_TAG}|g" ${APPLICATION_MANIFEST}
+    - sed -i "s|{{PIVCAC_CONTAINER_TAG}}|${PKI_IMAGE_TAG}|g" ${APPLICATION_MANIFEST}
+    - sed -i "s|{{ECR_REGISTRY}}|${ECR_REGISTRY}|g" ${APPLICATION_MANIFEST}
+    - cat ${APPLICATION_MANIFEST}
+    # Apply our ArgoCD Application
+    - kubectl apply -f ${APPLICATION_MANIFEST} -n argocd
+    - echo "View your applications deployment progress at https://argocd.reviewapp.identitysandbox.gov/applications/argocd/${CI_ENVIRONMENT_SLUG}?view=tree&resource="
     - echo "DNS may take a while to propagate, so be patient if it doesn't show up right away"
     - echo "To access the rails console, first run 'aws-vault exec sandbox-power -- aws eks update-kubeconfig --name reviewapp'"
     - echo "Then run aws-vault exec sandbox-power -- kubectl exec -it service/$CI_ENVIRONMENT_SLUG-login-chart-idp -n review-apps -- /app/bin/rails console"
@@ -589,7 +479,7 @@ stop-review-app:
   script:
     - export CONTEXT=$(kubectl config get-contexts | grep reviewapp | awk '{print $1}' | head -1)
     - kubectl config use-context "$CONTEXT"
-    - helm uninstall --namespace review-apps $CI_ENVIRONMENT_SLUG
+    - kubectl delete application $CI_ENVIRONMENT_SLUG -n argocd
   stage: review
   image:
     name: dtzar/helm-kubectl:latest
