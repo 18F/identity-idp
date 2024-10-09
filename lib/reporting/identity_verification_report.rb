@@ -356,8 +356,6 @@ module Reporting
             users[Results::IDV_REJECT_VERIFY] << user_id if success == '0'
           when Events::IDV_PHONE_FINDER_RESULTS
             users[Results::IDV_REJECT_PHONE_FINDER] << user_id if success == '0'
-          when Events::FRAUD_REVIEW_PASSED, Events::FRAUD_REVIEW_REJECT_AUTOMATIC, Events::FRAUD_REVIEW_REJECT_MANUAL
-            users[sp_event_key(row:, event:)] << user_id if row['service_provider'].present?
           end
         end
 
@@ -440,10 +438,6 @@ module Reporting
 
     def sp_key(row)
       "sp:#{row.is_a?(Hash) ? row['service_provider'] : row.to_s}"
-    end
-
-    def sp_event_key(event:, row:)
-      "#{sp_key(row)}:#{event}"
     end
   end
 end

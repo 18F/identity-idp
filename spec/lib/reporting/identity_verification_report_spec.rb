@@ -227,11 +227,9 @@ RSpec.describe Reporting::IdentityVerificationReport do
           end
         end
 
-        it 'includes per-sp data' do
+        it 'includes users per sp' do
           expect(report.data.transform_values(&:count)).to include(
             'sp:my:example:issuer' => 11,
-            'sp:my:example:issuer:Fraud: Profile review passed' => 3,
-            'sp:my:example:issuer:Fraud: Profile review rejected' => 3,
           )
         end
       end
