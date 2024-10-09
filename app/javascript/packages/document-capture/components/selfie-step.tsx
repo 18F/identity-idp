@@ -40,13 +40,21 @@ export function SelfieCaptureStep({
           t('doc_auth.tips.document_capture_selfie_text4'),
         ]}
       />
-      <DocumentSideAcuantCapture
-        {...defaultSideProps}
-        key="selfie"
-        side="selfie"
-        value={selfieValue}
-        isReviewStep={isReviewStep}
-      />
+
+      {
+        !isReviewStep &&
+        <AcuantSelfieInstructions />
+      }
+      {
+        isReviewStep &&
+        <DocumentSideAcuantCapture
+          {...defaultSideProps}
+          key="selfie"
+          side="selfie"
+          value={selfieValue}
+          isReviewStep={isReviewStep}
+        />
+      }
     </>
   );
 }
