@@ -8,9 +8,7 @@ RSpec.feature 'document capture step', :js do
 
   let(:max_attempts) { IdentityConfig.store.doc_auth_max_attempts }
   let(:fake_analytics) { FakeAnalytics.new }
-  let(:acr_values) do
-    Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR
-  end
+  let(:acr_values) { Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR }
   let(:issuer) { 'urn:gov:gsa:openidconnect:sp:server' }
 
   before(:each) do
@@ -1107,6 +1105,8 @@ end
 RSpec.feature 'direct access to IPP on desktop', :js do
   include IdvStepHelper
   include DocAuthHelper
+
+  let(:acr_values) { Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR }
 
   context 'before handoff page' do
     let(:sp_ipp_enabled) { true }
