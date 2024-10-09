@@ -81,6 +81,13 @@ RSpec.describe Reporting::IdentityVerificationReport do
         'fraud_review_pending' => '1' },
       { 'user_id' => 'user9', 'name' => 'Fraud: Profile review rejected', 'success' => '1' },
 
+      # IPP user in fraud review queue who is then passed
+      {
+        'user_id' => 'user10',
+        'name' => 'GetUspsProofingResultsJob: Enrollment status updated',
+        'fraud_review_pending' => '1',
+      },
+      { 'user_id' => 'user10', 'name' => 'Fraud: Profile review passed', 'success' => '1' },
     ]
   end
 
@@ -116,15 +123,15 @@ RSpec.describe Reporting::IdentityVerificationReport do
         ['Workflow completed - GPO + In-Person Pending - Fraud Review', 0],
         [],
         ['Fraud review rejected', 3],
-        ['Successfully Verified', 4],
+        ['Successfully Verified', 5],
         ['Successfully Verified - With phone number', 1],
         ['Successfully Verified - With mailed code', 1],
         ['Successfully Verified - In Person', 1],
-        ['Successfully Verified - Passed fraud review', 2],
-        ['Blanket Proofing Rate (IDV Started to Successfully Verified)', 0.6666666666666666],
-        ['Intent Proofing Rate (Welcome Submitted to Successfully Verified)', 0.6666666666666666],
-        ['Actual Proofing Rate (Image Submitted to Successfully Verified)', 0.6666666666666666],
-        ['Industry Proofing Rate (Verified minus IDV Rejected)', 0.8],
+        ['Successfully Verified - Passed fraud review', 3],
+        ['Blanket Proofing Rate (IDV Started to Successfully Verified)', (5.0 / 6.0)],
+        ['Intent Proofing Rate (Welcome Submitted to Successfully Verified)', (5.0 / 6.0)],
+        ['Actual Proofing Rate (Image Submitted to Successfully Verified)', (5.0 / 6.0)],
+        ['Industry Proofing Rate (Verified minus IDV Rejected)', (5.0 / 6.0)],
       ].compact
       aggregate_failures do
         report.as_csv.zip(expected_csv).each do |actual, expected|
@@ -160,15 +167,15 @@ RSpec.describe Reporting::IdentityVerificationReport do
         ['Workflow completed - GPO + In-Person Pending - Fraud Review', '0'],
         [],
         ['Fraud review rejected', '3'],
-        ['Successfully Verified', '4'],
+        ['Successfully Verified', '5'],
         ['Successfully Verified - With phone number', '1'],
         ['Successfully Verified - With mailed code', '1'],
         ['Successfully Verified - In Person', '1'],
-        ['Successfully Verified - Passed fraud review', '2'],
-        ['Blanket Proofing Rate (IDV Started to Successfully Verified)', '0.6666666666666666'],
-        ['Intent Proofing Rate (Welcome Submitted to Successfully Verified)', '0.6666666666666666'],
-        ['Actual Proofing Rate (Image Submitted to Successfully Verified)', '0.6666666666666666'],
-        ['Industry Proofing Rate (Verified minus IDV Rejected)', '0.8'],
+        ['Successfully Verified - Passed fraud review', '3'],
+        ['Blanket Proofing Rate (IDV Started to Successfully Verified)', (5.0 / 6.0).to_s],
+        ['Intent Proofing Rate (Welcome Submitted to Successfully Verified)', (5.0 / 6.0).to_s],
+        ['Actual Proofing Rate (Image Submitted to Successfully Verified)', (5.0 / 6.0).to_s],
+        ['Industry Proofing Rate (Verified minus IDV Rejected)', (5.0 / 6.0).to_s],
       ].compact
 
       aggregate_failures do
@@ -200,7 +207,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
         'IdV Reject: Doc Auth' => 3,
         'IdV Reject: Phone Finder' => 1,
         'IdV Reject: Verify' => 1,
-        'Fraud: Profile review passed' => 2,
+        'Fraud: Profile review passed' => 3,
         'Fraud: Profile review rejected' => 3,
       )
     end
@@ -219,8 +226,8 @@ RSpec.describe Reporting::IdentityVerificationReport do
 
         it 'includes per-sp data' do
           expect(report.data.transform_values(&:count)).to include(
-            'sp:my:example:issuer' => 9,
-            'sp:my:example:issuer:Fraud: Profile review passed' => 2,
+            'sp:my:example:issuer' => 10,
+            'sp:my:example:issuer:Fraud: Profile review passed' => 3,
             'sp:my:example:issuer:Fraud: Profile review rejected' => 3,
           )
         end
@@ -256,7 +263,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
         context 'but other events are tagged for the sp' do
           let(:service_provider_for_non_fraud_events) { issuer }
           it 'is users who completed workflow + passed fraud review and any event matches issuer' do
-            expect(report.fraud_review_passed).to eql(2)
+            expect(report.fraud_review_passed).to eql(3)
           end
         end
 
@@ -279,14 +286,14 @@ RSpec.describe Reporting::IdentityVerificationReport do
 
         context 'but other events are not tagged at all' do
           it 'counts all fraud events tagged for the sp' do
-            expect(report.fraud_review_passed).to eql(2)
+            expect(report.fraud_review_passed).to eql(3)
           end
         end
 
         context 'but other events are not tagged with the same SP' do
           let(:service_provider_for_non_fraud_events) { 'some:other:sp' }
           it 'still counts all fraud events tagged for the sp' do
-            expect(report.fraud_review_passed).to eql(2)
+            expect(report.fraud_review_passed).to eql(3)
           end
         end
 
@@ -302,7 +309,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
           context 'and other events are tagged for the right sp' do
             let(:service_provider_for_non_fraud_events) { issuer }
             it 'still finds those users' do
-              expect(report.fraud_review_passed).to eql(2)
+              expect(report.fraud_review_passed).to eql(3)
             end
           end
         end
@@ -313,7 +320,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
       let(:issuer) { nil }
 
       it 'includes users who did not complete workflow and passed fraud review' do
-        expect(report.fraud_review_passed).to eql(2)
+        expect(report.fraud_review_passed).to eql(3)
       end
     end
   end
@@ -398,14 +405,14 @@ RSpec.describe Reporting::IdentityVerificationReport do
       let(:issuer) { nil }
 
       it 'includes users who did not complete workflow and failed fraud review' do
-        expect(report.fraud_review_passed).to eql(2)
+        expect(report.idv_fraud_rejected).to eql(3)
       end
     end
   end
 
   describe '#successfully_verified_users' do
     it 'is the count of users who verified or passed fraud review' do
-      expect(report.successfully_verified_users).to eql(4)
+      expect(report.successfully_verified_users).to eql(5)
     end
   end
 
@@ -474,9 +481,34 @@ RSpec.describe Reporting::IdentityVerificationReport do
       expect(subject.query).to include(expected)
     end
 
-    it 'includes GPO fraud_check_failed attribute when calculating fraud_review_pending' do
+    it 'normalizes different attributes into fraud_review_pending' do
+      # rubocop:disable Layout/LineLength
+      elements = [
+        'properties.event_properties.fraud_review_pending',
+        'not isblank(properties.event_properties.fraud_pending_reason)',
+        'properties.event_properties.fraud_check_failed',
+        '(ispresent(properties.event_properties.tmx_status) and properties.event_properties.tmx_status not in ["threatmetrix_review", "threatmetrix_reject"])',
+        '0',
+      ]
+      # rubocop:enable Layout/LineLength
+
       expected = <<~FRAGMENT
-        coalesce(properties.event_properties.fraud_review_pending, properties.event_properties.fraud_pending_reason, properties.event_properties.fraud_check_failed, 0) AS fraud_review_pending
+        coalesce(#{elements.join(", ")}) AS fraud_review_pending
+      FRAGMENT
+      expect(subject.query).to include(expected)
+    end
+
+    it 'includes IPP events without regard to tmx_status' do
+      expected = <<~FRAGMENT
+        | filter (name = "GetUspsProofingResultsJob: Enrollment status updated" and properties.event_properties.passed = 1)
+                 or (name != "GetUspsProofingResultsJob: Enrollment status updated")
+      FRAGMENT
+      expect(subject.query).to include(expected)
+    end
+
+    it 'accepts properties.event_properties.issuer as service_provider' do
+      expected = <<~FRAGMENT
+        coalesce(properties.service_provider, properties.event_properties.issuer) AS service_provider
       FRAGMENT
       expect(subject.query).to include(expected)
     end

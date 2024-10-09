@@ -55,6 +55,17 @@ module Reporting
       # rubocop:enable Layout/LineLength
     end
 
+    # Because historically fraud-related events were not tagged with SP data,
+    # we need pull these out-of-band events *even if* the are marked as
+    # pending fraud review. This allows us to attribute untagged fraud-related
+    # events (by matching on user_id). We filter these events for counting
+    # purposes, though.
+    EVENTS_TO_IGNORE_IF_FRAUD_REVIEW_PENDING = [
+      Events::GPO_VERIFICATION_SUBMITTED,
+      Events::GPO_VERIFICATION_SUBMITTED_OLD,
+      Events::USPS_ENROLLMENT_STATUS_UPDATED,
+    ].to_set.freeze
+
     # @param [Array<String>] issuers
     # @param [Range<Time>] date
     def initialize(
@@ -318,13 +329,9 @@ module Reporting
           in_person_verification_pending = row['in_person_verification_pending'] == '1'
           fraud_review_pending = row['fraud_review_pending'] == '1'
 
-          ignore_event_for_user = begin
-            if event == Events::GPO_VERIFICATION_SUBMITTED || event == Events::GPO_VERIFICATION_SUBMITTED_OLD
-              # We don't count fraud review pending GPO verification submitted events for users, but we *do* still want
-              # to use them to attribute fraud events that are lacking SP data.
-              fraud_review_pending
-            end
-          end
+          ignore_event_for_user =
+            fraud_review_pending &&
+            EVENTS_TO_IGNORE_IF_FRAUD_REVIEW_PENDING.include?(event)
 
           users[event] << user_id unless ignore_event_for_user
           users[sp_key(row)] << user_id if row['service_provider'].present?
@@ -386,6 +393,15 @@ module Reporting
             Events::FRAUD_REVIEW_REJECT_MANUAL,
           ],
         ),
+        normalized_fraud_review_pending: "coalesce(#{[
+          # rubocop:disable Layout/LineLength
+          'properties.event_properties.fraud_review_pending',
+          'not isblank(properties.event_properties.fraud_pending_reason)',
+          'properties.event_properties.fraud_check_failed',
+          '(ispresent(properties.event_properties.tmx_status) and properties.event_properties.tmx_status not in ["threatmetrix_review", "threatmetrix_reject"])',
+          '0',
+          # rubocop:enable Layout/LineLength
+        ].join(", ")})",
       }
 
       format(<<~QUERY, params)
@@ -393,17 +409,17 @@ module Reporting
             name
           , properties.user_id AS user_id
           , coalesce(properties.event_properties.success, 0) AS success
-          , properties.service_provider AS service_provider
+          , coalesce(properties.service_provider, properties.event_properties.issuer) AS service_provider
         | filter name in %{event_names}
         | filter (name = %{fraud_review_passed} and properties.event_properties.success = 1)
                  or (name != %{fraud_review_passed})
-        | filter (name = %{usps_enrollment_status_updated} and properties.event_properties.passed = 1 and properties.event_properties.tmx_status not in ['threatmetrix_review', 'threatmetrix_reject'])
+        | filter (name = %{usps_enrollment_status_updated} and properties.event_properties.passed = 1)
                  or (name != %{usps_enrollment_status_updated})
         | filter (name in %{gpo_verification_submitted} and properties.event_properties.success = 1 and !properties.event_properties.pending_in_person_enrollment)
                  or (name not in %{gpo_verification_submitted})
         #{issuers.present? ? '| filter properties.service_provider IN %{issuers} OR name IN %{fraud_event_names}' : ''}
         | fields
-            coalesce(properties.event_properties.fraud_review_pending, properties.event_properties.fraud_pending_reason, properties.event_properties.fraud_check_failed, 0) AS fraud_review_pending
+            %{normalized_fraud_review_pending} AS fraud_review_pending
           , coalesce(properties.event_properties.gpo_verification_pending, 0) AS gpo_verification_pending
           , coalesce(properties.event_properties.in_person_verification_pending, 0) AS in_person_verification_pending
           , ispresent(properties.event_properties.deactivation_reason) AS has_other_deactivation_reason
