@@ -185,6 +185,7 @@ module Idv
         state: pii[:state],
         state_id_jurisdiction: pii[:state_id_jurisdiction],
         state_id_number: pii[:state_id_number],
+        state_id_type: pii[:state_id_type],
         # todo: add other edited fields?
         extra: {
           address_edited: !!idv_session.address_edited,
@@ -275,12 +276,14 @@ module Idv
       state: nil,
       state_id_jurisdiction: nil,
       state_id_number: nil,
+      state_id_type: nil,
       extra: {}
     )
       state_id = result.dig(:context, :stages, :state_id)
       if state_id
         state_id[:state] = state if state
         state_id[:state_id_jurisdiction] = state_id_jurisdiction if state_id_jurisdiction
+        state_id[:state_id_type] = state_id_type if state_id_type
         if state_id_number
           state_id[:state_id_number] =
             StringRedacter.redact_alphanumeric(state_id_number)
