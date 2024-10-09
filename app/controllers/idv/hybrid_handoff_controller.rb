@@ -22,15 +22,14 @@ module Idv
 
       @selfie_required = idv_session.selfie_check_required
 
-      analytics.idv_doc_auth_hybrid_handoff_visited(**analytics_arguments)
-
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).call(
         'upload', :view,
         true
       )
-
+      analytics.idv_doc_auth_hybrid_handoff_visited(**analytics_arguments)
       # reset if we visit or come back
       idv_session.skip_doc_auth_from_handoff = nil
+
       render :show, locals: extra_view_variables
     end
 
@@ -59,7 +58,7 @@ module Idv
       Idv::StepInfo.new(
         key: :hybrid_handoff,
         controller: self,
-        next_steps: [:link_sent, :document_capture],
+        next_steps: [:link_sent, :document_capture, :socure_document_capture],
         preconditions: ->(idv_session:, user:) {
                          idv_session.idv_consent_given? &&
                            (self.selected_remote(idv_session: idv_session) || # from opt-in screen

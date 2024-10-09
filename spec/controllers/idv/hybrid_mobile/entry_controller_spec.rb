@@ -12,9 +12,12 @@ RSpec.describe Idv::HybridMobile::EntryController do
     end
 
     let(:session_uuid) { document_capture_session.uuid }
+    let(:idv_vendor) { Idp::Constants::Vendors::MOCK }
 
     before do
       stub_analytics
+      allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(idv_vendor)
+      allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(idv_vendor)
     end
 
     context 'with no session' do
@@ -62,24 +65,47 @@ RSpec.describe Idv::HybridMobile::EntryController do
       let(:session) do
         {}
       end
+      let(:idv_vendor) { Idp::Constants::Vendors::MOCK }
 
       before do
         allow(controller).to receive(:session).and_return(session)
         get :show, params: { 'document-capture-session': session_uuid }
       end
 
-      it 'redirects to the first step' do
-        expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
+      context 'doc auth vendor is socure' do
+        let(:idv_vendor) { Idp::Constants::Vendors::SOCURE }
+
+        it 'redirects to the first step' do
+          expect(response).to redirect_to idv_hybrid_mobile_socure_document_capture_url
+        end
+
+        it 'logs an analytics event' do
+          expect(@analytics).to have_logged_event(
+            'Doc Auth',
+            hash_including(
+              success: true,
+              doc_capture_user_id?: false,
+            ),
+          )
+        end
       end
 
-      it 'logs an analytics event' do
-        expect(@analytics).to have_logged_event(
-          'Doc Auth',
-          hash_including(
-            success: true,
-            doc_capture_user_id?: false,
-          ),
-        )
+      context 'doc auth vendor is lexis nexis' do
+        let(:idv_vendor) { Idp::Constants::Vendors::LEXIS_NEXIS }
+
+        it 'redirects to the first step' do
+          expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
+        end
+
+        it 'logs an analytics event' do
+          expect(@analytics).to have_logged_event(
+            'Doc Auth',
+            hash_including(
+              success: true,
+              doc_capture_user_id?: false,
+            ),
+          )
+        end
       end
 
       context 'but we already had a session' do
@@ -111,8 +137,20 @@ RSpec.describe Idv::HybridMobile::EntryController do
           )
         end
 
-        it 'redirects to the document capture screen' do
-          expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
+        context 'doc auth vendor is socure' do
+          let(:idv_vendor) { Idp::Constants::Vendors::SOCURE }
+
+          it 'redirects to the socure document capture screen' do
+            expect(response).to redirect_to idv_hybrid_mobile_socure_document_capture_url
+          end
+        end
+
+        context 'doc auth vendor is lexis nexis' do
+          let(:idv_vendor) { Idp::Constants::Vendors::LEXIS_NEXIS }
+
+          it 'redirects to the document capture screen' do
+            expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
+          end
         end
       end
     end
@@ -125,8 +163,18 @@ RSpec.describe Idv::HybridMobile::EntryController do
         get :show
       end
 
-      it 'redirects to the first step' do
-        expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
+      context 'doc auth vendor is socure' do
+        let(:idv_vendor) { Idp::Constants::Vendors::SOCURE }
+
+        it 'redirects to the first step' do
+          expect(response).to redirect_to idv_hybrid_mobile_socure_document_capture_url
+        end
+      end
+
+      context 'doc auth vendor is lexis nexis' do
+        it 'redirects to the first step' do
+          expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
+        end
       end
     end
   end

@@ -191,6 +191,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_01_193936) do
     t.datetime "cancelled_at", precision: nil, comment: "sensitive=false"
     t.boolean "ocr_confirmation_pending", default: false, comment: "sensitive=false"
     t.string "last_doc_auth_result", comment: "sensitive=false"
+    t.string "socure_docv_token", comment: "sensitive=false"
     t.index ["result_id"], name: "index_document_capture_sessions_on_result_id"
     t.index ["user_id"], name: "index_document_capture_sessions_on_user_id"
     t.index ["uuid"], name: "index_document_capture_sessions_on_uuid"
