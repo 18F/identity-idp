@@ -445,6 +445,7 @@ trigger_devops:
     - cat ${APPLICATION_MANIFEST}
     # Apply our ArgoCD Application
     - kubectl apply -f ${APPLICATION_MANIFEST} -n argocd
+    - echo "View your applications deployment progress at https://argocd.reviewapp.identitysandbox.gov/applications/argocd/${CI_ENVIRONMENT_SLUG}?view=tree&resource="
     - echo "DNS may take a while to propagate, so be patient if it doesn't show up right away"
     - echo "To access the rails console, first run 'aws-vault exec sandbox-power -- aws eks update-kubeconfig --name reviewapp'"
     - echo "Then run aws-vault exec sandbox-power -- kubectl exec -it service/$CI_ENVIRONMENT_SLUG-login-chart-idp -n review-apps -- /app/bin/rails console"
