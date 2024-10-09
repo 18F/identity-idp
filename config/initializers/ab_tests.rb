@@ -81,4 +81,20 @@ module AbTests
       SecureRandom.alphanumeric(8)
     end
   end.freeze
+
+  DESKTOP_FT_UNLOCK_SETUP = AbTest.new(
+    experiment_name: 'Desktop F/T unlock setup',
+    should_log: [
+      'WebAuthn Setup Visited',
+      'Multi-Factor Authentication Setup',
+    ].to_set,
+    buckets: { desktop_ft_unlock:
+        IdentityConfig.store.show_desktop_ft_unlock_setup_option_percent_tested },
+  ) do |user:, user_session:, **|
+    if user_session&.[](:platform_authenticator_available) == false
+      nil
+    else
+      user.uuid
+    end
+  end.freeze
 end
