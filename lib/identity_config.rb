@@ -403,6 +403,7 @@ module IdentityConfig
     config.add(:socure_document_request_endpoint, type: :string)
     config.add(:socure_idplus_api_key, type: :string)
     config.add(:socure_webhook_enabled, type: :boolean)
+    config.add(:socure_enabled, type: :boolean)
     config.add(:socure_webhook_secret_key, type: :string)
     config.add(:socure_webhook_secret_key_queue, type: :json)
     config.add(:sp_handoff_bounce_max_seconds, type: :integer)
