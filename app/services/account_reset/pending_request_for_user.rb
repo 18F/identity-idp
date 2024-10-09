@@ -33,12 +33,7 @@ module AccountReset
       ).update_all(cancelled_at: cancelled_at, updated_at: Time.zone.now)
       # rubocop:enable Rails/SkipsModelValidations
 
-      if result == 1
-        notify_user!
-        true
-      else
-        false
-      end
+      notify_user! if result == 1
     end
 
     def notify_user!

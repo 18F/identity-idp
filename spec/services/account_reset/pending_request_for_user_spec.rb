@@ -62,12 +62,11 @@ RSpec.describe AccountReset::PendingRequestForUser do
   describe '#cancel_account_reset_request!' do
     let(:now) { Time.zone.now }
     it 'cancels the account reset request' do
-      result = subject.cancel_account_reset_request!(
+      subject.cancel_account_reset_request!(
         account_reset_request_id: account_reset_request.id,
         cancelled_at: now,
       )
 
-      expect(result).to eq true
       expect(account_reset_request.reload.cancelled_at.to_i).to eq(now.to_i)
     end
 
@@ -85,11 +84,12 @@ RSpec.describe AccountReset::PendingRequestForUser do
       it 'fails gracefully and does not send email' do
         expect(subject).to_not receive(:notify_user!)
 
-        result = subject.cancel_account_reset_request!(
-          account_reset_request_id: account_reset_request.id,
-          cancelled_at: now,
-        )
-        expect(result).to eq false
+        expect do
+          subject.cancel_account_reset_request!(
+            account_reset_request_id: account_reset_request.id,
+            cancelled_at: now,
+          )
+        end.to_not change { account_reset_request.cancelled_at }
       end
     end
   end
