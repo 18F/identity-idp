@@ -407,12 +407,12 @@ module Reporting
           , coalesce(properties.event_properties.success, 0) AS success
           , coalesce(properties.service_provider, properties.event_properties.issuer) AS service_provider
         | filter name in %{event_names}
-        | filter (name = %{fraud_review_passed} and properties.event_properties.success = 1)
-                 or (name != %{fraud_review_passed})
         | filter (name = %{usps_enrollment_status_updated} and properties.event_properties.passed = 1)
                  or (name != %{usps_enrollment_status_updated})
         | filter (name in %{gpo_verification_submitted} and properties.event_properties.success = 1 and !properties.event_properties.pending_in_person_enrollment)
                  or (name not in %{gpo_verification_submitted})
+        | filter (name = %{fraud_review_passed} and properties.event_properties.success = 1)
+                 or (name != %{fraud_review_passed})
         #{issuers.present? ? '| filter service_provider IN %{issuers} OR name IN %{fraud_event_names}' : ''}
         | fields
             %{normalized_fraud_review_pending} AS fraud_review_pending
