@@ -413,7 +413,7 @@ module Reporting
                  or (name != %{usps_enrollment_status_updated})
         | filter (name in %{gpo_verification_submitted} and properties.event_properties.success = 1 and !properties.event_properties.pending_in_person_enrollment)
                  or (name not in %{gpo_verification_submitted})
-        #{issuers.present? ? '| filter properties.service_provider IN %{issuers} OR name IN %{fraud_event_names}' : ''}
+        #{issuers.present? ? '| filter service_provider IN %{issuers} OR name IN %{fraud_event_names}' : ''}
         | fields
             %{normalized_fraud_review_pending} AS fraud_review_pending
           , coalesce(properties.event_properties.gpo_verification_pending, 0) AS gpo_verification_pending

@@ -459,7 +459,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
       it 'includes an issuer filter' do
         result = subject.query
 
-        expect(result).to include('| filter properties.service_provider IN ["my:example:issuer"]')
+        expect(result).to include('| filter service_provider IN ["my:example:issuer"]')
       end
     end
 
