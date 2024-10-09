@@ -161,5 +161,11 @@ RSpec.describe EmailAddress do
 
       it { expect(result).to eq(true) }
     end
+
+    context 'with a bad email address that has no domain' do
+      let(:email) { 'email_with_no_domain' }
+
+      it { expect(result).to eq(false) }
+    end
   end
 end
