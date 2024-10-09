@@ -34,6 +34,7 @@ RSpec.describe Users::EmailsController do
     before do
       stub_sign_in(user)
       request.env['HTTP_REFERER'] = 'http://example.com/sign_up/completed'
+      controller.user_session[:share_email] = true
     end
 
     it 'renders the show view with a link back to continue SP consent' do
