@@ -72,11 +72,7 @@ RSpec.describe AccountReset::PendingRequestForUser do
     end
 
     it "sends an email to the user's confirmed email addresses" do
-      notify_user_of_cancellation = instance_double(AccountReset::NotifyUserOfRequestCancellation)
-      expect(AccountReset::NotifyUserOfRequestCancellation).to receive(:new).
-        with(user).
-        and_return(notify_user_of_cancellation)
-      expect(notify_user_of_cancellation).to receive(:call)
+      expect(subject).to receive(:notify_user!)
 
       subject.cancel_account_reset_request!(
         account_reset_request_id: account_reset_request.id,
@@ -87,7 +83,7 @@ RSpec.describe AccountReset::PendingRequestForUser do
     context 'with no existing pending request' do
       let(:cancelled_at) { Time.zone.now }
       it 'fails gracefully and does not send email' do
-        expect(AccountReset::NotifyUserOfRequestCancellation).to_not receive(:new)
+        expect(subject).to_not receive(:notify_user!)
 
         result = subject.cancel_account_reset_request!(
           account_reset_request_id: account_reset_request.id,
@@ -95,6 +91,37 @@ RSpec.describe AccountReset::PendingRequestForUser do
         )
         expect(result).to eq false
       end
+    end
+  end
+
+  describe '#notify_user!' do
+    it 'sends an email to all of the user email addresses' do
+      email_address1 = user.email_addresses.first
+      email_address2 = create(:email_address, user: user)
+
+      subject.notify_user!
+
+      expect_delivered_email_count(2)
+      expect_delivered_email(
+        to: [email_address1.email],
+        subject: t('user_mailer.account_reset_cancel.subject'),
+      )
+      expect_delivered_email(
+        to: [email_address2.email],
+        subject: t('user_mailer.account_reset_cancel.subject'),
+      )
+    end
+
+    it 'sends a text to all of the user phone numbers' do
+      phone_config1 = create(:phone_configuration, user: user)
+      phone_config2 = create(:phone_configuration, user: user)
+
+      expect(Telephony).to receive(:send_account_reset_cancellation_notice).
+        with(to: phone_config1.phone, country_code: 'US')
+      expect(Telephony).to receive(:send_account_reset_cancellation_notice).
+        with(to: phone_config2.phone, country_code: 'US')
+
+      subject.notify_user!
     end
   end
 end
