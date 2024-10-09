@@ -47,8 +47,6 @@ module Reporting
       IDV_FINAL_RESOLUTION_GPO_IN_PERSON = 'IdV: final resolution - GPO Pending + In Person Pending'
       IDV_FINAL_RESOLUTION_GPO_IN_PERSON_FRAUD_REVIEW = 'IdV: final resolution - GPO Pending + In Person Pending + Fraud Review'
 
-      IDV_GPO_VERIFIED = 'Idv: GPO verified'
-
       IDV_REJECT_DOC_AUTH = 'IdV Reject: Doc Auth'
       IDV_REJECT_VERIFY = 'IdV Reject: Verify'
       IDV_REJECT_PHONE_FINDER = 'IdV Reject: Phone Finder'
