@@ -47,6 +47,8 @@ module Reporting
       IDV_FINAL_RESOLUTION_GPO_IN_PERSON = 'IdV: final resolution - GPO Pending + In Person Pending'
       IDV_FINAL_RESOLUTION_GPO_IN_PERSON_FRAUD_REVIEW = 'IdV: final resolution - GPO Pending + In Person Pending + Fraud Review'
 
+      IDV_GPO_VERIFIED = 'Idv: GPO verified'
+
       IDV_REJECT_DOC_AUTH = 'IdV Reject: Doc Auth'
       IDV_REJECT_VERIFY = 'IdV Reject: Verify'
       IDV_REJECT_PHONE_FINDER = 'IdV Reject: Phone Finder'
@@ -312,17 +314,24 @@ module Reporting
           event = row['name']
           user_id = row['user_id']
           success = row['success']
+          gpo_verification_pending = row['gpo_verification_pending'] == '1'
+          in_person_verification_pending = row['in_person_verification_pending'] == '1'
+          fraud_review_pending = row['fraud_review_pending'] == '1'
 
-          users[event] << user_id
+          ignore_event_for_user = begin
+            if event == Events::GPO_VERIFICATION_SUBMITTED || event == Events::GPO_VERIFICATION_SUBMITTED_OLD
+              # We don't count fraud review pending GPO verification submitted events for users, but we *do* still want
+              # to use them to attribute fraud events that are lacking SP data.
+              fraud_review_pending
+            end
+          end
+
+          users[event] << user_id unless ignore_event_for_user
           users[sp_key(row)] << user_id if row['service_provider'].present?
 
           case event
           when Events::IDV_FINAL_RESOLUTION
             users[Results::IDV_FINAL_RESOLUTION_VERIFIED] << user_id if row['identity_verified'] == '1'
-
-            gpo_verification_pending = row['gpo_verification_pending'] == '1'
-            in_person_verification_pending = row['in_person_verification_pending'] == '1'
-            fraud_review_pending = row['fraud_review_pending'] == '1'
 
             if !gpo_verification_pending && !in_person_verification_pending
               users[Results::IDV_FINAL_RESOLUTION_FRAUD_REVIEW] << user_id if fraud_review_pending
@@ -390,11 +399,11 @@ module Reporting
                  or (name != %{fraud_review_passed})
         | filter (name = %{usps_enrollment_status_updated} and properties.event_properties.passed = 1 and properties.event_properties.tmx_status not in ['threatmetrix_review', 'threatmetrix_reject'])
                  or (name != %{usps_enrollment_status_updated})
-        | filter (name in %{gpo_verification_submitted} and properties.event_properties.success = 1 and !properties.event_properties.pending_in_person_enrollment and !properties.event_properties.fraud_check_failed)
+        | filter (name in %{gpo_verification_submitted} and properties.event_properties.success = 1 and !properties.event_properties.pending_in_person_enrollment)
                  or (name not in %{gpo_verification_submitted})
         #{issuers.present? ? '| filter properties.service_provider IN %{issuers} OR name IN %{fraud_event_names}' : ''}
         | fields
-            coalesce(properties.event_properties.fraud_review_pending, properties.event_properties.fraud_pending_reason, 0) AS fraud_review_pending
+            coalesce(properties.event_properties.fraud_review_pending, properties.event_properties.fraud_pending_reason, properties.event_properties.fraud_check_failed, 0) AS fraud_review_pending
           , coalesce(properties.event_properties.gpo_verification_pending, 0) AS gpo_verification_pending
           , coalesce(properties.event_properties.in_person_verification_pending, 0) AS in_person_verification_pending
           , ispresent(properties.event_properties.deactivation_reason) AS has_other_deactivation_reason

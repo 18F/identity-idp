@@ -74,6 +74,13 @@ RSpec.describe Reporting::IdentityVerificationReport do
 
       # Just fraud rejection
       { 'user_id' => 'user8', 'name' => 'Fraud: Profile review rejected', 'success' => '1' },
+
+      # GPO confirmation followed by fraud rejection
+      { 'user_id' => 'user9',
+        'name' => 'IdV: GPO verification submitted',
+        'fraud_review_pending' => '1' },
+      { 'user_id' => 'user9', 'name' => 'Fraud: Profile review rejected', 'success' => '1' },
+
     ]
   end
 
@@ -108,7 +115,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
         ['Workflow completed - GPO + In-Person Pending', 0],
         ['Workflow completed - GPO + In-Person Pending - Fraud Review', 0],
         [],
-        ['Fraud review rejected', 2],
+        ['Fraud review rejected', 3],
         ['Successfully Verified', 4],
         ['Successfully Verified - With phone number', 1],
         ['Successfully Verified - With mailed code', 1],
@@ -152,7 +159,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
         ['Workflow completed - GPO + In-Person Pending', '0'],
         ['Workflow completed - GPO + In-Person Pending - Fraud Review', '0'],
         [],
-        ['Fraud review rejected', '2'],
+        ['Fraud review rejected', '3'],
         ['Successfully Verified', '4'],
         ['Successfully Verified - With phone number', '1'],
         ['Successfully Verified - With mailed code', '1'],
@@ -194,7 +201,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
         'IdV Reject: Phone Finder' => 1,
         'IdV Reject: Verify' => 1,
         'Fraud: Profile review passed' => 2,
-        'Fraud: Profile review rejected' => 2,
+        'Fraud: Profile review rejected' => 3,
       )
     end
 
@@ -212,9 +219,9 @@ RSpec.describe Reporting::IdentityVerificationReport do
 
         it 'includes per-sp data' do
           expect(report.data.transform_values(&:count)).to include(
-            'sp:my:example:issuer' => 8,
+            'sp:my:example:issuer' => 9,
             'sp:my:example:issuer:Fraud: Profile review passed' => 2,
-            'sp:my:example:issuer:Fraud: Profile review rejected' => 2,
+            'sp:my:example:issuer:Fraud: Profile review rejected' => 3,
           )
         end
       end
@@ -333,7 +340,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
         context 'but other events are tagged for the sp' do
           let(:service_provider_for_non_fraud_events) { issuer }
           it 'is the count of fraud rejected users where any other event matches on issuer' do
-            expect(report.idv_fraud_rejected).to eql(1)
+            expect(report.idv_fraud_rejected).to eql(2)
           end
         end
 
@@ -357,14 +364,14 @@ RSpec.describe Reporting::IdentityVerificationReport do
 
         context 'but other events are not tagged at all' do
           it 'counts all fraud events tagged for the sp' do
-            expect(report.idv_fraud_rejected).to eql(2)
+            expect(report.idv_fraud_rejected).to eql(3)
           end
         end
 
         context 'but other events are not tagged with the same SP' do
           let(:service_provider_for_non_fraud_events) { 'some:other:sp' }
           it 'still counts all fraud events tagged for the sp' do
-            expect(report.idv_fraud_rejected).to eql(2)
+            expect(report.idv_fraud_rejected).to eql(3)
           end
         end
 
@@ -380,7 +387,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
           context 'and other events are tagged for the right sp' do
             let(:service_provider_for_non_fraud_events) { issuer }
             it 'still finds those users' do
-              expect(report.idv_fraud_rejected).to eql(1)
+              expect(report.idv_fraud_rejected).to eql(2)
             end
           end
         end
@@ -460,10 +467,17 @@ RSpec.describe Reporting::IdentityVerificationReport do
 
     it 'includes GPO submission events with old name' do
       expected = <<~FRAGMENT
-        | filter (name in ["IdV: enter verify by mail code submitted","IdV: GPO verification submitted"] and properties.event_properties.success = 1 and !properties.event_properties.pending_in_person_enrollment and !properties.event_properties.fraud_check_failed)
+        | filter (name in ["IdV: enter verify by mail code submitted","IdV: GPO verification submitted"] and properties.event_properties.success = 1 and !properties.event_properties.pending_in_person_enrollment)
                  or (name not in ["IdV: enter verify by mail code submitted","IdV: GPO verification submitted"])
       FRAGMENT
 
+      expect(subject.query).to include(expected)
+    end
+
+    it 'includes GPO fraud_check_failed attribute when calculating fraud_review_pending' do
+      expected = <<~FRAGMENT
+        coalesce(properties.event_properties.fraud_review_pending, properties.event_properties.fraud_pending_reason, properties.event_properties.fraud_check_failed, 0) AS fraud_review_pending
+      FRAGMENT
       expect(subject.query).to include(expected)
     end
   end
