@@ -63,10 +63,6 @@ module Users
       redirect_to account_url
     end
 
-    def properties
-      ParseControllerFromReferer.new(request.referer).call
-    end
-
     def cancel_link_url
       if user_session[:share_email] == true
         sign_up_completed_url
