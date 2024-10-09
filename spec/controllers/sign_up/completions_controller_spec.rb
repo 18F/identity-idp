@@ -149,6 +149,82 @@ RSpec.describe SignUp::CompletionsController do
       end
     end
 
+    context 'threatmetrix on sign up enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:account_creation_device_profiling).
+          and_return(:collect_only)
+      end
+
+      context 'when in account creation flow' do
+        let(:threatmetrix_proofer_result) do
+          instance_double(Proofing::DdpResult, success?: true, transaction_id: 'ddp-123')
+        end
+
+        before do
+          allow_any_instance_of(AccountCreation::DeviceProfiling).to receive(:proof).
+            and_return(threatmetrix_proofer_result)
+
+          stub_sign_in(user)
+          subject.session[:sp] = {
+            issuer: current_sp.issuer,
+            acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            requested_attributes: [:email],
+            request_url: 'http://localhost:3000',
+          }
+          subject.user_session[:in_account_creation_flow] = true
+          get :show
+        end
+
+        it 'should return the result of the device profiling in the logs' do
+          expect(@analytics).to have_logged_event(
+            'User registration: agency handoff visited',
+            ial2: false,
+            ialmax: true,
+            service_provider_name: subject.decorated_sp_session.sp_name,
+            page_occurence: '',
+            needs_completion_screen_reason: :new_sp,
+            sp_session_requested_attributes: [:email],
+            in_account_creation_flow: false,
+            device_profiling_result: threatmetrix_proofer_result.to_h,
+          )
+        end
+      end
+
+      context 'when not in account creation flow' do
+        let(:threatmetrix_proofer_result) do
+          instance_double(Proofing::DdpResult, success?: true, transaction_id: 'ddp-123')
+        end
+
+        before do
+          allow_any_instance_of(AccountCreation::DeviceProfiling).to receive(:proof).
+            and_return(threatmetrix_proofer_result)
+
+          stub_sign_in(user)
+          subject.session[:sp] = {
+            issuer: current_sp.issuer,
+            acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            requested_attributes: [:email],
+            request_url: 'http://localhost:3000',
+          }
+          subject.user_session[:in_account_creation_flow] = false
+          get :show
+        end
+
+        it 'should return the result of the device profiling in the logs' do
+          expect(@analytics).to have_logged_event(
+            'User registration: agency handoff visited',
+            ial2: false,
+            ialmax: true,
+            service_provider_name: subject.decorated_sp_session.sp_name,
+            page_occurence: '',
+            needs_completion_screen_reason: :new_sp,
+            sp_session_requested_attributes: [:email],
+            in_account_creation_flow: false,
+          )
+        end
+      end
+    end
+
     it 'requires user with session to be logged in' do
       subject.session[:sp] = { dog: 'max' }
       get :show

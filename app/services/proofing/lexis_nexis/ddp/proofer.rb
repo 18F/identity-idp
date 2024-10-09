@@ -9,7 +9,6 @@ module Proofing
         attr_reader :config
 
         def initialize(attrs)
-          binding.pry
           @config = Config.new(attrs)
         end
 

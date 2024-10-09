@@ -7,9 +7,9 @@ module SignUp
     before_action :confirm_two_factor_authenticated
     before_action :confirm_identity_verified, if: :identity_proofing_required?
     before_action :apply_secure_headers_override, only: [:show, :update]
-    before_action :call_threatmetrix_if_in_account_creation
+    before_action :call_threatmetrix_if_in_account_creation, only: :show
     before_action :verify_needs_completions_screen
-    
+
     def show
       analytics.user_registration_agency_handoff_page_visit(
         **analytics_attributes(''),
@@ -90,7 +90,7 @@ module SignUp
       @device_profiling_result = AccountCreation::DeviceProfiling.new.proof(
         request_ip: request&.remote_ip,
         threatmetrix_session_id: session[:threatmetrix_session_id],
-        user_email: email_context.last_sign_in_email_address.email
+        user_email: email_context.last_sign_in_email_address.email,
       )
     end
 
@@ -112,6 +112,10 @@ module SignUp
 
       if page_occurence.present? && DisposableEmailDomain.disposable?(email_domain)
         attributes[:disposable_email_domain] = email_domain
+      end
+
+      if @device_profiling_result.present?
+        attributes[:device_profiling_result] = device_profiling_result.to_h
       end
 
       attributes
