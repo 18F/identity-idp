@@ -332,7 +332,7 @@ module Reporting
             EVENTS_TO_IGNORE_IF_FRAUD_REVIEW_PENDING.include?(event)
 
           users[event] << user_id unless ignore_event_for_user
-          users[sp_key(row)] << user_id if row['service_provider'].present?
+          users[sp_key(row['service_provider'])] << user_id if row['service_provider'].present?
 
           case event
           when Events::IDV_FINAL_RESOLUTION
@@ -436,8 +436,8 @@ module Reporting
       )
     end
 
-    def sp_key(row)
-      "sp:#{row.is_a?(Hash) ? row['service_provider'] : row.to_s}"
+    def sp_key(issuer)
+      "sp:#{issuer}"
     end
   end
 end
