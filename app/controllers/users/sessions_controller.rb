@@ -261,9 +261,9 @@ module Users
     end
 
     def pending_account_reset_request
-      AccountReset::FindPendingRequestForUser.new(
+      AccountReset::PendingRequestForUser.new(
         current_user,
-      ).call
+      ).get_account_reset_request
     end
 
     def override_csp_for_google_analytics

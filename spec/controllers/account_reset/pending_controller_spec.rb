@@ -87,6 +87,10 @@ RSpec.describe AccountReset::PendingController do
       post :cancel
 
       expect(account_reset_request.reload.cancelled_at).to_not be_nil
+      expect_delivered_email(
+        to: [user.email_addresses.first.email],
+        subject: t('user_mailer.account_reset_cancel.subject'),
+      )
     end
 
     context 'when the account reset request does not exist' do
