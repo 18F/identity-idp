@@ -68,7 +68,7 @@ module Users
     end
 
     def cancel_link_url
-      if properties[:request_came_from] == 'sign_up/completions#show'
+      if user_session[:share_email] == true
         sign_up_completed_url
       else
         decorated_sp_session.cancel_link_url
