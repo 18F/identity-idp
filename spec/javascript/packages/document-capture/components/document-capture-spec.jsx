@@ -18,7 +18,6 @@ import { FlowContext } from '@18f/identity-verify-flow';
 import { expect } from 'chai';
 import { useSandbox } from '@18f/identity-test-helpers';
 import { AcuantDocumentType } from '@18f/identity-document-capture/components/acuant-camera';
-import sinon from 'sinon';
 import { render, useAcuant, useDocumentCaptureForm } from '../../../support/document-capture';
 import { getFixtureFile } from '../../../support/file';
 
@@ -312,7 +311,7 @@ describe('document-capture/components/document-capture', () => {
 
     context('in person steps', () => {
       it('renders the step indicator', async () => {
-        const callback = sinon.spy();
+        const callback = sandbox.spy();
         const endpoint = '/upload';
         const { getByLabelText, getByText, queryByText, findByText } = render(
           <UploadContextProvider upload={httpUpload} endpoint={endpoint}>
