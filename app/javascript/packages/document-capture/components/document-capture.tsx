@@ -45,6 +45,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
     inPersonURL,
     skipDocAuthFromHowToVerify,
     skipDocAuthFromHandoff,
+    skipDocAuth,
   } = useContext(InPersonContext);
   useDidUpdateEffect(onStepChange, [stepName]);
   useEffect(() => {
@@ -145,9 +146,9 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   if (submissionError && formValues) {
     initialValues = formValues;
   }
-  // If the user got here by opting-in to in-person proofing, when skipDocAuthFromHowToVerify === true,
+  // If the user got here by opting-in to in-person proofing, when skipDocAuthFromHowToVerify === true || skipDocAuth === true,
   // then set steps to inPersonSteps
-  const isInPersonStepEnabled = skipDocAuthFromHowToVerify || skipDocAuthFromHandoff;
+  const isInPersonStepEnabled = skipDocAuthFromHowToVerify || skipDocAuthFromHandoff || skipDocAuth;
   const inPersonSteps: FormStep[] =
     inPersonURL === undefined
       ? []
@@ -161,7 +162,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   } else if (submissionError) {
     steps = [reviewFormStep, ...inPersonSteps];
   }
-  // If the user got here by opting-in to in-person proofing, when skipDocAuthFromHowToVerify === true;
+  // If the user got here by opting-in to in-person proofing, when skipDocAuthFromHowToVerify === true || skipDocAuth === true;
   // or opting-in ipp from handoff page, and selfie is required, when skipDocAuthFromHandoff === true
   // then set stepIndicatorPath to VerifyFlowPath.IN_PERSON
   const stepIndicatorPath =
