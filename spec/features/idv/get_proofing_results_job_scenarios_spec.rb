@@ -23,7 +23,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_ana
       @new_password = '$alty pickles'
     end
 
-    scenario 'User resets password and logs in before passed USPS proofing' do
+    scenario 'User resets password and logs in before USPS proofing "passed"' do
       # Given the user has an InPersonEnrollment with status "pending"
       expect(@user.in_person_enrollments.first).to have_attributes(
         status: 'pending',
@@ -102,7 +102,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_ana
     end
 
     ['failed', 'cancelled', 'expired'].each do |status|
-      scenario "User resets password and logs in before \"#{status}\" USPS proofing" do
+      scenario "User resets password and logs in before USPS proofing \"#{status}\"" do
         # Given the user has an InPersonEnrollment with status "pending"
         expect(@user.in_person_enrollments.first).to have_attributes(
           status: 'pending',
@@ -181,7 +181,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_ana
       end
     end
 
-    scenario 'User resets password without logging in before passing USPS proofing' do
+    scenario 'User resets password without logging in before USPS proofing "passed"' do
       # Given the user has an InPersonEnrollment with status "pending"
       expect(@user.in_person_enrollments.first).to have_attributes(
         status: 'pending',
@@ -242,7 +242,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_ana
     end
 
     ['failed', 'cancelled', 'expired'].each do |status|
-      scenario "User resets password without logging in before \"#{status}\" USPS proofing" do
+      scenario "User resets password without logging in before USPS proofing \"#{status}\"" do
         # Given the user has an InPersonEnrollment with status "pending"
         expect(@user.in_person_enrollments.first).to have_attributes(
           status: 'pending',
@@ -303,7 +303,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_ana
       end
     end
 
-    scenario 'User resets password with personal key after passing USPS proofing' do
+    scenario 'User resets password with personal key after USPS proofing "passed"' do
       # Given the user has an InPersonEnrollment with status "pending"
       expect(@user.in_person_enrollments.first).to have_attributes(
         status: 'pending',
@@ -368,7 +368,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_ana
       )
     end
 
-    scenario 'User resets password without personal key after passing USPS proofing' do
+    scenario 'User resets password without personal key after USPS proofing "passed"' do
       # Given the user has an InPersonEnrollment with status "pending"
       expect(@user.in_person_enrollments.first).to have_attributes(
         status: 'pending',
@@ -434,7 +434,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_ana
     end
 
     ['failed', 'cancelled', 'expired'].each do |status|
-      scenario "User resets password after \"#{status}\" USPS proofing" do
+      scenario "User resets password after USPS proofing \"#{status}\"" do
         # Given the user has an InPersonEnrollment with status "pending"
         expect(@user.in_person_enrollments.first).to have_attributes(
           status: 'pending',
@@ -496,7 +496,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_ana
     end
 
     scenario <<~EOS.squish do
-      User resets password and logs in before passed USPS proofing with fraud review pending
+      User resets password and logs in before USPS proofing "passed" with fraud review pending
     EOS
       @user.in_person_enrollments.first.profile.update(
         fraud_review_pending_at: 1.day.ago,
@@ -597,7 +597,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_ana
     end
 
     scenario <<~EOS.squish do
-      User resets password without logging in before passing USPS proofing with fraud review pending
+      User resets password without logging in before USPS proofing "passed" with fraud review pending
     EOS
       @user.in_person_enrollments.first.profile.update(
         fraud_review_pending_at: 1.day.ago,
