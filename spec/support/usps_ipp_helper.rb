@@ -180,10 +180,15 @@ module UspsIppHelper
     }
   end
 
-  def stub_request_unexpected_invalid_applicant
-    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
-      **request_unexpected_invalid_applicant_args,
+  def stub_request_unexpected_invalid_applicant(response_body_overrides = {})
+    response = merge_into_response_body(
+      request_unexpected_invalid_applicant_args,
+      response_body_overrides,
     )
+    stub_request(
+      :post,
+      %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults},
+    ).to_return(response)
   end
 
   def request_unexpected_invalid_applicant_args
@@ -195,10 +200,16 @@ module UspsIppHelper
     }
   end
 
-  def stub_request_unexpected_invalid_enrollment_code
-    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
-      **request_unexpected_invalid_enrollment_code_args,
+  def stub_request_unexpected_invalid_enrollment_code(response_body_overrides = {})
+    response = merge_into_response_body(
+      request_unexpected_invalid_enrollment_code_args,
+      response_body_overrides,
     )
+
+    stub_request(
+      :post,
+      %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults},
+    ).to_return(response)
   end
 
   def request_unexpected_invalid_enrollment_code_args
@@ -364,6 +375,17 @@ module UspsIppHelper
     stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
       status: 200,
       body: 'invalid',
+    )
+  end
+
+  def stub_request_proofing_results(status_code: 200, body: {})
+    stub_request(
+      :post,
+      %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults},
+    ).and_return(
+      status: status_code,
+      body: body.to_json,
+      headers: { 'content-type' => 'application/json' },
     )
   end
 
