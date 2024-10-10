@@ -122,50 +122,55 @@ try {
   parsedUsStatesTerritories = JSON.parse(usStatesTerritories);
 } catch (e) {}
 
-
 render(
-  <MarketingSiteContextProvider helpCenterRedirectURL={helpCenterRedirectURL} securityAndPrivacyHowItWorksURL={securityAndPrivacyHowItWorksURL}>
+  <MarketingSiteContextProvider
+    helpCenterRedirectURL={helpCenterRedirectURL}
+    securityAndPrivacyHowItWorksURL={securityAndPrivacyHowItWorksURL}
+  >
     <DeviceContext.Provider value={device}>
-      <InPersonContext.Provider value={{
-        inPersonURL: inPersonURL,
-        locationsURL: locationsURL,
-        addressSearchURL: addressSearchURL,
-        inPersonOutageExpectedUpdateDate: inPersonOutageExpectedUpdateDate,
-        inPersonOutageMessageEnabled: inPersonOutageMessageEnabled === 'true',
-        inPersonFullAddressEntryEnabled: inPersonFullAddressEntryEnabled === 'true',
-        optedInToInPersonProofing: optedInToInPersonProofing === 'true',
-        usStatesTerritories: parsedUsStatesTerritories,
-        skipDocAuth: skipDocAuth === 'true',
-        skipDocAuthFromHandoff: skipDocAuthFromHandoff === 'true',
-        howToVerifyURL: howToVerifyUrl,
-        previousStepURL: previousStepUrl,
+      <InPersonContext.Provider
+        value={{
+          inPersonURL,
+          locationsURL,
+          addressSearchURL,
+          inPersonOutageExpectedUpdateDate,
+          inPersonOutageMessageEnabled: inPersonOutageMessageEnabled === 'true',
+          inPersonFullAddressEntryEnabled: inPersonFullAddressEntryEnabled === 'true',
+          optedInToInPersonProofing: optedInToInPersonProofing === 'true',
+          usStatesTerritories: parsedUsStatesTerritories,
+          skipDocAuth: skipDocAuth === 'true',
+          skipDocAuthFromHandoff: skipDocAuthFromHandoff === 'true',
+          howToVerifyURL: howToVerifyUrl,
+          previousStepURL: previousStepUrl,
         }}
       >
         <AnalyticsContextProvider trackEvent={trackEvent}>
           <AcuantContextProvider
-              sdkSrc={acuantVersion && `/acuant/${acuantVersion}/AcuantJavascriptWebSdk.min.js`}
-              cameraSrc={acuantVersion && `/acuant/${acuantVersion}/AcuantCamera.min.js`}
-              passiveLivenessOpenCVSrc={acuantVersion && `/acuant/${acuantVersion}/opencv.min.js`}
-              passiveLivenessSrc={getSelfieCaptureEnabled()
+            sdkSrc={acuantVersion && `/acuant/${acuantVersion}/AcuantJavascriptWebSdk.min.js`}
+            cameraSrc={acuantVersion && `/acuant/${acuantVersion}/AcuantCamera.min.js`}
+            passiveLivenessOpenCVSrc={acuantVersion && `/acuant/${acuantVersion}/opencv.min.js`}
+            passiveLivenessSrc={
+              getSelfieCaptureEnabled()
                 ? acuantVersion && `/acuant/${acuantVersion}/AcuantPassiveLiveness.min.js`
-                : undefined}
-              credentials={getMetaContent('acuant-sdk-initialization-creds')}
-              endpoint={getMetaContent('acuant-sdk-initialization-endpoint')}
-              glareThreshold={glareThreshold}
-              sharpnessThreshold={sharpnessThreshold}
+                : undefined
+            }
+            credentials={getMetaContent('acuant-sdk-initialization-creds')}
+            endpoint={getMetaContent('acuant-sdk-initialization-endpoint')}
+            glareThreshold={glareThreshold}
+            sharpnessThreshold={sharpnessThreshold}
           >
             <UploadContextProvider
-                endpoint={String(appRoot.getAttribute('data-endpoint')) }
-                statusEndpoint={ String(appRoot.getAttribute('data-status-endpoint')) }
-                statusPollInterval={ Number(appRoot.getAttribute('data-status-poll-interval-ms')) }
-                isMockClient={isMockClient }
-                formData={formData }
-                flowPath={ flowPath }
+              endpoint={String(appRoot.getAttribute('data-endpoint'))}
+              statusEndpoint={String(appRoot.getAttribute('data-status-endpoint'))}
+              statusPollInterval={Number(appRoot.getAttribute('data-status-poll-interval-ms'))}
+              isMockClient={isMockClient}
+              formData={formData}
+              flowPath={flowPath}
             >
               <FlowContext.Provider
                 value={{
-                  accountURL: accountURL,
-                  cancelURL: cancelURL,
+                  accountURL,
+                  cancelURL,
                   currentStep: 'document_capture',
                 }}
               >
@@ -178,14 +183,12 @@ render(
                     }}
                   >
                     <FailedCaptureAttemptsContextProvider
-                        maxCaptureAttemptsBeforeNativeCamera={ Number(
-                          maxCaptureAttemptsBeforeNativeCamera
-                          )
-                        }
-                        maxSubmissionAttemptsBeforeNativeCamera={ Number(
-                          maxSubmissionAttemptsBeforeNativeCamera
-                          )
-                        }
+                      maxCaptureAttemptsBeforeNativeCamera={Number(
+                        maxCaptureAttemptsBeforeNativeCamera,
+                      )}
+                      maxSubmissionAttemptsBeforeNativeCamera={Number(
+                        maxSubmissionAttemptsBeforeNativeCamera,
+                      )}
                     >
                       <DocumentCapture onStepChange={() => extendSession(sessionsURL)} />
                     </FailedCaptureAttemptsContextProvider>

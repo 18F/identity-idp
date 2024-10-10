@@ -10,7 +10,6 @@ import {
   SelfieCaptureContext,
 } from '@18f/identity-document-capture';
 import DocumentsAndSelfieStep from '@18f/identity-document-capture/components/documents-and-selfie-step';
-import { composeComponents } from '@18f/identity-compose-components';
 import { render } from '../../../support/document-capture';
 import { getFixtureFile } from '../../../support/file';
 
@@ -145,19 +144,10 @@ describe('document-capture/components/documents-and-selfie-step', () => {
 
   context('selfie capture', () => {
     it('renders with front, back, and selfie inputs when isSelfieCaptureEnabled is true', () => {
-      const App = composeComponents(
-        [
-          SelfieCaptureContext.Provider,
-          {
-            value: {
-              isSelfieCaptureEnabled: true,
-            },
-          },
-        ],
-        [DocumentsAndSelfieStep],
-      );
       const { getAllByRole, getByText, getByRole, getByLabelText, queryByLabelText } = render(
-        <App />,
+        <SelfieCaptureContext.Provider value={{ isSelfieCaptureEnabled: true }}>
+          <DocumentsAndSelfieStep />
+        </SelfieCaptureContext.Provider>,
       );
 
       const front = getByLabelText('doc_auth.headings.document_capture_front');
@@ -195,18 +185,11 @@ describe('document-capture/components/documents-and-selfie-step', () => {
   });
 
   it('renders with front, back when isSelfieCaptureEnabled is false', () => {
-    const App = composeComponents(
-      [
-        SelfieCaptureContext.Provider,
-        {
-          value: {
-            isSelfieCaptureEnabled: false,
-          },
-        },
-      ],
-      [DocumentsAndSelfieStep],
+    const { queryByRole, getByRole, getByLabelText } = render(
+      <SelfieCaptureContext.Provider value={{ isSelfieCaptureEnabled: false }}>
+        <DocumentsAndSelfieStep />
+      </SelfieCaptureContext.Provider>,
     );
-    const { queryByRole, getByRole, getByLabelText } = render(<App />);
 
     const front = getByLabelText('doc_auth.headings.document_capture_front');
     const back = getByLabelText('doc_auth.headings.document_capture_back');
