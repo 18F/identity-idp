@@ -12,7 +12,6 @@ module Users
     delegate :enabled_mfa_methods_count, to: :mfa_context
 
     def index
-      reset_mfa_selection_attempt_count
       two_factor_options_form
       @presenter = two_factor_options_presenter
       analytics.user_registration_2fa_setup_visit(
