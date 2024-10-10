@@ -12,14 +12,35 @@ RSpec.describe Users::EmailsController do
 
   context 'user visits add an email address page' do
     let(:user) { create(:user) }
+
     before do
       stub_sign_in(user)
       stub_analytics
     end
-    it 'renders the index view' do
+
+    it 'renders the show view' do
       get :show
 
       expect(@analytics).to have_logged_event('Add Email Address Page Visited')
+
+      expect(controller.cancel_link_url).to eq(root_url)
+    end
+  end
+
+  context 'user visits add an email address from SP consent flow' do
+    let(:user) { create(:user) }
+    let(:current_sp) { create(:service_provider) }
+
+    before do
+      stub_sign_in(user)
+      request.env['HTTP_REFERER'] = 'http://example.com/sign_up/completed'
+      controller.user_session[:share_email] = true
+    end
+
+    it 'renders the show view with a link back to continue SP consent' do
+      get :show
+
+      expect(controller.cancel_link_url).to eq(sign_up_completed_url)
     end
   end
 
