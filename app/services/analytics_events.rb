@@ -5106,7 +5106,6 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name 'Multi-Factor Authentication: enter PIV CAC visited'
   # @param ["authentication", "reauthentication", "confirmation"] context User session context
   # @param ["piv_cac"] multi_factor_auth_method
-  # @param [Hash] mfa_attempts number of MFA setup attempts
   # @param [Integer, nil] piv_cac_configuration_id PIV/CAC configuration database ID
   # @param [Boolean] new_device Whether the user is authenticating from a new device
   # User used a PIV/CAC as their mfa
@@ -5115,7 +5114,6 @@ module AnalyticsEvents
     multi_factor_auth_method:,
     piv_cac_configuration_id:,
     new_device:,
-    mfa_attempts:,
     **extra
   )
     track_event(
@@ -5124,7 +5122,6 @@ module AnalyticsEvents
       multi_factor_auth_method: multi_factor_auth_method,
       piv_cac_configuration_id: piv_cac_configuration_id,
       new_device:,
-      mfa_attempts:,
       **extra,
     )
   end

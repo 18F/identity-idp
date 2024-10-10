@@ -66,13 +66,13 @@ module Users
     end
 
     def process_piv_cac_setup
-      mfa_selection_attempt_count
+      mfa_selection_attempt_count('piv_cac')
       result = user_piv_cac_form.submit
       properties = result.to_h.merge(analytics_properties)
       analytics.multi_factor_auth_setup(**properties)
       if result.success?
         process_valid_submission
-        reset_mfa_selection_attempt_count
+        user_session.delete(:mfa_attempts)
       else
         process_invalid_submission
       end
@@ -128,7 +128,7 @@ module Users
       {
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
         enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
-        mfa_attempts: mfa_attempts_hash('piv_cac'),
+        mfa_attempts: user_session[:mfa_attempts],
       }
     end
 

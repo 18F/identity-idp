@@ -26,7 +26,6 @@ module TwoFactorAuthentication
     }.freeze
 
     def index
-      reset_mfa_selection_attempt_count
       @two_factor_options_form = TwoFactorLoginOptionsForm.new(current_user)
       @presenter = two_factor_options_presenter
       analytics.multi_factor_auth_option_list_visit

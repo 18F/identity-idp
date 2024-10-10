@@ -12,17 +12,19 @@ module TwoFactorAuthenticatableMethods
   end
 
   def handle_verification_for_authentication_context(result:, auth_method:, extra_analytics: nil)
+    mfa_selection_attempt_count(auth_method)
     analytics.multi_factor_auth(
       **result.to_h,
       multi_factor_auth_method: auth_method,
       enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
       new_device: new_device?,
       **extra_analytics.to_h,
-      mfa_attempts: mfa_attempts_hash(auth_method),
+      mfa_attempts: user_session[:mfa_attempts],
     )
 
     if result.success?
       handle_valid_verification_for_authentication_context(auth_method:)
+      user_session.delete(:mfa_attempts)
     else
       handle_invalid_verification_for_authentication_context
     end
@@ -114,9 +116,10 @@ module TwoFactorAuthenticatableMethods
     save_remember_device_preference(remember_device_preference)
   end
 
-  def mfa_selection_attempt_count
-    user_session[:mfa_attempts] ||= 0
-    user_session[:mfa_attempts] += 1
+  def mfa_selection_attempt_count(auth_method)
+    user_session[:mfa_attempts] ||= {}
+    attempt = { auth_method.to_sym => 1 }
+    user_session[:mfa_attempts].merge!(attempt) { |_key, old_val, new_val| old_val + new_val }
   end
 
   def reset_mfa_selection_attempt_count

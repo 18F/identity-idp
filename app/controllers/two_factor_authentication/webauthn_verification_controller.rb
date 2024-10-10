@@ -9,7 +9,6 @@ module TwoFactorAuthentication
     before_action :confirm_webauthn_enabled, only: :show
 
     def show
-      mfa_selection_attempt_count
       save_challenge_in_session
       analytics.multi_factor_auth_enter_webauthn_visit(**analytics_properties)
       @presenter = presenter_for_two_factor_authentication_method
@@ -30,7 +29,6 @@ module TwoFactorAuthentication
           **analytics_properties,
           multi_factor_auth_method_created_at:
             webauthn_configuration_or_latest.created_at.strftime('%s%L'),
-          mfa_attempts: mfa_attempts_hash('webauthn'),
         },
       )
 
