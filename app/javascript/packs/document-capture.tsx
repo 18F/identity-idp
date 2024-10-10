@@ -15,6 +15,7 @@ import {
 import { isCameraCapableMobile } from '@18f/identity-device';
 import { FlowContext } from '@18f/identity-verify-flow';
 import { trackEvent as baseTrackEvent } from '@18f/identity-analytics';
+import { extendSession } from '@18f/identity-session';
 import type { FlowPath, DeviceContextValue } from '@18f/identity-document-capture';
 
 /**
@@ -40,6 +41,7 @@ interface AppRootData {
   docAuthSelfieDesktopTestMode: string;
   locationsUrl: string;
   addressSearchUrl: string;
+  sessionsUrl: string;
   docAuthSeparatePagesEnabled: string;
 }
 
@@ -112,6 +114,7 @@ const {
   docAuthSeparatePagesEnabled,
   locationsUrl: locationsURL,
   addressSearchUrl: addressSearchURL,
+  sessionsUrl: sessionsURL,
 } = appRoot.dataset as DOMStringMap & AppRootData;
 
 let parsedUsStatesTerritories = [];
@@ -201,7 +204,12 @@ const App = composeComponents(
       maxSubmissionAttemptsBeforeNativeCamera: Number(maxSubmissionAttemptsBeforeNativeCamera),
     },
   ],
-  [DocumentCapture],
+  [
+    DocumentCapture,
+    {
+      onStepChange: () => extendSession(sessionsURL),
+    },
+  ],
 );
 
 render(<App />, appRoot);
