@@ -37,15 +37,13 @@ class DwStaleDataCheckJob < ApplicationJob
   end
 
   def upload_to_s3(data, timestamp)
-    s3 = Aws::S3::Resource.new(region: 'us-west-2')
     date_str = timestamp.strftime('%Y-%m-%d')
-    csv_data = CSV.generate(headers: true) do |csv|
-      csv << ['table_name', 'max_id', 'row_count']
-      data.each do |table, values|
-        csv << [table, values[:max_id], values[:row_count]]
-      end
-    end
-    obj = s3.bucket("login-gov-analytics-export-#{Identity::Hostdata.env}-#{Identity::Hostdata.aws_account_id}-#{Identity::Hostdata.aws_region}").object("idp_max_ids/#{date_str}_idp_max_ids.csv")
-    obj.put(body: csv_data)
+    json_data = data.to_json
+    s3_client = JobHelpers::S3Helper.new.s3_client
+    s3_client.put_object(
+      bucket: "login-gov-analytics-export-#{Identity::Hostdata.env}-#{Identity::Hostdata.aws_account_id}-#{Identity::Hostdata.aws_region}",
+      key: "idp_max_ids/#{date_str}_idp_max_ids.json",
+      body: json_data,
+    )
   end
 end
