@@ -4,6 +4,10 @@ const MINIMUM_IOS_VERSION = 16;
 
 const MINIMUM_ANDROID_VERSION = 9;
 
+const MINIMUM_MACOS_VERSION = 13;
+
+const MINIMUM_WINDOWS_VERSION = 10
+
 function isQualifyingIOSDevice(): boolean {
   const match = navigator.userAgent.match(/iPhone; CPU iPhone OS (\d+)_/);
   const iOSVersion: null | number = match && Number(match[1]);
@@ -24,7 +28,20 @@ function isQualifyingAndroidDevice(): boolean {
   );
 }
 
+function isQualifyingMacOSDesktopDevice(): boolean {
+  const match = navigator.userAgent.match(/Mac OS X/);
+  const macOsVersion: null | number = match && Number(match[1]);
+  return !!macOsVersion && macOsVersion >= MINIMUM_MACOS_VERSION;
+}
+
+function isQualifyingWindowsDesktopDevice(): boolean {
+  const match = navigator.userAgent.match(/Windows/);
+  const windowsVersion: null | number = match && Number(match[1]);
+  return !!windowsVersion && windowsVersion >= MINIMUM_WINDOWS_VERSION;
+}
+
 const isWebauthnPasskeySupported: IsWebauthnPasskeySupported = () =>
-  isQualifyingIOSDevice() || isQualifyingAndroidDevice();
+  isQualifyingIOSDevice() || isQualifyingAndroidDevice() 
+  || isQualifyingMacOSDesktopDevice() || isQualifyingWindowsDesktopDevice();
 
 export default isWebauthnPasskeySupported;
