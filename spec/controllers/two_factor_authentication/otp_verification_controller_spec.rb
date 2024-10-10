@@ -62,10 +62,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
         country_code: parsed_phone.country,
         phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
         enabled_mfa_methods_count: 1,
-        mfa_attempts: {
-          attempts: 1,
-          auth_method: 'otp',
-        },
         in_account_creation_flow: false,
       )
     end
@@ -156,6 +152,10 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
           enabled_mfa_methods_count: 1,
           in_account_creation_flow: false,
+          mfa_attempts: {
+            'otp' => 1,
+            'sms' => 1,
+          },
         )
       end
 
@@ -238,6 +238,10 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
           enabled_mfa_methods_count: 1,
           in_account_creation_flow: false,
+          mfa_attempts: {
+            'otp' => 1,
+            'sms' => 1,
+          },
         )
         expect(@analytics).to have_logged_event('Multi-Factor Authentication: max attempts reached')
       end
@@ -308,6 +312,10 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
           enabled_mfa_methods_count: 1,
           in_account_creation_flow: false,
+          mfa_attempts: {
+            'otp' => 1,
+            'sms' => 1,
+          },
         )
         expect(@analytics).to have_logged_event(
           'User marked authenticated',
@@ -355,6 +363,10 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
             phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
             enabled_mfa_methods_count: 1,
             in_account_creation_flow: false,
+            mfa_attempts: {
+              'otp' => 1,
+              'sms' => 1,
+            },
           )
           expect(@analytics).to have_logged_event(
             'User marked authenticated',
@@ -540,8 +552,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
               enabled_mfa_methods_count: 1,
               in_account_creation_flow: true,
               mfa_attempts: {
-                attempts: 1,
-                auth_method: 'otp',
+                'otp' => 1,
               },
             )
           end
@@ -613,8 +624,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
               enabled_mfa_methods_count: 1,
               in_account_creation_flow: false,
               mfa_attempts: {
-                attempts: 1,
-                auth_method: 'otp',
+                'otp' => 1,
               },
             )
           end
@@ -658,8 +668,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
                 enabled_mfa_methods_count: 1,
                 in_account_creation_flow: false,
                 mfa_attempts: {
-                  attempts: 2,
-                  auth_method: 'otp',
+                  'otp' => 3,
                 },
               )
             end
@@ -712,8 +721,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
               enabled_mfa_methods_count: 0,
               in_account_creation_flow: false,
               mfa_attempts: {
-                attempts: 1,
-                auth_method: 'otp',
+                'otp' => 1,
               },
             )
 

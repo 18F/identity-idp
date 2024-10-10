@@ -109,8 +109,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
             enabled_mfa_methods_count: 0,
             in_account_creation_flow: false,
             mfa_attempts: {
-              attempts: 1,
-              auth_method: 'totp',
+              'totp' => 1,
             },
           )
         end
@@ -141,8 +140,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
             enabled_mfa_methods_count: 2,
             in_account_creation_flow: false,
             mfa_attempts: {
-              attempts: 1,
-              auth_method: 'totp',
+              'totp' => 1,
             },
           )
         end
@@ -175,8 +173,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
             enabled_mfa_methods_count: 2,
             in_account_creation_flow: false,
             mfa_attempts: {
-              attempts: 2,
-              auth_method: 'totp',
+              'totp' => 2,
             },
           )
         end
@@ -207,8 +204,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
             enabled_mfa_methods_count: 1,
             in_account_creation_flow: false,
             mfa_attempts: {
-              attempts: 1,
-              auth_method: 'totp',
+              'totp' => 1,
             },
           )
         end
@@ -240,8 +236,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
             enabled_mfa_methods_count: 1,
             in_account_creation_flow: false,
             mfa_attempts: {
-              attempts: 1,
-              auth_method: 'totp',
+              'totp' => 1,
             },
           )
         end
@@ -272,8 +267,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
             enabled_mfa_methods_count: 0,
             in_account_creation_flow: false,
             mfa_attempts: {
-              attempts: 1,
-              auth_method: 'totp',
+              'totp' => 1,
             },
           )
         end
@@ -307,8 +301,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
               enabled_mfa_methods_count: 1,
               in_account_creation_flow: true,
               mfa_attempts: {
-                attempts: 1,
-                auth_method: 'totp',
+                'totp' => 1,
               },
             )
           end
@@ -330,8 +323,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
               enabled_mfa_methods_count: 1,
               in_account_creation_flow: true,
               mfa_attempts: {
-                attempts: 1,
-                auth_method: 'totp',
+                'totp' => 1,
               },
             )
           end
@@ -360,8 +352,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
             enabled_mfa_methods_count: 0,
             in_account_creation_flow: false,
             mfa_attempts: {
-              attempts: 1,
-              auth_method: 'totp',
+              'totp' => 1,
             },
           )
         end
