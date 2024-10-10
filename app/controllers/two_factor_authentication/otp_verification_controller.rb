@@ -14,7 +14,6 @@ module TwoFactorAuthentication
     helper_method :in_multi_mfa_selection_flow?
 
     def show
-      mfa_selection_attempt_count unless UserSessionContext.confirmation_context?(context)
       analytics.multi_factor_auth_enter_otp_visit(**analytics_properties)
 
       @landline_alert = landline_warning?
@@ -22,7 +21,7 @@ module TwoFactorAuthentication
     end
 
     def create
-      mfa_selection_attempt_count if UserSessionContext.confirmation_context?(context)
+      mfa_selection_attempt_count('otp')
       result = otp_verification_form.submit
       post_analytics(result)
 
@@ -44,6 +43,7 @@ module TwoFactorAuthentication
         end
 
         reset_otp_session_data
+        user_session.delete(:mfa_attempts)
       else
         handle_invalid_otp(type: 'otp')
       end
@@ -143,9 +143,6 @@ module TwoFactorAuthentication
     def post_analytics(result)
       properties = result.to_h.merge(analytics_properties)
       analytics.multi_factor_auth_setup(**properties) if context == 'confirmation'
-      if result.success? && UserSessionContext.confirmation_context?(context)
-        reset_mfa_selection_attempt_count
-      end
     end
 
     def analytics_properties
@@ -161,7 +158,7 @@ module TwoFactorAuthentication
         phone_configuration_id: phone_configuration&.id,
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
         enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
-        mfa_attempts: mfa_attempts_hash('otp'),
+        mfa_attempts: user_session[:mfa_attempts],
       }
     end
 
