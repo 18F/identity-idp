@@ -43,17 +43,19 @@ module Idv
         ssn_form: ssn_form,
         step_indicator_steps: step_indicator_steps,
       )
-      analytics.idv_doc_auth_ssn_submitted(
-        **analytics_arguments.merge(form_response.to_h),
-      )
 
       if form_response.success?
+        idv_session.previous_ssn = idv_session.ssn
         idv_session.ssn = params[:doc_auth][:ssn]
         redirect_to next_url
       else
         flash[:error] = form_response.first_error_message
         render 'idv/shared/ssn', locals: threatmetrix_view_variables(ssn_presenter.updating_ssn?)
       end
+
+      analytics.idv_doc_auth_ssn_submitted(
+        **analytics_arguments.merge(form_response.to_h),
+      )
     end
 
     def self.step_info
@@ -81,6 +83,7 @@ module Idv
         flow_path: idv_session.flow_path,
         step: 'ssn',
         analytics_id: 'Doc Auth',
+        previous_ssn_edit_distance: previous_ssn_edit_distance,
       }.merge(ab_test_analytics_buckets)
     end
   end

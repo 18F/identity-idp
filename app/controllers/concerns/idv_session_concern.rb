@@ -63,4 +63,9 @@ module IdvSessionConcern
     resolved_authn_context_result.facial_match? &&
       !idv_session_user.identity_verified_with_facial_match?
   end
+
+  def previous_ssn_edit_distance
+    return if idv_session.ssn.blank? || idv_session.previous_ssn.blank?
+    DidYouMean::Levenshtein.distance(idv_session.previous_ssn, idv_session.ssn)
+  end
 end
