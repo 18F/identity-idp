@@ -289,6 +289,47 @@ RSpec.describe Idv::VerifyInfoController do
       end
     end
 
+    context 'when the user has updated their SSN' do
+      let(:document_capture_session) do
+        DocumentCaptureSession.create(user:)
+      end
+
+      let(:async_state) do
+        # Here we're trying to match the store to redis -> read from redis flow this data travels
+        adjudicated_result = Proofing::Resolution::ResultAdjudicator.new(
+          state_id_result: Proofing::StateIdResult.new(success: true),
+          device_profiling_result: Proofing::DdpResult.new(success: true),
+          ipp_enrollment_in_progress: true,
+          residential_resolution_result: Proofing::Resolution::Result.new(success: true),
+          resolution_result: Proofing::Resolution::Result.new(success: true),
+          same_address_as_id: true,
+          should_proof_state_id: true,
+          applicant_pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
+        ).adjudicated_result.to_h
+
+        document_capture_session.create_proofing_session
+
+        document_capture_session.store_proofing_result(adjudicated_result)
+
+        document_capture_session.load_proofing_result
+      end
+
+      it 'logs the edit distance between SSNs' do
+        allow(controller).to receive(:load_async_state).and_return(async_state)
+        controller.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
+        controller.idv_session.previous_ssn = '900-66-1256'
+
+        get :show
+
+        expect(@analytics).to have_logged_event(
+          'IdV: doc auth verify proofing results',
+          hash_including(
+            previous_ssn_edit_distance: 2,
+          ),
+        )
+      end
+    end
+
     context 'for an aamva request' do
       before do
         allow(controller).to receive(:load_async_state).and_return(async_state)

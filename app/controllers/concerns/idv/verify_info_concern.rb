@@ -185,10 +185,10 @@ module Idv
         state: pii[:state],
         state_id_jurisdiction: pii[:state_id_jurisdiction],
         state_id_number: pii[:state_id_number],
-        # todo: add other edited fields?
         extra: {
           address_edited: !!idv_session.address_edited,
           address_line2_present: !pii[:address2].blank?,
+          previous_ssn_edit_distance: previous_ssn_edit_distance,
           pii_like_keypaths: [
             [:errors, :ssn],
             [:proofing_results, :context, :stages, :resolution, :errors, :ssn],
