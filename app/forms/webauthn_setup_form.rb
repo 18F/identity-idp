@@ -25,7 +25,6 @@ class WebauthnSetupForm
     @authenticator_data_flags = nil
     @protocol = nil
     @device_name = device_name
-    @desktop_ab_test_bucket = false
   end
 
   def submit(params)
@@ -49,10 +48,6 @@ class WebauthnSetupForm
     !!@platform_authenticator
   end
 
-  def desktop_ab_test_bucket?
-    platform_authenticator? && desktop_ab_test_bucket
-  end
-
   def generic_error_message
     if platform_authenticator?
       I18n.t('errors.webauthn_platform_setup.general_error')
@@ -68,14 +63,12 @@ class WebauthnSetupForm
 
   attr_reader :success, :transports, :invalid_transports, :protocol
   attr_accessor :user, :challenge, :attestation_object, :client_data_json,
-                :name, :platform_authenticator, :authenticator_data_flags, :device_name,
-                :desktop_ab_test_bucket
+                :name, :platform_authenticator, :authenticator_data_flags, :device_name
 
   def consume_parameters(params)
     @attestation_object = params[:attestation_object]
     @client_data_json = params[:client_data_json]
     @platform_authenticator = (params[:platform_authenticator].to_s == 'true')
-    @desktop_ab_test_bucket = params[:ab_test_bucket]
     @name = @platform_authenticator ? @device_name : params[:name]
     @authenticator_data_flags = process_authenticator_data_value(
       params[:authenticator_data_value],
