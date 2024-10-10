@@ -131,8 +131,9 @@ class Analytics
 
     attributes = resolved_result.to_h
     attributes[:component_values] = resolved_result.component_values.map do |v|
-      [v.name.sub('http://idmanagement.gov/ns/assurance/', ''), true]
+      [v.name.sub("#{Saml::Idp::Constants::LEGACY_ACR_PREFIX}/", ''), true]
     end.to_h
+    attributes[:component_names] = resolved_result.component_names
     attributes.reject! { |_key, value| value == false }
 
     if differentiator.present?
@@ -157,7 +158,9 @@ class Analytics
   end
 
   def resolved_authn_context_result
-    return nil if sp.nil? || session[:sp].blank?
+    return nil if sp.blank? ||
+                  session[:sp].blank? ||
+                  (session[:sp][:vtr].blank? && session[:sp][:acr_values].blank?)
     return @resolved_authn_context_result if defined?(@resolved_authn_context_result)
 
     service_provider = ServiceProvider.find_by(issuer: sp)

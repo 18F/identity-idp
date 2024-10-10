@@ -346,6 +346,8 @@ sign_in_user_id_per_ip_attempt_window_exponential_factor: 1.1
 sign_in_user_id_per_ip_attempt_window_in_minutes: 720
 sign_in_user_id_per_ip_attempt_window_max_minutes: 43_200
 sign_in_user_id_per_ip_max_attempts: 50
+socure_document_request_endpoint: ''
+socure_enabled: false
 socure_idplus_api_key: ''
 socure_idplus_base_url: ''
 socure_idplus_timeout_in_seconds: 5
@@ -364,7 +366,6 @@ test_ssn_allowed_list: ''
 totp_code_interval: 30
 unauthorized_scope_enabled: false
 use_dashboard_service_providers: false
-use_fed_domain_class: false
 use_kms: false
 use_vot_in_sp_requests: true
 usps_auth_token_refresh_job_enabled: false
@@ -449,7 +450,6 @@ development:
   state_tracking_enabled: true
   telephony_adapter: test
   use_dashboard_service_providers: true
-  use_fed_domain_class: true
   usps_eipp_sponsor_id: '222222222222222'
   usps_ipp_sponsor_id: '111111111111111'
   usps_ipp_transliteration_enabled: true
@@ -582,7 +582,6 @@ test:
   telephony_adapter: test
   test_ssn_allowed_list: '999999999'
   totp_code_interval: 3
-  use_fed_domain_class: true
   usps_eipp_sponsor_id: '222222222222222'
   usps_ipp_root_url: 'http://localhost:1000'
   usps_ipp_sponsor_id: '111111111111111'
