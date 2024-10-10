@@ -4,6 +4,8 @@ metadata:
   name: {{ENVIRONMENT}}
   finalizers:
   - resources-finalizer.argocd.argoproj.io
+  labels:
+    project-name: {{CI_PROJECT_NAME}}
 spec:
   project: default
   source:
@@ -563,3 +565,6 @@ spec:
       selfHeal: true
     syncOptions:
     - CreateNamespace=true
+  info:
+    - name: Merge Request
+      value: {{CI_MERGE_REQUEST_SOURCE_PROJECT_URL}}
