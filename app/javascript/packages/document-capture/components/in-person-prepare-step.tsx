@@ -19,11 +19,11 @@ function InPersonPrepareStep({ toPreviousStep }) {
     inPersonURL,
     inPersonOutageMessageEnabled,
     inPersonOutageExpectedUpdateDate,
+    skipDocAuth,
     skipDocAuthFromHowToVerify,
     skipDocAuthFromHandoff,
     howToVerifyURL,
     previousStepURL,
-    skipDocAuth,
   } = useContext(InPersonContext);
 
   function goBack() {
