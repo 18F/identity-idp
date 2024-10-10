@@ -4,17 +4,19 @@ RSpec.describe DwStaleDataCheckJob, type: :job do
   let(:timestamp) { Time.zone.now.end_of_day }
   let(:job) { described_class.new }
   let(:expected_bucket) { 'login-gov-analytics-export-test-1234-us-west-2' }
-  let(:expected_object_key) { "idp_max_ids/#{timestamp.strftime('%Y-%m-%d')}_idp_max_ids.csv" }
+  let(:expected_object_key) { "idp_max_ids/#{timestamp.strftime('%Y-%m-%d')}_idp_max_ids.json" }
   let(:test_on_tables) { ['users'] }
   let(:s3_bucket) { instance_double('Aws::S3::Bucket', name: expected_bucket) }
   let(:s3_object) { instance_double('Aws::S3::Object') }
   let(:s3_resource) { instance_double('Aws::S3::Resource', bucket: s3_bucket) }
 
-  let(:expected_csv) do
-    <<~CSV
-      table_name,max_id,row_count
-      users,2,2
-    CSV
+  let(:expected_json) do
+    {
+      'users' => {
+        'max_id' => 2,
+        'row_count' => 2,
+      }
+    }.to_json
   end
 
   before do
@@ -31,41 +33,41 @@ RSpec.describe DwStaleDataCheckJob, type: :job do
 
   describe '#perform' do
     context 'when actual database tables contain data' do
-      it 'generates correct CSV from database tables' do
+      it 'generates correct JSON from database tables' do
         allow(ActiveRecord::Base.connection).to receive(:tables).and_return(test_on_tables)
         add_data_to_tables
 
-        csv_data = upload_csv_to_s3
+        json_data = upload_json_to_s3
 
-        expect(csv_data).to eq(expected_csv)
+        expect(json_data).to eq(expected_json)
       end
     end
 
     context 'when tables are empty' do
-      let(:expected_csv) { "table_name,max_id,row_count\nusers,,0\n" }
+      let(:expected_json) { { 'users' => { 'max_id' => nil, 'row_count' => 0 } }.to_json }
 
       it 'handles empty tables gracefully' do
         allow(ActiveRecord::Base.connection).to receive(:tables).and_return(test_on_tables)
 
-        csv_data = upload_csv_to_s3
+        json_data = upload_json_to_s3
 
         expect { job.perform(timestamp) }.not_to raise_error
-        expect(csv_data).to eq(expected_csv)
+        expect(json_data).to eq(expected_json)
       end
     end
 
     context 'when tables are missing the id column' do
-      let(:expected_csv) { "table_name,max_id,row_count\n" }
+      let(:expected_json) { {}.to_json }
 
       it 'skips tables without id column' do
         allow(ActiveRecord::Base.connection).to receive(:tables).and_return(['non_id_table'])
         allow(ActiveRecord::Base.connection).to receive(:columns).with('non_id_table').
           and_return([double(name: 'name')])
 
-        csv_data = upload_csv_to_s3
+        json_data = upload_json_to_s3
 
         expect { job.perform(timestamp) }.not_to raise_error
-        expect(csv_data).to eq(expected_csv)
+        expect(json_data).to eq(expected_json)
       end
     end
 
@@ -76,7 +78,7 @@ RSpec.describe DwStaleDataCheckJob, type: :job do
 
         job.perform(timestamp)
 
-        expect(s3_object).to have_received(:put).with(body: expected_csv).once
+        expect(s3_object).to have_received(:put).with(body: expected_json).once
         expect(Aws::S3::Resource).to have_received(:new).once
         expect(s3_bucket.name).to eq(expected_bucket)
         expect(s3_bucket).to have_received(:object).with(expected_object_key).once
@@ -101,13 +103,13 @@ RSpec.describe DwStaleDataCheckJob, type: :job do
     User.create!(id: 2, created_at: 1.hour.ago)
   end
 
-  def upload_csv_to_s3
-    csv_data = nil
+  def upload_json_to_s3
+    json_data = nil
     allow(s3_object).to receive(:put) do |args|
-      csv_data = args[:body]
+      json_data = args[:body]
       true
     end
     job.perform(timestamp)
-    csv_data
+    json_data
   end
 end
