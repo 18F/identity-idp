@@ -34,9 +34,9 @@ interface AppRootData {
   idvInPersonUrl?: string;
   optedInToInPersonProofing: string;
   securityAndPrivacyHowItWorksUrl: string;
+  skipDocAuth: string;
   skipDocAuthFromHowToVerify: string;
   skipDocAuthFromHandoff: string;
-  skipDocAuth: string;
   howToVerifyURL: string;
   previousStepUrl: string;
   docAuthSelfieDesktopTestMode: string;
