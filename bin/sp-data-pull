@@ -1,0 +1,78 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# option to use a file. if you want to copy/paste, skip to line 10
+require 'json'
+
+data_file = 'your-json-file-here.json'
+imported_data = File.read(data_file)
+
+parsed_data = JSON.parse(imported_data)
+
+user_uuids = parsed_data.map { |user| user[:"properties.user_id"] }
+
+# collects user information per scenario and helps collect median information
+no_sp_users = Array.new
+single_sp_users = Array.new
+multiple_sp_users = Array.new
+
+# collect information on service provider per scenario
+single_sp_list = Array.new
+multiple_sp_list = Array.new
+
+# count of service providers
+single_sp_tally  = 0
+multiple_sp_tally = 0
+
+# When working with large batches, run this so that batching doesn't time out. Increment timeout when using larger data sets
+ActiveRecord::Base.connection.execute 'SET statement_timeout = 200000'
+
+# Runs through the data in batches, saves list of users and service providers
+# Will take about a minute for large samples
+User.where(uuid: user_uuids).in_batches(of: 10_000) do |batch|
+  no_sp_users = []
+  single_sp_users = []
+  multiple_sp_users = []
+  batch.each do |user|
+    sp_count = user.service_providers.count
+    no_sp_users << user if sp_count.zero?
+    single_sp_users << user if sp_count == 1
+    multiple_sp_users << user if sp_count > 1
+  end
+
+  single_sp_users.each { |user| single_sp_list << user.service_providers.map { |u| u.friendly_name } }
+  multiple_sp_users.each { |user| multiple_sp_list << user.service_providers.map { |u| u.friendly_name } }
+
+  sleep(0.2)
+end
+
+# counts number of service providers 
+single_sp_tally = single_sp_list.flatten.sort.tally
+multiple_sp_tally = multiple_sp_list.flatten.sort.tally
+
+# number of logins for users based on number of service providers
+no_sp_sign_ins_per_user = no_sp_users.map { |user| user.events.where(event_type: :sign_in_before_2fa).count }
+single_sp_sign_ins_per_user = single_sp_users.map { |user| user.events.where(event_type: :sign_in_before_2fa).count }
+multiple_sp_sign_ins_per_user = multiple_sp_users.map { |user| user.events.where(event_type: :sign_in_before_2fa).count }
+
+# gets average of logins
+def login_average(dataset)
+  dataset.sum / dataset.size.to_f
+end
+
+puts '=== Results ==='
+puts "Total number in dataset: #{user_uuids.count}"
+
+puts "\n=== Accounts with no service provider ==="
+puts "Number of accounts: #{no_sp_users.count}"
+puts "Average number of logins: #{login_average(no_sp_sign_ins_per_user)}"
+
+puts "\n=== Accounts with one service provider ==="
+puts "Count of users with one service provider: #{single_sp_users.count}"
+puts "\nService providers associated with accounts with one SP added: #{single_sp_tally}"
+puts "\Average number of logins annually: #{login_average(single_sp_sign_ins_per_user)}"
+
+puts "\n=== Accounts with multiple service providers"
+puts "Count of users with multiple service providers: #{multiple_sp_users.count}"
+puts "\nService providers associated with accounts with multiple SP added: #{multiple_sp_tally}"
+puts "\Average number of logins annually: #{login_average(multiple_sp_sign_ins_per_user)}"
