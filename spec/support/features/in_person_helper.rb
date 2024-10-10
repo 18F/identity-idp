@@ -122,7 +122,7 @@ module InPersonHelper
 
   def complete_state_id_step(_user = nil, same_address_as_id: true, first_name: GOOD_FIRST_NAME)
     # Wait for page to load before attempting to fill out form
-    expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
+    expect(page).to have_current_path(idv_in_person_proofing_state_id_path, wait: 10)
     fill_out_state_id_form_ok(same_address_as_id: same_address_as_id, first_name:)
     click_idv_continue
     unless same_address_as_id
@@ -163,7 +163,7 @@ module InPersonHelper
     begin_in_person_proofing
     complete_prepare_step
     complete_location_step
-    expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
+    expect(page).to have_current_path(idv_in_person_proofing_state_id_path, wait: 10)
   end
 
   def complete_steps_before_state_id_controller
@@ -171,7 +171,6 @@ module InPersonHelper
     begin_in_person_proofing
     complete_prepare_step
     complete_location_step
-
     expect(page).to have_current_path(idv_in_person_proofing_state_id_path, wait: 10)
   end
 

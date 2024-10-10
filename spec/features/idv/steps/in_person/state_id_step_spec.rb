@@ -6,7 +6,6 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-    allow(IdentityConfig.store).to receive(:in_person_state_id_controller_enabled).and_return(false)
   end
 
   context 'when visiting state id for the first time' do
@@ -40,7 +39,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
 
       click_link t('links.cancel')
       click_on t('idv.cancel.actions.keep_going')
-      expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
+      expect(page).to have_current_path(idv_in_person_proofing_state_id_path, wait: 10)
     end
 
     it 'allows user to submit valid inputs on form', allow_browser_log: true do
@@ -72,11 +71,11 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
       click_idv_continue
       expect(page).to have_current_path(idv_in_person_ssn_url, wait: 10)
       complete_ssn_step
-      expect(page).to have_current_path(idv_in_person_verify_info_url, wait: 10)
-      click_button t('idv.buttons.change_state_id_label')
+      expect(page).to have_current_path(idv_in_person_verify_info_path, wait: 10)
+      click_link t('idv.buttons.change_state_id_label')
 
       # state id page has fields that are pre-populated
-      expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
+      expect(page).to have_current_path(idv_in_person_proofing_state_id_path, wait: 10)
       expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
       expect(page).to have_field(
         t('in_person_proofing.form.state_id.first_name'),
@@ -143,7 +142,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
         expect(page).to have_content(t('headings.verify'))
         expect(page).to have_current_path(idv_in_person_verify_info_path)
         # click update state ID button on the verify page
-        click_button t('idv.buttons.change_state_id_label')
+        click_link t('idv.buttons.change_state_id_label')
         # expect to be on the state ID page
         expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
         # change address
@@ -157,7 +156,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
         # expect to see state ID address update on verify twice
         expect(page).to have_text('test update address').twice # for state id addr and addr update
         # click update state id address
-        click_button t('idv.buttons.change_state_id_label')
+        click_link t('idv.buttons.change_state_id_label')
         # expect to be on the state ID page
         expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
         # expect "Yes, I live at a different address" is checked"
@@ -178,7 +177,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
         expect(page).to have_content(t('headings.verify'))
         expect(page).to have_current_path(idv_in_person_verify_info_path)
         # click update state ID button on the verify page
-        click_button t('idv.buttons.change_state_id_label')
+        click_link t('idv.buttons.change_state_id_label')
         # expect to be on the state ID page
         expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
         # change address
@@ -192,7 +191,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
         # expect to see state ID address update on verify
         expect(page).to have_text('test update address').once # only state id address update
         # click update state id address
-        click_button t('idv.buttons.change_state_id_label')
+        click_link t('idv.buttons.change_state_id_label')
         # expect to be on the state ID page
         expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
         expect(page).to have_checked_field(
@@ -206,7 +205,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
         # skip address step
         complete_ssn_step(user)
         # click update state ID button on the verify page
-        click_button t('idv.buttons.change_state_id_label')
+        click_link t('idv.buttons.change_state_id_label')
         # expect to be on the state ID page
         expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
         # change address
@@ -225,7 +224,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
         # expect to see state ID address update on verify
         expect(page).to have_text('test update address').once # only state id address update
         # click update state id address
-        click_button t('idv.buttons.change_state_id_label')
+        click_link t('idv.buttons.change_state_id_label')
         # expect to be on the state ID page
         expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
         # check that the "No, I live at a different address" is checked"
@@ -247,7 +246,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
         expect(page).to have_content(t('headings.verify'))
         expect(page).to have_current_path(idv_in_person_verify_info_path)
         # click update state ID button on the verify page
-        click_button t('idv.buttons.change_state_id_label')
+        click_link t('idv.buttons.change_state_id_label')
         # expect to be on the state ID page
         expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
         # change address
@@ -262,7 +261,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
         # expect to see state ID address update on verify twice
         expect(page).to have_text('test update address').twice # for state id addr and addr update
         # click update state ID button on the verify page
-        click_button t('idv.buttons.change_state_id_label')
+        click_link t('idv.buttons.change_state_id_label')
         # expect to be on the state ID page
         expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
         expect(page).to have_checked_field(
@@ -426,7 +425,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
       expect(page).to have_text('PR')
 
       # update state ID
-      click_button t('idv.buttons.change_state_id_label')
+      click_link t('idv.buttons.change_state_id_label')
 
       expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
       expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
