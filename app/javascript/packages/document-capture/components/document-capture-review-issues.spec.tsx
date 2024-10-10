@@ -45,28 +45,18 @@ describe('DocumentCaptureReviewIssues', () => {
 
   context('with doc error', () => {
     it('renders for non doc type failure', () => {
-      const props = {
-        isFailedDocType: false,
-        remainingSubmitAttempts: 2,
-        unknownFieldErrors: [
-          {
-            field: 'general',
-            error: toFormEntryError({ field: 'network', message: 'general error' }),
-          },
-        ],
-        errors: [
-          {
-            field: 'front',
-            error: toFormEntryError({ field: 'front', message: 'front side error' }),
-          },
-          {
-            field: 'back',
-            error: toFormEntryError({ field: 'back', message: 'back side error' }),
-          },
-        ],
-      };
       const { getByText, getByLabelText, getByRole, getAllByRole } = render(
-        <InPersonContext.Provider value={{ inPersonURL: '/verify/doc_capture' }}>
+        <InPersonContext.Provider
+          value={{
+            inPersonURL: '/verify/doc_capture',
+            locationsURL: '',
+            addressSearchURL: '',
+            inPersonFullAddressEntryEnabled: false,
+            inPersonOutageMessageEnabled: false,
+            optedInToInPersonProofing: false,
+            usStatesTerritories: [['Los Angeles', 'NY']],
+          }}
+        >
           <I18nContext.Provider
             value={
               new I18n({
@@ -74,7 +64,28 @@ describe('DocumentCaptureReviewIssues', () => {
               })
             }
           >
-            <DocumentCaptureReviewIssues {...DEFAULT_OPTIONS} {...props} />
+            <DocumentCaptureReviewIssues
+              {...{
+                ...DEFAULT_OPTIONS,
+                isFailedDocType: false,
+                remainingSubmitAttempts: 2,
+                unknownFieldErrors: [
+                  {
+                    error: toFormEntryError({ field: 'network', message: 'general error' }),
+                  },
+                ],
+                errors: [
+                  {
+                    field: 'front',
+                    error: toFormEntryError({ field: 'front', message: 'front side error' }),
+                  },
+                  {
+                    field: 'back',
+                    error: toFormEntryError({ field: 'back', message: 'back side error' }),
+                  },
+                ],
+              }}
+            />
           </I18nContext.Provider>
         </InPersonContext.Provider>,
       );

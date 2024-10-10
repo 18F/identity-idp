@@ -145,8 +145,22 @@ describe('document-capture/components/documents-and-selfie-step', () => {
   context('selfie capture', () => {
     it('renders with front, back, and selfie inputs when isSelfieCaptureEnabled is true', () => {
       const { getAllByRole, getByText, getByRole, getByLabelText, queryByLabelText } = render(
-        <SelfieCaptureContext.Provider value={{ isSelfieCaptureEnabled: true }}>
-          <DocumentsAndSelfieStep />
+        <SelfieCaptureContext.Provider
+          value={{
+            isSelfieCaptureEnabled: true,
+            isSelfieDesktopTestMode: false,
+            docAuthSeparatePagesEnabled: false,
+          }}
+        >
+          <DocumentsAndSelfieStep
+            value={{}}
+            onChange={() => undefined}
+            errors={[]}
+            onError={() => undefined}
+            registerField={() => undefined}
+            unknownFieldErrors={[]}
+            toPreviousStep={() => undefined}
+          />
         </SelfieCaptureContext.Provider>,
       );
 
@@ -186,8 +200,22 @@ describe('document-capture/components/documents-and-selfie-step', () => {
 
   it('renders with front, back when isSelfieCaptureEnabled is false', () => {
     const { queryByRole, getByRole, getByLabelText } = render(
-      <SelfieCaptureContext.Provider value={{ isSelfieCaptureEnabled: false }}>
-        <DocumentsAndSelfieStep />
+      <SelfieCaptureContext.Provider
+        value={{
+          isSelfieCaptureEnabled: false,
+          isSelfieDesktopTestMode: false,
+          docAuthSeparatePagesEnabled: false,
+        }}
+      >
+        <DocumentsAndSelfieStep
+          value={{}}
+          onChange={() => undefined}
+          errors={[]}
+          onError={() => undefined}
+          registerField={() => undefined}
+          unknownFieldErrors={[]}
+          toPreviousStep={() => undefined}
+        />
       </SelfieCaptureContext.Provider>,
     );
 
