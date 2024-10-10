@@ -73,7 +73,7 @@ class IdTokenBuilder
 
   def vot
     return nil unless sp_requests_vot?
-    resolved_authn_context_result.component_values.map(&:name).join('.')
+    resolved_authn_context.result.component_values.map(&:name).join('.')
   end
 
   def determine_ial_max_acr
@@ -82,10 +82,6 @@ class IdTokenBuilder
     else
       Vot::AcrComponentValues::IAL1
     end
-  end
-
-  def resolved_authn_context_result
-    @resolved_authn_context_result ||= resolved_authn_context.result
   end
 
   def resolved_authn_context
