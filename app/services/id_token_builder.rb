@@ -63,16 +63,7 @@ class IdTokenBuilder
 
   def acr
     return nil unless identity.acr_values.present?
-
-    if resolved_authn_context_result.facial_match?
-      Vot::AcrComponentValues::IAL2_BIO_REQUIRED.name
-    elsif resolved_authn_context_result.ialmax?
-      determine_ial_max_acr.name
-    elsif resolved_authn_context_result.identity_proofing?
-      Vot::AcrComponentValues::IAL2.name
-    else
-      Vot::AcrComponentValues::IAL1.name
-    end
+    resolved_authn_context.asserted_ial_acr
   end
 
   def sp_requests_vot?
@@ -94,12 +85,16 @@ class IdTokenBuilder
   end
 
   def resolved_authn_context_result
-    @resolved_authn_context_result ||= AuthnContextResolver.new(
+    @resolved_authn_context_result ||= resolved_authn_context.result
+  end
+
+  def resolved_authn_context
+    @resolved_authn_context ||= AuthnContextResolver.new(
       user: identity.user,
       service_provider: identity.service_provider_record,
       vtr: parsed_vtr_value,
       acr_values: identity.acr_values,
-    ).result
+    )
   end
 
   def parsed_vtr_value

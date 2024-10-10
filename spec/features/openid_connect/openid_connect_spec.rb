@@ -1239,7 +1239,7 @@ RSpec.describe 'OpenID Connect' do
       expect(decoded_id_token[:acr]).to eq(nil)
       expect(decoded_id_token[:vot]).to eq(vot)
     else
-      expect(decoded_id_token[:acr]).to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
+      expect(decoded_id_token[:acr]).to eq(Saml::Idp::Constants::IAL_VERIFIED_ACR)
       expect(decoded_id_token[:vot]).to eq(nil)
     end
 
@@ -1261,7 +1261,7 @@ RSpec.describe 'OpenID Connect' do
       expect(userinfo_response).not_to have_key(:aal)
       expect(userinfo_response[:vot]).to eq(vot)
     else
-      expect(userinfo_response[:ial]).to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
+      expect(userinfo_response[:ial]).to eq(Saml::Idp::Constants::IAL_VERIFIED_ACR)
       expect(userinfo_response[:aal]).to eq(
         Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
       )
