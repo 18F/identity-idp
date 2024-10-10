@@ -565,6 +565,3 @@ spec:
       selfHeal: true
     syncOptions:
     - CreateNamespace=true
-  info:
-    - name: Merge Request
-      value: {{CI_MERGE_REQUEST_SOURCE_PROJECT_URL}}
