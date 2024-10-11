@@ -264,7 +264,7 @@ module Reporting
 
     def aal3_issuers_query
       params = {
-        event: quote([SAML_AUTH_EVENT, OIDC_AUTH_EVENT]),
+        events: quote([SAML_AUTH_EVENT, OIDC_AUTH_EVENT]),
       }
 
       format(<<~QUERY, params)
@@ -273,9 +273,9 @@ module Reporting
           properties.event_properties.acr_values as acr
         | parse @message '"authn_context":[*]' as authn
         | filter
-          name IN %{event}
+          name IN %{events}
           AND (authn like /aal\\/3/ or acr like /aal\\/3/)
-          AND properties.event_properties.success= 1
+          AND properties.event_properties.success = 1
         | display issuer
         | sort issuer
         | dedup issuer
@@ -285,7 +285,9 @@ module Reporting
     def facial_match_issuers_query
       format(<<~QUERY)
         fields
-          coalesce(properties.event_properties.service_provider, properties.event_properties.client_id, properties.service_provider) as issuer
+          coalesce(properties.event_properties.service_provider,
+          properties.event_properties.client_id,
+          properties.service_provider) as issuer
         | filter properties.sp_request.facial_match
         | display issuer
         | sort issuer
@@ -332,7 +334,7 @@ module Reporting
 
     def saml_signature_query
       params = {
-        event: quote([SAML_AUTH_EVENT]),
+        events: quote([SAML_AUTH_EVENT]),
       }
 
       format(<<~QUERY, params)
@@ -341,7 +343,7 @@ module Reporting
           properties.event_properties.request_signed = 1 AS signed,
           properties.event_properties.request_signed != 1 AS not_signed,
           isempty(properties.event_properties.matching_cert_serial) AND signed AS invalid_signature
-        | filter name IN %{event}
+        | filter name IN %{events}
           AND properties.event_properties.success = 1
         | stats
           sum(not_signed) AS unsigned_count,
