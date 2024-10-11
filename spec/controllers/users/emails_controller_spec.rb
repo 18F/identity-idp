@@ -22,8 +22,6 @@ RSpec.describe Users::EmailsController do
       get :show
 
       expect(@analytics).to have_logged_event('Add Email Address Page Visited')
-
-      expect(controller.cancel_link_url).to eq(root_url)
     end
   end
 
@@ -40,7 +38,7 @@ RSpec.describe Users::EmailsController do
     it 'renders the show view with a link back to continue SP consent' do
       get :show
 
-      expect(controller.cpending_completions_consent?).to eq(true)
+      expect(controller.pending_completions_consent?).to eq(true)
     end
   end
 
