@@ -4,10 +4,10 @@ RSpec.describe PendingProfilePolicy do
   let(:user) { create(:user) }
   let(:resolved_authn_context_result) do
     AuthnContextResolver.new(
-      user: user,
+      user:,
       service_provider: nil,
-      vtr: vtr,
-      acr_values: acr_values,
+      vtr:,
+      acr_values:,
     ).result
   end
   let(:vtr) { nil }
