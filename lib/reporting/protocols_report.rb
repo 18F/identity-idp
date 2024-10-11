@@ -50,6 +50,7 @@ module Reporting
         protocols_table,
         saml_signature_issues_table,
         deprecated_parameters_table,
+        feature_use_table,
       ]
     end
 
@@ -146,6 +147,21 @@ module Reporting
       ]
     end
 
+    def feature_use_table
+      [
+        [
+          'Feature',
+          'Count of issuers',
+          'List of issuers',
+        ],
+        [
+          'IdV with Facial Match',
+          facial_match_data.length,
+          facial_match_data.join(', ')
+        ]
+      ]
+    end
+
     def saml_count
       protocol_data[:saml][:request_count]
     end
@@ -175,6 +191,16 @@ module Reporting
     def aal3_issuers_data
       @aal3_issuers_data ||= cloudwatch_client.fetch(
         query: aal3_issuers_query,
+        from: time_range.begin,
+        to: time_range.end,
+      ).
+        map { |slice| slice['issuer'] }.
+        uniq
+    end
+
+    def facial_match_data
+      @facial_match_data ||= cloudwatch_client.fetch(
+        query: facial_match_issuers_query,
         from: time_range.begin,
         to: time_range.end,
       ).
@@ -250,6 +276,21 @@ module Reporting
           name IN %{event}
           AND (authn like /aal\\/3/ or acr like /aal\\/3/)
           AND properties.event_properties.success= 1
+        | display issuer
+        | sort issuer
+        | dedup issuer
+      QUERY
+    end
+
+    def facial_match_issuers_query
+      params = {
+        event: quote([SAML_AUTH_EVENT, OIDC_AUTH_EVENT]),
+      }
+
+      format(<<~QUERY)
+        fields
+          coalesce(properties.event_properties.service_provider, properties.event_properties.client_id, properties.service_provider) as issuer
+        | filter properties.sp_request.facial_match
         | display issuer
         | sort issuer
         | dedup issuer
