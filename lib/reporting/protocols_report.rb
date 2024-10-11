@@ -157,8 +157,8 @@ module Reporting
         [
           'IdV with Facial Match',
           facial_match_data.length,
-          facial_match_data.join(', ')
-        ]
+          facial_match_data.join(', '),
+        ],
       ]
     end
 
@@ -283,10 +283,6 @@ module Reporting
     end
 
     def facial_match_issuers_query
-      params = {
-        event: quote([SAML_AUTH_EVENT, OIDC_AUTH_EVENT]),
-      }
-
       format(<<~QUERY)
         fields
           coalesce(properties.event_properties.service_provider, properties.event_properties.client_id, properties.service_provider) as issuer
