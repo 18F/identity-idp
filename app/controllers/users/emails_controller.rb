@@ -13,7 +13,7 @@ module Users
     def show
       analytics.add_email_visit
       @add_user_email_form = AddUserEmailForm.new
-      @cancel_link_url = cancel_link_url
+      @pending_completions_consent = pending_completions_consent?
     end
 
     def add
@@ -63,12 +63,8 @@ module Users
       redirect_to account_url
     end
 
-    def cancel_link_url
-      if user_session[:share_email] == true
-        sign_up_completed_url
-      else
-        decorated_sp_session.cancel_link_url
-      end
+    def pending_completions_consent?
+      user_session[:pending_completions_consent]
     end
 
     def verify
