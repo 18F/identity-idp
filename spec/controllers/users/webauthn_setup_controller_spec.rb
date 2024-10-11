@@ -382,12 +382,14 @@ RSpec.describe Users::WebauthnSetupController do
       end
 
       before do
+        get :new
         controller.user_session[:in_account_creation_flow] = true
         allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
         request.host = 'localhost:3000'
         controller.user_session[:webauthn_challenge] = webauthn_challenge
-        controller.user_session[:mfa_attempts] = 1
       end
+
+      let(:mfa_selections) { ['webauthn'] }
 
       it 'tracks the submission' do
         Funnel::Registration::AddMfa.call(user.id, 'webauthn', @analytics)
