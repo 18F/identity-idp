@@ -42,7 +42,7 @@ RSpec.describe AccountCreation::DeviceProfiling do
       context 'session id is missing' do
         let(:threatmetrix_session_id) { nil }
 
-        it 'does not make a request to the ThreatMetrix proofer'6 do
+        it 'does not make a request to the ThreatMetrix proofer' do
           expect(threatmetrix_proofer).not_to have_received(:proof)
         end
 

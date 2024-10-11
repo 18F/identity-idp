@@ -150,14 +150,23 @@ RSpec.describe SignUp::CompletionsController do
     end
 
     context 'threatmetrix on sign up enabled' do
+      let(:user) do
+        create(:user)
+      end
       before do
         allow(IdentityConfig.store).to receive(:account_creation_device_profiling).
           and_return(:collect_only)
+        stub_analytics
       end
 
       context 'when in account creation flow' do
         let(:threatmetrix_proofer_result) do
-          instance_double(Proofing::DdpResult, success?: true, transaction_id: 'ddp-123')
+          instance_double(
+            Proofing::DdpResult,
+            success?: true,
+            transaction_id: 'ddp-123',
+            to_h: { success: true, transaction_id: 'ddp-123' },
+          )
         end
 
         before do
@@ -179,14 +188,34 @@ RSpec.describe SignUp::CompletionsController do
           expect(@analytics).to have_logged_event(
             'User registration: agency handoff visited',
             ial2: false,
-            ialmax: true,
+            ialmax: false,
             service_provider_name: subject.decorated_sp_session.sp_name,
             page_occurence: '',
             needs_completion_screen_reason: :new_sp,
             sp_session_requested_attributes: [:email],
-            in_account_creation_flow: false,
+            in_account_creation_flow: true,
             device_profiling_result: threatmetrix_proofer_result.to_h,
           )
+        end
+
+        it 'should log tmx result for eligible users' do
+          expect(@analytics).to have_logged_event(
+            :account_creation_tmx_result, threatmetrix_proofer_result.to_h
+          )
+        end
+
+        context 'when redirected to account page instead of completion screen' do
+          before do
+            stub_sign_in(user)
+            subject.session[:sp] = {}
+            subject.user_session[:in_account_creation_flow] = true
+            get :show
+          end
+          it 'should log tmx result for eligible users' do
+            expect(@analytics).to have_logged_event(
+              :account_creation_tmx_result, threatmetrix_proofer_result.to_h
+            )
+          end
         end
       end
 
@@ -210,11 +239,11 @@ RSpec.describe SignUp::CompletionsController do
           get :show
         end
 
-        it 'should return the result of the device profiling in the logs' do
+        it 'should not return the result of the device profiling in the logs' do
           expect(@analytics).to have_logged_event(
             'User registration: agency handoff visited',
             ial2: false,
-            ialmax: true,
+            ialmax: false,
             service_provider_name: subject.decorated_sp_session.sp_name,
             page_occurence: '',
             needs_completion_screen_reason: :new_sp,

@@ -7,13 +7,14 @@ module SignUp
     before_action :confirm_two_factor_authenticated
     before_action :confirm_identity_verified, if: :identity_proofing_required?
     before_action :apply_secure_headers_override, only: [:show, :update]
-    before_action :call_threatmetrix_if_in_account_creation, only: :show
+    before_action :call_threatmetrix_if_eligible, only: :show
     before_action :verify_needs_completions_screen
 
     def show
       analytics.user_registration_agency_handoff_page_visit(
         **analytics_attributes(''),
       )
+      log_account_creation_threatmetrix_if_applicable
       @multiple_factors_enabled = MfaPolicy.new(current_user).multiple_factors_enabled?
       @presenter = completions_presenter
     end
@@ -68,6 +69,7 @@ module SignUp
 
     def return_to_account
       track_completion_event('account-page')
+      log_account_creation_threatmetrix_if_applicable
       redirect_to account_url
     end
 
@@ -84,7 +86,7 @@ module SignUp
       redirect_to new_user_session_url
     end
 
-    def call_threatmetrix_if_in_account_creation
+    def call_threatmetrix_if_eligible
       return unless FeatureManagement.account_creation_device_profiling_collecting_enabled?
       return unless user_session[:in_account_creation_flow]
       @device_profiling_result = AccountCreation::DeviceProfiling.new.proof(
@@ -115,7 +117,7 @@ module SignUp
       end
 
       if @device_profiling_result.present?
-        attributes[:device_profiling_result] = device_profiling_result.to_h
+        attributes[:device_profiling_result] = @device_profiling_result.to_h
       end
 
       attributes
@@ -140,6 +142,12 @@ module SignUp
     def pii
       Pii::Cacher.new(current_user, user_session).fetch(current_user.active_profile&.id) ||
         Pii::Attributes.new
+    end
+
+    def log_account_creation_threatmetrix_if_applicable
+      return unless FeatureManagement.account_creation_device_profiling_collecting_enabled?
+      return unless user_session[:in_account_creation_flow]
+      analytics.account_creation_tmx_result(**@device_profiling_result.to_h)
     end
 
     def send_in_person_completion_survey
