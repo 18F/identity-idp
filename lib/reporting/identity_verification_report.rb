@@ -392,7 +392,6 @@ module Reporting
         normalized_fraud_review_pending: "(#{[
           # rubocop:disable Layout/LineLength
           'coalesce(properties.event_properties.fraud_review_pending, 0)',
-          '!isblank(properties.event_properties.fraud_pending_reason)',
           'coalesce(properties.event_properties.fraud_check_failed, 0)',
           'coalesce((ispresent(properties.event_properties.tmx_status) and properties.event_properties.tmx_status in ["threatmetrix_review", "threatmetrix_reject"]), 0)',
           # rubocop:enable Layout/LineLength
