@@ -206,15 +206,15 @@ RSpec.describe Reporting::ProtocolsReport do
          string_or_num(strings, 2)],
       ],
       [
-        ['Issue', 'Count of issuers with the issue', 'List of issuers with the issue'],
+        ['Issue', 'Count of issuers', 'List of issuers'],
         ['Not signing SAML authentication requests', string_or_num(strings, 2), 'Issuer1, Issuer3'],
         ['Incorrectly signing SAML authentication requests', string_or_num(strings, 1), 'Issuer1'],
       ],
       [
         [
           'Deprecated Parameter',
-          'Count of issuers using the parameter',
-          'List of issuers using the parameter',
+          'Count of issuers',
+          'List of issuers',
         ],
         [
           'LOA',
