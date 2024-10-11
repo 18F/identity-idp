@@ -390,7 +390,7 @@ RSpec.describe Users::WebauthnSetupController do
       end
 
       it 'tracks the submission' do
-        Funnel::Registration::AddMfa.call(user.id, 'phone', @analytics)
+        Funnel::Registration::AddMfa.call(user.id, 'webauthn', @analytics)
 
         patch :confirm, params: params
 
