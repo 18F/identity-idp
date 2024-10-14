@@ -10,10 +10,16 @@ module DataWarehouse
 
     def bucket_name
       bucket_name = IdentityConfig.store.s3_data_warehouse_bucket_prefix
+<<<<<<< HEAD
       env = Identity::Hostdata.env
       aws_account_id = Identity::Hostdata.aws_account_id
       aws_region = Identity::Hostdata.aws_region
       "#{bucket_name}-#{env}-#{aws_account_id}-#{aws_region}"
+=======
+      aws_account_id = Identity::Hostdata.aws_account_id
+      aws_region = Identity::Hostdata.aws_region
+      "#{bucket_name}-#{aws_account_id}-#{aws_region}"
+>>>>>>> 2ca8c4c5d (added base job for s3 upload)
     end
 
     def generate_s3_paths(name, extension, subname: nil, now: Time.zone.now)
