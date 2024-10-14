@@ -20,7 +20,7 @@ RSpec.describe DataWarehouse::StaleDataCheckJob, type: :job do
     {
       body: anything,
       content_type: 'application/json',
-      bucket: 'login-gov-analytics-export-1234-us-west-1',
+      bucket: 'login-gov-analytics-export-int-1234-us-west-1',
     }
   end
 
@@ -28,7 +28,8 @@ RSpec.describe DataWarehouse::StaleDataCheckJob, type: :job do
     allow(Identity::Hostdata).to receive(:env).and_return('int')
     allow(Identity::Hostdata).to receive(:aws_account_id).and_return('1234')
     allow(Identity::Hostdata).to receive(:aws_region).and_return('us-west-1')
-    allow(IdentityConfig.store).to receive(:s3_data_warehouse_bucket_prefix).and_return(s3_data_warehouse_bucket_prefix)
+    allow(IdentityConfig.store).to receive(:s3_data_warehouse_bucket_prefix).
+      and_return(s3_data_warehouse_bucket_prefix)
 
     Aws.config[:s3] = {
       stub_responses: {
@@ -71,7 +72,8 @@ RSpec.describe DataWarehouse::StaleDataCheckJob, type: :job do
 
       before do
         allow(ActiveRecord::Base.connection).to receive(:tables).and_return(['non_id_table'])
-        allow(ActiveRecord::Base.connection).to receive(:columns).with('non_id_table').and_return([double(name: 'name')])
+        allow(ActiveRecord::Base.connection).to receive(:columns).with('non_id_table').
+          and_return([double(name: 'name')])
       end
 
       it 'skips tables without an id column' do
