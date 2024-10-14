@@ -172,7 +172,7 @@ else
       },
       # Data warehouse stale data check
       dw_stale_data_check_job: {
-        class: 'DwStaleDataCheckJob',
+        class: 'DataWarehouse::StaleDataCheckJob',
         cron: gpo_cron_24h,
         args: -> { [Time.zone.now.yesterday.end_of_day] },
       },
