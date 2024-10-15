@@ -64,7 +64,7 @@ module Users
     end
 
     def pending_completions_consent?
-      user_session[:pending_completions_consent]
+      needs_completion_screen_reason
     end
 
     def verify

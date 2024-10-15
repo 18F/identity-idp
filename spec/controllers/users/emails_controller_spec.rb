@@ -31,14 +31,18 @@ RSpec.describe Users::EmailsController do
 
     before do
       stub_sign_in(user)
-      request.env['HTTP_REFERER'] = 'http://example.com/sign_up/completed'
-      controller.user_session[:pending_completions_consent] = true
+      subject.session[:sp] = {
+        issuer: current_sp.issuer,
+        acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+        requested_attributes: [:email],
+        request_url: 'http://localhost:3000',
+      }
     end
 
     it 'renders the show view with a link back to continue SP consent' do
       get :show
 
-      expect(controller.pending_completions_consent?).to eq(true)
+      expect(controller.pending_completions_consent?).to eq(:new_sp)
     end
   end
 
