@@ -15,7 +15,6 @@ module SignUp
       )
       @multiple_factors_enabled = MfaPolicy.new(current_user).multiple_factors_enabled?
       @presenter = completions_presenter
-      user_session[:pending_completions_consent] = true
     end
 
     def update
