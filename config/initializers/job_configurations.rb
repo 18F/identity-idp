@@ -6,6 +6,7 @@ cron_1h = '0 * * * *'
 cron_24h = '0 0 * * *'
 cron_24h_and_a_bit = '12 0 * * *' # 0000 UTC + 12 min, staggered from whatever else runs at 0000 UTC
 gpo_cron_24h = '0 10 * * *' # 10am UTC is 5am EST/6am EDT
+dms_cron_24h = '0 7 * * *' # 7am UTC is 2am EST/3am EDT
 cron_every_monday = 'every Monday at 0:25 UTC' # equivalent to '25 0 * * 1'
 cron_every_monday_1am = 'every Monday at 1:00 UTC' # equivalent to '0 1 * * 1'
 cron_every_monday_2am = 'every Monday at 2:00 UTC' # equivalent to '0 2 * * 1'
@@ -247,6 +248,12 @@ else
         class: 'Reports::MfaReport',
         cron: cron_monthly,
         args: -> { [Time.zone.yesterday.end_of_day] },
+      },
+      # Daily sensitive tag column job
+      daily_sensitive_column_job: {
+        class: 'DataWarehouse::DailySensitiveColumnJob',
+        cron: dms_cron_24h,
+        args: -> { [Time.zone.today] },
       },
     }.compact
   end
