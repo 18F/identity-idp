@@ -71,15 +71,15 @@ RSpec.describe AttributeAsserter do
   end
 
   describe '#build' do
-
     context 'when an IAL2 request is made' do
       [
         Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-        Saml::Idp::Constants::IAL_VERIFIED_ACR]
-      .each do |ial_value|
+        Saml::Idp::Constants::IAL_VERIFIED_ACR,
+      ].
+        each do |ial_value|
         let(:authn_context) do
           [
-          ial_value,
+            ial_value,
           ]
         end
 
@@ -240,7 +240,8 @@ RSpec.describe AttributeAsserter do
               end
 
               it 'includes x509_subject x509_issuer x509_presented' do
-                expected = %i[uuid email verified_at aal ial x509_subject x509_issuer x509_presented]
+                expected = %i[uuid email verified_at aal ial x509_subject x509_issuer
+                              x509_presented]
                 expect(user.asserted_attributes.keys).to eq expected
               end
             end

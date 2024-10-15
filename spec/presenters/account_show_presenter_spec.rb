@@ -106,7 +106,6 @@ RSpec.describe AccountShowPresenter do
       it { is_expected.to eq(false) }
     end
 
-
     context 'using vtr values' do
       let(:acr_values) { nil }
       let(:vtr) { ['C2'] }

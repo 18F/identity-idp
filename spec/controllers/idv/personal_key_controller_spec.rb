@@ -416,13 +416,13 @@ RSpec.describe Idv::PersonalKeyController do
     context 'user selected phone verification' do
       context 'with an sp' do
         let(:acr_values) { Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF }
-        let(:vtr) { nil}
+        let(:vtr) { nil }
 
         before do
           subject.session[:sp] = {
-          issuer: create(:service_provider).issuer,
-          acr_values:,
-          vtr:,
+            issuer: create(:service_provider).issuer,
+            acr_values:,
+            vtr:,
           }
         end
 
@@ -443,7 +443,6 @@ RSpec.describe Idv::PersonalKeyController do
           end
         end
       end
-
 
       it 'redirects to the account path when no sp present' do
         patch :update

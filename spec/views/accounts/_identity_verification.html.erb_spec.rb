@@ -88,7 +88,7 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
     let(:sp_name) { 'Example SP' }
     let(:acr_values) do
       acrs = Saml::Idp::Constants::IAL_VERIFIED_ACR
-      acrs += " " + Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
+      acrs += ' ' + Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
     end
 
     context 'with unproofed user' do
@@ -119,7 +119,10 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
           expect(rendered).to have_content(
             strip_tags(t('account.index.verification.finish_verifying_html', sp_name:)),
           )
-          expect(rendered).to have_link(t('account.index.verification.continue_idv'), href: idv_path)
+          expect(rendered).to have_link(
+            t('account.index.verification.continue_idv'),
+            href: idv_path,
+          )
         end
       end
     end
@@ -370,7 +373,7 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
     let(:sp_name) { 'Example SP' }
     let(:acr_values) do
       acrs = Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR
-      acrs += " " + Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
+      acrs += ' ' + Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
     end
 
     context 'with unproofed user' do
@@ -401,7 +404,10 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
           expect(rendered).to have_content(
             strip_tags(t('account.index.verification.finish_verifying_html', sp_name:)),
           )
-          expect(rendered).to have_link(t('account.index.verification.continue_idv'), href: idv_path)
+          expect(rendered).to have_link(
+            t('account.index.verification.continue_idv'),
+            href: idv_path,
+          )
         end
       end
     end
@@ -482,7 +488,10 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
           expect(rendered).to have_content(
             t('account.index.verification.finish_verifying_no_sp', app_name: APP_NAME),
           )
-          expect(rendered).to have_link(t('account.index.verification.continue_idv'), href: idv_path)
+          expect(rendered).to have_link(
+            t('account.index.verification.continue_idv'),
+            href: idv_path,
+          )
         end
       end
     end

@@ -60,10 +60,10 @@ RSpec.describe IdvController do
         let(:current_sp) { create(:service_provider) }
         before do
           session[:sp] =
-          {
-            issuer: current_sp.issuer,
-            acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR
-          }
+            {
+              issuer: current_sp.issuer,
+              acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
+            }
         end
 
         it 'redirects to welcome' do
@@ -263,8 +263,8 @@ RSpec.describe IdvController do
 
             before do
               allow(IdentityConfig).to receive(
-                :allowed_valid_authn_context_semantic_providers
-                ).and_return([current_sp])
+                :allowed_valid_authn_context_semantic_providers,
+              ).and_return([current_sp])
             end
 
             it 'redirects back to the account page' do
@@ -294,8 +294,8 @@ RSpec.describe IdvController do
 
             before do
               allow(IdentityConfig).to receive(
-                :allowed_valid_authn_context_semantic_providers
-                ).and_return([current_sp])
+                :allowed_valid_authn_context_semantic_providers,
+              ).and_return([current_sp])
             end
 
             it 'begins the identity proofing process' do
@@ -323,8 +323,8 @@ RSpec.describe IdvController do
 
             before do
               allow(IdentityConfig).to receive(
-                :allowed_valid_authn_context_semantic_providers
-                ).and_return([current_sp])
+                :allowed_valid_authn_context_semantic_providers,
+              ).and_return([current_sp])
             end
 
             context 'when an SP is required' do
@@ -352,8 +352,8 @@ RSpec.describe IdvController do
 
             before do
               allow(IdentityConfig).to receive(
-                :allowed_valid_authn_context_semantic_providers
-                ).and_return([current_sp])
+                :allowed_valid_authn_context_semantic_providers,
+              ).and_return([current_sp])
             end
 
             it 'begins the identity proofing process' do
