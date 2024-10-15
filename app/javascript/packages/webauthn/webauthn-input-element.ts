@@ -1,4 +1,3 @@
-import isWebauthnPasskeySupported from './is-webauthn-passkey-supported';
 import isWebauthnPlatformAuthenticatorAvailable from './is-webauthn-platform-authenticator-available';
 
 export class WebauthnInputElement extends HTMLElement {
@@ -19,9 +18,9 @@ export class WebauthnInputElement extends HTMLElement {
       return;
     }
 
-    if (isWebauthnPasskeySupported() && (await isWebauthnPlatformAuthenticatorAvailable())) {
+    if (await isWebauthnPlatformAuthenticatorAvailable()) {
       this.hidden = false;
-    } else if (this.showUnsupportedPasskey) {
+    } else {
       this.hidden = false;
       this.classList.add('webauthn-input--unsupported-passkey');
     }
