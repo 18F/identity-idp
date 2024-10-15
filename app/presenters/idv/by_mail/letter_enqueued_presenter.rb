@@ -24,19 +24,23 @@ module Idv
       end
 
       def button_text
-        if sp
-          t('idv.cancel.actions.exit', app_name: APP_NAME)
-        else
-          t('idv.buttons.continue_plain')
-        end
+        t('idv.cancel.actions.exit', app_name: APP_NAME)
       end
 
       def button_destination
         if sp
           return_to_sp_cancel_path(step: :verify_address, location: :come_back_later)
         else
-          account_path
+          marketing_site_redirect_url
         end
+      end
+
+      def sp_name
+        sp&.friendly_name
+      end
+
+      def has_sp?
+        !!sp
       end
 
       private
