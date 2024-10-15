@@ -20,7 +20,7 @@ module TwoFactorAuthentication
     end
 
     def create
-      mfa_selection_attempt_count('otp')
+      mfa_selection_attempt_count(:otp)
       result = otp_verification_form.submit
       post_analytics(result)
 

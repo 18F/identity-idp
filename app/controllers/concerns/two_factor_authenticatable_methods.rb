@@ -122,18 +122,6 @@ module TwoFactorAuthenticatableMethods
     user_session[:mfa_attempts].merge!(attempt) { |_key, old_val, new_val| old_val + new_val }
   end
 
-  def reset_mfa_selection_attempt_count
-    user_session.delete(:mfa_attempts)
-  end
-
-  def mfa_attempts_hash(auth_method)
-    return nil if user_session[:mfa_attempts].nil?
-    {
-      attempts: user_session[:mfa_attempts],
-      auth_method: auth_method,
-    }
-  end
-
   # Method will be renamed in the next refactor.
   # You can pass in any "type" with a corresponding I18n key in
   # two_factor_authentication.invalid_#{type}

@@ -552,7 +552,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
               enabled_mfa_methods_count: 1,
               in_account_creation_flow: true,
               mfa_attempts: {
-                'otp' => 1,
+                otp: 1,
               },
             )
           end
@@ -624,7 +624,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
               enabled_mfa_methods_count: 1,
               in_account_creation_flow: false,
               mfa_attempts: {
-                'otp' => 1,
+                otp: 1,
               },
             )
           end
@@ -668,7 +668,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
                 enabled_mfa_methods_count: 1,
                 in_account_creation_flow: false,
                 mfa_attempts: {
-                  'otp' => 3,
+                  otp: 3,
                 },
               )
             end
@@ -721,7 +721,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
               enabled_mfa_methods_count: 0,
               in_account_creation_flow: false,
               mfa_attempts: {
-                'otp' => 1,
+                otp: 1,
               },
             )
 
