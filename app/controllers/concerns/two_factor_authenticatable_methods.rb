@@ -123,8 +123,8 @@ module TwoFactorAuthenticatableMethods
 
   def mfa_selection_attempt_count(auth_method)
     user_session[:mfa_attempts] ||= {}
-    attempt = { auth_method => 1 }
-    user_session[:mfa_attempts].merge!(attempt) { |_key, old_val, new_val| old_val + new_val }
+    user_session[:mfa_attempts][auth_method] ||= 0
+    user_session[:mfa_attempts][auth_method] += 1
   end
 
   # Method will be renamed in the next refactor.

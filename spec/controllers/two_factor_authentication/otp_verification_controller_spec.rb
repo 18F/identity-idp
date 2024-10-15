@@ -153,7 +153,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           enabled_mfa_methods_count: 1,
           in_account_creation_flow: false,
           mfa_attempts: {
-            'otp' => 1,
             'sms' => 1,
           },
         )
@@ -239,7 +238,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           enabled_mfa_methods_count: 1,
           in_account_creation_flow: false,
           mfa_attempts: {
-            'otp' => 1,
             'sms' => 1,
           },
         )
@@ -313,7 +311,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           enabled_mfa_methods_count: 1,
           in_account_creation_flow: false,
           mfa_attempts: {
-            'otp' => 1,
             'sms' => 1,
           },
         )
@@ -364,7 +361,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
             enabled_mfa_methods_count: 1,
             in_account_creation_flow: false,
             mfa_attempts: {
-              'otp' => 1,
               'sms' => 1,
             },
           )
@@ -554,7 +550,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
               mfa_attempts: {
                 otp: 1,
               },
-              pii_like_keypaths: [[:mfa_attempts, :otp], [:errors, :personal_key]],
             )
           end
 
