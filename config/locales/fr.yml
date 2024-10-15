@@ -1110,7 +1110,7 @@ idv.messages.activated_html: Votre identité a été vérifiée. Si vous souhait
 idv.messages.activated_link: nous contacter
 idv.messages.come_back_later_html:
   - Une fois ce courrier reçu, reconnectez-vous pour saisir le code de vérification qui y figure.
-  - Contactez %{sp_link} si vous avez besoin d'accéder à ses services avant l'arrivée de votre lettre.
+  - Contactez %{sp_link} si vous avez besoin d’accéder à ses services avant l’arrivée de votre lettre.
 idv.messages.come_back_later_no_sp_html: Une fois ce courrier reçu, reconnectez-vous pour saisir le code de vérification qui y figure.
 idv.messages.confirm: Nous avons sécurisé vos informations vérifiées
 idv.messages.enter_password.by_mail_password_reminder_html: '<strong>Mémorisez votre mot de passe.</strong> Le code de vérification contenu dans votre lettre ne fonctionnera pas si vous réinitialisez votre mot de passe par la suite.'
