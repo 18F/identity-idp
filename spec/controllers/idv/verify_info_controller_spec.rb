@@ -451,8 +451,6 @@ RSpec.describe Idv::VerifyInfoController do
       end
 
       it 'modifies pii as expected' do
-        sp_session = { issuer: sp.issuer, vtr: ['C1'] }
-
         expect(Idv::Agent).to receive(:new).with(
           hash_including(
             ssn: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn],
@@ -463,6 +461,7 @@ RSpec.describe Idv::VerifyInfoController do
 
         put :update
       end
+
       context 'with vtr values' do
         let(:acr_values) { nil }
         let(:vtr) { ['C1'] }

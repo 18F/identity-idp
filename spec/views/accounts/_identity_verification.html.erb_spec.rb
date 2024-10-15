@@ -87,8 +87,10 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
   context 'with partner requesting non-facial match verification' do
     let(:sp_name) { 'Example SP' }
     let(:acr_values) do
-      acrs = Saml::Idp::Constants::IAL_VERIFIED_ACR
-      acrs += ' ' + Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
+      [
+        Saml::Idp::Constants::IAL_VERIFIED_ACR,
+        Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+      ].join(' ')
     end
 
     context 'with unproofed user' do
@@ -372,8 +374,10 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
   context 'with partner requesting facial match verification' do
     let(:sp_name) { 'Example SP' }
     let(:acr_values) do
-      acrs = Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR
-      acrs += ' ' + Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
+      [
+        Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
+        Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+      ].join(' ')
     end
 
     context 'with unproofed user' do
