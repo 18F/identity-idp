@@ -29,21 +29,24 @@
 
 <% if @presenter.has_sp? %>
   <ul class="usa-list">
-    <% t(
-         'idv.messages.come_back_later_html',
-         sp_link: link_to(@presenter.sp_name, @presenter.button_destination),
-       ).each do |bullet| %>
-      <li><%= bullet %></li>
-    <% end %>
+    <li>
+      <%= t('idv.messages.come_back_later') %>
+    </li>
+    <li>
+      <%= t(
+            'idv.messages.contact_sp_html',
+            sp_link: link_to(@presenter.sp_name, @presenter.button_destination),
+          ) %>
+    </li>
   </ul>
 <% else %>
   <p class="margin-top-2">
-    <%= t('idv.messages.come_back_later_no_sp_html') %>
+    <%= t('idv.messages.come_back_later') %>
   </p>
 <% end %>
 
 <%= link_to(
-      @presenter.button_text,
+      t('idv.cancel.actions.exit', app_name: APP_NAME),
       @presenter.button_destination,
       class: 'usa-button usa-button--big usa-button--wide margin-top-2',
     )
