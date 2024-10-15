@@ -1,0 +1,68 @@
+# frozen_string_literal: true
+
+require 'rails_helper'
+
+RSpec.describe SocureReasonCodeDownloadJob do
+  subject(:job) { described_class.new }
+
+  let(:idv_socure_reason_code_download_enabled) { true }
+  let(:analytics) { FakeAnalytics.new }
+
+  before do
+    allow(IdentityConfig.store).to receive(:idv_socure_reason_code_download_enabled).
+      and_return(idv_socure_reason_code_download_enabled)
+    allow(IdentityConfig.store).to receive(:socure_reason_code_base_url).
+      and_return('https://example.org')
+    allow(job).to receive(:analytics).and_return(analytics)
+  end
+
+  describe '#perform' do
+    it 'downloads reason codes and writes them to the database' do
+      api_response_body = { 'reasonCodes' => { 'A1' => 'test1', 'B2' => 'test2' } }.to_json
+      stub_request(:get, 'https://example.org/api/3.0/reasoncodes').to_return(
+        headers: { 'Content-Type' => 'application/json' },
+        body: api_response_body,
+      )
+
+      expect { job.perform }.to change { SocureReasonCode.count }.from(0).to(2)
+
+      expect(analytics).to have_logged_event(
+        :idv_socure_reason_code_download,
+        success: true,
+        added_reason_codes: [
+          { 'code' => 'A1', 'description' => 'test1' },
+          { 'code' => 'B2', 'description' => 'test2' },
+        ],
+        deactivated_reason_codes: [],
+      )
+    end
+
+    context 'when an error occurs downloading the codes' do
+      it 'logs the error' do
+        stub_request(:get, 'https://example.org/api/3.0/reasoncodes').to_timeout
+
+        expect { job.perform }.to_not change { SocureReasonCode.count }
+
+        expect(analytics).to have_logged_event(
+          :idv_socure_reason_code_download,
+          success: false,
+          exception: a_string_matching(/execution expired/),
+        )
+      end
+    end
+
+    context 'when the job is disabled' do
+      let(:idv_socure_reason_code_download_enabled) { false }
+
+      it 'does not download codes and does not write anything to the database' do
+        api_response_body = { 'reasonCodes' => { 'A1' => 'test1', 'B2' => 'test2' } }.to_json
+        stub_request(:get, 'https://example.org/api/3.0/reasoncodes').to_return(
+          headers: { 'Content-Type' => 'application/json' },
+          body: api_response_body,
+        )
+
+        expect { job.perform }.to_not change { SocureReasonCode.count }
+      end
+    end
+  end
+end

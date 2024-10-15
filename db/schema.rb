@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_10_01_193936) do
+ActiveRecord::Schema[7.1].define(version: 2024_10_15_154109) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -558,6 +558,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_01_193936) do
     t.datetime "created_at", null: false, comment: "sensitive=false"
     t.datetime "updated_at", null: false, comment: "sensitive=false"
     t.index ["user_id", "service_provider"], name: "index_sign_in_restrictions_on_user_id_and_service_provider", unique: true
+  end
+
+  create_table "socure_reason_codes", force: :cascade do |t|
+    t.string "code"
+    t.text "description"
+    t.datetime "added_at"
+    t.datetime "deactivated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_socure_reason_codes_on_code", unique: true
   end
 
   create_table "sp_costs", force: :cascade do |t|
