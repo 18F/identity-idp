@@ -51,7 +51,7 @@ module Users
       end
 
       flash_error(result.errors) unless result.success?
-      mfa_selection_attempt_count('webauthn')
+      mfa_selection_attempt_count(:webauthn)
     end
 
     def confirm
