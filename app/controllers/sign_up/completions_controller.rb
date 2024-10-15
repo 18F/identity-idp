@@ -116,7 +116,6 @@ module SignUp
     def track_completion_event(last_page)
       analytics.user_registration_complete(**analytics_attributes(last_page))
       user_session.delete(:in_account_creation_flow)
-      user_session.delete(:pending_completions_consent)
     end
 
     def pii

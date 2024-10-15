@@ -64,7 +64,7 @@ module Users
     end
 
     def pending_completions_consent?
-      needs_completion_screen_reason
+      needs_completion_screen_reason.present?
     end
 
     def verify
