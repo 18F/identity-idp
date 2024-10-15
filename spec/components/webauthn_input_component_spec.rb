@@ -17,10 +17,6 @@ RSpec.describe WebauthnInputComponent, type: :component do
     expect(component.passkey_supported_only?).to eq(false)
   end
 
-  it 'exposes boolean alias for show_unsupported_passkey option' do
-    expect(component.show_unsupported_passkey?).to eq(false)
-  end
-
   context 'with platform option' do
     context 'with platform option false' do
       let(:options) { super().merge(platform: false) }
@@ -63,17 +59,6 @@ RSpec.describe WebauthnInputComponent, type: :component do
               it 'renders as hidden' do
                 expect(rendered).to have_css(
                   'lg-webauthn-input[hidden]:not([show-unsupported-passkey])',
-                  visible: false,
-                )
-              end
-            end
-
-            context 'with show_unsupported_passkey option true' do
-              let(:options) { super().merge(show_unsupported_passkey: true) }
-
-              it 'renders with show-unsupported-passkey attribute' do
-                expect(rendered).to have_css(
-                  'lg-webauthn-input[hidden][show-unsupported-passkey]',
                   visible: false,
                 )
               end
