@@ -13,7 +13,6 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
   let(:facial_match_required) { false }
   context 'split doc auth', allow_browser_log: true do
     before do
-      allow(IdentityConfig.store).to receive(:doc_auth_separate_pages_enabled).and_return(true)
       if facial_match_required
         visit_idp_from_oidc_sp_with_ial2(
           facial_match_required: facial_match_required,

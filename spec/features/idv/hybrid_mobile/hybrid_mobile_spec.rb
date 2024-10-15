@@ -474,12 +474,4 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
   end
 
   it_behaves_like 'hybrid flow doc auth'
-
-  context 'split doc auth flow' do
-    before do
-      allow(IdentityConfig.store).to receive(:doc_auth_separate_pages_enabled).and_return(true)
-    end
-
-    it_behaves_like 'hybrid flow doc auth'
-  end
 end
