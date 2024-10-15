@@ -554,6 +554,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
               mfa_attempts: {
                 otp: 1,
               },
+              pii_like_keypaths: [[:mfa_attempts, :otp], [:errors, :personal_key]],
             )
           end
 
