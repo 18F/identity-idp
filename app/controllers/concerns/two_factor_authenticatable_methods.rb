@@ -20,6 +20,11 @@ module TwoFactorAuthenticatableMethods
       new_device: new_device?,
       **extra_analytics.to_h,
       mfa_attempts: user_session[:mfa_attempts],
+      pii_like_keypaths: [
+        [:mfa_attempts, :otp],
+        [:errors, :personal_key],
+        [:error_details, :personal_key],
+      ],
     )
 
     if result.success?
