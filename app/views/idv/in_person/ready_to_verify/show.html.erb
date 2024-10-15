@@ -243,13 +243,13 @@
   <br />
   <%= render ClickObserverComponent.new(event_name: 'IdV: user clicked sp link on ready to verify page') do %>
     <%= link_to(
-      t(
-        'in_person_proofing.body.barcode.return_to_partner_link',
-        sp_name: @presenter.sp_name,
-      ),
-      @presenter.service_provider_homepage_url,
-      class: 'display-inline-block padding-top-2',
-    ) %>
+          t(
+            'in_person_proofing.body.barcode.return_to_partner_link',
+            sp_name: @presenter.sp_name,
+          ),
+          @presenter.service_provider_homepage_url,
+          class: 'display-inline-block padding-top-2',
+        ) %>
     <% end %>
   <% end %>
 <% end %>
