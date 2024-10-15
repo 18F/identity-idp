@@ -1948,6 +1948,7 @@ module AnalyticsEvents
   # @param ssn_is_unique [Boolean] Whether another Profile existed with the same SSN at the time the profile associated with the current IdV session was minted.
   # @param step [String] Always "verify" (leftover from flow state machine days)
   # @param success [Boolean] Whether identity resolution succeeded overall
+  # @param previous_ssn_edit_distance [Number] The edit distance to the previous submitted SSN
   def idv_doc_auth_verify_proofing_results(
     ab_tests: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
@@ -1964,6 +1965,7 @@ module AnalyticsEvents
     step: nil,
     success: nil,
     same_address_as_id: nil,
+    previous_ssn_edit_distance: nil,
     **extra
   )
     track_event(
@@ -1983,6 +1985,7 @@ module AnalyticsEvents
       step:,
       success:,
       same_address_as_id:,
+      previous_ssn_edit_distance:,
       **extra,
     )
   end
