@@ -124,6 +124,14 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def verify_by_mail_letter_requested
+    service_provider = unsaveable(
+      ServiceProvider.new(
+        friendly_name: 'Sample App SP',
+        return_to_sp_url: 'https://example.com',
+      ),
+    )
+    profile = Profile.new(initiating_service_provider: service_provider)
+    user.instance_variable_set(:@pending_profile, profile)
     UserMailer.with(user: user, email_address: email_address_record).verify_by_mail_letter_requested
   end
 

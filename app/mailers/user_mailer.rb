@@ -206,7 +206,11 @@ class UserMailer < ActionMailer::Base
 
   def verify_by_mail_letter_requested
     with_user_locale(user) do
-      mail(to: email_address.email, subject: t('user_mailer.letter_reminder.subject'))
+      @hide_title = true
+      @presenter = Idv::ByMail::LetterRequestedEmailPresenter.new(
+        current_user: user,
+      )
+      mail(to: email_address.email, subject: t('user_mailer.verify_by_mail_letter_requested.subject'))
     end
   end
 

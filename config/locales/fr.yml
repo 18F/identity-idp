@@ -1890,8 +1890,6 @@ user_mailer.letter_reminder_14_days.did_not_get_a_letter_html: Si vous n’avez 
 user_mailer.letter_reminder_14_days.finish: Terminer la vérification de votre identité
 user_mailer.letter_reminder_14_days.sign_in_and_request_another_letter: connectez-vous pour en demander une autre
 user_mailer.letter_reminder_14_days.subject: Terminer la vérification de votre identité
-user_mailer.letter_reminder.info_html: La lettre que vous êtes sur le point de recevoir contiendra un code de vérification nous permettant de vérifier votre adresse. Vous pouvez terminer le processus de vérification d’identité en vous connectant à %{link_html} et en saisissant le code de vérification.
-user_mailer.letter_reminder.subject: Nous avons posté une lettre à l’adresse que vous avez enregistrée
 user_mailer.new_device_sign_in_after_2fa.authentication_methods: méthodes d’authentification
 user_mailer.new_device_sign_in_after_2fa.info_p1: Votre e-mail et mot de passe %{app_name} ont été utilisés pour se connecter et s’authentifier sur un nouvel appareil.
 user_mailer.new_device_sign_in_after_2fa.info_p2: Si vous reconnaissez cette activité, vous n’avez rien à faire.
@@ -1947,6 +1945,11 @@ user_mailer.suspended_reset_password.subject: Nous n’avons pas pu réinitialis
 user_mailer.suspension_confirmed.contact_agency: Veuillez contacter l’organisme dont vous essayez d’accéder au service.
 user_mailer.suspension_confirmed.remain_locked: Nous avons terminé l’examen de votre compte %{app_name} et votre compte restera verrouillé.
 user_mailer.suspension_confirmed.subject: Votre compte est verrouillé
+user_mailer.verify_by_mail_letter_requested.cta.sign_in: Connexion
+user_mailer.verify_by_mail_letter_requested.instructions.contact_sp: Contactez %{friendly_name} si vous avez besoin d’accéder à ses services avant l’arrivée de votre lettre.
+user_mailer.verify_by_mail_letter_requested.instructions.sign_in: Une fois ce courrier reçu, reconnectez-vous pour saisir le code de vérification qui y figure.
+user_mailer.verify_by_mail_letter_requested.intro_html: 'Vous recevrez un courrier de Login.gov d’ici 5 à 10 jours à l’adresse que nous avons confirmée qui est associée à votre nom :'
+user_mailer.verify_by_mail_letter_requested.subject: Votre lettre est en route
 users.delete.actions.cancel: Retour au profil
 users.delete.actions.delete: Supprimer le compte
 users.delete.bullet_1: Vous n’aurez pas de compte %{app_name}.
