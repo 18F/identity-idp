@@ -198,8 +198,10 @@ RSpec.describe AccountShowPresenter do
 
     context 'with sp request for non-facial match' do
       let(:acr_values) do
-        Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF + ' ' +
-          Saml::Idp::Constants::IAL_VERIFIED_ACR
+        [
+          Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+          Saml::Idp::Constants::IAL_VERIFIED_ACR,
+        ].join(' ')
       end
 
       it { is_expected.to eq(true) }

@@ -450,7 +450,7 @@ RSpec.describe Idv::VerifyInfoController do
         allow(controller).to receive(:sp_session).and_return(sp_session)
       end
 
-      it 'modifies pii as expected' do
+      it 'modifies PII as expected' do
         expect(Idv::Agent).to receive(:new).with(
           hash_including(
             ssn: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn],
@@ -466,7 +466,7 @@ RSpec.describe Idv::VerifyInfoController do
         let(:acr_values) { nil }
         let(:vtr) { ['C1'] }
 
-        it 'modifies pii as expected' do
+        it 'modifies PII as expected' do
           expect(Idv::Agent).to receive(:new).with(
             hash_including(
               ssn: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn],

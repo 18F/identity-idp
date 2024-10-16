@@ -30,9 +30,10 @@ RSpec.describe PendingProfilePolicy do
 
       context 'with resolved authn context result' do
         let(:acr_values) do
-          Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF +
-            ' ' +
-            Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR
+          [
+            Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+            Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
+          ].join(' ')
         end
 
         it 'has a usable pending profile' do

@@ -100,7 +100,7 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
         expect(rendered).to have_content(t('account.index.verification.unverified_badge'))
       end
 
-      it 'shows warning alert instructing user to complete identity verificaton' do
+      it 'shows warning alert instructing user to complete identity verification' do
         expect(rendered).to have_css('.usa-alert.usa-alert--warning')
         expect(rendered).to have_content(
           strip_tags(t('account.index.verification.finish_verifying_html', sp_name:)),
@@ -116,7 +116,7 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
           expect(rendered).to have_content(t('account.index.verification.unverified_badge'))
         end
 
-        it 'shows warning alert instructing user to complete identity verificaton' do
+        it 'shows warning alert instructing user to complete identity verification' do
           expect(rendered).to have_css('.usa-alert.usa-alert--warning')
           expect(rendered).to have_content(
             strip_tags(t('account.index.verification.finish_verifying_html', sp_name:)),
@@ -387,7 +387,7 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
         expect(rendered).to have_content(t('account.index.verification.unverified_badge'))
       end
 
-      it 'shows warning alert instructing user to complete identity verificaton' do
+      it 'shows warning alert instructing user to complete identity verification' do
         expect(rendered).to have_css('.usa-alert.usa-alert--warning')
         expect(rendered).to have_content(
           strip_tags(t('account.index.verification.finish_verifying_html', sp_name:)),
@@ -403,7 +403,7 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
           expect(rendered).to have_content(t('account.index.verification.unverified_badge'))
         end
 
-        it 'shows warning alert instructing user to complete identity verificaton' do
+        it 'shows warning alert instructing user to complete identity verification' do
           expect(rendered).to have_css('.usa-alert.usa-alert--warning')
           expect(rendered).to have_content(
             strip_tags(t('account.index.verification.finish_verifying_html', sp_name:)),
@@ -447,7 +447,7 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
         )
       end
 
-      it 'shows warning alert instructing user to complete identity verificaton' do
+      it 'shows warning alert instructing user to complete identity verification' do
         expect(rendered).to have_css('.usa-alert.usa-alert--warning')
         expect(rendered).to have_content(
           t('account.index.verification.finish_verifying_no_sp', app_name: APP_NAME),
@@ -487,7 +487,7 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
           )
         end
 
-        it 'shows warning alert instructing user to complete identity verificaton' do
+        it 'shows warning alert instructing user to complete identity verification' do
           expect(rendered).to have_css('.usa-alert.usa-alert--warning')
           expect(rendered).to have_content(
             t('account.index.verification.finish_verifying_no_sp', app_name: APP_NAME),
@@ -555,7 +555,7 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
           )
         end
 
-        it 'renders pii' do
+        it 'renders PII' do
           expect(rendered).to render_template(partial: 'accounts/_pii')
         end
       end

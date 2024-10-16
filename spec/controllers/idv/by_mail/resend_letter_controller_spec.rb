@@ -84,7 +84,7 @@ RSpec.describe Idv::ByMail::ResendLetterController do
       )
     end
 
-    context 'using vtr values' do
+    context 'when using vtr values' do
       it 'uses the GPO confirmation maker to send another letter and redirects', :freeze_time do
         expect_to_resend_letter_and_redirect(vtr: true)
 
