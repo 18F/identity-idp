@@ -24,6 +24,11 @@ module LexisNexisFixtures
       )
     end
 
+    def ddp_account_creation_request_json
+      raw = read_fixture_file_at_path('ddp/account_creation_request.json')
+      JSON.parse(raw).to_json
+    end
+
     def ddp_request_json
       raw = read_fixture_file_at_path('ddp/request.json')
       JSON.parse(raw).to_json

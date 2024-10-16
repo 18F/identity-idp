@@ -15,7 +15,6 @@ module AccountCreation
           service_type: 'all',
           session_id: applicant[:threatmetrix_session_id],
           input_ip_address: applicant[:request_ip],
-          custom_attribute:,
         }.to_json
       end
     end

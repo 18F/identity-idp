@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module AccountCreation
-  module DeviceProfiling
+  module DeviceProfile
     class Proofer < Proofing::LexisNexis::Ddp::Proofer
       def proof(applicant)
         response = VerificationRequest.new(config: config, applicant: applicant).send_request

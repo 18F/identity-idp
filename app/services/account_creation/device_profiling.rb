@@ -30,7 +30,7 @@ module AccountCreation
       ddp_params[:email] = user_email
       ddp_params[:request_ip] = request_ip
 
-      lexisnexis_ddp_proofer.proof(ddp_params)
+      proofer.proof(ddp_params)
     end
 
     def threatmetrix_disabled_result
@@ -49,8 +49,8 @@ module AccountCreation
       )
     end
 
-    def lexisnexis_ddp_proofer
-      @lexisnexis_ddp_proofer ||=
+    def proofer
+      @proofer ||=
         if IdentityConfig.store.lexisnexis_threatmetrix_mock_enabled
           Proofing::Mock::DdpMockClient.new
         else

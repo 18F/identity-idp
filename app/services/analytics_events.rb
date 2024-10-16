@@ -11,9 +11,8 @@
 #                 ||     ||
 
 module AnalyticsEvents
-  # @param [Boolean] 'success' Checkw whether threatmetrix succeeded properly.
-  # @param [String] 'transaction_id' Vendor-specific transaction ID for the request.
-  # @param [String] 'review_status' TMX decision on the user
+  # @param [Boolean] success Check whether threatmetrix succeeded properly.
+  # @param [String] transaction_id Vendor-specific transaction ID for the request.
   def account_creation_tmx_result(
     success:,
     transaction_id:, **extra

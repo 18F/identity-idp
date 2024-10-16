@@ -38,6 +38,7 @@ allowed_verified_within_providers: '[]'
 asset_host: ''
 async_stale_job_timeout_seconds: 300
 async_wait_timeout_seconds: 60
+authentication_tmx_policy: '1234'
 available_locales: 'en,es,fr,zh'
 aws_http_retry_limit: 2
 aws_http_retry_max_delay: 1
