@@ -5,17 +5,18 @@ module Idv
     class VerificationResultsEmailPresenter
       include Rails.application.routes.url_helpers
 
-      attr_reader :enrollment, :url_options
+      attr_reader :enrollment, :url_options, :visited_location_name
 
       # update to user's time zone when out of pilot
       USPS_SERVER_TIMEZONE = ActiveSupport::TimeZone['America/New_York'].dup.freeze
 
-      def initialize(enrollment:, url_options:)
+      def initialize(enrollment:, url_options:, visited_location_name:)
         @enrollment = enrollment
         @url_options = url_options
+        @visited_location_name = visited_location_name
       end
 
-      def location_name
+      def selected_location_name
         enrollment.selected_location_details['name']
       end
 
