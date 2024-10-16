@@ -17,7 +17,7 @@ module IdvSessionConcern
   end
 
   def idv_needed?
-    user_needs_biometric_comparison? ||
+    user_needs_facial_match? ||
       idv_session_user.active_profile.blank? ||
       decorated_sp_session.requested_more_recent_verification?
   end
@@ -59,8 +59,13 @@ module IdvSessionConcern
     current_user
   end
 
-  def user_needs_biometric_comparison?
-    resolved_authn_context_result.biometric_comparison? &&
-      !idv_session_user.identity_verified_with_biometric_comparison?
+  def user_needs_facial_match?
+    resolved_authn_context_result.facial_match? &&
+      !idv_session_user.identity_verified_with_facial_match?
+  end
+
+  def previous_ssn_edit_distance
+    return if idv_session.ssn.blank? || idv_session.previous_ssn.blank?
+    DidYouMean::Levenshtein.distance(idv_session.previous_ssn, idv_session.ssn)
   end
 end

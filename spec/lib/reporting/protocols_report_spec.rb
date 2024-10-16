@@ -81,11 +81,21 @@ RSpec.describe Reporting::ProtocolsReport do
       },
     ]
 
+    facial_match_issuers_query_response = [
+      {
+        'issuer' => 'Issuer1',
+      },
+      {
+        'issuer' => 'Issuer8',
+      },
+    ]
+
     stub_multiple_cloudwatch_logs(
       protocol_query_response,
       saml_signature_query_response,
       loa_issuers_query_response,
       aal3_issuers_query_response,
+      facial_match_issuers_query_response,
     )
   end
 
@@ -109,7 +119,7 @@ RSpec.describe Reporting::ProtocolsReport do
   describe '#to_csvs' do
     it 'generates a csv' do
       csv_string_list = report.to_csvs
-      expect(csv_string_list.count).to be 4
+      expect(csv_string_list.count).to be 5
 
       csvs = csv_string_list.map { |csv| CSV.parse(csv) }
 
@@ -206,15 +216,15 @@ RSpec.describe Reporting::ProtocolsReport do
          string_or_num(strings, 2)],
       ],
       [
-        ['Issue', 'Count of issuers with the issue', 'List of issuers with the issue'],
+        ['Issue', 'Count of issuers', 'List of issuers'],
         ['Not signing SAML authentication requests', string_or_num(strings, 2), 'Issuer1, Issuer3'],
         ['Incorrectly signing SAML authentication requests', string_or_num(strings, 1), 'Issuer1'],
       ],
       [
         [
           'Deprecated Parameter',
-          'Count of issuers using the parameter',
-          'List of issuers using the parameter',
+          'Count of issuers',
+          'List of issuers',
         ],
         [
           'LOA',
@@ -225,6 +235,18 @@ RSpec.describe Reporting::ProtocolsReport do
           'AAL3',
           string_or_num(strings, 2),
           'Issuer1, Issuer3',
+        ],
+      ],
+      [
+        [
+          'Feature',
+          'Count of issuers',
+          'List of issuers',
+        ],
+        [
+          'IdV with Facial Match',
+          string_or_num(strings, 2),
+          'Issuer1, Issuer8',
         ],
       ],
     ]

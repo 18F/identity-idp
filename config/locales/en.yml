@@ -80,7 +80,7 @@ account.index.verification.identity_verification: Identity verification
 account.index.verification.in_person_instructions_html: You must visit any participating Post Office by <strong>%{deadline}</strong> to verify your identity.
 account.index.verification.instructions: Enter your verification code to finish verifying your identity.
 account.index.verification.learn_more_link: Learn more about verifying your identity
-account.index.verification.nonbiometric_verified_html: You verified your identity with %{app_name} on <strong>%{date}</strong> using your state ID.
+account.index.verification.legacy_verified_html: You verified your identity with %{app_name} on <strong>%{date}</strong> using your state ID.
 account.index.verification.pending_badge: Pending
 account.index.verification.pending_badge_tooltip: Your identity is pending verification.
 account.index.verification.reactivate_button: Enter the verification code you received via US mail
@@ -90,9 +90,9 @@ account.index.verification.unverified_badge: Unverified
 account.index.verification.unverified_badge_tooltip: Finish verifying your identity.
 account.index.verification.verified_badge: Verified
 account.index.verification.verified_badge_tooltip: Your identity has been verified.
-account.index.verification.verified_biometric_badge_tooltip: Your identity and photo have both been verified.
-account.index.verification.verify_with_biometric_html: To access <strong>%{sp_name}</strong>, verify your identity again using a photo of yourself.
-account.index.verification.you_verified_your_biometric_identity: You have verified your identity with the information below and verified a photo of yourself which gives you access to all %{app_name} partners.
+account.index.verification.verified_facial_match_badge_tooltip: Your identity and photo have both been verified.
+account.index.verification.verify_with_facial_match_html: To access <strong>%{sp_name}</strong>, verify your identity again using a photo of yourself.
+account.index.verification.you_verified_your_facial_match_identity: You have verified your identity with the information below and verified a photo of yourself which gives you access to all %{app_name} partners.
 account.index.verification.you_verified_your_identity_html: You verified your identity for <strong>%{sp_name}</strong> with the information below.
 account.index.webauthn: Security key
 account.index.webauthn_add: Add security key
@@ -556,7 +556,7 @@ doc_auth.errors.phone_step_incomplete: You must go to your phone and upload phot
 doc_auth.errors.pii.birth_date_min_age: Your birthday does not meet the minimum age requirement.
 doc_auth.errors.rate_limited_heading: We couldn’t verify your ID
 doc_auth.errors.rate_limited_subheading: Try taking new pictures
-doc_auth.errors.rate_limited_text_html: For your security, we limit the number of times you can attempt to verify a document online. <strong>Try again in %{timeout}.</strong>
+doc_auth.errors.rate_limited_text_html: To prevent fraud, we limit the number of times someone can attempt to verify a document online. <strong>Try again in %{timeout}.</strong>
 doc_auth.errors.selfie_fail_heading: We couldn’t match the photo of yourself to your ID
 doc_auth.errors.selfie_not_live_or_poor_quality_heading: We could not verify the photo of yourself
 doc_auth.errors.send_link_limited: You tried too many times, please try again in %{timeout}. You can also go back and choose to use your computer instead.
@@ -579,7 +579,7 @@ doc_auth.headings.document_capture_back: Back of your ID
 doc_auth.headings.document_capture_front: Front of your ID
 doc_auth.headings.document_capture_selfie: Photo of your face
 doc_auth.headings.document_capture_subheader_id: Driver’s license or state ID card
-doc_auth.headings.document_capture_subheader_selfie: Photo of your face
+doc_auth.headings.document_capture_subheader_selfie: Add a photo of your face
 doc_auth.headings.document_capture_with_selfie: Add photos of your ID and a photo of yourself
 doc_auth.headings.front: Front of your driver’s license or state ID
 doc_auth.headings.how_to_verify: Choose how you want to verify your identity
@@ -645,7 +645,7 @@ doc_auth.info.selfie_capture_status.too_many_faces: Too many faces
 doc_auth.info.selfie_capture.action.capture: Take photo
 doc_auth.info.selfie_capture.action.close: close
 doc_auth.info.selfie_capture.action.retake: retake
-doc_auth.info.selfie_capture.action.submit: Use this photo
+doc_auth.info.selfie_capture.action.submit: Photo taken. Submit photo.
 doc_auth.info.selfie_capture.intro: Camera is on, ready for selfie
 doc_auth.info.ssn: We need your Social Security number to verify your name, date of birth and address.
 doc_auth.info.stepping_up_html: Verify your identity again to access this service. %{link_html}
@@ -679,16 +679,16 @@ doc_auth.instructions.text2: You will not need your physical SSN card.
 doc_auth.instructions.text3: We match your phone number with your personal information and send a one-time code to your phone.
 doc_auth.instructions.text4: Your password saves and encrypts your personal information.
 doc_auth.tips.document_capture_hint: Must be a JPG or PNG
-doc_auth.tips.document_capture_id_text1: Place your ID on a flat and dark surface.
-doc_auth.tips.document_capture_id_text2: Take your photo in a well-lit place.
-doc_auth.tips.document_capture_id_text3: Avoid glare or shadows on your ID.
+doc_auth.tips.document_capture_id_text1: Use a flat and dark surface
+doc_auth.tips.document_capture_id_text2: Take photos in a well-lit place
+doc_auth.tips.document_capture_id_text3: Avoid glare or shadows
 doc_auth.tips.document_capture_id_text4: File size should be at least 2 MB.
-doc_auth.tips.document_capture_selfie_id_header_text: How to take clear photos of your ID
+doc_auth.tips.document_capture_selfie_id_header_text: How to take clear photos
 doc_auth.tips.document_capture_selfie_selfie_text: How to prepare for your photo
-doc_auth.tips.document_capture_selfie_text1: Remove any clothing items or accessories that might cover your face. We suggest removing your glasses or hat.
-doc_auth.tips.document_capture_selfie_text2: Take your photo in a well-lit place.
-doc_auth.tips.document_capture_selfie_text3: Keep your expression neutral.
-doc_auth.tips.document_capture_selfie_text4: Make sure your whole face is visible within the green circle.
+doc_auth.tips.document_capture_selfie_text1: Remove any items covering your face, like glasses or a hat
+doc_auth.tips.document_capture_selfie_text2: Take photo in a well-lit place
+doc_auth.tips.document_capture_selfie_text3: Keep your expression neutral
+doc_auth.tips.document_capture_selfie_text4: Make sure your whole face is visible within the green circle
 doc_auth.tips.mobile_phone_required: Mobile Phone Required
 doc_auth.tips.review_issues_id_header_text: 'Review the images of your state‑issued ID:'
 doc_auth.tips.review_issues_id_text1: Did you use a dark background?
@@ -1016,8 +1016,8 @@ idv.errors.incorrect_password: The password you entered is not correct.
 idv.errors.pattern_mismatch.ssn: Enter a nine-digit Social Security number
 idv.errors.pattern_mismatch.zipcode: Enter a 5 or 9 digit ZIP Code
 idv.errors.pattern_mismatch.zipcode_five: Enter a 5 digit ZIP Code
-idv.failure.attempts_html.one: For security reasons, you have <strong>one attempt</strong> remaining to add your ID online.
-idv.failure.attempts_html.other: For security reasons, you have <strong>%{count} attempts</strong> remaining to add your ID online.
+idv.failure.attempts_html.one: You can try <strong>1 more time.</strong> Then, you must wait 6 hours before trying again.
+idv.failure.attempts_html.other: You can try <strong>%{count} more times.</strong> Then, you must wait 6 hours before trying again.
 idv.failure.button.try_online: Try again online
 idv.failure.button.warning: Try again
 idv.failure.exceptions.in_person_outage_error_message.post_cta.body: In the meantime, you can still begin the in-person verification process on %{app_name} and then visit a Post Office. If you urgently need access to services, please contact your agency directly.
@@ -1804,9 +1804,15 @@ user_mailer.account_reset_request.header: Your account will be deleted in %{inte
 user_mailer.account_reset_request.intro_html: 'As a security measure, %{app_name} requires a two-step process to delete your account:<br><br> Step One: There is a waiting period of %{waiting_period} if you have lost access to your authentication methods and need to delete your account. If you locate your authentication methods, you can sign in to your %{app_name} account to cancel this request.<br><br> Step Two: After the waiting period of %{waiting_period}, you will receive an email that will ask you to confirm the deletion of your %{app_name} account. Your account will not be deleted until you confirm.'
 user_mailer.account_reset_request.subject: How to delete your %{app_name} account
 user_mailer.account_verified.change_password_link: change your password
-user_mailer.account_verified.contact_link: contact us
-user_mailer.account_verified.intro_html: You successfully verified your identity with %{sp_name} on %{date} using %{app_name}. If you did not perform this action, please %{contact_link_html} and sign in to %{change_password_link_html}.
-user_mailer.account_verified.subject: You verified your identity with %{sp_name}.
+user_mailer.account_verified.contact_link: contact %{app_name} support
+user_mailer.account_verified.greeting: Hello,
+user_mailer.account_verified.intro: You successfully verified your identity on %{date}.
+user_mailer.account_verified.next_sign_in.with_sp.with_cta: Next, click the button or copy the link below to access %{sp_name} and sign in.
+user_mailer.account_verified.next_sign_in.with_sp.without_cta: You can now sign in from %{sp_name}’s website.
+user_mailer.account_verified.next_sign_in.without_sp: Next, click the button or copy the link below to sign in to %{app_name}.
+user_mailer.account_verified.sign_in: Sign in
+user_mailer.account_verified.subject: You successfully verified your identity with %{app_name}
+user_mailer.account_verified.warning_contact_us_html: If you did not attempt to verify your identity, please sign in to %{change_password_link_html}. To report this, %{contact_link_html}.
 user_mailer.add_email_associated_with_another_account.help_html: If you did not request a new email or suspect an error, please visit the %{app_name_html} %{help_link_html} or %{contact_link_html}.
 user_mailer.add_email_associated_with_another_account.intro_html: This email address is already associated with a %{app_name_html} account, so we can’t add it to another account. You must first delete or remove it from the account it is associated with. To do this, follow the link below and sign in with this email address. If you are not trying to add this email address to an account, you can ignore this message.
 user_mailer.add_email_associated_with_another_account.link_text: Go to %{app_name}

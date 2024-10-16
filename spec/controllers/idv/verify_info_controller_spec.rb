@@ -235,6 +235,12 @@ RSpec.describe Idv::VerifyInfoController do
               ),
             ),
           )
+          expect(@analytics).to have_logged_event(
+            :idv_threatmetrix_response_body,
+            response_body: hash_including(
+              client: threatmetrix_client_id,
+            ),
+          )
         end
       end
 
@@ -280,6 +286,47 @@ RSpec.describe Idv::VerifyInfoController do
         it 'does not redirect back to the SSN step' do
           expect(response).not_to redirect_to(idv_ssn_url)
         end
+      end
+    end
+
+    context 'when the user has updated their SSN' do
+      let(:document_capture_session) do
+        DocumentCaptureSession.create(user:)
+      end
+
+      let(:async_state) do
+        # Here we're trying to match the store to redis -> read from redis flow this data travels
+        adjudicated_result = Proofing::Resolution::ResultAdjudicator.new(
+          state_id_result: Proofing::StateIdResult.new(success: true),
+          device_profiling_result: Proofing::DdpResult.new(success: true),
+          ipp_enrollment_in_progress: true,
+          residential_resolution_result: Proofing::Resolution::Result.new(success: true),
+          resolution_result: Proofing::Resolution::Result.new(success: true),
+          same_address_as_id: true,
+          should_proof_state_id: true,
+          applicant_pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
+        ).adjudicated_result.to_h
+
+        document_capture_session.create_proofing_session
+
+        document_capture_session.store_proofing_result(adjudicated_result)
+
+        document_capture_session.load_proofing_result
+      end
+
+      it 'logs the edit distance between SSNs' do
+        allow(controller).to receive(:load_async_state).and_return(async_state)
+        controller.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
+        controller.idv_session.previous_ssn = '900-66-1256'
+
+        get :show
+
+        expect(@analytics).to have_logged_event(
+          'IdV: doc auth verify proofing results',
+          hash_including(
+            previous_ssn_edit_distance: 2,
+          ),
+        )
       end
     end
 
@@ -393,7 +440,7 @@ RSpec.describe Idv::VerifyInfoController do
       end
     end
 
-    context 'when the reolution proofing job result is missing' do
+    context 'when the resolution proofing job result is missing' do
       let(:async_state) do
         ProofingSessionAsyncResult.new(status: ProofingSessionAsyncResult::MISSING)
       end
@@ -488,6 +535,38 @@ RSpec.describe Idv::VerifyInfoController do
         put :update
 
         expect(response).to redirect_to idv_session_errors_failure_url
+      end
+    end
+  end
+
+  describe '#best_effort_phone' do
+    it 'returns nil when there is no number available' do
+      expect(subject.best_effort_phone).to eq(nil)
+    end
+
+    context 'when there is a hybrid handoff number' do
+      before(:each) do
+        allow(subject.idv_session).to receive(:phone_for_mobile_flow).and_return('202-555-1234')
+      end
+
+      it 'returns the phone number from hybrid handoff' do
+        expect(subject.best_effort_phone[:phone]).to eq('202-555-1234')
+      end
+
+      it 'sets type to :hybrid_handoff' do
+        expect(subject.best_effort_phone[:source]).to eq(:hybrid_handoff)
+      end
+    end
+
+    context 'when there was an MFA phone number provided' do
+      let(:user) { create(:user, :with_phone) }
+
+      it 'returns the MFA phone number' do
+        expect(subject.best_effort_phone[:phone]).to eq('+1 202-555-1212')
+      end
+
+      it 'sets the phone source to :mfa' do
+        expect(subject.best_effort_phone[:source]).to eq(:mfa)
       end
     end
   end

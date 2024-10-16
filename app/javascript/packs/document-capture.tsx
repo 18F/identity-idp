@@ -41,6 +41,7 @@ interface AppRootData {
   docAuthSelfieDesktopTestMode: string;
   locationsUrl: string;
   addressSearchUrl: string;
+  sessionsUrl: string;
   docAuthSeparatePagesEnabled: string;
 }
 
@@ -113,6 +114,7 @@ const {
   docAuthSeparatePagesEnabled,
   locationsUrl: locationsURL,
   addressSearchUrl: addressSearchURL,
+  sessionsUrl: sessionsURL,
 } = appRoot.dataset as DOMStringMap & AppRootData;
 
 let parsedUsStatesTerritories = [];
@@ -205,7 +207,7 @@ const App = composeComponents(
   [
     DocumentCapture,
     {
-      onStepChange: extendSession,
+      onStepChange: () => extendSession(sessionsURL),
     },
   ],
 );

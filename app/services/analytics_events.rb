@@ -1177,7 +1177,7 @@ module AnalyticsEvents
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
   # @param ["hybrid","standard"] flow_path Document capture user flow
-  # @param [Boolean] liveness_checking_required Whether biometric selfie check is required
+  # @param [Boolean] liveness_checking_required Whether facial match check is required
   def idv_doc_auth_capture_complete_visited(
     step:,
     analytics_id:,
@@ -1200,8 +1200,8 @@ module AnalyticsEvents
   # @param [Hash] errors Errors resulting from form validation
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
-  # @param [Boolean] liveness_checking_required Whether biometric selfie check is required
-  # @param [Boolean] selfie_check_required Whether biometric selfie check is required
+  # @param [Boolean] liveness_checking_required Whether facial match check is required
+  # @param [Boolean] selfie_check_required Whether facial match check is required
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Boolean] redo_document_capture Whether user is redoing document capture after barcode
   # warning
@@ -1248,8 +1248,8 @@ module AnalyticsEvents
   # @param [String] analytics_id Current IdV flow identifier
   # @param [Boolean] redo_document_capture Whether user is redoing document capture after barcode
   # warning
-  # @param [Boolean] liveness_checking_required Whether biometric selfie check is required
-  # @param [Boolean] selfie_check_required Whether biometric selfie check is required
+  # @param [Boolean] liveness_checking_required Whether facial match check is required
+  # @param [Boolean] selfie_check_required Whether facial match check is required
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # SDK upgrades
@@ -1368,7 +1368,7 @@ module AnalyticsEvents
   # @param [String] analytics_id Current IdV flow identifier
   # @param [Boolean] redo_document_capture Whether user is redoing document capture after barcode
   # warning
-  # @param [Boolean] selfie_check_required Whether biometric selfie check is required
+  # @param [Boolean] selfie_check_required Whether facial match check is required
   # @param ["document_capture","send_link"] destination Where user is sent after submission
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
@@ -1415,7 +1415,7 @@ module AnalyticsEvents
   # @param [String] analytics_id Current IdV flow identifier
   # @param [Boolean] redo_document_capture Whether user is redoing document capture after barcode
   # warning
-  # @param [Boolean] selfie_check_required Whether biometric selfie check is required
+  # @param [Boolean] selfie_check_required Whether facial match check is required
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # SDK upgrades
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
@@ -1498,6 +1498,7 @@ module AnalyticsEvents
   # @param [Boolean] same_address_as_id
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [Number] previous_ssn_edit_distance The edit distance to the previous submitted SSN
   def idv_doc_auth_redo_ssn_submitted(
     step:,
     analytics_id:,
@@ -1505,6 +1506,7 @@ module AnalyticsEvents
     opted_in_to_in_person_proofing: nil,
     skip_hybrid_handoff: nil,
     same_address_as_id: nil,
+    previous_ssn_edit_distance: nil,
     **extra
   )
     track_event(
@@ -1515,6 +1517,7 @@ module AnalyticsEvents
       opted_in_to_in_person_proofing:,
       skip_hybrid_handoff:,
       same_address_as_id:,
+      previous_ssn_edit_distance:,
       **extra,
     )
   end
@@ -1555,6 +1558,7 @@ module AnalyticsEvents
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Boolean] same_address_as_id
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [Number] previous_ssn_edit_distance The edit distance to the previous submitted SSN
   def idv_doc_auth_ssn_submitted(
     success:,
     errors:,
@@ -1566,6 +1570,7 @@ module AnalyticsEvents
     acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
     same_address_as_id: nil,
+    previous_ssn_edit_distance: nil,
     **extra
   )
     track_event(
@@ -1580,6 +1585,7 @@ module AnalyticsEvents
       flow_path:,
       opted_in_to_in_person_proofing:,
       same_address_as_id:,
+      previous_ssn_edit_distance:,
       **extra,
     )
   end
@@ -1593,6 +1599,7 @@ module AnalyticsEvents
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Boolean] same_address_as_id
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [Number] previous_ssn_edit_distance The edit distance to the previous submitted SSN
   def idv_doc_auth_ssn_visited(
     step:,
     analytics_id:,
@@ -1601,6 +1608,7 @@ module AnalyticsEvents
     acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
     same_address_as_id: nil,
+    previous_ssn_edit_distance: nil,
     **extra
   )
     track_event(
@@ -1612,6 +1620,7 @@ module AnalyticsEvents
       flow_path:,
       opted_in_to_in_person_proofing:,
       same_address_as_id:,
+      previous_ssn_edit_distance:,
       **extra,
     )
   end
@@ -1953,6 +1962,7 @@ module AnalyticsEvents
   # @param ssn_is_unique [Boolean] Whether another Profile existed with the same SSN at the time the profile associated with the current IdV session was minted.
   # @param step [String] Always "verify" (leftover from flow state machine days)
   # @param success [Boolean] Whether identity resolution succeeded overall
+  # @param previous_ssn_edit_distance [Number] The edit distance to the previous submitted SSN
   def idv_doc_auth_verify_proofing_results(
     ab_tests: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
@@ -1969,6 +1979,7 @@ module AnalyticsEvents
     step: nil,
     success: nil,
     same_address_as_id: nil,
+    previous_ssn_edit_distance: nil,
     **extra
   )
     track_event(
@@ -1988,6 +1999,7 @@ module AnalyticsEvents
       step:,
       success:,
       same_address_as_id:,
+      previous_ssn_edit_distance:,
       **extra,
     )
   end
@@ -4370,14 +4382,21 @@ module AnalyticsEvents
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   #                  (previously called "attempt")
   # @param [Integer] selfie_attempts number of times SDK captured selfie, user may decide to retake
+  # @param [Boolean] liveness_checking_required Whether or not the selfie is required
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
-  def idv_sdk_selfie_image_capture_closed_without_photo(acuant_version:, captureAttempts: nil,
-                                                        selfie_attempts: nil, **extra)
+  def idv_sdk_selfie_image_capture_closed_without_photo(
+    acuant_version:,
+    captureAttempts: nil,
+    selfie_attempts: nil,
+    liveness_checking_required: true, # default to true to facilitate CW filtering
+    **extra
+  )
     track_event(
       :idv_sdk_selfie_image_capture_closed_without_photo,
-      acuant_version: acuant_version,
-      captureAttempts: captureAttempts,
-      selfie_attempts: selfie_attempts,
+      acuant_version:,
+      captureAttempts:,
+      selfie_attempts:,
+      liveness_checking_required:,
       **extra,
     )
   end
@@ -4392,6 +4411,7 @@ module AnalyticsEvents
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   #                  (previously called "attempt")
   # @param [Integer] selfie_attempts number of times SDK captured selfie, user may decide to retake
+  # @param [Boolean] liveness_checking_required Whether or not the selfie is required
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_sdk_selfie_image_capture_failed(
     acuant_version:,
@@ -4399,15 +4419,17 @@ module AnalyticsEvents
     sdk_error_message:,
     captureAttempts: nil,
     selfie_attempts: nil,
+    liveness_checking_required: true, # default to true to facilitate CW filtering
     **extra
   )
     track_event(
       :idv_sdk_selfie_image_capture_failed,
-      acuant_version: acuant_version,
-      sdk_error_code: sdk_error_code,
-      sdk_error_message: sdk_error_message,
-      captureAttempts: captureAttempts,
-      selfie_attempts: selfie_attempts,
+      acuant_version:,
+      sdk_error_code:,
+      sdk_error_message:,
+      captureAttempts:,
+      selfie_attempts:,
+      liveness_checking_required:,
       **extra,
     )
   end
@@ -4417,17 +4439,20 @@ module AnalyticsEvents
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   #                  (previously called "attempt")
   # @param [Integer] selfie_attempts number of times SDK captured selfie, user may decide to retake
+  # @param [Boolean] liveness_checking_required Whether or not the selfie is required
   def idv_sdk_selfie_image_capture_initialized(
     acuant_version:,
     captureAttempts: nil,
     selfie_attempts: nil,
+    liveness_checking_required: true, # default to true to facilitate CW filtering
     **extra
   )
     track_event(
       :idv_sdk_selfie_image_capture_initialized,
-      acuant_version: acuant_version,
-      captureAttempts: captureAttempts,
-      selfie_attempts: selfie_attempts,
+      acuant_version:,
+      captureAttempts:,
+      selfie_attempts:,
+      liveness_checking_required:,
       **extra,
     )
   end
@@ -4438,18 +4463,21 @@ module AnalyticsEvents
   # @param [String] acuant_version
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   # @param [Integer] selfie_attempts number of times SDK captured selfie, user may decide to retake
+  # @param [Boolean] liveness_checking_required Whether or not the selfie is required
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_sdk_selfie_image_capture_opened(
     acuant_version:,
     captureAttempts: nil,
     selfie_attempts: nil,
+    liveness_checking_required: true, # default to true to facilitate CW filtering
     **extra
   )
     track_event(
       :idv_sdk_selfie_image_capture_opened,
-      acuant_version: acuant_version,
-      captureAttempts: captureAttempts,
-      selfie_attempts: selfie_attempts,
+      acuant_version:,
+      captureAttempts:,
+      selfie_attempts:,
+      liveness_checking_required:,
       **extra,
     )
   end
@@ -4458,17 +4486,20 @@ module AnalyticsEvents
   # @param [String] acuant_version
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   # @param [Integer] selfie_attempts number of selfie captured by SDK
+  # @param [Boolean] liveness_checking_required Whether or not the selfie is required
   def idv_sdk_selfie_image_re_taken(
     acuant_version:,
     captureAttempts: nil,
     selfie_attempts: nil,
+    liveness_checking_required: true, # default to true to facilitate CW filtering
     **extra
   )
     track_event(
       :idv_sdk_selfie_image_re_taken,
-      acuant_version: acuant_version,
-      captureAttempts: captureAttempts,
-      selfie_attempts: selfie_attempts,
+      acuant_version:,
+      captureAttempts:,
+      selfie_attempts:,
+      liveness_checking_required:,
       **extra,
     )
   end
@@ -4477,17 +4508,20 @@ module AnalyticsEvents
   # @param [String] acuant_version
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   # @param [Integer] selfie_attempts number of selfie captured by SDK
+  # @param [Boolean] liveness_checking_required Whether or not the selfie is required
   def idv_sdk_selfie_image_taken(
     acuant_version:,
     captureAttempts: nil,
     selfie_attempts: nil,
+    liveness_checking_required: true, # default to true to facilitate CW filtering
     **extra
   )
     track_event(
       :idv_sdk_selfie_image_taken,
-      acuant_version: acuant_version,
-      captureAttempts: captureAttempts,
-      selfie_attempts: selfie_attempts,
+      acuant_version:,
+      captureAttempts:,
+      selfie_attempts:,
+      liveness_checking_required:,
       **extra,
     )
   end
@@ -4605,14 +4639,17 @@ module AnalyticsEvents
   # Logs a Socure KYC result alongside a resolution result for later comparison.
   # @param [Hash] socure_result Result from Socure KYC API call
   # @param [Hash] resolution_result Result from resolution proofing
+  # @param [String,nil] phone_source Whether the phone number is from MFA or hybrid handoff
   def idv_socure_shadow_mode_proofing_result(
     socure_result:,
     resolution_result:,
+    phone_source:,
     **extra
   )
     track_event(
       :idv_socure_shadow_mode_proofing_result,
       resolution_result: resolution_result.to_h,
+      phone_source:,
       socure_result: socure_result.to_h,
       **extra,
     )
@@ -4664,6 +4701,19 @@ module AnalyticsEvents
       active_profile_idv_level: active_profile_idv_level,
       pending_profile_idv_level: pending_profile_idv_level,
       profile_history: profile_history,
+      **extra,
+    )
+  end
+
+  # The JSON body of the response returned from Threatmetrix. PII has been removed.
+  # @param [Hash] response_body The response body returned by ThreatMetrix
+  def idv_threatmetrix_response_body(
+    response_body: nil,
+    **extra
+  )
+    track_event(
+      :idv_threatmetrix_response_body,
+      response_body: response_body,
       **extra,
     )
   end

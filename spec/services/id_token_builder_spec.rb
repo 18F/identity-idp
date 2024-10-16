@@ -83,6 +83,8 @@ RSpec.describe IdTokenBuilder do
 
     context 'context sp requests ACR values' do
       context 'aal and ial request' do
+        let(:user) { create(:user, :proofed) }
+
         before do
           identity.aal = 2
           acr_values = [
@@ -98,6 +100,8 @@ RSpec.describe IdTokenBuilder do
       end
 
       context 'ial2 request' do
+        let(:user) { create(:user, :proofed) }
+
         before do
           identity.ial = 2
           identity.acr_values = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
@@ -108,7 +112,9 @@ RSpec.describe IdTokenBuilder do
         end
       end
 
-      context 'ial2 with biometric comparison required' do
+      context 'ial2 with facial match comparison required' do
+        let(:user) { create(:user, :proofed_with_selfie) }
+
         before do
           identity.ial = 2
           identity.acr_values = Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF

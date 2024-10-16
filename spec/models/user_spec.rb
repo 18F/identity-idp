@@ -1433,7 +1433,7 @@ RSpec.describe User do
     end
   end
 
-  describe '#identity_verified_with_biometric_comparison?' do
+  describe '#identity_verified_with_facial_match?' do
     let(:user) { create(:user) }
     let(:active_profile) do
       create(
@@ -1446,23 +1446,23 @@ RSpec.describe User do
     it 'returns true if user has an active profile with selfie' do
       active_profile.idv_level = :unsupervised_with_selfie
       active_profile.save
-      expect(user.identity_verified_with_biometric_comparison?).to eq true
+      expect(user.identity_verified_with_facial_match?).to eq true
     end
 
     it 'returns false if user has an active profile without selfie' do
-      expect(user.identity_verified_with_biometric_comparison?).to eq false
+      expect(user.identity_verified_with_facial_match?).to eq false
     end
 
     it 'return true if user has an active in-person profile' do
       active_profile.idv_level = :in_person
       active_profile.save
-      expect(user.identity_verified_with_biometric_comparison?).to eq true
+      expect(user.identity_verified_with_facial_match?).to eq true
     end
 
     context 'user does not have active profile' do
       let(:active_profile) { nil }
       it 'returns false' do
-        expect(user.identity_verified_with_biometric_comparison?).to eq false
+        expect(user.identity_verified_with_facial_match?).to eq false
       end
     end
   end
@@ -1695,24 +1695,19 @@ RSpec.describe User do
   end
 
   describe '#has_fed_or_mil_email?' do
-    before do
-      allow(IdentityConfig.store).to receive(:use_fed_domain_class).and_return(false)
-    end
+    let!(:federal_email_domain) { create(:federal_email_domain, name: 'gsa.gov') }
 
-    context 'with a valid fed email in domain file' do
-      let(:user) { create(:user, email: 'example@example.gov') }
+    context 'with an email in federal_email_domains' do
+      let(:user) { create(:user, email: 'example@gsa.gov') }
       it 'should return true' do
         expect(user.has_fed_or_mil_email?).to eq(true)
       end
     end
 
-    context 'with use_fed_domain_class set to false and random .gov email' do
+    context 'with an email not in federal_email_domains' do
       let(:user) { create(:user, email: 'example@example.gov') }
-      before do
-        allow(IdentityConfig.store).to receive(:use_fed_domain_class).and_return(false)
-      end
-      it 'should return true' do
-        expect(user.has_fed_or_mil_email?).to eq(true)
+      it 'should return false' do
+        expect(user.has_fed_or_mil_email?).to eq(false)
       end
     end
 

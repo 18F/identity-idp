@@ -20,7 +20,7 @@ RSpec.describe Vot::Parser do
         expect(result.phishing_resistant?).to eq(false)
         expect(result.hspd12?).to eq(true)
         expect(result.identity_proofing?).to eq(false)
-        expect(result.biometric_comparison?).to eq(false)
+        expect(result.facial_match?).to eq(false)
         expect(result.ialmax?).to eq(false)
         expect(result.enhanced_ipp?).to eq(false)
       end
@@ -37,7 +37,7 @@ RSpec.describe Vot::Parser do
         expect(result.phishing_resistant?).to eq(false)
         expect(result.hspd12?).to eq(false)
         expect(result.identity_proofing?).to eq(true)
-        expect(result.biometric_comparison?).to eq(true)
+        expect(result.facial_match?).to eq(true)
         expect(result.ialmax?).to eq(false)
         expect(result.enhanced_ipp?).to eq(false)
       end
@@ -94,7 +94,7 @@ RSpec.describe Vot::Parser do
           expect(result.phishing_resistant?).to eq(false)
           expect(result.hspd12?).to eq(true)
           expect(result.identity_proofing?).to eq(true)
-          expect(result.biometric_comparison?).to eq(false)
+          expect(result.facial_match?).to eq(false)
           expect(result.ialmax?).to eq(false)
           expect(result.enhanced_ipp?).to eq(false)
         end

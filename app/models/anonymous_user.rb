@@ -53,7 +53,7 @@ class AnonymousUser
     second_factor_locked_at.present? && !lockout_period_expired?
   end
 
-  def identity_verified_with_biometric_comparison?
+  def identity_verified_with_facial_match?
     false
   end
 

@@ -5,7 +5,7 @@ module Test
   class OidcTestController < ApplicationController
     include OidcAuthHelper
 
-    BIOMETRIC_REQUIRED = 'biometric-comparison-required'
+    FACIAL_MATCH_REQUIRED = 'facial-match-required'
 
     def initialize
       @client_id = 'urn:gov:gsa:openidconnect:sp:sinatra'
@@ -14,7 +14,7 @@ module Test
 
     def index
       # default to require
-      @start_url_selfie = "#{test_oidc_auth_request_url}?ial=biometric-comparison-required"
+      @start_url_selfie = "#{test_oidc_auth_request_url}?ial=#{FACIAL_MATCH_REQUIRED}"
       @start_url_ial2 = "#{test_oidc_auth_request_url}?ial=2"
       @start_url_ial1 = "#{test_oidc_auth_request_url}?ial=1"
       update_service_provider
@@ -46,7 +46,7 @@ module Test
       params = ial2_params(
         client_id: client_id,
         acr_values: acr_values(ial: ial, aal: aal),
-        biometric_comparison_required: ial == BIOMETRIC_REQUIRED,
+        facial_match_required: ial == FACIAL_MATCH_REQUIRED,
         state: random_value,
         nonce: random_value,
       )
@@ -70,7 +70,7 @@ module Test
         'openid email social_security_number'
       when '1', nil
         'openid email'
-      when '2', BIOMETRIC_REQUIRED
+      when '2', FACIAL_MATCH_REQUIRED
         'openid email profile social_security_number phone address'
       else
         raise ArgumentError.new("Unexpected IAL: #{ial.inspect}")
@@ -84,7 +84,7 @@ module Test
         '' => 'http://idmanagement.gov/ns/assurance/ial/1',
         '1' => 'http://idmanagement.gov/ns/assurance/ial/1',
         '2' => 'http://idmanagement.gov/ns/assurance/ial/2',
-        'biometric-comparison-required' => 'http://idmanagement.gov/ns/assurance/ial/2',
+        'facial-match-required' => 'http://idmanagement.gov/ns/assurance/ial/2',
       }[ial]
       aal_value = {
         '2' => 'http://idmanagement.gov/ns/assurance/aal/2',

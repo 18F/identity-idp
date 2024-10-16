@@ -126,7 +126,7 @@ RSpec.describe AccountReset::DeleteAccountController do
       )
     end
 
-    it 'logs info about user biometrically verified account' do
+    it 'logs info about user facial matched verified account' do
       user = create(
         :user, :proofed_with_selfie, :with_phone
       )

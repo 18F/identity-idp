@@ -17,42 +17,47 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
       render
     end
 
-    context 'renders the show template with' do
-      it 'a title' do
-        expect(rendered).to have_content(t('doc_auth.headings.how_to_verify'))
-      end
+    it 'renders a step indicator with Getting started as the current step' do
+      expect(view.content_for(:pre_flash_content)).to have_css(
+        '.step-indicator__step--current',
+        text: t('step_indicator.flows.idv.getting_started'),
+      )
+    end
 
-      it 'two options for verifying your identity' do
-        expect(rendered).to have_content(t('doc_auth.headings.verify_online'))
-        expect(rendered).to have_content(t('doc_auth.headings.verify_at_post_office'))
-      end
+    it 'renders a title' do
+      expect(rendered).to have_content(t('doc_auth.headings.how_to_verify'))
+    end
 
-      it 'a button for remote and ipp' do
-        expect(rendered).to have_button(t('forms.buttons.continue_remote'))
-        expect(rendered).to have_button(t('forms.buttons.continue_ipp'))
-      end
+    it 'renders two options for verifying your identity' do
+      expect(rendered).to have_content(t('doc_auth.headings.verify_online'))
+      expect(rendered).to have_content(t('doc_auth.headings.verify_at_post_office'))
+    end
 
-      it 'a troubleshooting section' do
-        expect(rendered).to have_content(
-          t('doc_auth.info.how_to_verify_troubleshooting_options_header'),
-        )
-        expect(rendered).to have_link(t('doc_auth.info.verify_online_link_text'))
-        expect(rendered).to have_link(t('doc_auth.info.verify_at_post_office_link_text'))
-      end
+    it 'renders a button for remote and ipp' do
+      expect(rendered).to have_button(t('forms.buttons.continue_remote'))
+      expect(rendered).to have_button(t('forms.buttons.continue_ipp'))
+    end
 
-      it 'a cancel link' do
-        expect(rendered).to have_link(t('links.cancel'))
-      end
+    it 'renders a troubleshooting section' do
+      expect(rendered).to have_content(
+        t('doc_auth.info.how_to_verify_troubleshooting_options_header'),
+      )
+      expect(rendered).to have_link(t('doc_auth.info.verify_online_link_text'))
+      expect(rendered).to have_link(t('doc_auth.info.verify_at_post_office_link_text'))
+    end
 
-      it 'non-selfie specific content' do
-        expect(rendered).to have_content(t('doc_auth.info.how_to_verify'))
-        expect(rendered).not_to have_content(t('doc_auth.tips.mobile_phone_required'))
-        expect(rendered).to have_content(t('doc_auth.headings.verify_online'))
-        expect(rendered).to have_content(t('doc_auth.info.verify_online_instruction'))
-        expect(rendered).to have_content(t('doc_auth.info.verify_online_description'))
-        expect(rendered).to have_content(t('doc_auth.info.verify_at_post_office_instruction'))
-        expect(rendered).to have_content(t('doc_auth.info.verify_at_post_office_description'))
-      end
+    it 'renders a cancel link' do
+      expect(rendered).to have_link(t('links.cancel'))
+    end
+
+    it 'renders non-selfie specific content' do
+      expect(rendered).to have_content(t('doc_auth.info.how_to_verify'))
+      expect(rendered).not_to have_content(t('doc_auth.tips.mobile_phone_required'))
+      expect(rendered).to have_content(t('doc_auth.headings.verify_online'))
+      expect(rendered).to have_content(t('doc_auth.info.verify_online_instruction'))
+      expect(rendered).to have_content(t('doc_auth.info.verify_online_description'))
+      expect(rendered).to have_content(t('doc_auth.info.verify_at_post_office_instruction'))
+      expect(rendered).to have_content(t('doc_auth.info.verify_at_post_office_description'))
     end
   end
 
@@ -64,45 +69,50 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
       render
     end
 
-    context 'renders the show template with' do
-      it 'a title' do
-        expect(rendered).to have_content(t('doc_auth.headings.how_to_verify'))
-      end
+    it 'renders a step indicator with Getting started as the current step' do
+      expect(view.content_for(:pre_flash_content)).to have_css(
+        '.step-indicator__step--current',
+        text: t('step_indicator.flows.idv.getting_started'),
+      )
+    end
 
-      it 'two options for verifying your identity' do
-        expect(rendered).to have_content(t('doc_auth.headings.verify_online_selfie'))
-        expect(rendered).to have_content(t('doc_auth.headings.verify_at_post_office'))
-      end
+    it 'renders a title' do
+      expect(rendered).to have_content(t('doc_auth.headings.how_to_verify'))
+    end
 
-      it 'a button for remote and ipp' do
-        expect(rendered).to have_button(t('forms.buttons.continue_remote_selfie'))
-        expect(rendered).to have_button(t('forms.buttons.continue_ipp'))
-      end
+    it 'renders two options for verifying your identity' do
+      expect(rendered).to have_content(t('doc_auth.headings.verify_online_selfie'))
+      expect(rendered).to have_content(t('doc_auth.headings.verify_at_post_office'))
+    end
 
-      it 'a troubleshooting section' do
-        expect(rendered).to have_content(
-          t('doc_auth.info.how_to_verify_troubleshooting_options_header'),
-        )
-        expect(rendered).to have_link(t('doc_auth.info.verify_online_link_text'))
-        expect(rendered).to have_link(t('doc_auth.info.verify_at_post_office_link_text'))
-      end
+    it 'renders a button for remote and ipp' do
+      expect(rendered).to have_button(t('forms.buttons.continue_remote_selfie'))
+      expect(rendered).to have_button(t('forms.buttons.continue_ipp'))
+    end
 
-      it 'a cancel link' do
-        expect(rendered).to have_link(t('links.cancel'))
-      end
+    it 'renders a troubleshooting section' do
+      expect(rendered).to have_content(
+        t('doc_auth.info.how_to_verify_troubleshooting_options_header'),
+      )
+      expect(rendered).to have_link(t('doc_auth.info.verify_online_link_text'))
+      expect(rendered).to have_link(t('doc_auth.info.verify_at_post_office_link_text'))
+    end
 
-      it 'selfie specific content' do
-        expect(rendered).to have_content(t('doc_auth.info.how_to_verify_selfie'))
-        expect(rendered).to have_content(t('doc_auth.tips.mobile_phone_required'))
-        expect(rendered).to have_content(t('doc_auth.info.verify_online_instruction_selfie'))
-        expect(rendered).to have_content(t('doc_auth.info.verify_online_description_selfie'))
-        expect(rendered).to have_content(
-          t('doc_auth.info.verify_at_post_office_instruction_selfie'),
-        )
-        expect(rendered).to have_content(
-          t('doc_auth.info.verify_at_post_office_description_selfie'),
-        )
-      end
+    it 'renders a cancel link' do
+      expect(rendered).to have_link(t('links.cancel'))
+    end
+
+    it 'renders selfie specific content' do
+      expect(rendered).to have_content(t('doc_auth.info.how_to_verify_selfie'))
+      expect(rendered).to have_content(t('doc_auth.tips.mobile_phone_required'))
+      expect(rendered).to have_content(t('doc_auth.info.verify_online_instruction_selfie'))
+      expect(rendered).to have_content(t('doc_auth.info.verify_online_description_selfie'))
+      expect(rendered).to have_content(
+        t('doc_auth.info.verify_at_post_office_instruction_selfie'),
+      )
+      expect(rendered).to have_content(
+        t('doc_auth.info.verify_at_post_office_description_selfie'),
+      )
     end
   end
 end

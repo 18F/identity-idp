@@ -17,6 +17,18 @@
   border-width: 3px;
 }
 
+usa-file-input:not(
+    .usa-file-input--has-value,
+    .usa-file-input--value-pending,
+    .usa-file-input--is-id-capture
+  )
+  .usa-form-group--success
+  .usa-file-input
+  .usa-file-input__target {
+  height: 21rem;
+  width: 12rem;
+}
+
 .usa-file-input:not(.usa-file-input--has-value, .usa-file-input--value-pending) {
   .usa-file-input__target {
     border-color: color('primary');
@@ -75,7 +87,17 @@
     width: 100%;
   }
 }
-
+.usa-file-input.usa-file-input--single-value:not(.usa-file-input--is-id-capture) {
+  .usa-file-input__preview {
+    width: 12rem;
+  }
+  .usa-file-input__target {
+    width: 12rem;
+  }
+  .usa-file-input__preview-image {
+    width: 12rem;
+  }
+}
 .usa-file-input__input:not([disabled]):focus {
   outline: 3px solid color('primary');
   outline-offset: 6px;

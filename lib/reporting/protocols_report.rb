@@ -50,6 +50,7 @@ module Reporting
         protocols_table,
         saml_signature_issues_table,
         deprecated_parameters_table,
+        feature_use_table,
       ]
     end
 
@@ -82,6 +83,129 @@ module Reporting
           end
         end
       end
+    end
+
+    def overview_table
+      [
+        ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
+        # This needs to be Date.today so it works when run on the command line
+        ['Report Generated', Date.today.to_s], # rubocop:disable Rails/Date
+      ]
+    end
+
+    def protocols_table
+      [
+        ['Authentication Protocol', '% of requests', 'Total requests', 'Count of issuers'],
+        [
+          'SAML',
+          to_percent(saml_count, saml_count + oidc_count),
+          saml_count,
+          saml_issuer_count,
+        ],
+        [
+          'OIDC',
+          to_percent(oidc_count, saml_count + oidc_count),
+          oidc_count,
+          oidc_issuer_count,
+        ],
+      ]
+    end
+
+    def saml_signature_issues_table
+      [
+        ['Issue', 'Count of issuers', 'List of issuers'],
+        [
+          'Not signing SAML authentication requests',
+          saml_signature_data[:unsigned].length,
+          saml_signature_data[:unsigned].join(', '),
+        ],
+        [
+          'Incorrectly signing SAML authentication requests',
+          saml_signature_data[:invalid_signature].length,
+          saml_signature_data[:invalid_signature].join(', '),
+        ],
+      ]
+    end
+
+    def deprecated_parameters_table
+      [
+        [
+          'Deprecated Parameter',
+          'Count of issuers',
+          'List of issuers',
+        ],
+        [
+          'LOA',
+          loa_issuers_data.length,
+          loa_issuers_data.join(', '),
+        ],
+        [
+          'AAL3',
+          aal3_issuers_data.length,
+          aal3_issuers_data.join(', '),
+        ],
+      ]
+    end
+
+    def feature_use_table
+      [
+        [
+          'Feature',
+          'Count of issuers',
+          'List of issuers',
+        ],
+        [
+          'IdV with Facial Match',
+          facial_match_data.length,
+          facial_match_data.join(', '),
+        ],
+      ]
+    end
+
+    def saml_count
+      protocol_data[:saml][:request_count]
+    end
+
+    def oidc_count
+      protocol_data[:oidc][:request_count]
+    end
+
+    def saml_issuer_count
+      protocol_data[:saml][:issuer_count]
+    end
+
+    def oidc_issuer_count
+      protocol_data[:oidc][:issuer_count]
+    end
+
+    def loa_issuers_data
+      @loa_issuers_data ||= cloudwatch_client.fetch(
+        query: loa_issuers_query,
+        from: time_range.begin,
+        to: time_range.end,
+      ).
+        map { |slice| slice['issuer'] }.
+        uniq
+    end
+
+    def aal3_issuers_data
+      @aal3_issuers_data ||= cloudwatch_client.fetch(
+        query: aal3_issuers_query,
+        from: time_range.begin,
+        to: time_range.end,
+      ).
+        map { |slice| slice['issuer'] }.
+        uniq
+    end
+
+    def facial_match_data
+      @facial_match_data ||= cloudwatch_client.fetch(
+        query: facial_match_issuers_query,
+        from: time_range.begin,
+        to: time_range.end,
+      ).
+        map { |slice| slice['issuer'] }.
+        uniq
     end
 
     def protocol_data
@@ -138,142 +262,37 @@ module Reporting
       end
     end
 
-    def protocol_query
+    def aal3_issuers_query
       params = {
-        event: quote([SAML_AUTH_EVENT, OIDC_AUTH_EVENT]),
+        events: quote([SAML_AUTH_EVENT, OIDC_AUTH_EVENT]),
       }
 
       format(<<~QUERY, params)
         fields
-          name AS protocol,
-          coalesce(properties.event_properties.service_provider, properties.event_properties.client_id) as issuer
-        | filter name IN %{event} AND properties.event_properties.success= 1
-        | stats
-            count(*) AS request_count
-          BY
-          protocol, issuer
-      QUERY
-    end
-
-    def saml_signature_query
-      params = {
-        event: quote([SAML_AUTH_EVENT]),
-      }
-
-      format(<<~QUERY, params)
-        fields
-          properties.event_properties.service_provider AS issuer,
-          properties.event_properties.request_signed = 1 AS signed,
-          properties.event_properties.request_signed != 1 AS not_signed,
-          isempty(properties.event_properties.matching_cert_serial) AND signed AS invalid_signature
-        | filter name IN %{event}
+          coalesce(properties.event_properties.service_provider, properties.event_properties.client_id) as issuer,
+          properties.event_properties.acr_values as acr
+        | parse @message '"authn_context":[*]' as authn
+        | filter
+          name IN %{events}
+          AND (authn like /aal\\/3/ or acr like /aal\\/3/)
           AND properties.event_properties.success = 1
-        | stats
-          sum(not_signed) AS unsigned_count,
-          sum(invalid_signature) AS invalid_signature_count
-          BY
-          issuer
-        | sort
-          issuer
+        | display issuer
+        | sort issuer
+        | dedup issuer
       QUERY
     end
 
-    def cloudwatch_client
-      @cloudwatch_client ||= Reporting::CloudwatchClient.new(
-        num_threads: @threads,
-        ensure_complete_logs: false,
-        slice_interval: @slice,
-        progress: progress?,
-        logger: verbose? ? Logger.new(STDERR) : nil,
-      )
-    end
-
-    def overview_table
-      [
-        ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
-        # This needs to be Date.today so it works when run on the command line
-        ['Report Generated', Date.today.to_s], # rubocop:disable Rails/Date
-      ]
-    end
-
-    def saml_count
-      protocol_data[:saml][:request_count]
-    end
-
-    def oidc_count
-      protocol_data[:oidc][:request_count]
-    end
-
-    def saml_issuer_count
-      protocol_data[:saml][:issuer_count]
-    end
-
-    def oidc_issuer_count
-      protocol_data[:oidc][:issuer_count]
-    end
-
-    def protocols_table
-      [
-        ['Authentication Protocol', '% of requests', 'Total requests', 'Count of issuers'],
-        [
-          'SAML',
-          to_percent(saml_count, saml_count + oidc_count),
-          saml_count,
-          saml_issuer_count,
-        ],
-        [
-          'OIDC',
-          to_percent(oidc_count, saml_count + oidc_count),
-          oidc_count,
-          oidc_issuer_count,
-        ],
-      ]
-    end
-
-    def saml_signature_issues_table
-      [
-        ['Issue', 'Count of issuers with the issue', 'List of issuers with the issue'],
-        [
-          'Not signing SAML authentication requests',
-          saml_signature_data[:unsigned].length,
-          saml_signature_data[:unsigned].join(', '),
-        ],
-        [
-          'Incorrectly signing SAML authentication requests',
-          saml_signature_data[:invalid_signature].length,
-          saml_signature_data[:invalid_signature].join(', '),
-        ],
-      ]
-    end
-
-    def deprecated_parameters_table
-      [
-        [
-          'Deprecated Parameter',
-          'Count of issuers using the parameter',
-          'List of issuers using the parameter',
-        ],
-        [
-          'LOA',
-          loa_issuers_data.length,
-          loa_issuers_data.join(', '),
-        ],
-        [
-          'AAL3',
-          aal3_issuers_data.length,
-          aal3_issuers_data.join(', '),
-        ],
-      ]
-    end
-
-    def loa_issuers_data
-      @loa_issuers_data ||= cloudwatch_client.fetch(
-        query: loa_issuers_query,
-        from: time_range.begin,
-        to: time_range.end,
-      ).
-        map { |slice| slice['issuer'] }.
-        uniq
+    def facial_match_issuers_query
+      format(<<~QUERY)
+        fields
+          coalesce(properties.event_properties.service_provider,
+          properties.event_properties.client_id,
+          properties.service_provider) as issuer
+        | filter properties.sp_request.facial_match
+        | display issuer
+        | sort issuer
+        | dedup issuer
+      QUERY
     end
 
     def loa_issuers_query
@@ -296,34 +315,54 @@ module Reporting
       QUERY
     end
 
-    def aal3_issuers_data
-      @aal3_issuers_data ||= cloudwatch_client.fetch(
-        query: aal3_issuers_query,
-        from: time_range.begin,
-        to: time_range.end,
-      ).
-        map { |slice| slice['issuer'] }.
-        uniq
-    end
-
-    def aal3_issuers_query
+    def protocol_query
       params = {
         event: quote([SAML_AUTH_EVENT, OIDC_AUTH_EVENT]),
       }
 
       format(<<~QUERY, params)
         fields
-          coalesce(properties.event_properties.service_provider, properties.event_properties.client_id) as issuer,
-          properties.event_properties.acr_values as acr
-        | parse @message '"authn_context":[*]' as authn
-        | filter
-          name IN %{event}
-          AND (authn like /aal\\/3/ or acr like /aal\\/3/)
-          AND properties.event_properties.success= 1
-        | display issuer
-        | sort issuer
-        | dedup issuer
+          name AS protocol,
+          coalesce(properties.event_properties.service_provider, properties.event_properties.client_id) as issuer
+        | filter name IN %{event} AND properties.event_properties.success= 1
+        | stats
+            count(*) AS request_count
+          BY
+          protocol, issuer
       QUERY
+    end
+
+    def saml_signature_query
+      params = {
+        events: quote([SAML_AUTH_EVENT]),
+      }
+
+      format(<<~QUERY, params)
+        fields
+          properties.event_properties.service_provider AS issuer,
+          properties.event_properties.request_signed = 1 AS signed,
+          properties.event_properties.request_signed != 1 AS not_signed,
+          isempty(properties.event_properties.matching_cert_serial) AND signed AS invalid_signature
+        | filter name IN %{events}
+          AND properties.event_properties.success = 1
+        | stats
+          sum(not_signed) AS unsigned_count,
+          sum(invalid_signature) AS invalid_signature_count
+          BY
+          issuer
+        | sort
+          issuer
+      QUERY
+    end
+
+    def cloudwatch_client
+      @cloudwatch_client ||= Reporting::CloudwatchClient.new(
+        num_threads: @threads,
+        ensure_complete_logs: false,
+        slice_interval: @slice,
+        progress: progress?,
+        logger: verbose? ? Logger.new(STDERR) : nil,
+      )
     end
 
     def to_percent(numerator, denominator)

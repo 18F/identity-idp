@@ -106,6 +106,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
                 transaction_id: 1,
                 review_status: review_status,
                 response_body: {
+                  session_id: 'threatmetrix_session_id',
                   tmx_summary_reason_code: ['Identity_Negative_History'],
                 },
               },
@@ -118,11 +119,13 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
         }
       end
 
-      it 'logs proofing results with analytics_id' do
+      before do
         allow(controller).to receive(:load_async_state).and_return(async_state)
         allow(async_state).to receive(:done?).and_return(true)
         allow(async_state).to receive(:result).and_return(adjudicated_result)
+      end
 
+      it 'logs proofing results with analytics_id' do
         get :show
 
         expect(@analytics).to have_logged_event(
@@ -135,6 +138,27 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
               step: 'verify',
               same_address_as_id: true,
             },
+          ),
+        )
+        expect(@analytics).to have_logged_event(
+          :idv_threatmetrix_response_body,
+          response_body: {
+            session_id: 'threatmetrix_session_id',
+            tmx_summary_reason_code: ['Identity_Negative_History'],
+          },
+        )
+      end
+
+      it 'logs the edit distance between SSNs' do
+        controller.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
+        controller.idv_session.previous_ssn = '900-66-1256'
+
+        get :show
+
+        expect(@analytics).to have_logged_event(
+          'IdV: doc auth verify proofing results',
+          hash_including(
+            previous_ssn_edit_distance: 2,
           ),
         )
       end
@@ -268,6 +292,10 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
         expect(Idv::Agent).to receive(:new).with(
           Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS.merge(
             consent_given_at: subject.idv_session.idv_consent_given_at,
+            best_effort_phone_number_for_socure: {
+              source: :mfa,
+              phone: '+1 415-555-0130',
+            },
           ),
         ).and_call_original
         put :update

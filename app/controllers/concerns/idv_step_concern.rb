@@ -108,7 +108,7 @@ module IdvStepConcern
 
   def confirm_step_allowed
     # set it everytime, since user may switch SP
-    idv_session.selfie_check_required = resolved_authn_context_result.biometric_comparison?
+    idv_session.selfie_check_required = resolved_authn_context_result.facial_match?
     return if flow_policy.controller_allowed?(controller: self.class)
 
     redirect_to url_for_latest_step

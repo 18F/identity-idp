@@ -27,7 +27,7 @@ module Idv
         service_provider: current_sp,
         analytics: analytics,
         uuid_prefix: current_sp&.app_id,
-        liveness_checking_required: resolved_authn_context_result.biometric_comparison?,
+        liveness_checking_required: resolved_authn_context_result.facial_match?,
       )
     end
   end
