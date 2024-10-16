@@ -238,9 +238,7 @@
 </p>
 
 <%= render PageFooterComponent.new do %>
-  <%= link_to t('in_person_proofing.body.barcode.cancel_link_text'), idv_cancel_path(step: 'barcode') %>
   <% if @presenter.service_provider_homepage_url.present? %>
-  <br />
   <%= render ClickObserverComponent.new(event_name: 'IdV: user clicked sp link on ready to verify page') do %>
     <%= link_to(
           t(
@@ -248,8 +246,10 @@
             sp_name: @presenter.sp_name,
           ),
           @presenter.service_provider_homepage_url,
-          class: 'display-inline-block padding-top-2',
+          class: 'display-inline-block padding-bottom-2',
         ) %>
-    <% end %>
-  <% end %>
+          <% end %>
+          <% end %>
+          <br />
+  <%= link_to t('in_person_proofing.body.barcode.cancel_link_text'), idv_cancel_path(step: 'barcode') %>
 <% end %>
