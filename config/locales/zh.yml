@@ -16,7 +16,7 @@ account_reset.delete_account.info: 被锁在账户之外时，取消账户应当
 account_reset.delete_account.title: 删除账户应当是你最后的选择。
 account_reset.pending.cancel_request: 取消请求
 account_reset.pending.canceled: 我们已取消了你删除帐户的请求。
-account_reset.pending.confirm: 如果现在取消，你如果要删除账户的话，必须提出新请求并再等待%{interval} 。
+account_reset.pending.confirm: 如果现在取消，你如果要删除账户的话，必须提出新请求并再等待%{interval}。
 account_reset.pending.header: 你已提出删除账户的请求。
 account_reset.pending.wait_html: 要删除你的账户，有一个%{waiting_period}的等待期。你会在 <strong>%{interval}</strong> 收到电邮，向你说明如何完成删除。
 account_reset.recovery_options.check_saved_credential: 查看你是否有已保存的凭据
@@ -577,7 +577,7 @@ doc_auth.errors.sharpness.top_msg_plural: 我们无法读取你的身份证件�
 doc_auth.errors.upload_error: 抱歉，我们这边出错了。
 doc_auth.forms.captured_image: 扫描到的图像
 doc_auth.forms.change_file: 更改文件
-doc_auth.forms.choose_file_html: 将文件拖到此处或者 <lg-underline>从文件夹中选择</lg-underline>。
+doc_auth.forms.choose_file_html: 将文件拖到此处或者<lg-underline>从文件夹中选择</lg-underline>。
 doc_auth.forms.doc_success: 我们验证了你的信息
 doc_auth.forms.selected_file: 被选文件
 doc_auth.headings.address: 更新你的邮政地址
@@ -1056,7 +1056,7 @@ idv.failure.phone.rate_limited.option_verify_by_mail_html: 通过普通邮件验
 idv.failure.phone.rate_limited.options_header: 你可以：
 idv.failure.phone.timeout: 我们请你验证自己信息的请求已过期。请再试一次。
 idv.failure.phone.warning.attempts_html.one: 出于安全考虑，你只能再试<strong>一次</strong>了。
-idv.failure.phone.warning.attempts_html.other: 出于安全考虑，你只能再试<strong>%{count}次 </strong>了。
+idv.failure.phone.warning.attempts_html.other: 出于安全考虑，你只能再试<strong>%{count}次</strong>了。
 idv.failure.phone.warning.gpo.button: 通过普通邮件验证
 idv.failure.phone.warning.gpo.explanation: 如果你没有别的电话号码可以尝试，那请通过普通邮件验证。
 idv.failure.phone.warning.gpo.heading: 通过普通邮件验证
@@ -1134,14 +1134,14 @@ idv.messages.gpo.letter_on_the_way: 我们正在给你发信。
 idv.messages.gpo.resend: 给我另外发送一封信
 idv.messages.gpo.start_over_html: 如果该地址不对，你需要%{start_over_link_html}。
 idv.messages.gpo.start_over_link_text: 重新开始并用你新地址进行验证。
-idv.messages.gpo.timeframe_html: 你会在<strong> 5 到 10 天</strong> 里收到带有<strong>验证码</strong> 的信。
+idv.messages.gpo.timeframe_html: 你会在<strong> 5 到 10 天</strong> 里收到带有<strong>验证码</strong>的信。
 idv.messages.otp_delivery_method_description: 如果你在上面输入的是座机电话，请在下边选择“接听电话”。
 idv.messages.phone.alert_html: '<strong>输入一个符合以下条件的电话号码：</strong>'
 idv.messages.phone.description: 我们会将你的号码与记录核对并给你发个一次性代码来验证你的身份。
 idv.messages.phone.failed_number.alert_text: 我们无法将你与该号码匹配。
-idv.messages.phone.failed_number.gpo_alert_html: 试试 <strong>另一个</strong> 号码或者%{link_html}。
+idv.messages.phone.failed_number.gpo_alert_html: 试试 <strong>另一个</strong>号码或者%{link_html}。
 idv.messages.phone.failed_number.gpo_verify_link: 通过普通邮件验证
-idv.messages.phone.failed_number.try_again_html: 试试 <strong>另一个</strong> 号码。
+idv.messages.phone.failed_number.try_again_html: 试试 <strong>另一个</strong>号码。
 idv.messages.phone.rules:
   - 美国国内电话号码
   - 你的主要号码（或者你最常用的号码）
@@ -1252,7 +1252,7 @@ in_person_proofing.body.state_id.alert_message: 州政府颁发给你的身份�
 in_person_proofing.body.state_id.id_types:
   - 州驾照
   - 州非驾照身份卡
-in_person_proofing.body.state_id.info_html: 输入 <strong> 与州政府颁发的身份证件上完全一致的信息</strong> 我们将使用该信息来确认与你亲身出现所持身份证件上信息的一致性。
+in_person_proofing.body.state_id.info_html: 输入 <strong> 与州政府颁发的身份证件上完全一致的信息</strong>我们将使用该信息来确认与你亲身出现所持身份证件上信息的一致性。
 in_person_proofing.body.state_id.learn_more_link: 了解更多有关哪些身份证件可被接受的信息。
 in_person_proofing.body.state_id.questions: 有问题吗？
 in_person_proofing.form.address.errors.unsupported_chars: 我们的系统无法读取以下字符： %{char_list}. 请替换那些字符后再试一次。
@@ -1706,7 +1706,7 @@ two_factor_authentication.opt_in.opted_out_last_30d_html: 你选择过去 30 天
 two_factor_authentication.opt_in.title: 我们无法向你电话号码发送安全代码。
 two_factor_authentication.opt_in.wait_30d_opt_in: 30 天后，你可以选择加入并在那个电话号码接受安全代码。
 two_factor_authentication.otp_delivery_preference.instruction: 你可以随时对此进行更改。如果你使用座机电话，请选择“接听电话”。
-two_factor_authentication.otp_delivery_preference.landline_warning_html: 输入的电话号码似乎是一个 <strong>座机电话</strong>。通过 %{phone_setup_path} 请求一次性代码。
+two_factor_authentication.otp_delivery_preference.landline_warning_html: 输入的电话号码似乎是一个<strong>座机电话</strong>。通过 %{phone_setup_path} 请求一次性代码。
 two_factor_authentication.otp_delivery_preference.no_supported_options: 我们无法验证 %{location} 的电话号码。
 two_factor_authentication.otp_delivery_preference.phone_call: 电话
 two_factor_authentication.otp_delivery_preference.sms: 短信（SMS）
@@ -1844,14 +1844,14 @@ user_mailer.email_confirmation_instructions.header: '%{intro}请点击下面的�
 user_mailer.email_confirmation_instructions.link_text: 确认电邮地址
 user_mailer.email_confirmation_instructions.subject: 确认你的电邮
 user_mailer.email_deleted.header: 一个电邮地址被从你的 %{app_name} 用户资料中删除。
-user_mailer.email_deleted.help_html: 如果你没有想删除这一电邮地址， 请访问 %{app_name_html} %{help_link_html} 或者 %{contact_link_html}。
+user_mailer.email_deleted.help_html: 如果你没有想删除这一电邮地址，请访问 %{app_name_html} %{help_link_html} 或者 %{contact_link_html}。
 user_mailer.email_deleted.subject: 电邮地址已删除
 user_mailer.help_link_text: 帮助中心
 user_mailer.in_person_completion_survey.body.cta.callout: 点击下面的按钮来开始
 user_mailer.in_person_completion_survey.body.cta.label: 填写我们的意见调查
 user_mailer.in_person_completion_survey.body.greeting: 你好，
 user_mailer.in_person_completion_survey.body.intent: 我们想听听你在邮局亲身验证身份的经历。
-user_mailer.in_person_completion_survey.body.privacy_html: 你对这份意见调查的回复将会依照下面的 <a href="%{url}">隐私和安全标准</a> 得到保护。
+user_mailer.in_person_completion_survey.body.privacy_html: 你对这份意见调查的回复将会依照下面的 <a href="%{url}">隐私和安全标准</a>得到保护。
 user_mailer.in_person_completion_survey.body.request_description: 填写一个简短、匿名的调查问卷，你的意见会帮助我们更好满足你的需求。
 user_mailer.in_person_completion_survey.body.thanks: 感谢使用 %{app_name}。
 user_mailer.in_person_completion_survey.header: 花点时间告诉我们，我们表现如何
@@ -1862,7 +1862,7 @@ user_mailer.in_person_deadline_passed.body.greeting: 你好，
 user_mailer.in_person_deadline_passed.body.restart: 你可以开始提出在 %{partner_agency}验证身份的新请求。
 user_mailer.in_person_deadline_passed.header: 亲身验证身份的截止日期已过。
 user_mailer.in_person_deadline_passed.subject: 你亲身验证身份的要求已过期。
-user_mailer.in_person_failed_suspected_fraud.body.help_center_html: 如需要更多帮助，可以<a href="%{help_center_url}">访问我们的帮助中心</a> 或寻求你试图访问的机构的帮助。
+user_mailer.in_person_failed_suspected_fraud.body.help_center_html: 如需要更多帮助，可以<a href="%{help_center_url}">访问我们的帮助中心</a>或寻求你试图访问的机构的帮助。
 user_mailer.in_person_failed_suspected_fraud.body.intro: 我们知道你曾经试图通过 %{app_name} 验证身份，但是你的身份于 %{date}在 %{location} 邮局未能得到验证。
 user_mailer.in_person_failed_suspected_fraud.greeting: 你好，
 user_mailer.in_person_failed_suspected_fraud.subject: 你的身份未能亲身被验证。
@@ -1918,10 +1918,10 @@ user_mailer.new_device_sign_in_before_2fa.subject: 你 %{app_name} 账户有新�
 user_mailer.password_changed.disavowal_link: 重设你的密码
 user_mailer.password_changed.help_html: 如果你没做此更改， %{disavowal_link_html}。要得到更多帮助，请访问 %{app_name_html} %{help_link_html} 或者 %{contact_link_html}。
 user_mailer.password_changed.intro_html: 你的 %{app_name_html} 账户有了新密码。
-user_mailer.personal_key_regenerated.help_html: <p>你的 %{app_name} 账户刚得到了一个新的 16 字符的个人密钥。你收到这一电邮是为了确保就是你。</p><p>如果你刚刚登入并重设了个人密钥，没问题！你无需做任何事情。</p><p>如果你刚才没有重设个人密钥，或者你不确定，请立即采取以下步骤来保护你账户安全：<ol><li><strong><a href="%{reset_password_url}">更改你的密码</a>。</strong> 选择一个你在该账户没用过的密码。</li><li><strong><a href="%{account_url}">登录你的 %{app_name} 账户</a></strong> 并确保你账户页面上的信息你都能认出，包括你进行双因素身份证实的方法，比如电话号码、身份证实 app 或安全密钥。</li><li><strong>在你的<a href="%{account_url}">%{app_name} 账户页面</a>， 请求新个人密钥。</strong> 请记住，除非你在用该密钥登录一个使用 %{app_name} 的受到信任的网站，绝对不要将其与人分享。</li></ol></p><br>谢谢，<br> %{app_name} 团队
+user_mailer.personal_key_regenerated.help_html: <p>你的 %{app_name} 账户刚得到了一个新的 16 字符的个人密钥。你收到这一电邮是为了确保就是你。</p><p>如果你刚刚登入并重设了个人密钥，没问题！你无需做任何事情。</p><p>如果你刚才没有重设个人密钥，或者你不确定，请立即采取以下步骤来保护你账户安全：<ol><li><strong><a href="%{reset_password_url}">更改你的密码</a>。</strong>选择一个你在该账户没用过的密码。</li><li><strong><a href="%{account_url}">登录你的 %{app_name} 账户</a></strong>并确保你账户页面上的信息你都能认出，包括你进行双因素身份证实的方法，比如电话号码、身份证实 app 或安全密钥。</li><li><strong>在你的<a href="%{account_url}">%{app_name} 账户页面</a>，请求新个人密钥。</strong>请记住，除非你在用该密钥登录一个使用 %{app_name} 的受到信任的网站，绝对不要将其与人分享。</li></ol></p><br>谢谢，<br> %{app_name} 团队
 user_mailer.personal_key_regenerated.intro: 新个人密钥已发放
 user_mailer.personal_key_regenerated.subject: 账户安全警告
-user_mailer.personal_key_sign_in.help_html: <p>你的 16 字符的个人密钥刚被用来登录你的 %{app_name} 账户。你收到这一电邮是为了确保就是你。</p><p>如果你刚用自己的个人密钥登入，没问题！你无需做任何事情。</p><p>如果你没用个人密钥登录，或者你不确定，请立即采取以下步骤来保护你账户安全：<ol><li><strong><a href="%{reset_password_url}">更改你的密码</a>。</strong> 选择一个你在该账户没用过的密码。</li><li><strong><a href="%{account_url}"> 登录你的 %{app_name} 账户</a></strong> 并确保你账户页面上的信息你都能认出，包括你进行双因素身份证实的方法，比如电话号码、身份证实 app 或者安全密钥。</li><li><strong>在你的<a href="%{account_url}">%{app_name} 账户页面</a>， 请求新个人密钥。</strong> 请记住，除非你在用密钥登入一个使用%{app_name}的受到信任的网站，绝对不要将其与人分享。</li></ol></p><br>谢谢，<br>%{app_name} 团队
+user_mailer.personal_key_sign_in.help_html: <p>你的 16 字符的个人密钥刚被用来登录你的 %{app_name} 账户。你收到这一电邮是为了确保就是你。</p><p>如果你刚用自己的个人密钥登入，没问题！你无需做任何事情。</p><p>如果你没用个人密钥登录，或者你不确定，请立即采取以下步骤来保护你账户安全：<ol><li><strong><a href="%{reset_password_url}">更改你的密码</a>。</strong>选择一个你在该账户没用过的密码。</li><li><strong><a href="%{account_url}"> 登录你的 %{app_name} 账户</a></strong>并确保你账户页面上的信息你都能认出，包括你进行双因素身份证实的方法，比如电话号码、身份证实 app 或者安全密钥。</li><li><strong>在你的<a href="%{account_url}">%{app_name} 账户页面</a>，请求新个人密钥。</strong>请记住，除非你在用密钥登入一个使用%{app_name}的受到信任的网站，绝对不要将其与人分享。</li></ol></p><br>谢谢，<br>%{app_name} 团队
 user_mailer.personal_key_sign_in.intro: 个人密钥被用来登录
 user_mailer.personal_key_sign_in.subject: 账户安全警告
 user_mailer.phone_added.disavowal_link: 重设你的密码
