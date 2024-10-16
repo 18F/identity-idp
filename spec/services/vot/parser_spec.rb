@@ -96,24 +96,95 @@ RSpec.describe Vot::Parser do
       end
     end
 
-    context 'when input includes unrecognized components' do
-      let(:acr_values) { 'i-am-not-an-acr-value' }
-      it 'raises an exception' do
-        expect { Vot::Parser.new(acr_values:).parse }.to raise_exception(
-          Vot::Parser::UnsupportedComponentsException,
-          /'i-am-not-an-acr-value'$/,
-        )
+    context 'when a vector includes unrecognized components' do
+      let(:acr_values) { 'unknown-acr-value' }
+
+      context 'only an unknown acr_value is passed in' do
+        it 'raises an exception' do
+          expect { Vot::Parser.new(acr_values:).parse }.to raise_exception(
+            Vot::Parser::ParseException,
+            'VoT parser called without VoT or ACR values',
+          )
+        end
+
+        context 'when a known and valid acr_value is passed in as well' do
+          let(:acr_values) do
+            [
+              'unknown-acr-value',
+              Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            ].join(' ')
+          end
+
+          it 'parses ACR values to component values' do
+            result = Vot::Parser.new(acr_values:).parse
+
+            expect(result.component_values.map(&:name).join(' ')).to eq(
+              Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+            )
+            expect(result.aal2?).to eq(false)
+            expect(result.phishing_resistant?).to eq(false)
+            expect(result.hspd12?).to eq(false)
+            expect(result.identity_proofing?).to eq(false)
+            expect(result.facial_match?).to eq(false)
+            expect(result.ialmax?).to eq(false)
+            expect(result.enhanced_ipp?).to eq(false)
+          end
+
+          context 'with semantic acr_values' do
+            let(:acr_values) do
+              [
+                'unknown-acr-value',
+                Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
+              ].join(' ')
+            end
+
+            it 'parses ACR values to component values' do
+              result = Vot::Parser.new(acr_values:).parse
+
+              expect(result.component_values.map(&:name).join(' ')).to eq(
+                Saml::Idp::Constants::IAL_AUTH_ONLY_ACR
+              )
+              expect(result.aal2?).to eq(false)
+              expect(result.phishing_resistant?).to eq(false)
+              expect(result.hspd12?).to eq(false)
+              expect(result.identity_proofing?).to eq(false)
+              expect(result.facial_match?).to eq(false)
+              expect(result.ialmax?).to eq(false)
+              expect(result.enhanced_ipp?).to eq(false)
+            end
+          end
+        end
       end
 
       context 'with vectors of trust' do
-        it 'raises an exception' do
-          vector_of_trust = 'C1.C2.Xx'
+        context 'only an unknown VoT is passed in' do
+          it 'raises an exception' do
+            vector_of_trust = 'Xx'
 
-          expect { Vot::Parser.new(vector_of_trust:).parse }.to raise_exception(
-            Vot::Parser::UnsupportedComponentsException,
-            /'Xx'$/,
-          )
+            expect { Vot::Parser.new(vector_of_trust:).parse }.to raise_exception(
+              Vot::Parser::ParseException,
+              'VoT parser called without VoT or ACR values',
+            )
+          end
         end
+
+        context 'along with a known vector'
+          it 'parses the vector' do
+            vector_of_trust = 'C1.C2.Xx'
+
+            result = Vot::Parser.new(vector_of_trust:).parse
+
+            expect(result.component_values.map(&:name).join(' ')).to eq(
+              'C1 C2'
+            )
+            expect(result.aal2?).to eq(true)
+            expect(result.phishing_resistant?).to eq(false)
+            expect(result.hspd12?).to eq(false)
+            expect(result.identity_proofing?).to eq(false)
+            expect(result.facial_match?).to eq(false)
+            expect(result.ialmax?).to eq(false)
+            expect(result.enhanced_ipp?).to eq(false)
+          end
       end
     end
 
