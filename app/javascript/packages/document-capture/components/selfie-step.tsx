@@ -21,10 +21,12 @@ export function SelfieCaptureStep({
   defaultSideProps,
   selfieValue,
   isReviewStep,
+  showHelp,
 }: {
   defaultSideProps: DefaultSideProps;
   selfieValue: ImageValue;
   isReviewStep: boolean;
+  showHelp: boolean;
 }) {
   const { t } = useI18n();
   return (
@@ -43,17 +45,20 @@ export function SelfieCaptureStep({
       />
 
       {
-        isReviewStep
-          ? <DocumentSideAcuantCapture
-            {...defaultSideProps}
-            key="selfie"
-            side="selfie"
-            value={selfieValue}
-            isReviewStep="true"
-          />
-          : <AcuantSelfieInstructions />
+        showHelp &&
+        <AcuantSelfieInstructions />
       }
-   </>
+      {
+        !showHelp &&
+        <DocumentSideAcuantCapture
+          {...defaultSideProps}
+          key="selfie"
+          side="selfie"
+          value={selfieValue}
+          isReviewStep={true}
+        />
+      }
+    </>
   );
 }
 

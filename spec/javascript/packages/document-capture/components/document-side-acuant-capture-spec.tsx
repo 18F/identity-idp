@@ -23,6 +23,7 @@ describe('DocumentSideAcuantCapture', () => {
                 value={{
                   isSelfieCaptureEnabled: false,
                   isSelfieDesktopTestMode: false,
+                  showHelp: false,
                 }}
               >
                 <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="front" />
