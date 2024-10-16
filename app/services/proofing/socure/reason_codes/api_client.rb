@@ -31,7 +31,7 @@ module Proofing
             f.options.write_timeout = IdentityConfig.store.socure_reason_code_timeout_in_seconds
           end
 
-          conn.get(url, {}, headers) do |req|
+          conn.get(url, { group: true }, headers) do |req|
             req.options.context = { service_name: 'socure_reason_codes' }
           end
         end

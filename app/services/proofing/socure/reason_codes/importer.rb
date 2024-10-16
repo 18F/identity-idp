@@ -50,21 +50,27 @@ module Proofing
         private
 
         def create_or_update_downloaded_reason_codes
-          downloaded_reason_codes.each do |code, description|
-            reason_code = SocureReasonCode.find_or_initialize_by(code: code)
-            added_reason_code_records.push(reason_code) unless reason_code.persisted?
+          downloaded_reason_codes.each do |group, reason_codes|
+            reason_codes.each do |code, description|
+              reason_code = SocureReasonCode.find_or_initialize_by(code: code)
+              added_reason_code_records.push(reason_code) unless reason_code.persisted?
 
-            reason_code.description = description
-            reason_code.added_at ||= Time.zone.now
-            reason_code.deactivated_at = nil
-            reason_code.save!
-            added_reason_code_records
+              reason_code.group = group
+              reason_code.description = description
+              reason_code.added_at ||= Time.zone.now
+              reason_code.deactivated_at = nil
+              reason_code.save!
+              added_reason_code_records
+            end
           end
         end
 
         def deactive_missing_reason_codes
+          active_codes = downloaded_reason_codes.flat_map do |_group, reason_codes|
+            reason_codes.keys
+          end
           SocureReasonCode.where(deactivated_at: nil).where.not(
-            code: downloaded_reason_codes.keys,
+            code: active_codes,
           ).each do |deactivateable_reason_code|
             deactivateable_reason_code.update!(deactivated_at: Time.zone.now)
             deactivated_reason_code_records.push(deactivateable_reason_code)
@@ -72,7 +78,7 @@ module Proofing
         end
 
         def format_reason_code_records(socure_reason_codes)
-          socure_reason_codes.map { |r| r.attributes.slice('code', 'description') }
+          socure_reason_codes.map { |r| r.attributes.slice('code', 'group', 'description') }
         end
       end
     end

@@ -561,12 +561,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_15_154109) do
   end
 
   create_table "socure_reason_codes", force: :cascade do |t|
-    t.string "code"
-    t.text "description"
-    t.datetime "added_at"
-    t.datetime "deactivated_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string "code", comment: "sensitive=false"
+    t.string "group", comment: "sensitive=false"
+    t.text "description", comment: "sensitive=false"
+    t.datetime "added_at", comment: "sensitive=false"
+    t.datetime "deactivated_at", comment: "sensitive=false"
+    t.datetime "created_at", null: false, comment: "sensitive=false"
+    t.datetime "updated_at", null: false, comment: "sensitive=false"
     t.index ["code"], name: "index_socure_reason_codes_on_code", unique: true
   end
 

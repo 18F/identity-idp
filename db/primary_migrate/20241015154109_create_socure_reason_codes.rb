@@ -1,12 +1,13 @@
 class CreateSocureReasonCodes < ActiveRecord::Migration[7.1]
   def change
     create_table :socure_reason_codes do |t|
-      t.string :code
-      t.text :description
-      t.datetime :added_at
-      t.datetime :deactivated_at
+      t.string :code, comment: 'sensitive=false'
+      t.string :group, comment: 'sensitive=false'
+      t.text :description, comment: 'sensitive=false'
+      t.datetime :added_at, comment: 'sensitive=false'
+      t.datetime :deactivated_at, comment: 'sensitive=false'
 
-      t.timestamps
+      t.timestamps comment: 'sensitive=false'
 
       t.index :code, unique: true
     end

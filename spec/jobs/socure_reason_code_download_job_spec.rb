@@ -18,20 +18,31 @@ RSpec.describe SocureReasonCodeDownloadJob do
 
   describe '#perform' do
     it 'downloads reason codes and writes them to the database' do
-      api_response_body = { 'reasonCodes' => { 'A1' => 'test1', 'B2' => 'test2' } }.to_json
-      stub_request(:get, 'https://example.org/api/3.0/reasoncodes').to_return(
+      api_response_body = {
+        'reasonCodes' => {
+          'ProductA' => {
+            'A1' => 'test1',
+            'A2' => 'test2',
+          },
+          'ProductB' => {
+            'B2' => 'test3',
+          },
+        },
+      }.to_json
+      stub_request(:get, 'https://example.org/api/3.0/reasoncodes?group=true').to_return(
         headers: { 'Content-Type' => 'application/json' },
         body: api_response_body,
       )
 
-      expect { job.perform }.to change { SocureReasonCode.count }.from(0).to(2)
+      expect { job.perform }.to change { SocureReasonCode.count }.from(0).to(3)
 
       expect(analytics).to have_logged_event(
         :idv_socure_reason_code_download,
         success: true,
         added_reason_codes: [
-          { 'code' => 'A1', 'description' => 'test1' },
-          { 'code' => 'B2', 'description' => 'test2' },
+          { 'code' => 'A1', 'group' => 'ProductA', 'description' => 'test1' },
+          { 'code' => 'A2', 'group' => 'ProductA', 'description' => 'test2' },
+          { 'code' => 'B2', 'group' => 'ProductB', 'description' => 'test3' },
         ],
         deactivated_reason_codes: [],
       )
@@ -39,7 +50,7 @@ RSpec.describe SocureReasonCodeDownloadJob do
 
     context 'when an error occurs downloading the codes' do
       it 'logs the error' do
-        stub_request(:get, 'https://example.org/api/3.0/reasoncodes').to_timeout
+        stub_request(:get, 'https://example.org/api/3.0/reasoncodes?group=true').to_timeout
 
         expect { job.perform }.to_not change { SocureReasonCode.count }
 
@@ -56,7 +67,7 @@ RSpec.describe SocureReasonCodeDownloadJob do
 
       it 'does not download codes and does not write anything to the database' do
         api_response_body = { 'reasonCodes' => { 'A1' => 'test1', 'B2' => 'test2' } }.to_json
-        stub_request(:get, 'https://example.org/api/3.0/reasoncodes').to_return(
+        stub_request(:get, 'https://example.org/api/3.0/reasoncodes?group=true').to_return(
           headers: { 'Content-Type' => 'application/json' },
           body: api_response_body,
         )

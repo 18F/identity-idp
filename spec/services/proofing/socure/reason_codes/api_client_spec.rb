@@ -12,23 +12,36 @@ RSpec.describe Proofing::Socure::ReasonCodes::ApiClient do
   it 'returns a parsed set or reason codes' do
     api_response_body = {
       'reasonCodes' => {
-        'A1' => 'test1',
-        'B2' => 'test2',
+        'ProductA' => {
+          'A1' => 'test1',
+          'A2' => 'test2',
+        },
+        'ProductB' => {
+          'B2' => 'test3',
+        },
       },
     }.to_json
-    stub_request(:get, 'https://example.org/api/3.0/reasoncodes').to_return(
+    stub_request(:get, 'https://example.org/api/3.0/reasoncodes?group=true').to_return(
       headers: { 'Content-Type' => 'application/json' },
       body: api_response_body,
     )
 
     result = described_class.new.download_reason_codes
 
-    expect(result).to eq('A1' => 'test1', 'B2' => 'test2')
+    expect(result).to eq(
+      'ProductA' => {
+        'A1' => 'test1',
+        'A2' => 'test2',
+      },
+      'ProductB' => {
+        'B2' => 'test3',
+      },
+    )
   end
 
   context 'the authentication to the service fails' do
     it 'raises an unauthorized error' do
-      stub_request(:get, 'https://example.org/api/3.0/reasoncodes').to_return(
+      stub_request(:get, 'https://example.org/api/3.0/reasoncodes?group=true').to_return(
         status: 401,
         headers: {
           'Content-Type' => 'application/json',
@@ -49,7 +62,7 @@ RSpec.describe Proofing::Socure::ReasonCodes::ApiClient do
 
   context 'there is a networking error in the request' do
     it 'raises the error' do
-      stub_request(:get, 'https://example.org/api/3.0/reasoncodes').to_timeout
+      stub_request(:get, 'https://example.org/api/3.0/reasoncodes?group=true').to_timeout
 
       expect { described_class.new.download_reason_codes }.to raise_error(
         Proofing::Socure::ReasonCodes::ApiClient::ApiClientError,
@@ -60,7 +73,7 @@ RSpec.describe Proofing::Socure::ReasonCodes::ApiClient do
 
   context 'the response includes invalid JSON' do
     it 'raises a parsing error' do
-      stub_request(:get, 'https://example.org/api/3.0/reasoncodes').to_return(
+      stub_request(:get, 'https://example.org/api/3.0/reasoncodes?group=true').to_return(
         headers: { 'Content-Type' => 'application/json' },
         body: '{;*[("',
       )
