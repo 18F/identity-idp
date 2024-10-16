@@ -73,7 +73,7 @@ RSpec.feature 'idv enter password step', :js, allowed_extra_analytics: [:*] do
         to change { GpoConfirmation.count }.by(1)
 
       expect_delivered_email_count(email_count_before_continue + 1)
-      expect(last_email.subject).to eq(t('user_mailer.letter_reminder.subject'))
+      expect(last_email.subject).to eq(t('user_mailer.verify_by_mail_letter_requested.subject'))
 
       expect(user.events.account_verified.size).to be(0)
       expect(user.profiles.count).to eq 1

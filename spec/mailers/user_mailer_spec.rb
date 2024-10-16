@@ -501,6 +501,24 @@ RSpec.describe UserMailer, type: :mailer do
   end
 
   describe '#verify_by_mail_letter_requested' do
+    let(:service_provider) do
+      create(
+        :service_provider,
+        return_to_sp_url: 'https://www.example.com',
+        friendly_name: 'My Awesome SP',
+      )
+    end
+
+    let(:profile) do
+      create(
+        :profile,
+        :verify_by_mail_pending,
+        initiating_service_provider: service_provider,
+      )
+    end
+
+    let(:user) { profile.user }
+
     let(:mail) do
       UserMailer.with(user: user, email_address: email_address).verify_by_mail_letter_requested
     end
@@ -513,12 +531,73 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     it 'renders the subject' do
-      expect(mail.subject).to eq t('user_mailer.letter_reminder.subject')
+      expect(mail.subject).to eq t('user_mailer.verify_by_mail_letter_requested.subject')
     end
 
-    it 'renders the body' do
-      expect(mail.html_part.body).
-        to have_content(strip_tags(t('user_mailer.letter_reminder.info_html', link_html: APP_NAME)))
+    context 'ServiceProvider has a homepage URL' do
+      it 'renders the contact SP instructions' do
+        expect(mail.html_part.body).to have_content(
+          t(
+            'user_mailer.verify_by_mail_letter_requested.instructions.contact_sp', friendly_name: 'My Awesome SP'
+          ),
+        )
+      end
+
+      it 'renders the sign in CTA' do
+        expect(mail.html_part.body).to have_link(
+          t(
+            'user_mailer.verify_by_mail_letter_requested.cta.sign_in',
+          ),
+          href: 'https://www.example.com',
+        )
+      end
+    end
+
+    context 'ServiceProvider does not have a homepage URL' do
+      let(:service_provider) do
+        create(
+          :service_provider,
+          friendly_name: 'My Awesome SP',
+          return_to_sp_url: nil,
+        )
+      end
+
+      it 'renders the contact SP instructions' do
+        expect(mail.html_part.body).to have_content(
+          t(
+            'user_mailer.verify_by_mail_letter_requested.instructions.contact_sp', friendly_name: 'My Awesome SP'
+          ),
+        )
+      end
+
+      it 'does not render the sign in CTA' do
+        expect(mail.html_part.body).to_not have_link(
+          t(
+            'user_mailer.verify_by_mail_letter_requested.cta.sign_in',
+          ),
+        )
+      end
+    end
+
+    context 'No Service Provider present' do
+      let(:service_provider) { nil }
+
+      it 'it does not render the contact SP instructions' do
+        expect(mail.html_part.body).to_not have_content(
+          t(
+            'user_mailer.verify_by_mail_letter_requested.instructions.contact_sp', friendly_name: APP_NAME
+          ),
+        )
+      end
+
+      it 'renders the sign in CTA with root URL' do
+        expect(mail.html_part.body).to have_link(
+          t(
+            'user_mailer.verify_by_mail_letter_requested.cta.sign_in',
+          ),
+          href: root_url,
+        )
+      end
     end
   end
 
