@@ -15,7 +15,7 @@ RSpec.describe Idv::ByMail::LetterRequestedEmailPresenter do
 
   let(:user) { profile.user }
 
-  subject(:presenter) { described_class.new(current_user: user) }
+  subject(:presenter) { described_class.new(current_user: user, url_options: {}) }
 
   context 'when there is no associated service provider' do
     let(:service_provider) { nil }
@@ -28,8 +28,8 @@ RSpec.describe Idv::ByMail::LetterRequestedEmailPresenter do
       it { expect(presenter.show_sp_contact_instructions?).to eq(false) }
     end
 
-    describe '#show_sign_in_cta?' do
-      it { expect(presenter.show_sign_in_cta?).to eq(true) }
+    describe '#show_cta?' do
+      it { expect(presenter.show_cta?).to eq(true) }
     end
 
     describe '#sign_in_url' do
@@ -55,8 +55,8 @@ RSpec.describe Idv::ByMail::LetterRequestedEmailPresenter do
         it { expect(presenter.show_sp_contact_instructions?).to eq(true) }
       end
 
-      describe '#show_sign_in_cta?' do
-        it { expect(presenter.show_sign_in_cta?).to eq(false) }
+      describe '#show_cta?' do
+        it { expect(presenter.show_cta?).to eq(false) }
       end
 
       describe '#sign_in_url' do
@@ -81,8 +81,8 @@ RSpec.describe Idv::ByMail::LetterRequestedEmailPresenter do
         it { expect(presenter.show_sp_contact_instructions?).to eq(true) }
       end
 
-      describe '#show_sign_in_cta?' do
-        it { expect(presenter.show_sign_in_cta?).to eq(true) }
+      describe '#show_cta?' do
+        it { expect(presenter.show_cta?).to eq(true) }
       end
 
       describe '#sign_in_url' do

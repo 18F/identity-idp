@@ -209,8 +209,12 @@ class UserMailer < ActionMailer::Base
       @hide_title = true
       @presenter = Idv::ByMail::LetterRequestedEmailPresenter.new(
         current_user: user,
+        url_options: {},
       )
-      mail(to: email_address.email, subject: t('user_mailer.verify_by_mail_letter_requested.subject'))
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.verify_by_mail_letter_requested.subject'),
+      )
     end
   end
 
@@ -250,7 +254,7 @@ class UserMailer < ActionMailer::Base
     attachments.inline['verified.png'] =
       Rails.root.join('app/assets/images/email/user-signup-ial2.png').read
     with_user_locale(user) do
-      @presenter = Idv::AccountVerifiedEmailPresenter.new(profile:)
+      @presenter = Idv::AccountVerifiedEmailPresenter.new(profile:, url_options: {})
       @hide_title = true
       @date = I18n.l(profile.verified_at, format: :event_date)
       mail(
