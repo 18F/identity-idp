@@ -6,6 +6,7 @@ import {
   FormStepsContext,
 } from '@18f/identity-form-steps';
 import { Cancel } from '@18f/identity-verify-flow';
+import AcuantSelfieInstructions from './acuant-selfie-instructions';
 import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import TipList from './tip-list';
@@ -42,20 +43,17 @@ export function SelfieCaptureStep({
       />
 
       {
-        !isReviewStep &&
-        <AcuantSelfieInstructions />
+        isReviewStep
+          ? <DocumentSideAcuantCapture
+            {...defaultSideProps}
+            key="selfie"
+            side="selfie"
+            value={selfieValue}
+            isReviewStep="true"
+          />
+          : <AcuantSelfieInstructions />
       }
-      {
-        isReviewStep &&
-        <DocumentSideAcuantCapture
-          {...defaultSideProps}
-          key="selfie"
-          side="selfie"
-          value={selfieValue}
-          isReviewStep={isReviewStep}
-        />
-      }
-    </>
+   </>
   );
 }
 
