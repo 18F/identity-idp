@@ -4,7 +4,6 @@ import { InPersonContext } from '../context';
 
 describe('InPersonOutageAlert', () => {
   let getByText;
-
   beforeEach(() => {
     getByText = render(
       <InPersonContext.Provider
