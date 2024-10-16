@@ -39,7 +39,7 @@ RSpec.describe Users::EmailsController do
       }
     end
 
-    it 'renders the show view with a link back to continue SP consent' do
+    it 'sets the pending completions consent value to true' do
       get :show
 
       expect(controller.pending_completions_consent?).to eq(true)
