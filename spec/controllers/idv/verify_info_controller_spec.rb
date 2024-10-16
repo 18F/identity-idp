@@ -149,6 +149,7 @@ RSpec.describe Idv::VerifyInfoController do
           context: {
             stages: {
               threatmetrix: {
+                client: threatmetrix_client_id,
                 transaction_id: 1,
                 review_status: review_status,
                 response_body: {
@@ -226,9 +227,7 @@ RSpec.describe Idv::VerifyInfoController do
                 context: hash_including(
                   stages: hash_including(
                     threatmetrix: hash_including(
-                      response_body: hash_including(
-                        client: threatmetrix_client_id,
-                      ),
+                      client: threatmetrix_client_id,
                     ),
                   ),
                 ),

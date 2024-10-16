@@ -203,9 +203,7 @@ module Idv
         },
       )
 
-      threatmetrix_reponse_body = form_response.extra.dig(
-        :proofing_results, :context, :stages, :threatmetrix, :response_body
-      )
+      threatmetrix_reponse_body = delete_threatmetrix_response_body(form_response)
       if threatmetrix_reponse_body.present?
         analytics.idv_threatmetrix_response_body(
           response_body: threatmetrix_reponse_body,
@@ -312,6 +310,18 @@ module Idv
       idv_session.applicant = pii
       idv_session.applicant[:ssn] = idv_session.ssn
       idv_session.applicant['uuid'] = current_user.uuid
+    end
+
+    def delete_threatmetrix_response_body(form_response)
+      threatmetrix_result = form_response.extra.dig(
+        :proofing_results,
+        :context,
+        :stages,
+        :threatmetrix,
+      )
+      return if threatmetrix_result.blank?
+
+      threatmetrix_result.delete(:response_body)
     end
 
     def add_cost(token, transaction_id: nil)
