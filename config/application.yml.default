@@ -191,6 +191,7 @@ lexisnexis_hmac_key_id: pf_iv_hmac_key_id
 lexisnexis_hmac_secret_key: pf_iv_hmac_secret_key
 lexisnexis_instant_verify_timeout: 1.0
 lexisnexis_instant_verify_workflow: gsa2.chk32.test.wf
+lexisnexis_threatmetrix_org_id: test_id
 lexisnexis_password: test_password
 lexisnexis_phone_finder_timeout: 1.0
 lexisnexis_phone_finder_workflow: customers.gsa2.phonefinder.workflow
