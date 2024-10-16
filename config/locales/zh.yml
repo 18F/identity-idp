@@ -1961,7 +1961,7 @@ user_mailer.suspension_confirmed.subject: 你的账户被锁
 user_mailer.verify_by_mail_letter_requested.cta.sign_in: 登录
 user_mailer.verify_by_mail_letter_requested.instructions.contact_sp: 如果收到信件之前你需要访问我们合作伙伴机构的服务，请联系%{friendly_name}。
 user_mailer.verify_by_mail_letter_requested.instructions.sign_in: 收到信件后请再登录并输入其中的验证码。
-user_mailer.verify_by_mail_letter_requested.intro_html: '你会在5到10天内在我们验证过的与你相关的地址收到来自Login.gov寄给你的一封信:'
+user_mailer.verify_by_mail_letter_requested.intro_html: '你会在<strong>5到10</strong>天内在我们验证过的与你相关的地址收到来自%{app_name}寄给你的一封信:'
 user_mailer.verify_by_mail_letter_requested.subject: 你的信件已寄出。
 users.delete.actions.cancel: 返回用户资料
 users.delete.actions.delete: 删除账户

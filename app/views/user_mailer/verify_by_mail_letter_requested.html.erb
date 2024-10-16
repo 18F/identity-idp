@@ -7,15 +7,17 @@
       ) %>
 <h1><%= message.subject %></h1>
 <p>
-  <%= t('user_mailer.verify_by_mail_letter_requested.intro_html') %>
+  <%= t('user_mailer.verify_by_mail_letter_requested.intro_html', app_name: APP_NAME) %>
 </p>
 <!-- When there is a service provider present render this block -->
 <% if @presenter.show_sp_contact_instructions? %>
   <ul>
     <li><%= t('user_mailer.verify_by_mail_letter_requested.instructions.sign_in') %></li>
-    <li><%= t(
+    <li>
+      <%= t(
               'user_mailer.verify_by_mail_letter_requested.instructions.contact_sp',
-              friendly_name: @presenter.sp_name) %>
+              friendly_name: @presenter.sp_name,
+            ) %>
     </li>
   </ul>
 <% else %>
@@ -23,7 +25,7 @@
 <% end %>
 
 
-<% if @presenter.show_sign_in_cta? %>
+<% if @presenter.show_cta? %>
   <div class="margin-top-5">
     <table class="button expanded large radius">
       <tbody>

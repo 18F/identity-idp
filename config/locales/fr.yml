@@ -1948,7 +1948,7 @@ user_mailer.suspension_confirmed.subject: Votre compte est verrouillé
 user_mailer.verify_by_mail_letter_requested.cta.sign_in: Connexion
 user_mailer.verify_by_mail_letter_requested.instructions.contact_sp: Contactez %{friendly_name} si vous avez besoin d’accéder à ses services avant l’arrivée de votre lettre.
 user_mailer.verify_by_mail_letter_requested.instructions.sign_in: Une fois ce courrier reçu, reconnectez-vous pour saisir le code de vérification qui y figure.
-user_mailer.verify_by_mail_letter_requested.intro_html: 'Vous recevrez un courrier de Login.gov d’ici 5 à 10 jours à l’adresse que nous avons confirmée qui est associée à votre nom :'
+user_mailer.verify_by_mail_letter_requested.intro_html: 'Vous recevrez un courrier de %{app_name} d’ici <strong>5 à 10</strong> jours à l’adresse que nous avons confirmée qui est associée à votre nom :'
 user_mailer.verify_by_mail_letter_requested.subject: Votre lettre est en route
 users.delete.actions.cancel: Retour au profil
 users.delete.actions.delete: Supprimer le compte

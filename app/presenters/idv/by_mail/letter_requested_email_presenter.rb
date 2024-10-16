@@ -6,9 +6,10 @@ module Idv
       include ActionView::Helpers::TranslationHelper
       include Rails.application.routes.url_helpers
 
-      attr_reader :current_user, :service_provider
-      def initialize(current_user:)
+      attr_reader :current_user, :service_provider, :url_options
+      def initialize(current_user:, url_options:)
         @current_user = current_user
+        @url_options = url_options
         @service_provider = current_user.pending_profile&.initiating_service_provider
       end
 
@@ -20,7 +21,7 @@ module Idv
         sp_name.present?
       end
 
-      def show_sign_in_cta?
+      def show_cta?
         sign_in_url.present?
       end
 
@@ -30,10 +31,6 @@ module Idv
         else
           root_url
         end
-      end
-
-      def url_options
-        {}
       end
 
       private
