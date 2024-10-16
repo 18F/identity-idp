@@ -18,35 +18,6 @@ describe('WebauthnInputElement', () => {
     quibble.reset();
   });
 
-  // context('device does not support passkey', () => {
-  //   context('unsupported passkey not shown', () => {
-  //     beforeEach(() => {
-  //       isWebauthnPlatformAvailable.resolves(false);
-  //       document.body.innerHTML = `<lg-webauthn-input hidden></lg-webauthn-input>`;
-  //     });
-
-  //     it('stays hidden', () => {
-  //       const element = document.querySelector('lg-webauthn-input')!;
-
-  //       expect(element.hidden).to.be.true();
-  //     });
-  //   });
-
-  //   context('unsupported passkey shown', () => {
-  //     beforeEach(() => {
-  //       isWebauthnPlatformAvailable.resolves(false);
-  //       document.body.innerHTML = `<lg-webauthn-input show-unsupported-passkey hidden></lg-webauthn-input>`;
-  //     });
-
-  //     it('becomes visible, with modifier class', () => {
-  //       const element = document.querySelector('lg-webauthn-input')!;
-
-  //       expect(element.hidden).to.be.false();
-  //       expect(element.classList.contains('webauthn-input--unsupported-passkey')).to.be.true();
-  //     });
-  //   });
-  // });
-
   context('device supports passkey', () => {
     context('unsupported publickeycredential not shown', () => {
       beforeEach(() => {
