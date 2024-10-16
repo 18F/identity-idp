@@ -134,7 +134,6 @@ RSpec.feature 'document capture step', :js do
   context 'split doc auth flow', allow_browser_log: true do
     before do
       allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
-      allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
       visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
       sign_in_and_2fa_user(@user)
       complete_doc_auth_steps_before_document_capture_step
