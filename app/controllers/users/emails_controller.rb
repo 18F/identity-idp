@@ -13,6 +13,7 @@ module Users
     def show
       analytics.add_email_visit
       @add_user_email_form = AddUserEmailForm.new
+      @pending_completions_consent = pending_completions_consent?
     end
 
     def add
@@ -60,6 +61,10 @@ module Users
       end
 
       redirect_to account_url
+    end
+
+    def pending_completions_consent?
+      needs_completion_screen_reason.present?
     end
 
     def verify

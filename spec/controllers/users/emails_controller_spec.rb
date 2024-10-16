@@ -12,14 +12,37 @@ RSpec.describe Users::EmailsController do
 
   context 'user visits add an email address page' do
     let(:user) { create(:user) }
+
     before do
       stub_sign_in(user)
       stub_analytics
     end
-    it 'renders the index view' do
+
+    it 'renders the show view' do
       get :show
 
       expect(@analytics).to have_logged_event('Add Email Address Page Visited')
+    end
+  end
+
+  context 'user visits add an email address from SP consent flow' do
+    let(:user) { create(:user) }
+    let(:current_sp) { create(:service_provider) }
+
+    before do
+      stub_sign_in(user)
+      subject.session[:sp] = {
+        issuer: current_sp.issuer,
+        acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+        requested_attributes: [:email],
+        request_url: 'http://localhost:3000',
+      }
+    end
+
+    it 'sets the pending completions consent value to true' do
+      get :show
+
+      expect(controller.pending_completions_consent?).to eq(true)
     end
   end
 
