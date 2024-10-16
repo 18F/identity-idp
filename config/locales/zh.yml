@@ -1903,8 +1903,6 @@ user_mailer.letter_reminder_14_days.did_not_get_a_letter_html: 如果你没有�
 user_mailer.letter_reminder_14_days.finish: 完成验证你的身份
 user_mailer.letter_reminder_14_days.sign_in_and_request_another_letter: 登录要求再发一封信
 user_mailer.letter_reminder_14_days.subject: 完成验证你的身份
-user_mailer.letter_reminder.info_html: 你将收到的信件会含有帮助我们验证你地址的一次性代码。你可以登入 %{link_html} 并输入该一次性代码来完成身份验证流i程。
-user_mailer.letter_reminder.subject: 我们已向你存档地址发送了一封信。
 user_mailer.new_device_sign_in_after_2fa.authentication_methods: 身份证实方法
 user_mailer.new_device_sign_in_after_2fa.info_p1: 你的 %{app_name} 电邮和密码在一个新设备上被用来登录和进行身份验证。
 user_mailer.new_device_sign_in_after_2fa.info_p2: 如果你知道该活动，则无需做任何事情。
@@ -1960,6 +1958,11 @@ user_mailer.suspended_reset_password.subject: 我们无法重设你的密码。
 user_mailer.suspension_confirmed.contact_agency: 请联系你试图访问其服务的那个机构。
 user_mailer.suspension_confirmed.remain_locked: 我们已完成了对你%{app_name}账户的审查，你的账户将继续被锁。
 user_mailer.suspension_confirmed.subject: 你的账户被锁
+user_mailer.verify_by_mail_letter_requested.cta.sign_in: 登录
+user_mailer.verify_by_mail_letter_requested.instructions.contact_sp: 如果收到信件之前你需要访问我们合作伙伴机构的服务，请联系%{friendly_name}。
+user_mailer.verify_by_mail_letter_requested.instructions.sign_in: 收到信件后请再登录并输入其中的验证码。
+user_mailer.verify_by_mail_letter_requested.intro_html: '你会在5到10天内在我们验证过的与你相关的地址收到来自Login.gov寄给你的一封信:'
+user_mailer.verify_by_mail_letter_requested.subject: 你的信件已寄出。
 users.delete.actions.cancel: 返回用户资料
 users.delete.actions.delete: 删除账户
 users.delete.bullet_1: 你不会有 %{app_name} 账户
