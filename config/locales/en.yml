@@ -1948,7 +1948,7 @@ user_mailer.suspension_confirmed.subject: Your account is locked
 user_mailer.verify_by_mail_letter_requested.cta.sign_in: Sign in
 user_mailer.verify_by_mail_letter_requested.instructions.contact_sp: Contact %{friendly_name} if you need to access their services before your letter arrives.
 user_mailer.verify_by_mail_letter_requested.instructions.sign_in: Sign back in and enter the verification code when your letter arrives.
-user_mailer.verify_by_mail_letter_requested.intro_html: You’ll get a letter in the mail from Login.gov in <strong>5 to 10 days</strong> at the address we verified and associated with you.
+user_mailer.verify_by_mail_letter_requested.intro_html: You’ll get a letter in the mail from %{app_name} in <strong>5 to 10</strong> days at the address we verified and associated with you.
 user_mailer.verify_by_mail_letter_requested.subject: Your letter is on the way
 users.delete.actions.cancel: Back to profile
 users.delete.actions.delete: Delete account

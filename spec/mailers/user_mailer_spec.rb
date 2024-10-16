@@ -166,6 +166,7 @@ RSpec.describe UserMailer, type: :mailer do
 
   describe '#new_device_sign_in_before_2fa' do
     let(:event) { create(:event, event_type: :sign_in_before_2fa, user:, device: create(:device)) }
+
     subject(:mail) do
       UserMailer.with(user:, email_address:).new_device_sign_in_before_2fa(
         events: user.events.where(event_type: 'sign_in_before_2fa').includes(:device).to_a,
@@ -179,6 +180,7 @@ RSpec.describe UserMailer, type: :mailer do
 
   describe '#new_device_sign_in_after_2fa' do
     let(:event) { create(:event, event_type: :sign_in_after_2fa, user:, device: create(:device)) }
+
     subject(:mail) do
       UserMailer.with(user:, email_address:).new_device_sign_in_after_2fa(
         events: user.events.where(event_type: 'sign_in_after_2fa').includes(:device).to_a,
@@ -538,7 +540,8 @@ RSpec.describe UserMailer, type: :mailer do
       it 'renders the contact SP instructions' do
         expect(mail.html_part.body).to have_content(
           t(
-            'user_mailer.verify_by_mail_letter_requested.instructions.contact_sp', friendly_name: 'My Awesome SP'
+            'user_mailer.verify_by_mail_letter_requested.instructions.contact_sp',
+            friendly_name: 'My Awesome SP',
           ),
         )
       end
@@ -565,7 +568,8 @@ RSpec.describe UserMailer, type: :mailer do
       it 'renders the contact SP instructions' do
         expect(mail.html_part.body).to have_content(
           t(
-            'user_mailer.verify_by_mail_letter_requested.instructions.contact_sp', friendly_name: 'My Awesome SP'
+            'user_mailer.verify_by_mail_letter_requested.instructions.contact_sp',
+            friendly_name: 'My Awesome SP',
           ),
         )
       end
@@ -585,7 +589,8 @@ RSpec.describe UserMailer, type: :mailer do
       it 'it does not render the contact SP instructions' do
         expect(mail.html_part.body).to_not have_content(
           t(
-            'user_mailer.verify_by_mail_letter_requested.instructions.contact_sp', friendly_name: APP_NAME
+            'user_mailer.verify_by_mail_letter_requested.instructions.contact_sp',
+            friendly_name: APP_NAME,
           ),
         )
       end
@@ -926,6 +931,7 @@ RSpec.describe UserMailer, type: :mailer do
           enrollment: enrollment,
         )
       end
+
       context 'For Informed Delivery IPP (ID-IPP)' do
         it_behaves_like 'a system email'
         it_behaves_like 'an email that respects user email locale preference'
@@ -946,6 +952,7 @@ RSpec.describe UserMailer, type: :mailer do
 
       context 'For Enhanced In-Person Proofing (Enhanced IPP)' do
         let(:enrollment) { enhanced_ipp_enrollment }
+
         it 'renders content that is applicable to Enhanced In-Person Proofing (Enhanced IPP)' do
           aggregate_failures do
             [
@@ -1143,6 +1150,7 @@ RSpec.describe UserMailer, type: :mailer do
           user.email_language = 'fr'
           user.save!
         end
+
         it 'renders the pre opt-in in person completion survey url' do
           expect(mail.html_part.body).
             to have_selector(

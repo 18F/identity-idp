@@ -1960,7 +1960,7 @@ user_mailer.suspension_confirmed.subject: Su cuenta está bloqueada
 user_mailer.verify_by_mail_letter_requested.cta.sign_in: Iniciar sesión
 user_mailer.verify_by_mail_letter_requested.instructions.contact_sp: Contacte con %{friendly_name} si necesita acceder a los servicios de esa agencia antes de que llegue su carta.
 user_mailer.verify_by_mail_letter_requested.instructions.sign_in: Cuando reciba su carta, vuelva a iniciar sesión e ingrese el código de verificación.
-user_mailer.verify_by_mail_letter_requested.intro_html: 'En un plazo de 5 a 10 días, recibirá por correo una carta de Login.gov en la dirección que verificamos y asociamos con usted:'
+user_mailer.verify_by_mail_letter_requested.intro_html: 'En un plazo de <strong>5 a 10</strong> días, recibirá por correo una carta de %{app_name} en la dirección que verificamos y asociamos con usted:'
 user_mailer.verify_by_mail_letter_requested.subject: Su carta está en camino
 users.delete.actions.cancel: Volver al perfil
 users.delete.actions.delete: Eliminar cuenta
