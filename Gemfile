@@ -3,7 +3,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 ruby "~> #{File.read(File.join(__dir__, '.ruby-version')).strip}"
 
-gem 'rails', '~> 7.1.4'
+gem 'rails', '~> 7.2.1'
 
 gem 'ahoy_matey', '~> 3.0'
 # pod identity requires 3.188.0
