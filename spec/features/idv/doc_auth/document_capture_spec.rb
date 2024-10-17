@@ -131,7 +131,7 @@ RSpec.feature 'document capture step', :js do
     end
   end
 
-  context 'split page doc auth', allow_browser_log: true do
+  context 'facial match is required', allow_browser_log: true do
     before do
       allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
       visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
