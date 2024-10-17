@@ -77,12 +77,8 @@ module IdvStepHelper
   end
 
   def click_sp_link_in_person_ready_to_verify
-    expect(page).to have_content(sp_text)
+    expect(page).to have_content(link_text)
     click_link(link_text)
-  end
-
-  def sp_text
-    t('in_person_proofing.body.barcode.return_to_partner_html', link_html: link_text)
   end
 
   def complete_enter_password_step(user = user_with_2fa)
