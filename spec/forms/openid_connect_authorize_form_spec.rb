@@ -476,8 +476,8 @@ RSpec.describe OpenidConnectAuthorizeForm do
     let(:vtr) { nil }
     let(:acr_value_list) do
       [
-        'http://idmanagement.gov/ns/assurance/aal/3',
-        'http://idmanagement.gov/ns/assurance/loa/1',
+        Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+        Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
       ]
     end
     let(:acr_values) { acr_value_list.join(' ') }
@@ -489,8 +489,8 @@ RSpec.describe OpenidConnectAuthorizeForm do
     context 'when an unknown acr value is included' do
       let(:acr_value_list) do
         [
-          'http://idmanagement.gov/ns/assurance/loa/1',
-          'http://idmanagement.gov/ns/assurance/aal/3',
+          Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+          Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
         ]
       end
       let(:acr_values) { (acr_value_list + ['fake-value']).join(' ') }
