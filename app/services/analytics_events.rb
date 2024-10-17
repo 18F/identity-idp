@@ -3303,7 +3303,6 @@ module AnalyticsEvents
   # @param [String] enrollment_code
   # @param [String] enrollment_id
   # @param [Float] minutes_since_established
-  # @param [Boolean] fraud_suspected
   # @param [Boolean] passed did this enrollment pass or fail?
   # @param [String] reason why did this enrollment pass or fail?
   # @param [String] tmx_status the tmx_status of the enrollment profile profile
@@ -3312,7 +3311,6 @@ module AnalyticsEvents
     enrollment_code:,
     enrollment_id:,
     minutes_since_established:,
-    fraud_suspected:,
     passed:,
     reason:,
     tmx_status:,
@@ -3324,7 +3322,6 @@ module AnalyticsEvents
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
       minutes_since_established: minutes_since_established,
-      fraud_suspected: fraud_suspected,
       passed: passed,
       reason: reason,
       tmx_status: tmx_status,

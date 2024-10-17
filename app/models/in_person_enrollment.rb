@@ -155,6 +155,16 @@ class InPersonEnrollment < ApplicationRecord
     IdentityConfig.store.usps_eipp_sponsor_id == sponsor_id
   end
 
+  # @return [Boolean] Whether the enrollment's profile has a deactivation reason.
+  def profile_has_deactivation_reason?
+    profile_deactivation_reason.present?
+  end
+
+  # @return [String, nil] The enrollment's profile deactivation reason or nil.
+  def profile_deactivation_reason
+    profile&.deactivation_reason
+  end
+
   private
 
   def days_to_expire
