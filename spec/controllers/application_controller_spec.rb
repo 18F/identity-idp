@@ -477,7 +477,7 @@ RSpec.describe ApplicationController do
       let(:vtr) { nil }
       let(:acr_values) do
         [
-          'http://idmanagement.gov/ns/assurance/aal/1',
+          Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
         ].join(' ')
       end
 
@@ -499,7 +499,7 @@ RSpec.describe ApplicationController do
         context 'with a known acr value' do
           let(:acr_values) do
             [
-              'http://idmanagement.gov/ns/assurance/aal/1',
+              Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
               'unknown-acr-value',
             ].join(' ')
           end

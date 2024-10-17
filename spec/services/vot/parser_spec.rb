@@ -96,7 +96,7 @@ RSpec.describe Vot::Parser do
       end
     end
 
-    context 'when a vector includes unrecognized components' do
+    context 'when input includes unrecognized components' do
       let(:acr_values) { 'unknown-acr-value' }
 
       context 'only an unknown acr_value is passed in' do
