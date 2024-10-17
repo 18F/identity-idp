@@ -119,7 +119,7 @@ RSpec.describe Vot::Parser do
             result = Vot::Parser.new(acr_values:).parse
 
             expect(result.component_values.map(&:name).join(' ')).to eq(
-              Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+              Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
             )
             expect(result.aal2?).to eq(false)
             expect(result.phishing_resistant?).to eq(false)
@@ -142,7 +142,7 @@ RSpec.describe Vot::Parser do
               result = Vot::Parser.new(acr_values:).parse
 
               expect(result.component_values.map(&:name).join(' ')).to eq(
-                Saml::Idp::Constants::IAL_AUTH_ONLY_ACR
+                Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
               )
               expect(result.aal2?).to eq(false)
               expect(result.phishing_resistant?).to eq(false)
@@ -168,14 +168,14 @@ RSpec.describe Vot::Parser do
           end
         end
 
-        context 'along with a known vector'
+        context 'along with a known vector' do
           it 'parses the vector' do
             vector_of_trust = 'C1.C2.Xx'
 
             result = Vot::Parser.new(vector_of_trust:).parse
 
             expect(result.component_values.map(&:name).join(' ')).to eq(
-              'C1 C2'
+              'C1 C2',
             )
             expect(result.aal2?).to eq(true)
             expect(result.phishing_resistant?).to eq(false)
@@ -185,6 +185,7 @@ RSpec.describe Vot::Parser do
             expect(result.ialmax?).to eq(false)
             expect(result.enhanced_ipp?).to eq(false)
           end
+        end
       end
     end
 

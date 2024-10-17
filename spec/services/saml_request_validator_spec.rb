@@ -33,7 +33,7 @@ RSpec.describe SamlRequestValidator do
         use_vot_in_sp_requests,
       )
       allow(IdentityConfig.store).to receive(
-        :allowed_biometric_ial_providers
+        :allowed_biometric_ial_providers,
       ).and_return([issuer])
       allow(IdentityConfig.store).to receive(
         :allowed_valid_authn_contexts_semantic_providers,
@@ -239,7 +239,7 @@ RSpec.describe SamlRequestValidator do
           Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
           Saml::Idp::Constants::IAL_VERIFIED_ACR,
         ].each do |ial_value|
-        let(:authn_context) { [ial_value] }
+          let(:authn_context) { [ial_value] }
 
           it 'returns FormResponse with success: false' do
             errors = {

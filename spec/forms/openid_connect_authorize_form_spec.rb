@@ -18,7 +18,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
     )
   end
 
-  let(:acr_values) {  nil }
+  let(:acr_values) { nil }
   let(:vtr) { ['C1'].to_json }
   let(:client_id) { 'urn:gov:gsa:openidconnect:test' }
   let(:nonce) { SecureRandom.hex }
@@ -200,13 +200,13 @@ RSpec.describe OpenidConnectAuthorizeForm do
       context 'with a known IAL value' do
         before do
           allow(IdentityConfig.store).to receive(
-            :allowed_valid_authn_contexts_semantic_providers
+            :allowed_valid_authn_contexts_semantic_providers,
           ).and_return(client_id)
         end
         let(:acr_values) do
           [
             'unknown-value',
-            Saml::Idp::Constants::IAL_AUTH_ONLY_ACR
+            Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
           ].join(' ')
         end
 
@@ -214,7 +214,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
           expect(valid?).to eq(true)
         end
       end
-
     end
 
     context 'with ialmax requested' do
@@ -249,7 +248,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
           context 'when the service provider is allowed to use facial match ials' do
             before do
               allow(IdentityConfig.store).to receive(
-                :allowed_biometric_ial_providers
+                :allowed_biometric_ial_providers,
               ).and_return([client_id])
             end
 
@@ -277,7 +276,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
       context 'when using semantic acr_values' do
         before do
           allow(IdentityConfig.store).to receive(
-            :allowed_valid_authn_contexts_semantic_providers
+            :allowed_valid_authn_contexts_semantic_providers,
           ).and_return([client_id])
         end
         it_behaves_like 'allows facial match IAL only if sp is authorized',
@@ -609,7 +608,9 @@ RSpec.describe OpenidConnectAuthorizeForm do
         let(:acr_values) { '' }
 
         it 'returns the default AAL value' do
-          expect(form.requested_aal_value).to eq Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
+          expect(form.requested_aal_value).to eq(
+            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+          )
         end
       end
 
@@ -617,7 +618,9 @@ RSpec.describe OpenidConnectAuthorizeForm do
         let(:acr_values) { 'fake-value' }
 
         it 'returns the default AAL value' do
-          expect(form.requested_aal_value).to eq Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
+          expect(form.requested_aal_value).to eq(
+            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+          )
         end
       end
     end
