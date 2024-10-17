@@ -578,9 +578,7 @@ doc_auth.headings.document_capture: Ajoutez des photos de votre permis de condui
 doc_auth.headings.document_capture_back: Verso de votre pièce d’identité
 doc_auth.headings.document_capture_front: Recto de votre carte d’identité
 doc_auth.headings.document_capture_selfie: Photo de votre visage
-doc_auth.headings.document_capture_subheader_id: Permis de conduire ou carte d’identité d’un État
 doc_auth.headings.document_capture_subheader_selfie: Ajouter une photo de votre visage
-doc_auth.headings.document_capture_with_selfie: Ajouter des photos de votre pièce d’identité et une photo de vous-même
 doc_auth.headings.front: Recto de votre permis de conduire ou de votre carte d’identité d’un État
 doc_auth.headings.how_to_verify: Choisir la manière dont vous souhaitez confirmer votre identité
 doc_auth.headings.hybrid_handoff: Comment voulez-vous ajouter votre pièce d’identité ?

@@ -589,9 +589,7 @@ doc_auth.headings.document_capture: 添加你身份证件的照片
 doc_auth.headings.document_capture_back: 你身份证件的背面
 doc_auth.headings.document_capture_front: 你身份证件的正面
 doc_auth.headings.document_capture_selfie: 你面部照片
-doc_auth.headings.document_capture_subheader_id: 驾照或州政府颁发的身份证件
 doc_auth.headings.document_capture_subheader_selfie: 添加您面部照片
-doc_auth.headings.document_capture_with_selfie: 添加你身份证件和本人的照片
 doc_auth.headings.front: 驾照或州政府颁发身份证件的正面
 doc_auth.headings.how_to_verify: 选择你想如何验证身份
 doc_auth.headings.hybrid_handoff: 你想怎么添加身份证件？
