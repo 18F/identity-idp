@@ -366,7 +366,6 @@ test_ssn_allowed_list: ''
 totp_code_interval: 30
 unauthorized_scope_enabled: false
 use_dashboard_service_providers: false
-use_fed_domain_class: false
 use_kms: false
 use_vot_in_sp_requests: true
 usps_auth_token_refresh_job_enabled: false
@@ -451,7 +450,6 @@ development:
   state_tracking_enabled: true
   telephony_adapter: test
   use_dashboard_service_providers: true
-  use_fed_domain_class: true
   usps_eipp_sponsor_id: '222222222222222'
   usps_ipp_sponsor_id: '111111111111111'
   usps_ipp_transliteration_enabled: true
@@ -525,6 +523,8 @@ test:
   aamva_private_key: 123abc
   aamva_public_key: 123abc
   account_reset_fraud_user_wait_period_days: 30
+  allowed_biometric_ial_providers: '["urn:gov:gsa:openidconnect:sp:server"]'
+  allowed_valid_authn_contexts_semantic_providers: '["urn:gov:gsa:openidconnect:sp:server"]'
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
   dashboard_api_token: 123ABC
@@ -584,7 +584,6 @@ test:
   telephony_adapter: test
   test_ssn_allowed_list: '999999999'
   totp_code_interval: 3
-  use_fed_domain_class: true
   usps_eipp_sponsor_id: '222222222222222'
   usps_ipp_root_url: 'http://localhost:1000'
   usps_ipp_sponsor_id: '111111111111111'

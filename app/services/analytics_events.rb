@@ -1484,6 +1484,7 @@ module AnalyticsEvents
   # @param [Boolean] same_address_as_id
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [Number] previous_ssn_edit_distance The edit distance to the previous submitted SSN
   def idv_doc_auth_redo_ssn_submitted(
     step:,
     analytics_id:,
@@ -1491,6 +1492,7 @@ module AnalyticsEvents
     opted_in_to_in_person_proofing: nil,
     skip_hybrid_handoff: nil,
     same_address_as_id: nil,
+    previous_ssn_edit_distance: nil,
     **extra
   )
     track_event(
@@ -1501,6 +1503,7 @@ module AnalyticsEvents
       opted_in_to_in_person_proofing:,
       skip_hybrid_handoff:,
       same_address_as_id:,
+      previous_ssn_edit_distance:,
       **extra,
     )
   end
@@ -1541,6 +1544,7 @@ module AnalyticsEvents
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Boolean] same_address_as_id
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [Number] previous_ssn_edit_distance The edit distance to the previous submitted SSN
   def idv_doc_auth_ssn_submitted(
     success:,
     errors:,
@@ -1552,6 +1556,7 @@ module AnalyticsEvents
     acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
     same_address_as_id: nil,
+    previous_ssn_edit_distance: nil,
     **extra
   )
     track_event(
@@ -1566,6 +1571,7 @@ module AnalyticsEvents
       flow_path:,
       opted_in_to_in_person_proofing:,
       same_address_as_id:,
+      previous_ssn_edit_distance:,
       **extra,
     )
   end
@@ -1579,6 +1585,7 @@ module AnalyticsEvents
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Boolean] same_address_as_id
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [Number] previous_ssn_edit_distance The edit distance to the previous submitted SSN
   def idv_doc_auth_ssn_visited(
     step:,
     analytics_id:,
@@ -1587,6 +1594,7 @@ module AnalyticsEvents
     acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
     same_address_as_id: nil,
+    previous_ssn_edit_distance: nil,
     **extra
   )
     track_event(
@@ -1598,6 +1606,7 @@ module AnalyticsEvents
       flow_path:,
       opted_in_to_in_person_proofing:,
       same_address_as_id:,
+      previous_ssn_edit_distance:,
       **extra,
     )
   end
@@ -1939,6 +1948,7 @@ module AnalyticsEvents
   # @param ssn_is_unique [Boolean] Whether another Profile existed with the same SSN at the time the profile associated with the current IdV session was minted.
   # @param step [String] Always "verify" (leftover from flow state machine days)
   # @param success [Boolean] Whether identity resolution succeeded overall
+  # @param previous_ssn_edit_distance [Number] The edit distance to the previous submitted SSN
   def idv_doc_auth_verify_proofing_results(
     ab_tests: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
@@ -1955,6 +1965,7 @@ module AnalyticsEvents
     step: nil,
     success: nil,
     same_address_as_id: nil,
+    previous_ssn_edit_distance: nil,
     **extra
   )
     track_event(
@@ -1974,6 +1985,7 @@ module AnalyticsEvents
       step:,
       success:,
       same_address_as_id:,
+      previous_ssn_edit_distance:,
       **extra,
     )
   end

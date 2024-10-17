@@ -643,7 +643,7 @@ doc_auth.info.selfie_capture_status.face_not_found: Visage non trouvé
 doc_auth.info.selfie_capture_status.face_too_small: Visage trop petit
 doc_auth.info.selfie_capture_status.too_many_faces: Trop de visages
 doc_auth.info.selfie_capture.action.capture: Prendre une photo
-doc_auth.info.selfie_capture.action.close: éteindre
+doc_auth.info.selfie_capture.action.close: fermer
 doc_auth.info.selfie_capture.action.retake: nouvelle photo
 doc_auth.info.selfie_capture.action.submit: Photo prise. Envoyer la photo.
 doc_auth.info.selfie_capture.intro: Caméra prête à prendre la photo

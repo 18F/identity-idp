@@ -4,10 +4,10 @@ RSpec.describe PendingProfilePolicy do
   let(:user) { create(:user) }
   let(:resolved_authn_context_result) do
     AuthnContextResolver.new(
-      user: user,
+      user:,
       service_provider: nil,
-      vtr: vtr,
-      acr_values: acr_values,
+      vtr:,
+      acr_values:,
     ).result
   end
   let(:vtr) { nil }
@@ -29,10 +29,24 @@ RSpec.describe PendingProfilePolicy do
       end
 
       context 'with resolved authn context result' do
-        let(:vtr) { ['C2.Pb'] }
+        let(:acr_values) do
+          [
+            Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+            Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
+          ].join(' ')
+        end
 
         it 'has a usable pending profile' do
           expect(policy.user_has_pending_profile?).to eq(true)
+        end
+
+        context 'with vtr values' do
+          let(:acr_values) { nil }
+          let(:vtr) { ['C2.Pb'] }
+
+          it 'has a usable pending profile' do
+            expect(policy.user_has_pending_profile?).to eq(true)
+          end
         end
       end
 
