@@ -15,7 +15,6 @@ RSpec.describe Idv::HybridMobile::EntryController do
     let(:idv_vendor) { Idp::Constants::Vendors::MOCK }
 
     before do
-      stub_analytics
       allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(idv_vendor)
       allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(idv_vendor)
     end
