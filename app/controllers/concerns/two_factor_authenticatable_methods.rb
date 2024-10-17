@@ -121,11 +121,11 @@ module TwoFactorAuthenticatableMethods
     save_remember_device_preference(remember_device_preference)
   end
 
-  def mfa_selection_attempt_count(auth_method)
+  def mfa_selection_attempt_count(increment_auth_method)
     user_session[:mfa_attempts] ||= {}
-    auth_method = auth_method.to_s.gsub('personal_key', 'personal-key').to_sym
-    user_session[:mfa_attempts][auth_method] ||= 0
-    user_session[:mfa_attempts][auth_method] += 1
+    increment_auth_method = increment_auth_method.to_s.gsub('personal_key', 'personal-key')
+    user_session[:mfa_attempts][increment_auth_method] ||= 0
+    user_session[:mfa_attempts][increment_auth_method] += 1
   end
 
   # Method will be renamed in the next refactor.
