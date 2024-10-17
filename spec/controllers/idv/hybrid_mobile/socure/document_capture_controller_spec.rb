@@ -150,7 +150,8 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
 
         it 'puts the docvTransactionToken into the document capture session' do
           document_capture_session.reload
-          expect(document_capture_session.socure_docv_token).to eq(docv_transaction_token)
+          expect(document_capture_session.socure_docv_transaction_token).
+            to eq(docv_transaction_token)
         end
       end
     end
