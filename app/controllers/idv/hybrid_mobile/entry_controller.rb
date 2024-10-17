@@ -53,13 +53,6 @@ module Idv
 
         result = Idv::DocumentCaptureSessionForm.new(document_capture_session_uuid).submit
 
-        event_properties = result.to_h.tap do |properties|
-          # See LG-8890 for context
-          properties[:doc_capture_user_id?] = session[:doc_capture_user_id].present?
-        end
-
-        analytics.track_event 'Doc Auth', event_properties
-
         if result.success?
           reset_session
 
