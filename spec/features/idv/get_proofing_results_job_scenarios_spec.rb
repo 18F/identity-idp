@@ -65,19 +65,19 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_ana
       # When the user logs out
       logout(@user)
       # And the user visits USPS to complete their enrollment
-      # And USPS enrollment passed
+      # And USPS enrollment "passed"
       stub_request_passed_proofing_results
       # And GetUspsProofingResultsJob is performed
       perform_get_usps_proofing_results_job(@user)
 
-      # And the user has an InPersonEnrollment with status "passed"
+      # Then the user has an InPersonEnrollment with status "cancelled"
       expect(@user.in_person_enrollments.first).to have_attributes(
-        status: 'passed',
+        status: 'cancelled',
       )
-      # And the user has a Profile that is active
+      # And the user has a Profile that is deactivated with reason "encryption_error"
       expect(@user.in_person_enrollments.first.profile).to have_attributes(
-        active: true,
-        deactivation_reason: nil,
+        active: false,
+        deactivation_reason: 'encryption_error',
         in_person_verification_pending_at: nil,
       )
 
@@ -86,9 +86,9 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_ana
 
       # Then the user is taken to the /verify/welcome page
       expect(current_path).to eq(idv_welcome_path)
-      # And the user has an InPersonEnrollment with status "passed"
+      # And the user has an InPersonEnrollment with status "cancelled"
       expect(@user.in_person_enrollments.first).to have_attributes(
-        status: 'passed',
+        status: 'cancelled',
       )
       # And the user has a Profile that is deactivated with reason "encryption_error"
       expect(@user.in_person_enrollments.first.profile).to have_attributes(
@@ -149,9 +149,9 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_ana
         # And GetUspsProofingResultsJob is performed
         perform_get_usps_proofing_results_job(@user)
 
-        # Then the user has an InPersonEnrollment with status "failed|cancelled|expired"
+        # Then the user has an InPersonEnrollment with status "cancelled"
         expect(@user.in_person_enrollments.first).to have_attributes(
-          status: status,
+          status: 'cancelled',
         )
         # And the user has a Profile that is deactivated with reason "encryption_error"
         expect(@user.in_person_enrollments.first.profile).to have_attributes(
@@ -165,9 +165,9 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_ana
 
         # Then the user is taken to the /verify/welcome page
         expect(current_path).to eq(idv_welcome_path)
-        # And the user has an InPersonEnrollment with status "failed|cancelled|expired"
+        # And the user has an InPersonEnrollment with status "cancelled"
         expect(@user.in_person_enrollments.first).to have_attributes(
-          status: status,
+          status: 'cancelled',
         )
         # And the user has a Profile that is deactivated with reason "encryption_error"
         expect(@user.in_person_enrollments.first.profile).to have_attributes(
@@ -205,7 +205,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_ana
       )
 
       # And the user visits USPS to complete their enrollment
-      # And USPS enrollment passed
+      # And USPS enrollment "passed"
       stub_request_passed_proofing_results
       # And GetUspsProofingResultsJob is performed
       perform_get_usps_proofing_results_job(@user)
@@ -313,7 +313,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_ana
       )
 
       # When the user visits USPS to complete their enrollment
-      # And USPS enrollment passed
+      # And USPS enrollment "passed"
       stub_request_passed_proofing_results
       # And GetUspsProofingResultsJob is performed
       perform_get_usps_proofing_results_job(@user)
@@ -378,7 +378,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_ana
       )
 
       # When the user visits USPS to complete their enrollment
-      # And USPS enrollment passed
+      # And USPS enrollment "passed"
       stub_request_passed_proofing_results
       # And GetUspsProofingResultsJob is performed
       perform_get_usps_proofing_results_job(@user)
@@ -554,14 +554,14 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_ana
       # When the user logs out
       logout(@user)
       # And the user visits USPS to complete their enrollment
-      # And USPS enrollment passed
+      # And USPS enrollment "passed"
       stub_request_passed_proofing_results
       # And GetUspsProofingResultsJob is performed
       perform_get_usps_proofing_results_job(@user)
 
-      # And the user has an InPersonEnrollment with status "passed"
+      # Then the user has an InPersonEnrollment with status "cancelled"
       expect(@user.in_person_enrollments.first).to have_attributes(
-        status: 'passed',
+        status: 'cancelled',
       )
       # And the user has a Profile that is deactivated with reason "encryption_error" and
       # pending fraud review
@@ -578,9 +578,9 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_ana
 
       # Then the user is taken to the /verify/welcome page
       expect(current_path).to eq(idv_welcome_path)
-      # And the user has an InPersonEnrollment with status "passed"
+      # And the user has an InPersonEnrollment with status "cancelled"
       expect(@user.in_person_enrollments.first).to have_attributes(
-        status: 'passed',
+        status: 'cancelled',
       )
       # And the user has a Profile that is deactivated with reason "encryption_error" and
       # pending fraud review
@@ -634,7 +634,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_ana
       )
 
       # And the user visits USPS to complete their enrollment
-      # And USPS enrollment passed
+      # And USPS enrollment "passed"
       stub_request_passed_proofing_results
       # And GetUspsProofingResultsJob is performed
       perform_get_usps_proofing_results_job(@user)
