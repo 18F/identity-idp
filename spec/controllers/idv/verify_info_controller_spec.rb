@@ -481,21 +481,44 @@ RSpec.describe Idv::VerifyInfoController do
       expect(response).to redirect_to idv_verify_info_url
     end
 
-    it 'modifies pii as expected' do
-      app_id = 'hello-world'
-      sp = create(:service_provider, app_id: app_id)
-      sp_session = { issuer: sp.issuer, vtr: ['C1'] }
-      allow(controller).to receive(:sp_session).and_return(sp_session)
+    context 'with an sp' do
+      let(:sp) { create(:service_provider) }
+      let(:acr_values) { Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF }
+      let(:vtr) { nil }
+      let(:sp_session) { { issuer: sp.issuer, vtr:, acr_values: } }
 
-      expect(Idv::Agent).to receive(:new).with(
-        hash_including(
-          ssn: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn],
-          consent_given_at: controller.idv_session.idv_consent_given_at,
-          **Idp::Constants::MOCK_IDV_APPLICANT,
-        ),
-      ).and_call_original
+      before do
+        allow(controller).to receive(:sp_session).and_return(sp_session)
+      end
 
-      put :update
+      it 'modifies PII as expected' do
+        expect(Idv::Agent).to receive(:new).with(
+          hash_including(
+            ssn: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn],
+            consent_given_at: controller.idv_session.idv_consent_given_at,
+            **Idp::Constants::MOCK_IDV_APPLICANT,
+          ),
+        ).and_call_original
+
+        put :update
+      end
+
+      context 'with vtr values' do
+        let(:acr_values) { nil }
+        let(:vtr) { ['C1'] }
+
+        it 'modifies PII as expected' do
+          expect(Idv::Agent).to receive(:new).with(
+            hash_including(
+              ssn: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn],
+              consent_given_at: controller.idv_session.idv_consent_given_at,
+              **Idp::Constants::MOCK_IDV_APPLICANT,
+            ),
+          ).and_call_original
+
+          put :update
+        end
+      end
     end
 
     it 'updates DocAuthLog verify_submit_count' do
