@@ -389,6 +389,10 @@ RSpec.describe Idv::VerifyInfoController do
               },
             ),
           )
+
+          event = @analytics.events['IdV: doc auth verify proofing results'].first
+          state_id = event.dig(:proofing_results, :context, :stages, :state_id)
+          expect(state_id).to match(a_hash_including(state_id_type: 'drivers_license'))
         end
       end
 
