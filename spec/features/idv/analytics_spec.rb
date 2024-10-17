@@ -29,7 +29,6 @@ RSpec.feature 'Analytics Regression', :js do
       client: nil,
       errors: {},
       exception: nil,
-      response_body: threatmetrix_response_body,
       review_status: 'pass',
       account_lex_id: 'super-cool-test-lex-id',
       session_id: 'super-cool-test-session-id',
@@ -828,7 +827,6 @@ RSpec.feature 'Analytics Regression', :js do
           review_status: 'pass',
           account_lex_id: nil,
           session_id: nil,
-          response_body: threatmetrix_response_body,
         }
       end
 
@@ -909,7 +907,6 @@ RSpec.feature 'Analytics Regression', :js do
           review_status: 'pass',
           account_lex_id: nil,
           session_id: nil,
-          response_body: threatmetrix_response_body,
         }
       end
 
@@ -959,7 +956,6 @@ RSpec.feature 'Analytics Regression', :js do
           review_status: 'pass',
           account_lex_id: nil,
           session_id: nil,
-          response_body: threatmetrix_response_body,
         }
       end
 
@@ -1021,7 +1017,6 @@ RSpec.feature 'Analytics Regression', :js do
           review_status: 'pass',
           account_lex_id: nil,
           session_id: nil,
-          response_body: threatmetrix_response_body,
         }
       end
 
@@ -1093,7 +1088,6 @@ RSpec.feature 'Analytics Regression', :js do
           review_status: 'pass',
           account_lex_id: nil,
           session_id: nil,
-          response_body: threatmetrix_response_body,
         }
       end
 
@@ -1162,7 +1156,6 @@ RSpec.feature 'Analytics Regression', :js do
               review_status: 'pass',
               account_lex_id: nil,
               session_id: nil,
-              response_body: threatmetrix_response_body,
             }
           end
 
@@ -1220,7 +1213,6 @@ RSpec.feature 'Analytics Regression', :js do
               review_status: 'pass',
               account_lex_id: nil,
               session_id: nil,
-              response_body: threatmetrix_response_body,
             }
           end
 
@@ -1301,7 +1293,6 @@ RSpec.feature 'Analytics Regression', :js do
             review_status: 'pass',
             account_lex_id: nil,
             session_id: nil,
-            response_body: threatmetrix_response_body,
           }
         end
 
@@ -1314,6 +1305,7 @@ RSpec.feature 'Analytics Regression', :js do
         end
       end
     end
+
     context 'in person path' do
       let(:return_sp_url) { 'https://example.com/some/idv/ipp/url' }
 
@@ -1364,7 +1356,6 @@ RSpec.feature 'Analytics Regression', :js do
             review_status: 'pass',
             account_lex_id: nil,
             session_id: nil,
-            response_body: threatmetrix_response_body,
           }
         end
 
