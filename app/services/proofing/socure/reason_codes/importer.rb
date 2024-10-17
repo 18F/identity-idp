@@ -60,7 +60,6 @@ module Proofing
               reason_code.added_at ||= Time.zone.now
               reason_code.deactivated_at = nil
               reason_code.save!
-              added_reason_code_records
             end
           end
         end
