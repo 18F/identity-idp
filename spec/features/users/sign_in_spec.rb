@@ -879,12 +879,14 @@ RSpec.feature 'Sign in' do
     end
   end
 
-  context 'reCAPTCHA check fails' do
+  context 'when the reCAPTCHA check fails' do
     let(:user) { create(:user, :fully_registered) }
 
     before do
       allow(FeatureManagement).to receive(:sign_in_recaptcha_enabled?).and_return(true)
       allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).and_return(true)
+      allow(IdentityConfig.store).to receive(:sign_in_recaptcha_log_failures_only).
+        and_return(sign_in_recaptcha_log_failures_only)
       allow(IdentityConfig.store).to receive(:sign_in_recaptcha_score_threshold).and_return(0.2)
       allow(IdentityConfig.store).to receive(:sign_in_recaptcha_percent_tested).and_return(100)
       reload_ab_tests
@@ -894,40 +896,16 @@ RSpec.feature 'Sign in' do
       reload_ab_tests
     end
 
-    it 'redirects user to security check failed page' do
-      visit new_user_session_path
+    context 'when configured to log failures only' do
+      let(:sign_in_recaptcha_log_failures_only) { true }
+      it_behaves_like 'logs reCAPTCHA event and redirects appropriately',
+                      successful_sign_in: true
+    end
 
-      asserted_expected_user = false
-      fake_analytics = FakeAnalytics.new
-      allow_any_instance_of(ApplicationController).to receive(:analytics).
-        and_wrap_original do |original|
-          original_analytics = original.call
-          if original_analytics.request.params[:controller] == 'users/sessions' &&
-             original_analytics.request.params[:action] == 'create'
-            expect(original_analytics.user).to eq(user)
-            asserted_expected_user = true
-          end
-
-          fake_analytics
-        end
-
-      fill_in :user_recaptcha_mock_score, with: '0.1'
-      fill_in_credentials_and_submit(user.email, user.password)
-      expect(asserted_expected_user).to eq(true)
-      expect(fake_analytics).to have_logged_event(
-        'reCAPTCHA verify result received',
-        recaptcha_result: {
-          assessment_id: kind_of(String),
-          success: true,
-          score: 0.1,
-          errors: [],
-          reasons: [],
-        },
-        evaluated_as_valid: false,
-        score_threshold: 0.2,
-        form_class: 'RecaptchaMockForm',
-      )
-      expect(current_path).to eq sign_in_security_check_failed_path
+    context 'when not configured to log failures only' do
+      let(:sign_in_recaptcha_log_failures_only) { false }
+      it_behaves_like 'logs reCAPTCHA event and redirects appropriately',
+                      successful_sign_in: false
     end
   end
 
