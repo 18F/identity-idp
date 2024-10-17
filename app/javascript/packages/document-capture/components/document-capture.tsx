@@ -40,8 +40,13 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   const { flowPath } = useContext(UploadContext);
   const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
   const { isSelfieCaptureEnabled, docAuthSeparatePagesEnabled } = useContext(SelfieCaptureContext);
-  const { inPersonFullAddressEntryEnabled, inPersonURL, skipDocAuth, skipDocAuthFromHandoff } =
-    useContext(InPersonContext);
+  const {
+    inPersonFullAddressEntryEnabled,
+    inPersonURL,
+    skipDocAuthFromHowToVerify,
+    skipDocAuthFromHandoff,
+    skipDocAuth,
+  } = useContext(InPersonContext);
   useDidUpdateEffect(onStepChange, [stepName]);
   useEffect(() => {
     if (stepName) {
@@ -141,9 +146,9 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   if (submissionError && formValues) {
     initialValues = formValues;
   }
-  // If the user got here by opting-in to in-person proofing, when skipDocAuth === true,
+  // If the user got here by opting-in to in-person proofing, when skipDocAuthFromHowToVerify === true || skipDocAuth === true,
   // then set steps to inPersonSteps
-  const isInPersonStepEnabled = skipDocAuth || skipDocAuthFromHandoff;
+  const isInPersonStepEnabled = skipDocAuthFromHowToVerify || skipDocAuthFromHandoff || skipDocAuth;
   const inPersonSteps: FormStep[] =
     inPersonURL === undefined
       ? []
@@ -157,7 +162,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   } else if (submissionError) {
     steps = [reviewFormStep, ...inPersonSteps];
   }
-  // If the user got here by opting-in to in-person proofing, when skipDocAuth === true;
+  // If the user got here by opting-in to in-person proofing, when skipDocAuthFromHowToVerify === true || skipDocAuth === true;
   // or opting-in ipp from handoff page, and selfie is required, when skipDocAuthFromHandoff === true
   // then set stepIndicatorPath to VerifyFlowPath.IN_PERSON
   const stepIndicatorPath =
