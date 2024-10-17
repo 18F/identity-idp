@@ -123,7 +123,7 @@ module TwoFactorAuthenticatableMethods
 
   def mfa_selection_attempt_count(auth_method)
     user_session[:mfa_attempts] ||= {}
-    auth_method = auth_method.to_s.gsub('personal_key', 'personal-key')
+    auth_method = auth_method.to_s.gsub('personal_key', 'personal-key').to_sym
     user_session[:mfa_attempts][auth_method] ||= 0
     user_session[:mfa_attempts][auth_method] += 1
   end
