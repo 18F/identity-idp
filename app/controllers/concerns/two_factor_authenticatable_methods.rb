@@ -12,16 +12,24 @@ module TwoFactorAuthenticatableMethods
   end
 
   def handle_verification_for_authentication_context(result:, auth_method:, extra_analytics: nil)
+    mfa_selection_attempt_count(auth_method)
     analytics.multi_factor_auth(
       **result.to_h,
       multi_factor_auth_method: auth_method,
       enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
       new_device: new_device?,
       **extra_analytics.to_h,
+      mfa_attempts: user_session[:mfa_attempts],
+      pii_like_keypaths: [
+        [:mfa_attempts, :otp],
+        [:errors, :personal_key],
+        [:error_details, :personal_key],
+      ],
     )
 
     if result.success?
       handle_valid_verification_for_authentication_context(auth_method:)
+      user_session.delete(:mfa_attempts)
     else
       handle_invalid_verification_for_authentication_context
     end
@@ -122,6 +130,18 @@ module TwoFactorAuthenticatableMethods
   def handle_remember_device_preference(remember_device_preference)
     save_user_opted_remember_device_pref(remember_device_preference)
     save_remember_device_preference(remember_device_preference)
+  end
+
+  def mfa_selection_attempt_count(increment_auth_method)
+    user_session[:mfa_attempts] ||= {}
+    if increment_auth_method == 'personal_key'
+      increment_auth_method = increment_auth_method.gsub(
+        'personal_key',
+        'personal-key',
+      )
+    end
+    user_session[:mfa_attempts][increment_auth_method] ||= 0
+    user_session[:mfa_attempts][increment_auth_method] += 1
   end
 
   # Method will be renamed in the next refactor.
