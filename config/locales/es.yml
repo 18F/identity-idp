@@ -1121,7 +1121,7 @@ idv.messages.activated_html: Se verificó su identidad. Si necesita cambiar la i
 idv.messages.activated_link: contáctenos
 idv.messages.come_back_later: Cuando reciba su carta, vuelva a iniciar sesión e ingrese el código de verificación.
 idv.messages.confirm: Hemos protegido su información verificada
-idv.messages.contact_sp_html: Contacte con %{sp_link} si necesita acceder a los servicios de esa agencia antes de que llegue su carta.
+idv.messages.contact_sp_html: Contacte con %{sp_link_html} si necesita acceder a los servicios de esa agencia antes de que llegue su carta.
 idv.messages.enter_password.by_mail_password_reminder_html: '<strong>Recuerde su contraseña.</strong> El código de verificación de su carta no funcionará si restablece su contraseña más adelante.'
 idv.messages.enter_password.message: '%{app_name} cifrará su información con su contraseña. Esto significa que su información está protegida y solo usted puede acceder a ella o modificarla.'
 idv.messages.enter_password.phone_verified: Verificamos su número de teléfono

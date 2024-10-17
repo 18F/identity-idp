@@ -27,7 +27,7 @@
   <% end %>
 </div>
 
-<% if @presenter.has_sp? %>
+<% if @presenter.show_sp_contact_instructions? %>
   <ul class="usa-list">
     <li>
       <%= t('idv.messages.come_back_later') %>
@@ -35,7 +35,7 @@
     <li>
       <%= t(
             'idv.messages.contact_sp_html',
-            sp_link: link_to(@presenter.sp_name, @presenter.button_destination),
+            sp_link_html: link_to(@presenter.sp_name, @presenter.button_destination),
           ) %>
     </li>
   </ul>

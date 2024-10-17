@@ -1110,7 +1110,7 @@ idv.messages.activated_html: Your identity has been verified. If you need to cha
 idv.messages.activated_link: contact us
 idv.messages.come_back_later: Sign back in and enter the verification code when your letter arrives.
 idv.messages.confirm: We secured your verified information
-idv.messages.contact_sp_html: Contact&nbsp;%{sp_link} if you need to access their services before your letter arrives.
+idv.messages.contact_sp_html: Contact %{sp_link_html} if you need to access their services before your letter arrives.
 idv.messages.enter_password.by_mail_password_reminder_html: '<strong>Remember your password.</strong> The verification code in your letter won’t work if you reset your password later.'
 idv.messages.enter_password.message: '%{app_name} will encrypt your information with your password. This means that your information is secure and only you will be able to access or change it.'
 idv.messages.enter_password.phone_verified: We verified your phone number

@@ -1123,7 +1123,7 @@ idv.messages.activated_html: 你的身份已经验证。如要更改已验证过
 idv.messages.activated_link: 联系我们
 idv.messages.come_back_later: 收到信件后请再登录并输入其中的验证码。
 idv.messages.confirm: 我们对你验证过的信息做了安全处理
-idv.messages.contact_sp_html: 如果收到信件之前你需要访问我们合作伙伴机构的服务，请联系%{sp_link}。
+idv.messages.contact_sp_html: 如果收到信件之前你需要访问我们合作伙伴机构的服务，请联系%{sp_link_html}。
 idv.messages.enter_password.by_mail_password_reminder_html: '<strong>记住你的密码。</strong> 如果你随后重设密码的话，信中的验证码就不会奏效。'
 idv.messages.enter_password.message: '%{app_name}会用你的密码对你的账户加密。加密意味着你的信息很安全，而且只有你能够访问或变更你的信息。'
 idv.messages.enter_password.phone_verified: 我们验证了你的电话号码

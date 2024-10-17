@@ -35,8 +35,8 @@ module Idv
         sp&.friendly_name
       end
 
-      def has_sp?
-        !!sp
+      def show_sp_contact_instructions?
+        sp_name.present?
       end
 
       private
