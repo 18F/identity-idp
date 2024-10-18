@@ -10,6 +10,7 @@ import AcuantSelfieInstructions from './acuant-selfie-instructions';
 import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import TipList from './tip-list';
+import { SpinnerButton } from '@18f/identity-spinner-button';
 import { UploadContext } from '../context';
 import {
   ImageValue,
@@ -62,12 +63,23 @@ export function SelfieCaptureStep({
   );
 }
 
+function TakeSelfieButton({text = 'Take Photo'}) {
+  return (
+    <div className="margin-y-5 ">
+      <SpinnerButton spinOnClick={false} type="submit" isBig isWide>
+        {text}
+      </SpinnerButton>
+    </div>
+  );
+}
+
 export default function SelfieStep({
   value = {},
   onChange = () => {},
   errors = [],
   onError = () => {},
   registerField = () => undefined,
+  firstTime = true,
 }: FormStepComponentProps<DocumentsAndSelfieStepValue>) {
   const { isLastStep } = useContext(FormStepsContext);
   const { flowPath } = useContext(UploadContext);
@@ -85,8 +97,11 @@ export default function SelfieStep({
         defaultSideProps={defaultSideProps}
         selfieValue={value.selfie}
         isReviewStep={false}
+        showHelp={firstTime}
       />
-      {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
+      { firstTime ? <TakeSelfieButton /> :
+        isLastStep ? <FormStepsButton.Submit /> :
+          <FormStepsButton.Continue /> }
       <Cancel />
     </>
   );
