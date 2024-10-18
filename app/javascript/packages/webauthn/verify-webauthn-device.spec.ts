@@ -46,6 +46,7 @@ describe('verifyWebauthnDevice', () => {
               transports: ['internal', 'hybrid'],
             },
           ],
+          userVerification: 'discouraged',
           timeout: 800000,
         },
       };

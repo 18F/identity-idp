@@ -39,6 +39,7 @@ async function verifyWebauthnDevice({
       challenge: new Uint8Array(JSON.parse(userChallenge)),
       rpId: window.location.hostname,
       allowCredentials: credentials.map(mapVerifyCredential),
+      userVerification: 'discouraged',
       timeout: 800000,
     },
   })) as PublicKeyCredential;
