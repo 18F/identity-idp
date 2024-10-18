@@ -316,6 +316,56 @@ RSpec.shared_examples 'signing in as proofed account with broken personal key' d
   end
 end
 
+RSpec.shared_examples 'logs reCAPTCHA event and redirects appropriately' do |successful_sign_in:|
+  it 'logs reCAPTCHA event and redirects to the correct location' do
+    visit new_user_session_path
+
+    asserted_expected_user = false
+    fake_analytics = FakeAnalytics.new
+    allow_any_instance_of(ApplicationController).to receive(:analytics).
+      and_wrap_original do |original|
+        original_analytics = original.call
+        if original_analytics.request.params[:controller] == 'users/sessions' &&
+           original_analytics.request.params[:action] == 'create'
+          expect(original_analytics.user).to eq(user)
+          asserted_expected_user = true
+        end
+
+        fake_analytics
+      end
+
+    fill_in :user_recaptcha_mock_score, with: '0.1'
+    fill_in_credentials_and_submit(user.email, user.password)
+    expect(asserted_expected_user).to eq(true)
+    expect(fake_analytics).to have_logged_event(
+      'reCAPTCHA verify result received',
+      recaptcha_result: {
+        assessment_id: kind_of(String),
+        success: true,
+        score: 0.1,
+        errors: [],
+        reasons: [],
+      },
+      evaluated_as_valid: false,
+      score_threshold: 0.2,
+      form_class: 'RecaptchaMockForm',
+    )
+    expect(fake_analytics).to have_logged_event(
+      'Email and Password Authentication',
+      hash_including(
+        success: successful_sign_in,
+        valid_captcha_result: false,
+        captcha_validation_performed: true,
+      ),
+    )
+    if successful_sign_in
+      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+    else
+      expect(current_path).to eq sign_in_security_check_failed_path
+    end
+  end
+end
+
 def ial1_sign_in_with_personal_key_goes_to_sp(sp)
   user = create_ial1_account_go_back_to_sp_and_sign_out(sp)
   old_personal_key = PersonalKeyGenerator.new(user).generate!
