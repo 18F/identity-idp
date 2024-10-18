@@ -125,6 +125,21 @@ RSpec.describe SessionEncryptor do
       subject.dump(session)
     end
 
+    it 'does not raise for session personal_key key for counting mfa attempts' do
+      nested_session = {
+        'warden.user.user.session': {
+          mfa_attempts: { personal_key: 1 },
+          pii_like_key: ['mfa_attempts'],
+        },
+      }
+
+      expect do
+        subject.dump(nested_session)
+      end.not_to raise_error(
+        SessionEncryptor::SensitiveKeyError, 'personal_key unexpectedly appeared in session'
+      )
+    end
+
     it 'raises if sensitive value is not KMS encrypted' do
       session = {
         'new_key' => Idp::Constants::MOCK_IDV_APPLICANT[:last_name],
