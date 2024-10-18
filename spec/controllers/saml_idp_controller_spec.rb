@@ -1046,9 +1046,7 @@ RSpec.describe SamlIdpController do
               ),
             )
           end
-
         end
-
       end
     end
 
