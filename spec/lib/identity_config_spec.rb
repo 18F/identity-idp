@@ -119,7 +119,7 @@ RSpec.describe IdentityConfig do
     end
   end
 
-  def check_for_default(env_name = nil)
+  def check_for_default(env_name)
     aggregate_failures do
       default_yaml_config[env_name].each do |key, value|
         next unless default_yaml_config.key?(key)
