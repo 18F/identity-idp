@@ -4,7 +4,7 @@ class Event < ApplicationRecord
   belongs_to :user
   belongs_to :device
 
-  enum event_type: {
+  enum :event_type, {
     account_created: 1,
     phone_confirmed: 2,
     password_changed: 3,
