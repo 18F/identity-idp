@@ -5526,6 +5526,7 @@ module AnalyticsEvents
   # @param [String, nil] vtr_param
   # @param [Boolean] unauthorized_scope
   # @param [Boolean] user_fully_authenticated
+  # @param [String] unknown_authn_contexts space separated list of unknown contexts
   def openid_connect_request_authorization(
     success:,
     errors:,
@@ -5542,6 +5543,7 @@ module AnalyticsEvents
     unauthorized_scope:,
     user_fully_authenticated:,
     error_details: nil,
+    unknown_authn_contexts: nil,
     **extra
   )
     track_event(
@@ -5561,6 +5563,7 @@ module AnalyticsEvents
       vtr_param:,
       unauthorized_scope:,
       user_fully_authenticated:,
+      unknown_authn_contexts:,
       **extra,
     )
   end
@@ -6337,6 +6340,7 @@ module AnalyticsEvents
   # matches the request certificate in a successful, signed request
   # @param [Hash] cert_error_details Details for errors that occurred because of an invalid
   # signature
+  # @param [String] unknown_authn_contexts space separated list of unknown contexts
   def saml_auth(
     success:,
     errors:,
@@ -6353,6 +6357,7 @@ module AnalyticsEvents
     matching_cert_serial:,
     error_details: nil,
     cert_error_details: nil,
+    unknown_authn_contexts: nil,
     **extra
   )
     track_event(
@@ -6372,6 +6377,7 @@ module AnalyticsEvents
       request_signed:,
       matching_cert_serial:,
       cert_error_details:,
+      unknown_authn_contexts:,
       **extra,
     )
   end
@@ -6383,6 +6389,7 @@ module AnalyticsEvents
   # @param [Boolean] force_authn
   # @param [Boolean] final_auth_request
   # @param [String] service_provider
+  # @param [String] unknown_authn_contexts space separated list of unknown contexts
   # @param [Boolean] user_fully_authenticated
   # An external request for SAML Authentication was received
   def saml_auth_request(
@@ -6393,6 +6400,7 @@ module AnalyticsEvents
     force_authn:,
     final_auth_request:,
     service_provider:,
+    unknown_authn_contexts:,
     user_fully_authenticated:,
     **extra
   )
@@ -6405,6 +6413,7 @@ module AnalyticsEvents
       force_authn:,
       final_auth_request:,
       service_provider:,
+      unknown_authn_contexts:,
       user_fully_authenticated:,
       **extra,
     )
