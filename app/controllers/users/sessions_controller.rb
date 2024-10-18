@@ -39,7 +39,7 @@ module Users
       return process_rate_limited if session_bad_password_count_max_exceeded?
       return process_locked_out_user if current_user && user_locked_out?(current_user)
       return process_rate_limited if rate_limited?
-      return process_failed_captcha if !valid_captcha_result? && !log_captcha_failures_only?
+      return process_failed_captcha unless valid_captcha_result? || log_captcha_failures_only?
 
       rate_limit_password_failure = true
       self.resource = warden.authenticate!(auth_options)
