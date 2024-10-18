@@ -26,7 +26,7 @@ module Users
 
     def confirm
       result = totp_setup_form.submit
-      mfa_selection_attempt_count(:totp)
+      increment_mfa_selection_attempt_count(:totp)
       properties = result.to_h.merge(analytics_properties)
       analytics.multi_factor_auth_setup(**properties)
 

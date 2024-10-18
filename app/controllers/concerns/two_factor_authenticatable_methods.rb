@@ -12,7 +12,7 @@ module TwoFactorAuthenticatableMethods
   end
 
   def handle_verification_for_authentication_context(result:, auth_method:, extra_analytics: nil)
-    mfa_selection_attempt_count(auth_method)
+    increment_mfa_selection_attempt_count(auth_method)
     analytics.multi_factor_auth(
       **result.to_h,
       multi_factor_auth_method: auth_method,
@@ -121,10 +121,10 @@ module TwoFactorAuthenticatableMethods
     save_remember_device_preference(remember_device_preference)
   end
 
-  def mfa_selection_attempt_count(increment_auth_method)
+  def increment_mfa_selection_attempt_count(auth_method)
     user_session[:mfa_attempts] ||= {}
-    user_session[:mfa_attempts][increment_auth_method] ||= 0
-    user_session[:mfa_attempts][increment_auth_method] += 1
+    user_session[:mfa_attempts][auth_method] ||= 0
+    user_session[:mfa_attempts][auth_method] += 1
     user_session['pii_like_key'] = ['mfa_attempts']
   end
 

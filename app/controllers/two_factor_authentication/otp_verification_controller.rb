@@ -20,7 +20,9 @@ module TwoFactorAuthentication
     end
 
     def create
-      mfa_selection_attempt_count(:otp) if UserSessionContext.confirmation_context?(context)
+      if UserSessionContext.confirmation_context?(context)
+        increment_mfa_selection_attempt_count(:otp)
+      end
       result = otp_verification_form.submit
       post_analytics(result)
 
