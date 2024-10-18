@@ -123,14 +123,9 @@ module TwoFactorAuthenticatableMethods
 
   def mfa_selection_attempt_count(increment_auth_method)
     user_session[:mfa_attempts] ||= {}
-    if increment_auth_method == 'personal_key'
-      increment_auth_method = increment_auth_method.gsub(
-        'personal_key',
-        'personal-key',
-      )
-    end
     user_session[:mfa_attempts][increment_auth_method] ||= 0
     user_session[:mfa_attempts][increment_auth_method] += 1
+    user_session['pii_like_key'] = ['mfa_attempts']
   end
 
   # Method will be renamed in the next refactor.
