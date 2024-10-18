@@ -91,5 +91,4 @@ ActiveRecord::Schema[7.2].define(version: 2023_10_18_163221) do
     t.index ["queue_name", "scheduled_at"], name: "index_good_jobs_on_queue_name_and_scheduled_at", where: "(finished_at IS NULL)"
     t.index ["scheduled_at"], name: "index_good_jobs_on_scheduled_at", where: "(finished_at IS NULL)"
   end
-
 end
