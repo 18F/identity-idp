@@ -15,6 +15,7 @@ module Proofing
       :request_timeout,
       :org_id,
       :api_key,
+      :event_type,
       keyword_init: true,
       allowed_members: [
         :instant_verify_workflow,
