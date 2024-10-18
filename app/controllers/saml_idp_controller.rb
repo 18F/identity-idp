@@ -131,6 +131,7 @@ class SamlIdpController < ApplicationController
       request_signed: saml_request.signed?,
       matching_cert_serial:,
       requested_nameid_format: saml_request.name_id_format,
+      unknown_authn_contexts:,
     )
 
     if result.success? && saml_request.signed?
@@ -151,12 +152,13 @@ class SamlIdpController < ApplicationController
 
     analytics.saml_auth_request(
       requested_ial: requested_ial,
-      authn_context: saml_request&.requested_authn_contexts,
+      authn_context: requested_authn_contexts,
       requested_aal_authn_context: FederatedProtocols::Saml.new(saml_request).aal,
       requested_vtr_authn_contexts: saml_request&.requested_vtr_authn_contexts.presence,
       force_authn: saml_request&.force_authn?,
       final_auth_request: sp_session[:final_auth_request],
       service_provider: saml_request&.issuer,
+      unknown_authn_contexts:,
       user_fully_authenticated: user_fully_authenticated?,
     )
   end
@@ -226,5 +228,23 @@ class SamlIdpController < ApplicationController
 
   def require_path_year
     render_not_found if params[:path_year].blank?
+  end
+
+  def unknown_authn_contexts
+    return nil if saml_request.requested_vtr_authn_contexts.present?
+    return nil if requested_authn_contexts.blank?
+
+    (requested_authn_contexts -
+      Saml::Idp::Constants::VALID_AUTHN_CONTEXTS).reject do |authn_context|
+      authn_context.match(req_attrs_regexp)
+    end.join(' ').presence
+  end
+
+  def requested_authn_contexts
+    @request_authn_contexts || saml_request&.requested_authn_contexts
+  end
+
+  def req_attrs_regexp
+    'http:\/\/idmanagement.gov\/ns\/requested_attributes\?ReqAttr='
   end
 end
