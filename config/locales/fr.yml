@@ -1593,7 +1593,6 @@ titles.idv.reset_password: Réinitialiser le mot de passe
 titles.idv.verify_info: Vérifier vos informations
 titles.mfa_setup.face_touch_unlock_confirmation: Déverrouillage facial ou tactile ajouté
 titles.mfa_setup.suggest_second_mfa: Vous avez ajouté votre première méthode d’authentification ! Ajoutez-en une deuxième en guise de sauvegarde.
-titles.no_auth_option: Aucune méthode de connexion trouvée
 titles.openid_connect.authorization: Autorisation OpenID Connect
 titles.openid_connect.logout: Déconnexion OpenID Connect
 titles.passwords.change: Changer le mot de passe de votre compte
@@ -1684,7 +1683,6 @@ two_factor_authentication.max_otp_requests_reached: Pour votre sécurité, votre
 two_factor_authentication.max_personal_key_login_attempts_reached: Pour votre sécurité, votre compte est temporairement verrouillé en raison de la saisie erronée de la clé personnelle à de trop nombreuses reprises.
 two_factor_authentication.max_piv_cac_login_attempts_reached: Pour votre sécurité, votre compte est temporairement verrouillé en raison de la présentation erronée de votre certificat PIV/CAC à de trop nombreuses reprises.
 two_factor_authentication.mobile_terms_of_service: Conditions de service mobile
-two_factor_authentication.no_auth_option: Aucune option d’authentification n’a pu être trouvée pour vous connecter
 two_factor_authentication.opt_in.error_retry: Désolé, nous rencontrons actuellement des difficultés pour vous inscrire. Veuillez réessayer.
 two_factor_authentication.opt_in.opted_out_html: Vous avez choisi de ne pas recevoir de SMS au %{phone_number_html}. Vous pouvez vous inscrire et recevoir à nouveau un code de sécurité à ce numéro de téléphone.
 two_factor_authentication.opt_in.opted_out_last_30d_html: Vous avez choisi de ne plus recevoir de SMS au %{phone_number_html} au cours des 30 derniers jours. Nous ne pouvons inscrire un numéro de téléphone qu’une fois tous les 30 jours.

@@ -1593,7 +1593,6 @@ titles.idv.reset_password: Reset Password
 titles.idv.verify_info: Verify your information
 titles.mfa_setup.face_touch_unlock_confirmation: Face or touch unlock added
 titles.mfa_setup.suggest_second_mfa: You’ve added your first authentication method! Add a second method as a backup.
-titles.no_auth_option: No sign-in method found
 titles.openid_connect.authorization: OpenID Connect Authorization
 titles.openid_connect.logout: OpenID Connect Logout
 titles.passwords.change: Change the password for your account
@@ -1684,7 +1683,6 @@ two_factor_authentication.max_otp_requests_reached: For your security, your acco
 two_factor_authentication.max_personal_key_login_attempts_reached: For your security, your account is temporarily locked because you have entered the personal key incorrectly too many times.
 two_factor_authentication.max_piv_cac_login_attempts_reached: For your security, your account is temporarily locked because you have presented your piv/cac credential incorrectly too many times.
 two_factor_authentication.mobile_terms_of_service: Mobile terms of service
-two_factor_authentication.no_auth_option: No authentication option could be found for you to sign in.
 two_factor_authentication.opt_in.error_retry: Sorry, we are having trouble opting you in. Please try again.
 two_factor_authentication.opt_in.opted_out_html: You’ve opted out of receiving text messages at %{phone_number_html}. You can opt in and receive a security code again to that phone number.
 two_factor_authentication.opt_in.opted_out_last_30d_html: You’ve opted out of receiving text messages at %{phone_number_html} within the last 30 days. We can only opt in a phone number once every 30 days.
