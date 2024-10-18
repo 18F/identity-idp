@@ -801,74 +801,145 @@ RSpec.describe Profile do
   end
 
   describe '#activate_after_passing_in_person' do
-    it 'activates a profile if it passes in person proofing' do
-      profile = create(
-        :profile,
-        :fraud_review_pending,
-        :in_person_verification_pending,
-        user: user,
-      )
+    let(:current_time) { Time.zone.now }
 
-      expect(profile.activated_at).to be_nil # to change
-      expect(profile.active).to eq(false) # to change
-      expect(profile.deactivation_reason).to be_nil
-      expect(profile.fraud_review_pending?).to eq(true) # to change
-      expect(profile.gpo_verification_pending_at).to be_nil
-      expect(profile.in_person_verification_pending_at).to be_present
-      expect(profile.initiating_service_provider).to be_nil
-      expect(profile.verified_at).to be_nil # to change
-
-      profile.activate_after_passing_in_person
-
-      expect(profile.activated_at).to be_present # changed
-      expect(profile.active).to eq(true) # changed
-      expect(profile.deactivation_reason).to be_nil
-      expect(profile.fraud_review_pending?).to eq(false) # changed
-      expect(profile.gpo_verification_pending_at).to be_nil
-      expect(profile.in_person_verification_pending_at).to be_nil
-      expect(profile.initiating_service_provider).to be_nil
-      expect(profile.verified_at).to be_present # changed
-
-      expect(profile.fraud_review_pending_at).to be_nil
-      expect(profile.activated_at).not_to be_nil
-      expect(profile.deactivation_reason).to be_nil
-      expect(profile).to be_active # changed
-    end
-
-    it 'does not activate a profile if transaction raises an error' do
-      profile = create(
-        :profile,
-        :in_person_verification_pending,
-        :fraud_review_pending,
-        user: user,
-      )
-
-      allow(profile).to receive(:update!).and_raise(RuntimeError)
-
-      expect(profile.activated_at).to be_nil
-      expect(profile.active).to eq(false)
-      expect(profile.deactivation_reason).to be_nil
-      expect(profile.fraud_review_pending?).to eq(true)
-      expect(profile.gpo_verification_pending_at).to be_nil
-      expect(profile.in_person_verification_pending_at).to be_present
-      expect(profile.initiating_service_provider).to be_nil
-      expect(profile.verified_at).to be_nil
-
-      suppress(RuntimeError) do
-        profile.activate_after_passing_in_person
+    context 'when the profile does not have any reason not to activate' do
+      let(:profile) do
+        create(
+          :profile,
+          :in_person_verification_pending,
+          user: user,
+        )
       end
 
-      expect(profile.activated_at).to be_nil
-      expect(profile.active).to eq(false)
-      expect(profile.deactivation_reason).to be_nil
-      expect(profile.fraud_review_pending?).to eq(true)
-      expect(profile.gpo_verification_pending_at).to be_nil
-      expect(profile.in_person_verification_pending_at).to be_present
-      expect(profile.initiating_service_provider).to be_nil
-      expect(profile.verified_at).to be_nil
+      before do
+        freeze_time do
+          travel_to(current_time)
+          profile.activate_after_passing_in_person
+        end
+      end
 
-      expect(profile.deactivation_reason).to be_nil
-      expect(profile).to_not be_active
+      it 'activates a profile' do
+        expect(profile).to have_attributes(
+          activated_at: current_time,
+          active: true,
+          deactivation_reason: nil,
+          gpo_verification_pending_at: nil,
+          in_person_verification_pending_at: nil,
+          initiating_service_provider: nil,
+          verified_at: current_time,
+          fraud_review_pending_at: nil,
+          fraud_rejection_at: nil,
+          fraud_pending_reason: nil,
+        )
+      end
+    end
+
+    context 'when the profile has a pending reason not to activate' do
+      let(:profile) do
+        create(
+          :profile,
+          :fraud_review_pending,
+          :in_person_verification_pending,
+          user: user,
+        )
+      end
+
+      before do
+        profile.activate_after_passing_in_person
+      rescue => err
+        @error = err
+      ensure
+        profile.reload
+      end
+
+      it 'throws an "Attempting to activate a profile with pending reason:" error' do
+        expect(@error.message).to eq(
+          'Attempting to activate profile with pending reasons: fraud_check_pending',
+        )
+      end
+
+      it 'does not activate the profile' do
+        expect(profile).to have_attributes(
+          active: false,
+          activated_at: nil,
+          deactivation_reason: nil,
+          gpo_verification_pending_at: nil,
+          in_person_verification_pending_at: kind_of(Time),
+          initiating_service_provider: nil,
+          verified_at: nil,
+          fraud_review_pending_at: kind_of(Time),
+          fraud_rejection_at: nil,
+          fraud_pending_reason: 'threatmetrix_review',
+        )
+      end
+    end
+
+    context 'when the profile has a deactivation reason not to activate' do
+      let(:profile) do
+        create(
+          :profile,
+          :encryption_error,
+          :in_person_verification_pending,
+          user: user,
+        )
+      end
+
+      before do
+        profile.activate_after_passing_in_person
+      rescue => err
+        @error = err
+      ensure
+        profile.reload
+      end
+
+      it 'throws an "Attempting to activate a profile with deactivation reason:" error' do
+        expect(@error.message).to eq(
+          'Attempting to activate profile with deactivation reason: encryption_error',
+        )
+      end
+
+      it 'does not activate the profile' do
+        expect(profile).to have_attributes(
+          active: false,
+          activated_at: nil,
+          deactivation_reason: 'encryption_error',
+          gpo_verification_pending_at: nil,
+          in_person_verification_pending_at: kind_of(Time),
+          initiating_service_provider: nil,
+          verified_at: nil,
+          fraud_review_pending_at: nil,
+          fraud_rejection_at: nil,
+          fraud_pending_reason: nil,
+        )
+      end
+    end
+
+    context 'when an update error occurs' do
+      let(:profile) { create(:profile, :in_person_verification_pending, user: user) }
+
+      before do
+        allow(profile).to receive(:update!).and_raise(RuntimeError)
+
+        suppress(RuntimeError) do
+          profile.activate_after_passing_in_person
+        end
+      end
+
+      it 'does not activate the profile' do
+        expect(profile).to have_attributes(
+          active: false,
+          activated_at: nil,
+          deactivation_reason: nil,
+          gpo_verification_pending_at: nil,
+          in_person_verification_pending_at: kind_of(Time),
+          initiating_service_provider: nil,
+          verified_at: nil,
+          fraud_review_pending_at: nil,
+          fraud_rejection_at: nil,
+          fraud_pending_reason: nil,
+        )
+      end
     end
   end
 
