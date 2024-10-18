@@ -175,7 +175,7 @@ RSpec.shared_examples 'sp handoff after identity verification' do |sp|
       expect(sub).to be_present
       expect(decoded_id_token[:nonce]).to eq(@nonce)
       expect(decoded_id_token[:aud]).to eq(@client_id)
-      expect(decoded_id_token[:acr]).to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
+      expect(decoded_id_token[:acr]).to eq(Saml::Idp::Constants::IAL_VERIFIED_ACR)
       expect(decoded_id_token[:iss]).to eq(root_url)
       expect(decoded_id_token[:email]).to eq(user.confirmed_email_addresses.first.email)
       expect(decoded_id_token[:given_name]).to eq('FAKEY')

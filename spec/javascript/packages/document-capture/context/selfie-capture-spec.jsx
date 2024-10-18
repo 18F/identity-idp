@@ -6,11 +6,7 @@ describe('document-capture/context/selfie-capture', () => {
   it('has expected default properties', () => {
     const { result } = renderHook(() => useContext(SelfieCaptureContext));
 
-    expect(result.current).to.have.keys([
-      'isSelfieCaptureEnabled',
-      'isSelfieDesktopTestMode',
-      'docAuthSeparatePagesEnabled',
-    ]);
+    expect(result.current).to.have.keys(['isSelfieCaptureEnabled', 'isSelfieDesktopTestMode']);
     expect(result.current.isSelfieCaptureEnabled).to.be.a('boolean');
   });
 });

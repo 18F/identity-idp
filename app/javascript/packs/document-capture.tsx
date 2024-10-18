@@ -41,7 +41,7 @@ interface AppRootData {
   docAuthSelfieDesktopTestMode: string;
   locationsUrl: string;
   addressSearchUrl: string;
-  docAuthSeparatePagesEnabled: string;
+  sessionsUrl: string;
 }
 
 const appRoot = document.getElementById('document-capture-form')!;
@@ -110,9 +110,9 @@ const {
   howToVerifyUrl,
   previousStepUrl,
   docAuthSelfieDesktopTestMode,
-  docAuthSeparatePagesEnabled,
   locationsUrl: locationsURL,
   addressSearchUrl: addressSearchURL,
+  sessionsUrl: sessionsURL,
 } = appRoot.dataset as DOMStringMap & AppRootData;
 
 let parsedUsStatesTerritories = [];
@@ -191,7 +191,6 @@ const App = composeComponents(
       value: {
         isSelfieCaptureEnabled: getSelfieCaptureEnabled(),
         isSelfieDesktopTestMode: String(docAuthSelfieDesktopTestMode) === 'true',
-        docAuthSeparatePagesEnabled: String(docAuthSeparatePagesEnabled) === 'true',
       },
     },
   ],
@@ -205,7 +204,7 @@ const App = composeComponents(
   [
     DocumentCapture,
     {
-      onStepChange: extendSession,
+      onStepChange: () => extendSession(sessionsURL),
     },
   ],
 );

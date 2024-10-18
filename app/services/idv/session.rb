@@ -21,6 +21,7 @@ module Idv
       personal_key_acknowledged
       phone_for_mobile_flow
       previous_phone_step_params
+      previous_ssn
       profile_id
       proofing_started_at
       redo_document_capture

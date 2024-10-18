@@ -166,6 +166,28 @@ RSpec.describe Idv::SsnController do
       it 'updates idv_session.ssn' do
         expect { put :update, params: params }.to change { subject.idv_session.ssn }.
           from(nil).to(ssn)
+        expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+      end
+
+      context 'when the user has previously submitted an ssn' do
+        let(:analytics_args) do
+          {
+            analytics_id: 'Doc Auth',
+            flow_path: 'standard',
+            step: 'ssn',
+            success: true,
+            previous_ssn_edit_distance: 6,
+            errors: {},
+          }
+        end
+
+        it 'updates idv_session.ssn' do
+          subject.idv_session.ssn = '900-95-7890'
+
+          expect { put :update, params: params }.to change { subject.idv_session.ssn }.
+            from('900-95-7890').to(ssn)
+          expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+        end
       end
 
       context 'with a Puerto Rico address and pii_from_doc in idv_session' do
@@ -235,9 +257,12 @@ RSpec.describe Idv::SsnController do
     context 'when pii_from_doc is not present' do
       before do
         subject.idv_session.pii_from_doc = nil
-      end
-
-      it 'redirects to DocumentCaptureController on standard flow' do
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(
+          Idp::Constants::Vendors::LEXIS_NEXIS,
+        )
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(
+          Idp::Constants::Vendors::LEXIS_NEXIS,
+        )
         put :update
         expect(response.status).to eq 302
         expect(response).to redirect_to idv_document_capture_url

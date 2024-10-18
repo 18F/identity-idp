@@ -41,7 +41,7 @@ account_reset.request.yes_continue: Oui, continuer la suppression
 account.connected_apps.associated_attributes_html: 'Connecté %{timestamp_html} avec :'
 account.connected_apps.associated_html: Connecté %{timestamp_html}
 account.connected_apps.description: Avec votre compte %{app_name}, vous pouvez vous connecter en toute sécurité à plusieurs comptes de l’administration en ligne. Vous trouverez ci-dessous une liste de tous vos comptes actuellement connectés.
-account.connected_apps.email_not_selected: Email not yet selected
+account.connected_apps.email_not_selected: Adresse e-mail non encore sélectionnée
 account.email_language.default: '%{language} (par défaut)'
 account.email_language.edit_title: Modifier la langue dans laquelle vous préférez recevoir les e-mails
 account.email_language.languages_list: Vous recevrez des e-mails de %{app_name} dans la langue de votre choix.
@@ -578,9 +578,7 @@ doc_auth.headings.document_capture: Ajoutez des photos de votre permis de condui
 doc_auth.headings.document_capture_back: Verso de votre pièce d’identité
 doc_auth.headings.document_capture_front: Recto de votre carte d’identité
 doc_auth.headings.document_capture_selfie: Photo de votre visage
-doc_auth.headings.document_capture_subheader_id: Permis de conduire ou carte d’identité d’un État
 doc_auth.headings.document_capture_subheader_selfie: Ajouter une photo de votre visage
-doc_auth.headings.document_capture_with_selfie: Ajouter des photos de votre pièce d’identité et une photo de vous-même
 doc_auth.headings.front: Recto de votre permis de conduire ou de votre carte d’identité d’un État
 doc_auth.headings.how_to_verify: Choisir la manière dont vous souhaitez confirmer votre identité
 doc_auth.headings.hybrid_handoff: Comment voulez-vous ajouter votre pièce d’identité ?
@@ -643,9 +641,9 @@ doc_auth.info.selfie_capture_status.face_not_found: Visage non trouvé
 doc_auth.info.selfie_capture_status.face_too_small: Visage trop petit
 doc_auth.info.selfie_capture_status.too_many_faces: Trop de visages
 doc_auth.info.selfie_capture.action.capture: Prendre une photo
-doc_auth.info.selfie_capture.action.close: éteindre
+doc_auth.info.selfie_capture.action.close: fermer
 doc_auth.info.selfie_capture.action.retake: nouvelle photo
-doc_auth.info.selfie_capture.action.submit: Utiliser cette photo
+doc_auth.info.selfie_capture.action.submit: Photo prise. Envoyer la photo.
 doc_auth.info.selfie_capture.intro: Caméra prête à prendre la photo
 doc_auth.info.ssn: Nous avons besoin de votre numéro de sécurité sociale pour confirmer vos nom, date de naissance et adresse.
 doc_auth.info.stepping_up_html: Veuillez confirmer à nouveau votre identité pour accéder à ce service. %{link_html}

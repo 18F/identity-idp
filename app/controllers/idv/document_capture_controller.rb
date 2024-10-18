@@ -19,7 +19,12 @@ module Idv
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
         call('document_capture', :view, true)
 
-      render :show, locals: extra_view_variables
+      case doc_auth_vendor
+      when Idp::Constants::Vendors::SOCURE
+        redirect_to idv_socure_document_capture_url
+      when Idp::Constants::Vendors::LEXIS_NEXIS, Idp::Constants::Vendors::MOCK
+        render :show, locals: extra_view_variables
+      end
     end
 
     def update
