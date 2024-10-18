@@ -86,7 +86,7 @@ module Users
       if platform_authenticator? && in_account_creation_flow? &&
          current_user.webauthn_configurations.platform_authenticators.present?
         redirect_to authentication_methods_setup_path
-     end
+      end
     end
 
     def platform_authenticator?
