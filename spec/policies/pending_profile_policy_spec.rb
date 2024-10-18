@@ -23,6 +23,7 @@ RSpec.describe PendingProfilePolicy do
   describe '#user_has_pending_profile?' do
     context 'has an active non-facial match profile and facial match comparison is requested' do
       let(:idv_level) { :unsupervised_with_selfie }
+
       before do
         create(:profile, :active, :verified, idv_level: :legacy_unsupervised, user: user)
         create(:profile, :verify_by_mail_pending, idv_level: idv_level, user: user)
@@ -62,6 +63,7 @@ RSpec.describe PendingProfilePolicy do
     context 'no facial match comparison is requested' do
       let(:idv_level) { :legacy_unsupervised }
       let(:vtr) { ['C2'] }
+
       context 'user has pending profile' do
         before do
           create(:profile, :verify_by_mail_pending, idv_level: idv_level, user: user)
