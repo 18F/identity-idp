@@ -9,8 +9,8 @@
   @include u-text('primary-darker');
 
   &:hover {
-    @include u-bg('primary-lighter');
-    @include u-text('primary-darker');
+    @include u-bg('primary-light');
+    @include u-text('darkest');
   }
 }
 
@@ -22,9 +22,9 @@
 
   &:hover {
     @include u-border(1px);
-    @include u-bg('white');
-    @include u-text('primary-darker');
     @include u-border('base');
+    @include u-bg('primary-lighter');
+    @include u-text('darkest');
   }
 }
 
@@ -33,7 +33,7 @@
   @include u-text('white');
 
   &:hover {
-    @include u-bg('primary-darker');
-    @include u-text('white');
+    @include u-bg('darkest');
+    @include u-text('primary-lighter');
   }
 }
