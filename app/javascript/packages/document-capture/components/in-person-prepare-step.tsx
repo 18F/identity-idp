@@ -20,6 +20,7 @@ function InPersonPrepareStep({ toPreviousStep }) {
     inPersonOutageMessageEnabled,
     inPersonOutageExpectedUpdateDate,
     skipDocAuth,
+    skipDocAuthFromHowToVerify,
     skipDocAuthFromHandoff,
     howToVerifyURL,
     previousStepURL,
@@ -29,7 +30,7 @@ function InPersonPrepareStep({ toPreviousStep }) {
     if (skipDocAuthFromHandoff && previousStepURL) {
       // directly from handoff page
       forceRedirect(previousStepURL);
-    } else if (skipDocAuth && howToVerifyURL) {
+    } else if ((skipDocAuthFromHowToVerify || skipDocAuth) && howToVerifyURL) {
       forceRedirect(howToVerifyURL);
     } else {
       toPreviousStep();
