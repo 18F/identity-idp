@@ -8,6 +8,15 @@ RSpec.describe IdentityConfig do
   describe '.key_types' do
     subject(:key_types) { Identity::Hostdata.config_builder.key_types }
 
+    it 'has defaults defined for all keys in default configuration' do
+      aggregate_failures do
+        key_types.keys.each do |key|
+          expect(default_yaml_config).
+            to have_key(key.to_s), "expected default configuration to include value for #{key}"
+        end
+      end
+    end
+
     it 'has all _enabled keys as booleans' do
       aggregate_failures do
         key_types.select { |key, _type| key.to_s.end_with?('_enabled') }.
@@ -110,7 +119,7 @@ RSpec.describe IdentityConfig do
     end
   end
 
-  def check_for_default(env_name)
+  def check_for_default(env_name = nil)
     aggregate_failures do
       default_yaml_config[env_name].each do |key, value|
         next unless default_yaml_config.key?(key)
