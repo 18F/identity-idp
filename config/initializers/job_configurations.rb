@@ -242,6 +242,11 @@ else
         cron: cron_monthly,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
+      # Download and store Socure reason codes
+      socure_reason_code_download: {
+        class: 'SocureReasonCodeDownloadJob',
+        cron: cron_every_monday,
+      },
     }.compact
   end
   # rubocop:enable Metrics/BlockLength
