@@ -172,16 +172,22 @@ class SessionEncryptor
 
   def alert_or_raise_if_contains_sensitive_keys!(hash)
     hash.deep_transform_keys do |key|
-      if SENSITIVE_KEYS.include?(key.to_s)
-        exception = SensitiveKeyError.new("#{key} unexpectedly appeared in session")
-        if IdentityConfig.store.session_encryptor_alert_enabled
-          NewRelic::Agent.notice_error(
-            exception, custom_params: {
-              session_structure: hash.deep_transform_values { |_v| '' },
-            }
-          )
-        else
-          raise exception
+      if key == 'warden.user.user.session' && hash['warden.user.user.session']&.dig('pii_like_key').
+          present?
+        unless hash['warden.user.user.session']['pii_like_key'].
+            any? { |key| hash['warden.user.user.session'].key?(key) }
+          if SENSITIVE_KEYS.include?(key.to_s)
+            exception = SensitiveKeyError.new("#{key} unexpectedly appeared in session")
+            if IdentityConfig.store.session_encryptor_alert_enabled
+              NewRelic::Agent.notice_error(
+                exception, custom_params: {
+                  session_structure: hash.deep_transform_values { |_v| '' },
+                }
+              )
+            else
+              raise exception
+            end
+          end
         end
       end
     end
