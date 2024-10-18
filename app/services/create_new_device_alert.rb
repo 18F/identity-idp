@@ -8,7 +8,7 @@ class CreateNewDeviceAlert < ApplicationJob
     User.where(
       sql_query_for_users_with_new_device,
       tvalue: now - IdentityConfig.store.new_device_alert_delay_in_minutes.minutes,
-    ).each do |user|
+    ).find_each do |user|
       emails_sent += 1 if expire_sign_in_notification_timeframe_and_send_alert(user)
     end
 
