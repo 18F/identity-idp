@@ -245,6 +245,6 @@ class SamlIdpController < ApplicationController
   end
 
   def req_attrs_regexp
-    'http:\/\/idmanagement.gov\/ns\/requested_attributes\?ReqAttr='
+    Regexp.escape(Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF)
   end
 end

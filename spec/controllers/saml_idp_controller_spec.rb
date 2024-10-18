@@ -1027,6 +1027,28 @@ RSpec.describe SamlIdpController do
             ),
           )
         end
+
+        context 'when it includes the ReqAttributes AuthnContext' do
+          let(:authn_context) do
+            [
+              Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF,
+              Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+              unknown_value,
+            ]
+          end
+
+          it 'logs the unknown authn_context value' do
+            expect(response.status).to eq(302)
+            expect(@analytics).to have_logged_event(
+              'SAML Auth Request',
+              hash_including(
+                unknown_authn_contexts: unknown_value,
+              ),
+            )
+          end
+
+        end
+
       end
     end
 
