@@ -30,12 +30,7 @@ module DocAuth
             pii: socure_response.pii_from_doc.to_h,
             attention_with_barcode: false, # n/a
           ).submit
-
-          if response.success?
-            document_capture_session.store_result_from_response(socure_response)
-          else # rubocop:disable Style/EmptyElse
-            # log errors
-          end
+          # socure_response.merge(response)
         end
 
         def document_capture_session
