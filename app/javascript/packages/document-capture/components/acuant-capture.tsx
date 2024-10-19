@@ -313,6 +313,7 @@ function AcuantCapture(
     allowUpload = true,
     errorMessage,
     name,
+    goStraightToAcuantSdk = false,
   }: AcuantCaptureProps,
   ref: Ref<HTMLInputElement | null>,
 ) {
@@ -332,7 +333,7 @@ function AcuantCapture(
   const inputRef = useRef<HTMLInputElement>(null);
   const isForceUploading = useRef(false);
   const isSuppressingClickLogging = useRef(false);
-  const [isCapturingEnvironment, setIsCapturingEnvironment] = useState(false);
+  const [isCapturingEnvironment, setIsCapturingEnvironment] = useState(goStraightToAcuantSdk);
   const [ownErrorMessage, setOwnErrorMessage] = useState<string | null>(null);
   const [hasStartedCropping, setHasStartedCropping] = useState(false);
   useMemo(() => setOwnErrorMessage(null), [value]);
