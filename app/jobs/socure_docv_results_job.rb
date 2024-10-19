@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
-class SocureDocvResultsJob
+class SocureDocvResultsJob < ApplicationJob
+  queue_as :default
+
+  attr_reader :document_capture_session_uuid, :service_provider_issuer, :user_uuid
   # @param [String] document_capture_session_uuid
   # @param [String,nil] service_provider_issuer
   # @param [String] user_uuid
@@ -9,6 +12,10 @@ class SocureDocvResultsJob
     service_provider_issuer:,
     user_uuid:
   )
+    @document_capture_session_uuid = document_capture_session_uuid
+    @service_provider_issuer = service_provider_issuer
+    @user_uuid = user_uuid
+
     user = User.find_by(uuid: user_uuid)
     raise "User not found: #{user_uuid}" if !user
 
@@ -22,14 +29,7 @@ class SocureDocvResultsJob
 
     result = socure_document_verification_result
 
-    if result.success?
-      store_result_from_response(result)
-    else
-      analytics.track_event(
-        Analytics::SOCURE_DOCUMENT_VERIFICATION_RESULT,
-        { error: 'No result found' },
-      )
-    end
+    dcs.store_result_from_response(result)
   end
 
   private
@@ -47,7 +47,7 @@ class SocureDocvResultsJob
   end
 
   def socure_document_verification_result
-    Requests::DocvResultRequest.new(
+    DocAuth::Socure::Requests::DocvResultRequest.new(
       document_capture_session_uuid:,
     ).fetch
   end

@@ -374,6 +374,7 @@ module IdentityConfig
     config.add(:saml_secret_rotation_enabled, type: :boolean)
     config.add(:socure_idplus_api_key, type: :string)
     config.add(:socure_idplus_base_url, type: :string)
+    config.add(:socure_idplus_endpoint, type: :string)
     config.add(:socure_idplus_timeout_in_seconds, type: :integer)
     config.add(:scrypt_cost, type: :string)
     config.add(:second_mfa_reminder_account_age_in_days, type: :integer)
