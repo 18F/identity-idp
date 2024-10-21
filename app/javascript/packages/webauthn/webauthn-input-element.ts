@@ -5,23 +5,12 @@ export class WebauthnInputElement extends HTMLElement {
     this.toggleVisibleIfPasskeySupported();
   }
 
-  get isPlatform(): boolean {
-    return this.hasAttribute('platform');
-  }
-
-  get showUnsupportedPasskey(): boolean {
-    return this.hasAttribute('show-unsupported-passkey');
-  }
-
   async toggleVisibleIfPasskeySupported() {
-    if (!this.hasAttribute('hidden')) {
-      return;
-    }
-
     if (await isWebauthnPlatformAuthenticatorAvailable()) {
+      // if user is in the A/B test bucket, show. else, do not show
       this.hidden = false;
     } else {
-      this.hidden = false;
+      this.hidden = true;
     }
   }
 }
