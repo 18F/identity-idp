@@ -21,12 +21,9 @@ describe('document-capture/components/selfie-step', () => {
           registerField={() => undefined}
           unknownFieldErrors={[]}
           toPreviousStep={() => undefined}
-          initiallyShowHelp
         />,
       ));
     });
-
-    it('renders the help content');
   });
 
   context('when show help is turned off ', () => {
@@ -40,7 +37,6 @@ describe('document-capture/components/selfie-step', () => {
           registerField={() => undefined}
           unknownFieldErrors={[]}
           toPreviousStep={() => undefined}
-          initiallyShowHelp={false}
         />,
       ));
     });
@@ -72,7 +68,6 @@ describe('document-capture/components/selfie-step', () => {
           registerField={() => undefined}
           unknownFieldErrors={[]}
           toPreviousStep={() => undefined}
-          initiallyShowHelp={false}
         />
         ,
       </FailedCaptureAttemptsContextProvider>,

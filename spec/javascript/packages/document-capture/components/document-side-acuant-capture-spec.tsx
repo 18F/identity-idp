@@ -11,6 +11,7 @@ describe('DocumentSideAcuantCapture', () => {
     onChange: () => undefined,
     onError: () => undefined,
     isReviewStep: false,
+    goStraightToAcuantSdk: false,
   };
 
   context('when selfie is _not_ enabled', () => {
@@ -47,6 +48,7 @@ describe('DocumentSideAcuantCapture', () => {
                 value={{
                   isSelfieCaptureEnabled: false,
                   isSelfieDesktopTestMode: true,
+                  showHelp: false,
                 }}
               >
                 <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="front" />
@@ -72,6 +74,7 @@ describe('DocumentSideAcuantCapture', () => {
                 value={{
                   isSelfieCaptureEnabled: false,
                   isSelfieDesktopTestMode: false,
+                  showHelp: false,
                 }}
               >
                 <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="front" />
@@ -93,6 +96,7 @@ describe('DocumentSideAcuantCapture', () => {
                 value={{
                   isSelfieCaptureEnabled: false,
                   isSelfieDesktopTestMode: true,
+                  showHelp: false,
                 }}
               >
                 <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="front" />
@@ -118,6 +122,7 @@ describe('DocumentSideAcuantCapture', () => {
                 value={{
                   isSelfieCaptureEnabled: true,
                   isSelfieDesktopTestMode: false,
+                  showHelp: false,
                 }}
               >
                 <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="front" />
@@ -145,6 +150,7 @@ describe('DocumentSideAcuantCapture', () => {
                 value={{
                   isSelfieCaptureEnabled: true,
                   isSelfieDesktopTestMode: true,
+                  showHelp: false,
                 }}
               >
                 <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="front" />
@@ -180,6 +186,7 @@ describe('DocumentSideAcuantCapture', () => {
                 value={{
                   isSelfieCaptureEnabled: true,
                   isSelfieDesktopTestMode: true,
+                  showHelp: false
                 }}
               >
                 <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="front" />

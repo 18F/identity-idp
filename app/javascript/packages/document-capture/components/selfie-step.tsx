@@ -11,6 +11,7 @@ import AcuantSelfieInstructions from './acuant-selfie-instructions';
 import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import TipList from './tip-list';
+import SelfieCaptureContext from '../context/selfie-capture';
 import { UploadContext } from '../context';
 import {
   ImageValue,
@@ -53,7 +54,7 @@ export function SelfieCaptureStep({
           side="selfie"
           value={selfieValue}
           isReviewStep={isReviewStep}
-          goStraightToAcuantSdk
+          goStraightToAcuantSdk={true}
         />
       )}
     </>
@@ -66,8 +67,8 @@ export default function SelfieStep({
   errors = [],
   onError = () => {},
   registerField = () => undefined,
-  initiallyShowHelp = true,
 }: FormStepComponentProps<DocumentsAndSelfieStepValue>) {
+  const initiallyShowHelp = useContext(SelfieCaptureContext).showHelp;
   const { isLastStep } = useContext(FormStepsContext);
   const { flowPath } = useContext(UploadContext);
   const [showHelp, setShowHelp] = useState(initiallyShowHelp);
