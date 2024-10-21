@@ -1544,6 +1544,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                 it 'sends the please call email' do
                   expect(user_mailer).to have_received(:in_person_please_call).with(
                     enrollment: enrollment,
+                    visited_location_name: visited_location_name,
                   )
                   expect(mail_deliverer).to have_received(:deliver_later).with(
                     queue: :intentionally_delayed,
