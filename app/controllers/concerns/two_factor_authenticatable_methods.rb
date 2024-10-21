@@ -123,9 +123,12 @@ module TwoFactorAuthenticatableMethods
 
   def increment_mfa_selection_attempt_count(auth_method)
     user_session[:mfa_attempts] ||= {}
-    user_session[:mfa_attempts][auth_method] ||= 0
-    user_session[:mfa_attempts][auth_method] += 1
-    user_session['pii_like_key'] = ['mfa_attempts']
+    user_session[:mfa_attempts][:attempts] ||= 0
+    user_session[:mfa_attempts][:attempts] += 1
+    if user_session[:mfa_attempts][:auth_method] != auth_method
+      user_session[:mfa_attempts][:attempts] = 0
+    end
+    user_session[:mfa_attempts][:auth_method] = auth_method
   end
 
   # Method will be renamed in the next refactor.

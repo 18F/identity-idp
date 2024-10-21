@@ -125,19 +125,29 @@ RSpec.describe SessionEncryptor do
       subject.dump(session)
     end
 
-    it 'does not raise for session personal_key key for counting mfa attempts' do
-      nested_session = {
-        'warden.user.user.session': {
-          mfa_attempts: { personal_key: 1 },
-          pii_like_key: ['mfa_attempts'],
+    it 'does not raise if exempted PII key appears' do
+      session = {
+        'warden.user.user.session' => {
+          'mfa_attempts' => { 'attempts' => 1, 'auth_method' => 'personal_key' },
+        },
+      }
+      session = session.deep_transform_values(&:freeze)
+
+      expect { subject.dump(session) }.not_to raise_error(SessionEncryptor::SensitiveKeyError)
+    end
+
+    it 'maintains all values from the original session' do
+      session = {
+        'warden.user.user.session' => {
+          'idv_new' => { 'nested' => {} },
+          'mfa_attempts' => { 'attempts' => 1, 'auth_method' => 'personal_key' },
         },
       }
 
-      expect do
-        subject.dump(nested_session)
-      end.not_to raise_error(
-        SessionEncryptor::SensitiveKeyError, 'personal_key unexpectedly appeared in session'
-      )
+      dumped = subject.dump(session.deep_dup)
+      loaded = subject.load(dumped)
+
+      expect(loaded).to eq(session)
     end
 
     it 'raises if sensitive value is not KMS encrypted' do
