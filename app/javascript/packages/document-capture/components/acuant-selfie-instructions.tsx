@@ -16,7 +16,7 @@ export default function AcuantSelfieInstructions() {
           {t('doc_auth.info.selfie_capture_help_1')}
         </div>
       </div>
-      <div className="display-flex">
+      <div className="display-flex margin-top-1">
         <img
           src={getAssetPath('idv/selfie-capture-accept-help.svg')}
           alt={t('doc_auth.alt.selfie_help_2')}
