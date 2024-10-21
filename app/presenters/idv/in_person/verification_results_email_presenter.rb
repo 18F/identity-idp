@@ -16,10 +16,6 @@ module Idv
         @visited_location_name = visited_location_name
       end
 
-      def selected_location_name
-        enrollment.selected_location_details['name']
-      end
-
       def formatted_verified_date
         enrollment.status_updated_at.in_time_zone(USPS_SERVER_TIMEZONE).strftime(
           I18n.t('time.formats.event_date'),

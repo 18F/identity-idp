@@ -3,7 +3,6 @@ require 'rails_helper'
 RSpec.describe Idv::InPerson::VerificationResultsEmailPresenter do
   include Rails.application.routes.url_helpers
 
-  let(:selected_location_name) { 'FRIENDSHIP' }
   let(:visited_location_name) { 'ACQUAINTANCESHIP' }
   let(:status_updated_at) { described_class::USPS_SERVER_TIMEZONE.parse('2022-07-14T00:00:00Z') }
   let(:sp) { nil }
@@ -13,7 +12,7 @@ RSpec.describe Idv::InPerson::VerificationResultsEmailPresenter do
       :in_person_enrollment,
       :pending,
       service_provider: sp,
-      selected_location_details: { name: selected_location_name },
+      selected_location_details: { name: 'FRIENDSHIP' },
       current_address_matches_id: current_address_matches_id,
     )
   end
@@ -23,12 +22,6 @@ RSpec.describe Idv::InPerson::VerificationResultsEmailPresenter do
       enrollment: enrollment, url_options: {},
       visited_location_name: visited_location_name
     )
-  end
-
-  describe '#selected_location_name' do
-    it 'returns the location that the user selected during the online in-person proofing flow' do
-      expect(presenter.selected_location_name).to eq(selected_location_name)
-    end
   end
 
   describe 'visited_location_name' do
