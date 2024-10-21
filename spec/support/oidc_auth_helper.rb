@@ -1,4 +1,8 @@
+require_relative 'features/javascript_driver_helper'
+
 module OidcAuthHelper
+  include JavascriptDriverHelper
+
   OIDC_ISSUER = 'urn:gov:gsa:openidconnect:sp:server'.freeze
   OIDC_IAL1_ISSUER = 'urn:gov:gsa:openidconnect:sp:server_ial1'.freeze
   OIDC_AAL3_ISSUER = 'urn:gov:gsa:openidconnect:sp:server_requiring_aal3'.freeze
@@ -155,6 +159,9 @@ module OidcAuthHelper
   end
 
   def oidc_redirect_url
+    # Page will redirect automatically if JavaScript is enabled
+    return current_url if javascript_enabled?
+
     case IdentityConfig.store.openid_connect_redirect
     when 'client_side'
       extract_meta_refresh_url
