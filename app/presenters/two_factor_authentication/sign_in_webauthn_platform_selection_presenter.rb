@@ -11,7 +11,6 @@ module TwoFactorAuthentication
         WebauthnInputComponent.new(
           platform: true,
           passkey_supported_only: false,
-          show_unsupported_passkey: false,
         ),
         &block
       )
