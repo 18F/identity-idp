@@ -12,20 +12,18 @@ describe('document-capture/components/selfie-step', () => {
 
   context('when initially shown', () => {
     beforeEach(() => {
-      (
-        {queryByLabelText} = render(
-          <SelfieStep
-            value={{}}
-            onChange={() => undefined}
-            errors={[]}
-            onError={() => undefined}
-            registerField={() => undefined}
-            unknownFieldErrors={[]}
-            toPreviousStep={() => undefined}
-            initiallyShowHelp={true}
-          />,
-        )
-      )
+      ({ queryByLabelText } = render(
+        <SelfieStep
+          value={{}}
+          onChange={() => undefined}
+          errors={[]}
+          onError={() => undefined}
+          registerField={() => undefined}
+          unknownFieldErrors={[]}
+          toPreviousStep={() => undefined}
+          initiallyShowHelp
+        />,
+      ));
     });
 
     it('renders the help content');
@@ -33,20 +31,18 @@ describe('document-capture/components/selfie-step', () => {
 
   context('when show help is turned off ', () => {
     beforeEach(() => {
-      (
-        {queryByLabelText} = render(
-          <SelfieStep
-            value={{}}
-            onChange={() => undefined}
-            errors={[]}
-            onError={() => undefined}
-            registerField={() => undefined}
-            unknownFieldErrors={[]}
-            toPreviousStep={() => undefined}
-            initiallyShowHelp={false}
-          />,
-        )
-      )
+      ({ queryByLabelText } = render(
+        <SelfieStep
+          value={{}}
+          onChange={() => undefined}
+          errors={[]}
+          onError={() => undefined}
+          registerField={() => undefined}
+          unknownFieldErrors={[]}
+          toPreviousStep={() => undefined}
+          initiallyShowHelp={false}
+        />,
+      ));
     });
 
     it('renders with only selfie input', () => {
@@ -62,27 +58,25 @@ describe('document-capture/components/selfie-step', () => {
 
   it('calls onChange callback with uploaded image', async () => {
     const onChange = sinon.stub();
-    (
-      {getByLabelText} = render(
-        <FailedCaptureAttemptsContextProvider
-          maxCaptureAttemptsBeforeNativeCamera={3}
-          maxSubmissionAttemptsBeforeNativeCamera={3}
-          failedFingerprints={{ front: [], back: [] }}
-        >
-          <SelfieStep
-            value={{}}
-            onChange={onChange}
-            errors={[]}
-            onError={() => undefined}
-            registerField={() => undefined}
-            unknownFieldErrors={[]}
-            toPreviousStep={() => undefined}
-            initiallyShowHelp={false}
-          />
-          ,
-        </FailedCaptureAttemptsContextProvider>,
-      )
-    )
+    ({ getByLabelText } = render(
+      <FailedCaptureAttemptsContextProvider
+        maxCaptureAttemptsBeforeNativeCamera={3}
+        maxSubmissionAttemptsBeforeNativeCamera={3}
+        failedFingerprints={{ front: [], back: [] }}
+      >
+        <SelfieStep
+          value={{}}
+          onChange={onChange}
+          errors={[]}
+          onError={() => undefined}
+          registerField={() => undefined}
+          unknownFieldErrors={[]}
+          toPreviousStep={() => undefined}
+          initiallyShowHelp={false}
+        />
+        ,
+      </FailedCaptureAttemptsContextProvider>,
+    ));
     const file = await getFixtureFile('doc_auth_images/id-back.jpg');
 
     await Promise.all([

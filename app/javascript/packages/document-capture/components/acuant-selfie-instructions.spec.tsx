@@ -4,12 +4,10 @@ import AcuantSelfieInstructions from './acuant-selfie-instructions';
 describe('SelfieInstructions', () => {
   let getByText;
   let queryAllByRole;
-  let getByRole;
 
   beforeEach(() => {
     const renderedComponent = render(new AcuantSelfieInstructions());
     getByText = renderedComponent.getByText;
-    getByRole = renderedComponent.getByRole;
     queryAllByRole = renderedComponent.queryAllByRole;
   });
 
@@ -22,18 +20,10 @@ describe('SelfieInstructions', () => {
   });
 
   it('renders the first instruction block', () => {
-    expect(
-      getByText(
-        'doc_auth.info.selfie_capture_help_1'
-      ),
-    ).to.exist();
+    expect(getByText('doc_auth.info.selfie_capture_help_1')).to.exist();
   });
 
   it('renders the second instruction block', () => {
-    expect(
-      getByText(
-        'doc_auth.info.selfie_capture_help_2',
-      ),
-    ).to.exist();
+    expect(getByText('doc_auth.info.selfie_capture_help_2')).to.exist();
   });
 });

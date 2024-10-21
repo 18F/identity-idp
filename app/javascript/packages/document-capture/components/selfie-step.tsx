@@ -105,13 +105,9 @@ export default function SelfieStep({
         isReviewStep={false}
         showHelp={showHelp}
       />
-      {showHelp ? (
-        <TakeSelfieButton />
-      ) : isLastStep ? (
-        <FormStepsButton.Submit />
-      ) : (
-        <FormStepsButton.Continue />
-      )}
+      {showHelp && <TakeSelfieButton />}
+      {!showHelp && isLastStep && <FormStepsButton.Submit />}
+      {!showHelp && !isLastStep && <FormStepsButton.Continue />}
       <Cancel />
     </>
   );
