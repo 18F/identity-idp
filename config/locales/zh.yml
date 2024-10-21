@@ -504,8 +504,8 @@ devise.sessions.signed_out: 你现在已登出。
 doc_auth.accessible_labels.camera_video_capture_instructions: 我们会自动拍张照片。
 doc_auth.accessible_labels.camera_video_capture_label: 带框的取景器能把你身份证件放在中间。
 doc_auth.accessible_labels.document_capture_dialog: 文档扫描
-doc_auth.alt.selfie_help_1: 人脸在绿色椭圆中手指点击面孔下的勾选标记来确认照片。
-doc_auth.alt.selfie_help_2: 人脸在绿色椭圆中手指点击面孔下的勾选标记来确认照片。
+doc_auth.alt.selfie_help_1: 人脸在绿色椭圆中。
+doc_auth.alt.selfie_help_2: 手指点击面孔下的勾选标记来确认照片。
 doc_auth.buttons.add_new_photos: 添加新照片
 doc_auth.buttons.close: 关闭
 doc_auth.buttons.continue: 继续
