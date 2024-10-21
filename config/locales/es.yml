@@ -650,6 +650,8 @@ doc_auth.info.no_ssn: Debe tener un número de Seguro Social para finalizar la v
 doc_auth.info.review_examples_of_photos: Vea ejemplos de cómo tomar fotos nítidas de su identificación.
 doc_auth.info.secure_account: Cifraremos su cuenta cuando vuelva a ingresar su contraseña. Con el cifrado, sus datos están protegidos y solo usted puede acceder a su información o modificarla.
 doc_auth.info.selfie_capture_content: Revisaremos que usted sea la persona que figura en su identificación.
+doc_auth.info.selfie_capture_help_1: Alinee su cara con el círculo verde. No se mueva y espere a que la cámara capture una foto.
+doc_auth.info.selfie_capture_help_2: Después de la captura automática de su foto, toque la marca de verificación verde para aceptar la fotografía.
 doc_auth.info.selfie_capture_status.face_close_to_border: Demasiado cerca del marco
 doc_auth.info.selfie_capture_status.face_not_found: No se detectó el rostro
 doc_auth.info.selfie_capture_status.face_too_small: Rostro demasiado pequeño
@@ -659,8 +661,6 @@ doc_auth.info.selfie_capture.action.close: Cerrar
 doc_auth.info.selfie_capture.action.retake: Volver a tomar foto
 doc_auth.info.selfie_capture.action.submit: Se tomó la foto. Enviar la foto.
 doc_auth.info.selfie_capture.intro: Cámara encendida, lista para tomar selfie
-doc_auth.info.selfie_capture_help_1: Alinee su cara con el círculo verde. No se mueva y espere a que la cámara capture una foto.
-doc_auth.info.selfie_capture_help_2: Después de la captura automática de su foto, toque la marca de verificación verde para aceptar la fotografía.
 doc_auth.info.ssn: Necesitamos su número de Seguro Social para verificar su nombre, fecha de nacimiento y dirección.
 doc_auth.info.stepping_up_html: Verifique de nuevo su identidad para acceder a este servicio. %{link_html}
 doc_auth.info.tag: Recomendado
