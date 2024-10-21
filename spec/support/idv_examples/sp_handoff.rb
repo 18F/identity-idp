@@ -138,31 +138,31 @@ RSpec.shared_examples 'sp handoff after identity verification' do |sp|
     token_response = oidc_decoded_token
     decoded_id_token = oidc_decoded_id_token
 
-    sub = decoded_id_token[:sub]
-    expect(sub).to be_present
-    expect(decoded_id_token[:nonce]).to eq(@nonce)
-    expect(decoded_id_token[:aud]).to eq(@client_id)
-    expect(decoded_id_token[:acr]).to eq(Saml::Idp::Constants::IAL_VERIFIED_ACR)
-    expect(decoded_id_token[:iss]).to eq(root_url)
-    expect(decoded_id_token[:email]).to eq(user.confirmed_email_addresses.first.email)
-    expect(decoded_id_token[:given_name]).to eq('FAKEY')
-    expect(decoded_id_token[:social_security_number]).to eq(DocAuthHelper::GOOD_SSN)
+    Capybara.using_driver(:desktop_rack_test) do
+      sub = decoded_id_token[:sub]
+      expect(sub).to be_present
+      expect(decoded_id_token[:nonce]).to eq(@nonce)
+      expect(decoded_id_token[:aud]).to eq(@client_id)
+      expect(decoded_id_token[:acr]).to eq(Saml::Idp::Constants::IAL_VERIFIED_ACR)
+      expect(decoded_id_token[:iss]).to eq(root_url)
+      expect(decoded_id_token[:email]).to eq(user.confirmed_email_addresses.first.email)
+      expect(decoded_id_token[:given_name]).to eq('FAKEY')
+      expect(decoded_id_token[:social_security_number]).to eq(DocAuthHelper::GOOD_SSN)
 
-    access_token = token_response[:access_token]
-    expect(access_token).to be_present
+      access_token = token_response[:access_token]
+      expect(access_token).to be_present
 
-    userinfo_response = JSON.parse(
-      Faraday.new(
-        url: api_openid_connect_userinfo_url,
-        headers: { 'Authorization' => "Bearer #{access_token}" },
-      ).get.body,
-    ).with_indifferent_access
+      page.driver.get api_openid_connect_userinfo_path,
+                      {},
+                      'HTTP_AUTHORIZATION' => "Bearer #{access_token}"
 
-    expect(userinfo_response[:sub]).to eq(sub)
-    expect(AgencyIdentity.where(user_id: user.id, agency_id: 2).first.uuid).to eq(sub)
-    expect(userinfo_response[:email]).to eq(user.confirmed_email_addresses.first.email)
-    expect(userinfo_response[:given_name]).to eq('FAKEY')
-    expect(userinfo_response[:social_security_number]).to eq(DocAuthHelper::GOOD_SSN)
+      userinfo_response = JSON.parse(page.body).with_indifferent_access
+      expect(userinfo_response[:sub]).to eq(sub)
+      expect(AgencyIdentity.where(user_id: user.id, agency_id: 2).first.uuid).to eq(sub)
+      expect(userinfo_response[:email]).to eq(user.confirmed_email_addresses.first.email)
+      expect(userinfo_response[:given_name]).to eq('FAKEY')
+      expect(userinfo_response[:social_security_number]).to eq(DocAuthHelper::GOOD_SSN)
+    end
   end
 
   def expect_successful_saml_handoff

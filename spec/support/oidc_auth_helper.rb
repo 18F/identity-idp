@@ -192,15 +192,16 @@ module OidcAuthHelper
     client_assertion = JWT.encode(jwt_payload, client_private_key, 'RS256')
     client_assertion_type = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer'
 
-    response = Faraday.post(
-      api_openid_connect_token_url,
-      grant_type: 'authorization_code',
-      code:,
-      client_assertion_type:,
-      client_assertion:,
-    )
-
-    @oidc_decoded_token = JSON.parse(response.body).with_indifferent_access
+    Capybara.using_driver(:desktop_rack_test) do
+      page.driver.post(
+        api_openid_connect_token_url,
+        grant_type: 'authorization_code',
+        code:,
+        client_assertion_type:,
+        client_assertion:,
+      )
+      @oidc_decoded_token = JSON.parse(page.body).with_indifferent_access
+    end
   end
 
   def oidc_decoded_id_token
