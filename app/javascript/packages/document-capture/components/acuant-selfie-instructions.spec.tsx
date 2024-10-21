@@ -36,8 +36,4 @@ describe('SelfieInstructions', () => {
       ),
     ).to.exist();
   });
-
-  it('renders the take photo button', () => {
-    expect(getByRole('button', { text: 'How to take your photo' })).to.exist();
-  });
 });

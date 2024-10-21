@@ -66,10 +66,11 @@ export default function SelfieStep({
   errors = [],
   onError = () => {},
   registerField = () => undefined,
+  initiallyShowHelp = true,
 }: FormStepComponentProps<DocumentsAndSelfieStepValue>) {
   const { isLastStep } = useContext(FormStepsContext);
   const { flowPath } = useContext(UploadContext);
-  const [showHelp, setShowHelp] = useState(true);
+  const [showHelp, setShowHelp] = useState(initiallyShowHelp);
 
   function TakeSelfieButton() {
     return (
