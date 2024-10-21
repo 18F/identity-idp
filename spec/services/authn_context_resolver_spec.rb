@@ -48,8 +48,8 @@ RSpec.describe AuthnContextResolver do
       vtr = ['C2.Pb']
 
       acr_values = [
-        'http://idmanagement.gov/ns/assurance/aal/2',
-        'http://idmanagement.gov/ns/assurance/ial/2',
+        Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+        Saml::Idp::Constants::IAL_VERIFIED_ACR,
       ].join(' ')
 
       result = AuthnContextResolver.new(
@@ -152,8 +152,8 @@ RSpec.describe AuthnContextResolver do
     context 'with no service provider' do
       it 'parses an ACR value into requirements' do
         acr_values = [
-          'http://idmanagement.gov/ns/assurance/aal/2',
-          'http://idmanagement.gov/ns/assurance/ial/1',
+          Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+          Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
         ].join(' ')
 
         result = AuthnContextResolver.new(
@@ -175,7 +175,7 @@ RSpec.describe AuthnContextResolver do
 
       it 'properly parses an ACR value without an AAL ACR' do
         acr_values = [
-          'http://idmanagement.gov/ns/assurance/ial/1',
+          Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
         ].join(' ')
 
         result = AuthnContextResolver.new(
@@ -197,7 +197,7 @@ RSpec.describe AuthnContextResolver do
 
       it 'properly parses an ACR value without an IAL ACR' do
         acr_values = [
-          'http://idmanagement.gov/ns/assurance/aal/2',
+          Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
         ].join(' ')
 
         result = AuthnContextResolver.new(
@@ -223,8 +223,8 @@ RSpec.describe AuthnContextResolver do
         service_provider = build(:service_provider, default_aal: 2)
 
         acr_values = [
-          'http://idmanagement.gov/ns/assurance/aal/1',
-          'http://idmanagement.gov/ns/assurance/ial/1',
+          Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+          Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
         ].join(' ')
 
         result = AuthnContextResolver.new(
@@ -241,7 +241,7 @@ RSpec.describe AuthnContextResolver do
         service_provider = build(:service_provider, default_aal: 2)
 
         acr_values = [
-          'http://idmanagement.gov/ns/assurance/ial/1',
+          Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
         ].join(' ')
 
         result = AuthnContextResolver.new(
@@ -259,7 +259,7 @@ RSpec.describe AuthnContextResolver do
         service_provider = build(:service_provider, default_aal: 3)
 
         acr_values = [
-          'http://idmanagement.gov/ns/assurance/ial/1',
+          Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
         ].join(' ')
 
         result = AuthnContextResolver.new(
@@ -295,10 +295,10 @@ RSpec.describe AuthnContextResolver do
       let(:service_provider) { build(:service_provider, ial: 2) }
       subject do
         AuthnContextResolver.new(
-          user: user,
-          service_provider: service_provider,
+          user:,
+          service_provider:,
           vtr: nil,
-          acr_values: acr_values,
+          acr_values:,
         )
       end
 
@@ -307,8 +307,8 @@ RSpec.describe AuthnContextResolver do
       context 'if IAL ACR value is present' do
         let(:acr_values) do
           [
-            'http://idmanagement.gov/ns/assurance/ial/1',
-            'http://idmanagement.gov/ns/assurance/aal/1',
+            Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
           ].join(' ')
         end
 
@@ -318,12 +318,12 @@ RSpec.describe AuthnContextResolver do
         end
       end
 
-      context 'if multiple IAL ACR values are present' do
+      context 'when multiple IAL ACR values are present' do
         let(:acr_values) do
           [
-            'http://idmanagement.gov/ns/assurance/ial/1',
-            'http://idmanagement.gov/ns/assurance/ial/2',
-            'http://idmanagement.gov/ns/assurance/aal/1',
+            Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
           ].join(' ')
         end
 
@@ -331,12 +331,28 @@ RSpec.describe AuthnContextResolver do
           expect(result.identity_proofing?).to be true
           expect(result.aal2?).to be true
         end
+
+        context 'when one of the acr values is unknown' do
+          let(:acr_values) do
+            [
+              Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+              Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+              Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+              'unknown-acr-value',
+            ].join(' ')
+          end
+
+          it 'ignores the unknown value and uses the highest IAL ACR' do
+            expect(result.identity_proofing?).to eq(true)
+            expect(result.aal2?).to eq(true)
+          end
+        end
       end
 
       context 'if No IAL ACR is present' do
         let(:acr_values) do
           [
-            'http://idmanagement.gov/ns/assurance/aal/1',
+            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
           ].join(' ')
         end
 
@@ -346,12 +362,23 @@ RSpec.describe AuthnContextResolver do
         end
       end
 
+      context 'when the only ACR value is unknown' do
+        let(:acr_values) { 'unknown-acr-value' }
+
+        it 'errors out as if there were no values' do
+          expect { result }.to raise_error Vot::Parser::ParseException
+        end
+      end
+
       context 'if requesting facial match comparison' do
-        let(:bio_value) { 'required' }
+        let(:bio_acr_value) do
+          Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
+        end
+
         let(:acr_values) do
           [
-            "http://idmanagement.gov/ns/assurance/ial/2?bio=#{bio_value}",
-            'http://idmanagement.gov/ns/assurance/aal/1',
+            bio_acr_value,
+            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
           ].join(' ')
         end
 
@@ -391,7 +418,9 @@ RSpec.describe AuthnContextResolver do
         end
 
         context 'with facial match comparison is preferred' do
-          let(:bio_value) { 'preferred' }
+          let(:bio_acr_value) do
+            Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF
+          end
 
           context 'when the user is already verified' do
             context 'without facial match comparison' do
@@ -478,7 +507,7 @@ RSpec.describe AuthnContextResolver do
     context 'with no service provider' do
       it 'parses an ACR value into requirements' do
         acr_values = [
-          'http://idmanagement.gov/ns/assurance/aal/2',
+          Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
           Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
         ]
 
@@ -525,7 +554,7 @@ RSpec.describe AuthnContextResolver do
 
       it 'properly parses an ACR value without an IAL ACR' do
         acr_values = [
-          'http://idmanagement.gov/ns/assurance/aal/2',
+          Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
         ]
         resolver = AuthnContextResolver.new(
           user: user,
@@ -561,8 +590,8 @@ RSpec.describe AuthnContextResolver do
       context 'if IAL ACR value is present' do
         let(:acr_values) do
           [
-            'http://idmanagement.gov/ns/assurance/ial/1',
-            'http://idmanagement.gov/ns/assurance/aal/1',
+            Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
+            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
           ]
         end
 
@@ -572,12 +601,12 @@ RSpec.describe AuthnContextResolver do
         end
       end
 
-      context 'if multiple IAL ACR values are present' do
+      context 'when multiple IAL ACR values are present' do
         let(:acr_values) do
           [
-            'http://idmanagement.gov/ns/assurance/ial/1',
-            'urn:acr.login.gov:verified',
-            'http://idmanagement.gov/ns/assurance/aal/1',
+            Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
+            Saml::Idp::Constants::IAL_VERIFIED_ACR,
+            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
           ]
         end
 
@@ -585,12 +614,28 @@ RSpec.describe AuthnContextResolver do
           expect(result.identity_proofing?).to be true
           expect(result.aal2?).to be true
         end
+
+        context 'when one of the acr values is unknown' do
+          let(:acr_values) do
+            [
+              Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
+              Saml::Idp::Constants::IAL_VERIFIED_ACR,
+              Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+              'unknown-acr-value',
+            ]
+          end
+
+          it 'ignores the unknown value and uses the highest IAL ACR' do
+            expect(result.identity_proofing?).to eq(true)
+            expect(result.aal2?).to eq(true)
+          end
+        end
       end
 
       context 'if No IAL ACR is present' do
         let(:acr_values) do
           [
-            'http://idmanagement.gov/ns/assurance/aal/1',
+            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
           ]
         end
 
@@ -616,11 +661,14 @@ RSpec.describe AuthnContextResolver do
       end
 
       context 'if requesting facial match comparison' do
-        let(:bio_value) { 'required' }
+        let(:bio_acr_value) do
+          Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR
+        end
+
         let(:acr_values) do
           [
-            "urn:acr.login.gov:verified-facial-match-#{bio_value}",
-            'http://idmanagement.gov/ns/assurance/aal/1',
+            bio_acr_value,
+            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
           ]
         end
 
@@ -674,7 +722,9 @@ RSpec.describe AuthnContextResolver do
         end
 
         context 'with facial match comparison is preferred' do
-          let(:bio_value) { 'preferred' }
+          let(:bio_acr_value) do
+            Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_PREFERRED_ACR
+          end
 
           context 'when the user is already verified' do
             context 'without facial match comparison' do
