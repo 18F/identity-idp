@@ -292,8 +292,7 @@ module Features
     end
 
     def acknowledge_and_confirm_personal_key
-      checkbox_header = t('forms.personal_key.required_checkbox')
-      find('label', text: /#{checkbox_header}/).click
+      check t('forms.personal_key.required_checkbox')
       click_continue
     end
 
