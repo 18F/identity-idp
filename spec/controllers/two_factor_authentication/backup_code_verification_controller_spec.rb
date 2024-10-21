@@ -41,7 +41,10 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
             multi_factor_auth_method_created_at: Time.zone.now.strftime('%s%L'),
             enabled_mfa_methods_count: 1,
             new_device: true,
-            mfa_attempts: { 'backup_code' => 1 },
+            mfa_attempts: {
+              attempts: 1,
+              auth_method: 'backup_code',
+            },
           )
 
           expect(subject.user_session[:auth_events]).to eq(
@@ -98,7 +101,10 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
             multi_factor_auth_method_created_at: Time.zone.now.strftime('%s%L'),
             enabled_mfa_methods_count: 1,
             new_device: true,
-            mfa_attempts: { 'backup_code' => 1 },
+            mfa_attempts: {
+              attempts: 1,
+              auth_method: 'backup_code',
+            },
           )
           expect(@analytics).to have_logged_event(
             'User marked authenticated',
@@ -177,7 +183,10 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
           multi_factor_auth_method: 'backup_code',
           enabled_mfa_methods_count: 1,
           new_device: true,
-          mfa_attempts: { 'backup_code' => 1 },
+          mfa_attempts: {
+            attempts: 1,
+            auth_method: 'backup_code',
+          },
         )
         expect(@analytics).to have_logged_event('Multi-Factor Authentication: max attempts reached')
       end
