@@ -10,6 +10,7 @@ class CreateSocureReasonCodes < ActiveRecord::Migration[7.1]
       t.timestamps comment: 'sensitive=false'
 
       t.index :code, unique: true
+      t.index :deactivated_at
     end
   end
 end

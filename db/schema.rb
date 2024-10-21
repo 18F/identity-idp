@@ -569,6 +569,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_17_153042) do
     t.datetime "created_at", null: false, comment: "sensitive=false"
     t.datetime "updated_at", null: false, comment: "sensitive=false"
     t.index ["code"], name: "index_socure_reason_codes_on_code", unique: true
+    t.index ["deactivated_at"], name: "index_socure_reason_codes_on_deactivated_at"
   end
 
   create_table "sp_costs", force: :cascade do |t|

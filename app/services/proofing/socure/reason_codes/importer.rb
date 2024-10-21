@@ -68,10 +68,9 @@ module Proofing
           active_codes = downloaded_reason_codes.flat_map do |_group, reason_codes|
             reason_codes.keys
           end
-          SocureReasonCode.where(deactivated_at: nil).where.not(
-            code: active_codes,
-          ).each do |deactivateable_reason_code|
-            deactivateable_reason_code.update!(deactivated_at: Time.zone.now)
+          deactivated_at = Time.zone.now
+          SocureReasonCode.active.where.not(code: active_codes).each do |deactivateable_reason_code|
+            deactivateable_reason_code.update!(deactivated_at:)
             deactivated_reason_code_records.push(deactivateable_reason_code)
           end
         end
