@@ -8,6 +8,11 @@ module Reports
 
     attr_accessor :report_date
 
+    def initialize(report_date = nil, *args, **rest)
+      @report_date = report_date
+      super(*args, **rest)
+    end
+
     def perform(report_date)
       return unless IdentityConfig.store.s3_reports_enabled
 
@@ -33,10 +38,14 @@ module Reports
     private
 
     def weekly_protocols_emailable_reports
-      Reporting::ProtocolsReport.new(
+      report.as_emailable_reports
+    end
+
+    def report
+      @report ||= Reporting::ProtocolsReport.new(
         issuers: nil,
         time_range: report_date.all_week,
-      ).as_emailable_reports
+      )
     end
 
     def report_configs
