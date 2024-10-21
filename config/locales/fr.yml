@@ -493,6 +493,8 @@ devise.sessions.signed_out: Vous êtes maintenant déconnecté.
 doc_auth.accessible_labels.camera_video_capture_instructions: Nous prendrons automatiquement la photo
 doc_auth.accessible_labels.camera_video_capture_label: Viseur avec cadre pour centrer votre pièce d’identité
 doc_auth.accessible_labels.document_capture_dialog: Capture du document
+doc_auth.alt.selfie_help_1: A person with their face in a green oval.
+doc_auth.alt.selfie_help_2: A finger taps a checkmark under the face to confirm the photo.
 doc_auth.buttons.add_new_photos: Ajouter de nouvelles photos
 doc_auth.buttons.close: Fermer
 doc_auth.buttons.continue: Suite
@@ -590,6 +592,7 @@ doc_auth.headings.review_issues: Vérifiez vos images et essayez à nouveau
 doc_auth.headings.secure_account: Sécuriser votre compte
 doc_auth.headings.selfie: Photo de votre visage
 doc_auth.headings.selfie_capture: Prenez-vous en photo
+doc_auth.headings.selfie_instructions.howto: 'Comment vous prendre en photo :'
 doc_auth.headings.ssn: Saisir votre numéro de sécurité sociale
 doc_auth.headings.ssn_update: Mettre à jour votre numéro de sécurité sociale
 doc_auth.headings.text_message: Nous avons envoyé un message à votre téléphone
@@ -636,6 +639,8 @@ doc_auth.info.no_ssn: Vous devez avoir un numéro de sécurité sociale pour ter
 doc_auth.info.review_examples_of_photos: Voir des exemples qui montrent comment prendre des photos nettes de votre pièce d’identité.
 doc_auth.info.secure_account: Nous chiffrons votre compte lorsque vous resaisissez votre mot de passe. Le chiffrement signifie que vos données sont protégées et que vous êtes le seul à pouvoir accéder à vos informations ou les modifier.
 doc_auth.info.selfie_capture_content: Nous vérifierons que vous êtes la personne figurant sur la pièce d’identité.
+doc_auth.info.selfie_capture_help_1: Placez votre visage à l’intérieur du cercle vert. Ne bougez pas et attendez que l’appareil se déclenche.
+doc_auth.info.selfie_capture_help_2: Une fois la photo prise automatiquement, cochez la case sous la photo pour l’accepter (la case deviendra verte).
 doc_auth.info.selfie_capture_status.face_close_to_border: Trop près du cadre
 doc_auth.info.selfie_capture_status.face_not_found: Visage non trouvé
 doc_auth.info.selfie_capture_status.face_too_small: Visage trop petit

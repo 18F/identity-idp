@@ -504,6 +504,8 @@ devise.sessions.signed_out: Cerró su sesión.
 doc_auth.accessible_labels.camera_video_capture_instructions: Tomaremos la foto automáticamente
 doc_auth.accessible_labels.camera_video_capture_label: Visor con marco para centrar su identificación
 doc_auth.accessible_labels.document_capture_dialog: Captura de documento
+doc_auth.alt.selfie_help_1: A person with their face in a green oval.
+doc_auth.alt.selfie_help_2: A finger taps a checkmark under the face to confirm the photo.
 doc_auth.buttons.add_new_photos: Añadir nuevas fotos
 doc_auth.buttons.close: Cerrar
 doc_auth.buttons.continue: Continuar
@@ -601,6 +603,7 @@ doc_auth.headings.review_issues: Revise sus imágenes e inténtelo de nuevo
 doc_auth.headings.secure_account: Proteja su cuenta
 doc_auth.headings.selfie: Fotografía de su cara
 doc_auth.headings.selfie_capture: Capture una foto de usted
+doc_auth.headings.selfie_instructions.howto: 'Cómo tomar su fotografía:'
 doc_auth.headings.ssn: Ingrese su número de Seguro Social
 doc_auth.headings.ssn_update: Actualice su número de Seguro Social
 doc_auth.headings.text_message: Enviamos un mensaje a su teléfono
@@ -656,6 +659,8 @@ doc_auth.info.selfie_capture.action.close: Cerrar
 doc_auth.info.selfie_capture.action.retake: Volver a tomar foto
 doc_auth.info.selfie_capture.action.submit: Se tomó la foto. Enviar la foto.
 doc_auth.info.selfie_capture.intro: Cámara encendida, lista para tomar selfie
+doc_auth.info.selfie_capture_help_1: Alinee su cara con el círculo verde. No se mueva y espere a que la cámara capture una foto.
+doc_auth.info.selfie_capture_help_2: Después de la captura automática de su foto, toque la marca de verificación verde para aceptar la fotografía.
 doc_auth.info.ssn: Necesitamos su número de Seguro Social para verificar su nombre, fecha de nacimiento y dirección.
 doc_auth.info.stepping_up_html: Verifique de nuevo su identidad para acceder a este servicio. %{link_html}
 doc_auth.info.tag: Recomendado

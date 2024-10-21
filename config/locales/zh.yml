@@ -504,6 +504,8 @@ devise.sessions.signed_out: 你现在已登出。
 doc_auth.accessible_labels.camera_video_capture_instructions: 我们会自动拍张照片。
 doc_auth.accessible_labels.camera_video_capture_label: 带框的取景器能把你身份证件放在中间。
 doc_auth.accessible_labels.document_capture_dialog: 文档扫描
+doc_auth.alt.selfie_help_1: A person with their face in a green oval.
+doc_auth.alt.selfie_help_2: A finger taps a checkmark under the face to confirm the photo.
 doc_auth.buttons.add_new_photos: 添加新照片
 doc_auth.buttons.close: 关闭
 doc_auth.buttons.continue: 继续
@@ -601,6 +603,7 @@ doc_auth.headings.review_issues: 检查一下你的图片并再试一次
 doc_auth.headings.secure_account: 保护你的账户安全
 doc_auth.headings.selfie: 照片
 doc_auth.headings.selfie_capture: 拍你本人照片
+doc_auth.headings.selfie_instructions.howto: '如何拍摄你本人的照片：'
 doc_auth.headings.ssn: 输入你的社会保障号码
 doc_auth.headings.ssn_update: 更新你的社会保障号码
 doc_auth.headings.text_message: 我们给你的手机发了短信
@@ -647,6 +650,8 @@ doc_auth.info.no_ssn: 你必须有社会保障号码才能完成身份验证。
 doc_auth.info.review_examples_of_photos: 查看如何拍出身份证件清晰照片的示例。
 doc_auth.info.secure_account: 我们会用你的密码对你的账户加密。加密意味着你的数据得到了保护，而且只有你能够访问或变更你的信息。
 doc_auth.info.selfie_capture_content: 我们会查看你是身份证件上的人。
+doc_auth.info.selfie_capture_help_1: 把你的面部放在绿色圆圈里。请保持静止，等待工具拍照。
+doc_auth.info.selfie_capture_help_2: 你的照片被自动拍后，点击绿色勾选标志来接受照片。
 doc_auth.info.selfie_capture_status.face_close_to_border: 距离相框太近
 doc_auth.info.selfie_capture_status.face_not_found: 没找到面孔
 doc_auth.info.selfie_capture_status.face_too_small: 面孔太小

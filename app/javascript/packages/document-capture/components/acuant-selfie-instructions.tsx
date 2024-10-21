@@ -3,24 +3,25 @@ import { getAssetPath } from '@18f/identity-assets';
 export default function AcuantSelfieInstructions() {
   return (
     <>
-      <div className="margin-bottom-1 text-bold">How to take your photo</div>
+      <div className="margin-bottom-1 text-bold">
+        {t('doc_auth.headings.selfie_instructions.howto')}
+      </div>
       <div className="display-flex">
         <img
           src={getAssetPath('idv/selfie-capture-help.svg')}
-          alt="A person with their face in a green oval."
+          alt={t('doc_auth.alt.selfie_help_1')}
         />
         <div className="margin-left-2">
-          Line up your face with the green circle. Hold still and wait for the tool to capture a
-          photo.
+          {t('doc_auth.info.selfie_capture_help_1')}
         </div>
       </div>
       <div className="display-flex">
         <img
           src={getAssetPath('idv/selfie-capture-accept-help.svg')}
-          alt="A finger taps a checkmark under the face to confirm the photo."
+          alt={t('doc_auth.alt.selfie_help_2')}
         />
         <div className="margin-left-2">
-          After your photo is automatically captured, tap the green checkmark to accept the photo.
+          {t('doc_auth.info.selfie_capture_help_2')}
         </div>
       </div>
     </>
