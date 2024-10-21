@@ -54,7 +54,7 @@ export function SelfieCaptureStep({
           side="selfie"
           value={selfieValue}
           isReviewStep={isReviewStep}
-          goStraightToAcuantSdk={true}
+          goStraightToAcuantSdk
         />
       )}
     </>
