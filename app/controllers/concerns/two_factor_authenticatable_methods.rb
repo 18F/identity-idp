@@ -94,6 +94,7 @@ module TwoFactorAuthenticatableMethods
     return unless service_provider_mfa_policy.user_needs_sp_auth_method_verification?
     return if service_provider_mfa_policy.phishing_resistant_required? &&
               TwoFactorAuthenticatable::AuthMethod.phishing_resistant?(auth_method)
+    return if user_session[:add_piv_cac_after_2fa]
     if service_provider_mfa_policy.piv_cac_required? &&
        auth_method == TwoFactorAuthenticatable::AuthMethod::PIV_CAC
       return
@@ -148,8 +149,6 @@ module TwoFactorAuthenticatableMethods
       t('two_factor_authentication.invalid_otp')
     when 'personal_key'
       t('two_factor_authentication.invalid_personal_key')
-    when 'piv_cac'
-      t('two_factor_authentication.invalid_piv_cac')
     else
       raise "Unsupported otp method: #{type}"
     end

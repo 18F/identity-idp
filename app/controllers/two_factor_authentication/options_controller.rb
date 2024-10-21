@@ -54,6 +54,7 @@ module TwoFactorAuthentication
         service_provider: current_sp,
         phishing_resistant_required: service_provider_mfa_policy.phishing_resistant_required?,
         piv_cac_required: service_provider_mfa_policy.piv_cac_required?,
+        add_piv_cac_after_2fa: user_session[:add_piv_cac_after_2fa].present?,
       )
     end
 
