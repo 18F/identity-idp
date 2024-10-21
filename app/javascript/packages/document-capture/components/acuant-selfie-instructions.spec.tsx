@@ -6,7 +6,7 @@ describe('SelfieInstructions', () => {
   let queryAllByRole;
 
   beforeEach(() => {
-    const renderedComponent = render(new AcuantSelfieInstructions());
+    const renderedComponent = render(<AcuantSelfieInstructions />);
     getByText = renderedComponent.getByText;
     queryAllByRole = renderedComponent.queryAllByRole;
   });
