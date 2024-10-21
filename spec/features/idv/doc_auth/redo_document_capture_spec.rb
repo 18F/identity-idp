@@ -245,6 +245,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
         mock_doc_auth_success_face_match_fail
         attach_images
         click_continue
+        click_button 'Take Photo'
         attach_selfie
         submit_images
         click_try_again
@@ -268,6 +269,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
         mock_doc_auth_pass_and_portrait_match_not_live
         attach_images
         click_continue
+        click_button('Take Photo')
         attach_selfie
         submit_images
         click_try_again
