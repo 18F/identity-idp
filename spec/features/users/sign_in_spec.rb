@@ -162,7 +162,8 @@ RSpec.feature 'Sign in' do
   end
 
   scenario 'user session expires in amount of time specified by Devise config' do
-    sign_in_and_2fa_user
+    visit_idp_from_ial1_oidc_sp
+    sign_in_live_with_2fa(user_with_2fa)
 
     visit account_path
     expect(current_path).to eq account_path
@@ -171,6 +172,7 @@ RSpec.feature 'Sign in' do
 
     visit account_path
     expect(current_path).to eq root_path
+    expect_branded_experience
 
     travel_back
   end
@@ -192,6 +194,7 @@ RSpec.feature 'Sign in' do
       allow(IdentityConfig.store).to receive(:session_timeout_warning_seconds).
         and_return(Devise.timeout_in)
 
+      visit_idp_from_ial1_oidc_sp
       sign_in_and_2fa_user
       visit forget_all_browsers_path
       expect(page).to have_css('.usa-js-modal--active', wait: 5)
@@ -232,6 +235,7 @@ RSpec.feature 'Sign in' do
 
       expect(page).to have_content t('devise.sessions.signed_out')
       expect(current_path).to eq new_user_session_path
+      expect_branded_experience
     end
   end
 
