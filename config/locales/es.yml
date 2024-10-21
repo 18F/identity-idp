@@ -504,8 +504,8 @@ devise.sessions.signed_out: Cerró su sesión.
 doc_auth.accessible_labels.camera_video_capture_instructions: Tomaremos la foto automáticamente
 doc_auth.accessible_labels.camera_video_capture_label: Visor con marco para centrar su identificación
 doc_auth.accessible_labels.document_capture_dialog: Captura de documento
-doc_auth.alt.selfie_help_1: A person with their face in a green oval.
-doc_auth.alt.selfie_help_2: A finger taps a checkmark under the face to confirm the photo.
+doc_auth.alt.selfie_help_1: Una persona con el rostro dentro de un óvalo verde.
+doc_auth.alt.selfie_help_2: Un dedo toca una marca de verificación debajo de la cara para confirmar la foto.
 doc_auth.buttons.add_new_photos: Añadir nuevas fotos
 doc_auth.buttons.close: Cerrar
 doc_auth.buttons.continue: Continuar

@@ -493,8 +493,8 @@ devise.sessions.signed_out: Vous êtes maintenant déconnecté.
 doc_auth.accessible_labels.camera_video_capture_instructions: Nous prendrons automatiquement la photo
 doc_auth.accessible_labels.camera_video_capture_label: Viseur avec cadre pour centrer votre pièce d’identité
 doc_auth.accessible_labels.document_capture_dialog: Capture du document
-doc_auth.alt.selfie_help_1: A person with their face in a green oval.
-doc_auth.alt.selfie_help_2: A finger taps a checkmark under the face to confirm the photo.
+doc_auth.alt.selfie_help_1: Le visage d’une personne dans un ovale vert.
+doc_auth.alt.selfie_help_2: Un doigt coche une case sous le visage pour valider la photo.
 doc_auth.buttons.add_new_photos: Ajouter de nouvelles photos
 doc_auth.buttons.close: Fermer
 doc_auth.buttons.continue: Suite
