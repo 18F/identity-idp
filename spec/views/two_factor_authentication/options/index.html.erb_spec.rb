@@ -5,18 +5,22 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
   let(:phishing_resistant_required) { false }
   let(:piv_cac_required) { false }
   let(:reauthentication_context) { false }
+  let(:add_piv_cac_after_2fa) { false }
+
+  subject(:rendered) { render }
 
   before do
     allow(view).to receive(:user_session).and_return({})
     allow(view).to receive(:current_user).and_return(User.new)
 
     @presenter = TwoFactorLoginOptionsPresenter.new(
-      user: user,
-      view: view,
-      reauthentication_context: reauthentication_context,
+      user:,
+      view:,
+      reauthentication_context:,
       service_provider: nil,
-      phishing_resistant_required: phishing_resistant_required,
-      piv_cac_required: piv_cac_required,
+      phishing_resistant_required:,
+      piv_cac_required:,
+      add_piv_cac_after_2fa:,
     )
     @two_factor_options_form = TwoFactorLoginOptionsForm.new(user)
   end
@@ -26,27 +30,27 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
       t('two_factor_authentication.login_options_title'),
     )
 
-    render
+    rendered
   end
 
   it 'has a localized heading' do
-    render
-
     expect(rendered).to have_content \
       t('two_factor_authentication.login_options_title')
   end
 
   it 'has a localized intro text' do
-    render
-
     expect(rendered).to have_content \
       t('two_factor_authentication.login_intro')
   end
 
   it 'has a cancel link' do
-    render
-
     expect(rendered).to have_link(t('links.cancel_account_creation'), href: sign_up_cancel_path)
+  end
+
+  it 'does not display info text for adding piv cac after 2fa' do
+    expect(rendered).not_to have_content(
+      t('two_factor_authentication.piv_cac_mismatch.2fa_before_add'),
+    )
   end
 
   context 'phone vendor outage' do
@@ -54,8 +58,6 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
       create(:phone_configuration, user: user, phone: '(202) 555-1111')
       allow_any_instance_of(OutageStatus).to receive(:vendor_outage?).and_return(false)
       allow_any_instance_of(OutageStatus).to receive(:vendor_outage?).with(:sms).and_return(true)
-
-      render
     end
 
     it 'renders alert banner' do
@@ -76,10 +78,19 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
     end
   end
 
+  context 'when adding piv cac after 2fa' do
+    let(:add_piv_cac_after_2fa) { true }
+
+    it 'displays info text for adding piv cac after 2fa' do
+      expect(rendered).to have_selector(
+        '.usa-alert.usa-alert--info',
+        text: t('two_factor_authentication.piv_cac_mismatch.2fa_before_add'),
+      )
+    end
+  end
+
   context 'with phishing resistant required' do
     let(:phishing_resistant_required) { true }
-
-    before { render }
 
     it 'displays warning text' do
       expect(rendered).to have_selector(
@@ -93,8 +104,6 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
 
   context 'with piv cac required' do
     let(:piv_cac_required) { true }
-
-    before { render }
 
     it 'displays warning text' do
       expect(rendered).to have_selector(
@@ -110,15 +119,11 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
     let(:reauthentication_context) { true }
 
     it 'has a localized heading' do
-      render
-
       expect(rendered).to have_content \
         t('two_factor_authentication.login_options_reauthentication_title')
     end
 
     it 'has a localized intro text' do
-      render
-
       expect(rendered).to have_content \
         t('two_factor_authentication.login_intro_reauthentication')
     end

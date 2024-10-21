@@ -31,8 +31,22 @@
     <% end %>
   <% end %>
 
-  <%= f.submit t('forms.piv_cac_setup.submit'), class: 'display-block margin-y-5' %>
+  <%= f.submit t('forms.piv_cac_setup.submit'), class: 'display-block margin-top-5 margin-bottom-2' %>
 <% end %>
 
+<% if user_session[:add_piv_cac_after_2fa] && !@piv_cac_required %>
+  <%= render ButtonComponent.new(
+        url: submit_new_piv_cac_url,
+        method: :post,
+        params: { skip: 'true' },
+        unstyled: true,
+      ).with_content(t('mfa.skip')) %>
+<% end %>
 
-<%= render 'shared/cancel_or_back_to_options' %>
+<% if user_session[:add_piv_cac_after_2fa] %>
+  <%= render PageFooterComponent.new do %>
+    <%= link_to t('links.cancel'), sign_out_path %>
+  <% end %>
+<% else %>
+  <%= render 'shared/cancel_or_back_to_options' %>
+<% end %>

@@ -58,16 +58,22 @@ module TwoFactorAuthentication
 
     def handle_invalid_piv_cac
       clear_piv_cac_information
-      handle_invalid_otp(type: 'piv_cac')
+      update_invalid_user
+
+      if current_user.locked_out?
+        handle_second_factor_locked_user(type: 'piv_cac')
+      elsif redirect_for_piv_cac_mismatch_replacement?
+        redirect_to login_two_factor_piv_cac_mismatch_url
+      else
+        flash[:error] = t('two_factor_authentication.invalid_piv_cac')
+        redirect_to login_two_factor_piv_cac_url
+      end
     end
 
-    # This overrides the method in TwoFactorAuthenticatable so that we
-    # redirect back to ourselves rather than rendering the :show template.
-    # This removes the token from the address bar and preserves the error
-    # in the flash.
-    def render_show_after_invalid
-      flash[:error] = flash.now[:error]
-      redirect_to login_two_factor_piv_cac_url
+    def redirect_for_piv_cac_mismatch_replacement?
+      piv_cac_verification_form.error_type == 'user.piv_cac_mismatch' &&
+        UserSessionContext.authentication_context?(context) &&
+        current_user.piv_cac_configurations.count < IdentityConfig.store.max_piv_cac_per_account
     end
 
     def piv_cac_view_data
