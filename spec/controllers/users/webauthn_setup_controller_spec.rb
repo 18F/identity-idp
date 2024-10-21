@@ -415,7 +415,8 @@ RSpec.describe Users::WebauthnSetupController do
             ed: false,
           },
           mfa_attempts: {
-            'webauthn' => 1,
+            attempts: 1,
+            auth_method: :webauthn,
           },
         )
         expect(@analytics).to have_logged_event(
