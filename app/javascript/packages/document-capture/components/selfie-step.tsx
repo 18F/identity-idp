@@ -68,6 +68,7 @@ export default function SelfieStep({
   onError = () => {},
   registerField = () => undefined,
 }: FormStepComponentProps<DocumentsAndSelfieStepValue>) {
+  const { t } = useI18n();
   const { isLastStep } = useContext(FormStepsContext);
   const { flowPath } = useContext(UploadContext);
   const [showHelp, setShowHelp] = useState(true);
@@ -84,7 +85,7 @@ export default function SelfieStep({
           isBig
           isWide
         >
-          Take Photo
+          {t('doc_auth.buttons.take_picture')}
         </SpinnerButton>
       </div>
     );
