@@ -138,7 +138,6 @@ interface AcuantCaptureProps {
   goStraightToAcuantSdk: boolean;
 }
 
-
 /**
  * Non-breaking space (`&nbsp;`) represented as unicode escape sequence, which React will more
  * happily tolerate than an HTML entity.
