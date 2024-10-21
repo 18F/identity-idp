@@ -4622,6 +4622,31 @@ module AnalyticsEvents
     )
   end
 
+  # Socure Reason Codes were downloaded and synced against persisted codes in the database
+  # @param [Boolean] success Result from Socure KYC API call
+  # @param [Hash] errors Result from resolution proofing
+  # @param [String] exception Exception that occured during download or synchronizaiton
+  # @param [Array] added_reason_codes New reason codes that were added to the database
+  # @param [Array] deactivated_reason_codes Old reason codes that were deactivated
+  def idv_socure_reason_code_download(
+    success: true,
+    errors: nil,
+    exception: nil,
+    added_reason_codes: nil,
+    deactivated_reason_codes: nil,
+    **extra
+  )
+    track_event(
+      :idv_socure_reason_code_download,
+      success:,
+      errors:,
+      exception:,
+      added_reason_codes:,
+      deactivated_reason_codes:,
+      **extra,
+    )
+  end
+
   # Logs a Socure KYC result alongside a resolution result for later comparison.
   # @param [Hash] socure_result Result from Socure KYC API call
   # @param [Hash] resolution_result Result from resolution proofing
