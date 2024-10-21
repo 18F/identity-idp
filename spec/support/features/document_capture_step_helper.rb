@@ -26,6 +26,8 @@ module DocumentCaptureStepHelper
   )
     attach_images(file)
     click_continue
+    click_button 'Take Photo'
+    binding.pry
     attach_selfie
   end
 
