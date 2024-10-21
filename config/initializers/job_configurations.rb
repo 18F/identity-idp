@@ -259,6 +259,10 @@ else
         class: 'DataWarehouse::DailySensitiveColumnJob',
         cron: dms_cron_24h,
         args: -> { [Time.zone.today] },
+      # Download and store Socure reason codes
+      socure_reason_code_download: {
+        class: 'SocureReasonCodeDownloadJob',
+        cron: cron_every_monday,
       },
     }.compact
   end

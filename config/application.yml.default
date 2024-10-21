@@ -481,6 +481,11 @@ development:
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost"]'
   socure_idplus_base_url: 'https://sandbox.socure.us'
   socure_reason_code_base_url: 'https://sandbox.socure.us'
+<<<<<<< HEAD
+=======
+  state_tracking_enabled: true
+  telephony_adapter: test
+>>>>>>> 8fd493d25 (LG-14716 Download and store Socure reason codes weekly (#11350))
   use_dashboard_service_providers: true
   usps_eipp_sponsor_id: '222222222222222'
   usps_ipp_sponsor_id: '111111111111111'
