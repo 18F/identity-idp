@@ -6,7 +6,6 @@ module TwoFactorAuthentication
     include TwoFactorAuthenticatable
     include NewDeviceConcern
 
-    before_action :check_sp_required_mfa
     before_action :confirm_webauthn_enabled, only: :show
 
     def show
@@ -122,10 +121,6 @@ module TwoFactorAuthentication
         webauthn_error: params[:webauthn_error],
         screen_lock_error: params[:screen_lock_error],
       )
-    end
-
-    def check_sp_required_mfa
-      check_sp_required_mfa_bypass(auth_method: 'webauthn')
     end
 
     def platform_authenticator_param?
