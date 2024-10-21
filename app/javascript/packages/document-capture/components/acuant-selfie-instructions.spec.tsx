@@ -14,7 +14,7 @@ describe('SelfieInstructions', () => {
   });
 
   it('renders the header', () => {
-    expect(getByText('How to take your photo')).to.exist();
+    expect(getByText('doc_auth.headings.selfie_instructions.howto')).to.exist();
   });
 
   it('renders the instruction graphics', () => {
@@ -24,7 +24,7 @@ describe('SelfieInstructions', () => {
   it('renders the first instruction block', () => {
     expect(
       getByText(
-        'Line up your face with the green circle. Hold still and wait for the tool to capture a photo.',
+        'doc_auth.info.selfie_capture_help_1'
       ),
     ).to.exist();
   });
@@ -32,7 +32,7 @@ describe('SelfieInstructions', () => {
   it('renders the second instruction block', () => {
     expect(
       getByText(
-        'After your photo is automatically captured, tap the green checkmark to accept the photo.',
+        'doc_auth.info.selfie_capture_help_2',
       ),
     ).to.exist();
   });

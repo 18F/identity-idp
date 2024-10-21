@@ -1,4 +1,5 @@
 import { getAssetPath } from '@18f/identity-assets';
+import { t } from '@18f/identity-i18n';
 
 export default function AcuantSelfieInstructions() {
   return (
