@@ -565,6 +565,7 @@ RSpec.describe UserMailer, type: :mailer do
         :enhanced_ipp,
       )
     end
+    let(:visited_location_name) { 'ACQUAINTANCESHIP' }
 
     describe '#in_person_ready_to_verify' do
       let(:mail) do
@@ -875,6 +876,7 @@ RSpec.describe UserMailer, type: :mailer do
       let(:mail) do
         UserMailer.with(user: user, email_address: email_address).in_person_verified(
           enrollment: enrollment,
+          visited_location_name: visited_location_name,
         )
       end
 
@@ -895,6 +897,7 @@ RSpec.describe UserMailer, type: :mailer do
       let(:mail) do
         UserMailer.with(user: user, email_address: email_address).in_person_failed(
           enrollment: enrollment,
+          visited_location_name: visited_location_name,
         )
       end
 
@@ -914,6 +917,7 @@ RSpec.describe UserMailer, type: :mailer do
       let(:mail) do
         UserMailer.with(user: user, email_address: email_address).in_person_failed_fraud(
           enrollment: enrollment,
+          visited_location_name: visited_location_name,
         )
       end
 
@@ -925,6 +929,7 @@ RSpec.describe UserMailer, type: :mailer do
       let(:mail) do
         UserMailer.with(user: user, email_address: email_address).in_person_please_call(
           enrollment: enrollment,
+          visited_location_name: visited_location_name,
         )
       end
 
