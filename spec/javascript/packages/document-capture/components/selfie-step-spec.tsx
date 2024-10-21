@@ -7,31 +7,54 @@ import { render } from '../../../support/document-capture';
 import { getFixtureFile } from '../../../support/file';
 
 describe('document-capture/components/selfie-step', () => {
-  it('renders with only selfie input by default', () => {
-    const { queryByLabelText } = render(
-      <SelfieStep
-        value={{}}
-        onChange={() => undefined}
-        errors={[]}
-        onError={() => undefined}
-        registerField={() => undefined}
-        unknownFieldErrors={[]}
-        toPreviousStep={() => undefined}
-      />,
-    );
+  let getByLabelText;
+  let queryByLabelText;
 
-    const front = queryByLabelText('doc_auth.headings.document_capture_front');
-    const back = queryByLabelText('doc_auth.headings.document_capture_back');
-    const selfie = queryByLabelText('doc_auth.headings.document_capture_selfie');
+  context('when initially shown', () => {
+    beforeEach(() => {
+      ({ queryByLabelText } = render(
+        <SelfieStep
+          value={{}}
+          onChange={() => undefined}
+          errors={[]}
+          onError={() => undefined}
+          registerField={() => undefined}
+          unknownFieldErrors={[]}
+          toPreviousStep={() => undefined}
+        />,
+      ));
+    });
+  });
 
-    expect(front).to.not.exist();
-    expect(back).to.not.exist();
-    expect(selfie).to.be.ok();
+  context('when show help is turned off ', () => {
+    beforeEach(() => {
+      ({ queryByLabelText } = render(
+        <SelfieStep
+          value={{}}
+          onChange={() => undefined}
+          errors={[]}
+          onError={() => undefined}
+          registerField={() => undefined}
+          unknownFieldErrors={[]}
+          toPreviousStep={() => undefined}
+        />,
+      ));
+    });
+
+    it('renders with only selfie input', () => {
+      const front = queryByLabelText('doc_auth.headings.document_capture_front');
+      const back = queryByLabelText('doc_auth.headings.document_capture_back');
+      const selfie = queryByLabelText('doc_auth.headings.document_capture_selfie');
+
+      expect(front).to.not.exist();
+      expect(back).to.not.exist();
+      expect(selfie).to.be.ok();
+    });
   });
 
   it('calls onChange callback with uploaded image', async () => {
     const onChange = sinon.stub();
-    const { getByLabelText } = render(
+    ({ getByLabelText } = render(
       <FailedCaptureAttemptsContextProvider
         maxCaptureAttemptsBeforeNativeCamera={3}
         maxSubmissionAttemptsBeforeNativeCamera={3}
@@ -48,7 +71,7 @@ describe('document-capture/components/selfie-step', () => {
         />
         ,
       </FailedCaptureAttemptsContextProvider>,
-    );
+    ));
     const file = await getFixtureFile('doc_auth_images/id-back.jpg');
 
     await Promise.all([

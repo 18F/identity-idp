@@ -23,6 +23,7 @@ interface DocumentSideAcuantCaptureProps {
   onError: OnErrorCallback;
   className?: string;
   isReviewStep: boolean;
+  goStraightToAcuantSdk: boolean;
 }
 
 /**
@@ -54,6 +55,7 @@ function DocumentSideAcuantCapture({
   onError,
   className,
   isReviewStep,
+  goStraightToAcuantSdk = false,
 }: DocumentSideAcuantCaptureProps) {
   const error = errors.find(({ field }) => field === side)?.error;
   const { changeStepCanComplete } = useContext(FormStepsContext);
@@ -97,6 +99,7 @@ function DocumentSideAcuantCapture({
       name={side}
       className={className}
       allowUpload={isUploadAllowed}
+      goStraightToAcuantSdk={goStraightToAcuantSdk}
     />
   );
 }
