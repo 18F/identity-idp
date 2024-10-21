@@ -132,7 +132,12 @@ interface AcuantCaptureProps {
    * Prefix to prepend to user action analytics labels.
    */
   name: string;
+  /**
+   * Bypass display of the help text and start capturing immediately.
+   */
+  goStraightToAcuantSdk: boolean;
 }
+
 
 /**
  * Non-breaking space (`&nbsp;`) represented as unicode escape sequence, which React will more
