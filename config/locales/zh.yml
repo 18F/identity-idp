@@ -1207,8 +1207,7 @@ in_person_proofing.body.barcode.location_details: 详细地址信息
 in_person_proofing.body.barcode.questions: 有问题吗？
 in_person_proofing.body.barcode.retail_hours: 营业时间
 in_person_proofing.body.barcode.retail_hours_closed: 关闭
-in_person_proofing.body.barcode.return_to_partner_html: 你现在可以 %{link_html}来完成你可做的任何随后步骤，直到你的身份得到验证。
-in_person_proofing.body.barcode.return_to_partner_link: 登出 %{sp_name} 并返回 %{sp_name}
+in_person_proofing.body.barcode.return_to_partner_link: 返回 %{sp_name}
 in_person_proofing.body.barcode.what_to_expect: 在邮局会发生什么
 in_person_proofing.body.cta.button: 尝试亲身去
 in_person_proofing.body.cta.prompt_detail: 你也许可以到附近一个参与本项目的邮局去亲身验证你的身份证件。

@@ -1205,8 +1205,7 @@ in_person_proofing.body.barcode.location_details: Detalles del lugar
 in_person_proofing.body.barcode.questions: '¿Tiene alguna pregunta?'
 in_person_proofing.body.barcode.retail_hours: Horario de atención al público
 in_person_proofing.body.barcode.retail_hours_closed: Cerrado
-in_person_proofing.body.barcode.return_to_partner_html: Ahora puede %{link_html} para completar los pasos siguientes a los que tenga acceso hasta que se haya verificado su identidad.
-in_person_proofing.body.barcode.return_to_partner_link: cerrar sesión y volver a %{sp_name}
+in_person_proofing.body.barcode.return_to_partner_link: Volver a %{sp_name}
 in_person_proofing.body.barcode.what_to_expect: Qué esperar en la oficina de correos
 in_person_proofing.body.cta.button: Intentar en persona
 in_person_proofing.body.cta.prompt_detail: Es posible que pueda verificar su identidad en una oficina de correos participante cercana.
