@@ -8,10 +8,10 @@ import {
 import { Cancel } from '@18f/identity-verify-flow';
 import { SpinnerButton } from '@18f/identity-spinner-button';
 import AcuantSelfieInstructions from './acuant-selfie-instructions';
+import SelfieCaptureContext from '../context/selfie-capture';
 import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import TipList from './tip-list';
-import SelfieCaptureContext from '../context/selfie-capture';
 import { UploadContext } from '../context';
 import {
   ImageValue,
@@ -23,14 +23,13 @@ export function SelfieCaptureStep({
   defaultSideProps,
   selfieValue,
   isReviewStep,
-  showHelp,
 }: {
   defaultSideProps: DefaultSideProps;
   selfieValue: ImageValue;
   isReviewStep: boolean;
-  showHelp: boolean;
 }) {
   const { t } = useI18n();
+  const { showHelp } = useContext(SelfieCaptureContext);
   return (
     <>
       <h1>{t('doc_auth.headings.document_capture_subheader_selfie')}</h1>
@@ -54,7 +53,6 @@ export function SelfieCaptureStep({
           side="selfie"
           value={selfieValue}
           isReviewStep={isReviewStep}
-          goStraightToAcuantSdk
         />
       )}
     </>
@@ -71,7 +69,8 @@ export default function SelfieStep({
   const { t } = useI18n();
   const { isLastStep } = useContext(FormStepsContext);
   const { flowPath } = useContext(UploadContext);
-  const [showHelp, setShowHelp] = useState(true);
+  const { showHelpInitially } = useContext(SelfieCaptureContext);
+  const [showHelp, setShowHelp] = useState(showHelpInitially);
 
   function TakeSelfieButton() {
     return (
@@ -104,7 +103,6 @@ export default function SelfieStep({
         defaultSideProps={defaultSideProps}
         selfieValue={value.selfie}
         isReviewStep={false}
-        showHelp={showHelp}
       />
       {showHelp && <TakeSelfieButton />}
       {!showHelp && isLastStep && <FormStepsButton.Submit />}

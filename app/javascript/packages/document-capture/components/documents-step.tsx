@@ -36,7 +36,6 @@ export function DocumentsCaptureStep({
           side={side}
           value={value[side]}
           isReviewStep={isReviewStep}
-          goStraightToAcuantSdk={false}
         />
       ))}
     </>

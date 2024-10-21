@@ -10,7 +10,12 @@ interface SelfieCaptureProps {
    */
   isSelfieDesktopTestMode: boolean;
   /**
-   * Specify whether to show help and an action button instead of the capture component
+   * Specify whether to show help and an action button before showing
+   * the capture component.
+   */
+  showHelpInitially: boolean;
+  /**
+   * Specify whether we're currently showing help and an action button
    */
   showHelp: boolean;
 }
@@ -18,6 +23,7 @@ interface SelfieCaptureProps {
 const SelfieCaptureContext = createContext<SelfieCaptureProps>({
   isSelfieCaptureEnabled: false,
   isSelfieDesktopTestMode: false,
+  showHelpInitially: false,
   showHelp: false,
 });
 

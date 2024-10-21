@@ -11,7 +11,6 @@ describe('DocumentSideAcuantCapture', () => {
     onChange: () => undefined,
     onError: () => undefined,
     isReviewStep: false,
-    goStraightToAcuantSdk: false,
   };
 
   context('when selfie is _not_ enabled', () => {
@@ -24,6 +23,7 @@ describe('DocumentSideAcuantCapture', () => {
                 value={{
                   isSelfieCaptureEnabled: false,
                   isSelfieDesktopTestMode: false,
+                  showHelpInitially: false,
                   showHelp: false,
                 }}
               >
@@ -48,6 +48,7 @@ describe('DocumentSideAcuantCapture', () => {
                 value={{
                   isSelfieCaptureEnabled: false,
                   isSelfieDesktopTestMode: true,
+                  showHelpInitially: false,
                   showHelp: false,
                 }}
               >
@@ -74,6 +75,7 @@ describe('DocumentSideAcuantCapture', () => {
                 value={{
                   isSelfieCaptureEnabled: false,
                   isSelfieDesktopTestMode: false,
+                  showHelpInitially: false,
                   showHelp: false,
                 }}
               >
@@ -96,6 +98,7 @@ describe('DocumentSideAcuantCapture', () => {
                 value={{
                   isSelfieCaptureEnabled: false,
                   isSelfieDesktopTestMode: true,
+                  showHelpInitially: false,
                   showHelp: false,
                 }}
               >
@@ -122,6 +125,7 @@ describe('DocumentSideAcuantCapture', () => {
                 value={{
                   isSelfieCaptureEnabled: true,
                   isSelfieDesktopTestMode: false,
+                  showHelpInitially: false,
                   showHelp: false,
                 }}
               >
@@ -150,6 +154,7 @@ describe('DocumentSideAcuantCapture', () => {
                 value={{
                   isSelfieCaptureEnabled: true,
                   isSelfieDesktopTestMode: true,
+                  showHelpInitially: false,
                   showHelp: false,
                 }}
               >
@@ -186,6 +191,7 @@ describe('DocumentSideAcuantCapture', () => {
                 value={{
                   isSelfieCaptureEnabled: true,
                   isSelfieDesktopTestMode: true,
+                  showHelpInitially: false,
                   showHelp: false,
                 }}
               >

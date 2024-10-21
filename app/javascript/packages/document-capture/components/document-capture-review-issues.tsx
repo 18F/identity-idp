@@ -82,7 +82,6 @@ function DocumentCaptureReviewIssues({
           defaultSideProps={defaultSideProps}
           selfieValue={value.selfie}
           isReviewStep
-          showHelp={false}
         />
       )}
       <FormStepsButton.Submit />
