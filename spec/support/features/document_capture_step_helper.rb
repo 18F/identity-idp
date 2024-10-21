@@ -25,9 +25,7 @@ module DocumentCaptureStepHelper
     )
   )
     attach_images(file)
-    if IdentityConfig.store.doc_auth_separate_pages_enabled
-      click_continue
-    end
+    click_continue
     attach_selfie
   end
 

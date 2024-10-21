@@ -372,9 +372,7 @@ describe('document-capture/components/document-capture', () => {
 
   it('does not show selfie on first page when doc auth seperated pages enabled', () => {
     const { queryByText } = render(
-      <SelfieCaptureContext.Provider
-        value={{ isSelfieCaptureEnabled: true, docAuthSeparatePagesEnabled: true }}
-      >
+      <SelfieCaptureContext.Provider value={{ isSelfieCaptureEnabled: true }}>
         <DocumentCapture />
       </SelfieCaptureContext.Provider>,
     );

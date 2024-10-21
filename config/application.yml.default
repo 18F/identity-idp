@@ -99,7 +99,6 @@ doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 3
 doc_auth_selfie_desktop_test_mode: false
-doc_auth_separate_pages_enabled: false
 doc_auth_supported_country_codes: '["US", "GU", "VI", "AS", "MP", "PR", "USA" ,"GUM", "VIR", "ASM", "MNP", "PRI"]'
 doc_auth_vendor: 'mock'
 doc_auth_vendor_default: 'mock'
@@ -341,6 +340,7 @@ short_term_phone_otp_max_attempt_window_in_seconds: 10
 short_term_phone_otp_max_attempts: 2
 show_unsupported_passkey_platform_authentication_setup: false
 show_user_attribute_deprecation_warnings: false
+sign_in_recaptcha_log_failures_only: false
 sign_in_recaptcha_percent_tested: 0
 sign_in_recaptcha_score_threshold: 0.0
 sign_in_user_id_per_ip_attempt_window_exponential_factor: 1.1

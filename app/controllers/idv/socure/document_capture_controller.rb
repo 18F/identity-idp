@@ -41,7 +41,7 @@ module Idv
           uuid: document_capture_session_uuid,
         )
 
-        document_capture_session.socure_docv_token = document_response.dig(
+        document_capture_session.socure_docv_transaction_token = document_response.dig(
           :data,
           :docvTransactionToken,
         )
