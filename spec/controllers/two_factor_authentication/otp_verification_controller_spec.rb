@@ -152,6 +152,10 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
           enabled_mfa_methods_count: 1,
           in_account_creation_flow: false,
+          mfa_attempts: {
+            attempts: 1,
+            auth_method: 'sms',
+          },
         )
       end
 
@@ -234,6 +238,10 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
           enabled_mfa_methods_count: 1,
           in_account_creation_flow: false,
+          mfa_attempts: {
+            attempts: 1,
+            auth_method: 'sms',
+          },
         )
         expect(@analytics).to have_logged_event('Multi-Factor Authentication: max attempts reached')
       end
@@ -304,6 +312,10 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
           enabled_mfa_methods_count: 1,
           in_account_creation_flow: false,
+          mfa_attempts: {
+            attempts: 1,
+            auth_method: 'sms',
+          },
         )
         expect(@analytics).to have_logged_event(
           'User marked authenticated',
@@ -351,6 +363,10 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
             phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
             enabled_mfa_methods_count: 1,
             in_account_creation_flow: false,
+            mfa_attempts: {
+              attempts: 1,
+              auth_method: 'sms',
+            },
           )
           expect(@analytics).to have_logged_event(
             'User marked authenticated',
@@ -535,6 +551,10 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
               phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
               enabled_mfa_methods_count: 1,
               in_account_creation_flow: true,
+              mfa_attempts: {
+                attempts: 1,
+                auth_method: :otp,
+              },
             )
           end
 
@@ -604,12 +624,23 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
               phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
               enabled_mfa_methods_count: 1,
               in_account_creation_flow: false,
+              mfa_attempts: {
+                attempts: 1,
+                auth_method: :otp,
+              },
             )
           end
 
           context 'user enters in valid code after invalid entry' do
             before do
               expect(subject.current_user.reload.second_factor_attempts_count).to eq 1
+              post(
+                :create,
+                params: {
+                  code: '999',
+                  otp_delivery_preference: 'sms',
+                },
+              )
               post(
                 :create,
                 params: {
@@ -620,6 +651,29 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
             end
             it 'resets second_factor_attempts_count' do
               expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
+            end
+
+            it 'tracks an event' do
+              expect(@analytics).to have_logged_event(
+                'Multi-Factor Authentication Setup',
+                success: false,
+                error_details: { code: { wrong_length: true, incorrect: true } },
+                confirmation_for_add_phone: true,
+                context: 'confirmation',
+                multi_factor_auth_method: 'sms',
+                phone_configuration_id: controller.current_user.default_phone_configuration.id,
+                multi_factor_auth_method_created_at: controller.current_user.
+                  default_phone_configuration.created_at.strftime('%s%L'),
+                area_code: parsed_phone.area_code,
+                country_code: parsed_phone.country,
+                phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+                enabled_mfa_methods_count: 1,
+                in_account_creation_flow: false,
+                mfa_attempts: {
+                  attempts: 3,
+                  auth_method: :otp,
+                },
+              )
             end
           end
         end
@@ -669,6 +723,10 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
               phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
               enabled_mfa_methods_count: 0,
               in_account_creation_flow: false,
+              mfa_attempts: {
+                attempts: 1,
+                auth_method: :otp,
+              },
             )
 
             expect(controller).to have_received(:create_user_event).with(:phone_confirmed)

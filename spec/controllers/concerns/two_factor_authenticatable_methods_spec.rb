@@ -36,6 +36,10 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
           multi_factor_auth_method: TwoFactorAuthenticatable::AuthMethod::REMEMBER_DEVICE,
           enabled_mfa_methods_count: 0,
           new_device: true,
+          mfa_attempts: {
+            attempts: 1,
+            auth_method: 'remember_device',
+          },
         )
       end
 
@@ -189,6 +193,10 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
           multi_factor_auth_method: TwoFactorAuthenticatable::AuthMethod::SMS,
           enabled_mfa_methods_count: 1,
           new_device: true,
+          mfa_attempts: {
+            attempts: 1,
+            auth_method: 'sms',
+          },
         )
       end
 
