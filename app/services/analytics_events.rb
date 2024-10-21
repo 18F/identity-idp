@@ -5939,6 +5939,24 @@ module AnalyticsEvents
     track_event(:piv_cac_login_visited)
   end
 
+  # User submits prompt to replace PIV/CAC after failing to authenticate due to mismatched subject
+  # @param [Boolean] add_piv_cac_after_2fa User chooses to replace PIV/CAC authenticator
+  def piv_cac_mismatch_submitted(add_piv_cac_after_2fa:, **extra)
+    track_event(:piv_cac_mismatch_submitted, add_piv_cac_after_2fa:, **extra)
+  end
+
+  # User visits prompt to replace PIV/CAC after failing to authenticate due to mismatched subject
+  # @param [Boolean] piv_cac_required Partner requires HSPD12 authentication
+  # @param [Boolean] has_other_authentication_methods User has non-PIV authentication methods
+  def piv_cac_mismatch_visited(piv_cac_required:, has_other_authentication_methods:, **extra)
+    track_event(
+      :piv_cac_mismatch_visited,
+      piv_cac_required:,
+      has_other_authentication_methods:,
+      **extra,
+    )
+  end
+
   # @param [String] action what action user made
   # Tracks when user submits an action on Piv Cac recommended page
   def piv_cac_recommended(action: nil, **extra)
