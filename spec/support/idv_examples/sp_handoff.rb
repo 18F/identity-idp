@@ -150,11 +150,13 @@ RSpec.shared_examples 'sp handoff after identity verification' do |sp|
     access_token = token_response[:access_token]
     expect(access_token).to be_present
 
-    page.driver.get api_openid_connect_userinfo_path,
-                    {},
-                    'HTTP_AUTHORIZATION' => "Bearer #{access_token}"
+    userinfo_response = JSON.parse(
+      Faraday.new(
+        url: api_openid_connect_userinfo_url,
+        headers: { 'Authorization' => "Bearer #{access_token}" },
+      ).get.body,
+    ).with_indifferent_access
 
-    userinfo_response = JSON.parse(page.body).with_indifferent_access
     expect(userinfo_response[:sub]).to eq(sub)
     expect(AgencyIdentity.where(user_id: user.id, agency_id: 2).first.uuid).to eq(sub)
     expect(userinfo_response[:email]).to eq(user.confirmed_email_addresses.first.email)
