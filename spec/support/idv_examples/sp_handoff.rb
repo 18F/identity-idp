@@ -135,7 +135,8 @@ RSpec.shared_examples 'sp handoff after identity verification' do |sp|
   end
 
   def expect_successful_oidc_handoff
-    token_response = oidc_decoded_id_token
+    token_response = oidc_decoded_token
+    decoded_id_token = oidc_decoded_id_token
 
     sub = decoded_id_token[:sub]
     expect(sub).to be_present
