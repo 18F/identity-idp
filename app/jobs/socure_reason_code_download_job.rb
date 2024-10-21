@@ -18,7 +18,7 @@ class SocureReasonCodeDownloadJob < ApplicationJob
     Analytics.new(
       user: AnonymousUser.new,
       request: nil,
-      sp: service_provider_issuer,
+      sp: nil,
       session: {},
     )
   end
