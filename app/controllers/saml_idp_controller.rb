@@ -234,10 +234,13 @@ class SamlIdpController < ApplicationController
     return nil if saml_request.requested_vtr_authn_contexts.present?
     return nil if requested_authn_contexts.blank?
 
-    (requested_authn_contexts -
-      Saml::Idp::Constants::VALID_AUTHN_CONTEXTS).reject do |authn_context|
+    unmatched_authn_contexts.reject do |authn_context|
       authn_context.match(req_attrs_regexp)
     end.join(' ').presence
+  end
+
+  def unmatched_authn_contexts
+    requested_authn_contexts - Saml::Idp::Constants::VALID_AUTHN_CONTEXTS
   end
 
   def requested_authn_contexts
