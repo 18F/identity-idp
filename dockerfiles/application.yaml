@@ -81,6 +81,18 @@ spec:
             - op: add
               path: /data/REDIS_IRS_ATTEMPTS_API_URL
               value: "redis://{{ENVIRONMENT}}-redis.review-apps:6379/2"
+            - op: add
+              path: /data/RAILS_OFFLINE
+              value: "true"
+            - op: add
+              path: /data/LOGIN_DATACENTER
+              value: "true"
+            - op: add
+              path: /data/LOGIN_ENV
+              value: "review-app"
+            - op: add
+              path: /data/LOGIN_DOMAIN
+              value: "identitysandbox.gov"
         - target:
             kind: ConfigMap
             name: idp-config-dbsetup
@@ -142,6 +154,18 @@ spec:
             - op: add
               path: /data/REDIS_IRS_ATTEMPTS_API_URL
               value: "redis://{{ENVIRONMENT}}-redis.review-apps:6379/2"
+            - op: add
+              path: /data/RAILS_OFFLINE
+              value: "true"
+            - op: add
+              path: /data/LOGIN_DATACENTER
+              value: "true"
+            - op: add
+              path: /data/LOGIN_ENV
+              value: "review-app"
+            - op: add
+              path: /data/LOGIN_DOMAIN
+              value: "identitysandbox.gov"
         # Patch ConfigMap for Worker
         - target:
             kind: ConfigMap
