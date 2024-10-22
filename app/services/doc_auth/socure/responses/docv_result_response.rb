@@ -32,14 +32,15 @@ module DocAuth
           expiration_date: %w[documentVerification documentData expirationDate],
         }.freeze
 
-        def initialize(http_response:, biometric_comparison_required: false)
+        def initialize(http_response: nil, biometric_comparison_required: false,
+                       success: nil, errors: nil, exception: nil, extra: nil, pii_from_doc: nil)
           @http_response = http_response
           @biometric_comparison_required = biometric_comparison_required
           @pii_from_doc = read_pii
 
-          puts "\n\nResponse data:\n"
-          pp parsed_response_body
-          puts "\n"
+          # puts "\n\nResponse data:\n"
+          # pp parsed_response_body
+          # puts "\n"
 
           super(
             success: successful_result?,
@@ -48,7 +49,7 @@ module DocAuth
             pii_from_doc: @pii_from_doc,
           )
         rescue StandardError => e
-          # NewRelic::Agent.notice_error(e)
+          NewRelic::Agent.notice_error(e)
           super(
             success: false,
             errors: { network: true },
@@ -95,8 +96,7 @@ module DocAuth
             dob: parse_date(get_data(DATA_PATHS[:dob])),
             state_id_number: get_data(DATA_PATHS[:document_number]),
             state_id_issued: parse_date(get_data(DATA_PATHS[:issue_date])),
-            # state_id_expiration: parse_date(get_data(DATA_PATHS[:expiration_date])),
-            state_id_expiration: 1.year.from_now.to_date,
+            state_id_expiration: parse_date(get_data(DATA_PATHS[:expiration_date])),
             state_id_type: state_id_type,
             state_id_jurisdiction: get_data(DATA_PATHS[:issuing_state]),
             issuing_country_code: get_data(DATA_PATHS[:issuing_country]),

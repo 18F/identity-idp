@@ -18,6 +18,8 @@ class SocureWebhookController < ApplicationController
   private
 
   def fetch_results
+    # docv_transaction_token = socure_params[:event][:docVTransactionToken]
+    # dcs = DocumentCaptureSession.find_by(socure_docv_transaction_token: docv_transaction_token)
     dcs_uuid = socure_params[:event][:customer_user_id]
     dcs = DocumentCaptureSession.find_by(uuid: dcs_uuid)
     SocureDocvResultsJob.perform_later(
@@ -28,16 +30,13 @@ class SocureWebhookController < ApplicationController
   end
 
   def check_token
-    puts "\ncheck_token: #{token_valid?}\n"
     if !token_valid?
       render status: :unauthorized, json: { message: 'Invalid secret token.' }
     end
   end
 
   def check_socure_event
-    puts "\ncheck_socure_event: #{socure_params[:event]}\n"
     if socure_params[:event].blank?
-      byebug
       render status: :bad_request, json: { message: 'Invalid event.' }
     end
   end

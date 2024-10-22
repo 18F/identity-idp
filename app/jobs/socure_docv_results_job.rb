@@ -28,7 +28,6 @@ class SocureDocvResultsJob < ApplicationJob
     )
 
     result = socure_document_verification_result
-
     dcs.store_result_from_response(result)
   end
 
@@ -51,10 +50,4 @@ class SocureDocvResultsJob < ApplicationJob
       document_capture_session_uuid:,
     ).fetch
   end
-
-  # def store_result_from_response(result:)
-  #   DocumentCaptureSession.new(
-  #     result_id: document_capture_session_result_id,
-  #     ).load_proofing_result&.result
-  # end
 end

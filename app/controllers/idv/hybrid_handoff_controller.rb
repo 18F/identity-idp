@@ -30,7 +30,7 @@ module Idv
       # reset if we visit or come back
       idv_session.skip_doc_auth_from_handoff = nil
 
-      puts "\n\nDCS: #{idv_session.document_capture_session_uuid}\n\n"
+      # puts "\n\nDCS: #{idv_session.document_capture_session_uuid}\n\n"
 
       render :show, locals: extra_view_variables
     end

@@ -22,16 +22,10 @@ module DocAuth
         end
 
         def handle_http_response(http_response)
-          socure_response = DocAuth::Socure::Responses::DocvResultResponse.new(
+          DocAuth::Socure::Responses::DocvResultResponse.new(
             http_response: http_response,
             biometric_comparison_required: biometric_comparison_required,
           )
-          response = Idv::DocPiiForm.new(
-            pii: socure_response.pii_from_doc.to_h,
-            attention_with_barcode: false, # n/a
-          ).submit
-          # socure_response.merge(response)
-          response.merge(socure_response)
         end
 
         def document_capture_session

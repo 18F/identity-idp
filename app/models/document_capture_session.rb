@@ -18,14 +18,14 @@ class DocumentCaptureSession < ApplicationRecord
     session_result.success = doc_auth_response.success?
     session_result.pii = doc_auth_response.pii_from_doc.to_h
     session_result.captured_at = Time.zone.now
-    # session_result.attention_with_barcode = doc_auth_response.attention_with_barcode?
-    # session_result.doc_auth_success = doc_auth_response.doc_auth_success?
-    # session_result.selfie_status = doc_auth_response.selfie_status
+    session_result.attention_with_barcode = doc_auth_response.attention_with_barcode?
+    session_result.doc_auth_success = doc_auth_response.doc_auth_success?
+    session_result.selfie_status = doc_auth_response.selfie_status
     EncryptedRedisStructStorage.store(
       session_result,
       expires_in: IdentityConfig.store.doc_capture_request_valid_for_minutes.minutes.in_seconds,
     )
-    # self.ocr_confirmation_pending = doc_auth_response.attention_with_barcode?
+    self.ocr_confirmation_pending = doc_auth_response.attention_with_barcode?
     save!
   end
 
