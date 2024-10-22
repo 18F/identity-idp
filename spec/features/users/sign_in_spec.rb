@@ -231,7 +231,7 @@ RSpec.feature 'Sign in' do
     end
 
     scenario 'user has option to sign out' do
-      click_button(t('notices.timeout_warning.signed_in.sign_out'))
+      click_on t('notices.timeout_warning.signed_in.sign_out')
 
       expect(page).to have_content t('devise.sessions.signed_out')
       expect(current_path).to eq new_user_session_path
