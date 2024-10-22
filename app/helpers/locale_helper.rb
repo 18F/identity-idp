@@ -11,11 +11,12 @@ module LocaleHelper
 
     if I18n.locale_available?(locale)
       if defined?(url_options)
-        current_locale = I18n.locale
         I18n.with_locale(locale) do
+          url_options_locale = url_options[:locale]
           url_options[:locale] = locale
           block.call
-          url_options[:locale] = current_locale
+        ensure
+          url_options[:locale] = url_options_locale
         end
       else
         I18n.with_locale(locale, &block)
