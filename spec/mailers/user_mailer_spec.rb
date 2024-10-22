@@ -567,6 +567,37 @@ RSpec.describe UserMailer, type: :mailer do
     end
     let(:visited_location_name) { 'ACQUAINTANCESHIP' }
 
+    describe '#in_person_deadline_passed' do
+      let(:enrollment) do
+        create(
+          :in_person_enrollment,
+          :expired,
+          selected_location_details: { name: 'FRIENDSHIP' },
+        )
+      end
+
+      let(:mail) do
+        UserMailer.with(user: user, email_address: email_address).in_person_deadline_passed(
+          enrollment: enrollment,
+          visited_location_name: visited_location_name,
+        )
+      end
+
+      it_behaves_like 'a system email'
+      it_behaves_like 'an email that respects user email locale preference'
+
+      context 'when the keyword argument visited_location_name is missing' do
+        let(:mail) do
+          UserMailer.with(user: user, email_address: email_address).in_person_deadline_passed(
+            enrollment: enrollment,
+          )
+        end
+        it 'sends the email successfully' do
+          mail.deliver_later
+        end
+      end
+    end
+
     describe '#in_person_ready_to_verify' do
       let(:mail) do
         UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
@@ -882,6 +913,17 @@ RSpec.describe UserMailer, type: :mailer do
 
       it_behaves_like 'a system email'
       it_behaves_like 'an email that respects user email locale preference'
+
+      context 'when the keyword argument visited_location_name is missing' do
+        let(:mail) do
+          UserMailer.with(user: user, email_address: email_address).in_person_verified(
+            enrollment: enrollment,
+          )
+        end
+        it 'sends the email successfully' do
+          mail.deliver_later
+        end
+      end
     end
 
     describe '#in_person_failed' do
@@ -903,6 +945,17 @@ RSpec.describe UserMailer, type: :mailer do
 
       it_behaves_like 'a system email'
       it_behaves_like 'an email that respects user email locale preference'
+
+      context 'when the keyword argument visited_location_name is missing' do
+        let(:mail) do
+          UserMailer.with(user: user, email_address: email_address).in_person_failed(
+            enrollment: enrollment,
+          )
+        end
+        it 'sends the email successfully' do
+          mail.deliver_later
+        end
+      end
     end
 
     describe '#in_person_failed_fraud' do
@@ -923,6 +976,17 @@ RSpec.describe UserMailer, type: :mailer do
 
       it_behaves_like 'a system email'
       it_behaves_like 'an email that respects user email locale preference'
+
+      context 'when the keyword argument visited_location_name is missing' do
+        let(:mail) do
+          UserMailer.with(user: user, email_address: email_address).in_person_failed_fraud(
+            enrollment: enrollment,
+          )
+        end
+        it 'sends the email successfully' do
+          mail.deliver_later
+        end
+      end
     end
 
     describe '#in_person_please_call' do
@@ -935,6 +999,17 @@ RSpec.describe UserMailer, type: :mailer do
 
       it_behaves_like 'a system email'
       it_behaves_like 'an email that respects user email locale preference'
+
+      context 'when the keyword argument visited_location_name is missing' do
+        let(:mail) do
+          UserMailer.with(user: user, email_address: email_address).in_person_please_call(
+            enrollment: enrollment,
+          )
+        end
+        it 'sends the email successfully' do
+          mail.deliver_later
+        end
+      end
     end
 
     describe '#in_person_completion_survey' do
