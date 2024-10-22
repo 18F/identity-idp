@@ -19,12 +19,7 @@ module TwoFactorAuthenticatableMethods
       enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
       new_device: new_device?,
       **extra_analytics.to_h,
-      mfa_attempts: user_session[:mfa_attempts],
-      pii_like_keypaths: [
-        [:mfa_attempts, :otp],
-        [:errors, :personal_key],
-        [:error_details, :personal_key],
-      ],
+      attempts: user_session[:mfa_attempts][:attempts],
     )
 
     if result.success?
@@ -129,6 +124,12 @@ module TwoFactorAuthenticatableMethods
     end
     user_session[:mfa_attempts][:attempts] += 1
     user_session[:mfa_attempts][:auth_method] = auth_method
+  end
+
+  def mfa_attempts_count
+    if user_session[:mfa_attempts]
+      user_session[:mfa_attempts][:attempts]
+    end
   end
 
   # Method will be renamed in the next refactor.

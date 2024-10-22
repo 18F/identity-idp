@@ -128,7 +128,7 @@ module Users
       {
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
         enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
-        mfa_attempts: user_session[:mfa_attempts],
+        attempts: mfa_attempts_count,
       }
     end
 

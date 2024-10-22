@@ -158,10 +158,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
             webauthn_configuration_id: webauthn_configuration.id,
             multi_factor_auth_method_created_at: webauthn_configuration.created_at.strftime('%s%L'),
             new_device: true,
-            mfa_attempts: {
-              attempts: 1,
-              auth_method: 'webauthn',
-            },
+            attempts: 1,
           )
           expect(@analytics).to have_logged_event(
             'User marked authenticated',
@@ -222,10 +219,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
               multi_factor_auth_method_created_at: webauthn_configuration.created_at.
                 strftime('%s%L'),
               new_device: true,
-              mfa_attempts: {
-                attempts: 1,
-                auth_method: 'webauthn_platform',
-              },
+              attempts: 1,
             )
             expect(@analytics).to have_logged_event(
               'User marked authenticated',
@@ -257,10 +251,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
           webauthn_configuration_id: webauthn_configuration.id,
           multi_factor_auth_method_created_at: webauthn_configuration.created_at.strftime('%s%L'),
           new_device: true,
-          mfa_attempts: {
-            attempts: 1,
-            auth_method: 'webauthn',
-          },
+          attempts: 1,
         )
       end
 
@@ -327,10 +318,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
               second_webauthn_platform_configuration.created_at.strftime('%s%L'),
             new_device: true,
             frontend_error: webauthn_error,
-            mfa_attempts: {
-              attempts: 1,
-              auth_method: 'webauthn_platform',
-            },
+            attempts: 1,
           )
         end
       end

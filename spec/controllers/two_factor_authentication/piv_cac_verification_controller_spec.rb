@@ -135,10 +135,7 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
           piv_cac_configuration_id: cfg.id,
           piv_cac_configuration_dn_uuid: cfg.x509_dn_uuid,
           key_id: 'foo',
-          mfa_attempts: {
-            attempts: 1,
-            auth_method: 'piv_cac',
-          },
+          attempts: 1,
         )
         expect(@analytics).to have_logged_event(
           'User marked authenticated',
@@ -261,10 +258,7 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
           new_device: true,
           key_id: 'foo',
           piv_cac_configuration_dn_uuid: 'bad-uuid',
-          mfa_attempts: {
-            attempts: 1,
-            auth_method: 'piv_cac',
-          },
+          attempts: 1,
         )
         expect(@analytics).to have_logged_event('Multi-Factor Authentication: max attempts reached')
       end

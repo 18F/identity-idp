@@ -119,7 +119,7 @@ module Users
       {
         in_account_creation_flow: in_account_creation_flow?,
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
-        mfa_attempts: user_session[:mfa_attempts],
+        attempts: user_session[:mfa_attempts][:attempts],
       }
     end
   end

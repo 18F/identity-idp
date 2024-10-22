@@ -159,12 +159,7 @@ module TwoFactorAuthentication
         phone_configuration_id: phone_configuration&.id,
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
         enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
-        mfa_attempts: user_session[:mfa_attempts],
-        pii_like_keypaths: [
-          [:mfa_attempts, :otp],
-          [:errors, :personal_key],
-          [:error_details, :personal_key],
-        ],
+        attempts: mfa_attempts_count,
       }
     end
 
