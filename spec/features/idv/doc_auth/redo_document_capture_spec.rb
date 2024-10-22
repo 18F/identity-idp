@@ -160,7 +160,7 @@ RSpec.feature 'document capture step', :js do
         ),
       )
       click_continue
-      click 'Take photo'
+      click_button 'Take photo'
       attach_selfie(
         Rails.root.join(
           'spec', 'fixtures',
