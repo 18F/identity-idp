@@ -25,7 +25,7 @@ class User < ApplicationRecord
   MAX_RECENT_EVENTS = 5
   MAX_RECENT_DEVICES = 5
 
-  enum otp_delivery_preference: { sms: 0, voice: 1 }
+  enum :otp_delivery_preference, { sms: 0, voice: 1 }
 
   # rubocop:disable Rails/HasManyOrHasOneDependent
   # identities need to be orphaned to prevent UUID reuse

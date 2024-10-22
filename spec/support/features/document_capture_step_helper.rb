@@ -25,9 +25,8 @@ module DocumentCaptureStepHelper
     )
   )
     attach_images(file)
-    if IdentityConfig.store.doc_auth_separate_pages_enabled
-      click_continue
-    end
+    click_continue
+    click_button 'Take photo' if page.has_button? 'Take photo'
     attach_selfie
   end
 

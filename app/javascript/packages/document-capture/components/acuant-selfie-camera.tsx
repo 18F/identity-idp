@@ -157,12 +157,12 @@ function AcuantSelfieCamera({
       CAPTURE_ALT: t('doc_auth.info.selfie_capture.action.capture'),
     };
     const cleanupSelfieCamera = () => {
-      window.AcuantPassiveLiveness.end();
+      window.AcuantPassiveLiveness?.end();
       setIsActive(false);
     };
 
     const startSelfieCamera = () => {
-      window.AcuantPassiveLiveness.start(faceCaptureCallback, faceDetectionStates);
+      window.AcuantPassiveLiveness?.start(faceCaptureCallback, faceDetectionStates);
       setIsActive(true);
     };
 

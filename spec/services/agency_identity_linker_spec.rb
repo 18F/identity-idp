@@ -123,7 +123,7 @@ RSpec.describe AgencyIdentityLinker do
 
         it 'persists the service provider identity as an agency identity' do
           expect(subject.uuid).to eq uuid
-          ai = AgencyIdentity.where(user: user, agency: agency).take
+          ai = AgencyIdentity.find_by(user: user, agency: agency)
           expect(subject).to eq ai
         end
       end

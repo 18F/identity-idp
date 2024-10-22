@@ -239,7 +239,7 @@ normalize_yaml: ## Normalizes YAML files (alphabetizes keys, fixes line length, 
 optimize_svg: ## Optimizes SVG images
 	# Exclusions:
 	# - `login-icon-bimi.svg` is hand-optimized and includes required metadata that would be stripped by SVGO
-	find app/assets/images public -name '*.svg' -not -name 'login-icon-bimi.svg' | xargs ./node_modules/.bin/svgo
+	find app/assets/images public -name '*.svg' -not -name 'login-icon-bimi.svg' -not -name 'selfie-capture-accept-help.svg' | xargs ./node_modules/.bin/svgo
 
 optimize_assets: optimize_svg ## Optimizes all assets
 

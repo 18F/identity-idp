@@ -21,7 +21,7 @@ class Profile < ApplicationRecord
           class_name: 'InPersonEnrollment', foreign_key: :profile_id, inverse_of: :profile,
           dependent: :destroy
 
-  enum deactivation_reason: {
+  enum :deactivation_reason, {
     password_reset: 1,
     encryption_error: 2,
     gpo_verification_pending_NO_LONGER_USED: 3, # deprecated
@@ -29,12 +29,12 @@ class Profile < ApplicationRecord
     in_person_verification_pending_NO_LONGER_USED: 5, # deprecated
   }
 
-  enum fraud_pending_reason: {
+  enum :fraud_pending_reason, {
     threatmetrix_review: 1,
     threatmetrix_reject: 2,
   }
 
-  enum idv_level: {
+  enum :idv_level, {
     legacy_unsupervised: 1,
     legacy_in_person: 2,
     unsupervised_with_selfie: 3,

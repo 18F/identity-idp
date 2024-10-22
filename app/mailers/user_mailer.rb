@@ -273,12 +273,13 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def in_person_deadline_passed(enrollment:)
+  def in_person_deadline_passed(enrollment:, visited_location_name:)
     with_user_locale(user) do
       @header = t('user_mailer.in_person_deadline_passed.header')
       @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
         enrollment: enrollment,
         url_options: url_options,
+        visited_location_name: visited_location_name,
       )
       mail(
         to: email_address.email,
@@ -337,12 +338,13 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def in_person_verified(enrollment:)
+  def in_person_verified(enrollment:, visited_location_name:)
     with_user_locale(user) do
       @hide_title = true
       @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
         enrollment: enrollment,
         url_options: url_options,
+        visited_location_name: visited_location_name,
       )
       mail(
         to: email_address.email,
@@ -351,11 +353,12 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def in_person_failed(enrollment:)
+  def in_person_failed(enrollment:, visited_location_name:)
     with_user_locale(user) do
       @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
         enrollment: enrollment,
         url_options: url_options,
+        visited_location_name: visited_location_name,
       )
       mail(
         to: email_address.email,
@@ -364,11 +367,12 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def in_person_failed_fraud(enrollment:)
+  def in_person_failed_fraud(enrollment:, visited_location_name:)
     with_user_locale(user) do
       @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
         enrollment: enrollment,
         url_options: url_options,
+        visited_location_name: visited_location_name,
       )
       mail(
         to: email_address.email,
@@ -377,11 +381,12 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def in_person_please_call(enrollment:)
+  def in_person_please_call(enrollment:, visited_location_name:)
     with_user_locale(user) do
       @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
         enrollment: enrollment,
         url_options: url_options,
+        visited_location_name: visited_location_name,
       )
       @hide_title = true
       mail(

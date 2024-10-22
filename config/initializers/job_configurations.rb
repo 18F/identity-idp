@@ -164,6 +164,11 @@ else
         class: 'ThreatMetrixJsVerificationJob',
         cron: cron_1h,
       },
+      # Periodically check whether we can upgrade to GoodJob V4
+      good_job_v4_ready: {
+        class: 'GoodJobV4ReadyJob',
+        cron: cron_1h,
+      },
       # Reject profiles that have been in fraud_review_pending for 30 days
       fraud_rejection: {
         class: 'FraudRejectionDailyJob',
@@ -241,6 +246,11 @@ else
         class: 'Reports::MfaReport',
         cron: cron_monthly,
         args: -> { [Time.zone.yesterday.end_of_day] },
+      },
+      # Download and store Socure reason codes
+      socure_reason_code_download: {
+        class: 'SocureReasonCodeDownloadJob',
+        cron: cron_every_monday,
       },
     }.compact
   end

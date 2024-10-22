@@ -5,7 +5,6 @@ module TwoFactorAuthentication
     include TwoFactorAuthenticatable
     include NewDeviceConcern
 
-    before_action :check_sp_required_mfa
     before_action :confirm_totp_enabled
 
     def show
@@ -56,10 +55,6 @@ module TwoFactorAuthentication
       {
         two_factor_authentication_method: 'authenticator',
       }.merge(generic_data)
-    end
-
-    def check_sp_required_mfa
-      check_sp_required_mfa_bypass(auth_method: 'authenticator')
     end
   end
 end

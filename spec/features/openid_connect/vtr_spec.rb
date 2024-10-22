@@ -128,6 +128,6 @@ RSpec.feature 'OIDC requests using VTR' do
 
     click_button(t('doc_auth.buttons.upload_picture'))
 
-    expect(page).to have_content(t('doc_auth.headings.document_capture_subheader_selfie'))
+    expect(page).to have_content(t('doc_auth.headings.document_capture'))
   end
 end
