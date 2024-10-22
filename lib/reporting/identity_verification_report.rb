@@ -394,7 +394,7 @@ module Reporting
           'coalesce(properties.event_properties.fraud_review_pending, 0)',
           # NOTE: fraud_pending_reason is present on 'IdV: final resolution' events. For GPO / IPP,
           #       it will be set but the fraud_review_pending flag will be set to 0.
-          #       To caclulate the 'Workflow completed - GPO Pending - Fraud Review' stat, we
+          #       To calculate the 'Workflow completed - GPO Pending - Fraud Review' stat, we
           #       must consider this independently of fraud_review_pending.
           '!isblank(properties.event_properties.fraud_pending_reason)',
           'coalesce(properties.event_properties.fraud_check_failed, 0)',
