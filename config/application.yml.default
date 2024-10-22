@@ -42,6 +42,8 @@ async_stale_job_timeout_seconds: 300
 async_wait_timeout_seconds: 60
 attribute_encryption_key:
 attribute_encryption_key_queue: '[]'
+attribute_encryption_key:
+attribute_encryption_key_queue: '[]'
 available_locales: 'en,es,fr,zh'
 aws_http_retry_limit: 2
 aws_http_retry_max_delay: 1
@@ -67,6 +69,8 @@ component_previews_enabled: false
 compromised_password_randomizer_threshold: 900
 compromised_password_randomizer_value: 1000
 country_phone_number_overrides: '{}'
+dashboard_api_token: ''
+dashboard_url: https://dashboard.demo.login.gov
 dashboard_api_token: ''
 dashboard_url: https://dashboard.demo.login.gov
 database_advisory_locks_enabled: false
@@ -114,6 +118,7 @@ doc_auth_vendor_switching_enabled: false
 doc_capture_polling_enabled: true
 doc_capture_request_valid_for_minutes: 15
 domain_name: login.gov
+domain_name: login.gov
 drop_off_report_config: '[{"emails":["ursula@example.com"],"issuers": ["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]}]'
 email_from: no-reply@login.gov
 email_from_display_name: Login.gov
@@ -142,6 +147,8 @@ good_job_queues: 'default:5;low:1;*'
 gpo_designated_receiver_pii: '{}'
 gpo_max_profile_age_to_send_letter_in_days: 30
 hide_phone_mfa_signup: false
+hmac_fingerprinter_key:
+hmac_fingerprinter_key_queue: '[]'
 hmac_fingerprinter_key:
 hmac_fingerprinter_key_queue: '[]'
 identity_pki_disabled: false
@@ -205,8 +212,12 @@ lexisnexis_request_mode: testing
 # LexisNexis DDP/ThreatMetrix #####################################
 lexisnexis_threatmetrix_api_key:
 lexisnexis_threatmetrix_base_url:
+lexisnexis_threatmetrix_api_key:
+lexisnexis_threatmetrix_base_url:
 lexisnexis_threatmetrix_js_signing_cert: ''
 lexisnexis_threatmetrix_mock_enabled: true
+lexisnexis_threatmetrix_org_id:
+lexisnexis_threatmetrix_policy:
 lexisnexis_threatmetrix_org_id:
 lexisnexis_threatmetrix_policy:
 lexisnexis_threatmetrix_support_code: ABCD
@@ -231,6 +242,7 @@ logins_per_email_and_ip_bantime: 60
 logins_per_email_and_ip_limit: 5
 logins_per_email_and_ip_period: 60
 logins_per_ip_limit: 20
+logins_per_ip_limit: 20
 logins_per_ip_period: 60
 logins_per_ip_track_only_mode: false
 logo_upload_enabled: false
@@ -254,6 +266,7 @@ openid_connect_redirect: client_side_js
 openid_connect_redirect_issuer_override_map: '{}'
 openid_connect_redirect_uuid_override_map: '{}'
 otp_delivery_blocklist_findtime: 5
+otp_delivery_blocklist_findtime: 5
 otp_delivery_blocklist_maxretry: 10
 otp_expiration_warning_seconds: 150
 otp_min_attempts_remaining_warning_count: 3
@@ -266,6 +279,7 @@ outbound_connection_check_timeout: 5
 outbound_connection_check_url: 'https://checkip.amazonaws.com'
 participate_in_dap: false
 password_max_attempts: 3
+password_pepper:
 password_pepper:
 personal_key_retired: true
 phone_carrier_registration_blocklist_array: '[]'
@@ -284,6 +298,7 @@ pinpoint_voice_configs: '[]'
 pinpoint_voice_pool_size: 5
 piv_cac_service_timeout: 5.0
 piv_cac_service_url: https://localhost:8443/
+piv_cac_verify_token_secret:
 piv_cac_verify_token_secret:
 piv_cac_verify_token_url: https://localhost:8443/
 poll_rate_for_verify_in_seconds: 3
@@ -341,18 +356,24 @@ s3_data_warehouse_bucket_prefix: 'login-gov-analytics-export'
 s3_public_reports_enabled: false
 s3_report_bucket_prefix: login-gov.reports
 s3_report_public_bucket_prefix: login-gov-pubdata
+s3_report_bucket_prefix: login-gov.reports
+s3_report_public_bucket_prefix: login-gov-pubdata
 s3_reports_enabled: false
+saml_endpoint_configs: '[]'
 saml_endpoint_configs: '[]'
 saml_secret_rotation_enabled: false
 scrypt_cost: 10000$8$1$
+scrypt_cost: 10000$8$1$
 second_mfa_reminder_account_age_in_days: 30
 second_mfa_reminder_sign_in_count: 10
+secret_key_base:
 secret_key_base:
 seed_agreements_data: true
 service_provider_request_ttl_hours: 24
 ses_configuration_set_name: ''
 session_check_delay: 30
 session_check_frequency: 30
+session_encryption_key:
 session_encryption_key:
 session_encryptor_alert_enabled: false
 session_timeout_in_minutes: 15
@@ -370,6 +391,7 @@ sign_in_user_id_per_ip_attempt_window_in_minutes: 720
 sign_in_user_id_per_ip_attempt_window_max_minutes: 43_200
 sign_in_user_id_per_ip_max_attempts: 50
 skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:int"]'
+skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:int"]'
 socure_document_request_endpoint: ''
 socure_enabled: false
 socure_idplus_api_key: ''
@@ -384,12 +406,14 @@ socure_webhook_secret_key_queue: '[]'
 sp_handoff_bounce_max_seconds: 2
 sp_issuer_user_counts_report_configs: '[]'
 state_tracking_enabled: true
+state_tracking_enabled: true
 team_ada_email: ''
 team_all_login_emails: '[]'
 team_daily_fraud_metrics_emails: '[]'
 team_daily_reports_emails: '[]'
 team_monthly_fraud_metrics_emails: '[]'
 team_ursula_email: ''
+telephony_adapter: test
 telephony_adapter: test
 test_ssn_allowed_list: ''
 totp_code_interval: 30
@@ -413,7 +437,11 @@ usps_upload_enabled: false
 usps_upload_sftp_directory: ''
 usps_upload_sftp_host: ''
 usps_upload_sftp_password: ''
+usps_upload_sftp_directory: ''
+usps_upload_sftp_host: ''
+usps_upload_sftp_password: ''
 usps_upload_sftp_timeout: 5
+usps_upload_sftp_username: ''
 usps_upload_sftp_username: ''
 valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3", "http://idmanagement.gov/ns/assurance/ial/1", "http://idmanagement.gov/ns/assurance/ial/2", "http://idmanagement.gov/ns/assurance/ial/0", "http://idmanagement.gov/ns/assurance/ial/2?strict=true", "http://idmanagement.gov/ns/assurance/ial/2?bio=preferred", "http://idmanagement.gov/ns/assurance/ial/2?bio=required", "urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo", "http://idmanagement.gov/ns/assurance/aal/2", "http://idmanagement.gov/ns/assurance/aal/3", "http://idmanagement.gov/ns/assurance/aal/3?hspd12=true","http://idmanagement.gov/ns/assurance/aal/2?phishing_resistant=true","http://idmanagement.gov/ns/assurance/aal/2?hspd12=true"]'
 valid_authn_contexts_semantic: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3", "http://idmanagement.gov/ns/assurance/ial/1", "http://idmanagement.gov/ns/assurance/ial/2", "http://idmanagement.gov/ns/assurance/ial/0", "http://idmanagement.gov/ns/assurance/ial/2?strict=true", "http://idmanagement.gov/ns/assurance/ial/2?bio=preferred", "http://idmanagement.gov/ns/assurance/ial/2?bio=required", "urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo", "http://idmanagement.gov/ns/assurance/aal/2", "http://idmanagement.gov/ns/assurance/aal/3", "http://idmanagement.gov/ns/assurance/aal/3?hspd12=true","http://idmanagement.gov/ns/assurance/aal/2?phishing_resistant=true","http://idmanagement.gov/ns/assurance/aal/2?hspd12=true", "urn:acr.login.gov:auth-only", "urn:acr.login.gov:verified","urn:acr.login.gov:verified-facial-match-preferred","urn:acr.login.gov:verified-facial-match-required"]'
