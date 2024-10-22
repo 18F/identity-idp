@@ -72,7 +72,7 @@ RSpec.describe SamlRequestValidator do
       end
     end
 
-    context 'no authn context and sp and authorized nameID format' do
+    context 'no authn context and valid sp and authorized nameID format' do
       let(:authn_context) { [] }
       it 'returns FormResponse with success: true' do
         expect(response.to_h).to include(
