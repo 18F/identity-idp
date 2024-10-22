@@ -1,4 +1,8 @@
+require_relative 'features/javascript_driver_helper'
+
 module OidcAuthHelper
+  include JavascriptDriverHelper
+
   OIDC_ISSUER = 'urn:gov:gsa:openidconnect:sp:server'.freeze
   OIDC_IAL1_ISSUER = 'urn:gov:gsa:openidconnect:sp:server_ial1'.freeze
   OIDC_AAL3_ISSUER = 'urn:gov:gsa:openidconnect:sp:server_requiring_aal3'.freeze
@@ -155,6 +159,9 @@ module OidcAuthHelper
   end
 
   def oidc_redirect_url
+    # Page will redirect automatically if JavaScript is enabled
+    return current_url if javascript_enabled?
+
     case IdentityConfig.store.openid_connect_redirect
     when 'client_side'
       extract_meta_refresh_url
@@ -163,5 +170,46 @@ module OidcAuthHelper
     else # should only be :server_side
       current_url
     end
+  end
+
+  def oidc_decoded_token
+    return @oidc_decoded_token if defined?(@oidc_decoded_token)
+    redirect_uri = URI(oidc_redirect_url)
+    redirect_params = Rack::Utils.parse_query(redirect_uri.query).with_indifferent_access
+    code = redirect_params[:code]
+
+    jwt_payload = {
+      iss: 'urn:gov:gsa:openidconnect:sp:server',
+      sub: 'urn:gov:gsa:openidconnect:sp:server',
+      aud: api_openid_connect_token_url,
+      jti: SecureRandom.hex,
+      exp: 5.minutes.from_now.to_i,
+    }
+
+    client_private_key = OpenSSL::PKey::RSA.new(
+      File.read(Rails.root.join('keys', 'saml_test_sp.key')),
+    )
+    client_assertion = JWT.encode(jwt_payload, client_private_key, 'RS256')
+    client_assertion_type = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer'
+
+    Capybara.using_driver(:desktop_rack_test) do
+      page.driver.post(
+        api_openid_connect_token_url,
+        grant_type: 'authorization_code',
+        code:,
+        client_assertion_type:,
+        client_assertion:,
+      )
+      @oidc_decoded_token = JSON.parse(page.body).with_indifferent_access
+    end
+  end
+
+  def oidc_decoded_id_token
+    @oidc_decoded_id_token ||= JWT.decode(
+      oidc_decoded_token[:id_token],
+      AppArtifacts.store.oidc_public_key,
+      true,
+      algorithm: 'RS256',
+    ).first.with_indifferent_access
   end
 end

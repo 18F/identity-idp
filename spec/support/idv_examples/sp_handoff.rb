@@ -1,5 +1,6 @@
 RSpec.shared_examples 'sp handoff after identity verification' do |sp|
   include SamlAuthHelper
+  include OidcAuthHelper
   include IdvHelper
   include JavascriptDriverHelper
 
@@ -134,43 +135,10 @@ RSpec.shared_examples 'sp handoff after identity verification' do |sp|
   end
 
   def expect_successful_oidc_handoff
-    redirect_uri = URI(current_url)
-    redirect_params = Rack::Utils.parse_query(redirect_uri.query).with_indifferent_access
-
-    expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
-    expect(redirect_params[:state]).to eq(@state)
-
-    code = redirect_params[:code]
-    expect(code).to be_present
-
-    jwt_payload = {
-      iss: @client_id,
-      sub: @client_id,
-      aud: api_openid_connect_token_url,
-      jti: SecureRandom.hex,
-      exp: 5.minutes.from_now.to_i,
-    }
-
-    client_assertion = JWT.encode(jwt_payload, client_private_key, 'RS256')
-    client_assertion_type = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer'
+    token_response = oidc_decoded_token
+    decoded_id_token = oidc_decoded_id_token
 
     Capybara.using_driver(:desktop_rack_test) do
-      page.driver.post api_openid_connect_token_path,
-                       grant_type: 'authorization_code',
-                       code: code,
-                       client_assertion_type: client_assertion_type,
-                       client_assertion: client_assertion
-
-      expect(page.status_code).to eq(200)
-      token_response = JSON.parse(page.body).with_indifferent_access
-
-      id_token = token_response[:id_token]
-      expect(id_token).to be_present
-
-      decoded_id_token, _headers = JWT.decode(
-        id_token, sp_public_key, true, algorithm: 'RS256'
-      ).map(&:with_indifferent_access)
-
       sub = decoded_id_token[:sub]
       expect(sub).to be_present
       expect(decoded_id_token[:nonce]).to eq(@nonce)
@@ -208,22 +176,5 @@ RSpec.shared_examples 'sp handoff after identity verification' do |sp|
       expect(current_url).to eq @saml_authn_request
     end
     expect(xmldoc.phone_number.children.children.to_s).to eq(Phonelib.parse(profile_phone).e164)
-  end
-
-  def client_private_key
-    @client_private_key ||= begin
-      OpenSSL::PKey::RSA.new(
-        File.read(Rails.root.join('keys', 'saml_test_sp.key')),
-      )
-    end
-  end
-
-  def sp_public_key
-    page.driver.get api_openid_connect_certs_path
-
-    expect(page.status_code).to eq(200)
-    certs_response = JSON.parse(page.body).with_indifferent_access
-
-    JWT::JWK.import(certs_response[:keys].first).public_key
   end
 end
