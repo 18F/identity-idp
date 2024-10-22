@@ -306,6 +306,7 @@ class ApplicationController < ActionController::Base
   end
 
   def confirm_two_factor_authenticated
+    request.env['devise_timeout_failure_redirect_url'] = decorated_sp_session.cancel_link_url
     authenticate_user!(force: true)
 
     if !two_factor_enabled?
