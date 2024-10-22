@@ -141,6 +141,28 @@ RSpec.describe Idv::InPerson::SsnController do
 
         expect(response).to redirect_to idv_in_person_verify_info_url
       end
+
+      context 'when the user has previously submitted an ssn' do
+        let(:analytics_args) do
+          {
+            analytics_id: 'In Person Proofing',
+            flow_path: 'standard',
+            step: 'ssn',
+            success: true,
+            previous_ssn_edit_distance: 6,
+            same_address_as_id: true,
+            errors: {},
+          }
+        end
+
+        it 'updates idv_session.ssn' do
+          subject.idv_session.ssn = '900-95-7890'
+
+          expect { put :update, params: params }.to change { subject.idv_session.ssn }.
+            from('900-95-7890').to(ssn)
+          expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+        end
+      end
     end
 
     context 'invalid ssn' do

@@ -90,17 +90,6 @@ module TwoFactorAuthenticatableMethods
     redirect_to after_sign_in_path_for(current_user)
   end
 
-  def check_sp_required_mfa_bypass(auth_method:)
-    return unless service_provider_mfa_policy.user_needs_sp_auth_method_verification?
-    return if service_provider_mfa_policy.phishing_resistant_required? &&
-              TwoFactorAuthenticatable::AuthMethod.phishing_resistant?(auth_method)
-    if service_provider_mfa_policy.piv_cac_required? &&
-       auth_method == TwoFactorAuthenticatable::AuthMethod::PIV_CAC
-      return
-    end
-    prompt_to_verify_sp_required_mfa
-  end
-
   def reset_attempt_count_if_user_no_longer_locked_out
     return unless current_user.no_longer_locked_out?
 

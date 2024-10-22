@@ -5,7 +5,6 @@ import { toFormEntryError } from '@18f/identity-document-capture/services/upload
 import { I18nContext } from '@18f/identity-react-i18n';
 import { I18n } from '@18f/identity-i18n';
 import { expect } from 'chai';
-import { composeComponents } from '@18f/identity-compose-components';
 
 describe('DocumentCaptureReviewIssues', () => {
   const DEFAULT_OPTIONS = {
@@ -46,54 +45,51 @@ describe('DocumentCaptureReviewIssues', () => {
 
   context('with doc error', () => {
     it('renders for non doc type failure', () => {
-      const props = {
-        isFailedDocType: false,
-        remainingSubmitAttempts: 2,
-        unknownFieldErrors: [
-          {
-            field: 'general',
-            error: toFormEntryError({ field: 'network', message: 'general error' }),
-          },
-        ],
-        errors: [
-          {
-            field: 'front',
-            error: toFormEntryError({ field: 'front', message: 'front side error' }),
-          },
-          {
-            field: 'back',
-            error: toFormEntryError({ field: 'back', message: 'back side error' }),
-          },
-        ],
-      };
-      const App = composeComponents(
-        [
-          InPersonContext.Provider,
-          {
-            value: {
-              inPersonURL: '/verify/doc_capture',
-            },
-          },
-        ],
-        [
-          I18nContext.Provider,
-          {
-            value: new I18n({
-              strings: {
-                'idv.failure.attempts_html': 'You have %{count} attempts remaining.',
-              },
-            }),
-          },
-        ],
-        [
-          DocumentCaptureReviewIssues,
-          {
-            ...DEFAULT_OPTIONS,
-            ...props,
-          },
-        ],
+      const { getByText, getByLabelText, getByRole, getAllByRole } = render(
+        <InPersonContext.Provider
+          value={{
+            inPersonURL: '/verify/doc_capture',
+            locationsURL: '',
+            addressSearchURL: '',
+            inPersonFullAddressEntryEnabled: false,
+            inPersonOutageMessageEnabled: false,
+            optedInToInPersonProofing: false,
+            usStatesTerritories: [['Los Angeles', 'NY']],
+          }}
+        >
+          <I18nContext.Provider
+            value={
+              new I18n({
+                strings: { 'idv.failure.attempts_html': 'You have %{count} attempts remaining.' },
+              })
+            }
+          >
+            <DocumentCaptureReviewIssues
+              {...{
+                ...DEFAULT_OPTIONS,
+                isFailedDocType: false,
+                remainingSubmitAttempts: 2,
+                unknownFieldErrors: [
+                  {
+                    error: toFormEntryError({ field: 'network', message: 'general error' }),
+                  },
+                ],
+                errors: [
+                  {
+                    field: 'front',
+                    error: toFormEntryError({ field: 'front', message: 'front side error' }),
+                  },
+                  {
+                    field: 'back',
+                    error: toFormEntryError({ field: 'back', message: 'back side error' }),
+                  },
+                ],
+              }}
+            />
+          </I18nContext.Provider>
+        </InPersonContext.Provider>,
       );
-      const { getByText, getByLabelText, getByRole, getAllByRole } = render(<App />);
+
       const h1 = screen.getByRole('heading', { name: 'doc_auth.headings.review_issues', level: 1 });
       expect(h1).to.be.ok();
 

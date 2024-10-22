@@ -6,7 +6,6 @@ module TwoFactorAuthentication
     include MfaSetupConcern
     include NewDeviceConcern
 
-    before_action :check_sp_required_mfa
     before_action :confirm_multiple_factors_enabled
     before_action :redirect_if_blank_phone, only: [:show]
     before_action :confirm_voice_capability, only: [:show]
@@ -195,10 +194,6 @@ module TwoFactorAuthentication
 
     def confirmation_for_add_phone?
       UserSessionContext.confirmation_context?(context) && user_fully_authenticated?
-    end
-
-    def check_sp_required_mfa
-      check_sp_required_mfa_bypass(auth_method: params[:otp_delivery_preference])
     end
 
     def assign_phone

@@ -6,7 +6,9 @@ module Idv
       include Idv::AvailabilityConcern
       include IdvStepConcern
       include DocumentCaptureConcern
+      include RenderConditionConcern
 
+      check_or_render_not_found -> { IdentityConfig.store.socure_enabled }
       before_action :confirm_not_rate_limited
       before_action :confirm_step_allowed
 
@@ -39,7 +41,7 @@ module Idv
           uuid: document_capture_session_uuid,
         )
 
-        document_capture_session.socure_docv_token = document_response.dig(
+        document_capture_session.socure_docv_transaction_token = document_response.dig(
           :data,
           :docvTransactionToken,
         )

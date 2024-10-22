@@ -88,7 +88,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
 
       context 'enrollment does not exist' do
         it 'returns without doing anything' do
-          bad_id = (InPersonEnrollment.all.pluck(:id).max || 0) + 1
+          bad_id = (InPersonEnrollment.pluck(:id).max || 0) + 1
           job.perform(bad_id)
           expect(analytics).not_to have_logged_event('SendProofingNotificationJob: job started')
           expect(analytics).to have_logged_event('SendProofingNotificationJob: job skipped')

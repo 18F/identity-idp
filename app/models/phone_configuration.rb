@@ -8,7 +8,7 @@ class PhoneConfiguration < ApplicationRecord
 
   encrypted_attribute(name: :phone)
 
-  enum delivery_preference: { sms: 0, voice: 1 }
+  enum :delivery_preference, { sms: 0, voice: 1 }
 
   def formatted_phone
     PhoneFormatter.format(phone)

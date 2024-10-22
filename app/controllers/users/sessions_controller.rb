@@ -39,7 +39,7 @@ module Users
       return process_rate_limited if session_bad_password_count_max_exceeded?
       return process_locked_out_user if current_user && user_locked_out?(current_user)
       return process_rate_limited if rate_limited?
-      return process_failed_captcha if !valid_captcha_result?
+      return process_failed_captcha unless valid_captcha_result? || log_captcha_failures_only?
 
       rate_limit_password_failure = true
       self.resource = warden.authenticate!(auth_options)
@@ -204,7 +204,10 @@ module Users
     def track_authentication_attempt
       user = user_from_params || AnonymousUser.new
 
-      success = current_user.present? && !user_locked_out?(user) && valid_captcha_result?
+      success = current_user.present? &&
+                !user_locked_out?(user) &&
+                (valid_captcha_result? || log_captcha_failures_only?)
+
       analytics.email_and_password_auth(
         success: success,
         user_id: user.uuid,
@@ -261,9 +264,9 @@ module Users
     end
 
     def pending_account_reset_request
-      AccountReset::FindPendingRequestForUser.new(
+      AccountReset::PendingRequestForUser.new(
         current_user,
-      ).call
+      ).get_account_reset_request
     end
 
     def override_csp_for_google_analytics
@@ -307,6 +310,10 @@ module Users
     def randomize_check_password?
       SecureRandom.random_number(IdentityConfig.store.compromised_password_randomizer_value) >=
         IdentityConfig.store.compromised_password_randomizer_threshold
+    end
+
+    def log_captcha_failures_only?
+      IdentityConfig.store.sign_in_recaptcha_log_failures_only
     end
   end
 

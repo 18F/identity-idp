@@ -4,10 +4,6 @@ module Idv
   module InPerson
     module Public
       class UspsLocationsController < ApplicationController
-        include RenderConditionConcern
-
-        check_or_render_not_found -> { enabled? }
-
         skip_forgery_protection
 
         def index
@@ -36,10 +32,6 @@ module Idv
           locations.map do |location|
             UspsInPersonProofing::EnrollmentHelper.localized_location(location)
           end
-        end
-
-        def enabled?
-          IdentityConfig.store.in_person_public_address_search_enabled
         end
 
         def search_params

@@ -149,6 +149,7 @@ RSpec.describe Idv::VerifyInfoController do
           context: {
             stages: {
               threatmetrix: {
+                client: threatmetrix_client_id,
                 transaction_id: 1,
                 review_status: review_status,
                 response_body: {
@@ -226,9 +227,7 @@ RSpec.describe Idv::VerifyInfoController do
                 context: hash_including(
                   stages: hash_including(
                     threatmetrix: hash_including(
-                      response_body: hash_including(
-                        client: threatmetrix_client_id,
-                      ),
+                      client: threatmetrix_client_id,
                     ),
                   ),
                 ),
@@ -286,6 +285,47 @@ RSpec.describe Idv::VerifyInfoController do
         it 'does not redirect back to the SSN step' do
           expect(response).not_to redirect_to(idv_ssn_url)
         end
+      end
+    end
+
+    context 'when the user has updated their SSN' do
+      let(:document_capture_session) do
+        DocumentCaptureSession.create(user:)
+      end
+
+      let(:async_state) do
+        # Here we're trying to match the store to redis -> read from redis flow this data travels
+        adjudicated_result = Proofing::Resolution::ResultAdjudicator.new(
+          state_id_result: Proofing::StateIdResult.new(success: true),
+          device_profiling_result: Proofing::DdpResult.new(success: true),
+          ipp_enrollment_in_progress: true,
+          residential_resolution_result: Proofing::Resolution::Result.new(success: true),
+          resolution_result: Proofing::Resolution::Result.new(success: true),
+          same_address_as_id: true,
+          should_proof_state_id: true,
+          applicant_pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
+        ).adjudicated_result.to_h
+
+        document_capture_session.create_proofing_session
+
+        document_capture_session.store_proofing_result(adjudicated_result)
+
+        document_capture_session.load_proofing_result
+      end
+
+      it 'logs the edit distance between SSNs' do
+        allow(controller).to receive(:load_async_state).and_return(async_state)
+        controller.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
+        controller.idv_session.previous_ssn = '900-66-1256'
+
+        get :show
+
+        expect(@analytics).to have_logged_event(
+          'IdV: doc auth verify proofing results',
+          hash_including(
+            previous_ssn_edit_distance: 2,
+          ),
+        )
       end
     end
 
@@ -349,6 +389,10 @@ RSpec.describe Idv::VerifyInfoController do
               },
             ),
           )
+
+          event = @analytics.events['IdV: doc auth verify proofing results'].first
+          state_id = event.dig(:proofing_results, :context, :stages, :state_id)
+          expect(state_id).to match(a_hash_including(state_id_type: 'drivers_license'))
         end
       end
 
@@ -440,21 +484,44 @@ RSpec.describe Idv::VerifyInfoController do
       expect(response).to redirect_to idv_verify_info_url
     end
 
-    it 'modifies pii as expected' do
-      app_id = 'hello-world'
-      sp = create(:service_provider, app_id: app_id)
-      sp_session = { issuer: sp.issuer, vtr: ['C1'] }
-      allow(controller).to receive(:sp_session).and_return(sp_session)
+    context 'with an sp' do
+      let(:sp) { create(:service_provider) }
+      let(:acr_values) { Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF }
+      let(:vtr) { nil }
+      let(:sp_session) { { issuer: sp.issuer, vtr:, acr_values: } }
 
-      expect(Idv::Agent).to receive(:new).with(
-        hash_including(
-          ssn: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn],
-          consent_given_at: controller.idv_session.idv_consent_given_at,
-          **Idp::Constants::MOCK_IDV_APPLICANT,
-        ),
-      ).and_call_original
+      before do
+        allow(controller).to receive(:sp_session).and_return(sp_session)
+      end
 
-      put :update
+      it 'modifies PII as expected' do
+        expect(Idv::Agent).to receive(:new).with(
+          hash_including(
+            ssn: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn],
+            consent_given_at: controller.idv_session.idv_consent_given_at,
+            **Idp::Constants::MOCK_IDV_APPLICANT,
+          ),
+        ).and_call_original
+
+        put :update
+      end
+
+      context 'with vtr values' do
+        let(:acr_values) { nil }
+        let(:vtr) { ['C1'] }
+
+        it 'modifies PII as expected' do
+          expect(Idv::Agent).to receive(:new).with(
+            hash_including(
+              ssn: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn],
+              consent_given_at: controller.idv_session.idv_consent_given_at,
+              **Idp::Constants::MOCK_IDV_APPLICANT,
+            ),
+          ).and_call_original
+
+          put :update
+        end
+      end
     end
 
     it 'updates DocAuthLog verify_submit_count' do

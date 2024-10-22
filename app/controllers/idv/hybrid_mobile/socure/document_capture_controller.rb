@@ -7,7 +7,9 @@ module Idv
         include Idv::AvailabilityConcern
         include DocumentCaptureConcern
         include Idv::HybridMobile::HybridMobileConcern
+        include RenderConditionConcern
 
+        check_or_render_not_found -> { IdentityConfig.store.socure_enabled }
         before_action :check_valid_document_capture_session, except: [:update]
 
         def show
@@ -29,7 +31,7 @@ module Idv
           document_capture_session = DocumentCaptureSession.find_by(
             uuid: document_capture_session_uuid,
           )
-          document_capture_session.socure_docv_token = document_response.dig(
+          document_capture_session.socure_docv_transaction_token = document_response.dig(
             :data,
             :docvTransactionToken,
           )
