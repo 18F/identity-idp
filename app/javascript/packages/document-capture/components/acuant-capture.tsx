@@ -349,7 +349,9 @@ function AcuantCapture(
   // This hook does that.
   const isBackOfId = name === 'back';
   useLogCameraInfo({ isBackOfId, hasStartedCropping });
-  const [isCapturingEnvironment, setIsCapturingEnvironment] = useState(selfieCapture && immediatelyBeginCapture);
+  const [isCapturingEnvironment, setIsCapturingEnvironment] = useState(
+    selfieCapture && immediatelyBeginCapture,
+  );
 
   const {
     failedCaptureAttempts,
