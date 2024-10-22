@@ -347,6 +347,7 @@ RSpec.feature 'document capture step', :js do
               attach_images
               click_continue
               expect_doc_capture_selfie_subheader
+              click_button 'Take photo'
               attach_selfie
               submit_images
 
