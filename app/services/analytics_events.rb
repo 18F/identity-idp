@@ -2785,37 +2785,6 @@ module AnalyticsEvents
     )
   end
 
-  # @param ["hybrid","standard"] flow_path Document capture user flow
-  # @param [String] step
-  # @param [String] analytics_id
-  # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
-  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  # @param [Boolean] same_address_as_id
-  # User clicked cancel on update state id page
-  def idv_in_person_proofing_cancel_update_state_id(
-    success:,
-    errors:,
-    flow_path: nil,
-    step: nil,
-    analytics_id: nil,
-    error_details: nil,
-    same_address_as_id: nil,
-    **extra
-  )
-    track_event(
-      'IdV: in person proofing cancel_update_state_id submitted',
-      flow_path:,
-      step:,
-      analytics_id:,
-      success:,
-      errors:,
-      error_details:,
-      same_address_as_id:,
-      **extra,
-    )
-  end
-
   # A job to check USPS notifications about in-person enrollment status updates has completed
   # @param [Integer] fetched_items items fetched
   # @param [Integer] processed_items items fetched and processed
@@ -2881,40 +2850,6 @@ module AnalyticsEvents
     track_event(
       'IdV: in person proofing characters submitted could not be transliterated',
       nontransliterable_characters: nontransliterable_characters,
-      **extra,
-    )
-  end
-
-  # @param ["hybrid","standard"] flow_path Document capture user flow
-  # @param [String] step
-  # @param [String] analytics_id
-  # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
-  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  # @param [Boolean] same_address_as_id
-  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
-  # User submitted state id on redo state id page
-  def idv_in_person_proofing_redo_state_id_submitted(
-    success:,
-    errors:,
-    error_details: nil,
-    flow_path: nil,
-    step: nil,
-    analytics_id: nil,
-    same_address_as_id: nil,
-    opted_in_to_in_person_proofing: nil,
-    **extra
-  )
-    track_event(
-      'IdV: in person proofing redo_state_id submitted',
-      flow_path:,
-      step:,
-      analytics_id:,
-      success:,
-      errors:,
-      error_details:,
-      same_address_as_id:,
-      opted_in_to_in_person_proofing:,
       **extra,
     )
   end
