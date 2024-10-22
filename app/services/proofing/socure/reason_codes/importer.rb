@@ -24,7 +24,7 @@ module Proofing
           end
 
           create_or_update_downloaded_reason_codes
-          deactive_missing_reason_codes
+          deactivate_missing_reason_codes
 
           FormResponse.new(
             success: true,
@@ -64,14 +64,14 @@ module Proofing
           end
         end
 
-        def deactive_missing_reason_codes
+        def deactivate_missing_reason_codes
           active_codes = downloaded_reason_codes.flat_map do |_group, reason_codes|
             reason_codes.keys
           end
           deactivated_at = Time.zone.now
-          SocureReasonCode.active.where.not(code: active_codes).each do |deactivateable_reason_code|
-            deactivateable_reason_code.update!(deactivated_at:)
-            deactivated_reason_code_records.push(deactivateable_reason_code)
+          SocureReasonCode.active.where.not(code: active_codes).find_each do |reason_code|
+            reason_code.update!(deactivated_at:)
+            deactivated_reason_code_records.push(reason_code)
           end
         end
 
