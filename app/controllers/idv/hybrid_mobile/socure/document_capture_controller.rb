@@ -35,6 +35,7 @@ module Idv
             :data,
             :docvTransactionToken,
           )
+          puts "\n\ndocvTransactionToken: #{document_capture_session.socure_docv_token}\n\n"
           document_capture_session.save
 
           # useful for analytics

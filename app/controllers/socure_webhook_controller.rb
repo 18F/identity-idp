@@ -7,22 +7,37 @@ class SocureWebhookController < ApplicationController
   check_or_render_not_found -> { IdentityConfig.store.socure_enabled }
   before_action :check_token
   before_action :check_socure_event
+  # before_action :check_doc_capture_session
 
   def create
     log_webhook_receipt
+    fetch_results if socure_params[:event][:eventType] == 'DOCUMENTS_UPLOADED'
     render json: { message: 'Secret token is valid.' }
   end
 
   private
 
+  def fetch_results
+    dcs_uuid = socure_params[:event][:customer_user_id]
+    dcs = DocumentCaptureSession.find_by(uuid: dcs_uuid)
+    SocureDocvResultsJob.perform_later(
+      document_capture_session_uuid: dcs.uuid,
+      service_provider_issuer: dcs.issuer,
+      user_uuid: dcs.user.uuid,
+    )
+  end
+
   def check_token
+    puts "\ncheck_token: #{token_valid?}\n"
     if !token_valid?
       render status: :unauthorized, json: { message: 'Invalid secret token.' }
     end
   end
 
   def check_socure_event
+    puts "\ncheck_socure_event: #{socure_params[:event]}\n"
     if socure_params[:event].blank?
+      byebug
       render status: :bad_request, json: { message: 'Invalid event.' }
     end
   end

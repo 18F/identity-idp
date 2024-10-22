@@ -31,6 +31,7 @@ module DocAuth
             attention_with_barcode: false, # n/a
           ).submit
           # socure_response.merge(response)
+          response.merge(socure_response)
         end
 
         def document_capture_session
