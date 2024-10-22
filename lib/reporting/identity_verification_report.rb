@@ -235,14 +235,16 @@ module Reporting
       # there is another event for the user in the data that _is_ tagged
       # with the issuer.
 
-      result = data[Events::FRAUD_REVIEW_PASSED]
+      users = data[Events::FRAUD_REVIEW_PASSED]
 
-      issuers&.each do |issuer|
-        users_with_events_for_issuer = data[sp_key(issuer)]
-        result &= users_with_events_for_issuer
-      end
+      return users if issuers.nil? || issuers.empty?
 
-      result
+      users_with_events_for_any_issuer =
+        issuers.each_with_object(Set.new) do |issuer, accumulated_users|
+          accumulated_users | data[sp_key(issuer)]
+        end
+
+      users & users_with_events_for_any_issuer
     end
 
     def did_not_pass_fraud_review_users
