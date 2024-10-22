@@ -379,7 +379,6 @@ RSpec.feature 'document capture step', :js do
 
                 use_selfie_image('ial2_test_credential_multiple_doc_auth_failures_both_sides.yml')
                 submit_images
-
                 expect_rate_limited_header(true)
 
                 expect_try_taking_new_pictures
@@ -396,7 +395,6 @@ RSpec.feature 'document capture step', :js do
                 # Wrong doc type is uploaded
                 use_id_image('ial2_test_credential_wrong_doc_type.yml')
 
-                click_button 'Take photo'
                 use_selfie_image('ial2_test_portrait_match_success.yml')
                 submit_images
 
@@ -420,7 +418,6 @@ RSpec.feature 'document capture step', :js do
                   'ial2_test_credential_multiple_doc_auth_failures_front_side_only.yml',
                 )
 
-                click_button 'Take photo'
                 use_selfie_image(
                   'ial2_test_credential_multiple_doc_auth_failures_front_side_only.yml',
                 )
@@ -447,7 +444,6 @@ RSpec.feature 'document capture step', :js do
                   'ial2_test_credential_multiple_doc_auth_failures_back_side_only.yml',
                 )
 
-                click_button 'Take photo'
                 use_selfie_image(
                   'ial2_test_credential_multiple_doc_auth_failures_back_side_only.yml',
                 )
@@ -472,7 +468,6 @@ RSpec.feature 'document capture step', :js do
                 # attention barcode with invalid pii is uploaded
                 use_id_image('ial2_test_credential_barcode_attention_no_address.yml')
                 click_continue
-                click_button 'Take photo'
                 use_selfie_image('ial2_test_portrait_match_success.yml')
                 submit_images
 
