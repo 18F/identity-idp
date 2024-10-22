@@ -1,5 +1,4 @@
 import { render } from 'react-dom';
-import { composeComponents } from '@18f/identity-compose-components';
 import {
   DocumentCapture,
   DeviceContext,
