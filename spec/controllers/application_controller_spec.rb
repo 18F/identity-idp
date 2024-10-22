@@ -477,13 +477,38 @@ RSpec.describe ApplicationController do
       let(:vtr) { nil }
       let(:acr_values) do
         [
-          'http://idmanagement.gov/ns/assurance/aal/1',
+          Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
         ].join(' ')
       end
 
       it 'returns a resolved authn context result' do
         expect(result.aal2?).to eq(true)
         expect(result.identity_proofing?).to eq(true)
+      end
+
+      context 'when an unknown acr value is passed in' do
+        let(:acr_values) { 'unknown-acr-value' }
+
+        it 'raises an exception' do
+          expect { result }.to raise_exception(
+            Vot::Parser::ParseException,
+            'VoT parser called without VoT or ACR values',
+          )
+        end
+
+        context 'with a known acr value' do
+          let(:acr_values) do
+            [
+              Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+              'unknown-acr-value',
+            ].join(' ')
+          end
+
+          it 'returns a resolved authn context result' do
+            expect(result.aal2?).to eq(true)
+            expect(result.identity_proofing?).to eq(true)
+          end
+        end
       end
 
       context 'without an SP' do

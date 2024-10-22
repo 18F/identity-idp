@@ -7,7 +7,6 @@ import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import type { FormStep } from '@18f/identity-form-steps';
 import { getConfigValue } from '@18f/identity-config';
 import { UploadFormEntriesError } from '../services/upload';
-import DocumentsAndSelfieStep from './documents-and-selfie-step';
 import SelfieStep from './selfie-step';
 import DocumentsStep from './documents-step';
 import InPersonPrepareStep from './in-person-prepare-step';
@@ -39,7 +38,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   const { t } = useI18n();
   const { flowPath } = useContext(UploadContext);
   const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
-  const { isSelfieCaptureEnabled, docAuthSeparatePagesEnabled } = useContext(SelfieCaptureContext);
+  const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
   const { inPersonFullAddressEntryEnabled, inPersonURL, skipDocAuth, skipDocAuthFromHandoff } =
     useContext(InPersonContext);
   useDidUpdateEffect(onStepChange, [stepName]);
@@ -54,11 +53,6 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
     : InPersonLocationPostOfficeSearchStep;
 
   // Define different states to be used in human readable array declaration
-  const documentAndSelfieFormStep: FormStep = {
-    name: 'documentsAndSelfie',
-    form: DocumentsAndSelfieStep,
-    title: t('doc_auth.headings.document_capture'),
-  };
   const documentFormStep: FormStep = {
     name: 'documents',
     form: DocumentsStep,
@@ -70,9 +64,9 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
     title: t('doc_auth.headings.selfie_capture'),
   };
   const documentsFormSteps: FormStep[] =
-    isSelfieCaptureEnabled && docAuthSeparatePagesEnabled && submissionError === undefined
+    isSelfieCaptureEnabled && submissionError === undefined
       ? [documentFormStep, selfieFormStep]
-      : [documentAndSelfieFormStep];
+      : [documentFormStep];
   const reviewFormStep: FormStep = {
     name: 'review',
     form:

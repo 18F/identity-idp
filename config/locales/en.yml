@@ -493,6 +493,8 @@ devise.sessions.signed_out: You are now signed out.
 doc_auth.accessible_labels.camera_video_capture_instructions: We will automatically take the picture
 doc_auth.accessible_labels.camera_video_capture_label: Viewfinder with frame to center your ID
 doc_auth.accessible_labels.document_capture_dialog: Document capture
+doc_auth.alt.selfie_help_1: A person with their face in a green oval.
+doc_auth.alt.selfie_help_2: A finger taps a checkmark under the face to confirm the photo.
 doc_auth.buttons.add_new_photos: Add new photos
 doc_auth.buttons.close: Close
 doc_auth.buttons.continue: Continue
@@ -578,9 +580,7 @@ doc_auth.headings.document_capture: Add photos of your driver’s license or sta
 doc_auth.headings.document_capture_back: Back of your ID
 doc_auth.headings.document_capture_front: Front of your ID
 doc_auth.headings.document_capture_selfie: Photo of your face
-doc_auth.headings.document_capture_subheader_id: Driver’s license or state ID card
 doc_auth.headings.document_capture_subheader_selfie: Add a photo of your face
-doc_auth.headings.document_capture_with_selfie: Add photos of your ID and a photo of yourself
 doc_auth.headings.front: Front of your driver’s license or state ID
 doc_auth.headings.how_to_verify: Choose how you want to verify your identity
 doc_auth.headings.hybrid_handoff: How would you like to add your ID?
@@ -592,6 +592,7 @@ doc_auth.headings.review_issues: Check your images and try again
 doc_auth.headings.secure_account: Secure your account
 doc_auth.headings.selfie: Photo of your face
 doc_auth.headings.selfie_capture: Capture photo of yourself
+doc_auth.headings.selfie_instructions.howto: How to take your photo
 doc_auth.headings.ssn: Enter your Social Security number
 doc_auth.headings.ssn_update: Update your Social Security number
 doc_auth.headings.text_message: We sent a message to your phone
@@ -638,6 +639,8 @@ doc_auth.info.no_ssn: You must have a Social Security number to finish verifying
 doc_auth.info.review_examples_of_photos: Review examples of how to take clear photos of your ID.
 doc_auth.info.secure_account: We’ll encrypt your account when you re-enter your password. Encryption means your data is protected and only you will be able to access or change your information.
 doc_auth.info.selfie_capture_content: We’ll check that you are the person on your ID.
+doc_auth.info.selfie_capture_help_1: Line up your face with the green circle. Hold still and wait for the tool to capture a photo.
+doc_auth.info.selfie_capture_help_2: After your photo is automatically captured, tap the green checkmark to accept the photo.
 doc_auth.info.selfie_capture_status.face_close_to_border: Too close to the frame
 doc_auth.info.selfie_capture_status.face_not_found: Face not found
 doc_auth.info.selfie_capture_status.face_too_small: Face too small
@@ -1197,8 +1200,7 @@ in_person_proofing.body.barcode.location_details: Location details
 in_person_proofing.body.barcode.questions: Questions?
 in_person_proofing.body.barcode.retail_hours: Retail hours
 in_person_proofing.body.barcode.retail_hours_closed: Closed
-in_person_proofing.body.barcode.return_to_partner_html: You may now %{link_html} to complete any next steps you can access until your identity has been verified.
-in_person_proofing.body.barcode.return_to_partner_link: sign out and return to %{sp_name}
+in_person_proofing.body.barcode.return_to_partner_link: Return to %{sp_name}
 in_person_proofing.body.barcode.what_to_expect: What to expect at the Post Office
 in_person_proofing.body.cta.button: Try in person
 in_person_proofing.body.cta.prompt_detail: You may be able to verify your identity at a participating Post Office near you.
@@ -1596,7 +1598,6 @@ titles.idv.reset_password: Reset Password
 titles.idv.verify_info: Verify your information
 titles.mfa_setup.face_touch_unlock_confirmation: Face or touch unlock added
 titles.mfa_setup.suggest_second_mfa: You’ve added your first authentication method! Add a second method as a backup.
-titles.no_auth_option: No sign-in method found
 titles.openid_connect.authorization: OpenID Connect Authorization
 titles.openid_connect.logout: OpenID Connect Logout
 titles.passwords.change: Change the password for your account
@@ -1687,7 +1688,6 @@ two_factor_authentication.max_otp_requests_reached: For your security, your acco
 two_factor_authentication.max_personal_key_login_attempts_reached: For your security, your account is temporarily locked because you have entered the personal key incorrectly too many times.
 two_factor_authentication.max_piv_cac_login_attempts_reached: For your security, your account is temporarily locked because you have presented your piv/cac credential incorrectly too many times.
 two_factor_authentication.mobile_terms_of_service: Mobile terms of service
-two_factor_authentication.no_auth_option: No authentication option could be found for you to sign in.
 two_factor_authentication.opt_in.error_retry: Sorry, we are having trouble opting you in. Please try again.
 two_factor_authentication.opt_in.opted_out_html: You’ve opted out of receiving text messages at %{phone_number_html}. You can opt in and receive a security code again to that phone number.
 two_factor_authentication.opt_in.opted_out_last_30d_html: You’ve opted out of receiving text messages at %{phone_number_html} within the last 30 days. We can only opt in a phone number once every 30 days.

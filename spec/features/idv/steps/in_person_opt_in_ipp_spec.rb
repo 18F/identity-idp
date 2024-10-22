@@ -185,7 +185,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
       expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
 
       # click update state ID button
-      click_button t('idv.buttons.change_state_id_label')
+      click_link t('idv.buttons.change_state_id_label')
       expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
       choose t('in_person_proofing.form.state_id.same_address_as_id_yes')
       click_button t('forms.buttons.submit.update')

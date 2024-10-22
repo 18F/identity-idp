@@ -120,7 +120,7 @@ group :development, :test do
   gem 'rspec-rails', '~> 6.0'
   gem 'rubocop', '~> 1.62.0', require: false
   gem 'rubocop-performance', '~> 1.20.2', require: false
-  gem 'rubocop-rails', '>= 2.5.2', require: false
+  gem 'rubocop-rails', '>= 2.26.2', require: false
   gem 'rubocop-rspec', require: false
   gem 'sqlite3', require: false
 end

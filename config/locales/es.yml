@@ -504,6 +504,8 @@ devise.sessions.signed_out: Cerró su sesión.
 doc_auth.accessible_labels.camera_video_capture_instructions: Tomaremos la foto automáticamente
 doc_auth.accessible_labels.camera_video_capture_label: Visor con marco para centrar su identificación
 doc_auth.accessible_labels.document_capture_dialog: Captura de documento
+doc_auth.alt.selfie_help_1: Una persona con el rostro dentro de un óvalo verde.
+doc_auth.alt.selfie_help_2: Un dedo toca una marca de verificación debajo de la cara para confirmar la foto.
 doc_auth.buttons.add_new_photos: Añadir nuevas fotos
 doc_auth.buttons.close: Cerrar
 doc_auth.buttons.continue: Continuar
@@ -589,9 +591,7 @@ doc_auth.headings.document_capture: Añade fotos de tu licencia de conducir o cr
 doc_auth.headings.document_capture_back: Reverso de su identificación
 doc_auth.headings.document_capture_front: Frente de su identificación
 doc_auth.headings.document_capture_selfie: Fotografía de su cara
-doc_auth.headings.document_capture_subheader_id: Licencia de conducir o identificación estatal
 doc_auth.headings.document_capture_subheader_selfie: Añada una foto de su cara
-doc_auth.headings.document_capture_with_selfie: Agregue fotos de su identificación y una foto de usted
 doc_auth.headings.front: Frente de su licencia de conducir o identificación estatal
 doc_auth.headings.how_to_verify: Elija cómo desea verificar su identidad
 doc_auth.headings.hybrid_handoff: '¿Cómo desea añadir su identificación?'
@@ -603,6 +603,7 @@ doc_auth.headings.review_issues: Revise sus imágenes e inténtelo de nuevo
 doc_auth.headings.secure_account: Proteja su cuenta
 doc_auth.headings.selfie: Fotografía de su cara
 doc_auth.headings.selfie_capture: Capture una foto de usted
+doc_auth.headings.selfie_instructions.howto: 'Cómo tomar su fotografía:'
 doc_auth.headings.ssn: Ingrese su número de Seguro Social
 doc_auth.headings.ssn_update: Actualice su número de Seguro Social
 doc_auth.headings.text_message: Enviamos un mensaje a su teléfono
@@ -649,6 +650,8 @@ doc_auth.info.no_ssn: Debe tener un número de Seguro Social para finalizar la v
 doc_auth.info.review_examples_of_photos: Vea ejemplos de cómo tomar fotos nítidas de su identificación.
 doc_auth.info.secure_account: Cifraremos su cuenta cuando vuelva a ingresar su contraseña. Con el cifrado, sus datos están protegidos y solo usted puede acceder a su información o modificarla.
 doc_auth.info.selfie_capture_content: Revisaremos que usted sea la persona que figura en su identificación.
+doc_auth.info.selfie_capture_help_1: Alinee su cara con el círculo verde. No se mueva y espere a que la cámara capture una foto.
+doc_auth.info.selfie_capture_help_2: Después de la captura automática de su foto, toque la marca de verificación verde para aceptar la fotografía.
 doc_auth.info.selfie_capture_status.face_close_to_border: Demasiado cerca del marco
 doc_auth.info.selfie_capture_status.face_not_found: No se detectó el rostro
 doc_auth.info.selfie_capture_status.face_too_small: Rostro demasiado pequeño
@@ -1208,8 +1211,7 @@ in_person_proofing.body.barcode.location_details: Detalles del lugar
 in_person_proofing.body.barcode.questions: '¿Tiene alguna pregunta?'
 in_person_proofing.body.barcode.retail_hours: Horario de atención al público
 in_person_proofing.body.barcode.retail_hours_closed: Cerrado
-in_person_proofing.body.barcode.return_to_partner_html: Ahora puede %{link_html} para completar los pasos siguientes a los que tenga acceso hasta que se haya verificado su identidad.
-in_person_proofing.body.barcode.return_to_partner_link: cerrar sesión y volver a %{sp_name}
+in_person_proofing.body.barcode.return_to_partner_link: Volver a %{sp_name}
 in_person_proofing.body.barcode.what_to_expect: Qué esperar en la oficina de correos
 in_person_proofing.body.cta.button: Intentar en persona
 in_person_proofing.body.cta.prompt_detail: Es posible que pueda verificar su identidad en una oficina de correos participante cercana.
@@ -1608,7 +1610,6 @@ titles.idv.reset_password: Restablecer la contraseña
 titles.idv.verify_info: Verifique su información
 titles.mfa_setup.face_touch_unlock_confirmation: Se agregó el desbloqueo facial o táctil
 titles.mfa_setup.suggest_second_mfa: Agregó su primer método de autenticación. Agregue un segundo método como respaldo.
-titles.no_auth_option: No se encontró ningún método de inicio de sesión
 titles.openid_connect.authorization: Autorización de OpenID Connect
 titles.openid_connect.logout: Cierre de sesión de OpenID Connect
 titles.passwords.change: Cambie la contraseña de su cuenta
@@ -1699,7 +1700,6 @@ two_factor_authentication.max_otp_requests_reached: Para su seguridad, su cuenta
 two_factor_authentication.max_personal_key_login_attempts_reached: Para su seguridad, su cuenta está bloqueada temporalmente porque ingresó mal la clave personal demasiadas veces.
 two_factor_authentication.max_piv_cac_login_attempts_reached: Para su seguridad, su cuenta está bloqueada temporalmente porque presentó mal su tarjeta PIV o CAC demasiadas veces.
 two_factor_authentication.mobile_terms_of_service: Condiciones del servicio móvil
-two_factor_authentication.no_auth_option: No se pudo encontrar ninguna opción de autenticación para que iniciara sesión.
 two_factor_authentication.opt_in.error_retry: Lo sentimos, estamos teniendo problema para admitirlo; inténtelo de nuevo.
 two_factor_authentication.opt_in.opted_out_html: Optó por no recibir mensajes de texto en el %{phone_number_html}. Puede optar por recibir un código de seguridad de nuevo en ese número de teléfono.
 two_factor_authentication.opt_in.opted_out_last_30d_html: Optó por no recibir mensajes de texto en el %{phone_number_html} en los últimos 30 días. Solo podemos admitir un número telefónico una vez cada 30 días.

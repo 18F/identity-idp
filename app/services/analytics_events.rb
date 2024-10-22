@@ -2785,37 +2785,6 @@ module AnalyticsEvents
     )
   end
 
-  # @param ["hybrid","standard"] flow_path Document capture user flow
-  # @param [String] step
-  # @param [String] analytics_id
-  # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
-  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  # @param [Boolean] same_address_as_id
-  # User clicked cancel on update state id page
-  def idv_in_person_proofing_cancel_update_state_id(
-    success:,
-    errors:,
-    flow_path: nil,
-    step: nil,
-    analytics_id: nil,
-    error_details: nil,
-    same_address_as_id: nil,
-    **extra
-  )
-    track_event(
-      'IdV: in person proofing cancel_update_state_id submitted',
-      flow_path:,
-      step:,
-      analytics_id:,
-      success:,
-      errors:,
-      error_details:,
-      same_address_as_id:,
-      **extra,
-    )
-  end
-
   # A job to check USPS notifications about in-person enrollment status updates has completed
   # @param [Integer] fetched_items items fetched
   # @param [Integer] processed_items items fetched and processed
@@ -2881,40 +2850,6 @@ module AnalyticsEvents
     track_event(
       'IdV: in person proofing characters submitted could not be transliterated',
       nontransliterable_characters: nontransliterable_characters,
-      **extra,
-    )
-  end
-
-  # @param ["hybrid","standard"] flow_path Document capture user flow
-  # @param [String] step
-  # @param [String] analytics_id
-  # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
-  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  # @param [Boolean] same_address_as_id
-  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
-  # User submitted state id on redo state id page
-  def idv_in_person_proofing_redo_state_id_submitted(
-    success:,
-    errors:,
-    error_details: nil,
-    flow_path: nil,
-    step: nil,
-    analytics_id: nil,
-    same_address_as_id: nil,
-    opted_in_to_in_person_proofing: nil,
-    **extra
-  )
-    track_event(
-      'IdV: in person proofing redo_state_id submitted',
-      flow_path:,
-      step:,
-      analytics_id:,
-      success:,
-      errors:,
-      error_details:,
-      same_address_as_id:,
-      opted_in_to_in_person_proofing:,
       **extra,
     )
   end
@@ -4622,6 +4557,31 @@ module AnalyticsEvents
     )
   end
 
+  # Socure Reason Codes were downloaded and synced against persisted codes in the database
+  # @param [Boolean] success Result from Socure KYC API call
+  # @param [Hash] errors Result from resolution proofing
+  # @param [String] exception Exception that occured during download or synchronizaiton
+  # @param [Array] added_reason_codes New reason codes that were added to the database
+  # @param [Array] deactivated_reason_codes Old reason codes that were deactivated
+  def idv_socure_reason_code_download(
+    success: true,
+    errors: nil,
+    exception: nil,
+    added_reason_codes: nil,
+    deactivated_reason_codes: nil,
+    **extra
+  )
+    track_event(
+      :idv_socure_reason_code_download,
+      success:,
+      errors:,
+      exception:,
+      added_reason_codes:,
+      deactivated_reason_codes:,
+      **extra,
+    )
+  end
+
   # Logs a Socure KYC result alongside a resolution result for later comparison.
   # @param [Hash] socure_result Result from Socure KYC API call
   # @param [Hash] resolution_result Result from resolution proofing
@@ -5526,6 +5486,7 @@ module AnalyticsEvents
   # @param [String, nil] vtr_param
   # @param [Boolean] unauthorized_scope
   # @param [Boolean] user_fully_authenticated
+  # @param [String] unknown_authn_contexts space separated list of unknown contexts
   def openid_connect_request_authorization(
     success:,
     errors:,
@@ -5542,6 +5503,7 @@ module AnalyticsEvents
     unauthorized_scope:,
     user_fully_authenticated:,
     error_details: nil,
+    unknown_authn_contexts: nil,
     **extra
   )
     track_event(
@@ -5561,6 +5523,7 @@ module AnalyticsEvents
       vtr_param:,
       unauthorized_scope:,
       user_fully_authenticated:,
+      unknown_authn_contexts:,
       **extra,
     )
   end
@@ -6337,6 +6300,7 @@ module AnalyticsEvents
   # matches the request certificate in a successful, signed request
   # @param [Hash] cert_error_details Details for errors that occurred because of an invalid
   # signature
+  # @param [String] unknown_authn_contexts space separated list of unknown contexts
   def saml_auth(
     success:,
     errors:,
@@ -6353,6 +6317,7 @@ module AnalyticsEvents
     matching_cert_serial:,
     error_details: nil,
     cert_error_details: nil,
+    unknown_authn_contexts: nil,
     **extra
   )
     track_event(
@@ -6372,6 +6337,7 @@ module AnalyticsEvents
       request_signed:,
       matching_cert_serial:,
       cert_error_details:,
+      unknown_authn_contexts:,
       **extra,
     )
   end
@@ -6383,6 +6349,7 @@ module AnalyticsEvents
   # @param [Boolean] force_authn
   # @param [Boolean] final_auth_request
   # @param [String] service_provider
+  # @param [String] unknown_authn_contexts space separated list of unknown contexts
   # @param [Boolean] user_fully_authenticated
   # An external request for SAML Authentication was received
   def saml_auth_request(
@@ -6393,6 +6360,7 @@ module AnalyticsEvents
     force_authn:,
     final_auth_request:,
     service_provider:,
+    unknown_authn_contexts:,
     user_fully_authenticated:,
     **extra
   )
@@ -6405,6 +6373,7 @@ module AnalyticsEvents
       force_authn:,
       final_auth_request:,
       service_provider:,
+      unknown_authn_contexts:,
       user_fully_authenticated:,
       **extra,
     )

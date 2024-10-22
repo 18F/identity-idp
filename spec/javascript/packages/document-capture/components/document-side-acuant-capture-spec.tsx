@@ -23,7 +23,8 @@ describe('DocumentSideAcuantCapture', () => {
                 value={{
                   isSelfieCaptureEnabled: false,
                   isSelfieDesktopTestMode: false,
-                  docAuthSeparatePagesEnabled: false,
+                  showHelpInitially: false,
+                  immediatelyBeginCapture: false,
                 }}
               >
                 <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="front" />
@@ -47,7 +48,8 @@ describe('DocumentSideAcuantCapture', () => {
                 value={{
                   isSelfieCaptureEnabled: false,
                   isSelfieDesktopTestMode: true,
-                  docAuthSeparatePagesEnabled: false,
+                  showHelpInitially: false,
+                  immediatelyBeginCapture: false,
                 }}
               >
                 <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="front" />
@@ -73,7 +75,8 @@ describe('DocumentSideAcuantCapture', () => {
                 value={{
                   isSelfieCaptureEnabled: false,
                   isSelfieDesktopTestMode: false,
-                  docAuthSeparatePagesEnabled: false,
+                  showHelpInitially: false,
+                  immediatelyBeginCapture: false,
                 }}
               >
                 <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="front" />
@@ -95,7 +98,8 @@ describe('DocumentSideAcuantCapture', () => {
                 value={{
                   isSelfieCaptureEnabled: false,
                   isSelfieDesktopTestMode: true,
-                  docAuthSeparatePagesEnabled: false,
+                  showHelpInitially: false,
+                  immediatelyBeginCapture: false,
                 }}
               >
                 <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="front" />
@@ -121,7 +125,8 @@ describe('DocumentSideAcuantCapture', () => {
                 value={{
                   isSelfieCaptureEnabled: true,
                   isSelfieDesktopTestMode: false,
-                  docAuthSeparatePagesEnabled: false,
+                  showHelpInitially: false,
+                  immediatelyBeginCapture: false,
                 }}
               >
                 <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="front" />
@@ -149,7 +154,8 @@ describe('DocumentSideAcuantCapture', () => {
                 value={{
                   isSelfieCaptureEnabled: true,
                   isSelfieDesktopTestMode: true,
-                  docAuthSeparatePagesEnabled: false,
+                  showHelpInitially: false,
+                  immediatelyBeginCapture: false,
                 }}
               >
                 <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="front" />
@@ -185,7 +191,8 @@ describe('DocumentSideAcuantCapture', () => {
                 value={{
                   isSelfieCaptureEnabled: true,
                   isSelfieDesktopTestMode: true,
-                  docAuthSeparatePagesEnabled: false,
+                  showHelpInitially: false,
+                  immediatelyBeginCapture: false,
                 }}
               >
                 <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="front" />

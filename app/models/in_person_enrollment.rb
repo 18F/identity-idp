@@ -20,7 +20,7 @@ class InPersonEnrollment < ApplicationRecord
   STATUS_EXPIRED = 'expired'
   STATUS_CANCELLED = 'cancelled'
 
-  enum status: {
+  enum :status, {
     STATUS_ESTABLISHING.to_sym => 0,
     STATUS_PENDING.to_sym => 1,
     STATUS_PASSED.to_sym => 2,

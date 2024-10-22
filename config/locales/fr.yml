@@ -493,6 +493,8 @@ devise.sessions.signed_out: Vous êtes maintenant déconnecté.
 doc_auth.accessible_labels.camera_video_capture_instructions: Nous prendrons automatiquement la photo
 doc_auth.accessible_labels.camera_video_capture_label: Viseur avec cadre pour centrer votre pièce d’identité
 doc_auth.accessible_labels.document_capture_dialog: Capture du document
+doc_auth.alt.selfie_help_1: Le visage d’une personne dans un ovale vert.
+doc_auth.alt.selfie_help_2: Un doigt coche une case sous le visage pour valider la photo.
 doc_auth.buttons.add_new_photos: Ajouter de nouvelles photos
 doc_auth.buttons.close: Fermer
 doc_auth.buttons.continue: Suite
@@ -578,9 +580,7 @@ doc_auth.headings.document_capture: Ajoutez des photos de votre permis de condui
 doc_auth.headings.document_capture_back: Verso de votre pièce d’identité
 doc_auth.headings.document_capture_front: Recto de votre carte d’identité
 doc_auth.headings.document_capture_selfie: Photo de votre visage
-doc_auth.headings.document_capture_subheader_id: Permis de conduire ou carte d’identité d’un État
 doc_auth.headings.document_capture_subheader_selfie: Ajouter une photo de votre visage
-doc_auth.headings.document_capture_with_selfie: Ajouter des photos de votre pièce d’identité et une photo de vous-même
 doc_auth.headings.front: Recto de votre permis de conduire ou de votre carte d’identité d’un État
 doc_auth.headings.how_to_verify: Choisir la manière dont vous souhaitez confirmer votre identité
 doc_auth.headings.hybrid_handoff: Comment voulez-vous ajouter votre pièce d’identité ?
@@ -592,6 +592,7 @@ doc_auth.headings.review_issues: Vérifiez vos images et essayez à nouveau
 doc_auth.headings.secure_account: Sécuriser votre compte
 doc_auth.headings.selfie: Photo de votre visage
 doc_auth.headings.selfie_capture: Prenez-vous en photo
+doc_auth.headings.selfie_instructions.howto: 'Comment vous prendre en photo :'
 doc_auth.headings.ssn: Saisir votre numéro de sécurité sociale
 doc_auth.headings.ssn_update: Mettre à jour votre numéro de sécurité sociale
 doc_auth.headings.text_message: Nous avons envoyé un message à votre téléphone
@@ -638,6 +639,8 @@ doc_auth.info.no_ssn: Vous devez avoir un numéro de sécurité sociale pour ter
 doc_auth.info.review_examples_of_photos: Voir des exemples qui montrent comment prendre des photos nettes de votre pièce d’identité.
 doc_auth.info.secure_account: Nous chiffrons votre compte lorsque vous resaisissez votre mot de passe. Le chiffrement signifie que vos données sont protégées et que vous êtes le seul à pouvoir accéder à vos informations ou les modifier.
 doc_auth.info.selfie_capture_content: Nous vérifierons que vous êtes la personne figurant sur la pièce d’identité.
+doc_auth.info.selfie_capture_help_1: Placez votre visage à l’intérieur du cercle vert. Ne bougez pas et attendez que l’appareil se déclenche.
+doc_auth.info.selfie_capture_help_2: Une fois la photo prise automatiquement, cochez la case sous la photo pour l’accepter (la case deviendra verte).
 doc_auth.info.selfie_capture_status.face_close_to_border: Trop près du cadre
 doc_auth.info.selfie_capture_status.face_not_found: Visage non trouvé
 doc_auth.info.selfie_capture_status.face_too_small: Visage trop petit
@@ -1197,8 +1200,7 @@ in_person_proofing.body.barcode.location_details: Détails de l’emplacement
 in_person_proofing.body.barcode.questions: Des questions ?
 in_person_proofing.body.barcode.retail_hours: Heures d’ouverture
 in_person_proofing.body.barcode.retail_hours_closed: Fermé
-in_person_proofing.body.barcode.return_to_partner_html: Vous pouvez maintenant %{link_html} afin d’effectuer toutes les étapes suivantes auxquelles vous pouvez accéder jusqu’à ce que votre identité ait été vérifiée.
-in_person_proofing.body.barcode.return_to_partner_link: vous déconnecter et retourner à %{sp_name}
+in_person_proofing.body.barcode.return_to_partner_link: Retourner à %{sp_name}
 in_person_proofing.body.barcode.what_to_expect: À quoi s’attendre au bureau de poste
 in_person_proofing.body.cta.button: Essayer en personne
 in_person_proofing.body.cta.prompt_detail: Vous pourrez peut-être confirmer votre identité dans un bureau de poste participant près de chez vous.
@@ -1596,7 +1598,6 @@ titles.idv.reset_password: Réinitialiser le mot de passe
 titles.idv.verify_info: Vérifier vos informations
 titles.mfa_setup.face_touch_unlock_confirmation: Déverrouillage facial ou tactile ajouté
 titles.mfa_setup.suggest_second_mfa: Vous avez ajouté votre première méthode d’authentification ! Ajoutez-en une deuxième en guise de sauvegarde.
-titles.no_auth_option: Aucune méthode de connexion trouvée
 titles.openid_connect.authorization: Autorisation OpenID Connect
 titles.openid_connect.logout: Déconnexion OpenID Connect
 titles.passwords.change: Changer le mot de passe de votre compte
@@ -1687,7 +1688,6 @@ two_factor_authentication.max_otp_requests_reached: Pour votre sécurité, votre
 two_factor_authentication.max_personal_key_login_attempts_reached: Pour votre sécurité, votre compte est temporairement verrouillé en raison de la saisie erronée de la clé personnelle à de trop nombreuses reprises.
 two_factor_authentication.max_piv_cac_login_attempts_reached: Pour votre sécurité, votre compte est temporairement verrouillé en raison de la présentation erronée de votre certificat PIV/CAC à de trop nombreuses reprises.
 two_factor_authentication.mobile_terms_of_service: Conditions de service mobile
-two_factor_authentication.no_auth_option: Aucune option d’authentification n’a pu être trouvée pour vous connecter
 two_factor_authentication.opt_in.error_retry: Désolé, nous rencontrons actuellement des difficultés pour vous inscrire. Veuillez réessayer.
 two_factor_authentication.opt_in.opted_out_html: Vous avez choisi de ne pas recevoir de SMS au %{phone_number_html}. Vous pouvez vous inscrire et recevoir à nouveau un code de sécurité à ce numéro de téléphone.
 two_factor_authentication.opt_in.opted_out_last_30d_html: Vous avez choisi de ne plus recevoir de SMS au %{phone_number_html} au cours des 30 derniers jours. Nous ne pouvons inscrire un numéro de téléphone qu’une fois tous les 30 jours.
