@@ -8,7 +8,7 @@ RSpec.describe Funnel::Registration::AddMfa do
     user = create(:user)
     user.id
   end
-  let(:funnel) { RegistrationLog.all.first }
+  let(:funnel) { RegistrationLog.first }
 
   it 'shows user is not fully registered with no mfa' do
     expect(funnel&.registered_at).to_not be_present

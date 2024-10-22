@@ -92,7 +92,7 @@ module UspsInPersonProofing
         user.
           in_person_enrollments.
           where(status: :establishing).
-          each(&:cancelled!)
+          find_each(&:cancelled!)
       end
 
       def usps_proofer
