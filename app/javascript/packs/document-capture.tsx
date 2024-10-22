@@ -38,6 +38,7 @@ interface AppRootData {
   howToVerifyURL: string;
   previousStepUrl: string;
   docAuthSelfieDesktopTestMode: string;
+  accountUrl: string;
   locationsUrl: string;
   addressSearchUrl: string;
   sessionsUrl: string;
