@@ -37,7 +37,7 @@ RSpec.describe Idv::InPerson::AddressController do
         subject.user_session['idv/in_person'][:pii_from_user].delete(:identity_doc_address1)
         get :show
 
-        expect(response).to redirect_to idv_in_person_proofing_state_id_url
+        expect(response).to redirect_to idv_in_person_state_id_url
       end
     end
 
