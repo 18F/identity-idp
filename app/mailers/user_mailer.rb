@@ -209,7 +209,7 @@ class UserMailer < ActionMailer::Base
       @hide_title = true
       @presenter = Idv::ByMail::LetterRequestedEmailPresenter.new(
         current_user: user,
-        url_options: {},
+        url_options:,
       )
       mail(
         to: email_address.email,
