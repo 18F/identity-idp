@@ -10,7 +10,6 @@ module LocaleHelper
     locale = user.email_language
 
     if I18n.locale_available?(locale)
-      # Handle url_helper's url_options
       if defined?(url_options)
         current_locale = I18n.locale
         I18n.with_locale(locale) do
