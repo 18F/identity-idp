@@ -26,6 +26,7 @@ module DocumentCaptureStepHelper
   )
     attach_images(file)
     click_continue
+    click_button 'Take photo' if page.has_button? 'Take photo'
     attach_selfie
   end
 

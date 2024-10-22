@@ -1050,6 +1050,7 @@ RSpec.feature 'Analytics Regression', :js do
           complete_doc_auth_steps_before_document_capture_step
           attach_images
           click_continue
+          click_button 'Take photo'
           attach_selfie
           submit_images
 

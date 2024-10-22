@@ -31,6 +31,7 @@ RSpec.describe 'Account Reset Request: Delete Account', email: true do
         to have_content strip_tags(
           t('account_reset.request.delete_account'),
         )
+
       click_button t('account_reset.request.yes_continue')
 
       expect(page).
@@ -48,7 +49,7 @@ RSpec.describe 'Account Reset Request: Delete Account', email: true do
 
       reset_email
 
-      travel_to(Time.zone.now + 2.days + 1) do
+      travel_to(Time.zone.now + 2.days + 2) do
         AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today)
         open_last_email
         click_email_link_matching(/delete_account\?token/)
