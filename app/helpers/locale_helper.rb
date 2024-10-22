@@ -10,7 +10,17 @@ module LocaleHelper
     locale = user.email_language
 
     if I18n.locale_available?(locale)
-      I18n.with_locale(locale, &block)
+      # Handle url_helper's url_options
+      if defined?(url_options)
+        current_locale = I18n.locale
+        I18n.with_locale(locale) do
+          url_options[:locale] = locale
+          block.call
+          url_options[:locale] = current_locale
+        end
+      else
+        I18n.with_locale(locale, &block)
+      end
     else
       Rails.logger.warn("user_id=#{user.uuid} has bad email_language=#{locale}") if locale.present?
 

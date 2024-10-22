@@ -294,6 +294,7 @@ class UserMailerPreview < ActionMailer::Preview
             ),
           ),
         ],
+        email_language: params[:locale],
       ),
     )
   end
