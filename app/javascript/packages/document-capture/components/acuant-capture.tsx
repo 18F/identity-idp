@@ -332,7 +332,6 @@ function AcuantCapture(
   const inputRef = useRef<HTMLInputElement>(null);
   const isForceUploading = useRef(false);
   const isSuppressingClickLogging = useRef(false);
-  const [isCapturingEnvironment, setIsCapturingEnvironment] = useState(immediatelyBeginCapture);
   const [ownErrorMessage, setOwnErrorMessage] = useState<string | null>(null);
   const [hasStartedCropping, setHasStartedCropping] = useState(false);
   useMemo(() => setOwnErrorMessage(null), [value]);
@@ -350,6 +349,7 @@ function AcuantCapture(
   // This hook does that.
   const isBackOfId = name === 'back';
   useLogCameraInfo({ isBackOfId, hasStartedCropping });
+  const [isCapturingEnvironment, setIsCapturingEnvironment] = useState(selfieCapture && immediatelyBeginCapture);
 
   const {
     failedCaptureAttempts,
