@@ -18,7 +18,7 @@ RSpec.describe 'Account Reset Request: Delete Account', email: true do
   end
 
   context 'as an IAL1 user' do
-    it 'allows the user to delete their account after 24 hours', js: true do
+    it 'allows the user to delete their account after 24 hours' do
       signin(user_email, user.password)
       click_link t('two_factor_authentication.login_options_link_text')
       click_link t('two_factor_authentication.account_reset.link')
