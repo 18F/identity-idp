@@ -43,6 +43,7 @@ module Users
       @need_to_set_up_additional_mfa = need_to_set_up_additional_mfa?
 
       if result.errors.present?
+        increment_mfa_selection_attempt_count(:webauthn)
         analytics.webauthn_setup_submitted(
           platform_authenticator: form.platform_authenticator?,
           errors: result.errors,
@@ -51,7 +52,6 @@ module Users
       end
 
       flash_error(result.errors) unless result.success?
-      increment_mfa_selection_attempt_count(:webauthn)
     end
 
     def confirm

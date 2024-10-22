@@ -19,7 +19,7 @@ module TwoFactorAuthenticatableMethods
       enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
       new_device: new_device?,
       **extra_analytics.to_h,
-      attempts: user_session[:mfa_attempts][:attempts],
+      attempts: mfa_attempts_count,
     )
 
     if result.success?
@@ -127,9 +127,7 @@ module TwoFactorAuthenticatableMethods
   end
 
   def mfa_attempts_count
-    if user_session[:mfa_attempts]
-      user_session[:mfa_attempts][:attempts]
-    end
+    user_session.dig(:mfa_attempts, :attempts)
   end
 
   # Method will be renamed in the next refactor.
