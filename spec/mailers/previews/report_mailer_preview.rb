@@ -23,6 +23,21 @@ class ReportMailerPreview < ActionMailer::Preview
     )
   end
 
+  def protocols_report
+    date = Time.zone.yesterday
+    report = Reports::ProtocolsReport.new(date)
+
+    stub_cloudwatch_client(report.send(:report))
+
+    ReportMailer.tables_report(
+      email: 'test@example.com',
+      subject: "Weekly Protocols Report - #{date}",
+      message: "Report: protocols-report #{date}",
+      attachment_format: :csv,
+      reports: report.send(:weekly_protocols_emailable_reports),
+    )
+  end
+
   def fraud_metrics_report
     fraud_metrics_report = Reports::FraudMetricsReport.new(Time.zone.yesterday)
 

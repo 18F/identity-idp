@@ -1212,8 +1212,7 @@ in_person_proofing.body.barcode.location_details: 详细地址信息
 in_person_proofing.body.barcode.questions: 有问题吗？
 in_person_proofing.body.barcode.retail_hours: 营业时间
 in_person_proofing.body.barcode.retail_hours_closed: 关闭
-in_person_proofing.body.barcode.return_to_partner_html: 你现在可以 %{link_html}来完成你可做的任何随后步骤，直到你的身份得到验证。
-in_person_proofing.body.barcode.return_to_partner_link: 登出 %{sp_name} 并返回 %{sp_name}
+in_person_proofing.body.barcode.return_to_partner_link: 返回 %{sp_name}
 in_person_proofing.body.barcode.what_to_expect: 在邮局会发生什么
 in_person_proofing.body.cta.button: 尝试亲身去
 in_person_proofing.body.cta.prompt_detail: 你也许可以到附近一个参与本项目的邮局去亲身验证你的身份证件。
@@ -1611,7 +1610,6 @@ titles.idv.reset_password: 重设密码
 titles.idv.verify_info: 验证你的信息
 titles.mfa_setup.face_touch_unlock_confirmation: 人脸或触摸解锁已添加
 titles.mfa_setup.suggest_second_mfa: 你已添加了第一个身份证实方法！添加第二个做备份
-titles.no_auth_option: 没找到登录方法
 titles.openid_connect.authorization: OpenID Connect 授权
 titles.openid_connect.logout: OpenID Connect 登出
 titles.passwords.change: 更改你账户密码
@@ -1702,7 +1700,6 @@ two_factor_authentication.max_otp_requests_reached: 为了你的安全，你的�
 two_factor_authentication.max_personal_key_login_attempts_reached: 为了你的安全，你的账户暂时被锁住，因为你错误输入个人密钥太多次。
 two_factor_authentication.max_piv_cac_login_attempts_reached: 为了你的安全，你的账户暂时被锁住，因为你错误提供 piv/cac 凭据太多次。
 two_factor_authentication.mobile_terms_of_service: 移动服务条款
-two_factor_authentication.no_auth_option: 找不到身份证实选项让你登录。
 two_factor_authentication.opt_in.error_retry: 抱歉，我们让你加入有困难。请再试一次。
 two_factor_authentication.opt_in.opted_out_html: 你选择不在 %{phone_number_html} 接受短信。你可以选择加入并再在那个电话号码接受安全代码。
 two_factor_authentication.opt_in.opted_out_last_30d_html: 你选择过去 30 天里不在 %{phone_number_html} 接受短信。我们每 30 天只能允许加入一次电话号码。

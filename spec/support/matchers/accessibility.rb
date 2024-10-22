@@ -3,6 +3,7 @@ RSpec::Matchers.define :have_valid_idrefs do
 
   match do |page|
     ['aria-describedby', 'aria-labelledby'].each do |idref_attribute|
+      # rubocop:disable Rails/FindEach
       page.all(:css, "[#{idref_attribute}]").each do |element|
         element[idref_attribute].split(' ').each do |referenced_id|
           page.find_by_id(referenced_id, visible: :all)
@@ -10,6 +11,7 @@ RSpec::Matchers.define :have_valid_idrefs do
       rescue Capybara::ElementNotFound
         invalid_idref_messages << "[#{idref_attribute}=\"#{element[idref_attribute]}\"]"
       end
+      # rubocop:enable Rails/FindEach
     end
 
     invalid_idref_messages.blank?
@@ -28,9 +30,11 @@ RSpec::Matchers.define :label_required_fields do
   elements = []
 
   match do |page|
+    # rubocop:disable Rails/FindEach
     page.all(:css, 'input[required]').each do |input|
       elements << input if input['aria-invalid'].blank?
     end
+    # rubocop:enable Rails/FindEach
     elements.empty?
   end
 

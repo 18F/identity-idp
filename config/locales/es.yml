@@ -1210,8 +1210,7 @@ in_person_proofing.body.barcode.location_details: Detalles del lugar
 in_person_proofing.body.barcode.questions: '¿Tiene alguna pregunta?'
 in_person_proofing.body.barcode.retail_hours: Horario de atención al público
 in_person_proofing.body.barcode.retail_hours_closed: Cerrado
-in_person_proofing.body.barcode.return_to_partner_html: Ahora puede %{link_html} para completar los pasos siguientes a los que tenga acceso hasta que se haya verificado su identidad.
-in_person_proofing.body.barcode.return_to_partner_link: cerrar sesión y volver a %{sp_name}
+in_person_proofing.body.barcode.return_to_partner_link: Volver a %{sp_name}
 in_person_proofing.body.barcode.what_to_expect: Qué esperar en la oficina de correos
 in_person_proofing.body.cta.button: Intentar en persona
 in_person_proofing.body.cta.prompt_detail: Es posible que pueda verificar su identidad en una oficina de correos participante cercana.
@@ -1610,7 +1609,6 @@ titles.idv.reset_password: Restablecer la contraseña
 titles.idv.verify_info: Verifique su información
 titles.mfa_setup.face_touch_unlock_confirmation: Se agregó el desbloqueo facial o táctil
 titles.mfa_setup.suggest_second_mfa: Agregó su primer método de autenticación. Agregue un segundo método como respaldo.
-titles.no_auth_option: No se encontró ningún método de inicio de sesión
 titles.openid_connect.authorization: Autorización de OpenID Connect
 titles.openid_connect.logout: Cierre de sesión de OpenID Connect
 titles.passwords.change: Cambie la contraseña de su cuenta
@@ -1701,7 +1699,6 @@ two_factor_authentication.max_otp_requests_reached: Para su seguridad, su cuenta
 two_factor_authentication.max_personal_key_login_attempts_reached: Para su seguridad, su cuenta está bloqueada temporalmente porque ingresó mal la clave personal demasiadas veces.
 two_factor_authentication.max_piv_cac_login_attempts_reached: Para su seguridad, su cuenta está bloqueada temporalmente porque presentó mal su tarjeta PIV o CAC demasiadas veces.
 two_factor_authentication.mobile_terms_of_service: Condiciones del servicio móvil
-two_factor_authentication.no_auth_option: No se pudo encontrar ninguna opción de autenticación para que iniciara sesión.
 two_factor_authentication.opt_in.error_retry: Lo sentimos, estamos teniendo problema para admitirlo; inténtelo de nuevo.
 two_factor_authentication.opt_in.opted_out_html: Optó por no recibir mensajes de texto en el %{phone_number_html}. Puede optar por recibir un código de seguridad de nuevo en ese número de teléfono.
 two_factor_authentication.opt_in.opted_out_last_30d_html: Optó por no recibir mensajes de texto en el %{phone_number_html} en los últimos 30 días. Solo podemos admitir un número telefónico una vez cada 30 días.

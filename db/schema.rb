@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_10_01_193936) do
+ActiveRecord::Schema[7.1].define(version: 2024_10_17_153042) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -191,7 +191,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_01_193936) do
     t.datetime "cancelled_at", precision: nil, comment: "sensitive=false"
     t.boolean "ocr_confirmation_pending", default: false, comment: "sensitive=false"
     t.string "last_doc_auth_result", comment: "sensitive=false"
-    t.string "socure_docv_token", comment: "sensitive=false"
+    t.string "socure_docv_transaction_token", comment: "sensitive=false"
     t.index ["result_id"], name: "index_document_capture_sessions_on_result_id"
     t.index ["user_id"], name: "index_document_capture_sessions_on_user_id"
     t.index ["uuid"], name: "index_document_capture_sessions_on_uuid"
@@ -558,6 +558,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_01_193936) do
     t.datetime "created_at", null: false, comment: "sensitive=false"
     t.datetime "updated_at", null: false, comment: "sensitive=false"
     t.index ["user_id", "service_provider"], name: "index_sign_in_restrictions_on_user_id_and_service_provider", unique: true
+  end
+
+  create_table "socure_reason_codes", force: :cascade do |t|
+    t.string "code", comment: "sensitive=false"
+    t.string "group", comment: "sensitive=false"
+    t.text "description", comment: "sensitive=false"
+    t.datetime "added_at", comment: "sensitive=false"
+    t.datetime "deactivated_at", comment: "sensitive=false"
+    t.datetime "created_at", null: false, comment: "sensitive=false"
+    t.datetime "updated_at", null: false, comment: "sensitive=false"
+    t.index ["code"], name: "index_socure_reason_codes_on_code", unique: true
+    t.index ["deactivated_at"], name: "index_socure_reason_codes_on_deactivated_at"
   end
 
   create_table "sp_costs", force: :cascade do |t|
