@@ -221,7 +221,7 @@ RSpec.describe SamlRequestValidator do
           )
         end
 
-        context 'unknwn authn_context requested along with a valid one' do
+        context 'unknown authn_context requested along with a valid one' do
           let(:authn_context) { ['IAL1', Saml::Idp::Constants::IAL_AUTH_ONLY_ACR] }
 
           it 'returns FormResponse with success: true' do
