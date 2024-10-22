@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
 import { expect } from 'chai';
 import { FailedCaptureAttemptsContextProvider } from '@18f/identity-document-capture';
+import SelfieCaptureContext from '@18f/identity-document-capture/context/selfie-capture';
 import SelfieStep from '@18f/identity-document-capture/components/selfie-step';
 import { render } from '../../../support/document-capture';
 import { getFixtureFile } from '../../../support/file';
@@ -29,15 +30,25 @@ describe('document-capture/components/selfie-step', () => {
   context('when show help is turned off ', () => {
     beforeEach(() => {
       ({ queryByLabelText } = render(
-        <SelfieStep
-          value={{}}
-          onChange={() => undefined}
-          errors={[]}
-          onError={() => undefined}
-          registerField={() => undefined}
-          unknownFieldErrors={[]}
-          toPreviousStep={() => undefined}
-        />,
+        <SelfieCaptureContext.Provider
+          value={{
+            isSelfieCaptureEnabled: false,
+            isSelfieDesktopTestMode: false,
+            showHelpInitially: false,
+            immediatelyBeginCapture: false,
+          }}
+        >
+          <SelfieStep
+            value={{}}
+            onChange={() => undefined}
+            errors={[]}
+            onError={() => undefined}
+            registerField={() => undefined}
+            unknownFieldErrors={[]}
+            toPreviousStep={() => undefined}
+          />
+          ,
+        </SelfieCaptureContext.Provider>,
       ));
     });
 
@@ -60,15 +71,24 @@ describe('document-capture/components/selfie-step', () => {
         maxSubmissionAttemptsBeforeNativeCamera={3}
         failedFingerprints={{ front: [], back: [] }}
       >
-        <SelfieStep
-          value={{}}
-          onChange={onChange}
-          errors={[]}
-          onError={() => undefined}
-          registerField={() => undefined}
-          unknownFieldErrors={[]}
-          toPreviousStep={() => undefined}
-        />
+        <SelfieCaptureContext.Provider
+          value={{
+            isSelfieCaptureEnabled: false,
+            isSelfieDesktopTestMode: false,
+            showHelpInitially: false,
+            immediatelyBeginCapture: false,
+          }}
+        >
+          <SelfieStep
+            value={{}}
+            onChange={onChange}
+            errors={[]}
+            onError={() => undefined}
+            registerField={() => undefined}
+            unknownFieldErrors={[]}
+            toPreviousStep={() => undefined}
+          />
+        </SelfieCaptureContext.Provider>
         ,
       </FailedCaptureAttemptsContextProvider>,
     ));

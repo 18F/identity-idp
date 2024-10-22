@@ -23,13 +23,15 @@ export function SelfieCaptureStep({
   defaultSideProps,
   selfieValue,
   isReviewStep,
+  showHelp,
 }: {
   defaultSideProps: DefaultSideProps;
   selfieValue: ImageValue;
   isReviewStep: boolean;
+  showHelp: boolean;
 }) {
   const { t } = useI18n();
-  const { showHelp } = useContext(SelfieCaptureContext);
+
   return (
     <>
       <h1>{t('doc_auth.headings.document_capture_subheader_selfie')}</h1>
@@ -103,6 +105,7 @@ export default function SelfieStep({
         defaultSideProps={defaultSideProps}
         selfieValue={value.selfie}
         isReviewStep={false}
+        showHelp={showHelp}
       />
       {showHelp && <TakeSelfieButton />}
       {!showHelp && isLastStep && <FormStepsButton.Submit />}
