@@ -66,7 +66,7 @@ module Users
     end
 
     def process_piv_cac_setup
-      increment_mfa_selection_attempt_count(:piv_cac)
+      increment_mfa_selection_attempt_count(TwoFactorAuthenticatable::AuthMethod::PIV_CAC)
       result = user_piv_cac_form.submit
       properties = result.to_h.merge(analytics_properties)
       analytics.multi_factor_auth_setup(**properties)

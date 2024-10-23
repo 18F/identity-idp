@@ -43,7 +43,15 @@ module Users
       @need_to_set_up_additional_mfa = need_to_set_up_additional_mfa?
 
       if result.errors.present?
-        increment_mfa_selection_attempt_count(:webauthn)
+        if @platform_authenticator
+          increment_mfa_selection_attempt_count(
+            TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM,
+          )
+        else
+          increment_mfa_selection_attempt_count(
+            TwoFactorAuthenticatable::AuthMethod::WEBAUTHN,
+          )
+        end
         analytics.webauthn_setup_submitted(
           platform_authenticator: form.platform_authenticator?,
           errors: result.errors,
