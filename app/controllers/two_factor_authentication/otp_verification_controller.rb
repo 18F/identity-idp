@@ -21,7 +21,7 @@ module TwoFactorAuthentication
 
     def create
       if UserSessionContext.confirmation_context?(context)
-        increment_mfa_selection_attempt_count(:otp)
+        increment_mfa_selection_attempt_count(otp_auth_method)
       end
       result = otp_verification_form.submit
       post_analytics(result)
@@ -51,6 +51,14 @@ module TwoFactorAuthentication
     end
 
     private
+
+    def otp_auth_method
+      if params[:otp_delivery_preference] == 'sms'
+        TwoFactorAuthenticatable::AuthMethod::SMS
+      else
+        TwoFactorAuthenticatable::AuthMethod::VOICE
+      end
+    end
 
     def handle_valid_confirmation_otp
       assign_phone

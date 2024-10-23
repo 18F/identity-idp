@@ -390,7 +390,7 @@ RSpec.describe Users::WebauthnSetupController do
         allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
         request.host = 'localhost:3000'
         controller.user_session[:webauthn_challenge] = webauthn_challenge
-        controller.user_session[:mfa_attempts] = { auth_method: :webauthn, attempts: 1 }
+        controller.user_session[:mfa_attempts] = { auth_method: 'webauthn', attempts: 1 }
       end
 
       it 'tracks the submission' do

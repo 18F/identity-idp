@@ -63,7 +63,7 @@ module Users
     end
 
     def confirm
-      increment_mfa_selection_attempt_count(:webauthn)
+      increment_mfa_selection_attempt_count(webauthn_auth_method)
       form = WebauthnSetupForm.new(
         user: current_user,
         user_session: user_session,
@@ -97,6 +97,14 @@ module Users
          current_user.webauthn_configurations.platform_authenticators.present?
         redirect_to authentication_methods_setup_path
      end
+    end
+
+    def webauthn_auth_method
+      if @platform_authenticator
+        TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM
+      else
+        TwoFactorAuthenticatable::AuthMethod::WEBAUTHN
+      end
     end
 
     def platform_authenticator?
