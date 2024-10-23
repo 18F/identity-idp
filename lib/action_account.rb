@@ -224,8 +224,10 @@ class ActionAccount
         )
       end
 
-      if config.include_missing?
-        (uuids - users.map(&:uuid)).each do |missing_uuid|
+      missing_uuids = (uuids - users.map(&:uuid))
+
+      if config.include_missing? && !missing_uuids.empty?
+        missing_uuids.each do |missing_uuid|
           table, messages = log_message(
             uuid: missing_uuid,
             log: log_text[:missing_uuid],
@@ -321,8 +323,9 @@ class ActionAccount
         )
       end
 
-      if config.include_missing?
-        (uuids - users.map(&:uuid)).each do |missing_uuid|
+      missing_uuids = (uuids - users.map(&:uuid))
+      if config.include_missing? && !missing_uuids.empty?
+        missing_uuids.each do |missing_uuid|
           table, messages = log_message(
             uuid: missing_uuid,
             log: log_text[:missing_uuid],
