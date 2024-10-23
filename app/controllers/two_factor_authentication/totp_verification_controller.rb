@@ -25,7 +25,6 @@ module TwoFactorAuthentication
         result:,
         auth_method: TwoFactorAuthenticatable::AuthMethod::TOTP,
       )
-
       if result.success?
         handle_remember_device_preference(params[:remember_device])
         redirect_to after_sign_in_path_for(current_user)
