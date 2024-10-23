@@ -31,11 +31,15 @@ module DataWarehouse
     end
 
     def fetch_max_id_and_count(table, timestamp)
+      quoted_table = ActiveRecord::Base.connection.quote_table_name(table)
       query = <<-SQL
         SELECT COALESCE(MAX(id), 0) AS max_id, COUNT(*) AS row_count
-        FROM #{table}
-        #{"WHERE created_at <= '#{timestamp}'" if table_has_column?(table, 'created_at')}
+        FROM #{quoted_table}
       SQL
+      if table_has_column?(table, 'created_at')
+        quoted_timestamp = ActiveRecord::Base.connection.quote(timestamp)
+        query += " WHERE created_at <= #{quoted_timestamp}"
+      end
 
       ActiveRecord::Base.connection.execute(query).first
     end
