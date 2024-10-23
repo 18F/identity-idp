@@ -27,7 +27,6 @@ RSpec.describe Analytics do
       browser_bot: false,
       hostname: FakeRequest.new.host,
       pid: Process.pid,
-      service_provider: 'http://localhost:3000',
       trace_id: nil,
     }
   end
@@ -190,6 +189,19 @@ RSpec.describe Analytics do
             analytics_attributes,
           )
 
+          analytics.track_event('Trackable Event')
+        end
+      end
+    end
+
+    context 'when no request specified' do
+      let(:request) { nil }
+      context 'but an SP was specified via initializer' do
+        it 'logs the SP' do
+          expect(ahoy).to receive(:track).with(
+            'Trackable Event',
+            hash_including(service_provider: 'http://localhost:3000'),
+          )
           analytics.track_event('Trackable Event')
         end
       end
