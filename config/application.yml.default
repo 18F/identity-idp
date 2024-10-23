@@ -469,6 +469,7 @@ development:
   risc_notifications_local_enabled: true
   s3_report_bucket_prefix: ''
   s3_report_public_bucket_prefix: ''
+  s3_data_warehouse_bucket_prefix: ''
   saml_endpoint_configs: '[{"suffix":"2023","secret_key_passphrase":"trust-but-verify"},{"suffix":"2024","secret_key_passphrase":"trust-but-verify"}]'
   secret_key_base: development_secret_key_base
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
@@ -516,6 +517,7 @@ production:
   redis_url: redis://redis.login.gov.internal:6379
   report_timeout: 1_000_000
   ruby_workers_idv_enabled: false
+  s3_data_warehouse_bucket_prefix: 'login-gov-analytics-export'
   s3_reports_enabled: true
   seed_agreements_data: false
   session_encryptor_alert_enabled: true
@@ -570,6 +572,7 @@ test:
   reset_password_email_window_in_minutes: 80
   s3_report_bucket_prefix: ''
   s3_report_public_bucket_prefix: ''
+  s3_data_warehouse_bucket_prefix: ''
   saml_endpoint_configs: '[{"suffix":"2024","secret_key_passphrase":"trust-but-verify"},{"suffix":"2023","secret_key_passphrase":"trust-but-verify","comment":"this extra year is needed to demonstrate how handling multiple live years works in spec/requests/saml_requests_spec.rb"}]'
   scrypt_cost: 800$8$1$
   secret_key_base: test_secret_key_base
