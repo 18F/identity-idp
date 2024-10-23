@@ -241,7 +241,7 @@ module Reporting
 
       users_with_events_for_any_issuer =
         issuers.each_with_object(Set.new) do |issuer, accumulated_users|
-          accumulated_users | data[sp_key(issuer)]
+          accumulated_users.merge(data[sp_key(issuer)])
         end
 
       users & users_with_events_for_any_issuer
