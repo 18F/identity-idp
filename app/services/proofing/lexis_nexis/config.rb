@@ -15,7 +15,7 @@ module Proofing
       :request_timeout,
       :org_id,
       :api_key,
-      :event_type,
+      :ddp_policy,
       keyword_init: true,
       allowed_members: [
         :instant_verify_workflow,
