@@ -267,6 +267,7 @@ class ActionAccount
 
       messages = []
       users.each do |user|
+        profile = nil
         profile_fraud_review_pending_at = nil
         success = false
 
@@ -276,7 +277,6 @@ class ActionAccount
         elsif FraudReviewChecker.new(user).fraud_review_eligible?
           profile = user.fraud_review_pending_profile
           profile_fraud_review_pending_at = profile.fraud_review_pending_at
-          profile_age_in_seconds = profile.profile_age_in_seconds
           profile.activate_after_passing_review
           success = true
 
@@ -308,13 +308,16 @@ class ActionAccount
         end
 
         Analytics.new(
-          user: user, request: nil, session: {}, sp: nil,
+          user: user,
+          request: nil,
+          session: {},
+          sp: profile&.initiating_service_provider_issuer,
         ).fraud_review_passed(
           success:,
           errors: analytics_error_hash,
           exception: nil,
           profile_fraud_review_pending_at: profile_fraud_review_pending_at,
-          profile_age_in_seconds: profile_age_in_seconds,
+          profile_age_in_seconds: profile&.profile_age_in_seconds,
         )
       end
 
