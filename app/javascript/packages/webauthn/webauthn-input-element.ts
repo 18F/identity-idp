@@ -6,8 +6,16 @@ export class WebauthnInputElement extends HTMLElement {
     this.toggleVisibleIfPasskeySupported();
   }
 
+  get isOptedInToAbTest(): boolean {
+    return this.hasAttribute('desktop-ft-ab-test');
+  }
+
+  get isPlatform(): boolean {
+    return this.hasAttribute('platform');
+  }
+
   async toggleVisibleIfPasskeySupported() {
-    if (isWebauthnPasskeySupported() && await isWebauthnPlatformAuthenticatorAvailable()) {
+    if ((isWebauthnPasskeySupported() || this.isOptedInToAbTest)  && (await isWebauthnPlatformAuthenticatorAvailable())) {
       this.hidden = false;
     } else {
       this.hidden = true;

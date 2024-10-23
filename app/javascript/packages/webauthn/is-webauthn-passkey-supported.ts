@@ -28,20 +28,7 @@ function isQualifyingAndroidDevice(): boolean {
   );
 }
 
-function isQualifyingMacOSDesktopDevice(): boolean {
-  const match = navigator.userAgent.match(/Mac OS X/);
-  const macOsVersion: null | number = match && Number(match[1]);
-  return !!macOsVersion && macOsVersion >= MINIMUM_MACOS_VERSION;
-}
-
-function isQualifyingWindowsDesktopDevice(): boolean {
-  const match = navigator.userAgent.match(/Windows/);
-  const windowsVersion: null | number = match && Number(match[1]);
-  return !!windowsVersion && windowsVersion >= MINIMUM_WINDOWS_VERSION;
-}
-
 const isWebauthnPasskeySupported: IsWebauthnPasskeySupported = () =>
-  isQualifyingIOSDevice() || isQualifyingAndroidDevice() 
-  || isQualifyingMacOSDesktopDevice() || isQualifyingWindowsDesktopDevice();
+  isQualifyingIOSDevice() || isQualifyingAndroidDevice();
 
 export default isWebauthnPasskeySupported;
