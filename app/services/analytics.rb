@@ -21,6 +21,7 @@ class Analytics
       event_properties: attributes.except(:user_id).compact,
       new_event: first_event_this_session?,
       path: request&.path,
+      service_provider: sp,
       session_duration: session_duration,
       user_id: attributes[:user_id] || user.uuid,
       locale: I18n.locale,
@@ -58,7 +59,6 @@ class Analytics
       user_ip: request.remote_ip,
       hostname: request.host,
       pid: Process.pid,
-      service_provider: sp,
       trace_id: request.headers['X-Amzn-Trace-Id'],
     }
 
