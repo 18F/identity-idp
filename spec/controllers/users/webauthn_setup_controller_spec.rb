@@ -121,6 +121,7 @@ RSpec.describe Users::WebauthnSetupController do
             at: true,
             ed: false,
           },
+          attempts: 1,
         )
         expect(@analytics).to have_logged_event(
           :webauthn_setup_submitted,
@@ -249,6 +250,7 @@ RSpec.describe Users::WebauthnSetupController do
             mfa_method_counts: { webauthn: 1 },
             multi_factor_auth_method: 'webauthn',
             success: true,
+            attempts: 1,
           )
           expect(@analytics).to have_logged_event(
             :webauthn_setup_submitted,
@@ -308,6 +310,7 @@ RSpec.describe Users::WebauthnSetupController do
             mfa_method_counts: { webauthn_platform: 1 },
             multi_factor_auth_method: 'webauthn_platform',
             success: true,
+            attempts: 1,
           )
         end
 
@@ -354,6 +357,7 @@ RSpec.describe Users::WebauthnSetupController do
               mfa_method_counts: {},
               multi_factor_auth_method: 'webauthn_platform',
               success: false,
+              attempts: 1,
             },
           )
         end
@@ -382,18 +386,15 @@ RSpec.describe Users::WebauthnSetupController do
       end
 
       before do
-        get :new
         controller.user_session[:in_account_creation_flow] = true
         allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
         request.host = 'localhost:3000'
         controller.user_session[:webauthn_challenge] = webauthn_challenge
-        controller.user_session[:mfa_attempts] = { attempts: 1 }
+        controller.user_session[:mfa_attempts] = { auth_method: 'webauthn', attempts: 1 }
       end
 
-      let(:mfa_selections) { ['webauthn'] }
-
       it 'tracks the submission' do
-        Funnel::Registration::AddMfa.call(user.id, 'webauthn', @analytics)
+        Funnel::Registration::AddMfa.call(user.id, 'phone', @analytics)
 
         patch :confirm, params: params
 
@@ -415,7 +416,7 @@ RSpec.describe Users::WebauthnSetupController do
             at: true,
             ed: false,
           },
-          attempts: 1,
+          attempts: 2,
         )
         expect(@analytics).to have_logged_event(
           :webauthn_setup_submitted,

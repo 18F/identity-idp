@@ -119,7 +119,7 @@ module TwoFactorAuthenticatableMethods
   def increment_mfa_selection_attempt_count(auth_method)
     user_session[:mfa_attempts] ||= {}
     user_session[:mfa_attempts][:attempts] ||= 0
-    if user_session[:mfa_attempts][:auth_method] != auth_method
+    if user_session[:mfa_attempts][:auth_method].to_s != auth_method.to_s
       user_session[:mfa_attempts][:attempts] = 0
     end
     user_session[:mfa_attempts][:attempts] += 1

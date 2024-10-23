@@ -55,6 +55,7 @@ module Users
     end
 
     def confirm
+      increment_mfa_selection_attempt_count(:webauthn)
       form = WebauthnSetupForm.new(
         user: current_user,
         user_session: user_session,
@@ -72,7 +73,6 @@ module Users
       )
       properties = result.to_h.merge(analytics_properties)
       analytics.multi_factor_auth_setup(**properties)
-
       if result.success?
         process_valid_webauthn(form)
         user_session.delete(:mfa_attempts)

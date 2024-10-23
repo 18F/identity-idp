@@ -5961,11 +5961,11 @@ module AnalyticsEvents
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Integer] attempts number of MFA setup attempts
   def piv_cac_setup_visited(
-      in_account_creation_flow:,
-      enabled_mfa_methods_count: nil,
-      attempts: nil,
-      **extra
-    )
+    in_account_creation_flow:,
+    enabled_mfa_methods_count: nil,
+    attempts: nil,
+    **extra
+  )
     track_event(
       :piv_cac_setup_visited,
       in_account_creation_flow:,
