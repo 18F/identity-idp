@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+set -u
+
+USAGE="
+${0} [TARGET_BRANCH]
+
+Rolls back any migrations on current branch, but not specified target branch
+"
+
+NEW_PRIMARY_MIGRATIONS=$(git diff --name-only origin/main -- db/primary_migrate/)
+NEW_WORKER_MIGRATIONS=$(git diff --name-only origin/main -- db/worker_jobs_migrate/)
+
+for MIGRATION_VERSION in "${NEW_PRIMARY_MIGRATION_VERSIONS[@]}" ; do
+  echo "Rolling back primary database migration ${MIGRATION_VERSION}"
+  echo "VERSION=$MIGRATION_VERSION bundle exec rake db:migrate:down:primary"
+  VERSION=${MIGRATION_VERSION}
+  bundle exec rake db:migrate:down:primary
+done
+
+for MIGRATION_VERSION in "${NEW_WORKER_MIGRATION_VERSIONS[@]}" ; do
+  echo "${MIGRATION_VERSION}"
+done

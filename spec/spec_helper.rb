@@ -29,6 +29,8 @@ RSpec.configure do |config|
 
   # show the n slowest tests at the end of the test run
   config.profile_examples = RSPEC_RUNNING_IN_PARALLEL ? 10 : 0
+
+  config.filter_run_excluding(unsafe_database_migrations: true)
 end
 
 require 'retries'

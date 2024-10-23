@@ -20,7 +20,7 @@ require 'capybara/webmock'
 
 # Checks for pending migrations before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
-ActiveRecord::Migration.maintain_test_schema!
+ActiveRecord::Migration.maintain_test_schema! unless ENV['CI']
 
 # Require all .rb files in spec/support _except_ things that are actually specs.
 Dir[Rails.root.join('spec', 'support', '**', '*.rb')].sort.each do |f|
