@@ -415,6 +415,35 @@ RSpec.describe Reporting::IdentityVerificationReport do
     it 'is the count of users who verified or passed fraud review' do
       expect(report.successfully_verified_users).to eql(5)
     end
+
+    context 'multiple issuers specified' do
+      let(:cloudwatch_logs) do
+        [
+          { 'user_id' => 'user1',
+            'name' => 'IdV: final resolution',
+            'identity_verified' => '1',
+            'service_provider' => 'issuer1' },
+          { 'user_id' => 'user2',
+            'name' => 'IdV: final resolution',
+            'identity_verified' => '1',
+            'service_provider' => 'issuer2' },
+          { 'user_id' => 'user4',
+            'name' => 'IdV: final resolution',
+            'fraud_review_pending' => '1',
+            'service_provider' => 'issuer1' },
+          { 'user_id' => 'user4', 'name' => 'Fraud: Profile review passed', 'success' => '1' },
+          { 'user_id' => 'user5',
+            'name' => 'IdV: final resolution',
+            'fraud_review_pending' => '1',
+            'service_provider' => 'issuer2' },
+          { 'user_id' => 'user5', 'name' => 'Fraud: Profile review rejected', 'success' => '1' },
+        ]
+      end
+
+      it 'combines fraud results across issuers' do
+        expect(report.successfully_verified_users).to eql(3)
+      end
+    end
   end
 
   describe '#merge', :freeze_time do
