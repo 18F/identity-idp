@@ -10,7 +10,9 @@ module DataWarehouse
     end
 
     def fetch_table_max_ids_and_counts(timestamp)
-      max_ids_and_counts(timestamp)
+      Reports::BaseReport.transaction_with_timeout do
+        max_ids_and_counts(timestamp)
+      end
     end
 
     private
