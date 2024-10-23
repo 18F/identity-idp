@@ -458,8 +458,8 @@ RSpec.describe DataPull do
         expect(result.table).to match_array(
           [
             %w[uuid date events_count],
-            [user.uuid, '2023-01-02', 5],
-            [user.uuid, '2023-01-01', 1],
+            [user.uuid, Date.new(2023, 1, 2), 5],
+            [user.uuid, Date.new(2023, 1, 1), 1],
             ['uuid-does-not-exist', '[UUID NOT FOUND]', nil],
           ],
         )
