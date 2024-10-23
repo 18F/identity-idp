@@ -1,4 +1,5 @@
 import isWebauthnPlatformAuthenticatorAvailable from './is-webauthn-platform-authenticator-available';
+import isWebauthnPasskeySupported from './is-webauthn-passkey-supported';
 
 export class WebauthnInputElement extends HTMLElement {
   connectedCallback() {
@@ -6,8 +7,7 @@ export class WebauthnInputElement extends HTMLElement {
   }
 
   async toggleVisibleIfPasskeySupported() {
-    if (await isWebauthnPlatformAuthenticatorAvailable()) {
-      // if user is in the A/B test bucket, show. else, do not show
+    if (isWebauthnPasskeySupported() && await isWebauthnPlatformAuthenticatorAvailable()) {
       this.hidden = false;
     } else {
       this.hidden = true;
