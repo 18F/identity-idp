@@ -6,6 +6,11 @@ class Analytics
 
   attr_reader :user, :request, :sp, :session, :ahoy
 
+  # @param [User] user
+  # @param [ActionDispatch::Request,nil] request
+  # @param [String,nil] sp Service provider issuer string.
+  # @param [Hash] session
+  # @param [Ahoy::Tracker,nil] ahoy
   def initialize(user:, request:, sp:, session:, ahoy: nil)
     @user = user
     @request = request
