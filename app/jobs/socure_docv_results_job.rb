@@ -22,10 +22,10 @@ class SocureDocvResultsJob < ApplicationJob
     dcs = DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
     raise "DocumentCaptureSession not found: #{document_capture_session_uuid}" if !dcs
 
-    analytics = create_analytics(
-      user:,
-      service_provider_issuer:,
-    )
+    # analytics = create_analytics(
+    #   user:,
+    #   service_provider_issuer:,
+    # )
 
     result = socure_document_verification_result
     dcs.store_result_from_response(result)

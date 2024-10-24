@@ -32,8 +32,7 @@ module DocAuth
           expiration_date: %w[documentVerification documentData expirationDate],
         }.freeze
 
-        def initialize(http_response: nil, biometric_comparison_required: false,
-                       success: nil, errors: nil, exception: nil, extra: nil, pii_from_doc: nil)
+        def initialize(http_response: nil, biometric_comparison_required: false)
           @http_response = http_response
           @biometric_comparison_required = biometric_comparison_required
           @pii_from_doc = read_pii

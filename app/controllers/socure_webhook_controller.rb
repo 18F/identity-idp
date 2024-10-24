@@ -23,7 +23,7 @@ class SocureWebhookController < ApplicationController
     SocureDocvResultsJob.perform_later(
       document_capture_session_uuid: dcs&.uuid,
       service_provider_issuer: dcs&.issuer,
-      user_uuid: dcs&.user.uuid,
+      user_uuid: dcs&.user&.uuid,
     )
   end
 
