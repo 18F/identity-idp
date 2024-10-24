@@ -70,7 +70,9 @@ RSpec.describe SignUp::SelectEmailController do
     it 'updates selected email address' do
       response
 
-      expect(controller.user_session[:selected_email_id]).to eq(selected_email.id.to_s)
+      expect(
+        controller.user_session[:selected_email_id_for_linked_identity],
+      ).to eq(selected_email.id.to_s)
     end
 
     it 'logs analytics event' do
@@ -91,7 +93,9 @@ RSpec.describe SignUp::SelectEmailController do
 
       it 'rejects email not belonging to the user' do
         expect(response).to redirect_to(sign_up_select_email_path)
-        expect(controller.user_session[:selected_email_id]).to eq(nil)
+        expect(
+          controller.user_session[:selected_email_id_for_linked_identity],
+        ).to eq(nil)
       end
 
       it 'logs analytics event' do
