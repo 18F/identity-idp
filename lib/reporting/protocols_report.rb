@@ -72,6 +72,10 @@ module Reporting
           title: 'Deprecated Parameter Usage',
           table: deprecated_parameters_table,
         ),
+        Reporting::EmailableReport.new(
+          title: 'Feature Usage',
+          table: feature_use_table,
+        ),
       ]
     end
 
@@ -371,7 +375,6 @@ module Reporting
   end
 end
 
-# rubocop:disable Rails/Output
 if __FILE__ == $PROGRAM_NAME
   options = Reporting::CommandLineOptions.new.parse!(ARGV, require_issuer: false)
 
@@ -379,4 +382,3 @@ if __FILE__ == $PROGRAM_NAME
     puts csv
   end
 end
-# rubocop:enable Rails/Output

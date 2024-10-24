@@ -1,6 +1,10 @@
 import { useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
-import { FormStepComponentProps, FormStepsButton } from '@18f/identity-form-steps';
+import {
+  FormStepComponentProps,
+  FormStepsButton,
+  FormStepsContext,
+} from '@18f/identity-form-steps';
 import { Cancel } from '@18f/identity-verify-flow';
 import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
 import TipList from './tip-list';
@@ -51,6 +55,7 @@ export default function DocumentsStep({
   registerField = () => undefined,
 }: FormStepComponentProps<DocumentsAndSelfieStepValue>) {
   const { t } = useI18n();
+  const { isLastStep } = useContext(FormStepsContext);
   const { isMobile } = useContext(DeviceContext);
   const { flowPath } = useContext(UploadContext);
   const defaultSideProps: DefaultSideProps = {
@@ -77,7 +82,7 @@ export default function DocumentsStep({
         value={value}
         isReviewStep={false}
       />
-      <FormStepsButton.Continue />
+      {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
       <Cancel />
     </>
   );

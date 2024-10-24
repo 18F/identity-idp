@@ -145,7 +145,12 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def account_verified
-    service_provider = ServiceProvider.find_by(friendly_name: 'Example Sinatra App')
+    service_provider = unsaveable(
+      ServiceProvider.new(
+        friendly_name: 'Example Sinatra App',
+        return_to_sp_url: 'http://example.com',
+      ),
+    )
     UserMailer.with(user: user, email_address: email_address_record).account_verified(
       profile: unsaveable(
         Profile.new(
@@ -164,6 +169,7 @@ class UserMailerPreview < ActionMailer::Preview
   def in_person_deadline_passed
     UserMailer.with(user: user, email_address: email_address_record).in_person_deadline_passed(
       enrollment: in_person_enrollment_id_ipp,
+      visited_location_name: in_person_visited_location_name,
     )
   end
 
@@ -202,24 +208,28 @@ class UserMailerPreview < ActionMailer::Preview
   def in_person_verified
     UserMailer.with(user: user, email_address: email_address_record).in_person_verified(
       enrollment: in_person_enrollment_id_ipp,
+      visited_location_name: in_person_visited_location_name,
     )
   end
 
   def in_person_failed
     UserMailer.with(user: user, email_address: email_address_record).in_person_failed(
       enrollment: in_person_enrollment_id_ipp,
+      visited_location_name: in_person_visited_location_name,
     )
   end
 
   def in_person_failed_fraud
     UserMailer.with(user: user, email_address: email_address_record).in_person_failed_fraud(
       enrollment: in_person_enrollment_id_ipp,
+      visited_location_name: in_person_visited_location_name,
     )
   end
 
   def in_person_please_call
     UserMailer.with(user: user, email_address: email_address_record).in_person_please_call(
       enrollment: in_person_enrollment_id_ipp,
+      visited_location_name: in_person_visited_location_name,
     )
   end
 
@@ -299,6 +309,10 @@ class UserMailerPreview < ActionMailer::Preview
 
   def email_address_record
     unsaveable(EmailAddress.new(email: email_address))
+  end
+
+  def in_person_visited_location_name
+    'ACQUAINTANCESHIP'
   end
 
   def in_person_enrollment_id_ipp

@@ -66,7 +66,7 @@ RSpec.describe 'Phishing-resistant authentication required in an SAML context' d
       context 'with piv cac configured' do
         let(:user) { create(:user, :fully_registered, :with_piv_or_cac) }
 
-        it 'sends user to authenticate with piv cac' do
+        it 'sends user to authenticate with piv cac and removes weaker options' do
           sign_in_before_2fa(user)
 
           visit_saml_authn_request_url(
@@ -75,15 +75,17 @@ RSpec.describe 'Phishing-resistant authentication required in an SAML context' d
               authn_context: Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
             },
           )
-          visit login_two_factor_path(otp_delivery_preference: 'sms')
           expect(current_url).to eq(login_two_factor_piv_cac_url)
+          click_on t('two_factor_authentication.login_options_link_text')
+          expect(has_2fa_option?(:piv_cac)).to eq(true)
+          expect(has_2fa_option?(:sms)).to eq(false)
         end
       end
 
       context 'with webauthn configured' do
         let(:user) { create(:user, :fully_registered, :with_webauthn) }
 
-        it 'sends user to authenticate with webauthn' do
+        it 'sends user to authenticate with webauthn and removes weaker options' do
           sign_in_before_2fa(user)
 
           visit_saml_authn_request_url(
@@ -92,15 +94,17 @@ RSpec.describe 'Phishing-resistant authentication required in an SAML context' d
               authn_context: Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
             },
           )
-          visit login_two_factor_path(otp_delivery_preference: 'sms')
           expect(current_url).to eq(login_two_factor_webauthn_url)
+          click_on t('two_factor_authentication.login_options_link_text')
+          expect(has_2fa_option?(:webauthn)).to eq(true)
+          expect(has_2fa_option?(:sms)).to eq(false)
         end
       end
 
       context 'with webauthn platform configured' do
         let(:user) { create(:user, :fully_registered, :with_webauthn_platform) }
 
-        it 'sends user to authenticate with webauthn platform' do
+        it 'sends user to authenticate with webauthn platform and removes weaker options' do
           sign_in_before_2fa(user)
 
           visit_saml_authn_request_url(
@@ -109,8 +113,10 @@ RSpec.describe 'Phishing-resistant authentication required in an SAML context' d
               authn_context: Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
             },
           )
-          visit login_two_factor_path(otp_delivery_preference: 'sms')
           expect(current_url).to eq(login_two_factor_webauthn_url(platform: true))
+          click_on t('two_factor_authentication.login_options_link_text')
+          expect(has_2fa_option?(:webauthn_platform)).to eq(true)
+          expect(has_2fa_option?(:sms)).to eq(false)
         end
       end
 
@@ -157,7 +163,7 @@ RSpec.describe 'Phishing-resistant authentication required in an SAML context' d
       context 'with piv cac configured' do
         let(:user) { create(:user, :fully_registered, :with_piv_or_cac) }
 
-        it 'sends user to authenticate with piv cac' do
+        it 'sends user to authenticate with piv cac and removes weaker options' do
           sign_in_before_2fa(user)
 
           visit_saml_authn_request_url(
@@ -165,15 +171,17 @@ RSpec.describe 'Phishing-resistant authentication required in an SAML context' d
               issuer: sp1_issuer, authn_context: Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF
             },
           )
-          visit login_two_factor_path(otp_delivery_preference: 'sms')
           expect(current_url).to eq(login_two_factor_piv_cac_url)
+          click_on t('two_factor_authentication.login_options_link_text')
+          expect(has_2fa_option?(:piv_cac)).to eq(true)
+          expect(has_2fa_option?(:sms)).to eq(false)
         end
       end
 
       context 'with webauthn configured' do
         let(:user) { create(:user, :fully_registered, :with_webauthn) }
 
-        it 'sends user to authenticate with webauthn' do
+        it 'sends user to authenticate with webauthn and removes weaker options' do
           sign_in_before_2fa(user)
 
           visit_saml_authn_request_url(
@@ -181,15 +189,17 @@ RSpec.describe 'Phishing-resistant authentication required in an SAML context' d
               issuer: sp1_issuer, authn_context: Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF
             },
           )
-          visit login_two_factor_path(otp_delivery_preference: 'sms')
           expect(current_url).to eq(login_two_factor_webauthn_url)
+          click_on t('two_factor_authentication.login_options_link_text')
+          expect(has_2fa_option?(:webauthn)).to eq(true)
+          expect(has_2fa_option?(:sms)).to eq(false)
         end
       end
 
       context 'with webauthn platform configured' do
         let(:user) { create(:user, :fully_registered, :with_webauthn_platform) }
 
-        it 'sends user to authenticate with webauthn platform' do
+        it 'sends user to authenticate with webauthn platform and removes weaker options' do
           sign_in_before_2fa(user)
 
           visit_saml_authn_request_url(
@@ -197,8 +207,10 @@ RSpec.describe 'Phishing-resistant authentication required in an SAML context' d
               issuer: sp1_issuer, authn_context: Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF
             },
           )
-          visit login_two_factor_path(otp_delivery_preference: 'sms')
           expect(current_url).to eq(login_two_factor_webauthn_url(platform: true))
+          click_on t('two_factor_authentication.login_options_link_text')
+          expect(has_2fa_option?(:webauthn_platform)).to eq(true)
+          expect(has_2fa_option?(:sms)).to eq(false)
         end
       end
 
@@ -245,7 +257,7 @@ RSpec.describe 'Phishing-resistant authentication required in an SAML context' d
       context 'with piv cac configured' do
         let(:user) { create(:user, :fully_registered, :with_piv_or_cac) }
 
-        it 'sends user to authenticate with piv cac' do
+        it 'sends user to authenticate with piv cac and removes weaker options' do
           sign_in_before_2fa(user)
 
           visit_saml_authn_request_url(
@@ -253,15 +265,17 @@ RSpec.describe 'Phishing-resistant authentication required in an SAML context' d
               issuer: aal3_issuer, authn_context: nil
             },
           )
-          visit login_two_factor_path(otp_delivery_preference: 'sms')
           expect(current_url).to eq(login_two_factor_piv_cac_url)
+          click_on t('two_factor_authentication.login_options_link_text')
+          expect(has_2fa_option?(:piv_cac)).to eq(true)
+          expect(has_2fa_option?(:sms)).to eq(false)
         end
       end
 
       context 'with webauthn configured' do
         let(:user) { create(:user, :fully_registered, :with_webauthn) }
 
-        it 'sends user to authenticate with webauthn' do
+        it 'sends user to authenticate with webauthn and removes weaker options' do
           sign_in_before_2fa(user)
 
           visit_saml_authn_request_url(
@@ -269,15 +283,17 @@ RSpec.describe 'Phishing-resistant authentication required in an SAML context' d
               issuer: aal3_issuer, authn_context: nil
             },
           )
-          visit login_two_factor_path(otp_delivery_preference: 'sms')
           expect(current_url).to eq(login_two_factor_webauthn_url)
+          click_on t('two_factor_authentication.login_options_link_text')
+          expect(has_2fa_option?(:webauthn)).to eq(true)
+          expect(has_2fa_option?(:sms)).to eq(false)
         end
       end
 
       context 'with webauthn platform configured' do
         let(:user) { create(:user, :fully_registered, :with_webauthn_platform) }
 
-        it 'sends user to authenticate with webauthn platform' do
+        it 'sends user to authenticate with webauthn platform and removes weaker options' do
           sign_in_before_2fa(user)
 
           visit_saml_authn_request_url(
@@ -285,8 +301,10 @@ RSpec.describe 'Phishing-resistant authentication required in an SAML context' d
               issuer: aal3_issuer, authn_context: nil
             },
           )
-          visit login_two_factor_path(otp_delivery_preference: 'sms')
           expect(current_url).to eq(login_two_factor_webauthn_url(platform: true))
+          click_on t('two_factor_authentication.login_options_link_text')
+          expect(has_2fa_option?(:webauthn_platform)).to eq(true)
+          expect(has_2fa_option?(:sms)).to eq(false)
         end
       end
 
@@ -323,5 +341,12 @@ RSpec.describe 'Phishing-resistant authentication required in an SAML context' d
         end
       end
     end
+  end
+
+  def has_2fa_option?(auth_method)
+    page.find("label[for='two_factor_options_form_selection_#{auth_method}']")
+    true
+  rescue Capybara::ElementNotFound
+    false
   end
 end

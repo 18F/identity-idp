@@ -43,6 +43,7 @@ module Users
       @need_to_set_up_additional_mfa = need_to_set_up_additional_mfa?
 
       if result.errors.present?
+        increment_mfa_selection_attempt_count(webauthn_auth_method)
         analytics.webauthn_setup_submitted(
           platform_authenticator: form.platform_authenticator?,
           errors: result.errors,
@@ -54,6 +55,7 @@ module Users
     end
 
     def confirm
+      increment_mfa_selection_attempt_count(webauthn_auth_method)
       form = WebauthnSetupForm.new(
         user: current_user,
         user_session: user_session,
@@ -71,9 +73,9 @@ module Users
       )
       properties = result.to_h.merge(analytics_properties)
       analytics.multi_factor_auth_setup(**properties)
-
       if result.success?
         process_valid_webauthn(form)
+        user_session.delete(:mfa_attempts)
       else
         flash.now[:error] = result.first_error_message
         render :new
@@ -87,6 +89,14 @@ module Users
          current_user.webauthn_configurations.platform_authenticators.present?
         redirect_to authentication_methods_setup_path
      end
+    end
+
+    def webauthn_auth_method
+      if @platform_authenticator
+        TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM
+      else
+        TwoFactorAuthenticatable::AuthMethod::WEBAUTHN
+      end
     end
 
     def platform_authenticator?
@@ -147,6 +157,7 @@ module Users
     def analytics_properties
       {
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
+        attempts: mfa_attempts_count,
       }
     end
 

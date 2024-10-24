@@ -37,7 +37,7 @@ class AccessTokenVerifier
   end
 
   def load_identity(access_token)
-    identity = ServiceProviderIdentity.where(access_token: access_token).take
+    identity = ServiceProviderIdentity.find_by(access_token: access_token)
 
     if identity && OutOfBandSessionAccessor.new(identity.rails_session_id).ttl.positive?
       @identity = identity

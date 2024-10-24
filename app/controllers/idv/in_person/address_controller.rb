@@ -109,11 +109,7 @@ module Idv
 
       def confirm_in_person_state_id_step_complete
         return if pii_from_user&.has_key?(:identity_doc_address1)
-        if IdentityConfig.store.in_person_state_id_controller_enabled
-          redirect_to idv_in_person_proofing_state_id_url
-        else
-          redirect_to idv_in_person_step_url(step: :state_id)
-        end
+        redirect_to idv_in_person_proofing_state_id_url
       end
 
       def confirm_in_person_address_step_needed
