@@ -96,8 +96,6 @@ RSpec.describe DataWarehouse::TableSummaryStatsExportJob, type: :job do
     end
   end
 
-  private
-
   def add_data_to_tables
     User.create!(id: 1, created_at: (timestamp - 1.hour))
     User.create!(id: 2, created_at: (timestamp - 1.day))
