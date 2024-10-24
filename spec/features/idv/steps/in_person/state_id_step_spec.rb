@@ -39,7 +39,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
 
       click_link t('links.cancel')
       click_on t('idv.cancel.actions.keep_going')
-      expect(page).to have_current_path(idv_in_person_proofing_state_id_path, wait: 10)
+      expect(page).to have_current_path(idv_in_person_state_id_path, wait: 10)
     end
 
     it 'allows user to submit valid inputs on form', allow_browser_log: true do
@@ -75,7 +75,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
       click_link t('idv.buttons.change_state_id_label')
 
       # state id page has fields that are pre-populated
-      expect(page).to have_current_path(idv_in_person_proofing_state_id_path, wait: 10)
+      expect(page).to have_current_path(idv_in_person_state_id_path, wait: 10)
       expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
       expect(page).to have_field(
         t('in_person_proofing.form.state_id.first_name'),
