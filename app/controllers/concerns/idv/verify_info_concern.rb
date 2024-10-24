@@ -287,6 +287,7 @@ module Idv
         end
       end
 
+      result[:biographical_info]&.delete(:same_address_as_id)
       FormResponse.new(
         success: result[:success],
         errors: result[:errors],
