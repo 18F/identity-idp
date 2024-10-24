@@ -16,11 +16,21 @@ module LexisNexisFixtures
       )
     end
 
-    def example_ddp_config
+    def example_ddp_proofing_config
       Proofing::LexisNexis::Config.new(
         api_key: 'test_api_key',
         base_url: 'https://example.com',
         org_id: 'test_org_id',
+        ddp_policy: 'test_tmx_proofing_policy'
+      )
+    end
+
+    def example_ddp_authentication_config
+      Proofing::LexisNexis::Config.new(
+        api_key: 'test_api_key',
+        base_url: 'https://example.com',
+        org_id: 'test_org_id',
+        ddp_policy: 'test_tmx_authentication_policy'
       )
     end
 

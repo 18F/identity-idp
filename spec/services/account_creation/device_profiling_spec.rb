@@ -20,8 +20,7 @@ RSpec.describe AccountCreation::DeviceProfiling do
     end
 
     before do
-      allow(Proofing::LexisNexis::InstantVerify::VerificationRequest).to receive(:new)
-      allow(device_profiling).to receive(:lexisnexis_ddp_proofer).and_return(threatmetrix_proofer)
+      allow(device_profiling).to receive(:proofer).and_return(threatmetrix_proofer)
     end
 
     context 'ThreatMetrix is enabled' do

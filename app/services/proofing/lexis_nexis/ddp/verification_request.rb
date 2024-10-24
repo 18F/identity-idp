@@ -7,7 +7,7 @@ module Proofing
         private
 
         def build_request_body
-          if config.policy == IdentityConfig.store.lexisnexis_authentication_threatmetrix_policy
+          if config.ddp_policy == IdentityConfig.store.lexisnexis_authentication_threatmetrix_policy
             default_body.to_json
           else
             default_body.merge(proofing_request_body).to_json
@@ -24,7 +24,7 @@ module Proofing
             service_type: 'all',
             session_id: applicant[:threatmetrix_session_id],
             input_ip_address: applicant[:request_ip],
-          }.to_json
+          }
         end
 
         def proofing_request_body

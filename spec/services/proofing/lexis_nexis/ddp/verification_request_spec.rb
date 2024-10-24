@@ -25,7 +25,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::VerificationRequest do
 
   let(:response_body) { LexisNexisFixtures.ddp_success_response_json }
   subject do
-    described_class.new(applicant: applicant, config: LexisNexisFixtures.example_ddp_config)
+    described_class.new(applicant: applicant, config: LexisNexisFixtures.example_ddp_proofing_config)
   end
 
   before do
