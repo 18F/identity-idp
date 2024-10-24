@@ -65,25 +65,14 @@ module Proofing
                   :state_id_result
 
       def proof_with_threatmetrix_if_needed
-        unless FeatureManagement.proofing_device_profiling_collecting_enabled?
-          return threatmetrix_disabled_result
-        end
-
-        # The API call will fail without a session ID, so do not attempt to make
-        # it to avoid leaking data when not required.
-        return threatmetrix_id_missing_result if threatmetrix_session_id.blank?
-        return threatmetrix_pii_missing_result if applicant_pii.blank?
-
-        ddp_pii = applicant_pii.dup
-        ddp_pii[:threatmetrix_session_id] = threatmetrix_session_id
-        ddp_pii[:email] = user_email
-        ddp_pii[:request_ip] = request_ip
-
-        timer.time('threatmetrix') do
-          lexisnexis_ddp_proofer.proof(ddp_pii)
-        end.tap do |result|
-          add_sp_cost(:threatmetrix, result.transaction_id)
-        end
+        Plugins::ThreatMetrixPlugin.new.call(
+          applicant_pii:,
+          current_sp:,
+          threatmetrix_session_id:,
+          request_ip:,
+          timer:,
+          user_email:,
+        )
       end
 
       def proof_residential_address_if_needed
@@ -173,30 +162,6 @@ module Proofing
         @ipp_enrollment_in_progress
       end
 
-      def threatmetrix_disabled_result
-        Proofing::DdpResult.new(
-          success: true,
-          client: 'tmx_disabled',
-          review_status: 'pass',
-        )
-      end
-
-      def threatmetrix_pii_missing_result
-        Proofing::DdpResult.new(
-          success: false,
-          client: 'tmx_pii_missing',
-          review_status: 'reject',
-        )
-      end
-
-      def threatmetrix_id_missing_result
-        Proofing::DdpResult.new(
-          success: false,
-          client: 'tmx_session_id_missing',
-          review_status: 'reject',
-        )
-      end
-
       def out_of_aamva_jurisdiction_result
         Proofing::StateIdResult.new(
           errors: {},
@@ -204,19 +169,6 @@ module Proofing
           success: true,
           vendor_name: 'UnsupportedJurisdiction',
         )
-      end
-
-      def lexisnexis_ddp_proofer
-        @lexisnexis_ddp_proofer ||=
-          if IdentityConfig.store.lexisnexis_threatmetrix_mock_enabled
-            Proofing::Mock::DdpMockClient.new
-          else
-            Proofing::LexisNexis::Ddp::Proofer.new(
-              api_key: IdentityConfig.store.lexisnexis_threatmetrix_api_key,
-              org_id: IdentityConfig.store.lexisnexis_threatmetrix_org_id,
-              base_url: IdentityConfig.store.lexisnexis_threatmetrix_base_url,
-            )
-          end
       end
 
       def resolution_proofer
