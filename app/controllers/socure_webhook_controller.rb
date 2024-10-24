@@ -18,14 +18,12 @@ class SocureWebhookController < ApplicationController
   private
 
   def fetch_results
-    # docv_transaction_token = socure_params[:event][:docVTransactionToken]
-    # dcs = DocumentCaptureSession.find_by(socure_docv_transaction_token: docv_transaction_token)
-    dcs_uuid = socure_params[:event][:customer_user_id]
-    dcs = DocumentCaptureSession.find_by(uuid: dcs_uuid)
+    docv_transaction_token = socure_params[:event][:docVTransactionToken]
+    dcs = DocumentCaptureSession.find_by(socure_docv_transaction_token: docv_transaction_token)
     SocureDocvResultsJob.perform_later(
-      document_capture_session_uuid: dcs.uuid,
-      service_provider_issuer: dcs.issuer,
-      user_uuid: dcs.user.uuid,
+      document_capture_session_uuid: dcs&.uuid,
+      service_provider_issuer: dcs&.issuer,
+      user_uuid: dcs&.user.uuid,
     )
   end
 
