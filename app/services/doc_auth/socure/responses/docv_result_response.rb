@@ -61,6 +61,14 @@ module DocAuth
           )
         end
 
+        def doc_auth_success?
+          success?
+        end
+
+        def selfie_status
+          :not_processed
+        end
+
         private
 
         def successful_result?

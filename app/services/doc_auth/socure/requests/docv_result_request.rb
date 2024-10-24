@@ -16,7 +16,7 @@ module DocAuth
         def body
           {
             modules: ['documentverification'],
-            docvTransactionToken: document_capture_session.socure_docv_token,
+            docvTransactionToken: document_capture_session.socure_docv_transaction_token,
             customerUserId: document_capture_session_uuid,
           }.to_json
         end
