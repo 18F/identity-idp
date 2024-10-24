@@ -235,6 +235,7 @@ safe_migrations:
       command: ['--fsync=false', '--synchronous_commit=false', '--full_page_writes=false']
   script:
     - *bundle_install
+    - bundle exec rake db:create
     - bundle exec rake db:migrate:primary VERSION=$(git ls-tree --name-only main db/primary_migrate/ | grep -o '\d\{8,\}' | tail -1)
     - bundle exec rake db:migrate:worker_jobs VERSION=$(git ls-tree --name-only main db/worker_jobs_migrate/ | grep -o '\d\{8,\}' | tail -1)
     - bundle exec rake db:version
