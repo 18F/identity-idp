@@ -73,11 +73,9 @@ RSpec.describe Proofing::Socure::IdPlus::Proofer do
   it 'reports reason codes as errors' do
     expect(result.errors).to eql(
       {
-        reason_codes: [
-          'I905',
-          'I914',
-          'I919',
-        ],
+        'I905' => '[unknown]',
+        'I914' => '[unknown]',
+        'I919' => '[unknown]',
       },
     )
   end

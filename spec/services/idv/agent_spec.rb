@@ -169,7 +169,7 @@ RSpec.describe Idv::Agent do
         )
         result = document_capture_session.load_proofing_result.result
 
-        expect(result[:exception].to_s).to include('address mock timeout')
+        expect(result[:exception].to_s).to include('resolution mock timeout')
         expect(result).to include(
           success: false,
           timed_out: true,

@@ -50,7 +50,7 @@ module Proofing
         resolution_result(
           success: false,
           errors: {},
-          exception: Proofing::TimeoutError.new('address mock timeout'),
+          exception: Proofing::TimeoutError.new('resolution mock timeout'),
         )
       end
 
