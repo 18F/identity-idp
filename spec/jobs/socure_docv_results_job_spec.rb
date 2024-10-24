@@ -23,11 +23,7 @@ RSpec.describe SocureDocvResultsJob do
 
   describe '#perform' do
     subject(:perform) do
-      job.perform(
-        document_capture_session_uuid: document_capture_session.uuid,
-        service_provider_issuer: 'foo',
-        user_uuid: user.uuid,
-      )
+      job.perform(document_capture_session_uuid: document_capture_session.uuid)
     end
 
     let(:socure_response_body) do

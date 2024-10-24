@@ -20,11 +20,11 @@ class SocureWebhookController < ApplicationController
   def fetch_results
     docv_transaction_token = socure_params.dig(:event, :docVTransactionToken)
     dcs = DocumentCaptureSession.find_by(socure_docv_transaction_token: docv_transaction_token)
-    SocureDocvResultsJob.perform_later(
-      document_capture_session_uuid: dcs&.uuid,
-      service_provider_issuer: dcs&.issuer,
-      user_uuid: dcs&.user&.uuid,
-    )
+    raise 'DocumentCaptureSession not found' if dcs.blank?
+
+    SocureDocvResultsJob.perform_later(document_capture_session_uuid: dcs.uuid)
+  rescue StandardError => e
+    NewRelic::Agent.notice_error(e)
   end
 
   def check_token
