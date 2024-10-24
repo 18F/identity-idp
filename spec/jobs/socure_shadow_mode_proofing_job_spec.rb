@@ -402,7 +402,7 @@ RSpec.describe SocureShadowModeProofingJob do
           satisfy do |attributes|
             errors = attributes.dig(:socure_result, :errors)
             expect(errors).to include(
-              'I000' => '',
+              'I000' => '[unknown]',
             )
           end,
         )
