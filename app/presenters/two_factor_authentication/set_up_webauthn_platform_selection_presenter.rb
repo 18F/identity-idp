@@ -11,6 +11,8 @@ module TwoFactorAuthentication
         WebauthnInputComponent.new(
           platform: true,
           passkey_supported_only: true,
+          show_unsupported_passkey:
+            IdentityConfig.store.show_unsupported_passkey_platform_authentication_setup,
         ),
         &block
       )

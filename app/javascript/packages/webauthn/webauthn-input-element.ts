@@ -18,7 +18,8 @@ export class WebauthnInputElement extends HTMLElement {
     if ((isWebauthnPasskeySupported() || this.isOptedInToAbTest)  && (await isWebauthnPlatformAuthenticatorAvailable())) {
       this.hidden = false;
     } else {
-      this.hidden = true;
+      this.hidden = false;
+      this.classList.add('webauthn-input--unsupported-passkey');
     }
   }
 }
