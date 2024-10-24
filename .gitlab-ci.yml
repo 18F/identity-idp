@@ -216,6 +216,28 @@ check_changelog:
         exit 0
       fi
 
+safe_migrations:
+  stage: test
+  needs:
+    - job: install
+  cache:
+    - <<: *ruby_cache
+  variables:
+    DOCKER_DB_HOST: db-postgres
+    POSTGRES_DB: identity_idp_test
+    POSTGRES_USER: postgres_user
+    POSTGRES_PASSWORD: postgres_password
+    POSTGRES_HOST_AUTH_METHOD: trust
+    RAILS_ENV: test
+  services:
+    - name: public.ecr.aws/docker/library/postgres:13.9
+      alias: db-postgres
+      command: ['--fsync=false', '--synchronous_commit=false', '--full_page_writes=false']
+  script:
+    - *bundle_install
+    - rake db:migrate:primary VERSION=$(git ls-tree --name-only main db/primary_migrate/ | grep -o '\d\{8,\}' | tail -1)
+    - rake db:migrate:worker_jobs VERSION=$(git ls-tree --name-only main db/worker_jobs_migrate/ | grep -o '\d\{8,\}' | tail -1)
+
 migrate:
   stage: test
   needs:
