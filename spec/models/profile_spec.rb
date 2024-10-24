@@ -1128,8 +1128,8 @@ RSpec.describe Profile do
       # controller's params. As this is a model spec, we have to fake
       # the params object.
       fake_params = ActionController::Parameters.new(
-        user: OpenStruct.new(id: 'fake_user_id'),
-        email_address: OpenStruct.new(user_id: 'fake_user_id', email: 'fake_user@test.com'),
+        user: User.new(id: 'fake_user_id'),
+        email_address: EmailAddress.new(user_id: 'fake_user_id', email: 'fake_user@test.com'),
       )
       allow_any_instance_of(UserMailer).to receive(:params).and_return(fake_params)
     end
