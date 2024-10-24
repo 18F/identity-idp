@@ -401,8 +401,8 @@ Rails.application.routes.draw do
           # sometimes underscores get messed up when linked to via SMS
           as: :capture_doc_dashes
 
-      get '/in_person_proofing/state_id' => redirect('/in_person/state_id', status: 307)
-      put '/in_person_proofing/state_id' => redirect('/in_person/state_id', status: 307)
+      get '/in_person_proofing/state_id' => redirect('verify/in_person/state_id', status: 307)
+      put '/in_person_proofing/state_id' => redirect('verify/in_person/state_id', status: 307)
 
       get '/in_person' => 'in_person#index'
       get '/in_person/ready_to_verify' => 'in_person/ready_to_verify#show',
