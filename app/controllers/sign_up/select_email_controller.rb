@@ -24,7 +24,7 @@ module SignUp
       analytics.sp_select_email_submitted(**result.to_h, needs_completion_screen_reason:)
 
       if result.success?
-        user_session[:selected_email_id] = form_params[:selected_email_id]
+        user_session[:selected_email_id_for_linked_identity] = form_params[:selected_email_id]
         redirect_to sign_up_completed_path
       else
         flash[:error] = result.first_error_message
