@@ -11,6 +11,20 @@
 #                 ||     ||
 
 module AnalyticsEvents
+  # @param [Boolean] success Check whether threatmetrix succeeded properly.
+  # @param [String] transaction_id Vendor-specific transaction ID for the request.
+  def account_creation_tmx_result(
+    success:,
+    transaction_id:, **extra
+  )
+    track_event(
+      :account_creation_tmx_result,
+      success:,
+      transaction_id:,
+      **extra,
+    )
+  end
+
   # @param [Boolean] success
   # When a user submits a form to delete their account
   def account_delete_submitted(success:, **extra)
@@ -6778,6 +6792,7 @@ module AnalyticsEvents
   # reason for the consent screen being shown
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation
   # @param [Array] sp_session_requested_attributes Attributes requested by the service provider
+  # @param [Hash] device_profiling_result Used to log profiling result if existing
   def user_registration_agency_handoff_page_visit(
       ial2:,
       service_provider_name:,
@@ -6786,6 +6801,7 @@ module AnalyticsEvents
       in_account_creation_flow:,
       sp_session_requested_attributes:,
       ialmax: nil,
+      device_profiling_result: nil,
       **extra
     )
     track_event(
@@ -6797,6 +6813,7 @@ module AnalyticsEvents
       needs_completion_screen_reason:,
       in_account_creation_flow:,
       sp_session_requested_attributes:,
+      device_profiling_result:,
       **extra,
     )
   end
@@ -6834,6 +6851,7 @@ module AnalyticsEvents
     disposable_email_domain: nil,
     in_person_proofing_status: nil,
     doc_auth_result: nil,
+    device_profiling_result: nil,
     **extra
   )
     track_event(
@@ -6848,6 +6866,7 @@ module AnalyticsEvents
       disposable_email_domain:,
       in_person_proofing_status:,
       doc_auth_result:,
+      device_profiling_result:,
       **extra,
     )
   end

@@ -16,12 +16,27 @@ module LexisNexisFixtures
       )
     end
 
-    def example_ddp_config
+    def example_ddp_proofing_config
       Proofing::LexisNexis::Config.new(
         api_key: 'test_api_key',
         base_url: 'https://example.com',
         org_id: 'test_org_id',
+        ddp_policy: 'test_tmx_proofing_policy'
       )
+    end
+
+    def example_ddp_authentication_config
+      Proofing::LexisNexis::Config.new(
+        api_key: 'test_api_key',
+        base_url: 'https://example.com',
+        org_id: 'test_org_id',
+        ddp_policy: 'test_tmx_authentication_policy'
+      )
+    end
+
+    def ddp_account_creation_request_json
+      raw = read_fixture_file_at_path('ddp/account_creation_request.json')
+      JSON.parse(raw).to_json
     end
 
     def ddp_request_json

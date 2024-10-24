@@ -90,7 +90,7 @@ module TwoFactorAuthentication
           reason: RecaptchaAnnotator::AnnotationReasons::PASSED_TWO_FACTOR,
         ),
       )
-      Funnel::Registration::AddMfa.call(current_user.id, 'phone', analytics)
+      Funnel::Registration::AddMfa.call(current_user.id, 'phone', analytics, threatmetrix_attrs)
     end
 
     def confirm_multiple_factors_enabled
