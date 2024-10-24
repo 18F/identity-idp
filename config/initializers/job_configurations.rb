@@ -176,7 +176,7 @@ else
         args: -> { [Time.zone.today] },
       },
       # Data warehouse stale data check
-      dw_stale_data_check_job: {
+      table_summary_stats_export_job: {
         class: 'DataWarehouse::TableSummaryStatsExportJob',
         cron: gpo_cron_24h,
         args: -> { [Time.zone.now.yesterday.end_of_day] },
