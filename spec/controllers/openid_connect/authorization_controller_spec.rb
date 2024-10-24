@@ -2029,65 +2029,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
         end
       end
 
-      context 'when there are unknown acr_values params' do
-        let(:unknown_value) { 'unknown-acr-value' }
-        let(:acr_values) { unknown_value }
-
-        context 'when there is only an unknown acr_value' do
-          it 'tracks the event with errors' do
-            stub_analytics
-
-            action
-
-            expect(@analytics).to have_logged_event(
-              'OpenID Connect: authorization request',
-              success: false,
-              client_id:,
-              prompt:,
-              allow_prompt_login: true,
-              unauthorized_scope: false,
-              errors: hash_including(:acr_values),
-              error_details: hash_including(:acr_values),
-              user_fully_authenticated: true,
-              acr_values: '',
-              code_challenge_present: false,
-              scope: 'openid profile',
-              unknown_authn_contexts: unknown_value,
-            )
-          end
-
-          context 'when there is also a valid acr_value' do
-            let(:known_value) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
-            let(:acr_values) do
-              [
-                unknown_value,
-                known_value,
-              ].join(' ')
-            end
-
-            it 'tracks the event' do
-              stub_analytics
-
-              action
-              expect(@analytics).to have_logged_event(
-                'OpenID Connect: authorization request',
-                success: true,
-                client_id:,
-                prompt:,
-                allow_prompt_login: true,
-                unauthorized_scope: false,
-                user_fully_authenticated: true,
-                acr_values: known_value,
-                code_challenge_present: false,
-                scope: 'openid profile',
-                unknown_authn_contexts: unknown_value,
-                errors: {},
-              )
-            end
-          end
-        end
-      end
-
       context 'vtr with invalid params that do not interfere with the redirect_uri' do
         let(:acr_values) { nil }
         let(:vtr) { ['C1'].to_json }

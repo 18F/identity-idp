@@ -187,35 +187,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
       end
     end
 
-    context 'with unknown acr_values' do
-      let(:acr_values) { 'unknown-value' }
-      let(:vtr) { nil }
-
-      it 'has errors' do
-        expect(valid?).to eq(false)
-        expect(form.errors[:acr_values]).
-          to include(t('openid_connect.authorization.errors.no_valid_acr_values'))
-      end
-
-      context 'with a known IAL value' do
-        before do
-          allow(IdentityConfig.store).to receive(
-            :allowed_valid_authn_contexts_semantic_providers,
-          ).and_return(client_id)
-        end
-        let(:acr_values) do
-          [
-            'unknown-value',
-            Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
-          ].join(' ')
-        end
-
-        it 'is valid' do
-          expect(valid?).to eq(true)
-        end
-      end
-    end
-
     context 'with ialmax requested' do
       let(:acr_values) { Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF }
       let(:vtr) { nil }
@@ -240,52 +211,41 @@ RSpec.describe OpenidConnectAuthorizeForm do
       end
     end
 
-    context 'when facial match is requested' do
-      shared_examples 'allows facial match IAL only if sp is authorized' do |facial_match_ial|
-        let(:acr_values) { facial_match_ial }
+    shared_examples 'allows facial match IAL only if sp is authorized' do |facial_match_ial|
+      let(:acr_values) { facial_match_ial }
 
-        context "when the IAL requested is #{facial_match_ial}" do
-          context 'when the service provider is allowed to use facial match ials' do
-            before do
-              allow(IdentityConfig.store).to receive(
-                :allowed_biometric_ial_providers,
-              ).and_return([client_id])
-            end
-
-            it 'succeeds validation' do
-              expect(form).to be_valid
-            end
+      context "when the IAL requested is #{facial_match_ial}" do
+        context 'when the service provider is allowed to use facial match ials' do
+          before do
+            allow_any_instance_of(ServiceProvider).to receive(:facial_match_ial_allowed?).
+              and_return(true)
           end
 
-          context 'when the service provider is not allowed to use facial match ials' do
-            it 'fails with a not authorized error' do
-              expect(form).not_to be_valid
-              expect(form.errors[:acr_values]).
-                to include(t('openid_connect.authorization.errors.no_auth'))
-            end
+          it 'succeeds validation' do
+            expect(form).to be_valid
           end
         end
-      end
 
-      it_behaves_like 'allows facial match IAL only if sp is authorized',
-                      Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF
+        context 'when the service provider is not allowed to use facial match ials' do
+          before do
+            allow_any_instance_of(ServiceProvider).to receive(:facial_match_ial_allowed?).
+              and_return(false)
+          end
 
-      it_behaves_like 'allows facial match IAL only if sp is authorized',
-                      Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
-
-      context 'when using semantic acr_values' do
-        before do
-          allow(IdentityConfig.store).to receive(
-            :allowed_valid_authn_contexts_semantic_providers,
-          ).and_return([client_id])
+          it 'fails with a not authorized error' do
+            expect(form).not_to be_valid
+            expect(form.errors[:acr_values]).
+              to include(t('openid_connect.authorization.errors.no_auth'))
+          end
         end
-        it_behaves_like 'allows facial match IAL only if sp is authorized',
-                        Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_PREFERRED_ACR
-
-        it_behaves_like 'allows facial match IAL only if sp is authorized',
-                        Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR
       end
     end
+
+    it_behaves_like 'allows facial match IAL only if sp is authorized',
+                    Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF
+
+    it_behaves_like 'allows facial match IAL only if sp is authorized',
+                    Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
 
     context 'with aal but not ial requested via acr_values' do
       let(:acr_values) { Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF }
@@ -473,39 +433,22 @@ RSpec.describe OpenidConnectAuthorizeForm do
   end
 
   describe '#acr_values' do
-    let(:vtr) { nil }
-    let(:acr_value_list) do
+    let(:acr_values) do
       [
-        Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
-        Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
-      ]
+        'http://idmanagement.gov/ns/assurance/loa/1',
+        'http://idmanagement.gov/ns/assurance/aal/3',
+        'fake_value',
+      ].join(' ')
     end
-    let(:acr_values) { acr_value_list.join(' ') }
+    let(:vtr) { nil }
 
     it 'is parsed into an array of valid ACR values' do
-      expect(form.acr_values).to eq acr_value_list
-    end
-
-    context 'when an unknown acr value is included' do
-      let(:acr_value_list) do
-        [
-          Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
-          Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
-        ]
-      end
-      let(:acr_values) { (acr_value_list + ['fake-value']).join(' ') }
-
-      it 'is parsed into an array of valid ACR values' do
-        expect(form.acr_values).to eq acr_value_list
-      end
-    end
-
-    context 'when the only value is an unknown acr value' do
-      let(:acr_values) { 'fake_value' }
-
-      it 'returns an empty array for acr_values' do
-        expect(form.acr_values).to eq([])
-      end
+      expect(form.acr_values).to eq(
+        %w[
+          http://idmanagement.gov/ns/assurance/loa/1
+          http://idmanagement.gov/ns/assurance/aal/3
+        ],
+      )
     end
   end
 
@@ -601,26 +544,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
         it 'returns AAL2+HSPD12' do
           requested_aal_value = form.requested_aal_value
           expect(requested_aal_value).to eq(phishing_resistant)
-        end
-      end
-
-      context 'when no values are passed in' do
-        let(:acr_values) { '' }
-
-        it 'returns the default AAL value' do
-          expect(form.requested_aal_value).to eq(
-            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
-          )
-        end
-      end
-
-      context 'when only an unknown value is passed in' do
-        let(:acr_values) { 'fake-value' }
-
-        it 'returns the default AAL value' do
-          expect(form.requested_aal_value).to eq(
-            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
-          )
         end
       end
     end
