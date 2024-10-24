@@ -154,8 +154,6 @@ module TwoFactorAuthenticatableMethods
       t('two_factor_authentication.invalid_otp')
     when 'personal_key'
       t('two_factor_authentication.invalid_personal_key')
-    when 'piv_cac'
-      t('two_factor_authentication.invalid_piv_cac')
     else
       raise "Unsupported otp method: #{type}"
     end

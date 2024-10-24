@@ -415,18 +415,6 @@ RSpec.feature 'Two Factor Authentication' do
       expect(current_path).to eq account_path
     end
 
-    scenario 'user uses incorrect PIV/CAC as their second factor' do
-      user = user_with_piv_cac
-      sign_in_before_2fa(user)
-      stub_piv_cac_service(uuid: Random.uuid)
-
-      click_on t('forms.piv_cac_mfa.submit')
-      follow_piv_cac_redirect
-
-      expect(current_path).to eq login_two_factor_piv_cac_path
-      expect(page).to have_content(t('two_factor_authentication.invalid_piv_cac'))
-    end
-
     context 'user with Voice preference sends SMS, causing a Telephony error' do
       let(:user) do
         create(
