@@ -31,6 +31,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       enrollments_network_error: 0,
       enrollments_expired: 0,
       enrollments_failed: 0,
+      enrollments_cancelled: 0,
       enrollments_in_progress: 0,
       enrollments_passed: 0,
     }
@@ -106,6 +107,20 @@ class GetUspsProofingResultsJob < ApplicationJob
     status_check_attempted_at = Time.zone.now
     enrollment_outcomes[:enrollments_checked] += 1
 
+    profile_deactivation_reason = enrollment.profile_deactivation_reason
+
+    if profile_deactivation_reason.present?
+      log_enrollment_updated_analytics(
+        enrollment: enrollment,
+        enrollment_passed: false,
+        enrollment_completed: true,
+        response: nil,
+        reason: "Profile has a deactivation reason of #{profile_deactivation_reason}",
+      )
+      cancel_enrollment(enrollment)
+      return
+    end
+
     response = proofer.request_proofing_results(
       enrollment,
     )
@@ -123,6 +138,12 @@ class GetUspsProofingResultsJob < ApplicationJob
   ensure
     # Record the attempt to update the enrollment
     enrollment.update(status_check_attempted_at: status_check_attempted_at)
+  end
+
+  def cancel_enrollment(enrollment)
+    enrollment_outcomes[:enrollments_cancelled] += 1
+    enrollment.cancelled!
+    enrollment.profile.deactivate_due_to_in_person_verification_cancelled
   end
 
   def passed_with_unsupported_secondary_id_type?(enrollment, response)
@@ -374,8 +395,7 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   def handle_unexpected_response(enrollment, response_message, reason:, cancel: true)
     if cancel
-      enrollment.cancelled!
-      enrollment.profile.deactivate_due_to_in_person_verification_cancelled
+      cancel_enrollment(enrollment)
     end
     analytics(user: enrollment.user).
       idv_in_person_usps_proofing_results_job_unexpected_response(
