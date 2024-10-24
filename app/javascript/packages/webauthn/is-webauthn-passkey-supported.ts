@@ -4,10 +4,6 @@ const MINIMUM_IOS_VERSION = 16;
 
 const MINIMUM_ANDROID_VERSION = 9;
 
-const MINIMUM_MACOS_VERSION = 13;
-
-const MINIMUM_WINDOWS_VERSION = 10
-
 function isQualifyingIOSDevice(): boolean {
   const match = navigator.userAgent.match(/iPhone; CPU iPhone OS (\d+)_/);
   const iOSVersion: null | number = match && Number(match[1]);

@@ -15,7 +15,10 @@ export class WebauthnInputElement extends HTMLElement {
   }
 
   async toggleVisibleIfPasskeySupported() {
-    if ((isWebauthnPasskeySupported() || this.isOptedInToAbTest)  && (await isWebauthnPlatformAuthenticatorAvailable())) {
+    if (
+      (isWebauthnPasskeySupported() || this.isOptedInToAbTest) &&
+      (await isWebauthnPlatformAuthenticatorAvailable())
+    ) {
       this.hidden = false;
     } else {
       this.hidden = false;
