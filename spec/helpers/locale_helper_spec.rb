@@ -52,6 +52,7 @@ RSpec.describe LocaleHelper do
 
     context 'when the user has an email_language' do
       let(:email_language) { 'es' }
+      let(:url_options) { {} }
 
       it 'sets the language inside the block and yields' do
         subject

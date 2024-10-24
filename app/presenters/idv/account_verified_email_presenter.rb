@@ -4,10 +4,11 @@ module Idv
   class AccountVerifiedEmailPresenter
     include Rails.application.routes.url_helpers
 
-    attr_reader :profile
+    attr_reader :profile, :url_options
 
-    def initialize(profile:)
+    def initialize(profile:, url_options:)
       @profile = profile
+      @url_options = url_options
     end
 
     def service_provider
@@ -28,10 +29,6 @@ module Idv
 
     def sp_name
       service_provider&.friendly_name || APP_NAME
-    end
-
-    def url_options
-      {}
     end
 
     private
