@@ -337,6 +337,7 @@ risc_notifications_request_timeout: 3
 ruby_workers_idv_enabled: true
 rules_of_use_horizon_years: 5
 rules_of_use_updated_at: '2022-01-19T00:00:00Z' # Production has a newer timestamp than this, update directly in S3
+s3_data_warehouse_bucket_prefix: 'login-gov-analytics-export'
 s3_public_reports_enabled: false
 s3_report_bucket_prefix: login-gov.reports
 s3_report_public_bucket_prefix: login-gov-pubdata
@@ -467,6 +468,7 @@ development:
   rails_mailer_previews_enabled: true
   raise_on_missing_title: true
   risc_notifications_local_enabled: true
+  s3_data_warehouse_bucket_prefix: ''
   s3_report_bucket_prefix: ''
   s3_report_public_bucket_prefix: ''
   saml_endpoint_configs: '[{"suffix":"2023","secret_key_passphrase":"trust-but-verify"},{"suffix":"2024","secret_key_passphrase":"trust-but-verify"}]'
@@ -568,6 +570,7 @@ test:
   requests_per_ip_period: 60
   reset_password_email_max_attempts: 5
   reset_password_email_window_in_minutes: 80
+  s3_data_warehouse_bucket_prefix: ''
   s3_report_bucket_prefix: ''
   s3_report_public_bucket_prefix: ''
   saml_endpoint_configs: '[{"suffix":"2024","secret_key_passphrase":"trust-but-verify"},{"suffix":"2023","secret_key_passphrase":"trust-but-verify","comment":"this extra year is needed to demonstrate how handling multiple live years works in spec/requests/saml_requests_spec.rb"}]'

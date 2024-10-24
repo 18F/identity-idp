@@ -175,6 +175,12 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
+      # Data warehouse stale data check
+      table_summary_stats_export_job: {
+        class: 'DataWarehouse::TableSummaryStatsExportJob',
+        cron: gpo_cron_24h,
+        args: -> { [Time.zone.now.yesterday.end_of_day] },
+      },
       # Send Duplicate SSN report to S3
       duplicate_ssn: {
         class: 'Reports::DuplicateSsnReport',
