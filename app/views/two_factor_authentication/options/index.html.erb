@@ -2,6 +2,13 @@
 
 <%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice])) %>
 
+<% if @presenter.add_piv_cac_after_2fa? %>
+  <%= render AlertComponent.new(
+        type: :info,
+        class: 'margin-bottom-4',
+      ).with_content(t('two_factor_authentication.piv_cac_mismatch.2fa_before_add')) %>
+<% end %>
+
 <%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
 
 <p>

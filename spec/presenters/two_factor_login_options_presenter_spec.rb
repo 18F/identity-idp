@@ -9,15 +9,17 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
   let(:piv_cac_required) { false }
   let(:reauthentication_context) { false }
   let(:service_provider) { nil }
+  let(:add_piv_cac_after_2fa) { false }
 
   subject(:presenter) do
     TwoFactorLoginOptionsPresenter.new(
-      user: user,
-      view: view,
-      reauthentication_context: reauthentication_context,
-      service_provider: service_provider,
-      phishing_resistant_required: phishing_resistant_required,
-      piv_cac_required: piv_cac_required,
+      user:,
+      view:,
+      reauthentication_context:,
+      service_provider:,
+      phishing_resistant_required:,
+      piv_cac_required:,
+      add_piv_cac_after_2fa:,
     )
   end
 
@@ -44,6 +46,12 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
     subject { presenter.info }
 
     context 'default user session context' do
+      it { should eq t('two_factor_authentication.login_intro') }
+    end
+
+    context 'add piv cac after 2fa' do
+      let(:add_piv_cac_after_2fa) { true }
+
       it { should eq t('two_factor_authentication.login_intro') }
     end
 
@@ -146,6 +154,24 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
           )
         end
       end
+
+      context 'add piv cac after 2fa' do
+        let(:add_piv_cac_after_2fa) { true }
+
+        it 'returns all mfas associated with account' do
+          expect(options_classes).to eq(
+            [
+              TwoFactorAuthentication::SignInPhoneSelectionPresenter,
+              TwoFactorAuthentication::SignInPhoneSelectionPresenter,
+              TwoFactorAuthentication::SignInWebauthnSelectionPresenter,
+              TwoFactorAuthentication::SignInBackupCodeSelectionPresenter,
+              TwoFactorAuthentication::SignInPivCacSelectionPresenter,
+              TwoFactorAuthentication::SignInAuthAppSelectionPresenter,
+              TwoFactorAuthentication::SignInPersonalKeySelectionPresenter,
+            ],
+          )
+        end
+      end
     end
 
     context 'phishing resistant required' do
@@ -162,6 +188,24 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
 
       context 'in reauthentication context' do
         let(:reauthentication_context) { true }
+
+        it 'returns all mfas associated with account' do
+          expect(options_classes).to eq(
+            [
+              TwoFactorAuthentication::SignInPhoneSelectionPresenter,
+              TwoFactorAuthentication::SignInPhoneSelectionPresenter,
+              TwoFactorAuthentication::SignInWebauthnSelectionPresenter,
+              TwoFactorAuthentication::SignInBackupCodeSelectionPresenter,
+              TwoFactorAuthentication::SignInPivCacSelectionPresenter,
+              TwoFactorAuthentication::SignInAuthAppSelectionPresenter,
+              TwoFactorAuthentication::SignInPersonalKeySelectionPresenter,
+            ],
+          )
+        end
+      end
+
+      context 'add piv cac after 2fa' do
+        let(:add_piv_cac_after_2fa) { true }
 
         it 'returns all mfas associated with account' do
           expect(options_classes).to eq(
@@ -212,6 +256,12 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
 
         it { should be_nil }
       end
+
+      context 'add piv cac after 2fa' do
+        let(:add_piv_cac_after_2fa) { true }
+
+        it { should be_nil }
+      end
     end
 
     context 'piv cac required' do
@@ -238,6 +288,12 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
 
       context 'in reauthentication context' do
         let(:reauthentication_context) { true }
+
+        it { should be_nil }
+      end
+
+      context 'add piv cac after 2fa' do
+        let(:add_piv_cac_after_2fa) { true }
 
         it { should be_nil }
       end
