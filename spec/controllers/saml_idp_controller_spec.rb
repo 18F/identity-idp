@@ -970,22 +970,15 @@ RSpec.describe SamlIdpController do
     end
 
     context 'authn_context is invalid' do
-      let(:unknown_value) do
-        'http://idmanagement.gov/ns/assurance/loa/5'
-      end
-      let(:authn_context) { unknown_value }
-
-      before do
+      it 'renders an error page' do
         stub_analytics
 
         saml_get_auth(
           saml_settings(
-            overrides: { authn_context: },
+            overrides: { authn_context: 'http://idmanagement.gov/ns/assurance/loa/5' },
           ),
         )
-      end
 
-      it 'renders an error page' do
         expect(controller).to render_template('saml_idp/auth/error')
         expect(response.status).to eq(400)
         expect(response.body).to include(t('errors.messages.unauthorized_authn_context'))
@@ -996,7 +989,7 @@ RSpec.describe SamlIdpController do
             errors: { authn_context: [t('errors.messages.unauthorized_authn_context')] },
             error_details: { authn_context: { unauthorized_authn_context: true } },
             nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-            authn_context: [unknown_value],
+            authn_context: ['http://idmanagement.gov/ns/assurance/loa/5'],
             authn_context_comparison: 'exact',
             service_provider: 'http://localhost:3000',
             request_signed: true,
@@ -1005,48 +998,8 @@ RSpec.describe SamlIdpController do
             idv: false,
             finish_profile: false,
             matching_cert_serial: saml_test_sp_cert_serial,
-            unknown_authn_contexts: unknown_value,
           ),
         )
-      end
-
-      context 'there is also a valid authn_context' do
-        let(:authn_context) do
-          [
-            Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-            unknown_value,
-          ]
-        end
-
-        it 'logs the unknown authn_context value' do
-          expect(response.status).to eq(302)
-          expect(@analytics).to have_logged_event(
-            'SAML Auth Request',
-            hash_including(
-              unknown_authn_contexts: unknown_value,
-            ),
-          )
-        end
-
-        context 'when it includes the ReqAttributes AuthnContext' do
-          let(:authn_context) do
-            [
-              Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF,
-              Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-              unknown_value,
-            ]
-          end
-
-          it 'logs the unknown authn_context value' do
-            expect(response.status).to eq(302)
-            expect(@analytics).to have_logged_event(
-              'SAML Auth Request',
-              hash_including(
-                unknown_authn_contexts: unknown_value,
-              ),
-            )
-          end
-        end
       end
     end
 

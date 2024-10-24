@@ -88,10 +88,7 @@ class SamlRequestValidator
       next true if classref.match?(SamlIdp::Request::VTR_REGEXP) &&
                    IdentityConfig.store.use_vot_in_sp_requests
     end
-    # SAML requests are allowed to "default" to the integration's IAL default.
-    return true if authn_contexts.empty?
-
-    authn_contexts.any? do |classref|
+    authn_contexts.all? do |classref|
       valid_contexts.include?(classref)
     end
   end

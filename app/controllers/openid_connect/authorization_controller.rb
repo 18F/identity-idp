@@ -174,7 +174,6 @@ module OpenidConnect
           user_fully_authenticated: user_fully_authenticated?,
           referer: request.referer,
           vtr_param: params[:vtr],
-          unknown_authn_contexts:,
         ),
       )
       return if result.success?
@@ -258,13 +257,6 @@ module OpenidConnect
 
     def sp_handoff_bouncer
       @sp_handoff_bouncer ||= SpHandoffBouncer.new(sp_session)
-    end
-
-    def unknown_authn_contexts
-      return nil if params[:vtr].present? || params[:acr_values].blank?
-
-      (params[:acr_values].split - Saml::Idp::Constants::VALID_AUTHN_CONTEXTS).
-        join(' ').presence
     end
   end
 end
