@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe DataWarehouse::StaleDataCheckJob, type: :job do
+RSpec.describe DataWarehouse::TableSummaryStatsExportJob, type: :job do
   let(:timestamp) { Date.new(2024, 10, 10).in_time_zone('UTC').end_of_day }
   let(:job) { described_class.new }
   let(:expected_bucket) { 'login-gov-analytics-export-test-1234-us-west-2' }

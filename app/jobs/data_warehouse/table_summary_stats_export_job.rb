@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module DataWarehouse
-  class StaleDataCheckJob < BaseJob
+  class TableSummaryStatsExportJob < BaseJob
     REPORT_NAME = 'idp_max_ids'
 
     def perform(timestamp)
