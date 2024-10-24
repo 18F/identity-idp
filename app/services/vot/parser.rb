@@ -4,8 +4,6 @@ module Vot
   class Parser
     class ParseException < StandardError; end
 
-    class UnsupportedComponentsException < ParseException; end
-
     class DuplicateComponentsException < ParseException; end
 
     Result = Data.define(
@@ -87,8 +85,7 @@ module Vot
       @initial_components ||= component_string.split(component_separator).map do |component_name|
         component_map.fetch(component_name)
       rescue KeyError
-        raise_unsupported_component_exception(component_name)
-      end
+      end.compact
     end
 
     def component_separator
@@ -110,16 +107,6 @@ module Vot
     def validate_component_uniqueness!(component_values)
       if component_values.length != component_values.uniq.length
         raise_duplicate_component_exception
-      end
-    end
-
-    def raise_unsupported_component_exception(component_value_name)
-      if vector_of_trust.present?
-        raise UnsupportedComponentsException,
-              "'#{vector_of_trust}' contains unknown component '#{component_value_name}'"
-      else
-        raise UnsupportedComponentsException,
-              "'#{acr_values}' contains unknown acr value '#{component_value_name}'"
       end
     end
 
