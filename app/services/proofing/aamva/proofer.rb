@@ -50,8 +50,7 @@ module Proofing
       end
 
       def proof(applicant)
-        aamva_applicant =
-          Aamva::Applicant.from_proofer_applicant(OpenStruct.new(applicant))
+        aamva_applicant = Aamva::Applicant.from_proofer_applicant(applicant)
 
         response = Aamva::VerificationClient.new(
           config,

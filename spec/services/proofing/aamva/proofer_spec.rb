@@ -3,7 +3,7 @@ require 'ostruct'
 
 RSpec.describe Proofing::Aamva::Proofer do
   let(:aamva_applicant) do
-    Aamva::Applicant.from_proofer_applicant(OpenStruct.new(state_id_data))
+    Aamva::Applicant.from_proofer_applicant(state_id_data)
   end
 
   let(:state_id_data) do

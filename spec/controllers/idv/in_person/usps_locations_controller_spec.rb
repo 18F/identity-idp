@@ -455,7 +455,7 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
     context 'with failed doc_auth_result' do
       before do
         allow(controller).to receive(:document_capture_session).and_return(
-          OpenStruct.new({ last_doc_auth_result: 'Failed' }),
+          DocumentCaptureSession.new(last_doc_auth_result: 'Failed'),
         )
       end
 

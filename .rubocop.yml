@@ -1292,6 +1292,9 @@ Style/NumericLiteralPrefix:
 Style/OneLineConditional:
   Enabled: true
 
+Style/OpenStructUse:
+  Enabled: true
+
 Style/OptionalArguments:
   Enabled: true
 
