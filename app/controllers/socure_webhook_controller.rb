@@ -11,14 +11,14 @@ class SocureWebhookController < ApplicationController
 
   def create
     log_webhook_receipt
-    fetch_results if socure_params[:event][:eventType] == 'DOCUMENTS_UPLOADED'
+    fetch_results if socure_params.dig(:event, :eventType) == 'DOCUMENTS_UPLOADED'
     render json: { message: 'Secret token is valid.' }
   end
 
   private
 
   def fetch_results
-    docv_transaction_token = socure_params[:event][:docVTransactionToken]
+    docv_transaction_token = socure_params.dig(:event, :docVTransactionToken)
     dcs = DocumentCaptureSession.find_by(socure_docv_transaction_token: docv_transaction_token)
     SocureDocvResultsJob.perform_later(
       document_capture_session_uuid: dcs&.uuid,
