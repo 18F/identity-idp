@@ -287,11 +287,15 @@ module Idv
         end
       end
 
-      result[:biographical_info]&.delete(:same_address_as_id)
       FormResponse.new(
         success: result[:success],
         errors: result[:errors],
-        extra: extra.merge(proofing_results: result.except(:errors, :success)),
+        extra: extra.merge(
+          proofing_results: {
+            **result.except(:errors, :success),
+            biographical_info: result[:biographical_info]&.except(:same_address_as_id),
+          },
+        ),
       )
     end
 
