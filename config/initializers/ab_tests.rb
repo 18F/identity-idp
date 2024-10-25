@@ -89,7 +89,7 @@ module AbTests
   ).freeze
 
   RECOMMEND_WEBAUTHN_PLATFORM_FOR_SMS_USER = AbTest.new(
-    experiment_name: 'Upsell Face or Touch Unlock after SMS OTP',
+    experiment_name: 'Recommend Face or Touch Unlock for SMS users',
     should_log: [
       'Multi-Factor Authentication',
       'User Registration: MFA Setup Complete',
