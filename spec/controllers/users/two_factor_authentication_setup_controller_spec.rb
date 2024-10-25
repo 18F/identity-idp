@@ -139,6 +139,12 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
       it { is_expected.to redirect_to phone_setup_url }
     end
 
+    context 'when multi selection with auth app first' do
+      let(:params) { { two_factor_options_form: { selection: ['auth_app', 'phone', 'webauthn'] } } }
+
+      it { is_expected.to redirect_to authenticator_setup_url }
+    end
+
     context 'when the selection is auth_app' do
       let(:params) { { two_factor_options_form: { selection: ['auth_app'] } } }
 
