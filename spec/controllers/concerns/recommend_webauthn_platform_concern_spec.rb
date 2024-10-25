@@ -23,7 +23,7 @@ RSpec.describe RecommendWebauthnPlatformConcern do
     context 'device is not supported for platform authenticator setup' do
       let(:platform_authenticator_available) { false }
 
-      it { should eq(false) }
+      it { is_expected.to eq(false) }
     end
 
     context 'device is supported for platform authenticator setup' do
@@ -34,7 +34,7 @@ RSpec.describe RecommendWebauthnPlatformConcern do
           I18n.locale = (I18n.available_locales - [:en]).sample
         end
 
-        it { should eq(false) }
+        it { is_expected.to eq(false) }
       end
 
       context 'locale is english' do
@@ -51,7 +51,7 @@ RSpec.describe RecommendWebauthnPlatformConcern do
             )
           end
 
-          it { should eq(false) }
+          it { is_expected.to eq(false) }
         end
 
         context 'user has not yet been recommended for setup' do
@@ -68,7 +68,7 @@ RSpec.describe RecommendWebauthnPlatformConcern do
                 )
               end
 
-              it { should eq(false) }
+              it { is_expected.to eq(false) }
             end
 
             context 'user authenticated with sms' do
@@ -82,7 +82,7 @@ RSpec.describe RecommendWebauthnPlatformConcern do
               context 'user has platform authenticator associated with their account' do
                 let(:user) { create(:user, :fully_registered, :with_webauthn_platform) }
 
-                it { should eq(false) }
+                it { is_expected.to eq(false) }
               end
 
               context 'user does not have platform authenticator associated with their account' do
@@ -95,7 +95,7 @@ RSpec.describe RecommendWebauthnPlatformConcern do
                       and_return(nil)
                   end
 
-                  it { should eq(false) }
+                  it { is_expected.to eq(false) }
                 end
 
                 context 'user included in ab test' do
@@ -105,7 +105,7 @@ RSpec.describe RecommendWebauthnPlatformConcern do
                       and_return(:recommend)
                   end
 
-                  it { should eq(true) }
+                  it { is_expected.to eq(true) }
                 end
               end
             end
@@ -121,7 +121,7 @@ RSpec.describe RecommendWebauthnPlatformConcern do
                 user.phone_configurations.destroy_all
               end
 
-              it { should eq(false) }
+              it { is_expected.to eq(false) }
             end
 
             context 'user set up phone as an mfa method' do
@@ -132,7 +132,7 @@ RSpec.describe RecommendWebauthnPlatformConcern do
                   user.phone_configurations.update_all(delivery_preference: :voice)
                 end
 
-                it { should eq(false) }
+                it { is_expected.to eq(false) }
               end
 
               context 'user set up phone using sms delivery preference' do
@@ -143,7 +143,7 @@ RSpec.describe RecommendWebauthnPlatformConcern do
                 context 'user also set up platform authenticator' do
                   let(:user) { create(:user, :fully_registered, :with_webauthn_platform) }
 
-                  it { should eq(false) }
+                  it { is_expected.to eq(false) }
                 end
 
                 context 'user did not set up platform authenticator' do
@@ -156,7 +156,7 @@ RSpec.describe RecommendWebauthnPlatformConcern do
                         and_return(nil)
                     end
 
-                    it { should eq(false) }
+                    it { is_expected.to eq(false) }
                   end
 
                   context 'user included in ab test' do
@@ -166,7 +166,7 @@ RSpec.describe RecommendWebauthnPlatformConcern do
                         and_return(:recommend)
                     end
 
-                    it { should eq(true) }
+                    it { is_expected.to eq(true) }
                   end
                 end
               end
