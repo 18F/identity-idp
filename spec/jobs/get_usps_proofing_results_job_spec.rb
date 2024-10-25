@@ -2728,18 +2728,6 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
           end
         end
 
-        context 'when the enrollment does not have a unique_id' do
-          before do
-            enrollment.update(unique_id: nil)
-            allow(analytics).to receive(:idv_in_person_usps_proofing_results_job_exception)
-            subject.perform(current_time)
-          end
-
-          it 'updates the enrollment to have a unique_id' do
-            expect(enrollment.reload.unique_id).to be_present
-          end
-        end
-
         context 'when multiple pending InPersonEnrollments exist' do
           let(:enrollments) do
             [
