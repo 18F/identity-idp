@@ -148,6 +148,11 @@ module Reporting
           aal3_issuers_data.length,
           aal3_issuers_data.join(', '),
         ],
+        [
+          'id_token_hint',
+          id_token_hint_data.length,
+          id_token_hint_data.join(', '),
+        ],
       ]
     end
 
@@ -183,33 +188,27 @@ module Reporting
     end
 
     def loa_issuers_data
-      @loa_issuers_data ||= cloudwatch_client.fetch(
+      @loa_issuers_data ||= fetch_uniq_issuers(
         query: loa_issuers_query,
-        from: time_range.begin,
-        to: time_range.end,
-      ).
-        map { |slice| slice['issuer'] }.
-        uniq
+      )
     end
 
     def aal3_issuers_data
-      @aal3_issuers_data ||= cloudwatch_client.fetch(
+      @aal3_issuers_data ||= fetch_uniq_issuers(
         query: aal3_issuers_query,
-        from: time_range.begin,
-        to: time_range.end,
-      ).
-        map { |slice| slice['issuer'] }.
-        uniq
+      )
     end
 
     def facial_match_data
-      @facial_match_data ||= cloudwatch_client.fetch(
+      @facial_match_data ||= fetch_uniq_issuers(
         query: facial_match_issuers_query,
-        from: time_range.begin,
-        to: time_range.end,
-      ).
-        map { |slice| slice['issuer'] }.
-        uniq
+      )
+    end
+
+    def id_token_hint_data
+      @id_token_hint_data ||= fetch_uniq_issuers(
+        query: id_token_hint_query,
+      )
     end
 
     def protocol_data
@@ -225,22 +224,19 @@ module Reporting
               select { |slice| slice['protocol'] == SAML_AUTH_EVENT }.
               map { |slice| slice['request_count'].to_i }.
               sum,
-            issuer_count: results.
-              select { |slice| slice['protocol'] == SAML_AUTH_EVENT }.
-              map { |slice| slice['issuer'] }.
-              uniq.
-              count,
+            issuer_count: by_uniq_issuers(
+              results.
+                select { |slice| slice['protocol'] == SAML_AUTH_EVENT },
+            ).count,
           },
           oidc: {
             request_count: results.
               select { |slice| slice['protocol'] == OIDC_AUTH_EVENT }.
               map { |slice| slice['request_count'].to_i }.
               sum,
-            issuer_count: results.
-              select { |slice| slice['protocol'] == OIDC_AUTH_EVENT }.
-              map { |slice| slice['issuer'] }.
-              uniq.
-              count,
+            issuer_count: by_uniq_issuers(
+              results.select { |slice| slice['protocol'] == OIDC_AUTH_EVENT },
+            ).count,
           },
         }
       end
@@ -254,10 +250,9 @@ module Reporting
           to: time_range.end,
         )
         {
-          unsigned: results.
-            select { |slice| slice['unsigned_count'].to_i > 0 }.
-            map { |slice| slice['issuer'] }.
-            uniq,
+          unsigned: by_uniq_issuers(
+            results.select { |slice| slice['unsigned_count'].to_i > 0 },
+          ),
           invalid_signature: results.
             select { |slice| slice['invalid_signature_count'].to_i > 0 }.
             map { |slice| slice['issuer'] }.
@@ -293,6 +288,18 @@ module Reporting
           properties.event_properties.client_id,
           properties.service_provider) as issuer
         | filter properties.sp_request.facial_match
+        | display issuer
+        | sort issuer
+        | dedup issuer
+      QUERY
+    end
+
+    def id_token_hint_query
+      format(<<~QUERY)
+        fields @timestamp,
+          coalesce(properties.event_properties.id_token_hint_parameter_present, 0) as id_token_hint,
+          coalesce(properties.event_properties.client_id, properties.service_provider) as issuer
+        | filter ispresent(id_token_hint) and id_token_hint > 0 and name = 'OIDC Logout Requested'
         | display issuer
         | sort issuer
         | dedup issuer
@@ -357,6 +364,20 @@ module Reporting
         | sort
           issuer
       QUERY
+    end
+
+    def fetch_uniq_issuers(query)
+      by_uniq_issuers(
+        cloudwatch_client.fetch(
+          query:,
+          from: time_range.begin,
+          to: time_range.end,
+        )
+      )
+    end
+
+    def by_uniq_issuers(data)
+      data.map { |slice| slice['issuer'] }.uniq
     end
 
     def cloudwatch_client
