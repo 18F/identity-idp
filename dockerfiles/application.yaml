@@ -89,7 +89,7 @@ spec:
               value: "true"
             - op: add
               path: /data/LOGIN_ENV
-              value: "review-app"
+              value: "reviewapps"
             - op: add
               path: /data/LOGIN_DOMAIN
               value: "identitysandbox.gov"
@@ -162,7 +162,7 @@ spec:
               value: "true"
             - op: add
               path: /data/LOGIN_ENV
-              value: "review-app"
+              value: "reviewapps"
             - op: add
               path: /data/LOGIN_DOMAIN
               value: "identitysandbox.gov"
