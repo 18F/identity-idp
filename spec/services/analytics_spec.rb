@@ -6,6 +6,7 @@ RSpec.describe Analytics do
       user_id: current_user.uuid,
       new_event: true,
       path: path,
+      service_provider: 'http://localhost:3000',
       session_duration: nil,
       locale: I18n.locale,
       git_sha: IdentityConfig::GIT_SHA,
