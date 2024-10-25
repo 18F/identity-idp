@@ -1120,12 +1120,13 @@ idv.gpo.request_another_letter.learn_more_link: 对通过邮件验证你地址�
 idv.gpo.request_another_letter.title: 要求再发一封信？
 idv.gpo.return_to_profile: 返回你的用户资料
 idv.gpo.title: 输入你的验证代码
-idv.gpo.will_send_to: 我们会把信寄发到：
+idv.gpo.will_send_to: 你会在5到10天内在我们验证过的与你相关的地址收到来自%{app_name}寄给你的一封信：
 idv.images.come_back_later: 带有打勾符的信件
 idv.messages.activated_html: 你的身份已经验证。如要更改已验证过的你的信息，请 %{link_html}。
 idv.messages.activated_link: 联系我们
-idv.messages.come_back_later_html: '信件需要 <strong>5 - 10 日送到。</strong>收到信后请重新登录来输入你的验证代码。'
+idv.messages.come_back_later: 收到信件后请再登录并输入其中的验证码。
 idv.messages.confirm: 我们对你验证过的信息做了安全处理
+idv.messages.contact_sp_html: 如果收到信件之前你需要访问我们合作伙伴机构的服务，请联系%{sp_link_html}。
 idv.messages.enter_password.by_mail_password_reminder_html: '<strong>记住你的密码。</strong> 如果你随后重设密码的话，信中的验证码就不会奏效。'
 idv.messages.enter_password.message: '%{app_name}会用你的密码对你的账户加密。加密意味着你的信息很安全，而且只有你能够访问或变更你的信息。'
 idv.messages.enter_password.phone_verified: 我们验证了你的电话号码
