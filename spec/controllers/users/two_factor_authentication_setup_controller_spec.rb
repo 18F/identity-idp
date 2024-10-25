@@ -103,146 +103,72 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
     end
   end
 
-  describe 'PATCH create' do
-    it 'submits the TwoFactorOptionsForm' do
-      user = build(:user)
-      stub_sign_in_before_2fa(user)
-      stub_analytics
+  describe '#create' do
+    let(:params) { { two_factor_options_form: { selection: ['voice'] } } }
 
-      voice_params = {
-        two_factor_options_form: {
-          selection: ['voice'],
-        },
-      }
+    subject(:response) { patch :create, params: params }
 
-      expect(controller.two_factor_options_form).to receive(:submit).
-        with(hash_including(voice_params[:two_factor_options_form])).and_call_original
-
-      patch :create, params: voice_params
-
-      expect(@analytics).to have_logged_event(
-        'User Registration: 2FA Setup',
-        success: true,
-        errors: {},
-        enabled_mfa_methods_count: 0,
-        selected_mfa_count: 1,
-        selection: ['voice'],
-      )
+    before do
+      stub_sign_in_before_2fa
     end
 
     it 'tracks analytics event' do
-      stub_sign_in_before_2fa
       stub_analytics
 
-      patch :create, params: {
-        two_factor_options_form: {
-          selection: ['voice', 'auth_app'],
-        },
-      }
+      response
 
       expect(@analytics).to have_logged_event(
         'User Registration: 2FA Setup',
         enabled_mfa_methods_count: 0,
-        selection: ['voice', 'auth_app'],
+        selection: ['voice'],
         success: true,
-        selected_mfa_count: 2,
+        selected_mfa_count: 1,
         errors: {},
       )
     end
 
     context 'when multi selection with phone first' do
-      it 'redirects properly' do
-        stub_sign_in_before_2fa
-        patch :create, params: {
-          two_factor_options_form: {
-            selection: ['phone', 'auth_app'],
-          },
-        }
+      let(:params) { { two_factor_options_form: { selection: ['phone', 'auth_app'] } } }
 
-        expect(response).to redirect_to phone_setup_url
-      end
+      it { should redirect_to phone_setup_url }
     end
 
     context 'when multi selection with auth app first' do
-      it 'redirects properly' do
-        stub_sign_in_before_2fa
-        patch :create, params: {
-          two_factor_options_form: {
-            selection: ['auth_app', 'phone', 'webauthn'],
-          },
-        }
+      let(:params) { { two_factor_options_form: { selection: ['auth_app', 'phone', 'webauthn'] } } }
 
-        expect(response).to redirect_to authenticator_setup_url
-      end
+      it { should redirect_to authenticator_setup_url }
     end
 
     context 'when the selection is auth_app' do
-      it 'redirects to authentication app setup page' do
-        stub_sign_in_before_2fa
+      let(:params) { { two_factor_options_form: { selection: ['auth_app'] } } }
 
-        patch :create, params: {
-          two_factor_options_form: {
-            selection: ['auth_app'],
-          },
-        }
-
-        expect(response).to redirect_to authenticator_setup_url
-      end
+      it { should redirect_to authenticator_setup_url }
     end
 
     context 'when the selection is webauthn' do
-      it 'redirects to webauthn setup page' do
-        stub_sign_in_before_2fa
+      let(:params) { { two_factor_options_form: { selection: ['webauthn'] } } }
 
-        patch :create, params: {
-          two_factor_options_form: {
-            selection: ['webauthn'],
-          },
-        }
-
-        expect(response).to redirect_to webauthn_setup_url
-      end
+      it { should redirect_to webauthn_setup_url }
     end
 
     context 'when the selection is webauthn platform authenticator' do
-      it 'redirects to webauthn setup page with the platform param' do
-        stub_sign_in_before_2fa
+      let(:params) { { two_factor_options_form: { selection: ['webauthn_platform'] } } }
 
-        patch :create, params: {
-          two_factor_options_form: {
-            selection: ['webauthn_platform'],
-          },
-        }
-
-        expect(response).to redirect_to webauthn_setup_url(platform: true)
-      end
+      it { should redirect_to webauthn_setup_url(platform: true) }
     end
 
     context 'when the selection is piv_cac' do
-      it 'redirects to piv/cac setup page' do
-        stub_sign_in_before_2fa
+      let(:params) { { two_factor_options_form: { selection: ['piv_cac'] } } }
 
-        patch :create, params: {
-          two_factor_options_form: {
-            selection: ['piv_cac'],
-          },
-        }
-
-        expect(response).to redirect_to setup_piv_cac_url
-      end
+      it { should redirect_to setup_piv_cac_url }
     end
 
     context 'when the selection is not valid' do
-      it 'renders index page' do
-        stub_sign_in_before_2fa
+      let(:params) { { two_factor_options_form: { selection: ['foo'] } } }
 
-        patch :create, params: {
-          two_factor_options_form: {
-            selection: ['foo'],
-          },
-        }
-
+      it 'renders setup page with error message' do
         expect(response).to render_template(:index)
+        expect(flash[:error]).to eq(t('errors.messages.inclusion'))
       end
     end
   end
