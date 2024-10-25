@@ -28,7 +28,7 @@ AllCops:
     - 'vendor/**/*'
     - 'public/**/*'
   TargetRubyVersion: 3.2.0
-  TargetRailsVersion: 7.1
+  TargetRailsVersion: 7.2
   UseCache: true
   DisabledByDefault: true
   SuggestExtensions: false
@@ -1290,6 +1290,9 @@ Style/NumericLiteralPrefix:
   EnforcedOctalStyle: zero_with_o
 
 Style/OneLineConditional:
+  Enabled: true
+
+Style/OpenStructUse:
   Enabled: true
 
 Style/OptionalArguments:

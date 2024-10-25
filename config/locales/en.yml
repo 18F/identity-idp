@@ -1717,6 +1717,13 @@ two_factor_authentication.phone_verification.troubleshooting.code_not_received: 
 two_factor_authentication.phone.delete.failure: Unable to remove your phone.
 two_factor_authentication.phone.delete.success: Your phone has been removed.
 two_factor_authentication.piv_cac_header_text: Insert your government employee ID
+two_factor_authentication.piv_cac_mismatch.2fa_before_add: You need to authenticate with another method before adding your PIV/CAC.
+two_factor_authentication.piv_cac_mismatch.cta: Authenticate and add PIV/CAC
+two_factor_authentication.piv_cac_mismatch.delete_account: Delete your account
+two_factor_authentication.piv_cac_mismatch.instructions: Click “Authenticate and add PIV/CAC” below to authenticate with another method before adding this PIV/CAC to your account.
+two_factor_authentication.piv_cac_mismatch.instructions_no_other_method: If you were reissued your PIV/CAC, you will need to delete your %{app_name} account and create a new account to use your reissued PIV/CAC.
+two_factor_authentication.piv_cac_mismatch.skip: Skip adding PIV/CAC
+two_factor_authentication.piv_cac_mismatch.title: This government employee ID is not connected to your account
 two_factor_authentication.piv_cac_upsell.add_piv: Add PIV/CAC card
 two_factor_authentication.piv_cac_upsell.choose_other_method: Choose other methods instead
 two_factor_authentication.piv_cac_upsell.explain: This will improve your account security and let you skip entering your email and password when signing in.

@@ -20,6 +20,9 @@ module TwoFactorAuthentication
     end
 
     def create
+      if UserSessionContext.confirmation_context?(context)
+        increment_mfa_selection_attempt_count(otp_auth_method)
+      end
       result = otp_verification_form.submit
       post_analytics(result)
 
@@ -41,12 +44,21 @@ module TwoFactorAuthentication
         end
 
         reset_otp_session_data
+        user_session.delete(:mfa_attempts)
       else
         handle_invalid_otp(type: 'otp')
       end
     end
 
     private
+
+    def otp_auth_method
+      if params[:otp_delivery_preference] == 'sms'
+        TwoFactorAuthenticatable::AuthMethod::SMS
+      else
+        TwoFactorAuthenticatable::AuthMethod::VOICE
+      end
+    end
 
     def handle_valid_confirmation_otp
       assign_phone
@@ -155,6 +167,7 @@ module TwoFactorAuthentication
         phone_configuration_id: phone_configuration&.id,
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
         enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
+        attempts: mfa_attempts_count,
       }
     end
 

@@ -3238,20 +3238,20 @@ module AnalyticsEvents
   # @param [String] enrollment_code
   # @param [String] enrollment_id
   # @param [Float] minutes_since_established
-  # @param [Boolean] fraud_suspected
   # @param [Boolean] passed did this enrollment pass or fail?
   # @param [String] reason why did this enrollment pass or fail?
   # @param [String] tmx_status the tmx_status of the enrollment profile profile
   # @param [Integer] profile_age_in_seconds How many seconds have passed since profile created
+  # @param [Boolean] fraud_suspected
   def idv_in_person_usps_proofing_results_job_enrollment_updated(
     enrollment_code:,
     enrollment_id:,
     minutes_since_established:,
-    fraud_suspected:,
     passed:,
     reason:,
     tmx_status:,
     profile_age_in_seconds:,
+    fraud_suspected: nil,
     **extra
   )
     track_event(
@@ -3259,11 +3259,11 @@ module AnalyticsEvents
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
       minutes_since_established: minutes_since_established,
-      fraud_suspected: fraud_suspected,
       passed: passed,
       reason: reason,
       tmx_status: tmx_status,
       profile_age_in_seconds: profile_age_in_seconds,
+      fraud_suspected: fraud_suspected,
       **extra,
     )
   end
@@ -4905,6 +4905,7 @@ module AnalyticsEvents
   # @param [Boolean] new_device Whether the user is authenticating from a new device
   # @param [String] multi_factor_auth_method Authentication method used
   # @param [String] multi_factor_auth_method_created_at When the authentication method was created
+  # @param [Integer] attempts number of MFA setup attempts
   # @param [Integer] auth_app_configuration_id Database ID of authentication app configuration
   # @param [Integer] piv_cac_configuration_id Database ID of PIV/CAC configuration
   # @param [String] piv_cac_configuration_dn_uuid PIV/CAC X509 distinguished name UUID
@@ -4928,6 +4929,7 @@ module AnalyticsEvents
     errors: nil,
     error_details: nil,
     context: nil,
+    attempts: nil,
     multi_factor_auth_method_created_at: nil,
     auth_app_configuration_id: nil,
     piv_cac_configuration_id: nil,
@@ -4951,6 +4953,7 @@ module AnalyticsEvents
       error_details:,
       context:,
       new_device:,
+      attempts:,
       multi_factor_auth_method:,
       multi_factor_auth_method_created_at:,
       auth_app_configuration_id:,
@@ -4998,10 +5001,12 @@ module AnalyticsEvents
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Boolean] in_account_creation_flow whether user is going through creation flow
   # @param ['piv_cac'] method_name Authentication method added
+  # @param [Integer] attempts number of MFA setup attempts
   def multi_factor_auth_added_piv_cac(
     enabled_mfa_methods_count:,
     in_account_creation_flow:,
     method_name: :piv_cac,
+    attempts: nil,
     **extra
   )
     track_event(
@@ -5009,6 +5014,7 @@ module AnalyticsEvents
       method_name:,
       enabled_mfa_methods_count:,
       in_account_creation_flow:,
+      attempts:,
       **extra,
     )
   end
@@ -5048,6 +5054,7 @@ module AnalyticsEvents
   end
 
   # @param ["authentication", "reauthentication", "confirmation"] context User session context
+  # @param [Integer] attempts number of MFA setup attempts
   # @param [String] multi_factor_auth_method
   # @param [Boolean] confirmation_for_add_phone
   # @param [Integer] phone_configuration_id
@@ -5067,11 +5074,13 @@ module AnalyticsEvents
     phone_fingerprint:,
     in_account_creation_flow:,
     enabled_mfa_methods_count:,
+    attempts: nil,
     **extra
   )
     track_event(
       'Multi-Factor Authentication: enter OTP visited',
       context:,
+      attempts:,
       multi_factor_auth_method:,
       confirmation_for_add_phone:,
       phone_configuration_id:,
@@ -5247,6 +5256,7 @@ module AnalyticsEvents
   # @param [String, nil] key_id PIV/CAC key_id from PKI service
   # @param [Hash] mfa_method_counts Hash of MFA method with the number of that method on the account
   # @param [Hash] authenticator_data_flags WebAuthn authenticator data flags
+  # @param [Integer] attempts number of MFA setup attempts
   # @param [String, nil] aaguid AAGUID value of WebAuthn device
   # @param [String[], nil] unknown_transports Array of unrecognized WebAuthn transports, intended to
   # be used in case of future specification changes.
@@ -5270,6 +5280,7 @@ module AnalyticsEvents
     key_id: nil,
     mfa_method_counts: nil,
     authenticator_data_flags: nil,
+    attempts: nil,
     aaguid: nil,
     unknown_transports: nil,
     **extra
@@ -5295,6 +5306,7 @@ module AnalyticsEvents
       key_id:,
       mfa_method_counts:,
       authenticator_data_flags:,
+      attempts:,
       aaguid:,
       unknown_transports:,
       **extra,
@@ -5927,6 +5939,24 @@ module AnalyticsEvents
     track_event(:piv_cac_login_visited)
   end
 
+  # User submits prompt to replace PIV/CAC after failing to authenticate due to mismatched subject
+  # @param [Boolean] add_piv_cac_after_2fa User chooses to replace PIV/CAC authenticator
+  def piv_cac_mismatch_submitted(add_piv_cac_after_2fa:, **extra)
+    track_event(:piv_cac_mismatch_submitted, add_piv_cac_after_2fa:, **extra)
+  end
+
+  # User visits prompt to replace PIV/CAC after failing to authenticate due to mismatched subject
+  # @param [Boolean] piv_cac_required Partner requires HSPD12 authentication
+  # @param [Boolean] has_other_authentication_methods User has non-PIV authentication methods
+  def piv_cac_mismatch_visited(piv_cac_required:, has_other_authentication_methods:, **extra)
+    track_event(
+      :piv_cac_mismatch_visited,
+      piv_cac_required:,
+      has_other_authentication_methods:,
+      **extra,
+    )
+  end
+
   # @param [String] action what action user made
   # Tracks when user submits an action on Piv Cac recommended page
   def piv_cac_recommended(action: nil, **extra)
@@ -5947,11 +5977,18 @@ module AnalyticsEvents
   # Tracks when user's piv cac setup
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
-  def piv_cac_setup_visited(in_account_creation_flow:, enabled_mfa_methods_count: nil, **extra)
+  # @param [Integer] attempts number of MFA setup attempts
+  def piv_cac_setup_visited(
+    in_account_creation_flow:,
+    enabled_mfa_methods_count: nil,
+    attempts: nil,
+    **extra
+  )
     track_event(
       :piv_cac_setup_visited,
       in_account_creation_flow:,
       enabled_mfa_methods_count:,
+      attempts:,
       **extra,
     )
   end

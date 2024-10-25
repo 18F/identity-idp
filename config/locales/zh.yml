@@ -1730,6 +1730,13 @@ two_factor_authentication.phone_verification.troubleshooting.code_not_received: 
 two_factor_authentication.phone.delete.failure: 无法去掉你的电话。
 two_factor_authentication.phone.delete.success: 你的电话已被去掉。
 two_factor_authentication.piv_cac_header_text: 插入您的政府雇员ID
+two_factor_authentication.piv_cac_mismatch.2fa_before_add: 添加你的PIV/CAC之前，你需要使用另外一种方法进行身份证实。
+two_factor_authentication.piv_cac_mismatch.cta: 进行身份证实并添加PIV/CAC
+two_factor_authentication.piv_cac_mismatch.delete_account: 删除你的帐户
+two_factor_authentication.piv_cac_mismatch.instructions: 点击下边的“进行身份证实并添加PIV/CAC”，以在将该PIV/CAC添加到你账户之前使用另外一种方法进行身份证实。
+two_factor_authentication.piv_cac_mismatch.instructions_no_other_method: 如果你的PIV/CAV是重新颁发的，你需要删除自己的%{app_name}帐户，并使用重新颁发的PIV/CAC 设立一个新账户。
+two_factor_authentication.piv_cac_mismatch.skip: 跳过添加 PIV/CAC
+two_factor_authentication.piv_cac_mismatch.title: 该政府雇员身份证件与你的账户没有连接起来
 two_factor_authentication.piv_cac_upsell.add_piv: 添加 PIV/CAC 卡
 two_factor_authentication.piv_cac_upsell.choose_other_method: 选择其他方法
 two_factor_authentication.piv_cac_upsell.explain: 这将改善你账户安全，而且你在登录时无需再输入电邮和密码。

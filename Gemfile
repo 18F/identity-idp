@@ -3,7 +3,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 ruby "~> #{File.read(File.join(__dir__, '.ruby-version')).strip}"
 
-gem 'rails', '~> 7.1.4'
+gem 'rails', '~> 7.2.1'
 
 gem 'ahoy_matey', '~> 3.0'
 # pod identity requires 3.188.0
@@ -34,7 +34,7 @@ gem 'faker'
 gem 'faraday-retry'
 gem 'fugit'
 gem 'foundation_emails'
-gem 'good_job', '~> 3.0'
+gem 'good_job', '~> 4.0'
 gem 'http_accept_language'
 gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v4.0.0'
 gem 'identity-logging', github: '18F/identity-logging', tag: 'v0.1.1'
@@ -117,7 +117,7 @@ group :development, :test do
   gem 'pry-rails'
   gem 'psych'
   gem 'rspec', '~> 3.13.0'
-  gem 'rspec-rails', '~> 6.0'
+  gem 'rspec-rails', '~> 7.0'
   gem 'rubocop', '~> 1.62.0', require: false
   gem 'rubocop-performance', '~> 1.20.2', require: false
   gem 'rubocop-rails', '>= 2.26.2', require: false
