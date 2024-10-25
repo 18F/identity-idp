@@ -27,7 +27,7 @@ module Proofing
           ddp_pii[:request_ip] = request_ip
 
           timer.time('threatmetrix') do
-            lexisnexis_ddp_proofer.proof(ddp_pii)
+            proofer.proof(ddp_pii)
           end.tap do |result|
             Db::SpCost::AddSpCost.call(
               current_sp, :threatmetrix,
@@ -36,8 +36,8 @@ module Proofing
           end
         end
 
-        def lexisnexis_ddp_proofer
-          @lexisnexis_ddp_proofer ||=
+        def proofer
+          @proofer ||=
             if IdentityConfig.store.lexisnexis_threatmetrix_mock_enabled
               Proofing::Mock::DdpMockClient.new
             else
