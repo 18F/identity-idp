@@ -90,7 +90,9 @@ module OpenidConnect
 
     def email_address_id
       return nil unless IdentityConfig.store.feature_select_email_to_share_enabled
-      return user_session[:selected_email_id] if user_session[:selected_email_id].present?
+      if user_session[:selected_email_id_for_linked_identity].present?
+        return user_session[:selected_email_id_for_linked_identity]
+      end
       identity = current_user.identities.find_by(service_provider: sp_session['issuer'])
       identity&.email_address_id
     end
@@ -174,6 +176,7 @@ module OpenidConnect
           user_fully_authenticated: user_fully_authenticated?,
           referer: request.referer,
           vtr_param: params[:vtr],
+          unknown_authn_contexts:,
         ),
       )
       return if result.success?
@@ -257,6 +260,13 @@ module OpenidConnect
 
     def sp_handoff_bouncer
       @sp_handoff_bouncer ||= SpHandoffBouncer.new(sp_session)
+    end
+
+    def unknown_authn_contexts
+      return nil if params[:vtr].present? || params[:acr_values].blank?
+
+      (params[:acr_values].split - Saml::Idp::Constants::VALID_AUTHN_CONTEXTS).
+        join(' ').presence
     end
   end
 end

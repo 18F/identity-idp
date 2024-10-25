@@ -172,8 +172,8 @@ else
         args: -> { [Time.zone.today] },
       },
       # Data warehouse stale data check
-      dw_stale_data_check_job: {
-        class: 'DataWarehouse::StaleDataCheckJob',
+      table_summary_stats_export_job: {
+        class: 'DataWarehouse::TableSummaryStatsExportJob',
         cron: gpo_cron_24h,
         args: -> { [Time.zone.now.yesterday.end_of_day] },
       },
@@ -248,6 +248,11 @@ else
         class: 'Reports::MfaReport',
         cron: cron_monthly,
         args: -> { [Time.zone.yesterday.end_of_day] },
+      },
+      # Download and store Socure reason codes
+      socure_reason_code_download: {
+        class: 'SocureReasonCodeDownloadJob',
+        cron: cron_every_monday,
       },
       # Daily sensitive tag column job
       daily_sensitive_column_job: {

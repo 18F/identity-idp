@@ -1484,6 +1484,7 @@ module AnalyticsEvents
   # @param [Boolean] same_address_as_id
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [Number] previous_ssn_edit_distance The edit distance to the previous submitted SSN
   def idv_doc_auth_redo_ssn_submitted(
     step:,
     analytics_id:,
@@ -1491,6 +1492,7 @@ module AnalyticsEvents
     opted_in_to_in_person_proofing: nil,
     skip_hybrid_handoff: nil,
     same_address_as_id: nil,
+    previous_ssn_edit_distance: nil,
     **extra
   )
     track_event(
@@ -1501,6 +1503,7 @@ module AnalyticsEvents
       opted_in_to_in_person_proofing:,
       skip_hybrid_handoff:,
       same_address_as_id:,
+      previous_ssn_edit_distance:,
       **extra,
     )
   end
@@ -1541,6 +1544,7 @@ module AnalyticsEvents
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Boolean] same_address_as_id
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [Number] previous_ssn_edit_distance The edit distance to the previous submitted SSN
   def idv_doc_auth_ssn_submitted(
     success:,
     errors:,
@@ -1552,6 +1556,7 @@ module AnalyticsEvents
     acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
     same_address_as_id: nil,
+    previous_ssn_edit_distance: nil,
     **extra
   )
     track_event(
@@ -1566,6 +1571,7 @@ module AnalyticsEvents
       flow_path:,
       opted_in_to_in_person_proofing:,
       same_address_as_id:,
+      previous_ssn_edit_distance:,
       **extra,
     )
   end
@@ -1579,6 +1585,7 @@ module AnalyticsEvents
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Boolean] same_address_as_id
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [Number] previous_ssn_edit_distance The edit distance to the previous submitted SSN
   def idv_doc_auth_ssn_visited(
     step:,
     analytics_id:,
@@ -1587,6 +1594,7 @@ module AnalyticsEvents
     acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
     same_address_as_id: nil,
+    previous_ssn_edit_distance: nil,
     **extra
   )
     track_event(
@@ -1598,6 +1606,7 @@ module AnalyticsEvents
       flow_path:,
       opted_in_to_in_person_proofing:,
       same_address_as_id:,
+      previous_ssn_edit_distance:,
       **extra,
     )
   end
@@ -1939,6 +1948,7 @@ module AnalyticsEvents
   # @param ssn_is_unique [Boolean] Whether another Profile existed with the same SSN at the time the profile associated with the current IdV session was minted.
   # @param step [String] Always "verify" (leftover from flow state machine days)
   # @param success [Boolean] Whether identity resolution succeeded overall
+  # @param previous_ssn_edit_distance [Number] The edit distance to the previous submitted SSN
   def idv_doc_auth_verify_proofing_results(
     ab_tests: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
@@ -1955,6 +1965,7 @@ module AnalyticsEvents
     step: nil,
     success: nil,
     same_address_as_id: nil,
+    previous_ssn_edit_distance: nil,
     **extra
   )
     track_event(
@@ -1974,6 +1985,7 @@ module AnalyticsEvents
       step:,
       success:,
       same_address_as_id:,
+      previous_ssn_edit_distance:,
       **extra,
     )
   end
@@ -2773,37 +2785,6 @@ module AnalyticsEvents
     )
   end
 
-  # @param ["hybrid","standard"] flow_path Document capture user flow
-  # @param [String] step
-  # @param [String] analytics_id
-  # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
-  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  # @param [Boolean] same_address_as_id
-  # User clicked cancel on update state id page
-  def idv_in_person_proofing_cancel_update_state_id(
-    success:,
-    errors:,
-    flow_path: nil,
-    step: nil,
-    analytics_id: nil,
-    error_details: nil,
-    same_address_as_id: nil,
-    **extra
-  )
-    track_event(
-      'IdV: in person proofing cancel_update_state_id submitted',
-      flow_path:,
-      step:,
-      analytics_id:,
-      success:,
-      errors:,
-      error_details:,
-      same_address_as_id:,
-      **extra,
-    )
-  end
-
   # A job to check USPS notifications about in-person enrollment status updates has completed
   # @param [Integer] fetched_items items fetched
   # @param [Integer] processed_items items fetched and processed
@@ -2869,40 +2850,6 @@ module AnalyticsEvents
     track_event(
       'IdV: in person proofing characters submitted could not be transliterated',
       nontransliterable_characters: nontransliterable_characters,
-      **extra,
-    )
-  end
-
-  # @param ["hybrid","standard"] flow_path Document capture user flow
-  # @param [String] step
-  # @param [String] analytics_id
-  # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
-  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  # @param [Boolean] same_address_as_id
-  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
-  # User submitted state id on redo state id page
-  def idv_in_person_proofing_redo_state_id_submitted(
-    success:,
-    errors:,
-    error_details: nil,
-    flow_path: nil,
-    step: nil,
-    analytics_id: nil,
-    same_address_as_id: nil,
-    opted_in_to_in_person_proofing: nil,
-    **extra
-  )
-    track_event(
-      'IdV: in person proofing redo_state_id submitted',
-      flow_path:,
-      step:,
-      analytics_id:,
-      success:,
-      errors:,
-      error_details:,
-      same_address_as_id:,
-      opted_in_to_in_person_proofing:,
       **extra,
     )
   end
@@ -3291,20 +3238,20 @@ module AnalyticsEvents
   # @param [String] enrollment_code
   # @param [String] enrollment_id
   # @param [Float] minutes_since_established
-  # @param [Boolean] fraud_suspected
   # @param [Boolean] passed did this enrollment pass or fail?
   # @param [String] reason why did this enrollment pass or fail?
   # @param [String] tmx_status the tmx_status of the enrollment profile profile
   # @param [Integer] profile_age_in_seconds How many seconds have passed since profile created
+  # @param [Boolean] fraud_suspected
   def idv_in_person_usps_proofing_results_job_enrollment_updated(
     enrollment_code:,
     enrollment_id:,
     minutes_since_established:,
-    fraud_suspected:,
     passed:,
     reason:,
     tmx_status:,
     profile_age_in_seconds:,
+    fraud_suspected: nil,
     **extra
   )
     track_event(
@@ -3312,11 +3259,11 @@ module AnalyticsEvents
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
       minutes_since_established: minutes_since_established,
-      fraud_suspected: fraud_suspected,
       passed: passed,
       reason: reason,
       tmx_status: tmx_status,
       profile_age_in_seconds: profile_age_in_seconds,
+      fraud_suspected: fraud_suspected,
       **extra,
     )
   end
@@ -4610,6 +4557,31 @@ module AnalyticsEvents
     )
   end
 
+  # Socure Reason Codes were downloaded and synced against persisted codes in the database
+  # @param [Boolean] success Result from Socure KYC API call
+  # @param [Hash] errors Result from resolution proofing
+  # @param [String] exception Exception that occured during download or synchronizaiton
+  # @param [Array] added_reason_codes New reason codes that were added to the database
+  # @param [Array] deactivated_reason_codes Old reason codes that were deactivated
+  def idv_socure_reason_code_download(
+    success: true,
+    errors: nil,
+    exception: nil,
+    added_reason_codes: nil,
+    deactivated_reason_codes: nil,
+    **extra
+  )
+    track_event(
+      :idv_socure_reason_code_download,
+      success:,
+      errors:,
+      exception:,
+      added_reason_codes:,
+      deactivated_reason_codes:,
+      **extra,
+    )
+  end
+
   # Logs a Socure KYC result alongside a resolution result for later comparison.
   # @param [Hash] socure_result Result from Socure KYC API call
   # @param [Hash] resolution_result Result from resolution proofing
@@ -4933,6 +4905,7 @@ module AnalyticsEvents
   # @param [Boolean] new_device Whether the user is authenticating from a new device
   # @param [String] multi_factor_auth_method Authentication method used
   # @param [String] multi_factor_auth_method_created_at When the authentication method was created
+  # @param [Integer] attempts number of MFA setup attempts
   # @param [Integer] auth_app_configuration_id Database ID of authentication app configuration
   # @param [Integer] piv_cac_configuration_id Database ID of PIV/CAC configuration
   # @param [String] piv_cac_configuration_dn_uuid PIV/CAC X509 distinguished name UUID
@@ -4956,6 +4929,7 @@ module AnalyticsEvents
     errors: nil,
     error_details: nil,
     context: nil,
+    attempts: nil,
     multi_factor_auth_method_created_at: nil,
     auth_app_configuration_id: nil,
     piv_cac_configuration_id: nil,
@@ -4979,6 +4953,7 @@ module AnalyticsEvents
       error_details:,
       context:,
       new_device:,
+      attempts:,
       multi_factor_auth_method:,
       multi_factor_auth_method_created_at:,
       auth_app_configuration_id:,
@@ -5026,10 +5001,12 @@ module AnalyticsEvents
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Boolean] in_account_creation_flow whether user is going through creation flow
   # @param ['piv_cac'] method_name Authentication method added
+  # @param [Integer] attempts number of MFA setup attempts
   def multi_factor_auth_added_piv_cac(
     enabled_mfa_methods_count:,
     in_account_creation_flow:,
     method_name: :piv_cac,
+    attempts: nil,
     **extra
   )
     track_event(
@@ -5037,6 +5014,7 @@ module AnalyticsEvents
       method_name:,
       enabled_mfa_methods_count:,
       in_account_creation_flow:,
+      attempts:,
       **extra,
     )
   end
@@ -5076,6 +5054,7 @@ module AnalyticsEvents
   end
 
   # @param ["authentication", "reauthentication", "confirmation"] context User session context
+  # @param [Integer] attempts number of MFA setup attempts
   # @param [String] multi_factor_auth_method
   # @param [Boolean] confirmation_for_add_phone
   # @param [Integer] phone_configuration_id
@@ -5095,11 +5074,13 @@ module AnalyticsEvents
     phone_fingerprint:,
     in_account_creation_flow:,
     enabled_mfa_methods_count:,
+    attempts: nil,
     **extra
   )
     track_event(
       'Multi-Factor Authentication: enter OTP visited',
       context:,
+      attempts:,
       multi_factor_auth_method:,
       confirmation_for_add_phone:,
       phone_configuration_id:,
@@ -5275,6 +5256,7 @@ module AnalyticsEvents
   # @param [String, nil] key_id PIV/CAC key_id from PKI service
   # @param [Hash] mfa_method_counts Hash of MFA method with the number of that method on the account
   # @param [Hash] authenticator_data_flags WebAuthn authenticator data flags
+  # @param [Integer] attempts number of MFA setup attempts
   # @param [String, nil] aaguid AAGUID value of WebAuthn device
   # @param [String[], nil] unknown_transports Array of unrecognized WebAuthn transports, intended to
   # be used in case of future specification changes.
@@ -5298,6 +5280,7 @@ module AnalyticsEvents
     key_id: nil,
     mfa_method_counts: nil,
     authenticator_data_flags: nil,
+    attempts: nil,
     aaguid: nil,
     unknown_transports: nil,
     **extra
@@ -5323,6 +5306,7 @@ module AnalyticsEvents
       key_id:,
       mfa_method_counts:,
       authenticator_data_flags:,
+      attempts:,
       aaguid:,
       unknown_transports:,
       **extra,
@@ -5514,6 +5498,7 @@ module AnalyticsEvents
   # @param [String, nil] vtr_param
   # @param [Boolean] unauthorized_scope
   # @param [Boolean] user_fully_authenticated
+  # @param [String] unknown_authn_contexts space separated list of unknown contexts
   def openid_connect_request_authorization(
     success:,
     errors:,
@@ -5530,6 +5515,7 @@ module AnalyticsEvents
     unauthorized_scope:,
     user_fully_authenticated:,
     error_details: nil,
+    unknown_authn_contexts: nil,
     **extra
   )
     track_event(
@@ -5549,6 +5535,7 @@ module AnalyticsEvents
       vtr_param:,
       unauthorized_scope:,
       user_fully_authenticated:,
+      unknown_authn_contexts:,
       **extra,
     )
   end
@@ -5952,6 +5939,24 @@ module AnalyticsEvents
     track_event(:piv_cac_login_visited)
   end
 
+  # User submits prompt to replace PIV/CAC after failing to authenticate due to mismatched subject
+  # @param [Boolean] add_piv_cac_after_2fa User chooses to replace PIV/CAC authenticator
+  def piv_cac_mismatch_submitted(add_piv_cac_after_2fa:, **extra)
+    track_event(:piv_cac_mismatch_submitted, add_piv_cac_after_2fa:, **extra)
+  end
+
+  # User visits prompt to replace PIV/CAC after failing to authenticate due to mismatched subject
+  # @param [Boolean] piv_cac_required Partner requires HSPD12 authentication
+  # @param [Boolean] has_other_authentication_methods User has non-PIV authentication methods
+  def piv_cac_mismatch_visited(piv_cac_required:, has_other_authentication_methods:, **extra)
+    track_event(
+      :piv_cac_mismatch_visited,
+      piv_cac_required:,
+      has_other_authentication_methods:,
+      **extra,
+    )
+  end
+
   # @param [String] action what action user made
   # Tracks when user submits an action on Piv Cac recommended page
   def piv_cac_recommended(action: nil, **extra)
@@ -5972,11 +5977,18 @@ module AnalyticsEvents
   # Tracks when user's piv cac setup
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
-  def piv_cac_setup_visited(in_account_creation_flow:, enabled_mfa_methods_count: nil, **extra)
+  # @param [Integer] attempts number of MFA setup attempts
+  def piv_cac_setup_visited(
+    in_account_creation_flow:,
+    enabled_mfa_methods_count: nil,
+    attempts: nil,
+    **extra
+  )
     track_event(
       :piv_cac_setup_visited,
       in_account_creation_flow:,
       enabled_mfa_methods_count:,
+      attempts:,
       **extra,
     )
   end
@@ -6325,6 +6337,7 @@ module AnalyticsEvents
   # matches the request certificate in a successful, signed request
   # @param [Hash] cert_error_details Details for errors that occurred because of an invalid
   # signature
+  # @param [String] unknown_authn_contexts space separated list of unknown contexts
   def saml_auth(
     success:,
     errors:,
@@ -6341,6 +6354,7 @@ module AnalyticsEvents
     matching_cert_serial:,
     error_details: nil,
     cert_error_details: nil,
+    unknown_authn_contexts: nil,
     **extra
   )
     track_event(
@@ -6360,6 +6374,7 @@ module AnalyticsEvents
       request_signed:,
       matching_cert_serial:,
       cert_error_details:,
+      unknown_authn_contexts:,
       **extra,
     )
   end
@@ -6371,6 +6386,7 @@ module AnalyticsEvents
   # @param [Boolean] force_authn
   # @param [Boolean] final_auth_request
   # @param [String] service_provider
+  # @param [String] unknown_authn_contexts space separated list of unknown contexts
   # @param [Boolean] user_fully_authenticated
   # An external request for SAML Authentication was received
   def saml_auth_request(
@@ -6381,6 +6397,7 @@ module AnalyticsEvents
     force_authn:,
     final_auth_request:,
     service_provider:,
+    unknown_authn_contexts:,
     user_fully_authenticated:,
     **extra
   )
@@ -6393,6 +6410,7 @@ module AnalyticsEvents
       force_authn:,
       final_auth_request:,
       service_provider:,
+      unknown_authn_contexts:,
       user_fully_authenticated:,
       **extra,
     )

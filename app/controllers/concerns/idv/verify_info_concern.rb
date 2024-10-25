@@ -185,10 +185,11 @@ module Idv
         state: pii[:state],
         state_id_jurisdiction: pii[:state_id_jurisdiction],
         state_id_number: pii[:state_id_number],
-        # todo: add other edited fields?
+        state_id_type: pii[:state_id_type],
         extra: {
           address_edited: !!idv_session.address_edited,
           address_line2_present: !pii[:address2].blank?,
+          previous_ssn_edit_distance: previous_ssn_edit_distance,
           pii_like_keypaths: [
             [:errors, :ssn],
             [:proofing_results, :context, :stages, :resolution, :errors, :ssn],
@@ -203,9 +204,7 @@ module Idv
         },
       )
 
-      threatmetrix_reponse_body = form_response.extra.dig(
-        :proofing_results, :context, :stages, :threatmetrix, :response_body
-      )
+      threatmetrix_reponse_body = delete_threatmetrix_response_body(form_response)
       if threatmetrix_reponse_body.present?
         analytics.idv_threatmetrix_response_body(
           response_body: threatmetrix_reponse_body,
@@ -275,12 +274,14 @@ module Idv
       state: nil,
       state_id_jurisdiction: nil,
       state_id_number: nil,
+      state_id_type: nil,
       extra: {}
     )
       state_id = result.dig(:context, :stages, :state_id)
       if state_id
         state_id[:state] = state if state
         state_id[:state_id_jurisdiction] = state_id_jurisdiction if state_id_jurisdiction
+        state_id[:state_id_type] = state_id_type if state_id_type
         if state_id_number
           state_id[:state_id_number] =
             StringRedacter.redact_alphanumeric(state_id_number)
@@ -312,6 +313,18 @@ module Idv
       idv_session.applicant = pii
       idv_session.applicant[:ssn] = idv_session.ssn
       idv_session.applicant['uuid'] = current_user.uuid
+    end
+
+    def delete_threatmetrix_response_body(form_response)
+      threatmetrix_result = form_response.extra.dig(
+        :proofing_results,
+        :context,
+        :stages,
+        :threatmetrix,
+      )
+      return if threatmetrix_result.blank?
+
+      threatmetrix_result.delete(:response_body)
     end
 
     def add_cost(token, transaction_id: nil)

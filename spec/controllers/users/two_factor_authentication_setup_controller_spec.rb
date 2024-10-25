@@ -19,17 +19,19 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
       )
     end
 
-    context 'with user having gov or mil email and use_fed_domain_class set to false' do
-      let(:user) do
-        create(:user, email: 'example@example.gov', piv_cac_recommended_dismissed_at: Time.zone.now)
-      end
+    context 'with user having gov or mil email' do
       let!(:federal_domain) { create(:federal_email_domain, name: 'gsa.gov') }
-
-      before do
-        allow(IdentityConfig.store).to receive(:use_fed_domain_class).and_return(false)
+      let(:user) do
+        create(
+          :user,
+          email: 'example@gsa.gov',
+          piv_cac_recommended_dismissed_at: interstitial_dismissed_at,
+        )
       end
 
       context 'having already visited the PIV interstitial page' do
+        let(:interstitial_dismissed_at) { Time.zone.now }
+
         it 'tracks the visit in analytics' do
           get :index
 
@@ -42,43 +44,7 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
       end
 
       context 'directed to page without having visited PIV interstitial page' do
-        let(:user) do
-          create(:user, email: 'example@example.gov')
-        end
-
-        it 'redirects user to piv_recommended_path' do
-          get :index
-
-          expect(response).to redirect_to(login_piv_cac_recommended_url)
-        end
-      end
-    end
-
-    context 'with user having gov or mil email and use_fed_domain_class set to true' do
-      before do
-        allow(IdentityConfig.store).to receive(:use_fed_domain_class).and_return(true)
-      end
-
-      let!(:federal_domain) { create(:federal_email_domain, name: 'gsa.gov') }
-      let(:user) do
-        create(:user, email: 'example@gsa.gov', piv_cac_recommended_dismissed_at: Time.zone.now)
-      end
-      context 'having already visited the PIV interstitial page' do
-        it 'tracks the visit in analytics' do
-          get :index
-
-          expect(@analytics).to have_logged_event(
-            'User Registration: 2FA Setup visited',
-            enabled_mfa_methods_count: 0,
-            gov_or_mil_email: true,
-          )
-        end
-      end
-
-      context 'directed to page without having visited PIV interstitial page' do
-        let(:user) do
-          create(:user, email: 'example@gsa.gov')
-        end
+        let(:interstitial_dismissed_at) { nil }
 
         it 'redirects user to piv_recommended_path' do
           get :index
@@ -137,146 +103,72 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
     end
   end
 
-  describe 'PATCH create' do
-    it 'submits the TwoFactorOptionsForm' do
-      user = build(:user)
-      stub_sign_in_before_2fa(user)
-      stub_analytics
+  describe '#create' do
+    let(:params) { { two_factor_options_form: { selection: ['voice'] } } }
 
-      voice_params = {
-        two_factor_options_form: {
-          selection: ['voice'],
-        },
-      }
+    subject(:response) { patch :create, params: params }
 
-      expect(controller.two_factor_options_form).to receive(:submit).
-        with(hash_including(voice_params[:two_factor_options_form])).and_call_original
-
-      patch :create, params: voice_params
-
-      expect(@analytics).to have_logged_event(
-        'User Registration: 2FA Setup',
-        success: true,
-        errors: {},
-        enabled_mfa_methods_count: 0,
-        selected_mfa_count: 1,
-        selection: ['voice'],
-      )
+    before do
+      stub_sign_in_before_2fa
     end
 
     it 'tracks analytics event' do
-      stub_sign_in_before_2fa
       stub_analytics
 
-      patch :create, params: {
-        two_factor_options_form: {
-          selection: ['voice', 'auth_app'],
-        },
-      }
+      response
 
       expect(@analytics).to have_logged_event(
         'User Registration: 2FA Setup',
         enabled_mfa_methods_count: 0,
-        selection: ['voice', 'auth_app'],
+        selection: ['voice'],
         success: true,
-        selected_mfa_count: 2,
+        selected_mfa_count: 1,
         errors: {},
       )
     end
 
     context 'when multi selection with phone first' do
-      it 'redirects properly' do
-        stub_sign_in_before_2fa
-        patch :create, params: {
-          two_factor_options_form: {
-            selection: ['phone', 'auth_app'],
-          },
-        }
+      let(:params) { { two_factor_options_form: { selection: ['phone', 'auth_app'] } } }
 
-        expect(response).to redirect_to phone_setup_url
-      end
+      it { is_expected.to redirect_to phone_setup_url }
     end
 
     context 'when multi selection with auth app first' do
-      it 'redirects properly' do
-        stub_sign_in_before_2fa
-        patch :create, params: {
-          two_factor_options_form: {
-            selection: ['auth_app', 'phone', 'webauthn'],
-          },
-        }
+      let(:params) { { two_factor_options_form: { selection: ['auth_app', 'phone', 'webauthn'] } } }
 
-        expect(response).to redirect_to authenticator_setup_url
-      end
+      it { is_expected.to redirect_to authenticator_setup_url }
     end
 
     context 'when the selection is auth_app' do
-      it 'redirects to authentication app setup page' do
-        stub_sign_in_before_2fa
+      let(:params) { { two_factor_options_form: { selection: ['auth_app'] } } }
 
-        patch :create, params: {
-          two_factor_options_form: {
-            selection: ['auth_app'],
-          },
-        }
-
-        expect(response).to redirect_to authenticator_setup_url
-      end
+      it { is_expected.to redirect_to authenticator_setup_url }
     end
 
     context 'when the selection is webauthn' do
-      it 'redirects to webauthn setup page' do
-        stub_sign_in_before_2fa
+      let(:params) { { two_factor_options_form: { selection: ['webauthn'] } } }
 
-        patch :create, params: {
-          two_factor_options_form: {
-            selection: ['webauthn'],
-          },
-        }
-
-        expect(response).to redirect_to webauthn_setup_url
-      end
+      it { is_expected.to redirect_to webauthn_setup_url }
     end
 
     context 'when the selection is webauthn platform authenticator' do
-      it 'redirects to webauthn setup page with the platform param' do
-        stub_sign_in_before_2fa
+      let(:params) { { two_factor_options_form: { selection: ['webauthn_platform'] } } }
 
-        patch :create, params: {
-          two_factor_options_form: {
-            selection: ['webauthn_platform'],
-          },
-        }
-
-        expect(response).to redirect_to webauthn_setup_url(platform: true)
-      end
+      it { is_expected.to redirect_to webauthn_setup_url(platform: true) }
     end
 
     context 'when the selection is piv_cac' do
-      it 'redirects to piv/cac setup page' do
-        stub_sign_in_before_2fa
+      let(:params) { { two_factor_options_form: { selection: ['piv_cac'] } } }
 
-        patch :create, params: {
-          two_factor_options_form: {
-            selection: ['piv_cac'],
-          },
-        }
-
-        expect(response).to redirect_to setup_piv_cac_url
-      end
+      it { is_expected.to redirect_to setup_piv_cac_url }
     end
 
     context 'when the selection is not valid' do
-      it 'renders index page' do
-        stub_sign_in_before_2fa
+      let(:params) { { two_factor_options_form: { selection: ['foo'] } } }
 
-        patch :create, params: {
-          two_factor_options_form: {
-            selection: ['foo'],
-          },
-        }
-
+      it 'renders setup page with error message' do
         expect(response).to render_template(:index)
+        expect(flash[:error]).to eq(t('errors.messages.inclusion'))
       end
     end
   end

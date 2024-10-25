@@ -1,15 +1,16 @@
 require 'rails_helper'
 
 RSpec.describe AccountShowPresenter do
-  let(:vtr) { ['C2'] }
+  let(:acr_values) { Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF }
+  let(:vtr) { nil }
   let(:decrypted_pii) { nil }
   let(:sp_session_request_url) { nil }
   let(:authn_context) do
     AuthnContextResolver.new(
       user:,
       service_provider: nil,
-      vtr: vtr,
-      acr_values: nil,
+      vtr:,
+      acr_values:,
     ).result
   end
   let(:sp_name) { nil }
@@ -36,6 +37,17 @@ RSpec.describe AccountShowPresenter do
         user.identity_verified_with_facial_match?,
       )
     end
+
+    context 'using vtr values' do
+      let(:acr_values) { nil }
+      let(:vtr) { ['C2'] }
+
+      it 'delegates to user' do
+        expect(identity_verified_with_facial_match?).to eq(
+          user.identity_verified_with_facial_match?,
+        )
+      end
+    end
   end
 
   describe '#showing_alerts?' do
@@ -55,6 +67,26 @@ RSpec.describe AccountShowPresenter do
 
       it { is_expected.to eq(true) }
     end
+
+    context 'using vtr values' do
+      let(:acr_values) { nil }
+      let(:vtr) { ['C2'] }
+
+      it { is_expected.to eq(false) }
+
+      context 'with associated sp' do
+        let(:sp_session_request_url) { 'http://example.test' }
+        let(:sp_name) { 'Example SP' }
+
+        it { is_expected.to eq(true) }
+      end
+
+      context 'with password reset profile' do
+        let(:user) { build(:user, :deactivated_password_reset_profile) }
+
+        it { is_expected.to eq(true) }
+      end
+    end
   end
 
   describe '#active_profile?' do
@@ -73,6 +105,25 @@ RSpec.describe AccountShowPresenter do
 
       it { is_expected.to eq(false) }
     end
+
+    context 'using vtr values' do
+      let(:acr_values) { nil }
+      let(:vtr) { ['C2'] }
+
+      it { is_expected.to eq(false) }
+
+      context 'with proofed user' do
+        let(:user) { build(:user, :proofed) }
+
+        it { is_expected.to eq(true) }
+      end
+
+      context 'with user who proofed but has pending profile' do
+        let(:user) { build(:user, :deactivated_password_reset_profile) }
+
+        it { is_expected.to eq(false) }
+      end
+    end
   end
 
   describe '#active_profile_for_authn_context?' do
@@ -86,15 +137,34 @@ RSpec.describe AccountShowPresenter do
       it { is_expected.to eq(true) }
 
       context 'with sp request for non-facial match' do
-        let(:vtr) { ['C2.P1'] }
+        let(:acr_values) do
+          Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF + ' ' +
+            Saml::Idp::Constants::IAL_VERIFIED_ACR
+        end
 
         it { is_expected.to eq(true) }
+
+        context 'with vtr values' do
+          let(:vtr) { ['C2.P1'] }
+
+          it { is_expected.to eq(true) }
+        end
       end
 
       context 'with sp request for facial match' do
-        let(:vtr) { ['C2.Pb'] }
+        let(:acr_values) do
+          Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF + ' ' +
+            Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR
+        end
 
         it { is_expected.to eq(false) }
+
+        context 'with vtr values' do
+          let(:acr_values) { nil }
+          let(:vtr) { ['C2.Pb'] }
+
+          it { is_expected.to eq(false) }
+        end
       end
     end
 
@@ -104,9 +174,19 @@ RSpec.describe AccountShowPresenter do
       it { is_expected.to eq(true) }
 
       context 'with sp request for facial match' do
-        let(:vtr) { ['C2.Pb'] }
+        let(:acr_values) do
+          Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF + ' ' +
+            Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR
+        end
 
         it { is_expected.to eq(true) }
+
+        context 'with acr values' do
+          let(:acr_values) { nil }
+          let(:vtr) { ['C2.Pb'] }
+
+          it { is_expected.to eq(true) }
+        end
       end
     end
   end
@@ -117,7 +197,12 @@ RSpec.describe AccountShowPresenter do
     it { is_expected.to eq(false) }
 
     context 'with sp request for non-facial match' do
-      let(:vtr) { ['C2.P1'] }
+      let(:acr_values) do
+        [
+          Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+          Saml::Idp::Constants::IAL_VERIFIED_ACR,
+        ].join(' ')
+      end
 
       it { is_expected.to eq(true) }
 
@@ -126,10 +211,26 @@ RSpec.describe AccountShowPresenter do
 
         it { is_expected.to eq(false) }
       end
+
+      context 'with vtr values' do
+        let(:acr_values) { nil }
+        let(:vtr) { ['C2.P1'] }
+
+        it { is_expected.to eq(true) }
+
+        context 'with non-facial match proofed user' do
+          let(:user) { build(:user, :proofed) }
+
+          it { is_expected.to eq(false) }
+        end
+      end
     end
 
     context 'with sp request for facial match' do
-      let(:vtr) { ['C2.Pb'] }
+      let(:acr_values) do
+        Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF + ' ' +
+          Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR
+      end
 
       it { is_expected.to eq(true) }
 
@@ -143,6 +244,25 @@ RSpec.describe AccountShowPresenter do
         let(:user) { build(:user, :proofed_with_selfie) }
 
         it { is_expected.to eq(false) }
+      end
+
+      context 'with vtr values' do
+        let(:acr_values) { nil }
+        let(:vtr) { ['C2.Pb'] }
+
+        it { is_expected.to eq(true) }
+
+        context 'with non-facial match proofed user' do
+          let(:user) { build(:user, :proofed) }
+
+          it { is_expected.to eq(true) }
+        end
+
+        context 'with facial match proofed user' do
+          let(:user) { build(:user, :proofed_with_selfie) }
+
+          it { is_expected.to eq(false) }
+        end
       end
     end
   end
@@ -226,9 +346,19 @@ RSpec.describe AccountShowPresenter do
 
     context 'with pending idv' do
       let(:user) { build(:user, :proofed) }
-      let(:vtr) { ['C2.Pb'] }
+      let(:acr_values) do
+        Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF + ' ' +
+          Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR
+      end
 
       it { is_expected.to eq(true) }
+
+      context 'with vtr values' do
+        let(:acr_values) { nil }
+        let(:vtr) { ['C2.Pb'] }
+
+        it { is_expected.to eq(true) }
+      end
     end
 
     context 'with user pending ipp verification' do

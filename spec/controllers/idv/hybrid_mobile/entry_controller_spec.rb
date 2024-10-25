@@ -15,7 +15,6 @@ RSpec.describe Idv::HybridMobile::EntryController do
     let(:idv_vendor) { Idp::Constants::Vendors::MOCK }
 
     before do
-      stub_analytics
       allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(idv_vendor)
       allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(idv_vendor)
     end
@@ -35,15 +34,6 @@ RSpec.describe Idv::HybridMobile::EntryController do
         get :show, params: { 'document-capture-session': 'foo' }
       end
 
-      it 'logs an analytics event' do
-        expect(@analytics).to have_logged_event(
-          'Doc Auth',
-          hash_including(
-            success: false,
-            errors: { session_uuid: ['invalid session'] },
-          ),
-        )
-      end
       it 'redirects to the root url' do
         expect(response).to redirect_to root_url
       end
@@ -78,16 +68,6 @@ RSpec.describe Idv::HybridMobile::EntryController do
         it 'redirects to the first step' do
           expect(response).to redirect_to idv_hybrid_mobile_socure_document_capture_url
         end
-
-        it 'logs an analytics event' do
-          expect(@analytics).to have_logged_event(
-            'Doc Auth',
-            hash_including(
-              success: true,
-              doc_capture_user_id?: false,
-            ),
-          )
-        end
       end
 
       context 'doc auth vendor is lexis nexis' do
@@ -95,16 +75,6 @@ RSpec.describe Idv::HybridMobile::EntryController do
 
         it 'redirects to the first step' do
           expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
-        end
-
-        it 'logs an analytics event' do
-          expect(@analytics).to have_logged_event(
-            'Doc Auth',
-            hash_including(
-              success: true,
-              doc_capture_user_id?: false,
-            ),
-          )
         end
       end
 
@@ -125,16 +95,6 @@ RSpec.describe Idv::HybridMobile::EntryController do
 
         it 'assumes new document capture session' do
           expect(controller.session).to include(document_capture_session_uuid: session_uuid)
-        end
-
-        it 'logs an analytics event' do
-          expect(@analytics).to have_logged_event(
-            'Doc Auth',
-            hash_including(
-              success: true,
-              doc_capture_user_id?: true,
-            ),
-          )
         end
 
         context 'doc auth vendor is socure' do

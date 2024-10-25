@@ -414,14 +414,34 @@ RSpec.describe Idv::PersonalKeyController do
 
   describe '#update' do
     context 'user selected phone verification' do
-      it 'redirects to sign up completed for an sp' do
-        subject.session[:sp] = {
-          issuer: create(:service_provider).issuer,
-          vtr: ['C1'],
-        }
-        patch :update
+      context 'with an sp' do
+        let(:acr_values) { Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF }
+        let(:vtr) { nil }
 
-        expect(response).to redirect_to sign_up_completed_url
+        before do
+          subject.session[:sp] = {
+            issuer: create(:service_provider).issuer,
+            acr_values:,
+            vtr:,
+          }
+        end
+
+        it 'redirects to sign up completed for the sp' do
+          patch :update
+
+          expect(response).to redirect_to sign_up_completed_url
+        end
+
+        context 'with vtr values' do
+          let(:acr_values) { nil }
+          let(:vtr) { ['C1'] }
+
+          it 'redirects to sign up completed for the sp' do
+            patch :update
+
+            expect(response).to redirect_to sign_up_completed_url
+          end
+        end
       end
 
       it 'redirects to the account path when no sp present' do

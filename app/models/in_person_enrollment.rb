@@ -20,7 +20,7 @@ class InPersonEnrollment < ApplicationRecord
   STATUS_EXPIRED = 'expired'
   STATUS_CANCELLED = 'cancelled'
 
-  enum status: {
+  enum :status, {
     STATUS_ESTABLISHING.to_sym => 0,
     STATUS_PENDING.to_sym => 1,
     STATUS_PASSED.to_sym => 2,
@@ -153,6 +153,11 @@ class InPersonEnrollment < ApplicationRecord
 
   def enhanced_ipp?
     IdentityConfig.store.usps_eipp_sponsor_id == sponsor_id
+  end
+
+  # @return [String, nil] The enrollment's profile deactivation reason or nil.
+  def profile_deactivation_reason
+    profile&.deactivation_reason
   end
 
   private

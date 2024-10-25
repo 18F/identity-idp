@@ -21,6 +21,7 @@ module Idv
       personal_key_acknowledged
       phone_for_mobile_flow
       previous_phone_step_params
+      previous_ssn
       profile_id
       proofing_started_at
       redo_document_capture
@@ -221,8 +222,6 @@ module Idv
     def invalidate_in_person_pii_from_user!
       if has_pii_from_user_in_flow_session?
         user_session['idv/in_person'][:pii_from_user] = nil
-        # Mark the FSM step as incomplete so that it can be re-entered.
-        user_session['idv/in_person'].delete('Idv::Steps::InPerson::StateIdStep')
       end
     end
 

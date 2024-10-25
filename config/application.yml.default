@@ -17,6 +17,8 @@
 aamva_auth_request_timeout: 5.0
 aamva_auth_url: 'https://example.org:12345/auth/url'
 aamva_cert_enabled: true
+aamva_private_key: ''
+aamva_public_key: ''
 aamva_supported_jurisdictions: '["AL","AR","AZ","CO","CT","DC","DE","FL","GA","HI","IA","ID","IL","IN","KS","KY","MA","MD","ME","MI","MO","MS","MT","NC","ND","NE","NJ","NM","NV","OH","OR","PA","RI","SC","SD","TN","TX","VA","VT","WA","WI","WV","WY"]'
 aamva_verification_request_timeout: 5.0
 aamva_verification_url: https://example.org:12345/verification/url
@@ -38,6 +40,8 @@ allowed_verified_within_providers: '[]'
 asset_host: ''
 async_stale_job_timeout_seconds: 300
 async_wait_timeout_seconds: 60
+attribute_encryption_key:
+attribute_encryption_key_queue: '[]'
 available_locales: 'en,es,fr,zh'
 aws_http_retry_limit: 2
 aws_http_retry_max_delay: 1
@@ -63,6 +67,8 @@ component_previews_enabled: false
 compromised_password_randomizer_threshold: 900
 compromised_password_randomizer_value: 1000
 country_phone_number_overrides: '{}'
+dashboard_api_token: ''
+dashboard_url: https://dashboard.demo.login.gov
 database_advisory_locks_enabled: false
 database_host: ''
 database_name: ''
@@ -99,7 +105,6 @@ doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 3
 doc_auth_selfie_desktop_test_mode: false
-doc_auth_separate_pages_enabled: false
 doc_auth_supported_country_codes: '["US", "GU", "VI", "AS", "MP", "PR", "USA" ,"GUM", "VIR", "ASM", "MNP", "PRI"]'
 doc_auth_vendor: 'mock'
 doc_auth_vendor_default: 'mock'
@@ -108,6 +113,7 @@ doc_auth_vendor_socure_percent: 0
 doc_auth_vendor_switching_enabled: false
 doc_capture_polling_enabled: true
 doc_capture_request_valid_for_minutes: 15
+domain_name: login.gov
 drop_off_report_config: '[{"emails":["ursula@example.com"],"issuers": ["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]}]'
 email_from: no-reply@login.gov
 email_from_display_name: Login.gov
@@ -136,6 +142,8 @@ good_job_queues: 'default:5;low:1;*'
 gpo_designated_receiver_pii: '{}'
 gpo_max_profile_age_to_send_letter_in_days: 30
 hide_phone_mfa_signup: false
+hmac_fingerprinter_key:
+hmac_fingerprinter_key_queue: '[]'
 identity_pki_disabled: false
 identity_pki_local_dev: false
 idv_acuant_sdk_upgrade_a_b_testing_enabled: false
@@ -149,6 +157,7 @@ idv_max_attempts: 5
 idv_min_age_years: 13
 idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
+idv_socure_reason_code_download_enabled: false
 idv_socure_shadow_mode_enabled: false
 idv_sp_required: false
 in_person_completion_survey_url: 'https://login.gov'
@@ -175,10 +184,8 @@ in_person_outage_message_enabled: false
 in_person_proofing_enabled: false
 in_person_proofing_enforce_tmx: false
 in_person_proofing_opt_in_enabled: false
-in_person_public_address_search_enabled: false
 in_person_results_delay_in_hours: 1
 in_person_send_proofing_notifications_enabled: false
-in_person_state_id_controller_enabled: false
 in_person_stop_expiring_enrollments: false
 invalid_gpo_confirmation_zipcode: '00001'
 # LexisNexis #####################################################
@@ -196,8 +203,12 @@ lexisnexis_phone_finder_workflow: customers.gsa2.phonefinder.workflow
 lexisnexis_request_mode: testing
 ###################################################################
 # LexisNexis DDP/ThreatMetrix #####################################
+lexisnexis_threatmetrix_api_key:
+lexisnexis_threatmetrix_base_url:
 lexisnexis_threatmetrix_js_signing_cert: ''
 lexisnexis_threatmetrix_mock_enabled: true
+lexisnexis_threatmetrix_org_id:
+lexisnexis_threatmetrix_policy:
 lexisnexis_threatmetrix_support_code: ABCD
 lexisnexis_threatmetrix_timeout: 1.0
 # TrueID DocAuth Integration
@@ -219,6 +230,7 @@ login_otp_confirmation_max_attempts: 10
 logins_per_email_and_ip_bantime: 60
 logins_per_email_and_ip_limit: 5
 logins_per_email_and_ip_period: 60
+logins_per_ip_limit: 20
 logins_per_ip_period: 60
 logins_per_ip_track_only_mode: false
 logo_upload_enabled: false
@@ -241,6 +253,7 @@ openid_connect_content_security_form_action_enabled: false
 openid_connect_redirect: client_side_js
 openid_connect_redirect_issuer_override_map: '{}'
 openid_connect_redirect_uuid_override_map: '{}'
+otp_delivery_blocklist_findtime: 5
 otp_delivery_blocklist_maxretry: 10
 otp_expiration_warning_seconds: 150
 otp_min_attempts_remaining_warning_count: 3
@@ -253,6 +266,7 @@ outbound_connection_check_timeout: 5
 outbound_connection_check_url: 'https://checkip.amazonaws.com'
 participate_in_dap: false
 password_max_attempts: 3
+password_pepper:
 personal_key_retired: true
 phone_carrier_registration_blocklist_array: '[]'
 phone_confirmation_max_attempt_window_in_minutes: 1_440
@@ -270,6 +284,7 @@ pinpoint_voice_configs: '[]'
 pinpoint_voice_pool_size: 5
 piv_cac_service_timeout: 5.0
 piv_cac_service_url: https://localhost:8443/
+piv_cac_verify_token_secret:
 piv_cac_verify_token_url: https://localhost:8443/
 poll_rate_for_verify_in_seconds: 3
 prometheus_exporter: false
@@ -322,16 +337,23 @@ risc_notifications_request_timeout: 3
 ruby_workers_idv_enabled: true
 rules_of_use_horizon_years: 5
 rules_of_use_updated_at: '2022-01-19T00:00:00Z' # Production has a newer timestamp than this, update directly in S3
+s3_data_warehouse_bucket_prefix: 'login-gov-analytics-export'
 s3_public_reports_enabled: false
+s3_report_bucket_prefix: login-gov.reports
+s3_report_public_bucket_prefix: login-gov-pubdata
 s3_reports_enabled: false
+saml_endpoint_configs: '[]'
 saml_secret_rotation_enabled: false
+scrypt_cost: 10000$8$1$
 second_mfa_reminder_account_age_in_days: 30
 second_mfa_reminder_sign_in_count: 10
+secret_key_base:
 seed_agreements_data: true
 service_provider_request_ttl_hours: 24
 ses_configuration_set_name: ''
 session_check_delay: 30
 session_check_frequency: 30
+session_encryption_key:
 session_encryptor_alert_enabled: false
 session_timeout_in_minutes: 15
 session_timeout_warning_seconds: 150
@@ -340,32 +362,39 @@ short_term_phone_otp_max_attempt_window_in_seconds: 10
 short_term_phone_otp_max_attempts: 2
 show_unsupported_passkey_platform_authentication_setup: false
 show_user_attribute_deprecation_warnings: false
+sign_in_recaptcha_log_failures_only: false
 sign_in_recaptcha_percent_tested: 0
 sign_in_recaptcha_score_threshold: 0.0
 sign_in_user_id_per_ip_attempt_window_exponential_factor: 1.1
 sign_in_user_id_per_ip_attempt_window_in_minutes: 720
 sign_in_user_id_per_ip_attempt_window_max_minutes: 43_200
 sign_in_user_id_per_ip_max_attempts: 50
+skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:int"]'
 socure_document_request_endpoint: ''
+socure_enabled: false
 socure_idplus_api_key: ''
 socure_idplus_base_url: ''
 socure_idplus_timeout_in_seconds: 5
+socure_reason_code_api_key: ''
+socure_reason_code_base_url: ''
+socure_reason_code_timeout_in_seconds: 5
 socure_webhook_enabled: false
 socure_webhook_secret_key: ''
 socure_webhook_secret_key_queue: '[]'
 sp_handoff_bounce_max_seconds: 2
 sp_issuer_user_counts_report_configs: '[]'
+state_tracking_enabled: true
 team_ada_email: ''
 team_all_login_emails: '[]'
 team_daily_fraud_metrics_emails: '[]'
 team_daily_reports_emails: '[]'
 team_monthly_fraud_metrics_emails: '[]'
 team_ursula_email: ''
+telephony_adapter: test
 test_ssn_allowed_list: ''
 totp_code_interval: 30
 unauthorized_scope_enabled: false
 use_dashboard_service_providers: false
-use_fed_domain_class: false
 use_kms: false
 use_vot_in_sp_requests: true
 usps_auth_token_refresh_job_enabled: false
@@ -381,7 +410,11 @@ usps_ipp_transliteration_enabled: false
 usps_ipp_username: ''
 usps_mock_fallback: true
 usps_upload_enabled: false
+usps_upload_sftp_directory: ''
+usps_upload_sftp_host: ''
+usps_upload_sftp_password: ''
 usps_upload_sftp_timeout: 5
+usps_upload_sftp_username: ''
 valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3", "http://idmanagement.gov/ns/assurance/ial/1", "http://idmanagement.gov/ns/assurance/ial/2", "http://idmanagement.gov/ns/assurance/ial/0", "http://idmanagement.gov/ns/assurance/ial/2?strict=true", "http://idmanagement.gov/ns/assurance/ial/2?bio=preferred", "http://idmanagement.gov/ns/assurance/ial/2?bio=required", "urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo", "http://idmanagement.gov/ns/assurance/aal/2", "http://idmanagement.gov/ns/assurance/aal/3", "http://idmanagement.gov/ns/assurance/aal/3?hspd12=true","http://idmanagement.gov/ns/assurance/aal/2?phishing_resistant=true","http://idmanagement.gov/ns/assurance/aal/2?hspd12=true"]'
 valid_authn_contexts_semantic: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3", "http://idmanagement.gov/ns/assurance/ial/1", "http://idmanagement.gov/ns/assurance/ial/2", "http://idmanagement.gov/ns/assurance/ial/0", "http://idmanagement.gov/ns/assurance/ial/2?strict=true", "http://idmanagement.gov/ns/assurance/ial/2?bio=preferred", "http://idmanagement.gov/ns/assurance/ial/2?bio=required", "urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo", "http://idmanagement.gov/ns/assurance/aal/2", "http://idmanagement.gov/ns/assurance/aal/3", "http://idmanagement.gov/ns/assurance/aal/3?hspd12=true","http://idmanagement.gov/ns/assurance/aal/2?phishing_resistant=true","http://idmanagement.gov/ns/assurance/aal/2?hspd12=true", "urn:acr.login.gov:auth-only", "urn:acr.login.gov:verified","urn:acr.login.gov:verified-facial-match-preferred","urn:acr.login.gov:verified-facial-match-required"]'
 vendor_status_idv_scheduled_maintenance_finish: ''
@@ -427,7 +460,6 @@ development:
   in_person_send_proofing_notifications_enabled: true
   logins_per_ip_limit: 5
   logo_upload_enabled: true
-  otp_delivery_blocklist_findtime: 5
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
   phone_recaptcha_score_threshold: 0.5
   piv_cac_verify_token_secret: ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12
@@ -436,11 +468,11 @@ development:
   rails_mailer_previews_enabled: true
   raise_on_missing_title: true
   risc_notifications_local_enabled: true
+  s3_data_warehouse_bucket_prefix: ''
   s3_report_bucket_prefix: ''
   s3_report_public_bucket_prefix: ''
   s3_data_warehouse_bucket_prefix: ''
   saml_endpoint_configs: '[{"suffix":"2023","secret_key_passphrase":"trust-but-verify"},{"suffix":"2024","secret_key_passphrase":"trust-but-verify"}]'
-  scrypt_cost: 10000$8$1$
   secret_key_base: development_secret_key_base
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   show_unsupported_passkey_platform_authentication_setup: true
@@ -448,10 +480,8 @@ development:
   sign_in_recaptcha_score_threshold: 0.3
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost"]'
   socure_idplus_base_url: 'https://sandbox.socure.us'
-  state_tracking_enabled: true
-  telephony_adapter: test
+  socure_reason_code_base_url: 'https://sandbox.socure.us'
   use_dashboard_service_providers: true
-  use_fed_domain_class: true
   usps_eipp_sponsor_id: '222222222222222'
   usps_ipp_sponsor_id: '111111111111111'
   usps_ipp_transliteration_enabled: true
@@ -465,71 +495,47 @@ development:
 #
 production:
   aamva_auth_url: 'https://authentication-cert.aamva.org/Authentication/Authenticate.svc'
-  aamva_private_key: ''
-  aamva_public_key: ''
   aamva_verification_url: 'https://verificationservices-cert.aamva.org:18449/dldv/2.1/online'
-  attribute_encryption_key:
-  attribute_encryption_key_queue: '[]'
   available_locales: 'en,es,fr'
   biometric_ial_enabled: false
-  dashboard_api_token: ''
-  dashboard_url: https://dashboard.demo.login.gov
   disable_email_sending: false
   disable_logout_get_request: false
-  domain_name: login.gov
   email_registrations_per_ip_track_only_mode: true
   enable_test_routes: false
   enable_usps_verification: false
   feature_select_email_to_share_enabled: false
   feature_valid_authn_contexts_semantic_enabled: false
-  hmac_fingerprinter_key:
-  hmac_fingerprinter_key_queue: '[]'
   idv_sp_required: true
   invalid_gpo_confirmation_zipcode: ''
   lexisnexis_threatmetrix_mock_enabled: false
-  logins_per_ip_limit: 20
   logins_per_ip_period: 20
   logins_per_ip_track_only_mode: true
   openid_connect_content_security_form_action_enabled: true
   openid_connect_redirect: server_side
-  otp_delivery_blocklist_findtime: 5
   participate_in_dap: true
-  password_pepper:
-  piv_cac_verify_token_secret:
   raise_on_component_validation_error: false
   recaptcha_mock_validator: false
   redis_throttle_url: redis://redis.login.gov.internal:6379/1
   redis_url: redis://redis.login.gov.internal:6379
   report_timeout: 1_000_000
   ruby_workers_idv_enabled: false
-  s3_report_bucket_prefix: login-gov.reports
-  s3_report_public_bucket_prefix: login-gov-pubdata
-  s3_data_warehouse_bucket_prefix: 'login-gov-analytics-export'
   s3_reports_enabled: true
-  saml_endpoint_configs: '[]'
-  scrypt_cost: 10000$8$1$
-  secret_key_base:
   seed_agreements_data: false
-  session_encryption_key:
   session_encryptor_alert_enabled: true
-  skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:int"]'
   state_tracking_enabled: false
   telephony_adapter: pinpoint
   use_kms: true
   usps_auth_token_refresh_job_enabled: true
-  usps_upload_sftp_directory: ''
-  usps_upload_sftp_host: ''
-  usps_upload_sftp_password: ''
-  usps_upload_sftp_username: ''
 
 test:
   aamva_private_key: 123abc
   aamva_public_key: 123abc
   account_reset_fraud_user_wait_period_days: 30
+  allowed_biometric_ial_providers: '["urn:gov:gsa:openidconnect:sp:server"]'
+  allowed_valid_authn_contexts_semantic_providers: '["urn:gov:gsa:openidconnect:sp:server"]'
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
   dashboard_api_token: 123ABC
-  dashboard_url: https://dashboard.demo.login.gov
   doc_auth_max_attempts: 4
   doc_auth_selfie_desktop_test_mode: true
   doc_capture_polling_enabled: false
@@ -538,7 +544,6 @@ test:
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
   identity_pki_disabled: true
-  in_person_state_id_controller_enabled: true
   lexisnexis_trueid_account_id: 'test_account'
   lockout_period_in_minutes: 5
   logins_per_email_and_ip_limit: 2
@@ -566,6 +571,7 @@ test:
   requests_per_ip_period: 60
   reset_password_email_max_attempts: 5
   reset_password_email_window_in_minutes: 80
+  s3_data_warehouse_bucket_prefix: ''
   s3_report_bucket_prefix: ''
   s3_report_public_bucket_prefix: ''
   s3_data_warehouse_bucket_prefix: ''
@@ -577,16 +583,13 @@ test:
   skip_encryption_allowed_list: '[]'
   socure_webhook_secret_key: 'secret-key'
   socure_webhook_secret_key_queue: '["old-key-one", "old-key-two"]'
-  state_tracking_enabled: true
   team_ada_email: 'ada@example.com'
   team_all_login_emails: '["b@example.com", "c@example.com"]'
   team_daily_fraud_metrics_emails: '["g@example.com", "h@example.com"]'
   team_daily_reports_emails: '["a@example.com", "d@example.com"]'
   team_monthly_fraud_metrics_emails: '["e@example.com", "f@example.com"]'
-  telephony_adapter: test
   test_ssn_allowed_list: '999999999'
   totp_code_interval: 3
-  use_fed_domain_class: true
   usps_eipp_sponsor_id: '222222222222222'
   usps_ipp_root_url: 'http://localhost:1000'
   usps_ipp_sponsor_id: '111111111111111'

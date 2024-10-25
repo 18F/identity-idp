@@ -9,8 +9,6 @@ import glob from 'fast-glob';
 // only ever shrink over time. Scripts which are loaded directly by Node.js should exist within
 // packages with a defined entrypoint.
 const LEGACY_FILE_EXCEPTIONS = [
-  'app/javascript/packages/compose-components/index.js',
-  'app/javascript/packages/compose-components/index.spec.jsx',
   'app/javascript/packages/device/index.js',
   'app/javascript/packages/document-capture/index.js',
   'app/javascript/packages/document-capture/components/acuant-capture-canvas.jsx',
