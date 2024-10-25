@@ -130,37 +130,37 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
     context 'when multi selection with phone first' do
       let(:params) { { two_factor_options_form: { selection: ['phone', 'auth_app'] } } }
 
-      it { should redirect_to phone_setup_url }
+      it { is_expected.to redirect_to phone_setup_url }
     end
 
     context 'when multi selection with auth app first' do
       let(:params) { { two_factor_options_form: { selection: ['auth_app', 'phone', 'webauthn'] } } }
 
-      it { should redirect_to authenticator_setup_url }
+      it { is_expected.to redirect_to authenticator_setup_url }
     end
 
     context 'when the selection is auth_app' do
       let(:params) { { two_factor_options_form: { selection: ['auth_app'] } } }
 
-      it { should redirect_to authenticator_setup_url }
+      it { is_expected.to redirect_to authenticator_setup_url }
     end
 
     context 'when the selection is webauthn' do
       let(:params) { { two_factor_options_form: { selection: ['webauthn'] } } }
 
-      it { should redirect_to webauthn_setup_url }
+      it { is_expected.to redirect_to webauthn_setup_url }
     end
 
     context 'when the selection is webauthn platform authenticator' do
       let(:params) { { two_factor_options_form: { selection: ['webauthn_platform'] } } }
 
-      it { should redirect_to webauthn_setup_url(platform: true) }
+      it { is_expected.to redirect_to webauthn_setup_url(platform: true) }
     end
 
     context 'when the selection is piv_cac' do
       let(:params) { { two_factor_options_form: { selection: ['piv_cac'] } } }
 
-      it { should redirect_to setup_piv_cac_url }
+      it { is_expected.to redirect_to setup_piv_cac_url }
     end
 
     context 'when the selection is not valid' do
