@@ -7062,6 +7062,17 @@ module AnalyticsEvents
     )
   end
 
+  # User visits WebAuthn platform authenticator recommended screen
+  def webauthn_platform_recommended_visited
+    track_event(:webauthn_platform_recommended_visited)
+  end
+
+  # User submits WebAuthn platform authenticator recommended screen
+  # @param [Boolean] opted_to_add Whether the user chose to add a method
+  def webauthn_platform_recommended_submitted(opted_to_add:, **extra)
+    track_event(:webauthn_platform_recommended_submitted, opted_to_add:, **extra)
+  end
+
   # @param [Hash] platform_authenticator
   # @param [Boolean] success
   # @param [Hash, nil] errors

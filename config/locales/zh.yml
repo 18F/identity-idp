@@ -2020,6 +2020,12 @@ vendor_outage.blocked.phone.default: 我们目前无法验证电话。请稍后�
 vendor_outage.get_updates: 获得最新信息
 vendor_outage.get_updates_on_status_page: 在我们的状态页面获得最新信息。
 vendor_outage.working: 我们正在争取解决错误。
+webauthn_platform_recommended.cta: Set up face or touch unlock
+webauthn_platform_recommended.description_private_html: Face or touch unlock is %{phishing_resistant_link_html} and we don’t store any recordings of your face or fingerprint, so your information stays private.
+webauthn_platform_recommended.description_secure_account: Secure your sign in with face or touch unlock. Use your face, fingerprint, password, or another method to keep your account safer.
+webauthn_platform_recommended.heading: Set up face or touch unlock for a more secure sign in
+webauthn_platform_recommended.phishing_resistant: phishing-resistant
+webauthn_platform_recommended.skip: Skip
 zxcvbn.feedback.a_word_by_itself_is_easy_to_guess: 单字容易被人猜出
 zxcvbn.feedback.add_another_word_or_two_uncommon_words_are_better: 再加一两个字不常见的字更好
 zxcvbn.feedback.all_uppercase_is_almost_as_easy_to_guess_as_all_lowercase: 都是大写几乎和都是小写一样容易被人猜出

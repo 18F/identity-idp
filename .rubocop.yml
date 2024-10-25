@@ -977,6 +977,11 @@ Rails/SelectMap:
 Rails/ShortI18n:
   Enabled: true
 
+Rails/SkipsModelValidations:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*.rb'
+
 Rails/StripHeredoc:
   Enabled: false
 

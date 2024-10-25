@@ -399,6 +399,7 @@ module IdentityConfig
     config.add(:sign_in_recaptcha_percent_tested, type: :integer)
     config.add(:sign_in_recaptcha_score_threshold, type: :float)
     config.add(:skip_encryption_allowed_list, type: :json)
+    config.add(:recommend_webauthn_platform_for_sms_ab_test_percent, type: :integer)
     config.add(:socure_document_request_endpoint, type: :string)
     config.add(:socure_enabled, type: :boolean)
     config.add(:socure_idplus_api_key, type: :string)

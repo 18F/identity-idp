@@ -2,12 +2,15 @@
 
 module MfaSetupConcern
   extend ActiveSupport::Concern
+  include RecommendWebauthnPlatformConcern
 
   def next_setup_path
-    if suggest_second_mfa?
-      auth_method_confirmation_url
-    elsif next_setup_choice
+    if next_setup_choice
       confirmation_path
+    elsif recommend_webauthn_platform_for_sms_user?
+      webauthn_platform_recommended_path
+    elsif suggest_second_mfa?
+      auth_method_confirmation_path
     elsif user_session[:mfa_selections]
       track_user_registration_mfa_setup_complete_event
       user_session.delete(:mfa_selections)
@@ -52,8 +55,8 @@ module MfaSetupConcern
   end
 
   def suggest_second_mfa?
-    return false unless user_session[:mfa_selections]
-    mfa_selection_count < 2 && mfa_context.enabled_mfa_methods_count < 2
+    return false if current_user.webauthn_platform_recommended_dismissed_at?
+    mfa_context.enabled_mfa_methods_count < 2
   end
 
   def first_mfa_selection_path

@@ -87,4 +87,16 @@ module AbTests
     should_log: ['Password Reset: Password Submitted'].to_set,
     buckets: { log: IdentityConfig.store.log_password_reset_matches_existing_ab_test_percent },
   ).freeze
+
+  RECOMMEND_WEBAUTHN_PLATFORM_FOR_SMS_USER = AbTest.new(
+    experiment_name: 'Upsell Face or Touch Unlock after SMS OTP',
+    should_log: [
+      'Multi-Factor Authentication',
+      'User Registration: MFA Setup Complete',
+      'User Registration: 2FA Setup',
+    ].to_set,
+    buckets: {
+      recommend: IdentityConfig.store.recommend_webauthn_platform_for_sms_ab_test_percent,
+    },
+  ).freeze
 end
