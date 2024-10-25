@@ -51,7 +51,7 @@ RSpec.describe 'idv/by_mail/letter_enqueued/show.html.erb' do
   context 'without an SP' do
     let(:service_provider) { nil }
 
-    it 'renders a return to account button' do
+    it 'renders a return to Login.gov button' do
       expect(rendered).to have_link(
         t('idv.cancel.actions.exit', app_name: APP_NAME),
         href: marketing_site_redirect_path,
