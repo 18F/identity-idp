@@ -10,15 +10,15 @@ RSpec.describe SocureDocvResultsJob do
       dcs.socure_docv_transaction_token = '1234'
     end
   end
-  let(:socure_idplus_endpoint) { 'https://example.com/api/3.0/EmailAuthScore' }
+  let(:socure_idplus_base_url) { 'https://example.com' }
   let(:decision_value) { 'accept' }
   let(:expiration_date) { "#{1.year.from_now.year}-01-01" }
 
   let(:analytics) { FakeAnalytics.new }
 
   before do
-    allow(IdentityConfig.store).to receive(:socure_idplus_endpoint).
-      and_return(socure_idplus_endpoint)
+    allow(IdentityConfig.store).to receive(:socure_idplus_base_url).
+      and_return(socure_idplus_base_url)
   end
 
   describe '#perform' do

@@ -399,7 +399,6 @@ module IdentityConfig
     config.add(:socure_document_request_endpoint, type: :string)
     config.add(:socure_idplus_api_key, type: :string)
     config.add(:socure_idplus_base_url, type: :string)
-    config.add(:socure_idplus_endpoint, type: :string)
     config.add(:socure_idplus_timeout_in_seconds, type: :integer)
     config.add(:socure_reason_code_api_key, type: :string)
     config.add(:socure_reason_code_base_url, type: :string)

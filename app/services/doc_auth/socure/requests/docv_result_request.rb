@@ -37,7 +37,10 @@ module DocAuth
         end
 
         def endpoint
-          IdentityConfig.store.socure_idplus_endpoint
+          @endpoint ||= URI.join(
+            IdentityConfig.store.socure_idplus_base_url,
+            '/api/3.0/EmailAuthScore',
+          ).to_s
         end
 
         def metric_name

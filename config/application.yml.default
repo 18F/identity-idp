@@ -373,7 +373,6 @@ socure_document_request_endpoint: ''
 socure_enabled: false
 socure_idplus_api_key: ''
 socure_idplus_base_url: ''
-socure_idplus_endpoint: ''
 socure_idplus_timeout_in_seconds: 5
 socure_reason_code_api_key: ''
 socure_reason_code_base_url: ''
