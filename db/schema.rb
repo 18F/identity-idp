@@ -10,7 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema[7.2].define(version: 2024_10_29_152408) do
+=======
+ActiveRecord::Schema[7.2].define(version: 2024_10_25_221705) do
+>>>>>>> c8064091c (lg-14425 new sensitive job)
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -279,7 +283,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_29_152408) do
     t.datetime "updated_at", precision: nil, comment: "sensitive=false"
     t.string "session_uuid", limit: 255, comment: "sensitive=true"
     t.string "uuid", null: false, comment: "sensitive=false"
-    t.string "nonce", comment: "sensitive=false"
+    t.string "nonce", comment: "sensitive=true"
     t.integer "ial", default: 1, comment: "sensitive=false"
     t.string "access_token", comment: "sensitive=true"
     t.string "scope", comment: "sensitive=false"
@@ -404,7 +408,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_29_152408) do
 
   create_table "phone_configurations", force: :cascade do |t|
     t.bigint "user_id", null: false, comment: "sensitive=false"
-    t.text "encrypted_phone", null: false, comment: "sensitive=false"
+    t.text "encrypted_phone", null: false, comment: "sensitive=true"
     t.integer "delivery_preference", default: 0, null: false, comment: "sensitive=false"
     t.boolean "mfa_enabled", default: true, null: false, comment: "sensitive=false"
     t.datetime "confirmation_sent_at", precision: nil, comment: "sensitive=false"
@@ -416,7 +420,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_29_152408) do
   end
 
   create_table "phone_number_opt_outs", force: :cascade do |t|
-    t.string "encrypted_phone", comment: "sensitive=false"
+    t.string "encrypted_phone", comment: "sensitive=true"
     t.string "phone_fingerprint", null: false, comment: "sensitive=false"
     t.string "uuid", comment: "sensitive=false"
     t.datetime "created_at", null: false, comment: "sensitive=false"
@@ -456,8 +460,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_29_152408) do
     t.datetime "gpo_verification_pending_at", comment: "sensitive=false"
     t.integer "fraud_pending_reason", comment: "sensitive=false"
     t.datetime "in_person_verification_pending_at", comment: "sensitive=false"
-    t.text "encrypted_pii_multi_region", comment: "sensitive=false"
-    t.text "encrypted_pii_recovery_multi_region", comment: "sensitive=false"
+    t.text "encrypted_pii_multi_region", comment: "sensitive=true"
+    t.text "encrypted_pii_recovery_multi_region", comment: "sensitive=true"
     t.datetime "gpo_verification_expired_at", comment: "sensitive=false"
     t.integer "idv_level", comment: "sensitive=false"
     t.index ["fraud_pending_reason"], name: "index_profiles_on_fraud_pending_reason"
@@ -639,11 +643,11 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_29_152408) do
     t.datetime "remember_device_revoked_at", precision: nil, comment: "sensitive=false"
     t.string "email_language", limit: 10, comment: "sensitive=false"
     t.datetime "accepted_terms_at", precision: nil, comment: "sensitive=false"
-    t.datetime "encrypted_recovery_code_digest_generated_at", precision: nil, comment: "sensitive=false"
+    t.datetime "encrypted_recovery_code_digest_generated_at", precision: nil, comment: "sensitive=true"
     t.datetime "suspended_at", comment: "sensitive=false"
     t.datetime "reinstated_at", comment: "sensitive=false"
-    t.string "encrypted_password_digest_multi_region", comment: "sensitive=false"
-    t.string "encrypted_recovery_code_digest_multi_region", comment: "sensitive=false"
+    t.string "encrypted_password_digest_multi_region", comment: "sensitive=true"
+    t.string "encrypted_recovery_code_digest_multi_region", comment: "sensitive=true"
     t.datetime "second_mfa_reminder_dismissed_at", comment: "sensitive=false"
     t.datetime "piv_cac_recommended_dismissed_at", comment: "sensitive=false"
     t.datetime "sign_in_new_device_at", comment: "sensitive=false"

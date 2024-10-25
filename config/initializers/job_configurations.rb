@@ -253,6 +253,12 @@ else
         class: 'SocureReasonCodeDownloadJob',
         cron: cron_every_monday,
       },
+      # Daily sensitive tag column job
+      daily_sensitive_column_job: {
+        class: 'DataWarehouse::DailySensitiveColumnJob',
+        cron: cron_24h,
+        args: -> { [Time.zone.today] },
+      },
     }.compact
   end
   # rubocop:enable Metrics/BlockLength
