@@ -533,4 +533,33 @@ RSpec.describe InPersonEnrollment, type: :model do
       end
     end
   end
+
+  describe '#profile_deactivation_reason' do
+    let(:profile) { create(:profile) }
+    let(:enrollment) { create(:in_person_enrollment, user: profile.user, profile: profile) }
+
+    context "when the enrollment's profile has a deactivation reason" do
+      before do
+        profile.update!(deactivation_reason: 'encryption_error')
+      end
+
+      it "returns the profile's deactivation reason" do
+        expect(enrollment.profile_deactivation_reason).to eq('encryption_error')
+      end
+    end
+
+    context 'when the profile does not have a deactivation reason' do
+      it 'returns nil' do
+        expect(enrollment.profile_deactivation_reason).to be_nil
+      end
+    end
+
+    context 'when the enrollment does not have a profile' do
+      let(:enrollment) { create(:in_person_enrollment, user: profile.user, profile: nil) }
+
+      it 'returns nil' do
+        expect(enrollment.profile_deactivation_reason).to be_nil
+      end
+    end
+  end
 end
