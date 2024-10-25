@@ -262,6 +262,7 @@ else
       },
     }.compact
   end
+
   # rubocop:enable Metrics/BlockLength
 
   Rails.logger.info 'job_configurations: jobs scheduled with good_job.cron'

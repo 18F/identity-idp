@@ -10,6 +10,7 @@ module DataWarehouse
 
     def bucket_name
       bucket_name = IdentityConfig.store.s3_data_warehouse_bucket_prefix
+
       env = Identity::Hostdata.env
       aws_account_id = Identity::Hostdata.aws_account_id
       aws_region = Identity::Hostdata.aws_region
