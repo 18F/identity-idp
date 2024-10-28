@@ -1,9 +1,11 @@
-@use 'variables/email' as *;
-
 @forward 'uswds-core';
 @forward 'usa-prose';
 @forward 'usa-table';
 @forward 'usa-alert';
+
+$secondary-color: #112e51;
+$light-gray: #f3f3f3;
+$white: #ffffff;
 
 h1, h2, h3 {
   color: $secondary-color;
