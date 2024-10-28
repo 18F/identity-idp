@@ -372,7 +372,7 @@ module Reporting
           query:,
           from: time_range.begin,
           to: time_range.end,
-        )
+        ),
       )
     end
 
