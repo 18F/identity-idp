@@ -13,6 +13,8 @@ class SocureWebhookController < ApplicationController
     log_webhook_receipt
     fetch_results if socure_params.dig(:event, :eventType) == 'DOCUMENTS_UPLOADED'
     render json: { message: 'Secret token is valid.' }
+  rescue StandardError => e
+    NewRelic::Agent.notice_error(e)
   end
 
   private
@@ -23,8 +25,6 @@ class SocureWebhookController < ApplicationController
     raise 'DocumentCaptureSession not found' if dcs.blank?
 
     SocureDocvResultsJob.perform_later(document_capture_session_uuid: dcs.uuid)
-  rescue StandardError => e
-    NewRelic::Agent.notice_error(e)
   end
 
   def check_token

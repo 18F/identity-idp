@@ -37,10 +37,6 @@ module DocAuth
           @biometric_comparison_required = biometric_comparison_required
           @pii_from_doc = read_pii
 
-          # puts "\n\nResponse data:\n"
-          # pp parsed_response_body
-          # puts "\n"
-
           super(
             success: successful_result?,
             errors: error_messages,
@@ -55,7 +51,6 @@ module DocAuth
             exception: e,
             extra: {
               backtrace: e.backtrace,
-              # reference: reference,
             },
           )
         end
@@ -84,7 +79,7 @@ module DocAuth
 
         def extra_attributes
           {
-            reference: get_data(DATA_PATHS[:reference_id]),
+            reference_id: get_data(DATA_PATHS[:reference_id]),
             decision: get_data(DATA_PATHS[:decision]),
             biometric_comparison_required: biometric_comparison_required,
           }

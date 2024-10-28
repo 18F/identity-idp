@@ -7,12 +7,13 @@ RSpec.describe SocureWebhookController do
     let(:socure_secret_key) { 'this-is-a-secret' }
     let(:socure_secret_key_queue) { ['this-is-an-old-secret', 'this-is-an-older-secret'] }
     let(:socure_enabled) { true }
+    let(:event_type) { 'TEST_WEBHOOK' }
     let(:webhook_body) do
       {
         event: {
           created: '2020-01-01T00:00:00Z',
           customerUserId: '123',
-          eventType: 'TEST_WEBHOOK',
+          eventType: event_type,
           referenceId: 'abc',
           data: {
             documentData: {
@@ -33,6 +34,8 @@ RSpec.describe SocureWebhookController do
         and_return(socure_secret_key_queue)
       allow(IdentityConfig.store).to receive(:socure_enabled).
         and_return(socure_enabled)
+      allow(NewRelic::Agent).to receive(:notice_error)
+
       stub_analytics
     end
 
@@ -45,7 +48,7 @@ RSpec.describe SocureWebhookController do
         :idv_doc_auth_socure_webhook_received,
         created_at: '2020-01-01T00:00:00Z',
         customer_user_id: '123',
-        event_type: 'TEST_WEBHOOK',
+        event_type: event_type,
         reference_id: 'abc',
         user_id: '123',
       )
@@ -78,8 +81,22 @@ RSpec.describe SocureWebhookController do
       expect(response).to have_http_status(:bad_request)
     end
 
+    context 'when DOCUMENTSq_UPLOADED event' do
+      let(:event_type) { 'DOCUMENTS_UPLOADED' }
+
+      context 'when document capture session doesn not exist' do
+        it 'logs an error with NewRelic' do
+          request.headers['Authorization'] = socure_secret_key_queue.last
+          post :create, params: webhook_body
+
+          expect(NewRelic::Agent).to have_received(:notice_error)
+        end
+      end
+    end
+
     context 'when socure webhook disabled' do
       let(:socure_enabled) { false }
+
       it 'the webhook route does not exist' do
         request.headers['Authorization'] = socure_secret_key
         post :create, params: webhook_body
