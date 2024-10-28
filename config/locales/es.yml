@@ -1280,6 +1280,7 @@ in_person_proofing.form.state_id.same_address_as_id_no: No, vivo en otra direcci
 in_person_proofing.form.state_id.same_address_as_id_yes: Sí, vivo en la misma dirección que figura en mi identificación emitida por el estado
 in_person_proofing.form.state_id.state_id_jurisdiction: Estado emisor
 in_person_proofing.form.state_id.state_id_jurisdiction_hint: Este es el estado que emitió su identificación
+in_person_proofing.form.state_id.state_id_state_hint: Este es el estado que emitió su identificación
 in_person_proofing.form.state_id.state_id_jurisdiction_prompt: '- Seleccione -'
 in_person_proofing.form.state_id.state_id_number: Número de identificación
 in_person_proofing.form.state_id.state_id_number_florida_hint_html: Este es el número de su identificación que comienza con una letra seguida de 12 números. Ejemplo:&nbsp;D123-456-78-901-2
@@ -1295,7 +1296,7 @@ in_person_proofing.headings.barcode: Muestre este código de barras y su identif
 in_person_proofing.headings.barcode_eipp: Lleve este código de barras y los documentos comprobatorios a una oficina de correos para terminar de verificar su identidad
 in_person_proofing.headings.barcode_what_to_bring: Lo que debe llevar a la oficina de correos
 in_person_proofing.headings.cta: Intente verificar su identidad en persona
-in_person_proofing.headings.id_address: Domicilio que figura en su identificación
+in_person_proofing.headings.id_address: Ingrese la dirección que aparece en su ID
 in_person_proofing.headings.po_search.location: Busque una oficina de correos participante
 in_person_proofing.headings.prepare: Verifique su identidad en persona
 in_person_proofing.headings.state_id_milestone_2: Ingrese la información de su identificación emitida por el estado

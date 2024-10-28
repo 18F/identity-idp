@@ -1269,6 +1269,7 @@ in_person_proofing.form.state_id.same_address_as_id_no: No, I live at a differen
 in_person_proofing.form.state_id.same_address_as_id_yes: Yes, I live at the address on my state‑issued ID
 in_person_proofing.form.state_id.state_id_jurisdiction: Issuing state
 in_person_proofing.form.state_id.state_id_jurisdiction_hint: This is the state that issued your ID
+in_person_proofing.form.state_id.state_id_state_hint: This is the state printed on your id
 in_person_proofing.form.state_id.state_id_jurisdiction_prompt: '- Select -'
 in_person_proofing.form.state_id.state_id_number: ID number
 in_person_proofing.form.state_id.state_id_number_florida_hint_html: This is the number on your ID with one letter and 12 numbers. Example:&nbsp;D123-456-78-901-2
@@ -1284,7 +1285,7 @@ in_person_proofing.headings.barcode: Show this barcode and your state‑issued 
 in_person_proofing.headings.barcode_eipp: Bring this barcode and supporting documents to a Post Office to finish verifying your identity
 in_person_proofing.headings.barcode_what_to_bring: What to bring to the Post Office
 in_person_proofing.headings.cta: Try verifying your ID in person
-in_person_proofing.headings.id_address: Address on your ID
+in_person_proofing.headings.id_address: Enter the address on your ID
 in_person_proofing.headings.po_search.location: Find a participating Post Office
 in_person_proofing.headings.prepare: Verify your identity in person
 in_person_proofing.headings.state_id_milestone_2: Enter the information on your state‑issued ID

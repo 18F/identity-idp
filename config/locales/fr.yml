@@ -1269,6 +1269,7 @@ in_person_proofing.form.state_id.same_address_as_id_no: Non, j’habite à une a
 in_person_proofing.form.state_id.same_address_as_id_yes: Oui, j’habite à l’adresse indiquée sur ma pièce d’identité émise par l’État
 in_person_proofing.form.state_id.state_id_jurisdiction: État d’émission
 in_person_proofing.form.state_id.state_id_jurisdiction_hint: Il s’agit de l’État qui a émis votre pièce d’identité
+in_person_proofing.form.state_id.state_id_state_hint: Il s'agit de l'État imprimé sur votre carte d'identité
 in_person_proofing.form.state_id.state_id_jurisdiction_prompt: '- Sélectionnez -'
 in_person_proofing.form.state_id.state_id_number: Numéro de la pièce d’identité
 in_person_proofing.form.state_id.state_id_number_florida_hint_html: Il s’agit du numéro sur votre pièce d’identité qui commence par une lettre suivie de 12 chiffres. Exemple:&nbsp;D123-456-78-901-2
@@ -1284,7 +1285,7 @@ in_person_proofing.headings.barcode: Présentez ce code-barres et votre pièce d
 in_person_proofing.headings.barcode_eipp: Présenter ce code-barres et les documents complémentaires à un bureau de poste pour terminer la vérification de votre identité
 in_person_proofing.headings.barcode_what_to_bring: À apporter au bureau de poste
 in_person_proofing.headings.cta: Essayez de confirmer votre identité en personne
-in_person_proofing.headings.id_address: Adresse sur votre pièce d’identité
+in_person_proofing.headings.id_address: Saisissez l'adresse imprimée sur votre carte d'identité
 in_person_proofing.headings.po_search.location: Trouvez un bureau de poste participant
 in_person_proofing.headings.prepare: Confirmez votre identité en personne
 in_person_proofing.headings.state_id_milestone_2: Saisissez les informations figurant sur votre pièce d’identité délivrée par l’État
