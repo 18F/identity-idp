@@ -13,10 +13,10 @@ module Reports
       super(*args, **rest)
     end
 
-    def perform(report_date)
+    def perform(date = Time.zone.yesterday.end_of_day)
       return unless IdentityConfig.store.s3_reports_enabled
 
-      self.report_date = report_date
+      @report_date = date
       message = "Report: #{REPORT_NAME} #{report_date}"
       subject = "Weekly Protocols Report - #{report_date}"
 
