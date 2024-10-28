@@ -3,7 +3,7 @@
 module Proofing
   module Resolution
     module Plugins
-      class InstantVerifyStateIdPlugin
+      class InstantVerifyStateIdAddressPlugin
         SECONDARY_ID_ADDRESS_MAP = {
           identity_doc_address1: :address1,
           identity_doc_address2: :address2,
