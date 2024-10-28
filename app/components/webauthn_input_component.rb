@@ -30,7 +30,7 @@ class WebauthnInputComponent < BaseComponent
       **tag_options,
       **initial_hidden_tag_options,
       'show-unsupported-passkey': show_unsupported_passkey?.presence,
-      'desktop-ft-unlock-option': show_desktop_ft_unlock_option?,
+      'desktop-ft-unlock-option': show_desktop_ft_unlock_option?.presence,
     )
   end
 
