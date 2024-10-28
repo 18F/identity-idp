@@ -6138,13 +6138,15 @@ module AnalyticsEvents
   # @param [Boolean] evaluated_as_valid Whether result was considered valid
   # @param [String] form_class Class name of form
   # @param [String, nil] exception_class Class name of exception, if error occurred
-  # @param [String, nil] phone_country_code Country code associated with reCAPTCHA phone result
+  # @param [String] recaptcha_action reCAPTCHA action name, for distinct user flow
+  # @param [String, nil] phone_country_code Country code associated with reCAPTCHA phone results
   def recaptcha_verify_result_received(
     recaptcha_result:,
     score_threshold:,
     evaluated_as_valid:,
     form_class:,
     exception_class:,
+    recaptcha_action:,
     phone_country_code: nil,
     **extra
   )
@@ -6155,6 +6157,7 @@ module AnalyticsEvents
       evaluated_as_valid:,
       form_class:,
       exception_class:,
+      recaptcha_action:,
       phone_country_code:,
       **extra,
     )
