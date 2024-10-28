@@ -2,7 +2,7 @@
 
 module DataWarehouse
   class TableSummaryStatsExportJob < BaseJob
-    REPORT_NAME = 'idp_max_ids'
+    REPORT_NAME = 'table_summary_stats'
 
     def perform(timestamp)
       data = fetch_table_max_ids_and_counts(timestamp)
