@@ -88,7 +88,7 @@ module AbTests
       'WebAuthn Setup Visited',
       'Multi-Factor Authentication Setup',
     ].to_set,
-    buckets: { desktop_ft_unlock:
+    buckets: { desktop_ft_unlock_setup:
         IdentityConfig.store.desktop_ft_unlock_setup_option_percent_tested },
   ) do |user:, user_session:, **|
     if user_session&.[](:platform_authenticator_available) == false
