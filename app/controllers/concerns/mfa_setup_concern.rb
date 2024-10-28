@@ -55,6 +55,7 @@ module MfaSetupConcern
   end
 
   def suggest_second_mfa?
+    return false if !in_multi_mfa_selection_flow?
     return false if current_user.webauthn_platform_recommended_dismissed_at?
     mfa_context.enabled_mfa_methods_count < 2
   end
