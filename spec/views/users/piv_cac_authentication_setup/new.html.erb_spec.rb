@@ -11,7 +11,7 @@ RSpec.describe 'users/piv_cac_authentication_setup/new.html.erb' do
     allow(view).to receive(:user_session).and_return(user_session)
     allow(view).to receive(:current_user).and_return(user)
     allow(view).to receive(:in_multi_mfa_selection_flow?).and_return(in_multi_mfa_selection_flow)
-    form = OpenStruct.new
+    form = UserPivCacSetupForm.new
     @presenter = PivCacAuthenticationSetupPresenter.new(user, true, form)
   end
 

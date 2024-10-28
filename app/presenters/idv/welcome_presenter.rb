@@ -2,6 +2,11 @@
 
 module Idv
   class WelcomePresenter
+    BulletPoint = Struct.new(
+      :bullet,
+      :text,
+      keyword_init: true,
+    )
     include ActionView::Helpers::TranslationHelper
     include Rails.application.routes.url_helpers
     include LinkHelper
@@ -70,7 +75,7 @@ module Idv
     end
 
     def bullet_point(bullet, text)
-      OpenStruct.new(bullet: bullet, text: text)
+      BulletPoint.new(bullet: bullet, text: text)
     end
 
     def first_time_idv?

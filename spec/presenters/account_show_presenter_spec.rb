@@ -16,6 +16,7 @@ RSpec.describe AccountShowPresenter do
   let(:sp_name) { nil }
   let(:user) { build(:user) }
   let(:locked_for_session) { false }
+
   subject(:presenter) do
     AccountShowPresenter.new(
       decrypted_pii:,
@@ -480,6 +481,7 @@ RSpec.describe AccountShowPresenter do
 
   describe '#connected_apps' do
     let(:user) { create(:user, identities: [create(:service_provider_identity)]) }
+
     subject(:connected_apps) { presenter.connected_apps }
 
     it 'delegates to user, eager-loading view-specific relations' do

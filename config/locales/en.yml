@@ -1107,12 +1107,13 @@ idv.gpo.request_another_letter.learn_more_link: Learn more about verifying your 
 idv.gpo.request_another_letter.title: Request another letter?
 idv.gpo.return_to_profile: Return to your profile
 idv.gpo.title: Enter your verification code
-idv.gpo.will_send_to: 'We’ll mail a letter to:'
+idv.gpo.will_send_to: 'You’ll get a letter in the mail from %{app_name} in 5 to 10 days at the address we verified and associated with you:'
 idv.images.come_back_later: Letter with a check mark
 idv.messages.activated_html: Your identity has been verified. If you need to change your verified information, please %{link_html}.
 idv.messages.activated_link: contact us
-idv.messages.come_back_later_html: 'Letters take <strong>5 to 10 days</strong> to arrive. Sign back in to enter your verification code once you get your letter.'
+idv.messages.come_back_later: Sign back in and enter the verification code when your letter arrives.
 idv.messages.confirm: We secured your verified information
+idv.messages.contact_sp_html: Contact %{sp_link_html} if you need to access their services before your letter arrives.
 idv.messages.enter_password.by_mail_password_reminder_html: '<strong>Remember your password.</strong> The verification code in your letter won’t work if you reset your password later.'
 idv.messages.enter_password.message: '%{app_name} will encrypt your information with your password. This means that your information is secure and only you will be able to access or change it.'
 idv.messages.enter_password.phone_verified: We verified your phone number
@@ -1890,8 +1891,6 @@ user_mailer.letter_reminder_14_days.did_not_get_a_letter_html: If you didn’t g
 user_mailer.letter_reminder_14_days.finish: Finish verifying your identity
 user_mailer.letter_reminder_14_days.sign_in_and_request_another_letter: sign in to request another letter
 user_mailer.letter_reminder_14_days.subject: Finish verifying your identity
-user_mailer.letter_reminder.info_html: The letter you are about to receive will contain a verification code that helps us verify your address. You can complete the identity verification process by signing into %{link_html} and entering the verification code.
-user_mailer.letter_reminder.subject: We mailed a letter to the address you have on file
 user_mailer.new_device_sign_in_after_2fa.authentication_methods: authentication methods
 user_mailer.new_device_sign_in_after_2fa.info_p1: Your %{app_name} email and password were used to sign-in and authenticate on a new device.
 user_mailer.new_device_sign_in_after_2fa.info_p2: If you recognize this activity, you don’t need to do anything.
@@ -1947,6 +1946,11 @@ user_mailer.suspended_reset_password.subject: We couldn’t reset your password
 user_mailer.suspension_confirmed.contact_agency: Please contact the agency whose service you are trying to access.
 user_mailer.suspension_confirmed.remain_locked: We have completed our review of your %{app_name} account and your account will remain locked.
 user_mailer.suspension_confirmed.subject: Your account is locked
+user_mailer.verify_by_mail_letter_requested.cta.sign_in: Sign in
+user_mailer.verify_by_mail_letter_requested.instructions.contact_sp: Contact %{friendly_name} if you need to access their services before your letter arrives.
+user_mailer.verify_by_mail_letter_requested.instructions.sign_in: Sign back in and enter the verification code when your letter arrives.
+user_mailer.verify_by_mail_letter_requested.intro_html: You’ll get a letter in the mail from %{app_name} in <strong>5 to 10</strong> days at the address we verified and associated with you.
+user_mailer.verify_by_mail_letter_requested.subject: Your letter is on the way
 users.delete.actions.cancel: Back to profile
 users.delete.actions.delete: Delete account
 users.delete.bullet_1: You won’t have a %{app_name} account
