@@ -3,7 +3,7 @@
 class SocureDocvResultsJob < ApplicationJob
   queue_as :default
 
-  attr_reader :document_capture_session_uuid, :service_provider_issuer, :user_uuid
+  attr_reader :document_capture_session_uuid
 
   # @param [String] document_capture_session_uuid
   def perform(document_capture_session_uuid:)
