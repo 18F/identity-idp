@@ -81,7 +81,7 @@ RSpec.describe SocureWebhookController do
       expect(response).to have_http_status(:bad_request)
     end
 
-    context 'when DOCUMENTSq_UPLOADED event' do
+    context 'when DOCUMENTS_UPLOADED event received' do
       let(:event_type) { 'DOCUMENTS_UPLOADED' }
 
       context 'when document capture session doesn not exist' do
