@@ -84,7 +84,7 @@ RSpec.describe SocureWebhookController do
     context 'when DOCUMENTS_UPLOADED event received' do
       let(:event_type) { 'DOCUMENTS_UPLOADED' }
 
-      context 'when document capture session doesn not exist' do
+      context 'when document capture session does not exist' do
         it 'logs an error with NewRelic' do
           request.headers['Authorization'] = socure_secret_key_queue.last
           post :create, params: webhook_body
