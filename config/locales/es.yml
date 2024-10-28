@@ -504,6 +504,8 @@ devise.sessions.signed_out: Cerró su sesión.
 doc_auth.accessible_labels.camera_video_capture_instructions: Tomaremos la foto automáticamente
 doc_auth.accessible_labels.camera_video_capture_label: Visor con marco para centrar su identificación
 doc_auth.accessible_labels.document_capture_dialog: Captura de documento
+doc_auth.alt.selfie_help_1: Una persona con el rostro dentro de un óvalo verde.
+doc_auth.alt.selfie_help_2: Un dedo toca una marca de verificación debajo de la cara para confirmar la foto.
 doc_auth.buttons.add_new_photos: Añadir nuevas fotos
 doc_auth.buttons.close: Cerrar
 doc_auth.buttons.continue: Continuar
@@ -601,6 +603,7 @@ doc_auth.headings.review_issues: Revise sus imágenes e inténtelo de nuevo
 doc_auth.headings.secure_account: Proteja su cuenta
 doc_auth.headings.selfie: Fotografía de su cara
 doc_auth.headings.selfie_capture: Capture una foto de usted
+doc_auth.headings.selfie_instructions.howto: 'Cómo tomar su fotografía:'
 doc_auth.headings.ssn: Ingrese su número de Seguro Social
 doc_auth.headings.ssn_update: Actualice su número de Seguro Social
 doc_auth.headings.text_message: Enviamos un mensaje a su teléfono
@@ -647,6 +650,8 @@ doc_auth.info.no_ssn: Debe tener un número de Seguro Social para finalizar la v
 doc_auth.info.review_examples_of_photos: Vea ejemplos de cómo tomar fotos nítidas de su identificación.
 doc_auth.info.secure_account: Cifraremos su cuenta cuando vuelva a ingresar su contraseña. Con el cifrado, sus datos están protegidos y solo usted puede acceder a su información o modificarla.
 doc_auth.info.selfie_capture_content: Revisaremos que usted sea la persona que figura en su identificación.
+doc_auth.info.selfie_capture_help_1: Alinee su cara con el círculo verde. No se mueva y espere a que la cámara capture una foto.
+doc_auth.info.selfie_capture_help_2: Después de la captura automática de su foto, toque la marca de verificación verde para aceptar la fotografía.
 doc_auth.info.selfie_capture_status.face_close_to_border: Demasiado cerca del marco
 doc_auth.info.selfie_capture_status.face_not_found: No se detectó el rostro
 doc_auth.info.selfie_capture_status.face_too_small: Rostro demasiado pequeño
@@ -1113,12 +1118,13 @@ idv.gpo.request_another_letter.learn_more_link: Obtenga más información sobre 
 idv.gpo.request_another_letter.title: '¿Solicitar otra carta?'
 idv.gpo.return_to_profile: Vuelva a su perfil
 idv.gpo.title: Introduzca su código de verificación
-idv.gpo.will_send_to: 'La hemos enviado a:'
+idv.gpo.will_send_to: 'En un plazo de 5 a 10 días, recibirá por correo una carta de %{app_name} en la dirección que verificamos y asociamos con usted:'
 idv.images.come_back_later: Carta con una marca de verificación
 idv.messages.activated_html: Se verificó su identidad. Si necesita cambiar la información verificada, %{link_html}.
 idv.messages.activated_link: contáctenos
-idv.messages.come_back_later_html: 'Las cartas tardan entre <strong>5 y 10 días</strong> en llegar. Vuelva a iniciar sesión para introducir el código de verificación cuando reciba la carta.'
+idv.messages.come_back_later: Cuando reciba su carta, vuelva a iniciar sesión e ingrese el código de verificación.
 idv.messages.confirm: Hemos protegido su información verificada
+idv.messages.contact_sp_html: Contacte con %{sp_link_html} si necesita acceder a los servicios de esa agencia antes de que llegue su carta.
 idv.messages.enter_password.by_mail_password_reminder_html: '<strong>Recuerde su contraseña.</strong> El código de verificación de su carta no funcionará si restablece su contraseña más adelante.'
 idv.messages.enter_password.message: '%{app_name} cifrará su información con su contraseña. Esto significa que su información está protegida y solo usted puede acceder a ella o modificarla.'
 idv.messages.enter_password.phone_verified: Verificamos su número de teléfono
@@ -1205,8 +1211,7 @@ in_person_proofing.body.barcode.location_details: Detalles del lugar
 in_person_proofing.body.barcode.questions: '¿Tiene alguna pregunta?'
 in_person_proofing.body.barcode.retail_hours: Horario de atención al público
 in_person_proofing.body.barcode.retail_hours_closed: Cerrado
-in_person_proofing.body.barcode.return_to_partner_html: Ahora puede %{link_html} para completar los pasos siguientes a los que tenga acceso hasta que se haya verificado su identidad.
-in_person_proofing.body.barcode.return_to_partner_link: cerrar sesión y volver a %{sp_name}
+in_person_proofing.body.barcode.return_to_partner_link: Volver a %{sp_name}
 in_person_proofing.body.barcode.what_to_expect: Qué esperar en la oficina de correos
 in_person_proofing.body.cta.button: Intentar en persona
 in_person_proofing.body.cta.prompt_detail: Es posible que pueda verificar su identidad en una oficina de correos participante cercana.
@@ -1605,7 +1610,6 @@ titles.idv.reset_password: Restablecer la contraseña
 titles.idv.verify_info: Verifique su información
 titles.mfa_setup.face_touch_unlock_confirmation: Se agregó el desbloqueo facial o táctil
 titles.mfa_setup.suggest_second_mfa: Agregó su primer método de autenticación. Agregue un segundo método como respaldo.
-titles.no_auth_option: No se encontró ningún método de inicio de sesión
 titles.openid_connect.authorization: Autorización de OpenID Connect
 titles.openid_connect.logout: Cierre de sesión de OpenID Connect
 titles.passwords.change: Cambie la contraseña de su cuenta
@@ -1696,7 +1700,6 @@ two_factor_authentication.max_otp_requests_reached: Para su seguridad, su cuenta
 two_factor_authentication.max_personal_key_login_attempts_reached: Para su seguridad, su cuenta está bloqueada temporalmente porque ingresó mal la clave personal demasiadas veces.
 two_factor_authentication.max_piv_cac_login_attempts_reached: Para su seguridad, su cuenta está bloqueada temporalmente porque presentó mal su tarjeta PIV o CAC demasiadas veces.
 two_factor_authentication.mobile_terms_of_service: Condiciones del servicio móvil
-two_factor_authentication.no_auth_option: No se pudo encontrar ninguna opción de autenticación para que iniciara sesión.
 two_factor_authentication.opt_in.error_retry: Lo sentimos, estamos teniendo problema para admitirlo; inténtelo de nuevo.
 two_factor_authentication.opt_in.opted_out_html: Optó por no recibir mensajes de texto en el %{phone_number_html}. Puede optar por recibir un código de seguridad de nuevo en ese número de teléfono.
 two_factor_authentication.opt_in.opted_out_last_30d_html: Optó por no recibir mensajes de texto en el %{phone_number_html} en los últimos 30 días. Solo podemos admitir un número telefónico una vez cada 30 días.
@@ -1726,6 +1729,13 @@ two_factor_authentication.phone_verification.troubleshooting.code_not_received: 
 two_factor_authentication.phone.delete.failure: No se puede eliminar su teléfono.
 two_factor_authentication.phone.delete.success: Su teléfono fue eliminado.
 two_factor_authentication.piv_cac_header_text: Inserte su identificación de empleado del gobierno
+two_factor_authentication.piv_cac_mismatch.2fa_before_add: Debe realizar la autenticación con otro método antes de añadir su tarjeta PIV o CAC.
+two_factor_authentication.piv_cac_mismatch.cta: Autenticar y añadir tarjeta PIV o CAC
+two_factor_authentication.piv_cac_mismatch.delete_account: Eliminar su cuenta
+two_factor_authentication.piv_cac_mismatch.instructions: Haga clic en “Autenticar y añadir tarjeta PIV o CAC” más abajo para autenticar con otro método antes de añadir esta tarjeta PIV o CAC a su cuenta.
+two_factor_authentication.piv_cac_mismatch.instructions_no_other_method: Si se le emitió una nueva tarjeta PIV o CAC, para poder usarla, deberá eliminar su cuenta de %{app_name} y crear una cuenta nueva.
+two_factor_authentication.piv_cac_mismatch.skip: Saltar añadir tarjeta PIV o CAC
+two_factor_authentication.piv_cac_mismatch.title: Esta tarjeta de identificación de empleado del gobierno no está conectada a su cuenta
 two_factor_authentication.piv_cac_upsell.add_piv: Agregar tarjeta PIV/CAC
 two_factor_authentication.piv_cac_upsell.choose_other_method: Elegir otros métodos
 two_factor_authentication.piv_cac_upsell.explain: Esto hará que su cuenta sea más segura y no tendrá que ingresar su correo electrónico ni su contraseña cuando inicie sesión.
@@ -1893,8 +1903,6 @@ user_mailer.letter_reminder_14_days.did_not_get_a_letter_html: Si no recibió es
 user_mailer.letter_reminder_14_days.finish: Termine de verificar su identidad
 user_mailer.letter_reminder_14_days.sign_in_and_request_another_letter: inicie sesión para solicitar otra carta
 user_mailer.letter_reminder_14_days.subject: Termine de verificar su identidad
-user_mailer.letter_reminder.info_html: La carta que recibirá próximamente contiene un código de verificación que nos ayudará a verificar su dirección. Para completar el proceso de verificación de identidad, inicie sesión en %{link_html} e ingrese el código de verificación.
-user_mailer.letter_reminder.subject: Enviamos una carta a la dirección de su expediente
 user_mailer.new_device_sign_in_after_2fa.authentication_methods: métodos de autenticación
 user_mailer.new_device_sign_in_after_2fa.info_p1: Su correo electrónico y contraseña de %{app_name} se usaron para iniciar sesión y hacer la autenticación en un dispositivo nuevo.
 user_mailer.new_device_sign_in_after_2fa.info_p2: Si reconoce esta actividad, no tiene que hacer nada.
@@ -1950,6 +1958,11 @@ user_mailer.suspended_reset_password.subject: No pudimos restablecer su contrase
 user_mailer.suspension_confirmed.contact_agency: Contacte con la agencia a cuyo servicio está intentando acceder.
 user_mailer.suspension_confirmed.remain_locked: Terminamos la revisión de su cuenta de %{app_name} y la cuenta permanecerá bloqueada.
 user_mailer.suspension_confirmed.subject: Su cuenta está bloqueada
+user_mailer.verify_by_mail_letter_requested.cta.sign_in: Iniciar sesión
+user_mailer.verify_by_mail_letter_requested.instructions.contact_sp: Contacte con %{friendly_name} si necesita acceder a los servicios de esa agencia antes de que llegue su carta.
+user_mailer.verify_by_mail_letter_requested.instructions.sign_in: Cuando reciba su carta, vuelva a iniciar sesión e ingrese el código de verificación.
+user_mailer.verify_by_mail_letter_requested.intro_html: 'En un plazo de <strong>5 a 10</strong> días, recibirá por correo una carta de %{app_name} en la dirección que verificamos y asociamos con usted:'
+user_mailer.verify_by_mail_letter_requested.subject: Su carta está en camino
 users.delete.actions.cancel: Volver al perfil
 users.delete.actions.delete: Eliminar cuenta
 users.delete.bullet_1: No tendrá una cuenta de %{app_name}.

@@ -53,6 +53,17 @@ module Reporting
       # rubocop:enable Layout/LineLength
     end
 
+    # Because historically fraud-related events were not tagged with SP data,
+    # we need pull these out-of-band events *even if* the are marked as
+    # pending fraud review. This allows us to attribute untagged fraud-related
+    # events (by matching on user_id). We filter these events for counting
+    # purposes, though.
+    EVENTS_TO_IGNORE_IF_FRAUD_REVIEW_PENDING = [
+      Events::GPO_VERIFICATION_SUBMITTED,
+      Events::GPO_VERIFICATION_SUBMITTED_OLD,
+      Events::USPS_ENROLLMENT_STATUS_UPDATED,
+    ].to_set.freeze
+
     # @param [Array<String>] issuers
     # @param [Range<Time>] date
     def initialize(
@@ -218,11 +229,43 @@ module Reporting
       data[Events::USPS_ENROLLMENT_STATUS_UPDATED].count
     end
 
+    def passed_fraud_review_users
+      # Fraud review events may not be tagged with the issuer.
+      # When we are filtering by SP, we only count fraud review events where
+      # there is another event for the user in the data that _is_ tagged
+      # with the issuer.
+
+      users = data[Events::FRAUD_REVIEW_PASSED]
+
+      return users if issuers.nil? || issuers.empty?
+
+      users_with_events_for_any_issuer =
+        issuers.each_with_object(Set.new) do |issuer, accumulated_users|
+          accumulated_users.merge(data[sp_key(issuer)])
+        end
+
+      users & users_with_events_for_any_issuer
+    end
+
+    def did_not_pass_fraud_review_users
+      result = (
+        data[Events::FRAUD_REVIEW_REJECT_AUTOMATIC] +
+        data[Events::FRAUD_REVIEW_REJECT_MANUAL]
+      )
+
+      issuers&.each do |issuer|
+        users_with_events_for_issuer = data[sp_key(issuer)]
+        result &= users_with_events_for_issuer
+      end
+
+      result
+    end
+
     def successfully_verified_users
       @successfully_verified_users ||= (
         data[Results::IDV_FINAL_RESOLUTION_VERIFIED] +
         data[Events::USPS_ENROLLMENT_STATUS_UPDATED] +
-        data[Events::FRAUD_REVIEW_PASSED] +
+        passed_fraud_review_users +
         data[Events::GPO_VERIFICATION_SUBMITTED] +
         data[Events::GPO_VERIFICATION_SUBMITTED_OLD]
       ).count
@@ -252,11 +295,11 @@ module Reporting
     end
 
     def idv_fraud_rejected
-      (data[Events::FRAUD_REVIEW_REJECT_AUTOMATIC] + data[Events::FRAUD_REVIEW_REJECT_MANUAL]).count
+      did_not_pass_fraud_review_users.count
     end
 
     def fraud_review_passed
-      data[Events::FRAUD_REVIEW_PASSED].count
+      passed_fraud_review_users.count
     end
 
     def verified_user_count
@@ -272,7 +315,7 @@ module Reporting
     # @return [Hash<Set<String>>]
     def data
       @data ||= begin
-        event_users = Hash.new do |h, event_name|
+        users = Hash.new do |h, event_name|
           h[event_name] = Set.new
         end
 
@@ -282,39 +325,43 @@ module Reporting
           event = row['name']
           user_id = row['user_id']
           success = row['success']
+          gpo_verification_pending = row['gpo_verification_pending'] == '1'
+          in_person_verification_pending = row['in_person_verification_pending'] == '1'
+          fraud_review_pending = row['fraud_review_pending'] == '1'
 
-          event_users[event] << user_id
+          ignore_event_for_user =
+            fraud_review_pending &&
+            EVENTS_TO_IGNORE_IF_FRAUD_REVIEW_PENDING.include?(event)
+
+          users[event] << user_id unless ignore_event_for_user
+          users[sp_key(row['service_provider'])] << user_id if row['service_provider'].present?
 
           case event
           when Events::IDV_FINAL_RESOLUTION
-            event_users[Results::IDV_FINAL_RESOLUTION_VERIFIED] << user_id if row['identity_verified'] == '1'
-
-            gpo_verification_pending = row['gpo_verification_pending'] == '1'
-            in_person_verification_pending = row['in_person_verification_pending'] == '1'
-            fraud_review_pending = row['fraud_review_pending'] == '1'
+            users[Results::IDV_FINAL_RESOLUTION_VERIFIED] << user_id if row['identity_verified'] == '1'
 
             if !gpo_verification_pending && !in_person_verification_pending
-              event_users[Results::IDV_FINAL_RESOLUTION_FRAUD_REVIEW] << user_id if fraud_review_pending
+              users[Results::IDV_FINAL_RESOLUTION_FRAUD_REVIEW] << user_id if fraud_review_pending
             elsif gpo_verification_pending && !in_person_verification_pending
-              event_users[Results::IDV_FINAL_RESOLUTION_GPO] << user_id if !fraud_review_pending
-              event_users[Results::IDV_FINAL_RESOLUTION_GPO_FRAUD_REVIEW] << user_id if fraud_review_pending
+              users[Results::IDV_FINAL_RESOLUTION_GPO] << user_id if !fraud_review_pending
+              users[Results::IDV_FINAL_RESOLUTION_GPO_FRAUD_REVIEW] << user_id if fraud_review_pending
             elsif !gpo_verification_pending && in_person_verification_pending
-              event_users[Results::IDV_FINAL_RESOLUTION_IN_PERSON] << user_id if !fraud_review_pending
-              event_users[Results::IDV_FINAL_RESOLUTION_IN_PERSON_FRAUD_REVIEW] << user_id if fraud_review_pending
+              users[Results::IDV_FINAL_RESOLUTION_IN_PERSON] << user_id if !fraud_review_pending
+              users[Results::IDV_FINAL_RESOLUTION_IN_PERSON_FRAUD_REVIEW] << user_id if fraud_review_pending
             elsif gpo_verification_pending && in_person_verification_pending
-              event_users[Results::IDV_FINAL_RESOLUTION_GPO_IN_PERSON] << user_id if !fraud_review_pending
-              event_users[Results::IDV_FINAL_RESOLUTION_GPO_IN_PERSON_FRAUD_REVIEW] << user_id if fraud_review_pending
+              users[Results::IDV_FINAL_RESOLUTION_GPO_IN_PERSON] << user_id if !fraud_review_pending
+              users[Results::IDV_FINAL_RESOLUTION_GPO_IN_PERSON_FRAUD_REVIEW] << user_id if fraud_review_pending
             end
           when Events::IDV_DOC_AUTH_IMAGE_UPLOAD
-            event_users[Results::IDV_REJECT_DOC_AUTH] << user_id if row['doc_auth_failed_non_fraud'] == '1'
+            users[Results::IDV_REJECT_DOC_AUTH] << user_id if row['doc_auth_failed_non_fraud'] == '1'
           when Events::IDV_DOC_AUTH_VERIFY_RESULTS
-            event_users[Results::IDV_REJECT_VERIFY] << user_id if success == '0'
+            users[Results::IDV_REJECT_VERIFY] << user_id if success == '0'
           when Events::IDV_PHONE_FINDER_RESULTS
-            event_users[Results::IDV_REJECT_PHONE_FINDER] << user_id if success == '0'
+            users[Results::IDV_REJECT_PHONE_FINDER] << user_id if success == '0'
           end
         end
 
-        event_users
+        users
       end
     end
     # rubocop:enable Metrics/BlockLength
@@ -337,6 +384,25 @@ module Reporting
         ),
         idv_final_resolution: quote(Events::IDV_FINAL_RESOLUTION),
         fraud_review_passed: quote(Events::FRAUD_REVIEW_PASSED),
+        fraud_event_names: quote(
+          [
+            Events::FRAUD_REVIEW_PASSED,
+            Events::FRAUD_REVIEW_REJECT_AUTOMATIC,
+            Events::FRAUD_REVIEW_REJECT_MANUAL,
+          ],
+        ),
+        normalized_fraud_review_pending: "(#{[
+          # rubocop:disable Layout/LineLength
+          'coalesce(properties.event_properties.fraud_review_pending, 0)',
+          # NOTE: fraud_pending_reason is present on 'IdV: final resolution' events. For GPO / IPP,
+          #       it will be set but the fraud_review_pending flag will be set to 0.
+          #       To calculate the 'Workflow completed - GPO Pending - Fraud Review' stat, we
+          #       must consider this independently of fraud_review_pending.
+          '!isblank(properties.event_properties.fraud_pending_reason)',
+          'coalesce(properties.event_properties.fraud_check_failed, 0)',
+          'coalesce((ispresent(properties.event_properties.tmx_status) and properties.event_properties.tmx_status in ["threatmetrix_review", "threatmetrix_reject"]), 0)',
+          # rubocop:enable Layout/LineLength
+        ].join(" OR ")})",
       }
 
       format(<<~QUERY, params)
@@ -344,16 +410,17 @@ module Reporting
             name
           , properties.user_id AS user_id
           , coalesce(properties.event_properties.success, 0) AS success
-        #{issuers.present? ? '| filter properties.service_provider IN %{issuers}' : ''}
+          , coalesce(properties.service_provider, properties.event_properties.issuer) AS service_provider
         | filter name in %{event_names}
-        | filter (name = %{usps_enrollment_status_updated} and properties.event_properties.passed = 1 and properties.event_properties.tmx_status not in ['threatmetrix_review', 'threatmetrix_reject'])
+        | filter (name = %{usps_enrollment_status_updated} and properties.event_properties.passed = 1)
                  or (name != %{usps_enrollment_status_updated})
-        | filter (name in %{gpo_verification_submitted} and properties.event_properties.success = 1 and !properties.event_properties.pending_in_person_enrollment and !properties.event_properties.fraud_check_failed)
+        | filter (name in %{gpo_verification_submitted} and properties.event_properties.success = 1 and !properties.event_properties.pending_in_person_enrollment)
                  or (name not in %{gpo_verification_submitted})
         | filter (name = %{fraud_review_passed} and properties.event_properties.success = 1)
                  or (name != %{fraud_review_passed})
+        #{issuers.present? ? '| filter service_provider IN %{issuers} OR name IN %{fraud_event_names}' : ''}
         | fields
-            coalesce(properties.event_properties.fraud_review_pending, properties.event_properties.fraud_pending_reason, 0) AS fraud_review_pending
+            %{normalized_fraud_review_pending} AS fraud_review_pending
           , coalesce(properties.event_properties.gpo_verification_pending, 0) AS gpo_verification_pending
           , coalesce(properties.event_properties.in_person_verification_pending, 0) AS in_person_verification_pending
           , ispresent(properties.event_properties.deactivation_reason) AS has_other_deactivation_reason
@@ -372,6 +439,10 @@ module Reporting
         progress: progress?,
         logger: verbose? ? Logger.new(STDERR) : nil,
       )
+    end
+
+    def sp_key(issuer)
+      "sp:#{issuer}"
     end
   end
 end

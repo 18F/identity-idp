@@ -25,7 +25,7 @@ class User < ApplicationRecord
   MAX_RECENT_EVENTS = 5
   MAX_RECENT_DEVICES = 5
 
-  enum otp_delivery_preference: { sms: 0, voice: 1 }
+  enum :otp_delivery_preference, { sms: 0, voice: 1 }
 
   # rubocop:disable Rails/HasManyOrHasOneDependent
   # identities need to be orphaned to prevent UUID reuse
@@ -98,7 +98,7 @@ class User < ApplicationRecord
   end
 
   def active_identities
-    identities.where('session_uuid IS NOT ?', nil).order(last_authenticated_at: :asc) || []
+    identities.where.not(session_uuid: nil).order(last_authenticated_at: :asc) || []
   end
 
   def active_profile?

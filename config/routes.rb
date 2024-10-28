@@ -119,6 +119,9 @@ Rails.application.routes.draw do
       get '/login/two_factor/options' => 'two_factor_authentication/options#index'
       post '/login/two_factor/options' => 'two_factor_authentication/options#create'
 
+      get '/login/two_factor/piv_cac_mismatch' => 'two_factor_authentication/piv_cac_mismatch#show'
+      post '/login/two_factor/piv_cac_mismatch' => 'two_factor_authentication/piv_cac_mismatch#create'
+
       get '/login/two_factor/authenticator' => 'two_factor_authentication/totp_verification#show'
       post '/login/two_factor/authenticator' => 'two_factor_authentication/totp_verification#create'
       get '/login/two_factor/personal_key' => 'two_factor_authentication/personal_key_verification#show'
@@ -326,6 +329,7 @@ Rails.application.routes.draw do
     get '/redirect/help_center' => 'redirect/help_center#show', as: :help_center_redirect
     get '/redirect/contact/' => 'redirect/contact#show', as: :contact_redirect
     get '/redirect/policy/' => 'redirect/policy#show', as: :policy_redirect
+    get '/redirect/marketing' => 'redirect/marketing_site#show', as: :marketing_site_redirect
     get '/sign_up/completed/cancel/' => 'completions_cancellation#show'
 
     match '/sign_out' => 'sign_out#destroy', via: %i[get post delete]

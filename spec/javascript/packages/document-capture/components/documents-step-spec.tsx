@@ -9,7 +9,6 @@ import {
   SelfieCaptureContext,
 } from '@18f/identity-document-capture';
 import DocumentsStep from '@18f/identity-document-capture/components/documents-step';
-import { composeComponents } from '@18f/identity-compose-components';
 import { render } from '../../../support/document-capture';
 import { getFixtureFile } from '../../../support/file';
 
@@ -143,18 +142,26 @@ describe('document-capture/components/documents-step', () => {
   });
 
   it('renders only with front, back when isSelfieCaptureEnabled is true', () => {
-    const App = composeComponents(
-      [
-        SelfieCaptureContext.Provider,
-        {
-          value: {
-            isSelfieCaptureEnabled: true,
-          },
-        },
-      ],
-      [DocumentsStep],
+    const { getByRole, getByLabelText } = render(
+      <SelfieCaptureContext.Provider
+        value={{
+          isSelfieCaptureEnabled: true,
+          isSelfieDesktopTestMode: false,
+          showHelpInitially: true,
+          immediatelyBeginCapture: true,
+        }}
+      >
+        <DocumentsStep
+          value={{}}
+          onChange={() => undefined}
+          errors={[]}
+          onError={() => undefined}
+          registerField={() => undefined}
+          unknownFieldErrors={[]}
+          toPreviousStep={() => undefined}
+        />
+      </SelfieCaptureContext.Provider>,
     );
-    const { getByRole, getByLabelText } = render(<App />);
 
     const front = getByLabelText('doc_auth.headings.document_capture_front');
     const back = getByLabelText('doc_auth.headings.document_capture_back');

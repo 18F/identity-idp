@@ -138,6 +138,7 @@ RSpec.feature 'document capture step', :js do
       sign_in_and_2fa_user(@user)
       complete_doc_auth_steps_before_document_capture_step
     end
+
     it 'user can go through verification uploading ID and selfie on seprerate pages' do
       expect(page).to have_current_path(idv_document_capture_url)
       expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
@@ -145,10 +146,12 @@ RSpec.feature 'document capture step', :js do
       click_continue
       expect(page).to have_title(t('doc_auth.headings.selfie_capture'))
       expect(page).to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
+      click_button 'Take photo'
       attach_selfie
       submit_images
       expect(page).to have_content(t('doc_auth.headings.capture_complete'))
     end
+
     it 'initial verification failure allows user to resubmit all images in 1 page' do
       attach_images(
         Rails.root.join(
@@ -157,6 +160,7 @@ RSpec.feature 'document capture step', :js do
         ),
       )
       click_continue
+      click_button 'Take photo'
       attach_selfie(
         Rails.root.join(
           'spec', 'fixtures',
@@ -168,11 +172,11 @@ RSpec.feature 'document capture step', :js do
       click_try_again
       expect(page).to have_content(t('doc_auth.headings.review_issues'))
       attach_images
-      attach_selfie
       submit_images
       expect(page).to have_content(t('doc_auth.headings.capture_complete'))
     end
   end
+
   context 'standard desktop flow' do
     before do
       visit_idp_from_oidc_sp_with_ial2
@@ -343,6 +347,7 @@ RSpec.feature 'document capture step', :js do
               attach_images
               click_continue
               expect_doc_capture_selfie_subheader
+              click_button 'Take photo'
               attach_selfie
               submit_images
 
@@ -367,6 +372,7 @@ RSpec.feature 'document capture step', :js do
                 click_continue
                 use_id_image('ial2_test_credential_multiple_doc_auth_failures_both_sides.yml')
                 click_continue
+                click_button 'Take photo'
                 click_idv_submit_default
                 expect(page).not_to have_content(t('doc_auth.headings.capture_complete'))
                 expect(page).not_to have_content(t('doc_auth.errors.rate_limited_heading'))
@@ -390,6 +396,7 @@ RSpec.feature 'document capture step', :js do
 
                 # Wrong doc type is uploaded
                 use_id_image('ial2_test_credential_wrong_doc_type.yml')
+
                 use_selfie_image('ial2_test_portrait_match_success.yml')
                 submit_images
 
@@ -412,6 +419,7 @@ RSpec.feature 'document capture step', :js do
                 use_id_image(
                   'ial2_test_credential_multiple_doc_auth_failures_front_side_only.yml',
                 )
+
                 use_selfie_image(
                   'ial2_test_credential_multiple_doc_auth_failures_front_side_only.yml',
                 )
@@ -437,6 +445,7 @@ RSpec.feature 'document capture step', :js do
                 use_id_image(
                   'ial2_test_credential_multiple_doc_auth_failures_back_side_only.yml',
                 )
+
                 use_selfie_image(
                   'ial2_test_credential_multiple_doc_auth_failures_back_side_only.yml',
                 )
@@ -460,6 +469,8 @@ RSpec.feature 'document capture step', :js do
 
                 # attention barcode with invalid pii is uploaded
                 use_id_image('ial2_test_credential_barcode_attention_no_address.yml')
+                click_continue
+
                 use_selfie_image('ial2_test_portrait_match_success.yml')
                 submit_images
 
@@ -604,6 +615,7 @@ RSpec.feature 'document capture step', :js do
               attach_images
               click_continue
               expect_doc_capture_selfie_subheader
+              click_button 'Take photo'
               attach_selfie
               submit_images
 

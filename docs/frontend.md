@@ -233,6 +233,10 @@ For example, consider a **Password Input** component:
 - A web component would be named `PasswordInputElement`
 - A web components file would be named `app/javascript/packages/password-input/password-input-element.ts`
 
+#### Graphical Assets
+
+Web graphic assets like images, GIFs, and videos are artifacts authored in other tools. As such, there is no need to keep multiple variants of an asset (e.g., SVG and PNG) in the repository if they are not in use.
+
 ## Testing
 
 ### Stylelint

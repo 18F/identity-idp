@@ -206,7 +206,15 @@ class UserMailer < ActionMailer::Base
 
   def verify_by_mail_letter_requested
     with_user_locale(user) do
-      mail(to: email_address.email, subject: t('user_mailer.letter_reminder.subject'))
+      @hide_title = true
+      @presenter = Idv::ByMail::LetterRequestedEmailPresenter.new(
+        current_user: user,
+        url_options:,
+      )
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.verify_by_mail_letter_requested.subject'),
+      )
     end
   end
 
@@ -246,7 +254,7 @@ class UserMailer < ActionMailer::Base
     attachments.inline['verified.png'] =
       Rails.root.join('app/assets/images/email/user-signup-ial2.png').read
     with_user_locale(user) do
-      @presenter = Idv::AccountVerifiedEmailPresenter.new(profile:)
+      @presenter = Idv::AccountVerifiedEmailPresenter.new(profile:, url_options:)
       @hide_title = true
       @date = I18n.l(profile.verified_at, format: :event_date)
       mail(
@@ -273,12 +281,13 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def in_person_deadline_passed(enrollment:)
+  def in_person_deadline_passed(enrollment:, visited_location_name: nil)
     with_user_locale(user) do
       @header = t('user_mailer.in_person_deadline_passed.header')
       @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
         enrollment: enrollment,
         url_options: url_options,
+        visited_location_name: visited_location_name,
       )
       mail(
         to: email_address.email,
@@ -337,12 +346,13 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def in_person_verified(enrollment:)
+  def in_person_verified(enrollment:, visited_location_name: nil)
     with_user_locale(user) do
       @hide_title = true
       @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
         enrollment: enrollment,
         url_options: url_options,
+        visited_location_name: visited_location_name,
       )
       mail(
         to: email_address.email,
@@ -351,11 +361,12 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def in_person_failed(enrollment:)
+  def in_person_failed(enrollment:, visited_location_name: nil)
     with_user_locale(user) do
       @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
         enrollment: enrollment,
         url_options: url_options,
+        visited_location_name: visited_location_name,
       )
       mail(
         to: email_address.email,
@@ -364,11 +375,12 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def in_person_failed_fraud(enrollment:)
+  def in_person_failed_fraud(enrollment:, visited_location_name: nil)
     with_user_locale(user) do
       @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
         enrollment: enrollment,
         url_options: url_options,
+        visited_location_name: visited_location_name,
       )
       mail(
         to: email_address.email,
@@ -377,11 +389,12 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def in_person_please_call(enrollment:)
+  def in_person_please_call(enrollment:, visited_location_name: nil)
     with_user_locale(user) do
       @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
         enrollment: enrollment,
         url_options: url_options,
+        visited_location_name: visited_location_name,
       )
       @hide_title = true
       mail(

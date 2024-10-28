@@ -15,6 +15,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
       enrollments_network_error: 0,
       enrollments_expired: 0,
       enrollments_failed: 0,
+      enrollments_cancelled: 0,
       enrollments_in_progress: 0,
       enrollments_passed: 0,
       duration_seconds: 0.0,
@@ -103,6 +104,8 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
         let(:send_proofing_notification_job) do
           double(InPerson::SendProofingNotificationJob)
         end
+        let(:no_visited_location_name) { 'none' }
+        let(:visited_location_name) { 'WILKES BARRE' }
         let(:enrollment) do
           create(:in_person_enrollment, :pending, :with_notification_phone_configuration)
         end
@@ -324,6 +327,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                     it 'sends an in person deadline passed email' do
                       expect(user_mailer).to have_received(:in_person_deadline_passed).with(
                         enrollment: enrollment,
+                        visited_location_name: no_visited_location_name,
                       )
                       expect(mail_deliverer).to have_received(:deliver_later).with(no_args)
                     end
@@ -496,6 +500,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                     it 'sends an in person deadline passed email' do
                       expect(user_mailer).to have_received(:in_person_deadline_passed).with(
                         enrollment: enrollment,
+                        visited_location_name: no_visited_location_name,
                       )
                       expect(mail_deliverer).to have_received(:deliver_later).with(no_args)
                     end
@@ -694,6 +699,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                   it 'sends an in person deadline passed email' do
                     expect(user_mailer).to have_received(:in_person_deadline_passed).with(
                       enrollment: enrollment,
+                      visited_location_name: no_visited_location_name,
                     )
                     expect(mail_deliverer).to have_received(:deliver_later).with(no_args)
                   end
@@ -789,6 +795,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                 ).with(
                   **default_job_completion_analytics,
                   enrollments_checked: 1,
+                  enrollments_cancelled: 1,
                 )
               end
             end
@@ -867,6 +874,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                 ).with(
                   **default_job_completion_analytics,
                   enrollments_checked: 1,
+                  enrollments_cancelled: 1,
                 )
               end
             end
@@ -1539,6 +1547,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                 it 'sends the please call email' do
                   expect(user_mailer).to have_received(:in_person_please_call).with(
                     enrollment: enrollment,
+                    visited_location_name: visited_location_name,
                   )
                   expect(mail_deliverer).to have_received(:deliver_later).with(
                     queue: :intentionally_delayed,
@@ -1650,6 +1659,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                 it 'sends the in person failed email' do
                   expect(user_mailer).to have_received(:in_person_failed).with(
                     enrollment: enrollment,
+                    visited_location_name: visited_location_name,
                   )
                   expect(mail_deliverer).to have_received(:deliver_later).with(
                     queue: :intentionally_delayed,
@@ -1753,6 +1763,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                     it 'sends the in person failed email with delay' do
                       expect(user_mailer).to have_received(:in_person_failed).with(
                         enrollment: enrollment,
+                        visited_location_name: visited_location_name,
                       )
                       expect(mail_deliverer).to have_received(:deliver_later).with(
                         queue: :intentionally_delayed,
@@ -1851,6 +1862,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                     it 'sends the in person verified email with a delay' do
                       expect(user_mailer).to have_received(:in_person_verified).with(
                         enrollment: enrollment,
+                        visited_location_name: visited_location_name,
                       )
                       expect(mail_deliverer).to have_received(:deliver_later).with(
                         queue: :intentionally_delayed,
@@ -1950,6 +1962,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                     it 'sends the in person failed email with delay' do
                       expect(user_mailer).to have_received(:in_person_failed).with(
                         enrollment: enrollment,
+                        visited_location_name: visited_location_name,
                       )
                       expect(mail_deliverer).to have_received(:deliver_later).with(
                         queue: :intentionally_delayed,
@@ -2070,6 +2083,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                     it 'sends the in person verified email with delay' do
                       expect(user_mailer).to have_received(:in_person_verified).with(
                         enrollment: enrollment,
+                        visited_location_name: visited_location_name,
                       )
                       expect(mail_deliverer).to have_received(:deliver_later).with(
                         queue: :intentionally_delayed,
@@ -2168,6 +2182,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                     it 'sends the in person verified email' do
                       expect(user_mailer).to have_received(:in_person_verified).with(
                         enrollment: enrollment,
+                        visited_location_name: visited_location_name,
                       )
                       expect(mail_deliverer).to have_received(:deliver_later).with(
                         queue: :intentionally_delayed,
@@ -2267,6 +2282,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                     it 'sends the in person verified email' do
                       expect(user_mailer).to have_received(:in_person_verified).with(
                         enrollment: enrollment,
+                        visited_location_name: visited_location_name,
                       )
                       expect(mail_deliverer).to have_received(:deliver_later).with(
                         queue: :intentionally_delayed,
@@ -2371,6 +2387,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                   it 'sends the in person failed email' do
                     expect(user_mailer).to have_received(:in_person_failed).with(
                       enrollment: enrollment,
+                      visited_location_name: visited_location_name,
                     )
                     expect(mail_deliverer).to have_received(:deliver_later).with(
                       queue: :intentionally_delayed,
@@ -2474,6 +2491,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                   it 'sends the in person failed fraud email with a delay' do
                     expect(user_mailer).to have_received(:in_person_failed_fraud).with(
                       enrollment: enrollment,
+                      visited_location_name: visited_location_name,
                     )
                     expect(mail_deliverer).to have_received(:deliver_later).with(
                       queue: :intentionally_delayed,
@@ -2610,6 +2628,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                 it 'sends the in person verified email without delay' do
                   expect(user_mailer).to have_received(:in_person_verified).with(
                     enrollment: enrollment,
+                    visited_location_name: visited_location_name,
                   )
                   expect(mail_deliverer).to have_received(:deliver_later).with(no_args)
                 end
@@ -2638,6 +2657,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                 it 'sends the in person verified email with a default 1 hour delay' do
                   expect(user_mailer).to have_received(:in_person_verified).with(
                     enrollment: enrollment,
+                    visited_location_name: visited_location_name,
                   )
                   expect(mail_deliverer).to have_received(:deliver_later).with(
                     queue: :intentionally_delayed,
@@ -2649,15 +2669,62 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
           end
         end
 
-        context 'when the enrollment does not have a unique_id' do
+        context 'when the enrollment has a profile with a deactivation reason' do
+          let(:deactivation_reason) { 'encryption_error' }
+
           before do
-            enrollment.update(unique_id: nil)
-            allow(analytics).to receive(:idv_in_person_usps_proofing_results_job_exception)
+            enrollment.profile.update(deactivation_reason: deactivation_reason)
+            allow(analytics).to receive(:idv_in_person_usps_proofing_results_job_enrollment_updated)
             subject.perform(current_time)
           end
 
-          it 'updates the enrollment to have a unique_id' do
-            expect(enrollment.reload.unique_id).to be_present
+          it 'logs the job started analytic' do
+            expect(analytics).to have_received(
+              :idv_in_person_usps_proofing_results_job_started,
+            ).with(
+              enrollments_count: 1,
+              reprocess_delay_minutes: 5,
+              job_name: described_class.name,
+            )
+          end
+
+          it 'logs the job enrollment updated analytic' do
+            expect(analytics).to have_received(
+              :idv_in_person_usps_proofing_results_job_enrollment_updated,
+            ).with(
+              **enrollment_analytics,
+              response_present: false,
+              passed: false,
+              reason: "Profile has a deactivation reason of #{deactivation_reason}",
+              job_name: described_class.name,
+              tmx_status: nil,
+              profile_age_in_seconds: enrollment.profile&.profile_age_in_seconds,
+              enhanced_ipp: false,
+            )
+          end
+
+          it 'cancels the enrollment' do
+            expect(enrollment.reload).to have_attributes(
+              status: 'cancelled',
+            )
+          end
+
+          it "deactivates the enrollment's profile" do
+            expect(enrollment.reload.profile).to have_attributes(
+              active: false,
+              deactivation_reason: 'encryption_error',
+              in_person_verification_pending_at: nil,
+            )
+          end
+
+          it 'logs the job completed analytic' do
+            expect(analytics).to have_received(
+              :idv_in_person_usps_proofing_results_job_completed,
+            ).with(
+              **default_job_completion_analytics,
+              enrollments_checked: 1,
+              enrollments_cancelled: 1,
+            )
           end
         end
 

@@ -62,13 +62,9 @@ module UspsInPersonProofing
       # @return [String] The enrollment code
       # @raise [Exception::RequestEnrollException] Raised with a problem creating the enrollment
       def create_usps_enrollment(enrollment, pii, is_enhanced_ipp)
-        # Use the enrollment's unique_id value if it exists, otherwise use the deprecated
-        # #usps_unique_id value in order to remain backwards-compatible. LG-7024 will remove this
-        unique_id = enrollment.unique_id || enrollment.usps_unique_id
-
         applicant = UspsInPersonProofing::Applicant.new(
           {
-            unique_id: unique_id,
+            unique_id: enrollment.unique_id,
             first_name: transliterate(pii[:first_name]),
             last_name: transliterate(pii[:last_name]),
             address: transliterate(pii[:address1]),
@@ -92,7 +88,7 @@ module UspsInPersonProofing
         user.
           in_person_enrollments.
           where(status: :establishing).
-          each(&:cancelled!)
+          find_each(&:cancelled!)
       end
 
       def usps_proofer

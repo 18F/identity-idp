@@ -180,20 +180,6 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
           end
         end
 
-        context 'when the enrollment does not have a unique ID' do
-          it 'generates a usps_unique_id value to create the enrollment' do
-            enrollment.update(unique_id: nil)
-            expect(proofer).to receive(:request_enroll) do |applicant|
-              # The InPersonEnrollment#usps_unique_id method is deprecated
-              expect(applicant.unique_id).to eq(enrollment.usps_unique_id)
-
-              UspsInPersonProofing::Mock::Proofer.new.request_enroll(applicant, is_enhanced_ipp)
-            end
-
-            subject.schedule_in_person_enrollment(user:, pii:, is_enhanced_ipp:)
-          end
-        end
-
         it <<~STR.squish do
           sets enrollment status to pending, sponsor_id to usps_ipp_sponsor_id,
           and sets established at date and unique id

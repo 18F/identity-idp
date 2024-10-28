@@ -200,6 +200,7 @@ RSpec.describe Idv::VerifyInfoController do
           before do
             controller.idv_session.ssn = nil
           end
+
           it 'does not log an idv_verify_info_missing_threatmetrix_session_id event' do
             get :show
             expect(@analytics).not_to have_logged_event(
