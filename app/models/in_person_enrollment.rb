@@ -146,13 +146,13 @@ class InPersonEnrollment < ApplicationRecord
     notification_phone_configuration.present? && (passed? || failed?)
   end
 
-  # (deprecated) Returns the value to use for the USPS enrollment ID
-  def usps_unique_id
-    user.uuid.delete('-').slice(0, 18)
-  end
-
   def enhanced_ipp?
     IdentityConfig.store.usps_eipp_sponsor_id == sponsor_id
+  end
+
+  # @return [String, nil] The enrollment's profile deactivation reason or nil.
+  def profile_deactivation_reason
+    profile&.deactivation_reason
   end
 
   private

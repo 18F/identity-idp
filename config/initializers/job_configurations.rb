@@ -164,16 +164,17 @@ else
         class: 'ThreatMetrixJsVerificationJob',
         cron: cron_1h,
       },
-      # Periodically check whether we can upgrade to GoodJob V4
-      good_job_v4_ready: {
-        class: 'GoodJobV4ReadyJob',
-        cron: cron_1h,
-      },
       # Reject profiles that have been in fraud_review_pending for 30 days
       fraud_rejection: {
         class: 'FraudRejectionDailyJob',
         cron: cron_24h,
         args: -> { [Time.zone.today] },
+      },
+      # Data warehouse stale data check
+      table_summary_stats_export_job: {
+        class: 'DataWarehouse::TableSummaryStatsExportJob',
+        cron: gpo_cron_24h,
+        args: -> { [Time.zone.now.yesterday.end_of_day] },
       },
       # Send Duplicate SSN report to S3
       duplicate_ssn: {

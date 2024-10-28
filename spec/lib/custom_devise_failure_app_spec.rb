@@ -5,7 +5,7 @@ RSpec.describe CustomDeviseFailureApp do
   subject(:failure_app) { CustomDeviseFailureApp.new }
 
   let(:message) { :invalid }
-  let(:env) { { 'warden' => OpenStruct.new(message:) } }
+  let(:env) { { 'warden' => double('warden_proxy', message:) } }
   let(:request) { ActionDispatch::Request.new(env) }
 
   before do
