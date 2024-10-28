@@ -7,7 +7,7 @@ export class WebauthnInputElement extends HTMLElement {
   }
 
   get isOptedInToAbTest(): boolean {
-    return this.hasAttribute('desktop-ft-ab-test');
+    return this.hasAttribute('desktop-ft-unlock-option');
   }
 
   get isPlatform(): boolean {
