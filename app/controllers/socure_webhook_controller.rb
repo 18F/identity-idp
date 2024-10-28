@@ -10,7 +10,7 @@ class SocureWebhookController < ApplicationController
 
   def create
     log_webhook_receipt
-    fetch_results if socure_params.dig(:event, :eventType) == 'DOCUMENTS_UPLOADED'
+    process_webhook_event
     render json: { message: 'Secret token is valid.' }
   rescue StandardError => e
     NewRelic::Agent.notice_error(e)
@@ -63,18 +63,47 @@ class SocureWebhookController < ApplicationController
   end
 
   def log_webhook_receipt
-    event = socure_params[:event]
+    @event = socure_params[:event]
 
     analytics.idv_doc_auth_socure_webhook_received(
-      created_at: event[:created],
-      customer_user_id: event[:customerUserId],
-      event_type: event[:eventType],
-      reference_id: event[:referenceId],
-      user_id: event[:customerUserId],
+      created_at: @event[:created],
+      customer_user_id: @event[:customerUserId],
+      event_type: @event[:eventType],
+      reference_id: @event[:referenceId],
+      user_id: @event[:customerUserId],
+    )
+  end
+
+  def process_webhook_event
+    case @event[:eventType]
+    when 'DOCUMENTS_UPLOADED'
+      increment_rate_limiter
+      fetch_results
+    end
+  end
+
+  def increment_rate_limiter
+    @document_capture_session = DocumentCaptureSession.find_by(
+      user_id: @event[:customerUserId],
+      socure_docv_transaction_token: @event[:docvTransactionToken],
+    )
+    if !@document_capture_session.nil?
+      rate_limiter.increment!
+    end
+    # Logic to throw an error when no DocumentCaptureSession found will be done in ticket LG-14905
+  end
+
+  def rate_limiter
+    @rate_limiter ||= RateLimiter.new(
+      user: @document_capture_session.user,
+      rate_limit_type: :idv_doc_auth,
     )
   end
 
   def socure_params
-    params.permit(event: [:created, :customerUserId, :eventType, :referenceId])
+    params.permit(
+      event: [:created, :customerUserId, :eventType, :referenceId,
+              :docvTransactionToken],
+    )
   end
 end
