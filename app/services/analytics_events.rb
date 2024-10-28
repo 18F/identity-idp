@@ -750,6 +750,22 @@ module AnalyticsEvents
     )
   end
 
+  # User visited sign-in URL from the "You've been successfully verified email" CTA button
+  # @param issuer [String] the ServiceProvider.issuer
+  # @param campaign_id [String] the email campaign ID
+  def idv_account_verified_cta_visited(
+    issuer:,
+    campaign_id:,
+    **extra
+  )
+    track_event(
+      :idv_account_verified_cta_visited,
+      issuer:,
+      campaign_id:,
+      **extra,
+    )
+  end
+
   # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
   # @param [String] acuant_version
   # @param ["hybrid","standard"] flow_path Document capture user flow
