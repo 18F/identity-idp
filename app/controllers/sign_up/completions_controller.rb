@@ -13,7 +13,6 @@ module SignUp
       analytics.user_registration_agency_handoff_page_visit(
         **analytics_attributes(''),
       )
-      log_account_creation_threatmetrix_if_applicable
       @multiple_factors_enabled = MfaPolicy.new(current_user).multiple_factors_enabled?
       @presenter = completions_presenter
     end
@@ -68,7 +67,6 @@ module SignUp
 
     def return_to_account
       track_completion_event('account-page')
-      log_account_creation_threatmetrix_if_applicable
       redirect_to account_url
     end
 
