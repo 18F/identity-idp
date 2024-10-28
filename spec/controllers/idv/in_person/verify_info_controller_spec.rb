@@ -73,7 +73,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
           analytics_id: 'In Person Proofing',
           flow_path: 'standard',
           step: 'verify',
-          same_address_as_id: true,
         },
       )
     end
@@ -136,7 +135,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
               analytics_id: 'In Person Proofing',
               flow_path: 'standard',
               step: 'verify',
-              same_address_as_id: true,
             },
           ),
         )

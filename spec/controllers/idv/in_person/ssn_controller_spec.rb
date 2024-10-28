@@ -42,7 +42,6 @@ RSpec.describe Idv::InPerson::SsnController do
         analytics_id: 'In Person Proofing',
         flow_path: 'standard',
         step: 'ssn',
-        same_address_as_id: true,
       }
     end
 
@@ -112,7 +111,6 @@ RSpec.describe Idv::InPerson::SsnController do
           step: 'ssn',
           success: true,
           errors: {},
-          same_address_as_id: true,
         }
       end
 
@@ -150,7 +148,6 @@ RSpec.describe Idv::InPerson::SsnController do
             step: 'ssn',
             success: true,
             previous_ssn_edit_distance: 6,
-            same_address_as_id: true,
             errors: {},
           }
         end
@@ -178,7 +175,6 @@ RSpec.describe Idv::InPerson::SsnController do
             ssn: ['Enter a nine-digit Social Security number'],
           },
           error_details: { ssn: { invalid: true } },
-          same_address_as_id: true,
         }
       end
 
