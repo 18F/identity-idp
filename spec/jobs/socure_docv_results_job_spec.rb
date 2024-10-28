@@ -10,6 +10,7 @@ RSpec.describe SocureDocvResultsJob do
       dcs.socure_docv_transaction_token = '1234'
     end
   end
+  let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:socure_idplus_base_url) { 'https://example.com' }
   let(:decision_value) { 'accept' }
   let(:expiration_date) { "#{1.year.from_now.year}-01-01" }
@@ -23,7 +24,7 @@ RSpec.describe SocureDocvResultsJob do
 
   describe '#perform' do
     subject(:perform) do
-      job.perform(document_capture_session_uuid: document_capture_session.uuid)
+      job.perform(document_capture_session_uuid: document_capture_session_uuid)
     end
 
     let(:socure_response_body) do
@@ -78,7 +79,7 @@ RSpec.describe SocureDocvResultsJob do
         )
     end
 
-    it 'stores the result from the socure document verification request' do
+    it 'stores the result from the Socure DocV request' do
       perform
 
       document_capture_session.reload
@@ -88,6 +89,19 @@ RSpec.describe SocureDocvResultsJob do
       expect(document_capture_session_result.attention_with_barcode).to eq(false)
       expect(document_capture_session_result.doc_auth_success).to eq(true)
       expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+    end
+
+    context 'when the document capture session does not exist' do
+      let(:document_capture_session_uuid) { '1234' }
+
+      it 'raises an error and fails to store the result from the Socure DocV request' do
+        expect { perform }.to raise_error(
+          RuntimeError,
+          "DocumentCaptureSession not found: #{document_capture_session_uuid}",
+        )
+        document_capture_session.reload
+        expect(document_capture_session.load_result).to be_nil
+      end
     end
   end
 end
