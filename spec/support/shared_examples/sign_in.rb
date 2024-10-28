@@ -348,6 +348,7 @@ RSpec.shared_examples 'logs reCAPTCHA event and redirects appropriately' do |suc
       },
       evaluated_as_valid: false,
       score_threshold: 0.2,
+      recaptcha_action: 'sign_in',
       form_class: 'RecaptchaMockForm',
     )
     expect(fake_analytics).to have_logged_event(
