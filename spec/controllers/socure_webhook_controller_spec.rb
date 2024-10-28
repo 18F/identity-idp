@@ -34,7 +34,6 @@ RSpec.describe SocureWebhookController do
         and_return(socure_secret_key_queue)
       allow(IdentityConfig.store).to receive(:socure_enabled).
         and_return(socure_enabled)
-      allow(NewRelic::Agent).to receive(:notice_error)
 
       stub_analytics
     end
@@ -85,6 +84,10 @@ RSpec.describe SocureWebhookController do
       let(:event_type) { 'DOCUMENTS_UPLOADED' }
 
       context 'when document capture session does not exist' do
+        before do
+          allow(NewRelic::Agent).to receive(:notice_error)
+        end
+
         it 'logs an error with NewRelic' do
           request.headers['Authorization'] = socure_secret_key_queue.last
           post :create, params: webhook_body
