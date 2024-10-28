@@ -78,6 +78,59 @@ module Idv
           end,
         )
       end
+
+      def state_id_proofer
+        @state_id_proofer ||=
+          if IdentityConfig.store.proofer_mock_fallback
+            Proofing::Mock::StateIdMockClient.new
+          else
+            Proofing::Aamva::Proofer.new(
+              auth_request_timeout: IdentityConfig.store.aamva_auth_request_timeout,
+              auth_url: IdentityConfig.store.aamva_auth_url,
+              cert_enabled: IdentityConfig.store.aamva_cert_enabled,
+              private_key: IdentityConfig.store.aamva_private_key,
+              public_key: IdentityConfig.store.aamva_public_key,
+              verification_request_timeout: IdentityConfig.store.aamva_verification_request_timeout,
+              verification_url: IdentityConfig.store.aamva_verification_url,
+            )
+          end
+      end
+
+      def applicant_pii_with_state_id_address
+        applicant_pii
+      end
+
+      def should_proof_state_id_with_aamva?
+        aamva_supports_state_id_jurisdiction?
+      end
+
+      def aamva_supports_state_id_jurisdiction?
+        state_id_jurisdiction = applicant_pii[:state_id_jurisdiction]
+        IdentityConfig.store.aamva_supported_jurisdictions.include?(state_id_jurisdiction)
+      end
+
+      def state_id_result
+        timer = JobHelpers::Timer.new
+        timer.time('state_id') do
+          state_id_proofer.proof(applicant_pii_with_state_id_address)
+        end.tap do |result|
+          add_sp_cost(:aamva, result.transaction_id) if result.exception.blank?
+        end
+      end
+
+      def applicant_pii
+        idv_session.pii_from_doc.to_h
+      end
+
+      def add_sp_cost(token, transaction_id)
+        Db::SpCost::AddSpCost.call(current_sp, token, transaction_id: transaction_id)
+      end
+
+      def aamva_check_met?
+        return state_id_result.success? if should_proof_state_id_with_aamva?
+
+        true
+      end
     end
   end
 end

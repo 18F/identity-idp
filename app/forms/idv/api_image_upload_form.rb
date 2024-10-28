@@ -38,6 +38,7 @@ module Idv
 
       client_response = nil
       doc_pii_response = nil
+      state_id_response = nil
 
       if form_response.success?
         client_response = post_images_to_client
@@ -48,6 +49,14 @@ module Idv
 
         if client_response.success?
           doc_pii_response = validate_pii_from_doc(client_response)
+
+          if doc_pii_response.success? && should_proof_state_id_with_aamva?(doc_pii_response.pii_from_doc)
+            state_id_response = validate_state_id(doc_pii_response.pii_from_doc)
+            state_id_response.extra.merge!(doc_pii_response.extra)
+            if state_id_response.success?
+              store_pii(client_response)
+            end
+          end
         end
       end
 
@@ -55,9 +64,10 @@ module Idv
         form_response: form_response,
         client_response: client_response,
         doc_pii_response: doc_pii_response,
+        state_id_response:,
       )
 
-      failed_fingerprints = store_failed_images(client_response, doc_pii_response)
+      failed_fingerprints = store_failed_images(client_response, doc_pii_response, state_id_response)
       response.extra[:failed_image_fingerprints] = failed_fingerprints
       response
     end
@@ -138,10 +148,17 @@ module Idv
 
       analytics.idv_doc_auth_submitted_pii_validation(**response_with_classification)
 
-      if client_response.success? && response.success?
-        store_pii(client_response)
-      end
+      response
+    end
 
+    def validate_state_id(applicant_pii)
+      result = state_id_result(applicant_pii)
+
+      response = Idv::DocAuthFormResponse.new(
+        success: result.success?,
+        errors: result.errors,
+      )
+      response.pii_from_doc = applicant_pii
       response
     end
 
@@ -214,12 +231,15 @@ module Idv
       { selfie_attempts: past_selfie_count + processed_selfie_count }
     end
 
-    def determine_response(form_response:, client_response:, doc_pii_response:)
+    def determine_response(form_response:, client_response:, doc_pii_response:, state_id_response:)
       # image validation failed
       return form_response unless form_response.success?
 
       # doc_pii validation failed
       return doc_pii_response if doc_pii_response.present? && !doc_pii_response.success?
+
+      # aamva_proofing failed
+      return state_id_response if state_id_response.present? && !state_id_response.success?
 
       client_response
     end
@@ -461,7 +481,7 @@ module Idv
     # @param [Object] client_response
     # @param [Object] doc_pii_response
     # @return [Object] latest failed fingerprints
-    def store_failed_images(client_response, doc_pii_response)
+    def store_failed_images(client_response, doc_pii_response, state_id_response)
       unless image_resubmission_check?
         return {
           front: [],
@@ -500,6 +520,14 @@ module Idv
           doc_auth_success: client_response.doc_auth_success?,
           selfie_status: client_response.selfie_status,
         )
+      elsif state_id_response && !state_id_response.success?
+        document_capture_session.store_failed_auth_data(
+          front_image_fingerprint: extra_attributes[:front_image_fingerprint],
+          back_image_fingerprint: extra_attributes[:back_image_fingerprint],
+          selfie_image_fingerprint: extra_attributes[:selfie_image_fingerprint],
+          doc_auth_success: client_response.doc_auth_success?,
+          selfie_status: client_response.selfie_status,
+        )
       end
       # retrieve updated data from session
       captured_result = document_capture_session&.load_result
@@ -512,6 +540,45 @@ module Idv
 
     def image_resubmission_check?
       IdentityConfig.store.doc_auth_check_failed_image_resubmission_enabled
+    end
+
+    def state_id_proofer
+      @state_id_proofer ||=
+        if IdentityConfig.store.proofer_mock_fallback
+          Proofing::Mock::StateIdMockClient.new
+        else
+          Proofing::Aamva::Proofer.new(
+            auth_request_timeout: IdentityConfig.store.aamva_auth_request_timeout,
+            auth_url: IdentityConfig.store.aamva_auth_url,
+            cert_enabled: IdentityConfig.store.aamva_cert_enabled,
+            private_key: IdentityConfig.store.aamva_private_key,
+            public_key: IdentityConfig.store.aamva_public_key,
+            verification_request_timeout: IdentityConfig.store.aamva_verification_request_timeout,
+            verification_url: IdentityConfig.store.aamva_verification_url,
+          )
+        end
+    end
+
+    def should_proof_state_id_with_aamva?(applicant_pii)
+      aamva_supports_state_id_jurisdiction?(applicant_pii)
+    end
+
+    def aamva_supports_state_id_jurisdiction?(applicant_pii)
+      state_id_jurisdiction = applicant_pii[:state_id_jurisdiction]
+      IdentityConfig.store.aamva_supported_jurisdictions.include?(state_id_jurisdiction)
+    end
+
+    def state_id_result(applicant_pii)
+      timer = JobHelpers::Timer.new
+      timer.time('state_id') do
+        state_id_proofer.proof(applicant_pii)
+      end.tap do |result|
+        add_sp_cost(:aamva, result.transaction_id) if result.exception.blank?
+      end
+    end
+
+    def add_sp_cost(token, transaction_id)
+      # Db::SpCost::AddSpCost.call(current_sp, token, transaction_id: transaction_id)
     end
   end
 end
