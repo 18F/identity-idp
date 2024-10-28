@@ -44,7 +44,7 @@ module DocAuth
         end
 
         def metric_name
-          'socure_doc_auth_docv'
+          'socure_id_plus_document_verification'
         end
       end
     end
