@@ -13,7 +13,7 @@ module Flow
     attr_accessor :flow
 
     def index
-      redirect_to idv_in_person_proofing_state_id_url
+      redirect_to idv_in_person_state_id_url
     end
 
     def show
@@ -175,7 +175,7 @@ module Flow
     end
 
     def redirect_url
-      redirect_to idv_in_person_proofing_state_id_url
+      redirect_to idv_in_person_state_id_url
     end
 
     def analytics_properties

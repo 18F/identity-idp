@@ -405,7 +405,8 @@ Rails.application.routes.draw do
           # sometimes underscores get messed up when linked to via SMS
           as: :capture_doc_dashes
 
-      get '/in_person_proofing/state_id' => 'in_person/state_id#show'
+      # Deprecated route - temporary redirect while state id changes are rolled out
+      get '/in_person_proofing/state_id' => redirect('verify/in_person/state_id', status: 307)
       put '/in_person_proofing/state_id' => 'in_person/state_id#update'
 
       get '/in_person' => 'in_person#index'
@@ -413,6 +414,8 @@ Rails.application.routes.draw do
           as: :in_person_ready_to_verify
       post '/in_person/usps_locations' => 'in_person/usps_locations#index'
       put '/in_person/usps_locations' => 'in_person/usps_locations#update'
+      get '/in_person/state_id' => 'in_person/state_id#show'
+      put '/in_person/state_id' => 'in_person/state_id#update'
       get '/in_person/address' => 'in_person/address#show'
       put '/in_person/address' => 'in_person/address#update'
       get '/in_person/ssn' => 'in_person/ssn#show'
