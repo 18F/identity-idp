@@ -966,6 +966,7 @@ help_text.requested_attributes.address: Adresse
 help_text.requested_attributes.all_emails: Adresses e-mail sur votre compte
 help_text.requested_attributes.birthdate: Date de naissance
 help_text.requested_attributes.change_email_link: Modifier
+help_text.requested_attributes.select_email_link: Sélectionner l'e-mail
 help_text.requested_attributes.consent_reminder_html: Vous devez consentir chaque année au partage de vos informations avec %{sp_html}.
 help_text.requested_attributes.email: Adresse e-mail
 help_text.requested_attributes.full_name: Nom complet

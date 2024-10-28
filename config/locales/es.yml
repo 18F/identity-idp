@@ -977,6 +977,7 @@ help_text.requested_attributes.address: Dirección
 help_text.requested_attributes.all_emails: Direcciones de correo electrónico en su cuenta
 help_text.requested_attributes.birthdate: Fecha de nacimiento
 help_text.requested_attributes.change_email_link: Cambiar
+help_text.requested_attributes.select_email_link: Seleccionar correo electrónico
 help_text.requested_attributes.consent_reminder_html: Debe dar su consentimiento cada año para divulgar su información a %{sp_html}.
 help_text.requested_attributes.email: Dirección de correo electrónico
 help_text.requested_attributes.full_name: Nombre completo
