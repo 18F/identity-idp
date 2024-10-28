@@ -21,7 +21,7 @@ module LexisNexisFixtures
         api_key: 'test_api_key',
         base_url: 'https://example.com',
         org_id: 'test_org_id',
-        ddp_policy: 'test_tmx_proofing_policy'
+        ddp_policy: 'test-policy',
       )
     end
 
@@ -30,11 +30,11 @@ module LexisNexisFixtures
         api_key: 'test_api_key',
         base_url: 'https://example.com',
         org_id: 'test_org_id',
-        ddp_policy: 'test_tmx_authentication_policy'
+        ddp_policy: 'test-authentication-policy',
       )
     end
 
-    def ddp_account_creation_request_json
+    def ddp_authentication_request_json
       raw = read_fixture_file_at_path('ddp/account_creation_request.json')
       JSON.parse(raw).to_json
     end

@@ -3,7 +3,7 @@
     "org_id": "test_org_id",
     "account_email": "test@example.com",
     "event_type": "ACCOUNT_CREATION",
-    "policy": "authentication-test-policy",
+    "policy": "test-authentication-policy",
     "service_type": "all",
     "session_id": "UNIQUE_SESSION_ID",
     "input_ip_address": "127.0.0.1"

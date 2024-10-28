@@ -25,12 +25,13 @@ module AccountCreation
       return threatmetrix_disabled_result unless
         FeatureManagement.account_creation_device_profiling_collecting_enabled?
       return threatmetrix_id_missing_result if threatmetrix_session_id.blank?
-      ddp_params = {}
-      ddp_params[:threatmetrix_session_id] = threatmetrix_session_id
-      ddp_params[:email] = user_email
-      ddp_params[:request_ip] = request_ip
 
-      proofer.proof(ddp_params)
+      proofer.proof(
+        threatmetrix_session_id: threatmetrix_session_id,
+        email: user_email,
+        request_ip: request_ip,
+        current_sp: current_sp,
+      )
     end
 
     def threatmetrix_disabled_result

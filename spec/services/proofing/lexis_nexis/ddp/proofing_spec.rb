@@ -22,7 +22,6 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofer do
     }
   end
 
-
   let(:authentication_applicant) do
     {
       threatmetrix_session_id: '123456',
@@ -80,15 +79,19 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofer do
             status: 200,
           )
 
-          proofing_verification_request.send_request
+        proofing_verification_request.send_request
 
         expect(request).to have_been_requested.once
       end
     end
   end
 
-  subject do
-    described_class.new(LexisNexisFixtures.example_config.to_h)
+  subject(:proofing) do
+    described_class.new(LexisNexisFixtures.example_ddp_proofing_config.to_h)
+  end
+
+  subject(:authentication) do
+    described_class.new(LexisNexisFixtures.example_ddp_authentication_config.to_h)
   end
 
   describe '#proof' do
@@ -110,10 +113,10 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofer do
     context 'when user is going through Idv' do
       context 'when the response is a full match' do
         let(:response_body) { LexisNexisFixtures.ddp_success_response_json }
-  
+
         it 'is a successful result' do
-          result = subject.proof(proofing_applicant)
-  
+          result = proofing.proof(authentication_applicant)
+
           expect(result.success?).to eq(true)
           expect(result.errors).to be_empty
           expect(result.review_status).to eq('pass')
@@ -121,42 +124,78 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofer do
           expect(result.account_lex_id).to eq('super-cool-test-lex-id')
         end
       end
-  
+
       context 'when the response raises an exception' do
         let(:response_body) { '' }
-  
+
         it 'returns an exception result' do
           error = RuntimeError.new('hi')
-  
+
           expect(NewRelic::Agent).to receive(:notice_error).with(error)
-  
+
           stub_request(
             :post,
             proofing_verification_request.url,
           ).to_raise(error)
-  
-          result = subject.proof(proofing_applicant)
-  
+
+          result = proofing.proof(proofing_applicant)
+
           expect(result.success?).to eq(false)
           expect(result.errors).to be_empty
           expect(result.exception).to eq(error)
         end
       end
-  
+
       context 'when the review status has an unexpected value' do
         let(:response_body) { LexisNexisFixtures.ddp_unexpected_review_status_response_json }
-  
+
         it 'returns an exception result' do
-          result = subject.proof(proofing_applicant)
-  
+          result = proofing.proof(proofing_applicant)
+
           expect(result.success?).to eq(false)
-          expect(result.exception.inspect).to include(LexisNexisFixtures.ddp_unexpected_review_status)
+          expect(result.exception.inspect).
+            to include(LexisNexisFixtures.ddp_unexpected_review_status)
         end
       end
     end
 
     context 'when user is going through account creation' do
+      before do
+        allow(IdentityConfig.store).to receive(:lexisnexis_authentication_threatmetrix_policy).
+          and_return('test-authentication-policy')
+      end
+      context 'when the response is a full match' do
+        let(:response_body) { LexisNexisFixtures.ddp_success_response_json }
 
+        it 'is a successful result' do
+          result = authentication.proof(authentication_applicant)
+
+          expect(result.success?).to eq(true)
+          expect(result.errors).to be_empty
+          expect(result.review_status).to eq('pass')
+        end
+      end
+
+      context 'when the response raises an exception' do
+        let(:response_body) { '' }
+
+        it 'returns an exception result' do
+          error = RuntimeError.new('hi')
+
+          expect(NewRelic::Agent).to receive(:notice_error).with(error)
+
+          stub_request(
+            :post,
+            authentication_verification_request.url,
+          ).to_raise(error)
+
+          result = authentication.proof(authentication_applicant)
+
+          expect(result.success?).to eq(false)
+          expect(result.errors).to be_empty
+          expect(result.exception).to eq(error)
+        end
+      end
     end
   end
 end
