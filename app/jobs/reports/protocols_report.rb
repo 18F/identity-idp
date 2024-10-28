@@ -8,11 +8,6 @@ module Reports
 
     attr_accessor :report_date
 
-    def initialize(report_date = nil, *args, **rest)
-      @report_date = report_date
-      super(*args, **rest)
-    end
-
     def perform(date = Time.zone.yesterday.end_of_day)
       return unless IdentityConfig.store.s3_reports_enabled
 
