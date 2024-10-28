@@ -1903,8 +1903,6 @@ user_mailer.letter_reminder_14_days.did_not_get_a_letter_html: Si no recibió es
 user_mailer.letter_reminder_14_days.finish: Termine de verificar su identidad
 user_mailer.letter_reminder_14_days.sign_in_and_request_another_letter: inicie sesión para solicitar otra carta
 user_mailer.letter_reminder_14_days.subject: Termine de verificar su identidad
-user_mailer.letter_reminder.info_html: La carta que recibirá próximamente contiene un código de verificación que nos ayudará a verificar su dirección. Para completar el proceso de verificación de identidad, inicie sesión en %{link_html} e ingrese el código de verificación.
-user_mailer.letter_reminder.subject: Enviamos una carta a la dirección de su expediente
 user_mailer.new_device_sign_in_after_2fa.authentication_methods: métodos de autenticación
 user_mailer.new_device_sign_in_after_2fa.info_p1: Su correo electrónico y contraseña de %{app_name} se usaron para iniciar sesión y hacer la autenticación en un dispositivo nuevo.
 user_mailer.new_device_sign_in_after_2fa.info_p2: Si reconoce esta actividad, no tiene que hacer nada.
@@ -1960,6 +1958,11 @@ user_mailer.suspended_reset_password.subject: No pudimos restablecer su contrase
 user_mailer.suspension_confirmed.contact_agency: Contacte con la agencia a cuyo servicio está intentando acceder.
 user_mailer.suspension_confirmed.remain_locked: Terminamos la revisión de su cuenta de %{app_name} y la cuenta permanecerá bloqueada.
 user_mailer.suspension_confirmed.subject: Su cuenta está bloqueada
+user_mailer.verify_by_mail_letter_requested.cta.sign_in: Iniciar sesión
+user_mailer.verify_by_mail_letter_requested.instructions.contact_sp: Contacte con %{friendly_name} si necesita acceder a los servicios de esa agencia antes de que llegue su carta.
+user_mailer.verify_by_mail_letter_requested.instructions.sign_in: Cuando reciba su carta, vuelva a iniciar sesión e ingrese el código de verificación.
+user_mailer.verify_by_mail_letter_requested.intro_html: 'En un plazo de <strong>5 a 10</strong> días, recibirá por correo una carta de %{app_name} en la dirección que verificamos y asociamos con usted:'
+user_mailer.verify_by_mail_letter_requested.subject: Su carta está en camino
 users.delete.actions.cancel: Volver al perfil
 users.delete.actions.delete: Eliminar cuenta
 users.delete.bullet_1: No tendrá una cuenta de %{app_name}.

@@ -281,7 +281,7 @@ RSpec.describe 'I18n' do
     )
   end
 
-  it 'has matching HTML tags' do
+  it 'has matching HTML tags across all locales' do
     i18n.data[i18n.base_locale].select_keys do |key, _node|
       if key.start_with?('i18n.transliterate.rule.') || i18n.t(key).is_a?(Array) || i18n.t(key).nil?
         next
