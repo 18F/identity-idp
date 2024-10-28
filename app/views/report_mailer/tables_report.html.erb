@@ -24,14 +24,24 @@
     <tbody>
       <% rows.each do |row| %>
         <tr>
-          <% row.each do |cell| %>
-            <td <%= cell.is_a?(Numeric) ? 'class=table-number' : nil %> >
-              <% if cell.is_a?(Float) && report.float_as_percent? %>
-                <%= number_to_percentage(cell * 100, precision: report.precision || 2) %>
-              <% else %>
-                <%= number_with_delimiter(cell) %>
-              <% end %>
-            </td>
+          <% row.each_with_index do |cell, index| %>
+            <% if index == 0 %>
+              <th scope="row" <%= cell.is_a?(Numeric) ? 'class=table-number' : nil %> >
+                <% if cell.is_a?(Float) && report.float_as_percent? %>
+                  <%= number_to_percentage(cell * 100, precision: report.precision || 2) %>
+                <% else %>
+                  <%= number_with_delimiter(cell) %>
+                <% end %>
+              </th>
+            <% else %>
+              <td <%= cell.is_a?(Numeric) ? 'class=table-number' : nil %> >
+                <% if cell.is_a?(Float) && report.float_as_percent? %>
+                  <%= number_to_percentage(cell * 100, precision: report.precision || 2) %>
+                <% else %>
+                  <%= number_with_delimiter(cell) %>
+                <% end %>
+              </td>
+            <% end %>
           <% end %>
         </tr>
       <% end %>

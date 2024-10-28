@@ -1,7 +1,13 @@
+@use 'variables/email' as *;
+
 @forward 'uswds-core';
 @forward 'usa-prose';
 @forward 'usa-table';
 @forward 'usa-alert';
+
+h1, h2, h3 {
+  color: $secondary-color;
+}
 
 .table-number {
   font-variant-numeric: tabular-nums;
@@ -13,5 +19,22 @@
     &::before {
       background-image: url('email/info.png');
     }
+  }
+}
+
+.usa-table {
+  tr th,
+  tr td {
+    border: 2px solid $secondary-color;
+  }
+
+  thead th[scope='col'] {
+    background-color: $secondary-color;
+    color: $white;
+  }
+
+  tbody th {
+    font-weight: 700;
+    background-color: $light-gray;
   }
 }
