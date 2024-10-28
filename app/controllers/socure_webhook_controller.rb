@@ -7,7 +7,6 @@ class SocureWebhookController < ApplicationController
   check_or_render_not_found -> { IdentityConfig.store.socure_enabled }
   before_action :check_token
   before_action :check_socure_event
-  # before_action :check_doc_capture_session
 
   def create
     log_webhook_receipt
