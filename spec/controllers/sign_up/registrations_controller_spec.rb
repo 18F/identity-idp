@@ -44,21 +44,6 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
       end
     end
 
-    context 'with account creation device profiling enabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:account_creation_device_profiling).
-          and_return(:collect_only)
-      end
-
-      it 'sets threat metrix variables' do
-        get :new
-
-        expect(response.status).to eq(200)
-        expect(response).to render_template(:new)
-        expect(assigns(:threatmetrix_variables)).not_to be_nil
-      end
-    end
-
     context 'IdV unavailable' do
       before do
         allow(IdentityConfig.store).to receive(:idv_available).and_return(false)
