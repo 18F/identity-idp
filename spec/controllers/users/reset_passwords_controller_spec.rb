@@ -409,7 +409,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         let(:user) { create(:user, :proofed) }
         let(:password) { user.password }
 
-        it 'logs event indicating password deactivated while password the same' do
+        it 'logs event indicating profile deactivated while password the same' do
           stub_analytics
 
           reset_password_token = user.set_reset_password_token
