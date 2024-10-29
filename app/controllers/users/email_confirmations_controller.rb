@@ -44,7 +44,11 @@ module Users
       confirm_and_notify(email_address)
       if current_user
         flash[:success] = t('devise.confirmations.confirmed')
-        redirect_to account_url
+        if user_session[:pending_completions_consent] == true
+          redirect_to sign_up_completed_url
+        else
+          redirect_to account_url
+        end
       else
         flash[:success] = t('devise.confirmations.confirmed_but_sign_in')
         redirect_to root_url

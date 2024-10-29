@@ -67,5 +67,39 @@ RSpec.describe Users::EmailConfirmationsController do
         expect(flash[:error]).to eq t('errors.messages.confirmation_invalid_token')
       end
     end
+
+    describe '#process_successful_confirmation' do
+      let(:user) { create(:user) }
+
+      before do
+        stub_sign_in(user)
+      end
+
+      it 'adds an email from the service provider consent flow' do
+        new_email = Faker::Internet.email
+
+        controller.user_session[:pending_completions_consent] = true
+
+        add_email_form = AddUserEmailForm.new
+        add_email_form.submit(user, email: new_email)
+        email_record = add_email_form.email_address_record(new_email)
+
+        get :create, params: { confirmation_token: email_record.reload.confirmation_token }
+
+        expect(response).to redirect_to(sign_up_completed_url)
+      end
+
+      it 'adds an email from the account page' do
+        new_email = Faker::Internet.email
+
+        add_email_form = AddUserEmailForm.new
+        add_email_form.submit(user, email: new_email)
+        email_record = add_email_form.email_address_record(new_email)
+
+        get :create, params: { confirmation_token: email_record.reload.confirmation_token }
+
+        expect(response).to redirect_to(account_url)
+      end
+    end
   end
 end

@@ -22,6 +22,10 @@ module Users
       result = @add_user_email_form.submit(current_user, permitted_params)
       analytics.add_email_request(**result.to_h)
 
+      if pending_completions_consent?
+        user_session[:pending_completions_consent] = true
+      end
+
       if result.success?
         process_successful_creation
       else
