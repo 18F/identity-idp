@@ -120,7 +120,7 @@ RSpec.describe SocureWebhookController do
         post :create, params: document_uploaded_webhook_body
       end
       it 'returns OK and logs an event with a correct secret key and body' do
-        expect(response).to have_http_status(:no_content)
+        expect(response).to have_http_status(:ok)
         expect(@analytics).to have_logged_event(
           :idv_doc_auth_socure_webhook_received,
           created_at: document_uploaded_webhook_body[:event][:created],

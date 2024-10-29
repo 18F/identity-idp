@@ -9,11 +9,14 @@ class SocureWebhookController < ApplicationController
   before_action :check_socure_event
 
   def create
-    log_webhook_receipt
-    process_webhook_event
-    return render json: { message: 'Secret token is valid.' }, status: :ok
-  rescue StandardError => e
-    NewRelic::Agent.notice_error(e)
+    begin
+      log_webhook_receipt
+      process_webhook_event
+    rescue StandardError => e
+      NewRelic::Agent.notice_error(e)
+    ensure
+      render json: { message: 'Secret token is valid.' }, status: :ok
+    end
   end
 
   private
@@ -80,14 +83,14 @@ class SocureWebhookController < ApplicationController
   end
 
   def increment_rate_limiter
-    if !document_capture_session.nil?
+    if document_capture_session.present?
       rate_limiter.increment!
     end
     # Logic to throw an error when no DocumentCaptureSession found will be done in ticket LG-14905
   end
 
   def document_capture_session
-    DocumentCaptureSession.find_by(
+    @document_capture_session ||= DocumentCaptureSession.find_by(
       socure_docv_transaction_token: event[:docvTransactionToken],
     )
   end
