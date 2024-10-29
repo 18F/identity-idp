@@ -350,6 +350,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
             profile_deactivated: false,
             pending_profile_invalidated: false,
             pending_profile_pending_reasons: '',
+            password_different: true,
           )
           expect(user.events.password_changed.size).to be 1
 
@@ -398,9 +399,34 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           profile_deactivated: true,
           pending_profile_invalidated: false,
           pending_profile_pending_reasons: '',
+          password_different: true,
         )
         expect(user.active_profile.present?).to eq false
         expect(response).to redirect_to new_user_session_path
+      end
+
+      context 'proofed user submits same password as current' do
+        let(:user) { create(:user, :proofed) }
+        let(:password) { user.password }
+
+        it 'logs event indicating password deactivated while password the same' do
+          stub_analytics
+
+          reset_password_token = user.set_reset_password_token
+
+          put :update, params: {
+            reset_password_form: {
+              password:,
+              password_confirmation: password,
+              reset_password_token:,
+            },
+          }
+
+          expect(@analytics).to have_logged_event(
+            'Password Reset: Password Submitted',
+            hash_including(profile_deactivated: true, password_different: false),
+          )
+        end
       end
     end
 
@@ -443,6 +469,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           profile_deactivated: false,
           pending_profile_invalidated: false,
           pending_profile_pending_reasons: '',
+          password_different: true,
         )
         expect(user.reload.confirmed?).to eq true
         expect(response).to redirect_to new_user_session_path
