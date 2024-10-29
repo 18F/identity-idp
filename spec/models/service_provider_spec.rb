@@ -130,57 +130,6 @@ RSpec.describe ServiceProvider do
     end
   end
 
-  describe '#semantic_authn_contexts_allowed?' do
-    context 'when the semantic authn contexts feature is enabled' do
-      before do
-        allow(IdentityConfig.store).
-          to receive(:feature_valid_authn_contexts_semantic_enabled).
-          and_return(true)
-      end
-
-      context 'when the service provider is in the allowed list' do
-        before do
-          allow(IdentityConfig.store).
-            to receive(:allowed_valid_authn_contexts_semantic_providers).
-            and_return([service_provider.issuer])
-        end
-
-        it 'allows the service provider to use semantic ACRs' do
-          expect(service_provider.semantic_authn_contexts_allowed?).to be(true)
-        end
-      end
-
-      context 'when the service provider is not in the allowed list' do
-        before do
-          allow(IdentityConfig.store).to receive(:allowed_valid_authn_contexts_semantic_providers).
-            and_return([])
-        end
-
-        it 'does not allow the service provider to use semantic ACRs' do
-          expect(service_provider.semantic_authn_contexts_allowed?).to be(false)
-        end
-      end
-    end
-
-    context 'when the semantic ACRs feature is disabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:feature_valid_authn_contexts_semantic_enabled).
-          and_return(false)
-      end
-
-      context 'when the service provider is in the allowed list' do
-        before do
-          allow(IdentityConfig.store).to receive(:allowed_valid_authn_contexts_semantic_providers).
-            and_return([service_provider.issuer])
-        end
-
-        it 'does not allow the service provider to use semantic ACRs' do
-          expect(service_provider.semantic_authn_contexts_allowed?).to be(false)
-        end
-      end
-    end
-  end
-
   describe '#ssl_certs' do
     context 'with an empty string plural cert' do
       let(:service_provider) { build(:service_provider, certs: ['']) }

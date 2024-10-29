@@ -83,11 +83,6 @@ class ServiceProvider < ApplicationRecord
       IdentityConfig.store.allowed_biometric_ial_providers.include?(issuer)
   end
 
-  def semantic_authn_contexts_allowed?
-    IdentityConfig.store.feature_valid_authn_contexts_semantic_enabled &&
-      IdentityConfig.store.allowed_valid_authn_contexts_semantic_providers.include?(issuer)
-  end
-
   private
 
   # @return [String,nil]

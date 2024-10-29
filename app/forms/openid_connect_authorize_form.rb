@@ -312,8 +312,7 @@ class OpenidConnectAuthorizeForm
   def validate_privileges
     if (identity_proofing_requested? && !identity_proofing_service_provider?) ||
        (ialmax_requested? && !ialmax_allowed_for_sp?) ||
-       (facial_match_ial_requested? && !service_provider.facial_match_ial_allowed?) ||
-       (semantic_authn_contexts_requested? && !service_provider.semantic_authn_contexts_allowed?)
+       (facial_match_ial_requested? && !service_provider.facial_match_ial_allowed?)
       errors.add(
         :acr_values, t('openid_connect.authorization.errors.no_auth'),
         type: :no_auth
@@ -361,9 +360,5 @@ class OpenidConnectAuthorizeForm
 
   def verified_within_allowed?
     IdentityConfig.store.allowed_verified_within_providers.include?(client_id)
-  end
-
-  def semantic_authn_contexts_requested?
-    Saml::Idp::Constants::SEMANTIC_ACRS.intersect?(acr_values)
   end
 end
