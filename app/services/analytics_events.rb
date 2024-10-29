@@ -11,16 +11,43 @@
 #                 ||     ||
 
 module AnalyticsEvents
+
   # @param [Boolean] success Check whether threatmetrix succeeded properly.
   # @param [String] transaction_id Vendor-specific transaction ID for the request.
+  # @param [String, nil] client Client user was directed from when creating account
+  # @param [array<String>, nil] errors error response from api call
+  # @param [String, nil] exception Error exception from api call
+  # @param [Boolean] timed_out set whether api call timed out
+  # @param [String] review_status TMX decision on the user
+  # @param [String] account_lex_id LexID associated with the response.
+  # @param [String] session_id Session ID associated with response
+  # @param [Hash] response_body total response body for api call
+  # Result when threatmetrix is completed for account creation and result
   def account_creation_tmx_result(
+    client:,
     success:,
-    transaction_id:, **extra
+    errors:,
+    exception: ,
+    timed_out: ,
+    transaction_id:,
+    review_status:,
+    account_lex_id:,
+    session_id:,
+    response_body:,
+    **extra
   )
     track_event(
       :account_creation_tmx_result,
+      client:,
       success:,
+      errors:,
+      exception: ,
+      timed_out: ,
       transaction_id:,
+      review_status:,
+      account_lex_id:,
+      session_id:,
+      response_body:,
       **extra,
     )
   end
@@ -6771,7 +6798,6 @@ module AnalyticsEvents
   # reason for the consent screen being shown
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation
   # @param [Array] sp_session_requested_attributes Attributes requested by the service provider
-  # @param [Hash] device_profiling_result Used to log profiling result if existing
   def user_registration_agency_handoff_page_visit(
       ial2:,
       service_provider_name:,
@@ -6780,7 +6806,6 @@ module AnalyticsEvents
       in_account_creation_flow:,
       sp_session_requested_attributes:,
       ialmax: nil,
-      device_profiling_result: nil,
       **extra
     )
     track_event(
@@ -6792,7 +6817,6 @@ module AnalyticsEvents
       needs_completion_screen_reason:,
       in_account_creation_flow:,
       sp_session_requested_attributes:,
-      device_profiling_result:,
       **extra,
     )
   end
@@ -6819,6 +6843,7 @@ module AnalyticsEvents
   # @param [String, nil] disposable_email_domain Disposable email domain used for registration
   # @param [String, nil] in_person_proofing_status In person proofing status
   # @param [String, nil] doc_auth_result The doc auth result
+  # @param [Hash] device_profiling_result Used to log profiling result if existing
   def user_registration_complete(
     ial2:,
     service_provider_name:,
