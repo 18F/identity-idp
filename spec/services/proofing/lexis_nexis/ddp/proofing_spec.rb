@@ -115,7 +115,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofer do
         let(:response_body) { LexisNexisFixtures.ddp_success_response_json }
 
         it 'is a successful result' do
-          result = proofing.proof(authentication_applicant)
+          result = proofing.proof(proofing_applicant)
 
           expect(result.success?).to eq(true)
           expect(result.errors).to be_empty
