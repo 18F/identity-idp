@@ -57,7 +57,7 @@ RSpec.describe ThreatMetrixHelper do
       it 'should return mock javascript config' do
         iframe_sources = threatmetrix_iframe_url(session_id)
         expect(iframe_sources).
-          to eq(['http://www.example.com/test/device_profiling?org_id=test_id&session_id=1234'])
+          to eq('http://www.example.com/test/device_profiling?org_id=test_id&session_id=1234')
       end
     end
 
@@ -70,7 +70,7 @@ RSpec.describe ThreatMetrixHelper do
       it 'should return mock config source' do
         iframe_sources = threatmetrix_iframe_url(session_id)
         expect(iframe_sources).
-          to eq(['https://h.online-metrix.net/fp/tags?org_id=test_id&session_id=1234'])
+          to eq('https://h.online-metrix.net/fp/tags?org_id=test_id&session_id=1234')
       end
     end
   end
