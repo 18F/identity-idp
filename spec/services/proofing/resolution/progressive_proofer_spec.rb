@@ -96,16 +96,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     instance_double(Proofing::Resolution::Result, success?: true, errors: nil)
   end
 
-  def enable_threatmetrix
-    allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?).
-      and_return(true)
-  end
-
-  def disable_threatmetrix
-    allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?).
-      and_return(false)
-  end
-
   def block_real_instant_verify_requests
     allow(Proofing::LexisNexis::InstantVerify::VerificationRequest).to receive(:new)
   end
