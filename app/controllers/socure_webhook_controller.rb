@@ -11,7 +11,7 @@ class SocureWebhookController < ApplicationController
   def create
     log_webhook_receipt
     process_webhook_event
-    render json: { message: 'Secret token is valid.' }
+    return render json: { message: 'Secret token is valid.' }, status: :ok
   rescue StandardError => e
     NewRelic::Agent.notice_error(e)
   end
@@ -19,8 +19,7 @@ class SocureWebhookController < ApplicationController
   private
 
   def fetch_results
-    docv_transaction_token = socure_params.dig(:event, :docVTransactionToken)
-    dcs = DocumentCaptureSession.find_by(socure_docv_transaction_token: docv_transaction_token)
+    dcs = document_capture_session
     raise 'DocumentCaptureSession not found' if dcs.blank?
 
     SocureDocvResultsJob.perform_later(document_capture_session_uuid: dcs.uuid)
@@ -63,19 +62,17 @@ class SocureWebhookController < ApplicationController
   end
 
   def log_webhook_receipt
-    @event = socure_params[:event]
-
     analytics.idv_doc_auth_socure_webhook_received(
-      created_at: @event[:created],
-      customer_user_id: @event[:customerUserId],
-      event_type: @event[:eventType],
-      reference_id: @event[:referenceId],
-      user_id: @event[:customerUserId],
+      created_at: event[:created],
+      customer_user_id: event[:customerUserId],
+      event_type: event[:eventType],
+      reference_id: event[:referenceId],
+      user_id: event[:customerUserId],
     )
   end
 
   def process_webhook_event
-    case @event[:eventType]
+    case event[:eventType]
     when 'DOCUMENTS_UPLOADED'
       increment_rate_limiter
       fetch_results
@@ -91,13 +88,12 @@ class SocureWebhookController < ApplicationController
 
   def document_capture_session
     DocumentCaptureSession.find_by(
-      user: @event[:customerUserId],
-      socure_docv_transaction_token: @event[:docvTransactionToken],
+      socure_docv_transaction_token: event[:docvTransactionToken],
     )
   end
 
   def event
-    socure_params[:event]
+    @event ||= socure_params[:event]
   end
 
   def rate_limiter

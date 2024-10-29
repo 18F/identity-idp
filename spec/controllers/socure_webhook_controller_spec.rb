@@ -11,7 +11,6 @@ RSpec.describe SocureWebhookController do
         dcs.socure_docv_transaction_token = socure_docv_transaction_token
       end
     end
-    
     let(:rate_limiter) { RateLimiter.new(rate_limit_type: :idv_doc_auth, user: user) }
     let(:socure_secret_key) { 'this-is-a-secret' }
     let(:socure_secret_key_queue) { ['this-is-an-old-secret', 'this-is-an-older-secret'] }
@@ -40,7 +39,6 @@ RSpec.describe SocureWebhookController do
         reason: 'DOCUMENTS_UPLOADED',
         event: {
           created: '2020-01-01T00:00:00Z',
-          customerUserId: user.id,
           docvTransactionToken: socure_docv_transaction_token,
           eventType: 'DOCUMENTS_UPLOADED',
           message: 'Documents Upload Successful',
@@ -107,8 +105,10 @@ RSpec.describe SocureWebhookController do
     context 'DOCUMENTS_UPLOADED webhook' do
       before do
         allow(DocumentCaptureSession).to receive(:find_by).with(
-          { user_id: user.id.to_s,
-            socure_docv_transaction_token: socure_docv_transaction_token },
+          { socure_docv_transaction_token: socure_docv_transaction_token },
+        ).and_return(document_capture_session)
+        allow(DocumentCaptureSession).to receive(:find_by).with(
+          { uuid: document_capture_session.uuid },
         ).and_return(document_capture_session)
         allow(RateLimiter).to receive(:new).with(
           {
@@ -120,14 +120,12 @@ RSpec.describe SocureWebhookController do
         post :create, params: document_uploaded_webhook_body
       end
       it 'returns OK and logs an event with a correct secret key and body' do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:no_content)
         expect(@analytics).to have_logged_event(
           :idv_doc_auth_socure_webhook_received,
           created_at: document_uploaded_webhook_body[:event][:created],
-          customer_user_id: document_uploaded_webhook_body[:event][:customerUserId].to_s,
           event_type: document_uploaded_webhook_body[:event][:eventType],
           reference_id: document_uploaded_webhook_body[:event][:referenceId].to_s,
-          user_id: document_uploaded_webhook_body[:event][:customerUserId].to_s,
         )
       end
       it 'increments rate limiter of correct user' do
