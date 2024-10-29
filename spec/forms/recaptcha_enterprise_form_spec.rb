@@ -4,7 +4,7 @@ RSpec.describe RecaptchaEnterpriseForm do
   let(:score_threshold) { 0.2 }
   let(:analytics) { FakeAnalytics.new }
   let(:extra_analytics_properties) { {} }
-  let(:action) { 'example_action' }
+  let(:recaptcha_action) { 'example_action' }
   let(:recaptcha_enterprise_api_key) { 'recaptcha_enterprise_api_key' }
   let(:recaptcha_enterprise_project_id) { 'project_id' }
   let(:recaptcha_site_key) { 'recaptcha_site_key' }
@@ -19,7 +19,7 @@ RSpec.describe RecaptchaEnterpriseForm do
 
   subject(:form) do
     described_class.new(
-      recaptcha_action: action,
+      recaptcha_action:,
       score_threshold:,
       analytics:,
       extra_analytics_properties:,
@@ -121,11 +121,11 @@ RSpec.describe RecaptchaEnterpriseForm do
       before do
         stub_recaptcha_response(
           body: {
-            tokenProperties: { valid: false, action:, invalidReason: 'EXPIRED' },
+            tokenProperties: { valid: false, action: recaptcha_action, invalidReason: 'EXPIRED' },
             event: {},
             name:,
           },
-          action:,
+          action: recaptcha_action,
           token:,
         )
       end
@@ -155,6 +155,7 @@ RSpec.describe RecaptchaEnterpriseForm do
           evaluated_as_valid: false,
           score_threshold: score_threshold,
           form_class: 'RecaptchaEnterpriseForm',
+          recaptcha_action:,
         )
       end
     end
@@ -167,7 +168,7 @@ RSpec.describe RecaptchaEnterpriseForm do
           body: {
             error: { code: 400, status: 'INVALID_ARGUMENT' },
           },
-          action:,
+          action: recaptcha_action,
           token:,
         )
       end
@@ -194,6 +195,7 @@ RSpec.describe RecaptchaEnterpriseForm do
           evaluated_as_valid: true,
           score_threshold: score_threshold,
           form_class: 'RecaptchaEnterpriseForm',
+          recaptcha_action:,
         )
       end
     end
@@ -221,6 +223,7 @@ RSpec.describe RecaptchaEnterpriseForm do
           score_threshold: score_threshold,
           form_class: 'RecaptchaEnterpriseForm',
           exception_class: 'Faraday::ConnectionFailed',
+          recaptcha_action:,
         )
       end
     end
@@ -233,12 +236,12 @@ RSpec.describe RecaptchaEnterpriseForm do
       before do
         stub_recaptcha_response(
           body: {
-            tokenProperties: { valid: true, action: },
+            tokenProperties: { valid: true, action: recaptcha_action },
             riskAnalysis: { score:, reasons: ['AUTOMATION'] },
             event: {},
             name:,
           },
-          action:,
+          action: recaptcha_action,
           token:,
         )
       end
@@ -268,6 +271,7 @@ RSpec.describe RecaptchaEnterpriseForm do
           evaluated_as_valid: false,
           score_threshold: score_threshold,
           form_class: 'RecaptchaEnterpriseForm',
+          recaptcha_action:,
         )
       end
 
@@ -275,12 +279,12 @@ RSpec.describe RecaptchaEnterpriseForm do
         before do
           stub_recaptcha_response(
             body: {
-              tokenProperties: { valid: true, action: },
+              tokenProperties: { valid: true, action: recaptcha_action },
               riskAnalysis: { score:, reasons: ['LOW_CONFIDENCE_SCORE'] },
               event: {},
               name:,
             },
-            action:,
+            action: recaptcha_action,
             token:,
           )
         end
@@ -307,6 +311,7 @@ RSpec.describe RecaptchaEnterpriseForm do
             evaluated_as_valid: true,
             score_threshold: score_threshold,
             form_class: 'RecaptchaEnterpriseForm',
+            recaptcha_action:,
           )
         end
       end
@@ -320,12 +325,12 @@ RSpec.describe RecaptchaEnterpriseForm do
       around do |example|
         stubbed_request = stub_recaptcha_response(
           body: {
-            tokenProperties: { valid: true, action: },
+            tokenProperties: { valid: true, action: recaptcha_action },
             riskAnalysis: { score:, reasons: ['LOW_CONFIDENCE'] },
             event: {},
             name:,
           },
-          action:,
+          action: recaptcha_action,
           token:,
         )
         example.run
@@ -354,6 +359,7 @@ RSpec.describe RecaptchaEnterpriseForm do
           evaluated_as_valid: true,
           score_threshold: score_threshold,
           form_class: 'RecaptchaEnterpriseForm',
+          recaptcha_action:,
         )
       end
 
@@ -368,7 +374,7 @@ RSpec.describe RecaptchaEnterpriseForm do
               event: {},
               name:,
             },
-            action:,
+            action: recaptcha_action,
             token:,
           )
         end
@@ -402,6 +408,7 @@ RSpec.describe RecaptchaEnterpriseForm do
             evaluated_as_valid: true,
             score_threshold: score_threshold,
             form_class: 'RecaptchaEnterpriseForm',
+            recaptcha_action:,
             extra: true,
           )
         end

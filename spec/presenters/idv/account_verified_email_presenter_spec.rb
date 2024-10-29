@@ -12,7 +12,7 @@ RSpec.describe Idv::AccountVerifiedEmailPresenter do
     )
   end
 
-  subject(:presenter) { described_class.new(profile:) }
+  subject(:presenter) { described_class.new(profile:, url_options: {}) }
 
   context 'when there is no associated service provider' do
     let(:service_provider) { nil }

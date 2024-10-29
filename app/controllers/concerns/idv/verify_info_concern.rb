@@ -195,11 +195,10 @@ module Idv
             [:proofing_results, :context, :stages, :resolution, :errors, :ssn],
             [:proofing_results, :context, :stages, :residential_address, :errors, :ssn],
             [:proofing_results, :context, :stages, :threatmetrix, :response_body, :first_name],
-            [:same_address_as_id],
             [:proofing_results, :context, :stages, :state_id, :state_id_jurisdiction],
             [:proofing_results, :biographical_info, :identity_doc_address_state],
             [:proofing_results, :biographical_info, :state_id_jurisdiction],
-            [:proofing_results, :biographical_info, :same_address_as_id],
+            [:proofing_results, :biographical_info],
           ],
         },
       )
@@ -291,7 +290,12 @@ module Idv
       FormResponse.new(
         success: result[:success],
         errors: result[:errors],
-        extra: extra.merge(proofing_results: result.except(:errors, :success)),
+        extra: extra.merge(
+          proofing_results: {
+            **result.except(:errors, :success),
+            biographical_info: result[:biographical_info]&.except(:same_address_as_id),
+          },
+        ),
       )
     end
 

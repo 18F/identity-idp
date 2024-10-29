@@ -90,11 +90,21 @@ RSpec.describe Reporting::ProtocolsReport do
       },
     ]
 
+    id_token_hint_query_response = [
+      {
+        'issuer' => 'Issuer3',
+      },
+      {
+        'issuer' => 'Issuer4',
+      },
+    ]
+
     stub_multiple_cloudwatch_logs(
       protocol_query_response,
       saml_signature_query_response,
       loa_issuers_query_response,
       aal3_issuers_query_response,
+      id_token_hint_query_response,
       facial_match_issuers_query_response,
     )
   end
@@ -235,6 +245,11 @@ RSpec.describe Reporting::ProtocolsReport do
           'AAL3',
           string_or_num(strings, 2),
           'Issuer1, Issuer3',
+        ],
+        [
+          'id_token_hint',
+          string_or_num(strings, 2),
+          'Issuer3, Issuer4',
         ],
       ],
       [

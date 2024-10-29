@@ -5,9 +5,10 @@ RSpec.describe RecaptchaForm do
   let(:analytics) { FakeAnalytics.new }
   let(:extra_analytics_properties) { {} }
   let(:recaptcha_secret_key) { 'recaptcha_secret_key' }
+  let(:recaptcha_action) { 'example_action' }
 
   subject(:form) do
-    RecaptchaForm.new(score_threshold:, analytics:, extra_analytics_properties:)
+    RecaptchaForm.new(score_threshold:, recaptcha_action:, analytics:, extra_analytics_properties:)
   end
 
   before do
@@ -129,6 +130,7 @@ RSpec.describe RecaptchaForm do
           evaluated_as_valid: false,
           score_threshold: score_threshold,
           form_class: 'RecaptchaForm',
+          recaptcha_action:,
         )
       end
 
@@ -163,6 +165,7 @@ RSpec.describe RecaptchaForm do
               evaluated_as_valid: true,
               score_threshold: score_threshold,
               form_class: 'RecaptchaForm',
+              recaptcha_action:,
             )
           end
         end
@@ -197,6 +200,7 @@ RSpec.describe RecaptchaForm do
               evaluated_as_valid: true,
               score_threshold: score_threshold,
               form_class: 'RecaptchaForm',
+              recaptcha_action:,
             )
           end
         end
@@ -226,6 +230,7 @@ RSpec.describe RecaptchaForm do
           score_threshold: score_threshold,
           form_class: 'RecaptchaForm',
           exception_class: 'Faraday::ConnectionFailed',
+          recaptcha_action:,
         )
       end
     end
@@ -263,6 +268,7 @@ RSpec.describe RecaptchaForm do
           evaluated_as_valid: false,
           score_threshold: score_threshold,
           form_class: 'RecaptchaForm',
+          recaptcha_action:,
         )
       end
     end
@@ -299,6 +305,7 @@ RSpec.describe RecaptchaForm do
           evaluated_as_valid: true,
           score_threshold: score_threshold,
           form_class: 'RecaptchaForm',
+          recaptcha_action:,
         )
       end
 
@@ -320,6 +327,7 @@ RSpec.describe RecaptchaForm do
             evaluated_as_valid: true,
             score_threshold: score_threshold,
             form_class: 'RecaptchaForm',
+            recaptcha_action:,
             extra: true,
           )
         end
