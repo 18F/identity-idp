@@ -47,6 +47,8 @@ class ResetPasswordForm
   end
 
   def update_user
+    @password_different = !user.valid_password?(password)
+
     attributes = { password: password }
 
     ActiveRecord::Base.transaction do
@@ -87,6 +89,7 @@ class ResetPasswordForm
     {
       user_id: user.uuid,
       profile_deactivated: active_profile.present?,
+      password_different: @password_different,
       pending_profile_invalidated: pending_profile.present?,
       pending_profile_pending_reasons: (pending_profile&.pending_reasons || [])&.join(','),
     }
