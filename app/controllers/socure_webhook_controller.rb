@@ -83,19 +83,26 @@ class SocureWebhookController < ApplicationController
   end
 
   def increment_rate_limiter
-    @document_capture_session = DocumentCaptureSession.find_by(
-      user_id: @event[:customerUserId],
-      socure_docv_transaction_token: @event[:docvTransactionToken],
-    )
-    if !@document_capture_session.nil?
+    if !document_capture_session.nil?
       rate_limiter.increment!
     end
     # Logic to throw an error when no DocumentCaptureSession found will be done in ticket LG-14905
   end
 
+  def document_capture_session
+    DocumentCaptureSession.find_by(
+      user: @event[:customerUserId],
+      socure_docv_transaction_token: @event[:docvTransactionToken],
+    )
+  end
+
+  def event
+    socure_params[:event]
+  end
+
   def rate_limiter
     @rate_limiter ||= RateLimiter.new(
-      user: @document_capture_session.user,
+      user: document_capture_session.user,
       rate_limit_type: :idv_doc_auth,
     )
   end

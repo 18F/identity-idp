@@ -7,13 +7,11 @@ RSpec.describe SocureWebhookController do
     let(:user) { create(:user) }
     let(:socure_docv_transaction_token) { 'dummy_docv_transaction_token' }
     let(:document_capture_session) do
-      DocumentCaptureSession.create(
-        user_id: user.id,
-        user: user,
-        requested_at: Time.zone.now,
-        socure_docv_transaction_token: socure_docv_transaction_token,
-      )
+      DocumentCaptureSession.create(user:).tap do |dcs|
+        dcs.socure_docv_transaction_token = socure_docv_transaction_token
+      end
     end
+    
     let(:rate_limiter) { RateLimiter.new(rate_limit_type: :idv_doc_auth, user: user) }
     let(:socure_secret_key) { 'this-is-a-secret' }
     let(:socure_secret_key_queue) { ['this-is-an-old-secret', 'this-is-an-older-secret'] }
