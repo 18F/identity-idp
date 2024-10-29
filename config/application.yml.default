@@ -501,9 +501,9 @@ production:
   disable_email_sending: false
   disable_logout_get_request: false
   email_registrations_per_ip_track_only_mode: true
-  facial_match_general_availability_enabled: false
   enable_test_routes: false
   enable_usps_verification: false
+  facial_match_general_availability_enabled: false
   feature_select_email_to_share_enabled: false
   feature_valid_authn_contexts_semantic_enabled: false
   idv_sp_required: true
