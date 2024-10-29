@@ -102,39 +102,6 @@ RSpec.describe SocureWebhookController do
       end
     end
 
-    context 'DOCUMENTS_UPLOADED webhook' do
-      before do
-        allow(DocumentCaptureSession).to receive(:find_by).with(
-          { socure_docv_transaction_token: socure_docv_transaction_token },
-        ).and_return(document_capture_session)
-        allow(DocumentCaptureSession).to receive(:find_by).with(
-          { uuid: document_capture_session.uuid },
-        ).and_return(document_capture_session)
-        allow(RateLimiter).to receive(:new).with(
-          {
-            user: user,
-            rate_limit_type: :idv_doc_auth,
-          },
-        ).and_return(rate_limiter)
-        request.headers['Authorization'] = socure_secret_key
-        post :create, params: document_uploaded_webhook_body
-      end
-      it 'returns OK and logs an event with a correct secret key and body' do
-        expect(response).to have_http_status(:ok)
-        expect(@analytics).to have_logged_event(
-          :idv_doc_auth_socure_webhook_received,
-          created_at: document_uploaded_webhook_body[:event][:created],
-          event_type: document_uploaded_webhook_body[:event][:eventType],
-          reference_id: document_uploaded_webhook_body[:event][:referenceId].to_s,
-        )
-      end
-      it 'increments rate limiter of correct user' do
-        expect(rate_limiter.attempts).to eq 1
-        post :create, params: document_uploaded_webhook_body
-        expect(rate_limiter.attempts).to eq 2
-      end
-    end
-
     context 'when DOCUMENTS_UPLOADED event received' do
       let(:webhook_body) do
         {
@@ -155,6 +122,18 @@ RSpec.describe SocureWebhookController do
         }
       end
 
+      it 'returns OK and logs an event with a correct secret key and body' do
+        request.headers['Authorization'] = socure_secret_key
+        post :create, params: document_uploaded_webhook_body
+        expect(response).to have_http_status(:ok)
+        expect(@analytics).to have_logged_event(
+          :idv_doc_auth_socure_webhook_received,
+          created_at: document_uploaded_webhook_body[:event][:created],
+          event_type: document_uploaded_webhook_body[:event][:eventType],
+          reference_id: document_uploaded_webhook_body[:event][:referenceId].to_s,
+        )
+      end
+
       context 'when document capture session exists' do
         let(:user) { create(:user) }
         let(:document_capture_session) do
@@ -164,13 +143,26 @@ RSpec.describe SocureWebhookController do
         end
 
         before do
+          request.headers['Authorization'] = socure_secret_key
           allow(DocumentCaptureSession).to receive(:find_by).
             and_return(document_capture_session)
           allow(SocureDocvResultsJob).to receive(:perform_later)
+          allow(RateLimiter).to receive(:new).with(
+            {
+              user: user,
+              rate_limit_type: :idv_doc_auth,
+            },
+          ).and_return(rate_limiter)
+        end
+
+        it 'increments rate limiter of correct user' do
+          post :create, params: document_uploaded_webhook_body
+          expect(rate_limiter.attempts).to eq 1
+          post :create, params: document_uploaded_webhook_body
+          expect(rate_limiter.attempts).to eq 2
         end
 
         it 'enqueues a SocureDocvResultsJob' do
-          request.headers['Authorization'] = socure_secret_key
           post :create, params: webhook_body
 
           expect(SocureDocvResultsJob).to have_received(:perform_later).
