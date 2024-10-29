@@ -33,6 +33,7 @@ RSpec.describe SocureWebhookController do
         and_return(socure_secret_key_queue)
       allow(IdentityConfig.store).to receive(:socure_enabled).
         and_return(socure_enabled)
+
       stub_analytics
     end
 
@@ -78,8 +79,66 @@ RSpec.describe SocureWebhookController do
       expect(response).to have_http_status(:bad_request)
     end
 
+    context 'when DOCUMENTS_UPLOADED event received' do
+      let(:webhook_body) do
+        {
+          id: 'a8202f22-7331-483b-a76a-546f68da062d',
+          origId: '45ac9531-60ae-4bc7-805e-f7823e4e5545',
+          eventGroup: 'DocvNotification',
+          reason: 'DOCUMENTS_UPLOADED',
+          environmentName: 'Production',
+          event: {
+            created: '2024-08-07T21:18:19.949Z',
+            customerUserId: '111-222-333',
+            docVTransactionToken: '45ac9531-60ae-4bc7-805e-f7823e4e5545',
+            eventType: 'DOCUMENTS_UPLOADED',
+            message: 'Documents Upload Successful',
+            referenceId: '45ac9531-60ae-4bc7-805e-f7823e4e5545',
+            userId: '444-555-666',
+          },
+        }
+      end
+
+      context 'when document capture session exists' do
+        let(:user) { create(:user) }
+        let(:document_capture_session) do
+          DocumentCaptureSession.create(user:).tap do |dcs|
+            dcs.socure_docv_transaction_token = '45ac9531-60ae-4bc7-805e-f7823e4e5545'
+          end
+        end
+
+        before do
+          allow(DocumentCaptureSession).to receive(:find_by).
+            and_return(document_capture_session)
+          allow(SocureDocvResultsJob).to receive(:perform_later)
+        end
+
+        it 'enqueues a SocureDocvResultsJob' do
+          request.headers['Authorization'] = socure_secret_key
+          post :create, params: webhook_body
+
+          expect(SocureDocvResultsJob).to have_received(:perform_later).
+            with(document_capture_session_uuid: document_capture_session.uuid)
+        end
+      end
+
+      context 'when document capture session does not exist' do
+        before do
+          allow(NewRelic::Agent).to receive(:notice_error)
+        end
+
+        it 'logs an error with NewRelic' do
+          request.headers['Authorization'] = socure_secret_key_queue.last
+          post :create, params: webhook_body
+
+          expect(NewRelic::Agent).to have_received(:notice_error)
+        end
+      end
+    end
+
     context 'when socure webhook disabled' do
       let(:socure_enabled) { false }
+
       it 'the webhook route does not exist' do
         request.headers['Authorization'] = socure_secret_key
         post :create, params: webhook_body
