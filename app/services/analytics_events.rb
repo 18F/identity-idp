@@ -11,7 +11,6 @@
 #                 ||     ||
 
 module AnalyticsEvents
-
   # @param [Boolean] success Check whether threatmetrix succeeded properly.
   # @param [String] transaction_id Vendor-specific transaction ID for the request.
   # @param [String, nil] client Client user was directed from when creating account
@@ -27,8 +26,8 @@ module AnalyticsEvents
     client:,
     success:,
     errors:,
-    exception: ,
-    timed_out: ,
+    exception:,
+    timed_out:,
     transaction_id:,
     review_status:,
     account_lex_id:,
@@ -41,8 +40,8 @@ module AnalyticsEvents
       client:,
       success:,
       errors:,
-      exception: ,
-      timed_out: ,
+      exception:,
+      timed_out:,
       transaction_id:,
       review_status:,
       account_lex_id:,
