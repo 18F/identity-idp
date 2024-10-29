@@ -45,7 +45,7 @@ module Users
       if current_user
         flash[:success] = t('devise.confirmations.confirmed')
         if user_session[:pending_completions_consent] == true
-          redirect_to sign_up_completed_url
+          redirect_to sign_up_select_email_url
         else
           redirect_to account_url
         end

@@ -86,7 +86,7 @@ RSpec.describe Users::EmailConfirmationsController do
 
         get :create, params: { confirmation_token: email_record.reload.confirmation_token }
 
-        expect(response).to redirect_to(sign_up_completed_url)
+        expect(response).to redirect_to(sign_up_select_email_url)
       end
 
       it 'adds an email from the account page' do
