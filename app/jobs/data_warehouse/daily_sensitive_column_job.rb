@@ -40,6 +40,10 @@ module DataWarehouse
       end
     end
 
+    def bucket_name
+      IdentityConfig.store.s3_idp_internal_dw_tasks
+    end
+
     def dasherize_keys(columns)
       columns.each do |column|
         column.deep_transform_keys! { |key| key.to_s.dasherize }
