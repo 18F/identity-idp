@@ -137,7 +137,9 @@ module Users
           auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM,
         )
         Funnel::Registration::AddMfa.call(
-          current_user.id, 'webauthn_platform', analytics,
+          current_user.id,
+          'webauthn_platform',
+          analytics,
           threatmetrix_attrs
         )
         flash[:success] = t('notices.webauthn_platform_configured')
@@ -146,8 +148,10 @@ module Users
           auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN,
         )
         Funnel::Registration::AddMfa.call(
-          current_user.id, 'webauthn', analytics,
-          threatmetrix_attrs
+          current_user.id,
+          'webauthn',
+          analytics,
+          threatmetrix_attrs,
         )
         flash[:success] = t('notices.webauthn_configured')
       end

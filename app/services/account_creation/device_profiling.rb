@@ -5,18 +5,15 @@ module AccountCreation
     attr_reader :request_ip,
                 :threatmetrix_session_id,
                 :user_email,
-                :current_sp,
                 :device_profile_result
     def proof(
       request_ip:,
       threatmetrix_session_id:,
       user_email:,
-      current_sp: nil
     )
       @request_ip = request_ip
       @threatmetrix_session_id = threatmetrix_session_id
       @user_email = user_email
-      @current_sp = current_sp
 
       @device_profile_result = device_profile
     end
@@ -30,7 +27,6 @@ module AccountCreation
         threatmetrix_session_id: threatmetrix_session_id,
         email: user_email,
         request_ip: request_ip,
-        current_sp: current_sp,
       )
     end
 

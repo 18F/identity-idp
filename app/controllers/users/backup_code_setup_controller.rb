@@ -98,7 +98,9 @@ module Users
         in_account_creation_flow: in_account_creation_flow?,
       )
       Funnel::Registration::AddMfa.call(
-        current_user.id, 'backup_codes', analytics,
+        current_user.id,
+        'backup_codes',
+        analytics,
         threatmetrix_attrs
       )
     end
