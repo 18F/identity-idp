@@ -7,13 +7,13 @@
   <% header, *rows = report.table %>
   <%# Allow nil title if a subtitle is set %>
   <% if report.title && report.title != report.subtitle %>
-    <h2><%= report.title %></h2>
+    <h2 class="report-title"><%= report.title %></h2>
   <% end %>
   <% if report.subtitle %>
-    <h3><%= report.subtitle %></h3>
+    <h3 class="report-subtitle"><%= report.subtitle %></h3>
   <% end %>
 
-  <table class="usa-table">
+  <table class="usa-table report-table">
     <thead>
       <tr>
         <% header.each do |head| %>
@@ -24,24 +24,22 @@
     <tbody>
       <% rows.each do |row| %>
         <tr>
-          <% row.each_with_index do |cell, index| %>
-            <% if index == 0 %>
-              <th scope="row" <%= cell.is_a?(Numeric) ? 'class=table-number' : nil %> >
-                <% if cell.is_a?(Float) && report.float_as_percent? %>
-                  <%= number_to_percentage(cell * 100, precision: report.precision || 2) %>
-                <% else %>
-                  <%= number_with_delimiter(cell) %>
-                <% end %>
-              </th>
+          <% first, *rest = row %>
+          <th scope="row" <%= first.is_a?(Numeric) ? 'class=table-number' : nil %> >
+            <% if first.is_a?(Float) && report.float_as_percent? %>
+              <%= number_to_percentage(first * 100, precision: report.precision || 2) %>
             <% else %>
-              <td <%= cell.is_a?(Numeric) ? 'class=table-number' : nil %> >
-                <% if cell.is_a?(Float) && report.float_as_percent? %>
-                  <%= number_to_percentage(cell * 100, precision: report.precision || 2) %>
-                <% else %>
-                  <%= number_with_delimiter(cell) %>
-                <% end %>
-              </td>
+              <%= number_with_delimiter(first) %>
             <% end %>
+          </th>
+          <% rest.each do |cell| %>
+            <td <%= cell.is_a?(Numeric) ? 'class=table-number' : nil %> >
+              <% if cell.is_a?(Float) && report.float_as_percent? %>
+                <%= number_to_percentage(cell * 100, precision: report.precision || 2) %>
+              <% else %>
+                <%= number_with_delimiter(cell) %>
+              <% end %>
+            </td>
           <% end %>
         </tr>
       <% end %>

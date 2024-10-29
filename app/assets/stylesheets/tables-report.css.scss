@@ -1,16 +1,16 @@
-@forward 'uswds-core';
+@use 'uswds-core' as * with (
+  $theme-table-border-color: 'primary-darker',
+  $theme-table-header-background-color: 'primary-darker',
+  $theme-table-header-text-color: 'white'
+);
+
 @forward 'usa-prose';
 @forward 'usa-table';
 @forward 'usa-alert';
 
-$secondary-color: #112e51;
-$light-gray: #f3f3f3;
-$white: #fff;
-
-h1,
-h2,
-h3 {
-  color: $secondary-color;
+.report-title,
+.report-subtitle {
+  color: color('primary-darker');
 }
 
 .table-number {
@@ -26,19 +26,7 @@ h3 {
   }
 }
 
-.usa-table {
-  tr th,
-  tr td {
-    border: 2px solid $secondary-color;
-  }
-
-  thead th[scope='col'] {
-    background-color: $secondary-color;
-    color: $white;
-  }
-
-  tbody th {
-    font-weight: 700;
-    background-color: $light-gray;
-  }
+.report-table tbody th {
+  font-weight: 700;
+  background-color: color('base-lightest');
 }
