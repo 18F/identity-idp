@@ -2,7 +2,6 @@ import {
   useContext,
   useState,
   useMemo,
-  useEffect,
   forwardRef,
   useRef,
   useImperativeHandle,
@@ -232,19 +231,6 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
   const [ownErrorMessage, setOwnErrorMessage] = useState<string | null>(null);
   useMemo(() => setOwnErrorMessage(null), [value]);
   useImperativeHandle(ref, () => inputRef.current);
-  useEffect(() => {
-    // This is not a controlled component in the sense that the value is reflected onto the input
-    // element. Clear any DOM value that happens to be set, so that the browser doesn't suppress a
-    // change event based on what it assumes the current value to be.
-    //
-    // "In React, an <input type="file" /> is always an uncontrolled component because its value can
-    // only be set by a user, and not programmatically."
-    //
-    // See: https://reactjs.org/docs/uncontrolled-components.html#the-file-input-tag
-    if (inputRef.current && inputRef.current.files?.length) {
-      inputRef.current.value = '';
-    }
-  }, [value]);
   const inputId = `file-input-${instanceId}`;
   const hintId = `${inputId}-hint`;
   const errorId = `${inputId}-error`;
