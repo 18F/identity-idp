@@ -15,6 +15,7 @@ function FullAddressSearch({
   registerField,
   resultsHeaderComponent,
   usStatesTerritories,
+  resultsSectionHeading,
 }: FullAddressSearchProps) {
   const [apiError, setApiError] = useState<Error | null>(null);
   const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
@@ -61,6 +62,7 @@ function FullAddressSearch({
           address={foundAddress.address || ''}
           noInPersonLocationsDisplay={noInPersonLocationsDisplay}
           resultsHeaderComponent={resultsHeaderComponent}
+          resultsSectionHeading={resultsSectionHeading}
         />
       )}
     </>

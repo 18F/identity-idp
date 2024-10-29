@@ -20,6 +20,7 @@ function InPersonLocations({
   address,
   noInPersonLocationsDisplay: NoInPersonLocationsDisplay,
   resultsHeaderComponent: HeaderComponent,
+  resultsSectionHeading: ResultsSectionHeading,
 }: InPersonLocationsProps) {
   if (locations?.length === 0) {
     return <NoInPersonLocationsDisplay address={address} />;
@@ -27,6 +28,7 @@ function InPersonLocations({
 
   return (
     <>
+      {ResultsSectionHeading && <ResultsSectionHeading />}
       <h3 role="status">
         {t('in_person_proofing.body.location.po_search.results_description', {
           address,
