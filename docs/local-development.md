@@ -126,9 +126,9 @@ test:
   $ SHOW_BROWSER=true bundle exec rspec spec/features/
   ```
 
-  > [!IMPORTANT]
-  > You may still need to force the test to use a real browser by using a `js` tag on the test, e.g.
-  > ```
+  > [!TIP]
+  > Only JavaScript-enabled tests are configured to run using a real browser, since browser tests are slow to run. If you have a feature test you want to run in a real browser, you can add the `js` metadata to your test to mark it as requiring JavaScript:
+  > ```rb
   > it 'does something', :js do … end
   > ```
 #### Skipping asset compilation in feature tests
