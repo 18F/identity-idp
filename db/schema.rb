@@ -10,11 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema[7.2].define(version: 2024_10_29_152408) do
-=======
 ActiveRecord::Schema[7.2].define(version: 2024_10_25_221705) do
->>>>>>> c8064091c (lg-14425 new sensitive job)
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
