@@ -41,14 +41,16 @@ class OpenidConnectTokenForm
   def submit
     success = valid?
 
-    clear_authorization_code if success
+    if success
+      id_token_builder.delete_sp_session
+      clear_authorization_code
+    end
 
     FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
   end
 
   def response
     if valid?
-      id_token_builder = IdTokenBuilder.new(identity: identity, code: code)
       @ttl = id_token_builder.ttl
 
       {
@@ -60,6 +62,10 @@ class OpenidConnectTokenForm
     else
       { error: errors.to_a.join(' ') }
     end
+  end
+
+  def id_token_builder
+    @id_token_builder ||= IdTokenBuilder.new(identity: identity, code: code)
   end
 
   def url_options

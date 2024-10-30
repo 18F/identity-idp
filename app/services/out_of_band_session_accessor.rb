@@ -89,7 +89,24 @@ class OutOfBandSessionAccessor
     session_data.present?
   end
 
+  def delete_sp_session
+    if session_data.dig('sp', 'request_url').present?
+      session_data.delete('sp')
+      put_real(session_data.to_h)
+    end
+  end
+
   private
+
+  def put_real(data)
+    session_store.send(
+      :write_session,
+      PLACEHOLDER_REQUEST,
+      Rack::Session::SessionId.new(session_uuid),
+      data,
+      expire_after: nil,
+    )
+  end
 
   def put(data, expiration = 5.minutes)
     session_data = {

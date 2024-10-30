@@ -26,6 +26,10 @@ class IdTokenBuilder
     session_accessor.ttl
   end
 
+  def delete_sp_session
+    session_accessor.delete_sp_session
+  end
+
   private
 
   attr_reader :code
