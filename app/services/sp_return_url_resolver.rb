@@ -9,6 +9,7 @@ class SpReturnUrlResolver
     @oidc_redirect_uri = oidc_redirect_uri
   end
 
+  # @return [String, nil]
   def return_to_sp_url
     oidc_access_denied_redirect_url.presence ||
       service_provider.return_to_sp_url.presence ||
@@ -27,7 +28,7 @@ class SpReturnUrlResolver
 
   def inferred_redirect_url
     configured_url = service_provider.redirect_uris&.first || service_provider.acs_url
-    URI.join(configured_url, '/').to_s
+    URI.join(configured_url, '/').to_s if configured_url.present?
   end
 
   def oidc_access_denied_redirect_url
