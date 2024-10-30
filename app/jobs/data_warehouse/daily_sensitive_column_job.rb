@@ -17,37 +17,36 @@ module DataWarehouse
 
       tables.each do |table|
         true_sensitives, false_sensitives = ActiveRecord::Base.connection.columns(table).
-          reject { |col| col.name == 'id' }.partition do |column|
-          column.comment&.match?(/sensitive=true/i)
-        end
+          reject { |col| col.name == 'id' }.
+          partition do |column|
+            column.comment&.match?(/sensitive=true/i)
+          end
         insensitive_hash.concat(generate_column_data(false_sensitives, table))
         sensitive_hash.concat(generate_column_data(true_sensitives, table))
       end
       {
-        sensitive: dasherize_keys(sensitive_hash),
-        insensitive: dasherize_keys(insensitive_hash),
+        sensitive: sensitive_hash,
+        insensitive: insensitive_hash,
       }.to_json
     end
 
     def generate_column_data(columns, table)
       columns.map do |column|
         {
-          object_locator: {
-            column_name: column.name,
-            table_name: table,
+          "object-locator": {
+            "column-name": column.name,
+            "table-name": table,
           },
         }
       end
     end
 
     def bucket_name
-      IdentityConfig.store.s3_idp_internal_dw_tasks
-    end
-
-    def dasherize_keys(columns)
-      columns.each do |column|
-        column.deep_transform_keys! { |key| key.to_s.dasherize }
-      end
+      bucket_name = IdentityConfig.store.s3_idp_internal_dw_tasks
+      env = Identity::Hostdata.env
+      aws_account_id = Identity::Hostdata.aws_account_id
+      aws_region = Identity::Hostdata.aws_region
+      "#{bucket_name}-#{env}-#{aws_account_id}-#{aws_region}"
     end
 
     def upload_to_s3(body, timestamp)
