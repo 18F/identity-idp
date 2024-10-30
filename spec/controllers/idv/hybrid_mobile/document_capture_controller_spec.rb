@@ -34,13 +34,6 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
         :check_valid_document_capture_session,
       )
     end
-
-    it 'checks that we are in the correct vendor bucket' do
-      expect(subject).to have_actions(
-        :before,
-        :ensure_user_stays_in_vendor_bucket,
-      )
-    end
   end
 
   describe '#show' do

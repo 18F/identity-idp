@@ -45,13 +45,6 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         :confirm_two_factor_authenticated,
       )
     end
-
-    it 'checks that we are in the correct vendor bucket' do
-      expect(subject).to have_actions(
-        :before,
-        :ensure_user_stays_in_vendor_bucket,
-      )
-    end
   end
 
   describe '#show' do
@@ -73,7 +66,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
     end
 
     context 'when we try to use this controller but we should be using the LN/mock version' do
-      let(:idv_vendor) { Idp::Constants::Vendors::MOCK }
+      let(:idv_vendor) { Idp::Constants::Vendors::LEXIS_NEXIS }
 
       it 'redirects to the LN/mock controller' do
         get :show

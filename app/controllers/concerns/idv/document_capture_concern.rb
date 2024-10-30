@@ -62,21 +62,22 @@ module Idv
       end
     end
 
-    def ensure_user_stays_in_vendor_bucket
-      in_hybrid_mobile = request.fullpath.include?('/hybrid_mobile/')
-      expected_path = doc_auth_vendor_capture_path(in_hybrid_mobile)
+    def redirect_to_correct_vendor(vendor, in_hybrid_mobile)
+      expected_doc_auth_vendor = doc_auth_vendor
+      return if expected_doc_auth_vendor == Idp::Constants::Vendors::MOCK
 
-      if I18n.locale == :en
-        actual_path = request.path
-      else
-        actual_path = "/#{I18n.locale}#{request.path}"
-      end
+      return if vendor == expected_doc_auth_vendor
 
-      puts "ensure_user_stays_in_vendor_bucket: expected_path: #{expected_path}"
-      puts "                                      actual_path: #{actual_path}"
-      puts "                                 request.fullpath: #{request.fullpath}"
+      correct_path = case expected_doc_auth_vendor
+        when Idp::Constants::Vendors::SOCURE
+          in_hybrid_mobile ? idv_hybrid_mobile_socure_document_capture_path
+                           : idv_socure_document_capture_path
+        when Idp::Constants::Vendors::LEXIS_NEXIS
+          in_hybrid_mobile ? idv_hybrid_mobile_document_capture_path
+                           : idv_document_capture_path
+        end
 
-      redirect_to expected_path if actual_path != expected_path
+      redirect_to correct_path
     end
 
     private

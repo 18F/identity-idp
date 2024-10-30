@@ -11,7 +11,7 @@ module Idv
 
         check_or_render_not_found -> { IdentityConfig.store.socure_enabled }
         before_action :check_valid_document_capture_session, except: [:update]
-        before_action :ensure_user_stays_in_vendor_bucket
+        before_action -> { redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, true) }
 
         def show
           Funnel::DocAuth::RegisterStep.new(document_capture_user.id, sp_session[:issuer]).

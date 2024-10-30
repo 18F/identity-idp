@@ -11,7 +11,7 @@ module Idv
       check_or_render_not_found -> { IdentityConfig.store.socure_enabled }
       before_action :confirm_not_rate_limited
       before_action :confirm_step_allowed
-      before_action :ensure_user_stays_in_vendor_bucket
+      before_action -> { redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, false) }
 
       # reconsider and maybe remove these when implementing the real
       # update handler
