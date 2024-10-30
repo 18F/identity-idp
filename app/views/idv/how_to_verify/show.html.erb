@@ -28,7 +28,7 @@
             asset_url(@presenter.asset_url),
             width: 88,
             height: 88,
-            class: 'margin-right-1 margin-top-0 tablet:margin-top-4',
+            class: 'margin-right-1 margin-top-0 tablet:margin-top-3',
             alt: @presenter.alt_text,
           ) %>
     </div>
@@ -37,6 +37,7 @@
           @idv_how_to_verify_form,
           html: {
             id: nil,
+            class: @selfie_required ? 'margin-top-3 tablet:margin-top-4' : 'margin-top-3 tablet:margin-top-3 ',
             aria: { label: @presenter.submit },
           },
           method: :put,
@@ -71,7 +72,7 @@
         asset_url('idv/in-person.svg'),
         width: 88,
         height: 88,
-        class: 'margin-right-1 margin-top-4',
+        class: 'margin-right-1 margin-top-3',
         alt: t('image_description.post_office'),
       ) %>
 </div>
@@ -80,6 +81,7 @@
           @idv_how_to_verify_form,
           html: {
             id: nil,
+            class: 'margin-top-3',
             aria: { label: t('forms.buttons.continue_ipp') },
           },
           method: :put,
