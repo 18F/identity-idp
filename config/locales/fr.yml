@@ -566,7 +566,6 @@ doc_auth.errors.sharpness.failed_short: L’image est floue, veuillez réessayer
 doc_auth.errors.sharpness.top_msg: Nous n’avons pas pu lire votre pièce d’identité. Il se peut que votre photo soit trop floue ou trop sombre. Essayez de prendre une nouvelle photo dans un endroit bien éclairé.
 doc_auth.errors.sharpness.top_msg_plural: Nous n’avons pas pu lire votre pièce d’identité. Il se peut que vos photos soient trop floues ou trop sombres. Essayez de prendre de nouvelles photos dans un endroit bien éclairé.
 doc_auth.errors.upload_error: Désolé, il y a eu un problème de notre côté.
-doc_auth.forms.captured_image: Image capturée
 doc_auth.forms.change_file: Changer de fichier
 doc_auth.forms.choose_file_html: Faites glisser le fichier ici ou <lg-underline>choisissez dans un dossier</lg-underline>
 doc_auth.forms.doc_success: Nous avons vérifié vos informations

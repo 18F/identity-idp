@@ -577,7 +577,6 @@ doc_auth.errors.sharpness.failed_short: 图像模糊，请再试一次。
 doc_auth.errors.sharpness.top_msg: 我们无法读取你的身份证件。你的照片可能太模糊或太暗。尝试在明亮的地方重拍一张。
 doc_auth.errors.sharpness.top_msg_plural: 我们无法读取你的身份证件。你的照片可能太模糊或太暗。尝试在明亮的地方重拍一张。
 doc_auth.errors.upload_error: 抱歉，我们这边出错了。
-doc_auth.forms.captured_image: 扫描到的图像
 doc_auth.forms.change_file: 更改文件
 doc_auth.forms.choose_file_html: 将文件拖到此处或者<lg-underline>从文件夹中选择</lg-underline>。
 doc_auth.forms.doc_success: 我们验证了你的信息
