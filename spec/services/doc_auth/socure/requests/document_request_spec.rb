@@ -99,5 +99,31 @@ RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
         expect { document_request.fetch }.not_to raise_error
       end
     end
+    context 'with timeout exception' do
+      let(:response) { nil }
+      let(:response_status) { 403 }
+
+      before do
+        stub_request(:post, fake_socure_endpoint).to_raise(Faraday::ConnectionFailed)
+      end
+      it 'expect handle_connection_error method to be called' do
+        connection_error_attributes = {
+          success: false,
+          errors: { network: true },
+          exception: Faraday::ConnectionFailed,
+          extra: {
+            vendor: 'Socure',
+            selfie_live: false,
+            selfie_quality_good: false,
+            vendor_status_code: nil,
+            vendor_status_message: nil,
+          }.compact,
+        }
+        failed_response = DocAuth::Response.new(**connection_error_attributes)
+        allow(DocAuth::Response).to receive(:new).with(**connection_error_attributes).
+          and_return(failed_response)
+        expect(document_request.fetch).to eq(failed_response)
+      end
+    end
   end
 end
