@@ -5,11 +5,14 @@ class ResetPasswordForm
   include FormPasswordValidator
 
   attr_accessor :reset_password_token
+  private attr_reader :log_password_matches_existing
+  alias_method :log_password_matches_existing?, :log_password_matches_existing
 
   validate :valid_token
 
-  def initialize(user:)
+  def initialize(user:, log_password_matches_existing: false)
     @user = user
+    @log_password_matches_existing = log_password_matches_existing
     @reset_password_token = @user.reset_password_token
     @validate_confirmation = true
     @active_profile = user.active_profile
@@ -47,7 +50,7 @@ class ResetPasswordForm
   end
 
   def update_user
-    @password_matches_existing = user.valid_password?(password)
+    @password_matches_existing = user.valid_password?(password) if log_password_matches_existing?
 
     attributes = { password: password }
 

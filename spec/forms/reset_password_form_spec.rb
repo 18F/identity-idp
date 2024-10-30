@@ -2,7 +2,8 @@ require 'rails_helper'
 
 RSpec.describe ResetPasswordForm, type: :model do
   let(:user) { create(:user, uuid: '123') }
-  subject(:form) { ResetPasswordForm.new(user:) }
+  let(:log_password_matches_existing) { false }
+  subject(:form) { ResetPasswordForm.new(user:, log_password_matches_existing:) }
 
   let(:password) { 'a good and powerful password' }
   let(:password_confirmation) { password }
@@ -83,7 +84,7 @@ RSpec.describe ResetPasswordForm, type: :model do
           profile_deactivated: false,
           pending_profile_invalidated: false,
           pending_profile_pending_reasons: '',
-          password_matches_existing: false,
+          password_matches_existing: nil,
         )
       end
     end
@@ -150,8 +151,16 @@ RSpec.describe ResetPasswordForm, type: :model do
       context 'when the password is same as current' do
         let(:password) { user.password }
 
-        it 'includes extra detail for password matching existing' do
-          expect(result.extra[:password_matches_existing]).to eq(true)
+        it 'does not include extra detail for password matching existing' do
+          expect(result.extra[:password_matches_existing]).to eq(nil)
+        end
+
+        context 'when initialized to log password_matches_existing' do
+          let(:log_password_matches_existing) { true }
+
+          it 'includes extra detail for password matching existing' do
+            expect(result.extra[:password_matches_existing]).to eq(true)
+          end
         end
       end
     end
