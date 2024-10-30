@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import sinon from 'sinon';
 import { useSandbox } from '@18f/identity-test-helpers';
 import userEvent from '@testing-library/user-event';
@@ -318,6 +318,62 @@ describe('FullAddressSearch', () => {
       );
 
       await expect(handleLocationsFound).to.eventually.be.called();
+    });
+  });
+
+  context('Address Search with Results Section Heading', () => {
+    let server: SetupServer;
+    before(() => {
+      server = setupServer(
+        http.post(locationsURL, () => HttpResponse.json([{ name: 'Baltimore' }])),
+      );
+      server.listen();
+    });
+
+    after(() => {
+      server.close();
+    });
+
+    it('renders the results section heading when passed in', async () => {
+      const handleLocationsFound = sandbox.stub();
+      const onSelect = sinon.stub();
+      const resultsSectionHeadingText = 'Mock Heading';
+      const { queryByText, getByLabelText, getByText } = render(
+        <SWRConfig value={{ provider: () => new Map() }}>
+          <FullAddressSearch
+            usStatesTerritories={usStatesTerritories}
+            onFoundLocations={handleLocationsFound}
+            locationsURL={locationsURL}
+            registerField={() => undefined}
+            handleLocationSelect={onSelect}
+            disabled={false}
+            resultsSectionHeading={() => <h2>{resultsSectionHeadingText}</h2>}
+          />
+        </SWRConfig>,
+      );
+
+      await userEvent.type(
+        getByLabelText('in_person_proofing.body.location.po_search.address_label'),
+        '200 main',
+      );
+      await userEvent.type(
+        getByLabelText('in_person_proofing.body.location.po_search.city_label'),
+        'Endeavor',
+      );
+      await userEvent.selectOptions(
+        getByLabelText('in_person_proofing.body.location.po_search.state_label'),
+        'DE',
+      );
+      await userEvent.type(
+        getByLabelText('in_person_proofing.body.location.po_search.zipcode_label'),
+        '17201',
+      );
+      await userEvent.click(getByText('in_person_proofing.body.location.po_search.search_button'));
+
+      await waitFor(() => {
+        const resultsHeading = queryByText(resultsSectionHeadingText);
+        expect(resultsHeading).to.exist();
+      });
     });
   });
 });
