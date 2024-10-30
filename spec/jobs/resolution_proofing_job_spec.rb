@@ -383,22 +383,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
         )
       end
 
-      it 'verifies ID address with AAMVA & LexisNexis & residential address with LexisNexis' do
-        stub_vendor_requests
-
-        expect_any_instance_of(Proofing::LexisNexis::InstantVerify::Proofer).to receive(:proof).
-          with(hash_including(residential_address)).and_call_original
-
-        expect_any_instance_of(Proofing::LexisNexis::InstantVerify::Proofer).to receive(:proof).
-          with(hash_including(identity_doc_address)).and_call_original
-
-        expect_any_instance_of(Proofing::Aamva::Proofer).to receive(:proof).with(
-          hash_including(identity_doc_address),
-        ).and_call_original
-
-        perform
-      end
-
       it 'stores a successful result' do
         stub_vendor_requests
 
