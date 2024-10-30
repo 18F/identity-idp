@@ -132,6 +132,18 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
             )
           end
         end
+
+        context 'when the type is something invalid' do
+          it 'does not add a DocumentCategoryCode for nil ID type' do
+            applicant.state_id_data.state_id_type = nil
+            expect(subject.body).to_not include('<aa:DocumentCategoryCode>')
+          end
+
+          it 'does not add a DocumentCategoryCode for invalid ID types' do
+            applicant.state_id_data.state_id_type = 'License to Keep an Alpaca'
+            expect(subject.body).to_not include('<aa:DocumentCategoryCode>')
+          end
+        end
       end
     end
   end
