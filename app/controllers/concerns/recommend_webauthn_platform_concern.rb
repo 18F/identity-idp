@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module RecommendWebauthnPlatformConcern
-  def recommend_webauthn_platform_for_sms_user?
+  def recommend_webauthn_platform_for_sms_user?(bucket)
     # Only consider for A/B test if:
     # 1. Option would be offered for setup
     # 2. User is viewing content in English
@@ -13,7 +13,7 @@ module RecommendWebauthnPlatformConcern
     return false if current_user.webauthn_platform_recommended_dismissed_at?
     return false if !user_set_up_or_authenticated_with_phone?
     return false if current_user.webauthn_configurations.platform_authenticators.present?
-    ab_test_bucket(:RECOMMEND_WEBAUTHN_PLATFORM_FOR_SMS_USER) == :recommend
+    ab_test_bucket(:RECOMMEND_WEBAUTHN_PLATFORM_FOR_SMS_USER) == bucket
   end
 
   private

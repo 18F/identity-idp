@@ -11,6 +11,7 @@ RSpec.describe MfaSetupConcern do
   before do
     stub_sign_in(user)
     allow(controller).to receive(:recommend_webauthn_platform_for_sms_user?).
+      with(:recommend_for_account_creation).
       and_return(recommend_webauthn_platform_for_sms_user)
   end
 

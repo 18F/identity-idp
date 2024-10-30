@@ -234,13 +234,18 @@ RSpec.describe AbTests do
     end
 
     before do
-      allow(IdentityConfig.store).to receive(:recommend_webauthn_platform_for_sms_ab_test_percent).
-        and_return(recommend_webauthn_platform_for_sms_ab_test_percent)
+      allow(IdentityConfig.store).to receive(
+        :recommend_webauthn_platform_for_sms_ab_test_account_creation_percent,
+      ).and_return(recommend_webauthn_platform_for_sms_ab_test_account_creation_percent)
+      allow(IdentityConfig.store).to receive(
+        :recommend_webauthn_platform_for_sms_ab_test_authentication_percent,
+      ).and_return(recommend_webauthn_platform_for_sms_ab_test_authentication_percent)
       reload_ab_tests
     end
 
     context 'when A/B test is disabled' do
-      let(:recommend_webauthn_platform_for_sms_ab_test_percent) { 0 }
+      let(:recommend_webauthn_platform_for_sms_ab_test_account_creation_percent) { 0 }
+      let(:recommend_webauthn_platform_for_sms_ab_test_authentication_percent) { 0 }
 
       it 'does not return a bucket' do
         expect(bucket).to be_nil
@@ -248,7 +253,8 @@ RSpec.describe AbTests do
     end
 
     context 'when A/B test is enabled' do
-      let(:recommend_webauthn_platform_for_sms_ab_test_percent) { 1 }
+      let(:recommend_webauthn_platform_for_sms_ab_test_account_creation_percent) { 1 }
+      let(:recommend_webauthn_platform_for_sms_ab_test_authentication_percent) { 1 }
 
       it 'returns a bucket' do
         expect(bucket).not_to be_nil

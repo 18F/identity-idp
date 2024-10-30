@@ -16,8 +16,10 @@ RSpec.describe RecommendWebauthnPlatformConcern do
   end
 
   describe '#recommend_webauthn_platform_for_sms_user?' do
+    let(:bucket) { :recommend_for_account_creation }
+
     subject(:recommend_webauthn_platform_for_sms_user?) do
-      controller.recommend_webauthn_platform_for_sms_user?
+      controller.recommend_webauthn_platform_for_sms_user?(bucket)
     end
 
     context 'device is not supported for platform authenticator setup' do
@@ -102,7 +104,7 @@ RSpec.describe RecommendWebauthnPlatformConcern do
                   before do
                     expect(controller).to receive(:ab_test_bucket).
                       with(:RECOMMEND_WEBAUTHN_PLATFORM_FOR_SMS_USER).
-                      and_return(:recommend)
+                      and_return(bucket)
                   end
 
                   it { is_expected.to eq(true) }
@@ -163,7 +165,7 @@ RSpec.describe RecommendWebauthnPlatformConcern do
                     before do
                       expect(controller).to receive(:ab_test_bucket).
                         with(:RECOMMEND_WEBAUTHN_PLATFORM_FOR_SMS_USER).
-                        and_return(:recommend)
+                        and_return(bucket)
                     end
 
                     it { is_expected.to eq(true) }

@@ -96,7 +96,10 @@ module AbTests
       'User Registration: 2FA Setup',
     ].to_set,
     buckets: {
-      recommend: IdentityConfig.store.recommend_webauthn_platform_for_sms_ab_test_percent,
+      recommend_for_account_creation:
+        IdentityConfig.store.recommend_webauthn_platform_for_sms_ab_test_account_creation_percent,
+      recommend_for_authentication:
+        IdentityConfig.store.recommend_webauthn_platform_for_sms_ab_test_authentication_percent,
     },
   ).freeze
 end
