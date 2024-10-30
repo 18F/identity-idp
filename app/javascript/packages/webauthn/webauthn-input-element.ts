@@ -4,7 +4,6 @@ import isWebauthnPasskeySupported from './is-webauthn-passkey-supported';
 export class WebauthnInputElement extends HTMLElement {
   connectedCallback() {
     this.toggleVisibleIfPasskeySupported();
-    this.toggleAbtestOption();
   }
 
   get isOptedInToAbTest(): boolean {
@@ -24,19 +23,11 @@ export class WebauthnInputElement extends HTMLElement {
       return;
     }
 
-    if (isWebauthnPasskeySupported() &&(await isWebauthnPlatformAuthenticatorAvailable())) {
+    if ((isWebauthnPasskeySupported() || this.isOptedInToAbTest)  && (await isWebauthnPlatformAuthenticatorAvailable())) {
       this.hidden = false;
     } else if (this.showUnsupportedPasskey) {
       this.hidden = false;
       this.classList.add('webauthn-input--unsupported-passkey');
-    }
-  }
-
-  async toggleAbtestOption() {
-     if ((isWebauthnPasskeySupported() || this.isOptedInToAbTest) && (await isWebauthnPlatformAuthenticatorAvailable())) {
-      this.hidden = false;
-    } else if (!this.isOptedInToAbTest){
-      this.hidden = true;
     }
   }
 }
