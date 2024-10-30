@@ -21,6 +21,10 @@ RSpec.describe Proofing::Resolution::Plugins::ThreatMetrixPlugin do
   end
 
   describe '#call' do
+    def sp_cost_count
+      SpCost.where(cost_type: :threatmetrix, issuer: current_sp.issuer).count
+    end
+
     subject(:call) do
       plugin.call(
         applicant_pii:,
@@ -44,10 +48,7 @@ RSpec.describe Proofing::Resolution::Plugins::ThreatMetrixPlugin do
       end
 
       it 'creates a ThreatMetrix associated cost' do
-        expect { call }.
-          to change {
-               SpCost.where(cost_type: :threatmetrix, issuer: current_sp.issuer).count
-             }.to eql(1)
+        expect { call }.to change { sp_cost_count }.to(1)
       end
 
       context 'session id is missing' do
@@ -100,10 +101,7 @@ RSpec.describe Proofing::Resolution::Plugins::ThreatMetrixPlugin do
       end
 
       it 'does not create a ThreatMetrix associated cost' do
-        expect { call }.
-          not_to change {
-                   SpCost.where(cost_type: :threatmetrix, issuer: current_sp.issuer).count
-                 }
+        expect { call }.not_to change { sp_cost_count }
       end
     end
   end
