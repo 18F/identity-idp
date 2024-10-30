@@ -156,6 +156,7 @@ RSpec.describe SocureWebhookController do
         end
 
         it 'increments rate limiter of correct user' do
+          expect(rate_limiter.attempts).to eq 0
           post :create, params: document_uploaded_webhook_body
           expect(rate_limiter.attempts).to eq 1
           post :create, params: document_uploaded_webhook_body
@@ -192,6 +193,64 @@ RSpec.describe SocureWebhookController do
         post :create, params: webhook_body
 
         expect(response).to be_not_found
+      end
+    end
+
+    context 'when SESSION_COMPLETE event received' do
+      let(:docv_transaction_token) { '45ac9531-60ae-4bc7-805e-f7823e4e5547' }
+      let(:webhook_body) do
+        {
+          id: 'a8202f22-7331-483b-a76a-546f68da062d',
+          origId: '45ac9531-60ae-4bc7-805e-f7823e4e5545',
+          eventGroup: 'DocvNotification',
+          reason: 'SESSION_COMPLETE',
+          environmentName: 'Production',
+          event: {
+            created: '2024-08-07T21:18:19.949Z',
+            customerUserId: '111-222-333',
+            docVTransactionToken: docv_transaction_token,
+            eventType: 'SESSION_COMPLETE',
+            message: 'Session Complete',
+            referenceId: '45ac9531-60ae-4bc7-805e-f7823e4e5545',
+          },
+        }
+      end
+
+      context 'when document capture session exists' do
+        let(:user) { create(:user) }
+        let(:document_capture_session) do
+          DocumentCaptureSession.create(user:).tap do |dcs|
+            dcs.socure_docv_transaction_token = docv_transaction_token
+          end
+        end
+
+        before do
+          request.headers['Authorization'] = socure_secret_key
+          allow(DocumentCaptureSession).to receive(:find_by).
+            and_return(document_capture_session)
+          allow(SocureDocvResultsJob).to receive(:perform_later)
+          allow(RateLimiter).to receive(:new).with(
+            {
+              user: user,
+              rate_limit_type: :idv_doc_auth,
+            },
+          ).and_return(rate_limiter)
+        end
+
+        it 'does not increment rate limiter of user' do
+          expect(rate_limiter.attempts).to eq 0
+          post :create, params: webhook_body
+          expect(rate_limiter.attempts).to eq 0
+          post :create, params: webhook_body
+          expect(rate_limiter.attempts).to eq 0
+        end
+
+        it 'does not enqueue a SocureDocvResultsJob' do
+          post :create, params: webhook_body
+
+          expect(SocureDocvResultsJob).not_to have_received(:perform_later).
+            with(document_capture_session_uuid: document_capture_session.uuid)
+        end
       end
     end
   end
