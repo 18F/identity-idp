@@ -105,7 +105,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     allow(threatmetrix_plugin).to receive(:proofer).and_return(threatmetrix_proofer)
 
     allow(progressive_proofer).to receive(:resolution_proofer).and_return(instant_verify_proofer)
-    allow(progressive_proofer).to receive(:lexisnexis_ddp_proofer).and_return(threatmetrix_proofer)
     allow(progressive_proofer).to receive(:state_id_proofer).and_return(aamva_proofer)
 
     block_real_instant_verify_requests
