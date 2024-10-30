@@ -27,6 +27,14 @@ module DocAuth
           )
         end
 
+        def handle_connection_error(exception:)
+          NewRelic::Agent.notice_error(exception)
+          DocAuth::Socure::Responses::DocvResultResponse.new(
+            http_response: nil,
+            biometric_comparison_required: @biometric_comparison_required,
+          )
+        end
+
         def document_capture_session
           @document_capture_session ||=
             DocumentCaptureSession.find_by!(uuid: document_capture_session_uuid)

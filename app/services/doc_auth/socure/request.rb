@@ -45,22 +45,6 @@ module DocAuth
         end
       end
 
-      def handle_connection_error(exception:, status_code: nil, status_message: nil)
-        NewRelic::Agent.notice_error(exception)
-        DocAuth::Response.new(
-          success: false,
-          errors: { network: true },
-          exception: exception,
-          extra: {
-            vendor: 'Socure',
-            selfie_live: false,
-            selfie_quality_good: false,
-            vendor_status_code: status_code,
-            vendor_status_message: status_message,
-          }.compact,
-        )
-      end
-
       def send_http_get_request
         faraday_connection.get do |req|
           req.options.context = { service_name: metric_name }
