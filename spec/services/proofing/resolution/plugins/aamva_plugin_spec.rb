@@ -10,8 +10,10 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
     Proofing::StateIdResult.new(
       success: true,
       vendor_name: 'state_id:aamva',
+      transaction_id: proofer_transaction_id,
     )
   end
+  let(:proofer_transaction_id) { 'abcd-123' }
 
   subject(:plugin) do
     described_class.new
@@ -22,8 +24,16 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
   end
 
   describe '#call' do
-    def sp_cost_count
+    def sp_cost_count_for_issuer
       SpCost.where(cost_type: :aamva, issuer: current_sp.issuer).count
+    end
+
+    def sp_cost_count_with_transaction_id
+      SpCost.where(
+        cost_type: :aamva,
+        issuer: current_sp.issuer,
+        transaction_id: proofer_transaction_id,
+      ).count
     end
 
     subject(:call) do
@@ -64,7 +74,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
 
         it 'tracks an SP cost for AAMVA' do
           expect { call }.to(
-            change { sp_cost_count }.
+            change { sp_cost_count_with_transaction_id }.
               to(1),
           )
         end
@@ -79,7 +89,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
           end
 
           it 'does not track an SP cost for AAMVA' do
-            expect { call }.to_not change { sp_cost_count }
+            expect { call }.to_not change { sp_cost_count_for_issuer }
           end
         end
       end
@@ -103,7 +113,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
           it 'tracks an SP cost for AAMVA' do
             expect { call }.
               to(
-                change { sp_cost_count }.
+                change { sp_cost_count_with_transaction_id }.
                 to(1),
               )
           end
@@ -124,7 +134,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
           end
 
           it 'does not record an SP cost for AAMVA' do
-            expect { call }.not_to change { sp_cost_count }
+            expect { call }.not_to change { sp_cost_count_for_issuer }
           end
 
           it 'returns an UnsupportedJurisdiction result' do
@@ -168,7 +178,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
           end
 
           it 'records an SP cost for AAMVA' do
-            expect { call }.to change { sp_cost_count }.to(1)
+            expect { call }.to change { sp_cost_count_with_transaction_id }.to(1)
           end
         end
 
@@ -189,7 +199,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
             end
 
             it 'records an SP cost for AAMVA' do
-              expect { call }.to change { sp_cost_count }.to(1)
+              expect { call }.to change { sp_cost_count_with_transaction_id }.to(1)
             end
           end
 
@@ -208,7 +218,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
             end
 
             it 'does not record an SP cost for AAMVA' do
-              expect { call }.not_to change { sp_cost_count }
+              expect { call }.not_to change { sp_cost_count_for_issuer }
             end
 
             it 'returns an UnsupportedJurisdiction result' do
@@ -239,7 +249,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
             end
 
             it 'records an SP cost for AAMVA' do
-              expect { call }.to change { sp_cost_count }.to(1)
+              expect { call }.to change { sp_cost_count_with_transaction_id }.to(1)
             end
           end
 
@@ -260,7 +270,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
               end
 
               it 'does not record an SP cost for AAMVA' do
-                expect { call }.not_to change { sp_cost_count }
+                expect { call }.not_to change { sp_cost_count_for_issuer }
               end
             end
 
@@ -279,7 +289,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
               end
 
               it 'does not record an SP cost for AAMVA' do
-                expect { call }.not_to change { sp_cost_count }
+                expect { call }.not_to change { sp_cost_count_for_issuer }
               end
 
               it 'returns an UnsupportedJurisdiction result' do
