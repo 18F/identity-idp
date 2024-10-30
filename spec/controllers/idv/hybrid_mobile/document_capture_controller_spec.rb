@@ -15,12 +15,16 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
   let(:document_capture_session_requested_at) { Time.zone.now }
   let(:document_capture_session_result_captured_at) { Time.zone.now + 1.second }
   let(:document_capture_session_result_success) { true }
+  let(:idv_vendor) { Idp::Constants::Vendors::MOCK }
 
   before do
     stub_analytics
 
     session[:doc_capture_user_id] = user&.id
     session[:document_capture_session_uuid] = document_capture_session_uuid
+
+    allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(idv_vendor)
+    allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(idv_vendor)
   end
 
   describe 'before_actions' do
@@ -28,6 +32,13 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
       expect(subject).to have_actions(
         :before,
         :check_valid_document_capture_session,
+      )
+    end
+
+    it 'checks that we are in the correct vendor bucket' do
+      expect(subject).to have_actions(
+        :before,
+        :ensure_user_stays_in_vendor_bucket,
       )
     end
   end
@@ -53,6 +64,16 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
           selfie_check_required: false,
           liveness_checking_required: boolean,
         }
+      end
+
+      context 'when we try to use this controller but we should be using the Socure version' do
+        let(:idv_vendor) { Idp::Constants::Vendors::SOCURE }
+
+        it 'redirects to the Socure controller' do
+          get :show
+
+          expect(response).to redirect_to idv_hybrid_mobile_socure_document_capture_url
+        end
       end
 
       it 'renders the show template' do

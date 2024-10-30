@@ -50,6 +50,35 @@ module Idv
         stored_result.selfie_check_performed?
     end
 
+    # @returns[String] The document capture path for the current vendor
+    def doc_auth_vendor_capture_path(in_hybrid_mobile)
+      case doc_auth_vendor
+      when Idp::Constants::Vendors::SOCURE
+        in_hybrid_mobile ? idv_hybrid_mobile_socure_document_capture_path
+                         : idv_socure_document_capture_path
+      when Idp::Constants::Vendors::LEXIS_NEXIS, Idp::Constants::Vendors::MOCK
+        in_hybrid_mobile ? idv_hybrid_mobile_document_capture_path
+                         : idv_document_capture_path
+      end
+    end
+
+    def ensure_user_stays_in_vendor_bucket
+      in_hybrid_mobile = request.fullpath.include?('/hybrid_mobile/')
+      expected_path = doc_auth_vendor_capture_path(in_hybrid_mobile)
+
+      if I18n.locale == :en
+        actual_path = request.path
+      else
+        actual_path = "/#{I18n.locale}#{request.path}"
+      end
+
+      puts "ensure_user_stays_in_vendor_bucket: expected_path: #{expected_path}"
+      puts "                                      actual_path: #{actual_path}"
+      puts "                                 request.fullpath: #{request.fullpath}"
+
+      redirect_to expected_path if actual_path != expected_path
+    end
+
     private
 
     def track_document_issuing_state(user, state)
