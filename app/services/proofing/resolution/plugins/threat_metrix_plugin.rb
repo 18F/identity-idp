@@ -21,10 +21,11 @@ module Proofing
           return threatmetrix_id_missing_result if threatmetrix_session_id.blank?
           return threatmetrix_pii_missing_result if applicant_pii.blank?
 
-          ddp_pii = applicant_pii.dup
-          ddp_pii[:threatmetrix_session_id] = threatmetrix_session_id
-          ddp_pii[:email] = user_email
-          ddp_pii[:request_ip] = request_ip
+          ddp_pii = applicant_pii.merge(
+            threatmetrix_session_id: threatmetrix_session_id,
+            email: user_email,
+            request_id: request_ip,
+          )
 
           timer.time('threatmetrix') do
             proofer.proof(ddp_pii)
