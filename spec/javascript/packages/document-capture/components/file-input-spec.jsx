@@ -220,41 +220,6 @@ describe('document-capture/components/file-input', () => {
     expect(onChange.getCall(0).args[0]).to.equal(file);
   });
 
-  it('has an appropriate 2-part aria-label with no input added when on desktop', () => {
-    const { getByLabelText } = render(
-      <DeviceContext.Provider value={{ isMobile: false }}>
-        <FileInput label="File" bannerText="File" />
-      </DeviceContext.Provider>,
-    );
-
-    const queryByAriaLabel = getByLabelText('File doc_auth.forms.choose_file_html');
-
-    expect(queryByAriaLabel).to.exist();
-  });
-
-  it('has aria-label with label and filename', () => {
-    const fileName = 'file2.jpg';
-    const file2 = new window.File([file], fileName);
-    const { getByLabelText } = render(<FileInput label="File" value={file2} />);
-
-    const queryByAriaLabel = getByLabelText(`File - ${fileName}`);
-
-    expect(queryByAriaLabel).to.exist();
-  });
-
-  it('has aria-label with Captured Image', () => {
-    const { getByLabelText } = render(
-      <FileInput
-        label="File"
-        value="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQYV2NgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII="
-      />,
-    );
-
-    const queryByAriaLabel = getByLabelText(`File - ${'doc_auth.forms.captured_image'}`);
-
-    expect(queryByAriaLabel).to.exist();
-  });
-
   it('has aria-describedby set to null by default', () => {
     const { getByLabelText } = render(<FileInput label="File" />);
     const input = getByLabelText('File');

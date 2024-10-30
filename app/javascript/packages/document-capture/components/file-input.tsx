@@ -267,40 +267,6 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
     }
   }
 
-  /**
-   * @param {string} fileLabel String value of the label for input to display
-   * @param {Blob|string|null|undefined} fileValue File or string for which to generate label.
-   * @return {{'aria-label': string} | {'aria-labelledby': string}}
-   */
-  function getAriaLabelPropsFromValue(
-    fileLabel: string,
-    fileValue: Blob | string | null | undefined,
-  ): AriaLabelReturnType {
-    if (fileValue instanceof window.File) {
-      return {
-        'aria-label': `${fileLabel} - ${fileValue.name}`,
-      };
-    }
-
-    if (fileValue) {
-      return {
-        'aria-label': `${fileLabel} - ${t('doc_auth.forms.captured_image')}`,
-      };
-    }
-
-    // When no file is selected, provide a slightly more verbose label
-    // including the actual <label> contents and the prompt to drag a file or
-    // choose from a folder.
-    if (showInnerHint) {
-      return {
-        'aria-labelledby': `${labelId} ${innerHintId}`,
-      };
-    }
-    return {
-      'aria-labelledby': `${labelId}`,
-    };
-  }
-
   const shownErrorMessage = errorMessage ?? ownErrorMessage;
 
   let successMessage: string | undefined;
@@ -427,7 +393,6 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
             id={inputId}
             className="usa-file-input__input"
             type="file"
-            {...getAriaLabelPropsFromValue(label, value)}
             aria-busy={isValuePending}
             onChange={onChangeIfValid}
             onClick={onClick}
