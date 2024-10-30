@@ -62,8 +62,7 @@ module Proofing
           device_profiling_result: device_profiling_result,
           ipp_enrollment_in_progress: ipp_enrollment_in_progress,
           resolution_result: instant_verify_result,
-          should_proof_state_id:
-            Plugins::AamvaPlugin.aamva_supports_state_id_jurisdiction?(applicant_pii),
+          should_proof_state_id: aamva_plugin.aamva_supports_state_id_jurisdiction?(applicant_pii),
           state_id_result: state_id_result,
           residential_resolution_result: residential_instant_verify_result,
           same_address_as_id: applicant_pii[:same_address_as_id],

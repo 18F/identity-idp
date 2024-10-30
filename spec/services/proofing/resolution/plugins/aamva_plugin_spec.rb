@@ -294,4 +294,55 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
       end
     end
   end
+
+  describe '#aamva_supports_state_id_jurisdiction?' do
+    let(:applicant_pii) do
+      Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(
+        state: address_state,
+        state_id_jurisdiction: jurisdiction_state,
+      )
+    end
+    let(:jurisdiction_state) { 'WA' }
+    let(:address_state) { 'WA' }
+    let(:aamva_supported_jurisdictions) do
+      ['WA']
+    end
+
+    subject(:supported) do
+      described_class.new.aamva_supports_state_id_jurisdiction?(applicant_pii)
+    end
+
+    before do
+      allow(IdentityConfig.store).to receive(:aamva_supported_jurisdictions).
+        and_return(aamva_supported_jurisdictions)
+    end
+
+    context 'when jurisdiction is supported' do
+      it 'returns true' do
+        expect(supported).to eql(true)
+      end
+      context 'but address state is not' do
+        let(:address_state) { 'MT' }
+        it 'still returns true' do
+          expect(supported).to eql(true)
+        end
+      end
+    end
+
+    context 'when jurisdiction is not supported' do
+      let(:address_state) { 'MT' }
+      let(:jurisdiction_state) { 'MT' }
+
+      it 'returns false' do
+        expect(supported).to eql(false)
+      end
+
+      context 'but address state is' do
+        let(:address_state) { 'WA' }
+        it 'still returns false' do
+          expect(supported).to eql(false)
+        end
+      end
+    end
+  end
 end

@@ -49,7 +49,7 @@ module Proofing
           end
         end
 
-        def self.aamva_supports_state_id_jurisdiction?(applicant_pii)
+        def aamva_supports_state_id_jurisdiction?(applicant_pii)
           state_id_jurisdiction = applicant_pii[:state_id_jurisdiction]
           IdentityConfig.store.aamva_supported_jurisdictions.include?(state_id_jurisdiction)
         end
@@ -90,7 +90,7 @@ module Proofing
           instant_verify_result:,
           ipp_enrollment_in_progress:
         )
-          return false unless AamvaPlugin.aamva_supports_state_id_jurisdiction?(applicant_pii)
+          return false unless aamva_supports_state_id_jurisdiction?(applicant_pii)
           # If the user is in in-person-proofing and they have changed their address then
           # they are not eligible for get-to-yes
           if !ipp_enrollment_in_progress || same_address_as_id?(applicant_pii)
