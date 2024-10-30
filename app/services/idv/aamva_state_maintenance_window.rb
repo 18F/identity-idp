@@ -83,7 +83,7 @@ module Idv
       ],
       'MT' => [
         # Monthly maintenance occurs first Sunday of each month from 12:00 am to 6:00 am (Mountain Time zone).
-        { cron: '0 22 * * Sat#1', duration_minutes: 6 * 60 },
+        { cron: '0 2 * * Sun#1', duration_minutes: 6 * 60 },
       ],
       'NC' => [
         # Daily, Midnight to 7:00 am. ET.
