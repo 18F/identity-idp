@@ -156,13 +156,13 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
       end
     end
 
-    context 'when we should not redirect because there is no url in the response' do
+    context 'there is no url in the socure response' do
       let(:response_body) { {} }
 
-      it 'does not redirect' do
+      it 'redirects to idv unavailable url' do
         get(:show)
 
-        expect(response).not_to have_http_status(:redirect)
+        expect(response).to redirect_to(idv_unavailable_path)
         expect(controller.send(:instance_variable_get, :@url)).not_to be
       end
     end
