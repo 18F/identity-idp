@@ -146,6 +146,14 @@ RSpec.describe ResetPasswordForm, type: :model do
         expect(result.extra[:profile_deactivated]).to eq(true)
         expect(user.profiles.any?(&:active?)).to eq(false)
       end
+
+      context 'when the password is same as current' do
+        let(:password) { user.password }
+
+        it 'includes extra detail for password matching existing' do
+          expect(result.extra[:password_matches_existing]).to eq(true)
+        end
+      end
     end
 
     context 'when the user does not have an active profile' do
