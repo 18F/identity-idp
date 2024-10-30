@@ -41,8 +41,8 @@ RSpec.describe DocAuth::Socure::Requests::DocvResultRequest do
         failed_response = DocAuth::Socure::Responses::DocvResultResponse.new(
           **connection_error_attributes,
         )
-        allow(DocAuth::Socure::Responses::DocvResultResponse).to
-        receive(:new).with(**connection_error_attributes).
+        allow(DocAuth::Socure::Responses::DocvResultResponse).to receive(:new).
+          with(**connection_error_attributes).
           and_return(failed_response)
         expect(docv_result_request.fetch).to eq(failed_response)
       end
