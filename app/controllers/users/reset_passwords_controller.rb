@@ -40,7 +40,6 @@ module Users
       end
     end
 
-    # PUT /resource/password
     def update
       self.resource = user_matching_token(user_params[:reset_password_token])
       @reset_password_form = ResetPasswordForm.new(user: resource)
