@@ -19,8 +19,6 @@ module Idv
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
         call('verify', :update, true)
 
-      set_state_id_type
-
       ssn_rate_limiter.increment!
 
       document_capture_session = DocumentCaptureSession.create(
