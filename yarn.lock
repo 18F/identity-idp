@@ -2,13 +2,13 @@
 # yarn lockfile v1
 
 
-"@18f/identity-design-system@^9.3.0":
-  version "9.3.0"
-  resolved "https://registry.yarnpkg.com/@18f/identity-design-system/-/identity-design-system-9.3.0.tgz#990089ea93c5ac773cf87ac61d175d739ec89ae7"
-  integrity sha512-vOhBNu20rtSUUIx0bpyLjUTcOzyzLpq9/Oyot+vWPYxyatTg2m+7dpQK8xSNVDtnNtpVEwOhf1GnOGF+v7n+nA==
+"@18f/identity-design-system@^9.4.0":
+  version "9.4.0"
+  resolved "https://registry.yarnpkg.com/@18f/identity-design-system/-/identity-design-system-9.4.0.tgz#7d8f8f7fd5090f4245cfac10a29a9581248ea2b0"
+  integrity sha512-Bg9jo5peAbXVJk+L6sTfB0qWDOGlfTgev2RF4whjfHycBq/+m++gZBkFYlXqQ0EEivCM51I6XQnBd3NVYXEZXA==
   dependencies:
-    "@types/uswds__uswds" "^3.8.0"
-    "@uswds/uswds" "^3.8.1"
+    "@types/uswds__uswds" "^3.9.0"
+    "@uswds/uswds" "^3.9.0"
 
 "@aashutoshrathi/word-wrap@^1.2.3":
   version "1.2.6"
@@ -1693,10 +1693,10 @@
   dependencies:
     "@types/react-test-renderer" "*"
 
-"@types/uswds__uswds@^3.8.0":
-  version "3.8.0"
-  resolved "https://registry.yarnpkg.com/@types/uswds__uswds/-/uswds__uswds-3.8.0.tgz#f5e7e05b7f5a450a0dddf303fde765814b626d7b"
-  integrity sha512-bpM1KLaY7pNpLj7xlouMa+OSXeTCCNN56VJle+gacbyMG1XJXRfQIIihLVKnX7M+P70WZYMM8zXvVTrZzS5wog==
+"@types/uswds__uswds@^3.9.0":
+  version "3.9.0"
+  resolved "https://registry.yarnpkg.com/@types/uswds__uswds/-/uswds__uswds-3.9.0.tgz#12a9fcabec442eeda43b7941e6e4d44fd3f94a3d"
+  integrity sha512-Rg5W3CRq8aEvMIMR0AFsNSsnCJr318ZBXRQ5y5BxbfU+0Fs+5ieWsCmh0YHYPmXJgowU3YFV+zinplSIp8akMg==
 
 "@types/wrap-ansi@^3.0.0":
   version "3.0.0"
@@ -1860,12 +1860,11 @@
     "@typescript-eslint/types" "6.7.5"
     eslint-visitor-keys "^3.4.1"
 
-"@uswds/uswds@^3.8.1":
-  version "3.8.1"
-  resolved "https://registry.yarnpkg.com/@uswds/uswds/-/uswds-3.8.1.tgz#3d834559498ae1bb7d3a618f3f85a5f4e9818497"
-  integrity sha512-bKG/B9mJF1v0yoqth48wQDzST5Xyu3OxxpePIPDyhKWS84oDrCehnu3Z88JhSjdIAJMl8dtjtH8YvdO9kZUpAg==
+"@uswds/uswds@^3.9.0":
+  version "3.9.0"
+  resolved "https://registry.yarnpkg.com/@uswds/uswds/-/uswds-3.9.0.tgz#e98b52995a001ff091a9c61baeb487064c98bc6a"
+  integrity sha512-8THm36j7iLjrDiI1D0C6b3hHsmM/Sy5Iiz+IjE+i/gYzVUMG9XVthxAZYonhU97Q1b079n6nYwlUmDSYowJecQ==
   dependencies:
-    classlist-polyfill "1.2.0"
     object-assign "4.1.1"
     receptor "1.0.0"
     resolve-id-refs "0.1.0"
@@ -2541,11 +2540,6 @@ chrome-trace-event@^1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/chrome-trace-event/-/chrome-trace-event-1.0.3.tgz#1015eced4741e15d06664a957dbbf50d041e26ac"
   integrity sha512-p3KULyQg4S7NIHixdwbGX+nFHkoBiA4YQmyWtjb8XngSKV124nJmRysgAeujbUVb15vh+RvFUfCPqU7rXk+hZg==
-
-classlist-polyfill@1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/classlist-polyfill/-/classlist-polyfill-1.2.0.tgz#935bc2dfd9458a876b279617514638bcaa964a2e"
-  integrity sha512-GzIjNdcEtH4ieA2S8NmrSxv7DfEV5fmixQeyTmqmRmRJPGpRBaSnA2a0VrCjyT8iW8JjEdMbKzDotAJf+ajgaQ==
 
 cleave.js@^1.6.0:
   version "1.6.0"
