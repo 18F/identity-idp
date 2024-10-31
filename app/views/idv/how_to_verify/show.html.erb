@@ -21,9 +21,9 @@
   <% end %>
 <% end %>
 
-<p id='how-to-verify-info' class='margin-bottom-0'><%= @presenter.how_to_verify_info %></p>
+<p id='how-to-verify-info' class='margin-bottom-1'><%= @presenter.how_to_verify_info %></p>
   <div role="group" aria-labelledby="how-to-verify-info" class="border-bottom border-primary-light grid-row">
-    <div class="grid-col-12 tablet:grid-col-auto margin-top-4">
+    <div class="grid-col-12 tablet:grid-col-auto margin-top-3">
       <%= image_tag(
             asset_url(@presenter.asset_url),
             width: 88,
@@ -37,6 +37,7 @@
           html: {
             id: nil,
             aria: { label: @presenter.submit },
+            class: 'margin-top-3',
           },
           method: :put,
           url: idv_how_to_verify_url,
