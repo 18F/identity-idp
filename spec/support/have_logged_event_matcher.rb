@@ -13,6 +13,8 @@ class HaveLoggedEventMatcher
   end
 
   def failure_message
+    return fake_analytics_missing_failure_message if fake_analytics_missing?
+
     matching_events = events[expected_event_name]
 
     if matching_events&.length == 1
@@ -23,6 +25,8 @@ class HaveLoggedEventMatcher
   end
 
   def failure_message_when_negated
+    return fake_analytics_missing_failure_message if fake_analytics_missing?
+
     adjective = attributes_matcher_description(expected_attributes) ? 'matching ' : ''
     [
       "Expected that FakeAnalytics would not have received #{adjective}event",
@@ -33,6 +37,8 @@ class HaveLoggedEventMatcher
 
   def matches?(actual)
     @actual = actual
+
+    return false if fake_analytics_missing?
 
     matched_events =
       if expected_event_name.nil? && expected_attributes.nil?
@@ -55,6 +61,18 @@ class HaveLoggedEventMatcher
   private
 
   attr_reader :expected_event_name, :expected_attributes
+
+  def fake_analytics_missing?
+    !@actual.is_a?(FakeAnalytics)
+  end
+
+  def fake_analytics_missing_failure_message
+    <<~STR
+      Matching expected logged events requires analytics to be stubbed.
+
+      Check that you've called `stub_analytics` before asserting `have_logged_event`.
+    STR
+  end
 
   def default_failure_message
     with_attributes = expected_attributes.nil? ?

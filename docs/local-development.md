@@ -75,6 +75,21 @@ Running the sample application requires a few additional steps, but can be usefu
 test the experience of a user being redirected to an external site, or if you want to configure
 different options of the authentication request, such as AAL or IAL.
 
+### PIV/CAC authentication using PKI service
+
+The IdP's PIV/CAC features are not maintained as part of this codebase, and are instead managed in a
+separate application whose code can be found in the [`18F/identity-pki`](https://github.com/18f/identity-pki)
+GitHub repository.
+
+In local development, you have two choices for working with PIV/CAC:
+
+- Follow the [setup instructions for `identity-pki`](https://github.com/18f/identity-pki#local-development)
+  and run the application in parallel to the IdP. The IdP is configured by default to connect to the
+  default port of a locally-running `identity-pki` instance (http://localhost:8443)
+- Override application configuration to set `identity_pki_disabled: true` in your local `config/application.yml`.
+  This will allow you to simulate PKI results without having an instance running, and can be useful
+  for testing different error scenarios or distinct PIV/CAC subject identifiers.
+
 ### Running tests locally
 
 Login.gov uses the following tools for our testing:
@@ -111,6 +126,11 @@ test:
   $ SHOW_BROWSER=true bundle exec rspec spec/features/
   ```
 
+  > [!TIP]
+  > Only JavaScript-enabled tests are configured to run using a real browser, since browser tests are slow to run. If you have a feature test you want to run in a real browser, you can add the `js` metadata to your test to mark it as requiring JavaScript:
+  > ```rb
+  > it 'does something', :js do … end
+  > ```
 #### Skipping asset compilation in feature tests
 
 To ensure that tests are run using the latest source code, JavaScript-enabled feature specs will
