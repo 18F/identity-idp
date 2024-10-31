@@ -85,4 +85,34 @@ describe('WebauthnInputElement', () => {
       });
     });
   });
+
+  context('Desktop F/T unlock A/B test', () => {
+    context('desktop F/T unlock setup enabled', () => {
+      beforeEach(() => {
+        isWebauthnPasskeySupported.returns(false);
+        isWebauthnPlatformAvailable.resolves(true);
+        document.body.innerHTML = `<lg-webauthn-input desktop-ft-unlock-option></lg-webauthn-input>`;
+      });
+
+      it('becomes visible', async () => {
+        const element = document.querySelector('lg-webauthn-input')!;
+
+        expect(element.hidden).to.be.false();
+      });
+    });
+
+    context('desktop F/T unlock setup disabled', () => {
+      beforeEach(() => {
+        isWebauthnPasskeySupported.returns(true);
+        isWebauthnPlatformAvailable.resolves(false);
+        document.body.innerHTML = `<lg-webauthn-input desktop-ft-unlock-option></lg-webauthn-input>`;
+      });
+
+      it('is hidden', async () => {
+        const element = document.querySelector('lg-webauthn-input')!;
+
+        expect(element.hidden).to.be.false();
+      });
+    });
+  });
 });
