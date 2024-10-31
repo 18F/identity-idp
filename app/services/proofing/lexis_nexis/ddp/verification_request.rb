@@ -43,8 +43,8 @@ module Proofing
             account_telephone: '', # applicant[:phone], decision was made not to send phone
             account_drivers_license_number: applicant[:state_id_number]&.gsub(/\W/, ''),
             account_drivers_license_type: 'us_dl',
-            account_drivers_license_issuer: applicant[:state_id_jurisdiction].to_s.strip,
-            national_id_number: applicant[:ssn].gsub(/\D/, ''),
+            account_drivers_license_issuer: applicant[:state_id_jurisdiction]&.to_s&.strip,
+            national_id_number: applicant[:ssn]&.gsub(/\D/, ''),
             national_id_type: 'US_SSN',
             local_attrib_1: applicant[:uuid_prefix],
           }

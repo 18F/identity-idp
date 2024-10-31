@@ -59,11 +59,6 @@ module LexisNexisFixtures
       JSON.parse(raw).to_json
     end
 
-    def ddp_error_response_json
-      raw = read_fixture_file_at_path('ddp/error_response.json')
-      JSON.parse(raw).to_json
-    end
-
     def ddp_unexpected_review_status
       'unexpected_review_status_that_causes_problems'
     end

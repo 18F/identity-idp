@@ -101,7 +101,7 @@ module Users
         current_user.id,
         'backup_codes',
         analytics,
-        threatmetrix_attrs
+        threatmetrix_attrs,
       )
     end
 

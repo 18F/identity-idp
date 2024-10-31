@@ -19,14 +19,13 @@ module Funnel
       end
 
       def self.process_threatmetrix_for_user(
-        threatmetrix_attrs
+        _threatmetrix_attrs
       )
-        return unless FeatureManagement.account_creation_device_profiling_collecting_enabled?
-        return unless threatmetrix_attrs[:threatmetrix_session_id]
-        AccountCreation::DeviceProfiling.new.proof(
-          request_ip: threatmetrix_attrs[:request_ip],
-          threatmetrix_session_id: threatmetrix_attrs[:threatmetrix_session_id],
-          user_email: threatmetrix_attrs[:email]
+        if IdentityConfig.store.ruby_workers_idv_enabled
+          AuthenticationThreatMetrixJob.perform_later(**job_arguments)
+        else
+          AuthenticationThreatMetrixJob.perform_now(**job_arguments)
+        end
       end
     end
   end

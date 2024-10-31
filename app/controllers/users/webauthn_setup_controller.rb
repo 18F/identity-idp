@@ -140,7 +140,7 @@ module Users
           current_user.id,
           'webauthn_platform',
           analytics,
-          threatmetrix_attrs
+          threatmetrix_attrs,
         )
         flash[:success] = t('notices.webauthn_platform_configured')
       else

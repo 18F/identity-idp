@@ -9,7 +9,7 @@ module AccountCreation
     def proof(
       request_ip:,
       threatmetrix_session_id:,
-      user_email:,
+      user_email:
     )
       @request_ip = request_ip
       @threatmetrix_session_id = threatmetrix_session_id
