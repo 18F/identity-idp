@@ -1,4 +1,4 @@
-import { render, waitFor } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import sinon from 'sinon';
 import { useSandbox } from '@18f/identity-test-helpers';
 import userEvent from '@testing-library/user-event';
@@ -338,7 +338,7 @@ describe('FullAddressSearch', () => {
       const handleLocationsFound = sandbox.stub();
       const onSelect = sinon.stub();
       const resultsSectionHeadingText = 'Mock Heading';
-      const { queryByText, getByLabelText, getByText } = render(
+      const { findByText, getByLabelText, getByText } = render(
         <SWRConfig value={{ provider: () => new Map() }}>
           <FullAddressSearch
             usStatesTerritories={usStatesTerritories}
@@ -370,7 +370,7 @@ describe('FullAddressSearch', () => {
       );
       await userEvent.click(getByText('in_person_proofing.body.location.po_search.search_button'));
 
-      await findByText(resultsSectionHeadingText)
+      await findByText(resultsSectionHeadingText);
     });
   });
 });
