@@ -2,7 +2,6 @@ import {
   useContext,
   useState,
   useMemo,
-  useEffect,
   forwardRef,
   useRef,
   useImperativeHandle,
@@ -99,8 +98,6 @@ interface FileInputProps {
    */
   onError?: (message: ReactNode) => void;
 }
-
-type AriaLabelReturnType = { 'aria-labelledby': string } | { 'aria-label': string };
 
 /**
  * Given a token of an file input accept attribute, returns an equivalent regular expression
@@ -232,19 +229,6 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
   const [ownErrorMessage, setOwnErrorMessage] = useState<string | null>(null);
   useMemo(() => setOwnErrorMessage(null), [value]);
   useImperativeHandle(ref, () => inputRef.current);
-  useEffect(() => {
-    // This is not a controlled component in the sense that the value is reflected onto the input
-    // element. Clear any DOM value that happens to be set, so that the browser doesn't suppress a
-    // change event based on what it assumes the current value to be.
-    //
-    // "In React, an <input type="file" /> is always an uncontrolled component because its value can
-    // only be set by a user, and not programmatically."
-    //
-    // See: https://reactjs.org/docs/uncontrolled-components.html#the-file-input-tag
-    if (inputRef.current && inputRef.current.files?.length) {
-      inputRef.current.value = '';
-    }
-  }, [value]);
   const inputId = `file-input-${instanceId}`;
   const hintId = `${inputId}-hint`;
   const errorId = `${inputId}-error`;
@@ -279,40 +263,6 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
     } else {
       onChange(null);
     }
-  }
-
-  /**
-   * @param {string} fileLabel String value of the label for input to display
-   * @param {Blob|string|null|undefined} fileValue File or string for which to generate label.
-   * @return {{'aria-label': string} | {'aria-labelledby': string}}
-   */
-  function getAriaLabelPropsFromValue(
-    fileLabel: string,
-    fileValue: Blob | string | null | undefined,
-  ): AriaLabelReturnType {
-    if (fileValue instanceof window.File) {
-      return {
-        'aria-label': `${fileLabel} - ${fileValue.name}`,
-      };
-    }
-
-    if (fileValue) {
-      return {
-        'aria-label': `${fileLabel} - ${t('doc_auth.forms.captured_image')}`,
-      };
-    }
-
-    // When no file is selected, provide a slightly more verbose label
-    // including the actual <label> contents and the prompt to drag a file or
-    // choose from a folder.
-    if (showInnerHint) {
-      return {
-        'aria-labelledby': `${labelId} ${innerHintId}`,
-      };
-    }
-    return {
-      'aria-labelledby': `${labelId}`,
-    };
   }
 
   const shownErrorMessage = errorMessage ?? ownErrorMessage;
@@ -441,7 +391,6 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
             id={inputId}
             className="usa-file-input__input"
             type="file"
-            {...getAriaLabelPropsFromValue(label, value)}
             aria-busy={isValuePending}
             onChange={onChangeIfValid}
             onClick={onClick}
