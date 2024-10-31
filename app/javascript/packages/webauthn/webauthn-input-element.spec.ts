@@ -94,7 +94,7 @@ describe('WebauthnInputElement', () => {
         document.body.innerHTML = `<lg-webauthn-input desktop-ft-unlock-option></lg-webauthn-input>`;
       });
 
-      it('becomes visible', async () => {
+      it('becomes visible', () => {
         const element = document.querySelector('lg-webauthn-input')!;
 
         expect(element.hidden).to.be.false();
@@ -103,12 +103,12 @@ describe('WebauthnInputElement', () => {
 
     context('desktop F/T unlock setup disabled', () => {
       beforeEach(() => {
-        isWebauthnPasskeySupported.returns(true);
-        isWebauthnPlatformAvailable.resolves(false);
+        isWebauthnPasskeySupported.returns(false);
+        isWebauthnPlatformAvailable.resolves(true);
         document.body.innerHTML = `<lg-webauthn-input desktop-ft-unlock-option></lg-webauthn-input>`;
       });
 
-      it('is hidden', async () => {
+      it('is hidden',() => {
         const element = document.querySelector('lg-webauthn-input')!;
 
         expect(element.hidden).to.be.false();
