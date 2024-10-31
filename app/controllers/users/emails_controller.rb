@@ -23,7 +23,7 @@ module Users
       )
 
       result = @add_user_email_form.submit(
-        current_user, permitted_params
+        current_user, permitted_params.merge(request_id:)
       )
       analytics.add_email_request(**result)
 

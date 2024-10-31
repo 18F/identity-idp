@@ -7,9 +7,10 @@ class SendAddEmailConfirmation
     @user = user
   end
 
-  def call(email_address, in_select_email_flow = nil)
+  def call(email_address, request_id)
     @email_address = email_address
     @in_select_email_flow = in_select_email_flow
+    @request_id = request_id
     update_email_address_record
     send_email
   end
@@ -61,6 +62,7 @@ class SendAddEmailConfirmation
     UserMailer.with(user: user, email_address: email_address).add_email(
       confirmation_token,
       in_select_email_flow,
+      @request_id,
     ).deliver_now_or_later
   end
 end
