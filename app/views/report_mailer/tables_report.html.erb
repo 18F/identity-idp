@@ -13,7 +13,7 @@
     <h3 class="report-subtitle"><%= report.subtitle %></h3>
   <% end %>
 
-  <table class="usa-table report-table">
+  <table class="usa-table">
     <thead>
       <tr>
         <% header.each do |head| %>
@@ -24,15 +24,7 @@
     <tbody>
       <% rows.each do |row| %>
         <tr>
-          <% first, *rest = row %>
-          <th scope="row" <%= first.is_a?(Numeric) ? 'class=table-number' : nil %> >
-            <% if first.is_a?(Float) && report.float_as_percent? %>
-              <%= number_to_percentage(first * 100, precision: report.precision || 2) %>
-            <% else %>
-              <%= number_with_delimiter(first) %>
-            <% end %>
-          </th>
-          <% rest.each do |cell| %>
+          <% row.each do |cell| %>
             <td <%= cell.is_a?(Numeric) ? 'class=table-number' : nil %> >
               <% if cell.is_a?(Float) && report.float_as_percent? %>
                 <%= number_to_percentage(cell * 100, precision: report.precision || 2) %>
