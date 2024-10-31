@@ -265,7 +265,8 @@ RSpec.describe AbTests do
 
       context 'when A/B test is disabled' do
         before do
-          allow(IdentityConfig.store).to receive(:desktop_ft_unlock_setup_option_percent_tested).and_return(0)
+          allow(IdentityConfig.store).to receive(:desktop_ft_unlock_setup_option_percent_tested).
+            and_return(0)
           reload_ab_tests
         end
 

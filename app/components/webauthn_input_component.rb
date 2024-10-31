@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class WebauthnInputComponent < BaseComponent
-  attr_reader :platform, :passkey_supported_only, :show_unsupported_passkey, :desktop_ft_unlock_option,
-              :tag_options
+  attr_reader :platform, :passkey_supported_only, :show_unsupported_passkey,
+              :desktop_ft_unlock_option, :tag_options
 
   alias_method :platform?, :platform
   alias_method :passkey_supported_only?, :passkey_supported_only
