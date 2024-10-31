@@ -4,16 +4,17 @@ class AccountCreationThreatMetrixJob < ApplicationJob
   def perform(
     user_id: nil,
     threatmetrix_session_id: nil,
-    request_ip: nil
+    request_ip: nil,
+    email: nil
   )
-    user = User.find_by(id: user_id)
 
     device_profiling_result = AccountCreation::DeviceProfiling.new.proof(
       request_ip: request_ip,
       threatmetrix_session_id: threatmetrix_session_id,
-      user_email: EmailContext.new(user).last_sign_in_email_address,
+      user_email: email,
     )
   ensure
+    user = User.find_by(id: user_id)
     analytics(user).account_creation_tmx_result(**device_profiling_result.to_h)
   end
 

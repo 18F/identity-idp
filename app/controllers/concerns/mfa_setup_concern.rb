@@ -89,9 +89,9 @@ module MfaSetupConcern
 
   def threatmetrix_attrs
     {
+      user_id: current_user.id,
       request_ip: request&.remote_ip,
       threatmetrix_session_id: session[:threatmetrix_session_id],
-      in_account_creation_flow: in_account_creation_flow?,
       email: EmailContext.new(current_user).last_sign_in_email_address.email,
     }
   end
