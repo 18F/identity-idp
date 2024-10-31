@@ -10,7 +10,6 @@ export const formatLocations = (postOffices: PostOffice[]): FormattedLocation[] 
     streetAddress: po.address,
     sundayHours: po.sunday_hours,
     weekdayHours: po.weekday_hours,
-    isPilot: !!po.is_pilot,
   }));
 
 export const snakeCase = (value: string) =>
