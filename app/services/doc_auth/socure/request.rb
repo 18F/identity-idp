@@ -45,6 +45,10 @@ module DocAuth
         end
       end
 
+      def handle_connection_error
+        raise NotImplementedError
+      end
+
       def send_http_get_request
         faraday_connection.get do |req|
           req.options.context = { service_name: metric_name }
