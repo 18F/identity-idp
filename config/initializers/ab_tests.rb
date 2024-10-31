@@ -90,11 +90,5 @@ module AbTests
     ].to_set,
     buckets: { desktop_ft_unlock_setup:
         IdentityConfig.store.desktop_ft_unlock_setup_option_percent_tested },
-  ) do |user:, user_session:, **|
-    if user_session&.[](:platform_authenticator_available) == false
-      nil
-    else
-      user.uuid
-    end
-  end.freeze
+  ).freeze
 end
