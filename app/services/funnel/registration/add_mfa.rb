@@ -15,10 +15,8 @@ module Funnel
         funnel.update!(registered_at: now)
       end
 
-      def self.process_threatmetrix_for_user(
-        threatmetrix_attrs
-      )
-        AccountCreationThreatMetrixJob.perform_now(**threatmetrix_attrs)
+      def self.process_threatmetrix_for_user(threatmetrix_attrs)
+        AccountCreationThreatMetrixJob.perform_later(**threatmetrix_attrs)
       end
     end
   end
