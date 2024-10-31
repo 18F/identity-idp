@@ -30,7 +30,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     Proofing::Resolution::Plugins::InstantVerifyStateIdAddressPlugin.new
   end
 
-  let(:instant_verify_state_id_address_result) do
+  let(:state_id_address_resolution_result) do
     Proofing::Resolution::Result.new(
       success: true,
       transaction_id: 'iv-state-id',
@@ -40,7 +40,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   let(:instant_verify_state_id_address_proofer) do
     instance_double(
       Proofing::LexisNexis::InstantVerify::Proofer,
-      proof: instant_verify_state_id_address_result,
+      proof: state_id_address_resolution_result,
     )
   end
 
@@ -135,7 +135,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         expect(aamva_plugin).to receive(:call).with(
           applicant_pii:,
           current_sp:,
-          instant_verify_state_id_address_result:,
+          state_id_address_resolution_result:,
           ipp_enrollment_in_progress: false,
           timer: an_instance_of(JobHelpers::Timer),
         )
@@ -182,7 +182,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         proof.tap do |result|
           expect(result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
 
-          expect(result.resolution_result).to eql(instant_verify_state_id_address_result)
+          expect(result.resolution_result).to eql(state_id_address_resolution_result)
           expect(result.state_id_result).to eql(aamva_result)
           expect(result.device_profiling_result).to eql(threatmetrix_result)
           expect(result.residential_resolution_result).to satisfy do |result|
@@ -201,7 +201,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       context 'residential address is same as id' do
         let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID }
 
-        let(:instant_verify_state_id_address_result) do
+        let(:state_id_address_resolution_result) do
           instant_verify_residential_address_result
         end
 
@@ -209,7 +209,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           expect(aamva_plugin).to receive(:call).with(
             applicant_pii:,
             current_sp:,
-            instant_verify_state_id_address_result:,
+            state_id_address_resolution_result:,
             ipp_enrollment_in_progress: true,
             timer: an_instance_of(JobHelpers::Timer),
           )
@@ -254,11 +254,11 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           proof.tap do |result|
             expect(result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
 
-            expect(result.resolution_result).to eql(instant_verify_state_id_address_result)
+            expect(result.resolution_result).to eql(state_id_address_resolution_result)
             expect(result.state_id_result).to eql(aamva_result)
             expect(result.device_profiling_result).to eql(threatmetrix_result)
             expect(result.residential_resolution_result).to(
-              eql(instant_verify_state_id_address_result),
+              eql(state_id_address_resolution_result),
             )
             expect(result.ipp_enrollment_in_progress).to eql(true)
             expect(proof.same_address_as_id).to eq(applicant_pii[:same_address_as_id])
@@ -306,7 +306,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           expect(aamva_plugin).to receive(:call).with(
             applicant_pii:,
             current_sp:,
-            instant_verify_state_id_address_result:,
+            state_id_address_resolution_result:,
             ipp_enrollment_in_progress: true,
             timer: an_instance_of(JobHelpers::Timer),
           ).and_call_original
@@ -316,7 +316,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         it 'returns a ResultAdjudicator' do
           proof.tap do |result|
             expect(result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
-            expect(result.resolution_result).to eql(instant_verify_state_id_address_result)
+            expect(result.resolution_result).to eql(state_id_address_resolution_result)
             expect(result.state_id_result).to eql(aamva_result)
             expect(result.device_profiling_result).to eql(threatmetrix_result)
             expect(result.residential_resolution_result).to(
