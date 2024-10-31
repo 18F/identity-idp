@@ -102,15 +102,16 @@ RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
     context 'with timeout exception' do
       let(:response) { nil }
       let(:response_status) { 403 }
+      let(:faraday_connection_failed_exception) { Faraday::ConnectionFailed }
 
       before do
-        stub_request(:post, fake_socure_endpoint).to_raise(Faraday::ConnectionFailed)
+        stub_request(:post, fake_socure_endpoint).to_raise(faraday_connection_failed_exception)
       end
       it 'expect handle_connection_error method to be called' do
         connection_error_attributes = {
           success: false,
           errors: { network: true },
-          exception: Faraday::ConnectionFailed,
+          exception: faraday_connection_failed_exception,
           extra: {
             vendor: 'Socure',
             selfie_live: false,
@@ -119,10 +120,11 @@ RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
             vendor_status_message: nil,
           }.compact,
         }
-        failed_response = DocAuth::Response.new(**connection_error_attributes)
-        allow(DocAuth::Response).to receive(:new).with(**connection_error_attributes).
-          and_return(failed_response)
-        expect(document_request.fetch).to eq(failed_response)
+        result = document_request.fetch
+        expect(result[:success]).to eq(connection_error_attributes[:success])
+        expect(result[:errors]).to eq(connection_error_attributes[:errors])
+        expect(result[:exception]).to be_a Faraday::ConnectionFailed
+        expect(result[:extra]).to eq(connection_error_attributes[:extra])
       end
     end
   end

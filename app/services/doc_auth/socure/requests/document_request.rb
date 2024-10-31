@@ -47,10 +47,30 @@ module DocAuth
           JSON.parse(http_response.body, symbolize_names: true)
         end
 
+        def handle_invalid_response(http_response)
+          message = [
+            self.class.name,
+            'Unexpected HTTP response',
+            http_response.status,
+          ].join(' ')
+          exception = DocAuth::RequestError.new(message, http_response.status)
+
+          response_body = begin
+            http_response.body.present? ? JSON.parse(http_response.body) : {}
+          rescue JSON::JSONError
+            {}
+          end
+
+          handle_connection_error(
+            exception: exception,
+            status_code: response_body.dig('status', 'code'),
+            status_message: response_body.dig('status', 'message'),
+          )
+        end
+
         def handle_connection_error(exception:, status_code: nil, status_message: nil)
           NewRelic::Agent.notice_error(exception)
-          # DocAuth::Socure::Responses::DocvResultResponse.new
-          DocAuth::Response.new(
+          {
             success: false,
             errors: { network: true },
             exception: exception,
@@ -61,7 +81,7 @@ module DocAuth
               vendor_status_code: status_code,
               vendor_status_message: status_message,
             }.compact,
-          )
+          }
         end
 
         def method

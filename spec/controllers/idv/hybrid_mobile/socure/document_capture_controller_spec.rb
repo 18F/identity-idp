@@ -91,6 +91,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
       before do
         allow(I18n).to receive(:locale).and_return(expected_language)
         allow(request_class).to receive(:new).and_call_original
+        allow(request_class).to receive(:handle_connection_error).and_call_original
         get(:show)
       end
 
@@ -187,6 +188,20 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
         get(:show)
 
         expect(response).to be_not_found
+      end
+    end
+
+    context 'when socure connection error encountered' do
+      let(:fake_socure_endpoint) { 'https://fake-socure.com/' }
+      before do
+        allow(IdentityConfig.store).to receive(:socure_document_request_endpoint).
+          and_return(fake_socure_endpoint)
+        stub_request(:post, fake_socure_endpoint).to_raise(Faraday::ConnectionFailed)
+      end
+      it 'timeout still responds to user' do
+        get(:show)
+
+        expect(response).not_to be_nil
       end
     end
   end
