@@ -457,6 +457,10 @@ class ApplicationController < ActionController::Base
     render template: 'pages/not_acceptable', layout: false, status: :not_acceptable, formats: :html
   end
 
+  def render_bad_request
+    render template: 'pages/bad_request', layout: false, status: :bad_request, formats: :html
+  end
+
   def render_timeout(exception)
     analytics.response_timed_out(**analytics_exception_info(exception))
     if exception.instance_of?(Rack::Timeout::RequestTimeoutException)

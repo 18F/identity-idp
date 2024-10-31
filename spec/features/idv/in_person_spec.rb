@@ -193,10 +193,7 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
     expect(page).to have_content(t('doc_auth.headings.review_issues'))
 
     # Images should still be present
-    front_label = [t('doc_auth.headings.document_capture_front'), 'logo.png'].join(' - ')
-    back_label = [t('doc_auth.headings.document_capture_back'), 'logo.png'].join(' - ')
-    expect(page).to have_field(front_label)
-    expect(page).to have_field(back_label)
+    expect(page).to have_text('logo.png', count: 2)
   end
 
   context 'after in-person proofing is completed and passed for a partner' do
