@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe AccountCreation::DeviceProfiling do
-  let(:current_sp) { build(:service_provider) }
   let(:threatmetrix_session_id) { '13232' }
   let(:threatmetrix_proofer_result) do
     instance_double(Proofing::DdpResult, success?: true, transaction_id: 'ddp-123')
@@ -34,7 +33,6 @@ RSpec.describe AccountCreation::DeviceProfiling do
           request_ip: Faker::Internet.ip_v4_address,
           threatmetrix_session_id: threatmetrix_session_id,
           user_email: Faker::Internet.email,
-          current_sp: current_sp,
         )
       end
 
