@@ -38,7 +38,7 @@ module Idv
         @url = document_response.dig(:data, :url)
 
         # placeholder until we get an error page for url not being present
-        redirect_to idv_unavailable_url if @url.nil?
+        return redirect_to idv_unavailable_url if @url.nil?
 
         document_capture_session = DocumentCaptureSession.find_by(
           uuid: document_capture_session_uuid,
