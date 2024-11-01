@@ -1,5 +1,9 @@
 # `Change Log`
 
+## v3.4.0 (2024-11-07)
+
+- Added new optional resultsSectionHeading component prop to FullAddressSearch
+
 ## v3.3.0 (2024-11-05)
 
 - Remove obsolete `is_pilot` field from PostOffice and FormattedLocation types
