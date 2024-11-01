@@ -3,7 +3,9 @@ require 'rails_helper'
 RSpec.describe Proofing::Resolution::ProgressiveProofer do
   let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN }
   let(:ipp_enrollment_in_progress) { false }
+  let(:request_ip) { Faker::Internet.ip_v4_address }
   let(:threatmetrix_session_id) { SecureRandom.uuid }
+  let(:user_email) { Faker::Internet.email }
   let(:current_sp) { build(:service_provider) }
 
   let(:instant_verify_proofing_success) { true }
@@ -32,9 +34,17 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   end
   let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer, proof: aamva_proofer_result) }
 
-  let(:threatmetrix_proofer_result) do
-    instance_double(Proofing::DdpResult, success?: true, transaction_id: 'ddp-123')
+  let(:threatmetrix_plugin) do
+    Proofing::Resolution::Plugins::ThreatMetrixPlugin.new
   end
+
+  let(:threatmetrix_proofer_result) do
+    Proofing::DdpResult.new(
+      success: true,
+      transaction_id: 'ddp-123',
+    )
+  end
+
   let(:threatmetrix_proofer) do
     instance_double(
       Proofing::LexisNexis::Ddp::Proofer,
@@ -86,26 +96,24 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     instance_double(Proofing::Resolution::Result, success?: true, errors: nil)
   end
 
-  def enable_threatmetrix
-    allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?).
-      and_return(true)
-  end
-
-  def disable_threatmetrix
-    allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?).
-      and_return(false)
-  end
-
   def block_real_instant_verify_requests
     allow(Proofing::LexisNexis::InstantVerify::VerificationRequest).to receive(:new)
   end
 
   before do
+    allow(progressive_proofer).to receive(:threatmetrix_plugin).and_return(threatmetrix_plugin)
+    allow(threatmetrix_plugin).to receive(:proofer).and_return(threatmetrix_proofer)
+
     allow(progressive_proofer).to receive(:resolution_proofer).and_return(instant_verify_proofer)
-    allow(progressive_proofer).to receive(:lexisnexis_ddp_proofer).and_return(threatmetrix_proofer)
     allow(progressive_proofer).to receive(:state_id_proofer).and_return(aamva_proofer)
 
     block_real_instant_verify_requests
+  end
+
+  it 'assigns threatmetrix_plugin' do
+    expect(described_class.new.threatmetrix_plugin).to be_a(
+      Proofing::Resolution::Plugins::ThreatMetrixPlugin,
+    )
   end
 
   describe '#proof' do
@@ -115,90 +123,51 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
     subject(:proof) do
       progressive_proofer.proof(
-        applicant_pii: applicant_pii,
-        ipp_enrollment_in_progress: ipp_enrollment_in_progress,
-        request_ip: Faker::Internet.ip_v4_address,
-        threatmetrix_session_id: threatmetrix_session_id,
+        applicant_pii:,
+        ipp_enrollment_in_progress:,
+        request_ip:,
+        threatmetrix_session_id:,
         timer: JobHelpers::Timer.new,
-        user_email: Faker::Internet.email,
-        current_sp: current_sp,
+        user_email:,
+        current_sp:,
       )
+    end
+
+    context 'remote unsupervised proofing' do
+      it 'calls ThreatMetrixPlugin' do
+        expect(threatmetrix_plugin).to receive(:call).with(
+          applicant_pii:,
+          current_sp:,
+          request_ip:,
+          threatmetrix_session_id:,
+          timer: an_instance_of(JobHelpers::Timer),
+          user_email:,
+        )
+        proof
+      end
+    end
+
+    context 'in-person proofing' do
+      let(:ipp_enrollment_in_progress) { true }
+      let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID }
+
+      it 'calls ThreatMetrixPlugin' do
+        expect(threatmetrix_plugin).to receive(:call).with(
+          applicant_pii:,
+          current_sp:,
+          request_ip:,
+          threatmetrix_session_id:,
+          timer: an_instance_of(JobHelpers::Timer),
+          user_email:,
+        )
+        proof
+      end
     end
 
     context 'remote proofing' do
       it 'returns a ResultAdjudicator' do
         expect(proof).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
         expect(proof.same_address_as_id).to eq(nil)
-      end
-
-      context 'ThreatMetrix is enabled' do
-        before do
-          enable_threatmetrix
-          allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled).
-            and_return(false)
-
-          proof
-        end
-
-        it 'makes a request to the ThreatMetrix proofer' do
-          expect(threatmetrix_proofer).to have_received(:proof)
-        end
-
-        it 'creates a ThreatMetrix associated cost' do
-          threatmetrix_sp_costs = SpCost.where(cost_type: :threatmetrix, issuer: current_sp.issuer)
-          expect(threatmetrix_sp_costs.count).to eq(1)
-        end
-
-        context 'session id is missing' do
-          let(:threatmetrix_session_id) { nil }
-
-          it 'does not make a request to the ThreatMetrix proofer' do
-            expect(threatmetrix_proofer).not_to have_received(:proof)
-          end
-
-          it 'returns a failed result' do
-            device_profiling_result = proof.device_profiling_result
-
-            expect(device_profiling_result.success).to be(false)
-            expect(device_profiling_result.client).to eq('tmx_session_id_missing')
-            expect(device_profiling_result.review_status).to eq('reject')
-          end
-        end
-
-        context 'pii is missing' do
-          let(:applicant_pii) { {} }
-
-          it 'does not make a request to the ThreatMetrix proofer' do
-            expect(threatmetrix_proofer).not_to have_received(:proof)
-          end
-
-          it 'returns a failed result' do
-            device_profiling_result = proof.device_profiling_result
-
-            expect(device_profiling_result.success).to be(false)
-            expect(device_profiling_result.client).to eq('tmx_pii_missing')
-            expect(device_profiling_result.review_status).to eq('reject')
-          end
-        end
-      end
-
-      context 'ThreatMetrix is disabled' do
-        before do
-          disable_threatmetrix
-        end
-
-        it 'returns a disabled result' do
-          device_profiling_result = proof.device_profiling_result
-
-          expect(device_profiling_result.success).to be(true)
-          expect(device_profiling_result.client).to eq('tmx_disabled')
-          expect(device_profiling_result.review_status).to eq('pass')
-        end
-
-        it 'does not create a ThreatMetrix associated cost' do
-          threatmetrix_sp_costs = SpCost.where(cost_type: :threatmetrix, issuer: current_sp.issuer)
-          expect(threatmetrix_sp_costs.count).to eq(0)
-        end
       end
 
       context 'AAMVA raises an exception' do
