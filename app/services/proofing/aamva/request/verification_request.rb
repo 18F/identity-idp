@@ -84,10 +84,12 @@ module Proofing
             inside: '//dldv:verifyDriverLicenseDataRequest',
           )
 
-          add_state_id_type(
-            applicant.state_id_data.state_id_type,
-            document
-          ) if IdentityConfig.store.aamva_send_id_type
+          if IdentityConfig.store.aamva_send_id_type
+            add_state_id_type(
+              applicant.state_id_data.state_id_type,
+              document,
+            )
+          end
 
           @body = document.to_s
         end
