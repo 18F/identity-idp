@@ -370,7 +370,7 @@ describe('FullAddressSearch', () => {
       );
       await userEvent.click(getByText('in_person_proofing.body.location.po_search.search_button'));
 
-      await findByText(resultsSectionHeadingText);
+      expect(await findByText(resultsSectionHeadingText)).to.exist();
     });
   });
 });
