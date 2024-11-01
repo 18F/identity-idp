@@ -50,6 +50,10 @@ RSpec.describe Users::EmailConfirmationsController do
       end
 
       context 'when select email feature is disabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled).
+            and_return(false)
+        end
         it 'should render proper flash member' do
           flash_message = t('devise.confirmations.confirmed')
           user = create(:user)
