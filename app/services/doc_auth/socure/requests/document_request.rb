@@ -60,15 +60,14 @@ module DocAuth
           rescue JSON::JSONError
             {}
           end
-
           handle_connection_error(
             exception: exception,
-            status_code: response_body.dig('status', 'code'),
-            status_message: response_body.dig('status', 'message'),
+            status: response_body.dig('status'),
+            status_message: response_body.dig('msg'),
           )
         end
 
-        def handle_connection_error(exception:, status_code: nil, status_message: nil)
+        def handle_connection_error(exception:, status: nil, status_message: nil)
           NewRelic::Agent.notice_error(exception)
           {
             success: false,
@@ -76,9 +75,7 @@ module DocAuth
             exception: exception,
             extra: {
               vendor: 'Socure',
-              selfie_live: false,
-              selfie_quality_good: false,
-              vendor_status_code: status_code,
+              vendor_status: status,
               vendor_status_message: status_message,
             }.compact,
           }
