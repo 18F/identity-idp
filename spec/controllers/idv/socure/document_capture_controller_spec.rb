@@ -110,6 +110,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       it 'creates a DocumentRequest' do
         expect(request_class).to have_received(:new).
           with(
+            document_capture_session_uuid: expected_uuid,
             redirect_url: idv_socure_document_capture_update_url,
             language: expected_language,
           )
@@ -270,27 +271,29 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
   end
 
   describe '#update' do
-    it 'returns OK (200)' do
-      get(:update)
-
-      expect(response).to redirect_to(idv_ssn_path)
+    let(:stored_result) do
+      DocumentCaptureSessionResult.new(
+        success: true,
+        selfie_status: 'pass',
+        pii: { state: 'MD' },
+      )
     end
 
-    context 'when doc auth fails' do
-      let(:doc_auth_success) { false }
+    before do
+      stub_sign_in(user)
+      stub_up_to(:hybrid_handoff, idv_session: subject.idv_session)
 
-      it 'redirects to document capture' do
-        get(:update)
+      get(:update)
+    end
 
-        expect(response).to redirect_to(idv_socure_document_capture_path)
-      end
+    it 'returns FOUND (302) and redirects to SSN' do
+      expect(response).to redirect_to idv_ssn_url
     end
 
     context 'when socure is disabled' do
       let(:socure_enabled) { false }
-      it 'the webhook route does not exist' do
-        post(:update)
 
+      it 'the webhook route does not exist' do
         expect(response).to be_not_found
       end
     end

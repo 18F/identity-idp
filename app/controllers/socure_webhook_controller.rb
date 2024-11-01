@@ -104,8 +104,9 @@ class SocureWebhookController < ApplicationController
   end
 
   def document_capture_session
+    token = event[:docvTransactionToken] || event[:docVTransactionToken]
     @document_capture_session ||= DocumentCaptureSession.find_by(
-      socure_docv_transaction_token: docv_transaction_token,
+      socure_docv_transaction_token: token,
     )
   end
 

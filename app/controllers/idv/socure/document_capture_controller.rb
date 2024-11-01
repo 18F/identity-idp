@@ -27,6 +27,7 @@ module Idv
 
         # document request
         document_request = DocAuth::Socure::Requests::DocumentRequest.new(
+          document_capture_session_uuid: document_capture_session_uuid,
           redirect_url: idv_socure_document_capture_update_url,
           language: I18n.locale,
         )
@@ -72,8 +73,6 @@ module Idv
         Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
           call('socure_document_capture', :update, true)
 
-        cancel_establishing_in_person_enrollments
-
         if result.success?
           redirect_to idv_ssn_url
         else
@@ -104,6 +103,18 @@ module Idv
       end
 
       private
+
+      def handle_stored_result
+        if stored_result&.success? && selfie_requirement_met?
+          save_proofing_components(current_user)
+          extract_pii_from_doc(current_user, store_in_session: true)
+          flash[:success] = t('doc_auth.headings.capture_complete')
+          successful_response
+        else
+          extra = { stored_result_present: stored_result.present? }
+          failure(I18n.t('doc_auth.errors.general.network_error'), extra)
+        end
+      end
 
       def analytics_arguments
         {
