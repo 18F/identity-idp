@@ -7,6 +7,7 @@ class SocureDocvResultsJob < ApplicationJob
 
   # @param [String] document_capture_session_uuid
   def perform(document_capture_session_uuid:)
+    Rails.logger.info "\n\nSocureDocvResultsJob.perform: document_capture_session_uuid: #{document_capture_session_uuid}\n"
     @document_capture_session_uuid = document_capture_session_uuid
 
     dcs = DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)

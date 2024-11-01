@@ -27,7 +27,7 @@ module DocAuth
 
         def body
           redirect = {
-            method: 'POST',
+            method: 'GET',
             url: redirect_url,
           }
 
