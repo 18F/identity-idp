@@ -114,8 +114,6 @@ RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
           exception: faraday_connection_failed_exception,
           extra: {
             vendor: 'Socure',
-            selfie_live: false,
-            selfie_quality_good: false,
             vendor_status_code: nil,
             vendor_status_message: nil,
           }.compact,
