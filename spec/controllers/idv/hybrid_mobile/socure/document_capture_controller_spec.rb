@@ -119,7 +119,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
                     documentType: 'license',
                     redirect: {
                       method: 'GET',
-                      url: idv_hybrid_mobile_socure_document_capture_url,
+                      url: idv_hybrid_mobile_socure_document_capture_update_url,
                     },
                     language: expected_language,
                   },
@@ -141,7 +141,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
                     documentType: 'license',
                     redirect: {
                       method: 'GET',
-                      url: idv_hybrid_mobile_socure_document_capture_url,
+                      url: idv_hybrid_mobile_socure_document_capture_update_url,
                     },
                     language: 'zh-cn',
                   },
@@ -257,16 +257,31 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
   end
 
   describe '#update' do
-    it 'returns OK (200)' do
-      post(:update)
+    let(:stored_result) do
+      DocumentCaptureSessionResult.new(
+        success: true,
+        selfie_status: 'pass',
+        pii: { state: 'MD' },
+      )
+    end
 
-      expect(response).to have_http_status(:ok)
+    before do
+      allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
+        stub_sign_in(user)
+    #   stub_up_to(:hybrid_handoff, idv_session: nil)
+    end
+
+    it 'redirects to the ssn page' do
+      get(:update)
+
+      expect(response).to redirect_to(idv_ssn_url)
     end
 
     context 'when socure is disabled' do
       let(:socure_enabled) { false }
+
       it 'the webhook route does not exist' do
-        post(:update)
+        get(:update)
 
         expect(response).to be_not_found
       end
