@@ -7,6 +7,11 @@
 @forward 'usa-prose';
 @forward 'usa-table';
 @forward 'usa-alert';
+@forward "uswds-utilities";
+
+hr {
+  background-color: $theme-color-secondary;
+}
 
 .report-title,
 .report-subtitle {
