@@ -1,4 +1,13 @@
 class ReportMailerPreview < ActionMailer::Preview
+  def deleted_user_accounts_report
+    ReportMailer.deleted_user_accounts_report(
+      email: 'test@example.com',
+      name: '',
+      issuers: [],
+      data: [],
+    )
+  end
+
   def warn_error
     ReportMailer.warn_error(
       email: 'test@example.com',
