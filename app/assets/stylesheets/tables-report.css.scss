@@ -25,7 +25,7 @@ hr {
 }
 
 .border-transparent {
-  border-color: transparent;
+  @include u-border-color('transparent');
 }
 
 .report-title,
