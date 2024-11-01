@@ -193,16 +193,31 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       end
     end
 
-    context 'when socure connection error encountered' do
+    context 'when socure error encountered' do
       let(:fake_socure_endpoint) { 'https://fake-socure.com/' }
+      let(:failed_response_body) do
+        { 'status' => 'Error',
+          'referenceId' => '1cff6d33-1cc0-4205-b740-c9a9e6b8bd66',
+          'data' => {},
+          'msg' => 'No active account is associated with this request' }
+      end
       before do
         allow(IdentityConfig.store).to receive(:socure_document_request_endpoint).
           and_return(fake_socure_endpoint)
-        stub_request(:post, fake_socure_endpoint).to_raise(Faraday::ConnectionFailed)
       end
-      it 'timeout still responds to user' do
+      it 'connection timeout still responds to user' do
+        stub_request(:post, fake_socure_endpoint).to_raise(Faraday::ConnectionFailed)
         get(:show)
 
+        expect(response).not_to be_nil
+      end
+
+      it 'socure error response still gives a result to user' do
+        stub_request(:post, fake_socure_endpoint).to_return(
+          status: 401,
+          body: JSON.generate(failed_response_body),
+        )
+        get(:show)
         expect(response).not_to be_nil
       end
     end
