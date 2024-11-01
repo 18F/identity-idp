@@ -637,7 +637,7 @@ doc_auth.info.lets_go: 'La vérification de l’identité se fait en deux temps�
 doc_auth.info.link_sent: Veuillez vérifier votre téléphone et suivre les instructions pour prendre une photo de votre pièce d’identité délivrée par l’État.
 doc_auth.info.link_sent_complete_no_polling: Quand vous aurez fini, cliquez sur « Suite » ici pour terminer la vérification de votre identité.
 doc_auth.info.link_sent_complete_polling: L’étape suivante se chargera automatiquement.
-doc_auth.info.login_access_sp: Vous utilisez %{app_name} pour accéder à %{sp_name}
+doc_auth.info.login_access_sp: Vous utilisez %{app_name} pour accéder à %{sp_name}.
 doc_auth.info.no_ssn: Vous devez avoir un numéro de sécurité sociale pour terminer la vérification de votre identité.
 doc_auth.info.review_examples_of_photos: Voir des exemples qui montrent comment prendre des photos nettes de votre pièce d’identité.
 doc_auth.info.secure_account: Nous chiffrons votre compte lorsque vous resaisissez votre mot de passe. Le chiffrement signifie que vos données sont protégées et que vous êtes le seul à pouvoir accéder à vos informations ou les modifier.
