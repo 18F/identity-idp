@@ -746,7 +746,7 @@ GEM
     zeitwerk (2.7.1)
     zlib (3.0.0)
     zonebie (0.6.1)
-    zxcvbn (0.1.10)
+    zxcvbn (0.1.12)
 
 PLATFORMS
   ruby
@@ -876,7 +876,7 @@ DEPENDENCIES
   yard
   zlib
   zonebie
-  zxcvbn (= 0.1.10)
+  zxcvbn (= 0.1.12)
 
 RUBY VERSION
    ruby 3.3.4p94
