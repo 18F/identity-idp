@@ -21,14 +21,13 @@
   <% end %>
 <% end %>
 
-<p id='how-to-verify-info'><%= @presenter.how_to_verify_info %></p>
+<p id='how-to-verify-info' class='margin-bottom-1'><%= @presenter.how_to_verify_info %></p>
   <div role="group" aria-labelledby="how-to-verify-info" class="border-bottom border-primary-light grid-row">
-    <div class="grid-col-12 tablet:grid-col-auto">
+    <div class="grid-col-12 tablet:grid-col-auto margin-top-3">
       <%= image_tag(
             asset_url(@presenter.asset_url),
             width: 88,
             height: 88,
-            class: 'margin-right-1 margin-top-0 tablet:margin-top-4',
             alt: @presenter.alt_text,
           ) %>
     </div>
@@ -38,6 +37,7 @@
           html: {
             id: nil,
             aria: { label: @presenter.submit },
+            class: 'margin-top-3',
           },
           method: :put,
           url: idv_how_to_verify_url,
@@ -51,7 +51,7 @@
           :selection_remote,
         ) do %>
             <% if @selfie_required %>
-                <span class="usa-tag usa-tag--informative margin-bottom-2">
+                <span class='usa-tag usa-tag--informative margin-bottom-2 margin-top-1'>
                   <%= t('doc_auth.tips.mobile_phone_required') %>
                 </span>
             <% end %>
@@ -71,7 +71,7 @@
         asset_url('idv/in-person.svg'),
         width: 88,
         height: 88,
-        class: 'margin-right-1 margin-top-4',
+        class: 'margin-right-1 margin-top-3',
         alt: t('image_description.post_office'),
       ) %>
 </div>
@@ -80,6 +80,7 @@
           @idv_how_to_verify_form,
           html: {
             id: nil,
+            class: 'margin-top-3',
             aria: { label: t('forms.buttons.continue_ipp') },
           },
           method: :put,

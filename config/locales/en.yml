@@ -42,6 +42,7 @@ account.connected_apps.associated_attributes_html: 'Connected %{timestamp_html} 
 account.connected_apps.associated_html: Connected %{timestamp_html}
 account.connected_apps.description: With your %{app_name} account, you can securely connect to multiple government accounts online. Below is a list of all the accounts you currently have connected.
 account.connected_apps.email_not_selected: Email not yet selected
+account.connected_apps.email_update_success_html: Your email for <strong>%{sp_name}</strong> was updated successfully.
 account.email_language.default: '%{language} (default)'
 account.email_language.edit_title: Edit email language preference
 account.email_language.languages_list: You will receive emails from %{app_name} in the language you choose.
@@ -566,7 +567,6 @@ doc_auth.errors.sharpness.failed_short: Image is blurry, please try again.
 doc_auth.errors.sharpness.top_msg: We couldn’t read your ID. Your photo may be too blurry or dark. Try taking a new picture in a bright area.
 doc_auth.errors.sharpness.top_msg_plural: We couldn’t read your ID. Your photos may be too blurry or dark. Try taking new pictures in a bright area.
 doc_auth.errors.upload_error: Sorry, something went wrong on our end.
-doc_auth.forms.captured_image: Captured Image
 doc_auth.forms.change_file: Change file
 doc_auth.forms.choose_file_html: Drag file here or <lg-underline>choose from folder</lg-underline>
 doc_auth.forms.doc_success: We verified your information
