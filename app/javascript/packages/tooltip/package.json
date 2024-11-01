@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "@18f/identity-design-system": "^9.3.0"
+    "@18f/identity-design-system": "^9.4.0"
   },
   "sideEffects": [
     "./tooltip-element.ts"

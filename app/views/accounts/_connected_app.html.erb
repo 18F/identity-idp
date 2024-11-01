@@ -1,4 +1,8 @@
 <div class="padding-1 border-top border-left border-right border-primary-light">
+  <% if flash[:email_updated_identity_id] == identity.id %>
+    <%= render AlertComponent.new(type: :success, class: 'margin-bottom-2', message: t('account.connected_apps.email_update_success_html', sp_name: identity.display_name)) %>
+  <% end %>
+
   <h2 class="h3 margin-top-0 margin-bottom-1">
     <% if identity.return_to_sp_url.present? %>
       <%= link_to(identity.display_name, identity.return_to_sp_url) %>
