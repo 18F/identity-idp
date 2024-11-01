@@ -43,7 +43,7 @@ module Users
     def process_successful_confirmation(email_address)
       confirm_and_notify(email_address)
       if current_user
-        flash[:success] = t('devise.confirmations.confirmed')
+        flash[:success] = flash_message_for_successful_signed_in_confirmation
         redirect_to account_url
       else
         flash[:success] = t('devise.confirmations.confirmed_but_sign_in')
@@ -87,6 +87,17 @@ module Users
       else
         action_text = t('devise.confirmations.sign_in')
         t('devise.confirmations.already_confirmed', action: action_text)
+      end
+    end
+
+    def flash_message_for_successful_signed_in_confirmation
+      if IdentityConfig.store.feature_select_email_to_share_enabled
+        t(
+          'account.emails.confirmed_html',
+          url: account_connected_accounts_url,
+        )
+      else
+        t('devise.confirmations.confirmed')
       end
     end
 
