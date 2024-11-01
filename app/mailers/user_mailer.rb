@@ -199,7 +199,7 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def add_email(token, request_id, from_select_email_flow = nil)
+  def add_email(token:, request_id:, from_select_email_flow: nil)
     with_user_locale(user) do
       presenter = ConfirmationEmailPresenter.new(user, view_context)
       @first_sentence = presenter.first_sentence

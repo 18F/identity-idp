@@ -89,6 +89,10 @@ module Users
       render_not_found
     end
 
+    def request_id
+      sp_session[:request_id]
+    end
+
     def email_address
       EmailAddress.find(params[:id])
     end
@@ -114,7 +118,7 @@ module Users
     end
 
     def permitted_params
-      params.require(:user).permit(:email)
+      params.require(:user).permit(:email, :request_id)
     end
 
     def check_max_emails_per_account

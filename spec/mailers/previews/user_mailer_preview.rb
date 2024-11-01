@@ -136,7 +136,8 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def add_email
-    UserMailer.with(user: user, email_address: email_address_record).add_email(SecureRandom.hex)
+    UserMailer.with(user: user, email_address: email_address_record).
+      add_email(token: SecureRandom.hex)
   end
 
   def email_added

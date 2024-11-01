@@ -19,11 +19,11 @@ class AddUserEmailForm
     @user ||= User.new
   end
 
-  def submit(user, params, request_id = nil)
+  def submit(user, params)
     @user = user
     @email = params[:email]
     @email_address = email_address_record(@email)
-    @request_id = request_id
+    @request_id = params[:request_id]
     if valid?
       process_successful_submission
     else
@@ -46,13 +46,13 @@ class AddUserEmailForm
   private
 
   attr_writer :email
-  attr_reader :success, :email_address
+  attr_reader :success, :email_address, :request_id
 
   def process_successful_submission
     @success = true
     email_address.save!
     SendAddEmailConfirmation.new(user).
-      call(email_address, in_select_email_flow, @request_id)
+      call(email_address, in_select_email_flow, request_id)
   end
 
   def extra_analytics_attributes
