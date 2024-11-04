@@ -44,7 +44,7 @@ module Users
       confirm_and_notify(email_address)
       store_from_select_email_flow_in_session
       if current_user
-        flash[:success] = flash_message_for_successful_signed_in_confirmation
+        flash[:success] = t('devise.confirmations.confirmed')
         session.delete(:from_select_email_flow)
         redirect_to account_url
       else
@@ -89,18 +89,6 @@ module Users
       else
         action_text = t('devise.confirmations.sign_in')
         t('devise.confirmations.already_confirmed', action: action_text)
-      end
-    end
-
-    def flash_message_for_successful_signed_in_confirmation
-      if IdentityConfig.store.feature_select_email_to_share_enabled &&
-         session[:from_select_email_flow]
-        t(
-          'account.emails.confirmed_html',
-          url: account_connected_accounts_url,
-        )
-      else
-        t('devise.confirmations.confirmed')
       end
     end
 
