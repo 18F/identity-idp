@@ -6,7 +6,7 @@ class ReportMailerPreview < ActionMailer::Preview
 
     ReportMailer.deleted_user_accounts_report(
       email: 'test@example.com',
-      name: '',
+      name: 'Example Partner',
       issuers: ['test-sp-1', 'test-sp-2'],
       data:,
     )
