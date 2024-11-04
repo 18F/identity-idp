@@ -24,6 +24,8 @@ export function trackEvent(event: string, payload?: object) {
  * Logs an error.
  *
  * @param error Error object.
+ * @param event Error event, if error is caught using an `error` event handler. Including this can
+ * add additional resolution to the logged error, notably the filename where the error occurred.
  */
 export const trackError = ({ name, message, stack }: Error, event?: ErrorEvent) =>
   trackEvent('Frontend Error', { name, message, stack, filename: event?.filename });
