@@ -41,7 +41,7 @@ account_reset.request.yes_continue: Sí, continuar con la eliminación
 account.connected_apps.associated_attributes_html: 'Conectado el %{timestamp_html} con:'
 account.connected_apps.associated_html: 'Conectado: %{timestamp_html}'
 account.connected_apps.description: Con su cuenta de %{app_name}, puede conectarse de manera segura a muchas cuentas del gobierno en línea. Esta es una lista de todas las cuentas que tiene conectadas actualmente.
-account.connected_apps.email_not_selected: No se seleccionó correo electrónico aún
+account.connected_apps.email_not_selected: No se ha seleccionado aún una dirección de correo electrónico
 account.connected_apps.email_update_success_html: Se actualizó su correo electrónico para la <strong>%{sp_name}</strong>.
 account.email_language.default: '%{language} (predeterminado)'
 account.email_language.edit_title: Editar la preferencia de idioma del correo electrónico
@@ -1754,8 +1754,8 @@ two_factor_authentication.piv_cac.renamed: Se ha cambiado correctamente el nombr
 two_factor_authentication.please_try_again_html: Inténtelo de nuevo en <strong>%{countdown}</strong>.
 two_factor_authentication.read_about_two_factor_authentication: Lea sobre la autenticación de dos factores
 two_factor_authentication.recaptcha.disclosure_statement_html: Este sitio está protegido por reCAPTCHA y se aplican %{google_policy_link_html} y %{google_tos_link_html} de Google. Lea %{login_tos_link_html} de %{app_name}.
-two_factor_authentication.recaptcha.google_policy_link: Política de privacidad
-two_factor_authentication.recaptcha.google_tos_link: Condiciones de servicio
+two_factor_authentication.recaptcha.google_policy_link: la Política de privacidad
+two_factor_authentication.recaptcha.google_tos_link: las Condiciones de servicio
 two_factor_authentication.recaptcha.login_tos_link: Condiciones de uso del servicio móvil
 two_factor_authentication.recommended: Recomendado
 two_factor_authentication.totp_header_text: Ingrese su código de la aplicación de autenticación
