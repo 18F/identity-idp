@@ -6,12 +6,11 @@ module DocAuth
       def fetch
         # return DocAuth::Response with DocAuth::Error if workflow is invalid
         http_response = send_http_request
-        if http_response.nil? || !http_response.body.present?
-          return handle_invalid_response(http_response)
+        if http_response&.success? && http_response.body.present?
+          handle_http_response(http_response)
+        else
+          handle_invalid_response(http_response)
         end
-        return handle_invalid_response(http_response) unless http_response.success?
-
-        handle_http_response(http_response)
       rescue Faraday::ConnectionFailed, Faraday::TimeoutError, Faraday::SSLError => e
         handle_connection_error(exception: e)
       end
