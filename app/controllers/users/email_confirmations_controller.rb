@@ -91,7 +91,8 @@ module Users
     end
 
     def flash_message_for_successful_signed_in_confirmation
-      if IdentityConfig.store.feature_select_email_to_share_enabled
+      if IdentityConfig.store.feature_select_email_to_share_enabled &&
+         params[:from_select_email_flow].to_s == 'true'
         t(
           'account.emails.confirmed_html',
           url: account_connected_accounts_url,

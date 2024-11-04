@@ -31,21 +31,45 @@ RSpec.describe Users::EmailConfirmationsController do
             and_return(true)
         end
 
-        it 'renders the proper flash message for signed in user' do
-          flash_message = t(
-            'account.emails.confirmed_html',
-            url: account_connected_accounts_url,
-          )
-          user = create(:user)
-          sign_in user
-          new_email = Faker::Internet.email
-
-          add_email_form = AddUserEmailForm.new
-          add_email_form.submit(user, email: new_email)
-          email_record = add_email_form.email_address_record(new_email)
-
-          get :create, params: { confirmation_token: email_record.reload.confirmation_token }
-          expect(flash[:success]).to eq(flash_message)
+        context 'when user is in select email form flow' do
+          it 'renders the proper flash message' do
+            flash_message = t(
+              'account.emails.confirmed_html',
+              url: account_connected_accounts_url,
+            )
+            user = create(:user)
+            sign_in user
+            new_email = Faker::Internet.email
+  
+            add_email_form = AddUserEmailForm.new
+            add_email_form.submit(user, email: new_email)
+            email_record = add_email_form.email_address_record(new_email)
+  
+            get :create, params: { 
+                            confirmation_token: email_record.reload.confirmation_token,
+                            from_select_email_flow: true,
+                          }
+            expect(flash[:success]).to eq(flash_message)
+          end
+        end
+        
+        context 'when user is not in email form flow' do
+          it 'renders proper flash message' do
+            flash_message = t('devise.confirmations.confirmed')
+            user = create(:user)
+            sign_in user
+            new_email = Faker::Internet.email
+  
+            add_email_form = AddUserEmailForm.new
+            add_email_form.submit(user, email: new_email)
+            email_record = add_email_form.email_address_record(new_email)
+  
+            get :create, params: { 
+                            confirmation_token: email_record.reload.confirmation_token,
+                            from_select_email_flow: false,
+                          }
+            expect(flash[:success]).to eq(flash_message)
+          end
         end
       end
 
