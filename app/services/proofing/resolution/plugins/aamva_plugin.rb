@@ -15,13 +15,13 @@ module Proofing
         def call(
           applicant_pii:,
           current_sp:,
-          instant_verify_result:,
+          instant_verify_state_id_address_result:,
           ipp_enrollment_in_progress:,
           timer:
         )
           should_proof = should_proof_state_id_with_aamva?(
             applicant_pii:,
-            instant_verify_result:,
+            instant_verify_state_id_address_result:,
             ipp_enrollment_in_progress:,
           )
 
@@ -87,34 +87,35 @@ module Proofing
 
         def should_proof_state_id_with_aamva?(
           applicant_pii:,
-          instant_verify_result:,
+          instant_verify_state_id_address_result:,
           ipp_enrollment_in_progress:
         )
           return false unless aamva_supports_state_id_jurisdiction?(applicant_pii)
           # If the user is in in-person-proofing and they have changed their address then
           # they are not eligible for get-to-yes
           if !ipp_enrollment_in_progress || same_address_as_id?(applicant_pii)
-            user_can_pass_after_state_id_check?(instant_verify_result:)
+            user_can_pass_after_state_id_check?(instant_verify_state_id_address_result:)
           else
-            instant_verify_result.success?
+            instant_verify_state_id_address_result.success?
           end
         end
 
         def user_can_pass_after_state_id_check?(
-          instant_verify_result:
+          instant_verify_state_id_address_result:
         )
-          return true if instant_verify_result.success?
+          return true if instant_verify_state_id_address_result.success?
 
           # For failed IV results, this method validates that the user is eligible to pass if the
           # failed attributes are covered by the same attributes in a successful AAMVA response
           # aka the Get-to-Yes w/ AAMVA feature.
-          if !instant_verify_result.failed_result_can_pass_with_additional_verification?
+          if !instant_verify_state_id_address_result.
+              failed_result_can_pass_with_additional_verification?
             return false
           end
 
           attributes_aamva_can_pass = [:address, :dob, :state_id_number]
           attributes_requiring_additional_verification =
-            instant_verify_result.attributes_requiring_additional_verification
+            instant_verify_state_id_address_result.attributes_requiring_additional_verification
           results_that_cannot_pass_aamva =
             attributes_requiring_additional_verification - attributes_aamva_can_pass
 

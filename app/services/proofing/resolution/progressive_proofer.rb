@@ -8,15 +8,17 @@ module Proofing
     #   2. The user has only provided one address for their residential and identity document
     #      address or separate residential and identity document addresses
     class ProgressiveProofer
-      attr_reader :applicant_pii, :timer, :current_sp
       attr_reader :aamva_plugin,
                   :instant_verify_residential_address_plugin,
+                  :instant_verify_state_id_address_plugin,
                   :threatmetrix_plugin
 
       def initialize
         @aamva_plugin = Plugins::AamvaPlugin.new
         @instant_verify_residential_address_plugin =
           Plugins::InstantVerifyResidentialAddressPlugin.new
+        @instant_verify_state_id_address_plugin =
+          Plugins::InstantVerifyStateIdAddressPlugin.new
         @threatmetrix_plugin = Plugins::ThreatMetrixPlugin.new
       end
 
@@ -37,10 +39,7 @@ module Proofing
         ipp_enrollment_in_progress:,
         current_sp:
       )
-        @applicant_pii = applicant_pii.except(:best_effort_phone_number_for_socure)
-        @timer = timer
-        @ipp_enrollment_in_progress = ipp_enrollment_in_progress
-        @current_sp = current_sp
+        applicant_pii = applicant_pii.except(:best_effort_phone_number_for_socure)
 
         device_profiling_result = threatmetrix_plugin.call(
           applicant_pii:,
@@ -51,19 +50,25 @@ module Proofing
           user_email:,
         )
 
-        @residential_instant_verify_result = instant_verify_residential_address_plugin.call(
+        instant_verify_residential_address_result = instant_verify_residential_address_plugin.call(
           applicant_pii:,
           current_sp:,
           ipp_enrollment_in_progress:,
           timer:,
         )
 
-        @instant_verify_result = proof_id_address_with_lexis_nexis_if_needed
+        instant_verify_state_id_address_result = instant_verify_state_id_address_plugin.call(
+          applicant_pii:,
+          current_sp:,
+          instant_verify_residential_address_result:,
+          ipp_enrollment_in_progress:,
+          timer:,
+        )
 
         state_id_result = aamva_plugin.call(
           applicant_pii:,
           current_sp:,
-          instant_verify_result:,
+          instant_verify_state_id_address_result:,
           ipp_enrollment_in_progress:,
           timer:,
         )
@@ -71,92 +76,14 @@ module Proofing
         ResultAdjudicator.new(
           device_profiling_result: device_profiling_result,
           ipp_enrollment_in_progress: ipp_enrollment_in_progress,
-          resolution_result: instant_verify_result,
+          resolution_result: instant_verify_state_id_address_result,
           should_proof_state_id: aamva_plugin.aamva_supports_state_id_jurisdiction?(applicant_pii),
           state_id_result: state_id_result,
-          residential_resolution_result: residential_instant_verify_result,
+          residential_resolution_result: instant_verify_residential_address_result,
           same_address_as_id: applicant_pii[:same_address_as_id],
           applicant_pii: applicant_pii,
         )
       end
-
-      private
-
-      attr_reader :device_profiling_result,
-                  :residential_instant_verify_result,
-                  :instant_verify_result
-
-      def resolution_cannot_pass
-        Proofing::Resolution::Result.new(
-          success: false, errors: {}, exception: nil, vendor_name: 'ResolutionCannotPass',
-        )
-      end
-
-      def proof_id_address_with_lexis_nexis_if_needed
-        if same_address_as_id? && ipp_enrollment_in_progress?
-          return residential_instant_verify_result
-        end
-        return resolution_cannot_pass unless residential_instant_verify_result.success?
-
-        timer.time('resolution') do
-          resolution_proofer.proof(applicant_pii_with_state_id_address)
-        end.tap do |result|
-          add_sp_cost(:lexis_nexis_resolution, result.transaction_id)
-        end
-      end
-
-      def same_address_as_id?
-        applicant_pii[:same_address_as_id].to_s == 'true'
-      end
-
-      def ipp_enrollment_in_progress?
-        @ipp_enrollment_in_progress
-      end
-
-      def resolution_proofer
-        @resolution_proofer ||=
-          if IdentityConfig.store.proofer_mock_fallback
-            Proofing::Mock::ResolutionMockClient.new
-          else
-            Proofing::LexisNexis::InstantVerify::Proofer.new(
-              instant_verify_workflow: IdentityConfig.store.lexisnexis_instant_verify_workflow,
-              account_id: IdentityConfig.store.lexisnexis_account_id,
-              base_url: IdentityConfig.store.lexisnexis_base_url,
-              username: IdentityConfig.store.lexisnexis_username,
-              password: IdentityConfig.store.lexisnexis_password,
-              hmac_key_id: IdentityConfig.store.lexisnexis_hmac_key_id,
-              hmac_secret_key: IdentityConfig.store.lexisnexis_hmac_secret_key,
-              request_mode: IdentityConfig.store.lexisnexis_request_mode,
-            )
-          end
-      end
-
-      def applicant_pii_with_state_id_address
-        if ipp_enrollment_in_progress?
-          with_state_id_address(applicant_pii)
-        else
-          applicant_pii
-        end
-      end
-
-      def add_sp_cost(token, transaction_id)
-        Db::SpCost::AddSpCost.call(current_sp, token, transaction_id: transaction_id)
-      end
-
-      # Make a copy of pii with the user's state ID address overwriting the address keys
-      # Need to first remove the address keys to avoid key/value collision
-      def with_state_id_address(pii)
-        pii.except(*SECONDARY_ID_ADDRESS_MAP.values).
-          transform_keys(SECONDARY_ID_ADDRESS_MAP)
-      end
-
-      SECONDARY_ID_ADDRESS_MAP = {
-        identity_doc_address1: :address1,
-        identity_doc_address2: :address2,
-        identity_doc_city: :city,
-        identity_doc_address_state: :state,
-        identity_doc_zipcode: :zipcode,
-      }.freeze
     end
   end
 end
