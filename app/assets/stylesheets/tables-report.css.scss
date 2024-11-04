@@ -8,8 +8,8 @@
 @forward 'usa-table';
 @forward 'usa-alert';
 
-hr {
-  background-color: color('secondary');
+.bg-secondary {
+  @include u-bg('secondary');
 }
 
 .margin-bottom-4 {
