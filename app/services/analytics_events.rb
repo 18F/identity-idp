@@ -6864,7 +6864,6 @@ module AnalyticsEvents
   # @param [String, nil] disposable_email_domain Disposable email domain used for registration
   # @param [String, nil] in_person_proofing_status In person proofing status
   # @param [String, nil] doc_auth_result The doc auth result
-  # @param [Hash] device_profiling_result Used to log profiling result if existing
   def user_registration_complete(
     ial2:,
     service_provider_name:,
@@ -6890,7 +6889,6 @@ module AnalyticsEvents
       disposable_email_domain:,
       in_person_proofing_status:,
       doc_auth_result:,
-      device_profiling_result:,
       **extra,
     )
   end
