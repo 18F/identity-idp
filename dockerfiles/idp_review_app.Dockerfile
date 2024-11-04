@@ -130,7 +130,7 @@ COPY --chown=app:app pwned_passwords/pwned_passwords.txt.sample $RAILS_ROOT/pwne
 COPY --chown=app:app public/ban-robots.txt $RAILS_ROOT/public/robots.txt
 
 # Copy application.yml.default to application.yml
-COPY --chown=app:app ./config/application.yml.default.docker $RAILS_ROOT/config/application.yml
+COPY --chown=app:app ./config/application.yml.default.review_app $RAILS_ROOT/config/application.yml
 
 # Setup config files
 COPY --chown=app:app config/agencies.localdev.yml $RAILS_ROOT/config/agencies.yml

@@ -177,7 +177,7 @@ build-idp-image:
     - >-
       /kaniko/executor
       --context "${CI_PROJECT_DIR}"
-      --dockerfile "${CI_PROJECT_DIR}/dockerfiles/idp_prod.Dockerfile"
+      --dockerfile "${CI_PROJECT_DIR}/dockerfiles/idp_deploy.Dockerfile"
       --destination "${ECR_REGISTRY}/identity-idp/idp:${CI_COMMIT_SHA}"
       ${BRANCH_TAGGING_STRING}
       --cache-repo="${ECR_REGISTRY}/identity-idp/idp/cache"
