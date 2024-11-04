@@ -295,17 +295,6 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
         .filter(Boolean)
         .join(' ')}
     >
-      {/*
-       * Disable reason: The Airbnb configuration of the `jsx-a11y` rule is strict in that it
-       * requires _both_ the `for` attribute and nesting, to maximize support for assistive
-       * technology. By the standard, only one or the other should be required. A form layout which
-       * includes a hint following a label cannot be nested within the label without misidentifying
-       * the hint as part of the label, which is the markup currently supported by USWDS.
-       *
-       * See: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/issues/718
-       * See: https://github.com/airbnb/javascript/pull/2136
-       */}
-      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label
         id={labelId}
         htmlFor={inputId}
