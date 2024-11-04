@@ -50,7 +50,7 @@ module Proofing
           user_email:,
         )
 
-        instant_verify_residential_address_result = instant_verify_residential_address_plugin.call(
+        residential_address_resolution_result = instant_verify_residential_address_plugin.call(
           applicant_pii:,
           current_sp:,
           ipp_enrollment_in_progress:,
@@ -60,7 +60,7 @@ module Proofing
         state_id_address_resolution_result = instant_verify_state_id_address_plugin.call(
           applicant_pii:,
           current_sp:,
-          instant_verify_residential_address_result:,
+          residential_address_resolution_result:,
           ipp_enrollment_in_progress:,
           timer:,
         )
@@ -79,7 +79,7 @@ module Proofing
           resolution_result: state_id_address_resolution_result,
           should_proof_state_id: aamva_plugin.aamva_supports_state_id_jurisdiction?(applicant_pii),
           state_id_result: state_id_result,
-          residential_resolution_result: instant_verify_residential_address_result,
+          residential_resolution_result: residential_address_resolution_result,
           same_address_as_id: applicant_pii[:same_address_as_id],
           applicant_pii: applicant_pii,
         )

@@ -12,7 +12,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     Proofing::Resolution::Plugins::InstantVerifyResidentialAddressPlugin.new
   end
 
-  let(:instant_verify_residential_address_result) do
+  let(:residential_address_resolution_result) do
     Proofing::Resolution::Result.new(
       success: true,
       transaction_id: 'iv-residential',
@@ -22,7 +22,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   let(:instant_verify_residential_address_proofer) do
     instance_double(
       Proofing::LexisNexis::InstantVerify::Proofer,
-      proof: instant_verify_residential_address_result,
+      proof: residential_address_resolution_result,
     )
   end
 
@@ -156,7 +156,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         expect(instant_verify_state_id_address_plugin).to receive(:call).with(
           applicant_pii:,
           current_sp:,
-          instant_verify_residential_address_result: satisfy do |result|
+          residential_address_resolution_result: satisfy do |result|
             expect(result.success?).to eql(true)
             expect(result.vendor_name).to eql('ResidentialAddressNotRequired')
           end,
@@ -202,7 +202,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID }
 
         let(:state_id_address_resolution_result) do
-          instant_verify_residential_address_result
+          residential_address_resolution_result
         end
 
         it 'calls AamvaPlugin' do
@@ -231,7 +231,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           expect(instant_verify_state_id_address_plugin).to receive(:call).with(
             applicant_pii:,
             current_sp:,
-            instant_verify_residential_address_result:,
+            residential_address_resolution_result:,
             ipp_enrollment_in_progress: true,
             timer: an_instance_of(JobHelpers::Timer),
           ).and_call_original
@@ -295,7 +295,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           expect(instant_verify_state_id_address_plugin).to receive(:call).with(
             applicant_pii:,
             current_sp:,
-            instant_verify_residential_address_result:,
+            residential_address_resolution_result:,
             ipp_enrollment_in_progress: true,
             timer: an_instance_of(JobHelpers::Timer),
           ).and_call_original
@@ -320,7 +320,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             expect(result.state_id_result).to eql(aamva_result)
             expect(result.device_profiling_result).to eql(threatmetrix_result)
             expect(result.residential_resolution_result).to(
-              eql(instant_verify_residential_address_result),
+              eql(residential_address_resolution_result),
             )
             expect(result.ipp_enrollment_in_progress).to eql(true)
             expect(result.same_address_as_id).to eql('false')

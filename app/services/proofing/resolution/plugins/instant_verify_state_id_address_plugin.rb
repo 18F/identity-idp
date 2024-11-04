@@ -15,15 +15,15 @@ module Proofing
         def call(
           applicant_pii:,
           current_sp:,
-          instant_verify_residential_address_result:,
+          residential_address_resolution_result:,
           ipp_enrollment_in_progress:,
           timer:
         )
           if same_address_as_id?(applicant_pii) && ipp_enrollment_in_progress
-            return instant_verify_residential_address_result
+            return residential_address_resolution_result
           end
 
-          return resolution_cannot_pass unless instant_verify_residential_address_result.success?
+          return resolution_cannot_pass unless residential_address_resolution_result.success?
 
           applicant_pii_with_state_id_address =
             if ipp_enrollment_in_progress
