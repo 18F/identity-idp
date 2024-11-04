@@ -9,7 +9,7 @@
 @forward 'usa-alert';
 
 hr {
-  background-color: $theme-color-secondary;
+  background-color: color('secondary');
 }
 
 .margin-bottom-4 {
@@ -21,7 +21,7 @@ hr {
 }
 
 .height-05 {
-  @include u-height(4px);
+  @include u-height(0.5);
 }
 
 .border-transparent {
