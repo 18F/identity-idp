@@ -602,6 +602,7 @@ doc_auth.headings.verify_at_post_office: Confirmer votre identité en personne d
 doc_auth.headings.verify_identity: Confirmer votre identité
 doc_auth.headings.verify_online: Confirmer votre identité en ligne
 doc_auth.headings.verify_online_selfie: Confirmer votre identité en ligne à l’aide de votre téléphone
+doc_auth.headings.verify_with_phone: Confirmer votre identité à l’aide de votre téléphone
 doc_auth.headings.welcome: Vérifions votre identité auprès de %{sp_name}
 doc_auth.hybrid_flow_warning.explanation_html: Vous utilisez <strong>%{app_name}</strong> pour confirmer votre identité et accéder à <strong>%{service_provider_name}</strong> et à ses services.
 doc_auth.hybrid_flow_warning.explanation_non_sp_html: Vous utilisez <strong>%{app_name}</strong> pour confirmer votre identité.
@@ -609,6 +610,7 @@ doc_auth.hybrid_flow_warning.only_add_if_text: 'N’AJOUTEZ VOTRE PIÈCE D’IDE
 doc_auth.hybrid_flow_warning.only_add_own_account: Vous utilisez votre propre compte %{app_name}
 doc_auth.hybrid_flow_warning.only_add_phone_verify: Vous avez demandé à %{app_name} de confirmer votre identité à l’aide de votre téléphone
 doc_auth.hybrid_flow_warning.only_add_sp_services_html: Vous essayez d’accéder aux services de <strong>%{service_provider_name}</strong>
+doc_auth.info.add_id_consent_with_phone: Ajoutez uniquement votre pièce d’identité si vous avez demandé à %{app_name} de vérifier votre identité à l’aide de votre téléphone.
 doc_auth.info.address_guidance_puerto_rico_html: Résidents de Porto Rico :<br><br>modifiez votre adresse pour indiquer votre lotissement ou votre condominium à la ligne 2.
 doc_auth.info.capture_status_big_document: Trop près
 doc_auth.info.capture_status_capturing: Prise de la photo
@@ -635,6 +637,7 @@ doc_auth.info.lets_go: 'La vérification de l’identité se fait en deux temps�
 doc_auth.info.link_sent: Veuillez vérifier votre téléphone et suivre les instructions pour prendre une photo de votre pièce d’identité délivrée par l’État.
 doc_auth.info.link_sent_complete_no_polling: Quand vous aurez fini, cliquez sur « Suite » ici pour terminer la vérification de votre identité.
 doc_auth.info.link_sent_complete_polling: L’étape suivante se chargera automatiquement.
+doc_auth.info.login_access_sp: Vous utilisez %{app_name} pour accéder à %{sp_name}.
 doc_auth.info.no_ssn: Vous devez avoir un numéro de sécurité sociale pour terminer la vérification de votre identité.
 doc_auth.info.review_examples_of_photos: Voir des exemples qui montrent comment prendre des photos nettes de votre pièce d’identité.
 doc_auth.info.secure_account: Nous chiffrons votre compte lorsque vous resaisissez votre mot de passe. Le chiffrement signifie que vos données sont protégées et que vous êtes le seul à pouvoir accéder à vos informations ou les modifier.
