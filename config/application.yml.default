@@ -311,6 +311,8 @@ recaptcha_enterprise_project_id: ''
 recaptcha_mock_validator: true
 recaptcha_secret_key: ''
 recaptcha_site_key: ''
+recommend_webauthn_platform_for_sms_ab_test_account_creation_percent: 0
+recommend_webauthn_platform_for_sms_ab_test_authentication_percent: 0
 recovery_code_length: 4
 redis_pool_size: 10
 redis_throttle_pool_size: 5

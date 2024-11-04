@@ -236,6 +236,9 @@ Rails.application.routes.draw do
     get '/second_mfa_reminder' => 'users/second_mfa_reminder#new'
     post '/second_mfa_reminder' => 'users/second_mfa_reminder#create'
 
+    get '/webauthn_platform_recommended' => 'users/webauthn_platform_recommended#new'
+    post '/webauthn_platform_recommended' => 'users/webauthn_platform_recommended#create'
+
     get '/piv_cac' => 'users/piv_cac_authentication_setup#new', as: :setup_piv_cac
     get '/piv_cac_error' => 'users/piv_cac_authentication_setup#error', as: :setup_piv_cac_error
     post '/present_piv_cac' => 'users/piv_cac_authentication_setup#submit_new_piv_cac',
