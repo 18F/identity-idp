@@ -201,6 +201,22 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           'data' => {},
           'msg' => 'No active account is associated with this request' }
       end
+      let(:response_body_401) do
+        {
+          status: 'Error',
+          referenceId: '7ff0cdc5-395e-45d1-8467-0ff1b41c11dc',
+          msg: 'string',
+        }
+      end
+      let(:no_doc_found_response_body) do
+        {
+          referenceId: '0dc21b0d-04df-4dd5-8533-ec9ecdafe0f4',
+          msg: {
+            status: 400,
+            msg: 'No Documents found',
+          },
+        }
+      end
       before do
         allow(IdentityConfig.store).to receive(:socure_document_request_endpoint).
           and_return(fake_socure_endpoint)
@@ -218,7 +234,8 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           body: JSON.generate(failed_response_body),
         )
         get(:show)
-        expect(response).not_to be_nil
+        expect(response.body).to eq('')
+        expect(response.status).to be(200)
       end
       it 'socure nil response still gives a result to user' do
         stub_request(:post, fake_socure_endpoint).to_return(
@@ -226,7 +243,26 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           body: nil,
         )
         get(:show)
-        expect(response).not_to be_nil
+        expect(response.body).to eq('')
+        expect(response.status).to be(200)
+      end
+      it 'socure nil response still gives a result to user' do
+        stub_request(:post, fake_socure_endpoint).to_return(
+          status: 401,
+          body: JSON.generate(response_body_401),
+        )
+        get(:show)
+        expect(response.body).to eq('')
+        expect(response.status).to be(200)
+      end
+      it 'socure nil response still gives a result to user' do
+        stub_request(:post, fake_socure_endpoint).to_return(
+          status: 401,
+          body: JSON.generate(no_doc_found_response_body),
+        )
+        get(:show)
+        expect(response.body).to eq('')
+        expect(response.status).to be(200)
       end
     end
   end
