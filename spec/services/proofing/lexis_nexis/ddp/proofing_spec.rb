@@ -86,12 +86,8 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofer do
     end
   end
 
-  subject(:proofing) do
+  subject(:proofer) do
     described_class.new(LexisNexisFixtures.example_ddp_proofing_config.to_h)
-  end
-
-  subject(:authentication) do
-    described_class.new(LexisNexisFixtures.example_ddp_authentication_config.to_h)
   end
 
   describe '#proof' do
@@ -115,7 +111,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofer do
         let(:response_body) { LexisNexisFixtures.ddp_success_response_json }
 
         it 'is a successful result' do
-          result = proofing.proof(proofing_applicant)
+          result = proofer.proof(proofing_applicant)
 
           expect(result.success?).to eq(true)
           expect(result.errors).to be_empty
@@ -138,7 +134,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofer do
             proofing_verification_request.url,
           ).to_raise(error)
 
-          result = proofing.proof(proofing_applicant)
+          result = proofer.proof(proofing_applicant)
 
           expect(result.success?).to eq(false)
           expect(result.errors).to be_empty
@@ -150,7 +146,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofer do
         let(:response_body) { LexisNexisFixtures.ddp_unexpected_review_status_response_json }
 
         it 'returns an exception result' do
-          result = proofing.proof(proofing_applicant)
+          result = proofer.proof(proofing_applicant)
 
           expect(result.success?).to eq(false)
           expect(result.exception.inspect).
@@ -160,6 +156,10 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofer do
     end
 
     context 'when user is going through account creation' do
+      subject(:proofer) do
+        described_class.new(LexisNexisFixtures.example_ddp_authentication_config.to_h)
+      end
+
       before do
         allow(IdentityConfig.store).to receive(:lexisnexis_authentication_threatmetrix_policy).
           and_return('test-authentication-policy')
@@ -168,7 +168,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofer do
         let(:response_body) { LexisNexisFixtures.ddp_success_response_json }
 
         it 'is a successful result' do
-          result = authentication.proof(authentication_applicant)
+          result = proofer.proof(authentication_applicant)
 
           expect(result.success?).to eq(true)
           expect(result.errors).to be_empty
@@ -189,7 +189,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofer do
             authentication_verification_request.url,
           ).to_raise(error)
 
-          result = authentication.proof(authentication_applicant)
+          result = proofer.proof(authentication_applicant)
 
           expect(result.success?).to eq(false)
           expect(result.errors).to be_empty

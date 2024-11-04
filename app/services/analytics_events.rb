@@ -6876,7 +6876,6 @@ module AnalyticsEvents
     disposable_email_domain: nil,
     in_person_proofing_status: nil,
     doc_auth_result: nil,
-    device_profiling_result: nil,
     **extra
   )
     track_event(
