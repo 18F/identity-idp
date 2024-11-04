@@ -1,4 +1,6 @@
 #########################################################################
+# This is a "production-ready" image build for the IDP that is suitable
+# for deployment.
 # This is a multi-stage build.  This stage just builds and downloads
 # gems and yarn stuff and large files.  We have it so that we can
 # avoid having build-essential and the large-files token be in the
@@ -103,7 +105,7 @@ COPY keys.example $RAILS_ROOT/keys
 COPY public/ban-robots.txt $RAILS_ROOT/public/robots.txt
 
 # Copy application.yml.default to application.yml
-COPY ./config/application.yml.default.prod $RAILS_ROOT/config/application.yml
+COPY ./config/application.yml.default.k8s_deploy $RAILS_ROOT/config/application.yml
 
 # Precompile assets
 RUN SKIP_YARN_INSTALL=true bundle exec rake assets:precompile && rm -r node_modules/ && rm -r .yarn-cache/
