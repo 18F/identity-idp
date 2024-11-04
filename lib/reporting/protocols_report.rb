@@ -366,7 +366,7 @@ module Reporting
       QUERY
     end
 
-    def fetch_uniq_issuers(query)
+    def fetch_uniq_issuers(query:)
       by_uniq_issuers(
         cloudwatch_client.fetch(
           query:,
