@@ -193,8 +193,8 @@ describe('CaptchaSubmitButtonElement', () => {
         it('tracks error', async () => {
           const button = screen.getByRole('button', { name: 'Submit' });
           const form = document.querySelector('form')!;
-
           sandbox.stub(form, 'submit');
+
           await userEvent.click(button);
 
           await expect(trackError).to.eventually.be.calledWith(error);
