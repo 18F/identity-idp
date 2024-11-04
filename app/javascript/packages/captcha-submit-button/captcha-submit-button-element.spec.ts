@@ -183,10 +183,10 @@ describe('CaptchaSubmitButtonElement', () => {
         it('does not prevent default form submission', async () => {
           const button = screen.getByRole('button', { name: 'Submit' });
           const form = document.querySelector('form')!;
-
           sandbox.stub(form, 'submit');
 
           await userEvent.click(button);
+
           await expect(form.submit).to.eventually.be.called();
         });
 
