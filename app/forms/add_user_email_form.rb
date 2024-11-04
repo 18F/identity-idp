@@ -15,11 +15,11 @@ class AddUserEmailForm
     @user ||= User.new
   end
 
-  def submit(user, params, from_select_email_flow = nil)
+  def submit(user, params)
     @user = user
     @email = params[:email]
     @email_address = email_address_record(@email)
-    @from_select_email_flow = from_select_email_flow
+    @from_select_email_flow = params[:from_select_email_flow]
 
     if valid?
       process_successful_submission

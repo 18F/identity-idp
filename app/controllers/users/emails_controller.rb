@@ -12,7 +12,7 @@ module Users
 
     def show
       analytics.add_email_visit
-      user_session[:from_select_email_flow] = params[:from_select_email_flow]
+      @from_select_email_flow = params[:from_select_email_flow]
       @add_user_email_form = AddUserEmailForm.new
       @pending_completions_consent = pending_completions_consent?
     end
@@ -20,10 +20,7 @@ module Users
     def add
       @add_user_email_form = AddUserEmailForm.new
 
-      result = @add_user_email_form.submit(
-        current_user, permitted_params,
-        user_session[:from_select_email_flow]
-      )
+      result = @add_user_email_form.submit(current_user, permitted_params)
       analytics.add_email_request(**result.to_h)
 
       if result.success?
@@ -109,7 +106,7 @@ module Users
     end
 
     def permitted_params
-      params.require(:user).permit(:email)
+      params.require(:user).permit(:email, :from_select_email_flow)
     end
 
     def check_max_emails_per_account

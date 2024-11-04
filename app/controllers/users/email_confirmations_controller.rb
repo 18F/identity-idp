@@ -45,7 +45,6 @@ module Users
       store_from_select_email_flow_in_session
       if current_user
         flash[:success] = t('devise.confirmations.confirmed')
-        session.delete(:from_select_email_flow)
         redirect_to account_url
       else
         flash[:success] = t('devise.confirmations.confirmed_but_sign_in')
