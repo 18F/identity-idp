@@ -218,6 +218,14 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
         get(:show)
         expect(response).not_to be_nil
       end
+      it 'socure nil response still gives a result to user' do
+        stub_request(:post, fake_socure_endpoint).to_return(
+          status: 500,
+          body: nil,
+        )
+        get(:show)
+        expect(response).not_to be_nil
+      end
     end
   end
 
