@@ -204,7 +204,7 @@ module Idv
     end
 
     def verify_step_request?
-      request.referer == idv_verify_info_url
+      [idv_verify_info_url, idv_in_person_verify_info_url].include?(request.referer)
     end
 
     def should_keep_flash_success?

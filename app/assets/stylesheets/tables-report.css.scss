@@ -1,7 +1,17 @@
-@forward 'uswds-core';
+@use 'uswds-core' as * with (
+  $theme-table-border-color: 'primary-darker',
+  $theme-table-header-background-color: 'primary-darker',
+  $theme-table-header-text-color: 'white'
+);
+
 @forward 'usa-prose';
 @forward 'usa-table';
 @forward 'usa-alert';
+
+.report-title,
+.report-subtitle {
+  color: color('primary-darker');
+}
 
 .table-number {
   font-variant-numeric: tabular-nums;

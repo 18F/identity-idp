@@ -81,4 +81,10 @@ module AbTests
       SecureRandom.alphanumeric(8)
     end
   end.freeze
+
+  LOG_PASSWORD_RESET_MATCHES_EXISTING = AbTest.new(
+    experiment_name: 'Log password_matches_existing event property on password reset',
+    should_log: ['Password Reset: Password Submitted'].to_set,
+    buckets: { log: IdentityConfig.store.log_password_reset_matches_existing_ab_test_percent },
+  ).freeze
 end

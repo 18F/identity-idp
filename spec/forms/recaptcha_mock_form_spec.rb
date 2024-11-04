@@ -4,8 +4,9 @@ RSpec.describe RecaptchaMockForm do
   let(:score_threshold) { 0.2 }
   let(:analytics) { FakeAnalytics.new }
   let(:score) { nil }
+  let(:recaptcha_action) { 'example_action' }
   subject(:form) do
-    RecaptchaMockForm.new(score_threshold:, analytics:, score:)
+    RecaptchaMockForm.new(score_threshold:, analytics:, recaptcha_action:, score:)
   end
 
   around do |example|
@@ -44,6 +45,7 @@ RSpec.describe RecaptchaMockForm do
           evaluated_as_valid: false,
           score_threshold: score_threshold,
           form_class: 'RecaptchaMockForm',
+          recaptcha_action:,
         )
       end
     end
@@ -74,6 +76,7 @@ RSpec.describe RecaptchaMockForm do
           evaluated_as_valid: true,
           score_threshold: score_threshold,
           form_class: 'RecaptchaMockForm',
+          recaptcha_action:,
         )
       end
 

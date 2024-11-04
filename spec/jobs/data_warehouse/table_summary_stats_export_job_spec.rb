@@ -87,7 +87,7 @@ RSpec.describe DataWarehouse::TableSummaryStatsExportJob, type: :job do
     context 'when uploading to S3' do
       it 'uploads a file to S3 based on the report date' do
         expect(job).to receive(:upload_file_to_s3_bucket).with(
-          path: 'idp_max_ids/2024/2024-10-10_idp_max_ids.json',
+          path: 'table_summary_stats/2024/2024-10-10_table_summary_stats.json',
           **s3_metadata,
         ).exactly(1).time.and_call_original
 

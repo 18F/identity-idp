@@ -42,6 +42,7 @@ account.connected_apps.associated_attributes_html: 'Conectado el %{timestamp_htm
 account.connected_apps.associated_html: 'Conectado: %{timestamp_html}'
 account.connected_apps.description: Con su cuenta de %{app_name}, puede conectarse de manera segura a muchas cuentas del gobierno en línea. Esta es una lista de todas las cuentas que tiene conectadas actualmente.
 account.connected_apps.email_not_selected: No se seleccionó correo electrónico aún
+account.connected_apps.email_update_success_html: Se actualizó su correo electrónico para la <strong>%{sp_name}</strong>.
 account.email_language.default: '%{language} (predeterminado)'
 account.email_language.edit_title: Editar la preferencia de idioma del correo electrónico
 account.email_language.languages_list: Recibirá mensajes de correo electrónico de %{app_name} en el idioma que elija.
@@ -577,7 +578,6 @@ doc_auth.errors.sharpness.failed_short: La imagen está borrosa; inténtelo de n
 doc_auth.errors.sharpness.top_msg: No pudimos leer su identificación. Es posible que su foto esté demasiado borrosa u oscura. Intente tomar una nueva foto en un lugar iluminado.
 doc_auth.errors.sharpness.top_msg_plural: No pudimos leer su identificación. Es posible que sus fotos estén demasiado borrosas u oscuras. Intente tomar nuevas fotos en un lugar iluminado.
 doc_auth.errors.upload_error: Lo sentimos, algo no funcionó bien.
-doc_auth.forms.captured_image: Imagen capturada
 doc_auth.forms.change_file: Cambiar archivo
 doc_auth.forms.choose_file_html: Arrastrar el archivo aquí o <lg-underline>seleccionarlo de la carpeta</lg-underline>
 doc_auth.forms.doc_success: Verificamos su información

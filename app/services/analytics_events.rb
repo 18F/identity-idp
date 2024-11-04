@@ -790,6 +790,22 @@ module AnalyticsEvents
     )
   end
 
+  # User visited sign-in URL from the "You've been successfully verified email" CTA button
+  # @param issuer [String] the ServiceProvider.issuer
+  # @param campaign_id [String] the email campaign ID
+  def idv_account_verified_cta_visited(
+    issuer:,
+    campaign_id:,
+    **extra
+  )
+    track_event(
+      :idv_account_verified_cta_visited,
+      issuer:,
+      campaign_id:,
+      **extra,
+    )
+  end
+
   # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
   # @param [String] acuant_version
   # @param ["hybrid","standard"] flow_path Document capture user flow
@@ -5737,6 +5753,7 @@ module AnalyticsEvents
   # @param [String] pending_profile_pending_reasons Comma-separated list of the pending states
   # associated with the associated profile.
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # @param [Boolean] password_matches_existing Whether the password is same as the user's current
   # The user changed the password for their account via the password reset flow
   def password_reset_password(
     success:,
@@ -5744,6 +5761,7 @@ module AnalyticsEvents
     profile_deactivated:,
     pending_profile_invalidated:,
     pending_profile_pending_reasons:,
+    password_matches_existing:,
     error_details: {},
     **extra
   )
@@ -5755,6 +5773,7 @@ module AnalyticsEvents
       profile_deactivated:,
       pending_profile_invalidated:,
       pending_profile_pending_reasons:,
+      password_matches_existing:,
       **extra,
     )
   end
@@ -6148,13 +6167,15 @@ module AnalyticsEvents
   # @param [Boolean] evaluated_as_valid Whether result was considered valid
   # @param [String] form_class Class name of form
   # @param [String, nil] exception_class Class name of exception, if error occurred
-  # @param [String, nil] phone_country_code Country code associated with reCAPTCHA phone result
+  # @param [String] recaptcha_action reCAPTCHA action name, for distinct user flow
+  # @param [String, nil] phone_country_code Country code associated with reCAPTCHA phone results
   def recaptcha_verify_result_received(
     recaptcha_result:,
     score_threshold:,
     evaluated_as_valid:,
     form_class:,
     exception_class:,
+    recaptcha_action:,
     phone_country_code: nil,
     **extra
   )
@@ -6165,6 +6186,7 @@ module AnalyticsEvents
       evaluated_as_valid:,
       form_class:,
       exception_class:,
+      recaptcha_action:,
       phone_country_code:,
       **extra,
     )

@@ -25,7 +25,7 @@ class ReportMailerPreview < ActionMailer::Preview
 
   def protocols_report
     date = Time.zone.yesterday
-    report = Reports::ProtocolsReport.new(date)
+    report = Reports::ProtocolsReport.new.tap { |r| r.report_date = date }
 
     stub_cloudwatch_client(report.send(:report))
 

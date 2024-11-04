@@ -120,6 +120,7 @@ class RecaptchaForm
       evaluated_as_valid: recaptcha_result_valid?(result),
       exception_class: error&.class&.name,
       form_class: self.class.name,
+      recaptcha_action:,
       **extra_analytics_properties,
     )
   end
