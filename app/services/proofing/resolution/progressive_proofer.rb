@@ -9,10 +9,14 @@ module Proofing
     #      address or separate residential and identity document addresses
     class ProgressiveProofer
       attr_reader :applicant_pii, :timer, :current_sp
-      attr_reader :aamva_plugin, :threatmetrix_plugin
+      attr_reader :aamva_plugin,
+                  :instant_verify_residential_address_plugin,
+                  :threatmetrix_plugin
 
       def initialize
         @aamva_plugin = Plugins::AamvaPlugin.new
+        @instant_verify_residential_address_plugin =
+          Plugins::InstantVerifyResidentialAddressPlugin.new
         @threatmetrix_plugin = Plugins::ThreatMetrixPlugin.new
       end
 
@@ -47,7 +51,13 @@ module Proofing
           user_email:,
         )
 
-        @residential_instant_verify_result = proof_residential_address_if_needed
+        @residential_instant_verify_result = instant_verify_residential_address_plugin.call(
+          applicant_pii:,
+          current_sp:,
+          ipp_enrollment_in_progress:,
+          timer:,
+        )
+
         @instant_verify_result = proof_id_address_with_lexis_nexis_if_needed
 
         state_id_result = aamva_plugin.call(
@@ -75,22 +85,6 @@ module Proofing
       attr_reader :device_profiling_result,
                   :residential_instant_verify_result,
                   :instant_verify_result
-
-      def proof_residential_address_if_needed
-        return residential_address_unnecessary_result unless ipp_enrollment_in_progress?
-
-        timer.time('residential address') do
-          resolution_proofer.proof(applicant_pii_with_residential_address)
-        end.tap do |result|
-          add_sp_cost(:lexis_nexis_resolution, result.transaction_id)
-        end
-      end
-
-      def residential_address_unnecessary_result
-        Proofing::Resolution::Result.new(
-          success: true, errors: {}, exception: nil, vendor_name: 'ResidentialAddressNotRequired',
-        )
-      end
 
       def resolution_cannot_pass
         Proofing::Resolution::Result.new(
@@ -143,10 +137,6 @@ module Proofing
         else
           applicant_pii
         end
-      end
-
-      def applicant_pii_with_residential_address
-        applicant_pii
       end
 
       def add_sp_cost(token, transaction_id)

@@ -8,6 +8,10 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   let(:user_email) { Faker::Internet.email }
   let(:current_sp) { build(:service_provider) }
 
+  let(:instant_verify_residential_address_plugin) do
+    Proofing::Resolution::Plugins::InstantVerifyResidentialAddressPlugin.new
+  end
+
   let(:instant_verify_result) do
     Proofing::Resolution::Result.new(
       success: true,
@@ -107,6 +111,11 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     allow(progressive_proofer).to receive(:aamva_plugin).and_return(aamva_plugin)
     allow(aamva_plugin).to receive(:proofer).and_return(aamva_proofer)
 
+    allow(progressive_proofer).to receive(:instant_verify_residential_address_plugin).
+      and_return(instant_verify_residential_address_plugin)
+    allow(instant_verify_residential_address_plugin).to receive(:proofer).
+      and_return(instant_verify_proofer)
+
     allow(progressive_proofer).to receive(:resolution_proofer).and_return(instant_verify_proofer)
 
     block_real_instant_verify_requests
@@ -115,6 +124,12 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   it 'assigns aamva_plugin' do
     expect(described_class.new.aamva_plugin).to be_a(
       Proofing::Resolution::Plugins::AamvaPlugin,
+    )
+  end
+
+  it 'assigns instant_verify_residential_address_plugin' do
+    expect(described_class.new.instant_verify_residential_address_plugin).to be_a(
+      Proofing::Resolution::Plugins::InstantVerifyResidentialAddressPlugin,
     )
   end
 
@@ -150,6 +165,16 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           ipp_enrollment_in_progress: false,
           timer: an_instance_of(JobHelpers::Timer),
         )
+        proof
+      end
+
+      it 'calls InstantVerifyResidentialAddressPlugin' do
+        expect(instant_verify_residential_address_plugin).to receive(:call).with(
+          applicant_pii:,
+          current_sp:,
+          ipp_enrollment_in_progress: false,
+          timer: an_instance_of(JobHelpers::Timer),
+        ).and_call_original
         proof
       end
 
@@ -197,6 +222,16 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             timer: an_instance_of(JobHelpers::Timer),
           )
 
+          proof
+        end
+
+        it 'calls InstantVerifyResidentialAddressPlugin' do
+          expect(instant_verify_residential_address_plugin).to receive(:call).with(
+            applicant_pii:,
+            current_sp:,
+            ipp_enrollment_in_progress: true,
+            timer: an_instance_of(JobHelpers::Timer),
+          ).and_call_original
           proof
         end
 
@@ -250,6 +285,16 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             timer: an_instance_of(JobHelpers::Timer),
             user_email:,
           )
+          proof
+        end
+
+        it 'calls InstantVerifyResidentialAddressPlugin' do
+          expect(instant_verify_residential_address_plugin).to receive(:call).with(
+            applicant_pii:,
+            current_sp:,
+            ipp_enrollment_in_progress: true,
+            timer: an_instance_of(JobHelpers::Timer),
+          ).and_call_original
           proof
         end
 
