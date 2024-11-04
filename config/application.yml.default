@@ -126,6 +126,7 @@ enable_rate_limiting: true
 enable_test_routes: true
 enable_usps_verification: true
 event_disavowal_expiration_hours: 240
+facial_match_general_availability_enabled: true
 feature_idv_force_gpo_verification_enabled: false
 feature_idv_hybrid_flow_enabled: true
 feature_select_email_to_share_enabled: true
@@ -418,7 +419,7 @@ usps_upload_sftp_host: ''
 usps_upload_sftp_password: ''
 usps_upload_sftp_timeout: 5
 usps_upload_sftp_username: ''
-valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3", "http://idmanagement.gov/ns/assurance/ial/1", "http://idmanagement.gov/ns/assurance/ial/2", "http://idmanagement.gov/ns/assurance/ial/0", "http://idmanagement.gov/ns/assurance/ial/2?strict=true", "http://idmanagement.gov/ns/assurance/ial/2?bio=preferred", "http://idmanagement.gov/ns/assurance/ial/2?bio=required", "urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo", "http://idmanagement.gov/ns/assurance/aal/2", "http://idmanagement.gov/ns/assurance/aal/3", "http://idmanagement.gov/ns/assurance/aal/3?hspd12=true","http://idmanagement.gov/ns/assurance/aal/2?phishing_resistant=true","http://idmanagement.gov/ns/assurance/aal/2?hspd12=true"]'
+valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3", "http://idmanagement.gov/ns/assurance/ial/1", "http://idmanagement.gov/ns/assurance/ial/2", "http://idmanagement.gov/ns/assurance/ial/0", "http://idmanagement.gov/ns/assurance/ial/2?strict=true", "http://idmanagement.gov/ns/assurance/ial/2?bio=preferred", "http://idmanagement.gov/ns/assurance/ial/2?bio=required", "urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo", "http://idmanagement.gov/ns/assurance/aal/2", "http://idmanagement.gov/ns/assurance/aal/3", "http://idmanagement.gov/ns/assurance/aal/3?hspd12=true","http://idmanagement.gov/ns/assurance/aal/2?phishing_resistant=true","http://idmanagement.gov/ns/assurance/aal/2?hspd12=true", "urn:acr.login.gov:auth-only", "urn:acr.login.gov:verified","urn:acr.login.gov:verified-facial-match-preferred","urn:acr.login.gov:verified-facial-match-required"]'
 valid_authn_contexts_semantic: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3", "http://idmanagement.gov/ns/assurance/ial/1", "http://idmanagement.gov/ns/assurance/ial/2", "http://idmanagement.gov/ns/assurance/ial/0", "http://idmanagement.gov/ns/assurance/ial/2?strict=true", "http://idmanagement.gov/ns/assurance/ial/2?bio=preferred", "http://idmanagement.gov/ns/assurance/ial/2?bio=required", "urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo", "http://idmanagement.gov/ns/assurance/aal/2", "http://idmanagement.gov/ns/assurance/aal/3", "http://idmanagement.gov/ns/assurance/aal/3?hspd12=true","http://idmanagement.gov/ns/assurance/aal/2?phishing_resistant=true","http://idmanagement.gov/ns/assurance/aal/2?hspd12=true", "urn:acr.login.gov:auth-only", "urn:acr.login.gov:verified","urn:acr.login.gov:verified-facial-match-preferred","urn:acr.login.gov:verified-facial-match-required"]'
 vendor_status_idv_scheduled_maintenance_finish: ''
 vendor_status_idv_scheduled_maintenance_start: ''
@@ -505,6 +506,7 @@ production:
   email_registrations_per_ip_track_only_mode: true
   enable_test_routes: false
   enable_usps_verification: false
+  facial_match_general_availability_enabled: false
   feature_select_email_to_share_enabled: false
   feature_valid_authn_contexts_semantic_enabled: false
   idv_sp_required: true

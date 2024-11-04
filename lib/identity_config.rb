@@ -143,6 +143,7 @@ module IdentityConfig
     config.add(:enable_test_routes, type: :boolean)
     config.add(:enable_usps_verification, type: :boolean)
     config.add(:event_disavowal_expiration_hours, type: :integer)
+    config.add(:facial_match_general_availability_enabled, type: :boolean)
     config.add(:feature_idv_force_gpo_verification_enabled, type: :boolean)
     config.add(:feature_idv_hybrid_flow_enabled, type: :boolean)
     config.add(:feature_select_email_to_share_enabled, type: :boolean)
