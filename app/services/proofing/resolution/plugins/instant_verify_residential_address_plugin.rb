@@ -4,24 +4,7 @@ module Proofing
   module Resolution
     module Plugins
       class InstantVerifyResidentialAddressPlugin
-        def call(
-          applicant_pii:,
-          current_sp:,
-          ipp_enrollment_in_progress:,
-          timer:
-        )
-          return residential_address_unnecessary_result unless ipp_enrollment_in_progress
-
-          timer.time('residential address') do
-            proofer.proof(applicant_pii)
-          end.tap do |result|
-            Db::SpCost::AddSpCost.call(
-              current_sp,
-              :lexis_nexis_resolution,
-              transaction_id: result.transaction_id,
-            )
-          end
-        end
+        include ResidentialAddressPlugin
 
         def proofer
           @proofer ||=
@@ -41,10 +24,8 @@ module Proofing
             end
         end
 
-        def residential_address_unnecessary_result
-          Proofing::Resolution::Result.new(
-            success: true, errors: {}, exception: nil, vendor_name: 'ResidentialAddressNotRequired',
-          )
+        def sp_cost_token
+          :lexis_nexis_resolution
         end
       end
     end
