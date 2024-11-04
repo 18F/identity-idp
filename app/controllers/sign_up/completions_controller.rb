@@ -102,11 +102,6 @@ module SignUp
       if page_occurence.present? && DisposableEmailDomain.disposable?(email_domain)
         attributes[:disposable_email_domain] = email_domain
       end
-
-      if @device_profiling_result.present?
-        attributes[:device_profiling_result] = @device_profiling_result.to_h
-      end
-
       attributes
     end
 
