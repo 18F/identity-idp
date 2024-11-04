@@ -48,6 +48,11 @@ module DocAuth
         end
 
         def handle_invalid_response(http_response)
+          if http_response.nil? || !http_response.body.present?
+            message = [self.class.name, 'Unexpected HTTP response', 500].join(' ')
+            exception = DocAuth::RequestError.new(message, http_response.status)
+            return handle_connection_error(exception: exception)
+          end
           message = [
             self.class.name,
             'Unexpected HTTP response',
