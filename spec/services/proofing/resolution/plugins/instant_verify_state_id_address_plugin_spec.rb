@@ -5,7 +5,7 @@ RSpec.describe Proofing::Resolution::Plugins::InstantVerifyStateIdAddressPlugin 
 
   let(:current_sp) { build(:service_provider) }
 
-  let(:instant_verify_residential_address_result) do
+  let(:residential_address_resolution_result) do
     Proofing::Resolution::Result.new(
       success: true,
       errors: {},
@@ -35,7 +35,7 @@ RSpec.describe Proofing::Resolution::Plugins::InstantVerifyStateIdAddressPlugin 
         applicant_pii:,
         current_sp:,
         ipp_enrollment_in_progress:,
-        instant_verify_residential_address_result:,
+        residential_address_resolution_result:,
         timer: JobHelpers::Timer.new,
       )
     end
@@ -139,7 +139,7 @@ RSpec.describe Proofing::Resolution::Plugins::InstantVerifyStateIdAddressPlugin 
         it 'reuses residential address result' do
           result = call
           expect(plugin.proofer).not_to have_received(:proof)
-          expect(result).to eql(instant_verify_residential_address_result)
+          expect(result).to eql(residential_address_resolution_result)
         end
 
         it 'does not add a new LexisNexis SP cost (since residential address result was reused)' do
@@ -251,7 +251,7 @@ RSpec.describe Proofing::Resolution::Plugins::InstantVerifyStateIdAddressPlugin 
           end
 
           context 'LexisNexis InstantVerify failed for residential address' do
-            let(:instant_verify_residential_address_result) do
+            let(:residential_address_resolution_result) do
               Proofing::Resolution::Result.new(
                 success: false,
                 errors: {},
