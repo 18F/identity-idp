@@ -1,12 +1,14 @@
 class ReportMailerPreview < ActionMailer::Preview
   def deleted_user_accounts_report
+    data = <<~CSV
+      2023-01-01T:00:00:00Z,00000000-0000-0000-0000-000000000000
+    CSV
+
     ReportMailer.deleted_user_accounts_report(
       email: 'test@example.com',
       name: '',
       issuers: ['test-sp-1', 'test-sp-2'],
-      data: <<~CSV
-        2023-01-01T:00:00:00Z,00000000-0000-0000-0000-000000000000
-      CSV
+      data:,
     )
   end
 
