@@ -13,7 +13,7 @@ module Idv
 
     def show
       @upload_disabled = idv_session.selfie_check_required &&
-                         !idv_session.desktop_selfie_test_mode_enabled?
+                         !desktop_test_mode_enabled?
 
       @direct_ipp_with_selfie_enabled = IdentityConfig.store.in_person_doc_auth_button_enabled &&
                                         Idv::InPersonConfig.enabled_for_issuer?(
@@ -74,6 +74,8 @@ module Idv
       )
     end
 
+    private
+
     def handle_phone_submission
       return rate_limited_failure if rate_limiter.limited?
       rate_limiter.increment!
@@ -118,6 +120,10 @@ module Idv
 
     def sp_or_app_name
       current_sp&.friendly_name.presence || APP_NAME
+    end
+
+    def desktop_test_mode_enabled?
+      idv_session.desktop_selfie_test_mode_enabled? || idv_session.desktop_socure_test_mode_enabled?
     end
 
     def build_telephony_form_response(telephony_result)
