@@ -15,6 +15,7 @@ module IdentityConfig
 
   # identity-hostdata transforms these configs to the described type
   # rubocop:disable Metrics/BlockLength
+  # rubocop:disable Metrics/LineLength
   BUILDER = proc do |config|
     #  ______________________________________
     # / Adding something new in here? Please \
@@ -144,6 +145,7 @@ module IdentityConfig
     config.add(:enable_test_routes, type: :boolean)
     config.add(:enable_usps_verification, type: :boolean)
     config.add(:event_disavowal_expiration_hours, type: :integer)
+    config.add(:facial_match_general_availability_enabled, type: :boolean)
     config.add(:feature_idv_force_gpo_verification_enabled, type: :boolean)
     config.add(:feature_idv_hybrid_flow_enabled, type: :boolean)
     config.add(:feature_select_email_to_share_enabled, type: :boolean)
@@ -371,6 +373,7 @@ module IdentityConfig
     config.add(:s3_report_bucket_prefix, type: :string)
     config.add(:s3_report_public_bucket_prefix, type: :string)
     config.add(:s3_data_warehouse_bucket_prefix, type: :string)
+    config.add(:s3_idp_internal_dw_tasks, type: :string)
     config.add(:s3_reports_enabled, type: :boolean)
     config.add(:saml_endpoint_configs, type: :json, options: { symbolize_names: true })
     config.add(:saml_secret_rotation_enabled, type: :boolean)
@@ -400,6 +403,8 @@ module IdentityConfig
     config.add(:sign_in_recaptcha_percent_tested, type: :integer)
     config.add(:sign_in_recaptcha_score_threshold, type: :float)
     config.add(:skip_encryption_allowed_list, type: :json)
+    config.add(:recommend_webauthn_platform_for_sms_ab_test_account_creation_percent, type: :integer)
+    config.add(:recommend_webauthn_platform_for_sms_ab_test_authentication_percent, type: :integer)
     config.add(:socure_document_request_endpoint, type: :string)
     config.add(:socure_enabled, type: :boolean)
     config.add(:socure_idplus_api_key, type: :string)
@@ -466,5 +471,6 @@ module IdentityConfig
     config.add(:vtm_url)
     config.add(:weekly_auth_funnel_report_config, type: :json)
   end.freeze
+  # rubocop:enable Metrics/LineLength
   # rubocop:enable Metrics/BlockLength
 end

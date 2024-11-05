@@ -613,6 +613,7 @@ doc_auth.headings.verify_at_post_office: 去邮局验证身份
 doc_auth.headings.verify_identity: 验证你的身份
 doc_auth.headings.verify_online: 在网上验证身份
 doc_auth.headings.verify_online_selfie: 使用手机在网上验证你的身份
+doc_auth.headings.verify_with_phone: 使用你的电话来验证你的身份
 doc_auth.headings.welcome: 现在我们来为%{sp_name}验证你的身份
 doc_auth.hybrid_flow_warning.explanation_html: 你在使用 <strong>%{app_name}</strong> 验证身份以访问 <strong>%{service_provider_name}</strong> 及其服务。
 doc_auth.hybrid_flow_warning.explanation_non_sp_html: 你在使用 <strong>%{app_name}</strong> 验证身份。
@@ -620,6 +621,7 @@ doc_auth.hybrid_flow_warning.only_add_if_text: 只有在以下情况下才添加
 doc_auth.hybrid_flow_warning.only_add_own_account: 你在使用自己的 %{app_name} 账户
 doc_auth.hybrid_flow_warning.only_add_phone_verify: 你要求 %{app_name} 使用你的电话来验证你的身份证件。
 doc_auth.hybrid_flow_warning.only_add_sp_services_html: 你在试图访问 <strong>%{service_provider_name}</strong> 服务。
+doc_auth.info.add_id_consent_with_phone: 仅在你已请求%{app_name}使用你的电话来验证你的身份的情况下才添加你的身份证件。
 doc_auth.info.address_guidance_puerto_rico_html: 波多黎各居民：<br><br>编辑你的地址，在地址第 2 行列出你的 urbanization 或 condominium。
 doc_auth.info.capture_status_big_document: 太近了
 doc_auth.info.capture_status_capturing: 扫描中
@@ -646,6 +648,7 @@ doc_auth.info.lets_go: 身份验证包括两部分：
 doc_auth.info.link_sent: 请查看你的手机并按照说明拍一张你州政府颁发的身份证件的照片。
 doc_auth.info.link_sent_complete_no_polling: 照好以后，在这里点击“继续”，完成验证身份。
 doc_auth.info.link_sent_complete_polling: 下一步会自动加载。
+doc_auth.info.login_access_sp: 你在使用%{app_name}访问 %{sp_name}。
 doc_auth.info.no_ssn: 你必须有社会保障号码才能完成身份验证。
 doc_auth.info.review_examples_of_photos: 查看如何拍出身份证件清晰照片的示例。
 doc_auth.info.secure_account: 我们会用你的密码对你的账户加密。加密意味着你的数据得到了保护，而且只有你能够访问或变更你的信息。
@@ -2017,6 +2020,12 @@ vendor_outage.blocked.phone.default: 我们目前无法验证电话。请稍后�
 vendor_outage.get_updates: 获得最新信息
 vendor_outage.get_updates_on_status_page: 在我们的状态页面获得最新信息。
 vendor_outage.working: 我们正在争取解决错误。
+webauthn_platform_recommended.cta: Set up face or touch unlock
+webauthn_platform_recommended.description_private_html: Face or touch unlock is %{phishing_resistant_link_html} and we don’t store any recordings of your face or fingerprint, so your information stays private.
+webauthn_platform_recommended.description_secure_account: Secure your sign in with face or touch unlock. Use your face, fingerprint, password, or another method to keep your account safer.
+webauthn_platform_recommended.heading: Set up face or touch unlock for a more secure sign in
+webauthn_platform_recommended.phishing_resistant: phishing-resistant
+webauthn_platform_recommended.skip: Skip
 zxcvbn.feedback.a_word_by_itself_is_easy_to_guess: 单字容易被人猜出
 zxcvbn.feedback.add_another_word_or_two_uncommon_words_are_better: 再加一两个字不常见的字更好
 zxcvbn.feedback.all_uppercase_is_almost_as_easy_to_guess_as_all_lowercase: 都是大写几乎和都是小写一样容易被人猜出
