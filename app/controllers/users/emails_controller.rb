@@ -76,7 +76,8 @@ module Users
       if session_email.blank?
         redirect_to add_email_url
       else
-        render :verify, locals: { email: session_email }
+        render :verify,
+               locals: { email: session_email, in_select_email_flow: params[:in_select_email_flow] }
       end
     end
 
@@ -99,11 +100,13 @@ module Users
     end
 
     def process_successful_creation
-      session.delete(:in_select_email_flow)
       resend_confirmation = params[:user][:resend]
       session[:email] = @add_user_email_form.email
 
-      redirect_to add_email_verify_email_url(resend: resend_confirmation)
+      redirect_to add_email_verify_email_url(
+        resend: resend_confirmation,
+        in_select_email_flow: session.delete(:in_select_email_flow),
+      )
     end
 
     def session_email
