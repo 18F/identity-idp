@@ -101,6 +101,7 @@ describe('CaptchaSubmitButtonElement', () => {
         defineProperty(global, 'grecaptcha', {
           configurable: true,
           value: {
+            ready: sandbox.stub().callsArg(0),
             execute: sandbox.stub().resolves(RECAPTCHA_TOKEN_VALUE),
             enterprise: {
               ready: sandbox.stub().callsArg(0),
@@ -147,6 +148,32 @@ describe('CaptchaSubmitButtonElement', () => {
             .with.lengthOf.greaterThan(0);
           (globalThis as any).___grecaptcha_cfg.fns.forEach((callback) => callback());
           /* eslint-enable no-underscore-dangle */
+
+          await expect(form.submit).to.eventually.be.called();
+        });
+      });
+
+      context('with only recaptcha loader script loaded by time of submission', () => {
+        // The loader script will define the `grecaptcha` global and `ready` function, but it will
+        // not define `execute`.
+        beforeEach(() => {
+          delete (global as any).grecaptcha.execute;
+          delete (global as any).grecaptcha.enterprise.execute;
+        });
+
+        it('enqueues the challenge callback to be run once recaptcha loads', async () => {
+          const button = screen.getByRole('button', { name: 'Submit' });
+          const form = document.querySelector('form')!;
+          sandbox.stub(form, 'submit');
+
+          await userEvent.click(button);
+
+          expect(grecaptcha.ready).to.have.been.called();
+
+          // Simulate reCAPTCHA full script loaded
+          (global as any).grecaptcha.execute = sandbox.stub().resolves(RECAPTCHA_TOKEN_VALUE);
+          const callback = (grecaptcha.ready as SinonStub).getCall(0).args[0];
+          callback();
 
           await expect(form.submit).to.eventually.be.called();
         });
