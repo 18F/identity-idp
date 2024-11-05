@@ -15,7 +15,6 @@ RSpec.describe Proofing::LexisNexis::Ddp::VerificationRequest do
       zipcode: '70802-12345',
       state_id_number: '12345678',
       state_id_jurisdiction: 'LA',
-      threatmetrix_session_id: 'UNIQUE_SESSION_ID',
       phone: '5551231234',
       email: 'test@example.com',
       request_ip: '127.0.0.1',
@@ -61,6 +60,14 @@ RSpec.describe Proofing::LexisNexis::Ddp::VerificationRequest do
     end
 
     context 'Authentication verification request' do
+      let(:applicant) do
+        {
+          threatmetrix_session_id: 'UNIQUE_SESSION_ID',
+          email: 'test@example.com',
+          request_ip: '127.0.0.1',
+        }
+      end
+
       subject do
         described_class.new(
           applicant: applicant,
