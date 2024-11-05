@@ -51,6 +51,7 @@ account.email_language.name.es: Español
 account.email_language.name.fr: Français
 account.email_language.name.zh: 中文 (简体)
 account.email_language.updated: Votre langue de préférence pour les e-mails a été mise à jour.
+account.emails.confirmed_html: Vous avez confirmé votre adresse e-mail. Rendez-vous sur <a href="%{url}">vos comptes connectés</a> pour actualiser l’adresse e-mail que vous communiquez aux organismes connectés.
 account.forget_all_browsers.longer_description: Une fois que vous aurez choisi d’« oublier tous les navigateurs », nous aurons besoin d’informations supplémentaires pour savoir que c’est bien vous qui vous connectez à votre compte. Nous vous demanderons une méthode d’authentification multi-facteurs (comme un code SMS/texto ou une clé de sécurité) chaque fois que vous souhaiterez accéder à votre compte.
 account.index.auth_app_add: Ajouter une appli
 account.index.auth_app_disabled: non activé

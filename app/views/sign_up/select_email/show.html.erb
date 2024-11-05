@@ -30,7 +30,7 @@
   <% end %>
 
   <%= render ButtonComponent.new(
-        url: add_email_path,
+        url: add_email_path(in_select_email_flow: true),
         outline: true,
         big: true,
         wide: true,
