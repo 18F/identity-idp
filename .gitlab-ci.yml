@@ -462,7 +462,7 @@ review-app:
   stage: review
   allow_failure: true
   needs:
-    - job: build-review-image
+    - job: build-idp-image
   resource_group: $CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov
   extends: .deploy
   environment:
