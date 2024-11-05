@@ -51,7 +51,6 @@ module Idv
         flow_path: 'standard',
         sp_name: decorated_sp_session.sp_name,
         failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
-        skip_doc_auth: idv_session.skip_doc_auth,
         skip_doc_auth_from_how_to_verify: idv_session.skip_doc_auth_from_how_to_verify,
         skip_doc_auth_from_handoff: idv_session.skip_doc_auth_from_handoff,
         opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing,
@@ -71,7 +70,6 @@ module Idv
                            # mobile
                            idv_session.skip_doc_auth_from_handoff ||
                            idv_session.skip_hybrid_handoff ||
-                            idv_session.skip_doc_auth ||
                             idv_session.skip_doc_auth_from_how_to_verify ||
                             !idv_session.selfie_check_required || # desktop but selfie not required
                              idv_session.desktop_selfie_test_mode_enabled?
