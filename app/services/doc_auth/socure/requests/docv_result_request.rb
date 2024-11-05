@@ -36,7 +36,7 @@ module DocAuth
           exception = DocAuth::RequestError.new(message, http_response&.status)
 
           response_body = begin
-            http_response&.body.present? ? JSON.parse(http_response&.body) : {}
+            http_response&.body.present? ? JSON.parse(http_response.body) : {}
           rescue JSON::JSONError
             {}
           end
