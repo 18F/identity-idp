@@ -228,7 +228,6 @@ lexisnexis_trueid_username: test_username
 lexisnexis_username: test_username
 ###################################################################
 lockout_period_in_minutes: 10
-log_password_reset_matches_existing_ab_test_percent: 0
 log_to_stdout: false
 login_otp_confirmation_max_attempts: 10
 logins_per_email_and_ip_bantime: 60

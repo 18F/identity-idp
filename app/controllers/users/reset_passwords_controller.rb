@@ -3,8 +3,6 @@
 module Users
   class ResetPasswordsController < Devise::PasswordsController
     include AuthorizationCountConcern
-    include AbTestingConcern
-
     before_action :store_sp_metadata_in_session, only: [:edit]
     before_action :store_token_in_session, only: [:edit]
 
@@ -42,15 +40,10 @@ module Users
       end
     end
 
+    # PUT /resource/password
     def update
       self.resource = user_matching_token(user_params[:reset_password_token])
-      @reset_password_form = ResetPasswordForm.new(
-        user: resource,
-        log_password_matches_existing: ab_test_bucket(
-          :LOG_PASSWORD_RESET_MATCHES_EXISTING,
-          user: resource,
-        ) == :log,
-      )
+      @reset_password_form = ResetPasswordForm.new(user: resource)
 
       result = @reset_password_form.submit(user_params)
 
