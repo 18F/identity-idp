@@ -32,7 +32,6 @@ RSpec.describe ResetPasswordForm, type: :model do
           profile_deactivated: false,
           pending_profile_invalidated: false,
           pending_profile_pending_reasons: '',
-          password_matches_existing: nil,
         )
       end
     end
@@ -63,7 +62,6 @@ RSpec.describe ResetPasswordForm, type: :model do
           profile_deactivated: false,
           pending_profile_invalidated: false,
           pending_profile_pending_reasons: '',
-          password_matches_existing: nil,
         )
       end
     end
@@ -83,7 +81,6 @@ RSpec.describe ResetPasswordForm, type: :model do
           profile_deactivated: false,
           pending_profile_invalidated: false,
           pending_profile_pending_reasons: '',
-          password_matches_existing: false,
         )
       end
     end
@@ -116,7 +113,6 @@ RSpec.describe ResetPasswordForm, type: :model do
           profile_deactivated: false,
           pending_profile_invalidated: false,
           pending_profile_pending_reasons: '',
-          password_matches_existing: nil,
         )
       end
     end
@@ -133,7 +129,6 @@ RSpec.describe ResetPasswordForm, type: :model do
           profile_deactivated: false,
           pending_profile_invalidated: false,
           pending_profile_pending_reasons: '',
-          password_matches_existing: nil,
         )
       end
     end
