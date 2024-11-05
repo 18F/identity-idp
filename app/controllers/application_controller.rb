@@ -238,9 +238,6 @@ class ApplicationController < ActionController::Base
       :recommend_for_authentication,
     )
     return second_mfa_reminder_url if user_needs_second_mfa_reminder?
-    if sp_session.key?(:request_id) && needs_completion_screen_reason
-      return sign_up_select_email_url
-    end
     return sp_session_request_url_with_updated_params if sp_session.key?(:request_url)
     signed_in_url
   end
