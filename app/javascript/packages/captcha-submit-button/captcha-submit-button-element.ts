@@ -1,5 +1,9 @@
 import { trackError } from '@18f/identity-analytics';
 
+/**
+ * Maximum time (in milliseconds) to wait on reCAPTCHA to finish loading once a form is submitted
+ * before considering reCAPTCHA as having failed to load.
+ */
 export const FAILED_LOAD_DELAY_MS = 5000;
 
 class CaptchaSubmitButtonElement extends HTMLElement {
