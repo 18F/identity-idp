@@ -16,6 +16,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::VerificationRequest do
       state_id_number: '12345678',
       state_id_jurisdiction: 'LA',
       phone: '5551231234',
+      threatmetrix_session_id: 'UNIQUE_SESSION_ID',
       email: 'test@example.com',
       request_ip: '127.0.0.1',
       uuid_prefix: 'ABCD',
