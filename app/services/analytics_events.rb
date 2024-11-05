@@ -438,7 +438,7 @@ module AnalyticsEvents
 
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  # @param [String] user_id Database ID for user associated with attempted email address
+  # @param [String] user_id UUID for user associated with attempted email address
   # @param [Boolean] user_locked_out if the user is currently locked out of their second factor
   # @param [Boolean] rate_limited Whether the user has exceeded user IP rate limiting
   # @param [Boolean] valid_captcha_result Whether user passed the reCAPTCHA check or was exempt
