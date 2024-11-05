@@ -64,9 +64,6 @@ module Idv
 
     def flow_param; end
 
-    # state ID type isn't manually set for Idv::VerifyInfoController
-    def set_state_id_type; end
-
     def prev_url
       idv_ssn_url
     end
