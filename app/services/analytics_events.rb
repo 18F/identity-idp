@@ -436,8 +436,9 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] success
-  # @param [String] user_id
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # @param [String] user_id Database ID for user associated with attempted email address
   # @param [Boolean] user_locked_out if the user is currently locked out of their second factor
   # @param [Boolean] rate_limited Whether the user has exceeded user IP rate limiting
   # @param [Boolean] valid_captcha_result Whether user passed the reCAPTCHA check or was exempt
@@ -459,11 +460,13 @@ module AnalyticsEvents
     sp_request_url_present:,
     remember_device:,
     new_device:,
+    error_details: nil,
     **extra
   )
     track_event(
       'Email and Password Authentication',
       success:,
+      error_details:,
       user_id:,
       user_locked_out:,
       rate_limited:,
