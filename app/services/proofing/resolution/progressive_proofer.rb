@@ -9,16 +9,10 @@ module Proofing
     #      address or separate residential and identity document addresses
     class ProgressiveProofer
       attr_reader :aamva_plugin,
-                  :instant_verify_residential_address_plugin,
-                  :instant_verify_state_id_address_plugin,
                   :threatmetrix_plugin
 
       def initialize
         @aamva_plugin = Plugins::AamvaPlugin.new
-        @instant_verify_residential_address_plugin =
-          Plugins::InstantVerifyResidentialAddressPlugin.new
-        @instant_verify_state_id_address_plugin =
-          Plugins::InstantVerifyStateIdAddressPlugin.new
         @threatmetrix_plugin = Plugins::ThreatMetrixPlugin.new
       end
 
@@ -50,14 +44,14 @@ module Proofing
           user_email:,
         )
 
-        residential_address_resolution_result = instant_verify_residential_address_plugin.call(
+        residential_address_resolution_result = residential_address_plugin.call(
           applicant_pii:,
           current_sp:,
           ipp_enrollment_in_progress:,
           timer:,
         )
 
-        state_id_address_resolution_result = instant_verify_state_id_address_plugin.call(
+        state_id_address_resolution_result = state_id_address_plugin.call(
           applicant_pii:,
           current_sp:,
           residential_address_resolution_result:,
@@ -83,6 +77,54 @@ module Proofing
           same_address_as_id: applicant_pii[:same_address_as_id],
           applicant_pii: applicant_pii,
         )
+      end
+
+      def proofing_vendor
+        @proofing_vendor ||= begin
+          default_vendor = IdentityConfig.store.idv_resolution_default_vendor
+          alternate_vendor = IdentityConfig.store.idv_resolution_alternate_vendor
+          alternate_vendor_percent = IdentityConfig.store.idv_resolution_alternate_vendor_percent
+
+          if default_vendor.blank?
+            raise 'idv_resolution_default_vendor not configured'
+          end
+
+          if alternate_vendor.blank?
+            raise 'No resolution vendor configured' unless default_vendor.present?
+
+            if alternate_vendor_percent > 0
+              # rubocop:disable Layout/LineLength
+              raise 'idv_resolution_alternate_vendor is not configured, but idv_resolution_alternate_vendor_percent is > 0'
+              # rubocop:enable Layout/LineLength
+            end
+
+            return default_vendor
+          end
+
+          if (rand * 100) <= alternate_vendor_percent
+            alternate_vendor
+          else
+            default_vendor
+          end
+        end
+      end
+
+      def residential_address_plugin
+        @residential_address_plugin ||= case proofing_vendor
+        when :instant_verify then Plugins::InstantVerifyResidentialAddressPlugin.new
+        when :socure then Plugins::SocureResidentialAddressPlugin.new
+        else
+          raise 'Invalid proofing vendor'
+        end
+      end
+
+      def state_id_address_plugin
+        @state_id_address_plugin ||= case proofing_vendor
+        when :instant_verify then Plugins::InstantVerifyStateIdAddressPlugin.new
+        when :socure then Plugins::SocureStateIdAddressPlugin.new
+        else
+          raise 'Invalid proofing vendor'
+        end
       end
     end
   end
