@@ -5,10 +5,14 @@ class AddUserEmailForm
   include FormAddEmailValidator
   include ActionView::Helpers::TranslationHelper
 
-  attr_reader :email
+  attr_reader :email, :in_select_email_flow
 
   def self.model_name
     ActiveModel::Name.new(self, nil, 'User')
+  end
+
+  def initialize(in_select_email_flow = nil)
+    @in_select_email_flow = in_select_email_flow
   end
 
   def user
@@ -19,7 +23,6 @@ class AddUserEmailForm
     @user = user
     @email = params[:email]
     @email_address = email_address_record(@email)
-    @from_select_email_flow = params[:from_select_email_flow]
 
     if valid?
       process_successful_submission
@@ -43,12 +46,12 @@ class AddUserEmailForm
   private
 
   attr_writer :email
-  attr_reader :success, :email_address, :from_select_email_flow
+  attr_reader :success, :email_address
 
   def process_successful_submission
     @success = true
     email_address.save!
-    SendAddEmailConfirmation.new(user).call(email_address, from_select_email_flow)
+    SendAddEmailConfirmation.new(user).call(email_address, in_select_email_flow)
   end
 
   def extra_analytics_attributes
