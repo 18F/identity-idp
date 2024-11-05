@@ -86,6 +86,13 @@ module Idv
         :state_id,
         :mva_exception,
       )
+      is_threatmetrix_exception = result.extra.dig(
+        :proofing_results,
+        :context,
+        :stages,
+        :threatmetrix,
+        :exception,
+      ).present?
 
       if ssn_rate_limiter.limited?
         idv_failure_log_rate_limited(:proof_ssn)
@@ -96,6 +103,9 @@ module Idv
       elsif proofing_results_exception.present? && is_mva_exception
         idv_failure_log_warning
         redirect_to state_id_warning_url
+      elsif proofing_results_exception.present? && is_threatmetrix_exception
+        idv_failure_log_warning
+        redirect_to warning_url
       elsif proofing_results_exception.present?
         idv_failure_log_error
         redirect_to exception_url

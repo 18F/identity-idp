@@ -4,6 +4,7 @@ RSpec.describe Idv::VerifyInfoController do
   include FlowPolicyHelper
 
   let(:user) { create(:user) }
+
   let(:analytics_hash) do
     {
       analytics_id: 'Doc Auth',
@@ -144,6 +145,7 @@ RSpec.describe Idv::VerifyInfoController do
     context 'when proofing_device_profiling is enabled' do
       let(:threatmetrix_client_id) { 'threatmetrix_client' }
       let(:review_status) { 'pass' }
+
       let(:idv_result) do
         {
           context: {
@@ -250,6 +252,69 @@ RSpec.describe Idv::VerifyInfoController do
         it 'sets the review status in the idv session' do
           get :show
           expect(controller.idv_session.threatmetrix_review_status).to be_nil
+        end
+      end
+
+      context 'when there is a threatmetrix exception' do
+        let(:review_status) { nil }
+
+        let(:idv_result) do
+          {
+            context: {
+              device_profiling_adjudication_reason: 'device_profiling_exception',
+              errors: {},
+              stages: {
+                threatmetrix: {
+                  client: nil,
+                  errors: {},
+                  exception: "Unexpected ThreatMetrix review_status value: #{review_status}",
+                  response_body: nil,
+                  review_status:,
+                  success: false,
+                  transaction_id: nil,
+                },
+              },
+            },
+            success: false,
+          }
+        end
+
+        it 'sets the review status in the idv session' do
+          get :show
+          expect(controller.idv_session.threatmetrix_review_status).to be_nil
+        end
+
+        it 'redirects to warning_url' do
+          get :show
+
+          expect(response).to redirect_to idv_session_errors_warning_url
+
+          expect(@analytics).to have_logged_event(
+            'IdV: doc auth warning visited',
+            step_name: 'verify_info',
+            remaining_submit_attempts: kind_of(Integer),
+          )
+        end
+
+        it 'logs the analytics event with the device profiling exception' do
+          get :show
+
+          expect(@analytics).to have_logged_event(
+            'IdV: doc auth verify proofing results',
+            hash_including(
+              success: false,
+              proofing_results: hash_including(
+                context: hash_including(
+                  device_profiling_adjudication_reason: 'device_profiling_exception',
+                  stages: hash_including(
+                    threatmetrix: hash_including(
+                      exception: match(/\S+/),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          )
         end
       end
 
