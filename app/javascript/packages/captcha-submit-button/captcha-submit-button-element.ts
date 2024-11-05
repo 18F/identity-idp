@@ -83,7 +83,7 @@ class CaptchaSubmitButtonElement extends HTMLElement {
       this.recaptchaClient.ready(callback);
     } else {
       // If reCAPTCHA hasn't finished loading by the time the form is submitted, we can enqueue the
-      // callback to be invoked once loads by appending a callback to the ___grecaptcha_cfg global.
+      // callback to be invoked once loaded by appending a callback to the ___grecaptcha_cfg global.
       //
       // See: https://developers.google.com/recaptcha/docs/loading
 
