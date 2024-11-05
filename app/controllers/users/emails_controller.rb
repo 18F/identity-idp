@@ -9,7 +9,6 @@ module Users
     before_action :check_max_emails_per_account, only: %i[show add]
     before_action :retain_confirmed_emails, only: %i[delete]
     before_action :confirm_recently_authenticated_2fa
-    before_action :store_sp_metadata_in_session, only: [:add]
 
     def show
       analytics.add_email_visit
@@ -96,11 +95,6 @@ module Users
 
     def email_address
       EmailAddress.find(params[:id])
-    end
-
-    def store_sp_metadata_in_session
-      return if request_id.blank?
-      StoreSpMetadataInSession.new(session:, request_id:).call
     end
 
     def handle_successful_delete
