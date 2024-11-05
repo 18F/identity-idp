@@ -1,5 +1,7 @@
 import { trackError } from '@18f/identity-analytics';
 
+export const FAILED_LOAD_DELAY_MS = 5000;
+
 class CaptchaSubmitButtonElement extends HTMLElement {
   form: HTMLFormElement | null;
 
@@ -46,7 +48,7 @@ class CaptchaSubmitButtonElement extends HTMLElement {
   }
 
   invokeChallenge() {
-    this.recaptchaClient!.ready(async () => {
+    this.#onReady(async () => {
       const { recaptchaSiteKey: siteKey, recaptchaAction: action } = this;
 
       let token;
@@ -62,7 +64,7 @@ class CaptchaSubmitButtonElement extends HTMLElement {
   }
 
   shouldInvokeChallenge(): boolean {
-    return !!(this.recaptchaSiteKey && this.recaptchaClient);
+    return !!this.recaptchaSiteKey;
   }
 
   handleFormSubmit = (event: SubmitEvent) => {
@@ -71,6 +73,25 @@ class CaptchaSubmitButtonElement extends HTMLElement {
       this.invokeChallenge();
     }
   };
+
+  #onReady(callback: Parameters<ReCaptchaV2.ReCaptcha['ready']>[0]) {
+    if (this.recaptchaClient) {
+      callback();
+    } else {
+      // If reCAPTCHA hasn't finished loading by the time the form is submitted, we can enqueue the
+      // callback to be invoked once loads by appending a callback to the ___grecaptcha_cfg global.
+      //
+      // See: https://developers.google.com/recaptcha/docs/loading
+
+      const failedLoadTimeoutId = setTimeout(() => this.submit(), FAILED_LOAD_DELAY_MS);
+      const clearFailedLoadTimeout = () => clearTimeout(failedLoadTimeoutId);
+
+      /* eslint-disable no-underscore-dangle */
+      globalThis.___grecaptcha_cfg ??= { fns: [] };
+      globalThis.___grecaptcha_cfg.fns.push(clearFailedLoadTimeout, callback);
+      /* eslint-enable no-underscore-dangle */
+    }
+  }
 }
 
 declare global {

@@ -1,17 +1,20 @@
 import quibble from 'quibble';
 import type { SinonStub } from 'sinon';
-import userEvent from '@testing-library/user-event';
+import baseUserEvent from '@testing-library/user-event';
 import { screen, waitFor, fireEvent } from '@testing-library/dom';
 import { useSandbox, useDefineProperty } from '@18f/identity-test-helpers';
 import '@18f/identity-spinner-button/spinner-button-element';
 
 describe('CaptchaSubmitButtonElement', () => {
-  const sandbox = useSandbox();
+  let FAILED_LOAD_DELAY_MS: number;
+  const sandbox = useSandbox({ useFakeTimers: true });
+  const { clock } = sandbox;
+  const userEvent = baseUserEvent.setup({ advanceTimers: clock.tick });
   const trackError = sandbox.stub();
 
   before(async () => {
     quibble('@18f/identity-analytics', { trackError });
-    await import('./captcha-submit-button-element');
+    ({ FAILED_LOAD_DELAY_MS } = await import('./captcha-submit-button-element'));
   });
 
   afterEach(() => {
@@ -98,7 +101,6 @@ describe('CaptchaSubmitButtonElement', () => {
         defineProperty(global, 'grecaptcha', {
           configurable: true,
           value: {
-            ready: sandbox.stub().callsArg(0),
             execute: sandbox.stub().resolves(RECAPTCHA_TOKEN_VALUE),
             enterprise: {
               ready: sandbox.stub().callsArg(0),
@@ -117,12 +119,36 @@ describe('CaptchaSubmitButtonElement', () => {
         await userEvent.click(button);
         await waitFor(() => expect((form.submit as SinonStub).called).to.be.true());
 
-        expect(grecaptcha.ready).to.have.been.called();
         expect(grecaptcha.execute).to.have.been.calledWith(RECAPTCHA_SITE_KEY, {
           action: RECAPTCHA_ACTION_NAME,
         });
         expect(Object.fromEntries(new window.FormData(form))).to.deep.equal({
           recaptcha_token: RECAPTCHA_TOKEN_VALUE,
+        });
+      });
+
+      context('with recaptcha not loaded by time of submission', () => {
+        beforeEach(() => {
+          delete (global as any).grecaptcha;
+        });
+
+        it('enqueues the challenge callback to be run once recaptcha loads', async () => {
+          const button = screen.getByRole('button', { name: 'Submit' });
+          const form = document.querySelector('form')!;
+          sandbox.stub(form, 'submit');
+
+          await userEvent.click(button);
+
+          expect(form.submit).not.to.have.been.called();
+          /* eslint-disable no-underscore-dangle */
+          expect((globalThis as any).___grecaptcha_cfg).to.have.keys('fns');
+          expect((globalThis as any).___grecaptcha_cfg.fns)
+            .to.be.an('array')
+            .with.lengthOf.greaterThan(0);
+          (globalThis as any).___grecaptcha_cfg.fns.forEach((callback) => callback());
+          /* eslint-enable no-underscore-dangle */
+
+          await expect(form.submit).to.eventually.be.called();
         });
       });
 
@@ -141,7 +167,6 @@ describe('CaptchaSubmitButtonElement', () => {
           await userEvent.click(button);
           await waitFor(() => expect((form.submit as SinonStub).called).to.be.true());
 
-          expect(grecaptcha.enterprise.ready).to.have.been.called();
           expect(grecaptcha.enterprise.execute).to.have.been.calledWith(RECAPTCHA_SITE_KEY, {
             action: RECAPTCHA_ACTION_NAME,
           });
@@ -156,19 +181,18 @@ describe('CaptchaSubmitButtonElement', () => {
           delete (global as any).grecaptcha;
         });
 
-        it('does not prevent default form submission', async () => {
+        it('submits the form if recaptcha is still not loaded after reasonable delay', async () => {
           const button = screen.getByRole('button', { name: 'Submit' });
           const form = document.querySelector('form')!;
-
-          let didSubmit = false;
-          form.addEventListener('submit', (event) => {
-            expect(event.defaultPrevented).to.equal(false);
-            event.preventDefault();
-            didSubmit = true;
-          });
+          sandbox.stub(form, 'submit');
 
           await userEvent.click(button);
-          await waitFor(() => expect(didSubmit).to.be.true());
+
+          expect(form.submit).not.to.have.been.called();
+          clock.tick(FAILED_LOAD_DELAY_MS - 1);
+          expect(form.submit).not.to.have.been.called();
+          clock.tick(1);
+          expect(form.submit).to.have.been.called();
         });
       });
 
