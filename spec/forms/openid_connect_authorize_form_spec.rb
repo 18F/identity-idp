@@ -245,23 +245,41 @@ RSpec.describe OpenidConnectAuthorizeForm do
         let(:acr_values) { facial_match_ial }
 
         context "when the IAL requested is #{facial_match_ial}" do
-          context 'when the service provider is allowed to use facial match ials' do
+          context 'when facial match general availability is turned off' do
             before do
               allow(IdentityConfig.store).to receive(
-                :allowed_biometric_ial_providers,
-              ).and_return([client_id])
+                :facial_match_general_availability_enabled,
+              ).and_return(false)
+            end
+
+            context 'when the service provider is allowed to use facial match ials' do
+              before do
+                allow(IdentityConfig.store).to receive(
+                  :allowed_biometric_ial_providers,
+                ).and_return([client_id])
+              end
+
+              it 'succeeds validation' do
+                expect(form).to be_valid
+              end
+            end
+
+            context 'when the service provider is not allowed to use facial match ials' do
+              it 'fails with a not authorized error' do
+                expect(form).not_to be_valid
+                expect(form.errors[:acr_values]).
+                  to include(t('openid_connect.authorization.errors.no_auth'))
+              end
+            end
+          end
+
+          context 'when facial match general availability is turned on' do
+            before do
+              expect(IdentityConfig.store).not_to receive(:allowed_biometric_ial_providers)
             end
 
             it 'succeeds validation' do
               expect(form).to be_valid
-            end
-          end
-
-          context 'when the service provider is not allowed to use facial match ials' do
-            it 'fails with a not authorized error' do
-              expect(form).not_to be_valid
-              expect(form.errors[:acr_values]).
-                to include(t('openid_connect.authorization.errors.no_auth'))
             end
           end
         end
@@ -274,11 +292,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
                       Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
 
       context 'when using semantic acr_values' do
-        before do
-          allow(IdentityConfig.store).to receive(
-            :allowed_valid_authn_contexts_semantic_providers,
-          ).and_return([client_id])
-        end
         it_behaves_like 'allows facial match IAL only if sp is authorized',
                         Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_PREFERRED_ACR
 

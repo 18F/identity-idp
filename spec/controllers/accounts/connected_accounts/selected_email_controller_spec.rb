@@ -67,8 +67,9 @@ RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
     let(:params) { { identity_id:, select_email_form: { selected_email_id: selected_email.id } } }
     subject(:response) { patch :update, params: }
 
-    it 'redirects to connected accounts path' do
+    it 'redirects to connected accounts path with the appropriate flash message' do
       expect(response).to redirect_to(account_connected_accounts_path)
+      expect(flash[:email_updated_identity_id]).to eq(identity.id)
     end
 
     it 'logs analytics event' do

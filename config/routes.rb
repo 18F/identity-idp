@@ -236,6 +236,9 @@ Rails.application.routes.draw do
     get '/second_mfa_reminder' => 'users/second_mfa_reminder#new'
     post '/second_mfa_reminder' => 'users/second_mfa_reminder#create'
 
+    get '/webauthn_platform_recommended' => 'users/webauthn_platform_recommended#new'
+    post '/webauthn_platform_recommended' => 'users/webauthn_platform_recommended#create'
+
     get '/piv_cac' => 'users/piv_cac_authentication_setup#new', as: :setup_piv_cac
     get '/piv_cac_error' => 'users/piv_cac_authentication_setup#error', as: :setup_piv_cac_error
     post '/present_piv_cac' => 'users/piv_cac_authentication_setup#submit_new_piv_cac',
@@ -322,6 +325,8 @@ Rails.application.routes.draw do
           as: :reset_user_authorization, via: %i[put delete]
     get '/sign_up/cancel/' => 'sign_up/cancellations#new', as: :sign_up_cancel
     delete '/sign_up/cancel' => 'sign_up/cancellations#destroy', as: :sign_up_destroy
+
+    get '/redirect/return_to_sp/account_verified_cta' => 'idv/account_verified_cta_visited#show', as: :account_verified_sign_in_redirect
 
     get '/redirect/return_to_sp/cancel' => 'redirect/return_to_sp#cancel', as: :return_to_sp_cancel
     get '/redirect/return_to_sp/failure_to_proof' => 'redirect/return_to_sp#failure_to_proof',

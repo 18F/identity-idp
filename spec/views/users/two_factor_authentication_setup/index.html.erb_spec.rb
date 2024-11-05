@@ -24,30 +24,26 @@ RSpec.describe 'users/two_factor_authentication_setup/index.html.erb' do
   end
 
   it 'has link to cancel account creation' do
-    render
-
     expect(rendered).to have_css('.page-footer')
     expect(rendered).to have_link(t('links.cancel_account_creation'), href: sign_up_cancel_path)
   end
 
   it 'does not list currently configured mfa methods' do
-    render
-
     expect(rendered).not_to have_content(t('headings.account.two_factor'))
+  end
+
+  it 'renders hidden input for platform authenticator support' do
+    expect(rendered).to have_css('input#platform_authenticator_available', visible: false)
   end
 
   context 'with configured mfa methods' do
     let(:user) { build(:user, :with_phone) }
 
     it 'lists currently configured mfa methods' do
-      render
-
       expect(rendered).to have_content(t('headings.account.two_factor'))
     end
 
     it 'has link to skip additional mfa setup' do
-      render
-
       expect(rendered).to have_css('.page-footer')
       expect(rendered).to have_link(t('mfa.skip'), href: after_mfa_setup_path)
     end
@@ -56,8 +52,6 @@ RSpec.describe 'users/two_factor_authentication_setup/index.html.erb' do
       let(:show_skip_additional_mfa_link) { false }
 
       it 'does not have footer link' do
-        render
-
         expect(rendered).not_to have_css('.page-footer')
         expect(rendered).not_to have_link(t('links.cancel_account_creation'))
         expect(rendered).not_to have_link(t('mfa.skip'))
@@ -108,7 +102,6 @@ RSpec.describe 'users/two_factor_authentication_setup/index.html.erb' do
     let(:phishing_resistant_required) { true }
 
     it 'lists current selected mfa methods' do
-      render
       expect(rendered).to have_content(t('two_factor_authentication.two_factor_aal3_choice'))
       expect(rendered).to have_content(
         t('two_factor_authentication.two_factor_choice_options.phone'),
@@ -116,7 +109,6 @@ RSpec.describe 'users/two_factor_authentication_setup/index.html.erb' do
     end
 
     it 'shows a cancel link that aborts the login' do
-      render
       expect(rendered).not_to have_link(t('mfa.skip'))
       expect(rendered).to have_link(t('links.cancel'))
     end
