@@ -10,6 +10,7 @@ cron_every_monday = 'every Monday at 0:25 UTC' # equivalent to '25 0 * * 1'
 cron_every_monday_1am = 'every Monday at 1:00 UTC' # equivalent to '0 1 * * 1'
 cron_every_monday_2am = 'every Monday at 2:00 UTC' # equivalent to '0 2 * * 1'
 cron_monthly = '30 0 1 * *' # monthly, 0:30 UTC to not overlap with jobs running at 0000
+s3_cron_24h = '0 6 * * *' # 6am UTC is 1am EST/2am EDT
 
 if defined?(Rails::Console)
   Rails.logger.info 'job_configurations: console detected, skipping schedule'
@@ -252,6 +253,12 @@ else
       socure_reason_code_download: {
         class: 'SocureReasonCodeDownloadJob',
         cron: cron_every_monday,
+      },
+      # Daily sensitive tag column job
+      daily_sensitive_column_job: {
+        class: 'DataWarehouse::DailySensitiveColumnJob',
+        cron: s3_cron_24h,
+        args: -> { [Time.zone.today] },
       },
     }.compact
   end

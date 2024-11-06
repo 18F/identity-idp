@@ -148,9 +148,8 @@ RSpec.describe SocureShadowModeProofingJob do
         referenceId: 'a1234b56-e789-0123-4fga-56b7c890d123',
         kyc: {
           reasonCodes: [
-            'I919',
-            'I914',
-            'I905',
+            'I123',
+            'R890',
           ],
           fieldValidations: {
             firstName: 0.99,
@@ -171,7 +170,19 @@ RSpec.describe SocureShadowModeProofingJob do
       }
     end
 
+    let(:known_reason_codes) do
+      {
+        I123: 'Person is over seven feet tall.',
+        R567: 'Person may be an armadillo.',
+        R890: 'Help! I am trapped in a reason code factory!',
+      }
+    end
+
     before do
+      known_reason_codes.each do |(code, description)|
+        SocureReasonCode.create(code:, description:)
+      end
+
       stub_request(:post, 'https://example.org/api/3.0/EmailAuthScore').
         to_return(
           headers: {
@@ -256,7 +267,10 @@ RSpec.describe SocureShadowModeProofingJob do
           socure_result: {
             attributes_requiring_additional_verification: [],
             can_pass_with_additional_verification: false,
-            errors: { reason_codes: ['I905', 'I914', 'I919'] },
+            errors: {
+              'I123' => 'Person is over seven feet tall.',
+              'R890' => 'Help! I am trapped in a reason code factory!',
+            },
             exception: nil,
             reference: '',
             success: true,
@@ -371,6 +385,27 @@ RSpec.describe SocureShadowModeProofingJob do
       end
       it 'raises an error' do
         expect { perform }.to raise_error(JSON::ParserError)
+      end
+    end
+
+    context 'when an unknown reason code is encountered' do
+      let(:socure_response_body) do
+        super().tap do |body|
+          body[:kyc][:reasonCodes] << 'I000'
+        end
+      end
+
+      it 'still logs it' do
+        perform
+        expect(analytics).to have_logged_event(
+          :idv_socure_shadow_mode_proofing_result,
+          satisfy do |attributes|
+            errors = attributes.dig(:socure_result, :errors)
+            expect(errors).to include(
+              'I000' => '[unknown]',
+            )
+          end,
+        )
       end
     end
   end

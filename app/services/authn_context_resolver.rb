@@ -144,7 +144,6 @@ class AuthnContextResolver
   end
 
   def use_semantic_authn_contexts?
-    @use_semantic_authn_contexts ||= service_provider&.semantic_authn_contexts_allowed? &&
-                                     Vot::AcrComponentValues.any_semantic_acrs?(acr_values)
+    @use_semantic_authn_contexts ||= Vot::AcrComponentValues.any_semantic_acrs?(acr_values)
   end
 end

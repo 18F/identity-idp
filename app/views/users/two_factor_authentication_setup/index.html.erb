@@ -49,6 +49,9 @@
     </fieldset>
   </div>
 
+  <%= hidden_field_tag :platform_authenticator_available, id: 'platform_authenticator_available' %>
+  <% javascript_packs_tag_once('platform-authenticator-available') %>
+
   <%= f.submit t('forms.buttons.continue'), class: 'margin-bottom-1' %>
 <% end %>
 

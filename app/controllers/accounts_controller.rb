@@ -19,6 +19,12 @@ class AccountsController < ApplicationController
       user: current_user,
       locked_for_session: pii_locked_for_session?(current_user),
     )
+    if session.delete(:from_select_email_flow)
+      flash.now[:success] = t(
+        'account.emails.confirmed_html',
+        url: account_connected_accounts_url,
+      )
+    end
   end
 
   def reauthentication

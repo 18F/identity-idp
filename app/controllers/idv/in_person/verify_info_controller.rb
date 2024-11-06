@@ -57,14 +57,6 @@ module Idv
         'in_person'
       end
 
-      # state_id_type is hard-coded here because it's required for proofing against
-      # AAMVA. We're sticking with driver's license because most states don't discern
-      # between various ID types and driver's license is the most common one that will
-      # be supported. See also LG-3852 and related findings document.
-      def set_state_id_type
-        pii_from_user[:state_id_type] = 'drivers_license' unless invalid_state?
-      end
-
       def invalid_state?
         pii_from_user.blank?
       end

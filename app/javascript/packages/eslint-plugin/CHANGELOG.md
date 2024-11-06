@@ -2,6 +2,7 @@
 
 ### Backwards-compatible changes
 
+- Language ECMAVersion increased from `2018` to `"latest"`
 - Disabled many stylistic rules which would be redundant with Prettier formatting. For stylistic enforcement, it's recommended to opt-in to the optional Prettier rule extension.
   - `array-bracket-spacing`
   - `arrow-parens`
@@ -44,9 +45,20 @@
   - `no-loss-of-precision`
   - `no-redeclare`
   - `no-useless-constructor`
+- The following rules are no longer enforced:
+  - `lines-between-class-members`
+  - `no-restricted-globals`
+  - `no-restricted-properties`
 - React: The following rules are no longer enforced:
   - `react/no-array-index-key`
+  - `react/sort-comp` (use function components instead)
+- React: The following rules have been reconfigured in a backwards-compatible manner.
+  - `jsx-a11y/label-has-associated-control` now allows _either_ label for or nesting, previously requiring both.
 - `prefer-const` is only enforced on destructuring assignment if all variables should be `const` ([`destructuring: 'all'` option](https://eslint.org/docs/latest/rules/prefer-const#destructuring)).
+
+### Dependencies
+
+- Remove dependency on `eslint-config-airbnb` and `eslint-config-airbnb-base`.
 
 ## v2.0.0 (2022-03-14)
 
