@@ -66,6 +66,7 @@ lint: ## Runs all lint tests
 	@echo "--- erb-lint ---"
 	make lint_erb
 	@echo "--- rubocop ---"
+	mkdir -p tmp
 ifdef JUNIT_OUTPUT
 	bundle exec rubocop --parallel --format progress --format junit --out rubocop.xml --display-only-failed --color | tee tmp/rubocop.txt
 else
