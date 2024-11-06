@@ -34,7 +34,7 @@ RSpec.describe UserMailer, type: :mailer do
     let(:token) { SecureRandom.hex }
     let(:mail) do
       UserMailer.with(user: user, email_address: email_address).
-        add_email(token: token, request_id: nil)
+        add_email(token: token, request_id: nil, from_select_email_flow: nil)
     end
 
     it_behaves_like 'a system email'
@@ -50,7 +50,8 @@ RSpec.describe UserMailer, type: :mailer do
     context 'when user adds email from select email flow' do
       let(:token) { SecureRandom.hex }
       let(:mail) do
-        UserMailer.with(user: user, email_address: email_address).add_email(token, true)
+        UserMailer.with(user: user, email_address: email_address).
+          add_email(token: token, request_id: nil, from_select_email_flow: true)
       end
 
       it 'renders the add_email_confirmation_url' do
