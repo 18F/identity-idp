@@ -161,7 +161,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofer do
       end
 
       before do
-        allow(IdentityConfig.store).to receive(:lexisnexis_authentication_threatmetrix_policy).
+        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_authentication_policy).
           and_return('test-authentication-policy')
       end
       context 'when the response is a full match' do

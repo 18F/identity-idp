@@ -34,7 +34,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::VerificationRequest do
   before do
     allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_policy).
       and_return('test-policy')
-    allow(IdentityConfig.store).to receive(:lexisnexis_authentication_threatmetrix_policy).
+    allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_authentication_policy).
       and_return('test-authentication-policy')
   end
 
