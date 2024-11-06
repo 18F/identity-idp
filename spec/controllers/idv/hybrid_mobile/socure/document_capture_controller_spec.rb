@@ -105,7 +105,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
                   config: {
                     documentType: 'license',
                     redirect: {
-                      method: 'POST',
+                      method: 'GET',
                       url: idv_hybrid_mobile_socure_document_capture_url,
                     },
                     language: expected_language,
@@ -128,7 +128,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
                   config: {
                     documentType: 'license',
                     redirect: {
-                      method: 'POST',
+                      method: 'GET',
                       url: idv_hybrid_mobile_socure_document_capture_url,
                     },
                     language: 'zh-cn',
