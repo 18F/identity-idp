@@ -224,7 +224,7 @@ RSpec.describe Proofing::Socure::IdPlus::Proofer do
       end
 
       it 'includes exception details' do
-        expect(result.exception).to be_an_instance_of(Proofing::Socure::IdPlus::RequestError)
+        expect(result.exception).to be_an_instance_of(Proofing::Socure::IdPlus::Request::Error)
       end
     end
   end
@@ -253,7 +253,7 @@ RSpec.describe Proofing::Socure::IdPlus::Proofer do
       end
 
       it 'includes exception details' do
-        expect(result.exception).to be_an_instance_of(Proofing::Socure::IdPlus::RequestError)
+        expect(result.exception).to be_an_instance_of(Proofing::Socure::IdPlus::Request::Error)
       end
     end
   end
@@ -278,7 +278,7 @@ RSpec.describe Proofing::Socure::IdPlus::Proofer do
       end
 
       it 'includes exception details' do
-        expect(result.exception).to be_an_instance_of(Proofing::Socure::IdPlus::RequestError)
+        expect(result.exception).to be_an_instance_of(Proofing::Socure::IdPlus::Request::Error)
       end
     end
   end
