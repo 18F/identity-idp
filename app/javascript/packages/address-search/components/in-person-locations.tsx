@@ -12,7 +12,6 @@ export interface FormattedLocation {
   streetAddress: string;
   sundayHours: string;
   weekdayHours: string;
-  isPilot: boolean;
 }
 
 function InPersonLocations({
@@ -22,8 +21,6 @@ function InPersonLocations({
   noInPersonLocationsDisplay: NoInPersonLocationsDisplay,
   resultsHeaderComponent: HeaderComponent,
 }: InPersonLocationsProps) {
-  const isPilot = locations?.some((l) => l.isPilot);
-
   if (locations?.length === 0) {
     return <NoInPersonLocationsDisplay address={address} />;
   }
@@ -31,11 +28,10 @@ function InPersonLocations({
   return (
     <>
       <h3 role="status">
-        {!isPilot &&
-          t('in_person_proofing.body.location.po_search.results_description', {
-            address,
-            count: locations?.length,
-          })}
+        {t('in_person_proofing.body.location.po_search.results_description', {
+          address,
+          count: locations?.length,
+        })}
       </h3>
       {HeaderComponent && <HeaderComponent />}
       {onSelect && <p>{t('in_person_proofing.body.location.po_search.results_instructions')}</p>}

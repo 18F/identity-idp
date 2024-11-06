@@ -25,7 +25,6 @@ describe('InPersonLocations', () => {
       saturdayHours: '9 AM - 6 PM',
       sundayHours: 'Closed',
       id: 1,
-      isPilot: false,
     },
     {
       name: 'test name',
@@ -36,7 +35,6 @@ describe('InPersonLocations', () => {
       saturdayHours: '10 AM - 5 PM',
       sundayHours: 'Closed',
       id: 1,
-      isPilot: false,
     },
   ];
 
