@@ -4,7 +4,11 @@ module TwoFactorAuthentication
   class SetUpSelectionPresenter
     include ActionView::Helpers::TranslationHelper
 
-    attr_reader :user, :piv_cac_required, :phishing_resistant_required, :user_agent, :desktop_ft_ab_test
+    attr_reader :user,
+                :piv_cac_required,
+                :phishing_resistant_required,
+                :user_agent,
+                :desktop_ft_ab_test
     alias_method :piv_cac_required?, :piv_cac_required
     alias_method :phishing_resistant_required?, :phishing_resistant_required
 
@@ -18,7 +22,7 @@ module TwoFactorAuthentication
       @user = user
       @piv_cac_required = piv_cac_required
       @phishing_resistant_required = phishing_resistant_required
-      @user_agent = user_agent,
+      @user_agent = user_agent
       @desktop_ft_ab_test = desktop_ft_ab_test
     end
 
