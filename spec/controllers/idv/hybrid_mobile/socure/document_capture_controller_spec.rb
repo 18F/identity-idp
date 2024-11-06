@@ -192,7 +192,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
     end
 
     context 'when socure error encountered' do
-      let(:fake_socure_endpoint) { 'https://fake-socure.com/' }
+      let(:fake_socure_endpoint) { 'https://fake-socure.test/' }
       let(:failed_response_body) do
         { 'status' => 'Error',
           'referenceId' => '1cff6d33-1cc0-4205-b740-c9a9e6b8bd66',
