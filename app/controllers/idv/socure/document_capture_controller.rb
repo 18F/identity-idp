@@ -11,6 +11,7 @@ module Idv
       check_or_render_not_found -> { IdentityConfig.store.socure_enabled }
       before_action :confirm_not_rate_limited
       before_action :confirm_step_allowed
+      before_action :check_aamva
 
       # reconsider and maybe remove these when implementing the real
       # update handler
@@ -130,6 +131,16 @@ module Idv
         return state_id_result.success? if should_proof_state_id_with_aamva?
 
         true
+      end
+
+      def check_aamva
+        idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
+        if aamva_check_met?
+          # idv_session.aamva_passed = true
+          redirect_to idv_ssn_url
+        else
+          redirect_to idv_socure_document_capture_url
+        end
       end
     end
   end
