@@ -10,7 +10,7 @@ RSpec.describe DocAuth::Socure::Request do
   end
 
   describe '#fetch' do
-    let(:fake_socure_endpoint) { 'https://fake-socure.com/' }
+    let(:fake_socure_endpoint) { 'https://fake-socure.test/' }
     let(:fake_metric_name) { 'fake metric' }
 
     before do

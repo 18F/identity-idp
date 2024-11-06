@@ -12,8 +12,8 @@ RSpec.describe DocAuth::Socure::Requests::DocvResultRequest do
   end
 
   describe '#fetch' do
-    let(:fake_socure_endpoint) { 'https://fake-socure.com/' }
-    let(:fake_socure_api_endpoint) { 'https://fake-socure.com/api/3.0/EmailAuthScore' }
+    let(:fake_socure_endpoint) { 'https://fake-socure.test/' }
+    let(:fake_socure_api_endpoint) { 'https://fake-socure.test/api/3.0/EmailAuthScore' }
     let(:docv_transaction_token) { 'fake docv transaction token' }
     let(:user) { create(:user) }
     let(:document_capture_session) do
