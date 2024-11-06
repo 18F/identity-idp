@@ -25,8 +25,6 @@ class DocumentCaptureSession < ApplicationRecord
       session_result,
       expires_in: IdentityConfig.store.doc_capture_request_valid_for_minutes.minutes.in_seconds,
     )
-    Rails.logger.info "\n\nDocumentCaptureSession.store_result_from_response: session_result: #{session_result.inspect}\n"
-    Rails.logger.info "PII: #{session_result.pii.to_h}\n\n"
     self.ocr_confirmation_pending = doc_auth_response.attention_with_barcode?
     save!
   end

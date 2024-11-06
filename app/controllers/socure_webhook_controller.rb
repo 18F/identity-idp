@@ -30,11 +30,9 @@ class SocureWebhookController < ApplicationController
   end
 
   def fetch_results
-    Rails.logger.info "\n\nSocureWebhookController.fetch_results: params: #{params.inspect}\n"
     dcs = document_capture_session
     raise 'DocumentCaptureSession not found' if dcs.blank?
 
-    Rails.logger.info "\n\nSocureWebhookController.fetch_results: enqueueing job - document_capture_session_uuid: #{dcs.uuid}\n"
     SocureDocvResultsJob.perform_later(document_capture_session_uuid: dcs.uuid)
   end
 

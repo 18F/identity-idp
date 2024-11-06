@@ -50,8 +50,6 @@ module Idv
         )
         document_capture_session.save
 
-        Rails.logger.info "\n\nIdv::Socure::DocumentCaptureController.show:\n    dcs_uuid: #{document_capture_session.uuid}\n    docvTransactionToken: #{document_capture_session.socure_docv_transaction_token}\n    url: #{@url}\n"
-
         # useful for analytics
         @msg = document_response[:msg]
         @reference_id = document_response[:referenceId]
@@ -71,7 +69,6 @@ module Idv
           call('socure_document_capture', :update, true)
 
         # cancel_establishing_in_person_enrollments
-        Rails.logger.info "\n\nIdv::Socure::DocumentCaptureController.update: result: #{result.inspect}\n"
         if result.success?
           redirect_to idv_ssn_url
         else
@@ -105,9 +102,6 @@ module Idv
       private
 
       def handle_stored_result
-        Rails.logger.info "\n\nIdv::Socure::DocumentCaptureController.handle_stored_result: stored_result: #{stored_result.inspect}\n"
-        Rails.logger.info "        selfie_requirement_met?: #{selfie_requirement_met?}"
-        Rails.logger.info "        stored_result&.success?: #{stored_result&.success?}\n"
         if stored_result&.success? && selfie_requirement_met?
           save_proofing_components(current_user)
           extract_pii_from_doc(current_user, store_in_session: true)
@@ -130,7 +124,6 @@ module Idv
           selfie_check_required: resolved_authn_context_result.facial_match?,
         }.merge(ab_test_analytics_buckets)
       end
-
     end
   end
 end
