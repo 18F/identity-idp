@@ -106,12 +106,12 @@ module DocAuth
         end
 
         def get_data(path)
-          parsed_response_body.dig(*path)
+          parsed_response_body&.dig(*path)
         end
 
         def parsed_response_body
           @parsed_response_body ||= begin
-            http_response.body.present? ? JSON.parse(
+            http_response&.body.present? ? JSON.parse(
               http_response.body,
             ).with_indifferent_access : {}
           rescue JSON::JSONError
@@ -121,12 +121,12 @@ module DocAuth
 
         def state_id_type
           type = get_data(DATA_PATHS[:id_type])
-          type.gsub(/\W/, '').underscore
+          type&.gsub(/\W/, '')&.underscore
         end
 
         def parse_date(date_string)
           Date.parse(date_string)
-        rescue ArgumentError
+        rescue ArgumentError, TypeError
           message = {
             event: 'Failure to parse Socure ID+ date',
           }.to_json
