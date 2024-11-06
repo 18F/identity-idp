@@ -27,11 +27,17 @@ module DocAuth
           )
         end
 
-        def handle_connection_error(exception:)
+        def handle_connection_error(exception:, status: nil, status_message: nil)
           NewRelic::Agent.notice_error(exception)
-          DocAuth::Socure::Responses::DocvResultResponse.new(
-            http_response: nil,
-            biometric_comparison_required: @biometric_comparison_required,
+          DocAuth::Response.new(
+            success: false,
+            errors: { network: true },
+            exception: exception,
+            extra: {
+              vendor: 'Socure',
+              vendor_status: status,
+              vendor_status_message: status_message,
+            }.compact,
           )
         end
 
