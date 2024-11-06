@@ -67,10 +67,11 @@ lint: ## Runs all lint tests
 	make lint_erb
 	@echo "--- rubocop ---"
 ifdef JUNIT_OUTPUT
-	bundle exec rubocop -r ./scripts/strict_kernel_warn.rb --parallel --format progress --format junit --out rubocop.xml --display-only-failed
+	bundle exec rubocop --parallel --format progress --format junit --out rubocop.xml --display-only-failed --color | tee tmp/rubocop.txt
 else
-	bundle exec rubocop -r ./scripts/strict_kernel_warn.rb --parallel
+	bundle exec rubocop --parallel --color | tee tmp/rubocop.txt
 endif
+	grep "wrong namespace" tmp/rubocop.txt --quiet && (echo "Error: Unexpected warning about incorrect Rubocop namespace usage."; exit 1) || true
 	@echo "--- analytics_events ---"
 	make lint_analytics_events
 	make lint_analytics_events_sorted
