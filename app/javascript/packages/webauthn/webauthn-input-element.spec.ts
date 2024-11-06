@@ -1,6 +1,8 @@
 import sinon from 'sinon';
 import quibble from 'quibble';
 import { waitFor } from '@testing-library/dom';
+import { useSandbox } from '@18f/identity-test-helpers';
+import * as analytics from '@18f/identity-analytics';
 import type { IsWebauthnPasskeySupported } from './is-webauthn-passkey-supported';
 import type { IsWebauthnPlatformAvailable } from './is-webauthn-platform-authenticator-available';
 
@@ -50,8 +52,8 @@ describe('WebauthnInputElement', () => {
       it('becomes visible, with modifier class', () => {
         const element = document.querySelector('lg-webauthn-input')!;
 
-        expect(element.hidden).to.be.false();
-        expect(element.classList.contains('webauthn-input--unsupported-passkey')).to.be.true();
+        expect(element.hidden).to.be.true();
+        expect(element.classList.contains('webauthn-input--unsupported-passkey')).to.be.false();
       });
     });
   });
@@ -88,31 +90,43 @@ describe('WebauthnInputElement', () => {
 
   context('Desktop F/T unlock A/B test', () => {
     context('desktop F/T unlock setup enabled', () => {
+      const sandbox = useSandbox()
       beforeEach(() => {
-        isWebauthnPasskeySupported.returns(false);
         isWebauthnPlatformAvailable.resolves(true);
+        sandbox.stub(analytics, 'trackEvent');
         document.body.innerHTML = `<lg-webauthn-input desktop-ft-unlock-option></lg-webauthn-input>`;
       });
 
       it('becomes visible', () => {
         const element = document.querySelector('lg-webauthn-input')!;
-
         expect(element.hidden).to.be.false();
       });
     });
 
     context('desktop F/T unlock setup disabled', () => {
       beforeEach(() => {
-        isWebauthnPasskeySupported.returns(false);
-        isWebauthnPlatformAvailable.resolves(true);
+        isWebauthnPlatformAvailable.resolves(false);
         document.body.innerHTML = `<lg-webauthn-input desktop-ft-unlock-option></lg-webauthn-input>`;
       });
 
-      it('is hidden',() => {
+      it('is hidden when passkeys are supported',() => {
         const element = document.querySelector('lg-webauthn-input')!;
 
         expect(element.hidden).to.be.false();
       });
     });
+
+    context('when platform authenticator option is unavailable', () => {
+      const sandbox = useSandbox()
+      beforeEach(() => {
+        isWebauthnPlatformAvailable.resolves(false);
+        document.body.innerHTML = `<lg-webauthn-input desktop-ft-unlock-option></lg-webauthn-input>`;
+        sandbox.stub(analytics, 'trackEvent');
+      });
+
+      it('does not log the event', () => {
+        expect(analytics.trackEvent).to.not.have.been.calledWith('desktop_ab_test_option_shown');
+      });
+    })
   });
 });
