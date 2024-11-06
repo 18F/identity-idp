@@ -4,7 +4,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
   include FlowPolicyHelper
 
   let(:idv_vendor) { Idp::Constants::Vendors::SOCURE }
-  let(:fake_socure_endpoint) { 'https://fake-socure.com' }
+  let(:fake_socure_endpoint) { 'https://fake-socure.test' }
   let(:user) { create(:user) }
   let(:stored_result) { nil }
   let(:socure_enabled) { true }
