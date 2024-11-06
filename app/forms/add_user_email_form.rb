@@ -52,7 +52,7 @@ class AddUserEmailForm
     @success = true
     email_address.save!
     SendAddEmailConfirmation.new(user).
-      call(email_address, in_select_email_flow, request_id)
+      call(email_address:, in_select_email_flow:, request_id:)
   end
 
   def extra_analytics_attributes

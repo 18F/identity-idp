@@ -20,7 +20,7 @@ RSpec.describe SendAddEmailConfirmation do
     it 'sends the user an email with a confirmation link and the request id' do
       email_address.update!(confirmed_at: Time.zone.now)
 
-      subject.call(email_address, request_id: request_id)
+      subject.call(email_address:, request_id:, in_select_email_flow: nil)
       expect_delivered_email_count(1)
       expect_delivered_email(
         to: [user.email_addresses.first.email],
