@@ -41,7 +41,7 @@ module Proofing
           response = request.send_request
 
           build_result_from_response(response)
-        rescue Proofing::TimeoutError, RequestError => err
+        rescue Proofing::TimeoutError, Request::Error => err
           build_result_from_error(err)
         end
 
