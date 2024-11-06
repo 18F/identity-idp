@@ -42,7 +42,7 @@ module DataWarehouse
     end
 
     def bucket_name
-      bucket_name = IdentityConfig.store.s3_idp_internal_dw_tasks
+      bucket_name = IdentityConfig.store.s3_idp_dw_tasks
       env = Identity::Hostdata.env
       aws_account_id = Identity::Hostdata.aws_account_id
       aws_region = Identity::Hostdata.aws_region
