@@ -232,6 +232,7 @@ module Idv
 
       if form_response.success?
         save_threatmetrix_status(form_response)
+        save_source_check_vendor(form_response)
         move_applicant_to_idv_session
         idv_session.mark_verify_info_step_complete!
 
@@ -251,21 +252,38 @@ module Idv
       idv_session.threatmetrix_review_status = review_status
     end
 
+    def save_source_check_vendor(form_response)
+      vendor = form_response.extra.dig(
+        :proofing_results,
+        :context,
+        :stages,
+        :state_id,
+        :vendor_name,
+      )
+      idv_session.source_check_vendor = vendor
+    end
+
     def summarize_result_and_rate_limit(summary_result)
       proofing_results_exception = summary_result.extra.dig(:proofing_results, :exception)
       resolution_rate_limiter.increment! if proofing_results_exception.blank?
 
       if summary_result.success?
-        add_proofing_components
+        add_proofing_components(summary_result)
       else
         idv_failure(summary_result)
       end
     end
 
-    def add_proofing_components
+    def add_proofing_components(summary_result)
       ProofingComponent.create_or_find_by(user: current_user).update(
         resolution_check: Idp::Constants::Vendors::LEXIS_NEXIS,
-        source_check: Idp::Constants::Vendors::AAMVA,
+        source_check: summary_result.extra.dig(
+          :proofing_results,
+          :context,
+          :stages,
+          :state_id,
+          :vendor_name,
+        ),
       )
     end
 

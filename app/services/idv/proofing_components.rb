@@ -33,7 +33,7 @@ module Idv
     end
 
     def source_check
-      Idp::Constants::Vendors::AAMVA if idv_session.verify_info_step_complete?
+      idv_session.source_check_vendor
     end
 
     def resolution_check
@@ -67,7 +67,6 @@ module Idv
         address_check:,
         threatmetrix:,
         threatmetrix_review_status:,
-
       }.compact
     end
 
