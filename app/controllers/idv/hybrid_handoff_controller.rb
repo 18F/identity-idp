@@ -5,6 +5,7 @@ module Idv
     include Idv::AvailabilityConcern
     include ActionView::Helpers::DateHelper
     include IdvStepConcern
+    include DocAuthVendorConcern
     include StepIndicatorConcern
 
     before_action :confirm_not_rate_limited
@@ -12,8 +13,7 @@ module Idv
     before_action :confirm_hybrid_handoff_needed, only: :show
 
     def show
-      @upload_disabled = idv_session.selfie_check_required &&
-                         !desktop_test_mode_enabled?
+      @upload_disabled = upload_disabled?
 
       @direct_ipp_with_selfie_enabled = IdentityConfig.store.in_person_doc_auth_button_enabled &&
                                         Idv::InPersonConfig.enabled_for_issuer?(
@@ -120,6 +120,14 @@ module Idv
 
     def sp_or_app_name
       current_sp&.friendly_name.presence || APP_NAME
+    end
+
+    def upload_disabled?
+      if doc_auth_vendor == Idp::Constants::Vendors::SOCURE
+        return true unless desktop_test_mode_enabled?
+      end
+
+      idv_session.selfie_check_required && !desktop_test_mode_enabled?
     end
 
     def desktop_test_mode_enabled?
