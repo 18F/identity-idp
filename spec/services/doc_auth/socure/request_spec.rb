@@ -40,8 +40,10 @@ RSpec.describe DocAuth::Socure::Request do
       let(:response) { nil }
       let(:response_status) { 403 }
 
-      it 'returns {}' do
-        expect(request.fetch).to eq({})
+      # Because we have not implemented handle_connection_error at this level
+      # (defined in docv_result and document_request)
+      it 'raises a NotImplementedError' do
+        expect { request.fetch }.to raise_error NotImplementedError
       end
     end
   end

@@ -207,8 +207,8 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       it 'connection timeout still responds to user' do
         stub_request(:post, fake_socure_endpoint).to_raise(Faraday::ConnectionFailed)
         get(:show)
-
-        expect(response).not_to be_nil
+        expect(response.body).to eq('')
+        expect(response).to be_ok
       end
 
       it 'socure error response still gives a result to user' do
@@ -218,7 +218,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         )
         get(:show)
         expect(response.body).to eq('')
-        expect(response.status).to be(200)
+        expect(response).to be_ok
       end
       it 'socure nil response still gives a result to user' do
         stub_request(:post, fake_socure_endpoint).to_return(
@@ -227,7 +227,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         )
         get(:show)
         expect(response.body).to eq('')
-        expect(response.status).to be(200)
+        expect(response).to be_ok
       end
       it 'socure nil response still gives a result to user' do
         stub_request(:post, fake_socure_endpoint).to_return(
@@ -236,7 +236,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         )
         get(:show)
         expect(response.body).to eq('')
-        expect(response.status).to be(200)
+        expect(response).to be_ok
       end
       it 'socure nil response still gives a result to user' do
         stub_request(:post, fake_socure_endpoint).to_return(
@@ -245,7 +245,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         )
         get(:show)
         expect(response.body).to eq('')
-        expect(response.status).to be(200)
+        expect(response).to be_ok
       end
     end
   end
