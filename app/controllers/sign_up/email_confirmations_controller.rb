@@ -21,9 +21,7 @@ module SignUp
     private
 
     def log_validator_result
-      analytics.user_registration_email_confirmation(
-        **email_confirmation_token_validator_result,
-      )
+      analytics.user_registration_email_confirmation(**email_confirmation_token_validator_result)
     end
 
     def clear_setup_piv_cac_from_sign_in
