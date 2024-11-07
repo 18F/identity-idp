@@ -13,6 +13,12 @@ RSpec.describe SignUp::PasswordsController do
       expect(flash.now[:success]).to eq(t('devise.confirmations.confirmed_but_must_set_password'))
     end
 
+    it 'processes valid token' do
+      expect(controller).to receive(:process_valid_confirmation_token)
+
+      response
+    end
+
     it 'assigns variables expected to be available in the view' do
       response
 

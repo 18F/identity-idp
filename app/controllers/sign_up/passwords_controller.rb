@@ -11,6 +11,7 @@ module SignUp
 
     def new
       password_form # Memoize the password form to use in the view
+      process_valid_confirmation_token
       flash.now[:success] = t('devise.confirmations.confirmed_but_must_set_password')
       @forbidden_passwords = forbidden_passwords
     end
