@@ -23,21 +23,33 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
     )
   end
   subject(:presenter) { described_class.new(enrollment: enrollment) }
+
   describe '#formatted_due_date' do
-    subject(:formatted_due_date) { presenter.formatted_due_date }
+    let(:enrollment_established_at) { DateTime.new(2024, 7, 5) }
 
-    around do |example|
-      Time.use_zone('UTC') { example.run }
+    context 'when the enrollment has an enrollment_established_at time' do
+      [
+        ['English', :en, 'August 3, 2024'],
+        ['Spanish', :es, '3 de agosto de 2024'],
+        ['French', :fr, '3 août 2024'],
+        ['Chinese', :zh, '2024年8月3日'],
+      ].each do |language, locale, expected|
+        context "when locale is #{language}" do
+          before do
+            I18n.locale = locale
+          end
+
+          it "returns the formatted due date in #{language}" do
+            expect(presenter.formatted_due_date).to eq(expected)
+          end
+        end
+      end
     end
 
-    it 'returns a formatted due date' do
-      expect(formatted_due_date).to eq 'August 12, 2023'
-    end
-
-    context 'there is no enrollment_established_at' do
+    context 'when the enrollment does not have an enrollment_established_at time' do
       let(:enrollment_established_at) { nil }
       it 'returns formatted due date when no enrollment_established_at' do
-        expect(formatted_due_date).to eq 'July 13, 2023'
+        expect(presenter.formatted_due_date).to eq 'July 13, 2023'
       end
     end
   end

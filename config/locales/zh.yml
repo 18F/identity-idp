@@ -1571,7 +1571,7 @@ step_indicator.status.complete: 完成了
 step_indicator.status.current: 目前步骤
 step_indicator.status.not_complete: 未完成
 time.am: 上午
-time.formats.event_date: '%B %-d, %Y'
+time.formats.event_date: '%Y年%B%-d日'
 time.formats.event_time: '%-l:%M %p'
 time.formats.event_timestamp: '%B %-d, %Y at %-l:%M %p'
 time.formats.event_timestamp_js: '%{year}年%{month}月%{day}日, %{hour}:%{minute} %{day_period}'

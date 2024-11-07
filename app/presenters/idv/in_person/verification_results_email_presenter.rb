@@ -17,8 +17,9 @@ module Idv
       end
 
       def formatted_verified_date
-        enrollment.status_updated_at.in_time_zone(USPS_SERVER_TIMEZONE).strftime(
-          I18n.t('time.formats.event_date'),
+        I18n.l(
+          enrollment.status_updated_at.in_time_zone(USPS_SERVER_TIMEZONE),
+          format: :event_date,
         )
       end
 
