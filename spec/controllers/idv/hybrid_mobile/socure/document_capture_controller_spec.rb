@@ -4,7 +4,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
   include FlowPolicyHelper
 
   let(:idv_vendor) { Idp::Constants::Vendors::SOCURE }
-  let(:fake_socure_endpoint) { 'https://fake-socure.test' }
+  let(:fake_socure_endpoint) { 'https://fake-socure.com' }
   let(:user) { create(:user) }
   let(:stored_result) { nil }
   let(:socure_enabled) { true }
@@ -91,7 +91,6 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
       before do
         allow(I18n).to receive(:locale).and_return(expected_language)
         allow(request_class).to receive(:new).and_call_original
-        allow(request_class).to receive(:handle_connection_error).and_call_original
         get(:show)
       end
 
@@ -183,74 +182,6 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
         get(:show)
 
         expect(response).to be_not_found
-      end
-    end
-
-    context 'when socure error encountered' do
-      let(:fake_socure_endpoint) { 'https://fake-socure.test/' }
-      let(:failed_response_body) do
-        { 'status' => 'Error',
-          'referenceId' => '1cff6d33-1cc0-4205-b740-c9a9e6b8bd66',
-          'data' => {},
-          'msg' => 'No active account is associated with this request' }
-      end
-      let(:response_body_401) do
-        {
-          status: 'Error',
-          referenceId: '7ff0cdc5-395e-45d1-8467-0ff1b41c11dc',
-          msg: 'string',
-        }
-      end
-      let(:no_doc_found_response_body) do
-        {
-          referenceId: '0dc21b0d-04df-4dd5-8533-ec9ecdafe0f4',
-          msg: {
-            status: 400,
-            msg: 'No Documents found',
-          },
-        }
-      end
-      before do
-        allow(IdentityConfig.store).to receive(:socure_document_request_endpoint).
-          and_return(fake_socure_endpoint)
-      end
-      it 'connection timeout still responds to user' do
-        stub_request(:post, fake_socure_endpoint).to_raise(Faraday::ConnectionFailed)
-        get(:show)
-        expect(response).to be_ok
-      end
-
-      it 'socure error response still gives a result to user' do
-        stub_request(:post, fake_socure_endpoint).to_return(
-          status: 401,
-          body: JSON.generate(failed_response_body),
-        )
-        get(:show)
-        expect(response).to be_ok
-      end
-      it 'socure nil response still gives a result to user' do
-        stub_request(:post, fake_socure_endpoint).to_return(
-          status: 500,
-          body: nil,
-        )
-        get(:show)
-        expect(response).to be_ok
-      end
-      it 'socure nil response still gives a result to user' do
-        stub_request(:post, fake_socure_endpoint).to_return(
-          status: 401,
-          body: JSON.generate(response_body_401),
-        )
-        get(:show)
-        expect(response).to be_ok
-      end
-      it 'socure nil response still gives a result to user' do
-        stub_request(:post, fake_socure_endpoint).to_return(
-          status: 401,
-          body: JSON.generate(no_doc_found_response_body),
-        )
-        get(:show)
-        expect(response).to be_ok
       end
     end
   end
