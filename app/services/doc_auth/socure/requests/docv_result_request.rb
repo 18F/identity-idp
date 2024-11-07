@@ -27,20 +27,6 @@ module DocAuth
           )
         end
 
-        def handle_connection_error(exception:, status: nil, status_message: nil)
-          NewRelic::Agent.notice_error(exception)
-          DocAuth::Response.new(
-            success: false,
-            errors: { network: true },
-            exception: exception,
-            extra: {
-              vendor: 'Socure',
-              vendor_status: status,
-              vendor_status_message: status_message,
-            }.compact,
-          )
-        end
-
         def document_capture_session
           @document_capture_session ||=
             DocumentCaptureSession.find_by!(uuid: document_capture_session_uuid)

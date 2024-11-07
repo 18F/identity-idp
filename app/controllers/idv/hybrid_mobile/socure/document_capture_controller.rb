@@ -40,6 +40,7 @@ module Idv
             :docvTransactionToken,
           )
           document_capture_session.save
+
           # useful for analytics
           @msg = document_response[:msg]
           @reference_id = document_response[:referenceId]
