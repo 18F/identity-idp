@@ -160,7 +160,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       context 'renders the interstital page' do
         render_views
 
-        it 'it includes the socure capture app url' do
+        it 'response includes the socure capture app url' do
           expect(response).to have_http_status 200
           expect(response.body).to have_link(href: socure_capture_app_url)
         end
