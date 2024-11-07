@@ -11,7 +11,8 @@ module SignUp
 
     def new
       password_form # Memoize the password form to use in the view
-      process_successful_confirmation
+      flash.now[:success] = t('devise.confirmations.confirmed_but_must_set_password')
+      @forbidden_passwords = forbidden_passwords
     end
 
     def create
@@ -28,17 +29,10 @@ module SignUp
 
     private
 
-    def process_successful_confirmation
-      process_valid_confirmation_token
-      render_page
-    end
-
-    def render_page
-      render(
-        :new,
-        locals: { confirmation_token: @confirmation_token },
-        formats: :html,
-      )
+    def forbidden_passwords
+      @user.email_addresses.flat_map do |email_address|
+        ForbiddenPasswords.new(email_address.email).call
+      end
     end
 
     def track_analytics(result)
