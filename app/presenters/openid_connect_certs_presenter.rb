@@ -10,7 +10,8 @@ class OpenidConnectCertsPresenter
   private
 
   def keys
-    [AppArtifacts.store.oidc_public_key].map do |key|
+    keys = [AppArtifacts.store.oidc_public_key, AppArtifacts.store.oidc_public_key_second].compact
+    keys.map do |key|
       {
         alg: 'RS256',
         use: 'sig',
