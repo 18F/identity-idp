@@ -1691,7 +1691,7 @@ two_factor_authentication.max_generic_login_attempts_reached: For your security,
 two_factor_authentication.max_otp_login_attempts_reached: For your security, your account is temporarily locked because you have entered the one-time code incorrectly too many times.
 two_factor_authentication.max_otp_requests_reached: For your security, your account is temporarily locked because you have requested a one-time code too many times.
 two_factor_authentication.max_personal_key_login_attempts_reached: For your security, your account is temporarily locked because you have entered the personal key incorrectly too many times.
-two_factor_authentication.max_piv_cac_login_attempts_reached: For your security, your account is temporarily locked because you have presented your piv/cac credential incorrectly too many times.
+two_factor_authentication.max_piv_cac_login_attempts_reached: For your security, your account is temporarily locked because you have presented your PIV/CAC credential incorrectly too many times.
 two_factor_authentication.mobile_terms_of_service: Mobile terms of service
 two_factor_authentication.opt_in.error_retry: Sorry, we are having trouble opting you in. Please try again.
 two_factor_authentication.opt_in.opted_out_html: You’ve opted out of receiving text messages at %{phone_number_html}. You can opt in and receive a security code again to that phone number.
