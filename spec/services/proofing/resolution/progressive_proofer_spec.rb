@@ -390,6 +390,28 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       end
     end
 
+    context 'when proofer_mock_fallback is false' do
+      before do
+        allow(IdentityConfig.store).to receive(:proofer_mock_fallback).and_return(false)
+      end
+
+      context 'and default is set to :mock' do
+        let(:idv_resolution_default_vendor) { :mock }
+
+        it 'uses instant_verify' do
+          expect(proofing_vendor).to eql(:instant_verify)
+        end
+      end
+
+      context 'and default is set to a value other than :mock' do
+        let(:idv_resolution_default_vendor) { :default }
+
+        it 'uses the other value' do
+          expect(proofing_vendor).to eql(:default)
+        end
+      end
+    end
+
     context 'when alternate is not configured' do
       let(:idv_resolution_alternate_vendor) { nil }
       it 'uses default' do

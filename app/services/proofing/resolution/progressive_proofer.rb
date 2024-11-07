@@ -93,6 +93,16 @@ module Proofing
           alternate_vendor = IdentityConfig.store.idv_resolution_alternate_vendor
           alternate_vendor_percent = IdentityConfig.store.idv_resolution_alternate_vendor_percent
 
+          # Initially we will have production environments configured with
+          # `proofer_mock_fallback: false`
+          # We need to honor that configuration until all environments are
+          # updated to use idv_resolution_default_vendor
+          if !IdentityConfig.store.proofer_mock_fallback
+            if default_vendor == :mock
+              return :instant_verify
+            end
+          end
+
           if default_vendor.blank?
             raise 'idv_resolution_default_vendor not configured'
           end
