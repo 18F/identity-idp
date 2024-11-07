@@ -4,7 +4,7 @@
   <% c.with_header(id: 'select-email-heading') { t('titles.select_email') } %>
 
   <p id="select-email-intro">
-    <%= t('help_text.select_preferred_email', sp: @identity.display_name, app_name: APP_NAME) %>
+    <%= t('help_text.select_preferred_email_html', sp: @identity.display_name) %>
   </p>
 
   <%= simple_form_for(
@@ -30,7 +30,7 @@
             ]
           end,
         ) %>
-    <%= f.submit(t('help_text.requested_attributes.change_email_link'), class: 'margin-top-1') %>
+    <%= f.submit(t('help_text.requested_attributes.select_email_link'), class: 'margin-top-1') %>
   <% end %>
 
   <%= render ButtonComponent.new(
