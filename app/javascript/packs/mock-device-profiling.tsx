@@ -113,15 +113,6 @@ function MockDeviceProfilingOptions() {
   );
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  const ssnInput = document.getElementsByName('doc_auth[ssn]')[0];
-
-  if (ssnInput) {
-    const passwordToggle = ssnInput.closest('lg-password-toggle');
-
-    const div = document.createElement('div');
-    passwordToggle?.parentElement?.appendChild(div);
-
-    render(<MockDeviceProfilingOptions />, div);
-  }
-});
+const appRoot = document.createElement('div');
+document.currentScript!.after(appRoot);
+render(<MockDeviceProfilingOptions />, appRoot);
