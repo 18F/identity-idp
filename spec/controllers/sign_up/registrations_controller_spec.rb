@@ -172,5 +172,17 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
 
       expect(response).to render_template(:new)
     end
+
+    context 'with thmx enabled' do
+      before do
+        allow(FeatureManagement).to receive(:account_creation_device_profiling_collecting_enabled?).
+          and_return(true)
+      end
+      it 'renders new with invalid request' do 
+        post :create, params: params.deep_merge(user: { email: 'invalid@' })
+
+        expect(response).to render_template(:new)
+      end
+    end
   end
 end
