@@ -116,18 +116,30 @@ RSpec.describe Idv::DocumentCaptureController do
       }
     end
 
+    let(:idv_vendor) { Idp::Constants::Vendors::LEXIS_NEXIS }
+
     before do
       allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(
-        Idp::Constants::Vendors::LEXIS_NEXIS,
+        idv_vendor,
       )
       allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(
-        Idp::Constants::Vendors::LEXIS_NEXIS,
+        idv_vendor,
       )
     end
 
     it 'has non-nil presenter' do
       get :show
       expect(assigns(:presenter)).to be_kind_of(Idv::InPerson::UspsFormPresenter)
+    end
+
+    context 'when we try to use this controller but we should be using the Socure version' do
+      let(:idv_vendor) { Idp::Constants::Vendors::SOCURE }
+
+      it 'redirects to the Socure controller' do
+        get :show
+
+        expect(response).to redirect_to idv_socure_document_capture_url
+      end
     end
 
     it 'renders the show template' do

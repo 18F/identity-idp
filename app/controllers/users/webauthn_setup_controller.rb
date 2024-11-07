@@ -136,13 +136,23 @@ module Users
         handle_valid_verification_for_confirmation_context(
           auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM,
         )
-        Funnel::Registration::AddMfa.call(current_user.id, 'webauthn_platform', analytics)
+        Funnel::Registration::AddMfa.call(
+          current_user.id,
+          'webauthn_platform',
+          analytics,
+          threatmetrix_attrs,
+        )
         flash[:success] = t('notices.webauthn_platform_configured')
       else
         handle_valid_verification_for_confirmation_context(
           auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN,
         )
-        Funnel::Registration::AddMfa.call(current_user.id, 'webauthn', analytics)
+        Funnel::Registration::AddMfa.call(
+          current_user.id,
+          'webauthn',
+          analytics,
+          threatmetrix_attrs,
+        )
         flash[:success] = t('notices.webauthn_configured')
       end
       redirect_to next_setup_path || after_mfa_setup_path

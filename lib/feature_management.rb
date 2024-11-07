@@ -125,7 +125,7 @@ class FeatureManagement
       IdentityConfig.store.recaptcha_enterprise_project_id.present?
   end
 
-  # Whether we collect device profiling information as part of the account creation process
+  # Whether we collect device profiling as part of the account creation process
   def self.account_creation_device_profiling_collecting_enabled?
     case IdentityConfig.store.account_creation_device_profiling
     when :enabled, :collect_only then true

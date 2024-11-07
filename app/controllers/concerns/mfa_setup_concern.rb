@@ -91,6 +91,15 @@ module MfaSetupConcern
     end
   end
 
+  def threatmetrix_attrs
+    {
+      user_id: current_user.id,
+      request_ip: request&.remote_ip,
+      threatmetrix_session_id: session[:threatmetrix_session_id],
+      email: EmailContext.new(current_user).last_sign_in_email_address.email,
+    }
+  end
+
   private
 
   def track_user_registration_mfa_setup_complete_event

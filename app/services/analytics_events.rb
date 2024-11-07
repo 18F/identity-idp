@@ -11,6 +11,46 @@
 #                 ||     ||
 
 module AnalyticsEvents
+  # @param [Boolean] success Check whether threatmetrix succeeded properly.
+  # @param [String] transaction_id Vendor-specific transaction ID for the request.
+  # @param [String, nil] client Client user was directed from when creating account
+  # @param [array<String>, nil] errors error response from api call
+  # @param [String, nil] exception Error exception from api call
+  # @param [Boolean] timed_out set whether api call timed out
+  # @param [String] review_status TMX decision on the user
+  # @param [String] account_lex_id LexID associated with the response.
+  # @param [String] session_id Session ID associated with response
+  # @param [Hash] response_body total response body for api call
+  # Result when threatmetrix is completed for account creation and result
+  def account_creation_tmx_result(
+    client:,
+    success:,
+    errors:,
+    exception:,
+    timed_out:,
+    transaction_id:,
+    review_status:,
+    account_lex_id:,
+    session_id:,
+    response_body:,
+    **extra
+  )
+    track_event(
+      :account_creation_tmx_result,
+      client:,
+      success:,
+      errors:,
+      exception:,
+      timed_out:,
+      transaction_id:,
+      review_status:,
+      account_lex_id:,
+      session_id:,
+      response_body:,
+      **extra,
+    )
+  end
+
   # @param [Boolean] success
   # When a user submits a form to delete their account
   def account_delete_submitted(success:, **extra)

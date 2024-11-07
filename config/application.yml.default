@@ -207,6 +207,7 @@ lexisnexis_request_mode: testing
 ###################################################################
 # LexisNexis DDP/ThreatMetrix #####################################
 lexisnexis_threatmetrix_api_key:
+lexisnexis_threatmetrix_authentication_policy: '1234'
 lexisnexis_threatmetrix_base_url:
 lexisnexis_threatmetrix_js_signing_cert: ''
 lexisnexis_threatmetrix_mock_enabled: true
