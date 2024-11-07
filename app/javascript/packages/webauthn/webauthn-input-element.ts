@@ -33,7 +33,7 @@ export class WebauthnInputElement extends HTMLElement {
       this.classList.add('webauthn-input--unsupported-passkey');
     }
 
-    if(this.isOptedInToAbTest && !webauthnPlatformAvailable) {
+    if(this.isOptedInToAbTest && this.hasAttribute('hidden')) {
       trackEvent('desktop_ab_test_option_shown')
     }
   }
