@@ -93,6 +93,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       before do
         allow(request_class).to receive(:new).and_call_original
         allow(I18n).to receive(:locale).and_return(expected_language)
+        allow(DocumentCaptureSession).to receive(:find_by).and_return(document_capture_session)
         get(:show)
       end
 
@@ -103,6 +104,11 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
             redirect_url: idv_socure_document_capture_url,
             language: expected_language,
           )
+      end
+
+      it 'sets DocumentCaptureSession socure_docv_capture_app_url value' do
+        document_capture_session.reload
+        expect(document_capture_session.socure_docv_capture_app_url).to eq(response_redirect_url)
       end
 
       context 'language is english' do
