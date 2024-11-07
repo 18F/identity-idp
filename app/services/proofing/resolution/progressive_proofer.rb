@@ -8,7 +8,7 @@ module Proofing
     #   2. The user has only provided one address for their residential and identity document
     #      address or separate residential and identity document addresses
     class ProgressiveProofer
-      class InvalidProofingVendorError; end
+      class InvalidProofingVendorError < StandardError; end
 
       attr_reader :aamva_plugin,
                   :threatmetrix_plugin
@@ -104,15 +104,18 @@ module Proofing
           end
 
           if default_vendor.blank?
-            raise 'idv_resolution_default_vendor not configured'
+            raise InvalidProofingVendorError, 'idv_resolution_default_vendor not configured'
           end
 
           if alternate_vendor.blank?
-            raise 'No resolution vendor configured' unless default_vendor.present?
+            if !default_vendor.present?
+              raise InvalidProofingVendorError,
+                    'No resolution vendor configured'
+            end
 
             if alternate_vendor_percent > 0
               # rubocop:disable Layout/LineLength
-              raise 'idv_resolution_alternate_vendor is not configured, but idv_resolution_alternate_vendor_percent is > 0'
+              raise InvalidProofingVendorError, 'idv_resolution_alternate_vendor is not configured, but idv_resolution_alternate_vendor_percent is > 0'
               # rubocop:enable Layout/LineLength
             end
 
@@ -180,7 +183,10 @@ module Proofing
 
       def sp_cost_token
         token = PROOFING_VENDOR_SP_COST_TOKENS[proofing_vendor]
-        raise InvalidProofingVendorError unless token.present?
+        if token.blank?
+          raise InvalidProofingVendorError,
+                'No sp_cost token found for proofing vendor'
+        end
 
         token
       end
