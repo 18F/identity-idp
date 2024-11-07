@@ -114,5 +114,5 @@ function MockDeviceProfilingOptions() {
 }
 
 const appRoot = document.createElement('div');
-document.currentScript!.after(appRoot);
+currentScript?.after(appRoot);
 render(<MockDeviceProfilingOptions />, appRoot);
