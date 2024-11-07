@@ -72,8 +72,8 @@ module Proofing
       end
 
       def invalid_state_id_type?(state_id_type)
-        !SUPPORTED_STATE_ID_TYPES.include?(state_id_type) ||
-          state_id_type.nil?
+        !SUPPORTED_STATE_ID_TYPES.include?(state_id_type) &&
+          !state_id_type.nil?
       end
     end
   end

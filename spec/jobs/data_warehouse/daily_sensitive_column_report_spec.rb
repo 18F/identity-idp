@@ -5,9 +5,9 @@ RSpec.describe DataWarehouse::DailySensitiveColumnJob do
 
   let(:timestamp) { Date.new(2024, 10, 15).in_time_zone('UTC') }
   let(:job) { described_class.new }
-  let(:expected_bucket) { 'login-gov-ipd-internal-dw-tasks-test-1234-us-west-2' }
+  let(:expected_bucket) { 'login-gov-ipd-dw-tasks-test-1234-us-west-2' }
   let(:tables) { ['auth_app_configurations'] }
-  let(:s3_idp_internal_dw_tasks) { 'login-gov-idp-internal-dw-tasks' }
+  let(:s3_idp_dw_tasks) { 'login-gov-idp-dw-tasks' }
 
   let(:expected_json) do
     {
@@ -58,7 +58,7 @@ RSpec.describe DataWarehouse::DailySensitiveColumnJob do
     {
       body: anything,
       content_type: 'application/json',
-      bucket: 'login-gov-idp-internal-dw-tasks-int-1234-us-west-1',
+      bucket: 'login-gov-idp-dw-tasks-int-1234-us-west-1',
     }
   end
 
@@ -66,8 +66,8 @@ RSpec.describe DataWarehouse::DailySensitiveColumnJob do
     allow(Identity::Hostdata).to receive(:env).and_return('int')
     allow(Identity::Hostdata).to receive(:aws_account_id).and_return('1234')
     allow(Identity::Hostdata).to receive(:aws_region).and_return('us-west-1')
-    allow(IdentityConfig.store).to receive(:s3_idp_internal_dw_tasks).
-      and_return(s3_idp_internal_dw_tasks)
+    allow(IdentityConfig.store).to receive(:s3_idp_dw_tasks).
+      and_return(s3_idp_dw_tasks)
 
     Aws.config[:s3] = {
       stub_responses: {

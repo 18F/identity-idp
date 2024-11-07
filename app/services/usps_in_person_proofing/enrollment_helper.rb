@@ -111,7 +111,6 @@ module UspsInPersonProofing
           weekday_hours: EnrollmentHelper.localized_hours(location.weekday_hours),
           zip_code_4: location.zip_code_4,
           zip_code_5: location.zip_code_5,
-          is_pilot: location.is_pilot,
         }
       end
 

@@ -31,7 +31,7 @@
           <nc:LocationStateUsPostalServiceCode>VA</nc:LocationStateUsPostalServiceCode>
           <nc:LocationPostalCode>20176</nc:LocationPostalCode>
         </aa:Address>
-      </dldv:verifyDriverLicenseDataRequest>
+      <aa:DocumentCategoryCode>1</aa:DocumentCategoryCode></dldv:verifyDriverLicenseDataRequest>
     </dldv:VerifyDriverLicenseData>
   </soap:Body>
 </soap:Envelope>

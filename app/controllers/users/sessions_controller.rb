@@ -39,7 +39,7 @@ module Users
       return process_rate_limited if session_bad_password_count_max_exceeded?
       return process_locked_out_user if current_user && user_locked_out?(current_user)
       return process_rate_limited if rate_limited?
-      return process_failed_captcha unless valid_captcha_result? || log_captcha_failures_only?
+      return process_failed_captcha unless recaptcha_response.success? || log_captcha_failures_only?
 
       rate_limit_password_failure = true
       self.resource = warden.authenticate!(auth_options)
@@ -100,11 +100,10 @@ module Users
       distance_of_time_in_words(Time.zone.now, time_lockout_expires, true)
     end
 
-    def valid_captcha_result?
-      return @valid_captcha_result if defined?(@valid_captcha_result)
-      @valid_captcha_result = recaptcha_form.submit(
+    def recaptcha_response
+      @recaptcha_response ||= recaptcha_form.submit(
         recaptcha_token: params.require(:user)[:recaptcha_token],
-      ).success?
+      )
     end
 
     def recaptcha_form
@@ -206,15 +205,16 @@ module Users
 
       success = current_user.present? &&
                 !user_locked_out?(user) &&
-                (valid_captcha_result? || log_captcha_failures_only?)
+                (recaptcha_response.success? || log_captcha_failures_only?)
 
       analytics.email_and_password_auth(
+        **recaptcha_response.to_h,
         success: success,
         user_id: user.uuid,
         user_locked_out: user_locked_out?(user),
         rate_limited: rate_limited?,
         captcha_validation_performed: captcha_validation_performed?,
-        valid_captcha_result: valid_captcha_result?,
+        valid_captcha_result: recaptcha_response.success?,
         bad_password_count: session[:bad_password_count].to_i,
         sp_request_url_present: sp_session[:request_url].present?,
         remember_device: remember_device_cookie.present?,

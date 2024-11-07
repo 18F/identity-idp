@@ -84,7 +84,34 @@ module Proofing
             inside: '//dldv:verifyDriverLicenseDataRequest',
           )
 
+          if IdentityConfig.store.aamva_send_id_type
+            add_state_id_type(
+              applicant.state_id_data.state_id_type,
+              document,
+            )
+          end
+
           @body = document.to_s
+        end
+
+        def add_state_id_type(id_type, document)
+          category_code = case id_type
+                          when 'drivers_license'
+                            1
+                          when 'drivers_permit'
+                            2
+                          when 'state_id_card'
+                            3
+                          end
+
+          if category_code
+            add_optional_element(
+              'aa:DocumentCategoryCode',
+              value: category_code,
+              document:,
+              inside: '//dldv:verifyDriverLicenseDataRequest',
+            )
+          end
         end
 
         def add_optional_element(name, value:, document:, inside: nil, after: nil)

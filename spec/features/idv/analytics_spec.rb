@@ -153,7 +153,7 @@ RSpec.feature 'Analytics Regression', :js do
                                  vendor_name: 'ResolutionMock',
                                  vendor_workflow: nil,
                                  verified_attributes: nil },
-          state_id: state_id_resolution_with_id_type,
+          state_id: state_id_resolution,
           threatmetrix: threatmetrix_response,
         },
       },

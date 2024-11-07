@@ -42,6 +42,7 @@ module Users
 
     def process_successful_confirmation(email_address)
       confirm_and_notify(email_address)
+      store_from_select_email_flow_in_session
       if current_user
         flash[:success] = t('devise.confirmations.confirmed')
         redirect_to account_url
@@ -97,6 +98,10 @@ module Users
 
     def confirmation_params
       params.permit(:confirmation_token)
+    end
+
+    def store_from_select_email_flow_in_session
+      session[:from_select_email_flow] = params[:from_select_email_flow].to_s == 'true'
     end
   end
 end

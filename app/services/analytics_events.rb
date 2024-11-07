@@ -436,8 +436,9 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] success
-  # @param [String] user_id
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # @param [String] user_id UUID for user associated with attempted email address
   # @param [Boolean] user_locked_out if the user is currently locked out of their second factor
   # @param [Boolean] rate_limited Whether the user has exceeded user IP rate limiting
   # @param [Boolean] valid_captcha_result Whether user passed the reCAPTCHA check or was exempt
@@ -446,7 +447,7 @@ module AnalyticsEvents
   # @param [Boolean] sp_request_url_present if was an SP request URL in the session
   # @param [Boolean] remember_device if the remember device cookie was present
   # @param [Boolean, nil] new_device Whether the user is authenticating from a new device. Nil if
-  # there is the attempt was unsuccessful, since it cannot be known whether it's a new device.
+  # the attempt was unsuccessful, since it cannot be known whether it's a new device.
   # Tracks authentication attempts at the email/password screen
   def email_and_password_auth(
     success:,
@@ -459,11 +460,13 @@ module AnalyticsEvents
     sp_request_url_present:,
     remember_device:,
     new_device:,
+    error_details: nil,
     **extra
   )
     track_event(
       'Email and Password Authentication',
       success:,
+      error_details:,
       user_id:,
       user_locked_out:,
       rate_limited:,
