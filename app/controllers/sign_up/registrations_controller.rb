@@ -29,7 +29,7 @@ module SignUp
       if result.success?
         process_successful_creation
       else
-        render :new
+        render :new, locals: threatmetrix_variables
       end
     end
 
