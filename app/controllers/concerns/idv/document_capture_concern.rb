@@ -50,6 +50,24 @@ module Idv
         stored_result.selfie_check_performed?
     end
 
+    def redirect_to_correct_vendor(vendor, in_hybrid_mobile)
+      expected_doc_auth_vendor = doc_auth_vendor
+      return if vendor == expected_doc_auth_vendor
+      return if vendor == Idp::Constants::Vendors::LEXIS_NEXIS &&
+                expected_doc_auth_vendor == Idp::Constants::Vendors::MOCK
+
+      correct_path = case expected_doc_auth_vendor
+        when Idp::Constants::Vendors::SOCURE
+          in_hybrid_mobile ? idv_hybrid_mobile_socure_document_capture_path
+                           : idv_socure_document_capture_path
+        when Idp::Constants::Vendors::LEXIS_NEXIS, Idp::Constants::Vendors::MOCK
+          in_hybrid_mobile ? idv_hybrid_mobile_document_capture_path
+                           : idv_document_capture_path
+        end
+
+      redirect_to correct_path
+    end
+
     private
 
     def track_document_issuing_state(user, state)

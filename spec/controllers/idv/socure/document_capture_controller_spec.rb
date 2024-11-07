@@ -65,6 +65,15 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       subject.idv_session.document_capture_session_uuid = expected_uuid
     end
 
+    context 'when we try to use this controller but we should be using the LN/mock version' do
+      let(:idv_vendor) { Idp::Constants::Vendors::LEXIS_NEXIS }
+
+      it 'redirects to the LN/mock controller' do
+        get :show
+        expect(response).to redirect_to idv_document_capture_url
+      end
+    end
+
     context 'happy path' do
       let(:response_redirect_url) { 'https://idv.test/dance' }
       let(:docv_transaction_token) { '176dnc45d-2e34-46f3-82217-6f540ae90673' }
