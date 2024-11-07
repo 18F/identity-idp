@@ -22,7 +22,8 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     service_provider:,
     phishing_resistant_required:,
     piv_cac_required:,
-    add_piv_cac_after_2fa:
+    add_piv_cac_after_2fa:,
+    desktop_ab_test_option: nil
   )
     @user = user
     @view = view
@@ -31,6 +32,7 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     @phishing_resistant_required = phishing_resistant_required
     @piv_cac_required = piv_cac_required
     @add_piv_cac_after_2fa = add_piv_cac_after_2fa
+    @desktop_ab_test_option = desktop_ab_test_option
   end
 
   def title
