@@ -36,7 +36,7 @@ RSpec.feature 'signing into an SP with multiple emails enabled' do
 
       choose emails.second
 
-      click_button(t('help_text.requested_attributes.change_email_link'))
+      click_button(t('help_text.requested_attributes.select_email_link'))
 
       expect(current_path).to eq(sign_up_completed_path)
       click_agree_and_continue
@@ -55,7 +55,7 @@ RSpec.feature 'signing into an SP with multiple emails enabled' do
       click_submit_default
       click_link(t('help_text.requested_attributes.change_email_link'))
       choose email2.email
-      click_button(t('help_text.requested_attributes.change_email_link'))
+      click_button(t('help_text.requested_attributes.select_email_link'))
       expect(current_path).to eq(sign_up_completed_path)
       click_agree_and_continue
       click_submit_default
@@ -103,7 +103,7 @@ RSpec.feature 'signing into an SP with multiple emails enabled' do
 
       click_link(t('help_text.requested_attributes.change_email_link'))
       choose emails.second
-      click_button(t('help_text.requested_attributes.change_email_link'))
+      click_button(t('help_text.requested_attributes.select_email_link'))
 
       expect(current_path).to eq(sign_up_completed_path)
 
@@ -127,7 +127,7 @@ RSpec.feature 'signing into an SP with multiple emails enabled' do
       click_submit_default_twice
       click_link(t('help_text.requested_attributes.change_email_link'))
       choose email2.email
-      click_button(t('help_text.requested_attributes.change_email_link'))
+      click_button(t('help_text.requested_attributes.select_email_link'))
       expect(current_path).to eq(sign_up_completed_path)
       click_agree_and_continue
       click_submit_default
