@@ -29,7 +29,7 @@ RSpec.describe 'accounts/connected_accounts/selected_email/edit.html.erb' do
     expect(inputs).to be_logically_grouped(t('titles.select_email'))
     fieldset = page.find('fieldset')
     expect(fieldset).to have_description(
-      t('help_text.select_preferred_email', sp: identity.display_name, app_name: APP_NAME),
+      t('help_text.select_preferred_email_html', sp: identity.display_name),
     )
   end
 end

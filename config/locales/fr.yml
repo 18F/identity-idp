@@ -981,7 +981,7 @@ help_text.requested_attributes.social_security_number: Numéro de sécurité soc
 help_text.requested_attributes.verified_at: Mis à jour le
 help_text.requested_attributes.x509_issuer: Émetteur PIV/CAC
 help_text.requested_attributes.x509_subject: Identité PIV/CAC
-help_text.select_preferred_email: Vous pouvez modifier l’adresse e-mail que vous partagez avec %{sp} car vous possédez plusieurs adresses e-mail associées à votre compte %{app_name}.
+help_text.select_preferred_email_html: Sélectionnez ou ajoutez l’adresse e-mail que vous souhaitez employer pour accéder à <strong>%{sp}</strong>.
 i18n.language: Langue
 i18n.locale.en: English
 i18n.locale.es: Español

@@ -994,7 +994,7 @@ help_text.requested_attributes.social_security_number: 社会保障号码
 help_text.requested_attributes.verified_at: 更新是在
 help_text.requested_attributes.x509_issuer: PIV/CAC 发放方
 help_text.requested_attributes.x509_subject: PIV/CAC 身份
-help_text.select_preferred_email: 因为你有多个电邮与 %{app_name} 账户相关，你可以更改与我们 %{sp} 构分享哪个。
+help_text.select_preferred_email_html: 选择或添加你想用来访问<strong>%{sp}</strong>的电子邮件。 
 i18n.language: 语言
 i18n.locale.en: English
 i18n.locale.es: Español
