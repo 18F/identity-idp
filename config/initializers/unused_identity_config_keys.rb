@@ -6,3 +6,10 @@ if Identity::Hostdata.config_builder.unused_keys.present?
       keys: Identity::Hostdata.config_builder.unused_keys }.to_json,
   )
 end
+
+Rails.logger.info(
+  {
+    name: 'config_version',
+    **Identity::Hostdata.configuration_version,
+  }.to_json
+)

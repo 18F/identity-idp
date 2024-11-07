@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/18F/identity-hostdata.git
-  revision: 81caa5c0596d50aaeaa284366986829610e0bd9b
-  branch: mitchellhenke/secrets-manager
+  revision: 0230ef3f177055dcebdbcbccc436e4d128788439
+  branch: mitchellhenke/return-versions
   specs:
-    identity-hostdata (4.2.0)
+    identity-hostdata (4.4.0)
       activesupport (>= 6.1, < 8)
       aws-sdk-s3 (~> 1.8)
       aws-sdk-secretsmanager (>= 1.91)
@@ -186,13 +186,13 @@ GEM
     aws-sdk-pinpointsmsvoice (1.29.0)
       aws-sdk-core (~> 3, >= 3.122.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-s3 (1.132.1)
-      aws-sdk-core (~> 3, >= 3.179.0)
+    aws-sdk-s3 (1.159.0)
+      aws-sdk-core (~> 3, >= 3.201.0)
       aws-sdk-kms (~> 1)
-      aws-sigv4 (~> 1.6)
-    aws-sdk-secretsmanager (1.96.0)
-      aws-sdk-core (~> 3, >= 3.197.0)
-      aws-sigv4 (~> 1.1)
+      aws-sigv4 (~> 1.5)
+    aws-sdk-secretsmanager (1.102.0)
+      aws-sdk-core (~> 3, >= 3.201.0)
+      aws-sigv4 (~> 1.5)
     aws-sdk-ses (1.44.0)
       aws-sdk-core (~> 3, >= 3.122.0)
       aws-sigv4 (~> 1.1)
