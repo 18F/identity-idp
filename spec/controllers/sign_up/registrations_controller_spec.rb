@@ -57,7 +57,7 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
       end
     end
 
-    context 'with thmx enabled' do
+    context 'with threatmetrix enabled' do
       let(:tmx_session_id) { '1234' }
 
       before do
@@ -203,7 +203,7 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
       expect(response).to render_template(:new)
     end
 
-    context 'with thmx enabled' do
+    context 'with threatmetrix enabled' do
       let(:tmx_session_id) { '1234' }
 
       before do
@@ -219,7 +219,6 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
         tmx_url = 'https://h.online-metrix.net/fp'
         expect(subject).to receive(:render).with(
           :new,
-          formats: :html,
           locals: { threatmetrix_session_id: tmx_session_id,
                     threatmetrix_javascript_urls:
                       ["#{tmx_url}/tags.js?org_id=org1&session_id=#{tmx_session_id}"],
