@@ -6,11 +6,12 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
   let(:idv_vendor) { Idp::Constants::Vendors::SOCURE }
   let(:fake_socure_endpoint) { 'https://fake-socure.com' }
   let(:user) { create(:user) }
+  let(:doc_auth_success) { true }
   let(:stored_result) do
     DocumentCaptureSessionResult.new(
       id: SecureRandom.uuid,
-      success: true,
-      doc_auth_success: true,
+      success: doc_auth_success,
+      doc_auth_success: doc_auth_success,
       selfie_status: :none,
       pii: { first_name: 'Testy', last_name: 'Testerson' },
       attention_with_barcode: false,
@@ -194,6 +195,16 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       post(:update)
 
       expect(response).to redirect_to(idv_ssn_path)
+    end
+
+    context 'when doc auth fails' do
+      let(:doc_auth_success) { false }
+
+      it 'redirects to document capture' do
+        post(:update)
+
+        expect(response).to redirect_to(idv_socure_document_capture_path)
+      end
     end
 
     context 'when socure is disabled' do
