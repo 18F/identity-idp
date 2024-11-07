@@ -14,7 +14,7 @@ module Users
     def update
       result = form.submit(name: params.dig(:form, :name))
 
-      analytics.auth_app_update_name_submitted(**result.to_h)
+      analytics.auth_app_update_name_submitted(**result)
 
       if result.success?
         flash[:success] = t('two_factor_authentication.auth_app.renamed')
@@ -28,7 +28,7 @@ module Users
     def destroy
       result = form.submit
 
-      analytics.auth_app_delete_submitted(**result.to_h)
+      analytics.auth_app_delete_submitted(**result)
 
       if result.success?
         flash[:success] = t('two_factor_authentication.auth_app.deleted')

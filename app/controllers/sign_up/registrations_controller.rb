@@ -24,7 +24,7 @@ module SignUp
 
       result = @register_user_email_form.submit(permitted_params.merge(request_id:))
 
-      analytics.user_registration_email(**result.to_h)
+      analytics.user_registration_email(**result)
 
       if result.success?
         process_successful_creation

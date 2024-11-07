@@ -14,7 +14,7 @@ module TwoFactorAuthenticatableMethods
   def handle_verification_for_authentication_context(result:, auth_method:, extra_analytics: nil)
     increment_mfa_selection_attempt_count(auth_method)
     analytics.multi_factor_auth(
-      **result.to_h,
+      **result,
       multi_factor_auth_method: auth_method,
       enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
       new_device: new_device?,

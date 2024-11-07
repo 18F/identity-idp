@@ -26,7 +26,7 @@ module Users
 
       result = @update_user_password_form.submit(user_password_params)
 
-      analytics.password_changed(**result.to_h)
+      analytics.password_changed(**result)
 
       if result.success?
         handle_valid_password

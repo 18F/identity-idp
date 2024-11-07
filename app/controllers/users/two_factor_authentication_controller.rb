@@ -20,7 +20,7 @@ module Users
 
     def send_code
       result = otp_delivery_selection_form.submit(delivery_params)
-      analytics.otp_delivery_selection(**result.to_h)
+      analytics.otp_delivery_selection(**result)
       if result.success?
         handle_valid_otp_params(
           result,
@@ -80,7 +80,7 @@ module Users
 
     def validate_otp_delivery_preference_and_send_code
       result = otp_delivery_selection_form.submit(otp_delivery_preference: delivery_preference)
-      analytics.otp_delivery_selection(**result.to_h)
+      analytics.otp_delivery_selection(**result)
       phone_is_confirmed = UserSessionContext.authentication_or_reauthentication_context?(context)
       phone_capabilities = PhoneNumberCapabilities.new(
         parsed_phone,

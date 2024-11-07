@@ -37,7 +37,7 @@ module SignUp
     end
 
     def track_analytics(result)
-      analytics.password_creation(**result.to_h)
+      analytics.password_creation(**result)
     end
 
     def permitted_params

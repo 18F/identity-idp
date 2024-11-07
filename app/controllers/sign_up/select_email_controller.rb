@@ -21,7 +21,7 @@ module SignUp
 
       result = @select_email_form.submit(form_params)
 
-      analytics.sp_select_email_submitted(**result.to_h, needs_completion_screen_reason:)
+      analytics.sp_select_email_submitted(**result, needs_completion_screen_reason:)
 
       if result.success?
         user_session[:selected_email_id_for_linked_identity] = form_params[:selected_email_id]
