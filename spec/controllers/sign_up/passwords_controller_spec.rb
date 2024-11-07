@@ -29,12 +29,6 @@ RSpec.describe SignUp::PasswordsController do
         subject
 
         expect(@analytics).to have_logged_event(
-          'User Registration: Email Confirmation',
-          success: true,
-          errors: {},
-          user_id: user.uuid,
-        )
-        expect(@analytics).to have_logged_event(
           'Password Creation',
           success: true,
           errors: {},
@@ -78,12 +72,6 @@ RSpec.describe SignUp::PasswordsController do
           subject
 
           expect(@analytics).to have_logged_event(
-            'User Registration: Email Confirmation',
-            errors: {},
-            success: true,
-            user_id: user.uuid,
-          )
-          expect(@analytics).to have_logged_event(
             'Password Creation',
             success: false,
             errors: {
@@ -111,12 +99,6 @@ RSpec.describe SignUp::PasswordsController do
         it 'tracks invalid password_confirmation error' do
           subject
 
-          expect(@analytics).to have_logged_event(
-            'User Registration: Email Confirmation',
-            errors: {},
-            success: true,
-            user_id: user.uuid,
-          )
           expect(@analytics).to have_logged_event(
             'Password Creation',
             success: false,
