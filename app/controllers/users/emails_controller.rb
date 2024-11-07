@@ -42,7 +42,7 @@ module Users
 
       if email_address && !email_address.confirmed?
         analytics.resend_add_email_request(success: true)
-        SendAddEmailConfirmation.new(current_user).call(email_address:)
+        SendAddEmailConfirmation.new(current_user).call(email_address:, request_id:)
         flash[:success] = t('notices.resend_confirmation_email.success')
         redirect_to add_email_verify_email_url
       else
