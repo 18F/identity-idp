@@ -22,7 +22,7 @@ module Idv
     def update
       clear_future_steps!
       result = phone_confirmation_otp_verification_form.submit(code: params[:code])
-      analytics.idv_phone_confirmation_otp_submitted(**result.to_h, **ab_test_analytics_buckets)
+      analytics.idv_phone_confirmation_otp_submitted(**result, **ab_test_analytics_buckets)
 
       if result.success?
         idv_session.mark_phone_step_complete!

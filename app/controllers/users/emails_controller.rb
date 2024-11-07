@@ -25,7 +25,7 @@ module Users
       result = @add_user_email_form.submit(
         current_user, permitted_params
       )
-      analytics.add_email_request(**result.to_h)
+      analytics.add_email_request(**result)
 
       if result.success?
         process_successful_creation
@@ -58,7 +58,7 @@ module Users
 
     def delete
       result = DeleteUserEmailForm.new(current_user, email_address).submit
-      analytics.email_deletion_request(**result.to_h)
+      analytics.email_deletion_request(**result)
       if result.success?
         handle_successful_delete
       else

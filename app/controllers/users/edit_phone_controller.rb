@@ -18,7 +18,7 @@ module Users
     def update
       @edit_phone_form = EditPhoneForm.new(current_user, phone_configuration)
       result = @edit_phone_form.submit(edit_phone_params)
-      analytics.phone_change_submitted(**result.to_h)
+      analytics.phone_change_submitted(**result)
       if result.success?
         redirect_to account_url
       else

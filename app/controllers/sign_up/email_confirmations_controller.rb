@@ -22,7 +22,7 @@ module SignUp
 
     def log_validator_result
       analytics.user_registration_email_confirmation(
-        **email_confirmation_token_validator_result.to_h,
+        **email_confirmation_token_validator_result,
       )
     end
 

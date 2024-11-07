@@ -129,7 +129,7 @@ class MyController < ApplicationController
     form = MyForm.new(params)
 
     result = form.submit
-    analytics.my_event(**result.to_h)
+    analytics.my_event(**result)
 
     if result.success?
       do_something(form.sensitive_value_here)

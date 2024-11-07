@@ -15,7 +15,7 @@ class AccountCreationThreatMetrixJob < ApplicationJob
     )
   ensure
     user = User.find_by(id: user_id)
-    analytics(user).account_creation_tmx_result(**device_profiling_result.to_h)
+    analytics(user).account_creation_tmx_result(**device_profiling_result)
   end
 
   def analytics(user)

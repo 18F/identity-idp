@@ -10,7 +10,7 @@ module Users
 
     def update
       form_response = UpdateEmailLanguageForm.new(current_user).submit(update_email_params)
-      analytics.email_language_updated(**form_response.to_h)
+      analytics.email_language_updated(**form_response)
 
       flash[:success] = I18n.t('account.email_language.updated') if form_response.success?
 
