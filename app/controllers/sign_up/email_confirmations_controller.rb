@@ -25,6 +25,9 @@ module SignUp
 
     def process_successful_confirmation
       process_valid_confirmation_token
+      analytics.user_registration_email_confirmation(
+        **@email_confirmation_token_validator_result.to_h,
+      )
       redirect_to sign_up_enter_password_url(confirmation_token: @confirmation_token)
     end
 

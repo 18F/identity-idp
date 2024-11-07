@@ -30,9 +30,8 @@ module UnconfirmedUserConcern
   end
 
   def stop_if_invalid_token
-    result = email_confirmation_token_validator.submit
-    analytics.user_registration_email_confirmation(**result.to_h)
-    return if result.success?
+    @email_confirmation_token_validator_result = email_confirmation_token_validator.submit
+    return if @email_confirmation_token_validator_result.success?
     process_unsuccessful_confirmation
   end
 
