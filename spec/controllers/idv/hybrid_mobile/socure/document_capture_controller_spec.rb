@@ -222,7 +222,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
       it 'connection timeout still responds to user' do
         stub_request(:post, fake_socure_endpoint).to_raise(Faraday::ConnectionFailed)
         get(:show)
-        expect(response).to be_ok
+        expect(response).to redirect_to(idv_unavailable_path)
       end
 
       it 'socure error response still gives a result to user' do
@@ -231,7 +231,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
           body: JSON.generate(failed_response_body),
         )
         get(:show)
-        expect(response).to be_ok
+        expect(response).to redirect_to(idv_unavailable_path)
       end
       it 'socure nil response still gives a result to user' do
         stub_request(:post, fake_socure_endpoint).to_return(
@@ -239,7 +239,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
           body: nil,
         )
         get(:show)
-        expect(response).to be_ok
+        expect(response).to redirect_to(idv_unavailable_path)
       end
       it 'socure nil response still gives a result to user' do
         stub_request(:post, fake_socure_endpoint).to_return(
@@ -247,7 +247,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
           body: JSON.generate(response_body_401),
         )
         get(:show)
-        expect(response).to be_ok
+        expect(response).to redirect_to(idv_unavailable_path)
       end
       it 'socure nil response still gives a result to user' do
         stub_request(:post, fake_socure_endpoint).to_return(
@@ -255,7 +255,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
           body: JSON.generate(no_doc_found_response_body),
         )
         get(:show)
-        expect(response).to be_ok
+        expect(response).to redirect_to(idv_unavailable_path)
       end
     end
   end
