@@ -72,7 +72,7 @@ ifdef JUNIT_OUTPUT
 else
 	bundle exec rubocop --parallel --color 2> tmp/rubocop.txt
 endif
-	[ -s tmp/rubocop.txt ] && (printf "Error: Unexpected stderr output from Rubocop\n"; cat tmp/rubocop.txt; exit 1)
+	awk 'NF {exit 1}' tmp/rubocop.txt || (printf "Error: Unexpected stderr output from Rubocop\n"; cat tmp/rubocop.txt; exit 1)
 	@echo "--- analytics_events ---"
 	make lint_analytics_events
 	make lint_analytics_events_sorted
