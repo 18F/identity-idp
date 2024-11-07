@@ -16,7 +16,7 @@ module Funnel
       end
 
       def self.process_threatmetrix_for_user(threatmetrix_attrs)
-        return false unless FeatureManagement.account_creation_device_profiling_collecting_enabled?
+        return unless FeatureManagement.account_creation_device_profiling_collecting_enabled?
         AccountCreationThreatMetrixJob.perform_later(**threatmetrix_attrs)
       end
     end
