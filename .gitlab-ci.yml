@@ -177,7 +177,7 @@ build-idp-image:
     - >-
       /kaniko/executor
       --context "${CI_PROJECT_DIR}"
-      --dockerfile "${CI_PROJECT_DIR}/dockerfiles/idp_prod.Dockerfile"
+      --dockerfile "${CI_PROJECT_DIR}/dockerfiles/idp_deploy.Dockerfile"
       --destination "${ECR_REGISTRY}/identity-idp/idp:${CI_COMMIT_SHA}"
       ${BRANCH_TAGGING_STRING}
       --cache-repo="${ECR_REGISTRY}/identity-idp/idp/cache"
@@ -462,7 +462,7 @@ review-app:
   stage: review
   allow_failure: true
   needs:
-    - job: build-review-image
+    - job: build-idp-image
   resource_group: $CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov
   extends: .deploy
   environment:
@@ -480,7 +480,8 @@ stop-review-app:
   script:
     - export CONTEXT=$(kubectl config get-contexts | grep reviewapp | awk '{print $1}' | head -1)
     - kubectl config use-context "$CONTEXT"
-    - kubectl delete application $CI_ENVIRONMENT_SLUG -n argocd
+    - kubectl delete application "$CI_ENVIRONMENT_SLUG" -n argocd
+    - kubectl delete application "$CI_ENVIRONMENT_SLUG-db" -n argocd
   stage: review
   image:
     name: dtzar/helm-kubectl:latest
@@ -502,6 +503,7 @@ include:
 
 secret_detection:
   allow_failure: false
+  needs: []
   variables:
     SECRET_DETECTION_EXCLUDED_PATHS: 'keys.example,config/artifacts.example,public/acuant/*/opencv.min.js,tmp/0.0.0.0-3000.key'
     SECRET_DETECTION_REPORT_FILE: 'gl-secret-detection-report.json'
@@ -526,6 +528,7 @@ secret_detection:
           # check if '{ "vulnerabilities": [], ..' is empty in the report file if it exists
           if [ "$(jq ".vulnerabilities | length" $SECRET_DETECTION_REPORT_FILE)" -gt 0 ]; then
             echo "Vulnerabilities detected. Please analyze the artifact $SECRET_DETECTION_REPORT_FILE produced by the 'secret-detection' job."
+            echo "Check the \"Security\" tab on the overall pipeline run to download the report for more information."
             exit 80
           fi
         else

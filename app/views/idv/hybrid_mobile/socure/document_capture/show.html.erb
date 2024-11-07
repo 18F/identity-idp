@@ -1,14 +1,1 @@
-<% self.title = t('titles.doc_auth.doc_capture') %>
-<% if @url.present? %>
-  <a href="<%= @url %>">Open this link on your mobile device to open the Socure Capture App</a>
-<% else %>
-  <% if @reference_id.present? %>
-    <p>ReferenceId: <%= @reference_id %></p>
-  <% end %>
-  <% if @msg.present? %>
-    <p>ErrorMessage: <%= @msg %></p>
-  <% end %>
-  <p>Socure is not working</p>
-  <p>Document Request <%= @document_request.inspect %></p>
-  <p>Document Response <%= @document_response %></p>
-<% end %>
+<%= render 'idv/shared/doc_capture_interstitial' %>

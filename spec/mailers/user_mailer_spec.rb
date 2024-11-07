@@ -43,6 +43,22 @@ RSpec.describe UserMailer, type: :mailer do
       expect(mail.html_part.body).to have_content(add_email_url)
       expect(mail.html_part.body).to_not have_content(sign_up_create_email_confirmation_url)
     end
+
+    context 'when user adds email from select email flow' do
+      let(:token) { SecureRandom.hex }
+      let(:mail) do
+        UserMailer.with(user: user, email_address: email_address).add_email(token, true)
+      end
+
+      it 'renders the add_email_confirmation_url' do
+        add_email_url = add_email_confirmation_url(
+          confirmation_token: token,
+          from_select_email_flow: true,
+        )
+
+        expect(mail.html_part.body).to have_content(add_email_url)
+      end
+    end
   end
 
   describe '#email_deleted' do

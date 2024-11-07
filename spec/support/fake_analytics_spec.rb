@@ -529,6 +529,22 @@ RSpec.describe FakeAnalytics do
         end
       end
     end
+
+    context 'with analytics not stubbed' do
+      let(:code_under_test) { -> { expect(analytics).to have_logged_event } }
+      subject(:analytics) { nil }
+
+      it 'raises with message explaining that analytics needs to be stubbed' do
+        expect(&code_under_test).
+          to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
+          assert_error_messages_equal(err, <<~MESSAGE)
+            Matching expected logged events requires analytics to be stubbed.
+
+            Check that you've called `stub_analytics` before asserting `have_logged_event`.
+          MESSAGE
+        end
+      end
+    end
   end
 
   describe FakeAnalytics::PiiAlerter do

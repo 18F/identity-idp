@@ -372,6 +372,7 @@ RSpec.describe Users::SessionsController, devise: true do
           expect(@analytics).to have_logged_event(
             'Email and Password Authentication',
             success: false,
+            error_details: { recaptcha_token: { blank: true } },
             user_id: user.uuid,
             user_locked_out: false,
             rate_limited: false,

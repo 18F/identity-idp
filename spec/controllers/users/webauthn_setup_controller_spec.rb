@@ -364,16 +364,6 @@ RSpec.describe Users::WebauthnSetupController do
       end
     end
 
-    context 'Multiple MFA options turned off' do
-      context 'with a single MFA method chosen' do
-        it 'should direct user to second mfa suggestion page' do
-          patch :confirm, params: params
-
-          expect(response).to redirect_to(account_url)
-        end
-      end
-    end
-
     context 'sign in and confirm' do
       let(:params) do
         {

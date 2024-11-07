@@ -1,12 +1,26 @@
+import quibble from 'quibble';
 import type { SinonStub } from 'sinon';
 import userEvent from '@testing-library/user-event';
 import { screen, waitFor, fireEvent } from '@testing-library/dom';
 import { useSandbox, useDefineProperty } from '@18f/identity-test-helpers';
 import '@18f/identity-spinner-button/spinner-button-element';
-import './captcha-submit-button-element';
 
 describe('CaptchaSubmitButtonElement', () => {
   const sandbox = useSandbox();
+  const trackError = sandbox.stub();
+
+  before(async () => {
+    quibble('@18f/identity-analytics', { trackError });
+    await import('./captcha-submit-button-element');
+  });
+
+  afterEach(() => {
+    trackError.reset();
+  });
+
+  after(() => {
+    quibble.reset();
+  });
 
   context('without ancestor form element', () => {
     beforeEach(() => {
@@ -155,6 +169,35 @@ describe('CaptchaSubmitButtonElement', () => {
 
           await userEvent.click(button);
           await waitFor(() => expect(didSubmit).to.be.true());
+        });
+      });
+
+      context('when recaptcha fails to execute', () => {
+        let error: Error;
+
+        beforeEach(() => {
+          error = new Error('Invalid site key or not loaded in api.js: badkey');
+          ((global as any).grecaptcha.execute as SinonStub).throws(error);
+        });
+
+        it('does not prevent default form submission', async () => {
+          const button = screen.getByRole('button', { name: 'Submit' });
+          const form = document.querySelector('form')!;
+          sandbox.stub(form, 'submit');
+
+          await userEvent.click(button);
+
+          await expect(form.submit).to.eventually.be.called();
+        });
+
+        it('tracks error', async () => {
+          const button = screen.getByRole('button', { name: 'Submit' });
+          const form = document.querySelector('form')!;
+          sandbox.stub(form, 'submit');
+
+          await userEvent.click(button);
+
+          await expect(trackError).to.eventually.be.calledWith(error);
         });
       });
     });
