@@ -3,7 +3,17 @@
 module Proofing
   module Resolution
     module Plugins
-      module ResidentialAddressPlugin
+      class ResidentialAddressPlugin
+        attr_reader :proofer, :sp_cost_token
+
+        def initialize(
+          proofer:,
+          sp_cost_token:
+        )
+          @proofer = proofer
+          @sp_cost_token = sp_cost_token
+        end
+
         def call(
           applicant_pii:,
           current_sp:,

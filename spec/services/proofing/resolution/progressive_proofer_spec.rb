@@ -22,9 +22,13 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     let(:threatmetrix_session_id) { SecureRandom.uuid }
     let(:user_email) { Faker::Internet.email }
     let(:current_sp) { build(:service_provider) }
+    let(:sp_cost_token) { :mock_resolution }
 
-    let(:instant_verify_residential_address_plugin) do
-      Proofing::Resolution::Plugins::InstantVerifyResidentialAddressPlugin.new
+    let(:residential_address_plugin) do
+      Proofing::Resolution::Plugins::ResidentialAddressPlugin.new(
+        proofer: residential_address_proofer,
+        sp_cost_token:,
+      )
     end
 
     let(:residential_address_resolution_result) do
@@ -34,15 +38,18 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       )
     end
 
-    let(:instant_verify_residential_address_proofer) do
+    let(:residential_address_proofer) do
       instance_double(
         Proofing::LexisNexis::InstantVerify::Proofer,
         proof: residential_address_resolution_result,
       )
     end
 
-    let(:instant_verify_state_id_address_plugin) do
-      Proofing::Resolution::Plugins::InstantVerifyStateIdAddressPlugin.new
+    let(:state_id_address_plugin) do
+      Proofing::Resolution::Plugins::StateIdAddressPlugin.new(
+        proofer: state_id_address_proofer,
+        sp_cost_token:,
+      )
     end
 
     let(:state_id_address_resolution_result) do
@@ -52,7 +59,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       )
     end
 
-    let(:instant_verify_state_id_address_proofer) do
+    let(:state_id_address_proofer) do
       instance_double(
         Proofing::LexisNexis::InstantVerify::Proofer,
         proof: state_id_address_resolution_result,
@@ -108,14 +115,14 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       allow(aamva_plugin).to receive(:proofer).and_return(aamva_proofer)
 
       allow(progressive_proofer).to receive(:residential_address_plugin).
-        and_return(instant_verify_residential_address_plugin)
-      allow(instant_verify_residential_address_plugin).to receive(:proofer).
-        and_return(instant_verify_residential_address_proofer)
+        and_return(residential_address_plugin)
+      allow(residential_address_plugin).to receive(:proofer).
+        and_return(residential_address_proofer)
 
       allow(progressive_proofer).to receive(:state_id_address_plugin).
-        and_return(instant_verify_state_id_address_plugin)
-      allow(instant_verify_state_id_address_plugin).to receive(:proofer).
-        and_return(instant_verify_state_id_address_proofer)
+        and_return(state_id_address_plugin)
+      allow(state_id_address_plugin).to receive(:proofer).
+        and_return(state_id_address_proofer)
     end
 
     context 'remote unsupervised proofing' do
@@ -130,8 +137,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         proof
       end
 
-      it 'calls InstantVerifyResidentialAddressPlugin' do
-        expect(instant_verify_residential_address_plugin).to receive(:call).with(
+      it 'calls ResidentialAddressPlugin' do
+        expect(residential_address_plugin).to receive(:call).with(
           applicant_pii:,
           current_sp:,
           ipp_enrollment_in_progress: false,
@@ -140,8 +147,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         proof
       end
 
-      it 'calls InstantVerifyStateIdAddressPlugin' do
-        expect(instant_verify_state_id_address_plugin).to receive(:call).with(
+      it 'calls StateIdAddressPlugin' do
+        expect(state_id_address_plugin).to receive(:call).with(
           applicant_pii:,
           current_sp:,
           residential_address_resolution_result: satisfy do |result|
@@ -205,8 +212,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           proof
         end
 
-        it 'calls InstantVerifyResidentialAddressPlugin' do
-          expect(instant_verify_residential_address_plugin).to receive(:call).with(
+        it 'calls ResidentialAddressPlugin' do
+          expect(residential_address_plugin).to receive(:call).with(
             applicant_pii:,
             current_sp:,
             ipp_enrollment_in_progress: true,
@@ -215,8 +222,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           proof
         end
 
-        it 'calls InstantVerifyStateIdAddressPlugin' do
-          expect(instant_verify_state_id_address_plugin).to receive(:call).with(
+        it 'calls StateIdAddressPlugin' do
+          expect(state_id_address_plugin).to receive(:call).with(
             applicant_pii:,
             current_sp:,
             residential_address_resolution_result:,
@@ -269,8 +276,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           proof
         end
 
-        it 'calls InstantVerifyResidentialAddressPlugin' do
-          expect(instant_verify_residential_address_plugin).to receive(:call).with(
+        it 'calls ResidentialAddressPlugin' do
+          expect(residential_address_plugin).to receive(:call).with(
             applicant_pii:,
             current_sp:,
             ipp_enrollment_in_progress: true,
@@ -279,8 +286,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           proof
         end
 
-        it 'calls InstantVerifyStateIdAddressPlugin' do
-          expect(instant_verify_state_id_address_plugin).to receive(:call).with(
+        it 'calls StateIdAddressPlugin' do
+          expect(state_id_address_plugin).to receive(:call).with(
             applicant_pii:,
             current_sp:,
             residential_address_resolution_result:,
@@ -329,8 +336,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
         [
           aamva_plugin,
-          instant_verify_residential_address_plugin,
-          instant_verify_state_id_address_plugin,
+          residential_address_plugin,
+          state_id_address_plugin,
           threatmetrix_plugin,
         ].each do |plugin|
           expect(plugin).to receive(:call).with(
@@ -412,9 +419,27 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     context 'when proofing_vendor is :instant_verify' do
       let(:proofing_vendor) { :instant_verify }
 
-      it 'returns an InstantVerifyResidentialAddressPlugin' do
+      it 'returns ResidentialAddressPlugin with an InstantVerify proofer' do
         expect(progressive_proofer.residential_address_plugin).to be_an_instance_of(
-          Proofing::Resolution::Plugins::InstantVerifyResidentialAddressPlugin,
+          Proofing::Resolution::Plugins::ResidentialAddressPlugin,
+        )
+
+        expect(progressive_proofer.residential_address_plugin.proofer).to be_an_instance_of(
+          Proofing::LexisNexis::InstantVerify::Proofer,
+        )
+      end
+    end
+
+    context 'when proofing_vendor is :mock' do
+      let(:proofing_vendor) { :mock }
+
+      it 'returns ResidentialAddressPlugin with a mock proofer' do
+        expect(progressive_proofer.residential_address_plugin).to be_an_instance_of(
+          Proofing::Resolution::Plugins::ResidentialAddressPlugin,
+        )
+
+        expect(progressive_proofer.residential_address_plugin.proofer).to be_an_instance_of(
+          Proofing::Mock::ResolutionMockClient,
         )
       end
     end
@@ -422,9 +447,13 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     context 'when proofing_vendor is :socure' do
       let(:proofing_vendor) { :socure }
 
-      it 'returns a SocureResidentialAddressPlugin' do
+      it 'returns ResidentialAddressPlugin with a Socure proofer' do
         expect(progressive_proofer.residential_address_plugin).to be_an_instance_of(
-          Proofing::Resolution::Plugins::SocureResidentialAddressPlugin,
+          Proofing::Resolution::Plugins::ResidentialAddressPlugin,
+        )
+
+        expect(progressive_proofer.residential_address_plugin.proofer).to be_an_instance_of(
+          Proofing::Socure::IdPlus::Proofer,
         )
       end
     end
@@ -448,9 +477,13 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     context 'when proofing_vendor is :instant_verify' do
       let(:proofing_vendor) { :instant_verify }
 
-      it 'returns an InstantVerifyStateIdAddressPlugin' do
+      it 'returns StateIdAddressPlugin with an InstantVerify proofer' do
         expect(progressive_proofer.state_id_address_plugin).to be_an_instance_of(
-          Proofing::Resolution::Plugins::InstantVerifyStateIdAddressPlugin,
+          Proofing::Resolution::Plugins::StateIdAddressPlugin,
+        )
+
+        expect(progressive_proofer.state_id_address_plugin.proofer).to be_an_instance_of(
+          Proofing::LexisNexis::InstantVerify::Proofer,
         )
       end
     end
@@ -458,9 +491,27 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     context 'when proofing_vendor is :socure' do
       let(:proofing_vendor) { :socure }
 
-      it 'returns a SocureStateIdAddressPlugin' do
+      it 'returns StateIdAddressPlugin with a Socure proofer' do
         expect(progressive_proofer.state_id_address_plugin).to be_an_instance_of(
-          Proofing::Resolution::Plugins::SocureStateIdAddressPlugin,
+          Proofing::Resolution::Plugins::StateIdAddressPlugin,
+        )
+
+        expect(progressive_proofer.state_id_address_plugin.proofer).to be_an_instance_of(
+          Proofing::Socure::IdPlus::Proofer,
+        )
+      end
+    end
+
+    context 'when proofing_vendor is :mock' do
+      let(:proofing_vendor) { :mock }
+
+      it 'returns StateIdAddressPlugin with a mock proofer' do
+        expect(progressive_proofer.state_id_address_plugin).to be_an_instance_of(
+          Proofing::Resolution::Plugins::StateIdAddressPlugin,
+        )
+
+        expect(progressive_proofer.state_id_address_plugin.proofer).to be_an_instance_of(
+          Proofing::Mock::ResolutionMockClient,
         )
       end
     end

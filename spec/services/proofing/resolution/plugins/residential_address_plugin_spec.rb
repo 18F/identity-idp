@@ -21,21 +21,13 @@ RSpec.describe Proofing::Resolution::Plugins::ResidentialAddressPlugin do
     )
   end
 
-  let(:sp_cost_token) { :lexis_nexis_resolution }
+  let(:sp_cost_token) { :mock_resolution }
 
-  let(:plugin_class) do
-    Class.new do
-      include Proofing::Resolution::Plugins::ResidentialAddressPlugin
-    end
-  end
-
-  subject(:plugin) do
-    plugin_class.new
-  end
-
-  before do
-    allow(plugin).to receive(:proofer).and_return(proofer)
-    allow(plugin).to receive(:sp_cost_token).and_return(sp_cost_token)
+  let(:plugin) do
+    described_class.new(
+      proofer:,
+      sp_cost_token:,
+    )
   end
 
   describe '#call' do

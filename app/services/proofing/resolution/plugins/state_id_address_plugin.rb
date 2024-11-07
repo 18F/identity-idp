@@ -3,7 +3,9 @@
 module Proofing
   module Resolution
     module Plugins
-      module StateIdAddressPlugin
+      class StateIdAddressPlugin
+        attr_reader :proofer, :sp_cost_token
+
         SECONDARY_ID_ADDRESS_MAP = {
           identity_doc_address1: :address1,
           identity_doc_address2: :address2,
@@ -11,6 +13,14 @@ module Proofing
           identity_doc_address_state: :state,
           identity_doc_zipcode: :zipcode,
         }.freeze
+
+        def initialize(
+          proofer:,
+          sp_cost_token:
+        )
+          @proofer = proofer
+          @sp_cost_token = sp_cost_token
+        end
 
         def call(
           applicant_pii:,

@@ -25,7 +25,7 @@ RSpec.feature 'SP Costing', :email do
     expect_sp_cost_type(2, 2, 'acuant_result')
     expect_sp_cost_type(3, 2, 'threatmetrix')
     expect_sp_cost_type(
-      4, 2, 'lexis_nexis_resolution',
+      4, 2, 'mock_resolution',
       transaction_id: Proofing::Mock::ResolutionMockClient::TRANSACTION_ID
     )
     expect_sp_cost_type(
@@ -57,7 +57,7 @@ RSpec.feature 'SP Costing', :email do
     %w[
       acuant_front_image
       acuant_back_image
-      lexis_nexis_resolution
+      mock_resolution
       lexis_nexis_address
     ].each do |cost_type|
       sp_costs = SpCost.where(cost_type: cost_type)

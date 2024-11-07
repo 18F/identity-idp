@@ -8,8 +8,16 @@ module Proofing
     #   2. The user has only provided one address for their residential and identity document
     #      address or separate residential and identity document addresses
     class ProgressiveProofer
+      class InvalidProofingVendorError; end
+
       attr_reader :aamva_plugin,
                   :threatmetrix_plugin
+
+      PROOFING_VENDOR_SP_COST_TOKENS = {
+        mock: :mock_resolution,
+        instant_verify: :lexis_nexis_resolution,
+        socure: :socure_resolution,
+      }.freeze
 
       def initialize
         @aamva_plugin = Plugins::AamvaPlugin.new
@@ -110,21 +118,61 @@ module Proofing
       end
 
       def residential_address_plugin
-        @residential_address_plugin ||= case proofing_vendor
-        when :instant_verify then Plugins::InstantVerifyResidentialAddressPlugin.new
-        when :socure then Plugins::SocureResidentialAddressPlugin.new
-        else
-          raise 'Invalid proofing vendor'
-        end
+        @residential_address_plugin ||= Plugins::ResidentialAddressPlugin.new(
+          proofer: create_proofer,
+          sp_cost_token:,
+        )
       end
 
       def state_id_address_plugin
-        @state_id_address_plugin ||= case proofing_vendor
-        when :instant_verify then Plugins::InstantVerifyStateIdAddressPlugin.new
-        when :socure then Plugins::SocureStateIdAddressPlugin.new
+        @state_id_address_plugin ||= Plugins::StateIdAddressPlugin.new(
+          proofer: create_proofer,
+          sp_cost_token:,
+        )
+      end
+
+      def create_proofer
+        case proofing_vendor
+        when :instant_verify then create_instant_verify_proofer
+        when :mock then create_mock_proofer
+        when :socure then create_socure_proofer
         else
-          raise 'Invalid proofing vendor'
+          raise InvalidProofingVendorError
         end
+      end
+
+      def create_instant_verify_proofer
+        Proofing::LexisNexis::InstantVerify::Proofer.new(
+          instant_verify_workflow: IdentityConfig.store.lexisnexis_instant_verify_workflow,
+          account_id: IdentityConfig.store.lexisnexis_account_id,
+          base_url: IdentityConfig.store.lexisnexis_base_url,
+          username: IdentityConfig.store.lexisnexis_username,
+          password: IdentityConfig.store.lexisnexis_password,
+          hmac_key_id: IdentityConfig.store.lexisnexis_hmac_key_id,
+          hmac_secret_key: IdentityConfig.store.lexisnexis_hmac_secret_key,
+          request_mode: IdentityConfig.store.lexisnexis_request_mode,
+        )
+      end
+
+      def create_mock_proofer
+        Proofing::Mock::ResolutionMockClient.new
+      end
+
+      def create_socure_proofer
+        Proofing::Socure::IdPlus::Proofer.new(
+          Proofing::Socure::IdPlus::Config.new(
+            api_key: IdentityConfig.store.socure_idplus_api_key,
+            base_url: IdentityConfig.store.socure_idplus_base_url,
+            timeout: IdentityConfig.store.socure_idplus_timeout_in_seconds,
+          ),
+        )
+      end
+
+      def sp_cost_token
+        token = PROOFING_VENDOR_SP_COST_TOKENS[proofing_vendor]
+        raise InvalidProofingVendorError unless token.present?
+
+        token
       end
     end
   end
