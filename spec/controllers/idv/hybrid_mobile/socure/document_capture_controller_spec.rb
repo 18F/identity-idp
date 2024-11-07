@@ -267,8 +267,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
 
     before do
       allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
-        stub_sign_in(user)
-    #   stub_up_to(:hybrid_handoff, idv_session: nil)
+      stub_sign_in(user)
     end
 
     it 'redirects to the ssn page' do
