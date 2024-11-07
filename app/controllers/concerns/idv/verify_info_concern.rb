@@ -219,7 +219,7 @@ module Idv
         flash[:success] = t('doc_auth.forms.doc_success')
         redirect_to next_step_url
       end
-      analytics.idv_doc_auth_verify_proofing_results(**analytics_arguments, **form_response.to_h)
+      analytics.idv_doc_auth_verify_proofing_results(**analytics_arguments, **form_response)
     end
 
     def next_step_url

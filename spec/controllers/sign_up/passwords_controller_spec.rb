@@ -3,6 +3,47 @@ require 'rails_helper'
 RSpec.describe SignUp::PasswordsController do
   let(:token) { 'new token' }
 
+  describe '#new' do
+    let!(:user) { create(:user, :unconfirmed, confirmation_token: token) }
+    subject(:response) { get :new, params: { confirmation_token: token } }
+
+    it 'flashes a message informing the user that they need to set a password' do
+      response
+
+      expect(flash.now[:success]).to eq(t('devise.confirmations.confirmed_but_must_set_password'))
+    end
+
+    it 'processes valid token' do
+      expect(controller).to receive(:process_valid_confirmation_token)
+
+      response
+    end
+
+    it 'assigns variables expected to be available in the view' do
+      response
+
+      expect(assigns(:password_form)).to be_instance_of(PasswordForm)
+      expect(assigns(:email_address)).to be_instance_of(EmailAddress)
+      expect(assigns(:forbidden_passwords)).to be_present.and all be_kind_of(String)
+      expect(assigns(:confirmation_token)).to be_kind_of(String)
+    end
+
+    context 'with invalid confirmation_token' do
+      let!(:user) do
+        create(
+          :user,
+          :unconfirmed,
+          confirmation_token: token,
+          confirmation_sent_at: (IdentityConfig.store.add_email_link_valid_for_hours + 1).hours.ago,
+        )
+      end
+
+      it 'redirects to sign up page' do
+        expect(response).to redirect_to(sign_up_register_url)
+      end
+    end
+  end
+
   describe '#create' do
     subject(:response) { post :create, params: params }
     let(:params) do
@@ -28,12 +69,6 @@ RSpec.describe SignUp::PasswordsController do
       it 'tracks analytics' do
         subject
 
-        expect(@analytics).to have_logged_event(
-          'User Registration: Email Confirmation',
-          success: true,
-          errors: {},
-          user_id: user.uuid,
-        )
         expect(@analytics).to have_logged_event(
           'Password Creation',
           success: true,
@@ -78,12 +113,6 @@ RSpec.describe SignUp::PasswordsController do
           subject
 
           expect(@analytics).to have_logged_event(
-            'User Registration: Email Confirmation',
-            errors: {},
-            success: true,
-            user_id: user.uuid,
-          )
-          expect(@analytics).to have_logged_event(
             'Password Creation',
             success: false,
             errors: {
@@ -111,12 +140,6 @@ RSpec.describe SignUp::PasswordsController do
         it 'tracks invalid password_confirmation error' do
           subject
 
-          expect(@analytics).to have_logged_event(
-            'User Registration: Email Confirmation',
-            errors: {},
-            success: true,
-            user_id: user.uuid,
-          )
           expect(@analytics).to have_logged_event(
             'Password Creation',
             success: false,
@@ -159,24 +182,6 @@ RSpec.describe SignUp::PasswordsController do
         expect(user.confirmed?).to eq false
         expect(response).to redirect_to(sign_up_register_url)
       end
-    end
-  end
-
-  describe '#new' do
-    render_views
-
-    it 'rejects when confirmation_token is invalid' do
-      invalid_confirmation_sent_at =
-        Time.zone.now - (IdentityConfig.store.add_email_link_valid_for_hours.hours.in_seconds + 1)
-      create(
-        :user,
-        :unconfirmed,
-        confirmation_token: token,
-        confirmation_sent_at: invalid_confirmation_sent_at,
-      )
-
-      get :new, params: { confirmation_token: token }
-      expect(response).to redirect_to(sign_up_register_url)
     end
   end
 end

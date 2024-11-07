@@ -25,6 +25,8 @@ class FormResponse
     hash
   end
 
+  alias_method :to_hash, :to_h
+
   def merge(other)
     self.class.new(
       success: success? && other.success?,

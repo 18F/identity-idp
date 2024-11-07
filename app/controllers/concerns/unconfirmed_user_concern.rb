@@ -30,10 +30,12 @@ module UnconfirmedUserConcern
   end
 
   def stop_if_invalid_token
-    result = email_confirmation_token_validator.submit
-    analytics.user_registration_email_confirmation(**result.to_h)
-    return if result.success?
+    return if email_confirmation_token_validator_result.success?
     process_unsuccessful_confirmation
+  end
+
+  def email_confirmation_token_validator_result
+    @email_confirmation_token_validator_result ||= email_confirmation_token_validator.submit
   end
 
   def email_confirmation_token_validator
@@ -44,10 +46,6 @@ module UnconfirmedUserConcern
 
   def process_valid_confirmation_token
     @confirmation_token = params[:confirmation_token]
-    @forbidden_passwords = @user.email_addresses.flat_map do |email_address|
-      ForbiddenPasswords.new(email_address.email).call
-    end
-    flash.now[:success] = t('devise.confirmations.confirmed_but_must_set_password')
     session[:user_confirmation_token] = @confirmation_token
   end
 

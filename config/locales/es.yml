@@ -987,11 +987,12 @@ help_text.requested_attributes.full_name: Nombre completo
 help_text.requested_attributes.ial2_reverified_consent_info_html: 'Como volvió a verificar su identidad, necesitamos su permiso para divulgar esta información a %{sp_html}:'
 help_text.requested_attributes.intro_html: 'Divulgaremos esta información a %{sp_html}:'
 help_text.requested_attributes.phone: Número de teléfono
+help_text.requested_attributes.select_email_link: Seleccionar correo electrónico
 help_text.requested_attributes.social_security_number: Número de Seguro Social
 help_text.requested_attributes.verified_at: Actualizado en
 help_text.requested_attributes.x509_issuer: Emisor de la tarjeta PIV o CAC
 help_text.requested_attributes.x509_subject: Identidad de la tarjeta PIV o CAC
-help_text.select_preferred_email: Puede cambiar el correo electrónico que comparte con %{sp} ya que tiene varios correos electrónicos asociados a su cuenta de %{app_name}.
+help_text.select_preferred_email_html: Seleccione o agregue el correo electrónico que desea utilizar para acceder a <strong>%{sp}</strong>.
 i18n.language: Idioma
 i18n.locale.en: English
 i18n.locale.es: Español

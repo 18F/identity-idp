@@ -976,11 +976,12 @@ help_text.requested_attributes.full_name: Full name
 help_text.requested_attributes.ial2_reverified_consent_info_html: 'Because you verified your identity again, we need your permission to share this information with %{sp_html}:'
 help_text.requested_attributes.intro_html: 'We’ll share this information with %{sp_html}:'
 help_text.requested_attributes.phone: Phone number
+help_text.requested_attributes.select_email_link: Select email
 help_text.requested_attributes.social_security_number: Social Security number
 help_text.requested_attributes.verified_at: Updated on
 help_text.requested_attributes.x509_issuer: PIV/CAC Issuer
 help_text.requested_attributes.x509_subject: PIV/CAC Identity
-help_text.select_preferred_email: You may change which email you share with %{sp} since you have multiple emails associated with your %{app_name} account.
+help_text.select_preferred_email_html: Select or add the email you’d like to use to access <strong>%{sp}</strong>.
 i18n.language: Language
 i18n.locale.en: English
 i18n.locale.es: Español

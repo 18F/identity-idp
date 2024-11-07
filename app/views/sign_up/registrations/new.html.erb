@@ -17,15 +17,6 @@
 
 <%= render PageHeadingComponent.new.with_content(t('headings.create_account_new_users')) %>
 
-<% if FeatureManagement.account_creation_device_profiling_collecting_enabled? %>
-  <%= render partial: 'shared/threat_metrix_profiling',
-             locals: {
-               threatmetrix_session_id:,
-               threatmetrix_javascript_urls:,
-               threatmetrix_iframe_url:,
-             } %>
-<% end %>
-
 <%= simple_form_for(@register_user_email_form, url: sign_up_register_path) do |f| %>
   <%= render ValidatedFieldComponent.new(
         form: f,
@@ -50,6 +41,15 @@
         label_html: { class: 'margin-y-0' },
         required: true,
       ) %>
+
+  <% if FeatureManagement.account_creation_device_profiling_collecting_enabled? %>
+    <%= render partial: 'shared/threat_metrix_profiling',
+               locals: {
+                 threatmetrix_session_id:,
+                 threatmetrix_javascript_urls:,
+                 threatmetrix_iframe_url:,
+               } %>
+  <% end %>
 
   <%= f.submit t('forms.buttons.submit.default'), class: 'display-block margin-y-5' %>
 <% end %>
