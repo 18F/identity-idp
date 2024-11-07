@@ -90,7 +90,7 @@ module Users
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
         in_account_creation_flow: in_account_creation_flow?,
       )
-      Funnel::Registration::AddMfa.call(current_user.id, 'auth_app', analytics)
+      Funnel::Registration::AddMfa.call(current_user.id, 'auth_app', analytics, threatmetrix_attrs)
     end
 
     def process_invalid_code

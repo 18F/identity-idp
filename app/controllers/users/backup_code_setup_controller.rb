@@ -97,7 +97,12 @@ module Users
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
         in_account_creation_flow: in_account_creation_flow?,
       )
-      Funnel::Registration::AddMfa.call(current_user.id, 'backup_codes', analytics)
+      Funnel::Registration::AddMfa.call(
+        current_user.id,
+        'backup_codes',
+        analytics,
+        threatmetrix_attrs,
+      )
     end
 
     def mfa_user
