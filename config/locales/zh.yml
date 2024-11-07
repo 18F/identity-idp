@@ -138,7 +138,7 @@ account.re_verify.footer: 验证身份来查看你的信息。
 account.revoke_consent.link_title: 切断连接
 account.revoke_consent.longer_description_html: 你的信息将不再与 %{service_provider_html} 分享。以后要访问 %{service_provider_html}，你必须授权同意分享你的信息。授权同意请到 %{service_provider_html} 网站并登录。
 account.security.link: 请到帮助中心了解更多信息
-account.security.text: 为了你的安全，你的用户资料已被锁住。
+account.security.text: 出于安全考虑，你的用户资料已被锁住。
 account.verified_information.address: 地址
 account.verified_information.dob: 生日
 account.verified_information.full_name: 姓名
@@ -1075,7 +1075,7 @@ idv.failure.phone.warning.next_steps_html: 尝试 <strong>另一个</strong> 你
 idv.failure.phone.warning.try_again_button: 尝试另一个号码
 idv.failure.phone.warning.you_entered: 你输入了：
 idv.failure.sessions.exception: 处理你的请求时内部出错。
-idv.failure.sessions.fail_html: 为了你的安全，我们限制你在网上尝试验证个人信息的次数。<strong> %{timeout}后再试。</strong>
+idv.failure.sessions.fail_html: 出于安全考虑，我们限制你在网上尝试验证个人信息的次数。<strong> %{timeout}后再试。</strong>
 idv.failure.sessions.heading: 我们找不到与你个人信息匹配的记录
 idv.failure.sessions.warning: 请检查一下你输入的信息，然后再试一下。常见错误包括社会保障号码或邮编不对。
 idv.failure.setup.fail_date_html: 请给我们的联系中心在<strong>%{date_html}</strong> 之前打电话以继续验证你的身份。
@@ -1448,8 +1448,8 @@ notices.piv_cac_configured: 添加您的政府雇员ID
 notices.privacy.privacy_act_statement: 隐私法声明
 notices.privacy.security_and_privacy_practices: 安全实践和隐私法声明
 notices.resend_confirmation_email.success: 我们发送了另外一个确认电邮。
-notices.session_cleared: 为了你的安全，如果你在 %{minutes} 分钟内不移动到一个新页面，我们会清除你输入的内容。
-notices.session_timedout: 我们已将你登出。为了你的安全，如果你在 %{minutes} 分钟内不移动到一个新页面，%{app_name} 会结束你此次访问。
+notices.session_cleared: 出于安全考虑，如果你在 %{minutes} 分钟内不移动到一个新页面，我们会清除你输入的内容。
+notices.session_timedout: 我们已将你登出。出于安全考虑，如果你在 %{minutes} 分钟内不移动到一个新页面，%{app_name} 会结束你此次访问。
 notices.sign_in.recaptcha.disclosure_statement_html: 该网站由 reCAPTCHA 保护而且谷歌的 %{google_policy_link_html} 和 %{google_tos_link_html} 都适用。
 notices.signed_up_and_confirmed.first_paragraph_end: 带有确认你的电邮地址的链接。点击链接去继续把这个电邮添加到你的账户。
 notices.signed_up_and_confirmed.first_paragraph_start: 我们已发电邮到
@@ -1459,11 +1459,11 @@ notices.signed_up_but_unconfirmed.first_paragraph_start: 我们已发电邮到
 notices.signed_up_but_unconfirmed.resend_confirmation_email: 重新发送确认电邮
 notices.timeout_warning.partially_signed_in.continue: 继续登录
 notices.timeout_warning.partially_signed_in.live_region_message_html: '%{time_left_in_session_html} 后你会被登出。选择“保持我登录状态”保持登录；选择“把我登出”来登出。'
-notices.timeout_warning.partially_signed_in.message_html: 为了你的安全， %{time_left_in_session_html}分钟后我们将取消你的登录。
+notices.timeout_warning.partially_signed_in.message_html: 出于安全考虑， %{time_left_in_session_html}分钟后我们将取消你的登录。
 notices.timeout_warning.partially_signed_in.sign_out: 取消登录
 notices.timeout_warning.signed_in.continue: 保持我登录状态
 notices.timeout_warning.signed_in.live_region_message_html: '%{time_left_in_session_html} 后你会被登出。选择“保持我登录状态”保持登录；选择“把我登出”来登出。'
-notices.timeout_warning.signed_in.message_html: 为了你的安全，我们会在 %{time_left_in_session_html} 后将你登出，除非你告诉我们不要这样做。
+notices.timeout_warning.signed_in.message_html: 出于安全考虑，我们会在 %{time_left_in_session_html} 后将你登出，除非你告诉我们不要这样做。
 notices.timeout_warning.signed_in.sign_out: 把我登出
 notices.totp_configured: 你账户添加了一个身份证实应用程序。
 notices.use_diff_email.link: 使用一个不同的电邮地址
@@ -1699,12 +1699,12 @@ two_factor_authentication.login_options.webauthn: 安全密钥
 two_factor_authentication.login_options.webauthn_info: 使用你的安全密钥来访问账户
 two_factor_authentication.login_options.webauthn_platform: 人脸或触摸解锁
 two_factor_authentication.login_options.webauthn_platform_info: 不用一次性代码，而是用你的面孔或指纹来访问你的账户。
-two_factor_authentication.max_backup_code_login_attempts_reached: 为了你的安全，你的账户暂时被锁住，因为你错误输入备用代码太多次。
-two_factor_authentication.max_generic_login_attempts_reached: 为了你的安全，你的账户暂时被锁住。
-two_factor_authentication.max_otp_login_attempts_reached: 为了你的安全，你的账户暂时被锁住，因为你错误输入一次性代码太多次。
-two_factor_authentication.max_otp_requests_reached: 为了你的安全，你的账户暂时被锁住，因为你要求一次性代码太多次。
-two_factor_authentication.max_personal_key_login_attempts_reached: 为了你的安全，你的账户暂时被锁住，因为你错误输入个人密钥太多次。
-two_factor_authentication.max_piv_cac_login_attempts_reached: 为了你的安全，你的账户暂时被锁住，因为你错误提供 piv/cac 凭据太多次。
+two_factor_authentication.max_backup_code_login_attempts_reached: 出于安全考虑，你的账户暂时被锁住，因为你错误输入备用代码太多次。
+two_factor_authentication.max_generic_login_attempts_reached: 出于安全考虑，你的账户暂时被锁住。
+two_factor_authentication.max_otp_login_attempts_reached: 出于安全考虑，你的账户暂时被锁住，因为你错误输入一次性代码太多次。
+two_factor_authentication.max_otp_requests_reached: 出于安全考虑，你的账户暂时被锁住，因为你要求一次性代码太多次。
+two_factor_authentication.max_personal_key_login_attempts_reached: 出于安全考虑，你的账户暂时被锁住，因为你错误输入个人密钥太多次。
+two_factor_authentication.max_piv_cac_login_attempts_reached: 出于安全考虑，你的账户暂时被锁住，因为你错误提供 piv/cac 凭据太多次。
 two_factor_authentication.mobile_terms_of_service: 移动服务条款
 two_factor_authentication.opt_in.error_retry: 抱歉，我们让你加入有困难。请再试一次。
 two_factor_authentication.opt_in.opted_out_html: 你选择不在 %{phone_number_html} 接受短信。你可以选择加入并再在那个电话号码接受安全代码。
