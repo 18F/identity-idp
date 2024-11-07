@@ -73,7 +73,6 @@ module Idv
             failure(I18n.t('doc_auth.errors.general.network_error'), extra)
           end
         end
-
       end
     end
   end
