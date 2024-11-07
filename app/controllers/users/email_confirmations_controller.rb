@@ -52,12 +52,6 @@ module Users
         end
       else
         flash[:success] = t('devise.confirmations.confirmed_but_sign_in')
-        if params[:request_id]
-          StoreSpMetadataInSession.new(
-            session: session,
-            request_id: params[:request_id],
-          ).call
-        end
         redirect_to root_url(request_id: params[:request_id])
       end
     end
