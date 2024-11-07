@@ -32,7 +32,7 @@ module DocAuth
           expiration_date: %w[documentVerification documentData expirationDate],
         }.freeze
 
-        def initialize(http_response: nil, biometric_comparison_required: false)
+        def initialize(http_response:, biometric_comparison_required: false)
           @http_response = http_response
           @biometric_comparison_required = biometric_comparison_required
           @pii_from_doc = read_pii
@@ -110,17 +110,23 @@ module DocAuth
         end
 
         def parsed_response_body
-          @parsed_response_body ||= JSON.parse(http_response.body).with_indifferent_access
+          @parsed_response_body ||= begin
+            http_response&.body.present? ? JSON.parse(
+              http_response.body,
+            ).with_indifferent_access : {}
+          rescue JSON::JSONError
+            {}
+          end
         end
 
         def state_id_type
           type = get_data(DATA_PATHS[:id_type])
-          type.gsub(/\W/, '').underscore
+          type&.gsub(/\W/, '')&.underscore
         end
 
         def parse_date(date_string)
           Date.parse(date_string)
-        rescue ArgumentError
+        rescue ArgumentError, TypeError
           message = {
             event: 'Failure to parse Socure ID+ date',
           }.to_json

@@ -47,6 +47,20 @@ module DocAuth
           JSON.parse(http_response.body, symbolize_names: true)
         end
 
+        def handle_connection_error(exception:, status: nil, status_message: nil)
+          NewRelic::Agent.notice_error(exception)
+          {
+            success: false,
+            errors: { network: true },
+            exception: exception,
+            extra: {
+              vendor: 'Socure',
+              vendor_status: status,
+              vendor_status_message: status_message,
+            }.compact,
+          }
+        end
+
         def method
           :post
         end
