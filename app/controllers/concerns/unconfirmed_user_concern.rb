@@ -30,9 +30,12 @@ module UnconfirmedUserConcern
   end
 
   def stop_if_invalid_token
-    @email_confirmation_token_validator_result = email_confirmation_token_validator.submit
-    return if @email_confirmation_token_validator_result.success?
+    return if email_confirmation_token_validator_result.success?
     process_unsuccessful_confirmation
+  end
+
+  def email_confirmation_token_validator_result
+    @email_confirmation_token_validator_result ||= email_confirmation_token_validator.submit
   end
 
   def email_confirmation_token_validator
