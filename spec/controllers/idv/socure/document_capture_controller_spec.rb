@@ -192,7 +192,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
 
   describe '#update' do
     it 'returns OK (200)' do
-      post(:update)
+      get(:update)
 
       expect(response).to redirect_to(idv_ssn_path)
     end
@@ -201,7 +201,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       let(:doc_auth_success) { false }
 
       it 'redirects to document capture' do
-        post(:update)
+        get(:update)
 
         expect(response).to redirect_to(idv_socure_document_capture_path)
       end
