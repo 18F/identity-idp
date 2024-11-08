@@ -77,6 +77,8 @@ class LiteWebpackDevServerPlugin {
     });
 
     compiler.hooks.afterCompile.tap(PLUGIN, () => onCompileFinished());
+
+    compiler.hooks.shutdown.tap(PLUGIN, () => server.close());
   }
 }
 
