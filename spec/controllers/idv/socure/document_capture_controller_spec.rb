@@ -111,8 +111,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       it 'creates a DocumentRequest' do
         expect(request_class).to have_received(:new).
           with(
-            document_capture_session_uuid: expected_uuid,
-            redirect_url: idv_socure_document_capture_update_url,
+            redirect_url: idv_socure_document_capture_url,
             language: expected_language,
           )
       end
@@ -138,7 +137,6 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
                     },
                     language: :en,
                   },
-                  customerUserId: expected_uuid,
                 },
               ),
             )
@@ -161,7 +159,6 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
                     },
                     language: 'zh-cn',
                   },
-                  customerUserId: expected_uuid,
                 },
               ),
             )

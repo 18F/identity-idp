@@ -98,7 +98,6 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
       it 'creates a DocumentRequest' do
         expect(request_class).to have_received(:new).
           with(
-            document_capture_session_uuid: document_capture_session_uuid,
             redirect_url: idv_hybrid_mobile_socure_document_capture_url,
             language: expected_language,
           )
@@ -125,7 +124,6 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
                     },
                     language: expected_language,
                   },
-                  customerUserId: document_capture_session_uuid,
                 },
               ),
             )
@@ -148,7 +146,6 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
                     },
                     language: 'zh-cn',
                   },
-                  customerUserId: document_capture_session_uuid,
                 },
               ),
             )
