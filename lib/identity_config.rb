@@ -15,7 +15,7 @@ module IdentityConfig
 
   # identity-hostdata transforms these configs to the described type
   # rubocop:disable Metrics/BlockLength
-  # rubocop:disable Metrics/LineLength
+  # rubocop:disable Layout/LineLength
   BUILDER = proc do |config|
     #  ______________________________________
     # / Adding something new in here? Please \
@@ -472,6 +472,6 @@ module IdentityConfig
     config.add(:vtm_url)
     config.add(:weekly_auth_funnel_report_config, type: :json)
   end.freeze
-  # rubocop:enable Metrics/LineLength
+  # rubocop:enable Layout/LineLength
   # rubocop:enable Metrics/BlockLength
 end
