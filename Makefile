@@ -124,6 +124,7 @@ lint_font_glyphs: ## Lints to validate content glyphs match expectations from fo
 		--exclude-gem-path=faker \
 		--exclude-gem-path=good_job \
 		--exclude-gem-path=i18n-tasks \
+		--exclude-key-scope=user_mailer \
 		> app/assets/fonts/glyphs.txt
 	(! git diff --name-only | grep "glyphs\.txt$$") || (echo "Error: New character data found. Follow 'Fonts' instructions in 'docs/frontend.md' to regenerate fonts."; exit 1)
 
