@@ -12,7 +12,6 @@ module TwoFactorAuthentication
           platform: true,
           passkey_supported_only: false,
           show_unsupported_passkey: false,
-          desktop_ft_unlock_option: true,
         ),
         &block
       )

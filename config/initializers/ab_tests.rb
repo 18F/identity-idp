@@ -109,7 +109,7 @@ module AbTests
       'WebAuthn Setup Visited',
       'Multi-Factor Authentication Setup',
     ].to_set,
-    buckets: { desktop_ft_unlock_setup:
+    buckets: { desktop_ft_unlock_option_shown:
         IdentityConfig.store.desktop_ft_unlock_setup_option_percent_tested },
   ).freeze
 end

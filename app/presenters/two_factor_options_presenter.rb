@@ -49,7 +49,8 @@ class TwoFactorOptionsPresenter
         user:,
         piv_cac_required: piv_cac_required?,
         phishing_resistant_required: phishing_resistant_only?,
-        user_agent:
+        user_agent:,
+        desktop_ft_ab_test:,
       )
     end.
       partition(&:recommended?).
