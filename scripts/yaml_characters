@@ -66,7 +66,7 @@ end
 I18n.backend.eager_load!
 
 data = I18n.backend.translations.slice(*I18n.available_locales - excluded_locales)
-excluded_key_scopes.each { |scope| data.each { |locale,| data[locale].delete(scope) } }
+excluded_key_scopes.each { |scope| data.each_key { |locale| data[locale].delete(scope) } }
 strings = hash_values(data)
 joined_string = strings.join('')
 sanitized_string = sanitize(joined_string)
