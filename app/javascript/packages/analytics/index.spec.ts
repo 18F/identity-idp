@@ -93,7 +93,7 @@ describe('trackError', () => {
   });
 
   it('tracks event', async () => {
-    trackError(new Error('Oops!'));
+    trackError(new Error('Oops!'), { errorId: 'exampleId' });
 
     expect(global.navigator.sendBeacon).to.have.been.calledOnce();
 
@@ -101,12 +101,13 @@ describe('trackError', () => {
     expect(actualEndpoint).to.eql(endpoint);
 
     const { event, payload } = JSON.parse(await data.text());
-    const { name, message, stack } = payload;
+    const { name, message, stack, error_id: errorId } = payload;
 
     expect(event).to.equal('Frontend Error');
     expect(name).to.equal('Error');
     expect(message).to.equal('Oops!');
     expect(stack).to.be.a('string');
+    expect(errorId).to.equal('exampleId');
   });
 
   context('with event parameter', () => {
