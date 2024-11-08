@@ -8,7 +8,8 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
               :reauthentication_context,
               :phishing_resistant_required,
               :piv_cac_required,
-              :add_piv_cac_after_2fa
+              :add_piv_cac_after_2fa,
+              :desktop_ab_test_option
 
   alias_method :reauthentication_context?, :reauthentication_context
   alias_method :phishing_resistant_required?, :phishing_resistant_required
