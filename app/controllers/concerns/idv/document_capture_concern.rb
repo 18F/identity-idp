@@ -6,6 +6,18 @@ module Idv
 
     include DocAuthVendorConcern
 
+    def handle_stored_result(user: current_user, store_in_session: true)
+      if stored_result&.success? && selfie_requirement_met?
+        save_proofing_components(user)
+        extract_pii_from_doc(user, store_in_session: store_in_session)
+        flash[:success] = t('doc_auth.headings.capture_complete')
+        successful_response
+      else
+        extra = { stored_result_present: stored_result.present? }
+        failure(I18n.t('doc_auth.errors.general.network_error'), extra)
+      end
+    end
+
     def save_proofing_components(user)
       return unless user
 
@@ -76,6 +88,11 @@ module Idv
       return unless doc_auth_log
       doc_auth_log.state = state
       doc_auth_log.save!
+    end
+
+    def cancel_establishing_in_person_enrollments(user: current_user)
+      UspsInPersonProofing::EnrollmentHelper.
+        cancel_stale_establishing_enrollments_for_user(user)
     end
   end
 end

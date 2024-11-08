@@ -38,7 +38,7 @@ RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
           documentType: document_type,
           redirect:
           {
-            method: 'POST',
+            method: 'GET',
             url: redirect_url,
           },
           language: language,

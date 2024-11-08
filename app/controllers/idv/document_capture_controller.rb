@@ -89,11 +89,6 @@ module Idv
 
     private
 
-    def cancel_establishing_in_person_enrollments
-      UspsInPersonProofing::EnrollmentHelper.
-        cancel_stale_establishing_enrollments_for_user(current_user)
-    end
-
     def analytics_arguments
       {
         flow_path: flow_path,
@@ -104,18 +99,6 @@ module Idv
         liveness_checking_required: resolved_authn_context_result.facial_match?,
         selfie_check_required: resolved_authn_context_result.facial_match?,
       }.merge(ab_test_analytics_buckets)
-    end
-
-    def handle_stored_result
-      if stored_result&.success? && selfie_requirement_met?
-        save_proofing_components(current_user)
-        extract_pii_from_doc(current_user, store_in_session: true)
-        flash[:success] = t('doc_auth.headings.capture_complete')
-        successful_response
-      else
-        extra = { stored_result_present: stored_result.present? }
-        failure(I18n.t('doc_auth.errors.general.network_error'), extra)
-      end
     end
 
     def allow_direct_ipp?
