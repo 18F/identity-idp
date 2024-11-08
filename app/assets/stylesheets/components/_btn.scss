@@ -8,7 +8,7 @@
 }
 
 .usa-button:disabled.usa-button--active,
-[aria-disabled='true'].usa-button--active {
+.usa-button[aria-disabled='true'].usa-button--active {
   &:not(
       .usa-button--unstyled,
       .usa-button--secondary,
