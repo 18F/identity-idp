@@ -65,7 +65,7 @@ module Users
         show_skip_additional_mfa_link: show_skip_additional_mfa_link?,
         after_mfa_setup_path:,
         return_to_sp_cancel_path:,
-        desktop_ft_ab_test: ab_test_bucket(:DESKTOP_FT_UNLOCK_SETUP)
+        desktop_ft_ab_test: ab_test_bucket(:DESKTOP_FT_UNLOCK_SETUP),
       )
     end
 

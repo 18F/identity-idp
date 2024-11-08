@@ -35,7 +35,7 @@ class WebauthnInputComponent < BaseComponent
   end
 
   def initial_hidden_tag_options
-    if platform? && passkey_supported_only?
+    if platform? && passkey_supported_only? || !desktop_ft_unlock_option? && n
       { hidden: true }
     else
       { class: 'js' }
@@ -43,7 +43,7 @@ class WebauthnInputComponent < BaseComponent
   end
 
   def show_desktop_ft_unlock_option?
-    if desktop_ft_unlock_option?.presence && I18n.locale == :en
+    if desktop_ft_unlock_option? && I18n.locale == :en
       true
     else
       false
