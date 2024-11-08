@@ -90,7 +90,7 @@ describe('WebauthnInputElement', () => {
 
   context('Desktop F/T unlock A/B test', () => {
     context('desktop F/T unlock setup enabled', () => {
-      const sandbox = useSandbox()
+      const sandbox = useSandbox();
       beforeEach(() => {
         isWebauthnPlatformAvailable.resolves(true);
         sandbox.stub(analytics, 'trackEvent');
@@ -103,8 +103,8 @@ describe('WebauthnInputElement', () => {
       });
 
       it('does not log the event', () => {
-        expect(analytics.trackEvent).to.not.have.been.calledWith('desktop_ab_test_option_shown')
-      })
+        expect(analytics.trackEvent).to.not.have.been.calledWith('desktop_ab_test_option_shown');
+      });
     });
 
     context('desktop F/T unlock setup disabled', () => {
@@ -113,7 +113,7 @@ describe('WebauthnInputElement', () => {
         document.body.innerHTML = `<lg-webauthn-input desktop-ft-unlock-option></lg-webauthn-input>`;
       });
 
-      it('is hidden when passkeys are supported',() => {
+      it('is hidden when passkeys are supported', () => {
         const element = document.querySelector('lg-webauthn-input')!;
 
         expect(element.hidden).to.be.false();
@@ -121,7 +121,7 @@ describe('WebauthnInputElement', () => {
     });
 
     context('when the setup option would be hidden', () => {
-      const sandbox = useSandbox()
+      const sandbox = useSandbox();
       beforeEach(() => {
         isWebauthnPlatformAvailable.resolves(true);
         document.body.innerHTML = `<lg-webauthn-input desktop-ft-unlock-option hidden></lg-webauthn-input>`;
@@ -131,6 +131,6 @@ describe('WebauthnInputElement', () => {
       it('logs the event', () => {
         expect(analytics.trackEvent).to.not.have.been.calledWith('desktop_ab_test_option_shown');
       });
-    })
+    });
   });
 });
