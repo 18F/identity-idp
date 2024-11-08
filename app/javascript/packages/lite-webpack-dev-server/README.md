@@ -20,16 +20,21 @@ If migrating from `webpack-dev-server`:
 
 - Remove your `devServer` configuration from `webpack.config.js`
 
-Add an instance of `LiteWebpackDevServerPlugin` to your Webpack `plugins` array:
+Add an instance of `LiteWebpackDevServerPlugin` to your Webpack `plugins` array. The example below
+shows how you might conditionally include the plugin in local development only, to avoid the server
+being run in production environments.
 
 ```ts
 // webpack.config.js
+
+const { DEV_SERVER_PORT } = process.env;
 
 export default {
   // ...
   plugins: [
     // ...
-    new LiteWebpackDevServerPlugin({ publicPath: './public', port: 3035 }),
+    DEV_SERVER_PORT &&
+      new LiteWebpackDevServerPlugin({ publicPath: './public', port: Number(DEV_SERVER_PORT) }),
   ]
 };
 ```
