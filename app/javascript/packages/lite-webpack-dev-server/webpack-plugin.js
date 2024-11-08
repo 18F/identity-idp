@@ -65,7 +65,7 @@ class LiteWebpackDevServerPlugin {
       await build;
       const url = new URL(request.url ?? '', 'file:///');
       const filePath = join(process.cwd(), this.publicPath, url.pathname);
-      createReadStream(filePath, 'utf-8').pipe(response);
+      createReadStream(filePath).pipe(response);
     });
 
     server.listen(this.port);
