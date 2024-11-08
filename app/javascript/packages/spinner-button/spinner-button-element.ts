@@ -13,6 +13,7 @@ export class SpinnerButtonElement extends HTMLElement {
 
   connectedCallback() {
     this.form = this.querySelector('form') || this.closest('form');
+    this.button.addEventListener('click', this.#preventDefaultIfSpinning);
 
     this.addEventListener('spinner.start', () => this.toggleSpinner(true));
     this.addEventListener('spinner.stop', () => this.toggleSpinner(false));
@@ -40,6 +41,10 @@ export class SpinnerButtonElement extends HTMLElement {
     return this.querySelector('.usa-button')!;
   }
 
+  get isSpinning(): boolean {
+    return this.classList.contains('spinner-button--spinner-active');
+  }
+
   get actionMessage(): HTMLElement {
     return this.querySelector('.spinner-button__action-message')!;
   }
@@ -62,9 +67,9 @@ export class SpinnerButtonElement extends HTMLElement {
     this.button.classList.toggle('usa-button--active', isVisible);
 
     if (isVisible) {
-      this.button.setAttribute('disabled', '');
+      this.button.setAttribute('aria-disabled', 'true');
     } else {
-      this.button.removeAttribute('disabled');
+      this.button.removeAttribute('aria-disabled');
     }
 
     if (this.actionMessage) {
@@ -73,16 +78,19 @@ export class SpinnerButtonElement extends HTMLElement {
 
     window.clearTimeout(this.#longWaitTimeout);
     if (isVisible && Number.isFinite(this.longWaitDurationMs)) {
-      this.#longWaitTimeout = window.setTimeout(
-        () => this.handleLongWait(),
-        this.longWaitDurationMs,
-      );
+      this.#longWaitTimeout = window.setTimeout(this.#handleLongWait, this.longWaitDurationMs);
     }
   }
 
-  handleLongWait() {
+  #handleLongWait = () => {
     this.actionMessage?.classList.remove('usa-sr-only');
-  }
+  };
+
+  #preventDefaultIfSpinning = (event: MouseEvent) => {
+    if (this.isSpinning) {
+      event.preventDefault();
+    }
+  };
 }
 
 declare global {
