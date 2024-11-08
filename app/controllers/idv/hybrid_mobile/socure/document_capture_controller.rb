@@ -39,6 +39,10 @@ module Idv
             :data,
             :docvTransactionToken,
           )
+          document_capture_session.socure_docv_capture_app_url = document_response.dig(
+            :data,
+            :url,
+          )
           document_capture_session.save
 
           # useful for analytics

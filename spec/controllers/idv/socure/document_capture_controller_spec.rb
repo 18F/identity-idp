@@ -75,7 +75,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
     end
 
     context 'happy path' do
-      let(:response_redirect_url) { 'https://idv.test/dance' }
+      let(:socure_capture_app_url) { 'https://verify.socure.test/' }
       let(:docv_transaction_token) { '176dnc45d-2e34-46f3-82217-6f540ae90673' }
       let(:response_body) do
         {
@@ -85,7 +85,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
             customerUserId: '121212',
             docvTransactionToken: docv_transaction_token,
             qrCode: 'data:image/png;base64,iVBO......K5CYII=',
-            url: response_redirect_url,
+            url: socure_capture_app_url,
           },
         }
       end
@@ -93,6 +93,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       before do
         allow(request_class).to receive(:new).and_call_original
         allow(I18n).to receive(:locale).and_return(expected_language)
+        allow(DocumentCaptureSession).to receive(:find_by).and_return(document_capture_session)
         get(:show)
       end
 
@@ -103,6 +104,11 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
             redirect_url: idv_socure_document_capture_url,
             language: expected_language,
           )
+      end
+
+      it 'sets DocumentCaptureSession socure_docv_capture_app_url value' do
+        document_capture_session.reload
+        expect(document_capture_session.socure_docv_capture_app_url).to eq(socure_capture_app_url)
       end
 
       context 'language is english' do
@@ -154,9 +160,9 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       context 'renders the interstital page' do
         render_views
 
-        it 'it includes the socure redirect url' do
+        it 'response includes the socure capture app url' do
           expect(response).to have_http_status 200
-          expect(response.body).to have_link(href: response_redirect_url)
+          expect(response.body).to have_link(href: socure_capture_app_url)
         end
 
         it 'puts the docvTransactionToken into the document capture session' do
