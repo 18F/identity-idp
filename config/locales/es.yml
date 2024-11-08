@@ -1219,7 +1219,7 @@ in_person_proofing.body.barcode.retail_hours_closed: Cerrado
 in_person_proofing.body.barcode.return_to_partner_link: Volver a %{sp_name}
 in_person_proofing.body.barcode.what_to_expect: Qué esperar en la oficina de correos
 in_person_proofing.body.cta.button: Intentar en persona
-in_person_proofing.body.cta.prompt_detail: Es posible que pueda verificar su identidad en una oficina de correos participante cercana.
+in_person_proofing.body.cta.prompt_detail: La mayoría de las personas que no pueden hacer la verificación de su identidad en línea logran verificarla en una oficina de correos participante. No es necesario hacer cita para ello, y hay oficinas en todo el país.
 in_person_proofing.body.expect.heading: Qué esperar después de la visita
 in_person_proofing.body.expect.info: En las 24 horas siguientes a su visita a la oficina de correos, recibirá un correo electrónico para informarle si se logró o no su verificación de identidad.
 in_person_proofing.body.location.distance.one: A %{count} milla de distancia
