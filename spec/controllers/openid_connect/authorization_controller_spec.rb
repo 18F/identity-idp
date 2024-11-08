@@ -138,11 +138,21 @@ RSpec.describe OpenidConnect::AuthorizationController do
           end
 
           context 'with no previous event' do
-            it 'does not include sp_request_attributes in the final event' do
+            it "includes incoming request's sp_request_attributes in the final event" do
               expect(ahoy).to receive(:track).with(
                 'OpenID Connect: authorization request',
                 hash_including(
                   sp_request: hash_including(current_sp_request),
+                ),
+              )
+              action
+            end
+
+            it 'does not include a previous_sp_request_attributes key' do
+              expect(ahoy).to receive(:track).with(
+                'OpenID Connect: authorization request',
+                hash_including(
+                  event_properties: hash_not_including(:previous_sp_request_attributes),
                 ),
               )
               action
@@ -163,10 +173,11 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 hash_including(
                   sp_request: hash_including(current_sp_request),
                   event_properties: hash_including(
-                    previous_sp_request_attributes: previous_sp_request
+                    previous_sp_request_attributes: hash_including(previous_sp_request)
                   )
                 ),
               )
+
               action
             end
           end

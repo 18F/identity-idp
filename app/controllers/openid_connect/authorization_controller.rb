@@ -16,7 +16,6 @@ module OpenidConnect
     before_action :set_devise_failure_redirect_for_concurrent_session_logout
     before_action :pre_validate_authorize_form, only: [:index]
     before_action :sign_out_if_prompt_param_is_login_and_user_is_signed_in, only: [:index]
-    before_action :store_request, only: [:index]
     before_action :check_sp_active, only: [:index]
     before_action :secure_headers_override, only: [:index]
     before_action :handle_banned_user
@@ -171,12 +170,21 @@ module OpenidConnect
     def pre_validate_authorize_form
       result = @authorize_form.submit
 
+      previous_sp_request_attributes = current_sp ?
+        normalize_previous_sp_request_attributes :
+        nil
+
+      if result.success?
+        store_request
+      end
+
       analytics.openid_connect_request_authorization(
         **result.to_h.except(:redirect_uri, :code_digest).merge(
           user_fully_authenticated: user_fully_authenticated?,
           referer: request.referer,
           vtr_param: params[:vtr],
           unknown_authn_contexts:,
+          previous_sp_request_attributes:,
         ),
       )
       return if result.success?
@@ -267,6 +275,20 @@ module OpenidConnect
 
       (params[:acr_values].split - Saml::Idp::Constants::VALID_AUTHN_CONTEXTS).
         join(' ').presence
+    end
+
+    def normalize_previous_sp_request_attributes
+      attributes = resolved_authn_context_result.to_h
+      attributes.delete(:component_values)
+
+      attributes[:component_names] = resolved_authn_context_result.component_names
+      attributes.reject! { |_key, value| value == false }
+
+      attributes&.transform_keys! do |key|
+        key.to_s.chomp('?').to_sym
+      end
+
+      attributes
     end
   end
 end

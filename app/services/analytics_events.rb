@@ -5487,6 +5487,7 @@ module AnalyticsEvents
   # @param [String, nil] vtr_param
   # @param [Boolean] unauthorized_scope
   # @param [Boolean] user_fully_authenticated
+  # @param [Hash, nil] previous_sp_request_attributes the previous request's attributes
   # @param [String] unknown_authn_contexts space separated list of unknown contexts
   def openid_connect_request_authorization(
     success:,
@@ -5504,6 +5505,7 @@ module AnalyticsEvents
     unauthorized_scope:,
     user_fully_authenticated:,
     error_details: nil,
+    previous_sp_request_attributes: nil,
     unknown_authn_contexts: nil,
     **extra
   )
@@ -5524,6 +5526,7 @@ module AnalyticsEvents
       vtr_param:,
       unauthorized_scope:,
       user_fully_authenticated:,
+      previous_sp_request_attributes:,
       unknown_authn_contexts:,
       **extra,
     )
