@@ -120,6 +120,7 @@ lint_yaml: normalize_yaml ## Lints YAML files
 lint_font_glyphs: ## Lints to validate content glyphs match expectations from fonts
 	scripts/yaml_characters \
 		--exclude-locale=zh \
+		--exclude-path=config/locales/telephony \
 		--exclude-gem-path=faker \
 		--exclude-gem-path=good_job \
 		--exclude-gem-path=i18n-tasks \
