@@ -113,13 +113,20 @@ RSpec.describe OpenidConnect::AuthorizationController do
         end
 
         describe 'sp_request_attributes sent in event' do
+          let(:acr_values) { Saml::Idp::Constants::IAL_AUTH_ONLY_ACR }
           let(:ahoy) { double Ahoy::Tracker }
-          let(:sp_request_hash) do
+          let(:previous_sp_request) do
             {
+              component_names: ["urn:acr.login.gov:verified-facial-match-required"],
               aal2: true,
               identity_proofing: true,
               facial_match: true,
               two_pieces_of_fair_evidence: true,
+            }
+          end
+          let(:current_sp_request) do
+            {
+              component_names: ["urn:acr.login.gov:auth-only"],
             }
           end
 
@@ -134,8 +141,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
             it 'does not include sp_request_attributes in the final event' do
               expect(ahoy).to receive(:track).with(
                 'OpenID Connect: authorization request',
-                hash_not_including(
-                  sp_request: hash_including(sp_request_hash),
+                hash_including(
+                  sp_request: hash_including(current_sp_request),
                 ),
               )
               action
@@ -154,7 +161,10 @@ RSpec.describe OpenidConnect::AuthorizationController do
               expect(ahoy).to receive(:track).with(
                 'OpenID Connect: authorization request',
                 hash_including(
-                  sp_request: hash_including(sp_request_hash),
+                  sp_request: hash_including(current_sp_request),
+                  event_properties: hash_including(
+                    previous_sp_request_attributes: previous_sp_request
+                  )
                 ),
               )
               action
