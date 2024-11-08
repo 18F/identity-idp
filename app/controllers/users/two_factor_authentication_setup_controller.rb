@@ -4,6 +4,7 @@ module Users
   class TwoFactorAuthenticationSetupController < ApplicationController
     include UserAuthenticator
     include MfaSetupConcern
+    include AbTestingConcern
 
     before_action :authenticate_user
     before_action :confirm_user_authenticated_for_2fa_setup
@@ -22,7 +23,9 @@ module Users
 
     def create
       result = submit_form
-      analytics.user_registration_2fa_setup(**result.to_h)
+      analytics.user_registration_2fa_setup(**result)
+      user_session[:platform_authenticator_available] =
+        params[:platform_authenticator_available] == 'true'
 
       if result.success?
         process_valid_form

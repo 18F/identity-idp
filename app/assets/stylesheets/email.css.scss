@@ -124,8 +124,7 @@ h6 {
     padding: units(1.5) 0;
 
     &:first-child {
-      padding-left: $alert-icon-optical-padding;
-      padding-right: units(1);
+      @include u-padding-x(2);
     }
   }
 

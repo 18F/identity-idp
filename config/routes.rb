@@ -236,6 +236,9 @@ Rails.application.routes.draw do
     get '/second_mfa_reminder' => 'users/second_mfa_reminder#new'
     post '/second_mfa_reminder' => 'users/second_mfa_reminder#create'
 
+    get '/webauthn_platform_recommended' => 'users/webauthn_platform_recommended#new'
+    post '/webauthn_platform_recommended' => 'users/webauthn_platform_recommended#create'
+
     get '/piv_cac' => 'users/piv_cac_authentication_setup#new', as: :setup_piv_cac
     get '/piv_cac_error' => 'users/piv_cac_authentication_setup#error', as: :setup_piv_cac_error
     post '/present_piv_cac' => 'users/piv_cac_authentication_setup#submit_new_piv_cac',
@@ -323,6 +326,8 @@ Rails.application.routes.draw do
     get '/sign_up/cancel/' => 'sign_up/cancellations#new', as: :sign_up_cancel
     delete '/sign_up/cancel' => 'sign_up/cancellations#destroy', as: :sign_up_destroy
 
+    get '/redirect/return_to_sp/account_verified_cta' => 'idv/account_verified_cta_visited#show', as: :account_verified_sign_in_redirect
+
     get '/redirect/return_to_sp/cancel' => 'redirect/return_to_sp#cancel', as: :return_to_sp_cancel
     get '/redirect/return_to_sp/failure_to_proof' => 'redirect/return_to_sp#failure_to_proof',
         as: :return_to_sp_failure_to_proof
@@ -405,7 +410,8 @@ Rails.application.routes.draw do
           # sometimes underscores get messed up when linked to via SMS
           as: :capture_doc_dashes
 
-      get '/in_person_proofing/state_id' => 'in_person/state_id#show'
+      # Deprecated route - temporary redirect while state id changes are rolled out
+      get '/in_person_proofing/state_id' => redirect('verify/in_person/state_id', status: 307)
       put '/in_person_proofing/state_id' => 'in_person/state_id#update'
 
       get '/in_person' => 'in_person#index'
@@ -413,6 +419,8 @@ Rails.application.routes.draw do
           as: :in_person_ready_to_verify
       post '/in_person/usps_locations' => 'in_person/usps_locations#index'
       put '/in_person/usps_locations' => 'in_person/usps_locations#update'
+      get '/in_person/state_id' => 'in_person/state_id#show'
+      put '/in_person/state_id' => 'in_person/state_id#update'
       get '/in_person/address' => 'in_person/address#show'
       put '/in_person/address' => 'in_person/address#update'
       get '/in_person/ssn' => 'in_person/ssn#show'

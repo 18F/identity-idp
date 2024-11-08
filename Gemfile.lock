@@ -262,7 +262,7 @@ GEM
       bigdecimal
       rexml
     crass (1.0.6)
-    css_parser (1.17.1)
+    css_parser (1.19.1)
       addressable
     cssbundling-rails (1.4.0)
       railties (>= 6.0.0)
@@ -397,7 +397,7 @@ GEM
       activesupport (>= 4)
       railties (>= 4)
       request_store (~> 1.0)
-    loofah (2.22.0)
+    loofah (2.23.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
     lookbook (2.2.0)
@@ -426,14 +426,14 @@ GEM
     mini_histogram (0.3.1)
     mini_mime (1.1.5)
     mini_portile2 (2.8.7)
-    minitest (5.24.1)
+    minitest (5.25.1)
     msgpack (1.7.2)
     multiset (0.5.3)
     net-http (0.4.1)
       uri
     net-http-persistent (4.0.2)
       connection_pool (~> 2.2)
-    net-imap (0.4.12)
+    net-imap (0.5.0)
       date
       net-protocol
     net-pop (0.1.2)
@@ -465,9 +465,9 @@ GEM
       google-protobuf (>= 3.22.3)
     phonelib (0.9.1)
     pkcs11 (0.3.4)
-    premailer (1.23.0)
+    premailer (1.27.0)
       addressable
-      css_parser (>= 1.12.0)
+      css_parser (>= 1.19.0)
       htmlentities (>= 4.0.0)
     premailer-rails (1.12.0)
       actionmailer (>= 3)
@@ -576,7 +576,7 @@ GEM
       actionpack (>= 5.0)
       railties (>= 5.0)
     retries (0.0.5)
-    rexml (3.3.7)
+    rexml (3.3.9)
     rotp (6.3.0)
     rouge (4.2.0)
     rqrcode (2.1.0)
@@ -746,7 +746,7 @@ GEM
     zeitwerk (2.7.1)
     zlib (3.0.0)
     zonebie (0.6.1)
-    zxcvbn (0.1.9)
+    zxcvbn (0.1.12)
 
 PLATFORMS
   ruby
@@ -876,7 +876,7 @@ DEPENDENCIES
   yard
   zlib
   zonebie
-  zxcvbn (= 0.1.9)
+  zxcvbn (= 0.1.12)
 
 RUBY VERSION
    ruby 3.3.4p94

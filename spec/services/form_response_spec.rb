@@ -273,6 +273,21 @@ RSpec.describe FormResponse do
     end
   end
 
+  describe '#to_hash' do
+    it 'allows for splatting response as alias of #to_h' do
+      errors = ActiveModel::Errors.new(build_stubbed(:user))
+      errors.add(:email_language, :blank, message: 'Language cannot be blank')
+      response = FormResponse.new(success: false, errors:, serialize_error_details_only: true)
+
+      expect(**response).to eq(
+        success: false,
+        error_details: {
+          email_language: { blank: true },
+        },
+      )
+    end
+  end
+
   describe '#extra' do
     it 'returns the extra hash' do
       extra = { foo: 'bar' }

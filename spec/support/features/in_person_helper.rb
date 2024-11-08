@@ -122,7 +122,7 @@ module InPersonHelper
 
   def complete_state_id_step(_user = nil, same_address_as_id: true, first_name: GOOD_FIRST_NAME)
     # Wait for page to load before attempting to fill out form
-    expect(page).to have_current_path(idv_in_person_proofing_state_id_path, wait: 10)
+    expect(page).to have_current_path(idv_in_person_state_id_path, wait: 10)
     fill_out_state_id_form_ok(same_address_as_id: same_address_as_id, first_name:)
     click_idv_continue
     unless same_address_as_id
@@ -134,7 +134,7 @@ module InPersonHelper
   def complete_state_id_controller(_user = nil, same_address_as_id: true,
                                    first_name: GOOD_FIRST_NAME)
     # Wait for page to load before attempting to fill out form
-    expect(page).to have_current_path(idv_in_person_proofing_state_id_path, wait: 10)
+    expect(page).to have_current_path(idv_in_person_state_id_path, wait: 10)
     fill_out_state_id_form_ok(same_address_as_id: same_address_as_id, first_name:)
     click_idv_continue
     unless same_address_as_id
@@ -163,7 +163,7 @@ module InPersonHelper
     begin_in_person_proofing
     complete_prepare_step
     complete_location_step
-    expect(page).to have_current_path(idv_in_person_proofing_state_id_path, wait: 10)
+    expect(page).to have_current_path(idv_in_person_state_id_path, wait: 10)
   end
 
   def complete_steps_before_state_id_controller
@@ -171,7 +171,7 @@ module InPersonHelper
     begin_in_person_proofing
     complete_prepare_step
     complete_location_step
-    expect(page).to have_current_path(idv_in_person_proofing_state_id_path, wait: 10)
+    expect(page).to have_current_path(idv_in_person_state_id_path, wait: 10)
   end
 
   def complete_all_in_person_proofing_steps(user = user_with_2fa, tmx_status = nil,
@@ -254,7 +254,7 @@ module InPersonHelper
 
   def perform_desktop_hybrid_steps(user = user_with_2fa, same_address_as_id: true)
     perform_in_browser(:desktop) do
-      expect(page).to have_current_path(idv_in_person_proofing_state_id_path, wait: 10)
+      expect(page).to have_current_path(idv_in_person_state_id_path, wait: 10)
 
       complete_state_id_controller(user, same_address_as_id: same_address_as_id)
       complete_address_step(user, same_address_as_id: same_address_as_id) unless same_address_as_id

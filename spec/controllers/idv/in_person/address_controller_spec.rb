@@ -37,7 +37,7 @@ RSpec.describe Idv::InPerson::AddressController do
         subject.user_session['idv/in_person'][:pii_from_user].delete(:identity_doc_address1)
         get :show
 
-        expect(response).to redirect_to idv_in_person_proofing_state_id_url
+        expect(response).to redirect_to idv_in_person_state_id_url
       end
     end
 
@@ -59,7 +59,6 @@ RSpec.describe Idv::InPerson::AddressController do
         analytics_id: 'In Person Proofing',
         flow_path: 'standard',
         step: 'address',
-        same_address_as_id: false,
       }
     end
 
@@ -124,7 +123,6 @@ RSpec.describe Idv::InPerson::AddressController do
           analytics_id: 'In Person Proofing',
           flow_path: 'standard',
           step: 'address',
-          same_address_as_id: false,
           current_address_zip_code: '59010',
         }
       end
@@ -206,7 +204,6 @@ RSpec.describe Idv::InPerson::AddressController do
           analytics_id: 'In Person Proofing',
           flow_path: 'standard',
           step: 'address',
-          same_address_as_id: false,
           current_address_zip_code: '59010',
         }
       end

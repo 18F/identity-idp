@@ -11,6 +11,7 @@ module Idv
 
         check_or_render_not_found -> { IdentityConfig.store.socure_enabled }
         before_action :check_valid_document_capture_session, except: [:update]
+        before_action -> { redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, true) }
 
         def show
           Funnel::DocAuth::RegisterStep.new(document_capture_user.id, sp_session[:issuer]).
@@ -28,6 +29,9 @@ module Idv
           @document_response = document_response
           @url = document_response.dig(:data, :url)
 
+          # placeholder until we get an error page for url not being present
+          return redirect_to idv_unavailable_url if @url.nil?
+
           document_capture_session = DocumentCaptureSession.find_by(
             uuid: document_capture_session_uuid,
           )
@@ -35,8 +39,11 @@ module Idv
             :data,
             :docvTransactionToken,
           )
+          document_capture_session.socure_docv_capture_app_url = document_response.dig(
+            :data,
+            :url,
+          )
           document_capture_session.save
-
           # useful for analytics
           @msg = document_response[:msg]
           @reference_id = document_response[:referenceId]

@@ -233,7 +233,7 @@ RSpec.describe AttributeAsserter do
           let(:user) { create(:profile, :active, :verified, idv_level: :in_person).user }
 
           it 'asserts IAL2' do
-            expected_ial = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
+            expected_ial = Saml::Idp::Constants::IAL_VERIFIED_ACR
             expect(get_asserted_attribute(user, :ial)).to eq expected_ial
           end
         end
@@ -401,7 +401,7 @@ RSpec.describe AttributeAsserter do
         let(:user) { create(:profile, :active, :verified, idv_level: :in_person).user }
 
         it 'asserts IAL1' do
-          expected_ial = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+          expected_ial = Saml::Idp::Constants::IAL_AUTH_ONLY_ACR
           expect(get_asserted_attribute(user, :ial)).to eq expected_ial
         end
       end

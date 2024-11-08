@@ -20,6 +20,18 @@ module Idv
     end
 
     def sign_in_url
+      url_params = {
+        campaign_id:,
+        issuer: service_provider&.issuer,
+      }.compact_blank
+
+      UriService.add_params(
+        account_verified_sign_in_redirect_url,
+        url_params,
+      )
+    end
+
+    def displayed_sign_in_url
       service_provider_homepage_url || root_url
     end
 
@@ -33,8 +45,12 @@ module Idv
 
     private
 
+    def campaign_id
+      IdentityConfig.store.idv_account_verified_email_campaign_id
+    end
+
     def sp_return_url_resolver
-      SpReturnUrlResolver.new(service_provider: service_provider)
+      SpReturnUrlResolver.new(service_provider:) if service_provider
     end
   end
 end

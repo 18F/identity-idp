@@ -34,7 +34,7 @@ module TwoFactorAuthentication
     def create
       @two_factor_options_form = TwoFactorLoginOptionsForm.new(current_user)
       result = @two_factor_options_form.submit(two_factor_options_form_params)
-      analytics.multi_factor_auth_option_list(**result.to_h)
+      analytics.multi_factor_auth_option_list(**result)
 
       if result.success?
         process_valid_form

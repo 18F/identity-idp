@@ -127,13 +127,16 @@ module Features
       confirm_last_user
     end
 
-    def sign_up_and_set_password
-      user = sign_up
+    def set_password(user)
       user.password = VALID_PASSWORD
       fill_in t('forms.password'), with: user.password
       fill_in t('components.password_confirmation.confirm_label'), with: user.password
       click_button t('forms.buttons.continue')
       user
+    end
+
+    def sign_up_and_set_password
+      set_password(sign_up)
     end
 
     def sign_in_user(user = create(:user), email = nil)

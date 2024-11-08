@@ -11,6 +11,46 @@
 #                 ||     ||
 
 module AnalyticsEvents
+  # @param [Boolean] success Check whether threatmetrix succeeded properly.
+  # @param [String] transaction_id Vendor-specific transaction ID for the request.
+  # @param [String, nil] client Client user was directed from when creating account
+  # @param [array<String>, nil] errors error response from api call
+  # @param [String, nil] exception Error exception from api call
+  # @param [Boolean] timed_out set whether api call timed out
+  # @param [String] review_status TMX decision on the user
+  # @param [String] account_lex_id LexID associated with the response.
+  # @param [String] session_id Session ID associated with response
+  # @param [Hash] response_body total response body for api call
+  # Result when threatmetrix is completed for account creation and result
+  def account_creation_tmx_result(
+    client:,
+    success:,
+    errors:,
+    exception:,
+    timed_out:,
+    transaction_id:,
+    review_status:,
+    account_lex_id:,
+    session_id:,
+    response_body:,
+    **extra
+  )
+    track_event(
+      :account_creation_tmx_result,
+      client:,
+      success:,
+      errors:,
+      exception:,
+      timed_out:,
+      transaction_id:,
+      review_status:,
+      account_lex_id:,
+      session_id:,
+      response_body:,
+      **extra,
+    )
+  end
+
   # @param [Boolean] success
   # When a user submits a form to delete their account
   def account_delete_submitted(success:, **extra)
@@ -441,8 +481,9 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] success
-  # @param [String] user_id
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # @param [String] user_id UUID for user associated with attempted email address
   # @param [Boolean] user_locked_out if the user is currently locked out of their second factor
   # @param [Boolean] rate_limited Whether the user has exceeded user IP rate limiting
   # @param [Boolean] valid_captcha_result Whether user passed the reCAPTCHA check or was exempt
@@ -451,7 +492,7 @@ module AnalyticsEvents
   # @param [Boolean] sp_request_url_present if was an SP request URL in the session
   # @param [Boolean] remember_device if the remember device cookie was present
   # @param [Boolean, nil] new_device Whether the user is authenticating from a new device. Nil if
-  # there is the attempt was unsuccessful, since it cannot be known whether it's a new device.
+  # the attempt was unsuccessful, since it cannot be known whether it's a new device.
   # Tracks authentication attempts at the email/password screen
   def email_and_password_auth(
     success:,
@@ -464,11 +505,13 @@ module AnalyticsEvents
     sp_request_url_present:,
     remember_device:,
     new_device:,
+    error_details: nil,
     **extra
   )
     track_event(
       'Email and Password Authentication',
       success:,
+      error_details:,
       user_id:,
       user_locked_out:,
       rate_limited:,
@@ -751,6 +794,22 @@ module AnalyticsEvents
       success: success,
       exception: exception,
       gpo_confirmation_count: gpo_confirmation_count,
+      **extra,
+    )
+  end
+
+  # User visited sign-in URL from the "You've been successfully verified email" CTA button
+  # @param issuer [String] the ServiceProvider.issuer
+  # @param campaign_id [String] the email campaign ID
+  def idv_account_verified_cta_visited(
+    issuer:,
+    campaign_id:,
+    **extra
+  )
+    track_event(
+      :idv_account_verified_cta_visited,
+      issuer:,
+      campaign_id:,
       **extra,
     )
   end
@@ -1486,7 +1545,6 @@ module AnalyticsEvents
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
   # @param ["hybrid","standard"] flow_path Document capture user flow
-  # @param [Boolean] same_address_as_id
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # @param [Number] previous_ssn_edit_distance The edit distance to the previous submitted SSN
@@ -1496,7 +1554,6 @@ module AnalyticsEvents
     flow_path:,
     opted_in_to_in_person_proofing: nil,
     skip_hybrid_handoff: nil,
-    same_address_as_id: nil,
     previous_ssn_edit_distance: nil,
     **extra
   )
@@ -1507,7 +1564,6 @@ module AnalyticsEvents
       flow_path:,
       opted_in_to_in_person_proofing:,
       skip_hybrid_handoff:,
-      same_address_as_id:,
       previous_ssn_edit_distance:,
       **extra,
     )
@@ -1547,7 +1603,6 @@ module AnalyticsEvents
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
-  # @param [Boolean] same_address_as_id
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # @param [Number] previous_ssn_edit_distance The edit distance to the previous submitted SSN
   def idv_doc_auth_ssn_submitted(
@@ -1560,7 +1615,6 @@ module AnalyticsEvents
     error_details: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
-    same_address_as_id: nil,
     previous_ssn_edit_distance: nil,
     **extra
   )
@@ -1575,7 +1629,6 @@ module AnalyticsEvents
       acuant_sdk_upgrade_ab_test_bucket:,
       flow_path:,
       opted_in_to_in_person_proofing:,
-      same_address_as_id:,
       previous_ssn_edit_distance:,
       **extra,
     )
@@ -1588,7 +1641,6 @@ module AnalyticsEvents
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
-  # @param [Boolean] same_address_as_id
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # @param [Number] previous_ssn_edit_distance The edit distance to the previous submitted SSN
   def idv_doc_auth_ssn_visited(
@@ -1598,7 +1650,6 @@ module AnalyticsEvents
     opted_in_to_in_person_proofing: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
-    same_address_as_id: nil,
     previous_ssn_edit_distance: nil,
     **extra
   )
@@ -1610,7 +1661,6 @@ module AnalyticsEvents
       acuant_sdk_upgrade_ab_test_bucket:,
       flow_path:,
       opted_in_to_in_person_proofing:,
-      same_address_as_id:,
       previous_ssn_edit_distance:,
       **extra,
     )
@@ -1897,7 +1947,6 @@ module AnalyticsEvents
   # @param flow_path [String] "hybrid" for hybrid handoff, "standard" otherwise
   # @param lexisnexis_instant_verify_workflow_ab_test_bucket [String] A/B test bucket for Lexis Nexis InstantVerify workflow testing
   # @param opted_in_to_in_person_proofing [Boolean] Whether this user explicitly opted into in-person proofing
-  # @param [Boolean] same_address_as_id
   # @param proofing_results [Hash]
   # @option proofing_results [String,nil] exception If an exception occurred during any phase of proofing its message is provided here
   # @option proofing_results [Boolean] timed_out true if any vendor API calls timed out during proofing
@@ -1969,7 +2018,6 @@ module AnalyticsEvents
     ssn_is_unique: nil,
     step: nil,
     success: nil,
-    same_address_as_id: nil,
     previous_ssn_edit_distance: nil,
     **extra
   )
@@ -1989,7 +2037,6 @@ module AnalyticsEvents
       ssn_is_unique:,
       step:,
       success:,
-      same_address_as_id:,
       previous_ssn_edit_distance:,
       **extra,
     )
@@ -2003,7 +2050,6 @@ module AnalyticsEvents
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
-  # @param [Boolean] same_address_as_id
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   def idv_doc_auth_verify_submitted(
     step:,
@@ -2012,7 +2058,6 @@ module AnalyticsEvents
     opted_in_to_in_person_proofing: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
-    same_address_as_id: nil,
     **extra
   )
     track_event(
@@ -2023,7 +2068,6 @@ module AnalyticsEvents
       acuant_sdk_upgrade_ab_test_bucket:,
       flow_path:,
       opted_in_to_in_person_proofing:,
-      same_address_as_id:,
       **extra,
     )
   end
@@ -2035,7 +2079,6 @@ module AnalyticsEvents
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
-  # @param [Boolean] same_address_as_id
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   def idv_doc_auth_verify_visited(
     step:,
@@ -2044,7 +2087,6 @@ module AnalyticsEvents
     opted_in_to_in_person_proofing: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
-    same_address_as_id: nil,
     **extra
   )
     track_event(
@@ -2055,7 +2097,6 @@ module AnalyticsEvents
       acuant_sdk_upgrade_ab_test_bucket:,
       flow_path:,
       opted_in_to_in_person_proofing:,
-      same_address_as_id:,
       **extra,
     )
   end
@@ -2766,7 +2807,6 @@ module AnalyticsEvents
   # @param [String] step
   # @param [String] analytics_id
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
-  # @param [Boolean] same_address_as_id
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # address page visited
   def idv_in_person_proofing_address_visited(
@@ -2775,7 +2815,6 @@ module AnalyticsEvents
     analytics_id:,
     opted_in_to_in_person_proofing: nil,
     skip_hybrid_handoff: nil,
-    same_address_as_id: nil,
     **extra
   )
     track_event(
@@ -2785,7 +2824,6 @@ module AnalyticsEvents
       analytics_id:,
       opted_in_to_in_person_proofing:,
       skip_hybrid_handoff:,
-      same_address_as_id:,
       **extra,
     )
   end
@@ -2866,7 +2904,6 @@ module AnalyticsEvents
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
-  # @param [Boolean, nil] same_address_as_id
   # @param [String] current_address_zip_code ZIP code of given address
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   def idv_in_person_proofing_residential_address_submitted(
@@ -2879,7 +2916,6 @@ module AnalyticsEvents
     opted_in_to_in_person_proofing: nil,
     error_details: nil,
     skip_hybrid_handoff: nil,
-    same_address_as_id: nil,
     **extra
   )
     track_event(
@@ -2893,7 +2929,6 @@ module AnalyticsEvents
       opted_in_to_in_person_proofing:,
       error_details:,
       skip_hybrid_handoff:,
-      same_address_as_id:,
       **extra,
     )
   end
@@ -2904,7 +2939,6 @@ module AnalyticsEvents
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  # @param [Boolean, nil] same_address_as_id
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # @param [String] birth_year Birth year from document
   # @param [String] document_zip_code ZIP code from document
@@ -2920,7 +2954,6 @@ module AnalyticsEvents
     document_zip_code:,
     skip_hybrid_handoff: nil,
     error_details: nil,
-    same_address_as_id: nil,
     opted_in_to_in_person_proofing: nil,
     **extra
   )
@@ -2935,7 +2968,6 @@ module AnalyticsEvents
       birth_year:,
       document_zip_code:,
       skip_hybrid_handoff:,
-      same_address_as_id:,
       opted_in_to_in_person_proofing:,
       **extra,
     )
@@ -2945,7 +2977,6 @@ module AnalyticsEvents
   # @param [String] step
   # @param [String] analytics_id
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
-  # @param [Boolean] same_address_as_id
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # State id page visited
   def idv_in_person_proofing_state_id_visited(
@@ -2954,7 +2985,6 @@ module AnalyticsEvents
     analytics_id: nil,
     opted_in_to_in_person_proofing: nil,
     skip_hybrid_handoff: nil,
-    same_address_as_id: nil,
     **extra
   )
     track_event(
@@ -2964,7 +2994,6 @@ module AnalyticsEvents
       analytics_id:,
       opted_in_to_in_person_proofing:,
       skip_hybrid_handoff:,
-      same_address_as_id:,
       **extra,
     )
   end
@@ -5732,6 +5761,7 @@ module AnalyticsEvents
   # @param [String] pending_profile_pending_reasons Comma-separated list of the pending states
   # associated with the associated profile.
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # @param [Boolean] password_matches_existing Whether the password is same as the user's current
   # The user changed the password for their account via the password reset flow
   def password_reset_password(
     success:,
@@ -5739,6 +5769,7 @@ module AnalyticsEvents
     profile_deactivated:,
     pending_profile_invalidated:,
     pending_profile_pending_reasons:,
+    password_matches_existing:,
     error_details: {},
     **extra
   )
@@ -5750,6 +5781,7 @@ module AnalyticsEvents
       profile_deactivated:,
       pending_profile_invalidated:,
       pending_profile_pending_reasons:,
+      password_matches_existing:,
       **extra,
     )
   end
@@ -6143,13 +6175,15 @@ module AnalyticsEvents
   # @param [Boolean] evaluated_as_valid Whether result was considered valid
   # @param [String] form_class Class name of form
   # @param [String, nil] exception_class Class name of exception, if error occurred
-  # @param [String, nil] phone_country_code Country code associated with reCAPTCHA phone result
+  # @param [String] recaptcha_action reCAPTCHA action name, for distinct user flow
+  # @param [String, nil] phone_country_code Country code associated with reCAPTCHA phone results
   def recaptcha_verify_result_received(
     recaptcha_result:,
     score_threshold:,
     evaluated_as_valid:,
     form_class:,
     exception_class:,
+    recaptcha_action:,
     phone_country_code: nil,
     **extra
   )
@@ -6160,6 +6194,7 @@ module AnalyticsEvents
       evaluated_as_valid:,
       form_class:,
       exception_class:,
+      recaptcha_action:,
       phone_country_code:,
       **extra,
     )
@@ -7073,6 +7108,17 @@ module AnalyticsEvents
       error_details:,
       **extra,
     )
+  end
+
+  # User submits WebAuthn platform authenticator recommended screen
+  # @param [Boolean] opted_to_add Whether the user chose to add a method
+  def webauthn_platform_recommended_submitted(opted_to_add:, **extra)
+    track_event(:webauthn_platform_recommended_submitted, opted_to_add:, **extra)
+  end
+
+  # User visits WebAuthn platform authenticator recommended screen
+  def webauthn_platform_recommended_visited
+    track_event(:webauthn_platform_recommended_visited)
   end
 
   # @param [Hash] platform_authenticator

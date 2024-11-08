@@ -82,6 +82,27 @@ module AbTests
     end
   end.freeze
 
+  LOG_PASSWORD_RESET_MATCHES_EXISTING = AbTest.new(
+    experiment_name: 'Log password_matches_existing event property on password reset',
+    should_log: ['Password Reset: Password Submitted'].to_set,
+    buckets: { log: IdentityConfig.store.log_password_reset_matches_existing_ab_test_percent },
+  ).freeze
+
+  RECOMMEND_WEBAUTHN_PLATFORM_FOR_SMS_USER = AbTest.new(
+    experiment_name: 'Recommend Face or Touch Unlock for SMS users',
+    should_log: [
+      'Multi-Factor Authentication',
+      'User Registration: MFA Setup Complete',
+      'User Registration: 2FA Setup',
+    ].to_set,
+    buckets: {
+      recommend_for_account_creation:
+        IdentityConfig.store.recommend_webauthn_platform_for_sms_ab_test_account_creation_percent,
+      recommend_for_authentication:
+        IdentityConfig.store.recommend_webauthn_platform_for_sms_ab_test_authentication_percent,
+    },
+  ).freeze
+
   DESKTOP_FT_UNLOCK_SETUP = AbTest.new(
     experiment_name: 'Desktop F/T unlock setup',
     should_log: [

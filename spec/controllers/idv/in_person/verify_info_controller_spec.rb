@@ -73,7 +73,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
           analytics_id: 'In Person Proofing',
           flow_path: 'standard',
           step: 'verify',
-          same_address_as_id: true,
         },
       )
     end
@@ -136,7 +135,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
               analytics_id: 'In Person Proofing',
               flow_path: 'standard',
               step: 'verify',
-              same_address_as_id: true,
             },
           ),
         )
@@ -236,22 +234,15 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
       allow(user).to receive(:establishing_in_person_enrollment).and_return(enrollment)
     end
 
-    it 'sets ssn and state_id_type on pii_from_user' do
+    it 'sets ssn on pii_from_user' do
       expect(Idv::Agent).to receive(:new).with(
         hash_including(
-          state_id_type: 'drivers_license',
           ssn: Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID[:ssn],
           consent_given_at: subject.idv_session.idv_consent_given_at,
         ),
       ).and_call_original
 
-      # our test data already has the expected value by default
-      subject.user_session['idv/in_person'][:pii_from_user].delete(:state_id_type)
-
       put :update
-
-      expect(subject.user_session['idv/in_person'][:pii_from_user][:state_id_type]).
-        to eq 'drivers_license'
     end
 
     context 'a user does not have an establishing in person enrollment associated with them' do

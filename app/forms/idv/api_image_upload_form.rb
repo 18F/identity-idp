@@ -83,7 +83,7 @@ module Idv
         extra: extra_attributes,
       )
 
-      analytics.idv_doc_auth_submitted_image_upload_form(**response.to_h)
+      analytics.idv_doc_auth_submitted_image_upload_form(**response)
       response
     end
 

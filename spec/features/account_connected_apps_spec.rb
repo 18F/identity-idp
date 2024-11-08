@@ -87,7 +87,7 @@ RSpec.describe 'Account connected applications' do
     expect(page).to have_field(user.email) { |field| !field[:checked] }
 
     choose user.email
-    click_on t('help_text.requested_attributes.change_email_link')
+    click_on t('help_text.requested_attributes.select_email_link')
 
     within('li', text: identity.display_name) do
       expect(page).not_to have_content(t('account.connected_apps.email_not_selected'))
@@ -96,6 +96,12 @@ RSpec.describe 'Account connected applications' do
     end
 
     expect(page).to have_field(user.email) { |field| field[:checked] }
+
+    click_on(t('help_text.requested_attributes.select_email_link'))
+
+    expect(page).to have_content strip_tags(
+      t('account.connected_apps.email_update_success_html', sp_name: identity.display_name),
+    )
   end
 
   def build_account_connected_apps

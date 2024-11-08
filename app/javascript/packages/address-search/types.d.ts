@@ -10,7 +10,6 @@ interface FormattedLocation {
   streetAddress: string;
   sundayHours: string;
   weekdayHours: string;
-  isPilot: boolean;
 }
 
 interface PostOffice {
@@ -24,7 +23,6 @@ interface PostOffice {
   weekday_hours: string;
   zip_code_4: string;
   zip_code_5: string;
-  is_pilot: boolean;
 }
 
 interface LocationQuery {

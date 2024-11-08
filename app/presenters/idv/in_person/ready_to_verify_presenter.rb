@@ -24,8 +24,10 @@ module Idv
       end
 
       def formatted_due_date
-        enrollment.due_date.in_time_zone(USPS_SERVER_TIMEZONE).
-          strftime(I18n.t('time.formats.event_date'))
+        I18n.l(
+          enrollment.due_date.in_time_zone(USPS_SERVER_TIMEZONE),
+          format: :event_date,
+        )
       end
 
       def selected_location_hours(prefix)

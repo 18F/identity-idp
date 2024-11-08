@@ -1,3 +1,5 @@
+import { trackError } from '@18f/identity-analytics';
+
 class CaptchaSubmitButtonElement extends HTMLElement {
   form: HTMLFormElement | null;
 
@@ -46,7 +48,14 @@ class CaptchaSubmitButtonElement extends HTMLElement {
   invokeChallenge() {
     this.recaptchaClient!.ready(async () => {
       const { recaptchaSiteKey: siteKey, recaptchaAction: action } = this;
-      const token = await this.recaptchaClient!.execute(siteKey!, { action });
+
+      let token;
+      try {
+        token = await this.recaptchaClient!.execute(siteKey!, { action });
+      } catch (error) {
+        trackError(error);
+      }
+
       this.tokenInput.value = token;
       this.submit();
     });

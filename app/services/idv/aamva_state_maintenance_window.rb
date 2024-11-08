@@ -2,7 +2,8 @@
 
 module Idv
   class AamvaStateMaintenanceWindow
-    # _All_ AAMVA maintenance windows are expressed in 'ET' (LG-14028)
+    # All AAMVA maintenance windows are expressed in 'ET' (LG-14028),
+    # except Montana's which we converted here from MST to ET.
     TZ = 'America/New_York'
 
     MAINTENANCE_WINDOWS = {
@@ -79,6 +80,11 @@ module Idv
         { cron: '0 9 * * Sun', duration_minutes: 90 },
         # ...and 5 am to 5:45 am ET on 2nd Sunday of month.
         { cron: '0 5 * * Sun#2', duration_minutes: 45 },
+      ],
+      'MT' => [
+        # Monthly maintenance occurs first Sunday of each month
+        # from 12:00 am to 6:00 am (Mountain Time zone).
+        { cron: '0 2 * * Sun#1', duration_minutes: 6 * 60 },
       ],
       'NC' => [
         # Daily, Midnight to 7:00 am. ET.

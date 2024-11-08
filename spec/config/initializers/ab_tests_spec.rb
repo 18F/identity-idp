@@ -220,6 +220,48 @@ RSpec.describe AbTests do
     end
   end
 
+  describe 'RECOMMEND_WEBAUTHN_PLATFORM_FOR_SMS_USER' do
+    let(:user) { create(:user) }
+
+    subject(:bucket) do
+      AbTests::RECOMMEND_WEBAUTHN_PLATFORM_FOR_SMS_USER.bucket(
+        request: nil,
+        service_provider: nil,
+        session: nil,
+        user:,
+        user_session: nil,
+      )
+    end
+
+    before do
+      allow(IdentityConfig.store).to receive(
+        :recommend_webauthn_platform_for_sms_ab_test_account_creation_percent,
+      ).and_return(recommend_webauthn_platform_for_sms_ab_test_account_creation_percent)
+      allow(IdentityConfig.store).to receive(
+        :recommend_webauthn_platform_for_sms_ab_test_authentication_percent,
+      ).and_return(recommend_webauthn_platform_for_sms_ab_test_authentication_percent)
+      reload_ab_tests
+    end
+
+    context 'when A/B test is disabled' do
+      let(:recommend_webauthn_platform_for_sms_ab_test_account_creation_percent) { 0 }
+      let(:recommend_webauthn_platform_for_sms_ab_test_authentication_percent) { 0 }
+
+      it 'does not return a bucket' do
+        expect(bucket).to be_nil
+      end
+    end
+
+    context 'when A/B test is enabled' do
+      let(:recommend_webauthn_platform_for_sms_ab_test_account_creation_percent) { 1 }
+      let(:recommend_webauthn_platform_for_sms_ab_test_authentication_percent) { 1 }
+
+      it 'returns a bucket' do
+        expect(bucket).not_to be_nil
+      end
+    end
+  end
+
   describe 'DESKTOP_FT_UNLOCK_SETUP' do
     let(:user) { nil }
     let(:user_session) { {} }

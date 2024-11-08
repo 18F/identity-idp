@@ -25,7 +25,7 @@ module Idv
         form_result = form.submit(flow_params)
 
         analytics.idv_in_person_proofing_residential_address_submitted(
-          **analytics_arguments.merge(**form_result.to_h),
+          **analytics_arguments.merge(**form_result),
         )
 
         if form_result.success?
@@ -109,7 +109,7 @@ module Idv
 
       def confirm_in_person_state_id_step_complete
         return if pii_from_user&.has_key?(:identity_doc_address1)
-        redirect_to idv_in_person_proofing_state_id_url
+        redirect_to idv_in_person_state_id_url
       end
 
       def confirm_in_person_address_step_needed

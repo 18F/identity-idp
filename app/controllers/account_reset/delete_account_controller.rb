@@ -6,7 +6,7 @@ module AccountReset
       render :show and return unless token
 
       result = AccountReset::ValidateGrantedToken.new(token, request, analytics).call
-      analytics.account_reset_granted_token_validation(**result.to_h)
+      analytics.account_reset_granted_token_validation(**result)
 
       if result.success?
         handle_valid_token

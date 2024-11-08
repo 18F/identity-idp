@@ -14,6 +14,11 @@ RSpec.describe Idv::AccountVerifiedEmailPresenter do
 
   subject(:presenter) { described_class.new(profile:, url_options: {}) }
 
+  before do
+    allow(IdentityConfig.store).to receive(:idv_account_verified_email_campaign_id).
+      and_return('20241030')
+  end
+
   context 'when there is no associated service provider' do
     let(:service_provider) { nil }
 
@@ -29,9 +34,24 @@ RSpec.describe Idv::AccountVerifiedEmailPresenter do
       end
     end
 
-    describe '#sign_in_url' do
+    describe '#displayed_sign_in_url' do
       it 'links to ourselves since there is no SP' do
-        expect(presenter.sign_in_url).to eq(root_url)
+        expect(presenter.displayed_sign_in_url).to eq(root_url)
+      end
+    end
+
+    describe '#sign_in_url' do
+      let(:params) do
+        uri = URI.parse(presenter.sign_in_url)
+        Rack::Utils.parse_query(uri.query).with_indifferent_access
+      end
+
+      it 'has no issuer' do
+        expect(params[:issuer]).to be_nil
+      end
+
+      it 'has the correct campaign ID' do
+        expect(params[:campaign_id]).to eq('20241030')
       end
     end
   end
@@ -41,6 +61,7 @@ RSpec.describe Idv::AccountVerifiedEmailPresenter do
       let(:service_provider) do
         create(
           :service_provider,
+          issuer: 'urn:my:awesome:sp',
           return_to_sp_url: nil,
           friendly_name: 'My Awesome SP',
         )
@@ -58,9 +79,24 @@ RSpec.describe Idv::AccountVerifiedEmailPresenter do
         end
       end
 
-      describe '#sign_in_url' do
+      describe '#bare_sign_in_url' do
         it 'links to ourselves' do
-          expect(presenter.sign_in_url).to eq(root_url)
+          expect(presenter.displayed_sign_in_url).to eq(root_url)
+        end
+      end
+
+      describe '#sign_in_url' do
+        let(:params) do
+          uri = URI.parse(presenter.sign_in_url)
+          Rack::Utils.parse_query(uri.query).with_indifferent_access
+        end
+
+        it 'has the correct issuer' do
+          expect(params[:issuer]).to eq('urn:my:awesome:sp')
+        end
+
+        it 'has the correct campaign ID' do
+          expect(params[:campaign_id]).to eq('20241030')
         end
       end
     end
@@ -69,7 +105,8 @@ RSpec.describe Idv::AccountVerifiedEmailPresenter do
       let(:service_provider) do
         create(
           :service_provider,
-          return_to_sp_url: 'https://www.example.com',
+          issuer: 'urn:my:awesome:sp',
+          return_to_sp_url: 'https://www.mysp.com',
           friendly_name: 'My Awesome SP',
         )
       end
@@ -86,9 +123,24 @@ RSpec.describe Idv::AccountVerifiedEmailPresenter do
         end
       end
 
-      describe '#sign_in_url' do
+      describe '#bare_sign_in_url' do
         it 'links to the SP' do
-          expect(presenter.sign_in_url).to eq('https://www.example.com')
+          expect(presenter.displayed_sign_in_url).to eq('https://www.mysp.com')
+        end
+      end
+
+      describe '#sign_in_url' do
+        let(:params) do
+          uri = URI.parse(presenter.sign_in_url)
+          Rack::Utils.parse_query(uri.query).with_indifferent_access
+        end
+
+        it 'has the correct issuer' do
+          expect(params[:issuer]).to eq('urn:my:awesome:sp')
+        end
+
+        it 'has the correct campaign ID' do
+          expect(params[:campaign_id]).to eq('20241030')
         end
       end
     end

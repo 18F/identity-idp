@@ -11,6 +11,7 @@ module Idv
       check_or_render_not_found -> { IdentityConfig.store.socure_enabled }
       before_action :confirm_not_rate_limited
       before_action :confirm_step_allowed
+      before_action -> { redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, false) }
 
       # reconsider and maybe remove these when implementing the real
       # update handler
@@ -37,6 +38,9 @@ module Idv
         @document_response = document_response
         @url = document_response.dig(:data, :url)
 
+        # placeholder until we get an error page for url not being present
+        return redirect_to idv_unavailable_url if @url.nil?
+
         document_capture_session = DocumentCaptureSession.find_by(
           uuid: document_capture_session_uuid,
         )
@@ -44,6 +48,10 @@ module Idv
         document_capture_session.socure_docv_transaction_token = document_response.dig(
           :data,
           :docvTransactionToken,
+        )
+        document_capture_session.socure_docv_capture_app_url = document_response.dig(
+          :data,
+          :url,
         )
         document_capture_session.save
 
@@ -62,16 +70,15 @@ module Idv
           controller: self,
           next_steps: [:ssn, :ipp_ssn],
           preconditions: ->(idv_session:, user:) {
-                           idv_session.flow_path == 'standard' && (
-                            # mobile
-                            idv_session.skip_doc_auth_from_handoff ||
-                            idv_session.skip_hybrid_handoff ||
-                              idv_session.skip_doc_auth ||
-                              idv_session.skip_doc_auth_from_how_to_verify ||
-                              !idv_session.selfie_check_required ||
-                              idv_session.desktop_selfie_test_mode_enabled?
-                          )
-                         },
+            idv_session.flow_path == 'standard' && (
+              # mobile
+              idv_session.skip_doc_auth_from_handoff ||
+              idv_session.skip_hybrid_handoff ||
+              idv_session.skip_doc_auth ||
+              idv_session.skip_doc_auth_from_how_to_verify ||
+              !idv_session.selfie_check_required ||
+              idv_session.desktop_selfie_test_mode_enabled?)
+          },
           undo_step: ->(idv_session:, user:) do
             idv_session.pii_from_doc = nil
             idv_session.invalidate_in_person_pii_from_user!

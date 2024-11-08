@@ -16,12 +16,27 @@ module LexisNexisFixtures
       )
     end
 
-    def example_ddp_config
+    def example_ddp_proofing_config
       Proofing::LexisNexis::Config.new(
         api_key: 'test_api_key',
         base_url: 'https://example.com',
         org_id: 'test_org_id',
+        ddp_policy: 'test-policy',
       )
+    end
+
+    def example_ddp_authentication_config
+      Proofing::LexisNexis::Config.new(
+        api_key: 'test_api_key',
+        base_url: 'https://example.com',
+        org_id: 'test_org_id',
+        ddp_policy: 'test-authentication-policy',
+      )
+    end
+
+    def ddp_authentication_request_json
+      raw = read_fixture_file_at_path('ddp/account_creation_request.json')
+      JSON.parse(raw).to_json
     end
 
     def ddp_request_json
@@ -41,11 +56,6 @@ module LexisNexisFixtures
 
     def ddp_failure_response_json
       raw = read_fixture_file_at_path('ddp/failed_response.json')
-      JSON.parse(raw).to_json
-    end
-
-    def ddp_error_response_json
-      raw = read_fixture_file_at_path('ddp/error_response.json')
       JSON.parse(raw).to_json
     end
 

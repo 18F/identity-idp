@@ -42,6 +42,7 @@ account.connected_apps.associated_attributes_html: 'Connecté %{timestamp_html} 
 account.connected_apps.associated_html: Connecté %{timestamp_html}
 account.connected_apps.description: Avec votre compte %{app_name}, vous pouvez vous connecter en toute sécurité à plusieurs comptes de l’administration en ligne. Vous trouverez ci-dessous une liste de tous vos comptes actuellement connectés.
 account.connected_apps.email_not_selected: Adresse e-mail non encore sélectionnée
+account.connected_apps.email_update_success_html: Vous avez réussi à modifier votre adresse e-mail pour <strong>%{sp_name}</strong>.
 account.email_language.default: '%{language} (par défaut)'
 account.email_language.edit_title: Modifier la langue dans laquelle vous préférez recevoir les e-mails
 account.email_language.languages_list: Vous recevrez des e-mails de %{app_name} dans la langue de votre choix.
@@ -50,6 +51,7 @@ account.email_language.name.es: Español
 account.email_language.name.fr: Français
 account.email_language.name.zh: 中文 (简体)
 account.email_language.updated: Votre langue de préférence pour les e-mails a été mise à jour.
+account.emails.confirmed_html: Vous avez confirmé votre adresse e-mail. Rendez-vous sur <a href="%{url}">vos comptes connectés</a> pour actualiser l’adresse e-mail que vous communiquez aux organismes connectés.
 account.forget_all_browsers.longer_description: Une fois que vous aurez choisi d’« oublier tous les navigateurs », nous aurons besoin d’informations supplémentaires pour savoir que c’est bien vous qui vous connectez à votre compte. Nous vous demanderons une méthode d’authentification multi-facteurs (comme un code SMS/texto ou une clé de sécurité) chaque fois que vous souhaiterez accéder à votre compte.
 account.index.auth_app_add: Ajouter une appli
 account.index.auth_app_disabled: non activé
@@ -566,7 +568,6 @@ doc_auth.errors.sharpness.failed_short: L’image est floue, veuillez réessayer
 doc_auth.errors.sharpness.top_msg: Nous n’avons pas pu lire votre pièce d’identité. Il se peut que votre photo soit trop floue ou trop sombre. Essayez de prendre une nouvelle photo dans un endroit bien éclairé.
 doc_auth.errors.sharpness.top_msg_plural: Nous n’avons pas pu lire votre pièce d’identité. Il se peut que vos photos soient trop floues ou trop sombres. Essayez de prendre de nouvelles photos dans un endroit bien éclairé.
 doc_auth.errors.upload_error: Désolé, il y a eu un problème de notre côté.
-doc_auth.forms.captured_image: Image capturée
 doc_auth.forms.change_file: Changer de fichier
 doc_auth.forms.choose_file_html: Faites glisser le fichier ici ou <lg-underline>choisissez dans un dossier</lg-underline>
 doc_auth.forms.doc_success: Nous avons vérifié vos informations
@@ -602,6 +603,7 @@ doc_auth.headings.verify_at_post_office: Confirmer votre identité en personne d
 doc_auth.headings.verify_identity: Confirmer votre identité
 doc_auth.headings.verify_online: Confirmer votre identité en ligne
 doc_auth.headings.verify_online_selfie: Confirmer votre identité en ligne à l’aide de votre téléphone
+doc_auth.headings.verify_with_phone: Confirmer votre identité à l’aide de votre téléphone
 doc_auth.headings.welcome: Vérifions votre identité auprès de %{sp_name}
 doc_auth.hybrid_flow_warning.explanation_html: Vous utilisez <strong>%{app_name}</strong> pour confirmer votre identité et accéder à <strong>%{service_provider_name}</strong> et à ses services.
 doc_auth.hybrid_flow_warning.explanation_non_sp_html: Vous utilisez <strong>%{app_name}</strong> pour confirmer votre identité.
@@ -609,6 +611,7 @@ doc_auth.hybrid_flow_warning.only_add_if_text: 'N’AJOUTEZ VOTRE PIÈCE D’IDE
 doc_auth.hybrid_flow_warning.only_add_own_account: Vous utilisez votre propre compte %{app_name}
 doc_auth.hybrid_flow_warning.only_add_phone_verify: Vous avez demandé à %{app_name} de confirmer votre identité à l’aide de votre téléphone
 doc_auth.hybrid_flow_warning.only_add_sp_services_html: Vous essayez d’accéder aux services de <strong>%{service_provider_name}</strong>
+doc_auth.info.add_id_consent_with_phone: Ajoutez uniquement votre pièce d’identité si vous avez demandé à %{app_name} de vérifier votre identité à l’aide de votre téléphone.
 doc_auth.info.address_guidance_puerto_rico_html: Résidents de Porto Rico :<br><br>modifiez votre adresse pour indiquer votre lotissement ou votre condominium à la ligne 2.
 doc_auth.info.capture_status_big_document: Trop près
 doc_auth.info.capture_status_capturing: Prise de la photo
@@ -635,6 +638,7 @@ doc_auth.info.lets_go: 'La vérification de l’identité se fait en deux temps�
 doc_auth.info.link_sent: Veuillez vérifier votre téléphone et suivre les instructions pour prendre une photo de votre pièce d’identité délivrée par l’État.
 doc_auth.info.link_sent_complete_no_polling: Quand vous aurez fini, cliquez sur « Suite » ici pour terminer la vérification de votre identité.
 doc_auth.info.link_sent_complete_polling: L’étape suivante se chargera automatiquement.
+doc_auth.info.login_access_sp: Vous utilisez %{app_name} pour accéder à %{sp_name}.
 doc_auth.info.no_ssn: Vous devez avoir un numéro de sécurité sociale pour terminer la vérification de votre identité.
 doc_auth.info.review_examples_of_photos: Voir des exemples qui montrent comment prendre des photos nettes de votre pièce d’identité.
 doc_auth.info.secure_account: Nous chiffrons votre compte lorsque vous resaisissez votre mot de passe. Le chiffrement signifie que vos données sont protégées et que vous êtes le seul à pouvoir accéder à vos informations ou les modifier.
@@ -972,11 +976,12 @@ help_text.requested_attributes.full_name: Nom complet
 help_text.requested_attributes.ial2_reverified_consent_info_html: 'Étant donné que vous avez revérifié votre identité, nous avons besoin de votre autorisation pour partager ces informations avec %{sp_html} :'
 help_text.requested_attributes.intro_html: 'Nous partagerons ces informations avec %{sp_html}:'
 help_text.requested_attributes.phone: Numéro de téléphone
+help_text.requested_attributes.select_email_link: Sélectionner l’e-mail
 help_text.requested_attributes.social_security_number: Numéro de sécurité sociale
 help_text.requested_attributes.verified_at: Mis à jour le
 help_text.requested_attributes.x509_issuer: Émetteur PIV/CAC
 help_text.requested_attributes.x509_subject: Identité PIV/CAC
-help_text.select_preferred_email: Vous pouvez modifier l’adresse e-mail que vous partagez avec %{sp} car vous possédez plusieurs adresses e-mail associées à votre compte %{app_name}.
+help_text.select_preferred_email_html: Sélectionnez ou ajoutez l’adresse e-mail que vous souhaitez employer pour accéder à <strong>%{sp}</strong>.
 i18n.language: Langue
 i18n.locale.en: English
 i18n.locale.es: Español
@@ -2004,6 +2009,12 @@ vendor_outage.blocked.phone.default: Nous ne sommes pas actuellement en mesure d
 vendor_outage.get_updates: Obtenir les dernières informations
 vendor_outage.get_updates_on_status_page: Obtenir les dernières informations sur notre page d’état des systèmes.
 vendor_outage.working: Nous travaillons à la résolution d’une erreur
+webauthn_platform_recommended.cta: Set up face or touch unlock
+webauthn_platform_recommended.description_private_html: Face or touch unlock is %{phishing_resistant_link_html} and we don’t store any recordings of your face or fingerprint, so your information stays private.
+webauthn_platform_recommended.description_secure_account: Secure your sign in with face or touch unlock. Use your face, fingerprint, password, or another method to keep your account safer.
+webauthn_platform_recommended.heading: Set up face or touch unlock for a more secure sign in
+webauthn_platform_recommended.phishing_resistant: phishing-resistant
+webauthn_platform_recommended.skip: Skip
 zxcvbn.feedback.a_word_by_itself_is_easy_to_guess: Un mot seul est facile à deviner
 zxcvbn.feedback.add_another_word_or_two_uncommon_words_are_better: Ajoutez un ou deux autres mots. Il est préférable d’utiliser des mots peu communs.
 zxcvbn.feedback.all_uppercase_is_almost_as_easy_to_guess_as_all_lowercase: Tout en majuscules est presque aussi facile à deviner que tout en minuscules.

@@ -47,11 +47,8 @@ module Saml
 
       REQUESTED_ATTRIBUTES_CLASSREF = "#{LEGACY_ACR_NS}/requested_attributes?ReqAttr=".freeze
 
-      VALID_AUTHN_CONTEXTS = (if FeatureManagement.use_semantic_authn_contexts?
-                                IdentityConfig.store.valid_authn_contexts_semantic
-                             else
-                               IdentityConfig.store.valid_authn_contexts
-                             end).freeze
+      # TODO: replace valid_authn_contexts_semantic with valid_authn_contexts
+      VALID_AUTHN_CONTEXTS = IdentityConfig.store.valid_authn_contexts_semantic.freeze
 
       FACIAL_MATCH_IAL_CONTEXTS = [
         IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,

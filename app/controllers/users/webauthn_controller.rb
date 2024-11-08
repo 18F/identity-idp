@@ -15,7 +15,7 @@ module Users
     def update
       result = form.submit(name: params.dig(:form, :name))
 
-      analytics.webauthn_update_name_submitted(**result.to_h)
+      analytics.webauthn_update_name_submitted(**result)
 
       if result.success?
         flash[:success] = presenter.rename_success_alert_text
@@ -29,7 +29,7 @@ module Users
     def destroy
       result = form.submit
 
-      analytics.webauthn_delete_submitted(**result.to_h)
+      analytics.webauthn_delete_submitted(**result)
 
       if result.success?
         flash[:success] = presenter.delete_success_alert_text

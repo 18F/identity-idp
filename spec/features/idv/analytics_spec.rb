@@ -117,7 +117,6 @@ RSpec.feature 'Analytics Regression', :js do
       },
       biographical_info: {
         identity_doc_address_state: nil,
-        same_address_as_id: nil,
         state: 'MT',
         state_id_jurisdiction: 'ND',
         state_id_number: '#############',
@@ -154,13 +153,12 @@ RSpec.feature 'Analytics Regression', :js do
                                  vendor_name: 'ResolutionMock',
                                  vendor_workflow: nil,
                                  verified_attributes: nil },
-          state_id: state_id_resolution_with_id_type,
+          state_id: state_id_resolution,
           threatmetrix: threatmetrix_response,
         },
       },
       biographical_info: {
         identity_doc_address_state: 'ND',
-        same_address_as_id: 'false',
         state: 'MT',
         state_id_jurisdiction: 'ND',
         state_id_number: '#############',
@@ -561,25 +559,25 @@ RSpec.feature 'Analytics Regression', :js do
         step: 'state_id', flow_path: 'standard', analytics_id: 'In Person Proofing'
       },
       'IdV: in person proofing state_id submitted' => {
-        success: true, flow_path: 'standard', step: 'state_id', analytics_id: 'In Person Proofing', errors: {}, same_address_as_id: false, birth_year: '1938', document_zip_code: '12345'
+        success: true, flow_path: 'standard', step: 'state_id', analytics_id: 'In Person Proofing', errors: {}, birth_year: '1938', document_zip_code: '12345'
       },
       'IdV: in person proofing address visited' => {
-        step: 'address', flow_path: 'standard', analytics_id: 'In Person Proofing', same_address_as_id: false
+        step: 'address', flow_path: 'standard', analytics_id: 'In Person Proofing'
       },
       'IdV: in person proofing residential address submitted' => {
-        success: true, step: 'address', flow_path: 'standard', analytics_id: 'In Person Proofing', errors: {}, same_address_as_id: false, current_address_zip_code: '59010'
+        success: true, step: 'address', flow_path: 'standard', analytics_id: 'In Person Proofing', errors: {}, current_address_zip_code: '59010'
       },
       'IdV: doc auth ssn visited' => {
-        analytics_id: 'In Person Proofing', step: 'ssn', flow_path: 'standard', same_address_as_id: false
+        analytics_id: 'In Person Proofing', step: 'ssn', flow_path: 'standard'
       },
       'IdV: doc auth ssn submitted' => {
-        analytics_id: 'In Person Proofing', success: true, step: 'ssn', flow_path: 'standard', errors: {}, same_address_as_id: false
+        analytics_id: 'In Person Proofing', success: true, step: 'ssn', flow_path: 'standard', errors: {}
       },
       'IdV: doc auth verify visited' => {
-        analytics_id: 'In Person Proofing', step: 'verify', flow_path: 'standard', same_address_as_id: false
+        analytics_id: 'In Person Proofing', step: 'verify', flow_path: 'standard'
       },
       'IdV: doc auth verify submitted' => {
-        analytics_id: 'In Person Proofing', step: 'verify', flow_path: 'standard', same_address_as_id: false
+        analytics_id: 'In Person Proofing', step: 'verify', flow_path: 'standard'
       },
       idv_threatmetrix_response_body: (
         if threatmetrix_response_body.present?
@@ -587,7 +585,7 @@ RSpec.feature 'Analytics Regression', :js do
         end
       ),
       'IdV: doc auth verify proofing results' => {
-        success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'In Person Proofing', step: 'verify', same_address_as_id: false,
+        success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'In Person Proofing', step: 'verify',
         proofing_results: in_person_path_proofing_results
       },
       'IdV: phone confirmation form' => {

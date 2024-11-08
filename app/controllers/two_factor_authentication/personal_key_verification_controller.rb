@@ -61,7 +61,7 @@ module TwoFactorAuthentication
 
     def alert_user_about_personal_key_sign_in(disavowal_token)
       response = UserAlerts::AlertUserAboutPersonalKeySignIn.call(current_user, disavowal_token)
-      analytics.personal_key_alert_about_sign_in(**response.to_h)
+      analytics.personal_key_alert_about_sign_in(**response)
     end
 
     def remove_personal_key

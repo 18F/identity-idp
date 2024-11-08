@@ -146,7 +146,6 @@ RSpec.describe Idv::InPerson::StateIdController do
           analytics_id: 'In Person Proofing',
           flow_path: 'standard',
           step: 'state_id',
-          same_address_as_id: true,
           birth_year: dob[:year],
           document_zip_code: identity_doc_zipcode&.slice(0, 5),
         }

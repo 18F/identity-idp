@@ -460,20 +460,6 @@ RSpec.describe AuthnContextResolver do
   end
 
   context 'when resolving semantic acr_values' do
-    before do
-      allow(IdentityConfig.store).
-        to receive(:feature_valid_authn_contexts_semantic_enabled).
-        and_return(true)
-      allow_any_instance_of(ServiceProvider).
-        to receive(:semantic_authn_contexts_allowed?).
-        and_return(true)
-
-      stub_const(
-        'Saml::Idp::Constants::VALID_AUTHN_CONTEXTS',
-        IdentityConfig.store.valid_authn_contexts_semantic,
-      )
-    end
-
     context 'when no semantic ACR present' do
       let(:user) { build(:user) }
 

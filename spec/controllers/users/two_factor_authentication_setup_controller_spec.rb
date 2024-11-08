@@ -147,6 +147,12 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
       )
     end
 
+    it 'assigns platform_authenticator_available session value' do
+      expect { response }.to change { controller.user_session[:platform_authenticator_available] }.
+        from(nil).
+        to(false)
+    end
+
     context 'when multi selection with phone first' do
       let(:params) { { two_factor_options_form: { selection: ['phone', 'auth_app'] } } }
 
@@ -189,6 +195,18 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
       it 'renders setup page with error message' do
         expect(response).to render_template(:index)
         expect(flash[:error]).to eq(t('errors.messages.inclusion'))
+      end
+    end
+
+    context 'with form value indicating platform authenticator support' do
+      let(:params) { super().merge(platform_authenticator_available: 'true') }
+
+      it 'assigns platform_authenticator_available session value' do
+        expect do
+          response
+        end.to change { controller.user_session[:platform_authenticator_available] }.
+          from(nil).
+          to(true)
       end
     end
   end

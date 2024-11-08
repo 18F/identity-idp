@@ -33,7 +33,7 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
 
   describe '#body' do
     it 'should be a request body' do
-      expect(subject.body).to eq(AamvaFixtures.verification_request)
+      expect(subject.body + "\n").to eq(AamvaFixtures.verification_request)
     end
 
     it 'should escape XML in applicant data' do
@@ -87,6 +87,64 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
       expect(subject.body).to include(
         '<aa:DriverLicenseExpirationDate>2030-01-02</aa:DriverLicenseExpirationDate>',
       )
+    end
+
+    context '#state_id_type' do
+      context 'when the feature flag is off' do
+        before do
+          expect(IdentityConfig.store).to receive(:aamva_send_id_type).and_return(false)
+        end
+
+        it 'does not add a DocumentCategoryCode' do
+          applicant.state_id_data.state_id_type = 'drivers_license'
+          expect(subject.body).to_not include('<aa:DocumentCategoryCode>')
+        end
+      end
+
+      context 'when the feature flag is on' do
+        before do
+          expect(IdentityConfig.store).to receive(:aamva_send_id_type).and_return(true)
+        end
+
+        context 'when the type is a Drivers License' do
+          it 'includes DocumentCategoryCode=1' do
+            applicant.state_id_data.state_id_type = 'drivers_license'
+            expect(subject.body).to include(
+              '<aa:DocumentCategoryCode>1</aa:DocumentCategoryCode>',
+            )
+          end
+        end
+
+        context 'when the type is a learners permit' do
+          it 'includes DocumentCategoryCode=2' do
+            applicant.state_id_data.state_id_type = 'drivers_permit'
+            expect(subject.body).to include(
+              '<aa:DocumentCategoryCode>2</aa:DocumentCategoryCode>',
+            )
+          end
+        end
+
+        context 'when the type is an ID Card' do
+          it 'includes DocumentCategoryCode=3' do
+            applicant.state_id_data.state_id_type = 'state_id_card'
+            expect(subject.body).to include(
+              '<aa:DocumentCategoryCode>3</aa:DocumentCategoryCode>',
+            )
+          end
+        end
+
+        context 'when the type is something invalid' do
+          it 'does not add a DocumentCategoryCode for nil ID type' do
+            applicant.state_id_data.state_id_type = nil
+            expect(subject.body).to_not include('<aa:DocumentCategoryCode>')
+          end
+
+          it 'does not add a DocumentCategoryCode for invalid ID types' do
+            applicant.state_id_data.state_id_type = 'License to Keep an Alpaca'
+            expect(subject.body).to_not include('<aa:DocumentCategoryCode>')
+          end
+        end
+      end
     end
   end
 

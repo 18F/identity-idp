@@ -20,9 +20,10 @@ module Accounts
 
         result = @select_email_form.submit(form_params)
 
-        analytics.sp_select_email_submitted(**result.to_h)
+        analytics.sp_select_email_submitted(**result)
 
         if result.success?
+          flash[:email_updated_identity_id] = identity.id
           redirect_to account_connected_accounts_path
         else
           flash[:error] = result.first_error_message

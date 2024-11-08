@@ -9,11 +9,24 @@ class SocureWebhookController < ApplicationController
   before_action :check_socure_event
 
   def create
-    log_webhook_receipt
-    render json: { message: 'Secret token is valid.' }
+    begin
+      log_webhook_receipt
+      process_webhook_event
+    rescue StandardError => e
+      NewRelic::Agent.notice_error(e)
+    ensure
+      render json: { message: 'Secret token is valid.' }, status: :ok
+    end
   end
 
   private
+
+  def fetch_results
+    dcs = document_capture_session
+    raise 'DocumentCaptureSession not found' if dcs.blank?
+
+    SocureDocvResultsJob.perform_later(document_capture_session_uuid: dcs.uuid)
+  end
 
   def check_token
     if !token_valid?
@@ -52,8 +65,6 @@ class SocureWebhookController < ApplicationController
   end
 
   def log_webhook_receipt
-    event = socure_params[:event]
-
     analytics.idv_doc_auth_socure_webhook_received(
       created_at: event[:created],
       customer_user_id: event[:customerUserId],
@@ -63,7 +74,42 @@ class SocureWebhookController < ApplicationController
     )
   end
 
+  def process_webhook_event
+    case event[:eventType]
+    when 'DOCUMENTS_UPLOADED'
+      increment_rate_limiter
+      fetch_results
+    end
+  end
+
+  def increment_rate_limiter
+    if document_capture_session.present?
+      rate_limiter.increment!
+    end
+    # Logic to throw an error when no DocumentCaptureSession found will be done in ticket LG-14905
+  end
+
+  def document_capture_session
+    @document_capture_session ||= DocumentCaptureSession.find_by(
+      socure_docv_transaction_token: event[:docvTransactionToken],
+    )
+  end
+
+  def event
+    @event ||= socure_params[:event]
+  end
+
+  def rate_limiter
+    @rate_limiter ||= RateLimiter.new(
+      user: document_capture_session.user,
+      rate_limit_type: :idv_doc_auth,
+    )
+  end
+
   def socure_params
-    params.permit(event: [:created, :customerUserId, :eventType, :referenceId])
+    params.permit(
+      event: [:created, :customerUserId, :eventType, :referenceId,
+              :docvTransactionToken],
+    )
   end
 end

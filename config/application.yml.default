@@ -19,6 +19,7 @@ aamva_auth_url: 'https://example.org:12345/auth/url'
 aamva_cert_enabled: true
 aamva_private_key: ''
 aamva_public_key: ''
+aamva_send_id_type: true
 aamva_supported_jurisdictions: '["AL","AR","AZ","CO","CT","DC","DE","FL","GA","HI","IA","ID","IL","IN","KS","KY","MA","MD","ME","MI","MO","MS","MT","NC","ND","NE","NJ","NM","NV","OH","OR","PA","RI","SC","SD","TN","TX","VA","VT","WA","WI","WV","WY"]'
 aamva_verification_request_timeout: 5.0
 aamva_verification_url: https://example.org:12345/verification/url
@@ -127,6 +128,7 @@ enable_rate_limiting: true
 enable_test_routes: true
 enable_usps_verification: true
 event_disavowal_expiration_hours: 240
+facial_match_general_availability_enabled: true
 feature_idv_force_gpo_verification_enabled: false
 feature_idv_hybrid_flow_enabled: true
 feature_select_email_to_share_enabled: true
@@ -147,6 +149,7 @@ hmac_fingerprinter_key:
 hmac_fingerprinter_key_queue: '[]'
 identity_pki_disabled: false
 identity_pki_local_dev: false
+idv_account_verified_email_campaign_id: '20241028'
 idv_acuant_sdk_upgrade_a_b_testing_enabled: false
 idv_acuant_sdk_upgrade_a_b_testing_percent: 50
 idv_acuant_sdk_version_alternate: '11.9.2'
@@ -205,6 +208,7 @@ lexisnexis_request_mode: testing
 ###################################################################
 # LexisNexis DDP/ThreatMetrix #####################################
 lexisnexis_threatmetrix_api_key:
+lexisnexis_threatmetrix_authentication_policy: '1234'
 lexisnexis_threatmetrix_base_url:
 lexisnexis_threatmetrix_js_signing_cert: ''
 lexisnexis_threatmetrix_mock_enabled: true
@@ -226,6 +230,7 @@ lexisnexis_trueid_username: test_username
 lexisnexis_username: test_username
 ###################################################################
 lockout_period_in_minutes: 10
+log_password_reset_matches_existing_ab_test_percent: 0
 log_to_stdout: false
 login_otp_confirmation_max_attempts: 10
 logins_per_email_and_ip_bantime: 60
@@ -309,6 +314,8 @@ recaptcha_enterprise_project_id: ''
 recaptcha_mock_validator: true
 recaptcha_secret_key: ''
 recaptcha_site_key: ''
+recommend_webauthn_platform_for_sms_ab_test_account_creation_percent: 0
+recommend_webauthn_platform_for_sms_ab_test_authentication_percent: 0
 recovery_code_length: 4
 redis_pool_size: 10
 redis_throttle_pool_size: 5
@@ -339,6 +346,7 @@ ruby_workers_idv_enabled: true
 rules_of_use_horizon_years: 5
 rules_of_use_updated_at: '2022-01-19T00:00:00Z' # Production has a newer timestamp than this, update directly in S3
 s3_data_warehouse_bucket_prefix: 'login-gov-analytics-export'
+s3_idp_dw_tasks: 'login-gov-idp-dw-tasks'
 s3_public_reports_enabled: false
 s3_report_bucket_prefix: login-gov.reports
 s3_report_public_bucket_prefix: login-gov-pubdata
@@ -379,6 +387,7 @@ socure_idplus_timeout_in_seconds: 5
 socure_reason_code_api_key: ''
 socure_reason_code_base_url: ''
 socure_reason_code_timeout_in_seconds: 5
+socure_standard_capture_desktop_enabled: false
 socure_webhook_enabled: false
 socure_webhook_secret_key: ''
 socure_webhook_secret_key_queue: '[]'
@@ -416,7 +425,7 @@ usps_upload_sftp_host: ''
 usps_upload_sftp_password: ''
 usps_upload_sftp_timeout: 5
 usps_upload_sftp_username: ''
-valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3", "http://idmanagement.gov/ns/assurance/ial/1", "http://idmanagement.gov/ns/assurance/ial/2", "http://idmanagement.gov/ns/assurance/ial/0", "http://idmanagement.gov/ns/assurance/ial/2?strict=true", "http://idmanagement.gov/ns/assurance/ial/2?bio=preferred", "http://idmanagement.gov/ns/assurance/ial/2?bio=required", "urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo", "http://idmanagement.gov/ns/assurance/aal/2", "http://idmanagement.gov/ns/assurance/aal/3", "http://idmanagement.gov/ns/assurance/aal/3?hspd12=true","http://idmanagement.gov/ns/assurance/aal/2?phishing_resistant=true","http://idmanagement.gov/ns/assurance/aal/2?hspd12=true"]'
+valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3", "http://idmanagement.gov/ns/assurance/ial/1", "http://idmanagement.gov/ns/assurance/ial/2", "http://idmanagement.gov/ns/assurance/ial/0", "http://idmanagement.gov/ns/assurance/ial/2?strict=true", "http://idmanagement.gov/ns/assurance/ial/2?bio=preferred", "http://idmanagement.gov/ns/assurance/ial/2?bio=required", "urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo", "http://idmanagement.gov/ns/assurance/aal/2", "http://idmanagement.gov/ns/assurance/aal/3", "http://idmanagement.gov/ns/assurance/aal/3?hspd12=true","http://idmanagement.gov/ns/assurance/aal/2?phishing_resistant=true","http://idmanagement.gov/ns/assurance/aal/2?hspd12=true", "urn:acr.login.gov:auth-only", "urn:acr.login.gov:verified","urn:acr.login.gov:verified-facial-match-preferred","urn:acr.login.gov:verified-facial-match-required"]'
 valid_authn_contexts_semantic: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3", "http://idmanagement.gov/ns/assurance/ial/1", "http://idmanagement.gov/ns/assurance/ial/2", "http://idmanagement.gov/ns/assurance/ial/0", "http://idmanagement.gov/ns/assurance/ial/2?strict=true", "http://idmanagement.gov/ns/assurance/ial/2?bio=preferred", "http://idmanagement.gov/ns/assurance/ial/2?bio=required", "urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo", "http://idmanagement.gov/ns/assurance/aal/2", "http://idmanagement.gov/ns/assurance/aal/3", "http://idmanagement.gov/ns/assurance/aal/3?hspd12=true","http://idmanagement.gov/ns/assurance/aal/2?phishing_resistant=true","http://idmanagement.gov/ns/assurance/aal/2?hspd12=true", "urn:acr.login.gov:auth-only", "urn:acr.login.gov:verified","urn:acr.login.gov:verified-facial-match-preferred","urn:acr.login.gov:verified-facial-match-required"]'
 vendor_status_idv_scheduled_maintenance_finish: ''
 vendor_status_idv_scheduled_maintenance_start: ''
@@ -496,6 +505,7 @@ development:
 #
 production:
   aamva_auth_url: 'https://authentication-cert.aamva.org/Authentication/Authenticate.svc'
+  aamva_send_id_type: false
   aamva_verification_url: 'https://verificationservices-cert.aamva.org:18449/dldv/2.1/online'
   available_locales: 'en,es,fr'
   biometric_ial_enabled: false
@@ -504,6 +514,7 @@ production:
   email_registrations_per_ip_track_only_mode: true
   enable_test_routes: false
   enable_usps_verification: false
+  facial_match_general_availability_enabled: false
   feature_select_email_to_share_enabled: false
   feature_valid_authn_contexts_semantic_enabled: false
   idv_sp_required: true

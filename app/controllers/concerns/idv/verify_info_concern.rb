@@ -19,8 +19,6 @@ module Idv
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
         call('verify', :update, true)
 
-      set_state_id_type
-
       ssn_rate_limiter.increment!
 
       document_capture_session = DocumentCaptureSession.create(
@@ -195,11 +193,10 @@ module Idv
             [:proofing_results, :context, :stages, :resolution, :errors, :ssn],
             [:proofing_results, :context, :stages, :residential_address, :errors, :ssn],
             [:proofing_results, :context, :stages, :threatmetrix, :response_body, :first_name],
-            [:same_address_as_id],
             [:proofing_results, :context, :stages, :state_id, :state_id_jurisdiction],
             [:proofing_results, :biographical_info, :identity_doc_address_state],
             [:proofing_results, :biographical_info, :state_id_jurisdiction],
-            [:proofing_results, :biographical_info, :same_address_as_id],
+            [:proofing_results, :biographical_info],
           ],
         },
       )
@@ -222,7 +219,7 @@ module Idv
         flash[:success] = t('doc_auth.forms.doc_success')
         redirect_to next_step_url
       end
-      analytics.idv_doc_auth_verify_proofing_results(**analytics_arguments, **form_response.to_h)
+      analytics.idv_doc_auth_verify_proofing_results(**analytics_arguments, **form_response)
     end
 
     def next_step_url
@@ -291,7 +288,12 @@ module Idv
       FormResponse.new(
         success: result[:success],
         errors: result[:errors],
-        extra: extra.merge(proofing_results: result.except(:errors, :success)),
+        extra: extra.merge(
+          proofing_results: {
+            **result.except(:errors, :success),
+            biographical_info: result[:biographical_info]&.except(:same_address_as_id),
+          },
+        ),
       )
     end
 

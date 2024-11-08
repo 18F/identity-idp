@@ -1,5 +1,9 @@
 # `Change Log`
 
+## v3.3.0 (2024-11-05)
+
+- Remove obsolete `is_pilot` field from PostOffice and FormattedLocation types
+
 ## v3.2.0 (2024-10-01)
 
 ### New feature

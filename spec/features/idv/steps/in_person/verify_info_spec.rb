@@ -75,6 +75,7 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
     complete_verify_step(user)
 
     # phone page
+    expect(page).to have_content(t('doc_auth.forms.doc_success'))
     expect(page).to have_content(t('titles.idv.phone'))
   end
 
@@ -138,6 +139,7 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
     complete_verify_step(user)
 
     # phone page
+    expect(page).to have_content(t('doc_auth.forms.doc_success'))
     expect(page).to have_content(t('titles.idv.phone'))
   end
 

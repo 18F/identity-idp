@@ -22,11 +22,10 @@ class UserMailer < ActionMailer::Base
 
   class UserEmailAddressMismatchError < StandardError; end
 
-  attr_reader :user, :email_address
-
   before_action :validate_user_and_email_address
   before_action :attach_images
   after_action :add_metadata
+
   default(
     from: email_with_name(
       IdentityConfig.store.email_from,
@@ -39,24 +38,6 @@ class UserMailer < ActionMailer::Base
   )
 
   layout 'mailer'
-
-  def validate_user_and_email_address
-    @user = params.fetch(:user)
-    @email_address = params.fetch(:email_address)
-    if @user.id != @email_address.user_id
-      raise UserEmailAddressMismatchError.new(
-        "User ID #{@user.id} does not match EmailAddress ID #{@email_address.id}",
-      )
-    end
-  end
-
-  def add_metadata
-    message.instance_variable_set(
-      :@_metadata, {
-        user: user, email_address: email_address, action: action_name
-      }
-    )
-  end
 
   def email_confirmation_instructions(token, request_id:)
     with_user_locale(user) do
@@ -218,14 +199,16 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def add_email(token)
+  def add_email(token:, request_id:, from_select_email_flow: nil)
     with_user_locale(user) do
       presenter = ConfirmationEmailPresenter.new(user, view_context)
       @first_sentence = presenter.first_sentence
       @confirmation_period = presenter.confirmation_period
       @add_email_url = add_email_confirmation_url(
         confirmation_token: token,
+        from_select_email_flow:,
         locale: locale_url_param,
+        request_id:,
       )
       mail(to: email_address.email, subject: t('user_mailer.add_email.subject'))
     end
@@ -450,6 +433,26 @@ class UserMailer < ActionMailer::Base
   end
 
   private
+
+  attr_reader :user, :email_address
+
+  def validate_user_and_email_address
+    @user = params.fetch(:user)
+    @email_address = params.fetch(:email_address)
+    if @user.id != @email_address.user_id
+      raise UserEmailAddressMismatchError.new(
+        "User ID #{@user.id} does not match EmailAddress ID #{@email_address.id}",
+      )
+    end
+  end
+
+  def add_metadata
+    message.instance_variable_set(
+      :@_metadata, {
+        user: user, email_address: email_address, action: action_name
+      }
+    )
+  end
 
   def account_reset_token_valid_period
     current_time = Time.zone.now

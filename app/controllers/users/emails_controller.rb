@@ -12,15 +12,20 @@ module Users
 
     def show
       analytics.add_email_visit
+      session[:in_select_email_flow] = params[:in_select_email_flow]
       @add_user_email_form = AddUserEmailForm.new
       @pending_completions_consent = pending_completions_consent?
     end
 
     def add
-      @add_user_email_form = AddUserEmailForm.new
+      @add_user_email_form = AddUserEmailForm.new(
+        session[:in_select_email_flow],
+      )
 
-      result = @add_user_email_form.submit(current_user, permitted_params)
-      analytics.add_email_request(**result.to_h)
+      result = @add_user_email_form.submit(
+        current_user, permitted_params.merge(request_id:)
+      )
+      analytics.add_email_request(**result)
 
       if result.success?
         process_successful_creation
@@ -37,7 +42,7 @@ module Users
 
       if email_address && !email_address.confirmed?
         analytics.resend_add_email_request(success: true)
-        SendAddEmailConfirmation.new(current_user).call(email_address)
+        SendAddEmailConfirmation.new(current_user).call(email_address:, request_id:)
         flash[:success] = t('notices.resend_confirmation_email.success')
         redirect_to add_email_verify_email_url
       else
@@ -53,7 +58,7 @@ module Users
 
     def delete
       result = DeleteUserEmailForm.new(current_user, email_address).submit
-      analytics.email_deletion_request(**result.to_h)
+      analytics.email_deletion_request(**result)
       if result.success?
         handle_successful_delete
       else
@@ -71,7 +76,8 @@ module Users
       if session_email.blank?
         redirect_to add_email_url
       else
-        render :verify, locals: { email: session_email }
+        render :verify,
+               locals: { email: session_email, in_select_email_flow: params[:in_select_email_flow] }
       end
     end
 
@@ -81,6 +87,10 @@ module Users
       return render_not_found if email_address.user != current_user
     rescue ActiveRecord::RecordNotFound
       render_not_found
+    end
+
+    def request_id
+      sp_session[:request_id]
     end
 
     def email_address
@@ -97,7 +107,10 @@ module Users
       resend_confirmation = params[:user][:resend]
       session[:email] = @add_user_email_form.email
 
-      redirect_to add_email_verify_email_url(resend: resend_confirmation)
+      redirect_to add_email_verify_email_url(
+        resend: resend_confirmation,
+        in_select_email_flow: session.delete(:in_select_email_flow),
+      )
     end
 
     def session_email
@@ -105,7 +118,7 @@ module Users
     end
 
     def permitted_params
-      params.require(:user).permit(:email)
+      params.require(:user).permit(:email, :request_id)
     end
 
     def check_max_emails_per_account

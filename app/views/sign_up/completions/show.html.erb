@@ -49,7 +49,7 @@
             <% if @presenter.multiple_emails? %>
               <%= link_to t('help_text.requested_attributes.change_email_link'), sign_up_select_email_path %>
             <% else %>
-              <%= link_to t('account.index.email_add'), add_email_path %>
+              <%= link_to t('account.index.email_add'), add_email_path(in_select_email_flow: true) %>
             <% end %>
           </p>
         </div>

@@ -41,7 +41,8 @@ account_reset.request.yes_continue: Sí, continuar con la eliminación
 account.connected_apps.associated_attributes_html: 'Conectado el %{timestamp_html} con:'
 account.connected_apps.associated_html: 'Conectado: %{timestamp_html}'
 account.connected_apps.description: Con su cuenta de %{app_name}, puede conectarse de manera segura a muchas cuentas del gobierno en línea. Esta es una lista de todas las cuentas que tiene conectadas actualmente.
-account.connected_apps.email_not_selected: No se seleccionó correo electrónico aún
+account.connected_apps.email_not_selected: No se ha seleccionado aún una dirección de correo electrónico
+account.connected_apps.email_update_success_html: Se actualizó su correo electrónico para la <strong>%{sp_name}</strong>.
 account.email_language.default: '%{language} (predeterminado)'
 account.email_language.edit_title: Editar la preferencia de idioma del correo electrónico
 account.email_language.languages_list: Recibirá mensajes de correo electrónico de %{app_name} en el idioma que elija.
@@ -50,6 +51,7 @@ account.email_language.name.es: Español
 account.email_language.name.fr: Français
 account.email_language.name.zh: 中文 (简体)
 account.email_language.updated: Se actualizó su preferencia de idioma del correo electrónico.
+account.emails.confirmed_html: Usted confirmó su dirección de correo electrónico. Vaya a <a href="%{url}">Sus cuentas conectadas</a> para actualizar el correo electrónico que proporcionó a las agencias conectadas.
 account.forget_all_browsers.longer_description: Una vez que elija “Olvidar todos los navegadores”, necesitaremos más información para saber que realmente es usted quien está iniciando sesión en su cuenta. Le pediremos un método de autenticación multifactor (como código de texto o de SMS, o una clave de seguridad) cada vez que desee acceder a su cuenta.
 account.index.auth_app_add: Agregar aplicación
 account.index.auth_app_disabled: no habilitada
@@ -577,7 +579,6 @@ doc_auth.errors.sharpness.failed_short: La imagen está borrosa; inténtelo de n
 doc_auth.errors.sharpness.top_msg: No pudimos leer su identificación. Es posible que su foto esté demasiado borrosa u oscura. Intente tomar una nueva foto en un lugar iluminado.
 doc_auth.errors.sharpness.top_msg_plural: No pudimos leer su identificación. Es posible que sus fotos estén demasiado borrosas u oscuras. Intente tomar nuevas fotos en un lugar iluminado.
 doc_auth.errors.upload_error: Lo sentimos, algo no funcionó bien.
-doc_auth.forms.captured_image: Imagen capturada
 doc_auth.forms.change_file: Cambiar archivo
 doc_auth.forms.choose_file_html: Arrastrar el archivo aquí o <lg-underline>seleccionarlo de la carpeta</lg-underline>
 doc_auth.forms.doc_success: Verificamos su información
@@ -613,6 +614,7 @@ doc_auth.headings.verify_at_post_office: Verifique su identidad en una oficina d
 doc_auth.headings.verify_identity: Verifique su identidad
 doc_auth.headings.verify_online: Verifique su identidad en línea
 doc_auth.headings.verify_online_selfie: Verifique su identidad en línea con su teléfono
+doc_auth.headings.verify_with_phone: Verifique su identidad con su teléfono
 doc_auth.headings.welcome: Verifiquemos su identidad para %{sp_name}
 doc_auth.hybrid_flow_warning.explanation_html: Está utilizando <strong>%{app_name}</strong> para verificar su identidad y acceder a <strong>%{service_provider_name}</strong> y sus servicios.
 doc_auth.hybrid_flow_warning.explanation_non_sp_html: Está utilizando <strong>%{app_name}</strong> para verificar su identidad.
@@ -620,6 +622,7 @@ doc_auth.hybrid_flow_warning.only_add_if_text: 'SOLO AGREGUE SU IDENTIFICACIÓN 
 doc_auth.hybrid_flow_warning.only_add_own_account: Está usando su propia cuenta de %{app_name}
 doc_auth.hybrid_flow_warning.only_add_phone_verify: Usted solicitó a %{app_name} que verificara su identificación con su teléfono
 doc_auth.hybrid_flow_warning.only_add_sp_services_html: Está tratando de acceder a los servicios de <strong>%{service_provider_name}</strong>
+doc_auth.info.add_id_consent_with_phone: Solo agregue su identificación si solicitó a %{app_name} verificar su identidad usando su teléfono.
 doc_auth.info.address_guidance_puerto_rico_html: Residentes en Puerto Rico:<br><br>Edite su dirección para que el edificio de su vivienda o condominio figure en la línea de dirección 2.
 doc_auth.info.capture_status_big_document: Demasiado cerca
 doc_auth.info.capture_status_capturing: Capturando
@@ -646,6 +649,7 @@ doc_auth.info.lets_go: 'La verificación de la identidad se efectúa en dos part
 doc_auth.info.link_sent: Revise su teléfono y siga las instrucciones para tomar una foto de su identificación emitida por el estado.
 doc_auth.info.link_sent_complete_no_polling: Cuando termine, haga clic en “Continuar” para terminar la verificación de su identidad.
 doc_auth.info.link_sent_complete_polling: El siguiente paso se cargará automáticamente.
+doc_auth.info.login_access_sp: Está usando %{app_name} para acceder a %{sp_name}.
 doc_auth.info.no_ssn: Debe tener un número de Seguro Social para finalizar la verificación de su identidad.
 doc_auth.info.review_examples_of_photos: Vea ejemplos de cómo tomar fotos nítidas de su identificación.
 doc_auth.info.secure_account: Cifraremos su cuenta cuando vuelva a ingresar su contraseña. Con el cifrado, sus datos están protegidos y solo usted puede acceder a su información o modificarla.
@@ -983,11 +987,12 @@ help_text.requested_attributes.full_name: Nombre completo
 help_text.requested_attributes.ial2_reverified_consent_info_html: 'Como volvió a verificar su identidad, necesitamos su permiso para divulgar esta información a %{sp_html}:'
 help_text.requested_attributes.intro_html: 'Divulgaremos esta información a %{sp_html}:'
 help_text.requested_attributes.phone: Número de teléfono
+help_text.requested_attributes.select_email_link: Seleccionar correo electrónico
 help_text.requested_attributes.social_security_number: Número de Seguro Social
 help_text.requested_attributes.verified_at: Actualizado en
 help_text.requested_attributes.x509_issuer: Emisor de la tarjeta PIV o CAC
 help_text.requested_attributes.x509_subject: Identidad de la tarjeta PIV o CAC
-help_text.select_preferred_email: Puede cambiar el correo electrónico que comparte con %{sp} ya que tiene varios correos electrónicos asociados a su cuenta de %{app_name}.
+help_text.select_preferred_email_html: Seleccione o agregue el correo electrónico que desea utilizar para acceder a <strong>%{sp}</strong>.
 i18n.language: Idioma
 i18n.locale.en: English
 i18n.locale.es: Español
@@ -1202,7 +1207,7 @@ image_description.warning: Señal amarilla de precaución
 in_person_proofing.body.barcode.cancel_link_text: Cancele su código de barras
 in_person_proofing.body.barcode.close_window: Ya puede cerrar esta ventana.
 in_person_proofing.body.barcode.deadline: Debe acudir a cualquier oficina de correos participante antes del %{deadline}
-in_person_proofing.body.barcode.deadline_restart: Si vence el plazo, su información no se guardará y tendrá que reiniciar el proceso.
+in_person_proofing.body.barcode.deadline_restart: Si acude después del plazo, su información no se guardará y tendrá que reiniciar el proceso.
 in_person_proofing.body.barcode.eipp_tag: Código de barras piloto mejorado GSA
 in_person_proofing.body.barcode.eipp_what_to_bring: 'Según el tipo de identificación que tenga, es posible que deba presentar documentos comprobatorios. Lea con atención las opciones siguientes:'
 in_person_proofing.body.barcode.email_sent: Enviamos el código de barras y la información más abajo al correo electrónico que usó para iniciar sesión
@@ -1565,7 +1570,7 @@ step_indicator.status.complete: Completado
 step_indicator.status.current: Este paso
 step_indicator.status.not_complete: No completado
 time.am: a. m.
-time.formats.event_date: '%B %-d, %Y'
+time.formats.event_date: '%-d de %B de %Y'
 time.formats.event_time: '%-l:%M %p'
 time.formats.event_timestamp: '%B %-d, %Y a las %-l:%M %p'
 time.formats.event_timestamp_js: '%{month} %{day}, %{year} a las %{hour}:%{minute} %{day_period}'
@@ -1751,8 +1756,8 @@ two_factor_authentication.piv_cac.renamed: Se ha cambiado correctamente el nombr
 two_factor_authentication.please_try_again_html: Inténtelo de nuevo en <strong>%{countdown}</strong>.
 two_factor_authentication.read_about_two_factor_authentication: Lea sobre la autenticación de dos factores
 two_factor_authentication.recaptcha.disclosure_statement_html: Este sitio está protegido por reCAPTCHA y se aplican %{google_policy_link_html} y %{google_tos_link_html} de Google. Lea %{login_tos_link_html} de %{app_name}.
-two_factor_authentication.recaptcha.google_policy_link: Política de privacidad
-two_factor_authentication.recaptcha.google_tos_link: Condiciones de servicio
+two_factor_authentication.recaptcha.google_policy_link: la Política de privacidad
+two_factor_authentication.recaptcha.google_tos_link: las Condiciones de servicio
 two_factor_authentication.recaptcha.login_tos_link: Condiciones de uso del servicio móvil
 two_factor_authentication.recommended: Recomendado
 two_factor_authentication.totp_header_text: Ingrese su código de la aplicación de autenticación
@@ -2016,6 +2021,12 @@ vendor_outage.blocked.phone.default: No podemos verificar teléfonos en estos mo
 vendor_outage.get_updates: Obtenga actualizaciones
 vendor_outage.get_updates_on_status_page: Obtenga las actualizaciones en nuestra página de estado
 vendor_outage.working: Estamos trabajando para corregir un error
+webauthn_platform_recommended.cta: Set up face or touch unlock
+webauthn_platform_recommended.description_private_html: Face or touch unlock is %{phishing_resistant_link_html} and we don’t store any recordings of your face or fingerprint, so your information stays private.
+webauthn_platform_recommended.description_secure_account: Secure your sign in with face or touch unlock. Use your face, fingerprint, password, or another method to keep your account safer.
+webauthn_platform_recommended.heading: Set up face or touch unlock for a more secure sign in
+webauthn_platform_recommended.phishing_resistant: phishing-resistant
+webauthn_platform_recommended.skip: Skip
 zxcvbn.feedback.a_word_by_itself_is_easy_to_guess: Una sola palabra es fácil de adivinar.
 zxcvbn.feedback.add_another_word_or_two_uncommon_words_are_better: Añada otra palabra o dos. Es mejor usar palabras poco comunes.
 zxcvbn.feedback.all_uppercase_is_almost_as_easy_to_guess_as_all_lowercase: Todo en mayúsculas es casi tan fácil de adivinar como todo en minúsculas.

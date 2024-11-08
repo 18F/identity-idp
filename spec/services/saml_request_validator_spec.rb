@@ -35,9 +35,6 @@ RSpec.describe SamlRequestValidator do
       allow(IdentityConfig.store).to receive(
         :allowed_biometric_ial_providers,
       ).and_return([issuer])
-      allow(IdentityConfig.store).to receive(
-        :allowed_valid_authn_contexts_semantic_providers,
-      ).and_return([issuer])
     end
 
     context 'valid authn context and sp and authorized nameID format' do
@@ -334,36 +331,12 @@ RSpec.describe SamlRequestValidator do
           context 'when the service provider is allowed to use semantic ials' do
             before do
               sp.update(ial: 2)
-              allow_any_instance_of(ServiceProvider).
-                to receive(:semantic_authn_contexts_allowed?).
-                and_return(true)
             end
 
             it 'returns a successful response' do
               expect(response.to_h).to include(
                 success: true,
                 errors: {},
-                **extra,
-              )
-            end
-          end
-
-          context 'when the service provider is not allowed to use semantic ials' do
-            before do
-              allow_any_instance_of(ServiceProvider).
-                to receive(:semantic_authn_contexts_allowed?).
-                and_return(false)
-            end
-
-            it 'fails with an unauthorized error' do
-              errors = {
-                authn_context: [t('errors.messages.unauthorized_authn_context')],
-              }
-
-              expect(response.to_h).to include(
-                success: false,
-                errors: errors,
-                error_details: hash_including(*errors.keys),
                 **extra,
               )
             end
