@@ -1,6 +1,5 @@
 import isWebauthnPlatformAuthenticatorAvailable from './is-webauthn-platform-authenticator-available';
 import isWebauthnPasskeySupported from './is-webauthn-passkey-supported';
-import { trackEvent } from '@18f/identity-analytics';
 
 export class WebauthnInputElement extends HTMLElement {
   connectedCallback() {
@@ -33,8 +32,8 @@ export class WebauthnInputElement extends HTMLElement {
       this.classList.add('webauthn-input--unsupported-passkey');
     }
 
-    if(this.isOptedInToAbTest && this.hasAttribute('hidden')) {
-      trackEvent('desktop_ab_test_option_shown')
+    if(!this.isOptedInToAbTest) {
+      this.hidden = true;
     }
   }
 }
