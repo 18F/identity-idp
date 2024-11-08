@@ -52,7 +52,7 @@ class LiteWebpackDevServerPlugin {
    */
   apply(compiler) {
     /** @type {Promise<void>} */
-    let build = Promise.resolve();
+    let build;
 
     /** @type {() => void} */
     let onCompileFinished;
