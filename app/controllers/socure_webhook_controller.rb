@@ -33,7 +33,11 @@ class SocureWebhookController < ApplicationController
     dcs = document_capture_session
     raise 'DocumentCaptureSession not found' if dcs.blank?
 
-    SocureDocvResultsJob.perform_later(document_capture_session_uuid: dcs.uuid)
+    if IdentityConfig.store.ruby_workers_idv_enabled
+      SocureDocvResultsJob.perform_later(document_capture_session_uuid: dcs.uuid)
+    else
+      SocureDocvResultsJob.perform_now(document_capture_session_uuid: dcs.uuid)
+    end
   end
 
   def check_token
