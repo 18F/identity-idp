@@ -112,6 +112,56 @@ RSpec.describe OpenidConnect::AuthorizationController do
           expect(redirect_params[:state]).to eq(params[:state])
         end
 
+        describe 'sp_request_attributes sent in event' do
+          let(:ahoy) { double Ahoy::Tracker }
+          let(:sp_request_hash) do
+            {
+              aal2: true,
+              identity_proofing: true,
+              facial_match: true,
+              two_pieces_of_fair_evidence: true,
+            }
+          end
+
+          before do
+            allow(Ahoy::Tracker).to receive(:new).and_return ahoy
+            allow(ahoy).to receive(:set_visitor_cookie)
+            allow(ahoy).to receive(:set_visit_cookie)
+            allow(ahoy).to receive(:new_visit?)
+          end
+
+          context 'with no previous event' do
+            it 'does not include sp_request_attributes in the final event' do
+              expect(ahoy).to receive(:track).with(
+                'OpenID Connect: authorization request',
+                hash_not_including(
+                  sp_request: hash_including(sp_request_hash),
+                ),
+              )
+              action
+            end
+          end
+
+          context 'with a previous request' do
+            before do
+              controller.session[:sp] = {
+                acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
+                issuer: service_provider.issuer,
+              }
+            end
+
+            it 'includes sp_request_attributes for the previous request' do
+              expect(ahoy).to receive(:track).with(
+                'OpenID Connect: authorization request',
+                hash_including(
+                  sp_request: hash_including(sp_request_hash),
+                ),
+              )
+              action
+            end
+          end
+        end
+
         context 'with ial1 requested using acr_values' do
           it 'tracks IAL1 authentication event' do
             travel_to now + 15.seconds
