@@ -1566,9 +1566,10 @@ module AnalyticsEvents
 
   # @param [String] created_at The created timestamp received from Socure
   # @param [String] customer_user_id The customerUserId received from Socure
+  # @param [String] docv_transaction_token The docvTransactionToken received from Socure
   # @param [String] event_type The eventType received from Socure
   # @param [String] reference_id The referenceId received from Socure
-  # @param [String] user_id The customerUserId, repackaged as user_id
+  # @param [String] user_id The uuid of the user using Socure
   def idv_doc_auth_socure_webhook_received(
     created_at:,
     customer_user_id:,
