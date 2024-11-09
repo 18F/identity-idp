@@ -1573,6 +1573,7 @@ module AnalyticsEvents
     created_at:,
     customer_user_id:,
     event_type:,
+    docv_transaction_token:,
     reference_id:,
     user_id:,
     **extra
@@ -1581,6 +1582,7 @@ module AnalyticsEvents
       :idv_doc_auth_socure_webhook_received,
       created_at:,
       customer_user_id:,
+      docv_transaction_token:,
       event_type:,
       reference_id:,
       user_id:,
