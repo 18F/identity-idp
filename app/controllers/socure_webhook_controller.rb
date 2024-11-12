@@ -80,9 +80,10 @@ class SocureWebhookController < ApplicationController
     analytics.idv_doc_auth_socure_webhook_received(
       created_at: event[:created],
       customer_user_id: event[:customerUserId],
+      docv_transaction_token: event[:docvTransactionToken],
       event_type: event[:eventType],
       reference_id: event[:referenceId],
-      user_id: event[:customerUserId],
+      user_id: user&.uuid,
     )
   end
 
@@ -94,9 +95,8 @@ class SocureWebhookController < ApplicationController
   end
 
   def document_capture_session
-    token = event[:docvTransactionToken] || event[:docVTransactionToken]
     @document_capture_session ||= DocumentCaptureSession.find_by(
-      socure_docv_transaction_token: token,
+      socure_docv_transaction_token: docv_transaction_token,
     )
   end
 
@@ -116,5 +116,13 @@ class SocureWebhookController < ApplicationController
       event: [:created, :customerUserId, :eventType, :referenceId,
               :docvTransactionToken, :docVTransactionToken],
     )
+  end
+
+  def user
+    @user ||= document_capture_session&.user
+  end
+
+  def docv_transaction_token
+    @docv_transaction_token ||= event[:docvTransactionToken] || event[:docVTransactionToken]
   end
 end
