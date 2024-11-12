@@ -373,10 +373,14 @@ Each error includes a few details to help you debug:
 - `message`: Corresponds to [`Error#message`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/message), and is usually a good summary to group by
 - `name`: The subclass of the error (e.g. `TypeError`)
 - `stack`: A stacktrace of the individual error instance
+- `filename`: The URL of the script where the error was raised, if it's an uncaught error
+- `error_id`: A unique identifier for tracing caught errors explicitly tracked
 
 Note that NewRelic creates links in stack traces which are invalid, since they include the line and column number. If you encounter an "AccessDenied" error when clicking a stacktrace link, make sure to remove those details after the `.js` in your browser URL.
 
-Debugging these stack traces can be difficult, since files in production are minified, and the stack traces include line numbers and columns for minified files. With the following steps, you can find a reference to the original code:
+If an error includes `error_id`, you can use this to search in code for the corresponding call to `trackError` including that value as its `errorId` to trace where the error occurred.
+
+Otherwise, debugging these stack traces can be difficult, since files in production are minified, and the stack traces include line numbers and columns for minified files. With the following steps, you can find a reference to the original code:
 
 1. Download the minified JavaScript file referenced in the stack trace
    - Example: https://secure.login.gov/packs/document-capture-e41c853e.digested.js

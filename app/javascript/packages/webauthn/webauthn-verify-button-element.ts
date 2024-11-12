@@ -54,7 +54,7 @@ class WebauthnVerifyButtonElement extends HTMLElement {
       this.setInputValue('signature', result.signature);
     } catch (error) {
       if (!isExpectedWebauthnError(error, { isVerifying: true })) {
-        trackError(error);
+        trackError(error, { errorId: 'webauthnVerify' });
       }
 
       if (isUserVerificationScreenLockError(error)) {

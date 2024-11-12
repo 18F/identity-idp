@@ -75,7 +75,7 @@ function webauthn() {
       })
       .catch((error: Error) => {
         if (!isExpectedWebauthnError(error)) {
-          trackError(error);
+          trackError(error, { errorId: 'webauthnSetup' });
         }
 
         reloadWithError(error.name, { force: true });

@@ -53,7 +53,7 @@ class CaptchaSubmitButtonElement extends HTMLElement {
       try {
         token = await this.recaptchaClient!.execute(siteKey!, { action });
       } catch (error) {
-        trackError(error);
+        trackError(error, { errorId: 'recaptchaExecute' });
       }
 
       this.tokenInput.value = token;
