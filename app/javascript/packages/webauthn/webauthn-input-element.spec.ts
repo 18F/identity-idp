@@ -42,6 +42,20 @@ describe('WebauthnInputElement', () => {
       });
     });
 
+    context('part of A/B test', () => {
+      beforeEach(() => {
+        isWebauthnPasskeySupported.returns(false);
+        isWebauthnPlatformAvailable.resolves(true);
+        document.body.innerHTML = `<lg-webauthn-input desktop-ft-unlock-option hidden></lg-webauthn-input>`;
+      });
+
+      it('becomes visible', async () => {
+        const element = document.querySelector('lg-webauthn-input')!;
+
+        await waitFor(() => expect(element.hidden).to.be.false());
+      });
+    });
+
     context('unsupported passkey shown', () => {
       beforeEach(() => {
         isWebauthnPasskeySupported.returns(false);
