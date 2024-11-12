@@ -22,6 +22,12 @@ RSpec.describe 'accounts/connected_accounts/selected_email/edit.html.erb' do
     @select_email_form = SelectEmailForm.new(user:, identity:)
   end
 
+  it 'renders introduction text' do
+    expect(rendered).to have_content(
+      strip_tags(t('help_text.select_preferred_email_html', sp: identity.display_name)),
+    )
+  end
+
   it 'renders a list of the users email addresses as radio options' do
     allow(self).to receive(:page).and_return(Capybara.string(rendered))
     inputs = page.find_all('[type="radio"]')
