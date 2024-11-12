@@ -177,6 +177,7 @@ module OpenidConnect
           referer: request.referer,
           vtr_param: params[:vtr],
           unknown_authn_contexts:,
+          **resolved_authn_context_result.to_h,
         ),
       )
       return if result.success?
