@@ -207,7 +207,7 @@ RSpec.describe SocureWebhookController do
                   dcs.socure_docv_transaction_token = docv_transaction_token
                 end
               end
-      
+
               before do
                 request.headers['Authorization'] = socure_secret_key
                 allow(DocumentCaptureSession).to receive(:find_by).
@@ -222,7 +222,7 @@ RSpec.describe SocureWebhookController do
                 document_capture_session.socure_docv_capture_app_url = fake_capture_app_url
                 document_capture_session.save
               end
-      
+
               it 'does not increment rate limiter of user' do
                 expect(rate_limiter.attempts).to eq 0
                 post :create, params: webhook_body
@@ -230,17 +230,18 @@ RSpec.describe SocureWebhookController do
                 post :create, params: webhook_body
                 expect(rate_limiter.attempts).to eq 0
               end
-      
+
               it 'resets socure_docv_capture_app_url to nil' do
-                expect(document_capture_session.socure_docv_capture_app_url).to eq(fake_capture_app_url)
+                expect(document_capture_session.socure_docv_capture_app_url).
+                  to eq(fake_capture_app_url)
                 post :create, params: webhook_body
                 document_capture_session.reload
                 expect(document_capture_session.socure_docv_capture_app_url).to be_nil
               end
-      
+
               it 'does not enqueue a SocureDocvResultsJob' do
                 post :create, params: webhook_body
-      
+
                 expect(SocureDocvResultsJob).not_to have_received(:perform_later).
                   with(document_capture_session_uuid: document_capture_session.uuid)
               end
