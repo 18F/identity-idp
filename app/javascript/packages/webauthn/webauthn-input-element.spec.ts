@@ -102,7 +102,6 @@ describe('WebauthnInputElement', () => {
 
   context('Desktop F/T unlock A/B test', () => {
     context('desktop F/T unlock setup enabled', () => {
-      
       beforeEach(() => {
         isWebauthnPlatformAvailable.resolves(true);
         document.body.innerHTML = `<lg-webauthn-input desktop-ft-unlock-option></lg-webauthn-input>`;
@@ -115,7 +114,6 @@ describe('WebauthnInputElement', () => {
     });
 
     context('desktop F/T unlock setup disabled', () => {
-      
       beforeEach(() => {
         isWebauthnPlatformAvailable.resolves(true);
         document.body.innerHTML = `<lg-webauthn-input hidden></lg-webauthn-input>`;
