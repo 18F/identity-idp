@@ -51,6 +51,7 @@ IdentityIdp/I18nHelperHtmlLinter:
   Include:
     - app/views/**/*.erb
     - app/components/**/*.erb
+    - app/controllers/**/*.rb
 
 IdentityIdp/AnalyticsEventNameLinter:
   Enabled: true
