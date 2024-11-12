@@ -315,11 +315,14 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
     expect(page).to_not have_content(t('doc_auth.headings.upload_from_computer'))
   end
 
-  context 'on a desktop device with various ipp and selfie configuration' do
+  context 'on a desktop device with various ipp, socure, and selfie configuration' do
     let(:in_person_proofing_enabled) { true }
     let(:sp_ipp_enabled) { true }
     let(:in_person_proofing_opt_in_enabled) { true }
     let(:facial_match_required) { true }
+    let(:socure_enabled) { false }
+    let(:doc_auth_vendor) { Idp::Constants::Vendors::MOCK }
+    let(:desktop_test_mode_enabled) { false }
     let(:user) { user_with_2fa }
 
     before do
@@ -328,7 +331,11 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
         service_provider.in_person_proofing_enabled = false
         service_provider.save!
       end
+      allow(IdentityConfig.store).to receive(:socure_enabled).and_return(socure_enabled)
+      allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(doc_auth_vendor)
+      allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(doc_auth_vendor)
       allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).and_return(false)
+      allow(IdentityConfig.store).to receive(:socure_standard_capture_desktop_enabled).and_return(desktop_test_mode_enabled)
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(
         in_person_proofing_enabled,
       )
@@ -351,6 +358,31 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
       complete_doc_auth_steps_before_agreement_step
       complete_agreement_step
     end
+
+    context 'when socure is the doc auth vendor' do
+      let(:facial_match_required) { false }
+      let(:in_person_proofing_opt_in_enabled) { false }
+      let(:sp_ipp_enabled) { false }
+      let(:socure_enabled) { true }
+      let(:doc_auth_vendor) { Idp::Constants::Vendors::SOCURE }
+
+      context 'when socure desktop test mode is not enabled' do
+        it 'shows phone only top content no upload section' do
+          verify_handoff_page_non_selfie_version_content(page)
+          verify_no_upload_photos_section_and_link(page)
+        end
+      end
+
+      context 'when socure desktop test mode is enabled' do
+        let(:desktop_test_mode_enabled) { true }
+
+        it 'shows phone top content and desktop upload content' do
+          verify_handoff_page_non_selfie_version_content(page)
+          expect(page).to have_content(t('doc_auth.headings.upload_from_computer'))
+        end
+      end
+    end
+
     context 'when ipp is available system wide' do
       context 'when in person proofing opt in enabled' do
         context 'when sp ipp is available' do
