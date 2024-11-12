@@ -65,6 +65,13 @@ module Idv
         # Not used in standard flow, here for data consistency with hybrid flow.
         document_capture_session.confirm_ocr
 
+        # If the stored_result is nil, the job fetching the results has not completed.
+        if stored_result.nil?
+          analytics.idv_doc_auth_document_capture_polling_wait_visited(**analytics_arguments)
+          render 'shared/wait'
+          return
+        end
+
         result = handle_stored_result
         # TODO: new analytics event?
         analytics.idv_doc_auth_document_capture_submitted(**result.to_h.merge(analytics_arguments))
