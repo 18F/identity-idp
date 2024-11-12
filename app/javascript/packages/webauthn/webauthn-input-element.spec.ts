@@ -1,7 +1,6 @@
 import sinon from 'sinon';
 import quibble from 'quibble';
 import { waitFor } from '@testing-library/dom';
-import { useSandbox } from '@18f/identity-test-helpers';
 import type { IsWebauthnPasskeySupported } from './is-webauthn-passkey-supported';
 import type { IsWebauthnPlatformAvailable } from './is-webauthn-platform-authenticator-available';
 
@@ -103,7 +102,7 @@ describe('WebauthnInputElement', () => {
 
   context('Desktop F/T unlock A/B test', () => {
     context('desktop F/T unlock setup enabled', () => {
-      const sandbox = useSandbox();
+      
       beforeEach(() => {
         isWebauthnPlatformAvailable.resolves(true);
         document.body.innerHTML = `<lg-webauthn-input desktop-ft-unlock-option></lg-webauthn-input>`;
@@ -116,7 +115,7 @@ describe('WebauthnInputElement', () => {
     });
 
     context('desktop F/T unlock setup disabled', () => {
-      const sandbox = useSandbox();
+      
       beforeEach(() => {
         isWebauthnPlatformAvailable.resolves(true);
         document.body.innerHTML = `<lg-webauthn-input hidden></lg-webauthn-input>`;
