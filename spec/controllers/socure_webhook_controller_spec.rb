@@ -7,6 +7,8 @@ RSpec.describe SocureWebhookController do
     let(:socure_secret_key) { 'this-is-a-secret' }
     let(:socure_secret_key_queue) { ['this-is-an-old-secret', 'this-is-an-older-secret'] }
     let(:socure_enabled) { true }
+    let(:fake_capture_app_url) { 'https://fake-socure.test/capture' }
+    let(:rate_limiter) { RateLimiter.new(rate_limit_type: :idv_doc_auth, user: user) }
     let(:event_type) { 'TEST_WEBHOOK' }
     let(:event_docv_transaction_token) { 'TEST_WEBHOOK_TOKEN' }
     let(:customer_user_id) { '#1-customer' }
@@ -196,6 +198,52 @@ RSpec.describe SocureWebhookController do
               post :create, params: webhook_body
 
               expect(SocureDocvResultsJob).not_to have_received(:perform_later)
+            end
+            context 'when document capture session exists' do
+              let(:docv_transaction_token) { 'fake-transaction-token' }
+              let(:user) { create(:user) }
+              let(:document_capture_session) do
+                DocumentCaptureSession.create(user:).tap do |dcs|
+                  dcs.socure_docv_transaction_token = docv_transaction_token
+                end
+              end
+      
+              before do
+                request.headers['Authorization'] = socure_secret_key
+                allow(DocumentCaptureSession).to receive(:find_by).
+                  and_return(document_capture_session)
+                allow(SocureDocvResultsJob).to receive(:perform_later)
+                allow(RateLimiter).to receive(:new).with(
+                  {
+                    user: user,
+                    rate_limit_type: :idv_doc_auth,
+                  },
+                ).and_return(rate_limiter)
+                document_capture_session.socure_docv_capture_app_url = fake_capture_app_url
+                document_capture_session.save
+              end
+      
+              it 'does not increment rate limiter of user' do
+                expect(rate_limiter.attempts).to eq 0
+                post :create, params: webhook_body
+                expect(rate_limiter.attempts).to eq 0
+                post :create, params: webhook_body
+                expect(rate_limiter.attempts).to eq 0
+              end
+      
+              it 'resets socure_docv_capture_app_url to nil' do
+                expect(document_capture_session.socure_docv_capture_app_url).to eq(fake_capture_app_url)
+                post :create, params: webhook_body
+                document_capture_session.reload
+                expect(document_capture_session.socure_docv_capture_app_url).to be_nil
+              end
+      
+              it 'does not enqueue a SocureDocvResultsJob' do
+                post :create, params: webhook_body
+      
+                expect(SocureDocvResultsJob).not_to have_received(:perform_later).
+                  with(document_capture_session_uuid: document_capture_session.uuid)
+              end
             end
           end
 
