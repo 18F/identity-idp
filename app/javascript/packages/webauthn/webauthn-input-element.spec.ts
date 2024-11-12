@@ -2,7 +2,6 @@ import sinon from 'sinon';
 import quibble from 'quibble';
 import { waitFor } from '@testing-library/dom';
 import { useSandbox } from '@18f/identity-test-helpers';
-import * as analytics from '@18f/identity-analytics';
 import type { IsWebauthnPasskeySupported } from './is-webauthn-passkey-supported';
 import type { IsWebauthnPlatformAvailable } from './is-webauthn-platform-authenticator-available';
 
@@ -107,7 +106,6 @@ describe('WebauthnInputElement', () => {
       const sandbox = useSandbox();
       beforeEach(() => {
         isWebauthnPlatformAvailable.resolves(true);
-        sandbox.stub(analytics, 'trackEvent');
         document.body.innerHTML = `<lg-webauthn-input desktop-ft-unlock-option></lg-webauthn-input>`;
       });
 
@@ -122,7 +120,6 @@ describe('WebauthnInputElement', () => {
       beforeEach(() => {
         isWebauthnPlatformAvailable.resolves(true);
         document.body.innerHTML = `<lg-webauthn-input hidden></lg-webauthn-input>`;
-        sandbox.stub(analytics, 'trackEvent');
       });
 
       it('is hidden', () => {
