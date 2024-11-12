@@ -176,6 +176,9 @@ module OpenidConnect
 
       if result.success?
         store_request
+      else
+        # maybe?
+        session.delete(:sp)
       end
 
       analytics.openid_connect_request_authorization(
@@ -187,6 +190,7 @@ module OpenidConnect
           previous_sp_request_attributes:,
         ),
       )
+
       return if result.success?
       redirect_uri = result.extra[:redirect_uri]
 
