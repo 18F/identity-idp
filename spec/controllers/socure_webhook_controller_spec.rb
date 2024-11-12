@@ -44,13 +44,6 @@ RSpec.describe SocureWebhookController do
     end
 
     context 'webhook authentication' do
-      it 'returns bad request with no event in the body' do
-        request.headers['Authorization'] = socure_secret_key
-        post :create, params: {}
-
-        expect(response).to have_http_status(:bad_request)
-      end
-
       context 'received with invalid webhook key' do
         it 'returns unauthorized with a bad secret key' do
           request.headers['Authorization'] = 'ABC123'
@@ -80,7 +73,7 @@ RSpec.describe SocureWebhookController do
             customer_user_id:,
             docv_transaction_token: event_docv_transaction_token,
             event_type:,
-            reference_id: reference_id,
+            reference_id:,
           )
         end
 
@@ -89,6 +82,14 @@ RSpec.describe SocureWebhookController do
           post :create, params: webhook_body
 
           expect(response).to have_http_status(:ok)
+        end
+
+        context 'when an event does not exist in the body' do
+          it 'returns bad request' do
+            post :create, params: {}
+
+            expect(response).to have_http_status(:bad_request)
+          end
         end
 
         context 'when document capture session exists' do
@@ -104,7 +105,7 @@ RSpec.describe SocureWebhookController do
               customer_user_id:,
               docv_transaction_token: dcs.socure_docv_transaction_token,
               event_type:,
-              reference_id: reference_id,
+              reference_id:,
               user_id: dcs.user.uuid,
             )
           end
@@ -124,7 +125,7 @@ RSpec.describe SocureWebhookController do
                 customer_user_id:,
                 docv_transaction_token: dcs.socure_docv_transaction_token,
                 event_type:,
-                reference_id: reference_id,
+                reference_id:,
                 user_id: dcs.user.uuid,
               )
             end
