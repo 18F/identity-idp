@@ -20,7 +20,7 @@ RSpec.describe 'sign_up/select_email/show.html.erb' do
     )
   end
 
-  it 'shows all of the user\'s emails' do
+  it 'shows all of the emails' do
     expect(rendered).to include('michael.motorist@email.com')
     expect(rendered).to include('michael.motorist2@email.com')
   end
