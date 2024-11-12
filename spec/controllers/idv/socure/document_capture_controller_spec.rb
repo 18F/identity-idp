@@ -93,7 +93,6 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           referenceId: '123ab45d-2e34-46f3-8d17-6f540ae90303',
           data: {
             eventId: 'zoYgIxEZUbXBoocYAnbb5DrT',
-            customerUserId: '121212',
             docvTransactionToken: docv_transaction_token,
             qrCode: 'data:image/png;base64,iVBO......K5CYII=',
             url: socure_capture_app_url,
