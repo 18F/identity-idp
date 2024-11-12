@@ -91,9 +91,8 @@ module AbTests
   RECOMMEND_WEBAUTHN_PLATFORM_FOR_SMS_USER = AbTest.new(
     experiment_name: 'Recommend Face or Touch Unlock for SMS users',
     should_log: [
-      'Multi-Factor Authentication',
-      'User Registration: MFA Setup Complete',
-      'User Registration: 2FA Setup',
+      :webauthn_platform_recommended_visited,
+      :webauthn_setup_submitted,
     ].to_set,
     buckets: {
       recommend_for_account_creation:
