@@ -19,7 +19,7 @@ module Api
             configuration_id: params[:id],
           ).submit(name: params[:name])
 
-          analytics.auth_app_update_name_submitted(**result.to_h)
+          analytics.auth_app_update_name_submitted(**result)
 
           if result.success?
             render json: { success: true }
@@ -34,7 +34,7 @@ module Api
             configuration_id: params[:id],
           ).submit
 
-          analytics.auth_app_delete_submitted(**result.to_h)
+          analytics.auth_app_delete_submitted(**result)
 
           if result.success?
             create_user_event(:authenticator_disabled)

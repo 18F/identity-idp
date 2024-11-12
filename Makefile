@@ -66,11 +66,13 @@ lint: ## Runs all lint tests
 	@echo "--- erb-lint ---"
 	make lint_erb
 	@echo "--- rubocop ---"
+	mkdir -p tmp
 ifdef JUNIT_OUTPUT
-	bundle exec rubocop --parallel --format progress --format junit --out rubocop.xml --display-only-failed
+	bundle exec rubocop --parallel --format progress --format junit --out rubocop.xml --display-only-failed --color 2> tmp/rubocop.txt
 else
-	bundle exec rubocop --parallel
+	bundle exec rubocop --parallel --color 2> tmp/rubocop.txt
 endif
+	awk 'NF {exit 1}' tmp/rubocop.txt || (printf "Error: Unexpected stderr output from Rubocop\n"; cat tmp/rubocop.txt; exit 1)
 	@echo "--- analytics_events ---"
 	make lint_analytics_events
 	make lint_analytics_events_sorted

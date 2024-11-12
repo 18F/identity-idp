@@ -32,7 +32,10 @@ RSpec.describe UserMailer, type: :mailer do
 
   describe '#add_email' do
     let(:token) { SecureRandom.hex }
-    let(:mail) { UserMailer.with(user: user, email_address: email_address).add_email(token) }
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).
+        add_email(token: token, request_id: nil, from_select_email_flow: nil)
+    end
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
@@ -47,7 +50,8 @@ RSpec.describe UserMailer, type: :mailer do
     context 'when user adds email from select email flow' do
       let(:token) { SecureRandom.hex }
       let(:mail) do
-        UserMailer.with(user: user, email_address: email_address).add_email(token, true)
+        UserMailer.with(user: user, email_address: email_address).
+          add_email(token: token, request_id: nil, from_select_email_flow: true)
       end
 
       it 'renders the add_email_confirmation_url' do

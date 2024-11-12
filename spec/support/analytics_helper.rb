@@ -2,13 +2,15 @@ module AnalyticsHelper
   def stub_analytics(user: nil)
     analytics = FakeAnalytics.new
 
-    if user
-      allow(controller).to receive(:analytics).and_wrap_original do |original|
-        expect(original.call.user).to eq(user)
-        analytics
-      end
-    else
-      controller.analytics = analytics
+    stub = if defined?(controller)
+             allow(controller)
+           else
+             allow_any_instance_of(ApplicationController)
+           end
+
+    stub.to receive(:analytics).and_wrap_original do |original|
+      expect(original.call.user).to eq(user) if user
+      analytics
     end
 
     @analytics = analytics

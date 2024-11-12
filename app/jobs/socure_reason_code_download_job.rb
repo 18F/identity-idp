@@ -11,7 +11,7 @@ class SocureReasonCodeDownloadJob < ApplicationJob
     return unless IdentityConfig.store.idv_socure_reason_code_download_enabled
 
     result = Proofing::Socure::ReasonCodes::Importer.new.synchronize
-    analytics.idv_socure_reason_code_download(**result.to_h)
+    analytics.idv_socure_reason_code_download(**result)
   end
 
   def analytics

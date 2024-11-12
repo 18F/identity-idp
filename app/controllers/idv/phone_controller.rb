@@ -55,7 +55,7 @@ module Idv
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
         call(:verify_phone, :update, result.success?)
 
-      analytics.idv_phone_confirmation_form_submitted(**result.to_h, **ab_test_analytics_buckets)
+      analytics.idv_phone_confirmation_form_submitted(**result, **ab_test_analytics_buckets)
       if result.success?
         submit_proofing_attempt
         redirect_to idv_phone_path

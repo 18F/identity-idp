@@ -7,6 +7,7 @@ module SignUp
 
     before_action :find_user_with_confirmation_token
     before_action :confirm_user_needs_sign_up_confirmation
+    before_action :log_validator_result
     before_action :stop_if_invalid_token
     before_action :store_sp_metadata_in_session, only: [:create]
 
@@ -18,6 +19,10 @@ module SignUp
     end
 
     private
+
+    def log_validator_result
+      analytics.user_registration_email_confirmation(**email_confirmation_token_validator_result)
+    end
 
     def clear_setup_piv_cac_from_sign_in
       session.delete(:needs_to_setup_piv_cac_after_sign_in)

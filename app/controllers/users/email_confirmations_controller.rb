@@ -4,7 +4,7 @@ module Users
   class EmailConfirmationsController < ApplicationController
     def create
       result = email_confirmation_token_validator.submit
-      analytics.add_email_confirmation(**result.to_h)
+      analytics.add_email_confirmation(**result)
       if result.success?
         process_successful_confirmation(email_address)
       else
@@ -45,10 +45,14 @@ module Users
       store_from_select_email_flow_in_session
       if current_user
         flash[:success] = t('devise.confirmations.confirmed')
-        redirect_to account_url
+        if params[:request_id]
+          redirect_to sign_up_select_email_url
+        else
+          redirect_to account_url
+        end
       else
         flash[:success] = t('devise.confirmations.confirmed_but_sign_in')
-        redirect_to root_url
+        redirect_to root_url(request_id: params[:request_id])
       end
     end
 

@@ -31,13 +31,25 @@ RSpec.describe Idv::InPerson::VerificationResultsEmailPresenter do
   end
 
   describe '#formatted_verified_date' do
-    around do |example|
-      Time.use_zone('UTC') { example.run }
+    before do
+      enrollment.update(status_updated_at: DateTime.new(2024, 7, 5))
     end
 
-    it 'returns a formatted verified date' do
-      enrollment.update(status_updated_at: status_updated_at)
-      expect(presenter.formatted_verified_date).to eq 'July 13, 2022'
+    [
+      ['English', :en, 'July 4, 2024'],
+      ['Spanish', :es, '4 de julio de 2024'],
+      ['French', :fr, '4 juillet 2024'],
+      ['Chinese', :zh, '2024年7月4日'],
+    ].each do |language, locale, expected|
+      context "when locale is #{language}" do
+        before do
+          I18n.locale = locale
+        end
+
+        it "returns the formatted due date in #{language}" do
+          expect(presenter.formatted_verified_date).to eq(expected)
+        end
+      end
     end
   end
 

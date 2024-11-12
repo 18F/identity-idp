@@ -4,7 +4,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
   include FlowPolicyHelper
 
   let(:idv_vendor) { Idp::Constants::Vendors::SOCURE }
-  let(:fake_socure_endpoint) { 'https://fake-socure.com' }
+  let(:fake_socure_endpoint) { 'https://fake-socure.test' }
   let(:user) { create(:user) }
   let(:stored_result) { nil }
   let(:socure_enabled) { true }
@@ -63,8 +63,17 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
       end
     end
 
+    context 'when we try to use this controller but we should be using the LN/mock version' do
+      let(:idv_vendor) { Idp::Constants::Vendors::LEXIS_NEXIS }
+
+      it 'redirects to the LN/mock controller' do
+        get :show
+        expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
+      end
+    end
+
     context 'happy path' do
-      let(:response_redirect_url) { 'https://idv.test/dance' }
+      let(:socure_capture_app_url) { 'https://verify.socure.test/' }
       let(:docv_transaction_token) { '176dnc45d-2e34-46f3-82217-6f540ae90673' }
       let(:response_body) do
         {
@@ -74,7 +83,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
             customerUserId: document_capture_session_uuid,
             docvTransactionToken: docv_transaction_token,
             qrCode: 'data:image/png;base64,iVBO......K5CYII=',
-            url: response_redirect_url,
+            url: socure_capture_app_url,
           },
         }
       end
@@ -82,6 +91,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
       before do
         allow(I18n).to receive(:locale).and_return(expected_language)
         allow(request_class).to receive(:new).and_call_original
+        allow(request_class).to receive(:handle_connection_error).and_call_original
         get(:show)
       end
 
@@ -92,6 +102,11 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
             redirect_url: idv_hybrid_mobile_socure_document_capture_url,
             language: expected_language,
           )
+      end
+
+      it 'sets DocumentCaptureSession socure_docv_capture_app_url value' do
+        document_capture_session.reload
+        expect(document_capture_session.socure_docv_capture_app_url).to eq(socure_capture_app_url)
       end
 
       context 'language is english' do
@@ -105,7 +120,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
                   config: {
                     documentType: 'license',
                     redirect: {
-                      method: 'POST',
+                      method: 'GET',
                       url: idv_hybrid_mobile_socure_document_capture_url,
                     },
                     language: expected_language,
@@ -128,7 +143,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
                   config: {
                     documentType: 'license',
                     redirect: {
-                      method: 'POST',
+                      method: 'GET',
                       url: idv_hybrid_mobile_socure_document_capture_url,
                     },
                     language: 'zh-cn',
@@ -143,9 +158,9 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
       context 'renders the interstital page' do
         render_views
 
-        it 'it includes the socure redirect url' do
+        it 'response includes the socure capture app url' do
           expect(response).to have_http_status 200
-          expect(response.body).to have_link(href: response_redirect_url)
+          expect(response.body).to have_link(href: socure_capture_app_url)
         end
 
         it 'puts the docvTransactionToken into the document capture session' do
@@ -173,6 +188,74 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
         get(:show)
 
         expect(response).to be_not_found
+      end
+    end
+
+    context 'when socure error encountered' do
+      let(:fake_socure_endpoint) { 'https://fake-socure.test/' }
+      let(:failed_response_body) do
+        { 'status' => 'Error',
+          'referenceId' => '1cff6d33-1cc0-4205-b740-c9a9e6b8bd66',
+          'data' => {},
+          'msg' => 'No active account is associated with this request' }
+      end
+      let(:response_body_401) do
+        {
+          status: 'Error',
+          referenceId: '7ff0cdc5-395e-45d1-8467-0ff1b41c11dc',
+          msg: 'string',
+        }
+      end
+      let(:no_doc_found_response_body) do
+        {
+          referenceId: '0dc21b0d-04df-4dd5-8533-ec9ecdafe0f4',
+          msg: {
+            status: 400,
+            msg: 'No Documents found',
+          },
+        }
+      end
+      before do
+        allow(IdentityConfig.store).to receive(:socure_document_request_endpoint).
+          and_return(fake_socure_endpoint)
+      end
+      it 'connection timeout still responds to user' do
+        stub_request(:post, fake_socure_endpoint).to_raise(Faraday::ConnectionFailed)
+        get(:show)
+        expect(response).to redirect_to(idv_unavailable_path)
+      end
+
+      it 'socure error response still gives a result to user' do
+        stub_request(:post, fake_socure_endpoint).to_return(
+          status: 401,
+          body: JSON.generate(failed_response_body),
+        )
+        get(:show)
+        expect(response).to redirect_to(idv_unavailable_path)
+      end
+      it 'socure nil response still gives a result to user' do
+        stub_request(:post, fake_socure_endpoint).to_return(
+          status: 500,
+          body: nil,
+        )
+        get(:show)
+        expect(response).to redirect_to(idv_unavailable_path)
+      end
+      it 'socure nil response still gives a result to user' do
+        stub_request(:post, fake_socure_endpoint).to_return(
+          status: 401,
+          body: JSON.generate(response_body_401),
+        )
+        get(:show)
+        expect(response).to redirect_to(idv_unavailable_path)
+      end
+      it 'socure nil response still gives a result to user' do
+        stub_request(:post, fake_socure_endpoint).to_return(
+          status: 401,
+          body: JSON.generate(no_doc_found_response_body),
+        )
+        get(:show)
+        expect(response).to redirect_to(idv_unavailable_path)
       end
     end
   end

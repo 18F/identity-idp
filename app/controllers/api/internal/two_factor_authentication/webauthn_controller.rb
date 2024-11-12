@@ -19,7 +19,7 @@ module Api
             configuration_id: params[:id],
           ).submit(name: params[:name])
 
-          analytics.webauthn_update_name_submitted(**result.to_h)
+          analytics.webauthn_update_name_submitted(**result)
 
           if result.success?
             render json: { success: true }
@@ -34,7 +34,7 @@ module Api
             configuration_id: params[:id],
           ).submit
 
-          analytics.webauthn_delete_submitted(**result.to_h)
+          analytics.webauthn_delete_submitted(**result)
 
           if result.success?
             create_user_event(:webauthn_key_removed)

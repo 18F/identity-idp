@@ -53,7 +53,7 @@ module Idv
         @gpo_verify_form = build_gpo_verify_form
 
         result = @gpo_verify_form.submit(resolved_authn_context_result.enhanced_ipp?)
-        analytics.idv_verify_by_mail_enter_code_submitted(**result.to_h)
+        analytics.idv_verify_by_mail_enter_code_submitted(**result)
 
         if !result.success?
           if rate_limiter.limited?

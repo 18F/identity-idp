@@ -25,10 +25,6 @@
   margin-bottom: 30px;
 }
 
-.mr-tiny {
-  margin-right: 4px;
-}
-
 .s10 {
   font-size: 10px;
   line-height: 10px;
@@ -73,48 +69,6 @@ h6 {
   color: $gray;
   padding: 10px;
   width: 50%;
-}
-
-.footer {
-  background: $secondary-color;
-
-  a {
-    color: $white;
-    text-decoration: underline;
-  }
-
-  p {
-    color: $white;
-    padding-top: 0;
-  }
-
-  .columns {
-    padding-bottom: 0;
-  }
-
-  .wrapper-inner {
-    padding: 25px 0;
-  }
-
-  .container {
-    background: transparent;
-  }
-}
-
-.legal {
-  background: $body-background;
-
-  a {
-    color: $dark-gray;
-  }
-
-  .container {
-    background: $body-background;
-  }
-
-  .wrapper-inner {
-    padding: 15px 0;
-  }
 }
 
 .usa-alert {

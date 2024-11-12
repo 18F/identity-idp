@@ -102,7 +102,6 @@ module SignUp
       if page_occurence.present? && DisposableEmailDomain.disposable?(email_domain)
         attributes[:disposable_email_domain] = email_domain
       end
-
       attributes
     end
 

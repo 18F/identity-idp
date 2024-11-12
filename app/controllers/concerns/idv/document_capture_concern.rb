@@ -6,6 +6,18 @@ module Idv
 
     include DocAuthVendorConcern
 
+    def handle_stored_result(user: current_user, store_in_session: true)
+      if stored_result&.success? && selfie_requirement_met?
+        save_proofing_components(user)
+        extract_pii_from_doc(user, store_in_session: store_in_session)
+        flash[:success] = t('doc_auth.headings.capture_complete')
+        successful_response
+      else
+        extra = { stored_result_present: stored_result.present? }
+        failure(I18n.t('doc_auth.errors.general.network_error'), extra)
+      end
+    end
+
     def save_proofing_components(user)
       return unless user
 
@@ -50,6 +62,24 @@ module Idv
         stored_result.selfie_check_performed?
     end
 
+    def redirect_to_correct_vendor(vendor, in_hybrid_mobile)
+      expected_doc_auth_vendor = doc_auth_vendor
+      return if vendor == expected_doc_auth_vendor
+      return if vendor == Idp::Constants::Vendors::LEXIS_NEXIS &&
+                expected_doc_auth_vendor == Idp::Constants::Vendors::MOCK
+
+      correct_path = case expected_doc_auth_vendor
+        when Idp::Constants::Vendors::SOCURE
+          in_hybrid_mobile ? idv_hybrid_mobile_socure_document_capture_path
+                           : idv_socure_document_capture_path
+        when Idp::Constants::Vendors::LEXIS_NEXIS, Idp::Constants::Vendors::MOCK
+          in_hybrid_mobile ? idv_hybrid_mobile_document_capture_path
+                           : idv_document_capture_path
+        end
+
+      redirect_to correct_path
+    end
+
     private
 
     def track_document_issuing_state(user, state)
@@ -58,6 +88,11 @@ module Idv
       return unless doc_auth_log
       doc_auth_log.state = state
       doc_auth_log.save!
+    end
+
+    def cancel_establishing_in_person_enrollments(user: current_user)
+      UspsInPersonProofing::EnrollmentHelper.
+        cancel_stale_establishing_enrollments_for_user(user)
     end
   end
 end

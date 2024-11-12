@@ -976,11 +976,12 @@ help_text.requested_attributes.full_name: Full name
 help_text.requested_attributes.ial2_reverified_consent_info_html: 'Because you verified your identity again, we need your permission to share this information with %{sp_html}:'
 help_text.requested_attributes.intro_html: 'We’ll share this information with %{sp_html}:'
 help_text.requested_attributes.phone: Phone number
+help_text.requested_attributes.select_email_link: Select email
 help_text.requested_attributes.social_security_number: Social Security number
 help_text.requested_attributes.verified_at: Updated on
 help_text.requested_attributes.x509_issuer: PIV/CAC Issuer
 help_text.requested_attributes.x509_subject: PIV/CAC Identity
-help_text.select_preferred_email: You may change which email you share with %{sp} since you have multiple emails associated with your %{app_name} account.
+help_text.select_preferred_email_html: Select or add the email you’d like to use to access <strong>%{sp}</strong>.
 i18n.language: Language
 i18n.locale.en: English
 i18n.locale.es: Español
@@ -1690,7 +1691,7 @@ two_factor_authentication.max_generic_login_attempts_reached: For your security,
 two_factor_authentication.max_otp_login_attempts_reached: For your security, your account is temporarily locked because you have entered the one-time code incorrectly too many times.
 two_factor_authentication.max_otp_requests_reached: For your security, your account is temporarily locked because you have requested a one-time code too many times.
 two_factor_authentication.max_personal_key_login_attempts_reached: For your security, your account is temporarily locked because you have entered the personal key incorrectly too many times.
-two_factor_authentication.max_piv_cac_login_attempts_reached: For your security, your account is temporarily locked because you have presented your piv/cac credential incorrectly too many times.
+two_factor_authentication.max_piv_cac_login_attempts_reached: For your security, your account is temporarily locked because you have presented your PIV/CAC credential incorrectly too many times.
 two_factor_authentication.mobile_terms_of_service: Mobile terms of service
 two_factor_authentication.opt_in.error_retry: Sorry, we are having trouble opting you in. Please try again.
 two_factor_authentication.opt_in.opted_out_html: You’ve opted out of receiving text messages at %{phone_number_html}. You can opt in and receive a security code again to that phone number.

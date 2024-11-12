@@ -6,9 +6,11 @@ module DocAuth
       def fetch
         # return DocAuth::Response with DocAuth::Error if workflow is invalid
         http_response = send_http_request
-        return handle_invalid_response(http_response) unless http_response.success?
-
-        handle_http_response(http_response)
+        if http_response&.success? && http_response.body.present?
+          handle_http_response(http_response)
+        else
+          handle_invalid_response(http_response)
+        end
       rescue Faraday::ConnectionFailed, Faraday::TimeoutError, Faraday::SSLError => e
         handle_connection_error(exception: e)
       end
@@ -33,16 +35,27 @@ module DocAuth
       end
 
       def handle_invalid_response(http_response)
-        begin
-          if http_response.body.present?
-            warn(http_response.body)
-            JSON.parse(http_response.body)
-          else
-            {}
-          end
+        message = [
+          self.class.name,
+          'Unexpected HTTP response',
+          http_response&.status,
+        ].join(' ')
+        exception = DocAuth::RequestError.new(message, http_response&.status)
+
+        response_body = begin
+          http_response&.body.present? ? JSON.parse(http_response.body) : {}
         rescue JSON::JSONError
           {}
         end
+        handle_connection_error(
+          exception: exception,
+          status: response_body.dig('status'),
+          status_message: response_body.dig('msg'),
+        )
+      end
+
+      def handle_connection_error(exception:, status: nil, status_message: nil)
+        raise NotImplementedError
       end
 
       def send_http_get_request

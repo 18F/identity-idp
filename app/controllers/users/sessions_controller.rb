@@ -208,7 +208,7 @@ module Users
                 (recaptcha_response.success? || log_captcha_failures_only?)
 
       analytics.email_and_password_auth(
-        **recaptcha_response.to_h,
+        **recaptcha_response,
         success: success,
         user_id: user.uuid,
         user_locked_out: user_locked_out?(user),

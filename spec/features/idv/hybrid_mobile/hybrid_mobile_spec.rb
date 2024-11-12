@@ -10,6 +10,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
 
   before do
     allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(true)
+    allow(IdentityConfig.store).to receive(:socure_enabled).and_return(true)
     allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
     allow(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
       @sms_link = config[:link]
@@ -44,7 +45,11 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       # Confirm that jumping to LinkSent page does not cause errors
       visit idv_link_sent_url
       expect(page).to have_current_path(root_url)
-      visit idv_hybrid_mobile_document_capture_url
+
+      # Confirm that we end up on the LN / Mock page even if we try to
+      # go to the Socure one.
+      visit idv_hybrid_mobile_socure_document_capture_url
+      expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
 
       # Confirm that clicking cancel and then coming back doesn't cause errors
       click_link 'Cancel'

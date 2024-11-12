@@ -21,11 +21,23 @@ class SocureWebhookController < ApplicationController
 
   private
 
+  def process_webhook_event
+    case event[:eventType]
+    when 'DOCUMENTS_UPLOADED'
+      increment_rate_limiter
+      fetch_results
+    end
+  end
+
   def fetch_results
     dcs = document_capture_session
     raise 'DocumentCaptureSession not found' if dcs.blank?
 
-    SocureDocvResultsJob.perform_later(document_capture_session_uuid: dcs.uuid)
+    if IdentityConfig.store.ruby_workers_idv_enabled
+      SocureDocvResultsJob.perform_later(document_capture_session_uuid: dcs.uuid)
+    else
+      SocureDocvResultsJob.perform_now(document_capture_session_uuid: dcs.uuid)
+    end
   end
 
   def check_token
@@ -74,14 +86,6 @@ class SocureWebhookController < ApplicationController
     )
   end
 
-  def process_webhook_event
-    case event[:eventType]
-    when 'DOCUMENTS_UPLOADED'
-      increment_rate_limiter
-      fetch_results
-    end
-  end
-
   def increment_rate_limiter
     if document_capture_session.present?
       rate_limiter.increment!
@@ -90,8 +94,9 @@ class SocureWebhookController < ApplicationController
   end
 
   def document_capture_session
+    token = event[:docvTransactionToken] || event[:docVTransactionToken]
     @document_capture_session ||= DocumentCaptureSession.find_by(
-      socure_docv_transaction_token: event[:docvTransactionToken],
+      socure_docv_transaction_token: token,
     )
   end
 
@@ -109,7 +114,7 @@ class SocureWebhookController < ApplicationController
   def socure_params
     params.permit(
       event: [:created, :customerUserId, :eventType, :referenceId,
-              :docvTransactionToken],
+              :docvTransactionToken, :docVTransactionToken],
     )
   end
 end

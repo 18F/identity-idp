@@ -88,6 +88,15 @@ RSpec.describe Users::WebauthnSetupController do
         }
       end
 
+      let(:threatmetrix_attrs) do
+        {
+          user_id: user.id,
+          request_ip: Faker::Internet.ip_v4_address,
+          threatmetrix_session_id: 'test-session',
+          email: user.email,
+        }
+      end
+
       before do
         allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
         request.host = 'localhost:3000'
@@ -95,7 +104,7 @@ RSpec.describe Users::WebauthnSetupController do
       end
 
       it 'tracks the submission' do
-        Funnel::Registration::AddMfa.call(user.id, 'phone', @analytics)
+        Funnel::Registration::AddMfa.call(user.id, 'phone', @analytics, threatmetrix_attrs)
 
         patch :confirm, params: params
 
@@ -229,12 +238,21 @@ RSpec.describe Users::WebauthnSetupController do
           }
         end
 
+        let(:threatmetrix_attrs) do
+          {
+            user_id: user.id,
+            request_ip: Faker::Internet.ip_v4_address,
+            threatmetrix_session_id: 'test-session',
+            email: user.email,
+          }
+        end
+
         before do
           controller.user_session[:in_account_creation_flow] = true
         end
 
         it 'should log expected events' do
-          Funnel::Registration::AddMfa.call(user.id, 'phone', @analytics)
+          Funnel::Registration::AddMfa.call(user.id, 'phone', @analytics, threatmetrix_attrs)
 
           patch :confirm, params: params
 
@@ -383,8 +401,17 @@ RSpec.describe Users::WebauthnSetupController do
         controller.user_session[:mfa_attempts] = { auth_method: 'webauthn', attempts: 1 }
       end
 
+      let(:threatmetrix_attrs) do
+        {
+          user_id: user.id,
+          request_ip: Faker::Internet.ip_v4_address,
+          threatmetrix_session_id: 'test-session',
+          email: user.email,
+        }
+      end
+
       it 'tracks the submission' do
-        Funnel::Registration::AddMfa.call(user.id, 'phone', @analytics)
+        Funnel::Registration::AddMfa.call(user.id, 'phone', @analytics, threatmetrix_attrs)
 
         patch :confirm, params: params
 

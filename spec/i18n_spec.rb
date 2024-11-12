@@ -70,7 +70,6 @@ module I18n
         { key: 'simple_form.no', locales: %i[es] }, # "No" is "No" in Spanish
         { key: 'telephony.format_length.six', locales: %i[zh] }, # numeral is not translated
         { key: 'telephony.format_length.ten', locales: %i[zh] }, # numeral is not translated
-        { key: 'time.formats.event_date', locales: %i[es zh] },
         { key: 'time.formats.event_time', locales: %i[es zh] },
         { key: 'time.formats.event_timestamp', locales: %i[zh] },
         { key: 'time.formats.full_date', locales: %i[es] }, # format is the same in Spanish and English

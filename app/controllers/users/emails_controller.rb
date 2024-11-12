@@ -23,9 +23,9 @@ module Users
       )
 
       result = @add_user_email_form.submit(
-        current_user, permitted_params
+        current_user, permitted_params.merge(request_id:)
       )
-      analytics.add_email_request(**result.to_h)
+      analytics.add_email_request(**result)
 
       if result.success?
         process_successful_creation
@@ -42,7 +42,7 @@ module Users
 
       if email_address && !email_address.confirmed?
         analytics.resend_add_email_request(success: true)
-        SendAddEmailConfirmation.new(current_user).call(email_address)
+        SendAddEmailConfirmation.new(current_user).call(email_address:, request_id:)
         flash[:success] = t('notices.resend_confirmation_email.success')
         redirect_to add_email_verify_email_url
       else
@@ -58,7 +58,7 @@ module Users
 
     def delete
       result = DeleteUserEmailForm.new(current_user, email_address).submit
-      analytics.email_deletion_request(**result.to_h)
+      analytics.email_deletion_request(**result)
       if result.success?
         handle_successful_delete
       else
@@ -89,6 +89,10 @@ module Users
       render_not_found
     end
 
+    def request_id
+      sp_session[:request_id]
+    end
+
     def email_address
       EmailAddress.find(params[:id])
     end
@@ -114,7 +118,7 @@ module Users
     end
 
     def permitted_params
-      params.require(:user).permit(:email)
+      params.require(:user).permit(:email, :request_id)
     end
 
     def check_max_emails_per_account

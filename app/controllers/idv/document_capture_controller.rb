@@ -12,6 +12,7 @@ module Idv
     before_action :confirm_step_allowed, unless: -> { allow_direct_ipp? }
     before_action :override_csp_to_allow_acuant
     before_action :set_usps_form_presenter
+    before_action -> { redirect_to_correct_vendor(Idp::Constants::Vendors::LEXIS_NEXIS, false) }
 
     def show
       analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)
@@ -19,12 +20,7 @@ module Idv
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
         call('document_capture', :view, true)
 
-      case doc_auth_vendor
-      when Idp::Constants::Vendors::SOCURE
-        redirect_to idv_socure_document_capture_url
-      when Idp::Constants::Vendors::LEXIS_NEXIS, Idp::Constants::Vendors::MOCK
-        render :show, locals: extra_view_variables
-      end
+      render :show, locals: extra_view_variables
     end
 
     def update
@@ -93,11 +89,6 @@ module Idv
 
     private
 
-    def cancel_establishing_in_person_enrollments
-      UspsInPersonProofing::EnrollmentHelper.
-        cancel_stale_establishing_enrollments_for_user(current_user)
-    end
-
     def analytics_arguments
       {
         flow_path: flow_path,
@@ -108,18 +99,6 @@ module Idv
         liveness_checking_required: resolved_authn_context_result.facial_match?,
         selfie_check_required: resolved_authn_context_result.facial_match?,
       }.merge(ab_test_analytics_buckets)
-    end
-
-    def handle_stored_result
-      if stored_result&.success? && selfie_requirement_met?
-        save_proofing_components(current_user)
-        extract_pii_from_doc(current_user, store_in_session: true)
-        flash[:success] = t('doc_auth.headings.capture_complete')
-        successful_response
-      else
-        extra = { stored_result_present: stored_result.present? }
-        failure(I18n.t('doc_auth.errors.general.network_error'), extra)
-      end
     end
 
     def allow_direct_ipp?

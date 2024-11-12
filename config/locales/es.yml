@@ -987,11 +987,12 @@ help_text.requested_attributes.full_name: Nombre completo
 help_text.requested_attributes.ial2_reverified_consent_info_html: 'Como volvió a verificar su identidad, necesitamos su permiso para divulgar esta información a %{sp_html}:'
 help_text.requested_attributes.intro_html: 'Divulgaremos esta información a %{sp_html}:'
 help_text.requested_attributes.phone: Número de teléfono
+help_text.requested_attributes.select_email_link: Seleccionar correo electrónico
 help_text.requested_attributes.social_security_number: Número de Seguro Social
 help_text.requested_attributes.verified_at: Actualizado en
 help_text.requested_attributes.x509_issuer: Emisor de la tarjeta PIV o CAC
 help_text.requested_attributes.x509_subject: Identidad de la tarjeta PIV o CAC
-help_text.select_preferred_email: Puede cambiar el correo electrónico que comparte con %{sp} ya que tiene varios correos electrónicos asociados a su cuenta de %{app_name}.
+help_text.select_preferred_email_html: Seleccione o agregue el correo electrónico que desea utilizar para acceder a <strong>%{sp}</strong>.
 i18n.language: Idioma
 i18n.locale.en: English
 i18n.locale.es: Español
@@ -1206,7 +1207,7 @@ image_description.warning: Señal amarilla de precaución
 in_person_proofing.body.barcode.cancel_link_text: Cancele su código de barras
 in_person_proofing.body.barcode.close_window: Ya puede cerrar esta ventana.
 in_person_proofing.body.barcode.deadline: Debe acudir a cualquier oficina de correos participante antes del %{deadline}
-in_person_proofing.body.barcode.deadline_restart: Si vence el plazo, su información no se guardará y tendrá que reiniciar el proceso.
+in_person_proofing.body.barcode.deadline_restart: Si acude después del plazo, su información no se guardará y tendrá que reiniciar el proceso.
 in_person_proofing.body.barcode.eipp_tag: Código de barras piloto mejorado GSA
 in_person_proofing.body.barcode.eipp_what_to_bring: 'Según el tipo de identificación que tenga, es posible que deba presentar documentos comprobatorios. Lea con atención las opciones siguientes:'
 in_person_proofing.body.barcode.email_sent: Enviamos el código de barras y la información más abajo al correo electrónico que usó para iniciar sesión
@@ -1569,7 +1570,7 @@ step_indicator.status.complete: Completado
 step_indicator.status.current: Este paso
 step_indicator.status.not_complete: No completado
 time.am: a. m.
-time.formats.event_date: '%B %-d, %Y'
+time.formats.event_date: '%-d de %B de %Y'
 time.formats.event_time: '%-l:%M %p'
 time.formats.event_timestamp: '%B %-d, %Y a las %-l:%M %p'
 time.formats.event_timestamp_js: '%{month} %{day}, %{year} a las %{hour}:%{minute} %{day_period}'
