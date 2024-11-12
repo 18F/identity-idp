@@ -28,7 +28,7 @@ development:
 HOST=0.0.0.0 make run-https
 ```
 
-4. In the Chrome browser on your phone, open a new incognito tab. In the address bar, type in `https://` (don't forget the `s`) followed by your LAN IP and port number (like `https://192.168.x.x:3000`). When you visit this page, you may see a **Your connection is not private** message. Click **Advanced** and **Proceed** to continue. You should then see the sign in screen of the identity-idp app.
+4. On your phone's browser, open a new tab. In the address bar, type in `https://` (don't forget the `s`) followed by your LAN IP and port number (like `https://192.168.x.x:3000`). When you visit this page, you may see a **Your connection is not private** message. Click **Advanced** and **Proceed** to continue. You should then see the sign in screen of the identity-idp app.
 
 After you complete these steps, pages from the app are served from your development machine to your mobile device, where you may now use the identity-idp app. For front-end development, you may now want to turn on browser development tools per the next section of these instructions.
 
