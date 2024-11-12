@@ -1448,7 +1448,7 @@ notices.privacy.security_and_privacy_practices: Prácticas de seguridad y declar
 notices.resend_confirmation_email.success: Enviamos otro correo electrónico de confirmación.
 notices.session_cleared: Por su seguridad, borramos lo que usted ingresó si usted no pasa a una página nueva en %{minutes} minutos.
 notices.session_timedout: Cerramos su sesión. Por su seguridad, %{app_name} cierra su sesión cuando usted no pasa a una página nueva en %{minutes} minutos.
-notices.sign_in.recaptcha.disclosure_statement_html: Este sitio está protegido por reCAPTCHA y se aplican %{google_policy_link_html} y %{google_tos_link_html} de Google.
+notices.sign_in.recaptcha.disclosure_statement_html: Este sitio está protegido por reCAPTCHA y se aplican la %{google_policy_link_html} y las %{google_tos_link_html} de Google.
 notices.signed_up_and_confirmed.first_paragraph_end: con un vínculo para confirmar su dirección de correo electrónico. Siga el vínculo para continuar agregando este correo electrónico a su cuenta.
 notices.signed_up_and_confirmed.first_paragraph_start: Enviamos un correo electrónico a
 notices.signed_up_and_confirmed.no_email_sent_explanation_start: '¿No recibió un correo electrónico?'
@@ -1755,9 +1755,9 @@ two_factor_authentication.piv_cac.nickname: Apodo
 two_factor_authentication.piv_cac.renamed: Se ha cambiado correctamente el nombre de su método PIV/CAC
 two_factor_authentication.please_try_again_html: Inténtelo de nuevo en <strong>%{countdown}</strong>.
 two_factor_authentication.read_about_two_factor_authentication: Lea sobre la autenticación de dos factores
-two_factor_authentication.recaptcha.disclosure_statement_html: Este sitio está protegido por reCAPTCHA y se aplican %{google_policy_link_html} y %{google_tos_link_html} de Google. Lea %{login_tos_link_html} de %{app_name}.
-two_factor_authentication.recaptcha.google_policy_link: la Política de privacidad
-two_factor_authentication.recaptcha.google_tos_link: las Condiciones de servicio
+two_factor_authentication.recaptcha.disclosure_statement_html: Este sitio está protegido por reCAPTCHA y se aplican la %{google_policy_link_html} y las %{google_tos_link_html} de Google. Lea %{login_tos_link_html} de %{app_name}.
+two_factor_authentication.recaptcha.google_policy_link: Política de privacidad
+two_factor_authentication.recaptcha.google_tos_link: Condiciones de servicio
 two_factor_authentication.recaptcha.login_tos_link: Condiciones de uso del servicio móvil
 two_factor_authentication.recommended: Recomendado
 two_factor_authentication.totp_header_text: Ingrese su código de la aplicación de autenticación
