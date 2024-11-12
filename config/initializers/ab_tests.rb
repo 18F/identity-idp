@@ -92,6 +92,7 @@ module AbTests
     experiment_name: 'Recommend Face or Touch Unlock for SMS users',
     should_log: [
       :webauthn_platform_recommended_visited,
+      :webauthn_platform_recommended_submitted,
       :webauthn_setup_submitted,
     ].to_set,
     buckets: {
