@@ -75,18 +75,32 @@ describe('SpinnerButtonElement', () => {
   context('inside form', () => {
     it('disables button without preventing form handlers', async () => {
       const wrapper = createWrapper({ inForm: true });
-      let didSubmit = false;
-      wrapper.form!.addEventListener('submit', (event) => {
-        didSubmit = true;
-        event.preventDefault();
-      });
+      const onSubmit = sandbox.stub().callsFake((event: SubmitEvent) => event.preventDefault());
+      wrapper.form!.addEventListener('submit', onSubmit);
       const button = screen.getByRole('button', { name: 'Click Me' });
 
       await userEvent.type(button, '{Enter}');
       clock.tick(0);
 
-      expect(didSubmit).to.be.true();
-      expect(button.hasAttribute('disabled')).to.be.true();
+      expect(onSubmit).to.have.been.calledOnce();
+      expect(button.ariaDisabled).to.equal('true');
+    });
+
+    it('prevents duplicate submission', async () => {
+      const wrapper = createWrapper({ inForm: true });
+      const onSubmit = sandbox.stub().callsFake((event: SubmitEvent) => event.preventDefault());
+      wrapper.form!.addEventListener('submit', onSubmit);
+      const button = screen.getByRole('button', { name: 'Click Me' });
+
+      await userEvent.type(button, '{Enter}');
+      clock.tick(0);
+
+      expect(onSubmit).to.have.been.calledOnce();
+
+      await userEvent.type(button, '{Enter}');
+      clock.tick(0);
+
+      expect(onSubmit).to.have.been.calledOnce();
     });
 
     it('unbinds events when disconnected', () => {
@@ -104,18 +118,32 @@ describe('SpinnerButtonElement', () => {
   context('with form inside (button_to)', () => {
     it('disables button without preventing form handlers', async () => {
       const wrapper = createWrapper({ isButtonTo: true });
-      let didSubmit = false;
-      wrapper.form!.addEventListener('submit', (event) => {
-        didSubmit = true;
-        event.preventDefault();
-      });
+      const onSubmit = sandbox.stub().callsFake((event: SubmitEvent) => event.preventDefault());
+      wrapper.form!.addEventListener('submit', onSubmit);
       const button = screen.getByRole('button', { name: 'Click Me' });
 
       await userEvent.type(button, '{Enter}');
       clock.tick(0);
 
-      expect(didSubmit).to.be.true();
-      expect(button.hasAttribute('disabled')).to.be.true();
+      expect(onSubmit).to.have.been.calledOnce();
+      expect(button.ariaDisabled).to.equal('true');
+    });
+
+    it('prevents duplicate submission', async () => {
+      const wrapper = createWrapper({ isButtonTo: true });
+      const onSubmit = sandbox.stub().callsFake((event: SubmitEvent) => event.preventDefault());
+      wrapper.form!.addEventListener('submit', onSubmit);
+      const button = screen.getByRole('button', { name: 'Click Me' });
+
+      await userEvent.type(button, '{Enter}');
+      clock.tick(0);
+
+      expect(onSubmit.callCount).equal(1);
+
+      await userEvent.type(button, '{Enter}');
+      clock.tick(0);
+
+      expect(onSubmit.callCount).equal(1);
     });
   });
 
