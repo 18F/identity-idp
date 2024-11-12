@@ -123,12 +123,12 @@ module Idv
     end
 
     def upload_disabled?
-      (doc_auth_vendor == Idp::Constants::Vendors::SOCURE || idv_session.selfie_check_required) && !desktop_test_mode_enabled?
+      (doc_auth_vendor == Idp::Constants::Vendors::SOCURE || idv_session.selfie_check_required) &&
+        !desktop_test_mode_enabled?
     end
 
     def desktop_test_mode_enabled?
       idv_session.desktop_selfie_test_mode_enabled? || idv_session.desktop_socure_test_mode_enabled?
-
     end
 
     def build_telephony_form_response(telephony_result)
