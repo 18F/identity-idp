@@ -111,7 +111,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       it 'creates a DocumentRequest' do
         expect(request_class).to have_received(:new).
           with(
-            redirect_url: idv_socure_document_capture_url,
+            redirect_url: idv_socure_document_capture_update_url,
             language: expected_language,
           )
       end

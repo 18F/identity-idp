@@ -27,7 +27,7 @@ module Idv
 
         # document request
         document_request = DocAuth::Socure::Requests::DocumentRequest.new(
-          redirect_url: idv_socure_document_capture_url,
+          redirect_url: idv_socure_document_capture_update_url,
           language: I18n.locale,
         )
 
