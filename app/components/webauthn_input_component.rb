@@ -46,7 +46,7 @@ class WebauthnInputComponent < BaseComponent
     if desktop_ft_unlock_option? && I18n.locale == :en
       true
     else
-      { hidden: true }
+      false
     end
   end
 end

@@ -458,7 +458,7 @@ development:
   compromised_password_randomizer_value: 1
   dashboard_api_token: test_token
   dashboard_url: http://localhost:3001/api/service_providers
-  desktop_ft_unlock_setup_option_percent_tested: 100
+  desktop_ft_unlock_setup_option_percent_tested: 0
   doc_auth_selfie_desktop_test_mode: true
   domain_name: localhost:3000
   enable_rate_limiting: false
