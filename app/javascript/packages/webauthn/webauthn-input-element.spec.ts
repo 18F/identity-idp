@@ -90,7 +90,7 @@ describe('WebauthnInputElement', () => {
 
   context('Desktop F/T unlock A/B test', () => {
     context('desktop F/T unlock setup enabled', () => {
-      const sandbox = useSandbox()
+      const sandbox = useSandbox();
       beforeEach(() => {
         isWebauthnPlatformAvailable.resolves(true);
         sandbox.stub(analytics, 'trackEvent');
@@ -104,7 +104,7 @@ describe('WebauthnInputElement', () => {
     });
 
     context('desktop F/T unlock setup disabled', () => {
-      const sandbox = useSandbox()
+      const sandbox = useSandbox();
       beforeEach(() => {
         isWebauthnPlatformAvailable.resolves(true);
         document.body.innerHTML = `<lg-webauthn-input hidden></lg-webauthn-input>`;
@@ -114,7 +114,7 @@ describe('WebauthnInputElement', () => {
       it('is hidden', () => {
         const element = document.querySelector('lg-webauthn-input')!;
         expect(element.hidden).to.be.true();
-      })
-    })
+      });
+    });
   });
 });
