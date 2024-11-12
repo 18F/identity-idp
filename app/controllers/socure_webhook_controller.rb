@@ -26,6 +26,8 @@ class SocureWebhookController < ApplicationController
     when 'DOCUMENTS_UPLOADED'
       increment_rate_limiter
       fetch_results
+    when 'SESSION_EXPIRED', 'SESSION_COMPLETE'
+      reset_docv_url
     end
   end
 
@@ -92,6 +94,13 @@ class SocureWebhookController < ApplicationController
       rate_limiter.increment!
     end
     # Logic to throw an error when no DocumentCaptureSession found will be done in ticket LG-14905
+  end
+
+  def reset_docv_url
+    if document_capture_session.present?
+      document_capture_session.socure_docv_capture_app_url = nil
+      document_capture_session.save
+    end
   end
 
   def document_capture_session
