@@ -8,7 +8,6 @@ RSpec.describe SocureWebhookController do
     let(:socure_secret_key_queue) { ['this-is-an-old-secret', 'this-is-an-older-secret'] }
     let(:socure_enabled) { true }
     let(:fake_capture_app_url) { 'https://fake-socure.test/capture' }
-    let(:rate_limiter) { RateLimiter.new(rate_limit_type: :idv_doc_auth, user: user) }
     let(:event_type) { 'TEST_WEBHOOK' }
     let(:event_docv_transaction_token) { 'TEST_WEBHOOK_TOKEN' }
     let(:customer_user_id) { '#1-customer' }
@@ -161,8 +160,6 @@ RSpec.describe SocureWebhookController do
             it 'does not reset socure_docv_capture_app_url value' do
               dcs = create(:document_capture_session, :socure)
               webhook_body[:event][:docvTransactionToken] = dcs.socure_docv_transaction_token
-              allow(DocumentCaptureSession).to receive(:find_by).
-                and_return(dcs)
               allow(SocureDocvResultsJob).to receive(:perform_later)
               dcs.socure_docv_capture_app_url = fake_capture_app_url
               dcs.save
