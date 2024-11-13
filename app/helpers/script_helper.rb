@@ -16,12 +16,19 @@ module ScriptHelper
       concat javascript_assets_tag
       @scripts.each do |name, (url_params, attributes)|
         asset_sources.get_sources(name).each do |source|
+          crossorigin = true if local_crossorigin_sources?
+          integrity = asset_sources.get_integrity(source)
+
+          if attributes[:preload_links_header] != false
+            AssetPreloadLinker.append(response:, as: :script, url: source, crossorigin:, integrity:)
+          end
+
           concat javascript_include_tag(
             UriService.add_params(source, url_params),
             **attributes,
-            crossorigin: local_crossorigin_sources? ? true : nil,
-            integrity: asset_sources.get_integrity(source),
-            nopush: false,
+            crossorigin:,
+            integrity:,
+            preload_links_header: false,
           )
         end
       end
