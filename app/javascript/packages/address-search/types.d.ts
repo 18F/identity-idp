@@ -69,6 +69,7 @@ interface InPersonLocationsProps {
   noInPersonLocationsDisplay: ComponentType<{ address: string }>;
   onSelect;
   resultsHeaderComponent?: ComponentType;
+  resultsSectionHeading?: ComponentType;
 }
 
 interface LocationCollectionItemProps {
@@ -98,4 +99,5 @@ interface FullAddressSearchProps {
   registerField: RegisterFieldCallback;
   resultsHeaderComponent?: ComponentType;
   usStatesTerritories: string[][];
+  resultsSectionHeading?: ComponentType;
 }

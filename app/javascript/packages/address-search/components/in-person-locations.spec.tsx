@@ -88,6 +88,23 @@ describe('InPersonLocations', () => {
     ).to.not.exist();
   });
 
+  it('renders a header at the top of the results', () => {
+    const headingText = 'mock heading';
+    const testId = 'mock-heading';
+    const { getByTestId } = render(
+      <InPersonLocations
+        address={address}
+        locations={locations}
+        onSelect={onSelect}
+        noInPersonLocationsDisplay={NoLocationsViewMock}
+        resultsSectionHeading={() => <h2 data-testid={testId}>{headingText}</h2>}
+      />,
+    );
+
+    expect(getByTestId(testId)).to.exist();
+    expect(getByTestId(testId).textContent).to.equal(headingText);
+  });
+
   context('when no locations are found', () => {
     it('renders the passed in noLocations component w/ address', () => {
       const onClick = sinon.stub();
