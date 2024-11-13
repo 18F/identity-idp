@@ -334,7 +334,8 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
       allow(IdentityConfig.store).to receive(:socure_enabled).and_return(socure_enabled)
       allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(doc_auth_vendor)
       allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(doc_auth_vendor)
-      allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).and_return(desktop_test_mode_enabled)
+      allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).
+        and_return(desktop_test_mode_enabled)
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(
         in_person_proofing_enabled,
       )
