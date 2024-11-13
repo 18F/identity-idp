@@ -239,7 +239,7 @@ describe('CaptchaSubmitButtonElement', () => {
           await userEvent.click(button);
 
           await expect(form.submit).to.eventually.be.called();
-          await expect(Object.fromEntries(new window.FormData(form))).to.deep.equal({
+          expect(Object.fromEntries(new window.FormData(form))).to.deep.equal({
             recaptcha_token: '',
           });
         });
