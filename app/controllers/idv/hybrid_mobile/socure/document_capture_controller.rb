@@ -55,7 +55,7 @@ module Idv
           if result.success?
             redirect_to idv_ssn_url
           else
-            redirect_to idv_socure_document_capture_url
+            redirect_to idv_hybrid_mobile_socure_document_capture_url
           end
         end
 
