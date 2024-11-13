@@ -239,6 +239,9 @@ describe('CaptchaSubmitButtonElement', () => {
           await userEvent.click(button);
 
           await expect(form.submit).to.eventually.be.called();
+          expect(Object.fromEntries(new window.FormData(form))).to.deep.equal({
+            recaptcha_token: '',
+          });
         });
 
         it('tracks error', async () => {

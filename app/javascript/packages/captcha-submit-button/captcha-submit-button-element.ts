@@ -55,14 +55,14 @@ class CaptchaSubmitButtonElement extends HTMLElement {
     this.#onReady(async () => {
       const { recaptchaSiteKey: siteKey, recaptchaAction: action } = this;
 
-      let token;
+      let token: string | undefined;
       try {
         token = await this.recaptchaClient!.execute(siteKey!, { action });
+        this.tokenInput.value = token;
       } catch (error) {
         trackError(error, { errorId: 'recaptchaExecute' });
       }
 
-      this.tokenInput.value = token;
       this.submit();
     });
   }
