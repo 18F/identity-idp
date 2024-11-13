@@ -29,7 +29,7 @@ module Idv
           )
 
           unless candidate.has_valid_address?
-            raise UspsLocationsError.new
+            raise UspsLocationsError
           end
 
           locations = proofer.request_facilities(candidate, false)
