@@ -40,7 +40,7 @@ describe('WebauthnInputElement', () => {
       });
     });
 
-    context('part of A/B test', () => {
+    context('as a part of A/B test', () => {
       beforeEach(() => {
         isWebauthnPasskeySupported.returns(false);
         isWebauthnPlatformAvailable.resolves(true);
