@@ -176,9 +176,6 @@ module OpenidConnect
 
       if result.success?
         store_request
-      else
-        # maybe?
-        session.delete(:sp)
       end
 
       analytics.openid_connect_request_authorization(
