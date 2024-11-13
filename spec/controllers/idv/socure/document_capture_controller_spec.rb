@@ -6,7 +6,17 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
   let(:idv_vendor) { Idp::Constants::Vendors::SOCURE }
   let(:fake_socure_endpoint) { 'https://fake-socure.test' }
   let(:user) { create(:user) }
-  let(:stored_result) { nil }
+  let(:doc_auth_success) { true }
+  let(:stored_result) do
+    DocumentCaptureSessionResult.new(
+      id: SecureRandom.uuid,
+      success: doc_auth_success,
+      doc_auth_success: doc_auth_success,
+      selfie_status: :none,
+      pii: { first_name: 'Testy', last_name: 'Testerson' },
+      attention_with_barcode: false,
+    )
+  end
   let(:socure_enabled) { true }
 
   let(:document_capture_session) do
@@ -23,6 +33,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       and_return(fake_socure_endpoint)
     allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(idv_vendor)
     allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(idv_vendor)
+    allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
 
     allow(subject).to receive(:stored_result).and_return(stored_result)
 
@@ -82,7 +93,6 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           referenceId: '123ab45d-2e34-46f3-8d17-6f540ae90303',
           data: {
             eventId: 'zoYgIxEZUbXBoocYAnbb5DrT',
-            customerUserId: '121212',
             docvTransactionToken: docv_transaction_token,
             qrCode: 'data:image/png;base64,iVBO......K5CYII=',
             url: socure_capture_app_url,
@@ -100,8 +110,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       it 'creates a DocumentRequest' do
         expect(request_class).to have_received(:new).
           with(
-            document_capture_session_uuid: expected_uuid,
-            redirect_url: idv_socure_document_capture_url,
+            redirect_url: idv_socure_document_capture_update_url,
             language: expected_language,
           )
       end
@@ -122,12 +131,11 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
                   config: {
                     documentType: 'license',
                     redirect: {
-                      method: 'POST',
-                      url: idv_socure_document_capture_url,
+                      method: 'GET',
+                      url: idv_socure_document_capture_update_url,
                     },
                     language: :en,
                   },
-                  customerUserId: expected_uuid,
                 },
               ),
             )
@@ -145,12 +153,11 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
                   config: {
                     documentType: 'license',
                     redirect: {
-                      method: 'POST',
-                      url: idv_socure_document_capture_url,
+                      method: 'GET',
+                      url: idv_socure_document_capture_update_url,
                     },
                     language: 'zh-cn',
                   },
-                  customerUserId: expected_uuid,
                 },
               ),
             )
@@ -264,9 +271,19 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
 
   describe '#update' do
     it 'returns OK (200)' do
-      post(:update)
+      get(:update)
 
-      expect(response).to have_http_status(:ok)
+      expect(response).to redirect_to(idv_ssn_path)
+    end
+
+    context 'when doc auth fails' do
+      let(:doc_auth_success) { false }
+
+      it 'redirects to document capture' do
+        get(:update)
+
+        expect(response).to redirect_to(idv_socure_document_capture_path)
+      end
     end
 
     context 'when socure is disabled' do

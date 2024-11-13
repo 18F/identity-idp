@@ -21,11 +21,23 @@ class SocureWebhookController < ApplicationController
 
   private
 
+  def process_webhook_event
+    case event[:eventType]
+    when 'DOCUMENTS_UPLOADED'
+      increment_rate_limiter
+      fetch_results
+    end
+  end
+
   def fetch_results
     dcs = document_capture_session
     raise 'DocumentCaptureSession not found' if dcs.blank?
 
-    SocureDocvResultsJob.perform_later(document_capture_session_uuid: dcs.uuid)
+    if IdentityConfig.store.ruby_workers_idv_enabled
+      SocureDocvResultsJob.perform_later(document_capture_session_uuid: dcs.uuid)
+    else
+      SocureDocvResultsJob.perform_now(document_capture_session_uuid: dcs.uuid)
+    end
   end
 
   def check_token
@@ -68,18 +80,11 @@ class SocureWebhookController < ApplicationController
     analytics.idv_doc_auth_socure_webhook_received(
       created_at: event[:created],
       customer_user_id: event[:customerUserId],
+      docv_transaction_token: event[:docvTransactionToken],
       event_type: event[:eventType],
       reference_id: event[:referenceId],
-      user_id: event[:customerUserId],
+      user_id: user&.uuid,
     )
-  end
-
-  def process_webhook_event
-    case event[:eventType]
-    when 'DOCUMENTS_UPLOADED'
-      increment_rate_limiter
-      fetch_results
-    end
   end
 
   def increment_rate_limiter
@@ -91,7 +96,7 @@ class SocureWebhookController < ApplicationController
 
   def document_capture_session
     @document_capture_session ||= DocumentCaptureSession.find_by(
-      socure_docv_transaction_token: event[:docvTransactionToken],
+      socure_docv_transaction_token: docv_transaction_token,
     )
   end
 
@@ -109,7 +114,15 @@ class SocureWebhookController < ApplicationController
   def socure_params
     params.permit(
       event: [:created, :customerUserId, :eventType, :referenceId,
-              :docvTransactionToken],
+              :docvTransactionToken, :docVTransactionToken],
     )
+  end
+
+  def user
+    @user ||= document_capture_session&.user
+  end
+
+  def docv_transaction_token
+    @docv_transaction_token ||= event[:docvTransactionToken] || event[:docVTransactionToken]
   end
 end

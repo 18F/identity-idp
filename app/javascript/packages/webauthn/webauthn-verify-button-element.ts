@@ -14,8 +14,11 @@ class WebauthnVerifyButtonElement extends HTMLElement {
   dataset: WebauthnVerifyButtonDataset;
 
   connectedCallback() {
-    this.setButtonAttributes();
-    this.bindEvents();
+    this.form.addEventListener('submit', this.#handleSubmit, { once: true });
+  }
+
+  get form(): HTMLFormElement {
+    return this.closest('form')!;
   }
 
   get button(): HTMLButtonElement {
@@ -38,17 +41,8 @@ class WebauthnVerifyButtonElement extends HTMLElement {
     return this.dataset.userChallenge;
   }
 
-  setButtonAttributes() {
-    this.button.type = 'button';
-  }
-
-  bindEvents() {
-    this.button.addEventListener('click', () => this.verify());
-  }
-
   async verify() {
     this.spinner.hidden = false;
-    this.submitButton.activate();
 
     const { userChallenge, credentials } = this;
 
@@ -60,7 +54,7 @@ class WebauthnVerifyButtonElement extends HTMLElement {
       this.setInputValue('signature', result.signature);
     } catch (error) {
       if (!isExpectedWebauthnError(error, { isVerifying: true })) {
-        trackError(error);
+        trackError(error, { errorId: 'webauthnVerify' });
       }
 
       if (isUserVerificationScreenLockError(error)) {
@@ -70,13 +64,18 @@ class WebauthnVerifyButtonElement extends HTMLElement {
       this.setInputValue('webauthn_error', error.name);
     }
 
-    this.closest('form')?.submit();
+    this.form.submit();
   }
 
   setInputValue(name: string, value: string) {
     const input = this.querySelector<HTMLInputElement>(`[name="${name}"]`)!;
     input.value = value;
   }
+
+  #handleSubmit = (event: SubmitEvent) => {
+    event.preventDefault();
+    this.verify();
+  };
 }
 
 declare global {

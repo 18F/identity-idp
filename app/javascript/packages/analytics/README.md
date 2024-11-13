@@ -8,6 +8,9 @@ Utilities and custom elements for logging events and errors in the application.
 
 Track an event or error from your code using exported function members.
 
+Since JavaScript may be bundled and minified in production environments, including an `errorId` is
+required to uniquely identify the source of the error.
+
 ```ts
 import { trackEvent, trackError } from '@18f/identity-analytics';
 
@@ -18,7 +21,7 @@ button.addEventListener('click', () => {
 try {
   doSomethingRisky();
 } catch (error) {
-  trackError(error);
+  trackError(error, { errorId: 'exampleId' });
 }
 ```
 

@@ -60,9 +60,11 @@ RSpec.describe FrontendLogController do
           let(:flow_path) { 'standard' }
           let(:event) { 'IdV: location submitted' }
           let(:payload) do
-            { 'selected_location' => selected_location,
+            {
+              'selected_location' => selected_location,
               'flow_path' => flow_path,
-              'opted_in_to_in_person_proofing' => nil }
+              'opted_in_to_in_person_proofing' => nil,
+            }
           end
 
           it 'succeeds' do
@@ -94,9 +96,11 @@ RSpec.describe FrontendLogController do
               { opt_in_analytics_properties: true }
             end
             let(:payload) do
-              { 'selected_location' => selected_location,
+              {
+                'selected_location' => selected_location,
                 'flow_path' => flow_path,
-                'opted_in_to_in_person_proofing' => true }
+                'opted_in_to_in_person_proofing' => true,
+              }
             end
 
             before do
@@ -207,6 +211,7 @@ RSpec.describe FrontendLogController do
                 message: 'message',
                 stack: 'stack',
                 filename: 'filename',
+                error_id: nil,
               },
             },
             expected: true,

@@ -5,6 +5,7 @@ const WebpackAssetsManifest = require('webpack-assets-manifest');
 const RailsI18nWebpackPlugin = require('@18f/identity-rails-i18n-webpack-plugin');
 const RailsAssetsWebpackPlugin = require('@18f/identity-assets/webpack-plugin');
 const UnpolyfillWebpackPlugin = require('@18f/identity-unpolyfill-webpack-plugin');
+const LiteWebpackDevServerPlugin = require('@18f/identity-lite-webpack-dev-server');
 
 const env = process.env.NODE_ENV || process.env.RAILS_ENV || 'development';
 const host = process.env.HOST || 'localhost';
@@ -22,24 +23,6 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
   mode,
   devtool,
   target: ['web'],
-  devServer: {
-    static: {
-      directory: './public',
-      watch: false,
-    },
-    port: devServerPort,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Cache-Control': 'no-store',
-      Vary: '*',
-    },
-    client: {
-      overlay: {
-        runtimeErrors: false,
-      },
-    },
-    hot: false,
-  },
   entry: entries.reduce((result, path) => {
     result[parse(path).name] = resolve(path);
     return result;
@@ -112,5 +95,15 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
     }),
     new RailsAssetsWebpackPlugin(),
     new UnpolyfillWebpackPlugin(),
+    devServerPort &&
+      new LiteWebpackDevServerPlugin({
+        publicPath: './public',
+        port: Number(devServerPort),
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Cache-Control': 'no-store',
+          Vary: '*',
+        },
+      }),
   ],
 });

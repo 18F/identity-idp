@@ -3,6 +3,11 @@ import { getConfigValue } from '@18f/identity-config';
 export { default as isTrackableErrorEvent } from './is-trackable-error-event';
 
 /**
+ * Metadata used to identify the source of an error.
+ */
+type ErrorMetadata = { errorId?: never; filename: string } | { errorId: string; filename?: never };
+
+/**
  * Logs an event.
  *
  * @param event Event name.
@@ -24,8 +29,8 @@ export function trackEvent(event: string, payload?: object) {
  * Logs an error.
  *
  * @param error Error object.
- * @param event Error event, if error is caught using an `error` event handler. Including this can
- * add additional resolution to the logged error, notably the filename where the error occurred.
+ * @param metadata Metadata used to identify the source of an error, including either the filename
+ * from an ErrorEvent object, or a unique identifier.
  */
-export const trackError = ({ name, message, stack }: Error, event?: ErrorEvent) =>
-  trackEvent('Frontend Error', { name, message, stack, filename: event?.filename });
+export const trackError = ({ name, message, stack }: Error, { filename, errorId }: ErrorMetadata) =>
+  trackEvent('Frontend Error', { name, message, stack, filename, error_id: errorId });

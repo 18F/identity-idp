@@ -4,15 +4,13 @@ module DocAuth
   module Socure
     module Requests
       class DocumentRequest < DocAuth::Socure::Request
-        attr_reader :document_type, :redirect_url, :document_capture_session_uuid, :language
+        attr_reader :document_type, :redirect_url, :language
 
         def initialize(
-          document_capture_session_uuid:,
           redirect_url:,
           language:,
           document_type: 'license'
         )
-          @document_capture_session_uuid = document_capture_session_uuid
           @redirect_url = redirect_url
           @document_type = document_type
           @language = language
@@ -27,7 +25,7 @@ module DocAuth
 
         def body
           redirect = {
-            method: 'POST',
+            method: 'GET',
             url: redirect_url,
           }
 
@@ -39,7 +37,6 @@ module DocAuth
               redirect: redirect,
               language: lang(language),
             },
-            customerUserId: document_capture_session_uuid,
           }.to_json
         end
 

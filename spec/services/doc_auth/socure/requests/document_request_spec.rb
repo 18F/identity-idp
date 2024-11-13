@@ -7,7 +7,6 @@ RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
 
   subject(:document_request) do
     described_class.new(
-      document_capture_session_uuid:,
       redirect_url: redirect_url,
       language:,
     )
@@ -38,12 +37,11 @@ RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
           documentType: document_type,
           redirect:
           {
-            method: 'POST',
+            method: 'GET',
             url: redirect_url,
           },
           language: language,
         },
-        customerUserId: document_capture_session_uuid,
       }
     end
     let(:fake_socure_status) { 200 }

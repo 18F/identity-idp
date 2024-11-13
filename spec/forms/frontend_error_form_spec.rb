@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe FrontendErrorForm do
-  let(:filename) { 'https://example.com/foo.js' }
-
   subject(:form) { described_class.new }
 
   before do
@@ -10,7 +8,9 @@ RSpec.describe FrontendErrorForm do
   end
 
   describe '#submit' do
-    subject(:result) { form.submit(filename:) }
+    subject(:result) { form.submit(filename:, error_id:) }
+    let(:error_id) { nil }
+    let(:filename) { 'https://example.com/foo.js' }
 
     context 'with valid filename' do
       let(:filename) { 'https://example.com/foo.js' }
@@ -24,9 +24,20 @@ RSpec.describe FrontendErrorForm do
     context 'without filename' do
       let(:filename) { nil }
 
-      it 'is unsuccessful' do
-        expect(result.success?).to eq(false)
-        expect(result.errors).to eq(filename: [t('errors.general'), t('errors.general')])
+      context 'without error id' do
+        it 'is unsuccessful' do
+          expect(result.success?).to eq(false)
+          expect(result.errors).to eq(filename: [t('errors.general'), t('errors.general')])
+        end
+      end
+
+      context 'with error id' do
+        let(:error_id) { 'exampleId' }
+
+        it 'is successful' do
+          expect(result.success?).to eq(true)
+          expect(result.errors).to eq({})
+        end
       end
     end
 

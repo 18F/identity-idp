@@ -1,6 +1,7 @@
 class SubmitButtonElement extends HTMLElement {
   connectedCallback() {
-    this.form?.addEventListener('submit', () => this.activate());
+    this.button.addEventListener('click', this.#preventDefaultIfSubmitting);
+    this.form?.addEventListener('submit', this.#activate);
   }
 
   get form(): HTMLFormElement | null {
@@ -11,10 +12,20 @@ class SubmitButtonElement extends HTMLElement {
     return this.querySelector('button')!;
   }
 
-  activate() {
-    this.button.classList.add('usa-button--active');
-    this.button.disabled = true;
+  get isSubmitting(): boolean {
+    return this.button.getAttribute('aria-disabled') === 'true';
   }
+
+  #activate = () => {
+    this.button.classList.add('usa-button--active');
+    this.button.setAttribute('aria-disabled', 'true');
+  };
+
+  #preventDefaultIfSubmitting = (event: MouseEvent) => {
+    if (this.isSubmitting) {
+      event.preventDefault();
+    }
+  };
 }
 
 declare global {
