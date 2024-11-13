@@ -14,8 +14,7 @@ module Idv
 
         include IppHelper
 
-        rescue_from ActionController::InvalidAuthenticityToken,
-                    Faraday::Error,
+        rescue_from Faraday::Error,
                     StandardError,
                     UspsLocationsError,
                     Faraday::BadRequestError,
