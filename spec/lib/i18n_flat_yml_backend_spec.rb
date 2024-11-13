@@ -41,6 +41,12 @@ RSpec.describe I18nFlatYmlBackend do
     end
 
     before do
+      write_file File.join(@tmpdir, 'single_root/en.yml'), <<~STR
+        en:
+          single.root.key: 'single root key translation'
+          needs.more.than.one.key: 'value'
+      STR
+
       write_file File.join(@tmpdir, 'flat/en.yml'), <<~STR
         flat.key.translation: 'flat key translation'
       STR
@@ -55,10 +61,12 @@ RSpec.describe I18nFlatYmlBackend do
 
     it 'handles both flattened and nested translations' do
       backend.load_translations(
+        File.join(@tmpdir, 'single_root/en.yml'),
         File.join(@tmpdir, 'flat/en.yml'),
         File.join(@tmpdir, 'nested/en.yml'),
       )
 
+      expect(backend.translate(:en, 'single.root.key')).to eq('single root key translation')
       expect(backend.translate(:en, 'flat.key.translation')).to eq('flat key translation')
       expect(backend.translate(:en, 'nested.key.translation')).to eq('nested key translation')
     end
