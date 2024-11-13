@@ -1939,6 +1939,147 @@ module AnalyticsEvents
 
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
+  # @param [String] exception
+  # @param [Boolean] billed
+  # @param [String] doc_auth_result
+  # @param [String] user_id
+  # @param [String] state
+  # @param [String] state_id_type
+  # @param [Boolean] async
+  # @param [Integer] submit_attempts Times that user has tried submitting (previously called
+  # "attempts")
+  # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
+  # @param [Hash] client_image_metrics
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [Float] vendor_request_time_in_ms Time it took to upload images & get a response.
+  # @param [String] front_image_fingerprint Fingerprint of front image data
+  # @param [String] back_image_fingerprint Fingerprint of back image data
+  # @param [String] selfie_image_fingerprint Fingerprint of selfie image data
+  # @param [Boolean] attention_with_barcode Whether result was attention with barcode
+  # @param [Boolean] doc_type_supported
+  # @param [Boolean] doc_auth_success
+  # @param [Boolean] liveness_checking_required Whether or not the selfie is required
+  # @param [Boolean] liveness_enabled Whether or not the selfie result is included in response
+  # @param [String] selfie_status
+  # @param [String] vendor
+  # @param [String] conversation_id
+  # @param [String] request_id RequestId from TrueID
+  # @param [String] reference
+  # @param [String] transaction_status
+  # @param [String] transaction_reason_code
+  # @param [String] product_status
+  # @param [String] decision_product_status
+  # @param [Array] processed_alerts
+  # @param [Integer] alert_failure_count
+  # @param [Hash] log_alert_results
+  # @param [Hash] portrait_match_results
+  # @param [Hash] image_metrics
+  # @param [Boolean] address_line2_present
+  # @param [String] zip_code
+  # @param [Boolean] selfie_live Selfie liveness result
+  # @param [Boolean] selfie_quality_good Selfie quality result
+  # @param [String] workflow LexisNexis TrueID workflow
+  # @param [String] birth_year Birth year from document
+  # @param [Integer] issue_year Year document was issued
+  # @param [Hash] failed_image_fingerprints Hash of document field with an array of failed image
+  # fingerprints for that field.
+  # @param [Integer] selfie_attempts number of selfie attempts the user currently has processed
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
+  # SDK upgrades
+  # @option extra [String] 'DocumentName'
+  # @option extra [String] 'DocAuthResult'
+  # @option extra [String] 'DocIssuerCode'
+  # @option extra [String] 'DocIssuerName'
+  # @option extra [String] 'DocIssuerType'
+  # @option extra [String] 'DocClassCode'
+  # @option extra [String] 'DocClass'
+  # @option extra [String] 'DocClassName'
+  # @option extra [Boolean] 'DocIsGeneric'
+  # @option extra [String] 'DocIssue'
+  # @option extra [String] 'DocIssueType'
+  # @option extra [String] 'ClassificationMode'
+  # @option extra [Boolean] 'OrientationChanged'
+  # @option extra [Boolean] 'PresentationChanged'
+  # The document capture image was uploaded to vendor during the IDV process
+  def idv_socure_verification_data_requested(
+    success:,
+    errors:,
+    exception:,
+    user_id:,
+    state:,
+    state_id_type:,
+    async:,
+    submit_attempts:,
+    remaining_submit_attempts:,
+    client_image_metrics:,
+    flow_path:,
+    liveness_checking_required:,
+    issue_year:,
+    # failed_image_fingerprints: nil,
+    billed: nil,
+    vendor_request_time_in_ms: nil,
+    doc_type_supported: nil,
+    doc_auth_success: nil,
+    vendor: nil,
+    address_line2_present: nil,
+    zip_code: nil,
+    birth_year: nil,
+    liveness_enabled: nil,
+    **extra
+  )
+    track_event(
+      'IdV: socure verification data requested',
+      success:,
+      errors:,
+      exception:,
+      billed:,
+      user_id:,
+      state:,
+      state_id_type:,
+      async:,
+      submit_attempts: submit_attempts,
+      remaining_submit_attempts: remaining_submit_attempts,
+      client_image_metrics:,
+      flow_path:,
+      vendor_request_time_in_ms:,
+      front_image_fingerprint:,
+      back_image_fingerprint:,
+      selfie_image_fingerprint:,
+      attention_with_barcode:,
+      doc_type_supported:,
+      doc_auth_success:,
+      selfie_status:,
+      vendor:,
+      conversation_id:,
+      request_id:,
+      reference:,
+      transaction_status:,
+      transaction_reason_code:,
+      product_status:,
+      decision_product_status:,
+      processed_alerts:,
+      alert_failure_count:,
+      log_alert_results:,
+      portrait_match_results:,
+      image_metrics:,
+      address_line2_present:,
+      liveness_checking_required:,
+      zip_code:,
+      selfie_live:,
+      selfie_quality_good:,
+      workflow:,
+      birth_year:,
+      issue_year:,
+      failed_image_fingerprints:,
+      selfie_attempts:,
+      acuant_sdk_upgrade_ab_test_bucket:,
+      liveness_enabled:,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] user_id
   # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
