@@ -299,10 +299,6 @@ module Idv
       IdentityConfig.store.doc_auth_selfie_desktop_test_mode
     end
 
-    def desktop_socure_test_mode_enabled?
-      IdentityConfig.store.socure_standard_capture_desktop_enabled
-    end
-
     def idv_consent_given?
       !!session[:idv_consent_given_at]
     end
