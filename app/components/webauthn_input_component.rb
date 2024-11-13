@@ -43,10 +43,6 @@ class WebauthnInputComponent < BaseComponent
   end
 
   def show_desktop_ft_unlock_option?
-    if desktop_ft_unlock_option? && I18n.locale == :en
-      true
-    else
-      false
-    end
+    desktop_ft_unlock_option? && I18n.locale == :en
   end
 end
