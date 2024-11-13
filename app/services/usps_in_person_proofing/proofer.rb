@@ -9,6 +9,33 @@ module UspsInPersonProofing
     USPS_EIPP_ASSURANCE_LEVEL = '2.0'
 
     # Makes HTTP request to get nearby in-person proofing facilities
+    # Requires zip code, and is_enhanced_ipp.
+    # The PostOffice objects have a subset of the fields
+    # returned by the API.
+    # @param zip [String]
+    # @param is_enhanced_ipp [Boolean]
+    # @return [Array<PostOffice>] Facility locations
+    def request_facilities_by_zip(zip_code, is_enhanced_ipp)
+      url = "#{root_url}/ivs-ippaas-api/IPPRest/resources/rest/getIppFacilityListByZip"
+      request_body = {
+        sponsorID: sponsor_id,
+        zipCode: zip_code,
+      }
+
+      if is_enhanced_ipp
+        request_body[:sponsorID] = IdentityConfig.store.usps_eipp_sponsor_id.to_i
+      end
+      binding.pry
+      response = faraday.post(url, request_body.to_json, dynamic_headers) do |req|
+        req.options.context = { service_name: 'usps_facilities_by_zip' }
+      end.body
+
+      facilities = parse_facilities(response)
+      dedupe_facilities = dedupe_facilities(facilities)
+      sort_by_ascending_distance(dedupe_facilities)
+    end
+
+    # Makes HTTP request to get nearby in-person proofing facilities
     # Requires address, city, state, zip code, and is_enhanced_ipp.
     # The PostOffice objects have a subset of the fields
     # returned by the API.
