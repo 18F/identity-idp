@@ -1,4 +1,4 @@
-<%= content_for(:meta_refresh) { '15' } %>
+<%= content_for(:meta_refresh) { @refresh_interval || '15' } %>
 <% self.title = t('titles.doc_auth.verify') %>
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
