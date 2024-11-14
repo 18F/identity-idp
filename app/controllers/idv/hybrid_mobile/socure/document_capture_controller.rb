@@ -50,26 +50,15 @@ module Idv
         end
 
         def update
-          result = handle_stored_result
+          result = handle_stored_result(
+            user: document_capture_user,
+            store_in_session: false,
+          )
 
           if result.success?
             redirect_to idv_ssn_url
           else
             redirect_to idv_hybrid_mobile_socure_document_capture_url
-          end
-        end
-
-        private
-
-        def handle_stored_result
-          if stored_result&.success? && selfie_requirement_met?
-            save_proofing_components(current_user)
-            extract_pii_from_doc(current_user, store_in_session: true)
-            flash[:success] = t('doc_auth.headings.capture_complete')
-            successful_response
-          else
-            extra = { stored_result_present: stored_result.present? }
-            failure(I18n.t('doc_auth.errors.general.network_error'), extra)
           end
         end
       end

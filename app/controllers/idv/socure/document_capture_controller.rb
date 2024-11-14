@@ -76,12 +76,6 @@ module Idv
         Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
           call('socure_document_capture', :update, true)
 
-<<<<<<< HEAD
-        cancel_establishing_in_person_enrollments
-
-=======
-        # cancel_establishing_in_person_enrollments
->>>>>>> 5b36509c8b (LG-14008: Handle redirect from CaptureApp in hybrid flow)
         if result.success?
           redirect_to idv_ssn_url
         else
@@ -113,21 +107,6 @@ module Idv
 
       private
 
-<<<<<<< HEAD
-=======
-      def handle_stored_result
-        if stored_result&.success? && selfie_requirement_met?
-          save_proofing_components(current_user)
-          extract_pii_from_doc(current_user, store_in_session: true)
-          flash[:success] = t('doc_auth.headings.capture_complete')
-          successful_response
-        else
-          extra = { stored_result_present: stored_result.present? }
-          failure(I18n.t('doc_auth.errors.general.network_error'), extra)
-        end
-      end
-
->>>>>>> 5b36509c8b (LG-14008: Handle redirect from CaptureApp in hybrid flow)
       def analytics_arguments
         {
           flow_path: flow_path,
