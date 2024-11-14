@@ -374,6 +374,7 @@ RSpec.describe Idv::DocumentCaptureController do
 
         it 'stays on document capture' do
           put :update
+
           expect(response).to redirect_to idv_document_capture_url
         end
       end

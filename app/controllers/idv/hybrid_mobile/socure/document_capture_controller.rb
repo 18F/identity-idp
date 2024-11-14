@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+  # frozen_string_literal: true
 
 module Idv
   module HybridMobile
@@ -11,7 +11,8 @@ module Idv
 
         check_or_render_not_found -> { IdentityConfig.store.socure_docv_enabled }
         before_action :check_valid_document_capture_session, except: [:update]
-        before_action -> { redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, true) }
+        before_action -> { redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, true) },
+                      only: :show
 
         def show
           Funnel::DocAuth::RegisterStep.new(document_capture_user.id, sp_session[:issuer]).
@@ -63,8 +64,22 @@ module Idv
           if result.success?
             redirect_to idv_hybrid_mobile_capture_complete_url
           else
-            redirect_to idv_hybrid_mobile_socure_document_capture_url
+            redirect_to idv_hybrid_mobile_socure_document_capture_errors_url
           end
+        end
+
+        def errors
+          result = handle_stored_result
+
+          @presenter =
+            SocureErrorPresenter.new(
+              result.errors.dig(:socure, :reason_codes)&.first,
+              RateLimiter.new(
+                user: document_capture_session.user,
+                rate_limit_type: :idv_resolution,
+              ).remaining_count,
+              decorated_sp_session&.sp_name || APP_NAME,
+            )
         end
 
         private

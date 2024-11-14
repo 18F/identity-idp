@@ -14,7 +14,7 @@ module Idv
         successful_response
       else
         extra = { stored_result_present: stored_result.present? }
-        failure(I18n.t('doc_auth.errors.general.network_error'), extra)
+        failure(nil, extra)
       end
     end
 
@@ -33,11 +33,17 @@ module Idv
     end
 
     # copied from Flow::Failure module
-    def failure(message, extra = nil)
-      flash[:error] = message
-      form_response_params = { success: false, errors: { message: message } }
+    def failure(message = nil, extra = nil)
+      form_response_params = { success: false }
+      form_response_params[:errors] = make_error_hash(message)
       form_response_params[:extra] = extra unless extra.nil?
       FormResponse.new(**form_response_params)
+    end
+
+    def make_error_hash(message)
+      Rails.logger.info("make_error_hash: stored_result: #{stored_result.inspect}")
+
+      { message: message || I18n.t('doc_auth.errors.general.network_error') }
     end
 
     def extract_pii_from_doc(user, store_in_session: false)
@@ -54,7 +60,15 @@ module Idv
 
     def stored_result
       return @stored_result if defined?(@stored_result)
-      @stored_result = document_capture_session&.load_result
+
+      wait_start = Time.zone.now
+      while (Time.zone.now - wait_start < 20)
+        if @stored_result = document_capture_session&.load_result
+          break
+        end
+        sleep(0.1)
+      end
+      @stored_result
     end
 
     def selfie_requirement_met?

@@ -537,6 +537,8 @@ doc_auth.errors.document_capture_canceled: Vous avez annulé le téléchargement
 doc_auth.errors.dpi.failed_short: Image trop petite ou floue, veuillez réessayer.
 doc_auth.errors.dpi.top_msg: Nous n’avons pas pu lire votre pièce d’identité. Il se peut que votre image soit de trop petite taille ou que votre pièce d’identité soit trop petite ou floue sur la photo. Assurez-vous que votre pièce d’identité remplisse le cadre de l’image, puis essayez de prendre une nouvelle photo.
 doc_auth.errors.dpi.top_msg_plural: Nous n’avons pas pu lire votre pièce d’identité. Il se peut que votre image soit de trop petite taille ou que votre pièce d’identité soit trop petite ou floue sur les photos. Assurez-vous que votre pièce d’identité remplisse le cadre de l’image, puis essayez de prendre une nouvelle photo.
+doc_auth.errors.expired_id: Il n’est pas possible d’utiliser une pièce d’identité périmée pour confirmer votre identité. Si votre pièce d’identité est toujours valable, veillez à ce que tous les renseignements y figurant soient nets et que l’ensemble de la carte remplisse le cadre.
+doc_auth.headers.expired_id: Votre pièce d’identité est peut-être périmée
 doc_auth.errors.file_type.invalid: Ce type de fichier n’est pas accepté ; veuillez choisir un fichier JPG ou PNG.
 doc_auth.errors.general.fallback_field_level: Veuillez ajouter une nouvelle image
 doc_auth.errors.general.multiple_back_id_failures: Nous n’avons pas pu vérifier le verso de votre pièce d’identité. Essayez de prendre une nouvelle photo.
@@ -555,6 +557,10 @@ doc_auth.errors.http.image_size.failed_short: Le fichier image n’est pas pris 
 doc_auth.errors.http.image_size.top_msg: La taille de votre image est trop grande ou trop petite. Veuillez ajouter des images de votre pièce d’identité d’environ 2 025 x 1 275 pixels.
 doc_auth.errors.http.pixel_depth.failed_short: Le fichier image n’est pas pris en charge, veuillez réessayer.
 doc_auth.errors.http.pixel_depth.top_msg: La profondeur de pixel de votre fichier image n’est pas prise en charge. Veuillez prendre de nouvelles photos de votre pièce d’identité et réessayer. La profondeur de pixel de l’image prise en charge est de 24 bits RGB.
+doc_auth.errors.id_not_found: Veillez à prendre une photo de votre pièce d'identité physique et non d'une photo ou d'une capture d'écran.
+doc_auth.headers.id_not_found: Nous n’avons pas trouvé votre pièce d’identité
+doc_auth.errors.low_resolution: Nous n'avons pas pu vérifier votre identité car votre appareil n'a pas pris une photo suffisamment claire. Si cette erreur persiste, utilisez un autre appareil ou confirmez votre identité dans un bureau de poste local.
+doc_auth.headers.low_resolution: Il se peut que la caméra de votre appareil ne soit pas prise en charge
 doc_auth.errors.not_a_file: La sélection n’était pas un fichier valide.
 doc_auth.errors.phone_step_incomplete: Vous devez aller sur votre téléphone et télécharger des photos de votre pièce d’identité avant de continuer. Nous vous avons envoyé un lien avec des instructions.
 doc_auth.errors.pii.birth_date_min_age: Votre anniversaire ne correspond pas à l’âge minimum requis.
@@ -567,6 +573,12 @@ doc_auth.errors.send_link_limited: Vous avez essayé trop de fois, veuillez rée
 doc_auth.errors.sharpness.failed_short: L’image est floue, veuillez réessayer.
 doc_auth.errors.sharpness.top_msg: Nous n’avons pas pu lire votre pièce d’identité. Il se peut que votre photo soit trop floue ou trop sombre. Essayez de prendre une nouvelle photo dans un endroit bien éclairé.
 doc_auth.errors.sharpness.top_msg_plural: Nous n’avons pas pu lire votre pièce d’identité. Il se peut que vos photos soient trop floues ou trop sombres. Essayez de prendre de nouvelles photos dans un endroit bien éclairé.
+doc_auth.errors.unaccepted_id_type: Nous n’acceptons pas de passeports, de cartes d’identité militaires, de pièces d’identité papier ou provisoires. Vous pouvez uniquement utiliser un permis de conduire ou une pièce d’identité délivré par un État ou un territoire des États-Unis.
+doc_auth.headers.unaccepted_id_type: Utiliser un permis de conduire ou une carte d’identité d’un État
+doc_auth.errors.underage: Vous devez être âgé de 13 ans au moins pour utiliser %{app_name}. Si vous avez 13 ans ou plus, réessayez et assurez-vous que votre date de naissance est bien visible.
+doc_auth.headers.underage: Condition d'âge non remplie
+doc_auth.errors.unreadable_id: Prenez vos photos dans un endroit bien éclairé sans ombre ou reflet. Veillez à ce que tous les renseignements figurant sur votre pièce d’identité soient nets et que l’ensemble de la pièce soit visible à l’intérieur du cadre.
+doc_auth.headers.unreadable_id: Nous n’avons pas pu lire votre pièce d’identité
 doc_auth.errors.upload_error: Désolé, il y a eu un problème de notre côté.
 doc_auth.forms.change_file: Changer de fichier
 doc_auth.forms.choose_file_html: Faites glisser le fichier ici ou <lg-underline>choisissez dans un dossier</lg-underline>
@@ -685,6 +697,8 @@ doc_auth.instructions.text1: Les autres pièces d’identité ne sont pas accept
 doc_auth.instructions.text2: Vous n’aurez pas besoin de votre carte de sécurité sociale papier.
 doc_auth.instructions.text3: Nous comparons votre numéro de téléphone à vos informations personnelles et vous envoyons un code à usage unique sur votre téléphone.
 doc_auth.instructions.text4: Votre mot de passe s’enregistre et chiffre vos informations personnelles.
+doc_auth.rate_limit_warning.plural_html: Pour des raisons de sécurité, il vous reste <strong>%{remaining_attempts} tentatives</strong>.
+doc_auth.rate_limit_warning.singular_html: Pour des raisons de sécurité, il vous reste <strong>une tentative</strong>.
 doc_auth.tips.document_capture_hint: Doit être au format JPG ou PNG
 doc_auth.tips.document_capture_id_text1: Utilisez une surface plane et foncée
 doc_auth.tips.document_capture_id_text2: Prenez vos photos dans un endroit bien éclairé

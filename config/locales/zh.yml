@@ -548,6 +548,8 @@ doc_auth.errors.document_capture_canceled: 你已取消了用手机上传身份�
 doc_auth.errors.dpi.failed_short: 图像太小或模糊，请再试一次。
 doc_auth.errors.dpi.top_msg: 我们无法辨认你的身份证件。你的图像尺寸可能太小，或者照片中你的身份证件太小或太模糊。确保你的身份证件在图框中比较大，然后试着重拍一下。
 doc_auth.errors.dpi.top_msg_plural: 我们无法读取你的身份证件。你的图像尺寸可能太小，或者照片中你的身份证件太小或模糊。确保你的身份证件在图片框中很大，然后试着拍一张新照片。
+doc_auth.errors.expired_id: 你不能使用过期的身份证件进行身份验证。如果你的身份证件未过期，请确保你的身份证件上的所有内容对焦，而且身份卡填满画面。
+doc_auth.headers.expired_id: 你的身份证件可能已过期
 doc_auth.errors.file_type.invalid: 这一文件类型我们不接受。请选择一个 JPG 或 PNG 文件。
 doc_auth.errors.general.fallback_field_level: 请添加一个新图像
 doc_auth.errors.general.multiple_back_id_failures: 我们无法验证你身份证件的背面。尝试重拍一张。
@@ -566,6 +568,10 @@ doc_auth.errors.http.image_size.failed_short: 系统不支持图像文件，请�
 doc_auth.errors.http.image_size.top_msg: 你的图像尺寸太大或太小。请添加你身份证件的图像，其像素应约为 2025 x 1275。
 doc_auth.errors.http.pixel_depth.failed_short: 系统不支持图像文件，请再试一次。
 doc_auth.errors.http.pixel_depth.top_msg: 你图像文件的像素深度系统不支持。请重拍你的身份证件并再试一次。系统支持的图像像素深度为 24位 RGB。
+doc_auth.errors.id_not_found: 确保你拍摄的是你的实体身份证件，而不是照片或屏幕截图。
+doc_auth.headers.id_not_found: 我们找不到你的身份证件
+doc_auth.errors.low_resolution: 我们无法验证你的身份，因为你设备拍摄的照片不够清晰。如果这个错误持续发生，请使用其他设备或在当地邮局验证你的身份。
+doc_auth.headers.low_resolution: 你设备的相机可能不受支持
 doc_auth.errors.not_a_file: 你选择的不是一个正确的文件。
 doc_auth.errors.phone_step_incomplete: 在继续之前你必须使用手机上传你身份证件的图片。我们已给你发了带有说明的链接。
 doc_auth.errors.pii.birth_date_min_age: 你的生日不满足最低年龄要求。
@@ -578,6 +584,12 @@ doc_auth.errors.send_link_limited: 你尝试了太多次。请在 %{timeout}后�
 doc_auth.errors.sharpness.failed_short: 图像模糊，请再试一次。
 doc_auth.errors.sharpness.top_msg: 我们无法读取你的身份证件。你的照片可能太模糊或太暗。尝试在明亮的地方重拍一张。
 doc_auth.errors.sharpness.top_msg_plural: 我们无法读取你的身份证件。你的照片可能太模糊或太暗。尝试在明亮的地方重拍一张。
+doc_auth.errors.unaccepted_id_type: 我们不接受护照、军人身份证件、纸质身份证件或临时身份证件。你只能使用驾驶执照或美国州或领地颁发的身份证件。
+doc_auth.headers.unaccepted_id_type: 使用驾驶执照或州颁发的身份证件
+doc_auth.errors.underage: 你必须年满 13 岁才能使用 %{app_name}。如果你年满 13 岁，请重试并确保你的出生日期对焦。
+doc_auth.headers.underage: 不符合年龄规定
+doc_auth.errors.unreadable_id: 请在光线充足而且没有阴影或眩光的地方拍照。确保你身份证件上的所有内容都清晰对焦，并且身份卡填满画面。
+doc_auth.headers.unreadable_id: 我们无法读取你的身份证件
 doc_auth.errors.upload_error: 抱歉，我们这边出错了。
 doc_auth.forms.change_file: 更改文件
 doc_auth.forms.choose_file_html: 将文件拖到此处或者<lg-underline>从文件夹中选择</lg-underline>。
@@ -696,6 +708,8 @@ doc_auth.instructions.text1: 其他形式的身份证件不被接受。我们要
 doc_auth.instructions.text2: 不需要你社会保障卡实体。
 doc_auth.instructions.text3: 我们把你的电话号码与个人信息匹配，并向你的电话发送一个一次性代码。
 doc_auth.instructions.text4: 你的密码对你个人信息进行存储并加密。
+doc_auth.rate_limit_warning.plural_html: 出于安全原因，你还有 <strong>%{remaining_attempts} 次尝试机会</strong>。
+doc_auth.rate_limit_warning.singular_html: 出于安全原因，你还有 <strong>1 次尝试机会</strong>。
 doc_auth.tips.document_capture_hint: 必须是 JPG 或 PNG
 doc_auth.tips.document_capture_id_text1: 使用水平和深色表面
 doc_auth.tips.document_capture_id_text2: 在光线明亮的地方拍照

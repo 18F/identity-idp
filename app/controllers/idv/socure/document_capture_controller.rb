@@ -11,7 +11,8 @@ module Idv
       check_or_render_not_found -> { IdentityConfig.store.socure_docv_enabled }
       before_action :confirm_not_rate_limited
       before_action :confirm_step_allowed
-      before_action -> { redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, false) }
+      before_action -> { redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, false) },
+                    only: :show
 
       # reconsider and maybe remove these when implementing the real
       # update handler
@@ -79,8 +80,22 @@ module Idv
         if result.success?
           redirect_to idv_ssn_url
         else
-          redirect_to idv_socure_document_capture_url
+          redirect_to idv_socure_document_capture_errors_url
         end
+      end
+
+      def errors
+        result = handle_stored_result
+
+        @presenter =
+          SocureErrorPresenter.new(
+            result.errors.dig(:socure, :reason_codes)&.first,
+            RateLimiter.new(
+              user: document_capture_session.user,
+              rate_limit_type: :idv_resolution,
+            ).remaining_count,
+            decorated_sp_session&.sp_name || APP_NAME,
+          )
       end
 
       def self.step_info
