@@ -38,13 +38,6 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
     allow(view).to receive(:step_indicator_steps).and_return(step_indicator_steps)
   end
 
-  it 'displays a link back to the service provider' do
-    render
-
-    expect(rendered).to have_content(service_provider.friendly_name)
-    expect(rendered).to have_css("lg-click-observer[event-name='#{sp_event_name}']")
-  end
-
   it 'displays a link back to the help center' do
     render
 
@@ -57,16 +50,6 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
         article: 'verify-your-identity-in-person',
       ),
     )
-  end
-
-  context 'when the user is not coming from a service provider' do
-    let(:service_provider) { nil }
-
-    it 'does not display a link back to a service provider' do
-      render
-
-      expect(rendered).not_to have_content('You may now close this window or')
-    end
   end
 
   it 'renders a cancel link' do
@@ -84,86 +67,125 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
     expect(rendered).to have_content(t('in_person_proofing.process.barcode.caption_label'))
   end
 
-  context 'with enrollment where selected_location_details is present' do
-    it 'renders a location' do
-      render
+  context 'link back to the service provider' do
+    context 'when the user is coming from a service provider' do
+      it 'displays a link back to the service provider' do
+        render
 
-      expect(rendered).to have_content(t('in_person_proofing.body.barcode.retail_hours'))
+        expect(rendered).to have_content(service_provider.friendly_name)
+        expect(rendered).to have_css("lg-click-observer[event-name='#{sp_event_name}']")
+      end
+    end
+
+    context 'when the user is not coming from a service provider' do
+      let(:service_provider) { nil }
+
+      it 'does not display a link back to the service provider' do
+        render
+
+        expect(rendered).not_to have_css("lg-click-observer[event-name='#{sp_event_name}']")
+        expect(rendered).to have_content('You may now close this window')
+      end
     end
   end
 
-  context 'with enrollment where selected_location_details is not present' do
-    let(:selected_location_details) { nil }
+  context 'location section' do
+    context 'when selected_location_details is present' do
+      it 'renders a location' do
+        render
 
-    it 'does not render a location' do
-      render
+        expect(rendered).to have_content(t('in_person_proofing.body.barcode.retail_hours'))
+      end
+    end
 
-      expect(rendered).not_to have_content(t('in_person_proofing.body.barcode.retail_hours'))
+    context 'when selected_location_details is not present' do
+      let(:selected_location_details) { nil }
+
+      it 'does not render a location' do
+        render
+
+        expect(rendered).not_to have_content(t('in_person_proofing.body.barcode.retail_hours'))
+      end
     end
   end
 
-  context 'Outage message flag' do
-    before(:each) do
+  context 'outage alert' do
+    context 'when the outage message flag is enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).
+          and_return(true)
+      end
+
+      context 'when the outage dates are included' do
+        let(:formatted_date) { 'Tuesday, October 31' }
+        let(:in_person_outage_emailed_by_date) { 'November 1, 2023' }
+        let(:in_person_outage_expected_update_date) { 'October 31, 2023' }
+
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).
+            and_return(true)
+          allow(IdentityConfig.store).to receive(:in_person_outage_emailed_by_date).
+            and_return(in_person_outage_emailed_by_date)
+          allow(IdentityConfig.store).to receive(:in_person_outage_expected_update_date).
+            and_return(in_person_outage_expected_update_date)
+        end
+
+        it 'renders the outage alert' do
+          render
+
+          expect(rendered).to have_content(
+            t(
+              'idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title',
+              date: formatted_date,
+            ),
+          )
+        end
+      end
+
+      context 'when the outage dates are not included' do
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).
+            and_return(true)
+          allow(IdentityConfig.store).to receive(:in_person_outage_emailed_by_date).
+            and_return('')
+          allow(IdentityConfig.store).to receive(:in_person_outage_expected_update_date).
+            and_return('')
+        end
+
+        it 'does not render a warning' do
+          render
+
+          expect(rendered).to_not have_content(
+            t('idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title'),
+          )
+        end
+      end
     end
 
-    let(:formatted_date) { 'Tuesday, October 31' }
-    let(:in_person_outage_emailed_by_date) { 'November 1, 2023' }
-    let(:in_person_outage_expected_update_date) { 'October 31, 2023' }
+    context 'when the outage message flag is disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).
+          and_return(false)
+      end
 
-    it 'renders the outage alert when flag is enabled' do
-      allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).
-        and_return(true)
-      allow(IdentityConfig.store).to receive(:in_person_outage_emailed_by_date).
-        and_return(in_person_outage_emailed_by_date)
-      allow(IdentityConfig.store).to receive(:in_person_outage_expected_update_date).
-        and_return(in_person_outage_expected_update_date)
+      it 'does not render the outage alert' do
+        render
 
-      render
-
-      expect(rendered).to have_content(
-        t(
-          'idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title',
-          date: formatted_date,
-        ),
-      )
-    end
-
-    it 'does not render a warning when outage dates are not included' do
-      allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).
-        and_return(true)
-      allow(IdentityConfig.store).to receive(:in_person_outage_emailed_by_date).
-        and_return('')
-      allow(IdentityConfig.store).to receive(:in_person_outage_expected_update_date).
-        and_return('')
-
-      expect(rendered).to_not have_content(
-        t(
-          'idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title',
-          date: formatted_date,
-        ),
-      )
-    end
-
-    it 'does not render the outage alert when flag is disabled' do
-      allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).
-        and_return(false)
-
-      render
-
-      expect(rendered).not_to have_content(
-        t('idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title'),
-      )
+        expect(rendered).not_to have_content(
+          t('idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title'),
+        )
+      end
     end
   end
 
-  context 'For IPP (Not Enhanced IPP)' do
-    let(:is_enhanced_ipp) { false }
-    before do
-      @is_enhanced_ipp = false
-    end
+  context 'what to expect section' do
+    context 'when Enhanced IPP is not enabled' do
+      let(:is_enhanced_ipp) { false }
+      before do
+        @is_enhanced_ipp = is_enhanced_ipp
+      end
 
-    context 'template displays modified content' do
-      it 'conditionally renders content in the what to expect section applicable to IPP' do
+      it 'conditionally renders content applicable to ID-IPP' do
         render
 
         aggregate_failures do
@@ -180,71 +202,13 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
       end
     end
 
-    it 'renders Questions? and Learn more link only once' do
-      render
-
-      expect(rendered).to have_content(t('in_person_proofing.body.barcode.questions')).once
-      expect(rendered).to have_link(
-        t('in_person_proofing.body.barcode.learn_more'),
-        href: help_center_redirect_url(
-          category: 'verify-your-identity',
-          article: 'verify-your-identity-in-person',
-        ),
-      ).once
-    end
-
-    it 'renders the email sent success alert' do
-      render
-
-      expect(rendered).to have_content(t('in_person_proofing.body.barcode.email_sent'))
-    end
-
-    it 'template does not display Enhanced In-Person Proofing specific content' do
-      render
-
-      aggregate_failures do
-        [
-          t('in_person_proofing.headings.barcode_eipp'),
-          t('in_person_proofing.body.barcode.eipp_tag'),
-          t('in_person_proofing.headings.barcode_what_to_bring'),
-          t('in_person_proofing.body.barcode.eipp_what_to_bring'),
-          t('in_person_proofing.process.eipp_bring_id.heading'),
-          t('in_person_proofing.process.eipp_bring_id_with_current_address.heading'),
-          t('in_person_proofing.process.eipp_bring_id.info'),
-          t('in_person_proofing.process.real_id_and_supporting_docs.heading'),
-          t('in_person_proofing.process.real_id_and_supporting_docs.info'),
-          t('in_person_proofing.process.eipp_bring_id_plus_documents.heading'),
-          t('in_person_proofing.process.eipp_bring_id_plus_documents.info'),
-          t('in_person_proofing.process.eipp_state_id_passport.heading'),
-          t('in_person_proofing.process.eipp_state_id_passport.info'),
-          t('in_person_proofing.process.eipp_state_id_military_id.heading'),
-          t('in_person_proofing.process.eipp_state_id_military_id.info'),
-          t('in_person_proofing.process.eipp_state_id_supporting_docs.heading'),
-          t('in_person_proofing.process.eipp_state_id_supporting_docs.info'),
-          t('in_person_proofing.process.state_id.heading_eipp'),
-          t('in_person_proofing.process.state_id.info_eipp'),
-        ].each do |copy|
-          Array(copy).each do |part|
-            expect(rendered).to_not have_content(part)
-          end
-        end
+    context 'when Enhanced IPP is enabled' do
+      let(:is_enhanced_ipp) { true }
+      before do
+        @is_enhanced_ipp = is_enhanced_ipp
       end
 
-      t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').each do |item|
-        expect(rendered).to_not have_content(strip_tags(item))
-      end
-    end
-  end
-
-  context 'For Enhanced In-Person Proofing (EIPP)' do
-    let(:is_enhanced_ipp) { true }
-
-    before do
-      @is_enhanced_ipp = true
-    end
-
-    context 'template displays modified content' do
-      it 'conditionally renders content in the what to expect section applicable to EIPP' do
+      it 'conditionally renders content applicable to EIPP' do
         render
 
         aggregate_failures do
@@ -260,7 +224,9 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
         end
       end
     end
+  end
 
+  context 'Questions? and Learn more link' do
     it 'renders Questions? and Learn more link only once' do
       render
 
@@ -273,74 +239,195 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
         ),
       ).once
     end
+  end
 
+  context 'email sent success alert' do
     it 'renders the email sent success alert' do
       render
 
       expect(rendered).to have_content(t('in_person_proofing.body.barcode.email_sent'))
     end
+  end
 
-    context 'template displays additional (EIPP specific) content' do
+  context 'GSA Enhanced Pilot Barcode tag' do
+    context 'when Enhanced IPP is enabled' do
+      let(:is_enhanced_ipp) { true }
+      before do
+        @is_enhanced_ipp = is_enhanced_ipp
+      end
       it 'renders GSA Enhanced Pilot Barcode tag' do
         render
 
         expect(rendered).to have_content(t('in_person_proofing.body.barcode.eipp_tag'))
       end
+    end
+    context 'when Enhanced IPP is not enabled' do
+      let(:is_enhanced_ipp) { false }
+      before do
+        @is_enhanced_ipp = is_enhanced_ipp
+      end
 
-      context 'What to bring to the Post Office section' do
-        it 'displays heading and body' do
-          render
+      it 'does not render GSA Enhanced Pilot Barcode tag' do
+        render
 
-          expect(rendered).to have_content(t('in_person_proofing.headings.barcode_what_to_bring'))
-          expect(rendered).to have_content(t('in_person_proofing.body.barcode.eipp_what_to_bring'))
-        end
+        expect(rendered).not_to have_content(t('in_person_proofing.body.barcode.eipp_tag'))
+      end
+    end
+  end
 
-        it 'renders Option 1 content' do
-          render
+  context 'What to bring to the Post Office section' do
+    context 'when Enhanced IPP is enabled' do
+      let(:is_enhanced_ipp) { true }
+      before do
+        @is_enhanced_ipp = is_enhanced_ipp
+      end
 
-          aggregate_failures do
-            [
-              t('in_person_proofing.process.eipp_bring_id.heading'),
-              t('in_person_proofing.process.eipp_bring_id_with_current_address.heading'),
-              t('in_person_proofing.process.eipp_bring_id.info'),
-              t('in_person_proofing.process.real_id_and_supporting_docs.heading'),
-              t('in_person_proofing.process.real_id_and_supporting_docs.info'),
-            ].each do |copy|
-              Array(copy).each do |part|
-                expect(rendered).to have_content(part)
-              end
+      it 'displays heading and body' do
+        render
+
+        expect(rendered).to have_content(t('in_person_proofing.headings.barcode_what_to_bring'))
+        expect(rendered).to have_content(t('in_person_proofing.body.barcode.eipp_what_to_bring'))
+      end
+
+      it 'renders Option 1 content' do
+        render
+
+        aggregate_failures do
+          [
+            t('in_person_proofing.process.eipp_bring_id.heading'),
+            t('in_person_proofing.process.eipp_bring_id_with_current_address.heading'),
+            t('in_person_proofing.process.eipp_bring_id.info'),
+            t('in_person_proofing.process.real_id_and_supporting_docs.heading'),
+            t('in_person_proofing.process.real_id_and_supporting_docs.info'),
+          ].each do |copy|
+            Array(copy).each do |part|
+              expect(rendered).to have_content(part)
             end
           end
-
-          t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').each do |item|
-            expect(rendered).to have_content(strip_tags(item))
-          end
         end
 
-        it 'renders Option 2 content' do
-          render
+        t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').each do |item|
+          expect(rendered).to have_content(strip_tags(item))
+        end
+      end
 
-          aggregate_failures do
-            [
-              t('in_person_proofing.process.eipp_bring_id_plus_documents.heading'),
-              t('in_person_proofing.process.eipp_bring_id_plus_documents.info'),
-              t('in_person_proofing.process.eipp_state_id_passport.heading'),
-              t('in_person_proofing.process.eipp_state_id_passport.info'),
-              t('in_person_proofing.process.eipp_state_id_military_id.heading'),
-              t('in_person_proofing.process.eipp_state_id_military_id.info'),
-              t('in_person_proofing.process.eipp_state_id_supporting_docs.heading'),
-              t('in_person_proofing.process.eipp_state_id_supporting_docs.info'),
-            ].each do |copy|
-              Array(copy).each do |part|
-                expect(rendered).to have_content(part)
-              end
+      it 'renders Option 2 content' do
+        render
+
+        aggregate_failures do
+          [
+            t('in_person_proofing.process.eipp_bring_id_plus_documents.heading'),
+            t('in_person_proofing.process.eipp_bring_id_plus_documents.info'),
+            t('in_person_proofing.process.eipp_state_id_passport.heading'),
+            t('in_person_proofing.process.eipp_state_id_passport.info'),
+            t('in_person_proofing.process.eipp_state_id_military_id.heading'),
+            t('in_person_proofing.process.eipp_state_id_military_id.info'),
+            t('in_person_proofing.process.eipp_state_id_supporting_docs.heading'),
+            t('in_person_proofing.process.eipp_state_id_supporting_docs.info'),
+          ].each do |copy|
+            Array(copy).each do |part|
+              expect(rendered).to have_content(part)
             end
           end
+        end
 
-          t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').each do |item|
-            expect(rendered).to have_content(strip_tags(item))
+        t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').each do |item|
+          expect(rendered).to have_content(strip_tags(item))
+        end
+      end
+    end
+
+    context 'when Enhanced IPP is not enabled' do
+      let(:is_enhanced_ipp) { false }
+      before do
+        @is_enhanced_ipp = is_enhanced_ipp
+      end
+
+      it 'template does not display Enhanced In-Person Proofing what to bring content' do
+        render
+
+        aggregate_failures do
+          [
+            t('in_person_proofing.headings.barcode_eipp'),
+            t('in_person_proofing.headings.barcode_what_to_bring'),
+            t('in_person_proofing.body.barcode.eipp_what_to_bring'),
+            t('in_person_proofing.process.eipp_bring_id.heading'),
+            t('in_person_proofing.process.eipp_bring_id_with_current_address.heading'),
+            t('in_person_proofing.process.eipp_bring_id.info'),
+            t('in_person_proofing.process.real_id_and_supporting_docs.heading'),
+            t('in_person_proofing.process.real_id_and_supporting_docs.info'),
+            t('in_person_proofing.process.eipp_bring_id_plus_documents.heading'),
+            t('in_person_proofing.process.eipp_bring_id_plus_documents.info'),
+            t('in_person_proofing.process.eipp_state_id_passport.heading'),
+            t('in_person_proofing.process.eipp_state_id_passport.info'),
+            t('in_person_proofing.process.eipp_state_id_military_id.heading'),
+            t('in_person_proofing.process.eipp_state_id_military_id.info'),
+            t('in_person_proofing.process.eipp_state_id_supporting_docs.heading'),
+            t('in_person_proofing.process.eipp_state_id_supporting_docs.info'),
+            t('in_person_proofing.process.state_id.heading_eipp'),
+            t('in_person_proofing.process.state_id.info_eipp'),
+          ].each do |copy|
+            Array(copy).each do |part|
+              expect(rendered).to_not have_content(part)
+            end
           end
         end
+
+        t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').each do |item|
+          expect(rendered).to_not have_content(strip_tags(item))
+        end
+      end
+    end
+  end
+
+  context 'Need to Change Location section' do
+    context 'when Enhanced IPP is not enabled' do
+      let(:is_enhanced_ipp) { false }
+      before do
+        @is_enhanced_ipp = is_enhanced_ipp
+      end
+
+      it 'renders the change location heading' do
+        render
+
+        expect(rendered).to have_content(
+          t('in_person_proofing.body.location.change_location_heading'),
+        )
+      end
+
+      it 'renders the change location info' do
+        render
+
+        expect(rendered).to have_content(
+          t(
+            'in_person_proofing.body.location.change_location_info_html',
+            find_other_locations_link_html:
+              t('in_person_proofing.body.location.change_location_find_other_locations'),
+          ),
+        )
+      end
+    end
+
+    context 'when Enhanced IPP is enabled' do
+      let(:is_enhanced_ipp) { true }
+      before do
+        @is_enhanced_ipp = is_enhanced_ipp
+      end
+
+      it 'does not render the change location heading' do
+        render
+
+        expect(rendered).not_to have_content(
+          t('in_person_proofing.body.location.change_location_heading'),
+        )
+      end
+
+      it 'does not render the change location info' do
+        render
+
+        expect(rendered).not_to have_content(
+          t('in_person_proofing.body.location.change_location_info_html'),
+        )
       end
     end
   end

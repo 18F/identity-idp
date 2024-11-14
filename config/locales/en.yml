@@ -1211,10 +1211,13 @@ in_person_proofing.body.cta.button: Try in person
 in_person_proofing.body.cta.prompt_detail: Most people who are unable to complete this step online are successful in verifying their identity at a participating Post Office. No appointment needed. Locations are available nationwide.
 in_person_proofing.body.expect.heading: What to expect after your visit
 in_person_proofing.body.expect.info: We’ll send you an email to let you know if your identity verification was successful or unsuccessful within 24 hours of your visit to the Post Office.
+in_person_proofing.body.location.change_location_find_other_locations: Find other participating Post Office locations.
+in_person_proofing.body.location.change_location_heading: Need to change your Post Office location?
+in_person_proofing.body.location.change_location_info_html: You don’t need to create a new barcode, you can bring this barcode to any participating Post Office location. %{find_other_locations_link_html}
 in_person_proofing.body.location.distance.one: '%{count} mile away'
 in_person_proofing.body.location.distance.other: '%{count} miles away'
 in_person_proofing.body.location.heading: Post Office information
-in_person_proofing.body.location.info: No appointment is needed to verify your identity. You can visit any participating Post Office location.
+in_person_proofing.body.location.info: No appointment is needed to verify your identity.
 in_person_proofing.body.location.inline_error: Enter a valid address with city, state, and ZIP code
 in_person_proofing.body.location.location_button: Select
 in_person_proofing.body.location.po_search.address_label: Address
