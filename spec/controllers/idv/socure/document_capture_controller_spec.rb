@@ -290,6 +290,8 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       let(:socure_enabled) { false }
 
       it 'the webhook route does not exist' do
+        get(:update)
+
         expect(response).to be_not_found
       end
     end
