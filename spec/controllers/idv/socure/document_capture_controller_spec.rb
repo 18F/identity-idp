@@ -270,7 +270,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
   end
 
   describe '#update' do
-    it 'returns OK (200)' do
+    it 'returns FOUND (302) and redirects to SSN' do
       get(:update)
 
       expect(response).to redirect_to(idv_ssn_path)
@@ -288,8 +288,9 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
 
     context 'when socure is disabled' do
       let(:socure_enabled) { false }
+
       it 'the webhook route does not exist' do
-        post(:update)
+        get(:update)
 
         expect(response).to be_not_found
       end
