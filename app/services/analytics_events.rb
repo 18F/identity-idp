@@ -451,11 +451,6 @@ module AnalyticsEvents
     track_event(:create_new_device_alert_job_emails_sent, count:, **extra)
   end
 
-  # For those in the desktop F/T unlock bucket, tracks when the user sees the F/T unlock option
-  def desktop_ab_test_option_shown
-    track_event(:desktop_ab_test_option_shown)
-  end
-
   # @param [String] message the warning
   # @param [Array<String>] unknown_alerts Names of alerts not recognized by our code
   # @param [Hash] response_info Response payload
