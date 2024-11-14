@@ -68,7 +68,7 @@ module Idv
         # If the stored_result is nil, the job fetching the results has not completed.
         if stored_result.nil?
           analytics.idv_doc_auth_document_capture_polling_wait_visited(**analytics_arguments)
-          render 'shared/wait'
+          render 'idv/socure/document_capture/wait'
           return
         end
 

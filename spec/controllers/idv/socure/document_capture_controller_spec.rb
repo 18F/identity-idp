@@ -295,8 +295,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
 
       it 'renders the wait view' do
         get(:update)
-
-        expect(response).to render_template('shared/wait')
+        expect(response).to render_template('idv/socure/document_capture/wait')
         expect(@analytics).to have_logged_event(:idv_doc_auth_document_capture_polling_wait_visited)
       end
     end
