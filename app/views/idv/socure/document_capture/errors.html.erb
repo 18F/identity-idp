@@ -1,0 +1,17 @@
+<%= render(
+      'idv/shared/error',
+      type: :warning,
+      heading: @presenter.heading,
+      action: @presenter.action,
+      secondary_action: @presenter.secondary_action,
+      current_step: :verify_id,
+      troubleshooting_heading: @presenter.troubleshooting_heading,
+      secondary_action_heading: @presenter.secondary_action_heading,
+      secondary_action_text: @presenter.secondary_action_text,
+      options: @presenter.options,
+      step_indicator_steps: @presenter.step_indicator_steps,
+    ) do
+%>
+     <p><%= @presenter.body_text %></p>
+     <p><%= @presenter.rate_limit_text %></p>
+<% end %>

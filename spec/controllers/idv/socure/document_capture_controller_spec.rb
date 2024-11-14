@@ -272,9 +272,11 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
   end
 
   describe '#update' do
-    it 'returns FOUND (302) and redirects to SSN' do
-      get(:update)
+    before do
+      get :update
+    end
 
+    it 'returns FOUND (302) and redirects to SSN' do
       expect(response).to redirect_to(idv_ssn_path)
       expect(@analytics).to have_logged_event('IdV: doc auth document_capture submitted')
     end
@@ -282,10 +284,10 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
     context 'when doc auth fails' do
       let(:doc_auth_success) { false }
 
-      it 'redirects to document capture' do
+      it 'renders the errors' do
         get(:update)
 
-        expect(response).to redirect_to(idv_socure_document_capture_path)
+        expect(response).to redirect_to idv_socure_document_capture_errors_url
         expect(@analytics).to have_logged_event('IdV: doc auth document_capture submitted')
       end
     end
@@ -316,8 +318,6 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       let(:socure_docv_enabled) { false }
 
       it 'the webhook route does not exist' do
-        get(:update)
-
         expect(response).to be_not_found
       end
     end

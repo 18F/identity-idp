@@ -21,6 +21,8 @@ class DocumentCaptureSession < ApplicationRecord
     session_result.attention_with_barcode = doc_auth_response.attention_with_barcode?
     session_result.doc_auth_success = doc_auth_response.doc_auth_success?
     session_result.selfie_status = doc_auth_response.selfie_status
+    session_result.errors = doc_auth_response.errors
+
     EncryptedRedisStructStorage.store(
       session_result,
       expires_in: IdentityConfig.store.doc_capture_request_valid_for_minutes.minutes.in_seconds,

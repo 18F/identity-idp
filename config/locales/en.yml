@@ -537,6 +537,7 @@ doc_auth.errors.document_capture_canceled: You have canceled uploading photos of
 doc_auth.errors.dpi.failed_short: Image is too small or blurry, please try again.
 doc_auth.errors.dpi.top_msg: We couldn’t read your ID. Your image size may be too small, or your ID is too small or blurry in the photo. Make sure your ID is large within the image frame and try taking a new picture.
 doc_auth.errors.dpi.top_msg_plural: We couldn’t read your ID. Your image sizes may be too small, or your ID is too small or blurry in the photos. Make sure your ID is large within the image frame and try taking new pictures.
+doc_auth.errors.expired_id: You cannot use an expired ID card for identity verification. If your ID card is not expired, make sure everything on your ID is in focus and that the card fills the frame.
 doc_auth.errors.file_type.invalid: This file type is not accepted, please choose a JPG or PNG file.
 doc_auth.errors.general.fallback_field_level: Please add a new image
 doc_auth.errors.general.multiple_back_id_failures: We couldn’t verify the back of your ID. Try taking a new picture.
@@ -555,6 +556,8 @@ doc_auth.errors.http.image_size.failed_short: Image file is not supported, pleas
 doc_auth.errors.http.image_size.top_msg: Your image size is too large or too small. Please add images of your ID that are about 2025 x 1275 pixels.
 doc_auth.errors.http.pixel_depth.failed_short: Image file is not supported, please try again.
 doc_auth.errors.http.pixel_depth.top_msg: The pixel depth of your image file is not supported. Please take new photos of your ID and try again. Supported image pixel depth is 24-bit RGB.
+doc_auth.errors.id_not_found: Make sure you are taking a picture of your physical ID and not of a photo or screenshot.
+doc_auth.errors.low_resolution: We couldn’t verify your ID because your device could not take a clear enough photo. If this error keeps occurring, try using another device or verify your ID at a local Post Office.
 doc_auth.errors.not_a_file: The selection was not a valid file.
 doc_auth.errors.phone_step_incomplete: You must go to your phone and upload photos of your ID before continuing. We sent you a link with instructions.
 doc_auth.errors.pii.birth_date_min_age: Your birthday does not meet the minimum age requirement.
@@ -567,11 +570,20 @@ doc_auth.errors.send_link_limited: You tried too many times, please try again in
 doc_auth.errors.sharpness.failed_short: Image is blurry, please try again.
 doc_auth.errors.sharpness.top_msg: We couldn’t read your ID. Your photo may be too blurry or dark. Try taking a new picture in a bright area.
 doc_auth.errors.sharpness.top_msg_plural: We couldn’t read your ID. Your photos may be too blurry or dark. Try taking new pictures in a bright area.
+doc_auth.errors.unaccepted_id_type: We do not accept passports, military IDs, paper IDs or temporary IDs. You may only use a driver’s license or an ID issued by a U.S. state or territory.
+doc_auth.errors.underage: You must be at least 13 years old to use %{app_name}. If you are 13 or older, try again and make sure your date of birth is in focus.
+doc_auth.errors.unreadable_id: Take your photos in a well-lit area without shadows or glare. Make sure that everything on your ID is in focus and that the card fills the frame.
 doc_auth.errors.upload_error: Sorry, something went wrong on our end.
 doc_auth.forms.change_file: Change file
 doc_auth.forms.choose_file_html: Drag file here or <lg-underline>choose from folder</lg-underline>
 doc_auth.forms.doc_success: We verified your information
 doc_auth.forms.selected_file: Selected file
+doc_auth.headers.expired_id: Your ID may have expired
+doc_auth.headers.id_not_found: We couldn’t find your ID.
+doc_auth.headers.low_resolution: Your device’s camera may not be supported.
+doc_auth.headers.unaccepted_id_type: Use a driver’s license or a state ID
+doc_auth.headers.underage: Age requirement not met
+doc_auth.headers.unreadable_id: We could not read your ID
 doc_auth.headings.address: Update your mailing address
 doc_auth.headings.back: Back of your driver’s license or state ID
 doc_auth.headings.capture_complete: We verified your ID
@@ -685,6 +697,8 @@ doc_auth.instructions.text1: Other forms of ID are not accepted. We’ll check t
 doc_auth.instructions.text2: You will not need your physical SSN card.
 doc_auth.instructions.text3: We match your phone number with your personal information and send a one-time code to your phone.
 doc_auth.instructions.text4: Your password saves and encrypts your personal information.
+doc_auth.rate_limit_warning.plural_html: For security reasons, you have <strong>%{remaining_attempts} attempts</strong> remaining.
+doc_auth.rate_limit_warning.singular_html: For security reasons, you have <strong>1 attempt</strong> remaining.
 doc_auth.tips.document_capture_hint: Must be a JPG or PNG
 doc_auth.tips.document_capture_id_text1: Use a flat and dark surface
 doc_auth.tips.document_capture_id_text2: Take photos in a well-lit place

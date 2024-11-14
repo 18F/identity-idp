@@ -36,18 +36,18 @@
         method: 'put',
         html: { class: 'margin-top-2 margin-bottom-5 js-consent-continue-form' },
       ) do |f| %>
+    <div class="margin-top-4">
+      <%= render(
+            SpinnerButtonComponent.new(
+              type: :submit,
+              big: true,
+              wide: true,
+              spin_on_click: false,
+            ).with_content(t('doc_auth.buttons.continue')),
+          ) %>
+    </div>
+  <% end %>
 
-  <div class="margin-top-4">
-    <%= render(
-          SpinnerButtonComponent.new(
-            type: :submit,
-            big: true,
-            wide: true,
-            spin_on_click: false,
-          ).with_content(t('doc_auth.buttons.continue')),
-        ) %>
-  </div>
-<% end %>
   <%= render 'shared/cancel', link: idv_cancel_path(step: 'welcome') %>
 <% end %>
 <%= javascript_packs_tag_once('document-capture-welcome') %>

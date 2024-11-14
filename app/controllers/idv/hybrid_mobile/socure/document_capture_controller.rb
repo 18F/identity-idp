@@ -8,10 +8,12 @@ module Idv
         include DocumentCaptureConcern
         include Idv::HybridMobile::HybridMobileConcern
         include RenderConditionConcern
+        include SocureErrorsConcern
 
         check_or_render_not_found -> { IdentityConfig.store.socure_docv_enabled }
         before_action :check_valid_document_capture_session, except: [:update]
-        before_action -> { redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, true) }
+        before_action -> { redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, true) },
+                      only: :show
 
         def show
           Funnel::DocAuth::RegisterStep.new(document_capture_user.id, sp_session[:issuer]).
@@ -63,11 +65,20 @@ module Idv
           if result.success?
             redirect_to idv_hybrid_mobile_capture_complete_url
           else
-            redirect_to idv_hybrid_mobile_socure_document_capture_url
+            redirect_to idv_hybrid_mobile_socure_document_capture_errors_url
           end
         end
 
         private
+
+        def socure_errors_presenter(result)
+          SocureErrorPresenter.new(
+            error_code: result.errors[:socure][:reason_codes]&.first,
+            remaining_attempts: remaining_attempts,
+            sp_name: decorated_sp_session&.sp_name || APP_NAME,
+            hybrid_mobile: true,
+          )
+        end
 
         def wait_for_result?
           return false if stored_result.present?
