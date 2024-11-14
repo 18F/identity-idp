@@ -27,10 +27,6 @@ module Idv
 
         # document request
         document_request = DocAuth::Socure::Requests::DocumentRequest.new(
-<<<<<<< HEAD
-=======
-          document_capture_session_uuid: document_capture_session_uuid,
->>>>>>> 5b36509c8b (LG-14008: Handle redirect from CaptureApp in hybrid flow)
           redirect_url: idv_socure_document_capture_update_url,
           language: I18n.locale,
         )
