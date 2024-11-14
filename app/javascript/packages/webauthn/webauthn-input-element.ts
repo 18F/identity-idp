@@ -19,12 +19,11 @@ export class WebauthnInputElement extends HTMLElement {
   }
 
   async toggleVisibleIfPasskeySupported() {
-    const webauthnPlatformAvailable = await isWebauthnPlatformAuthenticatorAvailable();
-
     if (!this.hasAttribute('hidden')) {
       return;
     }
 
+    const webauthnPlatformAvailable = await isWebauthnPlatformAuthenticatorAvailable();
     if ((isWebauthnPasskeySupported() || this.isOptedInToAbTest) && webauthnPlatformAvailable) {
       this.hidden = false;
     } else if (this.showUnsupportedPasskey) {
