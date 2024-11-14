@@ -260,7 +260,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
     let(:stored_result) do
       DocumentCaptureSessionResult.new(
         success: true,
-        selfie_status: 'pass',
+        selfie_status: 'not_processed',
         pii: { state: 'MD' },
       )
     end
@@ -282,6 +282,22 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
         get(:update)
 
         expect(response).to be_not_found
+      end
+    end
+
+    context 'when socure reports failure' do
+      let(:stored_result) do
+        DocumentCaptureSessionResult.new(
+          success: false,
+          selfie_status: 'not_processed',
+          pii: { state: 'MD' },
+        )
+      end
+
+      it 'redirects back to the capture page' do
+        get(:update)
+
+        expect(response).to redirect_to(idv_hybrid_mobile_socure_document_capture_url)
       end
     end
   end
