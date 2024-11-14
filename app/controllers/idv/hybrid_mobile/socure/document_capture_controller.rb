@@ -51,7 +51,7 @@ module Idv
 
         def update
           result = handle_stored_result(
-            user: document_capture_user,
+            user: document_capture_session.user,
             store_in_session: false,
           )
 

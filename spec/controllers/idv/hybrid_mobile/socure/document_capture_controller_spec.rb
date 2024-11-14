@@ -26,6 +26,9 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
     allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(idv_vendor)
 
     allow(subject).to receive(:stored_result).and_return(stored_result)
+
+    session[:doc_capture_user_id] = user&.id
+    session[:document_capture_session_uuid] = document_capture_session_uuid
   end
 
   describe 'before_actions' do
@@ -48,9 +51,6 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
         status: 200,
         body: JSON.generate(response_body),
       )
-
-      session[:doc_capture_user_id] = user&.id
-      session[:document_capture_session_uuid] = document_capture_session_uuid
     end
 
     context 'with no user id in session' do
@@ -97,7 +97,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
       it 'creates a DocumentRequest' do
         expect(request_class).to have_received(:new).
           with(
-            redirect_url: idv_hybrid_mobile_socure_document_capture_url,
+            redirect_url: idv_hybrid_mobile_socure_document_capture_update_url,
             language: expected_language,
           )
       end
@@ -266,7 +266,6 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
     end
 
     before do
-      allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
       stub_sign_in(user)
     end
 
