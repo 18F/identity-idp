@@ -68,8 +68,16 @@ module Idv
         # If the stored_result is nil, the job fetching the results has not completed.
         if stored_result.nil?
           analytics.idv_doc_auth_document_capture_polling_wait_visited(**analytics_arguments)
-          @refresh_interval = IdentityConfig.store.doc_auth_socure_wait_polling_refresh_max_seconds
-          render 'idv/socure/document_capture/wait'
+          if wait_timed_out?
+            flash[:error] = I18n.t('errors.doc_auth.polling_timeout')
+            # TODO: redirect to try again page LG-14873
+            render plain: 'Technical difficulties!!!', status: :service_unavailable
+          else
+            @refresh_interval =
+              IdentityConfig.store.doc_auth_socure_wait_polling_refresh_max_seconds
+            render 'idv/socure/document_capture/wait'
+          end
+
           return
         end
 
@@ -110,6 +118,18 @@ module Idv
       end
 
       private
+
+      def wait_timed_out?
+        # swpsa: socure_wait_polling_started_at
+        if session[:swpsa].nil?
+          session[:swpsa] = Time.zone.now.to_s
+          return false
+        end
+        start = DateTime.parse(session[:swpsa])
+        timeout_period =
+          IdentityConfig.store.doc_auth_socure_wait_polling_timeout_minutes.minutes || 5.minutes
+        start + timeout_period < Time.zone.now
+      end
 
       def analytics_arguments
         {
