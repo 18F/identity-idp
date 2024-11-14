@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
+RSpec.describe 'Identity verification', :js do
   include IdvStepHelper
   include InPersonHelper
 
