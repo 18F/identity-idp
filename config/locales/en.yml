@@ -1208,7 +1208,7 @@ in_person_proofing.body.barcode.retail_hours_closed: Closed
 in_person_proofing.body.barcode.return_to_partner_link: Return to %{sp_name}
 in_person_proofing.body.barcode.what_to_expect: What to expect at the Post Office
 in_person_proofing.body.cta.button: Try in person
-in_person_proofing.body.cta.prompt_detail: You may be able to verify your identity at a participating Post Office near you.
+in_person_proofing.body.cta.prompt_detail: Most people who are unable to complete this step online are successful in verifying their identity at a participating Post Office. No appointment needed. Locations are available nationwide.
 in_person_proofing.body.expect.heading: What to expect after your visit
 in_person_proofing.body.expect.info: We’ll send you an email to let you know if your identity verification was successful or unsuccessful within 24 hours of your visit to the Post Office.
 in_person_proofing.body.location.distance.one: '%{count} mile away'

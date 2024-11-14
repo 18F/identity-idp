@@ -26,6 +26,8 @@ class SocureWebhookController < ApplicationController
     when 'DOCUMENTS_UPLOADED'
       increment_rate_limiter
       fetch_results
+    when 'SESSION_EXPIRED', 'SESSION_COMPLETE'
+      reset_docv_url
     end
   end
 
@@ -80,9 +82,10 @@ class SocureWebhookController < ApplicationController
     analytics.idv_doc_auth_socure_webhook_received(
       created_at: event[:created],
       customer_user_id: event[:customerUserId],
+      docv_transaction_token: event[:docvTransactionToken],
       event_type: event[:eventType],
       reference_id: event[:referenceId],
-      user_id: event[:customerUserId],
+      user_id: user&.uuid,
     )
   end
 
@@ -93,10 +96,16 @@ class SocureWebhookController < ApplicationController
     # Logic to throw an error when no DocumentCaptureSession found will be done in ticket LG-14905
   end
 
+  def reset_docv_url
+    if document_capture_session.present?
+      document_capture_session.socure_docv_capture_app_url = nil
+      document_capture_session.save
+    end
+  end
+
   def document_capture_session
-    token = event[:docvTransactionToken] || event[:docVTransactionToken]
     @document_capture_session ||= DocumentCaptureSession.find_by(
-      socure_docv_transaction_token: token,
+      socure_docv_transaction_token: docv_transaction_token,
     )
   end
 
@@ -116,5 +125,13 @@ class SocureWebhookController < ApplicationController
       event: [:created, :customerUserId, :eventType, :referenceId,
               :docvTransactionToken, :docVTransactionToken],
     )
+  end
+
+  def user
+    @user ||= document_capture_session&.user
+  end
+
+  def docv_transaction_token
+    @docv_transaction_token ||= event[:docvTransactionToken] || event[:docVTransactionToken]
   end
 end

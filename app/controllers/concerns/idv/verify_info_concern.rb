@@ -79,12 +79,27 @@ module Idv
 
     def idv_failure(result)
       proofing_results_exception = result.extra.dig(:proofing_results, :exception)
+      has_exception = proofing_results_exception.present?
       is_mva_exception = result.extra.dig(
         :proofing_results,
         :context,
         :stages,
         :state_id,
         :mva_exception,
+      ).present?
+      is_threatmetrix_exception = result.extra.dig(
+        :proofing_results,
+        :context,
+        :stages,
+        :threatmetrix,
+        :exception,
+      ).present?
+      resolution_failed = !result.extra.dig(
+        :proofing_results,
+        :context,
+        :stages,
+        :resolution,
+        :success,
       )
 
       if ssn_rate_limiter.limited?
@@ -93,10 +108,14 @@ module Idv
       elsif resolution_rate_limiter.limited?
         idv_failure_log_rate_limited(:idv_resolution)
         redirect_to rate_limited_url
-      elsif proofing_results_exception.present? && is_mva_exception
+      elsif has_exception && is_mva_exception
         idv_failure_log_warning
         redirect_to state_id_warning_url
-      elsif proofing_results_exception.present?
+      elsif (has_exception && is_threatmetrix_exception) ||
+            (!has_exception && resolution_failed)
+        idv_failure_log_warning
+        redirect_to warning_url
+      elsif has_exception
         idv_failure_log_error
         redirect_to exception_url
       else

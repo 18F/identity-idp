@@ -120,4 +120,95 @@ RSpec.describe Users::EmailsController do
       end
     end
   end
+
+  describe '#delete' do
+    subject(:response) { delete :delete, params: params }
+    let(:user) { create(:user, :fully_registered, :with_multiple_emails) }
+    let(:params) { { id: user.email_addresses.take.id } }
+
+    before do
+      stub_sign_in(user)
+    end
+
+    it 'redirects to account page' do
+      expect(response).to redirect_to(account_url)
+    end
+
+    context 'with invalid submisson' do
+      let(:user) { create(:user, :fully_registered) }
+
+      it 'logs analytics' do
+        stub_analytics
+
+        response
+
+        expect(@analytics).to have_logged_event(
+          'Email Deletion Requested',
+          success: false,
+          errors: {},
+        )
+      end
+
+      it 'flashes error' do
+        response
+
+        expect(flash[:error]).to eq(t('email_addresses.delete.failure'))
+      end
+    end
+
+    context 'with valid submission' do
+      it 'logs analytics' do
+        stub_analytics
+
+        response
+
+        expect(@analytics).to have_logged_event(
+          'Email Deletion Requested',
+          success: true,
+          errors: {},
+        )
+      end
+
+      it 'notifies all confirmed email addresses, including the deleted' do
+        email_addresses = user.confirmed_email_addresses.to_a
+
+        response
+
+        expect_delivered_email_count(email_addresses.count)
+        email_addresses.each do |email_address|
+          expect_delivered_email(
+            to: [email_address.email],
+            subject: t('user_mailer.email_deleted.subject'),
+          )
+        end
+      end
+
+      it 'flashes success' do
+        response
+
+        expect(flash[:success]).to eq(t('email_addresses.delete.success'))
+      end
+
+      it 'tracks user event' do
+        expect { response }.to change { user.events.count }.by(1)
+        expect(user.events.last.event_type).to eq('email_deleted')
+      end
+
+      it 'deletes the email address' do
+        expect { response }.to change { user.email_addresses.count }.by(-1)
+      end
+
+      context 'with selected email for linked identity in session' do
+        before do
+          controller.user_session[:selected_email_id_for_linked_identity] = params[:id]
+        end
+
+        it 'resets session value' do
+          response
+
+          expect(controller.user_session[:selected_email_id_for_linked_identity]).to be_nil
+        end
+      end
+    end
+  end
 end

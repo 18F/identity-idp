@@ -80,7 +80,6 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
           referenceId: '123ab45d-2e34-46f3-8d17-6f540ae90303',
           data: {
             eventId: 'zoYgIxEZUbXBoocYAnbb5DrT',
-            customerUserId: document_capture_session_uuid,
             docvTransactionToken: docv_transaction_token,
             qrCode: 'data:image/png;base64,iVBO......K5CYII=',
             url: socure_capture_app_url,
@@ -98,7 +97,6 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
       it 'creates a DocumentRequest' do
         expect(request_class).to have_received(:new).
           with(
-            document_capture_session_uuid: document_capture_session_uuid,
             redirect_url: idv_hybrid_mobile_socure_document_capture_url,
             language: expected_language,
           )
@@ -125,7 +123,6 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
                     },
                     language: expected_language,
                   },
-                  customerUserId: document_capture_session_uuid,
                 },
               ),
             )
@@ -148,7 +145,6 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
                     },
                     language: 'zh-cn',
                   },
-                  customerUserId: document_capture_session_uuid,
                 },
               ),
             )

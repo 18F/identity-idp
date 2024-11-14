@@ -99,6 +99,7 @@ module Users
 
     def handle_successful_delete
       send_delete_email_notification
+      user_session.delete(:selected_email_id_for_linked_identity)
       flash[:success] = t('email_addresses.delete.success')
       create_user_event(:email_deleted)
     end

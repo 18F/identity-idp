@@ -22,21 +22,13 @@ development:
   enable_load_testing_mode: true
 ```
 
-3. In the Chrome web browser of your development computer, visit `chrome://inspect`
-
-4. Click on **Port forwarding**. For port `8234` enter `0.0.0.0:3000`. Check **Enable port forwarding** and click **Done**. These screenshots illustrates enabling port forwarding on a MacBook:
-
-|                                                    Click on Port forwarding                                                    |                                                       Enter IP and enable                                                        |
-| :----------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------: |
-| ![port-forwarding-button](https://user-images.githubusercontent.com/546123/231608927-5f577e1a-bc82-47c6-b69a-d592c551a99f.png) | ![port-forwarding-settings](https://user-images.githubusercontent.com/546123/231608489-f09f281e-305d-4200-9f21-9d772773a113.png) |
-
-5. Start your app's local web server with:
+3. Start your app's local web server with:
 
 ```bash
 HOST=0.0.0.0 make run-https
 ```
 
-6. In the Chrome browser on your phone, open a new incognito tab. In the address bar, type in `https://` (don't forget the `s`) followed by your LAN IP and port number (like `https://192.168.x.x:3000`). When you visit this page, you may see a **Your connection is not private** message. Click **Advanced** and **Proceed** to continue. You should then see the sign in screen of the identity-idp app.
+4. On your phone's browser, open a new tab. In the address bar, type in `https://` (don't forget the `s`) followed by your LAN IP and port number (like `https://192.168.x.x:3000`). When you visit this page, you may see a **Your connection is not private** message. Click **Advanced** and **Proceed** to continue. You should then see the sign in screen of the identity-idp app.
 
 After you complete these steps, pages from the app are served from your development machine to your mobile device, where you may now use the identity-idp app. For front-end development, you may now want to turn on browser development tools per the next section of these instructions.
 
@@ -56,11 +48,25 @@ These instructions will allow you to debug your phone browser with Chrome DevToo
 
 2. Plug your Android phone into your development computer with a USB cable. (A USB hub may or may not work.) If you see a message on your phone asking you to **Allow USB debugging** click to allow it.
 
-3. Visit `chrome://inspect` in the Chrome browser of your development computer. (It may already be open from the previous set of instructions.) Below the "Remote Target" heading, you should see a listing of all the tabs open on your phone. Find the item on the list that represents the sign in screen of the identity-idp app. It should be at the top of the list.
+3. In the Chrome web browser of your development computer, visit `chrome://inspect`
+
+4. Click on **Port forwarding**. Create/ensure the following entries:
+   - Port 3000 forwarded to localhost:3000
+   - Port 3035 forwarded to localhost:3035 (This is needed to ensure that JavaScript resources can be accessed through webpack)
+
+Check **Enable port forwarding** and click **Done**. These screenshots illustrates enabling port forwarding on a MacBook:
+
+|                                                    Click on Port forwarding                                                    |                                                       Enter IP and enable                                                        |
+| :----------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------: |
+| ![port-forwarding-button](https://user-images.githubusercontent.com/546123/231608927-5f577e1a-bc82-47c6-b69a-d592c551a99f.png) | ![port-forwarding-settings](/docs/images/port-forwarding-settings.png) |
+
+5. You should now be able to access the application by navigating to http://localhost:3000 on your device.
+
+6. Back on your development computer, in the `chrome://inspect` tab, below the "Remote Target" heading, you should see a listing of all the tabs open on your phone. Find the item on the list that represents the sign in screen of the identity-idp app. It should be at the top of the list.
 
 If you don't see any tabs under the "Remote Target" heading, you may need to try a different method of connecting your phone to your computer. In your terminal, you can run the command `ioreg -p IOUSB` to see what is connected to your USB ports. If your phone is connected to a USB hub but is not listed in the output, try connecting your phone directly to the computer. You could also try using a different USB cable.
 
-4. Click to **inspect** this tab. You should see browser DevTools and a representation of your phone's screen on your development computer, as in this illustration:
+7. Click to **inspect** this tab. You should see browser DevTools and a representation of your phone's screen on your development computer, as in this illustration:
 
 <img width="800" alt="inspect-androd-chrome-tab" src="https://user-images.githubusercontent.com/546123/231608143-aff2e115-e672-4411-8670-79f86fcf58ad.png">
 

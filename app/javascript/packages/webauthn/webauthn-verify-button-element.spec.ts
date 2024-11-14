@@ -50,15 +50,16 @@ describe('WebauthnVerifyButtonElement', () => {
     Object.assign(element.dataset, { credentials: '[]', userChallenge: '[]' }, data);
     const form = document.querySelector('form')!;
     sinon.stub(form, 'submit');
-    return { form, element };
+    return element;
   }
 
-  it('assigns button type to avoid default form submission', () => {
+  it('prevents default form submission', async () => {
     createElement();
+    const button = screen.getByRole('button');
+    await userEvent.click(button);
 
-    const button = screen.getByRole('button') as HTMLButtonElement;
-
-    expect(button.type).to.equal('button');
+    // This test relies on the fact that JSDOM will throw an error about not implementing form
+    // submission if the form submission was left unhandled.
   });
 
   it('shows spinner on click', async () => {
@@ -94,6 +95,10 @@ describe('WebauthnVerifyButtonElement', () => {
     await userEvent.click(button);
 
     expect(verifyWebauthnDevice).to.have.been.calledOnce();
+
+    // This test also implicitly verifies that the form would not submit on a second button click,
+    // since JSDOM will throw an error about not implementing form submission if the form submission
+    // was left unhandled.
   });
 
   it('submits with error name as input on thrown expected error', async () => {

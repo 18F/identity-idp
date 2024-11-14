@@ -7,6 +7,7 @@ require:
   - rubocop-rails
   - rubocop-rspec
   - rubocop-performance
+  - ./lib/linters/i18n_helper_html_linter.rb
   - ./lib/linters/analytics_event_name_linter.rb
   - ./lib/linters/localized_validation_message_linter.rb
   - ./lib/linters/image_size_linter.rb
@@ -44,6 +45,13 @@ Bundler/InsecureProtocolSource:
 
 Gemspec/DuplicatedAssignment:
   Enabled: true
+
+IdentityIdp/I18nHelperHtmlLinter:
+  Enabled: true
+  Include:
+    - app/views/**/*.erb
+    - app/components/**/*.erb
+    - app/controllers/**/*.rb
 
 IdentityIdp/AnalyticsEventNameLinter:
   Enabled: true

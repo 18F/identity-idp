@@ -5,7 +5,9 @@ require 'pathname'
 require_relative '../config/environment'
 
 excluded_locales = []
-excluded_gem_paths = []
+excluded_paths = []
+excluded_key_scopes = []
+
 OptionParser.new do |opts|
   opts.banner = <<~TXT
     Usage
@@ -22,8 +24,16 @@ OptionParser.new do |opts|
     excluded_locales << locale.to_sym
   end
 
+  opts.on('--exclude-path=PATH', 'Disregard characters from the given relative path') do |path|
+    excluded_paths << File.join(Dir.pwd, path, '')
+  end
+
   opts.on('--exclude-gem-path=GEM', 'Disregard characters loaded by the given gem') do |gem|
-    excluded_gem_paths << Gem.loaded_specs[gem].full_gem_path
+    excluded_paths << File.join(Gem.loaded_specs[gem].full_gem_path, '')
+  end
+
+  opts.on('--exclude-key-scope=SCOPE', 'Exclude keys in the given top-level key scope') do |scope|
+    excluded_key_scopes << scope.to_sym
   end
 
   opts.on('-h', '--help', 'Prints this help') do
@@ -50,12 +60,13 @@ def hash_values(hash)
 end
 
 I18n.load_path.reject! do |load_path|
-  excluded_gem_paths.any? { |gem_path| load_path.start_with?(gem_path) }
+  excluded_paths.any? { |path| load_path.start_with?(path) }
 end
 
 I18n.backend.eager_load!
 
 data = I18n.backend.translations.slice(*I18n.available_locales - excluded_locales)
+excluded_key_scopes.each { |scope| data.each_key { |locale| data[locale].delete(scope) } }
 strings = hash_values(data)
 joined_string = strings.join('')
 sanitized_string = sanitize(joined_string)

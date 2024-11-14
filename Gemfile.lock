@@ -1,11 +1,12 @@
 GIT
   remote: https://github.com/18F/identity-hostdata.git
-  revision: 9574e05398833c531f450c3da99a6afde4ce68fc
-  tag: v4.0.0
+  revision: 67a19c577b8fa9305350cf9cefa572cef4a80310
+  tag: v4.4.1
   specs:
-    identity-hostdata (4.0.0)
-      activesupport (>= 6.1, < 8)
+    identity-hostdata (4.4.1)
+      activesupport (>= 6.1, < 9)
       aws-sdk-s3 (~> 1.8)
+      aws-sdk-secretsmanager (>= 1.91)
       redacted_struct (>= 2.0)
 
 GIT
@@ -26,11 +27,11 @@ GIT
 
 GIT
   remote: https://github.com/18F/redis-session-store.git
-  revision: 9e3f8a22a1b5d1e835e5cba20c51e38b8965b836
-  tag: v1.0.1-18f
+  revision: 905c146bbc1c09ce411edd036eac266c53f5b153
+  tag: v1.0.2-18f
   specs:
-    redis-session-store (1.0.1.pre.18f)
-      actionpack (>= 6, < 8)
+    redis-session-store (1.0.2.pre.18f)
+      actionpack (>= 6, < 9)
       redis (>= 4.3, < 6)
 
 GIT
@@ -182,6 +183,9 @@ GEM
       aws-sdk-core (~> 3, >= 3.179.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.6)
+    aws-sdk-secretsmanager (1.102.0)
+      aws-sdk-core (~> 3, >= 3.201.0)
+      aws-sigv4 (~> 1.5)
     aws-sdk-ses (1.44.0)
       aws-sdk-core (~> 3, >= 3.122.0)
       aws-sigv4 (~> 1.1)

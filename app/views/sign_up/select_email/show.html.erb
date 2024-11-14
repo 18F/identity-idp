@@ -4,7 +4,7 @@
   <% c.with_header(id: 'select-email-heading') { t('titles.select_email') } %>
 
   <p id="select-email-intro">
-    <%= I18n.t('help_text.select_preferred_email_html', sp: @sp_name) %>
+    <%= t('help_text.select_preferred_email_html', sp: @sp_name) %>
   </p>
 
   <%= simple_form_for(@select_email_form, url: sign_up_select_email_path) do |f| %>

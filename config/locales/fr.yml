@@ -1208,7 +1208,7 @@ in_person_proofing.body.barcode.retail_hours_closed: Fermé
 in_person_proofing.body.barcode.return_to_partner_link: Retourner à %{sp_name}
 in_person_proofing.body.barcode.what_to_expect: À quoi s’attendre au bureau de poste
 in_person_proofing.body.cta.button: Essayer en personne
-in_person_proofing.body.cta.prompt_detail: Vous pourrez peut-être confirmer votre identité dans un bureau de poste participant près de chez vous.
+in_person_proofing.body.cta.prompt_detail: La plupart des personnes qui ne parviennent pas à effectuer cette étape en ligne réussissent à confirmer leur identité dans un bureau de poste participant. Sans rendez-vous. Il existe des sites dans l’ensemble du pays.
 in_person_proofing.body.expect.heading: Que faire après votre visite
 in_person_proofing.body.expect.info: Nous vous enverrons un e-mail pour vous informer de la réussite ou de l’échec de la vérification de votre identité dans les 24 heures suivant votre visite au bureau de poste.
 in_person_proofing.body.location.distance.one: à %{count} mile
