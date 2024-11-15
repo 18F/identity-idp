@@ -312,7 +312,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_15_215510) do
     t.datetime "created_at", null: false, comment: "sensitive=false"
     t.datetime "updated_at", null: false, comment: "sensitive=false"
     t.boolean "current_address_matches_id", comment: "True if the user indicates that their current address matches the address on the ID they're bringing to the Post Office. sensitive=false"
-    t.jsonb "selected_location_details", comment: "sensitive=true"
+    t.jsonb "selected_location_details", comment: "The location details of the Post Office the user selected (including title, address, hours of operation) sensitive=true"
     t.string "unique_id", comment: "Unique ID to use with the USPS service sensitive=false"
     t.datetime "enrollment_established_at", comment: "When the enrollment was successfully established sensitive=false"
     t.string "issuer", comment: "Issuer associated with the enrollment at time of creation sensitive=false"
