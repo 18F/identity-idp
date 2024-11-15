@@ -126,7 +126,6 @@ RSpec.describe 'authorization count' do
         expect_ial1_and_ial2_count(issuer_1)
       end
 
-      # rubocop:disable Layout/LineLength
       context 'when ialmax is requested' do
         context 'provider is on the ialmax allow list' do
           before do
@@ -176,7 +175,6 @@ RSpec.describe 'authorization count' do
             expect_no_counts(issuer_1)
           end
         end
-        # rubocop:enable Layout/LineLength
       end
     end
   end
@@ -327,7 +325,6 @@ RSpec.describe 'authorization count' do
         expect_ial2_count_only(issuer_2)
       end
 
-      # rubocop:disable Layout/LineLength
       context 'ialmax is requested' do
         context 'provider is on ialmax allow list' do
           before do
@@ -378,7 +375,6 @@ RSpec.describe 'authorization count' do
         end
       end
 
-      # rubocop:enable Layout/LineLength
     end
   end
 

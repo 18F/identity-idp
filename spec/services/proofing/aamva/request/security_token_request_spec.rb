@@ -94,7 +94,6 @@ RSpec.describe Proofing::Aamva::Request::SecurityTokenRequest do
         )
       end
     end
-    # rubocop:enable Layout/LineLength
 
     context 'when the connection fails' do
       it 'raises an error' do

@@ -7,7 +7,6 @@ RSpec.describe Encryption::KmsClient do
       FakeConnectionPool.new { aws_kms_client },
     )
 
-    # rubocop:disable Layout/LineLength
     stub_mapped_aws_kms_client(
       [
         { plaintext: 'a' * 3000, ciphertext: 'us-north-1:kms1', key_id: key_id, region: 'us-north-1' },
@@ -15,7 +14,6 @@ RSpec.describe Encryption::KmsClient do
         { plaintext: 'c' * 3000, ciphertext: 'us-north-1:kms3', key_id: key_id, region: 'us-north-1' },
       ],
     )
-    # rubocop:enable Layout/LineLength
 
     encryptor = Encryption::Encryptors::AesEncryptor.new
     {
@@ -79,11 +77,9 @@ RSpec.describe Encryption::KmsClient do
       before do
         stub_mapped_aws_kms_client(
           [
-            # rubocop:disable Layout/LineLength
             { plaintext: 'a' * 3000, ciphertext: 'us-north-1:kms1', key_id: 'custom-key-id', region: 'us-north-1' },
             { plaintext: 'b' * 3000, ciphertext: 'us-north-1:kms2', key_id: 'custom-key-id', region: 'us-north-1' },
             { plaintext: 'c' * 3000, ciphertext: 'us-north-1:kms3', key_id: 'custom-key-id', region: 'us-north-1' },
-            # rubocop:enable Layout/LineLength
           ],
         )
       end

@@ -64,7 +64,6 @@ RSpec.describe Proofing::Aamva::Request::AuthenticationTokenRequest do
       end
     end
 
-    # rubocop:disable Layout/LineLength
     context 'when the request times out' do
       it 'raises an error' do
         stub_request(:post, config.auth_url).
@@ -76,7 +75,6 @@ RSpec.describe Proofing::Aamva::Request::AuthenticationTokenRequest do
         )
       end
     end
-    # rubocop:enable Layout/LineLength
 
     context 'when the connection fails' do
       it 'raises an error' do

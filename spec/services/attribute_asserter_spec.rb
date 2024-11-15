@@ -160,7 +160,6 @@ RSpec.describe AttributeAsserter do
             end
 
             context 'authn request specifies bundle' do
-              # rubocop:disable Layout/LineLength
               let(:authn_context) do
                 [
                   ial_value,
@@ -168,7 +167,6 @@ RSpec.describe AttributeAsserter do
                   "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
                 ]
               end
-              # rubocop:enable Layout/LineLength
 
               it 'uses authn request bundle' do
                 expect(user.asserted_attributes.keys).
@@ -318,7 +316,6 @@ RSpec.describe AttributeAsserter do
             end
           end
 
-          # rubocop:disable Layout/LineLength
           context 'authn request specifies bundle with first_name, last_name, email, ssn, phone' do
             let(:authn_context) do
               [

@@ -151,7 +151,6 @@ RSpec.describe ActionAccount do
       it 'Reject a user that has a pending review', aggregate_failures: true do
         profile_fraud_review_pending_at = user.pending_profile.fraud_review_pending_at
 
-        # rubocop:disable Layout/LineLength
         expect(result.table).to match_array(
           [
             ['uuid', 'status', 'reason'],
@@ -160,7 +159,6 @@ RSpec.describe ActionAccount do
             ['uuid-does-not-exist', 'Error: Could not find user with that UUID', 'INV1234'],
           ],
         )
-        # rubocop:enable Layout/LineLength
 
         expect(result.subtask).to eq('review-reject')
         expect(result.uuids).to match_array([user.uuid, user_without_profile.uuid])
@@ -230,7 +228,6 @@ RSpec.describe ActionAccount do
 
         profile_fraud_review_pending_at = user.pending_profile.fraud_review_pending_at
 
-        # rubocop:disable Layout/LineLength
         expect(result.table).to match_array(
           [
             ['uuid', 'status', 'reason'],
@@ -239,7 +236,6 @@ RSpec.describe ActionAccount do
             ['uuid-does-not-exist', 'Error: Could not find user with that UUID', 'INV1234'],
           ],
         )
-        # rubocop:enable Layout/LineLength
 
         expect(result.subtask).to eq('review-pass')
         expect(result.uuids).to match_array([user.uuid, user_without_profile.uuid])
@@ -327,7 +323,6 @@ RSpec.describe ActionAccount do
       it 'suspends users that are not suspended already', aggregate_failures: true do
         expect { result }.to(change { ActionMailer::Base.deliveries.count }.by(1))
 
-        # rubocop:disable Layout/LineLength
         expect(result.table).to match_array(
           [
             ['uuid', 'status', 'reason'],
@@ -336,7 +331,6 @@ RSpec.describe ActionAccount do
             ['uuid-does-not-exist', 'Error: Could not find user with that UUID', 'INV1234'],
           ],
         )
-        # rubocop:enable Layout/LineLength
 
         expect(result.subtask).to eq('reinstate-user')
         expect(result.uuids).to match_array([user.uuid, suspended_user.uuid])

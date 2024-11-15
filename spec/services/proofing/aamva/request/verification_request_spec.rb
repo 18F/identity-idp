@@ -186,7 +186,6 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
       end
     end
 
-    # rubocop:disable Layout/LineLength
     context 'when the request times out' do
       it 'raises an error' do
         stub_request(:post, config.verification_url).
@@ -198,7 +197,6 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
         )
       end
     end
-    # rubocop:enable Layout/LineLength
 
     context 'when the connection fails' do
       it 'raises an error' do
