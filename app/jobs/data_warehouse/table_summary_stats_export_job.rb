@@ -29,7 +29,9 @@ module DataWarehouse
     end
 
     def table_has_id_column?(table)
-      ActiveRecord::Base.connection.columns(table).map(&:name).include?('id')
+      ActiveRecord::Base.connection.columns(table).any? do |column|
+        column.name == 'id' && column.type == :integer
+      end
     end
 
     def fetch_max_id_and_count(table, timestamp)
