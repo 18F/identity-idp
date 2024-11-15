@@ -25,9 +25,8 @@ module UspsInPersonProofing
       if is_enhanced_ipp
         request_body[:sponsorID] = IdentityConfig.store.usps_eipp_sponsor_id.to_i
       end
-      binding.pry
       response = faraday.post(url, request_body.to_json, dynamic_headers) do |req|
-        req.options.context = { service_name: 'usps_facilities_by_zip' }
+        req.options.context = { service_name: 'usps_facilities' }
       end.body
 
       facilities = parse_facilities(response)
