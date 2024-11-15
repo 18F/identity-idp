@@ -133,53 +133,23 @@ RSpec.describe Proofing::Resolution::Plugins::InstantVerifyResidentialAddressPlu
     subject(:proofer) { plugin.proofer }
 
     before do
-      allow(IdentityConfig.store).to receive(:proofer_mock_fallback).
-        and_return(proofer_mock_fallback)
       allow(IdentityConfig.store).to receive(:idv_resolution_default_vendor).
         and_return(idv_resolution_default_vendor)
     end
 
-    context 'when proofer_mock_fallback is set to true' do
-      let(:proofer_mock_fallback) { true }
+    context 'idv_resolution_default_vendor is set to :instant_verify' do
+      let(:idv_resolution_default_vendor) {          :instant_verify }
 
-      context 'and idv_resolution_default_vendor is set to :instant_verify' do
-        let(:idv_resolution_default_vendor) do
-          :instant_verify
-        end
-
-        # rubocop:disable Layout/LineLength
-        it 'creates an Instant Verify proofer because the new setting takes precedence over the old one when the old one is set to its default value' do
-          expect(proofer).to be_an_instance_of(Proofing::LexisNexis::InstantVerify::Proofer)
-        end
-        # rubocop:enable Layout/LineLength
-      end
-
-      context 'and idv_resolution_default_vendor is set to :mock' do
-        let(:idv_resolution_default_vendor) { :mock }
-
-        it 'creates a mock proofer because the two settings agree' do
-          expect(proofer).to be_an_instance_of(Proofing::Mock::ResolutionMockClient)
-        end
+      it 'creates an Instant Verify proofer' do
+        expect(proofer).to be_an_instance_of(Proofing::LexisNexis::InstantVerify::Proofer)
       end
     end
 
-    context 'when proofer_mock_fallback is set to false' do
-      let(:proofer_mock_fallback) { false }
+    context 'idv_resolution_default_vendor is set to :mock' do
+      let(:idv_resolution_default_vendor) { :mock }
 
-      context 'and idv_resolution_default_vendor is set to :instant_verify' do
-        let(:idv_resolution_default_vendor) { :instant_verify }
-
-        it 'creates an Instant Verify proofer because the two settings agree' do
-          expect(proofer).to be_an_instance_of(Proofing::LexisNexis::InstantVerify::Proofer)
-        end
-      end
-
-      context 'and idv_resolution_default_vendor is set to :mock' do
-        let(:idv_resolution_default_vendor) { :mock }
-
-        it 'creates an Instant Verify proofer to support transition between configs' do
-          expect(proofer).to be_an_instance_of(Proofing::LexisNexis::InstantVerify::Proofer)
-        end
+      it 'creates a mock proofer' do
+        expect(proofer).to be_an_instance_of(Proofing::Mock::ResolutionMockClient)
       end
     end
   end
