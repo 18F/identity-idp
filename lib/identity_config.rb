@@ -414,7 +414,7 @@ module IdentityConfig
     config.add(:socure_reason_code_api_key, type: :string)
     config.add(:socure_reason_code_base_url, type: :string)
     config.add(:socure_reason_code_timeout_in_seconds, type: :integer)
-    config.add(:socure_webhook_secret_key, type: :string)
+    config.add(:socure_docv_webhook_secret_key, type: :string)
     config.add(:socure_docv_webhook_secret_key_queue, type: :json)
     config.add(:sp_handoff_bounce_max_seconds, type: :integer)
     config.add(:sp_issuer_user_counts_report_configs, type: :json)

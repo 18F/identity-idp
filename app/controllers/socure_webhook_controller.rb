@@ -65,7 +65,7 @@ class SocureWebhookController < ApplicationController
   def verify_current_key(authorization_header:)
     ActiveSupport::SecurityUtils.secure_compare(
       authorization_header,
-      IdentityConfig.store.socure_webhook_secret_key,
+      IdentityConfig.store.socure_docv_webhook_secret_key,
     )
   end
 

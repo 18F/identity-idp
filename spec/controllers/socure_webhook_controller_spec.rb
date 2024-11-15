@@ -32,7 +32,7 @@ RSpec.describe SocureWebhookController do
     end
 
     before do
-      allow(IdentityConfig.store).to receive(:socure_webhook_secret_key).
+      allow(IdentityConfig.store).to receive(:socure_docv_webhook_secret_key).
         and_return(socure_secret_key)
       allow(IdentityConfig.store).to receive(:socure_docv_webhook_secret_key_queue).
         and_return(socure_secret_key_queue)
