@@ -70,7 +70,7 @@ class SocureWebhookController < ApplicationController
   end
 
   def verify_queue(authorization_header:)
-    IdentityConfig.store.socure_webhook_secret_key_queue.any? do |key|
+    IdentityConfig.store.socure_docv_webhook_secret_key_queue.any? do |key|
       ActiveSupport::SecurityUtils.secure_compare(
         authorization_header,
         key,

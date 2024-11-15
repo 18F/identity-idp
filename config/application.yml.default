@@ -387,7 +387,7 @@ socure_reason_code_api_key: ''
 socure_reason_code_base_url: ''
 socure_reason_code_timeout_in_seconds: 5
 socure_webhook_secret_key: ''
-socure_webhook_secret_key_queue: '[]'
+socure_docv_webhook_secret_key_queue: '[]'
 sp_handoff_bounce_max_seconds: 2
 sp_issuer_user_counts_report_configs: '[]'
 state_tracking_enabled: true
@@ -589,7 +589,7 @@ test:
   short_term_phone_otp_max_attempts: 100
   skip_encryption_allowed_list: '[]'
   socure_webhook_secret_key: 'secret-key'
-  socure_webhook_secret_key_queue: '["old-key-one", "old-key-two"]'
+  socure_docv_webhook_secret_key_queue: '["old-key-one", "old-key-two"]'
   team_ada_email: 'ada@example.com'
   team_all_login_emails: '["b@example.com", "c@example.com"]'
   team_daily_fraud_metrics_emails: '["g@example.com", "h@example.com"]'
