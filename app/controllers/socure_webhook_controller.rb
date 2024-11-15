@@ -82,7 +82,7 @@ class SocureWebhookController < ApplicationController
     analytics.idv_doc_auth_socure_webhook_received(
       created_at: event[:created],
       customer_user_id: event[:customerUserId],
-      docv_transaction_token: event[:docvTransactionToken],
+      docv_transaction_token: docv_transaction_token,
       event_type: event[:eventType],
       reference_id: event[:referenceId],
       user_id: user&.uuid,
