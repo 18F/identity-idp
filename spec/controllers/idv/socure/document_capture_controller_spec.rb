@@ -29,7 +29,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
   before do
     allow(IdentityConfig.store).to receive(:socure_docv_enabled).
       and_return(socure_docv_enabled)
-    allow(IdentityConfig.store).to receive(:socure_document_request_endpoint).
+    allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint).
       and_return(fake_socure_endpoint)
     allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(idv_vendor)
     allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(idv_vendor)
@@ -225,7 +225,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         }
       end
       before do
-        allow(IdentityConfig.store).to receive(:socure_document_request_endpoint).
+        allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint).
           and_return(fake_socure_endpoint)
       end
       it 'connection timeout still responds to user' do

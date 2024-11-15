@@ -14,7 +14,7 @@ RSpec.describe DocAuth::Socure::Request do
     let(:fake_metric_name) { 'fake metric' }
 
     before do
-      allow(IdentityConfig.store).to receive(:socure_document_request_endpoint).
+      allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint).
         and_return(fake_socure_endpoint)
       allow(request).to receive(:endpoint).and_return(fake_socure_endpoint)
       allow(request).to receive(:metric_name).and_return(fake_metric_name)
