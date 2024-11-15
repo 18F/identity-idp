@@ -7,7 +7,6 @@ module Idv
       include IdvStepConcern
 
       before_action :confirm_in_person_state_id_step_complete
-      ## before_action :confirm_step_allowed # pending FSM removal of state id step
       before_action :confirm_in_person_address_step_needed, only: :show
       before_action :set_usps_form_presenter
 

@@ -72,12 +72,6 @@ RSpec.describe Idv::InPerson::AddressForm do
         expect(result.success?).to be(false)
         expect(result.errors.empty?).to be(true)
       end
-    end
-    context 'when usps_ipp_transliteration_enabled is enabled and validate on other field' do
-      before(:each) do
-        allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled).and_return(true)
-      end
-      let(:subject) { described_class.new }
       it 'submit with missing same_address_as_id should be successful' do
         missing_required_params = good_params.except(:same_address_as_id)
         result = subject.submit(missing_required_params)
