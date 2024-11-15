@@ -68,8 +68,7 @@ module Users
         show_skip_additional_mfa_link: show_skip_additional_mfa_link?,
         after_mfa_setup_path:,
         return_to_sp_cancel_path:,
-        desktop_ft_ab_test: ab_test_bucket(:DESKTOP_FT_UNLOCK_SETUP) ==
-                                            (:desktop_ft_unlock_option_shown),
+        desktop_ft_ab_test: isInAbTestBucket?,
       )
     end
 
@@ -82,6 +81,13 @@ module Users
       params.require(:two_factor_options_form).permit(:selection, selection: [])
     rescue ActionController::ParameterMissing
       ActionController::Parameters.new(selection: [])
+    end
+
+    def isInAbTestBucket?
+      testing_bucket = ab_test_bucket(:DESKTOP_FT_UNLOCK_SETUP) == :desktop_ft_unlock_option_shown
+      test_enabled = IdentityConfig.store.desktop_ft_unlock_setup_option_percent_tested > 0
+
+      testing_bucket && test_enabled
     end
   end
 end
