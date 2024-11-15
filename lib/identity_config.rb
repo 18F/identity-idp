@@ -414,7 +414,6 @@ module IdentityConfig
     config.add(:socure_reason_code_api_key, type: :string)
     config.add(:socure_reason_code_base_url, type: :string)
     config.add(:socure_reason_code_timeout_in_seconds, type: :integer)
-    config.add(:socure_standard_capture_desktop_enabled, type: :boolean)
     config.add(:socure_webhook_enabled, type: :boolean)
     config.add(:socure_webhook_secret_key, type: :string)
     config.add(:socure_webhook_secret_key_queue, type: :json)

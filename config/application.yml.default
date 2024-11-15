@@ -386,7 +386,6 @@ socure_idplus_timeout_in_seconds: 5
 socure_reason_code_api_key: ''
 socure_reason_code_base_url: ''
 socure_reason_code_timeout_in_seconds: 5
-socure_standard_capture_desktop_enabled: false
 socure_webhook_enabled: false
 socure_webhook_secret_key: ''
 socure_webhook_secret_key_queue: '[]'
