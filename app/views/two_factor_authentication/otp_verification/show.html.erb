@@ -29,6 +29,11 @@
         autofocus: true,
         value: @presenter.code_value,
         optional_prefix: '#',
+        field_options: {
+          error_messages: {
+            patternMismatch: t('errors.messages.phone_otp_format'),
+          },
+        },
       ) %>
   <%= f.input(
         :remember_device,
