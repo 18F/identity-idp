@@ -32,6 +32,7 @@ module Idv
       skip_doc_auth_from_handoff
       skip_doc_auth_from_how_to_verify
       skip_hybrid_handoff
+      socure_docv_wait_polling_started_at
       ssn
       threatmetrix_review_status
       threatmetrix_session_id

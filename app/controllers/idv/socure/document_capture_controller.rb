@@ -22,6 +22,8 @@ module Idv
       skip_before_action :confirm_step_allowed, only: [:update]
 
       def show
+        idv_session.socure_docv_wait_polling_started_at = nil
+
         Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
           call('socure_document_capture', :view, true)
 
@@ -65,14 +67,25 @@ module Idv
         # Not used in standard flow, here for data consistency with hybrid flow.
         document_capture_session.confirm_ocr
 
+        Rails.logger.info(
+          {
+            controller: 'idv/socure/document_capture_controller',
+            method: 'update',
+            stored_result: stored_result,
+            job_sleep_seconds: IdentityConfig.store.doc_auth_socure_job_sleep_seconds,
+            refresh_interval: IdentityConfig.store.doc_auth_socure_wait_polling_refresh_max_seconds,
+            timeout: IdentityConfig.store.doc_auth_socure_wait_polling_timeout_minutes,
+          }.to_json,
+        )
         # If the stored_result is nil, the job fetching the results has not completed.
         if stored_result.nil?
           analytics.idv_doc_auth_document_capture_polling_wait_visited(**analytics_arguments)
           if wait_timed_out?
-            flash[:error] = I18n.t('errors.doc_auth.polling_timeout')
-            # TODO: redirect to try again page LG-14873
-            render plain: 'Technical difficulties!!!', status: :service_unavailable
+            # flash[:error] = I18n.t('errors.doc_auth.polling_timeout')
+            # TODO: redirect to try again page LG-14873/14952/15059
+            render plain: 'Technical difficulties!!!', status: :ok
           else
+            @polling_started_at = idv_session.socure_docv_wait_polling_started_at.inspect
             @refresh_interval =
               IdentityConfig.store.doc_auth_socure_wait_polling_refresh_max_seconds
             render 'idv/socure/document_capture/wait'
@@ -112,6 +125,7 @@ module Idv
           },
           undo_step: ->(idv_session:, user:) do
             idv_session.pii_from_doc = nil
+            idv_session.socure_docv_wait_polling_started_at = nil
             idv_session.invalidate_in_person_pii_from_user!
           end,
         )
@@ -120,12 +134,11 @@ module Idv
       private
 
       def wait_timed_out?
-        # swpsa: socure_wait_polling_started_at
-        if session[:swpsa].nil?
-          session[:swpsa] = Time.zone.now.to_s
+        if idv_session.socure_docv_wait_polling_started_at.nil?
+          idv_session.socure_docv_wait_polling_started_at = Time.zone.now.to_s
           return false
         end
-        start = DateTime.parse(session[:swpsa])
+        start = DateTime.parse(idv_session.socure_docv_wait_polling_started_at)
         timeout_period =
           IdentityConfig.store.doc_auth_socure_wait_polling_timeout_minutes.minutes || 5.minutes
         start + timeout_period < Time.zone.now

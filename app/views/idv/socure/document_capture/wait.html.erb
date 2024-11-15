@@ -1,4 +1,4 @@
-<%= content_for(:meta_refresh) { @refresh_interval || '15' } %>
+<%= content_for(:meta_refresh) { @refresh_interval&.to_s || '15' } %>
 <% self.title = t('titles.doc_auth.verify') %>
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
@@ -16,6 +16,14 @@
       height: 116,
       class: 'margin-bottom-4',
     ) %>
+
+<h1>Doug was here!</h1>
+<p>
+  Refresh interval: <%= @refresh_interval %> sec<br/>
+  Timeout: <%= IdentityConfig.store.doc_auth_socure_wait_polling_timeout_minutes %> min<br/>
+  Sleep: <%= IdentityConfig.store.doc_auth_socure_job_sleep_seconds %> sec<br/>
+  Polling started at: <%= @polling_started_at %><br/>
+</p>
 
 <%= render PageHeadingComponent.new do %>
   <%= t('doc_auth.headings.interstitial') %>
