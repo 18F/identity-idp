@@ -12,10 +12,10 @@ class SocureDocvResultsJob < ApplicationJob
     dcs = DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
     raise "DocumentCaptureSession not found: #{document_capture_session_uuid}" if !dcs
 
-    # analytics = create_analytics(
-    #   user: dcs.user,
-    #   service_provider_issuer: dcs.issuer,
-    # )
+    @analytics = create_analytics(
+      user: dcs.user,
+      service_provider_issuer: dcs.issuer,
+    )
 
     result = socure_document_verification_result
     dcs.store_result_from_response(result)
@@ -38,6 +38,7 @@ class SocureDocvResultsJob < ApplicationJob
   def socure_document_verification_result
     DocAuth::Socure::Requests::DocvResultRequest.new(
       document_capture_session_uuid:,
+      analytics: @analytics,
     ).fetch
   end
 end

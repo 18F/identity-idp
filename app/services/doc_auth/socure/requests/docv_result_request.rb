@@ -6,9 +6,11 @@ module DocAuth
       class DocvResultRequest < DocAuth::Socure::Request
         attr_reader :document_capture_session_uuid, :biometric_comparison_required
 
-        def initialize(document_capture_session_uuid:, biometric_comparison_required: false)
+        def initialize(document_capture_session_uuid:, analytics:,
+                       biometric_comparison_required: false)
           @document_capture_session_uuid = document_capture_session_uuid
           @biometric_comparison_required = biometric_comparison_required
+          @analytics = analytics
         end
 
         private
@@ -22,6 +24,8 @@ module DocAuth
 
         def handle_http_response(http_response)
           DocAuth::Socure::Responses::DocvResultResponse.new(
+            document_capture_session_uuid: document_capture_session_uuid,
+            analytics: @analytics,
             http_response: http_response,
             biometric_comparison_required: biometric_comparison_required,
           )

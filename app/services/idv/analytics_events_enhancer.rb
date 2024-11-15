@@ -31,6 +31,7 @@ module Idv
       idv_doc_auth_ssn_visited
       idv_doc_auth_submitted_image_upload_form
       idv_doc_auth_submitted_image_upload_vendor
+      idv_socure_verification_data_requested
       idv_doc_auth_submitted_pii_validation
       idv_doc_auth_verify_proofing_results
       idv_doc_auth_verify_submitted

@@ -4,7 +4,7 @@ module DocAuth
   module Socure
     module Responses
       class DocvResultResponse < DocAuth::Response
-        attr_reader :http_response, :biometric_comparison_required
+        attr_reader :document_capture_session_uuid, :http_response, :biometric_comparison_required
 
         DATA_PATHS = {
           reference_id: %w[referenceId],
@@ -30,12 +30,19 @@ module DocAuth
           document_number: %w[documentVerification documentData documentNumber],
           issue_date: %w[documentVerification documentData issueDate],
           expiration_date: %w[documentVerification documentData expirationDate],
+          customer_profile: %w[customerProfile],
+          socure_customer_user_id: %w[customerProfile customerUserId],
+          socure_user_id: %w[customerProfile userId],
         }.freeze
 
-        def initialize(http_response:, biometric_comparison_required: false)
+        def initialize(document_capture_session_uuid:, analytics:, http_response:,
+                       biometric_comparison_required: false)
+          @document_capture_session_uuid = document_capture_session_uuid
+          @analytics = analytics
           @http_response = http_response
           @biometric_comparison_required = biometric_comparison_required
           @pii_from_doc = read_pii
+          log_verification_request
 
           super(
             success: successful_result?,
@@ -110,6 +117,39 @@ module DocAuth
           )
         end
 
+        def log_verification_request
+          user_id = nil
+          if !document_capture_session&.user.nil?
+            user_id = document_capture_session.user.uuid
+          end
+          @analytics.idv_socure_verification_data_requested(
+            success: doc_auth_success?,
+            errors: nil,
+            exception: nil,
+            async: false,
+            docv_transaction_token: document_capture_session&.socure_docv_transaction_token,
+            customer_profile: get_data(DATA_PATHS[:customer_profile]),
+            reference_id: get_data(DATA_PATHS[:reference_id]),
+            reason_codes: get_data(DATA_PATHS[:reason_codes]),
+            document_type: get_data(DATA_PATHS[:document_type]),
+            decision: get_data(DATA_PATHS[:decision]),
+            user_id: user_id,
+            state: get_data(DATA_PATHS[:state]),
+            state_id_type: state_id_type,
+            submit_attempts: rate_limiter&.attempts,
+            remaining_submit_attempts: rate_limiter&.remaining_count,
+            flow_path: nil, # TODO: check if value should be logged and where to get it
+            liveness_checking_required: @biometric_comparison_required,
+            issue_year: get_year(get_data(DATA_PATHS[:issue_date])),
+            doc_auth_success: doc_auth_success?,
+            vendor: 'Socure',
+            address_line2_present: get_data(DATA_PATHS[:address2]).present?,
+            zip_code: get_data(DATA_PATHS[:zipcode]),
+            birth_year: get_year(get_data(DATA_PATHS[:dob])),
+            liveness_enabled: @biometric_comparison_required,
+          )
+        end
+
         def get_data(path)
           parsed_response_body.dig(*path)
         end
@@ -137,6 +177,29 @@ module DocAuth
           }.to_json
           Rails.logger.info(message)
           nil
+        end
+
+        def get_year(date_str)
+          date = parse_date(date_str)
+          if date.nil?
+            return nil
+          else
+            return date.year
+          end
+        end
+
+        def document_capture_session
+          @document_capture_session ||=
+            DocumentCaptureSession.find_by!(uuid: document_capture_session_uuid)
+        end
+
+        def rate_limiter
+          return nil if document_capture_session.nil?
+
+          @rate_limiter ||= RateLimiter.new(
+            user: document_capture_session&.user,
+            rate_limit_type: :idv_doc_auth,
+          )
         end
       end
     end
