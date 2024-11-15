@@ -1,5 +1,4 @@
 require 'rails_helper'
-# rubocop:disable Layout/LineLength
 
 RSpec.describe 'Unchecking remember device' do
   describe '2fa setup' do
@@ -151,4 +150,3 @@ RSpec.describe 'Unchecking remember device' do
     end
   end
 end
-# rubocop:enable Layout/LineLength

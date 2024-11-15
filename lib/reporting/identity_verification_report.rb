@@ -308,7 +308,6 @@ module Reporting
       end
     end
 
-    # rubocop:disable Layout/LineLength
     # rubocop:disable Metrics/BlockLength
     # Turns query results into a hash keyed by event name, values are a count of unique users
     # for that event
@@ -365,7 +364,6 @@ module Reporting
       end
     end
     # rubocop:enable Metrics/BlockLength
-    # rubocop:enable Layout/LineLength
 
     def fetch_results
       cloudwatch_client.fetch(query:, from: time_range.begin, to: time_range.end)

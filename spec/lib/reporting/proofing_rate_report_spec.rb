@@ -60,7 +60,6 @@ RSpec.describe Reporting::ProofingRateReport do
     end
 
     it 'renders a report with 30, 60, 90 day numbers' do
-      # rubocop:disable Layout/LineLength
       expected_csv = [
         ['Metric', 'Trailing 30d', 'Trailing 60d', 'Trailing 90d'],
         ['Start Date', Date.new(2021, 12, 2), Date.new(2021, 11, 2), Date.new(2021, 10, 3)],
@@ -76,7 +75,6 @@ RSpec.describe Reporting::ProofingRateReport do
         ['Actual Proofing Rate (Image Submitted to Successfully Verified)', 1.0 / 2, 2.0 / 3, 3.0 / 4],
         ['Industry Proofing Rate (Verified minus IDV Rejected)', 1.0 / 2, 2.0 / 3, 3.0 / 4],
       ]
-      # rubocop:enable Layout/LineLength
 
       aggregate_failures do
         report.as_csv.zip(expected_csv).each do |actual, expected|

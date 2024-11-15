@@ -46,7 +46,6 @@ module Reporting
       )
     end
 
-    # rubocop:disable Layout/LineLength
     def as_csv
       csv = []
 
@@ -74,7 +73,6 @@ module Reporting
         [err.class.name, err.message],
       ]
     end
-    # rubocop:enable Layout/LineLength
 
     def to_csv
       CSV.generate do |csv|

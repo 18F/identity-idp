@@ -16,7 +16,6 @@ module Encryption
 
     attr_reader :cost, :salt, :z1, :z2, :random_r, :masked_ciphertext, :cek
 
-    # rubocop:disable Layout/LineLength
     def initialize(password: nil, salt: nil, cost: nil, scrypt_hash: nil, user_uuid: nil, log_context: nil)
       cost ||= IdentityConfig.store.scrypt_cost
       scrypt_password = if scrypt_hash.present?
@@ -30,7 +29,6 @@ module Encryption
       @user_uuid = user_uuid
       @log_context = log_context
     end
-    # rubocop:enable Layout/LineLength
 
     def as_scrypt_hash
       "#{cost}#{salt}$#{z1}#{z2}"

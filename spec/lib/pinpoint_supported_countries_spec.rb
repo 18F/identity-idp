@@ -133,7 +133,6 @@ RSpec.describe PinpointSupportedCountries do
   end
 
   describe '#sms_support' do
-    # rubocop:disable Layout/LineLength
     it 'parses the SMS page from poinpoint an array of configs' do
       expect(countries.sms_support).to eq [
         PinpointSupportedCountries::CountrySupport.new(iso_code: 'AR', name: 'Argentina', supports_sms: true),
@@ -143,7 +142,6 @@ RSpec.describe PinpointSupportedCountries do
         PinpointSupportedCountries::CountrySupport.new(iso_code: 'IN', name: 'India', supports_sms: true),
       ]
     end
-    # rubocop:enable Layout/LineLength
 
     context 'when we do not have a sender ID for a country that requires one' do
       before do
@@ -169,7 +167,6 @@ RSpec.describe PinpointSupportedCountries do
   end
 
   describe '#voice_support' do
-    # rubocop:disable Layout/LineLength
     it 'parses the voice page from poinpoint an array of configs' do
       expect(countries.voice_support).to eq [
         PinpointSupportedCountries::CountrySupport.new(name: 'Argentina', supports_voice: true),
@@ -177,7 +174,6 @@ RSpec.describe PinpointSupportedCountries do
         PinpointSupportedCountries::CountrySupport.new(name: 'Cayman Islands', supports_voice: true),
       ]
     end
-    # rubocop:enable Layout/LineLength
   end
 
   describe '#load_country_dialing_codes' do

@@ -202,14 +202,14 @@ module Reports
                 issuer_profile_age_results[:partner_ial2_unique_user_events_year3] || 0,
                 issuer_profile_age_results[:partner_ial2_unique_user_events_year4] || 0,
                 issuer_profile_age_results[:partner_ial2_unique_user_events_year5] || 0,
-                issuer_profile_age_results[:partner_ial2_unique_user_events_year_greater_than_5] || 0, # rubocop:disable Layout/LineLength
+                issuer_profile_age_results[:partner_ial2_unique_user_events_year_greater_than_5] || 0,
                 issuer_profile_age_results[:partner_ial2_unique_user_events_unknown] || 0,
                 issuer_profile_age_results[:partner_ial2_new_unique_user_events_year1] || 0,
                 issuer_profile_age_results[:partner_ial2_new_unique_user_events_year2] || 0,
                 issuer_profile_age_results[:partner_ial2_new_unique_user_events_year3] || 0,
                 issuer_profile_age_results[:partner_ial2_new_unique_user_events_year4] || 0,
                 issuer_profile_age_results[:partner_ial2_new_unique_user_events_year5] || 0,
-                issuer_profile_age_results[:partner_ial2_new_unique_user_events_year_greater_than_5] || 0, # rubocop:disable Layout/LineLength
+                issuer_profile_age_results[:partner_ial2_new_unique_user_events_year_greater_than_5] || 0,
                 issuer_profile_age_results[:partner_ial2_new_unique_user_events_unknown] || 0,
 
                 (ial1_total_auth_count = extract(issuer_results, :total_auth_count, ial: 1)),

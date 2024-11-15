@@ -86,10 +86,8 @@ RSpec.describe DataRequests::Local::FetchCloudwatchLogs do
       it 'groups consecutive days into a single range, and pads by 12 hours' do
         expect(query_ranges).to eq(
           [
-            # rubocop:disable Layout/LineLength
             (Date.new(2023, 1, 1).beginning_of_day - 12.hours)..(Date.new(2023, 1, 3).end_of_day + 12.hours),
             (Date.new(2023, 1, 5).beginning_of_day - 12.hours)..(Date.new(2023, 1, 7).end_of_day + 12.hours),
-            # rubocop:enable Layout/LineLength
           ],
         )
       end

@@ -35,7 +35,6 @@ module Idv
                          char_list: invalid_chars.join(', '),
                        )
                      end
-      # rubocop:disable Layout/LineLength
       validates_with UspsInPersonProofing::DateValidator,
                      attributes: [:dob], less_than_or_equal_to: ->(_rec) {
                        Time.zone.today - IdentityConfig.store.idv_min_age_years.years
@@ -46,7 +45,6 @@ module Idv
                          app_name: APP_NAME,
                        )
                      end
-      # rubocop:enable Layout/LineLength
     end
     # rubocop:enable Metrics/BlockLength
   end

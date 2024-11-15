@@ -157,7 +157,6 @@ module DocAuthRouter
     end
   end
 
-  # rubocop:disable Layout/LineLength
   # @param [Proc,nil] warn_notifier proc takes a hash, and should log that hash to events.log
   def self.client(vendor:, warn_notifier: nil)
     case vendor
@@ -193,7 +192,6 @@ module DocAuthRouter
       raise "#{vendor} is not a valid doc auth vendor"
     end
   end
-  # rubocop:enable Layout/LineLength
 
   def self.doc_auth_vendor_for_bucket(bucket)
     case bucket
