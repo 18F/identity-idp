@@ -122,6 +122,7 @@ group :development, :test do
   gem 'rubocop-performance', '~> 1.20.2', require: false
   gem 'rubocop-rails', '>= 2.26.2', require: false
   gem 'rubocop-rspec', require: false
+  gem 'rubocop-disable_syntax', require: false
   gem 'sqlite3', require: false
 end
 
