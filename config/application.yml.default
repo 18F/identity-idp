@@ -380,8 +380,8 @@ sign_in_user_id_per_ip_max_attempts: 50
 skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:int"]'
 socure_docv_document_request_endpoint: ''
 socure_docv_enabled: false
-socure_docv_webhook_secret_key_queue: '[]'
 socure_docv_webhook_secret_key: ''
+socure_docv_webhook_secret_key_queue: '[]'
 socure_idplus_api_key: ''
 socure_idplus_base_url: ''
 socure_idplus_timeout_in_seconds: 5
