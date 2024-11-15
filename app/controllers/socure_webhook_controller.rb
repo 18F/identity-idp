@@ -4,7 +4,7 @@ class SocureWebhookController < ApplicationController
   include RenderConditionConcern
 
   skip_before_action :verify_authenticity_token
-  check_or_render_not_found -> { IdentityConfig.store.socure_enabled }
+  check_or_render_not_found -> { IdentityConfig.store.socure_docv_enabled }
   before_action :check_token
   before_action :check_socure_event
 

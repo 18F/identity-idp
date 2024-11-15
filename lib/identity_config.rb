@@ -407,7 +407,7 @@ module IdentityConfig
     config.add(:recommend_webauthn_platform_for_sms_ab_test_account_creation_percent, type: :integer)
     config.add(:recommend_webauthn_platform_for_sms_ab_test_authentication_percent, type: :integer)
     config.add(:socure_document_request_endpoint, type: :string)
-    config.add(:socure_enabled, type: :boolean)
+    config.add(:socure_docv_enabled, type: :boolean)
     config.add(:socure_idplus_api_key, type: :string)
     config.add(:socure_idplus_base_url, type: :string)
     config.add(:socure_idplus_timeout_in_seconds, type: :integer)
