@@ -71,4 +71,24 @@ module DocumentCaptureStepHelper
   def click_try_again
     click_spinner_button_and_wait t('idv.failure.button.warning')
   end
+
+  def socure_docv_send_webhook(
+    docv_transaction_token:,
+    webhook_secret: IdentityConfig.store.socure_webhook_secret_key,
+    event_type: 'DOCUMENTS_UPLOADED'
+  )
+    Faraday.post "http://#{[page.server.host, page.server.port].join(':')}/api/webhooks/socure/event" do |req|
+      req.body = {
+        event: {
+          eventType: event_type,
+          docvTransactionToken: docv_transaction_token,
+        },
+      }.to_json
+      req.headers = {
+        'Content-Type': 'application/json',
+        Authorization: "secret #{webhook_secret}",
+      }
+      req.options.context = { service_name: 'socure-docv-webhook' }
+    end
+  end
 end
