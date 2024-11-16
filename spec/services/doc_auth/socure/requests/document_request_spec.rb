@@ -15,7 +15,7 @@ RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
   describe '#fetch' do
     let(:document_type) { 'license' }
     let(:fake_socure_endpoint) { 'https://fake-socure.test/' }
-    let(:fake_socure_document_capture_app_url) { 'https://verify.socure.us/something' }
+    let(:fake_socure_document_capture_app_url) { 'https://verify.fake-socure.test/something' }
     let(:docv_transaction_token) { 'fake docv transaction token' }
     let(:fake_socure_response) do
       {
