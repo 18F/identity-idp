@@ -179,9 +179,15 @@ module IdentityConfig
     config.add(:idv_max_attempts, type: :integer)
     config.add(:idv_min_age_years, type: :integer)
     config.add(
+      :idv_resolution_alternate_vendor,
+      type: :symbol,
+      enum: [:instant_verify, :socure_kyc, :mock, :none],
+    )
+    config.add(:idv_resolution_alternate_vendor_percent, type: :integer)
+    config.add(
       :idv_resolution_default_vendor,
       type: :symbol,
-      enum: [:instant_verify, :mock],
+      enum: [:instant_verify, :socure_kyc, :mock],
     )
     config.add(:idv_send_link_attempt_window_in_minutes, type: :integer)
     config.add(:idv_send_link_max_attempts, type: :integer)

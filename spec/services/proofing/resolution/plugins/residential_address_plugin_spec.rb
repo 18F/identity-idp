@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Proofing::Resolution::Plugins::InstantVerifyResidentialAddressPlugin do
+RSpec.describe Proofing::Resolution::Plugins::ResidentialAddressPlugin do
   let(:current_sp) { build(:service_provider) }
 
   let(:ipp_enrollment_in_progress) { false }
@@ -11,12 +11,21 @@ RSpec.describe Proofing::Resolution::Plugins::InstantVerifyResidentialAddressPlu
     Proofing::Resolution::Result.new(
       success: true,
       transaction_id: proofer_transaction_id,
-      vendor_name: 'lexisnexis:instant_verify',
+      vendor_name: 'test_resolution_vendor',
     )
   end
 
+  let(:proofer) do
+    instance_double(Proofing::LexisNexis::InstantVerify::Proofer, proof: proofer_result)
+  end
+
+  let(:sp_cost_token) { :test_cost_token }
+
   subject(:plugin) do
-    described_class.new
+    described_class.new(
+      proofer:,
+      sp_cost_token:,
+    )
   end
 
   describe '#call' do

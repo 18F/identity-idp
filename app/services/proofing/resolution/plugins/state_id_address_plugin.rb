@@ -3,7 +3,9 @@
 module Proofing
   module Resolution
     module Plugins
-      class InstantVerifyStateIdAddressPlugin
+      class StateIdAddressPlugin
+        attr_reader :proofer, :sp_cost_token
+
         SECONDARY_ID_ADDRESS_MAP = {
           identity_doc_address1: :address1,
           identity_doc_address2: :address2,
@@ -11,6 +13,14 @@ module Proofing
           identity_doc_address_state: :state,
           identity_doc_zipcode: :zipcode,
         }.freeze
+
+        def initialize(
+          proofer:,
+          sp_cost_token:
+        )
+          @proofer = proofer
+          @sp_cost_token = sp_cost_token
+        end
 
         def call(
           applicant_pii:,
@@ -41,25 +51,6 @@ module Proofing
               transaction_id: result.transaction_id,
             )
           end
-        end
-
-        def proofer
-          @proofer ||=
-            case IdentityConfig.store.idv_resolution_default_vendor
-              when :instant_verify
-                Proofing::LexisNexis::InstantVerify::Proofer.new(
-                  instant_verify_workflow: IdentityConfig.store.lexisnexis_instant_verify_workflow,
-                  account_id: IdentityConfig.store.lexisnexis_account_id,
-                  base_url: IdentityConfig.store.lexisnexis_base_url,
-                  username: IdentityConfig.store.lexisnexis_username,
-                  password: IdentityConfig.store.lexisnexis_password,
-                  hmac_key_id: IdentityConfig.store.lexisnexis_hmac_key_id,
-                  hmac_secret_key: IdentityConfig.store.lexisnexis_hmac_secret_key,
-                  request_mode: IdentityConfig.store.lexisnexis_request_mode,
-                )
-              when :mock
-                Proofing::Mock::ResolutionMockClient.new
-            end
         end
 
         def resolution_cannot_pass
