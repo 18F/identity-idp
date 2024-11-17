@@ -12,7 +12,6 @@ RSpec.feature 'document capture step', :js do
   let(:fake_socure_endpoint) { 'https://fake-socure.test/' }
   let(:fake_socure_document_capture_app_url) { 'https://verify.socure.test/something' }
   let(:docv_transaction_token) { 'fake docv transaction token' }
-  let(:fake_socure_idplus_base_url) { 'https://verification-data.fake-socure.test' }
   # let(:fake_socure_response) do
   #   {
   #     referenceId: 'socure-reference-id',
@@ -34,7 +33,6 @@ RSpec.feature 'document capture step', :js do
     allow(IdentityConfig.store).to receive(:socure_document_request_endpoint).
       and_return(fake_socure_endpoint)
     allow(IdentityConfig.store).to receive(:ruby_workers_idv_enabled).and_return(false)
-    allow(IdentityConfig.store).to receive(:socure_idplus_base_url).and_return(fake_socure_idplus_base_url)
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     @docv_transaction_token = SecureRandom.hex
     stub_request(:post, fake_socure_endpoint).
@@ -69,7 +67,7 @@ RSpec.feature 'document capture step', :js do
 
     context 'rate limits calls to backend docauth vendor', allow_browser_log: true do
       before do
-        stub_verification_data
+        stub_docv_verification_data_pass
         allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
         (max_attempts - 1).times do
           socure_docv_send_webhook(docv_transaction_token: @docv_transaction_token)
@@ -147,7 +145,7 @@ RSpec.feature 'document capture step', :js do
 
   context 'standard mobile flow' do
     before do
-      stub_verification_data
+      stub_docv_verification_data_pass
     end
     it 'proceeds to the next page with valid info' do
       perform_in_browser(:mobile) do
@@ -215,64 +213,6 @@ RSpec.feature 'document capture step', :js do
 
   def costing_for(cost_type)
     # SpCost.where(ial: 2, issuer: 'urn:gov:gsa:openidconnect:sp:server', cost_type: cost_type.to_s)
-  end
-
-  def stub_verification_data(decision: 'accept')
-    stub_request(:post, "#{fake_socure_idplus_base_url}/api/3.0/EmailAuthScore").
-      to_return(
-        headers: {
-          'Content-Type' => 'application/json',
-        },
-        body: JSON.generate(socure_response_body(decision:)),
-      )
-  end
-
-  def socure_response_body(decision:)
-    response = JSON.parse(
-      '{
-        "referenceId": "a1234b56-e789-0123-4fga-56b7c890d123",
-        "previousReferenceId": "e9c170f2-b3e4-423b-a373-5d6e1e9b23f8",
-        "documentVerification": {
-          "reasonCodes": [
-            "I831",
-            "R810"
-          ],
-          "documentType": {
-            "type": "Drivers License",
-            "country": "USA",
-            "state": "NY"
-          },
-          "decision": {
-            "name": "lenient",
-            "value": "review"
-          },
-          "documentData": {
-            "firstName": "Dwayne",
-            "surName": "Denver",
-            "fullName": "Dwayne Denver",
-            "address": "123 Example Street, New York City, NY 10001",
-            "parsedAddress": {
-              "physicalAddress": "123 Example Street",
-              "physicalAddress2": "New York City NY 10001",
-              "city": "New York City",
-              "state": "NY",
-              "country": "US",
-              "zip": "10001"
-            },
-            "documentNumber": "000000000",
-            "dob": "2020-01-01",
-            "issueDate": "2024-01-01",
-            "expirationDate": "2027-01-01"
-          }
-        },
-        "customerProfile": {
-          "customerUserId": "129",
-          "userId": "u8JpWn4QsF3R7tA2"
-        }
-      }',
-    )
-    response['documentVerification']['decision']['value'] = decision
-    response
   end
 end
 
