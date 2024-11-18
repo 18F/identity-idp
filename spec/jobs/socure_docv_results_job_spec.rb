@@ -5,6 +5,7 @@ require 'rails_helper'
 RSpec.describe SocureDocvResultsJob do
   let(:job) { described_class.new }
   let(:user) { create(:user) }
+  let(:fake_analytics) { FakeAnalytics.new }
   let(:document_capture_session) do
     DocumentCaptureSession.create(user:).tap do |dcs|
       dcs.socure_docv_transaction_token = '1234'
@@ -15,16 +16,18 @@ RSpec.describe SocureDocvResultsJob do
   let(:decision_value) { 'accept' }
   let(:expiration_date) { "#{1.year.from_now.year}-01-01" }
 
-  let(:analytics) { FakeAnalytics.new }
-
   before do
     allow(IdentityConfig.store).to receive(:socure_idplus_base_url).
       and_return(socure_idplus_base_url)
+    allow(Analytics).to receive(:new).and_return(fake_analytics)
   end
 
   describe '#perform' do
     subject(:perform) do
       job.perform(document_capture_session_uuid: document_capture_session_uuid)
+    end
+    subject(:perform_later) do
+      job.perform_later(document_capture_session_uuid: document_capture_session_uuid)
     end
 
     let(:socure_response_body) do
@@ -69,6 +72,24 @@ RSpec.describe SocureDocvResultsJob do
       }
     end
 
+    let(:expected_socure_log) do
+      {
+        success: true,
+        issue_year: 2020,
+        vendor: 'Socure',
+        submit_attempts: 0,
+        remaining_submit_attempts: 4,
+        state: 'NY',
+        zip_code: '10001',
+        doc_auth_success: true,
+        document_type: {
+          type: 'Drivers License',
+          country: 'USA',
+          state: 'NY',
+        },
+      }
+    end
+
     before do
       stub_request(:post, 'https://example.com/api/3.0/EmailAuthScore').
         to_return(
@@ -89,6 +110,25 @@ RSpec.describe SocureDocvResultsJob do
       expect(document_capture_session_result.attention_with_barcode).to eq(false)
       expect(document_capture_session_result.doc_auth_success).to eq(true)
       expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+    end
+
+    it 'expect fake analytics to have logged idv_socure_verification_data_requested' do
+      perform
+      expect(fake_analytics).to have_logged_event(
+        :idv_socure_verification_data_requested,
+        hash_including(
+          expected_socure_log.merge({ async: false }),
+        ),
+      )
+    end
+    it 'expect fake analytics to have logged idv_socure_verification_data_requested with async true' do
+      perform_later
+      expect(fake_analytics).to have_logged_event(
+        :idv_socure_verification_data_requested,
+        hash_including(
+          expected_socure_log.merge({ async: true }),
+        ),
+      )
     end
 
     context 'when the document capture session does not exist' do

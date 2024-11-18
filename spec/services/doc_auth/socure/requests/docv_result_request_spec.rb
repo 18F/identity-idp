@@ -56,59 +56,5 @@ RSpec.describe DocAuth::Socure::Requests::DocvResultRequest do
         expect(response_hash[:exception].message).to include('Unexpected HTTP response 500')
       end
     end
-
-    context 'with socure ok http response' do
-      let(:fake_reference_id) { 'dummy_reference_id' }
-      let(:fake_socure_response) do
-        {
-          referenceId: fake_reference_id,
-          documentVerification: {
-            reasonCodes: {},
-            documentType: {
-              type: 'ID',
-              state: 'TX',
-              country: 'USA',
-            },
-            decision: {
-              name: 'Accept',
-              value: 'Accept',
-            },
-            documentData: {
-              firstName: 'John',
-              middleName: 'Ham',
-              surName: 'Doe',
-              parsedAddress: {
-                physicalAddress: '12345 Test Street',
-                physicalAddress2: 'Suite 200',
-                city: 'Houston',
-                state: 'TX',
-                zip: '12345',
-              },
-              dob: '01/01/1999',
-              documentNumber: '12345',
-              issueDate: '01/01/2020',
-              expirationDate: '01/01/2030',
-            },
-            customerProfile: {
-              customerUserId: '123',
-              userId: 'fakeUserId',
-            },
-          },
-        }
-      end
-      let(:fake_socure_status) { 200 }
-      it 'expect correct doc auth response for a socure fail response' do
-        stub_request(:post, fake_socure_api_endpoint).
-          to_return(
-            status: fake_socure_status,
-            body: JSON.generate(fake_socure_response),
-          )
-        docv_result_request.fetch
-        expect(fake_analytics).to have_logged_event(
-          :idv_socure_verification_data_requested,
-          hash_including(reference_id: fake_reference_id),
-        )
-      end
-    end
   end
 end

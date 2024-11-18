@@ -40,7 +40,6 @@ module DocAuth
           @http_response = http_response
           @biometric_comparison_required = biometric_comparison_required
           @pii_from_doc = read_pii
-          log_verification_request
 
           super(
             success: successful_result?,
@@ -69,30 +68,18 @@ module DocAuth
         end
 
         def verification_response_data
-          user_id = nil
-          if !document_capture_session&.user.nil?
-            user_id = document_capture_session.user.uuid
-          end
           return {
-            success: doc_auth_success?,
-            errors: nil,
-            exception: nil,
-            async: false,
-            docv_transaction_token: document_capture_session&.socure_docv_transaction_token,
             customer_profile: get_data(DATA_PATHS[:customer_profile]),
             reference_id: get_data(DATA_PATHS[:reference_id]),
             reason_codes: get_data(DATA_PATHS[:reason_codes]),
             document_type: get_data(DATA_PATHS[:document_type]),
             decision: get_data(DATA_PATHS[:decision]),
-            user_id: user_id,
             state: state,
             state_id_type: state_id_type,
-            submit_attempts: rate_limiter&.attempts,
-            remaining_submit_attempts: rate_limiter&.remaining_count,
-            flow_path: nil, # TODO: check if value should be logged and where to get it
+            flow_path: nil,
             liveness_checking_required: @biometric_comparison_required,
             issue_year: get_year(state_id_issued),
-            doc_auth_success: doc_auth_success?,
+            doc_auth_success: successful_result?,
             vendor: 'Socure',
             address_line2_present: address2.present?,
             zip_code: zipcode,
@@ -209,20 +196,6 @@ module DocAuth
           else
             return date.year
           end
-        end
-
-        def document_capture_session
-          @document_capture_session ||=
-            DocumentCaptureSession.find_by!(uuid: document_capture_session_uuid)
-        end
-
-        def rate_limiter
-          return nil if document_capture_session.nil?
-
-          @rate_limiter ||= RateLimiter.new(
-            user: document_capture_session&.user,
-            rate_limit_type: :idv_doc_auth,
-          )
         end
       end
     end
