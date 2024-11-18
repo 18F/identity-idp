@@ -89,7 +89,6 @@ module Idv
               # mobile
               idv_session.skip_doc_auth_from_handoff ||
               idv_session.skip_hybrid_handoff ||
-              idv_session.skip_doc_auth ||
               idv_session.skip_doc_auth_from_how_to_verify ||
               !idv_session.selfie_check_required ||
               idv_session.desktop_selfie_test_mode_enabled?)
