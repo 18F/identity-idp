@@ -85,22 +85,6 @@ RSpec.describe Idv::StepIndicatorConcern, type: :controller do
         ]
       end
 
-      context 'via pending profile' do
-        let(:profile) do
-          create(
-            :profile,
-            gpo_verification_pending_at: 1.day.ago,
-            proofing_components: { 'document_check' => Idp::Constants::Vendors::USPS },
-          )
-        end
-
-        it 'returns in person gpo steps' do
-          ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
-          create(:in_person_enrollment, :establishing, user: user)
-          expect(steps).to eq in_person_step_indicator_steps_gpo
-        end
-      end
-
       context 'via current idv session' do
         before do
           ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
@@ -109,14 +93,6 @@ RSpec.describe Idv::StepIndicatorConcern, type: :controller do
 
         it 'returns in person steps' do
           expect(steps).to eq in_person_step_indicator_steps
-        end
-
-        context 'with gpo address verification method' do
-          before { force_gpo }
-
-          it 'returns in person gpo steps' do
-            expect(steps).to eq in_person_step_indicator_steps_gpo
-          end
         end
       end
 

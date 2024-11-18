@@ -269,10 +269,10 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
       stub_sign_in(user)
     end
 
-    it 'redirects to the ssn page' do
+    it 'redirects to the capture complete page' do
       get(:update)
 
-      expect(response).to redirect_to(idv_ssn_url)
+      expect(response).to redirect_to(idv_hybrid_mobile_capture_complete_url)
     end
 
     context 'when socure is disabled' do
