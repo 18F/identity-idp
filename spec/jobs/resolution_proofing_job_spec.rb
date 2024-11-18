@@ -26,6 +26,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
       and_return(lexisnexis_threatmetrix_mock_enabled)
     allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_base_url).
       and_return('https://www.example.com')
+    allow(IdentityConfig.store).to receive(:idv_resolution_default_vendor).
+      and_return(:instant_verify)
   end
 
   describe '#perform' do
