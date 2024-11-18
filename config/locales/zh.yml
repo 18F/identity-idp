@@ -762,13 +762,14 @@ errors.messages.invalid_voice_number: 电话号码有误。检查一下你是否
 errors.messages.missing_field: 请填写这一字段。
 errors.messages.no_pending_profile: 没有等待验证的用户资料
 errors.messages.not_a_number: 不是数字
-errors.messages.otp_format: 输入发送到你手机的一次性代码。请勿使用空格或特殊字符。
+errors.messages.otp_format: 输入你完整的一次性代码（没有空白或特殊字符）
 errors.messages.password_incorrect: 密码不对。
 errors.messages.password_mismatch: 你的密码不一致
 errors.messages.personal_key_incorrect: 个人密钥不对
 errors.messages.phone_carrier: 抱歉，我们目前无法支持这一电话运营商。请选择一个不同的号码再试一次。
 errors.messages.phone_confirmation_limited: 你尝试了太多次。请在 %{timeout}后再试。
 errors.messages.phone_duplicate: 该账户已在使用你输入的电话号码作为身份证实器。请使用一个不同的电话号码。
+errors.messages.phone_otp_format: 输入发送到你手机的一次性代码。请勿使用空格或特殊字符。
 errors.messages.phone_required: 电话号码是必需的。
 errors.messages.phone_unsupported: 抱歉，我们目前无法发送短信（SMS）。请尝试下面的接听电话选项或者使用你的个人密钥。
 errors.messages.premium_rate_phone: 这好像是一个高价电话号码。请选择一个不同的号码再试一次。

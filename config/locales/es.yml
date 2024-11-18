@@ -762,13 +762,14 @@ errors.messages.invalid_voice_number: Número de teléfono no válido. Verifique
 errors.messages.missing_field: Llene este campo.
 errors.messages.no_pending_profile: No hay ningún perfil en espera de verificación
 errors.messages.not_a_number: no es un número
-errors.messages.otp_format: Introduzca el código de un solo uso enviado a su teléfono. No utilice espacios ni caracteres especiales.
+errors.messages.otp_format: Ingrese su código de un solo uso completo, sin espacios ni caracteres especiales.
 errors.messages.password_incorrect: Contraseña incorrecta
 errors.messages.password_mismatch: Sus contraseñas no coinciden
 errors.messages.personal_key_incorrect: Clave personal incorrecta
 errors.messages.phone_carrier: Lo sentimos, no podemos admitir ese proveedor telefónico por ahora. Seleccione un número diferente e inténtelo de nuevo.
 errors.messages.phone_confirmation_limited: Lo intentó demasiadas veces; vuelva a intentarlo en %{timeout}.
 errors.messages.phone_duplicate: Esta cuenta ya usa el número de teléfono que ingresó como autenticador. Use un número de teléfono diferente.
+errors.messages.phone_otp_format: Introduzca el código de un solo uso enviado a su teléfono. No utilice espacios ni caracteres especiales.
 errors.messages.phone_required: Se requiere un número de teléfono.
 errors.messages.phone_unsupported: Lo sentimos, no podemos enviar un SMS en este momento. Intente la opción de llamada telefónica siguiente, o use su clave personal.
 errors.messages.premium_rate_phone: Parece que se trata de un número de teléfono de tarifa especial. Seleccione un número diferente e inténtelo de nuevo.
