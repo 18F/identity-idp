@@ -18,9 +18,7 @@ class SocureDocvResultsJob < ApplicationJob
     # )
 
     sleep_seconds = IdentityConfig.store.doc_auth_socure_job_sleep_seconds
-    Rails.logger.info "\n\n#{'Zzzz' * 20}\n\nSleeping for #{sleep_seconds} seconds..."
     sleep sleep_seconds
-    Rails.logger.info "\n    !!!!!!!!!!!! WAKE UP !!!!!!!!!\n\n#{'Zzzz' * 20}\n"
 
     result = socure_document_verification_result
     dcs.store_result_from_response(result)

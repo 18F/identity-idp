@@ -17,14 +17,6 @@
       class: 'margin-bottom-4',
     ) %>
 
-<h1>Doug was here!</h1>
-<p>
-  Refresh interval: <%= @refresh_interval %> sec<br/>
-  Timeout: <%= IdentityConfig.store.doc_auth_socure_wait_polling_timeout_minutes %> min<br/>
-  Sleep: <%= IdentityConfig.store.doc_auth_socure_job_sleep_seconds %> sec<br/>
-  Polling started at: <%= @polling_started_at %><br/>
-</p>
-
 <%= render PageHeadingComponent.new do %>
   <%= t('doc_auth.headings.interstitial') %>
 <% end %>

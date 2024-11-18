@@ -67,16 +67,6 @@ module Idv
         # Not used in standard flow, here for data consistency with hybrid flow.
         document_capture_session.confirm_ocr
 
-        Rails.logger.info(
-          {
-            controller: 'idv/socure/document_capture_controller',
-            method: 'update',
-            stored_result: stored_result,
-            job_sleep_seconds: IdentityConfig.store.doc_auth_socure_job_sleep_seconds,
-            refresh_interval: IdentityConfig.store.doc_auth_socure_wait_polling_refresh_max_seconds,
-            timeout: IdentityConfig.store.doc_auth_socure_wait_polling_timeout_minutes,
-          }.to_json,
-        )
         # If the stored_result is nil, the job fetching the results has not completed.
         if stored_result.nil?
           analytics.idv_doc_auth_document_capture_polling_wait_visited(**analytics_arguments)
@@ -85,7 +75,6 @@ module Idv
             # TODO: redirect to try again page LG-14873/14952/15059
             render plain: 'Technical difficulties!!!', status: :ok
           else
-            @polling_started_at = idv_session.socure_docv_wait_polling_started_at.inspect
             @refresh_interval =
               IdentityConfig.store.doc_auth_socure_wait_polling_refresh_max_seconds
             render 'idv/socure/document_capture/wait'
