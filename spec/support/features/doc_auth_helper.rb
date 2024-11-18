@@ -403,21 +403,27 @@ module DocAuthHelper
       )
   end
 
-  def stub_docv_document_request
-    random_token = SecureRandom.hex
+  def stub_docv_document_request(
+    url: 'https://verify.socure.test/something',
+    status: 200,
+    token: SecureRandom.hex,
+    body: nil
+  )
+    body ||= {
+      referenceId: 'socure-reference-id',
+      data: {
+        eventId: 'socure-event-id',
+        docvTransactionToken: token,
+        qrCode: 'qr-code',
+        url:,
+      },
+    }
+
     stub_request(:post, IdentityConfig.store.socure_document_request_endpoint).
       to_return(
         status:,
-        body: {
-          referenceId: 'socure-reference-id',
-          data: {
-            eventId: 'socure-event-id',
-            docvTransactionToken: random_token,
-            qrCode: 'qr-code',
-            url: 'https://verify.socure.test/something',
-          },
-        }.to_json,
+        body: body.to_json,
       )
-    random_token
+    token
   end
 end
