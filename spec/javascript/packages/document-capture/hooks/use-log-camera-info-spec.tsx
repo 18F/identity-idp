@@ -34,8 +34,7 @@ const mockDevice = {
 const mockGetUserMediaThrowsError = () => {
   throw new Error('camera logging failed');
 };
-const mockGetUserMedia = () =>
-  new Promise((resolve) => resolve({ getVideoTracks: mockGetVideoTracks }));
+const mockGetUserMedia = () => new Promise((resolve) => resolve({ getVideoTracks: mockGetVideoTracks }));
 const mockEnumerateDevices = () => new Promise((resolve) => resolve([mockDevice]));
 
 describe('document-capture/hooks/use-log-camera-info', () => {

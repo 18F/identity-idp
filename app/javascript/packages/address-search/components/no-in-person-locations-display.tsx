@@ -16,9 +16,7 @@ function NoInPersonLocationsDisplay({ address }: NoInPersonLocationsDisplayProps
         src={getAssetPath('info-pin-map.svg')}
       />
       <div className="inline-block grid-col-10">
-        <h2 role="status">
-          {t('in_person_proofing.body.location.po_search.none_found', { address })}
-        </h2>
+        <h2 role="status">{t('in_person_proofing.body.location.po_search.none_found', { address })}</h2>
         <p>{t('in_person_proofing.body.location.po_search.none_found_tip')}</p>
       </div>
     </div>

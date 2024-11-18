@@ -24,10 +24,7 @@ export interface TextInputProps extends InputHTMLAttributes<HTMLInputElement> {
   className?: string;
 }
 
-function TextInput(
-  { label, hint, id, className, ...inputProps }: TextInputProps,
-  ref: ForwardedRef<HTMLInputElement>,
-) {
+function TextInput({ label, hint, id, className, ...inputProps }: TextInputProps, ref: ForwardedRef<HTMLInputElement>) {
   const instanceId = useInstanceId();
   const inputId = id ?? `text-input-${instanceId}`;
   const hintId = id ?? `text-input-hint-${instanceId}`;
@@ -43,13 +40,7 @@ function TextInput(
           {hint}
         </div>
       )}
-      <input
-        ref={ref}
-        className={classes}
-        id={inputId}
-        aria-describedby={hint && hintId}
-        {...inputProps}
-      />
+      <input ref={ref} className={classes} id={inputId} aria-describedby={hint && hintId} {...inputProps} />
     </>
   );
 }

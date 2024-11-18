@@ -11,11 +11,7 @@ import { useEffect } from 'react';
  * @param property Property name to observe.
  * @param onChangeCallback Callback to trigger on change.
  */
-export function useObservableProperty(
-  object: any,
-  property: string,
-  onChangeCallback: (nextValue: any) => void,
-) {
+export function useObservableProperty(object: any, property: string, onChangeCallback: (nextValue: any) => void) {
   useEffect(() => {
     if (!object) {
       return;

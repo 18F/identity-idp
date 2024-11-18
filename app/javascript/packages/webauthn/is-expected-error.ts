@@ -9,11 +9,7 @@ import isUserVerificationScreenLockError from './is-user-verification-screen-loc
  *
  * @see https://webidl.spec.whatwg.org/#idl-DOMException
  */
-const EXPECTED_DOM_EXCEPTIONS: Set<string> = new Set([
-  'NotAllowedError',
-  'TimeoutError',
-  'InvalidStateError',
-]);
+const EXPECTED_DOM_EXCEPTIONS: Set<string> = new Set(['NotAllowedError', 'TimeoutError', 'InvalidStateError']);
 
 interface IsExpectedErrorOptions {
   /**
@@ -22,10 +18,7 @@ interface IsExpectedErrorOptions {
   isVerifying: boolean;
 }
 
-function isExpectedWebauthnError(
-  error: Error,
-  { isVerifying }: Partial<IsExpectedErrorOptions> = {},
-): boolean {
+function isExpectedWebauthnError(error: Error, { isVerifying }: Partial<IsExpectedErrorOptions> = {}): boolean {
   return (
     (error instanceof DOMException && EXPECTED_DOM_EXCEPTIONS.has(error.name)) ||
     (!!isVerifying && isUserVerificationScreenLockError(error))

@@ -1,7 +1,6 @@
 export function showOrHideJurisdictionExtras(jurisdictionCode) {
   const hasJurisdictionSpecificHint =
-    jurisdictionCode &&
-    document.querySelectorAll(`.jurisdiction-extras [data-state=${jurisdictionCode}]`).length > 0;
+    jurisdictionCode && document.querySelectorAll(`.jurisdiction-extras [data-state=${jurisdictionCode}]`).length > 0;
 
   document.querySelectorAll<HTMLElement>(`.jurisdiction-extras [data-state]`).forEach((element) => {
     const shouldShow =
@@ -24,9 +23,7 @@ export function showOrHidePuertoRicoExtras(forStateCode) {
 }
 
 function onStateSelectionChange() {
-  const stateSelector: HTMLInputElement = <HTMLInputElement>(
-    document.getElementById('idv_form_state')
-  );
+  const stateSelector: HTMLInputElement = <HTMLInputElement>document.getElementById('idv_form_state');
   showOrHidePuertoRicoExtras(stateSelector?.value);
   showOrHideJurisdictionExtras(stateSelector?.value);
 }
@@ -35,9 +32,7 @@ function onIdentityDocStateSelection() {
   const stateSelectors = document.querySelectorAll('.address-state-selector');
   stateSelectors.forEach((stateSelector) => {
     if (stateSelector instanceof HTMLSelectElement) {
-      stateSelector.addEventListener('change', () =>
-        showOrHidePuertoRicoExtras(stateSelector.value),
-      );
+      stateSelector.addEventListener('change', () => showOrHidePuertoRicoExtras(stateSelector.value));
       showOrHidePuertoRicoExtras(stateSelector.value);
     }
   });
@@ -47,9 +42,7 @@ function onIdentityDocJurisdictionSelection() {
   const stateSelectors = document.querySelectorAll('.jurisdiction-state-selector');
   stateSelectors.forEach((stateSelector) => {
     if (stateSelector instanceof HTMLSelectElement) {
-      stateSelector.addEventListener('change', () =>
-        showOrHideJurisdictionExtras(stateSelector.value),
-      );
+      stateSelector.addEventListener('change', () => showOrHideJurisdictionExtras(stateSelector.value));
       showOrHideJurisdictionExtras(stateSelector.value);
     }
   });

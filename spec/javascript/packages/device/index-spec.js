@@ -1,9 +1,4 @@
-import {
-  isLikelyMobile,
-  hasMediaAccess,
-  isCameraCapableMobile,
-  isIPad,
-} from '@18f/identity-device';
+import { isLikelyMobile, hasMediaAccess, isCameraCapableMobile, isIPad } from '@18f/identity-device';
 
 describe('isIPad', () => {
   let originalUserAgent;

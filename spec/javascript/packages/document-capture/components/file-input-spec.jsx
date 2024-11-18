@@ -129,9 +129,7 @@ describe('document-capture/components/file-input', () => {
   });
 
   it('renders decorative banner text', () => {
-    const { getByText } = render(
-      <FileInput label="File" bannerText="File Goes Here" className="my-custom-class" />,
-    );
+    const { getByText } = render(<FileInput label="File" bannerText="File Goes Here" className="my-custom-class" />);
 
     expect(getByText('File Goes Here', { hidden: true })).to.be.ok();
   });
@@ -162,9 +160,7 @@ describe('document-capture/components/file-input', () => {
   });
 
   it('renders a value preview for a file', async () => {
-    const { container, findByRole, getByLabelText } = render(
-      <FileInput label="File" value={file} />,
-    );
+    const { container, findByRole, getByLabelText } = render(<FileInput label="File" value={file} />);
 
     const preview = await findByRole('img', { hidden: true });
     const input = getByLabelText('File');
@@ -203,9 +199,7 @@ describe('document-capture/components/file-input', () => {
   });
 
   it('limits to accepted file mime types', () => {
-    const { getByLabelText } = render(
-      <FileInput label="File" accept={['image/png', 'image/bmp']} />,
-    );
+    const { getByLabelText } = render(<FileInput label="File" accept={['image/png', 'image/bmp']} />);
 
     expect(getByLabelText('File').accept).to.equal('image/png,image/bmp');
   });
@@ -433,13 +427,7 @@ describe('document-capture/components/file-input', () => {
     const onChange = sinon.stub();
     const onError = sinon.stub();
     const { getByLabelText, getByText } = render(
-      <FileInput
-        label="File"
-        accept={['text/*']}
-        onChange={onChange}
-        onError={onError}
-        invalidTypeText="Wrong type"
-      />,
+      <FileInput label="File" accept={['text/*']} onChange={onChange} onError={onError} invalidTypeText="Wrong type" />,
     );
 
     const input = getByLabelText('File');
@@ -509,13 +497,7 @@ describe('document-capture/components/file-input', () => {
 
   it('renders pending value', () => {
     const { getByLabelText, queryByRole, queryByText, container } = render(
-      <FileInput
-        bannerText="Banner"
-        fileLoadingText="File loading"
-        value={file}
-        label="File"
-        isValuePending
-      />,
+      <FileInput bannerText="Banner" fileLoadingText="File loading" value={file} label="File" isValuePending />,
     );
     const input = getByLabelText('File');
 
@@ -530,9 +512,7 @@ describe('document-capture/components/file-input', () => {
   });
 
   it('renders updated status', () => {
-    const { getByText, rerender } = render(
-      <FileInput fileLoadedText="File loaded" value={file} isValuePending />,
-    );
+    const { getByText, rerender } = render(<FileInput fileLoadedText="File loaded" value={file} isValuePending />);
 
     rerender(<FileInput fileLoadedText="File loaded" value={file} />);
 

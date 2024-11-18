@@ -48,9 +48,7 @@ describe('TextInput', () => {
   });
 
   it('renders with a hint', () => {
-    const { getByLabelText, getByText } = render(
-      <TextInput label="Input" hint="Something special" />,
-    );
+    const { getByLabelText, getByText } = render(<TextInput label="Input" hint="Something special" />);
 
     const input = getByLabelText('Input');
     const description = computeAccessibleDescription(input);

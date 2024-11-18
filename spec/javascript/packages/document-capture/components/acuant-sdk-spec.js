@@ -11,9 +11,7 @@ const ACUANT_PUBLIC_DIR = '../../../../../public/acuant';
 const VERSION_REGEX = /^\d+\.\d+\.\d+$/;
 
 describe('Acuant SDK Loading Tests', async () => {
-  const sdks = (await fs.readdir(path.join(__dirname, ACUANT_PUBLIC_DIR))).filter((dir) =>
-    VERSION_REGEX.test(dir),
-  );
+  const sdks = (await fs.readdir(path.join(__dirname, ACUANT_PUBLIC_DIR))).filter((dir) => VERSION_REGEX.test(dir));
 
   if (!sdks.length) {
     throw new Error('Expected to find at least one SDK version, but found none');
@@ -23,14 +21,11 @@ describe('Acuant SDK Loading Tests', async () => {
     describe(version, () => {
       const TEST_URL = `file://${__dirname}/index.html`;
 
-      const { window } = new JSDOM(
-        '<!doctype html><html lang="en"><head><title>JSDOM</title></head></html>',
-        {
-          url: TEST_URL,
-          runScripts: 'dangerously',
-          resources: 'usable',
-        },
-      );
+      const { window } = new JSDOM('<!doctype html><html lang="en"><head><title>JSDOM</title></head></html>', {
+        url: TEST_URL,
+        runScripts: 'dangerously',
+        resources: 'usable',
+      });
 
       const { document } = window;
 

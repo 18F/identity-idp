@@ -2,9 +2,7 @@ import { trackEvent as defaultTrackEvent } from '@18f/identity-analytics';
 
 export const DOC_CAPTURE_TIMEOUT = 1000 * 60 * 25; // 25 minutes
 export const DOC_CAPTURE_POLL_INTERVAL = 5000;
-export const MAX_DOC_CAPTURE_POLL_ATTEMPTS = Math.floor(
-  DOC_CAPTURE_TIMEOUT / DOC_CAPTURE_POLL_INTERVAL,
-);
+export const MAX_DOC_CAPTURE_POLL_ATTEMPTS = Math.floor(DOC_CAPTURE_TIMEOUT / DOC_CAPTURE_POLL_INTERVAL);
 
 interface DocumentCapturePollingElements {
   form: HTMLFormElement;
@@ -44,11 +42,7 @@ export class DocumentCapturePolling {
 
   pollAttempts = 0;
 
-  constructor({
-    elements,
-    statusEndpoint,
-    trackEvent = defaultTrackEvent,
-  }: DocumentCapturePollingOptions) {
+  constructor({ elements, statusEndpoint, trackEvent = defaultTrackEvent }: DocumentCapturePollingOptions) {
     this.elements = elements;
     this.statusEndpoint = statusEndpoint;
     this.trackEvent = trackEvent;

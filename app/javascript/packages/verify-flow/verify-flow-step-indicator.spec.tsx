@@ -1,9 +1,6 @@
 import { render } from '@testing-library/react';
 import { StepStatus } from '@18f/identity-step-indicator';
-import VerifyFlowStepIndicator, {
-  getStepStatus,
-  VerifyFlowPath,
-} from './verify-flow-step-indicator';
+import VerifyFlowStepIndicator, { getStepStatus, VerifyFlowPath } from './verify-flow-step-indicator';
 
 describe('getStepStatus', () => {
   it('returns incomplete if step is after current step', () => {

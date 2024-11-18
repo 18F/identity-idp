@@ -1,19 +1,5 @@
-import {
-  useRef,
-  useEffect,
-  Children,
-  cloneElement,
-  createElement,
-  useImperativeHandle,
-  forwardRef,
-} from 'react';
-import type {
-  MutableRefObject,
-  ReactNode,
-  HTMLAttributes,
-  InputHTMLAttributes,
-  ReactHTMLElement,
-} from 'react';
+import { useRef, useEffect, Children, cloneElement, createElement, useImperativeHandle, forwardRef } from 'react';
+import type { MutableRefObject, ReactNode, HTMLAttributes, InputHTMLAttributes, ReactHTMLElement } from 'react';
 import { useInstanceId } from '@18f/identity-react-hooks';
 import { t } from '@18f/identity-i18n';
 import './validated-field-element';
@@ -56,10 +42,7 @@ declare global {
  */
 export function getErrorMessages(inputType?: string) {
   const messages: Partial<Record<keyof ValidityState, string>> = {
-    valueMissing:
-      inputType === 'checkbox'
-        ? t('forms.validation.required_checkbox')
-        : t('simple_form.required.text'),
+    valueMissing: inputType === 'checkbox' ? t('forms.validation.required_checkbox') : t('simple_form.required.text'),
   };
 
   if (inputType === 'email') {
@@ -70,12 +53,7 @@ export function getErrorMessages(inputType?: string) {
 }
 
 function ValidatedField<InputType extends HTMLInputElement | HTMLSelectElement>(
-  {
-    validate = () => {},
-    messages,
-    children,
-    ...inputProps
-  }: ValidatedFieldProps & InputHTMLAttributes<InputType>,
+  { validate = () => {}, messages, children, ...inputProps }: ValidatedFieldProps & InputHTMLAttributes<InputType>,
   forwardedRef,
 ) {
   const fieldRef = useRef<ValidatedFieldElement>();

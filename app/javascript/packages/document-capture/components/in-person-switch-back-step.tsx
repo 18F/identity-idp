@@ -14,11 +14,7 @@ function InPersonSwitchBackStep({ onChange }: FormStepComponentProps<any>) {
   return (
     <>
       <PageHeading>{t('in_person_proofing.headings.switch_back')}</PageHeading>
-      <img
-        src={getAssetPath('idv/switch.png')}
-        width={193}
-        alt={t('doc_auth.instructions.switch_back_image')}
-      />
+      <img src={getAssetPath('idv/switch.png')} width={193} alt={t('doc_auth.instructions.switch_back_image')} />
     </>
   );
 }

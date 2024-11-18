@@ -166,63 +166,57 @@ describe('MemorableDateElement', () => {
   // the addEventListener and removeEventListener functions.
   // See here: https://discuss.newrelic.com/t/javascrypt-snippet-breaks-site/52188
   function itIsUnaffectedByNewRelicEventBug() {
-    context(
-      'another script overrides the addEventListener in a way that loses function identity',
-      () => {
-        let originalAddEventListenerFunction;
-        beforeEach(() => {
-          originalAddEventListenerFunction = Element.prototype.addEventListener;
-          Element.prototype.addEventListener = function addEventListener(type, listener, ...args) {
-            if (listener instanceof Function) {
-              listener = function overrideListener(...eventArgs) {
-                return listener.apply(this, eventArgs);
-              };
-            }
+    context('another script overrides the addEventListener in a way that loses function identity', () => {
+      let originalAddEventListenerFunction;
+      beforeEach(() => {
+        originalAddEventListenerFunction = Element.prototype.addEventListener;
+        Element.prototype.addEventListener = function addEventListener(type, listener, ...args) {
+          if (listener instanceof Function) {
+            listener = function overrideListener(...eventArgs) {
+              return listener.apply(this, eventArgs);
+            };
+          }
 
-            if (arguments.length > 1) {
-              args.unshift(listener);
-            }
+          if (arguments.length > 1) {
+            args.unshift(listener);
+          }
 
-            if (arguments.length > 0) {
-              args.unshift(type);
-            }
-            return originalAddEventListenerFunction.apply(this, args);
-          };
+          if (arguments.length > 0) {
+            args.unshift(type);
+          }
+          return originalAddEventListenerFunction.apply(this, args);
+        };
+      });
+
+      afterEach(() => {
+        Element.prototype.addEventListener = originalAddEventListenerFunction;
+        originalAddEventListenerFunction = null;
+      });
+
+      context('user has entered a day and year, then clicks an element outside the memorable date fields', () => {
+        beforeEach(async function () {
+          await userEvent.click(dayInput);
+          await userEvent.type(dayInput, '1');
+          await userEvent.click(yearInput);
+          await userEvent.type(yearInput, '19');
+          await userEvent.click(otherClickableElement);
         });
 
-        afterEach(() => {
-          Element.prototype.addEventListener = originalAddEventListenerFunction;
-          originalAddEventListenerFunction = null;
+        it('does not hang when the user modifies the day', async () => {
+          await userEvent.click(dayInput);
+          await userEvent.type(dayInput, '5');
+          const dayInputWithText = await findByDisplayValue(memorableDateElement, '15');
+          expect(dayInputWithText.id).to.equal(dayInput.id);
         });
 
-        context(
-          'user has entered a day and year, then clicks an element outside the memorable date fields',
-          () => {
-            beforeEach(async function () {
-              await userEvent.click(dayInput);
-              await userEvent.type(dayInput, '1');
-              await userEvent.click(yearInput);
-              await userEvent.type(yearInput, '19');
-              await userEvent.click(otherClickableElement);
-            });
-
-            it('does not hang when the user modifies the day', async () => {
-              await userEvent.click(dayInput);
-              await userEvent.type(dayInput, '5');
-              const dayInputWithText = await findByDisplayValue(memorableDateElement, '15');
-              expect(dayInputWithText.id).to.equal(dayInput.id);
-            });
-
-            it('does not hang when the user modifies the year', async () => {
-              await userEvent.click(yearInput);
-              await userEvent.type(yearInput, '4');
-              const yearInputWithText = await findByDisplayValue(memorableDateElement, '194');
-              expect(yearInputWithText.id).to.equal(yearInput.id);
-            });
-          },
-        );
-      },
-    );
+        it('does not hang when the user modifies the year', async () => {
+          await userEvent.click(yearInput);
+          await userEvent.type(yearInput, '4');
+          const yearInputWithText = await findByDisplayValue(memorableDateElement, '194');
+          expect(yearInputWithText.id).to.equal(yearInput.id);
+        });
+      });
+    });
   }
 
   function itHidesValidationErrorsOnTyping() {
@@ -517,9 +511,7 @@ describe('MemorableDateElement', () => {
     });
     describe('error mappings include custom min and max ranges with different messages', () => {
       beforeEach(() => {
-        errorMessageMappingsElement.textContent = JSON.stringify(
-          EXAMPLE_ERROR_MAPPINGS_WITH_RANGE_ERRORS,
-        );
+        errorMessageMappingsElement.textContent = JSON.stringify(EXAMPLE_ERROR_MAPPINGS_WITH_RANGE_ERRORS);
       });
       afterEach(() => {
         errorMessageMappingsElement.textContent = '';

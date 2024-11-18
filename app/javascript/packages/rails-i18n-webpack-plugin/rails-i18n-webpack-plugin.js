@@ -131,9 +131,7 @@ class RailsI18nWebpackPlugin extends ExtractKeysWebpackPlugin {
   async getLocales() {
     const localeFiles = await fs.readdir(this.options.configPath);
 
-    return localeFiles
-      .filter((file) => file.endsWith('.yml'))
-      .map((file) => path.basename(file, '.yml'));
+    return localeFiles.filter((file) => file.endsWith('.yml')).map((file) => path.basename(file, '.yml'));
   }
 
   /**

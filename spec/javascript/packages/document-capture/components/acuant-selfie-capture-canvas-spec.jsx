@@ -47,16 +47,12 @@ it('shows the fullscreen close button before acuant is hydrated in', () => {
   acuantFaceCaptureDiv.id = 'acuant-face-capture-camera';
   const acuantFaceCaptureContainer = container.querySelector('#acuant-face-capture-container');
   acuantFaceCaptureContainer.appendChild(acuantFaceCaptureDiv);
-  expect(
-    container.querySelector('#acuant-face-capture-container>#acuant-face-capture-camera'),
-  ).to.exist();
+  expect(container.querySelector('#acuant-face-capture-container>#acuant-face-capture-camera')).to.exist();
 
   // Mock how Acuant sets up the shadow dom with the #cameraContainer div inside it
   const cameraContainer = document.createElement('div');
   cameraContainer.id = 'cameraContainer';
-  const shadow = container
-    .querySelector('#acuant-face-capture-camera')
-    .attachShadow({ mode: 'open' });
+  const shadow = container.querySelector('#acuant-face-capture-camera').attachShadow({ mode: 'open' });
   shadow.appendChild(cameraContainer);
 
   // Rerender the component, the shadow dom continues to exist

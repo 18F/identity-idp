@@ -50,15 +50,11 @@ describe('LocationCollectionItem', () => {
     expect(addressParent.textContent).to.contain('test name');
     expect(addressParent.textContent).to.contain('123 Test Address');
     expect(addressParent.textContent).to.contain('City, State 12345-1234');
-    const wkDayHours = getByText(
-      'in_person_proofing.body.location.retail_hours_weekday 9 AM - 5 PM',
-    ).parentElement!;
+    const wkDayHours = getByText('in_person_proofing.body.location.retail_hours_weekday 9 AM - 5 PM').parentElement!;
     expect(wkDayHours.textContent).to.contain('9 AM - 5 PM');
-    const satHours = getByText('in_person_proofing.body.location.retail_hours_sat 9 AM - 6 PM')
-      .parentElement!;
+    const satHours = getByText('in_person_proofing.body.location.retail_hours_sat 9 AM - 6 PM').parentElement!;
     expect(satHours.textContent).to.contain('9 AM - 6 PM');
-    const sunHours = getByText('in_person_proofing.body.location.retail_hours_sun Closed')
-      .parentElement!;
+    const sunHours = getByText('in_person_proofing.body.location.retail_hours_sun Closed').parentElement!;
     expect(sunHours.textContent).to.contain('Closed');
   });
 
@@ -133,9 +129,7 @@ describe('LocationCollectionItem', () => {
 
       const heading = queryByText('in_person_proofing.body.location.retail_hours_heading');
       expect(heading).to.exist();
-      const wkDayHours = queryByText(
-        'in_person_proofing.body.location.retail_hours_weekday 9 AM - 5 PM',
-      );
+      const wkDayHours = queryByText('in_person_proofing.body.location.retail_hours_weekday 9 AM - 5 PM');
       expect(wkDayHours).to.exist();
       const satHours = queryByText('in_person_proofing.body.location.retail_hours_sat', {
         exact: false,
@@ -182,9 +176,7 @@ describe('LocationCollectionItem', () => {
         />,
       );
 
-      expect(container.textContent).to.not.contain(
-        'in_person_proofing.body.location.location_button',
-      );
+      expect(container.textContent).to.not.contain('in_person_proofing.body.location.location_button');
     });
   });
 });

@@ -45,10 +45,7 @@ export class TimeElement extends HTMLElement {
       formatter.formatToParts(this.date).map((part) => [part.type, part.value]),
     ) as Partial<Record<Intl.DateTimeFormatPartTypes, string>>;
 
-    this.textContent = replaceVariables(
-      this.#format,
-      mapKeys({ dayPeriod: '', ...parts }, snakeCase),
-    );
+    this.textContent = replaceVariables(this.#format, mapKeys({ dayPeriod: '', ...parts }, snakeCase));
   }
 }
 

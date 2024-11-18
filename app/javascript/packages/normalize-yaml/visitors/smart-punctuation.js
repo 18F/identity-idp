@@ -8,10 +8,7 @@ import smartquotes from 'smartquotes';
  * @return {string}
  */
 export function replaceInHTMLContent(html, replacer) {
-  return html.replace(
-    /([^<]*)(<.*?>)?/g,
-    (_match, text, tag = '') => (text ? replacer(text) : text) + tag,
-  );
+  return html.replace(/([^<]*)(<.*?>)?/g, (_match, text, tag = '') => (text ? replacer(text) : text) + tag);
 }
 
 /**

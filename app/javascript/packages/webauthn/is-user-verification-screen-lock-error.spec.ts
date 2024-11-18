@@ -1,6 +1,4 @@
-import isUserVerificationScreenLockError, {
-  SCREEN_LOCK_ERROR,
-} from './is-user-verification-screen-lock-error';
+import isUserVerificationScreenLockError, { SCREEN_LOCK_ERROR } from './is-user-verification-screen-lock-error';
 
 describe('isUserVerificationScreenLockError', () => {
   it('returns false for an error that is not a screen lock error', () => {

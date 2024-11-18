@@ -26,9 +26,7 @@ export function createDOM() {
           return Promise.resolve(Buffer.from(content, isBase64 ? 'base64' : 'utf-8'));
         }
 
-        return url === 'about:blank'
-          ? Promise.resolve(Buffer.from(''))
-          : Promise.reject(new Error('Failed to load'));
+        return url === 'about:blank' ? Promise.resolve(Buffer.from('')) : Promise.reject(new Error('Failed to load'));
       }
     })(),
   });
@@ -62,9 +60,7 @@ export function createDOM() {
 
   // JSDOM doesn't implement scrollTo, and loudly complains (logs) when it's called, conflicting
   // with global log error capturing. This suppresses said logging.
-  sinon
-    .stub(dom.window, 'scrollTo')
-    .callsFake((scrollX, scrollY) => Object.assign(dom.window, { scrollX, scrollY }));
+  sinon.stub(dom.window, 'scrollTo').callsFake((scrollX, scrollY) => Object.assign(dom.window, { scrollX, scrollY }));
 
   // If a script tag is added to the page, execute its callbacks as a successful or failed load,
   // based on whether the `src` is `about:blank`.

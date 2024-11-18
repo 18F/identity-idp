@@ -36,9 +36,7 @@ describe('StepIndicatorStep', () => {
 
   context('incomplete step', () => {
     it('renders step', () => {
-      const { getByText } = render(
-        <StepIndicatorStep title="Step" status={StepStatus.INCOMPLETE} />,
-      );
+      const { getByText } = render(<StepIndicatorStep title="Step" status={StepStatus.INCOMPLETE} />);
 
       const title = getByText('Step');
       const status = getByText('step_indicator.status.not_complete');

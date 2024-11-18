@@ -36,10 +36,7 @@ function getCameraInfo(videoTrack: MediaStreamTrack) {
   return cameraInfo;
 }
 
-async function updateConstraintsAndGetLogInfo(
-  videoDevice: MediaDeviceInfo,
-  trackEvent: TrackEventType,
-) {
+async function updateConstraintsAndGetLogInfo(videoDevice: MediaDeviceInfo, trackEvent: TrackEventType) {
   // See https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints/facingMode
   const updatedConstraints = getConstraints(videoDevice.deviceId);
   try {
@@ -53,11 +50,7 @@ async function updateConstraintsAndGetLogInfo(
 }
 
 function logsHaveSameValuesButDifferentName(logOne: CameraLog, logTwo: CameraLog) {
-  if (
-    logOne.height === logTwo.height &&
-    logOne.width === logTwo.width &&
-    logOne.frameRate === logTwo.frameRate
-  ) {
+  if (logOne.height === logTwo.height && logOne.width === logTwo.width && logOne.frameRate === logTwo.frameRate) {
     return true;
   }
   return false;
@@ -106,13 +99,7 @@ async function logCameraInfo(trackEvent: TrackEventType) {
 // This function is intended to be used only after camera permissions have been granted
 // hasStartedCropping only happens after an image has been captured with the Acuant SDK,
 // which means that camera permissions have been granted.
-function useLogCameraInfo({
-  isBackOfId,
-  hasStartedCropping,
-}: {
-  isBackOfId: boolean;
-  hasStartedCropping: boolean;
-}) {
+function useLogCameraInfo({ isBackOfId, hasStartedCropping }: { isBackOfId: boolean; hasStartedCropping: boolean }) {
   const didLogCameraInfoRef = useRef(false);
   const { trackEvent } = useContext(AnalyticsContext);
 

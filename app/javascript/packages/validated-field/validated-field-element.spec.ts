@@ -87,9 +87,7 @@ describe('ValidatedFieldElement', () => {
     expect(input.getAttribute('aria-invalid')).to.equal('true');
     expect(document.activeElement).to.equal(input);
     expect(form.querySelector('.usa-error-message:not(.display-none)')).to.exist();
-    expect(computeAccessibleDescription(document.activeElement!)).to.equal(
-      'Required Field This field is required',
-    );
+    expect(computeAccessibleDescription(document.activeElement!)).to.equal('Required Field This field is required');
   });
 
   it('shows custom validity as message content', () => {

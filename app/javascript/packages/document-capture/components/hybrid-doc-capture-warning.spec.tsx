@@ -38,9 +38,7 @@ describe('HybridDocCaptureWarning', () => {
       );
       const alertElement = getByRole('status');
 
-      expect(alertElement.textContent).to.have.string(
-        t('doc_auth.hybrid_flow_warning.explanation_non_sp_html'),
-      );
+      expect(alertElement.textContent).to.have.string(t('doc_auth.hybrid_flow_warning.explanation_non_sp_html'));
     });
 
     it('does not render a third list item pertaining to SP services', () => {

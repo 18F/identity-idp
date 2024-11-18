@@ -109,9 +109,7 @@ async function enrollWebauthnDevice({
 
   const response = credential.response as AuthenticatorAttestationResponseBrowserSupport;
   const authenticatorData = response.getAuthenticatorData?.();
-  const authenticatorDataFlagsValue = authenticatorData
-    ? new Uint8Array(authenticatorData)[32]
-    : undefined;
+  const authenticatorDataFlagsValue = authenticatorData ? new Uint8Array(authenticatorData)[32] : undefined;
 
   return {
     webauthnId: arrayBufferToBase64(credential.rawId),

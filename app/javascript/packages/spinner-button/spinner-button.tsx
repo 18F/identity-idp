@@ -34,14 +34,7 @@ interface SpinnerButtonProps extends ButtonProps {
 export type SpinnerButtonRefHandle = SpinnerButtonElement;
 
 function SpinnerButton(
-  {
-    spinOnClick = true,
-    actionMessage,
-    longWaitDurationMs,
-    isOutline,
-    children,
-    ...buttonProps
-  }: SpinnerButtonProps,
+  { spinOnClick = true, actionMessage, longWaitDurationMs, isOutline, children, ...buttonProps }: SpinnerButtonProps,
   ref: ForwardedRef<SpinnerButtonElement | null>,
 ) {
   const elementRef = useRef<SpinnerButtonRefHandle>(null);
@@ -65,11 +58,7 @@ function SpinnerButton(
         </span>
       </Button>
       {actionMessage && (
-        <div
-          role="status"
-          data-message={actionMessage}
-          className="spinner-button__action-message usa-sr-only"
-        />
+        <div role="status" data-message={actionMessage} className="spinner-button__action-message usa-sr-only" />
       )}
     </lg-spinner-button>
   );

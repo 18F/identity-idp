@@ -3,11 +3,7 @@ import { formatHTML } from '@18f/identity-react-i18n';
 import { t } from '@18f/identity-i18n';
 import { getConfigValue } from '@18f/identity-config';
 import { FormError, FormStepsContext } from '@18f/identity-form-steps';
-import type {
-  FormStepError,
-  OnErrorCallback,
-  RegisterFieldCallback,
-} from '@18f/identity-form-steps';
+import type { FormStepError, OnErrorCallback, RegisterFieldCallback } from '@18f/identity-form-steps';
 import AcuantCapture from './acuant-capture';
 import SelfieCaptureContext from '../context/selfie-capture';
 

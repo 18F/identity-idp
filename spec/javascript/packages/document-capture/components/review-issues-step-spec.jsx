@@ -84,9 +84,7 @@ describe('document-capture/components/review-issues-step', () => {
     expect(getByText('remaining')).to.be.ok();
     expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
 
-    expect(
-      getByRole('link', { name: 'idv.troubleshooting.options.doc_capture_tips links.new_tab' }),
-    ).to.exist();
+    expect(getByRole('link', { name: 'idv.troubleshooting.options.doc_capture_tips links.new_tab' })).to.exist();
     expect(
       getByRole('link', {
         name: 'idv.troubleshooting.options.supported_documents links.new_tab',
@@ -119,9 +117,7 @@ describe('document-capture/components/review-issues-step', () => {
     expect(getByRole('button', { name: 'idv.failure.button.try_online' })).to.be.ok();
     expect(getByRole('button', { name: 'in_person_proofing.body.cta.button' })).to.be.ok();
 
-    expect(
-      getByRole('link', { name: 'idv.troubleshooting.options.doc_capture_tips links.new_tab' }),
-    ).to.exist();
+    expect(getByRole('link', { name: 'idv.troubleshooting.options.doc_capture_tips links.new_tab' })).to.exist();
     expect(
       getByRole('link', {
         name: 'idv.troubleshooting.options.supported_documents links.new_tab',
@@ -167,9 +163,7 @@ describe('document-capture/components/review-issues-step', () => {
   });
 
   it('renders with only front and back inputs only by default', async () => {
-    const { getByLabelText, queryByLabelText, getByRole } = render(
-      <ReviewIssuesStep {...DEFAULT_PROPS} />,
-    );
+    const { getByLabelText, queryByLabelText, getByRole } = render(<ReviewIssuesStep {...DEFAULT_PROPS} />);
 
     await userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
 
@@ -251,9 +245,7 @@ describe('document-capture/components/review-issues-step', () => {
     expect(getByText(/3 attempts/, { selector: 'strong' })).to.be.ok();
     expect(getByText(/only state id/)).to.be.ok();
     expect(getByRole('button', { name: 'idv.failure.button.try_online' })).to.be.ok();
-    expect(
-      getByRole('link', { name: 'idv.troubleshooting.options.doc_capture_tips links.new_tab' }),
-    ).to.exist();
+    expect(getByRole('link', { name: 'idv.troubleshooting.options.doc_capture_tips links.new_tab' })).to.exist();
     expect(
       getByRole('link', {
         name: 'idv.troubleshooting.options.supported_documents links.new_tab',
@@ -263,9 +255,7 @@ describe('document-capture/components/review-issues-step', () => {
     // click try again
     await userEvent.click(getByRole('button', { name: 'idv.failure.button.try_online' }));
     // now use the alternative error message
-    expect(
-      getByText("We only accept a driver's license or a state ID card at this time."),
-    ).to.be.ok();
+    expect(getByText("We only accept a driver's license or a state ID card at this time.")).to.be.ok();
     expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
     expect(getByLabelText('doc_auth.headings.document_capture_back')).to.be.ok();
   });
@@ -306,9 +296,7 @@ describe('document-capture/components/review-issues-step', () => {
     expect(getByText(/3 attempts/, { selector: 'strong' })).to.be.ok();
     expect(getByText(/only state id/)).to.be.ok();
     expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
-    expect(
-      getByRole('link', { name: 'idv.troubleshooting.options.doc_capture_tips links.new_tab' }),
-    ).to.exist();
+    expect(getByRole('link', { name: 'idv.troubleshooting.options.doc_capture_tips links.new_tab' })).to.exist();
     expect(
       getByRole('link', {
         name: 'idv.troubleshooting.options.supported_documents links.new_tab',
@@ -317,9 +305,7 @@ describe('document-capture/components/review-issues-step', () => {
 
     // click try again
     await userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
-    expect(
-      getByText("We only accept a driver's license or a state ID card at this time."),
-    ).to.be.ok();
+    expect(getByText("We only accept a driver's license or a state ID card at this time.")).to.be.ok();
     expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
     expect(getByLabelText('doc_auth.headings.document_capture_back')).to.be.ok();
   });
@@ -411,9 +397,7 @@ describe('document-capture/components/review-issues-step', () => {
     it('renders initially with warning page', () => {
       async () => {
         const { getByRole, getByText } = render(
-          <ReviewIssuesStep
-            pii={{ first_name: 'Fakey', last_name: 'McFakerson', dob: '1938-10-06' }}
-          />,
+          <ReviewIssuesStep pii={{ first_name: 'Fakey', last_name: 'McFakerson', dob: '1938-10-06' }} />,
         );
 
         expect(getByText('doc_auth.errors.barcode_attention.heading')).to.be.ok();

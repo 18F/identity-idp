@@ -19,9 +19,7 @@ describe('TroubleshootingOptions', () => {
   });
 
   it('renders a given heading', () => {
-    const { getByRole } = render(
-      <TroubleshootingOptions {...DEFAULT_PROPS} heading="Need help?" />,
-    );
+    const { getByRole } = render(<TroubleshootingOptions {...DEFAULT_PROPS} heading="Need help?" />);
 
     const heading = getByRole('heading');
 

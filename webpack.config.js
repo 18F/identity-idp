@@ -32,8 +32,7 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
     chunkFilename: `[name].chunk${hashSuffix}.js`,
     sourceMapFilename: `[name]${hashSuffix}.js.map`,
     path: resolve(__dirname, 'public/packs'),
-    publicPath:
-      devServerPort && isLocalhost ? `http://localhost:${devServerPort}/packs/` : '/packs/',
+    publicPath: devServerPort && isLocalhost ? `http://localhost:${devServerPort}/packs/` : '/packs/',
   },
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.mjs', '.cjs', '.mts', '.cts'],
@@ -65,9 +64,7 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
       publicPath(filename, plugin) {
         // Only prepend public path for JavaScript files, since all other assets will be processed
         // using Rails asset pipeline, and should use the original filename.
-        return filename.endsWith('.js')
-          ? url.resolve(plugin.compiler.options.output.publicPath, filename)
-          : filename;
+        return filename.endsWith('.js') ? url.resolve(plugin.compiler.options.output.publicPath, filename) : filename;
       },
       writeToDisk: true,
       integrity: isProductionEnv,

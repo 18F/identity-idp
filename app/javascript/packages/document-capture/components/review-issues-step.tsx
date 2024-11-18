@@ -73,31 +73,21 @@ function ReviewIssuesStep({
   const [skipWarning, setSkipWarning] = useState(false);
   useDidUpdateEffect(onPageTransition, [hasDismissed]);
 
-  const { onFailedSubmissionAttempt, failedSubmissionImageFingerprints } = useContext(
-    FailedCaptureAttemptsContext,
-  );
+  const { onFailedSubmissionAttempt, failedSubmissionImageFingerprints } = useContext(FailedCaptureAttemptsContext);
   useEffect(() => onFailedSubmissionAttempt(failedImageFingerprints), []);
 
   useLayoutEffect(() => {
     let frontMetaData: { fingerprint: string | null } = { fingerprint: null };
     try {
-      frontMetaData = JSON.parse(
-        typeof value.front_image_metadata === 'undefined' ? '{}' : value.front_image_metadata,
-      );
+      frontMetaData = JSON.parse(typeof value.front_image_metadata === 'undefined' ? '{}' : value.front_image_metadata);
     } catch (e) {}
-    const frontHasFailed = !!failedSubmissionImageFingerprints?.front?.includes(
-      frontMetaData?.fingerprint ?? '',
-    );
+    const frontHasFailed = !!failedSubmissionImageFingerprints?.front?.includes(frontMetaData?.fingerprint ?? '');
 
     let backMetaData: { fingerprint: string | null } = { fingerprint: null };
     try {
-      backMetaData = JSON.parse(
-        typeof value.back_image_metadata === 'undefined' ? '{}' : value.back_image_metadata,
-      );
+      backMetaData = JSON.parse(typeof value.back_image_metadata === 'undefined' ? '{}' : value.back_image_metadata);
     } catch (e) {}
-    const backHasFailed = !!failedSubmissionImageFingerprints?.back?.includes(
-      backMetaData?.fingerprint ?? '',
-    );
+    const backHasFailed = !!failedSubmissionImageFingerprints?.back?.includes(backMetaData?.fingerprint ?? '');
     if (frontHasFailed || backHasFailed) {
       setSkipWarning(true);
     }

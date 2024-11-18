@@ -106,12 +106,7 @@ describe('document-capture/context/acuant', () => {
       const { result } = renderHook(() => useContext(AcuantContext), {
         wrapper: ({ children }) => (
           <DeviceContext.Provider value={{ isMobile: true }}>
-            <AcuantContextProvider
-              sdkSrc="about:blank"
-              cameraSrc="about:blank"
-              credentials="a"
-              endpoint="b"
-            >
+            <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank" credentials="a" endpoint="b">
               {children}
             </AcuantContextProvider>
           </DeviceContext.Provider>

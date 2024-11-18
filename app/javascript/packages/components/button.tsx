@@ -72,9 +72,7 @@ function Button({
   isUnstyled,
   className,
   ...htmlAttributes
-}: ButtonProps &
-  AnchorHTMLAttributes<HTMLAnchorElement> &
-  ButtonHTMLAttributes<HTMLButtonElement>) {
+}: ButtonProps & AnchorHTMLAttributes<HTMLAnchorElement> & ButtonHTMLAttributes<HTMLButtonElement>) {
   const classes = [
     'usa-button',
     isBig && 'usa-button--big',
@@ -89,11 +87,7 @@ function Button({
 
   const tagName = href ? 'a' : 'button';
 
-  return createElement(
-    tagName,
-    { type, href, disabled: isDisabled, className: classes, ...htmlAttributes },
-    children,
-  );
+  return createElement(tagName, { type, href, disabled: isDisabled, className: classes, ...htmlAttributes }, children);
 }
 
 export default Button;

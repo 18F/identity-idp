@@ -40,13 +40,7 @@ const FLOW_STEP_PATHS: Record<VerifyFlowPath, VerifyFlowConfig> = {
     },
   },
   [VerifyFlowPath.IN_PERSON]: {
-    steps: [
-      'find_a_post_office',
-      'verify_info',
-      'verify_phone',
-      're_enter_password',
-      'go_to_the_post_office',
-    ],
+    steps: ['find_a_post_office', 'verify_info', 'verify_phone', 're_enter_password', 'go_to_the_post_office'],
     mapping: {
       document_capture: 'find_a_post_office',
     },
@@ -86,10 +80,7 @@ export function getStepStatus(index, currentStepIndex): StepStatus {
   return StepStatus.INCOMPLETE;
 }
 
-function VerifyFlowStepIndicator({
-  currentStep,
-  path = VerifyFlowPath.DEFAULT,
-}: VerifyFlowStepIndicatorProps) {
+function VerifyFlowStepIndicator({ currentStep, path = VerifyFlowPath.DEFAULT }: VerifyFlowStepIndicatorProps) {
   const { steps, mapping } = FLOW_STEP_PATHS[path];
   const currentStepIndex = steps.indexOf(mapping[currentStep]);
 

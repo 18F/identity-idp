@@ -25,14 +25,7 @@ function useSandbox(config?: Partial<SinonSandboxConfig>) {
   // useFakeTimers overrides global.setTimeout, etc. (callable as setTimeout()), but does not
   // override window.setTimeout. So we'll do that.
   const originalWindowMethods = (
-    [
-      'clearImmediate',
-      'clearInterval',
-      'clearTimeout',
-      'setImmediate',
-      'setInterval',
-      'setTimeout',
-    ] as const
+    ['clearImmediate', 'clearInterval', 'clearTimeout', 'setImmediate', 'setInterval', 'setTimeout'] as const
   ).reduce((methods, method) => {
     methods[method] = window[method];
     return methods;

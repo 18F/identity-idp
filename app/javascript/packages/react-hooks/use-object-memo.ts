@@ -14,7 +14,6 @@ import { useMemo } from 'react';
  *
  * @return Memoized object.
  */
-const useObjectMemo = <T extends object>(object: T): T =>
-  useMemo(() => object, Object.values(object));
+const useObjectMemo = <T extends object>(object: T): T => useMemo(() => object, Object.values(object));
 
 export default useObjectMemo;

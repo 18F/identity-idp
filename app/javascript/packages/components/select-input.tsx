@@ -48,13 +48,7 @@ function SelectInput(
           {hint}
         </div>
       )}
-      <select
-        ref={ref}
-        className={classes}
-        id={inputId}
-        aria-describedby={hint && hintId}
-        {...inputProps}
-      >
+      <select ref={ref} className={classes} id={inputId} aria-describedby={hint && hintId} {...inputProps}>
         {children}
       </select>
     </>

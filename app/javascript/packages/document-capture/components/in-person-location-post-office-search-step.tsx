@@ -13,9 +13,7 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
   const [inProgress, setInProgress] = useState<boolean>(false);
   const [autoSubmit, setAutoSubmit] = useState<boolean>(false);
   const { trackEvent } = useContext(AnalyticsContext);
-  const [locationResults, setLocationResults] = useState<FormattedLocation[] | null | undefined>(
-    null,
-  );
+  const [locationResults, setLocationResults] = useState<FormattedLocation[] | null | undefined>(null);
 
   const [disabledAddressSearch, setDisabledAddressSearch] = useState<boolean>(false);
   const { flowPath } = useContext(UploadContext);

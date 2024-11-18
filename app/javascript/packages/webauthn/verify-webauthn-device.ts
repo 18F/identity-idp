@@ -22,18 +22,13 @@ interface VerifyResult {
   signature: string;
 }
 
-const mapVerifyCredential = (
-  credential: VerifyCredentialDescriptor,
-): PublicKeyCredentialDescriptor => ({
+const mapVerifyCredential = (credential: VerifyCredentialDescriptor): PublicKeyCredentialDescriptor => ({
   type: 'public-key',
   id: base64ToArrayBuffer(credential.id),
   transports: credential.transports || undefined,
 });
 
-async function verifyWebauthnDevice({
-  userChallenge,
-  credentials,
-}: VerifyOptions): Promise<VerifyResult> {
+async function verifyWebauthnDevice({ userChallenge, credentials }: VerifyOptions): Promise<VerifyResult> {
   const credential = (await navigator.credentials.get({
     publicKey: {
       challenge: new Uint8Array(JSON.parse(userChallenge)),

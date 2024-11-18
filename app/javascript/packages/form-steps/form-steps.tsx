@@ -360,13 +360,9 @@ function FormSteps({
     return null;
   }
 
-  const setPatchValues = (patch: Partial<FormValues>) =>
-    setValues((prevValues) => ({ ...prevValues, ...patch }));
-  const unknownFieldErrors = activeErrors.filter(
-    ({ field }) => !field || !fields.current[field]?.element,
-  );
-  const hasUnresolvedFieldErrors =
-    activeErrors.length && activeErrors.length > unknownFieldErrors.length;
+  const setPatchValues = (patch: Partial<FormValues>) => setValues((prevValues) => ({ ...prevValues, ...patch }));
+  const unknownFieldErrors = activeErrors.filter(({ field }) => !field || !fields.current[field]?.element);
+  const hasUnresolvedFieldErrors = activeErrors.length && activeErrors.length > unknownFieldErrors.length;
   const { form: Form, submit, name } = step;
 
   /**
@@ -412,8 +408,7 @@ function FormSteps({
     onStepSubmit(step?.name);
 
     const nextStepIndex = stepIndex + 1;
-    const isComplete =
-      stepCanComplete !== undefined ? stepCanComplete : nextStepIndex === steps.length;
+    const isComplete = stepCanComplete !== undefined ? stepCanComplete : nextStepIndex === steps.length;
     if (isComplete) {
       onComplete(values);
     } else {
@@ -443,9 +438,7 @@ function FormSteps({
       {stepErrors.map((error) => (
         <StepErrorAlert key={error.message} error={error} />
       ))}
-      <FormStepsContext.Provider
-        value={{ isLastStep, changeStepCanComplete, isSubmitting, onPageTransition }}
-      >
+      <FormStepsContext.Provider value={{ isLastStep, changeStepCanComplete, isSubmitting, onPageTransition }}>
         <Form
           key={name}
           value={values}

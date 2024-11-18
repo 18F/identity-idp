@@ -26,15 +26,11 @@ describe('AddressSearch', () => {
       );
 
       const heading = queryByText('in_person_proofing.headings.po_search.location');
-      const aboutMessage = queryByText(
-        'in_person_proofing.body.location.po_search.po_search_about',
-      );
+      const aboutMessage = queryByText('in_person_proofing.body.location.po_search.po_search_about');
 
       expect(heading).to.exist();
       expect(aboutMessage).to.exist();
-      expect(
-        queryByRole('heading', { name: 'in_person_proofing.headings.po_search.location' }),
-      ).to.exist();
+      expect(queryByRole('heading', { name: 'in_person_proofing.headings.po_search.location' })).to.exist();
     });
 
     it('both do not render when handleLocationSelect is null', () => {
@@ -54,9 +50,7 @@ describe('AddressSearch', () => {
       );
 
       const heading = queryByText('in_person_proofing.headings.po_search.location');
-      const aboutMessage = queryByText(
-        'in_person_proofing.body.location.po_search.po_search_about',
-      );
+      const aboutMessage = queryByText('in_person_proofing.body.location.po_search.po_search_about');
       expect(heading).to.be.empty;
       expect(aboutMessage).to.be.empty;
     });

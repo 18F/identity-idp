@@ -16,17 +16,12 @@ const getOTPDeliveryMethods = () =>
 const isDeliveryOptionSupported = (delivery: string, selectedOption: HTMLOptionElement): boolean =>
   selectedOption.getAttribute(`data-supports-${delivery}`) !== 'false';
 
-const getHintTextForDisabledDeliveryOption = (
-  delivery: string,
-  location: string,
-): string | undefined =>
+const getHintTextForDisabledDeliveryOption = (delivery: string, location: string): string | undefined =>
   // i18n-tasks-use t('two_factor_authentication.otp_delivery_preference.voice_unsupported')
   // i18n-tasks-use t('two_factor_authentication.otp_delivery_preference.sms_unsupported')
   t(`two_factor_authentication.otp_delivery_preference.${delivery}_unsupported`, { location });
 
-function setHintText(
-  hintText: string = t('two_factor_authentication.otp_delivery_preference.instruction'),
-) {
+function setHintText(hintText: string = t('two_factor_authentication.otp_delivery_preference.instruction')) {
   const hintElement = document.querySelector('#otp_delivery_preference_instruction');
   if (hintElement) {
     hintElement.textContent = hintText;
@@ -36,8 +31,7 @@ function setHintText(
 /**
  * Returns true if all inputs are disabled, or false otherwise.
  */
-const isAllDisabled = (inputs: HTMLInputElement[]): boolean =>
-  inputs.every((input) => input.disabled);
+const isAllDisabled = (inputs: HTMLInputElement[]): boolean => inputs.every((input) => input.disabled);
 
 /**
  * Returns the next non-disabled input in the set of inputs, if one exists.

@@ -25,10 +25,7 @@ interface SuspenseErrorBoundaryState {
   error?: Error;
 }
 
-class SuspenseErrorBoundary extends Component<
-  SuspenseErrorBoundaryProps,
-  SuspenseErrorBoundaryState
-> {
+class SuspenseErrorBoundary extends Component<SuspenseErrorBoundaryProps, SuspenseErrorBoundaryState> {
   constructor(props) {
     super(props);
 

@@ -33,15 +33,11 @@ describe('FullAddressSearch', () => {
       );
 
       const heading = queryByText('in_person_proofing.headings.po_search.location');
-      const aboutMessage = queryByText(
-        'in_person_proofing.body.location.po_search.po_search_about',
-      );
+      const aboutMessage = queryByText('in_person_proofing.body.location.po_search.po_search_about');
 
       expect(heading).to.exist();
       expect(aboutMessage).to.exist();
-      expect(
-        queryByRole('heading', { name: 'in_person_proofing.headings.po_search.location' }),
-      ).to.exist();
+      expect(queryByRole('heading', { name: 'in_person_proofing.headings.po_search.location' })).to.exist();
     });
 
     it('both do not render when handleLocationSelect is null', () => {
@@ -60,9 +56,7 @@ describe('FullAddressSearch', () => {
       );
 
       const heading = queryByText('in_person_proofing.headings.po_search.location');
-      const aboutMessage = queryByText(
-        'in_person_proofing.body.location.po_search.po_search_about',
-      );
+      const aboutMessage = queryByText('in_person_proofing.body.location.po_search.po_search_about');
       expect(heading).to.be.empty;
       expect(aboutMessage).to.be.empty;
     });
@@ -104,9 +98,7 @@ describe('FullAddressSearch', () => {
         </SWRConfig>,
       );
 
-      const searchLabel = queryByText(
-        'in_person_proofing.body.location.po_search.address_search_label',
-      );
+      const searchLabel = queryByText('in_person_proofing.body.location.po_search.address_search_label');
       expect(searchLabel).to.exist();
     });
   });
@@ -127,9 +119,7 @@ describe('FullAddressSearch', () => {
         </SWRConfig>,
       );
 
-      await userEvent.click(
-        await findByText('in_person_proofing.body.location.po_search.search_button'),
-      );
+      await userEvent.click(await findByText('in_person_proofing.body.location.po_search.search_button'));
 
       const errors = await findAllByText('simple_form.required.text');
       expect(errors).to.have.lengthOf(4);
@@ -167,21 +157,13 @@ describe('FullAddressSearch', () => {
         await findByLabelText('in_person_proofing.body.location.po_search.address_label'),
         '20, main',
       );
-      await userEvent.type(
-        await findByLabelText('in_person_proofing.body.location.po_search.city_label'),
-        'Endeavor',
-      );
+      await userEvent.type(await findByLabelText('in_person_proofing.body.location.po_search.city_label'), 'Endeavor');
       await userEvent.selectOptions(
         await findByLabelText('in_person_proofing.body.location.po_search.state_label'),
         'DE',
       );
-      await userEvent.type(
-        await findByLabelText('in_person_proofing.body.location.po_search.zipcode_label'),
-        '00010',
-      );
-      await userEvent.click(
-        await findByText('in_person_proofing.body.location.po_search.search_button'),
-      );
+      await userEvent.type(await findByLabelText('in_person_proofing.body.location.po_search.zipcode_label'), '00010');
+      await userEvent.click(await findByText('in_person_proofing.body.location.po_search.search_button'));
 
       const error = await findByText(
         'Our system cannot read the following characters: , . Please try again using substitutes for those characters.',
@@ -210,21 +192,10 @@ describe('FullAddressSearch', () => {
         await findByLabelText('in_person_proofing.body.location.po_search.address_label'),
         '200 main',
       );
-      await userEvent.type(
-        await findByLabelText('in_person_proofing.body.location.po_search.city_label'),
-        'Endeavor',
-      );
-      await userEvent.type(
-        await findByLabelText('in_person_proofing.body.location.po_search.state_label'),
-        'DE',
-      );
-      await userEvent.type(
-        await findByLabelText('in_person_proofing.body.location.po_search.zipcode_label'),
-        '1',
-      );
-      await userEvent.click(
-        await findByText('in_person_proofing.body.location.po_search.search_button'),
-      );
+      await userEvent.type(await findByLabelText('in_person_proofing.body.location.po_search.city_label'), 'Endeavor');
+      await userEvent.type(await findByLabelText('in_person_proofing.body.location.po_search.state_label'), 'DE');
+      await userEvent.type(await findByLabelText('in_person_proofing.body.location.po_search.zipcode_label'), '1');
+      await userEvent.click(await findByText('in_person_proofing.body.location.po_search.search_button'));
 
       const errors = await findAllByText('idv.errors.pattern_mismatch.zipcode_five');
       expect(errors).to.have.lengthOf(1);
@@ -249,21 +220,10 @@ describe('FullAddressSearch', () => {
         await findByLabelText('in_person_proofing.body.location.po_search.address_label'),
         '200 main',
       );
-      await userEvent.type(
-        await findByLabelText('in_person_proofing.body.location.po_search.city_label'),
-        'Endeavor',
-      );
-      await userEvent.type(
-        await findByLabelText('in_person_proofing.body.location.po_search.state_label'),
-        'DE',
-      );
-      await userEvent.type(
-        await findByLabelText('in_person_proofing.body.location.po_search.zipcode_label'),
-        '17201',
-      );
-      await userEvent.click(
-        await findByText('in_person_proofing.body.location.po_search.search_button'),
-      );
+      await userEvent.type(await findByLabelText('in_person_proofing.body.location.po_search.city_label'), 'Endeavor');
+      await userEvent.type(await findByLabelText('in_person_proofing.body.location.po_search.state_label'), 'DE');
+      await userEvent.type(await findByLabelText('in_person_proofing.body.location.po_search.zipcode_label'), '17201');
+      await userEvent.click(await findByText('in_person_proofing.body.location.po_search.search_button'));
 
       expect(queryByText('idv.errors.pattern_mismatch.zipcode')).to.be.null;
     });
@@ -272,9 +232,7 @@ describe('FullAddressSearch', () => {
   context('when an address is found', () => {
     let server: SetupServer;
     before(() => {
-      server = setupServer(
-        http.post(locationsURL, () => HttpResponse.json([{ name: 'Baltimore' }])),
-      );
+      server = setupServer(http.post(locationsURL, () => HttpResponse.json([{ name: 'Baltimore' }])));
       server.listen();
     });
 
@@ -301,21 +259,10 @@ describe('FullAddressSearch', () => {
         await findByLabelText('in_person_proofing.body.location.po_search.address_label'),
         '200 main',
       );
-      await userEvent.type(
-        await findByLabelText('in_person_proofing.body.location.po_search.city_label'),
-        'Endeavor',
-      );
-      await userEvent.type(
-        await findByLabelText('in_person_proofing.body.location.po_search.state_label'),
-        'DE',
-      );
-      await userEvent.type(
-        await findByLabelText('in_person_proofing.body.location.po_search.zipcode_label'),
-        '17201',
-      );
-      await userEvent.click(
-        await findByText('in_person_proofing.body.location.po_search.search_button'),
-      );
+      await userEvent.type(await findByLabelText('in_person_proofing.body.location.po_search.city_label'), 'Endeavor');
+      await userEvent.type(await findByLabelText('in_person_proofing.body.location.po_search.state_label'), 'DE');
+      await userEvent.type(await findByLabelText('in_person_proofing.body.location.po_search.zipcode_label'), '17201');
+      await userEvent.click(await findByText('in_person_proofing.body.location.po_search.search_button'));
 
       await expect(handleLocationsFound).to.eventually.be.called();
     });
@@ -324,9 +271,7 @@ describe('FullAddressSearch', () => {
   context('Address Search with Results Section Heading', () => {
     let server: SetupServer;
     before(() => {
-      server = setupServer(
-        http.post(locationsURL, () => HttpResponse.json([{ name: 'Baltimore' }])),
-      );
+      server = setupServer(http.post(locationsURL, () => HttpResponse.json([{ name: 'Baltimore' }])));
       server.listen();
     });
 
@@ -352,22 +297,10 @@ describe('FullAddressSearch', () => {
         </SWRConfig>,
       );
 
-      await userEvent.type(
-        getByLabelText('in_person_proofing.body.location.po_search.address_label'),
-        '200 main',
-      );
-      await userEvent.type(
-        getByLabelText('in_person_proofing.body.location.po_search.city_label'),
-        'Endeavor',
-      );
-      await userEvent.selectOptions(
-        getByLabelText('in_person_proofing.body.location.po_search.state_label'),
-        'DE',
-      );
-      await userEvent.type(
-        getByLabelText('in_person_proofing.body.location.po_search.zipcode_label'),
-        '17201',
-      );
+      await userEvent.type(getByLabelText('in_person_proofing.body.location.po_search.address_label'), '200 main');
+      await userEvent.type(getByLabelText('in_person_proofing.body.location.po_search.city_label'), 'Endeavor');
+      await userEvent.selectOptions(getByLabelText('in_person_proofing.body.location.po_search.state_label'), 'DE');
+      await userEvent.type(getByLabelText('in_person_proofing.body.location.po_search.zipcode_label'), '17201');
       await userEvent.click(getByText('in_person_proofing.body.location.po_search.search_button'));
 
       expect(await findByText(resultsSectionHeadingText)).to.exist();

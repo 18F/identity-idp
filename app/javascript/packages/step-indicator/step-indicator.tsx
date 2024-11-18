@@ -25,11 +25,7 @@ interface StepIndicatorProps {
 
 function StepIndicator({ className, children }: StepIndicatorProps) {
   return (
-    <lg-step-indicator
-      role="region"
-      aria-label={t('step_indicator.accessible_label')}
-      class={className}
-    >
+    <lg-step-indicator role="region" aria-label={t('step_indicator.accessible_label')} class={className}>
       <ol className="step-indicator__scroller">{children}</ol>
     </lg-step-indicator>
   );

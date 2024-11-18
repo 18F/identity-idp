@@ -130,9 +130,7 @@ describe('FullScreen', () => {
     const { getByRole } = render(<FullScreen>Content</FullScreen>);
 
     await delay(); // focus-trap delays initial focus by default
-    expect(document.activeElement).to.equal(
-      getByRole('button', { name: 'account.navigation.close' }),
-    );
+    expect(document.activeElement).to.equal(getByRole('button', { name: 'account.navigation.close' }));
   });
 
   it('is rendered as an accessible modal', () => {
@@ -143,9 +141,7 @@ describe('FullScreen', () => {
 
   it('calls close callback when close button is clicked', () => {
     const onRequestClose = sinon.spy();
-    const { getByLabelText } = render(
-      <FullScreen onRequestClose={onRequestClose}>Content</FullScreen>,
-    );
+    const { getByLabelText } = render(<FullScreen onRequestClose={onRequestClose}>Content</FullScreen>);
 
     const button = getByLabelText('account.navigation.close');
     fireEvent.click(button);

@@ -9,9 +9,7 @@ describe('AnalyticsContextProvider', () => {
   let wrapper: ComponentType;
   beforeEach(() => {
     trackEvent = sinon.stub();
-    wrapper = ({ children }) => (
-      <AnalyticsContextProvider trackEvent={trackEvent}>{children}</AnalyticsContextProvider>
-    );
+    wrapper = ({ children }) => <AnalyticsContextProvider trackEvent={trackEvent}>{children}</AnalyticsContextProvider>;
   });
 
   it('provides default context values', () => {

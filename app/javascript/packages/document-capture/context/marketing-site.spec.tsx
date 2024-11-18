@@ -25,9 +25,7 @@ describe('MarketingSiteContext', () => {
       });
 
       expect(result.current).to.have.keys(['getHelpCenterURL', 'securityAndPrivacyHowItWorksURL']);
-      expect(result.current.securityAndPrivacyHowItWorksURL).to.equal(
-        securityAndPrivacyHowItWorksURL,
-      );
+      expect(result.current.securityAndPrivacyHowItWorksURL).to.equal(securityAndPrivacyHowItWorksURL);
       expect(result.current.getHelpCenterURL).to.be.a('function');
     });
   });
@@ -53,9 +51,7 @@ describe('MarketingSiteContext', () => {
       it('parameterizes category, article, location', () => {
         const { result } = renderHook(() => useContext(MarketingSiteContext), {
           wrapper: ({ children }) => (
-            <Provider helpCenterRedirectURL="http://example.com/redirect/?flow=example">
-              {children}
-            </Provider>
+            <Provider helpCenterRedirectURL="http://example.com/redirect/?flow=example">{children}</Provider>
           ),
         });
 

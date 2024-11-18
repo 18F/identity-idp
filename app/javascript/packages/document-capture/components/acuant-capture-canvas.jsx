@@ -14,8 +14,7 @@ function AcuantCaptureCanvas() {
   useEffect(() => {
     const onAcuantCameraCreated = () => setCanvas(document.getElementById('acuant-ui-canvas'));
     cameraRef.current?.addEventListener('acuantcameracreated', onAcuantCameraCreated);
-    return () =>
-      cameraRef.current?.removeEventListener('acuantcameracreated', onAcuantCameraCreated);
+    return () => cameraRef.current?.removeEventListener('acuantcameracreated', onAcuantCameraCreated);
   }, [cameraRef.current]);
 
   const onCallback = useCallback(
@@ -44,17 +43,10 @@ function AcuantCaptureCanvas() {
       )}
       <h2 className="usa-sr-only">{t('doc_auth.accessible_labels.camera_video_capture_label')}</h2>
       {acuantCaptureMode !== 'TAP' && (
-        <p className="usa-sr-only">
-          {t('doc_auth.accessible_labels.camera_video_capture_instructions')}
-        </p>
+        <p className="usa-sr-only">{t('doc_auth.accessible_labels.camera_video_capture_instructions')}</p>
       )}
       <div id="acuant-camera" ref={cameraRef} className="acuant-capture-canvas__camera" />
-      <button
-        type="button"
-        onClick={clickCanvas}
-        disabled={acuantCaptureMode !== 'TAP'}
-        className="usa-sr-only"
-      >
+      <button type="button" onClick={clickCanvas} disabled={acuantCaptureMode !== 'TAP'} className="usa-sr-only">
         {t('doc_auth.buttons.take_picture')}
       </button>
     </>

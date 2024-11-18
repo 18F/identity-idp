@@ -45,20 +45,10 @@ function LocationCollectionItem({
               <h4>{t('in_person_proofing.body.location.retail_hours_heading')}</h4>
             )}
             {weekdayHours && (
-              <div>
-                {`${t('in_person_proofing.body.location.retail_hours_weekday')} ${weekdayHours}`}
-              </div>
+              <div>{`${t('in_person_proofing.body.location.retail_hours_weekday')} ${weekdayHours}`}</div>
             )}
-            {saturdayHours && (
-              <div>
-                {`${t('in_person_proofing.body.location.retail_hours_sat')} ${saturdayHours}`}
-              </div>
-            )}
-            {sundayHours && (
-              <div>
-                {`${t('in_person_proofing.body.location.retail_hours_sun')} ${sundayHours}`}
-              </div>
-            )}
+            {saturdayHours && <div>{`${t('in_person_proofing.body.location.retail_hours_sat')} ${saturdayHours}`}</div>}
+            {sundayHours && <div>{`${t('in_person_proofing.body.location.retail_hours_sun')} ${sundayHours}`}</div>}
             {handleSelect && (
               <SpinnerButton
                 className="tablet:display-none margin-top-2 width-full"

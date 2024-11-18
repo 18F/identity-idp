@@ -313,10 +313,7 @@ describe('request', () => {
 
           const inputs = document.querySelectorAll('input');
           expect(inputs).to.have.lengthOf(2);
-          expect(Array.from(inputs).map((input) => input.value)).to.deep.equal([
-            'new-token',
-            'new-token',
-          ]);
+          expect(Array.from(inputs).map((input) => input.value)).to.deep.equal(['new-token', 'new-token']);
         });
       });
     });

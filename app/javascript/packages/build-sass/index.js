@@ -18,9 +18,7 @@ import browserslist from 'browserslist';
  * @prop {AsyncCompiler=} sassCompiler Sass compiler to use, particularly useful with initCompiler
  */
 
-const TARGETS = browserslistToTargets(
-  browserslist(browserslist.loadConfig({ path: process.cwd() })),
-);
+const TARGETS = browserslistToTargets(browserslist(browserslist.loadConfig({ path: process.cwd() })));
 
 /**
  * Compiles a given Sass file.
@@ -31,16 +29,8 @@ const TARGETS = browserslistToTargets(
  * @return {Promise<CompileResult>}
  */
 export async function buildFile(file, options) {
-  const {
-    outDir = dirname(file),
-    optimize,
-    loadPaths = [],
-    sassCompiler,
-    ...sassOptions
-  } = options;
-  const sassCompile = sassCompiler
-    ? sassCompiler.compileAsync.bind(sassCompiler)
-    : baseSassCompileAsync;
+  const { outDir = dirname(file), optimize, loadPaths = [], sassCompiler, ...sassOptions } = options;
+  const sassCompile = sassCompiler ? sassCompiler.compileAsync.bind(sassCompiler) : baseSassCompileAsync;
 
   const sassResult = await sassCompile(file, {
     style: optimize ? 'compressed' : 'expanded',

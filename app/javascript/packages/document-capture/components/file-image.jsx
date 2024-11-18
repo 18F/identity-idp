@@ -28,19 +28,11 @@ function FileImage({ file, alt, className }) {
     reader.readAsDataURL(file);
   }, [file]);
 
-  const classes = [
-    'document-capture-file-image',
-    !imageData && 'document-capture-file-image--loading',
-    className,
-  ]
+  const classes = ['document-capture-file-image', !imageData && 'document-capture-file-image--loading', className]
     .filter(Boolean)
     .join(' ');
 
-  return imageData ? (
-    <img src={imageData} alt={alt} className={classes} />
-  ) : (
-    <span className={classes} />
-  );
+  return imageData ? <img src={imageData} alt={alt} className={classes} /> : <span className={classes} />;
 }
 
 export default FileImage;

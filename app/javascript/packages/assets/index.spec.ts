@@ -21,8 +21,7 @@ describe('getAssetPath', () => {
 
   context('with global assets including the provided asset', () => {
     beforeEach(() => {
-      document.body.innerHTML =
-        '<script type="application/json" data-asset-map>{"foo.svg":"bar.svg"}</script>';
+      document.body.innerHTML = '<script type="application/json" data-asset-map>{"foo.svg":"bar.svg"}</script>';
     });
 
     it('returns the mapped asset path', () => {

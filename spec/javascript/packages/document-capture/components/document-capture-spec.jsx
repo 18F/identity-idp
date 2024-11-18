@@ -1,10 +1,7 @@
 import userEvent from '@testing-library/user-event';
 import { fireEvent } from '@testing-library/react';
 import { waitFor } from '@testing-library/dom';
-import httpUpload, {
-  UploadFormEntriesError,
-  toFormEntryError,
-} from '@18f/identity-document-capture/services/upload';
+import httpUpload, { UploadFormEntriesError, toFormEntryError } from '@18f/identity-document-capture/services/upload';
 import {
   ServiceProviderContextProvider,
   UploadContextProvider,
@@ -74,9 +71,7 @@ describe('document-capture/components/document-capture', () => {
     // `onError` called with an Error instance is indication of camera access declined, which is
     // expected to show both field-level and step error.
     // See: https://github.com/18F/identity-idp/blob/164231d/app/javascript/packages/document-capture/components/acuant-capture.jsx#L114
-    window.AcuantCameraUI.start.callsFake(({ _onCaptured, _onCropped, onError }) =>
-      onError(new Error()),
-    );
+    window.AcuantCameraUI.start.callsFake(({ _onCaptured, _onCropped, onError }) => onError(new Error()));
 
     await userEvent.click(getByLabelText('doc_auth.headings.document_capture_front'));
 
@@ -112,9 +107,7 @@ describe('document-capture/components/document-capture', () => {
     await userEvent.click(submitButton);
     const errors = await findAllByText('simple_form.required.text');
     expect(errors).to.have.lengthOf(2);
-    expect(document.activeElement).to.equal(
-      getByLabelText('doc_auth.headings.document_capture_front'),
-    );
+    expect(document.activeElement).to.equal(getByLabelText('doc_auth.headings.document_capture_front'));
 
     // Providing values should remove errors progressively.
     fireEvent.change(getByLabelText('doc_auth.headings.document_capture_front'), {
@@ -123,9 +116,7 @@ describe('document-capture/components/document-capture', () => {
       },
     });
     await waitFor(() => expect(getAllByText('simple_form.required.text')).to.have.lengthOf(1));
-    expect(document.activeElement).to.equal(
-      getByLabelText('doc_auth.headings.document_capture_front'),
-    );
+    expect(document.activeElement).to.equal(getByLabelText('doc_auth.headings.document_capture_front'));
 
     await userEvent.click(getByLabelText('doc_auth.headings.document_capture_back'));
 
@@ -334,10 +325,9 @@ describe('document-capture/components/document-capture', () => {
           </UploadContextProvider>,
         );
 
-        const response = new Response(
-          JSON.stringify({ success: false, remaining_submit_attempts: 1, errors: [{}] }),
-          { status: 400 },
-        );
+        const response = new Response(JSON.stringify({ success: false, remaining_submit_attempts: 1, errors: [{}] }), {
+          status: 400,
+        });
         sandbox.stub(response, 'url').get(() => endpoint);
         sandbox.stub(global, 'fetch').withArgs(endpoint).resolves(response);
 

@@ -84,9 +84,7 @@ function DocumentCaptureWarning({
     isFailedSelfieLivenessOrQuality,
     t,
   });
-  const actionText = nonIppOrFailedResult
-    ? t('idv.failure.button.warning')
-    : t('idv.failure.button.try_online');
+  const actionText = nonIppOrFailedResult ? t('idv.failure.button.warning') : t('idv.failure.button.try_online');
   const subheading = getSubheading({
     nonIppOrFailedResult,
     t,
@@ -133,9 +131,7 @@ function DocumentCaptureWarning({
           />
         </div>
         <p>
-          <HtmlTextWithStrongNoWrap
-            text={t('idv.failure.attempts_html', { count: remainingSubmitAttempts })}
-          />
+          <HtmlTextWithStrongNoWrap text={t('idv.failure.attempts_html', { count: remainingSubmitAttempts })} />
         </p>
       </Warning>
       {nonIppOrFailedResult && <Cancel />}

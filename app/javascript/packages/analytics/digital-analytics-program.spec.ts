@@ -12,8 +12,7 @@ describe('digital analytics program', () => {
     });
 
     // Reference: https://github.com/nodejs/node/issues/30682
-    const toDataURL = (source: string) =>
-      new URL(`data:text/javascript,${encodeURIComponent(source)}`);
+    const toDataURL = (source: string) => new URL(`data:text/javascript,${encodeURIComponent(source)}`);
     const url = pathToFileURL(join(__dirname, './digital-analytics-program.js'));
     const code = `await import(${JSON.stringify(url)});`;
     new Worker(toDataURL(code)).on('error', (error) => {

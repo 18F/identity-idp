@@ -35,9 +35,7 @@ describe('DocumentCapturePolling', () => {
       statusEndpoint: '/status',
       elements: {
         backLink: /** @type {HTMLAnchorElement} */ (document.querySelector('.link-sent-back-link')),
-        form: /** @type {HTMLFormElement} */ (
-          document.querySelector('.link-sent-continue-button-form')
-        ),
+        form: /** @type {HTMLFormElement} */ (document.querySelector('.link-sent-continue-button-form')),
       },
       trackEvent,
     });
@@ -84,13 +82,10 @@ describe('DocumentCapturePolling', () => {
 
     expect(subject.elements.form.submit).to.have.been.called();
     expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling started');
-    expect(trackEvent).to.have.been.calledWithExactly(
-      'IdV: Link sent capture doc polling complete',
-      {
-        isCancelled: false,
-        isRateLimited: false,
-      },
-    );
+    expect(trackEvent).to.have.been.calledWithExactly('IdV: Link sent capture doc polling complete', {
+      isCancelled: false,
+      isRateLimited: false,
+    });
   });
 
   it('redirects if given redirect URL on success', async () => {
@@ -120,13 +115,10 @@ describe('DocumentCapturePolling', () => {
     await flushPromises(); // Flush `json`
 
     expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling started');
-    expect(trackEvent).to.have.been.calledWithExactly(
-      'IdV: Link sent capture doc polling complete',
-      {
-        isCancelled: true,
-        isRateLimited: false,
-      },
-    );
+    expect(trackEvent).to.have.been.calledWithExactly('IdV: Link sent capture doc polling complete', {
+      isCancelled: true,
+      isRateLimited: false,
+    });
     expect(subject.elements.form.submit).to.have.been.called();
   });
 
@@ -141,13 +133,10 @@ describe('DocumentCapturePolling', () => {
     await flushPromises(); // Flush `json`
 
     expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling started');
-    expect(trackEvent).to.have.been.calledWithExactly(
-      'IdV: Link sent capture doc polling complete',
-      {
-        isCancelled: false,
-        isRateLimited: true,
-      },
-    );
+    expect(trackEvent).to.have.been.calledWithExactly('IdV: Link sent capture doc polling complete', {
+      isCancelled: false,
+      isRateLimited: true,
+    });
     expect(window.location.hash).to.equal('#rate_limited');
   });
 

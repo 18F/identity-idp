@@ -18,10 +18,7 @@ describe('document-capture/components/warning', () => {
           actionOnClick={actionOnClick}
           troubleshootingHeading="Having trouble?"
           troubleshootingOptions={
-            <TroubleshootingOptions
-              heading="Having trouble?"
-              options={[{ text: 'Get help', url: '/' }]}
-            />
+            <TroubleshootingOptions heading="Having trouble?" options={[{ text: 'Get help', url: '/' }]} />
           }
           location="example"
         >

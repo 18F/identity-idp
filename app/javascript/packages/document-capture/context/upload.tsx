@@ -192,9 +192,7 @@ function UploadContextProvider({
   const uploadWithFormData = (payload) => upload({ ...payload, ...formData }, { endpoint });
 
   const getStatus = () =>
-    statusEndpoint
-      ? upload({ ...formData }, { endpoint: statusEndpoint, method: 'PUT' })
-      : Promise.reject();
+    statusEndpoint ? upload({ ...formData }, { endpoint: statusEndpoint, method: 'PUT' }) : Promise.reject();
 
   const value = useObjectMemo({
     upload: uploadWithFormData,

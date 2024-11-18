@@ -13,9 +13,7 @@ describe('StepIndicatorElement', () => {
           ${Array.from(Array(5))
             .map(
               (_value, index) => `
-            <li class="step-indicator__step ${
-              currentStepIndex === index ? 'step-indicator__step--current' : ''
-            } ">
+            <li class="step-indicator__step ${currentStepIndex === index ? 'step-indicator__step--current' : ''} ">
               <span class="step-indicator__step-title">
                 Step
               </span>

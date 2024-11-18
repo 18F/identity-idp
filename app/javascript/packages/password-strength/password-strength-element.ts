@@ -4,8 +4,7 @@ import type { ZXCVBNResult, ZXCVBNScore } from 'zxcvbn';
 
 const MINIMUM_STRENGTH: ZXCVBNScore = 3;
 
-const snakeCase = (string: string): string =>
-  string.replace(/[ -]/g, '_').replace(/\W/g, '').toLowerCase();
+const snakeCase = (string: string): string => string.replace(/[ -]/g, '_').replace(/\W/g, '').toLowerCase();
 
 class PasswordStrengthElement extends HTMLElement {
   connectedCallback() {
@@ -160,9 +159,7 @@ class PasswordStrengthElement extends HTMLElement {
       const result = zxcvbn(this.input.value, this.forbiddenPasswords);
       const score = this.#getNormalizedScore(result);
       this.setAttribute('score', String(score));
-      this.input.setCustomValidity(
-        this.#isValid(result) ? '' : t('errors.messages.stronger_password'),
-      );
+      this.input.setCustomValidity(this.#isValid(result) ? '' : t('errors.messages.stronger_password'));
       this.strength.textContent = this.#getStrengthLabel(score);
       this.feedback.textContent = this.#getNormalizedFeedback(result);
     }

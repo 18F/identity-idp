@@ -37,10 +37,7 @@ describe('AssetsWebpackPlugin', () => {
               expect(webpackError).to.be.null();
 
               const manifest = JSON.parse(
-                await fs.readFile(
-                  path.resolve(__dirname, `spec/fixtures/actual${mode}manifest.json`),
-                  'utf-8',
-                ),
+                await fs.readFile(path.resolve(__dirname, `spec/fixtures/actual${mode}manifest.json`), 'utf-8'),
               );
 
               expect(manifest.entrypoints.main.assets.svg).to.include.all.members(['foo.svg']);

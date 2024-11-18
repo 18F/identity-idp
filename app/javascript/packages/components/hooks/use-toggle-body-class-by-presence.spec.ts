@@ -16,9 +16,7 @@ describe('useToggleBodyClassByPresence', () => {
   });
 
   it('removes body class after hook is deactivated', () => {
-    const { unmount } = renderHook(() =>
-      useToggleBodyClassByPresence('component-one', ComponentOne),
-    );
+    const { unmount } = renderHook(() => useToggleBodyClassByPresence('component-one', ComponentOne));
 
     unmount();
 
@@ -27,9 +25,7 @@ describe('useToggleBodyClassByPresence', () => {
 
   it('does not remove body class if one of multiple instances is removed', () => {
     renderHook(() => useToggleBodyClassByPresence('component-one', ComponentOne));
-    const { unmount: unmountSecond } = renderHook(() =>
-      useToggleBodyClassByPresence('component-one', ComponentOne),
-    );
+    const { unmount: unmountSecond } = renderHook(() => useToggleBodyClassByPresence('component-one', ComponentOne));
 
     unmountSecond();
 

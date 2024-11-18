@@ -23,8 +23,6 @@ describe('InPersonCallToAction', () => {
     const button = getByRole('button', { name: 'in_person_proofing.body.cta.button' });
     await userEvent.click(button);
 
-    expect(trackEvent).to.have.been.calledWith(
-      'IdV: verify in person troubleshooting option clicked',
-    );
+    expect(trackEvent).to.have.been.calledWith('IdV: verify in person troubleshooting option clicked');
   });
 });

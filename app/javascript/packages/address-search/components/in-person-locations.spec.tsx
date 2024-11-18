@@ -83,9 +83,7 @@ describe('InPersonLocations', () => {
       />,
     );
 
-    expect(
-      queryByText('in_person_proofing.body.location.po_search.results_instructions'),
-    ).to.not.exist();
+    expect(queryByText('in_person_proofing.body.location.po_search.results_instructions')).to.not.exist();
   });
 
   it('renders a header at the top of the results', () => {
@@ -133,8 +131,7 @@ describe('InPersonLocations', () => {
         />,
       );
 
-      expect(queryByText('in_person_proofing.body.location.po_search.results_instructions')).to.be
-        .null;
+      expect(queryByText('in_person_proofing.body.location.po_search.results_instructions')).to.be.null;
       expect(queryByText('in_person_proofing.body.location.retail_hours_heading')).not.to.exist();
     });
   });

@@ -1,12 +1,4 @@
-import {
-  useContext,
-  useState,
-  useMemo,
-  forwardRef,
-  useRef,
-  useImperativeHandle,
-  ForwardedRef,
-} from 'react';
+import { useContext, useState, useMemo, forwardRef, useRef, useImperativeHandle, ForwardedRef } from 'react';
 import type {
   MouseEvent as ReactMouseEvent,
   DragEvent as ReactDragEvent,
@@ -155,9 +147,7 @@ export function isImage(value: Blob | string): boolean {
  * @return {boolean} Whether file is valid.
  */
 export function isValidForAccepts(mimeType: string, accept?: string[]): boolean {
-  return (
-    !accept || accept.map(getAcceptPattern).some((pattern) => pattern && pattern.test(mimeType))
-  );
+  return !accept || accept.map(getAcceptPattern).some((pattern) => pattern && pattern.test(mimeType));
 }
 
 interface AriaDescribedbyArguments {
@@ -218,10 +208,7 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const previousValue = usePrevious(value);
   const previousIsValuePending = usePrevious(isValuePending);
-  const isUpdated = useMemo(
-    () => Boolean(previousValue && value && previousValue !== value),
-    [value],
-  );
+  const isUpdated = useMemo(() => Boolean(previousValue && value && previousValue !== value), [value]);
   const isPendingValueReceived = useMemo(
     () => previousIsValuePending && !isValuePending && !!value,
     [value, isValuePending, previousIsValuePending],
@@ -313,11 +300,7 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
       <StatusMessage
         id={successId}
         status={Status.SUCCESS}
-        className={
-          successMessage === fileLoadingText || successMessage === fileLoadedText
-            ? 'usa-sr-only'
-            : undefined
-        }
+        className={successMessage === fileLoadingText || successMessage === fileLoadedText ? 'usa-sr-only' : undefined}
       >
         {!shownErrorMessage && successMessage}
       </StatusMessage>
@@ -364,9 +347,7 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
               {showInnerHint && (
                 <span className="usa-file-input__drag-text" id={innerHintId}>
                   {formatHTML(t('doc_auth.forms.choose_file_html'), {
-                    'lg-underline': ({ children }) => (
-                      <span className="usa-file-input__choose">{children}</span>
-                    ),
+                    'lg-underline': ({ children }) => <span className="usa-file-input__choose">{children}</span>,
                   })}
                 </span>
               )}

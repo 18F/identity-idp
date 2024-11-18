@@ -8,9 +8,7 @@ interface PageFooterProps {
 }
 
 function PageFooter({ children }: PageFooterProps) {
-  return (
-    <div className="margin-top-4 padding-top-2 border-top border-primary-light">{children}</div>
-  );
+  return <div className="margin-top-4 padding-top-2 border-top border-primary-light">{children}</div>;
 }
 
 export default PageFooter;

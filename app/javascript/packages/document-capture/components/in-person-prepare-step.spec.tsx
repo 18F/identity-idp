@@ -49,9 +49,7 @@ describe('InPersonPrepareStep', () => {
           <InPersonPrepareStep {...DEFAULT_PROPS} />
         </InPersonContext.Provider>,
       );
-      expect(
-        queryByText('idv.failure.exceptions.in_person_outage_error_message.post_cta.title'),
-      ).to.exist();
+      expect(queryByText('idv.failure.exceptions.in_person_outage_error_message.post_cta.title')).to.exist();
     });
     it('does not render a warning when the flag is disabled', () => {
       const { queryByText } = render(
@@ -68,9 +66,7 @@ describe('InPersonPrepareStep', () => {
           <InPersonPrepareStep {...DEFAULT_PROPS} />
         </InPersonContext.Provider>,
       );
-      expect(
-        queryByText('idv.failure.exceptions.in_person_outage_error_message.post_cta.title'),
-      ).not.to.exist();
+      expect(queryByText('idv.failure.exceptions.in_person_outage_error_message.post_cta.title')).not.to.exist();
     });
   });
 

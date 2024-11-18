@@ -1,9 +1,7 @@
 import { base64ToArrayBuffer, arrayBufferToBase64, longToByteArray } from './converters';
 
 const stringAsBase64 = 'Y3JlZGVudGlhbDEyMw==';
-const stringAsArrayBuffer = Uint8Array.from([
-  99, 114, 101, 100, 101, 110, 116, 105, 97, 108, 49, 50, 51,
-]).buffer;
+const stringAsArrayBuffer = Uint8Array.from([99, 114, 101, 100, 101, 110, 116, 105, 97, 108, 49, 50, 51]).buffer;
 
 describe('base64ToArrayBuffer', () => {
   it('converts a base64 string to an equivalent array buffer', () => {

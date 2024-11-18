@@ -119,11 +119,8 @@ function FailedCaptureAttemptsContextProvider({
   maxSubmissionAttemptsBeforeNativeCamera,
   failedFingerprints = { front: [], back: [] },
 }: FailedCaptureAttemptsContextProviderProps) {
-  const [lastAttemptMetadata, setLastAttemptMetadata] = useState<CaptureAttemptMetadata>(
-    DEFAULT_LAST_ATTEMPT_METADATA,
-  );
-  const [failedCaptureAttempts, incrementFailedCaptureAttempts, onResetFailedCaptureAttempts] =
-    useCounter();
+  const [lastAttemptMetadata, setLastAttemptMetadata] = useState<CaptureAttemptMetadata>(DEFAULT_LAST_ATTEMPT_METADATA);
+  const [failedCaptureAttempts, incrementFailedCaptureAttempts, onResetFailedCaptureAttempts] = useCounter();
   const [failedSubmissionAttempts, incrementFailedSubmissionAttempts] = useCounter();
   const [failedCameraPermissionAttempts, incrementFailedCameraPermissionAttempts] = useCounter();
   const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);

@@ -75,10 +75,7 @@ export async function request<Response = any>(
   url,
   options?: Partial<RequestOptions> & { read?: true },
 ): Promise<Response>;
-export async function request(
-  url,
-  options?: Partial<RequestOptions> & { read?: false },
-): Promise<Response>;
+export async function request(url, options?: Partial<RequestOptions> & { read?: false }): Promise<Response>;
 export async function request(url: string, options: Partial<RequestOptions> = {}) {
   const { csrf = true, json = true, read = true, ...fetchOptions } = options;
   let { body, headers } = fetchOptions;

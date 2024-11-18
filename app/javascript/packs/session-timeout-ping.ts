@@ -36,8 +36,7 @@ function success({ isLive, timeout }: SessionStatus) {
     });
   }
 
-  const nextPingTimeout =
-    timeRemaining > 0 && timeRemaining < frequency ? timeRemaining : frequency;
+  const nextPingTimeout = timeRemaining > 0 && timeRemaining < frequency ? timeRemaining : frequency;
 
   // Disable reason: circular dependency between ping and success
   // eslint-disable-next-line @typescript-eslint/no-use-before-define

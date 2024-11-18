@@ -31,9 +31,7 @@ describe('Button', () => {
 
   it('forwards additional props to the rendered element', async () => {
     const onClick = sinon.spy();
-    const { getByText } = render(
-      <Button onClick={(event) => onClick(event.type)}>Click me</Button>,
-    );
+    const { getByText } = render(<Button onClick={(event) => onClick(event.type)}>Click me</Button>);
 
     const button = getByText('Click me');
     await userEvent.click(button);

@@ -1,16 +1,10 @@
 import { useContext } from 'react';
 import { renderHook } from '@testing-library/react-hooks';
 import userEvent from '@testing-library/user-event';
-import {
-  DeviceContext,
-  AnalyticsContext,
-  SelfieCaptureContext,
-} from '@18f/identity-document-capture';
+import { DeviceContext, AnalyticsContext, SelfieCaptureContext } from '@18f/identity-document-capture';
 import { Provider as AcuantContextProvider } from '@18f/identity-document-capture/context/acuant';
 import AcuantCapture from '@18f/identity-document-capture/components/acuant-capture';
-import FailedCaptureAttemptsContext, {
-  Provider,
-} from '@18f/identity-document-capture/context/failed-capture-attempts';
+import FailedCaptureAttemptsContext, { Provider } from '@18f/identity-document-capture/context/failed-capture-attempts';
 import sinon from 'sinon';
 import { render } from '../../../support/document-capture';
 
@@ -45,9 +39,7 @@ describe('document-capture/context/failed-capture-attempts', () => {
   describe('Provider', () => {
     it('sets increments on onFailedCaptureAttempt', () => {
       const { result } = renderHook(() => useContext(FailedCaptureAttemptsContext), {
-        wrapper: ({ children }) => (
-          <Provider maxCaptureAttemptsBeforeNativeCamera={2}>{children}</Provider>
-        ),
+        wrapper: ({ children }) => <Provider maxCaptureAttemptsBeforeNativeCamera={2}>{children}</Provider>,
       });
 
       result.current.onFailedCaptureAttempt({ isAssessedAsGlare: true, isAssessedAsBlurry: false });
@@ -72,9 +64,7 @@ describe('document-capture/context/failed-capture-attempts', () => {
 describe('FailedCaptureAttemptsContext testing of forceNativeCamera logic', () => {
   it('Updating to a number of failed captures less than maxCaptureAttemptsBeforeNativeCamera will keep forceNativeCamera as false', () => {
     const { result, rerender } = renderHook(() => useContext(FailedCaptureAttemptsContext), {
-      wrapper: ({ children }) => (
-        <Provider maxCaptureAttemptsBeforeNativeCamera={2}>{children}</Provider>
-      ),
+      wrapper: ({ children }) => <Provider maxCaptureAttemptsBeforeNativeCamera={2}>{children}</Provider>,
     });
     result.current.onFailedCaptureAttempt({
       isAssessedAsGlare: true,
@@ -87,9 +77,7 @@ describe('FailedCaptureAttemptsContext testing of forceNativeCamera logic', () =
 
   it('Updating to a number of failed submissions less than maxSubmissionAttemptsBeforeNativeCamera will keep forceNativeCamera as false', () => {
     const { result, rerender } = renderHook(() => useContext(FailedCaptureAttemptsContext), {
-      wrapper: ({ children }) => (
-        <Provider maxSubmissionAttemptsBeforeNativeCamera={2}>{children}</Provider>
-      ),
+      wrapper: ({ children }) => <Provider maxSubmissionAttemptsBeforeNativeCamera={2}>{children}</Provider>,
     });
     result.current.onFailedSubmissionAttempt({ front: ['abcdefg'], back: [] });
     rerender(true);
@@ -103,9 +91,7 @@ describe('FailedCaptureAttemptsContext testing of forceNativeCamera logic', () =
 
   it('Updating failed captures to a number gte the maxCaptureAttemptsBeforeNativeCamera will set forceNativeCamera to true', () => {
     const { result, rerender } = renderHook(() => useContext(FailedCaptureAttemptsContext), {
-      wrapper: ({ children }) => (
-        <Provider maxCaptureAttemptsBeforeNativeCamera={2}>{children}</Provider>
-      ),
+      wrapper: ({ children }) => <Provider maxCaptureAttemptsBeforeNativeCamera={2}>{children}</Provider>,
     });
     result.current.onFailedCaptureAttempt({
       isAssessedAsGlare: true,
@@ -130,9 +116,7 @@ describe('FailedCaptureAttemptsContext testing of forceNativeCamera logic', () =
 
   it('Updating failed submissions to a number gte the maxSubmissionAttemptsBeforeNativeCamera will set forceNativeCamera to true', () => {
     const { result, rerender } = renderHook(() => useContext(FailedCaptureAttemptsContext), {
-      wrapper: ({ children }) => (
-        <Provider maxSubmissionAttemptsBeforeNativeCamera={2}>{children}</Provider>
-      ),
+      wrapper: ({ children }) => <Provider maxSubmissionAttemptsBeforeNativeCamera={2}>{children}</Provider>,
     });
     result.current.onFailedSubmissionAttempt();
     rerender(true);
@@ -149,10 +133,7 @@ describe('FailedCaptureAttemptsContext testing of forceNativeCamera logic', () =
   it('Combination of failedCapture and failedSubmission gte max does NOT force native camera', () => {
     const { result, rerender } = renderHook(() => useContext(FailedCaptureAttemptsContext), {
       wrapper: ({ children }) => (
-        <Provider
-          maxSubmissionAttemptsBeforeNativeCamera={3}
-          maxCaptureAttemptsBeforeNativeCamera={3}
-        >
+        <Provider maxSubmissionAttemptsBeforeNativeCamera={3} maxCaptureAttemptsBeforeNativeCamera={3}>
           {children}
         </Provider>
       ),
@@ -175,10 +156,7 @@ describe('FailedCaptureAttemptsContext testing of forceNativeCamera logic', () =
       const { result, rerender } = renderHook(() => useContext(FailedCaptureAttemptsContext), {
         wrapper: ({ children }) => (
           <SelfieCaptureContext.Provider value={{ isSelfieCaptureEnabled: true }}>
-            <Provider
-              maxCaptureAttemptsBeforeNativeCamera={2}
-              maxSubmissionAttemptsBeforeNativeCamera={2}
-            >
+            <Provider maxCaptureAttemptsBeforeNativeCamera={2} maxSubmissionAttemptsBeforeNativeCamera={2}>
               {children}
             </Provider>
           </SelfieCaptureContext.Provider>
@@ -216,9 +194,7 @@ describe('FailedCaptureAttemptsContext testing of forceNativeCamera logic', () =
       expect(result.current.failedSubmissionAttempts).to.equal(3);
       expect(result.current.forceNativeCamera).to.equal(false);
 
-      expect(trackEvent).to.not.have.been.calledWith(
-        'IdV: Native camera forced after failed attempts',
-      );
+      expect(trackEvent).to.not.have.been.calledWith('IdV: Native camera forced after failed attempts');
     });
   });
 });
@@ -256,10 +232,11 @@ describe('maxCaptureAttemptsBeforeNativeCamera logging tests', () => {
       expect(fileInput).to.exist();
       await user.click(fileInput);
       expect(trackEvent).to.have.been.called();
-      expect(trackEvent).to.have.been.calledWith(
-        'IdV: Native camera forced after failed attempts',
-        { field: 'example', failed_capture_attempts: 0, failed_submission_attempts: 0 },
-      );
+      expect(trackEvent).to.have.been.calledWith('IdV: Native camera forced after failed attempts', {
+        field: 'example',
+        failed_capture_attempts: 0,
+        failed_submission_attempts: 0,
+      });
     });
 
     it('Does not call analytics with native camera message when failed attempts less than 2', async function () {
@@ -284,9 +261,7 @@ describe('maxCaptureAttemptsBeforeNativeCamera logging tests', () => {
       const fileInput = result.container.querySelector('input[type="file"]');
       expect(fileInput).to.exist();
       await user.click(fileInput);
-      expect(trackEvent).to.not.have.been.calledWith(
-        'IdV: Native camera forced after failed attempts',
-      );
+      expect(trackEvent).to.not.have.been.calledWith('IdV: Native camera forced after failed attempts');
     });
 
     it('Does not call forceNativeCamera analytics if the target environment is desktop and other criteria are met', async function () {
@@ -297,10 +272,7 @@ describe('maxCaptureAttemptsBeforeNativeCamera logging tests', () => {
           <AnalyticsContext.Provider value={{ trackEvent }}>
             <DeviceContext.Provider value={{ isMobile: false }}>
               <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-                <Provider
-                  maxCaptureAttemptsBeforeNativeCamera={0}
-                  maxFailedSubmissionAttemptsBeforeNativeCamera={0}
-                >
+                <Provider maxCaptureAttemptsBeforeNativeCamera={0} maxFailedSubmissionAttemptsBeforeNativeCamera={0}>
                   {acuantCaptureComponent}
                   {children}
                 </Provider>
@@ -314,9 +286,7 @@ describe('maxCaptureAttemptsBeforeNativeCamera logging tests', () => {
       const fileInput = result.container.querySelector('input[type="file"]');
       expect(fileInput).to.exist();
       await user.click(fileInput);
-      expect(trackEvent).to.not.have.been.calledWith(
-        'IdV: Native camera forced after failed attempts',
-      );
+      expect(trackEvent).to.not.have.been.calledWith('IdV: Native camera forced after failed attempts');
     });
   });
 });

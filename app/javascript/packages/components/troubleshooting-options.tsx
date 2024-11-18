@@ -19,11 +19,7 @@ interface TroubleshootingOptionsProps {
   options: TroubleshootingOption[];
 }
 
-function TroubleshootingOptions({
-  headingTag = 'h2',
-  heading,
-  options,
-}: TroubleshootingOptionsProps) {
+function TroubleshootingOptions({ headingTag = 'h2', heading, options }: TroubleshootingOptionsProps) {
   const { t } = useI18n();
 
   if (!options.length) {

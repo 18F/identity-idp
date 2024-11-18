@@ -29,8 +29,7 @@ const isJavaScriptFile = (filename) => filename.endsWith('.js');
  *
  * @return {string[]} Asset paths.
  */
-const getAssetPaths = (source) =>
-  Array.from(source.matchAll(GET_ASSET_CALL)).map(([, path]) => path);
+const getAssetPaths = (source) => Array.from(source.matchAll(GET_ASSET_CALL)).map(([, path]) => path);
 
 /**
  * Adds the given asset file name to the list of files of the group's parent entrypoint.
@@ -49,22 +48,19 @@ class AssetsWebpackPlugin {
    */
   apply(compiler) {
     compiler.hooks.compilation.tap('compile', (compilation) => {
-      compilation.hooks.processAssets.tap(
-        { name: PLUGIN, stage: Compilation.PROCESS_ASSETS_STAGE_ADDITIONS },
-        () => {
-          compilation.chunks.forEach((chunk) => {
-            [...chunk.files].filter(isJavaScriptFile).forEach((filename) => {
-              const source = compilation.assets[filename].source();
-              const assetPaths = getAssetPaths(source);
-              if (assetPaths.length) {
-                Array.from(chunk.groupsIterable).forEach((group) => {
-                  addFilesToEntrypoint(assetPaths, group);
-                });
-              }
-            });
+      compilation.hooks.processAssets.tap({ name: PLUGIN, stage: Compilation.PROCESS_ASSETS_STAGE_ADDITIONS }, () => {
+        compilation.chunks.forEach((chunk) => {
+          [...chunk.files].filter(isJavaScriptFile).forEach((filename) => {
+            const source = compilation.assets[filename].source();
+            const assetPaths = getAssetPaths(source);
+            if (assetPaths.length) {
+              Array.from(chunk.groupsIterable).forEach((group) => {
+                addFilesToEntrypoint(assetPaths, group);
+              });
+            }
           });
-        },
-      );
+        });
+      });
     });
   }
 }

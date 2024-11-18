@@ -67,9 +67,7 @@ export function useInertSiblingElements(containerRef: MutableRefObject<HTMLEleme
 
     return () =>
       originalElementAttributeValues.forEach(([child, ariaHidden]) =>
-        ariaHidden === null
-          ? child.removeAttribute('aria-hidden')
-          : child.setAttribute('aria-hidden', ariaHidden),
+        ariaHidden === null ? child.removeAttribute('aria-hidden') : child.setAttribute('aria-hidden', ariaHidden),
       );
   });
 }
@@ -115,11 +113,7 @@ function FullScreen(
           onClick={onRequestClose}
           className="full-screen__close-button usa-button padding-2 margin-2"
         >
-          <img
-            alt=""
-            src={getAssetPath('close-white-alt.svg')}
-            className="full-screen__close-icon"
-          />
+          <img alt="" src={getAssetPath('close-white-alt.svg')} className="full-screen__close-icon" />
         </button>
       )}
     </div>,

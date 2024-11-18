@@ -32,11 +32,7 @@ function ServiceProviderContextProvider({ value, children }: ServiceProviderCont
     [value],
   );
 
-  return (
-    <ServiceProviderContext.Provider value={mergedValue}>
-      {children}
-    </ServiceProviderContext.Provider>
-  );
+  return <ServiceProviderContext.Provider value={mergedValue}>{children}</ServiceProviderContext.Provider>;
 }
 
 export default ServiceProviderContext;

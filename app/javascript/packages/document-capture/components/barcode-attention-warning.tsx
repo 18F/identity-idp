@@ -50,10 +50,7 @@ function BarcodeAttentionWarning({ onDismiss, pii }: BarcodeAttentionWarningProp
         </Button>,
       ]}
       troubleshootingOptions={
-        <DocumentCaptureTroubleshootingOptions
-          location="post_submission_warning"
-          showDocumentTips={false}
-        />
+        <DocumentCaptureTroubleshootingOptions location="post_submission_warning" showDocumentTips={false} />
       }
     >
       <p>{t('doc_auth.errors.barcode_attention.confirm_info')}</p>

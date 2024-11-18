@@ -48,28 +48,21 @@ function webauthn() {
         name: (document.getElementById('user_email') as HTMLInputElement).value,
         displayName: (document.getElementById('user_email') as HTMLInputElement).value,
       },
-      challenge: new Uint8Array(
-        JSON.parse((document.getElementById('user_challenge') as HTMLInputElement).value),
-      ),
+      challenge: new Uint8Array(JSON.parse((document.getElementById('user_challenge') as HTMLInputElement).value)),
       excludeCredentials: extractCredentials(
-        (document.getElementById('exclude_credentials') as HTMLInputElement).value
-          .split(',')
-          .filter(Boolean),
+        (document.getElementById('exclude_credentials') as HTMLInputElement).value.split(',').filter(Boolean),
       ),
     })
       .then((result) => {
         (document.getElementById('webauthn_id') as HTMLInputElement).value = result.webauthnId;
-        (document.getElementById('attestation_object') as HTMLInputElement).value =
-          result.attestationObject;
-        (document.getElementById('client_data_json') as HTMLInputElement).value =
-          result.clientDataJSON;
+        (document.getElementById('attestation_object') as HTMLInputElement).value = result.attestationObject;
+        (document.getElementById('client_data_json') as HTMLInputElement).value = result.clientDataJSON;
         if (result.authenticatorDataFlagsValue) {
           (document.getElementById('authenticator_data_value') as HTMLInputElement).value =
             `${result.authenticatorDataFlagsValue}`;
         }
         if (result.transports) {
-          (document.getElementById('transports') as HTMLInputElement).value =
-            result.transports.join();
+          (document.getElementById('transports') as HTMLInputElement).value = result.transports.join();
         }
         (document.getElementById('webauthn_form') as HTMLFormElement).submit();
       })

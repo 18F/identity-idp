@@ -18,9 +18,7 @@ function AddressSearch({
 }: AddressSearchProps) {
   const [apiError, setApiError] = useState<Error | null>(null);
   const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
-  const [locationResults, setLocationResults] = useState<FormattedLocation[] | null | undefined>(
-    null,
-  );
+  const [locationResults, setLocationResults] = useState<FormattedLocation[] | null | undefined>(null);
   const [isLoadingLocations, setLoadingLocations] = useState<boolean>(false);
 
   return (

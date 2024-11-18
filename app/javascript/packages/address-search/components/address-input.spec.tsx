@@ -58,9 +58,7 @@ describe('AddressInput', () => {
         await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
         '200 main',
       );
-      await userEvent.click(
-        await findByText('in_person_proofing.body.location.po_search.search_button'),
-      );
+      await userEvent.click(await findByText('in_person_proofing.body.location.po_search.search_button'));
 
       await expect(handleAddressFound).to.eventually.be.called();
       await expect(handleLocationsFound).to.eventually.be.called();

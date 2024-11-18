@@ -62,9 +62,7 @@ export default function useUspsLocations({
     isLoading: isLoadingCandidates,
     error: addressError,
   } = useSWR([addressQuery], () =>
-    addressQuery
-      ? requestAddressCandidates({ unvalidatedAddressInput: addressQuery, addressSearchURL })
-      : null,
+    addressQuery ? requestAddressCandidates({ unvalidatedAddressInput: addressQuery, addressSearchURL }) : null,
   );
 
   const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
@@ -80,9 +78,7 @@ export default function useUspsLocations({
         address: bestMatchedAddress.address,
       });
     } else if (addressCandidates) {
-      validatedFieldRef?.current?.setCustomValidity(
-        t('in_person_proofing.body.location.inline_error'),
-      );
+      validatedFieldRef?.current?.setCustomValidity(t('in_person_proofing.body.location.inline_error'));
       validatedFieldRef?.current?.reportValidity();
       setFoundAddress(null);
     }
@@ -92,9 +88,7 @@ export default function useUspsLocations({
     data: locationResults,
     isLoading: isLoadingLocations,
     error: uspsError,
-  } = useSWR([foundAddress], ([address]) =>
-    address ? requestUspsLocations({ locationsURL, address }) : null,
-  );
+  } = useSWR([foundAddress], ([address]) => (address ? requestUspsLocations({ locationsURL, address }) : null));
 
   return {
     foundAddress,

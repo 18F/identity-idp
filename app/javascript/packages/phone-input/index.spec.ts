@@ -24,10 +24,7 @@ describe('PhoneInput', () => {
   } = {}) {
     const element = document.createElement('lg-phone-input');
     element.setAttribute('data-delivery-methods', JSON.stringify(deliveryMethods));
-    element.setAttribute(
-      'data-translated-country-code-names',
-      JSON.stringify(translatedCountryCodeNames),
-    );
+    element.setAttribute('data-translated-country-code-names', JSON.stringify(translatedCountryCodeNames));
 
     const phoneInput = document.createElement('input');
     phoneInput.type = 'tel';
@@ -99,9 +96,7 @@ describe('PhoneInput', () => {
 
       await userEvent.type(phoneNumber, '647');
       expect(countryCode.value).to.eql('CA');
-      expect(phoneNumber.validationMessage).to.equal(
-        'Enter a phone number with the correct number of digits.',
-      );
+      expect(phoneNumber.validationMessage).to.equal('Enter a phone number with the correct number of digits.');
 
       await userEvent.type(phoneNumber, '555-1234');
       expect(phoneNumber.validity.valid).to.be.true();
@@ -117,9 +112,7 @@ describe('PhoneInput', () => {
     }) as HTMLSelectElement;
 
     await userEvent.selectOptions(countryCode, 'LK');
-    expect(phoneNumber.validationMessage).to.equal(
-      'We are unable to verify phone numbers from Sri Lanka',
-    );
+    expect(phoneNumber.validationMessage).to.equal('We are unable to verify phone numbers from Sri Lanka');
   });
 
   it('sets country on initialization', () => {
@@ -182,9 +175,7 @@ describe('PhoneInput', () => {
     // There are two comboboxes, one for no-JavaScript, and the other JavaScript enhanced. Only one
     // is visible at a time. We're primarily concerned with testing the latter.
     expect(comboboxes).to.have.lengthOf(2);
-    const [combobox] = comboboxes.filter(
-      (element) => !element.closest('.phone-input__international-code-wrapper'),
-    );
+    const [combobox] = comboboxes.filter((element) => !element.closest('.phone-input__international-code-wrapper'));
 
     const hasPopup = combobox.getAttribute('aria-haspopup');
     const name = computeAccessibleName(combobox);
@@ -222,9 +213,7 @@ describe('PhoneInput', () => {
       }) as HTMLSelectElement;
 
       await userEvent.selectOptions(countryCode, 'CA');
-      expect(phoneNumber.validationMessage).to.equal(
-        'We are unable to verify phone numbers from Canada',
-      );
+      expect(phoneNumber.validationMessage).to.equal('We are unable to verify phone numbers from Canada');
     });
   });
 

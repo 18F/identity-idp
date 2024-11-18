@@ -1,9 +1,6 @@
 import { render } from '@testing-library/react';
 import type { ComponentType, ReactNode } from 'react';
-import {
-  MarketingSiteContextProvider,
-  ServiceProviderContextProvider,
-} from '@18f/identity-document-capture';
+import { MarketingSiteContextProvider, ServiceProviderContextProvider } from '@18f/identity-document-capture';
 import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
 import type { ServiceProviderContextType } from '../context/service-provider';
 import InPersonContext, { InPersonContextProps } from '../context/in-person';
@@ -23,9 +20,7 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
     ),
     helpCenterAndServiceProviderContext: ({ children }) => (
       <MarketingSiteContextProvider helpCenterRedirectURL={helpCenterRedirectURL}>
-        <ServiceProviderContextProvider value={serviceProviderContext}>
-          {children}
-        </ServiceProviderContextProvider>
+        <ServiceProviderContextProvider value={serviceProviderContext}>{children}</ServiceProviderContextProvider>
       </MarketingSiteContextProvider>
     ),
   };
@@ -38,16 +33,12 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
     const links = getAllByRole('link') as HTMLAnchorElement[];
 
     expect(links).to.have.lengthOf(2);
-    expect(links[0].textContent).to.equal(
-      'idv.troubleshooting.options.doc_capture_tipslinks.new_tab',
-    );
+    expect(links[0].textContent).to.equal('idv.troubleshooting.options.doc_capture_tipslinks.new_tab');
     expect(links[0].getAttribute('href')).to.equal(
       'https://example.com/redirect/?category=verify-your-identity&article=how-to-add-images-of-your-state-issued-id&location=document_capture_troubleshooting_options',
     );
     expect(links[0].target).to.equal('_blank');
-    expect(links[1].textContent).to.equal(
-      'idv.troubleshooting.options.supported_documentslinks.new_tab',
-    );
+    expect(links[1].textContent).to.equal('idv.troubleshooting.options.supported_documentslinks.new_tab');
     expect(links[1].getAttribute('href')).to.equal(
       'https://example.com/redirect/?category=verify-your-identity&article=accepted-identification-documents&location=document_capture_troubleshooting_options',
     );
@@ -56,9 +47,7 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
 
   context('with heading prop', () => {
     it('shows heading text', () => {
-      const { getByRole } = render(
-        <DocumentCaptureTroubleshootingOptions heading="custom heading" />,
-      );
+      const { getByRole } = render(<DocumentCaptureTroubleshootingOptions heading="custom heading" />);
 
       expect(getByRole('heading', { name: 'custom heading' })).to.exist();
     });
@@ -77,9 +66,7 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
 
     context('with inPersonURL', () => {
       const wrapper: ComponentType = ({ children }) => (
-        <InPersonContext.Provider value={{ inPersonURL } as InPersonContextProps}>
-          {children}
-        </InPersonContext.Provider>
+        <InPersonContext.Provider value={{ inPersonURL } as InPersonContextProps}>{children}</InPersonContext.Provider>
       );
 
       it('renders in-person call to action', () => {
@@ -94,9 +81,7 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
 
   context('with document tips hidden', () => {
     it('renders nothing', () => {
-      const { container } = render(
-        <DocumentCaptureTroubleshootingOptions showDocumentTips={false} />,
-      );
+      const { container } = render(<DocumentCaptureTroubleshootingOptions showDocumentTips={false} />);
 
       expect(container.innerHTML).to.be.empty();
     });

@@ -146,8 +146,7 @@ export class FormStepsWait {
       } else {
         const message = getPageErrorMessage(dom);
         const redirectURL = getRedirectURL(response, body);
-        const isSamePage =
-          new URL(redirectURL, window.location.href).pathname === window.location.pathname;
+        const isSamePage = new URL(redirectURL, window.location.href).pathname === window.location.pathname;
         if (message && isSamePage) {
           this.renderError(message);
           this.stopSpinner();

@@ -103,19 +103,16 @@ describe('InPersonLocationPostOfficeSearchStep', () => {
     });
 
     it('displays a try again error message', async () => {
-      const { findByText, findByLabelText } = render(
-        <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />,
-        { wrapper },
-      );
+      const { findByText, findByLabelText } = render(<InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />, {
+        wrapper,
+      });
 
       await userEvent.type(
         await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
         '222 Merchandise Mart Plaza',
       );
 
-      await userEvent.click(
-        await findByText('in_person_proofing.body.location.po_search.search_button'),
-      );
+      await userEvent.click(await findByText('in_person_proofing.body.location.po_search.search_button'));
 
       const error = await findByText('idv.failure.exceptions.post_office_search_error');
       expect(error).to.exist();
@@ -144,9 +141,7 @@ describe('InPersonLocationPostOfficeSearchStep', () => {
         await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
         '100 main',
       );
-      await userEvent.click(
-        await findByText('in_person_proofing.body.location.po_search.search_button'),
-      );
+      await userEvent.click(await findByText('in_person_proofing.body.location.po_search.search_button'));
       await findAllByText('in_person_proofing.body.location.location_button');
     });
 
@@ -155,9 +150,7 @@ describe('InPersonLocationPostOfficeSearchStep', () => {
         wrapper,
       });
 
-      await userEvent.click(
-        await findByText('in_person_proofing.body.location.po_search.search_button'),
-      );
+      await userEvent.click(await findByText('in_person_proofing.body.location.po_search.search_button'));
 
       await findByText('in_person_proofing.body.location.inline_error');
     });
@@ -172,17 +165,13 @@ describe('InPersonLocationPostOfficeSearchStep', () => {
         await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
         '594 Broadway New York',
       );
-      await userEvent.click(
-        await findByText('in_person_proofing.body.location.po_search.search_button'),
-      );
+      await userEvent.click(await findByText('in_person_proofing.body.location.po_search.search_button'));
 
       await userEvent.type(
         await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
         'asdfkf',
       );
-      await userEvent.click(
-        await findByText('in_person_proofing.body.location.po_search.search_button'),
-      );
+      await userEvent.click(await findByText('in_person_proofing.body.location.po_search.search_button'));
 
       const results = queryByRole('status', {
         name: 'in_person_proofing.body.location.location_button',
@@ -200,12 +189,8 @@ describe('InPersonLocationPostOfficeSearchStep', () => {
         await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
         '800 main',
       );
-      await userEvent.click(
-        await findByText('in_person_proofing.body.location.po_search.search_button'),
-      );
-      await userEvent.click(
-        await findByText('in_person_proofing.body.location.po_search.search_button'),
-      );
+      await userEvent.click(await findByText('in_person_proofing.body.location.po_search.search_button'));
+      await userEvent.click(await findByText('in_person_proofing.body.location.po_search.search_button'));
       await findAllByText('in_person_proofing.body.location.location_button');
     });
 
@@ -218,20 +203,15 @@ describe('InPersonLocationPostOfficeSearchStep', () => {
       });
 
       it('displays correct pluralization for a single location result', async () => {
-        const { findByLabelText, findByText } = render(
-          <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />,
-          { wrapper },
-        );
+        const { findByLabelText, findByText } = render(<InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />, {
+          wrapper,
+        });
         await userEvent.type(
           await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
           '800 main',
         );
-        await userEvent.click(
-          await findByText('in_person_proofing.body.location.po_search.search_button'),
-        );
-        await userEvent.click(
-          await findByText('in_person_proofing.body.location.po_search.search_button'),
-        );
+        await userEvent.click(await findByText('in_person_proofing.body.location.po_search.search_button'));
+        await userEvent.click(await findByText('in_person_proofing.body.location.po_search.search_button'));
 
         const searchResultAlert = await findByText(
           `There is one participating Post Office within 50 miles of ${MULTI_LOCATION_RESPONSE[0].address}.`,
@@ -245,20 +225,15 @@ describe('InPersonLocationPostOfficeSearchStep', () => {
           http.post(addressSearchURL, () => HttpResponse.json(DEFAULT_RESPONSE)),
           http.post(locationsURL, () => HttpResponse.json(MULTI_LOCATION_RESPONSE)),
         );
-        const { findByLabelText, findByText } = render(
-          <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />,
-          { wrapper },
-        );
+        const { findByLabelText, findByText } = render(<InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />, {
+          wrapper,
+        });
         await userEvent.type(
           await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
           '800 main',
         );
-        await userEvent.click(
-          await findByText('in_person_proofing.body.location.po_search.search_button'),
-        );
-        await userEvent.click(
-          await findByText('in_person_proofing.body.location.po_search.search_button'),
-        );
+        await userEvent.click(await findByText('in_person_proofing.body.location.po_search.search_button'));
+        await userEvent.click(await findByText('in_person_proofing.body.location.po_search.search_button'));
         const searchResultAlert = await findByText(
           `There are ${MULTI_LOCATION_RESPONSE.length} participating Post Offices within 50 miles of ${MULTI_LOCATION_RESPONSE[0].address}.`,
         );
@@ -285,9 +260,7 @@ describe('InPersonLocationPostOfficeSearchStep', () => {
         await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
         '400 main',
       );
-      await userEvent.click(
-        await findByText('in_person_proofing.body.location.po_search.search_button'),
-      );
+      await userEvent.click(await findByText('in_person_proofing.body.location.po_search.search_button'));
       const result = await findAllByText('in_person_proofing.body.location.location_button');
 
       expect(result).to.exist();
@@ -315,9 +288,7 @@ describe('InPersonLocationPostOfficeSearchStep', () => {
         await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
         '500 main',
       );
-      await userEvent.click(
-        await findByText('in_person_proofing.body.location.po_search.search_button'),
-      );
+      await userEvent.click(await findByText('in_person_proofing.body.location.po_search.search_button'));
       const moreResults = queryAllByText('in_person_proofing.body.location.location_button');
 
       expect(moreResults).to.be.empty();
@@ -343,17 +314,11 @@ describe('InPersonLocationPostOfficeSearchStep', () => {
         'Evergreen Terrace Springfield',
       );
 
-      await userEvent.click(
-        await findByText('in_person_proofing.body.location.po_search.search_button'),
-      );
+      await userEvent.click(await findByText('in_person_proofing.body.location.po_search.search_button'));
 
-      await userEvent.clear(
-        await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
-      );
+      await userEvent.clear(await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'));
 
-      await userEvent.click(
-        (await findAllByText('in_person_proofing.body.location.location_button'))[0],
-      );
+      await userEvent.click((await findAllByText('in_person_proofing.body.location.location_button'))[0]);
 
       expect(queryByText('in_person_proofing.body.location.inline_error')).to.be.null();
       await waitFor(() => expect(window.location.hash).to.equal(inPersonURL));

@@ -28,9 +28,7 @@ describe('SpinnerButton', () => {
   });
 
   it('renders actionMessage as accessible message for click', async () => {
-    const { getByRole } = render(
-      <SpinnerButton longWaitDurationMs={1} actionMessage="Loading..." />,
-    );
+    const { getByRole } = render(<SpinnerButton longWaitDurationMs={1} actionMessage="Loading..." />);
 
     const button = getByRole('button') as HTMLButtonElement;
     const status = getByRole('status');

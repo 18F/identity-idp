@@ -158,9 +158,7 @@ describe('FormSteps', () => {
 
     expect(getByText('First Title')).to.be.ok();
     expect(
-      continueButton
-        .closest('lg-spinner-button')!
-        .classList.contains('spinner-button--spinner-active'),
+      continueButton.closest('lg-spinner-button')!.classList.contains('spinner-button--spinner-active'),
     ).to.be.true();
     await sandbox.clock.tickAsync(1000);
 
@@ -168,10 +166,7 @@ describe('FormSteps', () => {
   });
 
   it('uses submit implementation return value as patch to form values', async () => {
-    const steps = [
-      { ...STEPS[0], submit: () => Promise.resolve({ secondInputOne: 'received' }) },
-      STEPS[1],
-    ];
+    const steps = [{ ...STEPS[0], submit: () => Promise.resolve({ secondInputOne: 'received' }) }, STEPS[1]];
     const { getByText, findByDisplayValue } = render(<FormSteps steps={steps} />);
 
     const continueButton = getByText('forms.buttons.continue');
@@ -280,9 +275,7 @@ describe('FormSteps', () => {
 
   it('submits with form values', async () => {
     const onComplete = sinon.spy();
-    const { getByText, getByLabelText } = render(
-      <FormSteps steps={STEPS} onComplete={onComplete} />,
-    );
+    const { getByText, getByLabelText } = render(<FormSteps steps={STEPS} onComplete={onComplete} />);
 
     await userEvent.click(getByText('forms.buttons.continue'));
     await userEvent.type(getByLabelText('Second Input One'), 'one');
@@ -299,9 +292,7 @@ describe('FormSteps', () => {
 
   it('will submit the form by enter press in an input', async () => {
     const onComplete = sinon.spy();
-    const { getByText, getByLabelText } = render(
-      <FormSteps steps={STEPS} onComplete={onComplete} />,
-    );
+    const { getByText, getByLabelText } = render(<FormSteps steps={STEPS} onComplete={onComplete} />);
 
     await userEvent.click(getByText('forms.buttons.continue'));
     await userEvent.type(getByLabelText('Second Input One'), 'one');
@@ -386,14 +377,10 @@ describe('FormSteps', () => {
         error: new FormError('12345'),
       },
     ];
-    const { getByText, findByText } = render(
-      <FormSteps steps={STEPS} initialActiveErrors={errors} />,
-    );
+    const { getByText, findByText } = render(<FormSteps steps={STEPS} initialActiveErrors={errors} />);
 
     const checkFormHasExpectedErrors = () =>
-      findByText('Errors:', { exact: false }).then((e) =>
-        expect(e.parentElement?.textContent).contains('abcde,12345'),
-      );
+      findByText('Errors:', { exact: false }).then((e) => expect(e.parentElement?.textContent).contains('abcde,12345'));
 
     await expect(checkFormHasExpectedErrors()).to.be.fulfilled();
 

@@ -16,10 +16,7 @@ describe('FormStepsButton', () => {
 
       const wrapper = container.firstElementChild!;
 
-      expect(Array.from(wrapper.classList.values())).to.include.members([
-        'margin-y-5',
-        'my-custom-class',
-      ]);
+      expect(Array.from(wrapper.classList.values())).to.include.members(['margin-y-5', 'my-custom-class']);
     });
   });
 

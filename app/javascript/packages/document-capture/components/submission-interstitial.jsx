@@ -23,13 +23,7 @@ function SubmissionInterstitial({ autoFocus = false }) {
 
   return (
     <div>
-      <img
-        src={getAssetPath('id-card.svg')}
-        alt=""
-        width="216"
-        height="116"
-        className="margin-bottom-4"
-      />
+      <img src={getAssetPath('id-card.svg')} alt="" width="216" height="116" className="margin-bottom-4" />
       <PageHeading ref={headingRef} tabIndex={-1}>
         {t('doc_auth.headings.interstitial')}
       </PageHeading>

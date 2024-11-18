@@ -15,9 +15,7 @@ describe('SelectInput', () => {
 
   it('renders with child elements', () => {
     const childElement = <option value="abc">def</option>;
-    const { getByText, getByLabelText } = render(
-      <SelectInput label="Input">{childElement}</SelectInput>,
-    );
+    const { getByText, getByLabelText } = render(<SelectInput label="Input">{childElement}</SelectInput>);
 
     const input = getByLabelText('Input');
 

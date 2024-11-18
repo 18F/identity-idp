@@ -79,10 +79,7 @@ describe('RailsI18nWebpackPlugin', () => {
           expect(onMissingString).to.have.been.calledWithExactly('item.3', 'en');
 
           const manifest = JSON.parse(
-            await fs.readFile(
-              path.resolve(__dirname, 'spec/fixtures/actualmanifest.json'),
-              'utf-8',
-            ),
+            await fs.readFile(path.resolve(__dirname, 'spec/fixtures/actualmanifest.json'), 'utf-8'),
           );
 
           // 3 outputs + 3 x 3 languages - 1 dynamic output
@@ -129,10 +126,7 @@ describe('RailsI18nWebpackPlugin', () => {
           try {
             expect(webpackError).to.be.null();
             const manifest = JSON.parse(
-              await fs.readFile(
-                path.resolve(__dirname, 'spec/fixtures/production/actualmanifest.json'),
-                'utf-8',
-              ),
+              await fs.readFile(path.resolve(__dirname, 'spec/fixtures/production/actualmanifest.json'), 'utf-8'),
             );
 
             expect(manifest).to.deep.equal({

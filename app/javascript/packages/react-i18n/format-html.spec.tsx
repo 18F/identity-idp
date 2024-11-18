@@ -52,12 +52,9 @@ describe('formatHTML', () => {
   });
 
   it('allows (but discards) attributes in the input string', () => {
-    const formatted = formatHTML(
-      '<strong data-before>Hello</strong> <strong data-before>world</strong>',
-      {
-        strong: ({ children }) => <strong data-after>{children}</strong>,
-      },
-    );
+    const formatted = formatHTML('<strong data-before>Hello</strong> <strong data-before>world</strong>', {
+      strong: ({ children }) => <strong data-after>{children}</strong>,
+    });
 
     const { container } = render(<>{formatted}</>);
 

@@ -66,9 +66,7 @@ function GeneralError({
   const err = getError({ unknownFieldErrors });
 
   if (isFailedDocType && !!altFailedDocTypeMsg) {
-    return (
-      <p key={altFailedDocTypeMsg}>{formatIdTypeMsg({ altFailedDocTypeMsg, acceptedIdUrl })}</p>
-    );
+    return <p key={altFailedDocTypeMsg}>{formatIdTypeMsg({ altFailedDocTypeMsg, acceptedIdUrl })}</p>;
   }
   if (isFailedDocType && err) {
     return <p key={err.message}>{err.message}</p>;

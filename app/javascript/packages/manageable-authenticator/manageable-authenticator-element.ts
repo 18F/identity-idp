@@ -60,15 +60,11 @@ class ManageableAuthenticatorElement extends HTMLElement {
   }
 
   get saveRenameButton(): SpinnerButtonElement {
-    return this.querySelector<SpinnerButtonElement>(
-      '.manageable-authenticator__save-rename-button',
-    )!;
+    return this.querySelector<SpinnerButtonElement>('.manageable-authenticator__save-rename-button')!;
   }
 
   get cancelRenameButton(): HTMLButtonElement {
-    return this.querySelector<HTMLButtonElement>(
-      '.manageable-authenticator__cancel-rename-button',
-    )!;
+    return this.querySelector<HTMLButtonElement>('.manageable-authenticator__cancel-rename-button')!;
   }
 
   get alert(): HTMLElement {
@@ -123,10 +119,7 @@ class ManageableAuthenticatorElement extends HTMLElement {
     focusTarget.focus();
 
     if (isRenaming) {
-      this.renameInput.setSelectionRange(
-        this.renameInput.value.length,
-        this.renameInput.value.length,
-      );
+      this.renameInput.setSelectionRange(this.renameInput.value.length, this.renameInput.value.length);
     }
 
     this.#setAlertMessage(null);

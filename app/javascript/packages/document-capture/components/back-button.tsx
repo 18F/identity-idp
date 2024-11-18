@@ -14,9 +14,7 @@ function BackButton({ includeBorder = false, ...props }: BackLinkProps) {
     </Button>
   );
   if (includeBorder) {
-    return (
-      <div className="margin-top-5 padding-top-2 border-top border-primary-light">{button}</div>
-    );
+    return <div className="margin-top-5 padding-top-2 border-top border-primary-light">{button}</div>;
   }
   return button;
 }

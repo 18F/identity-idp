@@ -1,14 +1,6 @@
 import { Button, FullScreen } from '@18f/identity-components';
 import type { MouseEvent, ReactNode, Ref } from 'react';
-import {
-  forwardRef,
-  useContext,
-  useEffect,
-  useImperativeHandle,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { forwardRef, useContext, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import type { FocusTrap } from 'focus-trap';
 import type { FullScreenRefHandle } from '@18f/identity-components';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
@@ -149,16 +141,14 @@ const noop = () => {};
  * Returns true if the given Acuant capture failure was caused by the user declining access to the
  * camera, or false otherwise.
  */
-export const isAcuantCameraAccessFailure = (error: AcuantCaptureFailureError): error is Error =>
-  error instanceof Error;
+export const isAcuantCameraAccessFailure = (error: AcuantCaptureFailureError): error is Error => error instanceof Error;
 
 /**
  * Returns a human-readable document label corresponding to the given document type constant,
  * such as "id" "passport" or "none"
  */
 const getDocumentTypeLabel = (documentType: AcuantDocumentType): string =>
-  AcuantDocumentType[documentType]?.toLowerCase() ??
-  `An error in document type returned: ${documentType}`;
+  AcuantDocumentType[documentType]?.toLowerCase() ?? `An error in document type returned: ${documentType}`;
 
 export function getNormalizedAcuantCaptureFailureMessage(
   error: AcuantCaptureFailureError,
@@ -204,15 +194,9 @@ function getFingerPrint(file: File): Promise<string | null> {
         .digest('SHA-256', dataBuffer as ArrayBuffer)
         .then((arrayBuffer) => {
           const digestArray = new Uint8Array(arrayBuffer);
-          const strDigest = digestArray.reduce(
-            (data, byte) => data + String.fromCharCode(byte),
-            '',
-          );
+          const strDigest = digestArray.reduce((data, byte) => data + String.fromCharCode(byte), '');
           const base64String = window.btoa(strDigest);
-          const urlSafeBase64String = base64String
-            .replace(/\+/g, '-')
-            .replace(/\//g, '_')
-            .replace(/=+$/, '');
+          const urlSafeBase64String = base64String.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
           resolve(urlSafeBase64String);
         })
         .catch(() => null);
@@ -243,15 +227,13 @@ function getImageMetadata(
 ): Promise<{ width: number | null; height: number | null; fingerprint: string | null }> {
   const dimension = getImageDimensions(file);
   const fingerprint = getFingerPrint(file);
-  return new Promise<{ width: number | null; height: number | null; fingerprint: string | null }>(
-    function (resolve) {
-      Promise.all([dimension, fingerprint])
-        .then((results) => {
-          resolve({ width: results[0].width, height: results[0].height, fingerprint: results[1] });
-        })
-        .catch(() => ({ width: null, height: null, fingerprint: null }));
-    },
-  );
+  return new Promise<{ width: number | null; height: number | null; fingerprint: string | null }>(function (resolve) {
+    Promise.all([dimension, fingerprint])
+      .then((results) => {
+        resolve({ width: results[0].width, height: results[0].height, fingerprint: results[1] });
+      })
+      .catch(() => ({ width: null, height: null, fingerprint: null }));
+  });
 }
 
 /**
@@ -339,8 +321,7 @@ function AcuantCapture(
   const { t, formatHTML } = useI18n();
   const [captureAttempts, incrementCaptureAttempts] = useCounter(1);
   const selfieAttempts = useRef(0);
-  const [acuantFailureCookie, setAcuantFailureCookie, refreshAcuantFailureCookie] =
-    useCookie('AcuantCameraHasFailed');
+  const [acuantFailureCookie, setAcuantFailureCookie, refreshAcuantFailureCookie] = useCookie('AcuantCameraHasFailed');
   const [imageCaptureText, setImageCaptureText] = useState('');
   // There's some pretty significant changes to this component when it's used for
   // selfie capture vs document image capture. This controls those changes.
@@ -349,9 +330,7 @@ function AcuantCapture(
   // This hook does that.
   const isBackOfId = name === 'back';
   useLogCameraInfo({ isBackOfId, hasStartedCropping });
-  const [isCapturingEnvironment, setIsCapturingEnvironment] = useState(
-    selfieCapture && immediatelyBeginCapture,
-  );
+  const [isCapturingEnvironment, setIsCapturingEnvironment] = useState(selfieCapture && immediatelyBeginCapture);
 
   const {
     failedCaptureAttempts,
@@ -379,10 +358,7 @@ function AcuantCapture(
   /**
    * Calls onChange with next value and resets any errors which may be present.
    */
-  function onChangeAndResetError(
-    nextValue: Blob | string | null,
-    metadata?: ImageAnalyticsPayload,
-  ) {
+  function onChangeAndResetError(nextValue: Blob | string | null, metadata?: ImageAnalyticsPayload) {
     setOwnErrorMessage(null);
     onChange(nextValue, metadata);
   }
@@ -390,9 +366,7 @@ function AcuantCapture(
   /**
    * Returns an analytics payload, decorated with common values.
    */
-  function getAddAttemptAnalyticsPayload<
-    P extends ImageAnalyticsPayload | AcuantImageAnalyticsPayload,
-  >(payload: P): P {
+  function getAddAttemptAnalyticsPayload<P extends ImageAnalyticsPayload | AcuantImageAnalyticsPayload>(payload: P): P {
     const enhancedPayload = {
       ...payload,
       captureAttempts,
@@ -424,10 +398,7 @@ function AcuantCapture(
         failedImageResubmission: hasFailed,
         fileName: nextValue.name,
       });
-      trackEvent(
-        name === 'selfie' ? 'idv_selfie_image_added' : `IdV: ${name} image added`,
-        analyticsPayload,
-      );
+      trackEvent(name === 'selfie' ? 'idv_selfie_image_added' : `IdV: ${name} image added`, analyticsPayload);
     }
 
     onChangeAndResetError(nextValue, analyticsPayload);
@@ -441,15 +412,12 @@ function AcuantCapture(
     return <T extends (...args: any[]) => any>(fn: T) =>
       (...args: Parameters<T>) => {
         if (!isSuppressingClickLogging.current) {
-          trackEvent(
-            name === 'selfie' ? 'idv_selfie_image_clicked' : `IdV: ${name} image clicked`,
-            {
-              click_source: clickSource,
-              ...metadata,
-              liveness_checking_required: isSelfieCaptureEnabled,
-              captureAttempts,
-            },
-          );
+          trackEvent(name === 'selfie' ? 'idv_selfie_image_clicked' : `IdV: ${name} image clicked`, {
+            click_source: clickSource,
+            ...metadata,
+            liveness_checking_required: isSelfieCaptureEnabled,
+            captureAttempts,
+          });
         }
 
         return fn(...args);
@@ -499,8 +467,7 @@ function AcuantCapture(
   function startCaptureOrTriggerUpload(event: MouseEvent) {
     if (event.target === inputRef.current) {
       const isAcuantCaptureCapable = hasCapture && !acuantFailureCookie;
-      const shouldStartAcuantCapture =
-        isAcuantCaptureCapable && !isForceUploading.current && !forceNativeCamera;
+      const shouldStartAcuantCapture = isAcuantCaptureCapable && !isForceUploading.current && !forceNativeCamera;
 
       if (isAcuantCaptureCapable && forceNativeCamera) {
         trackEvent('IdV: Native camera forced after failed attempts', {
@@ -642,10 +609,7 @@ function AcuantCapture(
       selfie_attempts: selfieAttempts.current,
     });
 
-    trackEvent(
-      name === 'selfie' ? 'idv_selfie_image_added' : `IdV: ${name} image added`,
-      analyticsPayload,
-    );
+    trackEvent(name === 'selfie' ? 'idv_selfie_image_added' : `IdV: ${name} image added`, analyticsPayload);
 
     if (assessment === 'success') {
       onChangeAndResetError(data, analyticsPayload);
@@ -685,9 +649,7 @@ function AcuantCapture(
       }
     } else if (code === SEQUENCE_BREAK_CODE) {
       setOwnErrorMessage(
-        `${t('doc_auth.errors.upload_error')} ${t('errors.messages.try_again')
-          .split(' ')
-          .join(NBSP_UNICODE)}`,
+        `${t('doc_auth.errors.upload_error')} ${t('errors.messages.try_again').split(' ').join(NBSP_UNICODE)}`,
       );
 
       refreshAcuantFailureCookie();
@@ -797,9 +759,7 @@ function AcuantCapture(
             className={value ? 'margin-right-1' : 'margin-right-2'}
           >
             {(hasCapture || !allowUpload) &&
-              (value
-                ? t('doc_auth.buttons.take_picture_retry')
-                : t('doc_auth.buttons.take_picture'))}
+              (value ? t('doc_auth.buttons.take_picture_retry') : t('doc_auth.buttons.take_picture'))}
             {!hasCapture && allowUpload && t('doc_auth.buttons.upload_picture')}
           </Button>
         )}
@@ -808,9 +768,7 @@ function AcuantCapture(
           allowUpload &&
           formatHTML(t('doc_auth.buttons.take_or_upload_picture_html'), {
             'lg-take-photo': () => null,
-            'lg-or': ({ children }) => (
-              <span className="padding-left-1 padding-right-1">{children}</span>
-            ),
+            'lg-or': ({ children }) => <span className="padding-left-1 padding-right-1">{children}</span>,
             'lg-upload': ({ children }) => (
               <Button isUnstyled onClick={withLoggedClick('button')(forceUpload)}>
                 {children}

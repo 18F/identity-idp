@@ -14,8 +14,7 @@ const SUPPORTED_ANDROID_VERSION_CHROME_UA =
   'Mozilla/5.0 (Linux; Android 9; SM-A205U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.1234.56 Mobile Safari/537.36';
 
 // Source: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent/Firefox#mobile_and_tablet_indicators
-const SUPPORTED_ANDROID_VERSION_FIREFOX_UA =
-  'Mozilla/5.0 (Android 9; Mobile; rv:41.0) Gecko/41.0 Firefox/41.0';
+const SUPPORTED_ANDROID_VERSION_FIREFOX_UA = 'Mozilla/5.0 (Android 9; Mobile; rv:41.0) Gecko/41.0 Firefox/41.0';
 
 // Source: https://chromium.googlesource.com/chromium/src/+/master/docs/ios/user_agent.md
 const UNSUPPORTED_IOS_VERSION_CHROME_UA =
@@ -34,8 +33,7 @@ const SUPPORTED_IOS_SAFARI_VERSION_UA =
   'Mozilla/5.0 (iPhone; CPU iPhone OS 16_5 like Mac OS X) AppleWebKit/603.1.23 (KHTML, like Gecko) Version/10.0 Mobile/14E5239e Safari/602.1';
 
 // Source: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent#firefox_ua_string
-const FIREFOX_UA =
-  'Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) Gecko/20100101 Firefox/42.0';
+const FIREFOX_UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) Gecko/20100101 Firefox/42.0';
 
 // Source: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent#chrome_ua_string
 const DESKTOP_CHROME_UA =

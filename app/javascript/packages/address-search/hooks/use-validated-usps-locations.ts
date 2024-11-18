@@ -58,37 +58,32 @@ export default function useValidatedUspsLocations(locationsURL: string) {
     return formIsValid && zipCodeIsValid && !hasInvalidFields;
   };
 
-  const handleLocationSearch = useCallback(
-    (event, addressValue, cityValue, stateValue, zipCodeValue) => {
-      event.preventDefault();
-      const address = addressValue.trim();
-      const city = cityValue.trim();
-      const zipCode = zipCodeValue.trim();
+  const handleLocationSearch = useCallback((event, addressValue, cityValue, stateValue, zipCodeValue) => {
+    event.preventDefault();
+    const address = addressValue.trim();
+    const city = cityValue.trim();
+    const zipCode = zipCodeValue.trim();
 
-      const formIsValid = checkValidityAndDisplayErrors(address, city, stateValue, zipCode);
+    const formIsValid = checkValidityAndDisplayErrors(address, city, stateValue, zipCode);
 
-      if (!formIsValid) {
-        return;
-      }
+    if (!formIsValid) {
+      return;
+    }
 
-      setLocationQuery({
-        address: `${address}, ${city}, ${stateValue} ${zipCode}`,
-        streetAddress: address,
-        city,
-        state: stateValue,
-        zipCode,
-      });
-    },
-    [],
-  );
+    setLocationQuery({
+      address: `${address}, ${city}, ${stateValue} ${zipCode}`,
+      streetAddress: address,
+      city,
+      state: stateValue,
+      zipCode,
+    });
+  }, []);
 
   const {
     data: locationResults,
     isLoading: isLoadingLocations,
     error: uspsError,
-  } = useSWR([locationQuery], ([address]) =>
-    address ? requestUspsLocations({ address, locationsURL }) : null,
-  );
+  } = useSWR([locationQuery], ([address]) => (address ? requestUspsLocations({ address, locationsURL }) : null));
 
   return {
     locationQuery,

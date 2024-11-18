@@ -6,9 +6,7 @@ import { render } from '../../../support/document-capture';
 
 describe('document-capture/components/suspense-error-boundary', () => {
   it('renders its children', () => {
-    const { container } = render(
-      <SuspenseErrorBoundary fallback="Loading">No error</SuspenseErrorBoundary>,
-    );
+    const { container } = render(<SuspenseErrorBoundary fallback="Loading">No error</SuspenseErrorBoundary>);
 
     expect(container.textContent).to.equal('No error');
   });
@@ -58,11 +56,7 @@ describe('document-capture/components/suspense-error-boundary', () => {
       const [handledError, setHandledError] = useState();
 
       return (
-        <SuspenseErrorBoundary
-          fallback="Loading"
-          onError={setHandledError}
-          handledError={handledError}
-        >
+        <SuspenseErrorBoundary fallback="Loading" onError={setHandledError} handledError={handledError}>
           {handledError ? 'Handled' : <Child />}
         </SuspenseErrorBoundary>
       );

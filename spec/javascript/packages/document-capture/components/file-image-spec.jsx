@@ -46,9 +46,6 @@ describe('document-capture/components/file-image', () => {
 
     const image = await findByAltText('image');
 
-    expect(Array.from(image.classList.values())).to.have.members([
-      'document-capture-file-image',
-      'my-class',
-    ]);
+    expect(Array.from(image.classList.values())).to.have.members(['document-capture-file-image', 'my-class']);
   });
 });

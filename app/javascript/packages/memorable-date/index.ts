@@ -180,9 +180,7 @@ class MemorableDateElement extends HTMLElement {
 
     let parsedDate: Date | undefined;
     try {
-      parsedDate = new Date(
-        `${year.value}-${month.value.padStart(2, '0')}-${day.value.padStart(2, '0')}`,
-      );
+      parsedDate = new Date(`${year.value}-${month.value.padStart(2, '0')}-${day.value.padStart(2, '0')}`);
     } catch (e) {}
 
     // Check for cases where invalid dates could be "rolled over" into the next month
@@ -218,10 +216,8 @@ class MemorableDateElement extends HTMLElement {
     const { min, max } = this;
 
     const outsideRangeErrorMessage = errorMessages[MemorableDateErrorMessage.OUTSIDE_DATE_RANGE];
-    const minErrorMessage =
-      errorMessages[MemorableDateErrorMessage.RANGE_UNDERFLOW] || outsideRangeErrorMessage;
-    const maxErrorMessage =
-      errorMessages[MemorableDateErrorMessage.RANGE_OVERFLOW] || outsideRangeErrorMessage;
+    const minErrorMessage = errorMessages[MemorableDateErrorMessage.RANGE_UNDERFLOW] || outsideRangeErrorMessage;
+    const maxErrorMessage = errorMessages[MemorableDateErrorMessage.RANGE_OVERFLOW] || outsideRangeErrorMessage;
 
     if (minErrorMessage && min instanceof Date && date < min) {
       // Set range underflow error if applicable and messaging is available
@@ -340,10 +336,7 @@ class MemorableDateElement extends HTMLElement {
       if (Number.isInteger(minDate) && Number.isInteger(maxDate)) {
         return minDate! < maxDate!;
       }
-      return (
-        (Number.isInteger(minDate) && maxDate === null) ||
-        (Number.isInteger(maxDate) && minDate === null)
-      );
+      return (Number.isInteger(minDate) && maxDate === null) || (Number.isInteger(maxDate) && minDate === null);
     });
   }
 
@@ -352,8 +345,7 @@ class MemorableDateElement extends HTMLElement {
    * @returns Parsed error message mappings
    */
   private getErrorMessageMappings(): ErrorMessageLookupContainer {
-    const errorMessageText =
-      this.querySelector('.memorable-date__error-strings')?.textContent || '{}';
+    const errorMessageText = this.querySelector('.memorable-date__error-strings')?.textContent || '{}';
     let parsed: any;
     try {
       parsed = JSON.parse(errorMessageText);

@@ -117,9 +117,7 @@ class ExtractKeysWebpackPlugin {
                     includeHash,
                   });
                   compilation.emitAsset(assetFilename, new sources.RawSource(content));
-                  chunk.groupsIterable.forEach((group) =>
-                    addFileToEntrypoint(assetFilename, group),
-                  );
+                  chunk.groupsIterable.forEach((group) => addFileToEntrypoint(assetFilename, group));
                 }
               }),
             ),

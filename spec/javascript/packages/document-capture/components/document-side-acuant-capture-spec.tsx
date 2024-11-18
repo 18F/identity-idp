@@ -33,9 +33,7 @@ describe('DocumentSideAcuantCapture', () => {
             </DeviceContext.Provider>,
           );
 
-          const takeOrUploadPictureText = queryAllByText(
-            'doc_auth.buttons.take_or_upload_picture_html',
-          );
+          const takeOrUploadPictureText = queryAllByText('doc_auth.buttons.take_or_upload_picture_html');
           expect(takeOrUploadPictureText).to.have.lengthOf(2);
         });
       });
@@ -58,9 +56,7 @@ describe('DocumentSideAcuantCapture', () => {
             </DeviceContext.Provider>,
           );
 
-          const takeOrUploadPictureText = queryAllByText(
-            'doc_auth.buttons.take_or_upload_picture_html',
-          );
+          const takeOrUploadPictureText = queryAllByText('doc_auth.buttons.take_or_upload_picture_html');
           expect(takeOrUploadPictureText).to.have.lengthOf(2);
         });
       });
@@ -139,9 +135,7 @@ describe('DocumentSideAcuantCapture', () => {
           const takePictureText = queryAllByText('doc_auth.buttons.take_picture');
           expect(takePictureText).to.have.lengthOf(3);
 
-          const takeOrUploadPictureText = queryAllByText(
-            'doc_auth.buttons.take_or_upload_picture_html',
-          );
+          const takeOrUploadPictureText = queryAllByText('doc_auth.buttons.take_or_upload_picture_html');
           expect(takeOrUploadPictureText).to.have.lengthOf(0);
         });
       });
@@ -168,9 +162,7 @@ describe('DocumentSideAcuantCapture', () => {
           const takePictureText = queryAllByText('doc_auth.buttons.take_picture');
           expect(takePictureText).to.have.lengthOf(3);
 
-          const takeOrUploadPictureText = queryAllByText(
-            'doc_auth.buttons.take_or_upload_picture_html',
-          );
+          const takeOrUploadPictureText = queryAllByText('doc_auth.buttons.take_or_upload_picture_html');
           expect(takeOrUploadPictureText).to.have.lengthOf(3);
         });
       });

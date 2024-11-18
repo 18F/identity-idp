@@ -59,9 +59,7 @@ function DocumentCaptureReviewIssues({
       />
       {Number.isFinite(remainingSubmitAttempts) && (
         <p>
-          <HtmlTextWithStrongNoWrap
-            text={t('idv.failure.attempts_html', { count: remainingSubmitAttempts })}
-          />
+          <HtmlTextWithStrongNoWrap text={t('idv.failure.attempts_html', { count: remainingSubmitAttempts })} />
         </p>
       )}
       {!isFailedDocType && captureHints && (

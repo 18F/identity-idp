@@ -8,18 +8,12 @@ import AnalyticsContext from '../context/analytics';
 import { InPersonContext } from '../context';
 import UploadContext from '../context/upload';
 
-function InPersonLocationFullAddressEntryPostOfficeSearchStep({
-  onChange,
-  toPreviousStep,
-  registerField,
-}) {
+function InPersonLocationFullAddressEntryPostOfficeSearchStep({ onChange, toPreviousStep, registerField }) {
   const { inPersonURL, locationsURL, usStatesTerritories } = useContext(InPersonContext);
   const [inProgress, setInProgress] = useState<boolean>(false);
   const [autoSubmit, setAutoSubmit] = useState<boolean>(false);
   const { trackEvent } = useContext(AnalyticsContext);
-  const [locationResults, setLocationResults] = useState<FormattedLocation[] | null | undefined>(
-    null,
-  );
+  const [locationResults, setLocationResults] = useState<FormattedLocation[] | null | undefined>(null);
   const [disabledAddressSearch, setDisabledAddressSearch] = useState<boolean>(false);
   const { flowPath } = useContext(UploadContext);
 

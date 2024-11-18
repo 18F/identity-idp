@@ -46,18 +46,9 @@ function InPersonPrepareStep({ toPreviousStep }) {
       <p>{t('in_person_proofing.body.prepare.verify_step_about')}</p>
 
       <ProcessList className="margin-bottom-4">
-        <ProcessListItem
-          heading={t('in_person_proofing.body.prepare.verify_step_post_office')}
-          headingUnstyled
-        />
-        <ProcessListItem
-          heading={t('in_person_proofing.body.prepare.verify_step_enter_pii')}
-          headingUnstyled
-        />
-        <ProcessListItem
-          heading={t('in_person_proofing.body.prepare.verify_step_enter_phone')}
-          headingUnstyled
-        />
+        <ProcessListItem heading={t('in_person_proofing.body.prepare.verify_step_post_office')} headingUnstyled />
+        <ProcessListItem heading={t('in_person_proofing.body.prepare.verify_step_enter_pii')} headingUnstyled />
+        <ProcessListItem heading={t('in_person_proofing.body.prepare.verify_step_enter_phone')} headingUnstyled />
       </ProcessList>
       {inPersonURL && flowPath === 'standard' ? (
         <FormStepsButton.Continue className="margin-y-5" />

@@ -134,9 +134,7 @@ describe('ValidatedField', () => {
   });
 
   it('renders updated error message on re-render', () => {
-    const { getByRole, getByText, rerender } = render(
-      <ValidatedField required messages={{ valueMissing: 'foo' }} />,
-    );
+    const { getByRole, getByText, rerender } = render(<ValidatedField required messages={{ valueMissing: 'foo' }} />);
 
     rerender(<ValidatedField required messages={{ valueMissing: 'bar' }} />);
 

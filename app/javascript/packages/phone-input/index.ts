@@ -182,9 +182,7 @@ export class PhoneInputElement extends HTMLElement {
   }
 
   getInvalidFormatMessage(countryCode: CountryCode): string {
-    return countryCode === 'US'
-      ? this.strings.invalid_phone_us || ''
-      : this.strings.invalid_phone_international || '';
+    return countryCode === 'US' ? this.strings.invalid_phone_us || '' : this.strings.invalid_phone_international || '';
   }
 
   formatTextInput() {

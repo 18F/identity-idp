@@ -10,9 +10,7 @@
  * @param {SpinnerDotsProps} props
  */
 function SpinnerDots({ isCentered, className }) {
-  const classes = ['spinner-dots', isCentered && 'spinner-dots--centered', className]
-    .filter(Boolean)
-    .join(' ');
+  const classes = ['spinner-dots', isCentered && 'spinner-dots--centered', className].filter(Boolean).join(' ');
 
   return (
     <span className={classes} aria-hidden>

@@ -1,19 +1,11 @@
 import { useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
-import {
-  FormStepComponentProps,
-  FormStepsButton,
-  FormStepsContext,
-} from '@18f/identity-form-steps';
+import { FormStepComponentProps, FormStepsButton, FormStepsContext } from '@18f/identity-form-steps';
 import { Cancel } from '@18f/identity-verify-flow';
 import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
 import TipList from './tip-list';
 import { DeviceContext, UploadContext } from '../context';
-import {
-  ImageValue,
-  DefaultSideProps,
-  DocumentsAndSelfieStepValue,
-} from '../interface/documents-image-selfie-value';
+import { ImageValue, DefaultSideProps, DocumentsAndSelfieStepValue } from '../interface/documents-image-selfie-value';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 
 export function DocumentsCaptureStep({
@@ -77,11 +69,7 @@ export default function DocumentsStep({
           t('doc_auth.tips.document_capture_id_text3'),
         ].concat(!isMobile ? [t('doc_auth.tips.document_capture_id_text4')] : [])}
       />
-      <DocumentsCaptureStep
-        defaultSideProps={defaultSideProps}
-        value={value}
-        isReviewStep={false}
-      />
+      <DocumentsCaptureStep defaultSideProps={defaultSideProps} value={value} isReviewStep={false} />
       {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
       <Cancel />
     </>

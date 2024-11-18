@@ -6,9 +6,7 @@ import { render } from '../../../support/document-capture';
 describe('GeneralError', () => {
   context('there is no doc type failure', () => {
     it('render an empty paragraph when no errors', () => {
-      const { container } = render(
-        <GeneralError unknownFieldErrors={[]} isFailedDocType={false} />,
-      );
+      const { container } = render(<GeneralError unknownFieldErrors={[]} isFailedDocType={false} />);
       expect(container.querySelector('p')).to.be.ok();
     });
 

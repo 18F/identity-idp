@@ -383,11 +383,7 @@ describe('document-capture/components/acuant-capture', () => {
         <AnalyticsContext.Provider value={{ trackEvent }}>
           <DeviceContext.Provider value={{ isMobile: true }}>
             <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-              <AcuantCapture
-                label="Image"
-                name="test"
-                onCameraAccessDeclined={onCameraAccessDeclined}
-              />
+              <AcuantCapture label="Image" name="test" onCameraAccessDeclined={onCameraAccessDeclined} />
             </AcuantContextProvider>
           </DeviceContext.Provider>
         </AnalyticsContext.Provider>,
@@ -427,11 +423,7 @@ describe('document-capture/components/acuant-capture', () => {
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
             <input data-testid="outside-input" />
-            <AcuantCapture
-              label="Image"
-              name="test"
-              onCameraAccessDeclined={onCameraAccessDeclined}
-            />
+            <AcuantCapture label="Image" name="test" onCameraAccessDeclined={onCameraAccessDeclined} />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
       );
@@ -776,11 +768,7 @@ describe('document-capture/components/acuant-capture', () => {
     it('shows at most one error message between AcuantCapture and FileInput', async () => {
       const { getByLabelText, getByText, findByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
-          <AcuantContextProvider
-            sdkSrc="about:blank"
-            cameraSrc="about:blank"
-            sharpnessThreshold={50}
-          >
+          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank" sharpnessThreshold={50}>
             <AcuantCapture label="Image" />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
@@ -1087,9 +1075,7 @@ describe('document-capture/components/acuant-capture', () => {
       expect(trackEvent).to.be.calledWith('idv_selfie_image_clicked');
       expect(trackEvent).to.be.calledWith('IdV: Acuant SDK loaded');
 
-      expect(trackEvent).to.have.been.calledWith(
-        'idv_sdk_selfie_image_capture_closed_without_photo',
-      );
+      expect(trackEvent).to.have.been.calledWith('idv_sdk_selfie_image_capture_closed_without_photo');
     });
 
     it('calls trackEvent from onSelfieCaptureSuccess', () => {
@@ -1411,16 +1397,10 @@ describe('document-capture/components/acuant-capture', () => {
     const input = getByLabelText('Image');
     uploadFile(input, validUpload);
 
-    await expect(trackEvent).to.eventually.be.calledWith(
-      'IdV: test image added',
-      sinon.match({ captureAttempts: 1 }),
-    );
+    await expect(trackEvent).to.eventually.be.calledWith('IdV: test image added', sinon.match({ captureAttempts: 1 }));
 
     uploadFile(input, validUpload);
 
-    await expect(trackEvent).to.eventually.be.calledWith(
-      'IdV: test image added',
-      sinon.match({ captureAttempts: 2 }),
-    );
+    await expect(trackEvent).to.eventually.be.calledWith('IdV: test image added', sinon.match({ captureAttempts: 2 }));
   });
 });

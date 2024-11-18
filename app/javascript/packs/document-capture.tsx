@@ -69,13 +69,8 @@ function getMetaContent(name): string | null {
 const device: DeviceContextValue = { isMobile: isCameraCapableMobile() };
 
 const trackEvent: typeof baseTrackEvent = (event, payload) => {
-  const {
-    flowPath,
-    acuantSdkUpgradeABTestingEnabled,
-    useAlternateSdk,
-    acuantVersion,
-    optedInToInPersonProofing,
-  } = appRoot.dataset;
+  const { flowPath, acuantSdkUpgradeABTestingEnabled, useAlternateSdk, acuantVersion, optedInToInPersonProofing } =
+    appRoot.dataset;
   return baseTrackEvent(event, {
     ...payload,
     flow_path: flowPath,
@@ -185,12 +180,8 @@ render(
                     }}
                   >
                     <FailedCaptureAttemptsContextProvider
-                      maxCaptureAttemptsBeforeNativeCamera={Number(
-                        maxCaptureAttemptsBeforeNativeCamera,
-                      )}
-                      maxSubmissionAttemptsBeforeNativeCamera={Number(
-                        maxSubmissionAttemptsBeforeNativeCamera,
-                      )}
+                      maxCaptureAttemptsBeforeNativeCamera={Number(maxCaptureAttemptsBeforeNativeCamera)}
+                      maxSubmissionAttemptsBeforeNativeCamera={Number(maxSubmissionAttemptsBeforeNativeCamera)}
                       failedFingerprints={{ front: [], back: [] }}
                     >
                       <DocumentCapture onStepChange={() => extendSession(sessionsURL)} />

@@ -55,8 +55,6 @@ export function useConsoleLogSpy() {
 
   afterEach(() => {
     console.error = originalConsoleError;
-    expect(console.unverifiedCalls).to.be.empty(
-      `Unexpected console logging: ${console.unverifiedCalls.join(', ')}`,
-    );
+    expect(console.unverifiedCalls).to.be.empty(`Unexpected console logging: ${console.unverifiedCalls.join(', ')}`);
   });
 }

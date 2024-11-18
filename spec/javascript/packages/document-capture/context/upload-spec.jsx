@@ -1,8 +1,6 @@
 import { useContext } from 'react';
 import { renderHook } from '@testing-library/react-hooks';
-import UploadContext, {
-  Provider as UploadContextProvider,
-} from '@18f/identity-document-capture/context/upload';
+import UploadContext, { Provider as UploadContextProvider } from '@18f/identity-document-capture/context/upload';
 import defaultUpload from '@18f/identity-document-capture/services/upload';
 import { useSandbox } from '@18f/identity-test-helpers';
 
@@ -31,9 +29,7 @@ describe('document-capture/context/upload', () => {
   it('can be overridden with custom upload behavior', async () => {
     const { result } = renderHook(() => useContext(UploadContext), {
       wrapper: ({ children }) => (
-        <UploadContextProvider
-          upload={(payload) => Promise.resolve({ ...payload, received: true })}
-        >
+        <UploadContextProvider upload={(payload) => Promise.resolve({ ...payload, received: true })}>
           {children}
         </UploadContextProvider>
       ),
@@ -45,9 +41,7 @@ describe('document-capture/context/upload', () => {
 
   it('can be overridden with isMockClient value', () => {
     const { result } = renderHook(() => useContext(UploadContext), {
-      wrapper: ({ children }) => (
-        <UploadContextProvider isMockClient>{children}</UploadContextProvider>
-      ),
+      wrapper: ({ children }) => <UploadContextProvider isMockClient>{children}</UploadContextProvider>,
     });
 
     expect(result.current.isMockClient).to.be.true();
@@ -98,10 +92,7 @@ describe('document-capture/context/upload', () => {
   it('can merge form data to pass to uploader', async () => {
     const { result } = renderHook(() => useContext(UploadContext), {
       wrapper: ({ children }) => (
-        <UploadContextProvider
-          upload={(payload) => Promise.resolve(payload)}
-          formData={{ foo: 'bar' }}
-        >
+        <UploadContextProvider upload={(payload) => Promise.resolve(payload)} formData={{ foo: 'bar' }}>
           {children}
         </UploadContextProvider>
       ),

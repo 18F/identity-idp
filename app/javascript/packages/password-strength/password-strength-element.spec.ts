@@ -54,9 +54,7 @@ describe('PasswordStrengthElement', () => {
 
     expect(element.getAttribute('score')).to.equal('0');
     expect(screen.getByText('instructions.password.strength.0')).to.exist();
-    expect(
-      screen.getByText('zxcvbn.feedback.add_another_word_or_two_uncommon_words_are_better'),
-    ).to.exist();
+    expect(screen.getByText('zxcvbn.feedback.add_another_word_or_two_uncommon_words_are_better')).to.exist();
   });
 
   it('invalidates input when value is not strong enough', async () => {
@@ -76,9 +74,7 @@ describe('PasswordStrengthElement', () => {
 
     expect(element.getAttribute('score')).to.equal('0');
     expect(screen.getByText('instructions.password.strength.0')).to.exist();
-    expect(
-      screen.getByText('errors.attributes.password.avoid_using_phrases_that_are_easily_guessed'),
-    ).to.exist();
+    expect(screen.getByText('errors.attributes.password.avoid_using_phrases_that_are_easily_guessed')).to.exist();
     expect(input.validity.valid).to.be.false();
   });
 
@@ -117,9 +113,7 @@ describe('PasswordStrengthElement', () => {
 
     expect(element.getAttribute('score')).to.equal('4');
     expect(screen.getByText('instructions.password.strength.4')).to.exist();
-    expect(
-      element.querySelector('.password-strength__feedback')!.textContent!.trim(),
-    ).to.be.empty();
+    expect(element.querySelector('.password-strength__feedback')!.textContent!.trim()).to.be.empty();
     expect(input.validity.valid).to.be.true();
   });
 });

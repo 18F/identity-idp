@@ -44,9 +44,7 @@ class StepIndicatorElement extends HTMLElement {
       const { scrollWidth: scrollerScrollWidth, clientWidth: scrollerClientWidth } = scroller;
       const { offsetLeft: currentStepOffsetLeft } = currentStep;
       scroller.scrollLeft =
-        currentStepOffsetLeft -
-        scrollerPaddingLeft -
-        (scrollerScrollWidth - scrollerClientWidth) / 2;
+        currentStepOffsetLeft - scrollerPaddingLeft - (scrollerScrollWidth - scrollerClientWidth) / 2;
     }
   }
 

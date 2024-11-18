@@ -44,9 +44,7 @@ function Link({
   children,
   ...anchorProps
 }: LinkProps) {
-  const classes = ['usa-link', className, isExternal && 'usa-link--external']
-    .filter(Boolean)
-    .join(' ');
+  const classes = ['usa-link', className, isExternal && 'usa-link--external'].filter(Boolean).join(' ');
 
   let newTabProps: AnchorHTMLAttributes<HTMLAnchorElement> | undefined;
   if (isNewTab) {

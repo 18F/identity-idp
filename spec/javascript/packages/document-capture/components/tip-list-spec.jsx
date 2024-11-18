@@ -7,16 +7,11 @@ describe('document-capture/components/tip-list', () => {
   const items = ['doc_auth.tips.review_issues_id_text1', 'doc_auth.tips.review_issues_id_text2'];
 
   it('renders title and list', () => {
-    const { getByRole, getAllByRole, getByText } = render(
-      <TipList title={title} items={items} translationNeeded />,
-    );
+    const { getByRole, getAllByRole, getByText } = render(<TipList title={title} items={items} translationNeeded />);
     expect(getByRole('list')).to.be.ok();
     expect(getByText('doc_auth.tips.review_issues_id_header_text')).to.be.ok();
     const lis = getAllByRole('listitem').map((item) => item.textContent);
-    expect(lis).to.eql([
-      'doc_auth.tips.review_issues_id_text1',
-      'doc_auth.tips.review_issues_id_text2',
-    ]);
+    expect(lis).to.eql(['doc_auth.tips.review_issues_id_text1', 'doc_auth.tips.review_issues_id_text2']);
   });
 
   it('formats the title based on titleClassName', () => {

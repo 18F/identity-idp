@@ -12,9 +12,7 @@ describe('getAdditionalAssetFilename', () => {
     const includeHash = false;
     const expected = 'original.en.js';
 
-    expect(getAdditionalAssetFilename({ filename, locale, content, includeHash })).to.equal(
-      expected,
-    );
+    expect(getAdditionalAssetFilename({ filename, locale, content, includeHash })).to.equal(expected);
   });
 
   context('with hash included', () => {
@@ -25,9 +23,7 @@ describe('getAdditionalAssetFilename', () => {
       const includeHash = true;
       const expected = 'original-ae771fd2.en.js';
 
-      expect(getAdditionalAssetFilename({ filename, locale, content, includeHash })).to.equal(
-        expected,
-      );
+      expect(getAdditionalAssetFilename({ filename, locale, content, includeHash })).to.equal(expected);
     });
   });
 });

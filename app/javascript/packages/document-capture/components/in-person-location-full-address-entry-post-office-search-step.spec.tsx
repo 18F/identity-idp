@@ -84,10 +84,9 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
   });
 
   it('renders the step', () => {
-    const { getByRole } = render(
-      <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
-      { wrapper },
-    );
+    const { getByRole } = render(<InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />, {
+      wrapper,
+    });
 
     expect(getByRole('heading', { name: 'in_person_proofing.headings.po_search.location' }));
   });
@@ -107,22 +106,14 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
         await findByLabelText('in_person_proofing.body.location.po_search.address_label'),
         '222 Merchandise Mart Plaza',
       );
-      await userEvent.type(
-        await findByLabelText('in_person_proofing.body.location.po_search.city_label'),
-        'Endeavor',
-      );
+      await userEvent.type(await findByLabelText('in_person_proofing.body.location.po_search.city_label'), 'Endeavor');
       await userEvent.selectOptions(
         await findByLabelText('in_person_proofing.body.location.po_search.state_label'),
         'DE',
       );
-      await userEvent.type(
-        await findByLabelText('in_person_proofing.body.location.po_search.zipcode_label'),
-        '19701',
-      );
+      await userEvent.type(await findByLabelText('in_person_proofing.body.location.po_search.zipcode_label'), '19701');
 
-      await userEvent.click(
-        await findByText('in_person_proofing.body.location.po_search.search_button'),
-      );
+      await userEvent.click(await findByText('in_person_proofing.body.location.po_search.search_button'));
 
       const error = await findByText('idv.failure.exceptions.post_office_search_error');
       expect(error).to.exist();
@@ -135,9 +126,7 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
       { wrapper },
     );
 
-    await userEvent.click(
-      await findByText('in_person_proofing.body.location.po_search.search_button'),
-    );
+    await userEvent.click(await findByText('in_person_proofing.body.location.po_search.search_button'));
 
     const errors = await findAllByText('simple_form.required.text');
     expect(errors).to.have.lengthOf(4);
@@ -153,29 +142,16 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
       await findByLabelText('in_person_proofing.body.location.po_search.address_label'),
       '222 Merchandise Mart Plaza',
     );
-    await userEvent.type(
-      await findByLabelText('in_person_proofing.body.location.po_search.city_label'),
-      'Endeavor',
-    );
+    await userEvent.type(await findByLabelText('in_person_proofing.body.location.po_search.city_label'), 'Endeavor');
     await userEvent.selectOptions(
       await findByLabelText('in_person_proofing.body.location.po_search.state_label'),
       'DE',
     );
-    await userEvent.type(
-      await findByLabelText('in_person_proofing.body.location.po_search.zipcode_label'),
-      '19701',
-    );
-    await userEvent.click(
-      await findByText('in_person_proofing.body.location.po_search.search_button'),
-    );
+    await userEvent.type(await findByLabelText('in_person_proofing.body.location.po_search.zipcode_label'), '19701');
+    await userEvent.click(await findByText('in_person_proofing.body.location.po_search.search_button'));
 
-    await userEvent.type(
-      await findByLabelText('in_person_proofing.body.location.po_search.zipcode_label'),
-      '00000',
-    );
-    await userEvent.click(
-      await findByText('in_person_proofing.body.location.po_search.search_button'),
-    );
+    await userEvent.type(await findByLabelText('in_person_proofing.body.location.po_search.zipcode_label'), '00000');
+    await userEvent.click(await findByText('in_person_proofing.body.location.po_search.search_button'));
 
     const results = queryByRole('status', {
       name: 'in_person_proofing.body.location.location_button',
@@ -193,24 +169,14 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
       await findByLabelText('in_person_proofing.body.location.po_search.address_label'),
       '222 Merchandise Mart Plaza',
     );
-    await userEvent.type(
-      await findByLabelText('in_person_proofing.body.location.po_search.city_label'),
-      'Endeavor',
-    );
+    await userEvent.type(await findByLabelText('in_person_proofing.body.location.po_search.city_label'), 'Endeavor');
     await userEvent.selectOptions(
       await findByLabelText('in_person_proofing.body.location.po_search.state_label'),
       'DE',
     );
-    await userEvent.type(
-      await findByLabelText('in_person_proofing.body.location.po_search.zipcode_label'),
-      '19701',
-    );
-    await userEvent.click(
-      await findByText('in_person_proofing.body.location.po_search.search_button'),
-    );
-    await userEvent.click(
-      await findByText('in_person_proofing.body.location.po_search.search_button'),
-    );
+    await userEvent.type(await findByLabelText('in_person_proofing.body.location.po_search.zipcode_label'), '19701');
+    await userEvent.click(await findByText('in_person_proofing.body.location.po_search.search_button'));
+    await userEvent.click(await findByText('in_person_proofing.body.location.po_search.search_button'));
     await findAllByText('in_person_proofing.body.location.location_button');
   });
 
@@ -231,24 +197,14 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
         await findByLabelText('in_person_proofing.body.location.po_search.address_label'),
         '222 Merchandise Mart Plaza',
       );
-      await userEvent.type(
-        await findByLabelText('in_person_proofing.body.location.po_search.city_label'),
-        'Endeavor',
-      );
+      await userEvent.type(await findByLabelText('in_person_proofing.body.location.po_search.city_label'), 'Endeavor');
       await userEvent.selectOptions(
         await findByLabelText('in_person_proofing.body.location.po_search.state_label'),
         'DE',
       );
-      await userEvent.type(
-        await findByLabelText('in_person_proofing.body.location.po_search.zipcode_label'),
-        '19701',
-      );
-      await userEvent.click(
-        await findByText('in_person_proofing.body.location.po_search.search_button'),
-      );
-      await userEvent.click(
-        await findByText('in_person_proofing.body.location.po_search.search_button'),
-      );
+      await userEvent.type(await findByLabelText('in_person_proofing.body.location.po_search.zipcode_label'), '19701');
+      await userEvent.click(await findByText('in_person_proofing.body.location.po_search.search_button'));
+      await userEvent.click(await findByText('in_person_proofing.body.location.po_search.search_button'));
 
       const addressQuery = '222 Merchandise Mart Plaza, Endeavor, DE 19701';
       const searchResultAlert = await findByText(
@@ -269,24 +225,14 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
         await findByLabelText('in_person_proofing.body.location.po_search.address_label'),
         '222 Merchandise Mart Plaza',
       );
-      await userEvent.type(
-        await findByLabelText('in_person_proofing.body.location.po_search.city_label'),
-        'Endeavor',
-      );
+      await userEvent.type(await findByLabelText('in_person_proofing.body.location.po_search.city_label'), 'Endeavor');
       await userEvent.selectOptions(
         await findByLabelText('in_person_proofing.body.location.po_search.state_label'),
         'DE',
       );
-      await userEvent.type(
-        await findByLabelText('in_person_proofing.body.location.po_search.zipcode_label'),
-        '19701',
-      );
-      await userEvent.click(
-        await findByText('in_person_proofing.body.location.po_search.search_button'),
-      );
-      await userEvent.click(
-        await findByText('in_person_proofing.body.location.po_search.search_button'),
-      );
+      await userEvent.type(await findByLabelText('in_person_proofing.body.location.po_search.zipcode_label'), '19701');
+      await userEvent.click(await findByText('in_person_proofing.body.location.po_search.search_button'));
+      await userEvent.click(await findByText('in_person_proofing.body.location.po_search.search_button'));
 
       const addressQuery = '222 Merchandise Mart Plaza, Endeavor, DE 19701';
       const searchResultAlert = await findByText(
@@ -305,36 +251,20 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
       await findByLabelText('in_person_proofing.body.location.po_search.address_label'),
       '222 Merchandise Mart Plaza',
     );
-    await userEvent.type(
-      await findByLabelText('in_person_proofing.body.location.po_search.city_label'),
-      'Endeavor',
-    );
+    await userEvent.type(await findByLabelText('in_person_proofing.body.location.po_search.city_label'), 'Endeavor');
     await userEvent.selectOptions(
       await findByLabelText('in_person_proofing.body.location.po_search.state_label'),
       'DE',
     );
-    await userEvent.type(
-      await findByLabelText('in_person_proofing.body.location.po_search.zipcode_label'),
-      '19701',
-    );
+    await userEvent.type(await findByLabelText('in_person_proofing.body.location.po_search.zipcode_label'), '19701');
 
-    await userEvent.click(
-      await findByText('in_person_proofing.body.location.po_search.search_button'),
-    );
+    await userEvent.click(await findByText('in_person_proofing.body.location.po_search.search_button'));
 
-    await userEvent.clear(
-      await findByLabelText('in_person_proofing.body.location.po_search.address_label'),
-    );
-    await userEvent.clear(
-      await findByLabelText('in_person_proofing.body.location.po_search.city_label'),
-    );
-    await userEvent.clear(
-      await findByLabelText('in_person_proofing.body.location.po_search.zipcode_label'),
-    );
+    await userEvent.clear(await findByLabelText('in_person_proofing.body.location.po_search.address_label'));
+    await userEvent.clear(await findByLabelText('in_person_proofing.body.location.po_search.city_label'));
+    await userEvent.clear(await findByLabelText('in_person_proofing.body.location.po_search.zipcode_label'));
 
-    await userEvent.click(
-      (await findAllByText('in_person_proofing.body.location.location_button'))[0],
-    );
+    await userEvent.click((await findAllByText('in_person_proofing.body.location.location_button'))[0]);
 
     expect(queryByText('simple_form.required.text')).to.be.null();
     await waitFor(() => expect(window.location.hash).to.equal(inPersonURL));

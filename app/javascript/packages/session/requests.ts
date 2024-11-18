@@ -52,15 +52,12 @@ interface SessionTimedOutStatus {
 
 export type SessionStatus = SessionLiveStatus | SessionTimedOutStatus;
 
-function mapSessionStatusResponse<R extends SessionLiveStatusResponse>(
-  response: R,
-): SessionLiveStatus;
-function mapSessionStatusResponse<R extends SessionTimedOutStatusResponse>(
-  response: R,
-): SessionTimedOutStatus;
-function mapSessionStatusResponse<
-  R extends SessionLiveStatusResponse | SessionTimedOutStatusResponse,
->({ live, timeout }: R): SessionLiveStatus | SessionTimedOutStatus {
+function mapSessionStatusResponse<R extends SessionLiveStatusResponse>(response: R): SessionLiveStatus;
+function mapSessionStatusResponse<R extends SessionTimedOutStatusResponse>(response: R): SessionTimedOutStatus;
+function mapSessionStatusResponse<R extends SessionLiveStatusResponse | SessionTimedOutStatusResponse>({
+  live,
+  timeout,
+}: R): SessionLiveStatus | SessionTimedOutStatus {
   return live ? { isLive: true, timeout: new Date(timeout) } : { isLive: false };
 }
 
@@ -85,9 +82,7 @@ function handleUnauthorizedStatusResponse(error: ResponseError) {
  * @return A promise resolving to the current session status
  */
 export const requestSessionStatus = (sessionsURL: string): Promise<SessionStatus> =>
-  request<SessionStatusResponse>(sessionsURL)
-    .catch(handleUnauthorizedStatusResponse)
-    .then(mapSessionStatusResponse);
+  request<SessionStatusResponse>(sessionsURL).catch(handleUnauthorizedStatusResponse).then(mapSessionStatusResponse);
 
 /**
  * Request that the current session be kept alive. Returns a promise resolving to the updated

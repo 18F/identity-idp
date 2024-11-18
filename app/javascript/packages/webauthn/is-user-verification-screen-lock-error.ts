@@ -4,7 +4,6 @@
 export const SCREEN_LOCK_ERROR =
   'The specified `userVerification` requirement cannot be fulfilled by this device unless the device is secured with a screen lock.';
 
-const isUserVerificationScreenLockError = (error: Error): boolean =>
-  error.message === SCREEN_LOCK_ERROR;
+const isUserVerificationScreenLockError = (error: Error): boolean => error.message === SCREEN_LOCK_ERROR;
 
 export default isUserVerificationScreenLockError;

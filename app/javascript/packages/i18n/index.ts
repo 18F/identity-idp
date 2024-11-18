@@ -18,8 +18,7 @@ interface I18nOptions {
  *
  * @return Pluralization key.
  */
-const getPluralizationKey = (count: number): keyof PluralizedEntry =>
-  count === 1 ? 'one' : 'other';
+const getPluralizationKey = (count: number): keyof PluralizedEntry => (count === 1 ? 'one' : 'other');
 
 /**
  * Returns an entry from locale data.
@@ -29,8 +28,7 @@ const getPluralizationKey = (count: number): keyof PluralizedEntry =>
  *
  * @return Entry string or object.
  */
-const getEntry = (strings: Entries, key: string): Entry =>
-  Object.hasOwn(strings, key) ? strings[key] : key;
+const getEntry = (strings: Entries, key: string): Entry => (Object.hasOwn(strings, key) ? strings[key] : key);
 
 /**
  * Returns true if the given entry is a pluralization entry, or false otherwise.
@@ -39,8 +37,7 @@ const getEntry = (strings: Entries, key: string): Entry =>
  *
  * @return Whether entry is a pluralization entry.
  */
-const isPluralizedEntry = (entry: Entry): entry is PluralizedEntry =>
-  typeof entry === 'object' && 'one' in entry;
+const isPluralizedEntry = (entry: Entry): entry is PluralizedEntry => typeof entry === 'object' && 'one' in entry;
 
 /**
  * Returns true if the given entry is a string entry, or false otherwise.
@@ -80,9 +77,7 @@ function getString(entry: Entry, count?: number): string | string[] {
  * @return String with variables substituted.
  */
 export const replaceVariables = (string: string, variables: Variables): string =>
-  string.replace(/%{(\w+)}/g, (match, key) =>
-    Object.hasOwn(variables, key) ? variables[key] : match,
-  );
+  string.replace(/%{(\w+)}/g, (match, key) => (Object.hasOwn(variables, key) ? variables[key] : match));
 
 class I18n {
   strings: Entries;

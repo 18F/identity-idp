@@ -1,8 +1,5 @@
 import { expect } from 'chai';
-import {
-  showOrHideJurisdictionExtras,
-  showOrHidePuertoRicoExtras,
-} from '../../../app/javascript/packs/state-guidance';
+import { showOrHideJurisdictionExtras, showOrHidePuertoRicoExtras } from '../../../app/javascript/packs/state-guidance';
 
 describe('state-guidance', () => {
   describe('showOrHidePuertoRicoExtras', () => {
@@ -56,9 +53,7 @@ describe('state-guidance', () => {
 
       const allHintTexts = document.querySelectorAll('.jurisdiction-extras [data-state]');
       const texasText = document.querySelectorAll('.jurisdiction-extras [data-state=TX]');
-      const nonTexasText = document.querySelectorAll(
-        '.jurisdiction-extras [data-state].display-none',
-      );
+      const nonTexasText = document.querySelectorAll('.jurisdiction-extras [data-state].display-none');
 
       expect(texasText.length).to.eq(1);
       expect(texasText[0].classList.contains('display-none')).to.eq(false);
@@ -72,9 +67,7 @@ describe('state-guidance', () => {
 
       const allHintTexts = document.querySelectorAll('.jurisdiction-extras [data-state]');
       const defaultText = document.querySelectorAll('.jurisdiction-extras [data-state=default]');
-      const nonDefaultText = document.querySelectorAll(
-        '.jurisdiction-extras [data-state].display-none',
-      );
+      const nonDefaultText = document.querySelectorAll('.jurisdiction-extras [data-state].display-none');
 
       expect(defaultText.length).to.eq(1);
       expect(defaultText[0].classList.contains('display-none')).to.eq(false);
@@ -88,9 +81,7 @@ describe('state-guidance', () => {
 
       const allHintTexts = document.querySelectorAll('.jurisdiction-extras [data-state]');
       const defaultText = document.querySelectorAll('.jurisdiction-extras [data-state=default]');
-      const nonDefaultText = document.querySelectorAll(
-        '.jurisdiction-extras [data-state].display-none',
-      );
+      const nonDefaultText = document.querySelectorAll('.jurisdiction-extras [data-state].display-none');
 
       expect(defaultText.length).to.eq(1);
       expect(defaultText[0].classList.contains('display-none')).to.eq(false);

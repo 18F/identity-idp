@@ -135,9 +135,7 @@ describe('ManageableAuthenticatorElement', () => {
 
       const detailPanel = screen.getByRole('group');
 
-      await waitFor(() =>
-        expect(element.classList.contains('manageable-authenticator--editing')).to.be.true(),
-      );
+      await waitFor(() => expect(element.classList.contains('manageable-authenticator--editing')).to.be.true());
       expect(document.activeElement).to.equal(detailPanel);
     });
 
@@ -161,30 +159,22 @@ describe('ManageableAuthenticatorElement', () => {
       const element = createElement();
 
       await userEvent.click(screen.getByRole('button', { name: 'Manage configuration-name' }));
-      await waitFor(() =>
-        expect(element.classList.contains('manageable-authenticator--editing')).to.be.true(),
-      );
+      await waitFor(() => expect(element.classList.contains('manageable-authenticator--editing')).to.be.true());
 
       await userEvent.click(screen.getByRole('button', { name: 'Done' }));
       expect(element.classList.contains('manageable-authenticator--editing')).to.be.false();
-      expect(document.activeElement).to.equal(
-        screen.getByRole('button', { name: 'Manage configuration-name' }),
-      );
+      expect(document.activeElement).to.equal(screen.getByRole('button', { name: 'Manage configuration-name' }));
     });
 
     it('cancels and returns focus to manage button when pressing escape', async () => {
       const element = createElement();
 
       await userEvent.click(screen.getByRole('button', { name: 'Manage configuration-name' }));
-      await waitFor(() =>
-        expect(element.classList.contains('manageable-authenticator--editing')).to.be.true(),
-      );
+      await waitFor(() => expect(element.classList.contains('manageable-authenticator--editing')).to.be.true());
 
       await userEvent.keyboard('{Escape}');
       expect(element.classList.contains('manageable-authenticator--editing')).to.be.false();
-      expect(document.activeElement).to.equal(
-        screen.getByRole('button', { name: 'Manage configuration-name' }),
-      );
+      expect(document.activeElement).to.equal(screen.getByRole('button', { name: 'Manage configuration-name' }));
     });
   });
 
@@ -193,9 +183,7 @@ describe('ManageableAuthenticatorElement', () => {
       const element = createElement();
 
       await userEvent.click(screen.getByRole('button', { name: 'Manage configuration-name' }));
-      await waitFor(() =>
-        expect(element.classList.contains('manageable-authenticator--editing')).to.be.true(),
-      );
+      await waitFor(() => expect(element.classList.contains('manageable-authenticator--editing')).to.be.true());
 
       await userEvent.click(screen.getByRole('button', { name: 'Rename' }));
       const renameInput = screen.getByRole<HTMLInputElement>('textbox', { name: 'Nickname' });
@@ -209,9 +197,7 @@ describe('ManageableAuthenticatorElement', () => {
       const element = createElement();
 
       await userEvent.click(screen.getByRole('button', { name: 'Manage configuration-name' }));
-      await waitFor(() =>
-        expect(element.classList.contains('manageable-authenticator--editing')).to.be.true(),
-      );
+      await waitFor(() => expect(element.classList.contains('manageable-authenticator--editing')).to.be.true());
 
       await userEvent.click(screen.getByRole('button', { name: 'Rename' }));
       expect(element.classList.contains('manageable-authenticator--renaming')).to.be.true();
@@ -219,9 +205,7 @@ describe('ManageableAuthenticatorElement', () => {
       await userEvent.keyboard('{Escape}');
       expect(element.classList.contains('manageable-authenticator--editing')).to.be.false();
       expect(element.classList.contains('manageable-authenticator--renaming')).to.be.false();
-      expect(document.activeElement).to.equal(
-        screen.getByRole('button', { name: 'Manage configuration-name' }),
-      );
+      expect(document.activeElement).to.equal(screen.getByRole('button', { name: 'Manage configuration-name' }));
     });
 
     context('successful response from server when submitting rename', () => {
@@ -233,9 +217,7 @@ describe('ManageableAuthenticatorElement', () => {
         const element = createElement();
 
         await userEvent.click(screen.getByRole('button', { name: 'Manage configuration-name' }));
-        await waitFor(() =>
-          expect(element.classList.contains('manageable-authenticator--editing')).to.be.true(),
-        );
+        await waitFor(() => expect(element.classList.contains('manageable-authenticator--editing')).to.be.true());
 
         await userEvent.click(screen.getByRole('button', { name: 'Rename' }));
         await userEvent.keyboard('-new');
@@ -246,9 +228,7 @@ describe('ManageableAuthenticatorElement', () => {
         expect(saveButton.closest('.spinner-button--spinner-active')).to.exist();
 
         // Change for ARIA live region content update
-        const alert = screen
-          .getAllByRole('status')
-          .find((candidate) => !candidate.closest('lg-spinner-button'))!;
+        const alert = screen.getAllByRole('status').find((candidate) => !candidate.closest('lg-spinner-button'))!;
         expect(alert.textContent!.trim()).to.be.empty();
         await waitFor(() => expect(alert.textContent!.trim()).to.equal('Renamed'));
         expect(alert.classList.contains('usa-alert--success')).to.be.true();
@@ -273,18 +253,14 @@ describe('ManageableAuthenticatorElement', () => {
 
     context('failed response from server when submitting rename', () => {
       beforeEach(() => {
-        server.use(
-          http.put('/api/manage', () => HttpResponse.json({ error: 'Uh oh!' }, { status: 400 })),
-        );
+        server.use(http.put('/api/manage', () => HttpResponse.json({ error: 'Uh oh!' }, { status: 400 })));
       });
 
       it('keeps the user on the rename panel and displays the received error', async () => {
         const element = createElement();
 
         await userEvent.click(screen.getByRole('button', { name: 'Manage configuration-name' }));
-        await waitFor(() =>
-          expect(element.classList.contains('manageable-authenticator--editing')).to.be.true(),
-        );
+        await waitFor(() => expect(element.classList.contains('manageable-authenticator--editing')).to.be.true());
 
         await userEvent.click(screen.getByRole('button', { name: 'Rename' }));
         await userEvent.keyboard('-new');
@@ -292,9 +268,7 @@ describe('ManageableAuthenticatorElement', () => {
         await userEvent.click(saveButton);
 
         // Change for ARIA live region content update
-        const alert = screen
-          .getAllByRole('status')
-          .find((candidate) => !candidate.closest('lg-spinner-button'))!;
+        const alert = screen.getAllByRole('status').find((candidate) => !candidate.closest('lg-spinner-button'))!;
         expect(alert.textContent!.trim()).to.be.empty();
         await waitFor(() => expect(alert.textContent!.trim()).to.equal('Uh oh!'));
         expect(alert.classList.contains('usa-alert--success')).to.be.false();
@@ -320,9 +294,7 @@ describe('ManageableAuthenticatorElement', () => {
         const element = createElement();
 
         await userEvent.click(screen.getByRole('button', { name: 'Manage configuration-name' }));
-        await waitFor(() =>
-          expect(element.classList.contains('manageable-authenticator--editing')).to.be.true(),
-        );
+        await waitFor(() => expect(element.classList.contains('manageable-authenticator--editing')).to.be.true());
 
         await userEvent.click(screen.getByRole('button', { name: 'Rename' }));
         await userEvent.keyboard('-new');
@@ -340,9 +312,7 @@ describe('ManageableAuthenticatorElement', () => {
       const element = createElement();
 
       await userEvent.click(screen.getByRole('button', { name: 'Manage configuration-name' }));
-      await waitFor(() =>
-        expect(element.classList.contains('manageable-authenticator--editing')).to.be.true(),
-      );
+      await waitFor(() => expect(element.classList.contains('manageable-authenticator--editing')).to.be.true());
 
       sandbox.stub(window, 'confirm').returns(false);
       const deleteButton = screen.getByRole('button', { name: 'Delete' });
@@ -361,17 +331,13 @@ describe('ManageableAuthenticatorElement', () => {
         const element = createElement();
 
         await userEvent.click(screen.getByRole('button', { name: 'Manage configuration-name' }));
-        await waitFor(() =>
-          expect(element.classList.contains('manageable-authenticator--editing')).to.be.true(),
-        );
+        await waitFor(() => expect(element.classList.contains('manageable-authenticator--editing')).to.be.true());
 
         sandbox.stub(window, 'confirm').returns(true);
         const deleteButton = screen.getByRole('button', { name: 'Delete' });
         await userEvent.click(deleteButton);
 
-        const alert = screen
-          .getAllByRole('status')
-          .find((candidate) => !candidate.closest('lg-spinner-button'))!;
+        const alert = screen.getAllByRole('status').find((candidate) => !candidate.closest('lg-spinner-button'))!;
         expect(alert.textContent!.trim()).to.be.empty();
         await waitFor(() => expect(alert.textContent!.trim()).to.equal('Deleted'));
 
@@ -384,26 +350,20 @@ describe('ManageableAuthenticatorElement', () => {
 
     context('failed response from server when deleting', () => {
       beforeEach(() => {
-        server.use(
-          http.delete('/api/manage', () => HttpResponse.json({ error: 'Uh oh!' }, { status: 400 })),
-        );
+        server.use(http.delete('/api/manage', () => HttpResponse.json({ error: 'Uh oh!' }, { status: 400 })));
       });
 
       it('displays the error message', async () => {
         const element = createElement();
 
         await userEvent.click(screen.getByRole('button', { name: 'Manage configuration-name' }));
-        await waitFor(() =>
-          expect(element.classList.contains('manageable-authenticator--editing')).to.be.true(),
-        );
+        await waitFor(() => expect(element.classList.contains('manageable-authenticator--editing')).to.be.true());
 
         sandbox.stub(window, 'confirm').returns(true);
         const deleteButton = screen.getByRole('button', { name: 'Delete' });
         await userEvent.click(deleteButton);
 
-        const alert = screen
-          .getAllByRole('status')
-          .find((candidate) => !candidate.closest('lg-spinner-button'))!;
+        const alert = screen.getAllByRole('status').find((candidate) => !candidate.closest('lg-spinner-button'))!;
         expect(alert.textContent!.trim()).to.be.empty();
         await waitFor(() => expect(alert.textContent!.trim()).to.equal('Uh oh!'));
 
@@ -420,9 +380,7 @@ describe('ManageableAuthenticatorElement', () => {
         const element = createElement();
 
         await userEvent.click(screen.getByRole('button', { name: 'Manage configuration-name' }));
-        await waitFor(() =>
-          expect(element.classList.contains('manageable-authenticator--editing')).to.be.true(),
-        );
+        await waitFor(() => expect(element.classList.contains('manageable-authenticator--editing')).to.be.true());
 
         sandbox.stub(window, 'confirm').returns(true);
         sandbox.clock.setSystemTime(new Date('2023-12-07T15:00:00Z'));

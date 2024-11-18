@@ -8,13 +8,10 @@ describe('platform-authenticator-available', () => {
   before(async () => {
     quibble('@18f/identity-webauthn', {
       isWebauthnPasskeySupported: () => isWebauthnPasskeySupported,
-      isWebauthnPlatformAuthenticatorAvailable: () =>
-        Promise.resolve(isWebauthnPlatformAuthenticatorAvailable),
+      isWebauthnPlatformAuthenticatorAvailable: () => Promise.resolve(isWebauthnPlatformAuthenticatorAvailable),
     });
 
-    ({ initialize } = await import(
-      '../../../app/javascript/packs/platform-authenticator-available'
-    ));
+    ({ initialize } = await import('../../../app/javascript/packs/platform-authenticator-available'));
   });
 
   beforeEach(() => {

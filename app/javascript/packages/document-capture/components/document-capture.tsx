@@ -69,9 +69,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
     title: t('doc_auth.headings.selfie_capture'),
   };
   const documentsFormSteps: FormStep[] =
-    isSelfieCaptureEnabled && submissionError === undefined
-      ? [documentFormStep, selfieFormStep]
-      : [documentFormStep];
+    isSelfieCaptureEnabled && submissionError === undefined ? [documentFormStep, selfieFormStep] : [documentFormStep];
   const reviewFormStep: FormStep = {
     name: 'review',
     form:
@@ -82,8 +80,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
             isFailedResult: submissionError.isFailedResult,
             isFailedDocType: submissionError.isFailedDocType,
             isFailedSelfie: submissionError.isFailedSelfie,
-            isFailedSelfieLivenessOrQuality:
-              submissionError.selfieNotLive || submissionError.selfieNotGoodQuality,
+            isFailedSelfieLivenessOrQuality: submissionError.selfieNotLive || submissionError.selfieNotGoodQuality,
             captureHints: submissionError.hints,
             pii: submissionError.pii,
             failedImageFingerprints: submissionError.failed_image_fingerprints,
@@ -146,9 +143,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   const inPersonSteps: FormStep[] =
     inPersonURL === undefined
       ? []
-      : ([prepareFormStep, locationFormStep, flowPath === 'hybrid' && hybridFormStep].filter(
-          Boolean,
-        ) as FormStep[]);
+      : ([prepareFormStep, locationFormStep, flowPath === 'hybrid' && hybridFormStep].filter(Boolean) as FormStep[]);
 
   let steps = documentsFormSteps;
   if (isInPersonStepEnabled) {
@@ -167,8 +162,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   return (
     <>
       <VerifyFlowStepIndicator currentStep="document_capture" path={stepIndicatorPath} />
-      {submissionFormValues &&
-      (!submissionError || submissionError instanceof RetrySubmissionError) ? (
+      {submissionFormValues && (!submissionError || submissionError instanceof RetrySubmissionError) ? (
         <>
           <SubmissionInterstitial autoFocus />
           <SuspenseErrorBoundary

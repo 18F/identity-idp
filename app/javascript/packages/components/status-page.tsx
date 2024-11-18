@@ -73,26 +73,13 @@ interface StatusPageProps {
   troubleshootingOptions?: ReactComponentElement<typeof TroubleshootingOptions>;
 }
 
-function StatusPage({
-  status,
-  icon,
-  header,
-  children,
-  actionButtons = [],
-  troubleshootingOptions,
-}: StatusPageProps) {
+function StatusPage({ status, icon, header, children, actionButtons = [], troubleshootingOptions }: StatusPageProps) {
   const src = STATUS_ICONS[status][icon || 'default'];
   const alt = STATUS_ALT[icon || status];
 
   return (
     <>
-      <img
-        src={src}
-        alt={alt}
-        width={88}
-        height={88}
-        className="display-block margin-bottom-4 alert-icon"
-      />
+      <img src={src} alt={alt} width={88} height={88} className="display-block margin-bottom-4 alert-icon" />
       <PageHeading>{header}</PageHeading>
       {children}
       {actionButtons.length > 0 && (

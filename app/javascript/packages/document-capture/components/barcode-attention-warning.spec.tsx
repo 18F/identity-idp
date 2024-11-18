@@ -33,11 +33,7 @@ describe('BarcodeAttentionWarning', () => {
 
     const items = getAllByRole('definition');
 
-    expect(items.map((node) => node.textContent)).to.include.all.members([
-      'Jane',
-      'Smith',
-      '1938-10-06',
-    ]);
+    expect(items.map((node) => node.textContent)).to.include.all.members(['Jane', 'Smith', '1938-10-06']);
   });
 
   it('allows the user to continue to the next step', async () => {
@@ -58,17 +54,13 @@ describe('BarcodeAttentionWarning', () => {
   it('lets the user dismiss to take new photos', async () => {
     const onDismiss = sandbox.stub();
 
-    const { getByRole } = render(
-      <BarcodeAttentionWarning {...DEFAULT_PROPS} onDismiss={onDismiss} />,
-    );
+    const { getByRole } = render(<BarcodeAttentionWarning {...DEFAULT_PROPS} onDismiss={onDismiss} />);
 
     const dismissButton = getByRole('button', { name: t('doc_auth.buttons.add_new_photos') });
 
     await userEvent.click(dismissButton);
 
     expect(onDismiss).to.have.been.calledOnce();
-    expect(analytics.trackEvent).to.have.been.calledWith(
-      'IdV: barcode warning retake photos clicked',
-    );
+    expect(analytics.trackEvent).to.have.been.calledWith('IdV: barcode warning retake photos clicked');
   });
 });

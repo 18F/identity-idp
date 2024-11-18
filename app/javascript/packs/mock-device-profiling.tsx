@@ -90,8 +90,7 @@ function MockDeviceProfilingOptions() {
     <>
       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label className="usa-label" htmlFor={inputId}>
-        <strong className="text-accent-warm-dark">For sandbox testing only:</strong> Mock device
-        profiling behavior
+        <strong className="text-accent-warm-dark">For sandbox testing only:</strong> Mock device profiling behavior
       </label>
       <select
         className="border-05 border-accent-warm-dark"

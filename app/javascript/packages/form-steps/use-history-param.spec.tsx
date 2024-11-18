@@ -13,13 +13,7 @@ describe('getStepParam', () => {
 });
 
 describe('useHistoryParam', () => {
-  function TestComponent({
-    initialValue,
-    validValues,
-  }: {
-    initialValue?: string;
-    validValues?: string[];
-  }) {
+  function TestComponent({ initialValue, validValues }: { initialValue?: string; validValues?: string[] }) {
     const [count = 0, setCount] = useHistoryParam(initialValue, validValues);
 
     return (
@@ -128,9 +122,7 @@ describe('useHistoryParam', () => {
 
   context('when specifying valid values', () => {
     it('syncs by history events for a valid value', async () => {
-      const { getByText, getByDisplayValue, findByDisplayValue } = render(
-        <TestComponent validValues={['0', '1']} />,
-      );
+      const { getByText, getByDisplayValue, findByDisplayValue } = render(<TestComponent validValues={['0', '1']} />);
       expect(getByDisplayValue('0')).to.be.ok();
 
       await userEvent.click(getByText('Increment'));
@@ -149,9 +141,7 @@ describe('useHistoryParam', () => {
     it('maintains value (does not sync) by history events for an invalid value', async () => {
       const { getByDisplayValue } = render(<TestComponent validValues={['0', '1']} />);
       expect(getByDisplayValue('0')).to.be.ok();
-      const popstateHandled = new Promise((resolve) =>
-        window.addEventListener('popstate', resolve, { once: true }),
-      );
+      const popstateHandled = new Promise((resolve) => window.addEventListener('popstate', resolve, { once: true }));
 
       act(() => {
         window.location.hash = '#wrong';

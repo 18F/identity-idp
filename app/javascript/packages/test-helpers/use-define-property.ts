@@ -18,11 +18,7 @@ function useDefineProperty(): ObjectConstructor['defineProperty'] {
     redefined = [];
   });
 
-  return function defineProperty<O>(
-    object: O,
-    property: PropertyKey,
-    descriptor: PropertyDescriptor,
-  ) {
+  return function defineProperty<O>(object: O, property: PropertyKey, descriptor: PropertyDescriptor) {
     const originalDescriptor = Object.getOwnPropertyDescriptor(object, property);
     redefined.push([object, property, originalDescriptor]);
     return Object.defineProperty(object, property, descriptor);

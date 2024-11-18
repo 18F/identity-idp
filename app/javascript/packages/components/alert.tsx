@@ -31,10 +31,7 @@ interface AlertProps {
   textTag?: string;
 }
 
-function Alert(
-  { type, className, isFocusable, children, textTag = 'p' }: AlertProps,
-  ref: ForwardedRef<any>,
-) {
+function Alert({ type, className, isFocusable, children, textTag = 'p' }: AlertProps, ref: ForwardedRef<any>) {
   const classes = ['usa-alert', type && `usa-alert--${type}`, className].filter(Boolean).join(' ');
   const role = type === 'error' ? 'alert' : 'status';
 
