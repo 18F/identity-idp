@@ -11,19 +11,6 @@ RSpec.feature 'document capture step', :js do
   let(:socure_webhook_secret_key) { 'socure_webhook_secret_key' }
   let(:fake_socure_endpoint) { 'https://fake-socure.test/' }
   let(:fake_socure_document_capture_app_url) { 'https://verify.socure.test/something' }
-  let(:docv_transaction_token) { 'fake docv transaction token' }
-  # let(:fake_socure_response) do
-  #   {
-  #     referenceId: 'socure-reference-id',
-  #     data: {
-  #       eventId: 'socure-event-id',
-  #       docvTransactionToken: docv_transaction_token,
-  #       qrCode: 'qr-code',
-  #       url: fake_socure_document_capture_app_url,
-  #     },
-  #   }
-  # end
-  let(:fake_socure_status) { 200 }
 
   before(:each) do
     allow(IdentityConfig.store).to receive(:socure_enabled).and_return(true)
@@ -100,24 +87,13 @@ RSpec.feature 'document capture step', :js do
     end
 
     context 'network connection errors' do
-      it 'catches network connection errors on document request', allow_browser_log: true do
-        # DocAuth::Mock::DocAuthMockClient.mock_response!(
-        #   method: :post_front_image,
-        #   response: DocAuth::Response.new(
-        #     success: false,
-        #     errors: { network: I18n.t('doc_auth.errors.general.network_error') },
-        #   ),
-        # )
-
-        # attach_and_submit_images
-
-        # expect(page).to have_current_path(idv_document_capture_url)
+      xit 'catches network connection errors on document request', allow_browser_log: true do
         # expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
       end
 
-      it 'catches network connection errors on verification data request', allow_browser_log: true do
+      xit 'catches network connection errors on verification data request', allow_browser_log: true do
+        # expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
       end
-
     end
 
     it 'does not track state if state tracking is disabled' do
@@ -127,6 +103,15 @@ RSpec.feature 'document capture step', :js do
       )
 
       expect(DocAuthLog.find_by(user_id: @user.id).state).to be_nil
+    end
+
+    xit 'does track state if state tracking is disabled' do
+      allow(IdentityConfig.store).to receive(:state_tracking_enabled).and_return(true)
+      socure_docv_send_webhook(
+        docv_transaction_token: @docv_transaction_token,
+      )
+
+      expect(DocAuthLog.find_by(user_id: @user.id).state).not_to be_nil
     end
   end
 
