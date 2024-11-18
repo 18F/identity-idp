@@ -121,7 +121,8 @@ RSpec.describe SocureDocvResultsJob do
         ),
       )
     end
-    it 'expect fake analytics to have logged idv_socure_verification_data_requested with async true' do
+
+    it 'expect log with perform_later to have async eq true' do
       perform_later
       expect(fake_analytics).to have_logged_event(
         :idv_socure_verification_data_requested,
