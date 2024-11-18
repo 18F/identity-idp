@@ -38,7 +38,6 @@ module DocAuth
         def initialize(document_capture_session_uuid:, http_response:,
                        biometric_comparison_required: false)
           @document_capture_session_uuid = document_capture_session_uuid
-          @analytics = analytics
           @http_response = http_response
           @biometric_comparison_required = biometric_comparison_required
           @pii_from_doc = read_pii

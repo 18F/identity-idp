@@ -12,10 +12,10 @@ class SocureDocvResultsJob < ApplicationJob
     dcs = DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
     raise "DocumentCaptureSession not found: #{document_capture_session_uuid}" if !dcs
 
-    @analytics = create_analytics(
-      user: dcs.user,
-      service_provider_issuer: dcs.issuer,
-    )
+    #@analytics = create_analytics(
+    #  user: dcs.user,
+    #  service_provider_issuer: dcs.issuer,
+    #)
     #puts 'in perform'
     
     #timer = JobHelpers::Timer.new
