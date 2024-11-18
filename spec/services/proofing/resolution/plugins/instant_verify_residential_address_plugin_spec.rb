@@ -147,9 +147,11 @@ RSpec.describe Proofing::Resolution::Plugins::InstantVerifyResidentialAddressPlu
           :instant_verify
         end
 
-        it 'creates an Instant Verify proofer because the new setting takes precedence' do
+        # rubocop:disable Layout/LineLength
+        it 'creates an Instant Verify proofer because the new setting takes precedence over the old one when the old one is set to its default value' do
           expect(proofer).to be_an_instance_of(Proofing::LexisNexis::InstantVerify::Proofer)
         end
+        # rubocop:enable Layout/LineLength
       end
 
       context 'and idv_resolution_default_vendor is set to :mock' do
