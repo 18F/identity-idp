@@ -35,7 +35,7 @@ module DocAuth
           socure_user_id: %w[customerProfile userId],
         }.freeze
 
-        def initialize(document_capture_session_uuid:, analytics:, http_response:,
+        def initialize(document_capture_session_uuid:, http_response:,
                        biometric_comparison_required: false)
           @document_capture_session_uuid = document_capture_session_uuid
           @analytics = analytics
@@ -70,6 +70,39 @@ module DocAuth
           :not_processed
         end
 
+        def verification_response_data
+          user_id = nil
+          if !document_capture_session&.user.nil?
+            user_id = document_capture_session.user.uuid
+          end
+          return {
+            success: doc_auth_success?,
+            errors: nil,
+            exception: nil,
+            async: false,
+            docv_transaction_token: document_capture_session&.socure_docv_transaction_token,
+            customer_profile: get_data(DATA_PATHS[:customer_profile]),
+            reference_id: get_data(DATA_PATHS[:reference_id]),
+            reason_codes: get_data(DATA_PATHS[:reason_codes]),
+            document_type: get_data(DATA_PATHS[:document_type]),
+            decision: get_data(DATA_PATHS[:decision]),
+            user_id: user_id,
+            state: state,
+            state_id_type: state_id_type,
+            submit_attempts: rate_limiter&.attempts,
+            remaining_submit_attempts: rate_limiter&.remaining_count,
+            flow_path: nil, # TODO: check if value should be logged and where to get it
+            liveness_checking_required: @biometric_comparison_required,
+            issue_year: get_year(state_id_issued),
+            doc_auth_success: doc_auth_success?,
+            vendor: 'Socure',
+            address_line2_present: address2.present?,
+            zip_code: zipcode,
+            birth_year: dob&.year,
+            liveness_enabled: @biometric_comparison_required,
+          }
+        end
+
         private
 
         def successful_result?
@@ -99,7 +132,7 @@ module DocAuth
             last_name: get_data(DATA_PATHS[:last_name]),
             name_suffix: nil,
             address1: get_data(DATA_PATHS[:address1]),
-            address2: get_data(DATA_PATHS[:address2]),
+            address2: address2,
             city: get_data(DATA_PATHS[:city]),
             state: get_data(DATA_PATHS[:state]),
             zipcode: get_data(DATA_PATHS[:zipcode]),
@@ -109,44 +142,11 @@ module DocAuth
             weight: nil,
             eye_color: nil,
             state_id_number: get_data(DATA_PATHS[:document_number]),
-            state_id_issued: parse_date(get_data(DATA_PATHS[:issue_date])),
+            state_id_issued: parse_date(state_id_issued),
             state_id_expiration: parse_date(get_data(DATA_PATHS[:expiration_date])),
             state_id_type: state_id_type,
             state_id_jurisdiction: get_data(DATA_PATHS[:issuing_state]),
             issuing_country_code: get_data(DATA_PATHS[:issuing_country]),
-          )
-        end
-
-        def log_verification_request
-          user_id = nil
-          if !document_capture_session&.user.nil?
-            user_id = document_capture_session.user.uuid
-          end
-          @analytics.idv_socure_verification_data_requested(
-            success: doc_auth_success?,
-            errors: nil,
-            exception: nil,
-            async: false,
-            docv_transaction_token: document_capture_session&.socure_docv_transaction_token,
-            customer_profile: get_data(DATA_PATHS[:customer_profile]),
-            reference_id: get_data(DATA_PATHS[:reference_id]),
-            reason_codes: get_data(DATA_PATHS[:reason_codes]),
-            document_type: get_data(DATA_PATHS[:document_type]),
-            decision: get_data(DATA_PATHS[:decision]),
-            user_id: user_id,
-            state: get_data(DATA_PATHS[:state]),
-            state_id_type: state_id_type,
-            submit_attempts: rate_limiter&.attempts,
-            remaining_submit_attempts: rate_limiter&.remaining_count,
-            flow_path: nil, # TODO: check if value should be logged and where to get it
-            liveness_checking_required: @biometric_comparison_required,
-            issue_year: get_year(get_data(DATA_PATHS[:issue_date])),
-            doc_auth_success: doc_auth_success?,
-            vendor: 'Socure',
-            address_line2_present: get_data(DATA_PATHS[:address2]).present?,
-            zip_code: get_data(DATA_PATHS[:zipcode]),
-            birth_year: get_year(get_data(DATA_PATHS[:dob])),
-            liveness_enabled: @biometric_comparison_required,
           )
         end
 
@@ -164,9 +164,34 @@ module DocAuth
           end
         end
 
+        def state
+          get_data(DATA_PATHS[:state])
+        end
+
+        def zipcode
+          get_data(DATA_PATHS[:zipcode])
+        end
+
+        def state_id_issued
+          get_data(DATA_PATHS[:issue_date])
+        end
+
         def state_id_type
           type = get_data(DATA_PATHS[:id_type])
           type&.gsub(/\W/, '')&.underscore
+        end
+
+        def dob
+          dob = get_data(DATA_PATHS[:dob])
+          if dob.nil?
+            return nil
+          else
+            return parse_date(dob)
+          end
+        end
+
+        def address2
+          get_data(DATA_PATHS[:address2])
         end
 
         def parse_date(date_string)

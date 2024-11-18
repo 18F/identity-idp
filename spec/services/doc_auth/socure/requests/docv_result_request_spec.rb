@@ -7,7 +7,6 @@ RSpec.describe DocAuth::Socure::Requests::DocvResultRequest do
   subject(:docv_result_request) do
     described_class.new(
       document_capture_session_uuid:,
-      analytics: fake_analytics,
       biometric_comparison_required: biometric_comparison_required,
     )
   end

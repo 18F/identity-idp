@@ -16,9 +16,16 @@ class SocureDocvResultsJob < ApplicationJob
       user: dcs.user,
       service_provider_issuer: dcs.issuer,
     )
-
+    #puts 'in perform'
+    
+    #timer = JobHelpers::Timer.new
+    #response = timer.time('vendor_request') do
+    #  socure_document_verification_result
+    #end
+    #log_verification_request(response)
     result = socure_document_verification_result
     dcs.store_result_from_response(result)
+    #dcs.store_result_from_response(response)
   end
 
   private
@@ -35,10 +42,20 @@ class SocureDocvResultsJob < ApplicationJob
     )
   end
 
+  def log_verification_request(docv_result_response)
+    return if docv_result_response.nil?
+
+    puts 'in log_verification_request'
+    verification_response_data = docv_result_response.verification_response_data
+    puts "Response: #{verification_response_data}"
+    @analytics.idv_socure_verification_data_requested(
+      **verification_response_data.to_h,
+    )
+  end
+
   def socure_document_verification_result
     DocAuth::Socure::Requests::DocvResultRequest.new(
       document_capture_session_uuid:,
-      analytics: @analytics,
     ).fetch
   end
 end
