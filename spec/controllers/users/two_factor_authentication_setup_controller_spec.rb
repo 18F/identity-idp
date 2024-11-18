@@ -21,10 +21,10 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
       )
     end
 
-    it 'initializes presenter with blank ab test bucket value' do
+    it 'initializes presenter with false ab test bucket value' do
       response
 
-      expect(assigns(:presenter).desktop_ft_ab_test).to be_nil
+      expect(assigns(:presenter).desktop_ft_ab_test).to be false
     end
 
     context 'with user having gov or mil email' do
@@ -112,13 +112,15 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
 
     context 'with user opted in to desktop ft unlock setup ab test' do
       before do
-        allow(controller).to receive(:ab_test_bucket).and_return(:desktop_ft_unlock_setup)
+        allow(controller).to receive(:ab_test_bucket).with(
+          :DESKTOP_FT_UNLOCK_SETUP,
+        ).and_return(:desktop_ft_unlock_option_shown)
       end
 
       it 'initializes presenter with ab test bucket value' do
         response
 
-        expect(assigns(:presenter).desktop_ft_ab_test).to eq(:desktop_ft_unlock_setup)
+        expect(assigns(:presenter).desktop_ft_ab_test).to eq(true)
       end
     end
   end

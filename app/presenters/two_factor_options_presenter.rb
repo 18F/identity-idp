@@ -20,7 +20,7 @@ class TwoFactorOptionsPresenter
     show_skip_additional_mfa_link: true,
     after_mfa_setup_path: nil,
     return_to_sp_cancel_path: nil,
-    desktop_ft_ab_test: nil
+    desktop_ft_ab_test: false
   )
     @user_agent = user_agent
     @user = user
