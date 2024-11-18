@@ -374,7 +374,6 @@ RSpec.describe 'authorization count' do
           end
         end
       end
-
     end
   end
 

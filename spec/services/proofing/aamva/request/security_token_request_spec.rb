@@ -82,7 +82,6 @@ RSpec.describe Proofing::Aamva::Request::SecurityTokenRequest do
       end
     end
 
-    # rubocop:disable Layout/LineLength
     context 'when the request times out a second time' do
       it 'raises an error' do
         stub_request(:post, config.auth_url).

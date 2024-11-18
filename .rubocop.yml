@@ -1492,6 +1492,4 @@ Style/YodaCondition:
 
 Style/DisableSyntax:
   DisableSyntax:
-    - unless
-    - ternary
     - endless_methods

@@ -324,7 +324,6 @@ RSpec.describe AttributeAsserter do
                 "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
                 "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
               ]
-              # rubocop:enable Layout/LineLength
             end
 
             it 'only includes uuid, email, aal, and ial' do
