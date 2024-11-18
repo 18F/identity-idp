@@ -64,7 +64,7 @@ describe('WebauthnInputElement', () => {
       it('becomes visible, with modifier class', () => {
         const element = document.querySelector('lg-webauthn-input')!;
 
-        expect(element.hidden).to.be.true();
+        expect(element.hidden).to.be.false();
         expect(element.classList.contains('webauthn-input--unsupported-passkey')).to.be.true();
       });
     });
