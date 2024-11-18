@@ -4,7 +4,7 @@ module DocAuth
   module Socure
     module Responses
       class DocvResultResponse < DocAuth::Response
-        attr_reader :document_capture_session_uuid, :http_response, :biometric_comparison_required
+        attr_reader :http_response, :biometric_comparison_required
 
         DATA_PATHS = {
           reference_id: %w[referenceId],
@@ -35,9 +35,8 @@ module DocAuth
           socure_user_id: %w[customerProfile userId],
         }.freeze
 
-        def initialize(document_capture_session_uuid:, http_response:,
+        def initialize(http_response:,
                        biometric_comparison_required: false)
-          @document_capture_session_uuid = document_capture_session_uuid
           @http_response = http_response
           @biometric_comparison_required = biometric_comparison_required
           @pii_from_doc = read_pii

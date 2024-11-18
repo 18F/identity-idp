@@ -23,7 +23,6 @@ module DocAuth
 
         def handle_http_response(http_response)
           DocAuth::Socure::Responses::DocvResultResponse.new(
-            document_capture_session_uuid: document_capture_session_uuid,
             http_response: http_response,
             biometric_comparison_required: biometric_comparison_required,
           )
