@@ -402,4 +402,22 @@ module DocAuthHelper
         body:,
       )
   end
+
+  def stub_docv_document_request
+    random_token = SecureRandom.hex
+    stub_request(:post, IdentityConfig.store.socure_document_request_endpoint).
+      to_return(
+        status:,
+        body: {
+          referenceId: 'socure-reference-id',
+          data: {
+            eventId: 'socure-event-id',
+            docvTransactionToken: random_token,
+            qrCode: 'qr-code',
+            url: 'https://verify.socure.test/something',
+          },
+        }.to_json,
+      )
+    random_token
+  end
 end
