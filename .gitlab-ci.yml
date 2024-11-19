@@ -231,7 +231,7 @@ migrate:
     POSTGRES_HOST_AUTH_METHOD: trust
     RAILS_ENV: test
   services:
-    - name: public.ecr.aws/docker/library/postgres:13.9
+    - name: public.ecr.aws/docker/library/postgres:16.4
       alias: db-postgres
       command: ['--fsync=false', '--synchronous_commit=false', '--full_page_writes=false']
   script:
@@ -263,7 +263,7 @@ specs:
     POSTGRES_HOST_AUTH_METHOD: trust
     RAILS_ENV: test
   services:
-    - name: public.ecr.aws/docker/library/postgres:13.9
+    - name: public.ecr.aws/docker/library/postgres:16.4
       alias: db-postgres
       command: ['--fsync=false', '--synchronous_commit=false', '--full_page_writes=false']
     - name: public.ecr.aws/docker/library/redis:7.0

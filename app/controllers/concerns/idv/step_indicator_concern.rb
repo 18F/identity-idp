@@ -26,11 +26,7 @@ module Idv
 
     def step_indicator_steps
       if in_person_proofing?
-        if gpo_address_verification?
-          Idv::Flows::InPersonFlow::STEP_INDICATOR_STEPS_GPO
-        else
-          Idv::Flows::InPersonFlow::STEP_INDICATOR_STEPS
-        end
+        Idv::Flows::InPersonFlow::STEP_INDICATOR_STEPS
       elsif gpo_address_verification?
         Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS_GPO
       else

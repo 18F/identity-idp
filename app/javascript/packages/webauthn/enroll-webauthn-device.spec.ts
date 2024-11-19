@@ -87,6 +87,7 @@ describe('enrollWebauthnDevice', () => {
           authenticatorSelection: {
             userVerification: 'discouraged',
             authenticatorAttachment: 'cross-platform',
+            residentKey: undefined,
           },
           excludeCredentials: [
             {
@@ -126,7 +127,7 @@ describe('enrollWebauthnDevice', () => {
     });
 
     context('platform authenticator', () => {
-      it('enrolls a device with correct authenticatorAttachment', async () => {
+      it('enrolls a device with correct authenticatorAttachment and residentKey', async () => {
         await enrollWebauthnDevice({
           platformAuthenticator: true,
           user,
@@ -139,6 +140,7 @@ describe('enrollWebauthnDevice', () => {
             hints: undefined,
             authenticatorSelection: {
               authenticatorAttachment: 'platform',
+              residentKey: 'preferred',
             },
           },
         });
