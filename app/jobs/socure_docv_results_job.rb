@@ -17,9 +17,6 @@ class SocureDocvResultsJob < ApplicationJob
     #   service_provider_issuer: dcs.issuer,
     # )
 
-    sleep_seconds = IdentityConfig.store.doc_auth_socure_job_sleep_seconds
-    sleep sleep_seconds
-
     result = socure_document_verification_result
     dcs.store_result_from_response(result)
   end

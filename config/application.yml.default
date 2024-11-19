@@ -106,7 +106,6 @@ doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 3
 doc_auth_selfie_desktop_test_mode: false
-doc_auth_socure_job_sleep_seconds: 0
 doc_auth_socure_wait_polling_refresh_max_seconds: 15
 doc_auth_socure_wait_polling_timeout_minutes: 2
 doc_auth_supported_country_codes: '["US", "GU", "VI", "AS", "MP", "PR", "USA" ,"GUM", "VIR", "ASM", "MNP", "PRI"]'
