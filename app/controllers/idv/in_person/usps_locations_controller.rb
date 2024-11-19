@@ -40,7 +40,7 @@ module Idv
           raise UspsLocationsError.new
         end
 
-        locations = proofer.request_facilities(candidate, authn_context_enhanced_ipp?)
+        locations = proofer.request_facilities_by_zip(candidate.zip_code, authn_context_enhanced_ipp?)
         if locations.length > 0
           analytics.idv_in_person_locations_searched(
             success: true,

@@ -20,11 +20,13 @@ module UspsInPersonProofing
       request_body = {
         sponsorID: sponsor_id,
         zipCode: zip_code,
+        radius: "50"
       }
 
       if is_enhanced_ipp
         request_body[:sponsorID] = IdentityConfig.store.usps_eipp_sponsor_id.to_i
       end
+      binding.pry
       response = faraday.post(url, request_body.to_json, dynamic_headers) do |req|
         req.options.context = { service_name: 'usps_facilities' }
       end.body
@@ -189,8 +191,10 @@ module UspsInPersonProofing
         scope: 'ivs.ippaas.apis',
       }
 
+
       faraday.post(url, request_body) do |req|
         req.options.context = { service_name: 'usps_token' }
+        binding.pry
       end.body
     end
 
