@@ -59,8 +59,8 @@ RSpec.describe 'Hybrid Flow' do
       expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_url)
 
       # Confirm that clicking cancel and then coming back doesn't cause errors
-      # click_link 'Cancel'
-      # visit idv_hybrid_mobile_socure_document_capture_url
+      click_link 'Cancel'
+      visit idv_hybrid_mobile_socure_document_capture_url
 
       # Confirm that jumping to Phone page does not cause errors
       visit idv_phone_url
@@ -73,8 +73,6 @@ RSpec.describe 'Hybrid Flow' do
       visit idv_hybrid_mobile_socure_document_capture_url
 
       expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_url)
-      # expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
-      # attach_and_submit_images
 
       stub_docv_verification_data_pass
       click_idv_continue
