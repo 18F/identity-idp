@@ -275,5 +275,22 @@
   </div>
 <% end %>
 
+<% if !@is_enhanced_ipp %>
+  <h3><%= t('in_person_proofing.body.location.change_location_heading') %></h3>
+  <p class="margin-bottom-4">
+    <%= t(
+          'in_person_proofing.body.location.change_location_info_html',
+          find_other_locations_link_html: link_to(
+            t('in_person_proofing.body.location.change_location_find_other_locations'),
+            help_center_redirect_url(
+              category: 'verify-your-identity',
+              article: 'verify-your-identity-in-person/find-a-participating-post-office',
+            ),
+          ),
+        ).html_safe %>
+  </p>
+<% end %>
+
+
 <h2 class="font-heading-lg text-bold margin-bottom-2"><%= t('in_person_proofing.body.expect.heading') %></h2>
 <p class="margin-bottom-0"><%= t('in_person_proofing.body.expect.info') %></p>

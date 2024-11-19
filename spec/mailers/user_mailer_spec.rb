@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe UserMailer, type: :mailer do
+  include ActionView::Helpers::UrlHelper
+
   let(:user) { create(:user) }
   let(:email_address) { user.email_addresses.first }
   let(:banned_email) { 'banned_email+123abc@gmail.com' }
@@ -762,7 +764,59 @@ RSpec.describe UserMailer, type: :mailer do
         end
       end
 
-      context 'For In-Person Proofing (IPP)' do
+      context 'Need to change location section' do
+        context 'when Enhanced IPP is not enabled' do
+          let(:is_enhanced_ipp) { false }
+          let(:mail) do
+            UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
+              enrollment: enhanced_ipp_enrollment,
+              is_enhanced_ipp: is_enhanced_ipp,
+            )
+          end
+          it 'renders the change location heading' do
+            expect(mail.html_part.body).to have_content(
+              t('in_person_proofing.body.location.change_location_heading'),
+            )
+          end
+
+          it 'renders the change location info' do
+            expect(mail.html_part.body).to have_content(
+              t(
+                'in_person_proofing.body.location.change_location_info_html',
+                find_other_locations_link_html:
+                  t('in_person_proofing.body.location.change_location_find_other_locations'),
+              ),
+            )
+          end
+        end
+        context 'when Enhanced IPP is enabled' do
+          let(:is_enhanced_ipp) { true }
+          let(:mail) do
+            UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
+              enrollment: enhanced_ipp_enrollment,
+              is_enhanced_ipp: is_enhanced_ipp,
+            )
+          end
+
+          it 'does not render the change location heading' do
+            expect(mail.html_part.body).not_to have_content(
+              t('in_person_proofing.body.location.change_location_heading'),
+            )
+          end
+
+          it 'does not render the change location info' do
+            expect(mail.html_part.body).not_to have_content(
+              t(
+                'in_person_proofing.body.location.change_location_info_html',
+                find_other_locations_link_html:
+                  t('in_person_proofing.body.location.change_location_find_other_locations'),
+              ),
+            )
+          end
+        end
+      end
+
+      context 'For Informed Delivery In-Person Proofing (ID-IPP)' do
         context 'template displays modified content' do
           it 'conditionally renders content in the what to expect section applicable to IPP' do
             aggregate_failures do

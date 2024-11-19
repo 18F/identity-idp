@@ -1225,10 +1225,13 @@ in_person_proofing.body.cta.button: 尝试亲身去
 in_person_proofing.body.cta.prompt_detail: 无法在网上完成这一步骤的大多数人都能在一个参与本项目的邮局成功地证实身份。去邮局无需预约。全国各地都有参与本项目的邮局。
 in_person_proofing.body.expect.heading: 去邮局后会发生什么
 in_person_proofing.body.expect.info: 你去邮局后 24 小时内，我们会给你发电邮，告诉你是否成功验证了身份。
+in_person_proofing.body.location.change_location_find_other_locations: 查找其他参与本项目的邮局地点。
+in_person_proofing.body.location.change_location_heading: 需要更改你的邮局地点吗？
+in_person_proofing.body.location.change_location_info_html: 你不需要创建新的条形码，你可以将这个条形码带到任何参与本项目的邮局。 %{find_other_locations_link_html}
 in_person_proofing.body.location.distance.one: 距离你 %{count} 英里
 in_person_proofing.body.location.distance.other: 距离你 %{count} 英里
 in_person_proofing.body.location.heading: 邮局信息
-in_person_proofing.body.location.info: 验证你的身份无需做预约。你可以去任何参与邮局。
+in_person_proofing.body.location.info: 验证你的身份无需做预约。
 in_person_proofing.body.location.inline_error: 请输入正确地址，包括城市、州和邮编
 in_person_proofing.body.location.location_button: 选择
 in_person_proofing.body.location.po_search.address_label: 地址
