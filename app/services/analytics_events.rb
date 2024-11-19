@@ -4736,6 +4736,7 @@ module AnalyticsEvents
   # @param [String] zip_code
   # @param [String] birth_year Birth year from document
   # @param [Integer] issue_year Year document was issued
+  # @param [Boolean] biometric_comparison_required
   # The request for socure verification was sent
   def idv_socure_verification_data_requested(
     success:,
@@ -4765,6 +4766,7 @@ module AnalyticsEvents
     zip_code: nil,
     birth_year: nil,
     liveness_enabled: nil,
+    biometric_comparison_required: nil,
     **extra
   )
     track_event(
@@ -4796,6 +4798,7 @@ module AnalyticsEvents
       birth_year:,
       issue_year:,
       liveness_enabled:,
+      biometric_comparison_required:,
       **extra,
     )
   end

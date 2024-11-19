@@ -67,18 +67,19 @@ module DocAuth
           :not_processed
         end
 
-        def verification_response_data
-          return {
-            customer_profile: get_data(DATA_PATHS[:customer_profile]),
+        def extra_attributes
+          {
             reference_id: get_data(DATA_PATHS[:reference_id]),
+            decision: get_data(DATA_PATHS[:decision]),
+            biometric_comparison_required: biometric_comparison_required,
+            customer_profile: get_data(DATA_PATHS[:customer_profile]),
             reason_codes: get_data(DATA_PATHS[:reason_codes]),
             document_type: get_data(DATA_PATHS[:document_type]),
-            decision: get_data(DATA_PATHS[:decision]),
             state: state,
             state_id_type: state_id_type,
             flow_path: nil,
             liveness_checking_required: @biometric_comparison_required,
-            issue_year: get_year(state_id_issued),
+            issue_year: state_id_issued&.year,
             doc_auth_success: successful_result?,
             vendor: 'Socure',
             address_line2_present: address2.present?,
@@ -102,14 +103,6 @@ module DocAuth
           }
         end
 
-        def extra_attributes
-          {
-            reference_id: get_data(DATA_PATHS[:reference_id]),
-            decision: get_data(DATA_PATHS[:decision]),
-            biometric_comparison_required: biometric_comparison_required,
-          }
-        end
-
         def read_pii
           Pii::StateId.new(
             first_name: get_data(DATA_PATHS[:first_name]),
@@ -127,7 +120,7 @@ module DocAuth
             weight: nil,
             eye_color: nil,
             state_id_number: get_data(DATA_PATHS[:document_number]),
-            state_id_issued: parse_date(state_id_issued),
+            state_id_issued:,
             state_id_expiration: parse_date(get_data(DATA_PATHS[:expiration_date])),
             state_id_type: state_id_type,
             state_id_jurisdiction: get_data(DATA_PATHS[:issuing_state]),
@@ -158,7 +151,7 @@ module DocAuth
         end
 
         def state_id_issued
-          get_data(DATA_PATHS[:issue_date])
+          parse_date(get_data(DATA_PATHS[:issue_date]))
         end
 
         def state_id_type
@@ -167,12 +160,7 @@ module DocAuth
         end
 
         def dob
-          dob = get_data(DATA_PATHS[:dob])
-          if dob.nil?
-            return nil
-          else
-            return parse_date(dob)
-          end
+          parse_date(get_data(DATA_PATHS[:dob]))
         end
 
         def address2
@@ -187,15 +175,6 @@ module DocAuth
           }.to_json
           Rails.logger.info(message)
           nil
-        end
-
-        def get_year(date_str)
-          date = parse_date(date_str)
-          if date.nil?
-            return nil
-          else
-            return date.year
-          end
         end
       end
     end

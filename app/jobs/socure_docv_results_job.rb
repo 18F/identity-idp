@@ -47,7 +47,7 @@ class SocureDocvResultsJob < ApplicationJob
     return if docv_result_response.nil?
 
     response_hash = docv_result_response.to_h
-    verification_response_data = docv_result_response.verification_response_data
+    verification_response_data = docv_result_response.extra_attributes
     further_metrics = {
       user_id: document_capture_session.user.uuid,
       docv_transaction_token: document_capture_session.socure_docv_transaction_token,
