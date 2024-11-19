@@ -9,21 +9,6 @@ module Idv
 
       private
 
-      def save_proofing_components
-        return unless current_user
-
-        doc_auth_vendor = DocAuthRouter.doc_auth_vendor(
-          discriminator: flow_session[document_capture_session_uuid_key],
-          analytics: @flow.analytics,
-        )
-
-        component_attributes = {
-          document_check: doc_auth_vendor,
-          document_type: 'state_id',
-        }
-        ProofingComponent.create_or_find_by(user: current_user).update(component_attributes)
-      end
-
       def user_id_from_token
         flow_session[:doc_capture_user_id]
       end

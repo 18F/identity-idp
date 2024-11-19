@@ -65,7 +65,6 @@ module Idv
     end
 
     def handle_document_verification_success
-      save_proofing_components(current_user)
       extract_pii_from_doc(current_user, store_in_session: true)
       idv_session.flow_path = 'hybrid'
     end

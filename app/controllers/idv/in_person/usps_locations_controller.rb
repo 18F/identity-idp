@@ -63,8 +63,6 @@ module Idv
           sponsor_id: enrollment_sponsor_id,
         )
 
-        add_proofing_component
-
         render json: { success: true }, status: :ok
       end
 
@@ -90,12 +88,6 @@ module Idv
 
       def proofer
         @proofer ||= EnrollmentHelper.usps_proofer
-      end
-
-      def add_proofing_component
-        ProofingComponent.
-          create_or_find_by(user: current_or_hybrid_user).
-          update(document_check: Idp::Constants::Vendors::USPS)
       end
 
       def localized_locations(locations)

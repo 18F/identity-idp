@@ -36,7 +36,6 @@ module EventDisavowal
 
       user.active_profile&.deactivate(:password_reset)
       Funnel::DocAuth::ResetSteps.call(@user.id)
-      user.proofing_component&.destroy
     end
 
     def extra_analytics_attributes
