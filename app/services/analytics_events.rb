@@ -1240,6 +1240,44 @@ module AnalyticsEvents
     )
   end
 
+  # User returns from Socure document capture, but is waiting on a result to be fetched
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param [Boolean] redo_document_capture Whether user is redoing document capture after barcode
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  # @param [Boolean] liveness_checking_required Whether facial match check is required
+  # @param [Boolean] selfie_check_required Whether facial match check is required
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
+  # SDK upgrades
+  def idv_doc_auth_document_capture_polling_wait_visited(
+    flow_path:,
+    step:,
+    analytics_id:,
+    redo_document_capture:,
+    skip_hybrid_handoff:,
+    liveness_checking_required:,
+    selfie_check_required:,
+    opted_in_to_in_person_proofing: nil,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
+    **extra
+  )
+    track_event(
+      :idv_doc_auth_document_capture_polling_wait_visited,
+      flow_path:,
+      step:,
+      analytics_id:,
+      redo_document_capture:,
+      skip_hybrid_handoff:,
+      liveness_checking_required:,
+      selfie_check_required:,
+      opted_in_to_in_person_proofing:,
+      acuant_sdk_upgrade_ab_test_bucket:,
+      **extra,
+    )
+  end
+
   # User submits IdV document capture step
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation

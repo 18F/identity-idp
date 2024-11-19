@@ -41,6 +41,8 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
     allow(subject).to receive(:user_session).and_return(user_session)
 
     subject.idv_session.document_capture_session_uuid = document_capture_session.uuid
+
+    stub_analytics
   end
 
   describe '#step_info' do
@@ -274,6 +276,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       get(:update)
 
       expect(response).to redirect_to(idv_ssn_path)
+      expect(@analytics).to have_logged_event('IdV: doc auth document_capture submitted')
     end
 
     context 'when doc auth fails' do
@@ -283,6 +286,29 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         get(:update)
 
         expect(response).to redirect_to(idv_socure_document_capture_path)
+        expect(@analytics).to have_logged_event('IdV: doc auth document_capture submitted')
+      end
+    end
+
+    context 'when stored_result is nil' do
+      let(:stored_result) { nil }
+
+      it 'renders the wait view' do
+        get(:update)
+        expect(response).to render_template('idv/socure/document_capture/wait')
+        expect(@analytics).to have_logged_event(:idv_doc_auth_document_capture_polling_wait_visited)
+      end
+
+      context 'when the wait times out' do
+        before do
+          allow(subject).to receive(:wait_timed_out?).and_return(true)
+        end
+
+        it 'renders a technical difficulties message' do
+          get(:update)
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to eq('Technical difficulties!!!')
+        end
       end
     end
 
