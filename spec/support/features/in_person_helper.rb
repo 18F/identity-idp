@@ -174,6 +174,15 @@ module InPersonHelper
     expect(page).to have_current_path(idv_in_person_state_id_path, wait: 10)
   end
 
+  def complete_steps_before_info_verify(user = user_with_2fa)
+    sign_in_and_2fa_user(user)
+    begin_in_person_proofing(user)
+    complete_prepare_step(user)
+    complete_location_step(user)
+    complete_state_id_controller(user)
+    complete_ssn_step(user)
+  end
+
   def complete_all_in_person_proofing_steps(user = user_with_2fa, tmx_status = nil,
                                             same_address_as_id: true)
     complete_prepare_step(user)
