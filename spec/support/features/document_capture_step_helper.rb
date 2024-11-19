@@ -107,7 +107,7 @@ module DocumentCaptureStepHelper
   end
 
   def stub_docv_document_request(
-    url: 'https://verify.socure.test/something',
+    url: 'https://verify.fake-socure.test/something',
     status: 200,
     token: SecureRandom.hex,
     body: nil
