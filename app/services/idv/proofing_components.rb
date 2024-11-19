@@ -2,12 +2,7 @@
 
 module Idv
   class ProofingComponents
-    def initialize(
-      idv_session:,
-      session:,
-      user:,
-      user_session:
-    )
+    def initialize(idv_session:, session:, user:, user_session:)
       @idv_session = idv_session
       @session = session
       @user = user
@@ -33,7 +28,8 @@ module Idv
     end
 
     def source_check
-      idv_session.source_check_vendor
+      idv_session.source_check_vendor.presence ||
+        (idv_session.verify_info_step_complete? && Idp::Constants::Vendors::AAMVA)
     end
 
     def resolution_check
