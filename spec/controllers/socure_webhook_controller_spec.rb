@@ -6,7 +6,7 @@ RSpec.describe SocureWebhookController do
   describe 'POST /api/webhooks/socure/event' do
     let(:socure_secret_key) { 'this-is-a-secret' }
     let(:socure_secret_key_queue) { ['this-is-an-old-secret', 'this-is-an-older-secret'] }
-    let(:socure_enabled) { true }
+    let(:socure_docv_enabled) { true }
     let(:event_type) { 'TEST_WEBHOOK' }
     let(:event_docv_transaction_token) { 'TEST_WEBHOOK_TOKEN' }
     let(:customer_user_id) { '#1-customer' }
@@ -32,12 +32,12 @@ RSpec.describe SocureWebhookController do
     end
 
     before do
-      allow(IdentityConfig.store).to receive(:socure_webhook_secret_key).
+      allow(IdentityConfig.store).to receive(:socure_docv_webhook_secret_key).
         and_return(socure_secret_key)
-      allow(IdentityConfig.store).to receive(:socure_webhook_secret_key_queue).
+      allow(IdentityConfig.store).to receive(:socure_docv_webhook_secret_key_queue).
         and_return(socure_secret_key_queue)
-      allow(IdentityConfig.store).to receive(:socure_enabled).
-        and_return(socure_enabled)
+      allow(IdentityConfig.store).to receive(:socure_docv_enabled).
+        and_return(socure_docv_enabled)
       allow(SocureDocvResultsJob).to receive(:perform_later)
 
       stub_analytics
@@ -258,7 +258,7 @@ RSpec.describe SocureWebhookController do
           end
 
           context 'when socure webhook disabled' do
-            let(:socure_enabled) { false }
+            let(:socure_docv_enabled) { false }
 
             it 'the webhook route does not exist' do
               post :create, params: webhook_body

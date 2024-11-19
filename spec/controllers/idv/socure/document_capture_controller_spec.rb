@@ -17,7 +17,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       attention_with_barcode: false,
     )
   end
-  let(:socure_enabled) { true }
+  let(:socure_docv_enabled) { true }
 
   let(:document_capture_session) do
     DocumentCaptureSession.create(
@@ -27,9 +27,9 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
   end
 
   before do
-    allow(IdentityConfig.store).to receive(:socure_enabled).
-      and_return(socure_enabled)
-    allow(IdentityConfig.store).to receive(:socure_document_request_endpoint).
+    allow(IdentityConfig.store).to receive(:socure_docv_enabled).
+      and_return(socure_docv_enabled)
+    allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint).
       and_return(fake_socure_endpoint)
     allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(idv_vendor)
     allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(idv_vendor)
@@ -194,7 +194,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
     end
 
     context 'when socure is disabled' do
-      let(:socure_enabled) { false }
+      let(:socure_docv_enabled) { false }
       it 'the webhook route does not exist' do
         get(:show)
 
@@ -227,7 +227,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         }
       end
       before do
-        allow(IdentityConfig.store).to receive(:socure_document_request_endpoint).
+        allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint).
           and_return(fake_socure_endpoint)
       end
       it 'connection timeout still responds to user' do
@@ -313,7 +313,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
     end
 
     context 'when socure is disabled' do
-      let(:socure_enabled) { false }
+      let(:socure_docv_enabled) { false }
 
       it 'the webhook route does not exist' do
         get(:update)

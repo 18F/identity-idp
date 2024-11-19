@@ -8,7 +8,7 @@ module Idv
       include DocumentCaptureConcern
       include RenderConditionConcern
 
-      check_or_render_not_found -> { IdentityConfig.store.socure_enabled }
+      check_or_render_not_found -> { IdentityConfig.store.socure_docv_enabled }
       before_action :confirm_not_rate_limited
       before_action :confirm_step_allowed
       before_action -> { redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, false) }
