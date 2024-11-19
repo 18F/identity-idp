@@ -113,6 +113,38 @@ RSpec.describe Reporting::ProtocolsReport do
     it 'generates the tabular csv data' do
       expect(report.as_tables).to eq expected_tables
     end
+
+    describe 'queries' do
+      let(:client) { report.cloudwatch_client }
+      let(:time_query) do
+        {
+          from: report.time_range.begin,
+          to: report.time_range.end,
+        }
+      end
+      before do
+        allow(client).to receive(:fetch).and_call_original
+      end
+
+      it 'calls the cloudwatch client with the expected queries' do
+        report.as_tables
+
+        %i[
+          aal3_issuers_query
+          saml_signature_query
+          facial_match_issuers_query
+          id_token_hint_query
+          loa_issuers_query
+          protocol_query
+          saml_signature_query
+        ].each do |query|
+          expect(client).to have_received(:fetch).with(
+            query: report.send(query),
+            **time_query,
+          )
+        end
+      end
+    end
   end
 
   describe '#as_emailable_reports' do
