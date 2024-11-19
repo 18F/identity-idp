@@ -298,6 +298,18 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         expect(response).to render_template('idv/socure/document_capture/wait')
         expect(@analytics).to have_logged_event(:idv_doc_auth_document_capture_polling_wait_visited)
       end
+
+      context 'when the wait times out' do
+        before do
+          allow(subject).to receive(:wait_timed_out?).and_return(true)
+        end
+
+        it 'renders a technical difficulties message' do
+          get(:update)
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to eq('Technical difficulties!!!')
+        end
+      end
     end
 
     context 'when socure is disabled' do
