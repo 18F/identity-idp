@@ -2,7 +2,7 @@
 
 module Idv
   class ProfileMaker
-    attr_reader :pii_attributes
+    attr_reader :pii_attributes, :proofing_components
 
     def initialize(
       applicant:,
@@ -21,13 +21,14 @@ module Idv
       gpo_verification_needed:,
       in_person_verification_needed:,
       selfie_check_performed:,
+      proofing_components:,
       deactivation_reason: nil
     )
       profile = Profile.new(user: user, active: false, deactivation_reason: deactivation_reason)
       profile.initiating_service_provider = initiating_service_provider
       profile.deactivate_for_in_person_verification if in_person_verification_needed
       profile.encrypt_pii(pii_attributes, user_password)
-      profile.proofing_components = current_proofing_components
+      profile.proofing_components = proofing_components.to_json
       profile.fraud_pending_reason = fraud_pending_reason
 
       profile.idv_level = set_idv_level(
@@ -59,10 +60,6 @@ module Idv
       else
         :legacy_unsupervised
       end
-    end
-
-    def current_proofing_components
-      user.proofing_component&.as_json || {}
     end
 
     attr_accessor(

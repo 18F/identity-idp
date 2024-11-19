@@ -7,6 +7,7 @@ RSpec.describe Idv::ProfileMaker do
     let(:user_password) { user.password }
     let(:initiating_service_provider) { nil }
     let(:in_person_proofing_enforce_tmx_mock) { false }
+    let(:proofing_components) { { document_check: :mock } }
 
     subject do
       described_class.new(
@@ -18,12 +19,12 @@ RSpec.describe Idv::ProfileMaker do
     end
 
     it 'creates an inactive Profile with encrypted PII' do
-      proofing_component = ProofingComponent.create(user_id: user.id, document_check: 'mock')
       profile = subject.save_profile(
         fraud_pending_reason: nil,
         gpo_verification_needed: false,
         in_person_verification_needed: false,
         selfie_check_performed: false,
+        proofing_components:,
       )
       pii = subject.pii_attributes
 
@@ -32,7 +33,7 @@ RSpec.describe Idv::ProfileMaker do
       expect(profile.encrypted_pii).to_not be_nil
       expect(profile.encrypted_pii).to_not match('Some')
       expect(profile.fraud_pending_reason).to be_nil
-      expect(profile.proofing_components).to match(proofing_component.as_json)
+      expect(profile.proofing_components).to match(proofing_components.to_json)
       expect(profile.active).to eq(false)
       expect(profile.deactivation_reason).to be_nil
 
@@ -48,6 +49,7 @@ RSpec.describe Idv::ProfileMaker do
           deactivation_reason: :encryption_error,
           in_person_verification_needed: false,
           selfie_check_performed: false,
+          proofing_components:,
         )
       end
       it 'creates an inactive profile with deactivation reason' do
@@ -75,6 +77,7 @@ RSpec.describe Idv::ProfileMaker do
           deactivation_reason: nil,
           in_person_verification_needed: in_person_verification_needed,
           selfie_check_performed: false,
+          proofing_components:,
         )
       end
 
@@ -118,6 +121,7 @@ RSpec.describe Idv::ProfileMaker do
           deactivation_reason: nil,
           in_person_verification_needed: false,
           selfie_check_performed: false,
+          proofing_components:,
         )
       end
       it 'creates a pending profile for gpo verification' do
@@ -151,6 +155,7 @@ RSpec.describe Idv::ProfileMaker do
             deactivation_reason: nil,
             in_person_verification_needed: true,
             selfie_check_performed: false,
+            proofing_components:,
           )
         end
 
@@ -190,6 +195,7 @@ RSpec.describe Idv::ProfileMaker do
             deactivation_reason: nil,
             in_person_verification_needed: true,
             selfie_check_performed: false,
+            proofing_components:,
           )
         end
 
@@ -220,6 +226,7 @@ RSpec.describe Idv::ProfileMaker do
           deactivation_reason: nil,
           in_person_verification_needed: false,
           selfie_check_performed: selfie_check_performed,
+          proofing_components:,
         )
       end
 
@@ -267,6 +274,7 @@ RSpec.describe Idv::ProfileMaker do
           deactivation_reason: nil,
           in_person_verification_needed: false,
           selfie_check_performed: false,
+          proofing_components:,
         )
       end
       it 'creates a profile with the initiating sp recorded' do
