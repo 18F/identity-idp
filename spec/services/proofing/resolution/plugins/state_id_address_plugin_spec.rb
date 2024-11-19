@@ -289,29 +289,4 @@ RSpec.describe Proofing::Resolution::Plugins::StateIdAddressPlugin do
       end
     end
   end
-
-  describe '#proofer' do
-    subject(:proofer) { plugin.proofer }
-
-    before do
-      allow(IdentityConfig.store).to receive(:idv_resolution_default_vendor).
-        and_return(idv_resolution_default_vendor)
-    end
-
-    context 'idv_resolution_default_vendor is set to :instant_verify' do
-      let(:idv_resolution_default_vendor) { :instant_verify }
-
-      it 'creates an Instant Verify proofer' do
-        expect(proofer).to be_an_instance_of(Proofing::LexisNexis::InstantVerify::Proofer)
-      end
-    end
-
-    context 'idv_resolution_default_vendor is set to :mock' do
-      let(:idv_resolution_default_vendor) { :mock }
-
-      it 'creates a mock proofer' do
-        expect(proofer).to be_an_instance_of(Proofing::Mock::ResolutionMockClient)
-      end
-    end
-  end
 end
