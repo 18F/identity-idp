@@ -117,7 +117,7 @@ module DocAuth
             last_name: get_data(DATA_PATHS[:last_name]),
             name_suffix: nil,
             address1: get_data(DATA_PATHS[:address1]),
-            address2: address2,
+            address2:,
             city: get_data(DATA_PATHS[:city]),
             state: get_data(DATA_PATHS[:state]),
             zipcode: get_data(DATA_PATHS[:zipcode]),
