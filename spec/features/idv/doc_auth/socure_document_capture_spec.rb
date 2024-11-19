@@ -9,8 +9,8 @@ RSpec.feature 'document capture step', :js do
   let(:max_attempts) { 3 }
   let(:fake_analytics) { FakeAnalytics.new }
   let(:socure_webhook_secret_key) { 'socure_webhook_secret_key' }
-  let(:fake_socure_endpoint) { 'https://fake-socure.test/' }
-  let(:fake_socure_document_capture_app_url) { 'https://verify.socure.test/something' }
+  let(:fake_socure_document_request_endpoint) { 'https://fake-socure.test/document-request' }
+  let(:fake_socure_document_capture_app_url) { 'https://verify.fake-socure.test/something' }
 
   before(:each) do
     allow(IdentityConfig.store).to receive(:socure_enabled).and_return(true)
@@ -18,7 +18,7 @@ RSpec.feature 'document capture step', :js do
     allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return('Test SP')
     allow(IdentityConfig.store).to receive(:socure_webhook_secret_key).and_return(socure_webhook_secret_key)
     allow(IdentityConfig.store).to receive(:socure_document_request_endpoint).
-      and_return(fake_socure_endpoint)
+      and_return(fake_socure_document_request_endpoint)
     allow(IdentityConfig.store).to receive(:ruby_workers_idv_enabled).and_return(false)
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     @docv_transaction_token = stub_docv_document_request

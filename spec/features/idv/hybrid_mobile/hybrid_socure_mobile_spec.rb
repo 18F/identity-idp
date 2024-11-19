@@ -1,22 +1,28 @@
 require 'rails_helper'
 
-RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
+RSpec.describe 'Hybrid Flow' do #, :allow_net_connect_on_start do why is this here? doesn't allow stub_request
   include IdvHelper
   include IdvStepHelper
   include DocAuthHelper
 
   let(:phone_number) { '415-555-0199' }
   let(:sp) { :oidc }
+  let(:fake_socure_document_capture_app_url) { 'https://verify.fake-socure.test/something' }
+  let(:fake_socure_document_request_endpoint) { 'https://fake-socure.test/document-request' }
 
   before do
     allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(true)
     allow(IdentityConfig.store).to receive(:socure_enabled).and_return(true)
     allow(DocAuthRouter).to receive(:doc_auth_vendor_for_bucket).and_return(Idp::Constants::Vendors::SOCURE)
     allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
+    allow(IdentityConfig.store).to receive(:ruby_workers_idv_enabled).and_return(false)
+    allow(IdentityConfig.store).to receive(:socure_document_request_endpoint).
+      and_return(fake_socure_document_request_endpoint)
     allow(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
       @sms_link = config[:link]
       impl.call(**config)
     end.at_least(1).times
+    # stub_request will not work in this spec - Faraday timesout
     @docv_transaction_token = stub_docv_document_request
   end
 
@@ -72,7 +78,10 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       # attach_and_submit_images
 
       stub_docv_verification_data_pass
+      click_idv_continue
+      expect(page).to have_current_path(fake_socure_document_capture_app_url)
       socure_docv_send_webhook(docv_transaction_token: @docv_transaction_token)
+      visit idv_hybrid_mobile_socure_document_capture_update_url
 
       expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
       expect(page).to have_content(strip_nbsp(t('doc_auth.headings.capture_complete')))
@@ -179,13 +188,14 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       perform_in_browser(:mobile) do
         visit @sms_link
 
-        (max_attempts - 1).times do
-          attach_and_submit_images
-          click_on t('idv.failure.button.warning')
+        click_idv_continue
+        expect(page).to have_current_path(fake_socure_document_capture_app_url)
+        stub_docv_verification_data_pass
+        max_attempts.times do
+          socure_docv_send_webhook(docv_transaction_token: @docv_transaction_token)
         end
 
-        # final failure
-        attach_and_submit_images
+        visit idv_hybrid_mobile_socure_document_capture_update_url
 
         expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
         expect(page).not_to have_content(strip_nbsp(t('doc_auth.headings.capture_complete')))
@@ -198,81 +208,6 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
     end
   end
 
-  context 'barcode read error on mobile (redo document capture)' do
-    xit 'continues to ssn on desktop when user selects Continue', js: true do
-      user = nil
-
-      perform_in_browser(:desktop) do
-        user = sign_in_and_2fa_user
-        complete_doc_auth_steps_before_hybrid_handoff_step
-        clear_and_fill_in(:doc_auth_phone, phone_number)
-        click_send_link
-
-        expect(page).to have_content(t('doc_auth.headings.text_message'))
-      end
-
-      expect(@sms_link).to be_present
-
-      perform_in_browser(:mobile) do
-        visit @sms_link
-
-        mock_doc_auth_attention_with_barcode
-        attach_and_submit_images
-        click_idv_continue
-
-        expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
-        expect(page).to have_content(strip_nbsp(t('doc_auth.headings.capture_complete')))
-        expect(page).to have_text(t('doc_auth.instructions.switch_back'))
-      end
-
-      perform_in_browser(:desktop) do
-        expect(page).to have_current_path(idv_ssn_path, wait: 10)
-
-        fill_out_ssn_form_ok
-        click_idv_continue
-
-        expect(page).to have_current_path(idv_verify_info_path, wait: 10)
-
-        # verify pii is displayed
-        expect(page).to have_text('DAVID')
-        expect(page).to have_text('SAMPLE')
-        expect(page).to have_text('123 ABC AVE')
-
-        warning_link_text = t('doc_auth.headings.capture_scan_warning_link')
-        click_link warning_link_text
-
-        expect(current_path).to eq(idv_hybrid_handoff_path)
-        clear_and_fill_in(:doc_auth_phone, phone_number)
-        click_send_link
-      end
-
-      perform_in_browser(:mobile) do
-        visit @sms_link
-
-        DocAuth::Mock::DocAuthMockClient.reset!
-        attach_and_submit_images
-
-        expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
-      end
-
-      perform_in_browser(:desktop) do
-        expect(page).to have_current_path(idv_ssn_path, wait: 10)
-        complete_ssn_step
-        expect(page).to have_current_path(idv_verify_info_path)
-
-        # verify orig pii no longer displayed
-        expect(page).not_to have_text('DAVID')
-        expect(page).not_to have_text('SAMPLE')
-        expect(page).not_to have_text('123 ABC AVE')
-        # verify new pii from redo is displayed
-        expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:first_name])
-        expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:last_name])
-        expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:address1])
-
-        complete_verify_step
-      end
-    end
-  end
 
   it 'prefills the phone number used on the phone step if the user has no MFA phone', :js do
     user = create(:user, :with_authentication_app)
@@ -292,9 +227,11 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       visit @sms_link
 
       expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_url)
-
-      attach_liveness_images
-      submit_images
+      socure_docv_send_webhook(docv_transaction_token: @docv_transaction_token)
+      click_idv_continue
+      expect(page).to have_current_path(fake_socure_document_capture_app_url)
+      stub_docv_verification_data_pass
+      visit idv_hybrid_mobile_socure_document_capture_update_url
 
       expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
       expect(page).to have_text(t('doc_auth.instructions.switch_back'))
@@ -318,4 +255,30 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       )
     end
   end
+
+  # def stub_docv_document_request
+  #   token = SecureRandom.hex
+  #   allow_any_instance_of(DocAuth::Socure::Requests::DocumentRequest).to receive(:fetch).
+  #     and_return(
+  #       {
+  #         referenceId: 'socure-reference-id',
+  #         data: {
+  #           eventId: 'socure-event-id',
+  #           docvTransactionToken: token,
+  #           qrCode: 'qr-code',
+  #           url: fake_socure_document_capture_app_url,
+  #         },
+  #       },
+  #     )
+  #   token
+  # end
+
+  # def stub_docv_verification_data_pass
+  #   stub_docv_verification_data(body: SocureDocvFixtures.pass_json)
+  # end
+
+  # def stub_docv_verification_data(body:)
+  #   allow_any_instance_of(DocAuth::Socure::Requests::DocvResultRequest).to receive(:fetch).
+  #     and_return(body:)
+  # end
 end
