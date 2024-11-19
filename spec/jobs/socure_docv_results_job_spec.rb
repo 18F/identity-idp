@@ -26,8 +26,8 @@ RSpec.describe SocureDocvResultsJob do
     subject(:perform) do
       job.perform(document_capture_session_uuid: document_capture_session_uuid)
     end
-    subject(:perform_later) do
-      job.perform_later(document_capture_session_uuid: document_capture_session_uuid)
+    subject(:perform_now) do
+      job.perform(document_capture_session_uuid: document_capture_session_uuid, async: false)
     end
 
     let(:socure_response_body) do
@@ -117,17 +117,17 @@ RSpec.describe SocureDocvResultsJob do
       expect(fake_analytics).to have_logged_event(
         :idv_socure_verification_data_requested,
         hash_including(
-          expected_socure_log.merge({ async: false }),
+          expected_socure_log.merge({ async: true }),
         ),
       )
     end
 
-    it 'expect log with perform_later to have async eq true' do
-      perform_later
+    it 'expect log with perform_now to have async eq false' do
+      perform_now
       expect(fake_analytics).to have_logged_event(
         :idv_socure_verification_data_requested,
         hash_including(
-          expected_socure_log.merge({ async: true }),
+          expected_socure_log.merge({ async: false }),
         ),
       )
     end
