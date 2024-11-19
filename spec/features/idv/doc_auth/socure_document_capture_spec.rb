@@ -86,6 +86,7 @@ RSpec.feature 'document capture step', :js do
       end
     end
 
+    # ToDo post LG-14010
     context 'network connection errors' do
       xit 'catches network connection errors on document request', allow_browser_log: true do
         # expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
@@ -149,90 +150,57 @@ RSpec.feature 'document capture step', :js do
       expect(page).not_to have_content(review_issues_h1_heading)
     end
   end
-
-  def expect_rate_limit_warning(expected_remaining_attempts)
-    review_issues_rate_limit_warning = strip_tags(
-      t(
-        'idv.failure.attempts_html',
-        count: expected_remaining_attempts,
-      ),
-    )
-    expect(page).to have_content(review_issues_rate_limit_warning)
-  end
-
-  # do we need this?
-  def expect_resubmit_page_inline_error_messages(expected_count)
-    resubmit_page_inline_error_messages = strip_tags(
-      t('doc_auth.errors.general.fallback_field_level'),
-    )
-    expect(page).to have_content(resubmit_page_inline_error_messages).exactly(expected_count)
-  end
-
-  # do we need this?
-  def expect_to_try_again
-    click_try_again
-    expect(page).to have_current_path(idv_socure_document_capture_path)
-  end
-
-  def expect_costing_for_document
-    # %i[acuant_front_image acuant_back_image acuant_result].each do |cost_type|
-    #   expect(costing_for(cost_type)).to be_present
-    # end
-  end
-
-  def costing_for(cost_type)
-    # SpCost.where(ial: 2, issuer: 'urn:gov:gsa:openidconnect:sp:server', cost_type: cost_type.to_s)
-  end
 end
 
-# do wee need below tests copied from non-socure document_capture
-# RSpec.feature 'direct access to IPP on desktop', :js do
-#   include IdvStepHelper
-#   include DocAuthHelper
+RSpec.feature 'direct access to IPP on desktop', :js do
+  include IdvStepHelper
+  include DocAuthHelper
 
-#   context 'before handoff page' do
-#     let(:sp_ipp_enabled) { true }
-#     let(:in_person_proofing_opt_in_enabled) { true }
-#     let(:facial_match_required) { true }
-#     let(:user) { user_with_2fa }
+  context 'before handoff page' do
+    let(:sp_ipp_enabled) { true }
+    let(:in_person_proofing_opt_in_enabled) { true }
+    let(:facial_match_required) { false }
+    let(:user) { user_with_2fa }
 
-#     before do
-#       service_provider = create(:service_provider, :active, :in_person_proofing_enabled)
-#       allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).and_return(false)
-#       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-#       allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(
-#         in_person_proofing_opt_in_enabled,
-#       )
-#       allow(IdentityConfig.store).to receive(:allowed_biometric_ial_providers).
-#         and_return([service_provider.issuer])
-#       allow(IdentityConfig.store).to receive(
-#         :allowed_valid_authn_contexts_semantic_providers,
-#       ).and_return([service_provider.issuer])
-#       allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
-#         and_return(false)
-#       visit_idp_from_sp_with_ial2(
-#         :oidc,
-#         **{ client_id: service_provider.issuer,
-#             facial_match_required: facial_match_required },
-#       )
-#       sign_in_via_branded_page(user)
-#       complete_doc_auth_steps_before_agreement_step
+    before do
+      service_provider = create(:service_provider, :active, :in_person_proofing_enabled)
+      allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).and_return(false)
+      allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+      allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(
+        in_person_proofing_opt_in_enabled,
+      )
+      allow(IdentityConfig.store).to receive(:allowed_biometric_ial_providers).
+        and_return([service_provider.issuer])
+      allow(IdentityConfig.store).to receive(
+        :allowed_valid_authn_contexts_semantic_providers,
+      ).and_return([service_provider.issuer])
+      allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
+        and_return(false)
+      allow(IdentityConfig.store).to receive(:socure_enabled).and_return(true)
+      allow(DocAuthRouter).to receive(:doc_auth_vendor_for_bucket).and_return(Idp::Constants::Vendors::SOCURE)
+      visit_idp_from_sp_with_ial2(
+        :oidc,
+        **{ client_id: service_provider.issuer,
+            facial_match_required: facial_match_required },
+      )
+      sign_in_via_branded_page(user)
+      complete_doc_auth_steps_before_agreement_step
 
-#       visit idv_document_capture_path(step: 'hybrid_handoff')
-#     end
+      visit idv_socure_document_capture_path(step: 'hybrid_handoff')
+    end
 
-#     context 'when selfie is enabled' do
-#       it 'redirects back to agreement page' do
-#         expect(page).to have_current_path(idv_agreement_path)
-#       end
-#     end
+    context 'when selfie is enabled' do
+      it 'redirects back to agreement page' do
+        expect(page).to have_current_path(idv_agreement_path)
+      end
+    end
 
-#     context 'when selfie is disabled' do
-#       let(:facial_match_required) { false }
+    context 'when selfie is disabled' do
+      let(:facial_match_required) { false }
 
-#       it 'redirects back to agreement page' do
-#         expect(page).to have_current_path(idv_agreement_path)
-#       end
-#     end
-#   end
-# end
+      it 'redirects back to agreement page' do
+        expect(page).to have_current_path(idv_agreement_path)
+      end
+    end
+  end
+end

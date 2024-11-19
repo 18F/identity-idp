@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Hybrid Flow' do #, :allow_net_connect_on_start do why is this here? doesn't allow stub_request
+RSpec.describe 'Hybrid Flow' do
   include IdvHelper
   include IdvStepHelper
   include DocAuthHelper
@@ -22,7 +22,6 @@ RSpec.describe 'Hybrid Flow' do #, :allow_net_connect_on_start do why is this he
       @sms_link = config[:link]
       impl.call(**config)
     end.at_least(1).times
-    # stub_request will not work in this spec - Faraday timesout
     @docv_transaction_token = stub_docv_document_request
   end
 
@@ -199,7 +198,6 @@ RSpec.describe 'Hybrid Flow' do #, :allow_net_connect_on_start do why is this he
         visit idv_hybrid_mobile_socure_document_capture_update_url
 
         expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
-        # expect(page).not_to have_content(strip_nbsp(t('doc_auth.headings.capture_complete'))) why is this here?
         expect(page).to have_text(t('doc_auth.instructions.switch_back'))
       end
 
@@ -255,30 +253,4 @@ RSpec.describe 'Hybrid Flow' do #, :allow_net_connect_on_start do why is this he
       )
     end
   end
-
-  # def stub_docv_document_request
-  #   token = SecureRandom.hex
-  #   allow_any_instance_of(DocAuth::Socure::Requests::DocumentRequest).to receive(:fetch).
-  #     and_return(
-  #       {
-  #         referenceId: 'socure-reference-id',
-  #         data: {
-  #           eventId: 'socure-event-id',
-  #           docvTransactionToken: token,
-  #           qrCode: 'qr-code',
-  #           url: fake_socure_document_capture_app_url,
-  #         },
-  #       },
-  #     )
-  #   token
-  # end
-
-  # def stub_docv_verification_data_pass
-  #   stub_docv_verification_data(body: SocureDocvFixtures.pass_json)
-  # end
-
-  # def stub_docv_verification_data(body:)
-  #   allow_any_instance_of(DocAuth::Socure::Requests::DocvResultRequest).to receive(:fetch).
-  #     and_return(body:)
-  # end
 end
