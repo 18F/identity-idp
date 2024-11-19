@@ -85,8 +85,7 @@ module Users
     end
 
     def isInAbTestBucket
-      ab_test_bucket(:DESKTOP_FT_UNLOCK_SETUP) == (:desktop_ft_unlock_option_shown) &&
-        desktop_device?
+      ab_test_bucket(:DESKTOP_FT_UNLOCK_SETUP) == (:desktop_ft_unlock_option_shown)
     end
   end
 end
