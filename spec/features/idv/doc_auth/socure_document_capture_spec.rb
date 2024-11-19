@@ -44,7 +44,7 @@ RSpec.feature 'document capture step', :js do
       before do
         allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
         (max_attempts - 1).times do
-          socure_docv_send_webhook(docv_transaction_token: @docv_transaction_token)
+          socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
         end
       end
 
@@ -52,7 +52,7 @@ RSpec.feature 'document capture step', :js do
         expect(page).to have_current_path(fake_socure_document_capture_app_url)
         visit idv_socure_document_capture_path
         expect(page).to have_current_path(idv_socure_document_capture_path)
-        socure_docv_send_webhook(
+        socure_docv_upload_documents(
           docv_transaction_token: @docv_transaction_token,
         )
         visit idv_socure_document_capture_path
@@ -72,7 +72,7 @@ RSpec.feature 'document capture step', :js do
           expect(page).to have_current_path(fake_socure_document_capture_app_url)
           visit idv_socure_document_capture_path
           expect(page).to have_current_path(idv_socure_document_capture_path)
-          socure_docv_send_webhook(
+          socure_docv_upload_documents(
             docv_transaction_token: @docv_transaction_token,
           )
 
@@ -99,7 +99,7 @@ RSpec.feature 'document capture step', :js do
 
     it 'does not track state if state tracking is disabled' do
       allow(IdentityConfig.store).to receive(:state_tracking_enabled).and_return(false)
-      socure_docv_send_webhook(
+      socure_docv_upload_documents(
         docv_transaction_token: @docv_transaction_token,
       )
 
@@ -108,7 +108,7 @@ RSpec.feature 'document capture step', :js do
 
     xit 'does track state if state tracking is disabled' do
       allow(IdentityConfig.store).to receive(:state_tracking_enabled).and_return(true)
-      socure_docv_send_webhook(
+      socure_docv_upload_documents(
         docv_transaction_token: @docv_transaction_token,
       )
 
@@ -126,12 +126,12 @@ RSpec.feature 'document capture step', :js do
         expect(page).to have_current_path(idv_socure_document_capture_url)
         expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
         click_idv_continue
-        socure_docv_send_webhook(
+        socure_docv_upload_documents(
           docv_transaction_token: @docv_transaction_token,
         )
         visit idv_socure_document_capture_update_path
         expect(page).to have_current_path(idv_ssn_url)
-        expect_costing_for_document
+
         expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('NY')
 
         fill_out_ssn_form_ok

@@ -72,9 +72,19 @@ module DocumentCaptureStepHelper
     click_spinner_button_and_wait t('idv.failure.button.warning')
   end
 
+  def socure_docv_upload_documents(docv_transaction_token:)
+    [
+      'WAITING_FOR_USER_TO_REDIRECT',
+      'APP_OPENED',
+      'DOCUMENT_FRONT_UPLOADED',
+      'DOCUMENT_BACK_UPLOADED',
+      'DOCUMENTS_UPLOADED',
+      'SESSION_COMPLETE',
+    ].each{ |event_type| socure_docv_send_webhook(docv_transaction_token:, event_type:) }
+  end
+
   def socure_docv_send_webhook(
     docv_transaction_token:,
-    webhook_secret: IdentityConfig.store.socure_webhook_secret_key,
     event_type: 'DOCUMENTS_UPLOADED'
   )
     Faraday.post "http://#{[page.server.host, page.server.port].join(':')}/api/webhooks/socure/event" do |req|
@@ -86,7 +96,7 @@ module DocumentCaptureStepHelper
       }.to_json
       req.headers = {
         'Content-Type': 'application/json',
-        Authorization: "secret #{webhook_secret}",
+        Authorization: "secret #{IdentityConfig.store.socure_webhook_secret_key}",
       }
       req.options.context = { service_name: 'socure-docv-webhook' }
     end

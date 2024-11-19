@@ -77,7 +77,7 @@ RSpec.describe 'Hybrid Flow' do
       stub_docv_verification_data_pass
       click_idv_continue
       expect(page).to have_current_path(fake_socure_document_capture_app_url)
-      socure_docv_send_webhook(docv_transaction_token: @docv_transaction_token)
+      socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
       visit idv_hybrid_mobile_socure_document_capture_update_url
 
       expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
@@ -190,7 +190,7 @@ RSpec.describe 'Hybrid Flow' do
         expect(page).to have_current_path(fake_socure_document_capture_app_url)
         stub_docv_verification_data_pass
         max_attempts.times do
-          socure_docv_send_webhook(docv_transaction_token: @docv_transaction_token)
+          socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
         end
 
         visit idv_hybrid_mobile_socure_document_capture_update_url
@@ -226,7 +226,7 @@ RSpec.describe 'Hybrid Flow' do
       stub_docv_verification_data_pass
       click_idv_continue
       expect(page).to have_current_path(fake_socure_document_capture_app_url)
-      socure_docv_send_webhook(docv_transaction_token: @docv_transaction_token)
+      socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
       visit idv_hybrid_mobile_socure_document_capture_update_url
 
       expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
