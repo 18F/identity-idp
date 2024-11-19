@@ -138,7 +138,7 @@ RSpec.describe Proofing::Resolution::Plugins::InstantVerifyResidentialAddressPlu
     end
 
     context 'idv_resolution_default_vendor is set to :instant_verify' do
-      let(:idv_resolution_default_vendor) {          :instant_verify }
+      let(:idv_resolution_default_vendor) { :instant_verify }
 
       it 'creates an Instant Verify proofer' do
         expect(proofer).to be_an_instance_of(Proofing::LexisNexis::InstantVerify::Proofer)
