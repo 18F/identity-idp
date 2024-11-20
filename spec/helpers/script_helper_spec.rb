@@ -107,6 +107,18 @@ RSpec.describe ScriptHelper do
         end
       end
 
+      context 'with preload links header disabled' do
+        before do
+          javascript_packs_tag_once('application', preload_links_header: false)
+        end
+
+        it 'does not append preload header' do
+          render_javascript_pack_once_tags
+
+          expect(response.headers['link']).to eq('</document-capture.js>;rel=preload;as=script')
+        end
+      end
+
       context 'with attributes' do
         before do
           javascript_packs_tag_once('track-errors', defer: true)
