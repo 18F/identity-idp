@@ -1255,10 +1255,10 @@ module AnalyticsEvents
     flow_path:,
     step:,
     analytics_id:,
-    redo_document_capture:,
-    skip_hybrid_handoff:,
     liveness_checking_required:,
     selfie_check_required:,
+    redo_document_capture: nil,
+    skip_hybrid_handoff: nil,
     opted_in_to_in_person_proofing: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     **extra

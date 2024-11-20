@@ -101,10 +101,8 @@ module Idv
         def analytics_arguments
           {
             flow_path: 'hybrid',
-            step: 'socure_hybrid_document_capture',
+            step: 'socure_document_capture',
             analytics_id: 'Doc Auth',
-            redo_document_capture: nil,
-            skip_hybrid_handoff: false,
             liveness_checking_required: false,
             selfie_check_required: false,
           }
