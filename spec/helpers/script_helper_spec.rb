@@ -82,8 +82,8 @@ RSpec.describe ScriptHelper do
         render_javascript_pack_once_tags
 
         expect(response.headers['link']).to eq(
-          '</application.js>; rel=preload; as=script,' \
-            '</document-capture.js>; rel=preload; as=script',
+          '</application.js>;rel=preload;as=script,' \
+            '</document-capture.js>;rel=preload;as=script',
         )
         expect(response.headers['link']).to_not include('nopush')
       end
