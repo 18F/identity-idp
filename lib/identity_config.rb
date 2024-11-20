@@ -454,7 +454,6 @@ module IdentityConfig
     config.add(:usps_upload_sftp_timeout, type: :integer)
     config.add(:usps_upload_sftp_username, type: :string)
     config.add(:valid_authn_contexts, type: :json)
-    config.add(:valid_authn_contexts_semantic, type: :json)
     config.add(:vendor_status_lexisnexis_instant_verify, type: :symbol, enum: VENDOR_STATUS_OPTIONS)
     config.add(:vendor_status_lexisnexis_phone_finder, type: :symbol, enum: VENDOR_STATUS_OPTIONS)
     config.add(:vendor_status_lexisnexis_trueid, type: :symbol, enum: VENDOR_STATUS_OPTIONS)
