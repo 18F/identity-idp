@@ -123,6 +123,7 @@ module Proofing
                                      StringRedacter.redact_alphanumeric(state_id_number)
                                    end
         {
+          birth_year: applicant_pii[:dob]&.to_date&.year,
           state: applicant_pii[:state],
           identity_doc_address_state: applicant_pii[:identity_doc_address_state],
           state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
