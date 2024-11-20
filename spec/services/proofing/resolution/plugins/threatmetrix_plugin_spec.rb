@@ -44,7 +44,12 @@ RSpec.describe Proofing::Resolution::Plugins::ThreatMetrixPlugin do
 
       it 'calls the ThreatMetrix proofer' do
         call
-        expect(plugin.proofer).to have_received(:proof)
+        expect(plugin.proofer).to have_received(:proof).with(
+          **applicant_pii,
+          threatmetrix_session_id: threatmetrix_session_id,
+          email: user_email,
+          request_ip: request_ip,
+        )
       end
 
       it 'creates a ThreatMetrix associated cost' do

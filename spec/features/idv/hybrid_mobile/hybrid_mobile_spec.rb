@@ -10,7 +10,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
 
   before do
     allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(true)
-    allow(IdentityConfig.store).to receive(:socure_enabled).and_return(true)
+    allow(IdentityConfig.store).to receive(:socure_docv_enabled).and_return(true)
     allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
     allow(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
       @sms_link = config[:link]

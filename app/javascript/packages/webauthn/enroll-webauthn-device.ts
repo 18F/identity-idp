@@ -101,6 +101,7 @@ async function enrollWebauthnDevice({
         // contributes to abandonment or loss of access.
         userVerification: 'discouraged',
         authenticatorAttachment: platformAuthenticator ? 'platform' : 'cross-platform',
+        residentKey: platformAuthenticator ? 'preferred' : undefined,
       },
       excludeCredentials,
     } as PublicKeyCredentialCreationOptionsWithHints,

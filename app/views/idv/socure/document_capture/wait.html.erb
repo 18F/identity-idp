@@ -1,0 +1,30 @@
+<%= content_for(:meta_refresh) { @refresh_interval&.to_s || '15' } %>
+<% self.title = t('titles.doc_auth.verify') %>
+<% content_for(:pre_flash_content) do %>
+  <%= render StepIndicatorComponent.new(
+        steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS,
+        current_step: :verify_id,
+        locale_scope: 'idv',
+        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+      ) %>
+<% end %>
+
+<%= image_tag(
+      asset_url('id-card.svg'),
+      alt: '',
+      width: 216,
+      height: 116,
+      class: 'margin-bottom-4',
+    ) %>
+
+<%= render PageHeadingComponent.new do %>
+  <%= t('doc_auth.headings.interstitial') %>
+<% end %>
+
+<p class='margin-top-2'>
+  <%= t('doc_auth.info.interstitial_eta') %>
+</p>
+
+<p>
+  <%= t('doc_auth.info.interstitial_thanks') %>
+</p>

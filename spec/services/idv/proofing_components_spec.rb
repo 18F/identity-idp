@@ -38,6 +38,7 @@ RSpec.describe Idv::ProofingComponents do
       allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?).
         and_return(true)
       idv_session.threatmetrix_review_status = 'pass'
+      idv_session.source_check_vendor = 'aamva'
     end
 
     it 'returns expected result' do
@@ -63,6 +64,7 @@ RSpec.describe Idv::ProofingComponents do
     context 'in-person proofing' do
       context 'establishing' do
         let!(:enrollment) { create(:in_person_enrollment, :establishing, user:) }
+
         it 'returns USPS' do
           expect(subject.document_check).to eql(Idp::Constants::Vendors::USPS)
         end
@@ -70,6 +72,7 @@ RSpec.describe Idv::ProofingComponents do
 
       context 'pending' do
         let!(:enrollment) { create(:in_person_enrollment, :pending, user:) }
+
         it 'returns USPS' do
           expect(subject.document_check).to eql(Idp::Constants::Vendors::USPS)
         end
@@ -80,13 +83,16 @@ RSpec.describe Idv::ProofingComponents do
       before do
         allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return('test_vendor')
       end
+
       context 'before doc auth complete' do
         it 'returns nil' do
           expect(subject.document_check).to be_nil
         end
       end
+
       context 'after doc auth completed successfully' do
         let(:pii_from_doc) { Idp::Constants::MOCK_IDV_APPLICANT }
+
         it 'returns doc auth vendor' do
           expect(subject.document_check).to eql('test_vendor')
         end
@@ -98,6 +104,7 @@ RSpec.describe Idv::ProofingComponents do
     context 'in-person proofing' do
       context 'establishing' do
         let!(:enrollment) { create(:in_person_enrollment, :establishing, user:) }
+
         it 'returns nil' do
           expect(subject.document_type).to be_nil
         end
@@ -105,6 +112,7 @@ RSpec.describe Idv::ProofingComponents do
 
       context 'pending' do
         let!(:enrollment) { create(:in_person_enrollment, :pending, user:) }
+
         it 'returns nil' do
           expect(subject.document_type).to be_nil
         end
@@ -117,8 +125,10 @@ RSpec.describe Idv::ProofingComponents do
           expect(subject.document_type).to be_nil
         end
       end
+
       context 'after doc auth completed successfully' do
         let(:pii_from_doc) { Idp::Constants::MOCK_IDV_APPLICANT }
+
         it 'returns doc auth vendor' do
           expect(subject.document_type).to eql('state_id')
         end
@@ -134,6 +144,7 @@ RSpec.describe Idv::ProofingComponents do
     context 'after verification' do
       before do
         idv_session.mark_verify_info_step_complete!
+        idv_session.source_check_vendor = 'aamva'
       end
 
       it 'returns aamva' do
@@ -195,10 +206,12 @@ RSpec.describe Idv::ProofingComponents do
         before do
           idv_session.threatmetrix_review_status = 'pass'
         end
+
         it 'returns true' do
           expect(subject.threatmetrix).to be_truthy
         end
       end
+
       context 'threatmetrix_review_status not present' do
         it 'returns nil' do
           expect(subject.threatmetrix).to be_nil
@@ -216,6 +229,7 @@ RSpec.describe Idv::ProofingComponents do
         before do
           idv_session.threatmetrix_review_status = 'pass'
         end
+
         it 'returns false' do
           expect(subject.threatmetrix).to eql(false)
         end
@@ -234,10 +248,12 @@ RSpec.describe Idv::ProofingComponents do
       before do
         idv_session.threatmetrix_review_status = 'pass'
       end
+
       it 'returns value' do
         expect(subject.threatmetrix_review_status).to eql('pass')
       end
     end
+
     context 'threatmetrix_review_status not present in idv_session' do
       it 'returns nil' do
         expect(subject.threatmetrix_review_status).to be_nil

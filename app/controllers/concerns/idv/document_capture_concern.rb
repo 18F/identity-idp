@@ -89,10 +89,5 @@ module Idv
       doc_auth_log.state = state
       doc_auth_log.save!
     end
-
-    def cancel_establishing_in_person_enrollments(user: current_user)
-      UspsInPersonProofing::EnrollmentHelper.
-        cancel_stale_establishing_enrollments_for_user(user)
-    end
   end
 end

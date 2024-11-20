@@ -17,6 +17,7 @@ class MarketingSite
     verify-your-identity/phone-number
     verify-your-identity/verify-your-address-by-mail
     verify-your-identity/overview
+    verify-your-identity/verify-your-identity-in-person/find-a-participating-post-office
   ].to_set.freeze
 
   def self.locale_segment

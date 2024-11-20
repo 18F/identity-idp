@@ -7,7 +7,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
   let(:fake_socure_endpoint) { 'https://fake-socure.test' }
   let(:user) { create(:user) }
   let(:stored_result) { nil }
-  let(:socure_enabled) { true }
+  let(:socure_docv_enabled) { true }
 
   let(:document_capture_session) do
     DocumentCaptureSession.create(
@@ -18,14 +18,17 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
   let(:document_capture_session_uuid) { document_capture_session&.uuid }
 
   before do
-    allow(IdentityConfig.store).to receive(:socure_enabled).
-      and_return(socure_enabled)
-    allow(IdentityConfig.store).to receive(:socure_document_request_endpoint).
+    allow(IdentityConfig.store).to receive(:socure_docv_enabled).
+      and_return(socure_docv_enabled)
+    allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint).
       and_return(fake_socure_endpoint)
     allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(idv_vendor)
     allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(idv_vendor)
 
     allow(subject).to receive(:stored_result).and_return(stored_result)
+
+    session[:doc_capture_user_id] = user&.id
+    session[:document_capture_session_uuid] = document_capture_session_uuid
   end
 
   describe 'before_actions' do
@@ -48,9 +51,6 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
         status: 200,
         body: JSON.generate(response_body),
       )
-
-      session[:doc_capture_user_id] = user&.id
-      session[:document_capture_session_uuid] = document_capture_session_uuid
     end
 
     context 'with no user id in session' do
@@ -113,7 +113,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
       it 'creates a DocumentRequest' do
         expect(request_class).to have_received(:new).
           with(
-            redirect_url: idv_hybrid_mobile_socure_document_capture_url,
+            redirect_url: idv_hybrid_mobile_socure_document_capture_update_url,
             language: expected_language,
           )
       end
@@ -135,7 +135,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
                     documentType: 'license',
                     redirect: {
                       method: 'GET',
-                      url: idv_hybrid_mobile_socure_document_capture_url,
+                      url: idv_hybrid_mobile_socure_document_capture_update_url,
                     },
                     language: expected_language,
                   },
@@ -157,7 +157,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
                     documentType: 'license',
                     redirect: {
                       method: 'GET',
-                      url: idv_hybrid_mobile_socure_document_capture_url,
+                      url: idv_hybrid_mobile_socure_document_capture_update_url,
                     },
                     language: 'zh-cn',
                   },
@@ -195,7 +195,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
     end
 
     context 'when socure is disabled' do
-      let(:socure_enabled) { false }
+      let(:socure_docv_enabled) { false }
       it 'the webhook route does not exist' do
         get(:show)
 
@@ -228,7 +228,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
         }
       end
       before do
-        allow(IdentityConfig.store).to receive(:socure_document_request_endpoint).
+        allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint).
           and_return(fake_socure_endpoint)
       end
       it 'connection timeout still responds to user' do
@@ -273,18 +273,47 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
   end
 
   describe '#update' do
-    it 'returns OK (200)' do
-      post(:update)
+    let(:stored_result) do
+      DocumentCaptureSessionResult.new(
+        success: true,
+        selfie_status: 'not_processed',
+        pii: { state: 'MD' },
+      )
+    end
 
-      expect(response).to have_http_status(:ok)
+    before do
+      stub_sign_in(user)
+    end
+
+    it 'redirects to the capture complete page' do
+      get(:update)
+
+      expect(response).to redirect_to(idv_hybrid_mobile_capture_complete_url)
     end
 
     context 'when socure is disabled' do
-      let(:socure_enabled) { false }
+      let(:socure_docv_enabled) { false }
+
       it 'the webhook route does not exist' do
-        post(:update)
+        get(:update)
 
         expect(response).to be_not_found
+      end
+    end
+
+    context 'when socure reports failure' do
+      let(:stored_result) do
+        DocumentCaptureSessionResult.new(
+          success: false,
+          selfie_status: 'not_processed',
+          pii: { state: 'MD' },
+        )
+      end
+
+      it 'redirects back to the capture page' do
+        get(:update)
+
+        expect(response).to redirect_to(idv_hybrid_mobile_socure_document_capture_url)
       end
     end
   end

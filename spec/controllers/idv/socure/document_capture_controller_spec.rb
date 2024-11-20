@@ -17,7 +17,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       attention_with_barcode: false,
     )
   end
-  let(:socure_enabled) { true }
+  let(:socure_docv_enabled) { true }
 
   let(:document_capture_session) do
     DocumentCaptureSession.create(
@@ -27,9 +27,9 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
   end
 
   before do
-    allow(IdentityConfig.store).to receive(:socure_enabled).
-      and_return(socure_enabled)
-    allow(IdentityConfig.store).to receive(:socure_document_request_endpoint).
+    allow(IdentityConfig.store).to receive(:socure_docv_enabled).
+      and_return(socure_docv_enabled)
+    allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint).
       and_return(fake_socure_endpoint)
     allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(idv_vendor)
     allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(idv_vendor)
@@ -41,6 +41,8 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
     allow(subject).to receive(:user_session).and_return(user_session)
 
     subject.idv_session.document_capture_session_uuid = document_capture_session.uuid
+
+    stub_analytics
   end
 
   describe '#step_info' do
@@ -208,7 +210,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
     end
 
     context 'when socure is disabled' do
-      let(:socure_enabled) { false }
+      let(:socure_docv_enabled) { false }
       it 'the webhook route does not exist' do
         get(:show)
 
@@ -241,7 +243,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         }
       end
       before do
-        allow(IdentityConfig.store).to receive(:socure_document_request_endpoint).
+        allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint).
           and_return(fake_socure_endpoint)
       end
       it 'connection timeout still responds to user' do
@@ -286,10 +288,11 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
   end
 
   describe '#update' do
-    it 'returns OK (200)' do
+    it 'returns FOUND (302) and redirects to SSN' do
       get(:update)
 
       expect(response).to redirect_to(idv_ssn_path)
+      expect(@analytics).to have_logged_event('IdV: doc auth document_capture submitted')
     end
 
     context 'when doc auth fails' do
@@ -299,13 +302,37 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         get(:update)
 
         expect(response).to redirect_to(idv_socure_document_capture_path)
+        expect(@analytics).to have_logged_event('IdV: doc auth document_capture submitted')
+      end
+    end
+
+    context 'when stored_result is nil' do
+      let(:stored_result) { nil }
+
+      it 'renders the wait view' do
+        get(:update)
+        expect(response).to render_template('idv/socure/document_capture/wait')
+        expect(@analytics).to have_logged_event(:idv_doc_auth_document_capture_polling_wait_visited)
+      end
+
+      context 'when the wait times out' do
+        before do
+          allow(subject).to receive(:wait_timed_out?).and_return(true)
+        end
+
+        it 'renders a technical difficulties message' do
+          get(:update)
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to eq('Technical difficulties!!!')
+        end
       end
     end
 
     context 'when socure is disabled' do
-      let(:socure_enabled) { false }
+      let(:socure_docv_enabled) { false }
+
       it 'the webhook route does not exist' do
-        post(:update)
+        get(:update)
 
         expect(response).to be_not_found
       end

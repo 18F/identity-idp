@@ -4,7 +4,7 @@ class SocureWebhookController < ApplicationController
   include RenderConditionConcern
 
   skip_before_action :verify_authenticity_token
-  check_or_render_not_found -> { IdentityConfig.store.socure_enabled }
+  check_or_render_not_found -> { IdentityConfig.store.socure_docv_enabled }
   before_action :check_token
   before_action :check_socure_event
 
@@ -65,12 +65,12 @@ class SocureWebhookController < ApplicationController
   def verify_current_key(authorization_header:)
     ActiveSupport::SecurityUtils.secure_compare(
       authorization_header,
-      IdentityConfig.store.socure_webhook_secret_key,
+      IdentityConfig.store.socure_docv_webhook_secret_key,
     )
   end
 
   def verify_queue(authorization_header:)
-    IdentityConfig.store.socure_webhook_secret_key_queue.any? do |key|
+    IdentityConfig.store.socure_docv_webhook_secret_key_queue.any? do |key|
       ActiveSupport::SecurityUtils.secure_compare(
         authorization_header,
         key,
@@ -82,7 +82,7 @@ class SocureWebhookController < ApplicationController
     analytics.idv_doc_auth_socure_webhook_received(
       created_at: event[:created],
       customer_user_id: event[:customerUserId],
-      docv_transaction_token: event[:docvTransactionToken],
+      docv_transaction_token:,
       event_type: event[:eventType],
       reference_id: event[:referenceId],
       user_id: user&.uuid,
