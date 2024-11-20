@@ -331,6 +331,11 @@
          },
                   {
             "Group": "IDAUTH_FIELD_DATA",
+            "Name": "Fields_NameSuffix",
+            "Values": [{"Value": "JR"}]
+         },
+                  {
+            "Group": "IDAUTH_FIELD_DATA",
             "Name": "Fields_DOB_Year",
             "Values": [{"Value": "1966"}]
          },
