@@ -29,12 +29,11 @@ module ScriptHelper
             )
           end
 
-          concat javascript_include_tag(
-            UriService.add_params(source, url_params),
+          concat tag.script(
+            src: UriService.add_params(source, url_params),
             **attributes,
             crossorigin:,
             integrity:,
-            preload_links_header: false,
           )
         end
       end
