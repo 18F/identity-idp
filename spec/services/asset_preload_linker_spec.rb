@@ -34,6 +34,14 @@ RSpec.describe AssetPreloadLinker do
       it 'returns a comma-separated link value of the new and existing link' do
         expect(result).to eq('</a.js>;rel=preload;as=script,</script.js>;rel=preload;as=script')
       end
+
+      context 'with existing link value as frozen string' do
+        let(:link) { '</a.js>;rel=preload;as=script'.freeze }
+
+        it 'returns a comma-separated link value of the new and existing link' do
+          expect(result).to eq('</a.js>;rel=preload;as=script,</script.js>;rel=preload;as=script')
+        end
+      end
     end
 
     context 'with crossorigin option' do
