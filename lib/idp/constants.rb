@@ -16,6 +16,9 @@ module Idp
       MOCK = 'mock'
       USPS = 'usps'
       AAMVA = 'aamva'
+      AAMVA_UNSUPPORTED_JURISDICTION = 'UnsupportedJurisdiction'
+      STATE_ID_MOCK = 'StateIdMock'
+      SOURCE_CHECK = [AAMVA, AAMVA_UNSUPPORTED_JURISDICTION, STATE_ID_MOCK].freeze
     end
 
     # US State and Territory codes are

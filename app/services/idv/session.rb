@@ -1,6 +1,46 @@
 # frozen_string_literal: true
 
 module Idv
+  # @attr address_edited [Boolean, nil]
+  # @attr address_verification_mechanism [String, nil]
+  # @attr applicant [Struct, nil]
+  # @attr document_capture_session_uuid [String, nil]
+  # @attr flow_path [String, nil]
+  # @attr go_back_path [String, nil]
+  # @attr gpo_code_verified [Boolean, nil]
+  # @attr had_barcode_attention_error [Boolean, nil]
+  # @attr had_barcode_read_failure [Boolean, nil]
+  # @attr idv_consent_given [Boolean, nil]
+  # @attr idv_consent_given_at [String, nil]
+  # @attr idv_phone_step_document_capture_session_uuid [String, nil]
+  # @attr mail_only_warning_shown [Boolean, nil]
+  # @attr opted_in_to_in_person_proofing [Boolean, nil]
+  # @attr personal_key [String, nil]
+  # @attr personal_key_acknowledged [Boolean, nil]
+  # @attr phone_for_mobile_flow [String, nil]
+  # @attr previous_phone_step_params [Array]
+  # @attr previous_ssn [String, nil]
+  # @attr profile_id [String, nil]
+  # @attr proofing_started_at [String, nil]
+  # @attr redo_document_capture [Boolean, nil]
+  # @attr resolution_successful [Boolean, nil]
+  # @attr selfie_check_performed [Boolean, nil]
+  # @attr selfie_check_required [Boolean, nil]
+  # @attr skip_doc_auth [Boolean, nil]
+  # @attr skip_doc_auth_from_handoff [Boolean, nil]
+  # @attr skip_doc_auth_from_how_to_verify [Boolean, nil]
+  # @attr skip_hybrid_handoff [Boolean, nil]
+  # @attr source_check_vendor [String, nil]
+  # @attr ssn [String, nil]
+  # @attr threatmetrix_review_status [String, nil]
+  # @attr threatmetrix_session_id [String, nil]
+  # @attr user_phone_confirmation [Boolean, nil]
+  # @attr vendor_phone_confirmation [Boolean, nil]
+  # @attr verify_info_step_document_capture_session_uuid [String, nil]
+  # @attr welcome_visited [Boolean, nil]
+  # @attr_reader current_user [User]
+  # @attr_reader gpo_otp [String, nil]
+  # @attr_reader service_provider [ServiceProvider]
   class Session
     VALID_SESSION_ATTRIBUTES = %i[
       address_edited
@@ -25,6 +65,7 @@ module Idv
       profile_id
       proofing_started_at
       redo_document_capture
+      source_check_vendor
       resolution_successful
       selfie_check_performed
       selfie_check_required
