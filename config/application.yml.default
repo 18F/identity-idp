@@ -36,7 +36,6 @@ address_identity_proofing_supported_country_codes: '["AS", "GU", "MP", "PR", "US
 all_redirect_uris_cache_duration_minutes: 2
 allowed_biometric_ial_providers: '[]'
 allowed_ialmax_providers: '[]'
-allowed_valid_authn_contexts_semantic_providers: '[]'
 allowed_verified_within_providers: '[]'
 asset_host: ''
 async_stale_job_timeout_seconds: 300
@@ -59,7 +58,6 @@ backup_code_user_id_per_ip_attempt_window_exponential_factor: 1.1
 backup_code_user_id_per_ip_attempt_window_in_minutes: 720
 backup_code_user_id_per_ip_attempt_window_max_minutes: 43_200
 backup_code_user_id_per_ip_max_attempts: 50
-biometric_ial_enabled: true
 broken_personal_key_window_finish: '2021-09-22T00:00:00Z'
 broken_personal_key_window_start: '2021-07-29T00:00:00Z'
 check_user_password_compromised_enabled: false
@@ -133,7 +131,6 @@ facial_match_general_availability_enabled: true
 feature_idv_force_gpo_verification_enabled: false
 feature_idv_hybrid_flow_enabled: true
 feature_select_email_to_share_enabled: true
-feature_valid_authn_contexts_semantic_enabled: true
 geo_data_file_path: 'geo_data/GeoLite2-City.mmdb'
 get_usps_proofing_results_job_cron: '0/30 * * * *'
 get_usps_proofing_results_job_reprocess_delay_minutes: 5
@@ -507,7 +504,6 @@ production:
   aamva_send_id_type: false
   aamva_verification_url: 'https://verificationservices-cert.aamva.org:18449/dldv/2.1/online'
   available_locales: 'en,es,fr'
-  biometric_ial_enabled: false
   disable_email_sending: false
   disable_logout_get_request: false
   email_registrations_per_ip_track_only_mode: true
@@ -515,7 +511,6 @@ production:
   enable_usps_verification: false
   facial_match_general_availability_enabled: false
   feature_select_email_to_share_enabled: false
-  feature_valid_authn_contexts_semantic_enabled: false
   idv_sp_required: true
   invalid_gpo_confirmation_zipcode: ''
   lexisnexis_threatmetrix_mock_enabled: false
@@ -543,7 +538,6 @@ test:
   aamva_public_key: 123abc
   account_reset_fraud_user_wait_period_days: 30
   allowed_biometric_ial_providers: '["urn:gov:gsa:openidconnect:sp:server"]'
-  allowed_valid_authn_contexts_semantic_providers: '["urn:gov:gsa:openidconnect:sp:server"]'
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
   dashboard_api_token: 123ABC

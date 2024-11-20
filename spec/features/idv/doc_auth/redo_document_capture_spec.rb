@@ -502,9 +502,6 @@ RSpec.feature 'document capture step', :js do
               allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(99)
               allow(IdentityConfig.store).to receive(:allowed_biometric_ial_providers).
                 and_return([ipp_service_provider.issuer])
-              allow(IdentityConfig.store).to receive(
-                :allowed_valid_authn_contexts_semantic_providers,
-              ).and_return([ipp_service_provider.issuer])
               perform_in_browser(:mobile) do
                 visit_idp_from_sp_with_ial2(
                   :oidc,
@@ -773,9 +770,6 @@ RSpec.feature 'direct access to IPP on desktop', :js do
       )
       allow(IdentityConfig.store).to receive(:allowed_biometric_ial_providers).
         and_return([service_provider.issuer])
-      allow(IdentityConfig.store).to receive(
-        :allowed_valid_authn_contexts_semantic_providers,
-      ).and_return([service_provider.issuer])
       allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
         and_return(false)
       visit_idp_from_sp_with_ial2(

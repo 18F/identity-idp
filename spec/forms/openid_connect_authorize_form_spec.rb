@@ -198,11 +198,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
       end
 
       context 'with a known IAL value' do
-        before do
-          allow(IdentityConfig.store).to receive(
-            :allowed_valid_authn_contexts_semantic_providers,
-          ).and_return(client_id)
-        end
         let(:acr_values) do
           [
             'unknown-value',
