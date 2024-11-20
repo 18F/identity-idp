@@ -139,7 +139,7 @@ RSpec.describe Reporting::ProtocolsReport do
           saml_signature_query
         ].each do |query|
           expect(client).to have_received(:fetch).with(
-            query: report.send(query),
+            query: report.public_send(query),
             **time_query,
           )
         end
