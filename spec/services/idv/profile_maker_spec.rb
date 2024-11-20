@@ -33,7 +33,7 @@ RSpec.describe Idv::ProfileMaker do
       expect(profile.encrypted_pii).to_not be_nil
       expect(profile.encrypted_pii).to_not match('Some')
       expect(profile.fraud_pending_reason).to be_nil
-      expect(profile.proofing_components).to match(proofing_components.to_json)
+      expect(profile.proofing_components).to match(proofing_components)
       expect(profile.active).to eq(false)
       expect(profile.deactivation_reason).to be_nil
 

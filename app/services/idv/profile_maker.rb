@@ -28,7 +28,7 @@ module Idv
       profile.initiating_service_provider = initiating_service_provider
       profile.deactivate_for_in_person_verification if in_person_verification_needed
       profile.encrypt_pii(pii_attributes, user_password)
-      profile.proofing_components = proofing_components.to_json
+      profile.proofing_components = proofing_components
       profile.fraud_pending_reason = fraud_pending_reason
 
       profile.idv_level = set_idv_level(
