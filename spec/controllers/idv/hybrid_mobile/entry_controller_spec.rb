@@ -56,9 +56,13 @@ RSpec.describe Idv::HybridMobile::EntryController do
         {}
       end
       let(:idv_vendor) { Idp::Constants::Vendors::MOCK }
+      let(:vot) { 'P1' }
 
       before do
+        resolved_authn_context = Vot::Parser.new(vector_of_trust: vot).parse
         allow(controller).to receive(:session).and_return(session)
+        allow(controller).to receive(:resolved_authn_context_result).
+          and_return(resolved_authn_context)
         get :show, params: { 'document-capture-session': session_uuid }
       end
 
@@ -67,6 +71,15 @@ RSpec.describe Idv::HybridMobile::EntryController do
 
         it 'redirects to the first step' do
           expect(response).to redirect_to idv_hybrid_mobile_socure_document_capture_url
+        end
+      end
+
+      context 'doc auth vendor is socure but facial match is required' do
+        let(:idv_vendor) { Idp::Constants::Vendors::SOCURE }
+        let(:vot) { 'Pb' }
+
+        it 'redirects to the lexis nexis first step' do
+          expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
         end
       end
 

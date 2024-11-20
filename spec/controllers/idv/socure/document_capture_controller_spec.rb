@@ -77,11 +77,27 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
     end
 
     context 'when we try to use this controller but we should be using the LN/mock version' do
-      let(:idv_vendor) { Idp::Constants::Vendors::LEXIS_NEXIS }
+      context 'when doc_auth_vendor is Lexis Nexis' do
+        let(:idv_vendor) { Idp::Constants::Vendors::LEXIS_NEXIS }
 
-      it 'redirects to the LN/mock controller' do
-        get :show
-        expect(response).to redirect_to idv_document_capture_url
+        it 'redirects to the LN/mock controller' do
+          get :show
+          expect(response).to redirect_to idv_document_capture_url
+        end
+      end
+
+      context 'when facial match is required' do
+        let(:vot) { 'Pb' }
+        before do
+          resolved_authn_context = Vot::Parser.new(vector_of_trust: vot).parse
+          allow(controller).to receive(:resolved_authn_context_result).
+            and_return(resolved_authn_context)
+        end
+
+        it 'redirects to the LN/mock controller' do
+          get :show
+          expect(response).to redirect_to idv_document_capture_url
+        end
       end
     end
 
