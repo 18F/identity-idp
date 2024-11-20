@@ -3310,6 +3310,11 @@ module AnalyticsEvents
   # @param [Integer] enrollments_failed number of enrollments which failed identity proofing
   # @param [Integer] enrollments_in_progress number of enrollments which did not have any change
   # @param [Integer] enrollments_passed number of enrollments which passed identity proofing
+  # @param [Integer] enrollments_network_error
+  # @param [Integer] enrollments_cancelled
+  # @param [Float] percent_enrollments_errored
+  # @param [Float] percent_enrollments_network_error
+  # @param [String] job_name
   def idv_in_person_usps_proofing_results_job_completed(
     duration_seconds:,
     enrollments_checked:,
@@ -3318,17 +3323,27 @@ module AnalyticsEvents
     enrollments_failed:,
     enrollments_in_progress:,
     enrollments_passed:,
+    enrollments_network_error:,
+    enrollments_cancelled:,
+    percent_enrollments_errored:,
+    percent_enrollments_network_error:,
+    job_name:,
     **extra
   )
     track_event(
       'GetUspsProofingResultsJob: Job completed',
-      duration_seconds: duration_seconds,
-      enrollments_checked: enrollments_checked,
-      enrollments_errored: enrollments_errored,
-      enrollments_expired: enrollments_expired,
-      enrollments_failed: enrollments_failed,
-      enrollments_in_progress: enrollments_in_progress,
-      enrollments_passed: enrollments_passed,
+      duration_seconds:,
+      enrollments_checked:,
+      enrollments_errored:,
+      enrollments_expired:,
+      enrollments_failed:,
+      enrollments_in_progress:,
+      enrollments_passed:,
+      enrollments_network_error:,
+      enrollments_cancelled:,
+      percent_enrollments_errored:,
+      percent_enrollments_network_error:,
+      job_name:,
       **extra,
     )
   end
@@ -3353,27 +3368,57 @@ module AnalyticsEvents
   end
 
   # Tracks deadline email initiated during GetUspsProofingResultsJob
+  # @param [String] enrollment_code
   # @param [String] enrollment_id
+  # @param [Time] timestamp
+  # @param [String] service_provider
+  # @param [Integer] wait_until
+  # @param [String] job_name
   def idv_in_person_usps_proofing_results_job_deadline_passed_email_initiated(
+    enrollment_code:,
     enrollment_id:,
+    timestamp:,
+    service_provider:,
+    wait_until:,
+    job_name:,
     **extra
   )
     track_event(
       'GetUspsProofingResultsJob: deadline passed email initiated',
-      enrollment_id: enrollment_id,
+      enrollment_code:,
+      enrollment_id:,
+      timestamp:,
+      service_provider:,
+      wait_until:,
+      job_name:,
       **extra,
     )
   end
 
   # Tracks emails that are initiated during GetUspsProofingResultsJob
   # @param [String] email_type success, failed or failed fraud
+  # @param [String] enrollment_code
+  # @param [Time] timestamp
+  # @param [String] service_provider
+  # @param [Integer] wait_until
+  # @param [String] job_name
   def idv_in_person_usps_proofing_results_job_email_initiated(
     email_type:,
+    enrollment_code:,
+    timestamp:,
+    service_provider:,
+    wait_until:,
+    job_name:,
     **extra
   )
     track_event(
       'GetUspsProofingResultsJob: Success or failure email initiated',
-      email_type: email_type,
+      email_type:,
+      enrollment_code:,
+      timestamp:,
+      service_provider:,
+      wait_until:,
+      job_name:,
       **extra,
     )
   end
@@ -3404,44 +3449,8 @@ module AnalyticsEvents
   # @param [String] enrollment_code
   # @param [String] enrollment_id
   # @param [Float] minutes_since_established
-  # @param [Boolean] passed did this enrollment pass or fail?
-  # @param [String] reason why did this enrollment pass or fail?
-  # @param [String] tmx_status the tmx_status of the enrollment profile profile
-  # @param [Integer] profile_age_in_seconds How many seconds have passed since profile created
-  # @param [Boolean] fraud_suspected
-  def idv_in_person_usps_proofing_results_job_enrollment_updated(
-    enrollment_code:,
-    enrollment_id:,
-    minutes_since_established:,
-    passed:,
-    reason:,
-    tmx_status:,
-    profile_age_in_seconds:,
-    fraud_suspected: nil,
-    **extra
-  )
-    track_event(
-      'GetUspsProofingResultsJob: Enrollment status updated',
-      enrollment_code: enrollment_code,
-      enrollment_id: enrollment_id,
-      minutes_since_established: minutes_since_established,
-      passed: passed,
-      reason: reason,
-      tmx_status: tmx_status,
-      profile_age_in_seconds: profile_age_in_seconds,
-      fraud_suspected: fraud_suspected,
-      **extra,
-    )
-  end
-
-  # Tracks exceptions that are raised when running GetUspsProofingResultsJob
-  # @param [String] reason why was the exception raised?
-  # @param [String] enrollment_id
-  # @param [String] exception_class
-  # @param [String] exception_message
-  # @param [String] enrollment_code
-  # @param [Float] minutes_since_established
   # @param [Float] minutes_since_last_status_check
+  # @param [Float] minutes_since_last_status_check_completed
   # @param [Float] minutes_since_last_status_update
   # @param [Float] minutes_to_completion
   # @param [Boolean] fraud_suspected
@@ -3457,7 +3466,107 @@ module AnalyticsEvents
   # @param [String] proofing_state
   # @param [String] scan_count
   # @param [String] response_message
+  # @param [Boolean] passed did this enrollment pass or fail?
+  # @param [String] reason why did this enrollment pass or fail?
+  # @param [String] tmx_status the tmx_status of the enrollment profile profile
+  # @param [Integer] profile_age_in_seconds How many seconds have passed since profile created
+  # @param [Boolean] response_present
+  # @param [String] job_name
+  # @param [Boolean] enhanced_ipp
+  # @param [String] issuer
+  def idv_in_person_usps_proofing_results_job_enrollment_updated(
+    enrollment_code:,
+    enrollment_id:,
+    minutes_since_established:,
+    passed:,
+    reason:,
+    tmx_status:,
+    profile_age_in_seconds:,
+    minutes_since_last_status_check:,
+    minutes_since_last_status_check_completed:,
+    minutes_since_last_status_update:,
+    minutes_to_completion:,
+    response_present:,
+    job_name:,
+    enhanced_ipp:,
+    issuer:,
+    fraud_suspected: nil,
+    primary_id_type: nil,
+    secondary_id_type: nil,
+    failure_reason: nil,
+    transaction_end_date_time: nil,
+    transaction_start_date_time: nil,
+    status: nil,
+    assurance_level: nil,
+    proofing_post_office: nil,
+    proofing_city: nil,
+    proofing_state: nil,
+    scan_count: nil,
+    response_message: nil,
+    **extra
+  )
+    track_event(
+      'GetUspsProofingResultsJob: Enrollment status updated',
+      enrollment_code:,
+      enrollment_id:,
+      minutes_since_established:,
+      passed:,
+      reason:,
+      tmx_status:,
+      profile_age_in_seconds:,
+      minutes_since_last_status_check:,
+      minutes_since_last_status_check_completed:,
+      minutes_since_last_status_update:,
+      minutes_to_completion:,
+      fraud_suspected:,
+      primary_id_type:,
+      secondary_id_type:,
+      failure_reason:,
+      transaction_end_date_time:,
+      transaction_start_date_time:,
+      status:,
+      assurance_level:,
+      proofing_post_office:,
+      proofing_city:,
+      proofing_state:,
+      scan_count:,
+      response_present:,
+      response_message:,
+      job_name:,
+      enhanced_ipp:,
+      issuer:,
+      **extra,
+    )
+  end
+
+  # Tracks exceptions that are raised when running GetUspsProofingResultsJob
+  # @param [String] reason why was the exception raised?
+  # @param [String] enrollment_id
+  # @param [String] exception_class
+  # @param [String] exception_message
+  # @param [String] enrollment_code
+  # @param [Float] minutes_since_established
+  # @param [Float] minutes_since_last_status_check
+  # @param [Float] minutes_since_last_status_check_completed
+  # @param [Float] minutes_since_last_status_update
+  # @param [Float] minutes_to_completion
+  # @param [Boolean] fraud_suspected
+  # @param [String] primary_id_type
+  # @param [String] secondary_id_type
+  # @param [String] failure_reason
+  # @param [String] transaction_end_date_time
+  # @param [String] transaction_start_date_time
+  # @param [String] status
+  # @param [String] assurance_level
+  # @param [String] proofing_post_office
+  # @param [String] proofing_city
+  # @param [String] proofing_state
+  # @param [String] scan_count
+  # @param [Boolean] response_present
+  # @param [String] response_message
   # @param [Integer] response_status_code
+  # @param [String] job_name
+  # @param [String] issuer
   def idv_in_person_usps_proofing_results_job_exception(
     reason:,
     enrollment_id:,
@@ -3466,6 +3575,7 @@ module AnalyticsEvents
     exception_message: nil,
     enrollment_code: nil,
     minutes_since_last_status_check: nil,
+    minutes_since_last_status_check_completed: nil,
     minutes_since_last_status_update: nil,
     minutes_to_completion: nil,
     fraud_suspected: nil,
@@ -3480,35 +3590,42 @@ module AnalyticsEvents
     proofing_city: nil,
     proofing_state: nil,
     scan_count: nil,
+    response_present: nil,
     response_message: nil,
     response_status_code: nil,
+    job_name: nil,
+    issuer: nil,
     **extra
   )
     track_event(
       'GetUspsProofingResultsJob: Exception raised',
-      reason: reason,
-      enrollment_id: enrollment_id,
-      exception_class: exception_class,
-      exception_message: exception_message,
-      enrollment_code: enrollment_code,
-      minutes_since_established: minutes_since_established,
-      minutes_since_last_status_check: minutes_since_last_status_check,
-      minutes_since_last_status_update: minutes_since_last_status_update,
-      minutes_to_completion: minutes_to_completion,
-      fraud_suspected: fraud_suspected,
-      primary_id_type: primary_id_type,
-      secondary_id_type: secondary_id_type,
-      failure_reason: failure_reason,
-      transaction_end_date_time: transaction_end_date_time,
-      transaction_start_date_time: transaction_start_date_time,
-      status: status,
-      assurance_level: assurance_level,
-      proofing_post_office: proofing_post_office,
-      proofing_city: proofing_city,
-      proofing_state: proofing_state,
-      scan_count: scan_count,
-      response_message: response_message,
-      response_status_code: response_status_code,
+      reason:,
+      enrollment_id:,
+      exception_class:,
+      exception_message:,
+      enrollment_code:,
+      minutes_since_established:,
+      minutes_since_last_status_check:,
+      minutes_since_last_status_check_completed:,
+      minutes_since_last_status_update:,
+      minutes_to_completion:,
+      fraud_suspected:,
+      primary_id_type:,
+      secondary_id_type:,
+      failure_reason:,
+      transaction_end_date_time:,
+      transaction_start_date_time:,
+      status:,
+      assurance_level:,
+      proofing_post_office:,
+      proofing_city:,
+      proofing_state:,
+      scan_count:,
+      response_present:,
+      response_message:,
+      response_status_code:,
+      job_name:,
+      issuer:,
       **extra,
     )
   end
@@ -3546,36 +3663,72 @@ module AnalyticsEvents
   # @param [String] enrollment_code
   # @param [String] enrollment_id
   # @param [Float] minutes_since_established
+  # @param [Float] minutes_since_last_status_check
+  # @param [Float] minutes_since_last_status_check_completed
+  # @param [Float] minutes_since_last_status_update
+  # @param [Float] minutes_to_completion
+  # @param [String] issuer
+  # @param [String] job_name
   # @param [String] response_message
   # @param [String] reason why was this error unexpected?
   def idv_in_person_usps_proofing_results_job_unexpected_response(
     enrollment_code:,
     enrollment_id:,
     minutes_since_established:,
+    minutes_since_last_status_check:,
+    minutes_since_last_status_check_completed:,
+    minutes_since_last_status_update:,
+    minutes_to_completion:,
+    issuer:,
+    job_name:,
     response_message:,
     reason:,
     **extra
   )
     track_event(
       'GetUspsProofingResultsJob: Unexpected response received',
-      enrollment_code: enrollment_code,
-      enrollment_id: enrollment_id,
-      minutes_since_established: minutes_since_established,
-      response_message: response_message,
-      reason: reason,
+      enrollment_code:,
+      enrollment_id:,
+      minutes_since_established:,
+      response_message:,
+      reason:,
+      minutes_since_last_status_check:,
+      minutes_since_last_status_check_completed:,
+      minutes_since_last_status_update:,
+      minutes_to_completion:,
+      issuer:,
+      job_name:,
       **extra,
     )
   end
 
   # A user has been moved to fraud review after completing proofing at the USPS
+  # @param [String] enrollment_code
   # @param [String] enrollment_id
+  # @param [Float] minutes_since_established
+  # @param [Float] minutes_since_last_status_check
+  # @param [Float] minutes_since_last_status_update
+  # @param [Float] minutes_to_completion
+  # @param [String] issuer
   def idv_in_person_usps_proofing_results_job_user_sent_to_fraud_review(
+    enrollment_code:,
     enrollment_id:,
+    minutes_since_established:,
+    minutes_since_last_status_check:,
+    minutes_since_last_status_update:,
+    minutes_to_completion:,
+    issuer:,
     **extra
   )
     track_event(
       :idv_in_person_usps_proofing_results_job_user_sent_to_fraud_review,
-      enrollment_id: enrollment_id,
+      enrollment_code:,
+      enrollment_id:,
+      minutes_since_established:,
+      minutes_since_last_status_check:,
+      minutes_since_last_status_update:,
+      minutes_to_completion:,
+      issuer:,
       **extra,
     )
   end
