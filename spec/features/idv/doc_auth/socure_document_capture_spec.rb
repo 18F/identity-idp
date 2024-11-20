@@ -14,9 +14,11 @@ RSpec.feature 'document capture step', :js do
 
   before(:each) do
     allow(IdentityConfig.store).to receive(:socure_enabled).and_return(true)
-    allow(DocAuthRouter).to receive(:doc_auth_vendor_for_bucket).and_return(Idp::Constants::Vendors::SOCURE)
+    allow(DocAuthRouter).to receive(:doc_auth_vendor_for_bucket).
+      and_return(Idp::Constants::Vendors::SOCURE)
     allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return('Test SP')
-    allow(IdentityConfig.store).to receive(:socure_webhook_secret_key).and_return(socure_webhook_secret_key)
+    allow(IdentityConfig.store).to receive(:socure_webhook_secret_key).
+      and_return(socure_webhook_secret_key)
     allow(IdentityConfig.store).to receive(:socure_document_request_endpoint).
       and_return(fake_socure_document_request_endpoint)
     allow(IdentityConfig.store).to receive(:ruby_workers_idv_enabled).and_return(false)
@@ -92,7 +94,8 @@ RSpec.feature 'document capture step', :js do
         # expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
       end
 
-      xit 'catches network connection errors on verification data request', allow_browser_log: true do
+      xit 'catches network connection errors on verification data request',
+          allow_browser_log: true do
         # expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
       end
     end
@@ -177,7 +180,8 @@ RSpec.feature 'direct access to IPP on desktop', :js do
       allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
         and_return(false)
       allow(IdentityConfig.store).to receive(:socure_enabled).and_return(true)
-      allow(DocAuthRouter).to receive(:doc_auth_vendor_for_bucket).and_return(Idp::Constants::Vendors::SOCURE)
+      allow(DocAuthRouter).to receive(:doc_auth_vendor_for_bucket).
+        and_return(Idp::Constants::Vendors::SOCURE)
       visit_idp_from_sp_with_ial2(
         :oidc,
         **{ client_id: service_provider.issuer,

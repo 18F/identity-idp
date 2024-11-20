@@ -80,14 +80,15 @@ module DocumentCaptureStepHelper
       'DOCUMENT_BACK_UPLOADED',
       'DOCUMENTS_UPLOADED',
       'SESSION_COMPLETE',
-    ].each{ |event_type| socure_docv_send_webhook(docv_transaction_token:, event_type:) }
+    ].each { |event_type| socure_docv_send_webhook(docv_transaction_token:, event_type:) }
   end
 
   def socure_docv_send_webhook(
     docv_transaction_token:,
     event_type: 'DOCUMENTS_UPLOADED'
   )
-    Faraday.post "http://#{[page.server.host, page.server.port].join(':')}/api/webhooks/socure/event" do |req|
+    Faraday.post "http://#{[page.server.host,
+                            page.server.port].join(':')}/api/webhooks/socure/event" do |req|
       req.body = {
         event: {
           eventType: event_type,
