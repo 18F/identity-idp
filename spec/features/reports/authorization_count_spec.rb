@@ -186,9 +186,6 @@ RSpec.describe 'authorization count' do
 
     before do
       reset_monthly_auth_count_and_login(user)
-      allow(IdentityConfig.store).to receive(
-        :allowed_valid_authn_contexts_semantic_providers,
-      ).and_return([client_id_1, client_id_2])
     end
 
     context 'using oidc' do

@@ -14,9 +14,6 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
     allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(true)
     allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(5)
-    allow(IdentityConfig.store).to receive(
-      :allowed_valid_authn_contexts_semantic_providers,
-    ).and_return([ipp_service_provider.issuer, 'urn:gov:gsa:openidconnect:sp:server'])
   end
 
   context 'when ipp_opt_in_enabled and ipp_opt_in_enabled are both enabled' do
