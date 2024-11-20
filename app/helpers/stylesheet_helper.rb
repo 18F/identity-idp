@@ -16,7 +16,7 @@ module StylesheetHelper
     safe_join(
       @stylesheets.map do |stylesheet|
         url = stylesheet_path(stylesheet)
-        AssetPreloadLinker.append(response:, as: :style, url:)
+        AssetPreloadLinker.append(headers: response.headers, as: :style, url:)
         tag.link(rel: :stylesheet, href: url)
       end,
     )

@@ -20,7 +20,13 @@ module ScriptHelper
           integrity = asset_sources.get_integrity(source)
 
           if attributes[:preload_links_header] != false
-            AssetPreloadLinker.append(response:, as: :script, url: source, crossorigin:, integrity:)
+            AssetPreloadLinker.append(
+              headers: response.headers,
+              as: :script,
+              url: source,
+              crossorigin:,
+              integrity:,
+            )
           end
 
           concat javascript_include_tag(
