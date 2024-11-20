@@ -20,8 +20,6 @@ RSpec.feature 'how to verify step', js: true do
     }
     allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
       and_return(service_provider_in_person_proofing_enabled)
-    allow(IdentityConfig.store).to receive(:allowed_biometric_ial_providers).
-      and_return([ipp_service_provider.issuer])
     visit_idp_from_sp_with_ial2(
       :oidc, **{ client_id: ipp_service_provider.issuer,
                  facial_match_required: facial_match_required }

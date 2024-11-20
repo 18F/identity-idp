@@ -343,8 +343,6 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
       )
       allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
         and_return(sp_ipp_enabled)
-      allow(IdentityConfig.store).to receive(:allowed_biometric_ial_providers).
-        and_return([service_provider.issuer])
       visit_idp_from_sp_with_ial2(
         :oidc,
         **{ client_id: service_provider.issuer,
