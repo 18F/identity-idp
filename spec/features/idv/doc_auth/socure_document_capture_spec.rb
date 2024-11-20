@@ -28,7 +28,6 @@ RSpec.feature 'document capture step', :js do
   end
 
   before(:all) do
-    User.destroy_all
     @user = user_with_2fa
   end
 
