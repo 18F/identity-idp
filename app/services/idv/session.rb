@@ -107,7 +107,9 @@ module Idv
       VALID_SESSION_ATTRIBUTES.include?(attr_name_sym) || super
     end
 
-    def create_profile_from_applicant_with_password(user_password, is_enhanced_ipp)
+    def create_profile_from_applicant_with_password(
+      user_password, is_enhanced_ipp:, proofing_components:
+    )
       if user_has_unscheduled_in_person_enrollment?
         UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
           user: current_user,
@@ -123,6 +125,7 @@ module Idv
         gpo_verification_needed: !phone_confirmed? || verify_by_mail?,
         in_person_verification_needed: current_user.has_in_person_enrollment?,
         selfie_check_performed: session[:selfie_check_performed],
+        proofing_components:,
       )
 
       profile.activate unless profile.reason_not_to_activate
