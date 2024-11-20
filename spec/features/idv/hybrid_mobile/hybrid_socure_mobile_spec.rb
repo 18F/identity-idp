@@ -13,7 +13,8 @@ RSpec.describe 'Hybrid Flow' do
   before do
     allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(true)
     allow(IdentityConfig.store).to receive(:socure_enabled).and_return(true)
-    allow(DocAuthRouter).to receive(:doc_auth_vendor_for_bucket).and_return(Idp::Constants::Vendors::SOCURE)
+    allow(DocAuthRouter).to receive(:doc_auth_vendor_for_bucket).
+      and_return(Idp::Constants::Vendors::SOCURE)
     allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
     allow(IdentityConfig.store).to receive(:ruby_workers_idv_enabled).and_return(false)
     allow(IdentityConfig.store).to receive(:socure_document_request_endpoint).
