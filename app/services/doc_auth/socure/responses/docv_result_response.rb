@@ -36,7 +36,9 @@ module DocAuth
           @http_response = http_response
 
           # KLUDGE
-          parsed_response_body['documentVerification']['decision']['value'] = 'reject'
+          if rand < 0.5
+            parsed_response_body['documentVerification']['decision']['value'] = 'reject'
+          end
 
           @biometric_comparison_required = biometric_comparison_required
           @pii_from_doc = read_pii
