@@ -36,7 +36,7 @@ module DocAuth
           @http_response = http_response
 
           # KLUDGE
-          # parsed_response_body['documentVerification']['decision']['value'] = 'reject'
+          parsed_response_body['documentVerification']['decision']['value'] = 'reject'
 
           @biometric_comparison_required = biometric_comparison_required
           @pii_from_doc = read_pii
@@ -76,10 +76,10 @@ module DocAuth
         def error_messages
           return {} if successful_result?
 
-          reason_code = get_data(DATA_PATHS[:reason_codes])
+          # reason_code = get_data(DATA_PATHS[:reason_codes])
 
           # KLUDGE
-          # reason_code = %w[R820 I849 R827 I808 R845 I856].sample
+          reason_code = %w[R820 I849 R827 I808 R845 I856].sample
 
           {
             reason_codes: [reason_code],
