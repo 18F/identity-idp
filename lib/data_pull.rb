@@ -162,14 +162,22 @@ class DataPull
       ActiveRecord::Base.connection.execute('SET statement_timeout = 0')
       uuids = args
 
+      requesting_issuers =
+        config.requesting_issuers.presence || compute_requesting_issuers(uuids)
+
       users, missing_uuids = uuids.map do |uuid|
         DataRequests::Deployed::LookupUserByUuid.new(uuid).call || uuid
       end.partition { |u| u.is_a?(User) }
 
-      shared_device_users = DataRequests::Deployed::LookupSharedDeviceUsers.new(users).call
+      shared_device_users =
+        if config.depth && config.depth > 0
+          DataRequests::Deployed::LookupSharedDeviceUsers.new(users, config.depth).call
+        else
+          users
+        end
 
       output = shared_device_users.map do |user|
-        DataRequests::Deployed::CreateUserReport.new(user, config.requesting_issuers).call
+        DataRequests::Deployed::CreateUserReport.new(user, requesting_issuers).call
       end
 
       if config.include_missing?
@@ -197,6 +205,20 @@ class DataPull
         uuids: users.map(&:uuid),
         json: output,
       )
+    end
+
+    private
+
+    def compute_requesting_issuers(uuids)
+      service_providers = ServiceProviderIdentity.where(uuid: uuids).pluck(:service_provider)
+      return nil if service_providers.empty?
+      service_provider = service_providers.tally.max_by { |_sp, count| count }[0]
+
+      warn "Computed service provider #{service_provider}"
+
+      [
+        service_provider,
+      ]
     end
   end
 
