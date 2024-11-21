@@ -8,7 +8,7 @@ module Idv
       include DocumentCaptureConcern
       include RenderConditionConcern
 
-      check_or_render_not_found -> { IdentityConfig.store.socure_enabled }
+      check_or_render_not_found -> { IdentityConfig.store.socure_docv_enabled }
       before_action :confirm_not_rate_limited
       before_action :confirm_step_allowed
       before_action -> { redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, false) }
@@ -22,6 +22,8 @@ module Idv
       skip_before_action :confirm_step_allowed, only: [:update]
 
       def show
+        idv_session.socure_docv_wait_polling_started_at = nil
+
         Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
           call('socure_document_capture', :view, true)
 
@@ -65,6 +67,22 @@ module Idv
         # Not used in standard flow, here for data consistency with hybrid flow.
         document_capture_session.confirm_ocr
 
+        # If the stored_result is nil, the job fetching the results has not completed.
+        if stored_result.nil?
+          analytics.idv_doc_auth_document_capture_polling_wait_visited(**analytics_arguments)
+          if wait_timed_out?
+            # flash[:error] = I18n.t('errors.doc_auth.polling_timeout')
+            # TODO: redirect to try again page LG-14873/14952/15059
+            render plain: 'Technical difficulties!!!', status: :ok
+          else
+            @refresh_interval =
+              IdentityConfig.store.doc_auth_socure_wait_polling_refresh_max_seconds
+            render 'idv/socure/document_capture/wait'
+          end
+
+          return
+        end
+
         result = handle_stored_result
         # TODO: new analytics event?
         analytics.idv_doc_auth_document_capture_submitted(**result.to_h.merge(analytics_arguments))
@@ -89,19 +107,30 @@ module Idv
               # mobile
               idv_session.skip_doc_auth_from_handoff ||
               idv_session.skip_hybrid_handoff ||
-              idv_session.skip_doc_auth ||
               idv_session.skip_doc_auth_from_how_to_verify ||
               !idv_session.selfie_check_required ||
               idv_session.desktop_selfie_test_mode_enabled?)
           },
           undo_step: ->(idv_session:, user:) do
             idv_session.pii_from_doc = nil
+            idv_session.socure_docv_wait_polling_started_at = nil
             idv_session.invalidate_in_person_pii_from_user!
           end,
         )
       end
 
       private
+
+      def wait_timed_out?
+        if idv_session.socure_docv_wait_polling_started_at.nil?
+          idv_session.socure_docv_wait_polling_started_at = Time.zone.now.to_s
+          return false
+        end
+        start = DateTime.parse(idv_session.socure_docv_wait_polling_started_at)
+        timeout_period =
+          IdentityConfig.store.doc_auth_socure_wait_polling_timeout_minutes.minutes || 5.minutes
+        start + timeout_period < Time.zone.now
+      end
 
       def analytics_arguments
         {

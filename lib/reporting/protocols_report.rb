@@ -282,11 +282,18 @@ module Reporting
     end
 
     def facial_match_issuers_query
-      format(<<~QUERY)
+      params = {
+        events: quote([SAML_AUTH_EVENT, OIDC_AUTH_EVENT]),
+      }
+      # OIDC_AUTH_EVENT and SAML_AUTH_EVENTs are fired before the initiating
+      # session is stored.
+      # We are omitting those events to prevent false positives
+      format(<<~QUERY, params)
         fields
           coalesce(properties.event_properties.service_provider,
           properties.event_properties.client_id,
           properties.service_provider) as issuer
+        | filter name NOT IN %{events}
         | filter properties.sp_request.facial_match
         | display issuer
         | sort issuer

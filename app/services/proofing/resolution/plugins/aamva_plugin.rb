@@ -59,7 +59,7 @@ module Proofing
             errors: {},
             exception: nil,
             success: true,
-            vendor_name: 'UnsupportedJurisdiction',
+            vendor_name: Idp::Constants::Vendors::AAMVA_UNSUPPORTED_JURISDICTION,
           )
         end
 

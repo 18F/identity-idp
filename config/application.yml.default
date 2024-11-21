@@ -106,6 +106,8 @@ doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 3
 doc_auth_selfie_desktop_test_mode: false
+doc_auth_socure_wait_polling_refresh_max_seconds: 15
+doc_auth_socure_wait_polling_timeout_minutes: 2
 doc_auth_supported_country_codes: '["US", "GU", "VI", "AS", "MP", "PR", "USA" ,"GUM", "VIR", "ASM", "MNP", "PRI"]'
 doc_auth_vendor: 'mock'
 doc_auth_vendor_default: 'mock'
@@ -379,18 +381,16 @@ sign_in_user_id_per_ip_attempt_window_in_minutes: 720
 sign_in_user_id_per_ip_attempt_window_max_minutes: 43_200
 sign_in_user_id_per_ip_max_attempts: 50
 skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:int"]'
-socure_document_request_endpoint: ''
-socure_enabled: false
+socure_docv_document_request_endpoint: ''
+socure_docv_enabled: false
+socure_docv_webhook_secret_key: ''
+socure_docv_webhook_secret_key_queue: '[]'
 socure_idplus_api_key: ''
 socure_idplus_base_url: ''
 socure_idplus_timeout_in_seconds: 5
 socure_reason_code_api_key: ''
 socure_reason_code_base_url: ''
 socure_reason_code_timeout_in_seconds: 5
-socure_standard_capture_desktop_enabled: false
-socure_webhook_enabled: false
-socure_webhook_secret_key: ''
-socure_webhook_secret_key_queue: '[]'
 sp_handoff_bounce_max_seconds: 2
 sp_issuer_user_counts_report_configs: '[]'
 state_tracking_enabled: true
@@ -591,8 +591,8 @@ test:
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   short_term_phone_otp_max_attempts: 100
   skip_encryption_allowed_list: '[]'
-  socure_webhook_secret_key: 'secret-key'
-  socure_webhook_secret_key_queue: '["old-key-one", "old-key-two"]'
+  socure_docv_webhook_secret_key: 'secret-key'
+  socure_docv_webhook_secret_key_queue: '["old-key-one", "old-key-two"]'
   team_ada_email: 'ada@example.com'
   team_all_login_emails: '["b@example.com", "c@example.com"]'
   team_daily_fraud_metrics_emails: '["g@example.com", "h@example.com"]'

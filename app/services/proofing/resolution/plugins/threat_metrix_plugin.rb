@@ -24,7 +24,7 @@ module Proofing
           ddp_pii = applicant_pii.merge(
             threatmetrix_session_id: threatmetrix_session_id,
             email: user_email,
-            request_id: request_ip,
+            request_ip: request_ip,
           )
 
           timer.time('threatmetrix') do

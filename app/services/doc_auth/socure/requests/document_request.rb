@@ -63,7 +63,7 @@ module DocAuth
         end
 
         def endpoint
-          IdentityConfig.store.socure_document_request_endpoint
+          IdentityConfig.store.socure_docv_document_request_endpoint
         end
 
         def metric_name
