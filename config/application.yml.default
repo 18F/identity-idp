@@ -581,8 +581,10 @@ test:
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   short_term_phone_otp_max_attempts: 100
   skip_encryption_allowed_list: '[]'
+  socure_docv_document_request_endpoint: 'https://sandbox.socure.test/documnt-request'
   socure_docv_webhook_secret_key: 'secret-key'
   socure_docv_webhook_secret_key_queue: '["old-key-one", "old-key-two"]'
+  socure_idplus_base_url: 'https://sandbox.socure.test'
   team_ada_email: 'ada@example.com'
   team_all_login_emails: '["b@example.com", "c@example.com"]'
   team_daily_fraud_metrics_emails: '["g@example.com", "h@example.com"]'
