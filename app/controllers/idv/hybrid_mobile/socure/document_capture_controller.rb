@@ -86,6 +86,7 @@ module Idv
         end
 
         def goto_in_person
+          # set up an in-person profile and enrollment
           redirect_to idv_in_person_url
         end
 

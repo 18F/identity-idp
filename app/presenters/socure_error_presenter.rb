@@ -50,8 +50,8 @@ class SocureErrorPresenter
   end
 
   def secondary_action
-    url = hybrid_mobile ? idv_hybrid_mobile_socure_document_capture_goto_in_person
-                        : idv_socure_document_capture_goto_in_person
+    url = hybrid_mobile ? idv_hybrid_mobile_socure_document_capture_goto_in_person_path
+                        : idv_socure_document_capture_goto_in_person_path
 
     {
       text: I18n.t('in_person_proofing.body.cta.button'),

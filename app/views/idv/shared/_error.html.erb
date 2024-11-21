@@ -27,13 +27,6 @@ locals:
 
 <% self.title = local_assigns.fetch(:title, heading) %>
 
-<div>
-  current_step: <%= local_assigns[:current_step] %>
-</div>
-<div>
-  defined?(step_indicator_steps): <%= defined?(step_indicator_steps) %>
-</div>
-
 <% if local_assigns[:current_step] and defined?(step_indicator_steps) %>
   <% content_for(:pre_flash_content) do %>
     <%= render StepIndicatorComponent.new(
