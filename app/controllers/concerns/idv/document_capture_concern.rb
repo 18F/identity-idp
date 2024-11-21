@@ -64,15 +64,7 @@ module Idv
 
     def stored_result
       return @stored_result if defined?(@stored_result)
-
-      wait_start = Time.zone.now
-      while (Time.zone.now - wait_start < 20)
-        if @stored_result = document_capture_session&.load_result
-          break
-        end
-        sleep(0.1)
-      end
-      @stored_result
+      @stored_result = document_capture_session&.load_result
     end
 
     def selfie_requirement_met?
