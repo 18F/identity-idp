@@ -50,9 +50,12 @@ class SocureErrorPresenter
   end
 
   def secondary_action
+    url = hybrid_mobile ? idv_hybrid_mobile_socure_document_capture_goto_in_person
+                        : idv_socure_document_capture_goto_in_person
+
     {
       text: I18n.t('in_person_proofing.body.cta.button'),
-      url: idv_in_person_url,
+      url: url,
     }
   end
 
@@ -89,8 +92,8 @@ class SocureErrorPresenter
     ]
   end
 
-  def locals
-    { step_indicator_steps: Idv::StepIndicatorConcern.STEP_INDICATOR_STEP}
+  def step_indicator_steps
+    Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS
   end
 
   private

@@ -101,6 +101,10 @@ module Idv
           )
       end
 
+      def goto_in_person
+        redirect_to idv_in_person_url
+      end
+
       def self.step_info
         Idv::StepInfo.new(
           key: :socure_document_capture,

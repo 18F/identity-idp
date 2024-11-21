@@ -85,6 +85,10 @@ module Idv
             )
         end
 
+        def goto_in_person
+          redirect_to idv_in_person_url
+        end
+
         private
 
         def wait_for_result?
