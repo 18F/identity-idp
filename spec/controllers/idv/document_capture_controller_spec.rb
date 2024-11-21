@@ -365,6 +365,7 @@ RSpec.describe Idv::DocumentCaptureController do
         expect(controller).to receive(:selfie_requirement_met?).
           and_return(performed_if_needed)
         allow(result).to receive(:success?).and_return(true)
+        allow(result).to receive(:errors).and_return(result[:errors])
         allow(subject).to receive(:stored_result).and_return(result)
         allow(subject).to receive(:extract_pii_from_doc)
       end

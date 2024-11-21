@@ -8,10 +8,11 @@ class SocureErrorPresenter
 
   attr_reader :url_options
 
-  def initialize(error_code, remaining_attempts, sp_name)
+  def initialize(error_code:, remaining_attempts:, sp_name:, hybrid_mobile:)
     @error_code = error_code
     @remaining_attempts = remaining_attempts
     @sp_name = sp_name
+    @hybrid_mobile = hybrid_mobile
     @url_options = {}
   end
 
@@ -32,9 +33,11 @@ class SocureErrorPresenter
   end
 
   def action
+    url = hybrid_handoff ? idv_hybrid_mobile_socure_document_capture_path
+                         : idv_socure_document_capture_path
     {
       text: I18n.t('idv.failure.button.warning'),
-      url: idv_hybrid_mobile_socure_document_capture_path,
+      url: url,
     }
   end
 

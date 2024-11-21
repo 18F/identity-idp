@@ -91,12 +91,13 @@ module Idv
 
         @presenter =
           SocureErrorPresenter.new(
-            result.errors[:reason_codes]&.first,
-            RateLimiter.new(
+            error_code: result.errors[:reason_codes]&.first,
+            remaining_attempts: RateLimiter.new(
               user: document_capture_session.user,
               rate_limit_type: :idv_resolution,
             ).remaining_count,
-            decorated_sp_session&.sp_name || APP_NAME,
+            sp_name: decorated_sp_session&.sp_name || APP_NAME,
+            hybrid_mobile: false,
           )
       end
 
