@@ -583,7 +583,7 @@ test:
   skip_encryption_allowed_list: '[]'
   socure_docv_webhook_secret_key: 'secret-key'
   socure_docv_webhook_secret_key_queue: '["old-key-one", "old-key-two"]'
-  socure_document_request_endpoint: 'https://sandbox.socure.test/documnt-request'
+  socure_docv_document_request_endpoint: 'https://sandbox.socure.test/documnt-request'
   socure_idplus_base_url: 'https://sandbox.socure.test'
   team_ada_email: 'ada@example.com'
   team_all_login_emails: '["b@example.com", "c@example.com"]'
