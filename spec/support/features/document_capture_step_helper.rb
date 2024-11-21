@@ -97,7 +97,7 @@ module DocumentCaptureStepHelper
       }.to_json
       req.headers = {
         'Content-Type': 'application/json',
-        Authorization: "secret #{IdentityConfig.store.socure_webhook_secret_key}",
+        Authorization: "secret #{IdentityConfig.store.socure_docv_webhook_secret_key}",
       }
       req.options.context = { service_name: 'socure-docv-webhook' }
     end
@@ -133,7 +133,7 @@ module DocumentCaptureStepHelper
       },
     }
 
-    stub_request(:post, IdentityConfig.store.socure_document_request_endpoint).
+    stub_request(:post, IdentityConfig.store.socure_docv_document_request_endpoint).
       to_return(
         status:,
         body: body.to_json,
