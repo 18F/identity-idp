@@ -7,7 +7,7 @@ RSpec.describe AssetPreloadLinker do
     let(:url) { '/script.js' }
     let(:crossorigin) { nil }
     let(:integrity) { nil }
-    let(:headers) { { 'Link' => link } }
+    let(:headers) { { 'link' => link } }
     subject(:result) do
       AssetPreloadLinker.append(**{ headers:, as:, url:, crossorigin:, integrity: }.compact)
     end
