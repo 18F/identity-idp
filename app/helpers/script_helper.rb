@@ -14,9 +14,9 @@ module ScriptHelper
       javascript_packs_tag_once(...)
       return if @scripts.blank?
       concat javascript_assets_tag
+      crossorigin = true if local_crossorigin_sources?
       @scripts.each do |name, (url_params, attributes)|
         asset_sources.get_sources(name).each do |source|
-          crossorigin = true if local_crossorigin_sources?
           integrity = asset_sources.get_integrity(source)
 
           if attributes[:preload_links_header] != false
