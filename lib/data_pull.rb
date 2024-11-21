@@ -214,6 +214,10 @@ class DataPull
       return nil if service_providers.empty?
       service_provider = service_providers.tally.max_by { |_sp, count| count }[0]
 
+      if service_providers.count > 1
+        warn "Multiple computed service providers: #{service_providers.join(', ')}"
+      end
+
       warn "Computed service provider #{service_provider}"
 
       [
