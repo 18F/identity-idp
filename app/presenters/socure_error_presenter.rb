@@ -89,6 +89,8 @@ class SocureErrorPresenter
     ]
   end
 
+  def locals
+    { step_indicator_steps: Idv::StepIndicatorConcern.STEP_INDICATOR_STEP}
   private
 
   attr_reader :error_code, :remaining_attempts, :sp_name, :hybrid_mobile
