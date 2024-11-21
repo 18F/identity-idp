@@ -2,17 +2,16 @@
   render(
     'idv/shared/error',
     type: :warning,
-    heading: presenter.heading,
-    title: presenter.title,
-    action: presenter.action,
-    action_secondary: presenter.secondary_action,
+    heading: @presenter.heading,
+    action: @presenter.action,
+    action_secondary: @presenter.secondary_action,
     current_step: :verify_id,
-    troubleshooting_heading: presenter.troubleshooting_heading,
-    action_secondary_heading: presenter.secondary_action_heading,
-    action_secondary_text: presenter.secondary_action_text,
-    options: presenter.options,
+    troubleshooting_heading: @presenter.troubleshooting_heading,
+    action_secondary_heading: @presenter.secondary_action_heading,
+    action_secondary_text: @presenter.secondary_action_text,
+    options: @presenter.options,
   ) do
 %>
-     <p><%= presenter.body_text %></p>
-     <p><%= presenter.rate_limit_text %></p>
+     <p><%= @presenter.body_text %></p>
+     <p><%= @presenter.rate_limit_text %></p>
 <% end %>

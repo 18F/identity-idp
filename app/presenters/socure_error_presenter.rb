@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SocureErrorPresenter
   include Rails.application.routes.url_helpers
   include ActionView::Helpers::UrlHelper
@@ -29,10 +31,6 @@ class SocureErrorPresenter
     end
   end
 
-  def title
-    'title'
-  end
-
   def action
     {
       text: I18n.t('idv.failure.button.warning'),
@@ -51,7 +49,7 @@ class SocureErrorPresenter
   def secondary_action
     {
       text: I18n.t('in_person_proofing.body.cta.button'),
-      url: 'http://test.org',
+      url: idv_in_person_url,
     }
   end
 

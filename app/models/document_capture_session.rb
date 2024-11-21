@@ -17,6 +17,7 @@ class DocumentCaptureSession < ApplicationRecord
     )
     Rails.logger.info ''
     Rails.logger.info 'DocumentCaptureSession#store_result_from_response'
+    Rails.logger.info "  doc_auth_response: #{doc_auth_response.inspect}"
     Rails.logger.info "  started with: #{session_result.inspect}"
     Rails.logger.info ''
 
