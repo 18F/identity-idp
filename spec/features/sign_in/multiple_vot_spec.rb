@@ -38,9 +38,7 @@ RSpec.feature 'Sign in with multiple vectors of trust' do
         expect(user_info[:vot]).to eq('C1.C2.P1')
       end
 
-      scenario 'identity proofing with facial match is required if user is not proofed',
-               :js,
-               allowed_extra_analytics: [:*] do
+      scenario 'identity proofing with facial match is required if user is not proofed', :js do
         user = create(:user, :fully_registered)
 
         visit_idp_from_oidc_sp_with_vtr(vtr: ['C1.C2.P1.Pb', 'C1.C2.P1'])
@@ -176,9 +174,7 @@ RSpec.feature 'Sign in with multiple vectors of trust' do
         expect(first_name).to_not be_blank
       end
 
-      scenario 'identity proofing with facial match is required if user is not proofed',
-               :js,
-               allowed_extra_analytics: [:*] do
+      scenario 'identity proofing with facial match is required if user is not proofed', :js do
         user = create(:user, :fully_registered)
 
         visit_saml_authn_request_url(
