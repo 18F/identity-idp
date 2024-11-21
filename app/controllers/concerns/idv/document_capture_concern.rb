@@ -43,7 +43,11 @@ module Idv
     def make_error_hash(message)
       Rails.logger.info("make_error_hash: stored_result: #{stored_result.inspect}")
 
-      { message: message || I18n.t('doc_auth.errors.general.network_error') }
+      if stored_result.errors.has_key?(:reason_codes)
+        { reason_codes: stored_result.errors[:reason_codes] }
+      else
+        { message: message || I18n.t('doc_auth.errors.general.network_error') }
+      end
     end
 
     def extract_pii_from_doc(user, store_in_session: false)
