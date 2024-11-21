@@ -36,7 +36,6 @@ module Idv
 
         if document_capture_session.socure_docv_capture_app_url.present?
           @url = document_capture_session.socure_docv_capture_app_url
-          # TODO see if we need to set document_request, document_response, msg, and reference_id
           return
         end
 
