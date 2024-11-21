@@ -33,8 +33,8 @@ class SocureErrorPresenter
   end
 
   def action
-    url = hybrid_handoff ? idv_hybrid_mobile_socure_document_capture_path
-                         : idv_socure_document_capture_path
+    url = hybrid_mobile ? idv_hybrid_mobile_socure_document_capture_path
+                        : idv_socure_document_capture_path
     {
       text: I18n.t('idv.failure.button.warning'),
       url: url,
@@ -91,7 +91,7 @@ class SocureErrorPresenter
 
   private
 
-  attr_reader :error_code, :remaining_attempts, :sp_name
+  attr_reader :error_code, :remaining_attempts, :sp_name, :hybrid_mobile
 
   SOCURE_ERROR_MAP = {
     'I848' => 'unreadable_id',
