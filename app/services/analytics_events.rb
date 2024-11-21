@@ -5828,7 +5828,6 @@ module AnalyticsEvents
   # @param [String] pending_profile_pending_reasons Comma-separated list of the pending states
   # associated with the associated profile.
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  # @param [Boolean] password_matches_existing Whether the password is same as the user's current
   # The user changed the password for their account via the password reset flow
   def password_reset_password(
     success:,
@@ -5836,7 +5835,6 @@ module AnalyticsEvents
     profile_deactivated:,
     pending_profile_invalidated:,
     pending_profile_pending_reasons:,
-    password_matches_existing:,
     error_details: {},
     **extra
   )
@@ -5848,7 +5846,6 @@ module AnalyticsEvents
       profile_deactivated:,
       pending_profile_invalidated:,
       pending_profile_pending_reasons:,
-      password_matches_existing:,
       **extra,
     )
   end

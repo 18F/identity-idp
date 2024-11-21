@@ -242,7 +242,6 @@ module IdentityConfig
     config.add(:lexisnexis_trueid_username, type: :string)
     config.add(:lexisnexis_username, type: :string)
     config.add(:lockout_period_in_minutes, type: :integer)
-    config.add(:log_password_reset_matches_existing_ab_test_percent, type: :integer)
     config.add(:log_to_stdout, type: :boolean)
     config.add(:login_otp_confirmation_max_attempts, type: :integer)
     config.add(:logins_per_email_and_ip_bantime, type: :integer)
