@@ -34,20 +34,8 @@ RSpec.feature 'document capture step', :js do
       and_return(fake_socure_endpoint)
     allow(IdentityConfig.store).to receive(:ruby_workers_idv_enabled).and_return(false)
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
-    @docv_transaction_token = SecureRandom.hex
-    stub_request(:post, fake_socure_endpoint).
-      to_return(
-        status: fake_socure_status,
-        body: {
-          referenceId: 'socure-reference-id',
-          data: {
-            eventId: 'socure-event-id',
-            docvTransactionToken: @docv_transaction_token,
-            qrCode: 'qr-code',
-            url: fake_socure_document_capture_app_url,
-          },
-        }.to_json,
-      )
+    @docv_transaction_token = stub_docv_document_request
+    stub_docv_verification_data_pass
   end
 
   before(:all) do
@@ -67,7 +55,6 @@ RSpec.feature 'document capture step', :js do
 
     context 'rate limits calls to backend docauth vendor', allow_browser_log: true do
       before do
-        stub_docv_verification_data_pass
         allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
         (max_attempts - 1).times do
           socure_docv_send_webhook(docv_transaction_token: @docv_transaction_token)
@@ -144,9 +131,6 @@ RSpec.feature 'document capture step', :js do
   end
 
   context 'standard mobile flow' do
-    before do
-      stub_docv_verification_data_pass
-    end
     it 'proceeds to the next page with valid info' do
       perform_in_browser(:mobile) do
         visit_idp_from_oidc_sp_with_ial2
