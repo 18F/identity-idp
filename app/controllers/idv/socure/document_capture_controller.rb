@@ -71,6 +71,9 @@ module Idv
         document_capture_session.confirm_ocr
 
         result = handle_stored_result
+
+        Rails.logger.info "update: result.errors: #{result.errors.inspect}"
+
         # TODO: new analytics event?
         analytics.idv_doc_auth_document_capture_submitted(**result.to_h.merge(analytics_arguments))
 
