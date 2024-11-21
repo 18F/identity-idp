@@ -45,6 +45,8 @@ RSpec.feature 'mobile hybrid flow entry', :js do
       before do
         allow(DocAuthRouter).to receive(:doc_auth_vendor_for_bucket).
           and_return(Idp::Constants::Vendors::SOCURE)
+        allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint).
+          and_return('https://fake-socure.test.org')
         stub_docv_document_request
       end
 

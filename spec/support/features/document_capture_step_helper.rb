@@ -133,7 +133,7 @@ module DocumentCaptureStepHelper
       },
     }
 
-    stub_request(:post, IdentityConfig.store.socure_document_request_endpoint).
+    stub_request(:post, IdentityConfig.store.socure_docv_document_request_endpoint).
       to_return(
         status:,
         body: body.to_json,
