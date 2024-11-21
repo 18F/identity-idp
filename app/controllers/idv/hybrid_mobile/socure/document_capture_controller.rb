@@ -71,9 +71,11 @@ module Idv
         def errors
           result = handle_stored_result
 
+          Rails.logger.info "creating socure errror presenter: result.errors: #{result.errors.inspect}"
+
           @presenter =
             SocureErrorPresenter.new(
-              result.errors.dig(:socure, :reason_codes)&.first,
+              result.errors[:reason_codes]&.first,
               RateLimiter.new(
                 user: document_capture_session.user,
                 rate_limit_type: :idv_resolution,
