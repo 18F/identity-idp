@@ -14,7 +14,7 @@ module ScriptHelper
       javascript_packs_tag_once(...)
       return if @scripts.blank?
       concat javascript_assets_tag
-      crossorigin = true if local_crossorigin_sources?
+      crossorigin = local_crossorigin_sources?.presence
       @scripts.each do |name, (url_params, attributes)|
         asset_sources.get_sources(name).each do |source|
           integrity = asset_sources.get_integrity(source)
