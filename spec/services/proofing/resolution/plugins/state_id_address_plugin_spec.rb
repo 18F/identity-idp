@@ -1,16 +1,16 @@
 require 'rails_helper'
 
-RSpec.describe Proofing::Resolution::Plugins::InstantVerifyStateIdAddressPlugin do
+RSpec.describe Proofing::Resolution::Plugins::StateIdAddressPlugin do
   let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID }
 
   let(:current_sp) { build(:service_provider) }
 
-  let(:instant_verify_residential_address_result) do
+  let(:residential_address_resolution_result) do
     Proofing::Resolution::Result.new(
       success: true,
       errors: {},
       exception: nil,
-      vendor_name: 'lexisnexis:instant_verify',
+      vendor_name: 'test_resolution_vendor',
     )
   end
 
@@ -21,12 +21,21 @@ RSpec.describe Proofing::Resolution::Plugins::InstantVerifyStateIdAddressPlugin 
       success: true,
       errors: {},
       exception: nil,
-      vendor_name: 'lexisnexis:instant_verify',
+      vendor_name: 'test_resolution_vendor',
     )
   end
 
+  let(:proofer) do
+    instance_double(Proofing::LexisNexis::InstantVerify::Proofer, proof: proofer_result)
+  end
+
+  let(:sp_cost_token) { :test_cost_token }
+
   subject(:plugin) do
-    described_class.new
+    described_class.new(
+      proofer:,
+      sp_cost_token:,
+    )
   end
 
   describe '#call' do
@@ -35,13 +44,9 @@ RSpec.describe Proofing::Resolution::Plugins::InstantVerifyStateIdAddressPlugin 
         applicant_pii:,
         current_sp:,
         ipp_enrollment_in_progress:,
-        instant_verify_residential_address_result:,
+        residential_address_resolution_result:,
         timer: JobHelpers::Timer.new,
       )
-    end
-
-    before do
-      allow(plugin.proofer).to receive(:proof).and_return(proofer_result)
     end
 
     context 'remote unsupervised proofing' do
@@ -61,18 +66,17 @@ RSpec.describe Proofing::Resolution::Plugins::InstantVerifyStateIdAddressPlugin 
       it 'passes state id address to proofer' do
         expect(plugin.proofer).
           to receive(:proof).
-          with(hash_including(state_id_address)).
-          and_call_original
+          with(hash_including(state_id_address))
 
         call
       end
 
-      context 'when InstantVerify call succeeds' do
+      context 'when vendor call succeeds' do
         it 'returns the proofer result' do
           expect(call).to eql(proofer_result)
         end
 
-        it 'records a LexisNexis SP cost' do
+        it 'records correct SP cost' do
           expect { call }.
             to change {
                  SpCost.where(
@@ -83,13 +87,13 @@ RSpec.describe Proofing::Resolution::Plugins::InstantVerifyStateIdAddressPlugin 
         end
       end
 
-      context 'when InstantVerify call fails' do
+      context 'when vendor call fails' do
         let(:proofer_result) do
           Proofing::Resolution::Result.new(
             success: false,
             errors: {},
             exception: nil,
-            vendor_name: 'lexisnexis:instant_verify',
+            vendor_name: 'test_resolution_vendor',
           )
         end
 
@@ -108,7 +112,7 @@ RSpec.describe Proofing::Resolution::Plugins::InstantVerifyStateIdAddressPlugin 
         end
       end
 
-      context 'when InstantVerify call results in exception' do
+      context 'when vendor call results in exception' do
         let(:proofer_result) do
           Proofing::Resolution::Result.new(
             success: false,
@@ -139,7 +143,7 @@ RSpec.describe Proofing::Resolution::Plugins::InstantVerifyStateIdAddressPlugin 
         it 'reuses residential address result' do
           result = call
           expect(plugin.proofer).not_to have_received(:proof)
-          expect(result).to eql(instant_verify_residential_address_result)
+          expect(result).to eql(residential_address_resolution_result)
         end
 
         it 'does not add a new LexisNexis SP cost (since residential address result was reused)' do
@@ -176,15 +180,14 @@ RSpec.describe Proofing::Resolution::Plugins::InstantVerifyStateIdAddressPlugin 
           }
         end
 
-        context 'LexisNexis InstantVerify passes for residential address' do
-          it 'calls the InstantVerify Proofer with state id address' do
-            expect(plugin.proofer).to receive(:proof).with(hash_including(state_id_address)).
-              and_call_original
+        context 'LexisNexis vendor passes for residential address' do
+          it 'calls the vendor Proofer with state id address' do
+            expect(plugin.proofer).to receive(:proof).with(hash_including(state_id_address))
 
             call
           end
 
-          context 'when InstantVerify call succeeds' do
+          context 'when vendor call succeeds' do
             it 'returns the proofer result' do
               expect(call).to eql(proofer_result)
             end
@@ -200,7 +203,7 @@ RSpec.describe Proofing::Resolution::Plugins::InstantVerifyStateIdAddressPlugin 
             end
           end
 
-          context 'when InstantVerify call fails' do
+          context 'when vendor call fails' do
             let(:proofer_result) do
               Proofing::Resolution::Result.new(
                 success: false,
@@ -225,7 +228,7 @@ RSpec.describe Proofing::Resolution::Plugins::InstantVerifyStateIdAddressPlugin 
             end
           end
 
-          context 'when InstantVerify call results in exception' do
+          context 'when vendor call results in exception' do
             let(:proofer_result) do
               Proofing::Resolution::Result.new(
                 success: false,
@@ -250,8 +253,8 @@ RSpec.describe Proofing::Resolution::Plugins::InstantVerifyStateIdAddressPlugin 
             end
           end
 
-          context 'LexisNexis InstantVerify failed for residential address' do
-            let(:instant_verify_residential_address_result) do
+          context 'LexisNexis vendor failed for residential address' do
+            let(:residential_address_resolution_result) do
               Proofing::Resolution::Result.new(
                 success: false,
                 errors: {},
@@ -283,31 +286,6 @@ RSpec.describe Proofing::Resolution::Plugins::InstantVerifyStateIdAddressPlugin 
             end
           end
         end
-      end
-    end
-  end
-
-  describe '#proofer' do
-    subject(:proofer) { plugin.proofer }
-
-    before do
-      allow(IdentityConfig.store).to receive(:idv_resolution_default_vendor).
-        and_return(idv_resolution_default_vendor)
-    end
-
-    context 'idv_resolution_default_vendor is set to :instant_verify' do
-      let(:idv_resolution_default_vendor) { :instant_verify }
-
-      it 'creates an Instant Verify proofer' do
-        expect(proofer).to be_an_instance_of(Proofing::LexisNexis::InstantVerify::Proofer)
-      end
-    end
-
-    context 'idv_resolution_default_vendor is set to :mock' do
-      let(:idv_resolution_default_vendor) { :mock }
-
-      it 'creates a mock proofer' do
-        expect(proofer).to be_an_instance_of(Proofing::Mock::ResolutionMockClient)
       end
     end
   end

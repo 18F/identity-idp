@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
   let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN }
   let(:current_sp) { build(:service_provider) }
-  let(:instant_verify_state_id_address_result) { nil }
+  let(:state_id_address_resolution_result) { nil }
   let(:ipp_enrollment_in_progress) { false }
   let(:proofer) { instance_double(Proofing::Aamva::Proofer, proof: proofer_result) }
   let(:proofer_result) do
@@ -40,7 +40,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
       plugin.call(
         applicant_pii:,
         current_sp:,
-        instant_verify_state_id_address_result:,
+        state_id_address_resolution_result:,
         ipp_enrollment_in_progress:,
         timer: JobHelpers::Timer.new,
       )
@@ -60,7 +60,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
       end
 
       context 'InstantVerify succeeded' do
-        let(:instant_verify_state_id_address_result) do
+        let(:state_id_address_resolution_result) do
           Proofing::Resolution::Result.new(
             success: true,
             vendor_name: 'lexisnexis:instant_verify',
@@ -96,7 +96,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
 
       context 'InstantVerify failed' do
         context 'and the failure can possibly be covered by AAMVA' do
-          let(:instant_verify_state_id_address_result) do
+          let(:state_id_address_resolution_result) do
             Proofing::Resolution::Result.new(
               success: false,
               vendor_name: 'lexisnexis:instant_verify',
@@ -120,7 +120,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
         end
 
         context 'but the failure cannot be covered by AAMVA' do
-          let(:instant_verify_state_id_address_result) do
+          let(:state_id_address_resolution_result) do
             Proofing::Resolution::Result.new(
               success: false,
               vendor_name: 'lexisnexis:instant_verify',
@@ -164,7 +164,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
       context 'residential address same as id address' do
         let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID }
 
-        let(:instant_verify_state_id_address_result) do
+        let(:state_id_address_resolution_result) do
           Proofing::Resolution::Result.new(
             success: true,
             vendor_name: 'lexisnexis:instant_verify',
@@ -184,7 +184,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
 
         context 'InstantVerify failed' do
           context 'and the failure can possibly be covered by AAMVA' do
-            let(:instant_verify_state_id_address_result) do
+            let(:state_id_address_resolution_result) do
               Proofing::Resolution::Result.new(
                 success: false,
                 vendor_name: 'lexisnexis:instant_verify',
@@ -204,7 +204,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
           end
 
           context 'but the failure cannot be covered by AAMVA' do
-            let(:instant_verify_state_id_address_result) do
+            let(:state_id_address_resolution_result) do
               Proofing::Resolution::Result.new(
                 success: false,
                 vendor_name: 'lexisnexis:instant_verify',
@@ -236,7 +236,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
 
         context 'InstantVerify succeeded for residential address' do
           context 'and InstantVerify passed for id address' do
-            let(:instant_verify_state_id_address_result) do
+            let(:state_id_address_resolution_result) do
               Proofing::Resolution::Result.new(
                 success: true,
                 vendor_name: 'lexisnexis:instant_verify',
@@ -255,7 +255,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
 
           context 'and InstantVerify failed for state id address' do
             context 'but the failure can possibly be covered by AAMVA' do
-              let(:instant_verify_state_id_address_result) do
+              let(:state_id_address_resolution_result) do
                 Proofing::Resolution::Result.new(
                   success: false,
                   vendor_name: 'lexisnexis:instant_verify',
@@ -275,7 +275,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
             end
 
             context 'and the failure cannot be covered by AAMVA' do
-              let(:instant_verify_state_id_address_result) do
+              let(:state_id_address_resolution_result) do
                 Proofing::Resolution::Result.new(
                   success: false,
                   vendor_name: 'lexisnexis:instant_verify',

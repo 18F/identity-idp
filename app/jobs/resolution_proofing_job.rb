@@ -76,7 +76,7 @@ class ResolutionProofingJob < ApplicationJob
 
     if IdentityConfig.store.idv_socure_shadow_mode_enabled
       SocureShadowModeProofingJob.perform_later(
-        document_capture_session_result_id: document_capture_session.result_id,
+        document_capture_session_result_id: document_capture_session&.result_id,
         encrypted_arguments:,
         service_provider_issuer:,
         user_email: user_email_for_proofing(user),

@@ -34,14 +34,14 @@ module Proofing
         # @param [Hash] applicant
         # @return [Proofing::Resolution::Result]
         def proof(applicant)
-          input = Input.new(applicant.except(:phone_source))
+          input = Input.new(applicant.slice(*Input.members))
 
           request = Request.new(config:, input:)
 
           response = request.send_request
 
           build_result_from_response(response)
-        rescue Proofing::TimeoutError, RequestError => err
+        rescue Proofing::TimeoutError, Request::Error => err
           build_result_from_error(err)
         end
 
