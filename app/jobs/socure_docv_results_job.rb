@@ -13,11 +13,6 @@ class SocureDocvResultsJob < ApplicationJob
     raise "DocumentCaptureSession not found: #{document_capture_session_uuid}" unless
       document_capture_session
 
-    @analytics = create_analytics(
-      user: document_capture_session.user,
-      service_provider_issuer: document_capture_session.issuer,
-    )
-
     timer = JobHelpers::Timer.new
     response = timer.time('vendor_request') do
       socure_document_verification_result
@@ -31,37 +26,34 @@ class SocureDocvResultsJob < ApplicationJob
 
   private
 
-  def create_analytics(
-    user:,
-    service_provider_issuer:
-  )
-    Analytics.new(
-      user:,
-      request: nil,
-      sp: service_provider_issuer,
-      session: {},
+  def analytics
+    @analytics ||= Analytics.new(
+      user: document_capture_session.user,
+      service_provider_issuer: document_capture_session.issuer,
     )
   end
 
   def log_verification_request(docv_result_response:, vendor_request_time_in_ms:)
     return if docv_result_response.nil?
 
-    response_hash = docv_result_response.to_h
-    verification_response_data = docv_result_response.extra_attributes
-    further_metrics = {
-      user_id: document_capture_session.user.uuid,
-      docv_transaction_token: document_capture_session.socure_docv_transaction_token,
-      submit_attempts: rate_limiter&.attempts,
-      remaining_submit_attempts: rate_limiter&.remaining_count,
-      vendor_request_time_in_ms:,
-      async:,
-      success: response_hash[:success],
-      errors: response_hash[:errors],
-      exception: response_hash[:exception],
-    }
-    @analytics.idv_socure_verification_data_requested(
-      **verification_response_data.to_h.merge(further_metrics),
+    analytics.idv_socure_verification_data_requested(
+      **filtered_verification_data(docv_result_response).merge(
+        docv_transaction_token: document_capture_session.socure_docv_transaction_token,
+        submit_attempts: rate_limiter&.attempts,
+        remaining_submit_attempts: rate_limiter&.remaining_count,
+        vendor_request_time_in_ms:,
+        async:,
+      ).compact,
     )
+  end
+
+  def filtered_verification_data(docv_result_response)
+    hash = docv_result_response.to_h
+    hash.delete(:attention_with_barcode)
+    hash.delete(:selfie_live)
+    hash.delete(:selfie_quality_good)
+    hash.delete(:selfie_status)
+    hash
   end
 
   def socure_document_verification_result

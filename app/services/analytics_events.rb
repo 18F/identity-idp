@@ -4741,9 +4741,9 @@ module AnalyticsEvents
   def idv_socure_verification_data_requested(
     success:,
     errors:,
-    exception:,
     async:,
     docv_transaction_token: nil,
+    exception: nil,
     customer_profile: nil,
     reference_id: nil,
     reason_codes: nil,
