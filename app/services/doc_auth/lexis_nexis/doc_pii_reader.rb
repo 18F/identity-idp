@@ -31,7 +31,6 @@ module DocAuth
           first_name: id_auth_field_data['Fields_FirstName'],
           last_name: id_auth_field_data['Fields_Surname'],
           middle_name: id_auth_field_data['Fields_MiddleName'],
-          name_suffix: id_auth_field_data['Fields_NameSuffix'],
           address1: id_auth_field_data['Fields_AddressLine1'],
           address2: id_auth_field_data['Fields_AddressLine2'],
           city: id_auth_field_data['Fields_City'],
