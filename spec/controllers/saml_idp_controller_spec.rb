@@ -1525,6 +1525,40 @@ RSpec.describe SamlIdpController do
             )
           end
 
+          context 'when request is using SHA1 as the digest method algorithm' do
+            let(:auth_settings) do
+              saml_settings(
+                overrides: {
+                  security: {
+                    authn_requests_signed:,
+                    digest_method: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha1',
+                  },
+                },
+              )
+            end
+
+            it 'notes an error in the event' do
+              user.identities.last.update!(verified_attributes: ['email'])
+              generate_saml_response(user, auth_settings)
+
+              expect(response.status).to eq(200)
+              expect(@analytics).to have_logged_event(
+                'SAML Auth', hash_including(
+                  request_signed: authn_requests_signed,
+                  cert_error_details: [
+                    {
+                      cert: '16692258094164984098',
+                      error_code: :fingerprint_mismatch
+                    },
+                    {
+                      cert: '14834808178619537243', error_code: :fingerprint_mismatch
+                    },
+                  ],
+                )
+              )
+            end
+          end
+
           context 'Certificate sig validation fails because of namespace bug' do
             let(:request_sp) { double }
 
