@@ -66,8 +66,6 @@ module Idv
         render json: { success: true }, status: :ok
       end
 
-      private
-
       def idv_session
         if user_session && current_user
           @idv_session ||= Idv::Session.new(
@@ -77,6 +75,8 @@ module Idv
           )
         end
       end
+
+      private
 
       def document_capture_session
         if idv_session&.document_capture_session_uuid # standard flow
