@@ -220,9 +220,7 @@ class DataPull
 
       warn "Computed service provider #{service_provider}"
 
-      [
-        service_provider,
-      ]
+      Array(service_provider)
     end
   end
 
