@@ -193,7 +193,6 @@ RSpec.describe Idv::Session do
         let(:profile) { subject.profile }
 
         before do
-          ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
           subject.user_phone_confirmation = true
           subject.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.with_indifferent_access
@@ -272,7 +271,6 @@ RSpec.describe Idv::Session do
 
         before do
           allow(UspsInPersonProofing::EnrollmentHelper).to receive(:schedule_in_person_enrollment)
-          ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
           subject.user_phone_confirmation = true
           subject.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.with_indifferent_access

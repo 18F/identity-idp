@@ -87,7 +87,6 @@ RSpec.describe Idv::StepIndicatorConcern, type: :controller do
 
       context 'via current idv session' do
         before do
-          ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
           create(:in_person_enrollment, :establishing, user: user)
         end
 
