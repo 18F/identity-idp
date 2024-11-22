@@ -212,7 +212,7 @@ class DataPull
     def compute_requesting_issuers(uuids)
       service_providers = ServiceProviderIdentity.where(uuid: uuids).pluck(:service_provider)
       return nil if service_providers.empty?
-      service_provider = service_providers.tally.max_by { |_sp, count| count }[0]
+      service_provider, _count = service_providers.tally.max_by { |_sp, count| count }
 
       if service_providers.count > 1
         warn "Multiple computed service providers: #{service_providers.join(', ')}"
