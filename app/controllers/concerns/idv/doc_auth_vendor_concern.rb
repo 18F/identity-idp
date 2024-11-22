@@ -6,8 +6,8 @@ module Idv
 
     # @returns[String] String identifying the vendor to use for doc auth.
     def doc_auth_vendor
-      if resolved_authn_context_result.facial_match? && default_vendor_is_not_mock?
-        bucket = :lexis_nexis
+      if resolved_authn_context_result.facial_match?
+        bucket = default_vendor_is_not_mock? ? :lexis_nexis : :mock
       else
         bucket = ab_test_bucket(:DOC_AUTH_VENDOR)
       end
