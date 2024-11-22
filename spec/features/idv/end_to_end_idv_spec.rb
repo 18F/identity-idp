@@ -33,7 +33,7 @@ RSpec.describe 'Identity verification', :js do
 
     validate_verify_info_page
     complete_verify_step
-    validate_verify_info_submit(user)
+    validate_verify_info_submit
 
     validate_phone_page
     try_to_skip_ahead_from_phone
@@ -265,12 +265,8 @@ RSpec.describe 'Identity verification', :js do
     expect(page).to have_text(DocAuthHelper::GOOD_SSN)
   end
 
-  def validate_verify_info_submit(user)
+  def validate_verify_info_submit
     expect(page).to have_content(t('doc_auth.forms.doc_success'))
-    expect(user.proofing_component.resolution_check).to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
-    expect(user.proofing_component.source_check).to satisfy do |v|
-      Idp::Constants::Vendors::SOURCE_CHECK.include?(v)
-    end
   end
 
   def validate_phone_page
@@ -333,6 +329,15 @@ RSpec.describe 'Identity verification', :js do
     profile = user.profiles.first
 
     expect(profile.active?).to eq true
+    expect(profile.proofing_components).to eql(
+      'source_check' => 'StateIdMock',
+      'threatmetrix' => true,
+      'address_check' => 'lexis_nexis_address',
+      'document_type' => 'state_id',
+      'document_check' => 'mock',
+      'resolution_check' => 'lexis_nexis',
+      'threatmetrix_review_status' => 'pass',
+    )
     expect(GpoConfirmation.count).to eq(0)
   end
 
