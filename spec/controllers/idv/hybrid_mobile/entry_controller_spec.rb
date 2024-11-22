@@ -91,6 +91,14 @@ RSpec.describe Idv::HybridMobile::EntryController do
         end
       end
 
+      context 'doc auth vendor is mock' do
+        let(:idv_vendor) { Idp::Constants::Vendors::MOCK }
+
+        it 'redirects to the first step' do
+          expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
+        end
+      end
+
       context 'but we already had a session' do
         let!(:different_document_capture_session) do
           DocumentCaptureSession.create!(
