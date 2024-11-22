@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Proofing::Resolution::Plugins::InstantVerifyResidentialAddressPlugin do
+RSpec.describe Proofing::Resolution::Plugins::ResidentialAddressPlugin do
   let(:current_sp) { build(:service_provider) }
 
   let(:ipp_enrollment_in_progress) { false }
@@ -11,12 +11,21 @@ RSpec.describe Proofing::Resolution::Plugins::InstantVerifyResidentialAddressPlu
     Proofing::Resolution::Result.new(
       success: true,
       transaction_id: proofer_transaction_id,
-      vendor_name: 'lexisnexis:instant_verify',
+      vendor_name: 'test_resolution_vendor',
     )
   end
 
+  let(:proofer) do
+    instance_double(Proofing::LexisNexis::InstantVerify::Proofer, proof: proofer_result)
+  end
+
+  let(:sp_cost_token) { :test_cost_token }
+
   subject(:plugin) do
-    described_class.new
+    described_class.new(
+      proofer:,
+      sp_cost_token:,
+    )
   end
 
   describe '#call' do
@@ -124,61 +133,6 @@ RSpec.describe Proofing::Resolution::Plugins::InstantVerifyResidentialAddressPlu
 
         it 'records a LexisNexis SP cost' do
           expect { call }.to change { sp_cost_count_with_transaction_id }.to(1)
-        end
-      end
-    end
-  end
-
-  describe '#proofer' do
-    subject(:proofer) { plugin.proofer }
-
-    before do
-      allow(IdentityConfig.store).to receive(:proofer_mock_fallback).
-        and_return(proofer_mock_fallback)
-      allow(IdentityConfig.store).to receive(:idv_resolution_default_vendor).
-        and_return(idv_resolution_default_vendor)
-    end
-
-    context 'when proofer_mock_fallback is set to true' do
-      let(:proofer_mock_fallback) { true }
-
-      context 'and idv_resolution_default_vendor is set to :instant_verify' do
-        let(:idv_resolution_default_vendor) do
-          :instant_verify
-        end
-
-        # rubocop:disable Layout/LineLength
-        it 'creates an Instant Verify proofer because the new setting takes precedence over the old one when the old one is set to its default value' do
-          expect(proofer).to be_an_instance_of(Proofing::LexisNexis::InstantVerify::Proofer)
-        end
-        # rubocop:enable Layout/LineLength
-      end
-
-      context 'and idv_resolution_default_vendor is set to :mock' do
-        let(:idv_resolution_default_vendor) { :mock }
-
-        it 'creates a mock proofer because the two settings agree' do
-          expect(proofer).to be_an_instance_of(Proofing::Mock::ResolutionMockClient)
-        end
-      end
-    end
-
-    context 'when proofer_mock_fallback is set to false' do
-      let(:proofer_mock_fallback) { false }
-
-      context 'and idv_resolution_default_vendor is set to :instant_verify' do
-        let(:idv_resolution_default_vendor) { :instant_verify }
-
-        it 'creates an Instant Verify proofer because the two settings agree' do
-          expect(proofer).to be_an_instance_of(Proofing::LexisNexis::InstantVerify::Proofer)
-        end
-      end
-
-      context 'and idv_resolution_default_vendor is set to :mock' do
-        let(:idv_resolution_default_vendor) { :mock }
-
-        it 'creates an Instant Verify proofer to support transition between configs' do
-          expect(proofer).to be_an_instance_of(Proofing::LexisNexis::InstantVerify::Proofer)
         end
       end
     end

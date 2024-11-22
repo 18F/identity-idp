@@ -172,6 +172,17 @@ RSpec.describe Proofing::Socure::IdPlus::Proofer do
     end
   end
 
+  context 'when applicant includes extra fields' do
+    let(:applicant) do
+      {
+        some_weird_field_the_proofer_is_not_expecting: ':ohno:',
+      }
+    end
+    it 'does not raise an error' do
+      expect { result }.not_to raise_error
+    end
+  end
+
   context 'when request times out' do
     before do
       stub_request(:post, URI.join(base_url, '/api/3.0/EmailAuthScore').to_s).
@@ -224,7 +235,7 @@ RSpec.describe Proofing::Socure::IdPlus::Proofer do
       end
 
       it 'includes exception details' do
-        expect(result.exception).to be_an_instance_of(Proofing::Socure::IdPlus::RequestError)
+        expect(result.exception).to be_an_instance_of(Proofing::Socure::IdPlus::Request::Error)
       end
     end
   end
@@ -253,7 +264,7 @@ RSpec.describe Proofing::Socure::IdPlus::Proofer do
       end
 
       it 'includes exception details' do
-        expect(result.exception).to be_an_instance_of(Proofing::Socure::IdPlus::RequestError)
+        expect(result.exception).to be_an_instance_of(Proofing::Socure::IdPlus::Request::Error)
       end
     end
   end
@@ -278,7 +289,7 @@ RSpec.describe Proofing::Socure::IdPlus::Proofer do
       end
 
       it 'includes exception details' do
-        expect(result.exception).to be_an_instance_of(Proofing::Socure::IdPlus::RequestError)
+        expect(result.exception).to be_an_instance_of(Proofing::Socure::IdPlus::Request::Error)
       end
     end
   end
