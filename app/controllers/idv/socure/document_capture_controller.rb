@@ -62,26 +62,12 @@ module Idv
       end
 
       def update
+        return if wait_for_result?
+
         clear_future_steps!
         idv_session.redo_document_capture = nil # done with this redo
         # Not used in standard flow, here for data consistency with hybrid flow.
         document_capture_session.confirm_ocr
-
-        # If the stored_result is nil, the job fetching the results has not completed.
-        if stored_result.nil?
-          analytics.idv_doc_auth_document_capture_polling_wait_visited(**analytics_arguments)
-          if wait_timed_out?
-            # flash[:error] = I18n.t('errors.doc_auth.polling_timeout')
-            # TODO: redirect to try again page LG-14873/14952/15059
-            render plain: 'Technical difficulties!!!', status: :ok
-          else
-            @refresh_interval =
-              IdentityConfig.store.doc_auth_socure_wait_polling_refresh_max_seconds
-            render 'idv/socure/document_capture/wait'
-          end
-
-          return
-        end
 
         result = handle_stored_result
         # TODO: new analytics event?
@@ -121,6 +107,24 @@ module Idv
 
       private
 
+      def wait_for_result?
+        return false if stored_result.present?
+
+        # If the stored_result is nil, the job fetching the results has not completed.
+        analytics.idv_doc_auth_document_capture_polling_wait_visited(**analytics_arguments)
+        if wait_timed_out?
+          # flash[:error] = I18n.t('errors.doc_auth.polling_timeout')
+          # TODO: redirect to try again page LG-14873/14952/15059
+          render plain: 'Technical difficulties!!!', status: :ok
+        else
+          @refresh_interval =
+            IdentityConfig.store.doc_auth_socure_wait_polling_refresh_max_seconds
+          render 'idv/socure/document_capture/wait'
+        end
+
+        true
+      end
+
       def wait_timed_out?
         if idv_session.socure_docv_wait_polling_started_at.nil?
           idv_session.socure_docv_wait_polling_started_at = Time.zone.now.to_s
@@ -128,7 +132,7 @@ module Idv
         end
         start = DateTime.parse(idv_session.socure_docv_wait_polling_started_at)
         timeout_period =
-          IdentityConfig.store.doc_auth_socure_wait_polling_timeout_minutes.minutes || 5.minutes
+          IdentityConfig.store.doc_auth_socure_wait_polling_timeout_minutes.minutes || 2.minutes
         start + timeout_period < Time.zone.now
       end
 

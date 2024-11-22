@@ -69,7 +69,11 @@ RSpec.describe Idv::PersonalKeyController do
     idv_session.applicant = applicant
 
     if mint_profile_from_idv_session
-      idv_session.create_profile_from_applicant_with_password(password, is_enhanced_ipp)
+      idv_session.create_profile_from_applicant_with_password(
+        password,
+        is_enhanced_ipp:,
+        proofing_components: {},
+      )
     end
   end
 

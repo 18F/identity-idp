@@ -1255,10 +1255,10 @@ module AnalyticsEvents
     flow_path:,
     step:,
     analytics_id:,
-    redo_document_capture:,
-    skip_hybrid_handoff:,
     liveness_checking_required:,
     selfie_check_required:,
+    redo_document_capture: nil,
+    skip_hybrid_handoff: nil,
     opted_in_to_in_person_proofing: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     **extra
@@ -1379,10 +1379,35 @@ module AnalyticsEvents
   end
 
   # @param [String] side the side of the image submission
-  def idv_doc_auth_failed_image_resubmitted(side:, **extra)
+  # @param [Integer] submit_attempts Times that user has tried submitting (previously called
+  # "attempts")
+  # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [String] liveness_checking_required Whether or not the selfie is required
+  # @param [String] front_image_fingerprint Fingerprint of front image data
+  # @param [String] back_image_fingerprint Fingerprint of back image data
+  # @param [String] selfie_image_fingerprint Fingerprint of selfie image data
+  def idv_doc_auth_failed_image_resubmitted(
+    side:,
+    remaining_submit_attempts:,
+    flow_path:,
+    liveness_checking_required:,
+    submit_attempts:,
+    front_image_fingerprint:,
+    back_image_fingerprint:,
+    selfie_image_fingerprint:,
+    **extra
+  )
     track_event(
       'IdV: failed doc image resubmitted',
-      side: side,
+      side:,
+      remaining_submit_attempts:,
+      flow_path:,
+      liveness_checking_required:,
+      submit_attempts:,
+      front_image_fingerprint:,
+      back_image_fingerprint:,
+      selfie_image_fingerprint:,
       **extra,
     )
   end
@@ -3430,15 +3455,18 @@ module AnalyticsEvents
   # GetUspsProofingResultsJob is beginning. Includes some metadata about what the job will do
   # @param [Integer] enrollments_count number of enrollments eligible for status check
   # @param [Integer] reprocess_delay_minutes minimum delay since last status check
+  # @param [String] job_name Name of class which triggered proofing job
   def idv_in_person_usps_proofing_results_job_started(
     enrollments_count:,
     reprocess_delay_minutes:,
+    job_name:,
     **extra
   )
     track_event(
       'GetUspsProofingResultsJob: Job started',
-      enrollments_count: enrollments_count,
-      reprocess_delay_minutes: reprocess_delay_minutes,
+      enrollments_count:,
+      reprocess_delay_minutes:,
+      job_name:,
       **extra,
     )
   end
@@ -4330,12 +4358,15 @@ module AnalyticsEvents
   end
 
   # GPO "resend letter" page visited
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # @identity.idp.previous_event_name IdV: request letter visited
   def idv_resend_letter_visited(
+    pending_profile_idv_level: nil,
     **extra
   )
     track_event(
       :idv_resend_letter_visited,
+      pending_profile_idv_level:,
       **extra,
     )
   end
@@ -5797,7 +5828,6 @@ module AnalyticsEvents
   # @param [String] pending_profile_pending_reasons Comma-separated list of the pending states
   # associated with the associated profile.
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  # @param [Boolean] password_matches_existing Whether the password is same as the user's current
   # The user changed the password for their account via the password reset flow
   def password_reset_password(
     success:,
@@ -5805,7 +5835,6 @@ module AnalyticsEvents
     profile_deactivated:,
     pending_profile_invalidated:,
     pending_profile_pending_reasons:,
-    password_matches_existing:,
     error_details: {},
     **extra
   )
@@ -5817,7 +5846,6 @@ module AnalyticsEvents
       profile_deactivated:,
       pending_profile_invalidated:,
       pending_profile_pending_reasons:,
-      password_matches_existing:,
       **extra,
     )
   end
@@ -6158,6 +6186,7 @@ module AnalyticsEvents
   # @param [String] phone_fingerprint HMAC fingerprint of the phone number formatted as E.164
   # @param ["authentication", "reauthentication", "confirmation"] context User session context
   # @param ["sms", "voice"] otp_delivery_preference Channel used to send the message
+  # @param [String,nil] step_name Name of step in user flow where rate limit occurred
   # @identity.idp.previous_event_name Throttler Rate Limit Triggered
   def rate_limit_reached(
     limiter_type:,
@@ -6165,6 +6194,7 @@ module AnalyticsEvents
     phone_fingerprint: nil,
     context: nil,
     otp_delivery_preference: nil,
+    step_name: nil,
     **extra
   )
     track_event(
@@ -6174,6 +6204,7 @@ module AnalyticsEvents
       phone_fingerprint:,
       context:,
       otp_delivery_preference:,
+      step_name:,
       **extra,
     )
   end
@@ -6863,16 +6894,20 @@ module AnalyticsEvents
   # reason for the consent screen being shown
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation
   # @param [Array] sp_session_requested_attributes Attributes requested by the service provider
+  # @param [String, nil] in_person_proofing_status In person proofing status
+  # @param [String, nil] doc_auth_result The doc auth result
   def user_registration_agency_handoff_page_visit(
-      ial2:,
-      service_provider_name:,
-      page_occurence:,
-      needs_completion_screen_reason:,
-      in_account_creation_flow:,
-      sp_session_requested_attributes:,
-      ialmax: nil,
-      **extra
-    )
+    ial2:,
+    service_provider_name:,
+    page_occurence:,
+    needs_completion_screen_reason:,
+    in_account_creation_flow:,
+    sp_session_requested_attributes:,
+    ialmax: nil,
+    in_person_proofing_status: nil,
+    doc_auth_result: nil,
+    **extra
+  )
     track_event(
       'User registration: agency handoff visited',
       ial2:,
@@ -6882,6 +6917,8 @@ module AnalyticsEvents
       needs_completion_screen_reason:,
       in_account_creation_flow:,
       sp_session_requested_attributes:,
+      in_person_proofing_status:,
+      doc_auth_result:,
       **extra,
     )
   end

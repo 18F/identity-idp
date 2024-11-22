@@ -88,24 +88,8 @@ RSpec.describe ServiceProvider do
           and_return(true)
       end
 
-      context 'when the service provider is in the allowed list' do
-        before do
-          expect(IdentityConfig.store).not_to receive(:allowed_biometric_ial_providers)
-        end
-
-        it 'allows the service provider to use facial match IALs' do
-          expect(service_provider.facial_match_ial_allowed?).to be(true)
-        end
-      end
-
-      context 'when the service provider is not in the allowed list' do
-        before do
-          expect(IdentityConfig.store).not_to receive(:allowed_biometric_ial_providers)
-        end
-
-        it 'allows the service provider to use facial match IALs' do
-          expect(service_provider.facial_match_ial_allowed?).to be(true)
-        end
+      it 'allows the service provider to use facial match IALs' do
+        expect(service_provider.facial_match_ial_allowed?).to be(true)
       end
     end
 
@@ -115,26 +99,8 @@ RSpec.describe ServiceProvider do
           and_return(false)
       end
 
-      context 'when the service provider is in the allowed list' do
-        before do
-          allow(IdentityConfig.store).to receive(:allowed_biometric_ial_providers).
-            and_return([service_provider.issuer])
-        end
-
-        it 'allows the service provider to use facial match IALs' do
-          expect(service_provider.facial_match_ial_allowed?).to be(true)
-        end
-      end
-
-      context 'when the service provider is not in the allowed list' do
-        before do
-          allow(IdentityConfig.store).to receive(:allowed_biometric_ial_providers).
-            and_return([])
-        end
-
-        it 'does not allow the service provider to use facial match IALs' do
-          expect(service_provider.facial_match_ial_allowed?).to be(false)
-        end
+      it 'does not allow the service provider to use facial match IALs' do
+        expect(service_provider.facial_match_ial_allowed?).to be(false)
       end
     end
   end

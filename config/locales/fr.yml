@@ -1212,10 +1212,13 @@ in_person_proofing.body.cta.button: Essayer en personne
 in_person_proofing.body.cta.prompt_detail: La plupart des personnes qui ne parviennent pas à effectuer cette étape en ligne réussissent à confirmer leur identité dans un bureau de poste participant. Sans rendez-vous. Il existe des sites dans l’ensemble du pays.
 in_person_proofing.body.expect.heading: Que faire après votre visite
 in_person_proofing.body.expect.info: Nous vous enverrons un e-mail pour vous informer de la réussite ou de l’échec de la vérification de votre identité dans les 24 heures suivant votre visite au bureau de poste.
+in_person_proofing.body.location.change_location_find_other_locations: Trouvez d’autres bureaux de poste participants.
+in_person_proofing.body.location.change_location_heading: Vous devez changer de bureau de poste ?
+in_person_proofing.body.location.change_location_info_html: Pas besoin de créer un nouveau code-barres. Vous pouvez apporter le vôtre à n’importe quel bureau de poste participant. %{find_other_locations_link_html}
 in_person_proofing.body.location.distance.one: à %{count} mile
 in_person_proofing.body.location.distance.other: à %{count} miles
 in_person_proofing.body.location.heading: Informations sur les bureaux de poste
-in_person_proofing.body.location.info: Aucun rendez-vous n’est nécessaire pour vérifier votre identité. Vous pouvez vous rendre dans n’importe quel bureau de poste participant.
+in_person_proofing.body.location.info: Aucun rendez-vous n’est nécessaire pour vérifier votre identité.
 in_person_proofing.body.location.inline_error: Saisissez une adresse valide avec la ville, l’État et le code postal
 in_person_proofing.body.location.location_button: Sélectionner
 in_person_proofing.body.location.po_search.address_label: Adresse
