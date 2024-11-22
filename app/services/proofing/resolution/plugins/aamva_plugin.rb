@@ -19,7 +19,7 @@ module Proofing
           ipp_enrollment_in_progress:,
           timer:
         )
-          should_proof = should_proof_state_id_with_aamva?(
+          should_proof = should_proof_state_id?(
             applicant_pii:,
             state_id_address_resolution_result:,
             ipp_enrollment_in_progress:,
@@ -85,7 +85,7 @@ module Proofing
           applicant_pii[:same_address_as_id].to_s == 'true'
         end
 
-        def should_proof_state_id_with_aamva?(
+        def should_proof_state_id?(
           applicant_pii:,
           state_id_address_resolution_result:,
           ipp_enrollment_in_progress:
