@@ -4712,16 +4712,16 @@ module AnalyticsEvents
   # @param [Hash] errors Errors resulting from form validation
   # @param [String] exception
   # @param [Boolean] billed
-  # @param [String] docv_transaction_token
-  # @param [Hash] customer_profile
-  # @param [String] reference_id
-  # @param [Hash] reason_codes
-  # @param [Hash] document_type
-  # @param [Hash] decision
-  # @param [String] user_id
-  # @param [String] state
-  # @param [String] state_id_type
-  # @param [Boolean] async
+  # @param [String] docv_transaction_token socure transaction token
+  # @param [Hash] customer_profile socure customer profile
+  # @param [String] reference_id socure interal id for transaction
+  # @param [Hash] reason_codes socure internal reason codes for accept reject decision
+  # @param [Hash] document_type type of socument submitted (Drivers Licenese, etc.)
+  # @param [Hash] decision accept or reject of given ID
+  # @param [String] user_id internal id of socure user
+  # @param [String] state state of ID
+  # @param [String] state_id_type type of state issued ID
+  # @param [Boolean] async whether or not this worker is running asynchronously
   # @param [Integer] submit_attempts Times that user has tried submitting (previously called
   # "attempts")
   # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
@@ -4731,42 +4731,42 @@ module AnalyticsEvents
   # @param [Boolean] doc_auth_success
   # @param [Boolean] liveness_checking_required Whether or not the selfie is required
   # @param [Boolean] liveness_enabled Whether or not the selfie result is included in response
-  # @param [String] vendor
-  # @param [Boolean] address_line2_present
-  # @param [String] zip_code
+  # @param [String] vendor which 2rd party we are using for doc auth
+  # @param [Boolean] address_line2_present wether or not we have an address that uses the 2nd line
+  # @param [String] zip_code zip code from state issued ID
   # @param [String] birth_year Birth year from document
   # @param [Integer] issue_year Year document was issued
-  # @param [Boolean] biometric_comparison_required
+  # @param [Boolean] biometric_comparison_required does doc auth require biometirc
   # The request for socure verification was sent
   def idv_socure_verification_data_requested(
     success:,
     errors:,
     async:,
+    customer_profile:,
+    reference_id:,
+    reason_codes:,
+    document_type:,
+    decision:,
+    state:,
+    state_id_type:,
+    submit_attempts:,
+    remaining_submit_attempts:,
+    liveness_checking_required:,
+    issue_year:,
+    vendor_request_time_in_ms:,
+    doc_type_supported:,
+    doc_auth_success:,
+    vendor:,
+    address_line2_present:,
+    zip_code:,
+    birth_year:,
+    liveness_enabled:,
+    biometric_comparison_required:,
     docv_transaction_token: nil,
-    exception: nil,
-    customer_profile: nil,
-    reference_id: nil,
-    reason_codes: nil,
-    document_type: nil,
-    decision: nil,
     user_id: nil,
-    state: nil,
-    state_id_type: nil,
-    submit_attempts: nil,
-    remaining_submit_attempts: nil,
+    exception: nil,
     flow_path: nil,
-    liveness_checking_required: nil,
-    issue_year: nil,
     billed: nil,
-    vendor_request_time_in_ms: nil,
-    doc_type_supported: nil,
-    doc_auth_success: nil,
-    vendor: nil,
-    address_line2_present: nil,
-    zip_code: nil,
-    birth_year: nil,
-    liveness_enabled: nil,
-    biometric_comparison_required: nil,
     **extra
   )
     track_event(

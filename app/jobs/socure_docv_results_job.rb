@@ -6,9 +6,9 @@ class SocureDocvResultsJob < ApplicationJob
   attr_reader :document_capture_session_uuid, :async
 
   # @param [String] document_capture_session_uuid
-  def perform(document_capture_session_uuid:, async: true)
+  def perform(document_capture_session_uuid:)
     @document_capture_session_uuid = document_capture_session_uuid
-    @async = async
+    @async = IdentityConfig.store.ruby_workers_idv_enabled
 
     raise "DocumentCaptureSession not found: #{document_capture_session_uuid}" unless
       document_capture_session
