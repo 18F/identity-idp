@@ -6,9 +6,9 @@ class SocureDocvResultsJob < ApplicationJob
   attr_reader :document_capture_session_uuid, :async
 
   # @param [String] document_capture_session_uuid
-  def perform(document_capture_session_uuid:)
+  def perform(document_capture_session_uuid:, async: true)
     @document_capture_session_uuid = document_capture_session_uuid
-    @async = IdentityConfig.store.ruby_workers_idv_enabled
+    @async = async
 
     raise "DocumentCaptureSession not found: #{document_capture_session_uuid}" unless
       document_capture_session
@@ -37,23 +37,15 @@ class SocureDocvResultsJob < ApplicationJob
     return if docv_result_response.nil?
 
     analytics.idv_socure_verification_data_requested(
-      **filtered_verification_data(docv_result_response).merge(
+      **docv_result_response.to_h.merge(
         docv_transaction_token: document_capture_session.socure_docv_transaction_token,
         submit_attempts: rate_limiter&.attempts,
         remaining_submit_attempts: rate_limiter&.remaining_count,
         vendor_request_time_in_ms:,
         async:,
-      ).compact,
+      ).except(:attention_with_barcode, :selfie_live, :selfie_quality_good,
+               :selfie_status).compact,
     )
-  end
-
-  def filtered_verification_data(docv_result_response)
-    hash = docv_result_response.to_h
-    hash.delete(:attention_with_barcode)
-    hash.delete(:selfie_live)
-    hash.delete(:selfie_quality_good)
-    hash.delete(:selfie_status)
-    hash
   end
 
   def socure_document_verification_result

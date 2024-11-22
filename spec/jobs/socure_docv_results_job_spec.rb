@@ -26,6 +26,9 @@ RSpec.describe SocureDocvResultsJob do
     subject(:perform) do
       job.perform(document_capture_session_uuid: document_capture_session_uuid)
     end
+    subject(:perform_now) do
+      job.perform(document_capture_session_uuid: document_capture_session_uuid, async: false)
+    end
 
     let(:socure_response_body) do
       # ID+ v3.0 API Predictive Document Verification response
@@ -110,8 +113,6 @@ RSpec.describe SocureDocvResultsJob do
     end
 
     it 'expect fake analytics to have logged idv_socure_verification_data_requested' do
-      allow(IdentityConfig.store).to receive(:ruby_workers_idv_enabled).
-        and_return(true)
       perform
       expect(fake_analytics).to have_logged_event(
         :idv_socure_verification_data_requested,
@@ -122,9 +123,7 @@ RSpec.describe SocureDocvResultsJob do
     end
 
     it 'expect log with perform_now to have async eq false' do
-      allow(IdentityConfig.store).to receive(:ruby_workers_idv_enabled).
-        and_return(false)
-      perform
+      perform_now
       expect(fake_analytics).to have_logged_event(
         :idv_socure_verification_data_requested,
         hash_including(
