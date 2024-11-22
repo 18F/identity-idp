@@ -382,6 +382,7 @@ socure_docv_webhook_secret_key: ''
 socure_docv_webhook_secret_key_queue: '[]'
 socure_idplus_api_key: ''
 socure_idplus_base_url: ''
+socure_idplus_shadow_mode_percent: 0
 socure_idplus_timeout_in_seconds: 5
 socure_reason_code_api_key: ''
 socure_reason_code_base_url: ''
