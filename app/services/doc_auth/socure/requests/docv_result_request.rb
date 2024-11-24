@@ -8,7 +8,7 @@ module DocAuth
 
         def initialize(
           document_capture_session_uuid:,
-          docv_transaction_token_override:,
+          docv_transaction_token_override: nil,
           biometric_comparison_required: false
         )
           @document_capture_session_uuid = document_capture_session_uuid
