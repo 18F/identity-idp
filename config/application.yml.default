@@ -67,6 +67,7 @@ compromised_password_randomizer_value: 1000
 country_phone_number_overrides: '{}'
 dashboard_api_token: ''
 dashboard_url: https://dashboard.demo.login.gov
+data_warehouse_enabled: false
 database_advisory_locks_enabled: false
 database_host: ''
 database_name: ''
