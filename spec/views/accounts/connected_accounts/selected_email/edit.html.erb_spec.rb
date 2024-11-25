@@ -20,7 +20,7 @@ RSpec.describe 'accounts/connected_accounts/selected_email/edit.html.erb' do
     allow(view).to receive(:current_user).and_return(user)
     @identity = identity
     @select_email_form = SelectEmailForm.new(user:, identity:)
-    @can_add_email = true 
+    @can_add_email = true
   end
 
   it 'renders introduction text' do
@@ -55,5 +55,5 @@ RSpec.describe 'accounts/connected_accounts/selected_email/edit.html.erb' do
         href: add_email_path(in_select_email_flow: true),
       )
     end
-  end 
+  end
 end
