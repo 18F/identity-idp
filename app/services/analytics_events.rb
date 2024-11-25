@@ -5361,6 +5361,8 @@ module AnalyticsEvents
   # @param [String, nil] aaguid AAGUID value of WebAuthn device
   # @param [String[], nil] unknown_transports Array of unrecognized WebAuthn transports, intended to
   # be used in case of future specification changes.
+  # @param [:authentication, :account_creation, nil] webauthn_platform_recommended A/B test for
+  # recommended Face or Touch Unlock setup, if applicable.
   def multi_factor_auth_setup(
     success:,
     multi_factor_auth_method:,
@@ -5384,6 +5386,7 @@ module AnalyticsEvents
     attempts: nil,
     aaguid: nil,
     unknown_transports: nil,
+    webauthn_platform_recommended: nil,
     **extra
   )
     track_event(
@@ -5410,6 +5413,7 @@ module AnalyticsEvents
       attempts:,
       aaguid:,
       unknown_transports:,
+      webauthn_platform_recommended:,
       **extra,
     )
   end
