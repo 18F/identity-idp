@@ -29,12 +29,14 @@ class SocureDocvResultsJob < ApplicationJob
   def analytics
     @analytics ||= Analytics.new(
       user: document_capture_session.user,
-      service_provider_issuer: document_capture_session.issuer,
+      request: nil,
+      session: {},
+      sp: document_capture_session.issuer,
     )
   end
 
   def log_verification_request(docv_result_response:, vendor_request_time_in_ms:)
-    return if docv_result_response.nil?
+    return if docv_result_response.nil? || document_capture_session.nil?
 
     analytics.idv_socure_verification_data_requested(
       **docv_result_response.to_h.merge(
