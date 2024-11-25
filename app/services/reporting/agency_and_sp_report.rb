@@ -67,7 +67,7 @@ module Reporting
     end
 
     def facial_match_issuers
-      Profile.where(active: true).where(
+      @facial_match_issuers ||= Profile.where(active: true).where(
         'verified_at <= ?',
         report_date.end_of_day,
       ).where(idv_level: Profile::FACIAL_MATCH_IDV_LEVELS).
