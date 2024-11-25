@@ -412,7 +412,7 @@ Rails.application.routes.draw do
 
       # Deprecated route - temporary redirect while state id changes are rolled out
       get '/in_person_proofing/state_id' => redirect('verify/in_person/state_id', status: 307)
-      put '/in_person_proofing/state_id' => 'in_person/state_id#update'
+      put '/in_person_proofing/state_id' => redirect('verify/in_person/state_id', status: 307)
 
       get '/in_person' => 'in_person#index'
       get '/in_person/ready_to_verify' => 'in_person/ready_to_verify#show',
