@@ -8,10 +8,22 @@ RSpec.describe Reporting::TotalUserCountReport do
 
   let(:expected_report) do
     [
-      ['Metric', 'All Users', 'Verified users (Legacy IDV)', 'Verified users (Facial Matching)',
-       'Time Range Start', 'Time Range End'],
-      ['All-time count', expected_total_count, expected_verified_legacy_idv_count,
-       expected_verified_facial_match_count, '-', Date.new(2021, 3, 1)],
+      [
+        'Metric',
+        'All Users',
+        'Verified users (Legacy IDV)',
+        'Verified users (Facial Matching)',
+        'Time Range Start',
+        'Time Range End',
+      ],
+      [
+        'All-time count',
+        expected_total_count,
+        expected_verified_legacy_idv_count,
+        expected_verified_facial_match_count,
+        '-',
+        Date.new(2021, 3, 1),
+      ],
       [
         'All-time fully registered',
         expected_total_fully_registered,

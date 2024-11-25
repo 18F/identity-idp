@@ -101,8 +101,8 @@ module Reporting
 
     def new_verified_legacy_idv_user_count
       Reports::BaseReport.transaction_with_timeout do
-        Profile.where(active: true).where(verified_at: current_month).count
-        - new_verified_facial_match_user_count
+        Profile.where(active: true).where(verified_at: current_month).count -
+          new_verified_facial_match_user_count
       end
     end
 
@@ -121,8 +121,8 @@ module Reporting
 
     def annual_verified_legacy_idv_user_count
       Reports::BaseReport.transaction_with_timeout do
-        Profile.where(active: true).where(verified_at: annual_start_date..annual_end_date).count
-        - annual_verified_facial_match_user_count
+        Profile.where(active: true).where(verified_at: annual_start_date..annual_end_date).count -
+          annual_verified_facial_match_user_count
       end
     end
 
