@@ -90,7 +90,11 @@ RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
 
       response
 
-      expect(@analytics).to have_logged_event(:sp_select_email_submitted, success: true)
+      expect(@analytics).to have_logged_event(
+        :sp_select_email_submitted,
+        success: true,
+        selected_email_id: selected_email.id,
+      )
     end
 
     context 'with invalid submission' do

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe EmailConfirmationTokenValidator do
   describe '#submit' do
-    subject { described_class.new(email_address, current_user) }
+    subject { described_class.new(email_address:, current_user:) }
 
     context 'the email of the user does not match the user confirming' do
       let(:current_user) { create(:user, :fully_registered) }
@@ -16,7 +16,7 @@ RSpec.describe EmailConfirmationTokenValidator do
         expect(result.success?).to eq(false)
         expect(subject.email_address_already_confirmed?).to eq(false)
         expect(subject.confirmation_period_expired?).to eq(false)
-        expect(result.extra).to eq(user_id: email_address.user.uuid)
+        expect(result.extra).to eq(user_id: email_address.user.uuid, from_select_email_flow: false)
       end
     end
 
@@ -33,7 +33,7 @@ RSpec.describe EmailConfirmationTokenValidator do
         expect(result.errors).to be_empty
         expect(subject.email_address_already_confirmed?).to eq(false)
         expect(subject.confirmation_period_expired?).to eq(false)
-        expect(result.extra).to eq(user_id: email_address.user.uuid)
+        expect(result.extra).to eq(user_id: email_address.user.uuid, from_select_email_flow: false)
       end
     end
 
@@ -50,7 +50,7 @@ RSpec.describe EmailConfirmationTokenValidator do
         expect(result.errors).to eq(confirmation_token: [t('errors.messages.expired')])
         expect(subject.email_address_already_confirmed?).to eq(false)
         expect(subject.confirmation_period_expired?).to eq(true)
-        expect(result.extra).to eq(user_id: email_address.user.uuid)
+        expect(result.extra).to eq(user_id: email_address.user.uuid, from_select_email_flow: false)
       end
     end
 
@@ -67,7 +67,7 @@ RSpec.describe EmailConfirmationTokenValidator do
         expect(result.errors).to eq(confirmation_token: [t('errors.messages.already_confirmed')])
         expect(subject.email_address_already_confirmed?).to eq(true)
         expect(subject.confirmation_period_expired?).to eq(false)
-        expect(result.extra).to eq(user_id: email_address.user.uuid)
+        expect(result.extra).to eq(user_id: email_address.user.uuid, from_select_email_flow: false)
       end
     end
 
@@ -82,13 +82,28 @@ RSpec.describe EmailConfirmationTokenValidator do
         expect(result.errors).to eq(confirmation_token: [t('errors.messages.not_found')])
         expect(subject.email_address_already_confirmed?).to eq(false)
         expect(subject.confirmation_period_expired?).to eq(false)
-        expect(result.extra).to eq(user_id: nil)
+        expect(result.extra).to eq(user_id: nil, from_select_email_flow: false)
+      end
+    end
+
+    context 'in select email flow' do
+      subject { described_class.new(email_address:, current_user:, from_select_email_flow: true) }
+
+      let(:current_user) { nil }
+      let(:email_address) do
+        create(:email_address, confirmed_at: nil, confirmation_sent_at: Time.zone.now)
+      end
+
+      it 'includes log detail in extra analytics' do
+        result = subject.submit
+
+        expect(result.extra).to eq(user_id: email_address.user.uuid, from_select_email_flow: true)
       end
     end
   end
 
   describe '#email_address_already_confirmed_by_user?' do
-    subject { described_class.new(email_address) }
+    subject { described_class.new(email_address:) }
 
     context 'the email address was confirmed by the user' do
       let(:email_address) do

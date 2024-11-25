@@ -3,16 +3,18 @@
 class EmailConfirmationTokenValidator
   include ActiveModel::Model
 
-  attr_reader :email_address
+  attr_reader :email_address, :from_select_email_flow
+  alias_method :from_select_email_flow?, :from_select_email_flow
 
   validate :token_found
   validate :email_not_already_confirmed, if: :email_address_found_with_token?
   validate :token_not_expired, if: :email_address_found_with_token?
 
-  def initialize(email_address, current_user = nil)
+  def initialize(email_address:, current_user: nil, from_select_email_flow: false)
     @current_user = current_user
     @email_address = email_address
     @user = email_address&.user
+    @from_select_email_flow = from_select_email_flow
   end
 
   def submit
@@ -45,6 +47,7 @@ class EmailConfirmationTokenValidator
   def extra_analytics_attributes
     {
       user_id: user&.uuid,
+      from_select_email_flow: from_select_email_flow?,
     }
   end
 

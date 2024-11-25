@@ -1,6 +1,94 @@
 require 'rails_helper'
 
 RSpec.describe Users::EmailsController do
+  describe '#show' do
+    subject(:response) { get :show, params: params }
+    let(:params) { {} }
+
+    before do
+      stub_sign_in
+    end
+
+    it 'does not session value for email selection flow' do
+      expect { response }.not_to change { controller.session[:in_select_email_flow] }.from(nil)
+    end
+
+    it 'logs visit' do
+      stub_analytics
+
+      response
+
+      expect(@analytics).to have_logged_event(
+        'Add Email Address Page Visited',
+        in_select_email_flow: false,
+      )
+    end
+
+    context 'when adding through partner email selection flow' do
+      let(:params) { { in_select_email_flow: true } }
+
+      it 'assigns session value for email selection flow' do
+        expect { response }.to change { controller.session[:in_select_email_flow] }.
+          from(nil).to(true)
+      end
+
+      it 'logs visit with selected email value' do
+        stub_analytics
+
+        response
+
+        expect(@analytics).to have_logged_event(
+          'Add Email Address Page Visited',
+          in_select_email_flow: true,
+        )
+      end
+    end
+  end
+
+  describe '#add' do
+    subject(:response) { post :add, params: params }
+    let(:user) { create(:user) }
+    let(:params) { { user: { email:, request_id: } } }
+    let(:email) { 'new@example.com' }
+    let(:request_id) { 'request-id-1' }
+
+    before do
+      stub_sign_in(user)
+    end
+
+    it 'logs submission' do
+      stub_analytics
+
+      response
+
+      expect(@analytics).to have_logged_event(
+        'Add Email Requested',
+        success: true,
+        errors: {},
+        domain_name: 'example.com',
+        in_select_email_flow: false,
+        user_id: user.uuid,
+      )
+    end
+
+    context 'when adding through partner email selection flow' do
+      before do
+        controller.session[:in_select_email_flow] = true
+      end
+
+      it 'logs submission with selected email value' do
+        stub_analytics
+
+        response
+
+        expect(@analytics).to have_logged_event(
+          'Add Email Requested',
+          hash_including(in_select_email_flow: true),
+        )
+      end
+    end
+  end
+
   describe '#verify' do
     context 'with malformed payload' do
       it 'does not blow up' do
@@ -21,7 +109,10 @@ RSpec.describe Users::EmailsController do
     it 'renders the show view' do
       get :show
 
-      expect(@analytics).to have_logged_event('Add Email Address Page Visited')
+      expect(@analytics).to have_logged_event(
+        'Add Email Address Page Visited',
+        in_select_email_flow: false,
+      )
     end
   end
 
@@ -86,6 +177,7 @@ RSpec.describe Users::EmailsController do
           errors: {},
           user_id: user.uuid,
           domain_name: email.split('@').last,
+          in_select_email_flow: false,
         )
 
         post :resend
