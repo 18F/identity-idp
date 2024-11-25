@@ -49,7 +49,7 @@ RSpec.describe DataWarehouse::TableSummaryStatsExportJob, type: :job do
     context 'when data_warehouse_enabled is false' do
       it 'does not perform the job' do
         allow(IdentityConfig.store).to receive(:data_warehouse_enabled).
-          and_return(true)
+          and_return(false)
         expect(job).not_to receive(:fetch_table_max_ids_and_counts)
         expect(job).not_to receive(:upload_file_to_s3_bucket)
       end
