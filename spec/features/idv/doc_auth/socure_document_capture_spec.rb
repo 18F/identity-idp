@@ -30,8 +30,6 @@ RSpec.feature 'document capture step', :js do
   end
 
   before(:all) do
-    EmailAddress.destroy_all
-    User.destroy_all
     @user = user_with_2fa
   end
 
