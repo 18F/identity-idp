@@ -142,6 +142,23 @@ RSpec.describe Idv::DocumentCaptureController do
       end
     end
 
+    context 'socure is the default vendor but facial match is required' do
+      let(:idv_vendor) { Idp::Constants::Vendors::SOCURE }
+      let(:vot) { 'Pb' }
+
+      before do
+        resolved_authn_context = Vot::Parser.new(vector_of_trust: vot).parse
+        allow(controller).to receive(:resolved_authn_context_result).
+          and_return(resolved_authn_context)
+      end
+
+      it 'does not redirect to Socure controller' do
+        get :show
+
+        expect(response).to_not redirect_to idv_socure_document_capture_url
+      end
+    end
+
     it 'renders the show template' do
       expect(subject).to receive(:render).with(
         :show,

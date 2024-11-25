@@ -74,9 +74,19 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
       end
 
       context 'when facial match is required' do
-        let(:vot) { 'Pb' }
+        let(:acr_values) do
+          [
+            Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
+            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+          ].join(' ')
+        end
         before do
-          resolved_authn_context = Vot::Parser.new(vector_of_trust: vot).parse
+          resolved_authn_context = AuthnContextResolver.new(
+            user: user,
+            service_provider: nil,
+            vtr: nil,
+            acr_values: acr_values,
+          ).result
           allow(controller).to receive(:resolved_authn_context_result).
             and_return(resolved_authn_context)
         end

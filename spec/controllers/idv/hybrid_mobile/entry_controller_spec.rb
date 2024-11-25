@@ -56,10 +56,20 @@ RSpec.describe Idv::HybridMobile::EntryController do
         {}
       end
       let(:idv_vendor) { Idp::Constants::Vendors::MOCK }
-      let(:vot) { 'P1' }
+      let(:acr_values) do
+        [
+          Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+          Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+        ].join(' ')
+      end
 
       before do
-        resolved_authn_context = Vot::Parser.new(vector_of_trust: vot).parse
+        resolved_authn_context = AuthnContextResolver.new(
+          user: user,
+          service_provider: nil,
+          vtr: nil,
+          acr_values: acr_values,
+        ).result
         allow(controller).to receive(:session).and_return(session)
         allow(controller).to receive(:resolved_authn_context_result).
           and_return(resolved_authn_context)
@@ -76,7 +86,26 @@ RSpec.describe Idv::HybridMobile::EntryController do
 
       context 'doc auth vendor is socure but facial match is required' do
         let(:idv_vendor) { Idp::Constants::Vendors::SOCURE }
-        let(:vot) { 'Pb' }
+        let(:acr_values) do
+          [
+            Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
+            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+          ].join(' ')
+        end
+
+        it 'redirects to the lexis nexis first step' do
+          expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
+        end
+      end
+
+      context 'doc auth vendor is mock but facial match is required' do
+        let(:idv_vendor) { Idp::Constants::Vendors::MOCK }
+        let(:acr_values) do
+          [
+            Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
+            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+          ].join(' ')
+        end
 
         it 'redirects to the lexis nexis first step' do
           expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
