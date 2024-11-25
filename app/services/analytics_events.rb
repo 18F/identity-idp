@@ -451,6 +451,10 @@ module AnalyticsEvents
     track_event(:create_new_device_alert_job_emails_sent, count:, **extra)
   end
 
+  def connected_accounts_page_visited
+    track_event(:connected_accounts_page_visited)
+  end
+
   # @param [String] message the warning
   # @param [Array<String>] unknown_alerts Names of alerts not recognized by our code
   # @param [Hash] response_info Response payload
