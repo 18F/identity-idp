@@ -100,6 +100,7 @@ module AbTests
   DESKTOP_FT_UNLOCK_SETUP = AbTest.new(
     experiment_name: 'Desktop F/T unlock setup',
     should_log: [
+      'User Registration: 2FA Setup visited',
       :webauthn_setup_submitted,
       'Multi-Factor Authentication Setup',
     ].to_set,
