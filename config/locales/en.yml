@@ -751,13 +751,14 @@ errors.messages.invalid_voice_number: Invalid phone number. Check that you’ve 
 errors.messages.missing_field: Please fill in this field.
 errors.messages.no_pending_profile: No profile is waiting for verification
 errors.messages.not_a_number: is not a number
-errors.messages.otp_format: Enter the one-time code sent to your phone. Do not use spaces or special characters.
+errors.messages.otp_format: Enter your entire one-time code without spaces or special characters
 errors.messages.password_incorrect: Incorrect password
 errors.messages.password_mismatch: Your passwords don’t match
 errors.messages.personal_key_incorrect: Incorrect personal key
 errors.messages.phone_carrier: Sorry, we are unable to support that phone carrier at this time. Please select a different number and try again.
 errors.messages.phone_confirmation_limited: You tried too many times, please try again in %{timeout}.
 errors.messages.phone_duplicate: This account is already using the phone number you entered as an authenticator. Please use a different phone number.
+errors.messages.phone_otp_format: Enter the one-time code sent to your phone. Do not use spaces or special characters.
 errors.messages.phone_required: Phone number is required
 errors.messages.phone_unsupported: Sorry, we are unable to send SMS at this time. Please try the phone call option below, or use your personal key.
 errors.messages.premium_rate_phone: This appears to be a premium rate phone number. Please select a different number and try again.
@@ -1211,10 +1212,13 @@ in_person_proofing.body.cta.button: Try in person
 in_person_proofing.body.cta.prompt_detail: Most people who are unable to complete this step online are successful in verifying their identity at a participating Post Office. No appointment needed. Locations are available nationwide.
 in_person_proofing.body.expect.heading: What to expect after your visit
 in_person_proofing.body.expect.info: We’ll send you an email to let you know if your identity verification was successful or unsuccessful within 24 hours of your visit to the Post Office.
+in_person_proofing.body.location.change_location_find_other_locations: Find other participating Post Office locations.
+in_person_proofing.body.location.change_location_heading: Need to change your Post Office location?
+in_person_proofing.body.location.change_location_info_html: You don’t need to create a new barcode, you can bring this barcode to any participating Post Office location. %{find_other_locations_link_html}
 in_person_proofing.body.location.distance.one: '%{count} mile away'
 in_person_proofing.body.location.distance.other: '%{count} miles away'
 in_person_proofing.body.location.heading: Post Office information
-in_person_proofing.body.location.info: No appointment is needed to verify your identity. You can visit any participating Post Office location.
+in_person_proofing.body.location.info: No appointment is needed to verify your identity.
 in_person_proofing.body.location.inline_error: Enter a valid address with city, state, and ZIP code
 in_person_proofing.body.location.location_button: Select
 in_person_proofing.body.location.po_search.address_label: Address

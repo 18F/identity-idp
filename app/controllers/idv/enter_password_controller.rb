@@ -129,7 +129,13 @@ module Idv
     def init_profile
       idv_session.create_profile_from_applicant_with_password(
         password,
-        resolved_authn_context_result.enhanced_ipp?,
+        is_enhanced_ipp: resolved_authn_context_result.enhanced_ipp?,
+        proofing_components: ProofingComponents.new(
+          user: current_user,
+          idv_session:,
+          session:,
+          user_session:,
+        ).to_h,
       )
       if idv_session.verify_by_mail?
         current_user.send_email_to_all_addresses(:verify_by_mail_letter_requested)

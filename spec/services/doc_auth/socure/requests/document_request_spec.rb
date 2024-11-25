@@ -47,7 +47,7 @@ RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
     let(:fake_socure_status) { 200 }
 
     before do
-      allow(IdentityConfig.store).to receive(:socure_document_request_endpoint).
+      allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint).
         and_return(fake_socure_endpoint)
       stub_request(:post, fake_socure_endpoint).
         to_return(

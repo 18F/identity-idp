@@ -320,7 +320,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
     let(:sp_ipp_enabled) { true }
     let(:in_person_proofing_opt_in_enabled) { true }
     let(:facial_match_required) { true }
-    let(:socure_enabled) { false }
+    let(:socure_docv_enabled) { false }
     let(:doc_auth_vendor) { Idp::Constants::Vendors::MOCK }
     let(:desktop_test_mode_enabled) { false }
     let(:user) { user_with_2fa }
@@ -331,7 +331,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
         service_provider.in_person_proofing_enabled = false
         service_provider.save!
       end
-      allow(IdentityConfig.store).to receive(:socure_enabled).and_return(socure_enabled)
+      allow(IdentityConfig.store).to receive(:socure_docv_enabled).and_return(socure_docv_enabled)
       allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(doc_auth_vendor)
       allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).
         and_return(desktop_test_mode_enabled)
@@ -343,11 +343,6 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
       )
       allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
         and_return(sp_ipp_enabled)
-      allow(IdentityConfig.store).to receive(:allowed_biometric_ial_providers).
-        and_return([service_provider.issuer])
-      allow(IdentityConfig.store).to receive(
-        :allowed_valid_authn_contexts_semantic_providers,
-      ).and_return([service_provider.issuer])
       visit_idp_from_sp_with_ial2(
         :oidc,
         **{ client_id: service_provider.issuer,
@@ -362,7 +357,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
       let(:facial_match_required) { false }
       let(:in_person_proofing_opt_in_enabled) { false }
       let(:sp_ipp_enabled) { false }
-      let(:socure_enabled) { true }
+      let(:socure_docv_enabled) { true }
       let(:doc_auth_vendor) { Idp::Constants::Vendors::SOCURE }
 
       context 'when socure desktop test mode is not enabled' do

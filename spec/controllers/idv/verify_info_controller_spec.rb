@@ -396,10 +396,6 @@ RSpec.describe Idv::VerifyInfoController do
     end
 
     context 'for an aamva request' do
-      before do
-        allow(controller).to receive(:load_async_state).and_return(async_state)
-      end
-
       let(:document_capture_session) do
         DocumentCaptureSession.create(user:)
       end
@@ -407,7 +403,7 @@ RSpec.describe Idv::VerifyInfoController do
       let(:success) { true }
       let(:errors) { {} }
       let(:exception) { nil }
-      let(:vendor_name) { :aamva }
+      let(:vendor_name) { 'aamva_placeholder' }
 
       let(:async_state) do
         # Here we're trying to match the store to redis -> read from redis flow this data travels
@@ -436,6 +432,10 @@ RSpec.describe Idv::VerifyInfoController do
         document_capture_session.load_proofing_result
       end
 
+      before do
+        allow(controller).to receive(:load_async_state).and_return(async_state)
+      end
+
       context 'when aamva processes the request normally' do
         it 'redirect to phone confirmation url' do
           put :show
@@ -458,7 +458,12 @@ RSpec.describe Idv::VerifyInfoController do
 
           event = @analytics.events['IdV: doc auth verify proofing results'].first
           state_id = event.dig(:proofing_results, :context, :stages, :state_id)
-          expect(state_id).to match(a_hash_including(state_id_type: 'drivers_license'))
+          expect(state_id).to match(
+            hash_including(
+              state_id_type: 'drivers_license',
+              vendor_name: 'aamva_placeholder',
+            ),
+          )
         end
       end
 

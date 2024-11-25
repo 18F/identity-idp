@@ -329,29 +329,29 @@ RSpec.feature 'Two Factor Authentication' do
       # Invalid: Unsupported characters
       input.fill_in with: 'BADBAD'
       click_submit_default
-      expect(page).to have_content(t('errors.messages.otp_format'))
+      expect(page).to have_content(t('errors.messages.phone_otp_format'))
 
       # Invalid: Not enough characters, with prefix
       fill_in t('components.one_time_code_input.label'), with: '#12345'
       click_submit_default
-      expect(page).to have_content(t('errors.messages.otp_format'))
+      expect(page).to have_content(t('errors.messages.phone_otp_format'))
 
       # Invalid: Not enough characters, without prefix
       fill_in t('components.one_time_code_input.label'), with: '12345'
       click_submit_default
-      expect(page).to have_content(t('errors.messages.otp_format'))
+      expect(page).to have_content(t('errors.messages.phone_otp_format'))
 
       # Valid: Enough characters, with prefix
       input.fill_in with: '#123456'
       expect(input.value).to eq('#123456')
       page.evaluate_script('document.activeElement.closest("form").reportValidity()')
-      expect(page).not_to have_content(t('errors.messages.otp_format'))
+      expect(page).not_to have_content(t('errors.messages.phone_otp_format'))
 
       # Valid: Enough characters, without prefix
       input.fill_in with: '123456'
       expect(input.value).to eq('123456')
       page.evaluate_script('document.activeElement.closest("form").reportValidity()')
-      expect(page).not_to have_content(t('errors.messages.otp_format'))
+      expect(page).not_to have_content(t('errors.messages.phone_otp_format'))
     end
 
     scenario 'the user changes delivery method' do

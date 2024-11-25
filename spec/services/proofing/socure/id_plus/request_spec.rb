@@ -148,20 +148,20 @@ RSpec.describe Proofing::Socure::IdPlus::Request do
           )
       end
 
-      it 'raises RequestError' do
+      it 'raises Request::Error' do
         expect do
           request.send_request
         end.to raise_error(
-          Proofing::Socure::IdPlus::RequestError,
+          Proofing::Socure::IdPlus::Request::Error,
           'Request-specific error message goes here (400)',
         )
       end
 
-      it 'includes reference_id on RequestError' do
+      it 'includes reference_id on Request::Error' do
         expect do
           request.send_request
         end.to raise_error(
-          Proofing::Socure::IdPlus::RequestError,
+          Proofing::Socure::IdPlus::Request::Error,
         ) do |err|
           expect(err.reference_id).to eql('a-big-unique-reference-id')
         end
@@ -186,11 +186,11 @@ RSpec.describe Proofing::Socure::IdPlus::Request do
           )
       end
 
-      it 'raises RequestError' do
+      it 'raises Request::Error' do
         expect do
           request.send_request
         end.to raise_error(
-          Proofing::Socure::IdPlus::RequestError,
+          Proofing::Socure::IdPlus::Request::Error,
           'Request-specific error message goes here (401)',
         )
       end
@@ -205,10 +205,10 @@ RSpec.describe Proofing::Socure::IdPlus::Request do
           )
       end
 
-      it 'raises RequestError' do
+      it 'raises Request::Error' do
         expect do
           request.send_request
-        end.to raise_error(Proofing::Socure::IdPlus::RequestError)
+        end.to raise_error(Proofing::Socure::IdPlus::Request::Error)
       end
     end
 
@@ -229,8 +229,8 @@ RSpec.describe Proofing::Socure::IdPlus::Request do
           to_raise(Errno::ECONNRESET)
       end
 
-      it 'raises a RequestError' do
-        expect { request.send_request }.to raise_error Proofing::Socure::IdPlus::RequestError
+      it 'raises a Request::Error' do
+        expect { request.send_request }.to raise_error Proofing::Socure::IdPlus::Request::Error
       end
     end
   end

@@ -161,6 +161,7 @@ module Users
     def analytics_properties
       {
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
+        webauthn_platform_recommended: user_session[:webauthn_platform_recommended],
         attempts: mfa_attempts_count,
       }
     end
