@@ -28,6 +28,7 @@ RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
 
       expect(assigns(:identity)).to be_kind_of(ServiceProviderIdentity)
       expect(assigns(:select_email_form)).to be_kind_of(SelectEmailForm)
+      expect(assigns(:can_add_email)).to eq(true)
     end
 
     context 'with an identity parameter not associated with the user' do
@@ -57,6 +58,18 @@ RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
 
       it 'renders 404' do
         expect(response).to be_not_found
+      end
+    end
+
+    context 'when users has max number of emails' do
+      before do
+        allow(user).to receive(:email_address_count).and_return(2)
+        allow(IdentityConfig.store).to receive(:max_emails_per_account).and_return(2)
+      end
+
+      it 'can add email variable set to false' do
+        response
+        expect(assigns(:can_add_email)).to eq(false)
       end
     end
   end
