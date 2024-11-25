@@ -29,13 +29,15 @@
     <%= f.submit t('help_text.requested_attributes.select_email_link'), class: 'margin-top-1' %>
   <% end %>
 
-  <%= render ButtonComponent.new(
-        url: add_email_path(in_select_email_flow: true),
-        outline: true,
-        big: true,
-        wide: true,
-        class: 'margin-top-2',
-      ).with_content(t('account.index.email_add')) %>
+  <% if @can_add_email %>
+    <%= render ButtonComponent.new(
+          url: add_email_path(in_select_email_flow: true),
+          outline: true,
+          big: true,
+          wide: true,
+          class: 'margin-top-2',
+        ).with_content(t('account.index.email_add')) %>
+  <% end %>
 
   <%= render PageFooterComponent.new do %>
     <%= link_to t('forms.buttons.back'), sign_up_completed_path %>
