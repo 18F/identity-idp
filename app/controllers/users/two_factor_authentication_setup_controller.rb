@@ -84,7 +84,7 @@ module Users
       ActionController::Parameters.new(selection: [])
     end
 
-    def isInAbTestBucket
+    def is_in_ab_test_bucket
       ab_test_bucket(:DESKTOP_FT_UNLOCK_SETUP) == (:desktop_ft_unlock_option_shown)
     end
   end
