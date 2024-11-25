@@ -69,7 +69,7 @@ module Users
         show_skip_additional_mfa_link: show_skip_additional_mfa_link?,
         after_mfa_setup_path:,
         return_to_sp_cancel_path:,
-        desktop_ft_ab_test: isInAbTestBucket,
+        desktop_ft_ab_test: in_ab_test_bucket,
       )
     end
 
@@ -84,7 +84,7 @@ module Users
       ActionController::Parameters.new(selection: [])
     end
 
-    def is_in_ab_test_bucket
+    def in_ab_test_bucket
       ab_test_bucket(:DESKTOP_FT_UNLOCK_SETUP) == (:desktop_ft_unlock_option_shown)
     end
   end
