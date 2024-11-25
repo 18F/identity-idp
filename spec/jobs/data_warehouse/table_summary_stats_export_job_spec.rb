@@ -7,6 +7,7 @@ RSpec.describe DataWarehouse::TableSummaryStatsExportJob, type: :job do
   let(:test_on_tables) { ['users'] }
   let(:s3_data_warehouse_bucket_prefix) { 'login-gov-analytics-export' }
 
+
   let(:expected_json) do
     {
       'users' => {
@@ -30,7 +31,8 @@ RSpec.describe DataWarehouse::TableSummaryStatsExportJob, type: :job do
     allow(Identity::Hostdata).to receive(:aws_region).and_return('us-west-1')
     allow(IdentityConfig.store).to receive(:s3_data_warehouse_bucket_prefix).
       and_return(s3_data_warehouse_bucket_prefix)
-
+    allow(IdentityConfig.store).to receive(:data_warehouse_enabled).
+      and_return(true)
     Aws.config[:s3] = {
       stub_responses: {
         put_object: {},
@@ -42,6 +44,15 @@ RSpec.describe DataWarehouse::TableSummaryStatsExportJob, type: :job do
     before do
       allow(ActiveRecord::Base.connection).to receive(:tables).and_return(test_on_tables)
       add_data_to_tables
+    end
+
+    context 'when data_warehouse_enabled is false' do
+      it 'does not perform the job' do
+        allow(IdentityConfig.store).to receive(:data_warehouse_enabled).
+          and_return(true)
+        expect(job).not_to receive(:fetch_table_max_ids_and_counts)
+        expect(job).not_to receive(:upload_file_to_s3_bucket)
+      end
     end
 
     context 'when database tables contain data' do
