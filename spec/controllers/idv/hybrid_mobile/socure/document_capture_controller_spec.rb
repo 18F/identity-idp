@@ -18,6 +18,8 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
   end
   let(:document_capture_session_uuid) { document_capture_session&.uuid }
 
+  let(:socure_docv_verification_data_test_mode) { false }
+
   before do
     allow(IdentityConfig.store).to receive(:socure_docv_enabled).
       and_return(socure_docv_enabled)
@@ -32,6 +34,14 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
 
     session[:doc_capture_user_id] = user&.id
     session[:document_capture_session_uuid] = document_capture_session_uuid
+
+    allow(IdentityConfig.store).
+      to receive(:socure_docv_verification_data_test_mode).
+      and_return(socure_docv_verification_data_test_mode)
+
+    unless IdentityConfig.store.socure_docv_verification_data_test_mode
+      expect(IdentityConfig.store).not_to receive(:socure_docv_verification_data_test_mode_tokens)
+    end
 
     stub_analytics
   end
@@ -356,6 +366,49 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
           get(:update)
           expect(response).to have_http_status(:ok)
           expect(response.body).to eq('Technical difficulties!!!')
+        end
+      end
+    end
+
+    context 'when socure_docv_verification_data_test_mode is enabled' do
+      let(:test_token) { '12345' }
+      let(:socure_docv_verification_data_test_mode) { true }
+
+      before do
+        ActiveJob::Base.queue_adapter = :test
+        allow(IdentityConfig.store).
+          to receive(:socure_docv_verification_data_test_mode_tokens).
+          and_return([test_token])
+
+        stub_request(
+          :post,
+          "#{IdentityConfig.store.socure_idplus_base_url}/api/3.0/EmailAuthScore",
+        ).
+          with(body: { modules: ['documentverification'], docvTransactionToken: test_token }.
+            to_json).
+          to_return(
+            headers: {
+              'Content-Type' => 'application/json',
+            },
+            body: SocureDocvFixtures.pass_json,
+          )
+      end
+
+      context 'when a token is provided from the allow list' do
+        it 'performs SocureDocvResultsJob' do
+          expect { get(:update, params: { docv_token: test_token }) }.
+            not_to have_enqueued_job(SocureDocvResultsJob) # is synchronous
+
+          expect(document_capture_session.reload.load_result).not_to be_nil
+        end
+      end
+
+      context 'when a token is provided not on the allow list' do
+        it 'performs SocureDocvResultsJob' do
+          expect { get(:update, params: { docv_token: 'rando-token' }) }.
+            not_to have_enqueued_job(SocureDocvResultsJob)
+
+          expect(document_capture_session.reload.load_result).to be_nil
         end
       end
     end
