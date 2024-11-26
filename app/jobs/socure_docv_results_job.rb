@@ -36,8 +36,6 @@ class SocureDocvResultsJob < ApplicationJob
   end
 
   def log_verification_request(docv_result_response:, vendor_request_time_in_ms:)
-    return if docv_result_response.nil? || document_capture_session.nil?
-
     analytics.idv_socure_verification_data_requested(
       **docv_result_response.to_h.merge(
         docv_transaction_token: document_capture_session.socure_docv_transaction_token,
@@ -62,8 +60,6 @@ class SocureDocvResultsJob < ApplicationJob
   end
 
   def rate_limiter
-    return unless document_capture_session
-
     @rate_limiter ||= RateLimiter.new(
       user: document_capture_session.user,
       rate_limit_type: :idv_doc_auth,
