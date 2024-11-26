@@ -98,4 +98,15 @@ RSpec.describe Proofing::LexisNexis::InstantVerify::VerificationRequest do
       end
     end
   end
+
+  describe '#formatted_address' do
+    context 'when ZIP code is nil' do
+      it 'returns nil without raising an exception' do
+        applicant[:zipcode] = nil
+
+        expect { subject.send(:formatted_address) }.not_to raise_error(NoMethodError)
+        expect(subject.send(:formatted_address)['Zip5']).to be_nil
+      end
+    end
+  end
 end
