@@ -87,7 +87,7 @@ module AbTests
     should_log: [
       :webauthn_platform_recommended_visited,
       :webauthn_platform_recommended_submitted,
-      :webauthn_setup_submitted,
+      'Multi-Factor Authentication Setup',
     ].to_set,
     buckets: {
       recommend_for_account_creation:

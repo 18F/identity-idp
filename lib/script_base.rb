@@ -33,6 +33,7 @@ class ScriptBase
     :show_help,
     :requesting_issuers,
     :deflate,
+    :depth,
     :reason,
     keyword_init: true,
   ) do
@@ -109,6 +110,12 @@ class ScriptBase
         requesting issuer (used for ig-request task)
       MSG
         config.requesting_issuers << issuer
+      end
+
+      opts.on('--depth=DEPTH', <<-MSG) do |depth|
+        depth of connected devices (used for ig-request task)
+      MSG
+        config.depth = depth.to_i
       end
 
       opts.on('--help') do

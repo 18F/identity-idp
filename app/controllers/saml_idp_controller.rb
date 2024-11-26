@@ -136,6 +136,13 @@ class SamlIdpController < ApplicationController
 
     if result.success? && saml_request.signed?
       analytics_payload[:cert_error_details] = saml_request.cert_errors
+
+      # analytics to determine if turning on SHA256 validation will break
+      # existing partners
+      if certs_different?
+        analytics_payload[:certs_different] = true
+        analytics_payload[:sha256_matching_cert] = sha256_alg_matching_cert_serial
+      end
     end
 
     analytics.saml_auth(**analytics_payload)
@@ -145,6 +152,21 @@ class SamlIdpController < ApplicationController
     saml_request.matching_cert&.serial&.to_s
   rescue SamlIdp::XMLSecurity::SignedDocument::ValidationError
     nil
+  end
+
+  def sha256_alg_matching_cert
+    # if sha256_alg_matching_cert is nil, fallback to the "first" cert
+    saml_request.sha256_validation_matching_cert ||
+      saml_request_service_provider&.ssl_certs&.first
+  rescue SamlIdp::XMLSecurity::SignedDocument::ValidationError
+  end
+
+  def sha256_alg_matching_cert_serial
+    sha256_alg_matching_cert&.serial&.to_s
+  end
+
+  def certs_different?
+    encryption_cert != sha256_alg_matching_cert
   end
 
   def log_external_saml_auth_request
@@ -158,6 +180,8 @@ class SamlIdpController < ApplicationController
       force_authn: saml_request&.force_authn?,
       final_auth_request: sp_session[:final_auth_request],
       service_provider: saml_request&.issuer,
+      request_signed: saml_request.signed?,
+      matching_cert_serial:,
       unknown_authn_contexts:,
       user_fully_authenticated: user_fully_authenticated?,
     )

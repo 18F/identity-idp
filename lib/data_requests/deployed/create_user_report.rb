@@ -32,7 +32,6 @@ module DataRequests
       end
 
       def requesting_issuer_uuid
-        return user.uuid if requesting_issuers.blank?
         user.agency_identities.where(agency: requesting_agencies).first&.uuid ||
           "NonSPUser##{user.id}"
       end
