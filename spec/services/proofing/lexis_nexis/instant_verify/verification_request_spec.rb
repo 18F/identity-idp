@@ -104,8 +104,7 @@ RSpec.describe Proofing::LexisNexis::InstantVerify::VerificationRequest do
       it 'returns nil without raising an exception' do
         applicant[:zipcode] = nil
 
-        expect { subject.send(:formatted_address) }.not_to raise_error(NoMethodError)
-        expect(subject.send(:formatted_address)['Zip5']).to be_nil
+        expect(subject.send(:formatted_address).fetch(:Zip5)).to eq('')
       end
     end
   end
