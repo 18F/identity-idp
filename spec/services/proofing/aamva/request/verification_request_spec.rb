@@ -89,6 +89,87 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
       )
     end
 
+    it 'includes height if it is present' do
+      applicant.height = '63'
+      expect(subject.body).to include(
+        '<aa:PersonHeightMeasure>63</aa:PersonHeightMeasure>',
+      )
+    end
+
+    it 'includes weight if it is present' do
+      applicant.weight = 190
+      expect(subject.body).to include(
+        '<aa:PersonWeightMeasure>190</aa:PersonWeightMeasure>',
+      )
+    end
+
+    it 'includes eye_color if it is present' do
+      applicant.eye_color = 'blu'
+      expect(subject.body).to include(
+        '<aa:PersonEyeColorCode>blu</aa:PersonEyeColorCode>',
+      )
+    end
+
+    it 'includes name_suffix if it is present' do
+      applicant.name_suffix = 'JR'
+      expect(subject.body).to include(
+        '<nc:PersonNameSuffixText>JR</nc:PersonNameSuffixText>',
+      )
+    end
+
+    context '#sex' do
+      context 'when the sex is male' do
+        it 'sends a sex code value of 1' do
+          applicant.sex = 'male'
+          expect(subject.body).to include(
+            '<aa:PersonSexCode>1</aa:PersonSexCode>',
+          )
+        end
+      end
+
+      context 'when the sex is female' do
+        it 'sends a sex code value of 2' do
+          applicant.sex = 'female'
+          expect(subject.body).to include(
+            '<aa:PersonSexCode>2</aa:PersonSexCode>',
+          )
+        end
+      end
+
+      context 'when the sex is blank' do
+        it 'does not send a sex code value' do
+          applicant.sex = nil
+          expect(subject.body).to_not include('<aa:PersonSexCode>')
+        end
+      end
+    end
+
+    context '#middle_name' do
+      context 'when the feature flag is off' do
+        before do
+          allow(IdentityConfig.store).to receive(:aamva_send_middle_name).and_return(false)
+        end
+
+        it 'does not add a PersonMiddleName node' do
+          applicant.middle_name = 'test_name'
+          expect(subject.body).to_not include('<nc:PersonMiddleName>')
+        end
+      end
+
+      context 'when the feature flag is on' do
+        before do
+          allow(IdentityConfig.store).to receive(:aamva_send_middle_name).and_return(true)
+        end
+
+        it 'does add a PersonMiddleName node' do
+          applicant.middle_name = 'test_name'
+          expect(subject.body).to include(
+            '<nc:PersonMiddleName>test_name</nc:PersonMiddleName>',
+          )
+        end
+      end
+    end
+
     context '#state_id_type' do
       context 'when the feature flag is off' do
         before do

@@ -11,12 +11,20 @@
   <DriverLicenseIssueDateMatchIndicator>true</DriverLicenseIssueDateMatchIndicator>
   <DriverLicenseExpirationDateMatchIndicator>true</DriverLicenseExpirationDateMatchIndicator>
   <PersonBirthDateMatchIndicator>true</PersonBirthDateMatchIndicator>
+  <PersonSexCodeMatchIndicator>true</PersonSexCodeMatchIndicator>
+  <PersonHeightMatchIndicator>true</PersonHeightMatchIndicator>
+  <PersonWeightMatchIndicator>true</PersonWeightMatchIndicator>
+  <PersonEyeColorMatchIndicator>true</PersonEyeColorMatchIndicator>
   <PersonLastNameExactMatchIndicator>true</PersonLastNameExactMatchIndicator>
   <PersonLastNameFuzzyPrimaryMatchIndicator>true</PersonLastNameFuzzyPrimaryMatchIndicator>
   <PersonLastNameFuzzyAlternateMatchIndicator>true</PersonLastNameFuzzyAlternateMatchIndicator>
   <PersonFirstNameExactMatchIndicator>true</PersonFirstNameExactMatchIndicator>
   <PersonFirstNameFuzzyPrimaryMatchIndicator>true</PersonFirstNameFuzzyPrimaryMatchIndicator>
   <PersonFirstNameFuzzyAlternateMatchIndicator>true</PersonFirstNameFuzzyAlternateMatchIndicator>
+  <PersonMiddleNameExactMatchIndicator>true</PersonMiddleNameExactMatchIndicator>
+  <PersonMiddleNameFuzzyPrimaryMatchIndicator>true</PersonMiddleNameFuzzyPrimaryMatchIndicator>
+  <PersonMiddleNameFuzzyAlternateMatchIndicator>true</PersonMiddleNameFuzzyAlternateMatchIndicator>
+  <PersonNameSuffixMatchIndicator>true</PersonNameSuffixMatchIndicator>
   <DocumentCategoryMatchIndicator>true</DocumentCategoryMatchIndicator>
   <AddressLine1MatchIndicator>true</AddressLine1MatchIndicator>
   <AddressLine2MatchIndicator>true</AddressLine2MatchIndicator>

@@ -20,6 +20,7 @@ aamva_cert_enabled: true
 aamva_private_key: ''
 aamva_public_key: ''
 aamva_send_id_type: true
+aamva_send_middle_name: true
 aamva_supported_jurisdictions: '["AL","AR","AZ","CO","CT","DC","DE","FL","GA","HI","IA","ID","IL","IN","KS","KY","MA","MD","ME","MI","MO","MS","MT","NC","ND","NE","NJ","NM","NV","OH","OR","PA","RI","SC","SD","TN","TX","VA","VT","WA","WI","WV","WY"]'
 aamva_verification_request_timeout: 5.0
 aamva_verification_url: https://example.org:12345/verification/url
@@ -504,6 +505,7 @@ development:
 production:
   aamva_auth_url: 'https://authentication-cert.aamva.org/Authentication/Authenticate.svc'
   aamva_send_id_type: false
+  aamva_send_middle_name: false
   aamva_verification_url: 'https://verificationservices-cert.aamva.org:18449/dldv/2.1/online'
   available_locales: 'en,es,fr'
   disable_email_sending: false
