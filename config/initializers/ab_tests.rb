@@ -97,7 +97,6 @@ module AbTests
     },
   ).freeze
 
-
   SOCURE_IDV_SHADOW_MODE = AbTest.new(
     experiment_name: 'Socure shadow mode',
     should_log: ['IdV: doc auth verify proofing results'].to_set,
