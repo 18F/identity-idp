@@ -32,7 +32,7 @@ RSpec.describe DataWarehouse::TableSummaryStatsExportJob, type: :job do
     allow(IdentityConfig.store).to receive(:s3_data_warehouse_bucket_prefix).
       and_return(s3_data_warehouse_bucket_prefix)
     allow(IdentityConfig.store).to receive(:data_warehouse_enabled).
-      and_return(data_warehouse_enabled)
+      and_return(true)
     Aws.config[:s3] = {
       stub_responses: {
         put_object: {},
@@ -50,7 +50,7 @@ RSpec.describe DataWarehouse::TableSummaryStatsExportJob, type: :job do
       let(:data_warehouse_enabled) { false }
       it 'does not perform the job' do
         allow(IdentityConfig.store).to receive(:data_warehouse_enabled).
-          and_return(data_warehouse_enabled)
+          and_return(false)
         expect(job).not_to receive(:fetch_table_max_ids_and_counts)
         expect(job).not_to receive(:upload_file_to_s3_bucket)
       end
