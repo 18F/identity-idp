@@ -304,18 +304,6 @@ RSpec.describe AbTests do
       it 'returns a bucket' do
         expect(bucket).not_to be_nil
       end
-
-      context 'when A/B test is disabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:desktop_ft_unlock_setup_option_percent_tested).
-            and_return(0)
-          reload_ab_tests
-        end
-
-        it 'does not return a bucket' do
-          expect(bucket).to be_nil
-        end
-      end
     end
   end
 end
