@@ -8,11 +8,26 @@ RSpec.describe Reporting::TotalUserCountReport do
 
   let(:expected_report) do
     [
-      ['Metric', 'All Users', 'Verified users', 'Time Range Start', 'Time Range End'],
-      ['All-time count', expected_total_count, expected_verified_count, '-', Date.new(2021, 3, 1)],
+      [
+        'Metric',
+        'All Users',
+        'Verified users (Legacy IDV)',
+        'Verified users (Facial Matching)',
+        'Time Range Start',
+        'Time Range End',
+      ],
+      [
+        'All-time count',
+        expected_total_count,
+        expected_verified_legacy_idv_count,
+        expected_verified_facial_match_count,
+        '-',
+        Date.new(2021, 3, 1),
+      ],
       [
         'All-time fully registered',
         expected_total_fully_registered,
+        '-',
         '-',
         '-',
         Date.new(2021, 3, 1),
@@ -20,14 +35,16 @@ RSpec.describe Reporting::TotalUserCountReport do
       [
         'New users count',
         expected_new_count,
-        expected_new_verified_count,
+        expected_new_verified_legacy_idv_count,
+        expected_new_verified_facial_match_count,
         Date.new(2021, 3, 1),
         Date.new(2021, 3, 31),
       ],
       [
         'Annual users count',
         expected_annual_count,
-        expected_annual_verified_count,
+        expected_annual_verified_legacy_idv_count,
+        expected_annual_verified_facial_match_count,
         Date.new(2020, 10, 1),
         Date.new(2021, 9, 30),
       ],
@@ -50,12 +67,15 @@ RSpec.describe Reporting::TotalUserCountReport do
     context 'with only a non-verified user' do
       before { create(:user) }
       let(:expected_total_count) { 1 }
-      let(:expected_verified_count) { 0 }
+      let(:expected_verified_legacy_idv_count) { 0 }
+      let(:expected_verified_facial_match_count) { 0 }
       let(:expected_total_fully_registered) { 0 }
       let(:expected_new_count) { 1 }
-      let(:expected_new_verified_count) { 0 }
+      let(:expected_new_verified_legacy_idv_count) { 0 }
+      let(:expected_new_verified_facial_match_count) { 0 }
       let(:expected_annual_count) { expected_total_count }
-      let(:expected_annual_verified_count) { 0 }
+      let(:expected_annual_verified_legacy_idv_count) { 0 }
+      let(:expected_annual_verified_facial_match_count) { 0 }
 
       it_behaves_like 'a report with the specified counts'
     end
@@ -65,17 +85,20 @@ RSpec.describe Reporting::TotalUserCountReport do
       let!(:old_user) { create(:user, created_at: report_date - 13.months) }
 
       let(:expected_total_count) { 2 }
-      let(:expected_verified_count) { 0 }
+      let(:expected_verified_legacy_idv_count) { 0 }
+      let(:expected_verified_facial_match_count) { 0 }
       let(:expected_total_fully_registered) { 0 }
       let(:expected_new_count) { 1 }
-      let(:expected_new_verified_count) { 0 }
+      let(:expected_new_verified_legacy_idv_count) { 0 }
+      let(:expected_new_verified_facial_match_count) { 0 }
       let(:expected_annual_count) { 1 }
-      let(:expected_annual_verified_count) { 0 }
+      let(:expected_annual_verified_legacy_idv_count) { 0 }
+      let(:expected_annual_verified_facial_match_count) { 0 }
 
       it_behaves_like 'a report with the specified counts'
     end
 
-    context 'with one verified and one non-verified user' do
+    context 'with one legacy verified and one non-verified user' do
       before do
         user1 = create(:user)
         user2 = create(:user)
@@ -86,12 +109,37 @@ RSpec.describe Reporting::TotalUserCountReport do
         user2.profiles.first.deactivate(:password_reset)
       end
       let(:expected_total_count) { 2 }
-      let(:expected_verified_count) { 1 }
+      let(:expected_verified_legacy_idv_count) { 1 }
+      let(:expected_verified_facial_match_count) { 0 }
       let(:expected_total_fully_registered) { 0 }
       let(:expected_new_count) { 2 }
-      let(:expected_new_verified_count) { 1 }
+      let(:expected_new_verified_legacy_idv_count) { 1 }
+      let(:expected_new_verified_facial_match_count) { 0 }
       let(:expected_annual_count) { expected_total_count }
-      let(:expected_annual_verified_count) { 1 }
+      let(:expected_annual_verified_legacy_idv_count) { 1 }
+      let(:expected_annual_verified_facial_match_count) { 0 }
+
+      it_behaves_like 'a report with the specified counts'
+    end
+
+    context 'with one facial match verified and one non-verified user' do
+      before do
+        user1 = create(:user)
+        user2 = create(:user)
+        create(:profile, :active, :facial_match_proof, user: user1)
+        create(:profile, :active, :verified, user: user2)
+        user2.profiles.first.deactivate(:password_reset)
+      end
+      let(:expected_total_count) { 2 }
+      let(:expected_verified_legacy_idv_count) { 0 }
+      let(:expected_verified_facial_match_count) { 1 }
+      let(:expected_total_fully_registered) { 0 }
+      let(:expected_new_count) { 2 }
+      let(:expected_new_verified_legacy_idv_count) { 0 }
+      let(:expected_new_verified_facial_match_count) { 1 }
+      let(:expected_annual_count) { expected_total_count }
+      let(:expected_annual_verified_legacy_idv_count) { 0 }
+      let(:expected_annual_verified_facial_match_count) { 1 }
 
       it_behaves_like 'a report with the specified counts'
     end
@@ -104,12 +152,15 @@ RSpec.describe Reporting::TotalUserCountReport do
 
       # A suspended user is still a total user:
       let(:expected_total_count) { 1 }
-      let(:expected_verified_count) { 0 }
+      let(:expected_verified_legacy_idv_count) { 0 }
+      let(:expected_verified_facial_match_count) { 0 }
       let(:expected_total_fully_registered) { 0 }
       let(:expected_new_count) { 1 }
-      let(:expected_new_verified_count) { 0 }
+      let(:expected_new_verified_legacy_idv_count) { 0 }
+      let(:expected_new_verified_facial_match_count) { 0 }
       let(:expected_annual_count) { 1 }
-      let(:expected_annual_verified_count) { 0 }
+      let(:expected_annual_verified_legacy_idv_count) { 0 }
+      let(:expected_annual_verified_facial_match_count) { 0 }
 
       it_behaves_like 'a report with the specified counts'
     end
@@ -119,12 +170,15 @@ RSpec.describe Reporting::TotalUserCountReport do
 
       # A user with a fraud rejection is still a total user
       let(:expected_total_count) { 1 }
-      let(:expected_verified_count) { 0 }
+      let(:expected_verified_legacy_idv_count) { 0 }
+      let(:expected_verified_facial_match_count) { 0 }
       let(:expected_total_fully_registered) { 1 }
       let(:expected_new_count) { 1 }
-      let(:expected_new_verified_count) { 0 }
+      let(:expected_new_verified_legacy_idv_count) { 0 }
+      let(:expected_new_verified_facial_match_count) { 0 }
       let(:expected_annual_count) { 1 }
-      let(:expected_annual_verified_count) { 0 }
+      let(:expected_annual_verified_legacy_idv_count) { 0 }
+      let(:expected_annual_verified_facial_match_count) { 0 }
 
       it_behaves_like 'a report with the specified counts'
     end
@@ -137,12 +191,15 @@ RSpec.describe Reporting::TotalUserCountReport do
         end
       end
       let(:expected_total_count) { 3 }
-      let(:expected_verified_count) { 0 }
+      let(:expected_verified_legacy_idv_count) { 0 }
+      let(:expected_verified_facial_match_count) { 0 }
       let(:expected_total_fully_registered) { 2 }
       let(:expected_new_count) { 3 }
-      let(:expected_new_verified_count) { 0 }
+      let(:expected_new_verified_legacy_idv_count) { 0 }
+      let(:expected_new_verified_facial_match_count) { 0 }
       let(:expected_annual_count) { 3 }
-      let(:expected_annual_verified_count) { 0 }
+      let(:expected_annual_verified_legacy_idv_count) { 0 }
+      let(:expected_annual_verified_facial_match_count) { 0 }
 
       it_behaves_like 'a report with the specified counts'
     end

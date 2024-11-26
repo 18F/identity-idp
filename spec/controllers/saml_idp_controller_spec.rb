@@ -779,6 +779,8 @@ RSpec.describe SamlIdpController do
             requested_ial: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
             service_provider: sp1_issuer,
             force_authn: false,
+            request_signed: true,
+            matching_cert_serial: saml_test_sp_cert_serial,
             user_fully_authenticated: true,
           }
         )
@@ -930,6 +932,8 @@ RSpec.describe SamlIdpController do
             requested_ial: 'ialmax',
             service_provider: sp1_issuer,
             force_authn: false,
+            request_signed: true,
+            matching_cert_serial: saml_test_sp_cert_serial,
             user_fully_authenticated: true,
           }
         )
@@ -1221,6 +1225,8 @@ RSpec.describe SamlIdpController do
             requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
             service_provider: 'http://localhost:3000',
             requested_aal_authn_context: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+            request_signed: true,
+            matching_cert_serial: saml_test_sp_cert_serial,
             force_authn: true,
             user_fully_authenticated: false,
           }
@@ -1523,6 +1529,93 @@ RSpec.describe SamlIdpController do
                 matching_cert_serial: saml_test_sp_cert_serial,
               )
             )
+          end
+
+          context 'when request is using SHA1 as the signature method algorithm' do
+            let(:auth_settings) do
+              saml_settings(
+                overrides: {
+                  security: {
+                    authn_requests_signed:,
+                    signature_method: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha1',
+                  },
+                },
+              )
+            end
+
+            context 'when the certificate matches' do
+              it 'does not note that certs are different in the event' do
+                user.identities.last.update!(verified_attributes: ['email'])
+                generate_saml_response(user, auth_settings)
+
+                expect(response.status).to eq(200)
+                expect(@analytics).to have_logged_event(
+                  'SAML Auth', hash_not_including(
+                    certs_different: true,
+                    sha256_matching_cert: matching_cert_serial,
+                  )
+                )
+              end
+            end
+
+            context 'when the certificate does not match' do
+              let(:wrong_cert) do
+                OpenSSL::X509::Certificate.new(
+                  Rails.root.join('certs', 'sp', 'saml_test_sp2.crt').read,
+                )
+              end
+
+              before do
+                service_provider.update!(certs: [wrong_cert, saml_test_sp_cert])
+              end
+
+              it 'notes that certs are different in the event' do
+                user.identities.last.update!(verified_attributes: ['email'])
+                generate_saml_response(user, auth_settings)
+
+                expect(response.status).to eq(200)
+                expect(@analytics).to have_logged_event(
+                  'SAML Auth', hash_including(
+                    certs_different: true,
+                    sha256_matching_cert: wrong_cert.serial.to_s,
+                  )
+                )
+              end
+            end
+          end
+
+          context 'when request is using SHA1 as the digest method algorithm' do
+            let(:auth_settings) do
+              saml_settings(
+                overrides: {
+                  security: {
+                    authn_requests_signed:,
+                    digest_method: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha1',
+                  },
+                },
+              )
+            end
+
+            it 'notes an error in the event' do
+              user.identities.last.update!(verified_attributes: ['email'])
+              generate_saml_response(user, auth_settings)
+
+              expect(response.status).to eq(200)
+              expect(@analytics).to have_logged_event(
+                'SAML Auth', hash_including(
+                  request_signed: authn_requests_signed,
+                  cert_error_details: [
+                    {
+                      cert: '16692258094164984098',
+                      error_code: :fingerprint_mismatch,
+                    },
+                    {
+                      cert: '14834808178619537243', error_code: :fingerprint_mismatch
+                    },
+                  ],
+                )
+              )
+            end
           end
 
           context 'Certificate sig validation fails because of namespace bug' do
@@ -1943,6 +2036,8 @@ RSpec.describe SamlIdpController do
             requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
             service_provider: 'http://localhost:3000',
             requested_aal_authn_context: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+            request_signed: true,
+            matching_cert_serial: saml_test_sp_cert_serial,
             force_authn: false,
             user_fully_authenticated: false,
           }
@@ -2377,6 +2472,7 @@ RSpec.describe SamlIdpController do
             service_provider: 'http://localhost:3000',
             requested_aal_authn_context: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
             force_authn: false,
+            request_signed: false,
             user_fully_authenticated: true,
           }
         )
@@ -2428,6 +2524,8 @@ RSpec.describe SamlIdpController do
             service_provider: 'http://localhost:3000',
             requested_aal_authn_context: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
             force_authn: false,
+            request_signed: true,
+            matching_cert_serial: saml_test_sp_cert_serial,
             user_fully_authenticated: true,
           }
         )
@@ -2478,6 +2576,8 @@ RSpec.describe SamlIdpController do
             service_provider: 'http://localhost:3000',
             requested_aal_authn_context: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
             force_authn: false,
+            request_signed: true,
+            matching_cert_serial: saml_test_sp_cert_serial,
             user_fully_authenticated: true,
           }
         )

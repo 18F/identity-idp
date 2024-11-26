@@ -97,6 +97,15 @@ module AbTests
     },
   ).freeze
 
+
+  SOCURE_IDV_SHADOW_MODE = AbTest.new(
+    experiment_name: 'Socure shadow mode',
+    should_log: ['IdV: doc auth verify proofing results'].to_set,
+    buckets: {
+      shadow_mode_enabled: IdentityConfig.store.socure_idplus_shadow_mode_percent,
+    },
+  ).freeze
+
   DESKTOP_FT_UNLOCK_SETUP = AbTest.new(
     experiment_name: 'Desktop F/T unlock setup',
     should_log: [

@@ -51,7 +51,7 @@ function get_next_rc {
     LAST_RC="$1"; shift
     MAJOR=$(echo "$LAST_RC" | sed -E 's/\.[0-9]+//')
     MINOR=$(echo "$LAST_RC" | sed -E 's/[0-9]+(\.|$)//')
-    
+
     if [ "$PATCH" == "1" ]; then
         # Doing a patch, so increment minor version by 1
         if [ -z "$MINOR" ]; then
@@ -77,6 +77,7 @@ function get_staging_sha {
 }
 
 check_gh_configuration
+git fetch $GIT_REMOTE
 
 RC_BRANCH=stages/rc-$(date +'%Y-%m-%d')
 if git rev-parse "$GIT_REMOTE/$RC_BRANCH" > /dev/null 2>&1; then

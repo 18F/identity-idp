@@ -262,6 +262,46 @@ RSpec.describe AbTests do
     end
   end
 
+  describe 'SOCURE_IDV_SHADOW_MODE' do
+    let(:user) { create(:user) }
+
+    subject(:bucket) do
+      AbTests::SOCURE_IDV_SHADOW_MODE.bucket(
+        request: nil,
+        service_provider: nil,
+        session: nil,
+        user:,
+        user_session: nil,
+      )
+    end
+
+    before do
+      allow(IdentityConfig.store).to receive(
+        :socure_idplus_shadow_mode_percent,
+      ).and_return(0)
+      reload_ab_tests
+    end
+
+    context 'when the A/B test is disabled' do
+      it 'does not return a bucket' do
+        expect(bucket).to be_nil
+      end
+    end
+
+    context 'when the A/B test is enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(
+          :socure_idplus_shadow_mode_percent,
+        ).and_return(100)
+        reload_ab_tests
+      end
+
+      it 'returns a bucket' do
+        expect(bucket).to eq :shadow_mode_enabled
+      end
+    end
+  end
+
   describe 'DESKTOP_FT_UNLOCK_SETUP' do
     let(:user) { nil }
     let(:user_session) { {} }
