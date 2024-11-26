@@ -120,6 +120,7 @@ module IdentityConfig
     config.add(:doc_auth_max_attempts, type: :integer)
     config.add(:doc_auth_max_capture_attempts_before_native_camera, type: :integer)
     config.add(:doc_auth_max_submission_attempts_before_native_camera, type: :integer)
+    config.add(:doc_auth_read_additional_pii_attributes_enabled, type: :boolean)
     config.add(:doc_auth_selfie_desktop_test_mode, type: :boolean)
     config.add(:doc_auth_socure_wait_polling_refresh_max_seconds, type: :integer)
     config.add(:doc_auth_socure_wait_polling_timeout_minutes, type: :integer)
