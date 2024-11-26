@@ -538,8 +538,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
     context 'socure shadow mode' do
       context 'turned on' do
         before do
-          # Is there a cleaner way of doing this?
-          allow_any_instance_of(described_class).to receive(:use_shadow_mode).and_return(true)
+          allow(instance).to receive(:use_shadow_mode?).and_return(true)
         end
 
         it 'schedules a SocureShadowModeProofingJob' do
