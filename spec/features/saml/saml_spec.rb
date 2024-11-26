@@ -508,6 +508,8 @@ RSpec.feature 'saml api' do
            service_provider: 'http://localhost:3000',
            requested_aal_authn_context: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
            force_authn: false,
+           matching_cert_serial: saml_test_sp_cert_serial,
+           request_signed: true,
            user_fully_authenticated: false }],
       )
       expect(fake_analytics.events['SAML Auth'].count).to eq 2
@@ -551,6 +553,8 @@ RSpec.feature 'saml api' do
             requested_ial: 'http://idmanagement.gov/ns/assurance/ial/2',
             service_provider: 'saml_sp_ial2',
             force_authn: false,
+            matching_cert_serial: saml_test_sp_cert_serial,
+            request_signed: true,
             user_fully_authenticated: false,
           },
         ],
@@ -581,6 +585,8 @@ RSpec.feature 'saml api' do
            service_provider: 'http://localhost:3000',
            requested_aal_authn_context: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
            force_authn: false,
+           matching_cert_serial: saml_test_sp_cert_serial,
+           request_signed: true,
            user_fully_authenticated: false }],
       )
       expect(fake_analytics.events['SAML Auth'].count).to eq 2
