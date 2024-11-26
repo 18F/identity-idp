@@ -29,6 +29,8 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
 
     session[:doc_capture_user_id] = user&.id
     session[:document_capture_session_uuid] = document_capture_session_uuid
+
+    stub_analytics
   end
 
   describe 'before_actions' do
@@ -273,6 +275,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
       get(:update)
 
       expect(response).to redirect_to(idv_hybrid_mobile_capture_complete_url)
+      expect(@analytics).to have_logged_event('IdV: doc auth document_capture submitted')
     end
 
     context 'when socure is disabled' do
@@ -298,6 +301,30 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
         get(:update)
 
         expect(response).to redirect_to(idv_hybrid_mobile_socure_document_capture_url)
+        expect(@analytics).to have_logged_event('IdV: doc auth document_capture submitted')
+      end
+    end
+
+    context 'when stored result is nil' do
+      let(:stored_result) { nil }
+
+      it 'renders the wait view' do
+        get(:update)
+
+        expect(response).to render_template('idv/socure/document_capture/wait')
+        expect(@analytics).to have_logged_event(:idv_doc_auth_document_capture_polling_wait_visited)
+      end
+
+      context 'when the wait times out' do
+        before do
+          allow(subject).to receive(:wait_timed_out?).and_return(true)
+        end
+
+        it 'renders a technical difficulties message' do
+          get(:update)
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to eq('Technical difficulties!!!')
+        end
       end
     end
   end

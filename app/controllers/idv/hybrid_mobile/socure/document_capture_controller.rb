@@ -4,11 +4,10 @@ module Idv
   module HybridMobile
     module Socure
       class DocumentCaptureController < ApplicationController
-        include Idv::AvailabilityConcern
+        include AvailabilityConcern
         include DocumentCaptureConcern
         include Idv::HybridMobile::HybridMobileConcern
         include RenderConditionConcern
-        include DocumentCaptureConcern
 
         check_or_render_not_found -> { IdentityConfig.store.socure_docv_enabled }
         before_action :check_valid_document_capture_session, except: [:update]
@@ -50,9 +49,15 @@ module Idv
         end
 
         def update
+          return if wait_for_result?
+
           result = handle_stored_result(
             user: document_capture_session.user,
             store_in_session: false,
+          )
+          # TODO: new analytics event?
+          analytics.idv_doc_auth_document_capture_submitted(
+            **result.to_h.merge(analytics_arguments),
           )
 
           if result.success?
@@ -60,6 +65,47 @@ module Idv
           else
             redirect_to idv_hybrid_mobile_socure_document_capture_url
           end
+        end
+
+        private
+
+        def wait_for_result?
+          return false if stored_result.present?
+
+          # If the stored_result is nil, the job fetching the results has not completed.
+          analytics.idv_doc_auth_document_capture_polling_wait_visited(**analytics_arguments)
+          if wait_timed_out?
+            # flash[:error] = I18n.t('errors.doc_auth.polling_timeout')
+            # TODO: redirect to try again page LG-14873/14952/15059
+            render plain: 'Technical difficulties!!!', status: :ok
+          else
+            @refresh_interval =
+              IdentityConfig.store.doc_auth_socure_wait_polling_refresh_max_seconds
+            render 'idv/socure/document_capture/wait'
+          end
+
+          true
+        end
+
+        def wait_timed_out?
+          if session[:socure_docv_wait_polling_started_at].nil?
+            session[:socure_docv_wait_polling_started_at] = Time.zone.now.to_s
+            return false
+          end
+          start = DateTime.parse(session[:socure_docv_wait_polling_started_at])
+          timeout_period =
+            IdentityConfig.store.doc_auth_socure_wait_polling_timeout_minutes.minutes || 2.minutes
+          start + timeout_period < Time.zone.now
+        end
+
+        def analytics_arguments
+          {
+            flow_path: 'hybrid',
+            step: 'socure_document_capture',
+            analytics_id: 'Doc Auth',
+            liveness_checking_required: false,
+            selfie_check_required: false,
+          }
         end
       end
     end

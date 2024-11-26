@@ -175,6 +175,14 @@ and independent view components, rendered server-side.
 
 For more information, refer to the [components `README.md`](../app/components/README.md).
 
+To preview components and their available options, we use [Lookbook](https://lookbook.build/) to
+generate a navigable index of our available components. These previews are available at the [`/components/` route](http://localhost:3000/components/)
+in local development, review applications, and in the `dev` environment. When adding a new component
+or an option to an existing component, you should also make this component or option available in
+Lookbook previews, found under [`spec/components/previews`](https://github.com/18F/identity-idp/tree/main/spec/components/previews).
+Refer to [Lookbook's _Previews Overview_ documentation](https://lookbook.build/guide/previews) for
+more information on how to author Lookbook previews.
+
 #### React
 
 For non-trivial client-side interactivity, we use [React](https://reactjs.org/) to build and combine

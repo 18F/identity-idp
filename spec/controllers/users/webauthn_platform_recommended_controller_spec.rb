@@ -58,6 +58,11 @@ RSpec.describe Users::WebauthnPlatformRecommendedController do
       end
     end
 
+    it 'does not assign recommended session value' do
+      expect { response }.not_to change { controller.user_session[:webauthn_platform_recommended] }.
+        from(nil)
+    end
+
     it 'redirects user to after sign in path' do
       expect(controller).to receive(:after_sign_in_path_for).with(user).and_return(account_path)
 
@@ -91,6 +96,22 @@ RSpec.describe Users::WebauthnPlatformRecommendedController do
 
       it 'redirects user to set up platform authenticator' do
         expect(response).to redirect_to(webauthn_setup_path(platform: true))
+      end
+
+      it 'assigns recommended session value to recommendation flow' do
+        expect { response }.to change { controller.user_session[:webauthn_platform_recommended] }.
+          from(nil).to(:authentication)
+      end
+
+      context 'user is creating account' do
+        before do
+          allow(controller).to receive(:in_account_creation_flow?).and_return(true)
+        end
+
+        it 'assigns recommended session value to recommendation flow' do
+          expect { response }.to change { controller.user_session[:webauthn_platform_recommended] }.
+            from(nil).to(:account_creation)
+        end
       end
     end
   end
