@@ -779,6 +779,8 @@ RSpec.describe SamlIdpController do
             requested_ial: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
             service_provider: sp1_issuer,
             force_authn: false,
+            request_signed: true,
+            matching_cert_serial: saml_test_sp_cert_serial,
             user_fully_authenticated: true,
           }
         )
@@ -930,6 +932,8 @@ RSpec.describe SamlIdpController do
             requested_ial: 'ialmax',
             service_provider: sp1_issuer,
             force_authn: false,
+            request_signed: true,
+            matching_cert_serial: saml_test_sp_cert_serial,
             user_fully_authenticated: true,
           }
         )
@@ -1221,6 +1225,8 @@ RSpec.describe SamlIdpController do
             requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
             service_provider: 'http://localhost:3000',
             requested_aal_authn_context: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+            request_signed: true,
+            matching_cert_serial: saml_test_sp_cert_serial,
             force_authn: true,
             user_fully_authenticated: false,
           }
@@ -2030,6 +2036,8 @@ RSpec.describe SamlIdpController do
             requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
             service_provider: 'http://localhost:3000',
             requested_aal_authn_context: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+            request_signed: true,
+            matching_cert_serial: saml_test_sp_cert_serial,
             force_authn: false,
             user_fully_authenticated: false,
           }
@@ -2464,6 +2472,7 @@ RSpec.describe SamlIdpController do
             service_provider: 'http://localhost:3000',
             requested_aal_authn_context: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
             force_authn: false,
+            request_signed: false,
             user_fully_authenticated: true,
           }
         )
@@ -2515,6 +2524,8 @@ RSpec.describe SamlIdpController do
             service_provider: 'http://localhost:3000',
             requested_aal_authn_context: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
             force_authn: false,
+            request_signed: true,
+            matching_cert_serial: saml_test_sp_cert_serial,
             user_fully_authenticated: true,
           }
         )
@@ -2565,6 +2576,8 @@ RSpec.describe SamlIdpController do
             service_provider: 'http://localhost:3000',
             requested_aal_authn_context: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
             force_authn: false,
+            request_signed: true,
+            matching_cert_serial: saml_test_sp_cert_serial,
             user_fully_authenticated: true,
           }
         )

@@ -180,6 +180,8 @@ class SamlIdpController < ApplicationController
       force_authn: saml_request&.force_authn?,
       final_auth_request: sp_session[:final_auth_request],
       service_provider: saml_request&.issuer,
+      request_signed: saml_request.signed?,
+      matching_cert_serial:,
       unknown_authn_contexts:,
       user_fully_authenticated: user_fully_authenticated?,
     )

@@ -6505,6 +6505,8 @@ module AnalyticsEvents
   # @param [Boolean] force_authn
   # @param [Boolean] final_auth_request
   # @param [String] service_provider
+  # @param [Boolean] request_signed
+  # @param [String] matching_cert_serial
   # @param [String] unknown_authn_contexts space separated list of unknown contexts
   # @param [Boolean] user_fully_authenticated
   # An external request for SAML Authentication was received
@@ -6516,6 +6518,8 @@ module AnalyticsEvents
     force_authn:,
     final_auth_request:,
     service_provider:,
+    request_signed:,
+    matching_cert_serial:,
     unknown_authn_contexts:,
     user_fully_authenticated:,
     **extra
@@ -6529,6 +6533,8 @@ module AnalyticsEvents
       force_authn:,
       final_auth_request:,
       service_provider:,
+      request_signed:,
+      matching_cert_serial:,
       unknown_authn_contexts:,
       user_fully_authenticated:,
       **extra,
