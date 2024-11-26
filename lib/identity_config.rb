@@ -85,6 +85,7 @@ module IdentityConfig
     config.add(:country_phone_number_overrides, type: :json)
     config.add(:dashboard_api_token, type: :string)
     config.add(:dashboard_url, type: :string)
+    config.add(:data_warehouse_enabled, type: :boolean)
     config.add(:database_advisory_locks_enabled, type: :boolean)
     config.add(:database_host, type: :string)
     config.add(:database_name, type: :string)
