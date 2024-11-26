@@ -31,6 +31,7 @@ module DocAuth
           first_name: id_auth_field_data['Fields_FirstName'],
           last_name: id_auth_field_data['Fields_Surname'],
           middle_name: id_auth_field_data['Fields_MiddleName'],
+          name_suffix: nil,
           address1: id_auth_field_data['Fields_AddressLine1'],
           address2: id_auth_field_data['Fields_AddressLine2'],
           city: id_auth_field_data['Fields_City'],
@@ -41,6 +42,10 @@ module DocAuth
             month: id_auth_field_data['Fields_DOB_Month'],
             day: id_auth_field_data['Fields_DOB_Day'],
           ),
+          sex: nil,
+          height: nil,
+          weight: nil,
+          eye_color: nil,
           state_id_expiration: parse_date(
             year: id_auth_field_data['Fields_ExpirationDate_Year'],
             month: id_auth_field_data['Fields_ExpirationDate_Month'],
