@@ -8,7 +8,6 @@ RSpec.describe DataWarehouse::TableSummaryStatsExportJob, type: :job do
   let(:s3_data_warehouse_bucket_prefix) { 'login-gov-analytics-export' }
   let(:data_warehouse_enabled) { true }
 
-
   let(:expected_json) do
     {
       'users' => {
@@ -48,10 +47,10 @@ RSpec.describe DataWarehouse::TableSummaryStatsExportJob, type: :job do
     end
 
     context 'when data_warehouse_enabled is false' do
-      let (:data_warehouse_enabled) { false }
+      let(:data_warehouse_enabled) { false }
       it 'does not perform the job' do
         allow(IdentityConfig.store).to receive(:data_warehouse_enabled).
-          and_return(:data_warehouse_enabled)
+          and_return(data_warehouse_enabled)
         expect(job).not_to receive(:fetch_table_max_ids_and_counts)
         expect(job).not_to receive(:upload_file_to_s3_bucket)
       end
