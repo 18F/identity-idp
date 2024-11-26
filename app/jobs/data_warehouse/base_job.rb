@@ -42,5 +42,9 @@ module DataWarehouse
       logger.debug("#{class_name}: upload completed to #{url}")
       url
     end
+
+    def data_warehouse_disabled?
+      !IdentityConfig.store.data_warehouse_enabled
+    end
   end
 end
