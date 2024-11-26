@@ -420,6 +420,7 @@ module IdentityConfig
     config.add(:socure_docv_webhook_secret_key, type: :string)
     config.add(:socure_idplus_api_key, type: :string)
     config.add(:socure_idplus_base_url, type: :string)
+    config.add(:socure_idplus_shadow_mode_percent, type: :integer)
     config.add(:socure_idplus_timeout_in_seconds, type: :integer)
     config.add(:socure_reason_code_api_key, type: :string)
     config.add(:socure_reason_code_base_url, type: :string)

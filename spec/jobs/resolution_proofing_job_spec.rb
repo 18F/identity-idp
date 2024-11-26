@@ -538,7 +538,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
     context 'socure shadow mode' do
       context 'turned on' do
         before do
-          allow(IdentityConfig.store).to receive(:idv_socure_shadow_mode_enabled).and_return(true)
+          allow(instance).to receive(:use_shadow_mode?).and_return(true)
         end
 
         it 'schedules a SocureShadowModeProofingJob' do
