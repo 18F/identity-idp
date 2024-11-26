@@ -129,7 +129,7 @@ module Idv
         if wait_timed_out?
           # flash[:error] = I18n.t('errors.doc_auth.polling_timeout')
           # TODO: redirect to try again page LG-14873/14952/15059
-          render plain: 'Technical difficulties!!!', status: :ok
+          redirect_to idv_socure_errors_timeout_path
         else
           @refresh_interval =
             IdentityConfig.store.doc_auth_socure_wait_polling_refresh_max_seconds

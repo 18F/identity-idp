@@ -59,6 +59,7 @@ module Idv
         link_sent: Idv::LinkSentController.step_info,
         document_capture: Idv::DocumentCaptureController.step_info,
         socure_document_capture: Idv::Socure::DocumentCaptureController.step_info,
+        socure_errors: Idv::Socure::SocureErrorsController.step_info,
         ipp_address: Idv::InPerson::AddressController.step_info,
         ssn: Idv::SsnController.step_info,
         ipp_ssn: Idv::InPerson::SsnController.step_info,
