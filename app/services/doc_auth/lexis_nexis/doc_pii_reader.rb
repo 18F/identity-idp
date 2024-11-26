@@ -101,7 +101,7 @@ module DocAuth
         when 'M'
           'male'
         when 'F'
-          'femaile'
+          'female'
         end
       end
 
