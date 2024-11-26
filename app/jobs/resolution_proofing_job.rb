@@ -74,7 +74,7 @@ class ResolutionProofingJob < ApplicationJob
       timing: timer.results,
     )
 
-    if IdentityConfig.store.idv_socure_shadow_mode_enabled
+    if use_shadow_mode?(user:)
       SocureShadowModeProofingJob.perform_later(
         document_capture_session_result_id: document_capture_session&.result_id,
         encrypted_arguments:,
@@ -83,6 +83,17 @@ class ResolutionProofingJob < ApplicationJob
         user_uuid: user.uuid,
       )
     end
+  end
+
+  def use_shadow_mode?(user:)
+    IdentityConfig.store.idv_socure_shadow_mode_enabled &&
+      AbTests::SOCURE_IDV_SHADOW_MODE.bucket(
+        request: nil,
+        service_provider: nil,
+        session: nil,
+        user:,
+        user_session: nil,
+      ) == :shadow_mode_enabled
   end
 
   private

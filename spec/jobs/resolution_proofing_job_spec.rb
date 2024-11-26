@@ -538,7 +538,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
     context 'socure shadow mode' do
       context 'turned on' do
         before do
-          allow(IdentityConfig.store).to receive(:idv_socure_shadow_mode_enabled).and_return(true)
+          allow(instance).to receive(:use_shadow_mode?).and_return(true)
         end
 
         it 'schedules a SocureShadowModeProofingJob' do
@@ -557,6 +557,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
                   first_name: 'FAKEY',
                   middle_name: nil,
                   last_name: 'MCFAKERSON',
+                  name_suffix: nil,
                   address1: '1 FAKE RD',
                   identity_doc_address1: '1 FAKE RD',
                   identity_doc_address2: nil,
@@ -570,6 +571,10 @@ RSpec.describe ResolutionProofingJob, type: :job do
                   state: 'MT',
                   zipcode: '59010-1234',
                   dob: '1938-10-06',
+                  sex: nil,
+                  height: nil,
+                  weight: nil,
+                  eye_color: nil,
                   ssn: '900-66-1234',
                   state_id_jurisdiction: 'ND',
                   state_id_expiration: '2099-12-31',

@@ -9,7 +9,7 @@ RSpec.describe DataRequests::Deployed::CreateUserReport do
 
     expect(result[:user_id]).to eq(user.id)
     expect(result[:login_uuid]).to eq(user.uuid)
-    expect(result[:requesting_issuer_uuid]).to eq(user.uuid)
+    expect(result[:requesting_issuer_uuid]).to eq("NonSPUser##{user.id}")
     expect(result[:email_addresses]).to be_a(Array)
     expect(result[:mfa_configurations]).to be_a(Hash)
     expect(result[:user_events]).to be_a(Array)

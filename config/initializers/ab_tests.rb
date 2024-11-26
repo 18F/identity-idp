@@ -96,4 +96,12 @@ module AbTests
         IdentityConfig.store.recommend_webauthn_platform_for_sms_ab_test_authentication_percent,
     },
   ).freeze
+
+  SOCURE_IDV_SHADOW_MODE = AbTest.new(
+    experiment_name: 'Socure shadow mode',
+    should_log: ['IdV: doc auth verify proofing results'].to_set,
+    buckets: {
+      shadow_mode_enabled: IdentityConfig.store.socure_idplus_shadow_mode_percent,
+    },
+  ).freeze
 end
