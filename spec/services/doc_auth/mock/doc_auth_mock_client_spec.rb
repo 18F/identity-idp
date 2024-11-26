@@ -28,15 +28,15 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         first_name: 'FAKEY',
         middle_name: nil,
         last_name: 'MCFAKERSON',
-        name_suffix: nil,
+        name_suffix: 'JR',
         address1: '1 FAKE RD',
         address2: nil,
         city: 'GREAT FALLS',
         state: 'MT',
         zipcode: '59010-1234',
         dob: '1938-10-06',
-        sex: nil,
-        height: nil,
+        sex: 'male',
+        height: 72,
         weight: nil,
         eye_color: nil,
         state_id_number: '1111111111111',
@@ -55,12 +55,15 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         first_name: Susan
         last_name: Smith
         middle_name: Q
+        name_suffix: 'SR'
         address1: 1 Microsoft Way
         address2: Apt 3
         city: Bayside
         state: NY
         zipcode: '11364'
         dob: 1938-10-06
+        sex: 'female'
+        height: 66
         state_id_number: '111111111'
         state_id_jurisdiction: ND
         state_id_type: drivers_license
@@ -89,15 +92,15 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         first_name: 'Susan',
         middle_name: 'Q',
         last_name: 'Smith',
-        name_suffix: nil,
+        name_suffix: 'SR',
         address1: '1 Microsoft Way',
         address2: 'Apt 3',
         city: 'Bayside',
         state: 'NY',
         zipcode: '11364',
         dob: '1938-10-06',
-        sex: nil,
-        height: nil,
+        sex: 'female',
+        height: 66,
         weight: nil,
         eye_color: nil,
         state_id_number: '111111111',
@@ -137,15 +140,15 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         first_name: 'Susan',
         middle_name: nil,
         last_name: 'MCFAKERSON',
-        name_suffix: nil,
+        name_suffix: 'JR',
         address1: '1 FAKE RD',
         address2: nil,
         city: 'GREAT FALLS',
         state: 'MT',
         zipcode: '59010-1234',
         dob: '1938-10-06',
-        sex: nil,
-        height: nil,
+        sex: 'male',
+        height: 72,
         weight: nil,
         eye_color: nil,
         state_id_number: '1111111111111',
