@@ -84,6 +84,7 @@ module Idv
           redirect_to idv_socure_document_capture_errors_url
         end
       end
+
       def self.step_info
         Idv::StepInfo.new(
           key: :socure_document_capture,
