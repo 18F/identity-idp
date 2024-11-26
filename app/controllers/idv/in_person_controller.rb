@@ -11,7 +11,7 @@ module Idv
     before_action :redirect_unless_enrollment
 
     include IdvSessionConcern
-    include Flow::FlowStateMachine
+    # include Flow::FlowStateMachine
     include ThreatMetrixConcern
 
     before_action :redirect_if_flow_completed
@@ -24,6 +24,10 @@ module Idv
       flow: Idv::Flows::InPersonFlow,
       analytics_id: 'In Person Proofing',
     }.freeze
+
+    def index
+      redirect_to idv_in_person_state_id_url
+    end
 
     private
 
