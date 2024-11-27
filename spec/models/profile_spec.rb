@@ -609,6 +609,68 @@ RSpec.describe Profile do
     end
   end
 
+  describe '#deactivate_due_to_encryption_error' do
+    context 'when the profile has a "pending" in_person_enrollment' do
+      subject { create(:profile, :in_person_verification_pending, user: user) }
+      let!(:enrollment) do
+        create(:in_person_enrollment, user: user, profile: subject, status: :pending)
+      end
+
+      before do
+        subject.deactivate_due_to_encryption_error
+      end
+
+      it 'deactivates with reason encryption_error' do
+        expect(subject).to have_attributes(
+          active: false,
+          deactivation_reason: 'encryption_error',
+          in_person_verification_pending_at: be_kind_of(Time),
+        )
+      end
+
+      it 'cancels the associated pending in_person_enrollment' do
+        expect(subject.in_person_enrollment.status).to eq('cancelled')
+      end
+    end
+
+    context 'when the profile has a "passed" in_person_enrollment' do
+      subject { create(:profile, :active, user: user) }
+      let!(:enrollment) do
+        create(:in_person_enrollment, user: user, profile: subject, status: :passed)
+      end
+
+      before do
+        subject.deactivate_due_to_encryption_error
+      end
+
+      it 'deactivates with reason encryption_error' do
+        expect(subject).to have_attributes(
+          active: false,
+          deactivation_reason: 'encryption_error',
+        )
+      end
+
+      it 'does not cancel the associated pending in_person_enrollment' do
+        expect(subject.in_person_enrollment.status).to eq('passed')
+      end
+    end
+
+    context 'when the profile has no in_person_enrollment' do
+      subject { create(:profile, :active, user: user) }
+
+      before do
+        subject.deactivate_due_to_encryption_error
+      end
+
+      it 'deactivates with reason encryption_error' do
+        expect(subject).to have_attributes(
+          active: false,
+          deactivation_reason: 'encryption_error',
+        )
+      end
+    end
+  end
+
   describe '#remove_gpo_deactivation_reason' do
     it 'removes the gpo_verification_pending_at deactivation reason' do
       profile = create(:profile, :verify_by_mail_pending)
