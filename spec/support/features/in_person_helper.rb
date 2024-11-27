@@ -120,17 +120,6 @@ module InPersonHelper
     click_on t('forms.buttons.continue')
   end
 
-  def complete_state_id_step(_user = nil, same_address_as_id: true, first_name: GOOD_FIRST_NAME)
-    # Wait for page to load before attempting to fill out form
-    expect(page).to have_current_path(idv_in_person_state_id_path, wait: 10)
-    fill_out_state_id_form_ok(same_address_as_id: same_address_as_id, first_name:)
-    click_idv_continue
-    unless same_address_as_id
-      expect(page).to have_current_path(idv_in_person_address_path, wait: 10)
-      expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
-    end
-  end
-
   def complete_state_id_controller(_user = nil, same_address_as_id: true,
                                    first_name: GOOD_FIRST_NAME)
     # Wait for page to load before attempting to fill out form
@@ -156,14 +145,6 @@ module InPersonHelper
 
   def complete_verify_step(_user = nil)
     click_idv_submit_default
-  end
-
-  def complete_steps_before_state_id_step
-    sign_in_and_2fa_user
-    begin_in_person_proofing
-    complete_prepare_step
-    complete_location_step
-    expect(page).to have_current_path(idv_in_person_state_id_path, wait: 10)
   end
 
   def complete_steps_before_state_id_controller
@@ -205,11 +186,6 @@ module InPersonHelper
   end
 
   def expect_in_person_step_indicator_current_step(text)
-    expect_in_person_step_indicator
-    expect_step_indicator_current_step(text)
-  end
-
-  def expect_in_person_step_indicator
     # Normally we're only concerned with the "current" step, but since some steps are shared between
     # flows, we also want to make sure that at least one of the in-person-specific steps exists in
     # the step indicator.
@@ -217,9 +193,10 @@ module InPersonHelper
       '.step-indicator__step',
       text: t('step_indicator.flows.idv.find_a_post_office'),
     )
+    expect_step_indicator_current_step(text)
   end
 
-  def make_pii(same_address_as_id: 'true')
+  def build_pii_before_state_id_update(same_address_as_id: 'true')
     pii_from_user[:same_address_as_id] = same_address_as_id
     pii_from_user[:identity_doc_address1] = identity_doc_address1
     pii_from_user[:identity_doc_address2] = identity_doc_address2

@@ -225,7 +225,7 @@ RSpec.describe Idv::InPerson::StateIdController do
             expect(subject.user_session['idv/in_person'][:pii_from_user]).to_not have_key attr
           end
 
-          make_pii
+          build_pii_before_state_id_update
 
           # pii includes address attrs on re-visiting state id pg
           expect(subject.user_session['idv/in_person'][:pii_from_user]).to include(
@@ -285,7 +285,7 @@ RSpec.describe Idv::InPerson::StateIdController do
             expect(subject.user_session['idv/in_person'][:pii_from_user]).to_not have_key attr
           end
 
-          make_pii(same_address_as_id: 'false')
+          build_pii_before_state_id_update(same_address_as_id: 'false')
 
           # On Verify, user changes response from "No,..." to
           # "Yes, I live at the address on my state-issued ID
@@ -322,7 +322,7 @@ RSpec.describe Idv::InPerson::StateIdController do
           end
 
           # User picks "No, I live at a different address" on state ID
-          make_pii(same_address_as_id: 'false')
+          build_pii_before_state_id_update(same_address_as_id: 'false')
 
           # On Verify, user does not changes response "No,..."
           put :update, params: params
