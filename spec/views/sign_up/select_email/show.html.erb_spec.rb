@@ -12,6 +12,7 @@ RSpec.describe 'sign_up/select_email/show.html.erb' do
     @user_emails = user.confirmed_email_addresses
     @select_email_form = SelectEmailForm.new(user:)
     @sp_name = 'Test Service Provider'
+    @can_add_email = true
   end
 
   it 'renders introduction text' do
@@ -23,5 +24,25 @@ RSpec.describe 'sign_up/select_email/show.html.erb' do
   it 'shows all of the emails' do
     expect(rendered).to include('michael.motorist@email.com')
     expect(rendered).to include('michael.motorist2@email.com')
+  end
+
+  it 'renders a button to allow users to add email' do
+    expect(rendered).to have_link(
+      t('account.index.email_add'),
+      href: add_email_path(in_select_email_flow: true),
+    )
+  end
+
+  context 'if user has reached max number of emails' do
+    before do
+      @can_add_email = false
+    end
+
+    it 'does not render add email button' do
+      expect(rendered).not_to have_link(
+        t('account.index.email_add'),
+        href: add_email_path(in_select_email_flow: true),
+      )
+    end
   end
 end

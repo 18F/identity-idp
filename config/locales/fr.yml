@@ -1942,6 +1942,7 @@ user_mailer.reset_password_instructions.footer: Ce lien expire dans %{expires} h
 user_mailer.reset_password_instructions.gpo_letter_description: Si vous réinitialisez votre mot de passe, le code de vérification contenu dans votre lettre ne fonctionnera plus et vous devrez reconfirmer votre identité.
 user_mailer.reset_password_instructions.gpo_letter_header: Votre lettre est en route
 user_mailer.reset_password_instructions.header: Pour terminer la réinitialisation de votre mot de passe, veuillez cliquer sur le lien ci-dessous ou copier et coller le lien complet dans votre navigateur.
+user_mailer.reset_password_instructions.in_person_warning_description_html: <strong>If you reset your password now, your barcode will not work at the Post Office.</strong> You’ll have to restart the identity verification process from the beginning.
 user_mailer.reset_password_instructions.link_text: Réinitialiser votre mot de passe
 user_mailer.reset_password_instructions.subject: Réinitialiser votre mot de passe
 user_mailer.signup_with_your_email.help_html: Si vous n’avez pas demandé un nouveau compte ou soupçonnez qu’une erreur s’est produite, veuillez visiter le %{help_link_html} de %{app_name_html} ou %{contact_link_html}.
