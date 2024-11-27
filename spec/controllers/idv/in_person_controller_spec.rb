@@ -17,8 +17,6 @@ RSpec.describe Idv::InPersonController do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
-        :initialize_flow_state_machine,
-        :ensure_correct_step,
         :set_usps_form_presenter,
       )
     end
