@@ -47,6 +47,7 @@ RSpec.describe SignUp::SelectEmailController do
       expect(assigns(:user_emails)).to all be_kind_of(EmailAddress)
       expect(assigns(:last_sign_in_email_address)).to be_kind_of(String)
       expect(assigns(:select_email_form)).to be_kind_of(SelectEmailForm)
+      expect(assigns(:can_add_email)).to eq(true)
     end
 
     context 'with selected email to share feature disabled' do
@@ -67,6 +68,18 @@ RSpec.describe SignUp::SelectEmailController do
         response
 
         expect(response).to redirect_to(sign_up_completed_path)
+      end
+    end
+
+    context 'when users has max number of emails' do
+      before do
+        allow(user).to receive(:email_address_count).and_return(2)
+        allow(IdentityConfig.store).to receive(:max_emails_per_account).and_return(2)
+      end
+
+      it 'can add email variable set to false' do
+        response
+        expect(assigns(:can_add_email)).to eq(false)
       end
     end
   end
