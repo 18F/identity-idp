@@ -9,23 +9,14 @@ module Idv
 
     before_action :confirm_two_factor_authenticated
     before_action :redirect_unless_enrollment
-
-    include IdvSessionConcern
-    # include Flow::FlowStateMachine
-    include ThreatMetrixConcern
-
-    before_action :redirect_if_flow_completed
-
+    before_action :initialize_in_person_session
     before_action :set_usps_form_presenter
 
-    FLOW_STATE_MACHINE_SETTINGS = {
-      step_url: :idv_in_person_step_url,
-      final_url: :idv_in_person_state_id_url,
-      flow: Idv::Flows::InPersonFlow,
-      analytics_id: 'In Person Proofing',
-    }.freeze
-
     def index
+      redirect_to idv_in_person_state_id_url
+    end
+
+    def update
       redirect_to idv_in_person_state_id_url
     end
 
@@ -35,8 +26,9 @@ module Idv
       redirect_to idv_url unless current_user.establishing_in_person_enrollment
     end
 
-    def redirect_if_flow_completed
-      flow_finish if idv_session.applicant
+    def initialize_in_person_session
+      user_session['idv/in_person'] ||= { pii_from_user: { uuid: current_user.uuid } }
+      # binding.pry
     end
 
     def set_usps_form_presenter
