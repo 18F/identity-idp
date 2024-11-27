@@ -56,6 +56,7 @@ RSpec.describe Idv::HybridMobile::EntryController do
         {}
       end
       let(:idv_vendor) { Idp::Constants::Vendors::MOCK }
+      let(:lexis_nexis_percent) { 100 }
       let(:acr_values) do
         [
           Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
@@ -73,6 +74,8 @@ RSpec.describe Idv::HybridMobile::EntryController do
         allow(controller).to receive(:session).and_return(session)
         allow(controller).to receive(:resolved_authn_context_result).
           and_return(resolved_authn_context)
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_lexis_nexis_percent).
+          and_return(lexis_nexis_percent)
         get :show, params: { 'document-capture-session': session_uuid }
       end
 
@@ -84,8 +87,7 @@ RSpec.describe Idv::HybridMobile::EntryController do
         end
       end
 
-      context 'doc auth vendor is socure but facial match is required' do
-        let(:idv_vendor) { Idp::Constants::Vendors::SOCURE }
+      context 'facial match is required' do
         let(:acr_values) do
           [
             Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
@@ -93,22 +95,34 @@ RSpec.describe Idv::HybridMobile::EntryController do
           ].join(' ')
         end
 
-        it 'redirects to the lexis nexis first step' do
-          expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
-        end
-      end
+        context 'doc auth vendor is socure with facial match required' do
+          let(:idv_vendor) { Idp::Constants::Vendors::SOCURE }
 
-      context 'doc auth vendor is mock but facial match is required' do
-        let(:idv_vendor) { Idp::Constants::Vendors::MOCK }
-        let(:acr_values) do
-          [
-            Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
-            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
-          ].join(' ')
+          it 'redirects to the lexis nexis first step' do
+            expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
+          end
         end
 
-        it 'redirects to the lexis nexis first step' do
-          expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
+        context 'doc auth vendor is mock with facial match required' do
+          let(:idv_vendor) { Idp::Constants::Vendors::MOCK }
+
+          it 'redirects to the lexis nexis first step' do
+            expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
+          end
+        end
+
+        context 'lexis nexis is disabled' do
+          let(:idv_vendor) { nil }
+          let(:lexis_nexis_percent) { 0 }
+
+          before do
+            allow(IdentityConfig.store).to receive(:doc_auth_vendor_lexis_nexis_percent).
+              and_return(lexis_nexis_percent)
+          end
+
+          it 'causes an 404 error' do
+            expect(response.status).to eq(404)
+          end
         end
       end
 
