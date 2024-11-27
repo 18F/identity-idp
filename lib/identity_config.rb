@@ -350,6 +350,7 @@ module IdentityConfig
     config.add(:recaptcha_enterprise_api_key, type: :string)
     config.add(:recaptcha_enterprise_project_id, type: :string)
     config.add(:recaptcha_mock_validator, type: :boolean)
+    config.add(:recaptcha_request_timeout_in_seconds, type: :integer)
     config.add(:recaptcha_secret_key, type: :string)
     config.add(:recaptcha_site_key, type: :string)
     config.add(:recovery_code_length, type: :integer)
