@@ -113,6 +113,152 @@ RSpec.describe UserMailer, type: :mailer do
     end
   end
 
+  describe '#reset_password_instructions' do
+    let(:token) { SecureRandom.hex }
+    let(:request_id) { SecureRandom.uuid }
+    let(:mail) do
+      UserMailer.with(
+        user: user,
+        email_address: email_address,
+      ).reset_password_instructions(token:, request_id:)
+    end
+    let(:locale) { 'es' }
+
+    before do
+      I18n.locale = locale
+    end
+
+    it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
+
+    context 'when the user has gpo verfication pending' do
+      let(:user) { create(:user, :with_pending_gpo_profile) }
+
+      it 'sends to the current email address' do
+        expect(mail.to).to eq [email_address.email]
+      end
+
+      it 'renders the subject' do
+        expect(mail.subject).to eq t('user_mailer.reset_password_instructions.subject')
+      end
+
+      it 'renders the gpo warning alert' do
+        expect(mail.html_part.body).to have_content(
+          t('user_mailer.reset_password_instructions.gpo_letter_description'),
+        )
+      end
+
+      it 'does not render the in person warning banner' do
+        expect(mail.html_part.body).not_to have_content(
+          strip_tags(
+            t('user_mailer.reset_password_instructions.in_person_warning_description_html'),
+          ),
+        )
+      end
+
+      it 'renders the reset password instructions' do
+        expect(mail.html_part.body).to have_content(
+          t('user_mailer.reset_password_instructions.header'),
+        )
+      end
+
+      it 'renders the reset password button' do
+        expect(mail.html_part.body).to have_link(
+          t('user_mailer.reset_password_instructions.link_text'),
+          href: edit_user_password_url(
+            reset_password_token: token,
+            locale: locale,
+            request_id: request_id,
+          ),
+        )
+      end
+    end
+
+    context 'when the user has in person verfication pending' do
+      let(:user) { create(:user, :with_pending_in_person_enrollment) }
+
+      it 'sends to the current email address' do
+        expect(mail.to).to eq [email_address.email]
+      end
+
+      it 'renders the subject' do
+        expect(mail.subject).to eq t('user_mailer.reset_password_instructions.subject')
+      end
+
+      it 'renders the in person warning banner' do
+        expect(mail.html_part.body).to have_content(
+          strip_tags(
+            t('user_mailer.reset_password_instructions.in_person_warning_description_html'),
+          ),
+        )
+      end
+
+      it 'does not render the gpo warning alert' do
+        expect(mail.html_part.body).not_to have_content(
+          t('user_mailer.reset_password_instructions.gpo_letter_description'),
+        )
+      end
+
+      it 'renders the reset password instructions' do
+        expect(mail.html_part.body).to have_content(
+          t('user_mailer.reset_password_instructions.header'),
+        )
+      end
+
+      it 'renders the reset password button' do
+        expect(mail.html_part.body).to have_link(
+          t('user_mailer.reset_password_instructions.link_text'),
+          href: edit_user_password_url(
+            reset_password_token: token,
+            locale: locale,
+            request_id: request_id,
+          ),
+        )
+      end
+    end
+
+    context 'when the user does not have any verification pending' do
+      it 'sends to the current email address' do
+        expect(mail.to).to eq [email_address.email]
+      end
+
+      it 'renders the subject' do
+        expect(mail.subject).to eq t('user_mailer.reset_password_instructions.subject')
+      end
+
+      it 'does not render the gpo warning alert' do
+        expect(mail.html_part.body).not_to have_content(
+          t('user_mailer.reset_password_instructions.gpo_letter_description'),
+        )
+      end
+
+      it 'does not render the in person warning banner' do
+        expect(mail.html_part.body).not_to have_content(
+          strip_tags(
+            t('user_mailer.reset_password_instructions.in_person_warning_description_html'),
+          ),
+        )
+      end
+
+      it 'renders the reset password instructions' do
+        expect(mail.html_part.body).to have_content(
+          t('user_mailer.reset_password_instructions.header'),
+        )
+      end
+
+      it 'renders the reset password button' do
+        expect(mail.html_part.body).to have_link(
+          t('user_mailer.reset_password_instructions.link_text'),
+          href: edit_user_password_url(
+            reset_password_token: token,
+            locale: locale,
+            request_id: request_id,
+          ),
+        )
+      end
+    end
+  end
+
   describe '#password_changed' do
     let(:mail) do
       UserMailer.with(

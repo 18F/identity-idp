@@ -74,6 +74,7 @@ module I18n
         { key: 'time.formats.event_timestamp', locales: %i[zh] },
         { key: 'time.formats.full_date', locales: %i[es] }, # format is the same in Spanish and English
         { key: 'time.formats.sms_date' }, # for us date format
+        { key: 'user_mailer.reset_password_instructions.in_person_warning_description_html', locales: %i[es fr zh] }, # Temporary until spanish, french, and chinese translations come in.
         { key: 'webauthn_platform_recommended.cta' }, # English-only A/B test
         { key: 'webauthn_platform_recommended.description_private_html' }, # English-only A/B test
         { key: 'webauthn_platform_recommended.description_secure_account' }, # English-only A/B test
