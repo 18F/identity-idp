@@ -5,6 +5,7 @@ RSpec.describe Idv::InPerson::AddressController do
   include InPersonHelper
 
   let(:user) { build(:user) }
+  let(:pii_from_user) { Idp::Constants::MOCK_IPP_APPLICANT_SAME_ADDRESS_AS_ID_FALSE }
 
   before do
     allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled).
@@ -12,7 +13,7 @@ RSpec.describe Idv::InPerson::AddressController do
     stub_sign_in(user)
     stub_up_to(:hybrid_handoff, idv_session: subject.idv_session)
     subject.user_session['idv/in_person'] = {
-      pii_from_user: Idp::Constants::MOCK_IPP_APPLICANT_SAME_ADDRESS_AS_ID_FALSE.dup,
+      pii_from_user: pii_from_user,
     }
     subject.idv_session.ssn = nil
     stub_analytics
@@ -30,11 +31,21 @@ RSpec.describe Idv::InPerson::AddressController do
         :before,
         :set_usps_form_presenter,
       )
+      expect(subject).to have_actions(
+        :before,
+        :confirm_in_person_state_id_step_complete,
+      )
+      expect(subject).to have_actions(
+        :before,
+        :confirm_in_person_address_step_needed,
+      )
     end
 
     context '#confirm_in_person_state_id_step_complete' do
-      it 'redirects to state id page if not complete' do
+      before do
         subject.user_session['idv/in_person'][:pii_from_user].delete(:identity_doc_address1)
+      end
+      it 'redirects to state id page if not complete' do
         get :show
 
         expect(response).to redirect_to idv_in_person_state_id_url
@@ -42,8 +53,10 @@ RSpec.describe Idv::InPerson::AddressController do
     end
 
     context '#confirm_in_person_address_step_needed' do
+      before do
+        request.env['HTTP_REFERER'] = idv_in_person_verify_info_url
+      end
       it 'remains on page when referer is verify info' do
-        subject.request = idv_in_person_verify_info_url
         get :show
 
         expect(response).to render_template :show
@@ -68,12 +81,15 @@ RSpec.describe Idv::InPerson::AddressController do
       expect(response).to render_template :show
     end
 
-    it 'redirects to ssn page when address1 present' do
-      subject.user_session['idv/in_person'][:pii_from_user][:address1] = '123 Main St'
+    context 'when address1 present' do
+      before do
+        subject.user_session['idv/in_person'][:pii_from_user][:address1] = '123 Main St'
+      end
+      it 'redirects to ssn page' do
+        get :show
 
-      get :show
-
-      expect(response).to redirect_to idv_in_person_ssn_url
+        expect(response).to redirect_to idv_in_person_ssn_url
+      end
     end
 
     it 'logs idv_in_person_proofing_address_visited' do
@@ -101,10 +117,10 @@ RSpec.describe Idv::InPerson::AddressController do
 
   describe '#update' do
     context 'valid address details' do
-      let(:address1) { '1 FAKE RD' }
+      let(:address1) { Idp::Constants::MOCK_IDV_APPLICANT[:address1] }
       let(:address2) { 'APT 1B' }
-      let(:city) { 'GREAT FALLS' }
-      let(:zipcode) { '59010-4444' }
+      let(:city) { Idp::Constants::MOCK_IDV_APPLICANT[:city] }
+      let(:zipcode) { Idp::Constants::MOCK_IDV_APPLICANT[:zipcode] }
       let(:state) { 'Montana' }
       let(:params) do
         { in_person_address: {

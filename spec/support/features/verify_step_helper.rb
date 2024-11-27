@@ -5,7 +5,7 @@ module VerifyStepHelper
     expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1)
     expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2)
     expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_CITY)
-    expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction])
+    expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION)
     expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE)
   end
 
