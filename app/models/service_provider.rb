@@ -79,8 +79,7 @@ class ServiceProvider < ApplicationRecord
   end
 
   def facial_match_ial_allowed?
-    IdentityConfig.store.facial_match_general_availability_enabled ||
-      IdentityConfig.store.allowed_biometric_ial_providers.include?(issuer)
+    IdentityConfig.store.facial_match_general_availability_enabled
   end
 
   private

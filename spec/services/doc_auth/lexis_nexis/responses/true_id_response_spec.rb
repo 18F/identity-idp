@@ -127,11 +127,16 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         first_name: 'DAVID',
         last_name: 'SAMPLE',
         middle_name: 'LICENSE',
+        name_suffix: nil,
         address1: '123 ABC AVE',
         address2: 'APT 3E',
         city: 'ANYTOWN',
         state: 'MD',
         dob: '1986-07-01',
+        sex: nil,
+        height: nil,
+        weight: nil,
+        eye_color: nil,
         state_id_expiration: '2099-10-15',
         state_id_issued: '2016-10-15',
         state_id_jurisdiction: 'MD',
@@ -244,6 +249,22 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         expect(response.success?).to eq(false)
       end
     end
+
+    context 'when doc_auth_read_additional_pii_attributes_enabled is enabled' do
+      let(:success_response_body) { LexisNexisFixtures.true_id_response_success }
+
+      it 'reads the additional PII attributes' do
+        allow(IdentityConfig.store).to receive(:doc_auth_read_additional_pii_attributes_enabled).
+          and_return(true)
+
+        pii_from_doc = response.pii_from_doc
+
+        expect(pii_from_doc.first_name).to eq('LICENSE')
+        expect(pii_from_doc.name_suffix).to eq('JR')
+        expect(pii_from_doc.sex).to eq('male')
+        expect(pii_from_doc.height).to eq(68)
+      end
+    end
   end
 
   context 'when there is no address line 2' do
@@ -326,11 +347,16 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         first_name: 'DAVID',
         last_name: 'SAMPLE',
         middle_name: 'LICENSE',
+        name_suffix: nil,
         address1: '123 ABC AVE',
         address2: nil,
         city: 'ANYTOWN',
         state: 'MD',
         dob: '1986-10-13',
+        sex: nil,
+        height: nil,
+        weight: nil,
+        eye_color: nil,
         state_id_expiration: '2099-10-15',
         state_id_issued: '2016-10-15',
         state_id_jurisdiction: 'MD',

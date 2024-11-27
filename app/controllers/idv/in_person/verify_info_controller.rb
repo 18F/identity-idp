@@ -46,6 +46,7 @@ module Idv
             idv_session.resolution_successful = nil
             idv_session.verify_info_step_document_capture_session_uuid = nil
             idv_session.threatmetrix_review_status = nil
+            idv_session.source_check_vendor = nil
             idv_session.applicant = nil
           end,
         )

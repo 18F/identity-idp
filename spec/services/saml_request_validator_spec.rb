@@ -32,9 +32,6 @@ RSpec.describe SamlRequestValidator do
       ).and_return(
         use_vot_in_sp_requests,
       )
-      allow(IdentityConfig.store).to receive(
-        :allowed_biometric_ial_providers,
-      ).and_return([issuer])
     end
 
     context 'valid authn context and sp and authorized nameID format' do

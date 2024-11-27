@@ -138,6 +138,21 @@ RSpec.describe Users::WebauthnSetupController do
           success: true,
         )
       end
+
+      context 'with setup from sms recommendation' do
+        before do
+          controller.user_session[:webauthn_platform_recommended] = :authentication
+        end
+
+        it 'logs setup event with session value' do
+          patch :confirm, params: params
+
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication Setup',
+            hash_including(webauthn_platform_recommended: :authentication),
+          )
+        end
+      end
     end
   end
 

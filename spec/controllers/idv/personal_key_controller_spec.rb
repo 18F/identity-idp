@@ -13,6 +13,11 @@ RSpec.describe Idv::PersonalKeyController do
     # These keys are present in our applicant fixture but
     # are not actually supported in Pii::Attributes
     keys_to_ignore = %i[
+      name_suffix
+      sex
+      height
+      weight
+      eye_color
       state_id_expiration
       state_id_issued
       state_id_number
@@ -69,7 +74,11 @@ RSpec.describe Idv::PersonalKeyController do
     idv_session.applicant = applicant
 
     if mint_profile_from_idv_session
-      idv_session.create_profile_from_applicant_with_password(password, is_enhanced_ipp)
+      idv_session.create_profile_from_applicant_with_password(
+        password,
+        is_enhanced_ipp:,
+        proofing_components: {},
+      )
     end
   end
 

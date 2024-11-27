@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Users::ResetPasswordsController, devise: true do
-  include AbTestsHelper
-
   let(:password_error_message) do
     t('errors.attributes.password.too_short.other', count: Devise.password_length.first)
   end
@@ -403,58 +401,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         )
         expect(user.active_profile.present?).to eq false
         expect(response).to redirect_to new_user_session_path
-      end
-
-      context 'proofed user submits same password as current' do
-        let(:user) { create(:user, :proofed) }
-        let(:password) { user.password }
-
-        it 'logs event indicating profile deactivated while password the same' do
-          stub_analytics
-
-          reset_password_token = user.set_reset_password_token
-
-          put :update, params: {
-            reset_password_form: {
-              password:,
-              password_confirmation: password,
-              reset_password_token:,
-            },
-          }
-
-          expect(@analytics).to have_logged_event(
-            'Password Reset: Password Submitted',
-            hash_not_including(password_matches_existing: be_in([true, false])),
-          )
-        end
-
-        context 'when in ab test for logging password matches existing' do
-          before do
-            allow(controller).to receive(:ab_test_bucket).with(
-              :LOG_PASSWORD_RESET_MATCHES_EXISTING,
-              user:,
-            ).and_return(:log)
-          end
-
-          it 'logs event indicating profile deactivated while password the same' do
-            stub_analytics
-
-            reset_password_token = user.set_reset_password_token
-
-            put :update, params: {
-              reset_password_form: {
-                password:,
-                password_confirmation: password,
-                reset_password_token:,
-              },
-            }
-
-            expect(@analytics).to have_logged_event(
-              'Password Reset: Password Submitted',
-              hash_including(profile_deactivated: true, password_matches_existing: true),
-            )
-          end
-        end
       end
     end
 

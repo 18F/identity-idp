@@ -1,8 +1,2 @@
-73a74
-> GA4Object.defer = true;
-785d785
-< var piiRegex = [];
-900c900
-<         piiRegex.forEach(function (pii) {
----
->         window.piiRegex.forEach(function (pii) {
+87a88
+>   GA4Object.defer = true;

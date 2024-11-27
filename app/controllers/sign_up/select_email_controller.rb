@@ -14,6 +14,7 @@ module SignUp
       @user_emails = user_emails
       @last_sign_in_email_address = last_email
       @select_email_form = build_select_email_form
+      @can_add_email = EmailPolicy.new(current_user).can_add_email?
       analytics.sp_select_email_visited(needs_completion_screen_reason:)
     end
 

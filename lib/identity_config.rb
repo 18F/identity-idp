@@ -52,9 +52,7 @@ module IdentityConfig
     config.add(:add_email_link_valid_for_hours, type: :integer)
     config.add(:address_identity_proofing_supported_country_codes, type: :json)
     config.add(:all_redirect_uris_cache_duration_minutes, type: :integer)
-    config.add(:allowed_biometric_ial_providers, type: :json)
     config.add(:allowed_ialmax_providers, type: :json)
-    config.add(:allowed_valid_authn_contexts_semantic_providers, type: :json)
     config.add(:allowed_verified_within_providers, type: :json)
     config.add(:asset_host, type: :string)
     config.add(:async_stale_job_timeout_seconds, type: :integer)
@@ -77,7 +75,6 @@ module IdentityConfig
     config.add(:backup_code_user_id_per_ip_attempt_window_in_minutes, type: :integer)
     config.add(:backup_code_user_id_per_ip_attempt_window_max_minutes, type: :integer)
     config.add(:backup_code_user_id_per_ip_max_attempts, type: :integer)
-    config.add(:biometric_ial_enabled, type: :boolean)
     config.add(:broken_personal_key_window_finish, type: :timestamp)
     config.add(:broken_personal_key_window_start, type: :timestamp)
     config.add(:check_user_password_compromised_enabled, type: :boolean)
@@ -88,6 +85,7 @@ module IdentityConfig
     config.add(:country_phone_number_overrides, type: :json)
     config.add(:dashboard_api_token, type: :string)
     config.add(:dashboard_url, type: :string)
+    config.add(:data_warehouse_enabled, type: :boolean)
     config.add(:database_advisory_locks_enabled, type: :boolean)
     config.add(:database_host, type: :string)
     config.add(:database_name, type: :string)
@@ -123,6 +121,7 @@ module IdentityConfig
     config.add(:doc_auth_max_attempts, type: :integer)
     config.add(:doc_auth_max_capture_attempts_before_native_camera, type: :integer)
     config.add(:doc_auth_max_submission_attempts_before_native_camera, type: :integer)
+    config.add(:doc_auth_read_additional_pii_attributes_enabled, type: :boolean)
     config.add(:doc_auth_selfie_desktop_test_mode, type: :boolean)
     config.add(:doc_auth_socure_wait_polling_refresh_max_seconds, type: :integer)
     config.add(:doc_auth_socure_wait_polling_timeout_minutes, type: :integer)
@@ -151,7 +150,6 @@ module IdentityConfig
     config.add(:feature_idv_force_gpo_verification_enabled, type: :boolean)
     config.add(:feature_idv_hybrid_flow_enabled, type: :boolean)
     config.add(:feature_select_email_to_share_enabled, type: :boolean)
-    config.add(:feature_valid_authn_contexts_semantic_enabled, type: :boolean)
     config.add(:geo_data_file_path, type: :string)
     config.add(:get_usps_proofing_results_job_cron, type: :string)
     config.add(:get_usps_proofing_results_job_reprocess_delay_minutes, type: :integer)
@@ -179,9 +177,15 @@ module IdentityConfig
     config.add(:idv_max_attempts, type: :integer)
     config.add(:idv_min_age_years, type: :integer)
     config.add(
+      :idv_resolution_alternate_vendor,
+      type: :symbol,
+      enum: [:instant_verify, :socure_kyc, :mock, :none],
+    )
+    config.add(:idv_resolution_alternate_vendor_percent, type: :integer)
+    config.add(
       :idv_resolution_default_vendor,
       type: :symbol,
-      enum: [:instant_verify, :mock],
+      enum: [:instant_verify, :socure_kyc, :mock],
     )
     config.add(:idv_send_link_attempt_window_in_minutes, type: :integer)
     config.add(:idv_send_link_max_attempts, type: :integer)
@@ -246,7 +250,6 @@ module IdentityConfig
     config.add(:lexisnexis_trueid_username, type: :string)
     config.add(:lexisnexis_username, type: :string)
     config.add(:lockout_period_in_minutes, type: :integer)
-    config.add(:log_password_reset_matches_existing_ab_test_percent, type: :integer)
     config.add(:log_to_stdout, type: :boolean)
     config.add(:login_otp_confirmation_max_attempts, type: :integer)
     config.add(:logins_per_email_and_ip_bantime, type: :integer)
@@ -419,6 +422,7 @@ module IdentityConfig
     config.add(:socure_docv_webhook_secret_key, type: :string)
     config.add(:socure_idplus_api_key, type: :string)
     config.add(:socure_idplus_base_url, type: :string)
+    config.add(:socure_idplus_shadow_mode_percent, type: :integer)
     config.add(:socure_idplus_timeout_in_seconds, type: :integer)
     config.add(:socure_reason_code_api_key, type: :string)
     config.add(:socure_reason_code_base_url, type: :string)
@@ -458,7 +462,6 @@ module IdentityConfig
     config.add(:usps_upload_sftp_timeout, type: :integer)
     config.add(:usps_upload_sftp_username, type: :string)
     config.add(:valid_authn_contexts, type: :json)
-    config.add(:valid_authn_contexts_semantic, type: :json)
     config.add(:vendor_status_lexisnexis_instant_verify, type: :symbol, enum: VENDOR_STATUS_OPTIONS)
     config.add(:vendor_status_lexisnexis_phone_finder, type: :symbol, enum: VENDOR_STATUS_OPTIONS)
     config.add(:vendor_status_lexisnexis_trueid, type: :symbol, enum: VENDOR_STATUS_OPTIONS)

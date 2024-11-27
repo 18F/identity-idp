@@ -1,4 +1,4 @@
-DAP_SHA ?= 7c14bb3
+DAP_SHA ?= eebc4d1
 
 digital-analytics-program.js: digital-analytics-program-$(DAP_SHA).js digital-analytics-program.patch
 	patch -p1 $^ --output $@

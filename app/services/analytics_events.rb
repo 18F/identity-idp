@@ -1255,10 +1255,10 @@ module AnalyticsEvents
     flow_path:,
     step:,
     analytics_id:,
-    redo_document_capture:,
-    skip_hybrid_handoff:,
     liveness_checking_required:,
     selfie_check_required:,
+    redo_document_capture: nil,
+    skip_hybrid_handoff: nil,
     opted_in_to_in_person_proofing: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     **extra
@@ -1379,10 +1379,35 @@ module AnalyticsEvents
   end
 
   # @param [String] side the side of the image submission
-  def idv_doc_auth_failed_image_resubmitted(side:, **extra)
+  # @param [Integer] submit_attempts Times that user has tried submitting (previously called
+  # "attempts")
+  # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [String] liveness_checking_required Whether or not the selfie is required
+  # @param [String] front_image_fingerprint Fingerprint of front image data
+  # @param [String] back_image_fingerprint Fingerprint of back image data
+  # @param [String] selfie_image_fingerprint Fingerprint of selfie image data
+  def idv_doc_auth_failed_image_resubmitted(
+    side:,
+    remaining_submit_attempts:,
+    flow_path:,
+    liveness_checking_required:,
+    submit_attempts:,
+    front_image_fingerprint:,
+    back_image_fingerprint:,
+    selfie_image_fingerprint:,
+    **extra
+  )
     track_event(
       'IdV: failed doc image resubmitted',
-      side: side,
+      side:,
+      remaining_submit_attempts:,
+      flow_path:,
+      liveness_checking_required:,
+      submit_attempts:,
+      front_image_fingerprint:,
+      back_image_fingerprint:,
+      selfie_image_fingerprint:,
       **extra,
     )
   end
@@ -3430,15 +3455,18 @@ module AnalyticsEvents
   # GetUspsProofingResultsJob is beginning. Includes some metadata about what the job will do
   # @param [Integer] enrollments_count number of enrollments eligible for status check
   # @param [Integer] reprocess_delay_minutes minimum delay since last status check
+  # @param [String] job_name Name of class which triggered proofing job
   def idv_in_person_usps_proofing_results_job_started(
     enrollments_count:,
     reprocess_delay_minutes:,
+    job_name:,
     **extra
   )
     track_event(
       'GetUspsProofingResultsJob: Job started',
-      enrollments_count: enrollments_count,
-      reprocess_delay_minutes: reprocess_delay_minutes,
+      enrollments_count:,
+      reprocess_delay_minutes:,
+      job_name:,
       **extra,
     )
   end
@@ -4330,12 +4358,15 @@ module AnalyticsEvents
   end
 
   # GPO "resend letter" page visited
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # @identity.idp.previous_event_name IdV: request letter visited
   def idv_resend_letter_visited(
+    pending_profile_idv_level: nil,
     **extra
   )
     track_event(
       :idv_resend_letter_visited,
+      pending_profile_idv_level:,
       **extra,
     )
   end
@@ -4675,6 +4706,101 @@ module AnalyticsEvents
   # attempted to look for one.
   def idv_socure_shadow_mode_proofing_result_missing(**extra)
     track_event(:idv_socure_shadow_mode_proofing_result_missing, **extra)
+  end
+
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [String] exception
+  # @param [Boolean] billed
+  # @param [String] docv_transaction_token socure transaction token
+  # @param [Hash] customer_profile socure customer profile
+  # @param [String] reference_id socure interal id for transaction
+  # @param [Hash] reason_codes socure internal reason codes for accept reject decision
+  # @param [Hash] document_type type of socument submitted (Drivers Licenese, etc.)
+  # @param [Hash] decision accept or reject of given ID
+  # @param [String] user_id internal id of socure user
+  # @param [String] state state of ID
+  # @param [String] state_id_type type of state issued ID
+  # @param [Boolean] async whether or not this worker is running asynchronously
+  # @param [Integer] submit_attempts Times that user has tried submitting (previously called
+  # "attempts")
+  # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [Float] vendor_request_time_in_ms Time it took to upload images & get a response.
+  # @param [Boolean] doc_type_supported
+  # @param [Boolean] doc_auth_success
+  # @param [Boolean] liveness_checking_required Whether or not the selfie is required
+  # @param [Boolean] liveness_enabled Whether or not the selfie result is included in response
+  # @param [String] vendor which 2rd party we are using for doc auth
+  # @param [Boolean] address_line2_present wether or not we have an address that uses the 2nd line
+  # @param [String] zip_code zip code from state issued ID
+  # @param [String] birth_year Birth year from document
+  # @param [Integer] issue_year Year document was issued
+  # @param [Boolean] biometric_comparison_required does doc auth require biometirc
+  # The request for socure verification was sent
+  def idv_socure_verification_data_requested(
+    success:,
+    errors:,
+    async:,
+    customer_profile:,
+    reference_id:,
+    reason_codes:,
+    document_type:,
+    decision:,
+    state:,
+    state_id_type:,
+    submit_attempts:,
+    remaining_submit_attempts:,
+    liveness_checking_required:,
+    issue_year:,
+    vendor_request_time_in_ms:,
+    doc_type_supported:,
+    doc_auth_success:,
+    vendor:,
+    address_line2_present:,
+    zip_code:,
+    birth_year:,
+    liveness_enabled:,
+    biometric_comparison_required:,
+    docv_transaction_token: nil,
+    user_id: nil,
+    exception: nil,
+    flow_path: nil,
+    billed: nil,
+    **extra
+  )
+    track_event(
+      :idv_socure_verification_data_requested,
+      success:,
+      errors:,
+      exception:,
+      billed:,
+      docv_transaction_token:,
+      customer_profile:,
+      reference_id:,
+      reason_codes:,
+      document_type:,
+      decision:,
+      user_id:,
+      state:,
+      state_id_type:,
+      async:,
+      submit_attempts:,
+      remaining_submit_attempts:,
+      flow_path:,
+      liveness_checking_required:,
+      vendor_request_time_in_ms:,
+      doc_type_supported:,
+      doc_auth_success:,
+      vendor:,
+      address_line2_present:,
+      zip_code:,
+      birth_year:,
+      issue_year:,
+      liveness_enabled:,
+      biometric_comparison_required:,
+      **extra,
+    )
   end
 
   # @param [String] step
@@ -5330,6 +5456,8 @@ module AnalyticsEvents
   # @param [String, nil] aaguid AAGUID value of WebAuthn device
   # @param [String[], nil] unknown_transports Array of unrecognized WebAuthn transports, intended to
   # be used in case of future specification changes.
+  # @param [:authentication, :account_creation, nil] webauthn_platform_recommended A/B test for
+  # recommended Face or Touch Unlock setup, if applicable.
   def multi_factor_auth_setup(
     success:,
     multi_factor_auth_method:,
@@ -5353,6 +5481,7 @@ module AnalyticsEvents
     attempts: nil,
     aaguid: nil,
     unknown_transports: nil,
+    webauthn_platform_recommended: nil,
     **extra
   )
     track_event(
@@ -5379,6 +5508,7 @@ module AnalyticsEvents
       attempts:,
       aaguid:,
       unknown_transports:,
+      webauthn_platform_recommended:,
       **extra,
     )
   end
@@ -5797,7 +5927,6 @@ module AnalyticsEvents
   # @param [String] pending_profile_pending_reasons Comma-separated list of the pending states
   # associated with the associated profile.
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  # @param [Boolean] password_matches_existing Whether the password is same as the user's current
   # The user changed the password for their account via the password reset flow
   def password_reset_password(
     success:,
@@ -5805,7 +5934,6 @@ module AnalyticsEvents
     profile_deactivated:,
     pending_profile_invalidated:,
     pending_profile_pending_reasons:,
-    password_matches_existing:,
     error_details: {},
     **extra
   )
@@ -5817,7 +5945,6 @@ module AnalyticsEvents
       profile_deactivated:,
       pending_profile_invalidated:,
       pending_profile_pending_reasons:,
-      password_matches_existing:,
       **extra,
     )
   end
@@ -6158,6 +6285,7 @@ module AnalyticsEvents
   # @param [String] phone_fingerprint HMAC fingerprint of the phone number formatted as E.164
   # @param ["authentication", "reauthentication", "confirmation"] context User session context
   # @param ["sms", "voice"] otp_delivery_preference Channel used to send the message
+  # @param [String,nil] step_name Name of step in user flow where rate limit occurred
   # @identity.idp.previous_event_name Throttler Rate Limit Triggered
   def rate_limit_reached(
     limiter_type:,
@@ -6165,6 +6293,7 @@ module AnalyticsEvents
     phone_fingerprint: nil,
     context: nil,
     otp_delivery_preference: nil,
+    step_name: nil,
     **extra
   )
     track_event(
@@ -6174,6 +6303,7 @@ module AnalyticsEvents
       phone_fingerprint:,
       context:,
       otp_delivery_preference:,
+      step_name:,
       **extra,
     )
   end
@@ -6411,8 +6541,12 @@ module AnalyticsEvents
   # @param [Boolean] request_signed
   # @param [String] matching_cert_serial
   # matches the request certificate in a successful, signed request
+  # @param [Boolean] certs_different Whether the matching cert changes when SHA256 validations
+  # are turned on in the saml_idp gem
   # @param [Hash] cert_error_details Details for errors that occurred because of an invalid
   # signature
+  # @param [String] sha256_matching_cert serial of the cert that matches when sha256 validations
+  # are turned on
   # @param [String] unknown_authn_contexts space separated list of unknown contexts
   def saml_auth(
     success:,
@@ -6430,6 +6564,8 @@ module AnalyticsEvents
     matching_cert_serial:,
     error_details: nil,
     cert_error_details: nil,
+    certs_different: nil,
+    sha256_matching_cert: nil,
     unknown_authn_contexts: nil,
     **extra
   )
@@ -6450,6 +6586,8 @@ module AnalyticsEvents
       request_signed:,
       matching_cert_serial:,
       cert_error_details:,
+      certs_different:,
+      sha256_matching_cert:,
       unknown_authn_contexts:,
       **extra,
     )
@@ -6462,6 +6600,8 @@ module AnalyticsEvents
   # @param [Boolean] force_authn
   # @param [Boolean] final_auth_request
   # @param [String] service_provider
+  # @param [Boolean] request_signed
+  # @param [String] matching_cert_serial
   # @param [String] unknown_authn_contexts space separated list of unknown contexts
   # @param [Boolean] user_fully_authenticated
   # An external request for SAML Authentication was received
@@ -6473,6 +6613,8 @@ module AnalyticsEvents
     force_authn:,
     final_auth_request:,
     service_provider:,
+    request_signed:,
+    matching_cert_serial:,
     unknown_authn_contexts:,
     user_fully_authenticated:,
     **extra
@@ -6486,6 +6628,8 @@ module AnalyticsEvents
       force_authn:,
       final_auth_request:,
       service_provider:,
+      request_signed:,
+      matching_cert_serial:,
       unknown_authn_contexts:,
       user_fully_authenticated:,
       **extra,
@@ -6863,16 +7007,20 @@ module AnalyticsEvents
   # reason for the consent screen being shown
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation
   # @param [Array] sp_session_requested_attributes Attributes requested by the service provider
+  # @param [String, nil] in_person_proofing_status In person proofing status
+  # @param [String, nil] doc_auth_result The doc auth result
   def user_registration_agency_handoff_page_visit(
-      ial2:,
-      service_provider_name:,
-      page_occurence:,
-      needs_completion_screen_reason:,
-      in_account_creation_flow:,
-      sp_session_requested_attributes:,
-      ialmax: nil,
-      **extra
-    )
+    ial2:,
+    service_provider_name:,
+    page_occurence:,
+    needs_completion_screen_reason:,
+    in_account_creation_flow:,
+    sp_session_requested_attributes:,
+    ialmax: nil,
+    in_person_proofing_status: nil,
+    doc_auth_result: nil,
+    **extra
+  )
     track_event(
       'User registration: agency handoff visited',
       ial2:,
@@ -6882,6 +7030,8 @@ module AnalyticsEvents
       needs_completion_screen_reason:,
       in_account_creation_flow:,
       sp_session_requested_attributes:,
+      in_person_proofing_status:,
+      doc_auth_result:,
       **extra,
     )
   end

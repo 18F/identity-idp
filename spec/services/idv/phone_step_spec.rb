@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::PhoneStep, allowed_extra_analytics: [:*] do
+RSpec.describe Idv::PhoneStep do
   let(:user) { create(:user) }
   let(:service_provider) do
     create(
