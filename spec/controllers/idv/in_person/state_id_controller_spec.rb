@@ -227,7 +227,8 @@ RSpec.describe Idv::InPerson::StateIdController do
 
           build_pii_before_state_id_update
 
-          # pii includes residential address attrs, which are the same as state id address attrs, on re-visiting state id pg
+          # since same_address_as_id was initially true, pii includes residential address attrs,
+          # which are the same as state id address attrs, on re-visiting state id pg
           expect(subject.user_session['idv/in_person'][:pii_from_user]).to include(
             identity_doc_address1:,
             identity_doc_address2:,

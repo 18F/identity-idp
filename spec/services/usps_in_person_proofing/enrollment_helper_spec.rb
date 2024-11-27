@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe UspsInPersonProofing::EnrollmentHelper do
   include UspsIppHelper
+  include UspsIppServiceHelper
 
   let(:usps_mock_fallback) { false }
   let(:user) { build(:user) }
@@ -380,32 +381,5 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
         expect(user.in_person_enrollments.first.sponsor_id).to eq(usps_eipp_sponsor_id)
       end
     end
-  end
-
-  def transliterated_without_change(value)
-    UspsInPersonProofing::Transliterator::TransliterationResult.new(
-      changed?: false,
-      original: value,
-      transliterated: value,
-      unsupported_chars: [],
-    )
-  end
-
-  def transliterated(value)
-    UspsInPersonProofing::Transliterator::TransliterationResult.new(
-      changed?: true,
-      original: value,
-      transliterated: "transliterated_#{value}",
-      unsupported_chars: [],
-    )
-  end
-
-  def transliterated_with_failure(value)
-    UspsInPersonProofing::Transliterator::TransliterationResult.new(
-      changed?: true,
-      original: value,
-      transliterated: "transliterated_failed_#{value}",
-      unsupported_chars: [':'],
-    )
   end
 end
