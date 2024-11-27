@@ -384,10 +384,9 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           allow(subject).to receive(:wait_timed_out?).and_return(true)
         end
 
-        it 'renders a technical difficulties message' do
+        it 'redirect to a Try again page' do
           get(:update)
-          expect(response).to have_http_status(:ok)
-          expect(response.body).to eq('Technical difficulties!!!')
+          expect(response).to redirect_to(idv_socure_errors_timeout_path)
         end
       end
 

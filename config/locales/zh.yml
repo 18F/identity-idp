@@ -1062,6 +1062,8 @@ idv.errors.incorrect_password: 你输入的密码不对。
 idv.errors.pattern_mismatch.ssn: 输入 9 位数的社会保障号码
 idv.errors.pattern_mismatch.zipcode: 输入 5 或 9 位的邮编
 idv.errors.pattern_mismatch.zipcode_five: 输入 5 位的邮编
+idv.errors.technical_difficulties: 我们目前遇到技术困难
+idv.errors.try_again_later: 请稍后再试。
 idv.failure.attempts_html.one: 您可以再试<strong>1次。</strong> 然后您必须等6个小时才能再试。
 idv.failure.attempts_html.other: 您可以再试<strong>%{count}次。</strong> 然后您必须等6个小时才能再试。
 idv.failure.button.try_online: 在网上再试一下

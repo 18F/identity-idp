@@ -1060,6 +1060,8 @@ idv.errors.incorrect_password: La contraseña que ingresó no es la correcta.
 idv.errors.pattern_mismatch.ssn: Ingrese un número de Seguro Social de nueve dígitos.
 idv.errors.pattern_mismatch.zipcode: Ingrese un código postal de 5 o 9 dígitos.
 idv.errors.pattern_mismatch.zipcode_five: Ingrese un código postal de 5 dígitos.
+idv.errors.technical_difficulties: Estamos teniendo problemas técnicos
+idv.errors.try_again_later: Vuelva a intentarlo más tarde.
 idv.failure.attempts_html.one: Puede intentarlo <strong>una vez más.</strong> Luego, debe esperar 6 horas antes de volver a intentarlo.
 idv.failure.attempts_html.other: Puede intentarlo <strong>%{count} veces más.</strong> Luego, debe esperar 6 horas antes de volver a intentarlo.
 idv.failure.button.try_online: Vuelva a intentarlo en línea
