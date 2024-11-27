@@ -21,7 +21,7 @@ RSpec.describe 'accounts/connected_accounts/selected_email/edit.html.erb' do
     @identity = identity
     @select_email_form = SelectEmailForm.new(user:, identity:)
     @can_add_email = true
-    @last_sign_in_email_address = user.email_addresses.first.id
+    @email_id = user.email_addresses.first.id
   end
 
   it 'renders introduction text' do
