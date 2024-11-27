@@ -56,7 +56,10 @@ RSpec.feature 'doc auth verify step', :js do
   it 'allows the user to enter in a new address' do
     expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
     expect(page).not_to have_content(t('forms.example'))
-    fill_out_address_form_ok
+    fill_in 'idv_form_address1', with: '123 Main St'
+    fill_in 'idv_form_city', with: 'Nowhere'
+    select 'Virginia', from: 'idv_form_state'
+    fill_in 'idv_form_zipcode', with: '66044'
 
     click_button t('forms.buttons.submit.update')
     expect(page).to have_current_path(idv_verify_info_path)
