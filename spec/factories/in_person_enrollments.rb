@@ -49,9 +49,5 @@ FactoryBot.define do
     trait :enhanced_ipp do
       sponsor_id { IdentityConfig.store.usps_eipp_sponsor_id }
     end
-
-    trait :with_nil_sponsor_id do
-      sponsor_id { nil }
-    end
   end
 end

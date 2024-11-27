@@ -203,11 +203,19 @@ module InPersonHelper
     pii_from_user[:identity_doc_city] = identity_doc_city
     pii_from_user[:identity_doc_address_state] = identity_doc_address_state
     pii_from_user[:identity_doc_zipcode] = identity_doc_zipcode
-    pii_from_user[:address1] = address1
-    pii_from_user[:address2] = address2
-    pii_from_user[:city] = city
-    pii_from_user[:state] = state
-    pii_from_user[:zipcode] = zipcode
+    if same_address_as_id == 'true'
+      pii_from_user[:address1] = identity_doc_address1
+      pii_from_user[:address2] = identity_doc_address2
+      pii_from_user[:city] = identity_doc_city
+      pii_from_user[:state] = identity_doc_address_state
+      pii_from_user[:zipcode] = identity_doc_zipcode
+    else
+      pii_from_user[:address1] = address1
+      pii_from_user[:address2] = address2
+      pii_from_user[:city] = city
+      pii_from_user[:state] = state
+      pii_from_user[:zipcode] = zipcode
+    end
   end
 
   def mark_in_person_enrollment_passed(user)

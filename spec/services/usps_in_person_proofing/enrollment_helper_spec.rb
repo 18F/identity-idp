@@ -43,7 +43,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
   end
 
   describe '#schedule_in_person_enrollment' do
-    context 'when the user does not have a establishing in person enrollment' do
+    context 'when the user does not have an establishing in person enrollment' do
       let(:user) { double('user', establishing_in_person_enrollment: nil) }
 
       it 'returns without error' do
@@ -332,9 +332,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
 
   describe '#create_usps_enrollment' do
     let(:usps_mock_fallback) { true }
-    let(:enrollment) { create(:in_person_enrollment, :with_service_provider) }
     let(:usps_eipp_sponsor_id) { '314159265359' }
-    let(:is_enhanced_ipp) { true }
     let(:pii) do
       Pii::Attributes.new_from_hash(
         Idp::Constants::MOCK_IDV_APPLICANT,
@@ -369,6 +367,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
           profile: nil,
         )
       end
+      let(:is_enhanced_ipp) { true }
 
       it 'creates an enhanced ipp enrollment' do
         expect(proofer).to receive(:request_enroll).with(applicant, is_enhanced_ipp)

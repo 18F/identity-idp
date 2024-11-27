@@ -279,6 +279,7 @@ FactoryBot.define do
           user: user,
         )
         create(:in_person_enrollment, :passed, user: user, profile: profile)
+        profile.in_person_verification_pending_at = nil
       end
     end
 
