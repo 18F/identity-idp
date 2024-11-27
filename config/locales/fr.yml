@@ -1049,6 +1049,8 @@ idv.errors.incorrect_password: Le mot de passe que vous avez saisi est incorrect
 idv.errors.pattern_mismatch.ssn: Saisissez un numéro de sécurité sociale à neuf chiffres
 idv.errors.pattern_mismatch.zipcode: Saisissez un code postal à 5 ou 9 chiffres
 idv.errors.pattern_mismatch.zipcode_five: Saisissez un code postal à 5 chiffres
+idv.errors.technical_difficulties: Nous rencontrons des difficultés techniques
+idv.errors.try_again_later: Veuillez réessayer ultérieurement.
 idv.failure.attempts_html.one: Vous avez encore <strong>un essai.</strong> Vous devrez ensuite attendre 6 heures avant de réessayer.
 idv.failure.attempts_html.other: Vous pouvez encore essayer <strong>%{count} fois de plus.</strong> Ensuite, vous devrez ensuite attendre 6 heures avant de réessayer.
 idv.failure.button.try_online: Réessayer en ligne

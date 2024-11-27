@@ -1,11 +1,14 @@
 <%= render(
       'idv/shared/error',
       type: :warning,
-      title: t('titles.failure.phone_verification'),
-      heading: t('idv.failure.phone.warning.heading'), # We are having technical difficulties
+      title: t('idv.errors.technical_difficulties'),
+      heading: t('idv.errors.technical_difficulties'),
       current_step: :verify_id,
     ) do %>
 
+  <p>
+    <%= t('idv.errors.try_again_later') %>
+  </p>
   <p>
     <%= t('idv.failure.warning.attempts_html', count: @remaining_submit_attempts) %>
   </p>
