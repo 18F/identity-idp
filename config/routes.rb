@@ -429,8 +429,6 @@ Rails.application.routes.draw do
       put '/in_person/ssn' => 'in_person/ssn#update'
       get '/in_person/verify_info' => 'in_person/verify_info#show'
       put '/in_person/verify_info' => 'in_person/verify_info#update'
-      get '/in_person/:step' => 'in_person#show', as: :in_person_step
-      put '/in_person/:step' => 'in_person#update'
 
       get '/by_mail/enter_code' => 'by_mail/enter_code#index', as: :verify_by_mail_enter_code
       post '/by_mail/enter_code' => 'by_mail/enter_code#create'
