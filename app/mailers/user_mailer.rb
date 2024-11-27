@@ -67,7 +67,8 @@ class UserMailer < ActionMailer::Base
       @token = token
       @request_id = request_id
       @gpo_verification_pending_profile = user.gpo_verification_pending_profile?
-      @hide_title = @gpo_verification_pending_profile
+      @in_person_verification_pending_profile = user.in_person_pending_profile?
+      @hide_title = @gpo_verification_pending_profile || @in_person_verification_pending_profile
       mail(to: email_address.email, subject: t('user_mailer.reset_password_instructions.subject'))
     end
   end

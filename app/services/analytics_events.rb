@@ -4708,6 +4708,101 @@ module AnalyticsEvents
     track_event(:idv_socure_shadow_mode_proofing_result_missing, **extra)
   end
 
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [String] exception
+  # @param [Boolean] billed
+  # @param [String] docv_transaction_token socure transaction token
+  # @param [Hash] customer_profile socure customer profile
+  # @param [String] reference_id socure interal id for transaction
+  # @param [Hash] reason_codes socure internal reason codes for accept reject decision
+  # @param [Hash] document_type type of socument submitted (Drivers Licenese, etc.)
+  # @param [Hash] decision accept or reject of given ID
+  # @param [String] user_id internal id of socure user
+  # @param [String] state state of ID
+  # @param [String] state_id_type type of state issued ID
+  # @param [Boolean] async whether or not this worker is running asynchronously
+  # @param [Integer] submit_attempts Times that user has tried submitting (previously called
+  # "attempts")
+  # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [Float] vendor_request_time_in_ms Time it took to upload images & get a response.
+  # @param [Boolean] doc_type_supported
+  # @param [Boolean] doc_auth_success
+  # @param [Boolean] liveness_checking_required Whether or not the selfie is required
+  # @param [Boolean] liveness_enabled Whether or not the selfie result is included in response
+  # @param [String] vendor which 2rd party we are using for doc auth
+  # @param [Boolean] address_line2_present wether or not we have an address that uses the 2nd line
+  # @param [String] zip_code zip code from state issued ID
+  # @param [String] birth_year Birth year from document
+  # @param [Integer] issue_year Year document was issued
+  # @param [Boolean] biometric_comparison_required does doc auth require biometirc
+  # The request for socure verification was sent
+  def idv_socure_verification_data_requested(
+    success:,
+    errors:,
+    async:,
+    customer_profile:,
+    reference_id:,
+    reason_codes:,
+    document_type:,
+    decision:,
+    state:,
+    state_id_type:,
+    submit_attempts:,
+    remaining_submit_attempts:,
+    liveness_checking_required:,
+    issue_year:,
+    vendor_request_time_in_ms:,
+    doc_type_supported:,
+    doc_auth_success:,
+    vendor:,
+    address_line2_present:,
+    zip_code:,
+    birth_year:,
+    liveness_enabled:,
+    biometric_comparison_required:,
+    docv_transaction_token: nil,
+    user_id: nil,
+    exception: nil,
+    flow_path: nil,
+    billed: nil,
+    **extra
+  )
+    track_event(
+      :idv_socure_verification_data_requested,
+      success:,
+      errors:,
+      exception:,
+      billed:,
+      docv_transaction_token:,
+      customer_profile:,
+      reference_id:,
+      reason_codes:,
+      document_type:,
+      decision:,
+      user_id:,
+      state:,
+      state_id_type:,
+      async:,
+      submit_attempts:,
+      remaining_submit_attempts:,
+      flow_path:,
+      liveness_checking_required:,
+      vendor_request_time_in_ms:,
+      doc_type_supported:,
+      doc_auth_success:,
+      vendor:,
+      address_line2_present:,
+      zip_code:,
+      birth_year:,
+      issue_year:,
+      liveness_enabled:,
+      biometric_comparison_required:,
+      **extra,
+    )
+  end
+
   # @param [String] step
   # @param [String] location
   # @param [Hash,nil] proofing_components User's current proofing components

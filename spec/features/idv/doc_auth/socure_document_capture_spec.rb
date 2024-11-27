@@ -66,7 +66,9 @@ RSpec.feature 'document capture step', :js do
 
       context 'successfully processes image on last attempt' do
         before do
+          allow(IdentityConfig.store).to receive(:ruby_workers_idv_enabled).and_return(false)
           DocAuth::Mock::DocAuthMockClient.reset!
+          allow(Analytics).to receive(:new).and_return(fake_analytics)
         end
 
         it 'proceeds to the next page with valid info' do
@@ -76,13 +78,15 @@ RSpec.feature 'document capture step', :js do
           socure_docv_upload_documents(
             docv_transaction_token: @docv_transaction_token,
           )
-
           visit idv_socure_document_capture_update_path
           expect(page).to have_current_path(idv_ssn_url)
 
           visit idv_socure_document_capture_path
 
           expect(page).to have_current_path(idv_session_errors_rate_limited_path)
+          expect(fake_analytics).to have_logged_event(
+            :idv_socure_verification_data_requested,
+          )
         end
       end
     end
@@ -119,6 +123,11 @@ RSpec.feature 'document capture step', :js do
   end
 
   context 'standard mobile flow' do
+    before do
+      allow(IdentityConfig.store).to receive(:ruby_workers_idv_enabled).and_return(false)
+      allow(Analytics).to receive(:new).and_return(fake_analytics)
+    end
+
     it 'proceeds to the next page with valid info' do
       perform_in_browser(:mobile) do
         visit_idp_from_oidc_sp_with_ial2
@@ -135,6 +144,9 @@ RSpec.feature 'document capture step', :js do
         expect(page).to have_current_path(idv_ssn_url)
 
         expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('NY')
+        expect(fake_analytics).to have_logged_event(
+          :idv_socure_verification_data_requested,
+        )
 
         fill_out_ssn_form_ok
         click_idv_continue
