@@ -28,7 +28,6 @@ module Idv
 
     def initialize_in_person_session
       user_session['idv/in_person'] ||= { pii_from_user: { uuid: current_user.uuid } }
-      # binding.pry
     end
 
     def set_usps_form_presenter
