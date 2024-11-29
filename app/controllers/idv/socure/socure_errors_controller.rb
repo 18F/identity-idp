@@ -9,6 +9,7 @@ module Idv
       include Idv::AbTestAnalyticsConcern
 
       before_action :confirm_step_allowed
+      before_action :set_in_person_available
 
       def timeout
         @remaining_submit_attempts = rate_limiter.remaining_count
@@ -49,7 +50,7 @@ module Idv
 
       def in_person_enabled?
         IdentityConfig.store.in_person_doc_auth_button_enabled &&
-          Idv::InPersonConfig.enabled_for_issuer?(document_capture_session.issuer)
+          Idv::InPersonConfig.enabled_for_issuer?(document_capture_session&.issuer)
       end
     end
   end
