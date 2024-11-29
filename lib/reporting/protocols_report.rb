@@ -17,6 +17,7 @@ module Reporting
     attr_reader :time_range
 
     SAML_AUTH_EVENT = 'SAML Auth'
+    SAML_AUTH_REQUEST_EVENT = 'SAML Auth Request'
     OIDC_AUTH_EVENT = 'OpenID Connect: authorization request'
 
     # @param [Range<Time>] time_range
@@ -352,7 +353,7 @@ module Reporting
 
     def saml_signature_query
       params = {
-        events: quote([SAML_AUTH_EVENT]),
+        events: quote([SAML_AUTH_REQUEST_EVENT]),
       }
 
       format(<<~QUERY, params)
@@ -362,7 +363,6 @@ module Reporting
           properties.event_properties.request_signed != 1 AS not_signed,
           isempty(properties.event_properties.matching_cert_serial) AND signed AS invalid_signature
         | filter name IN %{events}
-          AND properties.event_properties.success = 1
         | stats
           sum(not_signed) AS unsigned_count,
           sum(invalid_signature) AS invalid_signature_count
