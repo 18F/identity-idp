@@ -16,6 +16,13 @@ module Idv
         track_event(type: :timeout)
       end
 
+      def go_in_person
+        idv_session.opted_in_to_in_person_proofing = true
+        idv_session.flow_path = 'standard'
+        idv_session.skip_doc_auth_from_how_to_verify = true
+        redirect_to idv_document_capture_url(step: :idv_doc_auth)
+      end
+
       def self.step_info
         Idv::StepInfo.new(
           key: :socure_errors,
@@ -45,7 +52,7 @@ module Idv
       end
 
       def set_in_person_available
-        @idv_in_person_url = in_person_enabled? ? idv_in_person_url : nil
+        @idv_in_person_url = in_person_enabled? ? idv_socure_errors_in_person_path : nil
       end
 
       def in_person_enabled?

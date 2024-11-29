@@ -13,7 +13,7 @@ module Idv
     before_action :override_csp_to_allow_acuant
     before_action :set_usps_form_presenter
     before_action -> { redirect_to_correct_vendor(Idp::Constants::Vendors::LEXIS_NEXIS, false) },
-                  only: :show
+                  unless: -> { allow_direct_ipp? }
 
     def show
       analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)
