@@ -67,11 +67,10 @@ module Reporting
     end
 
     def facial_match_issuers
-      @facial_match_issuers ||= Profile.where(active: true).where(
-        'verified_at <= ?',
-        report_date.end_of_day,
-      ).where(idv_level: Profile::FACIAL_MATCH_IDV_LEVELS).
-        pluck(:initiating_service_provider_issuer).uniq
+      @facial_match_issuers ||= Profile.active.verified.facial_match.
+        where('verified_at <= ?', Time.zone.today.end_of_day).
+        distinct.
+        pluck(:initiating_service_provider_issuer)
     end
   end
 end

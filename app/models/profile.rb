@@ -52,6 +52,10 @@ class Profile < ApplicationRecord
     where.not(verified_at: nil)
   end
 
+  def self.facial_match
+    where(idv_level: FACIAL_MATCH_IDV_LEVELS)
+  end
+
   def self.fraud_rejection
     where.not(fraud_rejection_at: nil)
   end
