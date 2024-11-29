@@ -362,6 +362,7 @@ Rails.application.routes.draw do
       get '/socure/document_capture' => 'socure/document_capture#show'
       get '/socure/document_capture_update' => 'socure/document_capture#update', as: :socure_document_capture_update
       get '/socure/errors/timeout' => 'socure/socure_errors#timeout'
+      get '/socure/errors/in_person' => 'socure/socure_errors#go_in_person'
       # This route is included in SMS messages sent to users who start the IdV hybrid flow. It
       # should be kept short, and should not include underscores ("_").
       get '/documents' => 'hybrid_mobile/entry#show', as: :hybrid_mobile_entry
