@@ -57,15 +57,13 @@ module Reporting
     end
 
     def service_providers
-      return @service_providers if defined?(@service_providers)
-      issuers = ServiceProvider.active.external.pluck(:issuer).select do |issuer|
-        Reports::BaseReport.transaction_with_timeout do
-          SpReturnLog.where(billable: true, issuer: issuer).
-            exists?(['returned_at::date <= ?', report_date])
-        end
+      @service_providers ||= Reports::BaseReport.transaction_with_timeout do
+        issuers = ServiceProviderIdentity.
+          where('created_at <= ?', report_date).
+          distinct.
+          pluck(:service_provider)
+        ServiceProvider.where(issuer: issuers).active.external
       end
-      @service_providers = ServiceProvider.where(issuer: issuers)
-      @service_providers
     end
 
     def facial_match_issuers
