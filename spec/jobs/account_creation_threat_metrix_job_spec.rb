@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe AccountCreationThreatMetrixJob, type: :job do
   let(:user) { create(:user, :fully_registered) }
   let(:request_ip) { Faker::Internet.ip_v4_address }
+  let(:service_provider) { create(:service_provider) }
   let(:threatmetrix_session_id) { SecureRandom.uuid }
   let(:authentication_device_profiling) { :collect_only }
   let(:lexisnexis_threatmetrix_mock_enabled) { false }
@@ -28,6 +29,7 @@ RSpec.describe AccountCreationThreatMetrixJob, type: :job do
         user_id: user.id,
         threatmetrix_session_id: threatmetrix_session_id,
         request_ip: request_ip,
+        uuid_prefix: service_provider.app_id,
       )
     end
 
