@@ -49,6 +49,7 @@ module IdvHelper
 
   def click_idv_cancel
     click_on 'Cancel'
+    click_on 'Exit Login.gov'
   end
 
   def click_idv_exit
