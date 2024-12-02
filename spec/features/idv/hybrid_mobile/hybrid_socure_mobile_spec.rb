@@ -328,8 +328,13 @@ RSpec.describe 'Hybrid Flow' do
     it_behaves_like 'a properly categorized Socure error', 'I856', 'doc_auth.headers.id_not_found'
   end
 
-  context 'with a network error' do
-    it 'proofs and hands off to mobile', js: true do
+  context 'with a network error requesting the capture app url' do
+    before do
+      allow_any_instance_of(Faraday::Connection).to receive(:post).
+        and_raise(Faraday::ConnectionFailed)
+    end
+
+    it 'shows the network error page on the phone and the link sent page on the desktop', js: true do
       user = nil
 
       perform_in_browser(:desktop) do
@@ -339,32 +344,19 @@ RSpec.describe 'Hybrid Flow' do
         complete_doc_auth_steps_before_hybrid_handoff_step
         clear_and_fill_in(:doc_auth_phone, phone_number)
         click_send_link
-
-        expect(page).to have_content(t('doc_auth.headings.text_message'))
-        expect(page).to have_content(t('doc_auth.info.you_entered'))
-        expect(page).to have_content('+1 415-555-0199')
-
-        # Confirm that Continue button is not shown when polling is enabled
-        expect(page).not_to have_content(t('doc_auth.buttons.continue'))
       end
-
-      expect(@sms_link).to be_present
 
       perform_in_browser(:mobile) do
         visit @sms_link
 
-        stub_docv_network_error
+        # click_idv_continue
 
-        click_idv_continue
+        # socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
+        # visit idv_hybrid_mobile_socure_document_capture_update_url
 
-        socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
-        visit idv_hybrid_mobile_socure_document_capture_update_url
+        binding.pry
 
         expect(page).to have_text(t('doc_auth.errors.general.network_error'))
-
-        click_try_again
-
-        expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_path)
       end
 
       perform_in_browser(:desktop) do

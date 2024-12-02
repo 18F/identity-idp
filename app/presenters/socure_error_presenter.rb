@@ -136,17 +136,24 @@ class SocureErrorPresenter
   end
 
   def heading_string_for(error_code)
-    # i18n-tasks-use t('doc_auth.headers.unreadable_id')
-    # i18n-tasks-use t('doc_auth.headers.unaccepted_id_type')
-    # i18n-tasks-use t('doc_auth.headers.expired_id')
-    # i18n-tasks-use t('doc_auth.headers.low_resolution')
-    # i18n-tasks-use t('doc_auth.headers.underage')
-    # i18n-tasks-use t('doc_auth.headers.id_not_found')
-    I18n.t("doc_auth.headers.#{remapped_error(error_code)}")
+    if error_code == :network
+      t('doc_auth.errors.general.network_error') # ToDo: get a proper translation for this.
+    else
+      # i18n-tasks-use t('doc_auth.headers.unreadable_id')
+      # i18n-tasks-use t('doc_auth.headers.unaccepted_id_type')
+      # i18n-tasks-use t('doc_auth.headers.expired_id')
+      # i18n-tasks-use t('doc_auth.headers.low_resolution')
+      # i18n-tasks-use t('doc_auth.headers.underage')
+      # i18n-tasks-use t('doc_auth.headers.id_not_found')
+      # i18n-tasks-use t('doc_auth.headers.network_error')
+      I18n.t("doc_auth.headers.#{remapped_error(error_code)}")
+    end
   end
 
   def error_string_for(error_code)
-    if remapped_error(error_code) == 'underage' # special handling because it says 'Login.gov'
+    if error_code == :network 
+      t('idv.failure.gpo.rate_limited_heading') # ToDo: get a proper translation for this.
+    elsif remapped_error(error_code) == 'underage' # special handling because it says 'Login.gov'
       I18n.t('doc_auth.errors.underage', app_name: APP_NAME)
     else
       # i18n-tasks-use t('doc_auth.errors.unreadable_id')
@@ -154,6 +161,7 @@ class SocureErrorPresenter
       # i18n-tasks-use t('doc_auth.errors.expired_id')
       # i18n-tasks-use t('doc_auth.errors.low_resolution')
       # i18n-tasks-use t('doc_auth.errors.id_not_found')
+      # i18n-tasks-use t('doc_auth.errors.network_error')
       I18n.t("doc_auth.errors.#{remapped_error(error_code)}")
     end
   end

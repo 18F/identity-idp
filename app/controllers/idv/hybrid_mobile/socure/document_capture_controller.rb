@@ -73,8 +73,8 @@ module Idv
 
         def socure_errors_presenter(result)
           SocureErrorPresenter.new(
-            error_code: result.errors[:socure][:reason_codes]&.first,
-            remaining_attempts: remaining_attempts,
+            error_code: error_code_for(result),
+            remaining_attempts:,
             sp_name: decorated_sp_session&.sp_name || APP_NAME,
             hybrid_mobile: true,
           )
