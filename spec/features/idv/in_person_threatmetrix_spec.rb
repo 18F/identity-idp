@@ -207,9 +207,9 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true do
 
           visit_idp_from_sp_with_ial2(sp)
           expect(page).to have_current_path(idv_please_call_path)
-          page.visit('/verify/welcome')
+          page.visit(idv_welcome_path)
           expect(page).to have_current_path(idv_please_call_path)
-          page.visit('/verify/in_person/document_capture')
+          page.visit(idv_in_person_state_id_path)
           expect(page).to have_current_path(idv_please_call_path)
         end
 
@@ -222,7 +222,7 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true do
           expect do
             review_pass.run(args: [user.uuid], config:)
           end.to(change { ActionMailer::Base.deliveries.count }.by(1))
-          page.visit('/verify/welcome')
+          page.visit(idv_welcome_path)
           expect(page).to have_current_path(idv_activated_path)
         end
       end
@@ -306,9 +306,9 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true do
 
         visit_idp_from_sp_with_ial2(sp)
         expect(page).to have_current_path(idv_not_verified_path)
-        page.visit('/verify/welcome')
+        page.visit(idv_welcome_path)
         expect(page).to have_current_path(idv_not_verified_path)
-        page.visit('/verify/in_person/document_capture')
+        page.visit(idv_in_person_state_id_path)
         expect(page).to have_current_path(idv_not_verified_path)
       end
     end
