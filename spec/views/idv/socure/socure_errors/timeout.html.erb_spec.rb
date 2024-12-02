@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'idv/socure/socure_errors/warning.html.erb' do
+RSpec.describe 'idv/socure/socure_errors/timeout.html.erb' do
   include Devise::Test::ControllerHelpers
 
   let(:remaining_submit_attempts) { 5 }
@@ -37,7 +37,7 @@ RSpec.describe 'idv/socure/socure_errors/warning.html.erb' do
     it 'does not render link to in person flow' do
       expect(rendered).not_to have_link(
         t('idv.troubleshooting.options.verify_by_mail'),
-        href: idv_in_person_url,
+        href: idv_document_capture_url(step: :idv_doc_auth),
       )
     end
   end
