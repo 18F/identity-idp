@@ -340,11 +340,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         document_capture_session.socure_docv_capture_app_url = fake_capture_app_url
         document_capture_session.save
         get(:show)
-        expect(request_class).not_to have_received(:new).
-          with(
-            redirect_url: idv_socure_document_capture_update_url,
-            language: expected_language,
-          )
+        expect(request_class).not_to have_received(:new)
         expect(document_capture_session.socure_docv_capture_app_url).to eq(fake_capture_app_url)
       end
     end
