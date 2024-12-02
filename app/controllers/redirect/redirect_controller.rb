@@ -17,14 +17,8 @@ module Redirect
       }.compact
     end
 
-    def redirect_to_and_log(url, event: nil, tracker_method: analytics.method(:external_redirect))
-      if event
-        # Once all events have been moved to tracker methods, we can remove the event: param
-        analytics.track_event(event, redirect_url: url, **location_params)
-      else
-        tracker_method.call(redirect_url: url, **location_params)
-      end
-
+    def redirect_to_and_log(url, tracker_method: analytics.method(:external_redirect))
+      tracker_method.call(redirect_url: url, **location_params)
       redirect_url = UriService.add_params(url, partner_params)
       redirect_to(redirect_url, allow_other_host: true)
     end
