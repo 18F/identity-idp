@@ -26,7 +26,6 @@ module Idv
   # @attr resolution_successful [Boolean, nil]
   # @attr selfie_check_performed [Boolean, nil]
   # @attr selfie_check_required [Boolean, nil]
-  # @attr skip_doc_auth [Boolean, nil]
   # @attr skip_doc_auth_from_handoff [Boolean, nil]
   # @attr skip_doc_auth_from_how_to_verify [Boolean, nil]
   # @attr skip_hybrid_handoff [Boolean, nil]
@@ -69,7 +68,6 @@ module Idv
       resolution_successful
       selfie_check_performed
       selfie_check_required
-      skip_doc_auth
       skip_doc_auth_from_handoff
       skip_doc_auth_from_how_to_verify
       skip_hybrid_handoff
