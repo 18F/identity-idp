@@ -25,7 +25,7 @@ RSpec.describe AccountCreation::DeviceProfiling do
         request_ip: Faker::Internet.ip_v4_address,
         threatmetrix_session_id: threatmetrix_session_id,
         user_email: Faker::Internet.email,
-        uuid_prefix: service_provider&.app_id,
+        uuid_prefix: service_provider.app_id,
       )
     end
 
