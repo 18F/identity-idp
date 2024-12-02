@@ -68,7 +68,7 @@ module Reporting
 
     def facial_match_issuers
       @facial_match_issuers ||= Reports::BaseReport.transaction_with_timeout do
-        Profile.active.verified.facial_match.
+        Profile.active.verified.facial_match_opt_in.
           where('verified_at <= ?', report_date.end_of_day).
           distinct.
           pluck(:initiating_service_provider_issuer)
