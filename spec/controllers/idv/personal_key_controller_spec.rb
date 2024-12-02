@@ -502,7 +502,6 @@ RSpec.describe Idv::PersonalKeyController do
       end
 
       before do
-        ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
         allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
       end
 

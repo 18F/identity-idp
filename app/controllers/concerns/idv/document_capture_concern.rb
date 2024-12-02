@@ -8,7 +8,6 @@ module Idv
 
     def handle_stored_result(user: current_user, store_in_session: true)
       if stored_result&.success? && selfie_requirement_met?
-        save_proofing_components(user)
         extract_pii_from_doc(user, store_in_session: store_in_session)
         flash[:success] = t('doc_auth.headings.capture_complete')
         successful_response
@@ -16,16 +15,6 @@ module Idv
         extra = { stored_result_present: stored_result.present? }
         failure(I18n.t('doc_auth.errors.general.network_error'), extra)
       end
-    end
-
-    def save_proofing_components(user)
-      return unless user
-
-      component_attributes = {
-        document_check: doc_auth_vendor,
-        document_type: 'state_id',
-      }
-      ProofingComponent.create_or_find_by(user: user).update(component_attributes)
     end
 
     def successful_response
