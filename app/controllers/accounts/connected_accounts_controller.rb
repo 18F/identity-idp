@@ -8,7 +8,7 @@ module Accounts
     layout 'account_side_nav'
 
     def show
-      analytics.track_event(:connected_accounts_page_visited)
+      analytics.connected_accounts_page_visited
       @presenter = AccountShowPresenter.new(
         decrypted_pii: nil,
         sp_session_request_url: sp_session_request_url_with_updated_params,
