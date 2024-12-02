@@ -8,11 +8,17 @@ class ServiceProvider < ApplicationRecord
 
   # rubocop:disable Rails/HasManyOrHasOneDependent
   # In order to preserve unique user UUIDs, we do not want to destroy Identity records
-  # when we destroy a ServiceProvider
+  # when we destroy a ServiceProvider.
+  # We also do not want to destroy SpReturnLog records because they are used for
+  # billing.
   has_many :identities, inverse_of: :service_provider_record,
                         foreign_key: 'service_provider',
                         primary_key: 'issuer',
                         class_name: 'ServiceProviderIdentity'
+  has_many :sp_return_logs, inverse_of: :service_provider,
+                            foreign_key: 'issuer',
+                            primary_key: 'issuer',
+                            class_name: 'SpReturnLog'
   # rubocop:enable Rails/HasManyOrHasOneDependent
   has_many :in_person_enrollments,
            inverse_of: :service_provider,

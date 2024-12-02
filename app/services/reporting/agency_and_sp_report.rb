@@ -60,9 +60,8 @@ module Reporting
       return @service_providers if defined?(@service_providers)
       issuers = ServiceProvider.active.external.pluck(:issuer).select do |issuer|
         Reports::BaseReport.transaction_with_timeout do
-          SpReturnLog.where(billable: true, issuer: issuer).where(
-            'returned_at::date <= ?', report_date
-          ).exists?
+          SpReturnLog.where(billable: true, issuer: issuer).
+            exists?(['returned_at::date <= ?', report_date])
         end
       end
       @service_providers = ServiceProvider.where(issuer: issuers)

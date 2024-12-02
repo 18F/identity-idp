@@ -46,7 +46,7 @@ RSpec.describe Reporting::AgencyAndSpReport do
           :external,
           :active,
           agency:,
-          identities: [build(:service_provider_identity)],
+          sp_return_logs: [build(:sp_return_log, returned_at: report_date)],
         )
       end
       let(:expected_report) do
@@ -65,7 +65,7 @@ RSpec.describe Reporting::AgencyAndSpReport do
     end
 
     context 'when adding an inactive SP' do
-      let!(:inactive_sp) { create(:service_provider, :external, agency:, identities: []) }
+      let!(:inactive_sp) { create(:service_provider, :external, agency:, sp_return_logs: []) }
       let(:expected_report) do
         [
           header_row,
@@ -88,7 +88,7 @@ RSpec.describe Reporting::AgencyAndSpReport do
           :external,
           :active,
           agency:,
-          identities: [build(:service_provider_identity)],
+          sp_return_logs: [build(:sp_return_log, returned_at: report_date)],
         )
       end
 
@@ -121,7 +121,7 @@ RSpec.describe Reporting::AgencyAndSpReport do
           :active,
           :idv,
           agency:,
-          identities: [build(:service_provider_identity)],
+          sp_return_logs: [build(:sp_return_log, returned_at: report_date)],
         )
 
         # The report gets memoized, so we need to reconstruct it here:
@@ -138,7 +138,7 @@ RSpec.describe Reporting::AgencyAndSpReport do
           :idv,
           :active,
           agency:,
-          identities: [build(:service_provider_identity)],
+          sp_return_logs: [build(:sp_return_log, returned_at: report_date)],
         )
       end
 
@@ -149,7 +149,11 @@ RSpec.describe Reporting::AgencyAndSpReport do
           :idv,
           :active,
           agency:,
-          identities: [build(:service_provider_identity, service_provider: 'https://facialmatch.com')],
+          sp_return_logs: [build(
+            :sp_return_log,
+            issuer: 'https://facialmatch.com',
+            returned_at: report_date,
+          )],
         )
       end
 
