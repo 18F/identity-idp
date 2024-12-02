@@ -10,14 +10,12 @@ RSpec.describe Accounts::ConnectedAccountsController do
       stub_sign_in(user) if user
     end
 
-    context 'on page load' do
-      it 'shows and logs a visit' do
-        stub_analytics
+    it 'shows and logs a visit' do
+      stub_analytics
 
-        get :show
+      get :show
 
-        expect(@analytics).to have_logged_event(:connected_accounts_page_visited)
-      end
+      expect(@analytics).to have_logged_event(:connected_accounts_page_visited)
     end
   end
 end
