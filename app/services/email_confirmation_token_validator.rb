@@ -44,10 +44,9 @@ class EmailConfirmationTokenValidator
   attr_reader :success
 
   def extra_analytics_attributes
-    {
-      user_id: user&.uuid,
-      from_select_email_flow: from_select_email_flow,
-    }.compact
+    attributes = { user_id: user&.uuid }
+    attributes[:from_select_email_flow] = from_select_email_flow if !from_select_email_flow.nil?
+    attributes
   end
 
   def confirmation_token; end
