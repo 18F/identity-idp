@@ -36,4 +36,34 @@ describe('isExpectedWebauthnError', () => {
 
     expect(result).to.be.true();
   });
+
+  it('returns true for a NotReadableError Android credential manager incompatibility', () => {
+    const error = new DOMException(
+      'An unknown error occurred while talking to the credential manager.',
+      'NotReadableError',
+    );
+    const result = isExpectedWebauthnError(error);
+
+    expect(result).to.be.true();
+  });
+
+  it('returns false for NotSupportedError when not during verification', () => {
+    const error = new DOMException(
+      'The user agent does not support public key credentials.',
+      'NotSupportedError',
+    );
+    const result = isExpectedWebauthnError(error);
+
+    expect(result).to.be.false();
+  });
+
+  it('returns true for NotSupportedError during verification', () => {
+    const error = new DOMException(
+      'The user agent does not support public key credentials.',
+      'NotSupportedError',
+    );
+    const result = isExpectedWebauthnError(error, { isVerifying: true });
+
+    expect(result).to.be.true();
+  });
 });
