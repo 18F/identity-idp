@@ -668,6 +668,7 @@ doc_auth.info.verify_identity: We’ll ask for your ID, phone number, and other 
 doc_auth.info.verify_online_description: This option is better if you have a phone to take photos of your ID.
 doc_auth.info.verify_online_description_selfie: Choose this option if you have a phone to take pictures.
 doc_auth.info.verify_online_instruction: You’ll take photos of your ID to verify your identity fully online. Most users finish this process in one sitting.
+doc_auth.info.verify_online_instruction_mobile_no_selfie: You’ll take photos of your ID using a phone. Most users finish this process in one sitting.
 doc_auth.info.verify_online_instruction_selfie: You’ll take photos of your ID and a photo of yourself using a phone. Most users finish this process in one sitting.
 doc_auth.info.verify_online_link_text: Learn more about verifying online
 doc_auth.info.you_entered: 'You entered:'

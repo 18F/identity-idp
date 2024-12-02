@@ -679,6 +679,7 @@ doc_auth.info.verify_identity: Le pediremos su identificación, número de telé
 doc_auth.info.verify_online_description: Esta opción es mejor si tiene un teléfono para tomar fotografías de su identificación.
 doc_auth.info.verify_online_description_selfie: Elija esta opción si tiene un teléfono para tomar fotografías.
 doc_auth.info.verify_online_instruction: Tomará fotografías de su identificación para verificar su identidad por completo en línea. La mayoría de los usuarios logran terminar este proceso en una sola sesión.
+doc_auth.info.verify_online_instruction_mobile_no_selfie: Tomará fotografías de su identificación con un teléfono. La mayoría de los usuarios logran terminar este proceso en una sola sesión.
 doc_auth.info.verify_online_instruction_selfie: Tomará con un teléfono fotos de su identificación y una foto de usted. La mayoría de los usuarios logran terminar este proceso en una sola sesión.
 doc_auth.info.verify_online_link_text: Obtenga más información sobre la verificación en línea
 doc_auth.info.you_entered: 'Usted ingresó:'

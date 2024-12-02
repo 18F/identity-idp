@@ -679,6 +679,7 @@ doc_auth.info.verify_identity: 我们会要求获得你的身份识别、电话�
 doc_auth.info.verify_online_description: 如果你没有移动设备或者无法轻松拍身份证件照片，这一选项更好。
 doc_auth.info.verify_online_description_selfie: 如果你有手机可以拍照，请选择该选项。
 doc_auth.info.verify_online_instruction: 你将拍身份证件的照片来完全在网上验证身份。大多数用户都能轻松完成这样流程。
+doc_auth.info.verify_online_instruction_mobile_no_selfie: 你将使用手机拍摄你的身份证件照片。大多数用户一次就能完成这个流程。
 doc_auth.info.verify_online_instruction_selfie: 你将用手机拍摄身份证件和本人的照片。大多数用户都能轻松完成这一流程。
 doc_auth.info.verify_online_link_text: 对网上验证获得更多了解
 doc_auth.info.you_entered: 你输入了：
