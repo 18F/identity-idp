@@ -7,6 +7,9 @@ class SelectEmailForm
   attr_reader :user, :identity, :selected_email_id
 
   validate :validate_owns_selected_email
+  validates :selected_email_id, presence: {
+    message: proc { I18n.t('email_address.not_found') },
+  }
 
   def initialize(user:, identity: nil)
     @user = user
