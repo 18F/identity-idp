@@ -543,6 +543,7 @@ doc_auth.errors.general.fallback_field_level: Veuillez ajouter une nouvelle imag
 doc_auth.errors.general.multiple_back_id_failures: Nous n’avons pas pu vérifier le verso de votre pièce d’identité. Essayez de prendre une nouvelle photo.
 doc_auth.errors.general.multiple_front_id_failures: Nous n’avons pas pu vérifier le recto de votre pièce d’identité. Essayez de prendre une nouvelle photo.
 doc_auth.errors.general.network_error: Nous rencontrons actuellement des difficultés techniques de notre côté. Veuillez réessayer d’envoyer vos images ultérieurement.
+doc_auth.errors.general.new_network_error: Veuillez réessayer ultérieurement.
 doc_auth.errors.general.no_liveness: Essayez de prendre de nouvelles photos.
 doc_auth.errors.general.selfie_failure: Nous n’avons pas pu vérifier votre photo. Essayez de prendre une nouvelle photo.
 doc_auth.errors.general.selfie_failure_help_link_text: Consultez plus de conseils pour prendre des photos claires
@@ -579,6 +580,7 @@ doc_auth.forms.choose_file_html: Faites glisser le fichier ici ou <lg-underline>
 doc_auth.forms.doc_success: Nous avons vérifié vos informations
 doc_auth.forms.selected_file: Fichier sélectionné
 doc_auth.headers.expired_id: Votre pièce d’identité est peut-être périmée
+doc_auth.headers.general.network_error: Nous rencontrons des difficultés techniques
 doc_auth.headers.id_not_found: Nous n’avons pas trouvé votre pièce d’identité
 doc_auth.headers.low_resolution: Il se peut que la caméra de votre appareil ne soit pas prise en charge
 doc_auth.headers.unaccepted_id_type: Utiliser un permis de conduire ou une carte d’identité d’un État

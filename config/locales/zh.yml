@@ -554,6 +554,7 @@ doc_auth.errors.general.fallback_field_level: 请添加一个新图像
 doc_auth.errors.general.multiple_back_id_failures: 我们无法验证你身份证件的背面。尝试重拍一张。
 doc_auth.errors.general.multiple_front_id_failures: 我们无法验证你身份证件的正面。尝试重拍一张。
 doc_auth.errors.general.network_error: 我们这边有技术困难。请稍后再提交你的图像。
+doc_auth.errors.general.new_network_error: 请稍后再试。
 doc_auth.errors.general.no_liveness: 尝试重拍。
 doc_auth.errors.general.selfie_failure: 我们无法验证你自己的照片。请重拍一张。
 doc_auth.errors.general.selfie_failure_help_link_text: 查看更多有关拍摄清晰照片的提示
@@ -590,6 +591,7 @@ doc_auth.forms.choose_file_html: 将文件拖到此处或者<lg-underline>从文
 doc_auth.forms.doc_success: 我们验证了你的信息
 doc_auth.forms.selected_file: 被选文件
 doc_auth.headers.expired_id: 你的身份证件可能已过期
+doc_auth.headers.general.network_error: 我们目前遇到技术困难
 doc_auth.headers.id_not_found: 我们找不到你的身份证件
 doc_auth.headers.low_resolution: 你设备的相机可能不受支持
 doc_auth.headers.unaccepted_id_type: 使用驾驶执照或州颁发的身份证件

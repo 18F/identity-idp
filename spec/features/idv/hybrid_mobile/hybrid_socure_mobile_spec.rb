@@ -349,14 +349,8 @@ RSpec.describe 'Hybrid Flow' do
       perform_in_browser(:mobile) do
         visit @sms_link
 
-        # click_idv_continue
-
-        # socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
-        # visit idv_hybrid_mobile_socure_document_capture_update_url
-
-        binding.pry
-
-        expect(page).to have_text(t('doc_auth.errors.general.network_error'))
+        expect(page).to have_text(t('doc_auth.headers.general.network_error'))
+        expect(page).to have_text(t('doc_auth.errors.general.new_network_error'))
       end
 
       perform_in_browser(:desktop) do

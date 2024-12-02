@@ -543,6 +543,7 @@ doc_auth.errors.general.fallback_field_level: Please add a new image
 doc_auth.errors.general.multiple_back_id_failures: We couldn’t verify the back of your ID. Try taking a new picture.
 doc_auth.errors.general.multiple_front_id_failures: We couldn’t verify the front of your ID. Try taking a new picture.
 doc_auth.errors.general.network_error: We are having technical difficulties on our end. Please try to submit your images again later.
+doc_auth.errors.general.new_network_error: Try again later.
 doc_auth.errors.general.no_liveness: Try taking new pictures.
 doc_auth.errors.general.selfie_failure: We couldn’t verify the photo of yourself. Try taking a new picture.
 doc_auth.errors.general.selfie_failure_help_link_text: Review more tips for taking clear photos
@@ -579,6 +580,7 @@ doc_auth.forms.choose_file_html: Drag file here or <lg-underline>choose from fol
 doc_auth.forms.doc_success: We verified your information
 doc_auth.forms.selected_file: Selected file
 doc_auth.headers.expired_id: Your ID may have expired
+doc_auth.headers.general.network_error: We are having technical difficulties
 doc_auth.headers.id_not_found: We couldn’t find your ID.
 doc_auth.headers.low_resolution: Your device’s camera may not be supported.
 doc_auth.headers.unaccepted_id_type: Use a driver’s license or a state ID

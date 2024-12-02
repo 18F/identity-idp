@@ -554,6 +554,7 @@ doc_auth.errors.general.fallback_field_level: Agregue una imagen nueva
 doc_auth.errors.general.multiple_back_id_failures: No pudimos verificar el reverso de su identificación. Intente tomar una nueva foto.
 doc_auth.errors.general.multiple_front_id_failures: No pudimos verificar el frente de su identificación. Intente tomar una nueva foto.
 doc_auth.errors.general.network_error: Estamos teniendo problemas técnicos. Intente enviar sus imágenes de nuevo más tarde.
+doc_auth.errors.general.new_network_error: Vuelva a intentarlo más tarde.
 doc_auth.errors.general.no_liveness: Intente tomar nuevas fotos.
 doc_auth.errors.general.selfie_failure: No pudimos verificar su foto. Intente tomar una nueva foto.
 doc_auth.errors.general.selfie_failure_help_link_text: Consulte más consejos para tomar fotos claras
@@ -590,6 +591,7 @@ doc_auth.forms.choose_file_html: Arrastrar el archivo aquí o <lg-underline>sele
 doc_auth.forms.doc_success: Verificamos su información
 doc_auth.forms.selected_file: Archivo seleccionado
 doc_auth.headers.expired_id: Su identificación puede estar vencida
+doc_auth.headers.general.network_error: Estamos teniendo problemas técnicos
 doc_auth.headers.id_not_found: No pudimos encontrar su identificación
 doc_auth.headers.low_resolution: Es posible que la cámara de su dispositivo no sea compatible
 doc_auth.headers.unaccepted_id_type: Use una licencia de conducir o una identificación estatal
