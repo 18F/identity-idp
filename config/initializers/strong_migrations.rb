@@ -15,13 +15,13 @@ end
 StrongMigrations.add_check do |method, (table, column, type, _options)|
   is_excluded = IdpStrongMigrations::EXCLUDED_COLUMNS.include?([table, column])
   if !is_excluded && method == :add_column && column.to_s.ends_with?('_id') && type == :integer
-    stop! "
+    stop! """
     Columns referencing another table should use :bigint instead of integer.
 
     add_column #{table.inspect}, #{column.inspect}, :bigint
     OR
     t.bigint #{column.inspect}
-    "
+    """
   end
 end
 
