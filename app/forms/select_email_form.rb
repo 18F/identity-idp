@@ -30,7 +30,7 @@ class SelectEmailForm
   private
 
   def extra_analytics_attributes
-    { selected_email_id: @selected_email_id }
+    { selected_email_id: }
   end
 
   def validate_owns_selected_email
