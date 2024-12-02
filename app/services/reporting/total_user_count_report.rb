@@ -83,33 +83,30 @@ module Reporting
 
     def verified_legacy_idv_user_count
       Reports::BaseReport.transaction_with_timeout do
-        Profile.where(active: true).where(
-          'verified_at <= ?',
-          end_date,
+        Profile.active.where(
+          'verified_at <= ?', end_date
         ).count - verified_facial_match_user_count
       end
     end
 
     def verified_facial_match_user_count
       @verified_facial_match_user_count ||= Reports::BaseReport.transaction_with_timeout do
-        Profile.where(active: true).where(
-          'verified_at <= ?',
-          end_date,
-        ).where(idv_level: Profile::FACIAL_MATCH_IDV_LEVELS).count
+        Profile.active.facial_match_opt_in.where(
+          'verified_at <= ?', end_date
+        ).count
       end
     end
 
     def new_verified_legacy_idv_user_count
       Reports::BaseReport.transaction_with_timeout do
-        Profile.where(active: true).where(verified_at: current_month).count -
+        Profile.active.where(verified_at: current_month).count -
           new_verified_facial_match_user_count
       end
     end
 
     def new_verified_facial_match_user_count
       @new_verified_facial_match_user_count ||= Reports::BaseReport.transaction_with_timeout do
-        Profile.where(active: true).where(verified_at: current_month).
-          where(idv_level: Profile::FACIAL_MATCH_IDV_LEVELS).count
+        Profile.active.facial_match_opt_in.where(verified_at: current_month).count
       end
     end
 
@@ -121,15 +118,16 @@ module Reporting
 
     def annual_verified_legacy_idv_user_count
       Reports::BaseReport.transaction_with_timeout do
-        Profile.where(active: true).where(verified_at: annual_start_date..annual_end_date).count -
+        Profile.active.where(verified_at: annual_start_date..annual_end_date).count -
           annual_verified_facial_match_user_count
       end
     end
 
     def annual_verified_facial_match_user_count
       @annual_verified_facial_match_user_count ||= Reports::BaseReport.transaction_with_timeout do
-        Profile.where(active: true).where(verified_at: annual_start_date..annual_end_date).
-          where(idv_level: Profile::FACIAL_MATCH_IDV_LEVELS).count
+        Profile.active.facial_match_opt_in.where(
+          verified_at: annual_start_date..annual_end_date,
+        ).count
       end
     end
 
