@@ -47,7 +47,7 @@ class EmailConfirmationTokenValidator
     {
       user_id: user&.uuid,
       from_select_email_flow: from_select_email_flow,
-    }
+    }.compact
   end
 
   def confirmation_token; end

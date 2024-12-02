@@ -16,7 +16,7 @@ RSpec.describe EmailConfirmationTokenValidator do
         expect(result.success?).to eq(false)
         expect(subject.email_address_already_confirmed?).to eq(false)
         expect(subject.confirmation_period_expired?).to eq(false)
-        expect(result.extra).to eq(user_id: email_address.user.uuid, from_select_email_flow: false)
+        expect(result.extra).to eq(user_id: email_address.user.uuid)
       end
     end
 
@@ -33,7 +33,7 @@ RSpec.describe EmailConfirmationTokenValidator do
         expect(result.errors).to be_empty
         expect(subject.email_address_already_confirmed?).to eq(false)
         expect(subject.confirmation_period_expired?).to eq(false)
-        expect(result.extra).to eq(user_id: email_address.user.uuid, from_select_email_flow: false)
+        expect(result.extra).to eq(user_id: email_address.user.uuid)
       end
     end
 
@@ -50,7 +50,7 @@ RSpec.describe EmailConfirmationTokenValidator do
         expect(result.errors).to eq(confirmation_token: [t('errors.messages.expired')])
         expect(subject.email_address_already_confirmed?).to eq(false)
         expect(subject.confirmation_period_expired?).to eq(true)
-        expect(result.extra).to eq(user_id: email_address.user.uuid, from_select_email_flow: false)
+        expect(result.extra).to eq(user_id: email_address.user.uuid)
       end
     end
 
@@ -67,7 +67,7 @@ RSpec.describe EmailConfirmationTokenValidator do
         expect(result.errors).to eq(confirmation_token: [t('errors.messages.already_confirmed')])
         expect(subject.email_address_already_confirmed?).to eq(true)
         expect(subject.confirmation_period_expired?).to eq(false)
-        expect(result.extra).to eq(user_id: email_address.user.uuid, from_select_email_flow: false)
+        expect(result.extra).to eq(user_id: email_address.user.uuid)
       end
     end
 
@@ -82,7 +82,7 @@ RSpec.describe EmailConfirmationTokenValidator do
         expect(result.errors).to eq(confirmation_token: [t('errors.messages.not_found')])
         expect(subject.email_address_already_confirmed?).to eq(false)
         expect(subject.confirmation_period_expired?).to eq(false)
-        expect(result.extra).to eq(user_id: nil, from_select_email_flow: false)
+        expect(result.extra).to be_blank
       end
     end
 
