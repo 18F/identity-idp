@@ -7151,14 +7151,11 @@ module AnalyticsEvents
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] user_id
-  # @param [Boolean] from_select_email_flow Whether email was added as part of partner email
-  # selection.
   def user_registration_email_confirmation(
     success:,
     errors:,
     error_details: nil,
     user_id: nil,
-    from_select_email_flow: nil,
     **extra
   )
     track_event(
@@ -7167,7 +7164,6 @@ module AnalyticsEvents
       errors:,
       error_details:,
       user_id:,
-      from_select_email_flow:,
       **extra,
     )
   end
