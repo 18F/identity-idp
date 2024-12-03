@@ -361,6 +361,8 @@ Rails.application.routes.draw do
       put '/document_capture' => 'document_capture#update'
       get '/socure/document_capture' => 'socure/document_capture#show'
       get '/socure/document_capture_update' => 'socure/document_capture#update', as: :socure_document_capture_update
+      get '/socure/errors/timeout' => 'socure/socure_errors#timeout'
+      get '/socure/errors/in_person' => 'socure/socure_errors#go_in_person'
       # This route is included in SMS messages sent to users who start the IdV hybrid flow. It
       # should be kept short, and should not include underscores ("_").
       get '/documents' => 'hybrid_mobile/entry#show', as: :hybrid_mobile_entry
@@ -382,9 +384,10 @@ Rails.application.routes.draw do
       put '/welcome' => 'welcome#update'
       get '/phone' => 'phone#new'
       put '/phone' => 'phone#create'
-      get '/phone/errors/warning' => 'phone_errors#warning'
-      get '/phone/errors/jobfail' => 'phone_errors#jobfail'
       get '/phone/errors/failure' => 'phone_errors#failure'
+      get '/phone/errors/jobfail' => 'phone_errors#jobfail'
+      get '/phone/errors/timeout' => 'phone_errors#timeout'
+      get '/phone/errors/warning' => 'phone_errors#warning'
       post '/phone/resend_code' => 'resend_otp#create', as: :resend_otp
       get '/phone_confirmation' => 'otp_verification#show', as: :otp_verification
       put '/phone_confirmation' => 'otp_verification#update', as: :nil
@@ -392,7 +395,6 @@ Rails.application.routes.draw do
       put '/enter_password' => 'enter_password#create'
       get '/session/errors/warning' => 'session_errors#warning'
       get '/session/errors/state_id_warning' => 'session_errors#state_id_warning'
-      get '/phone/errors/timeout' => 'phone_errors#timeout'
       get '/session/errors/failure' => 'session_errors#failure'
       get '/session/errors/ssn_failure' => 'session_errors#ssn_failure'
       get '/session/errors/exception' => 'session_errors#exception'
