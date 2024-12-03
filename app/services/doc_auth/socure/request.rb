@@ -89,9 +89,6 @@ module DocAuth
           conn.request :instrumentation, name: 'request_metric.faraday'
           conn.adapter :net_http
           conn.options.timeout = timeout
-          conn.options.read_timeout = timeout
-          conn.options.open_timeout = timeout
-          conn.options.write_timeout = timeout
         end
       end
 

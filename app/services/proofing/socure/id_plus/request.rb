@@ -56,9 +56,6 @@ module Proofing
             f.response :raise_error
             f.response :json
             f.options.timeout = config.timeout
-            f.options.read_timeout = config.timeout
-            f.options.open_timeout = config.timeout
-            f.options.write_timeout = config.timeout
           end
 
           Response.new(
