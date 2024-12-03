@@ -56,6 +56,7 @@ RSpec.describe Idv::HybridMobile::EntryController do
         {}
       end
       let(:idv_vendor) { Idp::Constants::Vendors::MOCK }
+      let(:vendor_switching_enabled) { true }
       let(:lexis_nexis_percent) { 100 }
       let(:acr_values) do
         [
@@ -74,6 +75,8 @@ RSpec.describe Idv::HybridMobile::EntryController do
         allow(controller).to receive(:session).and_return(session)
         allow(controller).to receive(:resolved_authn_context_result).
           and_return(resolved_authn_context)
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_switching_enabled).
+          and_return(vendor_switching_enabled)
         allow(IdentityConfig.store).to receive(:doc_auth_vendor_lexis_nexis_percent).
           and_return(lexis_nexis_percent)
         get :show, params: { 'document-capture-session': session_uuid }
@@ -113,6 +116,7 @@ RSpec.describe Idv::HybridMobile::EntryController do
 
         context 'lexis nexis is disabled' do
           let(:idv_vendor) { nil }
+          let(:vendor_switching_enabled) { false }
           let(:lexis_nexis_percent) { 0 }
 
           before do

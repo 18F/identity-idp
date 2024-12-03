@@ -117,6 +117,7 @@ RSpec.describe Idv::DocumentCaptureController do
     end
 
     let(:idv_vendor) { Idp::Constants::Vendors::LEXIS_NEXIS }
+    let(:vendor_switching_enabled) { true }
 
     before do
       allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(
@@ -124,6 +125,9 @@ RSpec.describe Idv::DocumentCaptureController do
       )
       allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(
         idv_vendor,
+      )
+      allow(IdentityConfig.store).to receive(:doc_auth_vendor_switching_enabled).and_return(
+        vendor_switching_enabled,
       )
     end
 

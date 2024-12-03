@@ -4,6 +4,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
   include FlowPolicyHelper
 
   let(:idv_vendor) { Idp::Constants::Vendors::SOCURE }
+  let(:vendor_switching_enabled) { true }
   let(:fake_socure_endpoint) { 'https://fake-socure.test' }
   let(:user) { create(:user) }
   let(:doc_auth_success) { true }
@@ -33,6 +34,8 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       and_return(fake_socure_endpoint)
     allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(idv_vendor)
     allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(idv_vendor)
+    allow(IdentityConfig.store).to receive(:doc_auth_vendor_switching_enabled).
+      and_return(vendor_switching_enabled)
     allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
 
     allow(subject).to receive(:stored_result).and_return(stored_result)
