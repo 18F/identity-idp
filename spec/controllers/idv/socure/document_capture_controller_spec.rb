@@ -155,6 +155,12 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           )
       end
 
+      it 'logs correct info' do
+        expect(@analytics).to have_logged_event(
+          :idv_socure_document_request_submitted,
+        )
+      end
+
       it 'sets DocumentCaptureSession socure_docv_capture_app_url value' do
         document_capture_session.reload
         expect(document_capture_session.socure_docv_capture_app_url).to eq(socure_capture_app_url)

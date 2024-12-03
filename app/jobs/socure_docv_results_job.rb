@@ -47,16 +47,6 @@ class SocureDocvResultsJob < ApplicationJob
       ).except(:attention_with_barcode, :selfie_live, :selfie_quality_good,
                :selfie_status),
     )
-    analytics.idv_socure_document_request_submitted(
-      **docv_result_response.to_h.merge(
-        docv_transaction_token: document_capture_session.socure_docv_transaction_token,
-        submit_attempts: rate_limiter&.attempts,
-        remaining_submit_attempts: rate_limiter&.remaining_count,
-        vendor_request_time_in_ms:,
-        async:,
-      ).except(:attention_with_barcode, :selfie_live, :selfie_quality_good,
-               :selfie_status).compact,
-    )
   end
 
   def socure_document_verification_result
