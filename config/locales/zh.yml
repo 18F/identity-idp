@@ -1880,6 +1880,10 @@ user_mailer.email_deleted.header: 一个电邮地址被从你的 %{app_name} 用
 user_mailer.email_deleted.help_html: 如果你没有想删除这一电邮地址，请访问 %{app_name_html} %{help_link_html} 或者 %{contact_link_html}。
 user_mailer.email_deleted.subject: 电邮地址已删除
 user_mailer.help_link_text: 帮助中心
+user_mailer.idv_please_call.body.contact_message_html: 打电话给 <strong>%{contact_number}</strong> 并向他们提供错误 代码 <strong>%{support_code}</strong>。
+user_mailer.idv_please_call.body.intro_html: 请在 <strong>%{date}</strong> 之前给我们的联系中心打电话，以继续验证你的身份。
+user_mailer.idv_please_call.header: 请给我们打个电话
+user_mailer.idv_please_call.subject: 致电 %{app_name} 继续进行身份验证
 user_mailer.in_person_completion_survey.body.cta.callout: 点击下面的按钮来开始
 user_mailer.in_person_completion_survey.body.cta.label: 填写我们的意见调查
 user_mailer.in_person_completion_survey.body.greeting: 你好，
@@ -1905,10 +1909,6 @@ user_mailer.in_person_failed.intro: 你的身份于 %{date}在 %{location} 邮�
 user_mailer.in_person_failed.subject: 你的身份未能亲身被验证。
 user_mailer.in_person_failed.verifying_identity: '验证你的身份时:'
 user_mailer.in_person_failed.verifying_step_not_expired: 你的州政府颁发的身份证件或驾照绝对没有过期。我们目前不接受任何其他形式的身份证件，比如护照和军队身份证件。
-user_mailer.in_person_please_call.body.contact_message_html: 打电话给 <strong>%{contact_number}</strong> 并向他们提供错误 代码 <strong>%{support_code}</strong>。
-user_mailer.in_person_please_call.body.intro_html: 请在 <strong>%{date}</strong> 之前给我们的联系中心打电话，以继续验证你的身份。
-user_mailer.in_person_please_call.header: 请给我们打个电话
-user_mailer.in_person_please_call.subject: 致电 %{app_name} 继续进行身份验证
 user_mailer.in_person_ready_to_verify_reminder.greeting: 你好，
 user_mailer.in_person_ready_to_verify_reminder.heading.one: 你距离亲身验证身份截止日期还有 %{count} 天
 user_mailer.in_person_ready_to_verify_reminder.heading.other: 你距离亲身验证身份截止日期还有 %{count} 天

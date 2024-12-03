@@ -1867,6 +1867,10 @@ user_mailer.email_deleted.header: Une adresse e-mail a été supprimée de votre
 user_mailer.email_deleted.help_html: Si vous ne souhaitez pas supprimer cette adresse e-mail, veuillez visiter le %{help_link_html} de %{app_name_html} ou %{contact_link_html}.
 user_mailer.email_deleted.subject: Adresse e-mail supprimée
 user_mailer.help_link_text: Centre d’aide
+user_mailer.idv_please_call.body.contact_message_html: Appelez le <strong>%{contact_number}</strong> et indiquez le code d’erreur <strong>%{support_code}</strong>.
+user_mailer.idv_please_call.body.intro_html: Appelez notre centre de contact avant le <strong>%{date}</strong> pour continuer à vérifier votre identité.
+user_mailer.idv_please_call.header: S’il vous plaît, appelez-nous
+user_mailer.idv_please_call.subject: Appeler %{app_name} afin de poursuivre la vérification de votre identité
 user_mailer.in_person_completion_survey.body.cta.callout: Cliquez sur le bouton ci-dessous pour commencer.
 user_mailer.in_person_completion_survey.body.cta.label: Répondez à notre enquête
 user_mailer.in_person_completion_survey.body.greeting: Bonjour,
@@ -1892,10 +1896,6 @@ user_mailer.in_person_failed.intro: Votre identité n’a pas pu être vérifié
 user_mailer.in_person_failed.subject: Votre identité n’a pas pu être vérifiée en personne
 user_mailer.in_person_failed.verifying_identity: 'Lors de la vérification de votre identité :'
 user_mailer.in_person_failed.verifying_step_not_expired: Votre carte d’identité délivrée par l’État ou votre permis de conduire ne doit pas être périmé. Nous n’acceptons actuellement aucune autre pièce d’identité, comme les passeports et les cartes d’identité militaires.
-user_mailer.in_person_please_call.body.contact_message_html: Appelez le <strong>%{contact_number}</strong> et indiquez le code d’erreur <strong>%{support_code}</strong>.
-user_mailer.in_person_please_call.body.intro_html: Appelez notre centre de contact avant le <strong>%{date}</strong> pour continuer à vérifier votre identité.
-user_mailer.in_person_please_call.header: S’il vous plaît, appelez-nous
-user_mailer.in_person_please_call.subject: Appeler %{app_name} afin de poursuivre la vérification de votre identité
 user_mailer.in_person_ready_to_verify_reminder.greeting: Bonjour,
 user_mailer.in_person_ready_to_verify_reminder.heading.one: Il vous reste %{count} jour pour vérifier votre identité en personne
 user_mailer.in_person_ready_to_verify_reminder.heading.other: Il vous reste %{count} jours pour vérifier votre identité en personne
