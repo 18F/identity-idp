@@ -15,7 +15,6 @@
     <%= f.input(
           :selected_email_id,
           as: :radio_buttons,
-          required: true,
           label: false,
           wrapper_html: {
             aria: {
@@ -27,7 +26,7 @@
             [
               email.email,
               email.id,
-              checked: email.id == @email_id,
+              checked: email.id == @identity.email_address_id,
             ]
           end,
         ) %>

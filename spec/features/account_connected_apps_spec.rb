@@ -91,7 +91,7 @@ RSpec.describe 'Account connected applications' do
       click_link(t('help_text.requested_attributes.change_email_link'))
     end
 
-    expect(page).to have_field(user.email) { |field| field[:checked] }
+    expect(page).to have_field(user.email) { |field| !field[:checked] }
 
     choose user.email_addresses.last.email
     click_on t('help_text.requested_attributes.select_email_link')
