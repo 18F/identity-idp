@@ -34,12 +34,16 @@ module Idv
           redirect_url: idv_socure_document_capture_update_url,
           language: I18n.locale,
         )
-
-        document_response = document_request.fetch
+        timer = JobHelpers::Timer.new
+        document_response = timer.time('vendor_request') do
+          document_request.fetch
+        end
 
         @document_request = document_request
         @document_response = document_response
         @url = document_response.dig(:data, :url)
+
+        analytics.idv_socure_document_request_submitted(**capture_app_analytics(timer))
 
         # placeholder until we get an error page for url not being present
         if @url.nil?
@@ -160,6 +164,31 @@ module Idv
           liveness_checking_required: resolved_authn_context_result.facial_match?,
           selfie_check_required: resolved_authn_context_result.facial_match?,
         }.merge(ab_test_analytics_buckets)
+      end
+
+      def capture_app_analytics(timer)
+        log_extras = {
+          redirect: {
+            url: @url,
+            method: 'POST',
+          },
+          vendor: 'Socure',
+          reference_id: @document_response.to_h[:referenceId],
+          vendor_request_time_in_ms: timer.results['vendor_request'],
+          success: true,
+        }
+        if @url.nil?
+          log_extras[:redirect] = {
+            url: idv_unavailable_url,
+            method: 'GET',
+          }
+          log_extras[:success] = false
+        end
+        @document_response.to_h.merge(log_extras).merge(analytics_arguments).except(
+          :referenceId, :step, :analytics_id, :redo_document_capture,
+          :skip_hybrid_handoff, :selfie_check_required,
+          :opted_in_to_in_person_proofing, :errors, :exception, :extra
+        ).compact
       end
     end
   end
