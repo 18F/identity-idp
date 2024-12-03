@@ -9,7 +9,7 @@ module AnalyticsHelper
            end
 
     stub.to receive(:analytics).and_wrap_original do |original|
-      expect(original.call.user).to eq(user) if user
+      expect(original.call.user).to match(user) if user
       analytics
     end
 
