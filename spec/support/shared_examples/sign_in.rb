@@ -350,7 +350,7 @@ RSpec.shared_examples 'logs reCAPTCHA event and redirects appropriately' do |suc
       form_class: 'RecaptchaMockForm',
     )
     asserted_expected_user = false
-    fake_analytics = FakeAnalytics.new
+    fake_analytics.reset!
 
     fill_in :user_recaptcha_mock_score, with: '0.1'
     fill_in_credentials_and_submit(user.email, user.password)
