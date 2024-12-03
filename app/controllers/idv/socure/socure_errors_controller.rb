@@ -17,6 +17,11 @@ module Idv
       end
 
       def go_in_person
+        attributes = {
+          remaining_submit_attempts: rate_limiter.remaining_count,
+        }.merge(ab_test_analytics_buckets)
+        analytics.idv_doc_auth_socure_choose_in_person(**attributes)
+
         idv_session.opted_in_to_in_person_proofing = true
         idv_session.flow_path = 'standard'
         idv_session.skip_doc_auth_from_how_to_verify = true
