@@ -85,13 +85,27 @@ RSpec.describe 'Account connected applications' do
     expect(page).to_not have_content(identity.display_name)
   end
 
-  scenario 'changing email shared with SP' do
+  scenario 'changing email shared with SP', :js do
     within('li', text: identity.display_name) do
       expect(page).to have_content(t('account.connected_apps.email_not_selected'))
       click_link(t('help_text.requested_attributes.change_email_link'))
     end
 
-    expect(page).to have_field(user.email) { |field| !field[:checked] }
+    expect(page).not_to have_checked_field(user.email)
+
+    click_on t('help_text.requested_attributes.select_email_link')
+
+    input = page.find(':focus')
+
+    expect(input).to have_name(
+      strip_tags(
+        t(
+          'help_text.select_preferred_email_html',
+          sp: identity.display_name,
+        ),
+      ),
+    )
+    expect(input).to have_description(t('simple_form.required.text'))
 
     choose user.email_addresses.last.email
     click_on t('help_text.requested_attributes.select_email_link')
