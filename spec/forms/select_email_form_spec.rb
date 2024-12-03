@@ -35,7 +35,7 @@ RSpec.describe SelectEmailForm do
         it 'is unsuccessful' do
           expect(response.to_h).to eq(
             success: false,
-            error_details: { selected_email_id: { not_found: true } },
+            error_details: { selected_email_id: { blank: true, not_found: true } },
           )
         end
       end
@@ -46,7 +46,7 @@ RSpec.describe SelectEmailForm do
         it 'is unsuccessful' do
           expect(response.to_h).to eq(
             success: false,
-            error_details: { selected_email_id: { blank: true, not_found: true } },
+            error_details: { selected_email_id: { not_found: true } },
           )
         end
       end
