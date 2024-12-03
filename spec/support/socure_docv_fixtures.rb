@@ -7,6 +7,16 @@ module SocureDocvFixtures
       JSON.parse(raw).to_json
     end
 
+    def fail_json(errors)
+      raw = read_fixture_file_at_path('pass.json')
+      body = JSON.parse(raw)
+
+      body['documentVerification']['decision']['value'] = 'reject'
+      body['documentVerification']['reasonCodes'] = errors
+
+      body.to_json
+    end
+
     private
 
     def read_fixture_file_at_path(filepath)

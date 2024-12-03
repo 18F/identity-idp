@@ -107,6 +107,10 @@ module DocumentCaptureStepHelper
     stub_docv_verification_data(body: SocureDocvFixtures.pass_json)
   end
 
+  def stub_docv_verification_data_fail_with(errors)
+    stub_docv_verification_data(body: SocureDocvFixtures.fail_json(errors))
+  end
+
   def stub_docv_verification_data(body:)
     stub_request(:post, "#{IdentityConfig.store.socure_idplus_base_url}/api/3.0/EmailAuthScore").
       to_return(
