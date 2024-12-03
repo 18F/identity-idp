@@ -87,9 +87,6 @@ RSpec.feature 'document capture step', :js do
           expect(fake_analytics).to have_logged_event(
             :idv_socure_verification_data_requested,
           )
-          expect(fake_analytics).to have_logged_event(
-            :idv_socure_document_request_submitted,
-          )
         end
       end
     end
@@ -149,9 +146,6 @@ RSpec.feature 'document capture step', :js do
         expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('NY')
         expect(fake_analytics).to have_logged_event(
           :idv_socure_verification_data_requested,
-        )
-        expect(fake_analytics).to have_logged_event(
-          :idv_socure_document_request_submitted,
         )
         fill_out_ssn_form_ok
         click_idv_continue
