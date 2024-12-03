@@ -91,12 +91,25 @@ RSpec.feature 'document capture step', :js do
         end
       end
 
-      # ToDo post LG-14010
       context 'network connection errors' do
-        xit 'catches network connection errors on document request', allow_browser_log: true do
-          # expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
+        context 'getting the capture path' do
+          before do
+            allow_any_instance_of(Faraday::Connection).to receive(:post).
+              and_raise(Faraday::ConnectionFailed)
+          end
+
+          it 'shows the network error page', js: true do
+            visit_idp_from_oidc_sp_with_ial2
+            sign_in_and_2fa_user(@user)
+
+            complete_doc_auth_steps_before_document_capture_step
+
+            expect(page).to have_content(t('doc_auth.headers.general.network_error'))
+            expect(page).to have_content(t('doc_auth.errors.general.new_network_error'))
+          end
         end
 
+        # ToDo post LG-14010. Does this belong here, or on the polling page tests?
         xit 'catches network connection errors on verification data request',
             allow_browser_log: true do
           # expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
@@ -149,18 +162,6 @@ RSpec.feature 'document capture step', :js do
     end
   end
 
-  # ToDo post LG-14010
-  xcontext 'network connection errors' do
-    it 'catches network connection errors on document request', allow_browser_log: true do
-      expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
-    end
-
-    it 'catches network connection errors on verification data request',
-       allow_browser_log: true do
-      expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
-    end
-  end
-
   shared_examples 'a properly categorized Socure error' do |socure_error_code, expected_header_key|
     before do
       stub_docv_verification_data_fail_with([socure_error_code])
@@ -210,23 +211,6 @@ RSpec.feature 'document capture step', :js do
 
   context 'a type 6 error' do
     it_behaves_like 'a properly categorized Socure error', 'I856', 'doc_auth.headers.id_not_found'
-  end
-
-  context 'with a network error requesting the capture app url' do
-    before do
-      allow_any_instance_of(Faraday::Connection).to receive(:post).
-        and_raise(Faraday::ConnectionFailed)
-    end
-
-    it 'shows the network error page', js: true do
-      visit_idp_from_oidc_sp_with_ial2
-      sign_in_and_2fa_user(@user)
-
-      complete_doc_auth_steps_before_document_capture_step
-
-      expect(page).to have_content(t('doc_auth.headers.general.network_error'))
-      expect(page).to have_content(t('doc_auth.errors.general.new_network_error'))
-    end
   end
 
   def expect_rate_limited_header(expected_to_be_present)
