@@ -5,7 +5,7 @@ module Users
     def create
       store_from_select_email_flow_in_session
       result = email_confirmation_token_validator.submit
-      analytics.add_email_confirmation(**result)
+      analytics.add_email_confirmation(**result, from_select_email_flow: from_select_email_flow?)
       if result.success?
         process_successful_confirmation(email_address)
       else
@@ -29,13 +29,8 @@ module Users
     end
 
     def email_confirmation_token_validator
-      @email_confirmation_token_validator ||= begin
-        EmailConfirmationTokenValidator.new(
-          email_address:,
-          current_user:,
-          from_select_email_flow: from_select_email_flow?,
-        )
-      end
+      @email_confirmation_token_validator ||=
+        EmailConfirmationTokenValidator.new(email_address:, current_user:)
     end
 
     def email_address_already_confirmed?

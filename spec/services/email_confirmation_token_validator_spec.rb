@@ -85,21 +85,6 @@ RSpec.describe EmailConfirmationTokenValidator do
         expect(result.extra).to eq(user_id: nil)
       end
     end
-
-    context 'in select email flow' do
-      subject { described_class.new(email_address:, current_user:, from_select_email_flow: true) }
-
-      let(:current_user) { nil }
-      let(:email_address) do
-        create(:email_address, confirmed_at: nil, confirmation_sent_at: Time.zone.now)
-      end
-
-      it 'includes log detail in extra analytics' do
-        result = subject.submit
-
-        expect(result.extra).to eq(user_id: email_address.user.uuid, from_select_email_flow: true)
-      end
-    end
   end
 
   describe '#email_address_already_confirmed_by_user?' do
