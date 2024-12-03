@@ -8,7 +8,7 @@ class SelectEmailForm
 
   validate :validate_owns_selected_email
   validates :selected_email_id, presence: {
-    message: proc { I18n.t('email_address.not_found') },
+    message: proc { I18n.t('simple_form.required.text') },
   }
 
   def initialize(user:, identity: nil)
