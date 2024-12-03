@@ -59,6 +59,10 @@ module Users
       end
     end
 
+    def analytics_user
+      @analytics_user || AnonymousUser.new
+    end
+
     private
 
     def clear_session_bad_password_count_if_window_expired
@@ -171,10 +175,6 @@ module Users
 
     def set_analytics_user_from_params
       @analytics_user = user_from_params
-    end
-
-    def analytics_user
-      @analytics_user || AnonymousUser.new
     end
 
     def process_locked_out_user
