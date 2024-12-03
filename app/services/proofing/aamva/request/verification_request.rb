@@ -130,7 +130,10 @@ module Proofing
             )
           end
 
-          @body = document.to_s
+          @body = String.new(encoding: 'UTF-8')
+          formatter = REXML::Formatters::Pretty.new
+          formatter.compact = true
+          formatter.write(document.root, @body)
         end
 
         def add_state_id_type(id_type, document)

@@ -8,15 +8,11 @@
   </soap:Header>
   <soap:Body>
     <dldv:VerifyDriverLicenseData>
-      <dldv:token>
-        <%= auth_token %>
-      </dldv:token>
+      <dldv:token><%= auth_token %></dldv:token>
       <dldv:verifyDriverLicenseDataRequest>
         <aa:ControlData>
           <aa:MessageAddress>
-            <aa:TransactionLocatorId>
-              <%= transaction_locator_id %>
-            </aa:TransactionLocatorId>
+            <aa:TransactionLocatorId><%= transaction_locator_id %></aa:TransactionLocatorId>
             <aa:MessageOriginatorId>GSA</aa:MessageOriginatorId>
             <aa:MessageDestinationId></aa:MessageDestinationId>
           </aa:MessageAddress>

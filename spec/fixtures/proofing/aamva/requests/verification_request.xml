@@ -1,24 +1,20 @@
-<soap:Envelope xmlns:aa='http://aamva.org/niem/extensions/1.0' xmlns:dldv='http://aamva.org/dldv/wsdl/2.1' xmlns:nc='http://niem.gov/niem/niem-core/2.0' xmlns:soap='http://www.w3.org/2003/05/soap-envelope'>
+<soap:Envelope xmlns:soap='http://www.w3.org/2003/05/soap-envelope' xmlns:dldv='http://aamva.org/dldv/wsdl/2.1' xmlns:aa='http://aamva.org/niem/extensions/1.0' xmlns:nc='http://niem.gov/niem/niem-core/2.0'>
   <soap:Header xmlns:wsa='http://www.w3.org/2005/08/addressing'>
     <wsa:Action>http://aamva.org/dldv/wsdl/2.1/IDLDVService21/VerifyDriverLicenseData</wsa:Action>
   </soap:Header>
   <soap:Body>
     <dldv:VerifyDriverLicenseData>
-      <dldv:token>
-        KEYKEYKEY
-      </dldv:token>
+      <dldv:token>KEYKEYKEY</dldv:token>
       <dldv:verifyDriverLicenseDataRequest>
         <aa:ControlData>
           <aa:MessageAddress>
-            <aa:TransactionLocatorId>
-              1234-abcd-efgh
-            </aa:TransactionLocatorId>
+            <aa:TransactionLocatorId>1234-abcd-efgh</aa:TransactionLocatorId>
             <aa:MessageOriginatorId>GSA</aa:MessageOriginatorId>
             <aa:MessageDestinationId>CA</aa:MessageDestinationId>
           </aa:MessageAddress>
         </aa:ControlData>
         <nc:DriverLicenseIdentification>
-          <nc:IdentificationID xsi:type='nc:PersonNameTextType' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>123456789</nc:IdentificationID>
+          <nc:IdentificationID xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='nc:PersonNameTextType'>123456789</nc:IdentificationID>
         </nc:DriverLicenseIdentification>
         <aa:PersonBirthDate>1942-10-29</aa:PersonBirthDate>
         <nc:PersonName>
@@ -31,7 +27,8 @@
           <nc:LocationStateUsPostalServiceCode>VA</nc:LocationStateUsPostalServiceCode>
           <nc:LocationPostalCode>20176</nc:LocationPostalCode>
         </aa:Address>
-      <aa:DocumentCategoryCode>1</aa:DocumentCategoryCode></dldv:verifyDriverLicenseDataRequest>
+        <aa:DocumentCategoryCode>1</aa:DocumentCategoryCode>
+      </dldv:verifyDriverLicenseDataRequest>
     </dldv:VerifyDriverLicenseData>
   </soap:Body>
 </soap:Envelope>
