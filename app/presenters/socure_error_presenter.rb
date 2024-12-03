@@ -136,41 +136,31 @@ class SocureErrorPresenter
   end
 
   def heading_string_for(error_code)
-    return_value =
-      if error_code == :network
-        t('doc_auth.headers.general.network_error')
-      else
-        # i18n-tasks-use t('doc_auth.headers.unreadable_id')
-        # i18n-tasks-use t('doc_auth.headers.unaccepted_id_type')
-        # i18n-tasks-use t('doc_auth.headers.expired_id')
-        # i18n-tasks-use t('doc_auth.headers.low_resolution')
-        # i18n-tasks-use t('doc_auth.headers.underage')
-        # i18n-tasks-use t('doc_auth.headers.id_not_found')
-        I18n.t("doc_auth.headers.#{remapped_error(error_code)}")
-      end
-
-    Rails.logger.info "SocureErrorPresenter#heading_string_for(#{error_code.inspect}): #{return_value}"
-
-    return_value
+    if error_code == :network
+      t('doc_auth.headers.general.network_error')
+    else
+      # i18n-tasks-use t('doc_auth.headers.unreadable_id')
+      # i18n-tasks-use t('doc_auth.headers.unaccepted_id_type')
+      # i18n-tasks-use t('doc_auth.headers.expired_id')
+      # i18n-tasks-use t('doc_auth.headers.low_resolution')
+      # i18n-tasks-use t('doc_auth.headers.underage')
+      # i18n-tasks-use t('doc_auth.headers.id_not_found')
+      I18n.t("doc_auth.headers.#{remapped_error(error_code)}")
+    end
   end
 
   def error_string_for(error_code)
-    return_value =
-      if error_code == :network
-        t('doc_auth.errors.general.new_network_error')
-      elsif remapped_error(error_code) == 'underage' # special handling because it says 'Login.gov'
-        I18n.t('doc_auth.errors.underage', app_name: APP_NAME)
-      else
-        # i18n-tasks-use t('doc_auth.errors.unreadable_id')
-        # i18n-tasks-use t('doc_auth.errors.unaccepted_id_type')
-        # i18n-tasks-use t('doc_auth.errors.expired_id')
-        # i18n-tasks-use t('doc_auth.errors.low_resolution')
-        # i18n-tasks-use t('doc_auth.errors.id_not_found')
-        I18n.t("doc_auth.errors.#{remapped_error(error_code)}")
-      end
-
-    Rails.logger.info "SocureErrorPresenter#error_string_for(#{error_code.inspect}): #{return_value}"
-
-    return_value
+    if error_code == :network
+      t('doc_auth.errors.general.new_network_error')
+    elsif remapped_error(error_code) == 'underage' # special handling because it says 'Login.gov'
+      I18n.t('doc_auth.errors.underage', app_name: APP_NAME)
+    else
+      # i18n-tasks-use t('doc_auth.errors.unreadable_id')
+      # i18n-tasks-use t('doc_auth.errors.unaccepted_id_type')
+      # i18n-tasks-use t('doc_auth.errors.expired_id')
+      # i18n-tasks-use t('doc_auth.errors.low_resolution')
+      # i18n-tasks-use t('doc_auth.errors.id_not_found')
+      I18n.t("doc_auth.errors.#{remapped_error(error_code)}")
+    end
   end
 end

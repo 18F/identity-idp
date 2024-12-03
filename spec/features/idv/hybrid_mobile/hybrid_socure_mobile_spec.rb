@@ -108,8 +108,8 @@ RSpec.describe 'Hybrid Flow' do
         expect(
           PhoneFormatter.format(prefilled_phone),
         ).to eq(
-               PhoneFormatter.format(user.default_phone_configuration.phone),
-             )
+          PhoneFormatter.format(user.default_phone_configuration.phone),
+        )
 
         fill_out_phone_form_ok
         verify_phone_otp
@@ -249,8 +249,8 @@ RSpec.describe 'Hybrid Flow' do
         expect(
           PhoneFormatter.format(prefilled_phone),
         ).to eq(
-               PhoneFormatter.format(phone_number),
-             )
+          PhoneFormatter.format(phone_number),
+        )
       end
     end
   end
@@ -309,7 +309,9 @@ RSpec.describe 'Hybrid Flow' do
   end
 
   context 'a type 2 error' do
-    it_behaves_like 'a properly categorized Socure error', 'I849', 'doc_auth.headers.unaccepted_id_type'
+    it_behaves_like 'a properly categorized Socure error',
+                    'I849',
+                    'doc_auth.headers.unaccepted_id_type'
   end
 
   context 'a type 3 error' do
@@ -334,7 +336,8 @@ RSpec.describe 'Hybrid Flow' do
         and_raise(Faraday::ConnectionFailed)
     end
 
-    it 'shows the network error page on the phone and the link sent page on the desktop', js: true do
+    it 'shows the network error page on the phone and the link sent page on the desktop',
+       js: true do
       user = nil
 
       perform_in_browser(:desktop) do
