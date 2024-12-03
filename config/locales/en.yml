@@ -1875,6 +1875,10 @@ user_mailer.email_deleted.header: An email address was deleted from your %{app_n
 user_mailer.email_deleted.help_html: If you did not want to delete this email address, please visit the %{app_name_html} %{help_link_html} or %{contact_link_html}.
 user_mailer.email_deleted.subject: Email address deleted
 user_mailer.help_link_text: Help Center
+user_mailer.idv_please_call.body.contact_message_html: Call <strong>%{contact_number}</strong> and provide them with the error code <strong>%{support_code}</strong>.
+user_mailer.idv_please_call.body.intro_html: Call our contact center by <strong>%{date}</strong> to continue verifying your identity.
+user_mailer.idv_please_call.header: Please give us a call
+user_mailer.idv_please_call.subject: Call %{app_name} to continue with your identity verification
 user_mailer.in_person_completion_survey.body.cta.callout: Click the button below to get started.
 user_mailer.in_person_completion_survey.body.cta.label: Take our survey
 user_mailer.in_person_completion_survey.body.greeting: Hello,
@@ -1900,10 +1904,6 @@ user_mailer.in_person_failed.intro: Your identity could not be verified at the %
 user_mailer.in_person_failed.subject: Your identity could not be verified in person
 user_mailer.in_person_failed.verifying_identity: 'When verifying your identity:'
 user_mailer.in_person_failed.verifying_step_not_expired: Your state‑issued ID or driver’s license must not be expired. We do not currently accept any other forms of identification, such as passports and military IDs.
-user_mailer.in_person_please_call.body.contact_message_html: Call <strong>%{contact_number}</strong> and provide them with the error code <strong>%{support_code}</strong>.
-user_mailer.in_person_please_call.body.intro_html: Call our contact center by <strong>%{date}</strong> to continue verifying your identity.
-user_mailer.in_person_please_call.header: Please give us a call
-user_mailer.in_person_please_call.subject: Call %{app_name} to continue with your identity verification
 user_mailer.in_person_ready_to_verify_reminder.greeting: Hello,
 user_mailer.in_person_ready_to_verify_reminder.heading.one: You have %{count} day left to verify your identity in person
 user_mailer.in_person_ready_to_verify_reminder.heading.other: You have %{count} days left to verify your identity in person
