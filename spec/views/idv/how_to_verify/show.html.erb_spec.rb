@@ -90,12 +90,12 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
     end
 
     it 'renders two options for verifying your identity' do
-      expect(rendered).to have_content(t('doc_auth.headings.verify_online_selfie'))
+      expect(rendered).to have_content(t('doc_auth.headings.verify_online_mobile'))
       expect(rendered).to have_content(t('doc_auth.headings.verify_at_post_office'))
     end
 
     it 'renders a button for remote and ipp' do
-      expect(rendered).to have_button(t('forms.buttons.continue_remote_selfie'))
+      expect(rendered).to have_button(t('forms.buttons.continue_remote_mobile'))
       expect(rendered).to have_button(t('forms.buttons.continue_ipp'))
     end
 
@@ -121,15 +121,15 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
       let(:selfie_check_required) { true }
 
       it 'renders selfie specific content' do
-        expect(rendered).to have_content(t('doc_auth.info.how_to_verify_selfie'))
+        expect(rendered).to have_content(t('doc_auth.info.how_to_verify_mobile'))
         expect(rendered).to have_content(t('doc_auth.tips.mobile_phone_required'))
         expect(rendered).to have_content(t('doc_auth.info.verify_online_instruction_selfie'))
-        expect(rendered).to have_content(t('doc_auth.info.verify_online_description_selfie'))
+        expect(rendered).to have_content(t('doc_auth.info.verify_online_description_mobile'))
         expect(rendered).to have_content(
           t('doc_auth.info.verify_at_post_office_instruction_selfie'),
         )
         expect(rendered).to have_content(
-          t('doc_auth.info.verify_at_post_office_description_selfie'),
+          t('doc_auth.info.verify_at_post_office_description_mobile'),
         )
       end
     end

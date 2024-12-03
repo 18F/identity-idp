@@ -13,7 +13,7 @@ class Idv::HowToVerifyPresenter
 
   def how_to_verify_info
     if mobile_required
-      t('doc_auth.info.how_to_verify_selfie')
+      t('doc_auth.info.how_to_verify_mobile')
     else
       t('doc_auth.info.how_to_verify')
     end
@@ -37,7 +37,7 @@ class Idv::HowToVerifyPresenter
 
   def verify_online_text
     if mobile_required
-      t('doc_auth.headings.verify_online_selfie')
+      t('doc_auth.headings.verify_online_mobile')
     else
       t('doc_auth.headings.verify_online')
     end
@@ -52,7 +52,7 @@ class Idv::HowToVerifyPresenter
 
   def verify_online_description
     if mobile_required
-      t('doc_auth.info.verify_online_description_selfie')
+      t('doc_auth.info.verify_online_description_mobile')
     else
       t('doc_auth.info.verify_online_description')
     end
@@ -60,7 +60,7 @@ class Idv::HowToVerifyPresenter
 
   def submit
     if mobile_required
-      t('forms.buttons.continue_remote_selfie')
+      t('forms.buttons.continue_remote_mobile')
     else
       t('forms.buttons.continue_remote')
     end
@@ -76,7 +76,7 @@ class Idv::HowToVerifyPresenter
 
   def post_office_description
     if mobile_required
-      t('doc_auth.info.verify_at_post_office_description_selfie')
+      t('doc_auth.info.verify_at_post_office_description_mobile')
     else
       t('doc_auth.info.verify_at_post_office_description')
     end
