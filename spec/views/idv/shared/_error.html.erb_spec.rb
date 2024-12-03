@@ -5,7 +5,7 @@ RSpec.describe 'idv/shared/_error.html.erb' do
   let(:options) { [{ text: 'Example', url: '#example' }] }
   let(:heading) { 'Error' }
   let(:action) { nil }
-  let(:action_secondary) { nil }
+  let(:secondary_action) { nil }
   let(:type) { nil }
   let(:current_step) { nil }
   let(:step_indicator_steps) { nil }
@@ -14,7 +14,7 @@ RSpec.describe 'idv/shared/_error.html.erb' do
       type: type,
       heading: heading,
       action: action,
-      action_secondary: action_secondary,
+      secondary_action: secondary_action,
       current_step: current_step,
       options: options,
     }
@@ -73,7 +73,7 @@ RSpec.describe 'idv/shared/_error.html.erb' do
     end
 
     context 'with secondary action' do
-      let(:action_secondary) { { text: 'Secondary Action', url: '#secondary' } }
+      let(:secondary_action) { { text: 'Secondary Action', url: '#secondary' } }
 
       it 'renders secondary action button' do
         expect(rendered).to have_link('Secondary Action', href: '#secondary')
@@ -81,7 +81,7 @@ RSpec.describe 'idv/shared/_error.html.erb' do
     end
 
     context 'with form action' do
-      let(:action_secondary) { { text: 'Delete', url: '#delete', method: :delete } }
+      let(:secondary_action) { { text: 'Delete', url: '#delete', method: :delete } }
 
       it 'renders action button' do
         expect(rendered).to have_button('Delete')

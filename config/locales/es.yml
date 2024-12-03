@@ -548,11 +548,13 @@ doc_auth.errors.document_capture_canceled: Ha cancelado la carga de fotos de su 
 doc_auth.errors.dpi.failed_short: La imagen es demasiado pequeña o está borrosa; inténtelo de nuevo.
 doc_auth.errors.dpi.top_msg: No pudimos leer su identificación. Es posible que el tamaño de su imagen o de su identificación sea demasiado pequeño o que la foto esté borrosa. Asegúrese de que su identificación se vea más grande dentro del marco de la imagen e intente tomar una nueva foto.
 doc_auth.errors.dpi.top_msg_plural: No pudimos leer su identificación. Es posible que el tamaño de sus imágenes o de su identificación sea demasiado pequeño o que las fotos estén borrosas. Asegúrese de que su identificación se vea grande dentro del marco de la imagen e intente tomar nuevas fotos.
+doc_auth.errors.expired_id: No puede usar una tarjeta de identificación vencida para verificar su identidad. Si su tarjeta de identificación no está vencida, revise que la información en esta se vea nítida y que la tarjeta llene el marco.
 doc_auth.errors.file_type.invalid: No se acepta este tipo de archivo; elija un archivo JPG o PNG.
 doc_auth.errors.general.fallback_field_level: Agregue una imagen nueva
 doc_auth.errors.general.multiple_back_id_failures: No pudimos verificar el reverso de su identificación. Intente tomar una nueva foto.
 doc_auth.errors.general.multiple_front_id_failures: No pudimos verificar el frente de su identificación. Intente tomar una nueva foto.
 doc_auth.errors.general.network_error: Estamos teniendo problemas técnicos. Intente enviar sus imágenes de nuevo más tarde.
+doc_auth.errors.general.new_network_error: Vuelva a intentarlo más tarde.
 doc_auth.errors.general.no_liveness: Intente tomar nuevas fotos.
 doc_auth.errors.general.selfie_failure: No pudimos verificar su foto. Intente tomar una nueva foto.
 doc_auth.errors.general.selfie_failure_help_link_text: Consulte más consejos para tomar fotos claras
@@ -566,6 +568,8 @@ doc_auth.errors.http.image_size.failed_short: El archivo de la imagen no es comp
 doc_auth.errors.http.image_size.top_msg: El tamaño de la imagen es demasiado grande o demasiado pequeño. Añada imágenes de su identificación de unos 2025 x 1275 píxeles.
 doc_auth.errors.http.pixel_depth.failed_short: El archivo de la imagen no es compatible; inténtelo de nuevo.
 doc_auth.errors.http.pixel_depth.top_msg: La profundidad de píxel de su archivo de imagen no es compatible. Tome nuevas fotos de su identificación e inténtelo de nuevo. La profundidad de píxel de la imagen admitida es RGB de 24 bits.
+doc_auth.errors.id_not_found: Verifique que está tomando una foto de su identificación física y no de una fotografía o captura de pantalla.
+doc_auth.errors.low_resolution: No pudimos verificar su identificación porque su dispositivo no tomó una fotografía bastante clara. Si se sigue presentando este error, use otro dispositivo o verifique su identidad en una oficina de correos de su localidad.
 doc_auth.errors.not_a_file: La selección no era un archivo válido.
 doc_auth.errors.phone_step_incomplete: Debe ir a su teléfono y cargar fotos de su identificación antes de continuar. Le enviamos un vínculo con instrucciones.
 doc_auth.errors.pii.birth_date_min_age: Su fecha de nacimiento no cumple con el requisito de edad mínima.
@@ -578,11 +582,21 @@ doc_auth.errors.send_link_limited: Lo intentó demasiadas veces; vuelva a intent
 doc_auth.errors.sharpness.failed_short: La imagen está borrosa; inténtelo de nuevo.
 doc_auth.errors.sharpness.top_msg: No pudimos leer su identificación. Es posible que su foto esté demasiado borrosa u oscura. Intente tomar una nueva foto en un lugar iluminado.
 doc_auth.errors.sharpness.top_msg_plural: No pudimos leer su identificación. Es posible que sus fotos estén demasiado borrosas u oscuras. Intente tomar nuevas fotos en un lugar iluminado.
+doc_auth.errors.unaccepted_id_type: No aceptamos pasaportes, identificaciones militares, ni identificaciones impresas o temporales. Solo puede usar una licencia de conducir o una identificación emitida por un estado o territorio de los EE. UU.
+doc_auth.errors.underage: Debe tener al menos 13 años para usar %{app_name}. Si tiene 13 años o más, vuelva a intentarlo y verifique que su fecha de nacimiento se vea nítida.
+doc_auth.errors.unreadable_id: Tome sus fotografías en un lugar bien iluminado sin sombras ni reflejos. Revise que la información en su identificación se vea nítida y que la tarjeta llene el marco.
 doc_auth.errors.upload_error: Lo sentimos, algo no funcionó bien.
 doc_auth.forms.change_file: Cambiar archivo
 doc_auth.forms.choose_file_html: Arrastrar el archivo aquí o <lg-underline>seleccionarlo de la carpeta</lg-underline>
 doc_auth.forms.doc_success: Verificamos su información
 doc_auth.forms.selected_file: Archivo seleccionado
+doc_auth.headers.expired_id: Su identificación puede estar vencida
+doc_auth.headers.general.network_error: Estamos teniendo problemas técnicos
+doc_auth.headers.id_not_found: No pudimos encontrar su identificación
+doc_auth.headers.low_resolution: Es posible que la cámara de su dispositivo no sea compatible
+doc_auth.headers.unaccepted_id_type: Use una licencia de conducir o una identificación estatal
+doc_auth.headers.underage: No se cumplió con el requisito de edad
+doc_auth.headers.unreadable_id: No pudimos leer su identificación
 doc_auth.headings.address: Actualice su dirección postal
 doc_auth.headings.back: Reverso de su licencia de conducir o identificación estatal
 doc_auth.headings.capture_complete: Verificamos su identificación
@@ -696,6 +710,8 @@ doc_auth.instructions.text1: No se aceptan otras formas de identificación. Revi
 doc_auth.instructions.text2: No necesita la tarjeta física del Seguro Social.
 doc_auth.instructions.text3: Revisamos que su número de teléfono coincida con su información personal y enviamos un código de un solo uso a su teléfono.
 doc_auth.instructions.text4: Su contraseña guarda y cifra su información personal.
+doc_auth.rate_limit_warning.plural_html: Por motivos de seguridad, le quedan <strong>%{remaining_attempts} intentos</strong>.
+doc_auth.rate_limit_warning.singular_html: Por motivos de seguridad, le queda <strong>un intento</strong>.
 doc_auth.tips.document_capture_hint: Debe ser un archivo JPG o PNG
 doc_auth.tips.document_capture_id_text1: Use una superficie plana y de color oscuro.
 doc_auth.tips.document_capture_id_text2: Tome fotos en un lugar bien iluminado
