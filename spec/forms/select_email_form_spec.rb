@@ -29,14 +29,26 @@ RSpec.describe SelectEmailForm do
     end
 
     context 'with an invalid email id' do
-      let(:selected_email_id) { '' }
+      context 'with a blank email id' do
+        let(:selected_email_id) { nil }
 
-      it 'is unsuccessful' do
-        expect(response.to_h).to eq(
-          success: false,
-          error_details: { selected_email_id: { not_found: true } },
-          selected_email_id: nil,
-        )
+        it 'is unsuccessful' do
+          expect(response.to_h).to eq(
+            success: false,
+            error_details: { selected_email_id: { not_found: true } },
+          )
+        end
+      end
+
+      context 'with a non-existing email id' do
+        let(:selected_email_id) { 9000 }
+
+        it 'is unsuccessful' do
+          expect(response.to_h).to eq(
+            success: false,
+            error_details: { selected_email_id: { blank: true, not_found: true } },
+          )
+        end
       end
 
       context 'with present value that does not convert to numeric' do

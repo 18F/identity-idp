@@ -113,7 +113,7 @@ RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
         expect(@analytics).to have_logged_event(
           :sp_select_email_submitted,
           success: false,
-          error_details: { selected_email_id: { not_found: true } },
+          error_details: { selected_email_id: { blank: true, not_found: true } },
         )
       end
     end
