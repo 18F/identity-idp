@@ -33,9 +33,5 @@ module Idv
         false
       end
     end
-
-    def default_vendor_is_not_mock?
-      IdentityConfig.store.doc_auth_vendor_default != Idp::Constants::Vendors::MOCK
-    end
   end
 end
