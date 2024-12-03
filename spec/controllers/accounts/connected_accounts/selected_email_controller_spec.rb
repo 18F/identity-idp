@@ -98,7 +98,7 @@ RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
     end
 
     context 'with invalid submission' do
-      let(:params) { super().merge(select_email_form: { selected_email_id: nil }) }
+      let(:params) { super().merge(select_email_form: { selected_email_id: '' }) }
 
       it 'redirects to form with flash' do
         expect(response).to redirect_to(edit_connected_account_selected_email_path(identity.id))

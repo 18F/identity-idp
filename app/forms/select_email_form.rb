@@ -14,7 +14,7 @@ class SelectEmailForm
   end
 
   def submit(params)
-    @selected_email_id = params[:selected_email_id].try(:to_i)
+    @selected_email_id = params[:selected_email_id].try(:to_i) if !params[:selected_email_id].blank?
 
     success = valid?
     identity.update(email_address_id: selected_email_id) if success && identity
