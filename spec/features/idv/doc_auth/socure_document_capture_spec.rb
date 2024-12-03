@@ -66,6 +66,9 @@ RSpec.feature 'document capture step', :js do
             'Rate Limit Reached',
             limiter_type: :idv_doc_auth,
           )
+          expect(fake_analytics).to have_logged_event(
+            :idv_socure_document_request_submitted,
+          )
         end
 
         context 'successfully processes image on last attempt' do
@@ -125,7 +128,7 @@ RSpec.feature 'document capture step', :js do
         expect(DocAuthLog.find_by(user_id: @user.id).state).to be_nil
       end
 
-      xit 'does track state if state tracking is disabled' do
+      it 'does track state if state tracking is disabled' do
         allow(IdentityConfig.store).to receive(:state_tracking_enabled).and_return(true)
         socure_docv_upload_documents(
           docv_transaction_token: @docv_transaction_token,
