@@ -18,6 +18,8 @@ RSpec.describe Idv::InPersonController do
         :before,
         :confirm_two_factor_authenticated,
         :set_usps_form_presenter,
+        :redirect_unless_enrollment,
+        :initialize_in_person_session,
       )
     end
   end

@@ -415,6 +415,7 @@ Rails.application.routes.draw do
       put '/in_person_proofing/state_id' => redirect('verify/in_person/state_id', status: 307)
 
       get '/in_person' => 'in_person#index'
+      put '/in_person' => 'in_person#update'
       get '/in_person/ready_to_verify' => 'in_person/ready_to_verify#show',
           as: :in_person_ready_to_verify
       post '/in_person/usps_locations' => 'in_person/usps_locations#index'
