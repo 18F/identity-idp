@@ -120,12 +120,24 @@ RSpec.describe SocureDocvResultsJob do
           expected_socure_log.merge({ async: true }),
         ),
       )
+      expect(fake_analytics).to have_logged_event(
+        :idv_socure_document_request_submitted,
+        hash_including(
+          expected_socure_log.merge({ async: true }),
+        ),
+      )
     end
 
     it 'expect log with perform_now to have async eq false' do
       perform_now
       expect(fake_analytics).to have_logged_event(
         :idv_socure_verification_data_requested,
+        hash_including(
+          expected_socure_log.merge({ async: false }),
+        ),
+      )
+      expect(fake_analytics).to have_logged_event(
+        :idv_socure_document_request_submitted,
         hash_including(
           expected_socure_log.merge({ async: false }),
         ),
