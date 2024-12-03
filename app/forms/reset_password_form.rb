@@ -65,7 +65,6 @@ class ResetPasswordForm
 
     active_profile.deactivate(:password_reset)
     Funnel::DocAuth::ResetSteps.call(user.id)
-    user.proofing_component&.destroy
   end
 
   # It is possible for an account that is resetting their password to be "invalid".

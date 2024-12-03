@@ -106,6 +106,7 @@ RSpec.describe SocureShadowModeProofingJob do
           },
         },
         biographical_info: {
+          birth_year: 1938,
           identity_doc_address_state: nil,
           same_address_as_id: nil,
           state: 'MT',
@@ -257,6 +258,7 @@ RSpec.describe SocureShadowModeProofingJob do
             threatmetrix_review_status: 'pass',
             timed_out: false,
             biographical_info: {
+              birth_year: 1938,
               identity_doc_address_state: nil,
               same_address_as_id: nil,
               state: 'MT',

@@ -121,9 +121,16 @@ RSpec.describe ResolutionProofingJob, type: :job do
             state_id_expiration
             state_id_issued
             state_id_number
-            state_id_type dob
+            state_id_type
+            dob
             last_name
             first_name
+            middle_name
+            name_suffix
+            height
+            sex
+            weight
+            eye_color
           ],
         )
 
@@ -138,10 +145,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result_context_stages_threatmetrix[:response_body]).to eq(
           JSON.parse(LexisNexisFixtures.ddp_success_redacted_response_json, symbolize_names: true),
         )
-
-        proofing_component = user.proofing_component
-        expect(proofing_component.threatmetrix).to equal(true)
-        expect(proofing_component.threatmetrix_review_status).to eq('pass')
       end
     end
 
@@ -213,9 +216,16 @@ RSpec.describe ResolutionProofingJob, type: :job do
             state_id_expiration
             state_id_issued
             state_id_number
-            state_id_type dob
+            state_id_type
+            dob
             last_name
             first_name
+            middle_name
+            name_suffix
+            height
+            sex
+            weight
+            eye_color
           ],
         )
       end
@@ -340,10 +350,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result_context_stages_threatmetrix[:client]).to eq('tmx_disabled')
 
         expect(@threatmetrix_stub).to_not have_been_requested
-
-        proofing_component = user.proofing_component
-        expect(proofing_component.threatmetrix).to equal(false)
-        expect(proofing_component.threatmetrix_review_status).to eq('pass')
       end
     end
 
@@ -446,9 +452,16 @@ RSpec.describe ResolutionProofingJob, type: :job do
             state_id_expiration
             state_id_issued
             state_id_number
-            state_id_type dob
+            state_id_type
+            dob
             last_name
             first_name
+            middle_name
+            name_suffix
+            height
+            sex
+            weight
+            eye_color
           ],
         )
 
@@ -463,10 +476,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result_context_stages_threatmetrix[:response_body]).to eq(
           JSON.parse(LexisNexisFixtures.ddp_success_redacted_response_json, symbolize_names: true),
         )
-
-        proofing_component = user.proofing_component
-        expect(proofing_component.threatmetrix).to equal(true)
-        expect(proofing_component.threatmetrix_review_status).to eq('pass')
       end
     end
 
@@ -538,7 +547,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
     context 'socure shadow mode' do
       context 'turned on' do
         before do
-          allow(IdentityConfig.store).to receive(:idv_socure_shadow_mode_enabled).and_return(true)
+          allow(instance).to receive(:use_shadow_mode?).and_return(true)
         end
 
         it 'schedules a SocureShadowModeProofingJob' do
@@ -557,6 +566,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
                   first_name: 'FAKEY',
                   middle_name: nil,
                   last_name: 'MCFAKERSON',
+                  name_suffix: 'JR',
                   address1: '1 FAKE RD',
                   identity_doc_address1: '1 FAKE RD',
                   identity_doc_address2: nil,
@@ -570,6 +580,10 @@ RSpec.describe ResolutionProofingJob, type: :job do
                   state: 'MT',
                   zipcode: '59010-1234',
                   dob: '1938-10-06',
+                  sex: 'male',
+                  height: 72,
+                  weight: nil,
+                  eye_color: nil,
                   ssn: '900-66-1234',
                   state_id_jurisdiction: 'ND',
                   state_id_expiration: '2099-12-31',

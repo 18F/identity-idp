@@ -5,6 +5,8 @@ module DataWarehouse
     REPORT_NAME = 'table_summary_stats'
 
     def perform(timestamp)
+      return if data_warehouse_disabled?
+
       data = fetch_table_max_ids_and_counts(timestamp)
       upload_to_s3(data, timestamp)
     end

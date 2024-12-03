@@ -80,7 +80,7 @@ FactoryBot.define do
     end
 
     trait :facial_match_proof do
-      idv_level { :in_person }
+      idv_level { :unsupervised_with_selfie }
       initiating_service_provider_issuer { 'urn:gov:gsa:openidconnect:inactive:sp:test' }
     end
 

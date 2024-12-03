@@ -48,8 +48,6 @@ module Idv
 
         log_letter_requested_analytics(resend: false)
         create_user_event(:gpo_mail_sent, current_user)
-
-        ProofingComponent.find_or_create_by(user: current_user).update(address_check: 'gpo_letter')
       end
 
       def confirm_mail_not_rate_limited

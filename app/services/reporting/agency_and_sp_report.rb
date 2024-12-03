@@ -48,12 +48,12 @@ module Reporting
     end
 
     def active_agencies
-      @active_agencies ||= Agreements::PartnerAccountStatus.find_by(name: 'active').
-        partner_accounts.
-        includes(:agency).
-        where('became_partner <= ?', report_date).
-        map(&:agency).
-        uniq
+      @active_agencies ||= Agency.joins(:partner_accounts).
+        where(partner_accounts: {
+          partner_account_status: Agreements::PartnerAccountStatus.find_by(name: 'active'),
+          became_partner: ..report_date,
+        }).
+        distinct
     end
 
     def service_providers
@@ -67,11 +67,12 @@ module Reporting
     end
 
     def facial_match_issuers
-      @facial_match_issuers ||= Profile.where(active: true).where(
-        'verified_at <= ?',
-        report_date.end_of_day,
-      ).where(idv_level: Profile::FACIAL_MATCH_IDV_LEVELS).
-        pluck(:initiating_service_provider_issuer).uniq
+      @facial_match_issuers ||= Reports::BaseReport.transaction_with_timeout do
+        Profile.active.facial_match_opt_in.
+          where('verified_at <= ?', report_date.end_of_day).
+          distinct.
+          pluck(:initiating_service_provider_issuer)
+      end
     end
   end
 end

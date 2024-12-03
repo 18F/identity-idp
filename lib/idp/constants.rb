@@ -100,17 +100,22 @@ module Idp
       address2: nil,
       city: 'GREAT FALLS',
       dob: '1938-10-06',
+      eye_color: nil,
       first_name: 'FAKEY',
+      height: 72,
+      issuing_country_code: 'US',
       last_name: 'MCFAKERSON',
       middle_name: nil,
+      name_suffix: 'JR',
       state: 'MT',
       state_id_expiration: '2099-12-31',
       state_id_issued: '2019-12-31',
       state_id_jurisdiction: MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION,
       state_id_number: '1111111111111',
       state_id_type: 'drivers_license',
+      sex: 'male',
+      weight: nil,
       zipcode: '59010-1234',
-      issuing_country_code: 'US',
     }.freeze
 
     MOCK_IPP_APPLICANT = {

@@ -374,11 +374,20 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
       end
 
       it 'updates proofing component vendor' do
-        expect(user.proofing_component&.document_check).to be_nil
+        proofing_components = Idv::ProofingComponents.new(
+          idv_session: controller.idv_session,
+          session: controller.session,
+          user_session: controller.user_session,
+          user:,
+        )
+
+        expect(proofing_components.document_check).to be_nil
 
         response
 
-        expect(user.proofing_component.document_check).to eq Idp::Constants::Vendors::USPS
+        user.reload
+
+        expect(proofing_components.document_check).to eq Idp::Constants::Vendors::USPS
       end
     end
 
@@ -404,11 +413,20 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
       end
 
       it 'updates proofing component vendor' do
-        expect(user.proofing_component&.document_check).to be_nil
+        proofing_components = Idv::ProofingComponents.new(
+          idv_session: controller.idv_session,
+          session: controller.session,
+          user_session: controller.user_session,
+          user:,
+        )
+
+        expect(proofing_components.document_check).to be_nil
 
         response
 
-        expect(user.proofing_component.document_check).to eq Idp::Constants::Vendors::USPS
+        user.reload
+
+        expect(proofing_components.document_check).to eq Idp::Constants::Vendors::USPS
       end
     end
 

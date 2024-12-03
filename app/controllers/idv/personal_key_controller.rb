@@ -29,7 +29,6 @@ module Idv
       if pii_is_missing?
         redirect_to_retrieve_pii
       else
-        add_proofing_component
         finish_idv_session
       end
     end
@@ -76,10 +75,6 @@ module Idv
       else
         after_sign_in_path_for(current_user)
       end
-    end
-
-    def add_proofing_component
-      ProofingComponent.find_or_create_by(user: current_user).update(verified_at: Time.zone.now)
     end
 
     def finish_idv_session

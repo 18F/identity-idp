@@ -13,6 +13,11 @@ RSpec.describe Idv::PersonalKeyController do
     # These keys are present in our applicant fixture but
     # are not actually supported in Pii::Attributes
     keys_to_ignore = %i[
+      name_suffix
+      sex
+      height
+      weight
+      eye_color
       state_id_expiration
       state_id_issued
       state_id_number
@@ -497,7 +502,6 @@ RSpec.describe Idv::PersonalKeyController do
       end
 
       before do
-        ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
         allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
       end
 

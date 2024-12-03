@@ -64,4 +64,12 @@ RSpec.describe Proofing::Aamva::Applicant do
 
     expect(aamva_applicant[:dob]).to eq('')
   end
+
+  it 'should format the height' do
+    proofer_applicant[:height] = 73
+    aamva_applicant = Proofing::Aamva::Applicant.from_proofer_applicant(proofer_applicant)
+
+    # This is intended to describe 6'1"
+    expect(aamva_applicant[:height]).to eq('61')
+  end
 end

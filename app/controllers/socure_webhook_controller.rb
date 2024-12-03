@@ -38,7 +38,7 @@ class SocureWebhookController < ApplicationController
     if IdentityConfig.store.ruby_workers_idv_enabled
       SocureDocvResultsJob.perform_later(document_capture_session_uuid: dcs.uuid)
     else
-      SocureDocvResultsJob.perform_now(document_capture_session_uuid: dcs.uuid)
+      SocureDocvResultsJob.perform_now(document_capture_session_uuid: dcs.uuid, async: false)
     end
   end
 

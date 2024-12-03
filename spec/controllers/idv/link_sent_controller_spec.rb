@@ -168,9 +168,14 @@ RSpec.describe Idv::LinkSentController do
 
           expect(response).to redirect_to(idv_ssn_url)
 
-          pc = ProofingComponent.find_by(user_id: user.id)
-          expect(pc.document_check).to eq('mock')
-          expect(pc.document_type).to eq('state_id')
+          proofing_components = Idv::ProofingComponents.new(
+            idv_session: subject.idv_session,
+            session: subject.session,
+            user_session: subject.user_session,
+            user:,
+          )
+          expect(proofing_components.document_check).to eq('mock')
+          expect(proofing_components.document_type).to eq('state_id')
         end
 
         context 'redo document capture' do

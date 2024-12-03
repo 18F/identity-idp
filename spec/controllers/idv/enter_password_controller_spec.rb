@@ -414,7 +414,6 @@ RSpec.describe Idv::EnterPasswordController do
           stub_request_enroll
           subject.idv_session.applicant =
             Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_PHONE
-          ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
         end
 

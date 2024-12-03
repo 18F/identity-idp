@@ -12,6 +12,7 @@ module Accounts
       def edit
         @identity = identity
         @select_email_form = build_select_email_form
+        @can_add_email = EmailPolicy.new(current_user).can_add_email?
         analytics.sp_select_email_visited
       end
 

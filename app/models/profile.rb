@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 class Profile < ApplicationRecord
+  # IDV levels equivalent to facial match
   FACIAL_MATCH_IDV_LEVELS = %w[unsupervised_with_selfie in_person].to_set.freeze
+  # Facial match through IAL2 opt-in flow
+  FACIAL_MATCH_OPT_IN = %w[unsupervised_with_selfie].to_set.freeze
 
   belongs_to :user
   # rubocop:disable Rails/InverseOf
@@ -50,6 +53,14 @@ class Profile < ApplicationRecord
 
   def self.verified
     where.not(verified_at: nil)
+  end
+
+  def self.facial_match
+    where(idv_level: FACIAL_MATCH_IDV_LEVELS)
+  end
+
+  def self.facial_match_opt_in
+    where(idv_level: FACIAL_MATCH_OPT_IN)
   end
 
   def self.fraud_rejection

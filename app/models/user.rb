@@ -44,7 +44,6 @@ class User < ApplicationRecord
   has_many :backup_code_configurations, dependent: :destroy
   has_many :document_capture_sessions, dependent: :destroy
   has_one :registration_log, dependent: :destroy
-  has_one :proofing_component, dependent: :destroy
   has_many :service_providers,
            through: :identities,
            source: :service_provider_record

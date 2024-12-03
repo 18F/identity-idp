@@ -156,10 +156,6 @@ RSpec.describe GpoVerifyForm do
           )
         end
 
-        let(:proofing_components) do
-          ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
-        end
-
         before do
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
         end
@@ -192,10 +188,6 @@ RSpec.describe GpoVerifyForm do
             profile: pending_profile,
             user: user,
           )
-        end
-
-        let(:proofing_components) do
-          ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
         end
 
         before do

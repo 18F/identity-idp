@@ -26,6 +26,14 @@ class UserMailerPreview < ActionMailer::Preview
     )
   end
 
+  def reset_password_instructions_with_pending_in_person_warning
+    UserMailer.with(
+      user: user_with_pending_in_person_profile, email_address: email_address_record,
+    ).reset_password_instructions(
+      token: SecureRandom.hex, request_id: SecureRandom.hex,
+    )
+  end
+
   def password_changed
     UserMailer.with(user: user, email_address: email_address_record).
       password_changed(disavowal_token: SecureRandom.hex)
@@ -310,6 +318,19 @@ class UserMailerPreview < ActionMailer::Preview
       ),
     )
     raw_user.send(:instance_variable_set, :@pending_profile, gpo_pending_profile)
+    raw_user
+  end
+
+  def user_with_pending_in_person_profile
+    raw_user = user
+    in_person_pending_profile = unsaveable(
+      Profile.new(
+        user: raw_user,
+        active: false,
+        in_person_verification_pending_at: Time.zone.now,
+      ),
+    )
+    raw_user.send(:instance_variable_set, :@pending_profile, in_person_pending_profile)
     raw_user
   end
 
