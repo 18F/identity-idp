@@ -121,9 +121,16 @@ RSpec.describe ResolutionProofingJob, type: :job do
             state_id_expiration
             state_id_issued
             state_id_number
-            state_id_type dob
+            state_id_type
+            dob
             last_name
             first_name
+            middle_name
+            name_suffix
+            height
+            sex
+            weight
+            eye_color
           ],
         )
 
@@ -209,9 +216,16 @@ RSpec.describe ResolutionProofingJob, type: :job do
             state_id_expiration
             state_id_issued
             state_id_number
-            state_id_type dob
+            state_id_type
+            dob
             last_name
             first_name
+            middle_name
+            name_suffix
+            height
+            sex
+            weight
+            eye_color
           ],
         )
       end
@@ -438,9 +452,16 @@ RSpec.describe ResolutionProofingJob, type: :job do
             state_id_expiration
             state_id_issued
             state_id_number
-            state_id_type dob
+            state_id_type
+            dob
             last_name
             first_name
+            middle_name
+            name_suffix
+            height
+            sex
+            weight
+            eye_color
           ],
         )
 

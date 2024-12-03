@@ -338,6 +338,108 @@ RSpec.describe Proofing::Aamva::Proofer do
           test_not_in_verified_attributes
         end
       end
+
+      describe '#middle_name' do
+        let(:attribute) { :middle_name }
+        let(:match_indicator_name) { 'PersonMiddleNameExactMatchIndicator' }
+
+        when_unverified do
+          test_still_successful
+          test_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+
+        when_missing do
+          test_still_successful
+          test_not_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+      end
+
+      describe '#name_suffix' do
+        let(:attribute) { :name_suffix }
+        let(:match_indicator_name) { 'PersonNameSuffixMatchIndicator' }
+
+        when_unverified do
+          test_still_successful
+          test_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+
+        when_missing do
+          test_still_successful
+          test_not_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+      end
+
+      describe '#height' do
+        let(:attribute) { :height }
+        let(:match_indicator_name) { 'PersonHeightMatchIndicator' }
+
+        when_unverified do
+          test_still_successful
+          test_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+
+        when_missing do
+          test_still_successful
+          test_not_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+      end
+
+      describe '#sex' do
+        let(:attribute) { :sex }
+        let(:match_indicator_name) { 'PersonSexCodeMatchIndicator' }
+
+        when_unverified do
+          test_still_successful
+          test_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+
+        when_missing do
+          test_still_successful
+          test_not_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+      end
+
+      describe '#weight' do
+        let(:attribute) { :weight }
+        let(:match_indicator_name) { 'PersonWeightMatchIndicator' }
+
+        when_unverified do
+          test_still_successful
+          test_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+
+        when_missing do
+          test_still_successful
+          test_not_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+      end
+
+      describe '#eye_color' do
+        let(:attribute) { :eye_color }
+        let(:match_indicator_name) { 'PersonEyeColorMatchIndicator' }
+
+        when_unverified do
+          test_still_successful
+          test_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+
+        when_missing do
+          test_still_successful
+          test_not_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+      end
     end
 
     context 'when verification is successful' do
@@ -361,7 +463,13 @@ RSpec.describe Proofing::Aamva::Proofer do
             state_id_type
             last_name
             first_name
+            middle_name
+            name_suffix
             address
+            height
+            sex
+            weight
+            eye_color
           ].to_set,
         )
       end
@@ -377,7 +485,13 @@ RSpec.describe Proofing::Aamva::Proofer do
             state_id_type: 1,
             last_name: 1,
             first_name: 1,
+            middle_name: 1,
+            name_suffix: 1,
             address: 1,
+            height: 1,
+            sex: 1,
+            weight: 1,
+            eye_color: 1,
           },
         )
       end
@@ -410,7 +524,13 @@ RSpec.describe Proofing::Aamva::Proofer do
             state_id_type
             last_name
             first_name
+            middle_name
+            name_suffix
             address
+            height
+            sex
+            weight
+            eye_color
           ].to_set,
         )
       end
@@ -426,7 +546,13 @@ RSpec.describe Proofing::Aamva::Proofer do
             state_id_type: 1,
             last_name: 1,
             first_name: 1,
+            middle_name: 1,
+            name_suffix: 1,
             address: 1,
+            height: 1,
+            sex: 1,
+            weight: 1,
+            eye_color: 1,
           },
         )
       end
@@ -458,7 +584,13 @@ RSpec.describe Proofing::Aamva::Proofer do
             state_id_type
             last_name
             first_name
+            middle_name
+            name_suffix
             address
+            height
+            sex
+            weight
+            eye_color
           ].to_set,
         )
       end
@@ -473,7 +605,13 @@ RSpec.describe Proofing::Aamva::Proofer do
             state_id_type: 1,
             last_name: 1,
             first_name: 1,
+            middle_name: 1,
+            name_suffix: 1,
             address: 1,
+            height: 1,
+            sex: 1,
+            weight: 1,
+            eye_color: 1,
           },
         )
       end

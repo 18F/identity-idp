@@ -35,6 +35,7 @@ module IdentityConfig
     config.add(:aamva_private_key, type: :string)
     config.add(:aamva_public_key, type: :string)
     config.add(:aamva_send_id_type, type: :boolean)
+    config.add(:aamva_send_middle_name, type: :boolean)
     config.add(:aamva_supported_jurisdictions, type: :json)
     config.add(:aamva_verification_request_timeout, type: :float)
     config.add(:aamva_verification_url)
