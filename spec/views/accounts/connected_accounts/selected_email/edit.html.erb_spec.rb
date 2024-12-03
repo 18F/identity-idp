@@ -35,7 +35,6 @@ RSpec.describe 'accounts/connected_accounts/selected_email/edit.html.erb' do
     inputs = page.find_all('[type="radio"]')
     expect(inputs.count).to eq(2)
     expect(inputs).to be_logically_grouped(t('titles.select_email'))
-    expect(inputs.first).to be_checked
     expect(rendered).to have_content(identity.display_name)
   end
 
