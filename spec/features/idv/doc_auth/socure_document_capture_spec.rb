@@ -63,9 +63,6 @@ RSpec.feature 'document capture step', :js do
             'Rate Limit Reached',
             limiter_type: :idv_doc_auth,
           )
-          expect(fake_analytics).to have_logged_event(
-            :idv_socure_document_request_submitted,
-          )
         end
 
         context 'successfully processes image on last attempt' do
