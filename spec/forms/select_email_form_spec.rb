@@ -39,6 +39,18 @@ RSpec.describe SelectEmailForm do
         )
       end
 
+      context 'with present value that does not convert to numeric' do
+        let(:selected_email_id) { true }
+
+        it 'is unsuccessful without raising exception' do
+          expect(response.to_h).to eq(
+            success: false,
+            error_details: { selected_email_id: { not_found: true } },
+            selected_email_id: nil,
+          )
+        end
+      end
+
       context 'with associated identity' do
         let(:identity) do
           create(
