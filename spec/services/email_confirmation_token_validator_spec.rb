@@ -82,7 +82,7 @@ RSpec.describe EmailConfirmationTokenValidator do
         expect(result.errors).to eq(confirmation_token: [t('errors.messages.not_found')])
         expect(subject.email_address_already_confirmed?).to eq(false)
         expect(subject.confirmation_period_expired?).to eq(false)
-        expect(result.extra).to be_blank
+        expect(result.extra).to eq(user_id: nil)
       end
     end
 
