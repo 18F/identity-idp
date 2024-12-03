@@ -4737,6 +4737,7 @@ module AnalyticsEvents
     birth_year:,
     liveness_enabled:,
     biometric_comparison_required:,
+    billed: nil,
     docv_transaction_token: nil,
     user_id: nil,
     exception: nil,
@@ -4774,6 +4775,7 @@ module AnalyticsEvents
       liveness_enabled:,
       biometric_comparison_required:,
       qr_code:,
+      billed:,
       **extra,
     )
   end
