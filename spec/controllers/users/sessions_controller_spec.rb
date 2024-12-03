@@ -87,14 +87,13 @@ RSpec.describe Users::SessionsController, devise: true do
       end
 
       it 'tracks the successful authentication for existing user' do
-        stub_analytics
+        stub_analytics(user:)
 
         response
 
         expect(@analytics).to have_logged_event(
           'Email and Password Authentication',
           success: true,
-          user_id: user.uuid,
           user_locked_out: false,
           rate_limited: false,
           valid_captcha_result: true,
@@ -161,14 +160,13 @@ RSpec.describe Users::SessionsController, devise: true do
         end
 
         it 'tracks as not being from a new device' do
-          stub_analytics
+          stub_analytics(user:)
 
           response
 
           expect(@analytics).to have_logged_event(
             'Email and Password Authentication',
             success: true,
-            user_id: user.uuid,
             user_locked_out: false,
             rate_limited: false,
             valid_captcha_result: true,
@@ -222,8 +220,8 @@ RSpec.describe Users::SessionsController, devise: true do
           attempt_window_max: 12.hours.in_minutes,
         },
       )
-      stub_analytics
       user = create(:user, :fully_registered)
+      stub_analytics(user:)
 
       travel_to (3.hours + 1.minute).ago do
         2.times do
@@ -252,7 +250,6 @@ RSpec.describe Users::SessionsController, devise: true do
         expect(@analytics).to have_logged_event(
           'Email and Password Authentication',
           success: false,
-          user_id: user.uuid,
           user_locked_out: false,
           rate_limited: true,
           valid_captcha_result: true,
@@ -267,7 +264,7 @@ RSpec.describe Users::SessionsController, devise: true do
     it 'tracks the unsuccessful authentication for existing user' do
       user = create(:user, :fully_registered)
 
-      stub_analytics
+      stub_analytics(user:)
       expect(SCrypt::Engine).to receive(:hash_secret).once.and_call_original
 
       post :create, params: { user: { email: user.email.upcase, password: 'invalid_password' } }
@@ -275,7 +272,6 @@ RSpec.describe Users::SessionsController, devise: true do
       expect(@analytics).to have_logged_event(
         'Email and Password Authentication',
         success: false,
-        user_id: user.uuid,
         user_locked_out: false,
         rate_limited: false,
         valid_captcha_result: true,
@@ -288,7 +284,7 @@ RSpec.describe Users::SessionsController, devise: true do
     end
 
     it 'tracks the authentication attempt for nonexistent user' do
-      stub_analytics
+      stub_analytics(user: kind_of(AnonymousUser))
       expect(SCrypt::Engine).to receive(:hash_secret).once.and_call_original
 
       post :create, params: { user: { email: 'foo@example.com', password: 'password' } }
@@ -296,7 +292,6 @@ RSpec.describe Users::SessionsController, devise: true do
       expect(@analytics).to have_logged_event(
         'Email and Password Authentication',
         success: false,
-        user_id: 'anonymous-uuid',
         user_locked_out: false,
         rate_limited: false,
         valid_captcha_result: true,
@@ -314,14 +309,13 @@ RSpec.describe Users::SessionsController, devise: true do
         second_factor_locked_at: Time.zone.now,
       )
 
-      stub_analytics
+      stub_analytics(user:)
 
       post :create, params: { user: { email: user.email.upcase, password: user.password } }
 
       expect(@analytics).to have_logged_event(
         'Email and Password Authentication',
         success: false,
-        user_id: user.uuid,
         user_locked_out: true,
         rate_limited: false,
         valid_captcha_result: true,
@@ -365,7 +359,7 @@ RSpec.describe Users::SessionsController, devise: true do
         it 'tracks unsuccessful authentication for failed reCAPTCHA' do
           user = create(:user, :fully_registered)
 
-          stub_analytics
+          stub_analytics(user:)
 
           post :create, params: { user: { email: user.email, password: user.password, score: 0.1 } }
 
@@ -373,7 +367,6 @@ RSpec.describe Users::SessionsController, devise: true do
             'Email and Password Authentication',
             success: false,
             error_details: { recaptcha_token: { blank: true } },
-            user_id: user.uuid,
             user_locked_out: false,
             rate_limited: false,
             valid_captcha_result: false,
@@ -400,14 +393,13 @@ RSpec.describe Users::SessionsController, devise: true do
         :fully_registered,
       )
 
-      stub_analytics
+      stub_analytics(user:)
 
       post :create, params: { user: { email: user.email.upcase, password: 'invalid' } }
       post :create, params: { user: { email: user.email.upcase, password: 'invalid' } }
       expect(@analytics).to have_logged_event(
         'Email and Password Authentication',
         success: false,
-        user_id: user.uuid,
         user_locked_out: false,
         rate_limited: false,
         valid_captcha_result: true,
@@ -420,14 +412,13 @@ RSpec.describe Users::SessionsController, devise: true do
 
     it 'tracks the presence of SP request_url in session' do
       subject.session[:sp] = { request_url: mock_valid_site }
-      stub_analytics
+      stub_analytics(user: kind_of(AnonymousUser))
 
       post :create, params: { user: { email: 'foo@example.com', password: 'password' } }
 
       expect(@analytics).to have_logged_event(
         'Email and Password Authentication',
         success: false,
-        user_id: 'anonymous-uuid',
         user_locked_out: false,
         rate_limited: false,
         valid_captcha_result: true,
@@ -592,14 +583,13 @@ RSpec.describe Users::SessionsController, devise: true do
           }.to_json,
         )
 
-        stub_analytics
+        stub_analytics(user:)
 
         post :create, params: { user: { email: user.email, password: user.password } }
 
         expect(@analytics).to have_logged_event(
           'Email and Password Authentication',
           success: true,
-          user_id: user.uuid,
           user_locked_out: false,
           rate_limited: false,
           valid_captcha_result: true,
@@ -718,14 +708,13 @@ RSpec.describe Users::SessionsController, devise: true do
           expires: 2.days.from_now,
         }
 
-        stub_analytics
+        stub_analytics(user:)
 
         post :create, params: { user: { email: user.email, password: user.password } }
 
         expect(@analytics).to have_logged_event(
           'Email and Password Authentication',
           success: true,
-          user_id: user.uuid,
           user_locked_out: false,
           rate_limited: false,
           valid_captcha_result: true,
@@ -746,14 +735,13 @@ RSpec.describe Users::SessionsController, devise: true do
           value: RememberDeviceCookie.new(user_id: user.id, created_at: 2.days.ago).to_json,
         }
 
-        stub_analytics
+        stub_analytics(user:)
 
         post :create, params: { user: { email: user.email, password: user.password } }
 
         expect(@analytics).to have_logged_event(
           'Email and Password Authentication',
           success: true,
-          user_id: user.uuid,
           user_locked_out: false,
           rate_limited: false,
           valid_captcha_result: true,
