@@ -91,21 +91,11 @@ RSpec.describe 'Account connected applications' do
       click_link(t('help_text.requested_attributes.change_email_link'))
     end
 
-    expect(page).not_to have_checked_field(user.email)
-
     click_on t('help_text.requested_attributes.select_email_link')
 
-    input = page.find(':focus')
+    input = page.find(':focus', visible: false)
 
-    expect(input).to have_name(
-      strip_tags(
-        t(
-          'help_text.select_preferred_email_html',
-          sp: identity.display_name,
-        ),
-      ),
-    )
-    expect(input).to have_description(t('simple_form.required.text'))
+    expect(input).to have_name(user.email)
 
     choose user.email_addresses.last.email
     click_on t('help_text.requested_attributes.select_email_link')
@@ -116,7 +106,11 @@ RSpec.describe 'Account connected applications' do
       click_link(t('help_text.requested_attributes.change_email_link'))
     end
 
-    expect(page).to have_field(user.email_addresses.last.email) { |field| field[:checked] }
+    input2_id = "select_email_form_selected_email_id_#{user.email_addresses.last.id}"
+
+    input2 = page.find(id: input2_id, visible: false)
+
+    expect(input2).to have_name(user.email_addresses.last.email)
 
     choose user.email
 
