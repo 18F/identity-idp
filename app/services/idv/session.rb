@@ -105,6 +105,7 @@ module Idv
       VALID_SESSION_ATTRIBUTES.include?(attr_name_sym) || super
     end
 
+    # @return [Profile]
     def create_profile_from_applicant_with_password(
       user_password, is_enhanced_ipp:, proofing_components:
     )
@@ -141,6 +142,8 @@ module Idv
       if profile.gpo_verification_pending?
         create_gpo_entry(profile_maker.pii_attributes, profile)
       end
+
+      profile
     end
 
     def opt_in_param
