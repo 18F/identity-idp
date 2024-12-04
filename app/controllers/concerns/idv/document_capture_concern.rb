@@ -81,6 +81,21 @@ module Idv
       redirect_to correct_path
     end
 
+    def capture_app_analytics(timer)
+      document_request_body = JSON.parse(@document_request.body, symbolize_names: true)[:config]
+      log_extras = {
+        vendor: 'Socure',
+        reference_id: @document_response.to_h[:referenceId],
+        vendor_request_time_in_ms: timer.results['vendor_request'],
+        success: !@url.nil?,
+        document_type: document_request_body[:documentType],
+      }
+      @document_response.to_h.merge(log_extras).merge(analytics_arguments).
+        merge(document_request_body).except(
+          :referenceId, :documentType, :extra
+        ).compact
+    end
+
     private
 
     def track_document_issuing_state(user, state)

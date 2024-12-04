@@ -16,13 +16,6 @@ module DocAuth
           @language = language
         end
 
-        private
-
-        def lang(language)
-          return 'zh-cn' if language == :zh
-          language
-        end
-
         def body
           redirect = {
             method: 'GET',
@@ -38,6 +31,13 @@ module DocAuth
               language: lang(language),
             },
           }.to_json
+        end
+
+        private
+
+        def lang(language)
+          return 'zh-cn' if language == :zh
+          language
         end
 
         def handle_http_response(http_response)
