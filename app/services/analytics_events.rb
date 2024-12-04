@@ -4730,8 +4730,17 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [String] exception any exceptions thrown during request
   # @param [String] docv_transaction_token socure transaction token
   # @param [String] reference_id socure interal id for transaction
+  # @param [String] language lagnuage presented to user
+  # @param [String] step current step of idv to user
+  # @param [String] analytics_id id of analytics
+  # @param [Boolean] redo_document_capture if user is redoing doc capture
+  # @param [Boolean] skip_hybrid_handoff if user is skipping handoff
+  # @param [Boolean] selfie_check_required is selfie check required
+  # @param [Boolean] opted_in_to_in_person_proofing user opts in to IPP
   # @param [Hash] data hash returned by Socure
   # @param [Hash] redirect hash for redirect (url and method)
   # @param [String] user_id internal id of socure user
@@ -4749,6 +4758,15 @@ module AnalyticsEvents
     liveness_checking_required:,
     vendor_request_time_in_ms:,
     vendor:,
+    language:,
+    step:,
+    analytics_id:,
+    redo_document_capture: nil,
+    skip_hybrid_handoff: nil,
+    selfie_check_required: nil,
+    opted_in_to_in_person_proofing: nil,
+    errors: nil,
+    exception: nil,
     reference_id: nil,
     data: nil,
     liveness_enabled: nil,
@@ -4763,12 +4781,21 @@ module AnalyticsEvents
       :idv_socure_document_request_submitted,
       success:,
       redirect:,
-      reference_id:,
       liveness_checking_required:,
       vendor_request_time_in_ms:,
       vendor:,
-      liveness_enabled:,
+      language:,
+      step:,
+      analytics_id:,
+      redo_document_capture:,
+      skip_hybrid_handoff:,
+      selfie_check_required:,
+      opted_in_to_in_person_proofing:,
+      errors:,
+      exception:,
+      reference_id:,
       data:,
+      liveness_enabled:,
       document_type:,
       docv_transaction_token:,
       user_id:,
