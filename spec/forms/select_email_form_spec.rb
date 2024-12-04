@@ -30,7 +30,7 @@ RSpec.describe SelectEmailForm do
 
     context 'with an invalid email id' do
       context 'with a blank email id' do
-        let(:selected_email_id) { nil }
+        let(:selected_email_id) { '' }
 
         it 'is unsuccessful' do
           expect(response.to_h).to eq(
