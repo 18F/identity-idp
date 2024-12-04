@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe CompletionsPresenter do
+  include Rails.application.routes.url_helpers
   include ActionView::Helpers::OutputSafetyHelper
   include ActionView::Helpers::TagHelper
 
@@ -342,6 +343,23 @@ RSpec.describe CompletionsPresenter do
             verified_at
           ]
         end
+      end
+    end
+  end
+
+  describe '#change_email_link' do
+    context 'when user has multiple emails at completion screen' do
+      let(:current_user) { create(:user, :fully_registered, :with_multiple_emails) }
+      it 'returns link for sign up select email path' do
+        expected_path = presenter.email_change_link
+        expect(expected_path).to eq(sign_up_select_email_path)
+      end
+    end
+
+    context 'when user has single email at completion screen' do
+      it 'returns link for add_email path' do
+        expected_path = presenter.email_change_link
+        expect(expected_path).to eq(add_email_path(in_select_email_flow: true))
       end
     end
   end

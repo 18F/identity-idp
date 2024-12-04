@@ -74,14 +74,12 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
       render
 
       expect(rendered).to_not include(t('help_text.requested_attributes.change_email_link'))
-      expect(rendered).to_not include(t('account.index.email_add'))
     end
 
     it 'does not show a link to add another email' do
       render
 
       expect(rendered).to_not include(t('help_text.requested_attributes.change_email_link'))
-      expect(rendered).to_not include(t('account.index.email_add'))
     end
   end
 
@@ -91,15 +89,19 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
       user.reload
       render
 
-      expect(rendered).to include(t('help_text.requested_attributes.change_email_link'))
-      expect(rendered).to_not include(t('account.index.email_add'))
+      expect(rendered).to have_link(
+        t('help_text.requested_attributes.change_email_link'),
+        href: sign_up_select_email_path,
+      )
     end
 
     it 'does not show a link to add another email' do
       render
 
-      expect(rendered).to_not include(t('help_text.requested_attributes.change_email_link'))
-      expect(rendered).to include(t('account.index.email_add'))
+      expect(rendered).to have_link(
+        t('help_text.requested_attributes.change_email_link'),
+        href: add_email_path(in_select_email_flow: true),
+      )
     end
   end
 

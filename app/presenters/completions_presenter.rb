@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
 class CompletionsPresenter
+  include Rails.application.routes.url_helpers
   include ActionView::Helpers::TranslationHelper
   include ActionView::Helpers::TagHelper
 
   attr_reader :current_user, :current_sp, :decrypted_pii, :requested_attributes,
-              :completion_context, :selected_email_id
+              :completion_context, :selected_email_id, :url_options
 
   SORTED_IAL2_ATTRIBUTE_MAPPING = [
     [[:email], :email],
@@ -105,8 +106,12 @@ class CompletionsPresenter
     end
   end
 
-  def multiple_emails?
-    current_user.confirmed_email_addresses.many?
+  def email_change_link
+    if current_user.confirmed_email_addresses.many?
+      sign_up_select_email_path
+    else
+      add_email_path(in_select_email_flow: true)
+    end
   end
 
   private
