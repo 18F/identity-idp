@@ -1490,7 +1490,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                   allow(analytics).to receive(
                     :idv_in_person_usps_proofing_results_job_please_call_email_initiated,
                   )
-                  allow(user_mailer).to receive(:in_person_please_call).and_return(mail_deliverer)
+                  allow(user_mailer).to receive(:idv_please_call).and_return(mail_deliverer)
                   subject.perform(current_time)
                 end
 
@@ -1545,10 +1545,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                 end
 
                 it 'sends the please call email' do
-                  expect(user_mailer).to have_received(:in_person_please_call).with(
-                    enrollment: enrollment,
-                    visited_location_name: visited_location_name,
-                  )
+                  expect(user_mailer).to have_received(:idv_please_call)
                   expect(mail_deliverer).to have_received(:deliver_later).with(
                     queue: :intentionally_delayed,
                     wait_until: (enrollment.reload.status_check_completed_at +

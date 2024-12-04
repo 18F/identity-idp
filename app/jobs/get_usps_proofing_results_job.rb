@@ -487,7 +487,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     )
 
     # send email
-    send_please_call_email(enrollment:, visited_location_name: response['proofingPostOffice'])
+    send_please_call_email(enrollment:)
     analytics(user: enrollment.user).
       idv_in_person_usps_proofing_results_job_please_call_email_initiated(
         **email_analytics_attributes(enrollment),
@@ -605,13 +605,12 @@ class GetUspsProofingResultsJob < ApplicationJob
     end
   end
 
-  def send_please_call_email(enrollment:, visited_location_name:)
+  def send_please_call_email(enrollment:)
     enrollment.user.confirmed_email_addresses.each do |email_address|
       # rubocop:disable IdentityIdp/MailLaterLinter
-      UserMailer.with(user: enrollment.user, email_address: email_address).in_person_please_call(
-        enrollment: enrollment,
-        visited_location_name: visited_location_name,
-      ).deliver_later(**notification_delivery_params(enrollment))
+      UserMailer.with(user: enrollment.user, email_address: email_address).
+        idv_please_call.
+        deliver_later(**notification_delivery_params(enrollment))
       # rubocop:enable IdentityIdp/MailLaterLinter
     end
   end
