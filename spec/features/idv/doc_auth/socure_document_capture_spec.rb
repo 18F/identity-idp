@@ -98,12 +98,12 @@ RSpec.feature 'document capture step', :js do
             socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
           end
         end
-  
+
         context 'successfully erases capture app url when flow is complete' do
           before do
             DocAuth::Mock::DocAuthMockClient.reset!
           end
-  
+
           it 'proceeds to the next page with valid info' do
             document_capture_session = DocumentCaptureSession.find_by(user_id: @user.id)
             expect(page).to have_current_path(fake_socure_document_capture_app_url)
@@ -118,7 +118,7 @@ RSpec.feature 'document capture step', :js do
             document_capture_session.reload
             expect(document_capture_session.socure_docv_capture_app_url).to be_nil
           end
-  
+
           it 'submits front ID, exits app, reuse capture app url' do
             document_capture_session = DocumentCaptureSession.find_by(user_id: @user.id)
             expect(page).to have_current_path(fake_socure_document_capture_app_url)
@@ -140,7 +140,7 @@ RSpec.feature 'document capture step', :js do
             expect(document_capture_session.socure_docv_capture_app_url).
               to eq(fake_socure_document_capture_app_url)
           end
-  
+
           it 'decline TOS making session expire, generates new capture app' do
             document_capture_session = DocumentCaptureSession.find_by(user_id: @user.id)
             expect(page).to have_current_path(fake_socure_document_capture_app_url)
