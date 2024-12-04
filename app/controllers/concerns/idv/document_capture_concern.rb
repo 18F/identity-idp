@@ -12,13 +12,8 @@ module Idv
         flash[:success] = t('doc_auth.headings.capture_complete')
         successful_response
       else
-        FormResponse.new(
-          {
-            success: false,
-            errors: error_hash(message),
-            extra: { stored_result_present: stored_result.present? },
-          },
-        )
+        extra = { stored_result_present: stored_result.present? }
+        failure(nil, extra)
       end
     end
 
@@ -26,10 +21,18 @@ module Idv
       FormResponse.new(success: true)
     end
 
+    # copied from Flow::Failure module
+    def failure(message = nil, extra = nil)
+      form_response_params = { success: false }
+      form_response_params[:errors] = error_hash(message)
+      form_response_params[:extra] = extra unless extra.nil?
+      FormResponse.new(**form_response_params)
+    end
+
     def error_hash(message)
       {
         message: message || I18n.t('doc_auth.errors.general.network_error'),
-        socure: stored_result&.errors[:socure],
+        socure: stored_result&.errors&.dig(:socure),
       }
     end
 
