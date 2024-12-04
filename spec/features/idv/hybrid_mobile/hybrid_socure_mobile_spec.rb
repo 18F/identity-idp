@@ -373,6 +373,9 @@ RSpec.describe 'Hybrid Flow' do
         click_idv_continue
 
         socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
+
+        binding.pry
+
         visit idv_hybrid_mobile_socure_document_capture_update_url
 
         expect(page).to have_text(t(expected_header_key))
