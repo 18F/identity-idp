@@ -221,9 +221,8 @@ FactoryBot.define do
     end
 
     trait :with_pending_in_person_enrollment do
-      after :build do |user|
-        profile = create(:profile, :with_pii, :in_person_verification_pending, user: user)
-        create(:in_person_enrollment, :pending, user: user, profile: profile)
+      profiles do
+        [association(:profile, :with_pii, :in_person_verification_pending, user: instance)]
       end
     end
 
