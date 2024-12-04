@@ -15,7 +15,7 @@ module RuboCop
       #   # good
       #   image_tag 'example.svg', width: 10, height: 20
       #
-      class ImageSizeLinter < RuboCop::Cop::Cop
+      class ImageSizeLinter < RuboCop::Cop::Base
         MSG = 'Assign width and height to images'
 
         RESTRICT_ON_SEND = [:image_tag].freeze

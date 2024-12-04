@@ -16,7 +16,7 @@ module RuboCop
       #   UserMailer.with(params).signup_with_your_email(user, email).deliver_now_or_later
       #   ReportMailer.report_mail(data).deliver_now
       #
-      class MailLaterLinter < RuboCop::Cop::Cop
+      class MailLaterLinter < RuboCop::Cop::Base
         MSG = 'Please send mail using deliver_now_or_later instead'
 
         RESTRICT_ON_SEND = [:deliver_now, :deliver_later].freeze

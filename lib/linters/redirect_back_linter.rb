@@ -16,7 +16,7 @@ module RuboCop
       #   #good
       #   redirect_back fallback_location: '/', allow_other_host: false
       #
-      class RedirectBackLinter < RuboCop::Cop::Cop
+      class RedirectBackLinter < RuboCop::Cop::Base
         MSG = 'Please set a fallback_location and the allow_other_host parameter to false'
 
         RESTRICT_ON_SEND = [:redirect_back].freeze

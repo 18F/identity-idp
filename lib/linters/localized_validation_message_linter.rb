@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module IdentityIdp
-      class LocalizedValidationMessageLinter < RuboCop::Cop::Cop
+      class LocalizedValidationMessageLinter < RuboCop::Cop::Base
         MSG = 'Use proc when translating validation message'
 
         RESTRICT_ON_SEND = [

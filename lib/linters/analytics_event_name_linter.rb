@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module IdentityIdp
-      class AnalyticsEventNameLinter < RuboCop::Cop::Cop
+      class AnalyticsEventNameLinter < RuboCop::Cop::Base
         RESTRICT_ON_SEND = [:track_event].freeze
 
         # DO NOT ADD TO THIS LIST OR YOU WILL MAKE A KITTEN CRY!
