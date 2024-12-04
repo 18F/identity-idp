@@ -63,6 +63,9 @@ RSpec.feature 'document capture step', :js do
             'Rate Limit Reached',
             limiter_type: :idv_doc_auth,
           )
+          expect(fake_analytics).to have_logged_event(
+            :idv_socure_document_request_submitted,
+          )
         end
 
         context 'successfully processes image on last attempt' do
@@ -203,6 +206,9 @@ RSpec.feature 'document capture step', :js do
           expect(page).to have_current_path(idv_ssn_url)
 
           expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('NY')
+          expect(fake_analytics).to have_logged_event(
+            :idv_socure_document_request_submitted,
+          )
 
           fill_out_ssn_form_ok
           click_idv_continue
@@ -234,6 +240,9 @@ RSpec.feature 'document capture step', :js do
 
     it 'shows the correct error page' do
       expect(page).to have_content(t(expected_header_key))
+      expect(fake_analytics).to have_logged_event(
+        :idv_socure_document_request_submitted,
+      )
     end
   end
 
