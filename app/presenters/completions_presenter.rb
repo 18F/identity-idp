@@ -45,6 +45,7 @@ class CompletionsPresenter
     @ial2_requested = ial2_requested
     @completion_context = completion_context
     @selected_email_id = selected_email_id
+    @url_options = {}
   end
 
   def ial2_requested?
