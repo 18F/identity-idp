@@ -451,6 +451,11 @@ module AnalyticsEvents
     track_event(:concurrent_session_logout)
   end
 
+  # User visits the connected accounts page
+  def connected_accounts_page_visited
+    track_event(:connected_accounts_page_visited)
+  end
+
   # @param [String] redirect_url URL user was directed to
   # @param [String, nil] step which step
   # @param [String, nil] location which part of a step, if applicable
