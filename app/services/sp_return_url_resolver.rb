@@ -25,11 +25,7 @@ class SpReturnUrlResolver
   end
 
   def post_idv_followup_url
-    if service_provider.post_idv_followup_url.present?
-      UriService.add_params(service_provider.post_idv_followup_url, locale: I18n.locale)
-    else
-      homepage_url
-    end
+    service_provider.post_idv_followup_url || homepage_url
   end
 
   private

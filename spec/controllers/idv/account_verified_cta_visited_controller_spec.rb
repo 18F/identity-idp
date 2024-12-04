@@ -28,12 +28,12 @@ RSpec.describe Idv::AccountVerifiedCtaVisitedController, type: :controller do
         { issuer: 'urn:my:awesome:issuer', campaign_id: '123234234' }
       end
 
-      it 'redirects to the service provider followup url with locale and logs event' do
+      it 'redirects to the service provider followup url and logs event' do
         action
 
         aggregate_failures 'verify response' do
           expect(response).to have_http_status(:redirect)
-          expect(response).to redirect_to('https://some-sp.com?locale=en')
+          expect(response).to redirect_to('https://some-sp.com')
         end
 
         expect(@analytics).to have_logged_event(

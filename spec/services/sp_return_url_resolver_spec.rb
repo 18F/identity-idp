@@ -168,11 +168,7 @@ RSpec.describe SpReturnUrlResolver do
       let(:return_to_sp_url) { 'https://sp.gov/return_to_sp' }
       let(:sp_post_idv_followup_url) { 'https://sp.gov/followup' }
 
-      it 'redirects to the followup URL with a locale' do
-        expect(post_idv_followup_url).to eq(
-          UriService.add_params(sp_post_idv_followup_url, locale: I18n.locale),
-        )
-      end
+      it { expect(post_idv_followup_url).to eq(sp_post_idv_followup_url) }
     end
   end
 end
