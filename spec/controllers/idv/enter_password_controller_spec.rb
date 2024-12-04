@@ -17,6 +17,8 @@ RSpec.describe Idv::EnterPasswordController do
     subject.idv_session
   end
 
+  let(:threatmetrix_review_status) { 'pass' }
+
   before do
     stub_analytics
     stub_sign_in(user)
@@ -27,6 +29,7 @@ RSpec.describe Idv::EnterPasswordController do
     subject.idv_session.flow_path = 'standard'
     subject.idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
     subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:ssn]
+    subject.idv_session.threatmetrix_review_status = threatmetrix_review_status
     subject.idv_session.threatmetrix_session_id = 'random-session-id'
     subject.idv_session.resolution_successful = true
     subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE
@@ -404,6 +407,19 @@ RSpec.describe Idv::EnterPasswordController do
         expect(events_count).to eq 1
       end
 
+      context 'user was flagged for fraud' do
+        let(:threatmetrix_review_status) { 'reject' }
+
+        it 'sends the user a "please call us" email' do
+          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+          expect_delivered_email_count(1)
+          expect_delivered_email(
+            to: [user.email_addresses.first.email],
+            subject: t('user_mailer.idv_please_call.subject', app_name: APP_NAME),
+          )
+        end
+      end
+
       context 'with in person profile' do
         let!(:enrollment) do
           create(:in_person_enrollment, :establishing, user: user, profile: nil)
@@ -448,6 +464,19 @@ RSpec.describe Idv::EnterPasswordController do
           expect(UserAlerts::AlertUserAboutAccountVerified).not_to receive(:call)
 
           put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+        end
+
+        context 'user was flagged for fraud' do
+          let(:threatmetrix_review_status) { 'reject' }
+
+          it 'does not send the user a "please call us" email' do
+            # For IPP, this is sent later, after the user goes to the post office.
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+            expect_email_not_delivered(
+              to: [user.email_addresses.first.email],
+              subject: t('user_mailer.idv_please_call.subject', app_name: APP_NAME),
+            )
+          end
         end
 
         it 'creates an in-person enrollment record' do
@@ -894,6 +923,19 @@ RSpec.describe Idv::EnterPasswordController do
         profile.reload
 
         expect(profile).to_not be_active
+      end
+
+      context 'user was flagged for fraud' do
+        let(:threatmetrix_review_status) { 'reject' }
+
+        it 'does not send the user a "please call us" email' do
+          # For GPO, this is sent after they enter their code
+          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+          expect_email_not_delivered(
+            to: [user.email_addresses.first.email],
+            subject: t('user_mailer.idv_please_call.subject', app_name: APP_NAME),
+          )
+        end
       end
 
       it 'sends an email about the gpo letter' do

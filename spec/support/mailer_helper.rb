@@ -37,4 +37,28 @@ module MailerHelper
     ERROR
     expect(email).to_not be(nil), error_message
   end
+
+  def expect_email_not_delivered(to: nil, subject: nil, body: nil)
+    email = ActionMailer::Base.deliveries.find do |sent_mail|
+      next unless to.present? && sent_mail.to == to
+      next unless subject.present? && sent_mail.subject == subject
+      if body.present?
+        delivered_body = sent_mail.text_part.decoded.squish
+        body.to_a.each do |expected_body|
+          next unless delivered_body.include?(expected_body)
+        end
+      end
+      true
+    end
+
+    error_message = <<~ERROR
+      Should not have found a sent email matching this, but we did:
+        to: #{to}
+        subject: #{subject}
+        body: #{body}
+      Sent mails: #{ActionMailer::Base.deliveries}
+    ERROR
+
+    expect(email).to be(nil), error_message
+  end
 end

@@ -143,12 +143,14 @@ module Idv
         UserAlerts::AlertUserAboutAccountVerified.call(
           profile: idv_session.profile,
         )
-        return
-      end
-
-      if profile.gpo_verification_pending?
+      elsif profile.gpo_verification_pending?
         current_user.send_email_to_all_addresses(:verify_by_mail_letter_requested)
         log_letter_enqueued_analytics(resend: false)
+      elsif profile.in_person_verification_pending?
+        return
+      elsif profile.fraud_review_pending?
+        # Note that IPP + GPO flows send this email later on
+        current_user.send_email_to_all_addresses(:idv_please_call)
       end
     end
 
