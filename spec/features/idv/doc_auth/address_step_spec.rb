@@ -2,7 +2,6 @@ require 'rails_helper'
 
 RSpec.feature 'doc auth verify step', :js do
   include IdvStepHelper
-  include DocAuthHelper
 
   let(:puerto_rico_address1_hint) do
     "#{t('forms.example')} 150 Calle A Apt 3"

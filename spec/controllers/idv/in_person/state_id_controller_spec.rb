@@ -235,6 +235,11 @@ RSpec.describe Idv::InPerson::StateIdController do
             identity_doc_city:,
             identity_doc_address_state:,
             identity_doc_zipcode:,
+            address1: identity_doc_address1,
+            address2: identity_doc_address2,
+            city: identity_doc_city,
+            state: identity_doc_address_state,
+            zipcode: identity_doc_zipcode,
           )
 
           # On Verify, user changes response from "Yes,..." to

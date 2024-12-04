@@ -110,7 +110,7 @@ RSpec.describe 'state id controller enabled', :js do
       )
       expect(page).to have_field(
         t('in_person_proofing.form.state_id.identity_doc_address_state'),
-        with: Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION,
+        with: Idp::Constants::MOCK_IDV_APPLICANT_STATE,
       )
       expect(page).to have_checked_field(
         t('in_person_proofing.form.state_id.same_address_as_id_yes'),

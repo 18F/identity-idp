@@ -47,7 +47,7 @@ module InPersonHelper
     fill_in t('in_person_proofing.form.state_id.address2'), with: GOOD_IDENTITY_DOC_ADDRESS2
     fill_in t('in_person_proofing.form.state_id.city'), with: GOOD_IDENTITY_DOC_CITY
     fill_in t('in_person_proofing.form.state_id.zipcode'), with: GOOD_IDENTITY_DOC_ZIPCODE
-    select GOOD_STATE_ID_JURISDICTION,
+    select GOOD_STATE,
            from: t('in_person_proofing.form.state_id.identity_doc_address_state')
     if same_address_as_id
       choose t('in_person_proofing.form.state_id.same_address_as_id_yes')
