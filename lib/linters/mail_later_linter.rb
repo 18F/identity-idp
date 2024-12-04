@@ -33,7 +33,7 @@ module RuboCop
                           receiver.receiver.const_name
                         end
 
-          add_offense(node, location: :expression) if mailer_name == 'UserMailer'
+          add_offense(node) if mailer_name == 'UserMailer'
         end
       end
     end
