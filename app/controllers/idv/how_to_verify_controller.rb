@@ -96,7 +96,6 @@ module Idv
     end
 
     def mobile_required?
-      return false if idv_session.desktop_selfie_test_mode_enabled?
       idv_session.selfie_check_required || doc_auth_vendor == Idp::Constants::Vendors::SOCURE
     end
   end
