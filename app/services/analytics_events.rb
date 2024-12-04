@@ -4694,8 +4694,8 @@ module AnalyticsEvents
   # @param [Boolean] skip_hybrid_handoff if user is skipping handoff
   # @param [Boolean] selfie_check_required is selfie check required
   # @param [Boolean] opted_in_to_in_person_proofing user opts in to IPP
-  # @param [Hash] data hash returned by Socure
   # @param [Hash] redirect hash for redirect (url and method)
+  # @param [Hash] response_body hash received from socure
   # @param [String] user_id internal id of socure user
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Float] vendor_request_time_in_ms Time it took to upload images & get a response.
@@ -4703,7 +4703,6 @@ module AnalyticsEvents
   # @param [Boolean] liveness_enabled Whether or not the selfie result is included in response
   # @param [String] vendor which 2rd party we are using for doc auth
   # @param [Hash] document_type type of socument submitted (Drivers Licenese, etc.)
-  # @param [Integer] qr_code Code from Socure request
   # The request for socure verification was sent
   def idv_socure_document_request_submitted(
     success:,
@@ -4714,6 +4713,7 @@ module AnalyticsEvents
     language:,
     step:,
     analytics_id:,
+    response_body:,
     redo_document_capture: nil,
     skip_hybrid_handoff: nil,
     selfie_check_required: nil,
@@ -4721,13 +4721,11 @@ module AnalyticsEvents
     errors: nil,
     exception: nil,
     reference_id: nil,
-    data: nil,
     liveness_enabled: nil,
     document_type: nil,
     docv_transaction_token: nil,
     user_id: nil,
     flow_path: nil,
-    qr_code: nil,
     **extra
   )
     track_event(
@@ -4747,13 +4745,12 @@ module AnalyticsEvents
       errors:,
       exception:,
       reference_id:,
-      data:,
+      response_body:,
       liveness_enabled:,
       document_type:,
       docv_transaction_token:,
       user_id:,
       flow_path:,
-      qr_code:,
       **extra,
     )
   end
