@@ -8,7 +8,8 @@ class TwoFactorOptionsPresenter
               :return_to_sp_cancel_path,
               :phishing_resistant_required,
               :piv_cac_required,
-              :user_agent
+              :user_agent,
+              :desktop_ft_ab_test
 
   delegate :two_factor_enabled?, to: :mfa_policy
   def initialize(
@@ -18,7 +19,8 @@ class TwoFactorOptionsPresenter
     piv_cac_required: false,
     show_skip_additional_mfa_link: true,
     after_mfa_setup_path: nil,
-    return_to_sp_cancel_path: nil
+    return_to_sp_cancel_path: nil,
+    desktop_ft_ab_test: false
   )
     @user_agent = user_agent
     @user = user
@@ -27,6 +29,7 @@ class TwoFactorOptionsPresenter
     @show_skip_additional_mfa_link = show_skip_additional_mfa_link
     @after_mfa_setup_path = after_mfa_setup_path
     @return_to_sp_cancel_path = return_to_sp_cancel_path
+    @desktop_ft_ab_test = desktop_ft_ab_test
   end
 
   def options
@@ -47,6 +50,7 @@ class TwoFactorOptionsPresenter
         piv_cac_required: piv_cac_required?,
         phishing_resistant_required: phishing_resistant_only?,
         user_agent:,
+        desktop_ft_ab_test:,
       )
     end.
       partition(&:recommended?).
