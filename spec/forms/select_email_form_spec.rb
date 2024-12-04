@@ -14,7 +14,7 @@ RSpec.describe SelectEmailForm do
       let(:selected_email_id) { user.confirmed_email_addresses.take.id }
 
       it 'is successful' do
-        expect(response.to_h).to eq(success: true)
+        expect(response.to_h).to eq(success: true, selected_email_id:)
       end
 
       context 'with associated identity' do
@@ -29,13 +29,26 @@ RSpec.describe SelectEmailForm do
     end
 
     context 'with an invalid email id' do
-      let(:selected_email_id) { nil }
+      let(:selected_email_id) { '' }
 
       it 'is unsuccessful' do
         expect(response.to_h).to eq(
           success: false,
           error_details: { selected_email_id: { not_found: true } },
+          selected_email_id: nil,
         )
+      end
+
+      context 'with present value that does not convert to numeric' do
+        let(:selected_email_id) { true }
+
+        it 'is unsuccessful without raising exception' do
+          expect(response.to_h).to eq(
+            success: false,
+            error_details: { selected_email_id: { not_found: true } },
+            selected_email_id: nil,
+          )
+        end
       end
 
       context 'with associated identity' do
@@ -55,7 +68,7 @@ RSpec.describe SelectEmailForm do
     end
 
     context 'with an unconfirmed email address added' do
-      let(:selected_email_id) { user.email_addresses.find_by(confirmed_at: nil) }
+      let(:selected_email_id) { user.email_addresses.find_by(confirmed_at: nil).id }
 
       before do
         create(:email_address, :unconfirmed, user:)
@@ -65,6 +78,7 @@ RSpec.describe SelectEmailForm do
         expect(response.to_h).to eq(
           success: false,
           error_details: { selected_email_id: { not_found: true } },
+          selected_email_id:,
         )
       end
 
@@ -85,6 +99,7 @@ RSpec.describe SelectEmailForm do
         expect(response.to_h).to eq(
           success: false,
           error_details: { selected_email_id: { not_found: true } },
+          selected_email_id:,
         )
       end
 

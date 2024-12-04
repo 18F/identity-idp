@@ -38,7 +38,7 @@ module SignUp
 
       confirmation_token = session[:user_confirmation_token]
       email_address = EmailAddress.find_with_confirmation_token(confirmation_token)
-      @token_validator = EmailConfirmationTokenValidator.new(email_address, current_user)
+      @token_validator = EmailConfirmationTokenValidator.new(email_address:, current_user:)
       result = @token_validator.submit
 
       if result.success?

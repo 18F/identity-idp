@@ -4,6 +4,8 @@ RSpec.describe Users::EmailConfirmationsController do
   describe '#create' do
     describe 'Valid email confirmation tokens' do
       it 'tracks a valid email confirmation token event' do
+        stub_analytics
+
         user = create(:user)
         new_email = Faker::Internet.email
 
@@ -23,6 +25,14 @@ RSpec.describe Users::EmailConfirmationsController do
         email_record = add_email_form.email_address_record(new_email)
 
         get :create, params: { confirmation_token: email_record.reload.confirmation_token }
+
+        expect(@analytics).to have_logged_event(
+          'Add Email: Email Confirmation',
+          success: true,
+          errors: {},
+          from_select_email_flow: false,
+          user_id: user.uuid,
+        )
       end
 
       context 'when select email feature is disabled' do
@@ -126,6 +136,7 @@ RSpec.describe Users::EmailConfirmationsController do
         end
 
         it 'adds an email from the service provider consent flow' do
+          stub_analytics
           new_email = Faker::Internet.email
           add_email_form = AddUserEmailForm.new
           add_email_form.submit(user, email: new_email, request_id: sp_request_uuid)
@@ -134,8 +145,16 @@ RSpec.describe Users::EmailConfirmationsController do
           get :create, params: {
             confirmation_token: email_record.reload.confirmation_token,
             request_id: sp_request_uuid,
+            from_select_email_flow: 'true',
           }
 
+          expect(@analytics).to have_logged_event(
+            'Add Email: Email Confirmation',
+            success: true,
+            errors: {},
+            from_select_email_flow: true,
+            user_id: user.uuid,
+          )
           expect(response).to redirect_to(sign_up_select_email_url)
         end
       end
