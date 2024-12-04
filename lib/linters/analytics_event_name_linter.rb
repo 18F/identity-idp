@@ -45,7 +45,6 @@ module RuboCop
           return if LEGACY_EVENT_NAMES.include?(Digest::MD5.hexdigest(actual_name.to_s)[0...7])
           add_offense(
             first_argument,
-            location: :expression,
             message: "Event name must match the method name, expected `:#{expected_name}`",
           )
         end

@@ -29,7 +29,7 @@ module RuboCop
           return if type && type.type == :sym
           options = type if type && type.type == :hash
           return if options && options.type == :hash && options.keys.map(&:value).include?(:type)
-          add_offense(node, location: :expression)
+          add_offense(node)
         end
       end
     end

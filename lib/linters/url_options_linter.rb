@@ -47,7 +47,7 @@ module RuboCop
           return unless includes_url_helpers?(node)
           return if defines_url_options?(node)
 
-          add_offense(node, location: :expression)
+          add_offense(node)
         end
 
         private

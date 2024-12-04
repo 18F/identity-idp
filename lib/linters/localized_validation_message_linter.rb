@@ -33,7 +33,7 @@ module RuboCop
 
         def on_send(node)
           if translated_validation_message?(node) || translated_validation_helper_message?(node)
-            add_offense(node, location: :expression)
+            add_offense(node)
           end
         end
       end

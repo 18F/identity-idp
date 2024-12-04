@@ -26,7 +26,7 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          add_offense(node, location: :expression) && return if node.arguments.empty?
+          add_offense(node) && return if node.arguments.empty?
 
           sets_fallback_location, sets_allow_other_host_false = false
           redirect_back_matcher(node) do |arguments|
@@ -45,7 +45,7 @@ module RuboCop
 
           return if sets_fallback_location && sets_allow_other_host_false
 
-          add_offense(node, location: :expression)
+          add_offense(node)
         end
       end
     end
