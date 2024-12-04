@@ -315,6 +315,7 @@ reauthn_window: 1200
 recaptcha_enterprise_api_key: ''
 recaptcha_enterprise_project_id: ''
 recaptcha_mock_validator: true
+recaptcha_request_timeout_in_seconds: 5
 recaptcha_secret_key: ''
 recaptcha_site_key: ''
 recommend_webauthn_platform_for_sms_ab_test_account_creation_percent: 0

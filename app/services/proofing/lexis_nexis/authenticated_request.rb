@@ -10,9 +10,6 @@ module Proofing
             f.request :authorization, :basic, config.username, config.password
           end
           f.options.timeout = timeout
-          f.options.read_timeout = timeout
-          f.options.open_timeout = timeout
-          f.options.write_timeout = timeout
         end
 
         Response.new(

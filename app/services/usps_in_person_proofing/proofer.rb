@@ -119,9 +119,6 @@ module UspsInPersonProofing
     def faraday
       Faraday.new(headers: request_headers) do |conn|
         conn.options.timeout = IdentityConfig.store.usps_ipp_request_timeout
-        conn.options.read_timeout = IdentityConfig.store.usps_ipp_request_timeout
-        conn.options.open_timeout = IdentityConfig.store.usps_ipp_request_timeout
-        conn.options.write_timeout = IdentityConfig.store.usps_ipp_request_timeout
 
         # Log request metrics
         conn.request :instrumentation, name: 'request_metric.faraday'

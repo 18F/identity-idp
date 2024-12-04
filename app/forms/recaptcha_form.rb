@@ -89,6 +89,7 @@ class RecaptchaForm
 
   def faraday
     Faraday.new do |conn|
+      conn.options.timeout = IdentityConfig.store.recaptcha_request_timeout_in_seconds
       conn.request :instrumentation, name: 'request_log.faraday'
       conn.response :json
     end
