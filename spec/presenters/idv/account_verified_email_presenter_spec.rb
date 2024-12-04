@@ -126,7 +126,7 @@ RSpec.describe Idv::AccountVerifiedEmailPresenter do
 
       describe '#bare_sign_in_url' do
         it 'links to the SP' do
-          expect(presenter.displayed_sign_in_url).to eq('https://www.mysp.com')
+          expect(presenter.displayed_sign_in_url).to eq('https://www.mysp.com?locale=en')
         end
       end
 
