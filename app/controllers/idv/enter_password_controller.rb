@@ -127,7 +127,7 @@ module Idv
     end
 
     def init_profile
-      idv_session.create_profile_from_applicant_with_password(
+      profile = idv_session.create_profile_from_applicant_with_password(
         password,
         is_enhanced_ipp: resolved_authn_context_result.enhanced_ipp?,
         proofing_components: ProofingComponents.new(
@@ -137,12 +137,13 @@ module Idv
           user_session:,
         ).to_h,
       )
-      if idv_session.verify_by_mail?
+
+      if profile.gpo_verification_pending?
         current_user.send_email_to_all_addresses(:verify_by_mail_letter_requested)
         log_letter_enqueued_analytics(resend: false)
       end
 
-      if idv_session.profile.active?
+      if profile.active?
         create_user_event(:account_verified)
         UserAlerts::AlertUserAboutAccountVerified.call(
           profile: idv_session.profile,
