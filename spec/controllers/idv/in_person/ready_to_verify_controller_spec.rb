@@ -44,7 +44,6 @@ RSpec.describe Idv::InPerson::ReadyToVerifyController do
 
         context 'with enrollment' do
           let(:user) { create(:user, :with_pending_in_person_enrollment) }
-          let(:profile) { create(:profile, :with_pii, user: user) }
 
           it 'renders show template' do
             expect(response).to render_template :show
