@@ -33,7 +33,7 @@ module Idv
           @document_response = document_response
           @url = document_response.dig(:data, :url)
 
-          analytics.idv_socure_document_request_submitted(**capture_app_analytics(timer))
+          track_document_request_event(document_request:, document_response:, timer:)
 
           # placeholder until we get an error page for url not being present
           if @url.nil?

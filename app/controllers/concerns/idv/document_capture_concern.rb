@@ -81,19 +81,20 @@ module Idv
       redirect_to correct_path
     end
 
-    def capture_app_analytics(timer)
-      document_request_body = JSON.parse(@document_request.body, symbolize_names: true)[:config]
+    def track_document_request_event(document_request:, document_response:, timer:)
+      document_request_body = JSON.parse(document_request.body, symbolize_names: true)[:config]
       log_extras = {
+        reference_id: document_response.to_h[:referenceId],
         vendor: 'Socure',
-        reference_id: @document_response.to_h[:referenceId],
         vendor_request_time_in_ms: timer.results['vendor_request'],
-        success: !@url.nil?,
+        success: @url.present?,
         document_type: document_request_body[:documentType],
       }
-      @document_response.to_h.merge(log_extras).merge(analytics_arguments).
+      analytics_hash = log_extras.merge(analytics_arguments).
         merge(document_request_body).except(
-          :referenceId, :documentType, :extra
-        ).compact
+          :documentType, # requested document type
+        ).merge(response_body: document_response.to_h)
+      analytics.idv_socure_document_request_submitted(**analytics_hash)
     end
 
     private
