@@ -33,7 +33,7 @@ module RuboCop
       #     end
       #   end
       #
-      class UrlOptionsLinter < RuboCop::Cop::Cop
+      class UrlOptionsLinter < RuboCop::Cop::Base
         MSG = 'Please define url_options when including Rails.application.routes.url_helpers'
 
         RESTRICT_ON_SEND = [:include].freeze
@@ -47,7 +47,7 @@ module RuboCop
           return unless includes_url_helpers?(node)
           return if defines_url_options?(node)
 
-          add_offense(node, location: :expression)
+          add_offense(node)
         end
 
         private

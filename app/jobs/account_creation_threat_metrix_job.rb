@@ -7,7 +7,6 @@ class AccountCreationThreatMetrixJob < ApplicationJob
     request_ip: nil,
     email: nil
   )
-
     device_profiling_result = AccountCreation::DeviceProfiling.new.proof(
       request_ip: request_ip,
       threatmetrix_session_id: threatmetrix_session_id,
