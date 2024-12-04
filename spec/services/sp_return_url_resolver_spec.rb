@@ -140,4 +140,39 @@ RSpec.describe SpReturnUrlResolver do
       end
     end
   end
+
+  describe '#post_idv_followup_url' do
+    let(:return_to_sp_url) { nil }
+    let(:sp_post_idv_followup_url) { nil }
+    let(:sp) do
+      build(
+        :service_provider,
+        return_to_sp_url: return_to_sp_url,
+        post_idv_followup_url: sp_post_idv_followup_url,
+      )
+    end
+    let(:instance) { described_class.new(service_provider: sp) }
+    subject(:post_idv_followup_url) { instance.post_idv_followup_url }
+
+    context 'with not homepage url or followup url configured' do
+      it { expect(post_idv_followup_url).to be_nil }
+    end
+
+    context 'with a homepage url configured' do
+      let(:return_to_sp_url) { 'https://sp.gov/return_to_sp' }
+
+      it { expect(post_idv_followup_url).to eq(return_to_sp_url) }
+    end
+
+    context 'with a followup url configured' do
+      let(:return_to_sp_url) { 'https://sp.gov/return_to_sp' }
+      let(:sp_post_idv_followup_url) { 'https://sp.gov/followup' }
+
+      it 'redirects to the followup URL with a locale' do
+        expect(post_idv_followup_url).to eq(
+          UriService.add_params(sp_post_idv_followup_url, locale: I18n.locale),
+        )
+      end
+    end
+  end
 end

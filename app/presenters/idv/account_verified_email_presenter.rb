@@ -16,7 +16,7 @@ module Idv
     end
 
     def show_cta?
-      !service_provider || service_provider_homepage_url.present?
+      !service_provider || service_provider_post_idv_followup_url.present?
     end
 
     def sign_in_url
@@ -32,11 +32,11 @@ module Idv
     end
 
     def displayed_sign_in_url
-      service_provider_homepage_url || root_url
+      service_provider_post_idv_followup_url || root_url
     end
 
-    def service_provider_homepage_url
-      sp_return_url_resolver.homepage_url if service_provider
+    def service_provider_post_idv_followup_url
+      sp_return_url_resolver.post_idv_followup_url if service_provider
     end
 
     def sp_name

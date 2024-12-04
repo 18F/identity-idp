@@ -24,6 +24,14 @@ class SpReturnUrlResolver
     service_provider.return_to_sp_url
   end
 
+  def post_idv_followup_url
+    if service_provider.post_idv_followup_url.present?
+      UriService.add_params(service_provider.post_idv_followup_url, locale: I18n.locale)
+    else
+      homepage_url
+    end
+  end
+
   private
 
   def inferred_redirect_url
