@@ -103,16 +103,22 @@ module DocumentCaptureStepHelper
     end
   end
 
-  def stub_docv_verification_data_pass
-    stub_docv_verification_data(body: SocureDocvFixtures.pass_json)
+  def stub_docv_verification_data_pass(docv_transaction_token:)
+    stub_docv_verification_data(body: SocureDocvFixtures.pass_json, docv_transaction_token:)
   end
 
-  def stub_docv_verification_data_fail_with(errors)
-    stub_docv_verification_data(body: SocureDocvFixtures.fail_json(errors))
+  def stub_docv_verification_data_fail_with(docv_transaction_token:, errors:)
+    stub_docv_verification_data(body: SocureDocvFixtures.fail_json(errors), docv_transaction_token:)
   end
 
-  def stub_docv_verification_data(body:)
+  def stub_docv_verification_data(body:, docv_transaction_token:)
+    request_body = {
+      modules: ['documentverification'],
+      docvTransactionToken: docv_transaction_token,
+    }
+
     stub_request(:post, "#{IdentityConfig.store.socure_idplus_base_url}/api/3.0/EmailAuthScore").
+      with(body: request_body.to_json).
       to_return(
         headers: {
           'Content-Type' => 'application/json',
