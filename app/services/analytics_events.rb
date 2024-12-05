@@ -243,14 +243,24 @@ module AnalyticsEvents
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] user_id User the email is linked to
+  # @param [Boolean] from_select_email_flow Whether email was added as part of partner email
+  # selection.
   # A user has clicked the confirmation link in an email
-  def add_email_confirmation(user_id:, success:, errors:, error_details: nil, **extra)
+  def add_email_confirmation(
+    user_id:,
+    success:,
+    errors:,
+    from_select_email_flow:,
+    error_details: nil,
+    **extra
+  )
     track_event(
       'Add Email: Email Confirmation',
       user_id:,
       success:,
       errors:,
       error_details:,
+      from_select_email_flow:,
       **extra,
     )
   end
@@ -259,21 +269,33 @@ module AnalyticsEvents
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] domain_name Domain name of email address submitted
+  # @param [Boolean] in_select_email_flow Whether email is being added as part of partner email
+  # selection.
   # Tracks request for adding new emails to an account
-  def add_email_request(success:, errors:, domain_name:, error_details: nil, **extra)
+  def add_email_request(
+    success:,
+    errors:,
+    domain_name:,
+    in_select_email_flow:,
+    error_details: nil,
+    **extra
+  )
     track_event(
       'Add Email Requested',
       success:,
       errors:,
       error_details:,
       domain_name:,
+      in_select_email_flow:,
       **extra,
     )
   end
 
   # When a user views the add email address page
-  def add_email_visit
-    track_event('Add Email Address Page Visited')
+  # @param [Boolean] in_select_email_flow Whether email is being added as part of partner email
+  # selection.
+  def add_email_visit(in_select_email_flow:, **extra)
+    track_event('Add Email Address Page Visited', in_select_email_flow:, **extra)
   end
 
   # Tracks When users visit the add phone page
@@ -429,6 +451,11 @@ module AnalyticsEvents
     track_event(:concurrent_session_logout)
   end
 
+  # User visits the connected accounts page
+  def connected_accounts_page_visited
+    track_event(:connected_accounts_page_visited)
+  end
+
   # @param [String] redirect_url URL user was directed to
   # @param [String, nil] step which step
   # @param [String, nil] location which part of a step, if applicable
@@ -478,7 +505,6 @@ module AnalyticsEvents
 
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  # @param [String] user_id UUID for user associated with attempted email address
   # @param [Boolean] user_locked_out if the user is currently locked out of their second factor
   # @param [Boolean] rate_limited Whether the user has exceeded user IP rate limiting
   # @param [Boolean] valid_captcha_result Whether user passed the reCAPTCHA check or was exempt
@@ -491,7 +517,6 @@ module AnalyticsEvents
   # Tracks authentication attempts at the email/password screen
   def email_and_password_auth(
     success:,
-    user_id:,
     user_locked_out:,
     rate_limited:,
     valid_captcha_result:,
@@ -507,7 +532,6 @@ module AnalyticsEvents
       'Email and Password Authentication',
       success:,
       error_details:,
-      user_id:,
       user_locked_out:,
       rate_limited:,
       valid_captcha_result:,
@@ -6825,10 +6849,12 @@ module AnalyticsEvents
   # User submitted form to change email shared with service provider
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # @param [Integer] selected_email_id Selected email address record ID
   # @param [String, nil] needs_completion_screen_reason Reason for the consent screen being shown,
   # if user is changing email in consent flow
   def sp_select_email_submitted(
     success:,
+    selected_email_id:,
     error_details: nil,
     needs_completion_screen_reason: nil,
     **extra
@@ -6838,6 +6864,7 @@ module AnalyticsEvents
       success:,
       error_details:,
       needs_completion_screen_reason:,
+      selected_email_id:,
       **extra,
     )
   end
@@ -7135,10 +7162,10 @@ module AnalyticsEvents
   )
     track_event(
       'User Registration: Email Confirmation',
-      success: success,
-      errors: errors,
-      error_details: error_details,
-      user_id: user_id,
+      success:,
+      errors:,
+      error_details:,
+      user_id:,
       **extra,
     )
   end

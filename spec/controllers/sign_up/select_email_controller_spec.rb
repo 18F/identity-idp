@@ -107,6 +107,7 @@ RSpec.describe SignUp::SelectEmailController do
         :sp_select_email_submitted,
         success: true,
         needs_completion_screen_reason: :new_attributes,
+        selected_email_id: selected_email.id,
       )
     end
 
@@ -131,6 +132,7 @@ RSpec.describe SignUp::SelectEmailController do
           success: false,
           error_details: { selected_email_id: { not_found: true } },
           needs_completion_screen_reason: :new_attributes,
+          selected_email_id: selected_email.id,
         )
       end
     end

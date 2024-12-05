@@ -36,10 +36,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: 752085a6f88cd3ce75ecc7a64afe064a0e4f9e35
-  tag: 0.23.3-18f
+  revision: e5d876cf10ce9b39bba0cc523d06c4dda1af5124
+  tag: 0.23.4-18f
   specs:
-    saml_idp (0.23.3.pre.18f)
+    saml_idp (0.23.4.pre.18f)
       activesupport
       builder
       faraday
@@ -382,7 +382,7 @@ GEM
     jmespath (1.6.2)
     jsbundling-rails (1.1.2)
       railties (>= 6.0.0)
-    json (2.7.2)
+    json (2.9.0)
     jwe (0.4.0)
     jwt (2.7.1)
     knapsack (4.0.0)
@@ -429,7 +429,7 @@ GEM
     method_source (1.1.0)
     mini_histogram (0.3.1)
     mini_mime (1.1.5)
-    mini_portile2 (2.8.7)
+    mini_portile2 (2.8.8)
     minitest (5.25.1)
     msgpack (1.7.2)
     multiset (0.5.3)
@@ -451,7 +451,7 @@ GEM
     net-ssh (6.1.0)
     newrelic_rpm (9.7.0)
     nio4r (2.7.3)
-    nokogiri (1.16.7)
+    nokogiri (1.16.8)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     numbers_and_words (0.11.12)
@@ -460,7 +460,7 @@ GEM
     openssl-signature_algorithm (1.2.1)
       openssl (> 2.0, < 3.1)
     orm_adapter (0.5.0)
-    parallel (1.25.1)
+    parallel (1.26.3)
     parser (3.3.4.2)
       ast (~> 2.4.1)
       racc
@@ -544,9 +544,9 @@ GEM
       activesupport (>= 5.0.0)
       minitest
       nokogiri (>= 1.6)
-    rails-html-sanitizer (1.6.0)
+    rails-html-sanitizer (1.6.1)
       loofah (~> 2.21)
-      nokogiri (~> 1.14)
+      nokogiri (>= 1.15.7, != 1.16.7, != 1.16.6, != 1.16.5, != 1.16.4, != 1.16.3, != 1.16.2, != 1.16.1, != 1.16.0.rc1, != 1.16.0)
     rails-i18n (7.0.6)
       i18n (>= 0.7, < 2)
       railties (>= 6.0.0, < 8)
@@ -571,7 +571,7 @@ GEM
       redis-client (>= 0.22.0)
     redis-client (0.22.2)
       connection_pool
-    regexp_parser (2.9.2)
+    regexp_parser (2.9.3)
     reline (0.5.9)
       io-console (~> 0.5)
     request_store (1.5.1)
@@ -612,35 +612,28 @@ GEM
     rspec-support (3.13.1)
     rspec_junit_formatter (0.6.0)
       rspec-core (>= 2, < 4, != 2.12.0)
-    rubocop (1.62.1)
+    rubocop (1.69.1)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
       parser (>= 3.3.0.2)
       rainbow (>= 2.2.2, < 4.0)
-      regexp_parser (>= 1.8, < 3.0)
-      rexml (>= 3.2.5, < 4.0)
-      rubocop-ast (>= 1.31.1, < 2.0)
+      regexp_parser (>= 2.9.3, < 3.0)
+      rubocop-ast (>= 1.36.2, < 2.0)
       ruby-progressbar (~> 1.7)
-      unicode-display_width (>= 2.4.0, < 3.0)
-    rubocop-ast (1.31.3)
+      unicode-display_width (>= 2.4.0, < 4.0)
+    rubocop-ast (1.36.2)
       parser (>= 3.3.1.0)
-    rubocop-capybara (2.19.0)
-      rubocop (~> 1.41)
-    rubocop-factory_bot (2.24.0)
-      rubocop (~> 1.33)
-    rubocop-performance (1.20.2)
+    rubocop-performance (1.23.0)
       rubocop (>= 1.48.1, < 2.0)
-      rubocop-ast (>= 1.30.0, < 2.0)
-    rubocop-rails (2.26.2)
+      rubocop-ast (>= 1.31.1, < 2.0)
+    rubocop-rails (2.27.0)
       activesupport (>= 4.2.0)
       rack (>= 1.1)
       rubocop (>= 1.52.0, < 2.0)
       rubocop-ast (>= 1.31.1, < 2.0)
-    rubocop-rspec (2.24.1)
-      rubocop (~> 1.33)
-      rubocop-capybara (~> 2.17)
-      rubocop-factory_bot (~> 2.22)
+    rubocop-rspec (3.2.0)
+      rubocop (~> 1.61)
     ruby-progressbar (1.13.0)
     ruby-saml (1.17.0)
       nokogiri (>= 1.13.10)
@@ -851,10 +844,10 @@ DEPENDENCIES
   rspec-rails (~> 7.0)
   rspec-retry
   rspec_junit_formatter
-  rubocop (~> 1.62.0)
-  rubocop-performance (~> 1.20.2)
-  rubocop-rails (>= 2.26.2)
-  rubocop-rspec
+  rubocop (~> 1.69.1)
+  rubocop-performance (~> 1.23.0)
+  rubocop-rails (~> 2.27.0)
+  rubocop-rspec (~> 3.2.0)
   ruby-progressbar
   ruby-saml
   safe_target_blank (>= 1.0.2)
@@ -876,7 +869,7 @@ DEPENDENCIES
   webauthn (~> 2.5.2)
   webmock
   xmldsig (~> 0.6)
-  xmlenc (~> 0.7, >= 0.7.1)
+  xmlenc (= 0.8.0)
   yard
   zlib
   zonebie

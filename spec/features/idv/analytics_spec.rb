@@ -160,7 +160,7 @@ RSpec.feature 'Analytics Regression', :js do
       },
       biographical_info: {
         birth_year: 1938,
-        identity_doc_address_state: 'ND',
+        identity_doc_address_state: 'MT',
         state: 'MT',
         state_id_jurisdiction: 'ND',
         state_id_number: '#############',

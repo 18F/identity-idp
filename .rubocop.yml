@@ -803,6 +803,9 @@ Performance/Squeeze:
 Performance/StartWith:
   Enabled: true
 
+Performance/StringBytesize:
+  Enabled: true
+
 Performance/StringIdentifierArgument:
   Enabled: true
 
@@ -1048,6 +1051,12 @@ Rails/WhereRange:
   Enabled: false
 
 RSpec/LeakyConstantDeclaration:
+  Enabled: true
+
+RSpec/MissingExpectationTargetMethod:
+  Enabled: true
+
+RSpec/RedundantPredicateMatcher:
   Enabled: true
 
 Security/Eval:

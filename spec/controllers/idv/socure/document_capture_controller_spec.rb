@@ -4,6 +4,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
   include FlowPolicyHelper
 
   let(:idv_vendor) { Idp::Constants::Vendors::SOCURE }
+  let(:vendor_switching_enabled) { true }
   let(:fake_socure_endpoint) { 'https://fake-socure.test' }
   let(:user) { create(:user) }
   let(:doc_auth_success) { true }
@@ -33,6 +34,8 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       and_return(fake_socure_endpoint)
     allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(idv_vendor)
     allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(idv_vendor)
+    allow(IdentityConfig.store).to receive(:doc_auth_vendor_switching_enabled).
+      and_return(vendor_switching_enabled)
     allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
 
     allow(subject).to receive(:stored_result).and_return(stored_result)
@@ -79,11 +82,37 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
     end
 
     context 'when we try to use this controller but we should be using the LN/mock version' do
-      let(:idv_vendor) { Idp::Constants::Vendors::LEXIS_NEXIS }
+      context 'when doc_auth_vendor is Lexis Nexis' do
+        let(:idv_vendor) { Idp::Constants::Vendors::LEXIS_NEXIS }
 
-      it 'redirects to the LN/mock controller' do
-        get :show
-        expect(response).to redirect_to idv_document_capture_url
+        it 'redirects to the LN/mock controller' do
+          get :show
+          expect(response).to redirect_to idv_document_capture_url
+        end
+      end
+
+      context 'when facial match is required' do
+        let(:acr_values) do
+          [
+            Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
+            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+          ].join(' ')
+        end
+        before do
+          resolved_authn_context = AuthnContextResolver.new(
+            user: user,
+            service_provider: nil,
+            vtr: nil,
+            acr_values: acr_values,
+          ).result
+          allow(controller).to receive(:resolved_authn_context_result).
+            and_return(resolved_authn_context)
+        end
+
+        it 'redirects to the LN/mock controller' do
+          get :show
+          expect(response).to redirect_to idv_document_capture_url
+        end
       end
     end
 
@@ -185,10 +214,10 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
     context 'there is no url in the socure response' do
       let(:response_body) { {} }
 
-      it 'redirects to idv unavailable url' do
+      it 'redirects to the errors page' do
         get(:show)
 
-        expect(response).to redirect_to(idv_unavailable_path)
+        expect(response).to redirect_to(idv_socure_document_capture_errors_url)
         expect(controller.send(:instance_variable_get, :@url)).not_to be
       end
     end
@@ -233,7 +262,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       it 'connection timeout still responds to user' do
         stub_request(:post, fake_socure_endpoint).to_raise(Faraday::ConnectionFailed)
         get(:show)
-        expect(response).to redirect_to(idv_unavailable_path)
+        expect(response).to redirect_to(idv_socure_document_capture_errors_url)
       end
 
       it 'socure error response still gives a result to user' do
@@ -242,7 +271,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           body: JSON.generate(failed_response_body),
         )
         get(:show)
-        expect(response).to redirect_to(idv_unavailable_path)
+        expect(response).to redirect_to(idv_socure_document_capture_errors_url)
       end
       it 'socure nil response still gives a result to user' do
         stub_request(:post, fake_socure_endpoint).to_return(
@@ -250,7 +279,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           body: nil,
         )
         get(:show)
-        expect(response).to redirect_to(idv_unavailable_path)
+        expect(response).to redirect_to(idv_socure_document_capture_errors_url)
       end
       it 'socure nil response still gives a result to user' do
         stub_request(:post, fake_socure_endpoint).to_return(
@@ -258,7 +287,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           body: JSON.generate(response_body_401),
         )
         get(:show)
-        expect(response).to redirect_to(idv_unavailable_path)
+        expect(response).to redirect_to(idv_socure_document_capture_errors_url)
       end
       it 'socure nil response still gives a result to user' do
         stub_request(:post, fake_socure_endpoint).to_return(
@@ -266,15 +295,17 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           body: JSON.generate(no_doc_found_response_body),
         )
         get(:show)
-        expect(response).to redirect_to(idv_unavailable_path)
+        expect(response).to redirect_to(idv_socure_document_capture_errors_url)
       end
     end
   end
 
   describe '#update' do
-    it 'returns FOUND (302) and redirects to SSN' do
-      get(:update)
+    before do
+      get :update
+    end
 
+    it 'returns FOUND (302) and redirects to SSN' do
       expect(response).to redirect_to(idv_ssn_path)
       expect(@analytics).to have_logged_event('IdV: doc auth document_capture submitted')
     end
@@ -282,10 +313,10 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
     context 'when doc auth fails' do
       let(:doc_auth_success) { false }
 
-      it 'redirects to document capture' do
+      it 'renders the errors' do
         get(:update)
 
-        expect(response).to redirect_to(idv_socure_document_capture_path)
+        expect(response).to redirect_to idv_socure_document_capture_errors_url
         expect(@analytics).to have_logged_event('IdV: doc auth document_capture submitted')
       end
     end
@@ -316,8 +347,6 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       let(:socure_docv_enabled) { false }
 
       it 'the webhook route does not exist' do
-        get(:update)
-
         expect(response).to be_not_found
       end
     end

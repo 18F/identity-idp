@@ -90,6 +90,7 @@ database_worker_jobs_sslmode: 'verify-full'
 database_worker_jobs_username: ''
 deleted_user_accounts_report_configs: '[]'
 deliver_mail_async: false
+desktop_ft_unlock_setup_option_percent_tested: 0
 development_mailer_deliver_method: letter_opener
 disable_email_sending: true
 disable_logout_get_request: true
@@ -314,6 +315,7 @@ reauthn_window: 1200
 recaptcha_enterprise_api_key: ''
 recaptcha_enterprise_project_id: ''
 recaptcha_mock_validator: true
+recaptcha_request_timeout_in_seconds: 5
 recaptcha_secret_key: ''
 recaptcha_site_key: ''
 recommend_webauthn_platform_for_sms_ab_test_account_creation_percent: 0
@@ -458,6 +460,7 @@ development:
   compromised_password_randomizer_value: 1
   dashboard_api_token: test_token
   dashboard_url: http://localhost:3001/api/service_providers
+  desktop_ft_unlock_setup_option_percent_tested: 100
   doc_auth_selfie_desktop_test_mode: true
   domain_name: localhost:3000
   enable_rate_limiting: false

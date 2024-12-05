@@ -220,7 +220,7 @@ RSpec.describe AbTests do
     end
   end
 
-  describe '.RECOMMEND_WEBAUTHN_PLATFORM_FOR_SMS_USER' do
+  describe 'RECOMMEND_WEBAUTHN_PLATFORM_FOR_SMS_USER' do
     let(:user) { create(:user) }
 
     subject(:bucket) do
@@ -298,6 +298,51 @@ RSpec.describe AbTests do
 
       it 'returns a bucket' do
         expect(bucket).to eq :shadow_mode_enabled
+      end
+    end
+  end
+
+  describe 'DESKTOP_FT_UNLOCK_SETUP' do
+    let(:user) { nil }
+    let(:user_session) { {} }
+
+    subject(:bucket) do
+      AbTests::DESKTOP_FT_UNLOCK_SETUP.bucket(
+        request: nil,
+        service_provider: nil,
+        session: nil,
+        user:,
+        user_session:,
+      )
+    end
+
+    context 'when A/B test is disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:desktop_ft_unlock_setup_option_percent_tested).
+          and_return(0)
+        reload_ab_tests
+      end
+
+      context 'when it would otherwise assign a bucket' do
+        let(:user) { build(:user) }
+
+        it 'does not return a bucket' do
+          expect(bucket).to be_nil
+        end
+      end
+    end
+
+    context 'when A/B test is enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:desktop_ft_unlock_setup_option_percent_tested).
+          and_return(100)
+        reload_ab_tests
+      end
+
+      let(:user) { build(:user) }
+
+      it 'returns a bucket' do
+        expect(bucket).not_to be_nil
       end
     end
   end

@@ -11,16 +11,14 @@ module Users
     before_action :confirm_recently_authenticated_2fa
 
     def show
-      analytics.add_email_visit
-      session[:in_select_email_flow] = params[:in_select_email_flow]
+      session[:in_select_email_flow] = true if params[:in_select_email_flow]
+      analytics.add_email_visit(in_select_email_flow: in_select_email_flow?)
       @add_user_email_form = AddUserEmailForm.new
       @pending_completions_consent = pending_completions_consent?
     end
 
     def add
-      @add_user_email_form = AddUserEmailForm.new(
-        session[:in_select_email_flow],
-      )
+      @add_user_email_form = AddUserEmailForm.new(in_select_email_flow: in_select_email_flow?)
 
       result = @add_user_email_form.submit(
         current_user, permitted_params.merge(request_id:)
@@ -82,6 +80,10 @@ module Users
     end
 
     private
+
+    def in_select_email_flow?
+      session[:in_select_email_flow] == true
+    end
 
     def authorize_user_to_edit_email
       return render_not_found if email_address.user != current_user

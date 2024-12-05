@@ -19,6 +19,7 @@ module Users
     before_action :check_user_needs_redirect, only: [:new]
     before_action :apply_secure_headers_override, only: [:new, :create]
     before_action :clear_session_bad_password_count_if_window_expired, only: [:create]
+    before_action :set_analytics_user_from_params, only: :create
     before_action :allow_csp_recaptcha_src, if: :recaptcha_enabled?
 
     after_action :add_recaptcha_resource_hints, if: :recaptcha_enabled?
@@ -56,6 +57,10 @@ module Users
         analytics.logout_initiated(sp_initiated: false, oidc: false)
         super
       end
+    end
+
+    def analytics_user
+      @analytics_user || AnonymousUser.new
     end
 
     private
@@ -168,6 +173,10 @@ module Users
       params.require(:user).permit(:email, :password)
     end
 
+    def set_analytics_user_from_params
+      @analytics_user = user_from_params
+    end
+
     def process_locked_out_user
       presenter = TwoFactorAuthCode::MaxAttemptsReachedPresenter.new(
         'generic_login_attempts',
@@ -210,7 +219,6 @@ module Users
       analytics.email_and_password_auth(
         **recaptcha_response,
         success: success,
-        user_id: user.uuid,
         user_locked_out: user_locked_out?(user),
         rate_limited: rate_limited?,
         captcha_validation_performed: captcha_validation_performed?,

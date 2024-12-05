@@ -7,11 +7,13 @@ module Idv
       include IdvStepConcern
       include DocumentCaptureConcern
       include RenderConditionConcern
+      include SocureErrorsConcern
 
       check_or_render_not_found -> { IdentityConfig.store.socure_docv_enabled }
       before_action :confirm_not_rate_limited
       before_action :confirm_step_allowed
-      before_action -> { redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, false) }
+      before_action -> { redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, false) },
+                    only: :show
 
       # reconsider and maybe remove these when implementing the real
       # update handler
@@ -40,7 +42,10 @@ module Idv
         @url = document_response.dig(:data, :url)
 
         # placeholder until we get an error page for url not being present
-        return redirect_to idv_unavailable_url if @url.nil?
+        if @url.nil?
+          redirect_to idv_socure_document_capture_errors_url
+          return
+        end
 
         document_capture_session = DocumentCaptureSession.find_by(
           uuid: document_capture_session_uuid,
@@ -79,7 +84,7 @@ module Idv
         if result.success?
           redirect_to idv_ssn_url
         else
-          redirect_to idv_socure_document_capture_url
+          redirect_to idv_socure_document_capture_errors_url
         end
       end
 
@@ -106,6 +111,15 @@ module Idv
       end
 
       private
+
+      def socure_errors_presenter(result)
+        SocureErrorPresenter.new(
+          error_code: error_code_for(result),
+          remaining_attempts:,
+          sp_name: decorated_sp_session&.sp_name || APP_NAME,
+          hybrid_mobile: false,
+        )
+      end
 
       def wait_for_result?
         return false if stored_result.present?

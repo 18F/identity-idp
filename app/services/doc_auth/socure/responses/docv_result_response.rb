@@ -38,6 +38,7 @@ module DocAuth
         def initialize(http_response:,
                        biometric_comparison_required: false)
           @http_response = http_response
+
           @biometric_comparison_required = biometric_comparison_required
           @pii_from_doc = read_pii
 
@@ -99,7 +100,7 @@ module DocAuth
           return {} if successful_result?
 
           {
-            reason_codes: get_data(DATA_PATHS[:reason_codes]),
+            socure: { reason_codes: get_data(DATA_PATHS[:reason_codes]) },
           }
         end
 

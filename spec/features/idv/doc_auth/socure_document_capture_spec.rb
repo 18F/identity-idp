@@ -24,7 +24,6 @@ RSpec.feature 'document capture step', :js do
     allow(IdentityConfig.store).to receive(:ruby_workers_idv_enabled).and_return(false)
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     @docv_transaction_token = stub_docv_document_request
-    stub_docv_verification_data_pass
   end
 
   before(:all) do
@@ -33,127 +32,185 @@ RSpec.feature 'document capture step', :js do
 
   after(:all) { @user.destroy }
 
-  context 'standard desktop flow' do
+  context 'happy path' do
     before do
-      visit_idp_from_oidc_sp_with_ial2
-      sign_in_and_2fa_user(@user)
-      complete_doc_auth_steps_before_document_capture_step
-      click_idv_continue
+      stub_docv_verification_data_pass
     end
 
-    context 'rate limits calls to backend docauth vendor', allow_browser_log: true do
+    context 'standard desktop flow' do
       before do
-        allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
-        (max_attempts - 1).times do
-          socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
-        end
+        visit_idp_from_oidc_sp_with_ial2
+        sign_in_and_2fa_user(@user)
+        complete_doc_auth_steps_before_document_capture_step
+        click_idv_continue
       end
 
-      it 'redirects to the rate limited error page' do
-        expect(page).to have_current_path(fake_socure_document_capture_app_url)
-        visit idv_socure_document_capture_path
-        expect(page).to have_current_path(idv_socure_document_capture_path)
-        socure_docv_upload_documents(
-          docv_transaction_token: @docv_transaction_token,
-        )
-        visit idv_socure_document_capture_path
-        expect(page).to have_current_path(idv_session_errors_rate_limited_path)
-        expect(fake_analytics).to have_logged_event(
-          'Rate Limit Reached',
-          limiter_type: :idv_doc_auth,
-        )
-      end
-
-      context 'successfully processes image on last attempt' do
+      context 'rate limits calls to backend docauth vendor', allow_browser_log: true do
         before do
-          allow(IdentityConfig.store).to receive(:ruby_workers_idv_enabled).and_return(false)
-          DocAuth::Mock::DocAuthMockClient.reset!
-          allow(Analytics).to receive(:new).and_return(fake_analytics)
+          allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
+          (max_attempts - 1).times do
+            socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
+          end
         end
 
-        it 'proceeds to the next page with valid info' do
+        it 'redirects to the rate limited error page' do
           expect(page).to have_current_path(fake_socure_document_capture_app_url)
           visit idv_socure_document_capture_path
           expect(page).to have_current_path(idv_socure_document_capture_path)
           socure_docv_upload_documents(
             docv_transaction_token: @docv_transaction_token,
           )
-          visit idv_socure_document_capture_update_path
-          expect(page).to have_current_path(idv_ssn_url)
-
           visit idv_socure_document_capture_path
-
           expect(page).to have_current_path(idv_session_errors_rate_limited_path)
           expect(fake_analytics).to have_logged_event(
-            :idv_socure_verification_data_requested,
+            'Rate Limit Reached',
+            limiter_type: :idv_doc_auth,
           )
         end
+
+        context 'successfully processes image on last attempt' do
+          before do
+            DocAuth::Mock::DocAuthMockClient.reset!
+          end
+
+          it 'proceeds to the next page with valid info' do
+            expect(page).to have_current_path(fake_socure_document_capture_app_url)
+            visit idv_socure_document_capture_path
+            expect(page).to have_current_path(idv_socure_document_capture_path)
+            socure_docv_upload_documents(
+              docv_transaction_token: @docv_transaction_token,
+            )
+
+            visit idv_socure_document_capture_update_path
+            expect(page).to have_current_path(idv_ssn_url)
+
+            visit idv_socure_document_capture_path
+
+            expect(page).to have_current_path(idv_session_errors_rate_limited_path)
+          end
+        end
       end
-    end
 
-    # ToDo post LG-14010
-    context 'network connection errors' do
-      xit 'catches network connection errors on document request', allow_browser_log: true do
-        # expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
+      context 'network connection errors' do
+        context 'getting the capture path' do
+          before do
+            allow_any_instance_of(Faraday::Connection).to receive(:post).
+              and_raise(Faraday::ConnectionFailed)
+          end
+
+          it 'shows the network error page', js: true do
+            visit_idp_from_oidc_sp_with_ial2
+            sign_in_and_2fa_user(@user)
+
+            complete_doc_auth_steps_before_document_capture_step
+
+            expect(page).to have_content(t('doc_auth.headers.general.network_error'))
+            expect(page).to have_content(t('doc_auth.errors.general.new_network_error'))
+          end
+        end
+
+        # ToDo post LG-14010. Does this belong here, or on the polling page tests?
+        xit 'catches network connection errors on verification data request',
+            allow_browser_log: true do
+          # expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
+        end
       end
 
-      xit 'catches network connection errors on verification data request',
-          allow_browser_log: true do
-        # expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
-      end
-    end
-
-    it 'does not track state if state tracking is disabled' do
-      allow(IdentityConfig.store).to receive(:state_tracking_enabled).and_return(false)
-      socure_docv_upload_documents(
-        docv_transaction_token: @docv_transaction_token,
-      )
-
-      expect(DocAuthLog.find_by(user_id: @user.id).state).to be_nil
-    end
-
-    xit 'does track state if state tracking is disabled' do
-      allow(IdentityConfig.store).to receive(:state_tracking_enabled).and_return(true)
-      socure_docv_upload_documents(
-        docv_transaction_token: @docv_transaction_token,
-      )
-
-      expect(DocAuthLog.find_by(user_id: @user.id).state).not_to be_nil
-    end
-  end
-
-  context 'standard mobile flow' do
-    before do
-      allow(IdentityConfig.store).to receive(:ruby_workers_idv_enabled).and_return(false)
-      allow(Analytics).to receive(:new).and_return(fake_analytics)
-    end
-
-    it 'proceeds to the next page with valid info' do
-      perform_in_browser(:mobile) do
-        visit_idp_from_oidc_sp_with_ial2
-        sign_in_and_2fa_user(@user)
-        complete_doc_auth_steps_before_document_capture_step
-
-        expect(page).to have_current_path(idv_socure_document_capture_url)
-        expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
-        click_idv_continue
+      it 'does not track state if state tracking is disabled' do
+        allow(IdentityConfig.store).to receive(:state_tracking_enabled).and_return(false)
         socure_docv_upload_documents(
           docv_transaction_token: @docv_transaction_token,
         )
-        visit idv_socure_document_capture_update_path
-        expect(page).to have_current_path(idv_ssn_url)
 
-        expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('NY')
-        expect(fake_analytics).to have_logged_event(
-          :idv_socure_verification_data_requested,
+        expect(DocAuthLog.find_by(user_id: @user.id).state).to be_nil
+      end
+
+      xit 'does track state if state tracking is disabled' do
+        allow(IdentityConfig.store).to receive(:state_tracking_enabled).and_return(true)
+        socure_docv_upload_documents(
+          docv_transaction_token: @docv_transaction_token,
         )
 
-        fill_out_ssn_form_ok
-        click_idv_continue
-        complete_verify_step
-        expect(page).to have_current_path(idv_phone_url)
+        expect(DocAuthLog.find_by(user_id: @user.id).state).not_to be_nil
       end
     end
+
+    context 'standard mobile flow' do
+      it 'proceeds to the next page with valid info' do
+        perform_in_browser(:mobile) do
+          visit_idp_from_oidc_sp_with_ial2
+          sign_in_and_2fa_user(@user)
+          complete_doc_auth_steps_before_document_capture_step
+
+          expect(page).to have_current_path(idv_socure_document_capture_url)
+          expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+          click_idv_continue
+          socure_docv_upload_documents(
+            docv_transaction_token: @docv_transaction_token,
+          )
+          visit idv_socure_document_capture_update_path
+          expect(page).to have_current_path(idv_ssn_url)
+
+          expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('NY')
+
+          fill_out_ssn_form_ok
+          click_idv_continue
+          complete_verify_step
+          expect(page).to have_current_path(idv_phone_url)
+        end
+      end
+    end
+  end
+
+  shared_examples 'a properly categorized Socure error' do |socure_error_code, expected_header_key|
+    before do
+      stub_docv_verification_data_fail_with([socure_error_code])
+
+      visit_idp_from_oidc_sp_with_ial2
+      sign_in_and_2fa_user(@user)
+
+      complete_doc_auth_steps_before_document_capture_step
+
+      click_idv_continue
+      socure_docv_upload_documents(
+        docv_transaction_token: @docv_transaction_token,
+      )
+      visit idv_socure_document_capture_update_path
+    end
+
+    it 'shows the correct error page' do
+      expect(page).to have_content(t(expected_header_key))
+    end
+  end
+
+  context 'a type 1 error (because we do not recognize the code)' do
+    it_behaves_like 'a properly categorized Socure error', 'XXXX', 'doc_auth.headers.unreadable_id'
+  end
+
+  context 'a type 1 error' do
+    it_behaves_like 'a properly categorized Socure error', 'I848', 'doc_auth.headers.unreadable_id'
+  end
+
+  context 'a type 2 error' do
+    it_behaves_like 'a properly categorized Socure error',
+                    'I849',
+                    'doc_auth.headers.unaccepted_id_type'
+  end
+
+  context 'a type 3 error' do
+    it_behaves_like 'a properly categorized Socure error', 'R827', 'doc_auth.headers.expired_id'
+  end
+
+  context 'a type 4 error' do
+    it_behaves_like 'a properly categorized Socure error', 'I808', 'doc_auth.headers.low_resolution'
+  end
+
+  context 'a type 5 error' do
+    it_behaves_like 'a properly categorized Socure error', 'R845', 'doc_auth.headers.underage'
+  end
+
+  context 'a type 6 error' do
+    it_behaves_like 'a properly categorized Socure error', 'I856', 'doc_auth.headers.id_not_found'
   end
 
   def expect_rate_limited_header(expected_to_be_present)

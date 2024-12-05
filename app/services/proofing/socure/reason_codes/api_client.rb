@@ -26,9 +26,6 @@ module Proofing
             f.response :raise_error
             f.response :json
             f.options.timeout = IdentityConfig.store.socure_reason_code_timeout_in_seconds
-            f.options.read_timeout = IdentityConfig.store.socure_reason_code_timeout_in_seconds
-            f.options.open_timeout = IdentityConfig.store.socure_reason_code_timeout_in_seconds
-            f.options.write_timeout = IdentityConfig.store.socure_reason_code_timeout_in_seconds
           end
 
           conn.get(url, { group: true }, headers) do |req|

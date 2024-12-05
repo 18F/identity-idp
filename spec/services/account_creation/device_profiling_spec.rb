@@ -5,6 +5,7 @@ RSpec.describe AccountCreation::DeviceProfiling do
   let(:threatmetrix_proofer_result) do
     instance_double(Proofing::DdpResult, success?: true, transaction_id: 'ddp-123')
   end
+  let(:service_provider) { create(:service_provider) }
   let(:threatmetrix_proofer) do
     instance_double(
       Proofing::LexisNexis::Ddp::Proofer,
@@ -24,6 +25,7 @@ RSpec.describe AccountCreation::DeviceProfiling do
         request_ip: Faker::Internet.ip_v4_address,
         threatmetrix_session_id: threatmetrix_session_id,
         user_email: Faker::Internet.email,
+        uuid_prefix: service_provider.app_id,
       )
     end
 

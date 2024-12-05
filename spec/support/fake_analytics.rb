@@ -171,6 +171,10 @@ class FakeAnalytics < Analytics
   def browser_attributes
     {}
   end
+
+  def reset!
+    @events = Hash.new
+  end
 end
 
 RSpec.configure do |c|

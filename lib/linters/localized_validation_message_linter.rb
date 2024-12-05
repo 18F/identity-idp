@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module IdentityIdp
-      class LocalizedValidationMessageLinter < RuboCop::Cop::Cop
+      class LocalizedValidationMessageLinter < RuboCop::Cop::Base
         MSG = 'Use proc when translating validation message'
 
         RESTRICT_ON_SEND = [
@@ -33,7 +33,7 @@ module RuboCop
 
         def on_send(node)
           if translated_validation_message?(node) || translated_validation_helper_message?(node)
-            add_offense(node, location: :expression)
+            add_offense(node)
           end
         end
       end

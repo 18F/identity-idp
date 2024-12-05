@@ -19,9 +19,6 @@ module Proofing
         conn = Faraday.new do |f|
           f.request :instrumentation, name: 'request_metric.faraday'
           f.options.timeout = timeout
-          f.options.read_timeout = timeout
-          f.options.open_timeout = timeout
-          f.options.write_timeout = timeout
         end
 
         Response.new(

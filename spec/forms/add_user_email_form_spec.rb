@@ -8,8 +8,19 @@ RSpec.describe AddUserEmailForm do
 
   describe '#submit' do
     let(:new_email) { 'new@example.com' }
+    let(:request_id) { 'request-id-1' }
 
-    subject(:submit) { form.submit(user, email: new_email) }
+    subject(:submit) { form.submit(user, email: new_email, request_id:) }
+
+    it 'returns a successful result' do
+      expect(submit.to_h).to eq(
+        success: true,
+        errors: {},
+        domain_name: 'example.com',
+        in_select_email_flow: false,
+        user_id: user.uuid,
+      )
+    end
 
     it 'creates a new EmailAddress record for a new email address' do
       expect(EmailAddress.find_with_email(new_email)).to be_nil
@@ -77,6 +88,32 @@ RSpec.describe AddUserEmailForm do
           response = submit
           expect(response.success?).to eq(false)
         end
+      end
+    end
+
+    context 'in select email flow' do
+      subject(:form) { AddUserEmailForm.new(in_select_email_flow: true) }
+
+      it 'sends email confirm with parameter value' do
+        send_add_email_confirmation = instance_double(SendAddEmailConfirmation)
+        expect(SendAddEmailConfirmation).to receive(:new).and_return(send_add_email_confirmation)
+        expect(send_add_email_confirmation).to receive(:call).with(
+          email_address: kind_of(EmailAddress),
+          in_select_email_flow: true,
+          request_id:,
+        )
+
+        submit
+      end
+
+      it 'includes extra analytics in result for flow value' do
+        expect(submit.to_h).to eq(
+          success: true,
+          errors: {},
+          domain_name: 'example.com',
+          in_select_email_flow: true,
+          user_id: user.uuid,
+        )
       end
     end
   end

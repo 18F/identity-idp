@@ -4,6 +4,8 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
   describe 'GET index' do
     let(:user) { create(:user) }
 
+    subject(:response) { get :index }
+
     before do
       stub_sign_in_before_2fa(user) if user
       stub_analytics
@@ -17,6 +19,12 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
         enabled_mfa_methods_count: 0,
         gov_or_mil_email: false,
       )
+    end
+
+    it 'initializes presenter with false ab test bucket value' do
+      response
+
+      expect(assigns(:presenter).desktop_ft_ab_test).to be false
     end
 
     context 'with user having gov or mil email' do
@@ -99,6 +107,20 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
         get :index
 
         expect(response).to redirect_to(user_two_factor_authentication_url)
+      end
+    end
+
+    context 'with user opted in to desktop ft unlock setup ab test' do
+      before do
+        allow(controller).to receive(:ab_test_bucket).with(
+          :DESKTOP_FT_UNLOCK_SETUP,
+        ).and_return(:desktop_ft_unlock_option_shown)
+      end
+
+      it 'initializes presenter with ab test bucket value' do
+        response
+
+        expect(assigns(:presenter).desktop_ft_ab_test).to eq(true)
       end
     end
   end

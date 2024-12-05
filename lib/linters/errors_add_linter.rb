@@ -14,7 +14,7 @@ module RuboCop
       #   #good
       #   errors.add(:iss, 'invalid issuer', type: :invalid_issuer)
       #
-      class ErrorsAddLinter < RuboCop::Cop::Cop
+      class ErrorsAddLinter < RuboCop::Cop::Base
         MSG = 'Please set a unique key for this error'
 
         RESTRICT_ON_SEND = [:add].freeze
@@ -29,7 +29,7 @@ module RuboCop
           return if type && type.type == :sym
           options = type if type && type.type == :hash
           return if options && options.type == :hash && options.keys.map(&:value).include?(:type)
-          add_offense(node, location: :expression)
+          add_offense(node)
         end
       end
     end

@@ -47,7 +47,7 @@ module InPersonHelper
     fill_in t('in_person_proofing.form.state_id.address2'), with: GOOD_IDENTITY_DOC_ADDRESS2
     fill_in t('in_person_proofing.form.state_id.city'), with: GOOD_IDENTITY_DOC_CITY
     fill_in t('in_person_proofing.form.state_id.zipcode'), with: GOOD_IDENTITY_DOC_ZIPCODE
-    select GOOD_STATE_ID_JURISDICTION,
+    select GOOD_STATE,
            from: t('in_person_proofing.form.state_id.identity_doc_address_state')
     if same_address_as_id
       choose t('in_person_proofing.form.state_id.same_address_as_id_yes')
@@ -120,17 +120,6 @@ module InPersonHelper
     click_on t('forms.buttons.continue')
   end
 
-  def complete_state_id_step(_user = nil, same_address_as_id: true, first_name: GOOD_FIRST_NAME)
-    # Wait for page to load before attempting to fill out form
-    expect(page).to have_current_path(idv_in_person_state_id_path, wait: 10)
-    fill_out_state_id_form_ok(same_address_as_id: same_address_as_id, first_name:)
-    click_idv_continue
-    unless same_address_as_id
-      expect(page).to have_current_path(idv_in_person_address_path, wait: 10)
-      expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
-    end
-  end
-
   def complete_state_id_controller(_user = nil, same_address_as_id: true,
                                    first_name: GOOD_FIRST_NAME)
     # Wait for page to load before attempting to fill out form
@@ -156,14 +145,6 @@ module InPersonHelper
 
   def complete_verify_step(_user = nil)
     click_idv_submit_default
-  end
-
-  def complete_steps_before_state_id_step
-    sign_in_and_2fa_user
-    begin_in_person_proofing
-    complete_prepare_step
-    complete_location_step
-    expect(page).to have_current_path(idv_in_person_state_id_path, wait: 10)
   end
 
   def complete_steps_before_state_id_controller
@@ -205,11 +186,6 @@ module InPersonHelper
   end
 
   def expect_in_person_step_indicator_current_step(text)
-    expect_in_person_step_indicator
-    expect_step_indicator_current_step(text)
-  end
-
-  def expect_in_person_step_indicator
     # Normally we're only concerned with the "current" step, but since some steps are shared between
     # flows, we also want to make sure that at least one of the in-person-specific steps exists in
     # the step indicator.
@@ -217,20 +193,29 @@ module InPersonHelper
       '.step-indicator__step',
       text: t('step_indicator.flows.idv.find_a_post_office'),
     )
+    expect_step_indicator_current_step(text)
   end
 
-  def make_pii(same_address_as_id: 'true')
+  def build_pii_before_state_id_update(same_address_as_id: 'true')
     pii_from_user[:same_address_as_id] = same_address_as_id
     pii_from_user[:identity_doc_address1] = identity_doc_address1
     pii_from_user[:identity_doc_address2] = identity_doc_address2
     pii_from_user[:identity_doc_city] = identity_doc_city
     pii_from_user[:identity_doc_address_state] = identity_doc_address_state
     pii_from_user[:identity_doc_zipcode] = identity_doc_zipcode
-    pii_from_user[:address1] = address1
-    pii_from_user[:address2] = address2
-    pii_from_user[:city] = city
-    pii_from_user[:state] = state
-    pii_from_user[:zipcode] = zipcode
+    if same_address_as_id == 'true'
+      pii_from_user[:address1] = identity_doc_address1
+      pii_from_user[:address2] = identity_doc_address2
+      pii_from_user[:city] = identity_doc_city
+      pii_from_user[:state] = identity_doc_address_state
+      pii_from_user[:zipcode] = identity_doc_zipcode
+    else
+      pii_from_user[:address1] = address1
+      pii_from_user[:address2] = address2
+      pii_from_user[:city] = city
+      pii_from_user[:state] = state
+      pii_from_user[:zipcode] = zipcode
+    end
   end
 
   def mark_in_person_enrollment_passed(user)

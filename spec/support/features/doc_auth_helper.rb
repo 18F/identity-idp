@@ -9,7 +9,6 @@ module DocAuthHelper
 
   GOOD_SSN = (Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]).freeze
   GOOD_SSN_MASKED = '9**-**-***4'.freeze
-  SAMPLE_TMX_SUMMARY_REASON_CODE = { tmx_summary_reason_code: ['Identity_Negative_History'] }.freeze
   SSN_THAT_FAILS_RESOLUTION = '123-45-6666'.freeze
   SSN_THAT_RAISES_EXCEPTION = '000-00-0000'.freeze
 
@@ -40,10 +39,6 @@ module DocAuthHelper
 
   def click_send_link
     click_on t('forms.buttons.send_link')
-  end
-
-  def click_upload_from_computer
-    click_on t('forms.buttons.upload_photos')
   end
 
   def complete_doc_auth_steps_before_welcome_step(expect_accessible: false)
@@ -130,16 +125,6 @@ module DocAuthHelper
     expect(page).to have_current_path(expected_path, wait: 10)
   end
 
-  def complete_doc_auth_steps_before_phone_otp_step(expect_accessible: false, with_selfie: false)
-    complete_doc_auth_steps_before_verify_step(
-      expect_accessible: expect_accessible,
-      with_selfie: with_selfie,
-    )
-    click_idv_continue
-    expect_page_to_have_no_accessibility_violations(page) if expect_accessible
-    click_idv_continue
-  end
-
   def mobile_device
     Browser.new(mobile_user_agent)
   end
@@ -221,16 +206,6 @@ module DocAuthHelper
     click_agree_and_continue
   end
 
-  def mock_general_doc_auth_client_error(method)
-    DocAuth::Mock::DocAuthMockClient.mock_response!(
-      method: method,
-      response: DocAuth::Response.new(
-        success: false,
-        errors: { error: I18n.t('doc_auth.errors.general.no_liveness') },
-      ),
-    )
-  end
-
   def mock_doc_auth_attention_with_barcode
     attention_with_barcode_response = instance_double(
       Faraday::Response,
@@ -246,119 +221,10 @@ module DocAuthHelper
     )
   end
 
-  def mock_doc_auth_success_face_match_fail
-    failure_response = instance_double(
-      Faraday::Response,
-      status: 200,
-      body: LexisNexisFixtures.true_id_response_with_face_match_fail,
-    )
-    DocAuth::Mock::DocAuthMockClient.mock_response!(
-      method: :get_results,
-      response: DocAuth::LexisNexis::Responses::TrueIdResponse.new(
-        failure_response,
-        DocAuth::LexisNexis::Config.new,
-        true, # liveness_checking_enabled
-      ),
-    )
-  end
-
-  def mock_doc_auth_failure_face_match_pass
-    failure_response = instance_double(
-      Faraday::Response,
-      status: 200,
-      body: LexisNexisFixtures.true_id_response_failure_with_face_match_pass,
-    )
-    DocAuth::Mock::DocAuthMockClient.mock_response!(
-      method: :get_results,
-      response: DocAuth::LexisNexis::Responses::TrueIdResponse.new(
-        failure_response,
-        DocAuth::LexisNexis::Config.new,
-        true, # liveness_checking_enabled
-      ),
-    )
-  end
-
-  def mock_doc_auth_fail_face_match_fail
-    failure_response = instance_double(
-      Faraday::Response,
-      status: 200,
-      body: LexisNexisFixtures.true_id_response_failure_with_face_match_fail,
-    )
-    DocAuth::Mock::DocAuthMockClient.mock_response!(
-      method: :get_results,
-      response: DocAuth::LexisNexis::Responses::TrueIdResponse.new(
-        failure_response,
-        DocAuth::LexisNexis::Config.new,
-        true, # liveness_checking_enabled
-      ),
-    )
-  end
-
-  def mock_doc_auth_pass_and_portrait_match_not_live
-    failure_response = instance_double(
-      Faraday::Response,
-      status: 200,
-      body: LexisNexisFixtures.true_id_response_success_with_portrait_match_not_live,
-    )
-    DocAuth::Mock::DocAuthMockClient.mock_response!(
-      method: :get_results,
-      response: DocAuth::LexisNexis::Responses::TrueIdResponse.new(
-        failure_response,
-        DocAuth::LexisNexis::Config.new,
-        true, # liveness_checking_enabled
-      ),
-    )
-  end
-
-  def mock_doc_auth_pass_face_match_pass_no_address1
-    response = instance_double(
-      Faraday::Response,
-      status: 200,
-      body: LexisNexisFixtures.true_id_response_success_with_liveness,
-    )
-    DocAuth::Mock::DocAuthMockClient.mock_response!(
-      method: :get_results,
-      response: DocAuth::LexisNexis::Responses::TrueIdResponse.new(
-        response,
-        DocAuth::LexisNexis::Config.new,
-        true, # liveness_checking_enabled
-      ),
-    )
-  end
-
-  def mock_doc_auth_trueid_http_non2xx_status(status)
-    network_error_response = instance_double(
-      Faraday::Response,
-      status: status,
-      body: '{}',
-    )
-    DocAuth::Mock::DocAuthMockClient.mock_response!(
-      method: :get_results,
-      response: DocAuth::LexisNexis::Responses::TrueIdResponse.new(
-        network_error_response,
-        DocAuth::LexisNexis::Config.new,
-      ),
-    )
-  end
-
   def verify_phone_otp
     choose_idv_otp_delivery_method_sms
     fill_in_code_with_last_phone_otp
     click_submit_default
-  end
-
-  def fill_out_address_form_ok
-    fill_in 'idv_form_address1', with: '123 Main St'
-    fill_in 'idv_form_city', with: 'Nowhere'
-    select 'Virginia', from: 'idv_form_state'
-    fill_in 'idv_form_zipcode', with: '66044'
-  end
-
-  def fill_out_address_form_resolution_fail
-    fill_in 'idv_form_address1', with: '123 Main St'
-    fill_in 'idv_form_city', with: 'Nowhere'
-    select 'Virginia', from: 'idv_form_state'
-    fill_in 'idv_form_zipcode', with: '00000'
   end
 
   def fill_out_address_form_fail
@@ -366,10 +232,6 @@ module DocAuthHelper
     fill_in 'idv_form_city', with: 'Nowhere'
     select 'Virginia', from: 'idv_form_state'
     fill_in 'idv_form_zipcode', with: '1'
-  end
-
-  def fill_out_doc_auth_phone_form_ok(phone = '415-555-0199')
-    fill_in :doc_auth_phone, with: phone
   end
 
   def complete_all_idv_steps_with(threatmetrix:)

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module IdentityIdp
-      class AnalyticsEventNameLinter < RuboCop::Cop::Cop
+      class AnalyticsEventNameLinter < RuboCop::Cop::Base
         RESTRICT_ON_SEND = [:track_event].freeze
 
         # DO NOT ADD TO THIS LIST OR YOU WILL MAKE A KITTEN CRY!
@@ -45,7 +45,6 @@ module RuboCop
           return if LEGACY_EVENT_NAMES.include?(Digest::MD5.hexdigest(actual_name.to_s)[0...7])
           add_offense(
             first_argument,
-            location: :expression,
             message: "Event name must match the method name, expected `:#{expected_name}`",
           )
         end

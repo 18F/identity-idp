@@ -171,7 +171,7 @@ RSpec.describe SignUp::PasswordsController do
       end
 
       it 'rejects when confirmation_token is invalid' do
-        validator = EmailConfirmationTokenValidator.new(user.email_addresses.first)
+        validator = EmailConfirmationTokenValidator.new(email_address: user.email_addresses.first)
         result = validator.submit
         expect(result.success?).to eq false
 
