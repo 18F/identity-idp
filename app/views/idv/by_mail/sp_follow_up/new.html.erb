@@ -1,0 +1,24 @@
+<% self.title = @presenter.heading %>
+
+<div class="text-center">
+  <%= image_tag(asset_url('user-access.svg'), width: '280', height: '91', alt: '', aria: { hidden: true }) %>
+  <h1 class="margin-bottom-4"><%= @presenter.heading %></h1>
+</div>
+
+<p><%= @presenter.body %></p>
+
+<div class='margin-top-3 margin-bottom-105'>
+  <%= render ButtonComponent.new(
+        url: idv_sp_follow_up_connect_path,
+        wide: false,
+        method: :get,
+      ).with_content(t('idv.by_mail.sp_follow_up.connect_account')) %>
+</div>
+<div>
+  <%= render ButtonComponent.new(
+        url: idv_sp_follow_up_cancel_path,
+        wide: false,
+        method: :get,
+        outline: true,
+      ).with_content(t('idv.by_mail.sp_follow_up.go_to_account')) %>
+</div>

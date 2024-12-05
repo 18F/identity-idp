@@ -483,14 +483,43 @@ RSpec.describe Idv::PersonalKeyController do
     context 'user selected gpo verification' do
       let(:address_verification_mechanism) { 'gpo' }
 
-      it 'redirects to correct url' do
-        patch :update
-        expect(response).to redirect_to idv_letter_enqueued_url
+      context 'when the user requested a letter this session' do
+        it 'redirects to correct url' do
+          patch :update
+          expect(response).to redirect_to idv_letter_enqueued_url
+        end
+
+        it 'does not log any events' do
+          expect(@analytics).not_to have_logged_event
+          patch :update
+        end
       end
 
-      it 'does not log any events' do
-        expect(@analytics).not_to have_logged_event
-        patch :update
+      context 'when the entered a GPO code' do
+        before do
+          pending_profile = user.pending_profile
+          pending_profile.remove_gpo_deactivation_reason
+          pending_profile.activate
+        end
+
+        it 'redirects to correct url' do
+          patch :update
+          expect(response).to redirect_to idv_sp_follow_up_url
+        end
+
+        it 'logs analytics' do
+          patch :update
+
+          expect(@analytics).to have_logged_event(
+            'IdV: personal key submitted',
+            hash_including(
+              address_verification_method: 'gpo',
+              fraud_review_pending: false,
+              fraud_rejection: false,
+              in_person_verification_pending: false,
+            ),
+          )
+        end
       end
     end
 

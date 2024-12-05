@@ -1022,6 +1022,10 @@ idv.buttons.change_ssn_label: Actualizar número de Seguro Social
 idv.buttons.change_state_id_label: Actualizar identificación estatal
 idv.buttons.continue_plain: Continuar
 idv.buttons.mail.send: Solicitar una carta
+idv.by_mail.sp_follow_up.body: Vuelva a iniciar sesión en %{service_provider} para conectar su cuenta verificada de %{app_name} y acceder a los servicios.
+idv.by_mail.sp_follow_up.connect_account: Conecte su cuenta
+idv.by_mail.sp_follow_up.go_to_account: Ir a la cuenta
+idv.by_mail.sp_follow_up.heading: Conéctese a %{service_provider}
 idv.cancel.actions.account_page: Ir a la página de la cuenta
 idv.cancel.actions.exit: Salir de %{app_name}
 idv.cancel.actions.keep_going: No, continuar

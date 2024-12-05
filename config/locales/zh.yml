@@ -1024,6 +1024,10 @@ idv.buttons.change_ssn_label: 更新社会保障号码
 idv.buttons.change_state_id_label: 更新州颁发的身份证件
 idv.buttons.continue_plain: 继续
 idv.buttons.mail.send: 要求发一封信
+idv.by_mail.sp_follow_up.body: 重新登录 %{service_provider}以连接你验证过的%{app_name}账户并获得服务。
+idv.by_mail.sp_follow_up.connect_account: 连接你的账户
+idv.by_mail.sp_follow_up.go_to_account: 前往账户
+idv.by_mail.sp_follow_up.heading: 连接 %{service_provider}
 idv.cancel.actions.account_page: 到账户页面
 idv.cancel.actions.exit: 退出 %{app_name}
 idv.cancel.actions.keep_going: 不是，继续
