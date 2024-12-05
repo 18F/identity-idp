@@ -81,13 +81,13 @@ module Idv
       redirect_to correct_path
     end
 
-    def fetch_verification_data
+    def fetch_test_verification_data
       if IdentityConfig.store.socure_docv_verification_data_test_mode
         docv_transaction_token_override = params.permit(:docv_token)[:docv_token]
         if IdentityConfig.store.socure_docv_verification_data_test_mode_tokens.
             include?(docv_transaction_token_override)
           SocureDocvResultsJob.
-            perform_later(document_capture_session_uuid:, docv_transaction_token_override:)
+            perform_now(document_capture_session_uuid:, docv_transaction_token_override:)
         end
       end
     end
