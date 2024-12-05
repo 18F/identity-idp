@@ -94,8 +94,8 @@ module Idv
       }
       analytics_hash = log_extras.merge(analytics_arguments).
         merge(document_request_body).except(
-        :documentType, # requested document type
-      ).merge(response_body: document_response.to_h)
+          :documentType, # requested document type
+        ).merge(response_body: document_response.to_h)
       analytics.idv_socure_document_request_submitted(**analytics_hash)
     end
 

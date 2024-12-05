@@ -94,7 +94,7 @@ RSpec.feature 'document capture step', :js do
         end
       end
 
-      context 'network connection errors' do
+      context 'network connection errors', allow_browser_log: true do
         context 'getting the capture path' do
           before do
             allow_any_instance_of(Faraday::Connection).to receive(:post).
@@ -109,6 +109,9 @@ RSpec.feature 'document capture step', :js do
 
             expect(page).to have_content(t('doc_auth.headers.general.network_error'))
             expect(page).to have_content(t('doc_auth.errors.general.new_network_error'))
+            expect(fake_analytics).to have_logged_event(
+              :idv_socure_document_request_submitted,
+            )
           end
         end
 
@@ -116,6 +119,22 @@ RSpec.feature 'document capture step', :js do
         xit 'catches network connection errors on verification data request',
             allow_browser_log: true do
           # expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
+        end
+      end
+
+      context 'invalid request', allow_browser_log: true do
+        context 'getting the capture path w wrong api key' do
+          before do
+            allow(IdentityConfig.store).to receive(:socure_docv_webhook_secret_key).
+              and_return('')
+          end
+
+          it 'correctly logs event', js: true do
+            visit idv_socure_document_capture_path
+            expect(fake_analytics).to have_logged_event(
+              :idv_socure_document_request_submitted,
+            )
+          end
         end
       end
 
