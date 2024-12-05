@@ -10,6 +10,7 @@ RSpec.describe 'Hybrid Flow' do
   let(:fake_socure_document_capture_app_url) { 'https://verify.fake-socure.test/something' }
   let(:fake_socure_docv_document_request_endpoint) { 'https://fake-socure.test/document-request' }
   let(:socure_docv_verification_data_test_mode) { false }
+  let(:fake_analytics) { FakeAnalytics.new }
 
   before do
     allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(true)
@@ -18,6 +19,7 @@ RSpec.describe 'Hybrid Flow' do
       and_return(Idp::Constants::Vendors::SOCURE)
     allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
     allow(IdentityConfig.store).to receive(:ruby_workers_idv_enabled).and_return(false)
+    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint).
       and_return(fake_socure_docv_document_request_endpoint)
     allow(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
@@ -29,7 +31,7 @@ RSpec.describe 'Hybrid Flow' do
     @docv_transaction_token = stub_docv_document_request
   end
 
-  context 'happy path' do
+  context 'happy path', allow_browser_log: true do
     before do
       @pass_stub = stub_docv_verification_data_pass(docv_transaction_token: @docv_transaction_token)
     end
@@ -86,7 +88,9 @@ RSpec.describe 'Hybrid Flow' do
         expect(page).to have_current_path(fake_socure_document_capture_app_url)
         socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
         visit idv_hybrid_mobile_socure_document_capture_update_url
-
+        expect(fake_analytics).to have_logged_event(
+          :idv_socure_document_request_submitted,
+        )
         expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
         expect(page).to have_content(strip_nbsp(t('doc_auth.headings.capture_complete')))
         expect(page).to have_text(t('doc_auth.instructions.switch_back'))
@@ -162,7 +166,7 @@ RSpec.describe 'Hybrid Flow' do
       end
     end
 
-    context 'user is rate limited on mobile' do
+    context 'user is rate limited on mobile', allow_browser_log: true do
       let(:max_attempts) { IdentityConfig.store.doc_auth_max_attempts }
 
       before do
@@ -339,7 +343,8 @@ RSpec.describe 'Hybrid Flow' do
     end
   end
 
-  shared_examples 'a properly categorized Socure error' do |socure_error_code, expected_header_key|
+  shared_examples 'a properly categorized Socure error', allow_browser_log: true do
+    |socure_error_code, expected_header_key|
     it 'shows the correct error page', js: true do
       user = nil
 
@@ -387,37 +392,37 @@ RSpec.describe 'Hybrid Flow' do
     end
   end
 
-  context 'a type 1 error (because we do not recognize the code)' do
+  context 'a type 1 error (because we do not recognize the code)', allow_browser_log: true do
     it_behaves_like 'a properly categorized Socure error', 'XXXX', 'doc_auth.headers.unreadable_id'
   end
 
-  context 'a type 1 error' do
+  context 'a type 1 error', allow_browser_log: true do
     it_behaves_like 'a properly categorized Socure error', 'I848', 'doc_auth.headers.unreadable_id'
   end
 
-  context 'a type 2 error' do
+  context 'a type 2 error', allow_browser_log: true do
     it_behaves_like 'a properly categorized Socure error',
                     'I849',
                     'doc_auth.headers.unaccepted_id_type'
   end
 
-  context 'a type 3 error' do
+  context 'a type 3 error', allow_browser_log: true do
     it_behaves_like 'a properly categorized Socure error', 'R827', 'doc_auth.headers.expired_id'
   end
 
-  context 'a type 4 error' do
+  context 'a type 4 error', allow_browser_log: true do
     it_behaves_like 'a properly categorized Socure error', 'I808', 'doc_auth.headers.low_resolution'
   end
 
-  context 'a type 5 error' do
+  context 'a type 5 error', allow_browser_log: true do
     it_behaves_like 'a properly categorized Socure error', 'R845', 'doc_auth.headers.underage'
   end
 
-  context 'a type 6 error' do
+  context 'a type 6 error', allow_browser_log: true do
     it_behaves_like 'a properly categorized Socure error', 'I856', 'doc_auth.headers.id_not_found'
   end
 
-  context 'with a network error requesting the capture app url' do
+  context 'with a network error requesting the capture app url', allow_browser_log: true do
     before do
       allow_any_instance_of(Faraday::Connection).to receive(:post).
         and_raise(Faraday::ConnectionFailed)
