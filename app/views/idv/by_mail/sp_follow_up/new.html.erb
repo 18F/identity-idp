@@ -7,18 +7,18 @@
 
 <p><%= @presenter.body %></p>
 
-<div class='margin-top-3 margin-bottom-105'>
+<div class='margin-top-5 margin-bottom-2'>
   <%= render ButtonComponent.new(
         url: idv_sp_follow_up_connect_path,
-        wide: false,
-        method: :get,
+        big: true,
+        wide: true,
       ).with_content(t('idv.by_mail.sp_follow_up.connect_account')) %>
 </div>
 <div>
   <%= render ButtonComponent.new(
         url: idv_sp_follow_up_cancel_path,
-        wide: false,
-        method: :get,
+        big: true,
+        wide: true,
         outline: true,
       ).with_content(t('idv.by_mail.sp_follow_up.go_to_account')) %>
 </div>
