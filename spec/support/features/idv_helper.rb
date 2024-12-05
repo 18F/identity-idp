@@ -47,11 +47,6 @@ module IdvHelper
     click_on t('forms.buttons.submit.update')
   end
 
-  def click_idv_cancel
-    click_on 'Cancel'
-    click_on 'Exit Login.gov'
-  end
-
   def click_idv_exit
     click_spinner_button_and_wait t('idv.cancel.actions.exit', app_name: APP_NAME)
   end
