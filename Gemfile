@@ -74,7 +74,7 @@ gem 'rqrcode'
 gem 'ruby-progressbar'
 gem 'ruby-saml'
 gem 'safe_target_blank', '>= 1.0.2'
-gem 'saml_idp', github: '18F/saml_idp', tag: '0.23.3-18f'
+gem 'saml_idp', github: '18F/saml_idp', tag: '0.23.4-18f'
 gem 'scrypt'
 gem 'simple_form', '>= 5.0.2'
 gem 'stringex', require: false
@@ -85,7 +85,7 @@ gem 'valid_email', '>= 0.1.3', github: 'hallelujah/valid_email', ref: '486b860'
 gem 'view_component', '~> 3.0'
 gem 'webauthn', '~> 2.5.2'
 gem 'xmldsig', '~> 0.6'
-gem 'xmlenc', '~> 0.7', '>= 0.7.1'
+gem 'xmlenc', '0.8.0'
 gem 'yard', require: false
 gem 'zlib', require: false
 

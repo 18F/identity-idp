@@ -36,10 +36,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: 752085a6f88cd3ce75ecc7a64afe064a0e4f9e35
-  tag: 0.23.3-18f
+  revision: e5d876cf10ce9b39bba0cc523d06c4dda1af5124
+  tag: 0.23.4-18f
   specs:
-    saml_idp (0.23.3.pre.18f)
+    saml_idp (0.23.4.pre.18f)
       activesupport
       builder
       faraday
@@ -869,7 +869,7 @@ DEPENDENCIES
   webauthn (~> 2.5.2)
   webmock
   xmldsig (~> 0.6)
-  xmlenc (~> 0.7, >= 0.7.1)
+  xmlenc (= 0.8.0)
   yard
   zlib
   zonebie

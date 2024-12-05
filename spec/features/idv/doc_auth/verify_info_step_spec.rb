@@ -7,17 +7,16 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
   let(:fake_analytics) { FakeAnalytics.new }
   let(:user) { user_with_2fa }
 
-  # values from Idp::Constants::MOCK_IDV_APPLICANT
   let(:fake_pii_details) do
     {
-      document_state: 'MT',
-      document_number: '1111111111111',
-      document_issued: '2019-12-31',
-      document_expiration: '2099-12-31',
-      first_name: 'FAKEY',
-      last_name: 'MCFAKERSON',
-      date_of_birth: '1938-10-06',
-      address: '1 FAKE RD',
+      document_state: MOCK_IDV_APPLICANT[:state],
+      document_number: MOCK_IDV_APPLICANT[:state_id_number],
+      document_issued: MOCK_IDV_APPLICANT[:state_id_issued],
+      document_expiration: MOCK_IDV_APPLICANT[:state_id_expiration],
+      first_name: MOCK_IDV_APPLICANT[:first_name],
+      last_name: MOCK_IDV_APPLICANT[:last_name],
+      date_of_birth: MOCK_IDV_APPLICANT[:dob],
+      address: MOCK_IDV_APPLICANT[:address1],
     }
   end
 
@@ -247,7 +246,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
 
   context 'AAMVA' do
     let(:mock_state_id_jurisdiction) do
-      [Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction]]
+      [Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION]
     end
 
     context 'when the user lives in an AAMVA supported state' do

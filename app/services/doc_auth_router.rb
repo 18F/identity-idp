@@ -201,6 +201,8 @@ module DocAuthRouter
       Idp::Constants::Vendors::SOCURE
     when :lexis_nexis
       Idp::Constants::Vendors::LEXIS_NEXIS
+    when :mock
+      Idp::Constants::Vendors::MOCK
     else # e.g., nil
       IdentityConfig.store.doc_auth_vendor_default
     end

@@ -1,19 +1,8 @@
 require 'rails_helper'
 
-def expect_facility_fields_to_be_present(facility)
-  expect(facility.address).to be_present
-  expect(facility.city).to be_present
-  expect(facility.name).to be_present
-  expect(facility.saturday_hours).to be_present
-  expect(facility.state).to be_present
-  expect(facility.sunday_hours).to be_present
-  expect(facility.weekday_hours).to be_present
-  expect(facility.zip_code_4).to be_present
-  expect(facility.zip_code_5).to be_present
-end
-
 RSpec.describe UspsInPersonProofing::Proofer do
   include UspsIppHelper
+  include UspsIppServiceHelper
 
   let(:subject) { UspsInPersonProofing::Proofer.new }
   let(:root_url) { 'http://my.root.url' }
@@ -297,8 +286,6 @@ RSpec.describe UspsInPersonProofing::Proofer do
     end
     let(:is_enhanced_ipp) { false }
     let(:request_url) { "#{root_url}/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant" }
-    let(:usps_ipp_sponsor_id) { '42' }
-    let(:ipp_assurance_level) { '1.5' }
 
     before do
       stub_request_token

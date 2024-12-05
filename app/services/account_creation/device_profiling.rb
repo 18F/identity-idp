@@ -5,15 +5,18 @@ module AccountCreation
     attr_reader :request_ip,
                 :threatmetrix_session_id,
                 :user_email,
-                :device_profile_result
+                :device_profile_result,
+                :uuid_prefix
     def proof(
       request_ip:,
       threatmetrix_session_id:,
-      user_email:
+      user_email:,
+      uuid_prefix:
     )
       @request_ip = request_ip
       @threatmetrix_session_id = threatmetrix_session_id
       @user_email = user_email
+      @uuid_prefix = uuid_prefix
 
       @device_profile_result = device_profile
     end
@@ -27,6 +30,7 @@ module AccountCreation
         threatmetrix_session_id: threatmetrix_session_id,
         email: user_email,
         request_ip: request_ip,
+        uuid_prefix: uuid_prefix,
       )
     end
 
