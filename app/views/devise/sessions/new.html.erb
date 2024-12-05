@@ -29,7 +29,10 @@
         name: :email,
         label: t('account.index.email'),
         required: true,
-        input_html: { autocorrect: 'off' },
+        input_html: {
+          autocomplete: 'username',
+          autocorrect: 'off',
+        },
       ) %>
   <%= render PasswordToggleComponent.new(
         form: f,
