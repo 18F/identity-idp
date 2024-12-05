@@ -29,21 +29,15 @@ RSpec.feature 'document capture step', :js do
       and_return(socure_docv_verification_data_test_mode)
   end
 
-  before(:all) do
-    @user = user_with_2fa
-  end
-
-  after(:all) { @user.destroy }
-
   context 'happy path' do
     before do
-      stub_docv_verification_data_pass(docv_transaction_token: @docv_transaction_token)
+      @pass_stub = stub_docv_verification_data_pass(docv_transaction_token: @docv_transaction_token)
     end
 
     context 'standard desktop flow' do
       before do
         visit_idp_from_oidc_sp_with_ial2
-        sign_in_and_2fa_user(@user)
+        @user = sign_in_and_2fa_user
         complete_doc_auth_steps_before_document_capture_step
         click_idv_continue
       end
@@ -94,69 +88,24 @@ RSpec.feature 'document capture step', :js do
         end
       end
 
-      context 'when socure_docv_verification_data_test_mode is enabled' do
-        let(:test_token) { 'valid-test-token' }
-        let(:socure_docv_verification_data_test_mode) { true }
-        before do
-          WebMock.reset!
-          @docv_transaction_token = stub_docv_document_request
-          allow(IdentityConfig.store).to receive(:socure_docv_verification_data_test_mode_tokens).
-            and_return([test_token])
-        end
-
-        context 'when a valid test token is used' do
-          it 'fetches verificationdata using override docvToken in request' do
-            stub_docv_verification_data_pass(docv_transaction_token: test_token)
-
-            visit idv_socure_document_capture_update_path(docv_token: test_token)
-
-            expect(page).to have_current_path(idv_ssn_url)
-
-            expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('NY')
-
-            fill_out_ssn_form_ok
-            click_idv_continue
-            complete_verify_step
-            expect(page).to have_current_path(idv_phone_url)
-          end
-        end
-
-        context 'when a valid test token is used' do
-          it 'fetches verificationdata using docvToken in document capture session' do
-            stub_docv_verification_data_pass(docv_transaction_token: test_token)
-
-            visit idv_socure_document_capture_update_path(docv_token: 'invalid-token')
-
-            expect(page).to have_current_path(idv_ssn_url)
-
-            expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('NY')
-
-            fill_out_ssn_form_ok
-            click_idv_continue
-            complete_verify_step
-            expect(page).to have_current_path(idv_phone_url)
-          end
-        end
-      end
-
       context 'network connection errors' do
         context 'getting the capture path' do
           before do
             allow_any_instance_of(Faraday::Connection).to receive(:post).
               and_raise(Faraday::ConnectionFailed)
           end
-    
+
           it 'shows the network error page', js: true do
             visit_idp_from_oidc_sp_with_ial2
             sign_in_and_2fa_user(@user)
-    
+
             complete_doc_auth_steps_before_document_capture_step
-    
+
             expect(page).to have_content(t('doc_auth.headers.general.network_error'))
             expect(page).to have_content(t('doc_auth.errors.general.new_network_error'))
           end
         end
-    
+
         # ToDo post LG-14010. Does this belong here, or on the polling page tests?
         xit 'catches network connection errors on verification data request',
             allow_browser_log: true do
@@ -164,23 +113,67 @@ RSpec.feature 'document capture step', :js do
         end
       end
 
-      context 'tracking state' do
-        it 'does not track state if state tracking is disabled' do
-          allow(IdentityConfig.store).to receive(:state_tracking_enabled).and_return(false)
-          socure_docv_upload_documents(
-            docv_transaction_token: @docv_transaction_token,
-          )
-  
-          expect(DocAuthLog.find_by(user_id: @user.id).state).to be_nil
+      it 'does not track state if state tracking is disabled' do
+        allow(IdentityConfig.store).to receive(:state_tracking_enabled).and_return(false)
+        socure_docv_upload_documents(
+          docv_transaction_token: @docv_transaction_token,
+        )
+
+        visit idv_socure_document_capture_update_path
+        expect(DocAuthLog.find_by(user_id: @user.id).state).to be_nil
+      end
+
+      xit 'does track state if state tracking is disabled' do
+        allow(IdentityConfig.store).to receive(:state_tracking_enabled).and_return(true)
+        socure_docv_upload_documents(
+          docv_transaction_token: @docv_transaction_token,
+        )
+
+        visit idv_socure_document_capture_update_path
+        expect(DocAuthLog.find_by(user_id: @user.id).state).not_to be_nil
+      end
+
+      context 'when socure_docv_verification_data_test_mode is enabled' do
+        let(:test_token) { 'valid-test-token' }
+        let(:socure_docv_verification_data_test_mode) { true }
+        before do
+          allow(IdentityConfig.store).to receive(:socure_docv_verification_data_test_mode_tokens).
+            and_return([test_token])
         end
   
-        xit 'does track state if state tracking is disabled' do
-          allow(IdentityConfig.store).to receive(:state_tracking_enabled).and_return(true)
-          socure_docv_upload_documents(
-            docv_transaction_token: @docv_transaction_token,
-          )
+        context 'when a valid test token is used' do
+          it 'fetches verificationdata using override docvToken in request' do
+            remove_request_stub(@pass_stub)
+            stub_docv_verification_data_pass(docv_transaction_token: test_token)
   
-          expect(DocAuthLog.find_by(user_id: @user.id).state).not_to be_nil
+            visit idv_socure_document_capture_update_path(docv_token: test_token)
+            expect(page).to have_current_path(idv_ssn_url)
+  
+            expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('NY')
+  
+            fill_out_ssn_form_ok
+            click_idv_continue
+            complete_verify_step
+            expect(page).to have_current_path(idv_phone_url)
+          end
+        end
+  
+        context 'when an invalid test token is used' do
+          it 'fetches verificationdata using docvToken in document capture session' do
+            socure_docv_upload_documents(
+              docv_transaction_token: @docv_transaction_token,
+            )
+            visit idv_socure_document_capture_update_path(docv_token: 'invalid-token')
+  
+            expect(page).to have_current_path(idv_ssn_url)
+  
+            expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('NY')
+  
+            fill_out_ssn_form_ok
+            click_idv_continue
+            complete_verify_step
+            expect(page).to have_current_path(idv_phone_url)
+          end
         end
       end
     end
@@ -189,7 +182,7 @@ RSpec.feature 'document capture step', :js do
       it 'proceeds to the next page with valid info' do
         perform_in_browser(:mobile) do
           visit_idp_from_oidc_sp_with_ial2
-          sign_in_and_2fa_user(@user)
+          @user = sign_in_and_2fa_user
           complete_doc_auth_steps_before_document_capture_step
 
           expect(page).to have_current_path(idv_socure_document_capture_url)
@@ -220,7 +213,7 @@ RSpec.feature 'document capture step', :js do
       )
 
       visit_idp_from_oidc_sp_with_ial2
-      sign_in_and_2fa_user(@user)
+      @user = sign_in_and_2fa_user
 
       complete_doc_auth_steps_before_document_capture_step
 

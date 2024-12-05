@@ -111,7 +111,7 @@ module DocumentCaptureStepHelper
     stub_docv_verification_data(body: SocureDocvFixtures.fail_json(errors), docv_transaction_token:)
   end
 
-  def stub_docv_verification_data(body:, docv_transaction_token:)
+  def stub_docv_verification_data(docv_transaction_token:, body:)
     request_body = {
       modules: ['documentverification'],
       docvTransactionToken: docv_transaction_token,
