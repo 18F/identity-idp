@@ -140,4 +140,35 @@ RSpec.describe SpReturnUrlResolver do
       end
     end
   end
+
+  describe '#post_idv_follow_up_url' do
+    let(:return_to_sp_url) { nil }
+    let(:sp_post_idv_follow_up_url) { nil }
+    let(:sp) do
+      build(
+        :service_provider,
+        return_to_sp_url: return_to_sp_url,
+        post_idv_follow_up_url: sp_post_idv_follow_up_url,
+      )
+    end
+    let(:instance) { described_class.new(service_provider: sp) }
+    subject(:post_idv_follow_up_url) { instance.post_idv_follow_up_url }
+
+    context 'with not homepage url or follow_up url configured' do
+      it { expect(post_idv_follow_up_url).to be_nil }
+    end
+
+    context 'with a homepage url configured' do
+      let(:return_to_sp_url) { 'https://sp.gov/return_to_sp' }
+
+      it { expect(post_idv_follow_up_url).to eq(return_to_sp_url) }
+    end
+
+    context 'with a follow_up url configured' do
+      let(:return_to_sp_url) { 'https://sp.gov/return_to_sp' }
+      let(:sp_post_idv_follow_up_url) { 'https://sp.gov/follow_up' }
+
+      it { expect(post_idv_follow_up_url).to eq(sp_post_idv_follow_up_url) }
+    end
+  end
 end
