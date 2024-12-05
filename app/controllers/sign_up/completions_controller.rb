@@ -54,6 +54,7 @@ module SignUp
         ial2_requested: ial2_requested?,
         completion_context: needs_completion_screen_reason,
         selected_email_id: user_session[:selected_email_id_for_linked_identity],
+        url_options: url_options,
       )
     end
 

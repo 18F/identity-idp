@@ -36,7 +36,8 @@ class CompletionsPresenter
     requested_attributes:,
     ial2_requested:,
     completion_context:,
-    selected_email_id:
+    selected_email_id:,
+    url_options:
   )
     @current_user = current_user
     @current_sp = current_sp
@@ -45,7 +46,7 @@ class CompletionsPresenter
     @ial2_requested = ial2_requested
     @completion_context = completion_context
     @selected_email_id = selected_email_id
-    @url_options = {}
+    @url_options = url_options
   end
 
   def ial2_requested?

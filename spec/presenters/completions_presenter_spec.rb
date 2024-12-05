@@ -14,6 +14,7 @@ RSpec.describe CompletionsPresenter do
       ),
     ]
   end
+  let(:url_options) { {} }
   let(:current_user) { create(:user, :fully_registered, identities: identities) }
   let(:current_sp) { create(:service_provider, friendly_name: 'Friendly service provider') }
   let(:selected_email_id) { current_user.email_addresses.first.id }
@@ -50,6 +51,7 @@ RSpec.describe CompletionsPresenter do
       ial2_requested:,
       completion_context:,
       selected_email_id:,
+      url_options:,
     )
   end
 

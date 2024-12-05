@@ -8,6 +8,7 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
   let(:requested_attributes) { [:email] }
   let(:ial2_requested) { false }
   let(:completion_context) { :new_sp }
+  let(:url_options) { {} }
 
   let(:view_context) { ActionController::Base.new.view_context }
   let(:decorated_sp_session) do
@@ -28,6 +29,7 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
       ial2_requested:,
       completion_context:,
       selected_email_id:,
+      url_options:,
     )
   end
 
