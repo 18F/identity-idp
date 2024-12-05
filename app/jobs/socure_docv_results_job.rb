@@ -3,12 +3,13 @@
 class SocureDocvResultsJob < ApplicationJob
   queue_as :high_socure_docv
 
-  attr_reader :document_capture_session_uuid, :async
+  attr_reader :document_capture_session_uuid, :async, :docv_transaction_token_override
 
   # @param [String] document_capture_session_uuid
   def perform(document_capture_session_uuid:, async: true)
     @document_capture_session_uuid = document_capture_session_uuid
     @async = async
+    @docv_transaction_token_override = docv_transaction_token_override
 
     raise "DocumentCaptureSession not found: #{document_capture_session_uuid}" unless
       document_capture_session
@@ -51,6 +52,7 @@ class SocureDocvResultsJob < ApplicationJob
   def socure_document_verification_result
     DocAuth::Socure::Requests::DocvResultRequest.new(
       document_capture_session_uuid:,
+      docv_transaction_token_override:,
     ).fetch
   end
 

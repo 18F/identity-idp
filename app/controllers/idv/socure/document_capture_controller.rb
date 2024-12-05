@@ -14,6 +14,7 @@ module Idv
       before_action :confirm_step_allowed
       before_action -> { redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, false) },
                     only: :show
+      before_action :fetch_verification_data, only: [:update]
 
       # reconsider and maybe remove these when implementing the real
       # update handler
