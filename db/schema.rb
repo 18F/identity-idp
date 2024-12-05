@@ -551,7 +551,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_03_163014) do
     t.boolean "use_legacy_name_id_behavior", default: false, comment: "sensitive=false"
     t.boolean "irs_attempts_api_enabled", comment: "sensitive=false"
     t.boolean "in_person_proofing_enabled", default: false, comment: "sensitive=false"
-    t.string "post_idv_followup_url", comment: "sensitive=false"
+    t.string "post_idv_follow_up_url", comment: "sensitive=false"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 

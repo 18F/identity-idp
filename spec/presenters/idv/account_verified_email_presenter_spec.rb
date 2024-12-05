@@ -62,7 +62,7 @@ RSpec.describe Idv::AccountVerifiedEmailPresenter do
         create(
           :service_provider,
           issuer: 'urn:my:awesome:sp',
-          post_idv_followup_url: nil,
+          post_idv_follow_up_url: nil,
           return_to_sp_url: nil,
           friendly_name: 'My Awesome SP',
         )
@@ -107,7 +107,7 @@ RSpec.describe Idv::AccountVerifiedEmailPresenter do
         create(
           :service_provider,
           issuer: 'urn:my:awesome:sp',
-          post_idv_followup_url: 'https://www.mysp.com',
+          post_idv_follow_up_url: 'https://www.mysp.com',
           friendly_name: 'My Awesome SP',
         )
       end

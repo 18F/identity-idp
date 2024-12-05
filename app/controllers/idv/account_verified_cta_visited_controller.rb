@@ -22,7 +22,8 @@ module Idv
       if issuer.blank?
         root_url
       else
-        sp_return_url_resolver&.post_idv_followup_url
+        sp_return_url_resolver&.post_idv_follow_up_url ||
+          sp_return_url_resolver&.return_to_sp_url
       end
     end
 
