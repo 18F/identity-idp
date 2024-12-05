@@ -336,9 +336,11 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       end
 
       it 'does not create a DocumentRequest when valid capture app exists' do
-        dcs = create(:document_capture_session, uuid: user.id)
-        dcs.socure_docv_capture_app_url = fake_capture_app_url
-        dcs.save
+        dcs = create(
+          :document_capture_session,
+          uuid: user.id,
+          socure_docv_capture_app_url: fake_capture_app_url,
+        )
         allow(DocumentCaptureSession).to receive(:find_by).and_return(dcs)
         get(:show)
         expect(request_class).not_to have_received(:new)
