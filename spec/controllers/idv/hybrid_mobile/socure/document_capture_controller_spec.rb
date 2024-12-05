@@ -334,7 +334,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
         allow(DocumentCaptureSession).to receive(:find_by).and_return(dcs)
         get(:show)
         expect(request_class).not_to have_received(:new)
-        expect(document_capture_session.socure_docv_capture_app_url).to eq(fake_capture_app_url)
+        expect(dcs.socure_docv_capture_app_url).to eq(fake_capture_app_url)
       end
     end
   end
