@@ -8,7 +8,6 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
   let(:requested_attributes) { [:email] }
   let(:ial2_requested) { false }
   let(:completion_context) { :new_sp }
-  let(:url_options) { {} }
 
   let(:view_context) { ActionController::Base.new.view_context }
   let(:decorated_sp_session) do
@@ -29,7 +28,6 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
       ial2_requested:,
       completion_context:,
       selected_email_id:,
-      url_options:,
     )
   end
 
@@ -82,28 +80,6 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
       render
 
       expect(rendered).to_not include(t('help_text.requested_attributes.change_email_link'))
-    end
-  end
-
-  context 'select email to send to partner' do
-    it 'does not show a link to select different email' do
-      create(:email_address, user: user)
-      user.reload
-      render
-
-      expect(rendered).to have_link(
-        t('help_text.requested_attributes.change_email_link'),
-        href: sign_up_select_email_path,
-      )
-    end
-
-    it 'does not show a link to add another email' do
-      render
-
-      expect(rendered).to have_link(
-        t('help_text.requested_attributes.change_email_link'),
-        href: add_email_path(in_select_email_flow: true),
-      )
     end
   end
 
