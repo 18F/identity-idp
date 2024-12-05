@@ -100,7 +100,11 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true do
       expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_CITY).twice
       expect(page).to have_text(
         Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION,
-        count: 3,
+        count: 1,
+      )
+      expect(page).to have_text(
+        Idp::Constants::MOCK_IDV_APPLICANT_STATE,
+        count: 2,
       )
       expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE).twice
       expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)

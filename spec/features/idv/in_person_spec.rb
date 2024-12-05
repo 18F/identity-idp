@@ -56,7 +56,8 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1).twice
     expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2).twice
     expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_CITY).twice
-    expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION, count: 3)
+    expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION, count: 1)
+    expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT_STATE, count: 2)
     expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE).twice
     expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
 
@@ -428,7 +429,8 @@ RSpec.describe 'In Person Proofing', js: true do
       expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1)
       expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2)
       expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_CITY)
-      expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION).twice
+      expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION).once
+      expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT_STATE).twice
       expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE)
       expect(page).to have_text(InPersonHelper::GOOD_ADDRESS1)
       expect(page).to have_text(InPersonHelper::GOOD_CITY)

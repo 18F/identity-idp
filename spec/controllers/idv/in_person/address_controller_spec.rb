@@ -45,6 +45,7 @@ RSpec.describe Idv::InPerson::AddressController do
       before do
         subject.user_session['idv/in_person'][:pii_from_user].delete(:identity_doc_address1)
       end
+
       it 'redirects to state id page if not complete' do
         get :show
 
