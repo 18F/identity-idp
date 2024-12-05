@@ -24,7 +24,7 @@ RSpec.describe Idv::ByMail::SpFollowUpPresenter do
   describe '#body' do
     it 'interpolates the SP name' do
       expect(presenter.body).to eq(
-        t('idv.by_mail.sp_follow_up.body', service_provider: sp_name),
+        t('idv.by_mail.sp_follow_up.body', service_provider: sp_name, app_name: APP_NAME),
       )
     end
   end
