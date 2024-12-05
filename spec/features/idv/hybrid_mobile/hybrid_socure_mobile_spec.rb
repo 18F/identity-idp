@@ -9,6 +9,7 @@ RSpec.describe 'Hybrid Flow' do
   let(:sp) { :oidc }
   let(:fake_socure_document_capture_app_url) { 'https://verify.fake-socure.test/something' }
   let(:fake_socure_docv_document_request_endpoint) { 'https://fake-socure.test/document-request' }
+  let(:socure_docv_verification_data_test_mode) { false }
 
   before do
     allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(true)
@@ -23,10 +24,15 @@ RSpec.describe 'Hybrid Flow' do
       @sms_link = config[:link]
       impl.call(**config)
     end.at_least(1).times
+    allow(IdentityConfig.store).to receive(:socure_docv_verification_data_test_mode).
+      and_return(socure_docv_verification_data_test_mode)
     @docv_transaction_token = stub_docv_document_request
   end
 
   context 'happy path' do
+    before do
+      @pass_stub = stub_docv_verification_data_pass(docv_transaction_token: @docv_transaction_token)
+    end
     it 'proofs and hands off to mobile', js: true do
       user = nil
 
@@ -76,7 +82,6 @@ RSpec.describe 'Hybrid Flow' do
 
         expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_url)
 
-        stub_docv_verification_data_pass
         click_idv_continue
         expect(page).to have_current_path(fake_socure_document_capture_app_url)
         socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
@@ -190,7 +195,6 @@ RSpec.describe 'Hybrid Flow' do
 
           click_idv_continue
           expect(page).to have_current_path(fake_socure_document_capture_app_url)
-          stub_docv_verification_data_pass
           max_attempts.times do
             socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
           end
@@ -225,7 +229,6 @@ RSpec.describe 'Hybrid Flow' do
         visit @sms_link
 
         expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_url)
-        stub_docv_verification_data_pass
         click_idv_continue
         expect(page).to have_current_path(fake_socure_document_capture_app_url)
         socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
@@ -251,6 +254,81 @@ RSpec.describe 'Hybrid Flow' do
         ).to eq(
           PhoneFormatter.format(phone_number),
         )
+      end
+    end
+
+    context 'when socure_docv_verification_data_test_mode is enabled' do
+      let(:test_token) { 'valid-test-token' }
+      let(:socure_docv_verification_data_test_mode) { true }
+      before do
+        allow(IdentityConfig.store).to receive(:socure_docv_verification_data_test_mode_tokens).
+          and_return([test_token])
+      end
+  
+      context 'when a valid test token is used' do
+        it 'fetches verificationdata using override docvToken in request', js: true do
+          user = nil
+  
+          perform_in_browser(:desktop) do
+            visit_idp_from_sp_with_ial2(sp)
+            user = sign_up_and_2fa_ial1_user
+  
+            complete_doc_auth_steps_before_hybrid_handoff_step
+            click_send_link
+          end
+  
+          expect(@sms_link).to be_present
+  
+          perform_in_browser(:mobile) do
+            remove_request_stub(@pass_stub)
+            stub_docv_verification_data_pass(docv_transaction_token: test_token)
+  
+            visit @sms_link
+  
+            expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_url)
+  
+            visit idv_hybrid_mobile_socure_document_capture_update_path(docv_token: test_token)
+  
+            expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
+          end
+  
+          perform_in_browser(:desktop) do
+            expect(page).to have_current_path(idv_ssn_path, wait: 10)
+          end
+        end
+      end
+  
+      context 'when an invalid test token is used' do
+        let(:invalid_token) { 'invalid-token' }
+  
+        it 'fetches verificationdata using docvToken in document capture session', js: true do
+          user = nil
+  
+          perform_in_browser(:desktop) do
+            visit_idp_from_sp_with_ial2(sp)
+            user = sign_up_and_2fa_ial1_user
+  
+            complete_doc_auth_steps_before_hybrid_handoff_step
+            click_send_link
+          end
+  
+          expect(@sms_link).to be_present
+  
+          perform_in_browser(:mobile) do
+            visit @sms_link
+  
+            click_idv_continue
+  
+            socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
+            visit idv_hybrid_mobile_socure_document_capture_update_path(docv_token: invalid_token)
+  
+            expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_path)
+          end
+  
+          perform_in_browser(:desktop) do
+            expect(page).to have_current_path(idv_ssn_path, wait: 10)
+          end
+        end
       end
     end
   end
@@ -280,7 +358,10 @@ RSpec.describe 'Hybrid Flow' do
       perform_in_browser(:mobile) do
         visit @sms_link
 
-        stub_docv_verification_data_fail_with([socure_error_code])
+        stub_docv_verification_data_fail_with(
+          docv_transaction_token: @docv_transaction_token,
+          errors: [socure_error_code],
+        )
 
         click_idv_continue
 
