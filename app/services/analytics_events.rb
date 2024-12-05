@@ -4696,7 +4696,6 @@ module AnalyticsEvents
   # @param [Boolean] opted_in_to_in_person_proofing user opts in to IPP
   # @param [Hash] redirect hash for redirect (url and method)
   # @param [Hash] response_body hash received from socure
-  # @param [String] user_id internal id of socure user
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Float] vendor_request_time_in_ms Time it took to upload images & get a response.
   # @param [Boolean] liveness_checking_required Whether or not the selfie is required
@@ -4724,7 +4723,6 @@ module AnalyticsEvents
     liveness_enabled: nil,
     document_type: nil,
     docv_transaction_token: nil,
-    user_id: nil,
     flow_path: nil,
     **extra
   )
@@ -4749,7 +4747,6 @@ module AnalyticsEvents
       liveness_enabled:,
       document_type:,
       docv_transaction_token:,
-      user_id:,
       flow_path:,
       **extra,
     )
