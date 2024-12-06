@@ -25,11 +25,7 @@ class SocureErrorPresenter
   end
 
   def rate_limit_text
-    if remaining_attempts == 1
-      t('doc_auth.rate_limit_warning.singular_html')
-    else
-      t('doc_auth.rate_limit_warning.plural_html', remaining_attempts: remaining_attempts)
-    end
+    t('doc_auth.rate_limit_warning_html', remaining_attempts: )
   end
 
   def action
@@ -50,7 +46,7 @@ class SocureErrorPresenter
   end
 
   def secondary_action
-    url = hybrid_mobile ? idv_hybrid_mobile_socure_document_capture_goto_in_person_path
+    url = hybrid_mobile ? idv_hybrid_mobile_capture_complete_url
                         : idv_socure_document_capture_goto_in_person_path
 
     {
@@ -99,6 +95,7 @@ class SocureErrorPresenter
   private
 
   attr_reader :error_code, :remaining_attempts, :sp_name, :hybrid_mobile
+
 
   SOCURE_ERROR_MAP = {
     'I848' => 'unreadable_id',

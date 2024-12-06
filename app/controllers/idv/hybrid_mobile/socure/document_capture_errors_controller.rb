@@ -21,7 +21,16 @@ module Idv
           )
         end
 
-        def update
+        # ToDo: Remove and use Doug's method
+        def goto_in_person
+          enrollment = InPersonEnrollment.find_or_initialize_by(
+            user: document_capture_session.user,
+            status: :establishing,
+            sponsor_id: IdentityConfig.store.usps_ipp_sponsor_id,
+          )
+          enrollment.save!
+
+          redirect_to idv_in_person_url
         end
 
         # def analytics_arguments
