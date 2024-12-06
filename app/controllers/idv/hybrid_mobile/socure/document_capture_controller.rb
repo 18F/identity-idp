@@ -14,6 +14,7 @@ module Idv
         before_action :check_valid_document_capture_session, except: [:update]
         before_action -> { redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, true) },
                       only: :show
+        before_action :fetch_test_verification_data, only: [:update]
 
         def show
           Funnel::DocAuth::RegisterStep.new(document_capture_user.id, sp_session[:issuer]).
