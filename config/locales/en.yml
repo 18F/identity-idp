@@ -765,6 +765,7 @@ errors.messages.invalid_recaptcha_token: We’re sorry, but your computer or net
 errors.messages.invalid_sms_number: The phone number entered doesn’t support text messaging. Try the Phone call option.
 errors.messages.invalid_voice_number: Invalid phone number. Check that you’ve entered the correct country code or area code.
 errors.messages.missing_field: Please fill in this field.
+errors.messages.no_cert_registered: Your service provider does not have a certificate registered.
 errors.messages.no_pending_profile: No profile is waiting for verification
 errors.messages.not_a_number: is not a number
 errors.messages.otp_format: Enter your entire one-time code without spaces or special characters

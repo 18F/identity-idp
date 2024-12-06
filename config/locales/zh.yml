@@ -776,6 +776,7 @@ errors.messages.invalid_recaptcha_token: 你必须完成预防滥发邮件测验
 errors.messages.invalid_sms_number: 输入的电话号码不支持短信。尝试接听电话选项。
 errors.messages.invalid_voice_number: 电话号码有误。检查一下你是否输入了正确的国家代码或区域代码。
 errors.messages.missing_field: 请填写这一字段。
+errors.messages.no_cert_registered: 我们在你的请求中探查不到证书。
 errors.messages.no_pending_profile: 没有等待验证的用户资料
 errors.messages.not_a_number: 不是数字
 errors.messages.otp_format: 输入你完整的一次性代码（没有空白或特殊字符）

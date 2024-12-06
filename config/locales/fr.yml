@@ -765,6 +765,7 @@ errors.messages.invalid_recaptcha_token: Désolé, il est possible que votre ord
 errors.messages.invalid_sms_number: Le numéro de téléphone saisi ne prend pas en charge les messages texte. Veuillez essayer l’option d’appel téléphonique.
 errors.messages.invalid_voice_number: Numéro de téléphone non valide. Vérifiez que vous avez entré le bon indicatif international ou régional.
 errors.messages.missing_field: Veuillez remplir ce champ.
+errors.messages.no_cert_registered: Nous ne pouvons pas détecter un certificat sur votre demande.
 errors.messages.no_pending_profile: Aucun profil en attente de vérification
 errors.messages.not_a_number: n’est pas un chiffre
 errors.messages.otp_format: Saisissez l’intégralité de votre code à usage unique sans espaces ni caractères spéciaux
