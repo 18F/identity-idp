@@ -23,18 +23,19 @@
 
   <div class="grid-row margin-top-5">
     <div class="tablet:grid-col-9">
-      <%= render ButtonComponent.new(
+      <%= render SubmitButtonComponent.new(
             url: webauthn_platform_recommended_url,
             method: :post,
             params: { add_method: true },
-            big: true,
             full_width: true,
             class: 'margin-bottom-2',
           ).with_content(t('webauthn_platform_recommended.cta')) %>
-      <%= render ButtonComponent.new(
+      <%= render SubmitButtonComponent.new(
             url: webauthn_platform_recommended_url,
             method: :post,
             unstyled: true,
+            big: false,
+            wide: false,
           ).with_content(t('webauthn_platform_recommended.skip')) %>
     </div>
   </div>
