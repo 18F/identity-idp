@@ -20,6 +20,7 @@ global.expect = chai.expect;
 const dom = createDOM();
 global.jsdom = dom;
 global.window = dom.window;
+Object.assign(global.navigator, dom.window.navigator);
 const windowGlobals = Object.fromEntries(
   Object.getOwnPropertyNames(window)
     .filter((key) => !(key in global))
