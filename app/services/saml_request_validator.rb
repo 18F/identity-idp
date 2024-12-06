@@ -3,8 +3,9 @@
 class SamlRequestValidator
   include ActiveModel::Model
 
-  validate :cert_exists
+  validate :request_cert_exists
   validate :authorized_service_provider
+  validate :registered_cert_exists
   validate :authorized_authn_context
   validate :parsable_vtr
   validate :authorized_email_nameid_format
@@ -72,7 +73,18 @@ class SamlRequestValidator
     end
   end
 
-  def cert_exists
+  def registered_cert_exists
+    # if there is no service provider, this error has already been added
+    return if service_provider.blank?
+    return if service_provider.certs.present?
+
+    errors.add(
+      :service_provider, :no_cert_registered,
+      type: :no_cert_registered
+    )
+  end
+
+  def request_cert_exists
     if @blank_cert
       errors.add(:service_provider, :blank_cert_element_req, type: :blank_cert_element_req)
     end
