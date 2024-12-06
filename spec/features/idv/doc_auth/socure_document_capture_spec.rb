@@ -142,7 +142,7 @@ RSpec.feature 'document capture step', :js do
         end
   
         context 'when a valid test token is used' do
-          it 'fetches verificationdata using override docvToken in request' do
+          it 'fetches verificationdata using override docvToken in request', allow_browser_log: true do
             remove_request_stub(@pass_stub)
             stub_docv_verification_data_pass(docv_transaction_token: test_token)
   

@@ -6,7 +6,7 @@ class SocureDocvResultsJob < ApplicationJob
   attr_reader :document_capture_session_uuid, :async, :docv_transaction_token_override
 
   # @param [String] document_capture_session_uuid
-  def perform(document_capture_session_uuid:, async: true)
+  def perform(document_capture_session_uuid:, async: true, docv_transaction_token_override: nil)
     @document_capture_session_uuid = document_capture_session_uuid
     @async = async
     @docv_transaction_token_override = docv_transaction_token_override
