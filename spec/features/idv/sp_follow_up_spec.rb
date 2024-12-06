@@ -75,7 +75,7 @@ RSpec.feature 'returning to an SP after out-of-band proofing' do
       expect(current_url).to eq(post_idv_follow_up_url)
     end
 
-    scenario 'canceling on the CTA' do
+    scenario 'canceling on the CTA and visiting from the account page' do
       post_idv_follow_up_url = 'https://example.com/idv_follow_up'
       initiating_service_provider = create(:service_provider, post_idv_follow_up_url:)
       profile = create(:profile, :verify_by_mail_pending, :with_pii, initiating_service_provider:)
@@ -101,6 +101,11 @@ RSpec.feature 'returning to an SP after out-of-band proofing' do
       click_on t('idv.by_mail.sp_follow_up.go_to_account')
 
       expect(current_url).to eq(account_url)
+
+      expect(page).to have_content(t('account.index.verification.connect_idv_account.intro'))
+      click_on(t('account.index.verification.connect_idv_account.cta'))
+
+      expect(current_url).to eq(post_idv_follow_up_url)
     end
   end
 end

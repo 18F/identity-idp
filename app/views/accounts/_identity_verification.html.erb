@@ -19,6 +19,17 @@
   </div>
 </div>
 
+<% if @presenter.active_profile? && !@presenter.connected_to_initiating_idv_sp? %>
+  <%= render AlertComponent.new(type: :warning, class: 'margin-bottom-2') do %>
+    <%= t('account.index.verification.connect_idv_account.intro') %><br />
+    <% if @presenter.connect_to_initiating_idv_sp_url.present? %>
+      <%= link_to(t('account.index.verification.connect_idv_account.cta'), @presenter.connect_to_initiating_idv_sp_url) %>
+    <% else %>
+      <%= t('account.index.verification.connect_idv_account.cta') %>
+    <% end %>
+  <% end %>
+<% end %>
+
 <% if @presenter.active_profile? || @presenter.pending_ipp? || @presenter.pending_gpo? %>
   <p>
     <% if @presenter.active_profile_for_authn_context? %>

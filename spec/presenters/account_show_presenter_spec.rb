@@ -395,6 +395,41 @@ RSpec.describe AccountShowPresenter do
     end
   end
 
+  describe '#connected_to_initiating_idv_sp?' do
+    let(:initiating_service_provider) { build(:service_provider) }
+    let(:user) { create(:user, identities: [identity].compact, profiles: [profile].compact) }
+    let(:profile) do
+      build(:profile, :active, initiating_service_provider:)
+    end
+    let(:last_ial2_authenticated_at) { 2.days.ago }
+    let(:identity) do
+      build(
+        :service_provider_identity,
+        service_provider: initiating_service_provider.issuer,
+        last_ial2_authenticated_at:,
+      )
+    end
+
+    subject(:connected_to_initiating_idv_sp?) { presenter.connected_to_initiating_idv_sp? }
+
+    context 'the user verified without an initiating service provider' do
+      let(:initiating_service_provider) { nil }
+      let(:identity) { nil }
+
+      it { expect(connected_to_initiating_idv_sp?).to eq(false) }
+    end
+
+    context 'the user has signed in to the initiating service provider' do
+      it { expect(connected_to_initiating_idv_sp?).to eq(true) }
+    end
+
+    context 'the user has not signed in to the initiating service provider' do
+      let(:last_ial2_authenticated_at) { nil }
+
+      it { expect(connected_to_initiating_idv_sp?).to eq(false) }
+    end
+  end
+
   describe '#header_personalization' do
     context 'AccountShowPresenter instance has decrypted_pii' do
       it "returns the user's first name" do
