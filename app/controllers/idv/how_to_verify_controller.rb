@@ -5,6 +5,7 @@ module Idv
     include Idv::AvailabilityConcern
     include IdvStepConcern
     include RenderConditionConcern
+    include DocAuthVendorConcern
 
     before_action :confirm_step_allowed
     before_action :set_how_to_verify_presenter
@@ -86,8 +87,16 @@ module Idv
     end
 
     def set_how_to_verify_presenter
+      @mobile_required = mobile_required?
       @selfie_required = idv_session.selfie_check_required
-      @presenter = Idv::HowToVerifyPresenter.new(selfie_check_required: @selfie_required)
+      @presenter = Idv::HowToVerifyPresenter.new(
+        mobile_required: @mobile_required,
+        selfie_check_required: @selfie_required,
+      )
+    end
+
+    def mobile_required?
+      idv_session.selfie_check_required || doc_auth_vendor == Idp::Constants::Vendors::SOCURE
     end
   end
 end

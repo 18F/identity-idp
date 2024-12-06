@@ -2,8 +2,14 @@ require 'rails_helper'
 
 RSpec.describe 'idv/how_to_verify/show.html.erb' do
   selection = Idv::HowToVerifyForm::IPP
+  let(:mobile_required) { false }
   let(:selfie_check_required) { false }
-  let(:presenter) { Idv::HowToVerifyPresenter.new(selfie_check_required: selfie_check_required) }
+  let(:presenter) do
+    Idv::HowToVerifyPresenter.new(
+      mobile_required: mobile_required,
+      selfie_check_required: selfie_check_required,
+    )
+  end
   let(:idv_how_to_verify_form) { Idv::HowToVerifyForm.new(selection: selection) }
 
   before do
@@ -11,9 +17,10 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
     assign(:presenter, presenter)
     assign :idv_how_to_verify_form, idv_how_to_verify_form
   end
-  context 'when selfie is not required' do
+  context 'when mobile is not required' do
     before do
-      @selfie_required = false
+      @mobile_required = mobile_required
+      @selfie_required = selfie_check_required
       render
     end
 
@@ -61,11 +68,13 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
     end
   end
 
-  context 'when selfie is required' do
-    let(:selfie_check_required) { true }
+  context 'when mobile is required' do
+    let(:selfie_check_required) { false }
+    let(:mobile_required) { true }
 
     before do
-      @selfie_required = true
+      @selfie_required = selfie_check_required
+      @mobile_required = mobile_required
       render
     end
 
@@ -81,12 +90,12 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
     end
 
     it 'renders two options for verifying your identity' do
-      expect(rendered).to have_content(t('doc_auth.headings.verify_online_selfie'))
+      expect(rendered).to have_content(t('doc_auth.headings.verify_online_mobile'))
       expect(rendered).to have_content(t('doc_auth.headings.verify_at_post_office'))
     end
 
     it 'renders a button for remote and ipp' do
-      expect(rendered).to have_button(t('forms.buttons.continue_remote_selfie'))
+      expect(rendered).to have_button(t('forms.buttons.continue_remote_mobile'))
       expect(rendered).to have_button(t('forms.buttons.continue_ipp'))
     end
 
@@ -102,17 +111,27 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
       expect(rendered).to have_link(t('links.cancel'))
     end
 
-    it 'renders selfie specific content' do
-      expect(rendered).to have_content(t('doc_auth.info.how_to_verify_selfie'))
-      expect(rendered).to have_content(t('doc_auth.tips.mobile_phone_required'))
-      expect(rendered).to have_content(t('doc_auth.info.verify_online_instruction_selfie'))
-      expect(rendered).to have_content(t('doc_auth.info.verify_online_description_selfie'))
+    it 'renders mobile specific content' do
       expect(rendered).to have_content(
-        t('doc_auth.info.verify_at_post_office_instruction_selfie'),
+        t('doc_auth.info.verify_online_instruction_mobile_no_selfie'),
       )
-      expect(rendered).to have_content(
-        t('doc_auth.info.verify_at_post_office_description_selfie'),
-      )
+    end
+
+    context 'when selfie is required' do
+      let(:selfie_check_required) { true }
+
+      it 'renders selfie specific content' do
+        expect(rendered).to have_content(t('doc_auth.info.how_to_verify_mobile'))
+        expect(rendered).to have_content(t('doc_auth.tips.mobile_phone_required'))
+        expect(rendered).to have_content(t('doc_auth.info.verify_online_instruction_selfie'))
+        expect(rendered).to have_content(t('doc_auth.info.verify_online_description_mobile'))
+        expect(rendered).to have_content(
+          t('doc_auth.info.verify_at_post_office_instruction_selfie'),
+        )
+        expect(rendered).to have_content(
+          t('doc_auth.info.verify_at_post_office_description_mobile'),
+        )
+      end
     end
   end
 end
