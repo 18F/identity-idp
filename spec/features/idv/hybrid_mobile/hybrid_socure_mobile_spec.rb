@@ -263,6 +263,7 @@ RSpec.describe 'Hybrid Flow' do
       before do
         allow(IdentityConfig.store).to receive(:socure_docv_verification_data_test_mode_tokens).
           and_return([test_token])
+        DocAuth::Mock::DocAuthMockClient.reset!
       end
 
       context 'when a valid test token is used' do
@@ -302,7 +303,7 @@ RSpec.describe 'Hybrid Flow' do
       context 'when an invalid test token is used' do
         let(:invalid_token) { 'invalid-token' }
 
-        it 'fetches verificationdata using docvToken in document capture session', js: true do
+        it 'waits to fetch verificationdata using docv capture session token', js: true do
           user = nil
 
           perform_in_browser(:desktop) do
@@ -320,6 +321,10 @@ RSpec.describe 'Hybrid Flow' do
 
             click_idv_continue
 
+            visit idv_hybrid_mobile_socure_document_capture_update_path(docv_token: invalid_token)
+            expect(page).to have_current_path(
+              idv_hybrid_mobile_socure_document_capture_update_path(docv_token: invalid_token),
+            )
             socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
             visit idv_hybrid_mobile_socure_document_capture_update_path(docv_token: invalid_token)
 

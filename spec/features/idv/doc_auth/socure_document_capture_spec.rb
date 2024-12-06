@@ -161,16 +161,17 @@ RSpec.feature 'document capture step', :js do
         end
 
         context 'when an invalid test token is used' do
+          let(:invalid_token) { 'invalid-token' }
           it 'waits to fetch verificationdata using docv capture session token' do
-            visit idv_socure_document_capture_update_path(docv_token: 'invalid-token')
+            visit idv_socure_document_capture_update_path(docv_token: invalid_token)
 
             expect(page).to have_current_path(
-              idv_socure_document_capture_update_path(docv_token: 'invalid-token'),
+              idv_socure_document_capture_update_path(docv_token: invalid_token),
             )
             socure_docv_upload_documents(
               docv_transaction_token: @docv_transaction_token,
             )
-            visit idv_socure_document_capture_update_path(docv_token: 'invalid-token')
+            visit idv_socure_document_capture_update_path(docv_token: invalid_token)
 
             expect(page).to have_current_path(idv_ssn_url)
 
