@@ -8,12 +8,12 @@ module Idv
     include IdvStepConcern
     include StepIndicatorConcern
 
-    before_action :confirm_not_rate_limited, except: [:update]
+    before_action :confirm_not_rate_limited, except: [:update, :direct_in_person]
     before_action :confirm_step_allowed, unless: -> { allow_direct_ipp? }
     before_action :override_csp_to_allow_acuant
     before_action :set_usps_form_presenter
     before_action -> { redirect_to_correct_vendor(Idp::Constants::Vendors::LEXIS_NEXIS, false) },
-                  unless: -> { allow_direct_ipp? }
+                  only: [:show]
 
     def show
       analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)
@@ -43,20 +43,15 @@ module Idv
       end
     end
 
-    def extra_view_variables
-      {
-        document_capture_session_uuid: document_capture_session_uuid,
-        mock_client: doc_auth_vendor == 'mock',
-        flow_path: 'standard',
-        sp_name: decorated_sp_session.sp_name,
-        failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
-        skip_doc_auth_from_how_to_verify: idv_session.skip_doc_auth_from_how_to_verify,
-        skip_doc_auth_from_handoff: idv_session.skip_doc_auth_from_handoff,
-        opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing,
-        doc_auth_selfie_capture: resolved_authn_context_result.facial_match?,
-      }.merge(
-        acuant_sdk_upgrade_a_b_testing_variables,
-      )
+    # Given that the start of the IPP flow is in the TrueID doc_auth React app,
+    # we need a generic, direct way to start the IPP flow
+    def direct_in_person
+      attributes = {
+        remaining_submit_attempts: rate_limiter.remaining_count,
+      }.merge(ab_test_analytics_buckets)
+      analytics.idv_in_person_direct_start(**attributes)
+
+      redirect_to idv_document_capture_url(step: :idv_doc_auth)
     end
 
     def self.step_info
@@ -86,6 +81,22 @@ module Idv
 
     private
 
+    def extra_view_variables
+      {
+        document_capture_session_uuid: document_capture_session_uuid,
+        mock_client: doc_auth_vendor == 'mock',
+        flow_path: 'standard',
+        sp_name: decorated_sp_session.sp_name,
+        failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
+        skip_doc_auth_from_how_to_verify: idv_session.skip_doc_auth_from_how_to_verify,
+        skip_doc_auth_from_handoff: idv_session.skip_doc_auth_from_handoff,
+        opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing,
+        doc_auth_selfie_capture: resolved_authn_context_result.facial_match?,
+      }.merge(
+        acuant_sdk_upgrade_a_b_testing_variables,
+      )
+    end
+
     def analytics_arguments
       {
         flow_path: flow_path,
@@ -102,8 +113,9 @@ module Idv
       return false unless idv_session.welcome_visited &&
                           idv_session.idv_consent_given?
       # not allowed when no step param and action:show(get request)
-      return false if params[:step].blank? || params[:action].to_s != 'show' ||
-                      idv_session.flow_path == 'hybrid'
+      return false if params[:step].blank?
+      return false if params[:action].to_s != 'show' && params[:action] != 'direct_in_person'
+      return false if idv_session.flow_path == 'hybrid'
       # Only allow direct access to document capture if IPP available
       return false unless IdentityConfig.store.in_person_doc_auth_button_enabled &&
                           Idv::InPersonConfig.enabled_for_issuer?(decorated_sp_session.sp_issuer)
@@ -117,6 +129,10 @@ module Idv
 
     def set_usps_form_presenter
       @presenter = Idv::InPerson::UspsFormPresenter.new
+    end
+
+    def rate_limiter
+      RateLimiter.new(user: idv_session.current_user, rate_limit_type: :idv_doc_auth)
     end
   end
 end
