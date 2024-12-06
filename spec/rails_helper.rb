@@ -44,6 +44,7 @@ RSpec.configure do |config|
   config.include AnalyticsHelper
   config.include AwsCloudwatchHelper
   config.include AwsKmsClientHelper
+  config.include DiffHelper
   config.include KeyRotationHelper
   config.include OtpHelper
   config.include XmlHelper
