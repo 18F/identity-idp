@@ -117,6 +117,18 @@ RSpec.describe 'Account connected applications' do
     )
   end
 
+  scenario 'changing email shared with SP when SP has an assigned email' do
+    identity.email_address_id = user.email_addresses.last.id
+    identity.save
+
+    within('li', text: identity.display_name) do
+      expect(page).to have_content(t('account.connected_apps.email_not_selected'))
+      click_link(t('help_text.requested_attributes.change_email_link'))
+    end
+
+    expect(page).to have_field(user.email_addresses.last.email) { |field| field[:checked] }
+  end
+
   def build_account_connected_apps
     identity
     identity_without_link
