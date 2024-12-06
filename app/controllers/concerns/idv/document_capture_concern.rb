@@ -82,17 +82,17 @@ module Idv
     end
 
     def fetch_test_verification_data
-      if IdentityConfig.store.socure_docv_verification_data_test_mode
-        docv_transaction_token_override = params.permit(:docv_token)[:docv_token]
-        if IdentityConfig.store.socure_docv_verification_data_test_mode_tokens.
-            include?(docv_transaction_token_override)
-          SocureDocvResultsJob.perform_now(
-            document_capture_session_uuid:,
-            docv_transaction_token_override:,
-            async: true,
-          )
-        end
-      end
+      return unless IdentityConfig.store.socure_docv_verification_data_test_mode
+
+      docv_transaction_token_override = params.permit(:docv_token)[:docv_token]
+      return unless IdentityConfig.store.socure_docv_verification_data_test_mode_tokens.
+        include?(docv_transaction_token_override)
+
+      SocureDocvResultsJob.perform_now(
+        document_capture_session_uuid:,
+        docv_transaction_token_override:,
+        async: true,
+      )
     end
 
     private
