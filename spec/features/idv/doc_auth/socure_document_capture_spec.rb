@@ -139,6 +139,7 @@ RSpec.feature 'document capture step', :js do
         before do
           allow(IdentityConfig.store).to receive(:socure_docv_verification_data_test_mode_tokens).
             and_return([test_token])
+          DocAuth::Mock::DocAuthMockClient.reset!
         end
 
         context 'when a valid test token is used' do
@@ -160,34 +161,25 @@ RSpec.feature 'document capture step', :js do
         end
 
         context 'when an invalid test token is used' do
-          before do
-            DocAuth::Mock::DocAuthMockClient.reset!
-          end
-
-          it 'docv result does not exist and waits for results' do
+          it 'waits to fetch verificationdata using docv capture session token' do
             visit idv_socure_document_capture_update_path(docv_token: 'invalid-token')
 
             expect(page).to have_current_path(
               idv_socure_document_capture_update_path(docv_token: 'invalid-token'),
             )
-          end
+            socure_docv_upload_documents(
+              docv_transaction_token: @docv_transaction_token,
+            )
+            visit idv_socure_document_capture_update_path(docv_token: 'invalid-token')
 
-          context 'when a user completes docv' do
-            it 'fetches verificationdata using docvToken in document capture session' do
-              socure_docv_upload_documents(
-                docv_transaction_token: @docv_transaction_token,
-              )
-              visit idv_socure_document_capture_update_path(docv_token: 'invalid-token')
+            expect(page).to have_current_path(idv_ssn_url)
 
-              expect(page).to have_current_path(idv_ssn_url)
+            expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('NY')
 
-              expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('NY')
-
-              fill_out_ssn_form_ok
-              click_idv_continue
-              complete_verify_step
-              expect(page).to have_current_path(idv_phone_url)
-            end
+            fill_out_ssn_form_ok
+            click_idv_continue
+            complete_verify_step
+            expect(page).to have_current_path(idv_phone_url)
           end
         end
       end
