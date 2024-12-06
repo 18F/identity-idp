@@ -264,67 +264,68 @@ RSpec.describe 'Hybrid Flow' do
         allow(IdentityConfig.store).to receive(:socure_docv_verification_data_test_mode_tokens).
           and_return([test_token])
       end
-  
+
       context 'when a valid test token is used' do
-        it 'fetches verificationdata using override docvToken in request', js: true do
+        it 'fetches verificationdata using override docvToken in request',
+           js: true, allow_browser_log: true do
           user = nil
-  
+
           perform_in_browser(:desktop) do
             visit_idp_from_sp_with_ial2(sp)
             user = sign_up_and_2fa_ial1_user
-  
+
             complete_doc_auth_steps_before_hybrid_handoff_step
             click_send_link
           end
-  
+
           expect(@sms_link).to be_present
-  
+
           perform_in_browser(:mobile) do
             remove_request_stub(@pass_stub)
             stub_docv_verification_data_pass(docv_transaction_token: test_token)
-  
+
             visit @sms_link
-  
+
             expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_url)
-  
+
             visit idv_hybrid_mobile_socure_document_capture_update_path(docv_token: test_token)
-  
+
             expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
           end
-  
+
           perform_in_browser(:desktop) do
             expect(page).to have_current_path(idv_ssn_path, wait: 10)
           end
         end
       end
-  
+
       context 'when an invalid test token is used' do
         let(:invalid_token) { 'invalid-token' }
-  
+
         it 'fetches verificationdata using docvToken in document capture session', js: true do
           user = nil
-  
+
           perform_in_browser(:desktop) do
             visit_idp_from_sp_with_ial2(sp)
             user = sign_up_and_2fa_ial1_user
-  
+
             complete_doc_auth_steps_before_hybrid_handoff_step
             click_send_link
           end
-  
+
           expect(@sms_link).to be_present
-  
+
           perform_in_browser(:mobile) do
             visit @sms_link
-  
+
             click_idv_continue
-  
+
             socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
             visit idv_hybrid_mobile_socure_document_capture_update_path(docv_token: invalid_token)
-  
+
             expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_path)
           end
-  
+
           perform_in_browser(:desktop) do
             expect(page).to have_current_path(idv_ssn_path, wait: 10)
           end

@@ -140,35 +140,36 @@ RSpec.feature 'document capture step', :js do
           allow(IdentityConfig.store).to receive(:socure_docv_verification_data_test_mode_tokens).
             and_return([test_token])
         end
-  
+
         context 'when a valid test token is used' do
-          it 'fetches verificationdata using override docvToken in request', allow_browser_log: true do
+          it 'fetches verificationdata using override docvToken in request',
+             allow_browser_log: true do
             remove_request_stub(@pass_stub)
             stub_docv_verification_data_pass(docv_transaction_token: test_token)
-  
+
             visit idv_socure_document_capture_update_path(docv_token: test_token)
             expect(page).to have_current_path(idv_ssn_url)
-  
+
             expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('NY')
-  
+
             fill_out_ssn_form_ok
             click_idv_continue
             complete_verify_step
             expect(page).to have_current_path(idv_phone_url)
           end
         end
-  
+
         context 'when an invalid test token is used' do
           it 'fetches verificationdata using docvToken in document capture session' do
             socure_docv_upload_documents(
               docv_transaction_token: @docv_transaction_token,
             )
             visit idv_socure_document_capture_update_path(docv_token: 'invalid-token')
-  
+
             expect(page).to have_current_path(idv_ssn_url)
-  
+
             expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('NY')
-  
+
             fill_out_ssn_form_ok
             click_idv_continue
             complete_verify_step
