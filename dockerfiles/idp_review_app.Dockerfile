@@ -1,4 +1,4 @@
-FROM ruby:3.3.4-slim
+FROM ruby:3.3.6-slim
 
 # Set environment variables
 ENV RAILS_ROOT /app

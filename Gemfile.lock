@@ -674,8 +674,7 @@ GEM
       simplecov (~> 0.19)
     simplecov-html (0.12.3)
     simplecov_json_formatter (0.1.4)
-    simpleidn (0.2.1)
-      unf (~> 0.1.4)
+    simpleidn (0.2.3)
     smart_properties (1.17.0)
     sqlite3 (2.1.0)
       mini_portile2 (~> 2.8.0)
@@ -695,9 +694,6 @@ GEM
       openssl-signature_algorithm (~> 1.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    unf (0.1.4)
-      unf_ext
-    unf_ext (0.0.9.1)
     unicode-display_width (2.5.0)
     uniform_notifier (1.16.0)
     uri (0.13.0)
@@ -878,7 +874,7 @@ DEPENDENCIES
   zxcvbn (= 0.1.12)
 
 RUBY VERSION
-   ruby 3.3.4p94
+   ruby 3.3.6p108
 
 BUNDLED WITH
-   2.5.6
+   2.5.23

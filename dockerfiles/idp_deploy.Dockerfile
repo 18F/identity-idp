@@ -6,7 +6,7 @@
 # avoid having build-essential and the large-files token be in the
 # main image.
 #########################################################################
-FROM ruby:3.3.4-slim as builder
+FROM ruby:3.3.6-slim as builder
 
 # Set environment variables
 ENV RAILS_ROOT /app
