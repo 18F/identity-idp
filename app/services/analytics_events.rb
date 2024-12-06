@@ -1698,25 +1698,6 @@ module AnalyticsEvents
     )
   end
 
-  # User chooses to try In Person from the Socure timeout error page
-  # @param [Integer] remaining_submit_attempts The number of remaining attempts to submit
-  # @param [Boolean] skip_hybrid_handoff Whether the user skipped the hybrid handoff A/B test
-  # @param [Boolean] opted_in_to_in_person_proofing Whether the user opted into in-person proofing
-  def idv_doc_auth_socure_choose_in_person(
-    remaining_submit_attempts:,
-    skip_hybrid_handoff: nil,
-    opted_in_to_in_person_proofing: nil,
-    **extra
-  )
-    track_event(
-      :idv_doc_auth_socure_choose_in_person,
-      remaining_submit_attempts:,
-      skip_hybrid_handoff:,
-      opted_in_to_in_person_proofing:,
-      **extra,
-    )
-  end
-
   # User is shown the Socure timeout error page
   # @param [String] type The type of error that occurred
   # @param [Integer] remaining_submit_attempts The number of remaining attempts to submit
@@ -2829,6 +2810,25 @@ module AnalyticsEvents
     )
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
+
+  # User chooses to try In Person, e.g. from a doc_auth timeout error page
+  # @param [Integer] remaining_submit_attempts The number of remaining attempts to submit
+  # @param [Boolean] skip_hybrid_handoff Whether the user skipped the hybrid handoff A/B test
+  # @param [Boolean] opted_in_to_in_person_proofing Whether the user opted into in-person proofing
+  def idv_in_person_direct_start(
+    remaining_submit_attempts:,
+    skip_hybrid_handoff: nil,
+    opted_in_to_in_person_proofing: nil,
+    **extra
+  )
+    track_event(
+      :idv_in_person_direct_start,
+      remaining_submit_attempts:,
+      skip_hybrid_handoff:,
+      opted_in_to_in_person_proofing:,
+      **extra,
+    )
+  end
 
   # Tracks emails that are initiated during InPerson::EmailReminderJob
   # @param [String] email_type early or late

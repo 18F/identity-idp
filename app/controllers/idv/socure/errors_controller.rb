@@ -2,7 +2,7 @@
 
 module Idv
   module Socure
-    class SocureErrorsController < ApplicationController
+    class ErrorsController < ApplicationController
       include Idv::AvailabilityConcern
       include IdvStepConcern
       include StepIndicatorConcern
@@ -14,18 +14,6 @@ module Idv
       def timeout
         @remaining_submit_attempts = rate_limiter.remaining_count
         track_event(type: :timeout)
-      end
-
-      def go_in_person
-        attributes = {
-          remaining_submit_attempts: rate_limiter.remaining_count,
-        }.merge(ab_test_analytics_buckets)
-        analytics.idv_doc_auth_socure_choose_in_person(**attributes)
-
-        idv_session.opted_in_to_in_person_proofing = true
-        idv_session.flow_path = 'standard'
-        idv_session.skip_doc_auth_from_how_to_verify = true
-        redirect_to idv_document_capture_url(step: :idv_doc_auth)
       end
 
       def self.step_info
@@ -57,7 +45,7 @@ module Idv
       end
 
       def set_in_person_available
-        @idv_in_person_url = in_person_enabled? ? idv_socure_errors_in_person_path : nil
+        @idv_in_person_url = in_person_enabled? ? idv_in_person_direct_path : nil
       end
 
       def in_person_enabled?

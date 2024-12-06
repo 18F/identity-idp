@@ -362,12 +362,13 @@ Rails.application.routes.draw do
       put '/how_to_verify' => 'how_to_verify#update'
       get '/document_capture' => 'document_capture#show'
       put '/document_capture' => 'document_capture#update'
+      get '/in_person/direct' => 'document_capture#direct_in_person'
       get '/socure/document_capture' => 'socure/document_capture#show'
       get '/socure/document_capture_update' => 'socure/document_capture#update', as: :socure_document_capture_update
       get '/socure/document_capture_errors' => 'socure/document_capture#errors', as: :socure_document_capture_errors
       get '/socure/document_capture_goto_in_person' => 'socure/document_capture#goto_in_person', as: :socure_document_capture_goto_in_person
-      get '/socure/errors/timeout' => 'socure/socure_errors#timeout'
       get '/socure/errors/in_person' => 'socure/socure_errors#go_in_person'
+      get '/socure/errors/timeout' => 'socure/errors#timeout'
       # This route is included in SMS messages sent to users who start the IdV hybrid flow. It
       # should be kept short, and should not include underscores ("_").
       get '/documents' => 'hybrid_mobile/entry#show', as: :hybrid_mobile_entry
