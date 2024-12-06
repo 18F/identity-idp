@@ -20,12 +20,12 @@
 </div>
 
 <% if @presenter.active_profile? && !@presenter.connected_to_initiating_idv_sp? %>
-  <%= render AlertComponent.new(type: :warning, text_tag: 'div', class: 'margin-bottom-2') do %>
-    <p class='margin-bottom-0'><%= t('account.index.verification.connect_idv_account.intro') %></p>
+  <%= render AlertComponent.new(type: :warning, class: 'margin-bottom-2') do %>
+    <%= t('account.index.verification.connect_idv_account.intro') %><br />
     <% if @presenter.connect_to_initiating_idv_sp_url.present? %>
-      <p><%= link_to(t('account.index.verification.connect_idv_account.cta'), @presenter.connect_to_initiating_idv_sp_url) %></p>
+      <%= link_to(t('account.index.verification.connect_idv_account.cta'), @presenter.connect_to_initiating_idv_sp_url) %>
     <% else %>
-      <p><%= t('account.index.verification.connect_idv_account.cta') %></p>
+      <%= t('account.index.verification.connect_idv_account.cta') %>
     <% end %>
   <% end %>
 <% end %>
