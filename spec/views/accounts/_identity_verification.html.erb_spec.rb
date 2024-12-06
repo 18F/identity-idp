@@ -53,6 +53,12 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
         )
       end
     end
+
+    it 'does not render alert to connect to IdV SP' do
+      expect(rendered).to_not have_content(
+        strip_tags(t('account.index.verification.connect_idv_account.intro')),
+      )
+    end
   end
 
   context 'with user pending ipp verification' do
@@ -81,6 +87,12 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
           strip_tags(t('account.index.verification.finish_verifying_html', sp_name: ipp_sp_name)),
         )
       end
+    end
+
+    it 'does not render alert to connect to IdV SP' do
+      expect(rendered).to_not have_content(
+        strip_tags(t('account.index.verification.connect_idv_account.intro')),
+      )
     end
   end
 
@@ -558,6 +570,73 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
         it 'renders PII' do
           expect(rendered).to render_template(partial: 'accounts/_pii')
         end
+      end
+    end
+  end
+
+  describe 'connect to SP alert' do
+    let(:post_idv_follow_up_url) { 'https://example.com/followup' }
+    let(:initiating_service_provider) do
+      build(
+        :service_provider,
+        friendly_name: initiating_sp_name,
+        post_idv_follow_up_url:,
+        return_to_sp_url: nil,
+      )
+    end
+    let(:initiating_sp_name) { 'Test SP' }
+    let(:user) { create(:user, identities: [identity].compact, profiles: [profile].compact) }
+    let(:profile) do
+      build(:profile, :active, initiating_service_provider:)
+    end
+    let(:last_ial2_authenticated_at) { nil }
+    let(:identity) do
+      build(
+        :service_provider_identity,
+        service_provider: initiating_service_provider.issuer,
+        last_ial2_authenticated_at:,
+      )
+    end
+
+    context 'with a user who has not connected to their initiating service provider' do
+      context 'the serive provider has a post-idv follow-up url' do
+        it 'renders an alert to connect to IdV SP with a link' do
+          expect(rendered).to have_content(
+            t('account.index.verification.connect_idv_account.intro'),
+          )
+          expect(rendered).to have_link(
+            t('account.index.verification.connect_idv_account.cta'),
+            href: post_idv_follow_up_url,
+          )
+        end
+      end
+
+      context 'the serive provider does not have a post-idv follow-up url' do
+        let(:post_idv_follow_up_url) { nil }
+
+        it 'renders an alert to connect to IdV SP without a link' do
+          expect(rendered).to have_content(
+            t('account.index.verification.connect_idv_account.intro'),
+          )
+          expect(rendered).to have_content(
+            t('account.index.verification.connect_idv_account.cta'),
+          )
+          expect(rendered).to_not have_link(
+            t('account.index.verification.connect_idv_account.cta'),
+          )
+        end
+      end
+    end
+
+    context 'with a user who has connected to their initiating service provider' do
+      let(:last_ial2_authenticated_at) { 2.days.ago }
+
+      it 'does not render alert to connect to IdV SP' do
+        expect(rendered).to_not have_content(
+          strip_tags(
+            t('account.index.verification.connect_idv_account.intro'),
+          ),
+        )
       end
     end
   end
