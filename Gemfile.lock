@@ -874,7 +874,7 @@ DEPENDENCIES
   zxcvbn (= 0.1.12)
 
 RUBY VERSION
-   ruby 3.3.4p94
+   ruby 3.3.6p108
 
 BUNDLED WITH
-   2.5.6
+   2.5.23
