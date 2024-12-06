@@ -178,8 +178,27 @@ RSpec.feature 'document capture step', :js do
       visit idv_socure_document_capture_update_path
     end
 
-    it 'shows the correct error page' do
+    it 'shows the correct error page, and "try again" works' do
       expect(page).to have_content(t(expected_header_key))
+
+      click_try_again
+
+      expect(page).to have_current_path(idv_socure_document_capture_url)
+      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+    end
+
+    context 'with IPP enabled' do
+      before do
+        allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).and_return(true)
+      end
+
+      it 'shows the correct error page, and "verify in person" works' do
+        expect(page).to have_content(t(expected_header_key))
+
+        click_on t('in_person_proofing.body.cta.button')
+
+        expect(page).to have_current_path(idv_in_person_state_id_url)
+      end
     end
   end
 
