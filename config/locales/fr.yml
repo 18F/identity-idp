@@ -75,6 +75,8 @@ account.index.reactivation.instructions: Votre profil a été récemment désact
 account.index.reactivation.link: Réactiver votre profil maintenant.
 account.index.sign_in_location_and_ip: De %{ip} (adresse IP éventuellement située dans %{location})
 account.index.unknown_location: lieu inconnu
+account.index.verification.connect_idv_account.cta: Connectez-vous à l’organisme partenaire pour accéder à ses services.
+account.index.verification.connect_idv_account.intro: Associer votre compte à l’organisme partenaire.
 account.index.verification.continue_idv: Poursuivre la vérification d’identité
 account.index.verification.finish_verifying_html: Terminez la procédure de vérification d’identité pour pouvoir accéder à <strong>%{sp_name}</strong>.
 account.index.verification.finish_verifying_no_sp: Terminer la procédure de vérification d’identité pour pouvoir accéder à tous les organismes partenaires de %{app_name}.
