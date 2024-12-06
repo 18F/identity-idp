@@ -305,12 +305,12 @@ GEM
       htmlentities (~> 4.3.3)
       launchy (~> 2.1)
       mail (~> 2.7)
-    erb_lint (0.5.0)
+    erb_lint (0.7.0)
       activesupport
       better_html (>= 2.0.1)
       parser (>= 2.7.1.4)
       rainbow
-      rubocop
+      rubocop (>= 1)
       smart_properties
     errbase (0.2.1)
     erubi (1.13.0)
@@ -779,7 +779,7 @@ DEPENDENCIES
   devise (~> 4.8)
   dotiw (>= 4.0.1)
   email_spec
-  erb_lint (~> 0.5.0)
+  erb_lint (~> 0.7.0)
   factory_bot_rails (>= 6.2.0)
   faker
   faraday (~> 2)
