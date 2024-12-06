@@ -68,18 +68,18 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
       ).and_return(false)
     end
 
-    it 'does not show a link to select different email' do
-      create(:email_address, user: user)
-      user.reload
+    it 'does not show change link' do
       render
 
       expect(rendered).to_not include(t('help_text.requested_attributes.change_email_link'))
     end
+  end
 
-    it 'does not show a link to add another email' do
+  context 'select email to send to partner' do
+    it 'shows email change link' do
       render
 
-      expect(rendered).to_not include(t('help_text.requested_attributes.change_email_link'))
+      expect(rendered).to include(t('help_text.requested_attributes.change_email_link'))
     end
   end
 
