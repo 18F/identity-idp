@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::Socure::SocureErrorsController do
+RSpec.describe Idv::Socure::ErrorsController do
   let(:user) { create(:user) }
 
   before do
