@@ -105,10 +105,6 @@ class CompletionsPresenter
     end
   end
 
-  def multiple_emails?
-    current_user.confirmed_email_addresses.many?
-  end
-
   private
 
   def first_time_signing_in?
