@@ -3,8 +3,6 @@
 module SignUp
   class RegistrationsController < ApplicationController
     include ApplicationHelper # for ial2_requested?
-    include ThreatMetrixHelper
-    include ThreatMetrixConcern
 
     before_action :confirm_two_factor_authenticated, only: [:destroy_confirm]
     before_action :require_no_authentication
@@ -16,7 +14,6 @@ module SignUp
     def new
       @register_user_email_form = RegisterUserEmailForm.new(analytics:)
       analytics.user_registration_enter_email_visit
-      render :new, formats: :html, locals: threatmetrix_variables
     end
 
     def create
@@ -29,7 +26,7 @@ module SignUp
       if result.success?
         process_successful_creation
       else
-        render :new, locals: threatmetrix_variables
+        render :new
       end
     end
 

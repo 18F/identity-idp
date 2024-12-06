@@ -6,6 +6,8 @@ module Users
     include MfaSetupConcern
     include AbTestingConcern
     include ApplicationHelper
+    include ThreatMetrixHelper
+    include ThreatMetrixConcern
 
     before_action :authenticate_user
     before_action :confirm_user_authenticated_for_2fa_setup
@@ -20,6 +22,7 @@ module Users
         enabled_mfa_methods_count:,
         gov_or_mil_email: fed_or_mil_email?,
       )
+      render :index, locals: threatmetrix_variables
     end
 
     def create
@@ -33,7 +36,7 @@ module Users
       else
         flash.now[:error] = result.first_error_message
         @presenter = two_factor_options_presenter
-        render :index
+        render :index, locals: threatmetrix_variables
       end
     end
 
