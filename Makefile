@@ -63,7 +63,7 @@ check: lint test ## Runs lint tests and spec tests
 
 lint: ## Runs all lint tests
 	# Ruby
-	@echo "--- erb-lint ---"
+	@echo "--- erb_lint ---"
 	make lint_erb
 	@echo "--- rubocop ---"
 	mkdir -p tmp
