@@ -160,20 +160,34 @@ RSpec.feature 'document capture step', :js do
         end
 
         context 'when an invalid test token is used' do
-          it 'fetches verificationdata using docvToken in document capture session' do
-            socure_docv_upload_documents(
-              docv_transaction_token: @docv_transaction_token,
-            )
+          before do
+            DocAuth::Mock::DocAuthMockClient.reset!
+          end
+
+          it 'docv result does not exist and waits for results' do
             visit idv_socure_document_capture_update_path(docv_token: 'invalid-token')
 
-            expect(page).to have_current_path(idv_ssn_url)
+            expect(page).to have_current_path(
+              idv_socure_document_capture_update_path(docv_token: 'invalid-token'),
+            )
+          end
 
-            expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('NY')
+          context 'when a user completes docv' do
+            it 'fetches verificationdata using docvToken in document capture session' do
+              socure_docv_upload_documents(
+                docv_transaction_token: @docv_transaction_token,
+              )
+              visit idv_socure_document_capture_update_path(docv_token: 'invalid-token')
 
-            fill_out_ssn_form_ok
-            click_idv_continue
-            complete_verify_step
-            expect(page).to have_current_path(idv_phone_url)
+              expect(page).to have_current_path(idv_ssn_url)
+
+              expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('NY')
+
+              fill_out_ssn_form_ok
+              click_idv_continue
+              complete_verify_step
+              expect(page).to have_current_path(idv_phone_url)
+            end
           end
         end
       end
