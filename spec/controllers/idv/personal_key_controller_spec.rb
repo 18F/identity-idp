@@ -495,7 +495,7 @@ RSpec.describe Idv::PersonalKeyController do
         end
       end
 
-      context 'when the entered a GPO code' do
+      context 'when the user entered a GPO code' do
         before do
           pending_profile = user.pending_profile
           pending_profile.remove_gpo_deactivation_reason
