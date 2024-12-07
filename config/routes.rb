@@ -451,6 +451,9 @@ Rails.application.routes.draw do
       end
 
       get '/by_mail/letter_enqueued' => 'by_mail/letter_enqueued#show', as: :letter_enqueued
+      get '/by_mail/sp_follow_up' => 'by_mail/sp_follow_up#new', as: :sp_follow_up
+      get '/by_mail/sp_follow_up/connect' => 'by_mail/sp_follow_up#show', as: :sp_follow_up_connect
+      get '/by_mail/sp_follow_up/cancel' => 'by_mail/sp_follow_up#cancel', as: :sp_follow_up_cancel
 
       # We re-mapped `/verify/by_mail` to `/verify/by_mail/enter_code`. However, we sent emails to
       # users with a link to `/verify/by_mail?did_not_receive_letter=1`. We need to continue
