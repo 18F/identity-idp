@@ -30,8 +30,6 @@ module Idv
             document_request.fetch
           end
 
-          @document_request = document_request
-          @document_response = document_response
           @url = document_response.dig(:data, :url)
 
           track_document_request_event(document_request:, document_response:, timer:)
@@ -54,9 +52,6 @@ module Idv
             :url,
           )
           document_capture_session.save
-          # useful for analytics
-          @msg = document_response[:msg]
-          @reference_id = document_response[:referenceId]
         end
 
         def update
