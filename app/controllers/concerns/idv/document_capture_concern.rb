@@ -95,6 +95,24 @@ module Idv
       )
     end
 
+    def track_document_request_event(document_request:, document_response:, timer:)
+      document_request_body = JSON.parse(document_request.body, symbolize_names: true)[:config]
+      response_hash = document_response.to_h
+      log_extras = {
+        reference_id: response_hash[:referenceId],
+        vendor: 'Socure',
+        vendor_request_time_in_ms: timer.results['vendor_request'],
+        success: @url.present?,
+        document_type: document_request_body[:documentType],
+        docv_transaction_token: response_hash.dig(:data, :docvTransactionToken),
+      }
+      analytics_hash = log_extras.merge(analytics_arguments).
+        merge(document_request_body).except(
+          :documentType, # requested document type
+        ).merge(response_body: document_response.to_h)
+      analytics.idv_socure_document_request_submitted(**analytics_hash)
+    end
+
     private
 
     def track_document_issuing_state(user, state)
