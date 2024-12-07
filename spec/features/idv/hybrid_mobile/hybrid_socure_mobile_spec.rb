@@ -10,6 +10,7 @@ RSpec.describe 'Hybrid Flow' do
   let(:fake_socure_document_capture_app_url) { 'https://verify.fake-socure.test/something' }
   let(:fake_socure_docv_document_request_endpoint) { 'https://fake-socure.test/document-request' }
   let(:socure_docv_verification_data_test_mode) { false }
+  let(:fake_analytics) { FakeAnalytics.new }
 
   before do
     allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(true)
@@ -27,9 +28,10 @@ RSpec.describe 'Hybrid Flow' do
     allow(IdentityConfig.store).to receive(:socure_docv_verification_data_test_mode).
       and_return(socure_docv_verification_data_test_mode)
     @docv_transaction_token = stub_docv_document_request
+    stub_analytics
   end
 
-  context 'happy path' do
+  context 'happy path', allow_browser_log: true do
     before do
       @pass_stub = stub_docv_verification_data_pass(docv_transaction_token: @docv_transaction_token)
     end
@@ -81,7 +83,6 @@ RSpec.describe 'Hybrid Flow' do
         visit idv_hybrid_mobile_socure_document_capture_url
 
         expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_url)
-
         click_idv_continue
         expect(page).to have_current_path(fake_socure_document_capture_app_url)
         socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
@@ -101,7 +102,7 @@ RSpec.describe 'Hybrid Flow' do
       perform_in_browser(:desktop) do
         expect(page).to_not have_content(t('doc_auth.headings.text_message'), wait: 10)
         expect(page).to have_current_path(idv_ssn_path)
-
+        expect(@analytics).to have_logged_event(:idv_socure_document_request_submitted)
         fill_out_ssn_form_ok
         click_idv_continue
 
@@ -441,10 +442,32 @@ RSpec.describe 'Hybrid Flow' do
 
         expect(page).to have_text(t('doc_auth.headers.general.network_error'))
         expect(page).to have_text(t('doc_auth.errors.general.new_network_error'))
+        expect(@analytics).to have_logged_event(:idv_socure_document_request_submitted)
       end
 
       perform_in_browser(:desktop) do
         expect(page).to have_current_path(idv_link_sent_path)
+      end
+    end
+  end
+
+  context 'invalid request', allow_browser_log: true do
+    context 'getting the capture path w wrong api key' do
+      before do
+        user = user_with_2fa
+        visit_idp_from_oidc_sp_with_ial2
+        sign_in_and_2fa_user(user)
+        complete_doc_auth_steps_before_document_capture_step
+        click_idv_continue
+        DocAuth::Mock::DocAuthMockClient.reset!
+        stub_docv_document_request(status: 401)
+      end
+
+      it 'correctly logs event', js: true do
+        visit idv_socure_document_capture_path
+        expect(@analytics).to have_logged_event(
+          :idv_socure_document_request_submitted,
+        )
       end
     end
   end
