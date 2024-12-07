@@ -122,8 +122,8 @@ RSpec.feature 'document capture step', :js do
       context 'invalid request', allow_browser_log: true do
         context 'getting the capture path w wrong api key' do
           before do
-            allow(IdentityConfig.store).to receive(:socure_docv_webhook_secret_key).
-              and_return('')
+            DocAuth::Mock::DocAuthMockClient.reset!
+            stub_docv_document_request(status: 401)
           end
 
           it 'correctly logs event', js: true do

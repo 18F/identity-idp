@@ -442,10 +442,32 @@ RSpec.describe 'Hybrid Flow' do
 
         expect(page).to have_text(t('doc_auth.headers.general.network_error'))
         expect(page).to have_text(t('doc_auth.errors.general.new_network_error'))
+        expect(@analytics).to have_logged_event(:idv_socure_document_request_submitted)
       end
 
       perform_in_browser(:desktop) do
         expect(page).to have_current_path(idv_link_sent_path)
+      end
+    end
+  end
+
+  context 'invalid request', allow_browser_log: true do
+    context 'getting the capture path w wrong api key' do
+      before do
+        user = user_with_2fa
+        visit_idp_from_oidc_sp_with_ial2
+        sign_in_and_2fa_user(user)
+        complete_doc_auth_steps_before_document_capture_step
+        click_idv_continue
+        DocAuth::Mock::DocAuthMockClient.reset!
+        stub_docv_document_request(status: 401)
+      end
+
+      it 'correctly logs event', js: true do
+        visit idv_socure_document_capture_path
+        expect(@analytics).to have_logged_event(
+          :idv_socure_document_request_submitted,
+        )
       end
     end
   end
