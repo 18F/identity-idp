@@ -1013,6 +1013,10 @@ idv.buttons.change_ssn_label: Update Social Security number
 idv.buttons.change_state_id_label: Update state ID
 idv.buttons.continue_plain: Continue
 idv.buttons.mail.send: Request a letter
+idv.by_mail.sp_follow_up.body: Sign back in to %{service_provider} to connect your verified %{app_name} account and access services.
+idv.by_mail.sp_follow_up.connect_account: Connect your account
+idv.by_mail.sp_follow_up.go_to_account: Go to account
+idv.by_mail.sp_follow_up.heading: Connect to %{service_provider}
 idv.cancel.actions.account_page: Go to account page
 idv.cancel.actions.exit: Exit %{app_name}
 idv.cancel.actions.keep_going: No, keep going

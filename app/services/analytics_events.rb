@@ -820,15 +820,32 @@ module AnalyticsEvents
   # User visited sign-in URL from the "You've been successfully verified email" CTA button
   # @param issuer [String] the ServiceProvider.issuer
   # @param campaign_id [String] the email campaign ID
+  # @param [Hash,nil] proofing_components User's current proofing components
+  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
+  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
+  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
+  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
+  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
+  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
+  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   def idv_account_verified_cta_visited(
     issuer:,
     campaign_id:,
+    proofing_components: nil,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
     **extra
   )
     track_event(
       :idv_account_verified_cta_visited,
       issuer:,
       campaign_id:,
+      proofing_components:,
+      active_profile_idv_level:,
+      pending_profile_idv_level:,
+
       **extra,
     )
   end
@@ -1028,6 +1045,36 @@ module AnalyticsEvents
     track_event(
       'Frontend: IdV: barcode warning retake photos clicked',
       liveness_checking_required: liveness_checking_required,
+      **extra,
+    )
+  end
+
+  # @param [String] initiating_service_provider The service provider the user needs to connect to
+  # The user chose not to connect their account from the SP follow-up page
+  def idv_by_mail_sp_follow_up_cancelled(initiating_service_provider:, **extra)
+    track_event(
+      :idv_by_mail_sp_follow_up_cancelled,
+      initiating_service_provider:,
+      **extra,
+    )
+  end
+
+  # @param [String] initiating_service_provider The service provider the user needs to connect to
+  # The user chose to connect their account from the SP follow-up page
+  def idv_by_mail_sp_follow_up_submitted(initiating_service_provider:, **extra)
+    track_event(
+      :idv_by_mail_sp_follow_up_submitted,
+      initiating_service_provider:,
+      **extra,
+    )
+  end
+
+  # @param [String] initiating_service_provider The service provider the user needs to connect to
+  # The user visited the SP follow-up page
+  def idv_by_mail_sp_follow_up_visited(initiating_service_provider:, **extra)
+    track_event(
+      :idv_by_mail_sp_follow_up_visited,
+      initiating_service_provider:,
       **extra,
     )
   end
