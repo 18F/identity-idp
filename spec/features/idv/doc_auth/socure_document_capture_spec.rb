@@ -29,7 +29,7 @@ RSpec.feature 'document capture step', :js do
       and_return(socure_docv_verification_data_test_mode)
   end
 
-  context 'happy path' do
+  context 'happy path', allow_browser_log: true do
     before do
       @pass_stub = stub_docv_verification_data_pass(docv_transaction_token: @docv_transaction_token)
     end
@@ -63,6 +63,9 @@ RSpec.feature 'document capture step', :js do
             'Rate Limit Reached',
             limiter_type: :idv_doc_auth,
           )
+          expect(fake_analytics).to have_logged_event(
+            :idv_socure_document_request_submitted,
+          )
         end
 
         context 'successfully processes image on last attempt' do
@@ -88,7 +91,7 @@ RSpec.feature 'document capture step', :js do
         end
       end
 
-      context 'network connection errors' do
+      context 'network connection errors', allow_browser_log: true do
         context 'getting the capture path' do
           before do
             allow_any_instance_of(Faraday::Connection).to receive(:post).
@@ -103,6 +106,9 @@ RSpec.feature 'document capture step', :js do
 
             expect(page).to have_content(t('doc_auth.headers.general.network_error'))
             expect(page).to have_content(t('doc_auth.errors.general.new_network_error'))
+            expect(fake_analytics).to have_logged_event(
+              :idv_socure_document_request_submitted,
+            )
           end
         end
 
@@ -110,6 +116,22 @@ RSpec.feature 'document capture step', :js do
         xit 'catches network connection errors on verification data request',
             allow_browser_log: true do
           # expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
+        end
+      end
+
+      context 'invalid request', allow_browser_log: true do
+        context 'getting the capture path w wrong api key' do
+          before do
+            DocAuth::Mock::DocAuthMockClient.reset!
+            stub_docv_document_request(status: 401)
+          end
+
+          it 'correctly logs event', js: true do
+            visit idv_socure_document_capture_path
+            expect(fake_analytics).to have_logged_event(
+              :idv_socure_document_request_submitted,
+            )
+          end
         end
       end
 
@@ -203,6 +225,9 @@ RSpec.feature 'document capture step', :js do
           expect(page).to have_current_path(idv_ssn_url)
 
           expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('NY')
+          expect(fake_analytics).to have_logged_event(
+            :idv_socure_document_request_submitted,
+          )
 
           fill_out_ssn_form_ok
           click_idv_continue
@@ -234,6 +259,9 @@ RSpec.feature 'document capture step', :js do
 
     it 'shows the correct error page' do
       expect(page).to have_content(t(expected_header_key))
+      expect(fake_analytics).to have_logged_event(
+        :idv_socure_document_request_submitted,
+      )
     end
   end
 
