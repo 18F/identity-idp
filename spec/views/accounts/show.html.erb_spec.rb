@@ -95,7 +95,7 @@ RSpec.describe 'accounts/show.html.erb' do
   end
 
   context 'when current user has ipp pending profile' do
-    let(:user) { build(:user, :with_pending_in_person_enrollment) }
+    let(:user) { create(:user, :with_pending_in_person_enrollment) }
 
     it 'renders idv partial' do
       expect(render).to render_template(partial: 'accounts/_identity_verification')
@@ -114,7 +114,7 @@ RSpec.describe 'accounts/show.html.erb' do
   context 'when current user has an in_person_enrollment that was failed' do
     let(:vtr) { ['Pe'] }
     let(:sp_name) { 'sinatra-test-app' }
-    let(:user) { build(:user, :with_pending_in_person_enrollment) }
+    let(:user) { create(:user, :with_pending_in_person_enrollment) }
 
     before do
       # Make the in_person_enrollment and associated profile failed
@@ -132,7 +132,7 @@ RSpec.describe 'accounts/show.html.erb' do
   context 'when current user has an in_person_enrollment that was cancelled' do
     let(:vtr) { ['Pe'] }
     let(:sp_name) { 'sinatra-test-app' }
-    let(:user) { build(:user, :with_pending_in_person_enrollment) }
+    let(:user) { create(:user, :with_pending_in_person_enrollment) }
 
     before do
       # Make the in_person_enrollment and associated profile cancelled
@@ -150,7 +150,7 @@ RSpec.describe 'accounts/show.html.erb' do
   context 'when current user has an in_person_enrollment that expired' do
     let(:vtr) { ['Pe'] }
     let(:sp_name) { 'sinatra-test-app' }
-    let(:user) { build(:user, :with_pending_in_person_enrollment) }
+    let(:user) { create(:user, :with_pending_in_person_enrollment) }
 
     before do
       # Expire the in_person_enrollment and associated profile

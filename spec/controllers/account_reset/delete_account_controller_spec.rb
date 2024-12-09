@@ -167,7 +167,7 @@ RSpec.describe AccountReset::DeleteAccountController do
         success: true,
         errors: {},
         mfa_method_counts: { phone: 1 },
-        profile_idv_level: 'legacy_in_person',
+        profile_idv_level: 'in_person',
         identity_verified: true,
         account_age_in_days: 0,
         account_confirmed_at: user.confirmed_at,

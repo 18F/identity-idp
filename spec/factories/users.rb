@@ -221,9 +221,8 @@ FactoryBot.define do
     end
 
     trait :with_pending_in_person_enrollment do
-      after :build do |user|
-        profile = create(:profile, :with_pii, :in_person_verification_pending, user: user)
-        create(:in_person_enrollment, :pending, user: user, profile: profile)
+      profiles do
+        [association(:profile, :with_pii, :in_person_verification_pending, user: instance)]
       end
     end
 
@@ -270,16 +269,14 @@ FactoryBot.define do
       confirmed_at { Time.zone.now.round }
 
       after :build do |user|
-        profile = create(
+        create(
           :profile,
           :with_pii,
           :active,
           :verified,
-          :in_person_verification_pending,
+          :in_person_verified,
           user: user,
         )
-        create(:in_person_enrollment, :passed, user: user, profile: profile)
-        profile.in_person_verification_pending_at = nil
       end
     end
 
