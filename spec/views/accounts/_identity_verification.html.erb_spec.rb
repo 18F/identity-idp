@@ -599,7 +599,7 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
     end
 
     context 'with a user who has not connected to their initiating service provider' do
-      context 'the serive provider has a post-idv follow-up url' do
+      context 'the service provider has a post-idv follow-up url' do
         it 'renders an alert to connect to IdV SP with a link' do
           expect(rendered).to have_content(
             t('account.index.verification.connect_idv_account.intro'),
@@ -611,7 +611,7 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
         end
       end
 
-      context 'the serive provider does not have a post-idv follow-up url' do
+      context 'the service provider does not have a post-idv follow-up url' do
         let(:post_idv_follow_up_url) { nil }
 
         it 'renders an alert to connect to IdV SP without a link' do
