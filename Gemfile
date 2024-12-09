@@ -143,4 +143,7 @@ group :test do
   gem 'tableparser', require: false
   gem 'webmock'
   gem 'zonebie'
+  gem 'cucumber'
+  gem 'cucumber-rails', require: false
+  gem 'database_cleaner'
 end

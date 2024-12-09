@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 Rails.application.configure do
+  # Configure 'rails notes' to inspect Cucumber files
+  config.annotations.register_directories('features')
+  config.annotations.register_extensions('feature') { |tag| /#\s*(#{tag}):?\s*(.*)$/ }
+
   config.cache_classes = false
   config.eager_load = false
   config.consider_all_requests_local = true
