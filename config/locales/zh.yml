@@ -627,7 +627,7 @@ doc_auth.headings.upload_from_phone: 使用手机拍照
 doc_auth.headings.verify_at_post_office: 去邮局验证身份
 doc_auth.headings.verify_identity: 验证你的身份
 doc_auth.headings.verify_online: 在网上验证身份
-doc_auth.headings.verify_online_selfie: 使用手机在网上验证你的身份
+doc_auth.headings.verify_online_mobile: 使用手机在网上验证你的身份
 doc_auth.headings.verify_with_phone: 使用你的电话来验证你的身份
 doc_auth.headings.welcome: 现在我们来为%{sp_name}验证你的身份
 doc_auth.hybrid_flow_warning.explanation_html: 你在使用 <strong>%{app_name}</strong> 验证身份以访问 <strong>%{service_provider_name}</strong> 及其服务。
@@ -648,7 +648,7 @@ doc_auth.info.exit.without_sp: 退出身份验证并到你的账户页面
 doc_auth.info.getting_started_html: '%{sp_name} 需要确保你是你，而不是别人冒充你。 了解更多有关验证你身份的信息 %{link_html}'
 doc_auth.info.getting_started_learn_more: 了解有关验证你身份的更多信息
 doc_auth.info.how_to_verify: 你可以选择在网上验证身份或者到参与本项目的邮局亲身验证身份。
-doc_auth.info.how_to_verify_selfie: 你可以选择用你的手机在网上验证身份或者到参与本项目的邮局亲身验证身份。
+doc_auth.info.how_to_verify_mobile: 你可以选择用你的手机在网上验证身份或者到参与本项目的邮局亲身验证身份。
 doc_auth.info.how_to_verify_troubleshooting_options_header: 想对验证身份获得更多了解吗？
 doc_auth.info.hybrid_handoff: 我们将通过读取州政府颁发给你的身份证件来收集你的信息。
 doc_auth.info.hybrid_handoff_ipp_html: '<strong>没有手机？</strong>你可以去一个美国邮局验证身份。'
@@ -685,14 +685,15 @@ doc_auth.info.tag: 建议
 doc_auth.info.upload_from_computer: 没有手机？从该电脑上传你身份证件的照片。
 doc_auth.info.upload_from_phone: 你不必重新登录，而且拍完照后可以转回到该电脑。你的手机必须带有相机和网络浏览器。
 doc_auth.info.verify_at_post_office_description: 如果你没有手机拍身份证件照片，这一选项更好。
-doc_auth.info.verify_at_post_office_description_selfie: 如果你没有手机可以拍照，请选择该选项
+doc_auth.info.verify_at_post_office_description_mobile: 如果你没有手机可以拍照，请选择该选项
 doc_auth.info.verify_at_post_office_instruction: 你在网上输入身份证件信息，然后到一个参与本项目的邮局去亲身验证身份。
 doc_auth.info.verify_at_post_office_instruction_selfie: 你在网上输入身份证件信息，然后到一个参与本项目的邮局去亲身验证身份。
 doc_auth.info.verify_at_post_office_link_text: 对亲身验证获得更多了解
 doc_auth.info.verify_identity: 我们会要求获得你的身份识别、电话号码和其他个人信息并通过与公共记录核对来验证你的身份。
 doc_auth.info.verify_online_description: 如果你没有移动设备或者无法轻松拍身份证件照片，这一选项更好。
-doc_auth.info.verify_online_description_selfie: 如果你有手机可以拍照，请选择该选项。
+doc_auth.info.verify_online_description_mobile: 如果你有手机可以拍照，请选择该选项。
 doc_auth.info.verify_online_instruction: 你将拍身份证件的照片来完全在网上验证身份。大多数用户都能轻松完成这样流程。
+doc_auth.info.verify_online_instruction_mobile_no_selfie: 你将使用手机拍摄你的身份证件照片。大多数用户一次就能完成这个流程。
 doc_auth.info.verify_online_instruction_selfie: 你将用手机拍摄身份证件和本人的照片。大多数用户都能轻松完成这一流程。
 doc_auth.info.verify_online_link_text: 对网上验证获得更多了解
 doc_auth.info.you_entered: 你输入了：
@@ -874,7 +875,7 @@ forms.buttons.confirm: 确认
 forms.buttons.continue: 继续
 forms.buttons.continue_ipp: 继续亲身验证
 forms.buttons.continue_remote: 继续在网上验证
-forms.buttons.continue_remote_selfie: 在手机上继续
+forms.buttons.continue_remote_mobile: 在手机上继续
 forms.buttons.delete: 删除
 forms.buttons.disable: 删除
 forms.buttons.edit: 编辑

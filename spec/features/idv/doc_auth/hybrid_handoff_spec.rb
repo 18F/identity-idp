@@ -385,7 +385,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
           end
           describe 'when selfie is required by sp' do
             before do
-              click_on t('forms.buttons.continue_remote_selfie')
+              click_on t('forms.buttons.continue_remote_mobile')
             end
             it 'shows selfie version of top content and ipp option section' do
               verify_handoff_page_selfie_version_content(page)

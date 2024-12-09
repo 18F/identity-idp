@@ -98,7 +98,7 @@ module DocAuthHelper
     complete_agreement_step
     if remote
       if facial_match_required
-        click_on t('forms.buttons.continue_remote_selfie')
+        click_on t('forms.buttons.continue_remote_mobile')
       else
         click_on t('forms.buttons.continue_remote')
       end
