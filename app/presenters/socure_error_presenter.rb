@@ -132,7 +132,11 @@ class SocureErrorPresenter
   }.freeze
 
   def remapped_error(error_code)
-    SOCURE_ERROR_MAP[error_code] || 'unreadable_id'
+    if error_code == :validation_failed
+      'unreadable_id'
+    else
+      SOCURE_ERROR_MAP[error_code] || 'unreadable_id'
+    end
   end
 
   def heading_string_for(error_code)
