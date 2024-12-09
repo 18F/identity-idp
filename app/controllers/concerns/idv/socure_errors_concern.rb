@@ -26,7 +26,9 @@ module Idv
     end
 
     def error_code_for(result)
-      if result.errors[:socure]
+      if result.errors[:validation_failed]
+        :validation_failed
+      elsif result.errors[:socure]
         result.errors.dig(:socure, :reason_codes).first
       elsif result.errors[:network]
         :network

@@ -323,7 +323,7 @@ RSpec.feature 'document capture step', :js do
     end
   end
 
-  shared_examples 'a properly categorized Socure error' do |socure_error_code, expected_header_key|
+  shared_examples 'a properly categorized error' do |expected_header_key|
     before do
       stub_docv_verification_data_fail_with(
         docv_transaction_token: @docv_transaction_token,
@@ -350,34 +350,85 @@ RSpec.feature 'document capture step', :js do
     end
   end
 
+  context 'a network error getting the capture path' do
+    before do
+      allow_any_instance_of(Faraday::Connection).to receive(:post).
+        and_raise(Faraday::ConnectionFailed)
+
+      visit_idp_from_oidc_sp_with_ial2
+      sign_in_and_2fa_user(@user)
+
+      complete_doc_auth_steps_before_document_capture_step
+    end
+
+    it 'shows the network error page', js: true do
+      expect(page).to have_content(t('doc_auth.headers.general.network_error'))
+      expect(page).to have_content(t('doc_auth.errors.general.new_network_error'))
+    end
+  end
+
   context 'a type 1 error (because we do not recognize the code)' do
-    it_behaves_like 'a properly categorized Socure error', 'XXXX', 'doc_auth.headers.unreadable_id'
+    before do
+      stub_docv_verification_data_fail_with(['XXXX'])
+    end
+
+    it_behaves_like 'a properly categorized error', 'doc_auth.headers.unreadable_id'
   end
 
   context 'a type 1 error' do
-    it_behaves_like 'a properly categorized Socure error', 'I848', 'doc_auth.headers.unreadable_id'
+    before do
+      stub_docv_verification_data_fail_with(['I848'])
+    end
+
+    it_behaves_like 'a properly categorized error', 'doc_auth.headers.unreadable_id'
   end
 
   context 'a type 2 error' do
-    it_behaves_like 'a properly categorized Socure error',
-                    'I849',
-                    'doc_auth.headers.unaccepted_id_type'
+    before do
+      stub_docv_verification_data_fail_with(['I849'])
+    end
+
+    it_behaves_like 'a properly categorized error', 'doc_auth.headers.unaccepted_id_type'
   end
 
   context 'a type 3 error' do
-    it_behaves_like 'a properly categorized Socure error', 'R827', 'doc_auth.headers.expired_id'
+    before do
+      stub_docv_verification_data_fail_with(['R827'])
+    end
+
+    it_behaves_like 'a properly categorized error', 'doc_auth.headers.expired_id'
   end
 
   context 'a type 4 error' do
-    it_behaves_like 'a properly categorized Socure error', 'I808', 'doc_auth.headers.low_resolution'
+    before do
+      stub_docv_verification_data_fail_with(['I808'])
+    end
+
+    it_behaves_like 'a properly categorized error', 'doc_auth.headers.low_resolution'
   end
 
   context 'a type 5 error' do
-    it_behaves_like 'a properly categorized Socure error', 'R845', 'doc_auth.headers.underage'
+    before do
+      stub_docv_verification_data_fail_with(['R845'])
+    end
+
+    it_behaves_like 'a properly categorized error', 'doc_auth.headers.underage'
   end
 
   context 'a type 6 error' do
-    it_behaves_like 'a properly categorized Socure error', 'I856', 'doc_auth.headers.id_not_found'
+    before do
+      stub_docv_verification_data_fail_with(['I856'])
+    end
+
+    it_behaves_like 'a properly categorized error', 'doc_auth.headers.id_not_found'
+  end
+
+  context 'a user with invalid PII' do
+    before do
+      stub_docv_verification_pii_validation_fail
+    end
+
+    it_behaves_like 'a properly categorized error', 'doc_auth.headers.unreadable_id'
   end
 
   def expect_rate_limited_header(expected_to_be_present)
