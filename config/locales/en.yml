@@ -75,6 +75,8 @@ account.index.reactivation.instructions: Your profile was recently deactivated d
 account.index.reactivation.link: Reactivate your profile now.
 account.index.sign_in_location_and_ip: From %{ip} (IP address potentially located in %{location})
 account.index.unknown_location: unknown location
+account.index.verification.connect_idv_account.cta: Sign in to partner agency to access services.
+account.index.verification.connect_idv_account.intro: Connect your account to the partner agency.
 account.index.verification.continue_idv: Continue identity verification
 account.index.verification.finish_verifying_html: Finish verifying your identity to access <strong>%{sp_name}</strong>.
 account.index.verification.finish_verifying_no_sp: Finish the identity verification process to gain access to all %{app_name} partners.
