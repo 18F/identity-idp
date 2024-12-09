@@ -49,7 +49,7 @@ RSpec.describe DocAuth::Socure::Responses::DocvResultResponse do
     end
 
     it 'adds the pii error to the errors' do
-      expect(subject.errors).to have_key(:pii_invalid)
+      expect(subject.errors).to have_key(:validation_failed)
     end
   end
 end

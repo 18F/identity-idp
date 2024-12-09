@@ -112,7 +112,7 @@ module DocAuth
           return {} if successful_result?
 
           {
-            pii_invalid: !pii_valid?,
+            validation_failed: !pii_valid?,
             socure: { reason_codes: get_data(DATA_PATHS[:reason_codes]) },
           }
         end
