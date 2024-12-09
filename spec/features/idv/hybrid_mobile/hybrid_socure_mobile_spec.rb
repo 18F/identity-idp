@@ -340,7 +340,7 @@ RSpec.describe 'Hybrid Flow' do
     end
   end
 
-  shared_examples 'a properly categorized Socure error' do |socure_error_code, expected_header_key|
+  shared_examples 'a properly categorized error' do |expected_header_key|
     it 'shows the correct error page', js: true do
       user = nil
 
@@ -389,33 +389,59 @@ RSpec.describe 'Hybrid Flow' do
   end
 
   context 'a type 1 error (because we do not recognize the code)' do
-    it_behaves_like 'a properly categorized Socure error', 'XXXX', 'doc_auth.headers.unreadable_id'
+    before do
+      stub_docv_verification_data_fail_with(['XXXX'])
+    end
+
+    it_behaves_like 'a properly categorized error', 'doc_auth.headers.unreadable_id'
   end
 
   context 'a type 1 error' do
-    it_behaves_like 'a properly categorized Socure error', 'I848', 'doc_auth.headers.unreadable_id'
+    before do
+      stub_docv_verification_data_fail_with(['I848'])
+    end
+
+    it_behaves_like 'a properly categorized error', 'doc_auth.headers.unreadable_id'
   end
 
   context 'a type 2 error' do
-    it_behaves_like 'a properly categorized Socure error',
-                    'I849',
-                    'doc_auth.headers.unaccepted_id_type'
+    before do
+      stub_docv_verification_data_fail_with(['I849'])
+    end
+
+    it_behaves_like 'a properly categorized error', 'doc_auth.headers.unaccepted_id_type'
   end
 
   context 'a type 3 error' do
-    it_behaves_like 'a properly categorized Socure error', 'R827', 'doc_auth.headers.expired_id'
+    before do
+      stub_docv_verification_data_fail_with(['R827'])
+    end
+
+    it_behaves_like 'a properly categorized error', 'doc_auth.headers.expired_id'
   end
 
   context 'a type 4 error' do
-    it_behaves_like 'a properly categorized Socure error', 'I808', 'doc_auth.headers.low_resolution'
+    before do
+      stub_docv_verification_data_fail_with(['I808'])
+    end
+
+    it_behaves_like 'a properly categorized error', 'doc_auth.headers.low_resolution'
   end
 
   context 'a type 5 error' do
-    it_behaves_like 'a properly categorized Socure error', 'R845', 'doc_auth.headers.underage'
+    before do
+      stub_docv_verification_data_fail_with(['R845'])
+    end
+
+    it_behaves_like 'a properly categorized error', 'doc_auth.headers.underage'
   end
 
   context 'a type 6 error' do
-    it_behaves_like 'a properly categorized Socure error', 'I856', 'doc_auth.headers.id_not_found'
+    before do
+      stub_docv_verification_data_fail_with(['I856'])
+    end
+
+    it_behaves_like 'a properly categorized error', 'doc_auth.headers.id_not_found'
   end
 
   context 'with a network error requesting the capture app url' do
