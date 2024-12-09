@@ -62,18 +62,67 @@ Forms should have a `#submit` method that returns a `FormResponse`.
 - `extra:` is, by convention, a method called `extra_analytics_attributes` that
   returns a Hash
 
-```ruby
-def submit
-  FormResponse.new(
-    success: valid?,
-    errors: errors,
-    extra: extra_analytics_attributes,
-  )
+By including `ActiveModel::Model`, you can use any of [Rails' built-in model validation helpers](https://guides.rubyonrails.org/active_record_validations.html#validation-helpers)
+or define [custom validation logic](https://guides.rubyonrails.org/active_record_validations.html#custom-methods).
+Regardless how you validate, you should use human-readable error messages and associate the error to
+the specific form parameter field that it affects, if the form is responsible for validating input
+from a page.
+
+```rb
+class NewEmailForm
+  include ActiveModel::Model
+  include ActionView::Helpers::TranslationHelper
+
+  validates_presence_of :email, { message: proc { I18n.t('errors.email.blank')} }
+  validate :validate_banned_email
+
+  def submit(email:)
+    @email = email
+
+    FormResponse.new(success: valid?, errors:, extra: extra_analytics_attributes)
+  end
+
+  def validate_banned_email
+    return if !BannedEmail.find_by(email: @email)
+    errors.add(:email, :banned, message: t('errors.email.banned'))
+  end
+
+  # ...
 end
 ```
 
 For sensitive properties, or results that are not meant to be logged, add
 properties to the Form object that get written during `#submit`
+
+### Form Error Handling
+
+If form validation is unsuccessful, you should inform the user what nees to be done to correct the
+issue by one or both of the following:
+
+- Flash message
+- Inline field errors
+
+For convenience, a `FormResponse` object includes a `first_error_message` method which can be used
+if you want to display a single error message, such as in a flash banner.
+
+```rb
+result = @form.submit(**params)
+if result.success?
+  # ...
+else
+  flash.now[:error] = result.first_error_message
+  render :new
+end
+```
+
+In the view, a [SimpleForm](https://github.com/heartcombo/simple_form) form can be bound to a form
+object. By doing so, each error will automatically be shown with the corresponding page input.
+
+```erb
+<%= simple_form_for @form, url: emails_path do |f| %>
+  <%= render ValidatedFieldComponent.new(form: f, name: :email) %>
+<% end >
+```
 
 ### Analytics
 
