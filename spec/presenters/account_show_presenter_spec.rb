@@ -419,6 +419,12 @@ RSpec.describe AccountShowPresenter do
       it { expect(connected_to_initiating_idv_sp?).to eq(false) }
     end
 
+    context 'the user does not have an identity for the initiating service provider' do
+      let(:identity) { nil }
+
+      it { expect(connected_to_initiating_idv_sp?).to eq(false) }
+    end
+
     context 'the user has signed in to the initiating service provider' do
       it { expect(connected_to_initiating_idv_sp?).to eq(true) }
     end
