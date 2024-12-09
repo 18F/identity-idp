@@ -18,8 +18,10 @@ FactoryBot.define do
       status_updated_at { Time.zone.now }
       profile do
         association(
-          :profile, :in_person_verification_pending, user: user,
-                                                     in_person_enrollment: instance
+          :profile,
+          :in_person_verification_pending,
+          user: user,
+          in_person_enrollment: instance,
         )
       end
     end
