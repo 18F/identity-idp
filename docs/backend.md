@@ -96,7 +96,7 @@ properties to the Form object that get written during `#submit`
 
 ### Form Error Handling
 
-If form validation is unsuccessful, you should inform the user what nees to be done to correct the
+If form validation is unsuccessful, you should inform the user what needs to be done to correct the
 issue by one or both of the following:
 
 - Flash message
