@@ -20,6 +20,11 @@ module Idv
           Funnel::DocAuth::RegisterStep.new(document_capture_user.id, sp_session[:issuer]).
             call('hybrid_mobile_socure_document_capture', :view, true)
 
+          if document_capture_session.socure_docv_capture_app_url.present?
+            @url = document_capture_session.socure_docv_capture_app_url
+            return
+          end
+
           # document request
           document_request = DocAuth::Socure::Requests::DocumentRequest.new(
             redirect_url: idv_hybrid_mobile_socure_document_capture_update_url,
@@ -40,9 +45,6 @@ module Idv
             return
           end
 
-          document_capture_session = DocumentCaptureSession.find_by(
-            uuid: document_capture_session_uuid,
-          )
           document_capture_session.socure_docv_transaction_token = document_response.dig(
             :data,
             :docvTransactionToken,

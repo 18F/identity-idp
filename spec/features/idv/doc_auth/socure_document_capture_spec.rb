@@ -91,7 +91,61 @@ RSpec.feature 'document capture step', :js do
         end
       end
 
-      context 'network connection errors', allow_browser_log: true do
+      context 'reuses valid capture app urls when appropriate', allow_browser_log: true do
+        context 'successfully erases capture app url when flow is complete' do
+          it 'proceeds to the next page with valid info' do
+            document_capture_session = DocumentCaptureSession.find_by(user_id: @user.id)
+            expect(document_capture_session.socure_docv_capture_app_url).
+              to eq(fake_socure_document_capture_app_url)
+            expect(page).to have_current_path(fake_socure_document_capture_app_url)
+            visit idv_socure_document_capture_path
+            expect(page).to have_current_path(idv_socure_document_capture_path)
+            document_capture_session.reload
+            expect(document_capture_session.socure_docv_capture_app_url).
+              to eq(fake_socure_document_capture_app_url)
+            socure_docv_upload_documents(
+              docv_transaction_token: @docv_transaction_token,
+            )
+            document_capture_session.reload
+            expect(document_capture_session.socure_docv_capture_app_url).to be_nil
+          end
+
+          it 'reuse capture app url when appropriate and creates new when not' do
+            document_capture_session = DocumentCaptureSession.find_by(user_id: @user.id)
+            expect(document_capture_session.socure_docv_capture_app_url).
+              to eq(fake_socure_document_capture_app_url)
+            expect(page).to have_current_path(fake_socure_document_capture_app_url)
+            visit idv_socure_document_capture_path
+            expect(page).to have_current_path(idv_socure_document_capture_path)
+            document_capture_session.reload
+            expect(document_capture_session.socure_docv_capture_app_url).
+              to eq(fake_socure_document_capture_app_url)
+            fake_capture_app2 = 'https://verify.fake-socure.test/capture2'
+            document_capture_session.socure_docv_capture_app_url = fake_capture_app2
+            document_capture_session.save
+            socure_docv_send_webhook(
+              docv_transaction_token: @docv_transaction_token,
+              event_type: 'DOCUMENT_FRONT_UPLOADED',
+            )
+            document_capture_session.reload
+            expect(document_capture_session.socure_docv_capture_app_url).
+              to eq(fake_capture_app2)
+            socure_docv_send_webhook(
+              docv_transaction_token: @docv_transaction_token,
+              event_type: 'SESSION_EXPIRED',
+            )
+            document_capture_session.reload
+            expect(document_capture_session.socure_docv_capture_app_url).to be_nil
+            visit idv_socure_document_capture_path
+            expect(page).to have_current_path(idv_socure_document_capture_path)
+            document_capture_session.reload
+            expect(document_capture_session.socure_docv_capture_app_url).
+              to eq(fake_socure_document_capture_app_url)
+          end
+        end
+      end
+
+      context 'network connection errors' do
         context 'getting the capture path' do
           before do
             allow_any_instance_of(Faraday::Connection).to receive(:post).
