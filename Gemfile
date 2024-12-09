@@ -77,6 +77,7 @@ gem 'safe_target_blank', '>= 1.0.2'
 gem 'saml_idp', github: '18F/saml_idp', tag: '0.23.4-18f'
 gem 'scrypt'
 gem 'simple_form', '>= 5.0.2'
+gem 'sorbet-static-and-runtime'
 gem 'stringex', require: false
 gem 'strong_migrations', '>= 0.4.2'
 gem 'terminal-table', require: false
@@ -123,6 +124,7 @@ group :development, :test do
   gem 'rubocop-rails', '~> 2.27.0', require: false
   gem 'rubocop-rspec', '~> 3.2.0', require: false
   gem 'sqlite3', require: false
+  gem 'tapioca', require: false
 end
 
 group :test do
