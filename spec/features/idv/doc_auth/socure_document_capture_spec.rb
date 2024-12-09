@@ -95,6 +95,8 @@ RSpec.feature 'document capture step', :js do
         context 'successfully erases capture app url when flow is complete' do
           it 'proceeds to the next page with valid info' do
             document_capture_session = DocumentCaptureSession.find_by(user_id: @user.id)
+            expect(document_capture_session.socure_docv_capture_app_url).
+              to eq(fake_socure_document_capture_app_url)
             expect(page).to have_current_path(fake_socure_document_capture_app_url)
             visit idv_socure_document_capture_path
             expect(page).to have_current_path(idv_socure_document_capture_path)
@@ -110,6 +112,8 @@ RSpec.feature 'document capture step', :js do
 
           it 'reuse capture app url when appropriate and creates new when not' do
             document_capture_session = DocumentCaptureSession.find_by(user_id: @user.id)
+            expect(document_capture_session.socure_docv_capture_app_url).
+              to eq(fake_socure_document_capture_app_url)
             expect(page).to have_current_path(fake_socure_document_capture_app_url)
             visit idv_socure_document_capture_path
             expect(page).to have_current_path(idv_socure_document_capture_path)
