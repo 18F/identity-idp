@@ -5184,7 +5184,7 @@ module AnalyticsEvents
     error_types:,
     event:,
     integration_exists:,
-    request_issuer:
+    request_issuer: nil
   )
     track_event(
       :integration_errors_present,

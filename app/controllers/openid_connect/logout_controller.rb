@@ -26,6 +26,13 @@ module OpenidConnect
       if result.success? && redirect_uri
         handle_successful_logout_request(result, redirect_uri)
       else
+        if result.extra[:integration_errors].present?
+          analytics.integration_errors_present(
+            **result.
+              to_h[:integration_errors].
+              merge({ event: :oidc_logout_requested }),
+          )
+        end
         render :error
       end
     end
@@ -48,6 +55,13 @@ module OpenidConnect
       if result.success? && redirect_uri
         handle_logout(result, redirect_uri)
       else
+        if result.extra[:integration_errors].present?
+          analytics.integration_errors_present(
+            **result.
+              to_h[:integration_errors].
+              merge({ event: :oidc_logout_submitted }),
+          )
+        end
         render :error
       end
     end
@@ -141,7 +155,7 @@ module OpenidConnect
     # Convert FormResponse into loggable analytics event
     # @param [FormResponse] result
     def to_event(result)
-      result.to_h.except(:redirect_uri)
+      result.to_h.except(:redirect_uri, :integration_errors)
     end
 
     def logout_params
