@@ -1365,6 +1365,27 @@ RSpec.describe SamlIdpController do
           ),
         )
       end
+
+      context 'when service provider has block_encryption set to none' do
+        before do
+          service_provider.update!(block_encryption: 'none')
+        end
+
+        it 'is succesful' do
+          user = create(:user, :fully_registered)
+          stub_analytics
+
+          generate_saml_response(user, settings)
+
+          expect(response.body).to_not include(t('errors.messages.no_cert_registered'))
+          expect(@analytics).to have_logged_event(
+            'SAML Auth',
+            hash_including(
+              success: true,
+            ),
+          )
+        end
+      end
     end
 
     context 'service provider has multiple certs' do
