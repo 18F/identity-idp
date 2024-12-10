@@ -1085,6 +1085,14 @@ RSpec.describe SamlIdpController do
             unknown_authn_contexts: unknown_value,
           ),
         )
+        expect(@analytics).to have_logged_event(
+          :integration_errors_present,
+          error_details: ['Unauthorized authentication context'],
+          error_types: [:saml_request_errors],
+          event: :saml_auth_request,
+          integration_exists: true,
+          request_issuer: saml_settings.issuer,
+        )
       end
 
       context 'there is also a valid authn_context' do
@@ -1102,6 +1110,9 @@ RSpec.describe SamlIdpController do
             hash_including(
               unknown_authn_contexts: unknown_value,
             ),
+          )
+          expect(@analytics).to_not have_logged_event(
+            :integration_errors_present,
           )
         end
 
@@ -1349,6 +1360,14 @@ RSpec.describe SamlIdpController do
             finish_profile: false,
           ),
         )
+        expect(@analytics).to have_logged_event(
+          :integration_errors_present,
+          error_details: ['Unauthorized Service Provider'],
+          error_types: [:saml_request_errors],
+          event: :saml_auth_request,
+          integration_exists: false,
+          request_issuer: 'invalid_provider',
+        )
       end
     end
 
@@ -1394,6 +1413,14 @@ RSpec.describe SamlIdpController do
             finish_profile: false,
           ),
         )
+        expect(@analytics).to have_logged_event(
+          :integration_errors_present,
+          error_details: ['Unauthorized Service Provider', 'Unauthorized authentication context'],
+          error_types: [:saml_request_errors],
+          event: :saml_auth_request,
+          integration_exists: false,
+          request_issuer: 'invalid_provider',
+        )
       end
     end
 
@@ -1436,6 +1463,15 @@ RSpec.describe SamlIdpController do
             errors: { service_provider: [t('errors.messages.no_cert_registered')] },
             error_details: { service_provider: { no_cert_registered: true } },
           ),
+        )
+
+        expect(@analytics).to have_logged_event(
+          :integration_errors_present,
+          error_details: ['Your service provider does not have a certificate registered.'],
+          error_types: [:saml_request_errors],
+          event: :saml_auth_request,
+          integration_exists: true,
+          request_issuer: service_provider.issuer,
         )
       end
 

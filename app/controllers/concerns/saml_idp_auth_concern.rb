@@ -50,6 +50,11 @@ module SamlIdpAuthConcern
     return if result.success?
 
     capture_analytics
+    track_integration_errors(
+      event: :saml_auth_request,
+      errors: result.errors.values.flatten,
+    )
+
     render 'saml_idp/auth/error', status: :bad_request
   end
 
@@ -247,5 +252,15 @@ module SamlIdpAuthConcern
 
     url.query = Rack::Utils.build_query(query_params).presence
     url.to_s
+  end
+
+  def track_integration_errors(event:, errors: nil)
+    analytics.integration_errors_present(
+      error_details: errors || saml_request.errors.uniq,
+      error_types: [:saml_request_errors],
+      event:,
+      integration_exists: saml_request_service_provider.present?,
+      request_issuer: saml_request&.issuer,
+    )
   end
 end

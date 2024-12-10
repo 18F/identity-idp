@@ -288,14 +288,4 @@ class SamlIdpController < ApplicationController
   def req_attrs_regexp
     Regexp.escape(Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF)
   end
-
-  def track_integration_errors(event:, errors: nil)
-    analytics.integration_errors_present(
-      error_details: errors || saml_request.errors.uniq,
-      error_types: [:saml_request_errors],
-      event:,
-      integration_exists: saml_request_service_provider.present?,
-      request_issuer: saml_request&.issuer,
-    )
-  end
 end
