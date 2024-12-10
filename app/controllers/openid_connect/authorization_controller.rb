@@ -171,7 +171,7 @@ module OpenidConnect
       result = @authorize_form.submit
 
       analytics.openid_connect_request_authorization(
-        **result.to_h.except(:redirect_uri, :code_digest).merge(
+        **result.to_h.except(:redirect_uri, :code_digest, :integration_errors).merge(
           user_fully_authenticated: user_fully_authenticated?,
           referer: request.referer,
           vtr_param: params[:vtr],
@@ -179,6 +179,13 @@ module OpenidConnect
         ),
       )
       return if result.success?
+
+      if result.extra[:integration_errors].present?
+        analytics.integration_errors_present(
+          **result.to_h[:integration_errors],
+        )
+      end
+
       redirect_uri = result.extra[:redirect_uri]
 
       if redirect_uri.nil?

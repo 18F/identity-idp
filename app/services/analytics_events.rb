@@ -5179,6 +5179,23 @@ module AnalyticsEvents
     )
   end
 
+  def integration_errors_present(
+    error_details:,
+    error_types:,
+    event:,
+    integration_exists:,
+    request_issuer:
+  )
+    track_event(
+      :integration_errors_present,
+      error_details:,
+      error_types:,
+      event:,
+      integration_exists:,
+      request_issuer:,
+    )
+  end
+
   # @param [String] controller
   # @param [Boolean] user_signed_in
   # Authenticity token (CSRF) is invalid
