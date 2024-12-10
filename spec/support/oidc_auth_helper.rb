@@ -1,7 +1,9 @@
 require_relative 'features/javascript_driver_helper'
+require_relative 'features/session_helper'
 
 module OidcAuthHelper
   include JavascriptDriverHelper
+  include Features::SessionHelper
 
   OIDC_ISSUER = 'urn:gov:gsa:openidconnect:sp:server'.freeze
   OIDC_IAL1_ISSUER = 'urn:gov:gsa:openidconnect:sp:server_ial1'.freeze
