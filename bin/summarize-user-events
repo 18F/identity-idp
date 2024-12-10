@@ -43,7 +43,9 @@ class SummarizeUserEvents
           name
         , properties.event_properties.success as success
         , @message
+        , @timestamp
       | filter properties.user_id = '#{uuid}'
+      | sort @timestamp asc
       | limit 10000
     QUERY
   end
