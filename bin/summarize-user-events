@@ -1,0 +1,55 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+
+$LOAD_PATH.unshift(File.expand_path(File.join(__dir__, '../../lib')))
+require 'reporting/cloudwatch_client'
+require 'reporting/cloudwatch_query_quoting'
+
+
+class SummarizeUserEvents
+  attr_reader :uuid, :from_date, to_date:
+  def initialize(argv:, stdin:, stdout:)
+    # argv[0] == uuid
+    # argv[1] == From date
+    # argv[2] == to date
+
+    uuid = argv[0]
+    from_date = argv[1].present? ? DateTime.parse(argv[1]) : 1.week.ago
+    to_date = argv[2].present? ? DateTime.parse(argv[2]) : DateTime.now 
+  end
+
+  def run
+    cloudwatch_client.fetch(
+      query: query,
+      from: from_date,
+      to: to_date,
+    )
+  end
+
+
+  def query
+    format(<<~QUERY, params)
+      fields
+          name
+        , properties.event_properties.success as success
+        , @message
+      | filter user_id = #{uuid}
+      | limit 10000
+    QUERY
+  end
+
+
+  def cloudwatch_client
+    @cloudwatch_client ||= Reporting::CloudwatchClient.new(
+      num_threads: 5,
+      ensure_complete_logs: true,
+      slice_interval: 3.hours,
+    )
+  end
+end
+
+
+if $PROGRAM_NAME == __FILE__
+  SummarizeUserEvents.new(argv: ARGV, stdin: STDIN, stdout: STDOUT).run
+end
