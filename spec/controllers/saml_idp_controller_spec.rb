@@ -46,6 +46,13 @@ RSpec.describe SamlIdpController do
         'Logout Initiated',
         hash_including(sp_initiated: true, oidc: false, saml_request_valid: false),
       )
+      expect(@analytics).to have_logged_event(
+        :integration_errors_present,
+        error_details: [:issuer_missing_or_invald, :no_auth_or_logout_request, :invalid_signature],
+        error_types: [:saml_request_errors],
+        event: :saml_logout_request,
+        integration_exists: false,
+      )
     end
 
     let(:service_provider) do
@@ -112,12 +119,35 @@ RSpec.describe SamlIdpController do
       expect(response).to be_ok
     end
 
-    it 'rejects requests from a wrong cert' do
-      delete :logout, params: UriService.params(
-        OneLogin::RubySaml::Logoutrequest.new.create(wrong_cert_settings),
-      ).merge(path_year: path_year)
+    context 'when the cert is not registered' do
+      it 'rejects requests from a wrong cert' do
+        delete :logout, params: UriService.params(
+          OneLogin::RubySaml::Logoutrequest.new.create(wrong_cert_settings),
+        ).merge(path_year: path_year)
 
-      expect(response).to be_bad_request
+        expect(response).to be_bad_request
+      end
+
+      it 'tracks the request' do
+        stub_analytics
+
+        delete :logout, params: UriService.params(
+          OneLogin::RubySaml::Logoutrequest.new.create(wrong_cert_settings),
+        ).merge(path_year: path_year)
+
+        expect(@analytics).to have_logged_event(
+          'Logout Initiated',
+          hash_including(sp_initiated: true, oidc: false, saml_request_valid: false),
+        )
+        expect(@analytics).to have_logged_event(
+          :integration_errors_present,
+          error_details: [:invalid_signature],
+          error_types: [:saml_request_errors],
+          event: :saml_logout_request,
+          integration_exists: true,
+          request_issuer: service_provider.issuer,
+        )
+      end
     end
 
     context 'cert element in SAML request is blank' do
@@ -183,6 +213,13 @@ RSpec.describe SamlIdpController do
       post :remotelogout, params: { SAMLRequest: 'foo', path_year: path_year }
 
       expect(@analytics).to have_logged_event('Remote Logout initiated', saml_request_valid: false)
+      expect(@analytics).to have_logged_event(
+        :integration_errors_present,
+        error_details: [:issuer_missing_or_invald, :no_auth_or_logout_request, :invalid_signature],
+        error_types: [:saml_request_errors],
+        event: :saml_remote_logout_request,
+        integration_exists: false,
+      )
     end
 
     let(:agency) { create(:agency) }
@@ -351,12 +388,21 @@ RSpec.describe SamlIdpController do
         ),
       ).to eq(true)
 
+      stub_analytics
       post :remotelogout, params: payload.to_h.merge(
         Signature: Base64.encode64(signature),
         path_year: path_year,
       )
 
       expect(response).to be_bad_request
+      expect(@analytics).to have_logged_event(
+        :integration_errors_present,
+        error_details: [:no_user_found_from_session_index],
+        error_types: [:saml_request_errors],
+        event: :saml_remote_logout_request,
+        integration_exists: true,
+        request_issuer: service_provider.issuer,
+      )
     end
 
     it 'rejects requests from a correct cert but bad session index' do
@@ -385,12 +431,21 @@ RSpec.describe SamlIdpController do
         ),
       ).to eq(true)
 
+      stub_analytics
       post :remotelogout, params: payload.to_h.merge(
         Signature: Base64.encode64(signature),
         path_year: path_year,
       )
 
       expect(response).to be_bad_request
+      expect(@analytics).to have_logged_event(
+        :integration_errors_present,
+        error_details: [:no_user_found_from_session_index],
+        error_types: [:saml_request_errors],
+        event: :saml_remote_logout_request,
+        integration_exists: true,
+        request_issuer: service_provider.issuer,
+      )
     end
 
     it 'rejects requests from a correct cert but a non-associated user' do
@@ -419,20 +474,38 @@ RSpec.describe SamlIdpController do
         ),
       ).to eq(true)
 
+      stub_analytics
       post :remotelogout, params: payload.to_h.merge(
         Signature: Base64.encode64(signature),
         path_year: path_year,
       )
 
       expect(response).to be_bad_request
+      expect(@analytics).to have_logged_event(
+        :integration_errors_present,
+        error_details: [:no_user_found_from_session_index],
+        error_types: [:saml_request_errors],
+        event: :saml_remote_logout_request,
+        integration_exists: true,
+        request_issuer: service_provider.issuer,
+      )
     end
 
     it 'rejects requests from a wrong cert' do
+      stub_analytics
       post :remotelogout, params: UriService.params(
         OneLogin::RubySaml::Logoutrequest.new.create(wrong_cert_settings),
       ).merge(path_year: path_year)
 
       expect(response).to be_bad_request
+      expect(@analytics).to have_logged_event(
+        :integration_errors_present,
+        error_details: [:invalid_signature],
+        error_types: [:saml_request_errors],
+        event: :saml_remote_logout_request,
+        integration_exists: true,
+        request_issuer: service_provider.issuer,
+      )
     end
   end
 

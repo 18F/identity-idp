@@ -61,7 +61,11 @@ class SamlIdpController < ApplicationController
 
     track_logout_event
 
-    return head(:bad_request) unless valid_saml_request?
+    unless valid_saml_request?
+      track_integration_errors(event: :saml_logout_request)
+
+      return head(:bad_request)
+    end
 
     handle_valid_sp_logout_request
   end
@@ -75,11 +79,21 @@ class SamlIdpController < ApplicationController
 
     track_remote_logout_event(issuer)
 
-    return head(:bad_request) unless valid_saml_request?
+    unless valid_saml_request?
+      track_integration_errors(event: :saml_remote_logout_request)
+
+      return head(:bad_request)
+    end
 
     user_id = find_user_from_session_index
 
-    return head(:bad_request) unless user_id.present?
+    unless user_id.present?
+      track_integration_errors(
+        event: :saml_remote_logout_request,
+        errors: [:no_user_found_from_session_index],
+      )
+      return head(:bad_request)
+    end
 
     handle_valid_sp_remote_logout_request(user_id: user_id, issuer: issuer)
   end
@@ -273,5 +287,15 @@ class SamlIdpController < ApplicationController
 
   def req_attrs_regexp
     Regexp.escape(Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF)
+  end
+
+  def track_integration_errors(event:, errors: nil)
+    analytics.integration_errors_present(
+      error_details: errors || saml_request.errors.uniq,
+      error_types: [:saml_request_errors],
+      event:,
+      integration_exists: saml_request_service_provider.present?,
+      request_issuer: saml_request&.issuer,
+    )
   end
 end
