@@ -33,7 +33,7 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
 
   describe '#body' do
     it 'should be a request body' do
-      expect(subject.body + "\n").to eq(AamvaFixtures.verification_request)
+      expect(subject.body).to match_xml(AamvaFixtures.verification_request)
     end
 
     it 'should escape XML in applicant data' do

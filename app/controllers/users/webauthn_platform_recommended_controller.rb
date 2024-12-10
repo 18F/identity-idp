@@ -39,7 +39,7 @@ module Users
       if opted_to_add?
         webauthn_setup_path(platform: true)
       elsif in_account_creation_flow?
-        next_setup_path
+        next_setup_path || after_mfa_setup_path
       else
         after_sign_in_path_for(current_user)
       end

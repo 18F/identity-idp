@@ -72,6 +72,8 @@ module Idv
         idv_please_call_url
       elsif session[:sp]
         sign_up_completed_url
+      elsif idv_session.address_verification_mechanism == 'gpo'
+        idv_sp_follow_up_path
       else
         after_sign_in_path_for(current_user)
       end

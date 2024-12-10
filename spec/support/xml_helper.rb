@@ -21,4 +21,13 @@ module XmlHelper
     element.parent.delete(element)
     document.to_s
   end
+
+  def pretty_xml_from_string(document)
+    output = String.new(encoding: 'UTF-8')
+    doc = REXML::Document.new(document)
+    formatter = REXML::Formatters::Pretty.new
+    formatter.compact = true
+    formatter.write(doc, output)
+    output.to_s
+  end
 end

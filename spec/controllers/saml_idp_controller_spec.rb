@@ -1334,6 +1334,39 @@ RSpec.describe SamlIdpController do
       end
     end
 
+    context 'when service provider has no certs' do
+      let(:service_provider) do
+        create(
+          :service_provider,
+          certs: [],
+          active: true,
+        )
+      end
+
+      let(:settings) do
+        saml_settings.tap do |settings|
+          settings.issuer = service_provider.issuer
+        end
+      end
+
+      it 'returns an error page' do
+        user = create(:user, :fully_registered)
+        stub_analytics
+
+        generate_saml_response(user, settings)
+
+        expect(response.body).to include(t('errors.messages.no_cert_registered'))
+        expect(@analytics).to have_logged_event(
+          'SAML Auth',
+          hash_including(
+            success: false,
+            errors: { service_provider: [t('errors.messages.no_cert_registered')] },
+            error_details: { service_provider: { no_cert_registered: true } },
+          ),
+        )
+      end
+    end
+
     context 'service provider has multiple certs' do
       let(:service_provider) do
         create(

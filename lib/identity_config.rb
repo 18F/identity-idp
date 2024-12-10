@@ -421,6 +421,8 @@ module IdentityConfig
     config.add(:recommend_webauthn_platform_for_sms_ab_test_authentication_percent, type: :integer)
     config.add(:socure_docv_document_request_endpoint, type: :string)
     config.add(:socure_docv_enabled, type: :boolean)
+    config.add(:socure_docv_verification_data_test_mode, type: :boolean)
+    config.add(:socure_docv_verification_data_test_mode_tokens, type: :json)
     config.add(:socure_docv_webhook_secret_key_queue, type: :json)
     config.add(:socure_docv_webhook_secret_key, type: :string)
     config.add(:socure_idplus_api_key, type: :string)

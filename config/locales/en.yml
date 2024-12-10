@@ -616,7 +616,7 @@ doc_auth.headings.upload_from_phone: Use your phone to take photos
 doc_auth.headings.verify_at_post_office: Verify your identity at a Post Office
 doc_auth.headings.verify_identity: Verify your identity
 doc_auth.headings.verify_online: Verify your identity online
-doc_auth.headings.verify_online_selfie: Verify your identity online using your phone
+doc_auth.headings.verify_online_mobile: Verify your identity online using your phone
 doc_auth.headings.verify_with_phone: Verify your identity using your phone
 doc_auth.headings.welcome: Let’s verify your identity for %{sp_name}
 doc_auth.hybrid_flow_warning.explanation_html: You’re using <strong>%{app_name}</strong> to verify your identity for access to <strong>%{service_provider_name}</strong> and its services.
@@ -637,7 +637,7 @@ doc_auth.info.exit.without_sp: Exit identity verification and go to your account
 doc_auth.info.getting_started_html: '%{sp_name} needs to make sure you are you — not someone pretending to be you. %{link_html}'
 doc_auth.info.getting_started_learn_more: Learn more about verifying your identity
 doc_auth.info.how_to_verify: You have the option to verify your identity online, or in person at a participating Post Office.
-doc_auth.info.how_to_verify_selfie: You have the option to verify your identity online with your phone, or in person at a participating Post Office.
+doc_auth.info.how_to_verify_mobile: You have the option to verify your identity online with your phone, or in person at a participating Post Office.
 doc_auth.info.how_to_verify_troubleshooting_options_header: Want to learn more about how to verify your identity?
 doc_auth.info.hybrid_handoff: We’ll collect information about you by reading your state‑issued ID.
 doc_auth.info.hybrid_handoff_ipp_html: '<strong>Don’t have a mobile phone?</strong> You can verify your identity at a United States Post Office instead.'
@@ -674,14 +674,15 @@ doc_auth.info.tag: Recommended
 doc_auth.info.upload_from_computer: Don’t have a phone? Upload photos of your ID from this computer.
 doc_auth.info.upload_from_phone: You won’t have to sign in again, and you’ll switch back to this computer after you take photos. Your mobile phone must have a camera and a web browser.
 doc_auth.info.verify_at_post_office_description: This option is better if you don’t have a phone to take photos of your ID.
-doc_auth.info.verify_at_post_office_description_selfie: Choose this option if you don’t have a phone to take pictures.
+doc_auth.info.verify_at_post_office_description_mobile: Choose this option if you don’t have a phone to take pictures.
 doc_auth.info.verify_at_post_office_instruction: You’ll enter your ID information online, and verify your identity in person at a participating Post Office.
 doc_auth.info.verify_at_post_office_instruction_selfie: You’ll enter your ID information online, and verify your identity in person at a participating Post Office.
 doc_auth.info.verify_at_post_office_link_text: Learn more about verifying in person
 doc_auth.info.verify_identity: We’ll ask for your ID, phone number, and other personal information to verify your identity against public records.
 doc_auth.info.verify_online_description: This option is better if you have a phone to take photos of your ID.
-doc_auth.info.verify_online_description_selfie: Choose this option if you have a phone to take pictures.
+doc_auth.info.verify_online_description_mobile: Choose this option if you have a phone to take pictures.
 doc_auth.info.verify_online_instruction: You’ll take photos of your ID to verify your identity fully online. Most users finish this process in one sitting.
+doc_auth.info.verify_online_instruction_mobile_no_selfie: You’ll take photos of your ID using a phone. Most users finish this process in one sitting.
 doc_auth.info.verify_online_instruction_selfie: You’ll take photos of your ID and a photo of yourself using a phone. Most users finish this process in one sitting.
 doc_auth.info.verify_online_link_text: Learn more about verifying online
 doc_auth.info.you_entered: 'You entered:'
@@ -765,6 +766,7 @@ errors.messages.invalid_recaptcha_token: We’re sorry, but your computer or net
 errors.messages.invalid_sms_number: The phone number entered doesn’t support text messaging. Try the Phone call option.
 errors.messages.invalid_voice_number: Invalid phone number. Check that you’ve entered the correct country code or area code.
 errors.messages.missing_field: Please fill in this field.
+errors.messages.no_cert_registered: Your service provider does not have a certificate registered.
 errors.messages.no_pending_profile: No profile is waiting for verification
 errors.messages.not_a_number: is not a number
 errors.messages.otp_format: Enter your entire one-time code without spaces or special characters
@@ -862,7 +864,7 @@ forms.buttons.confirm: Confirm
 forms.buttons.continue: Continue
 forms.buttons.continue_ipp: Continue in person
 forms.buttons.continue_remote: Continue online
-forms.buttons.continue_remote_selfie: Continue on your phone
+forms.buttons.continue_remote_mobile: Continue on your phone
 forms.buttons.delete: Delete
 forms.buttons.disable: Delete
 forms.buttons.edit: Edit
@@ -1011,6 +1013,10 @@ idv.buttons.change_ssn_label: Update Social Security number
 idv.buttons.change_state_id_label: Update state ID
 idv.buttons.continue_plain: Continue
 idv.buttons.mail.send: Request a letter
+idv.by_mail.sp_follow_up.body: Sign back in to %{service_provider} to connect your verified %{app_name} account and access services.
+idv.by_mail.sp_follow_up.connect_account: Connect your account
+idv.by_mail.sp_follow_up.go_to_account: Go to account
+idv.by_mail.sp_follow_up.heading: Connect to %{service_provider}
 idv.cancel.actions.account_page: Go to account page
 idv.cancel.actions.exit: Exit %{app_name}
 idv.cancel.actions.keep_going: No, keep going

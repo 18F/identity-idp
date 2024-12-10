@@ -627,7 +627,7 @@ doc_auth.headings.upload_from_phone: Utilice su teléfono para tomar fotos
 doc_auth.headings.verify_at_post_office: Verifique su identidad en una oficina de correos
 doc_auth.headings.verify_identity: Verifique su identidad
 doc_auth.headings.verify_online: Verifique su identidad en línea
-doc_auth.headings.verify_online_selfie: Verifique su identidad en línea con su teléfono
+doc_auth.headings.verify_online_mobile: Verifique su identidad en línea con su teléfono
 doc_auth.headings.verify_with_phone: Verifique su identidad con su teléfono
 doc_auth.headings.welcome: Verifiquemos su identidad para %{sp_name}
 doc_auth.hybrid_flow_warning.explanation_html: Está utilizando <strong>%{app_name}</strong> para verificar su identidad y acceder a <strong>%{service_provider_name}</strong> y sus servicios.
@@ -648,7 +648,7 @@ doc_auth.info.exit.without_sp: Salga de la verificación de identidad y vaya a l
 doc_auth.info.getting_started_html: '%{sp_name} necesita asegurarse de que se trata de usted y no de alguien que se hace pasar por usted. %{link_html}'
 doc_auth.info.getting_started_learn_more: Obtenga más información sobre la verificación de su identidad
 doc_auth.info.how_to_verify: Tiene la opción de verificar su identidad en línea, o en persona en una oficina de correos participante.
-doc_auth.info.how_to_verify_selfie: Tiene la opción de verificar su identidad en línea con su teléfono, o en persona en una oficina de correos participante.
+doc_auth.info.how_to_verify_mobile: Tiene la opción de verificar su identidad en línea con su teléfono, o en persona en una oficina de correos participante.
 doc_auth.info.how_to_verify_troubleshooting_options_header: ¿Desea obtener más información sobre cómo verificar su identidad?
 doc_auth.info.hybrid_handoff: Recopilaremos información sobre usted leyendo su identificación emitida por el estado.
 doc_auth.info.hybrid_handoff_ipp_html: '<strong>¿No tiene un teléfono móvil?</strong> Puede verificar su identidad en una oficina de correos de los Estados Unidos.'
@@ -685,14 +685,15 @@ doc_auth.info.tag: Recomendado
 doc_auth.info.upload_from_computer: '¿No tiene un teléfono? Cargue fotos de su identificación desde esta computadora.'
 doc_auth.info.upload_from_phone: No tendrá que volver a iniciar sesión y volverá a esta computadora después de tomar las fotos. Su teléfono móvil debe tener una cámara y un navegador web.
 doc_auth.info.verify_at_post_office_description: Esta opción es mejor si no tiene un teléfono para tomar fotografías de su identificación.
-doc_auth.info.verify_at_post_office_description_selfie: Elija esta opción si no tiene un teléfono para tomar fotografías.
+doc_auth.info.verify_at_post_office_description_mobile: Elija esta opción si no tiene un teléfono para tomar fotografías.
 doc_auth.info.verify_at_post_office_instruction: Ingresará la información de su identificación en línea, y verificará su identidad en persona en una oficina de correos participante.
 doc_auth.info.verify_at_post_office_instruction_selfie: Ingresará la información de su identificación en línea, y verificará su identidad en persona en una oficina de correos participante.
 doc_auth.info.verify_at_post_office_link_text: Obtenga más información sobre la verificación en persona
 doc_auth.info.verify_identity: Le pediremos su identificación, número de teléfono y otros datos personales para verificar su identidad comparándola con los registros públicos.
 doc_auth.info.verify_online_description: Esta opción es mejor si tiene un teléfono para tomar fotografías de su identificación.
-doc_auth.info.verify_online_description_selfie: Elija esta opción si tiene un teléfono para tomar fotografías.
+doc_auth.info.verify_online_description_mobile: Elija esta opción si tiene un teléfono para tomar fotografías.
 doc_auth.info.verify_online_instruction: Tomará fotografías de su identificación para verificar su identidad por completo en línea. La mayoría de los usuarios logran terminar este proceso en una sola sesión.
+doc_auth.info.verify_online_instruction_mobile_no_selfie: Tomará fotografías de su identificación con un teléfono. La mayoría de los usuarios logran terminar este proceso en una sola sesión.
 doc_auth.info.verify_online_instruction_selfie: Tomará con un teléfono fotos de su identificación y una foto de usted. La mayoría de los usuarios logran terminar este proceso en una sola sesión.
 doc_auth.info.verify_online_link_text: Obtenga más información sobre la verificación en línea
 doc_auth.info.you_entered: 'Usted ingresó:'
@@ -776,6 +777,7 @@ errors.messages.invalid_recaptcha_token: Lo sentimos, pero es posible que tu com
 errors.messages.invalid_sms_number: El número de teléfono ingresado no admite mensajes de texto. Intente la opción de llamada telefónica.
 errors.messages.invalid_voice_number: Número de teléfono no válido. Verifique haber ingresado el código de país o de área correcto.
 errors.messages.missing_field: Llene este campo.
+errors.messages.no_cert_registered: No podemos detectar un certificado en su solicitud.
 errors.messages.no_pending_profile: No hay ningún perfil en espera de verificación
 errors.messages.not_a_number: no es un número
 errors.messages.otp_format: Ingrese su código de un solo uso completo, sin espacios ni caracteres especiales.
@@ -873,7 +875,7 @@ forms.buttons.confirm: Confirmar
 forms.buttons.continue: Continuar
 forms.buttons.continue_ipp: Continúe en persona
 forms.buttons.continue_remote: Continúe en línea
-forms.buttons.continue_remote_selfie: Continúe en su teléfono
+forms.buttons.continue_remote_mobile: Continúe en su teléfono
 forms.buttons.delete: Eliminar
 forms.buttons.disable: Eliminar
 forms.buttons.edit: Editar
@@ -1022,6 +1024,10 @@ idv.buttons.change_ssn_label: Actualizar número de Seguro Social
 idv.buttons.change_state_id_label: Actualizar identificación estatal
 idv.buttons.continue_plain: Continuar
 idv.buttons.mail.send: Solicitar una carta
+idv.by_mail.sp_follow_up.body: Vuelva a iniciar sesión en %{service_provider} para conectar su cuenta verificada de %{app_name} y acceder a los servicios.
+idv.by_mail.sp_follow_up.connect_account: Conecte su cuenta
+idv.by_mail.sp_follow_up.go_to_account: Ir a la cuenta
+idv.by_mail.sp_follow_up.heading: Conéctese a %{service_provider}
 idv.cancel.actions.account_page: Ir a la página de la cuenta
 idv.cancel.actions.exit: Salir de %{app_name}
 idv.cancel.actions.keep_going: No, continuar

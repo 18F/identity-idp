@@ -24,6 +24,10 @@ class SpReturnUrlResolver
     service_provider.return_to_sp_url
   end
 
+  def post_idv_follow_up_url
+    service_provider.post_idv_follow_up_url || homepage_url
+  end
+
   private
 
   def inferred_redirect_url
