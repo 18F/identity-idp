@@ -15,7 +15,13 @@ module OpenidConnect
       analytics_attributes = result.to_h
       analytics_attributes[:expires_in] = response[:expires_in]
 
-      analytics.openid_connect_token(**analytics_attributes)
+      analytics.openid_connect_token(**analytics_attributes.except(:integration_errors))
+
+      if !result.success? && analytics_attributes[:integration_errors].present?
+        analytics.integration_errors_present(
+          **analytics_attributes[:integration_errors],
+        )
+      end
 
       render json: response,
              status: (result.success? ? :ok : :bad_request)

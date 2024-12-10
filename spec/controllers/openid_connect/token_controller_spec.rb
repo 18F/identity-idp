@@ -67,6 +67,8 @@ RSpec.describe OpenidConnect::TokenController do
             ial: 1,
           }
         )
+
+        expect(@analytics).to_not have_logged_event(:integration_errors_present)
       end
     end
 
@@ -99,6 +101,17 @@ RSpec.describe OpenidConnect::TokenController do
             ial: 1,
           }
         )
+
+        expect(@analytics).to have_logged_event(
+          :integration_errors_present,
+          error_details: array_including(
+            'Grant type is not included in the list',
+          ),
+          error_types: [:grant_type],
+          event: :oidc_token_request,
+          integration_exists: true,
+          request_issuer: client_id,
+        )
       end
     end
 
@@ -106,12 +119,16 @@ RSpec.describe OpenidConnect::TokenController do
       let(:code) { { nested: 'code' } }
 
       it 'is a 400 and has an error response and no id_token' do
+        stub_analytics
+
         action
         expect(response).to be_bad_request
 
         json = JSON.parse(response.body).with_indifferent_access
         expect(json[:error]).to be_present
         expect(json).to_not have_key(:id_token)
+
+        expect(@analytics).to_not have_logged_event(:integration_errors_present)
       end
     end
   end
