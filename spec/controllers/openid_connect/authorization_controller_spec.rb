@@ -153,6 +153,10 @@ RSpec.describe OpenidConnect::AuthorizationController do
               sign_in_flow:,
               acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
             )
+
+            expect(@analytics).to_not have_logged_event(
+              :integration_errors_present,
+            )
           end
         end
 
