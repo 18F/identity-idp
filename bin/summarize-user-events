@@ -1,40 +1,49 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
+Dir.chdir(__dir__) { require 'bundler/setup' }
 
+require 'active_support'
+require 'active_support/core_ext/integer/time'
+require 'active_support/core_ext/object/blank'
+require 'active_support/time'
+require 'aws-sdk-cloudwatchlogs'
+require 'concurrent-ruby'
 
-$LOAD_PATH.unshift(File.expand_path(File.join(__dir__, '../../lib')))
+$LOAD_PATH.unshift(File.expand_path(File.join(__dir__, '../lib')))
 require 'reporting/cloudwatch_client'
 require 'reporting/cloudwatch_query_quoting'
 
 
 class SummarizeUserEvents
-  attr_reader :uuid, :from_date, to_date:
+  attr_reader :uuid, :from_date, :to_date
+  
   def initialize(argv:, stdin:, stdout:)
     # argv[0] == uuid
     # argv[1] == From date
     # argv[2] == to date
 
-    uuid = argv[0]
-    from_date = argv[1].present? ? DateTime.parse(argv[1]) : 1.week.ago
-    to_date = argv[2].present? ? DateTime.parse(argv[2]) : DateTime.now 
+    @uuid = argv[0]
+    @from_date = argv[1].present? ? Time.strptime(argv[1], '%m/%d/%Y') : 1.week.ago
+    @to_date = argv[2].present? ? Time.strptime(argv[2], '%m/%d/%Y') : DateTime.now 
   end
 
   def run
-    cloudwatch_client.fetch(
+    results = cloudwatch_client.fetch(
       query: query,
       from: from_date,
       to: to_date,
     )
+    pp results
   end
 
 
   def query
-    format(<<~QUERY, params)
+    format(<<~QUERY)
       fields
           name
         , properties.event_properties.success as success
         , @message
-      | filter user_id = #{uuid}
+      | filter properties.user_id = '#{uuid}'
       | limit 10000
     QUERY
   end
@@ -44,7 +53,7 @@ class SummarizeUserEvents
     @cloudwatch_client ||= Reporting::CloudwatchClient.new(
       num_threads: 5,
       ensure_complete_logs: true,
-      slice_interval: 3.hours,
+      log_group_name: 'prod_/srv/idp/shared/log/events.log',
     )
   end
 end
