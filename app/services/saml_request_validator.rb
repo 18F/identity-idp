@@ -77,6 +77,7 @@ class SamlRequestValidator
     # if there is no service provider, this error has already been added
     return if service_provider.blank?
     return if service_provider.certs.present?
+    return unless service_provider.encrypt_responses?
 
     errors.add(
       :service_provider, :no_cert_registered,
