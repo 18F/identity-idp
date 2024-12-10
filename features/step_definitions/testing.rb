@@ -2,7 +2,7 @@
 
 require_relative '../../lib/saml_idp_constants'
 
-Given('I have cucumber setup correctly') do
+Given('A user is logged in') do
   @user = FactoryBot.create(
     :user, :fully_registered, with: { phone: '+1 202-555-1212' },
                               password: 'Val!d Pass w0rd'
@@ -61,7 +61,7 @@ end
 def sign_in_via_branded_page(user)
   fill_in_credentials_and_submit(user.confirmed_email_addresses.first.email, user.password)
   fill_in_code_with_last_phone_otp
-  click_submit_default
+  click_on I18n.t('forms.buttons.submit.default')
 end
 
 def fill_in_credentials_and_submit(email, password)
