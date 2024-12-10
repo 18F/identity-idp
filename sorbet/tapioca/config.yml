@@ -4,10 +4,11 @@ gem:
   # exclude:
   # - gem_name
   # doc: true
-  # workers: 5
+   workers: 1
 dsl:
   # Add your `dsl` command parameters here:
   #
   # exclude:
   # - SomeGeneratorName
-  # workers: 5
+   workers: 1
+   verify: true
