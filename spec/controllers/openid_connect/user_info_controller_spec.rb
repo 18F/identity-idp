@@ -28,6 +28,16 @@ RSpec.describe OpenidConnect::UserInfoController do
           errors: hash_including(:access_token),
           error_details: hash_including(:access_token),
         )
+
+        expect(@analytics).to have_logged_event(
+          :integration_errors_present,
+          error_details: array_including(
+            'Access token No Authorization header provided',
+          ),
+          error_types: [:access_token],
+          event: :oidc_bearer_token_auth,
+          integration_exists: false,
+        )
       end
     end
 
@@ -52,6 +62,16 @@ RSpec.describe OpenidConnect::UserInfoController do
           errors: hash_including(:access_token),
           error_details: hash_including(:access_token),
         )
+
+        expect(@analytics).to have_logged_event(
+          :integration_errors_present,
+          error_details: array_including(
+            'Access token Malformed Authorization header',
+          ),
+          error_types: [:access_token],
+          event: :oidc_bearer_token_auth,
+          integration_exists: false,
+        )
       end
     end
 
@@ -74,6 +94,17 @@ RSpec.describe OpenidConnect::UserInfoController do
           success: false,
           errors: hash_including(:access_token),
           error_details: hash_including(:access_token),
+        )
+
+        expect(@analytics).to have_logged_event(
+          :integration_errors_present,
+          error_details: array_including(
+            'Access token Could not find authorization for the contents of the provided ' \
+              'access_token or it may have expired',
+          ),
+          error_types: [:access_token],
+          event: :oidc_bearer_token_auth,
+          integration_exists: false,
         )
       end
     end
@@ -134,6 +165,10 @@ RSpec.describe OpenidConnect::UserInfoController do
           client_id: identity.service_provider,
           ial: identity.ial,
           errors: {},
+        )
+
+        expect(@analytics).to_not have_logged_event(
+          :integration_errors_present,
         )
       end
 
