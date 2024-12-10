@@ -211,7 +211,7 @@ RSpec.describe SecurityEventForm do
 
       context 'when signed with a different key than registered to the SP' do
         let(:rp_private_key) do
-          OpenSSL::PKey::RSA.new(AppArtifacts.store.oidc_private_key)
+          OpenSSL::PKey::RSA.new(AppArtifacts.store.oidc_primary_private_key)
         end
 
         it 'is invalid' do

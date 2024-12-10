@@ -16,9 +16,9 @@ class IdTokenBuilder
   def id_token
     JWT.encode(
       jwt_payload,
-      AppArtifacts.store.oidc_private_key,
+      AppArtifacts.store.oidc_primary_private_key,
       'RS256',
-      kid: JWT::JWK.new(AppArtifacts.store.oidc_private_key).kid,
+      kid: JWT::JWK.new(AppArtifacts.store.oidc_primary_private_key).kid,
     )
   end
 

@@ -62,10 +62,10 @@ module PushNotification
 
       JWT.encode(
         payload,
-        AppArtifacts.store.oidc_private_key,
+        AppArtifacts.store.oidc_primary_private_key,
         'RS256',
         typ: 'secevent+jwt',
-        kid: JWT::JWK.new(AppArtifacts.store.oidc_private_key).kid,
+        kid: JWT::JWK.new(AppArtifacts.store.oidc_primary_private_key).kid,
       )
     end
 

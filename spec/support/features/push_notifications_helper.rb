@@ -3,7 +3,7 @@ module PushNotificationsHelper
     stub_request(:post, sp_push_notification_endpoint).with do |request|
       parsed_jwt, _jwt_headers = JWT.decode(
         request.body,
-        AppArtifacts.store.oidc_public_key,
+        AppArtifacts.store.oidc_primary_public_key,
         true,
         algorithm: 'RS256',
       )

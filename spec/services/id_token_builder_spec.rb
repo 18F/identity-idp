@@ -37,7 +37,7 @@ RSpec.describe IdTokenBuilder do
     let(:decoded_id_token) do
       JWT.decode(
         id_token,
-        AppArtifacts.store.oidc_public_key,
+        AppArtifacts.store.oidc_primary_public_key,
         true,
         algorithm: 'RS256',
       ).map(&:with_indifferent_access)
@@ -224,7 +224,9 @@ RSpec.describe IdTokenBuilder do
     end
 
     it 'sets the kid for the signing key in the JWT headers' do
-      expect(decoded_headers[:kid]).to eq(JWT::JWK.new(AppArtifacts.store.oidc_private_key).kid)
+      expect(decoded_headers[:kid]).to eq(
+        JWT::JWK.new(AppArtifacts.store.oidc_primary_private_key).kid,
+      )
     end
   end
 end

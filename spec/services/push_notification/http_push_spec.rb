@@ -48,14 +48,14 @@ RSpec.describe PushNotification::HttpPush do
 
         jwt_payload, headers = JWT.decode(
           args[:jwt],
-          AppArtifacts.store.oidc_public_key,
+          AppArtifacts.store.oidc_primary_public_key,
           true,
           algorithm: 'RS256',
-          kid: JWT::JWK.new(AppArtifacts.store.oidc_private_key).kid,
+          kid: JWT::JWK.new(AppArtifacts.store.oidc_primary_private_key).kid,
         )
 
         expect(headers['typ']).to eq('secevent+jwt')
-        expect(headers['kid']).to eq(JWT::JWK.new(AppArtifacts.store.oidc_private_key).kid)
+        expect(headers['kid']).to eq(JWT::JWK.new(AppArtifacts.store.oidc_primary_private_key).kid)
 
         expect(jwt_payload['iss']).to eq(root_url)
         expect(jwt_payload['iat']).to eq(now.to_i)
@@ -82,10 +82,10 @@ RSpec.describe PushNotification::HttpPush do
         expect { deliver }.to have_enqueued_job(RiscDeliveryJob).with { |args|
           jwt_payload, _headers = JWT.decode(
             args[:jwt],
-            AppArtifacts.store.oidc_public_key,
+            AppArtifacts.store.oidc_primary_public_key,
             true,
             algorithm: 'RS256',
-            kid: JWT::JWK.new(AppArtifacts.store.oidc_private_key).kid,
+            kid: JWT::JWK.new(AppArtifacts.store.oidc_primary_private_key).kid,
           )
           expect(jwt_payload['events'][event.event_type]['subject']['sub']).to eq(agency_uuid)
         }

@@ -10,12 +10,16 @@ AppArtifacts.setup do |store|
   store.add_artifact(:saml_2024_cert, '/%<env>s/saml2024.crt')
   store.add_artifact(:saml_2024_key, '/%<env>s/saml2024.key.enc')
 
-  store.add_artifact(:oidc_private_key, '/%<env>s/oidc.key') { |k| OpenSSL::PKey::RSA.new(k) }
-  store.add_artifact(:oidc_public_key, '/%<env>s/oidc.pub') { |k| OpenSSL::PKey::RSA.new(k) }
+  store.add_artifact(:oidc_primary_private_key, '/%<env>s/oidc.key') do |k|
+    OpenSSL::PKey::RSA.new(k)
+  end
+  store.add_artifact(:oidc_primary_public_key, '/%<env>s/oidc.pub') do |k|
+    OpenSSL::PKey::RSA.new(k)
+  end
 end
 
-valid = OpenidConnectKeyValidation.valid?(
-  public_key: AppArtifacts.store.oidc_public_key,
-  private_key: AppArtifacts.store.oidc_private_key,
+primary_valid = OpenidConnectKeyValidation.valid?(
+  public_key: AppArtifacts.store.oidc_primary_public_key,
+  private_key: AppArtifacts.store.oidc_primary_private_key,
 )
-raise 'OIDC Public/Private Keys do not match' if !valid
+raise 'OIDC Primary Public/Private Keys do not match' if !primary_valid
