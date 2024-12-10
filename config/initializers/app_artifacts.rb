@@ -16,6 +16,18 @@ AppArtifacts.setup do |store|
   store.add_artifact(:oidc_primary_public_key, '/%<env>s/oidc.pub') do |k|
     OpenSSL::PKey::RSA.new(k)
   end
+  store.add_artifact(
+    :oidc_secondary_private_key, '/%<env>s/oidc_secondary.key',
+    allow_missing: true
+  ) do |k|
+    OpenSSL::PKey::RSA.new(k) if !k.nil?
+  end
+  store.add_artifact(
+    :oidc_secondary_public_key, '/%<env>s/oidc_secondary.pub',
+    allow_missing: true
+  ) do |k|
+    OpenSSL::PKey::RSA.new(k) if !k.nil?
+  end
 end
 
 primary_valid = OpenidConnectKeyValidation.valid?(
@@ -23,3 +35,12 @@ primary_valid = OpenidConnectKeyValidation.valid?(
   private_key: AppArtifacts.store.oidc_primary_private_key,
 )
 raise 'OIDC Primary Public/Private Keys do not match' if !primary_valid
+
+secondary_valid =
+  (AppArtifacts.store.oidc_secondary_private_key.nil? &&
+   AppArtifacts.store.oidc_secondary_public_key.nil?) ||
+  OpenidConnectKeyValidation.valid?(
+    public_key: AppArtifacts.store.oidc_secondary_public_key,
+    private_key: AppArtifacts.store.oidc_secondary_private_key,
+  )
+raise 'OIDC Secondary Public/Private Keys are invalid' if !secondary_valid
