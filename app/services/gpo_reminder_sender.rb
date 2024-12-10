@@ -32,10 +32,10 @@ class GpoReminderSender
 
       profile_eligible_range =
         (IdentityConfig.store.usps_confirmation_max_days +
-          IdentityConfig.store.gpo_max_profile_age_to_send_letter_in_days).
-          days.ago..for_letters_sent_before
-      Profile.joins(:gpo_confirmation_codes).
-        where(
+          IdentityConfig.store.gpo_max_profile_age_to_send_letter_in_days)
+          .days.ago..for_letters_sent_before
+      Profile.joins(:gpo_confirmation_codes)
+        .where(
           gpo_verification_pending_at: profile_eligible_range,
           gpo_confirmation_codes: { reminder_sent_at: nil },
           deactivation_reason: nil,

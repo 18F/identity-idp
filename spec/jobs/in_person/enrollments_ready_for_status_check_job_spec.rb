@@ -9,10 +9,10 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheckJob do
   describe '#perform' do
     before(:each) do
       allow(job).to receive(:analytics).and_return(analytics)
-      allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
-        and_return(in_person_proofing_enabled)
-      allow(IdentityConfig.store).to receive(:in_person_enrollments_ready_job_enabled).
-        and_return(in_person_enrollments_ready_job_enabled)
+      allow(IdentityConfig.store).to receive(:in_person_proofing_enabled)
+        .and_return(in_person_proofing_enabled)
+      allow(IdentityConfig.store).to receive(:in_person_enrollments_ready_job_enabled)
+        .and_return(in_person_enrollments_ready_job_enabled)
     end
 
     def process_batch_result
@@ -289,9 +289,9 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheckJob do
       wait_time_seconds = 20
       aws_http_timeout = 5
 
-      expect(Aws::SQS::Client).to receive(:new).
-        with(http_read_timeout: wait_time_seconds + aws_http_timeout).
-        and_return(sqs_client)
+      expect(Aws::SQS::Client).to receive(:new)
+        .with(http_read_timeout: wait_time_seconds + aws_http_timeout)
+        .and_return(sqs_client)
 
       expect(IdentityConfig.store).to receive_messages(
         aws_http_timeout:,
@@ -302,8 +302,8 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheckJob do
       )
 
       wrapper = instance_double(InPerson::EnrollmentsReadyForStatusCheck::SqsBatchWrapper)
-      expect(InPerson::EnrollmentsReadyForStatusCheck::SqsBatchWrapper).to receive(:new).
-        with(
+      expect(InPerson::EnrollmentsReadyForStatusCheck::SqsBatchWrapper).to receive(:new)
+        .with(
           sqs_client: sqs_client,
           queue_url:,
           receive_params: {
@@ -325,8 +325,8 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheckJob do
       batch_processor_error_reporter = instance_double(
         InPerson::EnrollmentsReadyForStatusCheck::ErrorReporter,
       )
-      expect(InPerson::EnrollmentsReadyForStatusCheck::ErrorReporter).to receive(:new).
-        with(
+      expect(InPerson::EnrollmentsReadyForStatusCheck::ErrorReporter).to receive(:new)
+        .with(
           InPerson::EnrollmentsReadyForStatusCheck::BatchProcessor.name,
           analytics,
         ).and_return(batch_processor_error_reporter)
@@ -337,28 +337,28 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheckJob do
       enrollment_pipeline_error_reporter = instance_double(
         InPerson::EnrollmentsReadyForStatusCheck::ErrorReporter,
       )
-      expect(InPerson::EnrollmentsReadyForStatusCheck::ErrorReporter).to receive(:new).
-        with(
+      expect(InPerson::EnrollmentsReadyForStatusCheck::ErrorReporter).to receive(:new)
+        .with(
           InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline.name,
           analytics,
         ).and_return(enrollment_pipeline_error_reporter)
 
       email_body_pattern = 'abcd'
-      expect(IdentityConfig.store).to receive(:in_person_enrollments_ready_job_email_body_pattern).
-        and_return(email_body_pattern)
+      expect(IdentityConfig.store).to receive(:in_person_enrollments_ready_job_email_body_pattern)
+        .and_return(email_body_pattern)
 
       enrollment_pipeline = instance_double(
         InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline,
       )
-      expect(InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline).to receive(:new).
-        with(
+      expect(InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline).to receive(:new)
+        .with(
           error_reporter: enrollment_pipeline_error_reporter,
           email_body_pattern: /abcd/,
         ).and_return(enrollment_pipeline)
 
       batch_processor = instance_double(InPerson::EnrollmentsReadyForStatusCheck::BatchProcessor)
-      expect(InPerson::EnrollmentsReadyForStatusCheck::BatchProcessor).to receive(:new).
-        with(
+      expect(InPerson::EnrollmentsReadyForStatusCheck::BatchProcessor).to receive(:new)
+        .with(
           error_reporter: batch_processor_error_reporter,
           sqs_batch_wrapper:,
           enrollment_pipeline:,

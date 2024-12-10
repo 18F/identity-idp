@@ -167,8 +167,8 @@ RSpec.describe 'cancel IdV' do
 
     it 'shows the user a cancellation message with the option to cancel and reset idv', :js do
       sp_name = 'Test SP'
-      allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).
-        and_return(sp_name)
+      allow_any_instance_of(ServiceProviderSession).to receive(:sp_name)
+        .and_return(sp_name)
 
       click_link t('links.cancel')
 

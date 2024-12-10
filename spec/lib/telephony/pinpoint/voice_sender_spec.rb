@@ -62,9 +62,9 @@ RSpec.describe Telephony::Pinpoint::VoiceSender do
     end
 
     it 'initializes a pinpoint sms and voice client and uses that to send a message' do
-      expect(pinpoint_client).to receive(:send_voice_message).
-        with(expected_message).
-        and_return(pinpoint_response)
+      expect(pinpoint_client).to receive(:send_voice_message)
+        .with(expected_message)
+        .and_return(pinpoint_response)
 
       response = voice_sender.deliver(message: message, to: recipient_phone, country_code: 'US')
 
@@ -81,9 +81,9 @@ RSpec.describe Telephony::Pinpoint::VoiceSender do
       it 'calls the user with a spanish voice' do
         expected_message[:content][:ssml_message][:language_code] = 'es-US'
         expected_message[:content][:ssml_message][:voice_id] = 'Miguel'
-        expect(pinpoint_client).to receive(:send_voice_message).
-          with(expected_message).
-          and_return(pinpoint_response)
+        expect(pinpoint_client).to receive(:send_voice_message)
+          .with(expected_message)
+          .and_return(pinpoint_response)
 
         response = voice_sender.deliver(message: message, to: recipient_phone, country_code: 'US')
 
@@ -100,9 +100,9 @@ RSpec.describe Telephony::Pinpoint::VoiceSender do
       it 'calls the user with a french voice' do
         expected_message[:content][:ssml_message][:language_code] = 'fr-FR'
         expected_message[:content][:ssml_message][:voice_id] = 'Mathieu'
-        expect(pinpoint_client).to receive(:send_voice_message).
-          with(expected_message).
-          and_return(pinpoint_response)
+        expect(pinpoint_client).to receive(:send_voice_message)
+          .with(expected_message)
+          .and_return(pinpoint_response)
 
         response = voice_sender.deliver(message: message, to: recipient_phone, country_code: 'US')
 
@@ -189,8 +189,8 @@ RSpec.describe Telephony::Pinpoint::VoiceSender do
     context 'when pinpoint raises a timeout exception' do
       it 'rescues the exception and returns an error' do
         exception = Seahorse::Client::NetworkingError.new(Net::ReadTimeout.new)
-        expect(pinpoint_client).
-          to receive(:send_voice_message).and_raise(exception)
+        expect(pinpoint_client)
+          .to receive(:send_voice_message).and_raise(exception)
 
         response = voice_sender.deliver(message: message, to: recipient_phone, country_code: 'US')
 
@@ -217,9 +217,9 @@ RSpec.describe Telephony::Pinpoint::VoiceSender do
 
       context 'when the first config succeeds' do
         before do
-          expect(pinpoint_client).to receive(:send_voice_message).
-            with(expected_message).
-            and_return(pinpoint_response)
+          expect(pinpoint_client).to receive(:send_voice_message)
+            .with(expected_message)
+            .and_return(pinpoint_response)
 
           expect(backup_pinpoint_client).to_not receive(:send_voice_message)
         end
@@ -242,9 +242,9 @@ RSpec.describe Telephony::Pinpoint::VoiceSender do
 
           # second config succeeds
           expected_message[:origination_phone_number] = backup_longcode
-          expect(backup_pinpoint_client).to receive(:send_voice_message).
-            with(expected_message).
-            and_return(pinpoint_response)
+          expect(backup_pinpoint_client).to receive(:send_voice_message)
+            .with(expected_message)
+            .and_return(pinpoint_response)
         end
 
         it 'logs a warning and tries the other configs' do

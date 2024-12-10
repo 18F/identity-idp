@@ -38,8 +38,8 @@ RSpec.describe Risc::SecurityEventsController do
     let(:jwt) { JWT.encode(jwt_payload, rp_private_key, 'RS256', typ: 'secevent+jwt') }
 
     it 'creates a security event record' do
-      expect { action }.
-        to(change { SecurityEvent.count }.by(1))
+      expect { action }
+        .to(change { SecurityEvent.count }.by(1))
 
       expect(response.body).to be_empty
       expect(response.code.to_i).to eq(202) # Accepted
@@ -65,8 +65,8 @@ RSpec.describe Risc::SecurityEventsController do
       before { jwt_payload[:aud] = 'http://bad.example' }
 
       it 'renders an error response and does not create a security event record' do
-        expect { action }.
-          to_not(change { SecurityEvent.count })
+        expect { action }
+          .to_not(change { SecurityEvent.count })
 
         expect(response).to be_bad_request
 

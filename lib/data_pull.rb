@@ -99,10 +99,10 @@ class DataPull
 
       table = []
       table << %w[partner_uuid source internal_uuid deleted]
-      identities = ServiceProviderIdentity.
-        includes(:user, :deleted_user, :agency).
-        where(uuid: partner_uuids).
-        order(:uuid)
+      identities = ServiceProviderIdentity
+        .includes(:user, :deleted_user, :agency)
+        .where(uuid: partner_uuids)
+        .order(:uuid)
 
       identities.each do |identity|
         table << [
@@ -283,9 +283,9 @@ class DataPull
       table = []
       table << %w[login_uuid agency issuer external_uuid]
 
-      User.includes(:agency_identities, identities: { service_provider_record: :agency }).
-        where(uuid: login_uuids).
-        then do |scope|
+      User.includes(:agency_identities, identities: { service_provider_record: :agency })
+        .where(uuid: login_uuids)
+        .then do |scope|
           if config.requesting_issuers.present?
             scope.where(service_provider_record: { issuer: config.requesting_issuers })
           else

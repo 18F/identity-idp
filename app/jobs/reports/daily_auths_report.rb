@@ -15,8 +15,7 @@ module Reports
       [
         bucket_name, # default reporting bucket
         IdentityConfig.store.s3_public_reports_enabled && public_bucket_name,
-      ].select(&:present?).
-        each do |bucket_name|
+      ].select(&:present?).each do |bucket_name|
         upload_file_to_s3_bucket(
           path: path,
           body: body,

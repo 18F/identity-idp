@@ -19,8 +19,8 @@ RSpec.describe OpenidConnectConfigurationPresenter do
         expect(configuration[:service_documentation]).to eq('https://developers.login.gov/')
         expect(configuration[:response_types_supported]).to eq(%w[code])
         expect(configuration[:grant_types_supported]).to eq(%w[authorization_code])
-        expect(configuration[:acr_values_supported]).
-          to match_array(Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
+        expect(configuration[:acr_values_supported])
+          .to match_array(Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
         expect(configuration[:subject_types_supported]).to eq(%w[pairwise])
         expect(configuration[:id_token_signing_alg_values_supported]).to eq(%w[RS256])
         expect(configuration[:token_endpoint_auth_methods_supported]).to eq(%w[private_key_jwt])

@@ -8,8 +8,8 @@ RSpec.describe Idv::AccountVerifiedCtaVisitedController, type: :controller do
   before do
     stub_analytics
 
-    allow(controller).to receive(:service_provider).
-      and_return(service_provider)
+    allow(controller).to receive(:service_provider)
+      .and_return(service_provider)
   end
 
   describe 'GET #show' do

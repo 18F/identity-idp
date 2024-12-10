@@ -23,12 +23,12 @@ RSpec.describe Encryption::KmsClient do
       'b' * 3000 => 'local2',
       'c' * 3000 => 'local3',
     }.each do |plaintext, ciphertext|
-      allow(encryptor).to receive(:encrypt).
-        with(plaintext, local_encryption_key).
-        and_return(ciphertext)
-      allow(encryptor).to receive(:decrypt).
-        with(ciphertext, local_encryption_key).
-        and_return(plaintext)
+      allow(encryptor).to receive(:encrypt)
+        .with(plaintext, local_encryption_key)
+        .and_return(ciphertext)
+      allow(encryptor).to receive(:decrypt)
+        .with(ciphertext, local_encryption_key)
+        .and_return(plaintext)
     end
     allow(Encryption::Encryptors::AesEncryptor).to receive(:new).and_return(encryptor)
     allow(FeatureManagement).to receive(:use_kms?).and_return(kms_enabled)
@@ -140,12 +140,12 @@ RSpec.describe Encryption::KmsClient do
     context 'with a contextless ciphertext' do
       before do
         contextless_client = Encryption::ContextlessKmsClient.new
-        allow(contextless_client).to receive(:decrypt).
-          with('KMSx123abc', log_context: encryption_context).
-          and_return('plaintext')
-        allow(contextless_client).to receive(:decrypt).
-          with('123abc', log_context: encryption_context).
-          and_return('plaintext')
+        allow(contextless_client).to receive(:decrypt)
+          .with('KMSx123abc', log_context: encryption_context)
+          .and_return('plaintext')
+        allow(contextless_client).to receive(:decrypt)
+          .with('123abc', log_context: encryption_context)
+          .and_return('plaintext')
         allow(Encryption::ContextlessKmsClient).to receive(:new).and_return(contextless_client)
       end
 

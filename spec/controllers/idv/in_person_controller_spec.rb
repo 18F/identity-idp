@@ -6,8 +6,8 @@ RSpec.describe Idv::InPersonController do
   let(:user) { nil }
 
   before do
-    allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
-      and_return(in_person_proofing_enabled)
+    allow(IdentityConfig.store).to receive(:in_person_proofing_enabled)
+      .and_return(in_person_proofing_enabled)
     allow(controller).to receive(:current_sp).and_return(sp)
     stub_sign_in(user) if user
   end
@@ -75,8 +75,8 @@ RSpec.describe Idv::InPersonController do
 
             context 'with in person proofing enabled for service provider' do
               before do
-                ServiceProvider.find_by(issuer: sp.issuer).
-                  update(in_person_proofing_enabled: true)
+                ServiceProvider.find_by(issuer: sp.issuer)
+                  .update(in_person_proofing_enabled: true)
               end
 
               it 'redirects to the first step' do

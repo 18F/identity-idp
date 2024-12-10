@@ -41,9 +41,9 @@ RSpec.describe PasswordConfirmationComponent, type: :component do
     let(:options) { super().merge(forbidden_passwords:) }
 
     it 'forwards forbidden passwords to rendered password strength component' do
-      expect(PasswordStrengthComponent).to receive(:new).
-        with(hash_including(forbidden_passwords:)).
-        and_call_original
+      expect(PasswordStrengthComponent).to receive(:new)
+        .with(hash_including(forbidden_passwords:))
+        .and_call_original
 
       rendered
     end

@@ -29,8 +29,8 @@ RSpec.describe Proofing::LexisNexis::PhoneFinder::Proofer do
   describe '#proof' do
     context 'when the response is a success' do
       it 'is a successful rdp1 result' do
-        stub_request(:post, verification_request.url).
-          to_return(body: LexisNexisFixtures.phone_finder_rdp1_success_response_json, status: 200)
+        stub_request(:post, verification_request.url)
+          .to_return(body: LexisNexisFixtures.phone_finder_rdp1_success_response_json, status: 200)
 
         result = subject.proof(applicant)
 
@@ -42,8 +42,8 @@ RSpec.describe Proofing::LexisNexis::PhoneFinder::Proofer do
       end
 
       it 'is a successful rdp2 result' do
-        stub_request(:post, verification_request.url).
-          to_return(body: LexisNexisFixtures.phone_finder_rdp2_success_response_json, status: 200)
+        stub_request(:post, verification_request.url)
+          .to_return(body: LexisNexisFixtures.phone_finder_rdp2_success_response_json, status: 200)
 
         result = subject.proof(applicant)
 
@@ -83,8 +83,8 @@ RSpec.describe Proofing::LexisNexis::PhoneFinder::Proofer do
 
     context 'when the rdp2 response is a failure' do
       it 'is a failure result' do
-        stub_request(:post, verification_request.url).
-          to_return(body: LexisNexisFixtures.phone_finder_rdp2_fail_response_json, status: 200)
+        stub_request(:post, verification_request.url)
+          .to_return(body: LexisNexisFixtures.phone_finder_rdp2_fail_response_json, status: 200)
 
         result = subject.proof(applicant)
         result_json_hash = result.errors[:PhoneFinder].first

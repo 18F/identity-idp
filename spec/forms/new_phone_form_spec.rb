@@ -116,8 +116,8 @@ RSpec.describe NewPhoneForm do
         result = subject.submit(params)
 
         expect(result.success?).to eq(false)
-        expect(result.errors[:otp_delivery_preference].first).
-          to eq 'is not included in the list'
+        expect(result.errors[:otp_delivery_preference].first)
+          .to eq 'is not included in the list'
       end
     end
 
@@ -134,8 +134,8 @@ RSpec.describe NewPhoneForm do
         result = subject.submit(params)
 
         expect(result.success?).to eq(false)
-        expect(result.errors[:otp_delivery_preference].first).
-          to eq 'is not included in the list'
+        expect(result.errors[:otp_delivery_preference].first)
+          .to eq 'is not included in the list'
       end
     end
 
@@ -213,8 +213,8 @@ RSpec.describe NewPhoneForm do
       before do
         allow(IdentityConfig.store).to receive(:phone_service_check).and_return(true)
 
-        expect(Telephony).to receive(:phone_info).with(phone).
-          and_raise(Aws::Pinpoint::Errors::BadRequestException.new(nil, nil))
+        expect(Telephony).to receive(:phone_info).with(phone)
+          .and_raise(Aws::Pinpoint::Errors::BadRequestException.new(nil, nil))
       end
 
       it 'is invalid and does not raise' do
@@ -258,8 +258,8 @@ RSpec.describe NewPhoneForm do
 
       context 'when AWS rate limits info type checks' do
         before do
-          expect(Telephony).to receive(:phone_info).
-            and_raise(Aws::Pinpoint::Errors::TooManyRequestsException.new(nil, 'error message'))
+          expect(Telephony).to receive(:phone_info)
+            .and_raise(Aws::Pinpoint::Errors::TooManyRequestsException.new(nil, 'error message'))
         end
 
         it 'logs a warning and fails open' do
@@ -298,8 +298,8 @@ RSpec.describe NewPhoneForm do
 
     context 'blocklisted carrier numbers' do
       before do
-        allow(IdentityConfig.store).to receive(:phone_carrier_registration_blocklist_array).
-          and_return(['Blocked Phone Carrier'])
+        allow(IdentityConfig.store).to receive(:phone_carrier_registration_blocklist_array)
+          .and_return(['Blocked Phone Carrier'])
       end
 
       context 'when phone number carrier is in blocklist' do
@@ -350,8 +350,8 @@ RSpec.describe NewPhoneForm do
 
       before do
         allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).and_return(true)
-        allow(IdentityConfig.store).to receive(:phone_recaptcha_score_threshold).
-          and_return(score_threshold)
+        allow(IdentityConfig.store).to receive(:phone_recaptcha_score_threshold)
+          .and_return(score_threshold)
       end
 
       it 'assigns recaptcha_assessment_id value' do
@@ -391,8 +391,8 @@ RSpec.describe NewPhoneForm do
 
       before do
         allow(FeatureManagement).to receive(:phone_recaptcha_enabled?).and_return(true)
-        allow(recaptcha_form).to receive(:submit).with(recaptcha_token).
-          and_return([recaptcha_form_response, recaptcha_assessment_id])
+        allow(recaptcha_form).to receive(:submit).with(recaptcha_token)
+          .and_return([recaptcha_form_response, recaptcha_assessment_id])
         allow(recaptcha_form).to receive(:errors).and_return(errors)
         allow(form).to receive(:recaptcha_form).and_return(recaptcha_form)
       end
@@ -406,10 +406,10 @@ RSpec.describe NewPhoneForm do
         end
 
         it 'assigns recaptcha_assessment_id value' do
-          expect { result }.
-            to change { form.recaptcha_assessment_id }.
-            from(nil).
-            to(recaptcha_assessment_id)
+          expect { result }
+            .to change { form.recaptcha_assessment_id }
+            .from(nil)
+            .to(recaptcha_assessment_id)
         end
 
         context 'with recaptcha enterprise' do

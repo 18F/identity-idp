@@ -37,8 +37,8 @@ class EmailNormalizer
 
   def mx_records(domain)
     Resolv::DNS.open do |dns|
-      dns.getresources(domain, Resolv::DNS::Resource::IN::MX).
-        map { |r| r.exchange.to_s }
+      dns.getresources(domain, Resolv::DNS::Resource::IN::MX)
+        .map { |r| r.exchange.to_s }
     end
   end
 end

@@ -17,14 +17,14 @@ RSpec.describe Proofing::Aamva::VerificationClient do
 
   describe '#send_verification_request' do
     before do
-      allow(Proofing::Aamva::AuthenticationClient).to receive(:auth_token).
-        and_return('ThisIsTheToken')
+      allow(Proofing::Aamva::AuthenticationClient).to receive(:auth_token)
+        .and_return('ThisIsTheToken')
     end
 
     it 'gets the auth token from the auth client' do
-      verification_stub = stub_request(:post, AamvaFixtures.example_config.verification_url).
-        to_return(body: AamvaFixtures.verification_response, status: 200).
-        with do |request|
+      verification_stub = stub_request(:post, AamvaFixtures.example_config.verification_url)
+        .to_return(body: AamvaFixtures.verification_response, status: 200)
+        .with do |request|
           xml_text_at_path(request.body, '//dldv:token').gsub(/\s/, '') == 'ThisIsTheToken'
         end
 
@@ -42,11 +42,11 @@ RSpec.describe Proofing::Aamva::VerificationClient do
     let(:response_http_status) { 200 }
 
     before do
-      allow(Proofing::Aamva::AuthenticationClient).to receive(:auth_token).
-        and_return('ThisIsTheToken')
+      allow(Proofing::Aamva::AuthenticationClient).to receive(:auth_token)
+        .and_return('ThisIsTheToken')
 
-      stub_request(:post, AamvaFixtures.example_config.verification_url).
-        to_return(body: response_body, status: response_http_status)
+      stub_request(:post, AamvaFixtures.example_config.verification_url)
+        .to_return(body: response_body, status: response_http_status)
     end
 
     let(:response) do

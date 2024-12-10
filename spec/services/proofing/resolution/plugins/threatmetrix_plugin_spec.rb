@@ -15,8 +15,8 @@ RSpec.describe Proofing::Resolution::Plugins::ThreatMetrixPlugin do
   end
 
   before do
-    allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled).
-      and_return(false)
+    allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled)
+      .and_return(false)
     allow(plugin.proofer).to receive(:proof).and_return(proofer_result)
   end
 
@@ -38,8 +38,8 @@ RSpec.describe Proofing::Resolution::Plugins::ThreatMetrixPlugin do
 
     context 'ThreatMetrix is enabled' do
       before do
-        allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?).
-          and_return(true)
+        allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?)
+          .and_return(true)
       end
 
       it 'calls the ThreatMetrix proofer' do
@@ -93,8 +93,8 @@ RSpec.describe Proofing::Resolution::Plugins::ThreatMetrixPlugin do
 
     context 'ThreatMetrix is disabled' do
       before do
-        allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?).
-          and_return(false)
+        allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?)
+          .and_return(false)
       end
 
       it 'returns a disabled result' do

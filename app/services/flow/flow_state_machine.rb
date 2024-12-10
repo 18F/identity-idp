@@ -183,8 +183,9 @@ module Flow
         flow_path: flow.flow_path,
         step: current_step,
         analytics_id: @analytics_id,
-      }.merge(flow.extra_analytics_properties).
-        merge(**opt_in_analytics_properties)
+      }
+        .merge(flow.extra_analytics_properties)
+        .merge(**opt_in_analytics_properties)
     end
 
     def current_step_name

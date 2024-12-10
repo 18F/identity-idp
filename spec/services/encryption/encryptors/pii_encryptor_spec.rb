@@ -39,9 +39,9 @@ RSpec.describe Encryption::Encryptors::PiiEncryptor do
       expect(SCrypt::Password).to receive(:new).and_return(scrypt_password)
 
       cipher = subject.send(:aes_cipher)
-      expect(cipher).to receive(:encrypt).
-        with(plaintext, decoded_scrypt_digest).
-        and_return('aes_ciphertext')
+      expect(cipher).to receive(:encrypt)
+        .with(plaintext, decoded_scrypt_digest)
+        .and_return('aes_ciphertext')
 
       single_region_kms_client = subject.send(:single_region_kms_client)
       multi_region_kms_client = subject.send(:multi_region_kms_client)
@@ -53,12 +53,12 @@ RSpec.describe Encryption::Encryptors::PiiEncryptor do
         IdentityConfig.store.aws_kms_multi_region_key_id,
       )
 
-      expect(single_region_kms_client).to receive(:encrypt).
-        with('aes_ciphertext', { 'context' => 'pii-encryption', 'user_uuid' => 'uuid-123-abc' }).
-        and_return('single_region_kms_ciphertext')
-      expect(multi_region_kms_client).to receive(:encrypt).
-        with('aes_ciphertext', { 'context' => 'pii-encryption', 'user_uuid' => 'uuid-123-abc' }).
-        and_return('multi_region_kms_ciphertext')
+      expect(single_region_kms_client).to receive(:encrypt)
+        .with('aes_ciphertext', { 'context' => 'pii-encryption', 'user_uuid' => 'uuid-123-abc' })
+        .and_return('single_region_kms_ciphertext')
+      expect(multi_region_kms_client).to receive(:encrypt)
+        .with('aes_ciphertext', { 'context' => 'pii-encryption', 'user_uuid' => 'uuid-123-abc' })
+        .and_return('multi_region_kms_ciphertext')
 
       ciphertext_single_region, ciphertext_multi_region = subject.encrypt(
         plaintext, user_uuid: 'uuid-123-abc'
@@ -94,8 +94,8 @@ RSpec.describe Encryption::Encryptors::PiiEncryptor do
       ciphertext_pair = subject.encrypt(plaintext, user_uuid: 'uuid-123-abc')
       new_encryptor = described_class.new('This is not the passowrd')
 
-      expect { new_encryptor.decrypt(ciphertext_pair, user_uuid: 'uuid-123-abc') }.
-        to raise_error Encryption::EncryptionError
+      expect { new_encryptor.decrypt(ciphertext_pair, user_uuid: 'uuid-123-abc') }
+        .to raise_error Encryption::EncryptionError
     end
 
     it 'uses layered AES and KMS to decrypt the contents' do
@@ -109,14 +109,14 @@ RSpec.describe Encryption::Encryptors::PiiEncryptor do
       expect(SCrypt::Password).to receive(:new).and_return(scrypt_password)
 
       kms_client = subject.send(:multi_region_kms_client)
-      expect(kms_client).to receive(:decrypt).
-        with('kms_ciphertext_mr', { 'context' => 'pii-encryption', 'user_uuid' => 'uuid-123-abc' }).
-        and_return('aes_ciphertext')
+      expect(kms_client).to receive(:decrypt)
+        .with('kms_ciphertext_mr', { 'context' => 'pii-encryption', 'user_uuid' => 'uuid-123-abc' })
+        .and_return('aes_ciphertext')
 
       cipher = subject.send(:aes_cipher)
-      expect(cipher).to receive(:decrypt).
-        with('aes_ciphertext', decoded_scrypt_digest).
-        and_return(plaintext)
+      expect(cipher).to receive(:decrypt)
+        .with('aes_ciphertext', decoded_scrypt_digest)
+        .and_return(plaintext)
 
       ciphertext_pair = Encryption::RegionalCiphertextPair.new(
         single_region_ciphertext: {

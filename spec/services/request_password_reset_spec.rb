@@ -30,20 +30,20 @@ RSpec.describe RequestPasswordReset do
       end
 
       before do
-        allow(UserMailer).to receive(:reset_password_instructions).
-          and_wrap_original do |impl, user, email, options|
+        allow(UserMailer).to receive(:reset_password_instructions)
+          .and_wrap_original do |impl, user, email, options|
             token = options.fetch(:token)
             expect(token).to be_present
-            expect(Devise.token_generator.digest(User, :reset_password_token, token)).
-              to eq(user.reset_password_token)
+            expect(Devise.token_generator.digest(User, :reset_password_token, token))
+              .to eq(user.reset_password_token)
 
             impl.call(user, email, **options)
           end
       end
 
       it 'sets password reset token' do
-        expect { subject }.
-          to(change { user.reload.reset_password_token })
+        expect { subject }
+          .to(change { user.reload.reset_password_token })
       end
 
       it 'sends the correct email to the user' do
@@ -57,8 +57,8 @@ RSpec.describe RequestPasswordReset do
       end
 
       it 'sends a recovery activated push event' do
-        expect(PushNotification::HttpPush).to receive(:deliver).
-          with(PushNotification::RecoveryActivatedEvent.new(user: user))
+        expect(PushNotification::HttpPush).to receive(:deliver)
+          .with(PushNotification::RecoveryActivatedEvent.new(user: user))
 
         subject
       end
@@ -71,17 +71,17 @@ RSpec.describe RequestPasswordReset do
 
       before do
         user.suspend!
-        allow(UserMailer).to receive(:reset_password_instructions).
-          and_wrap_original do |impl, user, email, options|
+        allow(UserMailer).to receive(:reset_password_instructions)
+          .and_wrap_original do |impl, user, email, options|
           token = options.fetch(:token)
           expect(token).to be_present
-          expect(Devise.token_generator.digest(User, :reset_password_token, token)).
-            to eq(user.reset_password_token)
+          expect(Devise.token_generator.digest(User, :reset_password_token, token))
+            .to eq(user.reset_password_token)
 
           impl.call(user, email, **options)
         end
-        allow(UserMailer).to receive(:suspended_reset_password).
-          and_wrap_original do |impl, user, email, options|
+        allow(UserMailer).to receive(:suspended_reset_password)
+          .and_wrap_original do |impl, user, email, options|
             token = options.fetch(:token)
             expect(token).not_to be_present
 
@@ -90,8 +90,8 @@ RSpec.describe RequestPasswordReset do
       end
 
       it 'does not set a password reset token' do
-        expect { subject }.
-          not_to(change { user.reload.reset_password_token })
+        expect { subject }
+          .not_to(change { user.reload.reset_password_token })
       end
 
       it 'sends an email to the suspended user' do
@@ -105,8 +105,8 @@ RSpec.describe RequestPasswordReset do
       end
 
       it 'does not send a recovery activated push event' do
-        expect(PushNotification::HttpPush).not_to receive(:deliver).
-          with(PushNotification::RecoveryActivatedEvent.new(user: user))
+        expect(PushNotification::HttpPush).not_to receive(:deliver)
+          .with(PushNotification::RecoveryActivatedEvent.new(user: user))
 
         subject
       end
@@ -114,20 +114,20 @@ RSpec.describe RequestPasswordReset do
 
     context 'when the user is found, not privileged, and not yet confirmed' do
       it 'sends password reset instructions' do
-        allow(UserMailer).to receive(:reset_password_instructions).
-          and_wrap_original do |impl, user, email, options|
+        allow(UserMailer).to receive(:reset_password_instructions)
+          .and_wrap_original do |impl, user, email, options|
             token = options.fetch(:token)
             expect(token).to be_present
-            expect(Devise.token_generator.digest(User, :reset_password_token, token)).
-              to eq(user.reset_password_token)
+            expect(Devise.token_generator.digest(User, :reset_password_token, token))
+              .to eq(user.reset_password_token)
 
             impl.call(user, email, **options)
           end
 
         expect do
           RequestPasswordReset.new(email:).perform
-        end.
-          to(change { user.reload.reset_password_token })
+        end
+          .to(change { user.reload.reset_password_token })
       end
     end
 
@@ -180,8 +180,8 @@ RSpec.describe RequestPasswordReset do
               email: email,
               analytics: analytics,
             ).perform
-          end.
-            to(change { user.reload.reset_password_token })
+          end
+            .to(change { user.reload.reset_password_token })
         end
 
         # extra time, rate limited
@@ -190,8 +190,8 @@ RSpec.describe RequestPasswordReset do
             email: email,
             analytics: analytics,
           ).perform
-        end.
-          to_not(change { user.reload.reset_password_token })
+        end
+          .to_not(change { user.reload.reset_password_token })
 
         expect(analytics).to have_logged_event(
           'Rate Limit Reached',
@@ -202,9 +202,9 @@ RSpec.describe RequestPasswordReset do
       it 'only sends a push notification when the attempts have not been rate limited' do
         max_attempts = IdentityConfig.store.reset_password_email_max_attempts
 
-        expect(PushNotification::HttpPush).to receive(:deliver).
-          with(PushNotification::RecoveryActivatedEvent.new(user: user)).
-          exactly(max_attempts - 1).times
+        expect(PushNotification::HttpPush).to receive(:deliver)
+          .with(PushNotification::RecoveryActivatedEvent.new(user: user))
+          .exactly(max_attempts - 1).times
 
         (max_attempts - 1).times do
           expect do
@@ -212,8 +212,8 @@ RSpec.describe RequestPasswordReset do
               email: email,
               analytics: analytics,
             ).perform
-          end.
-            to(change { user.reload.reset_password_token })
+          end
+            .to(change { user.reload.reset_password_token })
         end
 
         # extra time, rate limited
@@ -222,8 +222,8 @@ RSpec.describe RequestPasswordReset do
             email: email,
             analytics: analytics,
           ).perform
-        end.
-          to_not(change { user.reload.reset_password_token })
+        end
+          .to_not(change { user.reload.reset_password_token })
       end
     end
   end

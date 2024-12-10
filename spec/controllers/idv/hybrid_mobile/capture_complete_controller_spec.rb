@@ -24,8 +24,8 @@ RSpec.describe Idv::HybridMobile::CaptureCompleteController do
     session[:doc_capture_user_id] = user&.id
     session[:document_capture_session_uuid] = document_capture_session_uuid
     stub_analytics
-    allow(subject).to receive(:confirm_document_capture_session_complete).
-      and_return(true)
+    allow(subject).to receive(:confirm_document_capture_session_complete)
+      .and_return(true)
   end
 
   describe 'before_actions' do

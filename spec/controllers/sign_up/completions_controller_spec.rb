@@ -347,8 +347,8 @@ RSpec.describe SignUp::CompletionsController do
           last_consented_at: now,
           clear_deleted_at: true,
         )
-        allow(Idv::InPerson::CompletionSurveySender).to receive(:send_completion_survey).
-          with(user, sp.issuer)
+        allow(Idv::InPerson::CompletionSurveySender).to receive(:send_completion_survey)
+          .with(user, sp.issuer)
         freeze_time do
           travel_to(now)
           patch :update
@@ -370,8 +370,8 @@ RSpec.describe SignUp::CompletionsController do
           last_consented_at: now,
           clear_deleted_at: true,
         )
-        expect(Idv::InPerson::CompletionSurveySender).to receive(:send_completion_survey).
-          with(user, sp.issuer)
+        expect(Idv::InPerson::CompletionSurveySender).to receive(:send_completion_survey)
+          .with(user, sp.issuer)
         freeze_time do
           travel_to(now)
           patch :update

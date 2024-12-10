@@ -26,8 +26,8 @@ RSpec.describe PwnedPasswordDownloader do
         03643C928B2BCD37475C574E6F31B4650AD:22
       BODY
     )
-    stub_request(:get, URI.join(PwnedPasswordDownloader::RANGE_API_ROOT, '00001').to_s).
-      to_return(body: '00C271B56ABE9E5C137217BF2DE657C7B2F:5')
+    stub_request(:get, URI.join(PwnedPasswordDownloader::RANGE_API_ROOT, '00001').to_s)
+      .to_return(body: '00C271B56ABE9E5C137217BF2DE657C7B2F:5')
     allow(downloader).to receive(:wait_for_progress)
   end
 
@@ -52,9 +52,9 @@ RSpec.describe PwnedPasswordDownloader do
     context 'when server connection fails once' do
       before do
         already_called = false
-        expect(downloader).to receive(:download_one).
-          exactly(3).times.
-          and_wrap_original do |original, **kwargs|
+        expect(downloader).to receive(:download_one)
+          .exactly(3).times
+          .and_wrap_original do |original, **kwargs|
             if already_called
               original.call(**kwargs)
             else
@@ -73,9 +73,9 @@ RSpec.describe PwnedPasswordDownloader do
 
     context 'when server connection fails repeatedly' do
       before do
-        expect(downloader).to receive(:download_one).
-          at_least(9).times.
-          and_raise(Socket::ResolutionError)
+        expect(downloader).to receive(:download_one)
+          .at_least(9).times
+          .and_raise(Socket::ResolutionError)
       end
 
       it 'eventually raises an error that the download failed' do

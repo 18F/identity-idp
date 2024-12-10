@@ -31,10 +31,10 @@ class IdTokenBuilder
   attr_reader :code
 
   def jwt_payload
-    OpenidConnectUserInfoPresenter.new(identity, session_accessor: session_accessor).
-      user_info.
-      merge(id_token_claims).
-      merge(timestamp_claims)
+    OpenidConnectUserInfoPresenter.new(identity, session_accessor: session_accessor)
+      .user_info
+      .merge(id_token_claims)
+      .merge(timestamp_claims)
   end
 
   def id_token_claims

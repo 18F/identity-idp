@@ -11,9 +11,9 @@ RSpec.describe ForgetAllBrowsers do
 
   describe '#call' do
     it 'updates the remember_device_revoked_at' do
-      expect { service.call }.to change { user.remember_device_revoked_at.to_i }.
-        from(original_revoked_at.to_i).
-        to(now.to_i)
+      expect { service.call }.to change { user.remember_device_revoked_at.to_i }
+        .from(original_revoked_at.to_i)
+        .to(now.to_i)
     end
   end
 end

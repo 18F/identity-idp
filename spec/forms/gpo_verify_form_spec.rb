@@ -97,10 +97,10 @@ RSpec.describe GpoVerifyForm do
       let(:minimum_wait_before_another_usps_letter_in_hours) { 0 }
 
       before do
-        allow(IdentityConfig.store).to receive(:usps_confirmation_max_days).
-          and_return(expiration_days)
-        allow(IdentityConfig.store).to receive(:minimum_wait_before_another_usps_letter_in_hours).
-          and_return(minimum_wait_before_another_usps_letter_in_hours)
+        allow(IdentityConfig.store).to receive(:usps_confirmation_max_days)
+          .and_return(expiration_days)
+        allow(IdentityConfig.store).to receive(:minimum_wait_before_another_usps_letter_in_hours)
+          .and_return(minimum_wait_before_another_usps_letter_in_hours)
       end
 
       it 'is invalid' do
@@ -332,8 +332,8 @@ RSpec.describe GpoVerifyForm do
         )
       end
       it 'sends the correct information for scheduling an in person enrollment' do
-        expect(UspsInPersonProofing::EnrollmentHelper).to receive(:schedule_in_person_enrollment).
-          with(user: anything, pii: anything, is_enhanced_ipp: is_enhanced_ipp)
+        expect(UspsInPersonProofing::EnrollmentHelper).to receive(:schedule_in_person_enrollment)
+          .with(user: anything, pii: anything, is_enhanced_ipp: is_enhanced_ipp)
 
         subject.submit(is_enhanced_ipp)
       end

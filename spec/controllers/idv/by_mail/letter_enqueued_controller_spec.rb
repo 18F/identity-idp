@@ -5,8 +5,8 @@ RSpec.describe Idv::ByMail::LetterEnqueuedController do
   let(:gpo_verification_pending_profile) { true }
 
   before do
-    allow(user).to receive(:gpo_verification_pending_profile?).
-      and_return(gpo_verification_pending_profile)
+    allow(user).to receive(:gpo_verification_pending_profile?)
+      .and_return(gpo_verification_pending_profile)
     stub_sign_in(user)
   end
 

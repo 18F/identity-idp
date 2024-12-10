@@ -48,19 +48,19 @@ RSpec.describe RecaptchaAnnotator do
     context 'with recaptcha enterprise' do
       before do
         allow(FeatureManagement).to receive(:recaptcha_enterprise?).and_return(true)
-        allow(IdentityConfig.store).to receive(:recaptcha_enterprise_project_id).
-          and_return(recaptcha_enterprise_project_id)
-        allow(IdentityConfig.store).to receive(:recaptcha_enterprise_api_key).
-          and_return(recaptcha_enterprise_api_key)
-        stub_request(:post, annotation_url).
-          with do |req|
+        allow(IdentityConfig.store).to receive(:recaptcha_enterprise_project_id)
+          .and_return(recaptcha_enterprise_project_id)
+        allow(IdentityConfig.store).to receive(:recaptcha_enterprise_api_key)
+          .and_return(recaptcha_enterprise_api_key)
+        stub_request(:post, annotation_url)
+          .with do |req|
             parsed_body = JSON.parse(req.body)
             next if reason && parsed_body['reasons'] != [reason.to_s]
             next if !reason && parsed_body.key?('reasons')
             next if annotation && parsed_body['annotation'] != annotation.to_s
             true
-          end.
-          to_return(headers: { 'Content-Type': 'application/json' }, body: '{}')
+          end
+          .to_return(headers: { 'Content-Type': 'application/json' }, body: '{}')
       end
 
       it 'submits annotation' do
@@ -86,8 +86,8 @@ RSpec.describe RecaptchaAnnotator do
         it 'submits only what is provided' do
           annotate
 
-          expect(WebMock).to have_requested(:post, annotation_url).
-            with(body: { reasons: [reason] }.to_json)
+          expect(WebMock).to have_requested(:post, annotation_url)
+            .with(body: { reasons: [reason] }.to_json)
         end
 
         it 'returns a hash describing annotation' do

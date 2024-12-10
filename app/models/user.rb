@@ -257,19 +257,19 @@ class User < ApplicationRecord
   # @return [Boolean] Whether the user should receive a survey for completing in-person proofing
   def should_receive_in_person_completion_survey?(issuer)
     Idv::InPersonConfig.enabled_for_issuer?(issuer) &&
-      in_person_enrollments.
-        where(issuer: issuer, status: :passed).order(created_at: :desc).
-        pick(:follow_up_survey_sent) == false
+      in_person_enrollments
+        .where(issuer: issuer, status: :passed).order(created_at: :desc)
+        .pick(:follow_up_survey_sent) == false
   end
 
   ##
   # Record that the in-person proofing survey was sent
   # @param [String] issuer
   def mark_in_person_completion_survey_sent(issuer)
-    enrollment_id, follow_up_survey_sent = in_person_enrollments.
-      where(issuer: issuer, status: :passed).
-      order(created_at: :desc).
-      pick(:id, :follow_up_survey_sent)
+    enrollment_id, follow_up_survey_sent = in_person_enrollments
+      .where(issuer: issuer, status: :passed)
+      .order(created_at: :desc)
+      .pick(:id, :follow_up_survey_sent)
 
     if follow_up_survey_sent == false
       # Enrollment record is present and survey was not previously sent
@@ -407,8 +407,8 @@ class User < ApplicationRecord
   end
 
   def recent_events
-    events = Event.where(user_id: id).order('created_at DESC').limit(MAX_RECENT_EVENTS).
-      map(&:decorate)
+    events = Event.where(user_id: id).order('created_at DESC').limit(MAX_RECENT_EVENTS)
+      .map(&:decorate)
     (events + identity_events).sort_by(&:happened_at).reverse
   end
 
@@ -417,8 +417,8 @@ class User < ApplicationRecord
   end
 
   def recent_devices
-    @recent_devices ||= devices.order(last_used_at: :desc).limit(MAX_RECENT_DEVICES).
-      map(&:decorate)
+    @recent_devices ||= devices.order(last_used_at: :desc).limit(MAX_RECENT_DEVICES)
+      .map(&:decorate)
   end
 
   def has_devices?
@@ -441,12 +441,15 @@ class User < ApplicationRecord
   #
   # @param [ActiveSupport::TimeWithZone] since Time window to query user's events
   def sign_in_count(since:)
-    events.where(event_type: :sign_in_before_2fa).where(created_at: since..).count
+    events
+      .where(event_type: :sign_in_before_2fa).where(created_at: since..)
+      .count
   end
 
   def second_last_signed_in_at
-    events.where(event_type: 'sign_in_after_2fa').
-      order(created_at: :desc).limit(2).pluck(:created_at).second
+    events
+      .where(event_type: 'sign_in_after_2fa')
+      .order(created_at: :desc).limit(2).pluck(:created_at).second
   end
 
   def connected_apps
@@ -508,8 +511,9 @@ class User < ApplicationRecord
       UserMailer.with(
         user: self,
         email_address: email_address,
-      ).send(user_mailer_template).
-        deliver_now_or_later
+      )
+        .send(user_mailer_template)
+        .deliver_now_or_later
     end
   end
 

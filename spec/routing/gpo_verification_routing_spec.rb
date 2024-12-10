@@ -14,8 +14,8 @@ RSpec.describe 'GPO verification routes' do
   end
 
   before do
-    allow(FeatureManagement).to receive(:gpo_verification_enabled?).
-      and_return(enable_gpo_verification)
+    allow(FeatureManagement).to receive(:gpo_verification_enabled?)
+      .and_return(enable_gpo_verification)
     Rails.application.reload_routes!
   end
 
@@ -28,13 +28,13 @@ RSpec.describe 'GPO verification routes' do
 
     it 'does not route to endpoints controlled by feature flag' do
       get_routes.each do |route|
-        expect(get: route).
-          to route_to(controller: 'pages', action: 'page_not_found', path: route)
+        expect(get: route)
+          .to route_to(controller: 'pages', action: 'page_not_found', path: route)
       end
 
       put_routes.each do |route|
-        expect(put: route).
-          to route_to(controller: 'pages', action: 'page_not_found', path: route)
+        expect(put: route)
+          .to route_to(controller: 'pages', action: 'page_not_found', path: route)
       end
     end
   end

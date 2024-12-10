@@ -29,8 +29,8 @@ RSpec.describe Users::BackupCodeSetupController do
       allow(controller).to receive(:in_multi_mfa_selection_flow?).and_return(true)
 
       Funnel::Registration::AddMfa.call(user.id, 'phone', @analytics, threatmetrix_attrs)
-      expect(PushNotification::HttpPush).to receive(:deliver).
-        with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
+      expect(PushNotification::HttpPush).to receive(:deliver)
+        .with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
 
       response
 

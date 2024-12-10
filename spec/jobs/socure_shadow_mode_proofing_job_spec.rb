@@ -123,8 +123,8 @@ RSpec.describe SocureShadowModeProofingJob do
   before do
     document_capture_session.store_proofing_result(proofing_result.to_h)
 
-    allow(IdentityConfig.store).to receive(:socure_idplus_base_url).
-      and_return(socure_idplus_base_url)
+    allow(IdentityConfig.store).to receive(:socure_idplus_base_url)
+      .and_return(socure_idplus_base_url)
   end
 
   describe '#perform' do
@@ -184,8 +184,8 @@ RSpec.describe SocureShadowModeProofingJob do
         SocureReasonCode.create(code:, description:)
       end
 
-      stub_request(:post, 'https://example.org/api/3.0/EmailAuthScore').
-        to_return(
+      stub_request(:post, 'https://example.org/api/3.0/EmailAuthScore')
+        .to_return(
           headers: {
             'Content-Type' => 'application/json',
           },

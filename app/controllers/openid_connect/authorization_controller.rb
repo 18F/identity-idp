@@ -264,9 +264,10 @@ module OpenidConnect
 
     def unknown_authn_contexts
       return nil if params[:vtr].present? || params[:acr_values].blank?
-
-      (params[:acr_values].split - Saml::Idp::Constants::VALID_AUTHN_CONTEXTS).
-        join(' ').presence
+      params[:acr_values].split
+        .difference(Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
+        .join(' ')
+        .presence
     end
   end
 end

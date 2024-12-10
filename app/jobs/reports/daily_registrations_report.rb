@@ -17,8 +17,9 @@ module Reports
       [
         bucket_name, # default reporting bucket
         IdentityConfig.store.s3_public_reports_enabled && public_bucket_name,
-      ].select(&:present?).
-        each do |bucket_name|
+      ]
+        .select(&:present?)
+        .each do |bucket_name|
         upload_file_to_s3_bucket(
           path: path,
           body: body,
@@ -33,16 +34,17 @@ module Reports
     end
 
     def report_body
-      results = [*total_users, *fully_registered_users, *deleted_users].
-        group_by { |row| row['date'] }.
-        map do |date, rows|
+      results = [*total_users, *fully_registered_users, *deleted_users]
+        .group_by { |row| row['date'] }
+        .map do |date, rows|
           {
             date: date,
             total_users: rows.map { |r| r['total_users'] }.compact.first || 0,
             fully_registered_users: rows.map { |r| r['fully_registered_users'] }.compact.first || 0,
             deleted_users: rows.map { |r| r['deleted_users'] }.compact.first || 0,
           }
-        end.sort_by { |elem| elem[:date] }
+        end
+        .sort_by { |elem| elem[:date] }
 
       {
         finish: finish,

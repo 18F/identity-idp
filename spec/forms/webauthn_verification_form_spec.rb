@@ -310,8 +310,8 @@ RSpec.describe WebauthnVerificationForm do
 
       context 'when verification raises OpenSSL exception' do
         before do
-          allow_any_instance_of(WebAuthn::AuthenticatorAssertionResponse).to receive(:verify).
-            and_raise(OpenSSL::PKey::PKeyError)
+          allow_any_instance_of(WebAuthn::AuthenticatorAssertionResponse).to receive(:verify)
+            .and_raise(OpenSSL::PKey::PKeyError)
         end
 
         it 'returns unsucessful result' do

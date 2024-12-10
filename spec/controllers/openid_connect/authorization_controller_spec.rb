@@ -66,8 +66,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
         let(:vtr) { nil }
 
         it 'redirects back to the client app with a code if server-side redirect is enabled' do
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-            and_return('server_side')
+          allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+            .and_return('server_side')
           IdentityLinker.new(user, service_provider).link_identity(ial: 1)
           user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
           action
@@ -81,8 +81,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
         end
 
         it 'renders a client-side redirect back to the client app with a code if it is enabled' do
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-            and_return('client_side')
+          allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+            .and_return('client_side')
           IdentityLinker.new(user, service_provider).link_identity(ial: 1)
           user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
           action
@@ -97,8 +97,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
         end
 
         it 'renders a JS client-side redirect back to the client app with a code if it is enabled' do
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-            and_return('client_side_js')
+          allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+            .and_return('client_side_js')
           IdentityLinker.new(user, service_provider).link_identity(ial: 1)
           user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
           action
@@ -223,8 +223,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
 
             it 'redirects to the redirect_uri immediately when pii is unlocked if client-side redirect is disabled' do
-              allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                and_return('server_side')
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                .and_return('server_side')
               IdentityLinker.new(user, service_provider).link_identity(ial: 3)
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
@@ -236,8 +236,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
 
             it 'renders a client-side redirect back to the client app immediately if it is enabled' do
-              allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                and_return('client_side')
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                .and_return('client_side')
               IdentityLinker.new(user, service_provider).link_identity(ial: 3)
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
@@ -250,8 +250,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
 
             it 'renders a JS client-side redirect back to the client app immediately if it is enabled' do
-              allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                and_return('client_side_js')
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                .and_return('client_side_js')
               IdentityLinker.new(user, service_provider).link_identity(ial: 3)
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
@@ -264,10 +264,10 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
 
             it 'redirects back to the client app immediately if UUID is overridden to server-side redirect' do
-              allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                and_return('client_side')
-              allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map).
-                and_return({ user.uuid => 'server_side' })
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                .and_return('client_side')
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map)
+                .and_return({ user.uuid => 'server_side' })
               IdentityLinker.new(user, service_provider).link_identity(ial: 3)
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
@@ -279,10 +279,10 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
 
             it 'renders a client-side redirect back to the client app immediately if UUID is overridden to client-side redirect' do
-              allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                and_return('server_side')
-              allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map).
-                and_return({ user.uuid => 'client_side' })
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                .and_return('server_side')
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map)
+                .and_return({ user.uuid => 'client_side' })
               IdentityLinker.new(user, service_provider).link_identity(ial: 3)
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
@@ -295,10 +295,10 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
 
             it 'renders a JS client-side redirect back to the client app immediately if UUID is overridden to JS client-side redirect' do
-              allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                and_return('server_side')
-              allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map).
-                and_return({ user.uuid => 'client_side_js' })
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                .and_return('server_side')
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map)
+                .and_return({ user.uuid => 'client_side_js' })
               IdentityLinker.new(user, service_provider).link_identity(ial: 3)
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
@@ -311,12 +311,12 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
 
             it 'respects UUID redirect config when issuer config is also set' do
-              allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                and_return('server_side')
-              allow(IdentityConfig.store).to receive(:openid_connect_redirect_issuer_override_map).
-                and_return({ service_provider.issuer => 'client_side' })
-              allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map).
-                and_return({ user.uuid => 'client_side_js' })
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                .and_return('server_side')
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect_issuer_override_map)
+                .and_return({ service_provider.issuer => 'client_side' })
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map)
+                .and_return({ user.uuid => 'client_side_js' })
 
               IdentityLinker.new(user, service_provider).link_identity(ial: 3)
               user.identities.last.update!(
@@ -330,10 +330,10 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
 
             it 'respects issuer redirect config if UUID config is not set' do
-              allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                and_return('server_side')
-              allow(IdentityConfig.store).to receive(:openid_connect_redirect_issuer_override_map).
-                and_return({ service_provider.issuer => 'client_side_js' })
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                .and_return('server_side')
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect_issuer_override_map)
+                .and_return({ service_provider.issuer => 'client_side_js' })
 
               IdentityLinker.new(user, service_provider).link_identity(ial: 3)
               user.identities.last.update!(
@@ -407,8 +407,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
               let(:vtr) { ['Pb'].to_json }
 
               before do
-                allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                  and_return('server_side')
+                allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                  .and_return('server_side')
                 IdentityLinker.new(user, service_provider).link_identity(ial: 3)
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
@@ -448,8 +448,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
               let(:vtr) { ['Pb'].to_json }
 
               before do
-                allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                  and_return('server_side')
+                allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                  .and_return('server_side')
                 allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
                 IdentityLinker.new(user, service_provider).link_identity(ial: 3)
                 user.identities.last.update!(
@@ -489,8 +489,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
           context 'verified non-facial match profile with pending facial match profile' do
             before do
-              allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                and_return('server_side')
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                .and_return('server_side')
               IdentityLinker.new(user, service_provider).link_identity(ial: 3)
               user.identities.last.update!(
                 verified_attributes: %w[birthdate family_name given_name verified_at],
@@ -636,8 +636,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
               end
 
               it 'redirects to the redirect_uri immediately when pii is unlocked if server-side redirect is enabled' do
-                allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                  and_return('server_side')
+                allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                  .and_return('server_side')
                 IdentityLinker.new(user, service_provider).link_identity(ial: 3)
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
@@ -649,8 +649,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
               end
 
               it 'renders client-side redirect to the client app immediately if PII is unlocked and it is enabled' do
-                allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                  and_return('client_side')
+                allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                  .and_return('client_side')
 
                 IdentityLinker.new(user, service_provider).link_identity(ial: 3)
                 user.identities.last.update!(
@@ -664,8 +664,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
               end
 
               it 'renders JS client-side redirect to the client app immediately if PII is unlocked and it is enabled' do
-                allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                  and_return('client_side_js')
+                allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                  .and_return('client_side_js')
 
                 IdentityLinker.new(user, service_provider).link_identity(ial: 3)
                 user.identities.last.update!(
@@ -738,8 +738,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
             context 'account is not already verified' do
               it 'redirects to the redirect_uri immediately without proofing if server-side redirect is enabled' do
-                allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                  and_return('server_side')
+                allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                  .and_return('server_side')
                 IdentityLinker.new(user, service_provider).link_identity(ial: 1)
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
@@ -751,8 +751,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
               end
 
               it 'renders client-side redirect to the client app immediately if client-side redirect is enabled' do
-                allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                  and_return('client_side')
+                allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                  .and_return('client_side')
 
                 IdentityLinker.new(user, service_provider).link_identity(ial: 1)
                 user.identities.last.update!(
@@ -765,8 +765,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
               end
 
               it 'renders JS client-side redirect to the client app immediately if JS client-side redirect is enabled' do
-                allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                  and_return('client_side_js')
+                allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                  .and_return('client_side_js')
 
                 IdentityLinker.new(user, service_provider).link_identity(ial: 1)
                 user.identities.last.update!(
@@ -828,8 +828,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
               let(:user) { create(:profile, :verified, :password_reset).user }
 
               it 'redirects to the redirect_uri immediately without proofing if server-side redirect is enabled' do
-                allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                  and_return('server_side')
+                allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                  .and_return('server_side')
 
                 IdentityLinker.new(user, service_provider).link_identity(ial: 1)
                 user.identities.last.update!(
@@ -842,8 +842,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
               end
 
               it 'renders client-side redirect to the client app immediately if client-side redirect is enabled' do
-                allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                  and_return('client_side')
+                allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                  .and_return('client_side')
 
                 IdentityLinker.new(user, service_provider).link_identity(ial: 1)
                 user.identities.last.update!(
@@ -856,8 +856,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
               end
 
               it 'renders JS client-side redirect to the client app immediately if JS client-side redirect is enabled' do
-                allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                  and_return('client_side_js')
+                allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                  .and_return('client_side_js')
 
                 IdentityLinker.new(user, service_provider).link_identity(ial: 1)
                 user.identities.last.update!(
@@ -937,8 +937,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
           end
 
           it 'redirects back to the client app with a code if client-side redirect is disabled' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-              and_return('server_side')
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+              .and_return('server_side')
             action
 
             expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
@@ -950,8 +950,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
           end
 
           it 'renders a client-side redirect back to the client app with a code if it is enabled' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-              and_return('client_side')
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+              .and_return('client_side')
 
             action
 
@@ -964,8 +964,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
           end
 
           it 'renders a JS client-side redirect back to the client app with a code if it is enabled' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-              and_return('client_side_js')
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+              .and_return('client_side_js')
 
             action
 
@@ -983,8 +983,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
         let(:vtr) { ['C1'].to_json }
 
         it 'redirects back to the client app with a code if server-side redirect is enabled' do
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-            and_return('server_side')
+          allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+            .and_return('server_side')
           IdentityLinker.new(user, service_provider).link_identity(ial: 1)
           user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
           action
@@ -998,8 +998,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
         end
 
         it 'renders a client-side redirect back to the client app with a code if it is enabled' do
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-            and_return('client_side')
+          allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+            .and_return('client_side')
           IdentityLinker.new(user, service_provider).link_identity(ial: 1)
           user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
           action
@@ -1014,8 +1014,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
         end
 
         it 'renders a JS client-side redirect back to the client app with a code if it is enabled' do
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-            and_return('client_side_js')
+          allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+            .and_return('client_side_js')
           IdentityLinker.new(user, service_provider).link_identity(ial: 1)
           user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
           action
@@ -1145,8 +1145,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
 
             it 'redirects to the redirect_uri immediately when pii is unlocked if client-side redirect is disabled' do
-              allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                and_return('server_side')
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                .and_return('server_side')
               IdentityLinker.new(user, service_provider).link_identity(ial: 3)
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
@@ -1158,8 +1158,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
 
             it 'renders a client-side redirect back to the client app immediately if it is enabled' do
-              allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                and_return('client_side')
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                .and_return('client_side')
               IdentityLinker.new(user, service_provider).link_identity(ial: 3)
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
@@ -1172,8 +1172,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
 
             it 'renders a JS client-side redirect back to the client app immediately if it is enabled' do
-              allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                and_return('client_side_js')
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                .and_return('client_side_js')
               IdentityLinker.new(user, service_provider).link_identity(ial: 3)
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
@@ -1186,10 +1186,10 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
 
             it 'redirects back to the client app immediately if UUID is overridden to server-side redirect' do
-              allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                and_return('client_side')
-              allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map).
-                and_return({ user.uuid => 'server_side' })
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                .and_return('client_side')
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map)
+                .and_return({ user.uuid => 'server_side' })
               IdentityLinker.new(user, service_provider).link_identity(ial: 3)
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
@@ -1201,10 +1201,10 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
 
             it 'renders a client-side redirect back to the client app immediately if UUID is overridden to client-side redirect' do
-              allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                and_return('server_side')
-              allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map).
-                and_return({ user.uuid => 'client_side' })
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                .and_return('server_side')
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map)
+                .and_return({ user.uuid => 'client_side' })
               IdentityLinker.new(user, service_provider).link_identity(ial: 3)
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
@@ -1217,10 +1217,10 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
 
             it 'renders a JS client-side redirect back to the client app immediately if UUID is overridden to JS client-side redirect' do
-              allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                and_return('server_side')
-              allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map).
-                and_return({ user.uuid => 'client_side_js' })
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                .and_return('server_side')
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map)
+                .and_return({ user.uuid => 'client_side_js' })
               IdentityLinker.new(user, service_provider).link_identity(ial: 3)
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
@@ -1233,12 +1233,12 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
 
             it 'respects UUID redirect config when issuer config is also set' do
-              allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                and_return('server_side')
-              allow(IdentityConfig.store).to receive(:openid_connect_redirect_issuer_override_map).
-                and_return({ service_provider.issuer => 'client_side' })
-              allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map).
-                and_return({ user.uuid => 'client_side_js' })
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                .and_return('server_side')
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect_issuer_override_map)
+                .and_return({ service_provider.issuer => 'client_side' })
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map)
+                .and_return({ user.uuid => 'client_side_js' })
 
               IdentityLinker.new(user, service_provider).link_identity(ial: 3)
               user.identities.last.update!(
@@ -1252,10 +1252,10 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
 
             it 'respects issuer redirect config if UUID config is not set' do
-              allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                and_return('server_side')
-              allow(IdentityConfig.store).to receive(:openid_connect_redirect_issuer_override_map).
-                and_return({ service_provider.issuer => 'client_side_js' })
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                .and_return('server_side')
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect_issuer_override_map)
+                .and_return({ service_provider.issuer => 'client_side_js' })
 
               IdentityLinker.new(user, service_provider).link_identity(ial: 3)
               user.identities.last.update!(
@@ -1329,8 +1329,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
               let(:vtr) { ['Pb'].to_json }
 
               before do
-                allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                  and_return('server_side')
+                allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                  .and_return('server_side')
                 IdentityLinker.new(user, service_provider).link_identity(ial: 3)
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
@@ -1370,8 +1370,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
               let(:vtr) { ['Pb'].to_json }
 
               before do
-                allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                  and_return('server_side')
+                allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                  .and_return('server_side')
                 allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
                 IdentityLinker.new(user, service_provider).link_identity(ial: 3)
                 user.identities.last.update!(
@@ -1411,8 +1411,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
           context 'verified non-facial match profile with pending facial match profile' do
             before do
-              allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                and_return('server_side')
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                .and_return('server_side')
               IdentityLinker.new(user, service_provider).link_identity(ial: 3)
               user.identities.last.update!(
                 verified_attributes: %w[birthdate family_name given_name verified_at],
@@ -1560,8 +1560,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
               end
 
               it 'redirects to the redirect_uri immediately when pii is unlocked if server-side redirect is enabled' do
-                allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                  and_return('server_side')
+                allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                  .and_return('server_side')
                 IdentityLinker.new(user, service_provider).link_identity(ial: 3)
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
@@ -1573,8 +1573,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
               end
 
               it 'renders client-side redirect to the client app immediately if PII is unlocked and it is enabled' do
-                allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                  and_return('client_side')
+                allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                  .and_return('client_side')
 
                 IdentityLinker.new(user, service_provider).link_identity(ial: 3)
                 user.identities.last.update!(
@@ -1588,8 +1588,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
               end
 
               it 'renders JS client-side redirect to the client app immediately if PII is unlocked and it is enabled' do
-                allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                  and_return('client_side_js')
+                allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                  .and_return('client_side_js')
 
                 IdentityLinker.new(user, service_provider).link_identity(ial: 3)
                 user.identities.last.update!(
@@ -1662,8 +1662,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
             context 'account is not already verified' do
               it 'redirects to the redirect_uri immediately without proofing if server-side redirect is enabled' do
-                allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                  and_return('server_side')
+                allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                  .and_return('server_side')
                 IdentityLinker.new(user, service_provider).link_identity(ial: 1)
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
@@ -1675,8 +1675,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
               end
 
               it 'renders client-side redirect to the client app immediately if client-side redirect is enabled' do
-                allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                  and_return('client_side')
+                allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                  .and_return('client_side')
 
                 IdentityLinker.new(user, service_provider).link_identity(ial: 1)
                 user.identities.last.update!(
@@ -1689,8 +1689,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
               end
 
               it 'renders JS client-side redirect to the client app immediately if JS client-side redirect is enabled' do
-                allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                  and_return('client_side_js')
+                allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                  .and_return('client_side_js')
 
                 IdentityLinker.new(user, service_provider).link_identity(ial: 1)
                 user.identities.last.update!(
@@ -1752,8 +1752,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
               let(:user) { create(:profile, :verified, :password_reset).user }
 
               it 'redirects to the redirect_uri immediately without proofing if server-side redirect is enabled' do
-                allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                  and_return('server_side')
+                allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                  .and_return('server_side')
 
                 IdentityLinker.new(user, service_provider).link_identity(ial: 1)
                 user.identities.last.update!(
@@ -1766,8 +1766,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
               end
 
               it 'renders client-side redirect to the client app immediately if client-side redirect is enabled' do
-                allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                  and_return('client_side')
+                allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                  .and_return('client_side')
 
                 IdentityLinker.new(user, service_provider).link_identity(ial: 1)
                 user.identities.last.update!(
@@ -1780,8 +1780,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
               end
 
               it 'renders JS client-side redirect to the client app immediately if JS client-side redirect is enabled' do
-                allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                  and_return('client_side_js')
+                allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                  .and_return('client_side_js')
 
                 IdentityLinker.new(user, service_provider).link_identity(ial: 1)
                 user.identities.last.update!(
@@ -1861,8 +1861,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
           end
 
           it 'redirects back to the client app with a code if client-side redirect is disabled' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-              and_return('server_side')
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+              .and_return('server_side')
             action
 
             expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
@@ -1874,8 +1874,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
           end
 
           it 'renders a client-side redirect back to the client app with a code if it is enabled' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-              and_return('client_side')
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+              .and_return('client_side')
 
             action
 
@@ -1888,8 +1888,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
           end
 
           it 'renders a JS client-side redirect back to the client app with a code if it is enabled' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-              and_return('client_side_js')
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+              .and_return('client_side_js')
 
             action
 
@@ -1910,8 +1910,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
         before { params[:prompt] = '' }
 
         it 'redirects the user with an invalid request if client-side redirect is disabled' do
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-            and_return('server_side')
+          allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+            .and_return('server_side')
           action
 
           expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
@@ -1924,8 +1924,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
         end
 
         it 'renders client-side redirect with an invalid request if client-side redirect is enabled' do
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-            and_return('client_side')
+          allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+            .and_return('client_side')
           action
 
           expect(controller).to render_template('openid_connect/shared/redirect')
@@ -1939,8 +1939,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
         end
 
         it 'renders JS client-side redirect with an invalid request if JS client-side redirect is enabled' do
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-            and_return('client_side_js')
+          allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+            .and_return('client_side_js')
           action
 
           expect(controller).to render_template('openid_connect/shared/redirect_js')
@@ -1954,10 +1954,10 @@ RSpec.describe OpenidConnect::AuthorizationController do
         end
 
         it 'redirects the user with an invalid request if UUID is in server-side redirect list' do
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-            and_return('client_side')
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map).
-            and_return({ user.uuid => 'server_side' })
+          allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+            .and_return('client_side')
+          allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map)
+            .and_return({ user.uuid => 'server_side' })
           action
 
           expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
@@ -1970,10 +1970,10 @@ RSpec.describe OpenidConnect::AuthorizationController do
         end
 
         it 'renders client-side redirect with an invalid request if UUID is overriden for client-side redirect' do
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-            and_return('server_side')
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map).
-            and_return({ user.uuid => 'client_side' })
+          allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+            .and_return('server_side')
+          allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map)
+            .and_return({ user.uuid => 'client_side' })
           action
 
           expect(controller).to render_template('openid_connect/shared/redirect')
@@ -1987,10 +1987,10 @@ RSpec.describe OpenidConnect::AuthorizationController do
         end
 
         it 'renders JS client-side redirect with an invalid request if UUID is overriden for JS client-side redirect' do
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-            and_return('server_side')
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map).
-            and_return({ user.uuid => 'client_side_js' })
+          allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+            .and_return('server_side')
+          allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map)
+            .and_return({ user.uuid => 'client_side_js' })
           action
 
           expect(controller).to render_template('openid_connect/shared/redirect_js')
@@ -2095,8 +2095,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
         before { params[:prompt] = '' }
 
         it 'redirects the user with an invalid request if client-side redirect is disabled' do
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-            and_return('server_side')
+          allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+            .and_return('server_side')
 
           action
 
@@ -2110,8 +2110,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
         end
 
         it 'renders client-side redirect with an invalid request if client-side redirect is enabled' do
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-            and_return('client_side')
+          allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+            .and_return('client_side')
           action
 
           expect(controller).to render_template('openid_connect/shared/redirect')
@@ -2125,8 +2125,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
         end
 
         it 'renders JS client-side redirect with an invalid request if JS client-side redirect is enabled' do
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-            and_return('client_side_js')
+          allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+            .and_return('client_side_js')
           action
 
           expect(controller).to render_template('openid_connect/shared/redirect_js')
@@ -2140,10 +2140,10 @@ RSpec.describe OpenidConnect::AuthorizationController do
         end
 
         it 'redirects the user with an invalid request if UUID is in server-side redirect list' do
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-            and_return('client_side')
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map).
-            and_return({ user.uuid => 'server_side' })
+          allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+            .and_return('client_side')
+          allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map)
+            .and_return({ user.uuid => 'server_side' })
           action
 
           expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
@@ -2156,10 +2156,10 @@ RSpec.describe OpenidConnect::AuthorizationController do
         end
 
         it 'renders client-side redirect with an invalid request if UUID is overriden for client-side redirect' do
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-            and_return('server_side')
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map).
-            and_return({ user.uuid => 'client_side' })
+          allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+            .and_return('server_side')
+          allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map)
+            .and_return({ user.uuid => 'client_side' })
 
           action
 
@@ -2174,10 +2174,10 @@ RSpec.describe OpenidConnect::AuthorizationController do
         end
 
         it 'renders JS client-side redirect with an invalid request if UUID is overriden for JS client-side redirect' do
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-            and_return('server_side')
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map).
-            and_return({ user.uuid => 'client_side_js' })
+          allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+            .and_return('server_side')
+          allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map)
+            .and_return({ user.uuid => 'client_side_js' })
           action
 
           expect(controller).to render_template('openid_connect/shared/redirect_js')
@@ -2300,16 +2300,16 @@ RSpec.describe OpenidConnect::AuthorizationController do
           let(:acr_values) { nil }
 
           it 'handles the error and does not blow up when server-side redirect is enabled' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-              and_return('server_side')
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+              .and_return('server_side')
             action
 
             expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
           end
 
           it 'handles the error and does not blow up when client-side redirect is enabled' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-              and_return('client_side')
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+              .and_return('client_side')
             action
 
             expect(controller).to render_template('openid_connect/shared/redirect')
@@ -2317,8 +2317,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
           end
 
           it 'handles the error and does not blow up when client-side redirect is enabled' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-              and_return('client_side_js')
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+              .and_return('client_side_js')
             action
 
             expect(controller).to render_template('openid_connect/shared/redirect_js')
@@ -2341,8 +2341,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
           end
 
           it 'redirects the user if server-side redirect is enabled' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-              and_return('server_side')
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+              .and_return('server_side')
             action
 
             expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
@@ -2355,8 +2355,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
           end
 
           it 'renders a client-side redirect if client-side redirect is enabled' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-              and_return('client_side')
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+              .and_return('client_side')
             action
 
             expect(controller).to render_template('openid_connect/shared/redirect')
@@ -2370,8 +2370,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
           end
 
           it 'renders a JS client-side redirect if JS client-side redirect is enabled' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-              and_return('client_side_js')
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+              .and_return('client_side_js')
             action
 
             expect(controller).to render_template('openid_connect/shared/redirect_js')
@@ -2431,16 +2431,16 @@ RSpec.describe OpenidConnect::AuthorizationController do
           let(:vtr) { nil }
 
           it 'handles the error and does not blow up when server-side redirect is enabled' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-              and_return('server_side')
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+              .and_return('server_side')
             action
 
             expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
           end
 
           it 'handles the error and does not blow up when client-side redirect is enabled' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-              and_return('client_side')
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+              .and_return('client_side')
             action
 
             expect(controller).to render_template('openid_connect/shared/redirect')
@@ -2448,8 +2448,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
           end
 
           it 'handles the error and does not blow up when client-side redirect is enabled' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-              and_return('client_side_js')
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+              .and_return('client_side_js')
             action
 
             expect(controller).to render_template('openid_connect/shared/redirect_js')
@@ -2470,8 +2470,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
           let(:vtr) { ['CaPb'].to_json }
 
           it 'redirects the user if server-side redirect is enabled' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-              and_return('server_side')
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+              .and_return('server_side')
             action
 
             expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
@@ -2484,8 +2484,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
           end
 
           it 'renders a client-side redirect if client-side redirect is enabled' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-              and_return('client_side')
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+              .and_return('client_side')
             action
 
             expect(controller).to render_template('openid_connect/shared/redirect')
@@ -2499,8 +2499,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
           end
 
           it 'renders a JS client-side redirect if JS client-side redirect is enabled' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-              and_return('client_side_js')
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+              .and_return('client_side_js')
             action
 
             expect(controller).to render_template('openid_connect/shared/redirect_js')

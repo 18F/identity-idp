@@ -246,9 +246,9 @@ RSpec.describe 'I18n' do
       # most common interpolation arguments is the correct one. We then take the keys
       # in the remaining groups and add them to the missing keys list.
       keys =
-        interpolation_arguments.group_by { |_k, v| v }.
-          sort_by { |_k, v| v.length * -1 }.drop(1).
-          flat_map { |x| x[1] }.to_h.keys
+        interpolation_arguments.group_by { |_k, v| v }
+          .sort_by { |_k, v| v.length * -1 }.drop(1)
+          .flat_map { |x| x[1] }.to_h.keys
 
       missing_interpolation_argument_locale_keys += keys
     end
@@ -301,8 +301,8 @@ RSpec.describe 'I18n' do
 
   root_dir = File.expand_path(File.join(File.dirname(__FILE__), '../'))
 
-  ([File.join(root_dir, '/config/locales')] + Dir[File.join(root_dir, '/config/locales/**')]).
-    sort.each do |group_path|
+  ([File.join(root_dir, '/config/locales')] + Dir[File.join(root_dir, '/config/locales/**')])
+    .sort.each do |group_path|
     i18n_group = group_path.sub("#{root_dir}/", '')
 
     describe i18n_group do
@@ -411,8 +411,8 @@ RSpec.describe 'I18n' do
   end
 
   def extract_interpolation_arguments(translation)
-    translation.scan(I18n::INTERPOLATION_PATTERN).
-      map(&:compact).map(&:first).to_set
+    translation.scan(I18n::INTERPOLATION_PATTERN)
+      .map(&:compact).map(&:first).to_set
   end
 
   def flatten_hash(hash, flatten_arrays: true, parent_keys: [], out_hash: {})

@@ -67,10 +67,11 @@ module InPerson::EnrollmentsReadyForStatusCheck
       error_extra[:ses_mail_source] = ses_message.dig(:mail, :source)
 
       # https://datatracker.ietf.org/doc/html/rfc5322#section-3.6.1
-      error_extra[:ses_rfc_origination_date] = ses_message.
-        dig(:mail, :commonHeaders, :date)&.then do |date|
-          DateTime.parse(date).to_s
-        end
+      error_extra[:ses_rfc_origination_date] = ses_message
+        .dig(:mail, :commonHeaders, :date)
+        &.then do |date|
+        DateTime.parse(date).to_s
+      end
       # https://datatracker.ietf.org/doc/html/rfc5322#section-3.6.4
       error_extra[:ses_rfc_message_id] = ses_message.dig(:mail, :commonHeaders, :messageId)
 
@@ -119,11 +120,11 @@ module InPerson::EnrollmentsReadyForStatusCheck
       error_extra[:enrollment_code] = enrollment_code
 
       # Look up existing enrollment
-      id, user_id, ready_for_status_check = InPersonEnrollment.
-        where(enrollment_code:, status: :pending).
-        order(created_at: :desc).
-        limit(1).
-        pick(
+      id, user_id, ready_for_status_check = InPersonEnrollment
+        .where(enrollment_code:, status: :pending)
+        .order(created_at: :desc)
+        .limit(1)
+        .pick(
           :id, :user_id, :ready_for_status_check
         )
 

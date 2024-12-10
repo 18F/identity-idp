@@ -45,8 +45,8 @@ RSpec.describe Users::PersonalKeysController do
       stub_sign_in
 
       generator = instance_double(PersonalKeyGenerator)
-      allow(PersonalKeyGenerator).to receive(:new).
-        with(subject.current_user).and_return(generator)
+      allow(PersonalKeyGenerator).to receive(:new)
+        .with(subject.current_user).and_return(generator)
 
       expect(generator).to_not receive(:generate!)
 

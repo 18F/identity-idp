@@ -41,8 +41,8 @@ RSpec.describe RiscDeliveryJob do
     end
 
     it 'POSTs the jwt to the given URL' do
-      req = stub_request(:post, push_notification_url).
-        with(
+      req = stub_request(:post, push_notification_url)
+        .with(
           body: jwt,
           headers: {
             'Content-Type' => 'application/secevent+jwt',
@@ -276,8 +276,8 @@ RSpec.describe RiscDeliveryJob do
 
       context 'when the rate limit is overridden' do
         before do
-          allow(IdentityConfig.store).to receive(:risc_notifications_rate_limit_overrides).
-            and_return({ push_notification_url => { 'max_requests' => 1e6, 'interval' => 500 } })
+          allow(IdentityConfig.store).to receive(:risc_notifications_rate_limit_overrides)
+            .and_return({ push_notification_url => { 'max_requests' => 1e6, 'interval' => 500 } })
         end
 
         it 'allows the request' do

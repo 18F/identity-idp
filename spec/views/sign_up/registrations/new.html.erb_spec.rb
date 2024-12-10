@@ -15,12 +15,12 @@ RSpec.describe 'sign_up/registrations/new.html.erb' do
       analytics: FakeAnalytics.new,
     )
     view_context = ActionController::Base.new.view_context
-    allow(view_context).to receive(:new_user_session_url).
-      and_return('https://www.example.com/')
-    allow(view_context).to receive(:sign_up_email_path).
-      and_return('/sign_up/enter_email')
-    allow_any_instance_of(ActionView::Base).to receive(:request_id).
-      and_return(nil)
+    allow(view_context).to receive(:new_user_session_url)
+      .and_return('https://www.example.com/')
+    allow(view_context).to receive(:sign_up_email_path)
+      .and_return('/sign_up/enter_email')
+    allow_any_instance_of(ActionView::Base).to receive(:request_id)
+      .and_return(nil)
 
     @decorated_sp_session = ServiceProviderSessionCreator.new(
       sp: sp,

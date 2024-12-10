@@ -31,8 +31,8 @@ RSpec.describe ServiceProviderController do
     context 'feature on, correct token in headers' do
       context 'with no body' do
         before do
-          allow_any_instance_of(ServiceProviderUpdater).to receive(:dashboard_service_providers).
-            and_return(dashboard_service_providers)
+          allow_any_instance_of(ServiceProviderUpdater).to receive(:dashboard_service_providers)
+            .and_return(dashboard_service_providers)
           post :update
         end
 

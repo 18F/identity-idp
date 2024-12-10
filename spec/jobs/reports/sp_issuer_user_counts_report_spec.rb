@@ -36,11 +36,11 @@ RSpec.describe Reports::SpIssuerUserCountsReport do
   end
 
   before do
-    expect(Db::Identity::SpUserCounts).to receive(:with_issuer).with(issuer).
-      and_return(user_counts)
+    expect(Db::Identity::SpUserCounts).to receive(:with_issuer).with(issuer)
+      .and_return(user_counts)
 
-    allow(IdentityConfig.store).to receive(:sp_issuer_user_counts_report_configs).
-      and_return([{ 'issuer' => issuer, 'emails' => [email] }])
+    allow(IdentityConfig.store).to receive(:sp_issuer_user_counts_report_configs)
+      .and_return([{ 'issuer' => issuer, 'emails' => [email] }])
 
     allow(ReportMailer).to receive(:tables_report).and_call_original
   end

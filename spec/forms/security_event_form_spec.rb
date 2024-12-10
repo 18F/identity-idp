@@ -73,8 +73,8 @@ RSpec.describe SecurityEventForm do
       context 'reset_password_on_auth_fraud_event is enabled' do
         before do
           allow(IdentityConfig.store).to(
-            receive(:reset_password_on_auth_fraud_event).
-            and_return(true),
+            receive(:reset_password_on_auth_fraud_event)
+            .and_return(true),
           )
         end
 
@@ -86,8 +86,8 @@ RSpec.describe SecurityEventForm do
       context 'reset_password_on_auth_fraud_event is disabled' do
         before do
           allow(IdentityConfig.store).to(
-            receive(:reset_password_on_auth_fraud_event).
-            and_return(false),
+            receive(:reset_password_on_auth_fraud_event)
+            .and_return(false),
           )
         end
 
@@ -97,8 +97,8 @@ RSpec.describe SecurityEventForm do
       end
 
       it 'creates a password_invalidated event' do
-        expect { submit }.
-          to(change { user.events.password_invalidated.size }.from(0).to(1))
+        expect { submit }
+          .to(change { user.events.password_invalidated.size }.from(0).to(1))
       end
     end
 
@@ -246,8 +246,8 @@ RSpec.describe SecurityEventForm do
         it 'is invalid' do
           expect(valid?).to eq(false)
           expect(form.error_code).to eq('jwtAud')
-          expect(form.errors[:aud]).
-            to include("invalid aud claim, expected #{api_risc_security_events_url}")
+          expect(form.errors[:aud])
+            .to include("invalid aud claim, expected #{api_risc_security_events_url}")
         end
       end
     end

@@ -66,8 +66,8 @@ RSpec.describe DataWarehouse::DailySensitiveColumnJob do
     allow(Identity::Hostdata).to receive(:env).and_return('int')
     allow(Identity::Hostdata).to receive(:aws_account_id).and_return('1234')
     allow(Identity::Hostdata).to receive(:aws_region).and_return('us-west-1')
-    allow(IdentityConfig.store).to receive(:s3_idp_dw_tasks).
-      and_return(s3_idp_dw_tasks)
+    allow(IdentityConfig.store).to receive(:s3_idp_dw_tasks)
+      .and_return(s3_idp_dw_tasks)
 
     Aws.config[:s3] = {
       stub_responses: {

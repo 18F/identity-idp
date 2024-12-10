@@ -21,9 +21,9 @@ RSpec.describe SelectEmailForm do
         let(:identity) { create(:service_provider_identity, :consented, user:) }
 
         it 'updates linked email address' do
-          expect { response }.to change { identity.reload.email_address_id }.
-            from(nil).
-            to(selected_email_id)
+          expect { response }.to change { identity.reload.email_address_id }
+            .from(nil)
+            .to(selected_email_id)
         end
       end
     end

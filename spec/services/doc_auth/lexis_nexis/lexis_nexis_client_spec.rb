@@ -170,8 +170,8 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
       let(:status_code) { 1002 }
       let(:status_message) { 'The request sent by the client was syntactically incorrect.' }
       it 'return failed response with correct statuses' do
-        stub_request(:post, image_upload_url).
-          to_return(
+        stub_request(:post, image_upload_url)
+          .to_return(
             body: {
               status: {
                 code: status_code,
@@ -206,8 +206,8 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
 
       context 'when json is not returned in the body' do
         it 'return failed response with correct statuses' do
-          stub_request(:post, image_upload_url).
-            to_return(
+          stub_request(:post, image_upload_url)
+            .to_return(
               body: 'not json',
               status: 401,
             )

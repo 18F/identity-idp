@@ -17,8 +17,8 @@ module Idv
         before_action :fetch_test_verification_data, only: [:update]
 
         def show
-          Funnel::DocAuth::RegisterStep.new(document_capture_user.id, sp_session[:issuer]).
-            call('hybrid_mobile_socure_document_capture', :view, true)
+          Funnel::DocAuth::RegisterStep.new(document_capture_user.id, sp_session[:issuer])
+            .call('hybrid_mobile_socure_document_capture', :view, true)
 
           # document request
           document_request = DocAuth::Socure::Requests::DocumentRequest.new(

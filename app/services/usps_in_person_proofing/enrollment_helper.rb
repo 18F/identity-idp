@@ -20,8 +20,9 @@ module UspsInPersonProofing
         # Send state ID address to USPS
         pii = pii.to_h
         if !enrollment.current_address_matches_id?
-          pii = pii.except(*SECONDARY_ID_ADDRESS_MAP.values).
-            transform_keys(SECONDARY_ID_ADDRESS_MAP)
+          pii = pii
+            .except(*SECONDARY_ID_ADDRESS_MAP.values)
+            .transform_keys(SECONDARY_ID_ADDRESS_MAP)
         end
 
         enrollment_code = create_usps_enrollment(enrollment, pii, is_enhanced_ipp)
@@ -85,10 +86,10 @@ module UspsInPersonProofing
       end
 
       def cancel_stale_establishing_enrollments_for_user(user)
-        user.
-          in_person_enrollments.
-          where(status: :establishing).
-          find_each(&:cancelled!)
+        user
+          .in_person_enrollments
+          .where(status: :establishing)
+          .find_each(&:cancelled!)
       end
 
       def usps_proofer
@@ -120,15 +121,15 @@ module UspsInPersonProofing
         if hours == 'Closed'
           I18n.t('in_person_proofing.body.barcode.retail_hours_closed')
         elsif hours.include?(' - ') # Hyphen
-          hours.
-            split(' - '). # Hyphen
-            map { |time| Time.zone.parse(time).strftime(I18n.t('time.formats.event_time')) }.
-            join(' – ') # Endash
+          hours
+            .split(' - ') # Hyphen
+            .map { |time| Time.zone.parse(time).strftime(I18n.t('time.formats.event_time')) }
+            .join(' – ') # Endash
         elsif hours.include?(' – ') # Endash
-          hours.
-            split(' – '). # Endash
-            map { |time| Time.zone.parse(time).strftime(I18n.t('time.formats.event_time')) }.
-            join(' – ') # Endash
+          hours
+            .split(' – ') # Endash
+            .map { |time| Time.zone.parse(time).strftime(I18n.t('time.formats.event_time')) }
+            .join(' – ') # Endash
         else
           hours
         end

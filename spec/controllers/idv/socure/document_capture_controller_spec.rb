@@ -30,14 +30,14 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
   let(:socure_docv_verification_data_test_mode) { false }
 
   before do
-    allow(IdentityConfig.store).to receive(:socure_docv_enabled).
-      and_return(socure_docv_enabled)
-    allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint).
-      and_return(fake_socure_endpoint)
+    allow(IdentityConfig.store).to receive(:socure_docv_enabled)
+      .and_return(socure_docv_enabled)
+    allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint)
+      .and_return(fake_socure_endpoint)
     allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(idv_vendor)
     allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(idv_vendor)
-    allow(IdentityConfig.store).to receive(:doc_auth_vendor_switching_enabled).
-      and_return(vendor_switching_enabled)
+    allow(IdentityConfig.store).to receive(:doc_auth_vendor_switching_enabled)
+      .and_return(vendor_switching_enabled)
     allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
 
     allow(subject).to receive(:stored_result).and_return(stored_result)
@@ -46,9 +46,9 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
     allow(subject).to receive(:user_session).and_return(user_session)
 
     subject.idv_session.document_capture_session_uuid = document_capture_session.uuid
-    allow(IdentityConfig.store).
-      to receive(:socure_docv_verification_data_test_mode).
-      and_return(socure_docv_verification_data_test_mode)
+    allow(IdentityConfig.store)
+      .to receive(:socure_docv_verification_data_test_mode)
+      .and_return(socure_docv_verification_data_test_mode)
 
     unless IdentityConfig.store.socure_docv_verification_data_test_mode
       expect(IdentityConfig.store).not_to receive(:socure_docv_verification_data_test_mode_tokens)
@@ -114,8 +114,8 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
             vtr: nil,
             acr_values: acr_values,
           ).result
-          allow(controller).to receive(:resolved_authn_context_result).
-            and_return(resolved_authn_context)
+          allow(controller).to receive(:resolved_authn_context_result)
+            .and_return(resolved_authn_context)
         end
 
         it 'redirects to the LN/mock controller' do
@@ -148,8 +148,8 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       end
 
       it 'creates a DocumentRequest' do
-        expect(request_class).to have_received(:new).
-          with(
+        expect(request_class).to have_received(:new)
+          .with(
             redirect_url: idv_socure_document_capture_update_url,
             language: expected_language,
           )
@@ -170,8 +170,8 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         let(:expected_language) { :en }
 
         it 'does the correct POST to Socure' do
-          expect(WebMock).to have_requested(:post, fake_socure_endpoint).
-            with(
+          expect(WebMock).to have_requested(:post, fake_socure_endpoint)
+            .with(
               body: JSON.generate(
                 {
                   config: {
@@ -192,8 +192,8 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         let(:expected_language) { :zh }
 
         it 'does the correct POST to Socure' do
-          expect(WebMock).to have_requested(:post, fake_socure_endpoint).
-            with(
+          expect(WebMock).to have_requested(:post, fake_socure_endpoint)
+            .with(
               body: JSON.generate(
                 {
                   config: {
@@ -220,8 +220,8 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
 
         it 'puts the docvTransactionToken into the document capture session' do
           document_capture_session.reload
-          expect(document_capture_session.socure_docv_transaction_token).
-            to eq(docv_transaction_token)
+          expect(document_capture_session.socure_docv_transaction_token)
+            .to eq(docv_transaction_token)
         end
       end
     end
@@ -271,8 +271,8 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         }
       end
       before do
-        allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint).
-          and_return(fake_socure_endpoint)
+        allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint)
+          .and_return(fake_socure_endpoint)
       end
       it 'connection timeout still responds to user' do
         stub_request(:post, fake_socure_endpoint).to_raise(Faraday::ConnectionFailed)
@@ -363,17 +363,17 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
 
         before do
           ActiveJob::Base.queue_adapter = :test
-          allow(IdentityConfig.store).
-            to receive(:socure_docv_verification_data_test_mode_tokens).
-            and_return([test_token])
+          allow(IdentityConfig.store)
+            .to receive(:socure_docv_verification_data_test_mode_tokens)
+            .and_return([test_token])
 
           stub_request(
             :post,
             "#{IdentityConfig.store.socure_idplus_base_url}/api/3.0/EmailAuthScore",
-          ).
-            with(body: { modules: ['documentverification'], docvTransactionToken: test_token }.
-              to_json).
-            to_return(
+          )
+            .with(body: { modules: ['documentverification'], docvTransactionToken: test_token }
+              .to_json)
+            .to_return(
               headers: {
                 'Content-Type' => 'application/json',
               },
@@ -383,8 +383,8 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
 
         context 'when a token is provided from the allow list' do
           it 'performs SocureDocvResultsJob' do
-            expect { get(:update, params: { docv_token: test_token }) }.
-              not_to have_enqueued_job(SocureDocvResultsJob) # is synchronous
+            expect { get(:update, params: { docv_token: test_token }) }
+              .not_to have_enqueued_job(SocureDocvResultsJob) # is synchronous
 
             expect(document_capture_session.reload.load_result).not_to be_nil
           end
@@ -392,8 +392,8 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
 
         context 'when a token is provided not on the allow list' do
           it 'performs SocureDocvResultsJob' do
-            expect { get(:update, params: { docv_token: 'rando-token' }) }.
-              not_to have_enqueued_job(SocureDocvResultsJob)
+            expect { get(:update, params: { docv_token: 'rando-token' }) }
+              .not_to have_enqueued_job(SocureDocvResultsJob)
 
             expect(document_capture_session.reload.load_result).to be_nil
           end

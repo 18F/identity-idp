@@ -94,8 +94,8 @@ module Idv
           flow_path: idv_session.flow_path,
           step: 'address',
           analytics_id: 'In Person Proofing',
-        }.merge(ab_test_analytics_buckets).
-          merge(extra_analytics_properties)
+        }.merge(ab_test_analytics_buckets)
+          .merge(extra_analytics_properties)
       end
 
       def redirect_to_next_page
