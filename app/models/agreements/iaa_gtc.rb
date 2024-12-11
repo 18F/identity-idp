@@ -4,7 +4,6 @@ class Agreements::IaaGtc < ApplicationRecord
   self.table_name = 'iaa_gtcs'
 
   belongs_to :partner_account
-  belongs_to :iaa_status
 
   has_many :iaa_orders, dependent: :restrict_with_exception
   has_many :integrations, through: :iaa_orders
