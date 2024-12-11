@@ -350,7 +350,16 @@ GEM
       fugit (>= 1.11.0)
       railties (>= 6.1.0)
       thor (>= 1.0.0)
+    google-protobuf (4.28.2-aarch64-linux)
+      bigdecimal
+      rake (>= 13)
     google-protobuf (4.28.2-arm64-darwin)
+      bigdecimal
+      rake (>= 13)
+    google-protobuf (4.28.2-x86_64-darwin)
+      bigdecimal
+      rake (>= 13)
+    google-protobuf (4.28.2-x86_64-linux)
       bigdecimal
       rake (>= 13)
     hashdiff (1.1.0)
@@ -451,9 +460,13 @@ GEM
     netrc (0.11.0)
     newrelic_rpm (9.7.0)
     nio4r (2.7.3)
+    nokogiri (1.16.8-aarch64-linux)
+      racc (~> 1.4)
     nokogiri (1.16.8-arm64-darwin)
       racc (~> 1.4)
     nokogiri (1.16.8-x86_64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.16.8-x86_64-linux)
       racc (~> 1.4)
     numbers_and_words (0.11.12)
       i18n (<= 2)
@@ -683,7 +696,9 @@ GEM
     sorbet (0.5.11690)
       sorbet-static (= 0.5.11690)
     sorbet-runtime (0.5.11690)
+    sorbet-static (0.5.11690-aarch64-linux)
     sorbet-static (0.5.11690-universal-darwin)
+    sorbet-static (0.5.11690-x86_64-linux)
     sorbet-static-and-runtime (0.5.11690)
       sorbet (= 0.5.11690)
       sorbet-runtime (= 0.5.11690)
@@ -692,8 +707,12 @@ GEM
       prism (>= 0.28.0)
       sorbet-static-and-runtime (>= 0.5.10187)
       thor (>= 0.19.2)
+    sqlite3 (2.1.0-aarch64-linux-gnu)
+    sqlite3 (2.1.0-aarch64-linux-musl)
     sqlite3 (2.1.0-arm64-darwin)
     sqlite3 (2.1.0-x86_64-darwin)
+    sqlite3 (2.1.0-x86_64-linux-gnu)
+    sqlite3 (2.1.0-x86_64-linux-musl)
     stringex (2.8.5)
     stringio (3.1.1)
     strong_migrations (2.0.0)
@@ -775,7 +794,15 @@ GEM
     zxcvbn (0.1.12)
 
 PLATFORMS
+  aarch64-linux
+  aarch64-linux-gnu
+  aarch64-linux-musl
+  arm64-darwin
   universal-darwin
+  x86_64-darwin
+  x86_64-linux
+  x86_64-linux-gnu
+  x86_64-linux-musl
 
 DEPENDENCIES
   ahoy_matey (~> 3.0)
