@@ -14,6 +14,7 @@ require 'reporting/cloudwatch_client'
 require 'reporting/cloudwatch_query_quoting'
 
 require 'event_summarizer/example_matcher'
+require 'event_summarizer/idv_matcher'
 
 class SummarizeUserEvents
   attr_reader :uuid, :from_date, :to_date
@@ -30,12 +31,15 @@ class SummarizeUserEvents
 
   def matchers
     @matchers ||= [
-      EventSummarizer::ExampleMatcher.new
+      EventSummarizer::ExampleMatcher.new,
+      EventSummarizer::IdvMatcher.new
     ]
   end
 
   def run
     find_cloudwatch_events do |event|
+      Time.zone ||= 'America/New_York'
+      
       event['@message'] = JSON.parse(event['@message']) if event['@message'].is_a?(String)
 
       matchers.each do |matcher|
