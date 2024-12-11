@@ -54,6 +54,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
           code_digest: nil,
           code_challenge_present: false,
           service_provider_pkce: nil,
+          integration_errors: nil,
         )
       end
     end
@@ -79,6 +80,13 @@ RSpec.describe OpenidConnectAuthorizeForm do
             code_digest: nil,
             code_challenge_present: false,
             service_provider_pkce: nil,
+            integration_errors: {
+              error_details: ['Response type is not included in the list'],
+              error_types: [:response_type],
+              event: :oidc_request_authorization,
+              integration_exists: true,
+              request_issuer: client_id,
+            },
           )
         end
       end

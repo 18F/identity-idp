@@ -115,6 +115,7 @@ class OpenidConnectLogoutForm
   end
 
   def integration_errors
+    return nil if valid?
     {
       error_details: errors.full_messages,
       error_types: errors.attribute_names,

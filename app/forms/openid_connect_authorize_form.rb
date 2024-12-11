@@ -352,7 +352,7 @@ class OpenidConnectAuthorizeForm
   end
 
   def integration_errors
-    return nil if client_id.blank?
+    return nil if @success || client_id.blank?
 
     {
       error_details: errors.full_messages,
