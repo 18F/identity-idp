@@ -8,7 +8,7 @@ variables:
   FF_SCRIPT_SECTIONS: 'true'
   JUNIT_OUTPUT: 'true'
   ECR_REGISTRY: '${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
-  IDP_CI_SHA: 'sha256:5c4953f8efba18b7a6d6a9a961cb77ba7143059cbb2176499432b4275fbe67db'
+  IDP_CI_SHA: 'sha256:1585fc477567198748d3adba75120fd501d89f68844bfeeee4f96f9fd80ff4a5'
   PKI_IMAGE_TAG: 'main'
   DASHBOARD_IMAGE_TAG: 'main'
   APPLICATION_MANIFEST: dockerfiles/application.yaml
@@ -746,3 +746,31 @@ deploy_eks:
     IMAGE_TAG: $CI_COMMIT_SHA
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
+
+publish_er_diagram:
+  stage: .post
+  needs:
+    - job: build-ci-image
+  variables:
+    DOCKER_DB_HOST: db-postgres
+    POSTGRES_DB: identity_idp_test
+    POSTGRES_USER: postgres_user
+    POSTGRES_PASSWORD: postgres_password
+    POSTGRES_HOST_AUTH_METHOD: trust
+    RAILS_ENV: test
+  services:
+    - name: public.ecr.aws/docker/library/postgres:16.4
+      alias: db-postgres
+      command: ['--fsync=false', '--synchronous_commit=false', '--full_page_writes=false']
+  cache:
+    - <<: *ruby_cache
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "vm-reinstate-erd"
+  script:
+    - *bundle_install
+    - bundle exec rake db:create db:migrate --trace
+    - bundle exec rails erd
+  artifacts:
+    paths:
+      - idp_erd.svg
