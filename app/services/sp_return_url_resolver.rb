@@ -25,7 +25,9 @@ class SpReturnUrlResolver
   end
 
   def post_idv_follow_up_url
-    service_provider.post_idv_follow_up_url || homepage_url
+    url = service_provider.post_idv_follow_up_url || homepage_url
+    return if url.blank?
+    format(url.to_s, locale: I18n.locale.to_s )
   end
 
   private
