@@ -193,9 +193,9 @@ RSpec.describe ActionAccount do
         end
 
         it 'attributes analytics events to the SP' do
-          expect(Analytics).to receive(:new).
-            with(hash_including(sp: 'test-issuer')).
-            and_return(analytics)
+          expect(Analytics).to receive(:new)
+            .with(hash_including(sp: 'test-issuer'))
+            .and_return(analytics)
 
           subtask.run(args:, config:)
 
@@ -272,9 +272,9 @@ RSpec.describe ActionAccount do
         end
 
         it 'attributes analytics events to the SP' do
-          expect(Analytics).to receive(:new).
-            with(hash_including(sp: 'test-issuer')).
-            and_return(analytics)
+          expect(Analytics).to receive(:new)
+            .with(hash_including(sp: 'test-issuer'))
+            .and_return(analytics)
 
           subtask.run(args:, config:)
 

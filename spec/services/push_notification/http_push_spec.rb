@@ -29,8 +29,8 @@ RSpec.describe PushNotification::HttpPush do
   before do
     ActiveJob::Base.queue_adapter = :test
     allow(Identity::Hostdata).to receive(:env).and_return('dev')
-    allow(IdentityConfig.store).to receive(:push_notifications_enabled).
-      and_return(push_notifications_enabled)
+    allow(IdentityConfig.store).to receive(:push_notifications_enabled)
+      .and_return(push_notifications_enabled)
   end
 
   describe '#deliver' do

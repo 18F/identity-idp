@@ -9,8 +9,8 @@ RSpec.describe 'redirect_uri validation' do
       current_host = URI.parse(page.current_url).host
 
       expect(current_host).to eq 'www.example.com'
-      expect(page).
-        to have_content t('openid_connect.authorization.errors.redirect_uri_no_match')
+      expect(page)
+        .to have_content t('openid_connect.authorization.errors.redirect_uri_no_match')
     end
   end
 
@@ -20,8 +20,8 @@ RSpec.describe 'redirect_uri validation' do
       current_host = URI.parse(page.current_url).host
 
       expect(current_host).to eq 'www.example.com'
-      expect(page).
-        to have_content t('openid_connect.authorization.errors.redirect_uri_invalid')
+      expect(page)
+        .to have_content t('openid_connect.authorization.errors.redirect_uri_invalid')
     end
   end
 
@@ -33,8 +33,8 @@ RSpec.describe 'redirect_uri validation' do
 
       expect(current_host).to eq 'www.example.com'
       expect(current_path).to eq '/errors/service_provider_inactive'
-      expect(page).
-        to have_content t(
+      expect(page)
+        .to have_content t(
           'service_providers.errors.inactive.heading',
           sp_name: 'Example iOS App (inactive)',
           app_name: APP_NAME,
@@ -48,8 +48,8 @@ RSpec.describe 'redirect_uri validation' do
       current_host = URI.parse(page.current_url).host
 
       expect(current_host).to eq 'www.example.com'
-      expect(page).
-        to have_content t('openid_connect.authorization.errors.bad_client_id')
+      expect(page)
+        .to have_content t('openid_connect.authorization.errors.bad_client_id')
     end
   end
 
@@ -90,22 +90,22 @@ RSpec.describe 'redirect_uri validation' do
       current_host = URI.parse(page.current_url).host
 
       expect(current_host).to eq 'www.example.com'
-      expect(page).
-        to have_content t('openid_connect.authorization.errors.bad_client_id')
+      expect(page)
+        .to have_content t('openid_connect.authorization.errors.bad_client_id')
 
       visit_idp_from_sp_with_ial1_with_invalid_redirect_uri
       current_host = URI.parse(page.current_url).host
 
       expect(current_host).to eq 'www.example.com'
-      expect(page).
-        to have_content t('openid_connect.authorization.errors.redirect_uri_invalid')
+      expect(page)
+        .to have_content t('openid_connect.authorization.errors.redirect_uri_invalid')
 
       visit_idp_from_sp_with_ial1_with_disallowed_redirect_uri
       current_host = URI.parse(page.current_url).host
 
       expect(current_host).to eq 'www.example.com'
-      expect(page).
-        to have_content t('openid_connect.authorization.errors.redirect_uri_no_match')
+      expect(page)
+        .to have_content t('openid_connect.authorization.errors.redirect_uri_no_match')
     end
   end
 
@@ -122,22 +122,22 @@ RSpec.describe 'redirect_uri validation' do
       current_host = URI.parse(page.current_url).host
 
       expect(current_host).to eq 'www.example.com'
-      expect(page).
-        to have_content t('openid_connect.authorization.errors.bad_client_id')
+      expect(page)
+        .to have_content t('openid_connect.authorization.errors.bad_client_id')
 
       visit_idp_from_sp_with_ial1_with_invalid_redirect_uri
       current_host = URI.parse(page.current_url).host
 
       expect(current_host).to eq 'www.example.com'
-      expect(page).
-        to have_content t('openid_connect.authorization.errors.redirect_uri_invalid')
+      expect(page)
+        .to have_content t('openid_connect.authorization.errors.redirect_uri_invalid')
 
       visit_idp_from_sp_with_ial1_with_disallowed_redirect_uri
       current_host = URI.parse(page.current_url).host
 
       expect(current_host).to eq 'www.example.com'
-      expect(page).
-        to have_content t('openid_connect.authorization.errors.redirect_uri_no_match')
+      expect(page)
+        .to have_content t('openid_connect.authorization.errors.redirect_uri_no_match')
     end
   end
 
@@ -166,8 +166,8 @@ RSpec.describe 'redirect_uri validation' do
       current_host = URI.parse(page.current_url).host
 
       expect(current_host).to eq 'www.example.com'
-      expect(page).
-        to have_content t('openid_connect.authorization.errors.redirect_uri_no_match')
+      expect(page)
+        .to have_content t('openid_connect.authorization.errors.redirect_uri_no_match')
 
       visit new_user_session_path
       fill_in_credentials_and_submit(user.email, user.password)

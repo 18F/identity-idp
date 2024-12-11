@@ -32,8 +32,8 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
   before do
     stub_analytics
     stub_sign_in(user) if user
-    allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
-      and_return(in_person_proofing_enabled)
+    allow(IdentityConfig.store).to receive(:in_person_proofing_enabled)
+      .and_return(in_person_proofing_enabled)
     allow(controller).to receive(:current_sp).and_return(sp)
   end
 
@@ -150,8 +150,8 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
 
     context 'no addresses found by usps' do
       before do
-        allow(proofer).to receive(:request_facilities).with(address, false).
-          and_return([])
+        allow(proofer).to receive(:request_facilities).with(address, false)
+          .and_return([])
       end
 
       it 'logs analytics with error when successful response is empty' do
@@ -239,8 +239,8 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
       end
 
       before do
-        allow(proofer).to receive(:request_facilities).with(fake_address, false).
-          and_raise(exception)
+        allow(proofer).to receive(:request_facilities).with(fake_address, false)
+          .and_raise(exception)
       end
 
       it 'returns no locations' do

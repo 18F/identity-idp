@@ -20,8 +20,8 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.success?).to eq(true)
       expect(response.errors).to eq({})
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc.to_h).
-        to eq(Idp::Constants::MOCK_IDV_APPLICANT)
+      expect(response.pii_from_doc.to_h)
+        .to eq(Idp::Constants::MOCK_IDV_APPLICANT)
       expect(response.attention_with_barcode?).to eq(false)
       expect(response.selfie_status).to eq(:success)
     end
@@ -210,8 +210,8 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.success?).to eq(true)
       expect(response.errors).to eq({})
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc.to_h).
-        to eq(Idp::Constants::MOCK_IDV_APPLICANT)
+      expect(response.pii_from_doc.to_h)
+        .to eq(Idp::Constants::MOCK_IDV_APPLICANT)
       expect(response.attention_with_barcode?).to eq(false)
     end
   end

@@ -379,8 +379,8 @@ RSpec.describe Idv::PhoneController do
 
         context 'with full vendor outage' do
           before do
-            allow_any_instance_of(OutageStatus).to receive(:all_phone_vendor_outage?).
-              and_return(true)
+            allow_any_instance_of(OutageStatus).to receive(:all_phone_vendor_outage?)
+              .and_return(true)
           end
 
           it 'redirects to vendor outage page' do
@@ -407,8 +407,8 @@ RSpec.describe Idv::PhoneController do
 
         context 'with full vendor outage' do
           before do
-            allow_any_instance_of(OutageStatus).to receive(:all_phone_vendor_outage?).
-              and_return(true)
+            allow_any_instance_of(OutageStatus).to receive(:all_phone_vendor_outage?)
+              .and_return(true)
           end
 
           it 'redirects to vendor outage page' do

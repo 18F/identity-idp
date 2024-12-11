@@ -37,8 +37,8 @@ RSpec.describe OpenidConnect::UserInfoController do
       it '401s' do
         action
         expect(response).to be_unauthorized
-        expect(json_response[:error]).
-          to eq(t('openid_connect.user_info.errors.malformed_authorization'))
+        expect(json_response[:error])
+          .to eq(t('openid_connect.user_info.errors.malformed_authorization'))
       end
 
       it 'tracks analytics' do

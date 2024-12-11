@@ -21,8 +21,8 @@ RSpec.describe ApplicationHelper do
       let(:raise_on_missing_title) { nil }
 
       before do
-        allow(IdentityConfig.store).to receive(:raise_on_missing_title).
-          and_return(raise_on_missing_title)
+        allow(IdentityConfig.store).to receive(:raise_on_missing_title)
+          .and_return(raise_on_missing_title)
       end
 
       context 'configured not to raise on missing title' do

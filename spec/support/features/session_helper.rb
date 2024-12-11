@@ -79,8 +79,8 @@ module Features
     end
 
     def fill_in_piv_cac_credentials_and_submit(user,
-                                               uuid = user.
-                                                 piv_cac_configurations&.first&.x509_dn_uuid)
+                                               uuid = user
+                                                 .piv_cac_configurations&.first&.x509_dn_uuid)
       allow(FeatureManagement).to receive(:development_and_identity_pki_disabled?).and_return(false)
 
       stub_piv_cac_service(uuid:)
@@ -544,8 +544,8 @@ module Features
 
     def stub_piv_cac_service(error: nil, uuid: Random.uuid)
       allow(IdentityConfig.store).to receive(:identity_pki_disabled).and_return(false)
-      allow(IdentityConfig.store).to receive(:piv_cac_service_url).
-        and_return('http://piv.example.com/')
+      allow(IdentityConfig.store).to receive(:piv_cac_service_url)
+        .and_return('http://piv.example.com/')
       allow(IdentityConfig.store).to receive(:piv_cac_verify_token_url).and_return('http://piv.example.com/')
       stub_request(:post, 'piv.example.com').to_return do |request|
         {
@@ -554,9 +554,9 @@ module Features
         }
       end
 
-      stub_request(:post, 'piv.example.com').
-        with(query: hash_including('nonce', 'redirect_uri')).
-        to_return do |request|
+      stub_request(:post, 'piv.example.com')
+        .with(query: hash_including('nonce', 'redirect_uri'))
+        .to_return do |request|
           query = UriService.params(request.uri)
           {
             status: 302,

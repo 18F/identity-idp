@@ -169,8 +169,8 @@ class RegisterUserEmailForm
         limiter_type: :reg_confirmed_email,
       )
     else
-      UserMailer.with(user: existing_user, email_address: email_address_record).
-        signup_with_your_email(request_id: request_id).deliver_now_or_later
+      UserMailer.with(user: existing_user, email_address: email_address_record)
+        .signup_with_your_email(request_id: request_id).deliver_now_or_later
     end
   end
 
@@ -204,7 +204,7 @@ class RegisterUserEmailForm
   def blocked_email_address
     return @blocked_email_address if defined?(@blocked_email_address)
 
-    @blocked_email_address = SuspendedEmail.find_with_email_digest(digested_base_email)&.
-      email_address
+    @blocked_email_address = SuspendedEmail.find_with_email_digest(digested_base_email)
+      &.email_address
   end
 end

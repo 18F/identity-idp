@@ -7,8 +7,8 @@ RSpec.describe ConfirmDeleteEmailPresenter do
 
   describe '#confirm_delete_message' do
     it 'supplies a message for confirm delete page' do
-      expect(presenter.confirm_delete_message).
-        to eq(t('email_addresses.delete.confirm', email: email_address.email))
+      expect(presenter.confirm_delete_message)
+        .to eq(t('email_addresses.delete.confirm', email: email_address.email))
     end
   end
 end

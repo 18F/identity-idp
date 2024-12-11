@@ -34,13 +34,13 @@ RSpec.describe Proofing::Aamva::Proofer do
   let(:verification_response) { AamvaFixtures.verification_response }
 
   before do
-    stub_request(:post, AamvaFixtures.example_config.auth_url).
-      to_return(
+    stub_request(:post, AamvaFixtures.example_config.auth_url)
+      .to_return(
         { body: AamvaFixtures.security_token_response },
         { body: AamvaFixtures.authentication_token_response },
       )
-    stub_request(:post, AamvaFixtures.example_config.verification_url).
-      to_return(body: verification_response)
+    stub_request(:post, AamvaFixtures.example_config.verification_url)
+      .to_return(body: verification_response)
   end
 
   describe '#proof' do
@@ -645,8 +645,8 @@ RSpec.describe Proofing::Aamva::Proofer do
       let(:exception) { RuntimeError.new }
 
       before do
-        allow_any_instance_of(::Proofing::Aamva::Request::VerificationRequest).
-          to receive(:send).and_raise(exception)
+        allow_any_instance_of(::Proofing::Aamva::Request::VerificationRequest)
+          .to receive(:send).and_raise(exception)
       end
 
       it 'logs to NewRelic' do
@@ -742,8 +742,8 @@ RSpec.describe Proofing::Aamva::Proofer do
 
     context 'when the DMV is in a defined maintenance window' do
       before do
-        expect(Idv::AamvaStateMaintenanceWindow).to receive(:in_maintenance_window?).
-          and_return(true)
+        expect(Idv::AamvaStateMaintenanceWindow).to receive(:in_maintenance_window?)
+          .and_return(true)
       end
 
       it 'sets jurisdiction_in_maintenance_window to true' do
@@ -754,8 +754,8 @@ RSpec.describe Proofing::Aamva::Proofer do
 
     context 'when the DMV is not in a defined maintenance window' do
       before do
-        expect(Idv::AamvaStateMaintenanceWindow).to receive(:in_maintenance_window?).
-          and_return(false)
+        expect(Idv::AamvaStateMaintenanceWindow).to receive(:in_maintenance_window?)
+          .and_return(false)
       end
 
       it 'sets jurisdiction_in_maintenance_window to false' do

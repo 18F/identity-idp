@@ -2608,8 +2608,8 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
 
             context 'when the results delay is configured to be negative time' do
               before do
-                allow(IdentityConfig.store).to receive(:in_person_results_delay_in_hours).
-                  and_return(-1)
+                allow(IdentityConfig.store).to receive(:in_person_results_delay_in_hours)
+                  .and_return(-1)
               end
 
               context 'when the USPS proofing results has a passed status' do
@@ -2637,8 +2637,8 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
 
             context 'when the results delay is not configured' do
               before do
-                allow(IdentityConfig.store).to receive(:in_person_results_delay_in_hours).
-                  and_return(nil)
+                allow(IdentityConfig.store).to receive(:in_person_results_delay_in_hours)
+                  .and_return(nil)
               end
 
               context 'when the USPS proofing results has a passed status' do

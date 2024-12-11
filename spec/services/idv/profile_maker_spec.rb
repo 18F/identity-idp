@@ -142,10 +142,10 @@ RSpec.describe Idv::ProfileMaker do
     context 'with in_person_verification_needed' do
       context 'when threatmetrix decisioning is disabled' do
         before do
-          allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx).
-            and_return(in_person_proofing_enforce_tmx_mock)
-          allow(IdentityConfig.store).to receive(:proofing_device_profiling).
-            and_return(:disabled)
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx)
+            .and_return(in_person_proofing_enforce_tmx_mock)
+          allow(IdentityConfig.store).to receive(:proofing_device_profiling)
+            .and_return(:disabled)
         end
 
         let(:profile) do
@@ -182,10 +182,10 @@ RSpec.describe Idv::ProfileMaker do
         let(:in_person_proofing_enforce_tmx_mock) { true }
 
         before do
-          allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx).
-            and_return(in_person_proofing_enforce_tmx_mock)
-          allow(IdentityConfig.store).to receive(:proofing_device_profiling).
-            and_return(:enabled)
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx)
+            .and_return(in_person_proofing_enforce_tmx_mock)
+          allow(IdentityConfig.store).to receive(:proofing_device_profiling)
+            .and_return(:enabled)
         end
 
         let(:profile) do

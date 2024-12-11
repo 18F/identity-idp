@@ -158,8 +158,8 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
           end
 
           it 'sends the new device alert' do
-            expect(UserAlerts::AlertUserAboutNewDevice).to receive(:send_alert).
-              with(user:, disavowal_event: kind_of(Event), disavowal_token: kind_of(String))
+            expect(UserAlerts::AlertUserAboutNewDevice).to receive(:send_alert)
+              .with(user:, disavowal_event: kind_of(Event), disavowal_token: kind_of(String))
 
             result
           end

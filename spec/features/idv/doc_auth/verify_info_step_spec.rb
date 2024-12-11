@@ -122,8 +122,8 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
   context 'resolution rate limiting' do
     let(:max_resolution_attempts) { 3 }
     before do
-      allow(IdentityConfig.store).to receive(:idv_max_attempts).
-        and_return(max_resolution_attempts)
+      allow(IdentityConfig.store).to receive(:idv_max_attempts)
+        .and_return(max_resolution_attempts)
 
       fill_out_ssn_form_with_ssn_that_fails_resolution
       click_idv_continue
@@ -183,11 +183,11 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
     let(:max_ssn_attempts) { 3 }
 
     before do
-      allow(IdentityConfig.store).to receive(:idv_max_attempts).
-        and_return(max_resolution_attempts)
+      allow(IdentityConfig.store).to receive(:idv_max_attempts)
+        .and_return(max_resolution_attempts)
 
-      allow(IdentityConfig.store).to receive(:proof_ssn_max_attempts).
-        and_return(max_ssn_attempts)
+      allow(IdentityConfig.store).to receive(:proof_ssn_max_attempts)
+        .and_return(max_ssn_attempts)
 
       fill_out_ssn_form_with_ssn_that_fails_resolution
       click_idv_continue
@@ -283,8 +283,8 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
     it 'allows resubmitting form' do
       complete_ssn_step
 
-      allow(DocumentCaptureSession).to receive(:find_by).
-        and_return(nil)
+      allow(DocumentCaptureSession).to receive(:find_by)
+        .and_return(nil)
 
       complete_verify_step
       expect(fake_analytics).to have_logged_event('IdV: proofing resolution result missing')
@@ -300,8 +300,8 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
     it 'allows resubmitting form' do
       complete_ssn_step
 
-      allow(DocumentCaptureSession).to receive(:find_by).
-        and_return(nil)
+      allow(DocumentCaptureSession).to receive(:find_by)
+        .and_return(nil)
 
       complete_verify_step
       expect(page).to have_content(t('idv.failure.timeout'))

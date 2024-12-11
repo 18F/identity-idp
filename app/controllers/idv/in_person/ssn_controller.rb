@@ -30,8 +30,8 @@ module Idv
         end
         analytics.idv_doc_auth_ssn_visited(**analytics_arguments)
 
-        Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
-          call('ssn', :view, true)
+        Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer])
+          .call('ssn', :view, true)
 
         render 'idv/shared/ssn', locals: threatmetrix_view_variables(ssn_presenter.updating_ssn?)
       end
@@ -92,8 +92,8 @@ module Idv
           step: 'ssn',
           analytics_id: 'In Person Proofing',
           previous_ssn_edit_distance: previous_ssn_edit_distance,
-        }.merge(ab_test_analytics_buckets).
-          merge(**extra_analytics_properties)
+        }.merge(ab_test_analytics_buckets)
+          .merge(**extra_analytics_properties)
       end
 
       def confirm_in_person_address_step_complete

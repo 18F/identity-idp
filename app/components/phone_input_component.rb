@@ -43,8 +43,8 @@ class PhoneInputComponent < BaseComponent
 
   def international_phone_codes
     translated_international_codes = PhoneNumberCapabilities.translated_international_codes
-    supported_country_codes.
-      map do |code_key|
+    supported_country_codes
+      .map do |code_key|
         code_data = translated_international_codes[code_key]
 
         [
@@ -52,8 +52,8 @@ class PhoneInputComponent < BaseComponent
           code_key,
           { data: international_phone_codes_data(code_data) },
         ]
-      end.
-      sort_by do |label, code_key, _data|
+      end
+      .sort_by do |label, code_key, _data|
         # Sort alphabetically by label, but put the US first in the list
         [code_key == 'US' ? -1 : 1, label]
       end

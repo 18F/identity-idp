@@ -10,11 +10,11 @@ class FlashComponent < BaseComponent
   end
 
   def alerts
-    flash.
-      to_hash.
-      slice(*VALID_FLASH_TYPES).
-      select { |_flash_type, message| message.present? }.
-      map { |flash_type, message| [alert_type(flash_type), message] }
+    flash
+      .to_hash
+      .slice(*VALID_FLASH_TYPES)
+      .select { |_flash_type, message| message.present? }
+      .map { |flash_type, message| [alert_type(flash_type), message] }
   end
 
   def alert_type(flash_type)

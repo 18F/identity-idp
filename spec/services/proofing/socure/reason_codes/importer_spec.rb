@@ -15,8 +15,8 @@ RSpec.describe Proofing::Socure::ReasonCodes::Importer do
     end
 
     it 'adds reason codes that do not exist', :freeze_time do
-      allow(subject.api_client).to receive(:download_reason_codes).
-        and_return(downloaded_reason_codes)
+      allow(subject.api_client).to receive(:download_reason_codes)
+        .and_return(downloaded_reason_codes)
 
       result = subject.synchronize
 
@@ -42,8 +42,8 @@ RSpec.describe Proofing::Socure::ReasonCodes::Importer do
         added_at: 1.day.ago,
       )
 
-      allow(subject.api_client).to receive(:download_reason_codes).
-        and_return(downloaded_reason_codes)
+      allow(subject.api_client).to receive(:download_reason_codes)
+        .and_return(downloaded_reason_codes)
 
       result = subject.synchronize
       expect(result.to_h[:deactivated_reason_codes]).to eq(
@@ -58,8 +58,8 @@ RSpec.describe Proofing::Socure::ReasonCodes::Importer do
 
     context 'the downloaded reason codes are malformed' do
       it 'returns an unsuccessful response' do
-        allow(subject.api_client).to receive(:download_reason_codes).
-          and_return('malformed response')
+        allow(subject.api_client).to receive(:download_reason_codes)
+          .and_return('malformed response')
 
         result = subject.synchronize
 

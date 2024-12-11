@@ -351,8 +351,8 @@ RSpec.describe 'FeatureManagement' do
     end
     it 'raises for invalid value' do
       expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:emnabled)
-      expect { FeatureManagement.proofing_device_profiling_collecting_enabled? }.
-        to raise_error
+      expect { FeatureManagement.proofing_device_profiling_collecting_enabled? }
+        .to raise_error
     end
   end
 
@@ -371,8 +371,8 @@ RSpec.describe 'FeatureManagement' do
     end
     it 'raises for invalid value' do
       expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:dissabled)
-      expect { FeatureManagement.proofing_device_profiling_decisioning_enabled? }.
-        to raise_error
+      expect { FeatureManagement.proofing_device_profiling_decisioning_enabled? }
+        .to raise_error
     end
   end
 
@@ -385,14 +385,14 @@ RSpec.describe 'FeatureManagement' do
     subject(:recaptcha_enabled) { FeatureManagement.recaptcha_enabled? }
 
     before do
-      allow(IdentityConfig.store).to receive(:recaptcha_site_key).
-        and_return(recaptcha_site_key)
-      allow(IdentityConfig.store).to receive(:recaptcha_secret_key).
-        and_return(recaptcha_secret_key)
-      allow(IdentityConfig.store).to receive(:recaptcha_enterprise_api_key).
-        and_return(recaptcha_enterprise_api_key)
-      allow(IdentityConfig.store).to receive(:recaptcha_enterprise_project_id).
-        and_return(recaptcha_enterprise_project_id)
+      allow(IdentityConfig.store).to receive(:recaptcha_site_key)
+        .and_return(recaptcha_site_key)
+      allow(IdentityConfig.store).to receive(:recaptcha_secret_key)
+        .and_return(recaptcha_secret_key)
+      allow(IdentityConfig.store).to receive(:recaptcha_enterprise_api_key)
+        .and_return(recaptcha_enterprise_api_key)
+      allow(IdentityConfig.store).to receive(:recaptcha_enterprise_project_id)
+        .and_return(recaptcha_enterprise_project_id)
     end
 
     it { is_expected.to eq(false) }
@@ -430,8 +430,8 @@ RSpec.describe 'FeatureManagement' do
 
     before do
       allow(FeatureManagement).to receive(:recaptcha_enabled?).and_return(recaptcha_enabled)
-      allow(IdentityConfig.store).to receive(:phone_recaptcha_score_threshold).
-        and_return(phone_recaptcha_score_threshold)
+      allow(IdentityConfig.store).to receive(:phone_recaptcha_score_threshold)
+        .and_return(phone_recaptcha_score_threshold)
     end
 
     it { is_expected.to eq(false) }
@@ -457,8 +457,8 @@ RSpec.describe 'FeatureManagement' do
 
     before do
       allow(FeatureManagement).to receive(:recaptcha_enabled?).and_return(recaptcha_enabled)
-      allow(IdentityConfig.store).to receive(:sign_in_recaptcha_score_threshold).
-        and_return(sign_in_recaptcha_score_threshold)
+      allow(IdentityConfig.store).to receive(:sign_in_recaptcha_score_threshold)
+        .and_return(sign_in_recaptcha_score_threshold)
     end
 
     it { is_expected.to eq(false) }
@@ -483,10 +483,10 @@ RSpec.describe 'FeatureManagement' do
     subject(:recaptcha_enterprise) { FeatureManagement.recaptcha_enterprise? }
 
     before do
-      allow(IdentityConfig.store).to receive(:recaptcha_enterprise_api_key).
-        and_return(recaptcha_enterprise_api_key)
-      allow(IdentityConfig.store).to receive(:recaptcha_enterprise_project_id).
-        and_return(recaptcha_enterprise_project_id)
+      allow(IdentityConfig.store).to receive(:recaptcha_enterprise_api_key)
+        .and_return(recaptcha_enterprise_api_key)
+      allow(IdentityConfig.store).to receive(:recaptcha_enterprise_project_id)
+        .and_return(recaptcha_enterprise_project_id)
     end
 
     it { expect(recaptcha_enterprise).to eq(false) }
@@ -511,10 +511,10 @@ RSpec.describe 'FeatureManagement' do
 
     before do
       allow(IdentityConfig.store).to receive(:idv_available).and_return(idv_available)
-      allow(IdentityConfig.store).to receive(:vendor_status_lexisnexis_instant_verify).
-        and_return(vendor_status_lexisnexis_instant_verify)
-      allow(IdentityConfig.store).to receive(:vendor_status_lexisnexis_trueid).
-        and_return(vendor_status_lexisnexis_trueid)
+      allow(IdentityConfig.store).to receive(:vendor_status_lexisnexis_instant_verify)
+        .and_return(vendor_status_lexisnexis_instant_verify)
+      allow(IdentityConfig.store).to receive(:vendor_status_lexisnexis_trueid)
+        .and_return(vendor_status_lexisnexis_trueid)
     end
 
     it 'returns true by default' do

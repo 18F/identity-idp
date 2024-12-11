@@ -20,24 +20,24 @@ RSpec.describe 'two_factor_authentication/personal_key_verification/show.html.er
   it 'has a localized heading' do
     render
 
-    expect(rendered).
-      to have_content t('two_factor_authentication.personal_key_header_text')
+    expect(rendered)
+      .to have_content t('two_factor_authentication.personal_key_header_text')
   end
 
   it 'prompts the user to enter their personal key' do
     render
 
-    expect(rendered).
-      to have_content t('two_factor_authentication.personal_key_prompt')
+    expect(rendered)
+      .to have_content t('two_factor_authentication.personal_key_prompt')
   end
 
   it 'contains a form to submit the personal key' do
     render
 
     expect(rendered).to have_button(t('forms.buttons.submit.default'))
-    expect(rendered).
-      to have_xpath("//form[@action='#{login_two_factor_personal_key_path}']")
-    expect(rendered).
-      to have_xpath("//form[@method='post']")
+    expect(rendered)
+      .to have_xpath("//form[@action='#{login_two_factor_personal_key_path}']")
+    expect(rendered)
+      .to have_xpath("//form[@method='post']")
   end
 end

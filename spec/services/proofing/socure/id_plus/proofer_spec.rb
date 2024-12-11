@@ -58,8 +58,8 @@ RSpec.describe Proofing::Socure::IdPlus::Proofer do
   before do
     using_json = !response_body.is_a?(String)
 
-    stub_request(:post, URI.join(base_url, '/api/3.0/EmailAuthScore').to_s).
-      to_return(
+    stub_request(:post, URI.join(base_url, '/api/3.0/EmailAuthScore').to_s)
+      .to_return(
         status: response_status,
         headers: {
           'Content-Type' => using_json ?
@@ -185,8 +185,8 @@ RSpec.describe Proofing::Socure::IdPlus::Proofer do
 
   context 'when request times out' do
     before do
-      stub_request(:post, URI.join(base_url, '/api/3.0/EmailAuthScore').to_s).
-        to_timeout
+      stub_request(:post, URI.join(base_url, '/api/3.0/EmailAuthScore').to_s)
+        .to_timeout
     end
 
     describe 'the result' do

@@ -331,14 +331,14 @@ RSpec.describe Users::SessionsController, devise: true do
         allow(FeatureManagement).to receive(:sign_in_recaptcha_enabled?).and_return(true)
         allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).and_return(true)
         allow(IdentityConfig.store).to receive(:sign_in_recaptcha_score_threshold).and_return(0.2)
-        allow(controller).to receive(:ab_test_bucket).with(:RECAPTCHA_SIGN_IN, kind_of(Hash)).
-          and_return(:sign_in_recaptcha)
+        allow(controller).to receive(:ab_test_bucket).with(:RECAPTCHA_SIGN_IN, kind_of(Hash))
+          .and_return(:sign_in_recaptcha)
       end
 
       context 'when configured to log failures only' do
         before do
-          allow(IdentityConfig.store).to receive(:sign_in_recaptcha_log_failures_only).
-            and_return(true)
+          allow(IdentityConfig.store).to receive(:sign_in_recaptcha_log_failures_only)
+            .and_return(true)
         end
 
         it 'redirects unsuccessful authentication for failed reCAPTCHA to failed page' do
@@ -352,8 +352,8 @@ RSpec.describe Users::SessionsController, devise: true do
 
       context 'when not configured to log failures only' do
         before do
-          allow(IdentityConfig.store).to receive(:sign_in_recaptcha_log_failures_only).
-            and_return(false)
+          allow(IdentityConfig.store).to receive(:sign_in_recaptcha_log_failures_only)
+            .and_return(false)
         end
 
         it 'tracks unsuccessful authentication for failed reCAPTCHA' do
@@ -453,8 +453,8 @@ RSpec.describe Users::SessionsController, devise: true do
         context 'user randomly chosen to be tested' do
           before do
             allow(SecureRandom).to receive(:random_number).and_return(5)
-            allow(IdentityConfig.store).to receive(:compromised_password_randomizer_threshold).
-              and_return(2)
+            allow(IdentityConfig.store).to receive(:compromised_password_randomizer_threshold)
+              .and_return(2)
           end
 
           it 'updates user attribute password_compromised_checked_at' do
@@ -473,8 +473,8 @@ RSpec.describe Users::SessionsController, devise: true do
         context 'user not chosen to be tested' do
           before do
             allow(SecureRandom).to receive(:random_number).and_return(1)
-            allow(IdentityConfig.store).to receive(:compromised_password_randomizer_threshold).
-              and_return(5)
+            allow(IdentityConfig.store).to receive(:compromised_password_randomizer_threshold)
+              .and_return(5)
           end
 
           it 'does not store anything in user_session' do
@@ -498,8 +498,8 @@ RSpec.describe Users::SessionsController, devise: true do
         context 'user randomly chosen to be tested' do
           before do
             allow(SecureRandom).to receive(:random_number).and_return(5)
-            allow(IdentityConfig.store).to receive(:compromised_password_randomizer_threshold).
-              and_return(2)
+            allow(IdentityConfig.store).to receive(:compromised_password_randomizer_threshold)
+              .and_return(2)
           end
 
           it 'updates user attribute password_compromised_checked_at' do
@@ -518,8 +518,8 @@ RSpec.describe Users::SessionsController, devise: true do
         context 'user not chosen to be tested' do
           before do
             allow(SecureRandom).to receive(:random_number).and_return(1)
-            allow(IdentityConfig.store).to receive(:compromised_password_randomizer_threshold).
-              and_return(5)
+            allow(IdentityConfig.store).to receive(:compromised_password_randomizer_threshold)
+              .and_return(5)
           end
 
           it 'does not store anything in user_session' do
@@ -648,8 +648,8 @@ RSpec.describe Users::SessionsController, devise: true do
     it 'does not allow signing in with empty email' do
       post :create, params: { user: { email: '', password: 'foo' } }
 
-      expect(flash[:alert]).
-        to eq t(
+      expect(flash[:alert])
+        .to eq t(
           'devise.failure.not_found_in_database_html',
           link_html: link_to(
             t('devise.failure.not_found_in_database_link_text'),
@@ -662,8 +662,8 @@ RSpec.describe Users::SessionsController, devise: true do
       user = create(:user)
       post :create, params: { user: { email: 'invalid@example.com', password: user.password } }
 
-      expect(flash[:alert]).
-        to eq t(
+      expect(flash[:alert])
+        .to eq t(
           'devise.failure.invalid_html',
           link_html: link_to(
             t('devise.failure.invalid_link_text'),
@@ -675,8 +675,8 @@ RSpec.describe Users::SessionsController, devise: true do
     it 'does not allow signing in with empty password' do
       post :create, params: { user: { email: 'test@example.com', password: '' } }
 
-      expect(flash[:alert]).
-        to eq t(
+      expect(flash[:alert])
+        .to eq t(
           'devise.failure.not_found_in_database_html',
           link_html: link_to(
             t('devise.failure.not_found_in_database_link_text'),
@@ -689,8 +689,8 @@ RSpec.describe Users::SessionsController, devise: true do
       user = create(:user)
       post :create, params: { user: { email: user.email, password: 'invalidpass' } }
 
-      expect(flash[:alert]).
-        to eq t(
+      expect(flash[:alert])
+        .to eq t(
           'devise.failure.invalid_html',
           link_html: link_to(
             t('devise.failure.invalid_link_text'),
@@ -760,8 +760,8 @@ RSpec.describe Users::SessionsController, devise: true do
       let(:user) { create(:user, :fully_registered, accepted_terms_at: accepted_terms_at) }
 
       before do
-        allow(IdentityConfig.store).to receive(:rules_of_use_updated_at).
-          and_return(rules_of_use_updated_at)
+        allow(IdentityConfig.store).to receive(:rules_of_use_updated_at)
+          .and_return(rules_of_use_updated_at)
       end
 
       it 'redirects to 2fa since there is no pending account reset rewquests' do
@@ -776,8 +776,8 @@ RSpec.describe Users::SessionsController, devise: true do
       let(:user) { create(:user, :fully_registered, accepted_terms_at: accepted_terms_at) }
 
       before do
-        allow(IdentityConfig.store).to receive(:rules_of_use_updated_at).
-          and_return(rules_of_use_updated_at)
+        allow(IdentityConfig.store).to receive(:rules_of_use_updated_at)
+          .and_return(rules_of_use_updated_at)
       end
 
       it 'redirects to rules of use url' do
@@ -793,10 +793,10 @@ RSpec.describe Users::SessionsController, devise: true do
       let(:user) { create(:user, :fully_registered, accepted_terms_at: accepted_terms_at) }
 
       before do
-        allow(IdentityConfig.store).to receive(:rules_of_use_horizon_years).
-          and_return(rules_of_use_horizon_years)
-        allow(IdentityConfig.store).to receive(:rules_of_use_updated_at).
-          and_return(rules_of_use_updated_at)
+        allow(IdentityConfig.store).to receive(:rules_of_use_horizon_years)
+          .and_return(rules_of_use_horizon_years)
+        allow(IdentityConfig.store).to receive(:rules_of_use_updated_at)
+          .and_return(rules_of_use_updated_at)
       end
 
       it 'redirects to the rules of user url' do

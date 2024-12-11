@@ -5,8 +5,8 @@ RSpec.describe Users::RulesOfUseController do
   let(:accepted_terms_at) { nil }
   let(:user) { create(:user, :fully_registered, accepted_terms_at: accepted_terms_at) }
   before do
-    allow(IdentityConfig.store).to receive(:rules_of_use_updated_at).
-      and_return(rules_of_use_updated_at)
+    allow(IdentityConfig.store).to receive(:rules_of_use_updated_at)
+      .and_return(rules_of_use_updated_at)
   end
   describe 'before_actions' do
     it 'includes appropriate before_actions' do
@@ -146,8 +146,8 @@ RSpec.describe Users::RulesOfUseController do
           request_url: "http://test.com?#{URI.encode_www_form(params)}",
         }
         action
-        expect(response.request.content_security_policy.form_action).
-          to match_array(["'self'", 'https://example.com'])
+        expect(response.request.content_security_policy.form_action)
+          .to match_array(["'self'", 'https://example.com'])
       end
 
       it 'does not include service provider URIs in form-action CSP header when disabled' do
@@ -169,8 +169,8 @@ RSpec.describe Users::RulesOfUseController do
           request_url: "http://test.com?#{URI.encode_www_form(params)}",
         }
         action
-        expect(response.request.content_security_policy.form_action).
-          to match_array(["'self'"])
+        expect(response.request.content_security_policy.form_action)
+          .to match_array(["'self'"])
       end
     end
 

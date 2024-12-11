@@ -8,15 +8,15 @@ RSpec.describe Agreements::IaaGtc, type: :model do
     it { is_expected.to validate_uniqueness_of(:gtc_number) }
     it { is_expected.to validate_presence_of(:mod_number) }
     it do
-      is_expected.to validate_numericality_of(:mod_number).
-        only_integer.
-        is_greater_than_or_equal_to(0)
+      is_expected.to validate_numericality_of(:mod_number)
+        .only_integer
+        .is_greater_than_or_equal_to(0)
     end
     it do
-      is_expected.to validate_numericality_of(:estimated_amount).
-        is_less_than(10_000_000_000).
-        is_greater_than_or_equal_to(0).
-        allow_nil
+      is_expected.to validate_numericality_of(:estimated_amount)
+        .is_less_than(10_000_000_000)
+        .is_greater_than_or_equal_to(0)
+        .allow_nil
     end
     it { is_expected.to validate_presence_of(:start_date) }
     it { is_expected.to validate_presence_of(:end_date) }

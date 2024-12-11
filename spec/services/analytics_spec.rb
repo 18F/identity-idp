@@ -97,8 +97,8 @@ RSpec.describe Analytics do
       end
 
       it 'includes the tracing header as trace_id' do
-        expect(ahoy).to receive(:track).
-          with('Trackable Event', hash_including(trace_id: amazon_trace_id))
+        expect(ahoy).to receive(:track)
+          .with('Trackable Event', hash_including(trace_id: amazon_trace_id))
 
         analytics.track_event('Trackable Event')
       end
@@ -246,8 +246,8 @@ RSpec.describe Analytics do
       end
 
       it 'includes the sp_request' do
-        expect(ahoy).to receive(:track).
-          with('Trackable Event', hash_including(expected_attributes))
+        expect(ahoy).to receive(:track)
+          .with('Trackable Event', hash_including(expected_attributes))
 
         analytics.track_event('Trackable Event')
       end
@@ -274,8 +274,8 @@ RSpec.describe Analytics do
       end
 
       it 'includes the sp_request' do
-        expect(ahoy).to receive(:track).
-          with('Trackable Event', hash_including(expected_attributes))
+        expect(ahoy).to receive(:track)
+          .with('Trackable Event', hash_including(expected_attributes))
 
         analytics.track_event('Trackable Event')
       end
@@ -311,8 +311,8 @@ RSpec.describe Analytics do
       end
 
       it 'then includes :sp_request in the event' do
-        expect(ahoy).to receive(:track).
-          with('Trackable Event', hash_including(expected_attributes))
+        expect(ahoy).to receive(:track)
+          .with('Trackable Event', hash_including(expected_attributes))
 
         analytics.track_event('Trackable Event')
       end

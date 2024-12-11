@@ -132,8 +132,8 @@ RSpec.describe TwoFactorOptionsPresenter do
 
     context 'when a presenter which is recommended' do
       before do
-        allow_any_instance_of(TwoFactorAuthentication::SetUpPivCacSelectionPresenter).
-          to receive(:recommended?).and_return(true)
+        allow_any_instance_of(TwoFactorAuthentication::SetUpPivCacSelectionPresenter)
+          .to receive(:recommended?).and_return(true)
       end
 
       it 'orders options by recommended' do

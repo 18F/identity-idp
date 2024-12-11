@@ -189,13 +189,13 @@ RSpec.describe SignUp::EmailConfirmationsController do
         user: build(:user, email: nil),
       )
 
-      allow(subject).to receive(:process_successful_confirmation).
-        and_raise(ActiveRecord::RecordNotUnique)
+      allow(subject).to receive(:process_successful_confirmation)
+        .and_raise(ActiveRecord::RecordNotUnique)
 
       get :create, params: { confirmation_token: 'foo' }
 
-      expect(flash[:error]).
-        to eq t(
+      expect(flash[:error])
+        .to eq t(
           'devise.confirmations.already_confirmed',
           action: t('devise.confirmations.sign_in'),
         )

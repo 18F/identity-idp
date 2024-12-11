@@ -74,8 +74,8 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
 
         it 'tracks an SP cost for AAMVA' do
           expect { call }.to(
-            change { sp_cost_count_with_transaction_id }.
-              to(1),
+            change { sp_cost_count_with_transaction_id }
+              .to(1),
           )
         end
 
@@ -111,10 +111,10 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
           end
 
           it 'tracks an SP cost for AAMVA' do
-            expect { call }.
-              to(
-                change { sp_cost_count_with_transaction_id }.
-                to(1),
+            expect { call }
+              .to(
+                change { sp_cost_count_with_transaction_id }
+                .to(1),
               )
           end
         end
@@ -323,8 +323,8 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
     end
 
     before do
-      allow(IdentityConfig.store).to receive(:aamva_supported_jurisdictions).
-        and_return(aamva_supported_jurisdictions)
+      allow(IdentityConfig.store).to receive(:aamva_supported_jurisdictions)
+        .and_return(aamva_supported_jurisdictions)
     end
 
     context 'when jurisdiction is supported' do

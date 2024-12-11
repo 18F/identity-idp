@@ -46,13 +46,13 @@ RSpec.describe EmailDeliveries do
     subject(:run) { instance.run(out: stdout) }
 
     before do
-      allow(instance).to receive(:cloudwatch_client).
-        with('prod_/srv/idp/shared/log/events.log').
-        and_return(instance_double('Reporting::CloudwatchClient', fetch: events_log))
+      allow(instance).to receive(:cloudwatch_client)
+        .with('prod_/srv/idp/shared/log/events.log')
+        .and_return(instance_double('Reporting::CloudwatchClient', fetch: events_log))
 
-      allow(instance).to receive(:cloudwatch_client).
-        with('/aws/lambda/SESAllEvents_Lambda').
-        and_return(instance_double('Reporting::CloudwatchClient', fetch: email_events))
+      allow(instance).to receive(:cloudwatch_client)
+        .with('/aws/lambda/SESAllEvents_Lambda')
+        .and_return(instance_double('Reporting::CloudwatchClient', fetch: email_events))
     end
 
     # rubocop:disable Layout/LineLength

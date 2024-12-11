@@ -26,8 +26,8 @@ RSpec.describe TotpSetupForm do
       end
 
       it 'sends a recovery information changed event' do
-        expect(PushNotification::HttpPush).to receive(:deliver).
-          with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
+        expect(PushNotification::HttpPush).to receive(:deliver)
+          .with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
         form = TotpSetupForm.new(user, secret, code, name)
 
         form.submit

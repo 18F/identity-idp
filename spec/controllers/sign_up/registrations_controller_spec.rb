@@ -22,8 +22,8 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
     it 'gracefully handles invalid formats' do
       @request.env['HTTP_ACCEPT'] = "nessus=bad_bad_value'"
 
-      expect { get :new }.
-        to raise_error(Mime::Type::InvalidMimeType)
+      expect { get :new }
+        .to raise_error(Mime::Type::InvalidMimeType)
     end
 
     it 'tracks visit event' do
@@ -61,11 +61,11 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
       let(:tmx_session_id) { '1234' }
 
       before do
-        allow(FeatureManagement).to receive(:account_creation_device_profiling_collecting_enabled?).
-          and_return(true)
+        allow(FeatureManagement).to receive(:account_creation_device_profiling_collecting_enabled?)
+          .and_return(true)
         allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('org1')
-        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled).
-          and_return(false)
+        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled)
+          .and_return(false)
         subject.session[:threatmetrix_session_id] = tmx_session_id
       end
 
@@ -207,11 +207,11 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
       let(:tmx_session_id) { '1234' }
 
       before do
-        allow(FeatureManagement).to receive(:account_creation_device_profiling_collecting_enabled?).
-          and_return(true)
+        allow(FeatureManagement).to receive(:account_creation_device_profiling_collecting_enabled?)
+          .and_return(true)
         allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('org1')
-        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled).
-          and_return(false)
+        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled)
+          .and_return(false)
         subject.session[:threatmetrix_session_id] = tmx_session_id
       end
 

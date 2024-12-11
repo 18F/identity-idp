@@ -35,9 +35,9 @@ class ServiceProvider < ApplicationRecord
   scope(
     :with_push_notification_urls,
     -> {
-      where.not(push_notification_url: nil).
-        where.not(push_notification_url: '').
-        where(active: true)
+      where.not(push_notification_url: nil)
+        .where.not(push_notification_url: '')
+        .where(active: true)
     },
   )
 

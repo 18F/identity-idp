@@ -32,8 +32,9 @@ module RecommendWebauthnPlatformConcern
         phone_configuration.mfa_enabled? && phone_configuration.delivery_preference == 'sms'
       end
     else
-      auth_methods_session.auth_events.pluck(:auth_method).
-        include?(TwoFactorAuthenticatable::AuthMethod::SMS)
+      auth_methods_session.auth_events
+        .pluck(:auth_method)
+        .include?(TwoFactorAuthenticatable::AuthMethod::SMS)
     end
   end
 end

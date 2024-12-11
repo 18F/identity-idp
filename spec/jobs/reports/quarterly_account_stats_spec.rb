@@ -9,9 +9,9 @@ RSpec.describe Reports::QuarterlyAccountStats do
     let(:ninety_days_ago) { end_date - 90.days }
 
     it 'saves the report' do
-      expect(subject).to receive(:report_body).
-        with(ninety_days_ago, end_date).
-        and_return('csv text')
+      expect(subject).to receive(:report_body)
+        .with(ninety_days_ago, end_date)
+        .and_return('csv text')
       expect(subject).to receive(:save_report).with(
         'quarterly-account-stats',
         'csv text',

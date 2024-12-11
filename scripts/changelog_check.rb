@@ -48,10 +48,10 @@ def revert_commit?(commit)
 end
 
 def build_changelog_from_commit(commit)
-  [*commit.commit_messages, commit.title].
-    lazy.
-    map { |message| build_changelog(message, find_revert: revert_commit?(commit)) }.
-    find(&:itself)
+  [*commit.commit_messages, commit.title]
+    .lazy
+    .map { |message| build_changelog(message, find_revert: revert_commit?(commit)) }
+    .find(&:itself)
 end
 
 def get_git_log(base_branch, source_branch)
@@ -107,16 +107,16 @@ def generate_invalid_changes(git_log)
 end
 
 def closest_change_category(change)
-  CATEGORIES.
-    map do |category|
+  CATEGORIES
+    .map do |category|
       CategoryDistance.new(
         category,
         DidYouMean::Levenshtein.distance(change[:category], category),
       )
-    end.
-    filter { |category_distance| category_distance.distance <= MAX_CATEGORY_DISTANCE }.
-    max { |category_distance| category_distance.distance }&.
-    category
+    end
+    .filter { |category_distance| category_distance.distance <= MAX_CATEGORY_DISTANCE }
+    .max { |category_distance| category_distance.distance }
+    &.category
 end
 
 # Get the last valid changelog line for every Pull Request and tie it to the commit subject.
@@ -167,14 +167,14 @@ end
 # Entries with the same category and change are grouped into one changelog line so that we can
 # support multi-PR changes.
 def format_changelog(changelog_entries)
-  changelog_entries = changelog_entries.
-    sort_by(&:subcategory).
-    group_by { |entry| [entry.category, entry.change] }
+  changelog_entries = changelog_entries
+    .sort_by(&:subcategory)
+    .group_by { |entry| [entry.category, entry.change] }
 
   changelog = +''
   CATEGORIES.each do |category|
-    category_changes = changelog_entries.
-      filter { |(changelog_category, _change), _changes| changelog_category == category }
+    category_changes = changelog_entries
+      .filter { |(changelog_category, _change), _changes| changelog_category == category }
 
     next if category_changes.empty?
     changelog.concat("## #{category}\n")

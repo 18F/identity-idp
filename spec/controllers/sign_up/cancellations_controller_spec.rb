@@ -100,8 +100,8 @@ RSpec.describe SignUp::CancellationsController do
 
       delete :destroy
 
-      expect(response).
-        to redirect_to new_user_session_path(request_id: 'foo')
+      expect(response)
+        .to redirect_to new_user_session_path(request_id: 'foo')
     end
 
     it 'tracks the event in analytics when referer is nil' do

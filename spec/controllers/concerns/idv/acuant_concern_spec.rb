@@ -17,8 +17,8 @@ RSpec.describe Idv::AcuantConcern, :controller do
   subject(:variables) { controller.acuant_sdk_upgrade_a_b_testing_variables }
 
   before do
-    allow(controller).to receive(:document_capture_session_uuid).
-      and_return(session_uuid)
+    allow(controller).to receive(:document_capture_session_uuid)
+      .and_return(session_uuid)
 
     # ACUANT_SDK is frozen, so we have to work with a copy of it
     ab_test = AbTests::ACUANT_SDK.dup
@@ -33,9 +33,9 @@ RSpec.describe Idv::AcuantConcern, :controller do
     let(:session_uuid) { SecureRandom.uuid }
 
     before do
-      allow(IdentityConfig.store).
-        to receive(:idv_acuant_sdk_upgrade_a_b_testing_enabled).
-        and_return(false)
+      allow(IdentityConfig.store)
+        .to receive(:idv_acuant_sdk_upgrade_a_b_testing_enabled)
+        .and_return(false)
     end
 
     context 'and A/B test specifies the older acuant version' do
@@ -53,9 +53,9 @@ RSpec.describe Idv::AcuantConcern, :controller do
 
   context 'with acuant sdk upgrade A/B testing enabled' do
     before do
-      allow(IdentityConfig.store).
-        to receive(:idv_acuant_sdk_upgrade_a_b_testing_enabled).
-        and_return(true)
+      allow(IdentityConfig.store)
+        .to receive(:idv_acuant_sdk_upgrade_a_b_testing_enabled)
+        .and_return(true)
     end
 
     context 'and A/B test specifies the newer acuant version' do

@@ -30,11 +30,11 @@ class GpoExpirationJob < ApplicationJob
   end
 
   def gpo_profiles_that_should_be_expired(as_of:, min_profile_age: nil)
-    Profile.
-      and(are_pending_gpo_verification).
-      and(user_cant_request_more_letters(as_of: as_of)).
-      and(most_recent_code_has_expired(as_of: as_of)).
-      and(are_old_enough(as_of: as_of, min_profile_age: min_profile_age))
+    Profile
+      .and(are_pending_gpo_verification)
+      .and(user_cant_request_more_letters(as_of: as_of))
+      .and(most_recent_code_has_expired(as_of: as_of))
+      .and(are_old_enough(as_of: as_of, min_profile_age: min_profile_age))
   end
 
   private
@@ -84,10 +84,10 @@ class GpoExpirationJob < ApplicationJob
     max_code_sent_at = as_of - IdentityConfig.store.usps_confirmation_max_days.days
 
     Profile.where(
-      id: GpoConfirmationCode.
-        select(:profile_id).
-        group(:profile_id).
-        having('max(code_sent_at) < ?', max_code_sent_at),
+      id: GpoConfirmationCode
+        .select(:profile_id)
+        .group(:profile_id)
+        .having('max(code_sent_at) < ?', max_code_sent_at),
     )
   end
 

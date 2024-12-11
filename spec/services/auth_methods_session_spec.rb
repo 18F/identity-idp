@@ -14,9 +14,9 @@ RSpec.describe AuthMethodsSession do
 
     context 'no auth events' do
       it 'modifies auth events to include the new event' do
-        expect { result }.to change { auth_methods_session.auth_events }.
-          from([]).
-          to([{ auth_method:, at: Time.zone.now }])
+        expect { result }.to change { auth_methods_session.auth_events }
+          .from([])
+          .to([{ auth_method:, at: Time.zone.now }])
       end
 
       it 'returns the new array of auth events' do
@@ -29,9 +29,9 @@ RSpec.describe AuthMethodsSession do
       let(:user_session) { { auth_events: [first_auth_event] } }
 
       it 'appends the new event to the existing set' do
-        expect { result }.to change { auth_methods_session.auth_events }.
-          from([first_auth_event]).
-          to([first_auth_event, { auth_method:, at: Time.zone.now }])
+        expect { result }.to change { auth_methods_session.auth_events }
+          .from([first_auth_event])
+          .to([first_auth_event, { auth_method:, at: Time.zone.now }])
       end
 
       it 'returns the new array of auth events' do
@@ -49,9 +49,9 @@ RSpec.describe AuthMethodsSession do
       let(:user_session) { { auth_events: [first_auth_event, second_auth_event] } }
 
       it 'ejects the oldest' do
-        expect { result }.to change { auth_methods_session.auth_events }.
-          from([first_auth_event, second_auth_event]).
-          to([second_auth_event, { auth_method:, at: Time.zone.now }])
+        expect { result }.to change { auth_methods_session.auth_events }
+          .from([first_auth_event, second_auth_event])
+          .to([second_auth_event, { auth_method:, at: Time.zone.now }])
       end
     end
   end

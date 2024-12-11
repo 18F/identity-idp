@@ -112,8 +112,8 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
   context 'outage alert' do
     context 'when the outage message flag is enabled' do
       before do
-        allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).
-          and_return(true)
+        allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled)
+          .and_return(true)
       end
 
       context 'when the outage dates are included' do
@@ -122,12 +122,12 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
         let(:in_person_outage_expected_update_date) { 'October 31, 2023' }
 
         before do
-          allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).
-            and_return(true)
-          allow(IdentityConfig.store).to receive(:in_person_outage_emailed_by_date).
-            and_return(in_person_outage_emailed_by_date)
-          allow(IdentityConfig.store).to receive(:in_person_outage_expected_update_date).
-            and_return(in_person_outage_expected_update_date)
+          allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled)
+            .and_return(true)
+          allow(IdentityConfig.store).to receive(:in_person_outage_emailed_by_date)
+            .and_return(in_person_outage_emailed_by_date)
+          allow(IdentityConfig.store).to receive(:in_person_outage_expected_update_date)
+            .and_return(in_person_outage_expected_update_date)
         end
 
         it 'renders the outage alert' do
@@ -144,12 +144,12 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
 
       context 'when the outage dates are not included' do
         before do
-          allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).
-            and_return(true)
-          allow(IdentityConfig.store).to receive(:in_person_outage_emailed_by_date).
-            and_return('')
-          allow(IdentityConfig.store).to receive(:in_person_outage_expected_update_date).
-            and_return('')
+          allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled)
+            .and_return(true)
+          allow(IdentityConfig.store).to receive(:in_person_outage_emailed_by_date)
+            .and_return('')
+          allow(IdentityConfig.store).to receive(:in_person_outage_expected_update_date)
+            .and_return('')
         end
 
         it 'does not render a warning' do
@@ -164,8 +164,8 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
 
     context 'when the outage message flag is disabled' do
       before do
-        allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).
-          and_return(false)
+        allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled)
+          .and_return(false)
       end
 
       it 'does not render the outage alert' do

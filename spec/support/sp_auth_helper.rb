@@ -13,8 +13,8 @@ module SpAuthHelper
 
   def create_in_person_ial2_account_go_back_to_sp_and_sign_out(sp)
     user = user_with_totp_2fa
-    ServiceProvider.find_by(issuer: service_provider_issuer(sp)).
-      update(in_person_proofing_enabled: true)
+    ServiceProvider.find_by(issuer: service_provider_issuer(sp))
+      .update(in_person_proofing_enabled: true)
 
     visit_idp_from_sp_with_ial2(sp)
     sign_in_user(user)

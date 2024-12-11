@@ -101,9 +101,9 @@ class MakefileHelpParser
     expanded_makefile.split("\n\n").map do |stanza|
       m = stanza.match(/^#  .* \(from [`']#{makefile_path}', line (?<lineno>\d+)\):$/)
       [stanza, m && m[:lineno].to_i]
-    end.
-      select { |_stanza, lineno| lineno }.
-      each do |stanza, lineno|
+    end
+      .select { |_stanza, lineno| lineno }
+      .each do |stanza, lineno|
         target = stanza.split("\n").first.split(':').first
 
         targets[lineno] << target

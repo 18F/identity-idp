@@ -3,8 +3,8 @@ require 'rails_helper'
 RSpec.describe TwoFactorAuthCode::AuthenticatorDeliveryPresenter do
   let(:view) { ActionController::Base.new.view_context }
   let(:presenter) do
-    TwoFactorAuthCode::AuthenticatorDeliveryPresenter.
-      new(data: {}, view: view, service_provider: nil)
+    TwoFactorAuthCode::AuthenticatorDeliveryPresenter
+      .new(data: {}, view: view, service_provider: nil)
   end
 
   describe '#header' do

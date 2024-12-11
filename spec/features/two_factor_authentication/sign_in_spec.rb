@@ -13,8 +13,8 @@ RSpec.feature 'Two Factor Authentication' do
 
       click_continue
 
-      expect(page).
-        to have_content t('headings.add_info.phone')
+      expect(page)
+        .to have_content t('headings.add_info.phone')
 
       send_one_time_code_without_entering_phone_number
 
@@ -66,12 +66,12 @@ RSpec.feature 'Two Factor Authentication' do
       before do
         PhoneNumberOptOut.create_or_find_with_phone(phone_configuration.phone)
         opt_out_manager = instance_double('Telephony::Pinpoint::OptOutManager')
-        allow(opt_out_manager).
-          to receive(:opt_in_phone_number).
-          with(phone_configuration.formatted_phone).
-          and_return(FormResponse.new(success: true))
-        allow_any_instance_of(TwoFactorAuthentication::SmsOptInController).
-          to receive(:opt_out_manager).and_return(opt_out_manager)
+        allow(opt_out_manager)
+          .to receive(:opt_in_phone_number)
+          .with(phone_configuration.formatted_phone)
+          .and_return(FormResponse.new(success: true))
+        allow_any_instance_of(TwoFactorAuthentication::SmsOptInController)
+          .to receive(:opt_out_manager).and_return(opt_out_manager)
       end
 
       scenario 'renders the sms opt-out error screen when signing in' do
@@ -286,8 +286,8 @@ RSpec.feature 'Two Factor Authentication' do
       sign_in_before_2fa(user)
 
       expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
-      expect(page).
-        to have_content t('two_factor_authentication.header_text')
+      expect(page)
+        .to have_content t('two_factor_authentication.header_text')
 
       attempt_to_bypass_2fa
 
@@ -429,8 +429,8 @@ RSpec.feature 'Two Factor Authentication' do
 
       it 'does not change their OTP delivery preference' do
         allow(OtpRateLimiter).to receive(:new).and_return(otp_rate_limiter)
-        allow(otp_rate_limiter).to receive(:exceeded_otp_send_limit?).
-          and_return(false)
+        allow(otp_rate_limiter).to receive(:exceeded_otp_send_limit?)
+          .and_return(false)
 
         sign_in_user(user)
 
@@ -575,8 +575,8 @@ RSpec.feature 'Two Factor Authentication' do
     let(:max_attempts) { 2 }
     let(:user) { create(:user, :fully_registered) }
     before do
-      allow(IdentityConfig.store).to receive(:login_otp_confirmation_max_attempts).
-        and_return(max_attempts)
+      allow(IdentityConfig.store).to receive(:login_otp_confirmation_max_attempts)
+        .and_return(max_attempts)
     end
 
     def wrong_phone_otp

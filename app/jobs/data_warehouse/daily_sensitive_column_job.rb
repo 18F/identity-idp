@@ -17,9 +17,9 @@ module DataWarehouse
       insensitive_hash = []
 
       tables.each do |table|
-        true_sensitives, false_sensitives = ActiveRecord::Base.connection.columns(table).
-          reject { |col| col.name == 'id' }.
-          partition do |column|
+        true_sensitives, false_sensitives = ActiveRecord::Base.connection.columns(table)
+          .reject { |col| col.name == 'id' }
+          .partition do |column|
             column.comment&.match?(/sensitive=true/i)
           end
         insensitive_hash.concat(generate_column_data(false_sensitives, table))

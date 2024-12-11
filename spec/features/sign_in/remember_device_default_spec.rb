@@ -8,8 +8,8 @@ RSpec.describe 'Remember device checkbox' do
       user = create(:user, :fully_registered)
       sign_in_user(user)
 
-      expect(page).
-        to have_checked_field t('forms.messages.remember_device')
+      expect(page)
+        .to have_checked_field t('forms.messages.remember_device')
     end
   end
   context 'when signing in from an SP when the SP is AAL2' do

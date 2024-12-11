@@ -117,9 +117,9 @@ module DocumentCaptureStepHelper
       docvTransactionToken: docv_transaction_token,
     }
 
-    stub_request(:post, "#{IdentityConfig.store.socure_idplus_base_url}/api/3.0/EmailAuthScore").
-      with(body: request_body.to_json).
-      to_return(
+    stub_request(:post, "#{IdentityConfig.store.socure_idplus_base_url}/api/3.0/EmailAuthScore")
+      .with(body: request_body.to_json)
+      .to_return(
         headers: {
           'Content-Type' => 'application/json',
         },
@@ -143,8 +143,8 @@ module DocumentCaptureStepHelper
       },
     }
 
-    stub_request(:post, IdentityConfig.store.socure_docv_document_request_endpoint).
-      to_return(
+    stub_request(:post, IdentityConfig.store.socure_docv_document_request_endpoint)
+      .to_return(
         status:,
         body: body.to_json,
       )

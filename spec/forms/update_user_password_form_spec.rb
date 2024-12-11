@@ -81,8 +81,8 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
 
       it 'encrypts the active profile' do
         encryptor = instance_double(UserProfilesEncryptor)
-        allow(UserProfilesEncryptor).to receive(:new).
-          with(user: user, user_session: user_session, password: password).and_return(encryptor)
+        allow(UserProfilesEncryptor).to receive(:new)
+          .with(user: user, user_session: user_session, password: password).and_return(encryptor)
         allow(encryptor).to receive(:encrypt)
 
         subject.submit(params)
@@ -111,8 +111,8 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
 
       it 'encrypts the pending profile' do
         encryptor = instance_double(UserProfilesEncryptor)
-        allow(UserProfilesEncryptor).to receive(:new).
-          with(user: user, user_session: user_session, password: password).and_return(encryptor)
+        allow(UserProfilesEncryptor).to receive(:new)
+          .with(user: user, user_session: user_session, password: password).and_return(encryptor)
         allow(encryptor).to receive(:encrypt)
 
         subject.submit(params)

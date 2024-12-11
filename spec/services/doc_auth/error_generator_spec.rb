@@ -107,8 +107,8 @@ RSpec.describe DocAuth::ErrorGenerator do
           failed: [{ name: 'Unknown Alert', result: 'Attention' }],
         )
 
-        expect(warn_notifier).to receive(:call).
-          with(hash_including(:response_info, :message)).twice
+        expect(warn_notifier).to receive(:call)
+          .with(hash_including(:response_info, :message)).twice
 
         output = described_class.new(config).generate_doc_auth_errors(error_info)
 
@@ -243,8 +243,8 @@ RSpec.describe DocAuth::ErrorGenerator do
         failed: [{ name: 'Not a known alert', result: 'Failed' }],
       )
 
-      expect(warn_notifier).to receive(:call).
-        with(hash_including(:response_info, :message)).twice
+      expect(warn_notifier).to receive(:call)
+        .with(hash_including(:response_info, :message)).twice
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
@@ -264,8 +264,8 @@ RSpec.describe DocAuth::ErrorGenerator do
         ],
       )
 
-      expect(warn_notifier).to receive(:call).
-        with(hash_including(:response_info, :message, :unknown_alerts)).once
+      expect(warn_notifier).to receive(:call)
+        .with(hash_including(:response_info, :message, :unknown_alerts)).once
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
@@ -283,8 +283,8 @@ RSpec.describe DocAuth::ErrorGenerator do
         failed: [{ name: 'Birth Date Crosscheck', result: 'Failed' }],
       )
 
-      expect(warn_notifier).to receive(:call).
-        with(hash_including(:response_info, :message, :unknown_alerts)).once
+      expect(warn_notifier).to receive(:call)
+        .with(hash_including(:response_info, :message, :unknown_alerts)).once
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
@@ -304,8 +304,8 @@ RSpec.describe DocAuth::ErrorGenerator do
                                Front: passport_classification_details },
       )
 
-      expect(warn_notifier).to receive(:call).
-        with(hash_including(:response_info, :message, :unknown_alerts)).once
+      expect(warn_notifier).to receive(:call)
+        .with(hash_including(:response_info, :message, :unknown_alerts)).once
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
@@ -326,8 +326,8 @@ RSpec.describe DocAuth::ErrorGenerator do
         FaceMatchResult: 'Fail',
         FaceErrorMessage: 'Successful. Liveness: Live',
       }
-      expect(warn_notifier).to receive(:call).
-        with(hash_including(:response_info, :message)).twice
+      expect(warn_notifier).to receive(:call)
+        .with(hash_including(:response_info, :message)).twice
       output = described_class.new(config).generate_doc_auth_errors(error_info)
       expect(output.keys).to contain_exactly(:general, :front, :back, :hints)
       expect(output[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR)
@@ -364,8 +364,8 @@ RSpec.describe DocAuth::ErrorGenerator do
                                Front: passport_classification_details },
       )
 
-      expect(warn_notifier).to receive(:call).
-        with(hash_including(:response_info, :message, :unknown_alerts)).once
+      expect(warn_notifier).to receive(:call)
+        .with(hash_including(:response_info, :message, :unknown_alerts)).once
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
@@ -384,8 +384,8 @@ RSpec.describe DocAuth::ErrorGenerator do
                                Front: vhic_classification_details },
       )
 
-      expect(warn_notifier).to receive(:call).
-        with(hash_including(:response_info, :message, :unknown_alerts)).once
+      expect(warn_notifier).to receive(:call)
+        .with(hash_including(:response_info, :message, :unknown_alerts)).once
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
@@ -405,8 +405,8 @@ RSpec.describe DocAuth::ErrorGenerator do
         classification_info: { Front: unknown_classification_details },
       )
 
-      expect(warn_notifier).to receive(:call).
-        with(hash_including(:response_info, :message)).twice
+      expect(warn_notifier).to receive(:call)
+        .with(hash_including(:response_info, :message)).twice
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
@@ -422,8 +422,8 @@ RSpec.describe DocAuth::ErrorGenerator do
         doc_result: 'Passed',
         failed: [{ name: 'Not a known alert', result: 'Failed' }],
       )
-      expect(warn_notifier).to receive(:call).
-        with(hash_including(:response_info, :message)).twice
+      expect(warn_notifier).to receive(:call)
+        .with(hash_including(:response_info, :message)).twice
 
       # this is a fall back result, we cannot generate error but the generator is called
       # which should not happen
@@ -527,8 +527,8 @@ RSpec.describe DocAuth::ErrorGenerator do
         FaceMatchResult: 'Fail',
         FaceErrorMessage: 'Successful. Liveness: Live',
       }
-      expect(warn_notifier).to receive(:call).
-        with(hash_including(:response_info, :message)).once
+      expect(warn_notifier).to receive(:call)
+        .with(hash_including(:response_info, :message)).once
       output = described_class.new(config).generate_doc_auth_errors(error_info)
       expect(output.keys).to contain_exactly(:general, :front, :back, :hints, :selfie)
       expect(output[:general]).to contain_exactly(DocAuth::Errors::SELFIE_FAILURE)

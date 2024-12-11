@@ -21,8 +21,8 @@ RSpec.describe SignInRecaptchaForm do
     )
   end
   before do
-    allow(IdentityConfig.store).to receive(:sign_in_recaptcha_score_threshold).
-      and_return(score_threshold_config)
+    allow(IdentityConfig.store).to receive(:sign_in_recaptcha_score_threshold)
+      .and_return(score_threshold_config)
   end
 
   it 'passes instance variables to form' do
@@ -30,14 +30,14 @@ RSpec.describe SignInRecaptchaForm do
       RecaptchaMockForm,
       submit: FormResponse.new(success: true),
     )
-    expect(RecaptchaMockForm).to receive(:new).
-      with(
+    expect(RecaptchaMockForm).to receive(:new)
+      .with(
         score_threshold: score_threshold_config,
         score:,
         analytics:,
         recaptcha_action: described_class::RECAPTCHA_ACTION,
-      ).
-      and_return(recaptcha_form)
+      )
+      .and_return(recaptcha_form)
 
     form.submit(recaptcha_token:)
   end

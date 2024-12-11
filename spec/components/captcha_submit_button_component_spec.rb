@@ -83,8 +83,8 @@ RSpec.describe CaptchaSubmitButtonComponent, type: :component do
     let(:recaptcha_mock_validator) { nil }
 
     before do
-      allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).
-        and_return(recaptcha_mock_validator)
+      allow(IdentityConfig.store).to receive(:recaptcha_mock_validator)
+        .and_return(recaptcha_mock_validator)
     end
 
     context 'with mock validator disabled' do
