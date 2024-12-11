@@ -746,3 +746,32 @@ deploy_eks:
     IMAGE_TAG: $CI_COMMIT_SHA
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
+
+publish_er_diagram:
+  stage: .post
+  needs:
+    - job: build-ci-image
+  variables:
+    DOCKER_DB_HOST: db-postgres
+    POSTGRES_DB: identity_idp_test
+    POSTGRES_USER: postgres_user
+    POSTGRES_PASSWORD: postgres_password
+    POSTGRES_HOST_AUTH_METHOD: trust
+    RAILS_ENV: test
+  services:
+    - name: public.ecr.aws/docker/library/postgres:16.4
+      alias: db-postgres
+      command: ['--fsync=false', '--synchronous_commit=false', '--full_page_writes=false']
+  cache:
+    - <<: *ruby_cache
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "vm-reinstate-erd"
+  image: "${ECR_REGISTRY}/idp/ci:${CI_COMMIT_SHA}"
+  script:
+    - *bundle_install
+    - bundle exec rake db:create db:migrate --trace
+    - bundle exec rails erd
+  artifacts:
+    paths:
+      - idp_erd.svg
