@@ -1,14 +1,23 @@
 gem:
   # Add your `gem` command parameters here:
-  #
-  # exclude:
-  # - gem_name
   # doc: true
    workers: 1
+   verify: true
+#   exclude:
+#      - capybara-webmock
+#      - email_spec
+#      - knapsack
+#      - lookbook
+#      - rspec
+#      - rspec-rails
+#      - selenium
+#      - simplecov
+#      - simplecov-cobertura
+#      - simplecov_json_formatter
+#      - zonebie
 dsl:
   # Add your `dsl` command parameters here:
   #
   # exclude:
   # - SomeGeneratorName
    workers: 1
-   verify: true
