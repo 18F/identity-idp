@@ -55,9 +55,6 @@ class SummarizeUserEvents
 
   def format_results(results)
     results.map do |r|
-
-
-
       title = r[:title]
 
       [
