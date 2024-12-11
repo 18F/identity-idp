@@ -51,10 +51,13 @@ Then('the user is navigated to the personal key page') do
   expect(page).to have_current_path(idv_personal_key_path)
 end
 
-Then('the user has a pending in-person enrollment') do
+Then('the user has a {string} in-person enrollment') do |status|
   expect(@user.in_person_enrollments.first).to have_attributes(
-    status: 'pending',
+    status: status,
   )
+end
+
+Then('the user has a pending profile') do
   expect(@user.in_person_enrollments.first.profile).to have_attributes(
     active: false,
     deactivation_reason: nil,
