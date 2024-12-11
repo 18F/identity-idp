@@ -1,0 +1,9 @@
+title: login.gov IdP entity-relationship diagram
+notation: bachman
+filename: idp_erd
+filetype: svg
+attributes:
+    - primary_keys
+    - foreign_keys
+    - content
+sort: false

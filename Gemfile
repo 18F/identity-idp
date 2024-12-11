@@ -110,6 +110,7 @@ group :development, :test do
   gem 'pry-byebug'
   gem 'pry-rails'
   gem 'psych'
+  gem 'rails-erd'
   gem 'rspec', '~> 3.13'
   gem 'rspec-rails', '~> 7.0'
   gem 'rubocop', '~> 1.75', require: false

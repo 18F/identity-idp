@@ -22,6 +22,8 @@ RUN apt-get update -qq && \
     python3-venv \
     nodejs \
     locales \
+    graphviz \
+    yarn \
     ./google-chrome-stable_${CHROME_VERSION}_amd64.deb
 
 RUN curl -Ss "https://storage.googleapis.com/chrome-for-testing-public/$(google-chrome --version | grep -Po '\d+\.\d+\.\d+\.\d+' | tr -d '\n')/linux64/chromedriver-linux64.zip" > /tmp/chromedriver.zip && \
