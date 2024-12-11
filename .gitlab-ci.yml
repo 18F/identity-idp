@@ -746,3 +746,11 @@ deploy_eks:
     IMAGE_TAG: $CI_COMMIT_SHA
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
+
+publish_er_diagram:
+  stage: .post
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "vm-reinstate-erd"
+  script:
+    - echo "Publishing ER diagram"
