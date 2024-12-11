@@ -2036,7 +2036,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             error_details: array_including(
               'Prompt Please fill in this field.',
             ),
-            error_types: [:prompt],
+            error_types: { prompt: true },
             event: :oidc_request_authorization,
             integration_exists: true,
             request_issuer: client_id,
@@ -2057,7 +2057,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 'Acr values Please fill in this field.',
                 'Prompt Please fill in this field.',
               ),
-              error_types: [:acr_values, :prompt],
+              error_types: { acr_values: true, prompt: true },
               event: :oidc_request_authorization,
               integration_exists: true,
               request_issuer: client_id,
@@ -2097,7 +2097,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
               error_details: array_including(
                 'Acr values Please fill in this field.',
               ),
-              error_types: [:acr_values],
+              error_types: { acr_values: true },
               event: :oidc_request_authorization,
               integration_exists: true,
               request_issuer: client_id,

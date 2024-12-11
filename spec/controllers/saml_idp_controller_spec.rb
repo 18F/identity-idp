@@ -49,7 +49,7 @@ RSpec.describe SamlIdpController do
       expect(@analytics).to have_logged_event(
         :integration_errors_present,
         error_details: [:issuer_missing_or_invald, :no_auth_or_logout_request, :invalid_signature],
-        error_types: [:saml_request_errors],
+        error_types: { saml_request_errors: true },
         event: :saml_logout_request,
         integration_exists: false,
       )
@@ -142,7 +142,7 @@ RSpec.describe SamlIdpController do
         expect(@analytics).to have_logged_event(
           :integration_errors_present,
           error_details: [:invalid_signature],
-          error_types: [:saml_request_errors],
+          error_types: { saml_request_errors: true },
           event: :saml_logout_request,
           integration_exists: true,
           request_issuer: service_provider.issuer,
@@ -216,7 +216,7 @@ RSpec.describe SamlIdpController do
       expect(@analytics).to have_logged_event(
         :integration_errors_present,
         error_details: [:issuer_missing_or_invald, :no_auth_or_logout_request, :invalid_signature],
-        error_types: [:saml_request_errors],
+        error_types: { saml_request_errors: true },
         event: :saml_remote_logout_request,
         integration_exists: false,
       )
@@ -398,7 +398,7 @@ RSpec.describe SamlIdpController do
       expect(@analytics).to have_logged_event(
         :integration_errors_present,
         error_details: [:no_user_found_from_session_index],
-        error_types: [:saml_request_errors],
+        error_types: { saml_request_errors: true },
         event: :saml_remote_logout_request,
         integration_exists: true,
         request_issuer: service_provider.issuer,
@@ -441,7 +441,7 @@ RSpec.describe SamlIdpController do
       expect(@analytics).to have_logged_event(
         :integration_errors_present,
         error_details: [:no_user_found_from_session_index],
-        error_types: [:saml_request_errors],
+        error_types: { saml_request_errors: true },
         event: :saml_remote_logout_request,
         integration_exists: true,
         request_issuer: service_provider.issuer,
@@ -484,7 +484,7 @@ RSpec.describe SamlIdpController do
       expect(@analytics).to have_logged_event(
         :integration_errors_present,
         error_details: [:no_user_found_from_session_index],
-        error_types: [:saml_request_errors],
+        error_types: { saml_request_errors: true },
         event: :saml_remote_logout_request,
         integration_exists: true,
         request_issuer: service_provider.issuer,
@@ -501,7 +501,7 @@ RSpec.describe SamlIdpController do
       expect(@analytics).to have_logged_event(
         :integration_errors_present,
         error_details: [:invalid_signature],
-        error_types: [:saml_request_errors],
+        error_types: { saml_request_errors: true },
         event: :saml_remote_logout_request,
         integration_exists: true,
         request_issuer: service_provider.issuer,
@@ -1088,7 +1088,7 @@ RSpec.describe SamlIdpController do
         expect(@analytics).to have_logged_event(
           :integration_errors_present,
           error_details: ['Unauthorized authentication context'],
-          error_types: [:saml_request_errors],
+          error_types: { saml_request_errors: true },
           event: :saml_auth_request,
           integration_exists: true,
           request_issuer: saml_settings.issuer,
@@ -1363,7 +1363,7 @@ RSpec.describe SamlIdpController do
         expect(@analytics).to have_logged_event(
           :integration_errors_present,
           error_details: ['Unauthorized Service Provider'],
-          error_types: [:saml_request_errors],
+          error_types: { saml_request_errors: true },
           event: :saml_auth_request,
           integration_exists: false,
           request_issuer: 'invalid_provider',
@@ -1416,7 +1416,7 @@ RSpec.describe SamlIdpController do
         expect(@analytics).to have_logged_event(
           :integration_errors_present,
           error_details: ['Unauthorized Service Provider', 'Unauthorized authentication context'],
-          error_types: [:saml_request_errors],
+          error_types: { saml_request_errors: true },
           event: :saml_auth_request,
           integration_exists: false,
           request_issuer: 'invalid_provider',
@@ -1468,7 +1468,7 @@ RSpec.describe SamlIdpController do
         expect(@analytics).to have_logged_event(
           :integration_errors_present,
           error_details: ['Your service provider does not have a certificate registered.'],
-          error_types: [:saml_request_errors],
+          error_types: { saml_request_errors: true },
           event: :saml_auth_request,
           integration_exists: true,
           request_issuer: service_provider.issuer,

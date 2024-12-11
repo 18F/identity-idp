@@ -225,7 +225,7 @@ RSpec.describe OpenidConnect::LogoutController do
               error_details: array_including(
                 'Redirect uri redirect_uri does not match registered redirect_uri',
               ),
-              error_types: [:redirect_uri],
+              error_types: { redirect_uri: true },
               event: :oidc_logout_requested,
               integration_exists: true,
               request_issuer: service_provider.issuer,
@@ -237,7 +237,7 @@ RSpec.describe OpenidConnect::LogoutController do
           let(:id_token_hint) { 'abc123' }
           it 'tracks events' do
             stub_analytics
-            errors_keys = [:id_token_hint]
+            errors_keys = { id_token_hint: true }
 
             action
 
@@ -259,7 +259,7 @@ RSpec.describe OpenidConnect::LogoutController do
               error_details: array_including(
                 'Id token hint id_token_hint was not recognized',
               ),
-              error_types: [:id_token_hint],
+              error_types: { id_token_hint: true },
               event: :oidc_logout_requested,
               integration_exists: false,
             )
@@ -392,7 +392,7 @@ RSpec.describe OpenidConnect::LogoutController do
               error_details: array_including(
                 'Redirect uri redirect_uri does not match registered redirect_uri',
               ),
-              error_types: [:redirect_uri],
+              error_types: { redirect_uri: true },
               event: :oidc_logout_requested,
               integration_exists: true,
               request_issuer: service_provider.issuer,
@@ -533,7 +533,7 @@ RSpec.describe OpenidConnect::LogoutController do
               'Id token hint This application is misconfigured and should not be sending ' \
                 'id_token_hint. Please send client_id instead.',
             ),
-            error_types: [:id_token_hint],
+            error_types: { id_token_hint: true },
             event: :oidc_logout_requested,
             integration_exists: true,
             request_issuer: service_provider.issuer,
@@ -583,7 +583,7 @@ RSpec.describe OpenidConnect::LogoutController do
             error_details: array_including(
               'Redirect uri redirect_uri does not match registered redirect_uri',
             ),
-            error_types: [:redirect_uri],
+            error_types: { redirect_uri: true },
             event: :oidc_logout_requested,
             integration_exists: true,
             request_issuer: service_provider.issuer,
@@ -883,7 +883,7 @@ RSpec.describe OpenidConnect::LogoutController do
                 error_details: array_including(
                   'Client client_id is missing',
                 ),
-                error_types: [:client_id],
+                error_types: { client_id: true },
                 event: :oidc_logout_submitted,
                 integration_exists: false,
               )

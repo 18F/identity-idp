@@ -5192,10 +5192,11 @@ module AnalyticsEvents
     request_issuer: nil,
     **extra
   )
+    types = error_types.index_with { |type| true }
     track_event(
       :integration_errors_present,
       error_details:,
-      error_types:,
+      error_types: types,
       event:,
       integration_exists:,
       request_issuer:,

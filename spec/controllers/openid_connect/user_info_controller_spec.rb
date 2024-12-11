@@ -34,7 +34,7 @@ RSpec.describe OpenidConnect::UserInfoController do
           error_details: array_including(
             'Access token No Authorization header provided',
           ),
-          error_types: [:access_token],
+          error_types: { access_token: true },
           event: :oidc_bearer_token_auth,
           integration_exists: false,
         )
@@ -68,7 +68,7 @@ RSpec.describe OpenidConnect::UserInfoController do
           error_details: array_including(
             'Access token Malformed Authorization header',
           ),
-          error_types: [:access_token],
+          error_types: { access_token: true },
           event: :oidc_bearer_token_auth,
           integration_exists: false,
         )
@@ -102,7 +102,7 @@ RSpec.describe OpenidConnect::UserInfoController do
             'Access token Could not find authorization for the contents of the provided ' \
               'access_token or it may have expired',
           ),
-          error_types: [:access_token],
+          error_types: { access_token: true },
           event: :oidc_bearer_token_auth,
           integration_exists: false,
         )

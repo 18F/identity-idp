@@ -107,7 +107,7 @@ RSpec.describe OpenidConnect::TokenController do
           error_details: array_including(
             'Grant type is not included in the list',
           ),
-          error_types: [:grant_type],
+          error_types: { grant_type: true },
           event: :oidc_token_request,
           integration_exists: true,
           request_issuer: client_id,
