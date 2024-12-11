@@ -124,6 +124,7 @@ group :development, :test do
   gem 'rubocop-rails', '~> 2.27.0', require: false
   gem 'rubocop-rspec', '~> 3.2.0', require: false
   gem 'sqlite3', require: false
+  gem 'steep', '~> 1.9', '>= 1.9.1'
 end
 
 group :test do

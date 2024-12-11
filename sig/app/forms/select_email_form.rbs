@@ -1,11 +1,15 @@
 class SelectEmailForm
   @user: User
 
-  @identity: untyped
+  @identity: Identity
 
   @selected_email_id: Integer
 
-  include ActiveModel::model
+  include ActiveModel::Model
+
+  include ::ActiveModel::Validations
+
+  extend ::ActiveModel::Validations::ClassMethods
 
   include ActionView::Helpers::TranslationHelper
 
