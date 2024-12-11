@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module EventSummarizer
   class ExampleMatcher
     attr_reader :event_count
