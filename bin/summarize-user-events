@@ -13,6 +13,7 @@ $LOAD_PATH.unshift(File.expand_path(File.join(__dir__, '../lib')))
 require 'reporting/cloudwatch_client'
 require 'reporting/cloudwatch_query_quoting'
 
+require 'event_summarizer/example_matcher'
 
 class SummarizeUserEvents
   attr_reader :uuid, :from_date, :to_date
@@ -27,12 +28,44 @@ class SummarizeUserEvents
     @to_date = argv[2].present? ? Time.strptime(argv[2], '%m/%d/%Y') : DateTime.now 
   end
 
-  def run
-    find_cloudwatch_events do |cloudwatch_event|
-      pp cloudwatch_event
-    end
+  def matchers
+    @matchers ||= [
+      EventSummarizer::ExampleMatcher.new
+    ]
   end
 
+  def run
+    find_cloudwatch_events do |event|
+      event['@message'] = JSON.parse(event['@message']) if event['@message'].is_a?(String)
+
+      matchers.each do |matcher|
+        matcher.handle_cloudwatch_event(event)
+      end
+    end
+
+    overall_results = []
+    
+    matchers.each do |matcher|
+      results_for_matcher = matcher.finish
+      overall_results.append(*results_for_matcher)
+    end
+    
+    puts format_results(overall_results)
+  end
+
+  def format_results(results)
+    results.map do |r|
+      title = r[:title]
+
+      [
+        "## #{title}",
+        *r[:attributes]&.map do |attr|
+          "* #{attr[:description]}"
+        end,
+        ""
+      ]
+    end.join("\n")
+  end
 
   def query
     format(<<~QUERY)
@@ -45,6 +78,32 @@ class SummarizeUserEvents
       | sort @timestamp asc
       | limit 10000
     QUERY
+  end
+
+  def find_events(&block)
+    warn "$stdin.tty? = #{$stdin.tty?}"
+    if $stdin.tty?
+      cloudwatch_source(&block)
+    else
+      stdin_source(&block)
+    end
+  end
+
+  def stdin_source(&block)
+    $stdin.each_line do |line|
+      next if line.blank?
+      event = JSON.parse(line)
+      block.call(event)
+    end
+  end
+
+  def cloudwatch_source(&block)
+    cloudwatch_client.fetch(
+      query: query,
+      from: from_date,
+      to: to_date,
+      &block
+    )    
   end
 
 
