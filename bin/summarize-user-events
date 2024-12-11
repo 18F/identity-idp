@@ -43,6 +43,7 @@ class SummarizeUserEvents
         , @timestamp
       | filter properties.user_id = '#{uuid}'
       | sort @timestamp asc
+      | limit 10000
     QUERY
   end
 
