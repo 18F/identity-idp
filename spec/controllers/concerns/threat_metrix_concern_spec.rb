@@ -15,8 +15,8 @@ RSpec.describe ThreatMetrixConcern, type: :controller do
     let(:ff_enabled) { true }
 
     before do
-      allow(IdentityConfig.store).to receive(:proofing_device_profiling).
-        and_return(ff_enabled ? :enabled : :disabled)
+      allow(IdentityConfig.store).to receive(:proofing_device_profiling)
+        .and_return(ff_enabled ? :enabled : :disabled)
     end
 
     context 'ff is set' do

@@ -18,8 +18,8 @@ module Idv
     def show
       analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)
 
-      Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
-        call('document_capture', :view, true)
+      Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer])
+        .call('document_capture', :view, true)
 
       render :show, locals: extra_view_variables
     end
@@ -33,8 +33,8 @@ module Idv
       result = handle_stored_result
       analytics.idv_doc_auth_document_capture_submitted(**result.to_h.merge(analytics_arguments))
 
-      Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
-        call('document_capture', :update, true)
+      Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer])
+        .call('document_capture', :update, true)
 
       if result.success?
         redirect_to idv_ssn_url

@@ -11,8 +11,8 @@ class QueryTracker
   def self.track
     queries = Hash.new { |h, k| h[k] = [] }
 
-    subscriber = ActiveSupport::Notifications.
-      subscribe('sql.active_record') do |_name, _start, _finish, _id, payload|
+    subscriber = ActiveSupport::Notifications
+      .subscribe('sql.active_record') do |_name, _start, _finish, _id, payload|
         sql = payload[:sql]
 
         action = sql.split(' ').first.downcase.to_sym

@@ -73,8 +73,9 @@ class OpenidConnectTokenForm
   def find_identity_with_code
     return if code.blank? || code.include?("\x00")
 
-    @identity = ServiceProviderIdentity.where(session_uuid: code).
-      order(updated_at: :desc).first
+    @identity = ServiceProviderIdentity
+      .where(session_uuid: code)
+      .order(updated_at: :desc).first
   end
 
   def pkce?

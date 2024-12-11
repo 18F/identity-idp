@@ -52,8 +52,8 @@ class AddUserEmailForm
   def process_successful_submission
     @success = true
     email_address.save!
-    SendAddEmailConfirmation.new(user).
-      call(email_address:, in_select_email_flow: in_select_email_flow?, request_id:)
+    SendAddEmailConfirmation.new(user)
+      .call(email_address:, in_select_email_flow: in_select_email_flow?, request_id:)
   end
 
   def extra_analytics_attributes

@@ -28,9 +28,9 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
           sign_in_before_2fa(user)
           stub_analytics
 
-          expect(controller).to receive(:handle_valid_verification_for_authentication_context).
-            with(auth_method: TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE).
-            and_call_original
+          expect(controller).to receive(:handle_valid_verification_for_authentication_context)
+            .with(auth_method: TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE)
+            .and_call_original
 
           post :create, params: payload
 
@@ -165,8 +165,8 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
 
         stub_analytics
 
-        expect(PushNotification::HttpPush).to receive(:deliver).
-          with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
+        expect(PushNotification::HttpPush).to receive(:deliver)
+          .with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
 
         post :create, params: payload
 

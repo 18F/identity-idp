@@ -160,11 +160,11 @@ module Idv
     private
 
     def analytics_attributes(method_name)
-      AnalyticsEventsEnhancer.extra_args_for_method(method_name).
-        index_with do |arg_name|
+      AnalyticsEventsEnhancer.extra_args_for_method(method_name)
+        .index_with do |arg_name|
           send(arg_name.to_s).presence
-        end.
-        compact
+        end
+        .compact
     end
 
     def active_profile_idv_level
@@ -178,9 +178,9 @@ module Idv
     def profile_history
       return if !user&.respond_to?(:profiles)
 
-      (user&.profiles || []).
-        sort_by { |profile| profile.created_at }.
-        map { |profile| ProfileLogging.new(profile) }
+      (user&.profiles || [])
+        .sort_by { |profile| profile.created_at }
+        .map { |profile| ProfileLogging.new(profile) }
     end
 
     def proofing_components

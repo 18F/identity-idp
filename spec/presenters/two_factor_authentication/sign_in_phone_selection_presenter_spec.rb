@@ -99,8 +99,8 @@ RSpec.describe TwoFactorAuthentication::SignInPhoneSelectionPresenter do
 
       context 'sms vendor outage' do
         before do
-          allow_any_instance_of(OutageStatus).to receive(:vendor_outage?).with(:sms).
-            and_return(true)
+          allow_any_instance_of(OutageStatus).to receive(:vendor_outage?).with(:sms)
+            .and_return(true)
         end
 
         it { expect(presenter.disabled?).to eq(true) }
@@ -114,8 +114,8 @@ RSpec.describe TwoFactorAuthentication::SignInPhoneSelectionPresenter do
 
       context 'voice vendor outage' do
         before do
-          allow_any_instance_of(OutageStatus).to receive(:vendor_outage?).with(:voice).
-            and_return(true)
+          allow_any_instance_of(OutageStatus).to receive(:vendor_outage?).with(:voice)
+            .and_return(true)
         end
 
         it { expect(presenter.disabled?).to eq(true) }

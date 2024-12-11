@@ -85,13 +85,13 @@ RSpec.describe GpoConfirmationUploader do
       end
 
       it 'raises after 5 unsuccessful retries' do
-        expect(Net::SFTP).to receive(:start).
-          exactly(5).times.
-          with(*sftp_options).
-          and_yield(sftp_connection)
-        expect(sftp_connection).to receive(:upload!).
-          exactly(5).times.
-          and_raise(Net::SSH::ConnectionTimeout)
+        expect(Net::SFTP).to receive(:start)
+          .exactly(5).times
+          .with(*sftp_options)
+          .and_yield(sftp_connection)
+        expect(sftp_connection).to receive(:upload!)
+          .exactly(5).times
+          .and_raise(Net::SSH::ConnectionTimeout)
 
         expect { subject }.to raise_error(Net::SSH::ConnectionTimeout)
       end
@@ -125,8 +125,8 @@ RSpec.describe GpoConfirmationUploader do
     context 'when there is an error' do
       it 'notifies NewRelic and does not clear confirmations if SFTP fails' do
         expect(uploader).to receive(:generate_export).with(confirmations).and_return(export)
-        expect(uploader).to receive(:upload_export).with(export).
-          and_raise(StandardError, 'test error')
+        expect(uploader).to receive(:upload_export).with(export)
+          .and_raise(StandardError, 'test error')
         expect(uploader).not_to receive(:clear_confirmations)
 
         expect(NewRelic::Agent).to receive(:notice_error)
@@ -183,8 +183,8 @@ RSpec.describe GpoConfirmationUploader do
       end
 
       it 'tells New Relic that there are invalid records' do
-        expect(NewRelic::Agent).to receive(:notice_error).
-          with(GpoConfirmationUploader::InvalidGpoConfirmationsPresent)
+        expect(NewRelic::Agent).to receive(:notice_error)
+          .with(GpoConfirmationUploader::InvalidGpoConfirmationsPresent)
 
         expect(uploader).to receive(:generate_export).with([valid_confirmation]).and_return(export)
         expect(uploader).to receive(:upload_export).with(export)

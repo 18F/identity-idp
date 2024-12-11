@@ -43,8 +43,8 @@ RSpec.describe GpoReminderJob do
     let(:job_analytics) { FakeAnalytics.new }
 
     before do
-      allow(IdentityConfig.store).to receive(:usps_confirmation_max_days).
-        and_return(max_days_ago_to_send_letter)
+      allow(IdentityConfig.store).to receive(:usps_confirmation_max_days)
+        .and_return(max_days_ago_to_send_letter)
       allow(Analytics).to receive(:new).and_return(job_analytics)
 
       user_with_invalid_profile.gpo_verification_pending_profile.deactivate(:password_reset)

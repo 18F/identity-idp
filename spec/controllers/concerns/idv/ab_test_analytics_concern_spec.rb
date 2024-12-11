@@ -38,15 +38,15 @@ RSpec.describe Idv::AbTestAnalyticsConcern do
         end
 
         it 'includes opted_in_to_in_person_proofing when enabled' do
-          allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).
-            and_return(true)
-          expect(controller.ab_test_analytics_buckets).
-            to include({ opted_in_to_in_person_proofing: :opt_in_value })
+          allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled)
+            .and_return(true)
+          expect(controller.ab_test_analytics_buckets)
+            .to include({ opted_in_to_in_person_proofing: :opt_in_value })
         end
 
         it 'does not include opted_in_to_in_person_proofing when disabled' do
-          expect(controller.ab_test_analytics_buckets).
-            not_to include({ opted_in_to_in_person_proofing: :opt_in_value })
+          expect(controller.ab_test_analytics_buckets)
+            .not_to include({ opted_in_to_in_person_proofing: :opt_in_value })
         end
       end
     end

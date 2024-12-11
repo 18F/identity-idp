@@ -10,7 +10,7 @@ RSpec.describe 'config.ssl_options' do
     request = { 'HTTPS' => 'on' }
     _status, headers, _body = ssl_middleware.call(request)
 
-    expect(headers['strict-transport-security']).
-      to eq('max-age=31556952; includeSubDomains; preload')
+    expect(headers['strict-transport-security'])
+      .to eq('max-age=31556952; includeSubDomains; preload')
   end
 end

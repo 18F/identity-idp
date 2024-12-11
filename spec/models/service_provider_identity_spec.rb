@@ -28,8 +28,8 @@ RSpec.describe ServiceProviderIdentity do
       identity = create(:service_provider_identity)
       identity.uuid = nil
 
-      expect { identity.save }.
-        to raise_error(
+      expect { identity.save }
+        .to raise_error(
           ActiveRecord::NotNullViolation,
           /null value in column "uuid".*violates not-null constraint/,
         )
@@ -41,8 +41,8 @@ RSpec.describe ServiceProviderIdentity do
       identity2 = create(:service_provider_identity)
       identity2.uuid = identity1.uuid
 
-      expect { identity2.save }.
-        to raise_error(
+      expect { identity2.save }
+        .to raise_error(
           ActiveRecord::StatementInvalid,
           /duplicate key value violates unique constraint/,
         )
@@ -71,8 +71,8 @@ RSpec.describe ServiceProviderIdentity do
       it 'generates it via SecureRandom.uuid' do
         identity = build(:service_provider_identity)
 
-        expect(identity.generate_uuid).
-          to match(/[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}/)
+        expect(identity.generate_uuid)
+          .to match(/[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}/)
       end
     end
   end
@@ -123,14 +123,14 @@ RSpec.describe ServiceProviderIdentity do
   describe 'uniqueness validation for service provider per user' do
     it 'raises an error when uniqueness constraint is broken' do
       ServiceProviderIdentity.create(user_id: user.id, service_provider: 'externalapp')
-      expect { ServiceProviderIdentity.create(user_id: user.id, service_provider: 'externalapp') }.
-        to raise_error(ActiveRecord::RecordNotUnique)
+      expect { ServiceProviderIdentity.create(user_id: user.id, service_provider: 'externalapp') }
+        .to raise_error(ActiveRecord::RecordNotUnique)
     end
 
     it 'does not raise an error for a different service provider' do
       ServiceProviderIdentity.create(user_id: user.id, service_provider: 'externalapp')
-      expect { ServiceProviderIdentity.create(user_id: user.id, service_provider: 'externalapp2') }.
-        to_not raise_error
+      expect { ServiceProviderIdentity.create(user_id: user.id, service_provider: 'externalapp2') }
+        .to_not raise_error
     end
   end
 

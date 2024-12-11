@@ -14,9 +14,9 @@ RSpec.feature 'saml api' do
     end
 
     it 'returns the user to the acs url after authentication' do
-      expect(page).
-        to have_link t('links.back_to_sp', sp: sp.friendly_name),
-                     href: return_to_sp_cancel_path(step: :authentication)
+      expect(page)
+        .to have_link t('links.back_to_sp', sp: sp.friendly_name),
+                      href: return_to_sp_cancel_path(step: :authentication)
 
       sign_in_via_branded_page(user)
       click_submit_default
@@ -145,19 +145,19 @@ RSpec.feature 'saml api' do
 
       it 'contains a signature method nodeset with SHA256 algorithm' do
         expect(xmldoc.signature_method_nodeset.length).to eq(1)
-        expect(xmldoc.signature_method_nodeset[0].attr('Algorithm')).
-          to eq('http://www.w3.org/2001/04/xmldsig-more#rsa-sha256')
+        expect(xmldoc.signature_method_nodeset[0].attr('Algorithm'))
+          .to eq('http://www.w3.org/2001/04/xmldsig-more#rsa-sha256')
       end
 
       it 'contains a digest method nodeset with SHA256 algorithm' do
         expect(xmldoc.digest_method_nodeset.length).to eq(1)
-        expect(xmldoc.digest_method_nodeset[0].attr('Algorithm')).
-          to eq('http://www.w3.org/2001/04/xmlenc#sha256')
+        expect(xmldoc.digest_method_nodeset[0].attr('Algorithm'))
+          .to eq('http://www.w3.org/2001/04/xmlenc#sha256')
       end
 
       it 'redirects to /test/saml/decode_assertion after submitting the form' do
-        expect(page.current_url).
-          to eq(saml_settings.assertion_consumer_service_url)
+        expect(page.current_url)
+          .to eq(saml_settings.assertion_consumer_service_url)
       end
 
       it 'stores SP identifier in Identity model' do
@@ -203,8 +203,8 @@ RSpec.feature 'saml api' do
 
       it 'updates the service providers in the database' do
         page.driver.header 'X-LOGIN-DASHBOARD-TOKEN', '123ABC'
-        expect { page.driver.post '/api/service_provider' }.
-          to(change { ServiceProvider.active.sort_by(&:id) })
+        expect { page.driver.post '/api/service_provider' }
+          .to(change { ServiceProvider.active.sort_by(&:id) })
 
         expect(page.status_code).to eq 200
       end

@@ -15,8 +15,8 @@ RSpec.describe Idv::GpoVerifyByMailPolicy do
   describe '#resend_letter_available?' do
     context 'when the feature flag is off' do
       before do
-        allow(IdentityConfig.store).to receive(:enable_usps_verification).
-          and_return false
+        allow(IdentityConfig.store).to receive(:enable_usps_verification)
+          .and_return false
       end
 
       it 'returns false' do
@@ -26,8 +26,8 @@ RSpec.describe Idv::GpoVerifyByMailPolicy do
 
     context 'when the feature flag is on' do
       before do
-        allow(IdentityConfig.store).to receive(:enable_usps_verification).
-          and_return true
+        allow(IdentityConfig.store).to receive(:enable_usps_verification)
+          .and_return true
       end
 
       it 'returns false when the user is rate-limited' do
@@ -55,8 +55,8 @@ RSpec.describe Idv::GpoVerifyByMailPolicy do
   describe '#send_letter_available?' do
     context 'when the feature flag is off' do
       before do
-        allow(IdentityConfig.store).to receive(:enable_usps_verification).
-          and_return false
+        allow(IdentityConfig.store).to receive(:enable_usps_verification)
+          .and_return false
       end
 
       it 'returns false' do
@@ -66,8 +66,8 @@ RSpec.describe Idv::GpoVerifyByMailPolicy do
 
     context 'when the feature flag is on' do
       before do
-        allow(IdentityConfig.store).to receive(:enable_usps_verification).
-          and_return true
+        allow(IdentityConfig.store).to receive(:enable_usps_verification)
+          .and_return true
       end
 
       it 'returns true when the user is not rate-limited' do
@@ -119,12 +119,12 @@ RSpec.describe Idv::GpoVerifyByMailPolicy do
     let(:minimum_wait_before_another_usps_letter_in_hours) { 24 }
 
     before do
-      allow(IdentityConfig.store).to receive(:max_mail_events).
-        and_return(max_letter_request_events)
-      allow(IdentityConfig.store).to receive(:max_mail_events_window_in_days).
-        and_return(letter_request_events_window_days)
-      allow(IdentityConfig.store).to receive(:minimum_wait_before_another_usps_letter_in_hours).
-        and_return(minimum_wait_before_another_usps_letter_in_hours)
+      allow(IdentityConfig.store).to receive(:max_mail_events)
+        .and_return(max_letter_request_events)
+      allow(IdentityConfig.store).to receive(:max_mail_events_window_in_days)
+        .and_return(letter_request_events_window_days)
+      allow(IdentityConfig.store).to receive(:minimum_wait_before_another_usps_letter_in_hours)
+        .and_return(minimum_wait_before_another_usps_letter_in_hours)
     end
 
     context 'when no letters have been requested' do

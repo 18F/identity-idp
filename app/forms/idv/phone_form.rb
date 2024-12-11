@@ -33,9 +33,9 @@ module Idv
       @hybrid_handoff_phone_number = hybrid_handoff_phone_number
 
       @international_code, @phone = determine_initial_values(
-        **previous_params.
-        symbolize_keys.
-        slice(:international_code, :phone),
+        **previous_params
+        .symbolize_keys
+        .slice(:international_code, :phone),
       )
     end
 

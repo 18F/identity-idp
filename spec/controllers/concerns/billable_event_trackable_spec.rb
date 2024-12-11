@@ -94,10 +94,10 @@ RSpec.describe BillableEventTrackable do
         aggregate_failures do
           expect(sp_return_log.profile_id).to eq(active_profile.id)
           expect(sp_return_log.profile_verified_at).to eq(active_profile.verified_at)
-          expect(sp_return_log.profile_requested_issuer).
-            to eq(active_profile.initiating_service_provider_issuer)
-          expect(sp_return_log.profile_requested_service_provider).
-            to eq(active_profile.initiating_service_provider)
+          expect(sp_return_log.profile_requested_issuer)
+            .to eq(active_profile.initiating_service_provider_issuer)
+          expect(sp_return_log.profile_requested_service_provider)
+            .to eq(active_profile.initiating_service_provider)
         end
       end
     end

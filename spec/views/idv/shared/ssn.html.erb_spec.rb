@@ -21,10 +21,10 @@ RSpec.describe 'idv/shared/ssn.html.erb' do
   before :each do
     allow(view).to receive(:url_for).and_return('https://example.com/')
 
-    allow(IdentityConfig.store).to receive(:proofing_device_profiling).
-      and_return(threatmetrix_enabled ? :enabled : :disabled)
-    allow(IdentityConfig.store).
-      to receive(:lexisnexis_threatmetrix_org_id).and_return(lexisnexis_threatmetrix_org_id)
+    allow(IdentityConfig.store).to receive(:proofing_device_profiling)
+      .and_return(threatmetrix_enabled ? :enabled : :disabled)
+    allow(IdentityConfig.store)
+      .to receive(:lexisnexis_threatmetrix_org_id).and_return(lexisnexis_threatmetrix_org_id)
 
     assign(
       :ssn_presenter,
@@ -110,8 +110,8 @@ RSpec.describe 'idv/shared/ssn.html.erb' do
   end
 
   def expect_session_id_input_rendered
-    expect(rendered).
-      to have_css(
+    expect(rendered)
+      .to have_css(
         "input[type=hidden][name='doc_auth[threatmetrix_session_id]'][value='#{session_id}']",
         visible: false,
       )
@@ -126,7 +126,7 @@ RSpec.describe 'idv/shared/ssn.html.erb' do
   end
 
   def expect_session_id_input_not_rendered
-    expect(rendered).
-      not_to have_css('input[name="doc_auth[threatmetrix_session_id]"]', visible: false)
+    expect(rendered)
+      .not_to have_css('input[name="doc_auth[threatmetrix_session_id]"]', visible: false)
   end
 end

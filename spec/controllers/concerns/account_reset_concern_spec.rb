@@ -26,8 +26,8 @@ RSpec.describe AccountResetConcern do
           true,
           accumulate_on: :hours,
         )
-        expect(instance.account_reset_deletion_period_interval(user)).
-          to eq(time_in_hours)
+        expect(instance.account_reset_deletion_period_interval(user))
+          .to eq(time_in_hours)
       end
     end
 
@@ -41,14 +41,14 @@ RSpec.describe AccountResetConcern do
           true,
           accumulate_on: :days,
         )
-        expect(instance.account_reset_deletion_period_interval(user)).
-          to eq(time_in_hours)
+        expect(instance.account_reset_deletion_period_interval(user))
+          .to eq(time_in_hours)
       end
 
       context 'when account_reset_fraud_user_wait_period_days is nil' do
         before do
-          allow(IdentityConfig.store).to receive(:account_reset_fraud_user_wait_period_days).
-            and_return(nil)
+          allow(IdentityConfig.store).to receive(:account_reset_fraud_user_wait_period_days)
+            .and_return(nil)
         end
 
         it 'should return standard reset wait time' do
@@ -59,8 +59,8 @@ RSpec.describe AccountResetConcern do
             true,
             accumulate_on: :hours,
           )
-          expect(instance.account_reset_deletion_period_interval(user)).
-            to eq(time_in_hours)
+          expect(instance.account_reset_deletion_period_interval(user))
+            .to eq(time_in_hours)
         end
       end
     end

@@ -52,9 +52,9 @@ class TwoFactorOptionsPresenter
         user_agent:,
         desktop_ft_ab_test:,
       )
-    end.
-      partition(&:recommended?).
-      flatten
+    end
+      .partition(&:recommended?)
+      .flatten
   end
 
   def icon

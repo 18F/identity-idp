@@ -128,8 +128,8 @@ RSpec.describe Idv::SsnController do
     end
 
     it 'overrides Content Security Policies for ThreatMetrix' do
-      allow(IdentityConfig.store).to receive(:proofing_device_profiling).
-        and_return(:enabled)
+      allow(IdentityConfig.store).to receive(:proofing_device_profiling)
+        .and_return(:enabled)
       get :show
 
       csp = response.request.content_security_policy
@@ -164,8 +164,8 @@ RSpec.describe Idv::SsnController do
       end
 
       it 'updates idv_session.ssn' do
-        expect { put :update, params: params }.to change { subject.idv_session.ssn }.
-          from(nil).to(ssn)
+        expect { put :update, params: params }.to change { subject.idv_session.ssn }
+          .from(nil).to(ssn)
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
       end
 
@@ -184,8 +184,8 @@ RSpec.describe Idv::SsnController do
         it 'updates idv_session.ssn' do
           subject.idv_session.ssn = '900-95-7890'
 
-          expect { put :update, params: params }.to change { subject.idv_session.ssn }.
-            from('900-95-7890').to(ssn)
+          expect { put :update, params: params }.to change { subject.idv_session.ssn }
+            .from('900-95-7890').to(ssn)
           expect(@analytics).to have_logged_event(analytics_name, analytics_args)
         end
       end

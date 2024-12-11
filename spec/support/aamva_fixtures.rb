@@ -48,10 +48,10 @@ module AamvaFixtures
   end
 
   def self.authentication_token_request
-    read_fixture_file('proofing/aamva/requests/authentication_token_request.xml').
-      gsub(/^\s+/, '').
-      gsub(/\s+$/, '').
-      delete("\n") + "\n"
+    read_fixture_file('proofing/aamva/requests/authentication_token_request.xml')
+      .gsub(/^\s+/, '')
+      .gsub(/\s+$/, '')
+      .delete("\n") + "\n"
   end
 
   def self.authentication_token_response
@@ -59,10 +59,10 @@ module AamvaFixtures
   end
 
   def self.security_token_request
-    read_fixture_file('proofing/aamva/requests/security_token_request.xml').
-      gsub(/^\s+/, '').
-      gsub(/\s+$/, '').
-      delete("\n") + "\n"
+    read_fixture_file('proofing/aamva/requests/security_token_request.xml')
+      .gsub(/^\s+/, '')
+      .gsub(/\s+$/, '')
+      .delete("\n") + "\n"
   end
 
   def self.security_token_response

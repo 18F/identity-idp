@@ -139,8 +139,8 @@ module Users
       # when run asynchronously
       @current_confirmed_emails.each do |confirmed_email|
         # rubocop:disable IdentityIdp/MailLaterLinter
-        UserMailer.with(user: current_user, email_address: confirmed_email).
-          email_deleted.deliver_now
+        UserMailer.with(user: current_user, email_address: confirmed_email)
+          .email_deleted.deliver_now
         # rubocop:enable IdentityIdp/MailLaterLinter
       end
     end

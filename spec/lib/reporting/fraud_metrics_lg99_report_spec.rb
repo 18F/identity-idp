@@ -81,8 +81,8 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
   describe '#suspended_metrics_table' do
     it 'renders a suspended metrics table' do
       aggregate_failures do
-        report.suspended_metrics_table.zip(expected_suspended_metrics_table).
-          each do |actual, expected|
+        report.suspended_metrics_table.zip(expected_suspended_metrics_table)
+          .each do |actual, expected|
             expect(actual).to eq(expected)
           end
       end
@@ -92,8 +92,8 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
   describe '#reinstated_metrics_table' do
     it 'renders a reinstated metrics table' do
       aggregate_failures do
-        report.reinstated_metrics_table.zip(expected_reinstated_metrics_table).
-          each do |actual, expected|
+        report.reinstated_metrics_table.zip(expected_reinstated_metrics_table)
+          .each do |actual, expected|
             expect(actual).to eq(expected)
           end
       end

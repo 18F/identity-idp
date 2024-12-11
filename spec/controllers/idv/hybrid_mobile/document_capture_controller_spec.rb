@@ -227,8 +227,8 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
 
       context 'selfie checks' do
         before do
-          expect(controller).to receive(:selfie_requirement_met?).
-            and_return(performed_if_needed)
+          expect(controller).to receive(:selfie_requirement_met?)
+            .and_return(performed_if_needed)
         end
 
         context 'not performed' do

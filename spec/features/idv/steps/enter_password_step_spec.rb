@@ -42,11 +42,11 @@ RSpec.feature 'idv enter password step', :js do
         gpo_confirmation_entry = GpoConfirmation.last.entry
 
         if sp == :saml
-          expect(gpo_confirmation_entry[:issuer]).
-            to eq(sp1_issuer)
+          expect(gpo_confirmation_entry[:issuer])
+            .to eq(sp1_issuer)
         else
-          expect(gpo_confirmation_entry[:issuer]).
-            to eq('urn:gov:gsa:openidconnect:sp:server')
+          expect(gpo_confirmation_entry[:issuer])
+            .to eq('urn:gov:gsa:openidconnect:sp:server')
         end
       end
     end
@@ -69,8 +69,8 @@ RSpec.feature 'idv enter password step', :js do
 
       email_count_before_continue = ActionMailer::Base.deliveries.count
 
-      expect { click_continue }.
-        to change { GpoConfirmation.count }.by(1)
+      expect { click_continue }
+        .to change { GpoConfirmation.count }.by(1)
 
       expect_delivered_email_count(email_count_before_continue + 1)
       expect(last_email.subject).to eq(t('user_mailer.verify_by_mail_letter_requested.subject'))

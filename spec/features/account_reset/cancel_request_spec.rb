@@ -7,13 +7,13 @@ RSpec.describe 'Account Reset Request: Cancellation' do
       signin(user.email, user.password)
       click_link t('two_factor_authentication.login_options_link_text')
       click_link t('two_factor_authentication.account_reset.link')
-      expect(page).
-        to have_content strip_tags(
+      expect(page)
+        .to have_content strip_tags(
           t('account_reset.recovery_options.try_method_again'),
         )
       click_link t('account_reset.request.yes_continue')
-      expect(page).
-        to have_content strip_tags(
+      expect(page)
+        .to have_content strip_tags(
           t('account_reset.request.delete_account'),
         )
       reset_email
@@ -32,8 +32,8 @@ RSpec.describe 'Account Reset Request: Cancellation' do
 
         signin(user.email, user.password)
 
-        expect(page).
-          to have_current_path(
+        expect(page)
+          .to have_current_path(
             login_two_factor_path(otp_delivery_preference: 'sms'),
           )
       end

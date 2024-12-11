@@ -26,8 +26,8 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true do
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
     allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx).and_return(true)
-    ServiceProvider.find_by(issuer: service_provider_issuer(sp)).
-      update(in_person_proofing_enabled: true)
+    ServiceProvider.find_by(issuer: service_provider_issuer(sp))
+      .update(in_person_proofing_enabled: true)
   end
 
   def deactivate_profile_update_enrollment(status:)
@@ -141,9 +141,9 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true do
       freeze_time do
         acknowledge_and_confirm_personal_key
         deadline = (Time.zone.now +
-          IdentityConfig.store.in_person_enrollment_validity_in_days.days).
-          in_time_zone(Idv::InPerson::ReadyToVerifyPresenter::USPS_SERVER_TIMEZONE).
-          strftime(t('time.formats.event_date'))
+          IdentityConfig.store.in_person_enrollment_validity_in_days.days)
+          .in_time_zone(Idv::InPerson::ReadyToVerifyPresenter::USPS_SERVER_TIMEZONE)
+          .strftime(t('time.formats.event_date'))
       end
 
       # ready to verify page

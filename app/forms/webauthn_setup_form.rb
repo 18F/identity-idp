@@ -82,10 +82,10 @@ class WebauthnSetupForm
   def name_is_unique
     return unless WebauthnConfiguration.exists?(user_id: @user.id, name: @name)
     if @platform_authenticator
-      num_existing_devices = WebauthnConfiguration.
-        where(user_id: @user.id).
-        where('name LIKE ?', "#{@name}%").
-        count
+      num_existing_devices = WebauthnConfiguration
+        .where(user_id: @user.id)
+        .where('name LIKE ?', "#{@name}%")
+        .count
       @name = "#{@name} (#{num_existing_devices})"
     else
       name_error = if platform_authenticator?

@@ -14,8 +14,8 @@ RSpec.describe BrowserSupport do
 
     context 'with browser support config file missing' do
       before do
-        expect(File).to receive(:read).once.with(Rails.root.join('browsers.json')).
-          and_raise(Errno::ENOENT.new)
+        expect(File).to receive(:read).once.with(Rails.root.join('browsers.json'))
+          .and_raise(Errno::ENOENT.new)
       end
 
       it { expect(supported).to eq(true) }
@@ -28,8 +28,8 @@ RSpec.describe BrowserSupport do
 
     context 'with invalid support config' do
       before do
-        expect(File).to receive(:read).once.with(Rails.root.join('browsers.json')).
-          and_return('invalid')
+        expect(File).to receive(:read).once.with(Rails.root.join('browsers.json'))
+          .and_return('invalid')
       end
 
       it { expect(supported).to eq(true) }

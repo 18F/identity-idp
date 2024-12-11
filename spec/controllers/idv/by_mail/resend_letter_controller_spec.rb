@@ -138,9 +138,9 @@ RSpec.describe Idv::ByMail::ResendLetterController do
     end
 
     gpo_confirmation_maker = instance_double(GpoConfirmationMaker)
-    allow(GpoConfirmationMaker).to receive(:new).
-      with(pii: pii, service_provider: service_provider, profile: user.pending_profile).
-      and_return(gpo_confirmation_maker)
+    allow(GpoConfirmationMaker).to receive(:new)
+      .with(pii: pii, service_provider: service_provider, profile: user.pending_profile)
+      .and_return(gpo_confirmation_maker)
 
     expect(gpo_confirmation_maker).to receive(:perform)
     expect { put :create }.to change { ActionMailer::Base.deliveries.count }.by(1)

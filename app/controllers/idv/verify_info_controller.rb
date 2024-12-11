@@ -17,8 +17,8 @@ module Idv
       @ssn = idv_session.ssn
       @pii = pii
 
-      Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
-        call('verify', :view, true)
+      Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer])
+        .call('verify', :view, true)
 
       @had_barcode_read_failure = idv_session.had_barcode_read_failure
       process_async_state(load_async_state)

@@ -31,8 +31,8 @@ module TwoFactorAuthCode
     end
 
     def choose_another_method_troubleshooting_option
-      BlockLinkComponent.new(url: login_two_factor_options_path).
-        with_content(t('two_factor_authentication.login_options_link_text'))
+      BlockLinkComponent.new(url: login_two_factor_options_path)
+        .with_content(t('two_factor_authentication.login_options_link_text'))
     end
 
     def learn_more_about_authentication_options_troubleshooting_option

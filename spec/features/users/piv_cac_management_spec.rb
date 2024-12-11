@@ -15,8 +15,8 @@ RSpec.feature 'PIV/CAC Management' do
       visit account_two_factor_authentication_path
       click_link t('account.index.piv_cac_add'), href: setup_piv_cac_url
 
-      expect(page.response_headers['Content-Security-Policy'].split(';').map(&:strip)).
-        to(include("form-action https://*.pivcac.test.example.com 'self'"))
+      expect(page.response_headers['Content-Security-Policy'].split(';').map(&:strip))
+        .to(include("form-action https://*.pivcac.test.example.com 'self'"))
 
       fill_in t('instructions.mfa.piv_cac.step_1'), with: 'Card'
       click_on t('forms.piv_cac_setup.submit')

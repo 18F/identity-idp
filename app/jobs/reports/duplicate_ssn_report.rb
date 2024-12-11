@@ -28,10 +28,10 @@ module Reports
     def report_body
       todays_profiles = transaction_with_timeout do
         # note, this will table scan until we add an index, for a once-a-day job it may be ok
-        Profile.
-          select(:id, :ssn_signature).
-          where(active: true, activated_at: start..finish).
-          to_a
+        Profile
+          .select(:id, :ssn_signature)
+          .where(active: true, activated_at: start..finish)
+          .to_a
       end
 
       todays_profile_ids = todays_profiles.map(&:id).to_set
@@ -39,21 +39,21 @@ module Reports
       ssn_signatures = todays_profiles.map(&:ssn_signature).uniq
 
       profiles_connected_by_ssn = ssn_signatures.each_slice(1000).flat_map do |ssn_signature_slice|
-        Profile.
-          includes(:user).
-          where(ssn_signature: ssn_signature_slice).
-          to_a
+        Profile
+          .includes(:user)
+          .where(ssn_signature: ssn_signature_slice)
+          .to_a
       end
 
       profiles_connected_by_ssn.sort_by!(&:id).reverse!
 
-      count_by_ssn = profiles_connected_by_ssn.
-        group_by(&:ssn_signature).
-        transform_values(&:count)
-      count_by_ssn_active = profiles_connected_by_ssn.
-        select(&:active?).
-        group_by(&:ssn_signature).
-        transform_values(&:count)
+      count_by_ssn = profiles_connected_by_ssn
+        .group_by(&:ssn_signature)
+        .transform_values(&:count)
+      count_by_ssn_active = profiles_connected_by_ssn
+        .select(&:active?)
+        .group_by(&:ssn_signature)
+        .transform_values(&:count)
 
       CSV.generate do |csv|
         csv << %w[

@@ -128,8 +128,8 @@ RSpec.describe Api::Internal::TwoFactorAuthentication::WebauthnController do
     end
 
     it 'sends a recovery information changed event' do
-      expect(PushNotification::HttpPush).to receive(:deliver).
-        with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
+      expect(PushNotification::HttpPush).to receive(:deliver)
+        .with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
 
       response
     end

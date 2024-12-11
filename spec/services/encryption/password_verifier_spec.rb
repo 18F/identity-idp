@@ -35,9 +35,9 @@ RSpec.describe Encryption::PasswordVerifier do
       scrypt_password = double(SCrypt::Password, digest: 'scrypted_password')
       encoded_scrypt_password = Base64.strict_encode64('scrypted_password')
 
-      expect(SCrypt::Engine).to receive(:hash_secret).
-        with(password, scrypt_salt, 32).
-        and_return('scrypted')
+      expect(SCrypt::Engine).to receive(:hash_secret)
+        .with(password, scrypt_salt, 32)
+        .and_return('scrypted')
       expect(SCrypt::Password).to receive(:new).with('scrypted').and_return(scrypt_password)
 
       single_region_kms_client = subject.send(:single_region_kms_client)

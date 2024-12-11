@@ -27,9 +27,9 @@ RSpec.describe UspsInPersonProofing::Transliterator do
           expect(result.unsupported_chars).to include('И', 'Љ')
         end
         it 'transliterates using English locale' do
-          expect(I18n).to receive(:transliterate).
-            with(duck_type(:to_s), locale: :en).
-            and_call_original.at_least(:once)
+          expect(I18n).to receive(:transliterate)
+            .with(duck_type(:to_s), locale: :en)
+            .and_call_original.at_least(:once)
           result
         end
         it 'does not count question marks as unsupported characters by default' do

@@ -192,8 +192,9 @@ module Reporting
         results.each do |details_section|
           # Only condense the rows if there is more than one row in the 10+ range
           if details_section.count { |details| details.num_entities >= 10 } > 1
-            details_section.select { |details| details.num_entities >= 10 }.
-              reduce do |condensed_row, captured_row|
+            details_section
+              .select { |details| details.num_entities >= 10 }
+              .reduce do |condensed_row, captured_row|
                 # Delete any rows after the first captured_row (which becomes the condensed_row)
                 details_section.delete(captured_row) if captured_row != condensed_row
                 condensed_row.update_details(

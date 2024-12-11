@@ -21,8 +21,8 @@ RSpec.describe AccountReset::PendingPresenter do
   describe '#time_remaining_until_granted' do
     before { I18n.locale = :en }
     before do
-      allow(IdentityConfig.store).to receive(:account_reset_fraud_user_wait_period_days).
-        and_return(10)
+      allow(IdentityConfig.store).to receive(:account_reset_fraud_user_wait_period_days)
+        .and_return(10)
     end
 
     context 'fraud user' do

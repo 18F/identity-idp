@@ -62,8 +62,8 @@ RSpec.describe Reports::FraudMetricsReport do
     allow(Identity::Hostdata).to receive(:env).and_return('int')
     allow(Identity::Hostdata).to receive(:aws_account_id).and_return('1234')
     allow(Identity::Hostdata).to receive(:aws_region).and_return('us-west-1')
-    allow(IdentityConfig.store).to receive(:s3_report_bucket_prefix).
-      and_return(s3_report_bucket_prefix)
+    allow(IdentityConfig.store).to receive(:s3_report_bucket_prefix)
+      .and_return(s3_report_bucket_prefix)
 
     Aws.config[:s3] = {
       stub_responses: {
@@ -71,19 +71,19 @@ RSpec.describe Reports::FraudMetricsReport do
       },
     }
 
-    allow(IdentityConfig.store).to receive(:team_daily_fraud_metrics_emails).
-      and_return(mock_test_fraud_emails)
-    allow(IdentityConfig.store).to receive(:team_monthly_fraud_metrics_emails).
-      and_return(mock_team_fraud_emails)
+    allow(IdentityConfig.store).to receive(:team_daily_fraud_metrics_emails)
+      .and_return(mock_test_fraud_emails)
+    allow(IdentityConfig.store).to receive(:team_monthly_fraud_metrics_emails)
+      .and_return(mock_team_fraud_emails)
 
-    allow(report.fraud_metrics_lg99_report).to receive(:lg99_metrics_table).
-      and_return(mock_identity_verification_lg99_data)
+    allow(report.fraud_metrics_lg99_report).to receive(:lg99_metrics_table)
+      .and_return(mock_identity_verification_lg99_data)
 
-    allow(report.fraud_metrics_lg99_report).to receive(:suspended_metrics_table).
-      and_return(mock_suspended_metrics_table)
+    allow(report.fraud_metrics_lg99_report).to receive(:suspended_metrics_table)
+      .and_return(mock_suspended_metrics_table)
 
-    allow(report.fraud_metrics_lg99_report).to receive(:reinstated_metrics_table).
-      and_return(mock_reinstated_metrics_table)
+    allow(report.fraud_metrics_lg99_report).to receive(:reinstated_metrics_table)
+      .and_return(mock_reinstated_metrics_table)
   end
 
   it 'sends out a report to just to team agnes' do
