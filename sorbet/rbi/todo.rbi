@@ -7,14 +7,6 @@
 module ::Aamva::Applicant; end
 module ::AamvaTestCert; end
 module ::CopHelper; end
-module ::DataPull; end
-module ::DataPull::EmailLookup; end
-module ::DataPull::EventsSummary; end
-module ::DataPull::InspectorGeneralRequest; end
-module ::DataPull::ProfileSummary; end
-module ::DataPull::UuidConvert; end
-module ::DataPull::UuidExport; end
-module ::DataPull::UuidLookup; end
 module ::DownloadPivCerts; end
 module ::EmailDeliveries; end
 module ::GraphViz; end
