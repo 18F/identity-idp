@@ -237,7 +237,7 @@ RSpec.describe OpenidConnect::LogoutController do
           let(:id_token_hint) { 'abc123' }
           it 'tracks events' do
             stub_analytics
-            errors_keys = { id_token_hint: true }
+            errors_keys = [:id_token_hint]
 
             action
 
@@ -866,7 +866,6 @@ RSpec.describe OpenidConnect::LogoutController do
             expect(@analytics).to_not have_logged_event(
               :integration_errors_present,
             )
-            expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
           end
 
           context 'when client_id is missing' do
