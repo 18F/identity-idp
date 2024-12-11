@@ -94,9 +94,8 @@ class OpenidConnectLogoutForm
     return nil if id_token_hint.blank?
     payload, _headers = nil
 
-    _matching_cert = [
-      AppArtifacts.store.oidc_primary_public_key,
-      AppArtifacts.store.oidc_secondary_public_key,
+    [
+      AppArtifacts.store.oidc_primary_public_key, AppArtifacts.store.oidc_secondary_public_key
     ].compact.find do |key|
       payload, _headers = JWT.decode(
         id_token_hint, key, true,
