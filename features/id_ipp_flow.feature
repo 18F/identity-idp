@@ -15,4 +15,3 @@ Feature: ID-IPP Flow
     Then the user is navigated to the personal key page
     And the user has a "pending" in-person enrollment
     And the user has a pending profile
-

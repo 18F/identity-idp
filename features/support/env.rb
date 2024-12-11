@@ -52,3 +52,20 @@ end
 # The :transaction strategy is faster, but might give you threading problems.
 # See https://github.com/cucumber/cucumber-rails/blob/master/features/choose_javascript_database_strategy.feature
 Cucumber::Rails::Database.javascript_strategy = :truncation
+
+# For running Selenium at a lower speed
+# Very useful when recording test runs
+# https://stackoverflow.com/a/46840590/2037928
+if ENV['SLOW'].present?
+  require 'selenium-webdriver'
+  module ::Selenium::WebDriver::Remote
+    class Bridge
+      alias_method :old_execute, :execute
+
+      def execute(*args)
+        sleep(0.1)
+        old_execute(*args)
+      end
+    end
+  end
+end
