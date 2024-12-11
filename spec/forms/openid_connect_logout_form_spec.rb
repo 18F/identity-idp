@@ -149,6 +149,27 @@ RSpec.describe OpenidConnectLogoutForm do
           end
         end
 
+        context 'with a valid payload that was signed with the secondary OIDC key' do
+          let(:id_token_hint) do
+            JWT.encode(
+              { sub: identity.uuid, aud: identity.service_provider },
+              AppArtifacts.store.oidc_secondary_private_key, 'RS256'
+            )
+          end
+
+          it 'is valid' do
+            secondary_private_key = OpenSSL::PKey::RSA.generate(1_024)
+            secondary_public_key = secondary_private_key.public_key
+            allow(AppArtifacts.store).to receive(:oidc_secondary_private_key).and_return(
+              secondary_private_key,
+            )
+            allow(AppArtifacts.store).to receive(:oidc_secondary_public_key).and_return(
+              secondary_public_key,
+            )
+            expect(valid?).to eq(true)
+          end
+        end
+
         context 'with a payload that does not correspond to an identity' do
           let(:id_token_hint) do
             JWT.encode(

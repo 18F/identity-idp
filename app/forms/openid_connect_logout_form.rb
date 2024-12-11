@@ -86,22 +86,32 @@ class OpenidConnectLogoutForm
     if reject_id_token_hint?
       identity_from_client_id
     else
+      identity_from_token_hint(id_token_hint) || identity_from_client_id
+    end
+  end
+
+  def identity_from_token_hint(id_token_hint)
+    return nil if id_token_hint.blank?
+    payload, _headers = nil
+
+    _matching_cert = [
+      AppArtifacts.store.oidc_primary_public_key,
+      AppArtifacts.store.oidc_secondary_public_key,
+    ].compact.find do |key|
       payload, _headers = JWT.decode(
-        id_token_hint, AppArtifacts.store.oidc_primary_public_key, true,
+        id_token_hint, key, true,
         algorithm: 'RS256',
         leeway: Float::INFINITY
       ).map(&:with_indifferent_access)
-
-      identity_from_payload(payload) || identity_from_client_id
+    rescue JWT::DecodeError
+      next
     end
-  rescue JWT::DecodeError
-    nil
-  end
 
-  def identity_from_payload(payload)
-    uuid = payload[:sub]
-    sp = payload[:aud]
-    AgencyIdentityLinker.sp_identity_from_uuid_and_sp(uuid, sp)
+    if payload
+      uuid = payload[:sub]
+      sp = payload[:aud]
+      AgencyIdentityLinker.sp_identity_from_uuid_and_sp(uuid, sp)
+    end
   end
 
   def id_token_hint_or_client_id_present
