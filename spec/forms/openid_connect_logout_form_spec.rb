@@ -158,14 +158,6 @@ RSpec.describe OpenidConnectLogoutForm do
           end
 
           it 'is valid' do
-            secondary_private_key = OpenSSL::PKey::RSA.generate(1_024)
-            secondary_public_key = secondary_private_key.public_key
-            allow(AppArtifacts.store).to receive(:oidc_secondary_private_key).and_return(
-              secondary_private_key,
-            )
-            allow(AppArtifacts.store).to receive(:oidc_secondary_public_key).and_return(
-              secondary_public_key,
-            )
             expect(valid?).to eq(true)
           end
         end
