@@ -28,12 +28,9 @@ class SummarizeUserEvents
   end
 
   def run
-    results = cloudwatch_client.fetch(
-      query: query,
-      from: from_date,
-      to: to_date,
-    )
-    pp results
+    find_cloudwatch_events do |cloudwatch_event|
+      pp cloudwatch_event
+    end
   end
 
 
@@ -57,6 +54,32 @@ class SummarizeUserEvents
       log_group_name: 'prod_/srv/idp/shared/log/events.log',
     )
   end
+
+  def find_cloudwatch_events(&block)
+    if $stdin.tty?
+      cloudwatch_source(&block)
+    else
+      warn "Reading Cloudwatch events as newline-delimited JSON (ndjson) from stdin"
+      stdin_source(&block)
+    end
+  end
+
+  def stdin_source(&block)
+    $stdin.each_line do |line|
+      next if line.blank?
+      event = JSON.parse(line)
+      block.call(event)
+    end
+  end
+
+  def cloudwatch_source(&block)
+    cloudwatch_client.fetch(
+      query: query,
+      from: from_date,
+      to: to_date,
+      &block
+    )    
+  end  
 end
 
 
