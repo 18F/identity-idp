@@ -31,7 +31,7 @@ class AppArtifacts
     def add_artifact(name, path, allow_missing: false)
       value = read_artifact(path)
       raise MissingArtifactError.new("missing artifact: #{path}") if value.nil? && !allow_missing
-      value = yield(value) if block_given?
+      value = yield(value) if block_given? && value
       @artifacts[name] = value
       nil
     end
