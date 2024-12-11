@@ -612,9 +612,6 @@ RSpec.describe Profile do
   describe '#deactivate_due_to_encryption_error' do
     context 'when the profile has a "pending" in_person_enrollment' do
       subject { create(:profile, :in_person_verification_pending, user: user) }
-      let!(:enrollment) do
-        create(:in_person_enrollment, user: user, profile: subject, status: :pending)
-      end
 
       before do
         subject.deactivate_due_to_encryption_error
