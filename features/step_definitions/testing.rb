@@ -32,9 +32,32 @@ Given('the user verifies their information') do
   complete_verify_step(@user)
 end
 
-When('I run cucumber') do
+Given('the user submits their phone number for verification') do
+  fill_out_phone_form_ok(MfaContext.new(@user).phone_configurations.first.phone)
+  click_idv_send_security_code
 end
 
-Then('this should pass') do
-  expect(true).to be(true)
+Given('the user verifies their phone number') do
+  fill_in_code_with_last_phone_otp
+  click_submit_default
+end
+
+Given('the user submits their password') do
+  complete_enter_password_step(@user)
+end
+
+Then('the user is navigated to the personal key page') do
+  expect(page).to have_content(t('titles.idv.personal_key'))
+  expect(page).to have_current_path(idv_personal_key_path)
+end
+
+Then('the user has a pending in-person enrollment') do
+  expect(@user.in_person_enrollments.first).to have_attributes(
+    status: 'pending',
+  )
+  expect(@user.in_person_enrollments.first.profile).to have_attributes(
+    active: false,
+    deactivation_reason: nil,
+    in_person_verification_pending_at: be_kind_of(Time),
+  )
 end

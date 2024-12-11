@@ -19,6 +19,19 @@ BeforeAll do
 end
 
 Before do
+  Telephony::Test::Message.clear_messages
+  Telephony::Test::Call.clear_calls
+  PushNotification::LocalEventQueue.clear!
+  REDIS_THROTTLE_POOL.with { |client| client.flushdb } if Identity::Hostdata.config
+end
+
+Before do
+  descendants = ActiveJob::Base.descendants + [ActiveJob::Base]
+  ActiveJob::Base.queue_adapter = :inline
+  descendants.each(&:disable_test_adapter)
+end
+
+Before do
   allow(IdentityConfig.store).to receive(:domain_name).and_return(server_domain)
   default_url_options = ApplicationController.default_url_options.merge(host: server_domain)
   self.default_url_options = default_url_options
@@ -28,6 +41,4 @@ end
 Before('@id-ipp') do
   allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
   allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(true)
-  allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
-  allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('test_org')
 end
