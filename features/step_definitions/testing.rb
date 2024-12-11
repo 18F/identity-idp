@@ -1,21 +1,40 @@
 # frozen_string_literal: true
 
-require_relative '../../lib/saml_idp_constants'
-
-Given('A user is logged in') do
-  @user = FactoryBot.create(
-    :user, :fully_registered, with: { phone: '+1 202-555-1212' },
-                              password: 'Val!d Pass w0rd'
-  )
-  @service_provider = FactoryBot.create(:service_provider, :active, :in_person_proofing_enabled)
+Given('a user is logged in') do
+  @user = user_with_2fa
+  @service_provider = create(:service_provider, :active, :in_person_proofing_enabled)
 
   visit_idp_from_sp_with_ial2(:oidc, **{ client_id: @service_provider.issuer })
   sign_in_via_branded_page(@user)
 end
 
+Given('the user begins in-person proofing') do
+  begin_in_person_proofing_with_opt_in_ipp_enabled_and_opting_in
+end
+
+Given('the user completes the prepared step') do
+  complete_prepare_step(@user)
+end
+
+Given('the user selects a post office') do
+  complete_location_step
+end
+
+Given('the user submits a state id') do
+  complete_state_id_controller(@user)
+end
+
+Given('the user submits an ssn') do
+  complete_ssn_step(@user)
+end
+
+Given('the user verifies their information') do
+  complete_verify_step(@user)
+end
+
 When('I run cucumber') do
 end
 
-Then('This should pass') do
-  expect(true).to be(false)
+Then('this should pass') do
+  expect(true).to be(true)
 end

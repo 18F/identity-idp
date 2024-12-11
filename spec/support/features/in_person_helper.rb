@@ -50,9 +50,9 @@ module InPersonHelper
     select GOOD_STATE,
            from: t('in_person_proofing.form.state_id.identity_doc_address_state')
     if same_address_as_id
-      choose t('in_person_proofing.form.state_id.same_address_as_id_yes')
+      choose t('in_person_proofing.form.state_id.same_address_as_id_yes'), allow_label_click: true
     else
-      choose t('in_person_proofing.form.state_id.same_address_as_id_no')
+      choose t('in_person_proofing.form.state_id.same_address_as_id_no'), allow_label_click: true
     end
   end
 
