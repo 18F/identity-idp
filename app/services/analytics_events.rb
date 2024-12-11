@@ -5179,12 +5179,18 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Array] error_details Full messages of the errors
+  # @param [Hash] error_types Types of errors that are surfaced
+  # @param [Symbol] event What part of the workflow the error occured in
+  # @param [Boolean] integration_exists Whether the requesting issuer maps to an SP
+  # @param [String] request_issuer The issuer in the request
   def integration_errors_present(
     error_details:,
     error_types:,
     event:,
     integration_exists:,
-    request_issuer: nil
+    request_issuer: nil,
+    **extra
   )
     track_event(
       :integration_errors_present,
@@ -5193,6 +5199,7 @@ module AnalyticsEvents
       event:,
       integration_exists:,
       request_issuer:,
+      **extra,
     )
   end
 
