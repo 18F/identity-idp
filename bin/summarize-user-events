@@ -8,32 +8,32 @@ require 'active_support/core_ext/object/blank'
 require 'active_support/time'
 require 'aws-sdk-cloudwatchlogs'
 require 'concurrent-ruby'
+require 'optparse'
 
 $LOAD_PATH.unshift(File.expand_path(File.join(__dir__, '../lib')))
 require 'reporting/cloudwatch_client'
 require 'reporting/cloudwatch_query_quoting'
-
+# Require all *_matcher.rb files in lib/event_summarizer
+Dir[File.expand_path(File.join(__dir__, '../lib/event_summarizer', '**', '*_matcher.rb'))].sort.each do |f|
+  require f
+end
 
 class SummarizeUserEvents
   attr_reader :uuid, :from_date, :to_date
-  
-  def initialize(argv:, stdin:, stdout:)
-    # argv[0] == uuid
-    # argv[1] == From date
-    # argv[2] == to date
 
-    @uuid = argv[0]
-    @from_date = argv[1].present? ? Time.strptime(argv[1], '%m/%d/%Y') : 1.week.ago
-    @to_date = argv[2].present? ? Time.strptime(argv[2], '%m/%d/%Y') : DateTime.now 
+  def initialize(user_uuid:, start_time: nil, end_time: nil)
+    @uuid = user_uuid
+    @from_date = start_time || 1.week.ago
+    @to_date = end_time || DateTime.now
   end
 
-  def run
-    results = cloudwatch_client.fetch(
+  def run(&block)
+    cloudwatch_client.fetch(
       query: query,
       from: from_date,
       to: to_date,
+      &block
     )
-    pp results
   end
 
 
@@ -46,6 +46,7 @@ class SummarizeUserEvents
         , @timestamp
       | filter properties.user_id = '#{uuid}'
       | sort @timestamp asc
+      | limit 10000
     QUERY
   end
 
@@ -59,7 +60,48 @@ class SummarizeUserEvents
   end
 end
 
+def main(args)
+  options = {}
+  basename = File.basename($0)
+
+  optparse = OptionParser.new do |opts|
+    opts.banner = <<-EOM
+      usage: #{basename} [OPTIONS]
+
+    EOM
+    opts.on('-h', '--help', 'Display this message') do
+      STDERR.puts opts
+      exit
+    end
+
+    opts.on('-u', '--user-uuid USER_UUID', 'UUID of the protagonist of the story') do |val|
+      options[:user_uuid] = val
+    end
+
+    opts.on('-s', '--start-time START_TIME', 'DateTime of the start of the query period (e.g. 2024-12-09T10:00:00Z)') do |val|
+      options[:start_time] = Time.parse(val)
+    end
+
+    opts.on('-e', '--end_time END_TIME', 'DateTime of the end of the query period (e.g. 2024-12-09T14:30:00Z)') do |val|
+      options[:end_time] = Time.parse(val)
+    end
+  end
+
+  optparse.parse!
+
+  matchers = [
+    EventSummarizer::DocAuthMatcher.new,
+  ]
+
+  SummarizeUserEvents.new(**options).run do |event|
+    matchers.each do |matcher|
+      if matcher.match?(event)
+        puts matcher.format(event)
+      end
+    end
+  end
+end
 
 if $PROGRAM_NAME == __FILE__
-  SummarizeUserEvents.new(argv: ARGV, stdin: STDIN, stdout: STDOUT).run
+  main(ARGV)
 end
