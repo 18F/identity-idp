@@ -20,13 +20,13 @@ AppArtifacts.setup do |store|
     :oidc_secondary_private_key, '/%<env>s/oidc_secondary.key',
     allow_missing: true
   ) do |k|
-    OpenSSL::PKey::RSA.new(k) if !k.nil?
+    OpenSSL::PKey::RSA.new(k)
   end
   store.add_artifact(
     :oidc_secondary_public_key, '/%<env>s/oidc_secondary.pub',
     allow_missing: true
   ) do |k|
-    OpenSSL::PKey::RSA.new(k) if !k.nil?
+    OpenSSL::PKey::RSA.new(k)
   end
 end
 
