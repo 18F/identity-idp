@@ -1,0 +1,133 @@
+# !!! GENERATED FILE !!!
+# Please see yard/0.9/_generators/README.md
+
+# The data store for the {Registry}.
+#
+# @see Registry
+# @see Serializers::YardocSerializer
+class YARD::RegistryStore
+  # @deprecated The registry no longer tracks proxy types
+  attr_reader proxy_types: untyped
+  # Returns the value of attribute file.
+  attr_reader file: untyped
+  # Returns the value of attribute checksums.
+  attr_reader checksums: untyped
+  def initialize: () -> void
+  # Gets a {CodeObjects::Base} from the store
+  #
+  # @param [String, Symbol] key the path name of the object to look for.
+  #   If it is empty or :root, returns the {#root} object.
+  # @return [CodeObjects::Base, nil] a code object or nil if none is found
+  def get: (String | Symbol key) -> YARD::CodeObjects::Base?
+  # Associates an object with a path
+  # @param [String, Symbol] key the path name (:root or '' for root object)
+  # @param [CodeObjects::Base] value the object to store
+  # @return [CodeObjects::Base] returns +value+
+  def put: (String | Symbol key, YARD::CodeObjects::Base value) -> YARD::CodeObjects::Base
+  # Gets a {CodeObjects::Base} from the store
+  # @param [String, Symbol] key
+  #   the path name of the object to look for.
+  #   If it is empty or :root, returns the {#root} object.
+  # @return [CodeObjects::Base, nil] a code object or nil if none is found
+  #
+  def []: (String | Symbol key) -> YARD::CodeObjects::Base?
+  # Associates an object with a path
+  # @param [String, Symbol] key
+  #   the path name (:root or '' for root object)
+  # @param [CodeObjects::Base] value
+  #   the object to store
+  # @return [CodeObjects::Base] returns +value+
+  #
+  def []=: (String | Symbol key, YARD::CodeObjects::Base value) -> YARD::CodeObjects::Base
+  # Deletes an object at a given path
+  # @param [#to_sym] key the key to delete
+  # @return [void]
+  def delete: (untyped key) -> void
+  # Gets all path names from the store. Loads the entire database
+  # if +reload+ is +true+
+  #
+  # @param [Boolean] reload if false, does not load the entire database
+  #   before a lookup.
+  # @return [Array<Symbol>] the path names of all the code objects
+  def keys: (?bool reload) -> Array[Symbol]
+  # Gets all code objects from the store. Loads the entire database
+  # if +reload+ is +true+
+  #
+  # @param [Boolean] reload if false, does not load the entire database
+  #   before a lookup.
+  # @return [Array<CodeObjects::Base>] all the code objects
+  def values: (?bool reload) -> Array[YARD::CodeObjects::Base]
+  # @param [Symbol] type the type to look for
+  # @return [Array<String>] a list of object paths with a given
+  #   {CodeObjects::Base#type}
+  # @since 0.8.0
+  def paths_for_type: (Symbol type, ?untyped reload) -> Array[String]
+  # @param [Symbol] type the type to look for
+  # @return [Array<CodeObjects::Base>] a list of objects with a given
+  #   {CodeObjects::Base#type}
+  # @since 0.8.0
+  def values_for_type: (Symbol type, ?untyped reload) -> Array[YARD::CodeObjects::Base]
+  # @return [CodeObjects::RootObject] the root object
+  def root: () -> YARD::CodeObjects::RootObject
+  # @param [String] name the locale name.
+  # @return [I18n::Locale] the locale object for +name+.
+  # @since 0.8.3
+  def locale: (String name) -> YARD::I18n::Locale
+  # @param [String, nil] file the name of the yardoc db to load
+  # @return [Boolean] whether the database was loaded
+  def load: (?String? file) -> bool
+  # Loads the .yardoc file and loads all cached objects into memory
+  # automatically.
+  #
+  # @param [String, nil] file the name of the yardoc db to load
+  # @return [Boolean] whether the database was loaded
+  # @see #load_all
+  # @since 0.5.1
+  def load!: (?String? file) -> bool
+  # Loads all cached objects into memory
+  # @return [void]
+  def load_all: () -> void
+  # Saves the database to disk
+  # @param [Boolean] merge if true, merges the data in memory with the
+  #   data on disk, otherwise the data on disk is deleted.
+  # @param [String, nil] file if supplied, the name of the file to save to
+  # @return [Boolean] whether the database was saved
+  def save: (?bool merge, ?String? file) -> bool
+  # Creates a pessmistic transactional lock on the database for writing.
+  # Use with {YARD.parse} to ensure the database is not written multiple
+  # times.
+  #
+  # @see #locked_for_writing?
+  # @param file [String] if supplied, the path to the database
+  def lock_for_writing: (?String file) -> untyped
+  # @return [Boolean] whether the database is currently locked for writing
+  # @param file [String] if supplied, the path to the database
+  def locked_for_writing?: (?String file) -> bool
+  # Deletes the .yardoc database on disk
+  #
+  # @param [Boolean] force if force is not set to true, the file/directory
+  #   will only be removed if it ends with .yardoc. This helps with
+  #   cases where the directory might have been named incorrectly.
+  # @return [Boolean] true if the .yardoc database was deleted, false
+  #   otherwise.
+  def destroy: (?bool force) -> bool
+  def objects_path: () -> untyped
+  # @deprecated The registry no longer tracks proxy types
+  def proxy_types_path: () -> untyped
+  def checksums_path: () -> untyped
+  def object_types_path: () -> untyped
+  def load_yardoc: () -> untyped
+  private def load_yardoc_old: () -> untyped
+  # @deprecated The registry no longer tracks proxy types
+  private def load_proxy_types: () -> untyped
+  private def load_object_types: () -> untyped
+  private def load_checksums: () -> untyped
+  private def load_root: () -> untyped
+  private def load_locale: (untyped name) -> untyped
+  private def all_disk_objects: () -> untyped
+  # @deprecated The registry no longer tracks proxy types
+  private def write_proxy_types: () -> untyped
+  private def write_object_types: () -> untyped
+  private def write_checksums: () -> untyped
+  private def write_complete_lock: () -> untyped
+end

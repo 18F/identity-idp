@@ -1,0 +1,14 @@
+# !!! GENERATED FILE !!!
+# Please see yard/0.9/_generators/README.md
+
+# Stubs marshal dumps and acts a delegate class for an object by path
+#
+# @private
+class YARD::StubProxy
+  def _dump: (untyped _depth) -> untyped
+  def self._load: (untyped str) -> untyped
+  def hash: () -> untyped
+  def initialize: (untyped path, ?untyped transient) -> void
+  def method_missing: (untyped meth, *untyped args) -> untyped
+  FILELEN: untyped
+end

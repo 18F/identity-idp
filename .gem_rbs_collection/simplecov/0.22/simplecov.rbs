@@ -1,0 +1,54 @@
+module SimpleCov
+  extend Configuration
+
+  VERSION: String
+
+  def self.collate: (Array[String] result_filenames) -> void
+
+  def self.start: (?(String | Symbol | nil) profile) ?{ [self: Configuration] -> void } -> void
+
+  module Configuration
+    type filter = String
+                | Regexp
+                | Filter[untyped]
+                | ^(SourceFile source_file) -> boolish
+                | Array[filter]
+
+    type criterion = :line | :branch
+
+    def add_filter: (filter filter_argument) -> void
+                  | { (SourceFile source_file) -> boolish } -> void
+
+    def add_group: (String group_name, filter filter_argument) -> untyped
+                 | (String group_name) { (SourceFile source_file) -> boolish } -> void
+
+    def command_name: (String name) -> void
+
+    def enable_coverage: (criterion criterion) -> void
+
+    def enable_coverage_for_eval: () -> void
+
+    def filters: () -> Array[Filter[untyped]]
+
+    def primary_coverage: (criterion criterion) -> void
+
+    def root: (?String? root) -> String?
+  end
+
+  class SourceFile
+    attr_reader filename: String?
+
+    def lines: () -> Array[Line]
+
+    class Line
+    end
+  end
+
+  class Filter[T]
+    attr_reader filter_argument: T
+
+    def initialize: (T filter_argument) -> void
+
+    def matches?: (SourceFile source_file) -> boolish
+  end
+end

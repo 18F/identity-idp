@@ -1,0 +1,7 @@
+# !!! GENERATED FILE !!!
+# Please see yard/0.9/_generators/README.md
+
+dependencies:
+  - name: optparse
+  - name: logger
+  - name: ripper

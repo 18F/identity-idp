@@ -1,0 +1,132 @@
+# !!! GENERATED FILE !!!
+# Please see yard/0.9/_generators/README.md
+
+# Parses text and creates a {Docstring} object to represent documentation
+# for a {CodeObjects::Base}. To create a new docstring, you should initialize
+# the parser and call {#parse} followed by {#to_docstring}.
+#
+# == Subclassing Notes
+#
+# The DocstringParser can be subclassed and substituted during parsing by
+# setting the {Docstring.default_parser} attribute with the name of the
+# subclass. This allows developers to change the way docstrings are
+# parsed, allowing for completely different docstring syntaxes.
+#
+# @example Creating a Docstring with a DocstringParser
+#   DocstringParser.new.parse("text here").to_docstring
+# @example Creating a Custom DocstringParser
+#   # Parses docstrings backwards!
+#   class ReverseDocstringParser
+#     def parse_content(content)
+#       super(content.reverse)
+#     end
+#   end
+#
+#   # Set the parser as default when parsing
+#   YARD::Docstring.default_parser = ReverseDocstringParser
+# @see #parse_content
+# @since 0.8.0
+class YARD::DocstringParser
+  # @return [String] the parsed text portion of the docstring,
+  #   with tags removed.
+  attr_accessor text: String
+  # @return [String] the complete input string to the parser.
+  attr_accessor raw_text: String
+  # @return [Array<Tags::Tag>] the list of meta-data tags identified
+  #   by the parser
+  attr_accessor tags: Array[YARD::Tags::t]
+  # @return [Array<Tags::Directive>] a list of directives identified
+  #   by the parser. This list will not be passed on to the
+  #   Docstring object.
+  attr_accessor directives: Array[YARD::Tags::Directive]
+  # @return [OpenStruct] any arbitrary state to be passed between
+  #   tags during parsing. Mainly used by directives to coordinate
+  #   behaviour (so that directives can be aware of other directives
+  #   used in a docstring).
+  attr_accessor state: OpenStruct
+  # @return [CodeObjects::Base, nil] the object associated with
+  #   the docstring being parsed. May be nil if the docstring is
+  #   not attached to any object.
+  attr_accessor object: YARD::CodeObjects::Base?
+  # @return [CodeObjects::Base, nil] the object referenced by
+  #   the docstring being parsed. May be nil if the docstring doesn't
+  #   refer to any object.
+  attr_accessor reference: YARD::CodeObjects::Base?
+  # @return [Handlers::Base, nil] the handler parsing this
+  #   docstring. May be nil if this docstring parser is not
+  #   initialized through
+  attr_accessor handler: YARD::Handlers::Base?
+  # @return [Tags::Library] the tag library being used to
+  #   identify registered tags in the docstring.
+  attr_accessor library: YARD::Tags::Library
+  # Creates a new parser to parse docstring data
+  #
+  # @param [Tags::Library] library a tag library for recognizing
+  #   tags.
+  def initialize: (?YARD::Tags::Library library) -> void
+  # @return [Docstring] translates parsed text into
+  #   a Docstring object.
+  def to_docstring: () -> YARD::Docstring
+  # Parses all content and returns itself.
+  #
+  # @param [String] content the docstring text to parse
+  # @param [CodeObjects::Base] object the object that the docstring
+  #   is attached to. Will be passed to directives to act on
+  #   this object.
+  # @param [Handlers::Base, nil] handler the handler object that is
+  #   parsing this object. May be nil if this parser is not being
+  #   called from a {Parser::SourceParser} context.
+  # @return [self] the parser object. To get the docstring,
+  #   call {#to_docstring}.
+  # @see #to_docstring
+  def parse: (String content, ?YARD::CodeObjects::Base object, ?YARD::Handlers::Base? handler) -> self
+  # Parses a given block of text.
+  #
+  # @param [String] content the content to parse
+  # @note Subclasses can override this method to perform custom
+  #   parsing of content data.
+  def parse_content: (String content) -> untyped
+  # Call post processing callbacks on parser.
+  # This is called implicitly by parser. Use this when
+  # manually configuring a {Docstring} object.
+  #
+  # @return [void]
+  def post_process: () -> void
+  # Creates a tag from the {Tags::DefaultFactory tag factory}.
+  #
+  # To add an already created tag object, append it to {#tags}.
+  #
+  # @param [String] tag_name the tag name
+  # @param [String] tag_buf the text attached to the tag with newlines removed.
+  # @return [Tags::Tag, Tags::RefTag] a tag
+  def create_tag: (String tag_name, ?String tag_buf) -> (YARD::Tags::Tag | YARD::Tags::RefTag)
+  # Creates a {Tags::RefTag}
+  def create_ref_tag: (untyped tag_name, untyped name, untyped object_name) -> untyped
+  # Creates a new directive using the registered {#library}
+  # @return [Tags::Directive] the directive object that is created
+  def create_directive: (untyped tag_name, untyped tag_buf) -> YARD::Tags::Directive
+  # Backward compatibility to detect old tags that should be specified
+  # as directives in 0.8 and onward.
+  def tag_is_directive?: (untyped tag_name) -> bool
+  # Creates a callback that is called after a docstring is successfully
+  # parsed. Use this method to perform sanity checks on a docstring's
+  # tag data, or add any extra tags automatically to a docstring.
+  #
+  # @yield [parser] a block to be called after a docstring is parsed
+  # @yieldparam [DocstringParser] parser the docstring parser object
+  #   with all directives and tags created.
+  # @yieldreturn [void]
+  # @return [void]
+  def self.after_parse: () { (YARD::DocstringParser parser) -> void } -> void
+  # @return [Array<Proc>] the {after_parse} callback proc objects
+  def self.after_parse_callbacks: () -> Array[Proc]
+  private def namespace: () -> untyped
+  private def detect_reference: (untyped content) -> untyped
+  # Calls the {Tags::Directive#after_parse} callback on all the
+  # created directives.
+  private def call_directives_after_parse: () -> untyped
+  # Calls all {after_parse} callbacks
+  private def call_after_parse_callbacks: () -> untyped
+  # The regular expression to match the tag syntax
+  META_MATCH: untyped
+end

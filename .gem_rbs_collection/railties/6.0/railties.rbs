@@ -1,0 +1,14 @@
+module Rails
+  module Generators
+    class PluginGenerator < AppBase
+      # It is necessary to satisfy alias target.
+      def app_path: () -> untyped
+    end
+  end
+end
+
+module Rails
+  class Railties
+    extend Initializable::ClassMethods
+  end
+end

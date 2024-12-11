@@ -1,0 +1,16 @@
+# !!! GENERATED FILE !!!
+# Please see yard/0.9/_generators/README.md
+
+module YARD::GemIndex
+  private def find_all_by_name: (*untyped args) -> untyped
+
+  def self.find_all_by_name: (*untyped args) -> untyped
+
+  private def each: () -> untyped
+
+  def self.each: () -> untyped
+
+  private def all: () -> untyped
+
+  def self.all: () -> untyped
+end

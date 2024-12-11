@@ -1,0 +1,64 @@
+module Geocoder
+  #
+  # Search for information about an address or a set of coordinates.
+  #
+  def self.search: (String | [Float, Float] | Query query, ?::Hash[Symbol, untyped] options) -> Array[Result::_Base]
+
+  #
+  # Look up the coordinates of the given street or IP address.
+  #
+  def self.coordinates: (String | [Float, Float] | Query address, ?::Hash[Symbol, untyped] options) -> [Float, Float]?
+
+  #
+  # Look up the address of the given coordinates ([lat,lon])
+  # or IP address (string).
+  #
+  def self.address: (String | [Float, Float] | Query query, ?::Hash[Symbol, untyped] options) -> String?
+end
+
+module Geocoder
+  module Model
+    module Base
+      def geocoder_options: () -> Hash[untyped, untyped]
+      def geocoded_by: () -> bot
+      def reverse_geocoded_by: () -> bot
+    end
+
+    module ActiveRecord
+      include Base
+
+      def geocoded_by: (Symbol address_attr, **untyped) ? { () -> void } -> void
+      def reverse_geocoded_by: (Symbol latitude_attr, Symbol longitude_attr, **untyped) ? { () -> void } -> void
+    end
+  end
+
+  module Store
+    module Base
+      def geocoded: () -> bool
+      def to_coordinates: () -> [Float?, Float?]
+      def distance_to: (untyped point, ?Symbol? units) -> Float
+      alias distance_from distance_to
+
+      def bearing_to: (untyped point, **untyped) -> Float
+      def bearing_from: (untyped point, **untyped) -> Float
+      def geocode: () -> bot
+      def reverse_geocode: () -> bot
+    end
+
+    module ActiveRecord
+      include Base
+
+      def geocode: () -> [Float, Float]?
+      alias fetch_coordinates geocode
+
+      def reverse_geocode: () -> String?
+      alias fetch_address reverse_geocode
+    end
+  end
+end
+
+module ActiveRecord
+  class Base
+    extend Geocoder::Model::ActiveRecord
+  end
+end

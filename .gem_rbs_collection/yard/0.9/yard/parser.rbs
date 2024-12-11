@@ -1,0 +1,1231 @@
+# !!! GENERATED FILE !!!
+# Please see yard/0.9/_generators/README.md
+
+# The parser namespace holds all parsing engines used by YARD.
+# Currently only Ruby and C (Ruby) parsers are implemented.
+module YARD::Parser
+end
+
+# Represents the abstract base parser class that parses source code in
+# a specific way. A parser should implement {#parse}, {#tokenize} and
+# {#enumerator}.
+#
+# == Registering a Custom Parser
+# To register a parser, see {SourceParser.register_parser_type}
+#
+# @abstract
+# @see #parse
+# @see #tokenize
+# @see #enumerator
+# @since 0.5.6
+class YARD::Parser::Base
+  # Convenience method to create a new parser and {#parse}
+  def self.parse: (untyped source, ?untyped filename) -> untyped
+  # This default constructor does nothing. The subclass is responsible for
+  # storing the source contents and filename if they are required.
+  # @param [String] source the source contents
+  # @param [String] filename the name of the file if from disk
+  def initialize: (String source, String filename) -> void
+  # This method should be implemented to parse the source and return itself.
+  # @abstract
+  # @return [Base] this method should return itself
+  def parse: () -> YARD::Parser::Base
+  # This method should be implemented to tokenize given source
+  # @abstract
+  # @return [Array] a list/tree of lexical tokens
+  def tokenize: () -> Array[untyped]
+  # This method should be implemented to return a list of semantic tokens
+  # representing the source code to be post-processed. Otherwise the method
+  # should return nil.
+  #
+  # @abstract
+  # @return [Array] a list of semantic tokens representing the source code
+  #   to be post-processed
+  # @return [nil] if no post-processing should be done
+  def enumerator: () -> Array[untyped]?
+end
+
+# CRuby Parsing components
+module YARD::Parser::C
+end
+
+class YARD::Parser::C::BodyStatement < ::YARD::Parser::C::Statement
+  # Returns the value of attribute comments.
+  attr_accessor comments: untyped
+end
+
+class YARD::Parser::C::CParser < ::YARD::Parser::Base
+  def initialize: (untyped source, ?untyped file) -> void
+  def parse: () -> untyped
+  def enumerator: () -> untyped
+  def tokenize: () -> untyped
+  private def parse_toplevel: () -> untyped
+  private def consume_quote: (?untyped type) -> untyped
+  private def consume_directive: () -> untyped
+  private def consume_toplevel_statement: () -> untyped
+  private def consume_body_statements: () -> untyped
+  private def strip_non_statement_data: () -> untyped
+  private def consume_whitespace: () -> untyped
+  private def consume_comment: (?untyped add_comment) -> untyped
+  private def consume_until: (untyped end_char, ?untyped bracket_level, ?untyped brace_level, ?untyped add_comment) -> untyped
+  private def attach_comment: (untyped statement) -> untyped
+  private def advance: (?untyped num) -> untyped
+  private def back: (?untyped num) -> untyped
+  private def advance_loop: () -> untyped
+  private def nextline: () -> untyped
+  private def char: (?untyped num) -> untyped
+  private def prevchar: (?untyped num) -> untyped
+  private def nextchar: (?untyped num) -> untyped
+  private def struct: () -> untyped
+end
+
+class YARD::Parser::C::Comment < ::YARD::Parser::C::Statement
+  # Returns the value of attribute type.
+  attr_accessor type: untyped
+  # Returns the value of attribute overrides.
+  attr_accessor overrides: untyped
+  # Returns the value of attribute statement.
+  attr_accessor statement: untyped
+  def initialize: (untyped source, ?untyped file, ?untyped line) -> void
+  def comments: () -> untyped
+  def parse_comments: (untyped comments) -> untyped
+  private def parse_overrides: (untyped comments) -> untyped
+  private def parse_callseq: (untyped comments) -> untyped
+  private def parse_types: (untyped types) -> untyped
+  private def remove_private_comments: (untyped comment) -> untyped
+end
+
+module YARD::Parser::C::CommentParser
+  def parse_comments: (untyped comments) -> untyped
+
+  private def parse_overrides: (untyped comments) -> untyped
+
+  private def parse_callseq: (untyped comments) -> untyped
+
+  private def parse_types: (untyped types) -> untyped
+
+  private def remove_private_comments: (untyped comment) -> untyped
+end
+
+class YARD::Parser::C::Statement
+  # Returns the value of attribute source.
+  attr_accessor source: untyped
+  # Returns the value of attribute line.
+  attr_accessor line: untyped
+  # Returns the value of attribute file.
+  attr_accessor file: untyped
+  # @deprecated Groups are now defined by directives
+  # @see Tags::GroupDirective
+  attr_accessor group: untyped
+  # Returns the value of attribute comments_hash_flag.
+  attr_accessor comments_hash_flag: untyped
+  def initialize: (untyped source, ?untyped file, ?untyped line) -> void
+  def line_range: () -> untyped
+  def comments_range: () -> untyped
+  def first_line: () -> untyped
+  #
+  #
+  def signature: () -> untyped
+  def show: () -> untyped
+end
+
+class YARD::Parser::C::ToplevelStatement < ::YARD::Parser::C::Statement
+  # Returns the value of attribute block.
+  attr_accessor block: untyped
+  # Returns the value of attribute declaration.
+  attr_accessor declaration: untyped
+  # Returns the value of attribute comments.
+  attr_accessor comments: untyped
+end
+
+# Responsible for parsing a list of files in order. The
+# {#parse} method of this class can be called from the
+# {SourceParser#globals} globals state list to re-enter
+# parsing for the remainder of files in the list recursively.
+#
+# @see Processor#parse_remaining_files
+class YARD::Parser::OrderedParser
+  # @return [Array<String>] the list of remaining files to parse
+  attr_accessor files: Array[String]
+  # Creates a new OrderedParser with the global state and a list
+  # of files to parse.
+  #
+  # @note OrderedParser sets itself as the +ordered_parser+ key on
+  #   global_state for later use in {Handlers::Processor}.
+  # @param [OpenStruct] global_state a structure containing all global
+  #   state during parsing
+  # @param [Array<String>] files the list of files to parse
+  def initialize: (OpenStruct global_state, Array[String] files) -> void
+  # Parses the remainder of the {#files} list.
+  #
+  # @see Processor#parse_remaining_files
+  def parse: () -> untyped
+end
+
+# Raised when the parser sees a Ruby syntax error
+class YARD::Parser::ParserSyntaxError < ::YARD::Parser::UndocumentableError
+end
+
+# Ruby parsing components.
+module YARD::Parser::Ruby
+  # Builds and s-expression by creating {AstNode} objects with
+  # the type provided by the first argument.
+  #
+  # @example An implicit list of keywords
+  #   ast = s(s(:kw, "if"), s(:kw, "else"))
+  #   ast.type # => :list
+  # @example A method call
+  #   s(:command, s(:var_ref, "mymethod"))
+  #
+  # @overload s(*nodes, opts = {})
+  #   @param [Array<AstNode>] nodes a list of nodes.
+  #   @param [Hash] opts any extra options (docstring, file, source) to
+  #     set on the object
+  #   @return [AstNode] an implicit node where node.type == +:list+
+  # @overload s(type, *children, opts = {})
+  #   @param [Symbol] type the node type
+  #   @param [Array<AstNode>] children any child nodes inside this one
+  #   @param [Hash] opts any extra options to set on the object
+  #   @return [AstNode] a node of type +type+.
+  # @see AstNode#initialize
+  def s: (*untyped args) -> untyped
+end
+
+# An AST node is characterized by a type and a list of children. It
+# is most easily represented by the s-expression {#s} such as:
+#   # AST for "if true; 5 end":
+#   s(s(:if, s(:var_ref, s(:kw, "true")), s(s(:int, "5")), nil))
+#
+# The node type is not considered part of the list, only its children.
+# So +ast[0]+ does not refer to the type, but rather the first child
+# (or object). Items that are not +AstNode+ objects can be part of the
+# list, like Strings or Symbols representing names. To return only
+# the AstNode children of the node, use {#children}.
+class YARD::Parser::Ruby::AstNode < ::Array[untyped]
+  # Returns the value of attribute docstring_hash_flag.
+  attr_accessor docstring_hash_flag: untyped
+  # Returns the value of attribute docstring.
+  attr_accessor docstring: untyped
+  # Returns the value of attribute docstring_range.
+  attr_accessor docstring_range: untyped
+  # @return [String] the parse of {#full_source} that the node represents
+  attr_accessor source: String
+  # @deprecated Groups are now defined by directives
+  # @see Tags::GroupDirective
+  attr_accessor group: untyped
+  # @return [Range] the character range in {#full_source} represented
+  #   by the node
+  attr_accessor source_range: Range[untyped]
+  # @return [Range] the line range in {#full_source} represented
+  #   by the node
+  attr_accessor line_range: Range[untyped]
+  # @return [String] the filename the node was parsed from
+  attr_accessor file: String
+  # @return [String] the full source that the node was parsed from
+  attr_accessor full_source: String
+  # @return [Symbol] the node's unique symbolic type
+  attr_accessor type: Symbol
+  # @return [AstNode, nil] the node's parent or nil if it is a root node.
+  attr_accessor parent: YARD::Parser::Ruby::AstNode?
+  # Returns the value of attribute docstring.
+  #
+  def comments: () -> untyped
+  # Returns the value of attribute docstring_range.
+  #
+  def comments_range: () -> untyped
+  # Returns the value of attribute docstring_hash_flag.
+  #
+  def comments_hash_flag: () -> untyped
+  # Returns the value of attribute source.
+  #
+  def to_s: () -> untyped
+  # Finds the node subclass that should be instantiated for a specific
+  # node type
+  #
+  # @param [Symbol] type the node type to find a subclass for
+  # @return [Class] a subclass of AstNode to instantiate the node with.
+  def self.node_class_for: (Symbol type) -> Class
+  # Creates a new AST node
+  #
+  # @param [Symbol] type the type of node being created
+  # @param [Array<AstNode>] arr the child nodes
+  # @param [Hash] opts any extra line options
+  # @option opts [Fixnum] :line (nil) the line the node starts on in source
+  # @option opts [String] :char (nil) the character number the node starts on
+  #   in source
+  # @option opts [Fixnum] :listline (nil) a special key like :line but for
+  #   list nodes
+  # @option opts [Fixnum] :listchar (nil) a special key like :char but for
+  #   list nodes
+  # @option opts [Boolean] :token (nil) whether the node represents a token
+  def initialize: (Symbol type, Array[YARD::Parser::Ruby::AstNode] arr, ?Hash[untyped, untyped] opts) -> void
+  # @return [Boolean] whether the node is equal to another by checking
+  #   the list and type
+  # @private
+  def ==: (untyped other) -> bool
+  # Searches through the node and all descendants and returns the
+  # first node with a type matching any of +node_types+, otherwise
+  # returns the original node (self).
+  #
+  # @example Returns the first method definition in a block of code
+  #   ast = YARD.parse_string("if true; def x; end end").ast
+  #   ast.jump(:def)
+  #   # => s(:def, s(:ident, "x"), s(:params, nil, nil, nil, nil,
+  #   #      nil), s(s(:void_stmt, )))
+  # @example Returns first 'def' or 'class' statement
+  #   ast = YARD.parse_string("class X; def y; end end")
+  #   ast.jump(:def, :class).first
+  #   # =>
+  # @example If the node types are not present in the AST
+  #   ast = YARD.parse("def x; end")
+  #   ast.jump(:def)
+  #
+  # @param [Array<Symbol>] node_types a set of node types to match
+  # @return [AstNode] the matching node, if one was found
+  # @return [self] if no node was found
+  def jump: (*Array[Symbol] node_types) -> (YARD::Parser::Ruby::AstNode | self)
+  # @return [Array<AstNode>] the {AstNode} children inside the node
+  def children: () -> Array[YARD::Parser::Ruby::AstNode]
+  # Traverses the object and yields each node (including descendants) in order.
+  #
+  # @yield each descendant node in order
+  # @yieldparam [AstNode] self, or a child/descendant node
+  # @return [void]
+  def traverse: () { (YARD::Parser::Ruby::AstNode `self,`) -> untyped } -> void
+  # @return [Boolean] whether the node is a token
+  def token?: () -> bool
+  # @return [Boolean] whether the node is a reference (variable,
+  #   constant name)
+  def ref?: () -> bool
+  # @return [Boolean] whether the node is a literal value
+  def literal?: () -> bool
+  # @return [Boolean] whether the node is a keyword
+  def kw?: () -> bool
+  # @return [Boolean] whether the node is a method call
+  def call?: () -> bool
+  # @return [Boolean] whether the node is a method definition
+  def def?: () -> bool
+  # @return [Boolean] whether the node is a if/elsif/else condition
+  def condition?: () -> bool
+  # @return [Boolean] whether the node is a loop
+  def loop?: () -> bool
+  # @return [Boolean] whether the node has a block
+  def block?: () -> bool
+  # @return [Boolean] whether the node has a {#line_range} set
+  def has_line?: () -> bool
+  # @return [Fixnum] the starting line number of the node
+  def line: () -> Integer
+  # @return [String] the first line of source represented by the node.
+  def first_line: () -> String
+  # @return [String] the first line of source the node represents
+  def show: () -> String
+  # @return [nil] pretty prints the node
+  def pretty_print: (untyped q) -> nil
+  # @return [String] inspects the object
+  def inspect: () -> String
+  # Resets node state in tree
+  def unfreeze: () -> untyped
+  # Resets line information
+  # @return [void]
+  private def reset_line_info: () -> void
+  # List of all known keywords
+  # @return [Hash]
+  KEYWORDS: Hash[untyped, untyped]
+end
+
+class YARD::Parser::Ruby::ClassNode < ::YARD::Parser::Ruby::KeywordNode
+  def class_name: () -> untyped
+  def superclass: () -> untyped
+  def block: () -> untyped
+end
+
+# Represents a lone comment block in source
+class YARD::Parser::Ruby::CommentNode < ::YARD::Parser::Ruby::AstNode
+  def docstring: () -> untyped
+  def docstring=: (untyped value) -> untyped
+  #
+  #
+  def comments: () -> untyped
+  def source: () -> untyped
+  def first_line: () -> untyped
+end
+
+class YARD::Parser::Ruby::ConditionalNode < ::YARD::Parser::Ruby::KeywordNode
+  def condition?: () -> bool
+  def condition: () -> untyped
+  def then_block: () -> untyped
+  def else_block: () -> untyped
+  private def cmod?: () -> bool
+end
+
+class YARD::Parser::Ruby::KeywordNode < ::YARD::Parser::Ruby::AstNode
+  def kw?: () -> bool
+end
+
+# Handles Ruby parsing in Ruby 1.8.
+module YARD::Parser::Ruby::Legacy
+end
+
+# Lexical analyzer for Ruby source
+# @private
+class YARD::Parser::Ruby::Legacy::RubyLex
+  # Returns the value of attribute continue.
+  attr_reader continue: untyped
+  # Returns the value of attribute lex_state.
+  attr_reader lex_state: untyped
+  # Returns the value of attribute skip_space.
+  attr_accessor skip_space: untyped
+  # Returns the value of attribute read_auto_clean_up.
+  attr_accessor read_auto_clean_up: untyped
+  # Returns the value of attribute exception_on_syntax_error.
+  attr_accessor exception_on_syntax_error: untyped
+  # Returns the value of attribute indent.
+  attr_reader indent: untyped
+  def self.debug?: () -> bool
+  def initialize: (untyped content) -> void
+  # io functions
+  def line_no: () -> untyped
+  def char_no: () -> untyped
+  def get_read: () -> untyped
+  def getc: () -> untyped
+  def getc_of_rests: () -> untyped
+  def gets: () -> untyped
+  def ungetc: (?untyped c) -> untyped
+  def peek_equal?: (untyped str) -> bool
+  def peek: (?untyped i) -> untyped
+  def lex: () -> untyped
+  def token: () -> untyped
+  def lex_init: () -> untyped
+  def lex_int2: () -> untyped
+  def identify_gvar: () -> untyped
+  def identify_identifier: () -> untyped
+  def identify_here_document: () -> untyped
+  def identify_quotation: (untyped initial_char) -> untyped
+  def identify_number: (untyped start) -> untyped
+  def identify_string: (untyped ltype, ?untyped quoted, ?untyped opener, ?untyped initial_char) -> untyped
+  def skip_inner_expression: () -> untyped
+  def identify_comment: () -> untyped
+  def read_escape: () -> untyped
+  # @private
+  def set_token_position: (untyped line, untyped char) -> untyped
+  # @private
+  def Token: (untyped token, ?untyped value) -> untyped
+  ENINDENT_CLAUSE: untyped
+  # , "when"
+  ACCEPTS_COLON: untyped
+  # , "when"
+  DEINDENT_CLAUSE: untyped
+  PERCENT_LTYPE: untyped
+  PERCENT_PAREN: untyped
+  Ltype2Token: untyped
+  DLtype2Token: untyped
+end
+
+# Read an input stream character by character. We allow for unlimited
+# ungetting of characters just read.
+#
+# We simplify the implementation greatly by reading the entire input
+# into a buffer initially, and then simply traversing it using
+# pointers.
+#
+# We also have to allow for the <i>here document diversion</i>. This
+# little gem comes about when the lexer encounters a here
+# document. At this point we effectively need to split the input
+# stream into two parts: one to read the body of the here document,
+# the other to read the rest of the input line where the here
+# document was initially encountered. For example, we might have
+#
+#   do_something(<<-A, <<-B)
+#     stuff
+#     for
+#   A
+#     stuff
+#     for
+#   B
+#
+# When the lexer encounters the <<A, it reads until the end of the
+# line, and keeps it around for later. It then reads the body of the
+# here document.  Once complete, it needs to read the rest of the
+# original line, but then skip the here document body.
+#
+# @private
+class YARD::Parser::Ruby::Legacy::RubyLex::BufferedReader
+  # Returns the value of attribute line_num.
+  attr_reader line_num: untyped
+  def initialize: (untyped content) -> void
+  def column: () -> untyped
+  def getc: () -> untyped
+  def getc_already_read: () -> untyped
+  def ungetc: (untyped _ch) -> untyped
+  def get_read: () -> untyped
+  def peek: (untyped at) -> untyped
+  def peek_equal: (untyped str) -> untyped
+  def divert_read_from: (untyped reserve) -> untyped
+end
+
+# Legacy Ruby parser
+# @since 0.5.6
+class YARD::Parser::Ruby::Legacy::RubyParser < ::YARD::Parser::Base
+  def initialize: (untyped source, untyped _filename) -> void
+  def parse: () -> untyped
+  def tokenize: () -> untyped
+  def enumerator: () -> untyped
+  def encoding_line: () -> untyped
+  def shebang_line: () -> untyped
+end
+
+module YARD::Parser::Ruby::Legacy::RubyToken
+  EXPR_BEG: untyped
+
+  EXPR_MID: untyped
+
+  EXPR_END: untyped
+
+  EXPR_ARG: untyped
+
+  EXPR_FNAME: untyped
+
+  EXPR_DOT: untyped
+
+  EXPR_CLASS: untyped
+
+  # @private
+  TokenDefinitions: untyped
+
+  # { reading => token_class }
+  # { reading => [token_class, *opt] }
+  TkReading2Token: untyped
+
+  TkSymbol2Token: untyped
+
+  NEWLINE_TOKEN: untyped
+
+  # Legacy lexical tokenizer module.
+  # @private
+  def set_token_position: (untyped line, untyped char) -> untyped
+
+  # @private
+  def Token: (untyped token, ?untyped value) -> untyped
+
+  # @private
+  def self.def_token: (untyped token_n, ?untyped super_token, ?untyped reading, *untyped opts) -> untyped
+end
+
+# Represents a block
+class YARD::Parser::Ruby::Legacy::RubyToken::TkBlockContents < ::YARD::Parser::Ruby::Legacy::RubyToken::Token
+  def text: () -> untyped
+end
+
+class YARD::Parser::Ruby::Legacy::RubyToken::TkError < ::YARD::Parser::Ruby::Legacy::RubyToken::Token
+end
+
+# Represents a Ruby identifier
+class YARD::Parser::Ruby::Legacy::RubyToken::TkId < ::YARD::Parser::Ruby::Legacy::RubyToken::Token
+  # Returns the value of attribute name.
+  attr_reader name: untyped
+  def initialize: (untyped line_no, untyped char_no, untyped name) -> void
+end
+
+# Represents a Ruby keyword
+class YARD::Parser::Ruby::Legacy::RubyToken::TkKW < ::YARD::Parser::Ruby::Legacy::RubyToken::TkId
+end
+
+class YARD::Parser::Ruby::Legacy::RubyToken::TkNode < ::YARD::Parser::Ruby::Legacy::RubyToken::Token
+  # Returns the value of attribute node.
+  attr_reader node: untyped
+end
+
+class YARD::Parser::Ruby::Legacy::RubyToken::TkOPASGN < ::YARD::Parser::Ruby::Legacy::RubyToken::TkOp
+  # Returns the value of attribute op.
+  attr_reader op: untyped
+  def initialize: (untyped line_no, untyped char_no, untyped op) -> void
+end
+
+class YARD::Parser::Ruby::Legacy::RubyToken::TkOp < ::YARD::Parser::Ruby::Legacy::RubyToken::Token
+  def name: () -> untyped
+end
+
+# Represents an end statement
+class YARD::Parser::Ruby::Legacy::RubyToken::TkStatementEnd < ::YARD::Parser::Ruby::Legacy::RubyToken::Token
+  def text: () -> untyped
+end
+
+class YARD::Parser::Ruby::Legacy::RubyToken::TkUnknownChar < ::YARD::Parser::Ruby::Legacy::RubyToken::Token
+  # Returns the value of attribute name.
+  attr_reader name: untyped
+  def initialize: (untyped line_no, untyped char_no, untyped _id) -> void
+end
+
+# Represents a Ruby value
+class YARD::Parser::Ruby::Legacy::RubyToken::TkVal < ::YARD::Parser::Ruby::Legacy::RubyToken::Token
+  def initialize: (untyped line_no, untyped char_no, ?untyped value) -> void
+end
+
+# Represents whitespace
+class YARD::Parser::Ruby::Legacy::RubyToken::TkWhitespace < ::YARD::Parser::Ruby::Legacy::RubyToken::Token
+end
+
+# Represents a token in the Ruby lexer
+class YARD::Parser::Ruby::Legacy::RubyToken::Token
+  # @return [Integer] the line number in the file/stream the token is
+  #   located.
+  attr_reader line_no: Integer
+  # @return [Integer] the character number in the file/stream the token
+  #   is located.
+  attr_reader char_no: Integer
+  # @return [String] the token text value
+  attr_reader text: String
+  # @return [Symbol] the lexical state at the token
+  attr_accessor lex_state: Symbol
+  # Creates a new Token object
+  # @param [Integer] line_no the line number to initialize the token to
+  # @param [Integer] char_no the char number to initialize the token to
+  def initialize: (Integer line_no, Integer char_no) -> void
+  # Chainable way to sets the text attribute
+  #
+  # @param [String] text the new text
+  # @return [Token] this token object
+  def set_text: (String text) -> YARD::Parser::Ruby::Legacy::RubyToken::Token
+  # @private
+  NO_TEXT: untyped
+end
+
+class YARD::Parser::Ruby::Legacy::Statement
+  # Returns the value of attribute tokens.
+  attr_reader tokens: untyped
+  # Returns the value of attribute comments.
+  attr_reader comments: untyped
+  # Returns the value of attribute block.
+  attr_reader block: untyped
+  # Returns the value of attribute comments_range.
+  attr_accessor comments_range: untyped
+  # @deprecated Groups are now defined by directives
+  # @see Tags::GroupDirective
+  attr_accessor group: untyped
+  # Returns the value of attribute comments_hash_flag.
+  attr_accessor comments_hash_flag: untyped
+  def initialize: (untyped tokens, ?untyped block, ?untyped comments) -> void
+  def first_line: () -> untyped
+  #
+  #
+  def signature: () -> untyped
+  def to_s: (?untyped include_block) -> untyped
+  #
+  #
+  def source: (?untyped include_block) -> untyped
+  def inspect: () -> untyped
+  def show: () -> untyped
+  # @return [Fixnum] the first line of Ruby source
+  def line: () -> Integer
+  # @return [Range<Fixnum>] the first to last lines of Ruby source
+  # @since 0.5.4
+  def line_range: () -> Range[Integer]
+  private def clean_tokens: (untyped tokens) -> untyped
+end
+
+class YARD::Parser::Ruby::Legacy::StatementList < ::Array[untyped]
+  # Returns the value of attribute shebang_line.
+  attr_accessor shebang_line: untyped
+  # Returns the value of attribute encoding_line.
+  attr_accessor encoding_line: untyped
+  # Creates a new statement list
+  #
+  # @param [TokenList, String] content the tokens to create the list from
+  def initialize: (YARD::Parser::Ruby::Legacy::TokenList | String content) -> void
+  private def parse_statements: () -> untyped
+  # Returns the next statement in the token stream
+  #
+  # @return [Statement] the next statement
+  private def next_statement: () -> YARD::Parser::Ruby::Legacy::Statement
+  private def sanitize_statement_end: () -> untyped
+  private def sanitize_block: () -> untyped
+  # Processes a single token
+  #
+  # @param [RubyToken::Token] tk the token to process
+  private def process_token: (YARD::Parser::Ruby::Legacy::RubyToken::Token tk) -> untyped
+  # Processes a token in a block
+  #
+  # @param [RubyToken::Token] tk the token to process
+  private def process_block_token: (YARD::Parser::Ruby::Legacy::RubyToken::Token tk) -> untyped
+  # Processes a comment token that comes before a statement
+  #
+  # @param [RubyToken::Token] tk the token to process
+  # @return [Boolean] whether or not +tk+ was processed as an initial comment
+  private def process_initial_comment: (YARD::Parser::Ruby::Legacy::RubyToken::Token tk) -> bool
+  # Processes a simple block-opening token;
+  # that is, a block opener such as +begin+ or +do+
+  # that isn't followed by an expression
+  #
+  # @param [RubyToken::Token] tk the token to process
+  private def process_simple_block_opener: (YARD::Parser::Ruby::Legacy::RubyToken::Token tk) -> untyped
+  # Processes a complex block-opening token;
+  # that is, a block opener such as +while+ or +for+
+  # that is followed by an expression
+  #
+  # @param [RubyToken::Token] tk the token to process
+  private def process_complex_block_opener: (YARD::Parser::Ruby::Legacy::RubyToken::Token tk) -> untyped
+  # Processes a token that closes a statement
+  #
+  # @param [RubyToken::Token] tk the token to process
+  private def process_statement_end: (YARD::Parser::Ruby::Legacy::RubyToken::Token tk) -> untyped
+  # Handles the balancing of parentheses and blocks
+  #
+  # @param [RubyToken::Token] tk the token to process
+  # @return [Boolean] whether or not the current statement's parentheses and blocks
+  #   are balanced after +tk+
+  private def balances?: (YARD::Parser::Ruby::Legacy::RubyToken::Token tk) -> bool
+  # Adds a token to the current statement,
+  # unless it's a newline, semicolon, or comment
+  #
+  # @param [RubyToken::Token] tk the token to process
+  private def push_token: (YARD::Parser::Ruby::Legacy::RubyToken::Token tk) -> untyped
+  # Returns the next token in the stream that's not a space
+  #
+  # @return [RubyToken::Token] the next non-space token
+  private def peek_no_space: () -> YARD::Parser::Ruby::Legacy::RubyToken::Token
+  # @private
+  def set_token_position: (untyped line, untyped char) -> untyped
+  # @private
+  def Token: (untyped token, ?untyped value) -> untyped
+  # The following list of tokens will require a block to be opened
+  # if used at the beginning of a statement.
+  OPEN_BLOCK_TOKENS: untyped
+end
+
+class YARD::Parser::Ruby::Legacy::TokenList < ::Array[untyped]
+  def initialize: (?untyped content) -> void
+  def to_s: (?untyped full_statement, ?untyped show_block) -> untyped
+  # @param [TokenList, Token, String] tokens
+  #   A list of tokens. If the token is a string, it
+  #   is parsed with {RubyLex}.
+  def push: (*YARD::Parser::Ruby::Legacy::TokenList | YARD::Parser::Ruby::Legacy::RubyToken::Token | String tokens) -> untyped
+  # @param [TokenList, Token, String] tokens
+  #   A list of tokens. If the token is a string, it
+  #   is parsed with {RubyLex}.
+  #
+  def <<: (*YARD::Parser::Ruby::Legacy::TokenList | YARD::Parser::Ruby::Legacy::RubyToken::Token | String tokens) -> untyped
+  def squeeze: (?untyped type) -> untyped
+  private def parse_content: (untyped content) -> untyped
+  private def convert_token: (untyped lex, untyped tk) -> untyped
+  # @private
+  def set_token_position: (untyped line, untyped char) -> untyped
+  # @private
+  def Token: (untyped token, ?untyped value) -> untyped
+end
+
+class YARD::Parser::Ruby::LiteralNode < ::YARD::Parser::Ruby::AstNode
+  def literal?: () -> bool
+end
+
+class YARD::Parser::Ruby::LoopNode < ::YARD::Parser::Ruby::KeywordNode
+  def loop?: () -> bool
+  def condition: () -> untyped
+  def block: () -> untyped
+end
+
+class YARD::Parser::Ruby::MethodCallNode < ::YARD::Parser::Ruby::AstNode
+  def call?: () -> bool
+  def namespace: () -> untyped
+  def method_name: (?untyped name_only) -> untyped
+  def parameters: (?untyped include_block_param) -> untyped
+  def block_param: () -> untyped
+  def block: () -> untyped
+  private def index_adjust: () -> untyped
+  private def call_has_paren?: () -> bool
+end
+
+class YARD::Parser::Ruby::MethodDefinitionNode < ::YARD::Parser::Ruby::AstNode
+  def kw?: () -> bool
+  def def?: () -> bool
+  def namespace: () -> untyped
+  def method_name: (?untyped name_only) -> untyped
+  def parameters: (?untyped include_block_param) -> untyped
+  def signature: () -> untyped
+  def block: (?untyped n) -> untyped
+  private def index_adjust: () -> untyped
+end
+
+class YARD::Parser::Ruby::ModuleNode < ::YARD::Parser::Ruby::KeywordNode
+  def module_name: () -> untyped
+  def block: () -> untyped
+end
+
+class YARD::Parser::Ruby::ParameterNode < ::YARD::Parser::Ruby::AstNode
+  def unnamed_required_params: () -> untyped
+  def unnamed_optional_params: () -> untyped
+  def named_params: () -> untyped
+  def splat_param: () -> untyped
+  def unnamed_end_params: () -> untyped
+  def double_splat_param: () -> untyped
+  def block_param: () -> untyped
+  def args_forward: () -> untyped
+end
+
+class YARD::Parser::Ruby::ReferenceNode < ::YARD::Parser::Ruby::AstNode
+  def ref?: () -> bool
+  def path: () -> untyped
+  def namespace: () -> untyped
+end
+
+# Internal parser class
+# @since 0.5.6
+class YARD::Parser::Ruby::RipperParser < ::Ripper
+  attr_reader ast: untyped
+  attr_reader charno: untyped
+  attr_reader comments: untyped
+  attr_reader file: untyped
+  attr_reader tokens: untyped
+  attr_reader shebang_line: untyped
+  attr_reader encoding_line: untyped
+  attr_reader frozen_string_line: untyped
+  # @since 0.5.6
+  #
+  def root: () -> untyped
+  def initialize: (untyped source, untyped filename, *untyped args) -> void
+  def parse: () -> untyped
+  def enumerator: () -> untyped
+  def file_encoding: () -> untyped
+  private def on_sp: (untyped tok) -> untyped
+  private def visit_event: (untyped node) -> untyped
+  private def visit_event_arr: (untyped node) -> untyped
+  private def visit_ns_token: (untyped token, untyped data, ?untyped ast_token) -> untyped
+  private def add_token: (untyped token, untyped data) -> untyped
+  private def on_program: (*untyped args) -> untyped
+  private def on_body_stmt: (*untyped args) -> untyped
+  # @since 0.5.6
+  #
+  private def on_bodystmt: (*untyped args) -> untyped
+  private def on_assoc_new: (*untyped args) -> untyped
+  private def on_hash: (*untyped args) -> untyped
+  private def on_bare_assoc_hash: (*untyped args) -> untyped
+  private def on_assoclist_from_args: (*untyped args) -> untyped
+  private def on_unary: (untyped op, untyped val) -> untyped
+  private def on_aref: (*untyped args) -> untyped
+  private def on_aref_field: (*untyped args) -> untyped
+  private def on_array: (untyped other) -> untyped
+  private def on_lbracket: (untyped tok) -> untyped
+  private def on_rbracket: (untyped tok) -> untyped
+  private def on_dyna_symbol: (untyped sym) -> untyped
+  private def on_top_const_ref: (*untyped args) -> untyped
+  private def on_const_path_ref: (*untyped args) -> untyped
+  private def on_string_literal: (*untyped args) -> untyped
+  private def on_lambda: (*untyped args) -> untyped
+  private def on_string_content: (*untyped args) -> untyped
+  private def on_rescue: (untyped exc, *untyped args) -> untyped
+  private def on_void_stmt: () -> untyped
+  private def on_params: (*untyped args) -> untyped
+  private def on_label: (untyped data) -> untyped
+  private def on_comment: (untyped comment) -> untyped
+  private def on_embdoc_beg: (untyped text) -> untyped
+  private def on_embdoc: (untyped text) -> untyped
+  private def on_embdoc_end: (untyped text) -> untyped
+  private def on_parse_error: (untyped msg) -> untyped
+  # @raise [ParserSyntaxError] 
+  # @since 0.5.6
+  #
+  private def compile_error: (untyped msg) -> untyped
+  private def comment_starts_line?: (untyped charno) -> bool
+  private def insert_comments: () -> untyped
+  private def add_comment: (untyped line, ?untyped node, ?untyped before_node, ?untyped into) -> untyped
+  private def freeze_tree: (?untyped node) -> untyped
+  MAPPINGS: untyped
+  REV_MAPPINGS: untyped
+  AST_TOKENS: untyped
+  COMMENT_SKIP_NODE_TYPES: untyped
+end
+
+# Ruby 1.9 parser
+# @!attribute [r] encoding_line
+# @!attribute [r] frozen_string_line
+# @!attribute [r] shebang_line
+# @!attribute [r] enumerator
+class YARD::Parser::Ruby::RubyParser < ::YARD::Parser::Base
+  # Ruby 1.9 parser
+  # @!attribute [r] encoding_line
+  # @!attribute [r] frozen_string_line
+  # @!attribute [r] shebang_line
+  # @!attribute [r] enumerator
+  attr_reader encoding_line: untyped
+  # Ruby 1.9 parser
+  # @!attribute [r] encoding_line
+  # @!attribute [r] frozen_string_line
+  # @!attribute [r] shebang_line
+  # @!attribute [r] enumerator
+  attr_reader frozen_string_line: untyped
+  # Ruby 1.9 parser
+  # @!attribute [r] encoding_line
+  # @!attribute [r] frozen_string_line
+  # @!attribute [r] shebang_line
+  # @!attribute [r] enumerator
+  attr_reader shebang_line: untyped
+  # Ruby 1.9 parser
+  # @!attribute [r] encoding_line
+  # @!attribute [r] frozen_string_line
+  # @!attribute [r] shebang_line
+  # @!attribute [r] enumerator
+  attr_reader enumerator: untyped
+  def initialize: (untyped source, untyped filename) -> void
+  def parse: () -> untyped
+  def tokenize: () -> untyped
+end
+
+# Supports {#each} enumeration over a source's tokens, yielding
+# the token and a possible {CodeObjects::Base} associated with the
+# constant or identifier token.
+class YARD::Parser::Ruby::TokenResolver
+  # Creates a token resolver for given source.
+  #
+  # @param source [String] the source code to tokenize
+  # @param namespace [CodeObjects::Base] the object/namespace to resolve from
+  def initialize: (String source, ?YARD::CodeObjects::Base namespace) -> void
+  # Iterates over each token, yielding the token and a possible code
+  # object that is associated with the token.
+  #
+  # @yieldparam token [Array(Symbol,String,Array(Integer,Integer))] the
+  #   current token object being iterated
+  # @yieldparam object [CodeObjects::Base, nil] the fully qualified code
+  #   object associated with the current token, or nil if there is no object
+  #   for the yielded token.
+  # @example Yielding code objects
+  #   r = TokenResolver.new("A::B::C")
+  #   r.each do |tok, obj|
+  #     if obj
+  #       puts "#{tok[0]} -> #{obj.path.inspect}"
+  #     else
+  #       puts "No object: #{tok.inspect}"
+  #     end
+  #   end
+  #
+  #   # Prints:
+  #   # :const -> "A"
+  #   # No object: [:op, "::"]
+  #   # :const -> "A::B"
+  #   # No object: [:op, "::"]
+  #   # :const -> "A::B::C"
+  def each: () { ([ Symbol, String, [ Integer, Integer ] ] token, YARD::CodeObjects::Base? object) -> untyped } -> untyped
+  def self.state_attr: (*untyped attrs) -> untyped
+  private def push_state: () -> untyped
+  private def pop_state: () -> untyped
+  private def lookup: (untyped toktype, untyped name) -> untyped
+  private def object_resolved_types: (?untyped obj) -> untyped
+  # Registers a separator with an optional set of valid types that
+  # must follow the separator lexically.
+  #
+  # Calls all callbacks defined by {NamespaceMapper.on_invalidate} after
+  # the separator is registered.
+  #
+  # @param sep [String] the separator string for the namespace
+  # @param valid_types [Array<Symbol>] a list of object types that
+  #   must follow the separator. If the list is empty, any type can
+  #   follow the separator.
+  # @example Registering separators for a method object
+  #   # Anything after a "#" denotes a method object
+  #   register_separator "#", :method
+  #   # Anything after a "." denotes a method object
+  #   register_separator ".", :method
+  # @see .on_invalidate
+  def register_separator: (String sep, *Array[Symbol] valid_types) -> untyped
+  # Unregisters a separator by a type.
+  #
+  # @param type [Symbol] the type to unregister
+  # @see #register_separator
+  def unregister_separator_by_type: (Symbol type) -> untyped
+  # Clears the map of separators.
+  #
+  # @return [void]
+  def clear_separators: () -> void
+  # Gets or sets the default separator value to use when no
+  # separator for the namespace can be determined.
+  #
+  # @param value [String, nil] the default separator, or nil to return the
+  #   value
+  # @example
+  #   default_separator "::"
+  def default_separator: (?String? value) -> untyped
+  # @return [Array<String>] all of the registered separators
+  def separators: () -> Array[String]
+  # @return [Regexp] the regexp match of all separators
+  def separators_match: () -> Regexp
+  # @param sep [String] the separator to return types for
+  # @return [Array<Symbol>] a list of types registered to a separator
+  def types_for_separator: (String sep) -> Array[Symbol]
+  # @param type [String] the type to return separators for
+  # @return [Array<Symbol>] a list of separators registered to a type
+  def separators_for_type: (String type) -> Array[Symbol]
+end
+
+# Responsible for parsing a source file into the namespace. Parsing
+# also invokes handlers to process the parsed statements and generate
+# any code objects that may be recognized.
+#
+# == Custom Parsers
+# SourceParser allows custom parsers to be registered and called when
+# a certain filetype is recognized. To register a parser and hook it
+# up to a set of file extensions, call {register_parser_type}
+#
+# @see register_parser_type
+# @see Handlers::Base
+# @see CodeObjects::Base
+class YARD::Parser::SourceParser
+  # @return [Symbol] the default parser type (defaults to :ruby)
+  attr_accessor self.parser_type: Symbol
+  # @return [String] the filename being parsed by the parser.
+  attr_accessor file: String
+  # @return [Symbol] the parser type associated with the parser instance.
+  #   This should be set by the {#initialize constructor}.
+  attr_accessor parser_type: Symbol
+  # @return [OpenStruct] an open struct containing arbitrary global state
+  #   shared between files and handlers.
+  # @since 0.7.0
+  attr_reader globals: OpenStruct
+  # @return [String] the contents of the file to be parsed
+  # @since 0.7.0
+  attr_reader contents: String
+  # Parses a path or set of paths
+  #
+  # @param [String, Array<String>] paths a path, glob, or list of paths to
+  #   parse
+  # @param [Array<String, Regexp>] excluded a list of excluded path matchers
+  # @param [Fixnum] level the logger level to use during parsing. See
+  #   {YARD::Logger}
+  # @return [void]
+  def self.parse: (?Array[String] | String paths, ?Array[String | Regexp] excluded, ?Integer level) -> void
+  # Parses a string +content+
+  #
+  # @param [String] content the block of code to parse
+  # @param [Symbol] ptype the parser type to use. See {parser_type}.
+  # @return the parser object that was used to parse +content+
+  def self.parse_string: (String content, ?Symbol ptype) -> untyped
+  # Tokenizes but does not parse the block of code
+  #
+  # @param [String] content the block of code to tokenize
+  # @param [Symbol] ptype the parser type to use. See {parser_type}.
+  # @return [Array] a list of tokens
+  def self.tokenize: (String content, ?Symbol ptype) -> Array[untyped]
+  # Registers a new parser type.
+  #
+  # @example Registering a parser for "java" files
+  #   SourceParser.register_parser_type :java, JavaParser, 'java'
+  # @param [Symbol] type a symbolic name for the parser type
+  # @param [Base] parser_klass a class that implements parsing and tokenization
+  # @param [Array<String>, String, Regexp] extensions a list of extensions or a
+  #   regex to match against the file extension
+  # @return [void]
+  # @see Parser::Base
+  def self.register_parser_type: (Symbol type, YARD::Parser::Base parser_klass, ?Array[String] | String | Regexp extensions) -> void
+  # @return [Hash{Symbol=>Object}] a list of registered parser types
+  # @private
+  # @since 0.5.6
+  def self.parser_types: () -> Hash[Symbol, untyped]
+  def self.parser_types=: (untyped value) -> untyped
+  # @return [Hash] a list of registered parser type extensions
+  # @private
+  # @since 0.5.6
+  def self.parser_type_extensions: () -> Hash[untyped, untyped]
+  def self.parser_type_extensions=: (untyped value) -> untyped
+  # Finds a parser type that is registered for the extension. If no
+  # type is found, the default Ruby type is returned.
+  #
+  # @return [Symbol] the parser type to be used for the extension
+  # @since 0.5.6
+  def self.parser_type_for_extension: (untyped extension) -> Symbol
+  # Returns the validated parser type. Basically, enforces that :ruby
+  # type is never set if the Ripper library is not available
+  #
+  # @param [Symbol] type the parser type to set
+  # @return [Symbol] the validated parser type
+  # @private
+  def self.validated_parser_type: (Symbol type) -> Symbol
+  # Registers a callback to be called before a list of files is parsed
+  # via {parse}. The block passed to this method will be called on
+  # subsequent parse calls.
+  #
+  # @example Installing a simple callback
+  #   SourceParser.before_parse_list do |files, globals|
+  #     puts "Starting to parse..."
+  #   end
+  #   YARD.parse('lib/**/*.rb')
+  #   # prints "Starting to parse..."
+  #
+  # @example Setting global state
+  #   SourceParser.before_parse_list do |files, globals|
+  #     globals.method_count = 0
+  #   end
+  #   SourceParser.after_parse_list do |files, globals|
+  #     puts "Found #{globals.method_count} methods"
+  #   end
+  #   class MyCountHandler < Handlers::Ruby::Base
+  #     handles :def, :defs
+  #     process { globals.method_count += 1 }
+  #   end
+  #   YARD.parse
+  #   # Prints: "Found 37 methods"
+  #
+  # @example Using a global callback to cancel parsing
+  #   SourceParser.before_parse_list do |files, globals|
+  #     return false if files.include?('foo.rb')
+  #   end
+  #
+  #   YARD.parse(['foo.rb', 'bar.rb']) # callback cancels this method
+  #   YARD.parse('bar.rb') # parses normally
+  #
+  # @yield [files, globals] the yielded block is called once before
+  #   parsing all files
+  # @yieldparam [Array<String>] files the list of files that will be parsed.
+  # @yieldparam [OpenStruct] globals a global structure to store arbitrary
+  #   state for post processing (see {Handlers::Processor#globals})
+  # @yieldreturn [Boolean] if the block returns +false+, parsing is
+  #   cancelled.
+  # @return [Proc] the yielded block
+  # @see after_parse_list
+  # @see before_parse_file
+  # @since 0.7.0
+  def self.before_parse_list: () { (Array[String] files, OpenStruct globals) -> bool } -> Proc
+  # Registers a callback to be called after a list of files is parsed
+  # via {parse}. The block passed to this method will be called on
+  # subsequent parse calls.
+  #
+  # @example Printing results after parsing occurs
+  #   SourceParser.after_parse_list do
+  #     puts "Finished parsing!"
+  #   end
+  #   YARD.parse
+  #   # Prints "Finished parsing!" after parsing files
+  # @yield [files, globals] the yielded block is called once before
+  #   parsing all files
+  # @yieldparam [Array<String>] files the list of files that will be parsed.
+  # @yieldparam [OpenStruct] globals a global structure to store arbitrary
+  #   state for post processing (see {Handlers::Processor#globals})
+  # @yieldreturn [void] the return value for the block is ignored.
+  # @return [Proc] the yielded block
+  # @see before_parse_list
+  # @see before_parse_file
+  # @since 0.7.0
+  def self.after_parse_list: () { (Array[String] files, OpenStruct globals) -> void } -> Proc
+  # Registers a callback to be called before an individual file is parsed.
+  # The block passed to this method will be called on subsequent parse
+  # calls.
+  #
+  # To register a callback that is called before the entire list of files
+  # is processed, see {before_parse_list}.
+  #
+  # @example Installing a simple callback
+  #   SourceParser.before_parse_file do |parser|
+  #     puts "I'm parsing #{parser.file}"
+  #   end
+  #   YARD.parse('lib/**/*.rb')
+  #   # prints:
+  #   "I'm parsing lib/foo.rb"
+  #   "I'm parsing lib/foo_bar.rb"
+  #   "I'm parsing lib/last_file.rb"
+  #
+  # @example Cancel parsing of any test_*.rb files
+  #   SourceParser.before_parse_file do |parser|
+  #     return false if parser.file =~ /^test_.+\.rb$/
+  #   end
+  #
+  # @yield [parser] the yielded block is called once before each
+  #   file that is parsed. This might happen many times for a single
+  #   codebase.
+  # @yieldparam [SourceParser] parser the parser object that will {#parse}
+  #   the file.
+  # @yieldreturn [Boolean] if the block returns +false+, parsing for
+  #   the file is cancelled.
+  # @return [Proc] the yielded block
+  # @see after_parse_file
+  # @see before_parse_list
+  # @since 0.7.0
+  def self.before_parse_file: () { (YARD::Parser::SourceParser parser) -> bool } -> Proc
+  # Registers a callback to be called after an individual file is parsed.
+  # The block passed to this method will be called on subsequent parse
+  # calls.
+  #
+  # To register a callback that is called after the entire list of files
+  # is processed, see {after_parse_list}.
+  #
+  # @example Printing the length of each file after it is parsed
+  #   SourceParser.after_parse_file do |parser|
+  #     puts "#{parser.file} is #{parser.contents.size} characters"
+  #   end
+  #   YARD.parse('lib/**/*.rb')
+  #   # prints:
+  #   "lib/foo.rb is 1240 characters"
+  #   "lib/foo_bar.rb is 248 characters"
+  #
+  # @yield [parser] the yielded block is called once after each file
+  #   that is parsed. This might happen many times for a single codebase.
+  # @yieldparam [SourceParser] parser the parser object that parsed
+  #   the file.
+  # @yieldreturn [void] the return value for the block is ignored.
+  # @return [Proc] the yielded block
+  # @see before_parse_file
+  # @see after_parse_list
+  # @since 0.7.0
+  def self.after_parse_file: () { (YARD::Parser::SourceParser parser) -> void } -> Proc
+  # @return [Array<Proc>] the list of callbacks to be called before
+  #   parsing a list of files. Should only be used for testing.
+  # @since 0.7.0
+  def self.before_parse_list_callbacks: () -> Array[Proc]
+  # @return [Array<Proc>] the list of callbacks to be called after
+  #   parsing a list of files. Should only be used for testing.
+  # @since 0.7.0
+  def self.after_parse_list_callbacks: () -> Array[Proc]
+  # @return [Array<Proc>] the list of callbacks to be called before
+  #   parsing a file. Should only be used for testing.
+  # @since 0.7.0
+  def self.before_parse_file_callbacks: () -> Array[Proc]
+  # @return [Array<Proc>] the list of callbacks to be called after
+  #   parsing a file. Should only be used for testing.
+  # @since 0.7.0
+  def self.after_parse_file_callbacks: () -> Array[Proc]
+  # Parses a list of files in a queue.
+  #
+  # @param [Array<String>] files a list of files to queue for parsing
+  # @return [void]
+  private def self.parse_in_order: (*Array[String] files) -> void
+  # @overload initialize(parser_type = SourceParser.parser_type, globals = nil)
+  #   Creates a new parser object for code parsing with a specific parser type.
+  #
+  #   @param [Symbol] parser_type the parser type to use
+  #   @param [OpenStruct] globals global state to be re-used across separate source files
+  def initialize: (?untyped parser_type, ?untyped globals1, ?untyped globals2) -> void
+  # The main parser method. This should not be called directly. Instead,
+  # use the class methods {parse} and {parse_string}.
+  #
+  # @param [String, #read, Object] content the source file to parse
+  # @return [Object, nil] the parser object used to parse the source
+  def parse: (?untyped content) -> untyped
+  # Tokenizes but does not parse the block of code using the current {#parser_type}
+  #
+  # @param [String] content the block of code to tokenize
+  # @return [Array] a list of tokens
+  def tokenize: (String content) -> Array[untyped]
+  # Searches for encoding line and forces encoding
+  # @since 0.5.3
+  private def convert_encoding: (untyped content) -> untyped
+  # Runs a {Handlers::Processor} object to post process the parsed statements.
+  # @return [void]
+  private def post_process: () -> void
+  # Guesses the parser type to use depending on the file extension.
+  #
+  # @param [String] filename the filename to use to guess the parser type
+  # @return [Symbol] a parser type that matches the filename
+  private def parser_type_for_filename: (String filename) -> Symbol
+  # @since 0.5.6
+  private def parser_class: () -> untyped
+  SHEBANG_LINE: untyped
+  ENCODING_LINE: untyped
+  FROZEN_STRING_LINE: untyped
+  # The default glob of files to be parsed.
+  # @since 0.9.0
+  DEFAULT_PATH_GLOB: untyped
+  # Byte order marks for various encodings
+  # @since 0.7.0
+  ENCODING_BYTE_ORDER_MARKS: untyped
+end
+
+# Raised when an object is recognized but cannot be documented. This
+# generally occurs when the Ruby syntax used to declare an object is
+# too dynamic in nature.
+class YARD::Parser::UndocumentableError < ::RuntimeError
+end

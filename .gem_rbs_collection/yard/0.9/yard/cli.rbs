@@ -1,0 +1,802 @@
+# !!! GENERATED FILE !!!
+# Please see yard/0.9/_generators/README.md
+
+# Namespace for command-line interface components
+module YARD::CLI
+end
+
+# Abstract base class for CLI utilities. Provides some helper methods for
+# the option parser
+#
+# @abstract
+# @since 0.6.0
+class YARD::CLI::Command
+  # Helper method to run the utility on an instance.
+  # @see #run
+  def self.run: (*untyped args) -> untyped
+  def description: () -> untyped
+  # Adds a set of common options to the tail of the OptionParser
+  #
+  # @param [OptionParser] opts the option parser object
+  # @return [void]
+  def common_options: (OptionParser opts) -> void
+  # Parses the option and gracefully handles invalid switches
+  #
+  # @param [OptionParser] opts the option parser object
+  # @param [Array<String>] args the arguments passed from input. This
+  #   array will be modified.
+  # @return [void]
+  def parse_options: (OptionParser opts, Array[String] args) -> void
+  # Loads a Ruby script. If <tt>Config.options[:safe_mode]</tt> is enabled,
+  # this method will do nothing.
+  #
+  # @param [String] file the path to the script to load
+  # @since 0.6.2
+  def load_script: (String file) -> untyped
+  # Callback when an unrecognize option is parsed
+  #
+  # @param [OptionParser::ParseError] err the exception raised by the
+  #   option parser
+  def unrecognized_option: (OptionParser::ParseError err) -> untyped
+end
+
+# This class parses a command name out of the +yard+ CLI command and calls
+# that command in the form:
+#
+#   $ yard command_name [options]
+#
+# If no command or arguments are specified, or if the arguments immediately
+# begin with a +--opt+ (not +--help+), the {default_command} will be used
+# (which itself defaults to +:doc+).
+#
+# == Adding a Command
+#
+# To add a custom command via plugin, create a mapping in {commands} from
+# the Symbolic command name to the {Command} class that implements the
+# command. To implement a command, see the documentation for the {Command}
+# class.
+#
+# @see Command
+# @see commands
+# @see default_command
+class YARD::CLI::CommandParser
+  # @return [Hash{Symbol => Command}] the mapping of command names to
+  #   command classes to parse the user command.
+  attr_accessor self.commands: Hash[Symbol, YARD::CLI::Command]
+  # @return [Symbol] the default command name to use when no options
+  #   are specified or
+  attr_accessor self.default_command: Symbol
+  # Convenience method to create a new CommandParser and call {#run}
+  # @return (see #run)
+  def self.run: (*untyped args) -> void
+  def initialize: () -> void
+  # Runs the {Command} object matching the command name of the first
+  # argument.
+  # @return [void]
+  def run: (*untyped args) -> void
+  private def commands: () -> untyped
+  private def list_commands: () -> untyped
+end
+
+# CLI command to view or edit configuration options
+# @since 0.6.2
+class YARD::CLI::Config < ::YARD::CLI::Command
+  # @return [Symbol, nil] the key to view/edit, if any
+  attr_accessor key: Symbol?
+  # @return [Array, nil] the list of values to set (or single value), if modifying
+  attr_accessor values: Array[untyped]?
+  # @return [Boolean] whether to reset the {#key}
+  attr_accessor reset: bool
+  # @return [Boolean] whether the value being set should be inside a list
+  attr_accessor as_list: bool
+  # @return [Boolean] whether to append values to existing key
+  attr_accessor append: bool
+  # @return [String, nil] command to use when configuring ~/.gemrc file.
+  #   If the string is nil, configuration should not occur.
+  attr_accessor gem_install_cmd: String?
+  def initialize: () -> void
+  def description: () -> untyped
+  def run: (*untyped args) -> untyped
+  private def configure_gemrc: () -> untyped
+  private def modify_item: () -> untyped
+  private def view_item: () -> untyped
+  private def list_configuration: () -> untyped
+  private def encode_values: () -> untyped
+  private def encode_value: (untyped value) -> untyped
+  private def optparse: (*untyped args) -> untyped
+end
+
+# CLI command to return the objects that were added/removed from 2 versions
+# of a project (library, gem, working copy).
+# @since 0.6.0
+class YARD::CLI::Diff < ::YARD::CLI::Command
+  def initialize: () -> void
+  def description: () -> untyped
+  def run: (*untyped args) -> untyped
+  private def all_objects: () -> untyped
+  private def added_objects: (untyped registry1, untyped registry2) -> untyped
+  private def modified_objects: (untyped registry1, untyped registry2) -> untyped
+  private def removed_objects: (untyped registry1, untyped registry2) -> untyped
+  private def load_git_commit: (untyped commit) -> untyped
+  private def load_gem_data: (untyped gemfile) -> untyped
+  private def expand_and_parse: (untyped gemfile, untyped io) -> untyped
+  private def generate_yardoc: (untyped dir) -> untyped
+  private def expand_gem: (untyped gemfile, untyped io) -> untyped
+  private def require_rubygems: () -> untyped
+  private def cleanup: (untyped gemfile) -> untyped
+  private def optparse: (*untyped args) -> untyped
+end
+
+# Display one object
+# @since 0.8.6
+class YARD::CLI::Display < ::YARD::CLI::Yardoc
+  def description: () -> untyped
+  def initialize: (*untyped args) -> void
+  # Runs the commandline utility, parsing arguments and displaying an object
+  # from the {Registry}.
+  #
+  # @param [Array<String>] args the list of arguments.
+  # @return [void]
+  def run: (*Array[String] args) -> void
+  # @return [String] the output data for all formatted objects
+  def format_objects: () -> String
+  def wrap_layout: (untyped contents) -> untyped
+  # Parses commandline options.
+  # @param [Array<String>] args each tokenized argument
+  def parse_arguments: (*Array[String] args) -> untyped
+  def output_options: (untyped opts) -> untyped
+end
+
+# @since 0.6.0
+class YARD::CLI::Gems < ::YARD::CLI::Command
+  def initialize: () -> void
+  def description: () -> untyped
+  # Runs the commandline utility, parsing arguments and generating
+  # YARD indexes for gems.
+  #
+  # @param [Array<String>] args the list of arguments
+  # @return [void]
+  def run: (*Array[String] args) -> void
+  # Builds .yardoc files for all non-existing gems
+  private def build_gems: () -> untyped
+  private def add_gems: (untyped gems) -> untyped
+  # Parses options
+  private def optparse: (*untyped args) -> untyped
+end
+
+# A command-line utility to generate Graphviz graphs from
+# a set of objects
+#
+# @see Graph#run
+# @since 0.6.0
+class YARD::CLI::Graph < ::YARD::CLI::YardoptsCommand
+  # The options parsed out of the commandline.
+  # Default options are:
+  #   :format => :dot
+  attr_reader options: untyped
+  # The set of objects to include in the graph.
+  attr_reader objects: untyped
+  # Creates a new instance of the command-line utility
+  def initialize: () -> void
+  def description: () -> untyped
+  # Runs the command-line utility.
+  #
+  # @example
+  #   grapher = Graph.new
+  #   grapher.run('--private')
+  # @param [Array<String>] args each tokenized argument
+  def run: (*Array[String] args) -> untyped
+  private def unrecognized_option: (untyped err) -> untyped
+  # Parses commandline options.
+  # @param [Array<String>] args each tokenized argument
+  private def optparse: (*Array[String] args) -> untyped
+end
+
+# Options to pass to the {Graph} CLI.
+class YARD::CLI::GraphOptions < ::YARD::Templates::TemplateOptions
+  # @return [Boolean] whether to list the full class diagram
+  attr_accessor full: bool
+  # @return [Boolean] whether to show the object dependencies
+  attr_accessor dependencies: bool
+  # @return [String] any contents to pass to the digraph
+  attr_accessor contents: String
+  # @return [:dot] the default output format
+  def format: () -> untyped
+end
+
+# Handles help for commands
+# @since 0.6.0
+class YARD::CLI::Help < ::YARD::CLI::Command
+  def description: () -> untyped
+  def run: (*untyped args) -> untyped
+end
+
+# CLI command to support internationalization (a.k.a. i18n).
+# I18n feature is based on gettext technology.
+# This command generates .pot file from docstring and extra
+# documentation.
+#
+# @since 0.8.0
+# @todo Support msgminit and msgmerge features?
+class YARD::CLI::I18n < ::YARD::CLI::Yardoc
+  def initialize: () -> void
+  def description: () -> untyped
+  def run: (*untyped args) -> untyped
+  private def general_options: (untyped opts) -> untyped
+  private def generate_pot: (untyped relative_base_path) -> untyped
+end
+
+# Lists all constant and method names in the codebase. Uses {Yardoc} --list.
+class YARD::CLI::List < ::YARD::CLI::Command
+  def description: () -> untyped
+  # Runs the commandline utility, parsing arguments and displaying a
+  # list of objects
+  #
+  # @param [Array<String>] args the list of arguments.
+  # @return [void]
+  def run: (*Array[String] args) -> void
+end
+
+# Lists all markup types
+# @since 0.8.6
+class YARD::CLI::MarkupTypes < ::YARD::CLI::Command
+  def description: () -> untyped
+  # Runs the commandline utility, parsing arguments and displaying a
+  # list of markup types
+  #
+  # @param [Array<String>] args the list of arguments.
+  # @return [void]
+  def run: (*Array[String] args) -> void
+end
+
+# A local documentation server
+# @since 0.6.0
+class YARD::CLI::Server < ::YARD::CLI::Command
+  # @return [Hash] a list of options to pass to the doc server
+  attr_accessor options: Hash[untyped, untyped]
+  # @return [Hash] a list of options to pass to the web server
+  attr_accessor server_options: Hash[untyped, untyped]
+  # @return [Hash] a list of library names and yardoc files to serve
+  attr_accessor libraries: Hash[untyped, untyped]
+  # @return [YARD::Server::Adapter] the adapter to use for loading the web server
+  attr_accessor adapter: YARD::Server::Adapter
+  # @return [Array<String>] a list of scripts to load
+  # @since 0.6.2
+  attr_accessor scripts: Array[String]
+  # @return [Array<String>] a list of template paths to register
+  # @since 0.6.2
+  attr_accessor template_paths: Array[String]
+  # Creates a new instance of the Server command line utility
+  def initialize: () -> void
+  def description: () -> untyped
+  def run: (*untyped args) -> untyped
+  private def load_scripts: () -> untyped
+  private def load_template_paths: () -> untyped
+  private def select_adapter: () -> untyped
+  private def add_libraries: (untyped args) -> untyped
+  # @param [String] library The library name.
+  # @param [String, nil] dir The argument provided on the CLI after the
+  #   library name. Is supposed to point to either a project directory
+  #   with a Yard options file, or a yardoc db.
+  # @return [LibraryVersion, nil]
+  private def create_library_version_if_yardopts_exist: (String library, String? dir) -> untyped
+  private def add_gems: () -> untyped
+  private def add_gems_from_gemfile: (?untyped gemfile) -> untyped
+  private def optparse: (*untyped args) -> untyped
+  private def generate_doc_for_first_time: (untyped libver) -> untyped
+  private def extract_db_from_options_file: (untyped options_file) -> untyped
+end
+
+# @since 0.6.0
+class YARD::CLI::Stats < ::YARD::CLI::Yardoc
+  # @return [Boolean] whether to parse and load registry
+  attr_accessor parse: bool
+  # @param [Boolean] parse whether to parse and load registry (see {#parse})
+  def initialize: (?bool parse) -> void
+  def description: () -> untyped
+  # Runs the commandline utility, parsing arguments and generating
+  # output if set.
+  #
+  # @param [Array<String>] args the list of arguments
+  # @return [void]
+  def run: (*Array[String] args) -> void
+  # Prints statistics for different object types
+  #
+  # To add statistics for a specific type, add a method +#stats_for_TYPE+
+  # to this class that calls {#output}.
+  def print_statistics: () -> untyped
+  # Prints list of undocumented objects
+  def print_undocumented_objects: () -> untyped
+  # @return [Array<CodeObjects::Base>] all the parsed objects in the registry,
+  #   removing any objects that are not visible (private, protected) depending
+  #   on the arguments passed to the command.
+  def all_objects: () -> Array[YARD::CodeObjects::Base]
+  # Statistics for files
+  def stats_for_files: () -> untyped
+  # Statistics for modules
+  def stats_for_modules: () -> untyped
+  # Statistics for classes
+  def stats_for_classes: () -> untyped
+  # Statistics for constants
+  def stats_for_constants: () -> untyped
+  # Statistics for attributes
+  def stats_for_attributes: () -> untyped
+  # Statistics for methods
+  def stats_for_methods: () -> untyped
+  # Prints a statistic to standard out. This method is optimized for
+  # getting Integer values, though it allows any data to be printed.
+  #
+  # @param [String] name the statistic name
+  # @param [Integer, String] data the numeric (or any) data representing
+  #   the statistic. If +data+ is an Integer, it should represent the
+  #   total objects of a type.
+  # @param [Integer, nil] undoc number of undocumented objects for the type
+  # @return [void]
+  def output: (String name, Integer | String data, ?Integer? undoc) -> void
+  private def type_statistics: (untyped type) -> untyped
+  # Parses commandline options.
+  # @param [Array<String>] args each tokenized argument
+  private def optparse: (*Array[String] args) -> untyped
+  private def general_options: (untyped opts) -> untyped
+  # An object that keeps track of global state throughout the entire template
+  # rendering process (including any sub-templates).
+  #
+  # @return [OpenStruct] a struct object that stores state
+  # @since 0.6.0
+  def globals: () -> OpenStruct
+  # Runs a list of objects against the {Verifier} object passed into the
+  # template and returns the subset of verified objects.
+  #
+  # @param [Array<CodeObjects::Base>] list a list of code objects
+  # @return [Array<CodeObjects::Base>] a list of code objects that match
+  #   the verifier. If no verifier is supplied, all objects are returned.
+  def run_verifier: (Array[YARD::CodeObjects::Base] list) -> Array[YARD::CodeObjects::Base]
+  # Escapes text. This is used a lot by the HtmlHelper and there should
+  # be some helper to "clean up" text for whatever, this is it.
+  def h: (untyped text) -> untyped
+  # Links objects or URLs. This method will delegate to the correct +link_+
+  # method depending on the arguments passed in.
+  #
+  # @example Linking a URL
+  #   linkify('http://example.com')
+  # @example Including docstring contents of an object
+  #   linkify('include:YARD::Docstring')
+  # @example Linking to an extra file
+  #   linkify('file:README')
+  # @example Linking an object by path
+  #   linkify('YARD::Docstring')
+  def linkify: (*untyped args) -> untyped
+  # Includes an object's docstring into output.
+  # @since 0.6.0
+  # @param [CodeObjects::Base] obj the object to include
+  # @return [String] the object's docstring (no tags)
+  def link_include_object: (YARD::CodeObjects::Base obj) -> String
+  # Include a file as a docstring in output
+  # @since 0.7.0
+  # @param [String] file the filename to include
+  # @return [String] the file's contents
+  def link_include_file: (String file) -> String
+  # Links to an object with an optional title
+  #
+  # @param [CodeObjects::Base] obj the object to link to
+  # @param [String] title the title to use for the link
+  # @return [String] the linked object
+  def link_object: (YARD::CodeObjects::Base obj, ?String title) -> String
+  # Links to a URL
+  #
+  # @param [String] url the URL to link to
+  # @param [String] title the optional title to display the link as
+  # @param [Hash] params optional parameters for the link
+  # @return [String] the linked URL
+  def link_url: (String url, ?String title, ?Hash[untyped, untyped] params) -> String
+  # Links to an extra file
+  #
+  # @param [String] filename the filename to link to
+  # @param [String] title the title of the link
+  # @param [String] anchor optional anchor
+  # @return [String] the link to the file
+  # @since 0.5.5
+  def link_file: (String filename, ?String title, ?String anchor) -> String
+  # Formats a list of return types for output and links each type.
+  #
+  # @example Formatting types
+  #   format_types(['String', 'Array']) #=> "(String, Array)"
+  # @example Formatting types without surrounding brackets
+  #   format_types(['String', 'Array'], false) #=> "String, Array"
+  # @param [Array<String>] list a list of types
+  # @param [Boolean] brackets whether to surround the types in brackets
+  # @return [String] the formatted list of Ruby types
+  def format_types: (Array[String] list, ?bool brackets) -> String
+  # @example Formatted type of an exception class
+  #   o = ClassObject.new(:root, :MyError)
+  #   o.superclass = P('RuntimeError')
+  #   format_object_type(o) # => "Exception"
+  # @example Formatted type of a method
+  #   o = MethodObject.new(:root, :to_s)
+  #   format_object_type(o) # => "Method"
+  # @param [CodeObjects::Base] object the object to retrieve the type for
+  # @return [String] the human-readable formatted {CodeObjects::Base#type #type}
+  #   for the object
+  def format_object_type: (YARD::CodeObjects::Base object) -> String
+  # @example
+  #   s = format_object_title ModuleObject.new(:root, :MyModuleName)
+  #   s # => "Module: MyModuleName"
+  # @param [CodeObjects::Base] object the object to retrieve a title for
+  # @return [String] the page title name for a given object
+  def format_object_title: (YARD::CodeObjects::Base object) -> String
+  # Indents and formats source code
+  #
+  # @param [String] value the input source code
+  # @return [String] formatted source code
+  def format_source: (String value) -> String
+  # Maintains the order in which +stats_for_+ statistics methods should be
+  # printed.
+  #
+  # @see #print_statistics
+  STATS_ORDER: untyped
+end
+
+# A tool to view documentation in the console like `ri`
+class YARD::CLI::YRI < ::YARD::CLI::Command
+  # Helper method to run the utility on an instance.
+  # @see #run
+  def self.run: (*untyped args) -> untyped
+  def initialize: () -> void
+  def description: () -> untyped
+  # Runs the command-line utility.
+  #
+  # @example
+  #   YRI.new.run('String#reverse')
+  # @param [Array<String>] args each tokenized argument
+  def run: (*Array[String] args) -> untyped
+  # Prints the command usage
+  # @return [void]
+  # @since 0.5.6
+  def print_usage: () -> void
+  # Caches the .yardoc file where an object can be found in the {CACHE_FILE}
+  # @return [void]
+  def cache_object: (untyped name, untyped path) -> void
+  # @param [CodeObjects::Base] object the object to print.
+  # @return [String] the formatted output for an object.
+  def print_object: (YARD::CodeObjects::Base object) -> String
+  # Locates an object by name starting in the cached paths and then
+  # searching through any search paths.
+  #
+  # @param [String] name the full name of the object
+  # @return [CodeObjects::Base] an object if found
+  # @return [nil] if no object is found
+  def find_object: (String name) -> YARD::CodeObjects::Base?
+  # Tries to load the object with name. If successful, caches the object
+  # with the cache_path
+  #
+  # @param [String] name the object path
+  # @param [String] cache_path the location of the yardoc
+  #   db containing the object to cache for future lookups.
+  #   No caching is done if this is nil.
+  # @return [void]
+  private def try_load_object: (String name, String cache_path) -> void
+  # Loads {CACHE_FILE}
+  # @return [void]
+  private def load_cache: () -> void
+  # Adds all RubyGems yardoc files to search paths
+  # @return [void]
+  private def add_gem_paths: () -> void
+  # Adds paths in {SEARCH_PATHS_FILE}
+  # @since 0.5.1
+  private def add_default_paths: () -> untyped
+  # Parses commandline options.
+  # @param [Array<String>] args each tokenized argument
+  private def optparse: (*Array[String] args) -> untyped
+  # The location in {YARD::CONFIG_DIR} where the YRI cache file is loaded
+  # from.
+  CACHE_FILE: untyped
+  # A file containing all paths, delimited by newlines, to search for
+  # yardoc databases.
+  # @since 0.5.1
+  SEARCH_PATHS_FILE: untyped
+  # Default search paths that should be loaded dynamically into YRI. These paths
+  # take precedence over all other paths ({SEARCH_PATHS_FILE} and RubyGems
+  # paths). To add a path, call:
+  #
+  #   DEFAULT_SEARCH_PATHS.push("/path/to/.yardoc")
+  #
+  # @return [Array<String>] a list of extra search paths
+  # @since 0.6.0
+  DEFAULT_SEARCH_PATHS: Array[String]
+end
+
+# Yardoc is the default YARD CLI command (+yard doc+ and historic +yardoc+
+# executable) used to generate and output (mainly) HTML documentation given
+# a set of source files.
+#
+# == Usage
+#
+# Main usage for this command is:
+#
+#   $ yardoc [options] [source_files [- extra_files]]
+#
+# See +yardoc --help+ for details on valid options.
+#
+# == Options File (+.yardopts+)
+#
+# If a +.yardopts+ file is found in the source directory being processed,
+# YARD will use the contents of the file as arguments to the command,
+# treating newlines as spaces. You can use shell-style quotations to
+# group space delimited arguments, just like on the command line.
+#
+# A valid +.yardopts+ file might look like:
+#
+#   --no-private
+#   --title "My Title"
+#   --exclude foo --exclude bar
+#   lib/**/*.erb
+#   lib/**/*.rb -
+#   HACKING.rdoc LEGAL COPYRIGHT
+#
+# Note that Yardoc also supports the legacy RDoc style +.document+ file,
+# though this file can only specify source globs to parse, not options.
+#
+# == Queries (+--query+)
+#
+# Yardoc supports queries to select specific code objects for which to
+# generate documentation. For example, you might want to generate
+# documentation only for your public API. If you've documented your public
+# methods with +@api public+, you can use the following query to select
+# all of these objects:
+#
+#   --query '@api.text == "public"'
+#
+# Note that the syntax for queries is mostly Ruby with a few syntactic
+# simplifications for meta-data tags. See the {Verifier} class for an
+# overview of this syntax.
+#
+# == Adding Custom Ad-Hoc Meta-data Tags (+--tag+)
+#
+# YARD allows specification of {file:docs/Tags.md meta-data tags}
+# programmatically via the {YARD::Tags::Library} class, but often this is not
+# practical for users writing documentation. To make adding custom tags
+# easier, Yardoc has a few command-line switches for creating basic tags
+# and displaying them in generated HTML output.
+#
+# To specify a custom tag to be displayed in output, use any of the
+# following:
+#
+# * +--tag+ TAG:TITLE
+# * +--name-tag+ TAG:TITLE
+# * +--type-tag+ TAG:TITLE
+# * +--type-name-tag+ TAG:TITLE
+# * +--title-tag+ TAG:TITLE
+#
+# "TAG:TITLE" is of the form: name:"Display Title", for example:
+#
+#   --tag overload:"Overloaded Method"
+#
+# See +yard help doc+ for a description of the various options.
+#
+# Tags added in this way are automatically displayed in output. To add
+# a meta-data tag that does not show up in output, use +--hide-tag TAG+.
+# Note that you can also use this option on existing tags to hide
+# builtin tags, for instance.
+#
+# == Processed Data Storage (+.yardoc+ directory)
+#
+# When Yardoc parses a source directory, it creates a +.yardoc+ directory
+# (by default, override with +-b+) at the root of the project. This directory
+# contains marshal dumps for all raw object data in the source, so that
+# you can access it later for various commands (+stats+, +graph+, etc.).
+# This directory is also used as a cache for any future calls to +yardoc+
+# so as to process only the files which have changed since the last call.
+#
+# When Yardoc uses the cache in subsequent calls to +yardoc+, methods
+# or classes that have been deleted from source since the last parsing
+# will not be erased from the cache (YARD never deletes objects). In such
+# a case, you should wipe the cache and do a clean parsing of the source tree.
+# You can do this by deleting the +.yardoc+ directory manually, or running
+# Yardoc without +--use-cache+ (+-c+).
+#
+# @since 0.2.1
+# @see Verifier
+class YARD::CLI::Yardoc < ::YARD::CLI::YardoptsCommand
+  # @return [Hash] the hash of options passed to the template.
+  # @see Templates::Engine#render
+  attr_reader options: Hash[untyped, untyped]
+  # @return [Array<String>] list of Ruby source files to process
+  attr_accessor files: Array[String]
+  # @return [Array<String>] list of excluded paths (regexp matches)
+  # @since 0.5.3
+  attr_accessor excluded: Array[String]
+  # @return [Boolean] whether to use the existing yardoc db if the
+  #   .yardoc already exists. Also makes use of file checksums to
+  #   parse only changed files.
+  attr_accessor use_cache: bool
+  # @return [Boolean] whether objects should be serialized to .yardoc db
+  attr_accessor save_yardoc: bool
+  # @return [Boolean] whether to generate output
+  attr_accessor generate: bool
+  # @return [Boolean] whether to print a list of objects
+  # @since 0.5.5
+  attr_accessor list: bool
+  # Keep track of which visibilities are to be shown
+  # @return [Array<Symbol>] a list of visibilities
+  # @since 0.5.6
+  attr_accessor visibilities: Array[Symbol]
+  # Keep track of which APIs are to be shown
+  # @return [Array<String>] a list of APIs
+  # @since 0.8.1
+  attr_accessor apis: Array[String]
+  # Keep track of which APIs are to be hidden
+  # @return [Array<String>] a list of APIs to be hidden
+  # @since 0.8.7
+  attr_accessor hidden_apis: Array[String]
+  # @return [Array<Symbol>] a list of tags to hide from templates
+  # @since 0.6.0
+  attr_accessor hidden_tags: Array[Symbol]
+  # @return [Boolean] whether to print statistics after parsing
+  # @since 0.6.0
+  attr_accessor statistics: bool
+  # @return [Array<String>] a list of assets to copy after generation
+  # @since 0.6.0
+  attr_accessor assets: Array[String]
+  # @return [Boolean] whether markup option was specified
+  # @since 0.7.0
+  attr_accessor has_markup: bool
+  # @return [Boolean] whether yard exits with error status code if a warning occurs
+  attr_accessor fail_on_warning: bool
+  # Creates a new instance of the commandline utility
+  def initialize: () -> void
+  def description: () -> untyped
+  # Runs the commandline utility, parsing arguments and generating
+  # output if set.
+  #
+  # @param [Array<String>] args the list of arguments. If the list only
+  #   contains a single nil value, skip calling of {#parse_arguments}
+  # @return [void]
+  def run: (*Array[String] args) -> void
+  # Parses commandline arguments
+  # @param [Array<String>] args the list of arguments
+  # @return [Boolean] whether or not arguments are valid
+  # @since 0.5.6
+  def parse_arguments: (*Array[String] args) -> bool
+  # The list of all objects to process. Override this method to change
+  # which objects YARD should generate documentation for.
+  #
+  # @deprecated To hide methods use the +@private+ tag instead.
+  # @return [Array<CodeObjects::Base>] a list of code objects to process
+  def all_objects: () -> Array[YARD::CodeObjects::Base]
+  # Generates output for objects
+  # @param [Hash, nil] checksums if supplied, a list of checksums for files.
+  # @return [void]
+  # @since 0.5.1
+  private def run_generate: (Hash[untyped, untyped]? checksums) -> void
+  # Verifies that the markup options are valid before parsing any code.
+  # Failing early is better than failing late.
+  #
+  # @return (see YARD::Templates::Helpers::MarkupHelper#load_markup_provider)
+  private def verify_markup_options: () -> bool
+  # Copies any assets to the output directory
+  # @return [void]
+  # @since 0.6.0
+  private def copy_assets: () -> void
+  # Prints a list of all objects
+  # @return [void]
+  # @since 0.5.5
+  private def print_list: () -> void
+  # Adds a set of extra documentation files to be processed
+  # @param [Array<String>] files the set of documentation files
+  private def add_extra_files: (*Array[String] files) -> untyped
+  # @param file [String] the filename to validate
+  # @param check_exists [Boolean] whether the file should exist on disk
+  # @return [Boolean] whether the file is allowed to be used
+  private def extra_file_valid?: (String file, ?bool check_exists) -> bool
+  # Parses the file arguments into Ruby files and extra files, which are
+  # separated by a '-' element.
+  #
+  # @example Parses a set of Ruby source files
+  #   parse_files %w(file1 file2 file3)
+  # @example Parses a set of Ruby files with a separator and extra files
+  #   parse_files %w(file1 file2 - extrafile1 extrafile2)
+  # @param [Array<String>] files the list of files to parse
+  # @return [void]
+  private def parse_files: (*Array[String] files) -> void
+  # Adds verifier rule for visibilities
+  # @return [void]
+  # @since 0.5.6
+  private def add_visibility_verifier: () -> void
+  # Adds verifier rule for APIs
+  # @return [void]
+  # @since 0.8.1
+  private def add_api_verifier: () -> void
+  # Applies the specified locale to collected objects
+  # @return [void]
+  # @since 0.8.3
+  private def apply_locale: () -> void
+  # Runs a list of objects against the {Verifier} object passed into the
+  # template and returns the subset of verified objects.
+  #
+  # @param [Array<CodeObjects::Base>] list a list of code objects
+  # @return [Array<CodeObjects::Base>] a list of code objects that match
+  #   the verifier. If no verifier is supplied, all objects are returned.
+  #
+  private def run_verifier: (Array[YARD::CodeObjects::Base] list) -> Array[YARD::CodeObjects::Base]
+  # @since 0.6.0
+  private def add_tag: (untyped tag_data, ?untyped factory_method) -> untyped
+  # Parses commandline options.
+  # @param [Array<String>] args each tokenized argument
+  private def optparse: (*Array[String] args) -> untyped
+  # Adds general options
+  private def general_options: (untyped opts) -> untyped
+  # Adds output options
+  private def output_options: (untyped opts) -> untyped
+  # Adds tag options
+  # @since 0.6.0
+  private def tag_options: (untyped opts) -> untyped
+end
+
+# Default options used in +yard doc+ command.
+class YARD::CLI::YardocOptions < ::YARD::Templates::TemplateOptions
+  # @return [CodeObjects::ExtraFileObject] the README file object rendered
+  #   along with objects
+  attr_accessor readme: YARD::CodeObjects::ExtraFileObject
+  # @return [Array<CodeObjects::Base>] the list of code objects to render
+  #   the templates with.
+  attr_accessor objects: Array[YARD::CodeObjects::Base]
+  # @return [CodeObjects::Base] an extra item to send to a template that is not
+  #   the main rendered object
+  attr_accessor item: YARD::CodeObjects::Base
+  # @return [CodeObjects::ExtraFileObject] the file object being rendered.
+  #   The +object+ key is not used so that a file may be rendered in the context
+  #   of an object's namespace (for generating links).
+  attr_accessor file: YARD::CodeObjects::ExtraFileObject
+  # @return [String] the current locale
+  attr_accessor locale: String
+  # @return [Array<CodeObjects::ExtraFileObject>]
+  #   the list of extra files rendered along with objects
+  def files: () -> Array[YARD::CodeObjects::ExtraFileObject]
+  # @return [String] the default title appended to each generated page
+  def title: () -> String
+  # @return [Verifier] the default verifier object to filter queries
+  def verifier: () -> YARD::Verifier
+  # @return [Serializers::Base] the default serializer for generating output
+  #   to disk.
+  def serializer: () -> YARD::Serializers::Base
+  # @return [Symbol] the default output format (:html).
+  def format: () -> Symbol
+  # @return [Boolean] whether the data should be rendered in a single page,
+  #   if the template supports it.
+  def onefile: () -> bool
+end
+
+# Abstract base class for command that reads .yardopts file
+#
+# @abstract
+# @since 0.8.3
+class YARD::CLI::YardoptsCommand < ::YARD::CLI::Command
+  # @return [Boolean] whether to parse options from .yardopts
+  attr_accessor use_yardopts_file: bool
+  # @return [Boolean] whether to parse options from .document
+  attr_accessor use_document_file: bool
+  # The options file name (defaults to {DEFAULT_YARDOPTS_FILE})
+  # @return [String] the filename to load extra options from
+  attr_accessor options_file: String
+  # Creates a new command that reads .yardopts
+  def initialize: () -> void
+  # Parses commandline arguments
+  # @param [Array<String>] args the list of arguments
+  # @return [Boolean] whether or not arguments are valid
+  # @since 0.5.6
+  def parse_arguments: (*Array[String] args) -> bool
+  # Adds --[no-]yardopts / --[no-]document
+  def yardopts_options: (untyped opts) -> untyped
+  # Parses the .yardopts file for default yard options
+  # @return [Array<String>] an array of options parsed from .yardopts
+  private def yardopts: (?untyped file) -> Array[String]
+  # Parses out the yardopts/document options
+  private def parse_yardopts_options: (*untyped args) -> untyped
+  private def parse_rdoc_document_file: (?untyped file) -> untyped
+  private def parse_yardopts: (?untyped file) -> untyped
+  # Reads a .document file in the directory to get source file globs
+  # @return [Array<String>] an array of files parsed from .document
+  private def support_rdoc_document_file!: (?untyped file) -> Array[String]
+  # The configuration filename to load extra options from
+  DEFAULT_YARDOPTS_FILE: untyped
+end

@@ -1,0 +1,194 @@
+module Browser
+  module ActionController
+    private
+
+    def browser: () -> Browser::Base
+  end
+
+  def self.new: (String? user_agent, **untyped options) -> Browser::Base
+
+  class Base
+    attr_reader ua: String?
+
+    def id: () -> Symbol
+    def name: () -> String
+    def full_version: () -> String
+
+    def meta: () -> Browser::Meta::Base
+    def accept_language: () -> Array[String]
+    def to_s: () -> String
+    alias to_a meta
+
+    def version: () -> String
+    def platform: () -> Browser::Platform
+    def bot: () -> Browser::Bot
+    def bot?: () -> bool
+    def device: () -> Browser::Device
+    def ie?: (?untyped) -> bool
+    def edge?: (?untyped) -> bool
+    def compatibility_view?: () -> bool
+    def msie_full_version: () -> String
+    def msie_version: () -> String
+    def instagram?: (?untyped) -> bool
+    def facebook?: (?untyped) -> bool
+    def otter?: (?untyped) -> bool
+    def webkit?: (?untyped) -> bool
+    def quicktime?: (?untyped) -> bool
+    def core_media?: (?untyped) -> bool
+    def phantom_js?: (?untyped) -> bool
+    def safari?: (?untyped) -> bool
+    def safari_webapp_mode?: () -> bool
+    def firefox?: (?untyped) -> bool
+    def chrome?: (?untyped) -> bool
+    def opera?: (?untyped) -> bool
+    def sputnik?: (?untyped) -> bool
+    def yandex?: (?untyped) -> bool
+    alias yandex_browser? yandex?
+
+    def uc_browser?: (?untyped) -> bool
+    def nokia?: (?untyped) -> bool
+    def micro_messanger?: (?untyped) -> bool
+    alias wechat? micro_messanger?
+
+    def weibo?: (?untyped) -> bool
+    def alipay?: (?untyped) -> bool
+    def opera_mini?: (?untyped) -> bool
+    def duck_duck_go?: (?untyped) -> bool
+    def samsung_browser?: (?untyped) -> bool
+    def huawei_browser?: (?untyped) -> bool
+    def miui_browser?: (?untyped) -> bool
+    def maxthon?: (?untyped) -> bool
+    def qq?: (?untyped) -> bool
+    def sougou_browser?: (?untyped) -> bool
+    def google_search_app?: (?untyped) -> bool
+    def chromium_based?: () -> bool
+    def webkit_full_version: () -> String
+    def known?: () -> bool
+    def unknown?: () -> bool
+    def proxy?: () -> bool
+    def electron?: (?untyped) -> bool
+  end
+
+  class Bot
+    class EmptyUserAgentMatcher
+    end
+
+    class KeywordMatcher
+    end
+
+    class KnownBotsMatcher
+    end
+
+    type t = singleton(EmptyUserAgentMatcher) | singleton(KeywordMatcher) | singleton(KnownBotsMatcher)
+
+    def self.why?: (String? user_agent) -> t?
+    def bot?: () -> bool
+    def why?: () -> t
+    def search_engine?: () -> bool
+    def name: () -> String?
+  end
+
+  class Device
+    def id: () -> Symbol
+    def name: () -> String
+    def tablet?: () -> bool
+    def mobile?: () -> bool
+    def ipad?: () -> bool
+    def unknown?: () -> bool
+    def ipod_touch?: () -> bool
+    alias ipod? ipod_touch?
+
+    def iphone?: () -> bool
+    def ps3?: () -> bool
+    alias playstation3? ps3?
+
+    def ps4?: () -> bool
+    alias playstation4? ps4?
+
+    def psp?: () -> bool
+    def playstation_vita?: () -> bool
+    alias vita? playstation_vita?
+    alias psp_vita? playstation_vita?
+
+    def kindle?: () -> bool
+    def kindle_fire?: () -> bool
+    def nintendo_wii?: () -> bool
+    alias wii? nintendo_wii?
+
+    def nintendo_wiiu?: () -> bool
+    alias wiiu? nintendo_wiiu?
+
+    def nintendo_switch?: () -> bool
+    alias switch? nintendo_switch?
+
+    def blackberry_playbook?: () -> bool
+    alias playbook? blackberry_playbook?
+
+    def surface?: () -> bool
+    def tv?: () -> bool
+    def silk?: () -> bool
+    def xbox?: () -> bool
+    def xbox_360?: () -> bool
+    def xbox_one?: () -> bool
+    def playstation?: () -> bool
+    def nintendo?: () -> bool
+    def console?: () -> bool
+    def samsung?: () -> bool
+  end
+
+  module Meta
+    class Base
+      attr_reader browser: Browser
+
+      def meta: () -> String?
+      def to_a: () -> Array[String]
+    end
+  end
+
+  class Platform
+    def adobe_air?: (?untyped) -> bool
+    def chrome_os?: (?untyped) -> bool
+    def android?: (?untyped) -> bool
+    def unknown?: () -> bool
+    def linux?: () -> bool
+    def mac?: (?untyped) -> bool
+    def windows?: (?untyped) -> bool
+    def firefox_os?: () -> bool
+    def kai_os?: () -> bool
+    def ios?: (?untyped) -> bool
+    def blackberry?: (?untyped) -> bool
+    def windows_phone?: (?untyped) -> bool
+    def windows_mobile?: (?untyped) -> bool
+    def id: () -> Symbol
+    def version: () -> String
+    def name: () -> String
+    def to_s: () -> String
+    def ==: (untyped other) -> bool
+    def ios_app?: () -> bool
+    def ios_webview?: () -> bool
+    def android_app?: () -> bool
+    alias android_webview? android_app?
+
+    def windows_xp?: () -> bool
+    def windows_vista?: () -> bool
+    def windows7?: () -> bool
+    def windows8?: () -> bool
+    def windows8_1?: () -> bool
+    def windows10?: () -> bool
+    def windows_rt?: () -> bool
+    def windows_x64?: () -> bool
+    def windows_wow64?: () -> bool
+    def windows_x64_inclusive?: () -> bool
+    def windows_touchscreen_desktop?: () -> bool
+  end
+end
+
+module ActionController
+  class Base
+    include Browser::ActionController
+  end
+
+  class Metal
+    include Browser::ActionController
+  end
+end

@@ -1,0 +1,140 @@
+module ActiveSupport
+  module Cache
+    module Strategy
+      module LocalCache
+        module LocalCacheRegistry
+          def cache_for: (untyped local_cache_key) -> untyped
+          def set_cache_for: (untyped local_cache_key, untyped value) -> untyped
+          extend LocalCacheRegistry
+        end
+      end
+    end
+  end
+
+  module Notifications
+    interface _Callable5
+      def call: (String, Time, Time, String, Hash[untyped, untyped]) -> void
+    end
+
+    interface _Callable1
+      def call: (untyped event) -> void
+    end
+
+    # Subscribe to a given event name with the passed +block+.
+    #
+    # You can subscribe to events by passing a String to match exact event
+    # names, or by passing a Regexp to match all events that match a pattern.
+    #
+    #   ActiveSupport::Notifications.subscribe(/render/) do |*args|
+    #     @event = ActiveSupport::Notifications::Event.new(*args)
+    #   end
+    #
+    # The +block+ will receive five parameters with information about the event:
+    #
+    #   ActiveSupport::Notifications.subscribe('render') do |name, start, finish, id, payload|
+    #     name    # => String, name of the event (such as 'render' from above)
+    #     start   # => Time, when the instrumented block started execution
+    #     finish  # => Time, when the instrumented block ended execution
+    #     id      # => String, unique ID for the instrumenter that fired the event
+    #     payload # => Hash, the payload
+    #   end
+    #
+    # If the block passed to the method only takes one parameter,
+    # it will yield an event object to the block:
+    #
+    #   ActiveSupport::Notifications.subscribe(/render/) do |event|
+    #     @event = event
+    #   end
+    def self.subscribe: (String | Regexp, _Callable5 | _Callable1) -> Subscriber
+                      | ...
+  end
+
+  class TimeWithZone
+    # Returns a string of the object's date and time.
+    #
+    # This method is aliased to <tt>to_formatted_s</tt>.
+    #
+    # Accepts an optional <tt>format</tt>:
+    # * <tt>:default</tt> - default value, mimics Ruby Time#to_s format.
+    # * <tt>:db</tt> - format outputs time in UTC :db time. See Time#to_fs(:db).
+    # * Any key in +Time::DATE_FORMATS+ can be used. See active_support/core_ext/time/conversions.rb.
+    def to_fs: (?Symbol format) -> String
+  end
+
+  class TimeZone
+    # Locate a specific time zone object. If the argument is a string, it
+    # is interpreted to mean the name of the timezone to locate. If it is a
+    # numeric value it is either the hour offset, or the second offset, of the
+    # timezone to find. (The first one with that offset will be returned.)
+    # Returns +nil+ if no such time zone is known to the system.
+    def self.[]: (instance | TZInfo::Timezone | String | real | Duration) -> instance?
+  end
+end
+
+# activesupport/lib/active_support/core_ext/time/zones.rb
+class Time
+  # Returns a TimeZone instance matching the time zone provided.
+  # Accepts the time zone in any format supported by <tt>Time.zone=</tt>.
+  # Raises an +ArgumentError+ for invalid time zones.
+  #
+  #   Time.find_zone! "America/New_York" # => #<ActiveSupport::TimeZone @name="America/New_York" ...>
+  #   Time.find_zone! "EST"              # => #<ActiveSupport::TimeZone @name="EST" ...>
+  #   Time.find_zone! -5.hours           # => #<ActiveSupport::TimeZone @name="Bogota" ...>
+  #   Time.find_zone! nil                # => nil
+  #   Time.find_zone! false              # => false
+  #   Time.find_zone! "NOT-A-TIMEZONE"   # => ArgumentError: Invalid Timezone: NOT-A-TIMEZONE
+  def self.find_zone!: (ActiveSupport::TimeZone | TZInfo::Timezone | String | real | ActiveSupport::Duration) -> ActiveSupport::TimeZone
+
+  # Returns a TimeZone instance matching the time zone provided.
+  # Accepts the time zone in any format supported by <tt>Time.zone=</tt>.
+  # Returns +nil+ for invalid time zones.
+  #
+  #   Time.find_zone "America/New_York" # => #<ActiveSupport::TimeZone @name="America/New_York" ...>
+  #   Time.find_zone "NOT-A-TIMEZONE"   # => nil
+  def self.find_zone: (ActiveSupport::TimeZone | TZInfo::Timezone | String | real | ActiveSupport::Duration | nil) -> ActiveSupport::TimeZone?
+end
+
+module Enumerable[unchecked out Elem]
+  # Returns a new +Array+ without the blank items.
+  # Uses Object#blank? for determining if an item is blank.
+  #
+  #   [1, "", nil, 2, " ", [], {}, false, true].compact_blank
+  #   # =>  [1, 2, true]
+  #
+  #   Set.new([nil, "", 1, false]).compact_blank
+  #   # => [1]
+  #
+  # When called on a +Hash+, returns a new +Hash+ without the blank values.
+  #
+  #   { a: "", b: 1, c: nil, d: [], e: false, f: true }.compact_blank
+  #   # => { b: 1, f: true }
+  def compact_blank: () -> Array[Elem]
+end
+
+class Hash[unchecked out K, unchecked out V]
+  # Hash#reject has its own definition, so this needs one too.
+  def compact_blank: () -> Hash[K, V]
+
+  # Removes all blank values from the +Hash+ in place and returns self.
+  # Uses Object#blank? for determining if a value is blank.
+  #
+  #   h = { a: "", b: 1, c: nil, d: [], e: false, f: true }
+  #   h.compact_blank!
+  #   # => { b: 1, f: true }
+  def compact_blank!: () -> Hash[K, V]
+end
+
+class Array[unchecked out Elem]
+  # Removes all blank elements from the +Array+ in place and returns self.
+  # Uses Object#blank? for determining if an item is blank.
+  #
+  #   a = [1, "", nil, 2, " ", [], {}, false, true]
+  #   a.compact_blank!
+  #   # =>  [1, 2, true]
+  def compact_blank!: () -> Array[Elem]
+end
+
+# active_support/core_ext/string/inflections.rb
+class String
+  def downcase_first: () -> String
+end

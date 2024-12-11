@@ -1,0 +1,15 @@
+class Retries
+  VERSION: String
+
+  attr_accessor self.sleep_enabled: bool
+end
+
+module Kernel
+  def with_retries: [T] (?max_tries: Integer?,
+                         ?base_sleep_seconds: Numeric?,
+                         ?max_sleep_seconds: Numeric?,
+                         ?handler: (^(Exception exception, Integer attempts, Float time) -> void)?,
+                         ?rescue: Exception | Array[Exception] | nil,
+                        ) { (Integer attempt_number) -> T } -> T
+                  | [T] (Hash[Symbol, untyped] opts) { (Integer attempt_number) -> T } -> T
+end

@@ -1,0 +1,4 @@
+module Faraday
+  class TooManyRequestsError < ClientError
+  end
+end

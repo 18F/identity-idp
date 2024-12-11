@@ -1,0 +1,28 @@
+class SelectEmailForm
+  @user: User
+
+  @identity: untyped
+
+  @selected_email_id: Integer
+
+  include ActiveModel::model
+
+  include ActionView::Helpers::TranslationHelper
+
+  attr_reader user: User
+
+  attr_reader identity: untyped
+
+  attr_reader selected_email_id: Integer
+
+  def initialize: (user: User, ?identity: untyped?) -> void
+
+  def submit: (untyped params) -> untyped
+
+  private
+
+  def extra_analytics_attributes: () -> { selected_email_id: Integer }
+
+  def validate_owns_selected_email: () -> (nil | untyped)
+end
+

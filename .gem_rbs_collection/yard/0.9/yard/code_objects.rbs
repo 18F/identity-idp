@@ -1,0 +1,1088 @@
+# !!! GENERATED FILE !!!
+# Please see yard/0.9/_generators/README.md
+
+# A "code object" is defined as any entity in the Ruby language.
+# Classes, modules, methods, class variables and constants are the
+# major objects, but DSL languages can create their own by inheriting
+# from {CodeObjects::Base}.
+module YARD::CodeObjects
+  # Registers a separator with an optional set of valid types that
+  # must follow the separator lexically.
+  #
+  # Calls all callbacks defined by {NamespaceMapper.on_invalidate} after
+  # the separator is registered.
+  #
+  # @param sep [String] the separator string for the namespace
+  # @param valid_types [Array<Symbol>] a list of object types that
+  #   must follow the separator. If the list is empty, any type can
+  #   follow the separator.
+  # @example Registering separators for a method object
+  #   # Anything after a "#" denotes a method object
+  #   register_separator "#", :method
+  #   # Anything after a "." denotes a method object
+  #   register_separator ".", :method
+  # @see .on_invalidate
+  def register_separator: (String sep, *Array[Symbol] valid_types) -> untyped
+
+  # Unregisters a separator by a type.
+  #
+  # @param type [Symbol] the type to unregister
+  # @see #register_separator
+  def unregister_separator_by_type: (Symbol type) -> untyped
+
+  # Clears the map of separators.
+  #
+  # @return [void]
+  def clear_separators: () -> void
+
+  # Gets or sets the default separator value to use when no
+  # separator for the namespace can be determined.
+  #
+  # @param value [String, nil] the default separator, or nil to return the
+  #   value
+  # @example
+  #   default_separator "::"
+  def default_separator: (?String? value) -> untyped
+
+  # @return [Array<String>] all of the registered separators
+  def separators: () -> Array[String]
+
+  # @return [Regexp] the regexp match of all separators
+  def separators_match: () -> Regexp
+
+  # @param sep [String] the separator to return types for
+  # @return [Array<Symbol>] a list of types registered to a separator
+  def types_for_separator: (String sep) -> Array[Symbol]
+
+  # @param type [String] the type to return separators for
+  # @return [Array<Symbol>] a list of separators registered to a type
+  def separators_for_type: (String type) -> Array[Symbol]
+
+  # Namespace separator
+  NSEP: untyped
+
+  # Regex-quoted namespace separator
+  NSEPQ: untyped
+
+  # Instance method separator
+  ISEP: untyped
+
+  # Regex-quoted instance method separator
+  ISEPQ: untyped
+
+  # Class method separator
+  CSEP: untyped
+
+  # Regex-quoted class method separator
+  CSEPQ: untyped
+
+  # Regular expression to match constant name
+  CONSTANTMATCH: untyped
+
+  # Regular expression to match the beginning of a constant
+  CONSTANTSTART: untyped
+
+  # Regular expression to match namespaces (const A or complex path A::B)
+  NAMESPACEMATCH: untyped
+
+  # Regular expression to match a method name
+  METHODNAMEMATCH: untyped
+
+  # Regular expression to match a fully qualified method def (self.foo, Class.foo).
+  METHODMATCH: untyped
+
+  # All builtin Ruby exception classes for inheritance tree.
+  BUILTIN_EXCEPTIONS: untyped
+
+  # All builtin Ruby classes for inheritance tree.
+  # @note MatchingData is a 1.8.x legacy class
+  BUILTIN_CLASSES: untyped
+
+  # All builtin Ruby modules for mixin handling.
+  BUILTIN_MODULES: untyped
+
+  # All builtin Ruby classes and modules.
+  BUILTIN_ALL: untyped
+
+  # Hash of {BUILTIN_EXCEPTIONS} as keys and true as value (for O(1) lookups)
+  BUILTIN_EXCEPTIONS_HASH: untyped
+
+  # @private
+  PROXY_MATCH: untyped
+end
+
+# +Base+ is the superclass of all code objects recognized by YARD. A code
+# object is any entity in the Ruby language (class, method, module). A
+# DSL might subclass +Base+ to create a new custom object representing
+# a new entity type.
+#
+# == Registry Integration
+# Any created object associated with a namespace is immediately registered
+# with the registry. This allows the Registry to act as an identity map
+# to ensure that no object is represented by more than one Ruby object
+# in memory. A unique {#path} is essential for this identity map to work
+# correctly.
+#
+# == Custom Attributes
+# Code objects allow arbitrary custom attributes to be set using the
+# {#[]=} assignment method.
+#
+# == Namespaces
+# There is a special type of object called a "namespace". These are subclasses
+# of the {NamespaceObject} and represent Ruby entities that can have
+# objects defined within them. Classically these are modules and classes,
+# though a DSL might create a custom {NamespaceObject} to describe a
+# specific set of objects.
+#
+# == Separators
+# Custom classes with different separator tokens should define their own
+# separators using the {NamespaceMapper.register_separator} method. The
+# standard Ruby separators have already been defined ('::', '#', '.', etc).
+#
+# @abstract This class should not be used directly. Instead, create a
+#   subclass that implements {#path}, {#sep} or {#type}. You might also
+#   need to register custom separators if {#sep} uses alternate separator
+#   tokens.
+# @see Registry
+# @see #path
+# @see #[]=
+# @see NamespaceObject
+# @see NamespaceMapper.register_separator
+class YARD::CodeObjects::Base
+  # The files the object was defined in. To add a file, use {#add_file}.
+  # @return [Array<Array(String, Integer)>] a list of files
+  # @see #add_file
+  attr_reader files: Array[[ String, Integer ]]
+  # The namespace the object is defined in. If the object is in the
+  # top level namespace, this is {Registry.root}
+  # @return [NamespaceObject] the namespace object
+  attr_accessor namespace: YARD::CodeObjects::NamespaceObject
+  # The source code associated with the object
+  # @return [String, nil] source, if present, or nil
+  attr_accessor source: String?
+  # Language of the source code associated with the object. Defaults to
+  # +:ruby+.
+  #
+  # @return [Symbol] the language type
+  attr_accessor source_type: Symbol
+  # The one line signature representing an object. For a method, this will
+  # be of the form "def meth(arguments...)". This is usually the first
+  # source line.
+  #
+  # @return [String] a line of source
+  attr_accessor signature: String
+  # The non-localized documentation string associated with the object
+  # @return [Docstring] the documentation string
+  # @since 0.8.4
+  attr_reader base_docstring: YARD::Docstring
+  # Marks whether or not the method is conditionally defined at runtime
+  # @return [Boolean] true if the method is conditionally defined at runtime
+  attr_accessor dynamic: bool
+  # @return [String] the group this object is associated with
+  # @since 0.6.0
+  attr_accessor group: String
+  # @return [Symbol] the visibility of an object (:public, :private, :protected)
+  attr_accessor visibility: Symbol
+  # Is the object defined conditionally at runtime?
+  # @see #dynamic
+  def dynamic?: () -> bool
+  # Allocates a new code object
+  # @return [Base]
+  # @see #initialize
+  def self.new: (untyped namespace, untyped name, *untyped args) -> YARD::CodeObjects::Base
+  # Compares the class with subclasses
+  #
+  # @param [Object] other the other object to compare classes with
+  # @return [Boolean] true if other is a subclass of self
+  def self.===: (untyped other) -> bool
+  # Creates a new code object
+  #
+  # @example Create a method in the root namespace
+  #   CodeObjects::Base.new(:root, '#method') # => #<yardoc method #method>
+  # @example Create class Z inside namespace X::Y
+  #   CodeObjects::Base.new(P("X::Y"), :Z) # or
+  #   CodeObjects::Base.new(Registry.root, "X::Y")
+  # @param [NamespaceObject] namespace the namespace the object belongs in,
+  #   {Registry.root} or :root should be provided if it is associated with
+  #   the top level namespace.
+  # @param [Symbol, String] name the name (or complex path) of the object.
+  # @yield [self] a block to perform any extra initialization on the object
+  # @yieldparam [Base] self the newly initialized code object
+  # @return [Base] the newly created object
+  def initialize: (YARD::CodeObjects::NamespaceObject namespace, Symbol | String name, *untyped) { (YARD::CodeObjects::Base self) -> untyped } -> void
+  # Copies all data in this object to another code object, except for
+  # uniquely identifying information (path, namespace, name, scope).
+  #
+  # @param [Base] other the object to copy data to
+  # @return [Base] the other object
+  # @since 0.8.0
+  def copy_to: (YARD::CodeObjects::Base other) -> YARD::CodeObjects::Base
+  # The name of the object
+  # @param [Boolean] prefix whether to show a prefix. Implement
+  #   this in a subclass to define how the prefix is showed.
+  # @return [Symbol] if prefix is false, the symbolized name
+  # @return [String] if prefix is true, prefix + the name as a String.
+  #   This must be implemented by the subclass.
+  def name: (?bool prefix) -> (Symbol | String)
+  # Associates a file with a code object, optionally adding the line where it was defined.
+  # By convention, '<stdin>' should be used to associate code that comes form standard input.
+  #
+  # @param [String] file the filename ('<stdin>' for standard input)
+  # @param [Fixnum, nil] line the line number where the object lies in the file
+  # @param [Boolean] has_comments whether or not the definition has comments associated. This
+  #   will allow {#file} to return the definition where the comments were made instead
+  #   of any empty definitions that might have been parsed before (module namespaces for instance).
+  def add_file: (String file, ?Integer? line, ?bool has_comments) -> untyped
+  # Returns the filename the object was first parsed at, taking
+  # definitions with docstrings first.
+  #
+  # @return [String] a filename
+  # @return [nil] if there is no file associated with the object
+  def file: () -> String?
+  # Returns the line the object was first parsed at (or nil)
+  #
+  # @return [Fixnum] the line where the object was first defined.
+  # @return [nil] if there is no line associated with the object
+  def line: () -> Integer?
+  # Tests if another object is equal to this, including a proxy
+  # @param [Base, Proxy] other if other is a {Proxy}, tests if
+  #   the paths are equal
+  # @return [Boolean] whether or not the objects are considered the same
+  def equal?: (YARD::CodeObjects::Base | YARD::CodeObjects::Proxy other) -> bool
+  # Tests if another object is equal to this, including a proxy
+  # @param [Base, Proxy] other
+  #   if other is a {Proxy}, tests if
+  #   the paths are equal
+  # @return [Boolean] whether or not the objects are considered the same
+  #
+  def ==: (YARD::CodeObjects::Base | YARD::CodeObjects::Proxy other) -> bool
+  # Tests if another object is equal to this, including a proxy
+  # @param [Base, Proxy] other
+  #   if other is a {Proxy}, tests if
+  #   the paths are equal
+  # @return [Boolean] whether or not the objects are considered the same
+  #
+  def eql?: (YARD::CodeObjects::Base | YARD::CodeObjects::Proxy other) -> bool
+  # @return [Integer] the object's hash value (for equality checking)
+  def hash: () -> Integer
+  # @return [nil] this object does not turn into an array
+  def to_ary: () -> nil
+  # Accesses a custom attribute on the object
+  # @param [#to_s] key the name of the custom attribute
+  # @return [Object, nil] the custom attribute or nil if not found.
+  # @see #[]=
+  def []: (untyped key) -> untyped
+  # Sets a custom attribute on the object
+  # @param [#to_s] key the name of the custom attribute
+  # @param [Object] value the value to associate
+  # @return [void]
+  # @see #[]
+  def []=: (untyped key, untyped value) -> void
+  # @overload dynamic_attr_name
+  #   @return the value of attribute named by the method attribute name
+  #   @raise [NoMethodError] if no method or custom attribute exists by
+  #     the attribute name
+  #   @see #[]
+  # @overload dynamic_attr_name=(value)
+  #   @param value a value to set
+  #   @return +value+
+  #   @see #[]=
+  def method_missing: (untyped meth, *untyped args) -> untyped
+  # The documentation string associated with the object
+  #
+  # @param [String, I18n::Locale] locale (I18n::Locale.default)
+  #   the locale of the documentation string.
+  # @return [Docstring] the documentation string
+  def docstring: (?String | YARD::I18n::Locale locale) -> YARD::Docstring
+  # Attaches a docstring to a code object by parsing the comments attached to the statement
+  # and filling the {#tags} and {#docstring} methods with the parsed information.
+  #
+  # @param [String, Array<String>, Docstring] comments
+  #   the comments attached to the code object to be parsed
+  #   into a docstring and meta tags.
+  def docstring=: (Array[String] | String | YARD::Docstring comments) -> untyped
+  # Default type is the lowercase class name without the "Object" suffix.
+  # Override this method to provide a custom object type
+  #
+  # @return [Symbol] the type of code object this represents
+  def type: () -> Symbol
+  # Represents the unique path of the object. The default implementation
+  # joins the path of {#namespace} with {#name} via the value of {#sep}.
+  # Custom code objects should ensure that the path is unique to the code
+  # object by either overriding {#sep} or this method.
+  #
+  # @example The path of an instance method
+  #   MethodObject.new(P("A::B"), :c).path # => "A::B#c"
+  # @return [String] the unique path of the object
+  # @see #sep
+  def path: () -> String
+  # Represents the unique path of the object. The default implementation
+  # joins the path of {#namespace} with {#name} via the value of {#sep}.
+  # Custom code objects should ensure that the path is unique to the code
+  # object by either overriding {#sep} or this method.
+  # @example The path of an instance method
+  #   MethodObject.new(P("A::B"), :c).path # => "A::B#c"
+  # @return [String] the unique path of the object
+  # @see #sep
+  #
+  def to_s: () -> String
+  # @note
+  #   Override this method if your object has a special title that does
+  #   not match the {#path} attribute value. This title will be used
+  #   when linking or displaying the object.
+  # @return [String] the display title for an object
+  # @see 0.8.4
+  def title: () -> String
+  # @param [Base, String] other another code object (or object path)
+  # @return [String] the shortest relative path from this object to +other+
+  # @since 0.5.3
+  def relative_path: (YARD::CodeObjects::Base | String other) -> String
+  # Renders the object using the {Templates::Engine templating system}.
+  #
+  # @example Formats a class in plaintext
+  #   puts P('MyClass').format
+  # @example Formats a method in html with rdoc markup
+  #   puts P('MyClass#meth').format(:format => :html, :markup => :rdoc)
+  # @param [Hash] options a set of options to pass to the template
+  # @option options [Symbol] :format (:text) :html, :text or another output format
+  # @option options [Symbol] :template (:default) a specific template to use
+  # @option options [Symbol] :markup (nil) the markup type (:rdoc, :markdown, :textile)
+  # @option options [Serializers::Base] :serializer (nil) see Serializers
+  # @return [String] the rendered template
+  # @see Templates::Engine#render
+  def format: (?Hash[untyped, untyped] options) -> String
+  # Inspects the object, returning the type and path
+  # @return [String] a string describing the object
+  def inspect: () -> String
+  # The namespace the object is defined in. If the object is in the
+  # top level namespace, this is {Registry.root}
+  # @return [NamespaceObject] the namespace object
+  #
+  def parent: () -> YARD::CodeObjects::NamespaceObject
+  # Sets the namespace the object is defined in.
+  # @param [NamespaceObject, :root, nil] obj
+  #   the new namespace (:root
+  #   for {Registry.root}). If obj is nil, the object is unregistered
+  #   from the Registry.
+  #
+  def parent=: (untyped obj) -> untyped
+  # Gets a tag from the {#docstring}
+  # @see Docstring#tag
+  def tag: (untyped name) -> untyped
+  # Gets a list of tags from the {#docstring}
+  # @see Docstring#tags
+  def tags: (?untyped name) -> untyped
+  # Tests if the {#docstring} has a tag
+  # @see Docstring#has_tag?
+  def has_tag?: (untyped name) -> bool
+  # Add tags to the {#docstring}
+  # @see Docstring#add_tag
+  # @since 0.8.4
+  def add_tag: (*untyped tags) -> untyped
+  # @return whether or not this object is a RootObject
+  def root?: () -> bool
+  # Override this method with a custom component separator. For instance,
+  # {MethodObject} implements sep as '#' or '.' (depending on if the
+  # method is instance or class respectively). {#path} depends on this
+  # value to generate the full path in the form: namespace.path + sep + name
+  #
+  # @return [String] the component that separates the namespace path
+  #   and the name (default is {NSEP})
+  def sep: () -> String
+  # Override this method if your code object subclass does not allow
+  # copying of certain attributes.
+  #
+  # @return [Array<String>] the list of instance variable names (without
+  #   "@" prefix) that should be copied when {#copy_to} is called
+  # @see #copy_to
+  # @since 0.8.0
+  def copyable_attributes: () -> Array[String]
+  # Formats source code by removing leading indentation
+  #
+  # @param [String] source the source code to format
+  # @return [String] formatted source
+  private def format_source: (String source) -> String
+  private def translate_docstring: (untyped locale) -> untyped
+end
+
+# A ClassObject represents a Ruby class in source code. It is a {ModuleObject}
+# with extra inheritance semantics through the superclass.
+class YARD::CodeObjects::ClassObject < ::YARD::CodeObjects::NamespaceObject
+  # The {ClassObject} that this class object inherits from in Ruby source.
+  # @return [ClassObject] a class object that is the superclass of this one
+  attr_accessor superclass: YARD::CodeObjects::ClassObject
+  # Creates a new class object in +namespace+ with +name+
+  #
+  # @see Base.new
+  def initialize: (untyped namespace, untyped name, *untyped args) -> void
+  # Whether or not the class is a Ruby Exception
+  #
+  # @return [Boolean] whether the object represents a Ruby exception
+  def is_exception?: () -> bool
+  # Returns the inheritance tree of the object including self.
+  #
+  # @param [Boolean] include_mods whether or not to include mixins in the
+  #   inheritance tree.
+  # @return [Array<NamespaceObject>] the list of code objects that make up
+  #   the inheritance tree.
+  def inheritance_tree: (?bool include_mods) -> Array[YARD::CodeObjects::NamespaceObject]
+  # Returns the list of methods matching the options hash. Returns
+  # all methods if hash is empty.
+  #
+  # @param [Hash] opts the options hash to match
+  # @option opts [Boolean] :inherited (true) whether inherited methods should be
+  #   included in the list
+  # @option opts [Boolean] :included (true) whether mixed in methods should be
+  #   included in the list
+  # @return [Array<MethodObject>] the list of methods that matched
+  def meths: (?Hash[untyped, untyped] opts) -> Array[YARD::CodeObjects::MethodObject]
+  # Returns only the methods that were inherited.
+  #
+  # @return [Array<MethodObject>] the list of inherited method objects
+  def inherited_meths: (?untyped opts) -> Array[YARD::CodeObjects::MethodObject]
+  # Returns the list of constants matching the options hash.
+  #
+  # @param [Hash] opts the options hash to match
+  # @option opts [Boolean] :inherited (true) whether inherited constant should be
+  #   included in the list
+  # @option opts [Boolean] :included (true) whether mixed in constant should be
+  #   included in the list
+  # @return [Array<ConstantObject>] the list of constant that matched
+  def constants: (?Hash[untyped, untyped] opts) -> Array[YARD::CodeObjects::ConstantObject]
+  # Returns only the constants that were inherited.
+  #
+  # @return [Array<ConstantObject>] the list of inherited constant objects
+  def inherited_constants: () -> Array[YARD::CodeObjects::ConstantObject]
+end
+
+# Represents a class variable inside a namespace. The path is expressed
+# in the form "A::B::@@classvariable"
+class YARD::CodeObjects::ClassVariableObject < ::YARD::CodeObjects::Base
+  # @return [String] the class variable's value
+  attr_accessor value: String
+end
+
+# A list of code objects. This array acts like a set (no unique items)
+# but also disallows any {Proxy} objects from being added.
+class YARD::CodeObjects::CodeObjectList < ::Array[untyped]
+  # Creates a new object list associated with a namespace
+  #
+  # @param [NamespaceObject] owner the namespace the list should be associated with
+  # @return [CodeObjectList]
+  def initialize: (?YARD::CodeObjects::NamespaceObject owner) -> void
+  # Adds a new value to the list
+  #
+  # @param [Base] value a code object to add
+  # @return [CodeObjectList] self
+  def push: (YARD::CodeObjects::Base value) -> YARD::CodeObjects::CodeObjectList
+  # Adds a new value to the list
+  # @param [Base] value
+  #   a code object to add
+  # @return [CodeObjectList] self
+  #
+  def <<: (YARD::CodeObjects::Base value) -> YARD::CodeObjects::CodeObjectList
+end
+
+# A +ConstantObject+ represents a Ruby constant (not a module or class).
+# To access the constant's (source code) value, use {#value}.
+class YARD::CodeObjects::ConstantObject < ::YARD::CodeObjects::Base
+  # The source code representing the constant's value
+  # @return [String] the value the constant is set to
+  attr_accessor value: String
+end
+
+# Represents an instance method of a module that was mixed into the class
+# scope of another namespace.
+#
+# @see MethodObject
+class YARD::CodeObjects::ExtendedMethodObject
+  # @return [Symbol] always +:class+
+  def scope: () -> Symbol
+  # Sets up a delegate for {MethodObject} obj.
+  #
+  # @param [MethodObject] obj the instance method to treat as a mixed in
+  #   class method on another namespace.
+  def initialize: (YARD::CodeObjects::MethodObject obj) -> void
+  # Sends all methods to the {MethodObject} assigned in {#initialize}
+  # @see #initialize
+  # @see MethodObject
+  def method_missing: (untyped sym, *untyped args) -> untyped
+end
+
+# An ExtraFileObject represents an extra documentation file (README or other
+# file). It is not strictly a CodeObject (does not inherit from `Base`) although
+# it implements `path`, `name` and `type`, and therefore should be structurally
+# compatible with most CodeObject interfaces.
+class YARD::CodeObjects::ExtraFileObject
+  # Returns the value of attribute filename.
+  attr_accessor filename: untyped
+  attr_accessor attributes: untyped
+  # Returns the value of attribute name.
+  attr_accessor name: untyped
+  # @since 0.8.3
+  attr_accessor locale: untyped
+  # Creates a new extra file object.
+  # @param [String] filename the location on disk of the file
+  # @param [String] contents the file contents. If not set, the contents
+  #   will be read from disk using the +filename+.
+  def initialize: (String filename, ?String contents) -> void
+  # Returns the value of attribute name.
+  #
+  def path: () -> untyped
+  def title: () -> untyped
+  def contents: () -> untyped
+  def contents=: (untyped contents) -> untyped
+  def inspect: () -> untyped
+  #
+  #
+  def to_s: () -> untyped
+  def type: () -> untyped
+  def ==: (untyped other) -> untyped
+  #
+  #
+  def eql?: (untyped other) -> untyped
+  #
+  #
+  def equal?: (untyped other) -> untyped
+  def hash: () -> untyped
+  private def ensure_parsed: () -> untyped
+  # @param [String] data the file contents
+  private def parse_contents: (String data) -> untyped
+  private def translate: (untyped data) -> untyped
+end
+
+# A MacroObject represents a docstring defined through +@!macro NAME+ and can be
+# reused by specifying the tag +@!macro NAME+. You can also provide the
+# +attached+ type flag to the macro definition to have it attached to the
+# specific DSL method so it will be implicitly reused.
+#
+# Macros are fully described in the {file:docs/Tags.md#macro Tags Overview}
+# document.
+#
+# @example Creating a basic named macro
+#   # @!macro prop
+#   #   @!method $1(${3-})
+#   #   @return [$2] the value of the $0
+#   property :foo, String, :a, :b
+#
+#   # @!macro prop
+#   property :bar, Numeric, :value
+#
+# @example Creating a macro that is attached to the method call
+#   # @!macro [attach] prop2
+#   #   @!method $1(value)
+#   property :foo
+#
+#   # Extra data added to docstring
+#   property :bar
+class YARD::CodeObjects::MacroObject < ::YARD::CodeObjects::Base
+  # @return [String] the macro data stored on the object
+  attr_accessor macro_data: String
+  # @return [CodeObjects::Base] the method object that this macro is
+  #   attached to.
+  attr_accessor method_object: YARD::CodeObjects::Base
+  # Creates a new macro and fills in the relevant properties.
+  # @param [String] macro_name the name of the macro, must be unique.
+  # @param [String] data the data the macro should expand when re-used
+  # @param [CodeObjects::Base] method_object an object to attach this
+  #   macro to. If supplied, {#attached?} will be true
+  # @return [MacroObject] the newly created object
+  def self.create: (String macro_name, String data, ?YARD::CodeObjects::Base method_object) -> YARD::CodeObjects::MacroObject
+  # Finds a macro using +macro_name+
+  # @param [#to_s] macro_name the name of the macro
+  # @return [MacroObject] if a macro is found
+  # @return [nil] if there is no registered macro by that name
+  def self.find: (untyped macro_name) -> YARD::CodeObjects::MacroObject?
+  # Parses a given docstring and determines if the macro is "new" or
+  # not. If the macro has $variable names or if it has a @!macro tag
+  # with the [new] or [attached] flag, it is considered new.
+  #
+  # If a new macro is found, the macro is created and registered. Otherwise
+  # the macro name is searched and returned. If a macro is not found,
+  # nil is returned.
+  #
+  # @param [#to_s] macro_name the name of the macro
+  # @param [CodeObjects::Base] method_object an optional method to attach
+  #   the macro to. Only used if the macro is being created, otherwise
+  #   this argument is ignored.
+  # @return [MacroObject] the newly created or existing macro, depending
+  #   on whether the @!macro tag was a new tag or not.
+  # @return [nil] if the +data+ has no macro tag or if the macro is
+  #   not new and no macro by the macro name is found.
+  def self.find_or_create: (untyped macro_name, untyped data, ?YARD::CodeObjects::Base method_object) -> YARD::CodeObjects::MacroObject?
+  # Parses a given docstring and determines if the macro is "new" or
+  # not. If the macro has $variable names or if it has a @!macro tag
+  # with the [new] or [attached] flag, it is considered new.
+  #
+  # If a new macro is found, the macro is created and registered. Otherwise
+  # the macro name is searched and returned. If a macro is not found,
+  # nil is returned.
+  # @param [#to_s] macro_name
+  #   the name of the macro
+  # @param [CodeObjects::Base] method_object
+  #   an optional method to attach
+  #   the macro to. Only used if the macro is being created, otherwise
+  #   this argument is ignored.
+  # @return [MacroObject] the newly created or existing macro, depending
+  #   on whether the @!macro tag was a new tag or not.
+  # @return [nil] if the +data+ has no macro tag or if the macro is
+  #   not new and no macro by the macro name is found.
+  #
+  def self.create_docstring: (untyped macro_name, untyped data, ?YARD::CodeObjects::Base method_object) -> YARD::CodeObjects::MacroObject?
+  # Expands +macro_data+ using the interpolation parameters.
+  #
+  # Interpolation rules:
+  # * $0, $1, $2, ... = the Nth parameter in +call_params+
+  # * $* = the full statement source (excluding block)
+  # * Also supports $!{N-M} ranges, as well as negative indexes on N or M
+  # * Use \$ to escape the variable name in a macro.
+  #
+  # @!macro [new] macro.expand
+  #   @param [Array<String>] call_params the method name and parameters
+  #     to the method call. These arguments will fill \$0-N
+  #   @param [String] full_source the full source line (excluding block)
+  #     interpolated as \$*
+  #   @param [String] block_source Currently unused. Will support
+  #     interpolating the block data as a variable.
+  #   @return [String] the expanded macro data
+  # @param [String] macro_data the macro data to expand (taken from {#macro_data})
+  def self.expand: (String macro_data, ?untyped call_params, ?untyped full_source, ?untyped block_source) -> untyped
+  # Applies a macro on a docstring by creating any macro data inside of
+  # the docstring first. Equivalent to calling {find_or_create} and {apply_macro}
+  # on the new macro object.
+  #
+  # @param [Docstring] docstring the docstring to create a macro out of
+  # @!macro macro.expand
+  # @see find_or_create
+  def self.apply: (YARD::Docstring docstring, ?Array[String] call_params, ?String full_source, ?String block_source, ?untyped _method_object) -> String
+  # Applies a macro to a docstring, interpolating the macro's data on the
+  # docstring and appending any extra local docstring data that was in
+  # the original +docstring+ object.
+  #
+  # @param [MacroObject] macro the macro object
+  # @!macro macro.expand
+  def self.apply_macro: (YARD::CodeObjects::MacroObject macro, untyped docstring, ?Array[String] call_params, ?String full_source, ?String block_source) -> String
+  # @return [Boolean] whether this macro is attached to a method
+  def attached?: () -> bool
+  # Overrides {Base#path} so the macro path is ".macro.MACRONAME"
+  def path: () -> untyped
+  # Overrides the separator to be '.'
+  def sep: () -> untyped
+  # Expands the macro using
+  # @param [Array<String>] call_params a list of tokens that are passed
+  #   to the method call
+  # @param [String] full_source the full method call (not including the block)
+  # @param [String] block_source the source passed in the block of the method
+  #   call, if there is a block.
+  # @example Expanding a Macro
+  #   macro.expand(%w(property foo bar), 'property :foo, :bar', '') #=>
+  #     "...macro data interpolating this line of code..."
+  # @see expand
+  def expand: (?Array[String] call_params, ?String full_source, ?String block_source) -> untyped
+  MACRO_MATCH: untyped
+end
+
+# Represents a Ruby method in source
+class YARD::CodeObjects::MethodObject < ::YARD::CodeObjects::Base
+  # The scope of the method (+:class+ or +:instance+)
+  #
+  # @return [Symbol] the scope
+  attr_accessor scope: Symbol
+  # Whether the object is explicitly defined in source or whether it was
+  # inferred by a handler. For instance, attribute methods are generally
+  # inferred and therefore not explicitly defined in source.
+  #
+  # @return [Boolean] whether the object is explicitly defined in source.
+  attr_accessor explicit: bool
+  # Returns the list of parameters parsed out of the method signature
+  # with their default values.
+  #
+  # @return [Array<Array(String, String)>] a list of parameter names followed
+  #   by their default values (or nil)
+  attr_accessor parameters: Array[[ String, String ]]
+  # Creates a new method object in +namespace+ with +name+ and an instance
+  # or class +scope+
+  #
+  # If scope is +:module+, this object is instantiated as a public
+  # method in +:class+ scope, but also creates a new (empty) method
+  # as a private +:instance+ method on the same class or module.
+  #
+  # @param [NamespaceObject] namespace the namespace
+  # @param [String, Symbol] name the method name
+  # @param [Symbol] scope +:instance+, +:class+, or +:module+
+  def initialize: (YARD::CodeObjects::NamespaceObject namespace, String | Symbol name, ?Symbol scope) -> void
+  # @return whether or not the method is the #initialize constructor method
+  def constructor?: () -> bool
+  # @return [Boolean] whether or not this method was created as a module
+  #   function
+  # @since 0.8.0
+  def module_function?: () -> bool
+  # Returns the read/writer info for the attribute if it is one
+  # @return [SymbolHash] if there is information about the attribute
+  # @return [nil] if the method is not an attribute
+  # @since 0.5.3
+  def attr_info: () -> SymbolHash[untyped, untyped]?
+  # @return [Boolean] whether the method is a writer attribute
+  # @since 0.5.3
+  def writer?: () -> bool
+  # @return [Boolean] whether the method is a reader attribute
+  # @since 0.5.3
+  def reader?: () -> bool
+  # Tests if the object is defined as an attribute in the namespace
+  # @return [Boolean] whether the object is an attribute
+  def is_attribute?: () -> bool
+  # Tests if the object is defined as an alias of another method
+  # @return [Boolean] whether the object is an alias
+  def is_alias?: () -> bool
+  # Tests boolean {#explicit} value.
+  #
+  # @return [Boolean] whether the method is explicitly defined in source
+  def is_explicit?: () -> bool
+  # @return [MethodObject] the object that this method overrides
+  # @return [nil] if it does not override a method
+  # @since 0.6.0
+  def overridden_method: () -> YARD::CodeObjects::MethodObject?
+  # Returns all alias names of the object
+  # @return [Array<MethodObject>] the alias names
+  def aliases: () -> Array[YARD::CodeObjects::MethodObject]
+  # Override path handling for instance methods in the root namespace
+  # (they should still have a separator as a prefix).
+  # @return [String] the path of a method
+  def path: () -> String
+  # Returns the name of the object.
+  #
+  # @example The name of an instance method (with prefix)
+  #   an_instance_method.name(true) # => "#mymethod"
+  # @example The name of a class method (with prefix)
+  #   a_class_method.name(true) # => "mymethod"
+  # @param [Boolean] prefix whether or not to show the prefix
+  # @return [String] returns {#sep} + +name+ for an instance method if
+  #   prefix is true
+  # @return [Symbol] the name without {#sep} if prefix is set to false
+  def name: (?bool prefix) -> (String | Symbol)
+  # Override separator to differentiate between class and instance
+  # methods.
+  # @return [String] "#" for an instance method, "." for class
+  def sep: () -> String
+  def copyable_attributes: () -> untyped
+end
+
+# Represents a Ruby module.
+class YARD::CodeObjects::ModuleObject < ::YARD::CodeObjects::NamespaceObject
+  # Returns the inheritance tree of mixins.
+  #
+  # @param [Boolean] include_mods if true, will include mixed in
+  #   modules (which is likely what is wanted).
+  # @return [Array<NamespaceObject>] a list of namespace objects
+  def inheritance_tree: (?bool include_mods) -> Array[YARD::CodeObjects::NamespaceObject]
+end
+
+# This module controls registration and accessing of namespace separators
+# for {Registry} lookup.
+#
+# @since 0.9.1
+module YARD::CodeObjects::NamespaceMapper
+  # @return [String] the default separator when no separator can begin
+  #   determined.
+  private attr_accessor self.default_separator: String
+
+  # Registers a separator with an optional set of valid types that
+  # must follow the separator lexically.
+  #
+  # Calls all callbacks defined by {NamespaceMapper.on_invalidate} after
+  # the separator is registered.
+  #
+  # @param sep [String] the separator string for the namespace
+  # @param valid_types [Array<Symbol>] a list of object types that
+  #   must follow the separator. If the list is empty, any type can
+  #   follow the separator.
+  # @example Registering separators for a method object
+  #   # Anything after a "#" denotes a method object
+  #   register_separator "#", :method
+  #   # Anything after a "." denotes a method object
+  #   register_separator ".", :method
+  # @see .on_invalidate
+  def register_separator: (String sep, *Array[Symbol] valid_types) -> untyped
+
+  # Unregisters a separator by a type.
+  #
+  # @param type [Symbol] the type to unregister
+  # @see #register_separator
+  def unregister_separator_by_type: (Symbol type) -> untyped
+
+  # Clears the map of separators.
+  #
+  # @return [void]
+  def clear_separators: () -> void
+
+  # Gets or sets the default separator value to use when no
+  # separator for the namespace can be determined.
+  #
+  # @param value [String, nil] the default separator, or nil to return the
+  #   value
+  # @example
+  #   default_separator "::"
+  def default_separator: (?String? value) -> untyped
+
+  # @return [Array<String>] all of the registered separators
+  def separators: () -> Array[String]
+
+  # @return [Regexp] the regexp match of all separators
+  def separators_match: () -> Regexp
+
+  # @param sep [String] the separator to return types for
+  # @return [Array<Symbol>] a list of types registered to a separator
+  def types_for_separator: (String sep) -> Array[Symbol]
+
+  # @param type [String] the type to return separators for
+  # @return [Array<Symbol>] a list of separators registered to a type
+  def separators_for_type: (String type) -> Array[Symbol]
+
+  # Adds a callback that triggers when a new separator is registered or
+  # the cache is cleared by invalidation.
+  def self.on_invalidate: () -> untyped
+
+  # @return [Hash] a mapping of types to separators
+  private def self.map: () -> Hash[untyped, untyped]
+
+  # @return [Hash] a reverse mapping of separators to types
+  private def self.rev_map: () -> Hash[untyped, untyped]
+
+  # Invalidates all separators
+  # @return [void]
+  private def self.invalidate: () -> void
+
+  # @return [Regexp] the full list of separators as a regexp match
+  private def self.map_match: () -> Regexp
+end
+
+# A "namespace" is any object that can store other objects within itself.
+# The two main Ruby objects that can act as namespaces are modules
+# ({ModuleObject}) and classes ({ClassObject}).
+class YARD::CodeObjects::NamespaceObject < ::YARD::CodeObjects::Base
+  # @return [Array<String>] a list of ordered group names inside the namespace
+  # @since 0.6.0
+  attr_accessor groups: Array[String]
+  # The list of objects defined in this namespace
+  # @return [Array<Base>] a list of objects
+  attr_reader children: Array[YARD::CodeObjects::Base]
+  # A hash containing two keys, class and instance, each containing
+  # the attribute name with a { :read, :write } hash for the read and
+  # write objects respectively.
+  #
+  # @example The attributes of an object
+  #   >> Registry.at('YARD::Docstring').attributes
+  #   => {
+  #         :class => { },
+  #         :instance => {
+  #           :ref_tags => {
+  #             :read => #<yardoc method YARD::Docstring#ref_tags>,
+  #             :write => nil
+  #           },
+  #           :object => {
+  #             :read => #<yardoc method YARD::Docstring#object>,
+  #             :write => #<yardoc method YARD::Docstring#object=>
+  #            },
+  #            ...
+  #         }
+  #       }
+  # @return [Hash] a list of methods
+  attr_reader attributes: Hash[untyped, untyped]
+  # A hash containing two keys, :class and :instance, each containing
+  # a hash of objects and their alias names.
+  # @return [Hash] a list of methods
+  attr_reader aliases: Hash[untyped, untyped]
+  # Class mixins
+  # @return [Array<ModuleObject>] a list of mixins
+  attr_reader class_mixins: Array[YARD::CodeObjects::ModuleObject]
+  # Instance mixins
+  # @return [Array<ModuleObject>] a list of mixins
+  attr_reader instance_mixins: Array[YARD::CodeObjects::ModuleObject]
+  # Creates a new namespace object inside +namespace+ with +name+.
+  # @see Base#initialize
+  def initialize: (untyped namespace, untyped name, *untyped args) -> void
+  # Only the class attributes
+  # @return [Hash] a list of method names and their read/write objects
+  # @see #attributes
+  def class_attributes: () -> Hash[untyped, untyped]
+  # Only the instance attributes
+  # @return [Hash] a list of method names and their read/write objects
+  # @see #attributes
+  def instance_attributes: () -> Hash[untyped, untyped]
+  # Looks for a child that matches the attributes specified by +opts+.
+  #
+  # @example Finds a child by name and scope
+  #   namespace.child(:name => :to_s, :scope => :instance)
+  #   # => #<yardoc method MyClass#to_s>
+  # @return [Base, nil] the first matched child object, or nil
+  def child: (?untyped opts) -> YARD::CodeObjects::Base?
+  # Returns all methods that match the attributes specified by +opts+. If
+  # no options are provided, returns all methods.
+  #
+  # @example Finds all private and protected class methods
+  #   namespace.meths(:visibility => [:private, :protected], :scope => :class)
+  #   # => [#<yardoc method MyClass.privmeth>, #<yardoc method MyClass.protmeth>]
+  # @option opts [Array<Symbol>, Symbol] :visibility ([:public, :private,
+  #   :protected]) the visibility of the methods to list. Can be an array or
+  #   single value.
+  # @option opts [Array<Symbol>, Symbol] :scope ([:class, :instance]) the
+  #   scope of the methods to list. Can be an array or single value.
+  # @option opts [Boolean] :included (true) whether to include mixed in
+  #   methods in the list.
+  # @return [Array<MethodObject>] a list of method objects
+  def meths: (?Hash[untyped, untyped] opts) -> Array[YARD::CodeObjects::MethodObject]
+  # Returns methods included from any mixins that match the attributes
+  # specified by +opts+. If no options are specified, returns all included
+  # methods.
+  #
+  # @option opts [Array<Symbol>, Symbol] :visibility ([:public, :private,
+  #   :protected]) the visibility of the methods to list. Can be an array or
+  #   single value.
+  # @option opts [Array<Symbol>, Symbol] :scope ([:class, :instance]) the
+  #   scope of the methods to list. Can be an array or single value.
+  # @option opts [Boolean] :included (true) whether to include mixed in
+  #   methods in the list.
+  # @see #meths
+  def included_meths: (?Hash[untyped, untyped] opts) -> untyped
+  # Returns all constants in the namespace
+  #
+  # @option opts [Boolean] :included (true) whether or not to include
+  #   mixed in constants in list
+  # @return [Array<ConstantObject>] a list of constant objects
+  def constants: (?Hash[untyped, untyped] opts) -> Array[YARD::CodeObjects::ConstantObject]
+  # Returns constants included from any mixins
+  # @return [Array<ConstantObject>] a list of constant objects
+  def included_constants: () -> Array[YARD::CodeObjects::ConstantObject]
+  # Returns class variables defined in this namespace.
+  # @return [Array<ClassVariableObject>] a list of class variable objects
+  def cvars: () -> Array[YARD::CodeObjects::ClassVariableObject]
+  # Returns for specific scopes. If no scopes are provided, returns all mixins.
+  # @param [Array<Symbol>] scopes a list of scopes (:class, :instance) to
+  #   return mixins for. If this is empty, all scopes will be returned.
+  # @return [Array<ModuleObject>] a list of mixins
+  def mixins: (*Array[Symbol] scopes) -> Array[YARD::CodeObjects::ModuleObject]
+end
+
+# The Proxy class is a way to lazily resolve code objects in
+# cases where the object may not yet exist. A proxy simply stores
+# an unresolved path until a method is called on the object, at which
+# point it does a lookup using {Registry.resolve}. If the object is
+# not found, a warning is raised and {ProxyMethodError} might be raised.
+#
+# @example Creates a Proxy to the String class from a module
+#   # When the String class is parsed this method will
+#   # begin to act like the String ClassObject.
+#   Proxy.new(mymoduleobj, "String")
+# @see Registry.resolve
+# @see ProxyMethodError
+class YARD::CodeObjects::Proxy
+  # Returns the value of attribute namespace.
+  attr_reader namespace: untyped
+  def self.===: (untyped other) -> untyped
+  # Returns the value of attribute namespace.
+  #
+  def parent: () -> untyped
+  # Creates a new Proxy
+  #
+  # @raise [ArgumentError] if namespace is not a NamespaceObject
+  # @return [Proxy] self
+  def initialize: (untyped namespace, untyped name, ?untyped type) -> void
+  # The name of the object
+  # @param [Boolean] prefix whether to show a prefix. Implement
+  #   this in a subclass to define how the prefix is showed.
+  # @return [Symbol] if prefix is false, the symbolized name
+  # @return [String] if prefix is true, prefix + the name as a String.
+  #   This must be implemented by the subclass.
+  #
+  def name: (?bool prefix) -> (Symbol | String)
+  # Returns a text representation of the Proxy
+  # @return [String] the object's #inspect method or P(OBJECTPATH)
+  def inspect: () -> String
+  # If the proxy resolves to an object, returns its path, otherwise
+  # guesses at the correct path using the original namespace and name.
+  #
+  # @return [String] the assumed path of the proxy (or the real path
+  #   of the resolved object)
+  def path: () -> String
+  # If the proxy resolves to an object, returns its path, otherwise
+  # guesses at the correct path using the original namespace and name.
+  # @return [String] the assumed path of the proxy (or the real path
+  #   of the resolved object)
+  #
+  def to_s: () -> String
+  # If the proxy resolves to an object, returns its path, otherwise
+  # guesses at the correct path using the original namespace and name.
+  # @return [String] the assumed path of the proxy (or the real path
+  #   of the resolved object)
+  #
+  def to_str: () -> String
+  # If the proxy resolves to an object, returns its path, otherwise
+  # guesses at the correct path using the original namespace and name.
+  # @return [String] the assumed path of the proxy (or the real path
+  #   of the resolved object)
+  #
+  def title: () -> String
+  # @return [Boolean]
+  def is_a?: (untyped klass) -> bool
+  # @return [Boolean]
+  def ===: (untyped other) -> bool
+  # @return [Boolean]
+  def <=>: (untyped other) -> bool
+  # @return [Boolean]
+  def equal?: (untyped other) -> bool
+  # @return [Boolean] 
+  #
+  def ==: (untyped other) -> bool
+  # @return [Integer] the object's hash value (for equality checking)
+  def hash: () -> Integer
+  # Returns the class name of the object the proxy is mimicking, if
+  # resolved. Otherwise returns +Proxy+.
+  # @return [Class] the resolved object's class or +Proxy+
+  def class: () -> Class
+  # Returns the type of the proxy. If it cannot be resolved at the
+  # time of the call, it will either return the inferred proxy type
+  # (see {#type=}) or +:proxy+
+  # @return [Symbol] the Proxy's type
+  # @see #type=
+  def type: () -> Symbol
+  # Allows a parser to infer the type of the proxy by its path.
+  # @param [#to_sym] type the proxy's inferred type
+  # @return [void]
+  def type=: (untyped type) -> void
+  # @return [Boolean]
+  def instance_of?: (untyped klass) -> bool
+  # @return [Boolean]
+  def kind_of?: (untyped klass) -> bool
+  # @return [Boolean]
+  def respond_to?: (untyped meth, ?untyped include_private) -> bool
+  # Dispatches the method to the resolved object.
+  #
+  # @raise [ProxyMethodError] if the proxy cannot find the real object
+  def method_missing: (untyped meth, *untyped args) -> untyped
+  # This class is never a root object
+  def root?: () -> bool
+  # @note this method fixes a bug in 1.9.2: http://gist.github.com/437136
+  private def to_ary: () -> untyped
+  # Attempts to find the object that this unresolved object
+  # references by checking if any objects by this name are
+  # registered all the way up the namespace tree.
+  #
+  # @return [Base, nil] the registered code object or nil
+  private def to_obj: () -> YARD::CodeObjects::Base?
+  private def proxy_path: () -> untyped
+end
+
+# A special type of +NoMethodError+ when raised from a {Proxy}
+class YARD::CodeObjects::ProxyMethodError < ::NoMethodError[untyped]
+end
+
+# Represents the root namespace object (the invisible Ruby module that
+# holds all top level modules, class and other objects).
+class YARD::CodeObjects::RootObject < ::YARD::CodeObjects::ModuleObject
+  def path: () -> untyped
+  def inspect: () -> untyped
+  def root?: () -> bool
+  def title: () -> untyped
+  def equal?: (untyped other) -> bool
+  def hash: () -> untyped
+end

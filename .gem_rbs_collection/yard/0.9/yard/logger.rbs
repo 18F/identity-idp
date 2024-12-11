@@ -1,0 +1,104 @@
+# !!! GENERATED FILE !!!
+# Please see yard/0.9/_generators/README.md
+
+# Handles console logging for info, warnings and errors.
+# Uses the stdlib Logger class in Ruby for all the backend logic.
+class YARD::Logger < ::Logger
+  # @return [Boolean] whether backtraces should be shown (by default
+  #   this is on).
+  attr_accessor show_backtraces: bool
+  # @return [Boolean] whether progress indicators should be shown when
+  #   logging CLIs (by default this is off).
+  attr_accessor show_progress: bool
+  # Returns the value of attribute warned.
+  attr_accessor warned: untyped
+  # @return [IO] the IO object being logged to
+  # @since 0.8.2
+  def io: () -> IO
+  def io=: (untyped pipe) -> untyped
+  # The logger instance
+  # @return [Logger] the logger instance
+  def self.instance: (?untyped pipe) -> Logger
+  # Creates a new logger
+  def initialize: (untyped pipe, *untyped args) -> void
+  # Changes the debug level to DEBUG if $DEBUG is set
+  # and writes a debugging message.
+  def debug: (*untyped args) -> untyped
+  # Remembers when a warning occurs and writes a warning message.
+  def warn: (*untyped args) -> untyped
+  # Captures the duration of a block of code for benchmark analysis. Also
+  # calls {#progress} on the message to display it to the user.
+  #
+  # @todo Implement capture storage for reporting of benchmarks
+  # @param [String] msg the message to display
+  # @param [Symbol, nil] nontty_log the level to log as if the output
+  #   stream is not a TTY. Use +nil+ for no alternate logging.
+  # @yield a block of arbitrary code to benchmark
+  # @return [void]
+  def capture: (String msg, ?Symbol? nontty_log) -> void
+  # Displays a progress indicator for a given message. This progress report
+  # is only displayed on TTY displays, otherwise the message is passed to
+  # the +nontty_log+ level.
+  #
+  # @param [String] msg the message to log
+  # @param [Symbol, nil] nontty_log the level to log as if the output
+  #   stream is not a TTY. Use +nil+ for no alternate logging.
+  # @return [void]
+  # @since 0.8.2
+  def progress: (String msg, ?Symbol? nontty_log) -> void
+  # Clears the progress indicator in the TTY display.
+  # @return [void]
+  # @since 0.8.2
+  def clear_progress: () -> void
+  # Displays an unformatted line to the logger output stream, adding
+  # a newline.
+  # @param [String] msg the message to display
+  # @return [void]
+  # @since 0.8.2
+  def puts: (?String msg) -> void
+  private def print_no_newline: (untyped msg) -> untyped
+  # Displays an unformatted line to the logger output stream.
+  # @param [String] msg the message to display
+  # @return [void]
+  # @since 0.8.2
+  def print: (?String msg) -> void
+  # Displays an unformatted line to the logger output stream.
+  # @param [String] msg
+  #   the message to display
+  # @return [void] 
+  # @since 0.8.2
+  #
+  def <<: (?String msg) -> void
+  # Prints the backtrace +exc+ to the logger as error data.
+  #
+  # @param [Array<String>] exc the backtrace list
+  # @param [Symbol] level_meth the level to log backtrace at
+  # @return [void]
+  def backtrace: (Array[String] exc, ?Symbol level_meth) -> void
+  # Warns that the Ruby environment does not support continuations. Applies
+  # to JRuby, Rubinius and MacRuby. This warning will only display once
+  # per Ruby process.
+  #
+  # @deprecated Continuations are no longer needed by YARD 0.8.0+.
+  # @return [void]
+  def warn_no_continuations: () -> void
+  # Sets the logger level for the duration of the block
+  #
+  # @example
+  #   log.enter_level(Logger::ERROR) do
+  #     YARD.parse_string "def x; end"
+  #   end
+  # @param [Fixnum] new_level the logger level for the duration of the block.
+  #   values can be found in Ruby's Logger class.
+  # @yield the block with the logger temporarily set to +new_level+
+  def enter_level: (?Integer new_level) -> untyped
+  # Override this internal Logger method to clear line
+  private def add: (*untyped args) -> untyped
+  private def clear_line: () -> untyped
+  # Log format (from Logger implementation). Used by Logger internally
+  private def format_log: (untyped sev, untyped _time, untyped _prog, untyped msg) -> untyped
+  # The list of characters displayed beside the progress bar to indicate
+  # "movement".
+  # @since 0.8.2
+  PROGRESS_INDICATORS: untyped
+end

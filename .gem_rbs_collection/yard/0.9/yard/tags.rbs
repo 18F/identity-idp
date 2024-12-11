@@ -1,0 +1,1165 @@
+# !!! GENERATED FILE !!!
+# Please see yard/0.9/_generators/README.md
+
+# Namespace for Tag components
+module YARD::Tags
+  type t = Tag | OverloadTag | OptionTag
+end
+
+# Defines an attribute with a given name, using indented block data as the
+# attribute's docstring. If the type specifier is supplied with "r", "w", or
+# "rw", the attribute is made readonly, writeonly or readwrite respectively.
+# A readwrite attribute is the default, if no type is specified. The comment
+# containing this directive does not need to be attached to any source, but
+# if it is, that source code will be used as the method's source.
+#
+# To define a regular method, see {tag:!method}
+#
+# @note This directive should only be used if there is no explicit +attr_*+
+#   declaration for the attribute in any source files (i.e., the attribute
+#   is declared dynamically via meta-programming). In all other cases, add
+#   documentation to the attribute declaration itself.
+# @note For backwards compatibility support, you do not need to indent
+#   the attribute's docstring text. If an +@!attribute+ directive is seen with
+#   no indented block, the entire docstring is used as the new attribute's
+#   docstring text.
+# @example Defining a simple readonly attribute
+#   # @!attribute [r] count
+#   #   @return [Fixnum] the size of the list
+# @example Defining a simple readwrite attribute
+#   # @!attribute name
+#   #   @return [String] the name of the user
+# @see tag:!method
+# @since 0.7.0
+class YARD::Tags::AttributeDirective < ::YARD::Tags::MethodDirective
+  def after_parse: () -> untyped
+  def method_name: () -> untyped
+  def method_signature: () -> untyped
+  private def create_attribute_data: (untyped object) -> untyped
+  private def writable?: () -> bool
+  private def readable?: () -> bool
+end
+
+class YARD::Tags::DefaultFactory
+  # Parses tag text and creates a new tag with descriptive text
+  #
+  # @param tag_name        the name of the tag to parse
+  # @param [String] text   the raw tag text
+  # @return [Tag]          a tag object with the tag_name and text values filled
+  def parse_tag: (untyped tag_name, String text) -> YARD::Tags::Tag
+  # Parses tag text and creates a new tag with a key name and descriptive text
+  #
+  # @param tag_name        the name of the tag to parse
+  # @param [String] text   the raw tag text
+  # @return [Tag]          a tag object with the tag_name, name and text values filled
+  def parse_tag_with_name: (untyped tag_name, String text) -> YARD::Tags::Tag
+  # Parses tag text and creates a new tag with formally declared types and
+  # descriptive text
+  #
+  # @param tag_name        the name of the tag to parse
+  # @param [String] text   the raw tag text
+  # @return [Tag]          a tag object with the tag_name, types and text values filled
+  def parse_tag_with_types: (untyped tag_name, String text) -> YARD::Tags::Tag
+  # Parses tag text and creates a new tag with formally declared types, a key
+  # name and descriptive text
+  #
+  # @param tag_name        the name of the tag to parse
+  # @param [String] text   the raw tag text
+  # @return [Tag]          a tag object with the tag_name, name, types and text values filled
+  def parse_tag_with_types_and_name: (untyped tag_name, String text) -> YARD::Tags::Tag
+  # Parses tag text and creates a new tag with formally declared types, a title
+  # on the first line and descriptive text
+  #
+  # @param tag_name        the name of the tag to parse
+  # @param [String] text   the raw tag text
+  # @return [Tag]          a tag object with the tag_name, name, types and text values filled
+  def parse_tag_with_types_and_title: (untyped tag_name, String text) -> YARD::Tags::Tag
+  def parse_tag_with_title_and_text: (untyped tag_name, untyped text) -> untyped
+  def parse_tag_with_types_name_and_default: (untyped tag_name, untyped text) -> untyped
+  def parse_tag_with_options: (untyped tag_name, untyped text) -> untyped
+  # Extracts the name from raw tag text returning the name and remaining value
+  #
+  # @param [String] text the raw tag text
+  # @return [Array] an array holding the name as the first element and the
+  #                 value as the second element
+  private def extract_name_from_text: (String text) -> Array[untyped]
+  private def extract_title_and_desc_from_text: (untyped text) -> untyped
+  # Parses a [], <>, {} or () block at the beginning of a line of text
+  # into a list of comma delimited values.
+  #
+  # @example
+  #   obj.parse_types('[String, Array<Hash, String>, nil]') # => [nil, ['String', 'Array<Hash, String>', 'nil'], ""]
+  #   obj.parse_types('b<String> A string') # => ['b', ['String'], 'A string']
+  #
+  # @return [Array(String, Array<String>, String)] the text before the type
+  #   list (or nil), followed by the type list parsed into an array of
+  #   strings, followed by the text following the type list.
+  private def extract_types_and_name_from_text: (untyped text, ?untyped opening_types, ?untyped closing_types) -> [ String, Array[String], String ]
+  private def extract_types_and_name_from_text_unstripped: (untyped text, ?untyped opening_types, ?untyped closing_types) -> untyped
+  TYPELIST_OPENING_CHARS: untyped
+  TYPELIST_CLOSING_CHARS: untyped
+end
+
+class YARD::Tags::DefaultTag < ::YARD::Tags::Tag
+  # Returns the value of attribute defaults.
+  attr_reader defaults: untyped
+  def initialize: (untyped tag_name, untyped text, ?untyped types, ?untyped name, ?untyped defaults) -> void
+end
+
+# The base directive class. Subclass this class to create a custom
+# directive, registering it with {Library.define_directive}. Directive
+# classes are executed via the {#call} method, which perform all directive
+# processing on the object.
+#
+# If processing occurs within a handler, the {#handler} attribute is
+# available to access more information about parsing context and state.
+# Handlers are only available when parsing from {Parser::SourceParser},
+# not when parsing directly from {DocstringParser}. If the docstring is
+# attached to an object declaration, {#object} will be set and available
+# to modify the generated code object directly. Note that both of these
+# attributes may be nil, and directives should test their existence
+# before attempting to use them.
+#
+# @abstract Subclasses should implement {#call}.
+# @see Library.define_directive
+# @since 0.8.0
+class YARD::Tags::Directive
+  # @return [Tag] the meta-data tag containing data input to the directive
+  attr_accessor tag: YARD::Tags::Tag
+  # Set this field to replace the directive definition inside of a docstring
+  # with arbitrary text. For instance, the {MacroDirective} uses this field
+  # to expand its macro data in place of the call to a +@!macro+.
+  #
+  # @return [String] the text to expand in the original docstring in place
+  #   of this directive definition.
+  # @return [nil] if no expansion should take place for this directive
+  attr_accessor expanded_text: String?
+  # @return [DocstringParser] the parser that is parsing all tag
+  #   information out of the docstring
+  attr_accessor parser: YARD::DocstringParser
+  # @!attribute [r] object
+  # @return [CodeObjects::Base, nil] the object the parent docstring is
+  #   attached to. May be nil.
+  attr_reader object: YARD::CodeObjects::Base?
+  # @!attribute [r] handler
+  # @return [Handlers::Base, nil] the handler object the docstring parser
+  #   might be attached to. May be nil. Only available when parsing
+  #   through {Parser::SourceParser}.
+  attr_reader handler: YARD::Handlers::Base?
+  # @param [Tag] tag the meta-data tag containing all input to the docstring
+  # @param [DocstringParser] parser the docstring parser object
+  def initialize: (YARD::Tags::Tag tag, YARD::DocstringParser parser) -> void
+  # Called when processing the directive. Subclasses should implement
+  # this method to perform all functionality of the directive.
+  #
+  # @abstract implement this method to perform all data processing for
+  #   the directive.
+  # @return [void]
+  def call: () -> void
+  # Called after parsing all directives and tags in the docstring. Used
+  # to perform any cleanup after all directives perform their main task.
+  # @return [void]
+  def after_parse: () -> void
+  def inside_directive?: () -> bool
+end
+
+# Ends a group listing definition. Group definition automatically end
+# when class or module blocks are closed, and defining a new group overrides
+# the last group definition, but occasionally you need to end the current
+# group to return to the default listing. Use {tag:!group} to begin a
+# group listing.
+#
+# @example
+#   class Controller
+#     # @!group Callbacks
+#
+#     def before_filter; end
+#     def after_filter; end
+#
+#     # @!endgroup
+#
+#     def index; end
+#   end
+# @see tag:!group
+# @since 0.6.0
+class YARD::Tags::EndGroupDirective < ::YARD::Tags::Directive
+  def call: () -> untyped
+end
+
+# Defines a group listing. All methods (and attributes) seen after this
+# directive are placed into a group with the given description as the
+# group name. The group listing is used by templates to organize methods
+# and attributes into respective logical groups. To end a group listing
+# use {tag:!endgroup}.
+#
+# @note A group definition only applies to the scope it is defined in.
+#   If a new class or module is opened after the directive, this directive
+#   will not apply to methods in that class or module.
+# @example
+#   # @!group Callbacks
+#
+#   def before_filter; end
+#   def after_filter; end
+# @see tag:!endgroup
+# @since 0.6.0
+class YARD::Tags::GroupDirective < ::YARD::Tags::Directive
+  def call: () -> untyped
+end
+
+# Keeps track of all the registered meta-data tags and directives.
+# Also allows for defining of custom tags and customizing the tag parsing
+# syntax.
+#
+# == Defining Custom Meta-Data Tags
+#
+# To define a custom tag, use {define_tag}. You should pass the tag
+# name and the factory method to use when creating the tag. If you do not
+# provide a factory method to use, it will default to {DefaultFactory#parse_tag}
+#
+# You can also define tag objects manually by simply implementing a "tagname_tag"
+# method that returns a {Tag} object, but they will not take advantage of tag factory
+# parsing:
+#
+#   def mytag_tag(text)
+#     Tag.new(:mytag, text)
+#   end
+#
+# == Defining Custom Directives
+#
+# Directives can be defined by calling the {define_directive} method, taking
+# the directive name, an optional tag factory parser method (to parse the
+# data in the directive into a temporary {Tag} object) and a {Directive} subclass
+# that performs the directive processing. For more information on creating a
+# Directive subclass, see the {Directive} class documentation.
+#
+# Similar to tags, Directives can also be defined manually, in this case using
+# the method name "mydirective_directive" and returning a new {Directive} object:
+#
+#   def mydirective_directive(tag, parser)
+#     MyDirective.new(tag, parser)
+#   end
+#
+# == Namespaced Tags
+#
+# In YARD 0.8.0+, tags can be namespaced using the '.' character. It is recommended
+# to namespace project specific tags, like +@yard.tag_name+, so that tags do not
+# collide with other plugins or new built-in tags.
+#
+# == Adding/Changing the Tag Syntax
+#
+# If you have specialized tag parsing needs you can substitute the {#factory}
+# object with your own by setting {Library.default_factory= Library.default_factory}
+# to a new class with its own parsing methods before running YARD. This is useful
+# if you want to change the syntax of existing tags (@see, @since, etc.)
+#
+# @example Defining a custom tag
+#   define_tag "Parameter", :param, :with_types_and_name
+#   define_tag "Author", :author
+# @example Defining a custom directive
+#   define_directive :method, :with_title_and_text, MethodDirective
+# @see DefaultFactory
+# @see define_tag
+# @see define_directive
+# @see Directive
+class YARD::Tags::Library
+  # @return [SymbolHash{Symbol=>String}] the map of tag names and their
+  #   respective display labels.
+  attr_reader self.labels: SymbolHash[Symbol, String]
+  # @!attribute instance
+  # @return [Library] the main Library instance object.
+  attr_accessor self.instance: YARD::Tags::Library
+  # @!attribute default_factory
+  # Replace the factory object responsible for parsing tags by setting
+  # this to an object (or class) that responds to +parse_TAGNAME+ methods
+  # where +TAGNAME+ is the name of the tag.
+  #
+  # You should set this value before performing any source parsing with
+  # YARD, otherwise your factory class will not be used.
+  #
+  # @example
+  #   YARD::Tags::Library.default_factory = MyFactory
+  #
+  # @see DefaultFactory
+  attr_accessor self.default_factory: untyped
+  # Sets the list of tags to display when rendering templates. The order of
+  # tags in the list is also significant, as it represents the order that
+  # tags are displayed in templates.
+  #
+  # You can use the {Array#place} to insert new tags to be displayed in
+  # the templates at specific positions:
+  #
+  #   Library.visible_tags.place(:mytag).before(:return)
+  #
+  # @return [Array<Symbol>] a list of ordered tags
+  # @since 0.6.0
+  attr_accessor self.visible_tags: Array[Symbol]
+  # Sets the list of tags that should apply to any children inside the
+  # namespace they are defined in. For instance, a "@since" tag should
+  # apply to all methods inside a module it is defined in. Transitive
+  # tags can be overridden by directly defining a tag on the child object.
+  #
+  # @return [Array<Symbol>] a list of transitive tags
+  # @since 0.6.0
+  attr_accessor self.transitive_tags: Array[Symbol]
+  # A factory class to handle parsing of tags, defaults to {default_factory}
+  attr_accessor factory: untyped
+  # Returns the factory method used to parse the tag text for a specific tag
+  #
+  # @param [Symbol] tag the tag name
+  # @return [Symbol] the factory method name for the tag
+  # @return [Class<Tag>,Symbol] the Tag class to use to parse the tag
+  #   or the method to call on the factory class
+  # @return [nil] if the tag is freeform text
+  # @since 0.6.0
+  def self.factory_method_for: (Symbol tag) -> (Symbol | singleton(YARD::Tags::Tag))?
+  # Returns the factory method used to parse the tag text for a specific
+  # directive
+  #
+  # @param [Symbol] directive the directive name
+  # @return [Symbol] the factory method name for the tag
+  # @return [Class<Tag>,Symbol] the Tag class to use to parse the tag or
+  #   the methods to call on the factory class
+  # @return [nil] if the tag is freeform text
+  # @since 0.8.0
+  def self.factory_method_for_directive: (Symbol directive) -> (Symbol | singleton(YARD::Tags::Tag))?
+  # Sorts the labels lexically by their label name, often used when displaying
+  # the tags.
+  #
+  # @return [Array<Symbol>, String] the sorted labels as an array of the tag name and label
+  def self.sorted_labels: () -> (Array[Symbol] | String)
+  # Convenience method to define a new tag using one of {Tag}'s factory methods, or the
+  # regular {DefaultFactory#parse_tag} factory method if none is supplied.
+  #
+  # @!macro [attach] yard.tag
+  #   @!method $2_tag
+  #   @!visibility private
+  #   @yard.tag $2 [$3] $1
+  # @param [#to_s] label the label used when displaying the tag in templates
+  # @param [#to_s] tag the tag name to create
+  # @param [#to_s, Class<Tag>] meth the {Tag} factory method to call when
+  #   creating the tag or the name of the class to directly create a tag for
+  def self.define_tag: (untyped label, untyped tag, ?untyped meth) -> untyped
+  # @macro [attach] yard.directive
+  #   @!method $1_directive
+  #   @!visibility private
+  #   @yard.directive $1 [$2] $-1
+  # @overload define_directive(tag, tag_meth = nil, directive_class)
+  #   Convenience method to define a new directive using a {Tag} factory
+  #   method and {Directive} subclass that implements the directive
+  #   callbacks.
+  #
+  #   @param [#to_s] tag the tag name of the directive
+  #   @param [#to_s] tag_meth the tag factory method to use when
+  #     parsing tag information
+  #   @param [Class<Directive>] the directive class that implements the
+  #     directive behaviour
+  #   @see define_tag
+  def self.define_directive: (untyped tag, ?untyped tag_meth, ?untyped directive_class) -> untyped
+  def self.tag_method_name: (untyped tag_name) -> untyped
+  def self.directive_method_name: (untyped tag_name) -> untyped
+  private def self.tag_or_directive_method_name: (untyped tag_name, ?untyped type) -> untyped
+  private def send_to_factory: (untyped tag_name, untyped meth, untyped text) -> untyped
+  # @return [Directive]
+  private def directive_call: (untyped tag, untyped parser) -> YARD::Tags::Directive
+  def initialize: (?untyped factory) -> void
+  # @param [#to_s] tag_name the name of the tag to look for
+  # @return [Boolean] whether a tag by the given name is registered in
+  #   the library.
+  def has_tag?: (untyped tag_name) -> bool
+  # Creates a new {Tag} object with a given tag name and data
+  # @return [Tag] the newly created tag object
+  def tag_create: (untyped tag_name, untyped tag_buf) -> YARD::Tags::Tag
+  # @param [#to_s] tag_name the name of the tag to look for
+  # @return [Boolean] whether a directive by the given name is registered in
+  #   the library.
+  def has_directive?: (untyped tag_name) -> bool
+  # Creates a new directive with tag information and a docstring parser
+  # object.
+  # @param [String] tag_name the name of the tag
+  # @param [String] tag_buf the tag data
+  # @param [DocstringParser] parser the parser object parsing the docstring
+  # @return [Directive] the newly created directive
+  def directive_create: (String tag_name, String tag_buf, YARD::DocstringParser parser) -> YARD::Tags::Directive
+  # Marks a class/module/method as abstract with optional
+  # implementor information.
+  #
+  # @example
+  #   # @abstract Subclass and override {#run} to implement
+  #   #   a custom Threadable class.
+  #   class Runnable
+  #     def run; raise NotImplementedError end
+  #   end
+  # @!method abstract_tag
+  # @!visibility private
+  # @yard.tag abstract [] Abstract
+  private def abstract_tag: (untyped text) -> untyped
+  # Declares the API that the object belongs to. Does not display in
+  # output, but useful for performing queries (+yardoc --query+). Any text is
+  # allowable in this tag, and there are no predefined values.
+  #
+  # @!macro yard.tag.transitive
+  # @note The special name +@api private+ does display a notice in
+  #   documentation if it is listed, letting users know that the
+  #   method is not to be used by external components.
+  # @example
+  #   class Post
+  #     # @api private
+  #     def reset_table!; table.flush end
+  #   end
+  # @!method api_tag
+  # @!visibility private
+  # @yard.tag api [] API Visibility
+  private def api_tag: (untyped text) -> untyped
+  # Declares a readwrite attribute on a Struct or class.
+  #
+  # @note This attribute is only applicable on class docstrings
+  # @deprecated Use the more powerful {tag:!attribute} directive instead.
+  # @example
+  #   # @attr [String] name the name of the structure
+  #   # @attr [Fixnum] size the size of the structure
+  #   class MyStruct < Struct; end
+  # @!method attr_tag
+  # @!visibility private
+  # @yard.tag attr [with_types_and_name] Attribute
+  private def attr_tag: (untyped text) -> untyped
+  # Declares a readonly attribute on a Struct or class.
+  #
+  # @note This attribute is only applicable on class docstrings
+  # @deprecated Use the more powerful {tag:!attribute} directive instead.
+  # @example
+  #   # @attr_reader [String] name the name of the structure
+  #   # @attr_reader [Fixnum] size the size of the structure
+  #   class MyStruct < Struct; end
+  # @!method attr_reader_tag
+  # @!visibility private
+  # @yard.tag attr_reader [with_types_and_name] Attribute Getter
+  private def attr_reader_tag: (untyped text) -> untyped
+  # Declares a writeonly attribute on a Struct or class.
+  #
+  # @note This attribute is only applicable on class docstrings
+  # @deprecated Use the more powerful {tag:!attribute} directive instead.
+  # @example
+  #   # @attr_reader [String] name the name of the structure
+  #   # @attr_reader [Fixnum] size the size of the structure
+  #   class MyStruct < Struct; end
+  # @!method attr_writer_tag
+  # @!visibility private
+  # @yard.tag attr_writer [with_types_and_name] Attribute Setter
+  private def attr_writer_tag: (untyped text) -> untyped
+  # List the author or authors of a class, module, or method.
+  #
+  # @example
+  #   # @author Foo Bar <foo@bar.com>
+  #   class MyClass; end
+  # @!method author_tag
+  # @!visibility private
+  # @yard.tag author [] Author
+  private def author_tag: (untyped text) -> untyped
+  # Marks a method/class as deprecated with an optional description.
+  # The description should be used to inform users of the recommended
+  # migration path, and/or any useful information about why the object
+  # was marked as deprecated.
+  #
+  # @example Deprecate a method with a replacement API
+  #   # @deprecated Use {#bar} instead.
+  #   def foo; end
+  # @example Deprecate a method with no replacement
+  #   class Thread
+  #     # @deprecated Exiting a thread in this way is not reliable and
+  #     #   can cause a program crash.
+  #     def kill; end
+  #   end
+  # @!method deprecated_tag
+  # @!visibility private
+  # @yard.tag deprecated [] Deprecated
+  private def deprecated_tag: (untyped text) -> untyped
+  # Show an example snippet of code for an object. The first line
+  # is an optional title.
+  #
+  # @example
+  #   # @example Reverse a String
+  #   #   "mystring".reverse #=> "gnirtsym"
+  #   def reverse; end
+  # @yard.signature Optional title
+  #   Code block
+  # @!method example_tag
+  # @!visibility private
+  # @yard.tag example [with_title_and_text] Example
+  private def example_tag: (untyped text) -> untyped
+  # Adds an emphasized note at the top of the docstring for the object
+  #
+  # @example
+  #   # @note This method should only be used in outer space.
+  #   def eject; end
+  # @see tag:todo
+  # @!method note_tag
+  # @!visibility private
+  # @yard.tag note [] Note
+  private def note_tag: (untyped text) -> untyped
+  # Describe an options hash in a method. The tag takes the
+  # name of the options parameter first, followed by optional types,
+  # the option key name, a default value for the key and a
+  # description of the option. The default value should be placed within
+  # parentheses and is optional (can be omitted).
+  #
+  # Note that a +@param+ tag need not be defined for the options
+  # hash itself, though it is useful to do so for completeness.
+  #
+  # @note For keyword parameters, use +@param+, not +@option+.
+  #
+  # @example
+  #   # @param [Hash] opts the options to create a message with.
+  #   # @option opts [String] :subject The subject
+  #   # @option opts [String] :from ('nobody') From address
+  #   # @option opts [String] :to Recipient email
+  #   # @option opts [String] :body ('') The email's body
+  #   def send_email(opts = {}) end
+  # @yard.signature name [Types] option_key (default_value) description
+  # @!method option_tag
+  # @!visibility private
+  # @yard.tag option [with_options] Options Hash
+  private def option_tag: (untyped text) -> untyped
+  # Describe that your method can be used in various
+  # contexts with various parameters or return types. The first
+  # line should declare the new method signature, and the following
+  # indented tag data will be a new documentation string with its
+  # own tags adding metadata for such an overload.
+  #
+  # @example
+  #   # @overload set(key, value)
+  #   #   Sets a value on key
+  #   #   @param key [Symbol] describe key param
+  #   #   @param value [Object] describe value param
+  #   # @overload set(value)
+  #   #   Sets a value on the default key +:foo+
+  #   #   @param value [Object] describe value param
+  #   def set(*args) end
+  # @yard.signature method_signature(parameters)
+  #   Indented docstring for overload method
+  # @!method overload_tag
+  # @!visibility private
+  # @yard.tag overload [OverloadTag] Overloads
+  private def overload_tag: (untyped text) -> untyped
+  # Documents a single method parameter (either regular or keyword) with a given name, type
+  # and optional description.
+  #
+  # @example
+  #   # @param url [String] the URL of the page to download
+  #   # @param directory [String] the name of the directory to save to
+  #   def load_page(url, directory: 'pages') end
+  # @!method param_tag
+  # @!visibility private
+  # @yard.tag param [with_types_and_name] Parameters
+  private def param_tag: (untyped text) -> untyped
+  # Declares that the _logical_ visibility of an object is private.
+  # In other words, it specifies that this method should be marked
+  # private but cannot due to Ruby's visibility restrictions. This
+  # exists for classes, modules and constants that do not obey Ruby's
+  # visibility rules. For instance, an inner class might be considered
+  # "private", though Ruby would make no such distinction.
+  #
+  # This tag is meant to be used in conjunction with the +--no-private+
+  # command-line option, and is required to actually remove these objects
+  # from documentation output. See {file:README.md} for more information on
+  # switches.
+  #
+  # If you simply want to set the API visibility of a method, you should
+  # look at the {tag:api} tag instead.
+  #
+  # @note This method is not recommended for hiding undocumented or
+  #   "unimportant" methods. This tag should only be used to mark objects
+  #   private when Ruby visibility rules cannot do so. In Ruby 1.9.3, you
+  #   can use +private_constant+ to declare constants (like classes or
+  #   modules) as private, and should be used instead of +@private+.
+  # @macro yard.tag.transitive
+  # @example
+  #   # @private
+  #   class InteralImplementation; end
+  # @see tag:api
+  # @yard.signature
+  # @!method private_tag
+  # @!visibility private
+  # @yard.tag private [] Private
+  private def private_tag: (untyped text) -> untyped
+  # Describes that a method may raise a given exception, with
+  # an optional description of what it may mean.
+  #
+  # @example
+  #   # @raise [AccountBalanceError] if the account does not have
+  #   #   sufficient funds to perform the transaction
+  #   def withdraw(amount) end
+  # @!method raise_tag
+  # @!visibility private
+  # @yard.tag raise [with_types] Raises
+  private def raise_tag: (untyped text) -> untyped
+  # Describes the return value (and type or types) of a method.
+  # You can list multiple return tags for a method in the case
+  # where a method has distinct return cases. In this case, each
+  # case should begin with "if ...".
+  #
+  # @example A regular return value
+  #   # @return [Fixnum] the size of the file
+  #   def size; @file.size end
+  # @example A method returns an Array or a single object
+  #   # @return [String] if a single object was returned
+  #   #   from the database.
+  #   # @return [Array<String>] if multiple objects were
+  #   #   returned.
+  #   def find(query) end
+  # @!method return_tag
+  # @!visibility private
+  # @yard.tag return [with_types] Returns
+  private def return_tag: (untyped text) -> untyped
+  # "See Also" references for an object. Accepts URLs or
+  # other code objects with an optional description at the end.
+  # Note that the URL or object will be automatically linked by
+  # YARD and does not need to be formatted with markup.
+  #
+  # @example
+  #   # Synchronizes system time using NTP.
+  #   # @see http://ntp.org/documentation.html NTP Documentation
+  #   # @see NTPHelperMethods
+  #   class NTPUpdater; end
+  # @!method see_tag
+  # @!visibility private
+  # @yard.tag see [with_name] See Also
+  private def see_tag: (untyped text) -> untyped
+  # Lists the version that the object was first added.
+  #
+  # @!macro yard.tag.transitive
+  # @example
+  #   # @since 1.2.4
+  #   def clear_routes; end
+  # @!method since_tag
+  # @!visibility private
+  # @yard.tag since [] Since
+  private def since_tag: (untyped text) -> untyped
+  # Marks a TODO note in the object being documented.
+  # For reference, objects with TODO items can be enumerated
+  # from the command line with a simple command:
+  #
+  #   !!!sh
+  #   mocker$ yard list --query '@todo'
+  #   lib/mocker/mocker.rb:15: Mocker
+  #   lib/mocker/report/html.rb:5: Mocker::Report::Html
+  #
+  # YARD can also be used to enumerate the TODO items from
+  # a short script:
+  #
+  #   !!!ruby
+  #   require 'yard'
+  #   YARD::Registry.load!.all.each do |o|
+  #     puts o.tag(:todo).text if o.tag(:todo)
+  #   end
+  #
+  # @example
+  #   # @todo Add support for Jabberwocky service.
+  #   #   There is an open source Jabberwocky library available
+  #   #   at http://jbrwcky.org that can be easily integrated.
+  #   class Wonderlander; end
+  # @see tag:note
+  # @!method todo_tag
+  # @!visibility private
+  # @yard.tag todo [] Todo Item
+  private def todo_tag: (untyped text) -> untyped
+  # Lists the version of a class, module or method. This is
+  # similar to a library version, but at finer granularity.
+  # In some cases, version of specific modules, classes, methods
+  # or generalized components might change independently between
+  # releases. A version tag is used to infer the API compatibility
+  # of a specific object.
+  #
+  # @example
+  #   # The public REST API for http://jbrwcky.org
+  #   # @version 2.0
+  #   class JabberwockyAPI; end
+  # @!method version_tag
+  # @!visibility private
+  # @yard.tag version [] Version
+  private def version_tag: (untyped text) -> untyped
+  # Describes what a method might yield to a given block.
+  # The types specifier list should not list types, but names
+  # of the parameters yielded to the block. If you define
+  # parameters with +@yieldparam+, you do not need to define
+  # the parameters in the type specification of +@yield+ as
+  # well.
+  #
+  # @example
+  #   # For a block {|a,b,c| ... }
+  #   # @yield [a, b, c] Gives 3 random numbers to the block
+  #   def provide3values(&block) yield(42, 42, 42) end
+  # @see tag:yieldparam
+  # @see tag:yieldreturn
+  # @yard.signature [parameters] description
+  # @!method yield_tag
+  # @!visibility private
+  # @yard.tag yield [with_types] Yields
+  private def yield_tag: (untyped text) -> untyped
+  # Defines a parameter yielded by a block. If you define the
+  # parameters with +@yieldparam+, you do not need to define
+  # them via +@yield+ as well.
+  #
+  # @example
+  #   # @yieldparam [String] name the name that is yielded
+  #   def with_name(name) yield(name) end
+  # @!method yieldparam_tag
+  # @!visibility private
+  # @yard.tag yieldparam [with_types_and_name] Yield Parameters
+  private def yieldparam_tag: (untyped text) -> untyped
+  # Documents the value and type that the block is expected
+  # to return to the method.
+  #
+  # @example
+  #   # @yieldreturn [Fixnum] the number to add 5 to.
+  #   def add5_block(&block) 5 + yield end
+  # @see tag:return
+  # @!method yieldreturn_tag
+  # @!visibility private
+  # @yard.tag yieldreturn [with_types] Yield Returns
+  private def yieldreturn_tag: (untyped text) -> untyped
+  # @yard.signature [r | w | rw] attribute_name
+  #   Indented attribute docstring
+  # @!method attribute_directive
+  # @!visibility private
+  # @yard.directive attribute [with_types_and_title] AttributeDirective
+  private def attribute_directive: (untyped tag, untyped parser) -> untyped
+  # @yard.signature
+  # @!method endgroup_directive
+  # @!visibility private
+  # @yard.directive endgroup [EndGroupDirective] EndGroupDirective
+  private def endgroup_directive: (untyped tag, untyped parser) -> untyped
+  #
+  # @!method group_directive
+  # @!visibility private
+  # @yard.directive group [GroupDirective] GroupDirective
+  private def group_directive: (untyped tag, untyped parser) -> untyped
+  # @yard.signature [attach | new] optional_name
+  #   Optional macro expansion data
+  # @!method macro_directive
+  # @!visibility private
+  # @yard.directive macro [with_types_and_title] MacroDirective
+  private def macro_directive: (untyped tag, untyped parser) -> untyped
+  # @yard.signature method_signature(parameters)
+  #   Indented method docstring
+  # @!method method_directive
+  # @!visibility private
+  # @yard.directive method [with_title_and_text] MethodDirective
+  private def method_directive: (untyped tag, untyped parser) -> untyped
+  # @yard.signature [language] code
+  # @!method parse_directive
+  # @!visibility private
+  # @yard.directive parse [with_types] ParseDirective
+  private def parse_directive: (untyped tag, untyped parser) -> untyped
+  # Sets the scope of a DSL method. Only applicable to DSL method
+  # calls. Acceptable values are 'class' or 'instance'
+  # @yard.signature class | instance
+  # @!method scope_directive
+  # @!visibility private
+  # @yard.directive scope [ScopeDirective] ScopeDirective
+  private def scope_directive: (untyped tag, untyped parser) -> untyped
+  # Sets the visibility of a DSL method. Only applicable to
+  # DSL method calls. Acceptable values are public, protected, or private.
+  # @yard.signature public | protected | private
+  # @!method visibility_directive
+  # @!visibility private
+  # @yard.directive visibility [VisibilityDirective] VisibilityDirective
+  private def visibility_directive: (untyped tag, untyped parser) -> untyped
+end
+
+# Defines a block of text to be expanded whenever the macro is called by name
+# in subsequent docstrings. The macro data can be any arbitrary text data, be
+# it regular documentation, meta-data tags or directives.
+#
+# == Defining a Macro
+#
+# A macro must first be defined in order to be used. Note that a macro is also
+# expanded upon definition if it defined on an object (the docstring of a
+# method, class, module or constant object as opposed to a free standing
+# comment). To define a macro, use the "new" or "attach" identifier in the
+# types specifier list. A macro will also automatically be created if an
+# indented macro data block is given, so the keywords are not strictly needed.
+#
+# === Anonymous Macros
+#
+# In addition to standard named macros, macros can be defined anonymously if
+# no name is given. In this case, they can not be re-used in future docstrings,
+# but they will expand in the first definition. This is useful when needing
+# to take advantage of the macro expansion variables (described below).
+#
+# == Using a Macro
+#
+# To re-use a macro in another docstring after it is defined, simply use
+# <tt>@!macro the_name</tt> with no indented block of macro data. The resulting
+# data will be expanded in place.
+#
+# == Attaching a Macro to a DSL Method
+#
+# Macros can be defined to auto-expand on DSL-style class method calls. To
+# define a macro to be auto expanded in this way, use the "attach" keyword
+# in the type specifier list ("new" is implied).
+#
+# Attached macros can also be attached directly on the class method declaration
+# that provides the DSL method to its subclasses. The syntax in either case
+# is the same.
+#
+# == Macro Expansion Variables
+#
+# In the case of using macros on DSL-style method calls, a number of expansion
+# variables can be used for interpolation inside of the macro data. The variables,
+# similar in syntax to Ruby's global variables, are as follows:
+#
+# * $0 - the method name being called
+# * $1, $2, $3, ... - the Nth argument in the method call
+# * $& - the full source line
+#
+# The following example shows what the expansion variables might hold for a given
+# DSL method call:
+#
+#   property :foo, :a, :b, :c, String
+#   # $0 => "property"
+#   # $1 => "foo"
+#   # $2 => "a"
+#   # $& => "property :foo, :a, :b, :c, String"
+#
+# === Ranges
+#
+# Ranges are also acceptable with the syntax <tt>${N-M}</tt>. Negative values
+# on either N or M are valid, and refer to indexes from the end of the list.
+# Consider a DSL method that creates a method using the first argument with
+# argument names following, ending with the return type of the method. This
+# could be documented as:
+#
+#     # @!macro dsl_method
+#     #   @!method $1(${2--2})
+#     #   @return [${-1}] the return value of $0
+#     create_method_with_args :foo, :a, :b, :c, String
+#
+# As described, the method is using the signature <tt>foo(a, b, c)</tt> and the return
+# type from the last argument, +String+. When using ranges, tokens are joined
+# with commas. Note that this includes using $0:
+#
+#     !!!plain
+#     $0-1 # => Interpolates to "create_method_with_args, foo"
+#
+# If you want to separate them with spaces, use <tt>$1 $2 $3 $4 ...</tt>. Note that
+# if the token cannot be expanded, it will return the empty string (not an error),
+# so it would be safe to list <tt>$1 $2 ... $10</tt>, for example.
+#
+# === Escaping Interpolation
+#
+# Interpolation can be escaped by prefixing the +$+ with +\\\+, like so:
+#
+#     # @!macro foo
+#     #   I have \$2.00 USD.
+#
+# @example Defining a simple macro
+#   # @!macro [new] returnself
+#   #   @return [self] returns itself
+# @example Using a simple macro in multiple docstrings
+#   # Documentation for map
+#   # ...
+#   # @macro returnself
+#   def map; end
+#
+#   # Documentation for filter
+#   # ...
+#   # @macro returnself
+#   def filter; end
+# @example Attaching a macro to a class method (for DSL usage)
+#     class Resource
+#       # Defines a new property
+#       # @param [String] name the property name
+#       # @param [Class] type the property's type
+#       # @!macro [attach] property
+#       #   @return [$2] the $1 property
+#       def self.property(name, type) end
+#     end
+#
+#     class Post < Resource
+#       property :title, String
+#       property :view_count, Integer
+#     end
+# @example Attaching a macro directly to a DSL method
+#     class Post < Resource
+#       # @!macro [attach] property
+#       #   @return [$2] the $1 property
+#       property :title, String
+#
+#       # Macro will expand on this definition too
+#       property :view_count, Integer
+#     end
+# @since 0.7.0
+class YARD::Tags::MacroDirective < ::YARD::Tags::Directive
+  def call: () -> untyped
+  private def new?: () -> bool
+  private def attach?: () -> bool
+  private def class_method?: () -> bool
+  private def anonymous?: () -> bool
+  private def expand: (untyped macro_data) -> untyped
+  private def find_or_create: () -> untyped
+  private def warn: () -> untyped
+end
+
+# Defines a method object with a given method signature, using indented
+# block data as the method's docstring. The signature is similar to the
+# {tag:overload} tag. The comment containing this directive does not need
+# to be attached to any source, but if it is, that source code will be
+# used as the method's source.
+#
+# To define an attribute method, see {tag:!attribute}
+#
+# @note This directive should only be used if there is no explicit
+#   declaration for the method in any source files (i.e., the method
+#   is declared dynamically via meta-programming). In all other cases, add
+#   documentation to the method definition itself.
+# @note For backwards compatibility support, you do not need to indent
+#   the method's docstring text. If a +@!method+ directive is seen with
+#   no indented block, the entire docstring is used as the new method's
+#   docstring text.
+# @example Defining a simple method
+#   # @!method quit(username, message = "Quit")
+#   #   Sends a quit message to the server for a +username+.
+#   #   @param [String] username the username to quit
+#   #   @param [String] message the quit message
+#   quit_message_method
+# @example Attaching multiple methods to the same source
+#   # @!method method1
+#   # @!method method2
+#   create_methods :method1, :method2
+# @see tag:!attribute
+# @since 0.7.0
+class YARD::Tags::MethodDirective < ::YARD::Tags::Directive
+  def call: () -> untyped
+  def after_parse: () -> untyped
+  def method_name: () -> untyped
+  def method_signature: () -> untyped
+  def sanitized_tag_signature: () -> untyped
+  def use_indented_text: () -> untyped
+  def create_object: () -> untyped
+  SCOPE_MATCH: untyped
+end
+
+class YARD::Tags::OptionTag
+  # Returns the value of attribute pair.
+  attr_accessor pair: YARD::Tags::DefaultTag
+  def initialize: (untyped tag_name, untyped name, untyped pair) -> void
+end
+
+class YARD::Tags::OverloadTag < ::YARD::Tags::Tag
+  # Returns the value of attribute signature.
+  attr_reader signature: untyped
+  # Returns the value of attribute parameters.
+  attr_reader parameters: untyped
+  # Returns the value of attribute docstring.
+  attr_reader docstring: untyped
+  def initialize: (untyped tag_name, untyped text) -> void
+  def tag: (untyped name) -> untyped
+  def tags: (?untyped name) -> untyped
+  def has_tag?: (untyped name) -> bool
+  def object=: (untyped value) -> untyped
+  def name: (?untyped prefix) -> untyped
+  def method_missing: (*untyped args) -> untyped
+  def type: () -> untyped
+  def is_a?: (untyped other) -> bool
+  # @return [Boolean] 
+  #
+  def kind_of?: (untyped other) -> bool
+  private def parse_tag: (untyped text) -> untyped
+  private def parse_signature: () -> untyped
+end
+
+# Parses a block of code as if it were present in the source file at that
+# location. This directive is useful if a class has dynamic meta-programmed
+# behaviour that cannot be recognized by YARD.
+#
+# You can specify the language of the code block using the types
+# specification list. By default, the code language is "ruby".
+#
+# @example Documenting dynamic module inclusion
+#   class User
+#     # includes "UserMixin" and extends "UserMixin::ClassMethods"
+#     # using the UserMixin.included callback.
+#     # @!parse include UserMixin
+#     # @!parse extend UserMixin::ClassMethods
+#   end
+# @example Declaring a method as an attribute
+#   # This should really be an attribute
+#   # @!parse attr_reader :foo
+#   def object; @parent.object end
+# @example Parsing C code
+#   # @!parse [c]
+#   #   void Init_Foo() {
+#   #     rb_define_method(rb_cFoo, "method", method, 0);
+#   #   }
+# @since 0.8.0
+class YARD::Tags::ParseDirective < ::YARD::Tags::Directive
+  def call: () -> untyped
+end
+
+module YARD::Tags::RefTag
+  # Returns the value of attribute owner.
+  attr_accessor owner: untyped
+end
+
+class YARD::Tags::RefTagList
+  # Returns the value of attribute owner.
+  attr_accessor owner: untyped
+  # Returns the value of attribute tag_name.
+  attr_accessor tag_name: untyped
+  # Returns the value of attribute name.
+  attr_accessor name: untyped
+  def initialize: (untyped tag_name, untyped owner, ?untyped name) -> void
+  def tags: () -> untyped
+end
+
+# Modifies the current parsing scope (class or instance). If this
+# directive is defined on a docstring attached to an object definition,
+# it is applied only to that object. Otherwise, it applies the scope
+# to all future objects in the namespace.
+#
+# @example Modifying the scope of a DSL method
+#   # @!scope class
+#   cattr_accessor :subclasses
+# @example Modifying the scope of a set of methods
+#   # @!scope class
+#
+#   # Documentation for method1
+#   def method1; end
+#
+#   # Documentation for method2
+#   def method2; end
+# @since 0.7.0
+class YARD::Tags::ScopeDirective < ::YARD::Tags::Directive
+  def call: () -> untyped
+end
+
+# Represents a metadata tag value (+@tag+). Tags can have any combination of
+# {#types}, {#name} and {#text}, or none of the above.
+#
+# @example Programmatic tag creation
+#   # The following docstring syntax:
+#   #   @param [String, nil] arg an argument
+#   #
+#   # is equivalent to:
+#   Tag.new(:param, 'an argument', ['String', 'nil'], 'arg')
+class YARD::Tags::Tag
+  # @return [String] the name of the tag
+  attr_accessor tag_name: String
+  # @return [String] the tag text associated with the tag
+  # @return [nil] if no tag text is supplied
+  attr_accessor text: String?
+  # @return [Array<String>] a list of types associated with the tag
+  # @return [nil] if no types are associated with the tag
+  attr_accessor types: Array[String]?
+  # @return [String] a name associated with the tag
+  attr_accessor name: String
+  # @return [CodeObjects::Base] the associated object
+  attr_accessor object: YARD::CodeObjects::Base
+  # Creates a new tag object with a tag name and text. Optionally, formally declared types
+  # and a key name can be specified.
+  #
+  # Types are mainly for meta tags that rely on type information, such as +param+, +return+, etc.
+  #
+  # Key names are for tags that declare meta data for a specific key or name, such as +param+,
+  # +raise+, etc.
+  #
+  # @param [#to_s] tag_name        the tag name to create the tag for
+  # @param [String] text           the descriptive text for this tag
+  # @param [Array<String>] types   optional type list of formally declared types
+  #                                for the tag
+  # @param [String] name           optional key name which the tag refers to
+  def initialize: (untyped tag_name, String text, ?Array[String] types, ?String name) -> void
+  # Convenience method to access the first type specified. This should mainly
+  # be used for tags that only specify one type.
+  #
+  # @return [String] the first of the list of specified types
+  # @see #types
+  def type: () -> String
+  # Provides a plain English summary of the type specification, or nil
+  # if no types are provided or parsable.
+  #
+  # @return [String] a plain English description of the associated types
+  # @return [nil] if no types are provided or not parsable
+  def explain_types: () -> String?
+end
+
+class YARD::Tags::TagFormatError < ::RuntimeError
+end
+
+class YARD::Tags::TypesExplainer
+  # Provides a plain English summary of the type specification, or nil
+  # if no types are provided or parsable.
+  #
+  # @return [String] a plain English description of the associated types
+  # @return [nil] if no types are provided or not parsable
+  # @param types [Array<String>] a list of types to parse and summarize
+  def self.explain: (*Array[String] types) -> String?
+  # Provides a plain English summary of the type specification, or nil
+  # if no types are provided or parsable.
+  #
+  # @return [String] a plain English description of the associated types
+  # @return [nil] if no types are provided or not parsable
+  # @param types [Array<String>] a list of types to parse and summarize
+  # @raise [SyntaxError] if the types are not parsable
+  def self.explain!: (*Array[String] types) -> String?
+  type t = HashCollectionType | FixedCollectionType | CollectionType | Type
+end
+
+# @private
+class YARD::Tags::TypesExplainer::CollectionType < ::YARD::Tags::TypesExplainer::Type
+  attr_accessor types: Array[YARD::Tags::TypesExplainer::t]
+  def initialize: (untyped name, untyped types) -> void
+  def to_s: (?untyped _singular) -> untyped
+end
+
+# @private
+class YARD::Tags::TypesExplainer::FixedCollectionType < ::YARD::Tags::TypesExplainer::CollectionType
+  def to_s: (?untyped _singular) -> untyped
+end
+
+# @private
+class YARD::Tags::TypesExplainer::HashCollectionType < ::YARD::Tags::TypesExplainer::Type
+  attr_accessor key_types: Array[YARD::Tags::TypesExplainer::t]
+  attr_accessor value_types: Array[YARD::Tags::TypesExplainer::t]
+  def initialize: (untyped name, untyped key_types, untyped value_types) -> void
+  def to_s: (?untyped _singular) -> untyped
+end
+
+# @private
+class YARD::Tags::TypesExplainer::Parser
+  def self.parse: (String string) -> Array[YARD::Tags::TypesExplainer::t]
+  def initialize: (untyped string) -> void
+  def parse: () -> untyped
+  TOKENS: untyped
+end
+
+# @private
+class YARD::Tags::TypesExplainer::Type
+  # Returns the value of attribute name.
+  attr_accessor name: String
+  def initialize: (untyped name) -> void
+  def to_s: (?untyped singular) -> untyped
+  private def list_join: (untyped list) -> untyped
+end
+
+# Modifies the current parsing visibility (public, protected, or private).
+# If this directive is defined on a docstring attached to an object
+# definition, it is applied only to that object. Otherwise, it applies
+# the visibility to all future objects in the namespace.
+#
+# @example Modifying the visibility of a DSL method
+#   # @!visibility private
+#   cattr_accessor :subclasses
+# @example Modifying the visibility of a set of methods
+#   # Note that Ruby's "protected" is recommended over this directive
+#   # @!visibility protected
+#
+#   # Documentation for method1
+#   def method1; end
+#
+#   # Documentation for method2
+#   def method2; end
+# @since 0.7.0
+class YARD::Tags::VisibilityDirective < ::YARD::Tags::Directive
+  def call: () -> untyped
+end
