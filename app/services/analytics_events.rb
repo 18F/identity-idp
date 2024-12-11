@@ -820,15 +820,32 @@ module AnalyticsEvents
   # User visited sign-in URL from the "You've been successfully verified email" CTA button
   # @param issuer [String] the ServiceProvider.issuer
   # @param campaign_id [String] the email campaign ID
+  # @param [Hash,nil] proofing_components User's current proofing components
+  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
+  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
+  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
+  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
+  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
+  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
+  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   def idv_account_verified_cta_visited(
     issuer:,
     campaign_id:,
+    proofing_components: nil,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
     **extra
   )
     track_event(
       :idv_account_verified_cta_visited,
       issuer:,
       campaign_id:,
+      proofing_components:,
+      active_profile_idv_level:,
+      pending_profile_idv_level:,
+
       **extra,
     )
   end
@@ -1028,6 +1045,36 @@ module AnalyticsEvents
     track_event(
       'Frontend: IdV: barcode warning retake photos clicked',
       liveness_checking_required: liveness_checking_required,
+      **extra,
+    )
+  end
+
+  # @param [String] initiating_service_provider The service provider the user needs to connect to
+  # The user chose not to connect their account from the SP follow-up page
+  def idv_by_mail_sp_follow_up_cancelled(initiating_service_provider:, **extra)
+    track_event(
+      :idv_by_mail_sp_follow_up_cancelled,
+      initiating_service_provider:,
+      **extra,
+    )
+  end
+
+  # @param [String] initiating_service_provider The service provider the user needs to connect to
+  # The user chose to connect their account from the SP follow-up page
+  def idv_by_mail_sp_follow_up_submitted(initiating_service_provider:, **extra)
+    track_event(
+      :idv_by_mail_sp_follow_up_submitted,
+      initiating_service_provider:,
+      **extra,
+    )
+  end
+
+  # @param [String] initiating_service_provider The service provider the user needs to connect to
+  # The user visited the SP follow-up page
+  def idv_by_mail_sp_follow_up_visited(initiating_service_provider:, **extra)
+    track_event(
+      :idv_by_mail_sp_follow_up_visited,
+      initiating_service_provider:,
       **extra,
     )
   end
@@ -4678,6 +4725,76 @@ module AnalyticsEvents
       'IdV: session error visited',
       type:,
       remaining_submit_attempts:,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [String] exception any exceptions thrown during request
+  # @param [String] docv_transaction_token socure transaction token
+  # @param [String] reference_id socure interal id for transaction
+  # @param [String] language lagnuage presented to user
+  # @param [String] step current step of idv to user
+  # @param [String] analytics_id id of analytics
+  # @param [Boolean] redo_document_capture if user is redoing doc capture
+  # @param [Boolean] skip_hybrid_handoff if user is skipping handoff
+  # @param [Boolean] selfie_check_required is selfie check required
+  # @param [Boolean] opted_in_to_in_person_proofing user opts in to IPP
+  # @param [Hash] redirect hash for redirect (url and method)
+  # @param [Hash] response_body hash received from socure
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [Float] vendor_request_time_in_ms Time it took to upload images & get a response.
+  # @param [Boolean] liveness_checking_required Whether or not the selfie is required
+  # @param [Boolean] liveness_enabled Whether or not the selfie result is included in response
+  # @param [String] vendor which 2rd party we are using for doc auth
+  # @param [Hash] document_type type of socument submitted (Drivers Licenese, etc.)
+  # The request for socure verification was sent
+  def idv_socure_document_request_submitted(
+    success:,
+    redirect:,
+    liveness_checking_required:,
+    vendor_request_time_in_ms:,
+    vendor:,
+    language:,
+    step:,
+    analytics_id:,
+    response_body:,
+    redo_document_capture: nil,
+    skip_hybrid_handoff: nil,
+    selfie_check_required: nil,
+    opted_in_to_in_person_proofing: nil,
+    errors: nil,
+    exception: nil,
+    reference_id: nil,
+    liveness_enabled: nil,
+    document_type: nil,
+    docv_transaction_token: nil,
+    flow_path: nil,
+    **extra
+  )
+    track_event(
+      :idv_socure_document_request_submitted,
+      success:,
+      redirect:,
+      liveness_checking_required:,
+      vendor_request_time_in_ms:,
+      vendor:,
+      language:,
+      step:,
+      analytics_id:,
+      redo_document_capture:,
+      skip_hybrid_handoff:,
+      selfie_check_required:,
+      opted_in_to_in_person_proofing:,
+      errors:,
+      exception:,
+      reference_id:,
+      response_body:,
+      liveness_enabled:,
+      document_type:,
+      docv_transaction_token:,
+      flow_path:,
       **extra,
     )
   end

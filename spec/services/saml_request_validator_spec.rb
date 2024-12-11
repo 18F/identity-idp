@@ -49,6 +49,43 @@ RSpec.describe SamlRequestValidator do
         end
       end
 
+      context 'when the sp has no certs registered' do
+        before { sp.update!(certs: nil) }
+
+        context 'when it has block_encryption turned on' do
+          before { sp.update!(block_encryption: 'aes256-cbc') }
+          let(:errors) do
+            {
+              service_provider: [t('errors.messages.no_cert_registered')],
+            }
+          end
+          let(:error_details) do
+            {
+              service_provider: {
+                no_cert_registered: true,
+              },
+            }
+          end
+
+          it 'returns an error' do
+            expect(response.to_h).to include(
+              errors:,
+              error_details:,
+            )
+          end
+        end
+
+        context 'when block encryption is not turned on' do
+          it 'is valid' do
+            expect(response.to_h).to include(
+              success: true,
+              errors: {},
+              **extra,
+            )
+          end
+        end
+      end
+
       context 'ialmax authncontext and ialmax provider' do
         let(:authn_context) { [Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF] }
 

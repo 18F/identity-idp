@@ -155,6 +155,30 @@ how [`Idv::AnalyticsEventEnhancer`][analytics_events_enhancer.rb] is implemented
 [data_attributes]: https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes
 [analytics_events_enhancer.rb]: https://github.com/18F/identity-idp/blob/main/app/services/idv/analytics_events_enhancer.rb
 
+## Image Assets
+
+When possible, use SVG format for images, as these render at higher quality and with a smaller file
+size. Most images in the project are either illustrations or icons, which are ideal for vector image
+formats (SVG).
+
+There are few exceptions to this, such as [images used in emails][email-images] needing to be in a
+raster format (PNG) due to lack of SVG support in popular email clients. Logos for relying parties
+may also be rendered in formats other than SVG, since these are provided to us by partners.
+
+Image assets saved in source control should be optimized using a lossless image optimizer before
+being committed, to ensure they're served to users at the lowest possible file size. This is
+[enforced automatically for SVG images][lint-optimized-assets], but must be done manually for other
+image types. Consider using a tool like [Squoosh][squoosh] (web) or [ImageOptim][image-optim]
+(macOS) for these other image types.
+
+Since images, GIFs, and videos are artifacts authored in other tools, there is no need to keep
+multiple variants of an asset (e.g., SVG and PNG) in the repository if they are not in use.
+
+[email-images]: https://github.com/18F/identity-idp/tree/main/app/assets/images/email
+[lint-optimized-assets]: https://github.com/18F/identity-idp/blob/a1b4c5687739c080cb1d8c66db01956c87b63792/Makefile#L250-L251
+[squoosh]: https://squoosh.app/
+[imageoptim]: https://imageoptim.com/mac
+
 ## Components
 
 ### Design System
@@ -236,10 +260,6 @@ For example, consider a **Password Input** component:
 - A React component file would be named `app/javascript/packages/password-input/password-input.tsx`
 - A web component would be named `PasswordInputElement`
 - A web components file would be named `app/javascript/packages/password-input/password-input-element.ts`
-
-#### Graphical Assets
-
-Web graphic assets like images, GIFs, and videos are artifacts authored in other tools. As such, there is no need to keep multiple variants of an asset (e.g., SVG and PNG) in the repository if they are not in use.
 
 ## Testing
 

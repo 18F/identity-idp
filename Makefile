@@ -63,7 +63,7 @@ check: lint test ## Runs lint tests and spec tests
 
 lint: ## Runs all lint tests
 	# Ruby
-	@echo "--- erb-lint ---"
+	@echo "--- erb_lint ---"
 	make lint_erb
 	@echo "--- rubocop ---"
 	mkdir -p tmp
@@ -112,7 +112,7 @@ audit: ## Checks packages for vulnerabilities
 	yarn audit --groups dependencies; test $$? -le 7
 
 lint_erb: ## Lints ERB files
-	bundle exec erblint app/views app/components
+	bundle exec erb_lint app/views app/components
 
 lint_yaml: normalize_yaml ## Lints YAML files
 	(! git diff --name-only | grep "^config/.*\.yml") || (echo "Error: Run 'make normalize_yaml' to normalize YAML"; exit 1)
@@ -181,8 +181,8 @@ lint_spec_file_name:
 lintfix: ## Try to automatically fix any Ruby, ERB, JavaScript, YAML, or CSS lint errors
 	@echo "--- rubocop fix ---"
 	bundle exec rubocop -a
-	@echo "--- erblint fix ---"
-	bundle exec erblint app/views app/components -a
+	@echo "--- erb_lint fix ---"
+	bundle exec erb_lint app/views app/components -a
 	@echo "--- eslint fix ---"
 	yarn lint --fix
 	@echo "--- stylelint fix ---"

@@ -14,6 +14,7 @@ module Idv
       before_action :confirm_step_allowed
       before_action -> { redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, false) },
                     only: :show
+      before_action :fetch_test_verification_data, only: [:update]
 
       # reconsider and maybe remove these when implementing the real
       # update handler
@@ -29,27 +30,30 @@ module Idv
         Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
           call('socure_document_capture', :view, true)
 
+        if document_capture_session.socure_docv_capture_app_url.present?
+          @url = document_capture_session.socure_docv_capture_app_url
+          return
+        end
+
         # document request
         document_request = DocAuth::Socure::Requests::DocumentRequest.new(
           redirect_url: idv_socure_document_capture_update_url,
           language: I18n.locale,
         )
+        timer = JobHelpers::Timer.new
+        document_response = timer.time('vendor_request') do
+          document_request.fetch
+        end
 
-        document_response = document_request.fetch
-
-        @document_request = document_request
-        @document_response = document_response
         @url = document_response.dig(:data, :url)
+
+        track_document_request_event(document_request:, document_response:, timer:)
 
         # placeholder until we get an error page for url not being present
         if @url.nil?
           redirect_to idv_socure_document_capture_errors_url
           return
         end
-
-        document_capture_session = DocumentCaptureSession.find_by(
-          uuid: document_capture_session_uuid,
-        )
 
         document_capture_session.socure_docv_transaction_token = document_response.dig(
           :data,
@@ -60,10 +64,6 @@ module Idv
           :url,
         )
         document_capture_session.save
-
-        # useful for analytics
-        @msg = document_response[:msg]
-        @reference_id = document_response[:referenceId]
       end
 
       def update
