@@ -9,10 +9,10 @@
     ) do %>
   <%= content_tag(
         :script,
-        strings.
-          slice(:renamed, :delete_confirm, :deleted).
-          transform_keys { |key| key.to_s.camelcase(:lower) }.
-          to_json,
+        strings
+          .slice(:renamed, :delete_confirm, :deleted)
+          .transform_keys { |key| key.to_s.camelcase(:lower) }
+          .to_json,
         {
           type: 'application/json',
           class: 'manageable-authenticator__strings',
