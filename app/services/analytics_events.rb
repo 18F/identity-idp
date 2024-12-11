@@ -5192,7 +5192,7 @@ module AnalyticsEvents
     request_issuer: nil,
     **extra
   )
-    types = error_types.index_with { |type| true }
+    types = error_types.index_with { |_type| true }
     track_event(
       :integration_errors_present,
       error_details:,
