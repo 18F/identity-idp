@@ -68,10 +68,12 @@ module EventSummarizer
     attr_reader :current_idv_attempt
     attr_reader :idv_attempts
 
+    def initialize
+      @idv_attempts = []
+    end
+
     # @return {Hash,nil}
     def handle_cloudwatch_event(event)
-      @idv_attempts ||= []
-
       case event['name']
         when IDV_WELCOME_SUBMITTED_EVENT
           start_new_idv_attempt(event:)
