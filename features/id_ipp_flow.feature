@@ -1,6 +1,7 @@
 @id-ipp
 Feature: ID-IPP Flow
 
+  @presentation
   Scenario: User is able to complete scheduling an in-person enrollment
     Given a user is logged in
     And the user begins in-person proofing

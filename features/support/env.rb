@@ -63,7 +63,7 @@ if ENV['SLOW'].present?
       alias_method :old_execute, :execute
 
       def execute(*args)
-        sleep(0.1)
+        sleep(0.05)
         old_execute(*args)
       end
     end
