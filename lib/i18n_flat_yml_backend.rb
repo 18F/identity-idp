@@ -54,4 +54,17 @@ class I18nFlatYmlBackend < I18n::Backend::Simple
 
     result
   end
+
+  def translate(locale, key, options = EMPTY_HASH)
+    entry = super
+
+    if entry
+      translations = I18n.available_locales.map { |locale| [locale, super(locale, key, options)] }.to_h
+      File.open('tracking.json', 'a') do |f|
+        f.puts({ locale:, key:, options:, translations: }.to_json)
+      end
+    end
+
+    entry
+  end
 end

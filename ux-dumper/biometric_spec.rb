@@ -50,7 +50,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
           it 'proceeds to the next page with valid info, including a selfie image' do
             perform_in_browser(:mobile) do
-              visit_idp_from_oidc_sp_with_ial2(biometric_comparison_required: true)
+              visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
               sign_in_and_2fa_user(@user)
 
               ux_dumper.take_screenshot(page)
