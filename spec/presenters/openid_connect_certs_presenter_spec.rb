@@ -12,14 +12,14 @@ RSpec.describe OpenidConnectCertsPresenter do
       expect(json[:keys].all? { |k| k[:use] == 'sig' }).to eq(true)
 
       # Primary key should be first
-      primary_key_from_response = JWT::JWK.import(json[:keys].first).public_key
-      primary_public_key = AppArtifacts.store.oidc_primary_public_key
+      primary_key_from_response, secondary_key_from_response = json[:keys].map do |key|
+        JWT::JWK.import(key).public_key
+      end
 
+      primary_public_key = AppArtifacts.store.oidc_primary_public_key
       expect(primary_key_from_response.to_pem).to eq(primary_public_key.to_pem)
 
-      secondary_key_from_response = JWT::JWK.import(json[:keys][1]).public_key
       secondary_public_key = AppArtifacts.store.oidc_secondary_public_key
-
       expect(secondary_key_from_response.to_pem).to eq(secondary_public_key.to_pem)
     end
   end
