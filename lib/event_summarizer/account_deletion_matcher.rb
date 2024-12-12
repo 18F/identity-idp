@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 module EventSummarizer
   class AccountDeletionMatcher
     ACCOUNT_DELETION_STARTED_EVENT = 'Account Reset: request'
@@ -25,7 +24,6 @@ module EventSummarizer
         process_account_reset_delete(event)
       when ACCOUNT_DELETION_CANCELED_EVENT
         process_account_reset_cancel(event)
-      else
       end
     end
 
@@ -33,14 +31,15 @@ module EventSummarizer
       event_summaries
     end
 
-    private 
+    private
 
     def process_account_reset_request(event)
       event_message = {
         title: 'Account deletion Request',
         attributes: [
-          { type: :account_deletion_request, description: "On #{event["@timestamp"]} user initiated account deletion" },
-        ]
+          { type: :account_deletion_request,
+            description: "On #{event["@timestamp"]} user initiated account deletion" },
+        ],
       }
       event_summaries.push(event_message)
     end
@@ -49,21 +48,25 @@ module EventSummarizer
       event_message = {
         title: 'Account deletion Request',
         attributes: [
-          { type: :account_deletion_request, description: "On #{event["@timestamp"]} user initiated account deletion" },
-        ]
+          { type: :account_deletion_request,
+            description: "On #{event["@timestamp"]} user initiated account deletion" },
+        ],
       }
       event_summaries.push(event_message)
     end
 
     def process_account_reset_delete(event)
-      puts event
-      message = event["@message"]
+      message = event['@message']
+      age = message['properties']['event_properties']['account_age_in_days']
+      date = event['@timestamp']
       event_message = {
         title: 'Account deletion Request',
         attributes: [
-          { type: :account_deletion_request, 
-            description:"On #{event["@timestamp"]} user deleted their account that was #{message["properties"]["event_properties"]["account_age_in_days"]} days old"},
-        ]
+          {
+            type: :account_deletion_request,
+            description: "On #{date} user deleted their account which was #{age} days old",
+          },
+        ],
       }
       event_summaries.push(event_message)
     end
