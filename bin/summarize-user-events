@@ -33,7 +33,7 @@ class SummarizeUserEvents
     Time.zone = zone
     @uuid = user_uuid
     @from_date = parse_time(start_time) || 1.week.ago
-    @to_date = parse_time(end_time) || start_time.present? ? from_date + 1.week : Time.zone.now
+    @to_date = parse_time(end_time) || (start_time.present? ? from_date + 1.week : Time.zone.now)
   end
 
   def parse_time(time_str)
@@ -206,7 +206,7 @@ def main
       options[:start_time] = val
     end
 
-    opts.on('-e', '--end_time END_TIME', 'Time of the end of the query period (e.g. 2024-12-09T14:30:00Z), default: 1 week from start') do |val|
+    opts.on('-e', '--end-time END_TIME', 'Time of the end of the query period (e.g. 2024-12-09T14:30:00Z), default: 1 week from start') do |val|
       options[:end_time] = val
     end
 
