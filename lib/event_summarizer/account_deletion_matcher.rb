@@ -46,9 +46,9 @@ module EventSummarizer
 
     def process_account_reset_cancel(event)
       event_message = {
-        title: 'Account deletion Request',
+        title: 'Account deletion cancelled',
         attributes: [
-          { type: :account_deletion_request,
+          { type: :account_deletion_cancelled,
             description: "On #{event["@timestamp"]} user initiated account deletion" },
         ],
       }
@@ -60,10 +60,10 @@ module EventSummarizer
       age = message['properties']['event_properties']['account_age_in_days']
       date = event['@timestamp']
       event_message = {
-        title: 'Account deletion Request',
+        title: 'Account deleted',
         attributes: [
           {
-            type: :account_deletion_request,
+            type: :account_deleted,
             description: "On #{date} user deleted their account which was #{age} days old",
           },
         ],
