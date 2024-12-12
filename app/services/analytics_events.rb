@@ -6660,7 +6660,8 @@ module AnalyticsEvents
     score_threshold:,
     evaluated_as_valid:,
     form_class:,
-    recaptcha_action:, exception_class: nil,
+    exception_class:,
+    recaptcha_action:,
     phone_country_code: nil,
     **extra
   )
