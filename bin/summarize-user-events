@@ -155,10 +155,17 @@ class SummarizeUserEvents
   end
 
   def stdin_source(&block)
+    events = []
+
     $stdin.each_line do |line|
       next if line.blank?
-      event = JSON.parse(line)
-      block.call(event)
+      events << JSON.parse(line)
+    end
+
+    events.sort_by! { |e| e['@timestamp'] }
+
+    events.each do |e|
+      block.call(e)
     end
   end
 
