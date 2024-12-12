@@ -382,11 +382,12 @@ RSpec.describe OpenidConnectTokenForm do
           code_verifier_present: false,
           service_provider_pkce: nil,
           ial: 1,
+          integration_errors: nil,
         )
       end
     end
 
-    context 'with invalid params' do
+    context 'with invalid code' do
       let(:code) { nil }
 
       it 'returns FormResponse with success: false' do
@@ -399,6 +400,33 @@ RSpec.describe OpenidConnectTokenForm do
           client_id: nil,
           user_id: nil,
           code_digest: nil,
+        )
+      end
+    end
+
+    context 'with the wrong grant_type ' do
+      let(:grant_type) { 'wrong' }
+
+      it 'returns FormResponse with success: false and int error' do
+        submission = form.submit
+
+        expect(submission.to_h).to include(
+          success: false,
+          errors: form.errors.messages,
+          error_details: hash_including(:grant_type),
+          client_id: client_id,
+          user_id: user.uuid,
+          code_digest: Digest::SHA256.hexdigest(code),
+          code_verifier_present: false,
+          service_provider_pkce: nil,
+          ial: 1,
+          integration_errors: {
+            error_details: ['Grant type is not included in the list'],
+            error_types: [:grant_type],
+            event: :oidc_token_request,
+            integration_exists: true,
+            request_issuer: client_id,
+          },
         )
       end
     end

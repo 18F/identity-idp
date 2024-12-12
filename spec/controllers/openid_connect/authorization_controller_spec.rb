@@ -153,6 +153,10 @@ RSpec.describe OpenidConnect::AuthorizationController do
               sign_in_flow:,
               acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
             )
+
+            expect(@analytics).to_not have_logged_event(
+              :sp_integration_errors_present,
+            )
           end
         end
 
@@ -2020,12 +2024,45 @@ RSpec.describe OpenidConnect::AuthorizationController do
             errors: hash_including(:prompt),
             error_details: hash_including(:prompt),
             user_fully_authenticated: true,
-            acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
+            acr_values: acr_values,
             code_challenge_present: false,
             scope: 'openid',
           )
 
           expect(@analytics).to_not have_logged_event('SP redirect initiated')
+
+          expect(@analytics).to have_logged_event(
+            :sp_integration_errors_present,
+            error_details: array_including(
+              'Prompt Please fill in this field.',
+            ),
+            error_types: { prompt: true },
+            event: :oidc_request_authorization,
+            integration_exists: true,
+            request_issuer: client_id,
+          )
+        end
+
+        context 'when there are multiple issues with the request' do
+          let(:acr_values) { nil }
+
+          it 'notes all the integration errors' do
+            stub_analytics
+
+            action
+
+            expect(@analytics).to have_logged_event(
+              :sp_integration_errors_present,
+              error_details: array_including(
+                'Acr values Please fill in this field.',
+                'Prompt Please fill in this field.',
+              ),
+              error_types: { acr_values: true, prompt: true },
+              event: :oidc_request_authorization,
+              integration_exists: true,
+              request_issuer: client_id,
+            )
+          end
         end
       end
 
@@ -2053,6 +2090,17 @@ RSpec.describe OpenidConnect::AuthorizationController do
               code_challenge_present: false,
               scope: 'openid profile',
               unknown_authn_contexts: unknown_value,
+            )
+
+            expect(@analytics).to have_logged_event(
+              :sp_integration_errors_present,
+              error_details: array_including(
+                'Acr values Please fill in this field.',
+              ),
+              error_types: { acr_values: true },
+              event: :oidc_request_authorization,
+              integration_exists: true,
+              request_issuer: client_id,
             )
           end
 

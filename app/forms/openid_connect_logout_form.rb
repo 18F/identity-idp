@@ -114,6 +114,16 @@ class OpenidConnectLogoutForm
     )
   end
 
+  def integration_errors
+    return nil if valid?
+    {
+      error_details: errors.full_messages,
+      error_types: errors.attribute_names,
+      integration_exists: service_provider.present?,
+      request_issuer: client_id || service_provider&.issuer,
+    }
+  end
+
   def valid_client_id
     return unless client_id.present? && id_token_hint.blank?
     return if service_provider.present?
@@ -144,6 +154,7 @@ class OpenidConnectLogoutForm
       redirect_uri: redirect_uri,
       sp_initiated: true,
       oidc: true,
+      integration_errors:,
     }
   end
 
