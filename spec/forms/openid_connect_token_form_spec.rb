@@ -46,7 +46,7 @@ RSpec.describe OpenidConnectTokenForm do
   let(:client_private_key) do
     OpenSSL::PKey::RSA.new(Rails.root.join('keys', 'saml_test_sp.key').read)
   end
-  let(:server_public_key) { AppArtifacts.store.oidc_public_key }
+  let(:server_public_key) { Rails.application.config.oidc_public_key }
 
   let(:user) { create(:user) }
 

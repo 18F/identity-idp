@@ -38,6 +38,20 @@ RSpec.describe AppArtifacts::Store do
           AppArtifacts::MissingArtifactError, 'missing artifact: /%<env>s/test_artifact'
         )
       end
+
+      context 'with allow_missing: true' do
+        it 'does not raise an error if an artifact is missing' do
+          expect(secrets_s3).to receive(:read_file).with(
+            '/%<env>s/test_artifact',
+          ).and_return(nil)
+
+          store = instance.build do |store|
+            store.add_artifact(:test_artifact, '/%<env>s/test_artifact', allow_missing: true)
+          end
+
+          expect(store.test_artifact).to eq nil
+        end
+      end
     end
 
     context 'when running locally' do

@@ -1,5 +1,5 @@
 module PrivateKeyFileHelper
-  # Returns the private key in AppArtifacts.store.oidc_private_key if
+  # Returns the private key in AppArtifacts.store.oidc_primary_private_key if
   # Identity::Hostdata.in_datacenter? or if the private key file does
   # not exist; otherwise, the private key from the file is returned.
   def private_key_from_store_or(file_name:)
@@ -12,7 +12,7 @@ module PrivateKeyFileHelper
     if File.exist?(file_name)
       OpenSSL::PKey::RSA.new(File.read(file_name))
     else
-      return AppArtifacts.store.oidc_private_key
+      return AppArtifacts.store.oidc_primary_private_key
     end
   end
 
