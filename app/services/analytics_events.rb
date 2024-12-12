@@ -6681,7 +6681,7 @@ module AnalyticsEvents
   # @param [String] requested_ial
   # @param [Boolean] request_signed
   # @param [String] matching_cert_serial matches the request certificate in a successful, signed
-  #  request
+  #   request
   # @param [Boolean] certs_different Whether the matching cert changes when SHA256 validations
   #   are turned on in the saml_idp gem
   # @param [Hash] cert_error_details Details for errors that occurred because of an invalid
