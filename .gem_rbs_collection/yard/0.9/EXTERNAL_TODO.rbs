@@ -1,0 +1,29 @@
+# !!! GENERATED FILE !!!
+# Please see yard/0.9/_generators/README.md
+
+# It is a temporary definition of a type definition
+# for which the library RBS does not currently exist.
+# Once the library RBS is defined and included in rbs_collection.lock.yaml,
+# the duplicate type definitions in this file should be removed.
+
+class OpenStruct
+end
+
+module Rake
+  class TaskLib
+  end
+end
+
+module WEBrick
+  module HTTPServlet
+    class AbstractServlet
+    end
+  end
+end
+
+module RDoc
+  class Markup
+    class ToHtml
+    end
+  end
+end

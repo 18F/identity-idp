@@ -64,6 +64,7 @@ gem 'rack-attack', github: 'rack/rack-attack', ref: 'd9fedfae4f7f6409f3385776339
 gem 'rack-cors', '> 2.0.1', require: 'rack/cors'
 gem 'rack-headers_filter'
 gem 'rack-timeout', require: false
+gem 'rbs_rails', require: false
 gem 'redacted_struct'
 gem 'redis', '>= 3.2.0'
 gem 'redis-session-store', github: '18F/redis-session-store', tag: 'v1.0.2-18f'
@@ -123,6 +124,7 @@ group :development, :test do
   gem 'rubocop-rails', '~> 2.27.0', require: false
   gem 'rubocop-rspec', '~> 3.2.0', require: false
   gem 'sqlite3', require: false
+  gem 'steep', '~> 1.9', '>= 1.9.1'
 end
 
 group :test do

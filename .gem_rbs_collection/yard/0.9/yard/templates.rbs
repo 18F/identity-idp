@@ -1,0 +1,1285 @@
+# !!! GENERATED FILE !!!
+# Please see yard/0.9/_generators/README.md
+
+# Namespace for templating system
+module YARD::Templates
+end
+
+# This module manages all creation, handling and rendering of {Template}
+# objects.
+#
+# * To create a template object at a path, use {template}.
+# * To render a template, call {render}.
+# * To register a template path in the lookup paths, call {register_template_path}.
+module YARD::Templates::Engine
+  # @return [Array<String>] the list of registered template paths
+  attr_accessor self.template_paths: Array[String]
+
+  # Registers a new template path in {template_paths}
+  #
+  # @param [String] path a new template path
+  # @return [void]
+  def self.register_template_path: (String path) -> void
+
+  # Creates a template module representing the path. Searches on disk
+  # for the first directory named +path+ (joined by '/') within the
+  # template paths and builds a template module for. All other matching
+  # directories in other template paths will be included in the
+  # generated module as mixins (for overriding).
+  #
+  # @param [Array<String, Symbol>] path a list of path components
+  # @raise [ArgumentError] if the path does not exist within one of the
+  #   {template_paths} on disk.
+  # @return [Template] the module representing the template
+  def self.template: (*Array[String | Symbol] path) -> YARD::Templates::Template
+
+  # Forces creation of a template at +path+ within a +full_path+.
+  #
+  # @param [String] path the path name of the template
+  # @param [Array<String>] full_paths the full path on disk of the template
+  # @return [Template] the template module representing the +path+
+  def self.template!: (String path, ?Array[String] full_paths) -> YARD::Templates::Template
+
+  # Renders a template on a {CodeObjects::Base code object} using
+  # a set of default (overridable) options. Either the +:object+
+  # or +:type+ keys must be provided.
+  #
+  # If a +:serializer+ key is provided and +:serialize+ is not set to
+  # false, the rendered contents will be serialized through the {Serializers::Base}
+  # object. See {with_serializer}.
+  #
+  # @example Renders an object with html formatting
+  #   Engine.render(:format => :html, :object => obj)
+  # @example Renders without an object
+  #   Engine.render(:type => :fulldoc, :otheropts => somevalue)
+  # @param [Hash] options the options hash
+  # @option options [Symbol] :format (:text) the default format
+  # @option options [Symbol] :type (nil) the :object's type.
+  # @option options [Symbol] :template (:default) the default template
+  # @return [String] the rendered template
+  def self.render: (?Hash[untyped, untyped] options) -> String
+
+  # Passes a set of objects to the +:fulldoc+ template for full documentation generation.
+  # This is called by {CLI::Yardoc} to most commonly perform HTML
+  # documentation generation.
+  #
+  # @param [Array<CodeObjects::Base>] objects a list of {CodeObjects::Base}
+  #   objects to pass to the template
+  # @param [Hash] options (see {render})
+  # @return [void]
+  def self.generate: (Array[YARD::CodeObjects::Base] objects, ?Hash[untyped, untyped] options) -> void
+
+  # Serializes the results of a block with a +serializer+ object.
+  #
+  # @param [CodeObjects::Base] object the code object to serialize
+  # @param [Serializers::Base] serializer the serializer object
+  # @yield a block whose result will be serialize
+  # @yieldreturn [String] the contents to serialize
+  # @see Serializers::Base
+  def self.with_serializer: (YARD::CodeObjects::Base object, YARD::Serializers::Base serializer) { () -> String } -> untyped
+
+  # Sets default options on the options hash
+  #
+  # @param [Hash] options the options hash
+  # @option options [Symbol] :format (:text) the default format
+  # @option options [Symbol] :type (nil) the :object's type, if provided
+  # @option options [Symbol] :template (:default) the default template
+  # @return [void]
+  private def self.set_default_options: (?Hash[untyped, untyped] options) -> void
+
+  # Searches through the registered {template_paths} and returns
+  # all full directories that have the +path+ within them on disk.
+  #
+  # @param [Template] from_template if provided, allows a relative
+  #   path to be specified from this template's full path.
+  # @param [String] path the path component to search for in the
+  #   {template_paths}
+  # @return [Array<String>] a list of full paths that are existing
+  #   candidates for a template module
+  private def self.find_template_paths: (YARD::Templates::Template from_template, String path) -> Array[String]
+
+  # The name of the module that represents a +path+
+  #
+  # @param [String] path the path to generate a module name for
+  # @return [String] the module name
+  private def self.template_module_name: (String path) -> String
+end
+
+# @since 0.5.4
+module YARD::Templates::ErbCache
+  def self.method_for: (untyped filename) -> untyped
+
+  def self.clear!: () -> untyped
+end
+
+# Namespace for template helpers
+module YARD::Templates::Helpers
+end
+
+# The base helper module included in all templates.
+module YARD::Templates::Helpers::BaseHelper
+  # Returns the value of attribute object.
+  attr_accessor object: untyped
+
+  # Returns the value of attribute serializer.
+  attr_accessor serializer: untyped
+
+  # @return [CodeObjects::Base] the object representing the current generated
+  #   page. Might not be the current {#object} when inside sub-templates.
+  attr_reader owner: YARD::CodeObjects::Base
+
+  # An object that keeps track of global state throughout the entire template
+  # rendering process (including any sub-templates).
+  #
+  # @return [OpenStruct] a struct object that stores state
+  # @since 0.6.0
+  def globals: () -> OpenStruct
+
+  # Runs a list of objects against the {Verifier} object passed into the
+  # template and returns the subset of verified objects.
+  #
+  # @param [Array<CodeObjects::Base>] list a list of code objects
+  # @return [Array<CodeObjects::Base>] a list of code objects that match
+  #   the verifier. If no verifier is supplied, all objects are returned.
+  def run_verifier: (Array[YARD::CodeObjects::Base] list) -> Array[YARD::CodeObjects::Base]
+
+  # Escapes text. This is used a lot by the HtmlHelper and there should
+  # be some helper to "clean up" text for whatever, this is it.
+  def h: (untyped text) -> untyped
+
+  # Links objects or URLs. This method will delegate to the correct +link_+
+  # method depending on the arguments passed in.
+  #
+  # @example Linking a URL
+  #   linkify('http://example.com')
+  # @example Including docstring contents of an object
+  #   linkify('include:YARD::Docstring')
+  # @example Linking to an extra file
+  #   linkify('file:README')
+  # @example Linking an object by path
+  #   linkify('YARD::Docstring')
+  def linkify: (*untyped args) -> untyped
+
+  # Includes an object's docstring into output.
+  # @since 0.6.0
+  # @param [CodeObjects::Base] obj the object to include
+  # @return [String] the object's docstring (no tags)
+  def link_include_object: (YARD::CodeObjects::Base obj) -> String
+
+  # Include a file as a docstring in output
+  # @since 0.7.0
+  # @param [String] file the filename to include
+  # @return [String] the file's contents
+  def link_include_file: (String file) -> String
+
+  # Links to an object with an optional title
+  #
+  # @param [CodeObjects::Base] obj the object to link to
+  # @param [String] title the title to use for the link
+  # @return [String] the linked object
+  def link_object: (YARD::CodeObjects::Base obj, ?String title) -> String
+
+  # Links to a URL
+  #
+  # @param [String] url the URL to link to
+  # @param [String] title the optional title to display the link as
+  # @param [Hash] params optional parameters for the link
+  # @return [String] the linked URL
+  def link_url: (String url, ?String title, ?Hash[untyped, untyped] params) -> String
+
+  # Links to an extra file
+  #
+  # @param [String] filename the filename to link to
+  # @param [String] title the title of the link
+  # @param [String] anchor optional anchor
+  # @return [String] the link to the file
+  # @since 0.5.5
+  def link_file: (String filename, ?String title, ?String anchor) -> String
+
+  # Formats a list of return types for output and links each type.
+  #
+  # @example Formatting types
+  #   format_types(['String', 'Array']) #=> "(String, Array)"
+  # @example Formatting types without surrounding brackets
+  #   format_types(['String', 'Array'], false) #=> "String, Array"
+  # @param [Array<String>] list a list of types
+  # @param [Boolean] brackets whether to surround the types in brackets
+  # @return [String] the formatted list of Ruby types
+  def format_types: (Array[String] list, ?bool brackets) -> String
+
+  # @example Formatted type of an exception class
+  #   o = ClassObject.new(:root, :MyError)
+  #   o.superclass = P('RuntimeError')
+  #   format_object_type(o) # => "Exception"
+  # @example Formatted type of a method
+  #   o = MethodObject.new(:root, :to_s)
+  #   format_object_type(o) # => "Method"
+  # @param [CodeObjects::Base] object the object to retrieve the type for
+  # @return [String] the human-readable formatted {CodeObjects::Base#type #type}
+  #   for the object
+  def format_object_type: (YARD::CodeObjects::Base object) -> String
+
+  # @example
+  #   s = format_object_title ModuleObject.new(:root, :MyModuleName)
+  #   s # => "Module: MyModuleName"
+  # @param [CodeObjects::Base] object the object to retrieve a title for
+  # @return [String] the page title name for a given object
+  def format_object_title: (YARD::CodeObjects::Base object) -> String
+
+  # Indents and formats source code
+  #
+  # @param [String] value the input source code
+  # @return [String] formatted source code
+  def format_source: (String value) -> String
+end
+
+# Helpers for various object types
+module YARD::Templates::Helpers::FilterHelper
+  # @return [Boolean] whether an object is a method
+  def is_method?: (untyped object) -> bool
+
+  # @return [Boolean] whether an object is a namespace
+  def is_namespace?: (untyped object) -> bool
+
+  # @return [Boolean] whether an object is a class
+  def is_class?: (untyped object) -> bool
+
+  # @return [Boolean] whether an object is a module
+  def is_module?: (untyped object) -> bool
+end
+
+# The helper module for HTML templates.
+module YARD::Templates::Helpers::HtmlHelper
+  # Escapes HTML entities
+  #
+  # @param [String] text the text to escape
+  # @return [String] the HTML with escaped entities
+  def h: (String text) -> String
+
+  # Escapes a URL
+  #
+  # @param [String] text the URL
+  # @return [String] the escaped URL
+  private def urlencode: (String text) -> String
+
+  # Escapes a URL
+  # @param [String] text
+  #   the URL
+  # @return [String] the escaped URL
+  def self.urlencode: (String text) -> String
+
+  # Turns text into HTML using +markup+ style formatting.
+  #
+  # @param [String] text the text to format
+  # @param [Symbol] markup examples are +:markdown+, +:textile+, +:rdoc+.
+  #   To add a custom markup type, see {MarkupHelper}
+  # @return [String] the HTML
+  def htmlify: (String text, ?Symbol markup) -> String
+
+  # Converts Markdown to HTML
+  # @param [String] text input Markdown text
+  # @return [String] output HTML
+  # @since 0.6.0
+  def html_markup_markdown: (String text) -> String
+
+  # Converts org-mode to HTML
+  # @param [String] text input org-mode text
+  # @return [String] output HTML
+  def html_markup_org: (String text) -> String
+
+  # Converts Asciidoc to HTML
+  # @param [String] text input Asciidoc text
+  # @return [String] output HTML
+  def html_markup_asciidoc: (String text) -> String
+
+  # Converts Textile to HTML
+  # @param [String] text the input Textile text
+  # @return [String] output HTML
+  # @since 0.6.0
+  def html_markup_textile: (String text) -> String
+
+  # Converts plaintext to strict Textile (hard breaks)
+  # @param [String] text the input textile data
+  # @return [String] the output HTML
+  # @since 0.6.0
+  def html_markup_textile_strict: (String text) -> String
+
+  # Converts RDoc formatting (SimpleMarkup) to HTML
+  # @param [String] text the input RDoc formatted text
+  # @return [String] output HTML
+  # @since 0.6.0
+  def html_markup_rdoc: (String text) -> String
+
+  # Converts plaintext to pre-formatted HTML
+  # @param [String] text the input text
+  # @return [String] the output HTML
+  # @since 0.6.0
+  def html_markup_pre: (String text) -> String
+
+  # Converts plaintext to regular HTML
+  # @param [String] text the input text
+  # @return [String] the output HTML
+  # @since 0.6.0
+  def html_markup_text: (String text) -> String
+
+  # @return [String] the same text with no markup
+  # @since 0.6.6
+  def html_markup_none: (untyped text) -> String
+
+  # Converts HTML to HTML
+  # @param [String] text input html
+  # @return [String] output HTML
+  # @since 0.6.0
+  def html_markup_html: (String text) -> String
+
+  # Highlights Ruby source. Similar to {#html_syntax_highlight}, but
+  # this method is meant to be called from {#htmlify} when markup is
+  # set to "ruby".
+  #
+  # @param [String] source the Ruby source
+  # @return [String] the highlighted HTML
+  # @since 0.7.0
+  def html_markup_ruby: (String source) -> String
+
+  # @return [String] HTMLified text as a single line (paragraphs removed)
+  def htmlify_line: (*untyped args) -> String
+
+  # Syntax highlights +source+ in language +type+.
+  #
+  # @note To support a specific language +type+, implement the method
+  #   +html_syntax_highlight_TYPE+ in this class.
+  #
+  # @param [String] source the source code to highlight
+  # @param [Symbol, String] type the language type (:ruby, :plain, etc). Use
+  #   :plain for no syntax highlighting.
+  # @return [String] the highlighted source
+  def html_syntax_highlight: (String source, ?Symbol | String type) -> String
+
+  # @return [String] unhighlighted source
+  def html_syntax_highlight_plain: (untyped source) -> String
+
+  # Resolves any text in the form of +{Name}+ to the object specified by
+  # Name. Also supports link titles in the form +{Name title}+.
+  #
+  # @example Linking to an instance method
+  #   resolve_links("{MyClass#method}") # => "<a href='...'>MyClass#method</a>"
+  # @example Linking to a class with a title
+  #   resolve_links("{A::B::C the C class}") # => "<a href='...'>the c class</a>"
+  # @param [String] text the text to resolve links in
+  # @return [String] HTML with linkified references
+  def resolve_links: (String text) -> String
+
+  # Links to an extra file
+  #
+  # @param [String] filename the filename to link to
+  # @param [String] title the title of the link
+  # @param [String] anchor optional anchor
+  # @return [String] the link to the file
+  # @since 0.5.5
+  #
+  def link_file: (String filename, ?String title, ?String anchor) -> String
+
+  # Include a file as a docstring in output
+  # @since 0.7.0
+  # @param [String] file the filename to include
+  # @return [String] the file's contents
+  #
+  def link_include_file: (String file) -> String
+
+  # Includes an object's docstring into output.
+  # @since 0.6.0
+  # @param [CodeObjects::Base] obj the object to include
+  # @return [String] the object's docstring (no tags)
+  #
+  def link_include_object: (YARD::CodeObjects::Base obj) -> String
+
+  # Inserts an include link while respecting inlining
+  def insert_include: (untyped text, ?untyped markup) -> untyped
+
+  # Links to an object with an optional title
+  #
+  # @param [CodeObjects::Base] obj the object to link to
+  # @param [String] title the title to use for the link
+  # @return [String] the linked object
+  #
+  def link_object: (YARD::CodeObjects::Base obj, ?String title, ?untyped anchor, ?untyped relative) -> String
+
+  # Links to a URL
+  #
+  # @param [String] url the URL to link to
+  # @param [String] title the optional title to display the link as
+  # @param [Hash] params optional parameters for the link
+  # @return [String] the linked URL
+  #
+  def link_url: (String url, ?String title, ?Hash[untyped, untyped] params) -> String
+
+  # @param [CodeObjects::Base] object the object to get an anchor for
+  # @return [String] the anchor for a specific object
+  def anchor_for: (YARD::CodeObjects::Base object) -> String
+
+  # Returns the URL for an object.
+  #
+  # @param [String, CodeObjects::Base] obj the object (or object path) to link to
+  # @param [String] anchor the anchor to link to
+  # @param [Boolean] relative use a relative or absolute link
+  # @return [String] the URL location of the object
+  def url_for: (String | YARD::CodeObjects::Base obj, ?String anchor, ?bool relative) -> String
+
+  # Returns the URL for an object.
+  # @param [String, CodeObjects::Base] obj
+  #   the object (or object path) to link to
+  # @param [String] anchor
+  #   the anchor to link to
+  # @param [Boolean] relative
+  #   use a relative or absolute link
+  # @return [String] the URL location of the object
+  #
+  def mtime_url: (String | YARD::CodeObjects::Base obj, ?String anchor, ?bool relative) -> String
+
+  def mtime: (untyped _file) -> untyped
+
+  # Returns the URL for a specific file
+  #
+  # @param [String, CodeObjects::ExtraFileObject] filename the filename to link to
+  # @param [String] anchor optional anchor
+  # @return [String] the URL pointing to the file
+  def url_for_file: (String | YARD::CodeObjects::ExtraFileObject filename, ?String anchor) -> String
+
+  # Returns the URL for a list type
+  #
+  # @param [String, Symbol] type the list type to generate a URL for
+  # @return [String] the URL pointing to the list
+  # @since 0.8.0
+  def url_for_list: (String | Symbol type) -> String
+
+  # Returns the URL for the frameset page
+  #
+  # @return [String] the URL pointing to the frames page
+  # @since 0.8.0
+  def url_for_frameset: () -> String
+
+  # Returns the URL for the main page (README or alphabetic index)
+  #
+  # @return [String] the URL pointing to the first main page the
+  #   user should see.
+  def url_for_main: () -> String
+
+  # Returns the URL for the alphabetic index page
+  #
+  # @return [String] the URL pointing to the first main page the
+  #   user should see.
+  def url_for_index: () -> String
+
+  # Formats a list of objects and links them
+  # @return [String] a formatted list of objects
+  def format_object_name_list: (untyped objects) -> String
+
+  # Formats a list of types from a tag.
+  #
+  # @param [Array<String>, FalseClass] typelist
+  #   the list of types to be formatted.
+  #
+  # @param [Boolean] brackets omits the surrounding
+  #   brackets if +brackets+ is set to +false+.
+  #
+  # @return [String] the list of types formatted
+  #   as [Type1, Type2, ...] with the types linked
+  #   to their respective descriptions.
+  #
+  def format_types: (Array[String] | bool typelist, ?bool brackets) -> String
+
+  # Get the return types for a method signature.
+  #
+  # @param [CodeObjects::MethodObject] meth the method object
+  # @param [Boolean] link whether to link the types
+  # @return [String] the signature types
+  # @since 0.5.3
+  def signature_types: (YARD::CodeObjects::MethodObject meth, ?bool link) -> String
+
+  # Formats the signature of method +meth+.
+  #
+  # @param [CodeObjects::MethodObject] meth the method object to list
+  #   the signature of
+  # @param [Boolean] link whether to link the method signature to the details view
+  # @param [Boolean] show_extras whether to show extra meta-data (visibility, attribute info)
+  # @param [Boolean] full_attr_name whether to show the full attribute name
+  #   ("name=" instead of "name")
+  # @return [String] the formatted method signature
+  def signature: (YARD::CodeObjects::MethodObject meth, ?bool link, ?bool show_extras, ?bool full_attr_name) -> String
+
+  # Returns the current character set. The default value can be overridden
+  # by setting the +LANG+ environment variable or by overriding this
+  # method. In Ruby 1.9 you can also modify this value by setting
+  # +Encoding.default_external+.
+  #
+  # @return [String] the current character set
+  # @since 0.5.4
+  def charset: () -> String
+
+  # Converts a set of hash options into HTML attributes for a tag
+  #
+  # @param [Hash{String => String}] opts the tag options
+  # @return [String] the tag attributes of an HTML tag
+  private def tag_attrs: (?Hash[String, String] opts) -> String
+
+  # Converts a {CodeObjects::MethodObject} into an overload object
+  # @since 0.5.3
+  private def convert_method_to_overload: (untyped meth) -> untyped
+
+  # Parses !!!lang out of codeblock, returning the codeblock language
+  # followed by the source code.
+  #
+  # @param [String] source the source code whose language to determine
+  # @return [Array(String, String)] the language, if any, and the
+  #   remaining source
+  # @since 0.7.5
+  private def parse_lang_for_codeblock: (String source) -> [ String, String ]
+
+  # Parses code blocks out of html and performs syntax highlighting
+  # on code inside of the blocks.
+  #
+  # @param [String] html the html to search for code in
+  # @return [String] highlighted html
+  # @see #html_syntax_highlight
+  private def parse_codeblocks: (String html) -> String
+
+  # Parses code block's HTML attributes in order to detect the programming
+  # language of what's enclosed in that code block.
+  #
+  # @param [String, nil] pre_html_attrs HTML attribute list of +pre+ element
+  # @param [String, nil] code_html_attrs HTML attribute list of +code+
+  #   element
+  # @return [String, nil] detected programming language
+  private def detect_lang_in_codeblock_attributes: (String? pre_html_attrs, String? code_html_attrs) -> String?
+
+  # Highlights Ruby source
+  # @param [String] source the Ruby source code
+  # @return [String] the highlighted Ruby source
+  def html_syntax_highlight_ruby: (String source) -> String
+
+  private def html_syntax_highlight_ruby_ripper: (untyped source) -> untyped
+
+  private def html_syntax_highlight_ruby_legacy: (untyped source) -> untyped
+
+  private def clean_token_object: (untyped token_obj) -> untyped
+
+  # Prunes the method listing by running the verifier and removing attributes/aliases
+  # @param [Array<CodeObjects::Base>] list a list of methods
+  # @param [Boolean] hide_attributes whether to prune attribute methods from the list
+  # @return [Array<CodeObjects::Base>] a pruned list of methods
+  def prune_method_listing: (Array[YARD::CodeObjects::Base] list, ?bool hide_attributes) -> Array[YARD::CodeObjects::Base]
+
+  # Attempts to load the first valid markup provider in {MARKUP_PROVIDERS}.
+  # If a provider is specified, immediately try to load it.
+  #
+  # On success this sets `@markup_provider` and `@markup_class` to
+  # the provider name and library constant class/module respectively for
+  # the loaded provider.
+  #
+  # On failure this method will inform the user that no provider could be
+  # found and exit the program.
+  #
+  # @return [Boolean] whether the markup provider was successfully loaded.
+  def load_markup_provider: (?untyped type) -> bool
+
+  # Checks for a shebang or looks at the file extension to determine
+  # the markup type for the file contents. File extensions are registered
+  # for a markup type in {MARKUP_EXTENSIONS}.
+  #
+  # A shebang should be on the first line of a file and be in the form:
+  #
+  #   #!markup_type
+  #
+  # Standard markup types are text, html, rdoc, markdown, textile
+  #
+  # @param [String] contents Unused. Was necessary prior to 0.7.0.
+  #   Newer versions of YARD use {CodeObjects::ExtraFileObject#contents}
+  # @return [Symbol] the markup type recognized for the file
+  # @see MARKUP_EXTENSIONS
+  # @since 0.6.0
+  def markup_for_file: (String contents, untyped filename) -> Symbol
+
+  # Strips any shebang lines on the file contents that pertain to
+  # markup or preprocessing data.
+  #
+  # @deprecated Use {CodeObjects::ExtraFileObject#contents} instead
+  # @return [String] the file contents minus any preprocessing tags
+  # @since 0.6.0
+  def markup_file_contents: (untyped contents) -> String
+
+  # Gets the markup provider class/module constant for a markup type
+  # Call {#load_markup_provider} before using this method.
+  #
+  # @param [Symbol] type the markup type (:rdoc, :markdown, etc.)
+  # @return [Class] the markup class
+  def markup_class: (?Symbol type) -> Class
+
+  # Gets the markup provider name for a markup type
+  # Call {#load_markup_provider} before using this method.
+  #
+  # @param [Symbol] type the markup type (:rdoc, :markdown, etc.)
+  # @return [Symbol] the markup provider name (usually the gem name of the library)
+  def markup_provider: (?Symbol type) -> Symbol
+
+  # @private
+  URLMATCH: untyped
+
+  # @private
+  ASCIIDOC_ATTRIBUTES: untyped
+end
+
+# Helper methods for syntax highlighting.
+module YARD::Templates::Helpers::HtmlSyntaxHighlightHelper
+  # Highlights Ruby source
+  # @param [String] source the Ruby source code
+  # @return [String] the highlighted Ruby source
+  def html_syntax_highlight_ruby: (String source) -> String
+
+  private def html_syntax_highlight_ruby_ripper: (untyped source) -> untyped
+
+  private def html_syntax_highlight_ruby_legacy: (untyped source) -> untyped
+
+  private def clean_token_object: (untyped token_obj) -> untyped
+
+  # Prunes the method listing by running the verifier and removing attributes/aliases
+  # @param [Array<CodeObjects::Base>] list a list of methods
+  # @param [Boolean] hide_attributes whether to prune attribute methods from the list
+  # @return [Array<CodeObjects::Base>] a pruned list of methods
+  def prune_method_listing: (Array[YARD::CodeObjects::Base] list, ?bool hide_attributes) -> Array[YARD::CodeObjects::Base]
+end
+
+# Namespace for markup providers
+module YARD::Templates::Helpers::Markup
+end
+
+class YARD::Templates::Helpers::Markup::RDocMarkdown < ::YARD::Templates::Helpers::Markup::RDocMarkup
+  def initialize: (untyped text) -> void
+  def fix_typewriter: (untyped html) -> untyped
+end
+
+class YARD::Templates::Helpers::Markup::RDocMarkup
+  # Returns the value of attribute from_path.
+  attr_accessor from_path: untyped
+  def initialize: (untyped text) -> void
+  def to_html: () -> untyped
+  # Fixes RDoc behaviour with ++ only supporting alphanumeric text.
+  #
+  # @todo Refactor into own SimpleMarkup subclass
+  private def fix_typewriter: (untyped text) -> untyped
+  # Don't allow -- to turn into &#8212; element. The chances of this being
+  # some --option is far more likely than the typographical meaning.
+  #
+  # @todo Refactor into own SimpleMarkup subclass
+  private def fix_dash_dash: (untyped text) -> untyped
+  @@mutex: untyped
+  @@formatter: untyped
+  @@markup: untyped
+end
+
+class YARD::Templates::Helpers::Markup::RDocMarkupToHtml < ::RDoc::Markup::ToHtml
+  # Returns the value of attribute from_path.
+  attr_accessor from_path: untyped
+  # Disable auto-link of URLs
+  def handle_special_HYPERLINK: (untyped special) -> untyped
+  def accept_paragraph: (*untyped args) -> untyped
+end
+
+module YARD::Templates::Helpers::MarkupHelper
+  # The default list of markup providers for each markup type
+  MARKUP_PROVIDERS: untyped
+
+  # Returns a list of extensions for various markup types. To register
+  # extensions for a type, add them to the array of extensions for the
+  # type.
+  # @since 0.6.0
+  MARKUP_EXTENSIONS: untyped
+
+  # Contains the Regexp object that matches the shebang line of extra
+  # files to detect the markup type.
+  MARKUP_FILE_SHEBANG: untyped
+
+  # Helper methods for loading and managing markup types.
+  # @return [Hash{Symbol=>{(:provider,:class)=>Object}}] the cached markup providers
+  # @private
+  # @since 0.6.4
+  attr_accessor self.markup_cache: untyped
+
+  # Clears the markup provider cache information. Mainly used for testing.
+  # @return [void]
+  def self.clear_markup_cache: () -> void
+
+  # Attempts to load the first valid markup provider in {MARKUP_PROVIDERS}.
+  # If a provider is specified, immediately try to load it.
+  #
+  # On success this sets `@markup_provider` and `@markup_class` to
+  # the provider name and library constant class/module respectively for
+  # the loaded provider.
+  #
+  # On failure this method will inform the user that no provider could be
+  # found and exit the program.
+  #
+  # @return [Boolean] whether the markup provider was successfully loaded.
+  def load_markup_provider: (?untyped type) -> bool
+
+  # Checks for a shebang or looks at the file extension to determine
+  # the markup type for the file contents. File extensions are registered
+  # for a markup type in {MARKUP_EXTENSIONS}.
+  #
+  # A shebang should be on the first line of a file and be in the form:
+  #
+  #   #!markup_type
+  #
+  # Standard markup types are text, html, rdoc, markdown, textile
+  #
+  # @param [String] contents Unused. Was necessary prior to 0.7.0.
+  #   Newer versions of YARD use {CodeObjects::ExtraFileObject#contents}
+  # @return [Symbol] the markup type recognized for the file
+  # @see MARKUP_EXTENSIONS
+  # @since 0.6.0
+  def markup_for_file: (String contents, untyped filename) -> Symbol
+
+  # Strips any shebang lines on the file contents that pertain to
+  # markup or preprocessing data.
+  #
+  # @deprecated Use {CodeObjects::ExtraFileObject#contents} instead
+  # @return [String] the file contents minus any preprocessing tags
+  # @since 0.6.0
+  def markup_file_contents: (untyped contents) -> String
+
+  # Gets the markup provider class/module constant for a markup type
+  # Call {#load_markup_provider} before using this method.
+  #
+  # @param [Symbol] type the markup type (:rdoc, :markdown, etc.)
+  # @return [Class] the markup class
+  def markup_class: (?Symbol type) -> Class
+
+  # Gets the markup provider name for a markup type
+  # Call {#load_markup_provider} before using this method.
+  #
+  # @param [Symbol] type the markup type (:rdoc, :markdown, etc.)
+  # @return [Symbol] the markup provider name (usually the gem name of the library)
+  def markup_provider: (?Symbol type) -> Symbol
+end
+
+# Helper methods for method objects.
+module YARD::Templates::Helpers::MethodHelper
+  # @return [String] formatted arguments for a method
+  def format_args: (untyped object) -> String
+
+  # @return [String] formatted and linked return types for a method
+  def format_return_types: (untyped object) -> String
+
+  # @return [String] formatted block if one exists
+  def format_block: (untyped object) -> String
+
+  # @return [String] formats line numbers for source code of an object
+  def format_lines: (untyped object) -> String
+
+  # @return [String] formats source of an object
+  def format_code: (untyped object, ?untyped _show_lines) -> String
+
+  # @return [String] formats source code of a constant value
+  def format_constant: (untyped value) -> String
+end
+
+# Helper methods for managing module objects.
+module YARD::Templates::Helpers::ModuleHelper
+  # Prunes the method listing by running the verifier and removing attributes/aliases
+  # @param [Array<CodeObjects::Base>] list a list of methods
+  # @param [Boolean] hide_attributes whether to prune attribute methods from the list
+  # @return [Array<CodeObjects::Base>] a pruned list of methods
+  def prune_method_listing: (Array[YARD::CodeObjects::Base] list, ?bool hide_attributes) -> Array[YARD::CodeObjects::Base]
+end
+
+# Helper methods for text template formats.
+module YARD::Templates::Helpers::TextHelper
+  # @return [String] escapes text
+  def h: (untyped text) -> String
+
+  # @return [String] wraps text at +col+ columns.
+  def wrap: (untyped text, ?untyped col) -> String
+
+  # @return [String] indents +text+ by +len+ characters.
+  def indent: (untyped text, ?untyped len) -> String
+
+  # @return [String] aligns a title to the right
+  def title_align_right: (untyped text, ?untyped col) -> String
+
+  # @return [String] aligns text to the right
+  def align_right: (untyped text, ?untyped spacer, ?untyped col) -> String
+
+  # @return [String] returns a horizontal rule for output
+  def hr: (?untyped col, ?untyped sep) -> String
+
+  # @return [String] the formatted signature for a method
+  def signature: (untyped meth) -> String
+
+  private def resolve_links: (untyped text) -> untyped
+end
+
+# Helpers for UML template format
+module YARD::Templates::Helpers::UMLHelper
+  # Official UML visibility prefix syntax for an object given its visibility
+  # @param [CodeObjects::Base] object the object to retrieve visibility for
+  # @return [String] the UML visibility prefix
+  def uml_visibility: (YARD::CodeObjects::Base object) -> String
+
+  # Formats the path of an object for Graphviz syntax
+  # @param [CodeObjects::Base] object an object to format the path of
+  # @return [String] the encoded path
+  def format_path: (YARD::CodeObjects::Base object) -> String
+
+  # Encodes text in escaped Graphviz syntax
+  # @param [String] text text to encode
+  # @return [String] the encoded text
+  def h: (String text) -> String
+
+  # Tidies data by formatting and indenting text
+  # @param [String] data pre-formatted text
+  # @return [String] tidied text.
+  def tidy: (String data) -> String
+end
+
+# Abstracts the structure for a section and its subsections into an ordered
+# list of sections and subsections.
+# @since 0.6.0
+class YARD::Templates::Section < ::Array[untyped]
+  attr_accessor name: untyped
+  def initialize: (untyped name, *untyped args) -> void
+  def dup: () -> untyped
+  def []: (*untyped args) -> untyped
+  def eql?: (untyped other) -> bool
+  def ==: (untyped other) -> untyped
+  def push: (*untyped args) -> untyped
+  # @since 0.6.0
+  #
+  def <<: (*untyped args) -> untyped
+  def unshift: (*untyped args) -> untyped
+  def inspect: () -> untyped
+  def place: (*untyped args) -> untyped
+  def to_a: () -> untyped
+  def any: (untyped item) -> untyped
+  private def parse_sections: (untyped args) -> untyped
+end
+
+module YARD::Templates::Template
+  # Extra includes are mixins that are included after a template is created. These
+  # mixins can be registered by plugins to operate on templates and override behaviour.
+  #
+  # Note that this array can be filled with modules or proc objects. If a proc object
+  # is given, the proc will be called with the {Template#options} hash containing
+  # relevant template information like the object, format, and more. The proc should
+  # return a module or nil if there is none.
+  #
+  # @example Adding in extra mixins to include on a template
+  #   Template.extra_includes << MyHelper
+  # @example Conditionally including a mixin if the format is html
+  #   Template.extra_includes << proc {|opts| MyHelper if opts.format == :html }
+  # @return [Array<Module, Proc>] a list of modules to be automatically included
+  #   into any new template module
+  attr_accessor self.extra_includes: Array[Module | Proc]
+
+  # Returns the value of attribute class.
+  attr_accessor class: untyped
+
+  # Returns the value of attribute section.
+  attr_accessor section: untyped
+
+  # Returns the value of attribute options.
+  attr_accessor options: untyped
+
+  # @!parse extend ClassMethods
+  # @private
+  def self.included: (untyped klass) -> untyped
+
+  # Includes the {extra_includes} modules into the template object.
+  #
+  # @param [Template] template the template object to mixin the extra includes.
+  # @param [SymbolHash] options the options hash containing all template information
+  # @return [void]
+  def self.include_extra: (YARD::Templates::Template template, SymbolHash[untyped, untyped] options) -> void
+
+  def initialize: (untyped path, untyped full_paths) -> void
+
+  # Alias for creating {Engine.template}.
+  def T: (*untyped path) -> untyped
+
+  # Sets the sections (and subsections) to be rendered for the template
+  #
+  # @example Sets a set of erb sections
+  #   sections :a, :b, :c # searches for a.erb, b.erb, c.erb
+  # @example Sets a set of method and erb sections
+  #   sections :a, :b, :c # a is a method, the rest are erb files
+  # @example Sections with subsections
+  #   sections :header, [:name, :children]
+  #   # the above will call header.erb and only renders the subsections
+  #   # if they are yielded by the template (see #yieldall)
+  # @param [Array<Symbol, String, Template, Array>] args the sections
+  #   to use to render the template. For symbols and strings, the
+  #   section will be executed as a method (if one exists), or rendered
+  #   from the file "name.erb" where name is the section name. For
+  #   templates, they will have {Template::ClassMethods#run} called on them.
+  #   Any subsections can be yielded to using yield or {#yieldall}
+  def sections: (*Array[Array[untyped] | Symbol | String | YARD::Templates::Template] args) -> untyped
+
+  # Initialization called on the template. Override this in a 'setup.rb'
+  # file in the template's path to implement a template
+  #
+  # @example A default set of sections
+  #   def init
+  #     sections :section1, :section2, [:subsection1, :etc]
+  #   end
+  # @see #sections
+  def init: () -> untyped
+
+  def run: (*untyped args) -> untyped
+
+  # Yields all subsections with any extra options
+  #
+  # @param [Hash] opts extra options to be applied to subsections
+  def yieldall: (?Hash[untyped, untyped] opts) -> untyped
+
+  # @param [String, Symbol] section the section name
+  # @yield calls subsections to be rendered
+  # @return [String] the contents of the ERB rendered section
+  def erb: (String | Symbol section) -> String
+
+  # Returns the contents of a file. If +allow_inherited+ is set to +true+,
+  # use +{{{__super__}}}+ inside the file contents to insert the contents
+  # of the file from an inherited template. For instance, if +templates/b+
+  # inherits from +templates/a+ and file "test.css" exists in both directories,
+  # both file contents can be retrieved by having +templates/b/test.css+ look
+  # like:
+  #
+  #   {{{__super__}}}
+  #   ...
+  #   body { css styles here }
+  #   p.class { other styles }
+  #
+  # @param [String] basename the name of the file
+  # @param [Boolean] allow_inherited whether inherited templates can
+  #   be inserted with +{{{__super__}}}+
+  # @return [String] the contents of a file identified by +basename+. All
+  #   template paths (including any mixed in templates) are searched for
+  #   the file
+  # @see ClassMethods#find_file
+  # @see ClassMethods#find_nth_file
+  def file: (String basename, ?bool allow_inherited) -> String
+
+  # Calls the ERB file from the last inherited template with {#section}.erb
+  #
+  # @param [Symbol, String] sect if provided, uses a specific section name
+  # @return [String] the rendered ERB file in any of the inherited template
+  #   paths.
+  def superb: (?Symbol | String sect) -> String
+
+  def inspect: () -> untyped
+
+  def erb_file_for: (untyped section) -> untyped
+
+  def erb_with: (untyped content, ?untyped filename) -> untyped
+
+  private def render_section: (untyped section) -> untyped
+
+  private def cache: (untyped section) -> untyped
+
+  private def cache_filename: (untyped section) -> untyped
+
+  private def set_ivars: () -> untyped
+
+  private def add_options: (?untyped opts) -> untyped
+
+  private def with_section: () -> untyped
+
+  # @return [Array<String>] a list of full paths
+  # @note This method caches path results. Paths should not be modified
+  #   after this method is called; call {#reset_full_paths} to reset cache.
+  def full_paths: () -> Array[String]
+
+  # Resets cache for {#full_paths}
+  def reset_full_paths: () -> untyped
+
+  # Searches for a file identified by +basename+ in the template's
+  # path as well as any mixed in template paths. Equivalent to calling
+  # {ClassMethods#find_nth_file} with index of 1.
+  #
+  # @param [String] basename the filename to search for
+  # @return [String] the full path of a file on disk with filename
+  #   +basename+ in one of the template's paths.
+  # @see find_nth_file
+  def find_file: (String basename) -> String
+
+  # Searches for the nth file (where n = +index+) identified
+  # by basename in the template's path and any mixed in template paths.
+  #
+  # @param [String] basename the filename to search for
+  # @param [Fixnum] index the nth existing file to return
+  # @return [String] the full path of the nth file on disk with
+  #   filename +basename+ in one of the template paths
+  def find_nth_file: (String basename, ?Integer index) -> String
+
+  def is_a?: (untyped klass) -> bool
+
+  # Creates a new template object to be rendered with {Template#run}
+  def new: (*untyped args) -> untyped
+
+  # Alias for creating a {Section} with arguments
+  # @see Section#initialize
+  # @since 0.6.0
+  def S: (*untyped args) -> untyped
+
+  private def include_parent: () -> untyped
+
+  private def include_inherited: (untyped full_paths) -> untyped
+
+  private def load_setup_rb: () -> untyped
+
+  # @return [String] formatted arguments for a method
+  def format_args: (untyped object) -> String
+
+  # @return [String] formatted and linked return types for a method
+  def format_return_types: (untyped object) -> String
+
+  # @return [String] formatted block if one exists
+  def format_block: (untyped object) -> String
+
+  # @return [String] formats line numbers for source code of an object
+  def format_lines: (untyped object) -> String
+
+  # @return [String] formats source of an object
+  def format_code: (untyped object, ?untyped _show_lines) -> String
+
+  # @return [String] formats source code of a constant value
+  def format_constant: (untyped value) -> String
+
+  # An object that keeps track of global state throughout the entire template
+  # rendering process (including any sub-templates).
+  #
+  # @return [OpenStruct] a struct object that stores state
+  # @since 0.6.0
+  def globals: () -> OpenStruct
+
+  # Runs a list of objects against the {Verifier} object passed into the
+  # template and returns the subset of verified objects.
+  #
+  # @param [Array<CodeObjects::Base>] list a list of code objects
+  # @return [Array<CodeObjects::Base>] a list of code objects that match
+  #   the verifier. If no verifier is supplied, all objects are returned.
+  def run_verifier: (Array[YARD::CodeObjects::Base] list) -> Array[YARD::CodeObjects::Base]
+
+  # Escapes text. This is used a lot by the HtmlHelper and there should
+  # be some helper to "clean up" text for whatever, this is it.
+  def h: (untyped text) -> untyped
+
+  # Links objects or URLs. This method will delegate to the correct +link_+
+  # method depending on the arguments passed in.
+  #
+  # @example Linking a URL
+  #   linkify('http://example.com')
+  # @example Including docstring contents of an object
+  #   linkify('include:YARD::Docstring')
+  # @example Linking to an extra file
+  #   linkify('file:README')
+  # @example Linking an object by path
+  #   linkify('YARD::Docstring')
+  def linkify: (*untyped args) -> untyped
+
+  # Includes an object's docstring into output.
+  # @since 0.6.0
+  # @param [CodeObjects::Base] obj the object to include
+  # @return [String] the object's docstring (no tags)
+  def link_include_object: (YARD::CodeObjects::Base obj) -> String
+
+  # Include a file as a docstring in output
+  # @since 0.7.0
+  # @param [String] file the filename to include
+  # @return [String] the file's contents
+  def link_include_file: (String file) -> String
+
+  # Links to an object with an optional title
+  #
+  # @param [CodeObjects::Base] obj the object to link to
+  # @param [String] title the title to use for the link
+  # @return [String] the linked object
+  def link_object: (YARD::CodeObjects::Base obj, ?String title) -> String
+
+  # Links to a URL
+  #
+  # @param [String] url the URL to link to
+  # @param [String] title the optional title to display the link as
+  # @param [Hash] params optional parameters for the link
+  # @return [String] the linked URL
+  def link_url: (String url, ?String title, ?Hash[untyped, untyped] params) -> String
+
+  # Links to an extra file
+  #
+  # @param [String] filename the filename to link to
+  # @param [String] title the title of the link
+  # @param [String] anchor optional anchor
+  # @return [String] the link to the file
+  # @since 0.5.5
+  def link_file: (String filename, ?String title, ?String anchor) -> String
+
+  # Formats a list of return types for output and links each type.
+  #
+  # @example Formatting types
+  #   format_types(['String', 'Array']) #=> "(String, Array)"
+  # @example Formatting types without surrounding brackets
+  #   format_types(['String', 'Array'], false) #=> "String, Array"
+  # @param [Array<String>] list a list of types
+  # @param [Boolean] brackets whether to surround the types in brackets
+  # @return [String] the formatted list of Ruby types
+  def format_types: (Array[String] list, ?bool brackets) -> String
+
+  # @example Formatted type of an exception class
+  #   o = ClassObject.new(:root, :MyError)
+  #   o.superclass = P('RuntimeError')
+  #   format_object_type(o) # => "Exception"
+  # @example Formatted type of a method
+  #   o = MethodObject.new(:root, :to_s)
+  #   format_object_type(o) # => "Method"
+  # @param [CodeObjects::Base] object the object to retrieve the type for
+  # @return [String] the human-readable formatted {CodeObjects::Base#type #type}
+  #   for the object
+  def format_object_type: (YARD::CodeObjects::Base object) -> String
+
+  # @example
+  #   s = format_object_title ModuleObject.new(:root, :MyModuleName)
+  #   s # => "Module: MyModuleName"
+  # @param [CodeObjects::Base] object the object to retrieve a title for
+  # @return [String] the page title name for a given object
+  def format_object_title: (YARD::CodeObjects::Base object) -> String
+
+  # Indents and formats source code
+  #
+  # @param [String] value the input source code
+  # @return [String] formatted source code
+  def format_source: (String value) -> String
+end
+
+module YARD::Templates::Template::ClassMethods
+  # Returns the value of attribute path.
+  attr_accessor path: untyped
+
+  # Returns the value of attribute full_path.
+  attr_accessor full_path: untyped
+
+  # @return [Array<String>] a list of full paths
+  # @note This method caches path results. Paths should not be modified
+  #   after this method is called; call {#reset_full_paths} to reset cache.
+  def full_paths: () -> Array[String]
+
+  # Resets cache for {#full_paths}
+  def reset_full_paths: () -> untyped
+
+  def initialize: (untyped path, untyped full_paths) -> void
+
+  # Searches for a file identified by +basename+ in the template's
+  # path as well as any mixed in template paths. Equivalent to calling
+  # {ClassMethods#find_nth_file} with index of 1.
+  #
+  # @param [String] basename the filename to search for
+  # @return [String] the full path of a file on disk with filename
+  #   +basename+ in one of the template's paths.
+  # @see find_nth_file
+  def find_file: (String basename) -> String
+
+  # Searches for the nth file (where n = +index+) identified
+  # by basename in the template's path and any mixed in template paths.
+  #
+  # @param [String] basename the filename to search for
+  # @param [Fixnum] index the nth existing file to return
+  # @return [String] the full path of the nth file on disk with
+  #   filename +basename+ in one of the template paths
+  def find_nth_file: (String basename, ?Integer index) -> String
+
+  def is_a?: (untyped klass) -> bool
+
+  # Creates a new template object to be rendered with {Template#run}
+  def new: (*untyped args) -> untyped
+
+  def run: (*untyped args) -> untyped
+
+  # Alias for creating {Engine.template}.
+  def T: (*untyped path) -> untyped
+
+  # Alias for creating a {Section} with arguments
+  # @see Section#initialize
+  # @since 0.6.0
+  def S: (*untyped args) -> untyped
+
+  private def include_parent: () -> untyped
+
+  private def include_inherited: (untyped full_paths) -> untyped
+
+  private def load_setup_rb: () -> untyped
+end
+
+# An Options class containing default options for base template rendering. For
+# options specific to generation of HTML output, see {CLI::YardocOptions}.
+#
+# @see CLI::YardocOptions
+class YARD::Templates::TemplateOptions < ::YARD::Options
+  # @return [Symbol] the template output format
+  # @!attribute format
+  attr_accessor format: Symbol
+  # @return [Symbol] the template name used to render output
+  # @!attribute template
+  attr_accessor template: Symbol
+  # @return [Symbol] the markup format to use when parsing docstrings
+  # @!attribute markup
+  attr_accessor markup: Symbol
+  # @return [String] the default return type for a method with no return tags
+  # @!attribute default_return
+  attr_accessor default_return: String
+  # @return [Boolean] whether void methods should show "void" in their signature
+  # @!attribute hide_void_return
+  attr_accessor hide_void_return: bool
+  # @return [Boolean] whether code blocks should be syntax highlighted
+  # @!attribute highlight
+  attr_accessor highlight: bool
+  # @return [Class] the markup provider class for the markup format
+  attr_accessor markup_provider: Class
+  # @return [OpenStruct] an open struct containing any global state across all
+  #   generated objects in a template.
+  # @!attribute globals
+  attr_accessor globals: OpenStruct
+  # @return [CodeObjects::Base] the main object being generated in the template
+  attr_accessor object: YARD::CodeObjects::Base
+  # @return [CodeObjects::Base] the owner of the generated object
+  attr_accessor owner: YARD::CodeObjects::Base
+  # @return [Symbol] the template type used to generate output
+  attr_accessor type: Symbol
+  # @return [Boolean] whether serialization should be performed
+  # @!attribute serialize
+  attr_accessor serialize: bool
+  # @return [Serializers::Base] the serializer used to generate links and serialize
+  #   output. Serialization output only occurs if {#serialize} is +true+.
+  attr_accessor serializer: YARD::Serializers::Base
+  # @deprecated use {#highlight} instead.
+  # @return [Boolean] whether highlighting should be ignored
+  attr_accessor no_highlight: bool
+  # @return [String] the title of a given page
+  attr_accessor page_title: String
+  # @return [Boolean] whether the page is the "index"
+  attr_accessor index: bool
+  # @example A list of mixin path names (including wildcards)
+  #   opts.embed_mixins #=> ['ClassMethods', '*Helper', 'YARD::*']
+  # @return [Array<String>] an array of module name wildcards to embed into
+  #   class documentation as if their methods were defined directly in the class.
+  #   Useful for modules like ClassMethods. If the name contains '::', the module
+  #   is matched against the full mixin path, otherwise only the module name is used.
+  # @!attribute embed_mixins
+  attr_accessor embed_mixins: Array[String]
+  # @return [Verifier] the verifier object
+  attr_accessor verifier: YARD::Verifier
+  # @return [OpenStruct] an open struct containing any global state across all
+  #   generated objects in a template.
+  #
+  def __globals: () -> OpenStruct
+  # @param [CodeObjects::Base] mixin accepts any code object, but returns
+  #   nil unless the object is a module.
+  # @return [Boolean] whether a mixin matches the embed_mixins list
+  # @return [nil] if the mixin is not a module object
+  def embed_mixins_match?: (YARD::CodeObjects::Base mixin) -> bool?
+end

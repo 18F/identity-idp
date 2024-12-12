@@ -1,0 +1,32 @@
+class SelectEmailForm
+  @user: User
+
+  @identity: Hash[Symbol, Integer]
+
+  @selected_email_id: Integer
+
+  include ActiveModel::Model
+
+  include ::ActiveModel::Validations
+
+  extend ::ActiveModel::Validations::ClassMethods
+
+  include ActionView::Helpers::TranslationHelper
+
+  attr_reader user: User
+
+  attr_reader identity: Hash[Symbol, Integer]
+
+  attr_reader selected_email_id: Integer
+
+  def initialize: (user: User, ?identity: Hash[Symbol, Integer]?) -> void
+
+  def submit: (Hash[Symbol, String] params) -> FormResponse
+
+  private
+
+  def extra_analytics_attributes: () -> { selected_email_id: Integer }
+
+  def validate_owns_selected_email: () -> (nil | bool)
+end
+

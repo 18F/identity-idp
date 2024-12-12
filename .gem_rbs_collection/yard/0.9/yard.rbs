@@ -1,0 +1,60 @@
+# !!! GENERATED FILE !!!
+# Please see yard/0.9/_generators/README.md
+
+#
+# Gem::YARDoc provides methods to generate YARDoc and yri data for installed gems
+# upon gem installation.
+#
+# This file is automatically required by RubyGems 1.9 and newer.
+module YARD
+  # An alias to {Parser::SourceParser}'s parsing method
+  #
+  # @example Parse a glob of files
+  #   YARD.parse('lib/**/*.rb')
+  # @see Parser::SourceParser.parse
+  def self.parse: (*untyped args) -> untyped
+
+  # An alias to {Parser::SourceParser}'s parsing method
+  #
+  # @example Parse a string of input
+  #   YARD.parse_string('class Foo; end')
+  # @see Parser::SourceParser.parse_string
+  def self.parse_string: (*untyped args) -> untyped
+
+  # Loads gems that match the name 'yard-*' (recommended) or 'yard_*' except
+  # those listed in +~/.yard/ignored_plugins+. This is called immediately
+  # after YARD is loaded to allow plugin support.
+  #
+  # @return [Boolean] true if all plugins loaded successfully, false otherwise.
+  # @deprecated Use {Config.load_plugins}
+  def self.load_plugins: () -> bool
+
+  # @return [Boolean] whether YARD is being run inside of Windows
+  def self.windows?: () -> bool
+
+  # @return [Boolean] whether YARD is being run in Ruby 1.8 mode
+  def self.ruby18?: () -> bool
+
+  # @return [Boolean] whether YARD is being run in Ruby 1.9 mode
+  def self.ruby19?: () -> bool
+
+  # @return [Boolean] whether YARD is being run in Ruby 2.0
+  def self.ruby2?: () -> bool
+
+  # @return [Boolean] whether YARD is being run in Ruby 3.0
+  def self.ruby3?: () -> bool
+
+  # @return [Boolean] whether YARD is being run in Ruby 3.1
+  def self.ruby31?: () -> bool
+
+  # The root path for YARD source libraries
+  ROOT: untyped
+
+  # The root path for YARD builtin templates
+  TEMPLATE_ROOT: untyped
+
+  # @deprecated Use {Config::CONFIG_DIR}
+  CONFIG_DIR: untyped
+
+  VERSION: untyped
+end

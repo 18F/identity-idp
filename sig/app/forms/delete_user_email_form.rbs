@@ -1,0 +1,50 @@
+
+class DeleteUserEmailForm
+
+  @user: User
+
+  @email_address: EmailAddress
+
+  include ActiveModel::Model
+
+  attr_reader user: untyped
+
+  attr_reader email_address: EmailAddress
+
+  def initialize: (untyped user, untyped email_address) -> void
+
+  def submit: () -> untyped
+            
+  def validates: () -> untyped
+
+  private
+
+  def email_address_destroyed: () -> (false | true)
+
+  def notify_subscribers: () -> untyped
+end
+
+class FormResponse
+
+  def initialize: (success: untyped, ?errors: ::Hash[untyped, untyped], ?extra: ::Hash[untyped, untyped], ?serialize_error_details_only: bool) -> void
+
+end
+
+class EmailPolicy
+  @user: untyped
+
+  def initialize: (untyped user) -> void
+
+  def can_delete_email?: (untyped email) -> (false | true)
+
+end
+
+class PushNotification
+  HttpPush: untyped
+  IdentifierRecycledEvent: untyped
+  EmailChangedEvent: untyped
+  RecoveryInformationChangedEvent: untyped
+end
+
+class ApplicationRecord < ActiveRecord::Base
+end

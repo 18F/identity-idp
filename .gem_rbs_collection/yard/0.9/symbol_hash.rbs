@@ -1,0 +1,69 @@
+# !!! GENERATED FILE !!!
+# Please see yard/0.9/_generators/README.md
+
+# A subclass of Hash where all keys are converted into Symbols, and
+# optionally, all String values are converted into Symbols.
+class SymbolHash[unchecked out K, unchecked out V] < ::Hash[untyped, untyped]
+  # Creates a new SymbolHash object
+  #
+  # @param [Boolean] symbolize_value converts any String values into Symbols
+  #   if this is set to +true+.
+  def initialize: (?bool symbolize_value) -> void
+  # @overload [](hash)
+  #   Creates a SymbolHash object from an existing Hash
+  #
+  #   @example
+  #     SymbolHash['x' => 1, :y => 2] # => #<SymbolHash:0x...>
+  #   @param [Hash] hash the hash object
+  #   @return [SymbolHash] a new SymbolHash from a hash object
+  #
+  # @overload [](*list)
+  #   Creates a SymbolHash from an even list of keys and values
+  #
+  #   @example
+  #     SymbolHash[key1, value1, key2, value2, ...]
+  #   @param [Array] list an even list of key followed by value
+  #   @return [SymbolHash] a new SymbolHash object
+  def self.[]: (*untyped hsh) -> untyped
+  # Assigns a value to a symbolized key
+  # @param [#to_sym] key the key
+  # @param [Object] value the value to be assigned. If this is a String and
+  #   values are set to be symbolized, it will be converted into a Symbol.
+  def []=: (untyped key, untyped value) -> untyped
+  # Accessed a symbolized key
+  # @param [#to_sym] key the key to access
+  # @return [Object] the value associated with the key
+  def []: (untyped key) -> untyped
+  # Deleted a key and value associated with it
+  # @param [#to_sym] key the key to delete
+  # @return [void]
+  def delete: (untyped key) -> void
+  # Tests if a symbolized key exists
+  # @param [#to_sym] key the key to test
+  # @return [Boolean] whether the key exists
+  def key?: (untyped key) -> bool
+  # Tests if a symbolized key exists
+  # @param [#to_sym] key
+  #   the key to test
+  # @return [Boolean] whether the key exists
+  #
+  def has_key?: (untyped key) -> bool
+  # Updates the object with the contents of another Hash object.
+  # This method modifies the original SymbolHash object
+  #
+  # @param [Hash] hash the hash object to copy the values from
+  # @return [SymbolHash] self
+  def update: (Hash[untyped, untyped] hash) -> SymbolHash[K, V]
+  # Updates the object with the contents of another Hash object.
+  # This method modifies the original SymbolHash object
+  # @param [Hash] hash
+  #   the hash object to copy the values from
+  # @return [SymbolHash] self
+  #
+  def merge!: (Hash[untyped, untyped] hash) -> SymbolHash[K, V]
+  # Merges the contents of another hash into a new SymbolHash object
+  #
+  # @param [Hash] hash the hash of objects to copy
+  # @return [SymbolHash] a new SymbolHash containing the merged data
+  def merge: (Hash[untyped, untyped] hash) -> SymbolHash[K, V]
+end

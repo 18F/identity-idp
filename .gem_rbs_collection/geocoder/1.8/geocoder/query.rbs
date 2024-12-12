@@ -1,0 +1,75 @@
+module Geocoder
+  class Query
+    attr_accessor text: untyped
+
+    attr_accessor options: untyped
+
+    def initialize: (untyped text, ?::Hash[untyped, untyped] options) -> void
+
+    def execute: () -> untyped
+
+    def to_s: () -> untyped
+
+    def sanitized_text: () -> untyped
+
+    #
+    # Get a Lookup object (which communicates with the remote geocoding API)
+    # appropriate to the Query text.
+    #
+    def lookup: () -> untyped
+
+    def url: () -> untyped
+
+    #
+    # Is the Query blank? (ie, should we not bother searching?)
+    # A query is considered blank if its text is nil or empty string AND
+    # no URL parameters are specified.
+    #
+    def blank?: () -> untyped
+
+    #
+    # Does the Query text look like an IP address?
+    #
+    # Does not check for actual validity, just the appearance of four
+    # dot-delimited numbers.
+    #
+    def ip_address?: () -> untyped
+
+    #
+    # Is the Query text a loopback or private IP address?
+    #
+    def internal_ip_address?: () -> untyped
+
+    #
+    # Is the Query text a loopback IP address?
+    #
+    def loopback_ip_address?: () -> untyped
+
+    #
+    # Is the Query text a private IP address?
+    #
+    def private_ip_address?: () -> untyped
+
+    #
+    # Does the given string look like latitude/longitude coordinates?
+    #
+    def coordinates?: () -> untyped
+
+    #
+    # Return the latitude/longitude coordinates specified in the query,
+    # or nil if none.
+    #
+    def coordinates: () -> (untyped | nil)
+
+    #
+    # Should reverse geocoding be performed for this query?
+    #
+    def reverse_geocode?: () -> untyped
+
+    def language: () -> untyped
+
+    private
+
+    def params_given?: () -> untyped
+  end
+end

@@ -1,0 +1,103 @@
+# !!! GENERATED FILE !!!
+# Please see yard/0.9/_generators/README.md
+
+# Handles all logic for complex lexical and inherited object resolution.
+# Used by {Registry.resolve}, so there is no need to use this class
+# directly.
+#
+# @see Registry.resolve
+# @since 0.9.1
+class YARD::RegistryResolver
+  # Creates a new resolver object for a registry.
+  #
+  # @param registry [Registry] only set this if customizing the registry
+  #   object
+  def initialize: (?YARD::Registry registry) -> void
+  # Performs a lookup on a given path in the registry. Resolution will occur
+  # in a similar way to standard Ruby identifier resolution, doing lexical
+  # lookup, as well as (optionally) through the inheritance chain. A proxy
+  # object can be returned if the lookup fails for future resolution. The
+  # proxy will be type hinted with the +type+ used in the original lookup.
+  #
+  # @option opts namespace [CodeObjects::Base, :root, nil] (nil) the namespace
+  #   object to start searching from. If root or nil is provided, {Registry.root}
+  #   is assumed.
+  # @option opts inheritance [Boolean] (false) whether to perform lookups through
+  #   the inheritance chain (includes mixins)
+  # @option opts proxy_fallback [Boolean] (false) when true, a proxy is returned
+  #   if no match is found
+  # @option opts type [Symbol] (nil) an optional type hint for the resolver
+  #   to consider when performing a lookup. If a type is provided and the
+  #   resolved object's type does not match the hint, the object is discarded.
+  # @return [CodeObjects::Base, CodeObjects::Proxy, nil] the first object
+  #   that matches the path lookup. If proxy_fallback is provided, a proxy
+  #   object will be returned in the event of no match, otherwise nil will
+  #   be returned.
+  # @example A lookup from root
+  #   resolver.lookup_by_path("A::B::C")
+  # @example A lookup from the A::B namespace
+  #   resolver.lookup_by_path("C", namespace: P("A::B"))
+  # @example A lookup on a method through the inheritance tree
+  #   resolver.lookup_by_math("A::B#foo", inheritance: true)
+  def lookup_by_path: (untyped path, ?Hash[untyped, untyped] opts) -> (YARD::CodeObjects::Base | YARD::CodeObjects::Proxy)?
+  # return [Boolean] if the obj's type matches the provided type.
+  private def validate: (untyped obj, untyped type) -> untyped
+  # Performs a lexical lookup from a namespace for a path and a type hint.
+  private def lookup_path_direct: (untyped namespace, untyped path, untyped type) -> untyped
+  # Performs a lookup through the inheritance chain on a path with a type hint.
+  private def lookup_path_inherited: (untyped namespace, untyped path, untyped type) -> untyped
+  # Collects and returns all inherited namespaces for a given object
+  private def collect_namespaces: (untyped object) -> untyped
+  # @return [Regexp] the regexp match of the default separator
+  private def starts_with_default_separator_match: () -> Regexp
+  # @return [Regexp] the regexp that matches strings starting with
+  #   a separator
+  private def starts_with_separator_match: () -> Regexp
+  # @return [Regexp] the regexp that can be used to split a string on all
+  #   occurrences of separator tokens
+  private def split_on_separators_match: () -> Regexp
+  # Registers a separator with an optional set of valid types that
+  # must follow the separator lexically.
+  #
+  # Calls all callbacks defined by {NamespaceMapper.on_invalidate} after
+  # the separator is registered.
+  #
+  # @param sep [String] the separator string for the namespace
+  # @param valid_types [Array<Symbol>] a list of object types that
+  #   must follow the separator. If the list is empty, any type can
+  #   follow the separator.
+  # @example Registering separators for a method object
+  #   # Anything after a "#" denotes a method object
+  #   register_separator "#", :method
+  #   # Anything after a "." denotes a method object
+  #   register_separator ".", :method
+  # @see .on_invalidate
+  def register_separator: (String sep, *Array[Symbol] valid_types) -> untyped
+  # Unregisters a separator by a type.
+  #
+  # @param type [Symbol] the type to unregister
+  # @see #register_separator
+  def unregister_separator_by_type: (Symbol type) -> untyped
+  # Clears the map of separators.
+  #
+  # @return [void]
+  def clear_separators: () -> void
+  # Gets or sets the default separator value to use when no
+  # separator for the namespace can be determined.
+  #
+  # @param value [String, nil] the default separator, or nil to return the
+  #   value
+  # @example
+  #   default_separator "::"
+  def default_separator: (?String? value) -> untyped
+  # @return [Array<String>] all of the registered separators
+  def separators: () -> Array[String]
+  # @return [Regexp] the regexp match of all separators
+  def separators_match: () -> Regexp
+  # @param sep [String] the separator to return types for
+  # @return [Array<Symbol>] a list of types registered to a separator
+  def types_for_separator: (String sep) -> Array[Symbol]
+  # @param type [String] the type to return separators for
+  # @return [Array<Symbol>] a list of separators registered to a type
+  def separators_for_type: (String type) -> Array[Symbol]
+end

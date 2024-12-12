@@ -1,0 +1,36 @@
+class EmailAddress < ApplicationRecord
+  # include EncryptableAttribute
+
+  def email=: (untyped email) -> untyped
+
+  def confirmed?: () -> untyped
+
+  def confirmation_period_expired?: () -> untyped
+
+  def domain: () -> untyped
+
+  def fed_or_mil_email?: () -> untyped
+
+  def fed_email?: () -> untyped
+
+  def mil_email?: () -> untyped
+
+  def self.find_with_email: (untyped email) -> (nil | untyped)
+
+  def self.find_with_confirmation_token: (untyped token) -> (nil | untyped)
+
+  # It is possible for the same email address to exist more than once if it is unconfirmed,
+  # but only one row with that email address can be confirmed.  This method finds the first email
+  # address but will return the confirmed one first if it exists.
+  def self.find_with_confirmed_or_unconfirmed_email: (untyped email) -> untyped
+
+  def self.update_last_sign_in_at_on_user_id_and_email: (user_id: untyped, email: untyped) -> (nil | untyped)
+
+  private
+
+  def self.create_fingerprints: (untyped email) -> untyped
+
+  # Remove email id from all user identities
+  # when the email is destroyed.
+  def reset_linked_identities: () -> untyped
+end

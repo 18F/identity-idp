@@ -1,0 +1,37 @@
+# frozen_string_literal: true
+
+module Accounts
+  module ConnectedAccounts
+    class SelectedEmailController < ApplicationController
+      @identity: untyped
+
+      @select_email_form: SelectEmailForm
+
+      @can_add_email: bool
+      
+      include ActiveSupport::Concern
+
+      include RenderConditionConcern
+
+      def edit: () -> untyped
+
+      def update: () -> untyped
+                
+      def current_user: () -> untyped
+                      
+      def edit_connected_account_selected_email_path: (untyped) -> untyped
+                                                    
+      def account_connected_accounts_path: () -> untyped
+
+      private
+
+      def form_params: () -> untyped
+
+      def build_select_email_form: () -> SelectEmailForm
+
+      def validate_identity: () -> (untyped | nil)
+
+      def identity: () -> Hash[Symbol, Integer]
+    end
+  end
+end

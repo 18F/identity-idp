@@ -1,0 +1,52 @@
+module Geocoder
+  module Result
+    interface _Base
+      #
+      # A string in the given format.
+      #
+      # This default implementation dumbly follows the United States address
+      # format and will return incorrect results for most countries. Some APIs
+      # return properly formatted addresses and those should be funneled
+      # through this method.
+      #
+      def address: (?::Symbol format) -> String?
+
+      #
+      # A two-element array: [lat, lon].
+      #
+      def coordinates: () -> [Float, Float]
+
+      def latitude: () -> Float
+
+      def longitude: () -> Float
+
+      def state: () -> String?
+
+      def province: () -> String?
+
+      def state_code: () -> String?
+
+      def province_code: () -> String?
+
+      def country: () -> String?
+
+      def country_code: () -> String?
+    end
+
+    class Base
+      # data (hash) fetched from geocoding service
+      attr_accessor data: untyped
+
+      # true if result came from cache, false if from request to geocoding
+      # service; nil if cache is not configured
+      attr_accessor cache_hit: untyped
+
+      #
+      # Takes a hash of data from a parsed geocoding service response.
+      #
+      def initialize: (untyped data) -> void
+
+      include _Base
+    end
+  end
+end

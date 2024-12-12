@@ -1,0 +1,268 @@
+# !!! GENERATED FILE !!!
+# Please see yard/0.9/_generators/README.md
+
+# The +Registry+ is the centralized data store for all {CodeObjects} created
+# during parsing. The storage is a key value store with the object's path
+# (see {CodeObjects::Base#path}) as the key and the object itself as the value.
+# Object paths must be unique to be stored in the Registry. All lookups for
+# objects are done on the singleton Registry instance using the {Registry.at}
+# or {Registry.resolve} methods.
+#
+# == Saving / Loading a Registry
+# The registry is saved to a "yardoc file" (actually a directory), which can
+# be loaded back to perform any lookups. See {Registry.load!} and
+# {Registry.save} for information on saving and loading of a yardoc file.
+#
+# == Threading Notes
+# The registry class is a singleton class that is accessed directly in many
+# places across YARD. To mitigate threading issues, YARD (0.6.5+) makes
+# the Registry thread local. This means all access to a registry for a specific
+# object set must occur in the originating thread.
+#
+# @example Loading the Registry
+#   Registry.load!('/path/to/yardocfile') # loads all objects into memory
+#   Registry.at('YARD::CodeObjects::Base').docstring
+#   # => "+Base+ is the superclass of all code objects ..."
+# @example Getting an object by a specific path
+#   Registry.at('YARD::CodeObjects::Base#docstring')
+# @example Performing a lookup on a method anywhere in the inheritance tree
+#   Registry.resolve(P('YARD::CodeObjects::Base'), '#docstring', true)
+module YARD::Registry
+  # Gets/sets the yardoc filename
+  # @return [String] the yardoc filename
+  # @see DEFAULT_YARDOC_FILE
+  attr_accessor self.yardoc_file: String
+
+  # Whether or not the Registry storage should load everything into a
+  # single object database (for disk efficiency), or spread them out
+  # (for load time efficiency).
+  #
+  # @note Setting this attribute to nil will offload the decision to
+  #   the {RegistryStore storage adapter}.
+  # @return [Boolean, nil] if this value is set to nil, the storage
+  #   adapter will decide how to store the data.
+  attr_accessor self.single_object_db: bool?
+
+  # Gets/sets the directory that has LANG.po files
+  # @return [String] the directory that has .po files
+  attr_accessor self.po_dir: String
+
+  # Returns the .yardoc file associated with a gem.
+  #
+  # @param [String] gem the name of the gem to search for
+  # @param [String] ver_require an optional Gem version requirement
+  # @param [Boolean] for_writing whether or not the method should search
+  #   for writable locations
+  # @return [String] if +for_writing+ is set to +true+, returns the best
+  #   location suitable to write the .yardoc file. Otherwise, the first
+  #   existing location associated with the gem's .yardoc file.
+  # @return [nil] if +for_writing+ is set to false and no yardoc file
+  #   is found, returns nil.
+  def self.yardoc_file_for_gem: (String gem, ?String ver_require, ?bool for_writing) -> String?
+
+  # Loads the registry and/or parses a list of files
+  #
+  # @example Loads the yardoc file or parses files 'a', 'b' and 'c' (but not both)
+  #   Registry.load(['a', 'b', 'c'])
+  # @example Reparses files 'a' and 'b' regardless of whether yardoc file exists
+  #   Registry.load(['a', 'b'], true)
+  # @param [String, Array] files if +files+ is an Array, it should represent
+  #   a list of files that YARD should parse into the registry. If reload is
+  #   set to false and the yardoc file already exists, these files are skipped.
+  #   If files is a String, it should represent the yardoc file to load
+  #   into the registry.
+  # @param [Boolean] reparse if reparse is false and a yardoc file already
+  #   exists, any files passed in will be ignored.
+  # @return [Registry] the registry object (for chaining)
+  # @raise [ArgumentError] if files is not a String or Array
+  def self.load: (?Array[untyped] | String files, ?bool reparse) -> YARD::Registry
+
+  # Loads a yardoc file directly
+  #
+  # @param [String] file the yardoc file to load.
+  # @return [Registry] the registry object (for chaining)
+  def self.load_yardoc: (?String file) -> YARD::Registry
+
+  # Loads a yardoc file and forces all objects cached on disk into
+  # memory. Equivalent to calling {load_yardoc} followed by {load_all}
+  #
+  # @param [String] file the yardoc file to load
+  # @return [Registry] the registry object (for chaining)
+  # @see #load_yardoc
+  # @see #load_all
+  # @since 0.5.1
+  def self.load!: (?String file) -> YARD::Registry
+
+  # Forces all objects cached on disk into memory
+  #
+  # @example Loads all objects from disk
+  #   Registry.load
+  #   Registry.all.count #=> 0
+  #   Registry.load_all
+  #   Registry.all.count #=> 17
+  # @return [Registry] the registry object (for chaining)
+  # @since 0.5.1
+  def self.load_all: () -> YARD::Registry
+
+  # Saves the registry to +file+
+  #
+  # @param [String] file the yardoc file to save to
+  # @return [Boolean] true if the file was saved
+  def self.save: (?untyped merge, ?String file) -> bool
+
+  # Deletes the yardoc file from disk
+  # @return [void]
+  def self.delete_from_disk: () -> void
+
+  # Registers a new object with the registry
+  #
+  # @param [CodeObjects::Base] object the object to register
+  # @return [CodeObjects::Base] the registered object
+  def self.register: (YARD::CodeObjects::Base object) -> YARD::CodeObjects::Base
+
+  # Deletes an object from the registry
+  # @param [CodeObjects::Base] object the object to remove
+  # @return [void]
+  def self.delete: (YARD::CodeObjects::Base object) -> void
+
+  # Clears the registry
+  # @return [void]
+  def self.clear: () -> void
+
+  # Creates a pessmistic transactional lock on the database for writing.
+  # Use with {YARD.parse} to ensure the database is not written multiple
+  # times.
+  #
+  # @see locked_for_writing?
+  def self.lock_for_writing: (?untyped file) -> untyped
+
+  # @return [Boolean] whether the database is currently locked for writing
+  #
+  def self.locked_for_writing?: (?untyped file) -> bool
+
+  # Iterates over {all} with no arguments
+  def self.each: () -> untyped
+
+  # Returns all objects in the registry that match one of the types provided
+  # in the +types+ list (if +types+ is provided).
+  #
+  # @example Returns all objects
+  #   Registry.all
+  # @example Returns all classes and modules
+  #   Registry.all(:class, :module)
+  # @param [Array<Symbol>] types an optional list of types to narrow the
+  #   objects down by. Equivalent to performing a select:
+  #     +Registry.all.select {|o| types.include(o.type) }+
+  # @return [Array<CodeObjects::Base>] the list of objects found
+  # @see CodeObjects::Base#type
+  def self.all: (*Array[Symbol] types) -> Array[YARD::CodeObjects::Base]
+
+  # Returns the paths of all of the objects in the registry.
+  # @param [Boolean] reload whether to load entire database
+  # @return [Array<String>] all of the paths in the registry.
+  def self.paths: (?bool reload) -> Array[String]
+
+  # Returns the object at a specific path.
+  # @param [String, :root] path the pathname to look for. If +path+ is +root+,
+  #   returns the {root} object.
+  # @return [CodeObjects::Base] the object at path
+  # @return [nil] if no object is found
+  def self.at: (untyped path) -> YARD::CodeObjects::Base?
+
+  # Returns the object at a specific path.
+  # @param [String, :root] path
+  #   the pathname to look for. If +path+ is +root+,
+  #   returns the {root} object.
+  # @return [CodeObjects::Base] the object at path
+  # @return [nil] if no object is found
+  #
+  def self.[]: (untyped path) -> YARD::CodeObjects::Base?
+
+  # The root namespace object.
+  # @return [CodeObjects::RootObject] the root object in the namespace
+  def self.root: () -> YARD::CodeObjects::RootObject
+
+  # @param [String] name the locale name.
+  # @return [I18n::Locale] the locale object for +name+.
+  # @since 0.8.3
+  def self.locale: (String name) -> YARD::I18n::Locale
+
+  # Attempts to find an object by name starting at +namespace+, performing
+  # a lookup similar to Ruby's method of resolving a constant in a namespace.
+  #
+  # @example Looks for instance method #reverse starting from A::B::C
+  #   Registry.resolve(P("A::B::C"), "#reverse")
+  # @example Looks for a constant in the root namespace
+  #   Registry.resolve(nil, 'CONSTANT')
+  # @example Looks for a class method respecting the inheritance tree
+  #   Registry.resolve(myclass, 'mymethod', true)
+  # @example Looks for a constant but returns a proxy if not found
+  #   Registry.resolve(P('A::B::C'), 'D', false, true) # => #<yardoc proxy A::B::C::D>
+  # @example Looks for a complex path from a namespace
+  #   Registry.resolve(P('A::B'), 'B::D') # => #<yardoc class A::B::D>
+  # @param [CodeObjects::NamespaceObject, nil] namespace the starting namespace
+  #   (module or class). If +nil+ or +:root+, starts from the {root} object.
+  # @param [String, Symbol] name the name (or complex path) to look for from
+  #   +namespace+.
+  # @param [Boolean] inheritance Follows inheritance chain (mixins, superclass)
+  #   when performing name resolution if set to +true+.
+  # @param [Boolean] proxy_fallback If +true+, returns a proxy representing
+  #   the unresolved path (namespace + name) if no object is found.
+  # @param [Symbol, nil] type the {CodeObjects::Base#type} that the resolved
+  #   object must be equal to. No type checking if nil.
+  # @return [CodeObjects::Base] the object if it is found
+  # @return [CodeObjects::Proxy] a Proxy representing the object if
+  #   +proxy_fallback+ is +true+.
+  # @return [nil] if +proxy_fallback+ is +false+ and no object was found.
+  # @see P
+  def self.resolve: (YARD::CodeObjects::NamespaceObject? namespace, String | Symbol name, ?bool inheritance, ?bool proxy_fallback, ?Symbol? type) -> (YARD::CodeObjects::Base | YARD::CodeObjects::Proxy)?
+
+  # @return [Hash{String => String}] a set of checksums for files
+  def self.checksums: () -> Hash[String, String]
+
+  # @param [String] data data to checksum
+  # @return [String] the SHA1 checksum for data
+  def self.checksum_for: (String data) -> String
+
+  # The assumed types of a list of paths. This method is used by CodeObjects::Base
+  # @return [{String => Symbol}] a set of unresolved paths and their assumed type
+  # @private
+  # @deprecated The registry no longer globally tracks proxy types.
+  def self.proxy_types: () -> Hash[String, Symbol]
+
+  # The registry singleton instance.
+  #
+  # @deprecated use Registry.methodname directly.
+  # @return [Registry] returns the registry instance
+  def self.instance: () -> YARD::Registry
+
+  # Attempts to resolve a name in a namespace
+  #
+  # @param [CodeObjects::NamespaceObject] namespace the starting namespace
+  # @param [String] name the name to look for
+  # @param [Symbol, nil] type the {CodeObjects::Base#type} that the resolved
+  #   object must be equal to
+  private def self.partial_resolve: (YARD::CodeObjects::NamespaceObject namespace, String name, ?Symbol? type) -> untyped
+
+  # @group Retrieving yardoc File Locations
+  private def self.global_yardoc_file: (untyped spec, ?untyped for_writing) -> untyped
+
+  private def self.old_global_yardoc_file: (untyped spec, ?untyped for_writing) -> untyped
+
+  private def self.local_yardoc_file: (untyped spec, ?untyped for_writing) -> untyped
+
+  # @since 0.6.5
+  private def self.thread_local_store: () -> untyped
+
+  # @since 0.6.5
+  private def self.thread_local_store=: (untyped value) -> untyped
+
+  # @since 0.9.1
+  private def self.thread_local_resolver: () -> untyped
+
+  DEFAULT_YARDOC_FILE: untyped
+
+  LOCAL_YARDOC_INDEX: untyped
+
+  DEFAULT_PO_DIR: untyped
+end

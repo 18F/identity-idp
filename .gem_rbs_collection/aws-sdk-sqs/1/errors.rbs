@@ -1,0 +1,90 @@
+# WARNING ABOUT GENERATED CODE
+#
+# This file is generated. See the generator README.md for more information:
+# https://github.com/ruby/gem_rbs_collection/blob/main/generators/aws-sdk-rbs-generator/README.md
+#
+# WARNING ABOUT GENERATED CODE
+
+module Aws
+  module SQS
+    module Errors
+      class ServiceError < Aws::Errors::ServiceError
+      end
+
+      class BatchEntryIdsNotDistinct < ServiceError
+      end
+      class BatchRequestTooLong < ServiceError
+      end
+      class EmptyBatchRequest < ServiceError
+      end
+      class InvalidAttributeName < ServiceError
+      end
+      class InvalidBatchEntryId < ServiceError
+      end
+      class InvalidIdFormat < ServiceError
+      end
+      class InvalidMessageContents < ServiceError
+      end
+      class MessageNotInflight < ServiceError
+      end
+      class OverLimit < ServiceError
+      end
+      class PurgeQueueInProgress < ServiceError
+      end
+      class QueueDeletedRecently < ServiceError
+      end
+      class QueueDoesNotExist < ServiceError
+      end
+      class QueueNameExists < ServiceError
+      end
+      class ReceiptHandleIsInvalid < ServiceError
+      end
+      class ResourceNotFoundException < ServiceError
+      end
+      class TooManyEntriesInBatchRequest < ServiceError
+      end
+      class UnsupportedOperation < ServiceError
+      end
+
+      # Dynamic errors
+      # source: https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/CommonErrors.html
+
+      class AccessDeniedException < ServiceError
+      end
+      class IncompleteSignature < ServiceError
+      end
+      class InternalFailure < ServiceError
+      end
+      class InvalidAction < ServiceError
+      end
+      class InvalidClientTokenId < ServiceError
+      end
+      class InvalidParameterCombination < ServiceError
+      end
+      class InvalidParameterValue < ServiceError
+      end
+      class InvalidQueryParameter < ServiceError
+      end
+      class MalformedQueryString < ServiceError
+      end
+      class MissingAction < ServiceError
+      end
+      class MissingAuthenticationToken < ServiceError
+      end
+      class MissingParameter < ServiceError
+      end
+      class NotAuthorized < ServiceError
+      end
+      class OptInRequired < ServiceError
+      end
+      class RequestExpired < ServiceError
+      end
+      class ServiceUnavailable < ServiceError
+      end
+      class ThrottlingException < ServiceError
+      end
+      class ValidationError < ServiceError
+      end
+    end
+  end
+end

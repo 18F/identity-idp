@@ -1,0 +1,204 @@
+module ActiveRecord
+  class Base
+    include Encryption::EncryptableRecord
+    extend Encryption::EncryptableRecord::ClassMethods
+    include Normalization
+    extend Normalization::ClassMethods
+    include SecurePassword
+    extend SecurePassword::ClassMethods
+    include TokenFor
+    extend TokenFor::ClassMethods
+  end
+
+  class Relation
+    include TokenFor::RelationMethods
+
+    def insert: (untyped attributes, ?unique_by: untyped?, ?returning: untyped?, ?record_timestamps: bool?) -> untyped
+    def insert_all: (untyped attributes, ?unique_by: untyped?, ?returning: untyped?, ?record_timestamps: bool?) -> untyped
+    def insert!: (untyped attributes, ?returning: untyped?, ?record_timestamps: bool?) -> untyped
+    def insert_all!: (untyped attributes, ?returning: untyped?, ?record_timestamps: bool?) -> untyped
+    def upsert: (untyped attributes, ?unique_by: untyped?, ?returning: untyped?, ?record_timestamps: bool?) -> untyped
+    def upsert_all: (untyped attributes, ?unique_by: untyped?, ?returning: untyped?, ?record_timestamps: bool?) -> untyped
+  end
+
+  class Relation
+    module QueryMethods
+      def with_recursive: (*untyped) -> untyped
+      def with_recursive!: (*untyped) -> untyped
+    end
+  end
+
+  module Inheritance
+    module ClassMethods
+      def primary_abstract_class: () -> void
+    end
+  end
+
+  module Enum
+    def enum: (**untyped options) -> void
+            | ((String | Symbol) name, **untyped options) -> void
+            | ((String | Symbol) name, (Hash[(Symbol | String), untyped] | Array[Symbol | String]) values, **untyped options) -> void
+  end
+
+  module RuntimeRegistry
+    def sql_runtime: () -> untyped
+
+    def sql_runtime=: (untyped runtime) -> untyped
+
+    extend RuntimeRegistry
+  end
+
+  module QueryMethods
+    class WhereChain[Relation]
+      def associated: (*Symbol associations) -> Relation
+      def missing: (*Symbol associations) -> Relation
+    end
+  end
+
+  module Encryption
+    module EncryptableRecord
+      module ClassMethods
+        @deterministic_encrypted_attributes: untyped
+
+        def encrypts: (*untyped names, ?key_provider: untyped?, ?key: untyped?, ?deterministic: bool, ?support_unencrypted_data: untyped?, ?downcase: bool, ?ignore_case: bool, ?previous: untyped, **untyped context_properties) -> untyped
+
+        def deterministic_encrypted_attributes: () -> untyped
+
+        def source_attribute_from_preserved_attribute: (untyped attribute_name) -> untyped
+      end
+
+      def encrypted_attribute?: (untyped attribute_name) -> untyped
+
+      def ciphertext_for: (untyped attribute_name) -> untyped
+
+      def encrypt: () -> untyped
+
+      def decrypt: () -> untyped
+    end
+  end
+
+  module Normalization
+    def normalize_attribute: (untyped name) -> void
+
+    module ClassMethods
+      def normalizes: (*untyped names, with: untyped, ?apply_to_nil: bool) -> void
+      def normalize_value_for: (untyped name, untyped value) -> untyped
+    end
+  end
+
+  class AdapterError < ActiveRecordError
+    def initialize: (?untyped? message, ?connection_pool: ConnectionAdapters::ConnectionPool?) -> void
+
+    attr_reader connection_pool: ConnectionAdapters::ConnectionPool?
+  end
+
+  class ConnectionNotEstablished < AdapterError
+  end
+
+  class StatementInvalid < AdapterError
+    def initialize: (?untyped? message, ?sql: untyped?, ?binds: untyped?, ?connection_pool: ConnectionAdapters::ConnectionPool?) -> void
+
+    attr_reader sql: untyped
+    attr_reader binds: untyped
+
+    def set_query: (untyped sql, untyped binds) -> self
+  end
+
+  class MismatchedForeignKey < StatementInvalid
+    def initialize: (?message: untyped?, ?sql: untyped?, ?binds: untyped?, ?table: untyped?,
+                     ?foreign_key: untyped?, ?target_table: untyped?, ?primary_key: untyped?,
+                     ?primary_key_column: untyped?, ?query_parser: untyped?,
+                     ?connection_pool: ConnectionAdapters::ConnectionPool?) -> void
+  end
+
+  module Querying
+    def insert: (untyped attributes, ?unique_by: untyped?, ?returning: untyped?, ?record_timestamps: bool?) -> untyped
+
+    def insert_all: (untyped attributes, ?unique_by: untyped?, ?returning: untyped?, ?record_timestamps: bool?) -> untyped
+
+    def insert!: (untyped attributes, ?returning: untyped?, ?record_timestamps: bool?) -> untyped
+
+    def insert_all!: (untyped attributes, ?returning: untyped?, ?record_timestamps: bool?) -> untyped
+
+    def upsert: (untyped attributes, ?unique_by: untyped?, ?returning: untyped?, ?record_timestamps: bool?) -> untyped
+
+    def upsert_all: (untyped attributes, ?unique_by: untyped?, ?returning: untyped?, ?record_timestamps: bool?) -> untyped
+  end
+
+  module Querying
+    def with_recursive: (*untyped) -> untyped
+  end
+
+  class InsertAll
+    @record_timestamps: bool
+
+    def initialize: (untyped model, untyped inserts, on_duplicate: untyped, ?unique_by: untyped?, ?returning: untyped?, ?record_timestamps: bool?) -> untyped
+
+    def record_timestamps?: () -> bool
+
+    def keys_including_timestamps: () -> Set[String]
+
+    def timestamps_for_create: () -> Hash[String, String]
+  end
+
+  module SecurePassword
+    module ClassMethods
+      def authenticate_by: (untyped attributes) -> instance?
+    end
+  end
+
+  module TokenFor
+    module RelationMethods
+      def find_by_token_for: (Symbol purpose, String token) -> untyped
+      def find_by_token_for!: (Symbol purpose, String token) -> untyped
+    end
+
+    module ClassMethods
+      def generates_token_for: (Symbol purpose, ?expires_in: ActiveSupport::Duration) ? { () [self: instance] -> untyped } -> untyped
+      def find_by_token_for: (Symbol purpose, String token) -> untyped
+      def find_by_token_for!: (Symbol purpose, String token) -> untyped
+    end
+
+    def generate_token_for: (Symbol purpose) -> String
+  end
+end
+
+module Arel
+  class Table
+    def initialize: (untyped name, ?type_caster: untyped type_caster, ?as: untyped? as, ?klass: untyped?) -> void
+  end
+
+  class InsertManager < Arel::TreeManager
+    def initialize: (?Arel::Table? table) -> untyped
+  end
+
+  class UpdateManager < Arel::TreeManager
+    def initialize: (?Arel::Table? table) -> untyped
+  end
+
+  class DeleteManager < Arel::TreeManager
+    def initialize: (?Arel::Table? table) -> untyped
+  end
+
+  module FactoryMethods
+    def cast: (untyped name, untyped type) -> Nodes::NamedFunction
+  end
+end
+
+module ActiveRecord
+  class Relation
+    module Methods[Model, PrimaryKey]
+      def authenticate_by: (untyped attributes) -> Model?
+      def with: (*untyped args) -> self
+      def with_recursive: (*untyped) -> self
+      def with_recursive!: (*untyped) -> self
+    end
+  end
+
+  class Base
+    module ClassMethods[Model, Relation, PrimaryKey]
+      def with: (*untyped args) -> Relation
+      def with_recursive: (*untyped) -> Relation
+    end
+  end
+end

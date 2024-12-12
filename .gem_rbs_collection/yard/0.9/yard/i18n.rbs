@@ -1,0 +1,268 @@
+# !!! GENERATED FILE !!!
+# Please see yard/0.9/_generators/README.md
+
+# Namespace for internationalization (i18n)
+# @since 0.8.0
+module YARD::I18n
+end
+
+# +Locale+ is a unit of translation. It has {#name} and a set of
+# messages.
+#
+# @since 0.8.2
+class YARD::I18n::Locale
+  # @return [String, nil] the default locale name.
+  # @since 0.8.4
+  attr_accessor self.default: String?
+  # @return [String] the name of the locale. It used IETF language
+  #   tag format +[language[_territory][.codeset][@modifier]]+.
+  # @see http://tools.ietf.org/rfc/bcp/bcp47.txt
+  #   BCP 47 - Tags for Identifying Languages
+  attr_reader name: String
+  # Creates a locale for +name+ locale.
+  #
+  # @param [String] name the locale name.
+  def initialize: (String name) -> void
+  # Loads translation messages from +locale_directory+/{#name}.po.
+  #
+  # @param [String] locale_directory the directory path that has
+  #   {#name}.po.
+  # @return [Boolean] +true+ if PO file exists, +false+ otherwise.
+  def load: (String locale_directory) -> bool
+  # @param [String] message the translation target message.
+  # @return [String] translated message. If translation isn't
+  #   registered, the +message+ is returned.
+  def translate: (String message) -> String
+end
+
+# +Message+ is a translation target message. It has message ID as
+# {#id} and some properties {#locations} and {#comments}.
+#
+# @since 0.8.1
+class YARD::I18n::Message
+  # @return [String] the message ID of the translation target message.
+  attr_reader id: String
+  # @return [Set] the set of locations. Location is an array of
+  # path and line number where the message is appeared.
+  attr_reader locations: Set[untyped]
+  # @return [Set] the set of comments for the messages.
+  attr_reader comments: Set[untyped]
+  # Creates a translate target message for message ID +id+.
+  #
+  # @param [String] id the message ID of the translate target message.
+  def initialize: (String id) -> void
+  # Adds location information for the message.
+  #
+  # @param [String] path the path where the message appears.
+  # @param [Integer] line the line number where the message appears.
+  # @return [void]
+  def add_location: (String path, Integer line) -> void
+  # Adds a comment for the message.
+  #
+  # @param [String] comment the comment for the message to be added.
+  # @return [void]
+  def add_comment: (String comment) -> void
+  # @param [Message] other the +Message+ to be compared.
+  # @return [Boolean] checks whether this message is equal to another.
+  def ==: (YARD::I18n::Message other) -> bool
+end
+
+# Acts as a container for {Message} objects.
+#
+# @since 0.8.1
+class YARD::I18n::Messages
+  # @return [Hash{String=>Message}] the set of message objects
+  attr_reader messages: Hash[String, YARD::I18n::Message]
+  # Creates a new container.
+  def initialize: () -> void
+  # Enumerates each {Message} in the container.
+  #
+  # @yieldparam [Message] message the next message object in
+  #   the enumeration.
+  # @return [void]
+  def each: () { (YARD::I18n::Message message) -> untyped } -> void
+  # @param [String] id the message ID to perform a lookup on.
+  # @return [Message, nil] a registered message for the given +id+,
+  #   or nil if no message for the ID is found.
+  def []: (String id) -> YARD::I18n::Message?
+  # Registers a {Message}, the message ID of which is +id+. If
+  # corresponding +Message+ is already registered, the previously
+  # registered object is returned.
+  #
+  # @param [String] id the ID of the message to be registered.
+  # @return [Message] the registered +Message+.
+  def register: (String id) -> YARD::I18n::Message
+  # Checks if this messages list is equal to another messages list.
+  #
+  # @param [Messages] other the container to compare.
+  # @return [Boolean] whether +self+ and +other+ is equivalence or not.
+  def ==: (YARD::I18n::Messages other) -> bool
+end
+
+# +Locale+ is a wrapper for gettext's PO parsing feature. It hides
+# gettext API difference from YARD.
+#
+# @since 0.8.8
+class YARD::I18n::POParser
+  # @return [Boolean] true if gettext is available, false otherwise.
+  def self.available?: () -> bool
+  # Parses PO file.
+  #
+  # @param [String] file path of PO file to be parsed.
+  # @return [Hash<String, String>] parsed messages.
+  def parse: (String file) -> Hash[untyped, untyped]
+end
+
+# The +PotGenerator+ generates POT format string from
+# {CodeObjects::Base} and {CodeObjects::ExtraFileObject}.
+#
+# == POT and PO
+#
+# POT is an acronym for "Portable Object Template". POT is a
+# template file to create PO file. The extension for POT is
+# ".pot". PO file is an acronym for "Portable Object". PO file has
+# many parts of message ID (msgid) that is translation target
+# message and message string (msgstr) that is translated message
+# of message ID. If you want to translate "Hello" in English into
+# "Bonjour" in French, "Hello" is the msgid ID and "Bonjour" is
+# msgstr. The extension for PO is ".po".
+#
+# == How to extract msgids
+#
+# The +PotGenerator+ has two parse methods:
+#
+# * {#parse_objects} for {CodeObjects::Base}
+# * {#parse_files} for {CodeObjects::ExtraFileObject}
+#
+# {#parse_objects} extracts msgids from docstring and tags of
+# {CodeObjects::Base} objects. The docstring of
+# {CodeObjects::Base} object is parsed and a paragraph is
+# extracted as a msgid. Tag name and tag text are extracted as
+# msgids from a tag.
+#
+# {#parse_files} extracts msgids from
+# {CodeObjects::ExtraFileObject} objects. The file content of
+# {CodeObjects::ExtraFileObject} object is parsed and a paragraph
+# is extracted as a msgid.
+#
+# == Usage
+#
+# To create a .pot file by +PotGenerator+, instantiate a
+# +PotGenerator+ with a relative working directory path from a
+# directory path that has created .pot file, parse
+# {CodeObjects::Base} objects and {CodeObjects::ExtraFileObject}
+# objects, generate a POT and write the generated POT to a .pot
+# file. The relative working directory path is ".." when the
+# working directory path is "."  and the POT is wrote into
+# "po/yard.pot".
+#
+# @example Generate a .pot file
+#   po_file_path = "po/yard.pot"
+#   po_file_directory_pathname = Pathname.new(po_file_path).directory)
+#   working_directory_pathname = Pathname.new(".")
+#   relative_base_path = working_directory_pathname.relative_path_from(po_file_directory_pathname).to_s
+#   # relative_base_path -> ".."
+#   generator = YARD::I18n::PotGenerator.new(relative_base_path)
+#   generator.parse_objects(objects)
+#   generator.parse_files(files)
+#   pot = generator.generate
+#   po_file_directory_pathname.mkpath
+#   File.open(po_file_path, "w") do |pot_file|
+#     pot_file.print(pot)
+#   end
+# @see http://www.gnu.org/software/gettext/manual/html_node/PO-Files.html
+#   GNU gettext manual about details of PO file
+class YARD::I18n::PotGenerator
+  # Extracted messages.
+  #
+  # @return [Messages]
+  # @since 0.8.1
+  attr_reader messages: YARD::I18n::Messages
+  # Creates a POT generator that uses +relative_base_path+ to
+  # generate locations for a msgid. +relative_base_path+ is
+  # prepended to all locations.
+  #
+  # @param [String] relative_base_path a relative working
+  #   directory path from a directory path that has created .pot
+  #   file.
+  def initialize: (String relative_base_path) -> void
+  # Parses {CodeObjects::Base} objects and stores extracted msgids
+  # into {#messages}
+  #
+  # @param [Array<CodeObjects::Base>] objects a list of
+  #   {CodeObjects::Base} to be parsed.
+  # @return [void]
+  def parse_objects: (Array[YARD::CodeObjects::Base] objects) -> void
+  # Parses {CodeObjects::ExtraFileObject} objects and stores
+  # extracted msgids into {#messages}.
+  #
+  # @param [Array<CodeObjects::ExtraFileObject>] files a list
+  #   of {CodeObjects::ExtraFileObject} objects to be parsed.
+  # @return [void]
+  def parse_files: (Array[YARD::CodeObjects::ExtraFileObject] files) -> void
+  # Generates POT from +@messages+.
+  #
+  # One PO file entry is generated from a +Message+ in
+  # +@messages+.
+  #
+  # Locations of the +Message+ are used to generate the reference
+  # line that is started with "#: ". +relative_base_path+ passed
+  # when the generator is created is prepended to each path in location.
+  #
+  # Comments of the +Message+ are used to generate the
+  # translator-comment line that is started with "# ".
+  #
+  # @return [String] POT format string
+  def generate: () -> String
+  private def header: () -> untyped
+  private def current_time: () -> untyped
+  private def generate_pot_creation_date_value: () -> untyped
+  private def generate_message: (untyped pot, untyped message) -> untyped
+  private def escape_message_id: (untyped message_id) -> untyped
+  private def register_message: (untyped id) -> untyped
+  private def extract_documents: (untyped object) -> untyped
+  private def extract_tag_documents: (untyped tag) -> untyped
+  private def extract_tag_name: (untyped tag) -> untyped
+  private def extract_tag_text: (untyped tag) -> untyped
+  private def extract_paragraphs: (untyped file) -> untyped
+end
+
+# Provides some convenient features for translating a text.
+class YARD::I18n::Text
+  # Creates a text object that has translation related features for
+  # the input text.
+  #
+  # @param [#each_line] input a text to be translated.
+  # @option options [Boolean] :have_header (false) whether the
+  #   input text has header or not.
+  def initialize: (untyped input, ?Hash[untyped, untyped] options) -> void
+  # Extracts translation target messages from +@input+.
+  #
+  # @yield [:attribute, name, value, line_no] the block that
+  #   receives extracted an attribute in header. It may called many
+  #   times.
+  # @yieldparam [String] name the name of extracted attribute.
+  # @yieldparam [String] value the value of extracted attribute.
+  # @yieldparam [Integer] line_no the defined line number of extracted
+  #   attribute.
+  # @yield [:paragraph, text, start_line_no] the block that
+  #   receives extracted a paragraph in body. Paragraph is a text
+  #   block separated by one or more empty lines. Empty line is a
+  #   line that contains only zero or more whitespaces. It may
+  #   called many times.
+  # @yieldparam [String] text the text of extracted paragraph.
+  # @yieldparam [Integer] start_line_no the start line number of
+  #   extracted paragraph.
+  # @return [void]
+  def extract_messages: () { (String name, String value, Integer line_no, String text, Integer start_line_no) -> untyped } -> void
+  # Translates into +locale+.
+  #
+  # @param [Locale] locale the translation target locale.
+  # @return [String] translated text.
+  def translate: (YARD::I18n::Locale locale) -> String
+  private def parse: () -> untyped
+  private def emit_markup_event: (untyped line, untyped line_no) -> untyped
+  private def emit_attribute_event: (untyped match_data, untyped line_no) -> untyped
+  private def emit_empty_line_event: (untyped line, untyped line_no) -> untyped
+  private def emit_paragraph_event: (untyped paragraph, untyped paragraph_start_line, untyped line_no) -> untyped
+end

@@ -1,0 +1,48 @@
+# !!! GENERATED FILE !!!
+# Please see yard/0.9/_generators/README.md
+
+# Holds Rake tasks used by YARD
+module YARD::Rake
+end
+
+# The rake task to run {CLI::Yardoc} and generate documentation.
+class YARD::Rake::YardocTask < ::Rake::TaskLib
+  # The name of the task
+  # @return [String] the task name
+  attr_accessor name: String
+  # Options to pass to {CLI::Yardoc}
+  # @return [Array<String>] the options passed to the commandline utility
+  attr_accessor options: Array[String]
+  # Options to pass to {CLI::Stats}
+  # @return [Array<String>] the options passed to the stats utility
+  attr_accessor stats_options: Array[String]
+  # The Ruby source files (and any extra documentation files separated by '-')
+  # to process.
+  # @example Task files assignment
+  #   YARD::Rake::YardocTask.new do |t|
+  #     t.files   = ['app/**/*.rb', 'lib/**/*.rb', '-', 'doc/FAQ.md', 'doc/Changes.md']
+  #   end
+  # @return [Array<String>] a list of files
+  attr_accessor files: Array[String]
+  # Runs a +Proc+ before the task
+  # @return [Proc] a proc to call before running the task
+  attr_accessor before: Proc
+  # Runs a +Proc+ after the task
+  # @return [Proc] a proc to call after running the task
+  attr_accessor after: Proc
+  # @return [Verifier, Proc] an optional {Verifier} to run against all objects
+  #   being generated. Any object that the verifier returns false for will be
+  #   excluded from documentation. This attribute can also be a lambda.
+  # @see Verifier
+  attr_accessor verifier: YARD::Verifier | Proc
+  # Creates a new task with name +name+.
+  #
+  # @param [String, Symbol] name the name of the rake task
+  # @yield a block to allow any options to be modified on the task
+  # @yieldparam [YardocTask] _self the task object to allow any parameters
+  #   to be changed.
+  def initialize: (?String | Symbol name) { (YARD::Rake::YardocTask _self) -> untyped } -> void
+  # Defines the rake task
+  # @return [void]
+  def define: () -> void
+end

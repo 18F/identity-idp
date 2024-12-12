@@ -1,0 +1,50 @@
+class Redis
+  class BaseError < RuntimeError
+  end
+
+  class ProtocolError < BaseError
+    def initialize: (untyped reply_type) -> void
+  end
+
+  class CommandError < BaseError
+  end
+
+  class BaseConnectionError < BaseError
+  end
+
+  class CannotConnectError < BaseConnectionError
+  end
+
+  class ConnectionError < BaseConnectionError
+  end
+
+  class TimeoutError < BaseConnectionError
+  end
+
+  class InheritedError < BaseConnectionError
+  end
+
+  class InvalidClientOptionError < BaseError
+  end
+
+  class Cluster
+    class OrchestrationCommandNotSupported < BaseError
+      def initialize: (untyped command, untyped subcommand) -> void
+    end
+
+    class CommandErrorCollection < BaseError
+      attr_reader errors: Hash[String, Redis::CommandError]
+      @errors: Hash[String, Redis::CommandError]
+
+      def initialize: (Hash[String, Redis::CommandError] errors, String error_message) -> void
+    end
+
+    class AmbiguousNodeError < BaseError
+      def initialize: (untyped command) -> void
+    end
+
+    class CrossSlotPipeliningError < BaseError
+      def initialize: (untyped keys) -> void
+    end
+  end
+end

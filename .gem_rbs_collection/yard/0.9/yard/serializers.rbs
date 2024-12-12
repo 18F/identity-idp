@@ -1,0 +1,173 @@
+# !!! GENERATED FILE !!!
+# Please see yard/0.9/_generators/README.md
+
+# Namespace for components that serialize to various endpoints
+module YARD::Serializers
+end
+
+# The abstract base serializer. Serializers allow templates to be
+# rendered to various endpoints. For instance, a {FileSystemSerializer}
+# would allow template contents to be written to the filesystem
+#
+# To implement a custom serializer, override the following methods:
+# * {#serialize}
+# * {#serialized_path}
+#
+# Optionally, a serializer can implement before and after filters:
+# * {#before_serialize}
+# * {#after_serialize}
+#
+# @abstract Override this class to implement a custom serializer.
+class YARD::Serializers::Base
+  # All serializer options are saved so they can be passed to other serializers.
+  #
+  # @return [SymbolHash] the serializer options
+  attr_reader options: SymbolHash[untyped, untyped]
+  # Creates a new serializer with options
+  #
+  # @param [Hash] opts the options to assign to {#options}
+  def initialize: (?Hash[untyped, untyped] opts) -> void
+  # Serializes an object.
+  #
+  # @abstract This method should implement the logic that serializes
+  #   +data+ to the respective endpoint. This method should also call
+  #   the before and after callbacks {#before_serialize} and {#after_serialize}
+  # @param [CodeObjects::Base, String] object the object to serialize the
+  #   data for. The object can also be a string (for non-object serialization)
+  # @param [String] data the contents that should be serialized
+  def serialize: (YARD::CodeObjects::Base | String object, String data) -> untyped
+  # The serialized path of an object
+  #
+  # @abstract This method should return the path of the object on the
+  #   endpoint. For instance, for a file serializer, this should return
+  #   the filename that represents the object on disk.
+  # @param [CodeObjects::Base] object the object to return a path for
+  # @return [String] the serialized path of an object
+  def serialized_path: (YARD::CodeObjects::Base object) -> String
+  # Returns whether an object has been serialized
+  #
+  # @abstract This method should return whether the endpoint already exists.
+  #   For instance, a file system serializer would check if the file exists
+  #   on disk. You will most likely use +#basepath+ and {#serialized_path} to
+  #   get the endpoint's location.
+  # @param [CodeObjects::Base] object the object to check existence of
+  # @return [Boolean] whether the endpoint exists.
+  # @since 0.6.0
+  def exists?: (YARD::CodeObjects::Base object) -> bool
+  # Called before serialization.
+  #
+  # @abstract Should run code before serialization. Should return false
+  #   if serialization should not occur.
+  # @return [Boolean] whether or not serialization should occur
+  def before_serialize: () -> bool
+  # Called after serialization.
+  #
+  # @abstract Should run code after serialization.
+  # @param [String] data the data that was serialized.
+  # @return [void]
+  def after_serialize: (String data) -> void
+end
+
+# Implements a serializer that reads from and writes to the filesystem.
+class YARD::Serializers::FileSystemSerializer < ::YARD::Serializers::Base
+  # The base path to write data to.
+  # @return [String] a base path
+  attr_accessor basepath: String
+  # The extension of the filename (defaults to +html+)
+  #
+  # @return [String] the extension of the file. Empty string for no extension.
+  attr_accessor extension: String
+  # Creates a new FileSystemSerializer with options
+  #
+  # @option opts [String] :basepath ('doc') the base path to write data to
+  # @option opts [String] :extension ('html') the extension of the serialized
+  #   path filename. If this is set to the empty string, no extension is used.
+  def initialize: (?Hash[untyped, untyped] opts) -> void
+  # Serializes object with data to its serialized path (prefixed by the +#basepath+).
+  #
+  # @return [String] the written data (for chaining)
+  def serialize: (untyped object, untyped data) -> String
+  # Implements the serialized path of a code object.
+  #
+  # @param [CodeObjects::Base, CodeObjects::ExtraFileObject, String] object
+  #   the object to get a path for. The path of a string is the string itself.
+  # @return [String] if object is a String, returns
+  #   object, otherwise the path on disk (without the basepath).
+  def serialized_path: (YARD::CodeObjects::Base | YARD::CodeObjects::ExtraFileObject | String object) -> String
+  # Checks the disk for an object and returns whether it was serialized.
+  #
+  # @param [CodeObjects::Base] object the object to check
+  # @return [Boolean] whether an object has been serialized to disk
+  def exists?: (YARD::CodeObjects::Base object) -> bool
+  # Builds a filename mapping from object paths to filesystem path names.
+  # Needed to handle case sensitive YARD objects mapped into a case
+  # insensitive filesystem. Uses with {#mapped_name} to determine the
+  # mapping name for a given object.
+  #
+  # @note In order to use filesystem name mapping, you must initialize
+  #   the serializer object after preparing the {YARD::Registry}.
+  private def build_filename_map: () -> untyped
+  # @return [String] the filesystem mapped name of a given object.
+  private def mapped_name: (untyped object) -> String
+  # Remove special chars from filenames.
+  # Windows disallows \ / : * ? " < > | but we will just remove any
+  # non alphanumeric (plus period, underscore and dash).
+  private def encode_path_components: (*untyped components) -> untyped
+end
+
+# Serializes an object to a process (like less)
+#
+# @example Serializing to a pager (less)
+#   serializer = ProcessSerializer.new('less')
+#   serializer.serialize(object, "data!")
+class YARD::Serializers::ProcessSerializer < ::YARD::Serializers::Base
+  # Creates a new ProcessSerializer for the shell command +cmd+
+  #
+  # @param [String] cmd the command that will accept data on stdin
+  def initialize: (String cmd) -> void
+  # Overrides serialize behaviour and writes data to standard input
+  # of the associated command
+  def serialize: (untyped _object, untyped data) -> untyped
+end
+
+# A serializer that writes data to standard output.
+class YARD::Serializers::StdoutSerializer < ::YARD::Serializers::Base
+  # Creates a serializer to print text to stdout
+  #
+  # @param [Fixnum, nil] wrap if wrap is a number, wraps text to +wrap+
+  #   columns, otherwise no wrapping is done.
+  def initialize: (?Integer? wrap) -> void
+  # Overrides serialize behaviour to write data to standard output
+  def serialize: (untyped _object, untyped data) -> untyped
+  # Wraps text to a specific column length
+  #
+  # @param [String] text the text to wrap
+  # @param [Fixnum] _length the column length to wrap to
+  # @return [String] the wrapped text
+  private def word_wrap: (String text, ?Integer _length) -> String
+end
+
+class YARD::Serializers::YardocSerializer < ::YARD::Serializers::FileSystemSerializer
+  def initialize: (untyped yfile) -> void
+  def objects_path: () -> untyped
+  # @deprecated The registry no longer tracks proxy types
+  def proxy_types_path: () -> untyped
+  def checksums_path: () -> untyped
+  def object_types_path: () -> untyped
+  def complete_lock_path: () -> untyped
+  def processing_path: () -> untyped
+  def complete?: () -> bool
+  # Creates a pessmistic transactional lock on the database for writing.
+  # Use with {YARD.parse} to ensure the database is not written multiple
+  # times.
+  #
+  # @see #locked_for_writing?
+  def lock_for_writing: () -> untyped
+  # @return [Boolean] whether the database is currently locked for writing
+  def locked_for_writing?: () -> bool
+  def serialized_path: (untyped object) -> untyped
+  def serialize: (untyped object) -> untyped
+  def deserialize: (untyped path, ?untyped is_path) -> untyped
+  private def dump: (untyped object) -> untyped
+  private def internal_dump: (untyped object, ?untyped first_object) -> untyped
+end

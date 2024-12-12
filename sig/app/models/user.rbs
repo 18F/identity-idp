@@ -1,0 +1,209 @@
+class User < ApplicationRecord
+  @active_profile: untyped
+
+  @pending_profile: untyped
+
+  @recent_devices: untyped
+
+  @analytics: untyped
+
+  # include NonNullUuid
+
+  # include ::NewRelic::Agent::MethodTracer
+
+  # include ActionView::Helpers::DateHelper
+
+  # include EncryptableAttribute
+
+  # IMPORTANT this comes *after* devise() call.
+  # include UserAccessKeyOverrides
+
+  # include UserEncryptedAttributeOverrides
+
+  # include DeprecatedUserAttributes
+
+  # include UserOtpMethods
+
+  MAX_RECENT_EVENTS: 5
+
+  MAX_RECENT_DEVICES: 5
+
+  attr_accessor asserted_attributes: untyped
+
+  attr_accessor email: untyped
+
+  def confirmed_email_addresses: () -> untyped
+
+  def fully_registered?: () -> untyped
+
+  def confirmed?: () -> untyped
+
+  def has_fed_or_mil_email?: () -> untyped
+
+  def accepted_rules_of_use_still_valid?: () -> (untyped | nil)
+
+  def set_reset_password_token: () -> untyped
+
+  def last_identity: () -> untyped
+
+  def active_identities: () -> untyped
+
+  def active_profile?: () -> untyped
+
+  def active_profile: () -> untyped
+
+  def pending_profile?: () -> untyped
+
+  def gpo_verification_pending_profile?: () -> untyped
+
+  def suspended?: () -> untyped
+
+  def reinstated?: () -> untyped
+
+  def suspend!: () -> untyped
+
+  def reinstate!: () -> untyped
+
+  def pending_profile: () -> untyped
+
+  def gpo_verification_pending_profile: () -> (untyped | nil)
+
+  def fraud_review_pending?: () -> untyped
+
+  def fraud_rejection?: () -> untyped
+
+  def fraud_review_pending_profile: () -> (untyped | nil)
+
+  def fraud_rejection_profile: () -> (untyped | nil)
+
+  def in_person_pending_profile?: () -> untyped
+
+  def in_person_pending_profile: () -> (untyped | nil)
+
+  #
+  # Return the status of the current In Person Proofing Enrollment
+  # @return [String] enrollment status
+  def in_person_enrollment_status: () -> untyped
+
+  def ipp_enrollment_status_not_passed?: () -> untyped
+
+  def has_in_person_enrollment?: () -> untyped
+
+  # @return [Boolean] Whether the user has an establishing in person enrollment.
+  def has_establishing_in_person_enrollment?: () -> untyped
+
+  # Trust `pending_profile` rather than enrollment associations
+  def has_establishing_in_person_enrollment_safe?: () -> untyped
+
+  def personal_key_generated_at: () -> untyped
+
+  def default_phone_configuration: () -> untyped
+
+  #
+  # @param [String] issuer
+  # @return [Boolean] Whether the user should receive a survey for completing in-person proofing
+  def should_receive_in_person_completion_survey?: (untyped issuer) -> untyped
+
+  #
+  # Record that the in-person proofing survey was sent
+  # @param [String] issuer
+  def mark_in_person_completion_survey_sent: (untyped issuer) -> nil
+
+  def increment_second_factor_attempts_count!: () -> nil
+
+  MINIMUM_LIKELY_ENCRYPTED_DATA_LENGTH: 1000
+
+  def broken_personal_key?: () -> untyped
+
+  # To send emails asynchronously via ActiveJob.
+  def send_devise_notification: (untyped notification, *untyped args) -> untyped
+
+  #
+  # Decoration methods
+  #
+  def email_language_preference_description: () -> untyped
+
+  def visible_email_addresses: () -> untyped
+
+  def lockout_time_expiration: () -> untyped
+
+  def active_identity_for: (untyped service_provider) -> untyped
+
+  def active_or_pending_profile: () -> untyped
+
+  def identity_not_verified?: () -> untyped
+
+  def identity_verified?: () -> untyped
+
+  def identity_verified_with_facial_match?: () -> untyped
+
+  # This user's most recently activated profile that has also been deactivated
+  # due to a password reset, or nil if there is no such profile
+  def password_reset_profile: () -> untyped
+
+  def qrcode: (untyped otp_secret_key) -> untyped
+
+  def locked_out?: () -> untyped
+
+  def no_longer_locked_out?: () -> untyped
+
+  def recent_events: () -> untyped
+
+  def identity_events: () -> untyped
+
+  def recent_devices: () -> untyped
+
+  def has_devices?: () -> untyped
+
+  def authenticated_device?: (cookie_uuid: untyped) -> (false | untyped)
+
+  # Returns the number of times the user has signed in, corresponding to the `sign_in_before_2fa`
+  # event.
+  #
+  # A `since` time argument is required, to optimize performance based on database indices for
+  # querying a user's events.
+  #
+  # @param [ActiveSupport::TimeWithZone] since Time window to query user's events
+  def sign_in_count: (since: untyped) -> untyped
+
+  def second_last_signed_in_at: () -> untyped
+
+  def connected_apps: () -> untyped
+
+  def delete_account_bullet_key: () -> untyped
+
+  # To avoid these unnecessary DB calls, we've set case_insensitive_keys and
+  # strip_whitespace_keys to empty arrays in config/initializers/devise.rb.
+  # In addition, we've overridden the downcase_keys and strip_whitespace
+  # methods below to do nothing.
+  #
+  # Note that we already downcase and strip emails, and only when necessary
+  # (i.e. when the email attribute is being created or updated, and when a user
+  # is entering an email address in a form). This is the proper way to handle
+  # this formatting, as opposed to via a model callback that performs this
+  # action regardless of whether or not it is needed. Search the codebase for
+  # ".downcase.strip" for examples.
+  def downcase_keys: () -> nil
+
+  def strip_whitespace: () -> nil
+
+  # In order to pass in the SP request_id to the confirmation instructions
+  # email, we need to define `send_custom_confirmation_instructions` because
+  # Devise's `send_confirmation_instructions` does not include arguments.
+  # We also need to override the Devise method to do nothing because this method
+  # is called automatically when a user is created due to a Devise callback.
+  # If we didn't disable it, the user would receive two confirmation emails.
+  def send_confirmation_instructions: () -> nil
+
+  def analytics: () -> untyped
+
+  def send_email_to_all_addresses: (untyped user_mailer_template) -> untyped
+
+  def reload: (*untyped) ?{ (?) -> untyped } -> untyped
+
+  private
+
+  def lockout_period: () -> untyped
+
+  def lockout_period_expired?: () -> untyped
+end
