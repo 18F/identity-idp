@@ -207,7 +207,7 @@ module OidcAuthHelper
   def oidc_decoded_id_token
     @oidc_decoded_id_token ||= JWT.decode(
       oidc_decoded_token[:id_token],
-      AppArtifacts.store.oidc_primary_public_key,
+      Rails.application.config.oidc_public_key,
       true,
       algorithm: 'RS256',
     ).first.with_indifferent_access

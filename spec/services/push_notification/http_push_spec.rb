@@ -48,7 +48,7 @@ RSpec.describe PushNotification::HttpPush do
 
         jwt_payload, headers = JWT.decode(
           args[:jwt],
-          AppArtifacts.store.oidc_primary_public_key,
+          Rails.application.config.oidc_public_key,
           true,
           algorithm: 'RS256',
           kid: JWT::JWK.new(AppArtifacts.store.oidc_primary_private_key).kid,
@@ -82,7 +82,7 @@ RSpec.describe PushNotification::HttpPush do
         expect { deliver }.to have_enqueued_job(RiscDeliveryJob).with { |args|
           jwt_payload, _headers = JWT.decode(
             args[:jwt],
-            AppArtifacts.store.oidc_primary_public_key,
+            Rails.application.config.oidc_public_key,
             true,
             algorithm: 'RS256',
             kid: JWT::JWK.new(AppArtifacts.store.oidc_primary_private_key).kid,

@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 
 class OpenidConnectCertsPresenter
-  KEYS = [
-    AppArtifacts.store.oidc_primary_public_key,
-    AppArtifacts.store.oidc_secondary_public_key,
-  ].compact.map do |key|
+  KEYS = Rails.application.config.oidc_public_key_queue.map do |key|
     {
       alg: 'RS256',
       use: 'sig',

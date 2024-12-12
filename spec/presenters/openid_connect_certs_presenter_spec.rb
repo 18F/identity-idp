@@ -16,10 +16,10 @@ RSpec.describe OpenidConnectCertsPresenter do
         JWT::JWK.import(key).public_key
       end
 
-      primary_public_key = AppArtifacts.store.oidc_primary_public_key
+      primary_public_key = Rails.application.config.oidc_public_key
       expect(primary_key_from_response.to_pem).to eq(primary_public_key.to_pem)
 
-      secondary_public_key = AppArtifacts.store.oidc_secondary_public_key
+      secondary_public_key = Rails.application.config.oidc_public_key_queue.last
       expect(secondary_key_from_response.to_pem).to eq(secondary_public_key.to_pem)
     end
   end

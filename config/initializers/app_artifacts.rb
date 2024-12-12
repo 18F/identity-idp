@@ -44,3 +44,18 @@ secondary_valid =
     private_key: AppArtifacts.store.oidc_secondary_private_key,
   )
 raise 'OIDC Secondary Public/Private Keys are invalid' if !secondary_valid
+
+Rails.application.configure do
+  config.oidc_public_key = AppArtifacts.store.oidc_primary_public_key
+  config.oidc_private_key = AppArtifacts.store.oidc_primary_private_key
+
+  config.oidc_public_key_queue = [
+    AppArtifacts.store.oidc_primary_public_key,
+    AppArtifacts.store.oidc_secondary_public_key,
+  ].compact.freeze
+
+  config.oidc_private_key_queue = [
+    AppArtifacts.store.oidc_primary_private_key,
+    AppArtifacts.store.oidc_secondary_private_key,
+  ].compact.freeze
+end

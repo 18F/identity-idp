@@ -37,7 +37,7 @@ RSpec.describe IdTokenBuilder do
     let(:decoded_id_token) do
       JWT.decode(
         id_token,
-        AppArtifacts.store.oidc_primary_public_key,
+        Rails.application.config.oidc_public_key,
         true,
         algorithm: 'RS256',
       ).map(&:with_indifferent_access)
