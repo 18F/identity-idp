@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
+
 Dir.chdir(__dir__) { require 'bundler/setup' }
 
 require 'active_support'
@@ -8,29 +9,38 @@ require 'active_support/core_ext/object/blank'
 require 'active_support/time'
 require 'aws-sdk-cloudwatchlogs'
 require 'concurrent-ruby'
+require 'optparse'
 
 $LOAD_PATH.unshift(File.expand_path(File.join(__dir__, '../lib')))
 require 'reporting/cloudwatch_client'
 require 'reporting/cloudwatch_query_quoting'
 
-require 'event_summarizer/example_matcher'
+# Require all *_matcher.rb files in lib/event_summarizer
+Dir[File.expand_path(
+  File.join(__dir__, '../lib/event_summarizer', '**', '*_matcher.rb'),
+)].sort.each do |f|
+  require f
+end
 
 class SummarizeUserEvents
   attr_reader :uuid, :from_date, :to_date
-  
-  def initialize(argv:, stdin:, stdout:)
-    # argv[0] == uuid
-    # argv[1] == From date
-    # argv[2] == to date
 
-    @uuid = argv[0]
-    @from_date = argv[1].present? ? Time.strptime(argv[1], '%m/%d/%Y') : 1.week.ago
-    @to_date = argv[2].present? ? Time.strptime(argv[2], '%m/%d/%Y') : DateTime.now 
+  def initialize(user_uuid: nil, start_time: nil, end_time: nil, zone: 'UTC')
+    Time.zone = zone
+    @uuid = user_uuid
+    @from_date = parse_time(start_time) || 1.week.ago
+    @to_date = parse_time(end_time) || start_time.present? ? from_date + 1.week : Time.zone.now
+  end
+
+  def parse_time(time_str)
+    Time.zone.parse(time_str)
+  rescue StandardError
+    nil
   end
 
   def matchers
     @matchers ||= [
-      EventSummarizer::ExampleMatcher.new
+      EventSummarizer::ExampleMatcher.new,
     ]
   end
 
@@ -44,12 +54,12 @@ class SummarizeUserEvents
     end
 
     overall_results = []
-    
+
     matchers.each do |matcher|
       results_for_matcher = matcher.finish
       overall_results.append(*results_for_matcher)
     end
-    
+
     puts format_results(overall_results)
   end
 
@@ -62,7 +72,7 @@ class SummarizeUserEvents
         *r[:attributes]&.map do |attr|
           "* #{attr[:description]}"
         end,
-        ""
+        '',
       ]
     end.join("\n")
   end
@@ -89,24 +99,6 @@ class SummarizeUserEvents
     end
   end
 
-  def stdin_source(&block)
-    $stdin.each_line do |line|
-      next if line.blank?
-      event = JSON.parse(line)
-      block.call(event)
-    end
-  end
-
-  def cloudwatch_source(&block)
-    cloudwatch_client.fetch(
-      query: query,
-      from: from_date,
-      to: to_date,
-      &block
-    )    
-  end
-
-
   def cloudwatch_client
     @cloudwatch_client ||= Reporting::CloudwatchClient.new(
       num_threads: 5,
@@ -119,7 +111,7 @@ class SummarizeUserEvents
     if $stdin.tty?
       cloudwatch_source(&block)
     else
-      warn "Reading Cloudwatch events as newline-delimited JSON (ndjson) from stdin"
+      warn 'Reading Cloudwatch events as newline-delimited JSON (ndjson) from stdin'
       stdin_source(&block)
     end
   end
@@ -138,11 +130,59 @@ class SummarizeUserEvents
       from: from_date,
       to: to_date,
       &block
-    )    
-  end  
+    )
+  end
 end
 
+def main
+  options = {}
+  basename = File.basename($0)
+
+  # rubocop:disable Metrics/BlockLength, Metrics/LineLength
+  optparse = OptionParser.new do |opts|
+    opts.banner = <<-EOM
+
+    Summarize user events in a human-readable format
+
+    Cloudwatch logs can be read from stdin as newline-delimited JSON (ndjson),
+    or fetched directly via aws-vault.
+
+    usage: #{basename} [OPTIONS]
+
+    Examples:
+      #{basename} << events.ndjson
+      aws-vault exec prod-power -- #{basename} -u 1234-5678-90ab-cdef -s 2024-12-09T10:00:00 -e 2024-12-09T14:30:00 -z America/New_York
+
+    EOM
+
+    opts.on('-h', '--help', 'Display this message') do
+      warn opts
+      exit
+    end
+
+    opts.on('-u', '--user-uuid USER_UUID', 'UUID of the protagonist of the story') do |val|
+      options[:user_uuid] = val
+    end
+
+    opts.on('-s', '--start-time START_TIME', 'Time of the start of the query period (e.g. 2024-12-09T10:00:00Z), default: 1 week ago') do |val|
+      options[:start_time] = val
+    end
+
+    opts.on('-e', '--end_time END_TIME', 'Time of the end of the query period (e.g. 2024-12-09T14:30:00Z), default: 1 week from start') do |val|
+      options[:end_time] = val
+    end
+
+    opts.on('-z', '--timezone TIMEZONE', 'Timezone to use (e.g. America/New_York), default: UTC') do |val|
+      options[:zone] = val
+    end
+  end
+  # rubocop:enable Metrics/BlockLength, Metrics/LineLength
+
+  optparse.parse!
+
+  SummarizeUserEvents.new(**options).run
+end
 
 if $PROGRAM_NAME == __FILE__
-  SummarizeUserEvents.new(argv: ARGV, stdin: STDIN, stdout: STDOUT).run
+  main
 end
