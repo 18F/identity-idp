@@ -50,6 +50,11 @@ class SummarizeUserEvents
     find_cloudwatch_events do |event|
       Time.zone ||= zone
 
+      # Timestamps coming from cloudwatch are in UTC but don't include any zone
+      # information. Here we parse them as UTC.
+      if event['@timestamp'].is_a?(String)
+        event['@timestamp'] = Time.zone.parse("#{event['@timestamp']} UTC")
+      end
       event['@message'] = JSON.parse(event['@message']) if event['@message'].is_a?(String)
 
       matchers.each do |matcher|
