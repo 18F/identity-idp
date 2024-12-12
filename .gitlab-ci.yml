@@ -8,7 +8,7 @@ variables:
   FF_SCRIPT_SECTIONS: 'true'
   JUNIT_OUTPUT: 'true'
   ECR_REGISTRY: '${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
-  IDP_CI_SHA: 'sha256:2e3939008c71ab8acf9036686cbc433f5b5071c7d020359c12faf7990b6c2855'
+  IDP_CI_SHA: 'sha256:37766e5b4aaeaad72dc8d18aa73236558ae5abd478073f5005783c44d6d6e87e'
   PKI_IMAGE_TAG: 'main'
   DASHBOARD_IMAGE_TAG: 'main'
   APPLICATION_MANIFEST: dockerfiles/application.yaml
