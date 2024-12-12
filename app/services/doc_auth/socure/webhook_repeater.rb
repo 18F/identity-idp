@@ -4,11 +4,12 @@ module DocAuth
   module Socure
     class WebhookRepeater
 
-      attr_reader :body, :headers
+      attr_reader :body, :headers, :endpoints
 
-      def initialize(body:, headers:)
+      def initialize(body:, headers:, endpoints:)
         @body = body
         @headers = headers
+        @endpoints = endpoints
       end
 
       def broadcast
@@ -20,11 +21,14 @@ module DocAuth
       def repeat(endpoint)
         send_http_post_request(endpoint)
       rescue => exception
-        handle_connection_error(exception:, endpoint:)
-      end
-
-      def handle_connection_error(exception:, endpoint:)
-        NewRelic::Agent.notice_error(exception, custom_params: { endpoint: })
+        NewRelic::Agent.notice_error(
+          exception,
+          custom_params: {
+            event: 'Failed to repeat webhook',
+            endpoint:,
+            body:,
+          },
+        )
       end
 
       def send_http_post_request(endpoint)
@@ -55,10 +59,6 @@ module DocAuth
           conn.options.open_timeout = timeout
           conn.options.write_timeout = timeout
         end
-      end
-
-      def endpoints
-        @endpoints ||= IdentityConfig.store.socure_docv_webhook_repeat_endpoints
       end
 
       def url(endpoint)
