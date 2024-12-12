@@ -41,6 +41,7 @@ class SummarizeUserEvents
   def matchers
     @matchers ||= [
       EventSummarizer::ExampleMatcher.new,
+      EventSummarizer::AccountDeletionMatcher.new,
     ]
   end
 
