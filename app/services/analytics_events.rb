@@ -3722,7 +3722,7 @@ module AnalyticsEvents
   # @param [String] enrollment_id
   # @param [Float] minutes_since_established
   # @param [Float] minutes_since_last_status_check
-  # @parmm [Float] minutes_since_last_status_check_completed
+  # @param [Float] minutes_since_last_status_check_completed
   # @param [Float] minutes_since_last_status_update
   # @param [Float] minutes_to_completion
   # @param [String] issuer
@@ -6660,8 +6660,7 @@ module AnalyticsEvents
     score_threshold:,
     evaluated_as_valid:,
     form_class:,
-    exception_class:,
-    recaptcha_action:,
+    recaptcha_action:, exception_class: nil,
     phone_country_code: nil,
     **extra
   )
