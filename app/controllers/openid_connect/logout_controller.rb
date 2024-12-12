@@ -155,9 +155,9 @@ module OpenidConnect
     def track_integration_errors(result:, event:)
       if result.extra[:integration_errors].present?
         analytics.sp_integration_errors_present(
-          **result.
-            to_h[:integration_errors].
-            merge(event:),
+          **result
+            .to_h[:integration_errors]
+            .merge(event:),
         )
       end
     end
