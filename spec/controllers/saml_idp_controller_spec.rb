@@ -465,35 +465,35 @@ RSpec.describe SamlIdpController do
     it 'contains a signature method nodeset with SHA256 algorithm' do
       expect(xmldoc.signature_method_nodeset.length).to eq(1)
 
-      expect(xmldoc.signature_method_nodeset[0].attr('Algorithm')).
-        to eq('http://www.w3.org/2001/04/xmldsig-more#rsa-sha256')
+      expect(xmldoc.signature_method_nodeset[0].attr('Algorithm'))
+        .to eq('http://www.w3.org/2001/04/xmldsig-more#rsa-sha256')
     end
 
     it 'contains a digest method nodeset with SHA256 algorithm' do
       expect(xmldoc.digest_method_nodeset.length).to eq(1)
 
-      expect(xmldoc.digest_method_nodeset[0].attr('Algorithm')).
-        to eq('http://www.w3.org/2001/04/xmlenc#sha256')
+      expect(xmldoc.digest_method_nodeset[0].attr('Algorithm'))
+        .to eq('http://www.w3.org/2001/04/xmlenc#sha256')
     end
 
     it 'contains the organization name under AttributeAuthorityDescriptor' do
-      expect(xmldoc.attribute_authority_organization_name).
-        to eq org_name
+      expect(xmldoc.attribute_authority_organization_name)
+        .to eq org_name
     end
 
     it 'contains the org display name under AttributeAuthorityDescriptor' do
-      expect(xmldoc.attribute_authority_organization_display_name).
-        to eq org_name
+      expect(xmldoc.attribute_authority_organization_display_name)
+        .to eq org_name
     end
 
     it 'contains the organization name' do
-      expect(xmldoc.organization_name).
-        to eq org_name
+      expect(xmldoc.organization_name)
+        .to eq org_name
     end
 
     it 'contains the organization display name' do
-      expect(xmldoc.organization_display_name).
-        to eq org_name
+      expect(xmldoc.organization_display_name)
+        .to eq org_name
     end
 
     it 'disables caching' do
@@ -1065,8 +1065,8 @@ RSpec.describe SamlIdpController do
           authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
 
           expect(response.status).to eq(200)
-          expect(authn_context_class_ref).
-            to eq(Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF)
+          expect(authn_context_class_ref)
+            .to eq(Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF)
         end
       end
 
@@ -1079,8 +1079,8 @@ RSpec.describe SamlIdpController do
           authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
 
           expect(response.status).to eq(200)
-          expect(authn_context_class_ref).
-            to eq(Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF)
+          expect(authn_context_class_ref)
+            .to eq(Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF)
         end
 
         it 'returns default AAL authn_context when IAL1 is requested' do
@@ -1091,8 +1091,8 @@ RSpec.describe SamlIdpController do
           authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
 
           expect(response.status).to eq(200)
-          expect(authn_context_class_ref).
-            to eq(Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF)
+          expect(authn_context_class_ref)
+            .to eq(Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF)
         end
 
         it 'returns AAL2 authn_context when AAL2 is requested' do
@@ -1364,6 +1364,27 @@ RSpec.describe SamlIdpController do
             error_details: { service_provider: { no_cert_registered: true } },
           ),
         )
+      end
+
+      context 'when service provider has block_encryption set to none' do
+        before do
+          service_provider.update!(block_encryption: 'none')
+        end
+
+        it 'is succesful' do
+          user = create(:user, :fully_registered)
+          stub_analytics
+
+          generate_saml_response(user, settings)
+
+          expect(response.body).to_not include(t('errors.messages.no_cert_registered'))
+          expect(@analytics).to have_logged_event(
+            'SAML Auth',
+            hash_including(
+              success: true,
+            ),
+          )
+        end
       end
     end
 
@@ -1870,8 +1891,8 @@ RSpec.describe SamlIdpController do
           generate_saml_response(user, auth_settings)
 
           expect(response.status).to eq(200)
-          expect(name_id.attributes['Format'].value).
-            to eq(Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT)
+          expect(name_id.attributes['Format'].value)
+            .to eq(Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT)
           expect(name_id.children.first.to_s).to eq(user.last_identity.uuid)
           expect(@analytics).to have_logged_event(
             'SAML Auth',
@@ -1891,8 +1912,8 @@ RSpec.describe SamlIdpController do
           generate_saml_response(user, auth_settings)
 
           expect(response.status).to eq(200)
-          expect(name_id.attributes['Format'].value).
-            to eq(Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL)
+          expect(name_id.attributes['Format'].value)
+            .to eq(Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL)
           expect(name_id.children.first.to_s).to eq(user.email)
           expect(@analytics).to have_logged_event(
             'SAML Auth',
@@ -1940,8 +1961,8 @@ RSpec.describe SamlIdpController do
 
             expect(response.status).to eq(200)
 
-            expect(name_id.attributes['Format'].value).
-              to eq(Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT)
+            expect(name_id.attributes['Format'].value)
+              .to eq(Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT)
 
             expect(name_id.children.first.to_s).to eq(user.id.to_s)
           end
@@ -2017,8 +2038,8 @@ RSpec.describe SamlIdpController do
 
             expect(response.status).to eq(200)
 
-            expect(name_id.attributes['Format'].value).
-              to eq(Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT)
+            expect(name_id.attributes['Format'].value)
+              .to eq(Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT)
 
             expect(name_id.children.first.to_s).to eq(user.id.to_s)
           end
@@ -2315,8 +2336,8 @@ RSpec.describe SamlIdpController do
           end
 
           it 'has a format attribute specifying the email format' do
-            expect(name_id.attributes['Format'].value).
-              to eq('urn:oasis:names:tc:SAML:2.0:nameid-format:persistent')
+            expect(name_id.attributes['Format'].value)
+              .to eq('urn:oasis:names:tc:SAML:2.0:nameid-format:persistent')
           end
 
           it 'has the UUID of the user making the AuthN Request' do
@@ -2489,8 +2510,8 @@ RSpec.describe SamlIdpController do
         allow(controller).to receive(:remember_device_expired_for_sp?).and_return(false)
         allow(controller).to receive(:identity_needs_verification?).and_return(true)
         allow(controller).to receive(:saml_request).and_return(FakeSamlRequest.new)
-        allow(controller).to receive(:saml_request_id).
-          and_return(SecureRandom.uuid)
+        allow(controller).to receive(:saml_request_id)
+          .and_return(SecureRandom.uuid)
         stub_requested_attributes
 
         get :auth, params: { path_year: path_year }
@@ -2536,8 +2557,8 @@ RSpec.describe SamlIdpController do
       service_provider.ial = 2
       service_provider.save
       request_parser = instance_double(SamlRequestParser)
-      expect(SamlRequestParser).to receive(:new).
-        and_return(request_parser)
+      expect(SamlRequestParser).to receive(:new)
+        .and_return(request_parser)
       allow(request_parser).to receive(:requested_attributes).and_return([:email])
     end
 

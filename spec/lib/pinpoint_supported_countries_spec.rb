@@ -3,10 +3,10 @@ require 'pinpoint_supported_countries'
 
 RSpec.describe PinpointSupportedCountries do
   before do
-    stub_request(:get, PinpointSupportedCountries::PINPOINT_SMS_URL).
-      to_return(body: sms_table)
-    stub_request(:get, PinpointSupportedCountries::PINPOINT_VOICE_URL).
-      to_return(body: voice_table)
+    stub_request(:get, PinpointSupportedCountries::PINPOINT_SMS_URL)
+      .to_return(body: sms_table)
+    stub_request(:get, PinpointSupportedCountries::PINPOINT_VOICE_URL)
+      .to_return(body: voice_table)
 
     stub_const('STDERR', StringIO.new)
   end

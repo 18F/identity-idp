@@ -9,15 +9,15 @@ RSpec.describe BackupCodeGenerator do
     subject(:codes) { generator.delete_and_regenerate }
 
     it 'generates backup codes' do
-      expect { codes }.
-        to change { user.reload.backup_code_configurations.count }.
-        from(0).
-        to(BackupCodeGenerator::NUMBER_OF_CODES)
+      expect { codes }
+        .to change { user.reload.backup_code_configurations.count }
+        .from(0)
+        .to(BackupCodeGenerator::NUMBER_OF_CODES)
     end
 
     it 'returns valid 12-character codes via base32 crockford' do
-      expect(Base32::Crockford).to receive(:encode).
-        and_call_original.at_least(BackupCodeGenerator::NUMBER_OF_CODES).times
+      expect(Base32::Crockford).to receive(:encode)
+        .and_call_original.at_least(BackupCodeGenerator::NUMBER_OF_CODES).times
 
       expect(codes).to be_present
       codes.each do |code|
@@ -60,8 +60,8 @@ RSpec.describe BackupCodeGenerator do
       profane = Base32::Crockford.decode('FART')
       not_profane = Base32::Crockford.decode('ABCD')
 
-      expect(SecureRandom).to receive(:random_number).
-        and_return(profane, not_profane)
+      expect(SecureRandom).to receive(:random_number)
+        .and_return(profane, not_profane)
 
       code = generator.send(:backup_code)
 

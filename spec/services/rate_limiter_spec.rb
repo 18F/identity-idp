@@ -6,8 +6,8 @@ RSpec.describe RateLimiter do
   let(:attempt_window) { 10 }
   before(:each) do
     allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
-    allow(IdentityConfig.store).to receive(:doc_auth_attempt_window_in_minutes).
-      and_return(attempt_window)
+    allow(IdentityConfig.store).to receive(:doc_auth_attempt_window_in_minutes)
+      .and_return(attempt_window)
   end
 
   describe '.new' do
@@ -16,31 +16,31 @@ RSpec.describe RateLimiter do
 
       context 'target is not a string' do
         it 'raises an error' do
-          expect { RateLimiter.new(target: 3, rate_limit_type: rate_limit_type) }.
-            to raise_error(ArgumentError)
+          expect { RateLimiter.new(target: 3, rate_limit_type: rate_limit_type) }
+            .to raise_error(ArgumentError)
         end
       end
     end
 
     it 'throws an error when neither user nor target are provided' do
-      expect { RateLimiter.new(rate_limit_type: rate_limit_type) }.
-        to raise_error(
+      expect { RateLimiter.new(rate_limit_type: rate_limit_type) }
+        .to raise_error(
           ArgumentError,
           'RateLimiter must have a user or a target, but neither were provided',
         )
     end
 
     it 'throws an error when both user and target are provided' do
-      expect { RateLimiter.new(rate_limit_type: rate_limit_type) }.
-        to raise_error(
+      expect { RateLimiter.new(rate_limit_type: rate_limit_type) }
+        .to raise_error(
           ArgumentError,
           'RateLimiter must have a user or a target, but neither were provided',
         )
     end
 
     it 'throws an error for an invalid rate_limit_type' do
-      expect { RateLimiter.new(rate_limit_type: :abc_123, target: '1') }.
-        to raise_error(
+      expect { RateLimiter.new(rate_limit_type: :abc_123, target: '1') }
+        .to raise_error(
           ArgumentError,
           'rate_limit_type is not valid',
         )
@@ -141,8 +141,8 @@ RSpec.describe RateLimiter do
         rate_limiter.increment!
 
         travel_to(rate_limiter.attempted_at + 3.days) do
-          expect(rate_limiter.expires_at).to be_within(1.second).
-            of(rate_limiter.attempted_at + attempt_window.minutes)
+          expect(rate_limiter.expires_at).to be_within(1.second)
+            .of(rate_limiter.attempted_at + attempt_window.minutes)
         end
       end
 
@@ -166,8 +166,8 @@ RSpec.describe RateLimiter do
       it 'returns expiration time' do
         freeze_time do
           rate_limiter.increment!
-          expect(rate_limiter.expires_at).to be_within(1.second).
-            of(rate_limiter.attempted_at + attempt_window.minutes)
+          expect(rate_limiter.expires_at).to be_within(1.second)
+            .of(rate_limiter.attempted_at + attempt_window.minutes)
         end
       end
     end

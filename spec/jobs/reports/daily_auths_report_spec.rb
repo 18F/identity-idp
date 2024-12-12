@@ -12,12 +12,12 @@ RSpec.describe Reports::DailyAuthsReport do
     allow(Identity::Hostdata).to receive(:env).and_return('int')
     allow(Identity::Hostdata).to receive(:aws_account_id).and_return('1234')
     allow(Identity::Hostdata).to receive(:aws_region).and_return('us-west-1')
-    allow(IdentityConfig.store).to receive(:s3_public_reports_enabled).
-      and_return(s3_public_reports_enabled)
-    allow(IdentityConfig.store).to receive(:s3_report_bucket_prefix).
-      and_return(s3_report_bucket_prefix)
-    allow(IdentityConfig.store).to receive(:s3_report_public_bucket_prefix).
-      and_return(s3_report_public_bucket_prefix)
+    allow(IdentityConfig.store).to receive(:s3_public_reports_enabled)
+      .and_return(s3_public_reports_enabled)
+    allow(IdentityConfig.store).to receive(:s3_report_bucket_prefix)
+      .and_return(s3_report_bucket_prefix)
+    allow(IdentityConfig.store).to receive(:s3_report_public_bucket_prefix)
+      .and_return(s3_report_public_bucket_prefix)
 
     Aws.config[:s3] = {
       stub_responses: {
@@ -81,8 +81,8 @@ RSpec.describe Reports::DailyAuthsReport do
       end
 
       it 'aggregates by issuer' do
-        expect(report).to receive(:upload_file_to_s3_bucket).
-          exactly(2).times do |path:, body:, content_type:, bucket:|
+        expect(report).to receive(:upload_file_to_s3_bucket)
+          .exactly(2).times do |path:, body:, content_type:, bucket:|
             parsed = JSON.parse(body, symbolize_names: true)
 
             expect(parsed[:start]).to eq(report_date.beginning_of_day.as_json)

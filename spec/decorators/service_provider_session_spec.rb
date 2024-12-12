@@ -17,8 +17,8 @@ RSpec.describe ServiceProviderSession do
   let(:sp_create_link) { '/sign_up/enter_email' }
 
   before do
-    allow(view_context).to receive(:sign_up_email_path).
-      and_return('/sign_up/enter_email')
+    allow(view_context).to receive(:sign_up_email_path)
+      .and_return('/sign_up/enter_email')
   end
 
   it 'has the same public API as NullServiceProviderSession' do
@@ -38,8 +38,8 @@ RSpec.describe ServiceProviderSession do
   describe '#sp_alert' do
     context 'sp has custom alert' do
       it 'uses the custom template' do
-        expect(subject.sp_alert('sign_in')).
-          to eq "<strong>custom sign in help text for #{sp.friendly_name}</strong>"
+        expect(subject.sp_alert('sign_in'))
+          .to eq "<strong>custom sign in help text for #{sp.friendly_name}</strong>"
       end
     end
 
@@ -47,8 +47,8 @@ RSpec.describe ServiceProviderSession do
       let(:sp) { build_stubbed(:service_provider_without_help_text) }
 
       it 'returns nil' do
-        expect(subject.sp_alert('sign_in')).
-          to be_nil
+        expect(subject.sp_alert('sign_in'))
+          .to be_nil
       end
     end
 
@@ -56,8 +56,8 @@ RSpec.describe ServiceProviderSession do
       let(:sp) { build(:service_provider, help_text: nil) }
 
       it 'returns nil' do
-        expect(subject.sp_alert('sign_in')).
-          to be_nil
+        expect(subject.sp_alert('sign_in'))
+          .to be_nil
       end
     end
 
@@ -65,8 +65,8 @@ RSpec.describe ServiceProviderSession do
       let(:sp) { build_stubbed(:service_provider, :with_blank_help_text) }
 
       it 'returns nil' do
-        expect(subject.sp_alert('sign_in')).
-          to be_nil
+        expect(subject.sp_alert('sign_in'))
+          .to be_nil
       end
     end
   end
@@ -182,13 +182,13 @@ RSpec.describe ServiceProviderSession do
     end
 
     before do
-      allow(view_context).to receive(:new_user_session_url).
-        and_return('https://www.example.com/')
+      allow(view_context).to receive(:new_user_session_url)
+        .and_return('https://www.example.com/')
     end
 
     it 'returns view_context.new_user_session_url' do
-      expect(decorator.cancel_link_url).
-        to eq 'https://www.example.com/'
+      expect(decorator.cancel_link_url)
+        .to eq 'https://www.example.com/'
     end
   end
 
@@ -202,8 +202,8 @@ RSpec.describe ServiceProviderSession do
       allow(IdentityConfig.store).to receive(
         :allowed_verified_within_providers,
       ) { [client_id] }
-      allow(session_decorator).to receive(:authorize_form).
-        and_return(OpenidConnectAuthorizeForm.new(verified_within:, client_id:))
+      allow(session_decorator).to receive(:authorize_form)
+        .and_return(OpenidConnectAuthorizeForm.new(verified_within:, client_id:))
     end
 
     subject(:requested_more_recent_verification?) do

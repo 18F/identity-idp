@@ -11,12 +11,12 @@ RSpec.describe 'devise/passwords/new.html.erb' do
   before do
     @password_reset_email_form = PasswordResetEmailForm.new('')
     view_context = ActionController::Base.new.view_context
-    allow(view_context).to receive(:new_user_session_url).
-      and_return('https://www.example.com/')
-    allow(view_context).to receive(:sign_up_email_path).
-      and_return('/sign_up/enter_email')
-    allow_any_instance_of(ActionController::TestRequest).to receive(:path).
-      and_return('/users/password/new')
+    allow(view_context).to receive(:new_user_session_url)
+      .and_return('https://www.example.com/')
+    allow(view_context).to receive(:sign_up_email_path)
+      .and_return('/sign_up/enter_email')
+    allow_any_instance_of(ActionController::TestRequest).to receive(:path)
+      .and_return('/users/password/new')
 
     @decorated_sp_session = ServiceProviderSessionCreator.new(
       sp: sp,

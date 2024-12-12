@@ -19,13 +19,13 @@ RSpec.describe OtpCodeGenerator do
     end
 
     it 'generates crockford-32 encoded words' do
-      expect(generate_alphanumeric_digits).
-        to match(/\A[a-z0-9]{#{TwoFactorAuthenticatable::DIRECT_OTP_LENGTH}}\Z/io)
+      expect(generate_alphanumeric_digits)
+        .to match(/\A[a-z0-9]{#{TwoFactorAuthenticatable::DIRECT_OTP_LENGTH}}\Z/io)
     end
 
     it 'filters out profanity' do
-      expect(SecureRandom).to receive(:random_number).
-        and_return(
+      expect(SecureRandom).to receive(:random_number)
+        .and_return(
           Base32::Crockford.decode('FART1'),
           Base32::Crockford.decode('FART2'),
           Base32::Crockford.decode('ABCDE'),

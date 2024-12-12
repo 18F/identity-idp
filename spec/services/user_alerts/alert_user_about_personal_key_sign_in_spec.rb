@@ -17,10 +17,10 @@ RSpec.describe UserAlerts::AlertUserAboutPersonalKeySignIn do
 
       response = described_class.call(user, disavowal_token)
 
-      expect(Telephony).to have_received(:send_personal_key_sign_in_notice).
-        with(to: phone_configurations[0].phone, country_code: 'US')
-      expect(Telephony).to have_received(:send_personal_key_sign_in_notice).
-        with(to: phone_configurations[1].phone, country_code: 'US')
+      expect(Telephony).to have_received(:send_personal_key_sign_in_notice)
+        .with(to: phone_configurations[0].phone, country_code: 'US')
+      expect(Telephony).to have_received(:send_personal_key_sign_in_notice)
+        .with(to: phone_configurations[1].phone, country_code: 'US')
 
       expect(response.to_h[:emails]).to eq(2)
       expect(response.to_h[:sms_message_ids].size).to eq(2)

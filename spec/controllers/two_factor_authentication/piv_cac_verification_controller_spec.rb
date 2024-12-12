@@ -112,9 +112,9 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
         stub_analytics
         cfg = controller.current_user.piv_cac_configurations.first
 
-        expect(controller).to receive(:handle_valid_verification_for_authentication_context).
-          with(auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC).
-          and_call_original
+        expect(controller).to receive(:handle_valid_verification_for_authentication_context)
+          .with(auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC)
+          .and_call_original
 
         get :show, params: { token: 'good-token' }
 
@@ -260,8 +260,8 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
 
         stub_analytics
 
-        expect(PushNotification::HttpPush).to receive(:deliver).
-          with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
+        expect(PushNotification::HttpPush).to receive(:deliver)
+          .with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
 
         get :show, params: { token: 'bad-token' }
 

@@ -25,8 +25,8 @@ RSpec.describe EditPhoneForm do
         result = subject.submit(params)
 
         expect(result.success?).to eq(false)
-        expect(result.errors[:delivery_preference].first).
-          to eq 'is not included in the list'
+        expect(result.errors[:delivery_preference].first)
+          .to eq 'is not included in the list'
       end
     end
 
@@ -62,8 +62,8 @@ RSpec.describe EditPhoneForm do
         result = subject.submit(params)
 
         expect(result.success?).to eq(false)
-        expect(result.errors[:delivery_preference].first).
-          to eq 'is not included in the list'
+        expect(result.errors[:delivery_preference].first)
+          .to eq 'is not included in the list'
       end
     end
 

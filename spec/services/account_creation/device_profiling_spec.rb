@@ -31,10 +31,10 @@ RSpec.describe AccountCreation::DeviceProfiling do
 
     context 'ThreatMetrix is enabled' do
       before do
-        allow(IdentityConfig.store).to receive(:account_creation_device_profiling).
-          and_return(:collect_only)
-        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled).
-          and_return(false)
+        allow(IdentityConfig.store).to receive(:account_creation_device_profiling)
+          .and_return(:collect_only)
+        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled)
+          .and_return(false)
       end
 
       context 'session id is missing' do

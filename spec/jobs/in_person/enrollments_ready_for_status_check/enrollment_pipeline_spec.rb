@@ -8,8 +8,8 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
   let(:pipeline_analytics) { FakeAnalytics.new }
 
   before(:each) do
-    allow(IdentityConfig.store).to receive(:in_person_enrollments_ready_job_email_body_pattern).
-      and_return('\A\s*(?<enrollment_code>\d{16})\s*\Z')
+    allow(IdentityConfig.store).to receive(:in_person_enrollments_ready_job_email_body_pattern)
+      .and_return('\A\s*(?<enrollment_code>\d{16})\s*\Z')
 
     allow(error_reporter).to receive(:report_error)
   end
@@ -123,8 +123,8 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
     let(:expected_error_extra) { nil }
 
     before(:each) do
-      allow(sqs_message).to receive(:message_id).
-        and_return(sqs_message_id)
+      allow(sqs_message).to receive(:message_id)
+        .and_return(sqs_message_id)
     end
 
     def expect_error(error, **extra)
@@ -330,8 +330,8 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
           :pick,
         ).and_raise(error)
 
-        expect(error_reporter).to receive(:report_error).
-          with(
+        expect(error_reporter).to receive(:report_error)
+          .with(
             error,
             sqs_message_id:,
             sns_message_id:,
@@ -350,12 +350,12 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
         enrollment = create(:in_person_enrollment, enrollment_code:, status: :pending, user:)
 
         error = ActiveRecord::ConnectionNotEstablished.new
-        expect(InPersonEnrollment).to receive(:update).
-          with(enrollment.id, ready_for_status_check: true).
-          and_raise(error)
+        expect(InPersonEnrollment).to receive(:update)
+          .with(enrollment.id, ready_for_status_check: true)
+          .and_raise(error)
 
-        expect(error_reporter).to receive(:report_error).
-          with(
+        expect(error_reporter).to receive(:report_error)
+          .with(
             error,
             sqs_message_id:,
             sns_message_id:,
@@ -380,8 +380,8 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
         allow(sqs_message).to receive(:body).and_return(sns_text_payload.to_json)
         enrollment = create(:in_person_enrollment, enrollment_code:, status: :pending, user:)
 
-        expect(InPersonEnrollment).to receive(:update).
-          with(enrollment.id, ready_for_status_check: true).once
+        expect(InPersonEnrollment).to receive(:update)
+          .with(enrollment.id, ready_for_status_check: true).once
 
         expect(error_reporter).not_to receive(:report_error)
 
@@ -398,8 +398,8 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
         allow(sqs_message).to receive(:body).and_return(sns_html_payload.to_json)
         enrollment = create(:in_person_enrollment, enrollment_code:, status: :pending, user:)
 
-        expect(InPersonEnrollment).to receive(:update).
-          with(enrollment.id, ready_for_status_check: true).once
+        expect(InPersonEnrollment).to receive(:update)
+          .with(enrollment.id, ready_for_status_check: true).once
 
         expect(error_reporter).not_to receive(:report_error)
 
@@ -417,8 +417,8 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
 
         enrollment = create(:in_person_enrollment, enrollment_code:, status: :pending, user:)
 
-        expect(InPersonEnrollment).to receive(:update).
-          with(enrollment.id, ready_for_status_check: true).once
+        expect(InPersonEnrollment).to receive(:update)
+          .with(enrollment.id, ready_for_status_check: true).once
 
         expect(error_reporter).not_to receive(:report_error)
 
@@ -435,8 +435,8 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
 
         enrollment = create(:in_person_enrollment, enrollment_code:, status: :pending, user:)
 
-        expect(InPersonEnrollment).to receive(:update).
-          with(enrollment.id, ready_for_status_check: true).once
+        expect(InPersonEnrollment).to receive(:update)
+          .with(enrollment.id, ready_for_status_check: true).once
 
         expect(error_reporter).not_to receive(:report_error)
 

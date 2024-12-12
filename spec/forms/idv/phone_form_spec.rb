@@ -247,8 +247,8 @@ RSpec.describe Idv::PhoneForm do
       let(:result) { subject.submit(params) }
 
       before do
-        allow(subject).to receive(:unsupported_delivery_methods).
-          and_return(unsupported_delivery_methods)
+        allow(subject).to receive(:unsupported_delivery_methods)
+          .and_return(unsupported_delivery_methods)
       end
 
       context 'with one unsupported delivery method' do

@@ -42,8 +42,8 @@ RSpec.describe Users::VerifyPasswordController do
 
     context 'with personal key flag set' do
       before do
-        allow(subject.reactivate_account_session).to receive(:validated_personal_key?).
-          and_return(key)
+        allow(subject.reactivate_account_session).to receive(:validated_personal_key?)
+          .and_return(key)
       end
 
       describe '#new' do

@@ -46,8 +46,6 @@ RSpec.describe Idv::PersonalKeyController do
 
   let(:address_verification_mechanism) { 'phone' }
 
-  let(:in_person_enrollment) { nil }
-
   let(:idv_session) { subject.idv_session }
 
   let(:threatmetrix_review_status) { nil }
@@ -524,13 +522,10 @@ RSpec.describe Idv::PersonalKeyController do
     end
 
     context 'with in person profile' do
-      let!(:in_person_enrollment) do
-        create(:in_person_enrollment, :pending, user: user).tap do
-          user.reload_pending_in_person_enrollment
-        end
-      end
+      let!(:profile) { create(:profile, :in_person_verification_pending, user: user) }
 
       before do
+        user.reload_pending_in_person_enrollment
         allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
       end
 

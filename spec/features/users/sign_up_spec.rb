@@ -252,8 +252,8 @@ RSpec.feature 'Sign Up' do
       expect(page).to have_current_path(root_path)
 
       action = t('devise.confirmations.sign_in')
-      expect(page).
-        to have_content t('devise.confirmations.already_confirmed', action: action)
+      expect(page)
+        .to have_content t('devise.confirmations.already_confirmed', action: action)
     end
   end
 
@@ -263,8 +263,8 @@ RSpec.feature 'Sign Up' do
 
       expect(page).to have_current_path(sign_up_register_path)
 
-      expect(page).
-        to have_content t('errors.messages.confirmation_invalid_token')
+      expect(page)
+        .to have_content t('errors.messages.confirmation_invalid_token')
     end
   end
 
@@ -322,8 +322,8 @@ RSpec.feature 'Sign Up' do
     sign_in_user(user)
     visit authenticator_setup_path
 
-    expect(page).
-      to have_current_path login_two_factor_path(otp_delivery_preference: 'sms')
+    expect(page)
+      .to have_current_path login_two_factor_path(otp_delivery_preference: 'sms')
   end
 
   it 'prompts to sign in when accessing authenticator_setup_path before signing in' do

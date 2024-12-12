@@ -104,8 +104,8 @@ module Idv
           flow_path: idv_session.flow_path,
           step: 'state_id',
           analytics_id: 'In Person Proofing',
-        }.merge(ab_test_analytics_buckets).
-          merge(extra_analytics_properties)
+        }.merge(ab_test_analytics_buckets)
+          .merge(extra_analytics_properties)
       end
 
       def clear_residential_address(pii_from_user)

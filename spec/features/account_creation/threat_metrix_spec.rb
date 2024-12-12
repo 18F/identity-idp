@@ -16,8 +16,8 @@ RSpec.feature 'ThreatMetrix in account creation', :js do
     user = confirm_last_user
     set_password(user)
     fake_analytics = FakeAnalytics.new
-    expect_any_instance_of(AccountCreationThreatMetrixJob).to receive(:analytics).with(user).
-      and_return(fake_analytics)
+    expect_any_instance_of(AccountCreationThreatMetrixJob).to receive(:analytics).with(user)
+      .and_return(fake_analytics)
     select_2fa_option('backup_code')
     click_continue
 

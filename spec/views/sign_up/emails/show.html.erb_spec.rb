@@ -24,8 +24,8 @@ RSpec.describe 'sign_up/emails/show.html.erb' do
 
     expect(rendered).to have_selector('lg-form-link')
     expect(rendered).to have_link(href: '#', class: ['usa-link', 'block-link'])
-    expect(rendered).
-      to have_button(t('notices.signed_up_but_unconfirmed.resend_confirmation_email'))
+    expect(rendered)
+      .to have_button(t('notices.signed_up_but_unconfirmed.resend_confirmation_email'))
     expect(rendered).to have_css("form[action='#{sign_up_register_path}']")
   end
 

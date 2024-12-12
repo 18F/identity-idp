@@ -77,20 +77,20 @@ class FakeAnalytics < Analytics
     mattr_accessor :docstrings
 
     def track_event(event, original_attributes = {})
-      method_name = caller.
-        grep(/analytics_events\.rb/)&.
-        first&.
-        match(/:in `(?<method_name>[^']+)'/)&.
-        [](:method_name)&.
-        to_sym
+      method_name = caller
+        .grep(/analytics_events\.rb/)
+        &.first
+        &.match(/:in `(?<method_name>[^']+)'/)
+        &.[](:method_name)
+        &.to_sym
 
       if method_name
         analytics_method = AnalyticsEvents.instance_method(method_name)
 
-        param_names = analytics_method.
-          parameters.
-          select { |type, _name| [:keyreq, :key].include?(type) }.
-          map(&:last)
+        param_names = analytics_method
+          .parameters
+          .select { |type, _name| [:keyreq, :key].include?(type) }
+          .map(&:last)
 
         extra_keywords = original_attributes.keys \
           - [:pii_like_keypaths, :user_id] \
@@ -127,9 +127,9 @@ class FakeAnalytics < Analytics
       file = instance_method.source_location.first
 
       ast = self.asts[file] ||= begin
-        YARD::Parser::Ruby::RubyParser.new(File.read(file), file).
-          parse.
-          ast
+        YARD::Parser::Ruby::RubyParser.new(File.read(file), file)
+          .parse
+          .ast
       end
 
       docstring = self.docstrings[instance_method.name] ||= begin
@@ -140,8 +140,8 @@ class FakeAnalytics < Analytics
         YARD::DocstringParser.new.parse(node.docstring).to_docstring
       end
 
-      docstring.tags.select { |tag| tag.tag_name == 'option' }.
-        map { |tag| tag.pair.name.tr(%('"), '') }
+      docstring.tags.select { |tag| tag.tag_name == 'option' }
+        .map { |tag| tag.pair.name.tr(%('"), '') }
     end
   end
 

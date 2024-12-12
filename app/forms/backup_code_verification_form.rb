@@ -53,8 +53,8 @@ class BackupCodeVerificationForm
 
   def valid_backup_code_config_created_at
     return @valid_backup_code_config_created_at if defined?(@valid_backup_code_config_created_at)
-    @valid_backup_code_config_created_at = BackupCodeGenerator.new(user).
-      if_valid_consume_code_return_config_created_at(backup_code)
+    @valid_backup_code_config_created_at = BackupCodeGenerator.new(user)
+      .if_valid_consume_code_return_config_created_at(backup_code)
   end
 
   def rate_limiter

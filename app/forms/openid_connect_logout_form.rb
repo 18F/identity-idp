@@ -79,9 +79,9 @@ class OpenidConnectLogoutForm
   end
 
   def load_identity
-    identity_from_client_id = current_user&.
-      identities&.
-      find_by(service_provider: client_id)
+    identity_from_client_id = current_user
+      &.identities
+      &.find_by(service_provider: client_id)
 
     if reject_id_token_hint?
       identity_from_client_id

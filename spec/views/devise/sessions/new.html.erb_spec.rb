@@ -10,8 +10,8 @@ RSpec.describe 'devise/sessions/new.html.erb' do
     allow(view).to receive(:devise_mapping).and_return(Devise.mappings[:user])
     allow(view).to receive(:controller_name).and_return('sessions')
     allow(view).to receive(:decorated_sp_session).and_return(NullServiceProviderSession.new)
-    allow_any_instance_of(ActionController::TestRequest).to receive(:path).
-      and_return('/')
+    allow_any_instance_of(ActionController::TestRequest).to receive(:path)
+      .and_return('/')
   end
 
   it 'sets autocomplete attribute off' do
@@ -89,8 +89,8 @@ RSpec.describe 'devise/sessions/new.html.erb' do
         service_provider_request: ServiceProviderRequest.new,
       ).create_session
       allow(view).to receive(:decorated_sp_session).and_return(@decorated_sp_session)
-      allow(view_context).to receive(:sign_up_email_path).
-        and_return('/sign_up/enter_email')
+      allow(view_context).to receive(:sign_up_email_path)
+        .and_return('/sign_up/enter_email')
     end
 
     it 'displays a custom header' do
@@ -182,8 +182,8 @@ RSpec.describe 'devise/sessions/new.html.erb' do
 
       it 'does not render DAP analytics' do
         allow(view).to receive(:javascript_packs_tag_once)
-        expect(view).not_to receive(:javascript_packs_tag_once).
-          with(a_string_matching('https://dap.digitalgov.gov/'), defer: true, id: '_fed_an_ua_tag')
+        expect(view).not_to receive(:javascript_packs_tag_once)
+          .with(a_string_matching('https://dap.digitalgov.gov/'), defer: true, id: '_fed_an_ua_tag')
 
         render
       end
@@ -214,10 +214,10 @@ RSpec.describe 'devise/sessions/new.html.erb' do
     subject(:rendered) { render }
 
     before do
-      allow(FeatureManagement).to receive(:sign_in_recaptcha_enabled?).
-        and_return(sign_in_recaptcha_enabled)
-      allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).
-        and_return(recaptcha_mock_validator)
+      allow(FeatureManagement).to receive(:sign_in_recaptcha_enabled?)
+        .and_return(sign_in_recaptcha_enabled)
+      allow(IdentityConfig.store).to receive(:recaptcha_mock_validator)
+        .and_return(recaptcha_mock_validator)
     end
 
     context 'recaptcha at sign in is disabled' do

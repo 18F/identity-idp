@@ -324,8 +324,8 @@ RSpec.feature 'document capture step', :js do
       context 'on mobile platform', allow_browser_log: true do
         before do
           # mock mobile device as cameraCapable, this allows us to process
-          allow_any_instance_of(ActionController::Parameters).
-            to receive(:[]).and_wrap_original do |impl, param_name|
+          allow_any_instance_of(ActionController::Parameters)
+            .to receive(:[]).and_wrap_original do |impl, param_name|
             param_name.to_sym == :skip_hybrid_handoff ? '' : impl.call(param_name)
           end
         end
@@ -338,10 +338,10 @@ RSpec.feature 'document capture step', :js do
               complete_doc_auth_steps_before_document_capture_step
 
               expect(page).to have_current_path(idv_document_capture_url)
-              expect(max_capture_attempts_before_native_camera.to_i).
-                to eq(ActiveSupport::Duration::SECONDS_PER_HOUR)
-              expect(max_submission_attempts_before_native_camera.to_i).
-                to eq(ActiveSupport::Duration::SECONDS_PER_HOUR)
+              expect(max_capture_attempts_before_native_camera.to_i)
+                .to eq(ActiveSupport::Duration::SECONDS_PER_HOUR)
+              expect(max_submission_attempts_before_native_camera.to_i)
+                .to eq(ActiveSupport::Duration::SECONDS_PER_HOUR)
               expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
               expect(page).to have_text(t('doc_auth.headings.document_capture'))
               attach_images
@@ -567,8 +567,8 @@ RSpec.feature 'document capture step', :js do
         let(:desktop_selfie_mode) { false }
 
         before do
-          allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).
-            and_return(desktop_selfie_mode)
+          allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
+            .and_return(desktop_selfie_mode)
         end
 
         describe 'when desktop selfie not allowed' do
@@ -629,10 +629,10 @@ RSpec.feature 'document capture step', :js do
             let(:sp_ipp_enabled) { true }
 
             before do
-              allow(IdentityConfig.store).to receive(:in_person_doc_auth_button_enabled).
-                and_return(in_person_doc_auth_button_enabled)
-              allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).with(anything).
-                and_return(sp_ipp_enabled)
+              allow(IdentityConfig.store).to receive(:in_person_doc_auth_button_enabled)
+                .and_return(in_person_doc_auth_button_enabled)
+              allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).with(anything)
+                .and_return(sp_ipp_enabled)
             end
 
             describe 'when ipp is selected' do
@@ -766,8 +766,8 @@ RSpec.feature 'direct access to IPP on desktop', :js do
       allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(
         in_person_proofing_opt_in_enabled,
       )
-      allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
-        and_return(false)
+      allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled)
+        .and_return(false)
       visit_idp_from_sp_with_ial2(
         :oidc,
         **{ client_id: service_provider.issuer,

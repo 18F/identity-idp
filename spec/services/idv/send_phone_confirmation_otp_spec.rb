@@ -30,10 +30,10 @@ RSpec.describe Idv::SendPhoneConfirmationOtp do
     allow(Idv::PhoneConfirmationSession).to receive(:generate_code).and_return(otp_code)
 
     # Mock OtpRateLimiter
-    allow(OtpRateLimiter).to receive(:new).with(user: user, phone: phone, phone_confirmed: true).
-      and_return(otp_rate_limiter)
-    allow(otp_rate_limiter).to receive(:exceeded_otp_send_limit?).
-      and_return(exceeded_otp_send_limit)
+    allow(OtpRateLimiter).to receive(:new).with(user: user, phone: phone, phone_confirmed: true)
+      .and_return(otp_rate_limiter)
+    allow(otp_rate_limiter).to receive(:exceeded_otp_send_limit?)
+      .and_return(exceeded_otp_send_limit)
   end
 
   subject { described_class.new(user: user, idv_session: idv_session) }
@@ -123,8 +123,8 @@ RSpec.describe Idv::SendPhoneConfirmationOtp do
 
   describe '#user_locked_out?' do
     before do
-      allow(otp_rate_limiter).to receive(:exceeded_otp_send_limit?).
-        and_return(exceeded_otp_send_limit)
+      allow(otp_rate_limiter).to receive(:exceeded_otp_send_limit?)
+        .and_return(exceeded_otp_send_limit)
     end
 
     context 'the user is locked out' do

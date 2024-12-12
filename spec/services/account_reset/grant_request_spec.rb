@@ -35,8 +35,8 @@ RSpec.describe AccountReset::GrantRequest do
       let(:user2) { create(:user, :fraud_rejection) }
       context 'with nil being set for fraud time' do
         before do
-          allow(IdentityConfig.store).to receive(:account_reset_fraud_user_wait_period_days).
-            and_return(nil)
+          allow(IdentityConfig.store).to receive(:account_reset_fraud_user_wait_period_days)
+            .and_return(nil)
         end
 
         it 'grants request for all users' do

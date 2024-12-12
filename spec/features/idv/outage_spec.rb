@@ -52,13 +52,13 @@ RSpec.feature 'IdV Outage Spec' do
     # Wire up various let()s to configuration keys
     vendors.each do |service|
       vendor_status_key = :"vendor_status_#{service}"
-      allow(IdentityConfig.store).to receive(vendor_status_key).
-        and_return(send(vendor_status_key))
+      allow(IdentityConfig.store).to receive(vendor_status_key)
+        .and_return(send(vendor_status_key))
     end
 
     config_flags.each do |key|
-      allow(IdentityConfig.store).to receive(key).
-        and_return(send(key))
+      allow(IdentityConfig.store).to receive(key)
+        .and_return(send(key))
     end
   end
 
@@ -263,10 +263,10 @@ RSpec.feature 'IdV Outage Spec' do
 
   context 'during an IDV maintenance window', js: true do
     before do
-      allow(IdentityConfig.store).to receive(:vendor_status_idv_scheduled_maintenance_start).
-        and_return('2023-01-01T00:00:00Z')
-      allow(IdentityConfig.store).to receive(:vendor_status_idv_scheduled_maintenance_finish).
-        and_return('2023-01-01T23:59:59Z')
+      allow(IdentityConfig.store).to receive(:vendor_status_idv_scheduled_maintenance_start)
+        .and_return('2023-01-01T00:00:00Z')
+      allow(IdentityConfig.store).to receive(:vendor_status_idv_scheduled_maintenance_finish)
+        .and_return('2023-01-01T23:59:59Z')
 
       travel_to(Time.zone.parse('2023-01-01T12:00:00Z'))
     end

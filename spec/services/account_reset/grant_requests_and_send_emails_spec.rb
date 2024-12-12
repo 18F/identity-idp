@@ -57,8 +57,8 @@ RSpec.describe AccountReset::GrantRequestsAndSendEmails do
         let(:user) { create(:user, :fraud_review_pending) }
         let(:user2) { create(:user, :fraud_rejection) }
         before do
-          allow(IdentityConfig.store).to receive(:account_reset_fraud_user_wait_period_days).
-            and_return(10)
+          allow(IdentityConfig.store).to receive(:account_reset_fraud_user_wait_period_days)
+            .and_return(10)
         end
         it 'does not send notifications when the notifications were already sent' do
           before_waiting_the_full_fraud_wait_period(now) do
@@ -154,8 +154,8 @@ RSpec.describe AccountReset::GrantRequestsAndSendEmails do
 
         context 'with fraud wait period not set' do
           before do
-            allow(IdentityConfig.store).to receive(:account_reset_fraud_user_wait_period_days).
-              and_return(nil)
+            allow(IdentityConfig.store).to receive(:account_reset_fraud_user_wait_period_days)
+              .and_return(nil)
           end
           it 'does not send notifications before a request wait period is done' do
             create_account_reset_request_for(user)

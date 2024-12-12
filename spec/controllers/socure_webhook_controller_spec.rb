@@ -32,12 +32,12 @@ RSpec.describe SocureWebhookController do
     end
 
     before do
-      allow(IdentityConfig.store).to receive(:socure_docv_webhook_secret_key).
-        and_return(socure_secret_key)
-      allow(IdentityConfig.store).to receive(:socure_docv_webhook_secret_key_queue).
-        and_return(socure_secret_key_queue)
-      allow(IdentityConfig.store).to receive(:socure_docv_enabled).
-        and_return(socure_docv_enabled)
+      allow(IdentityConfig.store).to receive(:socure_docv_webhook_secret_key)
+        .and_return(socure_secret_key)
+      allow(IdentityConfig.store).to receive(:socure_docv_webhook_secret_key_queue)
+        .and_return(socure_secret_key_queue)
+      allow(IdentityConfig.store).to receive(:socure_docv_enabled)
+        .and_return(socure_docv_enabled)
       allow(SocureDocvResultsJob).to receive(:perform_later)
 
       stub_analytics
@@ -152,8 +152,8 @@ RSpec.describe SocureWebhookController do
 
               post :create, params: webhook_body
 
-              expect(SocureDocvResultsJob).to have_received(:perform_later).
-                with(document_capture_session_uuid: dcs.uuid)
+              expect(SocureDocvResultsJob).to have_received(:perform_later)
+                .with(document_capture_session_uuid: dcs.uuid)
             end
 
             it 'does not reset socure_docv_capture_app_url value' do
@@ -209,8 +209,8 @@ RSpec.describe SocureWebhookController do
             it 'resets socure_docv_capture_app_url to nil' do
               dcs = create(:document_capture_session, :socure)
               webhook_body[:event][:docvTransactionToken] = dcs.socure_docv_transaction_token
-              expect(dcs.socure_docv_capture_app_url).
-                not_to be_nil
+              expect(dcs.socure_docv_capture_app_url)
+                .not_to be_nil
               post :create, params: webhook_body
               dcs.reload
               expect(dcs.socure_docv_capture_app_url).to be_nil
@@ -249,8 +249,8 @@ RSpec.describe SocureWebhookController do
             it 'resets socure_docv_capture_app_url to nil' do
               dcs = create(:document_capture_session, :socure)
               webhook_body[:event][:docvTransactionToken] = dcs.socure_docv_transaction_token
-              expect(dcs.socure_docv_capture_app_url).
-                not_to be_nil
+              expect(dcs.socure_docv_capture_app_url)
+                .not_to be_nil
               post :create, params: webhook_body
               dcs.reload
               expect(dcs.socure_docv_capture_app_url).to be_nil

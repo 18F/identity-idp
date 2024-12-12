@@ -29,14 +29,14 @@ class ResetUserPassword
   end
 
   def log_event
-    UserEventCreator.new(current_user: user).
-      create_out_of_band_user_event(:password_invalidated)
+    UserEventCreator.new(current_user: user)
+      .create_out_of_band_user_event(:password_invalidated)
   end
 
   def notify_user
     user.confirmed_email_addresses.each do |email_address|
-      UserMailer.with(user: user, email_address: email_address).please_reset_password.
-        deliver_now_or_later
+      UserMailer.with(user: user, email_address: email_address).please_reset_password
+        .deliver_now_or_later
     end
   end
 end

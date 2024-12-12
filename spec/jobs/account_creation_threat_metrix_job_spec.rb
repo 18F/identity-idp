@@ -12,12 +12,12 @@ RSpec.describe AccountCreationThreatMetrixJob, type: :job do
   let(:job_analytics) { FakeAnalytics.new }
 
   before do
-    allow(IdentityConfig.store).to receive(:account_creation_device_profiling).
-      and_return(authentication_device_profiling)
-    allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled).
-      and_return(lexisnexis_threatmetrix_mock_enabled)
-    allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_base_url).
-      and_return('https://www.example.com')
+    allow(IdentityConfig.store).to receive(:account_creation_device_profiling)
+      .and_return(authentication_device_profiling)
+    allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled)
+      .and_return(lexisnexis_threatmetrix_mock_enabled)
+    allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_base_url)
+      .and_return('https://www.example.com')
     allow(instance).to receive(:analytics).and_return(job_analytics)
   end
 

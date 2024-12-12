@@ -68,8 +68,8 @@ module DocAuth
 
         def docv_transaction_token
           if IdentityConfig.store.socure_docv_verification_data_test_mode &&
-             IdentityConfig.store.socure_docv_verification_data_test_mode_tokens.
-                 include?(@docv_transaction_token_override)
+             IdentityConfig.store.socure_docv_verification_data_test_mode_tokens
+                 .include?(@docv_transaction_token_override)
             return @docv_transaction_token_override
           end
 

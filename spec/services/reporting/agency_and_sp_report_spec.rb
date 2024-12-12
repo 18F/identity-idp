@@ -164,8 +164,8 @@ RSpec.describe Reporting::AgencyAndSpReport do
       end
 
       before do
-        allow_any_instance_of(Reporting::AgencyAndSpReport).to receive(:facial_match_issuers).
-          and_return([idv_facial_match_sp.issuer])
+        allow_any_instance_of(Reporting::AgencyAndSpReport).to receive(:facial_match_issuers)
+          .and_return([idv_facial_match_sp.issuer])
       end
 
       it 'counts the SP and its Agency as IDV' do
@@ -175,8 +175,8 @@ RSpec.describe Reporting::AgencyAndSpReport do
 
     context 'when a query times out' do
       before do
-        expect(ServiceProvider).to receive(:where).
-          and_raise(ActiveRecord::QueryCanceled, 'query took too long')
+        expect(ServiceProvider).to receive(:where)
+          .and_raise(ActiveRecord::QueryCanceled, 'query took too long')
       end
 
       it 'rescues the error and shows a warning' do

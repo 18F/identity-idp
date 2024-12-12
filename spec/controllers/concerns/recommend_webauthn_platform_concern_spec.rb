@@ -92,9 +92,9 @@ RSpec.describe RecommendWebauthnPlatformConcern do
 
                 context 'user not included in ab test' do
                   before do
-                    expect(controller).to receive(:ab_test_bucket).
-                      with(:RECOMMEND_WEBAUTHN_PLATFORM_FOR_SMS_USER).
-                      and_return(nil)
+                    expect(controller).to receive(:ab_test_bucket)
+                      .with(:RECOMMEND_WEBAUTHN_PLATFORM_FOR_SMS_USER)
+                      .and_return(nil)
                   end
 
                   it { is_expected.to eq(false) }
@@ -102,9 +102,9 @@ RSpec.describe RecommendWebauthnPlatformConcern do
 
                 context 'user included in ab test' do
                   before do
-                    expect(controller).to receive(:ab_test_bucket).
-                      with(:RECOMMEND_WEBAUTHN_PLATFORM_FOR_SMS_USER).
-                      and_return(bucket)
+                    expect(controller).to receive(:ab_test_bucket)
+                      .with(:RECOMMEND_WEBAUTHN_PLATFORM_FOR_SMS_USER)
+                      .and_return(bucket)
                   end
 
                   it { is_expected.to eq(true) }
@@ -153,9 +153,9 @@ RSpec.describe RecommendWebauthnPlatformConcern do
 
                   context 'user not included in ab test' do
                     before do
-                      expect(controller).to receive(:ab_test_bucket).
-                        with(:RECOMMEND_WEBAUTHN_PLATFORM_FOR_SMS_USER).
-                        and_return(nil)
+                      expect(controller).to receive(:ab_test_bucket)
+                        .with(:RECOMMEND_WEBAUTHN_PLATFORM_FOR_SMS_USER)
+                        .and_return(nil)
                     end
 
                     it { is_expected.to eq(false) }
@@ -163,9 +163,9 @@ RSpec.describe RecommendWebauthnPlatformConcern do
 
                   context 'user included in ab test' do
                     before do
-                      expect(controller).to receive(:ab_test_bucket).
-                        with(:RECOMMEND_WEBAUTHN_PLATFORM_FOR_SMS_USER).
-                        and_return(bucket)
+                      expect(controller).to receive(:ab_test_bucket)
+                        .with(:RECOMMEND_WEBAUTHN_PLATFORM_FOR_SMS_USER)
+                        .and_return(bucket)
                     end
 
                     it { is_expected.to eq(true) }

@@ -133,8 +133,8 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         expect(email_address).to receive(:email).twice
 
         forbidden = instance_double(ForbiddenPasswords)
-        allow(ForbiddenPasswords).to receive(:new).
-          with(email_address.email).and_return(forbidden)
+        allow(ForbiddenPasswords).to receive(:new)
+          .with(email_address.email).and_return(forbidden)
         expect(forbidden).to receive(:call)
 
         get :edit
@@ -463,8 +463,8 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           }
         end.to(change { ActionMailer::Base.deliveries.count }.by(1))
 
-        expect(ActionMailer::Base.deliveries.last.subject).
-          to eq t('anonymous_mailer.password_reset_missing_user.subject')
+        expect(ActionMailer::Base.deliveries.last.subject)
+          .to eq t('anonymous_mailer.password_reset_missing_user.subject')
         expect(@analytics).to have_logged_event(
           'Password Reset: Email Submitted',
           success: true,
@@ -520,8 +520,8 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
       end
 
       it 'sends missing user email and tracks event' do
-        expect { put :create, params: params }.
-          to change { ActionMailer::Base.deliveries.count }.by(1)
+        expect { put :create, params: params }
+          .to change { ActionMailer::Base.deliveries.count }.by(1)
 
         expect(@analytics).to have_logged_event(
           'Password Reset: Email Submitted',
@@ -533,8 +533,8 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           active_profile: false,
         )
 
-        expect(ActionMailer::Base.deliveries.last.subject).
-          to eq t('anonymous_mailer.password_reset_missing_user.subject')
+        expect(ActionMailer::Base.deliveries.last.subject)
+          .to eq t('anonymous_mailer.password_reset_missing_user.subject')
         expect(response).to redirect_to forgot_password_path
       end
     end
@@ -565,8 +565,8 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         stub_analytics
 
         params = { password_reset_email_form: { email: 'foo' } }
-        expect { put :create, params: params }.
-          to change { ActionMailer::Base.deliveries.count }.by(0)
+        expect { put :create, params: params }
+          .to change { ActionMailer::Base.deliveries.count }.by(0)
 
         expect(@analytics).to have_logged_event(
           'Password Reset: Email Submitted',
@@ -609,9 +609,9 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
   def stub_user_mailer(user)
     mailer = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
     user.email_addresses.each do |email_address|
-      allow(UserMailer).to receive(:password_changed).
-        with(user, email_address, disavowal_token: instance_of(String)).
-        and_return(mailer)
+      allow(UserMailer).to receive(:password_changed)
+        .with(user, email_address, disavowal_token: instance_of(String))
+        .and_return(mailer)
     end
   end
 end

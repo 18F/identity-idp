@@ -52,8 +52,8 @@ RSpec.describe Ahoy::Store do
 
   context 'FeatureManagement.use_dashboard_service_providers? is true' do
     it 'does not exclude the event' do
-      allow(FeatureManagement).to receive(:use_dashboard_service_providers?).
-        and_return(true)
+      allow(FeatureManagement).to receive(:use_dashboard_service_providers?)
+        .and_return(true)
       store = Ahoy::Store.new({})
 
       expect(store.exclude?).to be_nil

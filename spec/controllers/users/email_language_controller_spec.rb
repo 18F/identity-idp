@@ -43,8 +43,10 @@ RSpec.describe Users::EmailLanguageController do
       let(:email_language) { 'es' }
 
       it 'updates the user email_language' do
-        expect { action }.
-          to(change { user.reload.email_language }.from(original_email_language).to(email_language))
+        expect { action }
+          .to(change do
+                user.reload.email_language
+              end.from(original_email_language).to(email_language))
       end
 
       it 'redirects to the account page with a success flash' do

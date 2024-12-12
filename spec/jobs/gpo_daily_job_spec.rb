@@ -13,8 +13,8 @@ RSpec.describe GpoDailyJob do
   end
 
   before do
-    allow(IdentityConfig.store).to receive(:gpo_designated_receiver_pii).
-      and_return(designated_receiver_pii)
+    allow(IdentityConfig.store).to receive(:gpo_designated_receiver_pii)
+      .and_return(designated_receiver_pii)
   end
 
   describe '#perform' do

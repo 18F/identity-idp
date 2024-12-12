@@ -109,8 +109,8 @@ RSpec.describe EncryptedRedisStructStorage do
         let(:id) { '' }
 
         it 'errors' do
-          expect { EncryptedRedisStructStorage.store(struct_class.new) }.
-            to raise_error(ArgumentError, 'id cannot be empty')
+          expect { EncryptedRedisStructStorage.store(struct_class.new) }
+            .to raise_error(ArgumentError, 'id cannot be empty')
         end
       end
 

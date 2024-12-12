@@ -23,10 +23,10 @@ RSpec.describe SocureReasonCodeDownloadJob do
   end
 
   before do
-    allow(IdentityConfig.store).to receive(:idv_socure_reason_code_download_enabled).
-      and_return(idv_socure_reason_code_download_enabled)
-    allow(IdentityConfig.store).to receive(:socure_reason_code_base_url).
-      and_return('https://example.org')
+    allow(IdentityConfig.store).to receive(:idv_socure_reason_code_download_enabled)
+      .and_return(idv_socure_reason_code_download_enabled)
+    allow(IdentityConfig.store).to receive(:socure_reason_code_base_url)
+      .and_return('https://example.org')
   end
 
   describe '#perform' do

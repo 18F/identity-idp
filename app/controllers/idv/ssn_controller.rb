@@ -28,8 +28,8 @@ module Idv
       end
       analytics.idv_doc_auth_ssn_visited(**analytics_arguments)
 
-      Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
-        call('ssn', :view, true)
+      Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer])
+        .call('ssn', :view, true)
 
       render 'idv/shared/ssn', locals: threatmetrix_view_variables(ssn_presenter.updating_ssn?)
     end

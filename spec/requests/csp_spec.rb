@@ -4,8 +4,8 @@ RSpec.describe 'content security policy' do
   context 'on endpoints that will redirect to an SP' do
     context 'when using client side OIDC redirect' do
       before do
-        allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-          and_return('client_side')
+        allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+          .and_return('client_side')
       end
 
       context 'when openid_connect_content_security_form_action_enabled is enabled' do
@@ -95,8 +95,8 @@ RSpec.describe 'content security policy' do
 
     context 'when using server side OIDC redirect' do
       before do
-        allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-          and_return('server_side')
+        allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+          .and_return('server_side')
       end
 
       context 'when openid_connect_content_security_form_action_enabled is enabled' do

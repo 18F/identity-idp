@@ -12,8 +12,8 @@ RSpec.describe RiscConfigurationPresenter do
       aggregate_failures do
         expect(configuration[:issuer]).to eq(root_url)
         expect(configuration[:jwks_uri]).to eq(api_openid_connect_certs_url)
-        expect(configuration[:delivery_methods_supported]).
-          to eq([RiscConfigurationPresenter::DELIVERY_METHOD_PUSH])
+        expect(configuration[:delivery_methods_supported])
+          .to eq([RiscConfigurationPresenter::DELIVERY_METHOD_PUSH])
 
         expect(configuration[:delivery].first).to eq(
           delivery_method: RiscConfigurationPresenter::DELIVERY_METHOD_PUSH,

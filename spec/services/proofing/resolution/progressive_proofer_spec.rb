@@ -86,14 +86,14 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
     before do
       allow(resolution_proofer).to receive(:proof).and_return(*resolution_proofing_results)
-      allow(progressive_proofer).to receive(:create_proofer).
-        and_return(resolution_proofer)
+      allow(progressive_proofer).to receive(:create_proofer)
+        .and_return(resolution_proofer)
 
-      allow(progressive_proofer.threatmetrix_plugin).to receive(:proofer).
-        and_return(threatmetrix_proofer)
+      allow(progressive_proofer.threatmetrix_plugin).to receive(:proofer)
+        .and_return(threatmetrix_proofer)
 
-      allow(progressive_proofer.aamva_plugin).to receive(:proofer).
-        and_return(aamva_proofer)
+      allow(progressive_proofer.aamva_plugin).to receive(:proofer)
+        .and_return(aamva_proofer)
     end
 
     context 'remote unsupervised proofing' do
@@ -339,12 +339,12 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     subject(:proofing_vendor) { progressive_proofer.proofing_vendor }
 
     before do
-      allow(IdentityConfig.store).to receive(:idv_resolution_default_vendor).
-        and_return(idv_resolution_default_vendor)
-      allow(IdentityConfig.store).to receive(:idv_resolution_alternate_vendor).
-        and_return(idv_resolution_alternate_vendor)
-      allow(IdentityConfig.store).to receive(:idv_resolution_alternate_vendor_percent).
-        and_return(idv_resolution_alternate_vendor_percent)
+      allow(IdentityConfig.store).to receive(:idv_resolution_default_vendor)
+        .and_return(idv_resolution_default_vendor)
+      allow(IdentityConfig.store).to receive(:idv_resolution_alternate_vendor)
+        .and_return(idv_resolution_alternate_vendor)
+      allow(IdentityConfig.store).to receive(:idv_resolution_alternate_vendor_percent)
+        .and_return(idv_resolution_alternate_vendor_percent)
     end
 
     context 'when default is set to 100%' do

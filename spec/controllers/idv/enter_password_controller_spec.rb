@@ -325,8 +325,8 @@ RSpec.describe Idv::EnterPasswordController do
         before do
           resolved_authn_context_result = Vot::Parser.new(vector_of_trust: 'Pb').parse
 
-          allow(controller).to receive(:resolved_authn_context_result).
-            and_return(resolved_authn_context_result)
+          allow(controller).to receive(:resolved_authn_context_result)
+            .and_return(resolved_authn_context_result)
         end
 
         it 'creates Profile with applicant attributes' do
@@ -345,8 +345,8 @@ RSpec.describe Idv::EnterPasswordController do
         before do
           resolved_authn_context_result = Vot::Parser.new(vector_of_trust: 'Pe').parse
 
-          allow(controller).to receive(:resolved_authn_context_result).
-            and_return(resolved_authn_context_result)
+          allow(controller).to receive(:resolved_authn_context_result)
+            .and_return(resolved_authn_context_result)
         end
 
         it 'creates Profile with applicant attributes' do
@@ -399,8 +399,8 @@ RSpec.describe Idv::EnterPasswordController do
 
       it 'creates an `account_verified` event once per confirmation' do
         put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
-        events_count = user.events.where(event_type: :account_verified, ip: '0.0.0.0').
-          where(disavowal_token_fingerprint: nil).count
+        events_count = user.events.where(event_type: :account_verified, ip: '0.0.0.0')
+          .where(disavowal_token_fingerprint: nil).count
         expect(events_count).to eq 1
       end
 
@@ -746,8 +746,8 @@ RSpec.describe Idv::EnterPasswordController do
               mock = double
               expect(UspsInPersonProofing::Proofer).to receive(:new).and_return(mock)
               expect(mock).to receive(:request_enroll) do |applicant|
-                expect(applicant.address).
-                  to eq(Idp::Constants::MOCK_IDV_APPLICANT[:address1])
+                expect(applicant.address)
+                  .to eq(Idp::Constants::MOCK_IDV_APPLICANT[:address1])
                 proofer.request_enroll(applicant)
               end
 
@@ -789,14 +789,14 @@ RSpec.describe Idv::EnterPasswordController do
         context 'when user enters an address2 value' do
           it 'does not include address2' do
             subject.idv_session.applicant =
-              Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_PHONE.
-                merge(address2: '3b')
+              Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_PHONE
+                .merge(address2: '3b')
             proofer = UspsInPersonProofing::Proofer.new
             mock = double
             expect(UspsInPersonProofing::Proofer).to receive(:new).and_return(mock)
             expect(mock).to receive(:request_enroll) do |applicant|
-              expect(applicant.address).
-                to eq(Idp::Constants::MOCK_IDV_APPLICANT[:address1])
+              expect(applicant.address)
+                .to eq(Idp::Constants::MOCK_IDV_APPLICANT[:address1])
               proofer.request_enroll(applicant)
             end
 
@@ -823,8 +823,8 @@ RSpec.describe Idv::EnterPasswordController do
                 let(:proofing_device_profiling_state) { proofing_device_profiling_state }
 
                 before do
-                  allow(IdentityConfig.store).to receive(:proofing_device_profiling).
-                    and_return(proofing_device_profiling_state)
+                  allow(IdentityConfig.store).to receive(:proofing_device_profiling)
+                    .and_return(proofing_device_profiling_state)
                   subject.idv_session.threatmetrix_review_status = review_status
                   stub_request_token
                 end
@@ -979,8 +979,8 @@ RSpec.describe Idv::EnterPasswordController do
         )
       end
       it 'passes the correct param to the enrollment helper method' do
-        expect(UspsInPersonProofing::EnrollmentHelper).to receive(:schedule_in_person_enrollment).
-          with(
+        expect(UspsInPersonProofing::EnrollmentHelper).to receive(:schedule_in_person_enrollment)
+          .with(
             user: user,
             pii: Pii::Attributes.new_from_hash(applicant),
             is_enhanced_ipp: is_enhanced_ipp,

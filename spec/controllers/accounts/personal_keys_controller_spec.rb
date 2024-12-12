@@ -28,8 +28,8 @@ RSpec.describe Accounts::PersonalKeysController do
       stub_analytics
 
       generator = instance_double(PersonalKeyGenerator)
-      allow(PersonalKeyGenerator).to receive(:new).
-        with(subject.current_user).and_return(generator)
+      allow(PersonalKeyGenerator).to receive(:new)
+        .with(subject.current_user).and_return(generator)
 
       expect(generator).to receive(:generate!)
 

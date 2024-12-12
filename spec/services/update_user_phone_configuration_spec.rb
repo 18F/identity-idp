@@ -42,8 +42,8 @@ RSpec.describe UpdateUserPhoneConfiguration do
       end
 
       it 'sends a recovery information changed event' do
-        expect(PushNotification::HttpPush).to receive(:deliver).
-          with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
+        expect(PushNotification::HttpPush).to receive(:deliver)
+          .with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
         confirmed_at = 1.day.ago.change(usec: 0)
         attributes = {
           otp_delivery_preference: 'voice',
@@ -123,8 +123,8 @@ RSpec.describe UpdateUserPhoneConfiguration do
           phone_configuration.update(made_default_at: original_made_default_at)
           UpdateUserPhoneConfiguration.new(user: user, attributes: attributes).call
           phone_configuration.reload
-          expect(phone_configuration.made_default_at).
-            to be_within(1.second).of original_made_default_at
+          expect(phone_configuration.made_default_at)
+            .to be_within(1.second).of original_made_default_at
         end
       end
 

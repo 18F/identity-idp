@@ -36,8 +36,8 @@ RSpec.describe Test::FakeS3Controller do
     end
 
     it 'stores the data in memory' do
-      expect { action }.
-        to(change { Test::FakeS3Controller.data[key] }.to(data))
+      expect { action }
+        .to(change { Test::FakeS3Controller.data[key] }.to(data))
     end
   end
 end

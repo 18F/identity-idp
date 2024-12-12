@@ -6,8 +6,8 @@ RSpec.feature 'OIDC requests using VTR' do
   include WebAuthnHelper
 
   before do
-    allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).
-      and_return(true)
+    allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests)
+      .and_return(true)
   end
 
   scenario 'sign in with VTR request for authentication' do

@@ -73,8 +73,8 @@ RSpec.describe LocaleHelper do
       end
 
       it 'warns about a bad email_language' do
-        expect(Rails.logger).to receive(:warn).
-          with("user_id=#{user.uuid} has bad email_language=#{user.email_language}")
+        expect(Rails.logger).to receive(:warn)
+          .with("user_id=#{user.uuid} has bad email_language=#{user.email_language}")
 
         subject
       end

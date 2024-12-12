@@ -230,8 +230,8 @@ RSpec.describe Users::TwoFactorAuthenticationController do
 
         expect(Telephony::Test::Message.messages.length).to eq(1)
         expect(Telephony::Test::Call.calls.length).to eq(0)
-        expect(response).
-          to redirect_to login_two_factor_path(**otp_preference_sms)
+        expect(response)
+          .to redirect_to login_two_factor_path(**otp_preference_sms)
       end
 
       context 'when no options are enabled and available for use' do
@@ -362,10 +362,10 @@ RSpec.describe Users::TwoFactorAuthenticationController do
 
       it 'calls OtpRateLimiter#exceeded_otp_send_limit? and #increment' do
         otp_rate_limiter = instance_double(OtpRateLimiter)
-        allow(OtpRateLimiter).to receive(:new).
-          with(phone: MfaContext.new(@user).phone_configurations.first.phone,
-               user: @user, phone_confirmed: true).
-          and_return(otp_rate_limiter)
+        allow(OtpRateLimiter).to receive(:new)
+          .with(phone: MfaContext.new(@user).phone_configurations.first.phone,
+                user: @user, phone_confirmed: true)
+          .and_return(otp_rate_limiter)
 
         expect(otp_rate_limiter).to receive(:exceeded_otp_send_limit?).twice
         expect(otp_rate_limiter).to receive(:increment)
@@ -376,8 +376,8 @@ RSpec.describe Users::TwoFactorAuthenticationController do
       it 'marks the user as locked out after too many attempts' do
         expect(@user.second_factor_locked_at).to be_nil
 
-        allow(OtpRateLimiter).to receive(:exceeded_otp_send_limit?).
-          and_return(true)
+        allow(OtpRateLimiter).to receive(:exceeded_otp_send_limit?)
+          .and_return(true)
 
         freeze_time do
           (IdentityConfig.store.otp_delivery_blocklist_maxretry + 1).times do
@@ -415,9 +415,9 @@ RSpec.describe Users::TwoFactorAuthenticationController do
             assessment_id:,
             reason: RecaptchaAnnotator::AnnotationReasons::INITIATED_TWO_FACTOR,
           }
-          expect(RecaptchaAnnotator).to receive(:annotate).once.
-            with(**recaptcha_annotation).
-            and_return(recaptcha_annotation)
+          expect(RecaptchaAnnotator).to receive(:annotate).once
+            .with(**recaptcha_annotation)
+            .and_return(recaptcha_annotation)
 
           response
 
@@ -621,8 +621,8 @@ RSpec.describe Users::TwoFactorAuthenticationController do
         sign_in_before_2fa(@user)
         subject.user_session[:context] = 'confirmation'
         allow(IdentityConfig.store).to receive(:short_term_phone_otp_max_attempts).and_return(2)
-        allow(IdentityConfig.store).to receive(:short_term_phone_otp_max_attempt_window_in_seconds).
-          and_return(5)
+        allow(IdentityConfig.store).to receive(:short_term_phone_otp_max_attempt_window_in_seconds)
+          .and_return(5)
 
         freeze_time do
           IdentityConfig.store.short_term_phone_otp_max_attempts.times do
@@ -660,8 +660,8 @@ RSpec.describe Users::TwoFactorAuthenticationController do
 
         expect(@user.second_factor_locked_at).to be_nil
 
-        allow(OtpRateLimiter).to receive(:exceeded_otp_send_limit?).
-          and_return(true)
+        allow(OtpRateLimiter).to receive(:exceeded_otp_send_limit?)
+          .and_return(true)
 
         freeze_time do
           (IdentityConfig.store.otp_delivery_blocklist_maxretry + 1).times do

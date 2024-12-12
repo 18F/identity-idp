@@ -85,8 +85,8 @@ module Idv
       return unless IdentityConfig.store.socure_docv_verification_data_test_mode
 
       docv_transaction_token_override = params.permit(:docv_token)[:docv_token]
-      return unless IdentityConfig.store.socure_docv_verification_data_test_mode_tokens.
-        include?(docv_transaction_token_override)
+      return unless IdentityConfig.store.socure_docv_verification_data_test_mode_tokens
+        .include?(docv_transaction_token_override)
 
       SocureDocvResultsJob.perform_now(
         document_capture_session_uuid:,
@@ -106,10 +106,12 @@ module Idv
         document_type: document_request_body[:documentType],
         docv_transaction_token: response_hash.dig(:data, :docvTransactionToken),
       }
-      analytics_hash = log_extras.merge(analytics_arguments).
-        merge(document_request_body).except(
+      analytics_hash = log_extras
+        .merge(analytics_arguments)
+        .merge(document_request_body).except(
           :documentType, # requested document type
-        ).merge(response_body: document_response.to_h)
+        )
+        .merge(response_body: document_response.to_h)
       analytics.idv_socure_document_request_submitted(**analytics_hash)
     end
 

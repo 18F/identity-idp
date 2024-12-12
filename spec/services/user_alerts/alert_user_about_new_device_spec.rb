@@ -10,9 +10,9 @@ RSpec.describe UserAlerts::AlertUserAboutNewDevice do
     subject(:result) { described_class.schedule_alert(event:) }
 
     it 'sets the user sign_in_new_device_at value to time of the given event' do
-      expect { result }.to change { user.reload.sign_in_new_device_at&.change(usec: 0) }.
-        from(nil).
-        to(event.created_at.change(usec: 0))
+      expect { result }.to change { user.reload.sign_in_new_device_at&.change(usec: 0) }
+        .from(nil)
+        .to(event.created_at.change(usec: 0))
     end
   end
 
@@ -36,9 +36,9 @@ RSpec.describe UserAlerts::AlertUserAboutNewDevice do
     end
 
     it 'unsets sign_in_new_device_at on the user' do
-      expect { result }.to change { user.reload.sign_in_new_device_at&.change(usec: 0) }.
-        from(sign_in_new_device_at.change(usec: 0)).
-        to(nil)
+      expect { result }.to change { user.reload.sign_in_new_device_at&.change(usec: 0) }
+        .from(sign_in_new_device_at.change(usec: 0))
+        .to(nil)
     end
 
     context 'with sign in notification expired disavowal event' do

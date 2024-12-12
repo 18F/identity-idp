@@ -14,8 +14,8 @@ RSpec.describe GetUspsReadyProofingResultsJob, allowed_extra_analytics: [:*] do
     )
     ActiveJob::Base.queue_adapter = :test
     allow(job).to receive(:analytics).and_return(job_analytics)
-    allow(IdentityConfig.store).to receive(:get_usps_proofing_results_job_reprocess_delay_minutes).
-      and_return(reprocess_delay_minutes)
+    allow(IdentityConfig.store).to receive(:get_usps_proofing_results_job_reprocess_delay_minutes)
+      .and_return(reprocess_delay_minutes)
     stub_const(
       'GetUspsProofingResultsJob::REQUEST_DELAY_IN_SECONDS',
       request_delay_ms / GetUspsProofingResultsJob::MILLISECONDS_PER_SECOND,
@@ -35,9 +35,9 @@ RSpec.describe GetUspsReadyProofingResultsJob, allowed_extra_analytics: [:*] do
       it 'requests the enrollments that need their status checked' do
         freeze_time do
           expect(InPersonEnrollment).to(
-            receive(:needs_status_check_on_ready_enrollments).
-            with(...reprocess_delay_minutes.minutes.ago).
-            and_return(InPersonEnrollment.all),
+            receive(:needs_status_check_on_ready_enrollments)
+            .with(...reprocess_delay_minutes.minutes.ago)
+            .and_return(InPersonEnrollment.all),
           )
 
           job.perform(Time.zone.now)
@@ -61,8 +61,8 @@ RSpec.describe GetUspsReadyProofingResultsJob, allowed_extra_analytics: [:*] do
 
         job.perform(Time.zone.now)
 
-        expect(InPersonEnrollment.where.not(status_check_attempted_at: nil).pluck(:id)).
-          to(match_array(ready_ids))
+        expect(InPersonEnrollment.where.not(status_check_attempted_at: nil).pluck(:id))
+          .to(match_array(ready_ids))
         expect(job_analytics).to have_logged_event(
           'GetUspsProofingResultsJob: Job started',
           enrollments_count: 6,

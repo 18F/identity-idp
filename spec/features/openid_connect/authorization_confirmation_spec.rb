@@ -56,8 +56,8 @@ RSpec.feature 'OIDC Authorization Confirmation' do
 
     context 'with client-side javascript redirect' do
       before do
-        allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-          and_return('client_side_js')
+        allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+          .and_return('client_side_js')
       end
 
       it_behaves_like 'signin email after signing in again'

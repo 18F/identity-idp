@@ -54,10 +54,10 @@ class PinpointSupportedCountries
   def run
     country_dialing_codes = load_country_dialing_codes
 
-    duplicate_iso = country_dialing_codes.
-      group_by(&:iso_code).
-      select { |_iso, arr| arr.size > 1 }.
-      keys
+    duplicate_iso = country_dialing_codes
+      .group_by(&:iso_code)
+      .select { |_iso, arr| arr.size > 1 }
+      .keys
 
     raise "error countries with duplicate iso codes: #{duplicate_iso}" if duplicate_iso.size > 0
 
@@ -71,10 +71,10 @@ class PinpointSupportedCountries
 
   # @return [Array<CountrySupport>]
   def sms_support
-    TableConverter.new(download(PINPOINT_SMS_URL)).
-      convert.
-      select { |sms_config| sms_config['ISO code'] }. # skip section rows
-      map do |sms_config|
+    TableConverter.new(download(PINPOINT_SMS_URL))
+      .convert
+      .select { |sms_config| sms_config['ISO code'] } # skip section rows
+      .map do |sms_config|
         iso_code = sms_config['ISO code']
         supports_sms = case trim_spaces(sms_config['Supports Sender IDs'])
         when 'Registration required1'

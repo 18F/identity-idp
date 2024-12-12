@@ -36,8 +36,8 @@ RSpec.describe Idv::ImageUploadsController do
 
     before do
       Funnel::DocAuth::RegisterStep.new(user.id, '').call('welcome', :view, true)
-      allow(IdentityConfig.store).to receive(:idv_acuant_sdk_upgrade_a_b_testing_enabled).
-        and_return(false)
+      allow(IdentityConfig.store).to receive(:idv_acuant_sdk_upgrade_a_b_testing_enabled)
+        .and_return(false)
     end
 
     context 'when fields are missing' do
@@ -290,13 +290,13 @@ RSpec.describe Idv::ImageUploadsController do
         before do
           resolved_authn_context_result = Vot::Parser.new(vector_of_trust: 'Pb').parse
 
-          allow(controller).to receive(:resolved_authn_context_result).
-            and_return(resolved_authn_context_result)
+          allow(controller).to receive(:resolved_authn_context_result)
+            .and_return(resolved_authn_context_result)
         end
 
         it 'returns a successful response and modifies the session' do
-          expect_any_instance_of(DocAuth::Mock::DocAuthMockClient).
-            to receive(:post_images).with(
+          expect_any_instance_of(DocAuth::Mock::DocAuthMockClient)
+            .to receive(:post_images).with(
               front_image: an_instance_of(String),
               back_image: an_instance_of(String),
               selfie_image: an_instance_of(String),
@@ -317,8 +317,8 @@ RSpec.describe Idv::ImageUploadsController do
       end
 
       it 'returns a successful response and modifies the session' do
-        expect_any_instance_of(DocAuth::Mock::DocAuthMockClient).
-          to receive(:post_images).with(
+        expect_any_instance_of(DocAuth::Mock::DocAuthMockClient)
+          .to receive(:post_images).with(
             front_image: an_instance_of(String),
             back_image: an_instance_of(String),
             selfie_image: nil,
@@ -1068,8 +1068,8 @@ RSpec.describe Idv::ImageUploadsController do
       end
 
       it 'sends a selfie' do
-        expect_any_instance_of(DocAuth::Mock::DocAuthMockClient).
-          to receive(:post_images).with(
+        expect_any_instance_of(DocAuth::Mock::DocAuthMockClient)
+          .to receive(:post_images).with(
             front_image: an_instance_of(String),
             back_image: an_instance_of(String),
             selfie_image: an_instance_of(String),

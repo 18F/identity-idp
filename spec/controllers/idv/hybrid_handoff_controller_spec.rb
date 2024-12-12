@@ -13,8 +13,8 @@ RSpec.describe Idv::HybridHandoffController do
   let(:sp_selfie_enabled) { false }
 
   before do
-    allow(controller).to receive(:current_sp).
-      and_return(service_provider)
+    allow(controller).to receive(:current_sp)
+      .and_return(service_provider)
     stub_sign_in(user)
     stub_up_to(:agreement, idv_session: subject.idv_session)
     stub_analytics
@@ -24,8 +24,8 @@ RSpec.describe Idv::HybridHandoffController do
                                       Vot::Parser.new(vector_of_trust: 'Pb').parse :
                                       Vot::Parser.new(vector_of_trust: 'P1').parse
 
-    allow(subject).to receive(:resolved_authn_context_result).
-      and_return(resolved_authn_context_result)
+    allow(subject).to receive(:resolved_authn_context_result)
+      .and_return(resolved_authn_context_result)
 
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { in_person_proofing }
     allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) {
@@ -204,8 +204,8 @@ RSpec.describe Idv::HybridHandoffController do
 
       context 'opt in selection is nil' do
         before do
-          allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).
-            and_return(false)
+          allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
+            .and_return(false)
           subject.idv_session.skip_doc_auth_from_how_to_verify = nil
         end
 
@@ -227,8 +227,8 @@ RSpec.describe Idv::HybridHandoffController do
 
       context 'opted in to ipp flow' do
         before do
-          allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).
-            and_return(false)
+          allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
+            .and_return(false)
           subject.idv_session.skip_doc_auth_from_how_to_verify = true
           subject.idv_session.skip_hybrid_handoff = true
         end

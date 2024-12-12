@@ -155,8 +155,8 @@ RSpec.describe Idv::InPerson::SsnController do
         it 'updates idv_session.ssn' do
           subject.idv_session.ssn = '900-95-7890'
 
-          expect { put :update, params: params }.to change { subject.idv_session.ssn }.
-            from('900-95-7890').to(ssn)
+          expect { put :update, params: params }.to change { subject.idv_session.ssn }
+            .from('900-95-7890').to(ssn)
           expect(@analytics).to have_logged_event(analytics_name, analytics_args)
         end
       end

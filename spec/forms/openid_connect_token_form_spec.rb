@@ -51,8 +51,8 @@ RSpec.describe OpenidConnectTokenForm do
   let(:user) { create(:user) }
 
   let!(:identity) do
-    IdentityLinker.new(user, service_provider).
-      link_identity(
+    IdentityLinker.new(user, service_provider)
+      .link_identity(
         nonce: nonce,
         rails_session_id: SecureRandom.hex,
         ial: 1,
@@ -138,8 +138,8 @@ RSpec.describe OpenidConnectTokenForm do
         it 'is false, and has errors if the sp is set for pkce only mode' do
           allow_any_instance_of(ServiceProvider).to receive(:pkce).and_return(true)
           expect(valid?).to eq(false)
-          expect(form.errors[:code]).
-            to include(t('openid_connect.token.errors.invalid_authentication'))
+          expect(form.errors[:code])
+            .to include(t('openid_connect.token.errors.invalid_authentication'))
         end
 
         context 'with a trailing slash in the audience url' do
@@ -215,8 +215,8 @@ RSpec.describe OpenidConnectTokenForm do
 
           it 'is invalid' do
             expect(valid?).to eq(false)
-            expect(form.errors[:client_assertion]).
-              to include("Invalid issuer. Expected [\"#{client_id}\"], received wrong")
+            expect(form.errors[:client_assertion])
+              .to include("Invalid issuer. Expected [\"#{client_id}\"], received wrong")
           end
         end
 
@@ -225,8 +225,8 @@ RSpec.describe OpenidConnectTokenForm do
 
           it 'is invalid' do
             expect(valid?).to eq(false)
-            expect(form.errors[:client_assertion]).
-              to include("Invalid subject. Expected #{client_id}, received wrong")
+            expect(form.errors[:client_assertion])
+              .to include("Invalid subject. Expected #{client_id}, received wrong")
           end
         end
 
@@ -276,8 +276,8 @@ RSpec.describe OpenidConnectTokenForm do
 
           it 'is has an error' do
             expect(valid?).to eq(false)
-            expect(form.errors[:client_assertion]).
-              to include(t('openid_connect.token.errors.invalid_signature'))
+            expect(form.errors[:client_assertion])
+              .to include(t('openid_connect.token.errors.invalid_signature'))
           end
         end
 
@@ -314,8 +314,8 @@ RSpec.describe OpenidConnectTokenForm do
         it 'is false, and has errors if the sp is set for jwt only mode' do
           allow_any_instance_of(ServiceProvider).to receive(:pkce).and_return(false)
           expect(valid?).to eq(false)
-          expect(form.errors[:code]).
-            to include(t('openid_connect.token.errors.invalid_authentication'))
+          expect(form.errors[:code])
+            .to include(t('openid_connect.token.errors.invalid_authentication'))
         end
       end
 
@@ -325,8 +325,8 @@ RSpec.describe OpenidConnectTokenForm do
 
         it 'is not valid' do
           expect(valid?).to eq(false)
-          expect(form.errors[:code_verifier]).
-            to include(t('openid_connect.token.errors.invalid_code_verifier'))
+          expect(form.errors[:code_verifier])
+            .to include(t('openid_connect.token.errors.invalid_code_verifier'))
         end
       end
 
@@ -336,8 +336,8 @@ RSpec.describe OpenidConnectTokenForm do
 
         it 'is not valid' do
           expect(valid?).to eq(false)
-          expect(form.errors[:code_verifier]).
-            to include(t('openid_connect.token.errors.invalid_code_verifier'))
+          expect(form.errors[:code_verifier])
+            .to include(t('openid_connect.token.errors.invalid_code_verifier'))
         end
       end
 
@@ -362,8 +362,8 @@ RSpec.describe OpenidConnectTokenForm do
 
       it 'is invalid' do
         expect(valid?).to eq(false)
-        expect(form.errors[:code]).
-          to include(t('openid_connect.token.errors.invalid_authentication'))
+        expect(form.errors[:code])
+          .to include(t('openid_connect.token.errors.invalid_authentication'))
       end
     end
   end

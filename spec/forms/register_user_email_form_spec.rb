@@ -160,9 +160,9 @@ RSpec.describe RegisterUserEmailForm do
 
       it 'sends confirmation instructions to existing user' do
         expect(send_sign_up_email_confirmation).to receive(:call)
-        expect(SendSignUpEmailConfirmation).to receive(:new).
-          with(existing_user).
-          and_return(send_sign_up_email_confirmation)
+        expect(SendSignUpEmailConfirmation).to receive(:new)
+          .with(existing_user)
+          .and_return(send_sign_up_email_confirmation)
 
         result = subject.submit(params).to_h
 
@@ -195,8 +195,8 @@ RSpec.describe RegisterUserEmailForm do
 
         it 'creates rate_limiter events after reaching rate_limiter limit' do
           1.upto(rate_limit) do |i|
-            RegisterUserEmailForm.new(analytics:).
-              submit(
+            RegisterUserEmailForm.new(analytics:)
+              .submit(
                 email: "taken+#{i}@gmail.com", terms_accepted: '1',
               )
           end
@@ -216,8 +216,8 @@ RSpec.describe RegisterUserEmailForm do
 
         send_sign_up_email_confirmation = instance_double(SendSignUpEmailConfirmation)
         expect(send_sign_up_email_confirmation).to receive(:call)
-        expect(SendSignUpEmailConfirmation).to receive(:new).
-          and_return(send_sign_up_email_confirmation)
+        expect(SendSignUpEmailConfirmation).to receive(:new)
+          .and_return(send_sign_up_email_confirmation)
 
         result = subject.submit(email: email_address.email, terms_accepted: '1')
         uuid = result.extra[:user_id]
@@ -265,8 +265,8 @@ RSpec.describe RegisterUserEmailForm do
 
         it 'creates rate_limiter events after reaching rate_limiter limit' do
           1.upto(rate_limit) do |i|
-            RegisterUserEmailForm.new(analytics:).
-              submit(params.merge(email: "taken+#{i}@gmail.com"))
+            RegisterUserEmailForm.new(analytics:)
+              .submit(params.merge(email: "taken+#{i}@gmail.com"))
           end
 
           expect(analytics).to have_logged_event(

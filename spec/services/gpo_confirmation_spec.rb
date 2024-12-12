@@ -64,8 +64,8 @@ RSpec.describe GpoConfirmation do
           valid_attributes.dup.tap { |a| a[:zipcode] = '00001' }
         end
         before do
-          allow(IdentityConfig.store).to receive(:invalid_gpo_confirmation_zipcode).
-            and_return(invalid_gpo_confirmation_zipcode)
+          allow(IdentityConfig.store).to receive(:invalid_gpo_confirmation_zipcode)
+            .and_return(invalid_gpo_confirmation_zipcode)
         end
 
         it 'does not validate' do

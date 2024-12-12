@@ -20,10 +20,10 @@ RSpec.describe AgencyIdentityLinker do
       user.destroy!
       expect(User.where(id: user.id).count).to eq(0)
       user2 = create(:user)
-      expect { create_service_provider_identity(user2, 'sp3', 'UUID1') }.
-        to raise_error ActiveRecord::RecordNotUnique
-      expect { create_service_provider_identity(user2, 'sp4', 'UUID2') }.
-        to raise_error ActiveRecord::RecordNotUnique
+      expect { create_service_provider_identity(user2, 'sp3', 'UUID1') }
+        .to raise_error ActiveRecord::RecordNotUnique
+      expect { create_service_provider_identity(user2, 'sp4', 'UUID2') }
+        .to raise_error ActiveRecord::RecordNotUnique
     end
 
     it 'does not allow agency_identity uuid to be reused after user deletes account' do
@@ -37,10 +37,10 @@ RSpec.describe AgencyIdentityLinker do
       expect(AgencyIdentity.where(user_id: user.id).count).to eq(0)
       expect(AgencyIdentity.where(uuid: 'UUID1').count).to eq(0)
       user2 = create(:user)
-      expect { create_service_provider_identity(user2, 'sp3', 'UUID1') }.
-        to raise_error ActiveRecord::RecordNotUnique
-      expect { create_service_provider_identity(user2, 'sp4', 'UUID2') }.
-        to raise_error ActiveRecord::RecordNotUnique
+      expect { create_service_provider_identity(user2, 'sp3', 'UUID1') }
+        .to raise_error ActiveRecord::RecordNotUnique
+      expect { create_service_provider_identity(user2, 'sp4', 'UUID2') }
+        .to raise_error ActiveRecord::RecordNotUnique
     end
 
     it 'links identity with 1 sp' do
