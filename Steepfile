@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# D = Steep::Diagnostic
+D = Steep::Diagnostic
 #
 # target :lib do
 #   signature "sig"
@@ -47,6 +47,14 @@ target :app do
   check 'app/forms/select_email_form.rb'
   signature 'sig'
   # configure_code_diagnostics(D::Ruby.strict)
+
+  library 'pathname'
+end
+
+target :app do
+  check 'app/controllers/accounts/connected_accounts/selected_email_controller.rb'
+  signature 'sig'
+  configure_code_diagnostics(D::Ruby.strict)
 
   library 'pathname'
 end

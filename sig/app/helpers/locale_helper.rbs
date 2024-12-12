@@ -1,0 +1,5 @@
+module LocaleHelper
+  def locale_url_param: () -> untyped
+
+  def with_user_locale: (untyped user) { () -> untyped } -> untyped
+end

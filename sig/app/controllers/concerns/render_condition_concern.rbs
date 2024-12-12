@@ -1,0 +1,7 @@
+module RenderConditionConcern
+  extend ActiveSupport::Concern
+
+  module ClassMethods
+    def check_or_render_not_found: (untyped callable, **untyped kwargs) -> untyped
+  end
+end

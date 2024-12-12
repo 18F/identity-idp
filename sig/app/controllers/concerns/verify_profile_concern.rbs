@@ -1,0 +1,17 @@
+module VerifyProfileConcern
+  @pending_profile_policy: untyped
+
+  private
+
+  def url_for_pending_profile_reason: () -> untyped
+
+  def user_has_pending_profile?: () -> untyped
+
+  def pending_profile_policy: () -> untyped
+
+  # Returns true if the user has not passed IPP at the post office and is
+  # flagged for fraud review, or has been rejected for fraud.
+  # Ultimately this is to allow users who fail at the post office to create another enrollment
+  # bypassing the typical flow of showing the Please Call or Fraud Rejection screens.
+  def user_failed_ipp_with_fraud_review_pending?: () -> untyped
+end
