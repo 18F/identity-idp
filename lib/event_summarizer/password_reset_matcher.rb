@@ -29,10 +29,13 @@ module EventSummarizer
       private
   
       def process_password_reset_request(event)
+        puts event
         event_message = {
           title: 'Account deletion Request',
           attributes: [
-            { type: :account_deletion_request,
+            { 
+              type: :account_deletion_request, 
+            }
           ],
         }
         event_summaries.push(event_message)
@@ -40,7 +43,7 @@ module EventSummarizer
   
       def process_password_reset_submitted(event)
         message = event['@message']
-        age = message['properties']['event_properties']['account_age_in_days']
+        pust event
         date = event['@timestamp']
         event_message = {
           title: 'Account deletion Request',
