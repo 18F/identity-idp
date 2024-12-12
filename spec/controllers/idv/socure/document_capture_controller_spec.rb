@@ -313,6 +313,40 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         expect(response).to redirect_to(idv_socure_document_capture_errors_url)
       end
     end
+
+    context 'reuse of valid capture app urls when appropriate' do
+      let(:fake_capture_app_url) { 'https://verify.socure.test/fake_capture_app' }
+      let(:socure_capture_app_url) { 'https://verify.socure.test/' }
+      let(:docv_transaction_token) { '176dnc45d-2e34-46f3-82217-6f540ae90673' }
+      let(:response_body) do
+        {
+          referenceId: '123ab45d-2e34-46f3-8d17-6f540ae90303',
+          data: {
+            eventId: 'zoYgIxEZUbXBoocYAnbb5DrT',
+            docvTransactionToken: docv_transaction_token,
+            qrCode: 'data:image/png;base64,iVBO......K5CYII=',
+            url: socure_capture_app_url,
+          },
+        }
+      end
+
+      before do
+        allow(request_class).to receive(:new).and_call_original
+        allow(I18n).to receive(:locale).and_return(expected_language)
+      end
+
+      it 'does not create a DocumentRequest when valid capture app exists' do
+        dcs = create(
+          :document_capture_session,
+          uuid: user.id,
+          socure_docv_capture_app_url: fake_capture_app_url,
+        )
+        allow(DocumentCaptureSession).to receive(:find_by).and_return(dcs)
+        get(:show)
+        expect(request_class).not_to have_received(:new)
+        expect(dcs.socure_docv_capture_app_url).to eq(fake_capture_app_url)
+      end
+    end
   end
 
   describe '#update' do
