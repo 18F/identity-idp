@@ -5,12 +5,14 @@ require 'active_support/time'
 
 require 'event_summarizer/vendor_result_evaluators/aamva'
 require 'event_summarizer/vendor_result_evaluators/instant_verify'
+require 'event_summarizer/vendor_result_evaluators/true_id'
 
 module EventSummarizer
   class IdvMatcher
     IDV_WELCOME_SUBMITTED_EVENT = 'IdV: doc auth welcome submitted'
     IDV_GPO_CODE_SUBMITTED_EVENT = 'IdV: enter verify by mail code submitted'
     IDV_FINAL_RESOLUTION_EVENT = 'IdV: final resolution'
+    IDV_IMAGE_UPLOAD_VENDOR_SUBMITTED_EVENT = 'IdV: doc auth image upload vendor submitted'
     IDV_VERIFY_PROOFING_RESULTS_EVENT = 'IdV: doc auth verify proofing results'
     IPP_ENROLLMENT_STATUS_UPDATED_EVENT = 'GetUspsProofingResultsJob: Enrollment status updated'
     PROFILE_ENCRYPTION_INVALID_EVENT = 'Profile Encryption: Invalid'
@@ -19,6 +21,11 @@ module EventSummarizer
     EVENT_PROPERTIES = ['@message', 'properties', 'event_properties'].freeze
 
     VENDORS = {
+      'TrueID' => {
+        id: :trueid,
+        name: 'True ID',
+        evaluator_module: EventSummarizer::VendorResultEvaluators::TrueId,
+      },
       'lexisnexis:instant_verify' => {
         id: :instant_verify,
         name: 'Instant Verify',
@@ -91,6 +98,11 @@ module EventSummarizer
         when IPP_ENROLLMENT_STATUS_UPDATED_EVENT
           for_current_idv_attempt(event:) do
             handle_ipp_enrollment_status_update(event:)
+          end
+
+        when IDV_IMAGE_UPLOAD_VENDOR_SUBMITTED_EVENT
+          for_current_idv_attempt(event:) do
+            handle_image_upload_vendor_submitted(event:)
           end
 
         when IDV_VERIFY_PROOFING_RESULTS_EVENT
@@ -323,6 +335,47 @@ module EventSummarizer
       end
     end
 
+    def handle_image_upload_vendor_submitted(event:)
+      timestamp = event['@timestamp']
+      success = event.dig(*EVENT_PROPERTIES, 'success')
+      doc_type = event.dig(*EVENT_PROPERTIES, 'DocClassName')
+
+      if success
+        prior_failures = current_idv_attempt.significant_events.count do |e|
+          e.type == :failed_document_capture
+        end
+        attempts = prior_failures > 0 ? "after #{prior_failures} tries" : 'on the first attempt'
+
+        add_significant_event(
+          timestamp:,
+          type: :passed_document_capture,
+          description: "User successfully verified their #{doc_type.downcase} #{attempts}",
+        )
+        return
+      end
+
+      prev_count = current_idv_attempt.significant_events.count
+
+      alerts = event.dig(*EVENT_PROPERTIES, 'processed_alerts')
+      alerts['success'] = false
+      alerts['vendor_name'] = event.dig(*EVENT_PROPERTIES, 'vendor')
+
+      add_events_for_failed_vendor_result(
+        alerts,
+        timestamp:,
+      )
+
+      any_events_added = current_idv_attempt.significant_events.count > prev_count
+
+      if !any_events_added
+        add_significant_event(
+          timestamp:,
+          type: :failed_document_capture,
+          description: "User failed to verify their #{doc_type.downcase} (check logs for reason)",
+        )
+      end
+    end
+
     def handle_verify_proofing_results_event(event:)
       timestamp = event['@timestamp']
       success = event.dig(*EVENT_PROPERTIES, 'success')
@@ -332,7 +385,7 @@ module EventSummarizer
         # user previously failed in this attempt
 
         prior_failures = current_idv_attempt.significant_events.count do |e|
-          e[:type] == :failed_identity_resolution
+          e.type == :failed_identity_resolution
         end
 
         if prior_failures > 0
@@ -381,7 +434,6 @@ module EventSummarizer
           type: :failed_identity_resolution,
           description: 'User failed identity resolution (check logs for reason)',
         )
-
       end
     end
 
