@@ -1,7 +1,7 @@
 class SelectEmailForm
   @user: User
 
-  @identity: Identity
+  @identity: Hash[Symbol, Integer]
 
   @selected_email_id: Integer
 
@@ -15,18 +15,18 @@ class SelectEmailForm
 
   attr_reader user: User
 
-  attr_reader identity: untyped
+  attr_reader identity: Hash[Symbol, Integer]
 
   attr_reader selected_email_id: Integer
 
-  def initialize: (user: User, ?identity: untyped?) -> void
+  def initialize: (user: User, ?identity: Hash[Symbol, Integer]?) -> void
 
-  def submit: (untyped params) -> untyped
+  def submit: (Hash[Symbol, String] params) -> FormResponse
 
   private
 
   def extra_analytics_attributes: () -> { selected_email_id: Integer }
 
-  def validate_owns_selected_email: () -> (nil | untyped)
+  def validate_owns_selected_email: () -> (nil | bool)
 end
 
