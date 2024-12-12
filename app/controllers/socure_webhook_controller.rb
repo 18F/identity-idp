@@ -11,8 +11,8 @@ class SocureWebhookController < ApplicationController
   def create
     begin
       log_webhook_receipt
-      process_webhook_event
       repeat_webhook
+      process_webhook_event
     rescue StandardError => e
       NewRelic::Agent.notice_error(e)
     ensure
@@ -137,11 +137,22 @@ class SocureWebhookController < ApplicationController
   end
 
   def repeat_webhook
+    endpoints = IdentityConfig.store.socure_docv_webhook_repeat_endpoints
+    return if endpoints.blank?
+
     headers = {
       Authorization: request.headers['Authorization'],
       'Content-Type': request.headers['Content-Type'],
     }
-    wr = DocAuth::Socure::WebhookRepeater.new(body: socure_params.to_h, headers:)
+    wr = DocAuth::Socure::WebhookRepeater.new(body: socure_params.to_h, headers:, endpoints:)
     wr.broadcast
+  rescue => exception
+    NewRelic::Agent.notice_error(
+      exception,
+      custom_params: {
+        event: 'Failed to broadcast Socure webhook',
+        body:,
+      },
+    )
   end
 end
