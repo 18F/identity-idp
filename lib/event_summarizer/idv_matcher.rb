@@ -150,7 +150,7 @@ module EventSummarizer
 
     # @return {Hash,nil}
     def handle_final_resolution_event(event:)
-      timestamp = Time.zone.parse(event['@timestamp'])
+      timestamp = event['@timestamp']
 
       gpo_pending = !!event.dig(
         *EVENT_PROPERTIES,
@@ -208,7 +208,7 @@ module EventSummarizer
     end
 
     def handle_gpo_code_submission(event:)
-      timestamp = Time.zone.parse(event['@timestamp'])
+      timestamp = event['@timestamp']
       success = event.dig(*EVENT_PROPERTIES, 'success')
 
       if !success
@@ -257,7 +257,7 @@ module EventSummarizer
     end
 
     def handle_ipp_enrollment_status_update(event:)
-      timestamp = Time.zone.parse(event['@timestamp'])
+      timestamp = event['@timestamp']
       passed = event.dig(*EVENT_PROPERTIES, 'passed')
       tmx_status = event.dig(*EVENT_PROPERTIES, 'tmx_status')
 
@@ -289,7 +289,7 @@ module EventSummarizer
 
       add_significant_event(
         type: :password_reset,
-        timestamp: Time.zone.parse(event['@timestamp']),
+        timestamp: event['@timestamp'],
         description: [
           'The user reset their password and did not provide their personal key.',
           caveats.length > 0 ?
@@ -310,7 +310,7 @@ module EventSummarizer
 
       return if limit_name.blank?
 
-      timestamp = Time.zone.parse(event['@timestamp'])
+      timestamp = event['@timestamp']
 
       for_current_idv_attempt(event:) do
         add_significant_event(
@@ -322,7 +322,7 @@ module EventSummarizer
     end
 
     def handle_verify_proofing_results_event(event:)
-      timestamp = Time.zone.parse(event['@timestamp'])
+      timestamp = event['@timestamp']
       success = event.dig(*EVENT_PROPERTIES, 'success')
 
       if success
@@ -407,7 +407,7 @@ module EventSummarizer
       finish_current_idv_attempt if current_idv_attempt
 
       @current_idv_attempt = IdvAttempt.new(
-        started_at: Time.zone.parse(event['@timestamp']),
+        started_at: event['@timestamp'],
       )
     end
 
@@ -417,6 +417,7 @@ module EventSummarizer
       attributes = attempt.significant_events.map do |e|
         {
           type: e.type,
+          timestamp: e.timestamp,
           description: e.description,
         }
       end
