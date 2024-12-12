@@ -255,7 +255,7 @@ module SamlIdpAuthConcern
   end
 
   def track_integration_errors(event:, errors: nil)
-    analytics.integration_errors_present(
+    analytics.sp_integration_errors_present(
       error_details: errors || saml_request.errors.uniq,
       error_types: [:saml_request_errors],
       event:,

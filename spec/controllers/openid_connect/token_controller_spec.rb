@@ -68,7 +68,7 @@ RSpec.describe OpenidConnect::TokenController do
           }
         )
 
-        expect(@analytics).to_not have_logged_event(:integration_errors_present)
+        expect(@analytics).to_not have_logged_event(:sp_integration_errors_present)
       end
     end
 
@@ -103,7 +103,7 @@ RSpec.describe OpenidConnect::TokenController do
         )
 
         expect(@analytics).to have_logged_event(
-          :integration_errors_present,
+          :sp_integration_errors_present,
           error_details: array_including(
             'Grant type is not included in the list',
           ),
@@ -128,7 +128,7 @@ RSpec.describe OpenidConnect::TokenController do
         expect(json[:error]).to be_present
         expect(json).to_not have_key(:id_token)
 
-        expect(@analytics).to_not have_logged_event(:integration_errors_present)
+        expect(@analytics).to_not have_logged_event(:sp_integration_errors_present)
       end
     end
   end

@@ -155,7 +155,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             )
 
             expect(@analytics).to_not have_logged_event(
-              :integration_errors_present,
+              :sp_integration_errors_present,
             )
           end
         end
@@ -2032,7 +2032,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
           expect(@analytics).to_not have_logged_event('SP redirect initiated')
 
           expect(@analytics).to have_logged_event(
-            :integration_errors_present,
+            :sp_integration_errors_present,
             error_details: array_including(
               'Prompt Please fill in this field.',
             ),
@@ -2052,7 +2052,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             action
 
             expect(@analytics).to have_logged_event(
-              :integration_errors_present,
+              :sp_integration_errors_present,
               error_details: array_including(
                 'Acr values Please fill in this field.',
                 'Prompt Please fill in this field.',
@@ -2093,7 +2093,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             )
 
             expect(@analytics).to have_logged_event(
-              :integration_errors_present,
+              :sp_integration_errors_present,
               error_details: array_including(
                 'Acr values Please fill in this field.',
               ),

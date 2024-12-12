@@ -24,7 +24,7 @@ module OpenidConnect
       if response.success?
         @current_identity = identity
       else
-        analytics.integration_errors_present(**attributes[:integration_errors])
+        analytics.sp_integration_errors_present(**attributes[:integration_errors])
         render json: { error: verifier.errors[:access_token].join(' ') },
                status: :unauthorized
       end

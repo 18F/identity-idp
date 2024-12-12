@@ -18,7 +18,7 @@ module OpenidConnect
       analytics.openid_connect_token(**analytics_attributes.except(:integration_errors))
 
       if !result.success? && analytics_attributes[:integration_errors].present?
-        analytics.integration_errors_present(
+        analytics.sp_integration_errors_present(
           **analytics_attributes[:integration_errors],
         )
       end

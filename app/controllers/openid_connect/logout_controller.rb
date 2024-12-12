@@ -26,13 +26,8 @@ module OpenidConnect
       if result.success? && redirect_uri
         handle_successful_logout_request(result, redirect_uri)
       else
-        if result.extra[:integration_errors].present?
-          analytics.integration_errors_present(
-            **result.
-              to_h[:integration_errors].
-              merge({ event: :oidc_logout_requested }),
-          )
-        end
+        track_integration_errors(result:, event: :oidc_logout_requested)
+
         render :error
       end
     end
@@ -55,13 +50,8 @@ module OpenidConnect
       if result.success? && redirect_uri
         handle_logout(result, redirect_uri)
       else
-        if result.extra[:integration_errors].present?
-          analytics.integration_errors_present(
-            **result.
-              to_h[:integration_errors].
-              merge({ event: :oidc_logout_submitted }),
-          )
-        end
+        track_integration_errors(result:, event: :oidc_logout_submitted)
+
         render :error
       end
     end
@@ -160,6 +150,16 @@ module OpenidConnect
 
     def logout_params
       params.permit(:client_id, :id_token_hint, :post_logout_redirect_uri, :state)
+    end
+
+    def track_integration_errors(result:, event:)
+      if result.extra[:integration_errors].present?
+        analytics.sp_integration_errors_present(
+          **result.
+            to_h[:integration_errors].
+            merge(event:),
+        )
+      end
     end
   end
 end

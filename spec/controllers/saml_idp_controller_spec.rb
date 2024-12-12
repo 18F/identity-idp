@@ -47,7 +47,7 @@ RSpec.describe SamlIdpController do
         hash_including(sp_initiated: true, oidc: false, saml_request_valid: false),
       )
       expect(@analytics).to have_logged_event(
-        :integration_errors_present,
+        :sp_integration_errors_present,
         error_details: [:issuer_missing_or_invald, :no_auth_or_logout_request, :invalid_signature],
         error_types: { saml_request_errors: true },
         event: :saml_logout_request,
@@ -140,7 +140,7 @@ RSpec.describe SamlIdpController do
           hash_including(sp_initiated: true, oidc: false, saml_request_valid: false),
         )
         expect(@analytics).to have_logged_event(
-          :integration_errors_present,
+          :sp_integration_errors_present,
           error_details: [:invalid_signature],
           error_types: { saml_request_errors: true },
           event: :saml_logout_request,
@@ -214,7 +214,7 @@ RSpec.describe SamlIdpController do
 
       expect(@analytics).to have_logged_event('Remote Logout initiated', saml_request_valid: false)
       expect(@analytics).to have_logged_event(
-        :integration_errors_present,
+        :sp_integration_errors_present,
         error_details: [:issuer_missing_or_invald, :no_auth_or_logout_request, :invalid_signature],
         error_types: { saml_request_errors: true },
         event: :saml_remote_logout_request,
@@ -396,7 +396,7 @@ RSpec.describe SamlIdpController do
 
       expect(response).to be_bad_request
       expect(@analytics).to have_logged_event(
-        :integration_errors_present,
+        :sp_integration_errors_present,
         error_details: [:no_user_found_from_session_index],
         error_types: { saml_request_errors: true },
         event: :saml_remote_logout_request,
@@ -439,7 +439,7 @@ RSpec.describe SamlIdpController do
 
       expect(response).to be_bad_request
       expect(@analytics).to have_logged_event(
-        :integration_errors_present,
+        :sp_integration_errors_present,
         error_details: [:no_user_found_from_session_index],
         error_types: { saml_request_errors: true },
         event: :saml_remote_logout_request,
@@ -482,7 +482,7 @@ RSpec.describe SamlIdpController do
 
       expect(response).to be_bad_request
       expect(@analytics).to have_logged_event(
-        :integration_errors_present,
+        :sp_integration_errors_present,
         error_details: [:no_user_found_from_session_index],
         error_types: { saml_request_errors: true },
         event: :saml_remote_logout_request,
@@ -499,7 +499,7 @@ RSpec.describe SamlIdpController do
 
       expect(response).to be_bad_request
       expect(@analytics).to have_logged_event(
-        :integration_errors_present,
+        :sp_integration_errors_present,
         error_details: [:invalid_signature],
         error_types: { saml_request_errors: true },
         event: :saml_remote_logout_request,
@@ -1086,7 +1086,7 @@ RSpec.describe SamlIdpController do
           ),
         )
         expect(@analytics).to have_logged_event(
-          :integration_errors_present,
+          :sp_integration_errors_present,
           error_details: ['Unauthorized authentication context'],
           error_types: { saml_request_errors: true },
           event: :saml_auth_request,
@@ -1112,7 +1112,7 @@ RSpec.describe SamlIdpController do
             ),
           )
           expect(@analytics).to_not have_logged_event(
-            :integration_errors_present,
+            :sp_integration_errors_present,
           )
         end
 
@@ -1361,7 +1361,7 @@ RSpec.describe SamlIdpController do
           ),
         )
         expect(@analytics).to have_logged_event(
-          :integration_errors_present,
+          :sp_integration_errors_present,
           error_details: ['Unauthorized Service Provider'],
           error_types: { saml_request_errors: true },
           event: :saml_auth_request,
@@ -1414,7 +1414,7 @@ RSpec.describe SamlIdpController do
           ),
         )
         expect(@analytics).to have_logged_event(
-          :integration_errors_present,
+          :sp_integration_errors_present,
           error_details: ['Unauthorized Service Provider', 'Unauthorized authentication context'],
           error_types: { saml_request_errors: true },
           event: :saml_auth_request,
@@ -1466,7 +1466,7 @@ RSpec.describe SamlIdpController do
         )
 
         expect(@analytics).to have_logged_event(
-          :integration_errors_present,
+          :sp_integration_errors_present,
           error_details: ['Your service provider does not have a certificate registered.'],
           error_types: { saml_request_errors: true },
           event: :saml_auth_request,

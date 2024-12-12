@@ -181,7 +181,7 @@ module OpenidConnect
       return if result.success?
 
       if result.extra[:integration_errors].present?
-        analytics.integration_errors_present(
+        analytics.sp_integration_errors_present(
           **result.to_h[:integration_errors],
         )
       end

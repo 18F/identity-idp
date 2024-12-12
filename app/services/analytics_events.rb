@@ -5179,31 +5179,6 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Array] error_details Full messages of the errors
-  # @param [Hash] error_types Types of errors that are surfaced
-  # @param [Symbol] event What part of the workflow the error occured in
-  # @param [Boolean] integration_exists Whether the requesting issuer maps to an SP
-  # @param [String] request_issuer The issuer in the request
-  def integration_errors_present(
-    error_details:,
-    error_types:,
-    event:,
-    integration_exists:,
-    request_issuer: nil,
-    **extra
-  )
-    types = error_types.index_with { |_type| true }
-    track_event(
-      :integration_errors_present,
-      error_details:,
-      error_types: types,
-      event:,
-      integration_exists:,
-      request_issuer:,
-      **extra,
-    )
-  end
-
   # @param [String] controller
   # @param [Boolean] user_signed_in
   # Authenticity token (CSRF) is invalid
@@ -6938,6 +6913,32 @@ module AnalyticsEvents
   # Tracks when a user visits the "This agency no longer uses Login.gov" page.
   def sp_inactive_visit
     track_event('SP inactive visited')
+  end
+
+  # @param [Array] error_details Full messages of the errors
+  # @param [Hash] error_types Types of errors that are surfaced
+  # @param [Symbol] event What part of the workflow the error occured in
+  # @param [Boolean] integration_exists Whether the requesting issuer maps to an SP
+  # @param [String] request_issuer The issuer in the request
+  # Monitoring service-provider specific integration errors
+  def sp_integration_errors_present(
+    error_details:,
+    error_types:,
+    event:,
+    integration_exists:,
+    request_issuer: nil,
+    **extra
+  )
+    types = error_types.index_with { |_type| true }
+    track_event(
+      :sp_integration_errors_present,
+      error_details:,
+      error_types: types,
+      event:,
+      integration_exists:,
+      request_issuer:,
+      **extra,
+    )
   end
 
   # Tracks when a user is redirected back to the service provider

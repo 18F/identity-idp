@@ -178,7 +178,7 @@ RSpec.describe OpenidConnect::LogoutController do
             )
 
             expect(@analytics).to_not have_logged_event(
-              :integration_errors_present,
+              :sp_integration_errors_present,
             )
           end
         end
@@ -221,7 +221,7 @@ RSpec.describe OpenidConnect::LogoutController do
             )
 
             expect(@analytics).to have_logged_event(
-              :integration_errors_present,
+              :sp_integration_errors_present,
               error_details: array_including(
                 'Redirect uri redirect_uri does not match registered redirect_uri',
               ),
@@ -255,7 +255,7 @@ RSpec.describe OpenidConnect::LogoutController do
             )
 
             expect(@analytics).to have_logged_event(
-              :integration_errors_present,
+              :sp_integration_errors_present,
               error_details: array_including(
                 'Id token hint id_token_hint was not recognized',
               ),
@@ -343,7 +343,7 @@ RSpec.describe OpenidConnect::LogoutController do
               ),
             )
             expect(@analytics).to_not have_logged_event(
-              :integration_errors_present,
+              :sp_integration_errors_present,
             )
             expect(response).to render_template(:confirm_logout)
             expect(response.body).to include service_provider.friendly_name
@@ -388,7 +388,7 @@ RSpec.describe OpenidConnect::LogoutController do
             )
 
             expect(@analytics).to have_logged_event(
-              :integration_errors_present,
+              :sp_integration_errors_present,
               error_details: array_including(
                 'Redirect uri redirect_uri does not match registered redirect_uri',
               ),
@@ -485,7 +485,7 @@ RSpec.describe OpenidConnect::LogoutController do
           )
 
           expect(@analytics).to_not have_logged_event(
-            :integration_errors_present,
+            :sp_integration_errors_present,
           )
         end
       end
@@ -528,7 +528,7 @@ RSpec.describe OpenidConnect::LogoutController do
           )
 
           expect(@analytics).to have_logged_event(
-            :integration_errors_present,
+            :sp_integration_errors_present,
             error_details: array_including(
               'Id token hint This application is misconfigured and should not be sending ' \
                 'id_token_hint. Please send client_id instead.',
@@ -579,7 +579,7 @@ RSpec.describe OpenidConnect::LogoutController do
           )
 
           expect(@analytics).to have_logged_event(
-            :integration_errors_present,
+            :sp_integration_errors_present,
             error_details: array_including(
               'Redirect uri redirect_uri does not match registered redirect_uri',
             ),
@@ -864,7 +864,7 @@ RSpec.describe OpenidConnect::LogoutController do
               oidc: true,
             )
             expect(@analytics).to_not have_logged_event(
-              :integration_errors_present,
+              :sp_integration_errors_present,
             )
           end
 
@@ -878,7 +878,7 @@ RSpec.describe OpenidConnect::LogoutController do
               action
 
               expect(@analytics).to have_logged_event(
-                :integration_errors_present,
+                :sp_integration_errors_present,
                 error_details: array_including(
                   'Client client_id is missing',
                 ),

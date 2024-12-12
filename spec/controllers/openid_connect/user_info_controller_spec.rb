@@ -30,7 +30,7 @@ RSpec.describe OpenidConnect::UserInfoController do
         )
 
         expect(@analytics).to have_logged_event(
-          :integration_errors_present,
+          :sp_integration_errors_present,
           error_details: array_including(
             'Access token No Authorization header provided',
           ),
@@ -64,7 +64,7 @@ RSpec.describe OpenidConnect::UserInfoController do
         )
 
         expect(@analytics).to have_logged_event(
-          :integration_errors_present,
+          :sp_integration_errors_present,
           error_details: array_including(
             'Access token Malformed Authorization header',
           ),
@@ -97,7 +97,7 @@ RSpec.describe OpenidConnect::UserInfoController do
         )
 
         expect(@analytics).to have_logged_event(
-          :integration_errors_present,
+          :sp_integration_errors_present,
           error_details: array_including(
             'Access token Could not find authorization for the contents of the provided ' \
               'access_token or it may have expired',
@@ -168,7 +168,7 @@ RSpec.describe OpenidConnect::UserInfoController do
         )
 
         expect(@analytics).to_not have_logged_event(
-          :integration_errors_present,
+          :sp_integration_errors_present,
         )
       end
 
