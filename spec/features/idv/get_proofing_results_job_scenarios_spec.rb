@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'axe-rspec'
 
-RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_analytics: [:*] do
+RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
   include OidcAuthHelper
   include UspsIppHelper
   include ActiveJob::TestHelper
