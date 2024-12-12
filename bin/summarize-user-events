@@ -12,6 +12,7 @@ require 'concurrent-ruby'
 $LOAD_PATH.unshift(File.expand_path(File.join(__dir__, '../lib')))
 require 'reporting/cloudwatch_client'
 require 'reporting/cloudwatch_query_quoting'
+require 'event_summarizer/account_deletion_matcher'
 
 require 'event_summarizer/example_matcher'
 
@@ -30,7 +31,8 @@ class SummarizeUserEvents
 
   def matchers
     @matchers ||= [
-      EventSummarizer::ExampleMatcher.new
+      EventSummarizer::ExampleMatcher.new,
+      EventSummarizer::AccountDeletionMatcher.new
     ]
   end
 
