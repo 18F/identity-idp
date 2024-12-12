@@ -1855,7 +1855,7 @@ module AnalyticsEvents
   # @param [String] state_id_type
   # @param [Boolean] async
   # @param [Integer] submit_attempts Times that user has tried submitting (previously called
-  # "attempts")
+  #   "attempts")
   # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
   # @param [Hash] client_image_metrics
   # @param ["hybrid","standard"] flow_path Document capture user flow
@@ -1890,10 +1890,10 @@ module AnalyticsEvents
   # @param [String] birth_year Birth year from document
   # @param [Integer] issue_year Year document was issued
   # @param [Hash] failed_image_fingerprints Hash of document field with an array of failed image
-  # fingerprints for that field.
+  #   fingerprints for that field.
   # @param [Integer] selfie_attempts number of selfie attempts the user currently has processed
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
-  # SDK upgrades
+  #   SDK upgrades
   # @option extra [String] 'DocumentName'
   # @option extra [String] 'DocAuthResult'
   # @option extra [String] 'DocIssuerCode'
