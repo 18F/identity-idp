@@ -14,7 +14,6 @@ require 'optparse'
 $LOAD_PATH.unshift(File.expand_path(File.join(__dir__, '../lib')))
 require 'reporting/cloudwatch_client'
 require 'reporting/cloudwatch_query_quoting'
-require 'event_summarizer/account_deletion_matcher'
 
 # Require all *_matcher.rb files in lib/event_summarizer
 Dir[File.expand_path(
