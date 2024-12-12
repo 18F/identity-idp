@@ -25,6 +25,9 @@ end
 class SummarizeUserEvents
   attr_reader :uuid, :from_date, :to_date, :zone
 
+  NICE_DATE_AND_TIME_FORMAT = '%B %d, %Y at %I:%M %p %Z'
+  TIME_ONLY_FORMAT = '%I:%M %p'
+
   def initialize(user_uuid: nil, start_time: nil, end_time: nil, zone: 'UTC')
     @zone = zone
     Time.zone = zone
@@ -42,7 +45,7 @@ class SummarizeUserEvents
   def matchers
     @matchers ||= [
       EventSummarizer::ExampleMatcher.new,
-      EventSummarizer::IdvMatcher.new
+      EventSummarizer::IdvMatcher.new,
     ]
   end
 
@@ -73,17 +76,52 @@ class SummarizeUserEvents
   end
 
   def format_results(results)
-    results.map do |r|
-      title = r[:title]
+    # Each Hash in results should have _at least_ a :title key defined
 
-      [
-        "## #{title}",
-        *r[:attributes]&.map do |attr|
-          "* #{attr[:description]}"
-        end,
-        '',
-      ]
-    end.join("\n")
+    results.
+      sort_by { |r| r[:timestamp] || r[:started_at] || Time.zone.at(0) }.
+      map do |r|
+        timestamp = r[:timestamp] || r[:started_at]
+
+        heading = r[:title]
+
+        if timestamp
+          heading = "#{heading} (#{timestamp.strftime(NICE_DATE_AND_TIME_FORMAT)})"
+        end
+
+        prev_timestamp = timestamp
+
+        list_items = r[:attributes]&.
+          sort_by { |attr| attr[:timestamp] || Time.zone.at(0) }&.
+          map do |attr|
+            text = attr[:description]
+
+            formatted_timestamp = format_time(attr[:timestamp], prev_timestamp)
+            prev_timestamp = attr[:timestamp]
+
+            text = "(#{formatted_timestamp}) #{text}" if formatted_timestamp
+
+            "* #{text}"
+          end
+
+        [
+          "## #{heading}",
+          *list_items,
+          '',
+        ]
+      end.join("\n")
+  end
+
+  def format_time(timestamp, prev_timestamp = nil)
+    return if timestamp.blank?
+
+    same_date = timestamp.to_date == prev_timestamp&.to_date
+
+    if same_date
+      timestamp.strftime(TIME_ONLY_FORMAT)
+    else
+      timestamp.strftime(NICE_DATE_AND_TIME_FORMAT)
+    end
   end
 
   def query
@@ -138,7 +176,7 @@ def main
   options = {}
   basename = File.basename($0)
 
-  # rubocop:disable Metrics/BlockLength, Metrics/LineLength
+  # rubocop:disable Metrics/LineLength
   optparse = OptionParser.new do |opts|
     opts.banner = <<-EOM
 
@@ -176,7 +214,7 @@ def main
       options[:zone] = val
     end
   end
-  # rubocop:enable Metrics/BlockLength, Metrics/LineLength
+  # rubocop:enable Metrics/LineLength
 
   optparse.parse!
 

@@ -417,6 +417,7 @@ module EventSummarizer
       attributes = attempt.significant_events.map do |e|
         {
           type: e.type,
+          timestamp: e.timestamp,
           description: e.description,
         }
       end
