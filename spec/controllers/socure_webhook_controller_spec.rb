@@ -63,6 +63,81 @@ RSpec.describe SocureWebhookController do
         before do
           request.headers['Authorization'] = socure_secret_key
         end
+
+        shared_examples 'repeats webhooks' do
+          let(:headers) do
+            {
+              Authorization: socure_secret_key_queue.last,
+              'Content-Type': 'application/json',
+            }
+          end
+          let(:endpoints) do
+            (1..3).map { |i| "https://#{i}.example.test/endpoint" }
+          end
+          let(:repeated_body) do
+            b = {}.merge(webhook_body)
+            b[:event].delete(:data)
+            b
+          end
+          before do
+            allow(IdentityConfig.store).to receive(:socure_docv_webhook_repeat_endpoints).
+              and_return(endpoints)
+
+            request.headers['Authorization'] = headers[:Authorization]
+            request.headers['Content-Type'] = headers[:'Content-Type']
+
+            endpoints.each do |endpoint|
+              stub_request(:post, endpoint)
+                .with(body: repeated_body, headers:)
+            end
+          end
+
+          context 'to all endpoints' do
+            # before do
+            #   endpoints.each do |endpoint|
+            #     stub_request(:post, endpoint)
+            #       .with(body: repeated_body, headers:)
+            #   end
+            # end
+
+            it 'repeats the webhook to all endpoints' do
+              post :create, params: webhook_body
+            end
+          end
+
+          context 'fails before broadcast' do
+            before do
+              allow_any_instance_of(DocAuth::Socure::WebhookRepeater).to receive(:repeat).and_raise('uh-oh')#.with(endpoints.first).and_raise('uh-oh')
+              # allow_any_instance_of(DocAuth::Socure::WebhookRepeater).to receive(:broadcast).and_raise('uh-oh')#.with(endpoints.first).and_raise('uh-oh')
+            end
+            it 'does not repeat webhooks' do
+              expect(NewRelic::Agent).to receive(:notice_error).exactly(1).times
+              post :create, params: webhook_body
+            end
+          end
+
+          context 'failing endpoints do not block sending remaining endpoints' do
+            before do
+              allow_any_instance_of(DocAuth::Socure::WebhookRepeater)
+                .to receive(:send_http_post_request).and_call_original
+
+              (1...3).each do |i|
+                allow_any_instance_of(DocAuth::Socure::WebhookRepeater)
+                  .to receive(:send_http_post_request).with(endpoints[i]).and_raise('uh-oh')
+              end
+            end
+            it 'does not prevent sending other webhooks' do
+              n = 2
+              if webhook_body.dig(:event, :eventType) == 'DOCUMENTS_UPLOADED'
+                n += 1 # also raises document capture session not found error
+              end
+
+              expect(NewRelic::Agent).to receive(:notice_error).exactly(n).times
+              post :create, params: webhook_body
+            end
+          end
+        end
+
         it 'returns OK and logs an event with a correct secret key and body' do
           post :create, params: webhook_body
 
@@ -112,6 +187,8 @@ RSpec.describe SocureWebhookController do
 
           context 'when DOCUMENTS_UPLOADED event received' do
             let(:event_type) { 'DOCUMENTS_UPLOADED' }
+
+            it_behaves_like 'repeats webhooks'
 
             it 'returns OK and logs an event with a correct secret key and body' do
               dcs = create(:document_capture_session, :socure)
@@ -181,6 +258,8 @@ RSpec.describe SocureWebhookController do
           context 'when SESSION_COMPLETE event received' do
             let(:event_type) { 'SESSION_COMPLETE' }
 
+            it_behaves_like 'repeats webhooks'
+
             it 'does not increment rate limiter of user' do
               dcs = create(:document_capture_session, :socure)
               webhook_body[:event][:docvTransactionToken] = dcs.socure_docv_transaction_token
@@ -219,6 +298,8 @@ RSpec.describe SocureWebhookController do
 
           context 'when SESSION_EXPIRED event received' do
             let(:event_type) { 'SESSION_EXPIRED' }
+
+            it_behaves_like 'repeats webhooks'
 
             it 'does not increment rate limiter of user' do
               dcs = create(:document_capture_session, :socure)
