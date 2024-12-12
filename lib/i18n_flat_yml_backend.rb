@@ -60,9 +60,7 @@ class I18nFlatYmlBackend < I18n::Backend::Simple
 
     if entry
       translations = I18n.available_locales.map { |locale| [locale, super(locale, key, options)] }.to_h
-      File.open('tracking.json', 'a') do |f|
-        f.puts({ locale:, key:, options:, translations: }.to_json)
-      end
+      Rails.logger.info "translation request: #{{ locale:, key:, options:, translations: }.to_json}"
     end
 
     entry

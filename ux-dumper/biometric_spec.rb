@@ -3,7 +3,7 @@
 require 'rails_helper'
 require_relative 'ux_dumper'
 
-RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
+RSpec.feature 'document capture step', :js do
   include IdvStepHelper
   include DocAuthHelper
   include DocCaptureHelper
@@ -15,7 +15,6 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
   before(:each) do
     allow_any_instance_of(ServiceProviderSession).
       to receive(:sp_name).and_return(@sp_name)
-    I18n.ux_dumper = ux_dumper
   end
 
   before(:all) do

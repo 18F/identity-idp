@@ -1,12 +1,12 @@
 class UxDumper
   SCREENSHOT_DIR = 'screenshots'
 
-  attr_reader :strings
+  attr_reader :log_file
 
   def initialize(name)
     @name = name
     @slides = []
-    @strings = []
+    @log_file = nil
   end
 
   def file_basename(page)
@@ -16,11 +16,6 @@ class UxDumper
 
   def screenshot_path
     Pathname.new("#{@name}-screenshots/slide-#{@slides.length}.png")
-  end
-
-  def add_string(key, string)
-    puts "UxDumper#add_string(#{key}, #{string.inspect})"
-    @strings << [key, string]
   end
 
   def resize_to_show_everything(page)
@@ -55,8 +50,25 @@ class UxDumper
   end
 
   def strings_for_last_slide
-    return_value = @strings
-    @strings = []
+    if !log_file
+      @log_file = File.open('log/test.log', 'r')
+    end
+    return [] if !log_file
+
+    return_value = []
+    so_far = []
+    log_file.each_line do |log_line|
+      case log_line
+      when /^translation request: ({.*})/
+        so_far << JSON.parse($1)
+      when /^{"method":"/
+        return_value = so_far
+        so_far = []
+      end
+    end
+
+    puts "strings_for_last_slide: returning: #{JSON.pretty_generate(return_value)}"
+
     return_value
   end
 
@@ -69,12 +81,11 @@ class UxDumper
   end
 
   def dump_strings(slide)
-    slide[:strings].map do |string_pair|
-      key = string_pair.first
-      string = string_pair.second
-
-      "`#{key}:         #{string.inspect}`<br />"
-    end.join + '<br />'
+    slide[:strings].map do |string_data|
+      key = string_data['key']
+      translations = string_data['translations']
+      "`#{key}:`\n> en: #{translations['en'].inspect} es: #{translations['es'].inspect} fr: #{translations['fr'].inspect} zh: #{translations['zh'].inspect}\n\n"
+    end.join('<br />') + '<br />'
   end
 
   def finish
