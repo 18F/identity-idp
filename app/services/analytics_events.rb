@@ -3630,12 +3630,12 @@ module AnalyticsEvents
     )
   end
 
-  # @param [String] enrollment_code:,
-  # @param [String] job_name:,
-  # @param [String] service_provider:,
-  # @param [Time] timestamp:,
-  # @param [Integer] wait_until:,
   # Tracks please call emails that are initiated during GetUspsProofingResultsJob
+  # @param [String] enrollment_code
+  # @param [String] job_name
+  # @param [String] service_provider
+  # @param [Time] timestamp
+  # @param [Integer] wait_until
   def idv_in_person_usps_proofing_results_job_please_call_email_initiated(
     enrollment_code:,
     job_name:,
