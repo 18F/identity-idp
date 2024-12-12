@@ -51,18 +51,34 @@ module EventSummarizer
         super(started_at:, significant_events:)
       end
 
+      def flagged_for_fraud?
+        self.significant_events.any? { |e| e.type == :flagged_for_fraud }
+      end
+
       def gpo?
         self.significant_events.any? { |e| e.type == :start_gpo }
+      end
+
+      def gpo_pending?
+        gpo? && !self.significant_events.any? { |e| e.type == :gpo_code_success }
       end
 
       def ipp?
         self.significant_events.any? { |e| e.type == :start_ipp }
       end
 
+      def ipp_pending?
+        ipp? && !self.significant_events.any? { |e| e.type == :ipp_enrollment_complete }
+      end
+
       def successful?
         self.significant_events.any? do |e|
-          e.type == :identity_verified
+          e.type == :verified
         end
+      end
+
+      def workflow_complete?
+        gpo? || ipp? || flagged_for_fraud? || successful?
       end
     end.freeze
 
@@ -74,6 +90,7 @@ module EventSummarizer
 
     attr_reader :current_idv_attempt
     attr_reader :idv_attempts
+    attr_reader :idv_abandoned_event
 
     def initialize
       @idv_attempts = []
@@ -86,6 +103,7 @@ module EventSummarizer
           start_new_idv_attempt(event:)
 
         when IDV_FINAL_RESOLUTION_EVENT
+
           for_current_idv_attempt(event:) do
             handle_final_resolution_event(event:)
           end
@@ -119,8 +137,12 @@ module EventSummarizer
           handle_rate_limit_reached(event:)
 
         else
-          warn event['name'] if ENV['LOG_UNHANDLED_EVENTS']
+          if ENV['LOG_UNHANDLED_EVENTS']
+            warn "#{event['@timestamp']} #{event['name']}"
+          end
       end
+
+      check_for_idv_abandonment(event)
     end
 
     def finish
@@ -145,6 +167,24 @@ module EventSummarizer
       )
     end
 
+    def check_for_idv_abandonment(event)
+      return if !current_idv_attempt.present?
+
+      looks_like_idv = /^idv/i.match(event['name'])
+      return if !looks_like_idv
+
+      if idv_abandoned_event.blank?
+        @idv_abandoned_event = event
+        return
+      end
+
+      is_a_little_bit_newer = event['@timestamp'] - idv_abandoned_event['@timestamp'] < 1.hour
+
+      if is_a_little_bit_newer
+        @idv_abandoned_event = event
+      end
+    end
+
     def for_current_idv_attempt(event:, &block)
       if !current_idv_attempt
         warn <<~WARNING
@@ -158,8 +198,24 @@ module EventSummarizer
     end
 
     def finish_current_idv_attempt
+      if current_idv_attempt.present?
+        looks_like_abandonment =
+          !current_idv_attempt.workflow_complete? &&
+          idv_abandoned_event.present? &&
+          idv_abandoned_event['@timestamp'] < 1.hour.ago
+
+        if looks_like_abandonment
+          add_significant_event(
+            type: :idv_abandoned,
+            timestamp: idv_abandoned_event['@timestamp'],
+            description: 'User abandoned identity verification',
+          )
+        end
+      end
+
       idv_attempts << current_idv_attempt if current_idv_attempt
       @current_idv_attempt = nil
+      @idv_abandoned_event = nil
     end
 
     # @return {Hash,nil}
