@@ -92,31 +92,22 @@ RSpec.describe SocureWebhookController do
             end
           end
 
-          context 'to all endpoints' do
-            # before do
-            #   endpoints.each do |endpoint|
-            #     stub_request(:post, endpoint)
-            #       .with(body: repeated_body, headers:)
-            #   end
-            # end
-
-            it 'repeats the webhook to all endpoints' do
-              post :create, params: webhook_body
-            end
+          it 'repeats the webhook to all endpoints' do
+            post :create, params: webhook_body
           end
 
-          context 'fails before broadcast' do
+          context 'processes webhook if broadcast fails' do
             before do
-              allow_any_instance_of(DocAuth::Socure::WebhookRepeater).to receive(:repeat).and_raise('uh-oh')#.with(endpoints.first).and_raise('uh-oh')
-              # allow_any_instance_of(DocAuth::Socure::WebhookRepeater).to receive(:broadcast).and_raise('uh-oh')#.with(endpoints.first).and_raise('uh-oh')
+              allow_any_instance_of(DocAuth::Socure::WebhookRepeater).to receive(:repeat).and_raise('uh-oh')
             end
+
             it 'does not repeat webhooks' do
               expect(NewRelic::Agent).to receive(:notice_error).exactly(1).times
               post :create, params: webhook_body
             end
           end
 
-          context 'failing endpoints do not block sending remaining endpoints' do
+          context 'failed endpoint repeat' do
             before do
               allow_any_instance_of(DocAuth::Socure::WebhookRepeater)
                 .to receive(:send_http_post_request).and_call_original
@@ -126,7 +117,8 @@ RSpec.describe SocureWebhookController do
                   .to receive(:send_http_post_request).with(endpoints[i]).and_raise('uh-oh')
               end
             end
-            it 'does not prevent sending other webhooks' do
+
+            it 'allows sending repeat requests to remaining endpoints' do
               n = 2
               if webhook_body.dig(:event, :eventType) == 'DOCUMENTS_UPLOADED'
                 n += 1 # also raises document capture session not found error
