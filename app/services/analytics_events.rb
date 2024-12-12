@@ -3630,12 +3630,27 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] enrollment_code:,
+  # @param [String] job_name:,
+  # @param [String] service_provider:,
+  # @param [Time] timestamp:,
+  # @param [Integer] wait_until:,
   # Tracks please call emails that are initiated during GetUspsProofingResultsJob
   def idv_in_person_usps_proofing_results_job_please_call_email_initiated(
+    enrollment_code:,
+    job_name:,
+    service_provider:,
+    timestamp:,
+    wait_until:,
     **extra
   )
     track_event(
       :idv_in_person_usps_proofing_results_job_please_call_email_initiated,
+      enrollment_code:,
+      job_name:,
+      service_provider:,
+      timestamp:,
+      wait_until:,
       **extra,
     )
   end
@@ -3707,6 +3722,7 @@ module AnalyticsEvents
   # @param [String] enrollment_id
   # @param [Float] minutes_since_established
   # @param [Float] minutes_since_last_status_check
+  # @parmm [Float] minutes_since_last_status_check_completed
   # @param [Float] minutes_since_last_status_update
   # @param [Float] minutes_to_completion
   # @param [String] issuer
@@ -3715,6 +3731,7 @@ module AnalyticsEvents
     enrollment_id:,
     minutes_since_established:,
     minutes_since_last_status_check:,
+    minutes_since_last_status_check_completed:,
     minutes_since_last_status_update:,
     minutes_to_completion:,
     issuer:,
@@ -3726,6 +3743,7 @@ module AnalyticsEvents
       enrollment_id:,
       minutes_since_established:,
       minutes_since_last_status_check:,
+      minutes_since_last_status_check_completed:,
       minutes_since_last_status_update:,
       minutes_to_completion:,
       issuer:,
