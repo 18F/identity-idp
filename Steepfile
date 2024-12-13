@@ -46,7 +46,7 @@ D = Steep::Diagnostic
 target :app do
   check 'app/forms/select_email_form.rb'
   signature 'sig'
-  # configure_code_diagnostics(D::Ruby.strict)
+  configure_code_diagnostics(D::Ruby.strict)
 
   library 'pathname'
 end
@@ -54,7 +54,7 @@ end
 target :app do
   check 'app/controllers/accounts/connected_accounts/selected_email_controller.rb'
   signature 'sig'
-  configure_code_diagnostics(D::Ruby.strict)
+  # configure_code_diagnostics(D::Ruby.strict)
 
   library 'pathname'
 end

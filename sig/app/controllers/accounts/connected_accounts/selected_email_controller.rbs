@@ -3,7 +3,7 @@
 module Accounts
   module ConnectedAccounts
     class SelectedEmailController < ApplicationController
-      @identity: Hash[Symbol, Hash[Symbol, Method]]
+      @identity: untyped | nil
 
       @select_email_form: SelectEmailForm
 
@@ -31,7 +31,7 @@ module Accounts
 
       def validate_identity: () -> (untyped | nil)
 
-      def identity: () -> (Hash[Symbol, Hash[Symbol, Method]] | nil)
+      def identity: () -> (untyped | nil)
     end
   end
 end

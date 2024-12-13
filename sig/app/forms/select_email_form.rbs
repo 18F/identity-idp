@@ -1,7 +1,7 @@
 class SelectEmailForm
   @user: User
 
-  @identity: Hash[Symbol, Integer]
+  @identity: Hash[Symbol, Integer] | nil
 
   @selected_email_id: Integer
 
@@ -15,7 +15,7 @@ class SelectEmailForm
 
   attr_reader user: User
 
-  attr_reader identity: Hash[Symbol, Integer]
+  attr_reader identity: Hash[Symbol, Integer] | nil
 
   attr_reader selected_email_id: Integer
 
