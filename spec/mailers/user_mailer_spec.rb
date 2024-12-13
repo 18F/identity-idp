@@ -1465,6 +1465,11 @@ RSpec.describe UserMailer, type: :mailer do
   end
 
   describe '#deliver_later' do
+    it 'queues email without raising' do
+      mailer = UserMailer.with(user:, email_address: user.email_addresses.first)
+      mailer.suspended_create_account.deliver_later
+    end
+
     it 'does not queue email if it potentially contains sensitive value' do
       user = create(:user)
       mailer = UserMailer.with(
