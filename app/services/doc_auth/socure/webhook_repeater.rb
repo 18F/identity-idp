@@ -3,7 +3,6 @@
 module DocAuth
   module Socure
     class WebhookRepeater
-
       attr_reader :body, :headers, :endpoints
 
       def initialize(body:, headers:, endpoints:)

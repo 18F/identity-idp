@@ -80,8 +80,11 @@ RSpec.describe SocureWebhookController do
             b
           end
           before do
-            allow(IdentityConfig.store).to receive(:socure_docv_webhook_repeat_endpoints).
-              and_return(endpoints)
+            allow(IdentityConfig.store)
+              .to receive(:socure_docv_webhook_repeat_endpoints).and_return(endpoints)
+
+            allow(DocumentCaptureSession).to receive(:find_by)
+              .and_return(create(:document_capture_session))
 
             request.headers['Authorization'] = headers[:Authorization]
             request.headers['Content-Type'] = headers[:'Content-Type']
@@ -98,11 +101,23 @@ RSpec.describe SocureWebhookController do
 
           context 'processes webhook if broadcast fails' do
             before do
-              allow_any_instance_of(DocAuth::Socure::WebhookRepeater).to receive(:repeat).and_raise('uh-oh')
+              allow(SocureDocvResultsJob).to receive(:perform_later)
+              allow_any_instance_of(DocAuth::Socure::WebhookRepeater)
+                .to receive(:repeat).and_raise('uh-oh')
+              expect(NewRelic::Agent).to receive(:notice_error) do |*args|
+                expect(args.first).to be_a_kind_of(RuntimeError)
+                expect(args.last).to eq(
+                  {
+                    custom_params: {
+                      event: 'Failed to broadcast Socure webhook',
+                      body: JSON.parse(repeated_body.to_json),
+                    },
+                  },
+                )
+              end
             end
 
             it 'does not repeat webhooks' do
-              expect(NewRelic::Agent).to receive(:notice_error).exactly(1).times
               post :create, params: webhook_body
             end
           end
@@ -115,16 +130,23 @@ RSpec.describe SocureWebhookController do
               (1...3).each do |i|
                 allow_any_instance_of(DocAuth::Socure::WebhookRepeater)
                   .to receive(:send_http_post_request).with(endpoints[i]).and_raise('uh-oh')
+
+                expect(NewRelic::Agent).to receive(:notice_error) do |*args|
+                  expect(args.first).to be_a_kind_of(RuntimeError)
+                  expect(args.last).to eq(
+                    {
+                      custom_params: {
+                        event: 'Failed to repeat webhook',
+                        endpoint: endpoints[i],
+                        body: JSON.parse(repeated_body.to_json),
+                      },
+                    },
+                  )
+                end
               end
             end
 
             it 'allows sending repeat requests to remaining endpoints' do
-              n = 2
-              if webhook_body.dig(:event, :eventType) == 'DOCUMENTS_UPLOADED'
-                n += 1 # also raises document capture session not found error
-              end
-
-              expect(NewRelic::Agent).to receive(:notice_error).exactly(n).times
               post :create, params: webhook_body
             end
           end
