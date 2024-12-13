@@ -144,7 +144,10 @@ class SocureWebhookController < ApplicationController
       Authorization: request.headers['Authorization'],
       'Content-Type': request.headers['Content-Type'],
     }
-    wr = DocAuth::Socure::WebhookRepeater.new(body: socure_params.to_h, headers:, endpoints:)
+
+    body = socure_params.to_h
+
+    wr = DocAuth::Socure::WebhookRepeater.new(body:, headers:, endpoints:)
     wr.broadcast
   rescue => exception
     NewRelic::Agent.notice_error(
