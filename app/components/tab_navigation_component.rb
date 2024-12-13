@@ -9,8 +9,9 @@ class TabNavigationComponent < BaseComponent
     @tag_options = tag_options
   end
 
-  def current_path?(path)
-    recognized_path = Rails.application.routes.recognize_path(path, method: request.method)
+  def current_path?(route)
+    return route[:current] if route.key?(:current)
+    recognized_path = Rails.application.routes.recognize_path(route[:path], method: request.method)
     request.params[:controller] == recognized_path[:controller] &&
       request.params[:action] == recognized_path[:action]
   rescue ActionController::RoutingError
