@@ -284,6 +284,7 @@ class OpenidConnectAuthorizeForm
       code_digest: code ? Digest::SHA256.hexdigest(code) : nil,
       code_challenge_present: code_challenge.present?,
       service_provider_pkce: service_provider&.pkce,
+      integration_errors:,
     }
   end
 
@@ -348,6 +349,18 @@ class OpenidConnectAuthorizeForm
 
   def ialmax_requested?
     Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[ial_values.sort.max] == 0
+  end
+
+  def integration_errors
+    return nil if @success || client_id.blank?
+
+    {
+      error_details: errors.full_messages,
+      error_types: errors.attribute_names,
+      event: :oidc_request_authorization,
+      integration_exists: service_provider.present?,
+      request_issuer: client_id,
+    }
   end
 
   def facial_match_ial_requested?

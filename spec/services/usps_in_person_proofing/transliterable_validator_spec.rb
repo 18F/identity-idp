@@ -29,8 +29,8 @@ RSpec.describe UspsInPersonProofing::TransliterableValidator do
   end
 
   before do
-    allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled).
-      and_return(usps_ipp_transliteration_enabled)
+    allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled)
+      .and_return(usps_ipp_transliteration_enabled)
   end
 
   subject(:validator) { described_class.new(options) }
@@ -111,8 +111,8 @@ RSpec.describe UspsInPersonProofing::TransliterableValidator do
 
           before do
             allow(validator).to receive(:analytics).and_return(analytics)
-            allow(validator.transliterator).to receive(:transliterate).with('def').
-              and_return(
+            allow(validator.transliterator).to receive(:transliterate).with('def')
+              .and_return(
                 UspsInPersonProofing::Transliterator::TransliterationResult.new(
                   changed?: true,
                   original: 'def',
@@ -156,8 +156,8 @@ RSpec.describe UspsInPersonProofing::TransliterableValidator do
             let(:transliterated_value_returned) { '1234' }
             let(:invalid_field) { 'def' }
             before do
-              allow(validator.transliterator).to receive(:transliterate).with('def').
-                and_return(
+              allow(validator.transliterator).to receive(:transliterate).with('def')
+                .and_return(
                   UspsInPersonProofing::Transliterator::TransliterationResult.new(
                     changed?: true,
                     original: 'def',

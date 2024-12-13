@@ -130,8 +130,8 @@ RSpec.shared_examples 'sp handoff after identity verification' do |sp|
     # Selenium driver does not support response header inspection, but we should be able to expect
     # that the browser itself would respect CSP and refuse invalid form targets.
     return if javascript_enabled?
-    expect(page.response_headers['Content-Security-Policy']).
-      to(include('form-action \'self\' http://localhost:7654'))
+    expect(page.response_headers['Content-Security-Policy'])
+      .to(include('form-action \'self\' http://localhost:7654'))
   end
 
   def expect_successful_oidc_handoff

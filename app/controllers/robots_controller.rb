@@ -18,9 +18,9 @@ class RobotsController < ApplicationController
   private
 
   def allowed_paths
-    I18n.available_locales.
-      map { |locale| locale == I18n.default_locale ? nil : locale }.
-      flat_map do |locale|
+    I18n.available_locales
+      .map { |locale| locale == I18n.default_locale ? nil : locale }
+      .flat_map do |locale|
         ALLOWED_ROUTES.map { |route| route_for(route, only_path: true, locale:) }
       end
   end

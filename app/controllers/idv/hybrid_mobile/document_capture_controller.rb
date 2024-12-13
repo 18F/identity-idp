@@ -17,8 +17,8 @@ module Idv
       def show
         analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)
 
-        Funnel::DocAuth::RegisterStep.new(document_capture_user.id, sp_session[:issuer]).
-          call('document_capture', :view, true)
+        Funnel::DocAuth::RegisterStep.new(document_capture_user.id, sp_session[:issuer])
+          .call('document_capture', :view, true)
 
         render :show, locals: extra_view_variables
       end
@@ -32,8 +32,8 @@ module Idv
 
         analytics.idv_doc_auth_document_capture_submitted(**result.to_h.merge(analytics_arguments))
 
-        Funnel::DocAuth::RegisterStep.new(document_capture_user.id, sp_session[:issuer]).
-          call('document_capture', :update, true)
+        Funnel::DocAuth::RegisterStep.new(document_capture_user.id, sp_session[:issuer])
+          .call('document_capture', :update, true)
 
         # rate limiting redirect is in ImageUploadResponsePresenter
         if result.success?

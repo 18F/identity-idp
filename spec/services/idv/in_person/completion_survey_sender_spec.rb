@@ -6,8 +6,8 @@ RSpec.describe Idv::InPerson::CompletionSurveySender do
     let(:issuer) { 'test_issuer' }
 
     it 'does nothing if the user should not receive a survey' do
-      allow(user).to receive(:should_receive_in_person_completion_survey?).
-        with(issuer).and_return(false)
+      allow(user).to receive(:should_receive_in_person_completion_survey?)
+        .with(issuer).and_return(false)
 
       described_class.send_completion_survey(user, issuer)
       expect_delivered_email_count(0)
@@ -15,8 +15,8 @@ RSpec.describe Idv::InPerson::CompletionSurveySender do
 
     context 'user should receive a survey' do
       before do
-        allow(user).to receive(:should_receive_in_person_completion_survey?).
-          with(issuer).and_return(true)
+        allow(user).to receive(:should_receive_in_person_completion_survey?)
+          .with(issuer).and_return(true)
 
         create(:service_provider, issuer: issuer)
         create(:in_person_enrollment, user: user, issuer: issuer, status: :passed)

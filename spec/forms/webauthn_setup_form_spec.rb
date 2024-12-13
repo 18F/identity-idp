@@ -55,13 +55,13 @@ RSpec.describe WebauthnSetupForm do
           user.reload
 
           expect(user.webauthn_configurations.roaming_authenticators.count).to eq(1)
-          expect(user.webauthn_configurations.roaming_authenticators.first.transports).
-            to eq(['usb'])
+          expect(user.webauthn_configurations.roaming_authenticators.first.transports)
+            .to eq(['usb'])
         end
 
         it 'sends a recovery information changed event' do
-          expect(PushNotification::HttpPush).to receive(:deliver).
-            with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
+          expect(PushNotification::HttpPush).to receive(:deliver)
+            .with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
 
           subject.submit(params)
         end
@@ -220,8 +220,8 @@ RSpec.describe WebauthnSetupForm do
 
     context 'when the attestation response raises an error' do
       before do
-        allow(WebAuthn::AttestationStatement).
-          to receive(:from).and_raise(WebAuthn::AuthenticatorDataFormatError)
+        allow(WebAuthn::AttestationStatement)
+          .to receive(:from).and_raise(WebAuthn::AuthenticatorDataFormatError)
       end
 
       it 'returns false with an error when the attestation response raises an error' do
@@ -300,8 +300,8 @@ RSpec.describe WebauthnSetupForm do
           expect(user.webauthn_configurations.platform_authenticators.count).to eq(2)
           expect(
             user.webauthn_configurations.platform_authenticators[1].name,
-          ).
-            to eq("#{device_name} (1)")
+          )
+            .to eq("#{device_name} (1)")
           expect(result.to_h[:success]).to eq(true)
         end
       end
@@ -325,8 +325,8 @@ RSpec.describe WebauthnSetupForm do
 
           expect(result.success?).to eq(true)
           expect(user.webauthn_configurations.platform_authenticators.count).to eq(3)
-          expect(user.webauthn_configurations.platform_authenticators.last.name).
-            to eq("#{device_name} (2)")
+          expect(user.webauthn_configurations.platform_authenticators.last.name)
+            .to eq("#{device_name} (2)")
         end
       end
     end

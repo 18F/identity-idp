@@ -87,9 +87,9 @@ RSpec.describe UserEventCreator do
         end
 
         it 'saves the cookie permanently' do
-          expect { subject.create_user_event(event_type, user) }.to change { cookie_jar[:device] }.
-            from(nil).
-            to(lambda { |value| value == Device.last.cookie_uuid })
+          expect { subject.create_user_event(event_type, user) }.to change { cookie_jar[:device] }
+            .from(nil)
+            .to(lambda { |value| value == Device.last.cookie_uuid })
         end
       end
     end
@@ -99,8 +99,8 @@ RSpec.describe UserEventCreator do
     it 'creates a device with a disavowal' do
       event, disavowal_token = subject.create_user_event_with_disavowal(event_type, user)
 
-      expect(event.disavowal_token_fingerprint).
-        to eq(Pii::Fingerprinter.fingerprint(disavowal_token))
+      expect(event.disavowal_token_fingerprint)
+        .to eq(Pii::Fingerprinter.fingerprint(disavowal_token))
     end
   end
 

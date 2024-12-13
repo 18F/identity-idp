@@ -30,8 +30,8 @@ RSpec.describe Idv::DocumentCaptureController do
     vot = sp_selfie_enabled ? 'Pb' : 'P1'
     resolved_authn_context = Vot::Parser.new(vector_of_trust: vot).parse
 
-    allow(controller).to receive(:resolved_authn_context_result).
-      and_return(resolved_authn_context)
+    allow(controller).to receive(:resolved_authn_context_result)
+      .and_return(resolved_authn_context)
     subject.idv_session.flow_path = flow_path
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
 
@@ -54,8 +54,8 @@ RSpec.describe Idv::DocumentCaptureController do
 
         it 'does not satisfy precondition' do
           expect(Idv::DocumentCaptureController.step_info.preconditions.is_a?(Proc))
-          expect(subject).to receive(:render).
-            with(:show, locals: an_instance_of(Hash)).and_call_original
+          expect(subject).to receive(:render)
+            .with(:show, locals: an_instance_of(Hash)).and_call_original
           get :show
           expect(response).to render_template :show
         end
@@ -65,8 +65,8 @@ RSpec.describe Idv::DocumentCaptureController do
         let(:sp_selfie_enabled) { true }
 
         before do
-          allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).
-            and_return(false)
+          allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
+            .and_return(false)
         end
 
         it 'does satisfy precondition' do
@@ -152,8 +152,8 @@ RSpec.describe Idv::DocumentCaptureController do
 
       before do
         resolved_authn_context = Vot::Parser.new(vector_of_trust: vot).parse
-        allow(controller).to receive(:resolved_authn_context_result).
-          and_return(resolved_authn_context)
+        allow(controller).to receive(:resolved_authn_context_result)
+          .and_return(resolved_authn_context)
       end
 
       it 'does not redirect to Socure controller' do
@@ -181,8 +181,8 @@ RSpec.describe Idv::DocumentCaptureController do
       let(:sp_selfie_enabled) { true }
       let(:desktop_selfie_enabled) { false }
       before do
-        allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).
-          and_return(desktop_selfie_enabled)
+        allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
+          .and_return(desktop_selfie_enabled)
       end
       describe 'when desktop selfie disabled' do
         let(:desktop_selfie_enabled) { false }
@@ -383,8 +383,8 @@ RSpec.describe Idv::DocumentCaptureController do
 
     context 'selfie checks' do
       before do
-        expect(controller).to receive(:selfie_requirement_met?).
-          and_return(performed_if_needed)
+        expect(controller).to receive(:selfie_requirement_met?)
+          .and_return(performed_if_needed)
         allow(result).to receive(:success?).and_return(true)
         allow(result).to receive(:errors).and_return(result[:errors])
         allow(subject).to receive(:stored_result).and_return(result)

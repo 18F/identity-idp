@@ -68,9 +68,9 @@ RSpec.feature 'Backup codes' do
       expect(page).to have_current_path(backup_code_setup_path)
       expect(page).to have_content(t('forms.backup_code.title'))
 
-      generated_at = user.backup_code_configurations.
-        order(created_at: :asc).first.created_at.
-        in_time_zone('UTC')
+      generated_at = user.backup_code_configurations
+        .order(created_at: :asc).first.created_at
+        .in_time_zone('UTC')
       formatted_generated_at = l(generated_at, format: t('time.formats.event_timestamp'))
 
       expected_message = "#{t('account.index.backup_codes_exist')} #{formatted_generated_at}"

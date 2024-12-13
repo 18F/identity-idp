@@ -105,12 +105,12 @@ RSpec.describe ServiceProviderUpdater do
         expect(sp.updated_at).to_not eq friendly_sp[:updated_at]
         expect(sp.created_at).to_not eq friendly_sp[:created_at]
         expect(sp.approved).to eq true
-        expect(sp.help_text['sign_in']).to eq friendly_sp[:help_text][:sign_in].
-          stringify_keys
-        expect(sp.help_text['sign_up']).to eq friendly_sp[:help_text][:sign_up].
-          stringify_keys
-        expect(sp.help_text['forgot_password']).to eq friendly_sp[:help_text][:forgot_password].
-          stringify_keys
+        expect(sp.help_text['sign_in']).to eq friendly_sp[:help_text][:sign_in]
+          .stringify_keys
+        expect(sp.help_text['sign_up']).to eq friendly_sp[:help_text][:sign_up]
+          .stringify_keys
+        expect(sp.help_text['forgot_password']).to eq friendly_sp[:help_text][:forgot_password]
+          .stringify_keys
       end
 
       it 'updates existing dashboard-provided Service Providers' do
@@ -128,12 +128,12 @@ RSpec.describe ServiceProviderUpdater do
         expect(sp.updated_at).to_not eq friendly_sp[:updated_at]
         expect(sp.created_at).to_not eq friendly_sp[:created_at]
         expect(sp.approved).to eq true
-        expect(sp.help_text['sign_in']).to eq friendly_sp[:help_text][:sign_in].
-          stringify_keys
-        expect(sp.help_text['sign_up']).to eq friendly_sp[:help_text][:sign_up].
-          stringify_keys
-        expect(sp.help_text['forgot_password']).to eq friendly_sp[:help_text][:forgot_password].
-          stringify_keys
+        expect(sp.help_text['sign_in']).to eq friendly_sp[:help_text][:sign_in]
+          .stringify_keys
+        expect(sp.help_text['sign_up']).to eq friendly_sp[:help_text][:sign_up]
+          .stringify_keys
+        expect(sp.help_text['forgot_password']).to eq friendly_sp[:help_text][:forgot_password]
+          .stringify_keys
       end
 
       it 'removes inactive Service Providers' do
@@ -161,8 +161,8 @@ RSpec.describe ServiceProviderUpdater do
       end
 
       it 'updates certs (plural)' do
-        expect { subject.run }.
-          to(change { ServiceProvider.find_by(issuer: oidc_issuer)&.ssl_certs&.size }.to(2))
+        expect { subject.run }
+          .to(change { ServiceProvider.find_by(issuer: oidc_issuer)&.ssl_certs&.size }.to(2))
       end
     end
 
@@ -175,8 +175,8 @@ RSpec.describe ServiceProviderUpdater do
 
         subject.run
 
-        expect(Rails.logger).to have_received(:error).
-          with("Failed to parse response from #{fake_dashboard_url}: ")
+        expect(Rails.logger).to have_received(:error)
+          .with("Failed to parse response from #{fake_dashboard_url}: ")
         expect(ServiceProvider.count).to eq before_count
       end
     end
@@ -243,8 +243,8 @@ RSpec.describe ServiceProviderUpdater do
 
         subject.run
 
-        expect(Rails.logger).to have_received(:error).
-          with("Failed to contact #{fake_dashboard_url}")
+        expect(Rails.logger).to have_received(:error)
+          .with("Failed to contact #{fake_dashboard_url}")
         expect(ServiceProvider.count).to eq before_count
       end
     end

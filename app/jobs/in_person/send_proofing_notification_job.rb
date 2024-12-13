@@ -15,16 +15,16 @@ module InPerson
       )
 
       if enrollment.nil? || !enrollment.eligible_for_notification?
-        analytics(user: enrollment&.user || AnonymousUser.new).
-          idv_in_person_send_proofing_notification_job_skipped(
+        analytics(user: enrollment&.user || AnonymousUser.new)
+          .idv_in_person_send_proofing_notification_job_skipped(
             enrollment_code: enrollment&.enrollment_code,
             enrollment_id: enrollment_id,
           )
         return
       end
 
-      analytics(user: enrollment.user).
-        idv_in_person_send_proofing_notification_job_started(
+      analytics(user: enrollment.user)
+        .idv_in_person_send_proofing_notification_job_started(
           enrollment_code: enrollment.enrollment_code,
           enrollment_id: enrollment.id,
         )
@@ -42,8 +42,8 @@ module InPerson
 
       log_job_completed(enrollment: enrollment)
     rescue StandardError => err
-      analytics(user: enrollment&.user || AnonymousUser.new).
-        idv_in_person_send_proofing_notification_job_exception(
+      analytics(user: enrollment&.user || AnonymousUser.new)
+        .idv_in_person_send_proofing_notification_job_exception(
           enrollment_code: enrollment&.enrollment_code,
           enrollment_id: enrollment_id,
           exception_class: err.class.to_s,
@@ -58,15 +58,15 @@ module InPerson
     end
 
     def log_job_completed(enrollment:)
-      analytics(user: enrollment.user).
-        idv_in_person_send_proofing_notification_job_completed(
+      analytics(user: enrollment.user)
+        .idv_in_person_send_proofing_notification_job_completed(
           enrollment_code: enrollment.enrollment_code, enrollment_id: enrollment.id,
         )
     end
 
     def handle_telephony_response(enrollment:, phone:, telephony_response:)
-      analytics(user: enrollment.user).
-        idv_in_person_send_proofing_notification_attempted(
+      analytics(user: enrollment.user)
+        .idv_in_person_send_proofing_notification_attempted(
           success: telephony_response.success?,
           enrollment_code: enrollment.enrollment_code,
           enrollment_id: enrollment.id,

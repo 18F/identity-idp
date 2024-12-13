@@ -117,9 +117,9 @@ RSpec.describe 'In Person Proofing', js: true do
     deadline = nil
     freeze_time do
       acknowledge_and_confirm_personal_key
-      deadline = (Time.zone.now + IdentityConfig.store.in_person_enrollment_validity_in_days.days).
-        in_time_zone(Idv::InPerson::ReadyToVerifyPresenter::USPS_SERVER_TIMEZONE).
-        strftime(t('time.formats.event_date'))
+      deadline = (Time.zone.now + IdentityConfig.store.in_person_enrollment_validity_in_days.days)
+        .in_time_zone(Idv::InPerson::ReadyToVerifyPresenter::USPS_SERVER_TIMEZONE)
+        .strftime(t('time.formats.event_date'))
     end
 
     # ready to verify page
@@ -211,8 +211,8 @@ RSpec.describe 'In Person Proofing', js: true do
         let(:sp) { service_provider }
         it 'sends a survey when they share information with that partner',
            allow_browser_log: true do
-          expect(last_email.html_part.body).
-            to have_selector(
+          expect(last_email.html_part.body)
+            .to have_selector(
               "a[href='#{IdentityConfig.store.in_person_opt_in_available_completion_survey_url}']",
             )
         end
@@ -470,9 +470,9 @@ RSpec.describe 'In Person Proofing', js: true do
       freeze_time do
         acknowledge_and_confirm_personal_key
         deadline = (Time.zone.now +
-          IdentityConfig.store.in_person_enrollment_validity_in_days.days).
-          in_time_zone(Idv::InPerson::ReadyToVerifyPresenter::USPS_SERVER_TIMEZONE).
-          strftime(t('time.formats.event_date'))
+          IdentityConfig.store.in_person_enrollment_validity_in_days.days)
+          .in_time_zone(Idv::InPerson::ReadyToVerifyPresenter::USPS_SERVER_TIMEZONE)
+          .strftime(t('time.formats.event_date'))
       end
 
       # ready to verify page

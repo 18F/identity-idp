@@ -17,8 +17,8 @@ namespace :profiles do
 
     update_profiles = ENV['UPDATE_PROFILES'] == 'true'
 
-    profiles = Profile.where('verified_at IS NOT NULL').
-      where('fraud_review_pending_at IS NOT NULL OR fraud_rejection_at IS NOT NULL OR
+    profiles = Profile.where('verified_at IS NOT NULL')
+      .where('fraud_review_pending_at IS NOT NULL OR fraud_rejection_at IS NOT NULL OR
         gpo_verification_pending_at IS NOT NULL')
 
     profiles.each do |profile|

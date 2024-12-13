@@ -53,8 +53,8 @@ RSpec.describe 'Setup PIV/CAC after sign-in' do
       http://localhost:7654 https://example.com
     STR
 
-    expect(page.response_headers['Content-Security-Policy']).
-      to(include(expected_form_action))
+    expect(page.response_headers['Content-Security-Policy'])
+      .to(include(expected_form_action))
   end
 
   scenario 'user opts to add piv/cac card and has to reauthenticate on remembered device' do

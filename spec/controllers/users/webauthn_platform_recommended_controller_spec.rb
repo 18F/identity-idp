@@ -58,15 +58,15 @@ RSpec.describe Users::WebauthnPlatformRecommendedController do
 
     it 'updates user record to mark as having dismissed recommendation' do
       freeze_time do
-        expect { response }.to change { user.webauthn_platform_recommended_dismissed_at }.
-          from(nil).
-          to(Time.zone.now)
+        expect { response }.to change { user.webauthn_platform_recommended_dismissed_at }
+          .from(nil)
+          .to(Time.zone.now)
       end
     end
 
     it 'does not assign recommended session value' do
-      expect { response }.not_to change { controller.user_session[:webauthn_platform_recommended] }.
-        from(nil)
+      expect { response }.not_to change { controller.user_session[:webauthn_platform_recommended] }
+        .from(nil)
     end
 
     it 'redirects user to after sign in path' do
@@ -118,8 +118,8 @@ RSpec.describe Users::WebauthnPlatformRecommendedController do
       end
 
       it 'assigns recommended session value to recommendation flow' do
-        expect { response }.to change { controller.user_session[:webauthn_platform_recommended] }.
-          from(nil).to(:authentication)
+        expect { response }.to change { controller.user_session[:webauthn_platform_recommended] }
+          .from(nil).to(:authentication)
       end
 
       context 'user is creating account' do
@@ -128,8 +128,8 @@ RSpec.describe Users::WebauthnPlatformRecommendedController do
         end
 
         it 'assigns recommended session value to recommendation flow' do
-          expect { response }.to change { controller.user_session[:webauthn_platform_recommended] }.
-            from(nil).to(:account_creation)
+          expect { response }.to change { controller.user_session[:webauthn_platform_recommended] }
+            .from(nil).to(:account_creation)
         end
       end
     end

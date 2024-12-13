@@ -3,9 +3,9 @@ class TooltipComponentPreview < BaseComponentPreview
   # @display body_class padding-10
   def default
     render(
-      TooltipComponent.
-        new(tooltip_text: 'Finish verifying your identity.').
-        with_content(content_tag(:span, 'Unverified')),
+      TooltipComponent
+        .new(tooltip_text: 'Finish verifying your identity.')
+        .with_content(content_tag(:span, 'Unverified')),
     )
   end
   # @!endgroup

@@ -29,10 +29,10 @@ RSpec.describe DataWarehouse::TableSummaryStatsExportJob, type: :job do
     allow(Identity::Hostdata).to receive(:env).and_return('int')
     allow(Identity::Hostdata).to receive(:aws_account_id).and_return('1234')
     allow(Identity::Hostdata).to receive(:aws_region).and_return('us-west-1')
-    allow(IdentityConfig.store).to receive(:s3_data_warehouse_bucket_prefix).
-      and_return(s3_data_warehouse_bucket_prefix)
-    allow(IdentityConfig.store).to receive(:data_warehouse_enabled).
-      and_return(data_warehouse_enabled)
+    allow(IdentityConfig.store).to receive(:s3_data_warehouse_bucket_prefix)
+      .and_return(s3_data_warehouse_bucket_prefix)
+    allow(IdentityConfig.store).to receive(:data_warehouse_enabled)
+      .and_return(data_warehouse_enabled)
     Aws.config[:s3] = {
       stub_responses: {
         put_object: {},
@@ -50,8 +50,8 @@ RSpec.describe DataWarehouse::TableSummaryStatsExportJob, type: :job do
       let(:data_warehouse_enabled) { false }
 
       it 'does not perform the job' do
-        allow(IdentityConfig.store).to receive(:data_warehouse_enabled).
-          and_return(data_warehouse_enabled)
+        allow(IdentityConfig.store).to receive(:data_warehouse_enabled)
+          .and_return(data_warehouse_enabled)
         expect(job).not_to receive(:fetch_table_max_ids_and_counts)
         expect(job).not_to receive(:upload_file_to_s3_bucket)
       end
@@ -85,8 +85,8 @@ RSpec.describe DataWarehouse::TableSummaryStatsExportJob, type: :job do
 
       before do
         allow(ActiveRecord::Base.connection).to receive(:tables).and_return(['non_id_table'])
-        allow(ActiveRecord::Base.connection).to receive(:columns).with('non_id_table').
-          and_return([double(name: 'name')])
+        allow(ActiveRecord::Base.connection).to receive(:columns).with('non_id_table')
+          .and_return([double(name: 'name')])
       end
 
       it 'skips tables without an id column' do

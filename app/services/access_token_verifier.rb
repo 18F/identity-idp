@@ -21,6 +21,7 @@ class AccessTokenVerifier
       extra: {
         client_id: @identity&.service_provider,
         ial: @identity&.ial,
+        integration_errors:,
       },
     )
 
@@ -68,5 +69,15 @@ class AccessTokenVerifier
     end
 
     access_token
+  end
+
+  def integration_errors
+    {
+      error_details: errors.full_messages,
+      error_types: errors.attribute_names,
+      event: :oidc_bearer_token_auth,
+      integration_exists: @identity&.service_provider.present?,
+      request_issuer: @identity&.service_provider,
+    }
   end
 end

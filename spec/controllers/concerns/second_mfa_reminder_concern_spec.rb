@@ -53,8 +53,8 @@ RSpec.describe SecondMfaReminderConcern do
         let(:user) { build(:user, :with_phone, created_at: 11.days.ago) }
 
         before do
-          allow(IdentityConfig.store).to receive(:second_mfa_reminder_account_age_in_days).
-            and_return(10)
+          allow(IdentityConfig.store).to receive(:second_mfa_reminder_account_age_in_days)
+            .and_return(10)
         end
 
         it { expect(user_needs_second_mfa_reminder).to eq(true) }

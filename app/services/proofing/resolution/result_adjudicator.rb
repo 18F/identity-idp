@@ -61,10 +61,10 @@ module Proofing
       private
 
       def errors
-        resolution_result.errors.
-          merge(residential_resolution_result.errors).
-          merge(state_id_result.errors).
-          merge(device_profiling_result.errors || {})
+        resolution_result.errors
+          .merge(residential_resolution_result.errors)
+          .merge(state_id_result.errors)
+          .merge(device_profiling_result.errors || {})
       end
 
       def exception

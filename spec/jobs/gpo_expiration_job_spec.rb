@@ -177,8 +177,8 @@ RSpec.describe GpoExpirationJob do
 
         job.perform(limit: limit)
 
-        expect(Profile.where.not(gpo_verification_pending_at: nil).count).
-          to eql(initial_count - limit)
+        expect(Profile.where.not(gpo_verification_pending_at: nil).count)
+          .to eql(initial_count - limit)
       end
     end
   end

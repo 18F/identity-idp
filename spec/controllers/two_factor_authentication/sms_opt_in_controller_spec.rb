@@ -14,8 +14,8 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
       before do
         stub_sign_in_before_2fa(user)
         stub_analytics
-        allow(controller).to receive(:decorated_sp_session).
-          and_return(instance_double('NullServiceProviderSession', sp_name: sp_name))
+        allow(controller).to receive(:decorated_sp_session)
+          .and_return(instance_double('NullServiceProviderSession', sp_name: sp_name))
       end
 
       it 'tracks a visit event' do
@@ -55,8 +55,8 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
       it 'assigns an in-memory phone configuration' do
         expect { action }.to_not change { user.reload.phone_configurations.count }
 
-        expect(PhoneFormatter.format(assigns[:phone_configuration].phone)).
-          to eq(PhoneFormatter.format(phone))
+        expect(PhoneFormatter.format(assigns[:phone_configuration].phone))
+          .to eq(PhoneFormatter.format(phone))
       end
     end
 

@@ -6,8 +6,8 @@ RSpec.describe 'accounts/connected_accounts/show.html.erb' do
 
   before do
     allow(view).to receive(:current_user).and_return(user)
-    allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled).
-      and_return(feature_select_email_to_share_enabled)
+    allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
+      .and_return(feature_select_email_to_share_enabled)
     assign(
       :presenter,
       AccountShowPresenter.new(

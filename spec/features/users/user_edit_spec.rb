@@ -16,8 +16,8 @@ RSpec.feature 'User edit' do
       click_button 'Update'
 
       expect(page).to have_css '.usa-alert', text: 'Please review the problems below:'
-      expect(page).
-        to have_content t(
+      expect(page)
+        .to have_content t(
           'errors.attributes.password.too_short.other',
           count: Devise.password_length.first,
         )

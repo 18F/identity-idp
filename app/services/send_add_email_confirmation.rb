@@ -37,9 +37,9 @@ class SendAddEmailConfirmation
   def already_confirmed_by_another_user?
     EmailAddress.where(
       email_fingerprint: Pii::Fingerprinter.fingerprint(email_address.email),
-    ).where.not(confirmed_at: nil).
-      where.not(user_id: email_address.user_id).
-      first
+    ).where.not(confirmed_at: nil)
+      .where.not(user_id: email_address.user_id)
+      .first
   end
 
   def send_email
@@ -54,8 +54,8 @@ class SendAddEmailConfirmation
     UserMailer.with(
       user: user,
       email_address: email_address,
-    ).add_email_associated_with_another_account.
-      deliver_now_or_later
+    ).add_email_associated_with_another_account
+      .deliver_now_or_later
   end
 
   def send_confirmation_email

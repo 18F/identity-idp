@@ -61,8 +61,8 @@ RSpec.describe OtpRateLimiter do
     it 'increments the otp_send_count' do
       otp_rate_limiter.increment
 
-      expect { otp_rate_limiter.increment }.
-        to change { otp_rate_limiter.rate_limiter.attempts }.from(1).to(2)
+      expect { otp_rate_limiter.increment }
+        .to change { otp_rate_limiter.rate_limiter.attempts }.from(1).to(2)
     end
   end
 

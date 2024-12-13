@@ -29,8 +29,8 @@ RSpec.feature 'Sign in' do
     signin('test@example.com', 'Please123!')
     link_url = new_user_password_url
 
-    expect(page).
-      to have_link t('devise.failure.not_found_in_database_link_text', href: link_url)
+    expect(page)
+      .to have_link t('devise.failure.not_found_in_database_link_text', href: link_url)
   end
 
   scenario 'user is suspended, gets show please call page after 2fa' do
@@ -189,8 +189,8 @@ RSpec.feature 'Sign in' do
     before :each do
       allow(IdentityConfig.store).to receive(:session_check_frequency).and_return(1)
       allow(IdentityConfig.store).to receive(:session_check_delay).and_return(0)
-      allow(IdentityConfig.store).to receive(:session_timeout_warning_seconds).
-        and_return(Devise.timeout_in)
+      allow(IdentityConfig.store).to receive(:session_timeout_warning_seconds)
+        .and_return(Devise.timeout_in)
 
       sign_in_and_2fa_user
       visit forget_all_browsers_path
@@ -239,8 +239,8 @@ RSpec.feature 'Sign in' do
     it 'displays the session timeout warning with partially signed in copy' do
       allow(IdentityConfig.store).to receive(:session_check_frequency).and_return(1)
       allow(IdentityConfig.store).to receive(:session_check_delay).and_return(0)
-      allow(IdentityConfig.store).to receive(:session_timeout_warning_seconds).
-        and_return(Devise.timeout_in)
+      allow(IdentityConfig.store).to receive(:session_timeout_warning_seconds)
+        .and_return(Devise.timeout_in)
 
       user = create(:user, :fully_registered)
       sign_in_user(user)
@@ -410,8 +410,8 @@ RSpec.feature 'Sign in' do
 
         rotate_attribute_encryption_key_with_invalid_queue
 
-        expect { signin(email, password) }.
-          to raise_error Encryption::EncryptionError, 'unable to decrypt attribute with any key'
+        expect { signin(email, password) }
+          .to raise_error Encryption::EncryptionError, 'unable to decrypt attribute with any key'
 
         user = user.reload
         expect(user.confirmed_email_addresses.first.encrypted_email).to eq encrypted_email
@@ -449,8 +449,8 @@ RSpec.feature 'Sign in' do
 
       link_url = new_user_password_url
 
-      expect(page).
-        to have_link t('devise.failure.invalid_link_text', href: link_url)
+      expect(page)
+        .to have_link t('devise.failure.invalid_link_text', href: link_url)
       expect(current_path).to eq root_path
     end
   end
@@ -495,8 +495,8 @@ RSpec.feature 'Sign in' do
     it 'redirects to sign in page with flash message' do
       user = create(:user, :fully_registered)
       visit new_user_session_path(request_id: '123')
-      allow_any_instance_of(Users::SessionsController).
-        to receive(:create).and_raise(ActionController::InvalidAuthenticityToken)
+      allow_any_instance_of(Users::SessionsController)
+        .to receive(:create).and_raise(ActionController::InvalidAuthenticityToken)
 
       fill_in_credentials_and_submit(user.email, user.password)
 
@@ -518,8 +518,8 @@ RSpec.feature 'Sign in' do
 
       expect(Telephony::Test::Call.calls.length).to eq(0)
       expect(Telephony::Test::Message.messages.length).to eq(1)
-      expect(page).
-        to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
+      expect(page)
+        .to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
       expect(page).to have_content t(
         'two_factor_authentication.otp_delivery_preference.voice_unsupported',
         location: 'Australia',
@@ -536,8 +536,8 @@ RSpec.feature 'Sign in' do
 
       expect(Telephony::Test::Call.calls.length).to eq(0)
       expect(Telephony::Test::Message.messages.length).to eq(0)
-      expect(page).
-        to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
+      expect(page)
+        .to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
       expect(page).to have_content t(
         'two_factor_authentication.otp_delivery_preference.voice_unsupported',
         location: 'Algeria',
@@ -561,8 +561,8 @@ RSpec.feature 'Sign in' do
 
       expect(Telephony::Test::Call.calls.length).to eq(0)
       expect(Telephony::Test::Message.messages.length).to eq(1)
-      expect(page).
-        to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
+      expect(page)
+        .to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
       expect(page).to have_content t(
         'two_factor_authentication.otp_delivery_preference.voice_unsupported',
         location: unsupported_country_name,
@@ -584,8 +584,8 @@ RSpec.feature 'Sign in' do
 
       expect(Telephony::Test::Call.calls.length).to eq(0)
       expect(Telephony::Test::Message.messages.length).to eq(1)
-      expect(page).
-        to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
+      expect(page)
+        .to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
       expect(page).to have_content t(
         'two_factor_authentication.otp_delivery_preference.voice_unsupported',
         location: unsupported_country_name,
@@ -607,8 +607,8 @@ RSpec.feature 'Sign in' do
 
       expect(Telephony::Test::Call.calls.length).to eq(0)
       expect(Telephony::Test::Message.messages.length).to eq(1)
-      expect(page).
-        to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
+      expect(page)
+        .to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
       expect(page).to have_content t(
         'two_factor_authentication.otp_delivery_preference.voice_unsupported',
         location: unsupported_country_name,
@@ -885,8 +885,8 @@ RSpec.feature 'Sign in' do
     before do
       allow(FeatureManagement).to receive(:sign_in_recaptcha_enabled?).and_return(true)
       allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).and_return(true)
-      allow(IdentityConfig.store).to receive(:sign_in_recaptcha_log_failures_only).
-        and_return(sign_in_recaptcha_log_failures_only)
+      allow(IdentityConfig.store).to receive(:sign_in_recaptcha_log_failures_only)
+        .and_return(sign_in_recaptcha_log_failures_only)
       allow(IdentityConfig.store).to receive(:sign_in_recaptcha_score_threshold).and_return(0.2)
       allow(IdentityConfig.store).to receive(:sign_in_recaptcha_percent_tested).and_return(100)
       reload_ab_tests
@@ -919,8 +919,8 @@ RSpec.feature 'Sign in' do
       context 'user is chosen to check if password compromised' do
         before do
           allow(SecureRandom).to receive(:random_number).and_return(5)
-          allow(IdentityConfig.store).to receive(:compromised_password_randomizer_threshold).
-            and_return(2)
+          allow(IdentityConfig.store).to receive(:compromised_password_randomizer_threshold)
+            .and_return(2)
         end
         it 'should bring user to manage password page with warning' do
           visit_idp_from_sp_with_ial1(:oidc)
@@ -953,8 +953,8 @@ RSpec.feature 'Sign in' do
       context 'user is not chosen to check if password compromised' do
         before do
           allow(SecureRandom).to receive(:random_number).and_return(2)
-          allow(IdentityConfig.store).to receive(:compromised_password_randomizer_threshold).
-            and_return(5)
+          allow(IdentityConfig.store).to receive(:compromised_password_randomizer_threshold)
+            .and_return(5)
         end
         it 'should continue without issue' do
           visit new_user_session_path
@@ -972,8 +972,8 @@ RSpec.feature 'Sign in' do
       context 'user is chosen to check if password compromised' do
         before do
           allow(SecureRandom).to receive(:random_number).and_return(5)
-          allow(IdentityConfig.store).to receive(:compromised_password_randomizer_threshold).
-            and_return(2)
+          allow(IdentityConfig.store).to receive(:compromised_password_randomizer_threshold)
+            .and_return(2)
         end
         it 'should bring user to account page and set password compromised attr' do
           visit new_user_session_path
@@ -990,8 +990,8 @@ RSpec.feature 'Sign in' do
       context 'user is not chosen to check if password compromised' do
         before do
           allow(SecureRandom).to receive(:random_number).and_return(2)
-          allow(IdentityConfig.store).to receive(:compromised_password_randomizer_threshold).
-            and_return(5)
+          allow(IdentityConfig.store).to receive(:compromised_password_randomizer_threshold)
+            .and_return(5)
         end
         it 'should continue without issue and does not set password compromised attr' do
           visit new_user_session_path

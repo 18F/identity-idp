@@ -9,14 +9,14 @@ RSpec.describe Users::EmailConfirmationsController do
         user = create(:user)
         new_email = Faker::Internet.email
 
-        expect(PushNotification::HttpPush).to receive(:deliver).once.
-          with(PushNotification::EmailChangedEvent.new(
+        expect(PushNotification::HttpPush).to receive(:deliver).once
+          .with(PushNotification::EmailChangedEvent.new(
             user: user,
             email: new_email,
           )).ordered
 
-        expect(PushNotification::HttpPush).to receive(:deliver).once.
-          with(PushNotification::RecoveryInformationChangedEvent.new(
+        expect(PushNotification::HttpPush).to receive(:deliver).once
+          .with(PushNotification::RecoveryInformationChangedEvent.new(
             user: user,
           )).ordered
 
@@ -37,8 +37,8 @@ RSpec.describe Users::EmailConfirmationsController do
 
       context 'when select email feature is disabled' do
         before do
-          allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled).
-            and_return(false)
+          allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
+            .and_return(false)
         end
         it 'should render proper flash member' do
           flash_message = t('devise.confirmations.confirmed')

@@ -10,8 +10,8 @@ RSpec.shared_examples 'an otp delivery preference form' do
 
   context 'voice' do
     it 'is valid when supported for the phone' do
-      expect(UpdateUserPhoneConfiguration).to receive(:update!).
-        with(user: user, attributes: { otp_delivery_preference: 'voice' })
+      expect(UpdateUserPhoneConfiguration).to receive(:update!)
+        .with(user: user, attributes: { otp_delivery_preference: 'voice' })
 
       capabilities = spy(PhoneNumberCapabilities)
       allow(PhoneNumberCapabilities).to receive(:new).with(phone).and_return(capabilities)

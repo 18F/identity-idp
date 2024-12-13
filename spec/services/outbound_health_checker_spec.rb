@@ -21,8 +21,8 @@ RSpec.describe OutboundHealthChecker do
 
     context 'successful connection to endpoint' do
       before do
-        stub_request(:head, IdentityConfig.store.outbound_connection_check_url).
-          to_return(status: status)
+        stub_request(:head, IdentityConfig.store.outbound_connection_check_url)
+          .to_return(status: status)
       end
 
       context '200 response from endpoint' do
@@ -80,8 +80,8 @@ RSpec.describe OutboundHealthChecker do
 
     context 'timeout from endpoint' do
       it 'retries and is healthy if the second request succeeds' do
-        stub_request(:head, IdentityConfig.store.outbound_connection_check_url).
-          to_timeout.then.to_return(status: 200)
+        stub_request(:head, IdentityConfig.store.outbound_connection_check_url)
+          .to_timeout.then.to_return(status: 200)
 
         expect(check).to be_healthy
       end
@@ -107,22 +107,22 @@ RSpec.describe OutboundHealthChecker do
       end
 
       it 'retries and is healthy if the second request succeeds' do
-        stub_request(:head, IdentityConfig.store.outbound_connection_check_url).
-          to_raise(Faraday::ConnectionFailed).then.to_return(status: 200)
+        stub_request(:head, IdentityConfig.store.outbound_connection_check_url)
+          .to_raise(Faraday::ConnectionFailed).then.to_return(status: 200)
 
         expect(check).to be_healthy
       end
 
       it 'is not healthy after 2 retries' do
-        stub_request(:head, IdentityConfig.store.outbound_connection_check_url).
-          to_raise(Faraday::ConnectionFailed)
+        stub_request(:head, IdentityConfig.store.outbound_connection_check_url)
+          .to_raise(Faraday::ConnectionFailed)
 
         expect(check).to_not be_healthy
       end
 
       it 'notifies newrelic' do
-        stub_request(:head, IdentityConfig.store.outbound_connection_check_url).
-          to_raise(Faraday::ConnectionFailed)
+        stub_request(:head, IdentityConfig.store.outbound_connection_check_url)
+          .to_raise(Faraday::ConnectionFailed)
 
         expect(NewRelic::Agent).to receive(:notice_error)
 

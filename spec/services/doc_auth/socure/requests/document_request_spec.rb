@@ -47,10 +47,10 @@ RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
     let(:fake_socure_status) { 200 }
 
     before do
-      allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint).
-        and_return(fake_socure_endpoint)
-      stub_request(:post, fake_socure_endpoint).
-        to_return(
+      allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint)
+        .and_return(fake_socure_endpoint)
+      stub_request(:post, fake_socure_endpoint)
+        .to_return(
           status: fake_socure_status,
           body: JSON.generate(fake_socure_response),
         )
@@ -59,8 +59,8 @@ RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
     it 'fetches from the correct url' do
       document_request.fetch
 
-      expect(WebMock).to have_requested(:post, fake_socure_endpoint).
-        with(body: JSON.generate(expected_request_body))
+      expect(WebMock).to have_requested(:post, fake_socure_endpoint)
+        .with(body: JSON.generate(expected_request_body))
     end
 
     it 'passes the response through' do
@@ -75,8 +75,8 @@ RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
       it 'includes the correct language in the request_body' do
         document_request.fetch
 
-        expect(WebMock).to have_requested(:post, fake_socure_endpoint).
-          with(body: JSON.generate(expected_request_body))
+        expect(WebMock).to have_requested(:post, fake_socure_endpoint)
+          .with(body: JSON.generate(expected_request_body))
       end
     end
 

@@ -123,8 +123,8 @@ RSpec.describe 'Identity verification', :js do
     before do
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
 
-      ServiceProvider.find_by(issuer: service_provider_issuer(sp)).
-        update(in_person_proofing_enabled: true)
+      ServiceProvider.find_by(issuer: service_provider_issuer(sp))
+        .update(in_person_proofing_enabled: true)
     end
 
     scenario 'In person proofing', allow_browser_log: true do
@@ -187,8 +187,8 @@ RSpec.describe 'Identity verification', :js do
   end
 
   def validate_hybrid_handoff_page
-    allow_any_instance_of(Idv::HybridHandoffController).to receive(:mobile_device?).
-      and_return(false)
+    allow_any_instance_of(Idv::HybridHandoffController).to receive(:mobile_device?)
+      .and_return(false)
 
     expect(page).to have_current_path(idv_hybrid_handoff_path)
 
@@ -200,8 +200,8 @@ RSpec.describe 'Identity verification', :js do
 
     # defaults phone to user's 2fa phone number
     field = page.find_field(t('two_factor_authentication.phone_label'))
-    expect(same_phone?(field.value, Features::SessionHelper::IAL1_USER_PHONE)).
-      to be true
+    expect(same_phone?(field.value, Features::SessionHelper::IAL1_USER_PHONE))
+      .to be true
   end
 
   def validate_document_capture_page

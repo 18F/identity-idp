@@ -63,8 +63,8 @@ RSpec.describe Users::EditPhoneController do
       stub_sign_in(user.reload)
       stub_analytics
 
-      expect(PushNotification::HttpPush).to receive(:deliver).
-        with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
+      expect(PushNotification::HttpPush).to receive(:deliver)
+        .with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
       delete :destroy, params: { id: phone_configuration.id }
 
       expect(@analytics).to have_logged_event(

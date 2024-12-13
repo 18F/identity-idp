@@ -31,8 +31,8 @@ class CreateNewDeviceAlert < ApplicationJob
   end
 
   def expire_sign_in_notification_timeframe_and_send_alert(user)
-    disavowal_event, disavowal_token = UserEventCreator.new(current_user: user).
-      create_out_of_band_user_event_with_disavowal(:sign_in_notification_timeframe_expired)
+    disavowal_event, disavowal_token = UserEventCreator.new(current_user: user)
+      .create_out_of_band_user_event_with_disavowal(:sign_in_notification_timeframe_expired)
 
     UserAlerts::AlertUserAboutNewDevice.send_alert(user:, disavowal_event:, disavowal_token:)
   end

@@ -191,9 +191,9 @@ module Reporting
     end
 
     def user_days_proofed_to_suspension_avg
-      user_data = User.where(uuid: data[Events::SUSPENDED_USERS]).includes(:profiles).
-        merge(Profile.active).
-        pluck(
+      user_data = User.where(uuid: data[Events::SUSPENDED_USERS]).includes(:profiles)
+        .merge(Profile.active)
+        .pluck(
           :activated_at,
           :suspended_at,
         )

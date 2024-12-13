@@ -21,10 +21,10 @@ module PushNotification
     def deliver
       return unless IdentityConfig.store.push_notifications_enabled
 
-      event.user.
-        service_providers.
-        merge(ServiceProviderIdentity.not_deleted).
-        with_push_notification_urls.each do |service_provider|
+      event.user
+        .service_providers
+        .merge(ServiceProviderIdentity.not_deleted)
+        .with_push_notification_urls.each do |service_provider|
           deliver_one(service_provider)
         end
     end
@@ -62,10 +62,10 @@ module PushNotification
 
       JWT.encode(
         payload,
-        AppArtifacts.store.oidc_private_key,
+        AppArtifacts.store.oidc_primary_private_key,
         'RS256',
         typ: 'secevent+jwt',
-        kid: JWT::JWK.new(AppArtifacts.store.oidc_private_key).kid,
+        kid: JWT::JWK.new(AppArtifacts.store.oidc_primary_private_key).kid,
       )
     end
 

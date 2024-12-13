@@ -65,9 +65,9 @@ RSpec.describe AbTest do
         }
       end
       it 'passes arguments to discriminator' do
-        expect(discriminator).to receive(:call).
-          once.
-          with(
+        expect(discriminator).to receive(:call)
+          .once
+          .with(
             request:,
             service_provider:,
             session:,

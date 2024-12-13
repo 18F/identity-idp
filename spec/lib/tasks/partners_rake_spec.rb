@@ -113,8 +113,8 @@ RSpec.describe 'partners rake tasks' do
 
       it 'displays an error message' do
         expect { Rake::Task[task].invoke }.to \
-          output("You must define the environment variables EMAIL_FILE, SP_FILE, and OUTPUT\n").
-          to_stdout
+          output("You must define the environment variables EMAIL_FILE, SP_FILE, and OUTPUT\n")
+          .to_stdout
       end
 
       it 'exits' do
@@ -132,8 +132,8 @@ RSpec.describe 'partners rake tasks' do
 
       it 'displays an error message' do
         expect { Rake::Task[task].invoke }.to \
-          output("You must define the environment variables EMAIL_FILE, SP_FILE, and OUTPUT\n").
-          to_stdout
+          output("You must define the environment variables EMAIL_FILE, SP_FILE, and OUTPUT\n")
+          .to_stdout
       end
 
       it 'exits' do
@@ -151,8 +151,8 @@ RSpec.describe 'partners rake tasks' do
 
       it 'displays an error message' do
         expect { Rake::Task[task].invoke }.to \
-          output("You must define the environment variables EMAIL_FILE, SP_FILE, and OUTPUT\n").
-          to_stdout
+          output("You must define the environment variables EMAIL_FILE, SP_FILE, and OUTPUT\n")
+          .to_stdout
       end
 
       it 'exits' do

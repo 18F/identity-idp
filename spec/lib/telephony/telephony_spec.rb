@@ -52,8 +52,8 @@ RSpec.describe Telephony do
       ).to eq 124
 
       # The double-length characters should count as twice their length
-      expect(Telephony.sms_character_length(Telephony::GSM_DOUBLE_CHARACTERS.join(''))).
-        to eq(Telephony::GSM_DOUBLE_CHARACTERS.length * 2)
+      expect(Telephony.sms_character_length(Telephony::GSM_DOUBLE_CHARACTERS.join('')))
+        .to eq(Telephony::GSM_DOUBLE_CHARACTERS.length * 2)
 
       # Space, new line, and carriage return all count as 1 character
       expect(Telephony.sms_character_length("\n\r ")).to eq 3
@@ -61,8 +61,8 @@ RSpec.describe Telephony do
       expect(Telephony.sms_character_length("Login.gov\nParty")).to eq 15
 
       random_double_character = Telephony::GSM_DOUBLE_CHARACTERS.to_a.sample
-      expect(Telephony.sms_character_length("abc\n¥ΔΦΓΛΩΠΨΣΘΞ#{random_double_character}")).
-        to eq 17
+      expect(Telephony.sms_character_length("abc\n¥ΔΦΓΛΩΠΨΣΘΞ#{random_double_character}"))
+        .to eq 17
     end
 
     it 'calculates correct length of messages containing non-GSM characters' do

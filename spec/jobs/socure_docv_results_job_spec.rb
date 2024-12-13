@@ -17,8 +17,8 @@ RSpec.describe SocureDocvResultsJob do
   let(:expiration_date) { "#{1.year.from_now.year}-01-01" }
 
   before do
-    allow(IdentityConfig.store).to receive(:socure_idplus_base_url).
-      and_return(socure_idplus_base_url)
+    allow(IdentityConfig.store).to receive(:socure_idplus_base_url)
+      .and_return(socure_idplus_base_url)
     allow(Analytics).to receive(:new).and_return(fake_analytics)
   end
 
@@ -91,8 +91,8 @@ RSpec.describe SocureDocvResultsJob do
     end
 
     before do
-      stub_request(:post, 'https://example.com/api/3.0/EmailAuthScore').
-        to_return(
+      stub_request(:post, 'https://example.com/api/3.0/EmailAuthScore')
+        .to_return(
           headers: {
             'Content-Type' => 'application/json',
           },

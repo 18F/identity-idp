@@ -95,8 +95,8 @@ RSpec.describe Users::PhoneSetupController do
     context 'with recaptcha enabled' do
       before do
         allow(FeatureManagement).to receive(:phone_recaptcha_enabled?).and_return(true)
-        allow(IdentityConfig.store).to receive(:phone_recaptcha_country_score_overrides).
-          and_return({})
+        allow(IdentityConfig.store).to receive(:phone_recaptcha_country_score_overrides)
+          .and_return({})
         allow(IdentityConfig.store).to receive(:phone_recaptcha_score_threshold).and_return(0.6)
       end
 
