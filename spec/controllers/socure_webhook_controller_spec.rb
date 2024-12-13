@@ -181,6 +181,8 @@ RSpec.describe SocureWebhookController do
           end
         end
 
+        it_behaves_like 'repeats webhooks'
+
         context 'when document capture session exists' do
           it 'logs the user\'s uuid' do
             dcs = create(:document_capture_session, :socure)
