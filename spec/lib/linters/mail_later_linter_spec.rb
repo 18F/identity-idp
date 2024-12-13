@@ -33,6 +33,14 @@ RSpec.describe RuboCop::Cop::IdentityIdp::MailLaterLinter do
     RUBY
   end
 
+  it 'registers offense when calling .with(...).deliver_now method with variable mailer' do
+    expect_offense(<<~RUBY)
+      mailer = UserMailer.with(user)
+      mailer.send_email(params).deliver_later
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ IdentityIdp/MailLaterLinter: Please send mail using deliver_now_or_later instead
+    RUBY
+  end
+
   it 'does not register offenses for the ReportMailer' do
     expect_no_offenses(<<~RUBY)
       ReportMailer.send_email(foobar).deliver_now
