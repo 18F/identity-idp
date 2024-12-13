@@ -11,6 +11,7 @@ RSpec.describe 'Hybrid Flow' do
   let(:fake_socure_docv_document_request_endpoint) { 'https://fake-socure.test/document-request' }
   let(:socure_docv_verification_data_test_mode) { false }
   let(:fake_analytics) { FakeAnalytics.new }
+  let(:socure_docv_webhook_repeat_endpoints) { [] }
 
   before do
     allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(true)
@@ -21,6 +22,9 @@ RSpec.describe 'Hybrid Flow' do
     allow(IdentityConfig.store).to receive(:ruby_workers_idv_enabled).and_return(false)
     allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint)
       .and_return(fake_socure_docv_document_request_endpoint)
+    allow(IdentityConfig.store).to receive(:socure_docv_webhook_repeat_endpoints)
+      .and_return(socure_docv_webhook_repeat_endpoints)
+    socure_docv_webhook_repeat_endpoints.each { |endpoint| stub_request(:post, endpoint) }
     allow(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
       @sms_link = config[:link]
       impl.call(**config)
@@ -165,6 +169,9 @@ RSpec.describe 'Hybrid Flow' do
 
     context 'user is rate limited on mobile' do
       let(:max_attempts) { IdentityConfig.store.doc_auth_max_attempts }
+      let(:socure_docv_webhook_repeat_endpoints) do # repeat webhooks
+        ['https://1.example.test/thepath', 'https://2.example.test/thepath']
+      end
 
       before do
         allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
@@ -212,49 +219,61 @@ RSpec.describe 'Hybrid Flow' do
       end
     end
 
-    it 'prefills the phone number used on the phone step if the user has no MFA phone', :js do
-      user = create(:user, :with_authentication_app)
-
-      perform_in_browser(:desktop) do
-        start_idv_from_sp(facial_match_required: false)
-        sign_in_and_2fa_user(user)
-
-        complete_doc_auth_steps_before_hybrid_handoff_step
-        clear_and_fill_in(:doc_auth_phone, phone_number)
-        click_send_link
+    context 'if the user has no MFA phone' do
+      let(:socure_docv_webhook_repeat_endpoints) do # repeat webhooks
+        ['https://1.example.test/thepath', 'https://2.example.test/thepath']
       end
 
-      expect(@sms_link).to be_present
-
-      perform_in_browser(:mobile) do
-        visit @sms_link
-
-        expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_url)
-        click_idv_continue
-        expect(page).to have_current_path(fake_socure_document_capture_app_url)
-        socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
-        visit idv_hybrid_mobile_socure_document_capture_update_url
-
-        expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
-        expect(page).to have_text(t('doc_auth.instructions.switch_back'))
+      before do
+        # recovers when fails to repeat webhook to an endpoint
+        allow_any_instance_of(DocAuth::Socure::WebhookRepeater)
+          .to receive(:send_http_post_request).and_raise('doh')
       end
 
-      perform_in_browser(:desktop) do
-        expect(page).to have_current_path(idv_ssn_path, wait: 10)
+      it 'prefills the phone number used on the phone step', :js do
+        user = create(:user, :with_authentication_app)
 
-        fill_out_ssn_form_ok
-        click_idv_continue
+        perform_in_browser(:desktop) do
+          start_idv_from_sp(facial_match_required: false)
+          sign_in_and_2fa_user(user)
 
-        expect(page).to have_content(t('headings.verify'))
-        complete_verify_step
+          complete_doc_auth_steps_before_hybrid_handoff_step
+          clear_and_fill_in(:doc_auth_phone, phone_number)
+          click_send_link
+        end
 
-        prefilled_phone = page.find(id: 'idv_phone_form_phone').value
+        expect(@sms_link).to be_present
 
-        expect(
-          PhoneFormatter.format(prefilled_phone),
-        ).to eq(
-          PhoneFormatter.format(phone_number),
-        )
+        perform_in_browser(:mobile) do
+          visit @sms_link
+
+          expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_url)
+          click_idv_continue
+          expect(page).to have_current_path(fake_socure_document_capture_app_url)
+          socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
+          visit idv_hybrid_mobile_socure_document_capture_update_url
+
+          expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
+          expect(page).to have_text(t('doc_auth.instructions.switch_back'))
+        end
+
+        perform_in_browser(:desktop) do
+          expect(page).to have_current_path(idv_ssn_path, wait: 10)
+
+          fill_out_ssn_form_ok
+          click_idv_continue
+
+          expect(page).to have_content(t('headings.verify'))
+          complete_verify_step
+
+          prefilled_phone = page.find(id: 'idv_phone_form_phone').value
+
+          expect(
+            PhoneFormatter.format(prefilled_phone),
+          ).to eq(
+            PhoneFormatter.format(phone_number),
+          )
+        end
       end
     end
 
@@ -303,6 +322,15 @@ RSpec.describe 'Hybrid Flow' do
 
       context 'when an invalid test token is used' do
         let(:invalid_token) { 'invalid-token' }
+        let(:socure_docv_webhook_repeat_endpoints) do # repeat webhooks
+          ['https://1.example.test/thepath', 'https://2.example.test/thepath']
+        end
+
+        before do
+          # recovers when fails to broadcast webhook
+          allow_any_instance_of(DocAuth::Socure::WebhookRepeater)
+            .to receive(:broadcast).and_raise('doh')
+        end
 
         it 'waits to fetch verificationdata using docv capture session token', js: true do
           user = nil
