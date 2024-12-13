@@ -177,6 +177,8 @@ Rails.application.routes.draw do
         put '/s3/:key' => 'fake_s3#update'
 
         get '/session_data' => 'session_data#index'
+
+        get '/string_manager' => 'string_manager#index'
       end
     end
 

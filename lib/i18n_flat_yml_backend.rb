@@ -54,4 +54,22 @@ class I18nFlatYmlBackend < I18n::Backend::Simple
 
     result
   end
+
+  def translate(locale, key, options = EMPTY_HASH)
+    result = super(locale, key, options)
+
+    translations = StringManager::LOCALES.map do |locale|
+      [locale, super(locale, key, options)]
+    end.to_h
+
+    StringManager.instance.record_translation_request(
+      locale:,
+      key:,
+      options:,
+      result:,
+      translations:,
+    )
+
+    result
+  end
 end

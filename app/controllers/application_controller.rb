@@ -8,6 +8,7 @@ class ApplicationController < ActionController::Base
   include SecondMfaReminderConcern
   include TwoFactorAuthenticatableMethods
   include AbTestingConcern
+  include StringManagerConcern
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -31,6 +32,7 @@ class ApplicationController < ActionController::Base
   prepend_before_action :add_new_relic_trace_attributes
   prepend_before_action :session_expires_at
   prepend_before_action :set_locale
+  prepend_before_action :manage_strings
   before_action :disable_caching
   before_action :cache_issuer_in_cookie
 

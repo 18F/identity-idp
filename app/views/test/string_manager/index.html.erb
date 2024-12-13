@@ -1,0 +1,22 @@
+<% self.title = 'String Manager' %>
+
+<table>
+  <thead>
+    <tr>
+      <th>String key</th>
+      <% StringManager::LOCALES.each do |locale| %>
+        <th><%= locale %></th>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <% StringManager.instance.translation_requests.each do |request| %>
+      <tr>
+        <td><%= request.key %></td>
+        <% StringManager::LOCALES.each do |locale| %>
+          <td><%= request.translations[locale] %></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
