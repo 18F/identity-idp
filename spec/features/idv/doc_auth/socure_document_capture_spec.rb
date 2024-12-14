@@ -58,7 +58,7 @@ RSpec.feature 'document capture step', :js do
           end
 
           expect(DocAuth::Socure::WebhookRepeater)
-            .to receive(:new).exctly(6).times.and_call_original
+            .to receive(:new).exactly(6).times.and_call_original
         end
 
         it 'redirects to the rate limited error page' do
