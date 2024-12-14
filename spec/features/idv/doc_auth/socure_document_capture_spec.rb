@@ -56,6 +56,9 @@ RSpec.feature 'document capture step', :js do
           (max_attempts - 1).times do
             socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
           end
+
+          expect(DocAuth::Socure::WebhookRepeater)
+            .to receive(:new).exctly(6).times.and_call_original
         end
 
         it 'redirects to the rate limited error page' do
@@ -138,6 +141,9 @@ RSpec.feature 'document capture step', :js do
 
       context 'reuses valid capture app urls when appropriate', allow_browser_log: true do
         context 'successfully erases capture app url when flow is complete' do
+          before do
+            expect(DocAuth::Socure::WebhookRepeater).not_to receive(:new)
+          end
           it 'proceeds to the next page with valid info' do
             document_capture_session = DocumentCaptureSession.find_by(user_id: @user.id)
             expect(document_capture_session.socure_docv_capture_app_url)
@@ -310,6 +316,11 @@ RSpec.feature 'document capture step', :js do
     context 'standard mobile flow' do
       let(:socure_docv_webhook_repeat_endpoints) do # repeat webhooks
         ['https://1.example.test/thepath', 'https://2.example.test/thepath']
+      end
+
+      before do
+        expect(DocAuth::Socure::WebhookRepeater)
+          .to receive(:new).exactly(6).times.and_call_original
       end
 
       it 'proceeds to the next page with valid info' do

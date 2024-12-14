@@ -40,6 +40,7 @@ RSpec.describe 'Hybrid Flow' do
       @pass_stub = stub_docv_verification_data_pass(docv_transaction_token: @docv_transaction_token)
     end
     it 'proofs and hands off to mobile', js: true do
+      expect(DocAuth::Socure::WebhookRepeater).not_to receive(:new)
       user = nil
 
       perform_in_browser(:desktop) do
@@ -137,6 +138,7 @@ RSpec.describe 'Hybrid Flow' do
     end
 
     it 'shows the waiting screen correctly after cancelling from mobile and restarting', js: true do
+      expect(DocAuth::Socure::WebhookRepeater).not_to receive(:new)
       user = nil
 
       perform_in_browser(:desktop) do
@@ -174,7 +176,6 @@ RSpec.describe 'Hybrid Flow' do
       end
 
       before do
-        allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
         DocAuth::Mock::DocAuthMockClient.mock_response!(
           method: :post_front_image,
           response: DocAuth::Response.new(
@@ -182,6 +183,8 @@ RSpec.describe 'Hybrid Flow' do
             errors: { network: I18n.t('doc_auth.errors.general.network_error') },
           ),
         )
+        expect(DocAuth::Socure::WebhookRepeater)
+          .to receive(:new).exactly(6 * max_attempts).times.and_call_original
       end
 
       it 'shows capture complete on mobile and error page on desktop', js: true do
@@ -228,6 +231,8 @@ RSpec.describe 'Hybrid Flow' do
         # recovers when fails to repeat webhook to an endpoint
         allow_any_instance_of(DocAuth::Socure::WebhookRepeater)
           .to receive(:send_http_post_request).and_raise('doh')
+        expect(DocAuth::Socure::WebhookRepeater)
+          .to receive(:new).exactly(6).times.and_call_original
       end
 
       it 'prefills the phone number used on the phone step', :js do
@@ -330,6 +335,8 @@ RSpec.describe 'Hybrid Flow' do
           # recovers when fails to broadcast webhook
           allow_any_instance_of(DocAuth::Socure::WebhookRepeater)
             .to receive(:broadcast).and_raise('doh')
+          expect(DocAuth::Socure::WebhookRepeater)
+            .to receive(:new).exactly(6).times.and_call_original
         end
 
         it 'waits to fetch verificationdata using docv capture session token', js: true do
