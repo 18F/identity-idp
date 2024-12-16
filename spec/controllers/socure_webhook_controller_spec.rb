@@ -83,8 +83,8 @@ RSpec.describe SocureWebhookController do
             allow(IdentityConfig.store)
               .to receive(:socure_docv_webhook_repeat_endpoints).and_return(endpoints)
 
-            allow(DocumentCaptureSession).to receive(:find_by)
-              .and_return(create(:document_capture_session))
+            dcs = create(:document_capture_session, :socure)
+            webhook_body[:event][:docvTransactionToken] = dcs.socure_docv_transaction_token
 
             request.headers['Authorization'] = headers[:Authorization]
             request.headers['Content-Type'] = headers[:'Content-Type']
