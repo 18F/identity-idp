@@ -30,6 +30,7 @@ class SummarizeUserEvents
 
   def initialize(file_name: nil, user_uuid: nil, start_time: nil, end_time: nil, zone: 'UTC')
     @file_name = file_name
+    @zone = zone
     Time.zone = zone
     @uuid = user_uuid
     @from_date = parse_time(start_time) || 1.week.ago
@@ -189,13 +190,13 @@ def main
 
     Summarize user events in a human-readable format
 
-    Cloudwatch logs can be read from stdin as newline-delimited JSON (ndjson),
+    Cloudwatch logs can be read from a file as newline-delimited JSON (ndjson),
     or fetched directly via aws-vault.
 
     usage: #{basename} [OPTIONS]
 
     Examples:
-      #{basename} << events.ndjson
+      #{basename} -f events.ndjson
       aws-vault exec prod-power -- #{basename} -u 1234-5678-90ab-cdef -s 2024-12-09T10:00:00 -e 2024-12-09T14:30:00 -z America/New_York
 
     EOM
