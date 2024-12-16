@@ -71,8 +71,6 @@ class FakeAnalytics < Analytics
   UndocumentedParams = Class.new(StandardError).freeze
 
   module UndocumentedParamsChecker
-    mattr_accessor :allowed_extra_analytics
-    mattr_accessor :checked_extra_analytics
     mattr_accessor :asts
     mattr_accessor :docstrings
 
@@ -98,16 +96,9 @@ class FakeAnalytics < Analytics
           - option_param_names(analytics_method)
 
         if extra_keywords.present?
-          @@checked_extra_analytics = checked_extra_analytics.to_a.concat(extra_keywords)
-
-          extra_keywords -= Array(allowed_extra_analytics)
-
-          if extra_keywords.present?
-            raise UndocumentedParams, <<~ERROR
-              event :#{method_name} called with undocumented params #{extra_keywords.inspect}
-              (if these params are for specs only, use :allowed_extra_analytics metadata)
-            ERROR
-          end
+          raise UndocumentedParams, <<~ERROR
+            event :#{method_name} called with undocumented params #{extra_keywords.inspect}
+          ERROR
         end
       end
 
@@ -174,24 +165,5 @@ class FakeAnalytics < Analytics
 
   def reset!
     @events = Hash.new
-  end
-end
-
-RSpec.configure do |c|
-  groups = []
-
-  c.around do |ex|
-    keys = Array(ex.metadata[:allowed_extra_analytics])
-    FakeAnalytics::UndocumentedParamsChecker.allowed_extra_analytics = keys
-    ex.run
-
-    if keys.present?
-      group = ex.example_group
-      group = group.superclass until [nil, RSpec::Core::ExampleGroup].include?(group.superclass)
-      groups << [group, FakeAnalytics::UndocumentedParamsChecker.checked_extra_analytics.to_a]
-    end
-  ensure
-    FakeAnalytics::UndocumentedParamsChecker.allowed_extra_analytics = []
-    FakeAnalytics::UndocumentedParamsChecker.checked_extra_analytics = []
   end
 end
