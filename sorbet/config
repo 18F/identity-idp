@@ -1,0 +1,8 @@
+--dir
+.
+--ignore=tmp/
+--ignore=vendor/
+--ignore=scripts/
+--ignore=lib/data_requests/
+--ignore=lib/deploy/
+--ignore=lib/reporting
