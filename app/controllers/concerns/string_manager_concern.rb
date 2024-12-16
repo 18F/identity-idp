@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module StringManagerConcern
-  def manage_strings
+  def reset_strings_manager
     StringManager.instance.reset_tracking
   end
 end

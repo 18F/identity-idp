@@ -1,6 +1,6 @@
 <% self.title = 'String Manager' %>
 
-<table>
+<table class="usa-table usa-table--striped width-auto margin-4">
   <thead>
     <tr>
       <th>String key</th>
@@ -12,7 +12,7 @@
   <tbody>
     <% StringManager.instance.translation_requests.each do |request| %>
       <tr>
-        <td><%= request.key %></td>
+        <td class="font-family-mono"><%= request.key %></td>
         <% StringManager::LOCALES.each do |locale| %>
           <td><%= request.translations[locale] %></td>
         <% end %>

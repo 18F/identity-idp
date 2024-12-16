@@ -2,7 +2,10 @@
 
 module Test
   class StringManagerController < ::ApplicationController
-    def index
-    end
+    layout 'base'
+
+    skip_before_action :reset_strings_manager
+
+    def index; end
   end
 end
