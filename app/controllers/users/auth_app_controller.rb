@@ -34,8 +34,6 @@ module Users
         flash[:success] = t('two_factor_authentication.auth_app.deleted')
         create_user_event(:authenticator_disabled)
         revoke_remember_device(current_user)
-        event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
-        PushNotification::HttpPush.deliver(event)
         redirect_to account_path
       else
         flash[:error] = result.first_error_message

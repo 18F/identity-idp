@@ -35,8 +35,6 @@ module Users
         flash[:success] = presenter.delete_success_alert_text
         create_user_event(:webauthn_key_removed)
         revoke_remember_device(current_user)
-        event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
-        PushNotification::HttpPush.deliver(event)
         redirect_to account_path
       else
         flash[:error] = result.first_error_message

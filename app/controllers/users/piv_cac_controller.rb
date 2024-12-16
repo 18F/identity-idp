@@ -35,7 +35,6 @@ module Users
       if result.success?
         create_user_event(:piv_cac_disabled)
         revoke_remember_device(current_user)
-        deliver_push_notification
         clear_piv_cac_information
 
         flash[:success] = presenter.delete_success_alert_text
@@ -47,11 +46,6 @@ module Users
     end
 
     private
-
-    def deliver_push_notification
-      event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
-      PushNotification::HttpPush.deliver(event)
-    end
 
     def form
       @form ||= form_class.new(user: current_user, configuration_id: params[:id])

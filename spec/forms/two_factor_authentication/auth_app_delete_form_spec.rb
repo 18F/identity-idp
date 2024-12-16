@@ -17,6 +17,13 @@ RSpec.describe TwoFactorAuthentication::AuthAppDeleteForm do
         expect(result.to_h).to eq(success: true, configuration_id:)
       end
 
+      it 'sends a recovery information changed event' do
+        expect(PushNotification::HttpPush).to receive(:deliver)
+          .with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
+
+        form.submit
+      end
+
       context 'with blank configuration' do
         let(:configuration) { nil }
 

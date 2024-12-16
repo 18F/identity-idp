@@ -18,7 +18,11 @@ module TwoFactorAuthentication
     def submit
       success = valid?
 
-      configuration.destroy if success
+      if success
+        configuration.destroy
+        event = PushNotification::RecoveryInformationChangedEvent.new(user: user)
+        PushNotification::HttpPush.deliver(event)
+      end
 
       FormResponse.new(
         success:,

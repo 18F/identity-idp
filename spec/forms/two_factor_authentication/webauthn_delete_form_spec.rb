@@ -21,13 +21,27 @@ RSpec.describe TwoFactorAuthentication::WebauthnDeleteForm do
         )
       end
 
+      it 'sends a recovery information changed event' do
+        expect(PushNotification::HttpPush).to receive(:deliver)
+          .with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
+
+        form.submit
+      end
+
       context 'with platform authenticator' do
         let(:configuration) do
           create(:webauthn_configuration, :platform_authenticator, user:)
+        end
 
-          it 'includes platform authenticator detail in result' do
-            expect(result.to_h[:platform_authenticator]).to eq(true)
-          end
+        it 'includes platform authenticator detail in result' do
+          expect(result.to_h[:platform_authenticator]).to eq(true)
+        end
+
+        it 'sends a recovery information changed event' do
+          expect(PushNotification::HttpPush).to receive(:deliver)
+            .with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
+
+          form.submit
         end
       end
 

@@ -39,8 +39,6 @@ module Api
           if result.success?
             create_user_event(:authenticator_disabled)
             revoke_remember_device(current_user)
-            event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
-            PushNotification::HttpPush.deliver(event)
             render json: { success: true }
           else
             render json: { success: false, error: result.first_error_message }, status: :bad_request

@@ -40,7 +40,6 @@ module Api
           if result.success?
             create_user_event(:piv_cac_disabled)
             revoke_remember_device(current_user)
-            deliver_push_notification
             clear_piv_cac_information
             render json: { success: true }
           else
@@ -49,11 +48,6 @@ module Api
         end
 
         private
-
-        def deliver_push_notification
-          event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
-          PushNotification::HttpPush.deliver(event)
-        end
 
         def render_unauthorized
           render json: { error: 'Unauthorized' }, status: :unauthorized
