@@ -590,7 +590,7 @@ doc_auth.headers.underage: Condition d’âge non remplie
 doc_auth.headers.unreadable_id: Nous n’avons pas pu lire votre pièce d’identité
 doc_auth.headings.address: Mettre à jour votre adresse postale
 doc_auth.headings.back: Verso de votre permis de conduire ou de votre carte d’identité d’un État
-doc_auth.headings.capture_complete: Nous avons vérifié votre pièce d'identité
+doc_auth.headings.capture_complete: Nous avons vérifié votre pièce d’identité
 doc_auth.headings.capture_scan_warning_html: Nous n’avons pas pu lire le code-barres de votre pièce d’identité. Si les informations ci-dessous ne sont pas correctes, veuillez %{link_html} de votre carte d’identité délivrée par l’État.
 doc_auth.headings.capture_scan_warning_link: télécharger de nouvelles photos
 doc_auth.headings.document_capture: Ajoutez des photos de votre permis de conduire ou de votre carte d’identité nationale
