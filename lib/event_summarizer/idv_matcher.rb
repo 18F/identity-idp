@@ -231,7 +231,7 @@ module EventSummarizer
         add_significant_event(
           type: :start_gpo,
           timestamp:,
-          description: 'User requested a letter to verfy by mail',
+          description: 'User requested a letter to verify by mail',
         )
       end
 
@@ -290,24 +290,14 @@ module EventSummarizer
         return
       end
 
-      # User successfully entered GPO code. If nothing else is pending,
+      # User successfully entered GPO code. If fraud review is not pending,
       # then they are fully verified
-
-      ipp_pending = !!event.dig(
-        *EVENT_PROPERTIES,
-        'pending_in_person_enrollment',
-      )
-
       fraud_review_pending = !!event.dig(
         *EVENT_PROPERTIES,
         'fraud_check_failed',
       )
 
-      fully_verified = !(ipp_pending || fraud_review_pending)
-
-      description = ipp_pending ?
-        'User successfully entered a GPO code, but is still pending in-person proofing'
-        : 'User successfully entered a GPO code'
+      fully_verified = !fraud_review_pending
 
       add_significant_event(
         type: :gpo_code_success,

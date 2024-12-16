@@ -23,12 +23,13 @@ Dir[File.expand_path(
 end
 
 class SummarizeUserEvents
-  attr_reader :uuid, :from_date, :to_date, :zone
+  attr_reader :file_name, :uuid, :from_date, :to_date, :zone
 
   NICE_DATE_AND_TIME_FORMAT = '%B %d, %Y at %I:%M %p %Z'
   TIME_ONLY_FORMAT = '%I:%M %p'
 
-  def initialize(user_uuid: nil, start_time: nil, end_time: nil, zone: 'UTC')
+  def initialize(file_name: nil, user_uuid: nil, start_time: nil, end_time: nil, zone: 'UTC')
+    @file_name = file_name
     @zone = zone
     Time.zone = zone
     @uuid = user_uuid
@@ -147,18 +148,18 @@ class SummarizeUserEvents
   end
 
   def find_cloudwatch_events(&block)
-    if $stdin.tty?
+    unless file_name.nil?
+      warn 'Reading Cloudwatch events as newline-delimited JSON (ndjson) a file'
+      file_source(&block)
+    else 
       cloudwatch_source(&block)
-    else
-      warn 'Reading Cloudwatch events as newline-delimited JSON (ndjson) from stdin'
-      stdin_source(&block)
     end
   end
 
-  def stdin_source(&block)
+  def file_source(&block)
     events = []
 
-    $stdin.each_line do |line|
+    File.read(file_name).each_line do |line|
       next if line.blank?
       events << JSON.parse(line)
     end
@@ -190,16 +191,20 @@ def main
 
     Summarize user events in a human-readable format
 
-    Cloudwatch logs can be read from stdin as newline-delimited JSON (ndjson),
+    Cloudwatch logs can be read from a file as newline-delimited JSON (ndjson),
     or fetched directly via aws-vault.
 
     usage: #{basename} [OPTIONS]
 
     Examples:
-      #{basename} << events.ndjson
+      #{basename} -f events.ndjson
       aws-vault exec prod-power -- #{basename} -u 1234-5678-90ab-cdef -s 2024-12-09T10:00:00 -e 2024-12-09T14:30:00 -z America/New_York
 
     EOM
+
+    opts.on('-f', '--file_name FILE_NAME', 'filename from which to read the events') do |val|
+      options[:file_name] = val
+    end
 
     opts.on('-h', '--help', 'Display this message') do
       warn opts
