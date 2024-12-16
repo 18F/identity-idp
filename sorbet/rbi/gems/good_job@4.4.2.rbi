@@ -818,6 +818,8 @@ class GoodJob::ApplicationController < ::ActionController::Base
 end
 
 module GoodJob::ApplicationController::HelperMethods
+  include ::ActionText::ContentHelper
+  include ::ActionText::TagHelper
   include ::ActionController::Base::HelperMethods
   include ::GoodJob::IconsHelper
   include ::GoodJob::ApplicationHelper

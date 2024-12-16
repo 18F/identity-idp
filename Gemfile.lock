@@ -350,16 +350,7 @@ GEM
       fugit (>= 1.11.0)
       railties (>= 6.1.0)
       thor (>= 1.0.0)
-    google-protobuf (4.28.2-aarch64-linux)
-      bigdecimal
-      rake (>= 13)
-    google-protobuf (4.28.2-arm64-darwin)
-      bigdecimal
-      rake (>= 13)
-    google-protobuf (4.28.2-x86_64-darwin)
-      bigdecimal
-      rake (>= 13)
-    google-protobuf (4.28.2-x86_64-linux)
+    google-protobuf (4.28.2)
       bigdecimal
       rake (>= 13)
     hashdiff (1.1.0)
@@ -438,6 +429,7 @@ GEM
     method_source (1.1.0)
     mini_histogram (0.3.1)
     mini_mime (1.1.5)
+    mini_portile2 (2.8.8)
     minitest (5.25.1)
     msgpack (1.7.2)
     multiset (0.5.3)
@@ -460,13 +452,8 @@ GEM
     netrc (0.11.0)
     newrelic_rpm (9.7.0)
     nio4r (2.7.3)
-    nokogiri (1.16.8-aarch64-linux)
-      racc (~> 1.4)
-    nokogiri (1.16.8-arm64-darwin)
-      racc (~> 1.4)
-    nokogiri (1.16.8-x86_64-darwin)
-      racc (~> 1.4)
-    nokogiri (1.16.8-x86_64-linux)
+    nokogiri (1.16.8)
+      mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     numbers_and_words (0.11.12)
       i18n (<= 2)
@@ -652,6 +639,8 @@ GEM
       rubocop-ast (>= 1.31.1, < 2.0)
     rubocop-rspec (3.2.0)
       rubocop (~> 1.61)
+    rubocop-sorbet (0.8.7)
+      rubocop (>= 1)
     ruby-progressbar (1.13.0)
     ruby-saml (1.17.0)
       nokogiri (>= 1.13.10)
@@ -707,12 +696,8 @@ GEM
       prism (>= 0.28.0)
       sorbet-static-and-runtime (>= 0.5.10187)
       thor (>= 0.19.2)
-    sqlite3 (2.1.0-aarch64-linux-gnu)
-    sqlite3 (2.1.0-aarch64-linux-musl)
-    sqlite3 (2.1.0-arm64-darwin)
-    sqlite3 (2.1.0-x86_64-darwin)
-    sqlite3 (2.1.0-x86_64-linux-gnu)
-    sqlite3 (2.1.0-x86_64-linux-musl)
+    sqlite3 (2.1.0)
+      mini_portile2 (~> 2.8.0)
     stringex (2.8.5)
     stringio (3.1.1)
     strong_migrations (2.0.0)
@@ -798,6 +783,7 @@ PLATFORMS
   aarch64-linux-gnu
   aarch64-linux-musl
   arm64-darwin
+  ruby
   universal-darwin
   x86_64-darwin
   x86_64-linux
@@ -904,6 +890,7 @@ DEPENDENCIES
   rubocop-performance (~> 1.23.0)
   rubocop-rails (~> 2.27.0)
   rubocop-rspec (~> 3.2.0)
+  rubocop-sorbet
   ruby-progressbar
   ruby-saml
   safe_target_blank (>= 1.0.2)
@@ -916,6 +903,7 @@ DEPENDENCIES
   simplecov-cobertura
   simplecov_json_formatter
   sorbet-static-and-runtime
+  spoom
   sqlite3
   stringex
   strong_migrations (>= 0.4.2)

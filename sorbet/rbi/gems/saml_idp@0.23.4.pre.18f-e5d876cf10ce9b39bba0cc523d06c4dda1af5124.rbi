@@ -760,6 +760,8 @@ class SamlIdp::IdpController < ::ActionController::Base
 end
 
 module SamlIdp::IdpController::HelperMethods
+  include ::ActionText::ContentHelper
+  include ::ActionText::TagHelper
   include ::ActionController::Base::HelperMethods
 
   # source://saml_idp//lib/saml_idp/controller.rb#12

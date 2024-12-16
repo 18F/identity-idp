@@ -5,7 +5,7 @@
 # Please run `bin/tapioca annotations` to update it.
 
 class ActiveJob::Base
-  sig { params(blk: T.proc.bind(T.attached_class).params(job: T.attached_class).void).void }
+  sig { params(blk: T.proc.bind(T.attached_class).params(job: T.attached_class, exception: Exception).void).void }
   def self.after_discard(&blk); end
 
   sig { params(filters: T.untyped, blk: T.nilable(T.proc.bind(T.attached_class).params(job: T.attached_class).void)).void }

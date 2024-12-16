@@ -5553,6 +5553,8 @@ class ActionView::Helpers::FormBuilder
   # source://actionview//lib/action_view/helpers/form_helper.rb#2133
   def range_field(method, options = T.unsafe(nil)); end
 
+  def rich_text_area(method, options = T.unsafe(nil)); end
+
   # source://actionview//lib/action_view/helpers/form_helper.rb#2049
   def search_field(method, options = T.unsafe(nil)); end
 
@@ -7101,6 +7103,8 @@ module ActionView::Helpers::FormHelper
   #
   # source://actionview//lib/action_view/helpers/form_helper.rb#1584
   def range_field(object_name, method, options = T.unsafe(nil)); end
+
+  def rich_text_area(object_name, method, options = T.unsafe(nil)); end
 
   # Returns an input of type "search" for accessing a specified attribute (identified by +method+) on an object
   # assigned to the template (identified by +object_name+). Inputs of type "search" may be styled differently by

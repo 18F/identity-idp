@@ -77,7 +77,6 @@ gem 'safe_target_blank', '>= 1.0.2'
 gem 'saml_idp', github: '18F/saml_idp', tag: '0.23.4-18f'
 gem 'scrypt'
 gem 'simple_form', '>= 5.0.2'
-gem 'sorbet-static-and-runtime'
 gem 'stringex', require: false
 gem 'strong_migrations', '>= 0.4.2'
 gem 'terminal-table', require: false
@@ -100,6 +99,7 @@ group :development do
   gem 'irb'
   gem 'letter_opener', '~> 1.8'
   gem 'rack-mini-profiler', '>= 1.1.3', require: false
+  gem 'sorbet-static-and-runtime'
 end
 
 group :development, :test do
@@ -111,8 +111,8 @@ group :development, :test do
   gem 'knapsack'
   gem 'listen'
   gem 'net-http-persistent', '~> 4.0.2', require: false
-  gem 'nokogiri', '~> 1.16.0'
-  gem 'pg_query', require: false
+  gem 'nokogiri', '~> 1.16.0', platforms: :ruby
+  gem 'pg_query', platforms: :ruby, require: false
   gem 'pry-byebug'
   gem 'pry-doc'
   gem 'pry-rails'
@@ -123,8 +123,10 @@ group :development, :test do
   gem 'rubocop-performance', '~> 1.23.0', require: false
   gem 'rubocop-rails', '~> 2.27.0', require: false
   gem 'rubocop-rspec', '~> 3.2.0', require: false
-  gem 'sqlite3', require: false
+  gem 'rubocop-sorbet', require: false
   gem 'tapioca', require: false
+  gem 'spoom', require: false
+  gem 'sqlite3', platforms: :ruby, require: false
 end
 
 group :test do

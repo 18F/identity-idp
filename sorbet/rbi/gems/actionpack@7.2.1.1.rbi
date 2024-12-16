@@ -2499,6 +2499,9 @@ end
 
 # source://actionpack//lib/action_controller/base.rb#0
 module ActionController::Base::HelperMethods
+  include ::ActionText::ContentHelper
+  include ::ActionText::TagHelper
+
   # source://ahoy_matey/3.3.0/lib/ahoy/controller.rb#6
   def ahoy(*_arg0, **_arg1, &_arg2); end
 
@@ -20212,6 +20215,7 @@ class ActionDispatch::SystemTestCase < ::ActiveSupport::TestCase
   include ::Capybara::Minitest::Assertions
   include ::ActionDispatch::SystemTesting::TestHelpers::SetupAndTeardown
   include ::ActionDispatch::SystemTesting::TestHelpers::ScreenshotHelper
+  include ::ActionText::SystemTestHelper
 
   # @return [SystemTestCase] a new instance of SystemTestCase
   #

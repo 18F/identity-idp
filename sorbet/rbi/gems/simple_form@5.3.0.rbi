@@ -156,6 +156,8 @@ class ActionView::Helpers::FormBuilder
   # source://actionview/7.2.1.1/lib/action_view/helpers/form_helper.rb#2133
   def range_field(method, options = T.unsafe(nil)); end
 
+  def rich_text_area(method, options = T.unsafe(nil)); end
+
   # source://actionview/7.2.1.1/lib/action_view/helpers/form_helper.rb#2049
   def search_field(method, options = T.unsafe(nil)); end
 

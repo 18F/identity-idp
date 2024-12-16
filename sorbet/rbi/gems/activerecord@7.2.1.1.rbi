@@ -8378,6 +8378,12 @@ class ActiveRecord::Base
   # source://activerecord//lib/active_record/reflection.rb#12
   def aggregate_reflections?; end
 
+  # source://activestorage/7.2.1.1/lib/active_storage/reflection.rb#53
+  def attachment_reflections; end
+
+  # source://activestorage/7.2.1.1/lib/active_storage/reflection.rb#53
+  def attachment_reflections?; end
+
   # source://activemodel/7.2.1.1/lib/active_model/attribute_methods.rb#71
   def attribute_aliases; end
 
@@ -8782,6 +8788,15 @@ class ActiveRecord::Base
 
     # source://activerecord//lib/active_record/core.rb#132
     def asynchronous_queries_tracker; end
+
+    # source://activestorage/7.2.1.1/lib/active_storage/reflection.rb#53
+    def attachment_reflections; end
+
+    # source://activestorage/7.2.1.1/lib/active_storage/reflection.rb#53
+    def attachment_reflections=(value); end
+
+    # source://activestorage/7.2.1.1/lib/active_storage/reflection.rb#53
+    def attachment_reflections?; end
 
     # source://activemodel/7.2.1.1/lib/active_model/attribute_methods.rb#71
     def attribute_aliases; end
@@ -31201,6 +31216,7 @@ class ActiveRecord::RecordNotUnique < ::ActiveRecord::WrappedDatabaseException; 
 # source://activerecord//lib/active_record/reflection.rb#7
 module ActiveRecord::Reflection
   extend ::ActiveSupport::Concern
+  extend ::ActiveStorage::Reflection::ReflectionExtension
   include GeneratedInstanceMethods
 
   mixes_in_class_methods GeneratedClassMethods
@@ -31218,7 +31234,7 @@ module ActiveRecord::Reflection
 
     private
 
-    # source://activerecord//lib/active_record/reflection.rb#34
+    # source://activestorage/7.2.1.1/lib/active_storage/reflection.rb#37
     def reflection_class_for(macro); end
   end
 
