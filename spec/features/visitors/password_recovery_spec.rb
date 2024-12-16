@@ -14,8 +14,8 @@ RSpec.feature 'Password Recovery' do
       click_link t('links.passwords.forgot')
       fill_in t('account.index.email'), with: user.email
 
-      expect(PushNotification::HttpPush).to receive(:deliver).
-        with(PushNotification::RecoveryActivatedEvent.new(user: user))
+      expect(PushNotification::HttpPush).to receive(:deliver)
+        .with(PushNotification::RecoveryActivatedEvent.new(user: user))
 
       click_button t('forms.buttons.continue')
 
@@ -222,8 +222,8 @@ RSpec.feature 'Password Recovery' do
         fill_in t('components.password_confirmation.confirm_label'), with: '1234'
         click_button t('forms.passwords.edit.buttons.submit')
 
-        expect(page).
-          to have_content t(
+        expect(page)
+          .to have_content t(
             'errors.attributes.password.too_short.other', count: Devise.password_length.first
           )
       end

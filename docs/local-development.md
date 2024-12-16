@@ -24,7 +24,7 @@ If not using macOS:
     - Ruby. Choose the version [in the `.ruby-version` file](../.ruby-version)
     - [PostgreSQL](http://www.postgresql.org/download/)
     - [Redis 7+](http://redis.io/)
-    - [Node.js v20](https://nodejs.org)
+    - [Node.js v22](https://nodejs.org)
     - [Yarn](https://yarnpkg.com/en/)
     - [chromedriver](https://formulae.brew.sh/cask/chromedriver)
 

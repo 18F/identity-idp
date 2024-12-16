@@ -85,8 +85,8 @@ RSpec.describe RedisRateLimiter do
     context 'when the key does not exist in redis' do
       it 'sets the value to 1 when' do
         expect { rate_limiter.increment(now) }.to(
-          change { REDIS_THROTTLE_POOL.with { |r| r.get(rate_limiter.build_key(now)) } }.
-            from(nil).to('1'),
+          change { REDIS_THROTTLE_POOL.with { |r| r.get(rate_limiter.build_key(now)) } }
+            .from(nil).to('1'),
         )
       end
     end

@@ -98,19 +98,19 @@ module Proofing
       end
 
       def requested_attributes(verification_response)
-        attributes = verification_response.
-          verification_results.filter { |_, verified| !verified.nil? }.
-          keys.
-          to_set
+        attributes = verification_response
+          .verification_results.filter { |_, verified| !verified.nil? }
+          .keys
+          .to_set
 
         normalize_address_attributes(attributes)
       end
 
       def verified_attributes(verification_response)
-        attributes = verification_response.
-          verification_results.filter { |_, verified| verified }.
-          keys.
-          to_set
+        attributes = verification_response
+          .verification_results.filter { |_, verified| verified }
+          .keys
+          .to_set
 
         normalize_address_attributes(attributes)
       end

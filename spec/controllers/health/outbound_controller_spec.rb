@@ -10,8 +10,8 @@ RSpec.describe Health::OutboundController do
 
     context 'when the outbound connections are healthy' do
       before do
-        stub_request(:head, IdentityConfig.store.outbound_connection_check_url).
-          to_return(status: 200)
+        stub_request(:head, IdentityConfig.store.outbound_connection_check_url)
+          .to_return(status: 200)
       end
 
       it 'is a 200' do

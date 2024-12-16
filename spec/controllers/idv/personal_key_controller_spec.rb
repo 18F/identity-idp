@@ -46,8 +46,6 @@ RSpec.describe Idv::PersonalKeyController do
 
   let(:address_verification_mechanism) { 'phone' }
 
-  let(:in_person_enrollment) { nil }
-
   let(:idv_session) { subject.idv_session }
 
   let(:threatmetrix_review_status) { nil }
@@ -483,25 +481,51 @@ RSpec.describe Idv::PersonalKeyController do
     context 'user selected gpo verification' do
       let(:address_verification_mechanism) { 'gpo' }
 
-      it 'redirects to correct url' do
-        patch :update
-        expect(response).to redirect_to idv_letter_enqueued_url
+      context 'when the user requested a letter this session' do
+        it 'redirects to correct url' do
+          patch :update
+          expect(response).to redirect_to idv_letter_enqueued_url
+        end
+
+        it 'does not log any events' do
+          expect(@analytics).not_to have_logged_event
+          patch :update
+        end
       end
 
-      it 'does not log any events' do
-        expect(@analytics).not_to have_logged_event
-        patch :update
+      context 'when the user entered a GPO code' do
+        before do
+          pending_profile = user.pending_profile
+          pending_profile.remove_gpo_deactivation_reason
+          pending_profile.activate
+        end
+
+        it 'redirects to correct url' do
+          patch :update
+          expect(response).to redirect_to idv_sp_follow_up_url
+        end
+
+        it 'logs analytics' do
+          patch :update
+
+          expect(@analytics).to have_logged_event(
+            'IdV: personal key submitted',
+            hash_including(
+              address_verification_method: 'gpo',
+              fraud_review_pending: false,
+              fraud_rejection: false,
+              in_person_verification_pending: false,
+            ),
+          )
+        end
       end
     end
 
     context 'with in person profile' do
-      let!(:in_person_enrollment) do
-        create(:in_person_enrollment, :pending, user: user).tap do
-          user.reload_pending_in_person_enrollment
-        end
-      end
+      let!(:profile) { create(:profile, :in_person_verification_pending, user: user) }
 
       before do
+        user.reload_pending_in_person_enrollment
         allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
       end
 

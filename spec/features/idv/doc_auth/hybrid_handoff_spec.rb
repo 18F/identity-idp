@@ -44,9 +44,9 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
     end
 
     it 'proceeds to the next page with valid info', :js do
-      expect(Telephony).to receive(:send_doc_auth_link).
-        with(hash_including(to: '+1 415-555-0199')).
-        and_call_original
+      expect(Telephony).to receive(:send_doc_auth_link)
+        .with(hash_including(to: '+1 415-555-0199'))
+        .and_call_original
 
       expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
 
@@ -116,8 +116,8 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
       timeout = distance_of_time_in_words(
         RateLimiter.attempt_window_in_minutes(:idv_send_link).minutes,
       )
-      allow(IdentityConfig.store).to receive(:idv_send_link_max_attempts).
-        and_return(idv_send_link_max_attempts)
+      allow(IdentityConfig.store).to receive(:idv_send_link_max_attempts)
+        .and_return(idv_send_link_max_attempts)
 
       freeze_time do
         idv_send_link_max_attempts.times do
@@ -208,10 +208,10 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
         let(:in_person_doc_auth_button_enabled) { true }
         let(:sp_ipp_enabled) { true }
         before do
-          allow(IdentityConfig.store).to receive(:in_person_doc_auth_button_enabled).
-            and_return(in_person_doc_auth_button_enabled)
-          allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).with(anything).
-            and_return(sp_ipp_enabled)
+          allow(IdentityConfig.store).to receive(:in_person_doc_auth_button_enabled)
+            .and_return(in_person_doc_auth_button_enabled)
+          allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).with(anything)
+            .and_return(sp_ipp_enabled)
           complete_doc_auth_steps_before_hybrid_handoff_step
         end
 
@@ -333,16 +333,16 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
       end
       allow(IdentityConfig.store).to receive(:socure_docv_enabled).and_return(socure_docv_enabled)
       allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(doc_auth_vendor)
-      allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).
-        and_return(desktop_test_mode_enabled)
+      allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
+        .and_return(desktop_test_mode_enabled)
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(
         in_person_proofing_enabled,
       )
       allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(
         in_person_proofing_opt_in_enabled,
       )
-      allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
-        and_return(sp_ipp_enabled)
+      allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled)
+        .and_return(sp_ipp_enabled)
       visit_idp_from_sp_with_ial2(
         :oidc,
         **{ client_id: service_provider.issuer,
@@ -385,7 +385,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
           end
           describe 'when selfie is required by sp' do
             before do
-              click_on t('forms.buttons.continue_remote_selfie')
+              click_on t('forms.buttons.continue_remote_mobile')
             end
             it 'shows selfie version of top content and ipp option section' do
               verify_handoff_page_selfie_version_content(page)

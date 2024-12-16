@@ -27,10 +27,10 @@ RSpec.describe BackupCodeVerificationForm do
       end
 
       it 'marks code as used' do
-        expect { subject }.
-          to change { backup_code_config.reload.used_at }.
-          from(nil).
-          to kind_of(Time)
+        expect { subject }
+          .to change { backup_code_config.reload.used_at }
+          .from(nil)
+          .to kind_of(Time)
       end
     end
 

@@ -46,8 +46,8 @@ RSpec.describe AccountReset::RequestController do
           true,
           accumulate_on: :hours,
         )
-        expect(controller.view_assigns['account_reset_deletion_period_interval']).
-          to eq(time_in_hours)
+        expect(controller.view_assigns['account_reset_deletion_period_interval'])
+          .to eq(time_in_hours)
       end
     end
 
@@ -56,8 +56,8 @@ RSpec.describe AccountReset::RequestController do
 
       context 'fraud wait period not set' do
         before do
-          allow(IdentityConfig.store).to receive(:account_reset_fraud_user_wait_period_days).
-            and_return(nil)
+          allow(IdentityConfig.store).to receive(:account_reset_fraud_user_wait_period_days)
+            .and_return(nil)
         end
 
         it 'should have @account_reset_deletion_period to match regular wait period' do
@@ -71,8 +71,8 @@ RSpec.describe AccountReset::RequestController do
             true,
             accumulate_on: :hours,
           )
-          expect(controller.view_assigns['account_reset_deletion_period_interval']).
-            to eq(time_in_hours)
+          expect(controller.view_assigns['account_reset_deletion_period_interval'])
+            .to eq(time_in_hours)
         end
       end
 
@@ -87,8 +87,8 @@ RSpec.describe AccountReset::RequestController do
           true,
           accumulate_on: :days,
         )
-        expect(controller.view_assigns['account_reset_deletion_period_interval']).
-          to eq(time_in_hours)
+        expect(controller.view_assigns['account_reset_deletion_period_interval'])
+          .to eq(time_in_hours)
       end
     end
   end

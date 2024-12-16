@@ -146,8 +146,8 @@ RSpec.describe 'Idv::FlowPolicy' do
 
   context 'each step in the flow' do
     before do
-      allow(Idv::PhoneConfirmationSession).to receive(:from_h).
-        with(user_phone_confirmation_session).and_return(user_phone_confirmation_session)
+      allow(Idv::PhoneConfirmationSession).to receive(:from_h)
+        .with(user_phone_confirmation_session).and_return(user_phone_confirmation_session)
       allow(user).to receive(:gpo_pending_profile?).and_return(has_gpo_pending_profile)
     end
     context 'empty session' do
@@ -227,8 +227,8 @@ RSpec.describe 'Idv::FlowPolicy' do
       it 'returns ipp_ssn' do
         expect(subject.info_for_latest_step.key).to eq(:ipp_ssn)
         expect(subject.controller_allowed?(controller: Idv::InPerson::SsnController)).to be
-        expect(subject.controller_allowed?(controller: Idv::InPerson::VerifyInfoController)).
-          not_to be
+        expect(subject.controller_allowed?(controller: Idv::InPerson::VerifyInfoController))
+          .not_to be
       end
     end
 

@@ -68,8 +68,8 @@ RSpec.describe Reports::DuplicateSsnReport do
         csv = CSV.parse(report_body, headers: true)
         expect(csv.length).to eq(3)
 
-        expect(csv.find { |r| r['uuid'] == unique_profile.user.uuid }).
-          to be_nil, 'does not include unique users in the report'
+        expect(csv.find { |r| r['uuid'] == unique_profile.user.uuid })
+          .to be_nil, 'does not include unique users in the report'
 
         today_user = fingerprint2_today_profile.user
         today_row = csv.find { |r| r['uuid'] == today_user.uuid }

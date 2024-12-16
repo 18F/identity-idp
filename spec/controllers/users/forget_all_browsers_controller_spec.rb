@@ -52,9 +52,9 @@ RSpec.describe Users::ForgetAllBrowsersController do
           travel_to(now)
           subject
         end
-      end.to change { user.remember_device_revoked_at.to_i }.
-        from(original_device_revoked_at.to_i).
-        to(now.to_i)
+      end.to change { user.remember_device_revoked_at.to_i }
+        .from(original_device_revoked_at.to_i)
+        .to(now.to_i)
     end
 
     it 'logs an analytics event for forgetting' do

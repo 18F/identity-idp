@@ -15,8 +15,8 @@ RSpec.describe Idv::AccountVerifiedEmailPresenter do
   subject(:presenter) { described_class.new(profile:, url_options: {}) }
 
   before do
-    allow(IdentityConfig.store).to receive(:idv_account_verified_email_campaign_id).
-      and_return('20241030')
+    allow(IdentityConfig.store).to receive(:idv_account_verified_email_campaign_id)
+      .and_return('20241030')
   end
 
   context 'when there is no associated service provider' do
@@ -57,11 +57,12 @@ RSpec.describe Idv::AccountVerifiedEmailPresenter do
   end
 
   context 'where there is a service provider' do
-    context 'when the service provider has no return URL' do
+    context 'when the service provider has no post-IdV follow-up URL' do
       let(:service_provider) do
         create(
           :service_provider,
           issuer: 'urn:my:awesome:sp',
+          post_idv_follow_up_url: nil,
           return_to_sp_url: nil,
           friendly_name: 'My Awesome SP',
         )
@@ -101,12 +102,12 @@ RSpec.describe Idv::AccountVerifiedEmailPresenter do
       end
     end
 
-    context 'when the service provider does have a return URL' do
+    context 'when the service provider does have a post-IdV follow-up URL' do
       let(:service_provider) do
         create(
           :service_provider,
           issuer: 'urn:my:awesome:sp',
-          return_to_sp_url: 'https://www.mysp.com',
+          post_idv_follow_up_url: 'https://www.mysp.com',
           friendly_name: 'My Awesome SP',
         )
       end

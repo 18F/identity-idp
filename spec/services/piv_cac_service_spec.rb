@@ -125,12 +125,12 @@ RSpec.describe PivCacService do
         end
 
         let!(:request) do
-          stub_request(:post, 'localhost:8443').
-            with(
+          stub_request(:post, 'localhost:8443')
+            .with(
               body: 'token=foo',
               headers: { 'Authentication' => /^hmac\s+:.+:.+$/ },
-            ).
-            to_return(
+            )
+            .to_return(
               status: [200, 'Ok'],
               body: '{"subject":"dn","uuid":"uuid"}',
             )
@@ -167,12 +167,12 @@ RSpec.describe PivCacService do
         end
 
         let!(:request) do
-          stub_request(:post, 'localhost:8443').
-            with(
+          stub_request(:post, 'localhost:8443')
+            .with(
               body: 'token=foo',
               headers: { 'Authentication' => /^hmac\s+:.+:.+$/ },
-            ).
-            to_return(
+            )
+            .to_return(
               status: [200, 'Ok'],
               body: '{"subject":"dn","uuid":"uuid"}',
             )
@@ -209,9 +209,9 @@ RSpec.describe PivCacService do
         end
 
         let!(:request) do
-          stub_request(:post, 'localhost:8443').
-            with(body: 'token=foo').
-            to_return(
+          stub_request(:post, 'localhost:8443')
+            .with(body: 'token=foo')
+            .to_return(
               status: [200, 'Ok'],
               body: 'bad-json',
             )
@@ -234,8 +234,8 @@ RSpec.describe PivCacService do
         end
 
         let!(:request) do
-          stub_request(:post, 'localhost:8443').
-            to_raise(Faraday::ConnectionFailed)
+          stub_request(:post, 'localhost:8443')
+            .to_raise(Faraday::ConnectionFailed)
         end
 
         it 'returns an error' do

@@ -251,8 +251,8 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
       end
 
       it 'indicates to the IDV agent that an IPP enrollment is not in progress' do
-        expect_any_instance_of(Idv::Agent).to receive(:proof_resolution).
-          with(
+        expect_any_instance_of(Idv::Agent).to receive(:proof_resolution)
+          .with(
             kind_of(DocumentCaptureSession),
             trace_id: subject.send(:amzn_trace_id),
             threatmetrix_session_id: nil,
@@ -294,8 +294,8 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
     end
 
     it 'passes the X-Amzn-Trace-Id to the proofer' do
-      expect_any_instance_of(Idv::Agent).to receive(:proof_resolution).
-        with(
+      expect_any_instance_of(Idv::Agent).to receive(:proof_resolution)
+        .with(
           kind_of(DocumentCaptureSession),
           trace_id: subject.send(:amzn_trace_id),
           threatmetrix_session_id: nil,
@@ -327,8 +327,8 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
 
       before do
         allow(IdentityConfig.store).to receive(:proof_ssn_max_attempts).and_return(3)
-        allow(IdentityConfig.store).to receive(:proof_ssn_max_attempt_window_in_minutes).
-          and_return(10)
+        allow(IdentityConfig.store).to receive(:proof_ssn_max_attempt_window_in_minutes)
+          .and_return(10)
       end
 
       it 'rate limits them all' do

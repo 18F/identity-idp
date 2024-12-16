@@ -31,7 +31,6 @@ module Idv
       idv_doc_auth_ssn_visited
       idv_doc_auth_submitted_image_upload_form
       idv_doc_auth_submitted_image_upload_vendor
-      idv_socure_verification_data_requested
       idv_doc_auth_submitted_pii_validation
       idv_doc_auth_verify_proofing_results
       idv_doc_auth_verify_submitted
@@ -97,6 +96,8 @@ module Idv
       idv_sdk_selfie_image_capture_opened
       idv_selfie_image_added
       idv_session_error_visited
+      idv_socure_document_request_submitted
+      idv_socure_verification_data_requested
       idv_threatmetrix_response_body
       idv_usps_auth_token_refresh_job_completed
       idv_usps_auth_token_refresh_job_network_error
@@ -159,11 +160,11 @@ module Idv
     private
 
     def analytics_attributes(method_name)
-      AnalyticsEventsEnhancer.extra_args_for_method(method_name).
-        index_with do |arg_name|
+      AnalyticsEventsEnhancer.extra_args_for_method(method_name)
+        .index_with do |arg_name|
           send(arg_name.to_s).presence
-        end.
-        compact
+        end
+        .compact
     end
 
     def active_profile_idv_level
@@ -177,9 +178,9 @@ module Idv
     def profile_history
       return if !user&.respond_to?(:profiles)
 
-      (user&.profiles || []).
-        sort_by { |profile| profile.created_at }.
-        map { |profile| ProfileLogging.new(profile) }
+      (user&.profiles || [])
+        .sort_by { |profile| profile.created_at }
+        .map { |profile| ProfileLogging.new(profile) }
     end
 
     def proofing_components

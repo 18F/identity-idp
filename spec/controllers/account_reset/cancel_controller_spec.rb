@@ -65,8 +65,8 @@ RSpec.describe AccountReset::CancelController do
 
       post :create
 
-      expect(flash[:success]).
-        to eq t('two_factor_authentication.account_reset.successful_cancel', app_name: APP_NAME)
+      expect(flash[:success])
+        .to eq t('two_factor_authentication.account_reset.successful_cancel', app_name: APP_NAME)
       expect(response).to redirect_to root_url
     end
 

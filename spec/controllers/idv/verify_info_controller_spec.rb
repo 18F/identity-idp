@@ -176,8 +176,9 @@ RSpec.describe Idv::VerifyInfoController do
       end
 
       before do
-        controller.
-          idv_session.verify_info_step_document_capture_session_uuid = document_capture_session.uuid
+        controller
+          .idv_session
+          .verify_info_step_document_capture_session_uuid = document_capture_session.uuid
         allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
       end
 

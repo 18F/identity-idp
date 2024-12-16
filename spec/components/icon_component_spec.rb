@@ -17,10 +17,10 @@ RSpec.describe IconComponent, type: :component do
     inline_style = rendered.at_css('style').text.strip
 
     expect(icon).to be_present
-    expect(inline_style).to match(%r{##{id}\s{.+?}}).
-      and(include('-webkit-mask-image:')).
-      and(include('mask-image:')).
-      and(match(%r{url\([^)]+/print-\w+\.svg\)}))
+    expect(inline_style).to match(%r{##{id}\s{.+?}})
+      .and(include('-webkit-mask-image:'))
+      .and(include('mask-image:'))
+      .and(match(%r{url\([^)]+/print-\w+\.svg\)}))
   end
 
   context 'with invalid icon' do

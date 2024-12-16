@@ -12,8 +12,8 @@ RSpec.describe OutageStatus do
   context 'when all vendors are operational' do
     before do
       OutageStatus::ALL_VENDORS.each do |vendor|
-        allow(IdentityConfig.store).to receive(:"vendor_status_#{vendor}").
-          and_return(:operational)
+        allow(IdentityConfig.store).to receive(:"vendor_status_#{vendor}")
+          .and_return(:operational)
       end
     end
 
@@ -29,8 +29,8 @@ RSpec.describe OutageStatus do
   context 'when any vendor has an outage' do
     OutageStatus::ALL_VENDORS.each do |vendor|
       before do
-        allow(IdentityConfig.store).to receive(:"vendor_status_#{vendor}").
-          and_return(:full_outage)
+        allow(IdentityConfig.store).to receive(:"vendor_status_#{vendor}")
+          .and_return(:full_outage)
       end
 
       it "correctly reports a vendor outage when #{vendor} is offline" do
@@ -41,8 +41,8 @@ RSpec.describe OutageStatus do
 
   context 'when an idv vendor has an outage' do
     before do
-      allow(IdentityConfig.store).to receive(:vendor_status_lexisnexis_trueid).
-        and_return(:full_outage)
+      allow(IdentityConfig.store).to receive(:vendor_status_lexisnexis_trueid)
+        .and_return(:full_outage)
     end
 
     it 'correctly reports an idv vendor outage' do
@@ -56,8 +56,8 @@ RSpec.describe OutageStatus do
 
   context 'when a non-idv vendor has an outage' do
     before do
-      allow(IdentityConfig.store).to receive(:vendor_status_sms).
-        and_return(:full_outage)
+      allow(IdentityConfig.store).to receive(:vendor_status_sms)
+        .and_return(:full_outage)
     end
 
     it 'correctly reports no idv vendor outage' do
@@ -131,10 +131,10 @@ RSpec.describe OutageStatus do
     subject(:status) { vendor_status.idv_scheduled_maintenance_status }
 
     before do
-      allow(IdentityConfig.store).to receive(:vendor_status_idv_scheduled_maintenance_start).
-        and_return(start)
-      allow(IdentityConfig.store).to receive(:vendor_status_idv_scheduled_maintenance_finish).
-        and_return(finish)
+      allow(IdentityConfig.store).to receive(:vendor_status_idv_scheduled_maintenance_start)
+        .and_return(start)
+      allow(IdentityConfig.store).to receive(:vendor_status_idv_scheduled_maintenance_finish)
+        .and_return(finish)
 
       travel_to(now)
     end

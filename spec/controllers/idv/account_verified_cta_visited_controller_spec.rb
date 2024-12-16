@@ -8,19 +8,19 @@ RSpec.describe Idv::AccountVerifiedCtaVisitedController, type: :controller do
   before do
     stub_analytics
 
-    allow(controller).to receive(:service_provider).
-      and_return(service_provider)
+    allow(controller).to receive(:service_provider)
+      .and_return(service_provider)
   end
 
   describe 'GET #show' do
     subject(:action) { get :show, params: }
 
-    context 'issuer provided and return_to_sp_url present' do
+    context 'issuer provided and post_idv_follow_up_url present' do
       let(:service_provider) do
         build(
           :service_provider,
           issuer: 'urn:my:awesome:issuer',
-          return_to_sp_url: 'https://some-sp.com',
+          post_idv_follow_up_url: 'https://some-sp.com',
         )
       end
 
@@ -28,7 +28,7 @@ RSpec.describe Idv::AccountVerifiedCtaVisitedController, type: :controller do
         { issuer: 'urn:my:awesome:issuer', campaign_id: '123234234' }
       end
 
-      it 'redirects to the service provider home page and logs event' do
+      it 'redirects to the service provider follow_up url and logs event' do
         action
 
         aggregate_failures 'verify response' do
@@ -50,6 +50,7 @@ RSpec.describe Idv::AccountVerifiedCtaVisitedController, type: :controller do
           :service_provider,
           issuer: 'urn:my:awesome:issuer',
           return_to_sp_url: nil,
+          post_idv_follow_up_url: nil,
           acs_url: nil,
           redirect_uris: nil,
         )

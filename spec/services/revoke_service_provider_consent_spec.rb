@@ -11,15 +11,15 @@ RSpec.describe RevokeServiceProviderConsent do
     end
 
     it 'sets the deleted_at' do
-      expect { service.call }.
-        to change { identity.reload.deleted_at&.to_i }.
-        from(nil).to(now.to_i)
+      expect { service.call }
+        .to change { identity.reload.deleted_at&.to_i }
+        .from(nil).to(now.to_i)
     end
 
     it 'clears the verified attributes' do
-      expect { service.call }.
-        to change { identity.reload.verified_attributes }.
-        from(['email']).to(nil)
+      expect { service.call }
+        .to change { identity.reload.verified_attributes }
+        .from(['email']).to(nil)
     end
   end
 end

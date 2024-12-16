@@ -7,10 +7,10 @@ RSpec.describe PhoneRecaptchaForm do
   let(:analytics) { FakeAnalytics.new }
   subject(:form) { described_class.new(parsed_phone:, analytics:) }
   before do
-    allow(IdentityConfig.store).to receive(:phone_recaptcha_country_score_overrides).
-      and_return(country_score_overrides_config)
-    allow(IdentityConfig.store).to receive(:phone_recaptcha_score_threshold).
-      and_return(score_threshold_config)
+    allow(IdentityConfig.store).to receive(:phone_recaptcha_country_score_overrides)
+      .and_return(country_score_overrides_config)
+    allow(IdentityConfig.store).to receive(:phone_recaptcha_score_threshold)
+      .and_return(score_threshold_config)
   end
 
   it 'passes instance variables to form' do
@@ -18,16 +18,16 @@ RSpec.describe PhoneRecaptchaForm do
       RecaptchaForm,
       submit: FormResponse.new(success: true),
     )
-    expect(RecaptchaForm).to receive(:new).
-      with(
+    expect(RecaptchaForm).to receive(:new)
+      .with(
         score_threshold: score_threshold_config,
         analytics:,
         recaptcha_action: described_class::RECAPTCHA_ACTION,
         extra_analytics_properties: {
           phone_country_code: parsed_phone.country,
         },
-      ).
-      and_return(recaptcha_form)
+      )
+      .and_return(recaptcha_form)
 
     form.submit('token')
   end

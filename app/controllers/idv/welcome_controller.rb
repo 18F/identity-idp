@@ -12,8 +12,8 @@ module Idv
       idv_session.proofing_started_at ||= Time.zone.now.iso8601
       analytics.idv_doc_auth_welcome_visited(**analytics_arguments)
 
-      Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
-        call('welcome', :view, true)
+      Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer])
+        .call('welcome', :view, true)
 
       @presenter = Idv::WelcomePresenter.new(decorated_sp_session)
     end
@@ -62,8 +62,8 @@ module Idv
 
     def cancel_previous_in_person_enrollments
       return unless IdentityConfig.store.in_person_proofing_enabled
-      UspsInPersonProofing::EnrollmentHelper.
-        cancel_stale_establishing_enrollments_for_user(current_user)
+      UspsInPersonProofing::EnrollmentHelper
+        .cancel_stale_establishing_enrollments_for_user(current_user)
     end
   end
 end

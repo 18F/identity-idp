@@ -17,6 +17,7 @@ module Reporting
     attr_reader :time_range
 
     SAML_AUTH_EVENT = 'SAML Auth'
+    SAML_AUTH_REQUEST_EVENT = 'SAML Auth Request'
     OIDC_AUTH_EVENT = 'OpenID Connect: authorization request'
 
     # @param [Range<Time>] time_range
@@ -220,20 +221,20 @@ module Reporting
         )
         {
           saml: {
-            request_count: results.
-              select { |slice| slice['protocol'] == SAML_AUTH_EVENT }.
-              map { |slice| slice['request_count'].to_i }.
-              sum,
+            request_count: results
+              .select { |slice| slice['protocol'] == SAML_AUTH_EVENT }
+              .map { |slice| slice['request_count'].to_i }
+              .sum,
             issuer_count: by_uniq_issuers(
-              results.
-                select { |slice| slice['protocol'] == SAML_AUTH_EVENT },
+              results
+                .select { |slice| slice['protocol'] == SAML_AUTH_EVENT },
             ).count,
           },
           oidc: {
-            request_count: results.
-              select { |slice| slice['protocol'] == OIDC_AUTH_EVENT }.
-              map { |slice| slice['request_count'].to_i }.
-              sum,
+            request_count: results
+              .select { |slice| slice['protocol'] == OIDC_AUTH_EVENT }
+              .map { |slice| slice['request_count'].to_i }
+              .sum,
             issuer_count: by_uniq_issuers(
               results.select { |slice| slice['protocol'] == OIDC_AUTH_EVENT },
             ).count,
@@ -253,10 +254,10 @@ module Reporting
           unsigned: by_uniq_issuers(
             results.select { |slice| slice['unsigned_count'].to_i > 0 },
           ),
-          invalid_signature: results.
-            select { |slice| slice['invalid_signature_count'].to_i > 0 }.
-            map { |slice| slice['issuer'] }.
-            uniq,
+          invalid_signature: results
+            .select { |slice| slice['invalid_signature_count'].to_i > 0 }
+            .map { |slice| slice['issuer'] }
+            .uniq,
         }
       end
     end
@@ -352,7 +353,7 @@ module Reporting
 
     def saml_signature_query
       params = {
-        events: quote([SAML_AUTH_EVENT]),
+        events: quote([SAML_AUTH_REQUEST_EVENT]),
       }
 
       format(<<~QUERY, params)
@@ -362,7 +363,6 @@ module Reporting
           properties.event_properties.request_signed != 1 AS not_signed,
           isempty(properties.event_properties.matching_cert_serial) AND signed AS invalid_signature
         | filter name IN %{events}
-          AND properties.event_properties.success = 1
         | stats
           sum(not_signed) AS unsigned_count,
           sum(invalid_signature) AS invalid_signature_count

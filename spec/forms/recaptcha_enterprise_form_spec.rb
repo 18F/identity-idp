@@ -27,12 +27,12 @@ RSpec.describe RecaptchaEnterpriseForm do
   end
 
   before do
-    allow(IdentityConfig.store).to receive(:recaptcha_enterprise_project_id).
-      and_return(recaptcha_enterprise_project_id)
-    allow(IdentityConfig.store).to receive(:recaptcha_enterprise_api_key).
-      and_return(recaptcha_enterprise_api_key)
-    allow(IdentityConfig.store).to receive(:recaptcha_site_key).
-      and_return(recaptcha_site_key)
+    allow(IdentityConfig.store).to receive(:recaptcha_enterprise_project_id)
+      .and_return(recaptcha_enterprise_project_id)
+    allow(IdentityConfig.store).to receive(:recaptcha_enterprise_api_key)
+      .and_return(recaptcha_enterprise_api_key)
+    allow(IdentityConfig.store).to receive(:recaptcha_site_key)
+      .and_return(recaptcha_site_key)
   end
 
   describe '#exempt?' do
@@ -390,8 +390,8 @@ RSpec.describe RecaptchaEnterpriseForm do
         end
       end
 
-      context 'with extra analytics properties', allowed_extra_analytics: [:extra] do
-        let(:extra_analytics_properties) { { extra: true } }
+      context 'with extra analytics properties' do
+        let(:extra_analytics_properties) { { phone_country_code: true } }
 
         it 'logs analytics of the body' do
           result
@@ -409,7 +409,7 @@ RSpec.describe RecaptchaEnterpriseForm do
             score_threshold: score_threshold,
             form_class: 'RecaptchaEnterpriseForm',
             recaptcha_action:,
-            extra: true,
+            phone_country_code: true,
           )
         end
       end
@@ -425,10 +425,10 @@ RSpec.describe RecaptchaEnterpriseForm do
   end
 
   def stub_recaptcha_response(body:, action:, site_key: recaptcha_site_key, token: nil)
-    stub_request(:post, assessment_url).
-      with do |req|
+    stub_request(:post, assessment_url)
+      .with do |req|
         req.body == { event: { token:, siteKey: site_key, expectedAction: action } }.to_json
-      end.
-      to_return(headers: { 'Content-Type': 'application/json' }, body: body.to_json)
+      end
+      .to_return(headers: { 'Content-Type': 'application/json' }, body: body.to_json)
   end
 end

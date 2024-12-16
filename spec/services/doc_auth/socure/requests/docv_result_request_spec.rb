@@ -24,8 +24,8 @@ RSpec.describe DocAuth::Socure::Requests::DocvResultRequest do
     end
 
     before do
-      allow(IdentityConfig.store).to receive(:socure_idplus_base_url).
-        and_return(fake_socure_endpoint)
+      allow(IdentityConfig.store).to receive(:socure_idplus_base_url)
+        .and_return(fake_socure_endpoint)
       allow(DocumentCaptureSession).to receive(:find_by).and_return(document_capture_session)
     end
 
@@ -43,8 +43,8 @@ RSpec.describe DocAuth::Socure::Requests::DocvResultRequest do
       end
 
       it 'expect correct doc auth response for a socure fail response' do
-        stub_request(:post, fake_socure_api_endpoint).
-          to_return(
+        stub_request(:post, fake_socure_api_endpoint)
+          .to_return(
             status: fake_socure_status,
             body: JSON.generate(fake_socure_response),
           )

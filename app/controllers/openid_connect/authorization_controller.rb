@@ -56,7 +56,7 @@ module OpenidConnect
     end
 
     def check_sp_active
-      return if @authorize_form.service_provider&.active?
+      return if service_provider&.active?
       redirect_to sp_inactive_error_url
     end
 
@@ -100,7 +100,7 @@ module OpenidConnect
     def ial_context
       IalContext.new(
         ial: resolved_authn_context_int_ial,
-        service_provider: @authorize_form.service_provider,
+        service_provider:,
         user: current_user,
       )
     end
@@ -121,7 +121,6 @@ module OpenidConnect
 
       redirect_user(
         @authorize_form.success_redirect_uri,
-        @authorize_form.service_provider.issuer,
         current_user.uuid,
       )
 
@@ -153,13 +152,13 @@ module OpenidConnect
 
     def secure_headers_override
       return if form_action_csp_disabled_and_not_server_side_redirect?(
-        issuer: @authorize_form.service_provider.issuer,
+        issuer: issuer,
         user_uuid: current_user&.uuid,
       )
 
       csp_uris = SecureHeadersAllowList.csp_with_sp_redirect_uris(
         @authorize_form.redirect_uri,
-        @authorize_form.service_provider.redirect_uris,
+        service_provider.redirect_uris,
       )
       override_form_action_csp(csp_uris)
     end
@@ -172,7 +171,7 @@ module OpenidConnect
       result = @authorize_form.submit
 
       analytics.openid_connect_request_authorization(
-        **result.to_h.except(:redirect_uri, :code_digest).merge(
+        **result.to_h.except(:redirect_uri, :code_digest, :integration_errors).merge(
           user_fully_authenticated: user_fully_authenticated?,
           referer: request.referer,
           vtr_param: params[:vtr],
@@ -180,19 +179,26 @@ module OpenidConnect
         ),
       )
       return if result.success?
+
+      if result.extra[:integration_errors].present?
+        analytics.sp_integration_errors_present(
+          **result.to_h[:integration_errors],
+        )
+      end
+
       redirect_uri = result.extra[:redirect_uri]
 
       if redirect_uri.nil?
         render :error
       else
-        redirect_user(redirect_uri, @authorize_form.service_provider.issuer, current_user&.uuid)
+        redirect_user(redirect_uri, current_user&.uuid)
       end
     end
 
     def sign_out_if_prompt_param_is_login_and_user_is_signed_in
       if @authorize_form.prompt != 'login'
         set_issuer_forced_reauthentication(
-          issuer: @authorize_form.service_provider.issuer,
+          issuer:,
           is_forced_reauthentication: false,
         )
       end
@@ -204,7 +210,7 @@ module OpenidConnect
       unless sp_session[:request_url] == request.original_url
         sign_out
         set_issuer_forced_reauthentication(
-          issuer: @authorize_form.service_provider.issuer,
+          issuer:,
           is_forced_reauthentication: true,
         )
       end
@@ -236,8 +242,8 @@ module OpenidConnect
       track_billing_events
     end
 
-    def redirect_user(redirect_uri, issuer, user_uuid)
-      case oidc_redirect_method(issuer: issuer, user_uuid: user_uuid)
+    def redirect_user(redirect_uri, user_uuid)
+      case oidc_redirect_method(issuer:, user_uuid: user_uuid)
       when 'client_side'
         @oidc_redirect_uri = redirect_uri
         render(
@@ -258,6 +264,14 @@ module OpenidConnect
       end
     end
 
+    def service_provider
+      @authorize_form.service_provider
+    end
+
+    def issuer
+      service_provider&.issuer
+    end
+
     def sp_handoff_bouncer
       @sp_handoff_bouncer ||= SpHandoffBouncer.new(sp_session)
     end
@@ -265,8 +279,8 @@ module OpenidConnect
     def unknown_authn_contexts
       return nil if params[:vtr].present? || params[:acr_values].blank?
 
-      (params[:acr_values].split - Saml::Idp::Constants::VALID_AUTHN_CONTEXTS).
-        join(' ').presence
+      (params[:acr_values].split - Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
+        .join(' ').presence
     end
   end
 end

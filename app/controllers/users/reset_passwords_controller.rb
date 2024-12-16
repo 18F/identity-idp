@@ -157,8 +157,8 @@ module Users
     end
 
     def user_params
-      params.require(:reset_password_form).
-        permit(:password, :password_confirmation, :reset_password_token)
+      params.require(:reset_password_form)
+        .permit(:password, :password_confirmation, :reset_password_token)
     end
 
     def assert_reset_token_passed

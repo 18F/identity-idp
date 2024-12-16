@@ -48,8 +48,8 @@ RSpec.feature 'Changing authentication factor' do
           },
         ).once
 
-        expect(current_path).
-          to eq login_two_factor_path(otp_delivery_preference: 'sms')
+        expect(current_path)
+          .to eq login_two_factor_path(otp_delivery_preference: 'sms')
       end
     end
 

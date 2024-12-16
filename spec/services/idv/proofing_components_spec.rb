@@ -35,8 +35,8 @@ RSpec.describe Idv::ProofingComponents do
       allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return('test_vendor')
       idv_session.mark_verify_info_step_complete!
       idv_session.address_verification_mechanism = 'gpo'
-      allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?).
-        and_return(true)
+      allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?)
+        .and_return(true)
       idv_session.threatmetrix_review_status = 'pass'
       idv_session.source_check_vendor = 'aamva'
     end
@@ -198,8 +198,8 @@ RSpec.describe Idv::ProofingComponents do
   describe '#threatmetrix' do
     context 'device profiling collecting enabled' do
       before do
-        allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?).
-          and_return(true)
+        allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?)
+          .and_return(true)
       end
 
       context 'threatmetrix_review_status present' do
@@ -221,8 +221,8 @@ RSpec.describe Idv::ProofingComponents do
 
     context 'device profiling collecting disabled' do
       before do
-        allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?).
-          and_return(false)
+        allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?)
+          .and_return(false)
       end
 
       context 'threatmetrix_review_status present' do

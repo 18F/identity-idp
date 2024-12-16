@@ -174,8 +174,8 @@ module UspsIppHelper
   def request_unexpected_expired_proofing_results_args
     {
       status: 400,
-      body: UspsInPersonProofing::Mock::Fixtures.
-        request_unexpected_expired_proofing_results_response,
+      body: UspsInPersonProofing::Mock::Fixtures
+        .request_unexpected_expired_proofing_results_response,
       headers: { 'content-type' => 'application/json' },
     }
   end
@@ -194,8 +194,8 @@ module UspsIppHelper
   def request_unexpected_invalid_applicant_args
     {
       status: 400,
-      body: UspsInPersonProofing::Mock::Fixtures.
-        request_unexpected_invalid_applicant_response,
+      body: UspsInPersonProofing::Mock::Fixtures
+        .request_unexpected_invalid_applicant_response,
       headers: { 'content-type' => 'application/json' },
     }
   end
@@ -215,8 +215,8 @@ module UspsIppHelper
   def request_unexpected_invalid_enrollment_code_args
     {
       status: 400,
-      body: UspsInPersonProofing::Mock::Fixtures.
-        request_unexpected_invalid_enrollment_code_response,
+      body: UspsInPersonProofing::Mock::Fixtures
+        .request_unexpected_invalid_enrollment_code_response,
       headers: { 'content-type' => 'application/json' },
     }
   end

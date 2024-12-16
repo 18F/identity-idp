@@ -8,8 +8,8 @@ RSpec.describe MfaConfirmationPresenter do
 
   describe '#heading?' do
     it 'supplies a message for successful MFA setup' do
-      expect(presenter.heading).
-        to eq(t('titles.mfa_setup.suggest_second_mfa'))
+      expect(presenter.heading)
+        .to eq(t('titles.mfa_setup.suggest_second_mfa'))
     end
 
     context 'after successful face or touch unlock setup' do
@@ -21,16 +21,16 @@ RSpec.describe MfaConfirmationPresenter do
       end
 
       it 'shows the correct heading' do
-        expect(presenter.heading).
-          to eq(t('titles.mfa_setup.face_touch_unlock_confirmation'))
+        expect(presenter.heading)
+          .to eq(t('titles.mfa_setup.face_touch_unlock_confirmation'))
       end
     end
   end
 
   describe '#info?' do
     it 'supplies a message for successful MFA setup' do
-      expect(presenter.info).
-        to eq(
+      expect(presenter.info)
+        .to eq(
           t('mfa.account_info'),
         )
     end
@@ -44,16 +44,16 @@ RSpec.describe MfaConfirmationPresenter do
       end
 
       it 'shows the correct information' do
-        expect(presenter.info).
-          to eq(t('mfa.webauthn_platform_message'))
+        expect(presenter.info)
+          .to eq(t('mfa.webauthn_platform_message'))
       end
     end
   end
 
   describe '#button?' do
     it 'supplies a message' do
-      expect(presenter.button).
-        to eq(t('mfa.add'))
+      expect(presenter.button)
+        .to eq(t('mfa.add'))
     end
   end
 

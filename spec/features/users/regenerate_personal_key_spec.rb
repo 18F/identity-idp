@@ -13,8 +13,8 @@ RSpec.feature 'View personal key' do
         sign_in_and_2fa_user(user)
         old_digest = user.encrypted_recovery_code_digest
 
-        expect(Telephony).to receive(:send_personal_key_regeneration_notice).
-          with(to: user.phone_configurations.first.phone, country_code: 'US')
+        expect(Telephony).to receive(:send_personal_key_regeneration_notice)
+          .with(to: user.phone_configurations.first.phone, country_code: 'US')
 
         visit account_two_factor_authentication_path
         click_on(t('account.links.regenerate_personal_key'), match: :prefer_exact)

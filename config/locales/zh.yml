@@ -75,6 +75,8 @@ account.index.reactivation.instructions: 你的用户资料因为重设密码最
 account.index.reactivation.link: 现在重新激活你的用户资料。
 account.index.sign_in_location_and_ip: 从 %{ip}（IP 地址可能位于 %{location}）。
 account.index.unknown_location: 未知地点
+account.index.verification.connect_idv_account.cta: 登录合作伙伴机构来获得服务。
+account.index.verification.connect_idv_account.intro: 把你的账户连接到合作伙伴机构。
 account.index.verification.continue_idv: 继续身份验证
 account.index.verification.finish_verifying_html: 完成身份验证流程来获得访问 <strong>%{sp_name}</strong> 的权限。
 account.index.verification.finish_verifying_no_sp: 完成身份验证流程来获得访问%{app_name} 合作伙伴机构的权限。
@@ -627,7 +629,7 @@ doc_auth.headings.upload_from_phone: 使用手机拍照
 doc_auth.headings.verify_at_post_office: 去邮局验证身份
 doc_auth.headings.verify_identity: 验证你的身份
 doc_auth.headings.verify_online: 在网上验证身份
-doc_auth.headings.verify_online_selfie: 使用手机在网上验证你的身份
+doc_auth.headings.verify_online_mobile: 使用手机在网上验证你的身份
 doc_auth.headings.verify_with_phone: 使用你的电话来验证你的身份
 doc_auth.headings.welcome: 现在我们来为%{sp_name}验证你的身份
 doc_auth.hybrid_flow_warning.explanation_html: 你在使用 <strong>%{app_name}</strong> 验证身份以访问 <strong>%{service_provider_name}</strong> 及其服务。
@@ -648,7 +650,7 @@ doc_auth.info.exit.without_sp: 退出身份验证并到你的账户页面
 doc_auth.info.getting_started_html: '%{sp_name} 需要确保你是你，而不是别人冒充你。 了解更多有关验证你身份的信息 %{link_html}'
 doc_auth.info.getting_started_learn_more: 了解有关验证你身份的更多信息
 doc_auth.info.how_to_verify: 你可以选择在网上验证身份或者到参与本项目的邮局亲身验证身份。
-doc_auth.info.how_to_verify_selfie: 你可以选择用你的手机在网上验证身份或者到参与本项目的邮局亲身验证身份。
+doc_auth.info.how_to_verify_mobile: 你可以选择用你的手机在网上验证身份或者到参与本项目的邮局亲身验证身份。
 doc_auth.info.how_to_verify_troubleshooting_options_header: 想对验证身份获得更多了解吗？
 doc_auth.info.hybrid_handoff: 我们将通过读取州政府颁发给你的身份证件来收集你的信息。
 doc_auth.info.hybrid_handoff_ipp_html: '<strong>没有手机？</strong>你可以去一个美国邮局验证身份。'
@@ -685,14 +687,15 @@ doc_auth.info.tag: 建议
 doc_auth.info.upload_from_computer: 没有手机？从该电脑上传你身份证件的照片。
 doc_auth.info.upload_from_phone: 你不必重新登录，而且拍完照后可以转回到该电脑。你的手机必须带有相机和网络浏览器。
 doc_auth.info.verify_at_post_office_description: 如果你没有手机拍身份证件照片，这一选项更好。
-doc_auth.info.verify_at_post_office_description_selfie: 如果你没有手机可以拍照，请选择该选项
+doc_auth.info.verify_at_post_office_description_mobile: 如果你没有手机可以拍照，请选择该选项
 doc_auth.info.verify_at_post_office_instruction: 你在网上输入身份证件信息，然后到一个参与本项目的邮局去亲身验证身份。
 doc_auth.info.verify_at_post_office_instruction_selfie: 你在网上输入身份证件信息，然后到一个参与本项目的邮局去亲身验证身份。
 doc_auth.info.verify_at_post_office_link_text: 对亲身验证获得更多了解
 doc_auth.info.verify_identity: 我们会要求获得你的身份识别、电话号码和其他个人信息并通过与公共记录核对来验证你的身份。
 doc_auth.info.verify_online_description: 如果你没有移动设备或者无法轻松拍身份证件照片，这一选项更好。
-doc_auth.info.verify_online_description_selfie: 如果你有手机可以拍照，请选择该选项。
+doc_auth.info.verify_online_description_mobile: 如果你有手机可以拍照，请选择该选项。
 doc_auth.info.verify_online_instruction: 你将拍身份证件的照片来完全在网上验证身份。大多数用户都能轻松完成这样流程。
+doc_auth.info.verify_online_instruction_mobile_no_selfie: 你将使用手机拍摄你的身份证件照片。大多数用户一次就能完成这个流程。
 doc_auth.info.verify_online_instruction_selfie: 你将用手机拍摄身份证件和本人的照片。大多数用户都能轻松完成这一流程。
 doc_auth.info.verify_online_link_text: 对网上验证获得更多了解
 doc_auth.info.you_entered: 你输入了：
@@ -776,6 +779,7 @@ errors.messages.invalid_recaptcha_token: 你必须完成预防滥发邮件测验
 errors.messages.invalid_sms_number: 输入的电话号码不支持短信。尝试接听电话选项。
 errors.messages.invalid_voice_number: 电话号码有误。检查一下你是否输入了正确的国家代码或区域代码。
 errors.messages.missing_field: 请填写这一字段。
+errors.messages.no_cert_registered: 我们在你的请求中探查不到证书。
 errors.messages.no_pending_profile: 没有等待验证的用户资料
 errors.messages.not_a_number: 不是数字
 errors.messages.otp_format: 输入你完整的一次性代码（没有空白或特殊字符）
@@ -873,7 +877,7 @@ forms.buttons.confirm: 确认
 forms.buttons.continue: 继续
 forms.buttons.continue_ipp: 继续亲身验证
 forms.buttons.continue_remote: 继续在网上验证
-forms.buttons.continue_remote_selfie: 在手机上继续
+forms.buttons.continue_remote_mobile: 在手机上继续
 forms.buttons.delete: 删除
 forms.buttons.disable: 删除
 forms.buttons.edit: 编辑
@@ -1024,6 +1028,10 @@ idv.buttons.change_ssn_label: 更新社会保障号码
 idv.buttons.change_state_id_label: 更新州颁发的身份证件
 idv.buttons.continue_plain: 继续
 idv.buttons.mail.send: 要求发一封信
+idv.by_mail.sp_follow_up.body: 重新登录 %{service_provider}以连接你验证过的%{app_name}账户并获得服务。
+idv.by_mail.sp_follow_up.connect_account: 连接你的账户
+idv.by_mail.sp_follow_up.go_to_account: 前往账户
+idv.by_mail.sp_follow_up.heading: 连接 %{service_provider}
 idv.cancel.actions.account_page: 到账户页面
 idv.cancel.actions.exit: 退出 %{app_name}
 idv.cancel.actions.keep_going: 不是，继续

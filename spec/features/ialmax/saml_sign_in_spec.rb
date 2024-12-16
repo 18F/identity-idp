@@ -143,9 +143,9 @@ RSpec.feature 'SAML IALMAX sign in' do
 
   context 'with an ial1 SP' do
     before do
-      ServiceProvider.
-        find_by(issuer: 'saml_sp_ial2').
-        update!(ial: 1)
+      ServiceProvider
+        .find_by(issuer: 'saml_sp_ial2')
+        .update!(ial: 1)
     end
 
     scenario 'returns an ial1 responses even with an ial2 user' do

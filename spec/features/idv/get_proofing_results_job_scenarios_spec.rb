@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'axe-rspec'
 
-RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_analytics: [:*] do
+RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
   include OidcAuthHelper
   include UspsIppHelper
   include ActiveJob::TestHelper
@@ -51,9 +51,9 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_ana
 
       # Then the user is taken to the /verify/welcome page
       expect(current_path).to eq(idv_welcome_path)
-      # And the user has an InPersonEnrollment with status "pending"
+      # And the user has an InPersonEnrollment with status "cancelled"
       expect(@user.in_person_enrollments.first).to have_attributes(
-        status: 'pending',
+        status: 'cancelled',
       )
       # And the user has a Profile that is deactivated with reason "encryption_error"
       expect(@user.in_person_enrollments.first.profile).to have_attributes(
@@ -78,7 +78,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_ana
       expect(@user.in_person_enrollments.first.profile).to have_attributes(
         active: false,
         deactivation_reason: 'encryption_error',
-        in_person_verification_pending_at: nil,
+        in_person_verification_pending_at: be_kind_of(Time),
       )
 
       # When the user logs in
@@ -94,7 +94,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_ana
       expect(@user.in_person_enrollments.first.profile).to have_attributes(
         active: false,
         deactivation_reason: 'encryption_error',
-        in_person_verification_pending_at: nil,
+        in_person_verification_pending_at: be_kind_of(Time),
       )
     end
 
@@ -130,9 +130,9 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_ana
 
         # Then the user is taken to the /verify/welcome page
         expect(current_path).to eq(idv_welcome_path)
-        # And the user has an InPersonEnrollment with status "pending"
+        # And the user has an InPersonEnrollment with status "cancelled"
         expect(@user.in_person_enrollments.first).to have_attributes(
-          status: 'pending',
+          status: 'cancelled',
         )
         # And the user has a Profile that is deactivated with reason "encryption_error"
         expect(@user.in_person_enrollments.first.profile).to have_attributes(
@@ -157,7 +157,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_ana
         expect(@user.in_person_enrollments.first.profile).to have_attributes(
           active: false,
           deactivation_reason: 'encryption_error',
-          in_person_verification_pending_at: nil,
+          in_person_verification_pending_at: be_kind_of(Time),
         )
 
         # When the user logs in
@@ -173,7 +173,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_ana
         expect(@user.in_person_enrollments.first.profile).to have_attributes(
           active: false,
           deactivation_reason: 'encryption_error',
-          in_person_verification_pending_at: nil,
+          in_person_verification_pending_at: be_kind_of(Time),
         )
       end
     end
@@ -537,9 +537,9 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_ana
 
       # Then the user is taken to the /verify/welcome page
       expect(current_path).to eq(idv_welcome_path)
-      # And the user has an InPersonEnrollment with status "pending"
+      # And the user has an InPersonEnrollment with status "cancelled"
       expect(@user.in_person_enrollments.first).to have_attributes(
-        status: 'pending',
+        status: 'cancelled',
       )
       # And the user has a Profile that is deactivated with reason "encryption_error" and
       # pending in person verification and fraud review
@@ -568,7 +568,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_ana
       expect(@user.in_person_enrollments.first.profile).to have_attributes(
         active: false,
         deactivation_reason: 'encryption_error',
-        in_person_verification_pending_at: nil,
+        in_person_verification_pending_at: be_kind_of(Time),
         fraud_pending_reason: 'threatmetrix_review',
         fraud_review_pending_at: be_kind_of(Time),
       )
@@ -587,7 +587,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true, allowed_extra_ana
       expect(@user.in_person_enrollments.first.profile).to have_attributes(
         active: false,
         deactivation_reason: 'encryption_error',
-        in_person_verification_pending_at: nil,
+        in_person_verification_pending_at: be_kind_of(Time),
         fraud_pending_reason: 'threatmetrix_review',
         fraud_review_pending_at: be_kind_of(Time),
       )

@@ -12,8 +12,8 @@ RSpec.describe UserMailer, type: :mailer do
   describe '#validate_user_and_email_address' do
     let(:request_id) { '1234-abcd' }
     let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).
-        signup_with_your_email(request_id: request_id)
+      UserMailer.with(user: user, email_address: email_address)
+        .signup_with_your_email(request_id: request_id)
     end
 
     context 'with user and email address match' do
@@ -35,8 +35,8 @@ RSpec.describe UserMailer, type: :mailer do
   describe '#add_email' do
     let(:token) { SecureRandom.hex }
     let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).
-        add_email(token: token, request_id: nil, from_select_email_flow: nil)
+      UserMailer.with(user: user, email_address: email_address)
+        .add_email(token: token, request_id: nil, from_select_email_flow: nil)
     end
 
     it_behaves_like 'a system email'
@@ -52,8 +52,8 @@ RSpec.describe UserMailer, type: :mailer do
     context 'when user adds email from select email flow' do
       let(:token) { SecureRandom.hex }
       let(:mail) do
-        UserMailer.with(user: user, email_address: email_address).
-          add_email(token: token, request_id: nil, from_select_email_flow: true)
+        UserMailer.with(user: user, email_address: email_address)
+          .add_email(token: token, request_id: nil, from_select_email_flow: true)
       end
 
       it 'renders the add_email_confirmation_url' do
@@ -93,8 +93,8 @@ RSpec.describe UserMailer, type: :mailer do
 
   describe '#add_email_associated_with_another_account' do
     let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).
-        add_email_associated_with_another_account
+      UserMailer.with(user: user, email_address: email_address)
+        .add_email_associated_with_another_account
     end
 
     it_behaves_like 'a system email'
@@ -291,8 +291,8 @@ RSpec.describe UserMailer, type: :mailer do
 
   describe '#personal_key_sign_in' do
     let(:mail) do
-      UserMailer.with(user: user, email_address: user.email_addresses.first).
-        personal_key_sign_in(disavowal_token: 'asdf1234')
+      UserMailer.with(user: user, email_address: user.email_addresses.first)
+        .personal_key_sign_in(disavowal_token: 'asdf1234')
     end
 
     it_behaves_like 'a system email'
@@ -321,8 +321,8 @@ RSpec.describe UserMailer, type: :mailer do
     let(:token) { 'asdf123' }
 
     let(:mail) do
-      UserMailer.with(user: user, email_address: user.email_addresses.first).
-        email_confirmation_instructions(
+      UserMailer.with(user: user, email_address: user.email_addresses.first)
+        .email_confirmation_instructions(
           token,
           request_id: request_id,
         )
@@ -386,8 +386,8 @@ RSpec.describe UserMailer, type: :mailer do
   describe '#signup_with_your_email' do
     let(:request_id) { '1234-abcd' }
     let(:mail) do
-      UserMailer.with(user: user, email_address: user.email_addresses.first).
-        signup_with_your_email(request_id: request_id)
+      UserMailer.with(user: user, email_address: user.email_addresses.first)
+        .signup_with_your_email(request_id: request_id)
     end
 
     it_behaves_like 'a system email'
@@ -423,8 +423,8 @@ RSpec.describe UserMailer, type: :mailer do
   describe '#phone_added' do
     disavowal_token = 'i_am_disavowal_token'
     let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).
-        phone_added(disavowal_token: disavowal_token)
+      UserMailer.with(user: user, email_address: email_address)
+        .phone_added(disavowal_token: disavowal_token)
     end
 
     it_behaves_like 'a system email'
@@ -509,8 +509,8 @@ RSpec.describe UserMailer, type: :mailer do
 
   describe '#account_reset_granted' do
     let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).
-        account_reset_granted(user.account_reset_request)
+      UserMailer.with(user: user, email_address: email_address)
+        .account_reset_granted(user.account_reset_request)
     end
     let(:account_reset_deletion_period_hours) { '24 hours' }
     let(:token_expiration_interval) { '24 hours' }
@@ -556,8 +556,8 @@ RSpec.describe UserMailer, type: :mailer do
 
   describe '#account_reset_complete' do
     let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).
-        account_reset_complete
+      UserMailer.with(user: user, email_address: email_address)
+        .account_reset_complete
     end
 
     it_behaves_like 'a system email'
@@ -572,8 +572,8 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     it 'renders the body' do
-      expect(mail.html_part.body).
-        to have_content(
+      expect(mail.html_part.body)
+        .to have_content(
           strip_tags(t('user_mailer.account_reset_complete.intro_html', app_name_html: APP_NAME)),
         )
     end
@@ -581,8 +581,8 @@ RSpec.describe UserMailer, type: :mailer do
 
   describe '#account_delete_submitted' do
     let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).
-        account_delete_submitted
+      UserMailer.with(user: user, email_address: email_address)
+        .account_delete_submitted
     end
 
     it_behaves_like 'a system email'
@@ -597,8 +597,8 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     it 'renders the body' do
-      expect(mail.html_part.body).
-        to have_content(
+      expect(mail.html_part.body)
+        .to have_content(
           strip_tags(t('user_mailer.account_reset_complete.intro_html', app_name_html: APP_NAME)),
         )
     end
@@ -606,8 +606,8 @@ RSpec.describe UserMailer, type: :mailer do
 
   describe '#account_reset_cancel' do
     let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).
-        account_reset_cancel
+      UserMailer.with(user: user, email_address: email_address)
+        .account_reset_cancel
     end
 
     it_behaves_like 'a system email'
@@ -622,8 +622,8 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     it 'renders the body' do
-      expect(mail.html_part.body).
-        to have_content(
+      expect(mail.html_part.body)
+        .to have_content(
           strip_tags(t('user_mailer.account_reset_cancel.intro_html', app_name_html: APP_NAME)),
         )
     end
@@ -644,13 +644,13 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     it 'renders the body' do
-      expect(mail.html_part.body).
-        to have_content(
+      expect(mail.html_part.body)
+        .to have_content(
           strip_tags(t('user_mailer.please_reset_password.intro', app_name: APP_NAME)),
         )
 
-      expect(mail.html_part.body).
-        to have_content(strip_tags(t('user_mailer.please_reset_password.call_to_action')))
+      expect(mail.html_part.body)
+        .to have_content(strip_tags(t('user_mailer.please_reset_password.call_to_action')))
     end
 
     it 'logs email metadata to analytics' do
@@ -779,8 +779,8 @@ RSpec.describe UserMailer, type: :mailer do
     let(:date_time) { Time.zone.now }
     let(:profile) { create(:profile, :active) }
     let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).
-        account_verified(profile: profile)
+      UserMailer.with(user: user, email_address: email_address)
+        .account_verified(profile: profile)
     end
 
     it_behaves_like 'a system email'
@@ -867,15 +867,15 @@ RSpec.describe UserMailer, type: :mailer do
         let(:in_person_outage_expected_update_date) { 'October 31, 2023' }
 
         it 'renders a warning when the flag is enabled' do
-          allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).
-            and_return(true)
-          allow(IdentityConfig.store).to receive(:in_person_outage_emailed_by_date).
-            and_return(in_person_outage_emailed_by_date)
-          allow(IdentityConfig.store).to receive(:in_person_outage_expected_update_date).
-            and_return(in_person_outage_expected_update_date)
+          allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled)
+            .and_return(true)
+          allow(IdentityConfig.store).to receive(:in_person_outage_emailed_by_date)
+            .and_return(in_person_outage_emailed_by_date)
+          allow(IdentityConfig.store).to receive(:in_person_outage_expected_update_date)
+            .and_return(in_person_outage_expected_update_date)
 
-          expect(mail.html_part.body).
-            to have_content(
+          expect(mail.html_part.body)
+            .to have_content(
               t(
                 'idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title',
                 date: formatted_date,
@@ -884,12 +884,12 @@ RSpec.describe UserMailer, type: :mailer do
         end
 
         it 'does not render a warning when outage dates are not included' do
-          allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).
-            and_return(true)
-          allow(IdentityConfig.store).to receive(:in_person_outage_emailed_by_date).
-            and_return('')
-          allow(IdentityConfig.store).to receive(:in_person_outage_expected_update_date).
-            and_return('')
+          allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled)
+            .and_return(true)
+          allow(IdentityConfig.store).to receive(:in_person_outage_emailed_by_date)
+            .and_return('')
+          allow(IdentityConfig.store).to receive(:in_person_outage_expected_update_date)
+            .and_return('')
 
           expect(mail.html_part.body).to_not have_content(
             t(
@@ -900,11 +900,11 @@ RSpec.describe UserMailer, type: :mailer do
         end
 
         it 'does not render a warning when the flag is disabled' do
-          allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).
-            and_return(false)
+          allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled)
+            .and_return(false)
 
-          expect(mail.html_part.body).
-            to_not have_content(
+          expect(mail.html_part.body)
+            .to_not have_content(
               t('idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title'),
             )
         end
@@ -1100,8 +1100,8 @@ RSpec.describe UserMailer, type: :mailer do
                     expect(mail.html_part.body).to have_content(part)
                   end
 
-                  t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').
-                    each do |item|
+                  t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list')
+                    .each do |item|
                     expect(mail.html_part.body).to have_content(strip_tags(item))
                   end
                 end
@@ -1124,8 +1124,8 @@ RSpec.describe UserMailer, type: :mailer do
                     expect(mail.html_part.body).to have_content(part)
                   end
 
-                  t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').
-                    each do |item|
+                  t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list')
+                    .each do |item|
                     expect(mail.html_part.body).to have_content(strip_tags(item))
                   end
                 end
@@ -1338,15 +1338,15 @@ RSpec.describe UserMailer, type: :mailer do
       end
 
       it 'renders the body' do
-        expect(mail.html_part.body).
-          to have_content(
+        expect(mail.html_part.body)
+          .to have_content(
             t(
               'user_mailer.in_person_completion_survey.body.thanks',
               app_name: APP_NAME,
             ),
           )
-        expect(mail.html_part.body).
-          to have_selector(
+        expect(mail.html_part.body)
+          .to have_selector(
             "a[href='#{MarketingSite.security_and_privacy_practices_url}']",
           )
       end
@@ -1358,8 +1358,8 @@ RSpec.describe UserMailer, type: :mailer do
         end
 
         it 'renders the post opt-in in person completion survey url' do
-          expect(mail.html_part.body).
-            to have_selector(
+          expect(mail.html_part.body)
+            .to have_selector(
               "a[href='#{IdentityConfig.store.in_person_opt_in_available_completion_survey_url}']",
             )
         end
@@ -1372,8 +1372,8 @@ RSpec.describe UserMailer, type: :mailer do
         end
 
         it 'renders the pre opt-in in person completion survey url' do
-          expect(mail.html_part.body).
-            to have_selector(
+          expect(mail.html_part.body)
+            .to have_selector(
               "a[href='#{IdentityConfig.store.in_person_completion_survey_url}']",
             )
         end
@@ -1383,8 +1383,8 @@ RSpec.describe UserMailer, type: :mailer do
 
   describe '#suspended_reset_password' do
     let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).
-        suspended_reset_password
+      UserMailer.with(user: user, email_address: email_address)
+        .suspended_reset_password
     end
 
     it_behaves_like 'a system email'
@@ -1399,8 +1399,8 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     it 'renders the body' do
-      expect(mail.html_part.body).
-        to have_content(
+      expect(mail.html_part.body)
+        .to have_content(
           t(
             'user_mailer.suspended_reset_password.message',
             support_code: IdentityConfig.store.account_suspended_support_code,
@@ -1427,8 +1427,8 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     it 'renders the body' do
-      expect(mail.html_part.body).
-        to have_content(
+      expect(mail.html_part.body)
+        .to have_content(
           t(
             'user_mailer.suspended_create_account.message',
             app_name: APP_NAME,
@@ -1555,10 +1555,10 @@ RSpec.describe UserMailer, type: :mailer do
       let(:user) { build(:user, email_language: :es) }
 
       it 'translates the footer help text correctly' do
-        expect(mail.html_part.body).
-          to include(t('user_mailer.suspension_confirmed.contact_agency', locale: :es))
-        expect(mail.html_part.body).
-          to_not include(t('user_mailer.suspension_confirmed.contact_agency', locale: :en))
+        expect(mail.html_part.body)
+          .to include(t('user_mailer.suspension_confirmed.contact_agency', locale: :es))
+        expect(mail.html_part.body)
+          .to_not include(t('user_mailer.suspension_confirmed.contact_agency', locale: :en))
       end
     end
   end

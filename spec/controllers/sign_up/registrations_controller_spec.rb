@@ -22,8 +22,8 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
     it 'gracefully handles invalid formats' do
       @request.env['HTTP_ACCEPT'] = "nessus=bad_bad_value'"
 
-      expect { get :new }.
-        to raise_error(Mime::Type::InvalidMimeType)
+      expect { get :new }
+        .to raise_error(Mime::Type::InvalidMimeType)
     end
 
     it 'tracks visit event' do

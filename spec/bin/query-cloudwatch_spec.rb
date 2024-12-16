@@ -333,8 +333,8 @@ RSpec.describe QueryCloudwatch do
       end
 
       before do
-        allow_any_instance_of(QueryCloudwatch::SqliteOutput).to receive(:db).
-          and_return(db)
+        allow_any_instance_of(QueryCloudwatch::SqliteOutput).to receive(:db)
+          .and_return(db)
         allow_any_instance_of(QueryCloudwatch::SqliteOutput).to receive(:close_database)
       end
 

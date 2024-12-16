@@ -102,8 +102,8 @@ RSpec.describe Reporting::MonthlyIdvReport do
 
     it 'returns IdV reports for the expected months' do
       [june, july, august].each do |month|
-        expect(Reporting::IdentityVerificationReport).to receive(:new).
-          with(issuers: nil, time_range: month, cloudwatch_client: anything)
+        expect(Reporting::IdentityVerificationReport).to receive(:new)
+          .with(issuers: nil, time_range: month, cloudwatch_client: anything)
       end
 
       subject.monthly_subreports

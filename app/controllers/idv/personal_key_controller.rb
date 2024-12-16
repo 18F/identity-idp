@@ -72,6 +72,8 @@ module Idv
         idv_please_call_url
       elsif session[:sp]
         sign_up_completed_url
+      elsif idv_session.address_verification_mechanism == 'gpo'
+        idv_sp_follow_up_path
       else
         after_sign_in_path_for(current_user)
       end
@@ -127,10 +129,13 @@ module Idv
     end
 
     def step_indicator_step
-      return :secure_account if idv_session.verify_by_mail?
-      return :go_to_the_post_office if in_person_proofing?
-
-      StepIndicatorComponent::ALL_STEPS_COMPLETE
+      if gpo_address_verification?
+        :secure_account
+      elsif in_person_proofing?
+        :go_to_the_post_office
+      else
+        :re_enter_password
+      end
     end
     helper_method :step_indicator_step
   end

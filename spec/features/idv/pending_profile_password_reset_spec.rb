@@ -5,8 +5,8 @@ RSpec.describe 'Resetting password with a pending profile' do
 
   let(:sp_name) { 'Test SP' }
   before do
-    allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).
-      and_return(sp_name)
+    allow_any_instance_of(ServiceProviderSession).to receive(:sp_name)
+      .and_return(sp_name)
   end
 
   scenario 'while GPO pending requires the user to reproof' do

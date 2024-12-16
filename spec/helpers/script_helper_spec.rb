@@ -20,15 +20,15 @@ RSpec.describe ScriptHelper do
       before do
         javascript_packs_tag_once('application')
         javascript_packs_tag_once('document-capture', 'document-capture')
-        allow(Rails.application.config.asset_sources).to receive(:get_sources).
-          with('application').and_return(['/application.js'])
-        allow(Rails.application.config.asset_sources).to receive(:get_sources).
-          with('document-capture').and_return(['/document-capture.js'])
+        allow(Rails.application.config.asset_sources).to receive(:get_sources)
+          .with('application').and_return(['/application.js'])
+        allow(Rails.application.config.asset_sources).to receive(:get_sources)
+          .with('document-capture').and_return(['/document-capture.js'])
         allow(Rails.application.config.asset_sources).to receive(:get_assets).with(
           'application',
           'document-capture',
-        ).
-          and_return(['clock.svg', 'sprite.svg'])
+        )
+          .and_return(['clock.svg', 'sprite.svg'])
       end
 
       it 'prints asset paths sources' do
@@ -91,9 +91,9 @@ RSpec.describe ScriptHelper do
       context 'with script integrity available' do
         before do
           allow(Rails.application.config.asset_sources).to receive(:get_integrity).and_return(nil)
-          allow(Rails.application.config.asset_sources).to receive(:get_integrity).
-            with('/application.js').
-            and_return('sha256-aztp/wpATyjXXpigZtP8ZP/9mUCHDMaL7OKFRbmnUIazQ9ehNmg4CD5Ljzym/TyA')
+          allow(Rails.application.config.asset_sources).to receive(:get_integrity)
+            .with('/application.js')
+            .and_return('sha256-aztp/wpATyjXXpigZtP8ZP/9mUCHDMaL7OKFRbmnUIazQ9ehNmg4CD5Ljzym/TyA')
         end
 
         it 'adds integrity attribute' do
@@ -122,11 +122,11 @@ RSpec.describe ScriptHelper do
       context 'with attributes' do
         before do
           javascript_packs_tag_once('track-errors', defer: true)
-          allow(Rails.application.config.asset_sources).to receive(:get_sources).
-            with('track-errors').and_return(['/track-errors.js'])
-          allow(Rails.application.config.asset_sources).to receive(:get_assets).
-            with('application', 'document-capture', 'track-errors').
-            and_return([])
+          allow(Rails.application.config.asset_sources).to receive(:get_sources)
+            .with('track-errors').and_return(['/track-errors.js'])
+          allow(Rails.application.config.asset_sources).to receive(:get_assets)
+            .with('application', 'document-capture', 'track-errors')
+            .and_return([])
         end
 
         it 'adds attribute' do
@@ -147,11 +147,11 @@ RSpec.describe ScriptHelper do
             url_params: { agency: 'gsa' },
             async: true,
           )
-          allow(Rails.application.config.asset_sources).to receive(:get_sources).
-            with('digital-analytics-program').and_return(['/digital-analytics-program.js'])
-          allow(Rails.application.config.asset_sources).to receive(:get_assets).
-            with('application', 'document-capture', 'digital-analytics-program').
-            and_return([])
+          allow(Rails.application.config.asset_sources).to receive(:get_sources)
+            .with('digital-analytics-program').and_return(['/digital-analytics-program.js'])
+          allow(Rails.application.config.asset_sources).to receive(:get_assets)
+            .with('application', 'document-capture', 'digital-analytics-program')
+            .and_return([])
         end
 
         it 'includes url parameters in script url for the pack' do
@@ -205,8 +205,8 @@ RSpec.describe ScriptHelper do
 
     context 'with named scripts argument' do
       before do
-        allow(Rails.application.config.asset_sources).to receive(:get_sources).with('application').
-          and_return(['/application.js'])
+        allow(Rails.application.config.asset_sources).to receive(:get_sources).with('application')
+          .and_return(['/application.js'])
       end
 
       it 'enqueues those scripts before printing them' do

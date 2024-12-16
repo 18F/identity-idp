@@ -1,15 +1,15 @@
 class UserMailerPreview < ActionMailer::Preview
   def email_confirmation_instructions
-    UserMailer.with(user: user, email_address: email_address_record).
-      email_confirmation_instructions(
+    UserMailer.with(user: user, email_address: email_address_record)
+      .email_confirmation_instructions(
         SecureRandom.hex,
         request_id: SecureRandom.uuid,
       )
   end
 
   def signup_with_your_email
-    UserMailer.with(user: user, email_address: email_address_record).
-      signup_with_your_email(request_id: SecureRandom.uuid)
+    UserMailer.with(user: user, email_address: email_address_record)
+      .signup_with_your_email(request_id: SecureRandom.uuid)
   end
 
   def reset_password_instructions
@@ -35,18 +35,18 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def password_changed
-    UserMailer.with(user: user, email_address: email_address_record).
-      password_changed(disavowal_token: SecureRandom.hex)
+    UserMailer.with(user: user, email_address: email_address_record)
+      .password_changed(disavowal_token: SecureRandom.hex)
   end
 
   def phone_added
-    UserMailer.with(user: user, email_address: email_address_record).
-      phone_added(disavowal_token: SecureRandom.hex)
+    UserMailer.with(user: user, email_address: email_address_record)
+      .phone_added(disavowal_token: SecureRandom.hex)
   end
 
   def personal_key_sign_in
-    UserMailer.with(user: user, email_address: email_address_record).
-      personal_key_sign_in(disavowal_token: SecureRandom.hex)
+    UserMailer.with(user: user, email_address: email_address_record)
+      .personal_key_sign_in(disavowal_token: SecureRandom.hex)
   end
 
   def new_device_sign_in_after_2fa
@@ -144,8 +144,8 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def add_email
-    UserMailer.with(user: user, email_address: email_address_record).
-      add_email(token: SecureRandom.hex, request_id: nil)
+    UserMailer.with(user: user, email_address: email_address_record)
+      .add_email(token: SecureRandom.hex, request_id: nil)
   end
 
   def email_added
@@ -157,8 +157,8 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def add_email_associated_with_another_account
-    UserMailer.with(user: user, email_address: email_address_record).
-      add_email_associated_with_another_account
+    UserMailer.with(user: user, email_address: email_address_record)
+      .add_email_associated_with_another_account
   end
 
   def account_verified

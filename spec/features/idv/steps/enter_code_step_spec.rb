@@ -28,8 +28,8 @@ RSpec.feature 'idv enter letter code step' do
   let(:fraud_review_pending) { false }
 
   before do
-    allow(IdentityConfig.store).to receive(:proofing_device_profiling).
-      and_return(threatmetrix_enabled ? :enabled : :disabled)
+    allow(IdentityConfig.store).to receive(:proofing_device_profiling)
+      .and_return(threatmetrix_enabled ? :enabled : :disabled)
   end
 
   it_behaves_like 'verification code entry'

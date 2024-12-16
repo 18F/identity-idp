@@ -210,8 +210,8 @@ RSpec.describe Idv::DocPiiForm do
 
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
-        expect(result.errors.keys).
-          to contain_exactly(
+        expect(result.errors.keys)
+          .to contain_exactly(
             :name,
             :dob,
             :zipcode,

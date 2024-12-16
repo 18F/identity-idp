@@ -73,8 +73,9 @@ class OpenidConnectTokenForm
   def find_identity_with_code
     return if code.blank? || code.include?("\x00")
 
-    @identity = ServiceProviderIdentity.where(session_uuid: code).
-      order(updated_at: :desc).first
+    @identity = ServiceProviderIdentity
+      .where(session_uuid: code)
+      .order(updated_at: :desc).first
   end
 
   def pkce?
@@ -204,6 +205,19 @@ class OpenidConnectTokenForm
       code_verifier_present: code_verifier.present?,
       service_provider_pkce: service_provider&.pkce,
       ial: identity&.ial,
+      integration_errors:,
+    }
+  end
+
+  def integration_errors
+    return nil if valid? || client_id.blank?
+
+    {
+      error_details: errors.full_messages,
+      error_types: errors.attribute_names,
+      event: :oidc_token_request,
+      integration_exists: service_provider.present?,
+      request_issuer: client_id,
     }
   end
 

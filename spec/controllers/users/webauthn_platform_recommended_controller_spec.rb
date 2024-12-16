@@ -2,8 +2,14 @@ require 'rails_helper'
 
 RSpec.describe Users::WebauthnPlatformRecommendedController do
   let(:user) { create(:user) }
+  let(:current_sp) { create(:service_provider) }
 
   before do
+    controller.session[:sp] = {
+      issuer: current_sp.issuer,
+      acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+      request_url: 'http://example.com',
+    }
     stub_sign_in(user) if user
   end
 
@@ -52,15 +58,15 @@ RSpec.describe Users::WebauthnPlatformRecommendedController do
 
     it 'updates user record to mark as having dismissed recommendation' do
       freeze_time do
-        expect { response }.to change { user.webauthn_platform_recommended_dismissed_at }.
-          from(nil).
-          to(Time.zone.now)
+        expect { response }.to change { user.webauthn_platform_recommended_dismissed_at }
+          .from(nil)
+          .to(Time.zone.now)
       end
     end
 
     it 'does not assign recommended session value' do
-      expect { response }.not_to change { controller.user_session[:webauthn_platform_recommended] }.
-        from(nil)
+      expect { response }.not_to change { controller.user_session[:webauthn_platform_recommended] }
+        .from(nil)
     end
 
     it 'redirects user to after sign in path' do
@@ -72,11 +78,24 @@ RSpec.describe Users::WebauthnPlatformRecommendedController do
     context 'user is creating account' do
       before do
         allow(controller).to receive(:in_account_creation_flow?).and_return(true)
-        allow(controller).to receive(:next_setup_path).and_return(sign_up_completed_path)
+        controller.user_session[:mfa_selections] = []
       end
 
-      it 'redirects user to set up next authenticator' do
+      it 'redirects user to consent screen' do
         expect(response).to redirect_to(sign_up_completed_path)
+      end
+
+      context 'mfa selections already completed' do
+        # Regression: If duplicate submission occurs (e.g. pressing back button), selections is
+        # already cleared from session, but the user is still in the account creation flow.
+
+        before do
+          controller.user_session[:mfa_selections] = nil
+        end
+
+        it 'redirects user to consent screen' do
+          expect(response).to redirect_to(sign_up_completed_path)
+        end
       end
     end
 
@@ -99,8 +118,8 @@ RSpec.describe Users::WebauthnPlatformRecommendedController do
       end
 
       it 'assigns recommended session value to recommendation flow' do
-        expect { response }.to change { controller.user_session[:webauthn_platform_recommended] }.
-          from(nil).to(:authentication)
+        expect { response }.to change { controller.user_session[:webauthn_platform_recommended] }
+          .from(nil).to(:authentication)
       end
 
       context 'user is creating account' do
@@ -109,8 +128,8 @@ RSpec.describe Users::WebauthnPlatformRecommendedController do
         end
 
         it 'assigns recommended session value to recommendation flow' do
-          expect { response }.to change { controller.user_session[:webauthn_platform_recommended] }.
-            from(nil).to(:account_creation)
+          expect { response }.to change { controller.user_session[:webauthn_platform_recommended] }
+            .from(nil).to(:account_creation)
         end
       end
     end

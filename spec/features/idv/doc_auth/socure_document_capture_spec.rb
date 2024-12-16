@@ -11,36 +11,33 @@ RSpec.feature 'document capture step', :js do
   let(:socure_docv_webhook_secret_key) { 'socure_docv_webhook_secret_key' }
   let(:fake_socure_docv_document_request_endpoint) { 'https://fake-socure.test/document-request' }
   let(:fake_socure_document_capture_app_url) { 'https://verify.fake-socure.test/something' }
+  let(:socure_docv_verification_data_test_mode) { false }
 
   before(:each) do
     allow(IdentityConfig.store).to receive(:socure_docv_enabled).and_return(true)
-    allow(DocAuthRouter).to receive(:doc_auth_vendor_for_bucket).
-      and_return(Idp::Constants::Vendors::SOCURE)
+    allow(DocAuthRouter).to receive(:doc_auth_vendor_for_bucket)
+      .and_return(Idp::Constants::Vendors::SOCURE)
     allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return('Test SP')
-    allow(IdentityConfig.store).to receive(:socure_docv_webhook_secret_key).
-      and_return(socure_docv_webhook_secret_key)
-    allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint).
-      and_return(fake_socure_docv_document_request_endpoint)
+    allow(IdentityConfig.store).to receive(:socure_docv_webhook_secret_key)
+      .and_return(socure_docv_webhook_secret_key)
+    allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint)
+      .and_return(fake_socure_docv_document_request_endpoint)
     allow(IdentityConfig.store).to receive(:ruby_workers_idv_enabled).and_return(false)
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     @docv_transaction_token = stub_docv_document_request
+    allow(IdentityConfig.store).to receive(:socure_docv_verification_data_test_mode)
+      .and_return(socure_docv_verification_data_test_mode)
   end
 
-  before(:all) do
-    @user = user_with_2fa
-  end
-
-  after(:all) { @user.destroy }
-
-  context 'happy path' do
+  context 'happy path', allow_browser_log: true do
     before do
-      stub_docv_verification_data_pass
+      @pass_stub = stub_docv_verification_data_pass(docv_transaction_token: @docv_transaction_token)
     end
 
     context 'standard desktop flow' do
       before do
         visit_idp_from_oidc_sp_with_ial2
-        sign_in_and_2fa_user(@user)
+        @user = sign_in_and_2fa_user
         complete_doc_auth_steps_before_document_capture_step
         click_idv_continue
       end
@@ -65,6 +62,9 @@ RSpec.feature 'document capture step', :js do
           expect(fake_analytics).to have_logged_event(
             'Rate Limit Reached',
             limiter_type: :idv_doc_auth,
+          )
+          expect(fake_analytics).to have_logged_event(
+            :idv_socure_document_request_submitted,
           )
         end
 
@@ -91,11 +91,65 @@ RSpec.feature 'document capture step', :js do
         end
       end
 
+      context 'reuses valid capture app urls when appropriate', allow_browser_log: true do
+        context 'successfully erases capture app url when flow is complete' do
+          it 'proceeds to the next page with valid info' do
+            document_capture_session = DocumentCaptureSession.find_by(user_id: @user.id)
+            expect(document_capture_session.socure_docv_capture_app_url)
+              .to eq(fake_socure_document_capture_app_url)
+            expect(page).to have_current_path(fake_socure_document_capture_app_url)
+            visit idv_socure_document_capture_path
+            expect(page).to have_current_path(idv_socure_document_capture_path)
+            document_capture_session.reload
+            expect(document_capture_session.socure_docv_capture_app_url)
+              .to eq(fake_socure_document_capture_app_url)
+            socure_docv_upload_documents(
+              docv_transaction_token: @docv_transaction_token,
+            )
+            document_capture_session.reload
+            expect(document_capture_session.socure_docv_capture_app_url).to be_nil
+          end
+
+          it 'reuse capture app url when appropriate and creates new when not' do
+            document_capture_session = DocumentCaptureSession.find_by(user_id: @user.id)
+            expect(document_capture_session.socure_docv_capture_app_url)
+              .to eq(fake_socure_document_capture_app_url)
+            expect(page).to have_current_path(fake_socure_document_capture_app_url)
+            visit idv_socure_document_capture_path
+            expect(page).to have_current_path(idv_socure_document_capture_path)
+            document_capture_session.reload
+            expect(document_capture_session.socure_docv_capture_app_url)
+              .to eq(fake_socure_document_capture_app_url)
+            fake_capture_app2 = 'https://verify.fake-socure.test/capture2'
+            document_capture_session.socure_docv_capture_app_url = fake_capture_app2
+            document_capture_session.save
+            socure_docv_send_webhook(
+              docv_transaction_token: @docv_transaction_token,
+              event_type: 'DOCUMENT_FRONT_UPLOADED',
+            )
+            document_capture_session.reload
+            expect(document_capture_session.socure_docv_capture_app_url)
+              .to eq(fake_capture_app2)
+            socure_docv_send_webhook(
+              docv_transaction_token: @docv_transaction_token,
+              event_type: 'SESSION_EXPIRED',
+            )
+            document_capture_session.reload
+            expect(document_capture_session.socure_docv_capture_app_url).to be_nil
+            visit idv_socure_document_capture_path
+            expect(page).to have_current_path(idv_socure_document_capture_path)
+            document_capture_session.reload
+            expect(document_capture_session.socure_docv_capture_app_url)
+              .to eq(fake_socure_document_capture_app_url)
+          end
+        end
+      end
+
       context 'network connection errors' do
         context 'getting the capture path' do
           before do
-            allow_any_instance_of(Faraday::Connection).to receive(:post).
-              and_raise(Faraday::ConnectionFailed)
+            allow_any_instance_of(Faraday::Connection).to receive(:post)
+              .and_raise(Faraday::ConnectionFailed)
           end
 
           it 'shows the network error page', js: true do
@@ -106,6 +160,9 @@ RSpec.feature 'document capture step', :js do
 
             expect(page).to have_content(t('doc_auth.headers.general.network_error'))
             expect(page).to have_content(t('doc_auth.errors.general.new_network_error'))
+            expect(fake_analytics).to have_logged_event(
+              :idv_socure_document_request_submitted,
+            )
           end
         end
 
@@ -116,12 +173,29 @@ RSpec.feature 'document capture step', :js do
         end
       end
 
+      context 'invalid request', allow_browser_log: true do
+        context 'getting the capture path w wrong api key' do
+          before do
+            DocAuth::Mock::DocAuthMockClient.reset!
+            stub_docv_document_request(status: 401)
+          end
+
+          it 'correctly logs event', js: true do
+            visit idv_socure_document_capture_path
+            expect(fake_analytics).to have_logged_event(
+              :idv_socure_document_request_submitted,
+            )
+          end
+        end
+      end
+
       it 'does not track state if state tracking is disabled' do
         allow(IdentityConfig.store).to receive(:state_tracking_enabled).and_return(false)
         socure_docv_upload_documents(
           docv_transaction_token: @docv_transaction_token,
         )
 
+        visit idv_socure_document_capture_update_path
         expect(DocAuthLog.find_by(user_id: @user.id).state).to be_nil
       end
 
@@ -131,7 +205,60 @@ RSpec.feature 'document capture step', :js do
           docv_transaction_token: @docv_transaction_token,
         )
 
+        visit idv_socure_document_capture_update_path
         expect(DocAuthLog.find_by(user_id: @user.id).state).not_to be_nil
+      end
+
+      context 'when socure_docv_verification_data_test_mode is enabled' do
+        let(:test_token) { 'valid-test-token' }
+        let(:socure_docv_verification_data_test_mode) { true }
+        before do
+          allow(IdentityConfig.store).to receive(:socure_docv_verification_data_test_mode_tokens)
+            .and_return([test_token])
+          DocAuth::Mock::DocAuthMockClient.reset!
+        end
+
+        context 'when a valid test token is used' do
+          it 'fetches verificationdata using override docvToken in request',
+             allow_browser_log: true do
+            remove_request_stub(@pass_stub)
+            stub_docv_verification_data_pass(docv_transaction_token: test_token)
+
+            visit idv_socure_document_capture_update_path(docv_token: test_token)
+            expect(page).to have_current_path(idv_ssn_url)
+
+            expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('NY')
+
+            fill_out_ssn_form_ok
+            click_idv_continue
+            complete_verify_step
+            expect(page).to have_current_path(idv_phone_url)
+          end
+        end
+
+        context 'when an invalid test token is used' do
+          let(:invalid_token) { 'invalid-token' }
+          it 'waits to fetch verificationdata using docv capture session token' do
+            visit idv_socure_document_capture_update_path(docv_token: invalid_token)
+
+            expect(page).to have_current_path(
+              idv_socure_document_capture_update_path(docv_token: invalid_token),
+            )
+            socure_docv_upload_documents(
+              docv_transaction_token: @docv_transaction_token,
+            )
+            visit idv_socure_document_capture_update_path(docv_token: invalid_token)
+
+            expect(page).to have_current_path(idv_ssn_url)
+
+            expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('NY')
+
+            fill_out_ssn_form_ok
+            click_idv_continue
+            complete_verify_step
+            expect(page).to have_current_path(idv_phone_url)
+          end
+        end
       end
     end
 
@@ -139,7 +266,7 @@ RSpec.feature 'document capture step', :js do
       it 'proceeds to the next page with valid info' do
         perform_in_browser(:mobile) do
           visit_idp_from_oidc_sp_with_ial2
-          sign_in_and_2fa_user(@user)
+          @user = sign_in_and_2fa_user
           complete_doc_auth_steps_before_document_capture_step
 
           expect(page).to have_current_path(idv_socure_document_capture_url)
@@ -152,6 +279,9 @@ RSpec.feature 'document capture step', :js do
           expect(page).to have_current_path(idv_ssn_url)
 
           expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('NY')
+          expect(fake_analytics).to have_logged_event(
+            :idv_socure_document_request_submitted,
+          )
 
           fill_out_ssn_form_ok
           click_idv_continue
@@ -164,10 +294,13 @@ RSpec.feature 'document capture step', :js do
 
   shared_examples 'a properly categorized Socure error' do |socure_error_code, expected_header_key|
     before do
-      stub_docv_verification_data_fail_with([socure_error_code])
+      stub_docv_verification_data_fail_with(
+        docv_transaction_token: @docv_transaction_token,
+        errors: [socure_error_code],
+      )
 
       visit_idp_from_oidc_sp_with_ial2
-      sign_in_and_2fa_user(@user)
+      @user = sign_in_and_2fa_user
 
       complete_doc_auth_steps_before_document_capture_step
 
@@ -180,6 +313,9 @@ RSpec.feature 'document capture step', :js do
 
     it 'shows the correct error page' do
       expect(page).to have_content(t(expected_header_key))
+      expect(fake_analytics).to have_logged_event(
+        :idv_socure_document_request_submitted,
+      )
     end
   end
 
@@ -240,16 +376,16 @@ RSpec.feature 'direct access to IPP on desktop', :js do
       allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(
         in_person_proofing_opt_in_enabled,
       )
-      allow(IdentityConfig.store).to receive(:allowed_biometric_ial_providers).
-        and_return([service_provider.issuer])
+      allow(IdentityConfig.store).to receive(:allowed_biometric_ial_providers)
+        .and_return([service_provider.issuer])
       allow(IdentityConfig.store).to receive(
         :allowed_valid_authn_contexts_semantic_providers,
       ).and_return([service_provider.issuer])
-      allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
-        and_return(false)
+      allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled)
+        .and_return(false)
       allow(IdentityConfig.store).to receive(:socure_docv_enabled).and_return(true)
-      allow(DocAuthRouter).to receive(:doc_auth_vendor_for_bucket).
-        and_return(Idp::Constants::Vendors::SOCURE)
+      allow(DocAuthRouter).to receive(:doc_auth_vendor_for_bucket)
+        .and_return(Idp::Constants::Vendors::SOCURE)
       visit_idp_from_sp_with_ial2(
         :oidc,
         **{ client_id: service_provider.issuer,

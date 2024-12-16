@@ -777,15 +777,15 @@ RSpec.feature 'Analytics Regression', :js do
   end
 
   before do
-    allow(IdentityConfig.store).to receive(:proofing_device_profiling).
-      and_return(proofing_device_profiling)
+    allow(IdentityConfig.store).to receive(:proofing_device_profiling)
+      .and_return(proofing_device_profiling)
     allow_any_instance_of(ApplicationController).to receive(:analytics) do |controller|
       fake_analytics.user = controller.analytics_user
       fake_analytics.session = controller.session
       fake_analytics
     end
-    allow(IdentityConfig.store).to receive(:idv_acuant_sdk_upgrade_a_b_testing_enabled).
-      and_return(false)
+    allow(IdentityConfig.store).to receive(:idv_acuant_sdk_upgrade_a_b_testing_enabled)
+      .and_return(false)
   end
 
   context 'Happy path' do
@@ -1189,12 +1189,12 @@ RSpec.feature 'Analytics Regression', :js do
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
       allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(false)
       allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).and_return(true)
-      allow_any_instance_of(Idv::InPerson::ReadyToVerifyPresenter).
-        to receive(:service_provider_homepage_url).and_return(return_sp_url)
-      allow_any_instance_of(Idv::InPerson::ReadyToVerifyPresenter).
-        to receive(:sp_name).and_return(sp_friendly_name)
-      allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx).
-        and_return(true)
+      allow_any_instance_of(Idv::InPerson::ReadyToVerifyPresenter)
+        .to receive(:service_provider_homepage_url).and_return(return_sp_url)
+      allow_any_instance_of(Idv::InPerson::ReadyToVerifyPresenter)
+        .to receive(:sp_name).and_return(sp_friendly_name)
+      allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx)
+        .and_return(true)
 
       start_idv_from_sp(:saml)
       sign_in_and_2fa_user(user)

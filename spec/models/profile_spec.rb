@@ -112,24 +112,24 @@ RSpec.describe Profile do
 
       encrypt_pii
 
-      expect(user.reload.encrypted_recovery_code_digest_generated_at.to_i).
-        to be_within(1).of(Time.zone.now.to_i)
+      expect(user.reload.encrypted_recovery_code_digest_generated_at.to_i)
+        .to be_within(1).of(Time.zone.now.to_i)
     end
 
     context 'ssn fingerprinting' do
       it 'fingerprints the ssn' do
-        expect { encrypt_pii }.
-          to change { profile.ssn_signature }.
-          from(nil).to(Pii::Fingerprinter.fingerprint(ssn))
+        expect { encrypt_pii }
+          .to change { profile.ssn_signature }
+          .from(nil).to(Pii::Fingerprinter.fingerprint(ssn))
       end
 
       context 'ssn is blank' do
         let(:ssn) { nil }
 
         it 'does not fingerprint the SSN' do
-          expect { encrypt_pii }.
-            to_not change { profile.ssn_signature }.
-            from(nil)
+          expect { encrypt_pii }
+            .to_not change { profile.ssn_signature }
+            .from(nil)
         end
       end
     end
@@ -144,18 +144,18 @@ RSpec.describe Profile do
         ].join(':'),
       )
 
-      expect { encrypt_pii }.
-        to change { profile.name_zip_birth_year_signature }.
-        from(nil).to(fingerprint)
+      expect { encrypt_pii }
+        .to change { profile.name_zip_birth_year_signature }
+        .from(nil).to(fingerprint)
     end
 
     context 'when a part of the compound PII key is missing' do
       let(:dob) { nil }
 
       it 'does not write a fingerprint' do
-        expect { encrypt_pii }.
-          to_not change { profile.name_zip_birth_year_signature }.
-          from(nil)
+        expect { encrypt_pii }
+          .to_not change { profile.name_zip_birth_year_signature }
+          .from(nil)
       end
     end
   end
@@ -265,8 +265,8 @@ RSpec.describe Profile do
       expect(profile.verified_at).to be_present # changed
 
       # TODO: call activate on the new profile instead
-      expect { user.profiles.create!(active: true) }.
-        to raise_error(ActiveRecord::RecordInvalid)
+      expect { user.profiles.create!(active: true) }
+        .to raise_error(ActiveRecord::RecordInvalid)
     end
 
     it 'prevents save! via psql unique partial index' do
@@ -393,8 +393,8 @@ RSpec.describe Profile do
 
     it 'sends a reproof completed push event' do
       profile = create(:profile, :active, user: user)
-      expect(PushNotification::HttpPush).to receive(:deliver).
-        with(PushNotification::ReproofCompletedEvent.new(user: user))
+      expect(PushNotification::HttpPush).to receive(:deliver)
+        .with(PushNotification::ReproofCompletedEvent.new(user: user))
 
       expect(profile.activated_at).to be_present
       expect(profile.active).to eq(true)
@@ -606,6 +606,65 @@ RSpec.describe Profile do
 
       expect(profile).to_not be_active
       expect(profile).to be_password_reset
+    end
+  end
+
+  describe '#deactivate_due_to_encryption_error' do
+    context 'when the profile has a "pending" in_person_enrollment' do
+      subject { create(:profile, :in_person_verification_pending, user: user) }
+
+      before do
+        subject.deactivate_due_to_encryption_error
+      end
+
+      it 'deactivates with reason encryption_error' do
+        expect(subject).to have_attributes(
+          active: false,
+          deactivation_reason: 'encryption_error',
+          in_person_verification_pending_at: be_kind_of(Time),
+        )
+      end
+
+      it 'cancels the associated pending in_person_enrollment' do
+        expect(subject.in_person_enrollment.status).to eq('cancelled')
+      end
+    end
+
+    context 'when the profile has a "passed" in_person_enrollment' do
+      subject { create(:profile, :active, user: user) }
+      let!(:enrollment) do
+        create(:in_person_enrollment, user: user, profile: subject, status: :passed)
+      end
+
+      before do
+        subject.deactivate_due_to_encryption_error
+      end
+
+      it 'deactivates with reason encryption_error' do
+        expect(subject).to have_attributes(
+          active: false,
+          deactivation_reason: 'encryption_error',
+        )
+      end
+
+      it 'does not cancel the associated pending in_person_enrollment' do
+        expect(subject.in_person_enrollment.status).to eq('passed')
+      end
+    end
+
+    context 'when the profile has no in_person_enrollment' do
+      subject { create(:profile, :active, user: user) }
+
+      before do
+        subject.deactivate_due_to_encryption_error
+      end
+
+      it 'deactivates with reason encryption_error' do
+        expect(subject).to have_attributes(
+          active: false,
+          deactivation_reason: 'encryption_error',
+        )
+      end
     end
   end
 
@@ -1105,8 +1164,8 @@ RSpec.describe Profile do
 
       profile.fraud_pending_reason = 'threatmetrix_review'
       expect { profile.deactivate_for_fraud_review }.to(
-        change { profile.fraud_review_pending? }.from(false).to(true).
-        and(change { profile.in_person_verification_pending_at }.to(nil)),
+        change { profile.fraud_review_pending? }.from(false).to(true)
+        .and(change { profile.in_person_verification_pending_at }.to(nil)),
       )
 
       expect(profile).to_not be_active

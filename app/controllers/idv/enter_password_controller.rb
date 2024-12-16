@@ -18,8 +18,8 @@ module Idv
                 with: :handle_request_enroll_exception
 
     def new
-      Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
-        call(:encrypt, :view, true)
+      Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer)
+        .call(:encrypt, :view, true)
       analytics.idv_enter_password_visited(
         address_verification_method: idv_session.address_verification_mechanism,
         **ab_test_analytics_buckets,
@@ -56,8 +56,8 @@ module Idv
         proofing_workflow_time_in_seconds: idv_session.proofing_workflow_time_in_seconds,
         **ab_test_analytics_buckets,
       )
-      Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
-        call(:verified, :view, true)
+      Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer)
+        .call(:verified, :view, true)
       analytics.idv_final(
         success: true,
         fraud_review_pending: idv_session.profile.fraud_review_pending?,
@@ -127,7 +127,7 @@ module Idv
     end
 
     def init_profile
-      idv_session.create_profile_from_applicant_with_password(
+      profile = idv_session.create_profile_from_applicant_with_password(
         password,
         is_enhanced_ipp: resolved_authn_context_result.enhanced_ipp?,
         proofing_components: ProofingComponents.new(
@@ -137,12 +137,13 @@ module Idv
           user_session:,
         ).to_h,
       )
-      if idv_session.verify_by_mail?
+
+      if profile.gpo_verification_pending?
         current_user.send_email_to_all_addresses(:verify_by_mail_letter_requested)
         log_letter_enqueued_analytics(resend: false)
       end
 
-      if idv_session.profile.active?
+      if profile.active?
         create_user_event(:account_verified)
         UserAlerts::AlertUserAboutAccountVerified.call(
           profile: idv_session.profile,

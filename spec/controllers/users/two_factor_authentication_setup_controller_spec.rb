@@ -180,9 +180,9 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
     end
 
     it 'assigns platform_authenticator_available session value' do
-      expect { response }.to change { controller.user_session[:platform_authenticator_available] }.
-        from(nil).
-        to(false)
+      expect { response }.to change { controller.user_session[:platform_authenticator_available] }
+        .from(nil)
+        .to(false)
     end
 
     context 'when multi selection with phone first' do
@@ -266,9 +266,9 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
       it 'assigns platform_authenticator_available session value' do
         expect do
           response
-        end.to change { controller.user_session[:platform_authenticator_available] }.
-          from(nil).
-          to(true)
+        end.to change { controller.user_session[:platform_authenticator_available] }
+          .from(nil)
+          .to(true)
       end
     end
   end

@@ -6,8 +6,8 @@ RSpec.describe RandomPhrase do
       profane = Base32::Crockford.decode('FART')
       not_profane = Base32::Crockford.decode('ABCD')
 
-      expect(SecureRandom).to receive(:random_number).
-        and_return(profane, not_profane)
+      expect(SecureRandom).to receive(:random_number)
+        .and_return(profane, not_profane)
 
       phrase = RandomPhrase.new(num_words: 1)
 

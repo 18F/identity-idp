@@ -191,6 +191,20 @@ class Profile < ApplicationRecord
     update!(active: false, deactivation_reason: reason)
   end
 
+  # Update the profile's deactivation reason to "encryption_error". As a
+  # side-effect, when the profile has an associated pending in-person
+  # enrollment it will be updated to have a status of "cancelled".
+  def deactivate_due_to_encryption_error
+    update!(
+      active: false,
+      deactivation_reason: :encryption_error,
+    )
+
+    if in_person_enrollment&.pending?
+      in_person_enrollment.cancelled!
+    end
+  end
+
   def fraud_deactivation_reason?
     fraud_review_pending? || fraud_rejection?
   end

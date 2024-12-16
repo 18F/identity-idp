@@ -99,8 +99,8 @@ RSpec.describe AnalyticsEventsDocumenter do
       RUBY
 
       it 'reports the missing tag' do
-        expect(documenter.missing_documentation.first).
-          to include('some_event event name not detected')
+        expect(documenter.missing_documentation.first)
+          .to include('some_event event name not detected')
       end
     end
 
@@ -114,8 +114,8 @@ RSpec.describe AnalyticsEventsDocumenter do
       RUBY
 
       it 'reports the missing tag' do
-        expect(documenter.missing_documentation.first).
-          to include('some_event success (undocumented)')
+        expect(documenter.missing_documentation.first)
+          .to include('some_event success (undocumented)')
       end
     end
 
@@ -129,8 +129,8 @@ RSpec.describe AnalyticsEventsDocumenter do
       RUBY
 
       it 'reports the invalid param' do
-        expect(documenter.missing_documentation.first).
-          to include('some_event unexpected positional parameters ["success"]')
+        expect(documenter.missing_documentation.first)
+          .to include('some_event unexpected positional parameters ["success"]')
       end
     end
 
@@ -159,8 +159,8 @@ RSpec.describe AnalyticsEventsDocumenter do
       RUBY
 
       it 'has an error documentation to be missing' do
-        expect(documenter.missing_documentation.first).
-          to include('some_event success missing types')
+        expect(documenter.missing_documentation.first)
+          .to include('some_event success missing types')
       end
     end
 
@@ -310,8 +310,8 @@ RSpec.describe AnalyticsEventsDocumenter do
       RUBY
 
       it 'parses the name correctly' do
-        expect(documenter.as_json[:events].first[:event_name]).
-          to eq('idv_enter_password_submitted')
+        expect(documenter.as_json[:events].first[:event_name])
+          .to eq('idv_enter_password_submitted')
       end
     end
   end

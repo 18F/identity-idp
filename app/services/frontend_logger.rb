@@ -43,9 +43,9 @@ class FrontendLogger
   # @param [Proc,Method] callable
   # @return [Array<Symbol>] the names of the kwargs for the callable (both optional and required)
   def kwargs(callable)
-    callable.
-      parameters.
-      map { |type, name| name if [:key, :keyreq].include?(type) }.
-      compact
+    callable
+      .parameters
+      .map { |type, name| name if [:key, :keyreq].include?(type) }
+      .compact
   end
 end

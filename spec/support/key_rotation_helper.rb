@@ -15,8 +15,8 @@ module KeyRotationHelper
     current_queue = IdentityConfig.store.attribute_encryption_key_queue
     current_queue = [{ 'key' => old_key }] + current_queue
 
-    allow(IdentityConfig.store).to receive(:attribute_encryption_key_queue).
-      and_return(current_queue)
+    allow(IdentityConfig.store).to receive(:attribute_encryption_key_queue)
+      .and_return(current_queue)
   end
 
   def rotate_all_keys

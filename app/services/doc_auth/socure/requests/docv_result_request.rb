@@ -6,8 +6,13 @@ module DocAuth
       class DocvResultRequest < DocAuth::Socure::Request
         attr_reader :document_capture_session_uuid, :biometric_comparison_required
 
-        def initialize(document_capture_session_uuid:, biometric_comparison_required: false)
+        def initialize(
+          document_capture_session_uuid:,
+          docv_transaction_token_override: nil,
+          biometric_comparison_required: false
+        )
           @document_capture_session_uuid = document_capture_session_uuid
+          @docv_transaction_token_override = docv_transaction_token_override
           @biometric_comparison_required = biometric_comparison_required
         end
 
@@ -16,7 +21,7 @@ module DocAuth
         def body
           {
             modules: ['documentverification'],
-            docvTransactionToken: document_capture_session.socure_docv_transaction_token,
+            docvTransactionToken: docv_transaction_token,
           }.to_json
         end
 
@@ -59,6 +64,16 @@ module DocAuth
 
         def metric_name
           'socure_id_plus_document_verification'
+        end
+
+        def docv_transaction_token
+          if IdentityConfig.store.socure_docv_verification_data_test_mode &&
+             IdentityConfig.store.socure_docv_verification_data_test_mode_tokens
+                 .include?(@docv_transaction_token_override)
+            return @docv_transaction_token_override
+          end
+
+          document_capture_session.socure_docv_transaction_token
         end
       end
     end
