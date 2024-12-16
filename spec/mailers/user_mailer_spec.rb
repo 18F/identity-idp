@@ -1466,8 +1466,10 @@ RSpec.describe UserMailer, type: :mailer do
 
   describe '#deliver_later' do
     it 'queues email without raising' do
+      # rubocop:disable IdentityIdp/MailLaterLinter
       mailer = UserMailer.with(user:, email_address: user.email_addresses.first)
       mailer.suspended_create_account.deliver_later
+      # rubocop:enable IdentityIdp/MailLaterLinter
     end
 
     it 'does not queue email if it potentially contains sensitive value' do
