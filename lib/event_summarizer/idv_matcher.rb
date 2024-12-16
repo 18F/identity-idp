@@ -231,7 +231,7 @@ module EventSummarizer
         add_significant_event(
           type: :start_gpo,
           timestamp:,
-          description: 'User requested a letter to verfy by mail',
+          description: 'User requested a letter to verify by mail',
         )
       end
 
