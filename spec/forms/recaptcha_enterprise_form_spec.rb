@@ -390,8 +390,8 @@ RSpec.describe RecaptchaEnterpriseForm do
         end
       end
 
-      context 'with extra analytics properties', allowed_extra_analytics: [:extra] do
-        let(:extra_analytics_properties) { { extra: true } }
+      context 'with extra analytics properties' do
+        let(:extra_analytics_properties) { { phone_country_code: true } }
 
         it 'logs analytics of the body' do
           result
@@ -409,7 +409,7 @@ RSpec.describe RecaptchaEnterpriseForm do
             score_threshold: score_threshold,
             form_class: 'RecaptchaEnterpriseForm',
             recaptcha_action:,
-            extra: true,
+            phone_country_code: true,
           )
         end
       end
