@@ -140,7 +140,7 @@ RUN openssl req -x509 -sha256 -nodes -newkey rsa:2048 -days 1825 \
 #########################################################################
 # This is the main image.
 #########################################################################
-FROM public.ecr.aws/docker/library/ruby:3.3.4-slim as main
+FROM public.ecr.aws/docker/library/ruby:3.3.6-slim as main
 
 # Set environment variables
 ENV RAILS_ROOT /app
