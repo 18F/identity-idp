@@ -49,7 +49,7 @@ module EventSummarizer
         title: 'Account deletion cancelled',
         attributes: [
           { type: :account_deletion_cancelled,
-            description: "On #{event["@timestamp"]} user initiated account deletion" },
+            description: "On #{event["@timestamp"]} user canceled account deletion" },
         ],
       }
       event_summaries.push(event_message)
