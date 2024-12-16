@@ -73,6 +73,7 @@ module Idv
     IGNORED_METHODS = [
       *EXCLUDED_FRONTEND_EVENT_METHODS,
       *EXCLUDED_JOB_EVENT_METHODS,
+      :idv_threatmetrix_response_body, # Prevent duplication when doing joins across events
     ].uniq.freeze
 
     STANDARD_ARGUMENTS = %i[
