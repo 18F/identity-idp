@@ -207,6 +207,7 @@ module IdvHelper
   end
 
   def validate_return_to_sp
+    expect(page).to have_current_path('/auth/result', ignore_query: true)
     expect(current_url).to start_with('http://localhost:7654/auth/result')
   end
 end

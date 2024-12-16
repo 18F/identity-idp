@@ -58,13 +58,16 @@ RSpec.describe 'Identity verification', :js do
     user = sign_up_and_2fa_ial1_user
 
     complete_welcome_step
+    expect(page).to have_current_path(idv_agreement_path)
 
     test_go_back_from_agreement
     complete_agreement_step
+    expect(page).to have_current_path(idv_hybrid_handoff_path)
 
     test_go_back_from_hybrid_handoff
     complete_hybrid_handoff_step # upload photos
 
+    expect(page).to have_current_path(idv_document_capture_path)
     test_go_back_from_document_capture
     complete_document_capture_step
 
@@ -419,9 +422,9 @@ RSpec.describe 'Identity verification', :js do
 
   def test_go_back_from_agreement
     go_back
-    expect(current_path).to eq(idv_welcome_path)
+    expect(page).to have_current_path(idv_welcome_path)
     complete_welcome_step
-    expect(current_path).to eq(idv_agreement_path)
+    expect(page).to have_current_path(idv_agreement_path)
     expect(page).not_to have_checked_field(
       t('doc_auth.instructions.consent', app_name: APP_NAME),
       visible: :all,
@@ -448,6 +451,7 @@ RSpec.describe 'Identity verification', :js do
 
   def test_go_back_from_document_capture
     go_back
+    expect(page).to have_current_path(idv_hybrid_handoff_path)
     go_back
     expect(page).to have_current_path(idv_agreement_path)
     expect(page).to have_checked_field(
