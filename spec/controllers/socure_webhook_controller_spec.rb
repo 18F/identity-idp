@@ -72,7 +72,7 @@ RSpec.describe SocureWebhookController do
             }
           end
           let(:endpoints) do
-            (1..3).map { |i| "https://#{i}.example.test/endpoint" }
+            3.times.map { |i| "https://#{i}.example.test/endpoint" }
           end
           let(:repeated_body) do
             b = {}.merge(webhook_body)
@@ -130,7 +130,7 @@ RSpec.describe SocureWebhookController do
               allow_any_instance_of(DocAuth::Socure::WebhookRepeater)
                 .to receive(:send_http_post_request).and_call_original
 
-              (1...3).each do |i|
+              2.times do |i|
                 allow_any_instance_of(DocAuth::Socure::WebhookRepeater)
                   .to receive(:send_http_post_request).with(endpoints[i]).and_raise('uh-oh')
 
