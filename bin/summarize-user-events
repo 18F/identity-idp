@@ -228,7 +228,7 @@ def main
   # rubocop:enable Metrics/LineLength
 
   optparse.parse!
-  
+
   SummarizeUserEvents.new(**options).run
 end
 
