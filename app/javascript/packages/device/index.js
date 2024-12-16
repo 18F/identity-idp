@@ -7,7 +7,7 @@
  * @return {boolean}
  */
 export function isIPad() {
-  const { userAgent, maxTouchPoints } = window.navigator;
+  const { userAgent, maxTouchPoints } = navigator;
   return /ipad/i.test(userAgent) || (/macintosh/i.test(userAgent) && maxTouchPoints === 5);
 }
 
@@ -18,7 +18,7 @@ export function isIPad() {
  * @return {boolean}
  */
 export function isLikelyMobile() {
-  return isIPad() || /iphone|android/i.test(window.navigator.userAgent);
+  return isIPad() || /iphone|android/i.test(navigator.userAgent);
 }
 
 /**
