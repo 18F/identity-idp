@@ -1,3 +1,5 @@
+require_relative '../../lib/analytics_events_documenter'
+
 class FakeAnalytics < Analytics
   PiiDetected = Class.new(StandardError).freeze
 
@@ -73,6 +75,10 @@ class FakeAnalytics < Analytics
   module UndocumentedParamsChecker
     mattr_accessor :asts
     mattr_accessor :docstrings
+    DOCUMENTATION_OPTIONAL_PARAMS = [
+      :user_id,
+      *AnalyticsEventsDocumenter::DOCUMENTATION_OPTIONAL_PARAMS.map(&:to_sym),
+    ].uniq.freeze
 
     def track_event(event, original_attributes = {})
       method_name = caller
@@ -91,9 +97,9 @@ class FakeAnalytics < Analytics
           .map(&:last)
 
         extra_keywords = original_attributes.keys \
-          - [:pii_like_keypaths, :user_id] \
-          - param_names \
-          - option_param_names(analytics_method)
+                          - DOCUMENTATION_OPTIONAL_PARAMS \
+                          - param_names \
+                          - option_param_names(analytics_method)
 
         if extra_keywords.present?
           raise UndocumentedParams, <<~ERROR
