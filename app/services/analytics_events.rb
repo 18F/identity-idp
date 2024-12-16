@@ -3423,6 +3423,28 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks skipped enrollments during the execution of the GetUspsProofingResultsJob
+  #
+  # @param [String] enrollment_code The in-person enrollment code.
+  # @param [String] enrollment_id The in-person enrollment ID.
+  # @param [String] reason The reason for skipping the enrollment.
+  # @param [String] job_name The class name of the job.
+  def idv_in_person_usps_proofing_results_job_enrollment_skipped(
+    enrollment_code:,
+    enrollment_id:,
+    reason:,
+    job_name:,
+    **extra
+  )
+    track_event('GetUspsProofingResultsJob: Enrollment Skipped',
+      enrollment_code:,
+      enrollment_id:,
+      reason:,
+      job_name:,
+      **extra,
+    )
+  end
+
   # Tracks incomplete enrollments checked via the USPS API
   # @param [String] enrollment_code
   # @param [String] enrollment_id

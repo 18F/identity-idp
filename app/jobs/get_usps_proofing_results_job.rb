@@ -34,6 +34,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       enrollments_cancelled: 0,
       enrollments_in_progress: 0,
       enrollments_passed: 0,
+      enrollments_skipped: 0,
     }
 
     started_at = Time.zone.now
@@ -104,23 +105,16 @@ class GetUspsProofingResultsJob < ApplicationJob
     status_check_attempted_at = Time.zone.now
     enrollment_outcomes[:enrollments_checked] += 1
 
-    profile_deactivation_reason = enrollment.profile_deactivation_reason
-
-    if profile_deactivation_reason.present?
-      log_enrollment_updated_analytics(
-        enrollment: enrollment,
-        enrollment_passed: false,
-        enrollment_completed: true,
-        response: nil,
-        reason: "Profile has a deactivation reason of #{profile_deactivation_reason}",
-      )
-      cancel_enrollment(enrollment)
+    if enrollment.profile_deactivation_reason.present?
+      if enrollment.profile_deactivation_reason == 'password_reset'
+        skip_enrollment(enrollment)
+      else
+        cancel_enrollment_due_to_encryption_error(enrollment)
+      end
       return
     end
 
-    response = proofer.request_proofing_results(
-      enrollment,
-    )
+    response = proofer.request_proofing_results(enrollment)
   rescue Faraday::BadRequestError => err
     # 400 status code. This is used for some status updates and some common client errors
     handle_bad_request_error(err, enrollment)
@@ -135,6 +129,26 @@ class GetUspsProofingResultsJob < ApplicationJob
   ensure
     # Record the attempt to update the enrollment
     enrollment.update(status_check_attempted_at: status_check_attempted_at)
+  end
+
+  def skip_enrollment(enrollment)
+    analytics.idv_in_person_usps_proofing_results_job_enrollment_skipped(
+      **enrollment_analytics_attributes(enrollment, complete: false),
+      reason: "Profile has a deactivation reason of #{enrollment.profile_deactivation_reason}",
+      job_name: self.class.name,
+    )
+    enrollment_outcomes[:enrollments_skipped] += 1
+  end
+
+  def cancel_enrollment_due_to_encryption_error(enrollment)
+    log_enrollment_updated_analytics(
+      enrollment: enrollment,
+      enrollment_passed: false,
+      enrollment_completed: true,
+      response: nil,
+      reason: "Profile has a deactivation reason of #{enrollment.profile_deactivation_reason}",
+    )
+    cancel_enrollment(enrollment)
   end
 
   def cancel_enrollment(enrollment)
