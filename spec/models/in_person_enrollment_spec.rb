@@ -534,28 +534,75 @@ RSpec.describe InPersonEnrollment, type: :model do
     end
   end
 
-  describe '#profile_deactivation_reason' do
-    let(:profile) { create(:profile) }
-    let(:enrollment) { create(:in_person_enrollment, user: profile.user, profile: profile) }
+  describe '#profile_has_encryption_error?' do
+    context 'when the enrollment has a profile' do
+      let(:profile) { create(:profile) }
+      let(:enrollment) { create(:in_person_enrollment, user: profile.user, profile: profile) }
 
-    context "when the enrollment's profile has a deactivation reason" do
-      before do
-        profile.update!(deactivation_reason: 'encryption_error')
+      context 'when the profile has the "encyrption_error" deactivation reason' do
+        before do
+          profile.update!(deactivation_reason: 'encryption_error')
+        end
+
+        it 'returns true' do
+          expect(enrollment.profile_has_encryption_error?).to be(true)
+        end
       end
 
-      it "returns the profile's deactivation reason" do
-        expect(enrollment.profile_deactivation_reason).to eq('encryption_error')
-      end
-    end
+      context 'when the profile has a "password_reset" deactivation reason' do
+        before do
+          profile.update!(deactivation_reason: 'password_reset')
+        end
 
-    context 'when the profile does not have a deactivation reason' do
-      it 'returns nil' do
-        expect(enrollment.profile_deactivation_reason).to be_nil
+        it 'returns false' do
+          expect(enrollment.profile_has_encryption_error?).to be(false)
+        end
+      end
+
+      context 'when the profile does not have a deactivation reason' do
+        before do
+          profile.update!(deactivation_reason: nil)
+        end
+
+        it 'returns false' do
+          expect(enrollment.profile_has_encryption_error?).to be(false)
+        end
       end
     end
 
     context 'when the enrollment does not have a profile' do
-      let(:enrollment) { create(:in_person_enrollment, user: profile.user, profile: nil) }
+      let(:enrollment) { create(:in_person_enrollment, profile: nil) }
+
+      it 'returns false' do
+        expect(enrollment.profile_has_encryption_error?).to be(false)
+      end
+    end
+  end
+
+  describe '#profile_deactivation_reason' do
+    context 'when the enrollment has a profile' do
+      let(:profile) { create(:profile) }
+      let(:enrollment) { create(:in_person_enrollment, user: profile.user, profile: profile) }
+
+      context "when the enrollment's profile has a deactivation reason" do
+        before do
+          profile.update!(deactivation_reason: 'encryption_error')
+        end
+
+        it "returns the profile's deactivation reason" do
+          expect(enrollment.profile_deactivation_reason).to eq('encryption_error')
+        end
+      end
+
+      context 'when the profile does not have a deactivation reason' do
+        it 'returns nil' do
+          expect(enrollment.profile_deactivation_reason).to be_nil
+        end
+      end
+    end
+
+    context 'when the enrollment does not have a profile' do
+      let(:enrollment) { create(:in_person_enrollment, profile: nil) }
 
       it 'returns nil' do
         expect(enrollment.profile_deactivation_reason).to be_nil

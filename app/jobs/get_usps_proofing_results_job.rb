@@ -104,17 +104,8 @@ class GetUspsProofingResultsJob < ApplicationJob
     status_check_attempted_at = Time.zone.now
     enrollment_outcomes[:enrollments_checked] += 1
 
-    profile_deactivation_reason = enrollment.profile_deactivation_reason
-
-    if profile_deactivation_reason.present?
-      log_enrollment_updated_analytics(
-        enrollment: enrollment,
-        enrollment_passed: false,
-        enrollment_completed: true,
-        response: nil,
-        reason: "Profile has a deactivation reason of #{profile_deactivation_reason}",
-      )
-      cancel_enrollment(enrollment)
+    if enrollment.profile_has_encryption_error?
+      cancel_enrollment_due_to_encryption_error(enrollment)
       return
     end
 
@@ -135,6 +126,17 @@ class GetUspsProofingResultsJob < ApplicationJob
   ensure
     # Record the attempt to update the enrollment
     enrollment.update(status_check_attempted_at: status_check_attempted_at)
+  end
+
+  def cancel_enrollment_due_to_encryption_error(enrollment)
+    log_enrollment_updated_analytics(
+      enrollment: enrollment,
+      enrollment_passed: false,
+      enrollment_completed: true,
+      response: nil,
+      reason: "Profile has a deactivation reason of #{enrollment.profile_deactivation_reason}",
+    )
+    cancel_enrollment(enrollment)
   end
 
   def cancel_enrollment(enrollment)
