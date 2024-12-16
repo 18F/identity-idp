@@ -170,7 +170,7 @@ RSpec.describe OpenidConnectLogoutForm do
             )
           end
 
-          it 'is valid' do
+          it 'is invalid' do
             expect(valid?).to eq(false)
           end
         end
