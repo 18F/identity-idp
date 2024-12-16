@@ -162,6 +162,19 @@ RSpec.describe OpenidConnectLogoutForm do
           end
         end
 
+        context 'with a payload that was signed with an invalid key' do
+          let(:id_token_hint) do
+            JWT.encode(
+              { sub: identity.uuid, aud: identity.service_provider },
+              OpenSSL::PKey::RSA.new(2048), 'RS256'
+            )
+          end
+
+          it 'is invalid' do
+            expect(valid?).to eq(false)
+          end
+        end
+
         context 'with a payload that does not correspond to an identity' do
           let(:id_token_hint) do
             JWT.encode(

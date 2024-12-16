@@ -94,14 +94,13 @@ class OpenidConnectLogoutForm
     return nil if id_token_hint.blank?
     payload, _headers = nil
 
-    Rails.application.config.oidc_public_key_queue.compact.find do |key|
+    begin
       payload, _headers = JWT.decode(
-        id_token_hint, key, true,
+        id_token_hint, Rails.application.config.oidc_public_key_queue, true,
         algorithm: 'RS256',
         leeway: Float::INFINITY
       ).map(&:with_indifferent_access)
     rescue JWT::DecodeError
-      next
     end
 
     if payload
