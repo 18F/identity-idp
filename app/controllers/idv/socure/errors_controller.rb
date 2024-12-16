@@ -45,7 +45,8 @@ module Idv
       end
 
       def set_in_person_available
-        @idv_in_person_url = in_person_enabled? ? idv_in_person_direct_path : nil
+        @idv_in_person_url = in_person_enabled? ?
+          idv_in_person_direct_path(step: :socure_doc_auth) : nil
       end
 
       def in_person_enabled?

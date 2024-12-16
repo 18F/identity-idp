@@ -13,7 +13,7 @@ module Idv
     before_action :override_csp_to_allow_acuant
     before_action :set_usps_form_presenter
     before_action -> { redirect_to_correct_vendor(Idp::Constants::Vendors::LEXIS_NEXIS, false) },
-                  only: [:show]
+                  only: [:show], unless: -> { allow_direct_ipp? }
 
     def show
       analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)
@@ -60,15 +60,15 @@ module Idv
         controller: self,
         next_steps: [:ssn, :ipp_ssn], # :ipp_state_id
         preconditions: ->(idv_session:, user:) {
-                         idv_session.flow_path == 'standard' && (
-                           # mobile
-                           idv_session.skip_doc_auth_from_handoff ||
-                           idv_session.skip_hybrid_handoff ||
-                            idv_session.skip_doc_auth_from_how_to_verify ||
-                            !idv_session.selfie_check_required || # desktop but selfie not required
-                             idv_session.desktop_selfie_test_mode_enabled?
-                         )
-                       },
+          idv_session.flow_path == 'standard' && (
+            # mobile
+            idv_session.skip_doc_auth_from_handoff ||
+              idv_session.skip_hybrid_handoff ||
+              idv_session.skip_doc_auth_from_how_to_verify ||
+              !idv_session.selfie_check_required || # desktop but selfie not required
+              idv_session.desktop_selfie_test_mode_enabled?
+          )
+        },
         undo_step: ->(idv_session:, user:) do
           idv_session.pii_from_doc = nil
           idv_session.invalidate_in_person_pii_from_user!
