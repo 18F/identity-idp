@@ -96,6 +96,9 @@ RSpec.describe SocureWebhookController do
           end
 
           it 'repeats the webhook to all endpoints' do
+            expect(Faraday)
+              .to receive(:new).exactly(endpoints.length).times
+
             post :create, params: webhook_body
           end
 
