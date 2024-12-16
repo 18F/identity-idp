@@ -216,16 +216,19 @@ RSpec.describe Idv::AnalyticsEventsEnhancer do
     let(:explicitly_ignored_methods) do
       described_class.const_get(:IGNORED_METHODS).sort
     end
+
     let(:explicitly_enhanced_methods) do
       described_class.const_get(:METHODS_WITH_PROFILE_HISTORY).sort
     end
+
     let(:explicitly_referenced_methods) do
       [*explicitly_ignored_methods, *explicitly_enhanced_methods].sort
     end
+
     let(:idv_event_methods) do
-      AnalyticsEvents.instance_methods(false).
-        filter { |n| n.start_with?('idv_') }.
-        sort
+      AnalyticsEvents.instance_methods(false)
+        .filter { |n| n.start_with?('idv_') }
+        .sort
     end
 
     it 'only references known AnalyticsEvents methods' do
