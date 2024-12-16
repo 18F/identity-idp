@@ -26,7 +26,7 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
 
       expect(assigns(:presenter).desktop_ft_ab_test).to be false
     end
-    
+
     context 'with threatmetrix enabled' do
       let(:tmx_session_id) { '1234' }
 
@@ -231,16 +231,17 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
 
       context 'with threatmetrix enabled' do
         let(:tmx_session_id) { '1234' }
-  
+
         before do
-          allow(FeatureManagement).to receive(:account_creation_device_profiling_collecting_enabled?).
+          allow(FeatureManagement).
+            to receive(:account_creation_device_profiling_collecting_enabled?).
             and_return(true)
           allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('org1')
           allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled).
             and_return(false)
           subject.session[:threatmetrix_session_id] = tmx_session_id
         end
-  
+
         it 'renders new with invalid request' do
           tmx_url = 'https://h.online-metrix.net/fp'
           expect(subject).to receive(:render).with(
@@ -251,9 +252,9 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
                       threatmetrix_iframe_url:
                         "#{tmx_url}/tags?org_id=org1&session_id=#{tmx_session_id}" },
           ).and_call_original
-  
-          post :create, params: params)
-  
+
+          post :create, params: params
+
           expect(response).to render_template(:new)
         end
       end

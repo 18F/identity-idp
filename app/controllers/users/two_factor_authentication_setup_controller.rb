@@ -22,9 +22,9 @@ module Users
         enabled_mfa_methods_count:,
         gov_or_mil_email: fed_or_mil_email?,
       )
-      @tmx_view_needed = 
+      @tmx_view_needed =
         FeatureManagement.account_creation_device_profiling_collecting_enabled? &&
-          mfa_context.enabled_mfa_methods_count == 0 
+        mfa_context.enabled_mfa_methods_count == 0
       render :index, locals: threatmetrix_variables
     end
 
