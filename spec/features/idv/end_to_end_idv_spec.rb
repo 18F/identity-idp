@@ -135,6 +135,7 @@ RSpec.describe 'Identity verification', :js do
       complete_all_in_person_proofing_steps(user)
       test_restart_in_person_flow(user)
       complete_otp_verification_page(user)
+      expect(page).to have_current_path(idv_enter_password_path)
 
       test_go_back_in_person_flow
 
@@ -429,7 +430,7 @@ RSpec.describe 'Identity verification', :js do
 
   def test_go_back_from_hybrid_handoff
     go_back
-    expect(current_path).to eql(idv_agreement_path)
+    expect(page).to have_current_path(idv_agreement_path)
     expect(page).to have_checked_field(
       t('doc_auth.instructions.consent', app_name: APP_NAME),
       visible: :all,
@@ -515,7 +516,9 @@ RSpec.describe 'Identity verification', :js do
 
   def test_go_back_in_person_flow
     go_back
+    expect(page).to have_current_path(idv_otp_verification_path)
     go_back
+    expect(page).to have_current_path(idv_phone_path)
     go_back
     expect(page).to have_current_path(idv_in_person_verify_info_path)
     # can't go back further with in person controllers (yet)
