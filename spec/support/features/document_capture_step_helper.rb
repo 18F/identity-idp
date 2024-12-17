@@ -103,12 +103,12 @@ module DocumentCaptureStepHelper
     end
   end
 
-  def stub_docv_verification_data_pass(docv_transaction_token:)
-    stub_docv_verification_data(body: SocureDocvFixtures.pass_json, docv_transaction_token:)
+  def stub_docv_verification_data_pass()
+    stub_docv_verification_data(body: SocureDocvFixtures.pass_json)
   end
 
-  def stub_docv_verification_data_fail_with(docv_transaction_token:, errors:)
-    stub_docv_verification_data(body: SocureDocvFixtures.fail_json(errors), docv_transaction_token:)
+  def stub_docv_verification_data_fail_with(errors:)
+    stub_docv_verification_data(body: SocureDocvFixtures.fail_json(errors))
   end
 
   def stub_docv_verification_pii_validation_fail
@@ -125,6 +125,7 @@ module DocumentCaptureStepHelper
       to_return(
         headers: {
           'Content-Type' => 'application/json',
+
         },
         body:,
       )

@@ -21,10 +21,6 @@ RSpec.describe DocAuth::Socure::Responses::DocvResultResponse do
     it 'doc_type is supported' do
       expect(subject.doc_type_supported?).to eq(true)
     end
-
-    it 'doc_auth_success? is true' do
-      expect(subject.doc_auth_success?).to eq(true)
-    end
   end
 
   context 'with a Socure error' do

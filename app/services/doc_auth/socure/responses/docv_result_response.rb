@@ -59,8 +59,6 @@ module DocAuth
           )
         end
 
-        alias_method :doc_auth_success?, :success?
-
         def selfie_status
           :not_processed
         end
@@ -78,7 +76,7 @@ module DocAuth
             flow_path: nil,
             liveness_checking_required: @biometric_comparison_required,
             issue_year: state_id_issued&.year,
-            doc_auth_success: successful_result?,
+            doc_auth_success: socure_succeeded?,
             vendor: 'Socure',
             address_line2_present: address2.present?,
             zip_code: zipcode,
@@ -86,6 +84,12 @@ module DocAuth
             liveness_enabled: @biometric_comparison_required,
           }
         end
+
+        def successful_result?
+          socure_succeeded? && pii_valid?
+        end
+
+        alias_method :doc_auth_success?, :successful_result?
 
         private
 
@@ -98,10 +102,6 @@ module DocAuth
           ).submit
 
           @pii_valid = response.success?
-        end
-
-        def successful_result?
-          socure_succeeded? && pii_valid?
         end
 
         def socure_succeeded?
@@ -143,7 +143,12 @@ module DocAuth
         end
 
         def get_data(path)
-          parsed_response_body.dig(*path)
+          data = parsed_response_body.dig(*path)
+          if data.is_a?(Hash)
+            data.symbolize_keys
+          else
+            data
+          end
         end
 
         def parsed_response_body
@@ -153,7 +158,7 @@ module DocAuth
             ).with_indifferent_access : {}
           rescue JSON::JSONError
             {}
-          end.symbolize_keys
+          end
           @parsed_response_body
         end
 
