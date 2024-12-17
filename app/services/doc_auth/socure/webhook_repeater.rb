@@ -3,21 +3,15 @@
 module DocAuth
   module Socure
     class WebhookRepeater
-      attr_reader :body, :headers, :endpoints
+      attr_reader :body, :headers, :endpoint
 
-      def initialize(body:, headers:, endpoints:)
+      def initialize(body:, headers:, endpoint:)
         @body = body
         @headers = headers
-        @endpoints = endpoints
+        @endpoint = endpoint
       end
 
-      def broadcast
-        endpoints.each { |endpoint| repeat(endpoint) }
-      end
-
-      private
-
-      def repeat(endpoint)
+      def repeat
         send_http_post_request(endpoint)
       rescue => exception
         NewRelic::Agent.notice_error(
@@ -29,6 +23,8 @@ module DocAuth
           },
         )
       end
+
+      private
 
       def send_http_post_request(endpoint)
         faraday_connection(endpoint).post do |req|
