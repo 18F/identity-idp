@@ -392,7 +392,7 @@ class User < ApplicationRecord
       interval: IdentityConfig.store.totp_code_interval,
     }
     url = ROTP::TOTP.new(otp_secret_key, options).provisioning_uri(
-      EmailContext.new(self).last_sign_in_email_address.email,
+      last_sign_in_email_address.email,
     )
     qrcode = RQRCode::QRCode.new(url)
     qrcode.as_png(size: 240).to_data_url

@@ -120,7 +120,7 @@ class AccountShowPresenter
   def header_personalization
     return decrypted_pii.first_name if decrypted_pii.present?
 
-    EmailContext.new(user).last_sign_in_email_address.email
+    user.last_sign_in_email_address.email
   end
 
   def totp_content
