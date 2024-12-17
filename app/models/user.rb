@@ -65,7 +65,7 @@ class User < ApplicationRecord
   attr_accessor :asserted_attributes, :email
 
   def confirmed_email_addresses
-    email_addresses.where.not(confirmed_at: nil).order('last_sign_in_at DESC NULLS LAST')
+    email_addresses.confirmed.order('last_sign_in_at DESC NULLS LAST')
   end
 
   def fully_registered?
@@ -73,7 +73,7 @@ class User < ApplicationRecord
   end
 
   def confirmed?
-    email_addresses.where.not(confirmed_at: nil).any?
+    confirmed_email_addresses.any?
   end
 
   def has_fed_or_mil_email?
@@ -392,7 +392,7 @@ class User < ApplicationRecord
       interval: IdentityConfig.store.totp_code_interval,
     }
     url = ROTP::TOTP.new(otp_secret_key, options).provisioning_uri(
-      EmailContext.new(self).last_sign_in_email_address.email,
+      last_sign_in_email_address.email,
     )
     qrcode = RQRCode::QRCode.new(url)
     qrcode.as_png(size: 240).to_data_url
@@ -519,6 +519,10 @@ class User < ApplicationRecord
   def reload(...)
     remove_instance_variable(:@pending_profile) if defined?(@pending_profile)
     super(...)
+  end
+
+  def last_sign_in_email_address
+    email_addresses.confirmed.last_sign_in
   end
 
   private
