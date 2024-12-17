@@ -79,11 +79,12 @@ RSpec.describe SocureWebhookController do
             b[:event].delete(:data)
             b
           end
+
           before do
-            allow(IdentityConfig.store).to receive(:ruby_workers_idv_enabled).and_return(false)
             allow(IdentityConfig.store)
               .to receive(:socure_docv_webhook_repeat_endpoints).and_return(endpoints)
             allow(SocureDocvResultsJob).to receive(:perform_now)
+            allow(SocureDocvRepeatWebhookJob).to receive(:perform_later)
 
             dcs = create(:document_capture_session, :socure)
             webhook_body[:event][:docvTransactionToken] = dcs.socure_docv_transaction_token
@@ -92,57 +93,16 @@ RSpec.describe SocureWebhookController do
             request.headers['Content-Type'] = headers[:'Content-Type']
 
             endpoints.each do |endpoint|
-              stub_request(:post, endpoint)
-                .with(body: repeated_body, headers:)
+              expect(SocureDocvRepeatWebhookJob).to receive(:perform_later) do |*args|
+                expect(args.first[:body]).to eq(JSON.parse(repeated_body.to_json))
+                expect(args.first[:endpoint]).to eq(endpoint)
+                expect(args.first[:headers]).to eq(headers)
+              end
             end
-          end
-
-          it 'repeats the webhook to all endpoints' do
-            expect(Faraday)
-              .to receive(:new).exactly(endpoints.length).times
-
-            post :create, params: webhook_body
           end
 
           context 'when idv workers are enabled' do
-            before do
-              allow(IdentityConfig.store).to receive(:ruby_workers_idv_enabled).and_return(true)
-            end
-
             it 'queues SocureDocvRepeatWebhook jobs' do
-              expect(SocureDocvRepeatWebhooksJob)
-                .to receive(:perform_later).exactly(endpoints.length).times
-
-              post :create, params: webhook_body
-            end
-          end
-
-          context 'failed endpoint repeat' do
-            before do
-              allow_any_instance_of(DocAuth::Socure::WebhookRepeater)
-                .to receive(:send_http_post_request).and_call_original
-
-              2.times do |i|
-                allow_any_instance_of(DocAuth::Socure::WebhookRepeater)
-                  .to receive(:send_http_post_request).with(endpoints[i]).and_raise('uh-oh')
-
-                expect(NewRelic::Agent).to receive(:notice_error) do |*args|
-                  expect(args.first).to be_a_kind_of(RuntimeError)
-                  expect(args.last).to eq(
-                    {
-                      custom_params: {
-                        event: 'Failed to repeat webhook',
-                        endpoint: endpoints[i],
-                        body: JSON.parse(repeated_body.to_json),
-                      },
-                    },
-                  )
-                end
-              end
-              expect(Faraday).to receive(:new).once.and_call_original
-            end
-
-            it 'sends repeat requests to remaining endpoints' do
               post :create, params: webhook_body
             end
           end

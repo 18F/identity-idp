@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class SocureDocvRepeatWebhooksJob < ApplicationJob
+class SocureDocvRepeatWebhookJob < ApplicationJob
   queue_as :high_socure_docv
 
   def perform(body:, headers:, endpoint:)
