@@ -12,3 +12,9 @@ paths:
     $ref: './paths/transmitter-configuration.yml'
   /poll:
     $ref: './paths/poll.yml'
+
+
+components:
+  schemas:
+    DecodedJWTPayload:
+      $ref: './schemas/DecodedJWTPayload.yml'

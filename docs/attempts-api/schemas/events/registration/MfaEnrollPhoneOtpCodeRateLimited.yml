@@ -1,0 +1,9 @@
+description: |
+  The user has exceeded the rate limit (10) for entering an MFA code when setting up an MFA device. Note that this event is currently only generated for phone mfa types.
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      mfa_device_type:
+        type: string
+        enum: ['otp']

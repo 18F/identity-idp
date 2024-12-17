@@ -1,0 +1,22 @@
+description:  A user provides their email address to create a new account.
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      email:
+        type: string
+      failure_reason:
+        type: object
+        description: |
+          An OPTIONAL object. An associative array of attributes and errors if success is false
+        properties: 
+          email:
+            type: array
+            description: Errors that explain the failure
+            items:
+              type: string
+              enum: ['invalid', 'Email address is not valid']
+      success:
+        type: boolean
+        description: |
+          Indicates whether the account was created successfully for the submitted email.

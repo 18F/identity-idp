@@ -1,0 +1,51 @@
+description: |
+  The user, after having previously been sent an OTP code during phone enrollment, has been asked to submit that code.
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      subject_dn:
+        type: string
+        description: |
+          The subject's Distinguished Name (DN)
+      failure_reason:
+        type: object
+        description: |
+          An OPTIONAL object. An associative array of attributes and errors if success is false
+        properties: 
+          piv_cac:
+            type: array
+            description: An OPTIONAL key that describes errors with the PIV/CAC
+            items:
+              type: string
+              enum: ['already_associated']
+          user:
+            type: array
+            description: An OPTIONAL key that describes errors with the user
+            items: 
+              type: string
+              enum: ['not_found', 'piv_cac_mismatch']
+          certificate:
+            type: array
+            description: An OPTIONAL key that describes errors with the certificate
+            enum: 
+              - bad
+              - expired
+              - invalid
+              - none
+              - not_auth_cert
+              - revoked
+              - unverified
+              - self-signed cert
+          token:
+            type: array
+            description: An OPTIONAL key that describes errors with the certificate  -
+            enum: 
+              - bad
+              - invalid
+              - missing
+              - http_failure
+      success:
+        type: boolean
+        description: |
+          Indicates whether indicates the entered code matched what was sent AND was not expired.
