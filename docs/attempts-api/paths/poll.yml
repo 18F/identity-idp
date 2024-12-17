@@ -5,8 +5,6 @@ post:
   description: |-
     [Spec](https://www.rfc-editor.org/rfc/rfc8936.html#name-polling-http-request)
   operationId: poll_events
-  security:
-    - BearerAuth: [ ]
   requestBody:
     description: Optional request parameters
     required: false
@@ -19,6 +17,6 @@ post:
       description: |-
         [Spec](https://www.rfc-editor.org/rfc/rfc8936.html#name-polling-http-response)
       content:
-        application/json:
+        application/jwt:
           schema:
-            type: object
+            $ref: '../schemas/DecodedJWTPayload.yml'
