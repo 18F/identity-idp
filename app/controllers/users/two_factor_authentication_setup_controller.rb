@@ -105,7 +105,7 @@ module Users
     end
 
     def generate_threatmetrix_session_id
-      user_session[:threatmetrix_session_id] ||= SecureRandom.uuid
+      user_session[:sign_up_threatmetrix_session_id] ||= SecureRandom.uuid
     end
   end
 end
