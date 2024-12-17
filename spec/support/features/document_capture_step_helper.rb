@@ -103,7 +103,7 @@ module DocumentCaptureStepHelper
     end
   end
 
-  def stub_docv_verification_data_pass()
+  def stub_docv_verification_data_pass
     stub_docv_verification_data(body: SocureDocvFixtures.pass_json)
   end
 
@@ -116,13 +116,9 @@ module DocumentCaptureStepHelper
     allow_any_instance_of(Idv::DocPiiForm).to receive(:valid?).and_return(false)
   end
 
-  def stub_docv_verification_data_fail_with(errors)
-    stub_docv_verification_data(body: SocureDocvFixtures.fail_json(errors))
-  end
-
   def stub_docv_verification_data(body:)
-    stub_request(:post, "#{IdentityConfig.store.socure_idplus_base_url}/api/3.0/EmailAuthScore").
-      to_return(
+    stub_request(:post, "#{IdentityConfig.store.socure_idplus_base_url}/api/3.0/EmailAuthScore")
+      .to_return(
         headers: {
           'Content-Type' => 'application/json',
 
