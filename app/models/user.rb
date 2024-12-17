@@ -521,6 +521,10 @@ class User < ApplicationRecord
     super(...)
   end
 
+  def last_sign_in_email_address
+    confirmed_email_addresses.first
+  end
+
   private
 
   def lockout_period
