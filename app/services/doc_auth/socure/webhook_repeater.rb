@@ -65,7 +65,7 @@ module DocAuth
       end
 
       def timeout
-        60
+        15
       end
     end
   end
