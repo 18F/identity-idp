@@ -1,6 +1,6 @@
 const { parse, resolve } = require('path');
 const url = require('url');
-const { sync: glob } = require('fast-glob');
+const { globSync: glob } = require('fs');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 const RailsI18nWebpackPlugin = require('@18f/identity-rails-i18n-webpack-plugin');
 const RailsAssetsWebpackPlugin = require('@18f/identity-assets/webpack-plugin');
