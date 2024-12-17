@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 
-import { readFile, stat } from 'node:fs/promises';
+import { readFile, stat, glob } from 'node:fs/promises';
 import { dirname, basename, join, resolve, relative } from 'node:path';
-import glob from 'fast-glob';
 
 /** @typedef {[path: string, manifest: Record<string, any>]} ManifestPair */
 /** @typedef {ManifestPair[]} ManifestPairs */
@@ -129,7 +128,9 @@ function checkPackageSideEffectsIncludesCustomElements(manifests) {
   return Promise.all(
     manifests.map(async ([manifestPath, manifest]) => {
       const manifestDirectory = dirname(manifestPath);
-      const customElementPaths = await glob(join(manifestDirectory, '*-element.ts'));
+      const customElementPaths = await Array.fromAsync(
+        glob(join(manifestDirectory, '*-element.ts')),
+      );
       const expectedPaths = customElementPaths.map((path) => resolve(path));
       const actualPaths = Array.from(manifest.sideEffects).map((path) =>
         resolve(join(manifestDirectory, path)),
@@ -170,7 +171,7 @@ const EXCEPTIONS = {
   checkHaveCorrectPackageName: ['app/javascript/packages/eslint-plugin/package.json'],
 };
 
-const manifestPaths = await glob('app/javascript/packages/*/package.json');
+const manifestPaths = await Array.fromAsync(glob('app/javascript/packages/*/package.json'));
 Promise.all(manifestPaths.map(async (path) => [path, await readFile(path, 'utf-8')]))
   .then((contents) =>
     contents.map(([path, content]) => /** @type {ManifestPair} */ ([path, JSON.parse(content)])),

@@ -381,6 +381,7 @@ RSpec.feature 'saml api' do
         visit_idp_from_sp_with_ial1(:saml)
         sign_in_live_with_2fa(user)
         click_submit_default_twice
+        expect(page).to have_current_path(test_saml_decode_assertion_path)
         xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
         expect(xmldoc.attribute_value_for(:ial)).to eq(
           Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
