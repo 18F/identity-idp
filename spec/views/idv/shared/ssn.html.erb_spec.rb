@@ -30,7 +30,7 @@ RSpec.describe 'idv/shared/ssn.html.erb' do
       :ssn_presenter,
       Idv::SsnPresenter.new(
         sp_name: sp_name, ssn_form: Idv::SsnFormatForm.new(nil),
-        step_indicator_steps: Idv::Flows::InPersonFlow::STEP_INDICATOR_STEPS
+        step_indicator_steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS
       ),
     )
     render template: 'idv/shared/ssn', locals: {

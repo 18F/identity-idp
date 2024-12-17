@@ -17,9 +17,9 @@ RSpec.describe Idv::InPersonController do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
-        :initialize_flow_state_machine,
-        :ensure_correct_step,
         :set_usps_form_presenter,
+        :redirect_unless_enrollment,
+        :initialize_in_person_session,
       )
     end
   end
@@ -99,7 +99,7 @@ RSpec.describe Idv::InPersonController do
             end
 
             it 'finishes the flow' do
-              put :update, params: { step: 'state_id' }
+              put :update
 
               expect(response).to redirect_to idv_in_person_state_id_path
             end
