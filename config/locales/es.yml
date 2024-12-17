@@ -601,7 +601,7 @@ doc_auth.headers.underage: No se cumplió con el requisito de edad
 doc_auth.headers.unreadable_id: No pudimos leer su identificación
 doc_auth.headings.address: Actualice su dirección postal
 doc_auth.headings.back: Reverso de su licencia de conducir o identificación estatal
-doc_auth.headings.capture_complete: Verificamos su identificación
+doc_auth.headings.capture_complete: Verificamos su documento de identidad
 doc_auth.headings.capture_scan_warning_html: No pudimos leer el código de barras en su identificación. Si la información que aparece a continuación es incorrecta, %{link_html} de su identificación emitida por el estado.
 doc_auth.headings.capture_scan_warning_link: cargue nuevas fotos
 doc_auth.headings.document_capture: Añade fotos de tu licencia de conducir o credencial de identificación oficial
