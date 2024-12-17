@@ -142,7 +142,6 @@ COPY --chown=app:app config/integrations.localdev.yml $RAILS_ROOT/config/integra
 COPY --chown=app:app config/partner_account_statuses.localdev.yml $RAILS_ROOT/config/partner_account_statuses.yml
 COPY --chown=app:app config/partner_accounts.localdev.yml $RAILS_ROOT/config/partner_accounts.yml
 COPY --chown=app:app certs.example $RAILS_ROOT/certs
-COPY --chown=app:app config/service_providers.localdev.yml $RAILS_ROOT/config/service_providers.yml
 
 # Precompile assets
 RUN SKIP_YARN_INSTALL=true bundle exec rake assets:precompile
