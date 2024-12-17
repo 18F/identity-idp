@@ -422,4 +422,27 @@ RSpec.describe Idv::DocumentCaptureController do
       end
     end
   end
+
+  describe '#direct_in_person' do
+    let(:analytics_name) { :idv_in_person_direct_start }
+    let(:analytics_args) do
+      {
+        remaining_submit_attempts: 4,
+        skip_hybrid_handoff: nil,
+        opted_in_to_in_person_proofing: nil,
+      }
+    end
+
+    it 'sends analytics event' do
+      expect(@analytics).to receive(:track_event).with(analytics_name, analytics_args)
+
+      get :direct_in_person
+    end
+
+    it 'redirects to document capture' do
+      get :direct_in_person
+
+      expect(response).to redirect_to(idv_document_capture_url(step: :idv_doc_auth))
+    end
+  end
 end
