@@ -1,0 +1,24 @@
+post:
+  tags:
+    - Transmitter
+  summary: Request for queued events to be returned.
+  description: |-
+    [Spec](https://www.rfc-editor.org/rfc/rfc8936.html#name-polling-http-request)
+  operationId: poll_events
+  security:
+    - BearerAuth: [ ]
+  requestBody:
+    description: Optional request parameters
+    required: false
+    content:
+      application/json:
+        schema:
+          $ref: "../schemas/PollParameters.yml"
+  responses:
+    200:
+      description: |-
+        [Spec](https://www.rfc-editor.org/rfc/rfc8936.html#name-polling-http-response)
+      content:
+        application/json:
+          schema:
+            type: object
