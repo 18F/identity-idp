@@ -51,7 +51,7 @@
 
   <%= hidden_field_tag :platform_authenticator_available, id: 'platform_authenticator_available' %>
   <% javascript_packs_tag_once('platform-authenticator-available') %>
-  <% if tmx_view_needed %>
+  <% if @tmx_view_needed %>
     <%= render partial: 'shared/threat_metrix_profiling',
                 locals: {
                   threatmetrix_session_id:,

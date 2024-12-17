@@ -94,5 +94,21 @@ module Users
     def in_ab_test_bucket?
       ab_test_bucket(:DESKTOP_FT_UNLOCK_SETUP) == (:desktop_ft_unlock_option_shown)
     end
+
+
+    def threatmetrix_variables
+      return {} unless FeatureManagement.account_creation_device_profiling_collecting_enabled?
+      session_id = generate_threatmetrix_session_id
+
+      {
+        threatmetrix_session_id: session_id,
+        threatmetrix_javascript_urls: threatmetrix_javascript_urls(session_id),
+        threatmetrix_iframe_url: threatmetrix_iframe_url(session_id),
+      }
+    end
+
+    def generate_threatmetrix_session_id
+      session[:threatmetrix_session_id] ||= SecureRandom.uuid
+    end
   end
 end
