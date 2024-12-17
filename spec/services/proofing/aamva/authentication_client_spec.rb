@@ -3,14 +3,14 @@ require 'rails_helper'
 RSpec.describe Proofing::Aamva::AuthenticationClient do
   let(:config) { AamvaFixtures.example_config }
   let(:security_token_request_stub) do
-    stub_request(:post, config.auth_url).
-      with(body: AamvaFixtures.security_token_request).
-      to_return(body: AamvaFixtures.security_token_response, status: 200)
+    stub_request(:post, config.auth_url)
+      .with(body: AamvaFixtures.security_token_request)
+      .to_return(body: AamvaFixtures.security_token_response, status: 200)
   end
   let(:auth_token_request_stub) do
-    stub_request(:post, config.auth_url).
-      with(body: AamvaFixtures.authentication_token_request).
-      to_return(body: AamvaFixtures.authentication_token_response, status: 200)
+    stub_request(:post, config.auth_url)
+      .with(body: AamvaFixtures.authentication_token_request)
+      .to_return(body: AamvaFixtures.authentication_token_response, status: 200)
   end
 
   let(:security_context_token_identifier) { 'sct-token-identifier' }
@@ -21,11 +21,11 @@ RSpec.describe Proofing::Aamva::AuthenticationClient do
   describe '#fetch_token' do
     before do
       security_token_request = Proofing::Aamva::Request::SecurityTokenRequest.new(config)
-      allow(security_token_request).to receive(:body).
-        and_return(AamvaFixtures.security_token_request)
+      allow(security_token_request).to receive(:body)
+        .and_return(AamvaFixtures.security_token_request)
       allow(security_token_request).to receive(:nonce).and_return(client_hmac_secret)
-      allow(Proofing::Aamva::Request::SecurityTokenRequest).to receive(:new).
-        and_return(security_token_request)
+      allow(Proofing::Aamva::Request::SecurityTokenRequest).to receive(:new)
+        .and_return(security_token_request)
       security_token_request_stub
 
       auth_token_request = Proofing::Aamva::Request::AuthenticationTokenRequest.new(
@@ -35,17 +35,17 @@ RSpec.describe Proofing::Aamva::AuthenticationClient do
         server_hmac_secret: server_hmac_secret,
         config: config,
       )
-      allow(auth_token_request).to receive(:body).
-        and_return(AamvaFixtures.authentication_token_request)
-      allow(Proofing::Aamva::Request::AuthenticationTokenRequest).to receive(:new).
-        with(
+      allow(auth_token_request).to receive(:body)
+        .and_return(AamvaFixtures.authentication_token_request)
+      allow(Proofing::Aamva::Request::AuthenticationTokenRequest).to receive(:new)
+        .with(
           config: config,
           security_context_token_identifier: security_context_token_identifier,
           security_context_token_reference: security_context_token_reference,
           client_hmac_secret: client_hmac_secret,
           server_hmac_secret: server_hmac_secret,
-        ).
-        and_return(auth_token_request)
+        )
+        .and_return(auth_token_request)
       auth_token_request_stub
     end
 

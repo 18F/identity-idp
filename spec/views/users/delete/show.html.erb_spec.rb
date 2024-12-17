@@ -25,14 +25,14 @@ RSpec.describe 'users/delete/show.html.erb' do
 
   it 'displays bullets for loa1' do
     allow(user).to receive(:identity_verified?).and_return(false)
-    expect(user.delete_account_bullet_key).
-      to eq t('users.delete.bullet_2_basic', app_name: APP_NAME)
+    expect(user.delete_account_bullet_key)
+      .to eq t('users.delete.bullet_2_basic', app_name: APP_NAME)
   end
 
   it 'displays bullets for loa1' do
     allow(user).to receive(:identity_verified?).and_return(true)
-    expect(user.delete_account_bullet_key).
-      to eq t('users.delete.bullet_2_verified', app_name: APP_NAME)
+    expect(user.delete_account_bullet_key)
+      .to eq t('users.delete.bullet_2_verified', app_name: APP_NAME)
   end
 
   it 'contains link to delete account button' do

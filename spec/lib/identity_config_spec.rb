@@ -11,16 +11,16 @@ RSpec.describe IdentityConfig do
     it 'has defaults defined for all keys in default configuration' do
       aggregate_failures do
         key_types.keys.each do |key|
-          expect(default_yaml_config).
-            to have_key(key.to_s), "expected default configuration to include value for #{key}"
+          expect(default_yaml_config)
+            .to have_key(key.to_s), "expected default configuration to include value for #{key}"
         end
       end
     end
 
     it 'has all _enabled keys as booleans' do
       aggregate_failures do
-        key_types.select { |key, _type| key.to_s.end_with?('_enabled') }.
-          each do |key, type|
+        key_types.select { |key, _type| key.to_s.end_with?('_enabled') }
+          .each do |key, type|
             expect(type).to eq(:boolean), "expected #{key} to be a boolean"
           end
       end
@@ -28,8 +28,8 @@ RSpec.describe IdentityConfig do
 
     it 'has all _at keys as timestamps' do
       aggregate_failures do
-        key_types.select { |key, _type| key.to_s.end_with?('_at') }.
-          each do |key, type|
+        key_types.select { |key, _type| key.to_s.end_with?('_at') }
+          .each do |key, type|
             expect(type).to eq(:timestamp), "expected #{key} to be a timestamp"
           end
       end
@@ -37,8 +37,8 @@ RSpec.describe IdentityConfig do
 
     it 'has all _timeout keys as numbers' do
       aggregate_failures do
-        key_types.select { |key, _type| key.to_s.end_with?('_timeout') }.
-          each do |key, type|
+        key_types.select { |key, _type| key.to_s.end_with?('_timeout') }
+          .each do |key, type|
             expect(type).to eq(:float).or(eq(:integer)), "expected #{key} to be a number"
           end
       end

@@ -6,9 +6,9 @@ module DiffHelper
   end
 
   def normalize_error_message(message)
-    message.
-      gsub(/\x1b\[[0-9;]*m/, ''). # Strip ANSI control characters used for color
-      gsub(/:0x[0-9a-f]{16}/, ':<id>').
-      strip
+    message
+      .gsub(/\x1b\[[0-9;]*m/, '') # Strip ANSI control characters used for color
+      .gsub(/:0x[0-9a-f]{16}/, ':<id>')
+      .strip
   end
 end

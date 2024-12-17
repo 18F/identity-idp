@@ -96,12 +96,12 @@ class PwnedPasswordDownloader
 
   # @return [String]
   def download_one(prefix:, net_http: Net::HTTP::Persistent.new, keep: keep_threshold)
-    net_http.
-      request(URI.join(RANGE_API_ROOT, prefix)).
-      body.
-      each_line(chomp: true).
-      select { |line| line[OCCURRENCE_OFFSET..].to_i >= keep }.
-      reduce('') { |result, line| result + "#{prefix}#{line}\n" }
+    net_http
+      .request(URI.join(RANGE_API_ROOT, prefix))
+      .body
+      .each_line(chomp: true)
+      .select { |line| line[OCCURRENCE_OFFSET..].to_i >= keep }
+      .reduce('') { |result, line| result + "#{prefix}#{line}\n" }
   end
 
   def write_one(prefix:, content:)

@@ -283,9 +283,9 @@ RSpec.describe ApplicationController do
         allow(controller).to receive(:analytics_user).and_return(user)
         allow(controller).to receive(:current_sp).and_return(sp)
 
-        expect(Analytics).to receive(:new).
-          with(user: user, request: request, sp: sp.issuer, session: match_array({}),
-               ahoy: controller.ahoy)
+        expect(Analytics).to receive(:new)
+          .with(user: user, request: request, sp: sp.issuer, session: match_array({}),
+                ahoy: controller.ahoy)
 
         controller.analytics
       end
@@ -298,9 +298,9 @@ RSpec.describe ApplicationController do
         user = instance_double(AnonymousUser)
         allow(AnonymousUser).to receive(:new).and_return(user)
 
-        expect(Analytics).to receive(:new).
-          with(user: user, request: request, sp: nil, session: match_array({}),
-               ahoy: controller.ahoy)
+        expect(Analytics).to receive(:new)
+          .with(user: user, request: request, sp: nil, session: match_array({}),
+                ahoy: controller.ahoy)
 
         controller.analytics
       end
@@ -549,8 +549,8 @@ RSpec.describe ApplicationController do
     end
 
     before do
-      allow(controller).to receive(:session).
-        and_return(sp: { request_url: sp_session_request_url })
+      allow(controller).to receive(:session)
+        .and_return(sp: { request_url: sp_session_request_url })
     end
 
     subject(:url_with_updated_params) do

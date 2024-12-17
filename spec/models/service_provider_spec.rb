@@ -9,10 +9,10 @@ RSpec.describe ServiceProvider do
     it { is_expected.to belong_to(:agency) }
 
     it do
-      is_expected.to have_many(:identities).
-        inverse_of(:service_provider_record).
-        with_foreign_key('service_provider').
-        with_primary_key('issuer')
+      is_expected.to have_many(:identities)
+        .inverse_of(:service_provider_record)
+        .with_foreign_key('service_provider')
+        .with_primary_key('issuer')
     end
   end
 
@@ -65,8 +65,8 @@ RSpec.describe ServiceProvider do
   describe '#skip_encryption_allowed' do
     context 'SP in allowed list' do
       before do
-        allow(IdentityConfig.store).to receive(:skip_encryption_allowed_list).
-          and_return(['http://localhost:3000'])
+        allow(IdentityConfig.store).to receive(:skip_encryption_allowed_list)
+          .and_return(['http://localhost:3000'])
       end
 
       it 'allows the SP to optionally skip encrypting the SAML response' do
@@ -84,8 +84,8 @@ RSpec.describe ServiceProvider do
   describe '#facial_match_ial_allowed?' do
     context 'when facial match general availability is enabled' do
       before do
-        allow(IdentityConfig.store).to receive(:facial_match_general_availability_enabled).
-          and_return(true)
+        allow(IdentityConfig.store).to receive(:facial_match_general_availability_enabled)
+          .and_return(true)
       end
 
       it 'allows the service provider to use facial match IALs' do
@@ -95,8 +95,8 @@ RSpec.describe ServiceProvider do
 
     context 'when the facial match general availability is disabled' do
       before do
-        allow(IdentityConfig.store).to receive(:facial_match_general_availability_enabled).
-          and_return(false)
+        allow(IdentityConfig.store).to receive(:facial_match_general_availability_enabled)
+          .and_return(false)
       end
 
       it 'does not allow the service provider to use facial match IALs' do

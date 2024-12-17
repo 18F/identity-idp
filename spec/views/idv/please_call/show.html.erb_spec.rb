@@ -6,8 +6,8 @@ RSpec.describe 'idv/please_call/show.html.erb' do
   before do
     @call_by_date = Date.new(2023, 10, 13)
     @in_person = in_person
-    allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
-      and_return(in_person_proofing_enabled)
+    allow(IdentityConfig.store).to receive(:in_person_proofing_enabled)
+      .and_return(in_person_proofing_enabled)
     render
   end
 

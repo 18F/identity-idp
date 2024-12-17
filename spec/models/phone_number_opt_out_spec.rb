@@ -29,8 +29,8 @@ RSpec.describe PhoneNumberOptOut do
       spaces = '+1 888 867 5309'
       dashes = '+1-888-867-5309'
 
-      expect(PhoneNumberOptOut.create_or_find_with_phone(spaces).id).
-        to eq(PhoneNumberOptOut.create_or_find_with_phone(dashes).id)
+      expect(PhoneNumberOptOut.create_or_find_with_phone(spaces).id)
+        .to eq(PhoneNumberOptOut.create_or_find_with_phone(dashes).id)
     end
   end
 
@@ -51,8 +51,8 @@ RSpec.describe PhoneNumberOptOut do
     it 'formats the phone internationally' do
       unformatted = '1 (888) 867-5309'
 
-      expect(PhoneNumberOptOut.create_or_find_with_phone(unformatted).formatted_phone).
-        to eq('+1 888-867-5309')
+      expect(PhoneNumberOptOut.create_or_find_with_phone(unformatted).formatted_phone)
+        .to eq('+1 888-867-5309')
     end
   end
 

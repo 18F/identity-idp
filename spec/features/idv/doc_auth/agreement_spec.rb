@@ -6,8 +6,8 @@ RSpec.feature 'agreement step error checking' do
     let(:fake_analytics) { FakeAnalytics.new }
 
     before do
-      allow_any_instance_of(ApplicationController).
-        to receive(:analytics).and_return(fake_analytics)
+      allow_any_instance_of(ApplicationController)
+        .to receive(:analytics).and_return(fake_analytics)
 
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_agreement_step

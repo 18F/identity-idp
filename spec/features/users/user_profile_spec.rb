@@ -237,8 +237,8 @@ RSpec.feature 'User profile' do
           expect(page).to have_button(t('account.re_verify.footer'))
           expect(page).to_not have_content(parsed_date)
           click_button t('account.re_verify.footer')
-          expect(page).
-            to have_content t('two_factor_authentication.login_options.sms')
+          expect(page)
+            .to have_content t('two_factor_authentication.login_options.sms')
           click_button t('forms.buttons.continue')
           fill_in_code_with_last_phone_otp
           click_submit_default

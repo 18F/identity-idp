@@ -52,8 +52,8 @@ RSpec.describe SignUp::SelectEmailController do
 
     context 'with selected email to share feature disabled' do
       before do
-        allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled).
-          and_return(false)
+        allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
+          .and_return(false)
       end
 
       it 'renders 404' do
@@ -139,8 +139,8 @@ RSpec.describe SignUp::SelectEmailController do
 
     context 'with selected email to share feature disabled' do
       before do
-        allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled).
-          and_return(false)
+        allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
+          .and_return(false)
       end
 
       it 'renders 404' do

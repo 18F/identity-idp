@@ -100,12 +100,12 @@ RSpec.describe Reporting::CloudwatchClient do
       let(:time_slices) { [1..2, 3..4, 5..6] }
 
       it 'uses the slices directly' do
-        expect(client).to receive(:fetch_one).
-          with(hash_including(start_time: 1, end_time: 2)).and_call_original
-        expect(client).to receive(:fetch_one).
-          with(hash_including(start_time: 3, end_time: 4)).and_call_original
-        expect(client).to receive(:fetch_one).
-          with(hash_including(start_time: 5, end_time: 6)).and_call_original
+        expect(client).to receive(:fetch_one)
+          .with(hash_including(start_time: 1, end_time: 2)).and_call_original
+        expect(client).to receive(:fetch_one)
+          .with(hash_including(start_time: 3, end_time: 4)).and_call_original
+        expect(client).to receive(:fetch_one)
+          .with(hash_including(start_time: 5, end_time: 6)).and_call_original
 
         fetch
       end

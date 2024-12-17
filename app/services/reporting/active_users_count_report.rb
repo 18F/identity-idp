@@ -112,8 +112,8 @@ module Reporting
     def fiscal_year_active_users_per_quarter_cumulative
       @fiscal_year_active_users_per_quarter_cumulative ||= begin
         data_by_quarter = {}
-        cumulative_quarter_ranges.
-          map do |quarter_range|
+        cumulative_quarter_ranges
+          .map do |quarter_range|
             data_by_quarter[quarter_range] ||= Reports::BaseReport.transaction_with_timeout do
               ReportRow.from_hash_time_range(
                 time_range: quarter_range,
@@ -131,8 +131,8 @@ module Reporting
     def apg_fiscal_year_active_users_per_quarter_cumulative
       @apg_fiscal_year_active_users_per_quarter_cumulative ||= begin
         data_by_quarter = {}
-        cumulative_quarter_ranges.
-          map do |quarter_range|
+        cumulative_quarter_ranges
+          .map do |quarter_range|
             data_by_quarter[quarter_range] ||= Reports::BaseReport.transaction_with_timeout do
               ReportRow.from_hash_time_range(
                 time_range: quarter_range,

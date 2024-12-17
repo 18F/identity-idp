@@ -11,6 +11,6 @@
     <%= t('service_providers.errors.inactive.instructions2') %>
   </p>
 
-  <% c.with_action_button(url: root_path).
-       with_content(t('service_providers.errors.inactive.button_text', app_name: APP_NAME)) %>
+  <% c.with_action_button(url: root_path)
+       .with_content(t('service_providers.errors.inactive.button_text', app_name: APP_NAME)) %>
 <% end %>

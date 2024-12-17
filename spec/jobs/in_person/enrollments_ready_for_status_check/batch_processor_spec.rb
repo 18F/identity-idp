@@ -68,10 +68,10 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::BatchProcessor do
       end
 
       it 'invalid item is marked as processed and deleted' do
-        expect(enrollment_pipeline).to receive(:process_message).
-          with(message).and_return(false).once
-        expect(sqs_batch_wrapper).to receive(:delete_message_batch).
-          with(messages).and_return(delete_result).once
+        expect(enrollment_pipeline).to receive(:process_message)
+          .with(message).and_return(false).once
+        expect(sqs_batch_wrapper).to receive(:delete_message_batch)
+          .with(messages).and_return(delete_result).once
         expect(delete_result).to receive(:failed).and_return([])
         expect(delete_result).to receive(:successful).and_return(messages)
         expect(error_reporter).not_to receive(:report_error)
@@ -87,10 +87,10 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::BatchProcessor do
       end
 
       it 'valid item is marked as processed and deleted' do
-        expect(enrollment_pipeline).to receive(:process_message).
-          with(message).and_return(true).once
-        expect(sqs_batch_wrapper).to receive(:delete_message_batch).
-          with(messages).and_return(delete_result).once
+        expect(enrollment_pipeline).to receive(:process_message)
+          .with(message).and_return(true).once
+        expect(sqs_batch_wrapper).to receive(:delete_message_batch)
+          .with(messages).and_return(delete_result).once
         expect(delete_result).to receive(:failed).and_return([])
         expect(delete_result).to receive(:successful).and_return(
           [
@@ -110,10 +110,10 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::BatchProcessor do
       end
 
       it 'item is marked as processed but fails to be deleted' do
-        expect(enrollment_pipeline).to receive(:process_message).
-          with(message).and_return(true).once
-        expect(sqs_batch_wrapper).to receive(:delete_message_batch).
-          with(messages).and_return(delete_result).once
+        expect(enrollment_pipeline).to receive(:process_message)
+          .with(message).and_return(true).once
+        expect(sqs_batch_wrapper).to receive(:delete_message_batch)
+          .with(messages).and_return(delete_result).once
         error_entry = failed_delete
         expect(delete_result).to receive(:failed).and_return(
           [
@@ -142,10 +142,10 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::BatchProcessor do
 
       it 'item is marked as processed but the batch delete call throws an error' do
         error = RuntimeError.new 'test batch error'
-        expect(enrollment_pipeline).to receive(:process_message).
-          with(message).and_return(true).once
-        expect(sqs_batch_wrapper).to receive(:delete_message_batch).
-          with(messages).and_raise(error).once
+        expect(enrollment_pipeline).to receive(:process_message)
+          .with(message).and_return(true).once
+        expect(sqs_batch_wrapper).to receive(:delete_message_batch)
+          .with(messages).and_raise(error).once
         expect(error_reporter).to receive(:report_error).with(error).once
         expected_analytics_stats = {
           **analytics_stats,
@@ -179,8 +179,8 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::BatchProcessor do
           true,
           true,
         ).exactly(5).times
-        expect(sqs_batch_wrapper).to receive(:delete_message_batch).
-          with(messages).and_return(delete_result).once
+        expect(sqs_batch_wrapper).to receive(:delete_message_batch)
+          .with(messages).and_return(delete_result).once
 
         error_entry = failed_delete
         error_entry2 = failed_delete

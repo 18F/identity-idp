@@ -9,8 +9,8 @@ RSpec.describe Reports::QueryHelpers do
     end
 
     it 'quotes strings to be psql string literals' do
-      expect(quote(%(a string with "quotes" in 'the middle'))).
-        to eq(%('a string with "quotes" in ''the middle'''))
+      expect(quote(%(a string with "quotes" in 'the middle')))
+        .to eq(%('a string with "quotes" in ''the middle'''))
     end
 
     it 'quotes arrays as list expressions' do

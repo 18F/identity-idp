@@ -53,8 +53,8 @@ RSpec.describe Users::SecondMfaReminderController do
 
       it 'updates user to acknowledge dismissal of prompt' do
         freeze_time do
-          expect { response }.to change { user.reload.second_mfa_reminder_dismissed_at }.
-            from(nil).to(Time.zone.now)
+          expect { response }.to change { user.reload.second_mfa_reminder_dismissed_at }
+            .from(nil).to(Time.zone.now)
         end
       end
 
@@ -83,8 +83,8 @@ RSpec.describe Users::SecondMfaReminderController do
 
       it 'updates user to acknowledge dismissal of prompt' do
         freeze_time do
-          expect { response }.to change { user.reload.second_mfa_reminder_dismissed_at }.
-            from(nil).to(Time.zone.now)
+          expect { response }.to change { user.reload.second_mfa_reminder_dismissed_at }
+            .from(nil).to(Time.zone.now)
         end
       end
 

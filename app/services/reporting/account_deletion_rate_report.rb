@@ -29,10 +29,10 @@ module Reporting
 
     def deleted_user_count
       @deleted_user_count ||= Reports::BaseReport.transaction_with_timeout do
-        DeletedUser.
-          where(deleted_at: start_date..end_date).
-          where('user_created_at < ?', end_date).
-          count
+        DeletedUser
+          .where(deleted_at: start_date..end_date)
+          .where('user_created_at < ?', end_date)
+          .count
       end
     end
 

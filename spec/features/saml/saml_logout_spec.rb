@@ -191,8 +191,8 @@ RSpec.feature 'SAML logout' do
       click_agree_and_continue
       click_button(t('forms.buttons.submit.default'))
 
-      identity = ServiceProviderIdentity.
-        find_by(user_id: user.id, service_provider: saml_settings.issuer)
+      identity = ServiceProviderIdentity
+        .find_by(user_id: user.id, service_provider: saml_settings.issuer)
       expect(OutOfBandSessionAccessor.new(identity.rails_session_id).exists?).to eq true
 
       # simulate a remote request

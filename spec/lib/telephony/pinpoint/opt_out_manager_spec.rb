@@ -8,8 +8,8 @@ RSpec.describe Telephony::Pinpoint::OptOutManager do
   let(:phone_number) { Faker::PhoneNumber.cell_phone }
 
   before do
-    allow(opt_out_manager).to receive(:build_client).
-      and_return(first_client, second_client)
+    allow(opt_out_manager).to receive(:build_client)
+      .and_return(first_client, second_client)
   end
 
   let(:first_client) { Aws::SNS::Client.new(stub_responses: true) }
@@ -123,8 +123,8 @@ RSpec.describe Telephony::Pinpoint::OptOutManager do
     end
 
     it 'iterates phone numbers across regions' do
-      expect(opt_out_manager.opted_out_numbers.to_a).
-        to eq([phone1, phone2, phone3, phone4, phone5, phone6])
+      expect(opt_out_manager.opted_out_numbers.to_a)
+        .to eq([phone1, phone2, phone3, phone4, phone5, phone6])
     end
   end
 end

@@ -69,8 +69,8 @@ RSpec.feature 'Password recovery via personal key' do
     reset_password_and_sign_back_in(user, new_password)
     click_link t('two_factor_authentication.login_options_link_text')
 
-    expect(page).
-      to_not have_selector("label[for='two_factor_options_form_selection_personal_key']")
+    expect(page)
+      .to_not have_selector("label[for='two_factor_options_form_selection_personal_key']")
   end
 
   context 'account recovery alternative paths' do

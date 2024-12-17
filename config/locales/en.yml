@@ -590,7 +590,7 @@ doc_auth.headers.underage: Age requirement not met
 doc_auth.headers.unreadable_id: We could not read your ID
 doc_auth.headings.address: Update your mailing address
 doc_auth.headings.back: Back of your driver’s license or state ID
-doc_auth.headings.capture_complete: We verified your ID
+doc_auth.headings.capture_complete: We verified your identity document
 doc_auth.headings.capture_scan_warning_html: We couldn’t read the barcode on your ID. If the information below is incorrect, please %{link_html} of your state‑issued ID.
 doc_auth.headings.capture_scan_warning_link: upload new photos
 doc_auth.headings.document_capture: Add photos of your driver’s license or state ID card

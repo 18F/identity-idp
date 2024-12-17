@@ -38,8 +38,8 @@ module Idv
       end
 
       def pii
-        Pii::Cacher.new(current_user, user_session).
-          fetch(current_user.gpo_verification_pending_profile.id)
+        Pii::Cacher.new(current_user, user_session)
+          .fetch(current_user.gpo_verification_pending_profile.id)
       end
 
       def create
@@ -155,11 +155,11 @@ module Idv
       def last_date_letter_was_sent
         return @last_date_letter_was_sent if defined?(@last_date_letter_was_sent)
 
-        @last_date_letter_was_sent = current_user.
-          gpo_verification_pending_profile&.
-          gpo_confirmation_codes&.
-          pluck(:updated_at)&.
-          max
+        @last_date_letter_was_sent = current_user
+          .gpo_verification_pending_profile
+          &.gpo_confirmation_codes
+          &.pluck(:updated_at)
+          &.max
       end
     end
   end

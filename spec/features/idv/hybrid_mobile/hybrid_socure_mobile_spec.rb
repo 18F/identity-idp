@@ -15,18 +15,18 @@ RSpec.describe 'Hybrid Flow' do
   before do
     allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(true)
     allow(IdentityConfig.store).to receive(:socure_docv_enabled).and_return(true)
-    allow(DocAuthRouter).to receive(:doc_auth_vendor_for_bucket).
-      and_return(Idp::Constants::Vendors::SOCURE)
+    allow(DocAuthRouter).to receive(:doc_auth_vendor_for_bucket)
+      .and_return(Idp::Constants::Vendors::SOCURE)
     allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
     allow(IdentityConfig.store).to receive(:ruby_workers_idv_enabled).and_return(false)
-    allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint).
-      and_return(fake_socure_docv_document_request_endpoint)
+    allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint)
+      .and_return(fake_socure_docv_document_request_endpoint)
     allow(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
       @sms_link = config[:link]
       impl.call(**config)
     end.at_least(1).times
-    allow(IdentityConfig.store).to receive(:socure_docv_verification_data_test_mode).
-      and_return(socure_docv_verification_data_test_mode)
+    allow(IdentityConfig.store).to receive(:socure_docv_verification_data_test_mode)
+      .and_return(socure_docv_verification_data_test_mode)
     @docv_transaction_token = stub_docv_document_request
     stub_analytics
   end
@@ -262,8 +262,8 @@ RSpec.describe 'Hybrid Flow' do
       let(:test_token) { 'valid-test-token' }
       let(:socure_docv_verification_data_test_mode) { true }
       before do
-        allow(IdentityConfig.store).to receive(:socure_docv_verification_data_test_mode_tokens).
-          and_return([test_token])
+        allow(IdentityConfig.store).to receive(:socure_docv_verification_data_test_mode_tokens)
+          .and_return([test_token])
         DocAuth::Mock::DocAuthMockClient.reset!
       end
 
@@ -420,8 +420,8 @@ RSpec.describe 'Hybrid Flow' do
 
   context 'with a network error requesting the capture app url' do
     before do
-      allow_any_instance_of(Faraday::Connection).to receive(:post).
-        and_raise(Faraday::ConnectionFailed)
+      allow_any_instance_of(Faraday::Connection).to receive(:post)
+        .and_raise(Faraday::ConnectionFailed)
     end
 
     it 'shows the network error page on the phone and the link sent page on the desktop',

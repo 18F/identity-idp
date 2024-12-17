@@ -110,8 +110,9 @@ RSpec.feature 'remember device sp expiration' do
 
   before do
     allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(1000)
-    allow(IdentityConfig.store).to receive(:second_mfa_reminder_account_age_in_days).
-      and_return([aal1_remember_device_expiration, aal2_remember_device_expiration].max.in_days + 2)
+    allow(IdentityConfig.store).to receive(:second_mfa_reminder_account_age_in_days)
+      .and_return([aal1_remember_device_expiration,
+                   aal2_remember_device_expiration].max.in_days + 2)
 
     ServiceProvider.find_by(issuer: OidcAuthHelper::OIDC_IAL1_ISSUER).update!(
       default_aal: aal,

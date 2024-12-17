@@ -68,8 +68,8 @@ RSpec.describe Proofing::Socure::IdPlus::Request do
 
   describe '#send_request' do
     before do
-      stub_request(:post, 'https://example.org/api/3.0/EmailAuthScore').
-        to_return(
+      stub_request(:post, 'https://example.org/api/3.0/EmailAuthScore')
+        .to_return(
           headers: {
             'Content-Type' => 'application/json',
           },
@@ -129,8 +129,8 @@ RSpec.describe Proofing::Socure::IdPlus::Request do
 
     context 'when service returns an HTTP 400 response' do
       before do
-        stub_request(:post, 'https://example.org/api/3.0/EmailAuthScore').
-          to_return(
+        stub_request(:post, 'https://example.org/api/3.0/EmailAuthScore')
+          .to_return(
             status: 400,
             headers: {
               'Content-Type' => 'application/json',
@@ -170,8 +170,8 @@ RSpec.describe Proofing::Socure::IdPlus::Request do
 
     context 'when service returns an HTTP 401 reponse' do
       before do
-        stub_request(:post, 'https://example.org/api/3.0/EmailAuthScore').
-          to_return(
+        stub_request(:post, 'https://example.org/api/3.0/EmailAuthScore')
+          .to_return(
             status: 401,
             headers: {
               'Content-Type' => 'application/json',
@@ -198,8 +198,8 @@ RSpec.describe Proofing::Socure::IdPlus::Request do
 
     context 'when service returns weird HTTP 500 response' do
       before do
-        stub_request(:post, 'https://example.org/api/3.0/EmailAuthScore').
-          to_return(
+        stub_request(:post, 'https://example.org/api/3.0/EmailAuthScore')
+          .to_return(
             status: 500,
             body: 'It works!',
           )
@@ -214,8 +214,8 @@ RSpec.describe Proofing::Socure::IdPlus::Request do
 
     context 'when request times out' do
       before do
-        stub_request(:post, 'https://example.org/api/3.0/EmailAuthScore').
-          to_timeout
+        stub_request(:post, 'https://example.org/api/3.0/EmailAuthScore')
+          .to_timeout
       end
 
       it 'raises a ProofingTimeoutError' do
@@ -225,8 +225,8 @@ RSpec.describe Proofing::Socure::IdPlus::Request do
 
     context 'when connection is reset' do
       before do
-        stub_request(:post, 'https://example.org/api/3.0/EmailAuthScore').
-          to_raise(Errno::ECONNRESET)
+        stub_request(:post, 'https://example.org/api/3.0/EmailAuthScore')
+          .to_raise(Errno::ECONNRESET)
       end
 
       it 'raises a Request::Error' do

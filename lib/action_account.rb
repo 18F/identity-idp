@@ -283,8 +283,8 @@ class ActionAccount
           success = true
 
           if profile.active?
-            UserEventCreator.new(current_user: user).
-              create_out_of_band_user_event(:account_verified)
+            UserEventCreator.new(current_user: user)
+              .create_out_of_band_user_event(:account_verified)
             UserAlerts::AlertUserAboutAccountVerified.call(profile: profile)
 
             log_texts << log_text[:profile_activated]

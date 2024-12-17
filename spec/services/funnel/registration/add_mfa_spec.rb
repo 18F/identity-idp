@@ -29,9 +29,9 @@ RSpec.describe Funnel::Registration::AddMfa do
 
   context 'with threat metrix for account creation enabled' do
     before do
-      allow(FeatureManagement).
-        to receive(:account_creation_device_profiling_collecting_enabled?).
-        and_return(:collect_only)
+      allow(FeatureManagement)
+        .to receive(:account_creation_device_profiling_collecting_enabled?)
+        .and_return(:collect_only)
     end
     it 'triggers threatmetrix job call' do
       expect(AccountCreationThreatMetrixJob).to receive(:perform_later)

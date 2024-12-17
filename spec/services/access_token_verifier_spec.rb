@@ -25,8 +25,8 @@ RSpec.describe AccessTokenVerifier do
         response, result_identity = result
 
         expect(response.success?).to eq(false)
-        expect(response.errors[:access_token]).
-          to include(t('openid_connect.user_info.errors.no_authorization'))
+        expect(response.errors[:access_token])
+          .to include(t('openid_connect.user_info.errors.no_authorization'))
         expect(result_identity).to be_nil
       end
     end
@@ -38,8 +38,8 @@ RSpec.describe AccessTokenVerifier do
         response, result_identity = result
 
         expect(response.success?).to eq(false)
-        expect(response.errors[:access_token]).
-          to include(t('openid_connect.user_info.errors.malformed_authorization'))
+        expect(response.errors[:access_token])
+          .to include(t('openid_connect.user_info.errors.malformed_authorization'))
         expect(result_identity).to be_nil
       end
     end

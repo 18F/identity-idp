@@ -9,9 +9,9 @@ RSpec.describe Agreements::Integration, type: :model do
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_uniqueness_of(:dashboard_identifier).allow_nil }
     it do
-      is_expected.to validate_numericality_of(:dashboard_identifier).
-        only_integer.
-        is_greater_than(0)
+      is_expected.to validate_numericality_of(:dashboard_identifier)
+        .only_integer
+        .is_greater_than(0)
     end
 
     it { is_expected.to belong_to(:partner_account) }

@@ -64,9 +64,9 @@ RSpec.describe Proofing::Resolution::Plugins::StateIdAddressPlugin do
       end
 
       it 'passes state id address to proofer' do
-        expect(plugin.proofer).
-          to receive(:proof).
-          with(hash_including(state_id_address))
+        expect(plugin.proofer)
+          .to receive(:proof)
+          .with(hash_including(state_id_address))
 
         call
       end
@@ -77,13 +77,13 @@ RSpec.describe Proofing::Resolution::Plugins::StateIdAddressPlugin do
         end
 
         it 'records correct SP cost' do
-          expect { call }.
-            to change {
-                 SpCost.where(
-                   cost_type: :lexis_nexis_resolution,
-                   issuer: current_sp.issuer,
-                 ).count
-               }.to(1)
+          expect { call }
+            .to change {
+                  SpCost.where(
+                    cost_type: :lexis_nexis_resolution,
+                    issuer: current_sp.issuer,
+                  ).count
+                }.to(1)
         end
       end
 
@@ -102,13 +102,13 @@ RSpec.describe Proofing::Resolution::Plugins::StateIdAddressPlugin do
         end
 
         it 'records a LexisNexis SP cost' do
-          expect { call }.
-            to change {
-                 SpCost.where(
-                   cost_type: :lexis_nexis_resolution,
-                   issuer: current_sp.issuer,
-                 ).count
-               }.to(1)
+          expect { call }
+            .to change {
+                  SpCost.where(
+                    cost_type: :lexis_nexis_resolution,
+                    issuer: current_sp.issuer,
+                  ).count
+                }.to(1)
         end
       end
 
@@ -127,13 +127,13 @@ RSpec.describe Proofing::Resolution::Plugins::StateIdAddressPlugin do
         end
 
         it 'records a LexisNexis SP cost' do
-          expect { call }.
-            to change {
-                 SpCost.where(
-                   cost_type: :lexis_nexis_resolution,
-                   issuer: current_sp.issuer,
-                 ).count
-               }.to(1)
+          expect { call }
+            .to change {
+                  SpCost.where(
+                    cost_type: :lexis_nexis_resolution,
+                    issuer: current_sp.issuer,
+                  ).count
+                }.to(1)
         end
       end
     end
@@ -147,8 +147,8 @@ RSpec.describe Proofing::Resolution::Plugins::StateIdAddressPlugin do
         end
 
         it 'does not add a new LexisNexis SP cost (since residential address result was reused)' do
-          expect { call }.
-            not_to change {
+          expect { call }
+            .not_to change {
               SpCost.where(
                 cost_type: :lexis_nexis_resolution,
                 issuer: current_sp.issuer,
@@ -193,13 +193,13 @@ RSpec.describe Proofing::Resolution::Plugins::StateIdAddressPlugin do
             end
 
             it 'records a LexisNexis SP cost' do
-              expect { call }.
-                to change {
-                     SpCost.where(
-                       cost_type: :lexis_nexis_resolution,
-                       issuer: current_sp.issuer,
-                     ).count
-                   }.to(1)
+              expect { call }
+                .to change {
+                      SpCost.where(
+                        cost_type: :lexis_nexis_resolution,
+                        issuer: current_sp.issuer,
+                      ).count
+                    }.to(1)
             end
           end
 
@@ -218,13 +218,13 @@ RSpec.describe Proofing::Resolution::Plugins::StateIdAddressPlugin do
             end
 
             it 'records a LexisNexis SP cost' do
-              expect { call }.
-                to change {
-                     SpCost.where(
-                       cost_type: :lexis_nexis_resolution,
-                       issuer: current_sp.issuer,
-                     ).count
-                   }.to(1)
+              expect { call }
+                .to change {
+                      SpCost.where(
+                        cost_type: :lexis_nexis_resolution,
+                        issuer: current_sp.issuer,
+                      ).count
+                    }.to(1)
             end
           end
 
@@ -243,13 +243,13 @@ RSpec.describe Proofing::Resolution::Plugins::StateIdAddressPlugin do
             end
 
             it 'records a LexisNexis SP cost' do
-              expect { call }.
-                to change {
-                     SpCost.where(
-                       cost_type: :lexis_nexis_resolution,
-                       issuer: current_sp.issuer,
-                     ).count
-                   }.to(1)
+              expect { call }
+                .to change {
+                      SpCost.where(
+                        cost_type: :lexis_nexis_resolution,
+                        issuer: current_sp.issuer,
+                      ).count
+                    }.to(1)
             end
           end
 
@@ -269,13 +269,13 @@ RSpec.describe Proofing::Resolution::Plugins::StateIdAddressPlugin do
             end
 
             it 'does not record an additional LexisNexis SP cost' do
-              expect { call }.
-                not_to change {
-                         SpCost.where(
-                           cost_type: :lexis_nexis_resolution,
-                           issuer: current_sp.issuer,
-                         ).count
-                       }
+              expect { call }
+                .not_to change {
+                          SpCost.where(
+                            cost_type: :lexis_nexis_resolution,
+                            issuer: current_sp.issuer,
+                          ).count
+                        }
             end
 
             it 'returns a ResolutionCannotPass result' do

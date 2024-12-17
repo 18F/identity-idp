@@ -115,29 +115,6 @@ RSpec.describe StepIndicatorComponent, type: :component do
         )
       end
     end
-
-    context 'all steps complete' do
-      let(:current_step) { StepIndicatorComponent::ALL_STEPS_COMPLETE }
-
-      it 'renders current step' do
-        expect(rendered).not_to have_css('.step-indicator__step--current')
-      end
-
-      it 'renders all steps completed' do
-        expect(rendered).to have_css(
-          '.step-indicator__step--complete',
-          text: t('step_indicator.flows.example.one'),
-        )
-        expect(rendered).to have_css(
-          '.step-indicator__step--complete',
-          text: t('step_indicator.flows.example.two'),
-        )
-        expect(rendered).to have_css(
-          '.step-indicator__step--complete',
-          text: t('step_indicator.flows.example.three'),
-        )
-      end
-    end
   end
 
   describe 'locale_scope' do

@@ -28,8 +28,8 @@ RSpec.describe Users::EmailsController do
       let(:params) { { in_select_email_flow: true } }
 
       it 'assigns session value for email selection flow' do
-        expect { response }.to change { controller.session[:in_select_email_flow] }.
-          from(nil).to(true)
+        expect { response }.to change { controller.session[:in_select_email_flow] }
+          .from(nil).to(true)
       end
 
       it 'logs visit with selected email value' do
@@ -92,8 +92,8 @@ RSpec.describe Users::EmailsController do
   describe '#verify' do
     context 'with malformed payload' do
       it 'does not blow up' do
-        expect { get :verify, params: { request_id: { foo: 'bar' } } }.
-          to_not raise_error
+        expect { get :verify, params: { request_id: { foo: 'bar' } } }
+          .to_not raise_error
       end
     end
   end

@@ -4,8 +4,11 @@ RSpec.describe Vot::Parser do
   describe '#parse' do
     context 'when neither a VtR nor ACR values are provided' do
       it 'raises an error' do
-        expect { Vot::Parser.new(vector_of_trust: nil, acr_values: nil).parse }.
-          to raise_error(Vot::Parser::ParseException, 'VoT parser called without VoT or ACR values')
+        expect { Vot::Parser.new(vector_of_trust: nil, acr_values: nil).parse }
+          .to raise_error(
+            Vot::Parser::ParseException,
+            'VoT parser called without VoT or ACR values',
+          )
       end
     end
 

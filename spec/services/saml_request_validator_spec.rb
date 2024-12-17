@@ -311,8 +311,8 @@ RSpec.describe SamlRequestValidator do
           context 'when the service provider is allowed to use facial match ials' do
             before do
               sp.update(ial: 2)
-              allow_any_instance_of(ServiceProvider).to receive(:facial_match_ial_allowed?).
-                and_return(true)
+              allow_any_instance_of(ServiceProvider).to receive(:facial_match_ial_allowed?)
+                .and_return(true)
             end
 
             it 'returns a successful response' do
@@ -326,8 +326,8 @@ RSpec.describe SamlRequestValidator do
 
           context 'when the service provider is not allowed to use facial match ials' do
             before do
-              allow_any_instance_of(ServiceProvider).to receive(:facial_match_ial_allowed?).
-                and_return(false)
+              allow_any_instance_of(ServiceProvider).to receive(:facial_match_ial_allowed?)
+                .and_return(false)
             end
 
             it 'fails with an unauthorized error' do

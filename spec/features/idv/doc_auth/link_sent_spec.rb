@@ -9,8 +9,8 @@ RSpec.feature 'doc auth link sent step' do
   let(:phone_number) { '415-555-0199' }
 
   before do
-    allow(FeatureManagement).
-      to(receive(:doc_capture_polling_enabled?).and_return(false))
+    allow(FeatureManagement)
+      .to(receive(:doc_capture_polling_enabled?).and_return(false))
 
     user
     complete_doc_auth_steps_before_hybrid_handoff_step

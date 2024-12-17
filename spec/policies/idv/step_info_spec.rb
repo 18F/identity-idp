@@ -57,8 +57,8 @@ RSpec.describe 'Idv::StepInfo' do
     end
 
     it 'returns an absolute "path" for the controller name' do
-      expect(Idv::StepInfo.full_controller_name(idv_step_controller_class)).
-        to eq('/idv/lets/go/deeper/anonymous')
+      expect(Idv::StepInfo.full_controller_name(idv_step_controller_class))
+        .to eq('/idv/lets/go/deeper/anonymous')
     end
   end
 end

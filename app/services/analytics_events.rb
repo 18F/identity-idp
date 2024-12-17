@@ -1236,7 +1236,7 @@ module AnalyticsEvents
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
-  # SDK upgrades
+  #   SDK upgrades
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   def idv_doc_auth_agreement_submitted(
@@ -1268,7 +1268,7 @@ module AnalyticsEvents
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
-  # SDK upgrades
+  #   SDK upgrades
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   def idv_doc_auth_agreement_visited(
@@ -1321,7 +1321,7 @@ module AnalyticsEvents
   # @param [Boolean] selfie_check_required Whether facial match check is required
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
-  # SDK upgrades
+  #   SDK upgrades
   def idv_doc_auth_document_capture_polling_wait_visited(
     flow_path:,
     step:,
@@ -1358,10 +1358,10 @@ module AnalyticsEvents
   # @param [Boolean] selfie_check_required Whether facial match check is required
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Boolean] redo_document_capture Whether user is redoing document capture after barcode
-  # warning
+  #   warning
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
-  # SDK upgrades
+  #   SDK upgrades
   # @param [Boolean] stored_result_present Whether a stored result was present
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   def idv_doc_auth_document_capture_submitted(
@@ -1401,12 +1401,12 @@ module AnalyticsEvents
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
   # @param [Boolean] redo_document_capture Whether user is redoing document capture after barcode
-  # warning
+  #   warning
   # @param [Boolean] liveness_checking_required Whether facial match check is required
   # @param [Boolean] selfie_check_required Whether facial match check is required
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
-  # SDK upgrades
+  #   SDK upgrades
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   def idv_doc_auth_document_capture_visited(
@@ -1546,12 +1546,12 @@ module AnalyticsEvents
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
   # @param [Boolean] redo_document_capture Whether user is redoing document capture after barcode
-  # warning
+  #   warning
   # @param [Boolean] selfie_check_required Whether facial match check is required
   # @param ["document_capture","send_link"] destination Where user is sent after submission
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
-  # SDK upgrades
+  #   SDK upgrades
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Hash] telephony_response Response from Telephony gem
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
@@ -1593,10 +1593,10 @@ module AnalyticsEvents
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
   # @param [Boolean] redo_document_capture Whether user is redoing document capture after barcode
-  # warning
+  #   warning
   # @param [Boolean] selfie_check_required Whether facial match check is required
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
-  # SDK upgrades
+  #   SDK upgrades
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   def idv_doc_auth_hybrid_handoff_visited(
@@ -1802,7 +1802,7 @@ module AnalyticsEvents
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Integer] submit_attempts Times that user has tried submitting (previously called
-  # "attempts")
+  #   "attempts")
   # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
   # @param [String] user_id
   # @param ["hybrid","standard"] flow_path Document capture user flow
@@ -1811,7 +1811,7 @@ module AnalyticsEvents
   # @param [String] back_image_fingerprint Fingerprint of back image data
   # @param [String] selfie_image_fingerprint Fingerprint of selfie image data
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
-  # SDK upgrades
+  #   SDK upgrades
   # The document capture image uploaded was locally validated during the IDV process
   def idv_doc_auth_submitted_image_upload_form(
     success:,
@@ -1855,7 +1855,7 @@ module AnalyticsEvents
   # @param [String] state_id_type
   # @param [Boolean] async
   # @param [Integer] submit_attempts Times that user has tried submitting (previously called
-  # "attempts")
+  #   "attempts")
   # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
   # @param [Hash] client_image_metrics
   # @param ["hybrid","standard"] flow_path Document capture user flow
@@ -1890,10 +1890,10 @@ module AnalyticsEvents
   # @param [String] birth_year Birth year from document
   # @param [Integer] issue_year Year document was issued
   # @param [Hash] failed_image_fingerprints Hash of document field with an array of failed image
-  # fingerprints for that field.
+  #   fingerprints for that field.
   # @param [Integer] selfie_attempts number of selfie attempts the user currently has processed
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
-  # SDK upgrades
+  #   SDK upgrades
   # @option extra [String] 'DocumentName'
   # @option extra [String] 'DocAuthResult'
   # @option extra [String] 'DocIssuerCode'
@@ -3310,6 +3310,11 @@ module AnalyticsEvents
   # @param [Integer] enrollments_failed number of enrollments which failed identity proofing
   # @param [Integer] enrollments_in_progress number of enrollments which did not have any change
   # @param [Integer] enrollments_passed number of enrollments which passed identity proofing
+  # @param [Integer] enrollments_network_error
+  # @param [Integer] enrollments_cancelled
+  # @param [Float] percent_enrollments_errored
+  # @param [Float] percent_enrollments_network_error
+  # @param [String] job_name
   def idv_in_person_usps_proofing_results_job_completed(
     duration_seconds:,
     enrollments_checked:,
@@ -3318,17 +3323,27 @@ module AnalyticsEvents
     enrollments_failed:,
     enrollments_in_progress:,
     enrollments_passed:,
+    enrollments_network_error:,
+    enrollments_cancelled:,
+    percent_enrollments_errored:,
+    percent_enrollments_network_error:,
+    job_name:,
     **extra
   )
     track_event(
       'GetUspsProofingResultsJob: Job completed',
-      duration_seconds: duration_seconds,
-      enrollments_checked: enrollments_checked,
-      enrollments_errored: enrollments_errored,
-      enrollments_expired: enrollments_expired,
-      enrollments_failed: enrollments_failed,
-      enrollments_in_progress: enrollments_in_progress,
-      enrollments_passed: enrollments_passed,
+      duration_seconds:,
+      enrollments_checked:,
+      enrollments_errored:,
+      enrollments_expired:,
+      enrollments_failed:,
+      enrollments_in_progress:,
+      enrollments_passed:,
+      enrollments_network_error:,
+      enrollments_cancelled:,
+      percent_enrollments_errored:,
+      percent_enrollments_network_error:,
+      job_name:,
       **extra,
     )
   end
@@ -3353,27 +3368,57 @@ module AnalyticsEvents
   end
 
   # Tracks deadline email initiated during GetUspsProofingResultsJob
+  # @param [String] enrollment_code
   # @param [String] enrollment_id
+  # @param [Time] timestamp
+  # @param [String] service_provider
+  # @param [Integer] wait_until
+  # @param [String] job_name
   def idv_in_person_usps_proofing_results_job_deadline_passed_email_initiated(
+    enrollment_code:,
     enrollment_id:,
+    timestamp:,
+    service_provider:,
+    wait_until:,
+    job_name:,
     **extra
   )
     track_event(
       'GetUspsProofingResultsJob: deadline passed email initiated',
-      enrollment_id: enrollment_id,
+      enrollment_code:,
+      enrollment_id:,
+      timestamp:,
+      service_provider:,
+      wait_until:,
+      job_name:,
       **extra,
     )
   end
 
   # Tracks emails that are initiated during GetUspsProofingResultsJob
   # @param [String] email_type success, failed or failed fraud
+  # @param [String] enrollment_code
+  # @param [Time] timestamp
+  # @param [String] service_provider
+  # @param [Integer] wait_until
+  # @param [String] job_name
   def idv_in_person_usps_proofing_results_job_email_initiated(
     email_type:,
+    enrollment_code:,
+    timestamp:,
+    service_provider:,
+    wait_until:,
+    job_name:,
     **extra
   )
     track_event(
       'GetUspsProofingResultsJob: Success or failure email initiated',
-      email_type: email_type,
+      email_type:,
+      enrollment_code:,
+      timestamp:,
+      service_provider:,
+      wait_until:,
+      job_name:,
       **extra,
     )
   end
@@ -3404,44 +3449,8 @@ module AnalyticsEvents
   # @param [String] enrollment_code
   # @param [String] enrollment_id
   # @param [Float] minutes_since_established
-  # @param [Boolean] passed did this enrollment pass or fail?
-  # @param [String] reason why did this enrollment pass or fail?
-  # @param [String] tmx_status the tmx_status of the enrollment profile profile
-  # @param [Integer] profile_age_in_seconds How many seconds have passed since profile created
-  # @param [Boolean] fraud_suspected
-  def idv_in_person_usps_proofing_results_job_enrollment_updated(
-    enrollment_code:,
-    enrollment_id:,
-    minutes_since_established:,
-    passed:,
-    reason:,
-    tmx_status:,
-    profile_age_in_seconds:,
-    fraud_suspected: nil,
-    **extra
-  )
-    track_event(
-      'GetUspsProofingResultsJob: Enrollment status updated',
-      enrollment_code: enrollment_code,
-      enrollment_id: enrollment_id,
-      minutes_since_established: minutes_since_established,
-      passed: passed,
-      reason: reason,
-      tmx_status: tmx_status,
-      profile_age_in_seconds: profile_age_in_seconds,
-      fraud_suspected: fraud_suspected,
-      **extra,
-    )
-  end
-
-  # Tracks exceptions that are raised when running GetUspsProofingResultsJob
-  # @param [String] reason why was the exception raised?
-  # @param [String] enrollment_id
-  # @param [String] exception_class
-  # @param [String] exception_message
-  # @param [String] enrollment_code
-  # @param [Float] minutes_since_established
   # @param [Float] minutes_since_last_status_check
+  # @param [Float] minutes_since_last_status_check_completed
   # @param [Float] minutes_since_last_status_update
   # @param [Float] minutes_to_completion
   # @param [Boolean] fraud_suspected
@@ -3457,7 +3466,107 @@ module AnalyticsEvents
   # @param [String] proofing_state
   # @param [String] scan_count
   # @param [String] response_message
+  # @param [Boolean] passed did this enrollment pass or fail?
+  # @param [String] reason why did this enrollment pass or fail?
+  # @param [String] tmx_status the tmx_status of the enrollment profile profile
+  # @param [Integer] profile_age_in_seconds How many seconds have passed since profile created
+  # @param [Boolean] response_present
+  # @param [String] job_name
+  # @param [Boolean] enhanced_ipp
+  # @param [String] issuer
+  def idv_in_person_usps_proofing_results_job_enrollment_updated(
+    enrollment_code:,
+    enrollment_id:,
+    minutes_since_established:,
+    passed:,
+    reason:,
+    tmx_status:,
+    profile_age_in_seconds:,
+    minutes_since_last_status_check:,
+    minutes_since_last_status_check_completed:,
+    minutes_since_last_status_update:,
+    minutes_to_completion:,
+    response_present:,
+    job_name:,
+    enhanced_ipp:,
+    issuer:,
+    fraud_suspected: nil,
+    primary_id_type: nil,
+    secondary_id_type: nil,
+    failure_reason: nil,
+    transaction_end_date_time: nil,
+    transaction_start_date_time: nil,
+    status: nil,
+    assurance_level: nil,
+    proofing_post_office: nil,
+    proofing_city: nil,
+    proofing_state: nil,
+    scan_count: nil,
+    response_message: nil,
+    **extra
+  )
+    track_event(
+      'GetUspsProofingResultsJob: Enrollment status updated',
+      enrollment_code:,
+      enrollment_id:,
+      minutes_since_established:,
+      passed:,
+      reason:,
+      tmx_status:,
+      profile_age_in_seconds:,
+      minutes_since_last_status_check:,
+      minutes_since_last_status_check_completed:,
+      minutes_since_last_status_update:,
+      minutes_to_completion:,
+      fraud_suspected:,
+      primary_id_type:,
+      secondary_id_type:,
+      failure_reason:,
+      transaction_end_date_time:,
+      transaction_start_date_time:,
+      status:,
+      assurance_level:,
+      proofing_post_office:,
+      proofing_city:,
+      proofing_state:,
+      scan_count:,
+      response_present:,
+      response_message:,
+      job_name:,
+      enhanced_ipp:,
+      issuer:,
+      **extra,
+    )
+  end
+
+  # Tracks exceptions that are raised when running GetUspsProofingResultsJob
+  # @param [String] reason why was the exception raised?
+  # @param [String] enrollment_id
+  # @param [String] exception_class
+  # @param [String] exception_message
+  # @param [String] enrollment_code
+  # @param [Float] minutes_since_established
+  # @param [Float] minutes_since_last_status_check
+  # @param [Float] minutes_since_last_status_check_completed
+  # @param [Float] minutes_since_last_status_update
+  # @param [Float] minutes_to_completion
+  # @param [Boolean] fraud_suspected
+  # @param [String] primary_id_type
+  # @param [String] secondary_id_type
+  # @param [String] failure_reason
+  # @param [String] transaction_end_date_time
+  # @param [String] transaction_start_date_time
+  # @param [String] status
+  # @param [String] assurance_level
+  # @param [String] proofing_post_office
+  # @param [String] proofing_city
+  # @param [String] proofing_state
+  # @param [String] scan_count
+  # @param [Boolean] response_present
+  # @param [String] response_message
   # @param [Integer] response_status_code
+  # @param [String] job_name
+  # @param [String] issuer
   def idv_in_person_usps_proofing_results_job_exception(
     reason:,
     enrollment_id:,
@@ -3466,6 +3575,7 @@ module AnalyticsEvents
     exception_message: nil,
     enrollment_code: nil,
     minutes_since_last_status_check: nil,
+    minutes_since_last_status_check_completed: nil,
     minutes_since_last_status_update: nil,
     minutes_to_completion: nil,
     fraud_suspected: nil,
@@ -3480,45 +3590,67 @@ module AnalyticsEvents
     proofing_city: nil,
     proofing_state: nil,
     scan_count: nil,
+    response_present: nil,
     response_message: nil,
     response_status_code: nil,
+    job_name: nil,
+    issuer: nil,
     **extra
   )
     track_event(
       'GetUspsProofingResultsJob: Exception raised',
-      reason: reason,
-      enrollment_id: enrollment_id,
-      exception_class: exception_class,
-      exception_message: exception_message,
-      enrollment_code: enrollment_code,
-      minutes_since_established: minutes_since_established,
-      minutes_since_last_status_check: minutes_since_last_status_check,
-      minutes_since_last_status_update: minutes_since_last_status_update,
-      minutes_to_completion: minutes_to_completion,
-      fraud_suspected: fraud_suspected,
-      primary_id_type: primary_id_type,
-      secondary_id_type: secondary_id_type,
-      failure_reason: failure_reason,
-      transaction_end_date_time: transaction_end_date_time,
-      transaction_start_date_time: transaction_start_date_time,
-      status: status,
-      assurance_level: assurance_level,
-      proofing_post_office: proofing_post_office,
-      proofing_city: proofing_city,
-      proofing_state: proofing_state,
-      scan_count: scan_count,
-      response_message: response_message,
-      response_status_code: response_status_code,
+      reason:,
+      enrollment_id:,
+      exception_class:,
+      exception_message:,
+      enrollment_code:,
+      minutes_since_established:,
+      minutes_since_last_status_check:,
+      minutes_since_last_status_check_completed:,
+      minutes_since_last_status_update:,
+      minutes_to_completion:,
+      fraud_suspected:,
+      primary_id_type:,
+      secondary_id_type:,
+      failure_reason:,
+      transaction_end_date_time:,
+      transaction_start_date_time:,
+      status:,
+      assurance_level:,
+      proofing_post_office:,
+      proofing_city:,
+      proofing_state:,
+      scan_count:,
+      response_present:,
+      response_message:,
+      response_status_code:,
+      job_name:,
+      issuer:,
       **extra,
     )
   end
 
   # Tracks please call emails that are initiated during GetUspsProofingResultsJob
+  # @param [String] enrollment_code
+  # @param [String] job_name
+  # @param [String] service_provider
+  # @param [Time] timestamp
+  # @param [Integer] wait_until
   def idv_in_person_usps_proofing_results_job_please_call_email_initiated(
+    enrollment_code:,
+    job_name:,
+    service_provider:,
+    timestamp:,
+    wait_until:,
     **extra
   )
     track_event(
       :idv_in_person_usps_proofing_results_job_please_call_email_initiated,
+      enrollment_code:,
+      job_name:,
+      service_provider:,
+      timestamp:,
+      wait_until:,
       **extra,
     )
   end
@@ -3546,36 +3678,75 @@ module AnalyticsEvents
   # @param [String] enrollment_code
   # @param [String] enrollment_id
   # @param [Float] minutes_since_established
+  # @param [Float] minutes_since_last_status_check
+  # @param [Float] minutes_since_last_status_check_completed
+  # @param [Float] minutes_since_last_status_update
+  # @param [Float] minutes_to_completion
+  # @param [String] issuer
+  # @param [String] job_name
   # @param [String] response_message
   # @param [String] reason why was this error unexpected?
   def idv_in_person_usps_proofing_results_job_unexpected_response(
     enrollment_code:,
     enrollment_id:,
     minutes_since_established:,
+    minutes_since_last_status_check:,
+    minutes_since_last_status_check_completed:,
+    minutes_since_last_status_update:,
+    minutes_to_completion:,
+    issuer:,
+    job_name:,
     response_message:,
     reason:,
     **extra
   )
     track_event(
       'GetUspsProofingResultsJob: Unexpected response received',
-      enrollment_code: enrollment_code,
-      enrollment_id: enrollment_id,
-      minutes_since_established: minutes_since_established,
-      response_message: response_message,
-      reason: reason,
+      enrollment_code:,
+      enrollment_id:,
+      minutes_since_established:,
+      response_message:,
+      reason:,
+      minutes_since_last_status_check:,
+      minutes_since_last_status_check_completed:,
+      minutes_since_last_status_update:,
+      minutes_to_completion:,
+      issuer:,
+      job_name:,
       **extra,
     )
   end
 
   # A user has been moved to fraud review after completing proofing at the USPS
+  # @param [String] enrollment_code
   # @param [String] enrollment_id
+  # @param [Float] minutes_since_established
+  # @param [Float] minutes_since_last_status_check
+  # @param [Float] minutes_since_last_status_check_completed
+  # @param [Float] minutes_since_last_status_update
+  # @param [Float] minutes_to_completion
+  # @param [String] issuer
   def idv_in_person_usps_proofing_results_job_user_sent_to_fraud_review(
+    enrollment_code:,
     enrollment_id:,
+    minutes_since_established:,
+    minutes_since_last_status_check:,
+    minutes_since_last_status_check_completed:,
+    minutes_since_last_status_update:,
+    minutes_to_completion:,
+    issuer:,
     **extra
   )
     track_event(
       :idv_in_person_usps_proofing_results_job_user_sent_to_fraud_review,
-      enrollment_id: enrollment_id,
+      enrollment_code:,
+      enrollment_id:,
+      minutes_since_established:,
+      minutes_since_last_status_check:,
+      minutes_since_last_status_check_completed:,
+      minutes_since_last_status_update:,
+      minutes_to_completion:,
+      issuer:,
       **extra,
     )
   end
@@ -4215,7 +4386,7 @@ module AnalyticsEvents
   # @param [Hash] vendor Vendor response payload
   # @param [Boolean] new_phone_added Whether phone number was added to account in submission
   # @param [Boolean] hybrid_handoff_phone_used Whether phone is the same as what was used for hybrid
-  # document capture
+  #   document capture
   # @param [String] area_code Area code of phone number
   # @param [String] country_code Abbreviated 2-letter country code associated with phone number
   # @param [String] phone_fingerprint HMAC fingerprint of the phone number formatted as E.164
@@ -4864,7 +5035,7 @@ module AnalyticsEvents
   # @param [String] state_id_type type of state issued ID
   # @param [Boolean] async whether or not this worker is running asynchronously
   # @param [Integer] submit_attempts Times that user has tried submitting (previously called
-  # "attempts")
+  #   "attempts")
   # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Float] vendor_request_time_in_ms Time it took to upload images & get a response.
@@ -5471,8 +5642,8 @@ module AnalyticsEvents
 
   # @param ["authentication", "reauthentication", "confirmation"] context User session context
   # @param ["webauthn","webauthn_platform"] multi_factor_auth_method which webauthn method was used,
-  # webauthn means a roaming authenticator like a yubikey, webauthn_platform means a platform
-  # authenticator like face or touch ID
+  #   webauthn means a roaming authenticator like a yubikey, webauthn_platform means a platform
+  #   authenticator like face or touch ID
   # @param [Integer, nil] webauthn_configuration_id webauthn database ID
   # @param [String] multi_factor_auth_method_created_at When the authentication method was created
   # User visited the page to authenticate with webauthn (yubikey, face ID or touch ID)
@@ -5596,7 +5767,7 @@ module AnalyticsEvents
   # @param [Integer] attempts number of MFA setup attempts
   # @param [String, nil] aaguid AAGUID value of WebAuthn device
   # @param [String[], nil] unknown_transports Array of unrecognized WebAuthn transports, intended to
-  # be used in case of future specification changes.
+  #   be used in case of future specification changes.
   # @param [:authentication, :account_creation, nil] webauthn_platform_recommended A/B test for
   # recommended Face or Touch Unlock setup, if applicable.
   def multi_factor_auth_setup(
@@ -5979,7 +6150,7 @@ module AnalyticsEvents
   # @param [Boolean] active_profile_present Whether active profile existed at time of change
   # @param [Boolean] pending_profile_present Whether pending profile existed at time of change
   # @param [Boolean] required_password_change Whether password change was forced due to compromised
-  # password
+  #   password
   # The user updated their password
   def password_changed(
     success:,
@@ -6035,9 +6206,9 @@ module AnalyticsEvents
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
   # @param [Boolean, nil] confirmed if the account the reset is being requested for has a
-  # confirmed email
+  #   confirmed email
   # @param [Boolean, nil] active_profile if the account the reset is being requested for has an
-  # active proofed profile
+  #   active proofed profile
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # The user entered an email address to request a password reset
   def password_reset_email(
@@ -6062,11 +6233,11 @@ module AnalyticsEvents
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
   # @param [Boolean] profile_deactivated if the active profile for the account was deactivated
-  # (the user will need to use their personal key to reactivate their profile)
+  #   (the user will need to use their personal key to reactivate their profile)
   # @param [Boolean] pending_profile_invalidated Whether a pending profile was invalidated as a
-  # result of the password reset
+  #   result of the password reset
   # @param [String] pending_profile_pending_reasons Comma-separated list of the pending states
-  # associated with the associated profile.
+  #   associated with the associated profile.
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # The user changed the password for their account via the password reset flow
   def password_reset_password(
@@ -6126,7 +6297,7 @@ module AnalyticsEvents
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Integer] emails Number of email addresses the notification was sent to
   # @param [Array<String>] sms_message_ids AWS Pinpoint SMS message IDs for each phone number that
-  # was notified
+  #   was notified
   # Alert user if a personal key was used to sign in
   def personal_key_alert_about_sign_in(
     success:,
@@ -6386,7 +6557,7 @@ module AnalyticsEvents
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Integer] emails Number of email addresses the notification was sent to
   # @param [Array<String>] sms_message_ids AWS Pinpoint SMS message IDs for each phone number that
-  # was notified
+  #   was notified
   # User has chosen to receive a new personal key, contains stats about notifications that
   # were sent to phone numbers and email addresses for the user
   def profile_personal_key_create_notifications(
@@ -6680,14 +6851,14 @@ module AnalyticsEvents
   # @param [Boolean] finish_profile
   # @param [String] requested_ial
   # @param [Boolean] request_signed
-  # @param [String] matching_cert_serial
-  # matches the request certificate in a successful, signed request
+  # @param [String] matching_cert_serial matches the request certificate in a successful, signed
+  #   request
   # @param [Boolean] certs_different Whether the matching cert changes when SHA256 validations
-  # are turned on in the saml_idp gem
+  #   are turned on in the saml_idp gem
   # @param [Hash] cert_error_details Details for errors that occurred because of an invalid
-  # signature
+  #   signature
   # @param [String] sha256_matching_cert serial of the cert that matches when sha256 validations
-  # are turned on
+  #   are turned on
   # @param [String] unknown_authn_contexts space separated list of unknown contexts
   def saml_auth(
     success:,
@@ -6915,6 +7086,32 @@ module AnalyticsEvents
     track_event('SP inactive visited')
   end
 
+  # @param [Array] error_details Full messages of the errors
+  # @param [Hash] error_types Types of errors that are surfaced
+  # @param [Symbol] event What part of the workflow the error occured in
+  # @param [Boolean] integration_exists Whether the requesting issuer maps to an SP
+  # @param [String] request_issuer The issuer in the request
+  # Monitoring service-provider specific integration errors
+  def sp_integration_errors_present(
+    error_details:,
+    error_types:,
+    event:,
+    integration_exists:,
+    request_issuer: nil,
+    **extra
+  )
+    types = error_types.index_with { |_type| true }
+    track_event(
+      :sp_integration_errors_present,
+      error_details:,
+      error_types: types,
+      event:,
+      integration_exists:,
+      request_issuer:,
+      **extra,
+    )
+  end
+
   # Tracks when a user is redirected back to the service provider
   # @param [Integer] ial
   # @param [Integer] billed_ial
@@ -6968,7 +7165,7 @@ module AnalyticsEvents
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Integer] selected_email_id Selected email address record ID
   # @param [String, nil] needs_completion_screen_reason Reason for the consent screen being shown,
-  # if user is changing email in consent flow
+  #   if user is changing email in consent flow
   def sp_select_email_submitted(
     success:,
     selected_email_id:,
@@ -6988,7 +7185,7 @@ module AnalyticsEvents
 
   # User visited form to change email shared with service provider
   # @param [String, nil] needs_completion_screen_reason Reason for the consent screen being shown,
-  # if user is changing email in consent flow
+  #   if user is changing email in consent flow
   def sp_select_email_visited(needs_completion_screen_reason: nil, **extra)
     track_event(:sp_select_email_visited, needs_completion_screen_reason:, **extra)
   end
@@ -7148,7 +7345,7 @@ module AnalyticsEvents
   # @param [String] service_provider_name The friendly name of the service provider
   # @param ['account-page','agency-page'] page_occurence Where the user concluded registration
   # @param ['new_sp','new_attributes','reverified_after_consent'] needs_completion_screen_reason The
-  # reason for the consent screen being shown
+  #   reason for the consent screen being shown
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation
   # @param [Array] sp_session_requested_attributes Attributes requested by the service provider
   # @param [String, nil] in_person_proofing_status In person proofing status
@@ -7196,7 +7393,7 @@ module AnalyticsEvents
   # @param [String] service_provider_name The friendly name of the service provider
   # @param ['account-page','agency-page'] page_occurence Where the user concluded registration
   # @param ['new_sp','new_attributes','reverified_after_consent'] needs_completion_screen_reason The
-  # reason for the consent screen being shown
+  #   reason for the consent screen being shown
   # @param [Array] sp_session_requested_attributes Attributes requested by the service provider
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
   # @param [String, nil] disposable_email_domain Disposable email domain used for registration

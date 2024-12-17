@@ -123,8 +123,8 @@ RSpec.describe 'Identity verification', :js do
     before do
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
 
-      ServiceProvider.find_by(issuer: service_provider_issuer(sp)).
-        update(in_person_proofing_enabled: true)
+      ServiceProvider.find_by(issuer: service_provider_issuer(sp))
+        .update(in_person_proofing_enabled: true)
     end
 
     scenario 'In person proofing', allow_browser_log: true do
@@ -135,6 +135,7 @@ RSpec.describe 'Identity verification', :js do
       complete_all_in_person_proofing_steps(user)
       test_restart_in_person_flow(user)
       complete_otp_verification_page(user)
+      expect(page).to have_current_path(idv_enter_password_path)
 
       test_go_back_in_person_flow
 
@@ -187,8 +188,8 @@ RSpec.describe 'Identity verification', :js do
   end
 
   def validate_hybrid_handoff_page
-    allow_any_instance_of(Idv::HybridHandoffController).to receive(:mobile_device?).
-      and_return(false)
+    allow_any_instance_of(Idv::HybridHandoffController).to receive(:mobile_device?)
+      .and_return(false)
 
     expect(page).to have_current_path(idv_hybrid_handoff_path)
 
@@ -200,8 +201,8 @@ RSpec.describe 'Identity verification', :js do
 
     # defaults phone to user's 2fa phone number
     field = page.find_field(t('two_factor_authentication.phone_label'))
-    expect(same_phone?(field.value, Features::SessionHelper::IAL1_USER_PHONE)).
-      to be true
+    expect(same_phone?(field.value, Features::SessionHelper::IAL1_USER_PHONE))
+      .to be true
   end
 
   def validate_document_capture_page
@@ -365,10 +366,9 @@ RSpec.describe 'Identity verification', :js do
       text: t('step_indicator.flows.idv.verify_phone'),
     )
     expect(page).to have_css(
-      '.step-indicator__step--complete',
+      '.step-indicator__step--current',
       text: t('step_indicator.flows.idv.re_enter_password'),
     )
-    expect(page).not_to have_css('.step-indicator__step--current')
     expect(page).not_to have_content(t('step_indicator.flows.idv.verify_address'))
 
     # Refreshing shows same page (BUT with new personal key, we should warn the user)
@@ -429,7 +429,7 @@ RSpec.describe 'Identity verification', :js do
 
   def test_go_back_from_hybrid_handoff
     go_back
-    expect(current_path).to eql(idv_agreement_path)
+    expect(page).to have_current_path(idv_agreement_path)
     expect(page).to have_checked_field(
       t('doc_auth.instructions.consent', app_name: APP_NAME),
       visible: :all,
@@ -515,7 +515,9 @@ RSpec.describe 'Identity verification', :js do
 
   def test_go_back_in_person_flow
     go_back
+    expect(page).to have_current_path(idv_otp_verification_path)
     go_back
+    expect(page).to have_current_path(idv_phone_path)
     go_back
     expect(page).to have_current_path(idv_in_person_verify_info_path)
     # can't go back further with in person controllers (yet)

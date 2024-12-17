@@ -116,10 +116,10 @@ RSpec.describe AccountReset::PendingRequestForUser do
       phone_config1 = create(:phone_configuration, user: user)
       phone_config2 = create(:phone_configuration, user: user)
 
-      expect(Telephony).to receive(:send_account_reset_cancellation_notice).
-        with(to: phone_config1.phone, country_code: 'US')
-      expect(Telephony).to receive(:send_account_reset_cancellation_notice).
-        with(to: phone_config2.phone, country_code: 'US')
+      expect(Telephony).to receive(:send_account_reset_cancellation_notice)
+        .with(to: phone_config1.phone, country_code: 'US')
+      expect(Telephony).to receive(:send_account_reset_cancellation_notice)
+        .with(to: phone_config2.phone, country_code: 'US')
 
       subject.notify_user!
     end

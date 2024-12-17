@@ -7,8 +7,8 @@ RSpec.describe SpHandoffBouncer do
 
   describe '#add_handoff_time!' do
     it 'sets the handoff time in the session' do
-      expect { bouncer.add_handoff_time!(now) }.
-        to(change { sp_session[:sp_handoff_start_time] }.to(now))
+      expect { bouncer.add_handoff_time!(now) }
+        .to(change { sp_session[:sp_handoff_start_time] }.to(now))
     end
   end
 

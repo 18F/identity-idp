@@ -15,8 +15,8 @@ RSpec.describe Idv::AccountVerifiedEmailPresenter do
   subject(:presenter) { described_class.new(profile:, url_options: {}) }
 
   before do
-    allow(IdentityConfig.store).to receive(:idv_account_verified_email_campaign_id).
-      and_return('20241030')
+    allow(IdentityConfig.store).to receive(:idv_account_verified_email_campaign_id)
+      .and_return('20241030')
   end
 
   context 'when there is no associated service provider' do

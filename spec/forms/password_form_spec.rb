@@ -86,8 +86,8 @@ RSpec.describe PasswordForm, type: :model do
 
           it 'returns false' do
             expect(result.success?).to eq false
-            expect(result.errors[:password_confirmation]).
-              to include(t('errors.messages.password_mismatch'))
+            expect(result.errors[:password_confirmation])
+              .to include(t('errors.messages.password_mismatch'))
           end
         end
 

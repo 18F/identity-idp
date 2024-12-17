@@ -27,9 +27,9 @@ module IaaReportingHelper
 
   # @return [Array<IaaConfig>]
   def iaas
-    Agreements::IaaGtc.
-      includes(iaa_orders: { integration_usages: :integration }).
-      flat_map do |gtc|
+    Agreements::IaaGtc
+      .includes(iaa_orders: { integration_usages: :integration })
+      .flat_map do |gtc|
         gtc.iaa_orders.flat_map do |iaa_order|
           issuers = iaa_order.integration_usages.map { |usage| usage.integration.issuer }
 
@@ -47,9 +47,9 @@ module IaaReportingHelper
   end
 
   def partner_accounts
-    Agreements::PartnerAccount.
-      includes(integrations: { service_provider: {}, integration_usages: :iaa_order }).
-      flat_map do |partner_account|
+    Agreements::PartnerAccount
+      .includes(integrations: { service_provider: {}, integration_usages: :iaa_order })
+      .flat_map do |partner_account|
         issuers = partner_account.integrations.map do |integration|
           integration.service_provider.issuer
         end

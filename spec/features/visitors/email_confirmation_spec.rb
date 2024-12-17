@@ -46,14 +46,14 @@ RSpec.feature 'Email confirmation during sign up' do
     it 'sends the user the confirmation email again' do
       email = 'test@example.com'
 
-      expect { sign_up_with(email) }.
-        to change { ActionMailer::Base.deliveries.count }.by(1)
+      expect { sign_up_with(email) }
+        .to change { ActionMailer::Base.deliveries.count }.by(1)
       expect(last_email.html_part.body).to have_content(
         t('user_mailer.email_confirmation_instructions.subject'),
       )
 
-      expect { sign_up_with(email) }.
-        to change { ActionMailer::Base.deliveries.count }.by(1)
+      expect { sign_up_with(email) }
+        .to change { ActionMailer::Base.deliveries.count }.by(1)
       expect(last_email.html_part.body).to have_content(
         t('user_mailer.email_confirmation_instructions.subject'),
       )
@@ -64,8 +64,8 @@ RSpec.feature 'Email confirmation during sign up' do
     it 'sends the confirmation email again' do
       sign_up_with('test@example.com')
 
-      expect { click_on t('notices.signed_up_but_unconfirmed.resend_confirmation_email') }.
-        to change { ActionMailer::Base.deliveries.count }.by(1)
+      expect { click_on t('notices.signed_up_but_unconfirmed.resend_confirmation_email') }
+        .to change { ActionMailer::Base.deliveries.count }.by(1)
 
       expect(last_email.html_part.body).to have_content(
         t('user_mailer.email_confirmation_instructions.subject'),

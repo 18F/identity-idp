@@ -79,29 +79,35 @@ class OpenidConnectLogoutForm
   end
 
   def load_identity
-    identity_from_client_id = current_user&.
-      identities&.
-      find_by(service_provider: client_id)
+    identity_from_client_id = current_user
+      &.identities
+      &.find_by(service_provider: client_id)
 
     if reject_id_token_hint?
       identity_from_client_id
     else
+      identity_from_token_hint(id_token_hint) || identity_from_client_id
+    end
+  end
+
+  def identity_from_token_hint(id_token_hint)
+    return nil if id_token_hint.blank?
+    payload, _headers = nil
+
+    begin
       payload, _headers = JWT.decode(
-        id_token_hint, AppArtifacts.store.oidc_public_key, true,
+        id_token_hint, Rails.application.config.oidc_public_key_queue, true,
         algorithm: 'RS256',
         leeway: Float::INFINITY
       ).map(&:with_indifferent_access)
-
-      identity_from_payload(payload) || identity_from_client_id
+    rescue JWT::DecodeError
     end
-  rescue JWT::DecodeError
-    nil
-  end
 
-  def identity_from_payload(payload)
-    uuid = payload[:sub]
-    sp = payload[:aud]
-    AgencyIdentityLinker.sp_identity_from_uuid_and_sp(uuid, sp)
+    if payload
+      uuid = payload[:sub]
+      sp = payload[:aud]
+      AgencyIdentityLinker.sp_identity_from_uuid_and_sp(uuid, sp)
+    end
   end
 
   def id_token_hint_or_client_id_present
@@ -112,6 +118,16 @@ class OpenidConnectLogoutForm
       t('openid_connect.logout.errors.no_client_id_or_id_token_hint'),
       type: :client_id_or_id_token_hint_missing,
     )
+  end
+
+  def integration_errors
+    return nil if valid?
+    {
+      error_details: errors.full_messages,
+      error_types: errors.attribute_names,
+      integration_exists: service_provider.present?,
+      request_issuer: client_id || service_provider&.issuer,
+    }
   end
 
   def valid_client_id
@@ -144,6 +160,7 @@ class OpenidConnectLogoutForm
       redirect_uri: redirect_uri,
       sp_initiated: true,
       oidc: true,
+      integration_errors:,
     }
   end
 

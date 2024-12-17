@@ -8,8 +8,8 @@ RSpec.describe Idv::InPerson::AddressController do
   let(:pii_from_user) { Idp::Constants::MOCK_IPP_APPLICANT_SAME_ADDRESS_AS_ID_FALSE }
 
   before do
-    allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled).
-      and_return(true)
+    allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled)
+      .and_return(true)
     stub_sign_in(user)
     stub_up_to(:hybrid_handoff, idv_session: subject.idv_session)
     subject.user_session['idv/in_person'] = {
@@ -176,8 +176,8 @@ RSpec.describe Idv::InPerson::AddressController do
           it 'infers and sets the "same_address_as_id" in the flow session to false' do
             put :update, params: params
 
-            expect(subject.user_session['idv/in_person'][:pii_from_user][:same_address_as_id]).
-              to eq('false')
+            expect(subject.user_session['idv/in_person'][:pii_from_user][:same_address_as_id])
+              .to eq('false')
           end
         end
 
@@ -189,8 +189,8 @@ RSpec.describe Idv::InPerson::AddressController do
           it 'leaves the "same_address_as_id" in the flow session as false' do
             put :update, params: params
 
-            expect(subject.user_session['idv/in_person'][:pii_from_user][:same_address_as_id]).
-              to eq('false')
+            expect(subject.user_session['idv/in_person'][:pii_from_user][:same_address_as_id])
+              .to eq('false')
           end
         end
       end

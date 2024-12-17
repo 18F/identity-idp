@@ -48,30 +48,30 @@ module Reporting
     end
 
     def active_agencies
-      @active_agencies ||= Agency.joins(:partner_accounts).
-        where(partner_accounts: {
+      @active_agencies ||= Agency.joins(:partner_accounts)
+        .where(partner_accounts: {
           partner_account_status: Agreements::PartnerAccountStatus.find_by(name: 'active'),
           became_partner: ..report_date,
-        }).
-        distinct
+        })
+        .distinct
     end
 
     def service_providers
       @service_providers ||= Reports::BaseReport.transaction_with_timeout do
-        issuers = ServiceProviderIdentity.
-          where('created_at <= ?', report_date).
-          distinct.
-          pluck(:service_provider)
+        issuers = ServiceProviderIdentity
+          .where('created_at <= ?', report_date)
+          .distinct
+          .pluck(:service_provider)
         ServiceProvider.where(issuer: issuers).active.external
       end
     end
 
     def facial_match_issuers
       @facial_match_issuers ||= Reports::BaseReport.transaction_with_timeout do
-        Profile.active.facial_match_opt_in.
-          where('verified_at <= ?', report_date.end_of_day).
-          distinct.
-          pluck(:initiating_service_provider_issuer)
+        Profile.active.facial_match_opt_in
+          .where('verified_at <= ?', report_date.end_of_day)
+          .distinct
+          .pluck(:initiating_service_provider_issuer)
       end
     end
   end

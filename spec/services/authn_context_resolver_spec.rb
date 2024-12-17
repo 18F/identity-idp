@@ -629,8 +629,8 @@ RSpec.describe AuthnContextResolver do
           let(:user) { build(:user, :fully_registered) }
 
           it "asserts #{Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF}" do
-            expect(subject.asserted_ial_acr).
-              to eq(Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF)
+            expect(subject.asserted_ial_acr)
+              .to eq(Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF)
             expect(result.identity_proofing?).to be true
             expect(result.aal2?).to be true
           end
@@ -640,8 +640,8 @@ RSpec.describe AuthnContextResolver do
           let(:user) { build(:user, :proofed) }
 
           it "asserts #{Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF}" do
-            expect(subject.asserted_ial_acr).
-              to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
+            expect(subject.asserted_ial_acr)
+              .to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
           end
         end
       end
@@ -659,16 +659,16 @@ RSpec.describe AuthnContextResolver do
         end
 
         before do
-          allow_any_instance_of(ServiceProvider).
-            to receive(:facial_match_ial_allowed?).
-            and_return(true)
+          allow_any_instance_of(ServiceProvider)
+            .to receive(:facial_match_ial_allowed?)
+            .and_return(true)
         end
 
         context 'with facial match comparison is required' do
           context 'when user is not verified' do
             it "asserts the resolved IAL as #{Saml::Idp::Constants::IAL_AUTH_ONLY_ACR}" do
-              expect(subject.asserted_ial_acr).
-                to eq(Saml::Idp::Constants::IAL_AUTH_ONLY_ACR)
+              expect(subject.asserted_ial_acr)
+                .to eq(Saml::Idp::Constants::IAL_AUTH_ONLY_ACR)
             end
 
             it 'sets facial_match to true' do
