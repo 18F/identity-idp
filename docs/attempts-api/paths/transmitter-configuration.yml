@@ -1,0 +1,15 @@
+get:
+  tags:
+    - StreamManagement
+  summary: Transmitter Configuration Request (without path)
+  description: "Return Transmitter Configuration information."
+  responses:
+    '200':
+      description: |
+        A set of Claims about the Transmitter's configuration,
+        including all necessary endpoints and public key location information
+      content:
+        application/json:
+          schema:
+             $ref: "../schemas/TransmitterConfiguration.yml"
+  operationId: _well_known_ssf_configuration_get

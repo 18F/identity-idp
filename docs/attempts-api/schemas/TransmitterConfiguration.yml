@@ -1,0 +1,42 @@
+type: object
+title: 'Transmitter Configuration Response'
+description: |
+  Metadata describing the Login.gov transmitter configuration.
+required:
+  - issuer
+  - jwks_uri
+properties:
+  issuer:
+    type: string
+    description: |
+      URL using the https scheme with no query or fragment component that the Transmitter asserts as its
+      Issuer Identifier.
+      This MUST be identical to the iss claim value in Security Event Tokens issued from this Transmitter.
+    format: uri
+    example: https://secure.login.gov
+  jwks_uri:
+    type: string
+    description: |
+      URL of the Transmitter's [JSON Web Key Set](https://openid.net/specs/openid-sse-framework-1_0.html#RFC7517)
+      document. This contains the signing key(s) the Receiver uses to validate signatures from the Transmitter.
+    format: uri
+    example: https://secure.login.gov/api/openid_connect/certs
+  delivery_methods_supported:
+    type: array
+    items:
+      type: string
+      format: uri
+    description: 'List of supported delivery method URIs.'
+    example: [
+        'https://schemas.openid.net/secevent/risc/delivery-method/poll'
+    ]
+  status_endpoint:
+    type: string
+    format: uri
+    description: 'The URL of the Status Endpoint.'
+    example: 'https://secure.login.gov/status'
+  verification_endpoint:
+    type: string
+    format: uri
+    description: 'The URL of the Verification Endpoint.'
+    example: 'https://secure.login.gov/verification'

@@ -1,0 +1,14 @@
+openapi: '3.0.3'
+info:
+  version: 1.0.0
+  title: Attempts Stream API for Login.gov
+  description: |
+    This API can be used by
+    Event Receivers to query the Event Stream configuration and
+    status, to add and remove subjects, and to trigger verification.
+
+paths:
+  /.well-known/sse-configuration:
+    $ref: './paths/transmitter-configuration.yml'
+  /poll:
+    $ref: './paths/poll.yml'
