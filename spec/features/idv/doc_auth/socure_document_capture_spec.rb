@@ -51,8 +51,8 @@ RSpec.feature 'document capture step', :js do
         before do
           DocAuth::Mock::DocAuthMockClient.reset!
           allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).and_return(true)
-          allow(IdentityConfig.store).to receive(:doc_auth_socure_wait_polling_timeout_minutes).
-            and_return(0)
+          allow(IdentityConfig.store).to receive(:doc_auth_socure_wait_polling_timeout_minutes)
+            .and_return(0)
         end
 
         it 'shows the Try Again page and allows user to start IPP', allow_browser_log: true do
@@ -60,11 +60,11 @@ RSpec.feature 'document capture step', :js do
           visit idv_socure_document_capture_path
           expect(page).to have_current_path(idv_socure_document_capture_path)
           %w[
-          WAITING_FOR_USER_TO_REDIRECT,
-          APP_OPENED,
-          DOCUMENT_FRONT_UPLOADED,
-          DOCUMENT_BACK_UPLOADED,
-        ].each do |event_type|
+            WAITING_FOR_USER_TO_REDIRECT,
+            APP_OPENED,
+            DOCUMENT_FRONT_UPLOADED,
+            DOCUMENT_BACK_UPLOADED,
+          ].each do |event_type|
             socure_docv_send_webhook(docv_transaction_token: @docv_transaction_token, event_type:)
           end
 
