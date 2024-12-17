@@ -80,8 +80,10 @@ RSpec.describe SocureWebhookController do
             b
           end
           before do
+            allow(IdentityConfig.store).to receive(:ruby_workers_idv_enabled).and_return(false)
             allow(IdentityConfig.store)
               .to receive(:socure_docv_webhook_repeat_endpoints).and_return(endpoints)
+            allow(SocureDocvResultsJob).to receive(:perform_now)
 
             dcs = create(:document_capture_session, :socure)
             webhook_body[:event][:docvTransactionToken] = dcs.socure_docv_transaction_token
@@ -102,25 +104,15 @@ RSpec.describe SocureWebhookController do
             post :create, params: webhook_body
           end
 
-          context 'processes webhook if broadcast fails' do
+          context 'when idv workers are enabled' do
             before do
-              allow(SocureDocvResultsJob).to receive(:perform_later)
-              allow_any_instance_of(DocAuth::Socure::WebhookRepeater)
-                .to receive(:repeat).and_raise('uh-oh')
-              expect(NewRelic::Agent).to receive(:notice_error) do |*args|
-                expect(args.first).to be_a_kind_of(RuntimeError)
-                expect(args.last).to eq(
-                  {
-                    custom_params: {
-                      event: 'Failed to broadcast Socure webhook',
-                      body: JSON.parse(repeated_body.to_json),
-                    },
-                  },
-                )
-              end
+              allow(IdentityConfig.store).to receive(:ruby_workers_idv_enabled).and_return(true)
             end
 
-            it 'does not repeat webhooks' do
+            it 'queues SocureDocvRepeatWebhook jobs' do
+              expect(SocureDocvRepeatWebhooksJob)
+                .to receive(:perform_later).exactly(endpoints.length).times
+
               post :create, params: webhook_body
             end
           end
@@ -147,9 +139,10 @@ RSpec.describe SocureWebhookController do
                   )
                 end
               end
+              expect(Faraday).to receive(:new).once.and_call_original
             end
 
-            it 'allows sending repeat requests to remaining endpoints' do
+            it 'sends repeat requests to remaining endpoints' do
               post :create, params: webhook_body
             end
           end

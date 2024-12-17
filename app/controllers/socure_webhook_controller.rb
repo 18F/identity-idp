@@ -147,15 +147,12 @@ class SocureWebhookController < ApplicationController
 
     body = socure_params.to_h
 
-    wr = DocAuth::Socure::WebhookRepeater.new(body:, headers:, endpoints:)
-    wr.broadcast
-  rescue => exception
-    NewRelic::Agent.notice_error(
-      exception,
-      custom_params: {
-        event: 'Failed to broadcast Socure webhook',
-        body:,
-      },
-    )
+    endpoints.each do |endpoint|
+      if IdentityConfig.store.ruby_workers_idv_enabled
+        SocureDocvRepeatWebhooksJob.perform_later(body:, headers:, endpoint:)
+      else
+        SocureDocvRepeatWebhooksJob.perform_now(body:, headers:, endpoint:)
+      end
+    end
   end
 end
