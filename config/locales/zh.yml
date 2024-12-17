@@ -601,7 +601,7 @@ doc_auth.headers.underage: 不符合年龄规定
 doc_auth.headers.unreadable_id: 我们无法读取你的身份证件
 doc_auth.headings.address: 更新你的邮政地址
 doc_auth.headings.back: 驾照或州政府颁发身份证件的背面。
-doc_auth.headings.capture_complete: 我们验证了你的身份证件
+doc_auth.headings.capture_complete: 我们验证了你的身份文件
 doc_auth.headings.capture_scan_warning_html: 我们读取不到你身份证件上的条形码。如果以下信息不正确，请将州政府颁发的身份证件%{link_html}。
 doc_auth.headings.capture_scan_warning_link: 上传新照片
 doc_auth.headings.document_capture: 添加你身份证件的照片
