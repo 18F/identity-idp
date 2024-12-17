@@ -149,6 +149,9 @@ Rails.application.routes.draw do
 
     if IdentityConfig.store.enable_test_routes
       namespace :test do
+        get '/ipp' => 'ipp#index'
+        put '/ipp' => 'ipp#update'
+
         # Assertion granting test start + return.
         get '/saml/login' => 'saml_test#index'
         get '/saml' => 'saml_test#start'
