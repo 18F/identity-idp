@@ -92,7 +92,6 @@ module Users
       ab_test_bucket(:DESKTOP_FT_UNLOCK_SETUP) == (:desktop_ft_unlock_option_shown)
     end
 
-
     def threatmetrix_variables
       return {} unless FeatureManagement.account_creation_device_profiling_collecting_enabled?
       session_id = generate_threatmetrix_session_id

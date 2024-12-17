@@ -11,7 +11,6 @@ RSpec.feature 'ThreatMetrix in account creation', :js do
     click_on t('links.create_account')
     fill_in t('forms.registration.labels.email'), with: Faker::Internet.email
     check t('sign_up.terms', app_name: APP_NAME)
-    select 'Reject', from: :mock_profiling_result
     click_button t('forms.buttons.submit.default')
     user = confirm_last_user
     set_password(user)
@@ -19,6 +18,7 @@ RSpec.feature 'ThreatMetrix in account creation', :js do
     expect_any_instance_of(AccountCreationThreatMetrixJob).to receive(:analytics).with(user)
       .and_return(fake_analytics)
     select_2fa_option('backup_code')
+    select 'Reject', from: :mock_profiling_result
     click_continue
 
     expect(fake_analytics).to have_logged_event(

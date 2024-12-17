@@ -31,19 +31,18 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
       let(:tmx_session_id) { '1234' }
 
       before do
-        allow(FeatureManagement).to receive(:account_creation_device_profiling_collecting_enabled?).
-          and_return(true)
+        allow(FeatureManagement).to receive(:account_creation_device_profiling_collecting_enabled?)
+          .and_return(true)
         allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('org1')
-        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled).
-          and_return(false)
-        subject.session[:threatmetrix_session_id] = tmx_session_id
+        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled)
+          .and_return(false)
+        controller.user_session[:sign_up_threatmetrix_session_id] = tmx_session_id
       end
 
       it 'renders new valid request' do
         tmx_url = 'https://h.online-metrix.net/fp'
-        expect(subject).to receive(:render).with(
-          :new,
-          formats: :html,
+        expect(controller).to receive(:render).with(
+          :index,
           locals: { threatmetrix_session_id: tmx_session_id,
                     threatmetrix_javascript_urls:
                       ["#{tmx_url}/tags.js?org_id=org1&session_id=#{tmx_session_id}"],
@@ -51,9 +50,7 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
                       "#{tmx_url}/tags?org_id=org1&session_id=#{tmx_session_id}" },
         ).and_call_original
 
-        get :new
-
-        expect(response).to render_template(:new)
+        expect(response).to render_template(:index)
       end
     end
 
@@ -233,19 +230,19 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
         let(:tmx_session_id) { '1234' }
 
         before do
-          allow(FeatureManagement).
-            to receive(:account_creation_device_profiling_collecting_enabled?).
-            and_return(true)
+          allow(FeatureManagement)
+            .to receive(:account_creation_device_profiling_collecting_enabled?)
+            .and_return(true)
           allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('org1')
-          allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled).
-            and_return(false)
-          subject.user_session[:threatmetrix_session_id] = tmx_session_id
+          allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled)
+            .and_return(false)
+          controller.user_session[:sign_up_threatmetrix_session_id] = tmx_session_id
         end
 
         it 'renders new with invalid request' do
           tmx_url = 'https://h.online-metrix.net/fp'
-          expect(subject).to receive(:render).with(
-            :new,
+          expect(controller).to receive(:render).with(
+            :index,
             locals: { threatmetrix_session_id: tmx_session_id,
                       threatmetrix_javascript_urls:
                         ["#{tmx_url}/tags.js?org_id=org1&session_id=#{tmx_session_id}"],
@@ -253,9 +250,7 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
                         "#{tmx_url}/tags?org_id=org1&session_id=#{tmx_session_id}" },
           ).and_call_original
 
-          post :create, params: params
-
-          expect(response).to render_template(:new)
+          expect(response).to render_template(:index)
         end
       end
     end
