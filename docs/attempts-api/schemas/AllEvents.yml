@@ -1,0 +1,7 @@
+type: object
+properties:
+   user-registration-email-submitted:
+    $ref: './events/UserRegistrationEmailSubmitted.yml'
+
+
+  

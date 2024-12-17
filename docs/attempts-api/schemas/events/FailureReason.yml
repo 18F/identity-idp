@@ -1,0 +1,7 @@
+type: object
+description: |
+  An OPTIONAL object. An associative array of attributes and errors if success is false
+properties: 
+  additionalProperties:
+    type: array
+    descripton: Errors that explain the failure
