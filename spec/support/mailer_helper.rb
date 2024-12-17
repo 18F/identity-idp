@@ -33,6 +33,24 @@ module MailerHelper
     expect(email).to_not be(nil), error_message
   end
 
+  # @param [String,nil] to If provided, the email address the message must've been sent to
+  # @param [String,nil] subject If provided, the subject the email must've had
+  # @param [String[],nil] Array of substrings that must appear in body.
+  def expect_email_not_delivered(to: nil, subject: nil, body: nil)
+    email = find_sent_email(to:, subject:, body:)
+
+    error_message = <<~ERROR
+      Found an email matching the below (but shouldn't have):
+        to: #{to}
+        subject: #{subject}
+        body: #{body}
+      Sent mails:
+      #{summarize_all_deliveries(to:, subject:, body:).indent(2)}
+    ERROR
+
+    expect(email).to be(nil), error_message
+  end
+
   private
 
   def body_matches(email:, body:)

@@ -203,4 +203,181 @@ RSpec.describe 'mailer_helper' do
       end
     end
   end
+
+  describe '#expect_email_not_delivered' do
+    context 'when searching by to' do
+      context 'and not found' do
+        it 'does not raise' do
+          expect do
+            expect_email_not_delivered(to: 'otheruser@example.com')
+          end.not_to raise_error
+        end
+      end
+      context 'and found' do
+        it 'raises an appropriate error' do
+          expect do
+            expect_email_not_delivered(to: 'user@example.com')
+          end.to raise_error(
+            satisfy do |err|
+              expect(err.message).to eql(
+                <<~END,
+                  Found an email matching the below (but shouldn't have):
+                    to: user@example.com
+                    subject: 
+                    body: 
+                  Sent mails:
+                    - To:      [\"user@example.com\"]
+                      Subject: Test subject 1
+                END
+              )
+            end,
+          )
+        end
+      end
+    end
+
+    context 'when searching by subject' do
+      context 'and not found' do
+        it 'does not raise' do
+          expect do
+            expect_email_not_delivered(subject: 'Another unrelated subject')
+          end.not_to raise_error
+        end
+        context 'and found' do
+          it 'raises an appropriate error' do
+            expect do
+              expect_email_not_delivered(subject: 'Test subject 1')
+            end.to raise_error(
+              satisfy do |err|
+                expect(err.message).to eql(
+                  <<~END,
+                    Found an email matching the below (but shouldn't have):
+                      to: 
+                      subject: Test subject 1
+                      body: 
+                    Sent mails:
+                      - To:      [\"user@example.com\"]
+                        Subject: Test subject 1
+                  END
+                )
+              end,
+            )
+          end
+        end
+      end
+    end
+
+    context 'when searching by body' do
+      context 'with string' do
+        context 'when not found' do
+          it 'does not raise' do
+            expect do
+              expect_email_not_delivered(
+                body: 'Hellow',
+              )
+            end.not_to raise_error
+          end
+        end
+        context 'when found' do
+          it 'raises an appropriate error' do
+            expect do
+              expect_email_not_delivered(body: 'Hello')
+            end.to raise_error(
+              satisfy do |err|
+                expect(err.message).to eql(
+                  <<~END,
+                    Found an email matching the below (but shouldn't have):
+                      to: 
+                      subject: 
+                      body: Hello
+                    Sent mails:
+                      - To:      [\"user@example.com\"]
+                        Subject: Test subject 1
+                        Body:
+                          - "Hello" (found)
+                  END
+                )
+              end,
+            )
+          end
+        end
+      end
+      context 'with array' do
+        context 'when not found' do
+          it 'does not raise' do
+            expect do
+              expect_email_not_delivered(
+                body: ['Hellow', 'world'],
+              )
+            end.not_to raise_error
+          end
+        end
+        context 'and found' do
+          it 'raises an appropriate error' do
+            expect do
+              expect_email_not_delivered(body: ['Hello', 'world'])
+            end.to raise_error(
+              satisfy do |err|
+                expect(err.message).to eql(
+                  <<~END,
+                    Found an email matching the below (but shouldn't have):
+                      to: 
+                      subject: 
+                      body: ["Hello", "world"]
+                    Sent mails:
+                      - To:      [\"user@example.com\"]
+                        Subject: Test subject 1
+                        Body:
+                          - "Hello" (found)
+                          - "world" (found)
+                  END
+                )
+              end,
+            )
+          end
+        end
+      end
+    end
+
+    context 'when searching by to + subject + body' do
+      context 'and not found' do
+        it 'does not raise' do
+          expect do
+            expect_email_not_delivered(
+              to: 'otheruser@example.com',
+              subject: 'Unrelated subject',
+              body: 'Hellow',
+            )
+          end.not_to raise_error
+        end
+        context 'and it matches' do
+          it 'raises an appropriate error' do
+            expect do
+              expect_email_not_delivered(
+                to: 'user@example.com',
+                subject: 'Test subject 1',
+                body: 'Hello',
+              )
+            end.to raise_error(
+              satisfy do |err|
+                expect(err.message).to eql(
+                  <<~END,
+                    Found an email matching the below (but shouldn't have):
+                      to: user@example.com
+                      subject: Test subject 1
+                      body: Hello
+                    Sent mails:
+                      - To:      [\"user@example.com\"]
+                        Subject: Test subject 1
+                        Body:
+                          - "Hello" (found)
+                  END
+                )
+              end,
+            )
+          end
+        end
+      end
+    end
+  end
 end
