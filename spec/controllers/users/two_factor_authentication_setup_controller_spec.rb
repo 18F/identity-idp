@@ -239,7 +239,7 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
           allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('org1')
           allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled).
             and_return(false)
-          subject.session[:threatmetrix_session_id] = tmx_session_id
+          subject.user_session[:threatmetrix_session_id] = tmx_session_id
         end
 
         it 'renders new with invalid request' do
