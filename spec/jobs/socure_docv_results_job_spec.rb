@@ -116,8 +116,7 @@ RSpec.describe SocureDocvResultsJob do
       perform
       expect(fake_analytics).to have_logged_event(
         :idv_socure_verification_data_requested,
-          hash_including(expected_socure_log.merge({ async: true }),
-        ),
+        hash_including(expected_socure_log.merge({ async: true })),
       )
     end
 

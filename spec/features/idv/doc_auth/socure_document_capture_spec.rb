@@ -352,8 +352,8 @@ RSpec.feature 'document capture step', :js do
 
   context 'a network error getting the capture path' do
     before do
-      allow_any_instance_of(Faraday::Connection).to receive(:post).
-        and_raise(Faraday::ConnectionFailed)
+      allow_any_instance_of(Faraday::Connection).to receive(:post)
+        .and_raise(Faraday::ConnectionFailed)
 
       visit_idp_from_oidc_sp_with_ial2
       sign_in_and_2fa_user(@user)
