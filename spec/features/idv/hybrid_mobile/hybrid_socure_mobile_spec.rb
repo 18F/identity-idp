@@ -40,7 +40,7 @@ RSpec.describe 'Hybrid Flow' do
       @pass_stub = stub_docv_verification_data_pass(docv_transaction_token: @docv_transaction_token)
     end
     it 'proofs and hands off to mobile', js: true do
-      expect(DocAuth::Socure::WebhookRepeater).not_to receive(:new)
+      expect(SocureDocvRepeatWebhookJob).not_to receive(:perform_later)
       user = nil
 
       perform_in_browser(:desktop) do
@@ -138,7 +138,7 @@ RSpec.describe 'Hybrid Flow' do
     end
 
     it 'shows the waiting screen correctly after cancelling from mobile and restarting', js: true do
-      expect(DocAuth::Socure::WebhookRepeater).not_to receive(:new)
+      expect(SocureDocvRepeatWebhookJob).not_to receive(:perform_later)
       user = nil
 
       perform_in_browser(:desktop) do
@@ -183,11 +183,13 @@ RSpec.describe 'Hybrid Flow' do
             errors: { network: I18n.t('doc_auth.errors.general.network_error') },
           ),
         )
-        expect(DocAuth::Socure::WebhookRepeater)
-          .to receive(:new).exactly(6 * max_attempts).times.and_call_original
       end
 
       it 'shows capture complete on mobile and error page on desktop', js: true do
+        expect(SocureDocvRepeatWebhookJob).to receive(:perform_later)
+          .exactly(6 * max_attempts * socure_docv_webhook_repeat_endpoints.length)
+          .times.and_call_original
+
         user = nil
 
         perform_in_browser(:desktop) do
@@ -231,11 +233,13 @@ RSpec.describe 'Hybrid Flow' do
         # recovers when fails to repeat webhook to an endpoint
         allow_any_instance_of(DocAuth::Socure::WebhookRepeater)
           .to receive(:send_http_post_request).and_raise('doh')
-        expect(DocAuth::Socure::WebhookRepeater)
-          .to receive(:new).exactly(6).times.and_call_original
       end
 
       it 'prefills the phone number used on the phone step', :js do
+        expect(SocureDocvRepeatWebhookJob).to receive(:perform_later)
+          .exactly(6 * socure_docv_webhook_repeat_endpoints.length)
+          .times.and_call_original
+
         user = create(:user, :with_authentication_app)
 
         perform_in_browser(:desktop) do
@@ -332,14 +336,15 @@ RSpec.describe 'Hybrid Flow' do
         end
 
         before do
-          # recovers when fails to broadcast webhook
+          # recovers when fails to repeat webhook
           allow_any_instance_of(DocAuth::Socure::WebhookRepeater)
-            .to receive(:broadcast).and_raise('doh')
-          expect(DocAuth::Socure::WebhookRepeater)
-            .to receive(:new).exactly(6).times.and_call_original
+            .to receive(:send_http_post_request).and_raise('doh')
         end
 
         it 'waits to fetch verificationdata using docv capture session token', js: true do
+          expect(SocureDocvRepeatWebhookJob).to receive(:perform_later)
+            .exactly(6 * socure_docv_webhook_repeat_endpoints.length).times.and_call_original
+
           user = nil
 
           perform_in_browser(:desktop) do
