@@ -78,7 +78,7 @@ module DocAuth
             flow_path: nil,
             liveness_checking_required: @biometric_comparison_required,
             issue_year: state_id_issued&.year,
-            doc_auth_success: doc_auth_success?,
+            doc_auth_success: successful_result?,
             vendor: 'Socure',
             address_line2_present: address2.present?,
             zip_code: zipcode,
@@ -153,7 +153,7 @@ module DocAuth
             ).with_indifferent_access : {}
           rescue JSON::JSONError
             {}
-          end
+          end.symbolize_keys
           @parsed_response_body
         end
 
