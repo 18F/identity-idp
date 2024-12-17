@@ -57,10 +57,6 @@ class OpenidConnectUserInfoPresenter
     identity.user.confirmed_email_addresses.map(&:email)
   end
 
-  def email_context
-    @email_context ||= EmailContext.new(identity.user)
-  end
-
   def ial2_attributes
     {
       given_name: stringify_attr(ial2_data.first_name),
