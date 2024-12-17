@@ -148,11 +148,7 @@ class SocureWebhookController < ApplicationController
     body = socure_params.to_h
 
     endpoints.each do |endpoint|
-      if IdentityConfig.store.ruby_workers_idv_enabled
-        SocureDocvRepeatWebhooksJob.perform_later(body:, headers:, endpoint:)
-      else
-        SocureDocvRepeatWebhooksJob.perform_now(body:, headers:, endpoint:)
-      end
+      SocureDocvRepeatWebhookJob.perform_later(body:, headers:, endpoint:)
     end
   end
 end
