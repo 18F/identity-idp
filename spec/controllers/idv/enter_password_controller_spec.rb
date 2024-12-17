@@ -13,6 +13,8 @@ RSpec.describe Idv::EnterPasswordController do
   end
   let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE }
   let(:use_gpo) { false }
+  let(:threatmetrix_enabled)  { true }
+  let(:threatmetrix_result) { 'pass' }
   let(:idv_session) do
     subject.idv_session
   end
@@ -28,6 +30,7 @@ RSpec.describe Idv::EnterPasswordController do
     subject.idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
     subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:ssn]
     subject.idv_session.threatmetrix_session_id = 'random-session-id'
+    subject.idv_session.threatmetrix_review_status = threatmetrix_result
     subject.idv_session.resolution_successful = true
     subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE
     subject.idv_session.resolution_successful = true
@@ -43,6 +46,9 @@ RSpec.describe Idv::EnterPasswordController do
     end
 
     subject.idv_session.applicant = applicant.with_indifferent_access
+
+    allow(IdentityConfig.store).to receive(:proofing_device_profiling)
+      .and_return(threatmetrix_enabled ? :enabled : :disabled)
   end
 
   describe '#step_info' do
@@ -404,6 +410,41 @@ RSpec.describe Idv::EnterPasswordController do
         expect(events_count).to eq 1
       end
 
+      context 'user was flagged by ThreatMetrix' do
+        let(:threatmetrix_result) { 'reject' }
+
+        it 'sends the idv_please_call email' do
+          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+          expect_delivered_email(
+            to: user.confirmed_email_addresses.first.email,
+            subject: t('user_mailer.idv_please_call.subject', app_name: APP_NAME),
+          )
+        end
+
+        it 'does not send the account_verified email' do
+          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+          expect_email_not_delivered(
+            subject: t('user_mailer.account_verified.subject', app_name: APP_NAME),
+          )
+        end
+
+        context 'but ThreatMetrix disabled' do
+          let(:threatmetrix_enabled) { false }
+          it 'does not send the idv_please_call email' do
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+            expect_email_not_delivered(
+              subject: t('user_mailer.idv_please_call.subject'),
+            )
+          end
+          it 'sends the account_verified email' do
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+            expect_delivered_email(
+              subject: t('user_mailer.account_verified.subject', app_name: APP_NAME),
+            )
+          end
+        end
+      end
+
       context 'with in person profile' do
         let!(:enrollment) do
           create(:in_person_enrollment, :establishing, user: user, profile: nil)
@@ -470,6 +511,17 @@ RSpec.describe Idv::EnterPasswordController do
             to: [user.email_addresses.first.email],
             subject: t('user_mailer.in_person_ready_to_verify.subject', app_name: APP_NAME),
           )
+        end
+
+        context 'user was flagged by ThreatMetrix' do
+          let(:threatmetrix_result) { 'reject' }
+
+          it 'does not send the idv_please_call email' do
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+            expect_email_not_delivered(
+              subject: t('user_mailer.idv_please_call.subject'),
+            )
+          end
         end
 
         context 'when there is a 4xx error' do
@@ -963,6 +1015,27 @@ RSpec.describe Idv::EnterPasswordController do
 
         it 'does not mint a GPO pending profile' do
           expect(user.reload.gpo_verification_pending_profile).to be_nil
+        end
+      end
+
+      context 'user was flagged by ThreatMetrix' do
+        let(:threatmetrix_review_status) { 'reject' }
+
+        it 'does not send the idv_please_call email' do
+          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+          expect_email_not_delivered(
+            subject: t('user_mailer.idv_please_call.subject'),
+          )
+        end
+
+        context 'but ThreatMetrix disabled' do
+          let(:threatmetrix_enabled) { false }
+          it 'does not send the idv_please_call email' do
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+            expect_email_not_delivered(
+              subject: t('user_mailer.idv_please_call.subject'),
+            )
+          end
         end
       end
     end
