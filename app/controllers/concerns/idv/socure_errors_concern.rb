@@ -6,16 +6,6 @@ module Idv
       @presenter = socure_errors_presenter(handle_stored_result)
     end
 
-    def goto_in_person
-      InPersonEnrollment.find_or_initialize_by(
-        user: document_capture_session.user,
-        status: :establishing,
-        sponsor_id: IdentityConfig.store.usps_ipp_sponsor_id,
-      ).save!
-
-      redirect_to idv_in_person_url
-    end
-
     private
 
     def remaining_attempts
