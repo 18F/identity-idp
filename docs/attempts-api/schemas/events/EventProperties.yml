@@ -4,18 +4,12 @@ properties:
     type: string
     description: |
       Indicates the SP URL (redirect_uri) from which the action was triggered.
-  eventName:
-    type: string
   occurred_at:
     type: integer
     format: int64
     description: The time when the event occurred.
   subject:
     $ref: './Subject.yml'
-  success:
-    type: boolean
-    description: |
-      An OPTIONAL boolean value. Indicates whether the event completed successfully. Omitted for some events where failure cannot occur and its meaning may be confusing.
   user_ip_address:
     type: string
     description: The end user’s IP address.

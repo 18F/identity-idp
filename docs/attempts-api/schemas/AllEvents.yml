@@ -1,7 +1,16 @@
 type: object
 properties:
-   user-registration-email-submitted:
+  mfa-enroll-options-selected:
+    $ref: './events/MfaEnrollOptionsSelected.yml'
+  user-registration-email-confirmed:
+    $ref: './events/UserRegistrationEmailConfirmed.yml'
+  user-registration-email-submitted:
     $ref: './events/UserRegistrationEmailSubmitted.yml'
+  user-registration-password-submitted:
+    $ref: './events/UserRegistrationPasswordSubmitted.yml'
+
+    
+   
 
 
   
