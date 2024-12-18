@@ -14,12 +14,17 @@ interface SelfieCaptureProps {
    * the capture component.
    */
   showHelpInitially: boolean;
+  /**
+   * Specify whether we should try to capture using Acuant immediately
+   */
+  immediatelyBeginCapture: boolean;
 }
 
 const SelfieCaptureContext = createContext<SelfieCaptureProps>({
   isSelfieCaptureEnabled: false,
   isSelfieDesktopTestMode: false,
   showHelpInitially: true,
+  immediatelyBeginCapture: false,
 });
 
 SelfieCaptureContext.displayName = 'SelfieCaptureContext';

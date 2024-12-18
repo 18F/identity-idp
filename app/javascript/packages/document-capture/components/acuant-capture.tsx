@@ -327,7 +327,7 @@ function AcuantCapture(
   } = useContext(AcuantContext);
   const { isMockClient } = useContext(UploadContext);
   const { trackEvent } = useContext(AnalyticsContext);
-  const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
+  const { isSelfieCaptureEnabled, immediatelyBeginCapture } = useContext(SelfieCaptureContext);
   const fullScreenRef = useRef<FullScreenRefHandle>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const isForceUploading = useRef(false);
@@ -349,7 +349,9 @@ function AcuantCapture(
   // This hook does that.
   const isBackOfId = name === 'back';
   useLogCameraInfo({ isBackOfId, hasStartedCropping });
-  const [isCapturingEnvironment, setIsCapturingEnvironment] = useState(selfieCapture);
+  const [isCapturingEnvironment, setIsCapturingEnvironment] = useState(
+    selfieCapture && immediatelyBeginCapture,
+  );
 
   const {
     failedCaptureAttempts,
