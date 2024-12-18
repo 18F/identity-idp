@@ -219,6 +219,63 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
         expect(response).to redirect_to(idv_path)
       end
     end
+
+    context 'when the resolution proofing job completed successfully' do
+      let(:document_capture_session) do
+        DocumentCaptureSession.create(user:)
+      end
+
+      let(:resolution_vendor_name) { 'ResolutionVendor' }
+
+      let(:residential_resolution_vendor_name) { 'ResidentialResolutionVendor' }
+
+      let(:async_state) do
+        # Here we're trying to match the store to redis -> read from redis flow this data travels
+        adjudicated_result = Proofing::Resolution::ResultAdjudicator.new(
+          state_id_result: Proofing::StateIdResult.new(
+            success: true,
+            errors: {},
+            exception: nil,
+            vendor_name: :aamva,
+            transaction_id: 'abc123',
+            verified_attributes: [],
+          ),
+          device_profiling_result: Proofing::DdpResult.new(success: true),
+          ipp_enrollment_in_progress: true,
+          residential_resolution_result: Proofing::Resolution::Result.new(
+            success: true,
+            vendor_name: residential_resolution_vendor_name,
+          ),
+          resolution_result: Proofing::Resolution::Result.new(
+            success: true,
+            vendor_name: resolution_vendor_name,
+          ),
+          same_address_as_id: true,
+          should_proof_state_id: true,
+          applicant_pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
+        ).adjudicated_result.to_h
+
+        document_capture_session.create_proofing_session
+
+        document_capture_session.store_proofing_result(adjudicated_result)
+
+        document_capture_session.load_proofing_result
+      end
+
+      before do
+        allow(controller).to receive(:load_async_state).and_return(async_state)
+      end
+
+      it 'sets resolution_vendor on idv_session' do
+        get :show
+        expect(controller.idv_session.resolution_vendor).to eql(resolution_vendor_name)
+      end
+
+      it 'sets residential_resolution_vendor on idv_session' do
+        get :show
+        expect(controller.idv_session.residential_resolution_vendor).to eql(residential_resolution_vendor_name)
+      end
+    end
   end
 
   describe '#update' do
