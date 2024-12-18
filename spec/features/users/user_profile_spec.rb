@@ -177,7 +177,11 @@ RSpec.feature 'User profile' do
 
         click_agree_and_continue
 
-        expect(current_url).to start_with('http://localhost:7654/auth/result')
+        expect(page).to have_current_path(
+          'http://localhost:7654/auth/result',
+          url: true,
+          ignore_query: true,
+        )
       end
     end
   end
