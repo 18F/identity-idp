@@ -27,6 +27,7 @@ RSpec.feature 'document capture step', :js do
     @docv_transaction_token = stub_docv_document_request
     allow(IdentityConfig.store).to receive(:socure_docv_verification_data_test_mode)
       .and_return(socure_docv_verification_data_test_mode)
+    allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
   end
 
   context 'happy path', allow_browser_log: true do
@@ -44,7 +45,6 @@ RSpec.feature 'document capture step', :js do
 
       context 'rate limits calls to backend docauth vendor', allow_browser_log: true do
         before do
-          allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
           (max_attempts - 1).times do
             socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
           end
@@ -88,6 +88,37 @@ RSpec.feature 'document capture step', :js do
 
             expect(page).to have_current_path(idv_session_errors_rate_limited_path)
           end
+        end
+      end
+
+      context 'shows the correct attempts on error pages' do
+        before do
+          stub_docv_verification_data_fail_with(
+            docv_transaction_token: @docv_transaction_token,
+            errors: ['XXXX'],
+          )
+        end
+
+        it 'remaining attempts displayed is properly decremented' do
+          socure_docv_upload_documents(
+            docv_transaction_token: @docv_transaction_token,
+          )
+          visit idv_socure_document_capture_update_path
+          expect(page).to have_content(
+            strip_tags(
+              t(
+                'doc_auth.rate_limit_warning.plural_html',
+                remaining_attempts: max_attempts - 1,
+              ),
+            ),
+          )
+
+          visit idv_socure_document_capture_path
+          socure_docv_upload_documents(
+            docv_transaction_token: @docv_transaction_token,
+          )
+          visit idv_socure_document_capture_update_path
+          expect(page).to have_content(strip_tags(t('doc_auth.rate_limit_warning.singular_html')))
         end
       end
 
