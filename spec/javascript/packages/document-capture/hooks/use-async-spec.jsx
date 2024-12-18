@@ -43,7 +43,7 @@ describe('document-capture/hooks/use-async', () => {
 
     expect(container.textContent).to.equal('Loading');
 
-    reject();
+    reject(new Error());
 
     expect(await findByText('Error')).to.be.ok();
     expect(console).to.have.loggedError();
