@@ -20,7 +20,7 @@ RSpec.feature 'Password recovery via personal key' do
     fill_in_code_with_last_phone_otp
     click_submit_default
 
-    expect(current_path).to eq reactivate_account_path
+    expect(page).to have_current_path reactivate_account_path
 
     reactivate_profile(new_password, personal_key)
 
@@ -39,7 +39,7 @@ RSpec.feature 'Password recovery via personal key' do
     fill_in_code_with_last_phone_otp
     click_submit_default
 
-    expect(current_path).to eq(reactivate_account_path)
+    expect(page).to have_current_path(reactivate_account_path)
 
     visit account_path
 
@@ -59,7 +59,7 @@ RSpec.feature 'Password recovery via personal key' do
     visit account_path
 
     expect(page).to have_content(t('account.index.verification.verified_badge'))
-    expect(current_path).to eq(account_path)
+    expect(page).to have_current_path(account_path)
   end
 
   scenario 'resets password, not allowed to use personal key as 2fa', email: true do
@@ -86,7 +86,7 @@ RSpec.feature 'Password recovery via personal key' do
       click_on t('links.account.reactivate.with_key')
       click_on t('links.reverify')
 
-      expect(current_path).to eq(idv_welcome_path)
+      expect(page).to have_current_path(idv_welcome_path)
     end
 
     scenario 'resets password, view modal and close it', email: true do
@@ -124,12 +124,12 @@ RSpec.feature 'Password recovery via personal key' do
   def reactivate_profile(password, personal_key)
     click_on t('links.account.reactivate.with_key')
 
-    expect(current_path).to eq verify_personal_key_path
+    expect(page).to have_current_path verify_personal_key_path
 
     fill_in 'personal_key', with: personal_key
     click_continue
 
-    expect(current_path).to eq verify_password_path
+    expect(page).to have_current_path verify_password_path
 
     fill_in 'Password', with: password
     click_continue

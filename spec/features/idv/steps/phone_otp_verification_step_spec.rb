@@ -11,14 +11,14 @@ RSpec.feature 'phone otp verification step spec', :js do
 
     # Attempt to bypass the step
     visit idv_enter_password_path
-    expect(current_path).to eq(idv_otp_verification_path)
+    expect(page).to have_current_path(idv_otp_verification_path)
 
     # Enter an incorrect otp
     fill_in 'code', with: '000000'
     click_submit_default
 
     expect(page).to have_content(t('two_factor_authentication.invalid_otp'))
-    expect(current_path).to eq(idv_otp_verification_path)
+    expect(page).to have_current_path(idv_otp_verification_path)
 
     # Enter the correct code
     fill_in_code_with_last_phone_otp
@@ -52,7 +52,7 @@ RSpec.feature 'phone otp verification step spec', :js do
     click_on t('links.two_factor_authentication.send_another_code')
 
     expect(Telephony::Test::Message.messages.count).to eq(sent_message_count + 1)
-    expect(current_path).to eq(idv_otp_verification_path)
+    expect(page).to have_current_path(idv_otp_verification_path)
 
     fill_in_code_with_last_phone_otp
     click_submit_default

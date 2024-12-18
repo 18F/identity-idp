@@ -88,7 +88,7 @@ RSpec.feature 'Backup codes' do
     let(:user) { create(:user, :with_backup_code) }
 
     it 'the user is not prompted to set up another MFA upon login' do
-      expect(current_path).to eq account_two_factor_authentication_path
+      expect(page).to have_current_path account_two_factor_authentication_path
     end
   end
 end

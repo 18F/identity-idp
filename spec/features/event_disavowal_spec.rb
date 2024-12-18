@@ -172,7 +172,9 @@ RSpec.feature 'disavowing an action' do
 
     # We should be on the MFA screen because we logged in with the new password
     expect(page).to have_content(t('two_factor_authentication.header_text'))
-    expect(page.current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
+    expect(page).to have_current_path(
+      login_two_factor_path(otp_delivery_preference: :sms),
+    )
   end
 
   scenario 'disavowing an event with javascript enabled', :js do
@@ -194,8 +196,10 @@ RSpec.feature 'disavowing an action' do
   end
 
   def submit_prefilled_otp_code(user, delivery_preference)
-    expect(current_path)
-      .to eq login_two_factor_path(otp_delivery_preference: delivery_preference)
+    expect(page).to have_current_path(
+      login_two_factor_path(otp_delivery_preference: delivery_preference),
+      ignore_query: true,
+    )
     fill_in('code', with: user.reload.direct_otp)
     click_button t('forms.buttons.submit.default')
   end
@@ -232,7 +236,9 @@ RSpec.feature 'disavowing an action' do
       expect(page).to have_current_path(login_two_factor_piv_cac_path)
     else
       expect(page).to have_content(t('two_factor_authentication.header_text'))
-      expect(page.current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
+      expect(page).to have_current_path(
+        login_two_factor_path(otp_delivery_preference: :sms),
+      )
     end
   end
 end

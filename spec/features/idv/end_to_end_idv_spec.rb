@@ -80,6 +80,7 @@ RSpec.describe 'Identity verification', :js do
     test_go_back_from_phone
     complete_otp_verification_page(user)
 
+    expect(page).to have_current_path(idv_enter_password_path)
     test_go_back_from_enter_password
     complete_enter_password_step(user)
 
@@ -353,12 +354,12 @@ RSpec.describe 'Identity verification', :js do
   end
 
   def validate_personal_key_page
-    expect(current_path).to eq idv_personal_key_path
+    expect(page).to have_current_path idv_personal_key_path
 
     # Clicking acknowledge checkbox is required to continue
     click_continue
     expect(page).to have_content(t('forms.validation.required_checkbox'))
-    expect(current_path).to eq(idv_personal_key_path)
+    expect(page).to have_current_path(idv_personal_key_path)
 
     expect(page).to have_content(t('forms.personal_key_partial.acknowledgement.header'))
     expect(page).to have_content(t('forms.personal_key_partial.acknowledgement.text'))
@@ -382,7 +383,7 @@ RSpec.describe 'Identity verification', :js do
 
   def try_to_skip_ahead_before_signing_in
     visit idv_enter_password_path
-    expect(current_path).to eq(root_path)
+    expect(page).to have_current_path(root_path)
   end
 
   def try_to_skip_ahead_from_welcome
@@ -438,7 +439,7 @@ RSpec.describe 'Identity verification', :js do
       visible: :all,
     )
     visit idv_welcome_path
-    expect(current_path).to eql(idv_welcome_path)
+    expect(page).to have_current_path(idv_welcome_path)
     complete_welcome_step
     expect(page).to have_current_path(idv_agreement_path)
     expect(page).not_to have_checked_field(

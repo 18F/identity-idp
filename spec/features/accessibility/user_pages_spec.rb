@@ -6,7 +6,7 @@ RSpec.feature 'Accessibility on pages that require authentication', :js do
     email = 'test@example.com'
     sign_up_with(email)
 
-    expect(current_path).to eq(sign_up_verify_email_path)
+    expect(page).to have_current_path(sign_up_verify_email_path)
     # We can't validate markup here, since markup validation requires a page reload when using the
     # JS driver, but the sign up verify email path can only be visited once before redirecting to
     # the account creation form. Instead, we validate markup separately with the non-JS driver.
@@ -18,7 +18,7 @@ RSpec.feature 'Accessibility on pages that require authentication', :js do
       email = 'test@example.com'
       sign_up_with(email)
 
-      expect(current_path).to eq(sign_up_verify_email_path)
+      expect(page).to have_current_path(sign_up_verify_email_path)
       expect(page).to have_valid_markup
     end
   end
@@ -28,14 +28,14 @@ RSpec.feature 'Accessibility on pages that require authentication', :js do
       create(:user, :unconfirmed)
       confirm_last_user
 
-      expect(current_path).to eq(sign_up_enter_password_path)
+      expect(page).to have_current_path(sign_up_enter_password_path, ignore_query: true)
       expect_page_to_have_no_accessibility_violations(page)
     end
 
     scenario 'invalid confirmation token' do
       visit sign_up_create_email_confirmation_path(confirmation_token: '123456')
 
-      expect(current_path).to eq(sign_up_register_path)
+      expect(page).to have_current_path(sign_up_register_path)
       expect(page).to have_content(t('errors.messages.confirmation_invalid_token'))
       expect_page_to_have_no_accessibility_violations(page)
     end
@@ -45,7 +45,7 @@ RSpec.feature 'Accessibility on pages that require authentication', :js do
     scenario 'two factor options page' do
       sign_up_and_set_password
 
-      expect(current_path).to eq(authentication_methods_setup_path)
+      expect(page).to have_current_path(authentication_methods_setup_path)
       expect_page_to_have_no_accessibility_violations(page)
       phone_checkbox = page.find_field('two_factor_options_form_selection_phone', visible: :all)
       expect(phone_checkbox).to have_name(
@@ -61,7 +61,7 @@ RSpec.feature 'Accessibility on pages that require authentication', :js do
       find("label[for='two_factor_options_form_selection_phone']").click
       click_button t('forms.buttons.continue')
 
-      expect(current_path).to eq(phone_setup_path)
+      expect(page).to have_current_path(phone_setup_path)
       expect_page_to_have_no_accessibility_violations(page)
     end
 
@@ -69,7 +69,7 @@ RSpec.feature 'Accessibility on pages that require authentication', :js do
       user = create(:user, :fully_registered)
       sign_in_before_2fa(user)
 
-      expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: 'sms'))
+      expect(page).to have_current_path login_two_factor_path(otp_delivery_preference: 'sms')
       expect_page_to_have_no_accessibility_violations(page)
     end
 
@@ -79,7 +79,7 @@ RSpec.feature 'Accessibility on pages that require authentication', :js do
         sign_in_before_2fa(user)
         visit login_two_factor_path(otp_delivery_preference: 'sms')
 
-        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+        expect(page).to have_current_path login_two_factor_path(otp_delivery_preference: 'sms')
         expect_page_to_have_no_accessibility_violations(page)
       end
     end
@@ -90,7 +90,7 @@ RSpec.feature 'Accessibility on pages that require authentication', :js do
         sign_in_before_2fa(user)
         visit login_two_factor_path(otp_delivery_preference: 'voice')
 
-        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'voice')
+        expect(page).to have_current_path login_two_factor_path(otp_delivery_preference: 'voice')
         expect_page_to_have_no_accessibility_violations(page)
       end
     end

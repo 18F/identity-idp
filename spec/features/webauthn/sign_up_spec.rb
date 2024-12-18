@@ -33,13 +33,13 @@ RSpec.feature 'webauthn sign up' do
       visit_idp_from_ial1_oidc_sp_requesting_phishing_resistant(prompt: 'select_account')
       select_2fa_option('webauthn', visible: :all)
 
-      expect(current_path).to eq webauthn_setup_path
+      expect(page).to have_current_path webauthn_setup_path
 
       fill_in_nickname_and_click_continue
       mock_press_button_on_hardware_key_on_setup
       skip_second_mfa_prompt
 
-      expect(current_path).to eq(sign_up_completed_path)
+      expect(page).to have_current_path(sign_up_completed_path)
     end
   end
 end

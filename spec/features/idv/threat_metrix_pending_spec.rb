@@ -58,7 +58,7 @@ RSpec.feature 'Users pending ThreatMetrix review', :js do
     sign_in_live_with_2fa(user)
     click_agree_and_continue
 
-    expect(current_path).to eq('/auth/result')
+    expect(page).to have_current_path('/auth/result', ignore_query: true)
   end
 
   scenario 'users rejected from fraud review cannot perform idv' do
@@ -83,7 +83,7 @@ RSpec.feature 'Users pending ThreatMetrix review', :js do
     sign_in_live_with_2fa(user)
     click_agree_and_continue
 
-    expect(current_path).to eq('/auth/result')
+    expect(page).to have_current_path('/auth/result', ignore_query: true)
   end
 
   scenario 'users ThreatMetrix Pass, it logs idv_tmx_fraud_check event' do

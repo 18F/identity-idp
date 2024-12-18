@@ -97,11 +97,11 @@ RSpec.feature 'webauthn sign in' do
       end
 
       it 'redirects to options page on sign in' do
-        expect(current_path).to eq(login_two_factor_options_path)
+        expect(page).to have_current_path(login_two_factor_options_path)
       end
 
       it 'allows user to go to options page and still select webauthn as their option' do
-        expect(current_path).to eq(login_two_factor_options_path)
+        expect(page).to have_current_path(login_two_factor_options_path)
         select_2fa_option('webauthn_platform', visible: :all)
         click_continue
         expect(current_url).to eq(login_two_factor_webauthn_url(platform: true))
