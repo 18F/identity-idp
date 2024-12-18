@@ -512,7 +512,6 @@ production:
   aamva_send_id_type: false
   aamva_send_middle_name: false
   aamva_verification_url: 'https://verificationservices-cert.aamva.org:18449/dldv/2.1/online'
-  available_locales: 'en,es,fr'
   disable_email_sending: false
   disable_logout_get_request: false
   email_registrations_per_ip_track_only_mode: true
