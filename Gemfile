@@ -96,6 +96,8 @@ gem 'zxcvbn', '0.1.12'
 group :development do
   gem 'better_errors', '>= 2.5.1'
   gem 'derailed_benchmarks'
+  # Putting foreman here saves developers from having bin/setup when the Ruby version changes
+  gem 'foreman', require: false
   gem 'irb'
   gem 'letter_opener', '~> 1.8'
   gem 'rack-mini-profiler', '>= 1.1.3', require: false
