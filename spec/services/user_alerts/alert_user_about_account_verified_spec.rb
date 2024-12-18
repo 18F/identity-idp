@@ -38,7 +38,9 @@ RSpec.describe UserAlerts::AlertUserAboutAccountVerified do
         expect_delivered_email(
           to: [user.confirmed_email_addresses.first.email],
           subject: t('user_mailer.account_verified.subject', app_name: APP_NAME),
-          body: ['<table class="button expanded large radius">', 'localhost:3000'],
+          body: [
+            'http://www.example.com/redirect/return_to_sp/account_verified_cta',
+          ],
         )
       end
     end
@@ -50,7 +52,9 @@ RSpec.describe UserAlerts::AlertUserAboutAccountVerified do
         described_class.call(profile: profile)
 
         email_body = last_email.text_part.decoded.squish
-        expect(email_body).to_not include('<table class="button expanded large radius">')
+        expect(email_body).to_not include(
+          'http://www.example.com/redirect/return_to_sp/account_verified_cta',
+        )
       end
     end
 
@@ -69,7 +73,7 @@ RSpec.describe UserAlerts::AlertUserAboutAccountVerified do
         expect_delivered_email(
           to: [user.confirmed_email_addresses.first.email],
           subject: t('user_mailer.account_verified.subject', app_name: APP_NAME),
-          body: ['<table class="button expanded large radius">', 'http://example.com'],
+          body: ['http://example.com'],
         )
       end
     end
