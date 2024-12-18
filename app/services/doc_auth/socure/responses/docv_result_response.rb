@@ -51,16 +51,12 @@ module DocAuth
           NewRelic::Agent.notice_error(e)
           super(
             success: false,
-            errors: { network: true },
+            errors: { network: true, details: e.to_s },
             exception: e,
             extra: {
               backtrace: e.backtrace,
             },
           )
-        end
-
-        def doc_auth_success?
-          success?
         end
 
         def selfie_status
@@ -80,7 +76,7 @@ module DocAuth
             flow_path: nil,
             liveness_checking_required: @biometric_comparison_required,
             issue_year: state_id_issued&.year,
-            doc_auth_success: successful_result?,
+            doc_auth_success: socure_succeeded?,
             vendor: 'Socure',
             address_line2_present: address2.present?,
             zip_code: zipcode,
@@ -89,9 +85,26 @@ module DocAuth
           }
         end
 
+        def successful_result?
+          socure_succeeded? && pii_valid?
+        end
+
+        alias_method :doc_auth_success?, :successful_result?
+
         private
 
-        def successful_result?
+        def pii_valid?
+          return @pii_valid if defined?(@pii_valid)
+
+          response = Idv::DocPiiForm.new(
+            pii: pii_from_doc.to_h,
+            attention_with_barcode: attention_with_barcode?,
+          ).submit
+
+          @pii_valid = response.success?
+        end
+
+        def socure_succeeded?
           get_data(DATA_PATHS[:decision_value]) == 'accept'
         end
 
@@ -99,6 +112,7 @@ module DocAuth
           return {} if successful_result?
 
           {
+            validation_failed: !pii_valid?,
             socure: { reason_codes: get_data(DATA_PATHS[:reason_codes]) },
           }
         end
@@ -129,7 +143,12 @@ module DocAuth
         end
 
         def get_data(path)
-          parsed_response_body.dig(*path)
+          data = parsed_response_body.dig(*path)
+          if data.is_a?(Hash)
+            data.symbolize_keys
+          else
+            data
+          end
         end
 
         def parsed_response_body
@@ -140,6 +159,7 @@ module DocAuth
           rescue JSON::JSONError
             {}
           end
+          @parsed_response_body
         end
 
         def state
