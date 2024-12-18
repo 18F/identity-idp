@@ -1,4 +1,4 @@
-require_relative '../../lib/analytics_events_documenter'
+require 'analytics_events_documenter'
 
 class FakeAnalytics < Analytics
   PiiDetected = Class.new(StandardError).freeze

@@ -10,6 +10,7 @@ RSpec.feature 'Analytics Regression', :js do
   let(:proofing_device_profiling) { :enabled }
   let(:threatmetrix) { true }
   let(:idv_level) { 'in_person' }
+
   let(:threatmetrix_response_body) do
     {
       account_lex_id: 'super-cool-test-lex-id',
@@ -24,6 +25,7 @@ RSpec.feature 'Analytics Regression', :js do
       tmx_summary_reason_code: ['Identity_Negative_History'],
     }
   end
+
   let(:threatmetrix_response) do
     {
       client: nil,
@@ -37,6 +39,7 @@ RSpec.feature 'Analytics Regression', :js do
       transaction_id: 'ddp-mock-transaction-id-123',
     }
   end
+
   let(:base_proofing_components) do
     {
       document_check: 'mock',
@@ -47,9 +50,11 @@ RSpec.feature 'Analytics Regression', :js do
       threatmetrix_review_status: 'pass',
     }
   end
+
   let(:lexis_nexis_address_proofing_components) do
     base_proofing_components.merge(address_check: 'lexis_nexis_address')
   end
+
   let(:gpo_letter_proofing_components) do
     base_proofing_components.merge(address_check: 'gpo_letter')
   end
@@ -300,6 +305,7 @@ RSpec.feature 'Analytics Regression', :js do
     }.compact
   end
 
+  # TODO: Add ["IdV: doc auth link_sent visited", "IdV: doc auth capture_complete visited", "IdV: doc auth link_sent submitted"]
   let(:happy_hybrid_path_events) do
     {
       'IdV: intro visited' => {},
@@ -424,6 +430,7 @@ RSpec.feature 'Analytics Regression', :js do
     }.compact
   end
 
+  # TODO: Add ["IdV: consent checkbox toggled"]
   let(:gpo_path_events) do
     {
       'IdV: intro visited' => {},
@@ -526,6 +533,7 @@ RSpec.feature 'Analytics Regression', :js do
     }.compact
   end
 
+  # TODO: Add ["IdV: consent checkbox toggled", "IdV: doc auth image upload vendor pii validation", "IdV: in person proofing location search submitted", "IdV: phone of record visited"]
   let(:in_person_path_events) do
     {
       'IdV: doc auth welcome visited' => {
@@ -849,6 +857,7 @@ RSpec.feature 'Analytics Regression', :js do
       let(:proofing_device_profiling) { :disabled }
       let(:threatmetrix) { false }
       let(:threatmetrix_response_body) { nil }
+
       let(:threatmetrix_response) do
         {
           client: 'tmx_disabled',
@@ -929,6 +938,7 @@ RSpec.feature 'Analytics Regression', :js do
       let(:proofing_device_profiling) { :disabled }
       let(:threatmetrix) { false }
       let(:threatmetrix_response_body) { nil }
+
       let(:threatmetrix_response) do
         {
           client: 'tmx_disabled',
@@ -981,6 +991,7 @@ RSpec.feature 'Analytics Regression', :js do
       let(:proofing_device_profiling) { :disabled }
       let(:threatmetrix) { false }
       let(:threatmetrix_response_body) { nil }
+
       let(:threatmetrix_response) do
         {
           client: 'tmx_disabled',
@@ -1046,6 +1057,7 @@ RSpec.feature 'Analytics Regression', :js do
         let(:proofing_device_profiling) { :disabled }
         let(:threatmetrix) { false }
         let(:threatmetrix_response_body) { nil }
+
         let(:threatmetrix_response) do
           {
             client: 'tmx_disabled',
@@ -1105,6 +1117,7 @@ RSpec.feature 'Analytics Regression', :js do
         let(:proofing_device_profiling) { :disabled }
         let(:threatmetrix) { false }
         let(:threatmetrix_response_body) { nil }
+
         let(:threatmetrix_response) do
           {
             client: 'tmx_disabled',
@@ -1186,6 +1199,7 @@ RSpec.feature 'Analytics Regression', :js do
       let(:proofing_device_profiling) { :disabled }
       let(:threatmetrix) { false }
       let(:threatmetrix_response_body) { nil }
+
       let(:threatmetrix_response) do
         {
           client: 'tmx_disabled',
@@ -1249,6 +1263,7 @@ RSpec.feature 'Analytics Regression', :js do
       let(:idv_level) { 'legacy_in_person' }
       let(:threatmetrix) { false }
       let(:threatmetrix_response_body) { nil }
+
       let(:threatmetrix_response) do
         {
           client: 'tmx_disabled',
