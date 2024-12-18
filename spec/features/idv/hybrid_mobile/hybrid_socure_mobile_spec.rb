@@ -388,7 +388,7 @@ RSpec.describe 'Hybrid Flow' do
       stub_docv_verification_data_fail_with(errors: ['XXXX'])
     end
 
-     it_behaves_like 'a properly categorized error', 'doc_auth.headers.unreadable_id'
+    it_behaves_like 'a properly categorized error', 'doc_auth.headers.unreadable_id'
   end
 
   context 'a type 1 error' do
