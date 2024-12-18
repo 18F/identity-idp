@@ -71,12 +71,15 @@ RSpec.describe 'Identity verification', :js do
     test_go_back_from_document_capture
     complete_document_capture_step
 
+    expect(page).to have_current_path(idv_ssn_path)
     test_go_back_from_ssn_page
     complete_ssn_step
 
+    expect(page).to have_current_path(idv_verify_info_path)
     test_go_back_from_verify_info
     complete_verify_step
 
+    expect(page).to have_current_path(idv_phone_path)
     test_go_back_from_phone
     complete_otp_verification_page(user)
 
@@ -97,6 +100,7 @@ RSpec.describe 'Identity verification', :js do
     complete_all_doc_auth_steps
 
     enter_gpo_flow
+    expect(page).to have_current_path(idv_request_letter_path)
     test_go_back_from_request_letter
     complete_request_letter
     complete_enter_password_step(user)
