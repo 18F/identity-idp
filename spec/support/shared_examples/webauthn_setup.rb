@@ -3,7 +3,7 @@ RSpec.shared_examples 'webauthn setup' do
     mock_webauthn_setup_challenge
     visit_webauthn_setup
 
-    expect(current_path).to eq webauthn_setup_path
+    expect(page).to have_current_path webauthn_setup_path
 
     fill_in_nickname_and_click_continue
     mock_press_button_on_hardware_key_on_setup
@@ -32,7 +32,7 @@ RSpec.shared_examples 'webauthn setup' do
     mock_webauthn_setup_challenge
     visit_webauthn_setup
 
-    expect(current_path).to eq webauthn_setup_path
+    expect(page).to have_current_path webauthn_setup_path
 
     mock_submit_without_pressing_button_on_hardware_key_on_setup
 

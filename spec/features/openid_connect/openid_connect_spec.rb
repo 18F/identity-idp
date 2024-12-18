@@ -53,7 +53,7 @@ RSpec.describe 'OpenID Connect' do
         client_id: 'urn:gov:gsa:openidconnect:test_prompt_login_banned',
       )
 
-      expect(current_path).to eq(openid_connect_authorize_path)
+      expect(page).to have_current_path(openid_connect_authorize_path, ignore_query: true)
       expect(page).to have_content(t('openid_connect.authorization.errors.prompt_invalid'))
     end
 
@@ -110,7 +110,7 @@ RSpec.describe 'OpenID Connect' do
         client_id: 'urn:gov:gsa:openidconnect:test_prompt_login_banned',
       )
 
-      expect(current_path).to eq(openid_connect_authorize_path)
+      expect(page).to have_current_path(openid_connect_authorize_path, ignore_query: true)
       expect(page).to have_content(t('openid_connect.authorization.errors.prompt_invalid'))
     end
 
@@ -1179,7 +1179,7 @@ RSpec.describe 'OpenID Connect' do
       expect(URI(oidc_redirect_url).path).to eq(redirs_to)
       return
     end
-    expect(current_path).to eq('/')
+    expect(page).to have_current_path('/')
 
     user ||= create(
       :profile, :active, :verified,

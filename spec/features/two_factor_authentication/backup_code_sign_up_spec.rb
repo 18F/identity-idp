@@ -18,7 +18,7 @@ RSpec.feature 'sign up with backup code' do
       select_2fa_option('backup_code')
 
       expect(page).to have_link(t('components.download_button.label'))
-      expect(current_path).to eq backup_code_setup_path
+      expect(page).to have_current_path backup_code_setup_path
 
       click_continue
       click_continue
@@ -29,7 +29,7 @@ RSpec.feature 'sign up with backup code' do
       click_continue
 
       expect(page).to have_content(t('notices.backup_codes_configured'))
-      expect(current_path).to eq confirm_backup_codes_path
+      expect(page).to have_current_path confirm_backup_codes_path
       expect(user.backup_code_configurations.count).to eq(BackupCodeGenerator::NUMBER_OF_CODES)
 
       click_continue
@@ -54,17 +54,17 @@ RSpec.feature 'sign up with backup code' do
       fill_in :backup_code_verification_form_backup_code, with: codes[index]
       click_on 'Submit'
       if index == BackupCodeGenerator::NUMBER_OF_CODES - 1
-        expect(current_path).to eq backup_code_refreshed_path
+        expect(page).to have_current_path backup_code_refreshed_path
         expect(page).to have_content(t('forms.backup_code.title'))
         expect(page).to have_content(t('forms.backup_code.last_code'))
         expect(user.backup_code_configurations.count).to eq(BackupCodeGenerator::NUMBER_OF_CODES)
         click_continue
 
         expect(page).to have_content(t('notices.backup_codes_configured'))
-        expect(current_path).to eq account_path
+        expect(page).to have_current_path account_path
         expect(user.backup_code_configurations.count).to eq(BackupCodeGenerator::NUMBER_OF_CODES)
       else
-        expect(current_path).to eq account_path
+        expect(page).to have_current_path account_path
         sign_out_user
       end
     end
@@ -79,7 +79,7 @@ RSpec.feature 'sign up with backup code' do
 
     click_continue
 
-    expect(current_path).to eq(sign_up_completed_path)
+    expect(page).to have_current_path(sign_up_completed_path)
   end
 
   context 'when the user needs a backup code reminder' do
@@ -93,7 +93,7 @@ RSpec.feature 'sign up with backup code' do
       fill_in_code_with_last_totp(user)
       click_submit_default
 
-      expect(current_path).to eq backup_code_reminder_path
+      expect(page).to have_current_path backup_code_reminder_path
     end
   end
 

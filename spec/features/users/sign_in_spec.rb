@@ -45,7 +45,7 @@ RSpec.feature 'Sign in' do
     fill_in_code_with_last_phone_otp
     click_submit_default
 
-    expect(current_path).to eq(user_please_call_path)
+    expect(page).to have_current_path(user_please_call_path)
   end
 
   scenario 'user with old terms of use can accept and continue to IAL1 SP' do
@@ -165,12 +165,12 @@ RSpec.feature 'Sign in' do
     sign_in_and_2fa_user
 
     visit account_path
-    expect(current_path).to eq account_path
+    expect(page).to have_current_path account_path
 
     travel(Devise.timeout_in + 1.minute)
 
     visit account_path
-    expect(current_path).to eq root_path
+    expect(page).to have_current_path root_path
 
     travel_back
   end
@@ -231,7 +231,7 @@ RSpec.feature 'Sign in' do
       click_button(t('notices.timeout_warning.signed_in.sign_out'))
 
       expect(page).to have_content t('devise.sessions.signed_out')
-      expect(current_path).to eq new_user_session_path
+      expect(page).to have_current_path new_user_session_path
     end
   end
 
@@ -292,7 +292,7 @@ RSpec.feature 'Sign in' do
         expect(page).to have_content t('errors.general')
 
         fill_in_credentials_and_submit(user.email, user.password)
-        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+        expect(page).to have_current_path login_two_factor_path(otp_delivery_preference: 'sms')
       end
     end
 
@@ -323,19 +323,19 @@ RSpec.feature 'Sign in' do
         perform_in_browser(:one) do
           sign_in_live_with_2fa(user)
 
-          expect(current_path).to eq account_path
+          expect(page).to have_current_path account_path
         end
 
         perform_in_browser(:two) do
           sign_in_live_with_2fa(user)
 
-          expect(current_path).to eq account_path
+          expect(page).to have_current_path account_path
         end
 
         perform_in_browser(:one) do
           visit account_path
 
-          expect(current_path).to eq new_user_session_path
+          expect(page).to have_current_path new_user_session_path
           expect(page).to have_content(t('devise.failure.session_limited'))
 
           expect(analytics.events[:concurrent_session_logout].count).to eq 1
@@ -350,19 +350,19 @@ RSpec.feature 'Sign in' do
         perform_in_browser(:one) do
           sign_in_user_with_piv(user)
 
-          expect(current_path).to eq account_path
+          expect(page).to have_current_path account_path
         end
 
         perform_in_browser(:two) do
           sign_in_user_with_piv(user)
 
-          expect(current_path).to eq account_path
+          expect(page).to have_current_path account_path
         end
 
         perform_in_browser(:one) do
           visit account_path
 
-          expect(current_path).to eq new_user_session_path
+          expect(page).to have_current_path new_user_session_path
           expect(page).to have_content(t('devise.failure.session_limited'))
         end
       end
@@ -389,7 +389,7 @@ RSpec.feature 'Sign in' do
         perform_in_browser(:one) do
           visit account_path
 
-          expect(current_path).to eq new_user_session_path
+          expect(page).to have_current_path new_user_session_path
           expect(page).to have_content(t('devise.failure.session_limited'))
           expect_branded_experience
         end
@@ -451,7 +451,7 @@ RSpec.feature 'Sign in' do
 
       expect(page)
         .to have_link t('devise.failure.invalid_link_text', href: link_url)
-      expect(current_path).to eq root_path
+      expect(page).to have_current_path root_path
     end
   end
 
@@ -463,7 +463,7 @@ RSpec.feature 'Sign in' do
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default
-      expect(current_path).to eq account_path
+      expect(page).to have_current_path account_path
     end
 
     context 'with email and password' do
@@ -475,7 +475,7 @@ RSpec.feature 'Sign in' do
         fill_in_credentials_and_submit(user.email, user.password)
         click_submit_default
 
-        expect(current_path).to eq account_path
+        expect(page).to have_current_path account_path
       end
     end
 
@@ -486,7 +486,7 @@ RSpec.feature 'Sign in' do
         visit new_user_session_path(request_id: 'invalid')
         signin_with_piv(user)
 
-        expect(current_path).to eq account_path
+        expect(page).to have_current_path account_path
       end
     end
   end
@@ -641,7 +641,7 @@ RSpec.feature 'Sign in' do
       click_link t('two_factor_authentication.login_options_link_text')
       click_on t('links.cancel')
 
-      expect(current_path).to eq root_path
+      expect(page).to have_current_path root_path
       expect(page).to have_content(t('devise.sessions.signed_out'))
     end
   end
@@ -657,7 +657,7 @@ RSpec.feature 'Sign in' do
       check 'rules_of_use_form[terms_accepted]'
 
       click_button t('forms.buttons.continue')
-      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+      expect(page).to have_current_path login_two_factor_path(otp_delivery_preference: 'sms')
     end
   end
 
@@ -701,7 +701,7 @@ RSpec.feature 'Sign in' do
       click_agree_and_continue
 
       visit_idp_from_oidc_sp_with_loa1_prompt_login
-      expect(current_path).to eq(bounced_path)
+      expect(page).to have_current_path(bounced_path)
     end
   end
 
@@ -743,7 +743,7 @@ RSpec.feature 'Sign in' do
         fill_in_code_with_last_phone_otp
         click_submit_default
 
-        expect(current_path).to eq sign_up_completed_path
+        expect(page).to have_current_path sign_up_completed_path
         expect(page).to have_content(user.email)
 
         click_agree_and_continue
@@ -761,7 +761,7 @@ RSpec.feature 'Sign in' do
         fill_in_code_with_last_phone_otp
         click_submit_default
 
-        expect(current_path).to eq sign_up_completed_path
+        expect(page).to have_current_path sign_up_completed_path
         expect(page).to have_content('1**-**-***3')
 
         click_agree_and_continue
@@ -803,7 +803,7 @@ RSpec.feature 'Sign in' do
         fill_in_code_with_last_phone_otp
         click_submit_default_twice
 
-        expect(current_path).to eq sign_up_completed_path
+        expect(page).to have_current_path sign_up_completed_path
         expect(page).to have_content(user.email)
 
         click_agree_and_continue
@@ -832,7 +832,7 @@ RSpec.feature 'Sign in' do
         click_submit_default
         click_submit_default
 
-        expect(current_path).to eq sign_up_completed_path
+        expect(page).to have_current_path sign_up_completed_path
         expect(page).to have_content('1**-**-***3')
 
         click_agree_and_continue
@@ -928,7 +928,7 @@ RSpec.feature 'Sign in' do
           fill_in_code_with_last_phone_otp
           click_submit_default
 
-          expect(current_path).to eq manage_password_path
+          expect(page).to have_current_path manage_password_path
         end
 
         it 'should redirect user to after_sign_in_path after editing password' do
@@ -937,7 +937,7 @@ RSpec.feature 'Sign in' do
           fill_in_code_with_last_phone_otp
           click_submit_default
 
-          expect(current_path).to eq manage_password_path
+          expect(page).to have_current_path manage_password_path
 
           password = 'salty pickles'
           fill_in t('forms.passwords.edit.labels.password'), with: password
@@ -962,7 +962,7 @@ RSpec.feature 'Sign in' do
           fill_in_code_with_last_phone_otp
           click_submit_default
 
-          expect(current_path).to eq account_path
+          expect(page).to have_current_path account_path
         end
       end
     end
@@ -981,7 +981,7 @@ RSpec.feature 'Sign in' do
           fill_in_code_with_last_phone_otp
           click_submit_default
 
-          expect(current_path).to eq account_path
+          expect(page).to have_current_path account_path
           user.reload
           expect(user.password_compromised_checked_at).to be_truthy
         end
@@ -999,7 +999,7 @@ RSpec.feature 'Sign in' do
           fill_in_code_with_last_phone_otp
           click_submit_default
 
-          expect(current_path).to eq account_path
+          expect(page).to have_current_path account_path
           user.reload
           expect(user.password_compromised_checked_at).to be_falsey
         end
@@ -1018,7 +1018,7 @@ RSpec.feature 'Sign in' do
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      expect(current_path).to eq authentication_methods_setup_path
+      expect(page).to have_current_path authentication_methods_setup_path
       select_2fa_option('piv_cac')
 
       expect(page).to have_current_path setup_piv_cac_path
@@ -1028,7 +1028,7 @@ RSpec.feature 'Sign in' do
       user = create(:user, :with_phone, :with_piv_or_cac)
       fill_in_credentials_and_submit(user.email, user.password)
 
-      expect(current_path).to eq login_two_factor_piv_cac_path
+      expect(page).to have_current_path login_two_factor_piv_cac_path
     end
   end
 
@@ -1040,7 +1040,7 @@ RSpec.feature 'Sign in' do
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      expect(current_path).to eq sign_up_completed_path
+      expect(page).to have_current_path sign_up_completed_path
       expect(page).to have_content(user.email)
 
       agree_and_continue_button = find_button(t('sign_up.agree_and_continue'))

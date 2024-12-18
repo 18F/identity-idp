@@ -44,7 +44,7 @@ RSpec.feature 'View personal key' do
         click_on(t('account.links.regenerate_personal_key'), match: :prefer_exact)
 
         # reauthn
-        expect(current_path).to eq login_two_factor_options_path
+        expect(page).to have_current_path login_two_factor_options_path
         find("label[for='two_factor_options_form_selection_sms']").click
         click_on t('forms.buttons.continue')
         fill_in_code_with_last_phone_otp

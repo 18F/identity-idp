@@ -19,7 +19,7 @@ RSpec.feature 'SAML logout' do
         # Sign out of the IDP
         visit account_path
         first(:button, t('links.sign_out')).click
-        expect(current_path).to eq root_path
+        expect(page).to have_current_path root_path
 
         # SAML logout request
         visit_saml_logout_request_url(
@@ -84,7 +84,7 @@ RSpec.feature 'SAML logout' do
 
         # The user should be signed out
         visit account_path
-        expect(current_path).to eq root_path
+        expect(page).to have_current_path root_path
       end
     end
 
@@ -102,7 +102,7 @@ RSpec.feature 'SAML logout' do
 
         # The user should be signed out
         visit account_path
-        expect(current_path).to eq root_path
+        expect(page).to have_current_path root_path
       end
     end
 
@@ -132,7 +132,7 @@ RSpec.feature 'SAML logout' do
 
           # The user should be signed out
           visit account_path
-          expect(current_path).to eq root_path
+          expect(page).to have_current_path root_path
         end
       end
     end
@@ -151,7 +151,10 @@ RSpec.feature 'SAML logout' do
           },
         )
 
-        expect(current_path).to eq(api_saml_logout_path(path_year: SamlAuthHelper::PATH_YEAR))
+        expect(page).to have_current_path(
+          api_saml_logout_path(path_year: SamlAuthHelper::PATH_YEAR),
+          ignore_query: true,
+        )
         expect(page.driver.status_code).to eq(400)
 
         # The user should be signed in

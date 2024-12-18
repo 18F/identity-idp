@@ -21,7 +21,7 @@ module Features
 
       click_link t('two_factor_authentication.login_options_link_text')
 
-      expect(current_path).to eq login_two_factor_options_path
+      expect(page).to have_current_path login_two_factor_options_path
 
       select_2fa_option(option)
     end
@@ -602,7 +602,7 @@ module Features
       fill_in t('account.index.email'), with: user.email
       click_button t('forms.buttons.continue')
 
-      expect(current_path).to eq forgot_password_path
+      expect(page).to have_current_path forgot_password_path
     end
 
     def click_reset_password_link_from_email
@@ -617,7 +617,7 @@ module Features
       open_last_email
       click_email_link_matching(/reset_password_token/)
 
-      expect(current_path).to eq edit_user_password_path
+      expect(page).to have_current_path edit_user_password_path
     end
 
     def expect_branded_experience

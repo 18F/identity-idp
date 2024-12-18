@@ -28,11 +28,11 @@ RSpec.feature 'Password recovery via personal key for a GPO-verified user' do
 
     click_on t('links.account.reactivate.with_key')
 
-    expect(current_path).to eq verify_personal_key_path
+    expect(page).to have_current_path verify_personal_key_path
     fill_in 'personal_key', with: personal_key
     click_continue
 
-    expect(current_path).to eq verify_password_path
+    expect(page).to have_current_path verify_password_path
     fill_in 'Password', with: new_password
     click_continue
 
