@@ -33,7 +33,7 @@ RSpec.describe 'Hybrid Flow' do
 
   context 'happy path', allow_browser_log: true do
     before do
-      @pass_stub = stub_docv_verification_data_pass(docv_transaction_token: @docv_transaction_token)
+      @pass_stub = stub_docv_verification_data_pass
     end
     it 'proofs and hands off to mobile', js: true do
       user = nil
@@ -284,7 +284,7 @@ RSpec.describe 'Hybrid Flow' do
 
           perform_in_browser(:mobile) do
             remove_request_stub(@pass_stub)
-            stub_docv_verification_data_pass(docv_transaction_token: test_token)
+            stub_docv_verification_data_pass
 
             visit @sms_link
 
@@ -365,11 +365,6 @@ RSpec.describe 'Hybrid Flow' do
       perform_in_browser(:mobile) do
         visit @sms_link
 
-        stub_docv_verification_data_fail_with(
-          docv_transaction_token: @docv_transaction_token,
-          errors: [socure_error_code],
-        )
-
         click_idv_continue
 
         socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
@@ -390,15 +385,15 @@ RSpec.describe 'Hybrid Flow' do
 
   context 'a type 1 error (because we do not recognize the code)' do
     before do
-      stub_docv_verification_data_fail_with(['XXXX'])
+      stub_docv_verification_data_fail_with(errors: ['XXXX'])
     end
 
-    it_behaves_like 'a properly categorized error', 'doc_auth.headers.unreadable_id'
+     it_behaves_like 'a properly categorized error', 'doc_auth.headers.unreadable_id'
   end
 
   context 'a type 1 error' do
     before do
-      stub_docv_verification_data_fail_with(['I848'])
+      stub_docv_verification_data_fail_with(errors: ['I848'])
     end
 
     it_behaves_like 'a properly categorized error', 'doc_auth.headers.unreadable_id'
@@ -406,7 +401,7 @@ RSpec.describe 'Hybrid Flow' do
 
   context 'a type 2 error' do
     before do
-      stub_docv_verification_data_fail_with(['I849'])
+      stub_docv_verification_data_fail_with(errors: ['I849'])
     end
 
     it_behaves_like 'a properly categorized error', 'doc_auth.headers.unaccepted_id_type'
@@ -414,7 +409,7 @@ RSpec.describe 'Hybrid Flow' do
 
   context 'a type 3 error' do
     before do
-      stub_docv_verification_data_fail_with(['R827'])
+      stub_docv_verification_data_fail_with(errors: ['R827'])
     end
 
     it_behaves_like 'a properly categorized error', 'doc_auth.headers.expired_id'
@@ -422,7 +417,7 @@ RSpec.describe 'Hybrid Flow' do
 
   context 'a type 4 error' do
     before do
-      stub_docv_verification_data_fail_with(['I808'])
+      stub_docv_verification_data_fail_with(errors: ['I808'])
     end
 
     it_behaves_like 'a properly categorized error', 'doc_auth.headers.low_resolution'
@@ -430,7 +425,7 @@ RSpec.describe 'Hybrid Flow' do
 
   context 'a type 5 error' do
     before do
-      stub_docv_verification_data_fail_with(['R845'])
+      stub_docv_verification_data_fail_with(errors: ['R845'])
     end
 
     it_behaves_like 'a properly categorized error', 'doc_auth.headers.underage'
@@ -438,7 +433,7 @@ RSpec.describe 'Hybrid Flow' do
 
   context 'a type 6 error' do
     before do
-      stub_docv_verification_data_fail_with(['I856'])
+      stub_docv_verification_data_fail_with(errors: ['I856'])
     end
 
     it_behaves_like 'a properly categorized error', 'doc_auth.headers.id_not_found'
