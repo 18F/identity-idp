@@ -15,6 +15,10 @@ class AnalyticsEventsDocumenter
 
   DOCUMENTATION_OPTIONAL_PARAMS = %w[
     pii_like_keypaths
+    active_profile_idv_level
+    pending_profile_idv_level
+    proofing_components
+    profile_history
   ].freeze
 
   attr_reader :database_path, :class_name
