@@ -17,8 +17,8 @@ RSpec.feature 'ThreatMetrix in account creation', :js do
     fake_analytics = FakeAnalytics.new
     expect_any_instance_of(AccountCreationThreatMetrixJob).to receive(:analytics).with(user)
       .and_return(fake_analytics)
-    select_2fa_option('backup_code')
     select 'Reject', from: :mock_profiling_result
+    select_2fa_option('backup_code')
     click_continue
 
     expect(fake_analytics).to have_logged_event(
