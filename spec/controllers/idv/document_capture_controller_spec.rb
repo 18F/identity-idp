@@ -136,6 +136,34 @@ RSpec.describe Idv::DocumentCaptureController do
       expect(assigns(:presenter)).to be_kind_of(Idv::InPerson::UspsFormPresenter)
     end
 
+    it 'renders the show template' do
+      expect(subject).to receive(:render).with(
+        :show,
+        locals: hash_including(
+          document_capture_session_uuid: document_capture_session_uuid,
+          doc_auth_selfie_capture: false,
+        ),
+      ).and_call_original
+
+      get :show
+
+      expect(response).to render_template :show
+    end
+
+    it 'sends analytics_visited event' do
+      get :show
+
+      expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+    end
+
+    it 'updates DocAuthLog document_capture_view_count' do
+      doc_auth_log = DocAuthLog.create(user_id: user.id)
+
+      expect { get :show }.to(
+        change { doc_auth_log.reload.document_capture_view_count }.from(0).to(1),
+      )
+    end
+
     context 'when we try to use this controller but we should be using the Socure version' do
       let(:idv_vendor) { Idp::Constants::Vendors::SOCURE }
 
@@ -161,20 +189,6 @@ RSpec.describe Idv::DocumentCaptureController do
 
         expect(response).to_not redirect_to idv_socure_document_capture_url
       end
-    end
-
-    it 'renders the show template' do
-      expect(subject).to receive(:render).with(
-        :show,
-        locals: hash_including(
-          document_capture_session_uuid: document_capture_session_uuid,
-          doc_auth_selfie_capture: false,
-        ),
-      ).and_call_original
-
-      get :show
-
-      expect(response).to render_template :show
     end
 
     context 'when a selfie is requested' do
@@ -218,12 +232,6 @@ RSpec.describe Idv::DocumentCaptureController do
       end
     end
 
-    it 'sends analytics_visited event' do
-      get :show
-
-      expect(@analytics).to have_logged_event(analytics_name, analytics_args)
-    end
-
     context 'redo_document_capture' do
       it 'adds redo_document_capture to analytics' do
         subject.idv_session.redo_document_capture = true
@@ -233,14 +241,6 @@ RSpec.describe Idv::DocumentCaptureController do
         analytics_args[:redo_document_capture] = true
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
       end
-    end
-
-    it 'updates DocAuthLog document_capture_view_count' do
-      doc_auth_log = DocAuthLog.create(user_id: user.id)
-
-      expect { get :show }.to(
-        change { doc_auth_log.reload.document_capture_view_count }.from(0).to(1),
-      )
     end
 
     context 'hybrid handoff step is not complete' do
@@ -420,6 +420,29 @@ RSpec.describe Idv::DocumentCaptureController do
         put :update
         expect(subject.document_capture_session.ocr_confirmation_pending).to be_falsey
       end
+    end
+  end
+
+  describe '#direct_in_person' do
+    let(:analytics_name) { :idv_in_person_direct_start }
+    let(:analytics_args) do
+      {
+        remaining_submit_attempts: 4,
+        skip_hybrid_handoff: nil,
+        opted_in_to_in_person_proofing: nil,
+      }
+    end
+
+    it 'sends analytics event' do
+      expect(@analytics).to receive(:track_event).with(analytics_name, analytics_args)
+
+      get :direct_in_person
+    end
+
+    it 'redirects to document capture' do
+      get :direct_in_person
+
+      expect(response).to redirect_to(idv_document_capture_url(step: :idv_doc_auth))
     end
   end
 end

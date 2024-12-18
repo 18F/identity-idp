@@ -1060,6 +1060,8 @@ idv.errors.incorrect_password: La contraseña que ingresó no es la correcta.
 idv.errors.pattern_mismatch.ssn: Ingrese un número de Seguro Social de nueve dígitos.
 idv.errors.pattern_mismatch.zipcode: Ingrese un código postal de 5 o 9 dígitos.
 idv.errors.pattern_mismatch.zipcode_five: Ingrese un código postal de 5 dígitos.
+idv.errors.technical_difficulties: Estamos teniendo problemas técnicos
+idv.errors.try_again_later: Vuelva a intentarlo más tarde.
 idv.failure.attempts_html.one: Puede intentarlo <strong>una vez más.</strong> Luego, debe esperar 6 horas antes de volver a intentarlo.
 idv.failure.attempts_html.other: Puede intentarlo <strong>%{count} veces más.</strong> Luego, debe esperar 6 horas antes de volver a intentarlo.
 idv.failure.button.try_online: Vuelva a intentarlo en línea
@@ -1086,8 +1088,6 @@ idv.failure.phone.rate_limited.option_try_again_later_no_gpo_html: Puede volver 
 idv.failure.phone.rate_limited.option_verify_by_mail_html: Verificar por correo, lo que tarda de <strong>5 a 10 días</strong>
 idv.failure.phone.rate_limited.options_header: 'Usted puede:'
 idv.failure.phone.timeout: Terminó el tiempo de nuestra solicitud para verificar su información. Vuelva a intentarlo.
-idv.failure.phone.warning.attempts_html.one: Por motivos de seguridad, le queda <strong>un intento</strong>.
-idv.failure.phone.warning.attempts_html.other: Por motivos de seguridad, le quedan <strong>%{count} intentos</strong>.
 idv.failure.phone.warning.gpo.button: Verificar por correo
 idv.failure.phone.warning.gpo.explanation: Si no tiene otro número de teléfono para intentarlo, haga la verificación por correo.
 idv.failure.phone.warning.gpo.heading: Verificar por correo
@@ -1109,6 +1109,8 @@ idv.failure.verify.exit: Salir de %{app_name}
 idv.failure.verify.fail_link_html: Obtenga ayuda en <strong>%{sp_name}</strong>
 idv.failure.verify.fail_text: para acceder a los servicios.
 idv.failure.verify.heading: No pudimos verificar su identidad
+idv.failure.warning.attempts_html.one: Por motivos de seguridad, le queda <strong>un intento</strong>.
+idv.failure.warning.attempts_html.other: Por motivos de seguridad, le quedan <strong>%{count} intentos</strong>.
 idv.forgot_password.link_text: '¿Olvidó su contraseña?'
 idv.forgot_password.modal_header: '¿Está seguro de que no puede recordar su contraseña?'
 idv.forgot_password.reset_password: Restablecer la contraseña
