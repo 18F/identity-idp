@@ -10,3 +10,10 @@
     @include u-height(9);
   }
 }
+
+/*
+  Workaround for https://github.com/uswds/uswds/issues/6260
+ */
+.usa-skipnav {
+  top: -5rem;
+}
