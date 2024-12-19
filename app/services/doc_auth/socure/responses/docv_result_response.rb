@@ -42,7 +42,7 @@ module DocAuth
           @pii_from_doc = read_pii
 
           super(
-            success: successful_result? && pii_valid?,
+            success: successful_result?,
             errors: error_messages,
             pii_from_doc:,
             extra: extra_attributes,
@@ -89,6 +89,12 @@ module DocAuth
           }
         end
 
+        # ToDo: Horrible override of things in our parent. Extract to parent.
+        def fail(errors)
+          @success = false
+          @errors.merge!(errors)
+        end
+
         private
 
         def successful_result?
@@ -98,8 +104,6 @@ module DocAuth
         def error_messages
           if !successful_result?
             { socure: { reason_codes: get_data(DATA_PATHS[:reason_codes]) } }
-          elsif !pii_valid?
-            { pii_validation: 'failed' }
           else
             {}
           end
@@ -177,12 +181,6 @@ module DocAuth
           }.to_json
           Rails.logger.info(message)
           nil
-        end
-
-        def pii_valid?
-          return @pii_valid if !@pii_valid.nil?
-
-          @pii_valid = Idv::DocPiiForm.new(pii: pii_from_doc.to_h).submit.success?
         end
       end
     end

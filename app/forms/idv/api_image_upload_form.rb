@@ -127,30 +127,17 @@ module Idv
     end
 
     def validate_pii_from_doc(client_response)
-      response = Idv::DocPiiForm.new(
-        pii: client_response.pii_from_doc.to_h,
-        attention_with_barcode: client_response.attention_with_barcode?,
-      ).submit
-      response.extra.merge!(extra_attributes)
-      side_classification = doc_side_classification(client_response)
-      response_with_classification =
-        response.to_h.merge(side_classification)
+      pii_validator = Idv::PiiValidator.new(
+        client_response,
+        extra_attributes,
+        analytics,
+      )
 
-      analytics.idv_doc_auth_submitted_pii_validation(**response_with_classification)
-
-      if client_response.success? && response.success?
+      if pii_validator.client_and_pii_both_succeeded?
         store_pii(client_response)
       end
 
-      response
-    end
-
-    def doc_side_classification(client_response)
-      side_info = {}.merge(client_response&.extra&.[](:classification_info) || {})
-      side_info.transform_keys(&:downcase).symbolize_keys
-      {
-        classification_info: side_info,
-      }
+      pii_validator.doc_auth_form_response
     end
 
     def extra_attributes

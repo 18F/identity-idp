@@ -26,6 +26,7 @@ RSpec.describe SocureDocvResultsJob do
     subject(:perform) do
       job.perform(document_capture_session_uuid: document_capture_session_uuid)
     end
+
     subject(:perform_now) do
       job.perform(document_capture_session_uuid: document_capture_session_uuid, async: false)
     end
@@ -112,13 +113,35 @@ RSpec.describe SocureDocvResultsJob do
       expect(document_capture_session_result.selfie_status).to eq(:not_processed)
     end
 
-    it 'expect fake analytics to have logged idv_socure_verification_data_requested' do
+    context 'Pii validation fails' do
+      before do
+        allow_any_instance_of(Idv::DocPiiForm).to receive(:zipcode).and_return(:invalid_junk)
+      end
+
+      it 'stores a failed result' do
+        perform
+
+        document_capture_session.reload
+        document_capture_session_result = document_capture_session.load_result
+        expect(document_capture_session_result.success).to eq(false)
+      end
+    end
+
+    it 'logs an idv_socure_verification_data_requested event' do
       perform
       expect(fake_analytics).to have_logged_event(
         :idv_socure_verification_data_requested,
         hash_including(
           expected_socure_log.merge({ async: true }),
         ),
+      )
+    end
+
+    xit 'logs an idv_doc_auth_submitted_pii_validation event' do
+      perform
+      expect(fake_analytics).to have_logged_event(
+        :idv_doc_auth_submitted_pii_validation,
+        hash,
       )
     end
 

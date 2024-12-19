@@ -18,6 +18,9 @@ class SocureDocvResultsJob < ApplicationJob
     response = timer.time('vendor_request') do
       socure_document_verification_result
     end
+
+    validate_pii_from_doc(response)
+
     log_verification_request(
       docv_result_response: response,
       vendor_request_time_in_ms: timer.results['vendor_request'],
@@ -50,11 +53,29 @@ class SocureDocvResultsJob < ApplicationJob
     )
   end
 
+  def validate_pii_from_doc(client_response)
+    pii_validator = Idv::PiiValidator.new(
+      client_response,
+      {
+        remaining_submit_attempts: rate_limiter&.remaining_count,
+        flow_path: nil,
+        liveness_checking_required: client_response.biometric_comparison_required,
+        submit_attempts: rate_limiter&.attempts,
+      },
+      analytics,
+    )
+
+    if !pii_validator.doc_auth_form_response.success?
+      client_response.fail(pii_validation: 'failed')
+    end
+  end
+
   def socure_document_verification_result
-    DocAuth::Socure::Requests::DocvResultRequest.new(
-      document_capture_session_uuid:,
-      docv_transaction_token_override:,
-    ).fetch
+    @socure_document_verification_result ||=
+      DocAuth::Socure::Requests::DocvResultRequest.new(
+        document_capture_session_uuid:,
+        docv_transaction_token_override:,
+      ).fetch
   end
 
   def document_capture_session
