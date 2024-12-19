@@ -21,6 +21,37 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
     it 'returns a valid StepInfo object' do
       expect(Idv::InPerson::VerifyInfoController.step_info).to be_valid
     end
+
+    describe '#undo_step' do
+      let(:idv_session) do
+        Idv::Session.new(
+          user_session: {},
+          current_user: user,
+          service_provider: nil,
+        ).tap do |idv_session|
+          idv_session.residential_resolution_vendor = 'ResidentialResolutionVendor'
+          idv_session.resolution_successful = true
+          idv_session.resolution_vendor = 'ResolutionVendor'
+          idv_session.verify_info_step_document_capture_session_uuid = 'abcd-1234'
+          idv_session.threatmetrix_review_status = 'pass'
+          idv_session.source_check_vendor = 'aamva'
+          idv_session.applicant = { first_name: 'Joe ' }
+        end
+      end
+
+      it 'resets relevant fields on idv_session to nil' do
+        described_class.step_info.undo_step.call(idv_session:, user:)
+        aggregate_failures do
+          expect(idv_session.applicant).to be(nil)
+          expect(idv_session.residential_resolution_vendor).to be(nil)
+          expect(idv_session.resolution_successful).to be(nil)
+          expect(idv_session.resolution_vendor).to be(nil)
+          expect(idv_session.source_check_vendor).to be(nil)
+          expect(idv_session.threatmetrix_review_status).to be(nil)
+          expect(idv_session.verify_info_step_document_capture_session_uuid).to be(nil)
+        end
+      end
+    end
   end
 
   describe 'before_actions' do
