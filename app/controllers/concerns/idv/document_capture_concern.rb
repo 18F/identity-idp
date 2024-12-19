@@ -24,21 +24,16 @@ module Idv
     # copied from Flow::Failure module
     def failure(message = nil, extra = nil)
       form_response_params = { success: false }
-      form_response_params[:errors] = make_error_hash(message)
+      form_response_params[:errors] = error_hash(message)
       form_response_params[:extra] = extra unless extra.nil?
       FormResponse.new(**form_response_params)
     end
 
-    def make_error_hash(message)
-      Rails.logger.info("make_error_hash: stored_result: #{stored_result.inspect}")
-
-      error_hash = { message: message || I18n.t('doc_auth.errors.general.network_error') }
-
-      if stored_result&.errors&.has_key?(:socure)
-        error_hash[:socure] = stored_result.errors[:socure]
-      end
-
-      error_hash
+    def error_hash(message)
+      {
+        message: message || I18n.t('doc_auth.errors.general.network_error'),
+        socure: stored_result&.errors&.dig(:socure),
+      }
     end
 
     def extract_pii_from_doc(user, store_in_session: false)

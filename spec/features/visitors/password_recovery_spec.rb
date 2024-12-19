@@ -19,7 +19,7 @@ RSpec.feature 'Password Recovery' do
 
       click_button t('forms.buttons.continue')
 
-      expect(current_path).to eq forgot_password_path
+      expect(page).to have_current_path forgot_password_path
 
       expect(last_email.subject).to eq t('user_mailer.reset_password_instructions.subject')
       expect(last_email.html_part.body).to include MarketingSite.help_url
@@ -33,7 +33,7 @@ RSpec.feature 'Password Recovery' do
       open_last_email
       click_email_link_matching(/reset_password_token/)
 
-      expect(current_path).to eq edit_user_password_path
+      expect(page).to have_current_path edit_user_password_path
     end
   end
 
@@ -85,13 +85,13 @@ RSpec.feature 'Password Recovery' do
       fill_in t('components.password_confirmation.confirm_label'), with: password
       click_button t('forms.passwords.edit.buttons.submit')
 
-      expect(current_path).to eq new_user_session_path
+      expect(page).to have_current_path new_user_session_path
     end
 
     it 'prompts user to set up their 2FA options after signing back in' do
       reset_password_and_sign_back_in(@user)
 
-      expect(current_path).to eq authentication_methods_setup_path
+      expect(page).to have_current_path authentication_methods_setup_path
     end
   end
 
@@ -105,7 +105,7 @@ RSpec.feature 'Password Recovery' do
     end
 
     it 'redirects to new user password form' do
-      expect(current_path).to eq new_user_password_path
+      expect(page).to have_current_path new_user_password_path
     end
 
     it 'displays a flash error message' do
@@ -130,7 +130,7 @@ RSpec.feature 'Password Recovery' do
       fill_in 'code', with: @user.reload.direct_otp
       click_button t('forms.buttons.submit.default')
 
-      expect(current_path).to eq account_path
+      expect(page).to have_current_path account_path
     end
   end
 
@@ -157,7 +157,7 @@ RSpec.feature 'Password Recovery' do
     end
 
     it 'lands on the reset password page' do
-      expect(current_path).to eq edit_user_password_path
+      expect(page).to have_current_path edit_user_password_path
     end
 
     context 'when password form values are valid' do
@@ -177,7 +177,7 @@ RSpec.feature 'Password Recovery' do
         ).to eq('password_changed')
 
         visit account_path
-        expect(current_path).to eq new_user_session_path
+        expect(page).to have_current_path new_user_session_path
       end
 
       it 'allows the user to continue to the service provider' do
@@ -234,7 +234,7 @@ RSpec.feature 'Password Recovery' do
         click_button t('forms.passwords.edit.buttons.submit')
 
         signin(@user.email, '1234')
-        expect(current_path).to eq new_user_session_path
+        expect(page).to have_current_path new_user_session_path
       end
 
       it 'allows multiple attempts with invalid password' do
@@ -276,7 +276,7 @@ RSpec.feature 'Password Recovery' do
 
     expect(page).to have_content t('devise.passwords.token_expired')
 
-    expect(current_path).to eq new_user_password_path
+    expect(page).to have_current_path new_user_password_path
   end
 
   it 'rate limits reset passwords requests' do

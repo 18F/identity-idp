@@ -50,7 +50,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
       login(@user, @new_password)
 
       # Then the user is taken to the /verify/welcome page
-      expect(current_path).to eq(idv_welcome_path)
+      expect(page).to have_current_path(idv_welcome_path)
       # And the user has an InPersonEnrollment with status "cancelled"
       expect(@user.in_person_enrollments.first).to have_attributes(
         status: 'cancelled',
@@ -85,7 +85,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
       login(@user, @new_password)
 
       # Then the user is taken to the /verify/welcome page
-      expect(current_path).to eq(idv_welcome_path)
+      expect(page).to have_current_path(idv_welcome_path)
       # And the user has an InPersonEnrollment with status "cancelled"
       expect(@user.in_person_enrollments.first).to have_attributes(
         status: 'cancelled',
@@ -129,7 +129,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
         login(@user, @new_password)
 
         # Then the user is taken to the /verify/welcome page
-        expect(current_path).to eq(idv_welcome_path)
+        expect(page).to have_current_path(idv_welcome_path)
         # And the user has an InPersonEnrollment with status "cancelled"
         expect(@user.in_person_enrollments.first).to have_attributes(
           status: 'cancelled',
@@ -164,7 +164,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
         login(@user, @new_password)
 
         # Then the user is taken to the /verify/welcome page
-        expect(current_path).to eq(idv_welcome_path)
+        expect(page).to have_current_path(idv_welcome_path)
         # And the user has an InPersonEnrollment with status "cancelled"
         expect(@user.in_person_enrollments.first).to have_attributes(
           status: 'cancelled',
@@ -225,7 +225,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
       login(@user, @new_password)
 
       # Then the user is taken to the /verify/welcome page
-      expect(current_path).to eq(idv_welcome_path)
+      expect(page).to have_current_path(idv_welcome_path)
       # And the user has an InPersonEnrollment with status "passed"
       expect(@user.in_person_enrollments.first).to have_attributes(
         status: 'passed',
@@ -286,7 +286,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
         login(@user, @new_password)
 
         # Then the user is taken to the /verify/welcome page
-        expect(current_path).to eq(idv_welcome_path)
+        expect(page).to have_current_path(idv_welcome_path)
         # And the user has an InPersonEnrollment with status "failed|cancelled|expired"
         expect(@user.in_person_enrollments.first).to have_attributes(
           status: status,
@@ -346,13 +346,13 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
       # When the user logs in
       login(@user, @new_password)
       # Then the user is taken to the /account/reactivate/start page
-      expect(current_path).to eq(reactivate_account_path)
+      expect(page).to have_current_path(reactivate_account_path)
 
       # When the user attempts to reactivate account without their personal key
       account_reactivation_with_personal_key(@user, @new_password)
 
       # Then the user is taken to the /sign_up/completed page
-      expect(current_path).to eq(sign_up_completed_path)
+      expect(page).to have_current_path(sign_up_completed_path)
       # And the user has an InPersonEnrollment with status "passed"
       expect(@user.in_person_enrollments.first).to have_attributes(
         status: 'passed',
@@ -411,13 +411,13 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
       # When the user logs in
       login(@user, @new_password)
       # Then the user is taken to the /account/reactivate/start page
-      expect(current_path).to eq(reactivate_account_path)
+      expect(page).to have_current_path(reactivate_account_path)
 
       # When the user attempts to reactivate account without their personal key
       account_reactivation_without_personal_key
 
       # Then the user is taken to the /verify/welcome page
-      expect(current_path).to eq(idv_welcome_path)
+      expect(page).to have_current_path(idv_welcome_path)
       # And the user has an InPersonEnrollment with status "passed"
       expect(@user.in_person_enrollments.first).to have_attributes(
         status: 'passed',
@@ -478,7 +478,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
         login(@user, @new_password)
 
         # Then the user is taken to the /verify/welcome page
-        expect(current_path).to eq(idv_welcome_path)
+        expect(page).to have_current_path(idv_welcome_path)
         # And the user has an InPersonEnrollment with status "failed|cancelled|expired"
         expect(@user.in_person_enrollments.first).to have_attributes(
           status: status,
@@ -536,7 +536,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
       login(@user, @new_password)
 
       # Then the user is taken to the /verify/welcome page
-      expect(current_path).to eq(idv_welcome_path)
+      expect(page).to have_current_path(idv_welcome_path)
       # And the user has an InPersonEnrollment with status "cancelled"
       expect(@user.in_person_enrollments.first).to have_attributes(
         status: 'cancelled',
@@ -577,7 +577,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
       login(@user, @new_password)
 
       # Then the user is taken to the /verify/welcome page
-      expect(current_path).to eq(idv_welcome_path)
+      expect(page).to have_current_path(idv_welcome_path)
       # And the user has an InPersonEnrollment with status "cancelled"
       expect(@user.in_person_enrollments.first).to have_attributes(
         status: 'cancelled',
@@ -656,7 +656,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
       login(@user, @new_password)
 
       # Then the user is taken to the /verify/welcome page
-      expect(current_path).to eq(idv_welcome_path)
+      expect(page).to have_current_path(idv_welcome_path)
       # And the user has an InPersonEnrollment with status "passed"
       expect(@user.in_person_enrollments.first).to have_attributes(
         status: 'passed',

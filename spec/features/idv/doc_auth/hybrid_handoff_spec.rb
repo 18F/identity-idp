@@ -60,7 +60,7 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
       fill_in :doc_auth_phone, with: ''
       click_send_link
 
-      expect(page).to have_current_path(idv_hybrid_handoff_path, ignore_query: true)
+      expect(page).to have_current_path(idv_hybrid_handoff_path)
     end
 
     it 'sends a link that does not contain any underscores' do
@@ -82,7 +82,7 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
 
       click_send_link
 
-      expect(page).to have_current_path(idv_hybrid_handoff_path, ignore_query: true)
+      expect(page).to have_current_path(idv_hybrid_handoff_path)
       expect(page).to have_content I18n.t('telephony.error.friendly_message.generic')
     end
 
@@ -136,7 +136,7 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
         fill_in :doc_auth_phone, with: '415-555-0199'
 
         click_send_link
-        expect(page).to have_current_path(idv_hybrid_handoff_path, ignore_query: true)
+        expect(page).to have_current_path(idv_hybrid_handoff_path)
         expect(page).to have_content(
           I18n.t(
             'doc_auth.errors.send_link_limited',
@@ -308,7 +308,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
 
     click_link t('links.cancel')
     expect(page).to have_content(t('idv.cancel.headings.prompt.standard'))
-    expect(current_path).to eq(idv_cancel_path)
+    expect(page).to have_current_path(idv_cancel_path, ignore_query: true)
   end
 
   def verify_no_upload_photos_section_and_link(page)

@@ -130,7 +130,7 @@ RSpec.describe 'webauthn hide' do
             fill_in_credentials_and_submit(user.email, user.password)
 
             # Redirected to options page
-            expect(current_path).to eq(login_two_factor_options_path)
+            expect(page).to have_current_path(login_two_factor_options_path)
 
             # Can choose authenticator
             expect(webauthn_option_hidden?).to eq(false)
@@ -150,7 +150,7 @@ RSpec.describe 'webauthn hide' do
               fill_in_credentials_and_submit(user.email, user.password)
 
               # Redirected to default MFA method
-              expect(current_path).to eq(login_two_factor_piv_cac_path)
+              expect(page).to have_current_path(login_two_factor_piv_cac_path)
 
               # Can change to authenticator if they choose
               click_on t('two_factor_authentication.login_options_link_text')

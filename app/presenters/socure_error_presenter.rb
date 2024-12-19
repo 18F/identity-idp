@@ -151,8 +151,11 @@ class SocureErrorPresenter
 
   def error_string_for(error_code)
     if error_code == :network
-      t('doc_auth.errors.general.new_network_error')
-    elsif remapped_error(error_code) == 'underage' # special handling because it says 'Login.gov'
+      return t('doc_auth.errors.general.new_network_error')
+    end
+
+    remapped_error_code = remapped_error(error_code)
+    if remapped_error_code == 'underage' # special handling because it says 'Login.gov'
       I18n.t('doc_auth.errors.underage', app_name: APP_NAME)
     else
       # i18n-tasks-use t('doc_auth.errors.unreadable_id')
@@ -160,7 +163,7 @@ class SocureErrorPresenter
       # i18n-tasks-use t('doc_auth.errors.expired_id')
       # i18n-tasks-use t('doc_auth.errors.low_resolution')
       # i18n-tasks-use t('doc_auth.errors.id_not_found')
-      I18n.t("doc_auth.errors.#{remapped_error(error_code)}")
+      I18n.t("doc_auth.errors.#{remapped_error_code}")
     end
   end
 end

@@ -1887,6 +1887,10 @@ user_mailer.email_deleted.header: Se eliminó una dirección de correo electrón
 user_mailer.email_deleted.help_html: Si no deseaba eliminar esta dirección de correo electrónico, visite %{help_link_html} de %{app_name_html} o %{contact_link_html}.
 user_mailer.email_deleted.subject: Dirección de correo electrónico eliminada
 user_mailer.help_link_text: Centro de ayuda
+user_mailer.idv_please_call.body.contact_message_html: Llame al <strong>%{contact_number}</strong> y proporcione el código de error <strong>%{support_code}</strong>.
+user_mailer.idv_please_call.body.intro_html: Llame a nuestro centro de contacto antes del <strong>%{date}</strong> para seguir verificando su identidad.
+user_mailer.idv_please_call.header: Llámenos
+user_mailer.idv_please_call.subject: Llame a %{app_name} para continuar con la verificación de identidad
 user_mailer.in_person_completion_survey.body.cta.callout: Haga clic en el botón siguiente para empezar.
 user_mailer.in_person_completion_survey.body.cta.label: Responda a nuestra encuesta
 user_mailer.in_person_completion_survey.body.greeting: 'Hola:'
@@ -1912,10 +1916,6 @@ user_mailer.in_person_failed.intro: No se pudo verificar su identidad en la ofic
 user_mailer.in_person_failed.subject: No se pudo verificar su identidad en persona
 user_mailer.in_person_failed.verifying_identity: 'Cuando verifique su identidad:'
 user_mailer.in_person_failed.verifying_step_not_expired: Su licencia de conducir o identificación emitida por el estado debe estar vigente. Actualmente no aceptamos otras formas de identificación, como pasaportes o identificaciones militares.
-user_mailer.in_person_please_call.body.contact_message_html: Llame al <strong>%{contact_number}</strong> y proporcione el código de error <strong>%{support_code}</strong>.
-user_mailer.in_person_please_call.body.intro_html: Llame a nuestro centro de contacto antes del <strong>%{date}</strong> para seguir verificando su identidad.
-user_mailer.in_person_please_call.header: Llámenos
-user_mailer.in_person_please_call.subject: Llame a %{app_name} para continuar con la verificación de identidad
 user_mailer.in_person_ready_to_verify_reminder.greeting: 'Hola:'
 user_mailer.in_person_ready_to_verify_reminder.heading.one: Le queda %{count} día para verificar su identidad en persona
 user_mailer.in_person_ready_to_verify_reminder.heading.other: Le quedan %{count} días para verificar su identidad en persona

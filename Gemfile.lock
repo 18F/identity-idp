@@ -471,7 +471,7 @@ GEM
     orm_adapter (0.5.0)
     ostruct (0.6.1)
     parallel (1.26.3)
-    parser (3.3.4.2)
+    parser (3.3.6.0)
       ast (~> 2.4.1)
       racc
     pg (1.5.9)
@@ -635,6 +635,8 @@ GEM
       unicode-display_width (>= 2.4.0, < 4.0)
     rubocop-ast (1.36.2)
       parser (>= 3.3.1.0)
+    rubocop-capybara (2.21.0)
+      rubocop (~> 1.41)
     rubocop-performance (1.23.0)
       rubocop (>= 1.48.1, < 2.0)
       rubocop-ast (>= 1.31.1, < 2.0)
@@ -853,6 +855,7 @@ DEPENDENCIES
   rspec-retry
   rspec_junit_formatter
   rubocop (~> 1.69.1)
+  rubocop-capybara
   rubocop-performance (~> 1.23.0)
   rubocop-rails (~> 2.27.0)
   rubocop-rspec (~> 3.2.0)
