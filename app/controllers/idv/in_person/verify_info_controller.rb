@@ -43,7 +43,9 @@ module Idv
             idv_session.ssn && idv_session.ipp_document_capture_complete?
           end,
           undo_step: ->(idv_session:, user:) do
+            idv_session.residential_resolution_vendor = nil
             idv_session.resolution_successful = nil
+            idv_session.resolution_vendor = nil
             idv_session.verify_info_step_document_capture_session_uuid = nil
             idv_session.threatmetrix_review_status = nil
             idv_session.source_check_vendor = nil
