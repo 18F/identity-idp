@@ -45,6 +45,8 @@ module DocAuth
           end,
         }
 
+        timeout = 15
+
         Faraday.new(url: url(endpoint).to_s, headers: request_headers) do |conn|
           conn.request :retry, retry_options
           conn.request :instrumentation, name: 'request_metric.faraday'
@@ -62,10 +64,6 @@ module DocAuth
 
       def request_headers(extras = {})
         headers.merge(extras)
-      end
-
-      def timeout
-        15
       end
     end
   end

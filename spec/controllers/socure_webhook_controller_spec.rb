@@ -91,18 +91,18 @@ RSpec.describe SocureWebhookController do
 
             request.headers['Authorization'] = headers[:Authorization]
             request.headers['Content-Type'] = headers[:'Content-Type']
-
-            endpoints.each do |endpoint|
-              expect(SocureDocvRepeatWebhookJob).to receive(:perform_later) do |*args|
-                expect(args.first[:body]).to eq(JSON.parse(repeated_body.to_json))
-                expect(args.first[:endpoint]).to eq(endpoint)
-                expect(args.first[:headers]).to eq(headers)
-              end
-            end
           end
 
           context 'when idv workers are enabled' do
             it 'queues SocureDocvRepeatWebhook jobs' do
+              endpoints.each do |endpoint|
+                expect(SocureDocvRepeatWebhookJob).to receive(:perform_later) do |*args|
+                  expect(args.first[:body]).to eq(JSON.parse(repeated_body.to_json))
+                  expect(args.first[:endpoint]).to eq(endpoint)
+                  expect(args.first[:headers]).to eq(headers)
+                end
+              end
+
               post :create, params: webhook_body
             end
           end

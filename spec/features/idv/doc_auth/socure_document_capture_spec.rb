@@ -247,7 +247,7 @@ RSpec.feature 'document capture step', :js do
         expect(DocAuthLog.find_by(user_id: @user.id).state).to be_nil
       end
 
-      it 'does track state if state tracking is disabled' do
+      it 'does track state if state tracking is enabled' do
         allow(IdentityConfig.store).to receive(:state_tracking_enabled).and_return(true)
         socure_docv_upload_documents(
           docv_transaction_token: @docv_transaction_token,
