@@ -1,3 +1,4 @@
 type: object
 allOf:
   - $ref: './events/RegistrationEvents.yml'
+  - $ref: './events/SignInEvents.yml'
