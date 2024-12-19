@@ -12,7 +12,8 @@ module Users
     before_action :authenticate_user
     before_action :confirm_user_authenticated_for_2fa_setup
     before_action :check_if_possible_piv_user
-    before_action :override_csp_for_threat_metrix
+    before_action :override_csp_for_threat_metrix,
+                  if: -> { FeatureManagement.account_creation_device_profiling_collecting_enabled? }
 
     delegate :enabled_mfa_methods_count, to: :mfa_context
 
