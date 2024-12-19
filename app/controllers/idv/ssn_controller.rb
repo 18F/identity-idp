@@ -10,7 +10,8 @@ module Idv
 
     before_action :confirm_not_rate_limited_after_doc_auth
     before_action :confirm_step_allowed
-    before_action :override_csp_for_threat_metrix
+    before_action :override_csp_for_threat_metrix,
+                  if: -> { FeatureManagement.proofing_device_profiling_collecting_enabled? }
 
     attr_reader :ssn_presenter
 
