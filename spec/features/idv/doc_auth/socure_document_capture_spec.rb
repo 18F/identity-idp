@@ -53,12 +53,12 @@ RSpec.feature 'document capture step', :js do
         end
 
         before do
+          expect(SocureDocvRepeatWebhookJob).to receive(:perform_later)
+            .exactly(6 * max_attempts * socure_docv_webhook_repeat_endpoints.length)
+            .times.and_call_original
           (max_attempts - 1).times do
             socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
           end
-
-          expect(DocAuth::Socure::WebhookRepeater)
-            .to receive(:new).exactly(6).times.and_call_original
         end
 
         it 'redirects to the rate limited error page' do
@@ -85,9 +85,6 @@ RSpec.feature 'document capture step', :js do
         context 'successfully processes image on last attempt' do
           before do
             DocAuth::Mock::DocAuthMockClient.reset!
-            # recovers when fails to broadcast webhook
-            allow_any_instance_of(DocAuth::Socure::WebhookRepeater)
-              .to receive(:broadcast).and_raise('doh')
           end
 
           it 'proceeds to the next page with valid info' do
@@ -250,7 +247,7 @@ RSpec.feature 'document capture step', :js do
         expect(DocAuthLog.find_by(user_id: @user.id).state).to be_nil
       end
 
-      xit 'does track state if state tracking is disabled' do
+      it 'does track state if state tracking is disabled' do
         allow(IdentityConfig.store).to receive(:state_tracking_enabled).and_return(true)
         socure_docv_upload_documents(
           docv_transaction_token: @docv_transaction_token,
@@ -318,12 +315,10 @@ RSpec.feature 'document capture step', :js do
         ['https://1.example.test/thepath', 'https://2.example.test/thepath']
       end
 
-      before do
-        expect(DocAuth::Socure::WebhookRepeater)
-          .to receive(:new).exactly(6).times.and_call_original
-      end
-
       it 'proceeds to the next page with valid info' do
+        expect(SocureDocvRepeatWebhookJob).to receive(:perform_later)
+          .exactly(6 * socure_docv_webhook_repeat_endpoints.length).times.and_call_original
+
         perform_in_browser(:mobile) do
           visit_idp_from_oidc_sp_with_ial2
           @user = sign_in_and_2fa_user
