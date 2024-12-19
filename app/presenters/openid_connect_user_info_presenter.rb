@@ -15,7 +15,7 @@ class OpenidConnectUserInfoPresenter
     info = {
       sub: uuid_from_sp_identity(identity),
       iss: root_url,
-      email: email_from_sp_identity,
+      email: identity.email_address_for_sharing.email,
       email_verified: true,
     }
 
@@ -53,16 +53,8 @@ class OpenidConnectUserInfoPresenter
     AgencyIdentityLinker.new(identity).link_identity.uuid
   end
 
-  def email_from_sp_identity
-    identity.email_address&.email || email_context.last_sign_in_email_address.email
-  end
-
   def all_emails_from_sp_identity(identity)
     identity.user.confirmed_email_addresses.map(&:email)
-  end
-
-  def email_context
-    @email_context ||= EmailContext.new(identity.user)
   end
 
   def ial2_attributes

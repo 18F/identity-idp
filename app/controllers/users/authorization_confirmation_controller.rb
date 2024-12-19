@@ -13,7 +13,11 @@ module Users
     def new
       analytics.authentication_confirmation
       @sp = ServiceProvider.find_by(issuer: sp_session[:issuer])
-      @email = EmailContext.new(current_user).last_sign_in_email_address.email
+      @email = if current_user.active_identity_for(@sp)
+                 current_user.active_identity_for(@sp).email_address_for_sharing.email
+               else
+                 current_user.last_sign_in_email_address.email
+               end
     end
 
     def create

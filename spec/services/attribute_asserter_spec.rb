@@ -272,8 +272,7 @@ RSpec.describe AttributeAsserter do
           end
 
           it 'does not create a getter function for IAL1 attributes' do
-            expected_email = EmailContext.new(user).last_sign_in_email_address.email
-            expect(get_asserted_attribute(user, :email)).to eq expected_email
+            expect(get_asserted_attribute(user, :email)).to eq user.last_sign_in_email_address.email
           end
 
           it 'gets UUID from Service Provider' do
@@ -293,8 +292,8 @@ RSpec.describe AttributeAsserter do
             end
 
             it 'does not create a getter function for IAL1 attributes' do
-              expected_email = EmailContext.new(user).last_sign_in_email_address.email
-              expect(get_asserted_attribute(user, :email)).to eq expected_email
+              expect(get_asserted_attribute(user, :email))
+                .to eq user.last_sign_in_email_address.email
             end
 
             it 'gets UUID from Service Provider' do
