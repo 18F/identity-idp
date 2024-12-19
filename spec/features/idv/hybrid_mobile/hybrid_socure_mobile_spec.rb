@@ -412,7 +412,9 @@ RSpec.describe 'Hybrid Flow' do
       perform_in_browser(:mobile) do
         visit @sms_link
 
-        stub_docv_verification_data_fail_with([socure_error_code])
+        stub_docv_verification_data_fail_with(
+          docv_transaction_token: @docv_transaction_token,
+          errors: [socure_error_code])
 
         click_idv_continue
 
@@ -421,6 +423,8 @@ RSpec.describe 'Hybrid Flow' do
         visit idv_hybrid_mobile_socure_document_capture_update_url
 
         expect(page).to have_text(t(expected_header_key))
+
+        binding.pry
 
         click_on t('in_person_proofing.body.cta.button')
 
