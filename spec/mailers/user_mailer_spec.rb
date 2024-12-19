@@ -814,6 +814,13 @@ RSpec.describe UserMailer, type: :mailer do
 
       mail.deliver_later
     end
+
+    it 'attaches the icon inline' do
+      icon_part = mail.attachments['phone_icon.png']
+      expect(icon_part).not_to be(nil)
+      expect(icon_part.inline?).to eql(true)
+      expect(icon_part.url).to start_with('cid:')
+    end
   end
 
   context 'in person emails' do
