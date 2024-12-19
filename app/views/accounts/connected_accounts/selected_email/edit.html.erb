@@ -16,6 +16,7 @@
           :selected_email_id,
           as: :radio_buttons,
           label: false,
+          required: true,
           wrapper_html: {
             aria: {
               labelledby: 'select-email-heading',
@@ -26,7 +27,7 @@
             [
               email.email,
               email.id,
-              checked: email.id == @identity.email_address_id,
+              checked: email.id == @email_id,
             ]
           end,
         ) %>

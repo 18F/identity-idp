@@ -223,8 +223,10 @@ RSpec.describe Idv::LinkSentController do
 
         before do
           expect(FormResponse).to receive(:new).with(
-            { success: false,
-              errors: { message: error_message } },
+            {
+              success: false,
+              errors: hash_including(message: error_message),
+            },
           )
         end
 

@@ -3,7 +3,14 @@ require 'rails_helper'
 RSpec.describe 'Account connected applications' do
   include NavigationHelper
 
-  let(:user) { create(:user, :fully_registered, created_at: Time.zone.now - 100.days) }
+  let(:user) do
+    create(
+      :user,
+      :fully_registered,
+      :with_multiple_emails,
+      created_at: Time.zone.now - 100.days,
+    )
+  end
   let(:identity) do
     create(
       :service_provider_identity,
@@ -84,24 +91,42 @@ RSpec.describe 'Account connected applications' do
       click_link(t('help_text.requested_attributes.change_email_link'))
     end
 
-    expect(page).to have_field(user.email) { |field| !field[:checked] }
+    expect(page).to have_field(user.email) { |field| field[:checked] }
 
-    choose user.email
+    choose user.email_addresses.last.email
     click_on t('help_text.requested_attributes.select_email_link')
 
     within('li', text: identity.display_name) do
       expect(page).not_to have_content(t('account.connected_apps.email_not_selected'))
-      expect(page).to have_content(user.email)
+      expect(page).to have_content(user.email_addresses.last.email)
       click_link(t('help_text.requested_attributes.change_email_link'))
     end
 
-    expect(page).to have_field(user.email) { |field| field[:checked] }
+    expect(page).to have_field(user.email_addresses.last.email) { |field| field[:checked] }
+
+    choose user.email
 
     click_on(t('help_text.requested_attributes.select_email_link'))
+
+    within('li', text: identity.display_name) do
+      expect(page).to have_content(user.email)
+    end
 
     expect(page).to have_content strip_tags(
       t('account.connected_apps.email_update_success_html', sp_name: identity.display_name),
     )
+  end
+
+  scenario 'changing email shared with SP when SP has an assigned email' do
+    identity.email_address_id = user.email_addresses.last.id
+    identity.save
+
+    within('li', text: identity.display_name) do
+      expect(page).to have_content(t('account.connected_apps.email_not_selected'))
+      click_link(t('help_text.requested_attributes.change_email_link'))
+    end
+
+    expect(page).to have_field(user.email_addresses.last.email) { |field| field[:checked] }
   end
 
   def build_account_connected_apps

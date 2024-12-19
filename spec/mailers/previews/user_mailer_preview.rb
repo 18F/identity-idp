@@ -243,11 +243,8 @@ class UserMailerPreview < ActionMailer::Preview
     )
   end
 
-  def in_person_please_call
-    UserMailer.with(user: user, email_address: email_address_record).in_person_please_call(
-      enrollment: in_person_enrollment_id_ipp,
-      visited_location_name: in_person_visited_location_name,
-    )
+  def idv_please_call
+    UserMailer.with(user: user, email_address: email_address_record).idv_please_call
   end
 
   def account_rejected

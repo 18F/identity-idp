@@ -84,7 +84,7 @@ RSpec.feature 'sign in with piv/cac' do
         click_on t('forms.piv_cac_setup.submit')
         follow_piv_cac_redirect
 
-        expect(current_path).to eq(sign_up_completed_path)
+        expect(page).to have_current_path(sign_up_completed_path)
 
         click_agree_and_continue
         expect(oidc_decoded_id_token[:x509_presented]).to eq(true)

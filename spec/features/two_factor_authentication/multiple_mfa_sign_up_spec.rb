@@ -258,7 +258,7 @@ RSpec.feature 'Multi Two Factor Authentication' do
 
     it 'returns to setup mfa page when user clicks Choose another option' do
       click_on(t('two_factor_authentication.choose_another_option'))
-      expect(current_path).to eq authentication_methods_setup_path
+      expect(page).to have_current_path authentication_methods_setup_path
       expect(mfa.backup_code_configurations).to be_empty
     end
   end

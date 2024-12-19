@@ -43,7 +43,7 @@ module SpAuthHelper
     fill_in_code_with_last_totp(user)
     click_submit_default
 
-    expect(current_path).to eq(sign_up_completed_path)
+    expect(page).to have_current_path(sign_up_completed_path)
     click_agree_and_continue
 
     visit sign_out_url

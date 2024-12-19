@@ -3,8 +3,6 @@
 class StepIndicatorComponent < BaseComponent
   attr_reader :current_step, :locale_scope, :tag_options
 
-  ALL_STEPS_COMPLETE = :all_steps_complete
-
   def initialize(steps:, current_step:, locale_scope: nil, **tag_options)
     @steps = steps
     @current_step = current_step
@@ -23,8 +21,6 @@ class StepIndicatorComponent < BaseComponent
   private
 
   def step_status(step)
-    return :complete if current_step == ALL_STEPS_COMPLETE
-
     if step[:name] == current_step
       :current
     elsif step_index(step[:name]) < step_index(current_step)

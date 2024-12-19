@@ -1,0 +1,67 @@
+<% self.title = 'In-person proofing enrollments' %>
+
+<%= content_for(:meta_refresh) { '15' } %>
+
+<h1>In-person proofing enrollments</h1>
+
+<div class="grid-row grid-gap margin-top-2 flex-align-stretch">
+  <div class="tablet:grid-col-12">
+    <% if @enrollments.count == 0 %>
+      <p>
+          There are no recent in-person enrollments.
+      </p>
+    <% else %>
+      <p>
+        Listed below 
+        <%= @enrollments.count == 1 ? 'is' : 'are' %> 
+        the <%= @enrollments.count %> most recent 
+        in-person enrollment<%= @enrollments.count == 1 ? '' : 's' %>.
+      </p>
+
+      <table class="bg-white" border="0" cellpadding="0" cellspacing="0">
+        <thead>
+          <tr>
+            <th class="border-bottom bg-base-lightest padding-x-2 padding-y-1 text-left text-no-wrap"></th>
+            <th class="border-bottom bg-base-lightest padding-x-2 padding-y-1 text-left text-no-wrap">UUID</th>
+            <th class="border-bottom bg-base-lightest padding-x-2 padding-y-1 text-left text-no-wrap" colspan="2">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @enrollments_with_actions.each_with_index do |(e, action), index| %>
+            <tr class="<%= index % 2 == 1 ? 'bg-base-lightest' : '' %>">
+              <td class="border-bottom padding-x-2 padding-y-1 text-no-wrap">
+                <small>
+                  <time datetime="<%= e.created_at %>" title="<%= e.created_at %>">
+                    <%= time_ago_in_words(e.created_at) %> ago
+                  </time>
+                </small>
+              </td>
+              <td class="border-bottom padding-x-2 padding-y-1"><code><%= e.user.uuid %></code></td>
+              <td class="border-bottom padding-x-2 padding-y-1 text-no-wrap">
+                <%= case e.status
+                  when 'pending' then '🤔'
+                  when 'passed' then '✅'
+                  when 'failed' then '🙀'
+                  else '⚪️'
+                  end %>
+                <%= e.status %>
+              </td>
+              <td class="border-bottom padding-x-2 padding-y-1">
+                  <%= case action
+                      when :approve
+                        button_to(
+                          '👍 Approve',
+                          test_ipp_path(enrollment: e.id),
+                          method: 'put',
+                          class: 'usa-button usa-button-small',
+                          title: 'Simulate the user passing the check at the post office',
+                        )
+                      end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
+  </div>
+</div>

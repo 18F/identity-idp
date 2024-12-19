@@ -22,7 +22,7 @@ RSpec.describe 'totp management' do
         ),
       )
 
-      expect(current_path).to eq(edit_auth_app_path(id: auth_app_config.id))
+      expect(page).to have_current_path(edit_auth_app_path(id: auth_app_config.id))
 
       click_button t('two_factor_authentication.auth_app.delete')
 
@@ -47,7 +47,7 @@ RSpec.describe 'totp management' do
         ),
       )
 
-      expect(current_path).to eq(edit_auth_app_path(id: auth_app_configuration.id))
+      expect(page).to have_current_path(edit_auth_app_path(id: auth_app_configuration.id))
       expect(page).to have_field(
         t('two_factor_authentication.auth_app.nickname'),
         with: name,
@@ -79,7 +79,7 @@ RSpec.describe 'totp management' do
         ),
       )
 
-      expect(current_path).to eq(edit_auth_app_path(id: existing_auth_app_configuration.id))
+      expect(page).to have_current_path(edit_auth_app_path(id: existing_auth_app_configuration.id))
       expect(page).to have_field(
         t('two_factor_authentication.auth_app.nickname'),
         with: name,
@@ -90,7 +90,7 @@ RSpec.describe 'totp management' do
 
       click_button t('two_factor_authentication.auth_app.change_nickname')
 
-      expect(current_path).to eq(edit_auth_app_path(id: existing_auth_app_configuration.id))
+      expect(page).to have_current_path(edit_auth_app_path(id: existing_auth_app_configuration.id))
 
       expect(page).to have_content(t('errors.manage_authenticator.unique_name_error'))
     end

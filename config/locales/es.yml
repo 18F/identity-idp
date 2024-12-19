@@ -601,7 +601,7 @@ doc_auth.headers.underage: No se cumplió con el requisito de edad
 doc_auth.headers.unreadable_id: No pudimos leer su identificación
 doc_auth.headings.address: Actualice su dirección postal
 doc_auth.headings.back: Reverso de su licencia de conducir o identificación estatal
-doc_auth.headings.capture_complete: Verificamos su identificación
+doc_auth.headings.capture_complete: Verificamos su documento de identidad
 doc_auth.headings.capture_scan_warning_html: No pudimos leer el código de barras en su identificación. Si la información que aparece a continuación es incorrecta, %{link_html} de su identificación emitida por el estado.
 doc_auth.headings.capture_scan_warning_link: cargue nuevas fotos
 doc_auth.headings.document_capture: Añade fotos de tu licencia de conducir o credencial de identificación oficial
@@ -1887,6 +1887,10 @@ user_mailer.email_deleted.header: Se eliminó una dirección de correo electrón
 user_mailer.email_deleted.help_html: Si no deseaba eliminar esta dirección de correo electrónico, visite %{help_link_html} de %{app_name_html} o %{contact_link_html}.
 user_mailer.email_deleted.subject: Dirección de correo electrónico eliminada
 user_mailer.help_link_text: Centro de ayuda
+user_mailer.idv_please_call.body.contact_message_html: Llame al <strong>%{contact_number}</strong> y proporcione el código de error <strong>%{support_code}</strong>.
+user_mailer.idv_please_call.body.intro_html: Llame a nuestro centro de contacto antes del <strong>%{date}</strong> para seguir verificando su identidad.
+user_mailer.idv_please_call.header: Llámenos
+user_mailer.idv_please_call.subject: Llame a %{app_name} para continuar con la verificación de identidad
 user_mailer.in_person_completion_survey.body.cta.callout: Haga clic en el botón siguiente para empezar.
 user_mailer.in_person_completion_survey.body.cta.label: Responda a nuestra encuesta
 user_mailer.in_person_completion_survey.body.greeting: 'Hola:'
@@ -1912,10 +1916,6 @@ user_mailer.in_person_failed.intro: No se pudo verificar su identidad en la ofic
 user_mailer.in_person_failed.subject: No se pudo verificar su identidad en persona
 user_mailer.in_person_failed.verifying_identity: 'Cuando verifique su identidad:'
 user_mailer.in_person_failed.verifying_step_not_expired: Su licencia de conducir o identificación emitida por el estado debe estar vigente. Actualmente no aceptamos otras formas de identificación, como pasaportes o identificaciones militares.
-user_mailer.in_person_please_call.body.contact_message_html: Llame al <strong>%{contact_number}</strong> y proporcione el código de error <strong>%{support_code}</strong>.
-user_mailer.in_person_please_call.body.intro_html: Llame a nuestro centro de contacto antes del <strong>%{date}</strong> para seguir verificando su identidad.
-user_mailer.in_person_please_call.header: Llámenos
-user_mailer.in_person_please_call.subject: Llame a %{app_name} para continuar con la verificación de identidad
 user_mailer.in_person_ready_to_verify_reminder.greeting: 'Hola:'
 user_mailer.in_person_ready_to_verify_reminder.heading.one: Le queda %{count} día para verificar su identidad en persona
 user_mailer.in_person_ready_to_verify_reminder.heading.other: Le quedan %{count} días para verificar su identidad en persona
@@ -1978,7 +1978,7 @@ user_mailer.reset_password_instructions.footer: Este vínculo vence en %{expires
 user_mailer.reset_password_instructions.gpo_letter_description: Si restablece su contraseña, el código de verificación que recibió en su carta ya no funcionará y tendrá que volver a verificar su identidad.
 user_mailer.reset_password_instructions.gpo_letter_header: Su carta está en camino
 user_mailer.reset_password_instructions.header: Para terminar de restablecer su contraseña, haga clic en el enlace de abajo o copie y pegue el enlace completo en su navegador.
-user_mailer.reset_password_instructions.in_person_warning_description_html: <strong>If you reset your password now, your barcode will not work at the Post Office.</strong> You’ll have to restart the identity verification process from the beginning.
+user_mailer.reset_password_instructions.in_person_warning_description_html: <strong>Si restablece su contraseña ahora, su código de barras no funcionará en la oficina de correos.</strong> Tendrá que volver a iniciar el proceso de verificación de identidad desde el principio.
 user_mailer.reset_password_instructions.link_text: Restablezca su contraseña
 user_mailer.reset_password_instructions.subject: Restablezca su contraseña
 user_mailer.signup_with_your_email.help_html: Si usted no solicitó una cuenta nueva o sospecha que hubo un error, visite la %{help_link_html} de %{app_name_html} o %{contact_link_html}.
