@@ -678,7 +678,9 @@ RSpec.describe Idv::VerifyInfoController do
 
       it 'sets residential_resolution_vendor on idv_session' do
         get :show
-        expect(controller.idv_session.residential_resolution_vendor).to eql(residential_resolution_vendor_name)
+        expect(controller.idv_session.residential_resolution_vendor).to(
+          eql(residential_resolution_vendor_name),
+        )
       end
     end
   end
