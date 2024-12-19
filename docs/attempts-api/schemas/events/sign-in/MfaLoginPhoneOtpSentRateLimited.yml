@@ -1,0 +1,10 @@
+description: |
+  During a login attempt, the user has exceeded the limit (9) for requesting an OTP be sent to their phone.
+# is 9 correct? should it be 10?
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      phone_number:
+        type: string
+        description: User-provided phone number
