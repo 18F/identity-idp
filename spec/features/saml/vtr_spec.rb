@@ -212,7 +212,7 @@ RSpec.feature 'SAML requests using VTR' do
 
   def expect_successful_saml_redirect
     if javascript_enabled?
-      expect(current_path).to eq(test_saml_decode_assertion_path)
+      expect(page).to have_current_path(test_saml_decode_assertion_path)
     else
       expect(page).to have_current_path(
         api_saml_finalauthpost_path(path_year: SamlAuthHelper::PATH_YEAR),

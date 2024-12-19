@@ -12,11 +12,11 @@ RSpec.feature 'address proofing rate limit' do
       start_idv_from_sp
       complete_idv_steps_before_phone_step(user)
 
-      expect(current_path).to eq(idv_phone_errors_failure_path)
+      expect(page).to have_current_path(idv_phone_errors_failure_path)
 
       # Cancel is available
       click_on 'Cancel'
-      expect(current_path).to eq(idv_cancel_path)
+      expect(page).to have_current_path(idv_cancel_path, ignore_query: true)
       click_on(t('idv.cancel.actions.keep_going'))
 
       # Can continue with Verify by mail
@@ -24,7 +24,7 @@ RSpec.feature 'address proofing rate limit' do
       click_on t('idv.buttons.mail.send')
 
       expect(page).to have_content(t('idv.titles.session.enter_password', app_name: APP_NAME))
-      expect(current_path).to eq(idv_enter_password_path)
+      expect(page).to have_current_path(idv_enter_password_path)
       fill_in 'Password', with: user.password
       click_idv_continue
       expect(page).to have_current_path(idv_letter_enqueued_path)
@@ -52,12 +52,12 @@ RSpec.feature 'address proofing rate limit' do
       click_idv_send_security_code
 
       # There should be no option to verify by mail on the warning page
-      expect(current_path).to eq(idv_phone_errors_warning_path)
+      expect(page).to have_current_path(idv_phone_errors_warning_path)
       expect(page).to_not have_content(t('idv.failure.phone.warning.gpo.button'))
 
       # Visiting the letter request URL should redirect to phone
       visit idv_request_letter_path
-      expect(current_path).to eq(idv_phone_path)
+      expect(page).to have_current_path(idv_phone_path)
 
       fill_out_phone_form_ok
       click_idv_send_security_code
@@ -65,10 +65,10 @@ RSpec.feature 'address proofing rate limit' do
       click_submit_default
 
       expect(page).to have_content(t('idv.titles.session.enter_password', app_name: APP_NAME))
-      expect(current_path).to eq(idv_enter_password_path)
+      expect(page).to have_current_path(idv_enter_password_path)
       fill_in 'Password', with: user.password
       click_idv_continue
-      expect(current_path).to eq(idv_personal_key_path)
+      expect(page).to have_current_path(idv_personal_key_path)
       expect(user.reload.active_profile.present?).to eq(true)
     end
   end
@@ -87,12 +87,12 @@ RSpec.feature 'address proofing rate limit' do
       start_idv_from_sp
       sign_in_live_with_2fa(user)
 
-      expect(current_path).to eq(idv_phone_errors_failure_path)
+      expect(page).to have_current_path(idv_phone_errors_failure_path)
       expect(page).to_not have_content(t('idv.failure.phone.warning.gpo.button'))
 
       # Visiting the letter request URL should redirect to phone failure
       visit idv_request_letter_path
-      expect(current_path).to eq(idv_phone_errors_failure_path)
+      expect(page).to have_current_path(idv_phone_errors_failure_path)
     end
   end
 end

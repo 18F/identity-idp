@@ -46,7 +46,9 @@ RSpec.shared_examples 'creating an IAL2 account using authenticator app for 2FA'
     acknowledge_and_confirm_personal_key
 
     click_agree_and_continue
-    expect(current_path).to eq test_saml_decode_assertion_path if sp == :saml
+    if sp == :saml
+      expect(page).to have_current_path test_saml_decode_assertion_path
+    end
 
     if sp == :oidc
       redirect_uri = URI(current_url)
@@ -92,7 +94,9 @@ RSpec.shared_examples 'creating an IAL2 account using webauthn for 2FA' do |sp|
     acknowledge_and_confirm_personal_key
 
     click_agree_and_continue
-    expect(current_path).to eq test_saml_decode_assertion_path if sp == :saml
+    if sp == :saml
+      expect(page).to have_current_path test_saml_decode_assertion_path
+    end
 
     if sp == :oidc
       redirect_uri = URI(current_url)

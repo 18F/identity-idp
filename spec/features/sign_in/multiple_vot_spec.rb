@@ -14,7 +14,7 @@ RSpec.feature 'Sign in with multiple vectors of trust' do
         visit_idp_from_oidc_sp_with_vtr(vtr: ['C1.C2.P1.Pb', 'C1.C2.P1'])
         sign_in_live_with_2fa(user)
 
-        expect(current_path).to eq(sign_up_completed_path)
+        expect(page).to have_current_path(sign_up_completed_path)
         click_agree_and_continue
 
         user_info = OpenidConnectUserInfoPresenter.new(user.identities.last).user_info
@@ -29,7 +29,7 @@ RSpec.feature 'Sign in with multiple vectors of trust' do
         visit_idp_from_oidc_sp_with_vtr(vtr: ['C1.C2.P1.Pb', 'C1.C2.P1'])
         sign_in_live_with_2fa(user)
 
-        expect(current_path).to eq(sign_up_completed_path)
+        expect(page).to have_current_path(sign_up_completed_path)
         click_agree_and_continue
 
         user_info = OpenidConnectUserInfoPresenter.new(user.identities.last).user_info
@@ -44,13 +44,13 @@ RSpec.feature 'Sign in with multiple vectors of trust' do
         visit_idp_from_oidc_sp_with_vtr(vtr: ['C1.C2.P1.Pb', 'C1.C2.P1'])
         sign_in_live_with_2fa(user)
 
-        expect(current_path).to eq(idv_welcome_path)
+        expect(page).to have_current_path(idv_welcome_path)
         complete_all_doc_auth_steps_before_password_step(with_selfie: true)
         fill_in 'Password', with: user.password
         click_continue
         acknowledge_and_confirm_personal_key
 
-        expect(current_path).to eq(sign_up_completed_path)
+        expect(page).to have_current_path(sign_up_completed_path)
         click_agree_and_continue
 
         user_info = OpenidConnectUserInfoPresenter.new(user.identities.last).user_info
@@ -70,7 +70,7 @@ RSpec.feature 'Sign in with multiple vectors of trust' do
         )
         sign_in_live_with_2fa(user)
 
-        expect(current_path).to eq(sign_up_completed_path)
+        expect(page).to have_current_path(sign_up_completed_path)
         click_agree_and_continue
 
         user_info = OpenidConnectUserInfoPresenter.new(user.identities.last).user_info
@@ -88,7 +88,7 @@ RSpec.feature 'Sign in with multiple vectors of trust' do
         )
         sign_in_live_with_2fa(user)
 
-        expect(current_path).to eq(sign_up_completed_path)
+        expect(page).to have_current_path(sign_up_completed_path)
         click_agree_and_continue
 
         user_info = OpenidConnectUserInfoPresenter.new(user.identities.last).user_info
@@ -109,7 +109,7 @@ RSpec.feature 'Sign in with multiple vectors of trust' do
         user.password = 'new even better password'
         sign_in_live_with_2fa(user)
 
-        expect(current_path).to eq(sign_up_completed_path)
+        expect(page).to have_current_path(sign_up_completed_path)
         click_agree_and_continue
 
         user_info = OpenidConnectUserInfoPresenter.new(user.identities.last).user_info
@@ -141,7 +141,7 @@ RSpec.feature 'Sign in with multiple vectors of trust' do
         sign_in_live_with_2fa(user)
 
         click_submit_default
-        expect(current_path).to eq(sign_up_completed_path)
+        expect(page).to have_current_path(sign_up_completed_path)
         click_agree_and_continue
         click_submit_default
 
@@ -162,7 +162,7 @@ RSpec.feature 'Sign in with multiple vectors of trust' do
         sign_in_live_with_2fa(user)
 
         click_submit_default
-        expect(current_path).to eq(sign_up_completed_path)
+        expect(page).to have_current_path(sign_up_completed_path)
         click_agree_and_continue
         click_submit_default
 
@@ -182,13 +182,13 @@ RSpec.feature 'Sign in with multiple vectors of trust' do
         )
         sign_in_live_with_2fa(user)
 
-        expect(current_path).to eq(idv_welcome_path)
+        expect(page).to have_current_path(idv_welcome_path)
         complete_all_doc_auth_steps_before_password_step(with_selfie: true)
         fill_in 'Password', with: user.password
         click_continue
         acknowledge_and_confirm_personal_key
 
-        expect(current_path).to eq(sign_up_completed_path)
+        expect(page).to have_current_path(sign_up_completed_path)
         click_agree_and_continue
 
         xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
@@ -217,7 +217,7 @@ RSpec.feature 'Sign in with multiple vectors of trust' do
         sign_in_live_with_2fa(user)
 
         click_submit_default
-        expect(current_path).to eq(sign_up_completed_path)
+        expect(page).to have_current_path(sign_up_completed_path)
         click_agree_and_continue
         click_submit_default
 
@@ -245,7 +245,7 @@ RSpec.feature 'Sign in with multiple vectors of trust' do
         sign_in_live_with_2fa(user)
 
         click_submit_default
-        expect(current_path).to eq(sign_up_completed_path)
+        expect(page).to have_current_path(sign_up_completed_path)
         click_agree_and_continue
         click_submit_default
 
@@ -276,7 +276,7 @@ RSpec.feature 'Sign in with multiple vectors of trust' do
         sign_in_live_with_2fa(user)
 
         click_submit_default
-        expect(current_path).to eq(sign_up_completed_path)
+        expect(page).to have_current_path(sign_up_completed_path)
         click_agree_and_continue
         click_submit_default
 

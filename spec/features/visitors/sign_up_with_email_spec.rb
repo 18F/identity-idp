@@ -57,7 +57,7 @@ RSpec.feature 'Visitor signs up with email address' do
     sign_up_and_2fa_ial1_user
 
     expect(Funnel::Registration::TotalRegisteredCount.call).to eq(1)
-    expect(current_path).to eq account_path
+    expect(page).to have_current_path account_path
   end
 
   it 'returns a bad request if the email contains invalid bytes' do

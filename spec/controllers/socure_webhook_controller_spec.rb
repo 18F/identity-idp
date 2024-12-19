@@ -63,6 +63,51 @@ RSpec.describe SocureWebhookController do
         before do
           request.headers['Authorization'] = socure_secret_key
         end
+
+        shared_examples 'repeats webhooks' do
+          let(:headers) do
+            {
+              Authorization: socure_secret_key_queue.last,
+              'Content-Type': 'application/json',
+            }
+          end
+          let(:endpoints) do
+            3.times.map { |i| "https://#{i}.example.test/endpoint" }
+          end
+          let(:repeated_body) do
+            b = {}.merge(webhook_body)
+            b[:event].delete(:data)
+            b
+          end
+
+          before do
+            allow(IdentityConfig.store)
+              .to receive(:socure_docv_webhook_repeat_endpoints).and_return(endpoints)
+            allow(SocureDocvResultsJob).to receive(:perform_now)
+            allow(SocureDocvRepeatWebhookJob).to receive(:perform_later)
+
+            dcs = create(:document_capture_session, :socure)
+            webhook_body[:event][:docvTransactionToken] = dcs.socure_docv_transaction_token
+
+            request.headers['Authorization'] = headers[:Authorization]
+            request.headers['Content-Type'] = headers[:'Content-Type']
+          end
+
+          context 'when idv workers are enabled' do
+            it 'queues SocureDocvRepeatWebhook jobs' do
+              endpoints.each do |endpoint|
+                expect(SocureDocvRepeatWebhookJob).to receive(:perform_later) do |*args|
+                  expect(args.first[:body]).to eq(JSON.parse(repeated_body.to_json))
+                  expect(args.first[:endpoint]).to eq(endpoint)
+                  expect(args.first[:headers]).to eq(headers)
+                end
+              end
+
+              post :create, params: webhook_body
+            end
+          end
+        end
+
         it 'returns OK and logs an event with a correct secret key and body' do
           post :create, params: webhook_body
 
@@ -92,6 +137,8 @@ RSpec.describe SocureWebhookController do
           end
         end
 
+        it_behaves_like 'repeats webhooks'
+
         context 'when document capture session exists' do
           it 'logs the user\'s uuid' do
             dcs = create(:document_capture_session, :socure)
@@ -112,6 +159,8 @@ RSpec.describe SocureWebhookController do
 
           context 'when DOCUMENTS_UPLOADED event received' do
             let(:event_type) { 'DOCUMENTS_UPLOADED' }
+
+            it_behaves_like 'repeats webhooks'
 
             it 'returns OK and logs an event with a correct secret key and body' do
               dcs = create(:document_capture_session, :socure)
@@ -181,6 +230,8 @@ RSpec.describe SocureWebhookController do
           context 'when SESSION_COMPLETE event received' do
             let(:event_type) { 'SESSION_COMPLETE' }
 
+            it_behaves_like 'repeats webhooks'
+
             it 'does not increment rate limiter of user' do
               dcs = create(:document_capture_session, :socure)
               webhook_body[:event][:docvTransactionToken] = dcs.socure_docv_transaction_token
@@ -219,6 +270,8 @@ RSpec.describe SocureWebhookController do
 
           context 'when SESSION_EXPIRED event received' do
             let(:event_type) { 'SESSION_EXPIRED' }
+
+            it_behaves_like 'repeats webhooks'
 
             it 'does not increment rate limiter of user' do
               dcs = create(:document_capture_session, :socure)

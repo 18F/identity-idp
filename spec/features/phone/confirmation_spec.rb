@@ -28,7 +28,7 @@ RSpec.describe 'phone otp confirmation' do
     def expect_failed_otp_confirmation(_delivery_method)
       visit account_path
 
-      expect(current_path).to eq(authentication_methods_setup_path)
+      expect(page).to have_current_path(authentication_methods_setup_path)
       expect(phone_configuration).to be_nil
     end
   end
@@ -52,7 +52,9 @@ RSpec.describe 'phone otp confirmation' do
     def expect_failed_otp_confirmation(delivery_method)
       visit account_path
 
-      expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: delivery_method))
+      expect(page).to have_current_path(
+        login_two_factor_path(otp_delivery_preference: delivery_method),
+      )
     end
   end
 

@@ -71,7 +71,9 @@ RSpec.shared_examples 'phone rate limiting' do |delivery_method|
           ),
         )
       end
-      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: delivery_method)
+      expect(page).to have_current_path(
+        login_two_factor_path(otp_delivery_preference: delivery_method),
+      )
     end
     fill_in :code, with: '123456'
     click_submit_default

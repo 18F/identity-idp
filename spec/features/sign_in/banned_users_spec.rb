@@ -30,7 +30,7 @@ RSpec.feature 'Banning users for an SP' do
       SignInRestriction.create(user: user, service_provider: 'http://localhost:3000')
 
       sign_in_live_with_2fa(user)
-      expect(current_path).to eq(account_path)
+      expect(page).to have_current_path(account_path)
 
       visit_idp_from_sp_with_ial1(:saml)
       expect_user_to_be_banned
@@ -49,7 +49,7 @@ RSpec.feature 'Banning users for an SP' do
       SignInRestriction.create(user: user, service_provider: OidcAuthHelper::OIDC_IAL1_ISSUER)
 
       sign_in_live_with_2fa(user)
-      expect(current_path).to eq(account_path)
+      expect(page).to have_current_path(account_path)
 
       visit_idp_from_sp_with_ial1(:oidc)
       expect_user_to_be_banned
@@ -58,15 +58,15 @@ RSpec.feature 'Banning users for an SP' do
       sign_in_live_with_2fa(user)
       click_submit_default
       click_agree_and_continue
-      expect(current_path).to eq(complete_saml_path)
+      expect(page).to have_current_path(complete_saml_path)
     end
   end
 
   def expect_user_to_be_banned
-    expect(current_path).to eq(banned_user_path)
+    expect(page).to have_current_path(banned_user_path)
     expect(page).to have_content(I18n.t('banned_user.title'))
 
     visit account_path
-    expect(current_path).to eq(new_user_session_path)
+    expect(page).to have_current_path(new_user_session_path)
   end
 end

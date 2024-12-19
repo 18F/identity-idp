@@ -12,6 +12,7 @@ RSpec.feature 'document capture step', :js do
   let(:fake_socure_docv_document_request_endpoint) { 'https://fake-socure.test/document-request' }
   let(:fake_socure_document_capture_app_url) { 'https://verify.fake-socure.test/something' }
   let(:socure_docv_verification_data_test_mode) { false }
+  let(:socure_docv_webhook_repeat_endpoints) { [] }
 
   before(:each) do
     allow(IdentityConfig.store).to receive(:socure_docv_enabled).and_return(true)
@@ -22,11 +23,15 @@ RSpec.feature 'document capture step', :js do
       .and_return(socure_docv_webhook_secret_key)
     allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint)
       .and_return(fake_socure_docv_document_request_endpoint)
+    allow(IdentityConfig.store).to receive(:socure_docv_webhook_repeat_endpoints)
+      .and_return(socure_docv_webhook_repeat_endpoints)
+    socure_docv_webhook_repeat_endpoints.each { |endpoint| stub_request(:post, endpoint) }
     allow(IdentityConfig.store).to receive(:ruby_workers_idv_enabled).and_return(false)
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     @docv_transaction_token = stub_docv_document_request
     allow(IdentityConfig.store).to receive(:socure_docv_verification_data_test_mode)
       .and_return(socure_docv_verification_data_test_mode)
+    allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
   end
 
   context 'happy path', allow_browser_log: true do
@@ -43,14 +48,23 @@ RSpec.feature 'document capture step', :js do
       end
 
       context 'rate limits calls to backend docauth vendor', allow_browser_log: true do
+        let(:socure_docv_webhook_repeat_endpoints) do # repeat webhooks
+          ['https://1.example.test/thepath', 'https://2.example.test/thepath']
+        end
+
         before do
-          allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
+          expect(SocureDocvRepeatWebhookJob).to receive(:perform_later)
+            .exactly(6 * max_attempts * socure_docv_webhook_repeat_endpoints.length)
+            .times.and_call_original
           (max_attempts - 1).times do
             socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
           end
         end
 
         it 'redirects to the rate limited error page' do
+          # recovers when fails to repeat webhook to an endpoint
+          allow_any_instance_of(DocAuth::Socure::WebhookRepeater)
+            .to receive(:send_http_post_request).and_raise('doh')
           expect(page).to have_current_path(fake_socure_document_capture_app_url)
           visit idv_socure_document_capture_path
           expect(page).to have_current_path(idv_socure_document_capture_path)
@@ -91,8 +105,42 @@ RSpec.feature 'document capture step', :js do
         end
       end
 
+      context 'shows the correct attempts on error pages' do
+        before do
+          stub_docv_verification_data_fail_with(
+            docv_transaction_token: @docv_transaction_token,
+            errors: ['XXXX'],
+          )
+        end
+
+        it 'remaining attempts displayed is properly decremented' do
+          socure_docv_upload_documents(
+            docv_transaction_token: @docv_transaction_token,
+          )
+          visit idv_socure_document_capture_update_path
+          expect(page).to have_content(
+            strip_tags(
+              t(
+                'doc_auth.rate_limit_warning.plural_html',
+                remaining_attempts: max_attempts - 1,
+              ),
+            ),
+          )
+
+          visit idv_socure_document_capture_path
+          socure_docv_upload_documents(
+            docv_transaction_token: @docv_transaction_token,
+          )
+          visit idv_socure_document_capture_update_path
+          expect(page).to have_content(strip_tags(t('doc_auth.rate_limit_warning.singular_html')))
+        end
+      end
+
       context 'reuses valid capture app urls when appropriate', allow_browser_log: true do
         context 'successfully erases capture app url when flow is complete' do
+          before do
+            expect(DocAuth::Socure::WebhookRepeater).not_to receive(:new)
+          end
           it 'proceeds to the next page with valid info' do
             document_capture_session = DocumentCaptureSession.find_by(user_id: @user.id)
             expect(document_capture_session.socure_docv_capture_app_url)
@@ -199,7 +247,7 @@ RSpec.feature 'document capture step', :js do
         expect(DocAuthLog.find_by(user_id: @user.id).state).to be_nil
       end
 
-      xit 'does track state if state tracking is disabled' do
+      it 'does track state if state tracking is enabled' do
         allow(IdentityConfig.store).to receive(:state_tracking_enabled).and_return(true)
         socure_docv_upload_documents(
           docv_transaction_token: @docv_transaction_token,
@@ -263,7 +311,14 @@ RSpec.feature 'document capture step', :js do
     end
 
     context 'standard mobile flow' do
+      let(:socure_docv_webhook_repeat_endpoints) do # repeat webhooks
+        ['https://1.example.test/thepath', 'https://2.example.test/thepath']
+      end
+
       it 'proceeds to the next page with valid info' do
+        expect(SocureDocvRepeatWebhookJob).to receive(:perform_later)
+          .exactly(6 * socure_docv_webhook_repeat_endpoints.length).times.and_call_original
+
         perform_in_browser(:mobile) do
           visit_idp_from_oidc_sp_with_ial2
           @user = sign_in_and_2fa_user

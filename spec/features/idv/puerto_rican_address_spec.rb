@@ -14,12 +14,12 @@ RSpec.describe 'proofing flow with a Puerto Rican document', :js do
     complete_ssn_step
 
     expect(page).to have_content(t('doc_auth.headings.address'))
-    expect(current_path).to eq(idv_address_path)
+    expect(page).to have_current_path(idv_address_path)
 
     click_button t('forms.buttons.submit.update')
 
     expect(page).to have_content(t('headings.verify'))
-    expect(current_path).to eq(idv_verify_info_path)
+    expect(page).to have_current_path(idv_verify_info_path)
   end
 
   it 'does not redirect to the user to the address step after they update their SSN' do
@@ -27,7 +27,7 @@ RSpec.describe 'proofing flow with a Puerto Rican document', :js do
     click_button t('forms.buttons.submit.update')
 
     expect(page).to have_content(t('headings.verify'))
-    expect(current_path).to eq(idv_verify_info_path)
+    expect(page).to have_current_path(idv_verify_info_path)
 
     click_link t('idv.buttons.change_ssn_label')
 

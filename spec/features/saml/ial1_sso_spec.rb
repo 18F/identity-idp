@@ -15,7 +15,7 @@ RSpec.feature 'IAL1 Single Sign On' do
 
       perform_in_browser(:two) do
         confirm_email_in_a_different_browser(email)
-        expect(current_path).to eq sign_up_completed_path
+        expect(page).to have_current_path sign_up_completed_path
         expect(page).to have_content t('help_text.requested_attributes.email')
         expect(page).to have_content email
         expect(page).to_not have_content t('help_text.requested_attributes.address')
@@ -43,7 +43,7 @@ RSpec.feature 'IAL1 Single Sign On' do
       expect(current_url).to eq complete_saml_url
 
       visit root_path
-      expect(current_path).to eq account_path
+      expect(page).to have_current_path account_path
     end
 
     it 'shows user the start page without accordion' do
@@ -152,7 +152,7 @@ RSpec.feature 'IAL1 Single Sign On' do
 
       visit saml_authn_request_url
 
-      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+      expect(page).to have_current_path login_two_factor_path(otp_delivery_preference: 'sms')
     end
   end
 
@@ -162,7 +162,7 @@ RSpec.feature 'IAL1 Single Sign On' do
 
       visit saml_authn_request_url
 
-      expect(current_path).to eq authentication_methods_setup_path
+      expect(page).to have_current_path authentication_methods_setup_path
     end
   end
 

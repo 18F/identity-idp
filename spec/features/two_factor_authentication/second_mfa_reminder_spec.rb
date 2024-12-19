@@ -40,7 +40,11 @@ RSpec.feature 'Second MFA Reminder' do
 
         click_on t('users.second_mfa_reminder.continue', sp_name: service_provider.friendly_name)
 
-        expect(current_url).to start_with(service_provider.redirect_uris.first)
+        expect(page).to have_current_path(
+          service_provider.redirect_uris.first,
+          url: true,
+          ignore_query: true,
+        )
       end
     end
 

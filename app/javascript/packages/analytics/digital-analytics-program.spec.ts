@@ -4,12 +4,7 @@ import { pathToFileURL } from 'node:url';
 
 describe('digital analytics program', () => {
   it('parses without syntax error', async () => {
-    // Future: Replace with Promise.withResolvers once supported
-    // See: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/withResolvers
-    let resolve;
-    const promise = new Promise((_resolve) => {
-      resolve = _resolve;
-    });
+    const { promise, resolve } = Promise.withResolvers<void>();
 
     // Reference: https://github.com/nodejs/node/issues/30682
     const toDataURL = (source: string) =>

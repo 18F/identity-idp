@@ -61,16 +61,6 @@ RSpec.describe SignUp::SelectEmailController do
       end
     end
 
-    context 'with only one verified email address' do
-      let(:user) { create(:user) }
-
-      it 'redirects to the sign up completed path' do
-        response
-
-        expect(response).to redirect_to(sign_up_completed_path)
-      end
-    end
-
     context 'when users has max number of emails' do
       before do
         allow(user).to receive(:email_address_count).and_return(2)

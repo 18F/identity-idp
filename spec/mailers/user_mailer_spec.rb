@@ -799,6 +799,23 @@ RSpec.describe UserMailer, type: :mailer do
     end
   end
 
+  describe '#idv_please_call' do
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).idv_please_call
+    end
+
+    it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
+
+    it 'renders the idv_please_call template' do
+      expect_any_instance_of(ActionMailer::Base).to receive(:mail)
+        .with(hash_including(template_name: 'idv_please_call'))
+        .and_call_original
+
+      mail.deliver_later
+    end
+  end
+
   context 'in person emails' do
     let(:current_address_matches_id) { false }
     let!(:enrollment) do
@@ -1306,6 +1323,14 @@ RSpec.describe UserMailer, type: :mailer do
       it_behaves_like 'a system email'
       it_behaves_like 'an email that respects user email locale preference'
 
+      it 'renders the idv_please_call template' do
+        expect_any_instance_of(ActionMailer::Base).to receive(:mail)
+          .with(hash_including(template_name: 'idv_please_call'))
+          .and_call_original
+
+        mail.deliver_later
+      end
+
       context 'when the keyword argument visited_location_name is missing' do
         let(:mail) do
           UserMailer.with(user: user, email_address: email_address).in_person_please_call(
@@ -1440,6 +1465,13 @@ RSpec.describe UserMailer, type: :mailer do
   end
 
   describe '#deliver_later' do
+    it 'queues email without raising' do
+      # rubocop:disable IdentityIdp/MailLaterLinter
+      mailer = UserMailer.with(user:, email_address: user.email_addresses.first)
+      mailer.suspended_create_account.deliver_later
+      # rubocop:enable IdentityIdp/MailLaterLinter
+    end
+
     it 'does not queue email if it potentially contains sensitive value' do
       user = create(:user)
       mailer = UserMailer.with(

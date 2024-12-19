@@ -164,7 +164,7 @@ RSpec.shared_examples 'signing in as IAL2 after resetting password' do |sp|
     click_submit_default
     click_submit_default if current_path == complete_saml_path
 
-    expect(current_path).to eq reactivate_account_path
+    expect(page).to have_current_path reactivate_account_path
 
     reactivate_profile(new_password, user.personal_key)
 
@@ -378,9 +378,9 @@ RSpec.shared_examples 'logs reCAPTCHA event and redirects appropriately' do |suc
       ),
     )
     if successful_sign_in
-      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+      expect(page).to have_current_path login_two_factor_path(otp_delivery_preference: 'sms')
     else
-      expect(current_path).to eq sign_in_security_check_failed_path
+      expect(page).to have_current_path sign_in_security_check_failed_path
     end
   end
 end

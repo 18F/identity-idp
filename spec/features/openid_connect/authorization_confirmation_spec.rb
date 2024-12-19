@@ -94,13 +94,13 @@ RSpec.feature 'OIDC Authorization Confirmation' do
       sign_in_user(user1)
       visit_idp_from_ial1_oidc_sp
 
-      expect(current_path).to eq(user_authorization_confirmation_path)
+      expect(page).to have_current_path(user_authorization_confirmation_path)
 
       click_button t('user_authorization_confirmation.sign_in')
       # Simulate clicking the back button by going right back to the original path
       visit user_authorization_confirmation_path
 
-      expect(current_path).to eq(new_user_session_path)
+      expect(page).to have_current_path(new_user_session_path)
     end
   end
 
@@ -115,7 +115,7 @@ RSpec.feature 'OIDC Authorization Confirmation' do
 
       perform_in_browser(:two) do
         confirm_email_in_a_different_browser(email)
-        expect(current_path).to eq sign_up_completed_path
+        expect(page).to have_current_path sign_up_completed_path
         expect(page).to have_content t('help_text.requested_attributes.email')
         expect(page).to have_content email
 

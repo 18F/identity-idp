@@ -25,37 +25,37 @@ RSpec.feature 'phone errors', :js do
 
   def verify_phone_submitted(phone_errors_url, phone_errors_path)
     visit(phone_errors_url)
-    expect(current_path).to eq(idv_welcome_path)
+    expect(page).to have_current_path(idv_welcome_path)
 
     complete_welcome_step
     visit(phone_errors_url)
-    expect(current_path).to eq(idv_agreement_path)
+    expect(page).to have_current_path(idv_agreement_path)
 
     complete_agreement_step
     visit(phone_errors_url)
-    expect(current_path).to eq(idv_hybrid_handoff_path)
+    expect(page).to have_current_path(idv_hybrid_handoff_path)
 
     complete_hybrid_handoff_step # upload photos
     visit(phone_errors_url)
-    expect(current_path).to eq(idv_document_capture_path)
+    expect(page).to have_current_path(idv_document_capture_path)
 
     complete_document_capture_step
     visit(phone_errors_url)
-    expect(current_path).to eq(idv_ssn_path)
+    expect(page).to have_current_path(idv_ssn_path)
 
     complete_ssn_step
     visit(phone_errors_url)
-    expect(current_path).to eq(idv_verify_info_path)
+    expect(page).to have_current_path(idv_verify_info_path)
 
     complete_verify_step
     visit(phone_errors_url)
-    expect(current_path).to eq(idv_phone_path)
+    expect(page).to have_current_path(idv_phone_path)
 
     fill_out_phone_form_fail
     click_idv_send_security_code
-    expect(current_path).to eq(idv_phone_errors_warning_path)
+    expect(page).to have_current_path(idv_phone_errors_warning_path)
 
     visit(phone_errors_url)
-    expect(current_path).to eq(phone_errors_path)
+    expect(page).to have_current_path(phone_errors_path)
   end
 end

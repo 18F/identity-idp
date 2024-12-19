@@ -14,7 +14,7 @@ RSpec.feature 'Session decryption' do
       visit account_path
 
       # Should redirect to root since the user has been logged out
-      expect(current_path).to eq(root_path)
+      expect(page).to have_current_path(root_path)
     end
   end
 end

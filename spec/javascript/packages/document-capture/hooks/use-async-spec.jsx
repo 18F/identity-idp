@@ -23,19 +23,8 @@ describe('document-capture/hooks/use-async', () => {
   }
 
   it('returns suspense resource that renders fallback', async () => {
-    let resolve;
-    const createPromise = sinon
-      .stub()
-      .onCall(0)
-      .returns(
-        new Promise((_resolve) => {
-          resolve = () => {
-            _resolve();
-          };
-        }),
-      )
-      .onCall(1)
-      .throws();
+    const { promise, resolve } = Promise.withResolvers();
+    const createPromise = sinon.stub().onCall(0).returns(promise).onCall(1).throws();
 
     const { container, findByText } = render(<Parent createPromise={createPromise} />);
 
@@ -47,25 +36,14 @@ describe('document-capture/hooks/use-async', () => {
   });
 
   it('returns suspense resource that renders error fallback', async () => {
-    let reject;
-    const createPromise = sinon
-      .stub()
-      .onCall(0)
-      .returns(
-        new Promise((_resolve, _reject) => {
-          reject = () => {
-            _reject(new Error());
-          };
-        }),
-      )
-      .onCall(1)
-      .throws();
+    const { promise, reject } = Promise.withResolvers();
+    const createPromise = sinon.stub().onCall(0).returns(promise).onCall(1).throws();
 
     const { container, findByText } = render(<Parent createPromise={createPromise} />);
 
     expect(container.textContent).to.equal('Loading');
 
-    reject();
+    reject(new Error());
 
     expect(await findByText('Error')).to.be.ok();
     expect(console).to.have.loggedError();

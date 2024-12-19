@@ -24,7 +24,7 @@ RSpec.describe 'webauthn management' do
       'errors.webauthn_setup.general_error_html',
       link_html: t('errors.webauthn_setup.additional_methods_link'),
     )
-    expect(current_path).to eq webauthn_setup_path
+    expect(page).to have_current_path webauthn_setup_path
   end
 
   def visit_webauthn_platform_setup
@@ -44,7 +44,7 @@ RSpec.describe 'webauthn management' do
 
   def expect_webauthn_platform_setup_error
     expect(page).to have_content t('errors.webauthn_platform_setup.general_error')
-    expect(current_path).to eq webauthn_setup_path
+    expect(page).to have_current_path webauthn_setup_path
   end
 
   context 'with webauthn roaming associations' do
@@ -91,7 +91,7 @@ RSpec.describe 'webauthn management' do
         ].join(': '),
       )
 
-      expect(current_path).to eq(edit_webauthn_path(id: webauthn_config.id))
+      expect(page).to have_current_path(edit_webauthn_path(id: webauthn_config.id))
 
       click_button t('two_factor_authentication.webauthn_roaming.delete')
 
@@ -116,7 +116,7 @@ RSpec.describe 'webauthn management' do
         ].join(': '),
       )
 
-      expect(current_path).to eq(edit_webauthn_path(id: webauthn_config.id))
+      expect(page).to have_current_path(edit_webauthn_path(id: webauthn_config.id))
       expect(page).to have_field(
         t('two_factor_authentication.webauthn_roaming.nickname'),
         with: name,
@@ -146,7 +146,7 @@ RSpec.describe 'webauthn management' do
         ].join(': '),
       )
 
-      expect(current_path).to eq(edit_webauthn_path(id: webauthn_config.id))
+      expect(page).to have_current_path(edit_webauthn_path(id: webauthn_config.id))
 
       click_link t('links.cancel')
 
@@ -170,7 +170,7 @@ RSpec.describe 'webauthn management' do
         ].join(': '),
       )
 
-      expect(current_path).to eq(edit_webauthn_path(id: webauthn_config.id))
+      expect(page).to have_current_path(edit_webauthn_path(id: webauthn_config.id))
 
       click_button t('two_factor_authentication.webauthn_roaming.delete')
 
@@ -195,7 +195,7 @@ RSpec.describe 'webauthn management' do
         ].join(': '),
       )
 
-      expect(current_path).to eq(edit_webauthn_path(id: webauthn_config.id))
+      expect(page).to have_current_path(edit_webauthn_path(id: webauthn_config.id))
       expect(page).to have_field(
         t('two_factor_authentication.webauthn_roaming.nickname'),
         with: name,
@@ -205,7 +205,7 @@ RSpec.describe 'webauthn management' do
 
       click_button t('two_factor_authentication.webauthn_roaming.change_nickname')
 
-      expect(current_path).to eq(edit_webauthn_path(id: webauthn_config.id))
+      expect(page).to have_current_path(edit_webauthn_path(id: webauthn_config.id))
       expect(page).to have_field(
         t('two_factor_authentication.webauthn_roaming.nickname'),
         with: 'existing',
@@ -221,15 +221,15 @@ RSpec.describe 'webauthn management' do
       sign_in_and_2fa_user(user)
 
       visit account_two_factor_authentication_path
-      expect(current_path).to eq account_two_factor_authentication_path
+      expect(page).to have_current_path account_two_factor_authentication_path
 
       first(:link, t('account.index.webauthn_add'), href: webauthn_setup_path).click
-      expect(current_path).to eq webauthn_setup_path
+      expect(page).to have_current_path webauthn_setup_path
 
       fill_in_nickname_and_click_continue(nickname: webauthn_config.name)
       mock_press_button_on_hardware_key_on_setup
 
-      expect(current_path).to eq webauthn_setup_path
+      expect(page).to have_current_path webauthn_setup_path
       expect(page).to have_content t('errors.webauthn_setup.unique_name')
     end
 
@@ -401,7 +401,7 @@ RSpec.describe 'webauthn management' do
         ].join(': '),
       )
 
-      expect(current_path).to eq(edit_webauthn_path(id: webauthn_config.id))
+      expect(page).to have_current_path(edit_webauthn_path(id: webauthn_config.id))
 
       click_button t('two_factor_authentication.webauthn_platform.delete')
 
@@ -426,7 +426,7 @@ RSpec.describe 'webauthn management' do
         ].join(': '),
       )
 
-      expect(current_path).to eq(edit_webauthn_path(id: webauthn_config.id))
+      expect(page).to have_current_path(edit_webauthn_path(id: webauthn_config.id))
       expect(page).to have_field(
         t('two_factor_authentication.webauthn_platform.nickname'),
         with: name,
@@ -456,7 +456,7 @@ RSpec.describe 'webauthn management' do
         ].join(': '),
       )
 
-      expect(current_path).to eq(edit_webauthn_path(id: webauthn_config.id))
+      expect(page).to have_current_path(edit_webauthn_path(id: webauthn_config.id))
 
       click_link t('links.cancel')
 
@@ -480,7 +480,7 @@ RSpec.describe 'webauthn management' do
         ].join(': '),
       )
 
-      expect(current_path).to eq(edit_webauthn_path(id: webauthn_config.id))
+      expect(page).to have_current_path(edit_webauthn_path(id: webauthn_config.id))
 
       click_button t('two_factor_authentication.webauthn_platform.delete')
 
@@ -505,7 +505,7 @@ RSpec.describe 'webauthn management' do
         ].join(': '),
       )
 
-      expect(current_path).to eq(edit_webauthn_path(id: webauthn_config.id))
+      expect(page).to have_current_path(edit_webauthn_path(id: webauthn_config.id))
       expect(page).to have_field(
         t('two_factor_authentication.webauthn_platform.nickname'),
         with: name,
@@ -515,7 +515,7 @@ RSpec.describe 'webauthn management' do
 
       click_button t('two_factor_authentication.webauthn_platform.change_nickname')
 
-      expect(current_path).to eq(edit_webauthn_path(id: webauthn_config.id))
+      expect(page).to have_current_path(edit_webauthn_path(id: webauthn_config.id))
       expect(page).to have_field(
         t('two_factor_authentication.webauthn_platform.nickname'),
         with: 'existing',
@@ -531,15 +531,15 @@ RSpec.describe 'webauthn management' do
       sign_in_and_2fa_user(user)
 
       visit account_two_factor_authentication_path
-      expect(current_path).to eq account_two_factor_authentication_path
+      expect(page).to have_current_path account_two_factor_authentication_path
 
       first(:link, t('account.index.webauthn_add'), href: webauthn_setup_path).click
-      expect(current_path).to eq webauthn_setup_path
+      expect(page).to have_current_path webauthn_setup_path
 
       fill_in_nickname_and_click_continue(nickname: webauthn_config.name)
       mock_press_button_on_hardware_key_on_setup
 
-      expect(current_path).to eq webauthn_setup_path
+      expect(page).to have_current_path webauthn_setup_path
       expect(page).to have_content t('errors.webauthn_setup.unique_name')
     end
 

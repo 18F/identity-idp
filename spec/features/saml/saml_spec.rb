@@ -53,14 +53,14 @@ RSpec.feature 'saml api' do
       it 'directs users to the start page' do
         visit_saml_authn_request_url
 
-        expect(current_path).to eq new_user_session_path
+        expect(page).to have_current_path new_user_session_path
       end
 
       it 'prompts the user to enter OTP' do
         sign_in_before_2fa(user)
         visit_saml_authn_request_url
 
-        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+        expect(page).to have_current_path login_two_factor_path(otp_delivery_preference: 'sms')
       end
     end
 
@@ -71,7 +71,7 @@ RSpec.feature 'saml api' do
       end
 
       it 'prompts the user to set up 2FA' do
-        expect(current_path).to eq authentication_methods_setup_path
+        expect(page).to have_current_path authentication_methods_setup_path
       end
 
       it 'prompts the user to confirm phone after setting up 2FA' do
@@ -79,7 +79,10 @@ RSpec.feature 'saml api' do
         fill_in 'new_phone_form_phone', with: '202-555-1212'
         click_send_one_time_code
 
-        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+        expect(page).to have_current_path(
+          login_two_factor_path(otp_delivery_preference: 'sms'),
+          ignore_query: true,
+        )
       end
     end
 
@@ -223,7 +226,7 @@ RSpec.feature 'saml api' do
       it 'redirects to root' do
         travel(Devise.timeout_in + 1.second) do
           visit api_saml_logout_url(path_year: SamlAuthHelper::PATH_YEAR)
-          expect(page.current_path).to eq('/')
+          expect(page).to have_current_path('/')
         end
       end
     end
@@ -381,6 +384,7 @@ RSpec.feature 'saml api' do
         visit_idp_from_sp_with_ial1(:saml)
         sign_in_live_with_2fa(user)
         click_submit_default_twice
+        expect(page).to have_current_path(test_saml_decode_assertion_path)
         xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
         expect(xmldoc.attribute_value_for(:ial)).to eq(
           Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,

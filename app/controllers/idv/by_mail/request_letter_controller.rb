@@ -59,11 +59,7 @@ module Idv
       end
 
       def step_indicator_steps
-        if in_person_proofing?
-          Idv::Flows::InPersonFlow::STEP_INDICATOR_STEPS_GPO
-        else
-          StepIndicatorConcern::STEP_INDICATOR_STEPS_GPO
-        end
+        StepIndicatorConcern::STEP_INDICATOR_STEPS_GPO
       end
     end
   end

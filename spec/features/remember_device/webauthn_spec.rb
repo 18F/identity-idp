@@ -130,7 +130,7 @@ RSpec.describe 'Remembering a webauthn device' do
         expect(page)
           .to have_content t('headings.add_info.phone')
 
-        expect(current_path).to eq phone_setup_path
+        expect(page).to have_current_path phone_setup_path
 
         fill_in 'new_phone_form_phone', with: '703-555-1212'
         click_send_one_time_code

@@ -11,6 +11,7 @@ class SocureWebhookController < ApplicationController
   def create
     begin
       log_webhook_receipt
+      repeat_webhook
       process_webhook_event
     rescue StandardError => e
       NewRelic::Agent.notice_error(e)
@@ -133,5 +134,21 @@ class SocureWebhookController < ApplicationController
 
   def docv_transaction_token
     @docv_transaction_token ||= event[:docvTransactionToken] || event[:docVTransactionToken]
+  end
+
+  def repeat_webhook
+    endpoints = IdentityConfig.store.socure_docv_webhook_repeat_endpoints
+    return if endpoints.blank?
+
+    headers = {
+      Authorization: request.headers['Authorization'],
+      'Content-Type': request.headers['Content-Type'],
+    }
+
+    body = socure_params.to_h
+
+    endpoints.each do |endpoint|
+      SocureDocvRepeatWebhookJob.perform_later(body:, headers:, endpoint:)
+    end
   end
 end

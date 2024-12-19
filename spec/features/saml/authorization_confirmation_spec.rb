@@ -63,13 +63,13 @@ RSpec.feature 'SAML Authorization Confirmation' do
       sign_in_user(user1)
       visit request_url
 
-      expect(current_path).to eq(user_authorization_confirmation_path)
+      expect(page).to have_current_path(user_authorization_confirmation_path)
 
       click_button t('user_authorization_confirmation.sign_in')
       # Simulate clicking the back button by going right back to the original path
       visit user_authorization_confirmation_path
 
-      expect(current_path).to eq(new_user_session_path)
+      expect(page).to have_current_path(new_user_session_path)
     end
 
     it 'does not render the confirmation screen on a return visit to the SP by default' do
@@ -89,7 +89,7 @@ RSpec.feature 'SAML Authorization Confirmation' do
       sign_in_user(user1)
       visit user_authorization_confirmation_path
 
-      expect(current_path).to eq(account_path)
+      expect(page).to have_current_path(account_path)
     end
   end
 
@@ -106,7 +106,7 @@ RSpec.feature 'SAML Authorization Confirmation' do
 
       perform_in_browser(:two) do
         confirm_email_in_a_different_browser(email)
-        expect(current_path).to eq sign_up_completed_path
+        expect(page).to have_current_path sign_up_completed_path
         expect(page).to have_content t('help_text.requested_attributes.email')
         expect(page).to have_content email
 

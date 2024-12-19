@@ -41,7 +41,7 @@ RSpec.describe 'New device tracking' do
 
       travel_to 16.minutes.from_now do
         visit root_url
-        expect(current_path).to eq(new_user_session_path)
+        expect(page).to have_current_path(new_user_session_path)
         sign_in_user(user)
       end
 
@@ -62,7 +62,7 @@ RSpec.describe 'New device tracking' do
       # Notified after session expired, user returned for successful email password and MFA
       travel_to 38.minutes.from_now do
         visit root_url
-        expect(current_path).to eq(new_user_session_path)
+        expect(page).to have_current_path(new_user_session_path)
 
         # Regression: LG-13221: Ensure that the successful authentication email lists failed MFA.
         sign_in_user(user)

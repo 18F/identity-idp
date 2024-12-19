@@ -7,7 +7,7 @@ RSpec.feature 'Two Factor Authentication' do
 
       attempt_to_bypass_2fa_setup
 
-      expect(current_path).to eq authentication_methods_setup_path
+      expect(page).to have_current_path authentication_methods_setup_path
 
       select_2fa_option('phone')
 
@@ -18,7 +18,7 @@ RSpec.feature 'Two Factor Authentication' do
 
       send_one_time_code_without_entering_phone_number
 
-      expect(current_path).to eq phone_setup_path
+      expect(page).to have_current_path phone_setup_path
 
       submit_2fa_setup_form_with_empty_string_phone
 
@@ -31,7 +31,10 @@ RSpec.feature 'Two Factor Authentication' do
       submit_2fa_setup_form_with_valid_phone
 
       expect(page).to_not have_content t('errors.messages.improbable_phone')
-      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+      expect(page).to have_current_path(
+        login_two_factor_path(otp_delivery_preference: 'sms'),
+        ignore_query: true,
+      )
       expect(MfaContext.new(user).phone_configurations).to be_empty
       expect(user.sms?).to eq true
     end
@@ -47,7 +50,7 @@ RSpec.feature 'Two Factor Authentication' do
         fill_in 'new_phone_form_phone', with: unsupported_phone
         click_send_one_time_code
 
-        expect(current_path).to eq phone_setup_path
+        expect(page).to have_current_path phone_setup_path
         expect(page).to have_content t(
           'two_factor_authentication.otp_delivery_preference.voice_unsupported',
           location: 'Bahamas',
@@ -55,7 +58,7 @@ RSpec.feature 'Two Factor Authentication' do
 
         click_on t('two_factor_authentication.choose_another_option')
 
-        expect(current_path).to eq authentication_methods_setup_path
+        expect(page).to have_current_path authentication_methods_setup_path
       end
     end
 
@@ -285,19 +288,19 @@ RSpec.feature 'Two Factor Authentication' do
       user = create(:user, :fully_registered)
       sign_in_before_2fa(user)
 
-      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+      expect(page).to have_current_path login_two_factor_path(otp_delivery_preference: 'sms')
       expect(page)
         .to have_content t('two_factor_authentication.header_text')
 
       attempt_to_bypass_2fa
 
-      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+      expect(page).to have_current_path login_two_factor_path(otp_delivery_preference: 'sms')
 
       check 'remember_device'
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      expect(current_path).to eq account_path
+      expect(page).to have_current_path account_path
     end
 
     def attempt_to_bypass_2fa
@@ -309,7 +312,7 @@ RSpec.feature 'Two Factor Authentication' do
       sign_in_before_2fa(user)
       click_link t('links.cancel')
 
-      expect(current_path).to eq root_path
+      expect(page).to have_current_path root_path
     end
 
     scenario 'user does not have to focus on OTP field', js: true do
@@ -370,38 +373,38 @@ RSpec.feature 'Two Factor Authentication' do
       user = user_with_piv_cac
       sign_in_before_2fa(user)
 
-      expect(current_path).to eq login_two_factor_piv_cac_path
+      expect(page).to have_current_path login_two_factor_piv_cac_path
 
       choose_another_security_option('sms')
 
-      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+      expect(page).to have_current_path login_two_factor_path(otp_delivery_preference: 'sms')
 
       visit login_two_factor_piv_cac_path
 
       choose_another_security_option('voice')
 
-      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'voice')
+      expect(page).to have_current_path login_two_factor_path(otp_delivery_preference: 'voice')
     end
 
     it 'allows totp fallback when configured' do
       user = create(:user, :fully_registered, :with_piv_or_cac, :with_authentication_app)
       sign_in_before_2fa(user)
 
-      expect(current_path).to eq login_two_factor_piv_cac_path
+      expect(page).to have_current_path login_two_factor_piv_cac_path
 
       choose_another_security_option('auth_app')
 
-      expect(current_path).to eq login_two_factor_authenticator_path
+      expect(page).to have_current_path login_two_factor_authenticator_path
     end
 
     scenario 'user can cancel PIV/CAC process' do
       user = create(:user, :fully_registered, :with_piv_or_cac)
       sign_in_before_2fa(user)
 
-      expect(current_path).to eq login_two_factor_piv_cac_path
+      expect(page).to have_current_path login_two_factor_piv_cac_path
       click_link t('links.cancel')
 
-      expect(current_path).to eq root_path
+      expect(page).to have_current_path root_path
     end
 
     scenario 'user uses PIV/CAC as their second factor' do
@@ -412,7 +415,7 @@ RSpec.feature 'Two Factor Authentication' do
       click_on t('forms.piv_cac_mfa.submit')
       follow_piv_cac_redirect
 
-      expect(current_path).to eq account_path
+      expect(page).to have_current_path account_path
     end
 
     context 'user with Voice preference sends SMS, causing a Telephony error' do
@@ -434,7 +437,7 @@ RSpec.feature 'Two Factor Authentication' do
 
         sign_in_user(user)
 
-        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'voice')
+        expect(page).to have_current_path login_two_factor_path(otp_delivery_preference: 'voice')
 
         choose_another_security_option('sms')
 
@@ -451,13 +454,13 @@ RSpec.feature 'Two Factor Authentication' do
 
       choose_another_security_option('sms')
 
-      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+      expect(page).to have_current_path login_two_factor_path(otp_delivery_preference: 'sms')
 
       visit login_two_factor_authenticator_path
 
       choose_another_security_option('voice')
 
-      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'voice')
+      expect(page).to have_current_path login_two_factor_path(otp_delivery_preference: 'voice')
     end
 
     scenario 'user can cancel TOTP process' do
@@ -465,7 +468,7 @@ RSpec.feature 'Two Factor Authentication' do
       sign_in_before_2fa(user)
       click_link t('links.cancel')
 
-      expect(current_path).to eq root_path
+      expect(page).to have_current_path root_path
     end
 
     scenario 'attempting to reuse a TOTP code results in an error' do
@@ -479,14 +482,14 @@ RSpec.feature 'Two Factor Authentication' do
         fill_in 'code', with: otp
         click_submit_default
 
-        expect(current_path).to eq(account_path)
+        expect(page).to have_current_path(account_path)
 
         set_new_browser_session
         sign_in_user(user)
         fill_in 'code', with: otp
         click_submit_default
 
-        expect(current_path).to eq login_two_factor_authenticator_path
+        expect(page).to have_current_path login_two_factor_authenticator_path
       end
     end
   end
@@ -503,11 +506,11 @@ RSpec.feature 'Two Factor Authentication' do
       sign_in_and_2fa_user
       visit login_two_factor_path(otp_delivery_preference: 'sms')
 
-      expect(current_path).to eq account_path
+      expect(page).to have_current_path account_path
 
       visit user_two_factor_authentication_path
 
-      expect(current_path).to eq account_path
+      expect(page).to have_current_path account_path
     end
   end
 
@@ -516,7 +519,7 @@ RSpec.feature 'Two Factor Authentication' do
       user = create(:user, :fully_registered)
       sign_in_user(user)
       click_link 'Login.gov'
-      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: :sms)
+      expect(page).to have_current_path login_two_factor_path(otp_delivery_preference: :sms)
     end
   end
 

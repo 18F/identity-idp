@@ -9,7 +9,9 @@ RSpec.describe 'editing a phone' do
     visit(manage_phone_path(id: phone_configuration.id))
 
     expect(page).to have_content(t('headings.edit_info.phone'))
-    expect(current_path).to eq(manage_phone_path(id: phone_configuration.id))
+    expect(page).to have_current_path(
+      manage_phone_path(id: phone_configuration.id),
+    )
   end
 
   it "does not allow a user to edit another user's phone number" do

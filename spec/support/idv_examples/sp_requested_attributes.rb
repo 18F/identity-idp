@@ -13,14 +13,14 @@ RSpec.shared_examples 'sp requesting attributes' do |sp|
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      expect(current_path).to eq idv_welcome_path
+      expect(page).to have_current_path idv_welcome_path
 
       complete_all_doc_auth_steps_before_password_step
       fill_in 'Password', with: user.password
       click_continue
       acknowledge_and_confirm_personal_key
 
-      expect(current_path).to eq(sign_up_completed_path)
+      expect(page).to have_current_path(sign_up_completed_path)
 
       expect(page).to have_content t('help_text.requested_attributes.email')
       expect(page).to have_content user.email
@@ -84,7 +84,7 @@ RSpec.shared_examples 'sp requesting attributes' do |sp|
       fill_in_code_with_last_phone_otp
       sp == :saml ? click_submit_default_twice : click_submit_default
 
-      expect(current_path).to eq(sign_up_completed_path)
+      expect(page).to have_current_path(sign_up_completed_path)
 
       expect(page).to have_content t('help_text.requested_attributes.email')
       expect(page).to have_content user.email

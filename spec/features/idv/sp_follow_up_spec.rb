@@ -18,7 +18,7 @@ RSpec.feature 'returning to an SP after out-of-band proofing' do
 
     sign_in_live_with_2fa(user)
 
-    expect(current_path).to eq(idv_verify_by_mail_enter_code_path)
+    expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
 
     fill_in t('idv.gpo.form.otp_label'), with: otp
     click_button t('idv.gpo.form.submit')
@@ -63,13 +63,13 @@ RSpec.feature 'returning to an SP after out-of-band proofing' do
 
       sign_in_live_with_2fa(user)
 
-      expect(current_path).to eq(idv_verify_by_mail_enter_code_path)
+      expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
 
       fill_in t('idv.gpo.form.otp_label'), with: otp
       click_button t('idv.gpo.form.submit')
       acknowledge_and_confirm_personal_key
 
-      expect(current_path).to eq(idv_sp_follow_up_path)
+      expect(page).to have_current_path(idv_sp_follow_up_path)
       click_on t('idv.by_mail.sp_follow_up.connect_account')
 
       expect(current_url).to eq(post_idv_follow_up_url)
@@ -91,13 +91,13 @@ RSpec.feature 'returning to an SP after out-of-band proofing' do
 
       sign_in_live_with_2fa(user)
 
-      expect(current_path).to eq(idv_verify_by_mail_enter_code_path)
+      expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
 
       fill_in t('idv.gpo.form.otp_label'), with: otp
       click_button t('idv.gpo.form.submit')
       acknowledge_and_confirm_personal_key
 
-      expect(current_path).to eq(idv_sp_follow_up_path)
+      expect(page).to have_current_path(idv_sp_follow_up_path)
       click_on t('idv.by_mail.sp_follow_up.go_to_account')
 
       expect(current_url).to eq(account_url)

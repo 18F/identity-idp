@@ -61,7 +61,7 @@ RSpec.feature 'IAL2 Single Sign On' do
 
       visit saml_ial2_request_url
 
-      expect(current_path).to match new_user_session_path
+      expect(page).to have_current_path(new_user_session_path)
       expect(page).to have_content(sp_content)
     end
 
@@ -101,7 +101,7 @@ RSpec.feature 'IAL2 Single Sign On' do
           visit account_path
           click_link(t('account.index.verification.reactivate_button'))
 
-          expect(current_path).to eq idv_verify_by_mail_enter_code_path
+          expect(page).to have_current_path idv_verify_by_mail_enter_code_path
           expect(page).not_to have_link(t('idv.messages.gpo.resend'))
         end
 
@@ -114,7 +114,7 @@ RSpec.feature 'IAL2 Single Sign On' do
 
           sign_in_live_with_2fa(user)
 
-          expect(current_path).to eq idv_verify_by_mail_enter_code_path
+          expect(page).to have_current_path idv_verify_by_mail_enter_code_path
           expect(page).not_to have_link(t('idv.messages.gpo.resend'))
         end
       end
@@ -132,16 +132,16 @@ RSpec.feature 'IAL2 Single Sign On' do
 
         sign_in_live_with_2fa(user)
 
-        expect(current_path).to eq idv_verify_by_mail_enter_code_path
+        expect(page).to have_current_path idv_verify_by_mail_enter_code_path
 
         click_link(t('idv.messages.gpo.resend'))
 
         expect(user.events.account_verified.size).to be(0)
-        expect(current_path).to eq(idv_resend_letter_path)
+        expect(page).to have_current_path(idv_resend_letter_path)
 
         click_button(t('idv.gpo.request_another_letter.button'))
 
-        expect(current_path).to eq(idv_letter_enqueued_path)
+        expect(page).to have_current_path(idv_letter_enqueued_path)
       end
     end
   end
@@ -158,7 +158,7 @@ RSpec.feature 'IAL2 Single Sign On' do
       )
       visit sign_up_completed_path
 
-      expect(current_path).to eq idv_welcome_path
+      expect(page).to have_current_path idv_welcome_path
     end
   end
 end
