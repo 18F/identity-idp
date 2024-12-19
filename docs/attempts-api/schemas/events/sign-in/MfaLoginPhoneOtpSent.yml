@@ -1,0 +1,35 @@
+description: |
+  During a login attempt, an OTP code has been sent via SMS or Voice.
+  Reauthentication occurs when the user was already signed in but their session has timed out and they need to reauthenticate to continue.
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      otp_delivery_method:
+        type: string
+        enum: 
+          - sms
+          - voice
+      phone_number:
+        type: string
+        description: User-provided phone number
+      reauthentication:
+        type: boolean
+      success:
+        type: boolean
+        description: |
+          Indicates whether the one-time code was sent.
+      failure_reason:
+        type: object
+        description: |
+          An OPTIONAL object. An associative array of attributes and errors if success is false
+        properties: 
+          telephony:
+            type: array
+            description: |
+              The user registered a phone for MFA, but then opted out by replying “STOP” over text, so when attempting to send a subsequent OTP it fails with this failure reason.
+            items:
+              type: string
+              # is this the only possible failure?
+              enum: 
+                - "Telephony::OptOutError - Pinpoint Error: PERMANENT_FAILURE - 400" 
