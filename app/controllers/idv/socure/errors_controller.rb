@@ -3,17 +3,25 @@
 module Idv
   module Socure
     class ErrorsController < ApplicationController
+      include DocumentCaptureConcern
       include Idv::AvailabilityConcern
       include IdvStepConcern
       include StepIndicatorConcern
       include Idv::AbTestAnalyticsConcern
 
       before_action :confirm_step_allowed
-      before_action :set_in_person_available
+
+      def show
+        error_code = error_code_for(handle_stored_result)
+        track_event(error_code: error_code)
+        @presenter = socure_errors_presenter(error_code)
+      end
 
       def timeout
-        @remaining_submit_attempts = rate_limiter.remaining_count
-        track_event(type: :timeout)
+        # @remaining_submit_attempts = rate_limiter.remaining_count
+        track_event(error_code: :timeout)
+        @presenter = socure_errors_presenter(:timeout)
+        render :show
       end
 
       def self.step_info
@@ -35,23 +43,27 @@ module Idv
         RateLimiter.new(user: idv_session.current_user, rate_limit_type: :idv_doc_auth)
       end
 
-      def track_event(type:)
-        attributes = { type: type }.merge(ab_test_analytics_buckets)
-        if type == :timeout
-          attributes[:remaining_submit_attempts] = @remaining_submit_attempts
+      def remaining_submit_attempts
+        @remaining_submit_attempts ||= rate_limiter.remaining_count
+      end
+
+      def track_event(error_code:)
+        attributes = { error_code: }.merge(ab_test_analytics_buckets)
+        if error_code == :timeout
+          attributes[:remaining_submit_attempts] = remaining_submit_attempts
         end
 
         analytics.idv_doc_auth_socure_error_visited(**attributes)
       end
 
-      def set_in_person_available
-        @idv_in_person_url = in_person_enabled? ?
-          idv_in_person_direct_path(step: :socure_doc_auth) : nil
-      end
-
-      def in_person_enabled?
-        IdentityConfig.store.in_person_doc_auth_button_enabled &&
-          Idv::InPersonConfig.enabled_for_issuer?(document_capture_session&.issuer)
+      def socure_errors_presenter(error_code)
+        SocureErrorPresenter.new(
+          error_code:,
+          remaining_attempts: remaining_submit_attempts,
+          sp_name: decorated_sp_session&.sp_name || APP_NAME,
+          issuer: decorated_sp_session&.sp_issuer,
+          flow_path:,
+        )
       end
     end
   end

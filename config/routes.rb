@@ -365,7 +365,7 @@ Rails.application.routes.draw do
       get '/in_person/direct' => 'document_capture#direct_in_person'
       get '/socure/document_capture' => 'socure/document_capture#show'
       get '/socure/document_capture_update' => 'socure/document_capture#update', as: :socure_document_capture_update
-      get '/socure/document_capture_errors' => 'socure/document_capture#errors', as: :socure_document_capture_errors
+      get '/socure/document_capture_errors' => 'socure/errors#show', as: :socure_document_capture_errors
       get '/socure/errors/timeout' => 'socure/errors#timeout'
       # This route is included in SMS messages sent to users who start the IdV hybrid flow. It
       # should be kept short, and should not include underscores ("_").
@@ -375,7 +375,7 @@ Rails.application.routes.draw do
       get '/hybrid_mobile/capture_complete' => 'hybrid_mobile/capture_complete#show'
       get '/hybrid_mobile/socure/document_capture' => 'hybrid_mobile/socure/document_capture#show'
       get '/hybrid_mobile/socure/document_capture_update' => 'hybrid_mobile/socure/document_capture#update', as: :hybrid_mobile_socure_document_capture_update
-      get '/hybrid_mobile/socure/document_capture_errors' => 'hybrid_mobile/socure/document_capture#errors', as: :hybrid_mobile_socure_document_capture_errors
+      get '/hybrid_mobile/socure/document_capture_errors' => 'socure/errors#show', as: :hybrid_mobile_socure_document_capture_errors
       get '/hybrid_handoff' => 'hybrid_handoff#show'
       put '/hybrid_handoff' => 'hybrid_handoff#update'
       get '/link_sent' => 'link_sent#show'

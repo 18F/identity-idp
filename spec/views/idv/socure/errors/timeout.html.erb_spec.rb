@@ -5,10 +5,31 @@ RSpec.describe 'idv/socure/errors/timeout.html.erb' do
 
   let(:remaining_submit_attempts) { 5 }
   let(:in_person_url) { nil }
+  let(:error_code) { :timeout }
+  let(:flow_path) { :standard }
+  let(:sp) { create(:service_provider) }
+  let(:decorated_sp_session) do
+    ServiceProviderSession.new(
+      sp:,
+      view_context: nil,
+      sp_session: nil,
+      service_provider_request: nil,
+    )
+  end
+  let(:presenter) do
+    SocureErrorPresenter.new(
+      error_code:,
+      remaining_attempts: remaining_submit_attempts,
+      sp_name: decorated_sp_session&.sp_name || APP_NAME,
+      issuer: decorated_sp_session&.sp_issuer,
+      flow_path:,
+    )
+  end
 
   before do
-    assign(:remaining_submit_attempts, remaining_submit_attempts)
-    assign(:idv_in_person_url, in_person_url)
+    allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+    assign(:presenter, presenter)
+
     render
   end
 
@@ -43,10 +64,10 @@ RSpec.describe 'idv/socure/errors/timeout.html.erb' do
   end
 
   context 'In person verification enabled' do
-    let(:in_person_url) { 'http://idp.test/idv/in_person' }
+    let(:sp) { create(:service_provider, in_person_proofing_enabled: true) }
 
-    it 'has an h2' do
-      expect(rendered).to have_css('h2', text: t('in_person_proofing.headings.cta'))
+    it 'has an h1' do
+      expect(rendered).to have_css('h1', text: t('in_person_proofing.headings.cta'))
     end
 
     it 'explains in person verification' do
@@ -54,7 +75,10 @@ RSpec.describe 'idv/socure/errors/timeout.html.erb' do
     end
 
     it 'has a secondary cta' do
-      expect(rendered).to have_link(t('in_person_proofing.body.cta.button'), href: in_person_url)
+      expect(rendered).to have_link(
+        t('in_person_proofing.body.cta.button'),
+        href: idv_in_person_direct_url,
+      )
     end
   end
 end

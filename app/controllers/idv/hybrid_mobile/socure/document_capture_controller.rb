@@ -82,6 +82,7 @@ module Idv
             error_code: error_code_for(result),
             remaining_attempts:,
             sp_name: decorated_sp_session&.sp_name || APP_NAME,
+            issuer: decorated_sp_session&.sp_issuer,
             hybrid_mobile: true,
           )
         end
