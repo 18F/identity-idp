@@ -387,6 +387,7 @@ socure_docv_document_request_endpoint: ''
 socure_docv_enabled: false
 socure_docv_verification_data_test_mode: false
 socure_docv_verification_data_test_mode_tokens: '[]'
+socure_docv_webhook_repeat_endpoints: '[]'
 socure_docv_webhook_secret_key: ''
 socure_docv_webhook_secret_key_queue: '[]'
 socure_idplus_api_key: ''
