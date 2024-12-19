@@ -8,11 +8,12 @@ class SocureErrorPresenter
 
   attr_reader :url_options
 
-  def initialize(error_code:, remaining_attempts:, sp_name:, hybrid_mobile:)
+  def initialize(error_code:, remaining_attempts:, sp_name:, issuer:, flow_path:)
     @error_code = error_code
     @remaining_attempts = remaining_attempts
     @sp_name = sp_name
-    @hybrid_mobile = hybrid_mobile
+    @issuer = issuer
+    @flow_path = flow_path
     @url_options = {}
   end
 
@@ -33,11 +34,11 @@ class SocureErrorPresenter
   end
 
   def action
-    url = hybrid_mobile ? idv_hybrid_mobile_socure_document_capture_path
-                        : idv_socure_document_capture_path
+    url = flow_path == :hybrid ? idv_hybrid_mobile_socure_document_capture_path
+                               : idv_socure_document_capture_path
     {
       text: I18n.t('idv.failure.button.warning'),
-      url: url,
+      url:,
     }
   end
 
@@ -50,10 +51,12 @@ class SocureErrorPresenter
   end
 
   def secondary_action
-    {
-      text: I18n.t('in_person_proofing.body.cta.button'),
-      url: idv_in_person_direct_url,
-    }
+    if in_person_enabled?
+      {
+        text: I18n.t('in_person_proofing.body.cta.button'),
+        url: idv_in_person_direct_url,
+      }
+    end
   end
 
   def troubleshooting_heading
@@ -61,6 +64,8 @@ class SocureErrorPresenter
   end
 
   def options
+    return [] if error_code == :timeout
+
     [
       {
         url: help_center_redirect_path(
@@ -95,7 +100,7 @@ class SocureErrorPresenter
 
   private
 
-  attr_reader :error_code, :remaining_attempts, :sp_name, :hybrid_mobile
+  attr_reader :error_code, :remaining_attempts, :sp_name, :issuer, :flow_path
 
   SOCURE_ERROR_MAP = {
     'I848' => 'unreadable_id',
@@ -133,8 +138,11 @@ class SocureErrorPresenter
   end
 
   def heading_string_for(error_code)
-    if error_code == :network
+    case error_code
+    when :network
       t('doc_auth.headers.general.network_error')
+    when :timeout
+      t('idv.errors.technical_difficulties')
     else
       # i18n-tasks-use t('doc_auth.headers.unreadable_id')
       # i18n-tasks-use t('doc_auth.headers.unaccepted_id_type')
@@ -147,20 +155,28 @@ class SocureErrorPresenter
   end
 
   def error_string_for(error_code)
-    if error_code == :network
-      return t('doc_auth.errors.general.new_network_error')
-    end
-
-    remapped_error_code = remapped_error(error_code)
-    if remapped_error_code == 'underage' # special handling because it says 'Login.gov'
-      I18n.t('doc_auth.errors.underage', app_name: APP_NAME)
+    case error_code
+    when :network
+      t('doc_auth.errors.general.new_network_error')
+    when :timeout
+      t('idv.errors.try_again_later')
     else
-      # i18n-tasks-use t('doc_auth.errors.unreadable_id')
-      # i18n-tasks-use t('doc_auth.errors.unaccepted_id_type')
-      # i18n-tasks-use t('doc_auth.errors.expired_id')
-      # i18n-tasks-use t('doc_auth.errors.low_resolution')
-      # i18n-tasks-use t('doc_auth.errors.id_not_found')
-      I18n.t("doc_auth.errors.#{remapped_error_code}")
+      if remapped_error(error_code) == 'underage' # special handling because it says 'Login.gov'
+        I18n.t('doc_auth.errors.underage', app_name: APP_NAME)
+      else
+        # i18n-tasks-use t('doc_auth.errors.unreadable_id')
+        # i18n-tasks-use t('doc_auth.errors.unaccepted_id_type')
+        # i18n-tasks-use t('doc_auth.errors.expired_id')
+        # i18n-tasks-use t('doc_auth.errors.low_resolution')
+        # i18n-tasks-use t('doc_auth.errors.id_not_found')
+        I18n.t("doc_auth.errors.#{remapped_error(error_code)}")
+      end
     end
+  end
+
+  def in_person_enabled?
+    IdentityConfig.store.in_person_doc_auth_button_enabled &&
+      Idv::InPersonConfig.enabled_for_issuer?(issuer) &&
+      flow_path == :standard
   end
 end

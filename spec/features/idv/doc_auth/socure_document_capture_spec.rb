@@ -73,6 +73,7 @@ RSpec.feature 'document capture step', :js do
           visit idv_socure_document_capture_update_path
           expect(page).to have_current_path(idv_socure_errors_timeout_path)
           expect(page).to have_content(I18n.t('idv.errors.try_again_later'))
+          # byebug
           click_on t('in_person_proofing.body.cta.button')
           expect(page).to have_current_path(idv_document_capture_path(step: :idv_doc_auth))
           expect(page).to have_content(t('in_person_proofing.headings.prepare'))
