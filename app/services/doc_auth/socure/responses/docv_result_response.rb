@@ -42,10 +42,10 @@ module DocAuth
           @pii_from_doc = read_pii
 
           super(
-            success: successful_result?,
+            success: successful_result? && pii_valid?,
             errors: error_messages,
+            pii_from_doc:,
             extra: extra_attributes,
-            pii_from_doc: @pii_from_doc,
           )
         rescue StandardError => e
           NewRelic::Agent.notice_error(e)
@@ -175,6 +175,12 @@ module DocAuth
           }.to_json
           Rails.logger.info(message)
           nil
+        end
+
+        def pii_valid?
+          return @pii_valid if !@pii_valid.nil?
+
+          @pii_valid = Idv::DocPiiForm.new(pii: pii_from_doc.to_h).submit.success?
         end
       end
     end
