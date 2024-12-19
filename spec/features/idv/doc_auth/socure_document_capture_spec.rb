@@ -94,7 +94,6 @@ RSpec.feature 'document capture step', :js do
       context 'shows the correct attempts on error pages' do
         before do
           stub_docv_verification_data_fail_with(
-            docv_transaction_token: @docv_transaction_token,
             errors: ['XXXX'],
           )
         end
