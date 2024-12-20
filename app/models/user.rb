@@ -65,7 +65,7 @@ class User < ApplicationRecord
   attr_accessor :asserted_attributes, :email
 
   def confirmed_email_addresses
-    email_addresses.where.not(confirmed_at: nil).order('last_sign_in_at DESC NULLS LAST')
+    email_addresses.confirmed
   end
 
   def fully_registered?
@@ -73,7 +73,7 @@ class User < ApplicationRecord
   end
 
   def confirmed?
-    email_addresses.where.not(confirmed_at: nil).any?
+    confirmed_email_addresses.any?
   end
 
   def has_fed_or_mil_email?
@@ -522,7 +522,7 @@ class User < ApplicationRecord
   end
 
   def last_sign_in_email_address
-    confirmed_email_addresses.first
+    email_addresses.confirmed.last_sign_in
   end
 
   private
