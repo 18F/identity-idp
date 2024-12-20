@@ -27,7 +27,9 @@ function InPersonCallToAction() {
         isWide
         className="margin-top-3 margin-bottom-1"
         onClick={() => {
-          trackEvent('IdV: verify in person troubleshooting option clicked', {submit_attempts: submitAttempts});
+          trackEvent('IdV: verify in person troubleshooting option clicked', {
+            submit_attempts: submitAttempts,
+          });
         }}
       >
         {t('in_person_proofing.body.cta.button')}
