@@ -1,4 +1,8 @@
 properties:
+  logged-in-password-change:
+    $ref: './sign-in/LoggedInPasswordChange.yml'
+  logged-in-profile-change-reauthentication-submitted:
+    $ref: './sign-in/LoggedInProfileChangeReauthenticationSubmitted.yml'
   login-email-and-password-auth:
     $ref: './sign-in/LoginEmailAndPasswordAuth.yml'
   login-rate-limited:

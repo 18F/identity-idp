@@ -44,8 +44,9 @@ allOf:
                 - unverified
           token: 
             type: array
-            items: string
-            enum:
+            items: 
+              type: string
+              enum:
               - bad
               - invalid
               - missing

@@ -14,7 +14,7 @@ properties:
     type: string
     description: The end user’s IP address.
   user_uuid: 
-    type: UUID
+    type: string
     description: |
       The primary key identifying a user in Login.gov. This field is populated only for users who have used their accounts to access the Agency Application, since it is generated when a user provides their consent for the first time. 
   unique_session_id:
