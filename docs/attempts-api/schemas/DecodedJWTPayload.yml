@@ -5,7 +5,7 @@ description: |
 properties: 
   aud:
     type: string
-    descripion: Event audience
+    description: Event audience
     example: https://serviceprovider.com
   iat:
     type: integer
@@ -18,7 +18,7 @@ properties:
     description: Event issuer, which will be a Login.gov URL indicating the environment in which the event occurred.
     example: https://secure.login.gov
   jti:
-    type: UUID
+    type: string
     description: | 
       Transaction ID, a unique identifier for the SET. This functions as the CSP transaction ID.
     example: 6454bc0b-00fc-4404-885c-7f07bef243ce

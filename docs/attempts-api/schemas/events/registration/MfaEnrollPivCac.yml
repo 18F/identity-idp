@@ -28,19 +28,23 @@ allOf:
           certificate:
             type: array
             description: An OPTIONAL key that describes errors with the certificate
-            enum: 
-              - bad
-              - expired
-              - invalid
-              - none
-              - not_auth_cert
-              - revoked
-              - unverified
-              - self-signed cert
+            items:
+              type: string
+              enum: 
+                - bad
+                - expired
+                - invalid
+                - none
+                - not_auth_cert
+                - revoked
+                - unverified
+                - self-signed cert
           token:
             type: array
             description: An OPTIONAL key that describes errors with the certificate  -
-            enum: 
+            items:
+              type: string
+              enum: 
               - bad
               - invalid
               - missing
