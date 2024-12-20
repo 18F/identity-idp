@@ -41,7 +41,7 @@ class DisplayablePiiFormatter
     if @selected_email_id
       current_user.confirmed_email_addresses.find(@selected_email_id).email
     else
-      EmailContext.new(current_user).last_sign_in_email_address.email
+      current_user.last_sign_in_email_address.email
     end
   end
 

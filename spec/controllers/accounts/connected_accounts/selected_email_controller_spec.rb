@@ -74,10 +74,10 @@ RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
       end
     end
 
-    context 'when users has max number of emails' do
+    context 'when the user already has max number of emails' do
       before do
-        allow(user).to receive(:email_address_count).and_return(2)
-        allow(IdentityConfig.store).to receive(:max_emails_per_account).and_return(2)
+        allow(IdentityConfig.store).to receive(:max_emails_per_account)
+          .and_return(user.email_addresses.count)
       end
 
       it 'can add email variable set to false' do
