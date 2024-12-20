@@ -20,6 +20,7 @@ RSpec.describe Idv::DocumentCaptureController do
   # selfie related test flags
   let(:sp_selfie_enabled) { false }
   let(:flow_path) { 'standard' }
+  let(:doc_auth_selfie_desktop_test_mode) { false }
 
   before do
     stub_sign_in(user)
@@ -41,6 +42,9 @@ RSpec.describe Idv::DocumentCaptureController do
     allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(
       Idp::Constants::Vendors::LEXIS_NEXIS,
     )
+
+    allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
+      .and_return(doc_auth_selfie_desktop_test_mode)
   end
 
   describe '#step_info' do
@@ -63,11 +67,6 @@ RSpec.describe Idv::DocumentCaptureController do
 
       describe 'with sp selfie enabled' do
         let(:sp_selfie_enabled) { true }
-
-        before do
-          allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
-            .and_return(false)
-        end
 
         it 'does satisfy precondition' do
           expect(Idv::DocumentCaptureController.step_info.preconditions.is_a?(Proc))
@@ -193,13 +192,8 @@ RSpec.describe Idv::DocumentCaptureController do
 
     context 'when a selfie is requested' do
       let(:sp_selfie_enabled) { true }
-      let(:desktop_selfie_enabled) { false }
-      before do
-        allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
-          .and_return(desktop_selfie_enabled)
-      end
+
       describe 'when desktop selfie disabled' do
-        let(:desktop_selfie_enabled) { false }
         it 'redirect back to handoff page' do
           expect(subject).not_to receive(:render).with(
             :show,
@@ -216,7 +210,7 @@ RSpec.describe Idv::DocumentCaptureController do
       end
 
       describe 'when desktop selfie enabled' do
-        let(:desktop_selfie_enabled) { true }
+        let(:doc_auth_selfie_desktop_test_mode) { true }
         it 'allows capture' do
           expect(subject).to receive(:render).with(
             :show,
@@ -321,7 +315,6 @@ RSpec.describe Idv::DocumentCaptureController do
       let(:sp_selfie_enabled) { true }
 
       before do
-        allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).and_return(false)
         allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).with(anything).and_return(false)
       end
 
