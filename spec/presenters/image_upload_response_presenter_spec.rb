@@ -4,7 +4,7 @@ RSpec.describe ImageUploadResponsePresenter do
   include Rails.application.routes.url_helpers
 
   let(:extra_attributes) do
-    { remaining_submit_attempts: 3, flow_path: 'standard' }
+    { remaining_submit_attempts: 3, flow_path: 'standard', submit_attempts: 2 }
   end
 
   let(:form_response) do
@@ -109,7 +109,8 @@ RSpec.describe ImageUploadResponsePresenter do
       let(:extra_attributes) do
         { remaining_submit_attempts: 0,
           flow_path: 'standard',
-          failed_image_fingerprints: { back: [], front: ['12345'], selfie: [] } }
+          failed_image_fingerprints: { back: [], front: ['12345'], selfie: [] },
+          submit_attempts: 5 }
       end
       let(:form_response) do
         FormResponse.new(
@@ -132,6 +133,7 @@ RSpec.describe ImageUploadResponsePresenter do
           ocr_pii: nil,
           doc_type_supported: true,
           failed_image_fingerprints: { back: [], front: ['12345'], selfie: [] },
+          submit_attempts: 5,
         }
 
         expect(presenter.as_json).to eq expected
@@ -141,7 +143,8 @@ RSpec.describe ImageUploadResponsePresenter do
         let(:extra_attributes) do
           { remaining_submit_attempts: 0,
             flow_path: 'hybrid',
-            failed_image_fingerprints: { back: [], front: ['12345'], selfie: [] } }
+            failed_image_fingerprints: { back: [], front: ['12345'], selfie: [] },
+            submit_attempts: 5 }
         end
 
         it 'returns hash of properties redirecting to capture_complete' do
@@ -155,6 +158,7 @@ RSpec.describe ImageUploadResponsePresenter do
             ocr_pii: nil,
             doc_type_supported: true,
             failed_image_fingerprints: { back: [], front: ['12345'], selfie: [] },
+            submit_attempts: 5,
           }
 
           expect(presenter.as_json).to eq expected
@@ -185,6 +189,7 @@ RSpec.describe ImageUploadResponsePresenter do
           ocr_pii: nil,
           doc_type_supported: true,
           failed_image_fingerprints: { back: [], front: [], selfie: [] },
+          submit_attempts: 2,
         }
 
         expect(presenter.as_json).to eq expected
@@ -198,7 +203,7 @@ RSpec.describe ImageUploadResponsePresenter do
               front: t('doc_auth.errors.not_a_file'),
               hints: true,
             },
-            extra: { doc_auth_result: 'Failed', remaining_submit_attempts: 3 },
+            extra: { doc_auth_result: 'Failed', remaining_submit_attempts: 3, submit_attempts: 2 },
           )
         end
 
@@ -213,6 +218,7 @@ RSpec.describe ImageUploadResponsePresenter do
             ocr_pii: nil,
             doc_type_supported: true,
             failed_image_fingerprints: { front: [], back: [], selfie: [] },
+            submit_attempts: 2,
           }
 
           expect(presenter.as_json).to eq expected
@@ -221,7 +227,7 @@ RSpec.describe ImageUploadResponsePresenter do
 
       context 'no remaining attempts' do
         let(:extra_attributes) do
-          { remaining_submit_attempts: 0, flow_path: 'standard' }
+          { remaining_submit_attempts: 0, flow_path: 'standard', submit_attempts: 5 }
         end
         let(:form_response) do
           FormResponse.new(
@@ -236,7 +242,7 @@ RSpec.describe ImageUploadResponsePresenter do
 
         context 'hybrid flow' do
           let(:extra_attributes) do
-            { remaining_submit_attempts: 0, flow_path: 'hybrid' }
+            { remaining_submit_attempts: 0, flow_path: 'hybrid', submit_attempts: 5 }
           end
 
           it 'returns hash of properties' do
@@ -251,6 +257,7 @@ RSpec.describe ImageUploadResponsePresenter do
               ocr_pii: nil,
               doc_type_supported: true,
               failed_image_fingerprints: { front: [], back: [], selfie: [] },
+              submit_attempts: 5,
             }
 
             expect(presenter.as_json).to eq expected
@@ -269,6 +276,7 @@ RSpec.describe ImageUploadResponsePresenter do
             ocr_pii: nil,
             doc_type_supported: true,
             failed_image_fingerprints: { back: [], front: [], selfie: [] },
+            submit_attempts: 5,
           }
 
           expect(presenter.as_json).to eq expected
@@ -325,7 +333,7 @@ RSpec.describe ImageUploadResponsePresenter do
       let(:form_response) do
         response = DocAuth::Response.new(
           success: true,
-          extra: { remaining_submit_attempts: 3 },
+          extra: { remaining_submit_attempts: 3, submit_attempts: 2 },
           pii_from_doc: Idp::Constants::MOCK_IDV_APPLICANT,
         )
         allow(response).to receive(:attention_with_barcode?).and_return(true)
@@ -343,6 +351,7 @@ RSpec.describe ImageUploadResponsePresenter do
           result_code_invalid: false,
           doc_type_supported: true,
           failed_image_fingerprints: { back: [], front: [], selfie: [] },
+          submit_attempts: 2,
         }
 
         expect(presenter.as_json).to eq expected
@@ -352,7 +361,7 @@ RSpec.describe ImageUploadResponsePresenter do
         let(:form_response) do
           response = DocAuth::Response.new(
             success: true,
-            extra: { remaining_submit_attempts: 3 },
+            extra: { remaining_submit_attempts: 3, submit_attempts: 2 },
             pii_from_doc: Idp::Constants::MOCK_IDV_APPLICANT,
           )
           allow(response).to receive(:attention_with_barcode?).and_return(true)
@@ -370,6 +379,7 @@ RSpec.describe ImageUploadResponsePresenter do
             ocr_pii: Idp::Constants::MOCK_IDV_APPLICANT.slice(:first_name, :last_name, :dob),
             doc_type_supported: true,
             failed_image_fingerprints: { back: [], front: [], selfie: [] },
+            submit_attempts: 2,
           }
 
           expect(presenter.as_json).to eq expected
