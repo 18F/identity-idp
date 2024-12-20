@@ -7,6 +7,24 @@ RSpec.describe 'Identity verification', :js do
   let(:sp) { :oidc }
   let(:sp_name) { 'Test SP' }
 
+  around do |ex|
+    should_record = ENV['RECORD_ANALYTICS'] == '1' || ENV['RECORD_ANALYTICS'] == 'true'
+    filename = "analytics_events_#{ex.full_description.parameterize}.ndjson"
+    file = should_record ? File.open(filename, 'w') : nil
+
+    recording_middleware = proc do |event|
+      if should_record
+        file.write(JSON.generate(event), "\n")
+      end
+    end
+
+    Analytics.with_default_middleware(recording_middleware) do
+      ex.run
+    end
+  ensure
+    file&.close
+  end
+
   scenario 'Unsupervised proofing happy path desktop' do
     try_to_skip_ahead_before_signing_in
     visit_idp_from_sp_with_ial2(sp)
