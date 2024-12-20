@@ -25,7 +25,7 @@ class ResolutionProofingJob < ApplicationJob
     service_provider_issuer: nil,
     threatmetrix_session_id: nil,
     request_ip: nil,
-    proofing_components: nil,
+    proofing_components: nil, # rubocop:disable Lint/UnusedMethodArgument
     # DEPRECATED ARGUMENTS
     should_proof_state_id: false # rubocop:disable Lint/UnusedMethodArgument
   )
