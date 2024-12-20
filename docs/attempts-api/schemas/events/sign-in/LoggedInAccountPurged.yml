@@ -1,0 +1,9 @@
+description:  A logged in user deletes their account.
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      success:
+        type: boolean
+        description: |
+          Indicates whether the the account was successfully deleted.
