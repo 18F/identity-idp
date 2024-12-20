@@ -7,7 +7,7 @@ module Idv
       include IdvStepConcern
       include DocumentCaptureConcern
       include RenderConditionConcern
-      include SocureErrorsConcern
+      # include SocureErrorsConcern
 
       check_or_render_not_found -> { IdentityConfig.store.socure_docv_enabled }
       before_action :confirm_not_rate_limited

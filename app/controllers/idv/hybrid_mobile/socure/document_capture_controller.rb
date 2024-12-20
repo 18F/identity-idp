@@ -75,6 +75,10 @@ module Idv
           end
         end
 
+        def errors
+          @presenter = socure_errors_presenter(handle_stored_result)
+        end
+
         private
 
         def socure_errors_presenter(result)
@@ -83,7 +87,7 @@ module Idv
             remaining_attempts:,
             sp_name: decorated_sp_session&.sp_name || APP_NAME,
             issuer: decorated_sp_session&.sp_issuer,
-            hybrid_mobile: true,
+            flow_path: :hybrid,
           )
         end
 

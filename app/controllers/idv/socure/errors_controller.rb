@@ -4,10 +4,10 @@ module Idv
   module Socure
     class ErrorsController < ApplicationController
       include DocumentCaptureConcern
-      include Idv::AvailabilityConcern
+      include AvailabilityConcern
       include IdvStepConcern
       include StepIndicatorConcern
-      include Idv::AbTestAnalyticsConcern
+      include AbTestAnalyticsConcern
 
       before_action :confirm_step_allowed
 
@@ -18,7 +18,6 @@ module Idv
       end
 
       def timeout
-        # @remaining_submit_attempts = rate_limiter.remaining_count
         track_event(error_code: :timeout)
         @presenter = socure_errors_presenter(:timeout)
         render :show
@@ -31,7 +30,8 @@ module Idv
           action: :timeout,
           next_steps: [FlowPolicy::FINAL],
           preconditions: ->(idv_session:, user:) do
-            idv_session.socure_docv_wait_polling_started_at.present?
+            # idv_session.socure_docv_wait_polling_started_at.present?
+            true
           end,
           undo_step: ->(idv_session:, user:) {},
         )
@@ -49,9 +49,7 @@ module Idv
 
       def track_event(error_code:)
         attributes = { error_code: }.merge(ab_test_analytics_buckets)
-        if error_code == :timeout
-          attributes[:remaining_submit_attempts] = remaining_submit_attempts
-        end
+        attributes[:remaining_submit_attempts] = remaining_submit_attempts
 
         analytics.idv_doc_auth_socure_error_visited(**attributes)
       end
@@ -64,6 +62,18 @@ module Idv
           issuer: decorated_sp_session&.sp_issuer,
           flow_path:,
         )
+      end
+
+      def error_code_for(result)
+        if result.errors[:socure]
+          result.errors.dig(:socure, :reason_codes).first
+        elsif result.errors[:network]
+          :network
+        else
+          # No error information available (shouldn't happen). Default
+          # to :network if it does.
+          :network
+        end
       end
     end
   end

@@ -2,10 +2,6 @@
 
 module Idv
   module SocureErrorsConcern
-    def errors
-      @presenter = socure_errors_presenter(handle_stored_result)
-    end
-
     private
 
     def remaining_attempts
