@@ -75,7 +75,7 @@ class ResolutionProofingJob < ApplicationJob
       timing: timer.results,
     )
 
-    if use_shadow_mode?(user:)
+    if use_shadow_mode?(user:, proofing_components:)
       SocureShadowModeProofingJob.perform_later(
         document_capture_session_result_id: document_capture_session&.result_id,
         encrypted_arguments:,
@@ -86,15 +86,20 @@ class ResolutionProofingJob < ApplicationJob
     end
   end
 
-  def use_shadow_mode?(user:)
-    IdentityConfig.store.idv_socure_shadow_mode_enabled &&
-      AbTests::SOCURE_IDV_SHADOW_MODE.bucket(
+  # @param user [User]
+  def use_shadow_mode?(user:, proofing_components: {})
+    (
+      IdentityConfig.store.idv_socure_shadow_mode_enabled ||
+      IdentityConfig.store.idv_socure_shadow_mode_enabled_for_docv_users &&
+        proofing_components[:document_check] == Idp::Constants::Vendors::SOCURE
+    ) &&
+      AbTests::SOCURE_IDV_SHADOW_MODE_FOR_NON_DOCV_USERS.bucket(
         request: nil,
         service_provider: nil,
         session: nil,
         user:,
         user_session: nil,
-      ) == :shadow_mode_enabled
+      ) == :socure_shadow_mode_for_non_docv_users
   end
 
   private
@@ -141,6 +146,11 @@ class ResolutionProofingJob < ApplicationJob
       threatmetrix_request_id: threatmetrix_result.transaction_id,
       threatmetrix_success: threatmetrix_result.success?,
     )
+  end
+
+  # @param user [User]
+  def docv_user?(user, result_id)
+    user.document_capture_sessions.find_by(id: result_id)
   end
 
   def logger_info_hash(hash)

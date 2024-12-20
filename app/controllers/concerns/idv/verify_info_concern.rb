@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Idv
+  # @attr idv_session [Idv::Session]
   module VerifyInfoConcern
     extend ActiveSupport::Concern
 
@@ -39,6 +40,16 @@ module Idv
         threatmetrix_session_id: idv_session.threatmetrix_session_id,
         request_ip: request.remote_ip,
         ipp_enrollment_in_progress: ipp_enrollment_in_progress?,
+        # Attempting to get the current set of proofing components
+        # so we can "see" document_check vendor.
+        # Unclear if the document_check vendor at this point is static though
+        # May need to save the field onto session
+        proofing_components: ProofingComponents.new(
+          user: current_user,
+          idv_session:,
+          session:,
+          user_session:,
+        ),
       )
 
       return true
@@ -353,6 +364,10 @@ module Idv
 
     def add_cost(token, transaction_id: nil)
       Db::SpCost::AddSpCost.call(current_sp, token, transaction_id: transaction_id)
+    end
+
+    def user_session
+      current_user && session&.dig('warden.user.user.session') || {}
     end
   end
 end
