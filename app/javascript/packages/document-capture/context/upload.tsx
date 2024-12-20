@@ -1,9 +1,8 @@
 import { createContext, useState } from 'react';
 import { useObjectMemo } from '@18f/identity-react-hooks';
 import type { ReactNode } from 'react';
-import defaultUpload from '../services/upload';
+import defaultUpload, { UploadFormEntriesError } from '../services/upload';
 import type { PII } from '../services/upload';
-import { UploadFormEntriesError } from '../services/upload';
 
 const UploadContext = createContext({
   upload: defaultUpload,
