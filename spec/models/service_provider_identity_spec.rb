@@ -216,8 +216,24 @@ RSpec.describe ServiceProviderIdentity do
           identity.email_address = shared_email_address
         end
 
-        it 'returns the shared email' do
-          expect(identity.email_address_for_sharing).to eq(shared_email_address)
+        context 'when the identity is active' do
+          before do
+            identity.session_uuid = SecureRandom.uuid
+          end
+
+          it 'returns the shared email' do
+            expect(identity.email_address_for_sharing).to eq(shared_email_address)
+          end
+        end
+
+        context 'when the identity is not active' do
+          before do
+            identity.session_uuid = nil
+          end
+
+          it 'returns the last login email' do
+            expect(identity.email_address_for_sharing).to eq(last_login_email_address)
+          end
         end
       end
 

@@ -66,7 +66,7 @@ class ServiceProviderIdentity < ApplicationRecord
   end
 
   def email_address_for_sharing
-    if IdentityConfig.store.feature_select_email_to_share_enabled && email_address
+    if IdentityConfig.store.feature_select_email_to_share_enabled && session_uuid && email_address
       return email_address
     end
     user.last_sign_in_email_address
