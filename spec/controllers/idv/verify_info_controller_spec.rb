@@ -23,6 +23,39 @@ RSpec.describe Idv::VerifyInfoController do
     it 'returns a valid StepInfo object' do
       expect(Idv::VerifyInfoController.step_info).to be_valid
     end
+
+    describe '#undo_step' do
+      let(:idv_session) do
+        Idv::Session.new(
+          user_session: {},
+          current_user: user,
+          service_provider: nil,
+        ).tap do |idv_session|
+          idv_session.address_edited = false
+          idv_session.applicant = { first_name: 'Joe' }
+          idv_session.residential_resolution_vendor = 'ResidentialResolutionVendor'
+          idv_session.resolution_successful = true
+          idv_session.resolution_vendor = 'ResolutionVendor'
+          idv_session.source_check_vendor = 'aamva'
+          idv_session.threatmetrix_review_status = 'pass'
+          idv_session.verify_info_step_document_capture_session_uuid = 'abcd-1234'
+        end
+      end
+
+      it 'resets relevant fields on idv_session to nil' do
+        described_class.step_info.undo_step.call(idv_session:, user:)
+        aggregate_failures do
+          expect(idv_session.address_edited).to be(nil)
+          expect(idv_session.applicant).to be(nil)
+          expect(idv_session.residential_resolution_vendor).to be(nil)
+          expect(idv_session.resolution_successful).to be(nil)
+          expect(idv_session.resolution_vendor).to be(nil)
+          expect(idv_session.source_check_vendor).to be(nil)
+          expect(idv_session.threatmetrix_review_status).to be(nil)
+          expect(idv_session.verify_info_step_document_capture_session_uuid).to be(nil)
+        end
+      end
+    end
   end
 
   describe 'before_actions' do
@@ -589,6 +622,65 @@ RSpec.describe Idv::VerifyInfoController do
         expect(response).to render_template :show
         expect(controller.flash[:error]).to eq(I18n.t('idv.failure.timeout'))
         expect(@analytics).to have_logged_event('IdV: proofing resolution result missing')
+      end
+    end
+
+    context 'when the resolution proofing job completed successfully' do
+      let(:document_capture_session) do
+        DocumentCaptureSession.create(user:)
+      end
+
+      let(:resolution_vendor_name) { 'ResolutionVendor' }
+
+      let(:residential_resolution_vendor_name) { 'ResidentialResolutionVendor' }
+
+      let(:async_state) do
+        # Here we're trying to match the store to redis -> read from redis flow this data travels
+        adjudicated_result = Proofing::Resolution::ResultAdjudicator.new(
+          state_id_result: Proofing::StateIdResult.new(
+            success: true,
+            errors: {},
+            exception: nil,
+            vendor_name: :aamva,
+            transaction_id: 'abc123',
+            verified_attributes: [],
+          ),
+          device_profiling_result: Proofing::DdpResult.new(success: true),
+          ipp_enrollment_in_progress: true,
+          residential_resolution_result: Proofing::Resolution::Result.new(
+            success: true,
+            vendor_name: residential_resolution_vendor_name,
+          ),
+          resolution_result: Proofing::Resolution::Result.new(
+            success: true,
+            vendor_name: resolution_vendor_name,
+          ),
+          same_address_as_id: true,
+          should_proof_state_id: true,
+          applicant_pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
+        ).adjudicated_result.to_h
+
+        document_capture_session.create_proofing_session
+
+        document_capture_session.store_proofing_result(adjudicated_result)
+
+        document_capture_session.load_proofing_result
+      end
+
+      before do
+        allow(controller).to receive(:load_async_state).and_return(async_state)
+      end
+
+      it 'sets resolution_vendor on idv_session' do
+        get :show
+        expect(controller.idv_session.resolution_vendor).to eql(resolution_vendor_name)
+      end
+
+      it 'sets residential_resolution_vendor on idv_session' do
+        get :show
+        expect(controller.idv_session.residential_resolution_vendor).to(
+          eql(residential_resolution_vendor_name),
+        )
       end
     end
   end
