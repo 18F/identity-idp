@@ -183,7 +183,7 @@ RSpec.describe Idv::ImageUploadsController do
             ocr_pii: nil,
             doc_type_supported: true,
             failed_image_fingerprints: { front: [], back: [], selfie: [] },
-            submit_attempts: 4,
+            submit_attempts: IdentityConfig.store.doc_auth_max_attempts,
           }
         end
 
