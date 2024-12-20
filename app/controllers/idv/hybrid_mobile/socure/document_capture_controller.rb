@@ -75,6 +75,10 @@ module Idv
           end
         end
 
+        def errors
+          @presenter = socure_errors_presenter(handle_stored_result)
+        end
+
         private
 
         def socure_errors_presenter(result)
@@ -82,7 +86,8 @@ module Idv
             error_code: error_code_for(result),
             remaining_attempts:,
             sp_name: decorated_sp_session&.sp_name || APP_NAME,
-            hybrid_mobile: true,
+            issuer: decorated_sp_session&.sp_issuer,
+            flow_path: :hybrid,
           )
         end
 

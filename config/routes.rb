@@ -362,10 +362,11 @@ Rails.application.routes.draw do
       put '/how_to_verify' => 'how_to_verify#update'
       get '/document_capture' => 'document_capture#show'
       put '/document_capture' => 'document_capture#update'
+      get '/in_person/direct' => 'document_capture#direct_in_person'
       get '/socure/document_capture' => 'socure/document_capture#show'
       get '/socure/document_capture_update' => 'socure/document_capture#update', as: :socure_document_capture_update
-      get '/socure/document_capture_errors' => 'socure/document_capture#errors', as: :socure_document_capture_errors
-      get '/socure/document_capture_goto_in_person' => 'socure/document_capture#goto_in_person', as: :socure_document_capture_goto_in_person
+      get '/socure/document_capture_errors' => 'socure/errors#show', as: :socure_document_capture_errors
+      get '/socure/errors/timeout' => 'socure/errors#timeout'
       # This route is included in SMS messages sent to users who start the IdV hybrid flow. It
       # should be kept short, and should not include underscores ("_").
       get '/documents' => 'hybrid_mobile/entry#show', as: :hybrid_mobile_entry
@@ -375,7 +376,6 @@ Rails.application.routes.draw do
       get '/hybrid_mobile/socure/document_capture' => 'hybrid_mobile/socure/document_capture#show'
       get '/hybrid_mobile/socure/document_capture_update' => 'hybrid_mobile/socure/document_capture#update', as: :hybrid_mobile_socure_document_capture_update
       get '/hybrid_mobile/socure/document_capture_errors' => 'hybrid_mobile/socure/document_capture#errors', as: :hybrid_mobile_socure_document_capture_errors
-      get '/hybrid_mobile/socure/document_capture_goto_in_person' => 'hybrid_mobile/socure/document_capture#goto_in_person', as: :hybrid_mobile_socure_document_capture_goto_in_person
       get '/hybrid_handoff' => 'hybrid_handoff#show'
       put '/hybrid_handoff' => 'hybrid_handoff#update'
       get '/link_sent' => 'link_sent#show'
@@ -389,9 +389,10 @@ Rails.application.routes.draw do
       put '/welcome' => 'welcome#update'
       get '/phone' => 'phone#new'
       put '/phone' => 'phone#create'
-      get '/phone/errors/warning' => 'phone_errors#warning'
-      get '/phone/errors/jobfail' => 'phone_errors#jobfail'
       get '/phone/errors/failure' => 'phone_errors#failure'
+      get '/phone/errors/jobfail' => 'phone_errors#jobfail'
+      get '/phone/errors/timeout' => 'phone_errors#timeout'
+      get '/phone/errors/warning' => 'phone_errors#warning'
       post '/phone/resend_code' => 'resend_otp#create', as: :resend_otp
       get '/phone_confirmation' => 'otp_verification#show', as: :otp_verification
       put '/phone_confirmation' => 'otp_verification#update', as: :nil
@@ -399,7 +400,6 @@ Rails.application.routes.draw do
       put '/enter_password' => 'enter_password#create'
       get '/session/errors/warning' => 'session_errors#warning'
       get '/session/errors/state_id_warning' => 'session_errors#state_id_warning'
-      get '/phone/errors/timeout' => 'phone_errors#timeout'
       get '/session/errors/failure' => 'session_errors#failure'
       get '/session/errors/ssn_failure' => 'session_errors#ssn_failure'
       get '/session/errors/exception' => 'session_errors#exception'

@@ -7,7 +7,7 @@ module Idv
       include IdvStepConcern
       include DocumentCaptureConcern
       include RenderConditionConcern
-      include SocureErrorsConcern
+      # include SocureErrorsConcern
 
       check_or_render_not_found -> { IdentityConfig.store.socure_docv_enabled }
       before_action :confirm_not_rate_limited
@@ -117,6 +117,7 @@ module Idv
           error_code: error_code_for(result),
           remaining_attempts:,
           sp_name: decorated_sp_session&.sp_name || APP_NAME,
+          issuer: decorated_sp_session&.sp_issuer,
           hybrid_mobile: false,
         )
       end
@@ -127,9 +128,7 @@ module Idv
         # If the stored_result is nil, the job fetching the results has not completed.
         analytics.idv_doc_auth_document_capture_polling_wait_visited(**analytics_arguments)
         if wait_timed_out?
-          # flash[:error] = I18n.t('errors.doc_auth.polling_timeout')
-          # TODO: redirect to try again page LG-14873/14952/15059
-          render plain: 'Technical difficulties!!!', status: :ok
+          redirect_to idv_socure_errors_timeout_path
         else
           @refresh_interval =
             IdentityConfig.store.doc_auth_socure_wait_polling_refresh_max_seconds
