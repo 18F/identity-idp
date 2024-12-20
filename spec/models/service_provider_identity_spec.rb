@@ -212,15 +212,20 @@ RSpec.describe ServiceProviderIdentity do
       end
 
       context 'when an email address for sharing has been set' do
-        it 'returns the shared email' do
+        before do
           identity.email_address = shared_email_address
+        end
+
+        it 'returns the shared email' do
           expect(identity.email_address_for_sharing).to eq(shared_email_address)
         end
       end
 
       context 'when an email address for sharing has not been set' do
-        it 'returns the last login email' do
+        before do
           identity.email_address = nil
+        end
+        it 'returns the last login email' do
           expect(identity.email_address_for_sharing).to eq(last_login_email_address)
         end
       end
