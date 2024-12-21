@@ -3,26 +3,17 @@ require 'rails_helper'
 RSpec.describe 'Identity verification', :js do
   include IdvStepHelper
   include InPersonHelper
+  include AnalyticsRecordingHelper
 
   let(:sp) { :oidc }
   let(:sp_name) { 'Test SP' }
 
   around do |ex|
-    should_record = ENV['RECORD_ANALYTICS'] == '1' || ENV['RECORD_ANALYTICS'] == 'true'
-    filename = "analytics_events_#{ex.full_description.parameterize}.ndjson"
-    file = should_record ? File.open(filename, 'w') : nil
-
-    recording_middleware = proc do |event|
-      if should_record
-        file.write(JSON.generate(event), "\n")
-      end
-    end
-
-    Analytics.with_default_middleware(recording_middleware) do
+    file_name =
+      "spec/fixtures/analytics/analytics-events-#{ex.full_description.parameterize}.ndjson"
+    record_and_verify_analytics(file_name:) do
       ex.run
     end
-  ensure
-    file&.close
   end
 
   scenario 'Unsupervised proofing happy path desktop' do
