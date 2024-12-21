@@ -4,7 +4,54 @@ class Analytics
   include AnalyticsEvents
   prepend Idv::AnalyticsEventsEnhancer
 
-  attr_reader :user, :request, :sp, :session, :ahoy
+  # Analytics middleware that sends the event to Ahoy
+  class AhoyMiddleware
+    attr_reader :ahoy
+
+    def initialize(ahoy: nil, request: nil)
+      @ahoy = ahoy || Ahoy::Tracker.new(request:)
+    end
+
+    def call(event)
+      ahoy.track(event[:name], event[:properties])
+      nil
+    end
+  end
+
+  # Analytics middleware that augments NewRelic APM trace with additional metadata.
+  class NewRelicMiddleware
+    def call(event)
+      # Tag NewRelic APM trace with a handful of useful metadata
+      # https://www.rubydoc.info/github/newrelic/rpm/NewRelic/Agent#add_custom_attributes-instance_method
+      ::NewRelic::Agent.add_custom_attributes(
+        user_id: event.dig(:properties, :user_id),
+        user_ip: event.dig(:properties, :user_ip),
+        service_provider: event.dig(:properties, :service_provider),
+        event_name: event[:name],
+        git_sha: IdentityConfig::GIT_SHA,
+      )
+
+      nil
+    end
+  end
+
+  class << self
+    # @return [Proc[]] The set of middleware Procs added to all new Analytics instances by default.
+    def default_middleware
+      @default_middleware ||= []
+    end
+
+    # @param [Proc[]] middlewares Middleware procs to add while block executes.
+    def with_default_middleware(*middlewares, &block)
+      middlewares.each { |m| default_middleware << m }
+      block.call
+    ensure
+      middlewares.each { |m| default_middleware.delete(m) }
+    end
+  end
+
+  attr_reader :user, :request, :sp, :session
+  attr_reader :middleware
 
   # @param [User] user
   # @param [ActionDispatch::Request,nil] request
@@ -16,7 +63,10 @@ class Analytics
     @request = request
     @sp = sp
     @session = session
-    @ahoy = ahoy || Ahoy::Tracker.new(request: request)
+    @middleware = Analytics.default_middleware.dup
+
+    middleware << AhoyMiddleware.new(ahoy:, request:)
+    middleware << NewRelicMiddleware.new
   end
 
   def track_event(event, attributes = {})
@@ -36,17 +86,18 @@ class Analytics
     analytics_hash.merge!(sp_request_attributes) if sp_request_attributes
     analytics_hash.merge!(ab_test_attributes(event))
 
-    ahoy.track(event, analytics_hash)
+    event_for_middleware = {
+      name: event,
+      properties: analytics_hash,
+    }.freeze
 
-    # Tag NewRelic APM trace with a handful of useful metadata
-    # https://www.rubydoc.info/github/newrelic/rpm/NewRelic/Agent#add_custom_attributes-instance_method
-    ::NewRelic::Agent.add_custom_attributes(
-      user_id: analytics_hash[:user_id],
-      user_ip: request&.remote_ip,
-      service_provider: sp,
-      event_name: event,
-      git_sha: IdentityConfig::GIT_SHA,
-    )
+    middleware.each do |m|
+      potential_new_event = m.call(event_for_middleware)
+
+      if potential_new_event.is_a?(Hash)
+        event_for_middleware = result
+      end
+    end
   end
 
   def update_session_events_and_paths_visited_for_analytics(event)
