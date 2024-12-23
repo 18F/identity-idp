@@ -173,7 +173,7 @@ RSpec.describe AnalyticsRecordingHelper do
               'state_id_type' => 'drivers_license',
               'submit_attempts' => 1,
               'success' => true,
-              'vendor_request_time_in_ms' => 10.0,
+              'vendor_request_time_in_ms' => '0ish',
               'workflow' => 'test_non_liveness_workflow',
               'zip_code' => '59010',
             },
@@ -248,7 +248,7 @@ RSpec.describe AnalyticsRecordingHelper do
                 state_id_type: 'drivers_license',
                 submit_attempts: 1,
                 success: true,
-                vendor_request_time_in_ms: 0,
+                vendor_request_time_in_ms: '0ish',
                 workflow: 'test_non_liveness_workflow',
                 zip_code: '59010',
               },
@@ -335,6 +335,9 @@ RSpec.describe AnalyticsRecordingHelper do
                     active: true,
                     id: 'id:1',
                     idv_level: 'legacy_unsupervised',
+                    created_at: '<TIMESTAMP>',
+                    verified_at: '<TIMESTAMP>',
+                    activated_at: '<TIMESTAMP>',
                   },
                 ],
                 proofing_components: {
@@ -346,7 +349,7 @@ RSpec.describe AnalyticsRecordingHelper do
                   threatmetrix: true,
                   threatmetrix_review_status: 'pass',
                 },
-                proofing_workflow_time_in_seconds: 10,
+                proofing_workflow_time_in_seconds: '0ish',
                 success: true,
               },
               locale: 'en',
@@ -362,6 +365,42 @@ RSpec.describe AnalyticsRecordingHelper do
               },
               user_id: 'uuid:1',
             },
+          },
+        )
+      end
+    end
+
+    context 'with "Return to SP: Cancelled" event' do
+      let(:raw_event) do
+        # rubocop:disable Metrics/LineLength
+        JSON.parse('{"name":"Return to SP: Cancelled","properties":{"event_properties":{"redirect_url":"http://localhost:7654/auth/result?error=access_denied&state=a8afc3c63dc6b345a3893e38bc99946f","step":"verify_address","location":"come_back_later"},"new_event":true,"path":"/redirect/return_to_sp/cancel","service_provider":"urn:gov:gsa:openidconnect:sp:server","user_id":"fd5bb94d-4972-4d3f-8b26-662402566109","locale":"en","sp_request":{"component_values":{"urn:acr.login.gov:verified":true},"component_separator":" ","aal2":true,"identity_proofing":true,"component_names":["urn:acr.login.gov:verified"]}}}')
+        # rubocop:enable Metrics/LineLength
+      end
+
+      it 'normalizes' do
+        expect(normalized_event).to eql(
+          {
+            name: 'Return to SP: Cancelled',
+            properties: {
+              event_properties: {
+                location: 'come_back_later',
+                redirect_url: 'url_with_state:1',
+                step: 'verify_address',
+              },
+              locale: 'en',
+              new_event: true,
+              path: '/redirect/return_to_sp/cancel',
+              service_provider: 'urn:gov:gsa:openidconnect:sp:server',
+              sp_request: {
+                aal2: true,
+                component_names: ['urn:acr.login.gov:verified'],
+                component_separator: ' ',
+                component_values: { "urn:acr.login.gov:verified": true },
+                identity_proofing: true,
+              },
+              user_id: 'uuid:1',
+            },
+
           },
         )
       end
@@ -482,6 +521,17 @@ RSpec.describe AnalyticsRecordingHelper do
         end
       end
 
+      context 'with values that look like urls with random state variables' do
+        let(:raw_value) do
+          'http://localhost:1234/auth/result?error=access_denied&state=a8afc3c63dc6b345a3893e38bc99946f'
+        end
+        it 'tokenizes' do
+          expect(normalized_value).to eql(
+            'url_with_state:1',
+          )
+        end
+      end
+
       context 'with values the look like ISO 8601 timestamps' do
         let(:raw_value) do
           {
@@ -492,7 +542,29 @@ RSpec.describe AnalyticsRecordingHelper do
           }
         end
         it 'removes the timestamps' do
-          expect(normalized_value).to eql({ active: true })
+          expect(normalized_value).to eql(
+            {
+              active: true,
+              activated_at: '<TIMESTAMP>',
+              created_at: '<TIMESTAMP>',
+              verified_at: '<TIMESTAMP>',
+            },
+          )
+        end
+      end
+
+      context 'with values that look like UNIX timestamps' do
+        let(:raw_value) do
+          {
+            created_at: '1734986743624',
+          }
+        end
+        it 'normalizes to just <UNIX TIMESTAMP>' do
+          expect(normalized_value).to eql(
+            {
+              created_at: '<UNIX TIMESTAMP>',
+            },
+          )
         end
       end
     end

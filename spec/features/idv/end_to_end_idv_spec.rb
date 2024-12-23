@@ -11,8 +11,14 @@ RSpec.describe 'Identity verification', :js do
   around do |ex|
     file_name =
       "spec/fixtures/analytics/analytics-events-#{ex.full_description.parameterize}.ndjson"
-    record_and_verify_analytics(file_name:) do
+
+    status = record_or_verify_analytics(file_name:) do
       ex.run
+    end
+
+    case status
+    when :checked then puts "Compared analytics events to #{file_name}"
+    when :recorded then puts "Recorded analytics events to #{file_name}}"
     end
   end
 

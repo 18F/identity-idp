@@ -23,7 +23,7 @@ module AnalyticsRecordingHelper
     # Because we use fixtures for our tests, this value is not particularly
     # meaningful (it may be `true` during recording but `false` on subsequent
     # runs [or vice versa]).
-    %i[properties event_properties ssn_is_unique],
+    %i[properties event_properties proofing_results ssn_is_unique],
   ].freeze
 
   UUID_REGEX = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/
@@ -57,6 +57,17 @@ module AnalyticsRecordingHelper
       # This varies in the "User Registration: Email Submitted" event
       value.is_a?(String) && path.last == :domain_name
     },
+    url_with_state: ->(_path, value) {
+      return if !value.is_a?(String)
+
+      uri = begin
+        URI(value)
+      rescue URI::InvalidURIError
+        return
+      end
+
+      !!/(^|&)state=[a-f0-9]+/.match?(uri.query)
+    },
   }.freeze
 
   # Normalizers take a path + value in and return the normalized value for that path.
@@ -64,6 +75,11 @@ module AnalyticsRecordingHelper
     ignore_timestamps: ->(path, value, _state) {
       return value if !path.last.to_s.end_with?('_at')
       return '<TIMESTAMP>' if ISO_8601_REGEX.match?(value.to_s)
+
+      if (value.is_a?(Numeric) || /\A\d+\z/.match?(value)) && value.to_i > 1704096000
+        return '<UNIX TIMESTAMP>'
+      end
+
       value
     },
     localhost_url_referencing_weird_port: ->(_path, value, _state) {
@@ -90,14 +106,16 @@ module AnalyticsRecordingHelper
       return value if !value.is_a?(Numeric)
 
       # Round to nearest 10 seconds
-      (value / 10000.0).round * 10000
+      rounded = (value / 10000.0).round * 10000
+      "#{rounded}ish"
     },
     round_second_values: ->(path, value, _state) {
       return value if !path.last.to_s.end_with?('_seconds')
       return value if !value.is_a?(Numeric)
 
       # Round to nearest minute
-      (value / 60.0).round * 60
+      rounded = (value / 60.0).round * 60
+      "#{rounded}ish"
     },
     symbols_to_strings: ->(_path, value, _state) {
       if value.is_a?(Symbol)
@@ -142,6 +160,8 @@ module AnalyticsRecordingHelper
     },
   }
 
+  # These are used when generating a friendly summary of an event to provide
+  # short bits of additional context.
   EVENT_CONTEXT_GIVERS = [
     ->(event) {
       event.dig(:properties, :event_properties, :action)
@@ -160,17 +180,16 @@ module AnalyticsRecordingHelper
   # 1) Records analytics events logged during {block} when the RECORD_ANALYTICS env is truthy OR
   # 2) Verifies analytics events logged during {block} against previously-recorded events
   # @param {String} file_name File to record analytics events to
-  def record_and_verify_analytics(
+  # @return {Symbol,nil} Either :recorded (if analytics were recorded) or :checked (if events were
+  #                      checked against a previous recording. If no recorded events could b
+  #                      found to check against, returns nil.
+  def record_or_verify_analytics(
     file_name:,
     &block
   )
     if should_record_analytics?
       record_analytics(file_name:, &block)
-      raise <<~END
-        Recorded analytics events to '#{file_name}'. 
-        This error was raised to ensure this test run doesn't succeed.
-        Re-run the tests without RECORD_ANALYTICS set.
-      END
+      return :recorded
     end
 
     actual_events = []
@@ -180,23 +199,32 @@ module AnalyticsRecordingHelper
       block.call
     end
 
-    expected_events = load_analytics_events_from_file(file_name:)
+    expected_events = begin
+      load_analytics_events_from_file(file_name:)
+    rescue Errno::ENOENT
+      return nil
+    end
 
     assert_logged_analytics_events_match(
       actual_events:,
       expected_events:,
+      file_name:,
     )
+
+    :checked
   end
 
   # Verifies that {actual_events} matches {expected_events}.
   # Order matters, but some wiggle room is allowed via the {window_size} parameter.
   # @param [Hash[]] actual_events Array of actual events logged.
   # @param [Hash[]] expected_events Array of analytics event hashes.
+  # @param [String,nil] file_name File name events were loaded from (for error reporting)
   # @param [Number] window_size Number of events we look at when trying to find a match.
   def assert_logged_analytics_events_match(
     actual_events:,
     expected_events:,
-    window_size: 10
+    file_name: nil,
+    window_size: 5
   )
     actual_events = actual_events.map do |e|
       normalize_analytics_event_for_comparison(e)
@@ -235,13 +263,15 @@ module AnalyticsRecordingHelper
       # diff in the output.
       closest_matches = candidates.filter { |e| e[:name] == actual_event[:name] }
       if closest_matches.length == 1
-        expect(actual_event).to eql(closest_matches.first)
+        expect(actual_event).to eql(closest_matches.first), error_message(<<~ERROR, file_name:)
+          No match was found for the event #{summarize_event(actual_event)} in the fixture data.
+        ERROR
         asserted = true
       end
 
       next if asserted
 
-      expect('event matched').to eql('event not matched'), <<~ERROR
+      expect('event matched').to eql('event not matched'), error_message(<<~ERROR, file_name:)
         Event '#{summarize_event(actual_event)}' was logged, but not expected.
 
         Here are the events we expected around where it happened:
@@ -257,7 +287,7 @@ module AnalyticsRecordingHelper
       (Set.new(0..expected_events.length - 1) - matches.keys.to_set)
         .map { |index| expected_events[index] }
 
-    expect(unmatched_expected_events.length).to eql(0), <<~ERROR
+    expect(unmatched_expected_events.length).to eql(0), error_message(<<~ERROR, file_name:)
       The following events were expected, but not seen:
 
       #{unmatched_expected_events.map { |e| "- #{summarize_event(e)}" }.join("\n")}
@@ -370,6 +400,29 @@ module AnalyticsRecordingHelper
 
   private
 
+  def error_message(message, file_name: nil)
+    message = <<~ERROR
+      #{message}
+
+      If you think this error should not have happened, it might mean that the
+      fixture data is out-of-date. You can regenerate it by re-running
+      your tests with the RECORD_ANALYTICS=true, e.g.:
+
+        RECORD_ANALYTICS=true bundle exec rspec path/to/your/spec.rb
+
+    ERROR
+
+    if file_name.present?
+      message = <<~ERROR
+        #{message}
+        
+        (Fixture data was loaded from #{file_name}.)
+      ERROR
+    end
+
+    message
+  end
+
   # @param [Hash] event
   def strip_irrelevant_paths_from_event(event)
     PATHS_TO_STRIP_WHEN_RECORDING.each do |path|
@@ -384,6 +437,6 @@ module AnalyticsRecordingHelper
     context = EVENT_CONTEXT_GIVERS.map { |g| g.call(event) }.compact
     return name if context.empty?
 
-    "#{name} (#{context.join("; ")})"
+    "\"#{name}\" (#{context.join("; ")})"
   end
 end
