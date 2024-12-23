@@ -646,7 +646,7 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
         let(:initiating_sp_name) { nil }
 
         context 'the service provider has a post-idv follow-up url' do
-          it 'renders a link but not the intro' do
+          it 'does not render the alert' do
             expect(rendered).not_to have_content(
               t(
                 'account.index.verification.connect_idv_account.intro',
