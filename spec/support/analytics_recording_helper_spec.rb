@@ -7,6 +7,30 @@ RSpec.describe AnalyticsRecordingHelper do
     end.new
   end
 
+  describe '#included' do
+    it 'calls around when available' do
+      c = Class.new do
+        def self.around(&_block)
+          @around_called = true
+        end
+
+        def self.around_called = @around_called
+
+        include AnalyticsRecordingHelper
+      end
+
+      expect(c.around_called).to eql(true)
+    end
+
+    it 'does not call around when not available' do
+      c = Class.new do
+        include AnalyticsRecordingHelper
+      end
+
+      expect { c.new }.not_to raise_error
+    end
+  end
+
   describe '#normalize_analytics_event_for_comparison' do
     subject(:normalized_event) do
       helper.normalize_analytics_event_for_comparison(raw_event)
