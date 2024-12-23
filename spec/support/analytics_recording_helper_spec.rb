@@ -37,7 +37,7 @@ RSpec.describe AnalyticsRecordingHelper do
     end
 
     context 'with a "Sign in page visited" event' do
-      # rubocop:disable Metrics/LineLength
+      # rubocop:disable Layout/LineLength
       let(:raw_event) do
         { name: 'Sign in page visited',
           properties: {
@@ -64,7 +64,7 @@ RSpec.describe AnalyticsRecordingHelper do
             browser_bot: false,
           } }
       end
-      # rubocop:end Metrics/LineLength
+      # rubocop:enable Layout/LineLength
 
       it 'normalizes' do
         expect(normalized_event).to eql(
@@ -398,10 +398,29 @@ RSpec.describe AnalyticsRecordingHelper do
 
     context 'with "Return to SP: Cancelled" event' do
       let(:raw_event) do
-        JSON.parse('{"name":"Return to SP: Cancelled","properties":{"event_properties":{"redirect_url":"http://localhost:7654/auth/result?error=access_denied&state=a8afc3c63dc6b345a3893e38bc99946f","step":"verify_address","location":"come_back_later"},"new_event":true,"path":"/redirect/return_to_sp/cancel","service_provider":"urn:gov:gsa:openidconnect:sp:server","user_id":"fd5bb94d-4972-4d3f-8b26-662402566109","locale":"en","sp_request":{"component_values":{"urn:acr.login.gov:verified":true},"component_separator":" ","aal2":true,"identity_proofing":true,"component_names":["urn:acr.login.gov:verified"]}}}')
-        # rubocop:enable Metrics/LineLength
+        {
+          name: 'Return to SP: Cancelled',
+          properties: {
+            event_properties: {
+              redirect_url: 'http://localhost:7654/auth/result?error=access_denied&state=a8afc3c63dc6b345a3893e38bc99946f',
+              step: 'verify_address',
+              location: 'come_back_later',
+            },
+            new_event: true,
+            path: '/redirect/return_to_sp/cancel',
+            service_provider: 'urn:gov:gsa:openidconnect:sp:server',
+            user_id: 'fd5bb94d-4972-4d3f-8b26-662402566109',
+            locale: 'en',
+            sp_request: {
+              component_values: { "urn:acr.login.gov:verified": true },
+              component_separator: ' ',
+              aal2: true,
+              identity_proofing: true,
+              component_names: ['urn:acr.login.gov:verified'],
+            },
+          },
+        }
       end
-
       it 'normalizes' do
         expect(normalized_event).to eql(
           {
