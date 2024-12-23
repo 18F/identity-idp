@@ -72,14 +72,28 @@ RSpec.feature 'document capture step', :js do
             socure_docv_send_webhook(docv_transaction_token: @docv_transaction_token, event_type:)
           end
 
+          # Go to the wait page
           visit idv_socure_document_capture_update_path
           expect(page).to have_current_path(idv_socure_document_capture_update_path)
+
+          # Timeout
           visit idv_socure_document_capture_update_path
           expect(page).to have_current_path(idv_socure_errors_timeout_path)
           expect(page).to have_content(I18n.t('idv.errors.try_again_later'))
+
+          # Try in person
           click_on t('in_person_proofing.body.cta.button')
           expect(page).to have_current_path(idv_document_capture_path(step: :idv_doc_auth))
           expect(page).to have_content(t('in_person_proofing.headings.prepare'))
+
+          # Go back
+          visit idv_socure_document_capture_update_path
+          expect(page).to have_current_path(idv_socure_errors_timeout_path)
+
+          # Try Socure again
+          click_on t('idv.failure.button.warning')
+          expect(page).to have_current_path(idv_socure_document_capture_path)
+          expect(page).to have_content(t('doc_auth.headings.verify_with_phone'))
         end
       end
 

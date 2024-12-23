@@ -7,7 +7,6 @@ module Idv
       include IdvStepConcern
       include DocumentCaptureConcern
       include RenderConditionConcern
-      # include SocureErrorsConcern
 
       check_or_render_not_found -> { IdentityConfig.store.socure_docv_enabled }
       before_action :confirm_not_rate_limited
@@ -111,16 +110,6 @@ module Idv
       end
 
       private
-
-      def socure_errors_presenter(result)
-        SocureErrorPresenter.new(
-          error_code: error_code_for(result),
-          remaining_attempts:,
-          sp_name: decorated_sp_session&.sp_name || APP_NAME,
-          issuer: decorated_sp_session&.sp_issuer,
-          hybrid_mobile: false,
-        )
-      end
 
       def wait_for_result?
         return false if stored_result.present?

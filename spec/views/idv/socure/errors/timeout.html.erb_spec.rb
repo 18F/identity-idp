@@ -55,7 +55,15 @@ RSpec.describe 'idv/socure/errors/timeout.html.erb' do
   end
 
   context 'In person verification disabled' do
-    it 'does not render link to in person flow' do
+    it 'does not have the IPP h1' do
+      expect(rendered).not_to have_css('h1', text: t('in_person_proofing.headings.cta'))
+    end
+
+    it 'does not explain in person verification' do
+      expect(rendered).not_to have_text(t('in_person_proofing.body.cta.prompt_detail'))
+    end
+
+    it 'does not render a secondary cta for IPP' do
       url = idv_in_person_direct_path
 
       expect(rendered).not_to have_link(
@@ -68,7 +76,7 @@ RSpec.describe 'idv/socure/errors/timeout.html.erb' do
   context 'In person verification enabled' do
     let(:sp) { create(:service_provider, in_person_proofing_enabled: true) }
 
-    it 'has an h1' do
+    it 'has the IPP h1' do
       expect(rendered).to have_css('h1', text: t('in_person_proofing.headings.cta'))
     end
 
@@ -76,7 +84,7 @@ RSpec.describe 'idv/socure/errors/timeout.html.erb' do
       expect(rendered).to have_text(t('in_person_proofing.body.cta.prompt_detail'))
     end
 
-    it 'has a secondary cta' do
+    it 'has a secondary cta for IPP' do
       url = idv_in_person_direct_path
       expect(rendered).to have_link(
         t('in_person_proofing.body.cta.button'),
