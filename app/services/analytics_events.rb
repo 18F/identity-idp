@@ -7367,18 +7367,15 @@ module AnalyticsEvents
   # Tracks when user visits MFA selection page
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Boolean] gov_or_mil_email Whether registered user has government email
-  # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
   def user_registration_2fa_setup_visit(
     enabled_mfa_methods_count:,
     gov_or_mil_email:,
-    in_account_creation_flow: nil,
     **extra
   )
     track_event(
       'User Registration: 2FA Setup visited',
       enabled_mfa_methods_count:,
       gov_or_mil_email:,
-      in_account_creation_flow:,
       **extra,
     )
   end
@@ -7695,12 +7692,20 @@ module AnalyticsEvents
   # @param [Hash] platform_authenticator
   # @param [Boolean] success
   # @param [Hash, nil] errors
+  # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
   # Tracks whether or not Webauthn setup was successful
-  def webauthn_setup_submitted(platform_authenticator:, success:, errors: nil, **extra)
+  def webauthn_setup_submitted(
+    platform_authenticator:,
+    success:,
+    in_account_creation_flow: nil,
+    errors: nil,
+    **extra
+  )
     track_event(
       :webauthn_setup_submitted,
       platform_authenticator: platform_authenticator,
       success: success,
+      in_account_creation_flow:,
       errors: errors,
       **extra,
     )

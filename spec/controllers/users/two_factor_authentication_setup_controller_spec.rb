@@ -18,7 +18,6 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
         'User Registration: 2FA Setup visited',
         enabled_mfa_methods_count: 0,
         gov_or_mil_email: false,
-        in_account_creation_flow: false,
       )
     end
 
@@ -75,7 +74,6 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
             'User Registration: 2FA Setup visited',
             enabled_mfa_methods_count: 0,
             gov_or_mil_email: true,
-            in_account_creation_flow: false,
           )
         end
       end
@@ -115,7 +113,6 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
           'User Registration: 2FA Setup visited',
           enabled_mfa_methods_count: 1,
           gov_or_mil_email: false,
-          in_account_creation_flow: false,
         )
       end
     end

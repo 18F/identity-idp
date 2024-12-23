@@ -21,7 +21,6 @@ module Users
       @presenter = two_factor_options_presenter
       analytics.user_registration_2fa_setup_visit(
         enabled_mfa_methods_count:,
-        in_account_creation_flow: user_session[:in_account_creation_flow] || false,
         gov_or_mil_email: fed_or_mil_email?,
       )
       render :index, locals: threatmetrix_variables
