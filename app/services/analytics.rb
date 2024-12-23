@@ -13,25 +13,26 @@ class Analytics
     end
 
     def call(event)
-      ahoy.track(event[:name], event[:properties])
-      nil
+      event.tap do |event|
+        ahoy.track(event[:name], event[:properties])
+      end
     end
   end
 
   # Analytics middleware that augments NewRelic APM trace with additional metadata.
   class NewRelicMiddleware
     def call(event)
-      # Tag NewRelic APM trace with a handful of useful metadata
-      # https://www.rubydoc.info/github/newrelic/rpm/NewRelic/Agent#add_custom_attributes-instance_method
-      ::NewRelic::Agent.add_custom_attributes(
-        user_id: event.dig(:properties, :user_id),
-        user_ip: event.dig(:properties, :user_ip),
-        service_provider: event.dig(:properties, :service_provider),
-        event_name: event[:name],
-        git_sha: IdentityConfig::GIT_SHA,
-      )
-
-      nil
+      event.tap do
+        # Tag NewRelic APM trace with a handful of useful metadata
+        # https://www.rubydoc.info/github/newrelic/rpm/NewRelic/Agent#add_custom_attributes-instance_method
+        ::NewRelic::Agent.add_custom_attributes(
+          user_id: event.dig(:properties, :user_id),
+          user_ip: event.dig(:properties, :user_ip),
+          service_provider: event.dig(:properties, :service_provider),
+          event_name: event[:name],
+          git_sha: IdentityConfig::GIT_SHA,
+        )
+      end
     end
   end
 
@@ -93,11 +94,7 @@ class Analytics
     }.freeze
 
     middleware.each do |m|
-      potential_new_event = m.call(event_for_middleware)
-
-      if potential_new_event.is_a?(Hash)
-        event_for_middleware = result
-      end
+      event_for_middleware = m.call(event_for_middleware)
     end
   end
 

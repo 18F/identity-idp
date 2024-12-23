@@ -211,7 +211,9 @@ module AnalyticsRecordingHelper
     end
 
     actual_events = []
-    middleware = proc { |event| actual_events << event }
+    middleware = proc { |event|
+      event.tap { actual_events << event }
+    }
 
     Analytics.with_default_middleware(middleware) do
       block.call
@@ -388,9 +390,11 @@ module AnalyticsRecordingHelper
     )
 
     recording_middleware = proc do |event|
-      event_to_record = JSON.parse(event.to_json, symbolize_names: true)
-      strip_irrelevant_paths_from_event(event_to_record)
-      file_handle.write(JSON.generate(event_to_record), "\n")
+      event.tap do
+        event_to_record = JSON.parse(event.to_json, symbolize_names: true)
+        strip_irrelevant_paths_from_event(event_to_record)
+        file_handle.write(JSON.generate(event_to_record), "\n")
+      end
     end
 
     Analytics.with_default_middleware(recording_middleware) do
