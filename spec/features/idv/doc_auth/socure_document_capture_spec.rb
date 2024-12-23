@@ -25,6 +25,8 @@ RSpec.feature 'document capture step', :js do
       .and_return(fake_socure_docv_document_request_endpoint)
     allow(IdentityConfig.store).to receive(:socure_docv_webhook_repeat_endpoints)
       .and_return(socure_docv_webhook_repeat_endpoints)
+    allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
+      .and_return(true, false)
     socure_docv_webhook_repeat_endpoints.each { |endpoint| stub_request(:post, endpoint) }
     allow(IdentityConfig.store).to receive(:ruby_workers_idv_enabled).and_return(false)
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
@@ -248,6 +250,8 @@ RSpec.feature 'document capture step', :js do
           before do
             allow_any_instance_of(Faraday::Connection).to receive(:post)
               .and_raise(Faraday::ConnectionFailed)
+            allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
+              .and_return(true, false)
           end
 
           it 'shows the network error page', js: true do
