@@ -82,18 +82,24 @@ class AccountShowPresenter
     I18n.l(user.active_profile.created_at, format: :event_date)
   end
 
-  def connect_to_initiating_idv_sp_url
-    initiating_service_provider = user.active_profile&.initiating_service_provider
-    return nil if !initiating_service_provider.present?
+  def initiating_idv_sp
+    @initiating_idv_sp ||= user.active_profile&.initiating_service_provider
+  end
 
-    SpReturnUrlResolver.new(service_provider: initiating_service_provider).post_idv_follow_up_url
+  def initiating_idv_sp_name
+    initiating_idv_sp&.friendly_name
+  end
+
+  def connect_to_initiating_idv_sp_url
+    return nil if !initiating_idv_sp.present?
+
+    SpReturnUrlResolver.new(service_provider: initiating_idv_sp).post_idv_follow_up_url
   end
 
   def connected_to_initiating_idv_sp?
-    initiating_service_provider = user.active_profile&.initiating_service_provider
-    return false if !initiating_service_provider.present?
+    return false if !initiating_idv_sp.present?
 
-    identity = user.identities.find_by(service_provider: initiating_service_provider.issuer)
+    identity = user.identities.find_by(service_provider: initiating_idv_sp.issuer)
     !!identity&.last_ial2_authenticated_at.present?
   end
 

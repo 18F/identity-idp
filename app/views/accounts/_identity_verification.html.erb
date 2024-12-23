@@ -19,13 +19,13 @@
   </div>
 </div>
 
-<% if @presenter.active_profile? && !@presenter.connected_to_initiating_idv_sp? && @presenter.sp_name %>
+<% if @presenter.active_profile? && !@presenter.connected_to_initiating_idv_sp? && @presenter.initiating_idv_sp_name %>
   <%= render AlertComponent.new(type: :warning, class: 'margin-bottom-2') do %>
-    <%= t('account.index.verification.connect_idv_account.intro', sp_name: @presenter.sp_name) %><br />
+    <%= t('account.index.verification.connect_idv_account.intro', sp_name: @presenter.initiating_idv_sp_name) %><br />
     <% if @presenter.connect_to_initiating_idv_sp_url.present? %>
-      <%= link_to(t('account.index.verification.connect_idv_account.cta', sp_name: @presenter.sp_name), @presenter.connect_to_initiating_idv_sp_url) %>
+      <%= link_to(t('account.index.verification.connect_idv_account.cta', sp_name: @presenter.initiating_idv_sp_name), @presenter.connect_to_initiating_idv_sp_url) %>
     <% else %>
-      <%= t('account.index.verification.connect_idv_account.cta', sp_name: @presenter.sp_name) %>
+      <%= t('account.index.verification.connect_idv_account.cta', sp_name: @presenter.initiating_idv_sp_name) %>
     <% end %>
   <% end %>
 <% end %>
@@ -36,7 +36,7 @@
       <% if @presenter.identity_verified_with_facial_match? %>
         <%= t('account.index.verification.you_verified_your_facial_match_identity', app_name: APP_NAME) %>
       <% else %>
-        <%= t('account.index.verification.you_verified_your_identity_html', sp_name: @presenter.user.active_profile.initiating_service_provider&.friendly_name || APP_NAME) %>
+        <%= t('account.index.verification.you_verified_your_identity_html', sp_name: @presenter.initiating_idv_sp_name || APP_NAME) %>
       <% end %>
     <% elsif @presenter.active_profile? %>
       <%= t('account.index.verification.legacy_verified_html', app_name: APP_NAME, date: @presenter.formatted_legacy_idv_date) %>
