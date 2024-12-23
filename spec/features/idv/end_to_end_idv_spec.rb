@@ -344,7 +344,8 @@ RSpec.describe 'Identity verification', :js do
       'address_check' => 'lexis_nexis_address',
       'document_type' => 'state_id',
       'document_check' => 'mock',
-      'resolution_check' => 'lexis_nexis',
+      'residential_resolution_check' => 'ResidentialAddressNotRequired',
+      'resolution_check' => 'ResolutionMock',
       'threatmetrix_review_status' => 'pass',
     )
     expect(GpoConfirmation.count).to eq(0)
