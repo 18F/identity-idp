@@ -42,6 +42,7 @@ class Analytics
     end
 
     # @param [Proc[]] middlewares Middleware procs to add while block executes.
+    # Added for use in specs only
     def with_default_middleware(*middlewares, &block)
       middlewares.each { |m| default_middleware << m }
       block.call
