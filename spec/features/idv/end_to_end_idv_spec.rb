@@ -8,20 +8,6 @@ RSpec.describe 'Identity verification', :js do
   let(:sp) { :oidc }
   let(:sp_name) { 'Test SP' }
 
-  around do |ex|
-    file_name =
-      "spec/fixtures/analytics/analytics-events-#{ex.full_description.parameterize}.ndjson"
-
-    status = record_or_verify_analytics(file_name:) do
-      ex.run
-    end
-
-    case status
-    when :checked then puts "Compared analytics events to #{file_name}"
-    when :recorded then puts "Recorded analytics events to #{file_name}}"
-    end
-  end
-
   scenario 'Unsupervised proofing happy path desktop' do
     try_to_skip_ahead_before_signing_in
     visit_idp_from_sp_with_ial2(sp)

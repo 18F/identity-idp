@@ -1,4 +1,22 @@
 module AnalyticsRecordingHelper
+  def self.included(base)
+    base.class_eval do
+      around do |ex|
+        file_name =
+          "spec/fixtures/analytics/analytics-events-#{ex.full_description.parameterize}.ndjson"
+
+        status = record_or_verify_analytics(file_name:) do
+          ex.run
+        end
+
+        case status
+        when :checked then puts "Compared analytics events to #{file_name}"
+        when :recorded then puts "Recorded analytics events to #{file_name}}"
+        end
+      end
+    end
+  end
+
   PATHS_TO_STRIP_WHEN_RECORDING = [
     # These paths contain metadata that will either not contain useful values
     # for test purposes OR will contain values that are unstable enough that
