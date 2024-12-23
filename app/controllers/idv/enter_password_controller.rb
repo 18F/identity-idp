@@ -143,6 +143,10 @@ module Idv
         log_letter_enqueued_analytics(resend: false)
       end
 
+      if profile.fraud_review_pending? && !profile.in_person_verification_pending?
+        current_user.send_email_to_all_addresses(:idv_please_call)
+      end
+
       if profile.active?
         create_user_event(:account_verified)
         UserAlerts::AlertUserAboutAccountVerified.call(
