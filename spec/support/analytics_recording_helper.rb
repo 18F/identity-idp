@@ -11,8 +11,8 @@ module AnalyticsRecordingHelper
           end
 
           case status
-          when :checked then puts "Compared analytics events to #{file_name}"
-          when :recorded then puts "Recorded analytics events to #{file_name}}"
+          when :checked then Rails.logger.debug { "Compared analytics events to #{file_name}" }
+          when :recorded then Rails.logger.debug { "Recorded analytics events to #{file_name}}" }
           end
         end
       end
@@ -178,7 +178,7 @@ module AnalyticsRecordingHelper
 
       value
     },
-  }
+  }.freeze
 
   # These are used when generating a friendly summary of an event to provide
   # short bits of additional context.
