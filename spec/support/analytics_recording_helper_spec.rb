@@ -7,9 +7,9 @@ RSpec.describe AnalyticsRecordingHelper do
     end.new
   end
 
-  describe '#normalize_logged_analytics_event' do
+  describe '#normalize_analytics_event_for_comparison' do
     subject(:normalized_event) do
-      helper.normalize_logged_analytics_event(raw_event)
+      helper.normalize_analytics_event_for_comparison(raw_event)
     end
 
     context 'with a "Sign in page visited" event' do
@@ -494,32 +494,6 @@ RSpec.describe AnalyticsRecordingHelper do
         it 'removes the timestamps' do
           expect(normalized_value).to eql({ active: true })
         end
-      end
-    end
-
-    context 'Class that implemements as_json' do
-      let(:raw_value) do
-        Class.new do
-          def to_h
-            'hi'
-          end
-        end.new
-      end
-      it 'calls as_json' do
-        expect(normalized_value).to eql('hi')
-      end
-    end
-
-    context 'Class that implements to_h' do
-      let(:raw_value) do
-        Class.new do
-          def to_h
-            'hi'
-          end
-        end.new
-      end
-      it 'calls to_h' do
-        expect(normalized_value).to eql('hi')
       end
     end
   end

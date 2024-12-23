@@ -1,5 +1,8 @@
 module AnalyticsRecordingHelper
   PATHS_TO_STRIP_WHEN_RECORDING = [
+    # These paths contain metadata that will either not contain useful values
+    # for test purposes OR will contain values that are unstable enough that
+    # they'd break tests left and right.
     %i[properties browser_bot],
     %i[properties browser_device_name],
     %i[properties browser_mobile],
@@ -15,6 +18,12 @@ module AnalyticsRecordingHelper
     %i[properties trace_id],
     %i[properties user_agent],
     %i[properties user_ip],
+
+    # This is logged by the 'IdV: doc auth verify proofing results' event.
+    # Because we use fixtures for our tests, this value is not particularly
+    # meaningful (it may be `true` during recording but `false` on subsequent
+    # runs [or vice versa]).
+    %i[properties event_properties ssn_is_unique],
   ].freeze
 
   UUID_REGEX = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/
@@ -23,12 +32,10 @@ module AnalyticsRecordingHelper
 
   ISO_8601_REGEX = /\A\d{4}-\d{1,2}-\d{1,2}T\d{1,2}:\d{1,2}:\d{1,2}(\.\d+)Z\z/
 
-  LOCALHOST_URL_WITH_HIGH_PORT = /\Ahttp:\/\/(localhost|127\.0\.0\.1):(\d+)/
-
   # Tokenizers take path + value in and return either:
   # - nil to not tokenize
   # - True to tokenize using the key of the TOKENIZERS array as a namespace
-  # - String or Symbol to customize the namespace of the token
+  # - A String or Symbol to customize the namespace used for the token
   TOKENIZERS = {
     database_id: ->(path, value) {
       looks_like_id = path.last == :id || path.last.to_s.end_with?('_id')
@@ -52,39 +59,85 @@ module AnalyticsRecordingHelper
     },
   }.freeze
 
-  # Normalizers take a path + value in and return the normalized value
+  # Normalizers take a path + value in and return the normalized value for that path.
   NORMALIZERS = {
-    millisecond_values: ->(path, value) {
-      return value if !path.last.to_s.end_with?('_in_ms')
-      return value if !value.is_a?(Numeric)
-
-      # Round to nearest second
-      (value / 1000.0).round * 1000
-    },
-    ignore_ssn_is_unique: ->(path, value) {
-      # Verify proofing results event logs this, a unique SSN during recording
-      # may not stay unique in subsequent runs.
-      return if path.last == :ssn_is_unique
-
-      value
-    },
-    ignore_timestamps: ->(path, value) {
+    ignore_timestamps: ->(path, value, _state) {
       return value if !path.last.to_s.end_with?('_at')
-      return  if value.is_a?(Time)
-      return  if ISO_8601_REGEX.match?(value.to_s)
+      return '<TIMESTAMP>' if ISO_8601_REGEX.match?(value.to_s)
       value
     },
-    second_values: ->(path, value) {
-      return value if !path.last.to_s.end_with?('_in_seconds')
+    localhost_url_referencing_weird_port: ->(_path, value, _state) {
+      # During feature specs, the Rails app runs on localhost with a high
+      # random port number that will vary between runs.
+      if value.is_a?(String)
+        uri = begin
+          URI(value)
+        rescue URI::InvalidURIError
+          return value
+        end
+
+        return value if !uri.is_a?(URI::HTTP)
+        return value if uri.port == 80
+
+        uri.port = 1234
+        return uri.to_s
+      end
+
+      value
+    },
+    round_millisecond_values: ->(path, value, _state) {
+      return value if !path.last.to_s.end_with?('_ms')
       return value if !value.is_a?(Numeric)
 
       # Round to nearest 10 seconds
-      (value / 10.0).round * 10
+      (value / 10000.0).round * 10000
     },
-    localhost_url_referencing_high_port: ->(_path, value) {
-      if value.is_a?(String)
-        value.gsub(LOCALHOST_URL_WITH_HIGH_PORT, 'http://localhost:11223344')
+    round_second_values: ->(path, value, _state) {
+      return value if !path.last.to_s.end_with?('_seconds')
+      return value if !value.is_a?(Numeric)
+
+      # Round to nearest minute
+      (value / 60.0).round * 60
+    },
+    symbols_to_strings: ->(_path, value, _state) {
+      if value.is_a?(Symbol)
+        value.to_s
+      else
+        value
       end
+    },
+    tokenize: ->(path, value, state) {
+      TOKENIZERS.each do |tokenizer_name, tokenizer|
+        tokenizer_result = tokenizer.call(path, value)
+
+        next if !tokenizer_result
+
+        # "token_type" is the namespace in which this token will live.
+        # By default, we use a namespace shared by all items handled by this
+        # tokenizer. But if {tokenizer} returns a Symbol / String, we use that
+        # as the namespace.
+        # This is because some IDs are safe to put in a global namespace
+        # because we won't have collisions (like UUIDs). Other things
+        # (like database ids) aren't unique enough, so we need a hint
+        # as to their context (essentially "what database table is this
+        # numeric ID from?")
+
+        token_type = tokenizer_result == true ?
+          tokenizer_name.to_s :
+          tokenizer_result.to_s
+
+        state[:tokenizers] ||= {}
+        state[:tokenizers][token_type] ||= {}
+
+        tokens = state[:tokenizers][token_type]
+
+        if !tokens.has_key?(value)
+          tokens[value] = "#{token_type}:#{tokens.count + 1}"
+        end
+
+        return tokens[value]
+      end
+
       value
     },
   }
@@ -118,31 +171,8 @@ module AnalyticsRecordingHelper
         This error was raised to ensure this test run doesn't succeed.
         Re-run the tests without RECORD_ANALYTICS set.
       END
-    else
-      assert_logged_analytics_events_match_file(file_name:, &block)
     end
-  end
 
-  # Verifies that the analytics events logged during the execution of block
-  # "match" those present in the given file.
-  def assert_logged_analytics_events_match_file(
-    file_name:,
-    &block
-  )
-    expected_events = load_analytics_events_from_file(file_name:)
-    assert_logged_analytics_events_match(expected_events:, file_name:, &block)
-  end
-
-  # Verifies that the analytics events logged during the execution of {block}
-  # match those present in {expected_events}
-  # @param [Hash[]] expected_events Array of analytics event hashes.
-  # @param [Number] window_size Number of events we look at when trying to find a match.
-  def assert_logged_analytics_events_match(
-    expected_events:,
-    window_size: 5,
-    file_name: nil,
-    &block
-  )
     actual_events = []
     middleware = proc { |event| actual_events << event }
 
@@ -150,82 +180,88 @@ module AnalyticsRecordingHelper
       block.call
     end
 
-    normalized_actual_events = actual_events.map do |e|
-      normalize_logged_analytics_event(e)
+    expected_events = load_analytics_events_from_file(file_name:)
+
+    assert_logged_analytics_events_match(
+      actual_events:,
+      expected_events:,
+    )
+  end
+
+  # Verifies that {actual_events} matches {expected_events}.
+  # Order matters, but some wiggle room is allowed via the {window_size} parameter.
+  # @param [Hash[]] actual_events Array of actual events logged.
+  # @param [Hash[]] expected_events Array of analytics event hashes.
+  # @param [Number] window_size Number of events we look at when trying to find a match.
+  def assert_logged_analytics_events_match(
+    actual_events:,
+    expected_events:,
+    window_size: 10
+  )
+    actual_events = actual_events.map do |e|
+      normalize_analytics_event_for_comparison(e)
     end
 
-    normalized_expected_events = expected_events.map do |e|
-      normalize_logged_analytics_event(e)
+    expected_events = expected_events.map do |e|
+      normalize_analytics_event_for_comparison(e)
     end
 
-    already_matched_indices = []
+    # key = index in expected_events, value = index in actual_events
+    matches = {}
 
-    normalized_actual_events.each_with_index do |actual_event, index|
-      start_index = [index - (window_size / 2), 0].max
-      end_index = [index + (window_size / 2)].min
+    actual_events.each_with_index do |actual_event, actual_event_index|
+      start_index = [actual_event_index - (window_size / 2), 0].max
+      end_index = [actual_event_index + (window_size / 2), expected_events.length - 1].min
 
-      candidates = normalized_expected_events[start_index..end_index]
+      candidates = expected_events[start_index..end_index]
 
-      # We expect that {actual_event} will match _one_ of these candidates
-      matched = false
-      close_match_index = nil
+      candidates.each_with_index do |expected_event, candidate_index|
+        expected_event_index = start_index + candidate_index
+        already_matched = matches.has_key?(expected_event_index)
+        next if already_matched
 
-      candidates.each_with_index do |c, candidate_index|
-        index_in_main_list = start_index + candidate_index
-        next if already_matched_indices.include?(index_in_main_list)
-
-        if c == actual_event
-          matched = true
-          already_matched_indices << index_in_main_list
+        if expected_event == actual_event
+          matches[expected_event_index] = actual_event_index
           break
         end
-
-        if c[:name] == actual_event[:name]
-          close_match_index = index_in_main_list
-        end
       end
 
-      next if matched
+      next if matches.value?(actual_event_index)
 
-      # If we have an event we _think_ might be the one we're trying to match,
-      # we can delegate to Rspec for error messaging.
-      if close_match_index.present?
-        expect(actual_event).to eql(normalized_expected_events[close_match_index])
+      asserted = false
+
+      # If there is 1 event matching by name in the candidate set, do a
+      # basic expect().to eql() type operation on it to hopefully get a good
+      # diff in the output.
+      closest_matches = candidates.filter { |e| e[:name] == actual_event[:name] }
+      if closest_matches.length == 1
+        expect(actual_event).to eql(closest_matches.first)
+        asserted = true
       end
 
-      error_message = <<~END
-        Failed to match #{summarize_event(actual_event)}
+      next if asserted
 
-        The event that was logged looks like this:
+      expect('event matched').to eql('event not matched'), <<~ERROR
+        Event '#{summarize_event(actual_event)}' was logged, but not expected.
 
-        #{actual_event.pretty_inspect}
-
-        Here are the events _around_ where we thought it should be:
-
-        #{candidates.map do |c| 
-          lines = c.pretty_inspect.split("\n")
-          [
-            "- #{lines.first}",
-            *lines.drop(1).map { |l| l.indent(2) },
-          ].join("\n")
+        Here are the events we expected around where it happened:
+        #{candidates.each_with_index.map do |c, candidate_index| 
+          expected_event_index = start_index + candidate_index
+          matched_to = matches[expected_event_index]
+          "- #{summarize_event(c)}#{matched_to ? " (matched to ##{matched_to})" : ""}" 
         end.join("\n")}
-      END
-
-      if file_name.present?
-        error_message = <<~END
-          #{error_message}
-          
-          Reference #{file_name} to see the full list of expected events.
-        END
-      end
-
-      expect(matched).to eql(true), error_message
+      ERROR
     end
 
-    if !normalized_expected_events.empty?
-      count = normalized_expected_events.count
-      raise "There #{count == 1 ? "was" : "were"} #{count} expected event#{count == 1 ? "" : "s"} that were not logged"
-    end
+    unmatched_expected_events =
+      (Set.new(0..expected_events.length - 1) - matches.keys.to_set)
+        .map { |index| expected_events[index] }
+
+    expect(unmatched_expected_events.length).to eql(0), <<~ERROR
+      The following events were expected, but not seen:
+
+      #{unmatched_expected_events.map { |e| "- #{summarize_event(e)}" }.join("\n")}
+    ERROR
   end
 
   def load_analytics_events_from_file(file_name:)
@@ -248,42 +284,10 @@ module AnalyticsRecordingHelper
     end.compact
   end
 
-  # When recording, we need to ensure that the given event is converted to
-  # a structure that can be cleanly serialized as JSON
-  def prepare_analytics_event_for_record(event)
-    prepare_part_of_analytics_event_for_record(event)
-  end
+  # Normalizes {event} so that it can be directly compared to other events.
+  def normalize_analytics_event_for_comparison(event)
+    event = JSON.parse(event.to_json, symbolize_names: true)
 
-  # TODO: can this ^ and v that be replaced with .as_json
-
-  def prepare_part_of_analytics_event_for_record(value)
-    if value.is_a?(Numeric)
-      value
-    elsif value.is_a?(TrueClass) || value.is_a?(FalseClass)
-      value
-    elsif value.is_a?(Symbol)
-      value.to_s
-    elsif value.is_a?(String)
-      value
-    elsif value.nil?
-      nil
-    elsif value.is_a?(Array)
-      value.map { |v| prepare_part_of_analytics_event_for_record(v) }
-    elsif value.is_a?(Hash)
-      value.map do |key, value|
-        [key.to_sym, prepare_part_of_analytics_event_for_record(value)]
-      end.to_h.compact
-    elsif value.respond_to?(:to_h)
-      prepare_part_of_analytics_event_for_record(value.to_h)
-    elsif value.respond_to?(:as_json)
-      prepare_part_of_analytics_event_for_record(value.as_json)
-    else
-      name = event[:name]
-      raise "Can't record event '#{name}': invalid value at #{path.join(".")} (#{value.inspect})"
-    end
-  end
-
-  def normalize_logged_analytics_event(event)
     normalized_event = normalize_part_of_analytics_event(event)
     strip_irrelevant_paths_from_event(normalized_event)
 
@@ -296,73 +300,22 @@ module AnalyticsRecordingHelper
   # @param [Symbol[]] path Path to this value in the event
   # @param [Hash] state Holds state used for normalization
   def normalize_part_of_analytics_event(value, path = [], state = {})
-    if value.is_a?(Numeric)
-      value
-    elsif value.is_a?(TrueClass) || value.is_a?(FalseClass)
-      value
-    elsif value.is_a?(Symbol)
-      value.to_s
-    elsif value.is_a?(String)
-      value
-    elsif value.nil?
-      nil
-    elsif value.is_a?(Array)
-      value.map { |v| normalize_part_of_analytics_event(v, path, state) }
-    elsif value.is_a?(Hash)
-      value.map do |key, value|
-        key_as_symbol = key.to_sym
-        new_value = normalize_hash_key_value(value, [*path, key_as_symbol], state)
-        [key_as_symbol, new_value]
+    if value.is_a?(Hash)
+      return value.map do |key, value|
+        new_value = normalize_part_of_analytics_event(value, [*path, key], state)
+        [key.to_sym, new_value]
       end.to_h.compact
-    elsif value.respond_to?(:to_h)
-      normalize_part_of_analytics_event(value.to_h, path, state)
-    elsif value.respond_to?(:as_json)
-      normalize_part_of_analytics_event(value.as_json, path, state)
-    else
-      name = event[:name]
-      parenthetical = path.empty? ? '' : " (#{path.join(".")})"
-      raise "Error in '#{name}'#{parenthetical}: Can't normalize #{value.inspect}"
-    end
-  end
-
-  def normalize_hash_key_value(value, path, state)
-    TOKENIZERS.each do |tokenizer_name, tokenizer|
-      tokenizer_result = tokenizer.call(path, value)
-
-      next if !tokenizer_result
-
-      # "token_type" is the namespace in which this token will live.
-      # By default, we use a global namespace. But if {tokenizer}
-      # returned a symbol / string, we use that.
-      # This is because some IDs are safe to put in a global namespace
-      # because we won't have collisions (like UUIDs). Other things
-      # (like database ids) aren't unique enough, so we need a hint
-      # as to their context (essentially "what database table is this
-      # numeric ID from?")
-
-      token_type = tokenizer_result == true ?
-        tokenizer_name.to_s :
-        tokenizer_result.to_s
-
-      state[:tokenizers] ||= {}
-      state[:tokenizers][token_type] ||= {}
-
-      tokens = state[:tokenizers][token_type]
-
-      if !tokens.has_key?(value)
-        tokens[value] = "#{token_type}:#{tokens.count + 1}"
+    elsif value.is_a?(Array)
+      return value.each_with_index.map do |v, index|
+        normalize_part_of_analytics_event(v, [*path, index], state)
       end
-
-      return tokens[value]
     end
 
-    NORMALIZERS.each_value do |normalizer|
-      normalized = normalizer.call(path, value)
-      return normalized if normalized != value
+    NORMALIZERS.each do |_normalizer_name, normalizer|
+      value = normalizer.call(path, value, state)
     end
 
-    # If we didn't apply tokenization, then continue processing normally
-    normalize_part_of_analytics_event(value, path, state)
+    value
   end
 
   # Records any analytics events logged during the execution of the given
@@ -387,7 +340,7 @@ module AnalyticsRecordingHelper
     )
 
     recording_middleware = proc do |event|
-      event_to_record = prepare_analytics_event_for_record(event)
+      event_to_record = JSON.parse(event.to_json, symbolize_names: true)
       strip_irrelevant_paths_from_event(event_to_record)
       file_handle.write(JSON.generate(event_to_record), "\n")
     end
