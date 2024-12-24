@@ -1049,6 +1049,8 @@ idv.errors.incorrect_password: Le mot de passe que vous avez saisi est incorrect
 idv.errors.pattern_mismatch.ssn: Saisissez un numéro de sécurité sociale à neuf chiffres
 idv.errors.pattern_mismatch.zipcode: Saisissez un code postal à 5 ou 9 chiffres
 idv.errors.pattern_mismatch.zipcode_five: Saisissez un code postal à 5 chiffres
+idv.errors.technical_difficulties: Nous rencontrons des difficultés techniques
+idv.errors.try_again_later: Veuillez réessayer ultérieurement.
 idv.failure.attempts_html.one: Vous avez encore <strong>un essai.</strong> Vous devrez ensuite attendre 6 heures avant de réessayer.
 idv.failure.attempts_html.other: Vous pouvez encore essayer <strong>%{count} fois de plus.</strong> Ensuite, vous devrez ensuite attendre 6 heures avant de réessayer.
 idv.failure.button.try_online: Réessayer en ligne
@@ -1075,8 +1077,6 @@ idv.failure.phone.rate_limited.option_try_again_later_no_gpo_html: Vous pourrez 
 idv.failure.phone.rate_limited.option_verify_by_mail_html: Vérifier par courrier, ce qui prend <strong>5 à 10 jours</strong>.
 idv.failure.phone.rate_limited.options_header: 'Vous pouvez :'
 idv.failure.phone.timeout: Notre demande de vérification de vos renseignements a expiré. Veuillez réessayer.
-idv.failure.phone.warning.attempts_html.one: Pour des raisons de sécurité, il vous reste <strong>une tentative</strong>.
-idv.failure.phone.warning.attempts_html.other: Pour des raisons de sécurité, il vous reste <strong>%{count} tentatives</strong>.
 idv.failure.phone.warning.gpo.button: Vérifier par courrier
 idv.failure.phone.warning.gpo.explanation: Si vous n’avez pas d’autre numéro de téléphone à essayer, vérifiez plutôt par courrier.
 idv.failure.phone.warning.gpo.heading: Vérifier par courrier
@@ -1098,6 +1098,8 @@ idv.failure.verify.exit: Quitter %{app_name}
 idv.failure.verify.fail_link_html: Obtenez de l’aide auprès de <strong>%{sp_name}</strong>
 idv.failure.verify.fail_text: pour accéder aux services.
 idv.failure.verify.heading: Nous n’avons pas pu confirmer votre identité
+idv.failure.warning.attempts_html.one: Pour des raisons de sécurité, il vous reste <strong>une tentative</strong>.
+idv.failure.warning.attempts_html.other: Pour des raisons de sécurité, il vous reste <strong>%{count} tentatives</strong>.
 idv.forgot_password.link_text: Mot de passe oublié?
 idv.forgot_password.modal_header: Êtes-vous sûr de ne pas pouvoir vous souvenir de votre mot de passe?
 idv.forgot_password.reset_password: Réinitialiser le mot de passe
