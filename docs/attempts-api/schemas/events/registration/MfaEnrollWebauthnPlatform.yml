@@ -6,5 +6,5 @@ allOf:
       success:
         type: boolean
         description: |
-          Indicates whether indicates the platform device was successfully added for MFA.
+          Indicates whether the platform device was successfully added for MFA.
 
