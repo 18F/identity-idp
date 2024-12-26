@@ -6,4 +6,4 @@ allOf:
       success:
         type: boolean
         description: |
-          Indicates whether indicates the backup codes were successfully generated
+          Indicates whether the backup codes were successfully generated
