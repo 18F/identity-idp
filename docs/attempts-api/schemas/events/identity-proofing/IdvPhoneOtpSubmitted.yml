@@ -1,0 +1,30 @@
+description: |
+  When the user submits the security code that they received on their phone to verify their phone or address during identity proofing.
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      phone_number:
+        type: string
+      failure_reason:
+        type: object
+        description: |
+          An OPTIONAL object. An associative array of attributes and errors if success is false
+        properties:
+          # these are true/false bools rather than arrays of strings.
+          # can we update this to be something like:
+          # code:
+          #   type: array
+          #   items:
+          #     type: string
+          #     enum: ['code_matches', 'code_expired']
+          code_matches:
+            type: boolean
+            description: An OPTIONAL key if the code does not match
+          code_expired:
+            type: boolean
+            description: An OPTIONAL key if the code has expired
+      success:
+        type: boolean
+        description: |
+          Indicates whether the entered code matched what was sent and is still valid.

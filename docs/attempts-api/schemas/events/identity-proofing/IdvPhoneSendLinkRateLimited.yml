@@ -1,0 +1,8 @@
+description: |
+  When the user is rate limited (5 attempts) for submitting a phone number to receive a mobile upload link too many times during identity verification. 
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      phone_number:
+        type: string

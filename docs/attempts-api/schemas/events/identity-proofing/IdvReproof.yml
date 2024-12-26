@@ -1,0 +1,5 @@
+description: |
+  This event is triggered when a user who has previously completed proofing completes identity proofing again. Note that the reproofing flow is identical to the regular proofing flow and will generate the same events as initial proofing. This is an additional event signifying that the just-completed proofing process was not the first time the user has proofed.
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
