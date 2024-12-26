@@ -1,0 +1,22 @@
+description: |
+  A user has submitted their personal key to reactivate their account.
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      failure_reason:
+        type: object
+        description: |
+          An OPTIONAL object. An associative array of attributes and errors if success is false
+        properties: 
+          personal_key:
+            type: array
+            description: Errors that explain the failure.
+            items:
+              type: string
+              enum: ['blank', 'personal_key_incorrect']
+      success:
+        type: boolean
+        description: |
+          Indicates whether the entered personal key matched and the account was reactivated successfully.
+     

@@ -1,3 +1,19 @@
 properties:
+  account-reset-account-deleted:
+    $ref: './account-recovery/AccountResetAccountDeleted.yml'
+  account-reset-cancel-request:
+    $ref: './account-recovery/AccountResetCancelRequest.yml'
+  account-reset-request-submitted:
+    $ref: './account-recovery/AccountResetRequestSubmitted.yml'
+  forgot-password-email-confirmed:
+    $ref: './account-recovery/ForgotPasswordEmailConfirmed.yml'
+  forgot-password-email-rate-limited:
+    $ref: './account-recovery/ForgotPasswordEmailRateLimited.yml'
   forgot-password-email-sent:
     $ref: './account-recovery/ForgotPasswordEmailSent.yml'
+  forgot-password-new-password-submitted:
+    $ref: './account-recovery/ForgotPasswordNewPasswordSubmitted.yml' 
+  personal-key-reactivation-submitted:
+    $ref: './account-recovery/PersonalKeyReactivationSubmitted.yml'
+  personal-key-reactivation-rate-limited:
+    $ref: './account-recovery/PersonalKeyReactivationRateLimited.yml'
