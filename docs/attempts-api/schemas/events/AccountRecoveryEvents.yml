@@ -1,0 +1,3 @@
+properties:
+  forgot-password-email-sent:
+    $ref: './account-recovery/ForgotPasswordEmailSent.yml'
