@@ -17,6 +17,14 @@ post:
       description: |-
         [Spec](https://www.rfc-editor.org/rfc/rfc8936.html#name-polling-http-response)
       content:
-        application/jwt:
+        application/json:
           schema:
-            $ref: '../schemas/DecodedJWTPayload.yml'
+            type: object
+            properties:
+              sets:
+                type: object
+                description: The key is the event JTI; the value is an encoded JWT
+                additionalProperties:
+                  type: object
+                  $ref: '../schemas/DecodedJWTPayload.yml'
+                  
