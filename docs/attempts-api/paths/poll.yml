@@ -5,8 +5,13 @@ post:
   description: |-
     [Spec](https://www.rfc-editor.org/rfc/rfc8936.html#name-polling-http-request)
   operationId: poll_events
+  security:
+    - BearerAuth: [ ]
   requestBody:
-    description: Optional request parameters
+    description: |
+      As detailed in the [RISC spec](https://www.rfc-editor.org/rfc/rfc8936.html#name-polling-http-request):
+      When initiating a poll request, the SET Recipient constructs a JSON document that consists of
+      polling request parameters and SET acknowledgement parameters in the form of JSON objects.
     required: false
     content:
       application/json:
@@ -14,8 +19,10 @@ post:
           $ref: "../schemas/PollParameters.yml"
   responses:
     200:
-      description: |-
-        [Spec](https://www.rfc-editor.org/rfc/rfc8936.html#name-polling-http-response)
+      description: |
+        As detailed in the [RISC Spec](https://www.rfc-editor.org/rfc/rfc8936.html#name-polling-http-response):
+        In response to a poll request, the SET Transmitter checks for available SETs and responds with a JSON
+        document.
       content:
         application/json:
           schema:
@@ -27,4 +34,23 @@ post:
                 additionalProperties:
                   type: object
                   $ref: '../schemas/DecodedJWTPayload.yml'
+    400:
+      description: |
+        The 400 (Bad Request) status code indicates that the server cannot or
+        will not process the request due to something that is perceived to be
+        a client error (e.g., malformed request syntax, invalid request
+        message framing, or deceptive request routing).
+    401:
+      description: |
+        The 401 (Unauthorized) status code indicates that the request has not
+        been applied because it lacks valid authentication credentials for
+        the target resource. Please ensure that the request includes a valid Bearer token.
+    403: 
+      description: |
+        The 403 (Forbidden) status code indicates that the server understood
+        the request but refuses to authorize it. Please reach out to your account manager
+        if you think this is a mistake.
+    '5XX':
+      description: Unexpected error.
+                
                   

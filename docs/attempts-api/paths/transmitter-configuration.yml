@@ -3,6 +3,8 @@ get:
     - StreamManagement
   summary: Transmitter Configuration Request (without path)
   description: "Return Transmitter Configuration information."
+  operationId: _well_known_ssf_configuration_get
+  security: [ ]
   responses:
     200:
       description: |
@@ -12,4 +14,11 @@ get:
         application/json:
           schema:
              $ref: "../schemas/TransmitterConfiguration.yml"
-  operationId: _well_known_ssf_configuration_get
+    400:
+      description: |
+        The 400 (Bad Request) status code indicates that the server cannot or
+        will not process the request due to something that is perceived to be
+        a client error (e.g., malformed request syntax, invalid request
+        message framing, or deceptive request routing).
+    "5XX":
+      description: Unexpected error.
