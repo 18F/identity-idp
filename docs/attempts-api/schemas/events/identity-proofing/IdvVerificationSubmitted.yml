@@ -1,0 +1,40 @@
+description: |
+  When the user verifies their information when identity proofing. 
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      document_state:
+        type: string
+        description: Driver's licenses document_state
+      document_number:
+        type: string
+        description: Driver's license number
+      document_issued:
+        type: string
+        description: Issuance date
+      document_expiration:
+        type: string
+        description: Driver's license expiration
+      first_name:
+        type: string
+      last_name:
+        type: string
+      date_of_birth:
+        type: string
+      address:
+        type: string
+      failure_reason:
+          type: object
+          description: |
+            An OPTIONAL object. An associative array of attributes and errors if success is false
+          properties:
+            pii:
+              type: array
+              # What is the best way of documenting all these errors? https://docs.google.com/document/d/1H7SAM8DSnbRJqKoSj4Qdzr-UvLCNMupt2zoqHLsIFe8/edit?tab=t.0#heading=h.26slvbezaoz5
+              # They won't be very readable in this document
+              # is there a way for us to make errors out of this more in line with other failure_reasons?
+      success:
+        type: boolean
+        description: |
+          Indicates whether the verification form was submitted successfully

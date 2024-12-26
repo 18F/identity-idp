@@ -3,3 +3,4 @@ allOf:
   - $ref: './events/RegistrationEvents.yml'
   - $ref: './events/SignInEvents.yml'
   - $ref: './events/AccountRecoveryEvents.yml'
+  - $ref: './events/IdentityProofingEvents.yml'

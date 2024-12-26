@@ -1,0 +1,11 @@
+description: |
+   The user has requested that a letter be sent via mail in order to verify their address.
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      resend:
+        type: boolean
+        description: |
+          False indicates that this is the initial request to be sent
+          True indicates a resend request.
