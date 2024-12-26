@@ -22,3 +22,9 @@ components:
   schemas:
     DecodedJWTPayload:
       $ref: './schemas/DecodedJWTPayload.yml'
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: string
+      description: <csp-id> <token>
