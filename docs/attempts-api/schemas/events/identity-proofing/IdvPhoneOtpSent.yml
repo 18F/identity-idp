@@ -1,0 +1,28 @@
+description: |
+  When a security code is sent to the phone number provided by the user to verify the phone number belongs to them. The user can choose to receive the code via text message/SMS or phone call. 
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      phone_number:
+        type: string
+      opt_delivery_method:
+        type: string
+        enum:
+          - sms
+          - voice
+      failure_reason:
+        type: object
+        description: |
+          An OPTIONAL object. An associative array of attributes and errors if success is false
+        properties:
+          telephony_errors:
+            type: array
+            # What is the best way of documenting all these errors? https://docs.google.com/document/d/1H7SAM8DSnbRJqKoSj4Qdzr-UvLCNMupt2zoqHLsIFe8/edit?tab=t.0#heading=h.obq86kcsheu4
+            # They won't be very readable in this document
+            description: |
+              Due to technical limitations, errors for this event will be localized into English, Spanish, or French, depending on the user’s settings, and appear in the “failure_reasons” setting that way.     
+      success:
+        type: boolean
+        description: |
+          Indicates whether the backup codes were successfully generated

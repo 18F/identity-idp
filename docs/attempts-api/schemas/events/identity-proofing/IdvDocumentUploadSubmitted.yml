@@ -1,0 +1,50 @@
+description: |
+  The document was uploaded during identity proofing and authenticated by the vendor.
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      document_state:
+        type: string
+        description: Driver's licenses document_state
+      document_number:
+        type: string
+        description: Driver's license number
+      document_issued:
+        type: string
+        description: Issuance date
+      document_expiration:
+        type: string
+        description: Driver's license expiration
+      first_name:
+        type: string
+      last_name:
+        type: string
+      date_of_birth:
+        type: string
+      address:
+        type: string
+      document_front_image_filename:
+        type: string
+        description: The ID used to retrieve this image if needed
+      document_back_image_filename: 
+        type: string
+        description: The ID used to retrieve this image if needed
+      document_image_encryption_key:
+        type: string
+        description: Randomly generated Base64-encoded key used to encrypt the image files.
+      failure_reason:
+          type: object
+          description: |
+            An OPTIONAL object. An associative array of attributes and errors if success is false
+          properties:
+            pii:
+              type: array
+              # What is the best way of documenting all these errors? https://docs.google.com/document/d/1H7SAM8DSnbRJqKoSj4Qdzr-UvLCNMupt2zoqHLsIFe8/edit?tab=t.0#heading=h.uiomae9tgtly
+              # They won't be very readable in this document
+              description: |
+                Due to technical limitations, errors for this event will be localized into English, Spanish, or French, depending on the user’s settings, and appear in the “failure_reasons” setting that way.     
+      success:
+        type: boolean
+        description: |
+          Indicates whether the backup codes were successfully generated

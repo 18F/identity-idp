@@ -1,0 +1,5 @@
+description: |
+  This event is triggered when a personal key is generated after a user has completed the identity verification process. The personal key can be used if a user forgets their password, which triggers a separate event.
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
