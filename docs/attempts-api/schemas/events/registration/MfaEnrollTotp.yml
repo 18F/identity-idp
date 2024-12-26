@@ -6,4 +6,4 @@ allOf:
       success:
         type: boolean
         description: |
-          Indicates whether indicates the entered code matched what was sent AND was not expired.
+          Indicates whether the entered code matched what was sent AND was not expired.
