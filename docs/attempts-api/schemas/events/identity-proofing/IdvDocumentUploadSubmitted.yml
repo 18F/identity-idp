@@ -24,10 +24,10 @@ allOf:
         type: string
       address:
         type: string
-      document_front_image_filename:
+      document_front_image_file_id:
         type: string
         description: The ID used to retrieve this image if needed
-      document_back_image_filename: 
+      document_back_image_file_id: 
         type: string
         description: The ID used to retrieve this image if needed
       document_image_encryption_key:

@@ -23,5 +23,4 @@ properties:
       Transaction ID, a unique identifier for the SET. This functions as the CSP transaction ID.
     example: 6454bc0b-00fc-4404-885c-7f07bef243ce
   events:
-    # $ref: './events/EventProperties.yml'
     $ref: './AllEvents.yml'

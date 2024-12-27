@@ -1,9 +1,7 @@
 get:
-  tags:
-    - StreamManagement
-  summary: Transmitter Configuration Request (without path)
-  description: "Return Transmitter Configuration information."
-  operationId: _well_known_ssf_configuration_get
+  summary: Request for transmitter configuration
+  description: Return Transmitter Configuration information.
+  operationId: _well_known_configuration_get
   security: [ ]
   responses:
     200:

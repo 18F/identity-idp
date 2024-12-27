@@ -14,8 +14,12 @@ servers:
 paths:
   /.well-known/sse-configuration:
     $ref: './paths/transmitter-configuration.yml'
-  /poll:
+  /api/attempts/poll:
     $ref: './paths/poll.yml'
+  /api/attempts/status:
+    $ref: './paths/status.yml'
+  /api/attempts/verification:
+    $ref: './paths/verification.yml'
 
 
 components:
@@ -26,5 +30,5 @@ components:
     BearerAuth:
       type: http
       scheme: bearer
-      bearerFormat: string
+      bearerFormat: csp-id JWT
       description: <csp-id> <token>
