@@ -1,6 +1,4 @@
 post:
-  tags:
-    - Transmitter
   summary: Request for queued events to be returned.
   description: |-
     [Spec](https://www.rfc-editor.org/rfc/rfc8936.html#name-polling-http-request)
@@ -52,5 +50,3 @@ post:
         if you think this is a mistake.
     '5XX':
       description: Unexpected error.
-                
-                  
