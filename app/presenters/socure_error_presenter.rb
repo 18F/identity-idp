@@ -176,7 +176,6 @@ class SocureErrorPresenter
 
   def in_person_enabled?
     IdentityConfig.store.in_person_doc_auth_button_enabled &&
-      Idv::InPersonConfig.enabled_for_issuer?(issuer) &&
-      flow_path.to_s == 'standard'
+      Idv::InPersonConfig.enabled_for_issuer?(issuer)
   end
 end

@@ -63,14 +63,15 @@ RSpec.feature 'document capture step', :js do
           expect(page).to have_current_path(fake_socure_document_capture_app_url)
           visit idv_socure_document_capture_path
           expect(page).to have_current_path(idv_socure_document_capture_path)
-          %w[
-            WAITING_FOR_USER_TO_REDIRECT,
-            APP_OPENED,
-            DOCUMENT_FRONT_UPLOADED,
-            DOCUMENT_BACK_UPLOADED,
-          ].each do |event_type|
-            socure_docv_send_webhook(docv_transaction_token: @docv_transaction_token, event_type:)
-          end
+          socure_docv_upload_documents(
+            docv_transaction_token: @docv_transaction_token,
+            webhooks: %w[
+              WAITING_FOR_USER_TO_REDIRECT,
+              APP_OPENED,
+              DOCUMENT_FRONT_UPLOADED,
+              DOCUMENT_BACK_UPLOADED,
+            ],
+          )
 
           # Go to the wait page
           visit idv_socure_document_capture_update_path
