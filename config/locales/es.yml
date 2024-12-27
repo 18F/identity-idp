@@ -81,7 +81,7 @@ account.index.verification.continue_idv: Continuar la verificación de identidad
 account.index.verification.finish_verifying_html: Termine de verificar su identidad para acceder a la <strong>%{sp_name}</strong>.
 account.index.verification.finish_verifying_no_sp: Termine el proceso de verificación de identidad para obtener acceso a todos los asociados de %{app_name}.
 account.index.verification.identity_verification: Verificación de identidad
-account.index.verification.in_person_instructions_html: Para terminar de verificar su identidad, debe acudir a una oficina de correos participante antes del <strong>%{deadline}.
+account.index.verification.in_person_instructions_html: Para terminar de verificar su identidad, debe acudir a una oficina de correos participante antes del <strong>%{deadline}</strong>.
 account.index.verification.instructions: Ingrese su código de verificación para terminar de verificar su identidad.
 account.index.verification.learn_more_link: Obtenga más información sobre la verificación de su identidad
 account.index.verification.legacy_verified_html: El <strong>%{date}</strong>, usted verificó su identidad con %{app_name} usando su identificación estatal.
