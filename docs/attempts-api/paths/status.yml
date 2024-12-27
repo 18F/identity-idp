@@ -1,0 +1,37 @@
+get:
+  summary: Request to get the status of an Event Stream
+  description: |-
+    [Spec](https://openid.net/specs/openid-sse-framework-1_0.html#reading-a-streams-status)
+
+    An Event Receiver checks the current status of an event stream by making an
+    HTTP GET request to the stream’s Status Endpoint.
+  operationId: get_status
+  security:
+    - BearerAuth: [ ]
+  responses:
+    200:
+      description: |-
+        On receiving a valid request the Event Transmitter responds with a 200
+        OK response containing a JSON object with an attribute status
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/StreamStatus.yml'
+    400:
+      description: |
+        The 400 (Bad Request) status code indicates that the server cannot or
+        will not process the request due to something that is perceived to be
+        a client error (e.g., malformed request syntax, invalid request
+        message framing, or deceptive request routing).
+    401:
+      description: |
+        The 401 (Unauthorized) status code indicates that the request has not
+        been applied because it lacks valid authentication credentials for
+        the target resource. Please ensure that the request includes a valid Bearer token.
+    403: 
+      description: |
+        The 403 (Forbidden) status code indicates that the server understood
+        the request but refuses to authorize it. Please reach out to your account manager
+        if you think this is a mistake.
+    '5XX':
+      description: Unexpected error.
