@@ -73,13 +73,13 @@ module DocumentCaptureStepHelper
   end
 
   def socure_docv_upload_documents(docv_transaction_token:)
-    [
-      'WAITING_FOR_USER_TO_REDIRECT',
-      'APP_OPENED',
-      'DOCUMENT_FRONT_UPLOADED',
-      'DOCUMENT_BACK_UPLOADED',
-      'DOCUMENTS_UPLOADED',
-      'SESSION_COMPLETE',
+    %w[
+      WAITING_FOR_USER_TO_REDIRECT
+      APP_OPENED
+      DOCUMENT_FRONT_UPLOADED
+      DOCUMENT_BACK_UPLOADED
+      DOCUMENTS_UPLOADED
+      SESSION_COMPLETE
     ].each { |event_type| socure_docv_send_webhook(docv_transaction_token:, event_type:) }
   end
 

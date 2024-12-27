@@ -30,7 +30,6 @@ module Idv
           action: :timeout,
           next_steps: [FlowPolicy::FINAL],
           preconditions: ->(idv_session:, user:) do
-            # idv_session.socure_docv_wait_polling_started_at.present?
             true
           end,
           undo_step: ->(idv_session:, user:) {},
