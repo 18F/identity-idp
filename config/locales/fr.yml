@@ -1223,7 +1223,7 @@ image_description.warning: Panneau d’avertissement jaune
 in_person_proofing.body.barcode.cancel_link_text: Annuler votre code-barres
 in_person_proofing.body.barcode.close_window: Vous pouvez maintenant fermer cette fenêtre
 in_person_proofing.body.barcode.deadline: Vous devez vous rendre dans un bureau de poste participant avant le %{deadline}
-in_person_proofing.body.barcode.deadline_restart: Si vous y allez après cette date limite, vos informations ne seront pas sauvegardées et vous devrez recommencer le processus.
+in_person_proofing.body.barcode.deadline_restart: Si vous laissez passer la date limite, votre code-barres ne fonctionnera pas. Vous devrez recommencer toute la procédure.
 in_person_proofing.body.barcode.eipp_tag: Code-barres pilote amélioré de la GSA
 in_person_proofing.body.barcode.eipp_what_to_bring: 'Selon la pièce d’identité dont vous disposez, il pourra vous être demandé de présenter des documents complémentaires. Étudiez attentivement les options suivantes:'
 in_person_proofing.body.barcode.email_sent: Nous avons envoyé votre code-barre et les informations ci-dessous à l’adresse e-mail que vous avez utilisée pour vous connecter
@@ -1316,7 +1316,7 @@ in_person_proofing.form.state_id.state_id_number_hint_spaces: des espaces
 in_person_proofing.form.state_id.state_id_number_texas_hint: Il s’agit du numéro à huit chiffres figurant sur votre pièce d’identité. Dans ce champ, ne saisissez que des chiffres.
 in_person_proofing.form.state_id.zipcode: Code postal
 in_person_proofing.headings.address: Saisissez votre adresse résidentielle actuelle
-in_person_proofing.headings.barcode: Présentez ce code-barres et votre pièce d’identité à un bureau de poste pour terminer la vérification de votre identité
+in_person_proofing.headings.barcode: Présentez ce code-barres et votre pièce d’identité l’État à un bureau de poste pour terminer la vérification de votre identité
 in_person_proofing.headings.barcode_eipp: Présenter ce code-barres et les documents complémentaires à un bureau de poste pour terminer la vérification de votre identité
 in_person_proofing.headings.barcode_what_to_bring: À apporter au bureau de poste
 in_person_proofing.headings.cta: Essayez de confirmer votre identité en personne
