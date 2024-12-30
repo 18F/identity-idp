@@ -249,6 +249,9 @@ class UserMailer < ActionMailer::Base
   end
 
   def idv_please_call(**)
+    attachments.inline['phone_icon.png'] =
+      Rails.root.join('app/assets/images/email/phone_icon.png').read
+
     with_user_locale(user) do
       @hide_title = true
 

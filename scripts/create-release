@@ -6,10 +6,10 @@ DEPLOY_BRANCH=stages/prod
 DRY_RUN=${DRY_RUN:-0}
 PR_JSON_FILE=${PR_JSON_FILE:-tmp/.pr.json}
 CHANGELOG_FILE=${CHANGELOG_FILE:-tmp/.changelog.md}
-GH_REPO=${GH_REPO:-18f/identity-idp}
+GH_REPO=${GH_REPO:-18F/identity-idp}
 
 USAGE="
-${0} [PULL_REQUEST_NUMBER]
+${0} [PULL_REQUEST_URL]
 
 Creates a new release based on the given PR having been merged.
 "
@@ -20,6 +20,9 @@ if [ $# -eq 0 ]; then
 fi
 
 PR="$1"; shift
+
+# Allow just pasting the PR URL
+PR=$(echo "$PR" | sed -E "s#https://github.com/${GH_REPO}/pull/([0-9]+).*#\1#i")
 
 if ! which gh > /dev/null 2>&1; then
     echo "Github CLI (gh) is not installed. You can install it with: brew install gh"

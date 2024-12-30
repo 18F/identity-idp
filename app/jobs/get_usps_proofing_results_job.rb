@@ -610,7 +610,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   def send_please_call_email(enrollment:, visited_location_name:)
     enrollment.user.confirmed_email_addresses.each do |email_address|
       # rubocop:disable IdentityIdp/MailLaterLinter
-      UserMailer.with(user: enrollment.user, email_address: email_address).in_person_please_call(
+      UserMailer.with(user: enrollment.user, email_address: email_address).idv_please_call(
         enrollment: enrollment,
         visited_location_name: visited_location_name,
       ).deliver_later(**notification_delivery_params(enrollment))
