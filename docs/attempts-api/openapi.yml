@@ -12,7 +12,7 @@ info:
 servers: 
   - url: https://secure.login.gov 
 paths:
-  /.well-known/sse-configuration:
+  /.well-known/ssf-configuration:
     $ref: './paths/transmitter-configuration.yml'
   /api/attempts/poll:
     $ref: './paths/poll.yml'

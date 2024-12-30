@@ -17,7 +17,7 @@ properties:
   jwks_uri:
     type: string
     description: |
-      URL of the Transmitter's [JSON Web Key Set](https://openid.net/specs/openid-sse-framework-1_0.html#RFC7517)
+      URL of the Transmitter's [JSON Web Key Set](https://openid.net/specs/openid-sharedsignals-framework-1_0-ID3.html#section-6.1-10)
       document. This contains the signing key(s) the Receiver uses to validate signatures from the Transmitter.
     format: uri
     example: https://secure.login.gov/api/openid_connect/certs
