@@ -22,9 +22,9 @@ RSpec.describe Proofing::Aamva::Request::AuthenticationTokenRequest do
 
   before do
     allow(Time).to receive(:now).and_return(Time.utc(2017))
-    allow(SecureRandom).to receive(:uuid).
-      at_least(:once).
-      and_return('12345678-abcd-efgh-ijkl-1234567890ab')
+    allow(SecureRandom).to receive(:uuid)
+      .at_least(:once)
+      .and_return('12345678-abcd-efgh-ijkl-1234567890ab')
   end
 
   describe '#body' do
@@ -55,8 +55,8 @@ RSpec.describe Proofing::Aamva::Request::AuthenticationTokenRequest do
   describe '#send' do
     context 'when the request is successful' do
       it 'returns a response object' do
-        stub_request(:post, config.auth_url).
-          to_return(body: AamvaFixtures.authentication_token_response, status: 200)
+        stub_request(:post, config.auth_url)
+          .to_return(body: AamvaFixtures.authentication_token_response, status: 200)
 
         result = subject.send
 
@@ -67,8 +67,8 @@ RSpec.describe Proofing::Aamva::Request::AuthenticationTokenRequest do
     # rubocop:disable Layout/LineLength
     context 'when the request times out' do
       it 'raises an error' do
-        stub_request(:post, config.auth_url).
-          to_timeout
+        stub_request(:post, config.auth_url)
+          .to_timeout
 
         expect { subject.send }.to raise_error(
           ::Proofing::TimeoutError,
@@ -80,8 +80,8 @@ RSpec.describe Proofing::Aamva::Request::AuthenticationTokenRequest do
 
     context 'when the connection fails' do
       it 'raises an error' do
-        stub_request(:post, config.auth_url).
-          to_raise(Faraday::ConnectionFailed.new('error'))
+        stub_request(:post, config.auth_url)
+          .to_raise(Faraday::ConnectionFailed.new('error'))
 
         expect { subject.send }.to raise_error(
           ::Proofing::TimeoutError,

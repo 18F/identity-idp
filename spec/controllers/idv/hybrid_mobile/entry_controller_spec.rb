@@ -73,12 +73,12 @@ RSpec.describe Idv::HybridMobile::EntryController do
           acr_values: acr_values,
         ).result
         allow(controller).to receive(:session).and_return(session)
-        allow(controller).to receive(:resolved_authn_context_result).
-          and_return(resolved_authn_context)
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_switching_enabled).
-          and_return(vendor_switching_enabled)
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_lexis_nexis_percent).
-          and_return(lexis_nexis_percent)
+        allow(controller).to receive(:resolved_authn_context_result)
+          .and_return(resolved_authn_context)
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_switching_enabled)
+          .and_return(vendor_switching_enabled)
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_lexis_nexis_percent)
+          .and_return(lexis_nexis_percent)
         get :show, params: { 'document-capture-session': session_uuid }
       end
 
@@ -120,8 +120,8 @@ RSpec.describe Idv::HybridMobile::EntryController do
           let(:lexis_nexis_percent) { 0 }
 
           before do
-            allow(IdentityConfig.store).to receive(:doc_auth_vendor_lexis_nexis_percent).
-              and_return(lexis_nexis_percent)
+            allow(IdentityConfig.store).to receive(:doc_auth_vendor_lexis_nexis_percent)
+              .and_return(lexis_nexis_percent)
           end
 
           it 'causes an 404 error' do

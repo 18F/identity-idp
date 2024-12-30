@@ -16,8 +16,8 @@ module Idv
     def shared_update
       return if idv_session.verify_info_step_document_capture_session_uuid
       analytics.idv_doc_auth_verify_submitted(**analytics_arguments)
-      Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
-        call('verify', :update, true)
+      Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer])
+        .call('verify', :update, true)
 
       ssn_rate_limiter.increment!
 
@@ -233,6 +233,7 @@ module Idv
       if form_response.success?
         save_threatmetrix_status(form_response)
         save_source_check_vendor(form_response)
+        save_resolution_vendors(form_response)
         move_applicant_to_idv_session
         idv_session.mark_verify_info_step_complete!
 
@@ -245,6 +246,24 @@ module Idv
     def next_step_url
       return idv_request_letter_url if FeatureManagement.idv_by_mail_only?
       idv_phone_url
+    end
+
+    def save_resolution_vendors(form_response)
+      idv_session.resolution_vendor = form_response.extra.dig(
+        :proofing_results,
+        :context,
+        :stages,
+        :resolution,
+        :vendor_name,
+      )
+
+      idv_session.residential_resolution_vendor = form_response.extra.dig(
+        :proofing_results,
+        :context,
+        :stages,
+        :residential_address,
+        :vendor_name,
+      )
     end
 
     def save_threatmetrix_status(form_response)

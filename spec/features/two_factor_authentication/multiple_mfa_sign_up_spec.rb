@@ -21,8 +21,8 @@ RSpec.feature 'Multi Two Factor Authentication' do
 
       click_continue
 
-      expect(page).
-        to have_content t('headings.add_info.phone')
+      expect(page)
+        .to have_content t('headings.add_info.phone')
 
       expect(page).to have_current_path phone_setup_path
 
@@ -53,8 +53,8 @@ RSpec.feature 'Multi Two Factor Authentication' do
 
       click_continue
 
-      expect(page).
-        to have_content t('headings.add_info.phone')
+      expect(page)
+        .to have_content t('headings.add_info.phone')
 
       expect(page).to have_current_path phone_setup_path
 
@@ -126,8 +126,8 @@ RSpec.feature 'Multi Two Factor Authentication' do
 
       click_continue
 
-      expect(page).
-        to have_content t('headings.add_info.phone')
+      expect(page)
+        .to have_content t('headings.add_info.phone')
 
       click_continue
 
@@ -191,9 +191,9 @@ RSpec.feature 'Multi Two Factor Authentication' do
 
       context 'with platform authenticator as the first mfa' do
         it 'does not allow the user to skip selecting second mfa' do
-          allow(IdentityConfig.store).
-            to receive(:show_unsupported_passkey_platform_authentication_setup).
-            and_return(true)
+          allow(IdentityConfig.store)
+            .to receive(:show_unsupported_passkey_platform_authentication_setup)
+            .and_return(true)
           mock_webauthn_setup_challenge
           user = sign_up_and_set_password
           user.password = Features::SessionHelper::VALID_PASSWORD
@@ -258,16 +258,16 @@ RSpec.feature 'Multi Two Factor Authentication' do
 
     it 'returns to setup mfa page when user clicks Choose another option' do
       click_on(t('two_factor_authentication.choose_another_option'))
-      expect(current_path).to eq authentication_methods_setup_path
+      expect(page).to have_current_path authentication_methods_setup_path
       expect(mfa.backup_code_configurations).to be_empty
     end
   end
 
   describe 'adding a phone as a second mfa' do
     it 'at setup, phone as second MFA show a cancel link that returns to mfa setup' do
-      allow(IdentityConfig.store).
-        to receive(:show_unsupported_passkey_platform_authentication_setup).
-        and_return(true)
+      allow(IdentityConfig.store)
+        .to receive(:show_unsupported_passkey_platform_authentication_setup)
+        .and_return(true)
 
       sign_up_and_set_password
       mock_webauthn_setup_challenge
@@ -294,21 +294,21 @@ RSpec.feature 'Multi Two Factor Authentication' do
 
   context 'User with phishing resistant service provider' do
     it 'should show phishing option first then all mfa options for second mfa' do
-      allow(IdentityConfig.store).
-        to receive(:show_unsupported_passkey_platform_authentication_setup).
-        and_return(true)
+      allow(IdentityConfig.store)
+        .to receive(:show_unsupported_passkey_platform_authentication_setup)
+        .and_return(true)
 
       visit_idp_from_ial1_oidc_sp_requesting_phishing_resistant(prompt: 'select_account')
       sign_up_and_set_password
       mock_webauthn_setup_challenge
-      expect(page).
-        to have_content(t('two_factor_authentication.two_factor_choice_options.webauthn'))
-      expect(page).
-        to have_content(t('two_factor_authentication.two_factor_choice_options.piv_cac'))
-      expect(page).
-        to_not have_content(t('two_factor_authentication.two_factor_choice_options.auth_app'))
-      expect(page).
-        to_not have_content(t('two_factor_authentication.two_factor_choice_options.phone'))
+      expect(page)
+        .to have_content(t('two_factor_authentication.two_factor_choice_options.webauthn'))
+      expect(page)
+        .to have_content(t('two_factor_authentication.two_factor_choice_options.piv_cac'))
+      expect(page)
+        .to_not have_content(t('two_factor_authentication.two_factor_choice_options.auth_app'))
+      expect(page)
+        .to_not have_content(t('two_factor_authentication.two_factor_choice_options.phone'))
       select_2fa_option('webauthn_platform', visible: :all)
 
       click_continue
@@ -316,14 +316,14 @@ RSpec.feature 'Multi Two Factor Authentication' do
       mock_press_button_on_hardware_key_on_setup
 
       click_link t('mfa.add')
-      expect(page).
-        to have_content(t('two_factor_authentication.two_factor_choice_options.webauthn'))
-      expect(page).
-        to have_content(t('two_factor_authentication.two_factor_choice_options.piv_cac'))
-      expect(page).
-        to have_content(t('two_factor_authentication.two_factor_choice_options.auth_app'))
-      expect(page).
-        to have_content(t('two_factor_authentication.two_factor_choice_options.phone'))
+      expect(page)
+        .to have_content(t('two_factor_authentication.two_factor_choice_options.webauthn'))
+      expect(page)
+        .to have_content(t('two_factor_authentication.two_factor_choice_options.piv_cac'))
+      expect(page)
+        .to have_content(t('two_factor_authentication.two_factor_choice_options.auth_app'))
+      expect(page)
+        .to have_content(t('two_factor_authentication.two_factor_choice_options.phone'))
     end
   end
 

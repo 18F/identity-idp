@@ -248,6 +248,23 @@ class UserMailer < ActionMailer::Base
     end
   end
 
+  def idv_please_call(**)
+    attachments.inline['phone_icon.png'] =
+      Rails.root.join('app/assets/images/email/phone_icon.png').read
+
+    with_user_locale(user) do
+      @hide_title = true
+
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.idv_please_call.subject', app_name: APP_NAME),
+        template_name: 'idv_please_call',
+      )
+    end
+  end
+
+  alias_method :in_person_please_call, :idv_please_call
+
   def in_person_completion_survey
     with_user_locale(user) do
       @header = t('user_mailer.in_person_completion_survey.header')
@@ -369,21 +386,6 @@ class UserMailer < ActionMailer::Base
       mail(
         to: email_address.email,
         subject: t('user_mailer.in_person_failed_suspected_fraud.subject'),
-      )
-    end
-  end
-
-  def in_person_please_call(enrollment:, visited_location_name: nil)
-    with_user_locale(user) do
-      @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
-        enrollment: enrollment,
-        url_options: url_options,
-        visited_location_name: visited_location_name,
-      )
-      @hide_title = true
-      mail(
-        to: email_address.email,
-        subject: t('user_mailer.in_person_please_call.subject', app_name: APP_NAME),
       )
     end
   end

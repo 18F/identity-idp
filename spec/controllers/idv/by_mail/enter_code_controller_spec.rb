@@ -15,8 +15,8 @@ RSpec.describe Idv::ByMail::EnterCodeController do
     allow(Pii::Cacher).to receive(:new).and_return(pii_cacher)
     allow(pii_cacher).to receive(:fetch).and_call_original
     allow(UserAlerts::AlertUserAboutAccountVerified).to receive(:call)
-    allow(IdentityConfig.store).to receive(:proofing_device_profiling).
-      and_return(threatmetrix_enabled ? :enabled : :disabled)
+    allow(IdentityConfig.store).to receive(:proofing_device_profiling)
+      .and_return(threatmetrix_enabled ? :enabled : :disabled)
     allow(IdentityConfig.store).to receive(:enable_usps_verification).and_return(gpo_enabled)
   end
 
@@ -206,8 +206,8 @@ RSpec.describe Idv::ByMail::EnterCodeController do
           letter_count: 1,
           submit_attempts: 1,
         )
-        event_count = user.events.where(event_type: :account_verified, ip: '0.0.0.0').
-          where(disavowal_token_fingerprint: nil).count
+        event_count = user.events.where(event_type: :account_verified, ip: '0.0.0.0')
+          .where(disavowal_token_fingerprint: nil).count
         expect(event_count).to eq 1
         expect(response).to redirect_to(idv_personal_key_url)
       end
@@ -232,8 +232,8 @@ RSpec.describe Idv::ByMail::EnterCodeController do
 
         before do
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-          allow(controller).to receive(:pii).
-            and_return(user.pending_profile.decrypt_pii(user.password).to_h)
+          allow(controller).to receive(:pii)
+            .and_return(user.pending_profile.decrypt_pii(user.password).to_h)
         end
 
         it 'redirects to personal key page' do
@@ -280,10 +280,18 @@ RSpec.describe Idv::ByMail::EnterCodeController do
               letter_count: 1,
               submit_attempts: 1,
             )
-            event_count = user.events.where(event_type: :account_verified, ip: '0.0.0.0').
-              where(disavowal_token_fingerprint: nil).count
+            event_count = user.events.where(event_type: :account_verified, ip: '0.0.0.0')
+              .where(disavowal_token_fingerprint: nil).count
             expect(event_count).to eq 1
             expect(response).to redirect_to(idv_personal_key_url)
+          end
+
+          it 'does not send the "Please Call" email' do
+            action
+            expect_email_not_delivered(
+              to: user.confirmed_email_addresses.first.email,
+              subject: t('user_mailer.idv_please_call.subject', app_name: APP_NAME),
+            )
           end
         end
       end
@@ -322,6 +330,14 @@ RSpec.describe Idv::ByMail::EnterCodeController do
             action
 
             expect(UserAlerts::AlertUserAboutAccountVerified).not_to have_received(:call)
+          end
+
+          it 'sends the "Please Call" email' do
+            action
+            expect_delivered_email(
+              to: user.confirmed_email_addresses.first.email,
+              subject: t('user_mailer.idv_please_call.subject', app_name: APP_NAME),
+            )
           end
         end
 
@@ -386,8 +402,8 @@ RSpec.describe Idv::ByMail::EnterCodeController do
       let(:max_attempts) { 2 }
 
       before do
-        allow(IdentityConfig.store).to receive(:verify_gpo_key_max_attempts).
-          and_return(max_attempts)
+        allow(IdentityConfig.store).to receive(:verify_gpo_key_max_attempts)
+          .and_return(max_attempts)
         (max_attempts - 1).times do |_i|
           post(:create, params: { gpo_verify_form: { otp: bad_otp } })
         end
@@ -430,12 +446,12 @@ RSpec.describe Idv::ByMail::EnterCodeController do
           post(:create, params: { gpo_verify_form: { otp: good_otp } })
 
           failed_gpo_submission_events =
-            @analytics.events['IdV: enter verify by mail code submitted'].
-              reject { |event_attributes| event_attributes[:errors].empty? }
+            @analytics.events['IdV: enter verify by mail code submitted']
+              .reject { |event_attributes| event_attributes[:errors].empty? }
 
           successful_gpo_submission_events =
-            @analytics.events['IdV: enter verify by mail code submitted'].
-              select { |event_attributes| event_attributes[:errors].empty? }
+            @analytics.events['IdV: enter verify by mail code submitted']
+              .select { |event_attributes| event_attributes[:errors].empty? }
 
           expect(failed_gpo_submission_events.count).to eq(max_attempts - 1)
           expect(successful_gpo_submission_events.count).to eq(1)

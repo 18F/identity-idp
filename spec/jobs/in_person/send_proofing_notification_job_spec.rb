@@ -50,10 +50,10 @@ RSpec.describe InPerson::SendProofingNotificationJob do
   before do
     ActiveJob::Base.queue_adapter = :test
     allow(job).to receive(:analytics).and_return(analytics)
-    allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
-      and_return(in_person_proofing_enabled)
-    allow(IdentityConfig.store).to receive(:in_person_send_proofing_notifications_enabled).
-      and_return(in_person_send_proofing_notifications_enabled)
+    allow(IdentityConfig.store).to receive(:in_person_proofing_enabled)
+      .and_return(in_person_proofing_enabled)
+    allow(IdentityConfig.store).to receive(:in_person_send_proofing_notifications_enabled)
+      .and_return(in_person_send_proofing_notifications_enabled)
   end
 
   describe '#perform' do
@@ -155,8 +155,8 @@ RSpec.describe InPerson::SendProofingNotificationJob do
 
           before do
             allow(Telephony).to receive(:send_notification).and_return(sms_success_response)
-            allow(Idv::InPerson::EnrollmentCodeFormatter).to receive(:format).
-              and_return(formatted_string)
+            allow(Idv::InPerson::EnrollmentCodeFormatter).to receive(:format)
+              .and_return(formatted_string)
           end
 
           it 'handles English language preference' do
@@ -164,10 +164,10 @@ RSpec.describe InPerson::SendProofingNotificationJob do
             passed_enrollment.update!(proofed_at: Time.zone.now)
             formatted_date = I18n.l(proofed_date, format: :sms_date, locale: 'en')
 
-            expect(Telephony).
-              to(
-                receive(:send_notification).
-                  with(
+            expect(Telephony)
+              .to(
+                receive(:send_notification)
+                  .with(
                     to: phone_number,
                     message: "Login.gov: You visited the Post Office on #{formatted_date}." \
                       " Check email for your result." \
@@ -185,10 +185,10 @@ RSpec.describe InPerson::SendProofingNotificationJob do
             passed_enrollment.update!(proofed_at: Time.zone.now)
             formatted_date = I18n.l(proofed_date, format: :sms_date, locale: 'fr')
 
-            expect(Telephony).
-              to(
-                receive(:send_notification).
-                  with(
+            expect(Telephony)
+              .to(
+                receive(:send_notification)
+                  .with(
                     to: phone_number,
                     message: "Login.gov : Vous avez visité le bureau de poste le " \
                     "#{formatted_date}. Vérifiez votre e-mail pour obtenir votre résultat. Ce" \
@@ -206,10 +206,10 @@ RSpec.describe InPerson::SendProofingNotificationJob do
             passed_enrollment.update!(proofed_at: Time.zone.now)
             formatted_date = I18n.l(proofed_date, format: :sms_date, locale: 'es')
 
-            expect(Telephony).
-              to(
-                receive(:send_notification).
-                  with(
+            expect(Telephony)
+              .to(
+                receive(:send_notification)
+                  .with(
                     to: phone_number,
                     message: "Login.gov: Usted acudió a la oficina de correos el " \
                       "#{formatted_date}. Revise el resultado en su correo electrónico. " \
@@ -248,9 +248,9 @@ RSpec.describe InPerson::SendProofingNotificationJob do
 
       context 'when an exception is raised trying to find the enrollment' do
         it 'logs the exception details' do
-          allow(InPersonEnrollment).
-            to receive(:find_by).
-            and_raise(ActiveRecord::DatabaseConnectionError)
+          allow(InPersonEnrollment)
+            .to receive(:find_by)
+            .and_raise(ActiveRecord::DatabaseConnectionError)
 
           job.perform(passed_enrollment.id)
 
@@ -267,10 +267,10 @@ RSpec.describe InPerson::SendProofingNotificationJob do
         let(:exception_message) { 'SMS unsupported' }
 
         it 'logs the exception details' do
-          allow(Telephony).
-            to(
-              receive(:send_notification).
-              and_raise(Telephony::SmsUnsupportedError.new(exception_message)),
+          allow(Telephony)
+            .to(
+              receive(:send_notification)
+              .and_raise(Telephony::SmsUnsupportedError.new(exception_message)),
             )
 
           job.perform(passed_enrollment.id)

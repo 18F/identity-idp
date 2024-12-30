@@ -27,7 +27,9 @@ RSpec.feature 'SP expiration while signed in' do
     travel_to(5.seconds.from_now) do
       visit_idp_from_sp_with_ial1_aal2(:oidc)
 
-      expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
+      expect(page).to have_current_path(
+        login_two_factor_path(otp_delivery_preference: :sms),
+      )
       expect(page).to have_content(t('two_factor_authentication.header_text'))
 
       fill_in_code_with_last_phone_otp

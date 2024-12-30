@@ -17,8 +17,8 @@ RSpec.describe Idv::PhoneConfirmationOtpVerificationForm do
   let(:max_attempts) { 2 }
 
   before do
-    allow(IdentityConfig.store).to receive(:login_otp_confirmation_max_attempts).
-      and_return(max_attempts)
+    allow(IdentityConfig.store).to receive(:login_otp_confirmation_max_attempts)
+      .and_return(max_attempts)
   end
 
   describe '#submit' do

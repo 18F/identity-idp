@@ -329,7 +329,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
         warning_link_text = t('doc_auth.headings.capture_scan_warning_link')
         click_link warning_link_text
 
-        expect(current_path).to eq(idv_hybrid_handoff_path)
+        expect(page).to have_current_path(idv_hybrid_handoff_path, ignore_query: true)
         clear_and_fill_in(:doc_auth_phone, phone_number)
         click_send_link
       end
@@ -387,7 +387,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
         warning_link_text = t('doc_auth.headings.capture_scan_warning_link')
         click_link warning_link_text
 
-        expect(current_path).to eq(idv_hybrid_handoff_path)
+        expect(page).to have_current_path(idv_hybrid_handoff_path, ignore_query: true)
         clear_and_fill_in(:doc_auth_phone, phone_number)
         click_send_link
       end

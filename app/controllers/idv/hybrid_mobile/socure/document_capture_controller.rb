@@ -17,8 +17,13 @@ module Idv
         before_action :fetch_test_verification_data, only: [:update]
 
         def show
-          Funnel::DocAuth::RegisterStep.new(document_capture_user.id, sp_session[:issuer]).
-            call('hybrid_mobile_socure_document_capture', :view, true)
+          Funnel::DocAuth::RegisterStep.new(document_capture_user.id, sp_session[:issuer])
+            .call('hybrid_mobile_socure_document_capture', :view, true)
+
+          if document_capture_session.socure_docv_capture_app_url.present?
+            @url = document_capture_session.socure_docv_capture_app_url
+            return
+          end
 
           # document request
           document_request = DocAuth::Socure::Requests::DocumentRequest.new(
@@ -40,9 +45,6 @@ module Idv
             return
           end
 
-          document_capture_session = DocumentCaptureSession.find_by(
-            uuid: document_capture_session_uuid,
-          )
           document_capture_session.socure_docv_transaction_token = document_response.dig(
             :data,
             :docvTransactionToken,
@@ -73,6 +75,10 @@ module Idv
           end
         end
 
+        def errors
+          @presenter = socure_errors_presenter(handle_stored_result)
+        end
+
         private
 
         def socure_errors_presenter(result)
@@ -80,7 +86,8 @@ module Idv
             error_code: error_code_for(result),
             remaining_attempts:,
             sp_name: decorated_sp_session&.sp_name || APP_NAME,
-            hybrid_mobile: true,
+            issuer: decorated_sp_session&.sp_issuer,
+            flow_path: :hybrid,
           )
         end
 

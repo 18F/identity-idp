@@ -99,8 +99,8 @@ RSpec.shared_examples 'signing in as IAL2 with personal key' do |sp|
     fill_in_credentials_and_submit(user.email, user.password)
     click_link t('two_factor_authentication.login_options_link_text')
 
-    expect(page).
-      to_not have_selector("label[for='two_factor_options_form_selection_ personal_key']")
+    expect(page)
+      .to_not have_selector("label[for='two_factor_options_form_selection_ personal_key']")
   end
 end
 
@@ -164,7 +164,7 @@ RSpec.shared_examples 'signing in as IAL2 after resetting password' do |sp|
     click_submit_default
     click_submit_default if current_path == complete_saml_path
 
-    expect(current_path).to eq reactivate_account_path
+    expect(page).to have_current_path reactivate_account_path
 
     reactivate_profile(new_password, user.personal_key)
 
@@ -196,8 +196,8 @@ RSpec.shared_examples 'signing in with wrong credentials' do |sp|
       fill_in_credentials_and_submit('test@test.com', 'foo')
 
       link_url = new_user_password_url(locale: 'es', request_id: sp_request_id)
-      expect(page).
-        to have_link t('devise.failure.not_found_in_database_link_text', href: link_url)
+      expect(page)
+        .to have_link t('devise.failure.not_found_in_database_link_text', href: link_url)
     end
   end
 
@@ -211,8 +211,8 @@ RSpec.shared_examples 'signing in with wrong credentials' do |sp|
       fill_in_credentials_and_submit(user.email, 'password')
 
       link_url = new_user_password_url(locale: 'es', request_id: sp_request_id)
-      expect(page).
-        to have_link t('devise.failure.invalid_link_text', href: link_url)
+      expect(page)
+        .to have_link t('devise.failure.invalid_link_text', href: link_url)
     end
   end
 end
@@ -222,10 +222,10 @@ RSpec.shared_examples 'signing in as proofed account with broken personal key' d
   let(:window_end) { 1.day.ago }
 
   before do
-    allow(IdentityConfig.store).to receive(:broken_personal_key_window_start).
-      and_return(window_start)
-    allow(IdentityConfig.store).to receive(:broken_personal_key_window_finish).
-      and_return(window_end)
+    allow(IdentityConfig.store).to receive(:broken_personal_key_window_start)
+      .and_return(window_start)
+    allow(IdentityConfig.store).to receive(:broken_personal_key_window_finish)
+      .and_return(window_end)
   end
 
   def user_with_broken_personal_key(scenario)
@@ -322,8 +322,8 @@ RSpec.shared_examples 'logs reCAPTCHA event and redirects appropriately' do |suc
 
     asserted_expected_user = false
     fake_analytics = FakeAnalytics.new
-    allow_any_instance_of(ApplicationController).to receive(:analytics).
-      and_wrap_original do |original|
+    allow_any_instance_of(ApplicationController).to receive(:analytics)
+      .and_wrap_original do |original|
         if original.receiver.instance_of?(Users::SessionsController) &&
            original.receiver.action_name == 'create'
           expect(original.call.user).to eq(user)
@@ -378,9 +378,9 @@ RSpec.shared_examples 'logs reCAPTCHA event and redirects appropriately' do |suc
       ),
     )
     if successful_sign_in
-      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+      expect(page).to have_current_path login_two_factor_path(otp_delivery_preference: 'sms')
     else
-      expect(current_path).to eq sign_in_security_check_failed_path
+      expect(page).to have_current_path sign_in_security_check_failed_path
     end
   end
 end

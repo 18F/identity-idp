@@ -23,8 +23,8 @@ RSpec.describe VendorOutageController do
     context 'gpo letter available' do
       before do
         stub_sign_in
-        allow(controller.gpo_verify_by_mail_policy).to receive(:send_letter_available?).
-          and_return(true)
+        allow(controller.gpo_verify_by_mail_policy).to receive(:send_letter_available?)
+          .and_return(true)
       end
 
       it 'sets show_gpo_option as true' do

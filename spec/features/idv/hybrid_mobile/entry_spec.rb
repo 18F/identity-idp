@@ -43,8 +43,8 @@ RSpec.feature 'mobile hybrid flow entry', :js do
 
     context 'when socure is the doc auth vendor' do
       before do
-        allow(DocAuthRouter).to receive(:doc_auth_vendor_for_bucket).
-          and_return(Idp::Constants::Vendors::SOCURE)
+        allow(DocAuthRouter).to receive(:doc_auth_vendor_for_bucket)
+          .and_return(Idp::Constants::Vendors::SOCURE)
         stub_docv_document_request
       end
 

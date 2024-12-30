@@ -15,14 +15,14 @@ RSpec.feature 'PIV/CAC Management' do
       visit account_two_factor_authentication_path
       click_link t('account.index.piv_cac_add'), href: setup_piv_cac_url
 
-      expect(page.response_headers['Content-Security-Policy'].split(';').map(&:strip)).
-        to(include("form-action https://*.pivcac.test.example.com 'self'"))
+      expect(page.response_headers['Content-Security-Policy'].split(';').map(&:strip))
+        .to(include("form-action https://*.pivcac.test.example.com 'self'"))
 
       fill_in t('instructions.mfa.piv_cac.step_1'), with: 'Card'
       click_on t('forms.piv_cac_setup.submit')
       follow_piv_cac_redirect
 
-      expect(current_path).to eq account_path
+      expect(page).to have_current_path account_path
       visit account_two_factor_authentication_path
       user.reload
       expect(page).to have_link(href: edit_piv_cac_path(id: user.piv_cac_configurations.first.id))
@@ -47,7 +47,7 @@ RSpec.feature 'PIV/CAC Management' do
       expect(page).to_not have_link(t('account.index.piv_cac_add'), href: setup_piv_cac_url)
 
       visit setup_piv_cac_path
-      expect(current_path).to eq account_two_factor_authentication_path
+      expect(page).to have_current_path account_two_factor_authentication_path
     end
 
     scenario 'disallows association of a piv/cac with the same name' do
@@ -61,7 +61,7 @@ RSpec.feature 'PIV/CAC Management' do
       click_on t('forms.piv_cac_setup.submit')
       follow_piv_cac_redirect
 
-      expect(current_path).to eq account_path
+      expect(page).to have_current_path account_path
 
       visit account_two_factor_authentication_path
       click_link t('account.index.piv_cac_add'), href: setup_piv_cac_url
@@ -83,7 +83,7 @@ RSpec.feature 'PIV/CAC Management' do
       click_on t('forms.piv_cac_setup.submit')
       follow_piv_cac_redirect
 
-      expect(current_path).to eq setup_piv_cac_error_path
+      expect(page).to have_current_path(setup_piv_cac_error_path, ignore_query: true)
       expect(page).to have_link(t('instructions.mfa.piv_cac.try_again'), href: setup_piv_cac_url)
       expect(page).to have_content(
         t(
@@ -104,7 +104,7 @@ RSpec.feature 'PIV/CAC Management' do
       click_on t('forms.piv_cac_setup.submit')
       follow_piv_cac_redirect
 
-      expect(current_path).to eq setup_piv_cac_error_path
+      expect(page).to have_current_path(setup_piv_cac_error_path, ignore_query: true)
       expect(page).to have_link(
         t('instructions.mfa.piv_cac.please_try_again'),
         href: setup_piv_cac_url,
@@ -155,7 +155,9 @@ RSpec.feature 'PIV/CAC Management' do
         ),
       )
 
-      expect(current_path).to eq(edit_piv_cac_path(id: user.piv_cac_configurations.first.id))
+      expect(page).to have_current_path(
+        edit_piv_cac_path(id: user.piv_cac_configurations.first.id),
+      )
       click_button t('two_factor_authentication.piv_cac.delete')
 
       expect(page).to have_content(t('two_factor_authentication.piv_cac.deleted'))

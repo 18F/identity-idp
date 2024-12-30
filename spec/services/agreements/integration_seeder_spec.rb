@@ -13,9 +13,9 @@ RSpec.describe Agreements::IntegrationSeeder do
       integration = create(:integration, issuer: 'new_issuer', name: 'Old Name')
 
       expect { seeder.run }.to \
-        change { integration.reload.name }.
-        from('Old Name').
-        to('Test Agency App')
+        change { integration.reload.name }
+        .from('Old Name')
+        .to('Test Agency App')
     end
   end
 end

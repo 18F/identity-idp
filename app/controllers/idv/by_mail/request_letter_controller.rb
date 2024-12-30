@@ -15,8 +15,8 @@ module Idv
       def index
         @applicant = idv_session.applicant
 
-        Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
-          call(:usps_address, :view, true)
+        Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer)
+          .call(:usps_address, :view, true)
         analytics.idv_request_letter_visited
       end
 
@@ -43,8 +43,8 @@ module Idv
       private
 
       def update_tracking
-        Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
-          call(:usps_letter_sent, :update, true)
+        Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer)
+          .call(:usps_letter_sent, :update, true)
 
         log_letter_requested_analytics(resend: false)
         create_user_event(:gpo_mail_sent, current_user)
@@ -59,11 +59,7 @@ module Idv
       end
 
       def step_indicator_steps
-        if in_person_proofing?
-          Idv::Flows::InPersonFlow::STEP_INDICATOR_STEPS_GPO
-        else
-          StepIndicatorConcern::STEP_INDICATOR_STEPS_GPO
-        end
+        StepIndicatorConcern::STEP_INDICATOR_STEPS_GPO
       end
     end
   end

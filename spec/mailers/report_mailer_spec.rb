@@ -112,8 +112,8 @@ RSpec.describe ReportMailer, type: :mailer do
     it 'renders the tables in HTML', aggregate_failures: true do
       doc = Nokogiri::HTML(mail.html_part.body.to_s)
 
-      expect(doc.css('h2').map(&:text)).
-        to eq(['Table 1', 'Custom Table 2', 'Custom Table 3 With Very Long Name'])
+      expect(doc.css('h2').map(&:text))
+        .to eq(['Table 1', 'Custom Table 2', 'Custom Table 3 With Very Long Name'])
 
       _first_table, percent_table, float_table = doc.css('table')
 
@@ -144,8 +144,8 @@ RSpec.describe ReportMailer, type: :mailer do
         tables = mail.attachments.map { |a| CSV.parse(a.read) }
 
         expect(tables).to eq(
-          [first_table, second_table, third_table].
-            map { |table| table.map { |row| row.map(&:to_s) } },
+          [first_table, second_table, third_table]
+            .map { |table| table.map { |row| row.map(&:to_s) } },
         )
       end
     end

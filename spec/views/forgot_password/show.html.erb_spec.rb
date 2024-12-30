@@ -25,10 +25,10 @@ RSpec.describe 'forgot_password/show.html.erb' do
     render
 
     expect(rendered).to have_button(t('links.resend'))
-    expect(rendered).
-      to have_xpath("//form[@action='#{user_password_path}']")
-    expect(rendered).
-      to have_xpath("//form[@method='post']")
+    expect(rendered)
+      .to have_xpath("//form[@action='#{user_password_path}']")
+    expect(rendered)
+      .to have_xpath("//form[@method='post']")
   end
 
   it 'provides an explanation to the user' do

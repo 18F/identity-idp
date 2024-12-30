@@ -2,13 +2,13 @@ require 'rails_helper'
 
 RSpec.shared_examples 'sends no emails' do
   it 'sends no emails' do
-    expect { subject.send_emails(time_due_for_reminder) }.
-      not_to change { ActionMailer::Base.deliveries.size }
+    expect { subject.send_emails(time_due_for_reminder) }
+      .not_to change { ActionMailer::Base.deliveries.size }
   end
 
   it 'logs no events' do
-    expect { subject.send_emails(time_due_for_reminder) }.
-      not_to change { fake_analytics.events.count }
+    expect { subject.send_emails(time_due_for_reminder) }
+      .not_to change { fake_analytics.events.count }
   end
 end
 
@@ -16,8 +16,8 @@ RSpec.shared_examples 'sends emails' do |expected_number_of_emails:,
                                          expected_number_of_analytics_events:
                                            expected_number_of_emails|
   it "sends that user #{expected_number_of_emails} email(s)" do
-    expect { subject.send_emails(time_due_for_reminder) }.
-      to change { ActionMailer::Base.deliveries.size }.by(expected_number_of_emails)
+    expect { subject.send_emails(time_due_for_reminder) }
+      .to change { ActionMailer::Base.deliveries.size }.by(expected_number_of_emails)
   end
 
   it 'logs the email events' do
@@ -38,10 +38,10 @@ RSpec.describe GpoReminderSender do
 
     let!(:user) { create(:user, :with_pending_gpo_profile, code_sent_at: code_sent_at) }
     let(:gpo_confirmation_code) do
-      user.
-        gpo_verification_pending_profile.
-        gpo_confirmation_codes.
-        first
+      user
+        .gpo_verification_pending_profile
+        .gpo_confirmation_codes
+        .first
     end
 
     let(:fake_analytics) { FakeAnalytics.new }
@@ -105,10 +105,10 @@ RSpec.describe GpoReminderSender do
         subject.send_emails(time_due_for_reminder)
         user.gpo_verification_pending_profile.gpo_confirmation_codes.each(&:reload)
 
-        expect(user.gpo_verification_pending_profile.gpo_confirmation_codes[0].reminder_sent_at).
-          to be_within(1.second).of(Time.zone.now)
-        expect(user.gpo_verification_pending_profile.gpo_confirmation_codes[1].reminder_sent_at).
-          to be_within(1.second).of(Time.zone.now)
+        expect(user.gpo_verification_pending_profile.gpo_confirmation_codes[0].reminder_sent_at)
+          .to be_within(1.second).of(Time.zone.now)
+        expect(user.gpo_verification_pending_profile.gpo_confirmation_codes[1].reminder_sent_at)
+          .to be_within(1.second).of(Time.zone.now)
       end
     end
 

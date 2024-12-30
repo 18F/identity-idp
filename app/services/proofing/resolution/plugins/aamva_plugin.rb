@@ -108,8 +108,8 @@ module Proofing
           # For failed IV results, this method validates that the user is eligible to pass if the
           # failed attributes are covered by the same attributes in a successful AAMVA response
           # aka the Get-to-Yes w/ AAMVA feature.
-          if !state_id_address_resolution_result.
-              failed_result_can_pass_with_additional_verification?
+          if !state_id_address_resolution_result
+              .failed_result_can_pass_with_additional_verification?
             return false
           end
 
@@ -125,8 +125,8 @@ module Proofing
         # Make a copy of pii with the user's state ID address overwriting the address keys
         # Need to first remove the address keys to avoid key/value collision
         def with_state_id_address(pii)
-          pii.except(*SECONDARY_ID_ADDRESS_MAP.values).
-            transform_keys(SECONDARY_ID_ADDRESS_MAP)
+          pii.except(*SECONDARY_ID_ADDRESS_MAP.values)
+            .transform_keys(SECONDARY_ID_ADDRESS_MAP)
         end
       end
     end

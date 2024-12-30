@@ -14,9 +14,9 @@ RSpec.feature 'saml api' do
     end
 
     it 'returns the user to the acs url after authentication' do
-      expect(page).
-        to have_link t('links.back_to_sp', sp: sp.friendly_name),
-                     href: return_to_sp_cancel_path(step: :authentication)
+      expect(page)
+        .to have_link t('links.back_to_sp', sp: sp.friendly_name),
+                      href: return_to_sp_cancel_path(step: :authentication)
 
       sign_in_via_branded_page(user)
       click_submit_default
@@ -53,14 +53,14 @@ RSpec.feature 'saml api' do
       it 'directs users to the start page' do
         visit_saml_authn_request_url
 
-        expect(current_path).to eq new_user_session_path
+        expect(page).to have_current_path new_user_session_path
       end
 
       it 'prompts the user to enter OTP' do
         sign_in_before_2fa(user)
         visit_saml_authn_request_url
 
-        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+        expect(page).to have_current_path login_two_factor_path(otp_delivery_preference: 'sms')
       end
     end
 
@@ -71,7 +71,7 @@ RSpec.feature 'saml api' do
       end
 
       it 'prompts the user to set up 2FA' do
-        expect(current_path).to eq authentication_methods_setup_path
+        expect(page).to have_current_path authentication_methods_setup_path
       end
 
       it 'prompts the user to confirm phone after setting up 2FA' do
@@ -79,7 +79,10 @@ RSpec.feature 'saml api' do
         fill_in 'new_phone_form_phone', with: '202-555-1212'
         click_send_one_time_code
 
-        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+        expect(page).to have_current_path(
+          login_two_factor_path(otp_delivery_preference: 'sms'),
+          ignore_query: true,
+        )
       end
     end
 
@@ -145,19 +148,19 @@ RSpec.feature 'saml api' do
 
       it 'contains a signature method nodeset with SHA256 algorithm' do
         expect(xmldoc.signature_method_nodeset.length).to eq(1)
-        expect(xmldoc.signature_method_nodeset[0].attr('Algorithm')).
-          to eq('http://www.w3.org/2001/04/xmldsig-more#rsa-sha256')
+        expect(xmldoc.signature_method_nodeset[0].attr('Algorithm'))
+          .to eq('http://www.w3.org/2001/04/xmldsig-more#rsa-sha256')
       end
 
       it 'contains a digest method nodeset with SHA256 algorithm' do
         expect(xmldoc.digest_method_nodeset.length).to eq(1)
-        expect(xmldoc.digest_method_nodeset[0].attr('Algorithm')).
-          to eq('http://www.w3.org/2001/04/xmlenc#sha256')
+        expect(xmldoc.digest_method_nodeset[0].attr('Algorithm'))
+          .to eq('http://www.w3.org/2001/04/xmlenc#sha256')
       end
 
       it 'redirects to /test/saml/decode_assertion after submitting the form' do
-        expect(page.current_url).
-          to eq(saml_settings.assertion_consumer_service_url)
+        expect(page.current_url)
+          .to eq(saml_settings.assertion_consumer_service_url)
       end
 
       it 'stores SP identifier in Identity model' do
@@ -203,8 +206,8 @@ RSpec.feature 'saml api' do
 
       it 'updates the service providers in the database' do
         page.driver.header 'X-LOGIN-DASHBOARD-TOKEN', '123ABC'
-        expect { page.driver.post '/api/service_provider' }.
-          to(change { ServiceProvider.active.sort_by(&:id) })
+        expect { page.driver.post '/api/service_provider' }
+          .to(change { ServiceProvider.active.sort_by(&:id) })
 
         expect(page.status_code).to eq 200
       end
@@ -223,7 +226,7 @@ RSpec.feature 'saml api' do
       it 'redirects to root' do
         travel(Devise.timeout_in + 1.second) do
           visit api_saml_logout_url(path_year: SamlAuthHelper::PATH_YEAR)
-          expect(page.current_path).to eq('/')
+          expect(page).to have_current_path('/')
         end
       end
     end
@@ -381,6 +384,7 @@ RSpec.feature 'saml api' do
         visit_idp_from_sp_with_ial1(:saml)
         sign_in_live_with_2fa(user)
         click_submit_default_twice
+        expect(page).to have_current_path(test_saml_decode_assertion_path)
         xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
         expect(xmldoc.attribute_value_for(:ial)).to eq(
           Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,

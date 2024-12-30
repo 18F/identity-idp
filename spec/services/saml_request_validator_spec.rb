@@ -51,24 +51,38 @@ RSpec.describe SamlRequestValidator do
 
       context 'when the sp has no certs registered' do
         before { sp.update!(certs: nil) }
-        let(:errors) do
-          {
-            service_provider: [t('errors.messages.no_cert_registered')],
-          }
-        end
-        let(:error_details) do
-          {
-            service_provider: {
-              no_cert_registered: true,
-            },
-          }
+
+        context 'when it has block_encryption turned on' do
+          before { sp.update!(block_encryption: 'aes256-cbc') }
+          let(:errors) do
+            {
+              service_provider: [t('errors.messages.no_cert_registered')],
+            }
+          end
+          let(:error_details) do
+            {
+              service_provider: {
+                no_cert_registered: true,
+              },
+            }
+          end
+
+          it 'returns an error' do
+            expect(response.to_h).to include(
+              errors:,
+              error_details:,
+            )
+          end
         end
 
-        it 'returns an error' do
-          expect(response.to_h).to include(
-            errors:,
-            error_details:,
-          )
+        context 'when block encryption is not turned on' do
+          it 'is valid' do
+            expect(response.to_h).to include(
+              success: true,
+              errors: {},
+              **extra,
+            )
+          end
         end
       end
 
@@ -297,8 +311,8 @@ RSpec.describe SamlRequestValidator do
           context 'when the service provider is allowed to use facial match ials' do
             before do
               sp.update(ial: 2)
-              allow_any_instance_of(ServiceProvider).to receive(:facial_match_ial_allowed?).
-                and_return(true)
+              allow_any_instance_of(ServiceProvider).to receive(:facial_match_ial_allowed?)
+                .and_return(true)
             end
 
             it 'returns a successful response' do
@@ -312,8 +326,8 @@ RSpec.describe SamlRequestValidator do
 
           context 'when the service provider is not allowed to use facial match ials' do
             before do
-              allow_any_instance_of(ServiceProvider).to receive(:facial_match_ial_allowed?).
-                and_return(false)
+              allow_any_instance_of(ServiceProvider).to receive(:facial_match_ial_allowed?)
+                .and_return(false)
             end
 
             it 'fails with an unauthorized error' do

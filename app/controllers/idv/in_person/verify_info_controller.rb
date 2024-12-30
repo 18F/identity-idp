@@ -18,8 +18,8 @@ module Idv
         @ssn = idv_session.ssn
         @pii = pii
 
-        Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
-          call('verify', :view, true) # specify in_person?
+        Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer])
+          .call('verify', :view, true) # specify in_person?
 
         process_async_state(load_async_state)
       end
@@ -43,7 +43,9 @@ module Idv
             idv_session.ssn && idv_session.ipp_document_capture_complete?
           end,
           undo_step: ->(idv_session:, user:) do
+            idv_session.residential_resolution_vendor = nil
             idv_session.resolution_successful = nil
+            idv_session.resolution_vendor = nil
             idv_session.verify_info_step_document_capture_session_uuid = nil
             idv_session.threatmetrix_review_status = nil
             idv_session.source_check_vendor = nil
@@ -84,8 +86,8 @@ module Idv
           flow_path: idv_session.flow_path,
           step: 'verify',
           analytics_id: 'In Person Proofing',
-        }.merge(ab_test_analytics_buckets).
-          merge(**extra_analytics_properties)
+        }.merge(ab_test_analytics_buckets)
+          .merge(**extra_analytics_properties)
       end
 
       def confirm_ssn_step_complete

@@ -13,8 +13,8 @@ RSpec.describe DatabaseHealthChecker do
 
     context 'when the database is unhealthy' do
       before do
-        expect(DatabaseHealthChecker).to receive(:simple_query).
-          and_raise(RuntimeError.new('canceling statement due to statement timeout'))
+        expect(DatabaseHealthChecker).to receive(:simple_query)
+          .and_raise(RuntimeError.new('canceling statement due to statement timeout'))
       end
 
       it 'returns an unhealthy check' do

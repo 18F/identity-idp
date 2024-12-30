@@ -52,22 +52,12 @@ RSpec.describe SignUp::SelectEmailController do
 
     context 'with selected email to share feature disabled' do
       before do
-        allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled).
-          and_return(false)
+        allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
+          .and_return(false)
       end
 
       it 'renders 404' do
         expect(response).to be_not_found
-      end
-    end
-
-    context 'with only one verified email address' do
-      let(:user) { create(:user) }
-
-      it 'redirects to the sign up completed path' do
-        response
-
-        expect(response).to redirect_to(sign_up_completed_path)
       end
     end
 
@@ -139,8 +129,8 @@ RSpec.describe SignUp::SelectEmailController do
 
     context 'with selected email to share feature disabled' do
       before do
-        allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled).
-          and_return(false)
+        allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
+          .and_return(false)
       end
 
       it 'renders 404' do

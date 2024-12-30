@@ -26,9 +26,9 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::SqsBatchWrapper do
         create_mock_message,
       ]
 
-      expect(sqs_client).to receive(:receive_message).
-        with(receive_params).
-        and_return(mock_result)
+      expect(sqs_client).to receive(:receive_message)
+        .with(receive_params)
+        .and_return(mock_result)
 
       expect(mock_result).to receive(:messages).and_return(mock_messages)
       expect(sqs_batch_wrapper.poll).to eq(mock_messages)

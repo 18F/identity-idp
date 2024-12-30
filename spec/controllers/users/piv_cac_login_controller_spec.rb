@@ -129,8 +129,8 @@ RSpec.describe Users::PivCacLoginController do
           it 'sets the session correctly' do
             response
 
-            expect(controller.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).
-              to eq false
+            expect(controller.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION])
+              .to eq false
             expect(controller.auth_methods_session.auth_events).to match(
               [
                 {

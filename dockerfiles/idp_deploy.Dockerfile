@@ -6,7 +6,7 @@
 # avoid having build-essential and the large-files token be in the
 # main image.
 #########################################################################
-FROM ruby:3.3.4-slim as builder
+FROM public.ecr.aws/docker/library/ruby:3.3.6-slim as builder
 
 # Set environment variables
 ENV RAILS_ROOT /app
@@ -16,7 +16,7 @@ ENV RAILS_LOG_TO_STDOUT true
 ENV RAILS_LOG_LEVEL debug
 ENV BUNDLE_PATH /app/vendor/bundle
 ENV YARN_VERSION 1.22.5
-ENV NODE_VERSION 20.10.0
+ENV NODE_VERSION 22.11.0
 ENV BUNDLER_VERSION 2.5.6
 
 # Install dependencies
@@ -140,7 +140,7 @@ RUN openssl req -x509 -sha256 -nodes -newkey rsa:2048 -days 1825 \
 #########################################################################
 # This is the main image.
 #########################################################################
-FROM ruby:3.3.4-slim as main
+FROM public.ecr.aws/docker/library/ruby:3.3.6-slim as main
 
 # Set environment variables
 ENV RAILS_ROOT /app

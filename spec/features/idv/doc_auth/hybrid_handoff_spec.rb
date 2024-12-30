@@ -44,9 +44,9 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
     end
 
     it 'proceeds to the next page with valid info', :js do
-      expect(Telephony).to receive(:send_doc_auth_link).
-        with(hash_including(to: '+1 415-555-0199')).
-        and_call_original
+      expect(Telephony).to receive(:send_doc_auth_link)
+        .with(hash_including(to: '+1 415-555-0199'))
+        .and_call_original
 
       expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
 
@@ -60,7 +60,7 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
       fill_in :doc_auth_phone, with: ''
       click_send_link
 
-      expect(page).to have_current_path(idv_hybrid_handoff_path, ignore_query: true)
+      expect(page).to have_current_path(idv_hybrid_handoff_path)
     end
 
     it 'sends a link that does not contain any underscores' do
@@ -82,7 +82,7 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
 
       click_send_link
 
-      expect(page).to have_current_path(idv_hybrid_handoff_path, ignore_query: true)
+      expect(page).to have_current_path(idv_hybrid_handoff_path)
       expect(page).to have_content I18n.t('telephony.error.friendly_message.generic')
     end
 
@@ -116,8 +116,8 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
       timeout = distance_of_time_in_words(
         RateLimiter.attempt_window_in_minutes(:idv_send_link).minutes,
       )
-      allow(IdentityConfig.store).to receive(:idv_send_link_max_attempts).
-        and_return(idv_send_link_max_attempts)
+      allow(IdentityConfig.store).to receive(:idv_send_link_max_attempts)
+        .and_return(idv_send_link_max_attempts)
 
       freeze_time do
         idv_send_link_max_attempts.times do
@@ -136,7 +136,7 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
         fill_in :doc_auth_phone, with: '415-555-0199'
 
         click_send_link
-        expect(page).to have_current_path(idv_hybrid_handoff_path, ignore_query: true)
+        expect(page).to have_current_path(idv_hybrid_handoff_path)
         expect(page).to have_content(
           I18n.t(
             'doc_auth.errors.send_link_limited',
@@ -208,10 +208,10 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
         let(:in_person_doc_auth_button_enabled) { true }
         let(:sp_ipp_enabled) { true }
         before do
-          allow(IdentityConfig.store).to receive(:in_person_doc_auth_button_enabled).
-            and_return(in_person_doc_auth_button_enabled)
-          allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).with(anything).
-            and_return(sp_ipp_enabled)
+          allow(IdentityConfig.store).to receive(:in_person_doc_auth_button_enabled)
+            .and_return(in_person_doc_auth_button_enabled)
+          allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).with(anything)
+            .and_return(sp_ipp_enabled)
           complete_doc_auth_steps_before_hybrid_handoff_step
         end
 
@@ -308,7 +308,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
 
     click_link t('links.cancel')
     expect(page).to have_content(t('idv.cancel.headings.prompt.standard'))
-    expect(current_path).to eq(idv_cancel_path)
+    expect(page).to have_current_path(idv_cancel_path, ignore_query: true)
   end
 
   def verify_no_upload_photos_section_and_link(page)
@@ -333,16 +333,16 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
       end
       allow(IdentityConfig.store).to receive(:socure_docv_enabled).and_return(socure_docv_enabled)
       allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(doc_auth_vendor)
-      allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).
-        and_return(desktop_test_mode_enabled)
+      allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
+        .and_return(desktop_test_mode_enabled)
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(
         in_person_proofing_enabled,
       )
       allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(
         in_person_proofing_opt_in_enabled,
       )
-      allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
-        and_return(sp_ipp_enabled)
+      allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled)
+        .and_return(sp_ipp_enabled)
       visit_idp_from_sp_with_ial2(
         :oidc,
         **{ client_id: service_provider.issuer,

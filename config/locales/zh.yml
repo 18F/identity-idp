@@ -75,8 +75,8 @@ account.index.reactivation.instructions: 你的用户资料因为重设密码最
 account.index.reactivation.link: 现在重新激活你的用户资料。
 account.index.sign_in_location_and_ip: 从 %{ip}（IP 地址可能位于 %{location}）。
 account.index.unknown_location: 未知地点
-account.index.verification.connect_idv_account.cta: 登录合作伙伴机构来获得服务。
-account.index.verification.connect_idv_account.intro: 把你的账户连接到合作伙伴机构。
+account.index.verification.connect_idv_account.cta: 登录%{sp_name}来获得服务。
+account.index.verification.connect_idv_account.intro: 把你的账户连接到%{sp_name}。
 account.index.verification.continue_idv: 继续身份验证
 account.index.verification.finish_verifying_html: 完成身份验证流程来获得访问 <strong>%{sp_name}</strong> 的权限。
 account.index.verification.finish_verifying_no_sp: 完成身份验证流程来获得访问%{app_name} 合作伙伴机构的权限。
@@ -601,7 +601,7 @@ doc_auth.headers.underage: 不符合年龄规定
 doc_auth.headers.unreadable_id: 我们无法读取你的身份证件
 doc_auth.headings.address: 更新你的邮政地址
 doc_auth.headings.back: 驾照或州政府颁发身份证件的背面。
-doc_auth.headings.capture_complete: 我们验证了你的身份证件
+doc_auth.headings.capture_complete: 我们验证了你的身份文件
 doc_auth.headings.capture_scan_warning_html: 我们读取不到你身份证件上的条形码。如果以下信息不正确，请将州政府颁发的身份证件%{link_html}。
 doc_auth.headings.capture_scan_warning_link: 上传新照片
 doc_auth.headings.document_capture: 添加你身份证件的照片
@@ -1062,6 +1062,8 @@ idv.errors.incorrect_password: 你输入的密码不对。
 idv.errors.pattern_mismatch.ssn: 输入 9 位数的社会保障号码
 idv.errors.pattern_mismatch.zipcode: 输入 5 或 9 位的邮编
 idv.errors.pattern_mismatch.zipcode_five: 输入 5 位的邮编
+idv.errors.technical_difficulties: 我们目前遇到技术困难
+idv.errors.try_again_later: 请稍后再试。
 idv.failure.attempts_html.one: 您可以再试<strong>1次。</strong> 然后您必须等6个小时才能再试。
 idv.failure.attempts_html.other: 您可以再试<strong>%{count}次。</strong> 然后您必须等6个小时才能再试。
 idv.failure.button.try_online: 在网上再试一下
@@ -1088,8 +1090,6 @@ idv.failure.phone.rate_limited.option_try_again_later_no_gpo_html: 您可以在<
 idv.failure.phone.rate_limited.option_verify_by_mail_html: 通过普通邮件验证，这需要<strong>五到十天</strong>
 idv.failure.phone.rate_limited.options_header: 你可以：
 idv.failure.phone.timeout: 我们请你验证自己信息的请求已过期。请再试一次。
-idv.failure.phone.warning.attempts_html.one: 出于安全考虑，你只能再试<strong>一次</strong>了。
-idv.failure.phone.warning.attempts_html.other: 出于安全考虑，你只能再试<strong>%{count}次</strong>了。
 idv.failure.phone.warning.gpo.button: 通过普通邮件验证
 idv.failure.phone.warning.gpo.explanation: 如果你没有别的电话号码可以尝试，那请通过普通邮件验证。
 idv.failure.phone.warning.gpo.heading: 通过普通邮件验证
@@ -1111,6 +1111,8 @@ idv.failure.verify.exit: 退出 %{app_name}
 idv.failure.verify.fail_link_html: 在<strong>%{sp_name}</strong> 得到
 idv.failure.verify.fail_text: 帮助以获得服务。
 idv.failure.verify.heading: 我们无法验证你的身份证件。
+idv.failure.warning.attempts_html.one: 出于安全考虑，你只能再试<strong>一次</strong>了。
+idv.failure.warning.attempts_html.other: 出于安全考虑，你只能再试<strong>%{count}次</strong>了。
 idv.forgot_password.link_text: 忘了密码?
 idv.forgot_password.modal_header: 你确定不记得密码吗？
 idv.forgot_password.reset_password: 重设密码
@@ -1888,6 +1890,10 @@ user_mailer.email_deleted.header: 一个电邮地址被从你的 %{app_name} 用
 user_mailer.email_deleted.help_html: 如果你没有想删除这一电邮地址，请访问 %{app_name_html} %{help_link_html} 或者 %{contact_link_html}。
 user_mailer.email_deleted.subject: 电邮地址已删除
 user_mailer.help_link_text: 帮助中心
+user_mailer.idv_please_call.body.contact_message_html: 打电话给 <strong>%{contact_number}</strong> 并向他们提供错误 代码 <strong>%{support_code}</strong>。
+user_mailer.idv_please_call.body.intro_html: 请在 <strong>%{date}</strong> 之前给我们的联系中心打电话，以继续验证你的身份。
+user_mailer.idv_please_call.header: 请给我们打个电话
+user_mailer.idv_please_call.subject: 致电 %{app_name} 继续进行身份验证
 user_mailer.in_person_completion_survey.body.cta.callout: 点击下面的按钮来开始
 user_mailer.in_person_completion_survey.body.cta.label: 填写我们的意见调查
 user_mailer.in_person_completion_survey.body.greeting: 你好，
@@ -1913,10 +1919,6 @@ user_mailer.in_person_failed.intro: 你的身份于 %{date}在 %{location} 邮�
 user_mailer.in_person_failed.subject: 你的身份未能亲身被验证。
 user_mailer.in_person_failed.verifying_identity: '验证你的身份时:'
 user_mailer.in_person_failed.verifying_step_not_expired: 你的州政府颁发的身份证件或驾照绝对没有过期。我们目前不接受任何其他形式的身份证件，比如护照和军队身份证件。
-user_mailer.in_person_please_call.body.contact_message_html: 打电话给 <strong>%{contact_number}</strong> 并向他们提供错误 代码 <strong>%{support_code}</strong>。
-user_mailer.in_person_please_call.body.intro_html: 请在 <strong>%{date}</strong> 之前给我们的联系中心打电话，以继续验证你的身份。
-user_mailer.in_person_please_call.header: 请给我们打个电话
-user_mailer.in_person_please_call.subject: 致电 %{app_name} 继续进行身份验证
 user_mailer.in_person_ready_to_verify_reminder.greeting: 你好，
 user_mailer.in_person_ready_to_verify_reminder.heading.one: 你距离亲身验证身份截止日期还有 %{count} 天
 user_mailer.in_person_ready_to_verify_reminder.heading.other: 你距离亲身验证身份截止日期还有 %{count} 天
@@ -1979,7 +1981,7 @@ user_mailer.reset_password_instructions.footer: 这一链接 %{expires} 小时�
 user_mailer.reset_password_instructions.gpo_letter_description: 如果你重设密码，信件中的一次性代码就会失效，你需要再次验证身份。
 user_mailer.reset_password_instructions.gpo_letter_header: 你的信件已寄出。
 user_mailer.reset_password_instructions.header: 要完成重设密码，请点击下面的链接或把整个链接复制并黏贴进浏览器。
-user_mailer.reset_password_instructions.in_person_warning_description_html: <strong>If you reset your password now, your barcode will not work at the Post Office.</strong> You’ll have to restart the identity verification process from the beginning.
+user_mailer.reset_password_instructions.in_person_warning_description_html: <strong>如果你现在重设密码，你的条形码在邮局将无法使用。</strong>你会不得不从头开始身份验证流程。
 user_mailer.reset_password_instructions.link_text: 重设你的密码
 user_mailer.reset_password_instructions.subject: 重设你的密码
 user_mailer.signup_with_your_email.help_html: 如果你没有要求一封新电邮或怀疑有错， 请访问 %{app_name_html}的 %{help_link_html} 或者 %{contact_link_html}。

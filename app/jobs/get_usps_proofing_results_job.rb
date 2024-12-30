@@ -62,8 +62,8 @@ class GetUspsProofingResultsJob < ApplicationJob
   attr_accessor :enrollment_outcomes
 
   DEFAULT_EMAIL_DELAY_IN_HOURS = 1
-  REQUEST_DELAY_IN_SECONDS = (IdentityConfig.store.
-    get_usps_proofing_results_job_request_delay_milliseconds / MILLISECONDS_PER_SECOND).freeze
+  REQUEST_DELAY_IN_SECONDS = (IdentityConfig.store
+    .get_usps_proofing_results_job_request_delay_milliseconds / MILLISECONDS_PER_SECOND).freeze
 
   def proofer
     @proofer ||= UspsInPersonProofing::EnrollmentHelper.usps_proofer
@@ -291,8 +291,8 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   def handle_incomplete_status_update(enrollment, response_message)
     enrollment_outcomes[:enrollments_in_progress] += 1
-    analytics(user: enrollment.user).
-      idv_in_person_usps_proofing_results_job_enrollment_incomplete(
+    analytics(user: enrollment.user)
+      .idv_in_person_usps_proofing_results_job_enrollment_incomplete(
         **enrollment_analytics_attributes(enrollment, complete: false),
         response_message: response_message,
         job_name: self.class.name,
@@ -328,16 +328,16 @@ class GetUspsProofingResultsJob < ApplicationJob
       end
     rescue StandardError => err
       NewRelic::Agent.notice_error(err)
-      analytics(user: enrollment.user).
-        idv_in_person_usps_proofing_results_job_deadline_passed_email_exception(
+      analytics(user: enrollment.user)
+        .idv_in_person_usps_proofing_results_job_deadline_passed_email_exception(
           enrollment_id: enrollment.id,
           exception_class: err.class.to_s,
           exception_message: err.message,
           job_name: self.class.name,
         )
     else
-      analytics(user: enrollment.user).
-        idv_in_person_usps_proofing_results_job_deadline_passed_email_initiated(
+      analytics(user: enrollment.user)
+        .idv_in_person_usps_proofing_results_job_deadline_passed_email_initiated(
           **email_analytics_attributes(enrollment),
           enrollment_id: enrollment.id,
           job_name: self.class.name,
@@ -384,8 +384,8 @@ class GetUspsProofingResultsJob < ApplicationJob
   def handle_fraud_review_pending(enrollment)
     enrollment.profile.deactivate_for_fraud_review
 
-    analytics(user: enrollment.user).
-      idv_in_person_usps_proofing_results_job_user_sent_to_fraud_review(
+    analytics(user: enrollment.user)
+      .idv_in_person_usps_proofing_results_job_user_sent_to_fraud_review(
         **enrollment_analytics_attributes(enrollment, complete: true),
       )
   end
@@ -394,8 +394,8 @@ class GetUspsProofingResultsJob < ApplicationJob
     if cancel
       cancel_enrollment(enrollment)
     end
-    analytics(user: enrollment.user).
-      idv_in_person_usps_proofing_results_job_unexpected_response(
+    analytics(user: enrollment.user)
+      .idv_in_person_usps_proofing_results_job_unexpected_response(
         **enrollment_analytics_attributes(enrollment, complete: cancel),
         response_message: response_message,
         reason: reason,
@@ -488,8 +488,8 @@ class GetUspsProofingResultsJob < ApplicationJob
 
     # send email
     send_please_call_email(enrollment:, visited_location_name: response['proofingPostOffice'])
-    analytics(user: enrollment.user).
-      idv_in_person_usps_proofing_results_job_please_call_email_initiated(
+    analytics(user: enrollment.user)
+      .idv_in_person_usps_proofing_results_job_please_call_email_initiated(
         **email_analytics_attributes(enrollment),
         job_name: self.class.name,
       )
@@ -576,9 +576,11 @@ class GetUspsProofingResultsJob < ApplicationJob
   def send_deadline_passed_email(enrollment:, visited_location_name:)
     # rubocop:disable IdentityIdp/MailLaterLinter
     enrollment.user.confirmed_email_addresses.each do |email_address|
-      UserMailer.with(user: enrollment.user, email_address: email_address).
-        in_person_deadline_passed(enrollment: enrollment,
-                                  visited_location_name: visited_location_name).deliver_later
+      UserMailer
+        .with(user: enrollment.user, email_address: email_address)
+        .in_person_deadline_passed(enrollment: enrollment,
+                                   visited_location_name: visited_location_name)
+        .deliver_later
       # rubocop:enable IdentityIdp/MailLaterLinter
     end
   end
@@ -608,7 +610,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   def send_please_call_email(enrollment:, visited_location_name:)
     enrollment.user.confirmed_email_addresses.each do |email_address|
       # rubocop:disable IdentityIdp/MailLaterLinter
-      UserMailer.with(user: enrollment.user, email_address: email_address).in_person_please_call(
+      UserMailer.with(user: enrollment.user, email_address: email_address).idv_please_call(
         enrollment: enrollment,
         visited_location_name: visited_location_name,
       ).deliver_later(**notification_delivery_params(enrollment))

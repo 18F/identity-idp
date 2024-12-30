@@ -526,9 +526,9 @@ RSpec.describe AccountShowPresenter do
     subject(:connected_apps) { presenter.connected_apps }
 
     it 'delegates to user, eager-loading view-specific relations' do
-      expect(connected_apps).to be_present.
-        and eq(user.connected_apps).
-        and all(
+      expect(connected_apps).to be_present
+        .and eq(user.connected_apps)
+        .and all(
           satisfy do |app|
             app.association(:service_provider_record).loaded? &&
               app.association(:email_address).loaded?

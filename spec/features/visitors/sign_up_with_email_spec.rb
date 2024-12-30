@@ -43,8 +43,8 @@ RSpec.feature 'Visitor signs up with email address' do
     scenario 'sends email saying someone tried to sign up with their email address' do
       user = create(:user)
 
-      expect { sign_up_with(user.email) }.
-        to change { ActionMailer::Base.deliveries.count }.by(1)
+      expect { sign_up_with(user.email) }
+        .to change { ActionMailer::Base.deliveries.count }.by(1)
 
       expect(last_email.html_part.body).to have_content(
         t('user_mailer.signup_with_your_email.intro_html', app_name_html: APP_NAME),
@@ -57,7 +57,7 @@ RSpec.feature 'Visitor signs up with email address' do
     sign_up_and_2fa_ial1_user
 
     expect(Funnel::Registration::TotalRegisteredCount.call).to eq(1)
-    expect(current_path).to eq account_path
+    expect(page).to have_current_path account_path
   end
 
   it 'returns a bad request if the email contains invalid bytes' do
@@ -72,8 +72,8 @@ RSpec.feature 'Visitor signs up with email address' do
     sign_up_with(email)
 
     starting_count = unread_emails_for(email).size
-    remaining_attempts = IdentityConfig.store.
-      reg_unconfirmed_email_max_attempts - 1 - starting_count
+    remaining_attempts = IdentityConfig.store
+      .reg_unconfirmed_email_max_attempts - 1 - starting_count
 
     1.upto(remaining_attempts) do |i|
       sign_up_with(email)

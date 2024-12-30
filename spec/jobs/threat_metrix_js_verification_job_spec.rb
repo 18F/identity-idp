@@ -64,15 +64,15 @@ RSpec.describe ThreatMetrixJsVerificationJob, type: :job do
     end
 
     before do
-      allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).
-        and_return(threatmetrix_org_id)
-      allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_js_signing_cert).
-        and_return(threatmetrix_signing_certificate)
-      allow(IdentityConfig.store).to receive(:proofing_device_profiling).
-        and_return(threatmetrix_enabled ? :collect_only : :disabled)
+      allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id)
+        .and_return(threatmetrix_org_id)
+      allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_js_signing_cert)
+        .and_return(threatmetrix_signing_certificate)
+      allow(IdentityConfig.store).to receive(:proofing_device_profiling)
+        .and_return(threatmetrix_enabled ? :collect_only : :disabled)
 
-      stub_request(:get, "https://h.online-metrix.net/fp/tags.js?org_id=#{threatmetrix_org_id}&session_id=#{threatmetrix_session_id}").
-        to_return(
+      stub_request(:get, "https://h.online-metrix.net/fp/tags.js?org_id=#{threatmetrix_org_id}&session_id=#{threatmetrix_session_id}")
+        .to_return(
           status: http_response_status,
           body: http_response_body,
         )
@@ -110,8 +110,8 @@ RSpec.describe ThreatMetrixJsVerificationJob, type: :job do
 
     context 'error that is not a configuration error' do
       before do
-        stub_request(:get, "https://h.online-metrix.net/fp/tags.js?org_id=#{threatmetrix_org_id}&session_id=#{threatmetrix_session_id}").
-          to_timeout
+        stub_request(:get, "https://h.online-metrix.net/fp/tags.js?org_id=#{threatmetrix_org_id}&session_id=#{threatmetrix_session_id}")
+          .to_timeout
       end
 
       it 'logs an error_message, and raises' do

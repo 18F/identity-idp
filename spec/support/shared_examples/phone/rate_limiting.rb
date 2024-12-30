@@ -4,12 +4,12 @@ RSpec.shared_examples 'phone rate limiting' do |delivery_method|
   let(:min_attempts) { 2 }
 
   before do
-    allow(IdentityConfig.store).to receive(:login_otp_confirmation_max_attempts).
-      and_return(max_confirmation_attempts)
-    allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).
-      and_return(max_otp_sends)
-    allow(IdentityConfig.store).to receive(:otp_min_attempts_remaining_warning_count).
-      and_return(min_attempts)
+    allow(IdentityConfig.store).to receive(:login_otp_confirmation_max_attempts)
+      .and_return(max_confirmation_attempts)
+    allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry)
+      .and_return(max_otp_sends)
+    allow(IdentityConfig.store).to receive(:otp_min_attempts_remaining_warning_count)
+      .and_return(min_attempts)
   end
 
   it 'limits the number of times the user can resend an OTP' do
@@ -71,7 +71,9 @@ RSpec.shared_examples 'phone rate limiting' do |delivery_method|
           ),
         )
       end
-      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: delivery_method)
+      expect(page).to have_current_path(
+        login_two_factor_path(otp_delivery_preference: delivery_method),
+      )
     end
     fill_in :code, with: '123456'
     click_submit_default

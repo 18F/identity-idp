@@ -22,8 +22,8 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
     it 'gracefully handles invalid formats' do
       @request.env['HTTP_ACCEPT'] = "nessus=bad_bad_value'"
 
-      expect { get :new }.
-        to raise_error(Mime::Type::InvalidMimeType)
+      expect { get :new }
+        .to raise_error(Mime::Type::InvalidMimeType)
     end
 
     it 'tracks visit event' do
@@ -54,36 +54,6 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
         expect(response).to redirect_to(
           idv_unavailable_path(from: SignUp::RegistrationsController::CREATE_ACCOUNT),
         )
-      end
-    end
-
-    context 'with threatmetrix enabled' do
-      let(:tmx_session_id) { '1234' }
-
-      before do
-        allow(FeatureManagement).to receive(:account_creation_device_profiling_collecting_enabled?).
-          and_return(true)
-        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('org1')
-        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled).
-          and_return(false)
-        subject.session[:threatmetrix_session_id] = tmx_session_id
-      end
-
-      it 'renders new valid request' do
-        tmx_url = 'https://h.online-metrix.net/fp'
-        expect(subject).to receive(:render).with(
-          :new,
-          formats: :html,
-          locals: { threatmetrix_session_id: tmx_session_id,
-                    threatmetrix_javascript_urls:
-                      ["#{tmx_url}/tags.js?org_id=org1&session_id=#{tmx_session_id}"],
-                    threatmetrix_iframe_url:
-                      "#{tmx_url}/tags?org_id=org1&session_id=#{tmx_session_id}" },
-        ).and_call_original
-
-        get :new
-
-        expect(response).to render_template(:new)
       end
     end
   end
@@ -201,35 +171,6 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
       post :create, params: params.deep_merge(user: { email: 'invalid@' })
 
       expect(response).to render_template(:new)
-    end
-
-    context 'with threatmetrix enabled' do
-      let(:tmx_session_id) { '1234' }
-
-      before do
-        allow(FeatureManagement).to receive(:account_creation_device_profiling_collecting_enabled?).
-          and_return(true)
-        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('org1')
-        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled).
-          and_return(false)
-        subject.session[:threatmetrix_session_id] = tmx_session_id
-      end
-
-      it 'renders new with invalid request' do
-        tmx_url = 'https://h.online-metrix.net/fp'
-        expect(subject).to receive(:render).with(
-          :new,
-          locals: { threatmetrix_session_id: tmx_session_id,
-                    threatmetrix_javascript_urls:
-                      ["#{tmx_url}/tags.js?org_id=org1&session_id=#{tmx_session_id}"],
-                    threatmetrix_iframe_url:
-                      "#{tmx_url}/tags?org_id=org1&session_id=#{tmx_session_id}" },
-        ).and_call_original
-
-        post :create, params: params.deep_merge(user: { email: 'invalid@' })
-
-        expect(response).to render_template(:new)
-      end
     end
   end
 end

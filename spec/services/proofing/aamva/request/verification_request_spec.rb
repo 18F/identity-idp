@@ -249,8 +249,8 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
   describe '#send' do
     context 'when the request is successful' do
       it 'returns a response object' do
-        stub_request(:post, config.verification_url).
-          to_return(body: AamvaFixtures.verification_response, status: 200)
+        stub_request(:post, config.verification_url)
+          .to_return(body: AamvaFixtures.verification_response, status: 200)
 
         response = subject.send
 
@@ -270,8 +270,8 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
     # rubocop:disable Layout/LineLength
     context 'when the request times out' do
       it 'raises an error' do
-        stub_request(:post, config.verification_url).
-          to_timeout
+        stub_request(:post, config.verification_url)
+          .to_timeout
 
         expect { subject.send }.to raise_error(
           ::Proofing::TimeoutError,
@@ -283,8 +283,8 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
 
     context 'when the connection fails' do
       it 'raises an error' do
-        stub_request(:post, config.verification_url).
-          to_raise(Faraday::ConnectionFailed.new('error'))
+        stub_request(:post, config.verification_url)
+          .to_raise(Faraday::ConnectionFailed.new('error'))
 
         expect { subject.send }.to raise_error(
           ::Proofing::TimeoutError,

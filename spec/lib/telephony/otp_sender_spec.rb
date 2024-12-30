@@ -269,8 +269,8 @@ RSpec.describe Telephony::OtpSender do
         let(:otp) { '123456' }
 
         it 'is the code separated by commas' do
-          expect(otp_transformed_for_channel).
-            to eq(
+          expect(otp_transformed_for_channel)
+            .to eq(
               "1 <break time='0.5s' /> 2 <break time='0.5s' /> 3 <break time='0.5s' /> 4 "\
                   "<break time='0.5s' /> 5 <break time='0.5s' /> 6 <break time='0.5s' /> ",
             )
@@ -281,8 +281,8 @@ RSpec.describe Telephony::OtpSender do
         let(:otp) { 'ABC123' }
 
         it 'is the code separated by commas' do
-          expect(otp_transformed_for_channel).
-            to eq(
+          expect(otp_transformed_for_channel)
+            .to eq(
               "A <break time='0.5s' /> B <break time='0.5s' /> C <break time='0.5s' /> 1 "\
                   "<break time='0.5s' /> 2 <break time='0.5s' /> 3 <break time='0.5s' /> ",
             )

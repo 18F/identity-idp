@@ -15,6 +15,10 @@ class AnalyticsEventsDocumenter
 
   DOCUMENTATION_OPTIONAL_PARAMS = %w[
     pii_like_keypaths
+    active_profile_idv_level
+    pending_profile_idv_level
+    proofing_components
+    profile_history
   ].freeze
 
   attr_reader :database_path, :class_name
@@ -185,8 +189,8 @@ class AnalyticsEventsDocumenter
 
     database.select do |_k, object|
       # this check will fail if the namespace is nested more than once
-      method_object_name_parts = [object.namespace&.parent&.name, object.namespace&.name].
-        select { |part| part.present? && part != :root }
+      method_object_name_parts = [object.namespace&.parent&.name, object.namespace&.name]
+        .select { |part| part.present? && part != :root }
 
       object.type == :method && method_object_name_parts == class_name_parts
     end.values

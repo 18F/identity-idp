@@ -13,7 +13,7 @@ RSpec.shared_examples 'sp handoff after identity verification' do |sp|
       visit_idp_from_sp_with_ial2(sp)
       register_user(email)
 
-      expect(current_path).to eq idv_welcome_path
+      expect(page).to have_current_path idv_welcome_path
 
       complete_all_doc_auth_steps_before_password_step
       fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
@@ -43,7 +43,7 @@ RSpec.shared_examples 'sp handoff after identity verification' do |sp|
       fill_in_code_with_last_totp(user)
       click_submit_default
 
-      expect(current_path).to eq idv_welcome_path
+      expect(page).to have_current_path idv_welcome_path
 
       complete_all_doc_auth_steps_before_password_step
       fill_in 'Password', with: user.password
@@ -130,8 +130,8 @@ RSpec.shared_examples 'sp handoff after identity verification' do |sp|
     # Selenium driver does not support response header inspection, but we should be able to expect
     # that the browser itself would respect CSP and refuse invalid form targets.
     return if javascript_enabled?
-    expect(page.response_headers['Content-Security-Policy']).
-      to(include('form-action \'self\' http://localhost:7654'))
+    expect(page.response_headers['Content-Security-Policy'])
+      .to(include('form-action \'self\' http://localhost:7654'))
   end
 
   def expect_successful_oidc_handoff
@@ -171,7 +171,7 @@ RSpec.shared_examples 'sp handoff after identity verification' do |sp|
 
     expect(AgencyIdentity.where(user_id: user.id, agency_id: 2).first.uuid).to eq(xmldoc.uuid)
     if javascript_enabled?
-      expect(current_path).to eq test_saml_decode_assertion_path
+      expect(page).to have_current_path test_saml_decode_assertion_path
     else
       expect(current_url).to eq @saml_authn_request
     end

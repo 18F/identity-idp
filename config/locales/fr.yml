@@ -75,8 +75,8 @@ account.index.reactivation.instructions: Votre profil a été récemment désact
 account.index.reactivation.link: Réactiver votre profil maintenant.
 account.index.sign_in_location_and_ip: De %{ip} (adresse IP éventuellement située dans %{location})
 account.index.unknown_location: lieu inconnu
-account.index.verification.connect_idv_account.cta: Connectez-vous à l’organisme partenaire pour accéder à ses services.
-account.index.verification.connect_idv_account.intro: Associer votre compte à l’organisme partenaire.
+account.index.verification.connect_idv_account.cta: Connectez-vous à %{sp_name} pour accéder à ses services.
+account.index.verification.connect_idv_account.intro: Associer votre compte à %{sp_name}.
 account.index.verification.continue_idv: Poursuivre la vérification d’identité
 account.index.verification.finish_verifying_html: Terminez la procédure de vérification d’identité pour pouvoir accéder à <strong>%{sp_name}</strong>.
 account.index.verification.finish_verifying_no_sp: Terminer la procédure de vérification d’identité pour pouvoir accéder à tous les organismes partenaires de %{app_name}.
@@ -1049,6 +1049,8 @@ idv.errors.incorrect_password: Le mot de passe que vous avez saisi est incorrect
 idv.errors.pattern_mismatch.ssn: Saisissez un numéro de sécurité sociale à neuf chiffres
 idv.errors.pattern_mismatch.zipcode: Saisissez un code postal à 5 ou 9 chiffres
 idv.errors.pattern_mismatch.zipcode_five: Saisissez un code postal à 5 chiffres
+idv.errors.technical_difficulties: Nous rencontrons des difficultés techniques
+idv.errors.try_again_later: Veuillez réessayer ultérieurement.
 idv.failure.attempts_html.one: Vous avez encore <strong>un essai.</strong> Vous devrez ensuite attendre 6 heures avant de réessayer.
 idv.failure.attempts_html.other: Vous pouvez encore essayer <strong>%{count} fois de plus.</strong> Ensuite, vous devrez ensuite attendre 6 heures avant de réessayer.
 idv.failure.button.try_online: Réessayer en ligne
@@ -1075,8 +1077,6 @@ idv.failure.phone.rate_limited.option_try_again_later_no_gpo_html: Vous pourrez 
 idv.failure.phone.rate_limited.option_verify_by_mail_html: Vérifier par courrier, ce qui prend <strong>5 à 10 jours</strong>.
 idv.failure.phone.rate_limited.options_header: 'Vous pouvez :'
 idv.failure.phone.timeout: Notre demande de vérification de vos renseignements a expiré. Veuillez réessayer.
-idv.failure.phone.warning.attempts_html.one: Pour des raisons de sécurité, il vous reste <strong>une tentative</strong>.
-idv.failure.phone.warning.attempts_html.other: Pour des raisons de sécurité, il vous reste <strong>%{count} tentatives</strong>.
 idv.failure.phone.warning.gpo.button: Vérifier par courrier
 idv.failure.phone.warning.gpo.explanation: Si vous n’avez pas d’autre numéro de téléphone à essayer, vérifiez plutôt par courrier.
 idv.failure.phone.warning.gpo.heading: Vérifier par courrier
@@ -1098,6 +1098,8 @@ idv.failure.verify.exit: Quitter %{app_name}
 idv.failure.verify.fail_link_html: Obtenez de l’aide auprès de <strong>%{sp_name}</strong>
 idv.failure.verify.fail_text: pour accéder aux services.
 idv.failure.verify.heading: Nous n’avons pas pu confirmer votre identité
+idv.failure.warning.attempts_html.one: Pour des raisons de sécurité, il vous reste <strong>une tentative</strong>.
+idv.failure.warning.attempts_html.other: Pour des raisons de sécurité, il vous reste <strong>%{count} tentatives</strong>.
 idv.forgot_password.link_text: Mot de passe oublié?
 idv.forgot_password.modal_header: Êtes-vous sûr de ne pas pouvoir vous souvenir de votre mot de passe?
 idv.forgot_password.reset_password: Réinitialiser le mot de passe
@@ -1875,6 +1877,10 @@ user_mailer.email_deleted.header: Une adresse e-mail a été supprimée de votre
 user_mailer.email_deleted.help_html: Si vous ne souhaitez pas supprimer cette adresse e-mail, veuillez visiter le %{help_link_html} de %{app_name_html} ou %{contact_link_html}.
 user_mailer.email_deleted.subject: Adresse e-mail supprimée
 user_mailer.help_link_text: Centre d’aide
+user_mailer.idv_please_call.body.contact_message_html: Appelez le <strong>%{contact_number}</strong> et indiquez le code d’erreur <strong>%{support_code}</strong>.
+user_mailer.idv_please_call.body.intro_html: Appelez notre centre de contact avant le <strong>%{date}</strong> pour continuer à vérifier votre identité.
+user_mailer.idv_please_call.header: S’il vous plaît, appelez-nous
+user_mailer.idv_please_call.subject: Appeler %{app_name} afin de poursuivre la vérification de votre identité
 user_mailer.in_person_completion_survey.body.cta.callout: Cliquez sur le bouton ci-dessous pour commencer.
 user_mailer.in_person_completion_survey.body.cta.label: Répondez à notre enquête
 user_mailer.in_person_completion_survey.body.greeting: Bonjour,
@@ -1900,10 +1906,6 @@ user_mailer.in_person_failed.intro: Votre identité n’a pas pu être vérifié
 user_mailer.in_person_failed.subject: Votre identité n’a pas pu être vérifiée en personne
 user_mailer.in_person_failed.verifying_identity: 'Lors de la vérification de votre identité :'
 user_mailer.in_person_failed.verifying_step_not_expired: Votre carte d’identité délivrée par l’État ou votre permis de conduire ne doit pas être périmé. Nous n’acceptons actuellement aucune autre pièce d’identité, comme les passeports et les cartes d’identité militaires.
-user_mailer.in_person_please_call.body.contact_message_html: Appelez le <strong>%{contact_number}</strong> et indiquez le code d’erreur <strong>%{support_code}</strong>.
-user_mailer.in_person_please_call.body.intro_html: Appelez notre centre de contact avant le <strong>%{date}</strong> pour continuer à vérifier votre identité.
-user_mailer.in_person_please_call.header: S’il vous plaît, appelez-nous
-user_mailer.in_person_please_call.subject: Appeler %{app_name} afin de poursuivre la vérification de votre identité
 user_mailer.in_person_ready_to_verify_reminder.greeting: Bonjour,
 user_mailer.in_person_ready_to_verify_reminder.heading.one: Il vous reste %{count} jour pour vérifier votre identité en personne
 user_mailer.in_person_ready_to_verify_reminder.heading.other: Il vous reste %{count} jours pour vérifier votre identité en personne
@@ -1966,7 +1968,7 @@ user_mailer.reset_password_instructions.footer: Ce lien expire dans %{expires} h
 user_mailer.reset_password_instructions.gpo_letter_description: Si vous réinitialisez votre mot de passe, le code de vérification contenu dans votre lettre ne fonctionnera plus et vous devrez reconfirmer votre identité.
 user_mailer.reset_password_instructions.gpo_letter_header: Votre lettre est en route
 user_mailer.reset_password_instructions.header: Pour terminer la réinitialisation de votre mot de passe, veuillez cliquer sur le lien ci-dessous ou copier et coller le lien complet dans votre navigateur.
-user_mailer.reset_password_instructions.in_person_warning_description_html: <strong>If you reset your password now, your barcode will not work at the Post Office.</strong> You’ll have to restart the identity verification process from the beginning.
+user_mailer.reset_password_instructions.in_person_warning_description_html: <strong>Si vous réinitialisez maintenant votre mot de passe, votre code-barres ne fonctionnera pas au bureau de poste.</strong> Vous devrez recommencer la procédure de vérification d’identité depuis le début.
 user_mailer.reset_password_instructions.link_text: Réinitialiser votre mot de passe
 user_mailer.reset_password_instructions.subject: Réinitialiser votre mot de passe
 user_mailer.signup_with_your_email.help_html: Si vous n’avez pas demandé un nouveau compte ou soupçonnez qu’une erreur s’est produite, veuillez visiter le %{help_link_html} de %{app_name_html} ou %{contact_link_html}.

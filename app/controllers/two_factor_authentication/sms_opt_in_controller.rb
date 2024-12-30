@@ -74,8 +74,8 @@ module TwoFactorAuthentication
     end
 
     def has_other_auth_methods?
-      two_factor_configurations.
-        any? { |config| config.mfa_enabled? && config != @phone_configuration }
+      two_factor_configurations
+        .any? { |config| config.mfa_enabled? && config != @phone_configuration }
     end
 
     def new_user?

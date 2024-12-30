@@ -53,7 +53,7 @@ RSpec.describe 'OpenID Connect' do
         client_id: 'urn:gov:gsa:openidconnect:test_prompt_login_banned',
       )
 
-      expect(current_path).to eq(openid_connect_authorize_path)
+      expect(page).to have_current_path(openid_connect_authorize_path, ignore_query: true)
       expect(page).to have_content(t('openid_connect.authorization.errors.prompt_invalid'))
     end
 
@@ -110,7 +110,7 @@ RSpec.describe 'OpenID Connect' do
         client_id: 'urn:gov:gsa:openidconnect:test_prompt_login_banned',
       )
 
-      expect(current_path).to eq(openid_connect_authorize_path)
+      expect(page).to have_current_path(openid_connect_authorize_path, ignore_query: true)
       expect(page).to have_content(t('openid_connect.authorization.errors.prompt_invalid'))
     end
 
@@ -125,8 +125,8 @@ RSpec.describe 'OpenID Connect' do
     end
 
     it 'auto-allows with a second authorization and redirect_uris in CSP headers if enabled' do
-      allow(IdentityConfig.store).to receive(:openid_connect_content_security_form_action_enabled).
-        and_return(true)
+      allow(IdentityConfig.store).to receive(:openid_connect_content_security_form_action_enabled)
+        .and_return(true)
       client_id = 'urn:gov:gsa:openidconnect:sp:server'
       service_provider = build(:service_provider, issuer: client_id)
       user = user_with_2fa
@@ -137,8 +137,8 @@ RSpec.describe 'OpenID Connect' do
       visit_idp_from_ial1_oidc_sp(client_id: client_id, prompt: 'select_account')
       sign_in_user(user)
 
-      expect(page.response_headers['Content-Security-Policy']).
-        to(include('form-action \'self\' http://localhost:7654 https://example.com'))
+      expect(page.response_headers['Content-Security-Policy'])
+        .to(include('form-action \'self\' http://localhost:7654 https://example.com'))
 
       fill_in_code_with_last_phone_otp
       click_submit_default
@@ -148,8 +148,8 @@ RSpec.describe 'OpenID Connect' do
     end
 
     it 'auto-allows with a second authorization and blank CSP headers if not enabled' do
-      allow(IdentityConfig.store).to receive(:openid_connect_content_security_form_action_enabled).
-        and_return(false)
+      allow(IdentityConfig.store).to receive(:openid_connect_content_security_form_action_enabled)
+        .and_return(false)
       client_id = 'urn:gov:gsa:openidconnect:sp:server'
       service_provider = build(:service_provider, issuer: client_id)
       user = user_with_2fa
@@ -160,8 +160,8 @@ RSpec.describe 'OpenID Connect' do
       visit_idp_from_ial1_oidc_sp(client_id: client_id, prompt: 'select_account')
       sign_in_user(user)
 
-      expect(page.response_headers['Content-Security-Policy']).
-        to(include('form-action \'self\''))
+      expect(page.response_headers['Content-Security-Policy'])
+        .to(include('form-action \'self\''))
 
       fill_in_code_with_last_phone_otp
       click_submit_default
@@ -171,8 +171,8 @@ RSpec.describe 'OpenID Connect' do
     end
 
     it 'auto-allows and includes redirect_uris in CSP headers if enabled after an incorrect OTP' do
-      allow(IdentityConfig.store).to receive(:openid_connect_content_security_form_action_enabled).
-        and_return(true)
+      allow(IdentityConfig.store).to receive(:openid_connect_content_security_form_action_enabled)
+        .and_return(true)
 
       client_id = 'urn:gov:gsa:openidconnect:sp:server'
       service_provider = build(:service_provider, issuer: client_id)
@@ -184,15 +184,15 @@ RSpec.describe 'OpenID Connect' do
       visit_idp_from_ial1_oidc_sp(client_id: client_id, prompt: 'select_account')
       sign_in_user(user)
 
-      expect(page.response_headers['Content-Security-Policy']).
-        to(include('form-action \'self\' http://localhost:7654 https://example.com'))
+      expect(page.response_headers['Content-Security-Policy'])
+        .to(include('form-action \'self\' http://localhost:7654 https://example.com'))
 
       fill_in :code, with: 'wrong otp'
       click_submit_default
 
       expect(page).to have_content(t('two_factor_authentication.invalid_otp'))
-      expect(page.response_headers['Content-Security-Policy']).
-        to(include('form-action \'self\' http://localhost:7654 https://example.com'))
+      expect(page.response_headers['Content-Security-Policy'])
+        .to(include('form-action \'self\' http://localhost:7654 https://example.com'))
 
       fill_in_code_with_last_phone_otp
       click_submit_default
@@ -202,8 +202,8 @@ RSpec.describe 'OpenID Connect' do
     end
 
     it 'auto-allows and blank CSP headers if disabled after an incorrect OTP' do
-      allow(IdentityConfig.store).to receive(:openid_connect_content_security_form_action_enabled).
-        and_return(true)
+      allow(IdentityConfig.store).to receive(:openid_connect_content_security_form_action_enabled)
+        .and_return(true)
 
       client_id = 'urn:gov:gsa:openidconnect:sp:server'
       service_provider = build(:service_provider, issuer: client_id)
@@ -215,15 +215,15 @@ RSpec.describe 'OpenID Connect' do
       visit_idp_from_ial1_oidc_sp(client_id: client_id, prompt: 'select_account')
       sign_in_user(user)
 
-      expect(page.response_headers['Content-Security-Policy']).
-        to(include('form-action \'self\''))
+      expect(page.response_headers['Content-Security-Policy'])
+        .to(include('form-action \'self\''))
 
       fill_in :code, with: 'wrong otp'
       click_submit_default
 
       expect(page).to have_content(t('two_factor_authentication.invalid_otp'))
-      expect(page.response_headers['Content-Security-Policy']).
-        to(include('form-action \'self\''))
+      expect(page.response_headers['Content-Security-Policy'])
+        .to(include('form-action \'self\''))
 
       fill_in_code_with_last_phone_otp
       click_submit_default
@@ -307,8 +307,8 @@ RSpec.describe 'OpenID Connect' do
 
   context 'when accepting id_token_hint in logout' do
     before do
-      allow(IdentityConfig.store).to receive(:reject_id_token_hint_in_logout).
-        and_return(false)
+      allow(IdentityConfig.store).to receive(:reject_id_token_hint_in_logout)
+        .and_return(false)
     end
 
     context 'when sending id_token_hint' do
@@ -357,8 +357,8 @@ RSpec.describe 'OpenID Connect' do
           post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
           state: state,
         )
-        expect(page.response_headers['Content-Security-Policy']).
-          to(include('form-action \'self\' gov.gsa.openidconnect.test:'))
+        expect(page.response_headers['Content-Security-Policy'])
+          .to(include('form-action \'self\' gov.gsa.openidconnect.test:'))
         expect(page).to have_content(
           t(
             'openid_connect.logout.heading_with_sp',
@@ -423,8 +423,8 @@ RSpec.describe 'OpenID Connect' do
 
   context 'when rejecting id_token_hint in logout' do
     before do
-      allow(IdentityConfig.store).to receive(:reject_id_token_hint_in_logout).
-        and_return(true)
+      allow(IdentityConfig.store).to receive(:reject_id_token_hint_in_logout)
+        .and_return(true)
     end
 
     it 'logout destroys the session when confirming logout' do
@@ -571,8 +571,8 @@ RSpec.describe 'OpenID Connect' do
 
   it 'errors if verified_within param is too recent', driver: :mobile_rack_test do
     client_id = 'urn:gov:gsa:openidconnect:test'
-    allow(IdentityConfig.store).to receive(:allowed_verified_within_providers).
-      and_return([client_id])
+    allow(IdentityConfig.store).to receive(:allowed_verified_within_providers)
+      .and_return([client_id])
     state = SecureRandom.hex
     nonce = SecureRandom.hex
     code_verifier = SecureRandom.hex
@@ -597,14 +597,14 @@ RSpec.describe 'OpenID Connect' do
     redirect_params = UriService.params(oidc_redirect_url)
 
     expect(redirect_params[:error]).to eq('invalid_request')
-    expect(redirect_params[:error_description]).
-      to include('Verified within value must be at least 30 days or older')
+    expect(redirect_params[:error_description])
+      .to include('Verified within value must be at least 30 days or older')
   end
 
   it 'sends the user through idv again via verified_within param', :js do
     client_id = 'urn:gov:gsa:openidconnect:sp:server'
-    allow(IdentityConfig.store).to receive(:allowed_verified_within_providers).
-      and_return([client_id])
+    allow(IdentityConfig.store).to receive(:allowed_verified_within_providers)
+      .and_return([client_id])
 
     user = user_with_2fa
     _profile = create(
@@ -1047,8 +1047,8 @@ RSpec.describe 'OpenID Connect' do
         click_agree_and_continue
 
         expect(current_url).to eq new_user_session_url
-        expect(page).
-          to have_content t('instructions.go_back_to_mobile_app', friendly_name: 'Example iOS App')
+        expect(page)
+          .to have_content t('instructions.go_back_to_mobile_app', friendly_name: 'Example iOS App')
       end
     end
   end
@@ -1179,7 +1179,7 @@ RSpec.describe 'OpenID Connect' do
       expect(URI(oidc_redirect_url).path).to eq(redirs_to)
       return
     end
-    expect(current_path).to eq('/')
+    expect(page).to have_current_path('/')
 
     user ||= create(
       :profile, :active, :verified,

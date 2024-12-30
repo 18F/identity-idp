@@ -35,7 +35,7 @@ RSpec.describe Idv::StateIdForm do
       identity_doc_address_state: Faker::Address.state_abbr,
       same_address_as_id: same_address_as_id,
       state_id_jurisdiction: 'AL',
-      state_id_number: Faker::IDNumber.valid,
+      state_id_number: Faker::IdNumber.valid,
     }
   end
   let(:dob_min_age_name_error_params) do
@@ -50,7 +50,7 @@ RSpec.describe Idv::StateIdForm do
       identity_doc_address_state: Faker::Address.state_abbr,
       same_address_as_id: same_address_as_id,
       state_id_jurisdiction: 'AL',
-      state_id_number: Faker::IDNumber.valid,
+      state_id_number: Faker::IdNumber.valid,
     }
   end
   let(:invalid_char) { '1' }
@@ -66,7 +66,7 @@ RSpec.describe Idv::StateIdForm do
       identity_doc_address_state: Faker::Address.state_abbr,
       same_address_as_id: same_address_as_id,
       state_id_jurisdiction: 'AL',
-      state_id_number: Faker::IDNumber.valid,
+      state_id_number: Faker::IdNumber.valid,
     }
   end
   let(:pii) { nil }

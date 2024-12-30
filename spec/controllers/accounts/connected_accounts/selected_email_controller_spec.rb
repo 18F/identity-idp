@@ -29,6 +29,19 @@ RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
       expect(assigns(:identity)).to be_kind_of(ServiceProviderIdentity)
       expect(assigns(:select_email_form)).to be_kind_of(SelectEmailForm)
       expect(assigns(:can_add_email)).to eq(true)
+      expect(assigns(:email_id)).to eq(user.email_addresses.first.id)
+    end
+
+    context 'user has signed in with a different email address than has been assigned' do
+      it 'assigns the user identity email id' do
+        identity_email = user.email_addresses.last.id
+        identity.email_address_id = identity_email
+        identity.save
+
+        response
+
+        expect(assigns(:email_id)).to eq(identity_email)
+      end
     end
 
     context 'with an identity parameter not associated with the user' do
@@ -52,8 +65,8 @@ RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
 
     context 'with selected email to share feature disabled' do
       before do
-        allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled).
-          and_return(false)
+        allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
+          .and_return(false)
       end
 
       it 'renders 404' do
@@ -61,10 +74,10 @@ RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
       end
     end
 
-    context 'when users has max number of emails' do
+    context 'when the user already has max number of emails' do
       before do
-        allow(user).to receive(:email_address_count).and_return(2)
-        allow(IdentityConfig.store).to receive(:max_emails_per_account).and_return(2)
+        allow(IdentityConfig.store).to receive(:max_emails_per_account)
+          .and_return(user.email_addresses.count)
       end
 
       it 'can add email variable set to false' do
@@ -113,7 +126,7 @@ RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
         expect(@analytics).to have_logged_event(
           :sp_select_email_submitted,
           success: false,
-          error_details: { selected_email_id: { not_found: true } },
+          error_details: { selected_email_id: { blank: true, not_found: true } },
         )
       end
     end
@@ -131,8 +144,8 @@ RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
 
     context 'with selected email to share feature disabled' do
       before do
-        allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled).
-          and_return(false)
+        allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
+          .and_return(false)
       end
 
       it 'renders 404' do

@@ -62,8 +62,8 @@ RSpec.describe 'webauthn hide' do
 
         context 'when in ab test for desktop setup' do
           before do
-            allow(IdentityConfig.store).to receive(:desktop_ft_unlock_setup_option_percent_tested).
-              and_return(100)
+            allow(IdentityConfig.store).to receive(:desktop_ft_unlock_setup_option_percent_tested)
+              .and_return(100)
             reload_ab_tests
           end
 
@@ -77,8 +77,8 @@ RSpec.describe 'webauthn hide' do
 
         context 'when A/B test is disabled' do
           before do
-            allow(IdentityConfig.store).to receive(:desktop_ft_unlock_setup_option_percent_tested).
-              and_return(0)
+            allow(IdentityConfig.store).to receive(:desktop_ft_unlock_setup_option_percent_tested)
+              .and_return(0)
             reload_ab_tests
           end
 
@@ -130,7 +130,7 @@ RSpec.describe 'webauthn hide' do
             fill_in_credentials_and_submit(user.email, user.password)
 
             # Redirected to options page
-            expect(current_path).to eq(login_two_factor_options_path)
+            expect(page).to have_current_path(login_two_factor_options_path)
 
             # Can choose authenticator
             expect(webauthn_option_hidden?).to eq(false)
@@ -150,7 +150,7 @@ RSpec.describe 'webauthn hide' do
               fill_in_credentials_and_submit(user.email, user.password)
 
               # Redirected to default MFA method
-              expect(current_path).to eq(login_two_factor_piv_cac_path)
+              expect(page).to have_current_path(login_two_factor_piv_cac_path)
 
               # Can change to authenticator if they choose
               click_on t('two_factor_authentication.login_options_link_text')

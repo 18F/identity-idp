@@ -35,8 +35,8 @@ RSpec.describe Idv::ProofingComponents do
       allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return('test_vendor')
       idv_session.mark_verify_info_step_complete!
       idv_session.address_verification_mechanism = 'gpo'
-      allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?).
-        and_return(true)
+      allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?)
+        .and_return(true)
       idv_session.threatmetrix_review_status = 'pass'
       idv_session.source_check_vendor = 'aamva'
     end
@@ -153,18 +153,56 @@ RSpec.describe Idv::ProofingComponents do
     end
   end
 
+  describe '#residential_resolution_check' do
+    it 'returns nil by default' do
+      expect(subject.residential_resolution_check).to be_nil
+    end
+
+    context 'when resolution_vendor is set on idv_session' do
+      before do
+        idv_session.mark_verify_info_step_complete!
+        idv_session.residential_resolution_vendor = 'AReallyGoodVendor'
+      end
+
+      it 'returns the vendor we set' do
+        expect(subject.residential_resolution_check).to eql('AReallyGoodVendor')
+      end
+    end
+
+    context 'when resolution done but residential_resolution_vendor nil because of 50/50 state' do
+      before do
+        idv_session.mark_verify_info_step_complete!
+      end
+
+      it 'returns nil to match previous behavior' do
+        expect(subject.residential_resolution_check).to be(nil)
+      end
+    end
+  end
+
   describe '#resolution_check' do
     it 'returns nil by default' do
       expect(subject.resolution_check).to be_nil
     end
 
-    context 'after verification' do
+    context 'when resolution_vendor is set on idv_session' do
+      before do
+        idv_session.mark_verify_info_step_complete!
+        idv_session.resolution_vendor = 'AReallyGoodVendor'
+      end
+
+      it 'returns the vendor we set' do
+        expect(subject.resolution_check).to eql('AReallyGoodVendor')
+      end
+    end
+
+    context 'when resolution done but resolution_vendor nil because of 50/50 state' do
       before do
         idv_session.mark_verify_info_step_complete!
       end
 
-      it 'returns LexisNexis' do
-        expect(subject.resolution_check).to eql(Idp::Constants::Vendors::LEXIS_NEXIS)
+      it 'returns LexisNexis to match previous behavior' do
+        expect(subject.resolution_check).to eql('lexis_nexis')
       end
     end
   end
@@ -198,8 +236,8 @@ RSpec.describe Idv::ProofingComponents do
   describe '#threatmetrix' do
     context 'device profiling collecting enabled' do
       before do
-        allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?).
-          and_return(true)
+        allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?)
+          .and_return(true)
       end
 
       context 'threatmetrix_review_status present' do
@@ -221,8 +259,8 @@ RSpec.describe Idv::ProofingComponents do
 
     context 'device profiling collecting disabled' do
       before do
-        allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?).
-          and_return(false)
+        allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?)
+          .and_return(false)
       end
 
       context 'threatmetrix_review_status present' do

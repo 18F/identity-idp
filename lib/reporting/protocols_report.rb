@@ -221,20 +221,20 @@ module Reporting
         )
         {
           saml: {
-            request_count: results.
-              select { |slice| slice['protocol'] == SAML_AUTH_EVENT }.
-              map { |slice| slice['request_count'].to_i }.
-              sum,
+            request_count: results
+              .select { |slice| slice['protocol'] == SAML_AUTH_EVENT }
+              .map { |slice| slice['request_count'].to_i }
+              .sum,
             issuer_count: by_uniq_issuers(
-              results.
-                select { |slice| slice['protocol'] == SAML_AUTH_EVENT },
+              results
+                .select { |slice| slice['protocol'] == SAML_AUTH_EVENT },
             ).count,
           },
           oidc: {
-            request_count: results.
-              select { |slice| slice['protocol'] == OIDC_AUTH_EVENT }.
-              map { |slice| slice['request_count'].to_i }.
-              sum,
+            request_count: results
+              .select { |slice| slice['protocol'] == OIDC_AUTH_EVENT }
+              .map { |slice| slice['request_count'].to_i }
+              .sum,
             issuer_count: by_uniq_issuers(
               results.select { |slice| slice['protocol'] == OIDC_AUTH_EVENT },
             ).count,
@@ -254,10 +254,10 @@ module Reporting
           unsigned: by_uniq_issuers(
             results.select { |slice| slice['unsigned_count'].to_i > 0 },
           ),
-          invalid_signature: results.
-            select { |slice| slice['invalid_signature_count'].to_i > 0 }.
-            map { |slice| slice['issuer'] }.
-            uniq,
+          invalid_signature: results
+            .select { |slice| slice['invalid_signature_count'].to_i > 0 }
+            .map { |slice| slice['issuer'] }
+            .uniq,
         }
       end
     end

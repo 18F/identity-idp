@@ -49,10 +49,10 @@ RSpec.describe 'users/backup_code_setup/create.html.erb' do
   it 'contains form post to backup_code_continue_path' do
     render
 
-    expect(rendered).
-      to have_xpath("//form[@action='#{backup_code_continue_path}']")
-    expect(rendered).
-      to have_xpath("//form[@method='post']")
+    expect(rendered)
+      .to have_xpath("//form[@action='#{backup_code_continue_path}']")
+    expect(rendered)
+      .to have_xpath("//form[@method='post']")
   end
 
   it 'has continue button' do

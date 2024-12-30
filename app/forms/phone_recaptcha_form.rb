@@ -35,9 +35,9 @@ class PhoneRecaptchaForm
   end
 
   def score_threshold_country_override
-    parsed_phone.valid_countries.
-      map { |country| self.class.country_score_overrides[country.to_sym] }.
-      compact.
-      min
+    parsed_phone.valid_countries
+      .map { |country| self.class.country_score_overrides[country.to_sym] }
+      .compact
+      .min
   end
 end

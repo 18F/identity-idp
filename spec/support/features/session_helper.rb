@@ -21,7 +21,7 @@ module Features
 
       click_link t('two_factor_authentication.login_options_link_text')
 
-      expect(current_path).to eq login_two_factor_options_path
+      expect(page).to have_current_path login_two_factor_options_path
 
       select_2fa_option(option)
     end
@@ -79,8 +79,8 @@ module Features
     end
 
     def fill_in_piv_cac_credentials_and_submit(user,
-                                               uuid = user.
-                                                 piv_cac_configurations&.first&.x509_dn_uuid)
+                                               uuid = user
+                                                 .piv_cac_configurations&.first&.x509_dn_uuid)
       allow(FeatureManagement).to receive(:development_and_identity_pki_disabled?).and_return(false)
 
       stub_piv_cac_service(uuid:)
@@ -544,8 +544,8 @@ module Features
 
     def stub_piv_cac_service(error: nil, uuid: Random.uuid)
       allow(IdentityConfig.store).to receive(:identity_pki_disabled).and_return(false)
-      allow(IdentityConfig.store).to receive(:piv_cac_service_url).
-        and_return('http://piv.example.com/')
+      allow(IdentityConfig.store).to receive(:piv_cac_service_url)
+        .and_return('http://piv.example.com/')
       allow(IdentityConfig.store).to receive(:piv_cac_verify_token_url).and_return('http://piv.example.com/')
       stub_request(:post, 'piv.example.com').to_return do |request|
         {
@@ -554,9 +554,9 @@ module Features
         }
       end
 
-      stub_request(:post, 'piv.example.com').
-        with(query: hash_including('nonce', 'redirect_uri')).
-        to_return do |request|
+      stub_request(:post, 'piv.example.com')
+        .with(query: hash_including('nonce', 'redirect_uri'))
+        .to_return do |request|
           query = UriService.params(request.uri)
           {
             status: 302,
@@ -602,7 +602,7 @@ module Features
       fill_in t('account.index.email'), with: user.email
       click_button t('forms.buttons.continue')
 
-      expect(current_path).to eq forgot_password_path
+      expect(page).to have_current_path forgot_password_path
     end
 
     def click_reset_password_link_from_email
@@ -617,7 +617,7 @@ module Features
       open_last_email
       click_email_link_matching(/reset_password_token/)
 
-      expect(current_path).to eq edit_user_password_path
+      expect(page).to have_current_path edit_user_password_path
     end
 
     def expect_branded_experience

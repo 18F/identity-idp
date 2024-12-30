@@ -6,8 +6,8 @@ RSpec.feature 'OIDC requests using VTR' do
   include WebAuthnHelper
 
   before do
-    allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).
-      and_return(true)
+    allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests)
+      .and_return(true)
   end
 
   scenario 'sign in with VTR request for authentication' do
@@ -107,7 +107,7 @@ RSpec.feature 'OIDC requests using VTR' do
 
     sign_in_live_with_2fa(user)
 
-    expect(current_path).to eq(idv_welcome_path)
+    expect(page).to have_current_path(idv_welcome_path)
   end
 
   scenario 'sign in with VTR request for idv with facial match requires idv with facial match',
@@ -120,7 +120,7 @@ RSpec.feature 'OIDC requests using VTR' do
 
     sign_in_live_with_2fa(user)
 
-    expect(current_path).to eq(idv_welcome_path)
+    expect(page).to have_current_path(idv_welcome_path)
 
     click_continue
     check t('doc_auth.instructions.consent', app_name: APP_NAME)

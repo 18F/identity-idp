@@ -265,8 +265,8 @@ class RateLimiter
       },
       short_term_phone_otp: {
         max_attempts: IdentityConfig.store.short_term_phone_otp_max_attempts,
-        attempt_window: IdentityConfig.store.
-          short_term_phone_otp_max_attempt_window_in_seconds.seconds.in_minutes.to_f,
+        attempt_window: IdentityConfig.store
+          .short_term_phone_otp_max_attempt_window_in_seconds.seconds.in_minutes.to_f,
       },
       sign_in_user_id_per_ip: {
         max_attempts: IdentityConfig.store.sign_in_user_id_per_ip_max_attempts,

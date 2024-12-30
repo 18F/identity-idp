@@ -24,21 +24,16 @@ module Idv
     # copied from Flow::Failure module
     def failure(message = nil, extra = nil)
       form_response_params = { success: false }
-      form_response_params[:errors] = make_error_hash(message)
+      form_response_params[:errors] = error_hash(message)
       form_response_params[:extra] = extra unless extra.nil?
       FormResponse.new(**form_response_params)
     end
 
-    def make_error_hash(message)
-      Rails.logger.info("make_error_hash: stored_result: #{stored_result.inspect}")
-
-      error_hash = { message: message || I18n.t('doc_auth.errors.general.network_error') }
-
-      if stored_result&.errors&.has_key?(:socure)
-        error_hash[:socure] = stored_result.errors[:socure]
-      end
-
-      error_hash
+    def error_hash(message)
+      {
+        message: message || I18n.t('doc_auth.errors.general.network_error'),
+        socure: stored_result&.errors&.dig(:socure),
+      }
     end
 
     def extract_pii_from_doc(user, store_in_session: false)
@@ -85,8 +80,8 @@ module Idv
       return unless IdentityConfig.store.socure_docv_verification_data_test_mode
 
       docv_transaction_token_override = params.permit(:docv_token)[:docv_token]
-      return unless IdentityConfig.store.socure_docv_verification_data_test_mode_tokens.
-        include?(docv_transaction_token_override)
+      return unless IdentityConfig.store.socure_docv_verification_data_test_mode_tokens
+        .include?(docv_transaction_token_override)
 
       SocureDocvResultsJob.perform_now(
         document_capture_session_uuid:,
@@ -106,10 +101,12 @@ module Idv
         document_type: document_request_body[:documentType],
         docv_transaction_token: response_hash.dig(:data, :docvTransactionToken),
       }
-      analytics_hash = log_extras.merge(analytics_arguments).
-        merge(document_request_body).except(
+      analytics_hash = log_extras
+        .merge(analytics_arguments)
+        .merge(document_request_body).except(
           :documentType, # requested document type
-        ).merge(response_body: document_response.to_h)
+        )
+        .merge(response_body: document_response.to_h)
       analytics.idv_socure_document_request_submitted(**analytics_hash)
     end
 

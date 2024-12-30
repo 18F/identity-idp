@@ -1490,7 +1490,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                   allow(analytics).to receive(
                     :idv_in_person_usps_proofing_results_job_please_call_email_initiated,
                   )
-                  allow(user_mailer).to receive(:in_person_please_call).and_return(mail_deliverer)
+                  allow(user_mailer).to receive(:idv_please_call).and_return(mail_deliverer)
                   subject.perform(current_time)
                 end
 
@@ -1545,7 +1545,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                 end
 
                 it 'sends the please call email' do
-                  expect(user_mailer).to have_received(:in_person_please_call).with(
+                  expect(user_mailer).to have_received(:idv_please_call).with(
                     enrollment: enrollment,
                     visited_location_name: visited_location_name,
                   )
@@ -2608,8 +2608,8 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
 
             context 'when the results delay is configured to be negative time' do
               before do
-                allow(IdentityConfig.store).to receive(:in_person_results_delay_in_hours).
-                  and_return(-1)
+                allow(IdentityConfig.store).to receive(:in_person_results_delay_in_hours)
+                  .and_return(-1)
               end
 
               context 'when the USPS proofing results has a passed status' do
@@ -2637,8 +2637,8 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
 
             context 'when the results delay is not configured' do
               before do
-                allow(IdentityConfig.store).to receive(:in_person_results_delay_in_hours).
-                  and_return(nil)
+                allow(IdentityConfig.store).to receive(:in_person_results_delay_in_hours)
+                  .and_return(nil)
               end
 
               context 'when the USPS proofing results has a passed status' do

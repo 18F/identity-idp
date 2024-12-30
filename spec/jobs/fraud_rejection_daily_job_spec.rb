@@ -11,8 +11,8 @@ RSpec.describe FraudRejectionDailyJob do
 
       rejected_profiles = Profile.where.not(fraud_rejection_at: nil)
 
-      allow(job).to receive(:analytics).with(user: rejectedable_profile.user).
-        and_return(job_analytics)
+      allow(job).to receive(:analytics).with(user: rejectedable_profile.user)
+        .and_return(job_analytics)
 
       expect { job.perform(Time.zone.today) }.to change { rejected_profiles.count }.by(1)
       expect(job_analytics).to have_logged_event(

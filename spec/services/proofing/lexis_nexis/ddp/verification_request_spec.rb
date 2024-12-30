@@ -32,10 +32,10 @@ RSpec.describe Proofing::LexisNexis::Ddp::VerificationRequest do
   end
 
   before do
-    allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_policy).
-      and_return('test-policy')
-    allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_authentication_policy).
-      and_return('test-authentication-policy')
+    allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_policy)
+      .and_return('test-policy')
+    allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_authentication_policy)
+      .and_return('test-authentication-policy')
   end
 
   describe '#body' do

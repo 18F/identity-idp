@@ -26,8 +26,8 @@ RSpec.describe EventDecorator do
       let(:ip_address) { '0.0.0.0' }
 
       it 'is an approximate location' do
-        expect(decorator.last_sign_in_location_and_ip).
-          to eq('From 0.0.0.0 (IP address potentially located in United States)')
+        expect(decorator.last_sign_in_location_and_ip)
+          .to eq('From 0.0.0.0 (IP address potentially located in United States)')
       end
     end
 

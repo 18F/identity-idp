@@ -21,22 +21,36 @@ RSpec.describe SelectEmailForm do
         let(:identity) { create(:service_provider_identity, :consented, user:) }
 
         it 'updates linked email address' do
-          expect { response }.to change { identity.reload.email_address_id }.
-            from(nil).
-            to(selected_email_id)
+          expect { response }.to change { identity.reload.email_address_id }
+            .from(nil)
+            .to(selected_email_id)
         end
       end
     end
 
     context 'with an invalid email id' do
-      let(:selected_email_id) { '' }
+      context 'with a blank email id' do
+        let(:selected_email_id) { '' }
 
-      it 'is unsuccessful' do
-        expect(response.to_h).to eq(
-          success: false,
-          error_details: { selected_email_id: { not_found: true } },
-          selected_email_id: nil,
-        )
+        it 'is unsuccessful' do
+          expect(response.to_h).to eq(
+            success: false,
+            error_details: { selected_email_id: { blank: true, not_found: true } },
+            selected_email_id: nil,
+          )
+        end
+      end
+
+      context 'with a non-existing email id' do
+        let(:selected_email_id) { 9000 }
+
+        it 'is unsuccessful' do
+          expect(response.to_h).to eq(
+            success: false,
+            error_details: { selected_email_id: { not_found: true } },
+            selected_email_id: 9000,
+          )
+        end
       end
 
       context 'with present value that does not convert to numeric' do
@@ -45,7 +59,7 @@ RSpec.describe SelectEmailForm do
         it 'is unsuccessful without raising exception' do
           expect(response.to_h).to eq(
             success: false,
-            error_details: { selected_email_id: { not_found: true } },
+            error_details: { selected_email_id: { not_found: true, blank: true } },
             selected_email_id: nil,
           )
         end

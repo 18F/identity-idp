@@ -18,6 +18,10 @@ RSpec.feature 'A user with a UAK passwords attempts IdV' do
 
     click_agree_and_continue
 
-    expect(current_url).to start_with('http://localhost:7654/auth/result')
+    expect(page).to have_current_path(
+      'http://localhost:7654/auth/result',
+      url: true,
+      ignore_query: true,
+    )
   end
 end

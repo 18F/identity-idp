@@ -18,8 +18,8 @@ module Idv
                 with: :handle_request_enroll_exception
 
     def new
-      Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
-        call(:encrypt, :view, true)
+      Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer)
+        .call(:encrypt, :view, true)
       analytics.idv_enter_password_visited(
         address_verification_method: idv_session.address_verification_mechanism,
         **ab_test_analytics_buckets,
@@ -56,8 +56,8 @@ module Idv
         proofing_workflow_time_in_seconds: idv_session.proofing_workflow_time_in_seconds,
         **ab_test_analytics_buckets,
       )
-      Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
-        call(:verified, :view, true)
+      Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer)
+        .call(:verified, :view, true)
       analytics.idv_final(
         success: true,
         fraud_review_pending: idv_session.profile.fraud_review_pending?,
@@ -141,6 +141,10 @@ module Idv
       if profile.gpo_verification_pending?
         current_user.send_email_to_all_addresses(:verify_by_mail_letter_requested)
         log_letter_enqueued_analytics(resend: false)
+      end
+
+      if profile.fraud_review_pending? && !profile.in_person_verification_pending?
+        current_user.send_email_to_all_addresses(:idv_please_call)
       end
 
       if profile.active?

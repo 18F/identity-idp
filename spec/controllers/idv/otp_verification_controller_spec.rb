@@ -107,8 +107,8 @@ RSpec.describe Idv::OtpVerificationController do
     context 'the user is going through in person proofing' do
       before(:each) do
         create(:in_person_enrollment, :establishing, user: user)
-        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
-          and_return(true)
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled)
+          .and_return(true)
       end
 
       context 'the user uses sms otp' do
@@ -120,8 +120,8 @@ RSpec.describe Idv::OtpVerificationController do
         end
 
         it 'saves the sms notification number to the enrollment' do
-          expect(IdentityConfig.store).to receive(:in_person_send_proofing_notifications_enabled).
-            and_return(true)
+          expect(IdentityConfig.store).to receive(:in_person_send_proofing_notifications_enabled)
+            .and_return(true)
 
           put :update, params: otp_code_param
 
@@ -142,8 +142,8 @@ RSpec.describe Idv::OtpVerificationController do
         end
 
         it 'does not save the sms notification number to the enrollment' do
-          expect(IdentityConfig.store).to receive(:in_person_send_proofing_notifications_enabled).
-            and_return(true)
+          expect(IdentityConfig.store).to receive(:in_person_send_proofing_notifications_enabled)
+            .and_return(true)
 
           put :update, params: otp_code_param
 

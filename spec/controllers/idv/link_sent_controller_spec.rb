@@ -191,8 +191,8 @@ RSpec.describe Idv::LinkSentController do
 
         context 'selfie checks' do
           before do
-            expect(controller).to receive(:selfie_requirement_met?).
-              and_return(performed_if_needed)
+            expect(controller).to receive(:selfie_requirement_met?)
+              .and_return(performed_if_needed)
           end
 
           context 'not performed' do
@@ -223,8 +223,10 @@ RSpec.describe Idv::LinkSentController do
 
         before do
           expect(FormResponse).to receive(:new).with(
-            { success: false,
-              errors: { message: error_message } },
+            {
+              success: false,
+              errors: hash_including(message: error_message),
+            },
           )
         end
 

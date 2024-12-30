@@ -79,8 +79,8 @@ RSpec.describe AttributeAsserter do
       [
         Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
         Saml::Idp::Constants::IAL_VERIFIED_ACR,
-      ].
-        each do |ial_value|
+      ]
+        .each do |ial_value|
         let(:authn_context) do
           [
             ial_value,
@@ -92,8 +92,8 @@ RSpec.describe AttributeAsserter do
             let(:attribute_bundle) { %w[email phone first_name] }
 
             it 'includes all requested attributes + uuid' do
-              expect(user.asserted_attributes.keys).
-                to eq(%i[uuid email phone first_name verified_at aal ial])
+              expect(user.asserted_attributes.keys)
+                .to eq(%i[uuid email phone first_name verified_at aal ial])
             end
 
             it 'creates getter function' do
@@ -117,8 +117,8 @@ RSpec.describe AttributeAsserter do
               end
 
               it 'includes all requested attributes + uuid' do
-                expect(user.asserted_attributes.keys).
-                  to eq(%i[uuid email phone first_name verified_at aal ial])
+                expect(user.asserted_attributes.keys)
+                  .to eq(%i[uuid email phone first_name verified_at aal ial])
               end
             end
           end
@@ -143,8 +143,8 @@ RSpec.describe AttributeAsserter do
             let(:attribute_bundle) { %w[email phone first_name ascii] }
 
             it 'skips ascii as an attribute' do
-              expect(user.asserted_attributes.keys).
-                to eq(%i[uuid email phone first_name verified_at aal ial])
+              expect(user.asserted_attributes.keys)
+                .to eq(%i[uuid email phone first_name verified_at aal ial])
             end
 
             it 'transliterates attributes to ASCII' do
@@ -171,8 +171,8 @@ RSpec.describe AttributeAsserter do
               # rubocop:enable Layout/LineLength
 
               it 'uses authn request bundle' do
-                expect(user.asserted_attributes.keys).
-                  to eq(%i[uuid email first_name last_name ssn phone verified_at aal ial])
+                expect(user.asserted_attributes.keys)
+                  .to eq(%i[uuid email first_name last_name ssn phone verified_at aal ial])
               end
             end
           end
@@ -272,8 +272,7 @@ RSpec.describe AttributeAsserter do
           end
 
           it 'does not create a getter function for IAL1 attributes' do
-            expected_email = EmailContext.new(user).last_sign_in_email_address.email
-            expect(get_asserted_attribute(user, :email)).to eq expected_email
+            expect(get_asserted_attribute(user, :email)).to eq user.last_sign_in_email_address.email
           end
 
           it 'gets UUID from Service Provider' do
@@ -293,8 +292,8 @@ RSpec.describe AttributeAsserter do
             end
 
             it 'does not create a getter function for IAL1 attributes' do
-              expected_email = EmailContext.new(user).last_sign_in_email_address.email
-              expect(get_asserted_attribute(user, :email)).to eq expected_email
+              expect(get_asserted_attribute(user, :email))
+                .to eq user.last_sign_in_email_address.email
             end
 
             it 'gets UUID from Service Provider' do
@@ -679,8 +678,8 @@ RSpec.describe AttributeAsserter do
       end
 
       it 'defers to user alternate email' do
-        expect(get_asserted_attribute(user, :email)).
-          to eq 'email@example.com'
+        expect(get_asserted_attribute(user, :email))
+          .to eq 'email@example.com'
       end
     end
 
@@ -707,8 +706,8 @@ RSpec.describe AttributeAsserter do
       end
 
       it 'defers to user alternate email' do
-        expect(get_asserted_attribute(user, :email)).
-          to eq user.email_addresses.last.email
+        expect(get_asserted_attribute(user, :email))
+          .to eq user.email_addresses.last.email
       end
     end
 
@@ -747,8 +746,8 @@ RSpec.describe AttributeAsserter do
         end
 
         it 'defers to user alternate email' do
-          expect(get_asserted_attribute(user, :email)).
-            to eq 'email@example.com'
+          expect(get_asserted_attribute(user, :email))
+            .to eq 'email@example.com'
         end
       end
 
@@ -775,8 +774,8 @@ RSpec.describe AttributeAsserter do
         end
 
         it 'defers to user alternate email' do
-          expect(get_asserted_attribute(user, :email)).
-            to eq user.email_addresses.last.email
+          expect(get_asserted_attribute(user, :email))
+            .to eq user.email_addresses.last.email
         end
       end
     end

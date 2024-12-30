@@ -75,8 +75,8 @@ account.index.reactivation.instructions: Your profile was recently deactivated d
 account.index.reactivation.link: Reactivate your profile now.
 account.index.sign_in_location_and_ip: From %{ip} (IP address potentially located in %{location})
 account.index.unknown_location: unknown location
-account.index.verification.connect_idv_account.cta: Sign in to partner agency to access services.
-account.index.verification.connect_idv_account.intro: Connect your account to the partner agency.
+account.index.verification.connect_idv_account.cta: Sign in to %{sp_name} to access services.
+account.index.verification.connect_idv_account.intro: Connect your account to %{sp_name}.
 account.index.verification.continue_idv: Continue identity verification
 account.index.verification.finish_verifying_html: Finish verifying your identity to access <strong>%{sp_name}</strong>.
 account.index.verification.finish_verifying_no_sp: Finish the identity verification process to gain access to all %{app_name} partners.
@@ -590,7 +590,7 @@ doc_auth.headers.underage: Age requirement not met
 doc_auth.headers.unreadable_id: We could not read your ID
 doc_auth.headings.address: Update your mailing address
 doc_auth.headings.back: Back of your driver’s license or state ID
-doc_auth.headings.capture_complete: We verified your ID
+doc_auth.headings.capture_complete: We verified your identity document
 doc_auth.headings.capture_scan_warning_html: We couldn’t read the barcode on your ID. If the information below is incorrect, please %{link_html} of your state‑issued ID.
 doc_auth.headings.capture_scan_warning_link: upload new photos
 doc_auth.headings.document_capture: Add photos of your driver’s license or state ID card
@@ -1049,6 +1049,8 @@ idv.errors.incorrect_password: The password you entered is not correct.
 idv.errors.pattern_mismatch.ssn: Enter a nine-digit Social Security number
 idv.errors.pattern_mismatch.zipcode: Enter a 5 or 9 digit ZIP Code
 idv.errors.pattern_mismatch.zipcode_five: Enter a 5 digit ZIP Code
+idv.errors.technical_difficulties: We are having technical difficulties
+idv.errors.try_again_later: Try again later.
 idv.failure.attempts_html.one: You can try <strong>1 more time.</strong> Then, you must wait 6 hours before trying again.
 idv.failure.attempts_html.other: You can try <strong>%{count} more times.</strong> Then, you must wait 6 hours before trying again.
 idv.failure.button.try_online: Try again online
@@ -1075,8 +1077,6 @@ idv.failure.phone.rate_limited.option_try_again_later_no_gpo_html: You can try a
 idv.failure.phone.rate_limited.option_verify_by_mail_html: Verify by mail, which takes <strong>5 to 10 days</strong>
 idv.failure.phone.rate_limited.options_header: 'You can:'
 idv.failure.phone.timeout: Our request to verify your information timed out. Please try again.
-idv.failure.phone.warning.attempts_html.one: For security reasons, you have <strong>one attempt</strong> remaining.
-idv.failure.phone.warning.attempts_html.other: For security reasons, you have <strong>%{count} attempts</strong> remaining.
 idv.failure.phone.warning.gpo.button: Verify by mail
 idv.failure.phone.warning.gpo.explanation: If you don’t have another phone number to try, verify by mail instead.
 idv.failure.phone.warning.gpo.heading: Verify by mail
@@ -1098,6 +1098,8 @@ idv.failure.verify.exit: Exit %{app_name}
 idv.failure.verify.fail_link_html: Get help at <strong>%{sp_name}</strong>
 idv.failure.verify.fail_text: to access services.
 idv.failure.verify.heading: We couldn’t verify your identity
+idv.failure.warning.attempts_html.one: For security reasons, you have <strong>one attempt</strong> remaining.
+idv.failure.warning.attempts_html.other: For security reasons, you have <strong>%{count} attempts</strong> remaining.
 idv.forgot_password.link_text: Forgot password?
 idv.forgot_password.modal_header: Are you sure you can’t remember your password?
 idv.forgot_password.reset_password: Reset password
@@ -1875,6 +1877,10 @@ user_mailer.email_deleted.header: An email address was deleted from your %{app_n
 user_mailer.email_deleted.help_html: If you did not want to delete this email address, please visit the %{app_name_html} %{help_link_html} or %{contact_link_html}.
 user_mailer.email_deleted.subject: Email address deleted
 user_mailer.help_link_text: Help Center
+user_mailer.idv_please_call.body.contact_message_html: Call <strong>%{contact_number}</strong> and provide them with the error code <strong>%{support_code}</strong>.
+user_mailer.idv_please_call.body.intro_html: Call our contact center by <strong>%{date}</strong> to continue verifying your identity.
+user_mailer.idv_please_call.header: Please give us a call
+user_mailer.idv_please_call.subject: Call %{app_name} to continue with your identity verification
 user_mailer.in_person_completion_survey.body.cta.callout: Click the button below to get started.
 user_mailer.in_person_completion_survey.body.cta.label: Take our survey
 user_mailer.in_person_completion_survey.body.greeting: Hello,
@@ -1900,10 +1906,6 @@ user_mailer.in_person_failed.intro: Your identity could not be verified at the %
 user_mailer.in_person_failed.subject: Your identity could not be verified in person
 user_mailer.in_person_failed.verifying_identity: 'When verifying your identity:'
 user_mailer.in_person_failed.verifying_step_not_expired: Your state‑issued ID or driver’s license must not be expired. We do not currently accept any other forms of identification, such as passports and military IDs.
-user_mailer.in_person_please_call.body.contact_message_html: Call <strong>%{contact_number}</strong> and provide them with the error code <strong>%{support_code}</strong>.
-user_mailer.in_person_please_call.body.intro_html: Call our contact center by <strong>%{date}</strong> to continue verifying your identity.
-user_mailer.in_person_please_call.header: Please give us a call
-user_mailer.in_person_please_call.subject: Call %{app_name} to continue with your identity verification
 user_mailer.in_person_ready_to_verify_reminder.greeting: Hello,
 user_mailer.in_person_ready_to_verify_reminder.heading.one: You have %{count} day left to verify your identity in person
 user_mailer.in_person_ready_to_verify_reminder.heading.other: You have %{count} days left to verify your identity in person

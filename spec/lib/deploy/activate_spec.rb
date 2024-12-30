@@ -46,12 +46,12 @@ RSpec.describe Deploy::Activate do
 
       ec2_api_token = SecureRandom.hex
 
-      stub_request(:put, 'http://169.254.169.254/latest/api/token').
-        to_return(body: ec2_api_token)
+      stub_request(:put, 'http://169.254.169.254/latest/api/token')
+        .to_return(body: ec2_api_token)
 
-      stub_request(:get, 'http://169.254.169.254/2016-09-02/dynamic/instance-identity/document').
-        with(headers: { 'X-aws-ec2-metadata-token' => ec2_api_token }).
-        to_return(body: {
+      stub_request(:get, 'http://169.254.169.254/2016-09-02/dynamic/instance-identity/document')
+        .with(headers: { 'X-aws-ec2-metadata-token' => ec2_api_token })
+        .to_return(body: {
           'region' => 'us-west-1',
           'accountId' => '12345',
         }.to_json)
@@ -125,8 +125,8 @@ RSpec.describe Deploy::Activate do
 
   context 'outside a deployed production environment' do
     before do
-      stub_request(:put, 'http://169.254.169.254/latest/api/token').
-        to_timeout
+      stub_request(:put, 'http://169.254.169.254/latest/api/token')
+        .to_timeout
 
       # for now, stub cloning identity-idp-config
       allow(subject).to receive(:clone_idp_config)

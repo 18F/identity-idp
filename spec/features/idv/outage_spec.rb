@@ -52,13 +52,13 @@ RSpec.feature 'IdV Outage Spec' do
     # Wire up various let()s to configuration keys
     vendors.each do |service|
       vendor_status_key = :"vendor_status_#{service}"
-      allow(IdentityConfig.store).to receive(vendor_status_key).
-        and_return(send(vendor_status_key))
+      allow(IdentityConfig.store).to receive(vendor_status_key)
+        .and_return(send(vendor_status_key))
     end
 
     config_flags.each do |key|
-      allow(IdentityConfig.store).to receive(key).
-        and_return(send(key))
+      allow(IdentityConfig.store).to receive(key)
+        .and_return(send(key))
     end
   end
 
@@ -68,24 +68,24 @@ RSpec.feature 'IdV Outage Spec' do
     it 'takes the user through the mail only flow, allowing hybrid', js: true do
       sign_in_with_idv_required(user: user)
 
-      expect(current_path).to eq idv_mail_only_warning_path
+      expect(page).to have_current_path idv_mail_only_warning_path
 
       click_idv_continue
 
-      expect(current_path).to eq idv_welcome_path
+      expect(page).to have_current_path idv_welcome_path
 
       complete_welcome_step
       complete_agreement_step
 
       # Still offer the option for hybrid flow
-      expect(current_path).to eq idv_hybrid_handoff_path
+      expect(page).to have_current_path idv_hybrid_handoff_path
 
       complete_hybrid_handoff_step
       complete_document_capture_step
       complete_ssn_step
       complete_verify_step
 
-      expect(current_path).to eq idv_request_letter_path
+      expect(page).to have_current_path idv_request_letter_path
     end
   end
 
@@ -95,13 +95,13 @@ RSpec.feature 'IdV Outage Spec' do
     it 'shows mail only warning page before idv welcome page', js: true do
       sign_in_with_idv_required(user: user)
 
-      expect(current_path).to eq idv_mail_only_warning_path
+      expect(page).to have_current_path idv_mail_only_warning_path
 
       complete_doc_auth_steps_before_document_capture_step
       click_on t('links.cancel')
       click_on t('idv.cancel.actions.start_over')
 
-      expect(current_path).to eq idv_mail_only_warning_path
+      expect(page).to have_current_path idv_mail_only_warning_path
     end
   end
 
@@ -111,11 +111,11 @@ RSpec.feature 'IdV Outage Spec' do
     it 'shows mail only warning page before idv welcome page' do
       sign_in_with_idv_required(user: user)
 
-      expect(current_path).to eq idv_mail_only_warning_path
+      expect(page).to have_current_path idv_mail_only_warning_path
 
       click_idv_continue
 
-      expect(current_path).to eq idv_welcome_path
+      expect(page).to have_current_path idv_welcome_path
     end
   end
 
@@ -126,7 +126,7 @@ RSpec.feature 'IdV Outage Spec' do
     it 'shows mail only warning page before idv welcome page' do
       sign_in_with_idv_required(user: user)
 
-      expect(current_path).to eq vendor_outage_path
+      expect(page).to have_current_path vendor_outage_path
     end
   end
 
@@ -140,11 +140,11 @@ RSpec.feature 'IdV Outage Spec' do
         it 'shows mail only warning page before idv welcome page' do
           sign_in_with_idv_required(user: user, sms_or_totp: :totp)
 
-          expect(current_path).to eq idv_mail_only_warning_path
+          expect(page).to have_current_path idv_mail_only_warning_path
 
           click_idv_continue
 
-          expect(current_path).to eq idv_welcome_path
+          expect(page).to have_current_path idv_welcome_path
         end
 
         it 'returns to the correct page when clicking to exit' do
@@ -161,7 +161,7 @@ RSpec.feature 'IdV Outage Spec' do
           click_idv_continue
           complete_agreement_step
 
-          expect(current_path).to eq idv_document_capture_path
+          expect(page).to have_current_path idv_document_capture_path
         end
       end
     end
@@ -174,11 +174,11 @@ RSpec.feature 'IdV Outage Spec' do
     it 'shows mail only warning page before idv welcome page' do
       sign_in_with_idv_required(user: user, sms_or_totp: :sms)
 
-      expect(current_path).to eq idv_mail_only_warning_path
+      expect(page).to have_current_path idv_mail_only_warning_path
 
       click_idv_continue
 
-      expect(current_path).to eq idv_welcome_path
+      expect(page).to have_current_path idv_welcome_path
     end
 
     it 'still allows the hybrid handoff screen' do
@@ -187,7 +187,7 @@ RSpec.feature 'IdV Outage Spec' do
       click_idv_continue
       complete_agreement_step
 
-      expect(current_path).to eq idv_hybrid_handoff_path
+      expect(page).to have_current_path idv_hybrid_handoff_path
     end
   end
 
@@ -198,7 +198,7 @@ RSpec.feature 'IdV Outage Spec' do
     it 'does not show the mail only warning page before idv welcome page' do
       sign_in_with_idv_required(user: user, sms_or_totp: :sms)
 
-      expect(current_path).to eq idv_welcome_path
+      expect(page).to have_current_path idv_welcome_path
     end
 
     it 'does not show the hybrid handoff screen' do
@@ -207,7 +207,7 @@ RSpec.feature 'IdV Outage Spec' do
       click_idv_continue
       complete_agreement_step
 
-      expect(current_path).to eq idv_document_capture_path
+      expect(page).to have_current_path idv_document_capture_path
     end
   end
 
@@ -263,10 +263,10 @@ RSpec.feature 'IdV Outage Spec' do
 
   context 'during an IDV maintenance window', js: true do
     before do
-      allow(IdentityConfig.store).to receive(:vendor_status_idv_scheduled_maintenance_start).
-        and_return('2023-01-01T00:00:00Z')
-      allow(IdentityConfig.store).to receive(:vendor_status_idv_scheduled_maintenance_finish).
-        and_return('2023-01-01T23:59:59Z')
+      allow(IdentityConfig.store).to receive(:vendor_status_idv_scheduled_maintenance_start)
+        .and_return('2023-01-01T00:00:00Z')
+      allow(IdentityConfig.store).to receive(:vendor_status_idv_scheduled_maintenance_finish)
+        .and_return('2023-01-01T23:59:59Z')
 
       travel_to(Time.zone.parse('2023-01-01T12:00:00Z'))
     end

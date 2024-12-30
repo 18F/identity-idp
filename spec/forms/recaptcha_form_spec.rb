@@ -12,8 +12,8 @@ RSpec.describe RecaptchaForm do
   end
 
   before do
-    allow(IdentityConfig.store).to receive(:recaptcha_secret_key).
-      and_return(recaptcha_secret_key)
+    allow(IdentityConfig.store).to receive(:recaptcha_secret_key)
+      .and_return(recaptcha_secret_key)
   end
 
   describe '#exempt?' do
@@ -309,8 +309,8 @@ RSpec.describe RecaptchaForm do
         )
       end
 
-      context 'with extra analytics properties', allowed_extra_analytics: [:extra] do
-        let(:extra_analytics_properties) { { extra: true } }
+      context 'with extra analytics properties' do
+        let(:extra_analytics_properties) { { phone_country_code: true } }
 
         it 'logs analytics of the body' do
           result
@@ -328,7 +328,7 @@ RSpec.describe RecaptchaForm do
             score_threshold: score_threshold,
             form_class: 'RecaptchaForm',
             recaptcha_action:,
-            extra: true,
+            phone_country_code: true,
           )
         end
       end
@@ -344,8 +344,8 @@ RSpec.describe RecaptchaForm do
   end
 
   def stub_recaptcha_response(body:, secret: recaptcha_secret_key, token: nil)
-    stub_request(:post, RecaptchaForm::VERIFICATION_ENDPOINT).
-      with { |req| req.body == URI.encode_www_form(secret:, response: token) }.
-      to_return(headers: { 'Content-Type': 'application/json' }, body: body.to_json)
+    stub_request(:post, RecaptchaForm::VERIFICATION_ENDPOINT)
+      .with { |req| req.body == URI.encode_www_form(secret:, response: token) }
+      .to_return(headers: { 'Content-Type': 'application/json' }, body: body.to_json)
   end
 end

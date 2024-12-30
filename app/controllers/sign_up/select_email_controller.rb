@@ -7,7 +7,6 @@ module SignUp
     check_or_render_not_found -> { IdentityConfig.store.feature_select_email_to_share_enabled }
     before_action :confirm_two_factor_authenticated
     before_action :verify_needs_completions_screen
-    before_action :verify_multiple_emails
 
     def show
       @sp_name = current_sp.friendly_name || sp.agency&.name
@@ -52,12 +51,8 @@ module SignUp
       if user_session[:selected_email_id_for_linked_identity]
         user_emails.find(user_session[:selected_email_id_for_linked_identity]).email
       else
-        EmailContext.new(current_user).last_sign_in_email_address.email
+        current_user.last_sign_in_email_address.email
       end
-    end
-
-    def verify_multiple_emails
-      redirect_to sign_up_completed_path if user_emails.count < 2
     end
 
     def verify_needs_completions_screen

@@ -9,12 +9,12 @@ RSpec.feature 'idv resend letter step' do
   let(:max_days_before_resend_disabled) { 30 }
 
   before do
-    allow(IdentityConfig.store).to receive(:minimum_wait_before_another_usps_letter_in_hours).
-      and_return(minimum_wait_for_letter)
-    allow(IdentityConfig.store).to receive(:gpo_max_profile_age_to_send_letter_in_days).
-      and_return(max_days_before_resend_disabled)
-    allow(IdentityConfig.store).to receive(:second_mfa_reminder_account_age_in_days).
-      and_return(days_passed + 1)
+    allow(IdentityConfig.store).to receive(:minimum_wait_before_another_usps_letter_in_hours)
+      .and_return(minimum_wait_for_letter)
+    allow(IdentityConfig.store).to receive(:gpo_max_profile_age_to_send_letter_in_days)
+      .and_return(max_days_before_resend_disabled)
+    allow(IdentityConfig.store).to receive(:second_mfa_reminder_account_age_in_days)
+      .and_return(days_passed + 1)
   end
 
   let(:user) { user_with_2fa }
@@ -71,8 +71,8 @@ RSpec.feature 'idv resend letter step' do
       click_on t('idv.messages.gpo.resend')
 
       # And then actually ask for a resend
-      expect { click_on t('idv.gpo.request_another_letter.button') }.
-        to change { GpoConfirmation.count }.from(1).to(2)
+      expect { click_on t('idv.gpo.request_another_letter.button') }
+        .to change { GpoConfirmation.count }.from(1).to(2)
       expect_user_to_be_unverified(user)
       expect(page).to have_content(t('idv.messages.gpo.another_letter_on_the_way'))
       expect(page).to have_content(t('idv.titles.come_back_later'))

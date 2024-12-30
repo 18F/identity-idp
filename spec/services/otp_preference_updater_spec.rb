@@ -37,8 +37,8 @@ RSpec.describe OtpPreferenceUpdater do
                          otp_make_default_number: nil,
                          phone_id: 1 }
 
-          expect(UpdateUserPhoneConfiguration).to receive(:update!).
-            with(user: user, attributes: attributes)
+          expect(UpdateUserPhoneConfiguration).to receive(:update!)
+            .with(user: user, attributes: attributes)
 
           updater.call
         end

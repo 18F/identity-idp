@@ -2,7 +2,7 @@ require 'rails_helper'
 require_relative './user_mailer_preview'
 
 RSpec.describe UserMailerPreview do
-  it_behaves_like 'a mailer preview'
+  it_behaves_like 'a mailer preview', preview_methods_that_can_be_missing: [:in_person_please_call]
 
   it 'uses user and email records that cannot be saved' do
     expect(User.count).to eq(0)

@@ -27,6 +27,33 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
       expect(assigns(:presenter).desktop_ft_ab_test).to be false
     end
 
+    context 'with threatmetrix enabled' do
+      let(:tmx_session_id) { '1234' }
+
+      before do
+        allow(FeatureManagement).to receive(:account_creation_device_profiling_collecting_enabled?)
+          .and_return(true)
+        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('org1')
+        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled)
+          .and_return(false)
+        controller.user_session[:sign_up_threatmetrix_session_id] = tmx_session_id
+      end
+
+      it 'renders new valid request' do
+        tmx_url = 'https://h.online-metrix.net/fp'
+        expect(controller).to receive(:render).with(
+          :index,
+          locals: { threatmetrix_session_id: tmx_session_id,
+                    threatmetrix_javascript_urls:
+                      ["#{tmx_url}/tags.js?org_id=org1&session_id=#{tmx_session_id}"],
+                    threatmetrix_iframe_url:
+                      "#{tmx_url}/tags?org_id=org1&session_id=#{tmx_session_id}" },
+        ).and_call_original
+
+        expect(response).to render_template(:index)
+      end
+    end
+
     context 'with user having gov or mil email' do
       let!(:federal_domain) { create(:federal_email_domain, name: 'gsa.gov') }
       let(:user) do
@@ -150,9 +177,9 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
     end
 
     it 'assigns platform_authenticator_available session value' do
-      expect { response }.to change { controller.user_session[:platform_authenticator_available] }.
-        from(nil).
-        to(false)
+      expect { response }.to change { controller.user_session[:platform_authenticator_available] }
+        .from(nil)
+        .to(false)
     end
 
     context 'when multi selection with phone first' do
@@ -198,6 +225,34 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
         expect(response).to render_template(:index)
         expect(flash[:error]).to eq(t('errors.messages.inclusion'))
       end
+
+      context 'with threatmetrix enabled' do
+        let(:tmx_session_id) { '1234' }
+
+        before do
+          allow(FeatureManagement)
+            .to receive(:account_creation_device_profiling_collecting_enabled?)
+            .and_return(true)
+          allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('org1')
+          allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled)
+            .and_return(false)
+          controller.user_session[:sign_up_threatmetrix_session_id] = tmx_session_id
+        end
+
+        it 'renders new with invalid request' do
+          tmx_url = 'https://h.online-metrix.net/fp'
+          expect(controller).to receive(:render).with(
+            :index,
+            locals: { threatmetrix_session_id: tmx_session_id,
+                      threatmetrix_javascript_urls:
+                        ["#{tmx_url}/tags.js?org_id=org1&session_id=#{tmx_session_id}"],
+                      threatmetrix_iframe_url:
+                        "#{tmx_url}/tags?org_id=org1&session_id=#{tmx_session_id}" },
+          ).and_call_original
+
+          expect(response).to render_template(:index)
+        end
+      end
     end
 
     context 'with form value indicating platform authenticator support' do
@@ -206,9 +261,9 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
       it 'assigns platform_authenticator_available session value' do
         expect do
           response
-        end.to change { controller.user_session[:platform_authenticator_available] }.
-          from(nil).
-          to(true)
+        end.to change { controller.user_session[:platform_authenticator_available] }
+          .from(nil)
+          .to(true)
       end
     end
   end

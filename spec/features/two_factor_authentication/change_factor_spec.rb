@@ -12,11 +12,11 @@ RSpec.feature 'Changing authentication factor' do
     scenario 'editing password' do
       visit manage_password_path
 
-      expect(current_path).to eq login_two_factor_options_path
+      expect(page).to have_current_path login_two_factor_options_path
 
       complete_2fa_confirmation
 
-      expect(current_path).to eq manage_password_path
+      expect(page).to have_current_path manage_password_path
     end
 
     context 'resending OTP code to old phone' do
@@ -48,8 +48,9 @@ RSpec.feature 'Changing authentication factor' do
           },
         ).once
 
-        expect(current_path).
-          to eq login_two_factor_path(otp_delivery_preference: 'sms')
+        expect(page).to have_current_path(
+          login_two_factor_path(otp_delivery_preference: 'sms'),
+        )
       end
     end
 
@@ -62,14 +63,14 @@ RSpec.feature 'Changing authentication factor' do
 
         # Canceling from MFA prompt
         click_on t('links.cancel')
-        expect(current_path).to eq account_path
+        expect(page).to have_current_path account_path
 
         # Canceling from MFA selection
         visit manage_password_path
         complete_2fa_confirmation_without_entering_otp
         click_on t('two_factor_authentication.login_options_link_text')
         click_on t('links.cancel')
-        expect(current_path).to eq account_path
+        expect(page).to have_current_path account_path
       end
     end
   end
@@ -81,19 +82,19 @@ RSpec.feature 'Changing authentication factor' do
 
       # Ensure reauthentication context does not prompt incorrectly
       visit webauthn_setup_path
-      expect(current_path).to eq login_two_factor_options_path
+      expect(page).to have_current_path login_two_factor_options_path
 
       visit phone_setup_path
-      expect(current_path).to eq login_two_factor_options_path
+      expect(page).to have_current_path login_two_factor_options_path
 
       find("label[for='two_factor_options_form_selection_sms']").click
       click_on t('forms.buttons.continue')
       fill_in_code_with_last_phone_otp
       click_submit_default
-      expect(current_path).to eq phone_setup_path
+      expect(page).to have_current_path phone_setup_path
 
       visit phone_setup_path
-      expect(current_path).to eq phone_setup_path
+      expect(page).to have_current_path phone_setup_path
     end
   end
 
@@ -104,12 +105,12 @@ RSpec.feature 'Changing authentication factor' do
   end
 
   def complete_2fa_confirmation_without_entering_otp
-    expect(current_path).to eq login_two_factor_options_path
+    expect(page).to have_current_path login_two_factor_options_path
 
     find("label[for='two_factor_options_form_selection_sms']").click
     click_on t('forms.buttons.continue')
 
-    expect(current_path).to eq login_two_factor_path(
+    expect(page).to have_current_path login_two_factor_path(
       otp_delivery_preference: user.otp_delivery_preference,
     )
   end
@@ -123,7 +124,7 @@ RSpec.feature 'Changing authentication factor' do
     fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
     click_button t('forms.buttons.continue')
 
-    expect(current_path).to eq login_two_factor_authenticator_path
+    expect(page).to have_current_path login_two_factor_authenticator_path
 
     fill_in 'code', with: generate_totp_code(@secret)
     click_submit_default
