@@ -602,10 +602,16 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
       context 'the service provider has a post-idv follow-up url' do
         it 'renders an alert to connect to IdV SP with a link' do
           expect(rendered).to have_content(
-            t('account.index.verification.connect_idv_account.intro'),
+            t(
+              'account.index.verification.connect_idv_account.intro',
+              sp_name: initiating_sp_name,
+            ),
           )
           expect(rendered).to have_link(
-            t('account.index.verification.connect_idv_account.cta'),
+            t(
+              'account.index.verification.connect_idv_account.cta',
+              sp_name: initiating_sp_name,
+            ),
             href: post_idv_follow_up_url,
           )
         end
@@ -616,14 +622,45 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
 
         it 'renders an alert to connect to IdV SP without a link' do
           expect(rendered).to have_content(
-            t('account.index.verification.connect_idv_account.intro'),
+            t(
+              'account.index.verification.connect_idv_account.intro',
+              sp_name: initiating_sp_name,
+            ),
           )
           expect(rendered).to have_content(
-            t('account.index.verification.connect_idv_account.cta'),
+            t(
+              'account.index.verification.connect_idv_account.cta',
+              sp_name: initiating_sp_name,
+            ),
           )
           expect(rendered).to_not have_link(
-            t('account.index.verification.connect_idv_account.cta'),
+            t(
+              'account.index.verification.connect_idv_account.cta',
+              sp_name: initiating_sp_name,
+            ),
           )
+        end
+      end
+
+      context 'the service provider does not have a name' do
+        let(:initiating_sp_name) { nil }
+
+        context 'the service provider has a post-idv follow-up url' do
+          it 'does not render the alert' do
+            expect(rendered).not_to have_content(
+              t(
+                'account.index.verification.connect_idv_account.intro',
+                sp_name: initiating_sp_name,
+              ),
+            )
+            expect(rendered).not_to have_link(
+              t(
+                'account.index.verification.connect_idv_account.cta',
+                sp_name: initiating_sp_name,
+              ),
+              href: post_idv_follow_up_url,
+            )
+          end
         end
       end
     end

@@ -102,8 +102,18 @@ RSpec.feature 'returning to an SP after out-of-band proofing' do
 
       expect(current_url).to eq(account_url)
 
-      expect(page).to have_content(t('account.index.verification.connect_idv_account.intro'))
-      click_on(t('account.index.verification.connect_idv_account.cta'))
+      expect(page).to have_content(
+        t(
+          'account.index.verification.connect_idv_account.intro',
+          sp_name: initiating_service_provider.friendly_name,
+        ),
+      )
+      click_on(
+        t(
+          'account.index.verification.connect_idv_account.cta',
+          sp_name: initiating_service_provider.friendly_name,
+        ),
+      )
 
       expect(current_url).to eq(post_idv_follow_up_url)
     end
