@@ -1,5 +1,5 @@
 description: |
-  When the user exceeds the number of times (10) they can try verifying the security code that they received on their phone for phone or address verification during identity proofing.
+  When the user exceeds the number of times they can try verifying the security code that they received on their phone for phone or address verification during identity proofing.
 allOf:
   - $ref: '../shared/EventProperties.yml'
   - type: object

@@ -1,5 +1,5 @@
 description: |
-  The user reaches verification submission rate limits (see below) when identity proofing. 
+  The user reaches verification submission rate limits when identity proofing. 
 allOf:
   - $ref: '../shared/EventProperties.yml'
   - type: object
@@ -7,8 +7,8 @@ allOf:
       throttle_context:
         type: string
         description: |
-          `single-session` context means that one session attempted to submit verification using the same PII multiple times with failure and exceeded the rate limit (5 within 6 hours).
-          `multi-session` context means that multiple sessions attempted to submit verification using the same Social Security number multiple times with failure and exceeded the rate limit (10 within 60 minutes).
+          `single-session` context means that one session attempted to submit verification using the same PII multiple times with failure and exceeded the rate limit.
+          `multi-session` context means that multiple sessions attempted to submit verification using the same Social Security number multiple times with failure and exceeded the rate limit.
         enum: 
           - single-session
           - multi-session
