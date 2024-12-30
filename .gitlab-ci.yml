@@ -333,6 +333,7 @@ js_build:
     - *yarn_production_install
     - bundle exec rake assets:precompile
     - make lint_asset_bundle_size
+    - make compile-openapi
 
 js_tests:
   stage: test

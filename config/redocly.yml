@@ -1,0 +1,10 @@
+extends:
+  - recommended
+
+apis:
+  external@v1:
+    root: ./docs/attempts-api/openapi.yml
+
+    theme:
+      openapi:
+        hideLogo: true

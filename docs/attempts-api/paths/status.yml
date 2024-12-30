@@ -1,7 +1,7 @@
 get:
   summary: Request to get the status of an Event Stream
   description: |-
-    [Spec](https://openid.net/specs/openid-sse-framework-1_0.html#reading-a-streams-status)
+    [Spec](https://openid.net/specs/openid-sharedsignals-framework-1_0-ID3.html#name-reading-a-streams-status)
 
     An Event Receiver checks the current status of an event stream by making an
     HTTP GET request to the stream’s Status Endpoint.
