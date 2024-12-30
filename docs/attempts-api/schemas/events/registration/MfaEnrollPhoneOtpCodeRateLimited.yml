@@ -1,5 +1,5 @@
 description: |
-  The user has exceeded the rate limit (10) for entering an MFA code when setting up an MFA device. Note that this event is currently only generated for phone mfa types.
+  The user has exceeded the rate limit for entering an MFA code when setting up an MFA device. Note that this event is currently only generated for phone mfa types.
 allOf:
   - $ref: '../shared/EventProperties.yml'
   - type: object
