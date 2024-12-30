@@ -1,5 +1,5 @@
 description: |
-  The user has exceeded the limit (3) for submitting an MFA code when signing in with a registered MFA device.
+  The user has exceeded the limit for submitting an MFA code when signing in with a registered MFA device.
 allOf:
   - $ref: '../shared/EventProperties.yml'
   - type: object

@@ -1,5 +1,5 @@
 description: |
-  The user has exceeded the rate limit (9) for requesting OTPs be sent to their phone when setting up an MFA device.
+  The user has exceeded the rate limit for requesting OTPs be sent to their phone when setting up an MFA device.
 allOf:
   - $ref: '../shared/EventProperties.yml'
   - type: object

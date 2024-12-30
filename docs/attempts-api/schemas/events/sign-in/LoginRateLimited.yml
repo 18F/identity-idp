@@ -1,5 +1,5 @@
 description: |
-  The user has exceeded the limit (5 attempts within 1 minute) for providing their email address and password all resulting in a failed login attempt.
+  The user has exceeded the limit for providing their email address and password all resulting in a failed login attempt.
 allOf:
   - $ref: '../shared/EventProperties.yml'
   - type: object

@@ -1,5 +1,5 @@
 description: |
-  When the user exceeds the limit (5 attempts in 15 minutes) for entering their personal key to reactivate their account incorrectly.
+  When the user exceeds the limit for entering their personal key to reactivate their account incorrectly.
 allOf:
   - $ref: '../shared/EventProperties.yml'
   - type: object

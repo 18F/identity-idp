@@ -1,5 +1,5 @@
 description: |
-  When the user exceeds the limit (3) for entering their current Login.gov password during the logged-in change profile-info flow incorrectly. 
+  When the user exceeds the limit for entering their current Login.gov password during the logged-in change profile-info flow incorrectly. 
 allOf:
   - $ref: '../shared/EventProperties.yml'
   - type: object
