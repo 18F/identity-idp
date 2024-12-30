@@ -23,7 +23,6 @@ class DocumentCaptureSession < ApplicationRecord
     session_result.doc_auth_success = doc_auth_response.doc_auth_success?
     session_result.selfie_status = doc_auth_response.selfie_status
     session_result.errors = doc_auth_response.errors
-    session_result.vendor = doc_auth_response.extra[:vendor]
 
     EncryptedRedisStructStorage.store(
       session_result,
