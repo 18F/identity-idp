@@ -263,8 +263,6 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  alias_method :in_person_please_call, :idv_please_call
-
   def in_person_completion_survey
     with_user_locale(user) do
       @header = t('user_mailer.in_person_completion_survey.header')
