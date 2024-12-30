@@ -48,6 +48,6 @@ allOf:
               type: string
               enum:
               - bad
+              - http_failure
               - invalid
               - missing
-              - http_failure

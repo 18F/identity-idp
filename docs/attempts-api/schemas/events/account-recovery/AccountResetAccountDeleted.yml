@@ -14,8 +14,10 @@ allOf:
             description: Errors that explain the failure.
             items:
               type: string
-              enum: ['The link to delete your Login.gov account has expired. Please create another request to delete your account.']
+              enum: 
+                - The link to delete your Login.gov account has expired. Please create another request to delete your account.
       success:
         type: boolean
         description: |
           Indicates whether the account was successfully deleted.
+     

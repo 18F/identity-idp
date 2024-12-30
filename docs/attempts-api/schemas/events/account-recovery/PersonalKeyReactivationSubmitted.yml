@@ -14,7 +14,9 @@ allOf:
             description: Errors that explain the failure.
             items:
               type: string
-              enum: ['blank', 'personal_key_incorrect']
+              enum: 
+                - blank
+                - personal_key_incorrect
       success:
         type: boolean
         description: |

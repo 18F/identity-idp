@@ -16,13 +16,16 @@ allOf:
             description: An OPTIONAL key that describes errors with the email provided
             items:
               type: string
-              enum: ['already_confirmed']
+              enum: 
+                - already_confirmed
           confirmation_token:
             type: array
             description: An OPTIONAL key that describes errors with the confirmation token
             items: 
               type: string
-              enum: ['not_found', 'expired']
+              enum: 
+                - expired
+                - not_found
       success:
         type: boolean
         description: |

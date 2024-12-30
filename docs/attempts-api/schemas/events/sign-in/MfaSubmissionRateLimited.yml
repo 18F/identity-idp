@@ -7,8 +7,8 @@ allOf:
       mfa_device_type:
         type: string
         enum:
-          - otp
-          - totp
           - backup_code
+          - otp
           - piv_cac
+          - totp
           - web_authn

@@ -4,9 +4,9 @@ properties:
     type: string
     example: disabled
     enum:
+      - disabled
       - enabled
       - paused
-      - disabled
     description: |-
       REQUIRED. The status of the stream. Values can be one of:
 
