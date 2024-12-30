@@ -384,9 +384,5 @@ module Idv
     def add_cost(token, transaction_id: nil)
       Db::SpCost::AddSpCost.call(current_sp, token, transaction_id: transaction_id)
     end
-
-    def user_session
-      current_user && session&.dig('warden.user.user.session') || {}
-    end
   end
 end
