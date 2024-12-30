@@ -6,4 +6,5 @@ allOf:
     properties:
       mfa_device_type:
         type: string
-        enum: ['otp']
+        enum: 
+          - otp

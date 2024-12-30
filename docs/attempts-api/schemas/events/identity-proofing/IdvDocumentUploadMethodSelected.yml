@@ -7,5 +7,5 @@ allOf:
       upload_method:
         type: string
         enum: 
-          - mobile
           - desktop
+          - mobile

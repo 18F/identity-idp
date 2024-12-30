@@ -9,7 +9,9 @@ allOf:
         description: The provided phone number
       otp_delivery_method:
         type: string
-        enum: ['sms', 'voice']
+        enum: 
+          - sms
+          - voice
       success:
         type: boolean
         description: |

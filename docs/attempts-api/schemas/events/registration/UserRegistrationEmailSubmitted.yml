@@ -15,7 +15,9 @@ allOf:
             description: Errors that explain the failure
             items:
               type: string
-              enum: ['invalid', 'Email address is not valid']
+              enum: 
+                - Email address is not valid
+                - invalid
       success:
         type: boolean
         description: |
