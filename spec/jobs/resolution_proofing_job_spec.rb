@@ -18,6 +18,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
   let(:proofing_device_profiling) { :enabled }
   let(:lexisnexis_threatmetrix_mock_enabled) { false }
   let(:ipp_enrollment_in_progress) { false }
+  let(:proofing_components) { nil }
 
   before do
     allow(IdentityConfig.store).to receive(:proofing_device_profiling)
@@ -43,6 +44,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         threatmetrix_session_id: threatmetrix_session_id,
         request_ip: request_ip,
         ipp_enrollment_in_progress: ipp_enrollment_in_progress,
+        proofing_components: proofing_components,
       )
     end
 
@@ -545,68 +547,150 @@ RSpec.describe ResolutionProofingJob, type: :job do
     end
 
     context 'socure shadow mode' do
-      context 'turned on' do
-        before do
-          allow(instance).to receive(:use_shadow_mode?).and_return(true)
+      let(:idv_socure_shadow_mode_enabled_for_docv_users) { false }
+      let(:idv_socure_shadow_mode_enabled) { false }
+      let(:doc_auth_vendor) { nil }
+      let(:in_shadow_mode_ab_test_bucket) { false }
+
+      before do
+        allow(IdentityConfig.store).to receive(:idv_socure_shadow_mode_enabled_for_docv_users)
+          .and_return(idv_socure_shadow_mode_enabled_for_docv_users)
+        allow(IdentityConfig.store).to receive(:idv_socure_shadow_mode_enabled)
+          .and_return(idv_socure_shadow_mode_enabled)
+
+        allow(instance).to receive(:shadow_mode_ab_test_bucket) do |user:|
+          expect(user).not_to eql(nil)
+          if in_shadow_mode_ab_test_bucket
+            :socure_shadow_mode_for_non_docv_users
+          end
         end
 
-        it 'schedules a SocureShadowModeProofingJob' do
-          stub_vendor_requests
-          expect(SocureShadowModeProofingJob).to receive(:perform_later).with(
-            user_email: user.email,
-            user_uuid: user.uuid,
-            document_capture_session_result_id: document_capture_session.result_id,
-            encrypted_arguments: satisfy do |ciphertext|
-              json = JSON.parse(
-                Encryption::Encryptors::BackgroundProofingArgEncryptor.new.decrypt(ciphertext),
-                symbolize_names: true,
-              )
-              expect(json[:applicant_pii]).to eql(
-                {
-                  first_name: 'FAKEY',
-                  middle_name: nil,
-                  last_name: 'MCFAKERSON',
-                  name_suffix: 'JR',
-                  address1: '1 FAKE RD',
-                  identity_doc_address1: '1 FAKE RD',
-                  identity_doc_address2: nil,
-                  identity_doc_city: 'GREAT FALLS',
-                  identity_doc_address_state: 'MT',
-                  identity_doc_zipcode: '59010-1234',
-                  issuing_country_code: 'US',
-                  address2: nil,
-                  same_address_as_id: 'true',
-                  city: 'GREAT FALLS',
-                  state: 'MT',
-                  zipcode: '59010-1234',
-                  dob: '1938-10-06',
-                  sex: 'male',
-                  height: 72,
-                  weight: nil,
-                  eye_color: nil,
-                  ssn: '900-66-1234',
-                  state_id_jurisdiction: 'ND',
-                  state_id_expiration: '2099-12-31',
-                  state_id_issued: '2019-12-31',
-                  state_id_number: '1111111111111',
-                  state_id_type: 'drivers_license',
-                },
-              )
-            end,
-            service_provider_issuer: service_provider.issuer,
-          )
+        stub_vendor_requests
+      end
 
-          perform
+      context 'enabled' do
+        let(:idv_socure_shadow_mode_enabled) { true }
+
+        context 'at 100%' do
+          let(:in_shadow_mode_ab_test_bucket) { true }
+
+          it 'schedules a SocureShadowModeProofingJob' do
+            expect(SocureShadowModeProofingJob).to receive(:perform_later).with(
+              user_email: user.email,
+              user_uuid: user.uuid,
+              document_capture_session_result_id: document_capture_session.result_id,
+              encrypted_arguments: satisfy do |ciphertext|
+                json = JSON.parse(
+                  Encryption::Encryptors::BackgroundProofingArgEncryptor.new.decrypt(ciphertext),
+                  symbolize_names: true,
+                )
+                expect(json[:applicant_pii]).to eql(
+                  {
+                    first_name: 'FAKEY',
+                    middle_name: nil,
+                    last_name: 'MCFAKERSON',
+                    name_suffix: 'JR',
+                    address1: '1 FAKE RD',
+                    identity_doc_address1: '1 FAKE RD',
+                    identity_doc_address2: nil,
+                    identity_doc_city: 'GREAT FALLS',
+                    identity_doc_address_state: 'MT',
+                    identity_doc_zipcode: '59010-1234',
+                    issuing_country_code: 'US',
+                    address2: nil,
+                    same_address_as_id: 'true',
+                    city: 'GREAT FALLS',
+                    state: 'MT',
+                    zipcode: '59010-1234',
+                    dob: '1938-10-06',
+                    sex: 'male',
+                    height: 72,
+                    weight: nil,
+                    eye_color: nil,
+                    ssn: '900-66-1234',
+                    state_id_jurisdiction: 'ND',
+                    state_id_expiration: '2099-12-31',
+                    state_id_issued: '2019-12-31',
+                    state_id_number: '1111111111111',
+                    state_id_type: 'drivers_license',
+                  },
+                )
+              end,
+              service_provider_issuer: service_provider.issuer,
+            )
+
+            perform
+          end
+
+          context 'and also enabled for docv users' do
+            let(:idv_socure_shadow_mode_enabled_for_docv_users) { true }
+
+            context 'when user is a docv user' do
+              let(:proofing_components) do
+                {
+                  document_check: Idp::Constants::Vendors::SOCURE,
+                }
+              end
+              it 'only schedules 1 SocureShadowModeProofingJob' do
+                expect(SocureShadowModeProofingJob).to receive(:perform_later).once
+                perform
+              end
+            end
+          end
+        end
+
+        context 'at 0%' do
+          let(:in_shadow_mode_ab_test_bucket) { false }
+
+          it 'does not schedule a shadow mode job' do
+            expect(SocureShadowModeProofingJob).not_to receive(:perform_later)
+            perform
+          end
+
+          context 'but also enabled for docv users' do
+            let(:idv_socure_shadow_mode_enabled_for_docv_users) { true }
+
+            context 'when user is a docv user' do
+              let(:proofing_components) do
+                {
+                  document_check: Idp::Constants::Vendors::SOCURE,
+                }
+              end
+
+              it 'schedules a SocureShadowModeProofingJob' do
+                expect(SocureShadowModeProofingJob).to receive(:perform_later).once
+                perform
+              end
+            end
+
+            context 'when user is not a docv user' do
+              it 'does not schedule a SocureShadowModeProofingJob' do
+                expect(SocureShadowModeProofingJob).not_to receive(:perform_later)
+                perform
+              end
+            end
+          end
         end
       end
 
       context 'turned off' do
+        let(:idv_socure_shadow_mode_enabled) { false }
+
         it 'does not schedule a SocureShadowModeProofingJob' do
           stub_vendor_requests
-
           expect(SocureShadowModeProofingJob).not_to receive(:perform_later)
-
           perform
+        end
+
+        context 'but still enabled for docv users' do
+          let(:idv_socure_shadow_mode_enabled_for_docv_users) { true }
+          context 'when user is a docv user' do
+            it 'does not schedule a SocureShadowModeProofingJob' do
+              stub_vendor_requests
+              expect(SocureShadowModeProofingJob).not_to receive(:perform_later)
+              perform
+            end
+          end
         end
       end
     end

@@ -25,7 +25,7 @@ class ResolutionProofingJob < ApplicationJob
     service_provider_issuer: nil,
     threatmetrix_session_id: nil,
     request_ip: nil,
-    proofing_components: nil, # rubocop:disable Lint/UnusedMethodArgument
+    proofing_components: nil,
     # DEPRECATED ARGUMENTS
     should_proof_state_id: false # rubocop:disable Lint/UnusedMethodArgument
   )
@@ -87,19 +87,21 @@ class ResolutionProofingJob < ApplicationJob
   end
 
   # @param user [User]
-  def use_shadow_mode?(user:, proofing_components: {})
-    (
-      IdentityConfig.store.idv_socure_shadow_mode_enabled ||
-      IdentityConfig.store.idv_socure_shadow_mode_enabled_for_docv_users &&
-        proofing_components[:document_check] == Idp::Constants::Vendors::SOCURE
-    ) &&
-      AbTests::SOCURE_IDV_SHADOW_MODE_FOR_NON_DOCV_USERS.bucket(
-        request: nil,
-        service_provider: nil,
-        session: nil,
-        user:,
-        user_session: nil,
-      ) == :socure_shadow_mode_for_non_docv_users
+  # @param proofing_components [Hash,nil]
+  def use_shadow_mode?(user:, proofing_components:)
+    # Let idv_socure_shadow_mode_enabled setting to control shadow mode globally
+    disabled_globally = !IdentityConfig.store.idv_socure_shadow_mode_enabled
+    return false if disabled_globally
+
+    # If the user went through Socure docv, they are already a Socure user and
+    # are thus eligible for shadow mode.
+    enabled_for_docv_users =
+      IdentityConfig.store.idv_socure_shadow_mode_enabled_for_docv_users
+    is_docv_user = proofing_components&.dig(:document_check) == Idp::Constants::Vendors::SOCURE
+    return true if enabled_for_docv_users && is_docv_user
+
+    # Otherwise fall back to A/B test infra
+    shadow_mode_ab_test_bucket(user:) == :socure_shadow_mode_for_non_docv_users
   end
 
   private
@@ -159,5 +161,15 @@ class ResolutionProofingJob < ApplicationJob
 
   def progressive_proofer
     @progressive_proofer ||= Proofing::Resolution::ProgressiveProofer.new
+  end
+
+  def shadow_mode_ab_test_bucket(user:)
+    AbTests::SOCURE_IDV_SHADOW_MODE_FOR_NON_DOCV_USERS.bucket(
+      request: nil,
+      service_provider: nil,
+      session: nil,
+      user:,
+      user_session: nil,
+    )
   end
 end
