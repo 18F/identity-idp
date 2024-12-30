@@ -5,7 +5,7 @@ module EventSummarizer
     module Aamva
       ID_TYPES = {
         'state_id_card' => 'non-driving ID card',
-        'drivers_license' => 'drivers\' license',
+        'drivers_license' => "drivers' license",
       }.freeze
 
       # TODO: Load these from the AAMVA proofer or put them somewhere common
