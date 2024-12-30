@@ -94,6 +94,7 @@ module EventSummarizer
 
     def initialize
       @idv_attempts = []
+      @current_idv_attempt = nil
     end
 
     # @return {Hash,nil}
@@ -168,12 +169,12 @@ module EventSummarizer
     end
 
     def check_for_idv_abandonment(event)
-      return if !current_idv_attempt.present?
+      return if current_idv_attempt.nil?
 
       looks_like_idv = /^idv/i.match(event['name'])
       return if !looks_like_idv
 
-      if idv_abandoned_event.blank?
+      if idv_abandoned_event.nil?
         @idv_abandoned_event = event
         return
       end
@@ -198,10 +199,10 @@ module EventSummarizer
     end
 
     def finish_current_idv_attempt
-      if current_idv_attempt.present?
+      if !current_idv_attempt.nil?
         looks_like_abandonment =
           !current_idv_attempt.workflow_complete? &&
-          idv_abandoned_event.present? &&
+          !idv_abandoned_event.nil? &&
           idv_abandoned_event['@timestamp'] < 1.hour.ago
 
         if looks_like_abandonment
