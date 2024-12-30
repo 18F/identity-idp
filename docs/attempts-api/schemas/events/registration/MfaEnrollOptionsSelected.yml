@@ -7,7 +7,15 @@ allOf:
         type: array
         items:
           type: string
-          enum: ['phone', 'sms', 'voice', 'auth_app', 'piv_cac','webauthn', 'webauthn_platform', 'backup_code']
+          enum: 
+            - auth_app
+            - backup_code
+            - phone
+            - piv_cac
+            - sms
+            - voice
+            - webauthn
+            - webauthn_platform
       success:
         type: boolean
         description: |

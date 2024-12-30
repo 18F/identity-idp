@@ -18,13 +18,16 @@ allOf:
             description: An OPTIONAL key that describes errors with the PIV/CAC
             items:
               type: string
-              enum: ['already_associated']
+              enum: 
+                - already_associated
           user:
             type: array
             description: An OPTIONAL key that describes errors with the user
             items: 
               type: string
-              enum: ['not_found', 'piv_cac_mismatch']
+              enum: 
+                - not_found
+                - piv_cac_mismatch
           certificate:
             type: array
             description: An OPTIONAL key that describes errors with the certificate
@@ -37,8 +40,8 @@ allOf:
                 - none
                 - not_auth_cert
                 - revoked
-                - unverified
                 - self-signed cert
+                - unverified
           token:
             type: array
             description: An OPTIONAL key that describes errors with the certificate  -
@@ -46,9 +49,9 @@ allOf:
               type: string
               enum: 
               - bad
+              - http_failure
               - invalid
               - missing
-              - http_failure
       success:
         type: boolean
         description: |

@@ -17,19 +17,19 @@ allOf:
             items:
               type: string
               enum:
-                - TelephonyError
-                - InvalidPhoneNumberError
-                - InvalidCallingAreaError
-                - VoiceUnsupportedError
-                - SmsUnsupportedError
+                - DailyLimitReachedError
                 - DuplicateEndpointError
+                - InvalidCallingAreaError
+                - InvalidPhoneNumberError
                 - OptOutError
                 - PermanentFailureError
+                - SmsUnsupportedError
+                - TelephonyError
                 - TemporaryFailureError
                 - ThrottledError
-                - DailyLimitReachedError
                 - TimeoutError
                 - UnknownFailureError
+                - VoiceUnsupportedError
       success:
         type: boolean
         description: |

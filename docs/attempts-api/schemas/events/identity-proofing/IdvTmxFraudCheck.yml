@@ -26,15 +26,15 @@ allOf:
             items:
               type: string
               enum:
-                - Identity_Negative_History
-                - IP_Negative_History
                 - Bot
                 - Device_Spoofing
                 - Geo_Spoofing
+                - Identity_Negative_History
                 - Identity_Spoofing
-                - MITB
-                - Level_1_Link_Reject
+                - IP_Negative_History
                 - Level_1_Link_Accept
+                - Level_1_Link_Reject
+                - MITB
       success:
         type: boolean
         description: |
