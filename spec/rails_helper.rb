@@ -32,6 +32,7 @@ RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
 
   config.include ActiveSupport::Testing::TimeHelpers
+  config.include AbTestsHelper
   config.include EmailSpec::Helpers
   config.include EmailSpec::Matchers
   config.include AbstractController::Translation
@@ -164,5 +165,9 @@ RSpec.configure do |config|
         /chromedriver\.storage\.googleapis\.com/, # For fetching a chromedriver binary
       ],
     )
+  end
+
+  config.after(:context) do
+    reload_ab_tests
   end
 end
