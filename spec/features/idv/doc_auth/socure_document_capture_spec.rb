@@ -47,6 +47,56 @@ RSpec.feature 'document capture step', :js do
         click_idv_continue
       end
 
+      context 'when the user times out waiting for results' do
+        before do
+          DocAuth::Mock::DocAuthMockClient.reset!
+          allow(IdentityConfig.store)
+            .to receive(:in_person_proofing_enabled).and_return(true)
+          allow(IdentityConfig.store)
+            .to receive(:in_person_doc_auth_button_enabled).and_return(true)
+          allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).and_return(true)
+          allow(IdentityConfig.store).to receive(:doc_auth_socure_wait_polling_timeout_minutes)
+            .and_return(0)
+        end
+
+        it 'shows the Try Again page and allows user to start IPP', allow_browser_log: true do
+          expect(page).to have_current_path(fake_socure_document_capture_app_url)
+          visit idv_socure_document_capture_path
+          expect(page).to have_current_path(idv_socure_document_capture_path)
+          %w[
+            WAITING_FOR_USER_TO_REDIRECT,
+            APP_OPENED,
+            DOCUMENT_FRONT_UPLOADED,
+            DOCUMENT_BACK_UPLOADED,
+          ].each do |event_type|
+            socure_docv_send_webhook(docv_transaction_token: @docv_transaction_token, event_type:)
+          end
+
+          # Go to the wait page
+          visit idv_socure_document_capture_update_path
+          expect(page).to have_current_path(idv_socure_document_capture_update_path)
+
+          # Timeout
+          visit idv_socure_document_capture_update_path
+          expect(page).to have_current_path(idv_socure_errors_timeout_path)
+          expect(page).to have_content(I18n.t('idv.errors.try_again_later'))
+
+          # Try in person
+          click_on t('in_person_proofing.body.cta.button')
+          expect(page).to have_current_path(idv_document_capture_path(step: :idv_doc_auth))
+          expect(page).to have_content(t('in_person_proofing.headings.prepare'))
+
+          # Go back
+          visit idv_socure_document_capture_update_path
+          expect(page).to have_current_path(idv_socure_errors_timeout_path)
+
+          # Try Socure again
+          click_on t('idv.failure.button.warning')
+          expect(page).to have_current_path(idv_socure_document_capture_path)
+          expect(page).to have_content(t('doc_auth.headings.verify_with_phone'))
+        end
+      end
+
       context 'rate limits calls to backend docauth vendor', allow_browser_log: true do
         let(:socure_docv_webhook_repeat_endpoints) do # repeat webhooks
           ['https://1.example.test/thepath', 'https://2.example.test/thepath']
@@ -358,7 +408,6 @@ RSpec.feature 'document capture step', :js do
       @user = sign_in_and_2fa_user
 
       complete_doc_auth_steps_before_document_capture_step
-
       click_idv_continue
       socure_docv_upload_documents(
         docv_transaction_token: @docv_transaction_token,

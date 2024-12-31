@@ -6,10 +6,13 @@ module Users
     include MfaSetupConcern
     include AbTestingConcern
     include ApplicationHelper
+    include ThreatMetrixHelper
+    include ThreatMetrixConcern
 
     before_action :authenticate_user
     before_action :confirm_user_authenticated_for_2fa_setup
     before_action :check_if_possible_piv_user
+    before_action :override_csp_for_threat_metrix
 
     delegate :enabled_mfa_methods_count, to: :mfa_context
 
@@ -20,6 +23,7 @@ module Users
         enabled_mfa_methods_count:,
         gov_or_mil_email: fed_or_mil_email?,
       )
+      render :index, locals: threatmetrix_variables
     end
 
     def create
@@ -33,7 +37,7 @@ module Users
       else
         flash.now[:error] = result.first_error_message
         @presenter = two_factor_options_presenter
-        render :index
+        render :index, locals: threatmetrix_variables
       end
     end
 
@@ -86,6 +90,21 @@ module Users
 
     def in_ab_test_bucket?
       ab_test_bucket(:DESKTOP_FT_UNLOCK_SETUP) == (:desktop_ft_unlock_option_shown)
+    end
+
+    def threatmetrix_variables
+      return {} unless FeatureManagement.account_creation_device_profiling_collecting_enabled?
+      session_id = generate_threatmetrix_session_id
+
+      {
+        threatmetrix_session_id: session_id,
+        threatmetrix_javascript_urls: threatmetrix_javascript_urls(session_id),
+        threatmetrix_iframe_url: threatmetrix_iframe_url(session_id),
+      }
+    end
+
+    def generate_threatmetrix_session_id
+      user_session[:sign_up_threatmetrix_session_id] ||= SecureRandom.uuid
     end
   end
 end

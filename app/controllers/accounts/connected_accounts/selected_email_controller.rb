@@ -53,7 +53,7 @@ module Accounts
       end
 
       def last_email
-        EmailContext.new(current_user).last_sign_in_email_address.id
+        current_user.last_sign_in_email_address.id
       end
     end
   end

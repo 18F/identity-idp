@@ -93,7 +93,7 @@ module OpenidConnect
       if user_session[:selected_email_id_for_linked_identity].present?
         return user_session[:selected_email_id_for_linked_identity]
       end
-      identity = current_user.identities.find_by(service_provider: sp_session['issuer'])
+      identity = current_user.identities.find_by(service_provider: sp_session[:issuer])
       identity&.email_address_id
     end
 
