@@ -7692,12 +7692,20 @@ module AnalyticsEvents
   # @param [Hash] platform_authenticator
   # @param [Boolean] success
   # @param [Hash, nil] errors
+  # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
   # Tracks whether or not Webauthn setup was successful
-  def webauthn_setup_submitted(platform_authenticator:, success:, errors: nil, **extra)
+  def webauthn_setup_submitted(
+    platform_authenticator:,
+    success:,
+    in_account_creation_flow: nil,
+    errors: nil,
+    **extra
+  )
     track_event(
       :webauthn_setup_submitted,
       platform_authenticator: platform_authenticator,
       success: success,
+      in_account_creation_flow:,
       errors: errors,
       **extra,
     )
