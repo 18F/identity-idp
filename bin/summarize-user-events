@@ -184,7 +184,9 @@ class SummarizeUserEvents
 end
 
 def main
-  options = {}
+  options = {
+    zone: 'America/New_York'
+  }
   basename = File.basename($0)
 
   # rubocop:disable Metrics/LineLength
