@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'active_support/core_ext/string/inflections'
+
 module EventSummarizer
   module VendorResultEvaluators
     module InstantVerify
@@ -70,9 +72,7 @@ module EventSummarizer
           end
         end
 
-        plural = checks.length == 1 ? '' : 's'
-
-        "#{checks.length} check#{plural} failed: #{checks.join(", ")}"
+        "#{checks.length} #{'check'.pluralize(checks.length)} failed: #{checks.join(", ")}"
       end
     end
   end
