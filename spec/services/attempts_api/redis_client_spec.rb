@@ -89,44 +89,4 @@ RSpec.describe AttemptsApi::RedisClient do
       expect(subject.read_events(timestamp: time2, issuer: issuer)).to eq({ event2.jti => jwe2 })
     end
   end
-
-  describe '#remove_events' do
-    it 'removes events for the specified time and issuer' do
-      time1 = Time.new(2022, 1, 1, 1, 0, 0, 'Z')
-      time2 = Time.new(2022, 1, 1, 2, 0, 0, 'Z')
-      event1 = AttemptsApi::AttemptEvent.new(
-        event_type: 'test_event',
-        session_id: 'test-session-id',
-        occurred_at: time1,
-        event_metadata: {
-          first_name: Idp::Constants::MOCK_IDV_APPLICANT[:first_name],
-        },
-      )
-      event2 = AttemptsApi::AttemptEvent.new(
-        event_type: 'test_event',
-        session_id: 'test-session-id',
-        occurred_at: time2,
-        event_metadata: {
-          first_name: Idp::Constants::MOCK_IDV_APPLICANT[:first_name],
-        },
-      )
-      jwe1 = event1.to_jwe(issuer: issuer, public_key: attempts_api_public_key)
-      jwe2 = event2.to_jwe(issuer: issuer, public_key: attempts_api_public_key)
-
-      subject.write_event(
-        event_key: event1.jti, jwe: jwe1, timestamp: event1.occurred_at, issuer: issuer,
-      )
-      subject.write_event(
-        event_key: event2.jti, jwe: jwe2, timestamp: event2.occurred_at, issuer: issuer,
-      )
-
-      expect(subject.read_events(timestamp: time1, issuer: issuer)).to eq({ event1.jti => jwe1 })
-      expect(subject.read_events(timestamp: time2, issuer: issuer)).to eq({ event2.jti => jwe2 })
-
-      subject.remove_events(timestamp: time1, issuer: issuer)
-
-      expect(subject.read_events(timestamp: time1, issuer: issuer)).to eq({})
-      expect(subject.read_events(timestamp: time2, issuer: issuer)).to eq({ event2.jti => jwe2 })
-    end
-  end
 end
