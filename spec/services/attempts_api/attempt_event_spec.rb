@@ -31,7 +31,7 @@ RSpec.describe AttemptsApi::AttemptEvent do
       headers = JSON.parse(header_str)
 
       expect(headers['alg']).to eq('RSA-OAEP')
-      # expect(headers['kid']).to eq(JWT::JWK.new(attempts_api_public_key).kid)
+      expect(headers['kid']).to eq(JWT::JWK.new(attempts_api_public_key).kid)
 
       decrypted_jwe_payload = JWE.decrypt(jwe, attempts_api_private_key)
 
