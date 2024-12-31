@@ -62,6 +62,8 @@ class SummarizeUserEvents
       end
       event['@message'] = JSON.parse(event['@message']) if event['@message'].is_a?(String)
 
+      event['name'] ||= event['@message']['name']
+
       matchers.each do |matcher|
         matcher.handle_cloudwatch_event(event)
       end
