@@ -100,7 +100,7 @@ class ResolutionProofingJob < ApplicationJob
     is_docv_user = proofing_components&.dig(:document_check) == Idp::Constants::Vendors::SOCURE
     return true if enabled_for_docv_users && is_docv_user
 
-    # Otherwise fall back to A/B test infra
+    # Otherwise fall back to A/B test
     shadow_mode_ab_test_bucket(user:) == :socure_shadow_mode_for_non_docv_users
   end
 
@@ -148,11 +148,6 @@ class ResolutionProofingJob < ApplicationJob
       threatmetrix_request_id: threatmetrix_result.transaction_id,
       threatmetrix_success: threatmetrix_result.success?,
     )
-  end
-
-  # @param user [User]
-  def docv_user?(user, result_id)
-    user.document_capture_sessions.find_by(id: result_id)
   end
 
   def logger_info_hash(hash)

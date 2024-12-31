@@ -40,10 +40,6 @@ module Idv
         threatmetrix_session_id: idv_session.threatmetrix_session_id,
         request_ip: request.remote_ip,
         ipp_enrollment_in_progress: ipp_enrollment_in_progress?,
-        # Attempting to get the current set of proofing components
-        # so we can "see" document_check vendor.
-        # Unclear if the document_check vendor at this point is static though
-        # May need to save the field onto session
         proofing_components: ProofingComponents.new(
           user: current_user,
           idv_session:,

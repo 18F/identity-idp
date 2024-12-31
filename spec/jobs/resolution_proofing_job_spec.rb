@@ -546,7 +546,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
       end
     end
 
-    context 'socure shadow mode' do
+    context 'Socure shadow mode test' do
       let(:idv_socure_shadow_mode_enabled_for_docv_users) { false }
       let(:idv_socure_shadow_mode_enabled) { false }
       let(:doc_auth_vendor) { nil }
@@ -568,10 +568,10 @@ RSpec.describe ResolutionProofingJob, type: :job do
         stub_vendor_requests
       end
 
-      context 'enabled' do
+      context 'when enabled' do
         let(:idv_socure_shadow_mode_enabled) { true }
 
-        context 'at 100%' do
+        context 'and user is selected in A/B test' do
           let(:in_shadow_mode_ab_test_bucket) { true }
 
           it 'schedules a SocureShadowModeProofingJob' do
@@ -622,10 +622,10 @@ RSpec.describe ResolutionProofingJob, type: :job do
             perform
           end
 
-          context 'and also enabled for docv users' do
+          context 'and shadow mode also enabled for docv users' do
             let(:idv_socure_shadow_mode_enabled_for_docv_users) { true }
 
-            context 'when user is a docv user' do
+            context 'when the user is a docv user' do
               let(:proofing_components) do
                 {
                   document_check: Idp::Constants::Vendors::SOCURE,
@@ -639,7 +639,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
           end
         end
 
-        context 'at 0%' do
+        context 'and user is NOT selected in A/B test' do
           let(:in_shadow_mode_ab_test_bucket) { false }
 
           it 'does not schedule a shadow mode job' do
@@ -647,10 +647,10 @@ RSpec.describe ResolutionProofingJob, type: :job do
             perform
           end
 
-          context 'but also enabled for docv users' do
+          context 'but shadow mode is enabled for docv users' do
             let(:idv_socure_shadow_mode_enabled_for_docv_users) { true }
 
-            context 'when user is a docv user' do
+            context 'and the user happens to be a docv user' do
               let(:proofing_components) do
                 {
                   document_check: Idp::Constants::Vendors::SOCURE,
@@ -663,7 +663,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
               end
             end
 
-            context 'when user is not a docv user' do
+            context 'except the user did not use Socure docv' do
               it 'does not schedule a SocureShadowModeProofingJob' do
                 expect(SocureShadowModeProofingJob).not_to receive(:perform_later)
                 perform
@@ -673,7 +673,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         end
       end
 
-      context 'turned off' do
+      context 'when disabled' do
         let(:idv_socure_shadow_mode_enabled) { false }
 
         it 'does not schedule a SocureShadowModeProofingJob' do
@@ -682,7 +682,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
           perform
         end
 
-        context 'but still enabled for docv users' do
+        context 'but the flag to enable shadow mode for docv users was left on' do
           let(:idv_socure_shadow_mode_enabled_for_docv_users) { true }
           context 'when user is a docv user' do
             it 'does not schedule a SocureShadowModeProofingJob' do
