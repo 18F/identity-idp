@@ -184,7 +184,6 @@ lint_spec_file_name:
 		-exec echo "Error: Spec files named incorrectly, should end in '.spec.(js|ts|jsx|tsx)':" {} +
 
 lint_openapi:
-	@yarn generate-openapi-json
 	@yarn lint:openapi	
 
 lintfix: ## Try to automatically fix any Ruby, ERB, JavaScript, YAML, or CSS lint errors
