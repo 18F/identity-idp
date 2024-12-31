@@ -82,7 +82,7 @@ RSpec.describe EventSummarizer::VendorResultEvaluators::InstantVerify do
     it 'returns the correct result' do
       expect(evaluation).to eql(
         {
-          description: 'Instant Verify request failed. 2 checks failed: Check2, CheckWithCode (some_obscure_code )',
+          description: 'Instant Verify request failed. 2 checks failed: Check2, CheckWithCode (some_obscure_code )', # rubocop:disable Layout/LineLength
           type: :instant_verify_error,
         },
       )
