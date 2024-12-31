@@ -7,35 +7,31 @@ module EventSummarizer
       # @return [Hash] A Hash with a type and description keys.
       def self.evaluate_result(result)
         if result['success']
-          return {
+          {
             type: :instant_verify_success,
             description: 'Instant Verify call succeeded',
           }
-        end
-
-        if result['timed_out']
-          return {
+        elsif result['timed_out']
+          {
             type: :instant_verify_timed_out,
             description: 'Instant Verify request timed out.',
           }
-        end
-
-        if result['exception']
-          return {
+        elsif result['exception']
+          {
             type: :instant_verify_exception,
             description: 'Instant Verify request resulted in an exception',
           }
+        else
+          # The API call failed because of actual errors in the user's data.
+          # Try to come up with an explanation
+
+          explanation = explain_errors(result) || 'Check logs for more info.'
+
+          {
+            type: :instant_verify_error,
+            description: "Instant Verify request failed. #{explanation}",
+          }
         end
-
-        # The API call failed because of actual errors in the user's data.
-        # Try to come up with an explanation
-
-        explanation = explain_errors(result) || 'Check logs for more info.'
-
-        return {
-          type: :instant_verify_error,
-          description: "Instant Verify request failed. #{explanation}",
-        }
       end
 
       # Attempts to render a legible explanation of what went wrong in a
