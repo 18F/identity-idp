@@ -55,14 +55,7 @@ class SummarizeUserEvents
     find_cloudwatch_events do |event|
       Time.zone ||= zone
 
-      # Timestamps coming from cloudwatch are in UTC but don't include any zone
-      # information. Here we parse them as UTC.
-      if event['@timestamp'].is_a?(String)
-        event['@timestamp'] = Time.zone.parse("#{event['@timestamp']} UTC")
-      end
-      event['@message'] = JSON.parse(event['@message']) if event['@message'].is_a?(String)
-
-      event['name'] ||= event['@message']['name']
+      normalize_event!(event)
 
       matchers.each do |matcher|
         matcher.handle_cloudwatch_event(event)
@@ -180,6 +173,18 @@ class SummarizeUserEvents
       to: to_date,
       &block
     )
+  end
+
+  def normalize_event!(event)
+    if event['@timestamp'].is_a?(String)
+      event['@timestamp'] = ActiveSupport::TimeZone['UTC'].parse(event['@timestamp'])
+    end
+
+    if event['@message'].is_a?(String)
+      event['@message'] = JSON.parse(event['@message'])
+    end
+
+    event['name'] ||= event['@message']['name']  
   end
 end
 
