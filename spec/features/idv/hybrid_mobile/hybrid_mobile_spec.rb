@@ -19,8 +19,8 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
   end
 
   it 'proofs and hands off to mobile', js: true, allow_browser_log: true do
-    allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
-      .and_return(true, false)
+    # allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
+    #   .and_return(true, false)
 
     user = nil
 
@@ -251,8 +251,6 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
           errors: { network: I18n.t('doc_auth.errors.general.network_error') },
         ),
       )
-      allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
-        .and_return(true, false)
     end
 
     it 'shows capture complete on mobile and error page on desktop', js: true do

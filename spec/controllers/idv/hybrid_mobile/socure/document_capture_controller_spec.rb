@@ -29,7 +29,6 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
     allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(idv_vendor)
     allow(IdentityConfig.store).to receive(:doc_auth_vendor_switching_enabled)
       .and_return(vendor_switching_enabled)
-    allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).and_return(false)
 
     allow(subject).to receive(:stored_result).and_return(stored_result)
 

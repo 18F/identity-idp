@@ -24,8 +24,6 @@ RSpec.feature 'mobile hybrid flow entry', :js do
   context 'valid link' do
     before do
       allow(IdentityConfig.store).to receive(:socure_docv_enabled).and_return(true)
-      allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
-        .and_return(true, false)
     end
 
     it 'puts the user on the document capture page' do

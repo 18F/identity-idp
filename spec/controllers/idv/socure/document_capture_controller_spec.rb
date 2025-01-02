@@ -28,7 +28,6 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
   end
 
   let(:socure_docv_verification_data_test_mode) { false }
-  let(:doc_auth_selfie_desktop_test_mode) { false }
 
   before do
     allow(IdentityConfig.store).to receive(:socure_docv_enabled)
@@ -40,8 +39,6 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
     allow(IdentityConfig.store).to receive(:doc_auth_vendor_switching_enabled)
       .and_return(vendor_switching_enabled)
     allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
-    allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
-      .and_return(doc_auth_selfie_desktop_test_mode)
     allow(subject).to receive(:stored_result).and_return(stored_result)
 
     user_session = {}

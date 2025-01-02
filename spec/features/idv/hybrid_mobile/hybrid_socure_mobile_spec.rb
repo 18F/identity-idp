@@ -495,8 +495,6 @@ RSpec.describe 'Hybrid Flow' do
   xcontext 'invalid request', allow_browser_log: true do
     context 'getting the capture path w wrong api key' do
       before do
-        # allow(IdentityConfig.store).to receive(:socure_docv_verification_data_test_mode)
-        #   .and_return(true, false)
         user = user_with_2fa
         visit_idp_from_oidc_sp_with_ial2
         sign_in_and_2fa_user(user)
