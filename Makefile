@@ -40,6 +40,7 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	lint_readme \
 	lint_spec_file_name \
 	lintfix \
+	lint_openapi \
 	normalize_yaml \
 	optimize_assets \
 	optimize_svg \
