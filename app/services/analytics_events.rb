@@ -1198,7 +1198,7 @@ module AnalyticsEvents
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] use_alternate_sdk
   # @param [Boolean] liveness_checking_required
-  # @param [Integer] submit_attempts Times that user has tried submitting
+  # @param [Integer] submit_attempts Times that user has tried submitting document capture
   def idv_capture_troubleshooting_dismissed(
     acuant_sdk_upgrade_a_b_testing_enabled:,
     acuant_version:,
@@ -5312,7 +5312,7 @@ module AnalyticsEvents
 
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
-  # @param [Integer] submit_attempts Times that user has tried submitting
+  # @param [Integer] submit_attempts Times that user has tried submitting document capture
   # The user clicked the troubleshooting option to start in-person proofing
   def idv_verify_in_person_troubleshooting_option_clicked(
     flow_path:,
