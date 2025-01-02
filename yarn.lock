@@ -1256,7 +1256,7 @@
     require-from-string "^2.0.2"
     uri-js-replace "^1.0.1"
 
-"@redocly/cli@^1.22.22":
+"@redocly/cli@^1.26.1":
   version "1.27.2"
   resolved "https://registry.yarnpkg.com/@redocly/cli/-/cli-1.27.2.tgz#3158df763ef8bbb2dfea312e0840ddf02196fa2c"
   integrity sha512-bJi3Hb3eaTo7lnMXAJ3HQwQS45vrNXwaqNwh/nbgjkzeb4/5p7GXgB6nWkakwKUDiPVMX2rBoa8MCodNaaQ3Yg==
