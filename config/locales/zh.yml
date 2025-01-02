@@ -75,8 +75,8 @@ account.index.reactivation.instructions: 你的用户资料因为重设密码最
 account.index.reactivation.link: 现在重新激活你的用户资料。
 account.index.sign_in_location_and_ip: 从 %{ip}（IP 地址可能位于 %{location}）。
 account.index.unknown_location: 未知地点
-account.index.verification.connect_idv_account.cta: 登录合作伙伴机构来获得服务。
-account.index.verification.connect_idv_account.intro: 把你的账户连接到合作伙伴机构。
+account.index.verification.connect_idv_account.cta: 登录%{sp_name}来获得服务。
+account.index.verification.connect_idv_account.intro: 把你的账户连接到%{sp_name}。
 account.index.verification.continue_idv: 继续身份验证
 account.index.verification.finish_verifying_html: 完成身份验证流程来获得访问 <strong>%{sp_name}</strong> 的权限。
 account.index.verification.finish_verifying_no_sp: 完成身份验证流程来获得访问%{app_name} 合作伙伴机构的权限。

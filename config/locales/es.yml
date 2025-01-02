@@ -75,8 +75,8 @@ account.index.reactivation.instructions: Su perfil fue desactivado recientemente
 account.index.reactivation.link: Reactive su perfil ahora.
 account.index.sign_in_location_and_ip: Desde %{ip} (la dirección IP se encuentra posiblemente en %{location})
 account.index.unknown_location: ubicación desconocida
-account.index.verification.connect_idv_account.cta: Inicie sesión en la agencia asociada para acceder a los servicios.
-account.index.verification.connect_idv_account.intro: Conecte su cuenta a la agencia asociada.
+account.index.verification.connect_idv_account.cta: Inicie sesión en %{sp_name} para acceder a los servicios.
+account.index.verification.connect_idv_account.intro: Conecte su cuenta a %{sp_name}.
 account.index.verification.continue_idv: Continuar la verificación de identidad
 account.index.verification.finish_verifying_html: Termine de verificar su identidad para acceder a la <strong>%{sp_name}</strong>.
 account.index.verification.finish_verifying_no_sp: Termine el proceso de verificación de identidad para obtener acceso a todos los asociados de %{app_name}.
