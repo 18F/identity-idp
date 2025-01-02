@@ -1349,7 +1349,7 @@
     require-from-string "^2.0.2"
     uri-js-replace "^1.0.1"
 
-"@redocly/cli@^1.22.22":
+"@redocly/cli@^1.26.1":
   version "1.26.1"
   resolved "https://registry.yarnpkg.com/@redocly/cli/-/cli-1.26.1.tgz#c79e81ae08c539de7091cb8103fcbd716ea653ba"
   integrity sha512-ZNutKq1W+iiwpR7GtuGCfU1hU62KsP0AELDvcCvkWzcCWhRiaOGEQSSwPfRdjehgzqecApUvG0nG0nCQmwqcoQ==
@@ -6765,7 +6765,7 @@ use-sync-external-store@^1.4.0:
 util-deprecate@^1.0.1, util-deprecate@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
-  integrity sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==
+  integrity sha1-RQ1Nyfpw3nMnYvvS1KKJgUGaDM8=
 
 varint@^6.0.0:
   version "6.0.0"
