@@ -62,10 +62,10 @@ GIT
 
 GIT
   remote: https://github.com/mitchellhenke/newrelic-ruby-agent.git
-  revision: 102c37f6fcecd17ac8764606c50b5f95971639a3
+  revision: 129945f66842e4cbfdf0b501b1d18479d06a6feb
   branch: mitchellhenke/include-cached-queries
   specs:
-    newrelic_rpm (9.8.0)
+    newrelic_rpm (9.16.1)
 
 GIT
   remote: https://github.com/rack/rack-attack.git
