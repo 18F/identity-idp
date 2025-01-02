@@ -15,6 +15,7 @@ module Accounts
         sp_name: decorated_sp_session.sp_name,
         user: current_user,
         locked_for_session: pii_locked_for_session?(current_user),
+        requested_attributes: nil,
       )
     end
   end

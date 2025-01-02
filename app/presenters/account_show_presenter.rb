@@ -7,8 +7,29 @@ class AccountShowPresenter
               :pii,
               :sp_session_request_url,
               :authn_context,
-              :sp_name
+              :sp_name,
+              :requested_attributes
 
+  SORTED_IAL2_ATTRIBUTE_MAPPING = [
+    [[:email], :email],
+    [[:all_emails], :all_emails],
+    [%i[given_name family_name], :full_name],
+    [[:address], :address],
+    [[:phone], :phone],
+    [[:birthdate], :birthdate],
+    [[:social_security_number], :social_security_number],
+    [[:x509_subject], :x509_subject],
+    [[:x509_issuer], :x509_issuer],
+    [[:verified_at], :verified_at],
+  ].freeze
+
+  SORTED_IAL1_ATTRIBUTE_MAPPING = [
+    [[:email], :email],
+    [[:all_emails], :all_emails],
+    [[:x509_subject], :x509_subject],
+    [[:x509_issuer], :x509_issuer],
+    [[:verified_at], :verified_at],
+  ].freeze
   delegate :identity_verified_with_facial_match?, to: :user
 
   def initialize(
@@ -17,7 +38,8 @@ class AccountShowPresenter
     authn_context:,
     sp_name:,
     user:,
-    locked_for_session:
+    locked_for_session:,
+    requested_attributes:
   )
     @decrypted_pii = decrypted_pii
     @user = user
@@ -25,6 +47,7 @@ class AccountShowPresenter
     @sp_session_request_url = sp_session_request_url
     @authn_context = authn_context
     @locked_for_session = locked_for_session
+    @requested_attributes = requested_attributes
     @pii = determine_pii
   end
 
@@ -192,5 +215,20 @@ class AccountShowPresenter
     else
       obfuscated_pii_accessor
     end
+  end
+
+  def displayable_attribute_keys
+    sorted_attribute_mapping = if ial2_requested?
+                                 SORTED_IAL2_ATTRIBUTE_MAPPING
+                               else
+                                 SORTED_IAL1_ATTRIBUTE_MAPPING
+                               end
+
+    sorted_attributes = sorted_attribute_mapping.map do |raw_attribute, display_attribute|
+      display_attribute if (requested_attributes & raw_attribute).present?
+    end
+    # If the SP requests all emails, do not show
+    sorted_attributes.delete(:email) if sorted_attributes.include?(:all_emails)
+    sorted_attributes.compact
   end
 end
