@@ -91,12 +91,10 @@ module Idv
           controller: self,
           next_steps: [:ssn, :ipp_ssn],
           preconditions: ->(idv_session:, user:) {
+            # !idv_session.selfie_check_required && ( handled by redirect to vendor
             idv_session.flow_path == 'standard' && (
               # mobile
-              idv_session.skip_doc_auth_from_handoff ||
               idv_session.skip_hybrid_handoff ||
-              idv_session.skip_doc_auth_from_how_to_verify ||
-              !idv_session.selfie_check_required ||
               idv_session.desktop_selfie_test_mode_enabled?)
           },
           undo_step: ->(idv_session:, user:) do
