@@ -59,7 +59,7 @@ module Idv
     end
 
     def redirect_to_correct_vendor(vendor, in_hybrid_mobile)
-      return if IdentityConfig.store.doc_auth_selfie_desktop_test_mode &&
+      return if IdentityConfig.store.doc_auth_disable_redirect_to_correct_vendor &&
                 !(vendor == Idp::Constants::Vendors::SOCURE &&
                 resolved_authn_context_result.facial_match?)
 
