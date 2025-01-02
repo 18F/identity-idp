@@ -1,0 +1,34 @@
+openapi: '3.0.3'
+info:
+  version: 1.0.0
+  title: Attempts Stream API for Login.gov
+  license:
+    name: CC0 1.0 Universal
+    url: https://creativecommons.org/publicdomain/zero/1.0/legalcode
+  description: |
+    This API can be used by
+    Event Receivers to query the Event Stream configuration and
+    status, to add and remove subjects, and to trigger verification.
+servers: 
+  - url: https://secure.login.gov 
+paths:
+  /.well-known/ssf-configuration:
+    $ref: './paths/transmitter-configuration.yml'
+  /api/attempts/poll:
+    $ref: './paths/poll.yml'
+  /api/attempts/status:
+    $ref: './paths/status.yml'
+  /api/attempts/verification:
+    $ref: './paths/verification.yml'
+
+
+components:
+  schemas:
+    DecodedJWTPayload:
+      $ref: './schemas/DecodedJWTPayload.yml'
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: csp-id JWT
+      description: <csp-id> <token>

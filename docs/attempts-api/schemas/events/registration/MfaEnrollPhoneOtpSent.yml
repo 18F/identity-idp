@@ -1,0 +1,18 @@
+description: |
+  Relevant only when the user is enrolling a phone as their MFA. The user has been sent a one-time password by Login.gov over SMS or voice during the MFA enrollment process.
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      phone_number:
+        type: string
+        description: The provided phone number
+      otp_delivery_method:
+        type: string
+        enum: 
+          - sms
+          - voice
+      success:
+        type: boolean
+        description: |
+          Indicates whether the one-time password was sent.

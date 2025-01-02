@@ -1,0 +1,26 @@
+description: |
+  When the user provides their phone number for identity verification. 
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      phone_number:
+        type: string
+      failure_reason:
+        type: object
+        description: |
+          An OPTIONAL object. An associative array of attributes and errors if success is false
+        properties: 
+          phone:
+            type: array
+            description: An OPTIONAL key that describes errors with the phone number
+            items:
+              type: string
+              enum:
+                - improbable_phone
+                - We are unable to call phone numbers in {Country Name}
+                - We are unable to send text messages to phone numbers in {Country Name}
+      success:
+        type: boolean
+        description: |
+          Indicates whether the upload link was successfully sent to the user’s phone.

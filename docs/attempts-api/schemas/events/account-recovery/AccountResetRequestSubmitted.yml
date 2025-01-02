@@ -1,0 +1,10 @@
+description: |
+  A user is able to login with their email address and password, but is unable to use any of their MFA methods to complete the login process. In this case, users can request to reset their account (which effectively deletes their account and allows them to create a new one).
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      success:
+        type: boolean
+        description: |
+          Indicates whether the account reset request was successfully submitted.

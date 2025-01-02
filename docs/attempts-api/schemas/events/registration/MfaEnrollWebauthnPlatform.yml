@@ -1,0 +1,10 @@
+description: The user has enrolled face or touch unlock for MFA.
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      success:
+        type: boolean
+        description: |
+          Indicates whether the platform device was successfully added for MFA.
+
