@@ -82,7 +82,7 @@ export interface UploadErrorResponse {
   remaining_submit_attempts?: number;
 
   /**
-   * Number of submit attempts for user.
+   * Number of submitted doc capture attempts for user
    */
   submit_attempts?: number;
 
