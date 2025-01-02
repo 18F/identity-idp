@@ -18,10 +18,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
     end.at_least(1).times
   end
 
-  it 'proofs and hands off to mobile', js: true, allow_browser_log: true do
-    # allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
-    #   .and_return(true, false)
-
+  it 'proofs and hands off to mobile', js: true do
     user = nil
 
     perform_in_browser(:desktop) do
@@ -239,7 +236,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
     end
   end
 
-  context 'user is rate limited on mobile', allow_browser_log: true do
+  context 'user is rate limited on mobile' do
     let(:max_attempts) { IdentityConfig.store.doc_auth_max_attempts }
 
     before do
@@ -289,7 +286,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
     end
   end
 
-  context 'barcode read error on mobile (redo document capture)', allow_browser_log: true do
+  context 'barcode read error on mobile (redo document capture)' do
     it 'continues to ssn on desktop when user selects Continue', js: true do
       user = nil
 
