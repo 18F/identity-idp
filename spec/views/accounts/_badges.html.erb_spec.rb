@@ -13,7 +13,6 @@ RSpec.describe 'accounts/_badges.html.erb' do
       user:,
       locked_for_session: false,
       all_emails_requested: false,
-      ial2_requested: false,
     )
   end
 
