@@ -106,9 +106,14 @@ module TwoFactorAuthenticatableMethods
     return @sign_in_notification_timeframe_expired_event if defined?(
       @sign_in_notification_timeframe_expired_event
     )
-    @sign_in_notification_timeframe_expired_event = current_user.events.where(
-      event_type: 'sign_in_notification_timeframe_expired',
-    ).order(created_at: :desc).limit(1).take
+    @sign_in_notification_timeframe_expired_event = current_user.events
+      .limit(3000)
+      .where(
+        event_type: 'sign_in_notification_timeframe_expired',
+      )
+      .order(created_at: :desc)
+      .limit(1)
+      .take
   end
 
   def handle_remember_device_preference(remember_device_preference)
