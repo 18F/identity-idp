@@ -132,10 +132,11 @@ RSpec.describe Idv::InPerson::ReadyToVerifyController do
           context 'with in_person_proofing_post_office_closed_alert_enabled' do
             let(:ipp_post_office_closed_alert_enabled) { true }
             before do
-              allow(IdentityConfig.store).to receive(:in_person_proofing_post_office_closed_alert_enabled)
-              .and_return(ipp_post_office_closed_alert_enabled)
+              allow(IdentityConfig.store)
+                .to receive(:in_person_proofing_post_office_closed_alert_enabled)
+                .and_return(ipp_post_office_closed_alert_enabled)
             end
-  
+
             it 'renders the show template' do
               expect(response).to render_template :show
             end

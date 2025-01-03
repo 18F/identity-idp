@@ -937,12 +937,13 @@ RSpec.describe UserMailer, type: :mailer do
       context 'post office closed alert' do
         context 'when the post office closed alert flag is disabled' do
           before do
-            allow(IdentityConfig.store).to receive(:in_person_proofing_post_office_closed_alert_enabled)
+            allow(IdentityConfig.store)
+              .to receive(:in_person_proofing_post_office_closed_alert_enabled)
               .and_return(false)
           end
-    
+
           it 'does not render the post office closed alert' do
-            aggregate_failures do 
+            aggregate_failures do
               [
                 t('in_person_proofing.post_office_closed.heading'),
                 t('in_person_proofing.post_office_closed.body'),
@@ -954,15 +955,16 @@ RSpec.describe UserMailer, type: :mailer do
             end
           end
         end
-    
+
         context 'when the post office closed alert flag is enabled' do
           before do
-            allow(IdentityConfig.store).to receive(:in_person_proofing_post_office_closed_alert_enabled)
+            allow(IdentityConfig.store)
+              .to receive(:in_person_proofing_post_office_closed_alert_enabled)
               .and_return(true)
           end
-    
+
           it 'renders the post office closed alert' do
-            aggregate_failures do 
+            aggregate_failures do
               [
                 t('in_person_proofing.post_office_closed.heading'),
                 t('in_person_proofing.post_office_closed.body'),

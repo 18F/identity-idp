@@ -184,7 +184,7 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
 
       it 'does not render the post office closed alert' do
         render
-  
+
         aggregate_failures do
           [
             t('in_person_proofing.post_office_closed.heading'),

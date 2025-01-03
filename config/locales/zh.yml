@@ -1279,9 +1279,6 @@ in_person_proofing.body.location.retail_hours_sat: 周六：
 in_person_proofing.body.location.retail_hours_sun: 周日：
 in_person_proofing.body.location.retail_hours_weekday: 周一到周五：
 in_person_proofing.body.location.selection: 这是你选择的地点：
-in_person_proofing.post_office_closed.body: Post Office locations will resume regular hours on Friday, January 10, 2025.
-in_person_proofing.post_office_closed.heading: All Post Offices will be closed on Thursday, January 9, 2025 to honor former President Jimmy Carter.
-in_person_proofing.post_office_closed.subject: All Post Offices will be closed on Thursday, January 9, 2025
 in_person_proofing.body.prepare.privacy_disclaimer: '%{app_name} 是一个安全的政府网站。我们和美国邮局使用你的数据来验证你的身份。'
 in_person_proofing.body.prepare.privacy_disclaimer_link: 了解有关隐私和安全的更多信息。
 in_person_proofing.body.prepare.privacy_disclaimer_questions: 有问题吗？
@@ -1343,6 +1340,9 @@ in_person_proofing.headings.state_id_milestone_2: 输入你州政府颁发身份
 in_person_proofing.headings.switch_back: 切换回你的电脑，来准备亲身去验证身份。
 in_person_proofing.headings.update_address: 更新你当前地址
 in_person_proofing.headings.update_state_id: 更新你身份证件上的信息
+in_person_proofing.post_office_closed.body: Post Office locations will resume regular hours on Friday, January 10, 2025.
+in_person_proofing.post_office_closed.heading: All Post Offices will be closed on Thursday, January 9, 2025 to honor former President Jimmy Carter.
+in_person_proofing.post_office_closed.subject: All Post Offices will be closed on Thursday, January 9, 2025
 in_person_proofing.process.barcode.caption_label: 注册代码
 in_person_proofing.process.barcode.heading: 出示你的 %{app_name} 条形码
 in_person_proofing.process.barcode.info: 邮局工作人员需要扫描该页顶部的条形码你可以把该页打印出来，或在你的移动设备上显示。
