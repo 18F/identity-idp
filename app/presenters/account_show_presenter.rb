@@ -7,8 +7,7 @@ class AccountShowPresenter
               :pii,
               :sp_session_request_url,
               :authn_context,
-              :sp_name,
-              :requested_attributes
+              :sp_name
 
   SORTED_IAL2_ATTRIBUTE_MAPPING = [
     [[:email], :email],
@@ -39,7 +38,7 @@ class AccountShowPresenter
     sp_name:,
     user:,
     locked_for_session:,
-    requested_attributes:,
+    all_emails_requested:,
     ial2_requested:
   )
     @decrypted_pii = decrypted_pii
@@ -48,7 +47,7 @@ class AccountShowPresenter
     @sp_session_request_url = sp_session_request_url
     @authn_context = authn_context
     @locked_for_session = locked_for_session
-    @requested_attributes = requested_attributes
+    @all_emails_requested = all_emails_requested
     @pii = determine_pii
     @ial2_requested = ial2_requested
   end
@@ -171,7 +170,7 @@ class AccountShowPresenter
   end
 
   def show_change_option
-    @requested_attributes
+    @all_emails_requested
   end
 
   delegate :recent_events, :recent_devices, to: :user

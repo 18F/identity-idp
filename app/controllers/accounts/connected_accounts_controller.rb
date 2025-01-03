@@ -18,12 +18,10 @@ module Accounts
         sp_name: decorated_sp_session.sp_name,
         user: current_user,
         locked_for_session: pii_locked_for_session?(current_user),
-        requested_attributes: decorated_sp_session.requested_attributes.map(&:to_sym)
+        all_emails_requested: decorated_sp_session.requested_attributes.map(&:to_sym)
                                 .include?('all_emails'),
         ial2_requested: ial2_requested?,
       )
     end
-
-    private
   end
 end
