@@ -119,7 +119,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
 
         it 'redirects to the LN/mock controller' do
           get :show
-          expect(response).to redirect_to idv_hybrid_handoff_url
+          expect(response).to redirect_to idv_document_capture_url
         end
 
         context 'when desktop test mode is enabled' do
