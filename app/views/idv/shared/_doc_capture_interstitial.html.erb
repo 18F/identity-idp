@@ -8,6 +8,12 @@
       ) %>
 <% end %>
 
+<% if local_assigns.fetch(:show_test_mode_warning, false) %>
+  <p>
+    <marquee class="bg-accent-warm" ><strong>FOR TESTING ONLY.</strong> This will only <strong>simulate</strong> verifying your documents.</marquee>
+  </p>
+<% end %>
+
 <%= render PageHeadingComponent.new do %>
   <%= t('doc_auth.headings.verify_with_phone') %>
 <% end %>
