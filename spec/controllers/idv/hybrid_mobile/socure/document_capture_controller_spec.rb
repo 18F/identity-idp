@@ -217,7 +217,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
             let(:idv_vendor) { Idp::Constants::Vendors::LEXIS_NEXIS }
             before do
               allow(IdentityConfig.store)
-                .to receive(:doc_auth_disable_redirect_to_correct_vendor).and_return(true)
+                .to receive(:doc_auth_redirect_to_correct_vendor_disabled).and_return(true)
             end
 
             it 'redirects to the Socure controller' do
