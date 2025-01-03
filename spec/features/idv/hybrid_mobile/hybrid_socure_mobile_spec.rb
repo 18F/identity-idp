@@ -465,20 +465,20 @@ RSpec.describe 'Hybrid Flow' do
         perform_in_browser(:desktop) do
           visit_idp_from_sp_with_ial2(sp)
           sign_up_and_2fa_ial1_user
-  
+
           complete_doc_auth_steps_before_hybrid_handoff_step
           clear_and_fill_in(:doc_auth_phone, phone_number)
           click_send_link
         end
-  
+
         perform_in_browser(:mobile) do
           visit @sms_link
-  
+
           expect(page).to have_text(t('doc_auth.headers.general.network_error'))
           expect(page).to have_text(t('doc_auth.errors.general.new_network_error'))
           expect(@analytics).to have_logged_event(:idv_socure_document_request_submitted)
         end
-  
+
         perform_in_browser(:desktop) do
           expect(page).to have_current_path(idv_link_sent_path)
         end
@@ -499,7 +499,7 @@ RSpec.describe 'Hybrid Flow' do
         DocAuth::Mock::DocAuthMockClient.reset!
         stub_docv_document_request(status: 401)
       end
-  
+
       it_behaves_like 'document request API failure'
     end
   end
