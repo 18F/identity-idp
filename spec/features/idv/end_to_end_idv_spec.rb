@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe 'Identity verification', :js do
   include IdvStepHelper
   include InPersonHelper
+  include AnalyticsRecordingHelper
 
   let(:sp) { :oidc }
   let(:sp_name) { 'Test SP' }
