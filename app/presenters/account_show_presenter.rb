@@ -166,6 +166,10 @@ class AccountShowPresenter
     user.connected_apps.includes([:service_provider_record, :email_address])
   end
 
+  def ial2_requested?
+    @ial2_requested
+  end
+
   delegate :recent_events, :recent_devices, to: :user
 
   private
