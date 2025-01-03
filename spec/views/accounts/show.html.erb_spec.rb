@@ -25,7 +25,6 @@ RSpec.describe 'accounts/show.html.erb' do
         sp_name: nil,
         locked_for_session: false,
         all_emails_requested: false,
-        ial2_requested: false,
       ),
     )
   end
@@ -258,7 +257,6 @@ RSpec.describe 'accounts/show.html.erb' do
           sp_name: sp.friendly_name,
           locked_for_session: false,
           all_emails_requested: false,
-          ial2_requested: false,
         ),
       )
     end

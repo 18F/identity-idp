@@ -9,26 +9,6 @@ class AccountShowPresenter
               :authn_context,
               :sp_name
 
-  SORTED_IAL2_ATTRIBUTE_MAPPING = [
-    [[:email], :email],
-    [[:all_emails], :all_emails],
-    [%i[given_name family_name], :full_name],
-    [[:address], :address],
-    [[:phone], :phone],
-    [[:birthdate], :birthdate],
-    [[:social_security_number], :social_security_number],
-    [[:x509_subject], :x509_subject],
-    [[:x509_issuer], :x509_issuer],
-    [[:verified_at], :verified_at],
-  ].freeze
-
-  SORTED_IAL1_ATTRIBUTE_MAPPING = [
-    [[:email], :email],
-    [[:all_emails], :all_emails],
-    [[:x509_subject], :x509_subject],
-    [[:x509_issuer], :x509_issuer],
-    [[:verified_at], :verified_at],
-  ].freeze
   delegate :identity_verified_with_facial_match?, to: :user
 
   def initialize(
@@ -38,8 +18,7 @@ class AccountShowPresenter
     sp_name:,
     user:,
     locked_for_session:,
-    all_emails_requested:,
-    ial2_requested:
+    all_emails_requested:
   )
     @decrypted_pii = decrypted_pii
     @user = user
@@ -49,7 +28,6 @@ class AccountShowPresenter
     @locked_for_session = locked_for_session
     @all_emails_requested = all_emails_requested
     @pii = determine_pii
-    @ial2_requested = ial2_requested
   end
 
   def show_password_reset_partial?
@@ -165,10 +143,6 @@ class AccountShowPresenter
     user.connected_apps.includes([:service_provider_record, :email_address])
   end
 
-  def ial2_requested?
-    @ial2_requested
-  end
-
   def show_change_option
     @all_emails_requested
   end
@@ -224,20 +198,5 @@ class AccountShowPresenter
     else
       obfuscated_pii_accessor
     end
-  end
-
-  def displayable_attribute_keys
-    sorted_attribute_mapping = if ial2_requested?
-                                 SORTED_IAL2_ATTRIBUTE_MAPPING
-                               else
-                                 SORTED_IAL1_ATTRIBUTE_MAPPING
-                               end
-
-    sorted_attributes = sorted_attribute_mapping.map do |raw_attribute, display_attribute|
-      display_attribute if (requested_attributes & raw_attribute).present?
-    end
-    # If the SP requests all emails, do not show
-    sorted_attributes.delete(:email) if sorted_attributes.include?(:all_emails)
-    sorted_attributes.compact
   end
 end

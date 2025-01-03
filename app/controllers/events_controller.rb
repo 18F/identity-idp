@@ -17,7 +17,6 @@ class EventsController < ApplicationController
       user: current_user,
       locked_for_session: pii_locked_for_session?(current_user),
       all_emails_requested: nil,
-      ial2_requested: nil,
     )
     device_and_events
   rescue ActiveRecord::RecordNotFound, ActiveModel::RangeError

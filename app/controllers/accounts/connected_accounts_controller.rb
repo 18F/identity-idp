@@ -19,7 +19,6 @@ module Accounts
         user: current_user,
         locked_for_session: pii_locked_for_session?(current_user),
         all_emails_requested: all_emails_requested?,
-        ial2_requested: ial2_requested?,
       )
     end
 
