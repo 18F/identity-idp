@@ -59,6 +59,7 @@ module IdentityConfig
     config.add(:async_stale_job_timeout_seconds, type: :integer)
     config.add(:async_wait_timeout_seconds, type: :integer)
     config.add(:attempts_api_event_ttl_seconds, type: :integer)
+    config.add(:attempts_api_enabled, type: :boolean)
     config.add(:attribute_encryption_key, type: :string)
     config.add(:attribute_encryption_key_queue, type: :json)
     config.add(:available_locales, type: :comma_separated_string_list)
