@@ -466,11 +466,10 @@ RSpec.describe 'Hybrid Flow' do
 
     it 'shows the network error page on the phone and the link sent page on the desktop',
        js: true do
-      user = nil
 
       perform_in_browser(:desktop) do
         visit_idp_from_sp_with_ial2(sp)
-        user = sign_up_and_2fa_ial1_user
+        sign_up_and_2fa_ial1_user
 
         complete_doc_auth_steps_before_hybrid_handoff_step
         clear_and_fill_in(:doc_auth_phone, phone_number)
