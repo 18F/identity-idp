@@ -293,6 +293,11 @@ RSpec.feature 'document capture step', :js do
           docv_transaction_token: @docv_transaction_token,
         )
 
+        # Confirm that we end up on the LN / Mock page even if we try to
+        # go to the Socure one.
+        visit idv_document_capture_url
+        expect(page).to have_current_path(idv_socure_document_capture_url)
+
         visit idv_socure_document_capture_update_path
         expect(DocAuthLog.find_by(user_id: @user.id).state).to be_nil
       end
