@@ -468,7 +468,6 @@ development:
   dashboard_api_token: test_token
   dashboard_url: http://localhost:3001/api/service_providers
   desktop_ft_unlock_setup_option_percent_tested: 100
-  doc_auth_disable_redirect_to_correct_vendor: true
   doc_auth_selfie_desktop_test_mode: true
   domain_name: localhost:3000
   enable_rate_limiting: false
