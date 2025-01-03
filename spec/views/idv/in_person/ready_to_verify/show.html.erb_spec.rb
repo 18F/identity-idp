@@ -122,8 +122,6 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
         let(:in_person_outage_expected_update_date) { 'October 31, 2023' }
 
         before do
-          allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled)
-            .and_return(true)
           allow(IdentityConfig.store).to receive(:in_person_outage_emailed_by_date)
             .and_return(in_person_outage_emailed_by_date)
           allow(IdentityConfig.store).to receive(:in_person_outage_expected_update_date)
@@ -174,6 +172,54 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
         expect(rendered).not_to have_content(
           t('idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title'),
         )
+      end
+    end
+  end
+
+  context 'post office closed alert' do
+    context 'when the post office closed alert flag is disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_proofing_post_office_closed_alert_enabled)
+          .and_return(false)
+      end
+
+      it 'does not render the outage alert' do
+        render
+  
+        aggregate_failures do
+          [
+            t('in_person_proofing.post_office_closed.heading'),
+            t('in_person_proofing.post_office_closed.body'),
+          ].each do |copy|
+            Array(copy).each do |part|
+              expect(rendered).to_not have_content(part)
+            end
+          end
+        end
+      end
+    end
+
+    context 'when the post office closed alert flag is enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_proofing_post_office_closed_alert_enabled)
+          .and_return(true)
+      end
+
+      it 'renders the outage alert' do
+        render
+
+        aggregate_failures do
+          [
+            t('in_person_proofing.post_office_closed.heading'),
+            t('in_person_proofing.post_office_closed.body'),
+          ].each do |copy|
+            Array(copy).each do |part|
+              puts '-----'
+              puts part
+              expect(rendered).to have_content(part)
+            end
+          end
+        end
       end
     end
   end
