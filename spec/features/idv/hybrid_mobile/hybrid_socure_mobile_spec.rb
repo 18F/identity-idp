@@ -68,9 +68,9 @@ RSpec.describe 'Hybrid Flow' do
         visit idv_link_sent_url
         expect(page).to have_current_path(root_url)
 
-        # Confirm that we end up on the LN / Mock page even if we try to
-        # go to the Socure one.
-        visit idv_hybrid_mobile_socure_document_capture_url
+        # Confirm that we end up on the Socure page even if we try to
+        # go to the LN / Mock one.
+        visit idv_hybrid_mobile_document_capture_url
         expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_url)
 
         # Confirm that clicking cancel and then coming back doesn't cause errors
