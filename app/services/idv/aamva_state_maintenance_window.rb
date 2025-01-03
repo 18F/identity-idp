@@ -29,7 +29,7 @@ module Idv
         # Sunday 5:00 am. to 7:00 am. ET
         { cron: '0 6 * * Sun', duration_minutes: 2 * 60 },
         # second Sunday of month 4:00 am. to 8:00 am. ET
-        { cron: '0 4 * * Sun#2', duration_minutes: 4 * 60 }
+        { cron: '0 4 * * Sun#2', duration_minutes: 4 * 60 },
       ],
       'DC' => [
         # Daily, Midnight to 6 am. ET.
