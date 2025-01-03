@@ -25,8 +25,8 @@ RSpec.describe AccountShowPresenter do
       sp_name:,
       user:,
       locked_for_session:,
-      requested_attributes:,
-      ial2_requested:,
+      requested_attributes: nil,
+      ial2_requested: nil,
     )
   end
 
@@ -481,7 +481,7 @@ RSpec.describe AccountShowPresenter do
           sp_name: nil,
           locked_for_session: false,
           requested_attributes: nil,
-          ial2_required: false,
+          ial2_requested: false,
         )
 
         expect(profile_index.header_personalization).to eq email_address.email
