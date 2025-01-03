@@ -23,7 +23,7 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
       sp_name:,
       user:,
       locked_for_session: false,
-      all_emails_requested: nil,
+      all_emails_requested: false,
       ial2_requested: false,
     )
   end

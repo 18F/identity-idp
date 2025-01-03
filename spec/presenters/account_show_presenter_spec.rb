@@ -25,7 +25,7 @@ RSpec.describe AccountShowPresenter do
       sp_name:,
       user:,
       locked_for_session:,
-      all_emails_requested: nil,
+      all_emails_requested: false,
       ial2_requested: nil,
     )
   end
@@ -296,7 +296,7 @@ RSpec.describe AccountShowPresenter do
           sp_name: nil,
           user: user,
           locked_for_session: false,
-          all_emails_requested: nil,
+          all_emails_requested: false,
           ial2_requested: false,
         )
 
@@ -331,7 +331,7 @@ RSpec.describe AccountShowPresenter do
           sp_name: nil,
           user: user,
           locked_for_session: false,
-          all_emails_requested: nil,
+          all_emails_requested: false,
           ial2_requested: false,
         )
 
@@ -460,7 +460,7 @@ RSpec.describe AccountShowPresenter do
           authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
-          all_emails_requested: nil,
+          all_emails_requested: false,
           ial2_requested: false,
         )
 
@@ -480,7 +480,7 @@ RSpec.describe AccountShowPresenter do
           authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
-          all_emails_requested: nil,
+          all_emails_requested: false,
           ial2_requested: false,
         )
 
@@ -504,7 +504,7 @@ RSpec.describe AccountShowPresenter do
           authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
-          all_emails_requested: nil,
+          all_emails_requested: false,
           ial2_requested: false,
         )
 
@@ -525,7 +525,7 @@ RSpec.describe AccountShowPresenter do
           authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
-          all_emails_requested: nil,
+          all_emails_requested: false,
           ial2_requested: false,
         )
 
@@ -564,7 +564,7 @@ RSpec.describe AccountShowPresenter do
         sp_name: nil,
         user: user.reload,
         locked_for_session: false,
-        all_emails_requested: nil,
+        all_emails_requested: false,
         ial2_requested: false,
       )
 
@@ -585,7 +585,7 @@ RSpec.describe AccountShowPresenter do
         sp_name: nil,
         user: user.reload,
         locked_for_session: false,
-        all_emails_requested: nil,
+        all_emails_requested: false,
         ial2_requested: false,
       )
 
@@ -635,7 +635,7 @@ RSpec.describe AccountShowPresenter do
           authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
-          all_emails_requested: nil,
+          all_emails_requested: false,
           ial2_requested: false,
         )
 
@@ -661,7 +661,7 @@ RSpec.describe AccountShowPresenter do
           authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
-          all_emails_requested: nil,
+          all_emails_requested: false,
           ial2_requested: false,
         )
 
@@ -682,7 +682,7 @@ RSpec.describe AccountShowPresenter do
           authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
-          all_emails_requested: nil,
+          all_emails_requested: false,
           ial2_requested: false,
         )
 

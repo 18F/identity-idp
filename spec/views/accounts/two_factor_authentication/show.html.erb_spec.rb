@@ -14,7 +14,7 @@ RSpec.describe 'accounts/two_factor_authentication/show.html.erb' do
         authn_context: nil,
         sp_name: nil,
         locked_for_session: false,
-        all_emails_requested: nil,
+        all_emails_requested: false,
         ial2_requested: false,
       ),
     )
@@ -42,7 +42,7 @@ RSpec.describe 'accounts/two_factor_authentication/show.html.erb' do
           authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
-          all_emails_requested: nil,
+          all_emails_requested: false,
           ial2_requested: false,
         ),
       )

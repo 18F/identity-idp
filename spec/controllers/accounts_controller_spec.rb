@@ -134,7 +134,7 @@ RSpec.describe AccountsController do
           sp_name: nil,
           user: user,
           locked_for_session: false,
-          all_emails_requested: nil,
+          all_emails_requested: false,
           ial2_requested: false,
         )
         allow(subject).to receive(:presenter).and_return(presenter)
@@ -174,7 +174,7 @@ RSpec.describe AccountsController do
             sp_name: nil,
             user: user,
             locked_for_session: false,
-            all_emails_requested: nil,
+            all_emails_requested: false,
             ial2_requested: false,
           )
           allow(subject).to receive(:presenter).and_return(presenter)
