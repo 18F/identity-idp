@@ -14,6 +14,8 @@ RSpec.describe 'accounts/history/show.html.erb' do
         authn_context: nil,
         sp_name: nil,
         locked_for_session: false,
+        requested_attributes: nil,
+        ial2_requested: false,
       ),
     )
   end

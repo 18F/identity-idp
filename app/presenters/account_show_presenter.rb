@@ -39,7 +39,8 @@ class AccountShowPresenter
     sp_name:,
     user:,
     locked_for_session:,
-    requested_attributes:
+    requested_attributes:,
+    ial2_requested:
   )
     @decrypted_pii = decrypted_pii
     @user = user
@@ -49,6 +50,7 @@ class AccountShowPresenter
     @locked_for_session = locked_for_session
     @requested_attributes = requested_attributes
     @pii = determine_pii
+    @ial2_requested = ial2_requested
   end
 
   def show_password_reset_partial?

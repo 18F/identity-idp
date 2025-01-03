@@ -12,6 +12,8 @@ RSpec.describe 'accounts/_badges.html.erb' do
       sp_name: nil,
       user:,
       locked_for_session: false,
+      requested_attributes: nil,
+      ial2_requested: false,
     )
   end
 
