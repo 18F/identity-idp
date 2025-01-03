@@ -3,6 +3,8 @@
 module Accounts
   class ConnectedAccountsController < ApplicationController
     include RememberDeviceConcern
+    include ApplicationHelper
+
     before_action :confirm_two_factor_authenticated
 
     layout 'account_side_nav'
@@ -17,6 +19,7 @@ module Accounts
         user: current_user,
         locked_for_session: pii_locked_for_session?(current_user),
         requested_attributes: requested_attributes,
+        ial2_requested: ial2_requested?,
       )
     end
 

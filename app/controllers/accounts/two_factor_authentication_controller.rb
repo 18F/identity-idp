@@ -17,6 +17,7 @@ module Accounts
         user: current_user,
         locked_for_session: pii_locked_for_session?(current_user),
         requested_attributes: nil,
+        ial2_requested: nil,
       )
     end
   end
