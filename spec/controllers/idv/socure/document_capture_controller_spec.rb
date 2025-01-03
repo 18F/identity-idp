@@ -97,6 +97,28 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           get :show
           expect(response).to redirect_to idv_document_capture_url
         end
+
+        context 'when redirect to correct vendor is disabled' do
+          let(:socure_capture_app_url) { 'https://verify.socure.test/' }
+          let(:response_body) do
+            {
+              data: {
+                docvTransactionToken: SecureRandom.hex(6),
+                url: socure_capture_app_url,
+              },
+            }
+          end
+          before do
+            allow(IdentityConfig.store)
+              .to receive(:doc_auth_disable_redirect_to_correct_vendor).and_return(true)
+          end
+
+          it 'redirects to the Socure controller' do
+            get :show
+
+            expect(response).to have_http_status 200
+          end
+        end
       end
 
       context 'when facial match is required' do
@@ -121,14 +143,6 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           get :show
           expect(response).to redirect_to idv_document_capture_url
         end
-
-        # context 'when desktop test mode is enabled' do
-        #   let(:doc_auth_selfie_desktop_test_mode) { true }
-        #   it 'redirects to the LN/mock controller' do
-        #     get :show
-        #     expect(response).to redirect_to idv_document_capture_url
-        #   end
-        # end
       end
     end
 
