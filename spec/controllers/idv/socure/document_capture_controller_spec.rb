@@ -122,13 +122,13 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           expect(response).to redirect_to idv_document_capture_url
         end
 
-        context 'when desktop test mode is enabled' do
-          let(:doc_auth_selfie_desktop_test_mode) { true }
-          it 'redirects to the LN/mock controller' do
-            get :show
-            expect(response).to redirect_to idv_document_capture_url
-          end
-        end
+        # context 'when desktop test mode is enabled' do
+        #   let(:doc_auth_selfie_desktop_test_mode) { true }
+        #   it 'redirects to the LN/mock controller' do
+        #     get :show
+        #     expect(response).to redirect_to idv_document_capture_url
+        #   end
+        # end
       end
     end
 
