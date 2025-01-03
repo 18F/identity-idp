@@ -96,11 +96,21 @@ RSpec.feature 'document capture step', :js do
       expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
     end
 
-    it 'does not track state if state tracking is disabled' do
-      allow(IdentityConfig.store).to receive(:state_tracking_enabled).and_return(false)
-      attach_and_submit_images
+    context 'state tracking is disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:state_tracking_enabled).and_return(false)
+        allow(IdentityConfig.store).to receive(:socure_docv_enabled).and_return(true)
+      end
+      it 'does not track state' do
+        # Confirm that we end up on the LN / Mock page even if we try to
+        # go to the Socure one.
+        visit idv_socure_document_capture_url
+        expect(page).to have_current_path(idv_document_capture_url)
 
-      expect(DocAuthLog.find_by(user_id: @user.id).state).to be_nil
+        attach_and_submit_images
+
+        expect(DocAuthLog.find_by(user_id: @user.id).state).to be_nil
+      end
     end
   end
 
