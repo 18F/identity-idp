@@ -81,7 +81,7 @@ account.index.verification.continue_idv: Poursuivre la vérification d’identit
 account.index.verification.finish_verifying_html: Terminez la procédure de vérification d’identité pour pouvoir accéder à <strong>%{sp_name}</strong>.
 account.index.verification.finish_verifying_no_sp: Terminer la procédure de vérification d’identité pour pouvoir accéder à tous les organismes partenaires de %{app_name}.
 account.index.verification.identity_verification: Vérification de l’identité
-account.index.verification.in_person_instructions_html: Vous devez vous rendre à un bureau de poste participant d’ici le <strong>%{deadline}</strong>.
+account.index.verification.in_person_instructions_html: Vous devez vous rendre à un bureau de poste participant d’ici le <strong>%{deadline}</strong> pour terminer la procédure de vérification de votre identité.
 account.index.verification.instructions: Saisissez votre code de vérification pour terminer la procédure de vérification d’identité.
 account.index.verification.learn_more_link: En savoir plus sur la vérification de votre identité
 account.index.verification.legacy_verified_html: Vous avez confirmé votre identité sur %{app_name} le <strong>%{date}</strong> avec votre pièce d’identité d’État.

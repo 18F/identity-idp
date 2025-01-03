@@ -81,7 +81,7 @@ account.index.verification.continue_idv: 继续身份验证
 account.index.verification.finish_verifying_html: 完成身份验证流程来获得访问 <strong>%{sp_name}</strong> 的权限。
 account.index.verification.finish_verifying_no_sp: 完成身份验证流程来获得访问%{app_name} 合作伙伴机构的权限。
 account.index.verification.identity_verification: 身份验证
-account.index.verification.in_person_instructions_html: 你必须在 <strong>%{deadline}</strong> 之前去邮局完。
+account.index.verification.in_person_instructions_html: 你必须在 <strong>%{deadline}</strong> 之前去邮局完成验证你的身份。
 account.index.verification.instructions: 输入你的验证码来完成身份验证。
 account.index.verification.learn_more_link: 了解更多有关验证你身份的信息。
 account.index.verification.legacy_verified_html: 你在 <strong>%{date}</strong> 使用州颁发的身份证件在%{app_name} 验证了身份。

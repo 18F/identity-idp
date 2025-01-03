@@ -81,7 +81,7 @@ account.index.verification.continue_idv: Continue identity verification
 account.index.verification.finish_verifying_html: Finish verifying your identity to access <strong>%{sp_name}</strong>.
 account.index.verification.finish_verifying_no_sp: Finish the identity verification process to gain access to all %{app_name} partners.
 account.index.verification.identity_verification: Identity verification
-account.index.verification.in_person_instructions_html: You must visit any participating Post Office by <strong>%{deadline}</strong>.
+account.index.verification.in_person_instructions_html: You must visit any participating Post Office by <strong>%{deadline}</strong> to verify your identity.
 account.index.verification.instructions: Enter your verification code to finish verifying your identity.
 account.index.verification.learn_more_link: Learn more about verifying your identity
 account.index.verification.legacy_verified_html: You verified your identity with %{app_name} on <strong>%{date}</strong> using your state ID.
