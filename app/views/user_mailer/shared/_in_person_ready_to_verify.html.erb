@@ -275,6 +275,21 @@
   </div>
 <% end %>
 
+<%# alert %>
+<% if @show_closed_post_office_banner %>
+  <table class="usa-alert usa-alert--warning margin-y-4">
+    <tr>
+      <td style="width:16px;">
+        <%= image_tag('email/warning.png', width: 16, height: 16, alt: '', style: 'margin-top: 4px;') %>
+      </td>
+      <td>
+        <p class="margin-bottom-1"><strong><%= t('in_person_proofing.post_office_closed.heading') %></strong></p>
+        <p class="margin-bottom-0"><%= t('in_person_proofing.post_office_closed.body') %></p>
+      </td>
+    </tr>
+  </table>
+<% end %>
+
 <% if !@is_enhanced_ipp %>
   <h3><%= t('in_person_proofing.body.location.change_location_heading') %></h3>
   <p class="margin-bottom-4">
