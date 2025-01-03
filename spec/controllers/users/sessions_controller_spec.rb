@@ -371,7 +371,7 @@ RSpec.describe Users::SessionsController, devise: true do
             rate_limited: false,
             valid_captcha_result: false,
             captcha_validation_performed: true,
-            bad_password_count: 0,
+            bad_password_count: 1,
             remember_device: false,
             sp_request_url_present: false,
           )
