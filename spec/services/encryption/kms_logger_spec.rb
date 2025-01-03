@@ -6,6 +6,7 @@ RSpec.describe Encryption::KmsLogger do
       it 'logs the context' do
         log = {
           kms: {
+            timestamp: Time.zone.now,
             action: 'encrypt',
             encryption_context: { context: 'pii-encryption', user_uuid: '1234-abc' },
             log_context: 'log_context',
@@ -29,6 +30,7 @@ RSpec.describe Encryption::KmsLogger do
       it 'logs that an encryption happened without a context' do
         log = {
           kms: {
+            timestamp: Time.zone.now,
             action: 'decrypt',
             encryption_context: nil,
             log_context: nil,
