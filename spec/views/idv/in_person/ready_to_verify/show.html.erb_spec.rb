@@ -176,14 +176,13 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
     end
   end
 
-  context 'post office closed alert' do
-    context 'when the post office closed alert flag is disabled' do
+  context 'post office warning' do
+    context 'when the show closed post office banner is disabled' do
       before do
-        allow(IdentityConfig.store).to receive(:in_person_proofing_post_office_closed_alert_enabled)
-          .and_return(false)
+        @show_closed_post_office_banner = false
       end
 
-      it 'does not render the outage alert' do
+      it 'does not render the post office closed alert' do
         render
   
         aggregate_failures do
@@ -199,13 +198,12 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
       end
     end
 
-    context 'when the post office closed alert flag is enabled' do
+    context 'when the show closed post office banner is enabled' do
       before do
-        allow(IdentityConfig.store).to receive(:in_person_proofing_post_office_closed_alert_enabled)
-          .and_return(true)
+        @show_closed_post_office_banner = true
       end
 
-      it 'renders the outage alert' do
+      it 'renders the post office closed alert' do
         render
 
         aggregate_failures do
@@ -214,8 +212,6 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
             t('in_person_proofing.post_office_closed.body'),
           ].each do |copy|
             Array(copy).each do |part|
-              puts '-----'
-              puts part
               expect(rendered).to have_content(part)
             end
           end
