@@ -170,6 +170,10 @@ class AccountShowPresenter
     @ial2_requested
   end
 
+  def show_change_option
+    @requested_attributes
+  end
+
   delegate :recent_events, :recent_devices, to: :user
 
   private
