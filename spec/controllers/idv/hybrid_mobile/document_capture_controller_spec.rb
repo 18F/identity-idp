@@ -70,7 +70,8 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
 
         context 'when redirect to correct vendor is disabled' do
           before do
-            allow(IdentityConfig.store).to receive(:doc_auth_disable_redirect_to_correct_vendor).and_return(true)
+            allow(IdentityConfig.store)
+              .to receive(:doc_auth_disable_redirect_to_correct_vendor).and_return(true)
           end
 
           it 'redirects to the Socure controller' do
