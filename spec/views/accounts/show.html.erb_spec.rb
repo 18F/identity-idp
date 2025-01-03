@@ -24,7 +24,7 @@ RSpec.describe 'accounts/show.html.erb' do
         authn_context:,
         sp_name: nil,
         locked_for_session: false,
-        requested_attributes: nil,
+        all_emails_requested: nil,
         ial2_requested: false,
       ),
     )
@@ -257,7 +257,7 @@ RSpec.describe 'accounts/show.html.erb' do
           authn_context:,
           sp_name: sp.friendly_name,
           locked_for_session: false,
-          requested_attributes: nil,
+          all_emails_requested: nil,
           ial2_requested: false,
         ),
       )

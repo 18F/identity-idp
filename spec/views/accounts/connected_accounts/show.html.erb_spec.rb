@@ -17,7 +17,7 @@ RSpec.describe 'accounts/connected_accounts/show.html.erb' do
         authn_context: nil,
         sp_name: nil,
         locked_for_session: false,
-        requested_attributes: nil,
+        all_emails_requested: nil,
         ial2_requested: false,
       ),
     )
