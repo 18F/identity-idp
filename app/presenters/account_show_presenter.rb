@@ -17,7 +17,8 @@ class AccountShowPresenter
     authn_context:,
     sp_name:,
     user:,
-    locked_for_session:
+    locked_for_session:,
+    all_emails_requested:
   )
     @decrypted_pii = decrypted_pii
     @user = user
@@ -25,6 +26,7 @@ class AccountShowPresenter
     @sp_session_request_url = sp_session_request_url
     @authn_context = authn_context
     @locked_for_session = locked_for_session
+    @all_emails_requested = all_emails_requested
     @pii = determine_pii
   end
 
@@ -139,6 +141,10 @@ class AccountShowPresenter
 
   def connected_apps
     user.connected_apps.includes([:service_provider_record, :email_address])
+  end
+
+  def show_change_option
+    @all_emails_requested
   end
 
   delegate :recent_events, :recent_devices, to: :user
