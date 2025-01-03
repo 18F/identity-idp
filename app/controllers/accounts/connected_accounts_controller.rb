@@ -18,10 +18,15 @@ module Accounts
         sp_name: decorated_sp_session.sp_name,
         user: current_user,
         locked_for_session: pii_locked_for_session?(current_user),
-        all_emails_requested: decorated_sp_session.requested_attributes.map(&:to_sym)
-                                .include?('all_emails'),
+        all_emails_requested: all_emails_requested?,
         ial2_requested: ial2_requested?,
       )
+    end
+
+    def all_emails_requested?
+      if decorated_sp_session.requested_attributes.present?
+        decorated_sp_session.requested_attributes.map(&:to_sym).include?('all_emails')
+      end
     end
   end
 end
