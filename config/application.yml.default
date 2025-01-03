@@ -100,7 +100,7 @@ doc_auth_attempt_window_in_minutes: 360
 doc_auth_check_failed_image_resubmission_enabled: true
 doc_auth_client_glare_threshold: 50
 doc_auth_client_sharpness_threshold: 50
-doc_auth_disable_redirect_to_correct_vendor: false
+doc_auth_redirect_to_correct_vendor_disabled: false
 doc_auth_error_dpi_threshold: 290
 doc_auth_error_glare_threshold: 40
 doc_auth_error_sharpness_threshold: 40
