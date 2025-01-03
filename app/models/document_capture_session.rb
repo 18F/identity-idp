@@ -11,6 +11,7 @@ class DocumentCaptureSession < ApplicationRecord
     EncryptedRedisStructStorage.load(result_id, type: DocumentCaptureSessionResult)
   end
 
+  # @param doc_auth_response [DocAuth::Response]
   def store_result_from_response(doc_auth_response)
     session_result = load_result || DocumentCaptureSessionResult.new(
       id: generate_result_id,

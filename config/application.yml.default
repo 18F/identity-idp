@@ -168,6 +168,7 @@ idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 idv_socure_reason_code_download_enabled: false
 idv_socure_shadow_mode_enabled: false
+idv_socure_shadow_mode_enabled_for_docv_users: true
 idv_sp_required: false
 in_person_completion_survey_url: 'https://login.gov'
 in_person_doc_auth_button_enabled: true

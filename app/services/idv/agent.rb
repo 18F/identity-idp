@@ -6,13 +6,16 @@ module Idv
       @applicant = applicant.symbolize_keys
     end
 
+    # @param document_capture_session [DocumentCaptureSession]
+    # @param proofing_components [Idv::ProofingComponents]
     def proof_resolution(
       document_capture_session,
       trace_id:,
       user_id:,
       threatmetrix_session_id:,
       request_ip:,
-      ipp_enrollment_in_progress:
+      ipp_enrollment_in_progress:,
+      proofing_components:
     )
       document_capture_session.create_proofing_session
 
@@ -29,6 +32,7 @@ module Idv
         threatmetrix_session_id: threatmetrix_session_id,
         request_ip: request_ip,
         ipp_enrollment_in_progress: ipp_enrollment_in_progress,
+        proofing_components: proofing_components.to_h,
       }
 
       if IdentityConfig.store.ruby_workers_idv_enabled

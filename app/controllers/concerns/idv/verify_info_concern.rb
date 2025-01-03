@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Idv
+  # @attr idv_session [Idv::Session]
   module VerifyInfoConcern
     extend ActiveSupport::Concern
 
@@ -39,6 +40,12 @@ module Idv
         threatmetrix_session_id: idv_session.threatmetrix_session_id,
         request_ip: request.remote_ip,
         ipp_enrollment_in_progress: ipp_enrollment_in_progress?,
+        proofing_components: ProofingComponents.new(
+          user: current_user,
+          idv_session:,
+          session:,
+          user_session:,
+        ),
       )
 
       return true
