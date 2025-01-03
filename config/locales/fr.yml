@@ -1222,7 +1222,7 @@ image_description.us_flag: Drapeau des États-Unis
 image_description.warning: Panneau d’avertissement jaune
 in_person_proofing.body.barcode.cancel_link_text: Annuler votre code-barres
 in_person_proofing.body.barcode.close_window: Vous pouvez maintenant fermer cette fenêtre
-in_person_proofing.body.barcode.deadline: Vous devez vous rendre dans un bureau de poste participant avant le %{deadline}
+in_person_proofing.body.barcode.deadline: Vous devez vous rendre dans un bureau de poste participant avant le %{deadline}.
 in_person_proofing.body.barcode.deadline_restart: Si vous laissez passer la date limite, votre code-barres ne fonctionnera pas. Vous devrez recommencer toute la procédure.
 in_person_proofing.body.barcode.eipp_tag: Code-barres pilote amélioré de la GSA
 in_person_proofing.body.barcode.eipp_what_to_bring: 'Selon la pièce d’identité dont vous disposez, il pourra vous être demandé de présenter des documents complémentaires. Étudiez attentivement les options suivantes:'
