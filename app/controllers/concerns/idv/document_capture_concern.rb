@@ -59,7 +59,7 @@ module Idv
     end
 
     def redirect_to_correct_vendor(vendor, in_hybrid_mobile)
-      return if IdentityConfig.store.doc_auth_disable_redirect_to_correct_vendor
+      return if IdentityConfig.store.doc_auth_redirect_to_correct_vendor_disabled
 
       expected_doc_auth_vendor = doc_auth_vendor
       return if vendor == expected_doc_auth_vendor

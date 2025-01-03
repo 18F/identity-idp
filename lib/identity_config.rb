@@ -118,7 +118,7 @@ module IdentityConfig
     config.add(:doc_auth_check_failed_image_resubmission_enabled, type: :boolean)
     config.add(:doc_auth_client_glare_threshold, type: :integer)
     config.add(:doc_auth_client_sharpness_threshold, type: :integer)
-    config.add(:doc_auth_disable_redirect_to_correct_vendor, type: :boolean)
+    config.add(:doc_auth_redirect_to_correct_vendor_disabled, type: :boolean)
     config.add(:doc_auth_error_dpi_threshold, type: :integer)
     config.add(:doc_auth_error_glare_threshold, type: :integer)
     config.add(:doc_auth_error_sharpness_threshold, type: :integer)
