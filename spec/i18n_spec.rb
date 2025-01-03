@@ -68,6 +68,9 @@ module I18n
         { key: 'in_person_proofing.post_office_closed.heading', locales: %i[es fr zh] }, # temp, waiting on translations 01/03/25
         { key: 'in_person_proofing.process.eipp_bring_id.image_alt_text', locales: %i[fr es zh] }, # Real ID is considered a proper noun in this context, ID translated to ID Card in Chinese
         { key: 'links.contact', locales: %i[fr] }, # "Contact" is "Contact" in French
+        { key: 'in_person_proofing.post_office_closed.email.body_html', locales: %i[fr es zh] }, # Temporary email for post office closures
+        { key: 'in_person_proofing.post_office_closed.email.heading', locales: %i[fr es zh] }, # Temporary email for post office closures
+        { key: 'in_person_proofing.post_office_closed.email.subject', locales: %i[fr es zh] }, # Temporary email for post office closures
         { key: 'saml_idp.auth.error.title', locales: %i[es] }, # "Error" is "Error" in Spanish
         { key: 'simple_form.no', locales: %i[es] }, # "No" is "No" in Spanish
         { key: 'telephony.format_length.six', locales: %i[zh] }, # numeral is not translated
