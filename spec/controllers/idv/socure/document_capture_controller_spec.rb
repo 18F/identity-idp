@@ -110,7 +110,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           end
           before do
             allow(IdentityConfig.store)
-              .to receive(:doc_auth_disable_redirect_to_correct_vendor).and_return(true)
+              .to receive(:doc_auth_redirect_to_correct_vendor_disabled).and_return(true)
           end
 
           it 'redirects to the Socure controller' do
