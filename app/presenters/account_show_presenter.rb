@@ -18,7 +18,7 @@ class AccountShowPresenter
     sp_name:,
     user:,
     locked_for_session:,
-    all_emails_requested:
+    all_emails_requested: false
   )
     @decrypted_pii = decrypted_pii
     @user = user
