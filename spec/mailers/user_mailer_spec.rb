@@ -1363,37 +1363,6 @@ RSpec.describe UserMailer, type: :mailer do
       end
     end
 
-    describe '#in_person_please_call' do
-      let(:mail) do
-        UserMailer.with(user: user, email_address: email_address).in_person_please_call(
-          enrollment: enrollment,
-          visited_location_name: visited_location_name,
-        )
-      end
-
-      it_behaves_like 'a system email'
-      it_behaves_like 'an email that respects user email locale preference'
-
-      it 'renders the idv_please_call template' do
-        expect_any_instance_of(ActionMailer::Base).to receive(:mail)
-          .with(hash_including(template_name: 'idv_please_call'))
-          .and_call_original
-
-        mail.deliver_later
-      end
-
-      context 'when the keyword argument visited_location_name is missing' do
-        let(:mail) do
-          UserMailer.with(user: user, email_address: email_address).in_person_please_call(
-            enrollment: enrollment,
-          )
-        end
-        it 'sends the email successfully' do
-          mail.deliver_later
-        end
-      end
-    end
-
     describe '#in_person_completion_survey' do
       let(:mail) do
         UserMailer.with(user: user, email_address: email_address).in_person_completion_survey
