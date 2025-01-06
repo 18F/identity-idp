@@ -441,6 +441,16 @@ class UserMailer < ActionMailer::Base
     end
   end
 
+  def in_person_post_office_closed
+    with_user_locale(user) do
+      @hide_title = true
+      mail(
+        to: email_address.email,
+        subject: t('in_person_proofing.post_office_closed.email.subject'),
+      )
+    end
+  end
+
   private
 
   attr_reader :user, :email_address

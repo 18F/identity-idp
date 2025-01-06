@@ -1339,6 +1339,9 @@ in_person_proofing.headings.switch_back: Vuelva a su computadora para preparar l
 in_person_proofing.headings.update_address: Actualice su dirección actual
 in_person_proofing.headings.update_state_id: Actualice la información de su identificación
 in_person_proofing.post_office_closed.body: Post Office locations will resume regular hours on Friday, January 10, 2025.
+in_person_proofing.post_office_closed.email.body_html: <strong>You will not be able to visit a Post Office on Thursday, January 9, 2025 to finish verifying your identity.</strong> Post Office locations will resume regular hours on Friday, January 10, 2025.
+in_person_proofing.post_office_closed.email.heading: All Post Offices will be closed on January 9, 2025 to honor former President Jimmy Carter
+in_person_proofing.post_office_closed.email.subject: All Post Offices will be closed on Thursday, January 9, 2025
 in_person_proofing.post_office_closed.heading: All Post Offices will be closed on Thursday, January 9, 2025 to honor former President Jimmy Carter.
 in_person_proofing.process.barcode.caption_label: Código de registro
 in_person_proofing.process.barcode.heading: Muestre su código de barras de %{app_name}
