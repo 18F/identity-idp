@@ -934,6 +934,50 @@ RSpec.describe UserMailer, type: :mailer do
         end
       end
 
+      context 'post office closed alert' do
+        context 'when the post office closed alert flag is disabled' do
+          before do
+            allow(IdentityConfig.store)
+              .to receive(:in_person_proofing_post_office_closed_alert_enabled)
+              .and_return(false)
+          end
+
+          it 'does not render the post office closed alert' do
+            aggregate_failures do
+              [
+                t('in_person_proofing.post_office_closed.heading'),
+                t('in_person_proofing.post_office_closed.body'),
+              ].each do |copy|
+                Array(copy).each do |part|
+                  expect(mail.html_part.body).to_not have_content(part)
+                end
+              end
+            end
+          end
+        end
+
+        context 'when the post office closed alert flag is enabled' do
+          before do
+            allow(IdentityConfig.store)
+              .to receive(:in_person_proofing_post_office_closed_alert_enabled)
+              .and_return(true)
+          end
+
+          it 'renders the post office closed alert' do
+            aggregate_failures do
+              [
+                t('in_person_proofing.post_office_closed.heading'),
+                t('in_person_proofing.post_office_closed.body'),
+              ].each do |copy|
+                Array(copy).each do |part|
+                  expect(mail.html_part.body).to have_content(part)
+                end
+              end
+            end
+          end
+        end
+      end
+
       context 'Need to change location section' do
         context 'when Enhanced IPP is not enabled' do
           let(:is_enhanced_ipp) { false }
