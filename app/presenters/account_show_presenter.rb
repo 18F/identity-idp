@@ -138,7 +138,7 @@ class AccountShowPresenter
   end
 
   def show_change_option
-    @all_emails_requested
+    !@all_emails_requested
   end
 
   delegate :recent_events, :recent_devices, to: :user
