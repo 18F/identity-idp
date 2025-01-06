@@ -27,6 +27,19 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
       expect(assigns(:presenter).desktop_ft_ab_test).to be false
     end
 
+    context 'with threatmetrix disabled' do
+      before do
+        allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?)
+          .and_return(false)
+      end
+
+      it 'does not override CSPs for ThreatMetrix' do
+        expect(controller).not_to receive(:override_csp_for_threat_metrix)
+
+        response
+      end
+    end
+
     context 'with threatmetrix enabled' do
       let(:tmx_session_id) { '1234' }
 
@@ -51,6 +64,12 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
         ).and_call_original
 
         expect(response).to render_template(:index)
+      end
+
+      it 'overrides CSPs for ThreatMetrix' do
+        expect(controller).to receive(:override_csp_for_threat_metrix)
+
+        response
       end
     end
 
