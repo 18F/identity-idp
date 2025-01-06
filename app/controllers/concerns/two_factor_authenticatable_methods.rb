@@ -107,9 +107,9 @@ module TwoFactorAuthenticatableMethods
       @sign_in_notification_timeframe_expired_event
     )
     @sign_in_notification_timeframe_expired_event = current_user.events
-      .limit(3000)
       .where(
         event_type: 'sign_in_notification_timeframe_expired',
+        created_at: (IdentityConfig.store.session_total_duration_timeout_in_minutes.minutes.ago..),
       )
       .order(created_at: :desc)
       .limit(1)
