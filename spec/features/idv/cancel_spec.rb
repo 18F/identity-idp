@@ -187,6 +187,11 @@ RSpec.describe 'cancel IdV' do
 
       click_spinner_button_and_wait t('idv.cancel.actions.exit', app_name: APP_NAME)
 
+      expect(page).to have_current_path(
+        'http://localhost:7654/auth/result',
+        url: true,
+        ignore_query: true,
+      )
       expect(current_url).to start_with('http://localhost:7654/auth/result?error=access_denied')
       expect(fake_analytics).to have_logged_event(
         'IdV: cancellation confirmed',

@@ -1198,12 +1198,14 @@ module AnalyticsEvents
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] use_alternate_sdk
   # @param [Boolean] liveness_checking_required
+  # @param [Integer] submit_attempts Times that user has tried submitting document capture
   def idv_capture_troubleshooting_dismissed(
     acuant_sdk_upgrade_a_b_testing_enabled:,
     acuant_version:,
     flow_path:,
     use_alternate_sdk:,
     liveness_checking_required:,
+    submit_attempts:,
     **extra
   )
     track_event(
@@ -1213,6 +1215,7 @@ module AnalyticsEvents
       flow_path: flow_path,
       use_alternate_sdk: use_alternate_sdk,
       liveness_checking_required: liveness_checking_required,
+      submit_attempts: submit_attempts,
       **extra,
     )
   end
@@ -1694,6 +1697,28 @@ module AnalyticsEvents
       opted_in_to_in_person_proofing:,
       skip_hybrid_handoff:,
       previous_ssn_edit_distance:,
+      **extra,
+    )
+  end
+
+  # User is shown the Socure timeout error page
+  # @param [String] error_code The type of error that occurred
+  # @param [Integer] remaining_submit_attempts The number of remaining attempts to submit
+  # @param [Boolean] skip_hybrid_handoff Whether the user skipped the hybrid handoff A/B test
+  # @param [Boolean] opted_in_to_in_person_proofing Whether the user opted into in-person proofing
+  def idv_doc_auth_socure_error_visited(
+    error_code:,
+    remaining_submit_attempts:,
+    skip_hybrid_handoff: nil,
+    opted_in_to_in_person_proofing: nil,
+    **extra
+  )
+    track_event(
+      :idv_doc_auth_socure_error_visited,
+      error_code:,
+      remaining_submit_attempts:,
+      skip_hybrid_handoff:,
+      opted_in_to_in_person_proofing:,
       **extra,
     )
   end
@@ -2788,6 +2813,25 @@ module AnalyticsEvents
     )
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
+
+  # User chooses to try In Person, e.g. from a doc_auth timeout error page
+  # @param [Integer] remaining_submit_attempts The number of remaining attempts to submit
+  # @param [Boolean] skip_hybrid_handoff Whether the user skipped the hybrid handoff A/B test
+  # @param [Boolean] opted_in_to_in_person_proofing Whether the user opted into in-person proofing
+  def idv_in_person_direct_start(
+    remaining_submit_attempts:,
+    skip_hybrid_handoff: nil,
+    opted_in_to_in_person_proofing: nil,
+    **extra
+  )
+    track_event(
+      :idv_in_person_direct_start,
+      remaining_submit_attempts:,
+      skip_hybrid_handoff:,
+      opted_in_to_in_person_proofing:,
+      **extra,
+    )
+  end
 
   # Tracks emails that are initiated during InPerson::EmailReminderJob
   # @param [String] email_type early or late
@@ -5268,16 +5312,19 @@ module AnalyticsEvents
 
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [Integer] submit_attempts Times that user has tried submitting document capture
   # The user clicked the troubleshooting option to start in-person proofing
   def idv_verify_in_person_troubleshooting_option_clicked(
     flow_path:,
     opted_in_to_in_person_proofing:,
+    submit_attempts:,
     **extra
   )
     track_event(
       'IdV: verify in person troubleshooting option clicked',
       flow_path: flow_path,
       opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
+      submit_attempts: submit_attempts,
       **extra,
     )
   end
@@ -7651,12 +7698,20 @@ module AnalyticsEvents
   # @param [Hash] platform_authenticator
   # @param [Boolean] success
   # @param [Hash, nil] errors
+  # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
   # Tracks whether or not Webauthn setup was successful
-  def webauthn_setup_submitted(platform_authenticator:, success:, errors: nil, **extra)
+  def webauthn_setup_submitted(
+    platform_authenticator:,
+    success:,
+    in_account_creation_flow: nil,
+    errors: nil,
+    **extra
+  )
     track_event(
       :webauthn_setup_submitted,
       platform_authenticator: platform_authenticator,
       success: success,
+      in_account_creation_flow:,
       errors: errors,
       **extra,
     )

@@ -54,7 +54,11 @@ RSpec.feature 'Password recovery via personal key' do
     acknowledge_and_confirm_personal_key
     click_agree_and_continue
 
-    expect(current_url).to start_with('http://localhost:7654/auth/result')
+    expect(page).to have_current_path(
+      'http://localhost:7654/auth/result',
+      url: true,
+      ignore_query: true,
+    )
 
     visit account_path
 

@@ -75,8 +75,8 @@ account.index.reactivation.instructions: Your profile was recently deactivated d
 account.index.reactivation.link: Reactivate your profile now.
 account.index.sign_in_location_and_ip: From %{ip} (IP address potentially located in %{location})
 account.index.unknown_location: unknown location
-account.index.verification.connect_idv_account.cta: Sign in to partner agency to access services.
-account.index.verification.connect_idv_account.intro: Connect your account to the partner agency.
+account.index.verification.connect_idv_account.cta: Sign in to %{sp_name} to access services.
+account.index.verification.connect_idv_account.intro: Connect your account to %{sp_name}.
 account.index.verification.continue_idv: Continue identity verification
 account.index.verification.finish_verifying_html: Finish verifying your identity to access <strong>%{sp_name}</strong>.
 account.index.verification.finish_verifying_no_sp: Finish the identity verification process to gain access to all %{app_name} partners.
@@ -1049,6 +1049,8 @@ idv.errors.incorrect_password: The password you entered is not correct.
 idv.errors.pattern_mismatch.ssn: Enter a nine-digit Social Security number
 idv.errors.pattern_mismatch.zipcode: Enter a 5 or 9 digit ZIP Code
 idv.errors.pattern_mismatch.zipcode_five: Enter a 5 digit ZIP Code
+idv.errors.technical_difficulties: We are having technical difficulties
+idv.errors.try_again_later: Try again later.
 idv.failure.attempts_html.one: You can try <strong>1 more time.</strong> Then, you must wait 6 hours before trying again.
 idv.failure.attempts_html.other: You can try <strong>%{count} more times.</strong> Then, you must wait 6 hours before trying again.
 idv.failure.button.try_online: Try again online
@@ -1075,8 +1077,6 @@ idv.failure.phone.rate_limited.option_try_again_later_no_gpo_html: You can try a
 idv.failure.phone.rate_limited.option_verify_by_mail_html: Verify by mail, which takes <strong>5 to 10 days</strong>
 idv.failure.phone.rate_limited.options_header: 'You can:'
 idv.failure.phone.timeout: Our request to verify your information timed out. Please try again.
-idv.failure.phone.warning.attempts_html.one: For security reasons, you have <strong>one attempt</strong> remaining.
-idv.failure.phone.warning.attempts_html.other: For security reasons, you have <strong>%{count} attempts</strong> remaining.
 idv.failure.phone.warning.gpo.button: Verify by mail
 idv.failure.phone.warning.gpo.explanation: If you don’t have another phone number to try, verify by mail instead.
 idv.failure.phone.warning.gpo.heading: Verify by mail
@@ -1098,6 +1098,8 @@ idv.failure.verify.exit: Exit %{app_name}
 idv.failure.verify.fail_link_html: Get help at <strong>%{sp_name}</strong>
 idv.failure.verify.fail_text: to access services.
 idv.failure.verify.heading: We couldn’t verify your identity
+idv.failure.warning.attempts_html.one: For security reasons, you have <strong>one attempt</strong> remaining.
+idv.failure.warning.attempts_html.other: For security reasons, you have <strong>%{count} attempts</strong> remaining.
 idv.forgot_password.link_text: Forgot password?
 idv.forgot_password.modal_header: Are you sure you can’t remember your password?
 idv.forgot_password.reset_password: Reset password
@@ -1325,6 +1327,11 @@ in_person_proofing.headings.state_id_milestone_2: Enter the information on your 
 in_person_proofing.headings.switch_back: Switch back to your computer to prepare to verify your identity in person
 in_person_proofing.headings.update_address: Update your current address
 in_person_proofing.headings.update_state_id: Update the information on your ID
+in_person_proofing.post_office_closed.body: Post Office locations will resume regular hours on Friday, January 10, 2025.
+in_person_proofing.post_office_closed.email.body_html: <strong>You will not be able to visit a Post Office on Thursday, January 9, 2025 to finish verifying your identity.</strong> Post Office locations will resume regular hours on Friday, January 10, 2025.
+in_person_proofing.post_office_closed.email.heading: All Post Offices will be closed on January 9, 2025 to honor former President Jimmy Carter
+in_person_proofing.post_office_closed.email.subject: All Post Offices will be closed on Thursday, January 9, 2025
+in_person_proofing.post_office_closed.heading: All Post Offices will be closed on Thursday, January 9, 2025 to honor former President Jimmy Carter.
 in_person_proofing.process.barcode.caption_label: Enrollment code
 in_person_proofing.process.barcode.heading: Show your %{app_name} barcode
 in_person_proofing.process.barcode.info: The retail associate needs to scan your barcode at the top of this page. You can print this page or show it on your mobile device.

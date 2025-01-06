@@ -9,7 +9,7 @@ RSpec.describe Idv::SsnController do
 
   before do
     stub_sign_in(user)
-    stub_up_to(:document_capture, idv_session: subject.idv_session)
+    stub_up_to(:document_capture, idv_session: controller.idv_session)
     stub_analytics
   end
 
@@ -33,16 +33,11 @@ RSpec.describe Idv::SsnController do
         :check_for_mail_only_outage,
       )
     end
-
-    it 'overrides CSPs for ThreatMetrix' do
-      expect(subject).to have_actions(
-        :before,
-        :override_csp_for_threat_metrix,
-      )
-    end
   end
 
   describe '#show' do
+    subject(:response) { get :show }
+
     let(:analytics_name) { 'IdV: doc auth ssn visited' }
     let(:analytics_args) do
       {
@@ -73,25 +68,25 @@ RSpec.describe Idv::SsnController do
     end
 
     it 'adds a threatmetrix session id to idv_session' do
-      expect { get :show }.to change { subject.idv_session.threatmetrix_session_id }.from(nil)
+      expect { get :show }.to change { controller.idv_session.threatmetrix_session_id }.from(nil)
     end
 
     context 'when updating ssn' do
       let(:threatmetrix_session_id) { 'original-session-id' }
 
       before do
-        subject.idv_session.ssn = ssn
-        subject.idv_session.threatmetrix_session_id = threatmetrix_session_id
+        controller.idv_session.ssn = ssn
+        controller.idv_session.threatmetrix_session_id = threatmetrix_session_id
       end
       it 'does not change threatmetrix_session_id' do
-        expect { get :show }.not_to change { subject.idv_session.threatmetrix_session_id }
+        expect { get :show }.not_to change { controller.idv_session.threatmetrix_session_id }
       end
 
       context 'but there is no threatmetrix_session_id in the session' do
         let(:threatmetrix_session_id) { nil }
 
         it 'sets a threatmetrix_session_id' do
-          expect { get :show }.to change { subject.idv_session.threatmetrix_session_id }
+          expect { get :show }.to change { controller.idv_session.threatmetrix_session_id }
         end
       end
     end
@@ -102,22 +97,22 @@ RSpec.describe Idv::SsnController do
       end
 
       it 'still add a threatmetrix session id to idv_session' do
-        expect { get :show }.to change { subject.idv_session.threatmetrix_session_id }.from(nil)
+        expect { get :show }.to change { controller.idv_session.threatmetrix_session_id }.from(nil)
       end
 
       context 'when idv_session has a threatmetrix_session_id' do
         before do
-          subject.idv_session.threatmetrix_session_id = 'fake-session-id'
+          controller.idv_session.threatmetrix_session_id = 'fake-session-id'
         end
         it 'changes the threatmetrix_session_id' do
-          expect { get :show }.to change { subject.idv_session.threatmetrix_session_id }
+          expect { get :show }.to change { controller.idv_session.threatmetrix_session_id }
         end
       end
     end
 
     context 'with an ssn in idv_session' do
       before do
-        subject.idv_session.ssn = ssn
+        controller.idv_session.ssn = ssn
       end
 
       it 'does not redirect and allows the back button' do
@@ -127,24 +122,29 @@ RSpec.describe Idv::SsnController do
       end
     end
 
-    it 'overrides Content Security Policies for ThreatMetrix' do
-      allow(IdentityConfig.store).to receive(:proofing_device_profiling)
-        .and_return(:enabled)
-      get :show
+    context 'with ThreatMetrix profiling disabled' do
+      before do
+        allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?)
+          .and_return(false)
+      end
 
-      csp = response.request.content_security_policy
+      it 'does not override CSPs for ThreatMetrix' do
+        expect(controller).not_to receive(:override_csp_for_threat_metrix)
 
-      aggregate_failures do
-        expect(csp.directives['script-src']).to include('h.online-metrix.net')
-        expect(csp.directives['script-src']).to include("'unsafe-eval'")
+        response
+      end
+    end
 
-        expect(csp.directives['style-src']).to include("'unsafe-inline'")
+    context 'with ThreatMetrix profiling enabled' do
+      before do
+        allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?)
+          .and_return(true)
+      end
 
-        expect(csp.directives['child-src']).to include('h.online-metrix.net')
+      it 'overrides CSPs for ThreatMetrix' do
+        expect(controller).to receive(:override_csp_for_threat_metrix)
 
-        expect(csp.directives['connect-src']).to include('h.online-metrix.net')
-
-        expect(csp.directives['img-src']).to include('*.online-metrix.net')
+        response
       end
     end
   end

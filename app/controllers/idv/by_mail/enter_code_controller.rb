@@ -153,10 +153,6 @@ module Idv
         redirect_to account_url
       end
 
-      def threatmetrix_enabled?
-        FeatureManagement.proofing_device_profiling_decisioning_enabled?
-      end
-
       def pii_locked?
         !Pii::Cacher.new(current_user, user_session).exists_in_session?
       end

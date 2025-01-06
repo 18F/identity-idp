@@ -22,6 +22,11 @@ RSpec.feature 'canceling at the completions screen' do
     expect(page).to have_current_path(sign_up_completed_cancel_path)
     click_on t('login_cancel.exit', app_name: APP_NAME)
 
+    expect(page).to have_current_path(
+      'http://localhost:7654/auth/result',
+      url: true,
+      ignore_query: true,
+    )
     expect(current_url).to start_with('http://localhost:7654/auth/result?error=access_denied')
   end
 end

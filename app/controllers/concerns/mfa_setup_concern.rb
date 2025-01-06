@@ -95,8 +95,8 @@ module MfaSetupConcern
     {
       user_id: current_user.id,
       request_ip: request&.remote_ip,
-      threatmetrix_session_id: session[:threatmetrix_session_id],
-      email: EmailContext.new(current_user).last_sign_in_email_address.email,
+      threatmetrix_session_id: user_session[:sign_up_threatmetrix_session_id],
+      email: current_user.last_sign_in_email_address.email,
       uuid_prefix: current_sp&.app_id,
     }
   end

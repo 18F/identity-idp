@@ -51,6 +51,16 @@
 
   <%= hidden_field_tag :platform_authenticator_available, id: 'platform_authenticator_available' %>
   <% javascript_packs_tag_once('platform-authenticator-available') %>
+  <% if FeatureManagement.account_creation_device_profiling_collecting_enabled? %>
+    <div class="margin-bottom-2">
+      <%= render partial: 'shared/threat_metrix_profiling',
+                 locals: {
+                   threatmetrix_session_id:,
+                   threatmetrix_javascript_urls:,
+                   threatmetrix_iframe_url:,
+                 } %>
+    </div>
+  <% end %>
 
   <%= f.submit t('forms.buttons.continue'), class: 'margin-bottom-1' %>
 <% end %>

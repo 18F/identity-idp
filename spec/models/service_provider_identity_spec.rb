@@ -181,4 +181,65 @@ RSpec.describe ServiceProviderIdentity do
       end
     end
   end
+
+  describe '#email_address_for_sharing' do
+    let!(:last_login_email_address) do
+      create(
+        :email_address,
+        email: 'last_login@email.com',
+        user: user,
+        last_sign_in_at: 1.minute.ago,
+      )
+    end
+
+    let!(:shared_email_address) do
+      create(
+        :email_address,
+        email: 'shared@email.com',
+        user: user,
+        last_sign_in_at: 1.hour.ago,
+      )
+    end
+
+    let(:identity) do
+      create(:service_provider_identity, user: user, session_uuid: SecureRandom.uuid)
+    end
+
+    context 'when email sharing feature is enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
+          .and_return(true)
+      end
+
+      context 'when an email address for sharing has been set' do
+        before do
+          identity.email_address = shared_email_address
+        end
+
+        it 'returns the shared email' do
+          expect(identity.email_address_for_sharing).to eq(shared_email_address)
+        end
+      end
+
+      context 'when an email address for sharing has not been set' do
+        before do
+          identity.email_address = nil
+        end
+        it 'returns the last login email' do
+          expect(identity.email_address_for_sharing).to eq(last_login_email_address)
+        end
+      end
+    end
+
+    context 'when email sharing feature is disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
+          .and_return(true)
+      end
+
+      it 'returns the last login email' do
+        expect(identity.email_address_for_sharing).to eq(last_login_email_address)
+      end
+    end
+  end
 end

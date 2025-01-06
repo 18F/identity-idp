@@ -1721,4 +1721,39 @@ RSpec.describe User do
       end
     end
   end
+
+  describe '#last_sign_in_email_address' do
+    let(:user) { create(:user) }
+
+    let!(:last_sign_in_email_address) do
+      create(
+        :email_address,
+        email: 'last_sign_in@email.com',
+        user: user,
+        last_sign_in_at: 1.minute.ago,
+      )
+    end
+
+    let!(:older_sign_in_email_address) do
+      create(
+        :email_address,
+        email: 'older_sign_in@email.com',
+        user: user,
+        last_sign_in_at: 1.hour.ago,
+      )
+    end
+
+    let!(:never_signed_in_email_address) do
+      create(
+        :email_address,
+        email: 'never_signed_in@email.com',
+        user: user,
+        last_sign_in_at: nil,
+      )
+    end
+
+    it 'returns the last signed in email address' do
+      expect(user.last_sign_in_email_address).to eq(last_sign_in_email_address)
+    end
+  end
 end

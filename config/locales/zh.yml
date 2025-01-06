@@ -75,8 +75,8 @@ account.index.reactivation.instructions: 你的用户资料因为重设密码最
 account.index.reactivation.link: 现在重新激活你的用户资料。
 account.index.sign_in_location_and_ip: 从 %{ip}（IP 地址可能位于 %{location}）。
 account.index.unknown_location: 未知地点
-account.index.verification.connect_idv_account.cta: 登录合作伙伴机构来获得服务。
-account.index.verification.connect_idv_account.intro: 把你的账户连接到合作伙伴机构。
+account.index.verification.connect_idv_account.cta: 登录%{sp_name}来获得服务。
+account.index.verification.connect_idv_account.intro: 把你的账户连接到%{sp_name}。
 account.index.verification.continue_idv: 继续身份验证
 account.index.verification.finish_verifying_html: 完成身份验证流程来获得访问 <strong>%{sp_name}</strong> 的权限。
 account.index.verification.finish_verifying_no_sp: 完成身份验证流程来获得访问%{app_name} 合作伙伴机构的权限。
@@ -1062,6 +1062,8 @@ idv.errors.incorrect_password: 你输入的密码不对。
 idv.errors.pattern_mismatch.ssn: 输入 9 位数的社会保障号码
 idv.errors.pattern_mismatch.zipcode: 输入 5 或 9 位的邮编
 idv.errors.pattern_mismatch.zipcode_five: 输入 5 位的邮编
+idv.errors.technical_difficulties: 我们目前遇到技术困难
+idv.errors.try_again_later: 请稍后再试。
 idv.failure.attempts_html.one: 您可以再试<strong>1次。</strong> 然后您必须等6个小时才能再试。
 idv.failure.attempts_html.other: 您可以再试<strong>%{count}次。</strong> 然后您必须等6个小时才能再试。
 idv.failure.button.try_online: 在网上再试一下
@@ -1088,8 +1090,6 @@ idv.failure.phone.rate_limited.option_try_again_later_no_gpo_html: 您可以在<
 idv.failure.phone.rate_limited.option_verify_by_mail_html: 通过普通邮件验证，这需要<strong>五到十天</strong>
 idv.failure.phone.rate_limited.options_header: 你可以：
 idv.failure.phone.timeout: 我们请你验证自己信息的请求已过期。请再试一次。
-idv.failure.phone.warning.attempts_html.one: 出于安全考虑，你只能再试<strong>一次</strong>了。
-idv.failure.phone.warning.attempts_html.other: 出于安全考虑，你只能再试<strong>%{count}次</strong>了。
 idv.failure.phone.warning.gpo.button: 通过普通邮件验证
 idv.failure.phone.warning.gpo.explanation: 如果你没有别的电话号码可以尝试，那请通过普通邮件验证。
 idv.failure.phone.warning.gpo.heading: 通过普通邮件验证
@@ -1111,6 +1111,8 @@ idv.failure.verify.exit: 退出 %{app_name}
 idv.failure.verify.fail_link_html: 在<strong>%{sp_name}</strong> 得到
 idv.failure.verify.fail_text: 帮助以获得服务。
 idv.failure.verify.heading: 我们无法验证你的身份证件。
+idv.failure.warning.attempts_html.one: 出于安全考虑，你只能再试<strong>一次</strong>了。
+idv.failure.warning.attempts_html.other: 出于安全考虑，你只能再试<strong>%{count}次</strong>了。
 idv.forgot_password.link_text: 忘了密码?
 idv.forgot_password.modal_header: 你确定不记得密码吗？
 idv.forgot_password.reset_password: 重设密码
@@ -1338,6 +1340,11 @@ in_person_proofing.headings.state_id_milestone_2: 输入你州政府颁发身份
 in_person_proofing.headings.switch_back: 切换回你的电脑，来准备亲身去验证身份。
 in_person_proofing.headings.update_address: 更新你当前地址
 in_person_proofing.headings.update_state_id: 更新你身份证件上的信息
+in_person_proofing.post_office_closed.body: 邮局地点将于 2025 年 1 月 10 日星期五恢复正常工作时间。
+in_person_proofing.post_office_closed.email.body_html: <strong>您将无法在 2025 年 1 月 9 日星期四前往邮局完成身份验证。</strong> 邮局地点将于 2025 年 1 月 10 日星期五恢复正常工作时间
+in_person_proofing.post_office_closed.email.heading: 所有邮局将于 2025 年 1 月 9 日关闭，以纪念前总统吉米·卡特
+in_person_proofing.post_office_closed.email.subject: 所有邮局将于 2025 年 1 月 9 日星期四关闭
+in_person_proofing.post_office_closed.heading: 所有邮局将于 2025 年 1 月 9 日关闭，以纪念前总统吉米·卡特。
 in_person_proofing.process.barcode.caption_label: 注册代码
 in_person_proofing.process.barcode.heading: 出示你的 %{app_name} 条形码
 in_person_proofing.process.barcode.info: 邮局工作人员需要扫描该页顶部的条形码你可以把该页打印出来，或在你的移动设备上显示。
