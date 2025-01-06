@@ -89,7 +89,7 @@ class ResolutionProofingJob < ApplicationJob
   # @param user [User]
   # @param proofing_components [Hash,nil]
   def use_shadow_mode?(user:, proofing_components:)
-    # Let idv_socure_shadow_mode_enabled setting to control shadow mode globally
+    # Let idv_socure_shadow_mode_enabled setting control shadow mode globally
     disabled_globally = !IdentityConfig.store.idv_socure_shadow_mode_enabled
     return false if disabled_globally
 
