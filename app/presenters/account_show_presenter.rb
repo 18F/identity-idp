@@ -143,8 +143,8 @@ class AccountShowPresenter
     user.connected_apps.includes([:service_provider_record, :email_address])
   end
 
-  def show_change_option
-    !@all_emails_requested
+  def hide_change_option
+    @all_emails_requested
   end
 
   delegate :recent_events, :recent_devices, to: :user
