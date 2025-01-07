@@ -5253,6 +5253,7 @@ module AnalyticsEvents
   # @param [Integer] which_letter Sorted by enqueue time, which letter had this code
   # @param [Integer] letter_count How many letters did the user enqueue for this profile
   # @param [Integer] profile_age_in_seconds How many seconds have passed since profile created
+  # @param [String] initiating_service_provider The initiating service provider issuer
   # @param [Integer] submit_attempts Number of attempts to enter a correct code
   #                  (previously called "attempts")
   # @param [Boolean] pending_in_person_enrollment
@@ -5267,6 +5268,7 @@ module AnalyticsEvents
     which_letter:,
     letter_count:,
     profile_age_in_seconds:,
+    initiating_service_provider:,
     submit_attempts:,
     pending_in_person_enrollment:,
     fraud_check_failed:,
@@ -5282,6 +5284,7 @@ module AnalyticsEvents
       which_letter:,
       letter_count:,
       profile_age_in_seconds:,
+      initiating_service_provider:,
       submit_attempts:,
       pending_in_person_enrollment:,
       fraud_check_failed:,
