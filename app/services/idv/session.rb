@@ -31,6 +31,7 @@ module Idv
   # @attr skip_doc_auth_from_handoff [Boolean, nil]
   # @attr skip_doc_auth_from_how_to_verify [Boolean, nil]
   # @attr skip_hybrid_handoff [Boolean, nil]
+  # @attr doc_auth_vendor [String, nil]
   # @attr source_check_vendor [String, nil]
   # @attr ssn [String, nil]
   # @attr threatmetrix_review_status [String, nil]
@@ -66,6 +67,7 @@ module Idv
       profile_id
       proofing_started_at
       redo_document_capture
+      doc_auth_vendor
       source_check_vendor
       residential_resolution_vendor
       resolution_successful
