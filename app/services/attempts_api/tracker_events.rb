@@ -7,7 +7,7 @@ module AttemptsApi
     # A user has submitted an email address and password for authentication
     def email_and_password_auth(email:, success:)
       track_event(
-        :email_and_password_auth,
+        'login-email-and-password-auth',
         email: email,
         success: success,
       )
