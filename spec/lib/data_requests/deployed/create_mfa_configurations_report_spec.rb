@@ -41,6 +41,9 @@ RSpec.describe DataRequests::Deployed::CreateMfaConfigurationsReport do
       webauthn_data = result[:webauthn_configurations]
 
       expect(webauthn_data.first[:name]).to eq(webauthn_configuration.name)
+      expect(webauthn_data.first[:platform_authenticator]).to eq(
+        webauthn_configuration.platform_authenticator,
+      )
       expect(webauthn_data.first[:created_at]).to be_within(1.second).of(
         webauthn_configuration.created_at,
       )
