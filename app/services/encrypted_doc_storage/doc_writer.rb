@@ -3,28 +3,21 @@
 module EncryptedDocStorage
   class DocWriter
     Result = Struct.new(
-      :front_uuid,
-      :back_uuid,
+      :name,
       :encryption_key,
     )
 
-    def write(front_image:, back_image:, data_store: LocalStorage)
-      front_uuid = SecureRandom.uuid
-      back_uuid = SecureRandom.uuid
+    def write(image:, data_store: LocalStorage)
+      name = SecureRandom.uuid
       storage = data_store.new
 
       storage.write_image(
-        encrypted_image: encrypted_image(front_image),
-        name: front_uuid,
-      )
-      storage.write_image(
-        encrypted_image: encrypted_image(back_image),
-        name: back_uuid,
+        encrypted_image: aes_cipher.encrypt(image, key),
+        name:,
       )
 
       Result.new(
-        front_uuid:,
-        back_uuid:,
+        name:,
         encryption_key: Base64.strict_encode64(key),
       )
     end
@@ -33,10 +26,6 @@ module EncryptedDocStorage
 
     def aes_cipher
       @aes_cipher ||= Encryption::AesCipher.new
-    end
-
-    def encrypted_image(image)
-      aes_cipher.encrypt(image, key)
     end
 
     def key
