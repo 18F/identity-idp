@@ -18,10 +18,23 @@ allOf:
         properties:
           telephony_errors:
             type: array
-            # What is the best way of documenting all these errors? https://docs.google.com/document/d/1H7SAM8DSnbRJqKoSj4Qdzr-UvLCNMupt2zoqHLsIFe8/edit?tab=t.0#heading=h.obq86kcsheu4
-            # They won't be very readable in this document
-            description: |
-              Due to technical limitations, errors for this event will be localized into English, Spanish, or French, depending on the user’s settings, and appear in the “failure_reasons” setting that way.     
+            description: Errors that describe the failure   
+            items: 
+              type: string
+              enum: 
+                - daily_voice_limit_reached
+                - duplicate_endpoint
+                - generic
+                - invalid_calling_area
+                - invalid_phone_number
+                - opt_out
+                - permanent_failure
+                - sms_unsupported
+                - temporary_failure
+                - throttled
+                - timeout
+                - unknown_failure
+                - voice_unsupported
       success:
         type: boolean
         description: |
