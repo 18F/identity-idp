@@ -906,12 +906,12 @@ forms.personal_key.instructions: Confirme que tiene una copia de su clave person
 forms.personal_key.required_checkbox: Guardé mi clave personal en un lugar seguro.
 forms.personal_key.title: Ingrese su clave personal
 forms.phone.buttons.delete: Eliminar teléfono
-forms.piv_cac_login.submit: Inserte su tarjeta PIV o CAC.
-forms.piv_cac_mfa.submit: Inserte su tarjeta PIV o CAC.
+forms.piv_cac_login.submit: Inserte su tarjeta PIV o CAC
+forms.piv_cac_mfa.submit: Inserte su tarjeta PIV o CAC
 forms.piv_cac_setup.nickname: Alias de la tarjeta PIV o CAC
 forms.piv_cac_setup.no_thanks: No, gracias
 forms.piv_cac_setup.piv_cac_intro_html: Le pediremos que presente su tarjeta PIV o CAC <strong>cada vez que inicie sesión</strong> como parte de la autenticación de dos factores.<br><br>Después de hacer clic en “Agregar tarjeta PIV o CAC”, su navegador le pedirá el PIN de su tarjeta PIV o CAC y que seleccione un certificado.
-forms.piv_cac_setup.submit: Inserte su tarjeta PIV o CAC.
+forms.piv_cac_setup.submit: Inserte su tarjeta PIV o CAC
 forms.piv_cac_setup.try_again: Vuelva a intentarlo
 forms.registration.labels.email: Ingrese su dirección de correo electrónico
 forms.registration.labels.email_language: Seleccione su preferencia de idioma del correo electrónico
@@ -1389,7 +1389,7 @@ instructions.go_back_to_mobile_app: Para continuar, vuelva a la aplicación %{fr
 instructions.mfa.authenticator.confirm_code_html: Ingrese el código de su aplicación de autenticación. Si tiene varias cuentas configuradas en su aplicación, ingrese el código correspondiente a %{app_name_html}.
 instructions.mfa.authenticator.manual_entry: O ingrese este código manualmente en su aplicación de autenticación
 instructions.mfa.piv_cac.account_not_found_html: '<p>%{sign_in} con su dirección de correo electrónico y su contraseña. Luego, agregue su tarjeta PIV o CAC a su cuenta.</p><p>¿No tiene una cuenta de %{app_name}? %{create_account}</p>'
-instructions.mfa.piv_cac.add_from_sign_in_html: '<strong> Instrucciones:</strong> Inserte su tarjeta PIV o CAC en <strong> “AGREGAR TARJETA PIV O CAC” </strong>. Tendrá que <strong> elegir un certificado </strong> (es probable que el correcto tenga su nombre) e <strong> ingrese su PIN </strong> (su PIN se creó cuando configuró su tarjeta PIV o CAC).'
+instructions.mfa.piv_cac.add_from_sign_in_html: '<strong> Instrucciones:</strong> Inserte su tarjeta PIV o CAC en <strong> “AGREGAR TARJETA PIV O CAC” </strong>. Tendrá que <strong> elegir un certificado </strong> (es probable que el correcto tenga su nombre) e <strong> ingresar su PIN </strong> (su PIN se creó cuando configuró su tarjeta PIV o CAC).'
 instructions.mfa.piv_cac.already_associated_html: Elija un certificado de una tarjeta PIV o CAC diferente y contacte con el administrador para confirmar que su tarjeta PIV o CAC está al día. Si cree que se trata de un error, %{try_again_html}.
 instructions.mfa.piv_cac.back_to_sign_in: Vuelva a iniciar sesión
 instructions.mfa.piv_cac.confirm_piv_cac: Inserte la tarjeta PIV o CAC asociada con su cuenta en un lector de tarjetas inteligente.
@@ -1403,7 +1403,7 @@ instructions.mfa.piv_cac.step_1: Asígnele un alias.
 instructions.mfa.piv_cac.step_1_info: Si agrega más de una tarjeta PIV o CAC, podrá distinguirlas.
 instructions.mfa.piv_cac.step_2: Inserte su tarjeta PIV o CAC en su lector de tarjetas.
 instructions.mfa.piv_cac.step_3: Agregue su tarjeta PIV o CAC.
-instructions.mfa.piv_cac.step_3_info_html: Tendrá que <strong> elegir un certificado </strong> (es probable que el correcto tenga su nombre) e <strong> ingrese su PIN </strong> (su PIN se creó cuando configuró su tarjeta PIV o CAC)
+instructions.mfa.piv_cac.step_3_info_html: Tendrá que <strong> elegir un certificado </strong> (es probable que el correcto tenga su nombre) e <strong> ingresar su PIN </strong> (su PIN se creó cuando configuró su tarjeta PIV o CAC)
 instructions.mfa.piv_cac.try_again: vuelva a intentarlo
 instructions.mfa.sms.number_message_html: Enviamos un mensaje de texto (SMS) con un código de un solo uso al %{number_html}. Este código vence en %{expiration} minutos.
 instructions.mfa.voice.number_message_html: Hicimos una llamada con un código de un solo uso al %{number_html}. Este código vence en %{expiration} minutos.
@@ -1685,7 +1685,7 @@ two_factor_authentication.account_reset.cancel_link: Cancelar su solicitud
 two_factor_authentication.account_reset.link: eliminando su cuenta
 two_factor_authentication.account_reset.pending: Actualmente tiene una solicitud pendiente para eliminar su cuenta. Se necesitan %{interval} desde el momento en que realizó la solicitud para completar el proceso. Por favor, vuelva más tarde.
 two_factor_authentication.account_reset.successful_cancel: Gracias. Su solicitud para eliminar su cuenta de %{app_name} ha sido cancelada.
-two_factor_authentication.account_reset.text_html: Si no puede usar ninguno de los métodos de autenticación anteriores, puede restablecer sus preferencias en %{link_html}.
+two_factor_authentication.account_reset.text_html: Si no puede usar ninguno de los métodos de autenticación anteriores, puede restablecer sus preferencias %{link_html}.
 two_factor_authentication.attempt_remaining_warning_html.one: Le queda <strong>%{count} intento</strong>.
 two_factor_authentication.attempt_remaining_warning_html.other: Le quedan <strong>%{count} intentos</strong>.
 two_factor_authentication.auth_app.change_nickname: Cambiar apodo
@@ -1774,7 +1774,7 @@ two_factor_authentication.piv_cac_mismatch.cta: Autenticar y añadir tarjeta PIV
 two_factor_authentication.piv_cac_mismatch.delete_account: Eliminar su cuenta
 two_factor_authentication.piv_cac_mismatch.instructions: Haga clic en “Autenticar y añadir tarjeta PIV o CAC” más abajo para autenticar con otro método antes de añadir esta tarjeta PIV o CAC a su cuenta.
 two_factor_authentication.piv_cac_mismatch.instructions_no_other_method: Si se le emitió una nueva tarjeta PIV o CAC, para poder usarla, deberá eliminar su cuenta de %{app_name} y crear una cuenta nueva.
-two_factor_authentication.piv_cac_mismatch.skip: Saltar añadir tarjeta PIV o CAC
+two_factor_authentication.piv_cac_mismatch.skip: Omitir añadir tarjeta PIV o CAC
 two_factor_authentication.piv_cac_mismatch.title: Esta tarjeta de identificación de empleado del gobierno no está conectada a su cuenta
 two_factor_authentication.piv_cac_upsell.add_piv: Agregar tarjeta PIV/CAC
 two_factor_authentication.piv_cac_upsell.choose_other_method: Elegir otros métodos
