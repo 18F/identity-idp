@@ -75,19 +75,19 @@ class SummarizeUserEvents
   
     # rubocop:disable Metrics/LineLength
     optparse = OptionParser.new do |opts|
-      opts.banner = <<-EOM
+      opts.banner = <<~EOM
   
-      Summarize user events in a human-readable format
-  
-      Cloudwatch logs can be read from a file as newline-delimited JSON (ndjson),
-      or fetched directly via aws-vault.
-  
-      usage: #{basename} [OPTIONS]
-  
-      Examples:
-        #{basename} -f events.ndjson
-        aws-vault exec prod-power -- #{basename} -u 1234-5678-90ab-cdef -s 2024-12-09T10:00:00 -e 2024-12-09T14:30:00 -z America/New_York
-  
+        Summarize user events in a human-readable format
+
+        Cloudwatch logs can be read from a file as newline-delimited JSON (ndjson),
+        or fetched directly via aws-vault.
+
+        Usage: #{basename} [OPTIONS]
+
+        Examples:
+          #{basename} -f events.ndjson
+          aws-vault exec prod-power -- #{basename} -u 1234-5678-90ab-cdef -s 2024-12-09T10:00:00 -e 2024-12-09T14:30:00 -z America/New_York
+
       EOM
   
       opts.on('-f', '--file_name FILE_NAME', 'filename from which to read the events') do |val|
