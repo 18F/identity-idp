@@ -810,7 +810,7 @@ errors.messages.wrong_length.one: 长度不对（应当是 1 个字符）
 errors.messages.wrong_length.other: 长度不对（应当是 %{count} 个字符）
 errors.piv_cac_setup.unique_name: 这个名字已被使用。请选择一个不同的名字。
 errors.registration.terms: 在你能继续之前，你必须授予我们你的同意。请在下面的框打勾然后点击继续。
-errors.sign_in.bad_password_limit: 你已超出登录尝试允许最多次数。你必须等待 %{time_left} 才能重试。
+errors.sign_in.sign_in_failure_limit: 你已超出登录尝试允许最多次数。你必须等待 %{time_left} 才能重试。
 errors.two_factor_auth_setup.must_select_additional_option: 请选择一个额外的身份证实方法。
 errors.two_factor_auth_setup.must_select_option: 选择一个身份证实方法。
 errors.verify_personal_key.rate_limited: 你尝试了太多次。请在 %{timeout}后再试。

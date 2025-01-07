@@ -249,8 +249,8 @@ logins_per_ip_track_only_mode: false
 logo_upload_enabled: false
 mailer_domain_name: http://localhost:3000
 max_auth_apps_per_account: 2
-max_bad_passwords: 5
-max_bad_passwords_window_in_seconds: 60
+max_sign_in_failures: 5
+max_sign_in_failures_window_in_seconds: 60
 max_emails_per_account: 12
 max_mail_events: 4
 max_mail_events_window_in_days: 30

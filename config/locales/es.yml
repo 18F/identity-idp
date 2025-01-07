@@ -810,7 +810,7 @@ errors.messages.wrong_length.one: tiene la longitud incorrecta (debe ser de 1 c
 errors.messages.wrong_length.other: tiene la longitud incorrecta (debe ser de %{count} caracteres)
 errors.piv_cac_setup.unique_name: Ese nombre ya fue seleccionado. Elija un nombre diferente.
 errors.registration.terms: Antes de continuar, debe darnos permiso. Marque la casilla a continuación y luego haga clic en continuar.
-errors.sign_in.bad_password_limit: Superó el número máximo de intentos de inicio de sesión. Debe esperar %{time_left} antes de volver a intentarlo.
+errors.sign_in.sign_in_failure_limit: Superó el número máximo de intentos de inicio de sesión. Debe esperar %{time_left} antes de volver a intentarlo.
 errors.two_factor_auth_setup.must_select_additional_option: Seleccione un método de autenticación adicional.
 errors.two_factor_auth_setup.must_select_option: Seleccione un método de autenticación.
 errors.verify_personal_key.rate_limited: Lo intentó demasiadas veces; vuelva a intentarlo en %{timeout}.
