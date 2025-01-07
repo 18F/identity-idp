@@ -11,6 +11,9 @@ info:
     status, to add and remove subjects, and to trigger verification.
 servers: 
   - url: https://secure.login.gov 
+    description: Production server (uses live data)
+  - url: https://idp.int.identitysandbox.gov
+    description: Sandbox server (uses test data)
 paths:
   /.well-known/ssf-configuration:
     $ref: './paths/transmitter-configuration.yml'

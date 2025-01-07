@@ -30,9 +30,12 @@ allOf:
       document_back_image_file_id: 
         type: string
         description: The ID used to retrieve this image if needed
-      document_image_encryption_key:
+      document_front_image_encryption_key:
         type: string
-        description: Randomly generated Base64-encoded key used to encrypt the image files.
+        description: Randomly generated Base64-encoded key used to encrypt the front image file.
+      document_back_image_encryption_key:
+        type: string
+        description: Randomly generated Base64-encoded key used to encrypt the back image file.
       failure_reason:
           type: object
           description: |
