@@ -20,17 +20,21 @@ module Idv
       { name: :secure_account },
     ].freeze
 
+    STEP_INDICATOR_STEPS_IPP = [
+      { name: :find_a_post_office },
+      { name: :verify_info },
+      { name: :verify_phone },
+      { name: :re_enter_password },
+      { name: :go_to_the_post_office },
+    ].freeze
+
     included do
       helper_method :step_indicator_steps
     end
 
     def step_indicator_steps
       if in_person_proofing?
-        if gpo_address_verification?
-          Idv::Flows::InPersonFlow::STEP_INDICATOR_STEPS_GPO
-        else
-          Idv::Flows::InPersonFlow::STEP_INDICATOR_STEPS
-        end
+        Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS_IPP
       elsif gpo_address_verification?
         Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS_GPO
       else

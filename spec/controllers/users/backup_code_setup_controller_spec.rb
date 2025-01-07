@@ -15,13 +15,22 @@ RSpec.describe Users::BackupCodeSetupController do
   end
 
   shared_examples 'valid backup codes creation' do
+    let(:threatmetrix_attrs) do
+      {
+        user_id: user.id,
+        request_ip: Faker::Internet.ip_v4_address,
+        threatmetrix_session_id: 'test-session',
+        email: user.email,
+      }
+    end
+
     it 'creates backup codes and logs expected events' do
       stub_analytics
       allow(controller).to receive(:in_multi_mfa_selection_flow?).and_return(true)
 
-      Funnel::Registration::AddMfa.call(user.id, 'phone', @analytics)
-      expect(PushNotification::HttpPush).to receive(:deliver).
-        with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
+      Funnel::Registration::AddMfa.call(user.id, 'phone', @analytics, threatmetrix_attrs)
+      expect(PushNotification::HttpPush).to receive(:deliver)
+        .with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
 
       response
 

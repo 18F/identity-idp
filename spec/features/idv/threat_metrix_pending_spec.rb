@@ -58,7 +58,7 @@ RSpec.feature 'Users pending ThreatMetrix review', :js do
     sign_in_live_with_2fa(user)
     click_agree_and_continue
 
-    expect(current_path).to eq('/auth/result')
+    expect(page).to have_current_path('/auth/result', ignore_query: true)
   end
 
   scenario 'users rejected from fraud review cannot perform idv' do
@@ -83,7 +83,7 @@ RSpec.feature 'Users pending ThreatMetrix review', :js do
     sign_in_live_with_2fa(user)
     click_agree_and_continue
 
-    expect(current_path).to eq('/auth/result')
+    expect(page).to have_current_path('/auth/result', ignore_query: true)
   end
 
   scenario 'users ThreatMetrix Pass, it logs idv_tmx_fraud_check event' do
@@ -104,7 +104,7 @@ RSpec.feature 'Users pending ThreatMetrix review', :js do
     end
   end
 
-  scenario 'users pending ThreatMetrix No Result, it results in an error', :js do
+  scenario 'users pending ThreatMetrix No Result, it results in an error but shows warning', :js do
     freeze_time do
       user = create(:user, :fully_registered)
       visit_idp_from_ial1_oidc_sp(
@@ -117,8 +117,8 @@ RSpec.feature 'Users pending ThreatMetrix review', :js do
       complete_ssn_step
       complete_verify_step
 
-      expect(page).to have_content(t('idv.failure.sessions.exception'))
-      expect(page).to have_current_path(idv_session_errors_exception_path)
+      expect(page).to have_content(t('idv.failure.sessions.warning'))
+      expect(page).to have_current_path(idv_session_errors_warning_path)
     end
   end
 

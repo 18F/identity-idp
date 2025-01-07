@@ -5,14 +5,15 @@ RSpec.describe RecaptchaForm do
   let(:analytics) { FakeAnalytics.new }
   let(:extra_analytics_properties) { {} }
   let(:recaptcha_secret_key) { 'recaptcha_secret_key' }
+  let(:recaptcha_action) { 'example_action' }
 
   subject(:form) do
-    RecaptchaForm.new(score_threshold:, analytics:, extra_analytics_properties:)
+    RecaptchaForm.new(score_threshold:, recaptcha_action:, analytics:, extra_analytics_properties:)
   end
 
   before do
-    allow(IdentityConfig.store).to receive(:recaptcha_secret_key).
-      and_return(recaptcha_secret_key)
+    allow(IdentityConfig.store).to receive(:recaptcha_secret_key)
+      .and_return(recaptcha_secret_key)
   end
 
   describe '#exempt?' do
@@ -129,6 +130,7 @@ RSpec.describe RecaptchaForm do
           evaluated_as_valid: false,
           score_threshold: score_threshold,
           form_class: 'RecaptchaForm',
+          recaptcha_action:,
         )
       end
 
@@ -163,6 +165,7 @@ RSpec.describe RecaptchaForm do
               evaluated_as_valid: true,
               score_threshold: score_threshold,
               form_class: 'RecaptchaForm',
+              recaptcha_action:,
             )
           end
         end
@@ -197,6 +200,7 @@ RSpec.describe RecaptchaForm do
               evaluated_as_valid: true,
               score_threshold: score_threshold,
               form_class: 'RecaptchaForm',
+              recaptcha_action:,
             )
           end
         end
@@ -226,6 +230,7 @@ RSpec.describe RecaptchaForm do
           score_threshold: score_threshold,
           form_class: 'RecaptchaForm',
           exception_class: 'Faraday::ConnectionFailed',
+          recaptcha_action:,
         )
       end
     end
@@ -263,6 +268,7 @@ RSpec.describe RecaptchaForm do
           evaluated_as_valid: false,
           score_threshold: score_threshold,
           form_class: 'RecaptchaForm',
+          recaptcha_action:,
         )
       end
     end
@@ -299,11 +305,12 @@ RSpec.describe RecaptchaForm do
           evaluated_as_valid: true,
           score_threshold: score_threshold,
           form_class: 'RecaptchaForm',
+          recaptcha_action:,
         )
       end
 
-      context 'with extra analytics properties', allowed_extra_analytics: [:extra] do
-        let(:extra_analytics_properties) { { extra: true } }
+      context 'with extra analytics properties' do
+        let(:extra_analytics_properties) { { phone_country_code: true } }
 
         it 'logs analytics of the body' do
           result
@@ -320,7 +327,8 @@ RSpec.describe RecaptchaForm do
             evaluated_as_valid: true,
             score_threshold: score_threshold,
             form_class: 'RecaptchaForm',
-            extra: true,
+            recaptcha_action:,
+            phone_country_code: true,
           )
         end
       end
@@ -336,8 +344,8 @@ RSpec.describe RecaptchaForm do
   end
 
   def stub_recaptcha_response(body:, secret: recaptcha_secret_key, token: nil)
-    stub_request(:post, RecaptchaForm::VERIFICATION_ENDPOINT).
-      with { |req| req.body == URI.encode_www_form(secret:, response: token) }.
-      to_return(headers: { 'Content-Type': 'application/json' }, body: body.to_json)
+    stub_request(:post, RecaptchaForm::VERIFICATION_ENDPOINT)
+      .with { |req| req.body == URI.encode_www_form(secret:, response: token) }
+      .to_return(headers: { 'Content-Type': 'application/json' }, body: body.to_json)
   end
 end

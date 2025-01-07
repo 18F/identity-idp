@@ -20,7 +20,7 @@ class InPersonEnrollment < ApplicationRecord
   STATUS_EXPIRED = 'expired'
   STATUS_CANCELLED = 'cancelled'
 
-  enum status: {
+  enum :status, {
     STATUS_ESTABLISHING.to_sym => 0,
     STATUS_PENDING.to_sym => 1,
     STATUS_PASSED.to_sym => 2,
@@ -52,19 +52,19 @@ class InPersonEnrollment < ApplicationRecord
 
     # Find enrollments that need a status check via the USPS API
     def needs_usps_status_check(check_interval)
-      where(status: :pending).
-        and(
-          where(last_batch_claimed_at: check_interval).
-          or(where(last_batch_claimed_at: nil)),
+      where(status: :pending)
+        .and(
+          where(last_batch_claimed_at: check_interval)
+          .or(where(last_batch_claimed_at: nil)),
         )
     end
 
     def needs_usps_status_check_batch(batch_at)
-      where(status: :pending).
-        and(
+      where(status: :pending)
+        .and(
           where(last_batch_claimed_at: batch_at),
-        ).
-        order(status_check_attempted_at: :asc)
+        )
+        .order(status_check_attempted_at: :asc)
     end
 
     # Find enrollments that are ready for a status check via the USPS API
@@ -85,11 +85,11 @@ class InPersonEnrollment < ApplicationRecord
     private
 
     def pending_and_established_between(early_benchmark, late_benchmark)
-      where(status: :pending).
-        and(
+      where(status: :pending)
+        .and(
           where(enrollment_established_at: late_benchmark...(early_benchmark.end_of_day)),
-        ).
-        order(enrollment_established_at: :asc)
+        )
+        .order(enrollment_established_at: :asc)
     end
   end
   # end class methods
@@ -146,13 +146,13 @@ class InPersonEnrollment < ApplicationRecord
     notification_phone_configuration.present? && (passed? || failed?)
   end
 
-  # (deprecated) Returns the value to use for the USPS enrollment ID
-  def usps_unique_id
-    user.uuid.delete('-').slice(0, 18)
-  end
-
   def enhanced_ipp?
     IdentityConfig.store.usps_eipp_sponsor_id == sponsor_id
+  end
+
+  # @return [String, nil] The enrollment's profile deactivation reason or nil.
+  def profile_deactivation_reason
+    profile&.deactivation_reason
   end
 
   private

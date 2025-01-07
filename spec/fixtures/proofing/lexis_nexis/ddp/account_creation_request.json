@@ -1,0 +1,27 @@
+{
+    "api_key": "test_api_key",
+    "org_id": "test_org_id",
+    "account_email": "test@example.com",
+    "event_type": "ACCOUNT_CREATION",
+    "policy": "test-authentication-policy",
+    "service_type": "all",
+    "session_id": "UNIQUE_SESSION_ID",
+    "input_ip_address": "127.0.0.1",
+    "account_address_street1": "",
+    "account_address_street2": "",
+    "account_address_city": "",
+    "account_address_state": "",
+    "account_address_country": "",
+    "account_address_zip": "",
+    "account_date_of_birth": "",
+    "account_first_name": "",
+    "account_last_name": "",
+    "account_telephone": "",
+    "account_drivers_license_issuer": "",
+    "account_drivers_license_number": "",
+    "account_drivers_license_type": "",
+    "national_id_number": "",
+    "national_id_type": "",
+    "local_attrib_1": ""
+  }
+  

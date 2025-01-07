@@ -2,6 +2,11 @@
 
 module Idv
   class WelcomePresenter
+    BulletPoint = Struct.new(
+      :bullet,
+      :text,
+      keyword_init: true,
+    )
     include ActionView::Helpers::TranslationHelper
     include Rails.application.routes.url_helpers
     include LinkHelper
@@ -20,10 +25,6 @@ module Idv
 
     def title
       t('doc_auth.headings.welcome', sp_name: sp_name)
-    end
-
-    def selfie_required?
-      decorated_sp_session.biometric_comparison_required?
     end
 
     def explanation_text(help_link)
@@ -74,7 +75,7 @@ module Idv
     end
 
     def bullet_point(bullet, text)
-      OpenStruct.new(bullet: bullet, text: text)
+      BulletPoint.new(bullet: bullet, text: text)
     end
 
     def first_time_idv?

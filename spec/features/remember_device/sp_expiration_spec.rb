@@ -31,7 +31,7 @@ RSpec.shared_examples 'expiring remember device for an sp config' do |expiration
         sign_in_user(user)
 
         expect(page).to have_content(t('two_factor_authentication.header_text'))
-        expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
+        expect(page).to have_current_path(login_two_factor_path(otp_delivery_preference: :sms))
 
         fill_in_code_with_last_phone_otp
         protocol == :saml ? click_submit_default_twice : click_submit_default
@@ -55,7 +55,7 @@ RSpec.shared_examples 'expiring remember device for an sp config' do |expiration
           sign_in_user(user)
           visit_sp(protocol, aal)
 
-          expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
+          expect(page).to have_current_path(login_two_factor_path(otp_delivery_preference: :sms))
           expect(page).to have_content(t('two_factor_authentication.header_text'))
 
           fill_in_code_with_last_phone_otp
@@ -71,7 +71,7 @@ RSpec.shared_examples 'expiring remember device for an sp config' do |expiration
           sign_in_user(user)
 
           expect(page).to have_content(t('two_factor_authentication.header_text'))
-          expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
+          expect(page).to have_current_path(login_two_factor_path(otp_delivery_preference: :sms))
 
           fill_in_code_with_last_phone_otp
           protocol == :saml ? click_submit_default_twice : click_submit_default
@@ -110,8 +110,9 @@ RSpec.feature 'remember device sp expiration' do
 
   before do
     allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(1000)
-    allow(IdentityConfig.store).to receive(:second_mfa_reminder_account_age_in_days).
-      and_return([aal1_remember_device_expiration, aal2_remember_device_expiration].max.in_days + 2)
+    allow(IdentityConfig.store).to receive(:second_mfa_reminder_account_age_in_days)
+      .and_return([aal1_remember_device_expiration,
+                   aal2_remember_device_expiration].max.in_days + 2)
 
     ServiceProvider.find_by(issuer: OidcAuthHelper::OIDC_IAL1_ISSUER).update!(
       default_aal: aal,

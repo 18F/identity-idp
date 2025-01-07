@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe SignUp::SelectEmailController do
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :with_multiple_emails) }
   let(:sp) { create(:service_provider) }
 
   before do
@@ -29,6 +29,17 @@ RSpec.describe SignUp::SelectEmailController do
   describe '#show' do
     subject(:response) { get :show }
 
+    it 'logs analytics event' do
+      stub_analytics
+
+      response
+
+      expect(@analytics).to have_logged_event(
+        :sp_select_email_visited,
+        needs_completion_screen_reason: :new_attributes,
+      )
+    end
+
     it 'assigns view variables' do
       response
 
@@ -36,54 +47,90 @@ RSpec.describe SignUp::SelectEmailController do
       expect(assigns(:user_emails)).to all be_kind_of(EmailAddress)
       expect(assigns(:last_sign_in_email_address)).to be_kind_of(String)
       expect(assigns(:select_email_form)).to be_kind_of(SelectEmailForm)
+      expect(assigns(:can_add_email)).to eq(true)
     end
 
     context 'with selected email to share feature disabled' do
       before do
-        allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled).
-          and_return(false)
+        allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
+          .and_return(false)
       end
 
       it 'renders 404' do
         expect(response).to be_not_found
       end
     end
+
+    context 'when users has max number of emails' do
+      before do
+        allow(user).to receive(:email_address_count).and_return(2)
+        allow(IdentityConfig.store).to receive(:max_emails_per_account).and_return(2)
+      end
+
+      it 'can add email variable set to false' do
+        response
+        expect(assigns(:can_add_email)).to eq(false)
+      end
+    end
   end
 
   describe '#create' do
-    let(:email) { 'michael.motorist@email.com' }
-    let(:email2) { 'michael.motorist2@email.com' }
-    let(:email3) { 'david.motorist@email.com' }
-    let(:params) { { selected_email_id: email2 } }
+    let(:selected_email) { user.confirmed_email_addresses.sample }
+    let(:params) { { select_email_form: { selected_email_id: selected_email.id } } }
 
     subject(:response) { post :create, params: params }
-
-    before do
-      create(:email_address, user:, email: email)
-      create(:email_address, user:, email: email2)
-    end
 
     it 'updates selected email address' do
       response
 
-      expect(user.email_addresses.last.email).
-        to include('michael.motorist2@email.com')
+      expect(
+        controller.user_session[:selected_email_id_for_linked_identity],
+      ).to eq(selected_email.id.to_s)
+    end
+
+    it 'logs analytics event' do
+      stub_analytics
+
+      response
+
+      expect(@analytics).to have_logged_event(
+        :sp_select_email_submitted,
+        success: true,
+        needs_completion_screen_reason: :new_attributes,
+        selected_email_id: selected_email.id,
+      )
     end
 
     context 'with a corrupted email selected_email_id form' do
-      let(:params) { { selected_email_id: email3 } }
+      let(:other_user) { create(:user) }
+      let(:selected_email) { other_user.confirmed_email_addresses.sample }
 
       it 'rejects email not belonging to the user' do
         expect(response).to redirect_to(sign_up_select_email_path)
-        expect(user.email_addresses.last.email).
-          to include('michael.motorist2@email.com')
+        expect(
+          controller.user_session[:selected_email_id_for_linked_identity],
+        ).to eq(nil)
+      end
+
+      it 'logs analytics event' do
+        stub_analytics
+
+        response
+
+        expect(@analytics).to have_logged_event(
+          :sp_select_email_submitted,
+          success: false,
+          error_details: { selected_email_id: { not_found: true } },
+          needs_completion_screen_reason: :new_attributes,
+          selected_email_id: selected_email.id,
+        )
       end
     end
 
     context 'with selected email to share feature disabled' do
       before do
-        allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled).
-          and_return(false)
+        allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
+          .and_return(false)
       end
 
       it 'renders 404' do

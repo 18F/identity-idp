@@ -64,4 +64,11 @@ class ServiceProviderIdentity < ApplicationRecord
   def happened_at
     last_authenticated_at.in_time_zone('UTC')
   end
+
+  def email_address_for_sharing
+    if IdentityConfig.store.feature_select_email_to_share_enabled && email_address
+      return email_address
+    end
+    user.last_sign_in_email_address
+  end
 end

@@ -10,13 +10,13 @@ class EventDisavowalController < ApplicationController
       success: true,
       extra: EventDisavowal::BuildDisavowedEventAnalyticsAttributes.call(disavowed_event),
     )
-    analytics.event_disavowal(**result.to_h)
+    analytics.event_disavowal(**result)
     @forbidden_passwords = forbidden_passwords
   end
 
   def create
     result = password_reset_from_disavowal_form.submit(password_reset_params)
-    analytics.event_disavowal_password_reset(**result.to_h)
+    analytics.event_disavowal_password_reset(**result)
     if result.success?
       handle_successful_password_reset
     else
@@ -50,7 +50,7 @@ class EventDisavowalController < ApplicationController
       return
     end
 
-    analytics.event_disavowal_token_invalid(**result.to_h)
+    analytics.event_disavowal_token_invalid(**result)
     flash[:error] = (result.errors[:event] || result.errors.first.last).first
     redirect_to root_url
   end

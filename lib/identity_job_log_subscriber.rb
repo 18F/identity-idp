@@ -163,6 +163,8 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
   def default_attributes(event, job)
     {
       duration_ms: event.duration,
+      cpu_time_ms: event.cpu_time,
+      idle_time_ms: event.idle_time,
       timestamp: Time.zone.now,
       name: event.name,
       job_class: job.class.name,

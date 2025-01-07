@@ -6,6 +6,11 @@ class Analytics
 
   attr_reader :user, :request, :sp, :session, :ahoy
 
+  # @param [User] user
+  # @param [ActionDispatch::Request,nil] request
+  # @param [String,nil] sp Service provider issuer string.
+  # @param [Hash] session
+  # @param [Ahoy::Tracker,nil] ahoy
   def initialize(user:, request:, sp:, session:, ahoy: nil)
     @user = user
     @request = request
@@ -21,6 +26,7 @@ class Analytics
       event_properties: attributes.except(:user_id).compact,
       new_event: first_event_this_session?,
       path: request&.path,
+      service_provider: sp,
       session_duration: session_duration,
       user_id: attributes[:user_id] || user.uuid,
       locale: I18n.locale,
@@ -58,7 +64,6 @@ class Analytics
       user_ip: request.remote_ip,
       hostname: request.host,
       pid: Process.pid,
-      service_provider: sp,
       trace_id: request.headers['X-Amzn-Trace-Id'],
     }
 
@@ -131,8 +136,9 @@ class Analytics
 
     attributes = resolved_result.to_h
     attributes[:component_values] = resolved_result.component_values.map do |v|
-      [v.name.sub('http://idmanagement.gov/ns/assurance/', ''), true]
+      [v.name.sub("#{Saml::Idp::Constants::LEGACY_ACR_PREFIX}/", ''), true]
     end.to_h
+    attributes[:component_names] = resolved_result.component_names
     attributes.reject! { |_key, value| value == false }
 
     if differentiator.present?
@@ -157,7 +163,9 @@ class Analytics
   end
 
   def resolved_authn_context_result
-    return nil if sp.nil? || session[:sp].blank?
+    return nil if sp.blank? ||
+                  session[:sp].blank? ||
+                  (session[:sp][:vtr].blank? && session[:sp][:acr_values].blank?)
     return @resolved_authn_context_result if defined?(@resolved_authn_context_result)
 
     service_provider = ServiceProvider.find_by(issuer: sp)

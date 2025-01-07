@@ -13,6 +13,7 @@ module Idv
                 :identity_doc_city,
                 :state_id_jurisdiction,
                 :state_id_number,
+                :same_address_as_id,
                 presence: true
 
       validates_with UspsInPersonProofing::TransliterableValidator,

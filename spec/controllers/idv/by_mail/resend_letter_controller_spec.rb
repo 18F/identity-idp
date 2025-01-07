@@ -84,6 +84,31 @@ RSpec.describe Idv::ByMail::ResendLetterController do
       )
     end
 
+    context 'when using vtr values' do
+      it 'uses the GPO confirmation maker to send another letter and redirects', :freeze_time do
+        expect_to_resend_letter_and_redirect(vtr: true)
+
+        expect(@analytics).to have_logged_event(
+          'IdV: USPS address letter requested',
+          hash_including(
+            resend: true,
+            first_letter_requested_at: user.pending_profile.gpo_verification_pending_at,
+            hours_since_first_letter: 24,
+          ),
+        )
+
+        expect(@analytics).to have_logged_event(
+          'IdV: USPS address letter enqueued',
+          hash_including(
+            resend: true,
+            first_letter_requested_at: user.pending_profile.gpo_verification_pending_at,
+            hours_since_first_letter: 24,
+            enqueued_at: Time.zone.now,
+          ),
+        )
+      end
+    end
+
     it 'redirects to capture password controller if the PII is locked' do
       pii_cacher = instance_double(Pii::Cacher)
       allow(pii_cacher).to receive(:fetch).and_return(nil)
@@ -96,7 +121,7 @@ RSpec.describe Idv::ByMail::ResendLetterController do
     end
   end
 
-  def expect_to_resend_letter_and_redirect
+  def expect_to_resend_letter_and_redirect(vtr: false)
     pii = user.pending_profile.decrypt_pii(user.password).to_h
     pii_cacher = instance_double(Pii::Cacher)
     allow(pii_cacher).to receive(:fetch).with(user.pending_profile.id).and_return(pii)
@@ -104,12 +129,18 @@ RSpec.describe Idv::ByMail::ResendLetterController do
     allow(Pii::Cacher).to receive(:new).and_return(pii_cacher)
 
     service_provider = create(:service_provider, issuer: '123abc')
-    session[:sp] = { issuer: service_provider.issuer, vtr: ['C1'] }
+    session[:sp] = { issuer: service_provider.issuer }
+
+    if vtr
+      session[:sp][:vtr] = ['C1']
+    else
+      session[:sp][:acr_values] = Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF
+    end
 
     gpo_confirmation_maker = instance_double(GpoConfirmationMaker)
-    allow(GpoConfirmationMaker).to receive(:new).
-      with(pii: pii, service_provider: service_provider, profile: user.pending_profile).
-      and_return(gpo_confirmation_maker)
+    allow(GpoConfirmationMaker).to receive(:new)
+      .with(pii: pii, service_provider: service_provider, profile: user.pending_profile)
+      .and_return(gpo_confirmation_maker)
 
     expect(gpo_confirmation_maker).to receive(:perform)
     expect { put :create }.to change { ActionMailer::Base.deliveries.count }.by(1)

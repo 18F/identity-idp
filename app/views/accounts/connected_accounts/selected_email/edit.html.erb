@@ -4,7 +4,7 @@
   <% c.with_header(id: 'select-email-heading') { t('titles.select_email') } %>
 
   <p id="select-email-intro">
-    <%= t('help_text.select_preferred_email', sp: @identity.display_name, app_name: APP_NAME) %>
+    <%= t('help_text.select_preferred_email_html', sp: @identity.display_name) %>
   </p>
 
   <%= simple_form_for(
@@ -16,6 +16,7 @@
           :selected_email_id,
           as: :radio_buttons,
           label: false,
+          required: true,
           wrapper_html: {
             aria: {
               labelledby: 'select-email-heading',
@@ -26,20 +27,22 @@
             [
               email.email,
               email.id,
-              checked: email.id == @identity.email_address_id,
+              checked: email.id == @email_id,
             ]
           end,
         ) %>
-    <%= f.submit(t('help_text.requested_attributes.change_email_link'), class: 'margin-top-1') %>
+    <%= f.submit(t('help_text.requested_attributes.select_email_link'), class: 'margin-top-1') %>
   <% end %>
 
-  <%= render ButtonComponent.new(
-        url: add_email_path,
-        outline: true,
-        big: true,
-        wide: true,
-        class: 'margin-top-2',
-      ).with_content(t('account.index.email_add')) %>
+  <% if @can_add_email %>
+    <%= render ButtonComponent.new(
+          url: add_email_path(in_select_email_flow: true),
+          outline: true,
+          big: true,
+          wide: true,
+          class: 'margin-top-2',
+        ).with_content(t('account.index.email_add')) %>
+  <% end %>
 
   <% c.with_footer { link_to t('forms.buttons.back'), account_connected_accounts_path } %>
 <% end %>

@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'axe-rspec'
 
-RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
+RSpec.describe 'In Person Proofing', js: true do
   include IdvStepHelper
   include SpAuthHelper
   include InPersonHelper
@@ -9,7 +9,6 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-    allow(IdentityConfig.store).to receive(:in_person_state_id_controller_enabled).and_return(true)
   end
 
   it 'works for a happy path', allow_browser_log: true do
@@ -57,13 +56,16 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
     expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1).twice
     expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2).twice
     expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_CITY).twice
-    expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction], count: 3)
+    expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION, count: 1)
+    expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT_STATE, count: 2)
     expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE).twice
     expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
 
     # click update state ID button
-    click_button t('idv.buttons.change_state_id_label')
+    click_link t('idv.buttons.change_state_id_label')
+
     expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
+
     choose t('in_person_proofing.form.state_id.same_address_as_id_yes')
     click_button t('forms.buttons.submit.update')
     expect(page).to have_content(t('headings.verify'))
@@ -115,9 +117,9 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
     deadline = nil
     freeze_time do
       acknowledge_and_confirm_personal_key
-      deadline = (Time.zone.now + IdentityConfig.store.in_person_enrollment_validity_in_days.days).
-        in_time_zone(Idv::InPerson::ReadyToVerifyPresenter::USPS_SERVER_TIMEZONE).
-        strftime(t('time.formats.event_date'))
+      deadline = (Time.zone.now + IdentityConfig.store.in_person_enrollment_validity_in_days.days)
+        .in_time_zone(Idv::InPerson::ReadyToVerifyPresenter::USPS_SERVER_TIMEZONE)
+        .strftime(t('time.formats.event_date'))
     end
 
     # ready to verify page
@@ -192,10 +194,7 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
     expect(page).to have_content(t('doc_auth.headings.review_issues'))
 
     # Images should still be present
-    front_label = [t('doc_auth.headings.document_capture_front'), 'logo.png'].join(' - ')
-    back_label = [t('doc_auth.headings.document_capture_back'), 'logo.png'].join(' - ')
-    expect(page).to have_field(front_label)
-    expect(page).to have_field(back_label)
+    expect(page).to have_text('logo.png', count: 2)
   end
 
   context 'after in-person proofing is completed and passed for a partner' do
@@ -212,8 +211,8 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
         let(:sp) { service_provider }
         it 'sends a survey when they share information with that partner',
            allow_browser_log: true do
-          expect(last_email.html_part.body).
-            to have_selector(
+          expect(last_email.html_part.body)
+            .to have_selector(
               "a[href='#{IdentityConfig.store.in_person_opt_in_available_completion_survey_url}']",
             )
         end
@@ -353,7 +352,7 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
       expect(page).to have_text('new address different from state address1').once
 
       # click update state id address
-      click_button t('idv.buttons.change_state_id_label')
+      click_link t('idv.buttons.change_state_id_label')
 
       # check that the "No, I live at a different address" is checked
       expect(page).to have_checked_field(
@@ -368,8 +367,6 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
 
     before do
       allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).and_return(true)
-      allow(IdentityConfig.store).to receive(:in_person_state_id_controller_enabled).
-        and_return(true)
     end
 
     it 'allows the user to generate a barcode despite outage', allow_browser_log: true do
@@ -432,12 +429,13 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
       expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1)
       expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2)
       expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_CITY)
-      expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction]).twice
+      expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION).once
+      expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT_STATE).twice
       expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE)
       expect(page).to have_text(InPersonHelper::GOOD_ADDRESS1)
       expect(page).to have_text(InPersonHelper::GOOD_CITY)
       expect(page).to have_text(InPersonHelper::GOOD_ZIPCODE)
-      expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:state])
+      expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT_STATE)
       expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
       complete_verify_step(user)
 
@@ -472,9 +470,9 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
       freeze_time do
         acknowledge_and_confirm_personal_key
         deadline = (Time.zone.now +
-          IdentityConfig.store.in_person_enrollment_validity_in_days.days).
-          in_time_zone(Idv::InPerson::ReadyToVerifyPresenter::USPS_SERVER_TIMEZONE).
-          strftime(t('time.formats.event_date'))
+          IdentityConfig.store.in_person_enrollment_validity_in_days.days)
+          .in_time_zone(Idv::InPerson::ReadyToVerifyPresenter::USPS_SERVER_TIMEZONE)
+          .strftime(t('time.formats.event_date'))
       end
 
       # ready to verify page

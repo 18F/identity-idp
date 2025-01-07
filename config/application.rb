@@ -59,7 +59,7 @@ module Identity
       end
     end
 
-    config.load_defaults '7.1'
+    config.load_defaults '7.2'
     config.active_record.belongs_to_required_by_default = false
     config.active_job.queue_adapter = :good_job
 
@@ -157,9 +157,7 @@ module Identity
       allow do
         origins IdentityCors.allowed_origins_static_sites
         resource '/api/country-support', headers: :any, methods: [:get]
-        if Identity::Hostdata.config.in_person_public_address_search_enabled
-          resource '/api/usps_locations', headers: :any, methods: %i[post options]
-        end
+        resource '/api/usps_locations', headers: :any, methods: %i[post options]
       end
     end
 

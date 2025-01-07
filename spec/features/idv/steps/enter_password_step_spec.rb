@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'idv enter password step', :js, allowed_extra_analytics: [:*] do
+RSpec.feature 'idv enter password step', :js do
   include IdvStepHelper
 
   context 'choosing to confirm address with gpo' do
@@ -31,7 +31,7 @@ RSpec.feature 'idv enter password step', :js, allowed_extra_analytics: [:*] do
       click_continue
 
       expect(page).to have_content(t('idv.titles.come_back_later'))
-      expect(current_path).to eq idv_letter_enqueued_path
+      expect(page).to have_current_path idv_letter_enqueued_path
     end
 
     context 'with an sp' do
@@ -42,11 +42,11 @@ RSpec.feature 'idv enter password step', :js, allowed_extra_analytics: [:*] do
         gpo_confirmation_entry = GpoConfirmation.last.entry
 
         if sp == :saml
-          expect(gpo_confirmation_entry[:issuer]).
-            to eq(sp1_issuer)
+          expect(gpo_confirmation_entry[:issuer])
+            .to eq(sp1_issuer)
         else
-          expect(gpo_confirmation_entry[:issuer]).
-            to eq('urn:gov:gsa:openidconnect:sp:server')
+          expect(gpo_confirmation_entry[:issuer])
+            .to eq('urn:gov:gsa:openidconnect:sp:server')
         end
       end
     end
@@ -69,11 +69,11 @@ RSpec.feature 'idv enter password step', :js, allowed_extra_analytics: [:*] do
 
       email_count_before_continue = ActionMailer::Base.deliveries.count
 
-      expect { click_continue }.
-        to change { GpoConfirmation.count }.by(1)
+      expect { click_continue }
+        .to change { GpoConfirmation.count }.by(1)
 
       expect_delivered_email_count(email_count_before_continue + 1)
-      expect(last_email.subject).to eq(t('user_mailer.letter_reminder.subject'))
+      expect(last_email.subject).to eq(t('user_mailer.verify_by_mail_letter_requested.subject'))
 
       expect(user.events.account_verified.size).to be(0)
       expect(user.profiles.count).to eq 1
@@ -94,14 +94,14 @@ RSpec.feature 'idv enter password step', :js, allowed_extra_analytics: [:*] do
 
     it 'allows the user to submit password and proceed to obtain a personal key' do
       visit(idv_hybrid_handoff_url(redo: true))
-      expect(current_path).to eq idv_hybrid_handoff_path
+      expect(page).to have_current_path(idv_hybrid_handoff_path(redo: true))
       complete_hybrid_handoff_step
       complete_document_capture_step
       complete_ssn_step
       complete_verify_step
       complete_phone_step(user)
       complete_enter_password_step(user)
-      expect(current_path).to eq idv_personal_key_path
+      expect(page).to have_current_path idv_personal_key_path
     end
   end
 end

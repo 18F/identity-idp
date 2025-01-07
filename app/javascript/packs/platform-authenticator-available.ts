@@ -3,18 +3,13 @@ import {
   isWebauthnPasskeySupported,
 } from '@18f/identity-webauthn';
 
-async function platformAuthenticatorAvailable() {
-  const platformAuthenticatorAvailableInput = document.getElementById(
-    'platform_authenticator_available',
-  ) as HTMLInputElement;
-  if (!platformAuthenticatorAvailableInput) {
-    return;
-  }
+export async function initialize() {
+  const input = document.getElementById('platform_authenticator_available') as HTMLInputElement;
   if (isWebauthnPasskeySupported() && (await isWebauthnPlatformAuthenticatorAvailable())) {
-    platformAuthenticatorAvailableInput.value = 'true';
-  } else {
-    platformAuthenticatorAvailableInput.value = 'false';
+    input.value = 'true';
   }
 }
 
-platformAuthenticatorAvailable();
+if (process.env.NODE_ENV !== 'test') {
+  initialize();
+}

@@ -8,15 +8,6 @@ module DocumentCaptureStepHelper
     end
   end
 
-  def continue_doc_auth_form
-    click_on 'Continue'
-
-    # Wait for the the loading interstitial to disappear before continuing
-    wait_for_content_to_disappear do
-      expect(page).not_to have_content(t('doc_auth.headings.interstitial'), wait: 10)
-    end
-  end
-
   def attach_and_submit_images
     attach_images
     submit_images
@@ -34,6 +25,8 @@ module DocumentCaptureStepHelper
     )
   )
     attach_images(file)
+    click_continue
+    click_button 'Take photo' if page.has_button? 'Take photo'
     attach_selfie
   end
 
@@ -77,5 +70,84 @@ module DocumentCaptureStepHelper
 
   def click_try_again
     click_spinner_button_and_wait t('idv.failure.button.warning')
+  end
+
+  def socure_docv_upload_documents(docv_transaction_token:)
+    [
+      'WAITING_FOR_USER_TO_REDIRECT',
+      'APP_OPENED',
+      'DOCUMENT_FRONT_UPLOADED',
+      'DOCUMENT_BACK_UPLOADED',
+      'DOCUMENTS_UPLOADED',
+      'SESSION_COMPLETE',
+    ].each { |event_type| socure_docv_send_webhook(docv_transaction_token:, event_type:) }
+  end
+
+  def socure_docv_send_webhook(
+    docv_transaction_token:,
+    event_type: 'DOCUMENTS_UPLOADED'
+  )
+    Faraday.post "http://#{[page.server.host,
+                            page.server.port].join(':')}/api/webhooks/socure/event" do |req|
+      req.body = {
+        event: {
+          eventType: event_type,
+          docvTransactionToken: docv_transaction_token,
+        },
+      }.to_json
+      req.headers = {
+        'Content-Type': 'application/json',
+        Authorization: "secret #{IdentityConfig.store.socure_docv_webhook_secret_key}",
+      }
+      req.options.context = { service_name: 'socure-docv-webhook' }
+    end
+  end
+
+  def stub_docv_verification_data_pass(docv_transaction_token:)
+    stub_docv_verification_data(body: SocureDocvFixtures.pass_json, docv_transaction_token:)
+  end
+
+  def stub_docv_verification_data_fail_with(docv_transaction_token:, errors:)
+    stub_docv_verification_data(body: SocureDocvFixtures.fail_json(errors), docv_transaction_token:)
+  end
+
+  def stub_docv_verification_data(docv_transaction_token:, body:)
+    request_body = {
+      modules: ['documentverification'],
+      docvTransactionToken: docv_transaction_token,
+    }
+
+    stub_request(:post, "#{IdentityConfig.store.socure_idplus_base_url}/api/3.0/EmailAuthScore")
+      .with(body: request_body.to_json)
+      .to_return(
+        headers: {
+          'Content-Type' => 'application/json',
+        },
+        body:,
+      )
+  end
+
+  def stub_docv_document_request(
+    url: 'https://verify.fake-socure.test/something',
+    status: 200,
+    token: SecureRandom.hex,
+    body: nil
+  )
+    body ||= {
+      referenceId: 'socure-reference-id',
+      data: {
+        eventId: 'socure-event-id',
+        docvTransactionToken: token,
+        qrCode: 'qr-code',
+        url:,
+      },
+    }
+
+    stub_request(:post, IdentityConfig.store.socure_docv_document_request_endpoint)
+      .to_return(
+        status:,
+        body: body.to_json,
+      )
+    token
   end
 end

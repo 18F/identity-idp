@@ -58,7 +58,7 @@ RSpec.feature 'Sign Up' do
     end
 
     it 'redirects user to the home page' do
-      expect(current_path).to eq root_path
+      expect(page).to have_current_path root_path
     end
   end
 
@@ -69,7 +69,7 @@ RSpec.feature 'Sign Up' do
     end
 
     it 'sends them to the cancel page' do
-      expect(current_path).to eq sign_up_cancel_path
+      expect(page).to have_current_path sign_up_cancel_path
     end
   end
 
@@ -81,7 +81,7 @@ RSpec.feature 'Sign Up' do
     end
 
     it 'sends them to the cancel page' do
-      expect(current_path).to eq sign_up_cancel_path
+      expect(page).to have_current_path sign_up_cancel_path
     end
   end
 
@@ -89,7 +89,7 @@ RSpec.feature 'Sign Up' do
     it 'redirects user to the translated home page' do
       visit sign_up_email_path(locale: 'es')
       click_on t('links.cancel')
-      expect(current_path).to eq '/es'
+      expect(page).to have_current_path '/es'
     end
   end
 
@@ -110,7 +110,7 @@ RSpec.feature 'Sign Up' do
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      expect(current_path).to eq backup_code_setup_path
+      expect(page).to have_current_path backup_code_setup_path
 
       expect(page).to have_link(t('components.download_button.label'))
 
@@ -140,7 +140,7 @@ RSpec.feature 'Sign Up' do
     fill_in 'new_phone_form_phone', with: '225-555-1000'
     click_send_one_time_code
 
-    expect(current_path).to eq(phone_setup_path)
+    expect(page).to have_current_path(phone_setup_path)
     expect(page).to have_content(I18n.t('telephony.error.friendly_message.generic'))
   end
 
@@ -163,7 +163,7 @@ RSpec.feature 'Sign Up' do
       timeout: '(10|9) minutes',
     )
 
-    expect(current_path).to eq(authentication_methods_setup_path)
+    expect(page).to have_current_path(authentication_methods_setup_path)
 
     expect(page).to have_content(/#{rate_limited_message}/)
   end
@@ -252,8 +252,8 @@ RSpec.feature 'Sign Up' do
       expect(page).to have_current_path(root_path)
 
       action = t('devise.confirmations.sign_in')
-      expect(page).
-        to have_content t('devise.confirmations.already_confirmed', action: action)
+      expect(page)
+        .to have_content t('devise.confirmations.already_confirmed', action: action)
     end
   end
 
@@ -263,8 +263,8 @@ RSpec.feature 'Sign Up' do
 
       expect(page).to have_current_path(sign_up_register_path)
 
-      expect(page).
-        to have_content t('errors.messages.confirmation_invalid_token')
+      expect(page)
+        .to have_content t('errors.messages.confirmation_invalid_token')
     end
   end
 
@@ -322,8 +322,8 @@ RSpec.feature 'Sign Up' do
     sign_in_user(user)
     visit authenticator_setup_path
 
-    expect(page).
-      to have_current_path login_two_factor_path(otp_delivery_preference: 'sms')
+    expect(page)
+      .to have_current_path login_two_factor_path(otp_delivery_preference: 'sms')
   end
 
   it 'prompts to sign in when accessing authenticator_setup_path before signing in' do
@@ -398,12 +398,12 @@ RSpec.feature 'Sign Up' do
       )
       click_button t('forms.buttons.continue')
 
-      expect(current_path).to eq rules_of_use_path
+      expect(page).to have_current_path rules_of_use_path
       check 'rules_of_use_form[terms_accepted]'
 
       freeze_time do
         click_button t('forms.buttons.continue')
-        expect(current_path).to eq authentication_methods_setup_path
+        expect(page).to have_current_path authentication_methods_setup_path
         expect(user.reload.accepted_terms_at).to eq Time.zone.now
       end
     end
@@ -493,7 +493,7 @@ RSpec.feature 'Sign Up' do
       it 'returns them to the homepage' do
         click_link APP_NAME, href: new_user_session_path
 
-        expect(current_path).to eq new_user_session_path
+        expect(page).to have_current_path new_user_session_path
       end
     end
 
@@ -506,122 +506,82 @@ RSpec.feature 'Sign Up' do
       it 'returns them to the MFA setup screen' do
         click_link APP_NAME, href: new_user_session_path
 
-        expect(current_path).to eq authentication_methods_setup_path
+        expect(page).to have_current_path authentication_methods_setup_path
       end
     end
   end
 
   describe 'User Directed to Piv Cac recommended' do
-    context 'set config use_fed_domain_class to false' do
-      let(:email) { 'test@test.gov' }
-      before do
-        allow(IdentityConfig.store).to receive(:use_fed_domain_class).and_return(false)
-      end
+    let!(:federal_email_domain) { create(:federal_email_domain, name: 'gsa.gov') }
+    let(:email) { 'test@gsa.gov' }
 
+    context 'when the user has a fed email' do
       it 'should land user on piv cac suggestion page' do
         confirm_email(email)
         submit_form_with_valid_password
-        expect(current_path).to eq login_piv_cac_recommended_path
+        expect(page).to have_current_path login_piv_cac_recommended_path
       end
 
-      context 'user can skip piv cac prompt' do
-        it 'should skip piv cac prompt and land on mfa screen' do
+      context 'when the user chooses to skip adding piv' do
+        it 'should land on mfa screen' do
           confirm_email(email)
           submit_form_with_valid_password
-          expect(current_path).to eq login_piv_cac_recommended_path
+          expect(page).to have_current_path login_piv_cac_recommended_path
           click_button t('two_factor_authentication.piv_cac_upsell.choose_other_method')
 
-          expect(current_path).to eq authentication_methods_setup_path
+          expect(page).to have_current_path authentication_methods_setup_path
         end
       end
 
-      context 'user who selects to add piv is directed to piv screen' do
-        it 'should be directed straight to piv add screen' do
+      context 'when the user chooses to add piv' do
+        it 'should land on piv add screen' do
           confirm_email(email)
           submit_form_with_valid_password
-          expect(current_path).to eq login_piv_cac_recommended_path
+          expect(page).to have_current_path login_piv_cac_recommended_path
           click_button t('two_factor_authentication.piv_cac_upsell.add_piv')
 
-          expect(current_path).to eq setup_piv_cac_path
+          expect(page).to have_current_path setup_piv_cac_path
         end
       end
     end
 
-    context 'set config use_fed_domain_class to true' do
-      let!(:federal_email_domain) { create(:federal_email_domain, name: 'gsa.gov') }
-      let(:email) { 'test@gsa.gov' }
-
-      before do
-        allow(IdentityConfig.store).to receive(:use_fed_domain_class).and_return(true)
+    context 'when the user has a mil email' do
+      let(:email) { 'test@example.mil' }
+      it 'should land user on piv cac suggestion page' do
+        confirm_email(email)
+        submit_form_with_valid_password
+        expect(page).to have_current_path login_piv_cac_recommended_path
       end
-      context 'valid fed email' do
-        it 'should land user on piv cac suggestion page when fed government' do
+
+      context 'when the user chooses to skip adding piv' do
+        it 'should land on mfa screen' do
           confirm_email(email)
           submit_form_with_valid_password
-          expect(current_path).to eq login_piv_cac_recommended_path
-        end
+          expect(page).to have_current_path login_piv_cac_recommended_path
+          click_button t('two_factor_authentication.piv_cac_upsell.choose_other_method')
 
-        context 'user can skip piv cac prompt' do
-          it 'should skip piv cac prompt and land on mfa screen' do
-            confirm_email(email)
-            submit_form_with_valid_password
-            expect(current_path).to eq login_piv_cac_recommended_path
-            click_button t('two_factor_authentication.piv_cac_upsell.choose_other_method')
-
-            expect(current_path).to eq authentication_methods_setup_path
-          end
-        end
-
-        context 'user who selects to add piv is directed to piv screen' do
-          it 'should be directed straight to piv add screen' do
-            confirm_email(email)
-            submit_form_with_valid_password
-            expect(current_path).to eq login_piv_cac_recommended_path
-            click_button t('two_factor_authentication.piv_cac_upsell.add_piv')
-
-            expect(current_path).to eq setup_piv_cac_path
-          end
+          expect(page).to have_current_path authentication_methods_setup_path
         end
       end
 
-      context 'any mil email' do
-        let(:email) { 'test@example.mil' }
-        it 'should land user on piv cac suggestion page when fed government' do
+      context 'when the user chooses to add piv' do
+        it 'should land on piv add screen' do
           confirm_email(email)
           submit_form_with_valid_password
-          expect(current_path).to eq login_piv_cac_recommended_path
-        end
+          expect(page).to have_current_path login_piv_cac_recommended_path
+          click_button t('two_factor_authentication.piv_cac_upsell.add_piv')
 
-        context 'user can skip piv cac prompt' do
-          it 'should skip piv cac prompt and land on mfa screen' do
-            confirm_email(email)
-            submit_form_with_valid_password
-            expect(current_path).to eq login_piv_cac_recommended_path
-            click_button t('two_factor_authentication.piv_cac_upsell.choose_other_method')
-
-            expect(current_path).to eq authentication_methods_setup_path
-          end
-        end
-
-        context 'user who selects to add piv is directed to piv screen' do
-          it 'should be directed straight to piv add screen' do
-            confirm_email(email)
-            submit_form_with_valid_password
-            expect(current_path).to eq login_piv_cac_recommended_path
-            click_button t('two_factor_authentication.piv_cac_upsell.add_piv')
-
-            expect(current_path).to eq setup_piv_cac_path
-          end
+          expect(page).to have_current_path setup_piv_cac_path
         end
       end
+    end
 
-      context 'invalid fed email' do
-        let(:email) { 'test@example.gov' }
-        it 'should land user on piv cac suggestion page when fed government' do
-          confirm_email(email)
-          submit_form_with_valid_password
-          expect(current_path).to eq authentication_methods_setup_path
-        end
+    context 'when the user does not have a fed or mil email' do
+      let(:email) { 'test@example.gov' }
+      it 'should skip piv cac recommendation page' do
+        confirm_email(email)
+        submit_form_with_valid_password
+        expect(page).to have_current_path authentication_methods_setup_path
       end
     end
   end

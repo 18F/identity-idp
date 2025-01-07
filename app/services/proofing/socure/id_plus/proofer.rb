@@ -7,6 +7,7 @@ module Proofing
         attr_reader :config
 
         VENDOR_NAME = 'socure_kyc'
+        UNKNOWN_REASON_CODE = '[unknown]'
 
         VERIFIED_ATTRIBUTE_MAP = {
           address: %i[streetAddress city state zip].freeze,
@@ -33,14 +34,14 @@ module Proofing
         # @param [Hash] applicant
         # @return [Proofing::Resolution::Result]
         def proof(applicant)
-          input = Input.new(applicant.except(:phone_source))
+          input = Input.new(applicant.slice(*Input.members))
 
           request = Request.new(config:, input:)
 
           response = request.send_request
 
           build_result_from_response(response)
-        rescue Proofing::TimeoutError, RequestError => err
+        rescue Proofing::TimeoutError, Request::Error => err
           build_result_from_error(err)
         end
 
@@ -77,9 +78,10 @@ module Proofing
         # @param [Proofing::Socure::IdPlus::Response] response
         # @return [Hash]
         def reason_codes_as_errors(response)
-          {
-            reason_codes: response.kyc_reason_codes.sort,
-          }
+          known_codes = SocureReasonCode.where(
+            code: response.kyc_reason_codes,
+          ).pluck(:code, :description).to_h
+          response.kyc_reason_codes.index_with { |code| known_codes[code] || UNKNOWN_REASON_CODE }
         end
 
         # @param [Proofing::Socure::IdPlus::Response] response

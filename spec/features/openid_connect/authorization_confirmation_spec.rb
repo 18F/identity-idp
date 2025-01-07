@@ -31,7 +31,21 @@ RSpec.feature 'OIDC Authorization Confirmation' do
       user1
     end
 
-    shared_examples 'signin email after signing in again' do
+    shared_examples 'signing in with a different email prompts with the shared email' do
+      it 'confirms the user wants to continue to SP' do
+        shared_email = user1.identities.first.email_address.email
+        second_email = create(:email_address, user: user1)
+        sign_in_user(user1, second_email.email)
+        visit_idp_from_ial1_oidc_sp
+        expect(current_url).to match(user_authorization_confirmation_path)
+        expect(page).to have_content shared_email
+
+        continue_as(second_email.email)
+        expect(oidc_redirect_url).to match('http://localhost:7654/auth/result')
+      end
+    end
+
+    shared_examples 'signing in with a different email prompts with the signed in email' do
       it 'confirms the user wants to continue to SP' do
         second_email = create(:email_address, user: user1)
         sign_in_user(user1, second_email.email)
@@ -44,23 +58,56 @@ RSpec.feature 'OIDC Authorization Confirmation' do
       end
     end
 
-    it_behaves_like 'signin email after signing in again'
-
-    context 'with client-side redirect' do
+    context 'when email sharing feature is enabled' do
       before do
-        allow(IdentityConfig.store).to receive(:openid_connect_redirect).and_return('client_side')
+        allow(IdentityConfig.store)
+          .to receive(:feature_select_email_to_share_enabled).and_return(true)
       end
 
-      it_behaves_like 'signin email after signing in again'
+      it_behaves_like 'signing in with a different email prompts with the shared email'
+
+      context 'with client-side redirect' do
+        before do
+          allow(IdentityConfig.store).to receive(:openid_connect_redirect).and_return('client_side')
+        end
+
+        it_behaves_like 'signing in with a different email prompts with the shared email'
+      end
+
+      context 'with client-side javascript redirect' do
+        before do
+          allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+            .and_return('client_side_js')
+        end
+
+        it_behaves_like 'signing in with a different email prompts with the shared email'
+      end
     end
 
-    context 'with client-side javascript redirect' do
+    context 'when email sharing feature is disabled' do
       before do
-        allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-          and_return('client_side_js')
+        allow(IdentityConfig.store)
+          .to receive(:feature_select_email_to_share_enabled).and_return(false)
       end
 
-      it_behaves_like 'signin email after signing in again'
+      it_behaves_like 'signing in with a different email prompts with the signed in email'
+
+      context 'with client-side redirect' do
+        before do
+          allow(IdentityConfig.store).to receive(:openid_connect_redirect).and_return('client_side')
+        end
+
+        it_behaves_like 'signing in with a different email prompts with the signed in email'
+      end
+
+      context 'with client-side javascript redirect' do
+        before do
+          allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+            .and_return('client_side_js')
+        end
+
+        it_behaves_like 'signing in with a different email prompts with the signed in email'
+      end
     end
 
     it 'it allows the user to switch accounts prior to continuing to the SP' do
@@ -94,13 +141,13 @@ RSpec.feature 'OIDC Authorization Confirmation' do
       sign_in_user(user1)
       visit_idp_from_ial1_oidc_sp
 
-      expect(current_path).to eq(user_authorization_confirmation_path)
+      expect(page).to have_current_path(user_authorization_confirmation_path)
 
       click_button t('user_authorization_confirmation.sign_in')
       # Simulate clicking the back button by going right back to the original path
       visit user_authorization_confirmation_path
 
-      expect(current_path).to eq(new_user_session_path)
+      expect(page).to have_current_path(new_user_session_path)
     end
   end
 
@@ -115,7 +162,7 @@ RSpec.feature 'OIDC Authorization Confirmation' do
 
       perform_in_browser(:two) do
         confirm_email_in_a_different_browser(email)
-        expect(current_path).to eq sign_up_completed_path
+        expect(page).to have_current_path sign_up_completed_path
         expect(page).to have_content t('help_text.requested_attributes.email')
         expect(page).to have_content email
 

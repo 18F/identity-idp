@@ -63,14 +63,16 @@ check: lint test ## Runs lint tests and spec tests
 
 lint: ## Runs all lint tests
 	# Ruby
-	@echo "--- erb-lint ---"
+	@echo "--- erb_lint ---"
 	make lint_erb
 	@echo "--- rubocop ---"
+	mkdir -p tmp
 ifdef JUNIT_OUTPUT
-	bundle exec rubocop --parallel --format progress --format junit --out rubocop.xml --display-only-failed
+	bundle exec rubocop --parallel --format progress --format junit --out rubocop.xml --display-only-failed --color 2> tmp/rubocop.txt || (cat tmp/rubocop.txt; exit 1)
 else
-	bundle exec rubocop --parallel
+	bundle exec rubocop --parallel --color 2> tmp/rubocop.txt || (cat tmp/rubocop.txt; exit 1)
 endif
+	awk 'NF {exit 1}' tmp/rubocop.txt || (printf "Error: Unexpected stderr output from Rubocop\n"; cat tmp/rubocop.txt; exit 1)
 	@echo "--- analytics_events ---"
 	make lint_analytics_events
 	make lint_analytics_events_sorted
@@ -110,7 +112,7 @@ audit: ## Checks packages for vulnerabilities
 	yarn audit --groups dependencies; test $$? -le 7
 
 lint_erb: ## Lints ERB files
-	bundle exec erblint app/views app/components
+	bundle exec erb_lint app/views app/components
 
 lint_yaml: normalize_yaml ## Lints YAML files
 	(! git diff --name-only | grep "^config/.*\.yml") || (echo "Error: Run 'make normalize_yaml' to normalize YAML"; exit 1)
@@ -118,9 +120,11 @@ lint_yaml: normalize_yaml ## Lints YAML files
 lint_font_glyphs: ## Lints to validate content glyphs match expectations from fonts
 	scripts/yaml_characters \
 		--exclude-locale=zh \
+		--exclude-path=config/locales/telephony \
 		--exclude-gem-path=faker \
 		--exclude-gem-path=good_job \
 		--exclude-gem-path=i18n-tasks \
+		--exclude-key-scope=user_mailer \
 		> app/assets/fonts/glyphs.txt
 	(! git diff --name-only | grep "glyphs\.txt$$") || (echo "Error: New character data found. Follow 'Fonts' instructions in 'docs/frontend.md' to regenerate fonts."; exit 1)
 
@@ -177,8 +181,8 @@ lint_spec_file_name:
 lintfix: ## Try to automatically fix any Ruby, ERB, JavaScript, YAML, or CSS lint errors
 	@echo "--- rubocop fix ---"
 	bundle exec rubocop -a
-	@echo "--- erblint fix ---"
-	bundle exec erblint app/views app/components -a
+	@echo "--- erb_lint fix ---"
+	bundle exec erb_lint app/views app/components -a
 	@echo "--- eslint fix ---"
 	yarn lint --fix
 	@echo "--- stylelint fix ---"
@@ -239,7 +243,7 @@ normalize_yaml: ## Normalizes YAML files (alphabetizes keys, fixes line length, 
 optimize_svg: ## Optimizes SVG images
 	# Exclusions:
 	# - `login-icon-bimi.svg` is hand-optimized and includes required metadata that would be stripped by SVGO
-	find app/assets/images public -name '*.svg' -not -name 'login-icon-bimi.svg' | xargs ./node_modules/.bin/svgo
+	find app/assets/images public -name '*.svg' -not -name 'login-icon-bimi.svg' -not -name 'selfie-capture-accept-help.svg' | xargs ./node_modules/.bin/svgo
 
 optimize_assets: optimize_svg ## Optimizes all assets
 

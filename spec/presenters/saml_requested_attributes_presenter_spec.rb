@@ -9,15 +9,15 @@ RSpec.describe SamlRequestedAttributesPresenter do
         attribute_bundle: service_provider_attribute_bundle,
       )
     end
-    let(:vtr) { ['C1.C2'] }
-    let(:ial) { nil }
+    let(:vtr) { nil }
+    let(:ial) { Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF }
     let(:authn_request_attribute_bundle) { %w[email] }
 
     subject do
       described_class.new(
         service_provider: service_provider,
-        vtr: vtr,
-        ial: ial,
+        vtr:,
+        ial:,
         authn_request_attribute_bundle: authn_request_attribute_bundle,
       )
     end
@@ -43,7 +43,6 @@ RSpec.describe SamlRequestedAttributesPresenter do
 
     context 'with IAL2 requested with ACR values' do
       let(:authn_request_attribute_bundle) { %w[email first_name dob fake_extra_attribute] }
-      let(:vtr) { nil }
       let(:ial) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
 
       it 'returns requested proofing attributes' do
@@ -58,11 +57,27 @@ RSpec.describe SamlRequestedAttributesPresenter do
           expect(subject.requested_attributes).to eq(%i[email given_name social_security_number])
         end
       end
+
+      context 'with semantic acr values' do
+        let(:ial) { Saml::Idp::Constants::IAL_VERIFIED_ACR }
+
+        it 'returns requested proofing attributes' do
+          expect(subject.requested_attributes).to eq(%i[email given_name birthdate])
+        end
+
+        context 'no attributes are requested' do
+          let(:authn_request_attribute_bundle) { nil }
+          let(:service_provider_attribute_bundle) { %w[email first_name ssn] }
+
+          it 'returns default attributes' do
+            expect(subject.requested_attributes).to eq(%i[email given_name social_security_number])
+          end
+        end
+      end
     end
 
     context 'IALMax requested with ACR values' do
       let(:authn_request_attribute_bundle) { %w[email first_name dob fake_extra_attribute] }
-      let(:vtr) { nil }
       let(:ial) { Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF }
 
       it 'returns requested proofing attributes' do
@@ -80,11 +95,20 @@ RSpec.describe SamlRequestedAttributesPresenter do
     end
 
     context 'with address attributes requested' do
-      let(:vtr) { ['C1.C2.P1'] }
+      let(:ial) { Saml::Idp::Constants::IAL_VERIFIED_ACR }
       let(:authn_request_attribute_bundle) { %w[address1 address2 city state zipcode] }
 
       it 'combines address fields into single friendly name' do
         expect(subject.requested_attributes).to eq(%i[address])
+      end
+
+      context 'with vtr values' do
+        let(:acr_values) { nil }
+        let(:vtr) { ['C1.C2.P1'] }
+
+        it 'combines address fields into single friendly name' do
+          expect(subject.requested_attributes).to eq(%i[address])
+        end
       end
     end
 

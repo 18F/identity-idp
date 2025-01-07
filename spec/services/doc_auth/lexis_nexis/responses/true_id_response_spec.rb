@@ -127,11 +127,16 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         first_name: 'DAVID',
         last_name: 'SAMPLE',
         middle_name: 'LICENSE',
+        name_suffix: nil,
         address1: '123 ABC AVE',
         address2: 'APT 3E',
         city: 'ANYTOWN',
         state: 'MD',
         dob: '1986-07-01',
+        sex: nil,
+        height: nil,
+        weight: nil,
+        eye_color: nil,
         state_id_expiration: '2099-10-15',
         state_id_issued: '2016-10-15',
         state_id_jurisdiction: 'MD',
@@ -230,11 +235,11 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     context 'when identification card issued by a country' do
       let(:success_response) do
         body = JSON.parse(LexisNexisFixtures.true_id_response_success_3).tap do |json|
-          doc_class_node = json['Products'].first['ParameterDetails'].
-            select { |f| f['Name'] == 'DocClassName' && f['Group'] == 'AUTHENTICATION_RESULT' }
+          doc_class_node = json['Products'].first['ParameterDetails']
+            .select { |f| f['Name'] == 'DocClassName' && f['Group'] == 'AUTHENTICATION_RESULT' }
           doc_class_node.first['Values'].first['Value'] = 'Identification Card'
-          doc_issuer_type = json['Products'].first['ParameterDetails'].
-            select { |f| f['Name'] == 'DocIssuerType' && f['Group'] == 'AUTHENTICATION_RESULT' }
+          doc_issuer_type = json['Products'].first['ParameterDetails']
+            .select { |f| f['Name'] == 'DocIssuerType' && f['Group'] == 'AUTHENTICATION_RESULT' }
           doc_issuer_type.first['Values'].first['Value'] = 'Country'
         end.to_json
         instance_double(Faraday::Response, status: 200, body: body)
@@ -244,13 +249,29 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         expect(response.success?).to eq(false)
       end
     end
+
+    context 'when doc_auth_read_additional_pii_attributes_enabled is enabled' do
+      let(:success_response_body) { LexisNexisFixtures.true_id_response_success }
+
+      it 'reads the additional PII attributes' do
+        allow(IdentityConfig.store).to receive(:doc_auth_read_additional_pii_attributes_enabled)
+          .and_return(true)
+
+        pii_from_doc = response.pii_from_doc
+
+        expect(pii_from_doc.first_name).to eq('LICENSE')
+        expect(pii_from_doc.name_suffix).to eq('JR')
+        expect(pii_from_doc.sex).to eq('male')
+        expect(pii_from_doc.height).to eq(68)
+      end
+    end
   end
 
   context 'when there is no address line 2' do
     let(:success_response_no_line2) do
       body_no_line2 = JSON.parse(LexisNexisFixtures.true_id_response_success_3).tap do |json|
-        json['Products'].first['ParameterDetails'] = json['Products'].first['ParameterDetails'].
-          select { |f| f['Name'] != 'Fields_AddressLine2' }
+        json['Products'].first['ParameterDetails'] = json['Products'].first['ParameterDetails']
+          .select { |f| f['Name'] != 'Fields_AddressLine2' }
       end.to_json
       instance_double(Faraday::Response, status: 200, body: body_no_line2)
     end
@@ -326,11 +347,16 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         first_name: 'DAVID',
         last_name: 'SAMPLE',
         middle_name: 'LICENSE',
+        name_suffix: nil,
         address1: '123 ABC AVE',
         address2: nil,
         city: 'ANYTOWN',
         state: 'MD',
         dob: '1986-10-13',
+        sex: nil,
+        height: nil,
+        weight: nil,
+        eye_color: nil,
         state_id_expiration: '2099-10-15',
         state_id_issued: '2016-10-15',
         state_id_jurisdiction: 'MD',
@@ -384,8 +410,8 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
           failure_response_no_liveness, config,
           liveness_checking_enabled
         ).to_h
-        expect(output.to_h[:log_alert_results]).
-          to match(a_hash_including(visible_pattern: { no_side: 'Failed' }))
+        expect(output.to_h[:log_alert_results])
+          .to match(a_hash_including(visible_pattern: { no_side: 'Failed' }))
       end
 
       it 'returns Failed for liveness failure' do
@@ -612,9 +638,9 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     let(:success_response_body) do
       body = JSON.parse(super(), symbolize_names: true)
 
-      parameter = body[:Products].
-        first[:ParameterDetails].
-        find { |h| h[:Name] == 'DocAuthResult' }
+      parameter = body[:Products]
+        .first[:ParameterDetails]
+        .find { |h| h[:Name] == 'DocAuthResult' }
 
       parameter[:Values] = [{ Value: doc_auth_result }]
 
@@ -646,8 +672,8 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     let(:doc_class_name) { 'Drivers License' }
     let(:success_response) do
       response = JSON.parse(LexisNexisFixtures.true_id_response_success_3).tap do |json|
-        doc_class_node = json['Products'].first['ParameterDetails'].
-          select { |f| f['Name'] == 'DocClassName' }
+        doc_class_node = json['Products'].first['ParameterDetails']
+          .select { |f| f['Name'] == 'DocClassName' }
         doc_class_node.first['Values'].first['Value'] = doc_class_name
       end.to_json
       instance_double(Faraday::Response, status: 200, body: response)
@@ -675,8 +701,8 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     context 'when country code is not supported' do
       let(:success_response) do
         body = JSON.parse(LexisNexisFixtures.true_id_response_success_3).tap do |json|
-          doc_country_node = json['Products'].first['ParameterDetails'].
-            select { |f| f['Name'] == 'Fields_CountryCode' && f['Group'] == 'IDAUTH_FIELD_DATA' }
+          doc_country_node = json['Products'].first['ParameterDetails']
+            .select { |f| f['Name'] == 'Fields_CountryCode' && f['Group'] == 'IDAUTH_FIELD_DATA' }
           doc_country_node.first['Values'].first['Value'] = 'CAN'
         end.to_json
         instance_double(Faraday::Response, status: 200, body: body)
@@ -689,11 +715,11 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     context 'when id is federal identification card' do
       let(:success_response) do
         body = JSON.parse(LexisNexisFixtures.true_id_response_success_3).tap do |json|
-          doc_class_node = json['Products'].first['ParameterDetails'].
-            select { |f| f['Name'] == 'DocClassName' && f['Group'] == 'AUTHENTICATION_RESULT' }
+          doc_class_node = json['Products'].first['ParameterDetails']
+            .select { |f| f['Name'] == 'DocClassName' && f['Group'] == 'AUTHENTICATION_RESULT' }
           doc_class_node.first['Values'].first['Value'] = 'Identification Card'
-          doc_issuer_type = json['Products'].first['ParameterDetails'].
-            select { |f| f['Name'] == 'DocIssuerType' && f['Group'] == 'AUTHENTICATION_RESULT' }
+          doc_issuer_type = json['Products'].first['ParameterDetails']
+            .select { |f| f['Name'] == 'DocIssuerType' && f['Group'] == 'AUTHENTICATION_RESULT' }
           doc_issuer_type.first['Values'].first['Value'] = 'Country'
         end.to_json
         instance_double(Faraday::Response, status: 200, body: body)
@@ -706,15 +732,15 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     context 'when id is federal ID and image dpi is low' do
       let(:error_response) do
         body = JSON.parse(LexisNexisFixtures.true_id_response_success_3).tap do |json|
-          doc_class_node = json['Products'].first['ParameterDetails'].
-            select { |f| f['Name'] == 'DocClassName' && f['Group'] == 'AUTHENTICATION_RESULT' }
+          doc_class_node = json['Products'].first['ParameterDetails']
+            .select { |f| f['Name'] == 'DocClassName' && f['Group'] == 'AUTHENTICATION_RESULT' }
           doc_class_node.first['Values'].first['Value'] = 'Identification Card'
-          doc_issuer_type = json['Products'].first['ParameterDetails'].
-            select { |f| f['Name'] == 'DocIssuerType' && f['Group'] == 'AUTHENTICATION_RESULT' }
+          doc_issuer_type = json['Products'].first['ParameterDetails']
+            .select { |f| f['Name'] == 'DocIssuerType' && f['Group'] == 'AUTHENTICATION_RESULT' }
           doc_issuer_type.first['Values'].first['Value'] = 'Country'
 
-          image_metric_resolution = json['Products'].first['ParameterDetails'].
-            select do |f|
+          image_metric_resolution = json['Products'].first['ParameterDetails']
+            .select do |f|
             f['Group'] == 'IMAGE_METRICS_RESULT' &&
               f['Name'] == 'HorizontalResolution'
           end

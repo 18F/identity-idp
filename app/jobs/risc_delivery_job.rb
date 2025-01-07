@@ -90,9 +90,6 @@ class RiscDeliveryJob < ApplicationJob
       f.request :instrumentation, name: 'request_log.faraday'
       f.adapter :net_http
       f.options.timeout = IdentityConfig.store.risc_notifications_request_timeout
-      f.options.read_timeout = IdentityConfig.store.risc_notifications_request_timeout
-      f.options.open_timeout = IdentityConfig.store.risc_notifications_request_timeout
-      f.options.write_timeout = IdentityConfig.store.risc_notifications_request_timeout
     end
   end
 

@@ -10,13 +10,13 @@ RSpec.describe 'proofing components' do
     let(:user) { User.find_with_email(email) }
 
     before do
-      allow(IdentityConfig.store).to receive(:ruby_workers_idv_enabled).
-        and_return(ruby_workers_idv_enabled)
+      allow(IdentityConfig.store).to receive(:ruby_workers_idv_enabled)
+        .and_return(ruby_workers_idv_enabled)
 
       visit_idp_from_sp_with_ial2(:oidc)
       register_user(email)
 
-      expect(current_path).to eq idv_welcome_path
+      expect(page).to have_current_path idv_welcome_path
 
       complete_all_doc_auth_steps_before_password_step
       fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
@@ -31,6 +31,7 @@ RSpec.describe 'proofing components' do
         proofing_components = user.active_profile.proofing_components
         expect(proofing_components['document_check']).to eq('mock')
         expect(proofing_components['document_type']).to eq('state_id')
+        expect(proofing_components['source_check']).to eq('StateIdMock')
       end
     end
   end

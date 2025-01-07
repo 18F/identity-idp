@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
+RSpec.describe 'Identity verification', :js do
   include IdvStepHelper
   include InPersonHelper
 
@@ -33,7 +33,7 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
 
     validate_verify_info_page
     complete_verify_step
-    validate_verify_info_submit(user)
+    validate_verify_info_submit
 
     validate_phone_page
     try_to_skip_ahead_from_phone
@@ -58,25 +58,32 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
     user = sign_up_and_2fa_ial1_user
 
     complete_welcome_step
+    expect(page).to have_current_path(idv_agreement_path)
 
     test_go_back_from_agreement
     complete_agreement_step
+    expect(page).to have_current_path(idv_hybrid_handoff_path)
 
     test_go_back_from_hybrid_handoff
     complete_hybrid_handoff_step # upload photos
 
+    expect(page).to have_current_path(idv_document_capture_path)
     test_go_back_from_document_capture
     complete_document_capture_step
 
+    expect(page).to have_current_path(idv_ssn_path)
     test_go_back_from_ssn_page
     complete_ssn_step
 
+    expect(page).to have_current_path(idv_verify_info_path)
     test_go_back_from_verify_info
     complete_verify_step
 
+    expect(page).to have_current_path(idv_phone_path)
     test_go_back_from_phone
     complete_otp_verification_page(user)
 
+    expect(page).to have_current_path(idv_enter_password_path)
     test_go_back_from_enter_password
     complete_enter_password_step(user)
 
@@ -93,6 +100,7 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
     complete_all_doc_auth_steps
 
     enter_gpo_flow
+    expect(page).to have_current_path(idv_request_letter_path)
     test_go_back_from_request_letter
     complete_request_letter
     complete_enter_password_step(user)
@@ -123,8 +131,8 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
     before do
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
 
-      ServiceProvider.find_by(issuer: service_provider_issuer(sp)).
-        update(in_person_proofing_enabled: true)
+      ServiceProvider.find_by(issuer: service_provider_issuer(sp))
+        .update(in_person_proofing_enabled: true)
     end
 
     scenario 'In person proofing', allow_browser_log: true do
@@ -135,6 +143,7 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
       complete_all_in_person_proofing_steps(user)
       test_restart_in_person_flow(user)
       complete_otp_verification_page(user)
+      expect(page).to have_current_path(idv_enter_password_path)
 
       test_go_back_in_person_flow
 
@@ -187,8 +196,8 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
   end
 
   def validate_hybrid_handoff_page
-    allow_any_instance_of(Idv::HybridHandoffController).to receive(:mobile_device?).
-      and_return(false)
+    allow_any_instance_of(Idv::HybridHandoffController).to receive(:mobile_device?)
+      .and_return(false)
 
     expect(page).to have_current_path(idv_hybrid_handoff_path)
 
@@ -200,8 +209,8 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
 
     # defaults phone to user's 2fa phone number
     field = page.find_field(t('two_factor_authentication.phone_label'))
-    expect(same_phone?(field.value, Features::SessionHelper::IAL1_USER_PHONE)).
-      to be true
+    expect(same_phone?(field.value, Features::SessionHelper::IAL1_USER_PHONE))
+      .to be true
   end
 
   def validate_document_capture_page
@@ -265,10 +274,8 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
     expect(page).to have_text(DocAuthHelper::GOOD_SSN)
   end
 
-  def validate_verify_info_submit(user)
+  def validate_verify_info_submit
     expect(page).to have_content(t('doc_auth.forms.doc_success'))
-    expect(user.proofing_component.resolution_check).to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
-    expect(user.proofing_component.source_check).to eq(Idp::Constants::Vendors::AAMVA)
   end
 
   def validate_phone_page
@@ -331,6 +338,16 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
     profile = user.profiles.first
 
     expect(profile.active?).to eq true
+    expect(profile.proofing_components).to eql(
+      'source_check' => 'StateIdMock',
+      'threatmetrix' => true,
+      'address_check' => 'lexis_nexis_address',
+      'document_type' => 'state_id',
+      'document_check' => 'mock',
+      'residential_resolution_check' => 'ResidentialAddressNotRequired',
+      'resolution_check' => 'ResolutionMock',
+      'threatmetrix_review_status' => 'pass',
+    )
     expect(GpoConfirmation.count).to eq(0)
   end
 
@@ -342,12 +359,12 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
   end
 
   def validate_personal_key_page
-    expect(current_path).to eq idv_personal_key_path
+    expect(page).to have_current_path idv_personal_key_path
 
     # Clicking acknowledge checkbox is required to continue
     click_continue
     expect(page).to have_content(t('forms.validation.required_checkbox'))
-    expect(current_path).to eq(idv_personal_key_path)
+    expect(page).to have_current_path(idv_personal_key_path)
 
     expect(page).to have_content(t('forms.personal_key_partial.acknowledgement.header'))
     expect(page).to have_content(t('forms.personal_key_partial.acknowledgement.text'))
@@ -358,10 +375,9 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
       text: t('step_indicator.flows.idv.verify_phone'),
     )
     expect(page).to have_css(
-      '.step-indicator__step--complete',
+      '.step-indicator__step--current',
       text: t('step_indicator.flows.idv.re_enter_password'),
     )
-    expect(page).not_to have_css('.step-indicator__step--current')
     expect(page).not_to have_content(t('step_indicator.flows.idv.verify_address'))
 
     # Refreshing shows same page (BUT with new personal key, we should warn the user)
@@ -372,7 +388,7 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
 
   def try_to_skip_ahead_before_signing_in
     visit idv_enter_password_path
-    expect(current_path).to eq(root_path)
+    expect(page).to have_current_path(root_path)
   end
 
   def try_to_skip_ahead_from_welcome
@@ -411,9 +427,9 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
 
   def test_go_back_from_agreement
     go_back
-    expect(current_path).to eq(idv_welcome_path)
+    expect(page).to have_current_path(idv_welcome_path)
     complete_welcome_step
-    expect(current_path).to eq(idv_agreement_path)
+    expect(page).to have_current_path(idv_agreement_path)
     expect(page).not_to have_checked_field(
       t('doc_auth.instructions.consent', app_name: APP_NAME),
       visible: :all,
@@ -422,13 +438,13 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
 
   def test_go_back_from_hybrid_handoff
     go_back
-    expect(current_path).to eql(idv_agreement_path)
+    expect(page).to have_current_path(idv_agreement_path)
     expect(page).to have_checked_field(
       t('doc_auth.instructions.consent', app_name: APP_NAME),
       visible: :all,
     )
     visit idv_welcome_path
-    expect(current_path).to eql(idv_welcome_path)
+    expect(page).to have_current_path(idv_welcome_path)
     complete_welcome_step
     expect(page).to have_current_path(idv_agreement_path)
     expect(page).not_to have_checked_field(
@@ -440,6 +456,7 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
 
   def test_go_back_from_document_capture
     go_back
+    expect(page).to have_current_path(idv_hybrid_handoff_path)
     go_back
     expect(page).to have_current_path(idv_agreement_path)
     expect(page).to have_checked_field(
@@ -508,7 +525,9 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
 
   def test_go_back_in_person_flow
     go_back
+    expect(page).to have_current_path(idv_otp_verification_path)
     go_back
+    expect(page).to have_current_path(idv_phone_path)
     go_back
     expect(page).to have_current_path(idv_in_person_verify_info_path)
     # can't go back further with in person controllers (yet)

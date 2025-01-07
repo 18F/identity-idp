@@ -22,7 +22,8 @@ RSpec.describe Idv::StateIdForm do
       },
     )
   end
-  let(:good_params) do
+  let(:same_address_as_id) { 'true' }
+  let(:params) do
     {
       first_name: Faker::Name.first_name,
       last_name: Faker::Name.last_name,
@@ -32,9 +33,9 @@ RSpec.describe Idv::StateIdForm do
       identity_doc_city: Faker::Address.city,
       identity_doc_zipcode: Faker::Address.zip_code,
       identity_doc_address_state: Faker::Address.state_abbr,
-      same_address_as_id: 'true',
+      same_address_as_id: same_address_as_id,
       state_id_jurisdiction: 'AL',
-      state_id_number: Faker::IDNumber.valid,
+      state_id_number: Faker::IdNumber.valid,
     }
   end
   let(:dob_min_age_name_error_params) do
@@ -47,9 +48,9 @@ RSpec.describe Idv::StateIdForm do
       identity_doc_city: Faker::Address.city,
       identity_doc_zipcode: Faker::Address.zip_code,
       identity_doc_address_state: Faker::Address.state_abbr,
-      same_address_as_id: 'true',
+      same_address_as_id: same_address_as_id,
       state_id_jurisdiction: 'AL',
-      state_id_number: Faker::IDNumber.valid,
+      state_id_number: Faker::IdNumber.valid,
     }
   end
   let(:invalid_char) { '1' }
@@ -63,9 +64,9 @@ RSpec.describe Idv::StateIdForm do
       identity_doc_city: Faker::Address.city,
       identity_doc_zipcode: Faker::Address.zip_code,
       identity_doc_address_state: Faker::Address.state_abbr,
-      same_address_as_id: 'true',
+      same_address_as_id: same_address_as_id,
       state_id_jurisdiction: 'AL',
-      state_id_number: Faker::IDNumber.valid,
+      state_id_number: Faker::IdNumber.valid,
     }
   end
   let(:pii) { nil }
@@ -76,21 +77,21 @@ RSpec.describe Idv::StateIdForm do
           success: true,
           errors: {},
           extra: { birth_year: valid_dob[:year],
-                   document_zip_code: good_params[:identity_doc_zipcode].slice(0, 5) },
+                   document_zip_code: params[:identity_doc_zipcode].slice(0, 5) },
         )
       end
 
       it 'returns a successful form response' do
-        expect(subject.submit(good_params)).to eq(form_response)
+        expect(subject.submit(params)).to eq(form_response)
       end
 
       it 'logs extra analytics attributes' do
-        result = subject.submit(good_params)
+        result = subject.submit(params)
 
         expect(result.extra).to eq(
           {
             birth_year: valid_dob[:year],
-            document_zip_code: good_params[:identity_doc_zipcode].slice(0, 5),
+            document_zip_code: params[:identity_doc_zipcode].slice(0, 5),
           },
         )
       end
@@ -128,6 +129,21 @@ RSpec.describe Idv::StateIdForm do
             'in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age',
             app_name: APP_NAME,
           ),
+        ]
+      end
+    end
+
+    context 'when the same_address_as_id field is missing' do
+      before do
+        params.delete(:same_address_as_id)
+      end
+      let(:same_address_as_id) { nil }
+      it 'returns an error' do
+        result = subject.submit(params)
+        expect(subject.errors.empty?).to be(false)
+        expect(result.success?).to eq(false)
+        expect(subject.errors[:same_address_as_id]).to eq [
+          I18n.t('errors.messages.missing_field'),
         ]
       end
     end

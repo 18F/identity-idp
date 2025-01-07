@@ -47,14 +47,14 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
       let(:payload) { { personal_key_form: personal_key } }
       it 'tracks the valid authentication event' do
         personal_key
-        multi_factor_auth_method_created_at = user.reload.
-          encrypted_recovery_code_digest_generated_at.strftime('%s%L')
+        multi_factor_auth_method_created_at = user.reload
+          .encrypted_recovery_code_digest_generated_at.strftime('%s%L')
         sign_in_before_2fa(user)
         stub_analytics
 
-        expect(controller).to receive(:handle_valid_verification_for_authentication_context).
-          with(auth_method: TwoFactorAuthenticatable::AuthMethod::PERSONAL_KEY).
-          and_call_original
+        expect(controller).to receive(:handle_valid_verification_for_authentication_context)
+          .with(auth_method: TwoFactorAuthenticatable::AuthMethod::PERSONAL_KEY)
+          .and_call_original
 
         freeze_time do
           post :create, params: payload
@@ -76,6 +76,7 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
           multi_factor_auth_method: 'personal-key',
           multi_factor_auth_method_created_at:,
           new_device: true,
+          attempts: 1,
         )
         expect(@analytics).to have_logged_event(
           'Personal key: Alert user about sign in',
@@ -91,8 +92,8 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
         before do
           personal_key
           sign_in_before_2fa(user)
-          allow(FeatureManagement).
-            to receive(:enable_additional_mfa_redirect_for_personal_key_mfa?).and_return(true)
+          allow(FeatureManagement)
+            .to receive(:enable_additional_mfa_redirect_for_personal_key_mfa?).and_return(true)
         end
         it 'should redirect to mfa selection page' do
           post :create, params: payload
@@ -104,8 +105,8 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
         before do
           personal_key
           sign_in_before_2fa(user)
-          allow(FeatureManagement).
-            to receive(:enable_additional_mfa_redirect_for_personal_key_mfa?).and_return(false)
+          allow(FeatureManagement)
+            .to receive(:enable_additional_mfa_redirect_for_personal_key_mfa?).and_return(false)
         end
         it 'should redirect to account page' do
           post :create, params: payload
@@ -200,12 +201,12 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
         user.second_factor_attempts_count =
           IdentityConfig.store.login_otp_confirmation_max_attempts - 1
         user.save
-        personal_key_generated_at = controller.current_user.
-          encrypted_recovery_code_digest_generated_at
+        personal_key_generated_at = controller.current_user
+          .encrypted_recovery_code_digest_generated_at
         stub_analytics
 
-        expect(PushNotification::HttpPush).to receive(:deliver).
-          with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
+        expect(PushNotification::HttpPush).to receive(:deliver)
+          .with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
 
         post :create, params: payload
 
@@ -218,6 +219,7 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
           multi_factor_auth_method: 'personal-key',
           multi_factor_auth_method_created_at: personal_key_generated_at.strftime('%s%L'),
           new_device: true,
+          attempts: 1,
         )
         expect(@analytics).to have_logged_event('Multi-Factor Authentication: max attempts reached')
       end

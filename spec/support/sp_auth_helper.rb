@@ -13,8 +13,8 @@ module SpAuthHelper
 
   def create_in_person_ial2_account_go_back_to_sp_and_sign_out(sp)
     user = user_with_totp_2fa
-    ServiceProvider.find_by(issuer: service_provider_issuer(sp)).
-      update(in_person_proofing_enabled: true)
+    ServiceProvider.find_by(issuer: service_provider_issuer(sp))
+      .update(in_person_proofing_enabled: true)
 
     visit_idp_from_sp_with_ial2(sp)
     sign_in_user(user)
@@ -43,7 +43,7 @@ module SpAuthHelper
     fill_in_code_with_last_totp(user)
     click_submit_default
 
-    expect(current_path).to eq(sign_up_completed_path)
+    expect(page).to have_current_path(sign_up_completed_path)
     click_agree_and_continue
 
     visit sign_out_url

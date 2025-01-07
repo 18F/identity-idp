@@ -36,7 +36,7 @@ RSpec.feature 'User profile' do
       fill_in(t('idv.form.password'), with: Features::SessionHelper::VALID_PASSWORD)
       click_button t('users.delete.actions.delete')
       expect(page).to have_content t('devise.registrations.destroyed')
-      expect(current_path).to eq root_path
+      expect(page).to have_current_path root_path
       expect(User.count).to eq 0
       expect(AgencyIdentity.count).to eq 0
     end
@@ -84,7 +84,7 @@ RSpec.feature 'User profile' do
       fill_in(t('idv.form.password'), with: profile.user.password)
       click_button t('users.delete.actions.delete')
       expect(page).to have_content t('devise.registrations.destroyed')
-      expect(current_path).to eq root_path
+      expect(page).to have_current_path root_path
       expect(User.count).to eq 0
       expect(Profile.count).to eq 0
     end
@@ -132,7 +132,7 @@ RSpec.feature 'User profile' do
 
       click_button 'Update'
 
-      expect(current_path).to eq account_path
+      expect(page).to have_current_path account_path
     end
 
     context 'IAL2 user' do
@@ -155,12 +155,10 @@ RSpec.feature 'User profile' do
 
         click_continue
 
-        expect(current_path).to eq(account_path)
+        expect(page).to have_current_path(account_path)
       end
 
-      it 'allows the user reactivate their profile by reverifying',
-         :js,
-         allowed_extra_analytics: [:*] do
+      it 'allows the user reactivate their profile by reverifying', :js do
         profile = create(:profile, :active, :verified, pii: { ssn: '1234', dob: '1920-01-01' })
         user = profile.user
 
@@ -175,11 +173,15 @@ RSpec.feature 'User profile' do
         click_idv_continue
         acknowledge_and_confirm_personal_key
 
-        expect(current_path).to eq(sign_up_completed_path)
+        expect(page).to have_current_path(sign_up_completed_path)
 
         click_agree_and_continue
 
-        expect(current_url).to start_with('http://localhost:7654/auth/result')
+        expect(page).to have_current_path(
+          'http://localhost:7654/auth/result',
+          url: true,
+          ignore_query: true,
+        )
       end
     end
   end
@@ -193,7 +195,7 @@ RSpec.feature 'User profile' do
       click_on t('account.navigation.menu')
       click_link t('account.navigation.history')
 
-      expect(current_path).to eq(account_history_path)
+      expect(page).to have_current_path(account_history_path)
     end
   end
 
@@ -239,8 +241,8 @@ RSpec.feature 'User profile' do
           expect(page).to have_button(t('account.re_verify.footer'))
           expect(page).to_not have_content(parsed_date)
           click_button t('account.re_verify.footer')
-          expect(page).
-            to have_content t('two_factor_authentication.login_options.sms')
+          expect(page)
+            .to have_content t('two_factor_authentication.login_options.sms')
           click_button t('forms.buttons.continue')
           fill_in_code_with_last_phone_otp
           click_submit_default

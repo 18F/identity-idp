@@ -10,7 +10,7 @@ RSpec.feature 'how to verify step', js: true do
   let(:in_person_proofing_enabled) { true }
   let(:in_person_proofing_opt_in_enabled) { false }
   let(:service_provider_in_person_proofing_enabled) { true }
-  let(:biometric_comparison_required) { false }
+  let(:facial_match_required) { false }
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) {
       in_person_proofing_enabled
@@ -18,11 +18,11 @@ RSpec.feature 'how to verify step', js: true do
     allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) {
       in_person_proofing_opt_in_enabled
     }
-    allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
-      and_return(service_provider_in_person_proofing_enabled)
+    allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled)
+      .and_return(service_provider_in_person_proofing_enabled)
     visit_idp_from_sp_with_ial2(
       :oidc, **{ client_id: ipp_service_provider.issuer,
-                 biometric_comparison_required: biometric_comparison_required }
+                 facial_match_required: facial_match_required }
     )
     sign_in_via_branded_page(user)
     complete_doc_auth_steps_before_agreement_step
@@ -105,7 +105,7 @@ RSpec.feature 'how to verify step', js: true do
       context 'when selfie is enabled' do
         include InPersonHelper
 
-        let(:biometric_comparison_required) { false }
+        let(:facial_match_required) { false }
 
         it 'goes to direct IPP if selected and can come back' do
           expect(page).to have_current_path(idv_how_to_verify_path)

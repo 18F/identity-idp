@@ -16,10 +16,8 @@ module Idv
     def shared_update
       return if idv_session.verify_info_step_document_capture_session_uuid
       analytics.idv_doc_auth_verify_submitted(**analytics_arguments)
-      Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
-        call('verify', :update, true)
-
-      set_state_id_type
+      Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer])
+        .call('verify', :update, true)
 
       ssn_rate_limiter.increment!
 
@@ -81,12 +79,27 @@ module Idv
 
     def idv_failure(result)
       proofing_results_exception = result.extra.dig(:proofing_results, :exception)
+      has_exception = proofing_results_exception.present?
       is_mva_exception = result.extra.dig(
         :proofing_results,
         :context,
         :stages,
         :state_id,
         :mva_exception,
+      ).present?
+      is_threatmetrix_exception = result.extra.dig(
+        :proofing_results,
+        :context,
+        :stages,
+        :threatmetrix,
+        :exception,
+      ).present?
+      resolution_failed = !result.extra.dig(
+        :proofing_results,
+        :context,
+        :stages,
+        :resolution,
+        :success,
       )
 
       if ssn_rate_limiter.limited?
@@ -95,10 +108,14 @@ module Idv
       elsif resolution_rate_limiter.limited?
         idv_failure_log_rate_limited(:idv_resolution)
         redirect_to rate_limited_url
-      elsif proofing_results_exception.present? && is_mva_exception
+      elsif has_exception && is_mva_exception
         idv_failure_log_warning
         redirect_to state_id_warning_url
-      elsif proofing_results_exception.present?
+      elsif (has_exception && is_threatmetrix_exception) ||
+            (!has_exception && resolution_failed)
+        idv_failure_log_warning
+        redirect_to warning_url
+      elsif has_exception
         idv_failure_log_error
         redirect_to exception_url
       else
@@ -185,27 +202,25 @@ module Idv
         state: pii[:state],
         state_id_jurisdiction: pii[:state_id_jurisdiction],
         state_id_number: pii[:state_id_number],
-        # todo: add other edited fields?
+        state_id_type: pii[:state_id_type],
         extra: {
           address_edited: !!idv_session.address_edited,
           address_line2_present: !pii[:address2].blank?,
+          previous_ssn_edit_distance: previous_ssn_edit_distance,
           pii_like_keypaths: [
             [:errors, :ssn],
             [:proofing_results, :context, :stages, :resolution, :errors, :ssn],
             [:proofing_results, :context, :stages, :residential_address, :errors, :ssn],
             [:proofing_results, :context, :stages, :threatmetrix, :response_body, :first_name],
-            [:same_address_as_id],
             [:proofing_results, :context, :stages, :state_id, :state_id_jurisdiction],
             [:proofing_results, :biographical_info, :identity_doc_address_state],
             [:proofing_results, :biographical_info, :state_id_jurisdiction],
-            [:proofing_results, :biographical_info, :same_address_as_id],
+            [:proofing_results, :biographical_info],
           ],
         },
       )
 
-      threatmetrix_reponse_body = form_response.extra.dig(
-        :proofing_results, :context, :stages, :threatmetrix, :response_body
-      )
+      threatmetrix_reponse_body = delete_threatmetrix_response_body(form_response)
       if threatmetrix_reponse_body.present?
         analytics.idv_threatmetrix_response_body(
           response_body: threatmetrix_reponse_body,
@@ -217,13 +232,15 @@ module Idv
 
       if form_response.success?
         save_threatmetrix_status(form_response)
+        save_source_check_vendor(form_response)
+        save_resolution_vendors(form_response)
         move_applicant_to_idv_session
         idv_session.mark_verify_info_step_complete!
 
         flash[:success] = t('doc_auth.forms.doc_success')
         redirect_to next_step_url
       end
-      analytics.idv_doc_auth_verify_proofing_results(**analytics_arguments, **form_response.to_h)
+      analytics.idv_doc_auth_verify_proofing_results(**analytics_arguments, **form_response)
     end
 
     def next_step_url
@@ -231,27 +248,47 @@ module Idv
       idv_phone_url
     end
 
+    def save_resolution_vendors(form_response)
+      idv_session.resolution_vendor = form_response.extra.dig(
+        :proofing_results,
+        :context,
+        :stages,
+        :resolution,
+        :vendor_name,
+      )
+
+      idv_session.residential_resolution_vendor = form_response.extra.dig(
+        :proofing_results,
+        :context,
+        :stages,
+        :residential_address,
+        :vendor_name,
+      )
+    end
+
     def save_threatmetrix_status(form_response)
       review_status = form_response.extra.dig(:proofing_results, :threatmetrix_review_status)
       idv_session.threatmetrix_review_status = review_status
+    end
+
+    def save_source_check_vendor(form_response)
+      vendor = form_response.extra.dig(
+        :proofing_results,
+        :context,
+        :stages,
+        :state_id,
+        :vendor_name,
+      )
+      idv_session.source_check_vendor = vendor
     end
 
     def summarize_result_and_rate_limit(summary_result)
       proofing_results_exception = summary_result.extra.dig(:proofing_results, :exception)
       resolution_rate_limiter.increment! if proofing_results_exception.blank?
 
-      if summary_result.success?
-        add_proofing_components
-      else
+      if !summary_result.success?
         idv_failure(summary_result)
       end
-    end
-
-    def add_proofing_components
-      ProofingComponent.create_or_find_by(user: current_user).update(
-        resolution_check: Idp::Constants::Vendors::LEXIS_NEXIS,
-        source_check: Idp::Constants::Vendors::AAMVA,
-      )
     end
 
     def load_async_state
@@ -275,12 +312,14 @@ module Idv
       state: nil,
       state_id_jurisdiction: nil,
       state_id_number: nil,
+      state_id_type: nil,
       extra: {}
     )
       state_id = result.dig(:context, :stages, :state_id)
       if state_id
         state_id[:state] = state if state
         state_id[:state_id_jurisdiction] = state_id_jurisdiction if state_id_jurisdiction
+        state_id[:state_id_type] = state_id_type if state_id_type
         if state_id_number
           state_id[:state_id_number] =
             StringRedacter.redact_alphanumeric(state_id_number)
@@ -290,7 +329,12 @@ module Idv
       FormResponse.new(
         success: result[:success],
         errors: result[:errors],
-        extra: extra.merge(proofing_results: result.except(:errors, :success)),
+        extra: extra.merge(
+          proofing_results: {
+            **result.except(:errors, :success),
+            biographical_info: result[:biographical_info]&.except(:same_address_as_id),
+          },
+        ),
       )
     end
 
@@ -312,6 +356,18 @@ module Idv
       idv_session.applicant = pii
       idv_session.applicant[:ssn] = idv_session.ssn
       idv_session.applicant['uuid'] = current_user.uuid
+    end
+
+    def delete_threatmetrix_response_body(form_response)
+      threatmetrix_result = form_response.extra.dig(
+        :proofing_results,
+        :context,
+        :stages,
+        :threatmetrix,
+      )
+      return if threatmetrix_result.blank?
+
+      threatmetrix_result.delete(:response_body)
     end
 
     def add_cost(token, transaction_id: nil)

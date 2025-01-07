@@ -92,36 +92,21 @@ RSpec.describe EmailAddress do
   describe '#fed_or_mil_email?' do
     subject(:result) { email_address.fed_or_mil_email? }
 
-    context 'with an email domain that is a fed email' do
-      before do
-        allow(IdentityConfig.store).to receive(:use_fed_domain_class).and_return(false)
-      end
-      let(:email) { 'example@example.gov' }
+    context 'with an email that is in federal_email_domains' do
+      let!(:federal_email_domain) { create(:federal_email_domain, name: 'gsa.gov') }
+      let(:email) { 'example@gsa.gov' }
 
       it { expect(result).to eq(true) }
     end
 
-    context 'with an email that is a mil email' do
+    context 'with an email that has a .mil TLD' do
       let(:email) { 'example@example.mil' }
 
       it { expect(result).to eq(true) }
     end
 
-    context 'with an email that is not a mil or fed email' do
-      before do
-        allow(IdentityConfig.store).to receive(:use_fed_domain_class).and_return(true)
-      end
-
+    context 'with an email that is neither in federal_email_domains nor has a .mil TLD' do
       let(:email) { 'example@bad.gov' }
-
-      it { expect(result).to eq(false) }
-    end
-
-    context 'with a non fed email while use_fed_domain_class set to true' do
-      before do
-        allow(IdentityConfig.store).to receive(:use_fed_domain_class).and_return(true)
-      end
-      let(:email) { 'example@good.gov' }
 
       it { expect(result).to eq(false) }
     end
@@ -130,13 +115,13 @@ RSpec.describe EmailAddress do
   describe '#mil_email?' do
     subject(:result) { email_address.mil_email? }
 
-    context 'with an email domain not a mil email' do
+    context 'with an email that does not have a .mil TLD' do
       let(:email) { 'example@example.gov' }
 
       it { expect(result).to eq(false) }
     end
 
-    context 'with an email domain ending in a mil domain email' do
+    context 'with an email that has a .mil TLD' do
       let(:email) { 'example@example.mil' }
 
       it { expect(result).to eq(true) }
@@ -165,22 +150,22 @@ RSpec.describe EmailAddress do
     subject(:result) { email_address.fed_email? }
     let!(:federal_email_domain) { create(:federal_email_domain, name: 'gsa.gov') }
 
-    context 'use_fed_domain_class set to true' do
-      before do
-        allow(IdentityConfig.store).to receive(:use_fed_domain_class).and_return(true)
-      end
+    context 'with an email domain that is not in federal_email_domains' do
+      let(:email) { 'example@bad.gov' }
 
-      context 'with an email domain not a fed email' do
-        let(:email) { 'example@bad.gov' }
+      it { expect(result).to eq(false) }
+    end
 
-        it { expect(result).to eq(false) }
-      end
+    context 'with an email domain that is in federal_email_domains' do
+      let(:email) { 'example@gsa.gov' }
 
-      context 'with an email domain ending in a fed domain email' do
-        let(:email) { 'example@gsa.gov' }
+      it { expect(result).to eq(true) }
+    end
 
-        it { expect(result).to eq(true) }
-      end
+    context 'with a bad email address that has no domain' do
+      let(:email) { 'email_with_no_domain' }
+
+      it { expect(result).to eq(false) }
     end
   end
 end

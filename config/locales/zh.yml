@@ -16,7 +16,7 @@ account_reset.delete_account.info: 被锁在账户之外时，取消账户应当
 account_reset.delete_account.title: 删除账户应当是你最后的选择。
 account_reset.pending.cancel_request: 取消请求
 account_reset.pending.canceled: 我们已取消了你删除帐户的请求。
-account_reset.pending.confirm: 如果现在取消，你如果要删除账户的话，必须提出新请求并再等待%{interval} 。
+account_reset.pending.confirm: 如果现在取消，你如果要删除账户的话，必须提出新请求并再等待%{interval}。
 account_reset.pending.header: 你已提出删除账户的请求。
 account_reset.pending.wait_html: 要删除你的账户，有一个%{waiting_period}的等待期。你会在 <strong>%{interval}</strong> 收到电邮，向你说明如何完成删除。
 account_reset.recovery_options.check_saved_credential: 查看你是否有已保存的凭据
@@ -41,7 +41,8 @@ account_reset.request.yes_continue: 是的，继续删除
 account.connected_apps.associated_attributes_html: '在 %{timestamp_html} 用以下电邮做的连接：'
 account.connected_apps.associated_html: 已连接 %{timestamp_html}
 account.connected_apps.description: 使用你的 %{app_name} 账户，你可以安全地连接到网上多个政府账户。以下列出了你目前已连接的所有账户。
-account.connected_apps.email_not_selected: Email not yet selected
+account.connected_apps.email_not_selected: 尚未选择电邮
+account.connected_apps.email_update_success_html: 你给<strong>%{sp_name}</strong>的电邮更新成功了。
 account.email_language.default: '%{language} （默认）'
 account.email_language.edit_title: 编辑电邮语言选择
 account.email_language.languages_list: 您将收到%{app_name}用您选择的语言发送的电子邮件。
@@ -50,6 +51,7 @@ account.email_language.name.es: Español
 account.email_language.name.fr: Français
 account.email_language.name.zh: 中文 (简体)
 account.email_language.updated: 你的电邮语言选择已更新。
+account.emails.confirmed_html: 你已确认了你的电邮地址。请到<a href="%{url}">你已连接的账户</a>来更新你与已连接机构所分享的电邮。
 account.forget_all_browsers.longer_description: 你选择“忘掉所有浏览器”后，我们将需要额外信息来知道的确是你在登录你自己的账户。每次你要访问自己的账户时，我们都会向你要一个多因素身份证实方法（比如短信/SMS 代码或安全密钥）
 account.index.auth_app_add: 添加应用程序
 account.index.auth_app_disabled: 未启用
@@ -73,6 +75,8 @@ account.index.reactivation.instructions: 你的用户资料因为重设密码最
 account.index.reactivation.link: 现在重新激活你的用户资料。
 account.index.sign_in_location_and_ip: 从 %{ip}（IP 地址可能位于 %{location}）。
 account.index.unknown_location: 未知地点
+account.index.verification.connect_idv_account.cta: 登录%{sp_name}来获得服务。
+account.index.verification.connect_idv_account.intro: 把你的账户连接到%{sp_name}。
 account.index.verification.continue_idv: 继续身份验证
 account.index.verification.finish_verifying_html: 完成身份验证流程来获得访问 <strong>%{sp_name}</strong> 的权限。
 account.index.verification.finish_verifying_no_sp: 完成身份验证流程来获得访问%{app_name} 合作伙伴机构的权限。
@@ -80,7 +84,7 @@ account.index.verification.identity_verification: 身份验证
 account.index.verification.in_person_instructions_html: 你必须在 <strong>%{deadline}</strong> 之前去邮局完成验证你的身份。
 account.index.verification.instructions: 输入你的验证码来完成身份验证。
 account.index.verification.learn_more_link: 了解更多有关验证你身份的信息。
-account.index.verification.nonbiometric_verified_html: 你在 <strong>%{date}</strong> 使用州颁发的身份证件在%{app_name} 验证了身份。
+account.index.verification.legacy_verified_html: 你在 <strong>%{date}</strong> 使用州颁发的身份证件在%{app_name} 验证了身份。
 account.index.verification.pending_badge: 待验证
 account.index.verification.pending_badge_tooltip: 你的身份有待验证。
 account.index.verification.reactivate_button: 输入你通过邮局收到的验证码。
@@ -90,9 +94,9 @@ account.index.verification.unverified_badge: 未验证
 account.index.verification.unverified_badge_tooltip: 完成验证你的身份。
 account.index.verification.verified_badge: 已验证
 account.index.verification.verified_badge_tooltip: 你的身份已经验证。
-account.index.verification.verified_biometric_badge_tooltip: 你的身份和照片都已验证。
-account.index.verification.verify_with_biometric_html: 要访问 <strong>%{sp_name}</strong>，请使用你本人照片再次验证身份。
-account.index.verification.you_verified_your_biometric_identity: 你使用以下信息验证了身份并验证了一张你本人的照片，从而获得了访问%{app_name}所有合作伙伴机构的权限。
+account.index.verification.verified_facial_match_badge_tooltip: 你的身份和照片都已验证。
+account.index.verification.verify_with_facial_match_html: 要访问 <strong>%{sp_name}</strong>，请使用你本人照片再次验证身份。
+account.index.verification.you_verified_your_facial_match_identity: 你使用以下信息验证了身份并验证了一张你本人的照片，从而获得了访问%{app_name}所有合作伙伴机构的权限。
 account.index.verification.you_verified_your_identity_html: 你使用以下信息向 <strong>%{sp_name}</strong> 验证了身份。
 account.index.webauthn: 安全密钥
 account.index.webauthn_add: 添加安全密钥
@@ -136,7 +140,7 @@ account.re_verify.footer: 验证身份来查看你的信息。
 account.revoke_consent.link_title: 切断连接
 account.revoke_consent.longer_description_html: 你的信息将不再与 %{service_provider_html} 分享。以后要访问 %{service_provider_html}，你必须授权同意分享你的信息。授权同意请到 %{service_provider_html} 网站并登录。
 account.security.link: 请到帮助中心了解更多信息
-account.security.text: 为了你的安全，你的用户资料已被锁住。
+account.security.text: 出于安全考虑，你的用户资料已被锁住。
 account.verified_information.address: 地址
 account.verified_information.dob: 生日
 account.verified_information.full_name: 姓名
@@ -504,6 +508,8 @@ devise.sessions.signed_out: 你现在已登出。
 doc_auth.accessible_labels.camera_video_capture_instructions: 我们会自动拍张照片。
 doc_auth.accessible_labels.camera_video_capture_label: 带框的取景器能把你身份证件放在中间。
 doc_auth.accessible_labels.document_capture_dialog: 文档扫描
+doc_auth.alt.selfie_help_1: 人脸在绿色椭圆中。
+doc_auth.alt.selfie_help_2: 手指点击面孔下的勾选标记来确认照片。
 doc_auth.buttons.add_new_photos: 添加新照片
 doc_auth.buttons.close: 关闭
 doc_auth.buttons.continue: 继续
@@ -544,11 +550,13 @@ doc_auth.errors.document_capture_canceled: 你已取消了用手机上传身份�
 doc_auth.errors.dpi.failed_short: 图像太小或模糊，请再试一次。
 doc_auth.errors.dpi.top_msg: 我们无法辨认你的身份证件。你的图像尺寸可能太小，或者照片中你的身份证件太小或太模糊。确保你的身份证件在图框中比较大，然后试着重拍一下。
 doc_auth.errors.dpi.top_msg_plural: 我们无法读取你的身份证件。你的图像尺寸可能太小，或者照片中你的身份证件太小或模糊。确保你的身份证件在图片框中很大，然后试着拍一张新照片。
+doc_auth.errors.expired_id: 你不能使用过期的身份证件进行身份验证。如果你的身份证件未过期，请确保你的身份证件上的所有内容对焦，而且身份卡填满画面。
 doc_auth.errors.file_type.invalid: 这一文件类型我们不接受。请选择一个 JPG 或 PNG 文件。
 doc_auth.errors.general.fallback_field_level: 请添加一个新图像
 doc_auth.errors.general.multiple_back_id_failures: 我们无法验证你身份证件的背面。尝试重拍一张。
 doc_auth.errors.general.multiple_front_id_failures: 我们无法验证你身份证件的正面。尝试重拍一张。
 doc_auth.errors.general.network_error: 我们这边有技术困难。请稍后再提交你的图像。
+doc_auth.errors.general.new_network_error: 请稍后再试。
 doc_auth.errors.general.no_liveness: 尝试重拍。
 doc_auth.errors.general.selfie_failure: 我们无法验证你自己的照片。请重拍一张。
 doc_auth.errors.general.selfie_failure_help_link_text: 查看更多有关拍摄清晰照片的提示
@@ -562,36 +570,45 @@ doc_auth.errors.http.image_size.failed_short: 系统不支持图像文件，请�
 doc_auth.errors.http.image_size.top_msg: 你的图像尺寸太大或太小。请添加你身份证件的图像，其像素应约为 2025 x 1275。
 doc_auth.errors.http.pixel_depth.failed_short: 系统不支持图像文件，请再试一次。
 doc_auth.errors.http.pixel_depth.top_msg: 你图像文件的像素深度系统不支持。请重拍你的身份证件并再试一次。系统支持的图像像素深度为 24位 RGB。
+doc_auth.errors.id_not_found: 确保你拍摄的是你的实体身份证件，而不是照片或屏幕截图。
+doc_auth.errors.low_resolution: 我们无法验证你的身份，因为你设备拍摄的照片不够清晰。如果这个错误持续发生，请使用其他设备或在当地邮局验证你的身份。
 doc_auth.errors.not_a_file: 你选择的不是一个正确的文件。
 doc_auth.errors.phone_step_incomplete: 在继续之前你必须使用手机上传你身份证件的图片。我们已给你发了带有说明的链接。
 doc_auth.errors.pii.birth_date_min_age: 你的生日不满足最低年龄要求。
 doc_auth.errors.rate_limited_heading: 我们无法验证你的身份证件。
 doc_auth.errors.rate_limited_subheading: 尝试再拍照片
-doc_auth.errors.rate_limited_text_html: 为了你的安全，我们限制你在网上尝试验证文件的次数。<strong> %{timeout} 后再试。</strong>
+doc_auth.errors.rate_limited_text_html: 为了防止欺诈，我们限制在网上尝试验证文件的次数。<strong> %{timeout}个小时以后再试。</strong>
 doc_auth.errors.selfie_fail_heading: 我们无法把你自己的照片与你的身份证件匹配
 doc_auth.errors.selfie_not_live_or_poor_quality_heading: 我们无法验证你自己的照片
 doc_auth.errors.send_link_limited: 你尝试了太多次。请在 %{timeout}后再试。你也可以返回并选择使用电脑。
 doc_auth.errors.sharpness.failed_short: 图像模糊，请再试一次。
 doc_auth.errors.sharpness.top_msg: 我们无法读取你的身份证件。你的照片可能太模糊或太暗。尝试在明亮的地方重拍一张。
 doc_auth.errors.sharpness.top_msg_plural: 我们无法读取你的身份证件。你的照片可能太模糊或太暗。尝试在明亮的地方重拍一张。
+doc_auth.errors.unaccepted_id_type: 我们不接受护照、军人身份证件、纸质身份证件或临时身份证件。你只能使用驾驶执照或美国州或领地颁发的身份证件。
+doc_auth.errors.underage: 你必须年满 13 岁才能使用 %{app_name}。如果你年满 13 岁，请重试并确保你的出生日期对焦。
+doc_auth.errors.unreadable_id: 请在光线充足而且没有阴影或眩光的地方拍照。确保你身份证件上的所有内容都清晰对焦，并且身份卡填满画面。
 doc_auth.errors.upload_error: 抱歉，我们这边出错了。
-doc_auth.forms.captured_image: 扫描到的图像
 doc_auth.forms.change_file: 更改文件
-doc_auth.forms.choose_file_html: 将文件拖到此处或者 <lg-underline>从文件夹中选择</lg-underline>。
+doc_auth.forms.choose_file_html: 将文件拖到此处或者<lg-underline>从文件夹中选择</lg-underline>。
 doc_auth.forms.doc_success: 我们验证了你的信息
 doc_auth.forms.selected_file: 被选文件
+doc_auth.headers.expired_id: 你的身份证件可能已过期
+doc_auth.headers.general.network_error: 我们目前遇到技术困难
+doc_auth.headers.id_not_found: 我们找不到你的身份证件
+doc_auth.headers.low_resolution: 你设备的相机可能不受支持
+doc_auth.headers.unaccepted_id_type: 使用驾驶执照或州颁发的身份证件
+doc_auth.headers.underage: 不符合年龄规定
+doc_auth.headers.unreadable_id: 我们无法读取你的身份证件
 doc_auth.headings.address: 更新你的邮政地址
 doc_auth.headings.back: 驾照或州政府颁发身份证件的背面。
-doc_auth.headings.capture_complete: 我们验证了你的身份证件
+doc_auth.headings.capture_complete: 我们验证了你的身份文件
 doc_auth.headings.capture_scan_warning_html: 我们读取不到你身份证件上的条形码。如果以下信息不正确，请将州政府颁发的身份证件%{link_html}。
 doc_auth.headings.capture_scan_warning_link: 上传新照片
 doc_auth.headings.document_capture: 添加你身份证件的照片
 doc_auth.headings.document_capture_back: 你身份证件的背面
 doc_auth.headings.document_capture_front: 你身份证件的正面
 doc_auth.headings.document_capture_selfie: 你面部照片
-doc_auth.headings.document_capture_subheader_id: 驾照或州政府颁发的身份证件
-doc_auth.headings.document_capture_subheader_selfie: 你本人照片
-doc_auth.headings.document_capture_with_selfie: 添加你身份证件和本人的照片
+doc_auth.headings.document_capture_subheader_selfie: 添加您面部照片
 doc_auth.headings.front: 驾照或州政府颁发身份证件的正面
 doc_auth.headings.how_to_verify: 选择你想如何验证身份
 doc_auth.headings.hybrid_handoff: 你想怎么添加身份证件？
@@ -603,6 +620,7 @@ doc_auth.headings.review_issues: 检查一下你的图片并再试一次
 doc_auth.headings.secure_account: 保护你的账户安全
 doc_auth.headings.selfie: 照片
 doc_auth.headings.selfie_capture: 拍你本人照片
+doc_auth.headings.selfie_instructions.howto: '如何拍摄你本人的照片：'
 doc_auth.headings.ssn: 输入你的社会保障号码
 doc_auth.headings.ssn_update: 更新你的社会保障号码
 doc_auth.headings.text_message: 我们给你的手机发了短信
@@ -611,7 +629,8 @@ doc_auth.headings.upload_from_phone: 使用手机拍照
 doc_auth.headings.verify_at_post_office: 去邮局验证身份
 doc_auth.headings.verify_identity: 验证你的身份
 doc_auth.headings.verify_online: 在网上验证身份
-doc_auth.headings.verify_online_selfie: 使用手机在网上验证你的身份
+doc_auth.headings.verify_online_mobile: 使用手机在网上验证你的身份
+doc_auth.headings.verify_with_phone: 使用你的电话来验证你的身份
 doc_auth.headings.welcome: 现在我们来为%{sp_name}验证你的身份
 doc_auth.hybrid_flow_warning.explanation_html: 你在使用 <strong>%{app_name}</strong> 验证身份以访问 <strong>%{service_provider_name}</strong> 及其服务。
 doc_auth.hybrid_flow_warning.explanation_non_sp_html: 你在使用 <strong>%{app_name}</strong> 验证身份。
@@ -619,6 +638,7 @@ doc_auth.hybrid_flow_warning.only_add_if_text: 只有在以下情况下才添加
 doc_auth.hybrid_flow_warning.only_add_own_account: 你在使用自己的 %{app_name} 账户
 doc_auth.hybrid_flow_warning.only_add_phone_verify: 你要求 %{app_name} 使用你的电话来验证你的身份证件。
 doc_auth.hybrid_flow_warning.only_add_sp_services_html: 你在试图访问 <strong>%{service_provider_name}</strong> 服务。
+doc_auth.info.add_id_consent_with_phone: 仅在你已请求%{app_name}使用你的电话来验证你的身份的情况下才添加你的身份证件。
 doc_auth.info.address_guidance_puerto_rico_html: 波多黎各居民：<br><br>编辑你的地址，在地址第 2 行列出你的 urbanization 或 condominium。
 doc_auth.info.capture_status_big_document: 太近了
 doc_auth.info.capture_status_capturing: 扫描中
@@ -630,7 +650,7 @@ doc_auth.info.exit.without_sp: 退出身份验证并到你的账户页面
 doc_auth.info.getting_started_html: '%{sp_name} 需要确保你是你，而不是别人冒充你。 了解更多有关验证你身份的信息 %{link_html}'
 doc_auth.info.getting_started_learn_more: 了解有关验证你身份的更多信息
 doc_auth.info.how_to_verify: 你可以选择在网上验证身份或者到参与本项目的邮局亲身验证身份。
-doc_auth.info.how_to_verify_selfie: 你可以选择用你的手机在网上验证身份或者到参与本项目的邮局亲身验证身份。
+doc_auth.info.how_to_verify_mobile: 你可以选择用你的手机在网上验证身份或者到参与本项目的邮局亲身验证身份。
 doc_auth.info.how_to_verify_troubleshooting_options_header: 想对验证身份获得更多了解吗？
 doc_auth.info.hybrid_handoff: 我们将通过读取州政府颁发给你的身份证件来收集你的信息。
 doc_auth.info.hybrid_handoff_ipp_html: '<strong>没有手机？</strong>你可以去一个美国邮局验证身份。'
@@ -645,10 +665,13 @@ doc_auth.info.lets_go: 身份验证包括两部分：
 doc_auth.info.link_sent: 请查看你的手机并按照说明拍一张你州政府颁发的身份证件的照片。
 doc_auth.info.link_sent_complete_no_polling: 照好以后，在这里点击“继续”，完成验证身份。
 doc_auth.info.link_sent_complete_polling: 下一步会自动加载。
+doc_auth.info.login_access_sp: 你在使用%{app_name}访问 %{sp_name}。
 doc_auth.info.no_ssn: 你必须有社会保障号码才能完成身份验证。
 doc_auth.info.review_examples_of_photos: 查看如何拍出身份证件清晰照片的示例。
 doc_auth.info.secure_account: 我们会用你的密码对你的账户加密。加密意味着你的数据得到了保护，而且只有你能够访问或变更你的信息。
 doc_auth.info.selfie_capture_content: 我们会查看你是身份证件上的人。
+doc_auth.info.selfie_capture_help_1: 把你的面部放在绿色圆圈里。请保持静止，等待工具拍照。
+doc_auth.info.selfie_capture_help_2: 你的照片被自动拍后，点击绿色勾选标志来接受照片。
 doc_auth.info.selfie_capture_status.face_close_to_border: 距离相框太近
 doc_auth.info.selfie_capture_status.face_not_found: 没找到面孔
 doc_auth.info.selfie_capture_status.face_too_small: 面孔太小
@@ -656,7 +679,7 @@ doc_auth.info.selfie_capture_status.too_many_faces: 太多张面孔
 doc_auth.info.selfie_capture.action.capture: 拍照
 doc_auth.info.selfie_capture.action.close: 关闭
 doc_auth.info.selfie_capture.action.retake: 重拍
-doc_auth.info.selfie_capture.action.submit: 使用这张照片
+doc_auth.info.selfie_capture.action.submit: 照片拍摄完毕。提交照片。
 doc_auth.info.selfie_capture.intro: 相机已打开，准备自拍
 doc_auth.info.ssn: 我们需要你的社会保障号码来证实你的姓名、生日和地址。
 doc_auth.info.stepping_up_html: 再次验证你的身份以使用这项服务。 %{link_html}
@@ -664,15 +687,16 @@ doc_auth.info.tag: 建议
 doc_auth.info.upload_from_computer: 没有手机？从该电脑上传你身份证件的照片。
 doc_auth.info.upload_from_phone: 你不必重新登录，而且拍完照后可以转回到该电脑。你的手机必须带有相机和网络浏览器。
 doc_auth.info.verify_at_post_office_description: 如果你没有手机拍身份证件照片，这一选项更好。
-doc_auth.info.verify_at_post_office_description_selfie: 如果你没有手机可以拍照，请选择该选项
+doc_auth.info.verify_at_post_office_description_mobile: 如果你没有手机可以拍照，请选择该选项
 doc_auth.info.verify_at_post_office_instruction: 你在网上输入身份证件信息，然后到一个参与本项目的邮局去亲身验证身份。
 doc_auth.info.verify_at_post_office_instruction_selfie: 你在网上输入身份证件信息，然后到一个参与本项目的邮局去亲身验证身份。
 doc_auth.info.verify_at_post_office_link_text: 对亲身验证获得更多了解
 doc_auth.info.verify_identity: 我们会要求获得你的身份识别、电话号码和其他个人信息并通过与公共记录核对来验证你的身份。
 doc_auth.info.verify_online_description: 如果你没有移动设备或者无法轻松拍身份证件照片，这一选项更好。
-doc_auth.info.verify_online_description_selfie: 如果你有手机可以拍照，请选择该选项。
+doc_auth.info.verify_online_description_mobile: 如果你有手机可以拍照，请选择该选项。
 doc_auth.info.verify_online_instruction: 你将拍身份证件的照片来完全在网上验证身份。大多数用户都能轻松完成这样流程。
-doc_auth.info.verify_online_instruction_selfie: 使用手机在网上验证你的身份你将用手机拍摄身份证件和本人的照片。大多数用户都能轻松完成这一流程。
+doc_auth.info.verify_online_instruction_mobile_no_selfie: 你将使用手机拍摄你的身份证件照片。大多数用户一次就能完成这个流程。
+doc_auth.info.verify_online_instruction_selfie: 你将用手机拍摄身份证件和本人的照片。大多数用户都能轻松完成这一流程。
 doc_auth.info.verify_online_link_text: 对网上验证获得更多了解
 doc_auth.info.you_entered: 你输入了：
 doc_auth.instructions.bullet1: 带上驾照或州身份证件
@@ -689,17 +713,19 @@ doc_auth.instructions.text1: 其他形式的身份证件不被接受。我们要
 doc_auth.instructions.text2: 不需要你社会保障卡实体。
 doc_auth.instructions.text3: 我们把你的电话号码与个人信息匹配，并向你的电话发送一个一次性代码。
 doc_auth.instructions.text4: 你的密码对你个人信息进行存储并加密。
+doc_auth.rate_limit_warning.plural_html: 出于安全原因，你还有 <strong>%{remaining_attempts} 次尝试机会</strong>。
+doc_auth.rate_limit_warning.singular_html: 出于安全原因，你还有 <strong>1 次尝试机会</strong>。
 doc_auth.tips.document_capture_hint: 必须是 JPG 或 PNG
-doc_auth.tips.document_capture_id_text1: 把你身份证件放在一个平坦、暗色的表面上。
-doc_auth.tips.document_capture_id_text2: 在光线明亮的地方拍照。
-doc_auth.tips.document_capture_id_text3: 避免身份证件上有炫光或阴影。
+doc_auth.tips.document_capture_id_text1: 使用水平和深色表面
+doc_auth.tips.document_capture_id_text2: 在光线明亮的地方拍照
+doc_auth.tips.document_capture_id_text3: 避免炫光或阴影
 doc_auth.tips.document_capture_id_text4: 文件大小应当至少 2 兆。
-doc_auth.tips.document_capture_selfie_id_header_text: 如何拍摄你身份证件的清晰照片
+doc_auth.tips.document_capture_selfie_id_header_text: 如何拍摄清晰照片
 doc_auth.tips.document_capture_selfie_selfie_text: 如何准备拍照
-doc_auth.tips.document_capture_selfie_text1: 摘掉可能盖住你面部的任何服饰。我们建议你摘掉眼镜和帽子。
-doc_auth.tips.document_capture_selfie_text2: 在光线明亮的地方拍照。
-doc_auth.tips.document_capture_selfie_text3: 面部表情保持中性。
-doc_auth.tips.document_capture_selfie_text4: 确保你整个面部都可以在绿色圆圈中看到。
+doc_auth.tips.document_capture_selfie_text1: 摘掉任何遮盖您面孔的东西，比如眼镜或帽子
+doc_auth.tips.document_capture_selfie_text2: 在光线明亮的地方拍照
+doc_auth.tips.document_capture_selfie_text3: 保持中性表情
+doc_auth.tips.document_capture_selfie_text4: 确保您整个面孔都可以在绿色圆圈里看到
 doc_auth.tips.mobile_phone_required: 要求有手机
 doc_auth.tips.review_issues_id_header_text: 请仔细查看你州政府颁发身份证件的图像：
 doc_auth.tips.review_issues_id_text1: 你是否使用了暗色背景？
@@ -753,15 +779,17 @@ errors.messages.invalid_recaptcha_token: 你必须完成预防滥发邮件测验
 errors.messages.invalid_sms_number: 输入的电话号码不支持短信。尝试接听电话选项。
 errors.messages.invalid_voice_number: 电话号码有误。检查一下你是否输入了正确的国家代码或区域代码。
 errors.messages.missing_field: 请填写这一字段。
+errors.messages.no_cert_registered: 我们在你的请求中探查不到证书。
 errors.messages.no_pending_profile: 没有等待验证的用户资料
 errors.messages.not_a_number: 不是数字
-errors.messages.otp_format: 输入发送到你手机的一次性代码。请勿使用空格或特殊字符。
+errors.messages.otp_format: 输入你完整的一次性代码（没有空白或特殊字符）
 errors.messages.password_incorrect: 密码不对。
 errors.messages.password_mismatch: 你的密码不一致
 errors.messages.personal_key_incorrect: 个人密钥不对
 errors.messages.phone_carrier: 抱歉，我们目前无法支持这一电话运营商。请选择一个不同的号码再试一次。
 errors.messages.phone_confirmation_limited: 你尝试了太多次。请在 %{timeout}后再试。
 errors.messages.phone_duplicate: 该账户已在使用你输入的电话号码作为身份证实器。请使用一个不同的电话号码。
+errors.messages.phone_otp_format: 输入发送到你手机的一次性代码。请勿使用空格或特殊字符。
 errors.messages.phone_required: 电话号码是必需的。
 errors.messages.phone_unsupported: 抱歉，我们目前无法发送短信（SMS）。请尝试下面的接听电话选项或者使用你的个人密钥。
 errors.messages.premium_rate_phone: 这好像是一个高价电话号码。请选择一个不同的号码再试一次。
@@ -849,7 +877,7 @@ forms.buttons.confirm: 确认
 forms.buttons.continue: 继续
 forms.buttons.continue_ipp: 继续亲身验证
 forms.buttons.continue_remote: 继续在网上验证
-forms.buttons.continue_remote_selfie: 在手机上继续
+forms.buttons.continue_remote_mobile: 在手机上继续
 forms.buttons.delete: 删除
 forms.buttons.disable: 删除
 forms.buttons.edit: 编辑
@@ -982,11 +1010,12 @@ help_text.requested_attributes.full_name: 姓名
 help_text.requested_attributes.ial2_reverified_consent_info_html: '因为你重新验证了身份，我们需要得到你的许可才能与 %{sp_html} 分享该信息。'
 help_text.requested_attributes.intro_html: 我们会与 %{sp_html} 分享这些信息：
 help_text.requested_attributes.phone: 电话号码
+help_text.requested_attributes.select_email_link: 选择电邮
 help_text.requested_attributes.social_security_number: 社会保障号码
 help_text.requested_attributes.verified_at: 更新是在
 help_text.requested_attributes.x509_issuer: PIV/CAC 发放方
 help_text.requested_attributes.x509_subject: PIV/CAC 身份
-help_text.select_preferred_email: 因为你有多个电邮与 %{app_name} 账户相关，你可以更改与我们 %{sp} 构分享哪个。
+help_text.select_preferred_email_html: 选择或添加你想用来访问<strong>%{sp}</strong>的电子邮件。
 i18n.language: 语言
 i18n.locale.en: English
 i18n.locale.es: Español
@@ -999,6 +1028,10 @@ idv.buttons.change_ssn_label: 更新社会保障号码
 idv.buttons.change_state_id_label: 更新州颁发的身份证件
 idv.buttons.continue_plain: 继续
 idv.buttons.mail.send: 要求发一封信
+idv.by_mail.sp_follow_up.body: 重新登录 %{service_provider}以连接你验证过的%{app_name}账户并获得服务。
+idv.by_mail.sp_follow_up.connect_account: 连接你的账户
+idv.by_mail.sp_follow_up.go_to_account: 前往账户
+idv.by_mail.sp_follow_up.heading: 连接 %{service_provider}
 idv.cancel.actions.account_page: 到账户页面
 idv.cancel.actions.exit: 退出 %{app_name}
 idv.cancel.actions.keep_going: 不是，继续
@@ -1029,8 +1062,10 @@ idv.errors.incorrect_password: 你输入的密码不对。
 idv.errors.pattern_mismatch.ssn: 输入 9 位数的社会保障号码
 idv.errors.pattern_mismatch.zipcode: 输入 5 或 9 位的邮编
 idv.errors.pattern_mismatch.zipcode_five: 输入 5 位的邮编
-idv.failure.attempts_html.one: 出于安全考虑，你在网上添加身份证件只能再试<strong>一次</strong>了。
-idv.failure.attempts_html.other: 出于安全考虑，你在网上添加身份证件只能再试<strong>%{count} </strong>次了。
+idv.errors.technical_difficulties: 我们目前遇到技术困难
+idv.errors.try_again_later: 请稍后再试。
+idv.failure.attempts_html.one: 您可以再试<strong>1次。</strong> 然后您必须等6个小时才能再试。
+idv.failure.attempts_html.other: 您可以再试<strong>%{count}次。</strong> 然后您必须等6个小时才能再试。
 idv.failure.button.try_online: 在网上再试一下
 idv.failure.button.warning: 再试一下。
 idv.failure.exceptions.in_person_outage_error_message.post_cta.body: 与此同时，你仍然可以在 %{app_name}开始亲身验证身份流程，然后去邮局。如果你迫切需要得到服务，请直接联系该政府机构。
@@ -1047,7 +1082,7 @@ idv.failure.exit.without_sp: 退出身份验证并到你的账户页面
 idv.failure.gpo.rate_limited.heading: 请稍后再试
 idv.failure.phone.heading: 我们无法将该电话号码与其他记录相匹配
 idv.failure.phone.jobfail: 出错了，我们现在无法处理你的请求。请再试一次。
-idv.failure.phone.rate_limited.body: 为了你的安全，我们限制你在网上尝试验证电话号码的次数。
+idv.failure.phone.rate_limited.body: 出于安全考虑，我们限制你在网上尝试验证电话号码的次数。
 idv.failure.phone.rate_limited.gpo.button: 通过普通邮件验证
 idv.failure.phone.rate_limited.heading: 我们无法通过电话验证你的身份。
 idv.failure.phone.rate_limited.option_try_again_later_html: 取消并在 <strong>%{time_left}</strong> 后再试
@@ -1055,8 +1090,6 @@ idv.failure.phone.rate_limited.option_try_again_later_no_gpo_html: 您可以在<
 idv.failure.phone.rate_limited.option_verify_by_mail_html: 通过普通邮件验证，这需要<strong>五到十天</strong>
 idv.failure.phone.rate_limited.options_header: 你可以：
 idv.failure.phone.timeout: 我们请你验证自己信息的请求已过期。请再试一次。
-idv.failure.phone.warning.attempts_html.one: 出于安全考虑，你只能再试<strong>一次</strong>了。
-idv.failure.phone.warning.attempts_html.other: 出于安全考虑，你只能再试<strong>%{count}次 </strong>了。
 idv.failure.phone.warning.gpo.button: 通过普通邮件验证
 idv.failure.phone.warning.gpo.explanation: 如果你没有别的电话号码可以尝试，那请通过普通邮件验证。
 idv.failure.phone.warning.gpo.heading: 通过普通邮件验证
@@ -1067,7 +1100,7 @@ idv.failure.phone.warning.next_steps_html: 尝试 <strong>另一个</strong> 你
 idv.failure.phone.warning.try_again_button: 尝试另一个号码
 idv.failure.phone.warning.you_entered: 你输入了：
 idv.failure.sessions.exception: 处理你的请求时内部出错。
-idv.failure.sessions.fail_html: 为了你的安全，我们限制你在网上尝试验证个人信息的次数。<strong> %{timeout}后再试。</strong>
+idv.failure.sessions.fail_html: 出于安全考虑，我们限制你在网上尝试验证个人信息的次数。<strong> %{timeout}后再试。</strong>
 idv.failure.sessions.heading: 我们找不到与你个人信息匹配的记录
 idv.failure.sessions.warning: 请检查一下你输入的信息，然后再试一下。常见错误包括社会保障号码或邮编不对。
 idv.failure.setup.fail_date_html: 请给我们的联系中心在<strong>%{date_html}</strong> 之前打电话以继续验证你的身份。
@@ -1078,6 +1111,8 @@ idv.failure.verify.exit: 退出 %{app_name}
 idv.failure.verify.fail_link_html: 在<strong>%{sp_name}</strong> 得到
 idv.failure.verify.fail_text: 帮助以获得服务。
 idv.failure.verify.heading: 我们无法验证你的身份证件。
+idv.failure.warning.attempts_html.one: 出于安全考虑，你只能再试<strong>一次</strong>了。
+idv.failure.warning.attempts_html.other: 出于安全考虑，你只能再试<strong>%{count}次</strong>了。
 idv.forgot_password.link_text: 忘了密码?
 idv.forgot_password.modal_header: 你确定不记得密码吗？
 idv.forgot_password.reset_password: 重设密码
@@ -1117,12 +1152,13 @@ idv.gpo.request_another_letter.learn_more_link: 对通过邮件验证你地址�
 idv.gpo.request_another_letter.title: 要求再发一封信？
 idv.gpo.return_to_profile: 返回你的用户资料
 idv.gpo.title: 输入你的验证代码
-idv.gpo.will_send_to: 我们会把信寄发到：
+idv.gpo.will_send_to: 你会在5到10天内在我们验证过的与你相关的地址收到来自%{app_name}寄给你的一封信：
 idv.images.come_back_later: 带有打勾符的信件
 idv.messages.activated_html: 你的身份已经验证。如要更改已验证过的你的信息，请 %{link_html}。
 idv.messages.activated_link: 联系我们
-idv.messages.come_back_later_html: '信件需要 <strong>5 - 10 日送到。</strong>收到信后请重新登录来输入你的验证代码。'
+idv.messages.come_back_later: 收到信件后请再登录并输入其中的验证码。
 idv.messages.confirm: 我们对你验证过的信息做了安全处理
+idv.messages.contact_sp_html: 如果收到信件之前你需要访问我们合作伙伴机构的服务，请联系%{sp_link_html}。
 idv.messages.enter_password.by_mail_password_reminder_html: '<strong>记住你的密码。</strong> 如果你随后重设密码的话，信中的验证码就不会奏效。'
 idv.messages.enter_password.message: '%{app_name}会用你的密码对你的账户加密。加密意味着你的信息很安全，而且只有你能够访问或变更你的信息。'
 idv.messages.enter_password.phone_verified: 我们验证了你的电话号码
@@ -1134,14 +1170,14 @@ idv.messages.gpo.letter_on_the_way: 我们正在给你发信。
 idv.messages.gpo.resend: 给我另外发送一封信
 idv.messages.gpo.start_over_html: 如果该地址不对，你需要%{start_over_link_html}。
 idv.messages.gpo.start_over_link_text: 重新开始并用你新地址进行验证。
-idv.messages.gpo.timeframe_html: 你会在<strong> 5 到 10 天</strong> 里收到带有<strong>验证码</strong> 的信。
+idv.messages.gpo.timeframe_html: 你会在<strong> 5 到 10 天</strong> 里收到带有<strong>验证码</strong>的信。
 idv.messages.otp_delivery_method_description: 如果你在上面输入的是座机电话，请在下边选择“接听电话”。
 idv.messages.phone.alert_html: '<strong>输入一个符合以下条件的电话号码：</strong>'
 idv.messages.phone.description: 我们会将你的号码与记录核对并给你发个一次性代码来验证你的身份。
 idv.messages.phone.failed_number.alert_text: 我们无法将你与该号码匹配。
-idv.messages.phone.failed_number.gpo_alert_html: 试试 <strong>另一个</strong> 号码或者%{link_html}。
+idv.messages.phone.failed_number.gpo_alert_html: 试试 <strong>另一个</strong>号码或者%{link_html}。
 idv.messages.phone.failed_number.gpo_verify_link: 通过普通邮件验证
-idv.messages.phone.failed_number.try_again_html: 试试 <strong>另一个</strong> 号码。
+idv.messages.phone.failed_number.try_again_html: 试试 <strong>另一个</strong>号码。
 idv.messages.phone.rules:
   - 美国国内电话号码
   - 你的主要号码（或者你最常用的号码）
@@ -1209,17 +1245,19 @@ in_person_proofing.body.barcode.location_details: 详细地址信息
 in_person_proofing.body.barcode.questions: 有问题吗？
 in_person_proofing.body.barcode.retail_hours: 营业时间
 in_person_proofing.body.barcode.retail_hours_closed: 关闭
-in_person_proofing.body.barcode.return_to_partner_html: 你现在可以 %{link_html}来完成你可做的任何随后步骤，直到你的身份得到验证。
-in_person_proofing.body.barcode.return_to_partner_link: 登出 %{sp_name} 并返回 %{sp_name}
+in_person_proofing.body.barcode.return_to_partner_link: 返回 %{sp_name}
 in_person_proofing.body.barcode.what_to_expect: 在邮局会发生什么
 in_person_proofing.body.cta.button: 尝试亲身去
-in_person_proofing.body.cta.prompt_detail: 你也许可以到附近一个参与本项目的邮局去亲身验证你的身份证件。
+in_person_proofing.body.cta.prompt_detail: 无法在网上完成这一步骤的大多数人都能在一个参与本项目的邮局成功地证实身份。去邮局无需预约。全国各地都有参与本项目的邮局。
 in_person_proofing.body.expect.heading: 去邮局后会发生什么
 in_person_proofing.body.expect.info: 你去邮局后 24 小时内，我们会给你发电邮，告诉你是否成功验证了身份。
+in_person_proofing.body.location.change_location_find_other_locations: 查找其他参与本项目的邮局地点。
+in_person_proofing.body.location.change_location_heading: 需要更改你的邮局地点吗？
+in_person_proofing.body.location.change_location_info_html: 你不需要创建新的条形码，你可以将这个条形码带到任何参与本项目的邮局。 %{find_other_locations_link_html}
 in_person_proofing.body.location.distance.one: 距离你 %{count} 英里
 in_person_proofing.body.location.distance.other: 距离你 %{count} 英里
 in_person_proofing.body.location.heading: 邮局信息
-in_person_proofing.body.location.info: 验证你的身份无需做预约。你可以去任何参与邮局。
+in_person_proofing.body.location.info: 验证你的身份无需做预约。
 in_person_proofing.body.location.inline_error: 请输入正确地址，包括城市、州和邮编
 in_person_proofing.body.location.location_button: 选择
 in_person_proofing.body.location.po_search.address_label: 地址
@@ -1252,7 +1290,7 @@ in_person_proofing.body.state_id.alert_message: 州政府颁发给你的身份�
 in_person_proofing.body.state_id.id_types:
   - 州驾照
   - 州非驾照身份卡
-in_person_proofing.body.state_id.info_html: 输入 <strong> 与州政府颁发的身份证件上完全一致的信息</strong> 我们将使用该信息来确认与你亲身出现所持身份证件上信息的一致性。
+in_person_proofing.body.state_id.info_html: 输入 <strong> 与州政府颁发的身份证件上完全一致的信息</strong>我们将使用该信息来确认与你亲身出现所持身份证件上信息的一致性。
 in_person_proofing.body.state_id.learn_more_link: 了解更多有关哪些身份证件可被接受的信息。
 in_person_proofing.body.state_id.questions: 有问题吗？
 in_person_proofing.form.address.errors.unsupported_chars: 我们的系统无法读取以下字符： %{char_list}. 请替换那些字符后再试一次。
@@ -1302,6 +1340,11 @@ in_person_proofing.headings.state_id_milestone_2: 输入你州政府颁发身份
 in_person_proofing.headings.switch_back: 切换回你的电脑，来准备亲身去验证身份。
 in_person_proofing.headings.update_address: 更新你当前地址
 in_person_proofing.headings.update_state_id: 更新你身份证件上的信息
+in_person_proofing.post_office_closed.body: 邮局地点将于 2025 年 1 月 10 日星期五恢复正常工作时间。
+in_person_proofing.post_office_closed.email.body_html: <strong>您将无法在 2025 年 1 月 9 日星期四前往邮局完成身份验证。</strong> 邮局地点将于 2025 年 1 月 10 日星期五恢复正常工作时间
+in_person_proofing.post_office_closed.email.heading: 所有邮局将于 2025 年 1 月 9 日关闭，以纪念前总统吉米·卡特
+in_person_proofing.post_office_closed.email.subject: 所有邮局将于 2025 年 1 月 9 日星期四关闭
+in_person_proofing.post_office_closed.heading: 所有邮局将于 2025 年 1 月 9 日关闭，以纪念前总统吉米·卡特。
 in_person_proofing.process.barcode.caption_label: 注册代码
 in_person_proofing.process.barcode.heading: 出示你的 %{app_name} 条形码
 in_person_proofing.process.barcode.info: 邮局工作人员需要扫描该页顶部的条形码你可以把该页打印出来，或在你的移动设备上显示。
@@ -1440,8 +1483,8 @@ notices.piv_cac_configured: 添加您的政府雇员ID
 notices.privacy.privacy_act_statement: 隐私法声明
 notices.privacy.security_and_privacy_practices: 安全实践和隐私法声明
 notices.resend_confirmation_email.success: 我们发送了另外一个确认电邮。
-notices.session_cleared: 为了你的安全，如果你在 %{minutes} 分钟内不移动到一个新页面，我们会清除你输入的内容。
-notices.session_timedout: 我们已将你登出。为了你的安全，如果你在 %{minutes} 分钟内不移动到一个新页面，%{app_name} 会结束你此次访问。
+notices.session_cleared: 出于安全考虑，如果你在 %{minutes} 分钟内不移动到一个新页面，我们会清除你输入的内容。
+notices.session_timedout: 我们已将你登出。出于安全考虑，如果你在 %{minutes} 分钟内不移动到一个新页面，%{app_name} 会结束你此次访问。
 notices.sign_in.recaptcha.disclosure_statement_html: 该网站由 reCAPTCHA 保护而且谷歌的 %{google_policy_link_html} 和 %{google_tos_link_html} 都适用。
 notices.signed_up_and_confirmed.first_paragraph_end: 带有确认你的电邮地址的链接。点击链接去继续把这个电邮添加到你的账户。
 notices.signed_up_and_confirmed.first_paragraph_start: 我们已发电邮到
@@ -1451,11 +1494,11 @@ notices.signed_up_but_unconfirmed.first_paragraph_start: 我们已发电邮到
 notices.signed_up_but_unconfirmed.resend_confirmation_email: 重新发送确认电邮
 notices.timeout_warning.partially_signed_in.continue: 继续登录
 notices.timeout_warning.partially_signed_in.live_region_message_html: '%{time_left_in_session_html} 后你会被登出。选择“保持我登录状态”保持登录；选择“把我登出”来登出。'
-notices.timeout_warning.partially_signed_in.message_html: 为了你的安全， %{time_left_in_session_html}分钟后我们将取消你的登录。
+notices.timeout_warning.partially_signed_in.message_html: 出于安全考虑， %{time_left_in_session_html}分钟后我们将取消你的登录。
 notices.timeout_warning.partially_signed_in.sign_out: 取消登录
 notices.timeout_warning.signed_in.continue: 保持我登录状态
 notices.timeout_warning.signed_in.live_region_message_html: '%{time_left_in_session_html} 后你会被登出。选择“保持我登录状态”保持登录；选择“把我登出”来登出。'
-notices.timeout_warning.signed_in.message_html: 为了你的安全，我们会在 %{time_left_in_session_html} 后将你登出，除非你告诉我们不要这样做。
+notices.timeout_warning.signed_in.message_html: 出于安全考虑，我们会在 %{time_left_in_session_html} 后将你登出，除非你告诉我们不要这样做。
 notices.timeout_warning.signed_in.sign_out: 把我登出
 notices.totp_configured: 你账户添加了一个身份证实应用程序。
 notices.use_diff_email.link: 使用一个不同的电邮地址
@@ -1563,7 +1606,7 @@ step_indicator.status.complete: 完成了
 step_indicator.status.current: 目前步骤
 step_indicator.status.not_complete: 未完成
 time.am: 上午
-time.formats.event_date: '%B %-d, %Y'
+time.formats.event_date: '%Y年%B%-d日'
 time.formats.event_time: '%-l:%M %p'
 time.formats.event_timestamp: '%B %-d, %Y at %-l:%M %p'
 time.formats.event_timestamp_js: '%{year}年%{month}月%{day}日, %{hour}:%{minute} %{day_period}'
@@ -1608,7 +1651,6 @@ titles.idv.reset_password: 重设密码
 titles.idv.verify_info: 验证你的信息
 titles.mfa_setup.face_touch_unlock_confirmation: 人脸或触摸解锁已添加
 titles.mfa_setup.suggest_second_mfa: 你已添加了第一个身份证实方法！添加第二个做备份
-titles.no_auth_option: 没找到登录方法
 titles.openid_connect.authorization: OpenID Connect 授权
 titles.openid_connect.logout: OpenID Connect 登出
 titles.passwords.change: 更改你账户密码
@@ -1692,21 +1734,20 @@ two_factor_authentication.login_options.webauthn: 安全密钥
 two_factor_authentication.login_options.webauthn_info: 使用你的安全密钥来访问账户
 two_factor_authentication.login_options.webauthn_platform: 人脸或触摸解锁
 two_factor_authentication.login_options.webauthn_platform_info: 不用一次性代码，而是用你的面孔或指纹来访问你的账户。
-two_factor_authentication.max_backup_code_login_attempts_reached: 为了你的安全，你的账户暂时被锁住，因为你错误输入备用代码太多次。
-two_factor_authentication.max_generic_login_attempts_reached: 为了你的安全，你的账户暂时被锁住。
-two_factor_authentication.max_otp_login_attempts_reached: 为了你的安全，你的账户暂时被锁住，因为你错误输入一次性代码太多次。
-two_factor_authentication.max_otp_requests_reached: 为了你的安全，你的账户暂时被锁住，因为你要求一次性代码太多次。
-two_factor_authentication.max_personal_key_login_attempts_reached: 为了你的安全，你的账户暂时被锁住，因为你错误输入个人密钥太多次。
-two_factor_authentication.max_piv_cac_login_attempts_reached: 为了你的安全，你的账户暂时被锁住，因为你错误提供 piv/cac 凭据太多次。
+two_factor_authentication.max_backup_code_login_attempts_reached: 出于安全考虑，你的账户暂时被锁住，因为你错误输入备用代码太多次。
+two_factor_authentication.max_generic_login_attempts_reached: 出于安全考虑，你的账户暂时被锁住。
+two_factor_authentication.max_otp_login_attempts_reached: 出于安全考虑，你的账户暂时被锁住，因为你错误输入一次性代码太多次。
+two_factor_authentication.max_otp_requests_reached: 出于安全考虑，你的账户暂时被锁住，因为你要求一次性代码太多次。
+two_factor_authentication.max_personal_key_login_attempts_reached: 出于安全考虑，你的账户暂时被锁住，因为你错误输入个人密钥太多次。
+two_factor_authentication.max_piv_cac_login_attempts_reached: 出于安全考虑，你的账户暂时被锁住，因为你错误提供 PIV/CAC 凭据太多次。
 two_factor_authentication.mobile_terms_of_service: 移动服务条款
-two_factor_authentication.no_auth_option: 找不到身份证实选项让你登录。
 two_factor_authentication.opt_in.error_retry: 抱歉，我们让你加入有困难。请再试一次。
 two_factor_authentication.opt_in.opted_out_html: 你选择不在 %{phone_number_html} 接受短信。你可以选择加入并再在那个电话号码接受安全代码。
 two_factor_authentication.opt_in.opted_out_last_30d_html: 你选择过去 30 天里不在 %{phone_number_html} 接受短信。我们每 30 天只能允许加入一次电话号码。
 two_factor_authentication.opt_in.title: 我们无法向你电话号码发送安全代码。
 two_factor_authentication.opt_in.wait_30d_opt_in: 30 天后，你可以选择加入并在那个电话号码接受安全代码。
 two_factor_authentication.otp_delivery_preference.instruction: 你可以随时对此进行更改。如果你使用座机电话，请选择“接听电话”。
-two_factor_authentication.otp_delivery_preference.landline_warning_html: 输入的电话号码似乎是一个 <strong>座机电话</strong>。通过 %{phone_setup_path} 请求一次性代码。
+two_factor_authentication.otp_delivery_preference.landline_warning_html: 输入的电话号码似乎是一个<strong>座机电话</strong>。通过 %{phone_setup_path} 请求一次性代码。
 two_factor_authentication.otp_delivery_preference.no_supported_options: 我们无法验证 %{location} 的电话号码。
 two_factor_authentication.otp_delivery_preference.phone_call: 电话
 two_factor_authentication.otp_delivery_preference.sms: 短信（SMS）
@@ -1729,6 +1770,13 @@ two_factor_authentication.phone_verification.troubleshooting.code_not_received: 
 two_factor_authentication.phone.delete.failure: 无法去掉你的电话。
 two_factor_authentication.phone.delete.success: 你的电话已被去掉。
 two_factor_authentication.piv_cac_header_text: 插入您的政府雇员ID
+two_factor_authentication.piv_cac_mismatch.2fa_before_add: 添加你的PIV/CAC之前，你需要使用另外一种方法进行身份证实。
+two_factor_authentication.piv_cac_mismatch.cta: 进行身份证实并添加PIV/CAC
+two_factor_authentication.piv_cac_mismatch.delete_account: 删除你的帐户
+two_factor_authentication.piv_cac_mismatch.instructions: 点击下边的“进行身份证实并添加PIV/CAC”，以在将该PIV/CAC添加到你账户之前使用另外一种方法进行身份证实。
+two_factor_authentication.piv_cac_mismatch.instructions_no_other_method: 如果你的PIV/CAV是重新颁发的，你需要删除自己的%{app_name}帐户，并使用重新颁发的PIV/CAC 设立一个新账户。
+two_factor_authentication.piv_cac_mismatch.skip: 跳过添加 PIV/CAC
+two_factor_authentication.piv_cac_mismatch.title: 该政府雇员身份证件与你的账户没有连接起来
 two_factor_authentication.piv_cac_upsell.add_piv: 添加 PIV/CAC 卡
 two_factor_authentication.piv_cac_upsell.choose_other_method: 选择其他方法
 two_factor_authentication.piv_cac_upsell.explain: 这将改善你账户安全，而且你在登录时无需再输入电邮和密码。
@@ -1817,9 +1865,15 @@ user_mailer.account_reset_request.header: 你的账户会在%{interval}后删除
 user_mailer.account_reset_request.intro_html: 作为一项安全措施，%{app_name} 要求一个两步流程来删除你的帐户：<br><br> 第一步：如果你丢失了身份证实方法但需删除账户，有一个%{waiting_period} 的等待期。如果你找到了身份证实方法，可以登录你的 %{app_name} 帐户来取消这个请求。<br><br> 第二步：%{waiting_period}等待期之后，你会收到一封电邮，请你确认要删除 %{app_name} 账户。只有经你确认后，你的账户才会被删除。
 user_mailer.account_reset_request.subject: 如何删除你的 %{app_name} 账户
 user_mailer.account_verified.change_password_link: 更改密码
-user_mailer.account_verified.contact_link: 联系我们
-user_mailer.account_verified.intro_html: 你于 %{date} 使用 %{app_name} 在 %{sp_name}成功验证了身份。如果你没有采取这一行动，请 %{contact_link_html} 并登录 %{change_password_link_html}。
-user_mailer.account_verified.subject: 你在 %{sp_name} 验证了身份。
+user_mailer.account_verified.contact_link: 请联系 %{app_name}支持
+user_mailer.account_verified.greeting: 你好，
+user_mailer.account_verified.intro: 你在 %{date} 成功地验证了身份。
+user_mailer.account_verified.next_sign_in.with_sp.with_cta: 接下来请点击按钮或复制下面的连接来访问 %{sp_name} 并登录。
+user_mailer.account_verified.next_sign_in.with_sp.without_cta: 你现在可以从 %{sp_name} 的网站登录。
+user_mailer.account_verified.next_sign_in.without_sp: 接下来请点击按钮或复制下面的连接来登录 %{app_name}。
+user_mailer.account_verified.sign_in: 登录
+user_mailer.account_verified.subject: 你在 %{app_name} 成功地验证了身份
+user_mailer.account_verified.warning_contact_us_html: 如果你没有试图验证过身份，请登录来%{change_password_link_html}。要报告这件事，%{contact_link_html}。
 user_mailer.add_email_associated_with_another_account.help_html: 如果你没有要求一封新电邮或怀疑有错， 请访问 %{app_name_html}的 %{help_link_html} 或者 %{contact_link_html}。
 user_mailer.add_email_associated_with_another_account.intro_html: 该电邮地址已与一个 %{app_name_html}账户相关联，所以我们不能把它加到另外一个账户上。你必须首先将其从与之相关的账户中删除或去掉。要做到这一点，点击以下链接并用该电邮地址登录。如果你没有试图将此电邮地址加到一个账户，可忽略这一信息。
 user_mailer.add_email_associated_with_another_account.link_text: 请到 %{app_name}
@@ -1838,14 +1892,18 @@ user_mailer.email_confirmation_instructions.header: '%{intro}请点击下面的�
 user_mailer.email_confirmation_instructions.link_text: 确认电邮地址
 user_mailer.email_confirmation_instructions.subject: 确认你的电邮
 user_mailer.email_deleted.header: 一个电邮地址被从你的 %{app_name} 用户资料中删除。
-user_mailer.email_deleted.help_html: 如果你没有想删除这一电邮地址， 请访问 %{app_name_html} %{help_link_html} 或者 %{contact_link_html}。
+user_mailer.email_deleted.help_html: 如果你没有想删除这一电邮地址，请访问 %{app_name_html} %{help_link_html} 或者 %{contact_link_html}。
 user_mailer.email_deleted.subject: 电邮地址已删除
 user_mailer.help_link_text: 帮助中心
+user_mailer.idv_please_call.body.contact_message_html: 打电话给 <strong>%{contact_number}</strong> 并向他们提供错误 代码 <strong>%{support_code}</strong>。
+user_mailer.idv_please_call.body.intro_html: 请在 <strong>%{date}</strong> 之前给我们的联系中心打电话，以继续验证你的身份。
+user_mailer.idv_please_call.header: 请给我们打个电话
+user_mailer.idv_please_call.subject: 致电 %{app_name} 继续进行身份验证
 user_mailer.in_person_completion_survey.body.cta.callout: 点击下面的按钮来开始
 user_mailer.in_person_completion_survey.body.cta.label: 填写我们的意见调查
 user_mailer.in_person_completion_survey.body.greeting: 你好，
 user_mailer.in_person_completion_survey.body.intent: 我们想听听你在邮局亲身验证身份的经历。
-user_mailer.in_person_completion_survey.body.privacy_html: 你对这份意见调查的回复将会依照下面的 <a href="%{url}">隐私和安全标准</a> 得到保护。
+user_mailer.in_person_completion_survey.body.privacy_html: 你对这份意见调查的回复将会依照下面的 <a href="%{url}">隐私和安全标准</a>得到保护。
 user_mailer.in_person_completion_survey.body.request_description: 填写一个简短、匿名的调查问卷，你的意见会帮助我们更好满足你的需求。
 user_mailer.in_person_completion_survey.body.thanks: 感谢使用 %{app_name}。
 user_mailer.in_person_completion_survey.header: 花点时间告诉我们，我们表现如何
@@ -1856,7 +1914,7 @@ user_mailer.in_person_deadline_passed.body.greeting: 你好，
 user_mailer.in_person_deadline_passed.body.restart: 你可以开始提出在 %{partner_agency}验证身份的新请求。
 user_mailer.in_person_deadline_passed.header: 亲身验证身份的截止日期已过。
 user_mailer.in_person_deadline_passed.subject: 你亲身验证身份的要求已过期。
-user_mailer.in_person_failed_suspected_fraud.body.help_center_html: 如需要更多帮助，可以<a href="%{help_center_url}">访问我们的帮助中心</a> 或寻求你试图访问的机构的帮助。
+user_mailer.in_person_failed_suspected_fraud.body.help_center_html: 如需要更多帮助，可以<a href="%{help_center_url}">访问我们的帮助中心</a>或寻求你试图访问的机构的帮助。
 user_mailer.in_person_failed_suspected_fraud.body.intro: 我们知道你曾经试图通过 %{app_name} 验证身份，但是你的身份于 %{date}在 %{location} 邮局未能得到验证。
 user_mailer.in_person_failed_suspected_fraud.greeting: 你好，
 user_mailer.in_person_failed_suspected_fraud.subject: 你的身份未能亲身被验证。
@@ -1866,10 +1924,6 @@ user_mailer.in_person_failed.intro: 你的身份于 %{date}在 %{location} 邮�
 user_mailer.in_person_failed.subject: 你的身份未能亲身被验证。
 user_mailer.in_person_failed.verifying_identity: '验证你的身份时:'
 user_mailer.in_person_failed.verifying_step_not_expired: 你的州政府颁发的身份证件或驾照绝对没有过期。我们目前不接受任何其他形式的身份证件，比如护照和军队身份证件。
-user_mailer.in_person_please_call.body.contact_message_html: 打电话给 <strong>%{contact_number}</strong> 并向他们提供错误 代码 <strong>%{support_code}</strong>。
-user_mailer.in_person_please_call.body.intro_html: 请在 <strong>%{date}</strong> 之前给我们的联系中心打电话，以继续验证你的身份。
-user_mailer.in_person_please_call.header: 请给我们打个电话
-user_mailer.in_person_please_call.subject: 致电 %{app_name} 继续进行身份验证
 user_mailer.in_person_ready_to_verify_reminder.greeting: 你好，
 user_mailer.in_person_ready_to_verify_reminder.heading.one: 你距离亲身验证身份截止日期还有 %{count} 天
 user_mailer.in_person_ready_to_verify_reminder.heading.other: 你距离亲身验证身份截止日期还有 %{count} 天
@@ -1890,8 +1944,6 @@ user_mailer.letter_reminder_14_days.did_not_get_a_letter_html: 如果你没有�
 user_mailer.letter_reminder_14_days.finish: 完成验证你的身份
 user_mailer.letter_reminder_14_days.sign_in_and_request_another_letter: 登录要求再发一封信
 user_mailer.letter_reminder_14_days.subject: 完成验证你的身份
-user_mailer.letter_reminder.info_html: 你将收到的信件会含有帮助我们验证你地址的一次性代码。你可以登入 %{link_html} 并输入该一次性代码来完成身份验证流i程。
-user_mailer.letter_reminder.subject: 我们已向你存档地址发送了一封信。
 user_mailer.new_device_sign_in_after_2fa.authentication_methods: 身份证实方法
 user_mailer.new_device_sign_in_after_2fa.info_p1: 你的 %{app_name} 电邮和密码在一个新设备上被用来登录和进行身份验证。
 user_mailer.new_device_sign_in_after_2fa.info_p2: 如果你知道该活动，则无需做任何事情。
@@ -1912,10 +1964,10 @@ user_mailer.new_device_sign_in_before_2fa.subject: 你 %{app_name} 账户有新�
 user_mailer.password_changed.disavowal_link: 重设你的密码
 user_mailer.password_changed.help_html: 如果你没做此更改， %{disavowal_link_html}。要得到更多帮助，请访问 %{app_name_html} %{help_link_html} 或者 %{contact_link_html}。
 user_mailer.password_changed.intro_html: 你的 %{app_name_html} 账户有了新密码。
-user_mailer.personal_key_regenerated.help_html: <p>你的 %{app_name} 账户刚得到了一个新的 16 字符的个人密钥。你收到这一电邮是为了确保就是你。</p><p>如果你刚刚登入并重设了个人密钥，没问题！你无需做任何事情。</p><p>如果你刚才没有重设个人密钥，或者你不确定，请立即采取以下步骤来保护你账户安全：<ol><li><strong><a href="%{reset_password_url}">更改你的密码</a>。</strong> 选择一个你在该账户没用过的密码。</li><li><strong><a href="%{account_url}">登录你的 %{app_name} 账户</a></strong> 并确保你账户页面上的信息你都能认出，包括你进行双因素身份证实的方法，比如电话号码、身份证实 app 或安全密钥。</li><li><strong>在你的<a href="%{account_url}">%{app_name} 账户页面</a>， 请求新个人密钥。</strong> 请记住，除非你在用该密钥登录一个使用 %{app_name} 的受到信任的网站，绝对不要将其与人分享。</li></ol></p><br>谢谢，<br> %{app_name} 团队
+user_mailer.personal_key_regenerated.help_html: <p>你的 %{app_name} 账户刚得到了一个新的 16 字符的个人密钥。你收到这一电邮是为了确保就是你。</p><p>如果你刚刚登入并重设了个人密钥，没问题！你无需做任何事情。</p><p>如果你刚才没有重设个人密钥，或者你不确定，请立即采取以下步骤来保护你账户安全：<ol><li><strong><a href="%{reset_password_url}">更改你的密码</a>。</strong>选择一个你在该账户没用过的密码。</li><li><strong><a href="%{account_url}">登录你的 %{app_name} 账户</a></strong>并确保你账户页面上的信息你都能认出，包括你进行双因素身份证实的方法，比如电话号码、身份证实 app 或安全密钥。</li><li><strong>在你的<a href="%{account_url}">%{app_name} 账户页面</a>，请求新个人密钥。</strong>请记住，除非你在用该密钥登录一个使用 %{app_name} 的受到信任的网站，绝对不要将其与人分享。</li></ol></p><br>谢谢，<br> %{app_name} 团队
 user_mailer.personal_key_regenerated.intro: 新个人密钥已发放
 user_mailer.personal_key_regenerated.subject: 账户安全警告
-user_mailer.personal_key_sign_in.help_html: <p>你的 16 字符的个人密钥刚被用来登录你的 %{app_name} 账户。你收到这一电邮是为了确保就是你。</p><p>如果你刚用自己的个人密钥登入，没问题！你无需做任何事情。</p><p>如果你没用个人密钥登录，或者你不确定，请立即采取以下步骤来保护你账户安全：<ol><li><strong><a href="%{reset_password_url}">更改你的密码</a>。</strong> 选择一个你在该账户没用过的密码。</li><li><strong><a href="%{account_url}"> 登录你的 %{app_name} 账户</a></strong> 并确保你账户页面上的信息你都能认出，包括你进行双因素身份证实的方法，比如电话号码、身份证实 app 或者安全密钥。</li><li><strong>在你的<a href="%{account_url}">%{app_name} 账户页面</a>， 请求新个人密钥。</strong> 请记住，除非你在用密钥登入一个使用%{app_name}的受到信任的网站，绝对不要将其与人分享。</li></ol></p><br>谢谢，<br>%{app_name} 团队
+user_mailer.personal_key_sign_in.help_html: <p>你的 16 字符的个人密钥刚被用来登录你的 %{app_name} 账户。你收到这一电邮是为了确保就是你。</p><p>如果你刚用自己的个人密钥登入，没问题！你无需做任何事情。</p><p>如果你没用个人密钥登录，或者你不确定，请立即采取以下步骤来保护你账户安全：<ol><li><strong><a href="%{reset_password_url}">更改你的密码</a>。</strong>选择一个你在该账户没用过的密码。</li><li><strong><a href="%{account_url}"> 登录你的 %{app_name} 账户</a></strong>并确保你账户页面上的信息你都能认出，包括你进行双因素身份证实的方法，比如电话号码、身份证实 app 或者安全密钥。</li><li><strong>在你的<a href="%{account_url}">%{app_name} 账户页面</a>，请求新个人密钥。</strong>请记住，除非你在用密钥登入一个使用%{app_name}的受到信任的网站，绝对不要将其与人分享。</li></ol></p><br>谢谢，<br>%{app_name} 团队
 user_mailer.personal_key_sign_in.intro: 个人密钥被用来登录
 user_mailer.personal_key_sign_in.subject: 账户安全警告
 user_mailer.phone_added.disavowal_link: 重设你的密码
@@ -1934,6 +1986,7 @@ user_mailer.reset_password_instructions.footer: 这一链接 %{expires} 小时�
 user_mailer.reset_password_instructions.gpo_letter_description: 如果你重设密码，信件中的一次性代码就会失效，你需要再次验证身份。
 user_mailer.reset_password_instructions.gpo_letter_header: 你的信件已寄出。
 user_mailer.reset_password_instructions.header: 要完成重设密码，请点击下面的链接或把整个链接复制并黏贴进浏览器。
+user_mailer.reset_password_instructions.in_person_warning_description_html: <strong>如果你现在重设密码，你的条形码在邮局将无法使用。</strong>你会不得不从头开始身份验证流程。
 user_mailer.reset_password_instructions.link_text: 重设你的密码
 user_mailer.reset_password_instructions.subject: 重设你的密码
 user_mailer.signup_with_your_email.help_html: 如果你没有要求一封新电邮或怀疑有错， 请访问 %{app_name_html}的 %{help_link_html} 或者 %{contact_link_html}。
@@ -1947,6 +2000,11 @@ user_mailer.suspended_reset_password.subject: 我们无法重设你的密码。
 user_mailer.suspension_confirmed.contact_agency: 请联系你试图访问其服务的那个机构。
 user_mailer.suspension_confirmed.remain_locked: 我们已完成了对你%{app_name}账户的审查，你的账户将继续被锁。
 user_mailer.suspension_confirmed.subject: 你的账户被锁
+user_mailer.verify_by_mail_letter_requested.cta.sign_in: 登录
+user_mailer.verify_by_mail_letter_requested.instructions.contact_sp: 如果收到信件之前你需要访问我们合作伙伴机构的服务，请联系%{friendly_name}。
+user_mailer.verify_by_mail_letter_requested.instructions.sign_in: 收到信件后请再登录并输入其中的验证码。
+user_mailer.verify_by_mail_letter_requested.intro_html: '你会在<strong>5到10</strong>天内在我们验证过的与你相关的地址收到来自%{app_name}寄给你的一封信:'
+user_mailer.verify_by_mail_letter_requested.subject: 你的信件已寄出。
 users.delete.actions.cancel: 返回用户资料
 users.delete.actions.delete: 删除账户
 users.delete.bullet_1: 你不会有 %{app_name} 账户
@@ -2000,6 +2058,12 @@ vendor_outage.blocked.phone.default: 我们目前无法验证电话。请稍后�
 vendor_outage.get_updates: 获得最新信息
 vendor_outage.get_updates_on_status_page: 在我们的状态页面获得最新信息。
 vendor_outage.working: 我们正在争取解决错误。
+webauthn_platform_recommended.cta: Set up face or touch unlock
+webauthn_platform_recommended.description_private_html: Face or touch unlock is %{phishing_resistant_link_html} and we don’t store any recordings of your face or fingerprint, so your information stays private.
+webauthn_platform_recommended.description_secure_account: Secure your sign in with face or touch unlock. Use your face, fingerprint, password, or another method to keep your account safer.
+webauthn_platform_recommended.heading: Set up face or touch unlock for a more secure sign in
+webauthn_platform_recommended.phishing_resistant: phishing-resistant
+webauthn_platform_recommended.skip: Skip
 zxcvbn.feedback.a_word_by_itself_is_easy_to_guess: 单字容易被人猜出
 zxcvbn.feedback.add_another_word_or_two_uncommon_words_are_better: 再加一两个字不常见的字更好
 zxcvbn.feedback.all_uppercase_is_almost_as_easy_to_guess_as_all_lowercase: 都是大写几乎和都是小写一样容易被人猜出

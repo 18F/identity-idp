@@ -10,10 +10,8 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
 
   before do
     allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(true)
+    allow(IdentityConfig.store).to receive(:socure_docv_enabled).and_return(true)
     allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
-  end
-
-  before do
     allow(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
       @sms_link = config[:link]
       impl.call(**config)
@@ -47,7 +45,11 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       # Confirm that jumping to LinkSent page does not cause errors
       visit idv_link_sent_url
       expect(page).to have_current_path(root_url)
-      visit idv_hybrid_mobile_document_capture_url
+
+      # Confirm that we end up on the LN / Mock page even if we try to
+      # go to the Socure one.
+      visit idv_hybrid_mobile_socure_document_capture_url
+      expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
 
       # Confirm that clicking cancel and then coming back doesn't cause errors
       click_link 'Cancel'
@@ -110,12 +112,12 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
     end
   end
 
-  context 'when biometric confirmation is requested' do
+  context 'when facial confirmation is requested' do
     it 'proofs and hands off to mobile', js: true do
       user = nil
 
       perform_in_browser(:desktop) do
-        visit_idp_from_oidc_sp_with_ial2(biometric_comparison_required: true)
+        visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
 
         user = sign_up_and_2fa_ial1_user
 
@@ -156,8 +158,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
         visit idv_hybrid_mobile_document_capture_url
 
         expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
-        attach_images
-        attach_selfie
+        attach_liveness_images
         submit_images
 
         expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
@@ -328,7 +329,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
         warning_link_text = t('doc_auth.headings.capture_scan_warning_link')
         click_link warning_link_text
 
-        expect(current_path).to eq(idv_hybrid_handoff_path)
+        expect(page).to have_current_path(idv_hybrid_handoff_path, ignore_query: true)
         clear_and_fill_in(:doc_auth_phone, phone_number)
         click_send_link
       end
@@ -386,7 +387,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
         warning_link_text = t('doc_auth.headings.capture_scan_warning_link')
         click_link warning_link_text
 
-        expect(current_path).to eq(idv_hybrid_handoff_path)
+        expect(page).to have_current_path(idv_hybrid_handoff_path, ignore_query: true)
         clear_and_fill_in(:doc_auth_phone, phone_number)
         click_send_link
       end
@@ -431,7 +432,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
     user = create(:user, :with_authentication_app)
 
     perform_in_browser(:desktop) do
-      start_idv_from_sp(biometric_comparison_required: true)
+      start_idv_from_sp(facial_match_required: true)
       sign_in_and_2fa_user(user)
 
       complete_doc_auth_steps_before_hybrid_handoff_step

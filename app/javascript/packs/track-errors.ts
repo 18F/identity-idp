@@ -9,6 +9,6 @@ declare let window: WindowWithInitialErrors;
 const { _e: initialErrors } = window;
 
 const handleErrorEvent = (event: ErrorEvent) =>
-  isTrackableErrorEvent(event) && trackError(event.error, event);
+  isTrackableErrorEvent(event) && trackError(event.error, { filename: event.filename });
 initialErrors.forEach(handleErrorEvent);
 window.addEventListener('error', handleErrorEvent);

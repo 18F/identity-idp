@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 class Profile < ApplicationRecord
+  # IDV levels equivalent to facial match
+  FACIAL_MATCH_IDV_LEVELS = %w[unsupervised_with_selfie in_person].to_set.freeze
+  # Facial match through IAL2 opt-in flow
+  FACIAL_MATCH_OPT_IN = %w[unsupervised_with_selfie].to_set.freeze
+
   belongs_to :user
   # rubocop:disable Rails/InverseOf
   belongs_to :initiating_service_provider,
@@ -19,7 +24,7 @@ class Profile < ApplicationRecord
           class_name: 'InPersonEnrollment', foreign_key: :profile_id, inverse_of: :profile,
           dependent: :destroy
 
-  enum deactivation_reason: {
+  enum :deactivation_reason, {
     password_reset: 1,
     encryption_error: 2,
     gpo_verification_pending_NO_LONGER_USED: 3, # deprecated
@@ -27,12 +32,12 @@ class Profile < ApplicationRecord
     in_person_verification_pending_NO_LONGER_USED: 5, # deprecated
   }
 
-  enum fraud_pending_reason: {
+  enum :fraud_pending_reason, {
     threatmetrix_review: 1,
     threatmetrix_reject: 2,
   }
 
-  enum idv_level: {
+  enum :idv_level, {
     legacy_unsupervised: 1,
     legacy_in_person: 2,
     unsupervised_with_selfie: 3,
@@ -48,6 +53,14 @@ class Profile < ApplicationRecord
 
   def self.verified
     where.not(verified_at: nil)
+  end
+
+  def self.facial_match
+    where(idv_level: FACIAL_MATCH_IDV_LEVELS)
+  end
+
+  def self.facial_match_opt_in
+    where(idv_level: FACIAL_MATCH_OPT_IN)
   end
 
   def self.fraud_rejection
@@ -94,7 +107,7 @@ class Profile < ApplicationRecord
     now = Time.zone.now
     profile_to_deactivate = Profile.find_by(user_id: user_id, active: true)
     is_reproof = profile_to_deactivate.present?
-    is_biometric_upgrade = is_reproof && biometric? && !profile_to_deactivate.biometric?
+    is_facial_match_upgrade = is_reproof && facial_match? && !profile_to_deactivate.facial_match?
 
     attrs = {
       active: true,
@@ -107,7 +120,7 @@ class Profile < ApplicationRecord
       Profile.where(user_id: user_id).update_all(active: false)
       update!(attrs)
     end
-    track_biometric_reproof if is_biometric_upgrade
+    track_facial_match_reproof if is_facial_match_upgrade
     send_push_notifications if is_reproof
   end
   # rubocop:enable Rails/SkipsModelValidations
@@ -157,10 +170,6 @@ class Profile < ApplicationRecord
   def activate_after_passing_in_person
     transaction do
       update!(
-        fraud_review_pending_at: nil,
-        fraud_rejection_at: nil,
-        fraud_pending_reason: nil,
-        deactivation_reason: nil,
         in_person_verification_pending_at: nil,
       )
       activate
@@ -180,6 +189,20 @@ class Profile < ApplicationRecord
 
   def deactivate(reason)
     update!(active: false, deactivation_reason: reason)
+  end
+
+  # Update the profile's deactivation reason to "encryption_error". As a
+  # side-effect, when the profile has an associated pending in-person
+  # enrollment it will be updated to have a status of "cancelled".
+  def deactivate_due_to_encryption_error
+    update!(
+      active: false,
+      deactivation_reason: :encryption_error,
+    )
+
+    if in_person_enrollment&.pending?
+      in_person_enrollment.cancelled!
+    end
   end
 
   def fraud_deactivation_reason?
@@ -309,8 +332,8 @@ class Profile < ApplicationRecord
     (Time.zone.now - created_at).round
   end
 
-  def biometric?
-    ::User::BIOMETRIC_COMPARISON_IDV_LEVELS.include?(idv_level)
+  def facial_match?
+    FACIAL_MATCH_IDV_LEVELS.include?(idv_level)
   end
 
   private
@@ -341,8 +364,8 @@ class Profile < ApplicationRecord
     PushNotification::HttpPush.deliver(event)
   end
 
-  def track_biometric_reproof
-    SpUpgradedBiometricProfile.create(
+  def track_facial_match_reproof
+    SpUpgradedFacialMatchProfile.create(
       user: user,
       upgraded_at: Time.zone.now,
       idv_level: idv_level,

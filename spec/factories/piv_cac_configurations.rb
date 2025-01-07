@@ -3,7 +3,7 @@ FactoryBot.define do
 
   factory :piv_cac_configuration do
     name { Faker::Lorem.unique.words.join(' ') }
-    x509_dn_uuid { 'helloworld' }
+    x509_dn_uuid { Random.uuid }
     user
   end
 end

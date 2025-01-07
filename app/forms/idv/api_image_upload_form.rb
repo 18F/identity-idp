@@ -83,7 +83,7 @@ module Idv
         extra: extra_attributes,
       )
 
-      analytics.idv_doc_auth_submitted_image_upload_form(**response.to_h)
+      analytics.idv_doc_auth_submitted_image_upload_form(**response)
       response
     end
 
@@ -371,9 +371,9 @@ module Idv
           vendor_request_time_in_ms: vendor_request_time_in_ms,
           zip_code: zip_code,
           issue_year: issue_year,
-        ).except(:classification_info).
-        merge(acuant_sdk_upgrade_ab_test_data).
-        merge(processed_selfie_attempts_data),
+        ).except(:classification_info)
+        .merge(acuant_sdk_upgrade_ab_test_data)
+        .merge(processed_selfie_attempts_data),
       )
     end
 
@@ -403,31 +403,31 @@ module Idv
     end
 
     def image_metadata
-      @image_metadata ||= params.
-        permit(:front_image_metadata, :back_image_metadata, :selfie_image_metadata).to_h.
-        transform_values do |str|
+      @image_metadata ||= params
+        .permit(:front_image_metadata, :back_image_metadata, :selfie_image_metadata).to_h
+        .transform_values do |str|
           JSON.parse(str)
         rescue JSON::ParserError
           nil
-        end.
-        compact.
-        transform_keys { |key| key.gsub(/_image_metadata$/, '') }.
-        deep_symbolize_keys
+        end
+        .compact
+        .transform_keys { |key| key.gsub(/_image_metadata$/, '') }
+        .deep_symbolize_keys
     end
 
     def add_costs(response)
-      Db::AddDocumentVerificationAndSelfieCosts.
-        new(user_id: user_id,
-            service_provider: service_provider,
-            liveness_checking_enabled: liveness_checking_required).
-        call(response)
+      Db::AddDocumentVerificationAndSelfieCosts
+        .new(user_id: user_id,
+             service_provider: service_provider,
+             liveness_checking_enabled: liveness_checking_required)
+        .call(response)
     end
 
     def update_funnel(client_response)
       steps = %i[front_image back_image]
       steps.each do |step|
-        Funnel::DocAuth::RegisterStep.new(user_id, service_provider&.issuer).
-          call(step.to_s, :update, client_response.success?)
+        Funnel::DocAuth::RegisterStep.new(user_id, service_provider&.issuer)
+          .call(step.to_s, :update, client_response.success?)
       end
     end
 

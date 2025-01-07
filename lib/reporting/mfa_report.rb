@@ -182,7 +182,6 @@ module Reporting
   end
 end
 
-# rubocop:disable Rails/Output
 if __FILE__ == $PROGRAM_NAME
   options = Reporting::CommandLineOptions.new.parse!(ARGV)
 
@@ -190,4 +189,3 @@ if __FILE__ == $PROGRAM_NAME
     puts csv
   end
 end
-# rubocop:enable Rails/Output

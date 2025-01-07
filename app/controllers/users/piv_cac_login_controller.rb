@@ -54,7 +54,7 @@ module Users
       else
         process_invalid_submission
       end
-      analytics.piv_cac_login(**result.to_h, new_device: @new_device)
+      analytics.piv_cac_login(**result, new_device: @new_device)
     end
 
     def piv_cac_login_form

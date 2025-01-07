@@ -6,7 +6,7 @@ RSpec.describe Proofing::LexisNexis::RequestSigner do
   let(:timestamp) { Time.zone.now.strftime('%s%L') }
   let(:nonce) { SecureRandom.uuid }
   let(:config) do
-    OpenStruct.new(
+    Proofing::LexisNexis::Config.new(
       base_url: 'https://example.gov',
       hmac_key_id: 'KEY_ID',
       hmac_secret_key: 'SECRET_KEY',

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'idv/by_mail/letter_enqueued/show.html.erb' do
-  let(:service_provider) { '🔒🌐💻' }
+  let(:service_provider) { create(:service_provider) }
   let(:step_indicator_steps) { Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS_GPO }
 
   let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT }
@@ -34,7 +34,7 @@ RSpec.describe 'idv/by_mail/letter_enqueued/show.html.erb' do
   it 'renders the come back later message' do
     expect(rendered).to have_content(
       strip_tags(
-        t('idv.messages.come_back_later_html'),
+        t('idv.messages.come_back_later'),
       ),
     )
   end
@@ -51,10 +51,10 @@ RSpec.describe 'idv/by_mail/letter_enqueued/show.html.erb' do
   context 'without an SP' do
     let(:service_provider) { nil }
 
-    it 'renders a return to account button' do
+    it 'renders a return to Login.gov button' do
       expect(rendered).to have_link(
-        t('idv.buttons.continue_plain'),
-        href: account_path,
+        t('idv.cancel.actions.exit', app_name: APP_NAME),
+        href: marketing_site_redirect_path,
       )
     end
   end

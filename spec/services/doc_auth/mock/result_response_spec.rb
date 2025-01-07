@@ -20,8 +20,8 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.success?).to eq(true)
       expect(response.errors).to eq({})
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc.to_h).
-        to eq(Idp::Constants::MOCK_IDV_APPLICANT)
+      expect(response.pii_from_doc.to_h)
+        .to eq(Idp::Constants::MOCK_IDV_APPLICANT)
       expect(response.attention_with_barcode?).to eq(false)
       expect(response.selfie_status).to eq(:success)
     end
@@ -34,12 +34,15 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           first_name: Susan
           last_name: Smith
           middle_name: Q
+          name_suffix:
           address1: 1 Microsoft Way
           address2: Apt 3
           city: Bayside
           state: NY
           zipcode: '11364'
           dob: 1938-10-06
+          sex: female
+          height: 66
           state_id_number: '111111111'
           state_id_jurisdiction: ND
           state_id_type: drivers_license
@@ -58,12 +61,17 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           first_name: 'Susan',
           middle_name: 'Q',
           last_name: 'Smith',
+          name_suffix: nil,
           address1: '1 Microsoft Way',
           address2: 'Apt 3',
           city: 'Bayside',
           state: 'NY',
           zipcode: '11364',
           dob: '1938-10-06',
+          sex: 'female',
+          height: 66,
+          weight: nil,
+          eye_color: nil,
           state_id_number: '111111111',
           state_id_jurisdiction: 'ND',
           state_id_type: 'drivers_license',
@@ -202,8 +210,8 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.success?).to eq(true)
       expect(response.errors).to eq({})
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc.to_h).
-        to eq(Idp::Constants::MOCK_IDV_APPLICANT)
+      expect(response.pii_from_doc.to_h)
+        .to eq(Idp::Constants::MOCK_IDV_APPLICANT)
       expect(response.attention_with_barcode?).to eq(false)
     end
   end
@@ -277,13 +285,15 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           first_name: Susan
           last_name: Smith
           middle_name: Q
+          name_suffix:
           address1: 1 Microsoft Way
           address2: Apt 3
           city: Bayside
           state: NY
           zipcode: '11364'
           dob: 10/06/1938
-          phone: +1 314-555-1212
+          sex: female
+          height: 66
           state_id_number: '123456789'
           state_id_type: drivers_license
           state_id_jurisdiction: 'NY'
@@ -302,6 +312,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           first_name: 'Susan',
           middle_name: 'Q',
           last_name: 'Smith',
+          name_suffix: nil,
           address1: '1 Microsoft Way',
           address2: 'Apt 3',
           city: 'Bayside',
@@ -310,6 +321,10 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           state_id_number: '123456789',
           zipcode: '11364',
           dob: '1938-10-06',
+          sex: 'female',
+          height: 66,
+          weight: nil,
+          eye_color: nil,
           state_id_type: 'drivers_license',
           state_id_expiration: '2089-12-31',
           state_id_issued: '2009-12-31',
@@ -356,12 +371,17 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           first_name: 'Susan',
           middle_name: nil,
           last_name: 'MCFAKERSON',
+          name_suffix: 'JR',
           address1: '1 FAKE RD',
           address2: nil,
           city: 'GREAT FALLS',
           state: 'MT',
           zipcode: '59010-1234',
           dob: '1938-10-06',
+          sex: 'male',
+          height: 72,
+          weight: nil,
+          eye_color: nil,
           state_id_number: '1111111111111',
           state_id_jurisdiction: 'ND',
           state_id_type: 'drivers_license',
@@ -480,12 +500,15 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           first_name: Susan
           last_name: Smith
           middle_name: Q
+          name_suffix:
           address1: 1 Microsoft Way
           address2: Apt 3
           city: Bayside
           state: NY
           zipcode: 11364
           dob: 1938-10-06
+          sex: female
+          height: 66
           state_id_number: '111111111'
           state_id_jurisdiction: ND
           state_id_type: drivers_license
@@ -504,12 +527,17 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           first_name: 'Susan',
           middle_name: 'Q',
           last_name: 'Smith',
+          name_suffix: nil,
           address1: '1 Microsoft Way',
           address2: 'Apt 3',
           city: 'Bayside',
           state: 'NY',
           zipcode: '11364',
           dob: '1938-10-06',
+          sex: 'female',
+          height: 66,
+          weight: nil,
+          eye_color: nil,
           state_id_number: '111111111',
           state_id_jurisdiction: 'ND',
           state_id_type: 'drivers_license',

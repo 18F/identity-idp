@@ -35,9 +35,9 @@ class ServiceProvider < ApplicationRecord
   scope(
     :with_push_notification_urls,
     -> {
-      where.not(push_notification_url: nil).
-        where.not(push_notification_url: '').
-        where(active: true)
+      where.not(push_notification_url: nil)
+        .where.not(push_notification_url: '')
+        .where(active: true)
     },
   )
 
@@ -78,14 +78,8 @@ class ServiceProvider < ApplicationRecord
     IdentityConfig.store.allowed_ialmax_providers.include?(issuer)
   end
 
-  def biometric_ial_allowed?
-    IdentityConfig.store.biometric_ial_enabled &&
-      IdentityConfig.store.allowed_biometric_ial_providers.include?(issuer)
-  end
-
-  def semantic_authn_contexts_allowed?
-    IdentityConfig.store.feature_valid_authn_contexts_semantic_enabled &&
-      IdentityConfig.store.allowed_valid_authn_contexts_semantic_providers.include?(issuer)
+  def facial_match_ial_allowed?
+    IdentityConfig.store.facial_match_general_availability_enabled
   end
 
   private

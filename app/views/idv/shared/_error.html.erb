@@ -5,17 +5,24 @@ locals:
 * heading: Primary page heading text. Also used as page title if title is not given.
 * title: Optional custom page title, defaulting to the heading.
 * action: Optional hash of `text`, `url`, optional `method` of a primary action link.
-* action_secondary: Optional hash of `text`, `url`, optional `method` of a secondary action link.
+* secondary_action: Optional hash of `text`, `url`, optional `method` of a secondary action link.
 * current_step: Optionally identify the current step of the IdV flow. If provided, the step indicator will be rendered.
 * options: Array of troubleshooting options.
 %>
 <% if local_assigns.fetch(:type, :error) == :error
      icon_name = :error
-     troubleshooting_heading = t('idv.troubleshooting.headings.need_assistance')
-else
-  icon_name = :warning
-  troubleshooting_heading = t('components.troubleshooting_options.default_heading')
-end %>
+   else
+     icon_name = :warning
+   end
+
+   troubleshooting_heading = local_assigns.fetch(:troubleshooting_heading) do
+     if local_assigns.fetch(:type, :error) == :error
+       troubleshooting_heading = t('idv.troubleshooting.headings.need_assistance')
+     else
+       troubleshooting_heading = t('components.troubleshooting_options.default_heading')
+     end
+   end
+ %>
 
 <% self.title = local_assigns.fetch(:title, heading) %>
 
@@ -46,13 +53,23 @@ end %>
         ) %>
   </div>
 
-  <% if local_assigns[:action_secondary] %>
+  <% if local_assigns[:secondary_action] %>
+    <hr class="margin-top-5" />
+
+    <% if local_assigns[:secondary_action_heading] %>
+      <h1><%= local_assigns[:secondary_action_heading] %></h1>
+    <% end %>
+  
+    <% if local_assigns[:secondary_action_text] %>
+      <p><%= local_assigns[:secondary_action_text] %></p>
+    <% end %>
+
     <div class="margin-top-2">
       <%= button_or_link_to(
-            action_secondary[:text],
-            action_secondary[:url],
+            secondary_action[:text],
+            secondary_action[:url],
             class: 'usa-button usa-button--big usa-button--wide usa-button--outline',
-            method: action_secondary[:method],
+            method: secondary_action[:method],
           ) %>
     </div>
   <% end %>

@@ -10,10 +10,10 @@ RSpec.describe Idv::PleaseCallController do
 
   before do
     stub_sign_in(user)
-    allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
-      and_return(in_person_proofing_enabled)
-    allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx).
-      and_return(in_person_proofing_enforce_tmx)
+    allow(IdentityConfig.store).to receive(:in_person_proofing_enabled)
+      .and_return(in_person_proofing_enabled)
+    allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx)
+      .and_return(in_person_proofing_enforce_tmx)
   end
 
   render_views
@@ -62,10 +62,10 @@ RSpec.describe Idv::PleaseCallController do
     let!(:enrollment) { create(:in_person_enrollment, :passed, user: user, profile: profile) }
 
     before do
-      allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
-        and_return(in_person_proofing_enabled)
-      allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx).
-        and_return(in_person_proofing_enforce_tmx)
+      allow(IdentityConfig.store).to receive(:in_person_proofing_enabled)
+        .and_return(in_person_proofing_enabled)
+      allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx)
+        .and_return(in_person_proofing_enforce_tmx)
     end
 
     it 'renders the show template' do
@@ -116,10 +116,10 @@ RSpec.describe Idv::PleaseCallController do
       let!(:enrollment) { create(:in_person_enrollment, :passed, user: user, profile: profile) }
 
       before do
-        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
-          and_return(in_person_proofing_enabled)
-        allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx).
-          and_return(in_person_proofing_enforce_tmx)
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled)
+          .and_return(in_person_proofing_enabled)
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx)
+          .and_return(in_person_proofing_enforce_tmx)
       end
 
       it 'returns false from in_person_prevent_fraud_redirection' do

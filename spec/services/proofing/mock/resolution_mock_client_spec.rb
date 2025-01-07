@@ -164,7 +164,7 @@ RSpec.describe Proofing::Mock::ResolutionMockClient do
         expect(result.to_h).to eq(
           success: false,
           errors: {},
-          exception: Proofing::TimeoutError.new('address mock timeout'),
+          exception: Proofing::TimeoutError.new('resolution mock timeout'),
           timed_out: true,
           reference: reference,
           transaction_id: transaction_id,

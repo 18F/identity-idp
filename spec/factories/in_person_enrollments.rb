@@ -17,7 +17,12 @@ FactoryBot.define do
       status { :pending }
       status_updated_at { Time.zone.now }
       profile do
-        association(:profile, :in_person_verification_pending, user: user)
+        association(
+          :profile,
+          :in_person_verification_pending,
+          user: user,
+          in_person_enrollment: instance,
+        )
       end
     end
 
@@ -48,10 +53,6 @@ FactoryBot.define do
 
     trait :enhanced_ipp do
       sponsor_id { IdentityConfig.store.usps_eipp_sponsor_id }
-    end
-
-    trait :with_nil_sponsor_id do
-      sponsor_id { nil }
     end
   end
 end

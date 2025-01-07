@@ -25,7 +25,6 @@ describe('InPersonLocations', () => {
       saturdayHours: '9 AM - 6 PM',
       sundayHours: 'Closed',
       id: 1,
-      isPilot: false,
     },
     {
       name: 'test name',
@@ -36,7 +35,6 @@ describe('InPersonLocations', () => {
       saturdayHours: '10 AM - 5 PM',
       sundayHours: 'Closed',
       id: 1,
-      isPilot: false,
     },
   ];
 
@@ -88,6 +86,23 @@ describe('InPersonLocations', () => {
     expect(
       queryByText('in_person_proofing.body.location.po_search.results_instructions'),
     ).to.not.exist();
+  });
+
+  it('renders a header at the top of the results', () => {
+    const headingText = 'mock heading';
+    const testId = 'mock-heading';
+    const { getByTestId } = render(
+      <InPersonLocations
+        address={address}
+        locations={locations}
+        onSelect={onSelect}
+        noInPersonLocationsDisplay={NoLocationsViewMock}
+        resultsSectionHeading={() => <h2 data-testid={testId}>{headingText}</h2>}
+      />,
+    );
+
+    expect(getByTestId(testId)).to.exist();
+    expect(getByTestId(testId).textContent).to.equal(headingText);
   });
 
   context('when no locations are found', () => {

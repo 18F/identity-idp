@@ -50,6 +50,11 @@ module SamlIdpAuthConcern
     return if result.success?
 
     capture_analytics
+    track_integration_errors(
+      event: :saml_auth_request,
+      errors: result.errors.values.flatten,
+    )
+
     render 'saml_idp/auth/error', status: :bad_request
   end
 
@@ -131,9 +136,9 @@ module SamlIdpAuthConcern
   end
 
   def link_identity_from_session_data
-    IdentityLinker.
-      new(current_user, saml_request_service_provider).
-      link_identity(
+    IdentityLinker
+      .new(current_user, saml_request_service_provider)
+      .link_identity(
         ial: resolved_authn_context_int_ial,
         rails_session_id: session.id,
         email_address_id: email_address_id,
@@ -142,7 +147,9 @@ module SamlIdpAuthConcern
 
   def email_address_id
     return nil unless IdentityConfig.store.feature_select_email_to_share_enabled
-    return user_session[:selected_email_id] if user_session[:selected_email_id].present?
+    if user_session[:selected_email_id_for_linked_identity].present?
+      return user_session[:selected_email_id_for_linked_identity]
+    end
     identity = current_user.identities.find_by(service_provider: sp_session['issuer'])
     email_id = identity&.email_address_id
     return email_id if email_id.is_a? Integer
@@ -245,5 +252,15 @@ module SamlIdpAuthConcern
 
     url.query = Rack::Utils.build_query(query_params).presence
     url.to_s
+  end
+
+  def track_integration_errors(event:, errors: nil)
+    analytics.sp_integration_errors_present(
+      error_details: errors || saml_request.errors.uniq,
+      error_types: [:saml_request_errors],
+      event:,
+      integration_exists: saml_request_service_provider.present?,
+      request_issuer: saml_request&.issuer,
+    )
   end
 end

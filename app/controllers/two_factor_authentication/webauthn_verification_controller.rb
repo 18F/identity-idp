@@ -6,7 +6,6 @@ module TwoFactorAuthentication
     include TwoFactorAuthenticatable
     include NewDeviceConcern
 
-    before_action :check_sp_required_mfa
     before_action :confirm_webauthn_enabled, only: :show
 
     def show
@@ -85,9 +84,9 @@ module TwoFactorAuthentication
     end
 
     def credentials
-      webauthn_configurations.
-        select { |configuration| configuration.platform_authenticator? == platform_authenticator? }.
-        map do |configuration|
+      webauthn_configurations
+        .select { |configuration| configuration.platform_authenticator? == platform_authenticator? }
+        .map do |configuration|
           { id: configuration.credential_id, transports: configuration.transports }
         end
     end
@@ -103,8 +102,8 @@ module TwoFactorAuthentication
         context: context,
         multi_factor_auth_method: auth_method,
         webauthn_configuration_id: form&.webauthn_configuration&.id,
-        multi_factor_auth_method_created_at: form&.webauthn_configuration&.
-          created_at&.strftime('%s%L'),
+        multi_factor_auth_method_created_at: form&.webauthn_configuration
+          &.created_at&.strftime('%s%L'),
       }
     end
 
@@ -122,10 +121,6 @@ module TwoFactorAuthentication
         webauthn_error: params[:webauthn_error],
         screen_lock_error: params[:screen_lock_error],
       )
-    end
-
-    def check_sp_required_mfa
-      check_sp_required_mfa_bypass(auth_method: 'webauthn')
     end
 
     def platform_authenticator_param?

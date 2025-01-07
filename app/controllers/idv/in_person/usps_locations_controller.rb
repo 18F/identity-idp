@@ -63,12 +63,8 @@ module Idv
           sponsor_id: enrollment_sponsor_id,
         )
 
-        add_proofing_component
-
         render json: { success: true }, status: :ok
       end
-
-      private
 
       def idv_session
         if user_session && current_user
@@ -80,6 +76,8 @@ module Idv
         end
       end
 
+      private
+
       def document_capture_session
         if idv_session&.document_capture_session_uuid # standard flow
           DocumentCaptureSession.find_by(uuid: idv_session.document_capture_session_uuid)
@@ -90,12 +88,6 @@ module Idv
 
       def proofer
         @proofer ||= EnrollmentHelper.usps_proofer
-      end
-
-      def add_proofing_component
-        ProofingComponent.
-          create_or_find_by(user: current_or_hybrid_user).
-          update(document_check: Idp::Constants::Vendors::USPS)
       end
 
       def localized_locations(locations)

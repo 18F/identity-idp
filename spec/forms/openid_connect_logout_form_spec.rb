@@ -45,8 +45,8 @@ RSpec.describe OpenidConnectLogoutForm do
     let(:current_user) { nil }
 
     before do
-      allow(IdentityConfig.store).to receive(:reject_id_token_hint_in_logout).
-        and_return(false)
+      allow(IdentityConfig.store).to receive(:reject_id_token_hint_in_logout)
+        .and_return(false)
     end
 
     describe '#submit' do
@@ -144,20 +144,49 @@ RSpec.describe OpenidConnectLogoutForm do
 
           it 'is not valid' do
             expect(valid?).to eq(false)
-            expect(form.errors[:id_token_hint]).
-              to include(t('openid_connect.logout.errors.id_token_hint'))
+            expect(form.errors[:id_token_hint])
+              .to include(t('openid_connect.logout.errors.id_token_hint'))
+          end
+        end
+
+        context 'with a valid payload that was signed with the secondary OIDC key' do
+          let(:id_token_hint) do
+            JWT.encode(
+              { sub: identity.uuid, aud: identity.service_provider },
+              AppArtifacts.store.oidc_secondary_private_key, 'RS256'
+            )
+          end
+
+          it 'is valid' do
+            expect(valid?).to eq(true)
+          end
+        end
+
+        context 'with a payload that was signed with an invalid key' do
+          let(:id_token_hint) do
+            JWT.encode(
+              { sub: identity.uuid, aud: identity.service_provider },
+              OpenSSL::PKey::RSA.new(2048), 'RS256'
+            )
+          end
+
+          it 'is invalid' do
+            expect(valid?).to eq(false)
           end
         end
 
         context 'with a payload that does not correspond to an identity' do
           let(:id_token_hint) do
-            JWT.encode({ sub: '123', aud: '456' }, AppArtifacts.store.oidc_private_key, 'RS256')
+            JWT.encode(
+              { sub: '123', aud: '456' },
+              AppArtifacts.store.oidc_primary_private_key, 'RS256'
+            )
           end
 
           it 'is not valid' do
             expect(valid?).to eq(false)
-            expect(form.errors[:id_token_hint]).
-              to include(t('openid_connect.logout.errors.id_token_hint'))
+            expect(form.errors[:id_token_hint])
+              .to include(t('openid_connect.logout.errors.id_token_hint'))
           end
         end
 
@@ -192,8 +221,8 @@ RSpec.describe OpenidConnectLogoutForm do
 
           it 'is not valid' do
             expect(valid?).to eq(false)
-            expect(form.errors[:redirect_uri]).
-              to include(t('openid_connect.authorization.errors.redirect_uri_no_match'))
+            expect(form.errors[:redirect_uri])
+              .to include(t('openid_connect.authorization.errors.redirect_uri_no_match'))
           end
         end
       end
@@ -205,8 +234,8 @@ RSpec.describe OpenidConnectLogoutForm do
     let(:current_user) { nil }
 
     before do
-      allow(IdentityConfig.store).to receive(:reject_id_token_hint_in_logout).
-        and_return(true)
+      allow(IdentityConfig.store).to receive(:reject_id_token_hint_in_logout)
+        .and_return(true)
     end
 
     describe '#submit' do
@@ -292,8 +321,8 @@ RSpec.describe OpenidConnectLogoutForm do
 
           it 'is not valid' do
             expect(valid?).to eq(false)
-            expect(form.errors[:id_token_hint]).
-              to include(t('openid_connect.logout.errors.id_token_hint_present'))
+            expect(form.errors[:id_token_hint])
+              .to include(t('openid_connect.logout.errors.id_token_hint_present'))
           end
         end
       end
@@ -313,8 +342,8 @@ RSpec.describe OpenidConnectLogoutForm do
 
           it 'is not valid' do
             expect(valid?).to eq(false)
-            expect(form.errors[:redirect_uri]).
-              to include(t('openid_connect.authorization.errors.redirect_uri_no_match'))
+            expect(form.errors[:redirect_uri])
+              .to include(t('openid_connect.authorization.errors.redirect_uri_no_match'))
           end
         end
 
@@ -323,14 +352,14 @@ RSpec.describe OpenidConnectLogoutForm do
 
           it 'does not include error about redirect_uri' do
             expect(valid?).to eq(false)
-            expect(form.errors[:redirect_uri]).
-              not_to include(t('openid_connect.authorization.errors.redirect_uri_no_match'))
+            expect(form.errors[:redirect_uri])
+              .not_to include(t('openid_connect.authorization.errors.redirect_uri_no_match'))
           end
 
           it 'is not valid' do
             expect(valid?).to eq(false)
-            expect(form.errors[:client_id]).
-              to include(t('openid_connect.logout.errors.client_id_missing'))
+            expect(form.errors[:client_id])
+              .to include(t('openid_connect.logout.errors.client_id_missing'))
           end
         end
       end

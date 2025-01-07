@@ -9,8 +9,8 @@ RSpec.describe 'idv/enter_password/new.html.erb' do
     before do
       user = build_stubbed(:user, :fully_registered)
       allow(view).to receive(:current_user).and_return(user)
-      allow(view).to receive(:step_indicator_steps).
-        and_return(Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS)
+      allow(view).to receive(:step_indicator_steps)
+        .and_return(Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS)
       allow(view).to receive(:step_indicator_step).and_return(:re_enter_password)
     end
 

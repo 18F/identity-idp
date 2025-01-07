@@ -16,9 +16,9 @@ class IdTokenBuilder
   def id_token
     JWT.encode(
       jwt_payload,
-      AppArtifacts.store.oidc_private_key,
+      AppArtifacts.store.oidc_primary_private_key,
       'RS256',
-      kid: JWT::JWK.new(AppArtifacts.store.oidc_private_key).kid,
+      kid: JWT::JWK.new(AppArtifacts.store.oidc_primary_private_key).kid,
     )
   end
 
@@ -31,10 +31,10 @@ class IdTokenBuilder
   attr_reader :code
 
   def jwt_payload
-    OpenidConnectUserInfoPresenter.new(identity, session_accessor: session_accessor).
-      user_info.
-      merge(id_token_claims).
-      merge(timestamp_claims)
+    OpenidConnectUserInfoPresenter.new(identity, session_accessor: session_accessor)
+      .user_info
+      .merge(id_token_claims)
+      .merge(timestamp_claims)
   end
 
   def id_token_claims
@@ -63,16 +63,7 @@ class IdTokenBuilder
 
   def acr
     return nil unless identity.acr_values.present?
-
-    if resolved_authn_context_result.biometric_comparison?
-      Vot::AcrComponentValues::IAL2_BIO_REQUIRED.name
-    elsif resolved_authn_context_result.ialmax?
-      determine_ial_max_acr.name
-    elsif resolved_authn_context_result.identity_proofing?
-      Vot::AcrComponentValues::IAL2.name
-    else
-      Vot::AcrComponentValues::IAL1.name
-    end
+    resolved_authn_context.asserted_ial_acr
   end
 
   def sp_requests_vot?
@@ -82,7 +73,7 @@ class IdTokenBuilder
 
   def vot
     return nil unless sp_requests_vot?
-    resolved_authn_context_result.component_values.map(&:name).join('.')
+    resolved_authn_context.result.component_values.map(&:name).join('.')
   end
 
   def determine_ial_max_acr
@@ -93,13 +84,13 @@ class IdTokenBuilder
     end
   end
 
-  def resolved_authn_context_result
-    @resolved_authn_context_result ||= AuthnContextResolver.new(
+  def resolved_authn_context
+    @resolved_authn_context ||= AuthnContextResolver.new(
       user: identity.user,
       service_provider: identity.service_provider_record,
       vtr: parsed_vtr_value,
       acr_values: identity.acr_values,
-    ).result
+    )
   end
 
   def parsed_vtr_value

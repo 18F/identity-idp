@@ -9,8 +9,8 @@ class PendingProfilePolicy
   def user_has_pending_profile?
     return false if user.blank?
 
-    if biometric_comparison_requested?
-      pending_biometric_profile?
+    if facial_match_requested?
+      pending_facial_match_profile?
     else
       pending_legacy_profile? || fraud_review_pending?
     end
@@ -20,12 +20,12 @@ class PendingProfilePolicy
 
   attr_reader :user, :resolved_authn_context_result
 
-  def pending_biometric_profile?
+  def pending_facial_match_profile?
     user.pending_profile&.idv_level == 'unsupervised_with_selfie'
   end
 
-  def biometric_comparison_requested?
-    resolved_authn_context_result.biometric_comparison?
+  def facial_match_requested?
+    resolved_authn_context_result.facial_match?
   end
 
   def pending_legacy_profile?

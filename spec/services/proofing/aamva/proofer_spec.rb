@@ -3,7 +3,7 @@ require 'ostruct'
 
 RSpec.describe Proofing::Aamva::Proofer do
   let(:aamva_applicant) do
-    Aamva::Applicant.from_proofer_applicant(OpenStruct.new(state_id_data))
+    Aamva::Applicant.from_proofer_applicant(state_id_data)
   end
 
   let(:state_id_data) do
@@ -34,13 +34,13 @@ RSpec.describe Proofing::Aamva::Proofer do
   let(:verification_response) { AamvaFixtures.verification_response }
 
   before do
-    stub_request(:post, AamvaFixtures.example_config.auth_url).
-      to_return(
+    stub_request(:post, AamvaFixtures.example_config.auth_url)
+      .to_return(
         { body: AamvaFixtures.security_token_response },
         { body: AamvaFixtures.authentication_token_response },
       )
-    stub_request(:post, AamvaFixtures.example_config.verification_url).
-      to_return(body: verification_response)
+    stub_request(:post, AamvaFixtures.example_config.verification_url)
+      .to_return(body: verification_response)
   end
 
   describe '#proof' do
@@ -338,6 +338,108 @@ RSpec.describe Proofing::Aamva::Proofer do
           test_not_in_verified_attributes
         end
       end
+
+      describe '#middle_name' do
+        let(:attribute) { :middle_name }
+        let(:match_indicator_name) { 'PersonMiddleNameExactMatchIndicator' }
+
+        when_unverified do
+          test_still_successful
+          test_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+
+        when_missing do
+          test_still_successful
+          test_not_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+      end
+
+      describe '#name_suffix' do
+        let(:attribute) { :name_suffix }
+        let(:match_indicator_name) { 'PersonNameSuffixMatchIndicator' }
+
+        when_unverified do
+          test_still_successful
+          test_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+
+        when_missing do
+          test_still_successful
+          test_not_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+      end
+
+      describe '#height' do
+        let(:attribute) { :height }
+        let(:match_indicator_name) { 'PersonHeightMatchIndicator' }
+
+        when_unverified do
+          test_still_successful
+          test_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+
+        when_missing do
+          test_still_successful
+          test_not_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+      end
+
+      describe '#sex' do
+        let(:attribute) { :sex }
+        let(:match_indicator_name) { 'PersonSexCodeMatchIndicator' }
+
+        when_unverified do
+          test_still_successful
+          test_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+
+        when_missing do
+          test_still_successful
+          test_not_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+      end
+
+      describe '#weight' do
+        let(:attribute) { :weight }
+        let(:match_indicator_name) { 'PersonWeightMatchIndicator' }
+
+        when_unverified do
+          test_still_successful
+          test_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+
+        when_missing do
+          test_still_successful
+          test_not_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+      end
+
+      describe '#eye_color' do
+        let(:attribute) { :eye_color }
+        let(:match_indicator_name) { 'PersonEyeColorMatchIndicator' }
+
+        when_unverified do
+          test_still_successful
+          test_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+
+        when_missing do
+          test_still_successful
+          test_not_in_requested_attributes
+          test_not_in_verified_attributes
+        end
+      end
     end
 
     context 'when verification is successful' do
@@ -361,7 +463,13 @@ RSpec.describe Proofing::Aamva::Proofer do
             state_id_type
             last_name
             first_name
+            middle_name
+            name_suffix
             address
+            height
+            sex
+            weight
+            eye_color
           ].to_set,
         )
       end
@@ -377,7 +485,13 @@ RSpec.describe Proofing::Aamva::Proofer do
             state_id_type: 1,
             last_name: 1,
             first_name: 1,
+            middle_name: 1,
+            name_suffix: 1,
             address: 1,
+            height: 1,
+            sex: 1,
+            weight: 1,
+            eye_color: 1,
           },
         )
       end
@@ -410,7 +524,13 @@ RSpec.describe Proofing::Aamva::Proofer do
             state_id_type
             last_name
             first_name
+            middle_name
+            name_suffix
             address
+            height
+            sex
+            weight
+            eye_color
           ].to_set,
         )
       end
@@ -426,7 +546,13 @@ RSpec.describe Proofing::Aamva::Proofer do
             state_id_type: 1,
             last_name: 1,
             first_name: 1,
+            middle_name: 1,
+            name_suffix: 1,
             address: 1,
+            height: 1,
+            sex: 1,
+            weight: 1,
+            eye_color: 1,
           },
         )
       end
@@ -458,7 +584,13 @@ RSpec.describe Proofing::Aamva::Proofer do
             state_id_type
             last_name
             first_name
+            middle_name
+            name_suffix
             address
+            height
+            sex
+            weight
+            eye_color
           ].to_set,
         )
       end
@@ -473,7 +605,13 @@ RSpec.describe Proofing::Aamva::Proofer do
             state_id_type: 1,
             last_name: 1,
             first_name: 1,
+            middle_name: 1,
+            name_suffix: 1,
             address: 1,
+            height: 1,
+            sex: 1,
+            weight: 1,
+            eye_color: 1,
           },
         )
       end
@@ -507,8 +645,8 @@ RSpec.describe Proofing::Aamva::Proofer do
       let(:exception) { RuntimeError.new }
 
       before do
-        allow_any_instance_of(::Proofing::Aamva::Request::VerificationRequest).
-          to receive(:send).and_raise(exception)
+        allow_any_instance_of(::Proofing::Aamva::Request::VerificationRequest)
+          .to receive(:send).and_raise(exception)
       end
 
       it 'logs to NewRelic' do
@@ -599,13 +737,25 @@ RSpec.describe Proofing::Aamva::Proofer do
           expect(result.mva_timeout?).to eq(true)
           expect(result.mva_exception?).to eq(true)
         end
+
+        context 'when the DMV is in a defined maintenance window' do
+          before do
+            expect(Idv::AamvaStateMaintenanceWindow).to receive(:in_maintenance_window?)
+              .and_return(true)
+          end
+
+          it 'sets jurisdiction_in_maintenance_window to true' do
+            result = subject.proof(state_id_data)
+            expect(result.jurisdiction_in_maintenance_window?).to eq(true)
+          end
+        end
       end
     end
 
     context 'when the DMV is in a defined maintenance window' do
       before do
-        expect(Idv::AamvaStateMaintenanceWindow).to receive(:in_maintenance_window?).
-          and_return(true)
+        expect(Idv::AamvaStateMaintenanceWindow).to receive(:in_maintenance_window?)
+          .and_return(true)
       end
 
       it 'sets jurisdiction_in_maintenance_window to true' do
@@ -616,8 +766,8 @@ RSpec.describe Proofing::Aamva::Proofer do
 
     context 'when the DMV is not in a defined maintenance window' do
       before do
-        expect(Idv::AamvaStateMaintenanceWindow).to receive(:in_maintenance_window?).
-          and_return(false)
+        expect(Idv::AamvaStateMaintenanceWindow).to receive(:in_maintenance_window?)
+          .and_return(false)
       end
 
       it 'sets jurisdiction_in_maintenance_window to false' do

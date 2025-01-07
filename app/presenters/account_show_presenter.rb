@@ -9,7 +9,7 @@ class AccountShowPresenter
               :authn_context,
               :sp_name
 
-  delegate :identity_verified_with_biometric_comparison?, to: :user
+  delegate :identity_verified_with_facial_match?, to: :user
 
   def initialize(
     decrypted_pii:,
@@ -54,7 +54,7 @@ class AccountShowPresenter
     return @active_profile_for_authn_context if defined?(@active_profile_for_authn_context)
 
     @active_profile_for_authn_context = active_profile? && (
-      !authn_context.biometric_comparison? || identity_verified_with_biometric_comparison?
+      !authn_context.facial_match? || identity_verified_with_facial_match?
     )
   end
 
@@ -78,8 +78,29 @@ class AccountShowPresenter
     I18n.l(user.pending_in_person_enrollment.due_date, format: :event_date)
   end
 
-  def formatted_nonbiometric_idv_date
+  def formatted_legacy_idv_date
     I18n.l(user.active_profile.created_at, format: :event_date)
+  end
+
+  def initiating_idv_sp
+    @initiating_idv_sp ||= user.active_profile&.initiating_service_provider
+  end
+
+  def initiating_idv_sp_name
+    initiating_idv_sp&.friendly_name
+  end
+
+  def connect_to_initiating_idv_sp_url
+    return nil if !initiating_idv_sp.present?
+
+    SpReturnUrlResolver.new(service_provider: initiating_idv_sp).post_idv_follow_up_url
+  end
+
+  def connected_to_initiating_idv_sp?
+    return false if !initiating_idv_sp.present?
+
+    identity = user.identities.find_by(service_provider: initiating_idv_sp.issuer)
+    !!identity&.last_ial2_authenticated_at.present?
   end
 
   def show_unphishable_badge?
@@ -105,7 +126,7 @@ class AccountShowPresenter
   def header_personalization
     return decrypted_pii.first_name if decrypted_pii.present?
 
-    EmailContext.new(user).last_sign_in_email_address.email
+    user.last_sign_in_email_address.email
   end
 
   def totp_content

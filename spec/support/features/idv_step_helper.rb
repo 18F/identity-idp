@@ -13,9 +13,9 @@ module IdvStepHelper
     end
   end
 
-  def start_idv_from_sp(sp = :oidc, biometric_comparison_required: nil)
+  def start_idv_from_sp(sp = :oidc, facial_match_required: nil)
     if sp.present?
-      visit_idp_from_sp_with_ial2(sp, biometric_comparison_required:)
+      visit_idp_from_sp_with_ial2(sp, facial_match_required:)
     else
       visit root_path
     end
@@ -64,10 +64,6 @@ module IdvStepHelper
     click_link t('in_person_proofing.body.barcode.learn_more')
   end
 
-  def visit_sp_from_in_person_ready_to_verify
-    click_sp_link_in_person_ready_to_verify
-  end
-
   def sp_friendly_name
     'Test SP'
   end
@@ -76,13 +72,9 @@ module IdvStepHelper
     t('in_person_proofing.body.barcode.return_to_partner_link', sp_name: sp_friendly_name)
   end
 
-  def click_sp_link_in_person_ready_to_verify
-    expect(page).to have_content(sp_text)
+  def visit_sp_from_in_person_ready_to_verify
+    expect(page).to have_content(link_text)
     click_link(link_text)
-  end
-
-  def sp_text
-    t('in_person_proofing.body.barcode.return_to_partner_html', link_html: link_text)
   end
 
   def complete_enter_password_step(user = user_with_2fa)
@@ -109,14 +101,6 @@ module IdvStepHelper
     password = user.password || user_password
     fill_in 'Password', with: password
     click_continue
-  end
-
-  def complete_idv_steps_before_confirmation_step(address_verification_mechanism = :phone)
-    if address_verification_mechanism == :phone
-      complete_idv_steps_with_phone_before_confirmation_step
-    else
-      complete_idv_steps_with_gpo_before_confirmation_step
-    end
   end
 
   def complete_idv_steps_before_step(step, user = user_with_2fa)
@@ -149,15 +133,5 @@ module IdvStepHelper
     # state ID page
     fill_out_state_id_form_ok(same_address_as_id: true)
     click_idv_continue
-  end
-
-  private
-
-  def stub_idv_session(**session_attributes)
-    allow(Idv::Session).to receive(:new).and_wrap_original do |original, kwargs|
-      result = original.call(**kwargs)
-      kwargs[:user_session][:idv].merge!(session_attributes)
-      result
-    end
   end
 end

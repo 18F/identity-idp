@@ -2,7 +2,8 @@ require 'rails_helper'
 
 RSpec.describe SamlRequestValidator do
   describe '#call' do
-    let(:sp) { ServiceProvider.find_by(issuer: 'http://localhost:3000') }
+    let(:issuer) { 'http://localhost:3000' }
+    let(:sp) { ServiceProvider.find_by(issuer:) }
     let(:name_id_format) { Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT }
     let(:authn_context) { [Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF] }
     let(:comparison) { 'exact' }
@@ -34,12 +35,55 @@ RSpec.describe SamlRequestValidator do
     end
 
     context 'valid authn context and sp and authorized nameID format' do
-      it 'returns FormResponse with success: true' do
-        expect(response.to_h).to include(
-          success: true,
-          errors: {},
-          **extra,
-        )
+      [
+        Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+        Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
+      ].each do |ial_value|
+        let(:authn_context) { [ial_value] }
+        it 'returns FormResponse with success: true' do
+          expect(response.to_h).to include(
+            success: true,
+            errors: {},
+            **extra,
+          )
+        end
+      end
+
+      context 'when the sp has no certs registered' do
+        before { sp.update!(certs: nil) }
+
+        context 'when it has block_encryption turned on' do
+          before { sp.update!(block_encryption: 'aes256-cbc') }
+          let(:errors) do
+            {
+              service_provider: [t('errors.messages.no_cert_registered')],
+            }
+          end
+          let(:error_details) do
+            {
+              service_provider: {
+                no_cert_registered: true,
+              },
+            }
+          end
+
+          it 'returns an error' do
+            expect(response.to_h).to include(
+              errors:,
+              error_details:,
+            )
+          end
+        end
+
+        context 'when block encryption is not turned on' do
+          it 'is valid' do
+            expect(response.to_h).to include(
+              success: true,
+              errors: {},
+              **extra,
+            )
+          end
+        end
       end
 
       context 'ialmax authncontext and ialmax provider' do
@@ -56,6 +100,17 @@ RSpec.describe SamlRequestValidator do
             **extra,
           )
         end
+      end
+    end
+
+    context 'no authn context and valid sp and authorized nameID format' do
+      let(:authn_context) { [] }
+      it 'returns FormResponse with success: true' do
+        expect(response.to_h).to include(
+          success: true,
+          errors: {},
+          **extra,
+        )
       end
     end
 
@@ -180,8 +235,8 @@ RSpec.describe SamlRequestValidator do
       end
     end
 
-    context 'invalid authn context and valid sp and authorized nameID format' do
-      context 'unknown auth context' do
+    context 'unknown context and valid sp and authorized nameID format' do
+      context 'only the unknown authn_context is requested' do
         let(:authn_context) { ['IAL1'] }
 
         it 'returns FormResponse with success: false' do
@@ -196,22 +251,39 @@ RSpec.describe SamlRequestValidator do
             **extra,
           )
         end
+
+        context 'unknown authn_context requested along with a valid one' do
+          let(:authn_context) { ['IAL1', Saml::Idp::Constants::IAL_AUTH_ONLY_ACR] }
+
+          it 'returns FormResponse with success: true' do
+            expect(response.to_h).to include(
+              success: true,
+              errors: {},
+              **extra,
+            )
+          end
+        end
       end
 
       context 'authn context is ial2 when sp is ial 1' do
-        let(:authn_context) { [Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF] }
+        [
+          Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+          Saml::Idp::Constants::IAL_VERIFIED_ACR,
+        ].each do |ial_value|
+          let(:authn_context) { [ial_value] }
 
-        it 'returns FormResponse with success: false' do
-          errors = {
-            authn_context: [t('errors.messages.unauthorized_authn_context')],
-          }
+          it 'returns FormResponse with success: false' do
+            errors = {
+              authn_context: [t('errors.messages.unauthorized_authn_context')],
+            }
 
-          expect(response.to_h).to include(
-            success: false,
-            errors: errors,
-            error_details: hash_including(*errors.keys),
-            **extra,
-          )
+            expect(response.to_h).to include(
+              success: false,
+              errors: errors,
+              error_details: hash_including(*errors.keys),
+              **extra,
+            )
+          end
         end
       end
 
@@ -232,16 +304,15 @@ RSpec.describe SamlRequestValidator do
         end
       end
 
-      shared_examples 'allows biometric IAL only if sp is authorized' do |biometric_ial|
-        let(:authn_context) { [biometric_ial] }
+      shared_examples 'allows facial match IAL only if sp is authorized' do |facial_match_ial|
+        let(:authn_context) { [facial_match_ial] }
 
-        context "when the IAL requested is #{biometric_ial}" do
-          context 'when the service provider is allowed to use biometric ials' do
-            let(:sp) { create(:service_provider, :idv) }
-
+        context "when the IAL requested is #{facial_match_ial}" do
+          context 'when the service provider is allowed to use facial match ials' do
             before do
-              allow_any_instance_of(ServiceProvider).to receive(:biometric_ial_allowed?).
-                and_return(true)
+              sp.update(ial: 2)
+              allow_any_instance_of(ServiceProvider).to receive(:facial_match_ial_allowed?)
+                .and_return(true)
             end
 
             it 'returns a successful response' do
@@ -253,10 +324,10 @@ RSpec.describe SamlRequestValidator do
             end
           end
 
-          context 'when the service provider is not allowed to use biometric ials' do
+          context 'when the service provider is not allowed to use facial match ials' do
             before do
-              allow_any_instance_of(ServiceProvider).to receive(:biometric_ial_allowed?).
-                and_return(false)
+              allow_any_instance_of(ServiceProvider).to receive(:facial_match_ial_allowed?)
+                .and_return(false)
             end
 
             it 'fails with an unauthorized error' do
@@ -275,50 +346,31 @@ RSpec.describe SamlRequestValidator do
         end
       end
 
-      it_behaves_like 'allows biometric IAL only if sp is authorized',
+      it_behaves_like 'allows facial match IAL only if sp is authorized',
                       Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
 
-      it_behaves_like 'allows biometric IAL only if sp is authorized',
+      it_behaves_like 'allows facial match IAL only if sp is authorized',
                       Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF
+
+      it_behaves_like 'allows facial match IAL only if sp is authorized',
+                      Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_PREFERRED_ACR
+
+      it_behaves_like 'allows facial match IAL only if sp is authorized',
+                      Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR
 
       shared_examples 'allows semantic IAL only if sp is authorized' do |semantic_ial|
         let(:authn_context) { [semantic_ial] }
 
         context "when the IAL requested is #{semantic_ial}" do
           context 'when the service provider is allowed to use semantic ials' do
-            let(:sp) { create(:service_provider, :idv) }
-
             before do
-              allow_any_instance_of(ServiceProvider).
-                to receive(:semantic_authn_contexts_allowed?).
-                and_return(true)
+              sp.update(ial: 2)
             end
 
             it 'returns a successful response' do
               expect(response.to_h).to include(
                 success: true,
                 errors: {},
-                **extra,
-              )
-            end
-          end
-
-          context 'when the service provider is not allowed to use semantic ials' do
-            before do
-              allow_any_instance_of(ServiceProvider).
-                to receive(:semantic_authn_contexts_allowed?).
-                and_return(false)
-            end
-
-            it 'fails with an unauthorized error' do
-              errors = {
-                authn_context: [t('errors.messages.unauthorized_authn_context')],
-              }
-
-              expect(response.to_h).to include(
-                success: false,
-                errors: errors,
-                error_details: hash_including(*errors.keys),
                 **extra,
               )
             end

@@ -10,7 +10,8 @@ module Idv
 
     before_action :confirm_not_rate_limited_after_doc_auth
     before_action :confirm_step_allowed
-    before_action :override_csp_for_threat_metrix
+    before_action :override_csp_for_threat_metrix,
+                  if: -> { FeatureManagement.proofing_device_profiling_collecting_enabled? }
 
     attr_reader :ssn_presenter
 
@@ -28,8 +29,8 @@ module Idv
       end
       analytics.idv_doc_auth_ssn_visited(**analytics_arguments)
 
-      Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
-        call('ssn', :view, true)
+      Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer])
+        .call('ssn', :view, true)
 
       render 'idv/shared/ssn', locals: threatmetrix_view_variables(ssn_presenter.updating_ssn?)
     end
@@ -43,17 +44,19 @@ module Idv
         ssn_form: ssn_form,
         step_indicator_steps: step_indicator_steps,
       )
-      analytics.idv_doc_auth_ssn_submitted(
-        **analytics_arguments.merge(form_response.to_h),
-      )
 
       if form_response.success?
+        idv_session.previous_ssn = idv_session.ssn
         idv_session.ssn = params[:doc_auth][:ssn]
         redirect_to next_url
       else
         flash[:error] = form_response.first_error_message
         render 'idv/shared/ssn', locals: threatmetrix_view_variables(ssn_presenter.updating_ssn?)
       end
+
+      analytics.idv_doc_auth_ssn_submitted(
+        **analytics_arguments.merge(form_response.to_h),
+      )
     end
 
     def self.step_info
@@ -81,6 +84,7 @@ module Idv
         flow_path: idv_session.flow_path,
         step: 'ssn',
         analytics_id: 'Doc Auth',
+        previous_ssn_edit_distance: previous_ssn_edit_distance,
       }.merge(ab_test_analytics_buckets)
     end
   end

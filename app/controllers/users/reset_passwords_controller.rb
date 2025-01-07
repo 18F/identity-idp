@@ -15,7 +15,7 @@ module Users
       @password_reset_email_form = PasswordResetEmailForm.new(email)
       result = @password_reset_email_form.submit
 
-      analytics.password_reset_email(**result.to_h)
+      analytics.password_reset_email(**result)
 
       if result.success?
         handle_valid_email
@@ -30,7 +30,7 @@ module Users
       else
         result = PasswordResetTokenValidator.new(token_user).submit
 
-        analytics.password_reset_token(**result.to_h)
+        analytics.password_reset_token(**result)
         if result.success?
           @reset_password_form = ResetPasswordForm.new(user: build_user)
           @forbidden_passwords = forbidden_passwords(token_user.email_addresses)
@@ -40,14 +40,13 @@ module Users
       end
     end
 
-    # PUT /resource/password
     def update
       self.resource = user_matching_token(user_params[:reset_password_token])
       @reset_password_form = ResetPasswordForm.new(user: resource)
 
       result = @reset_password_form.submit(user_params)
 
-      analytics.password_reset_password(**result.to_h)
+      analytics.password_reset_password(**result)
 
       if result.success?
         session.delete(:reset_password_token)
@@ -158,8 +157,8 @@ module Users
     end
 
     def user_params
-      params.require(:reset_password_form).
-        permit(:password, :password_confirmation, :reset_password_token)
+      params.require(:reset_password_form)
+        .permit(:password, :password_confirmation, :reset_password_token)
     end
 
     def assert_reset_token_passed

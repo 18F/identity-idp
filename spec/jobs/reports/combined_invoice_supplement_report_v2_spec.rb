@@ -51,8 +51,13 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
 
         let(:user2) { create(:user, profiles: [profile2]) }
         let(:profile2) { build(:profile, verified_at: DateTime.new(2018, 6, 1).utc) }
+        let(:report_date) { inside_iaa1 }
 
-        let(:csv) { CSV.parse(report.perform(Time.zone.today), headers: true) }
+        let(:csv) do
+          travel_to report_date do
+            CSV.parse(report.perform(report_date), headers: true)
+          end
+        end
 
         before do
           iaa_order1.integrations << build_integration(
@@ -140,6 +145,14 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
             expect(row['issuer_unique_users'].to_i).to eq(2)
           end
         end
+
+        context 'when IAA ended more than 90 days ago' do
+          let(:report_date) { iaa1_range.end + 90.days }
+
+          it 'is excluded from the report' do
+            expect(csv.length).to eq(0)
+          end
+        end
       end
 
       context 'with an IAA with two issuers in September 2020' do
@@ -206,7 +219,11 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
         let(:user10) { create(:user, profiles: [profile10]) }
         let(:profile10) { build(:profile, verified_at: DateTime.new(2015, 1, 1).utc) }
 
-        let(:csv) { CSV.parse(report.perform(Time.zone.today), headers: true) }
+        let(:csv) do
+          travel_to inside_iaa2 do
+            CSV.parse(report.perform(Time.zone.today), headers: true)
+          end
+        end
 
         before do
           iaa_order2.integrations << build_integration(
@@ -385,6 +402,7 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
         let(:partner_account3) { create(:partner_account) }
 
         let(:iaa3_range) { DateTime.new(2020, 9, 1).utc..DateTime.new(2021, 8, 30).utc }
+        let(:inside_iaa3) { iaa3_range.begin + 1.day }
 
         let(:gtc3) do
           create(
@@ -417,7 +435,11 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
         let(:user12) { create(:user, profiles: [profile12]) }
         let(:profile12) { build(:profile, verified_at: DateTime.new(2017, 9, 10).utc) }
 
-        let(:csv) { CSV.parse(report.perform(Time.zone.today), headers: true) }
+        let(:csv) do
+          travel_to inside_iaa3 do
+            CSV.parse(report.perform(Time.zone.today), headers: true)
+          end
+        end
 
         before do
           iaa_order3.integrations << build_integration(

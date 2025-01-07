@@ -53,10 +53,6 @@ eliminate the effort involved with applying correct formatting. As a reviewer, i
 debates over code style, since there is a consistent style being enforced through the adopted
 tooling.
 
-Prettier works reasonably well in combination with Airbnb's JavaScript standards. In the few cases
-where conflicts occur, formatting rules may be disabled to err toward Prettier conventions when an
-option is not configurable.
-
 Prettier is integrated with [the project's linting setup](#eslint). Most issues can be resolved
 automatically by running `yarn run lint --fix`. You may also consider one of the
 [available editor integrations](https://prettier.io/docs/en/editors.html), which can simplify your
@@ -159,6 +155,30 @@ how [`Idv::AnalyticsEventEnhancer`][analytics_events_enhancer.rb] is implemented
 [data_attributes]: https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes
 [analytics_events_enhancer.rb]: https://github.com/18F/identity-idp/blob/main/app/services/idv/analytics_events_enhancer.rb
 
+## Image Assets
+
+When possible, use SVG format for images, as these render at higher quality and with a smaller file
+size. Most images in the project are either illustrations or icons, which are ideal for vector image
+formats (SVG).
+
+There are few exceptions to this, such as [images used in emails][email-images] needing to be in a
+raster format (PNG) due to lack of SVG support in popular email clients. Logos for relying parties
+may also be rendered in formats other than SVG, since these are provided to us by partners.
+
+Image assets saved in source control should be optimized using a lossless image optimizer before
+being committed, to ensure they're served to users at the lowest possible file size. This is
+[enforced automatically for SVG images][lint-optimized-assets], but must be done manually for other
+image types. Consider using a tool like [Squoosh][squoosh] (web) or [ImageOptim][image-optim]
+(macOS) for these other image types.
+
+Since images, GIFs, and videos are artifacts authored in other tools, there is no need to keep
+multiple variants of an asset (e.g., SVG and PNG) in the repository if they are not in use.
+
+[email-images]: https://github.com/18F/identity-idp/tree/main/app/assets/images/email
+[lint-optimized-assets]: https://github.com/18F/identity-idp/blob/a1b4c5687739c080cb1d8c66db01956c87b63792/Makefile#L250-L251
+[squoosh]: https://squoosh.app/
+[imageoptim]: https://imageoptim.com/mac
+
 ## Components
 
 ### Design System
@@ -178,6 +198,14 @@ The [ViewComponent gem](https://viewcomponent.org/) is a framework for creating 
 and independent view components, rendered server-side.
 
 For more information, refer to the [components `README.md`](../app/components/README.md).
+
+To preview components and their available options, we use [Lookbook](https://lookbook.build/) to
+generate a navigable index of our available components. These previews are available at the [`/components/` route](http://localhost:3000/components/)
+in local development, review applications, and in the `dev` environment. When adding a new component
+or an option to an existing component, you should also make this component or option available in
+Lookbook previews, found under [`spec/components/previews`](https://github.com/18F/identity-idp/tree/main/spec/components/previews).
+Refer to [Lookbook's _Previews Overview_ documentation](https://lookbook.build/guide/previews) for
+more information on how to author Lookbook previews.
 
 #### React
 
@@ -373,10 +401,14 @@ Each error includes a few details to help you debug:
 - `message`: Corresponds to [`Error#message`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/message), and is usually a good summary to group by
 - `name`: The subclass of the error (e.g. `TypeError`)
 - `stack`: A stacktrace of the individual error instance
+- `filename`: The URL of the script where the error was raised, if it's an uncaught error
+- `error_id`: A unique identifier for tracing caught errors explicitly tracked
 
 Note that NewRelic creates links in stack traces which are invalid, since they include the line and column number. If you encounter an "AccessDenied" error when clicking a stacktrace link, make sure to remove those details after the `.js` in your browser URL.
 
-Debugging these stack traces can be difficult, since files in production are minified, and the stack traces include line numbers and columns for minified files. With the following steps, you can find a reference to the original code:
+If an error includes `error_id`, you can use this to search in code for the corresponding call to `trackError` including that value as its `errorId` to trace where the error occurred.
+
+Otherwise, debugging these stack traces can be difficult, since files in production are minified, and the stack traces include line numbers and columns for minified files. With the following steps, you can find a reference to the original code:
 
 1. Download the minified JavaScript file referenced in the stack trace
    - Example: https://secure.login.gov/packs/document-capture-e41c853e.digested.js

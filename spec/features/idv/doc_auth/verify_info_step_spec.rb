@@ -1,23 +1,22 @@
 require 'rails_helper'
 
-RSpec.feature 'verify_info step and verify_info_concern', :js, allowed_extra_analytics: [:*] do
+RSpec.feature 'verify_info step and verify_info_concern', :js do
   include IdvStepHelper
   include DocAuthHelper
 
   let(:fake_analytics) { FakeAnalytics.new }
   let(:user) { user_with_2fa }
 
-  # values from Idp::Constants::MOCK_IDV_APPLICANT
   let(:fake_pii_details) do
     {
-      document_state: 'MT',
-      document_number: '1111111111111',
-      document_issued: '2019-12-31',
-      document_expiration: '2099-12-31',
-      first_name: 'FAKEY',
-      last_name: 'MCFAKERSON',
-      date_of_birth: '1938-10-06',
-      address: '1 FAKE RD',
+      document_state: MOCK_IDV_APPLICANT[:state],
+      document_number: MOCK_IDV_APPLICANT[:state_id_number],
+      document_issued: MOCK_IDV_APPLICANT[:state_id_issued],
+      document_expiration: MOCK_IDV_APPLICANT[:state_id_expiration],
+      first_name: MOCK_IDV_APPLICANT[:first_name],
+      last_name: MOCK_IDV_APPLICANT[:last_name],
+      date_of_birth: MOCK_IDV_APPLICANT[:dob],
+      address: MOCK_IDV_APPLICANT[:address1],
     }
   end
 
@@ -123,8 +122,8 @@ RSpec.feature 'verify_info step and verify_info_concern', :js, allowed_extra_ana
   context 'resolution rate limiting' do
     let(:max_resolution_attempts) { 3 }
     before do
-      allow(IdentityConfig.store).to receive(:idv_max_attempts).
-        and_return(max_resolution_attempts)
+      allow(IdentityConfig.store).to receive(:idv_max_attempts)
+        .and_return(max_resolution_attempts)
 
       fill_out_ssn_form_with_ssn_that_fails_resolution
       click_idv_continue
@@ -184,11 +183,11 @@ RSpec.feature 'verify_info step and verify_info_concern', :js, allowed_extra_ana
     let(:max_ssn_attempts) { 3 }
 
     before do
-      allow(IdentityConfig.store).to receive(:idv_max_attempts).
-        and_return(max_resolution_attempts)
+      allow(IdentityConfig.store).to receive(:idv_max_attempts)
+        .and_return(max_resolution_attempts)
 
-      allow(IdentityConfig.store).to receive(:proof_ssn_max_attempts).
-        and_return(max_ssn_attempts)
+      allow(IdentityConfig.store).to receive(:proof_ssn_max_attempts)
+        .and_return(max_ssn_attempts)
 
       fill_out_ssn_form_with_ssn_that_fails_resolution
       click_idv_continue
@@ -247,7 +246,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js, allowed_extra_ana
 
   context 'AAMVA' do
     let(:mock_state_id_jurisdiction) do
-      [Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction]]
+      [Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION]
     end
 
     context 'when the user lives in an AAMVA supported state' do
@@ -284,8 +283,8 @@ RSpec.feature 'verify_info step and verify_info_concern', :js, allowed_extra_ana
     it 'allows resubmitting form' do
       complete_ssn_step
 
-      allow(DocumentCaptureSession).to receive(:find_by).
-        and_return(nil)
+      allow(DocumentCaptureSession).to receive(:find_by)
+        .and_return(nil)
 
       complete_verify_step
       expect(fake_analytics).to have_logged_event('IdV: proofing resolution result missing')
@@ -301,8 +300,8 @@ RSpec.feature 'verify_info step and verify_info_concern', :js, allowed_extra_ana
     it 'allows resubmitting form' do
       complete_ssn_step
 
-      allow(DocumentCaptureSession).to receive(:find_by).
-        and_return(nil)
+      allow(DocumentCaptureSession).to receive(:find_by)
+        .and_return(nil)
 
       complete_verify_step
       expect(page).to have_content(t('idv.failure.timeout'))

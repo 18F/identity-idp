@@ -23,21 +23,33 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
     )
   end
   subject(:presenter) { described_class.new(enrollment: enrollment) }
+
   describe '#formatted_due_date' do
-    subject(:formatted_due_date) { presenter.formatted_due_date }
+    let(:enrollment_established_at) { DateTime.new(2024, 7, 5) }
 
-    around do |example|
-      Time.use_zone('UTC') { example.run }
+    context 'when the enrollment has an enrollment_established_at time' do
+      [
+        ['English', :en, 'August 3, 2024'],
+        ['Spanish', :es, '3 de agosto de 2024'],
+        ['French', :fr, '3 août 2024'],
+        ['Chinese', :zh, '2024年8月3日'],
+      ].each do |language, locale, expected|
+        context "when locale is #{language}" do
+          before do
+            I18n.locale = locale
+          end
+
+          it "returns the formatted due date in #{language}" do
+            expect(presenter.formatted_due_date).to eq(expected)
+          end
+        end
+      end
     end
 
-    it 'returns a formatted due date' do
-      expect(formatted_due_date).to eq 'August 12, 2023'
-    end
-
-    context 'there is no enrollment_established_at' do
+    context 'when the enrollment does not have an enrollment_established_at time' do
       let(:enrollment_established_at) { nil }
       it 'returns formatted due date when no enrollment_established_at' do
-        expect(formatted_due_date).to eq 'July 13, 2023'
+        expect(presenter.formatted_due_date).to eq 'July 13, 2023'
       end
     end
   end
@@ -161,8 +173,8 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
     subject(:update_date) { presenter.formatted_outage_expected_update_date }
 
     it 'returns a formatted date for expected update after an outage' do
-      allow(IdentityConfig.store).to receive(:in_person_outage_expected_update_date).
-        and_return(in_person_outage_expected_update_date)
+      allow(IdentityConfig.store).to receive(:in_person_outage_expected_update_date)
+        .and_return(in_person_outage_expected_update_date)
       update_day, update_month = update_date.remove(',').split(' ')
 
       expect(Date::DAYNAMES.include?(update_day && update_day.capitalize)).to be_truthy
@@ -176,8 +188,8 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
     subject(:email_date) { presenter.formatted_outage_emailed_by_date }
 
     it 'returns a formatted email date' do
-      allow(IdentityConfig.store).to receive(:in_person_outage_emailed_by_date).
-        and_return(in_person_outage_emailed_by_date)
+      allow(IdentityConfig.store).to receive(:in_person_outage_emailed_by_date)
+        .and_return(in_person_outage_emailed_by_date)
       email_day, email_month = email_date.remove(',').split(' ')
 
       expect(Date::DAYNAMES.include?(email_day && email_day.capitalize)).to be_truthy
@@ -190,14 +202,14 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
     subject(:outage_message_enabled) { presenter.outage_message_enabled? }
 
     it 'returns true when the flag is enabled' do
-      allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).
-        and_return(true).once
+      allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled)
+        .and_return(true).once
       expect(outage_message_enabled).to be(true)
     end
 
     it 'returns false when the flag is disabled' do
-      allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).
-        and_return(false).once
+      allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled)
+        .and_return(false).once
       expect(outage_message_enabled).to be(false)
     end
   end

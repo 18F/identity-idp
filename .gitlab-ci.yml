@@ -8,9 +8,10 @@ variables:
   FF_SCRIPT_SECTIONS: 'true'
   JUNIT_OUTPUT: 'true'
   ECR_REGISTRY: '${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
-  IDP_CI_SHA: 'sha256:5c4953f8efba18b7a6d6a9a961cb77ba7143059cbb2176499432b4275fbe67db'
+  IDP_CI_SHA: 'sha256:37766e5b4aaeaad72dc8d18aa73236558ae5abd478073f5005783c44d6d6e87e'
   PKI_IMAGE_TAG: 'main'
   DASHBOARD_IMAGE_TAG: 'main'
+  APPLICATION_MANIFEST: dockerfiles/application.yaml
 
 default:
   image: '${ECR_REGISTRY}/idp/ci@${IDP_CI_SHA}'
@@ -92,56 +93,6 @@ install:
 
 # Build a container image async, and don't block CI tests
 # Cache intermediate images for 1 week (168 hours)
-build-review-image:
-  stage: review
-  needs: []
-  environment:
-    name: review/$CI_COMMIT_REF_NAME
-  interruptible: true
-  variables:
-    BRANCH_TAGGING_STRING: ''
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      variables:
-        BRANCH_TAGGING_STRING: '--destination ${ECR_REGISTRY}/identity-idp/review:main'
-    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
-    - if: $CI_PIPELINE_SOURCE != "merge_request_event"
-      when: never
-  tags:
-    - build-pool
-  image:
-    name: gcr.io/kaniko-project/executor:debug
-    entrypoint: ['']
-  script:
-    - mkdir -p /kaniko/.docker
-    - echo ${CI_ENVIRONMENT_SLUG}
-    - echo $CI_ENVIRONMENT_SLUG
-    - echo $CI_COMMIT_BRANCH
-    - echo $CI_COMMIT_SHA
-    - |-
-      KANIKOCFG="\"credsStore\":\"ecr-login\""
-      if [ "x${http_proxy}" != "x" -o "x${https_proxy}" != "x" ]; then
-        KANIKOCFG="${KANIKOCFG}, \"proxies\": { \"default\": { \"httpProxy\": \"${http_proxy}\", \"httpsProxy\": \"${https_proxy}\", \"noProxy\": \"${no_proxy}\"}}"
-      fi
-      KANIKOCFG="{ ${KANIKOCFG} }"
-      echo "${KANIKOCFG}" > /kaniko/.docker/config.json
-    - >-
-      /kaniko/executor
-      --context "${CI_PROJECT_DIR}"
-      --dockerfile "${CI_PROJECT_DIR}/dockerfiles/idp_review_app.Dockerfile"
-      --destination "${ECR_REGISTRY}/identity-idp/review:${CI_COMMIT_SHA}"
-      ${BRANCH_TAGGING_STRING}
-      --cache-repo="${ECR_REGISTRY}/identity-idp/review/cache"
-      --cache-ttl=168h
-      --cache=true
-      --compressed-caching=false
-      --build-arg "http_proxy=${http_proxy}"
-      --build-arg "https_proxy=${https_proxy}"
-      --build-arg "no_proxy=${no_proxy}"
-      --build-arg "ARG_CI_ENVIRONMENT_SLUG=${CI_ENVIRONMENT_SLUG}"
-      --build-arg "ARG_CI_COMMIT_BRANCH=${CI_COMMIT_BRANCH}"
-      --build-arg "ARG_CI_COMMIT_SHA=${CI_COMMIT_SHA}"
-
 build-idp-image:
   stage: review
   needs: []
@@ -176,7 +127,7 @@ build-idp-image:
     - >-
       /kaniko/executor
       --context "${CI_PROJECT_DIR}"
-      --dockerfile "${CI_PROJECT_DIR}/dockerfiles/idp_prod.Dockerfile"
+      --dockerfile "${CI_PROJECT_DIR}/dockerfiles/idp_deploy.Dockerfile"
       --destination "${ECR_REGISTRY}/identity-idp/idp:${CI_COMMIT_SHA}"
       ${BRANCH_TAGGING_STRING}
       --cache-repo="${ECR_REGISTRY}/identity-idp/idp/cache"
@@ -194,6 +145,57 @@ build-idp-image:
       --build-arg "LARGE_FILES_USER=${LARGE_FILES_USER}"
       --build-arg "SERVICE_PROVIDERS_KEY=${SERVICE_PROVIDERS_KEY}"
 
+build-nginx-image:
+  stage: review
+  needs: []
+  interruptible: true
+  variables:
+    BRANCH_TAGGING_STRING: ''
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      variables:
+        BRANCH_TAGGING_STRING: '--destination ${ECR_REGISTRY}/identity-idp/nginx:main'
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE != "merge_request_event"
+      when: never
+  tags:
+    - build-pool
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: ['']
+  script:
+    - mkdir -p /kaniko/.docker
+    - echo ${CI_ENVIRONMENT_SLUG}
+    - echo $CI_ENVIRONMENT_SLUG
+    - echo $CI_COMMIT_BRANCH
+    - echo $CI_COMMIT_SHA
+    - |-
+      KANIKOCFG="\"credsStore\":\"ecr-login\""
+      if [ "x${http_proxy}" != "x" -o "x${https_proxy}" != "x" ]; then
+        KANIKOCFG="${KANIKOCFG}, \"proxies\": { \"default\": { \"httpProxy\": \"${http_proxy}\", \"httpsProxy\": \"${https_proxy}\", \"noProxy\": \"${no_proxy}\"}}"
+      fi
+      KANIKOCFG="{ ${KANIKOCFG} }"
+      echo "${KANIKOCFG}" > /kaniko/.docker/config.json
+    - >-
+      /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/dockerfiles/nginx.Dockerfile"
+      --destination "${ECR_REGISTRY}/identity-idp/nginx:${CI_COMMIT_SHA}"
+      ${BRANCH_TAGGING_STRING}
+      --cache-repo="${ECR_REGISTRY}/identity-idp/idp/cache"
+      --cache-ttl=168h
+      --cache=true
+      --snapshot-mode=redo
+      --compressed-caching=false
+      --build-arg "http_proxy=${http_proxy}"
+      --build-arg "https_proxy=${https_proxy}"
+      --build-arg "no_proxy=${no_proxy}"
+      --build-arg "ARG_CI_ENVIRONMENT_SLUG=${CI_ENVIRONMENT_SLUG}"
+      --build-arg "ARG_CI_COMMIT_BRANCH=${CI_COMMIT_BRANCH}"
+      --build-arg "ARG_CI_COMMIT_SHA=${CI_COMMIT_SHA}"
+      --build-arg "LARGE_FILES_TOKEN=${LARGE_FILES_TOKEN}"
+      --build-arg "LARGE_FILES_USER=${LARGE_FILES_USER}"
+      --build-arg "SERVICE_PROVIDERS_KEY=${SERVICE_PROVIDERS_KEY}"
 
 check_changelog:
   stage: test
@@ -229,7 +231,7 @@ migrate:
     POSTGRES_HOST_AUTH_METHOD: trust
     RAILS_ENV: test
   services:
-    - name: public.ecr.aws/docker/library/postgres:13.9
+    - name: public.ecr.aws/docker/library/postgres:16.4
       alias: db-postgres
       command: ['--fsync=false', '--synchronous_commit=false', '--full_page_writes=false']
   script:
@@ -261,7 +263,7 @@ specs:
     POSTGRES_HOST_AUTH_METHOD: trust
     RAILS_ENV: test
   services:
-    - name: public.ecr.aws/docker/library/postgres:13.9
+    - name: public.ecr.aws/docker/library/postgres:16.4
       alias: db-postgres
       command: ['--fsync=false', '--synchronous_commit=false', '--full_page_writes=false']
     - name: public.ecr.aws/docker/library/redis:7.0
@@ -291,7 +293,7 @@ specs:
     - cp -a keys.example keys
     - cp -a certs.example certs
     - cp pwned_passwords/pwned_passwords.txt.sample pwned_passwords/pwned_passwords.txt
-    - "echo -e \"test:\n  redis_url: 'redis://db-redis:6379/0'\n  redis_throttle_url: 'redis://db-redis:6379/1'\" > config/application.yml"
+    - "echo -e \"test:\n  redis_url: 'redis://db-redis:6379/0'\n  redis_throttle_url: 'redis://db-redis:6379/1'\n  redis_attempts_api_url: 'redis://db-redis:6379/2'\" > config/application.yml"
     - bundle exec rake db:create db:migrate --trace
     - bundle exec rake db:seed
     - bundle exec rake knapsack:rspec["--format documentation --format RspecJunitFormatter --out rspec.xml --format json --out rspec_json/${CI_NODE_INDEX}.json"]
@@ -433,132 +435,22 @@ trigger_devops:
     - export SANITIZED_BRANCH_NAME=$(echo "$CI_COMMIT_REF_NAME" | tr '/' '-' | tr -c '[:alnum:]-_' '-' | sed 's/-*$//')
     - echo "${CI_COMMIT_REF_NAME}"
     - echo "${SANITIZED_BRANCH_NAME}"
-    - |-
-      export IDP_CONFIG=$(cat <<EOF
-      {
-        "kubernetesReviewApp": "true",
-        "postgres": {
-          "sslmode": "prefer",
-          "name": "idp",
-          "host": "$CI_ENVIRONMENT_SLUG-login-chart-pg.review-apps"
-        },
-        "postgresWorker": {
-          "sslmode": "prefer",
-          "name": "idp",
-          "host": "$CI_ENVIRONMENT_SLUG-login-chart-pg.review-apps"
-        },
-        "railsOffline": "true",
-        "redis": {
-          "throttleUrl": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379/1",
-          "url": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379"
-        },
-        "assetHost": "https://$CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov",
-        "domainName": "$CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov",
-        "loginDatacenter": "true",
-        "loginDomain": "identitysandbox.gov",
-        "loginEnv": "$CI_ENVIRONMENT_SLUG",
-        "loginHostRole": "idp",
-        "loginSkipRemoteConfig": "true",
-        "pivcacServiceUrl": "https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapps.identitysandbox.gov/",
-        "pivcacVerifyTokenUrl": "https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapps.identitysandbox.gov/",
-        "dashboardUrl": "https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapps.identitysandbox.gov"
-      }
-      EOF
-      )
-    - |-
-      export WORKER_CONFIG=$(cat <<EOF
-      {
-        "kubernetesReviewApp": "true",
-        "postgres": {
-          "sslmode": "prefer",
-          "name": "idp",
-          "host": "$CI_ENVIRONMENT_SLUG-login-chart-pg.review-apps"
-        },
-        "postgresWorker": {
-          "sslmode": "prefer",
-          "name": "idp",
-          "host": "$CI_ENVIRONMENT_SLUG-login-chart-pg.review-apps"
-        },
-        "railsOffline": "true",
-        "redis": {
-          "throttleUrl": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379/1",
-          "url": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379"
-        },
-        "assetHost": "https://$CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov",
-        "domainName": "$CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov",
-        "loginDatacenter": "true",
-        "loginDomain": "identitysandbox.gov",
-        "loginEnv": "$CI_ENVIRONMENT_SLUG",
-        "loginHostRole": "worker",
-        "loginSkipRemoteConfig": "true",
-        "pivcacServiceUrl": "https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapps.identitysandbox.gov/",
-        "pivcacVerifyTokenUrl": "https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapps.identitysandbox.gov/"
-      }
-      EOF
-      )
-    - |-
-      export PIVCAC_CONFIG=$(cat <<EOF
-      {
-        "kubernetesReviewApp": "true",
-        "clientCertS3Bucket": "login-gov-pivcac-public-cert-reviewapps.894947205914-us-west-2",
-        "postgres": {
-          "sslmode": "prefer",
-          "name": "idp",
-          "host": "$CI_ENVIRONMENT_SLUG-login-chart-pivcac-pg.review-apps"
-        },
-        "idpHost": "$CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov",
-        "domainName": "$CI_ENVIRONMENT_SLUG.pivcac.reviewapps.identitysandbox.gov"
-      }
-      EOF
-      )
-    - |-
-      export DASHBOARD_CONFIG=$(cat <<EOF
-      {
-        "kubernetesReviewApp": "true",
-        "postgres": {
-          "sslmode": "prefer",
-          "name": "dashboard",
-          "host": "$CI_ENVIRONMENT_SLUG-login-chart-dashboard-pg.review-apps"
-        },
-        "newrelic": {
-          "enabled": "false"
-        },
-        "samlSpIssuer": "https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapps.identitysandbox.gov",
-        "idpUrl": "https://$CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov",
-        "idpSpUrl": "https://$CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov",
-        "postLogoutUrl": "https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapps.identitysandbox.gov",
-        "domainName": "$CI_ENVIRONMENT_SLUG-dashboard.reviewapps.identitysandbox.gov"
-      }
-      EOF
-      )
-    - git clone -b main --single-branch https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.login.gov/lg-public/identity-idp-helm-chart.git
-    - >-
-      helm upgrade --install --namespace review-apps
-      --debug
-      --set global.labels.branch="${SANITIZED_BRANCH_NAME}"
-      --set env="reviewapps-$CI_ENVIRONMENT_SLUG"
-      --set idp.image.repository="${ECR_REGISTRY}/identity-idp/review"
-      --set idp.image.tag="${CI_COMMIT_SHA}"
-      --set worker.image.repository="${ECR_REGISTRY}/identity-idp/review"
-      --set worker.image.tag="${CI_COMMIT_SHA}"
-      --set pivcac.image.repository="${ECR_REGISTRY}/identity-pivcac/review"
-      --set pivcac.image.tag="${PKI_IMAGE_TAG}"
-      --set pivcac.image.pullPolicy="Always"
-      --set dashboard.image.repository="${ECR_REGISTRY}/identity-dashboard/review"
-      --set dashboard.image.tag="${DASHBOARD_IMAGE_TAG}"
-      --set dashboard.image.pullPolicy="Always"
-      --set-json dashboard.config="$DASHBOARD_CONFIG"
-      --set-json dashboard.enabled=true
-      --set-json idp.config="$IDP_CONFIG"
-      --set-json worker.config="$WORKER_CONFIG"
-      --set-json pivcac.config="$PIVCAC_CONFIG"
-      --set-json idp.ingress.hosts="[{\"host\": \"$CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov\", \"paths\": [{\"path\": \"/\", \"pathType\": \"Prefix\"}]}]"
-      --set-json pivcac.ingress.hosts="[{\"host\": \"$CI_ENVIRONMENT_SLUG.pivcac.reviewapps.identitysandbox.gov\", \"paths\": [{\"path\": \"/\", \"pathType\": \"Prefix\"}]}]"
-      --set-json dashboard.ingress.hosts="[{\"host\": \"$CI_ENVIRONMENT_SLUG-dashboard.reviewapps.identitysandbox.gov\", \"paths\": [{\"path\": \"/\", \"pathType\": \"Prefix\"}]}]"
-      $CI_ENVIRONMENT_SLUG ./identity-idp-helm-chart
+    #TODO put in kustomize based deploy
+    # Dynamically populate review environment settings
+    - sed -i "s|{{ENVIRONMENT}}|${CI_ENVIRONMENT_SLUG}|g" ${APPLICATION_MANIFEST}
+    - sed -i "s|{{SANITIZED_BRANCH_NAME}}|${SANITIZED_BRANCH_NAME}|g" ${APPLICATION_MANIFEST}
+    - sed -i "s|{{IDP_CONTAINER_TAG}}|${CI_COMMIT_SHA}|g" ${APPLICATION_MANIFEST}
+    - sed -i "s|{{DASHBOARD_CONTAINER_TAG}}|${DASHBOARD_IMAGE_TAG}|g" ${APPLICATION_MANIFEST}
+    - sed -i "s|{{PIVCAC_CONTAINER_TAG}}|${PKI_IMAGE_TAG}|g" ${APPLICATION_MANIFEST}
+    - sed -i "s|{{ECR_REGISTRY}}|${ECR_REGISTRY}|g" ${APPLICATION_MANIFEST}
+    - sed -i "s|{{CI_PROJECT_NAME}}|${CI_PROJECT_NAME}|g" ${APPLICATION_MANIFEST}
+    - cat ${APPLICATION_MANIFEST}
+    # Apply our ArgoCD Application
+    - kubectl apply -f ${APPLICATION_MANIFEST} -n argocd
+    - echo "View your applications deployment progress at https://argocd.reviewapp.identitysandbox.gov/applications/argocd/${CI_ENVIRONMENT_SLUG}?view=tree&resource="
     - echo "DNS may take a while to propagate, so be patient if it doesn't show up right away"
     - echo "To access the rails console, first run 'aws-vault exec sandbox-power -- aws eks update-kubeconfig --name reviewapp'"
-    - echo "Then run aws-vault exec sandbox-power -- kubectl exec -it service/$CI_ENVIRONMENT_SLUG-login-chart-idp -n review-apps -- /app/bin/rails console"
+    - echo "Then run aws-vault exec sandbox-power -- kubectl exec -it service/$CI_ENVIRONMENT_SLUG-idp -n review-apps -- /app/bin/rails console"
     - echo "Address of IDP review app:"
     - echo https://$CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov
     - echo "Address of PIVCAC review app:"
@@ -571,7 +463,7 @@ review-app:
   stage: review
   allow_failure: true
   needs:
-    - job: build-review-image
+    - job: build-idp-image
   resource_group: $CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov
   extends: .deploy
   environment:
@@ -589,7 +481,8 @@ stop-review-app:
   script:
     - export CONTEXT=$(kubectl config get-contexts | grep reviewapp | awk '{print $1}' | head -1)
     - kubectl config use-context "$CONTEXT"
-    - helm uninstall --namespace review-apps $CI_ENVIRONMENT_SLUG
+    - kubectl delete application "$CI_ENVIRONMENT_SLUG" -n argocd
+    - kubectl delete application "$CI_ENVIRONMENT_SLUG-db" -n argocd
   stage: review
   image:
     name: dtzar/helm-kubectl:latest
@@ -611,6 +504,7 @@ include:
 
 secret_detection:
   allow_failure: false
+  needs: []
   variables:
     SECRET_DETECTION_EXCLUDED_PATHS: 'keys.example,config/artifacts.example,public/acuant/*/opencv.min.js,tmp/0.0.0.0-3000.key'
     SECRET_DETECTION_REPORT_FILE: 'gl-secret-detection-report.json'
@@ -635,6 +529,7 @@ secret_detection:
           # check if '{ "vulnerabilities": [], ..' is empty in the report file if it exists
           if [ "$(jq ".vulnerabilities | length" $SECRET_DETECTION_REPORT_FILE)" -gt 0 ]; then
             echo "Vulnerabilities detected. Please analyze the artifact $SECRET_DETECTION_REPORT_FILE produced by the 'secret-detection' job."
+            echo "Check the \"Security\" tab on the overall pipeline run to download the report for more information."
             exit 80
           fi
         else
@@ -778,19 +673,6 @@ secret_detection:
 
 # Export the automated ECR scan results into a format Gitlab can use
 # Report schema https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/container-scanning-report-format.json
-ecr-scan-review-app:
-  extends: .container_scan_template
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
-    - if: $CI_PIPELINE_SOURCE != "merge_request_event"
-      when: never
-  needs:
-    - job: build-review-image
-  stage: scan
-  variables:
-    ecr_repo: identity-idp/review
-
 ecr-scan-ci:
   extends: .container_scan_template
   rules:

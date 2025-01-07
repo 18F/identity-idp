@@ -11,7 +11,6 @@ import { I18n } from '@18f/identity-i18n';
 import { I18nContext } from '@18f/identity-react-i18n';
 import ReviewIssuesStep from '@18f/identity-document-capture/components/review-issues-step';
 import { toFormEntryError } from '@18f/identity-document-capture/services/upload';
-import { composeComponents } from '@18f/identity-compose-components';
 import { render } from '../../../support/document-capture';
 import { getFixtureFile } from '../../../support/file';
 
@@ -180,18 +179,11 @@ describe('document-capture/components/review-issues-step', () => {
   });
 
   it('renders with front, back, and selfie inputs when isSelfieCaptureEnabled is true', async () => {
-    const App = composeComponents(
-      [
-        SelfieCaptureContext.Provider,
-        {
-          value: {
-            isSelfieCaptureEnabled: true,
-          },
-        },
-      ],
-      [ReviewIssuesStep, DEFAULT_PROPS],
+    const { getByLabelText, queryByLabelText, getByRole } = render(
+      <SelfieCaptureContext.Provider value={{ isSelfieCaptureEnabled: true }}>
+        <ReviewIssuesStep {...DEFAULT_PROPS} />
+      </SelfieCaptureContext.Provider>,
     );
-    const { getByLabelText, queryByLabelText, getByRole } = render(<App />);
 
     await userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
 

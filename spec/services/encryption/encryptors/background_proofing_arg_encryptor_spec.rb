@@ -7,12 +7,12 @@ RSpec.describe Encryption::Encryptors::BackgroundProofingArgEncryptor do
     it 'returns a KMS wrapped AES encrypted ciphertext' do
       aes_encryptor = instance_double(Encryption::Encryptors::AesEncryptor)
       kms_client = instance_double(Encryption::KmsClient)
-      allow(aes_encryptor).to receive(:encrypt).
-        with(plaintext, IdentityConfig.store.session_encryption_key[0...32]).
-        and_return('aes output')
-      allow(kms_client).to receive(:encrypt).
-        with('aes output', 'context' => 'session-encryption').
-        and_return('kms output')
+      allow(aes_encryptor).to receive(:encrypt)
+        .with(plaintext, IdentityConfig.store.session_encryption_key[0...32])
+        .and_return('aes output')
+      allow(kms_client).to receive(:encrypt)
+        .with('aes output', 'context' => 'session-encryption')
+        .and_return('kms output')
       allow(Encryption::Encryptors::AesEncryptor).to receive(:new).and_return(aes_encryptor)
       allow(Encryption::KmsClient).to receive(:new).with(
         kms_key_id: IdentityConfig.store.aws_kms_session_key_id,

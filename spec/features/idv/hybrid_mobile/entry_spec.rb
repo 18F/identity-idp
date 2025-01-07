@@ -22,6 +22,10 @@ RSpec.feature 'mobile hybrid flow entry', :js do
   let(:link_to_visit) { link_sent_via_sms }
 
   context 'valid link' do
+    before do
+      allow(IdentityConfig.store).to receive(:socure_docv_enabled).and_return(true)
+    end
+
     it 'puts the user on the document capture page' do
       expect(link_to_visit).to be
 
@@ -29,6 +33,34 @@ RSpec.feature 'mobile hybrid flow entry', :js do
         visit link_to_visit
         # Should have redirected to the actual doc capture url
         expect(current_url).to eql(idv_hybrid_mobile_document_capture_url)
+
+        # Confirm that we end up on the LN / Mock page even if we try to
+        # go to the Socure one.
+        visit idv_hybrid_mobile_socure_document_capture_url
+        expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
+      end
+    end
+
+    context 'when socure is the doc auth vendor' do
+      before do
+        allow(DocAuthRouter).to receive(:doc_auth_vendor_for_bucket)
+          .and_return(Idp::Constants::Vendors::SOCURE)
+        stub_docv_document_request
+      end
+
+      it 'puts the user on the socure document capture page' do
+        expect(link_to_visit).to be
+
+        Capybara.using_session('mobile') do
+          visit link_to_visit
+          # Should have redirected to the actual doc capture url
+          expect(current_url).to eql(idv_hybrid_mobile_socure_document_capture_url)
+
+          # Confirm that we end up on the LN / Mock page even if we try to
+          # go to the Socure one.
+          visit idv_hybrid_mobile_document_capture_url
+          expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_url)
+        end
       end
     end
   end

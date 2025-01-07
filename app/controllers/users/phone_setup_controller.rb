@@ -33,7 +33,7 @@ module Users
     def create
       @new_phone_form = NewPhoneForm.new(user: current_user, analytics: analytics)
       result = @new_phone_form.submit(new_phone_form_params)
-      analytics.multi_factor_auth_phone_setup(**result.to_h)
+      analytics.multi_factor_auth_phone_setup(**result)
 
       if result.success?
         handle_create_success(@new_phone_form.phone)

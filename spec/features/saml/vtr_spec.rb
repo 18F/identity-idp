@@ -126,9 +126,7 @@ RSpec.feature 'SAML requests using VTR' do
     expect_successful_saml_redirect
   end
 
-  scenario 'sign in with VTR request for idv requires idv',
-           :js,
-           allowed_extra_analytics: [:*] do
+  scenario 'sign in with VTR request for idv requires idv', :js do
     user = create(:user, :fully_registered)
 
     visit_saml_authn_request_url(
@@ -150,8 +148,7 @@ RSpec.feature 'SAML requests using VTR' do
     expect_successful_saml_redirect
   end
 
-  scenario 'sign in with VTR request for idv includes proofed attributes',
-           allowed_extra_analytics: [:*] do
+  scenario 'sign in with VTR request for idv includes proofed attributes' do
     pii = {
       first_name: 'Jonathan',
       ssn: '900-66-6666',
@@ -189,9 +186,8 @@ RSpec.feature 'SAML requests using VTR' do
     expect(ssn).to eq(pii[:ssn])
   end
 
-  scenario 'sign in with VTR request for idv with biometric requires idv with biometric',
-           :js,
-           allowed_extra_analytics: [:*] do
+  scenario 'sign in with VTR request for idv with facial match requires idv with facial match',
+           :js do
     user = create(:user, :proofed)
     user.active_profile.update!(idv_level: :legacy_unsupervised)
 
@@ -216,7 +212,7 @@ RSpec.feature 'SAML requests using VTR' do
 
   def expect_successful_saml_redirect
     if javascript_enabled?
-      expect(current_path).to eq(test_saml_decode_assertion_path)
+      expect(page).to have_current_path(test_saml_decode_assertion_path)
     else
       expect(page).to have_current_path(
         api_saml_finalauthpost_path(path_year: SamlAuthHelper::PATH_YEAR),

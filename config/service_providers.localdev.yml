@@ -217,6 +217,7 @@ test:
     assertion_consumer_logout_service_url: ''
     ial: 2
     allow_prompt_login: true
+    post_idv_follow_up_url: http://localhost/post_idv_follow_up_url
 
   'urn:gov:gsa:openidconnect:sp:server_ial1':
     agency_id: 2
@@ -374,7 +375,7 @@ development:
 
   'urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost':
     agency_id: 1
-    friendly_name: 'Test SAML SP'
+    friendly_name: 'Example SAML App'
     acs_url: 'http://localhost:4567/consume'
     sp_initiated_login_url: 'http://localhost:4567/test/saml'
     assertion_consumer_logout_service_url: 'http://localhost:4567/slo_logout'
@@ -447,7 +448,7 @@ development:
       - 'http://localhost:9292/logout'
     certs:
       - 'sp_sinatra_demo'
-    friendly_name: 'Example Sinatra App'
+    friendly_name: 'Example OIDC App'
     in_person_proofing_enabled: true
 
   'urn:gov:gsa:openidconnect:sp:sinatra_pkce':
@@ -461,7 +462,7 @@ development:
       - 'http://localhost:9292/logout'
     certs:
       - 'sp_sinatra_demo'
-    friendly_name: 'Example Sinatra App with PKCE'
+    friendly_name: 'Example OIDC App with PKCE'
     in_person_proofing_enabled: true
     pkce: true
 

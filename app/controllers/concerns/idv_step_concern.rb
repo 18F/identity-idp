@@ -78,18 +78,11 @@ module IdvStepConcern
   private
 
   def extra_analytics_properties
-    extra = {
+    {
       pii_like_keypaths: [
-        [:same_address_as_id],
         [:proofing_results, :context, :stages, :state_id, :state_id_jurisdiction],
       ],
     }
-
-    unless flow_session.dig(:pii_from_user, :same_address_as_id).nil?
-      extra[:same_address_as_id] =
-        flow_session[:pii_from_user][:same_address_as_id].to_s == 'true'
-    end
-    extra
   end
 
   def letter_recently_enqueued?
@@ -108,7 +101,7 @@ module IdvStepConcern
 
   def confirm_step_allowed
     # set it everytime, since user may switch SP
-    idv_session.selfie_check_required = resolved_authn_context_result.biometric_comparison?
+    idv_session.selfie_check_required = resolved_authn_context_result.facial_match?
     return if flow_policy.controller_allowed?(controller: self.class)
 
     redirect_to url_for_latest_step

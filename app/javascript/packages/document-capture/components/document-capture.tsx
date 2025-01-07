@@ -7,7 +7,6 @@ import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import type { FormStep } from '@18f/identity-form-steps';
 import { getConfigValue } from '@18f/identity-config';
 import { UploadFormEntriesError } from '../services/upload';
-import DocumentsAndSelfieStep from './documents-and-selfie-step';
 import SelfieStep from './selfie-step';
 import DocumentsStep from './documents-step';
 import InPersonPrepareStep from './in-person-prepare-step';
@@ -39,9 +38,13 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   const { t } = useI18n();
   const { flowPath } = useContext(UploadContext);
   const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
-  const { isSelfieCaptureEnabled, docAuthSeparatePagesEnabled } = useContext(SelfieCaptureContext);
-  const { inPersonFullAddressEntryEnabled, inPersonURL, skipDocAuth, skipDocAuthFromHandoff } =
-    useContext(InPersonContext);
+  const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
+  const {
+    inPersonFullAddressEntryEnabled,
+    inPersonURL,
+    skipDocAuthFromHandoff,
+    skipDocAuthFromHowToVerify,
+  } = useContext(InPersonContext);
   useDidUpdateEffect(onStepChange, [stepName]);
   useEffect(() => {
     if (stepName) {
@@ -54,11 +57,6 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
     : InPersonLocationPostOfficeSearchStep;
 
   // Define different states to be used in human readable array declaration
-  const documentAndSelfieFormStep: FormStep = {
-    name: 'documentsAndSelfie',
-    form: DocumentsAndSelfieStep,
-    title: t('doc_auth.headings.document_capture'),
-  };
   const documentFormStep: FormStep = {
     name: 'documents',
     form: DocumentsStep,
@@ -70,15 +68,16 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
     title: t('doc_auth.headings.selfie_capture'),
   };
   const documentsFormSteps: FormStep[] =
-    isSelfieCaptureEnabled && docAuthSeparatePagesEnabled && submissionError === undefined
+    isSelfieCaptureEnabled && submissionError === undefined
       ? [documentFormStep, selfieFormStep]
-      : [documentAndSelfieFormStep];
+      : [documentFormStep];
   const reviewFormStep: FormStep = {
     name: 'review',
     form:
       submissionError instanceof UploadFormEntriesError
         ? withProps({
             remainingSubmitAttempts: submissionError.remainingSubmitAttempts,
+            submitAttempts: submissionError.submitAttempts,
             isResultCodeInvalid: submissionError.isResultCodeInvalid,
             isFailedResult: submissionError.isFailedResult,
             isFailedDocType: submissionError.isFailedDocType,
@@ -141,26 +140,23 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   if (submissionError && formValues) {
     initialValues = formValues;
   }
-
+  // If the user got here by opting-in to in-person proofing, when skipDocAuthFromHowToVerify === true
+  // then set steps to inPersonSteps
+  const isInPersonStepEnabled = skipDocAuthFromHowToVerify || skipDocAuthFromHandoff;
   const inPersonSteps: FormStep[] =
     inPersonURL === undefined
       ? []
       : ([prepareFormStep, locationFormStep, flowPath === 'hybrid' && hybridFormStep].filter(
           Boolean,
         ) as FormStep[]);
-  const reviewAfterFailedSteps = [reviewFormStep] as FormStep[];
-  const reviewWithInPersonSteps = reviewAfterFailedSteps.concat(inPersonSteps);
-  const afterSubmissionErrorSteps = docAuthSeparatePagesEnabled
-    ? reviewAfterFailedSteps
-    : reviewWithInPersonSteps;
-  const defaultSteps: FormStep[] = submissionError ? afterSubmissionErrorSteps : documentsFormSteps;
 
-  // If the user got here by opting-in to in-person proofing, when skipDocAuth === true,
-  // then set steps to inPersonSteps
-  const isInPersonStepEnabled = skipDocAuth || skipDocAuthFromHandoff;
-  const steps: FormStep[] = isInPersonStepEnabled ? inPersonSteps : defaultSteps;
-
-  // If the user got here by opting-in to in-person proofing, when skipDocAuth === true;
+  let steps = documentsFormSteps;
+  if (isInPersonStepEnabled) {
+    steps = inPersonSteps;
+  } else if (submissionError) {
+    steps = [reviewFormStep, ...inPersonSteps];
+  }
+  // If the user got here by opting-in to in-person proofing, when skipDocAuthFromHowToVerify === true
   // or opting-in ipp from handoff page, and selfie is required, when skipDocAuthFromHandoff === true
   // then set stepIndicatorPath to VerifyFlowPath.IN_PERSON
   const stepIndicatorPath =

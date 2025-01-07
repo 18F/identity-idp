@@ -114,26 +114,10 @@ RSpec.describe Idv::ByMail::LetterEnqueuedPresenter do
     end
   end
 
-  describe '#button_text' do
-    context 'when there is no SP' do
-      it 'is a plain Continue button' do
-        expect(presenter.button_text).to eq(t('idv.buttons.continue_plain'))
-      end
-    end
-
-    context 'when there is an SP' do
-      let(:service_provider) { double('service provider') }
-
-      it 'is an Exit button' do
-        expect(presenter.button_text).to eq(t('idv.cancel.actions.exit', app_name: APP_NAME))
-      end
-    end
-  end
-
   describe '#button_destination' do
     context 'when there is no SP' do
-      it 'is the account page' do
-        expect(presenter.button_destination).to eq(account_path)
+      it 'is a redirect to the marketing page' do
+        expect(presenter.button_destination).to eq(marketing_site_redirect_path)
       end
     end
 

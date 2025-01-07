@@ -3,8 +3,9 @@
 class SamlRequestValidator
   include ActiveModel::Model
 
-  validate :cert_exists
+  validate :request_cert_exists
   validate :authorized_service_provider
+  validate :registered_cert_exists
   validate :authorized_authn_context
   validate :parsable_vtr
   validate :authorized_email_nameid_format
@@ -61,8 +62,7 @@ class SamlRequestValidator
     if !valid_authn_context? ||
        (identity_proofing_requested? && !service_provider.identity_proofing_allowed?) ||
        (ial_max_requested? && !service_provider.ialmax_allowed?) ||
-       (biometric_ial_requested? && !service_provider.biometric_ial_allowed?) ||
-       (semantic_authn_contexts_requested? && !service_provider.semantic_authn_contexts_allowed?)
+       (facial_match_ial_requested? && !service_provider.facial_match_ial_allowed?)
       errors.add(:authn_context, :unauthorized_authn_context, type: :unauthorized_authn_context)
     end
   end
@@ -73,7 +73,19 @@ class SamlRequestValidator
     end
   end
 
-  def cert_exists
+  def registered_cert_exists
+    # if there is no service provider, this error has already been added
+    return if service_provider.blank?
+    return if service_provider.certs.present?
+    return unless service_provider.encrypt_responses?
+
+    errors.add(
+      :service_provider, :no_cert_registered,
+      type: :no_cert_registered
+    )
+  end
+
+  def request_cert_exists
     if @blank_cert
       errors.add(:service_provider, :blank_cert_element_req, type: :blank_cert_element_req)
     end
@@ -88,7 +100,10 @@ class SamlRequestValidator
       next true if classref.match?(SamlIdp::Request::VTR_REGEXP) &&
                    IdentityConfig.store.use_vot_in_sp_requests
     end
-    authn_contexts.all? do |classref|
+    # SAML requests are allowed to "default" to the integration's IAL default.
+    return true if authn_contexts.empty?
+
+    authn_contexts.any? do |classref|
       valid_contexts.include?(classref)
     end
   end
@@ -116,13 +131,8 @@ class SamlRequestValidator
     Array(authn_context).include?(Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF)
   end
 
-  def biometric_ial_requested?
-    Array(authn_context).any? { |ial| Saml::Idp::Constants::BIOMETRIC_IAL_CONTEXTS.include? ial }
-  end
-
-  def semantic_authn_contexts_requested?
-    return false if vtr.present? || parsed_vectors_of_trust.present?
-    Saml::Idp::Constants::SEMANTIC_ACRS.intersect?(authn_context)
+  def facial_match_ial_requested?
+    Array(authn_context).any? { |ial| Saml::Idp::Constants::FACIAL_MATCH_IAL_CONTEXTS.include? ial }
   end
 
   def authorized_email_nameid_format

@@ -4,11 +4,16 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
   include AccountResetConcern
   include ActionView::Helpers::TranslationHelper
 
-  attr_reader :user, :reauthentication_context, :phishing_resistant_required, :piv_cac_required
+  attr_reader :user,
+              :reauthentication_context,
+              :phishing_resistant_required,
+              :piv_cac_required,
+              :add_piv_cac_after_2fa
 
   alias_method :reauthentication_context?, :reauthentication_context
   alias_method :phishing_resistant_required?, :phishing_resistant_required
   alias_method :piv_cac_required?, :piv_cac_required
+  alias_method :add_piv_cac_after_2fa?, :add_piv_cac_after_2fa
 
   def initialize(
     user:,
@@ -16,7 +21,8 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     reauthentication_context:,
     service_provider:,
     phishing_resistant_required:,
-    piv_cac_required:
+    piv_cac_required:,
+    add_piv_cac_after_2fa:
   )
     @user = user
     @view = view
@@ -24,6 +30,7 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     @service_provider = service_provider
     @phishing_resistant_required = phishing_resistant_required
     @piv_cac_required = piv_cac_required
+    @add_piv_cac_after_2fa = add_piv_cac_after_2fa
   end
 
   def title
@@ -47,7 +54,7 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
   end
 
   def restricted_options_warning_text
-    return if reauthentication_context?
+    return if show_all_options?
 
     if piv_cac_required?
       t('two_factor_authentication.aal2_request.piv_cac_only_html', sp_name:)
@@ -60,9 +67,9 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     return @options if defined?(@options)
     mfa = MfaContext.new(user)
 
-    if piv_cac_required? && !reauthentication_context?
+    if piv_cac_required? && !show_all_options?
       configurations = mfa.piv_cac_configurations
-    elsif phishing_resistant_required? && !reauthentication_context?
+    elsif phishing_resistant_required? && !show_all_options?
       configurations = mfa.phishing_resistant_configurations
     else
       configurations = mfa.two_factor_configurations
@@ -100,6 +107,10 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
   end
 
   private
+
+  def show_all_options?
+    reauthentication_context? || add_piv_cac_after_2fa?
+  end
 
   def account_reset_link
     t(

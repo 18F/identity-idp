@@ -3,6 +3,7 @@ RSpec::Matchers.define :have_valid_idrefs do
 
   match do |page|
     ['aria-describedby', 'aria-labelledby'].each do |idref_attribute|
+      # rubocop:disable Rails/FindEach
       page.all(:css, "[#{idref_attribute}]").each do |element|
         element[idref_attribute].split(' ').each do |referenced_id|
           page.find_by_id(referenced_id, visible: :all)
@@ -10,6 +11,7 @@ RSpec::Matchers.define :have_valid_idrefs do
       rescue Capybara::ElementNotFound
         invalid_idref_messages << "[#{idref_attribute}=\"#{element[idref_attribute]}\"]"
       end
+      # rubocop:enable Rails/FindEach
     end
 
     invalid_idref_messages.blank?
@@ -28,9 +30,11 @@ RSpec::Matchers.define :label_required_fields do
   elements = []
 
   match do |page|
+    # rubocop:disable Rails/FindEach
     page.all(:css, 'input[required]').each do |input|
       elements << input if input['aria-invalid'].blank?
     end
+    # rubocop:enable Rails/FindEach
     elements.empty?
   end
 
@@ -87,8 +91,8 @@ RSpec::Matchers.define :have_valid_markup do
         page.driver.browser.set_cookie "_identity_idp_session=#{session_value}" if session_value
         page.driver.get(original_path_with_params)
         allow(IdentityConfig.store).to receive(:domain_name).and_return(domain_name)
-        allow(Rails.application.routes).to receive(:default_url_options).
-          and_return(default_url_options)
+        allow(Rails.application.routes).to receive(:default_url_options)
+          .and_return(default_url_options)
         page.html
       end
     else
@@ -114,9 +118,9 @@ end
 
 RSpec::Matchers.define :have_description do |description|
   def descriptors(element)
-    element['aria-describedby']&.
-      split(' ')&.
-      map { |descriptor_id| page.find("##{descriptor_id}")&.text }
+    element['aria-describedby']
+      &.split(' ')
+      &.map { |descriptor_id| page.find("##{descriptor_id}")&.text }
   end
 
   match do |element|
@@ -209,9 +213,9 @@ RSpec::Matchers.define :tag_decorative_svgs_with_aria_hidden do
   end
 
   failure_message do |page|
-    img_tags = decorative_svgs(page).select { |img| img[:'aria-hidden'].nil? }.
-      map { |img| %(<img alt="#{img[:alt]}" src="#{img[:src]}" class="#{img[:class]}">) }.
-      join("\n")
+    img_tags = decorative_svgs(page).select { |img| img[:'aria-hidden'].nil? }
+      .map { |img| %(<img alt="#{img[:alt]}" src="#{img[:src]}" class="#{img[:class]}">) }
+      .join("\n")
 
     <<~STR
       Expect all decorative SVGs to have aria-hidden, but found ones without:
@@ -265,10 +269,10 @@ class AccessibleName
     # "if computing a name, and the current node has an aria-labelledby attribute that contains at
     # least one valid IDREF, and the current node is not already part of an aria-labelledby
     # traversal, process its IDREFs in the order they occur"
-    valid_labels = element['aria-labelledby']&.
-      split(' ')&.
-      map { |label_id| page.find("##{label_id}")&.text }&.
-      compact
+    valid_labels = element['aria-labelledby']
+      &.split(' ')
+      &.map { |label_id| page.find("##{label_id}")&.text }
+      &.compact
 
     valid_labels.join('') if valid_labels.present?
   end

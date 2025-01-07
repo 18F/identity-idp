@@ -13,6 +13,8 @@ RSpec.describe Idv::EnterPasswordController do
   end
   let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE }
   let(:use_gpo) { false }
+  let(:threatmetrix_enabled)  { true }
+  let(:threatmetrix_result) { 'pass' }
   let(:idv_session) do
     subject.idv_session
   end
@@ -28,6 +30,7 @@ RSpec.describe Idv::EnterPasswordController do
     subject.idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
     subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:ssn]
     subject.idv_session.threatmetrix_session_id = 'random-session-id'
+    subject.idv_session.threatmetrix_review_status = threatmetrix_result
     subject.idv_session.resolution_successful = true
     subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE
     subject.idv_session.resolution_successful = true
@@ -43,6 +46,9 @@ RSpec.describe Idv::EnterPasswordController do
     end
 
     subject.idv_session.applicant = applicant.with_indifferent_access
+
+    allow(IdentityConfig.store).to receive(:proofing_device_profiling)
+      .and_return(threatmetrix_enabled ? :enabled : :disabled)
   end
 
   describe '#step_info' do
@@ -325,8 +331,8 @@ RSpec.describe Idv::EnterPasswordController do
         before do
           resolved_authn_context_result = Vot::Parser.new(vector_of_trust: 'Pb').parse
 
-          allow(controller).to receive(:resolved_authn_context_result).
-            and_return(resolved_authn_context_result)
+          allow(controller).to receive(:resolved_authn_context_result)
+            .and_return(resolved_authn_context_result)
         end
 
         it 'creates Profile with applicant attributes' do
@@ -345,8 +351,8 @@ RSpec.describe Idv::EnterPasswordController do
         before do
           resolved_authn_context_result = Vot::Parser.new(vector_of_trust: 'Pe').parse
 
-          allow(controller).to receive(:resolved_authn_context_result).
-            and_return(resolved_authn_context_result)
+          allow(controller).to receive(:resolved_authn_context_result)
+            .and_return(resolved_authn_context_result)
         end
 
         it 'creates Profile with applicant attributes' do
@@ -399,9 +405,44 @@ RSpec.describe Idv::EnterPasswordController do
 
       it 'creates an `account_verified` event once per confirmation' do
         put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
-        events_count = user.events.where(event_type: :account_verified, ip: '0.0.0.0').
-          where(disavowal_token_fingerprint: nil).count
+        events_count = user.events.where(event_type: :account_verified, ip: '0.0.0.0')
+          .where(disavowal_token_fingerprint: nil).count
         expect(events_count).to eq 1
+      end
+
+      context 'user was flagged by ThreatMetrix' do
+        let(:threatmetrix_result) { 'reject' }
+
+        it 'sends the idv_please_call email' do
+          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+          expect_delivered_email(
+            to: user.last_sign_in_email_address.email,
+            subject: t('user_mailer.idv_please_call.subject', app_name: APP_NAME),
+          )
+        end
+
+        it 'does not send the account_verified email' do
+          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+          expect_email_not_delivered(
+            subject: t('user_mailer.account_verified.subject', app_name: APP_NAME),
+          )
+        end
+
+        context 'but ThreatMetrix disabled' do
+          let(:threatmetrix_enabled) { false }
+          it 'does not send the idv_please_call email' do
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+            expect_email_not_delivered(
+              subject: t('user_mailer.idv_please_call.subject'),
+            )
+          end
+          it 'sends the account_verified email' do
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+            expect_delivered_email(
+              subject: t('user_mailer.account_verified.subject', app_name: APP_NAME),
+            )
+          end
+        end
       end
 
       context 'with in person profile' do
@@ -414,7 +455,6 @@ RSpec.describe Idv::EnterPasswordController do
           stub_request_enroll
           subject.idv_session.applicant =
             Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_PHONE
-          ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
         end
 
@@ -471,6 +511,17 @@ RSpec.describe Idv::EnterPasswordController do
             to: [user.email_addresses.first.email],
             subject: t('user_mailer.in_person_ready_to_verify.subject', app_name: APP_NAME),
           )
+        end
+
+        context 'user was flagged by ThreatMetrix' do
+          let(:threatmetrix_result) { 'reject' }
+
+          it 'does not send the idv_please_call email' do
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+            expect_email_not_delivered(
+              subject: t('user_mailer.idv_please_call.subject'),
+            )
+          end
         end
 
         context 'when there is a 4xx error' do
@@ -747,8 +798,8 @@ RSpec.describe Idv::EnterPasswordController do
               mock = double
               expect(UspsInPersonProofing::Proofer).to receive(:new).and_return(mock)
               expect(mock).to receive(:request_enroll) do |applicant|
-                expect(applicant.address).
-                  to eq(Idp::Constants::MOCK_IDV_APPLICANT[:address1])
+                expect(applicant.address)
+                  .to eq(Idp::Constants::MOCK_IDV_APPLICANT[:address1])
                 proofer.request_enroll(applicant)
               end
 
@@ -790,14 +841,14 @@ RSpec.describe Idv::EnterPasswordController do
         context 'when user enters an address2 value' do
           it 'does not include address2' do
             subject.idv_session.applicant =
-              Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_PHONE.
-                merge(address2: '3b')
+              Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_PHONE
+                .merge(address2: '3b')
             proofer = UspsInPersonProofing::Proofer.new
             mock = double
             expect(UspsInPersonProofing::Proofer).to receive(:new).and_return(mock)
             expect(mock).to receive(:request_enroll) do |applicant|
-              expect(applicant.address).
-                to eq(Idp::Constants::MOCK_IDV_APPLICANT[:address1])
+              expect(applicant.address)
+                .to eq(Idp::Constants::MOCK_IDV_APPLICANT[:address1])
               proofer.request_enroll(applicant)
             end
 
@@ -824,8 +875,8 @@ RSpec.describe Idv::EnterPasswordController do
                 let(:proofing_device_profiling_state) { proofing_device_profiling_state }
 
                 before do
-                  allow(IdentityConfig.store).to receive(:proofing_device_profiling).
-                    and_return(proofing_device_profiling_state)
+                  allow(IdentityConfig.store).to receive(:proofing_device_profiling)
+                    .and_return(proofing_device_profiling_state)
                   subject.idv_session.threatmetrix_review_status = review_status
                   stub_request_token
                 end
@@ -966,6 +1017,27 @@ RSpec.describe Idv::EnterPasswordController do
           expect(user.reload.gpo_verification_pending_profile).to be_nil
         end
       end
+
+      context 'user was flagged by ThreatMetrix' do
+        let(:threatmetrix_review_status) { 'reject' }
+
+        it 'does not send the idv_please_call email' do
+          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+          expect_email_not_delivered(
+            subject: t('user_mailer.idv_please_call.subject'),
+          )
+        end
+
+        context 'but ThreatMetrix disabled' do
+          let(:threatmetrix_enabled) { false }
+          it 'does not send the idv_please_call email' do
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+            expect_email_not_delivered(
+              subject: t('user_mailer.idv_please_call.subject'),
+            )
+          end
+        end
+      end
     end
 
     context 'user is going through enhanced ipp' do
@@ -980,8 +1052,8 @@ RSpec.describe Idv::EnterPasswordController do
         )
       end
       it 'passes the correct param to the enrollment helper method' do
-        expect(UspsInPersonProofing::EnrollmentHelper).to receive(:schedule_in_person_enrollment).
-          with(
+        expect(UspsInPersonProofing::EnrollmentHelper).to receive(:schedule_in_person_enrollment)
+          .with(
             user: user,
             pii: Pii::Attributes.new_from_hash(applicant),
             is_enhanced_ipp: is_enhanced_ipp,

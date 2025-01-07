@@ -4,7 +4,9 @@ RSpec.describe AttributeAsserter do
   include SamlAuthHelper
 
   let(:user) { create(:profile, :active, :verified).user }
-  let(:biometric_verified_user) { create(:profile, :active, :verified, idv_level: :in_person).user }
+  let(:facial_match_verified_user) do
+    create(:profile, :active, :verified, idv_level: :in_person).user
+  end
   let(:user_session) { {} }
   let(:identity) do
     build(
@@ -16,21 +18,20 @@ RSpec.describe AttributeAsserter do
   let(:name_id_format) { Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT }
   let(:service_provider_ial) { 1 }
   let(:service_provider_aal) { nil }
+  let(:attribute_bundle) { nil }
   let(:service_provider) do
-    instance_double(
-      ServiceProvider,
-      issuer: 'http://localhost:3000',
+    create(
+      :service_provider,
       ial: service_provider_ial,
       default_aal: service_provider_aal,
-      metadata: {},
-      semantic_authn_contexts_allowed?: false,
+      attribute_bundle:,
     )
   end
 
   let(:authn_context) do
     [
       Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
-      Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+      Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
     ]
   end
   let(:options) { { authn_context: } }
@@ -70,198 +71,180 @@ RSpec.describe AttributeAsserter do
 
   describe '#build' do
     context 'when an IAL2 request is made' do
-      let(:authn_context) do
-        [
-          Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-        ]
+      before do
+        user.identities << identity
+        subject.build
       end
 
-      context 'when the user has been proofed without biometric' do
-        context 'custom bundle includes email, phone, and first_name' do
-          before do
-            user.identities << identity
-            allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-              and_return(%w[email phone first_name])
-            subject.build
-          end
-
-          it 'includes all requested attributes + uuid' do
-            expect(user.asserted_attributes.keys).
-              to eq(%i[uuid email phone first_name verified_at aal ial])
-          end
-
-          it 'creates getter function' do
-            expect(get_asserted_attribute(user, :first_name)).to eq 'Jåné'
-          end
-
-          it 'formats the phone number as e164' do
-            expect(get_asserted_attribute(user, :phone)).to eq '+18888675309'
-          end
-
-          it 'gets UUID from Service Provider' do
-            expect(get_asserted_attribute(user, :uuid)).to eq user.last_identity.uuid
-          end
+      [
+        Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+        Saml::Idp::Constants::IAL_VERIFIED_ACR,
+      ]
+        .each do |ial_value|
+        let(:authn_context) do
+          [
+            ial_value,
+          ]
         end
 
-        context 'custom bundle includes dob' do
-          before do
-            user.identities << identity
-            allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-              and_return(%w[dob])
-            subject.build
-          end
+        context 'when the user has been proofed without facial match' do
+          context 'custom bundle includes email, phone, and first_name' do
+            let(:attribute_bundle) { %w[email phone first_name] }
 
-          it 'formats the dob in an international format' do
-            expect(get_asserted_attribute(user, :dob)).to eq '1970-12-31'
-          end
-        end
+            it 'includes all requested attributes + uuid' do
+              expect(user.asserted_attributes.keys)
+                .to eq(%i[uuid email phone first_name verified_at aal ial])
+            end
 
-        context 'custom bundle includes zipcode' do
-          before do
-            user.identities << identity
-            allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-              and_return(%w[zipcode])
-            subject.build
-          end
+            it 'creates getter function' do
+              expect(get_asserted_attribute(user, :first_name)).to eq 'Jåné'
+            end
 
-          it 'formats zipcode as 5 digits' do
-            expect(get_asserted_attribute(user, :zipcode)).to eq '12345'
-          end
-        end
+            it 'formats the phone number as e164' do
+              expect(get_asserted_attribute(user, :phone)).to eq '+18888675309'
+            end
 
-        context 'bundle includes :ascii' do
-          before do
-            user.identities << identity
-            allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-              and_return(%w[email phone first_name ascii])
-            subject.build
-          end
+            it 'gets UUID from Service Provider' do
+              expect(get_asserted_attribute(user, :uuid)).to eq user.last_identity.uuid
+            end
 
-          it 'skips ascii as an attribute' do
-            expect(user.asserted_attributes.keys).
-              to eq(%i[uuid email phone first_name verified_at aal ial])
-          end
+            context 'when authn_context includes an unknown value' do
+              let(:authn_context) do
+                [
+                  ial_value,
+                  'unknown/authn/context',
+                ]
+              end
 
-          it 'transliterates attributes to ASCII' do
-            expect(get_asserted_attribute(user, :first_name)).to eq 'Jane'
-          end
-        end
-
-        context 'Service Provider does not specify bundle' do
-          before do
-            allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-              and_return(nil)
-            subject.build
-          end
-
-          context 'authn request does not specify bundle' do
-            it 'only returns uuid, verified_at, aal, and ial' do
-              expect(user.asserted_attributes.keys).to eq %i[uuid verified_at aal ial]
+              it 'includes all requested attributes + uuid' do
+                expect(user.asserted_attributes.keys)
+                  .to eq(%i[uuid email phone first_name verified_at aal ial])
+              end
             end
           end
 
-          context 'authn request specifies bundle' do
-            # rubocop:disable Layout/LineLength
-            let(:authn_context) do
-              [
-                Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-                "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
-                "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
-              ]
-            end
-            # rubocop:enable Layout/LineLength
+          context 'custom bundle includes dob' do
+            let(:attribute_bundle) { %w[dob] }
 
-            it 'uses authn request bundle' do
-              expect(user.asserted_attributes.keys).
-                to eq(%i[uuid email first_name last_name ssn phone verified_at aal ial])
+            it 'formats the dob in an international format' do
+              expect(get_asserted_attribute(user, :dob)).to eq '1970-12-31'
+            end
+          end
+
+          context 'custom bundle includes zipcode' do
+            let(:attribute_bundle) { %w[zipcode] }
+
+            it 'formats zipcode as 5 digits' do
+              expect(get_asserted_attribute(user, :zipcode)).to eq '12345'
+            end
+          end
+
+          context 'bundle includes :ascii' do
+            let(:attribute_bundle) { %w[email phone first_name ascii] }
+
+            it 'skips ascii as an attribute' do
+              expect(user.asserted_attributes.keys)
+                .to eq(%i[uuid email phone first_name verified_at aal ial])
+            end
+
+            it 'transliterates attributes to ASCII' do
+              expect(get_asserted_attribute(user, :first_name)).to eq 'Jane'
+            end
+          end
+
+          context 'Service Provider does not specify bundle' do
+            context 'authn request does not specify bundle' do
+              it 'only returns uuid, verified_at, aal, and ial' do
+                expect(user.asserted_attributes.keys).to eq %i[uuid verified_at aal ial]
+              end
+            end
+
+            context 'authn request specifies bundle' do
+              # rubocop:disable Layout/LineLength
+              let(:authn_context) do
+                [
+                  ial_value,
+                  "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+                  "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+                ]
+              end
+              # rubocop:enable Layout/LineLength
+
+              it 'uses authn request bundle' do
+                expect(user.asserted_attributes.keys)
+                  .to eq(%i[uuid email first_name last_name ssn phone verified_at aal ial])
+              end
+            end
+          end
+
+          context 'Service Provider specifies empty bundle' do
+            let(:attribute_bundle) { [] }
+
+            it 'only includes uuid, verified_at, aal, and ial' do
+              expect(user.asserted_attributes.keys).to eq(%i[uuid verified_at aal ial])
+            end
+          end
+
+          context 'custom bundle has invalid attribute name' do
+            let(:attribute_bundle) { %w[email foo] }
+
+            it 'silently skips invalid attribute name' do
+              expect(user.asserted_attributes.keys).to eq(%i[uuid email verified_at aal ial])
+            end
+          end
+
+          context 'x509 attributes included in the SP attribute bundle' do
+            let(:attribute_bundle) do
+              %w[email x509_subject x509_issuer x509_presented]
+            end
+
+            context 'user did not present piv/cac' do
+              let(:user_session) do
+                {
+                  decrypted_x509: nil,
+                }
+              end
+
+              it 'does not include x509_subject, x509_issuer, and x509_presented' do
+                expect(user.asserted_attributes.keys).to eq %i[uuid email verified_at aal ial]
+              end
+            end
+
+            context 'user presented piv/cac' do
+              let(:user_session) do
+                {
+                  decrypted_x509: {
+                    subject: 'x509 subject',
+                    presented: true,
+                  }.to_json,
+                }
+              end
+
+              it 'includes x509_subject x509_issuer x509_presented' do
+                expected = %i[uuid email verified_at aal ial x509_subject x509_issuer
+                              x509_presented]
+                expect(user.asserted_attributes.keys).to eq expected
+              end
             end
           end
         end
 
-        context 'Service Provider specifies empty bundle' do
-          before do
-            allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-              and_return([])
-            subject.build
+        context 'when the user has been proofed with facial match' do
+          let(:user) { create(:profile, :active, :verified, idv_level: :in_person).user }
+
+          it 'asserts IAL2' do
+            expected_ial = Saml::Idp::Constants::IAL_VERIFIED_ACR
+            expect(get_asserted_attribute(user, :ial)).to eq expected_ial
           end
-
-          it 'only includes uuid, verified_at, aal, and ial' do
-            expect(user.asserted_attributes.keys).to eq(%i[uuid verified_at aal ial])
-          end
-        end
-
-        context 'custom bundle has invalid attribute name' do
-          before do
-            allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).and_return(
-              %w[email foo],
-            )
-            subject.build
-          end
-
-          it 'silently skips invalid attribute name' do
-            expect(user.asserted_attributes.keys).to eq(%i[uuid email verified_at aal ial])
-          end
-        end
-
-        context 'x509 attributes included in the SP attribute bundle' do
-          before do
-            allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-              and_return(%w[email x509_subject x509_issuer x509_presented])
-            subject.build
-          end
-
-          context 'user did not present piv/cac' do
-            let(:user_session) do
-              {
-                decrypted_x509: nil,
-              }
-            end
-
-            it 'does not include x509_subject, x509_issuer, and x509_presented' do
-              expect(user.asserted_attributes.keys).to eq %i[uuid email verified_at aal ial]
-            end
-          end
-
-          context 'user presented piv/cac' do
-            let(:user_session) do
-              {
-                decrypted_x509: {
-                  subject: 'x509 subject',
-                  presented: true,
-                }.to_json,
-              }
-            end
-
-            it 'includes x509_subject x509_issuer x509_presented' do
-              expected = %i[uuid email verified_at aal ial x509_subject x509_issuer x509_presented]
-              expect(user.asserted_attributes.keys).to eq expected
-            end
-          end
-        end
-      end
-
-      context 'when the user has been proofed with biometric' do
-        let(:user) { create(:profile, :active, :verified, idv_level: :in_person).user }
-
-        before do
-          user.identities << identity
-          subject.build
-        end
-
-        it 'asserts IAL2' do
-          expected_ial = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
-          expect(get_asserted_attribute(user, :ial)).to eq expected_ial
         end
       end
     end
 
     context 'verified user and proofing VTR request' do
       let(:authn_context) { 'C1.C2.P1' }
-
+      let(:attribute_bundle) { %w[email first_name last_name] }
       before do
         user.identities << identity
-        allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-          and_return(%w[email first_name last_name])
         subject.build
       end
 
@@ -275,22 +258,21 @@ RSpec.describe AttributeAsserter do
     end
 
     context 'when an IAL1 request is made' do
-      context 'when the user has been proofed without biometric comparison' do
+      before do
+        user.identities << identity
+        subject.build
+      end
+
+      context 'when the user has been proofed without facial match comparison' do
         context 'custom bundle includes email, phone, and first_name' do
-          before do
-            user.identities << identity
-            allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-              and_return(%w[email phone first_name])
-            subject.build
-          end
+          let(:attribute_bundle) { %w[email phone first_name] }
 
           it 'only includes uuid, email, aal, and ial (no verified_at)' do
             expect(user.asserted_attributes.keys).to eq %i[uuid email aal ial]
           end
 
           it 'does not create a getter function for IAL1 attributes' do
-            expected_email = EmailContext.new(user).last_sign_in_email_address.email
-            expect(get_asserted_attribute(user, :email)).to eq expected_email
+            expect(get_asserted_attribute(user, :email)).to eq user.last_sign_in_email_address.email
           end
 
           it 'gets UUID from Service Provider' do
@@ -300,12 +282,7 @@ RSpec.describe AttributeAsserter do
         end
 
         context 'custom bundle includes verified_at' do
-          before do
-            user.identities << identity
-            allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-              and_return(%w[email verified_at])
-            subject.build
-          end
+          let(:attribute_bundle) { %w[email verified_at] }
 
           context 'the service provider is ial1' do
             let(:service_provider_ial) { 1 }
@@ -315,8 +292,8 @@ RSpec.describe AttributeAsserter do
             end
 
             it 'does not create a getter function for IAL1 attributes' do
-              expected_email = EmailContext.new(user).last_sign_in_email_address.email
-              expect(get_asserted_attribute(user, :email)).to eq expected_email
+              expect(get_asserted_attribute(user, :email))
+                .to eq user.last_sign_in_email_address.email
             end
 
             it 'gets UUID from Service Provider' do
@@ -334,12 +311,6 @@ RSpec.describe AttributeAsserter do
         end
 
         context 'Service Provider does not specify bundle' do
-          before do
-            allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-              and_return(nil)
-            subject.build
-          end
-
           context 'authn request does not specify bundle' do
             it 'only includes uuid, aal, and ial' do
               expect(user.asserted_attributes.keys).to eq %i[uuid aal ial]
@@ -365,11 +336,7 @@ RSpec.describe AttributeAsserter do
         end
 
         context 'Service Provider specifies empty bundle' do
-          before do
-            allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-              and_return([])
-            subject.build
-          end
+          let(:attribute_bundle) { [] }
 
           it 'only includes UUID, aal, and ial' do
             expect(user.asserted_attributes.keys).to eq(%i[uuid aal ial])
@@ -377,12 +344,7 @@ RSpec.describe AttributeAsserter do
         end
 
         context 'custom bundle has invalid attribute name' do
-          before do
-            allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).and_return(
-              %w[email foo],
-            )
-            subject.build
-          end
+          let(:attribute_bundle) { %w[email foo] }
 
           it 'silently skips invalid attribute name' do
             expect(user.asserted_attributes.keys).to eq(%i[uuid email aal ial])
@@ -390,11 +352,7 @@ RSpec.describe AttributeAsserter do
         end
 
         context 'x509 attributes included in the SP attribute bundle' do
-          before do
-            allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-              and_return(%w[email x509_subject x509_issuer x509_presented])
-            subject.build
-          end
+          let(:attribute_bundle) { %w[email x509_subject x509_issuer x509_presented] }
 
           context 'user did not present piv/cac' do
             let(:user_session) do
@@ -427,13 +385,7 @@ RSpec.describe AttributeAsserter do
 
         context 'request made with a VTR param' do
           let(:options) { { authn_context: 'C1.C2' } }
-
-          before do
-            user.identities << identity
-            allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-              and_return(%w[email])
-            subject.build
-          end
+          let(:attribute_bundle) { %w[email] }
 
           it 'includes the correct bundle attributes' do
             expect(user.asserted_attributes.keys).to eq(
@@ -444,22 +396,24 @@ RSpec.describe AttributeAsserter do
         end
       end
 
-      context 'when the user has been proofed with biometric comparison' do
+      context 'when the user has been proofed with facial match comparison' do
         let(:user) { create(:profile, :active, :verified, idv_level: :in_person).user }
 
-        before do
-          user.identities << identity
-          subject.build
-        end
-
         it 'asserts IAL1' do
-          expected_ial = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+          expected_ial = Saml::Idp::Constants::IAL_AUTH_ONLY_ACR
           expect(get_asserted_attribute(user, :ial)).to eq expected_ial
         end
       end
     end
 
     context 'verified user and IAL1 AAL3 request' do
+      let(:attribute_bundle) { %w[email phone first_name] }
+
+      before do
+        user.identities << identity
+        subject.build
+      end
+
       context 'service provider configured for AAL3' do
         let(:service_provider_aal) { 3 }
         let(:authn_context) do
@@ -467,13 +421,6 @@ RSpec.describe AttributeAsserter do
             Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
             Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
           ]
-        end
-
-        before do
-          user.identities << identity
-          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-            and_return(%w[email phone first_name])
-          subject.build
         end
 
         it 'asserts AAL3' do
@@ -488,13 +435,6 @@ RSpec.describe AttributeAsserter do
             Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
             Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
           ]
-        end
-
-        before do
-          user.identities << identity
-          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-            and_return(%w[email phone first_name])
-          subject.build
         end
 
         it 'asserts AAL3' do
@@ -534,6 +474,7 @@ RSpec.describe AttributeAsserter do
 
       context 'IAL2 service provider requests IALMAX with IAL2 user' do
         let(:service_provider_ial) { 2 }
+        let(:attribute_bundle) { %w[email phone first_name] }
         let(:options) do
           {
             authn_context: [
@@ -545,8 +486,6 @@ RSpec.describe AttributeAsserter do
 
         before do
           user.identities << identity
-          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-            and_return(%w[email phone first_name])
           ServiceProvider.find_by(issuer: sp1_issuer).update!(ial: 2)
           subject.build
         end
@@ -565,6 +504,7 @@ RSpec.describe AttributeAsserter do
 
     context 'non-IAL2 service provider requests IALMAX with IAL2 user' do
       let(:service_provider_ial) { 1 }
+      let(:attribute_bundle) { %w[email phone first_name] }
       let(:options) do
         {
           authn_context: [
@@ -576,8 +516,6 @@ RSpec.describe AttributeAsserter do
 
       before do
         user.identities << identity
-        allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-          and_return(%w[email phone first_name])
         ServiceProvider.find_by(issuer: sp1_issuer).update!(ial: 1)
         subject.build
       end
@@ -593,7 +531,7 @@ RSpec.describe AttributeAsserter do
       end
     end
 
-    context 'when biometric IAL preferred is requested' do
+    context 'when facial match IAL preferred is requested' do
       let(:options) do
         {
           authn_context: [
@@ -602,34 +540,29 @@ RSpec.describe AttributeAsserter do
         }
       end
 
-      context 'when the user has been proofed with biometric' do
-        let(:user) { biometric_verified_user }
+      before do
+        user.identities << identity
+        subject.build
+      end
 
-        before do
-          user.identities << identity
-          subject.build
-        end
+      context 'when the user has been proofed with facial match' do
+        let(:user) { facial_match_verified_user }
 
-        it 'asserts IAL2 with biometric comparison' do
+        it 'asserts IAL2 with facial match comparison' do
           expected_ial = Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
           expect(get_asserted_attribute(user, :ial)).to eq expected_ial
         end
       end
 
-      context 'when the user has been proofed without biometric' do
-        before do
-          user.identities << identity
-          subject.build
-        end
-
-        it 'asserts IAL2 (without biometric comparison)' do
+      context 'when the user has been proofed without facial match' do
+        it 'asserts IAL2 (without facial match comparison)' do
           expected_ial = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
           expect(get_asserted_attribute(user, :ial)).to eq expected_ial
         end
       end
     end
 
-    context 'when biometric IAL required is requested' do
+    context 'when facial match IAL required is requested' do
       let(:options) do
         {
           authn_context: [
@@ -638,15 +571,15 @@ RSpec.describe AttributeAsserter do
         }
       end
 
-      context 'when the user has been proofed with biometric comparison' do
-        let(:user) { biometric_verified_user }
+      context 'when the user has been proofed with facial match comparison' do
+        let(:user) { facial_match_verified_user }
 
         before do
           user.identities << identity
           subject.build
         end
 
-        it 'asserts IAL2 with biometric comparison' do
+        it 'asserts IAL2 with facial match comparison' do
           expected_ial = Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
           expect(get_asserted_attribute(user, :ial)).to eq expected_ial
         end
@@ -655,12 +588,10 @@ RSpec.describe AttributeAsserter do
 
     shared_examples 'unverified user' do
       let(:user) { create(:user, :fully_registered) }
+      let(:attribute_bundle) { %w[first_name last_name] }
 
       context 'custom bundle does not include email, phone' do
         before do
-          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).and_return(
-            %w[first_name last_name],
-          )
           subject.build
         end
 
@@ -670,11 +601,9 @@ RSpec.describe AttributeAsserter do
       end
 
       context 'custom bundle includes all_emails' do
+        let(:attribute_bundle) { %w[all_emails] }
         before do
           create(:email_address, user: user)
-          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).and_return(
-            %w[all_emails],
-          )
           subject.build
         end
 
@@ -687,10 +616,8 @@ RSpec.describe AttributeAsserter do
       end
 
       context 'custom bundle includes email, phone' do
+        let(:attribute_bundle) { %w[first_name last_name email phone] }
         before do
-          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).and_return(
-            %w[first_name last_name email phone],
-          )
           subject.build
         end
 
@@ -724,6 +651,7 @@ RSpec.describe AttributeAsserter do
     end
 
     context 'with a deleted email' do
+      let(:attribute_bundle) { %w[email phone first_name] }
       let(:subject) do
         described_class.new(
           user: user,
@@ -737,8 +665,6 @@ RSpec.describe AttributeAsserter do
 
       before do
         user.identities << identity
-        allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-          and_return(%w[email phone first_name])
         create(:email_address, user:, email: 'email@example.com')
 
         ident = user.identities.last
@@ -752,12 +678,13 @@ RSpec.describe AttributeAsserter do
       end
 
       it 'defers to user alternate email' do
-        expect(get_asserted_attribute(user, :email)).
-          to eq 'email@example.com'
+        expect(get_asserted_attribute(user, :email))
+          .to eq 'email@example.com'
       end
     end
 
     context 'with a nil email id' do
+      let(:attribute_bundle) { %w[email phone first_name] }
       let(:subject) do
         described_class.new(
           user: user,
@@ -771,8 +698,6 @@ RSpec.describe AttributeAsserter do
 
       before do
         user.identities << identity
-        allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-          and_return(%w[email phone first_name])
 
         ident = user.identities.last
         ident.email_address_id = nil
@@ -781,12 +706,13 @@ RSpec.describe AttributeAsserter do
       end
 
       it 'defers to user alternate email' do
-        expect(get_asserted_attribute(user, :email)).
-          to eq user.email_addresses.last.email
+        expect(get_asserted_attribute(user, :email))
+          .to eq user.email_addresses.last.email
       end
     end
 
     context 'select email to send to partner feature is disabled' do
+      let(:attribute_bundle) { %w[first_name last_name email phone] }
       before do
         allow(IdentityConfig.store).to receive(
           :feature_select_email_to_share_enabled,
@@ -807,8 +733,6 @@ RSpec.describe AttributeAsserter do
 
         before do
           user.identities << identity
-          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-            and_return(%w[email phone first_name])
           create(:email_address, user:, email: 'email@example.com')
 
           ident = user.identities.last
@@ -822,12 +746,13 @@ RSpec.describe AttributeAsserter do
         end
 
         it 'defers to user alternate email' do
-          expect(get_asserted_attribute(user, :email)).
-            to eq 'email@example.com'
+          expect(get_asserted_attribute(user, :email))
+            .to eq 'email@example.com'
         end
       end
 
       context 'with a nil email id' do
+        let(:attribute_bundle) { %w[first_name email phone] }
         let(:subject) do
           described_class.new(
             user: user,
@@ -841,8 +766,6 @@ RSpec.describe AttributeAsserter do
 
         before do
           user.identities << identity
-          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-            and_return(%w[email phone first_name])
 
           ident = user.identities.last
           ident.email_address_id = nil
@@ -851,18 +774,17 @@ RSpec.describe AttributeAsserter do
         end
 
         it 'defers to user alternate email' do
-          expect(get_asserted_attribute(user, :email)).
-            to eq user.email_addresses.last.email
+          expect(get_asserted_attribute(user, :email))
+            .to eq user.email_addresses.last.email
         end
       end
     end
   end
 
   describe 'aal attributes handling' do
+    let(:attribute_bundle) { %w[email] }
     before do
       user.identities << identity
-      allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-        and_return(%w[email])
       subject.build
     end
 
@@ -1036,7 +958,7 @@ RSpec.describe AttributeAsserter do
             let(:service_provider_aal) { 1 }
 
             it 'asserts aal1' do
-              # we do not enforce aal1, we enforce default aal, so this should be updated
+              # we don't really have an aal1 level to enforce, so this should be updated
               expect(get_asserted_attribute(user, :aal)).to eq(
                 Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF,
               )
@@ -1046,8 +968,7 @@ RSpec.describe AttributeAsserter do
           context 'default_aal is 2' do
             let(:service_provider_aal) { 2 }
 
-            it 'asserts aal1' do
-              # we do not enforce aal1, we enforce default aal, so this should be updated
+            it 'asserts aal2' do
               expect(get_asserted_attribute(user, :aal)).to eq(
                 Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
               )
@@ -1057,8 +978,8 @@ RSpec.describe AttributeAsserter do
           context 'default_aal is 3' do
             let(:service_provider_aal) { 3 }
 
-            it 'asserts aal1' do
-              # we do not enforce aal1, we enforce default aal, so this should be updated
+            it 'asserts aal3' do
+              # we do not enforce aal3, we enforce aal2 with phishing-resistant mfa
               expect(get_asserted_attribute(user, :aal)).to eq(
                 Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
               )
@@ -1122,8 +1043,8 @@ RSpec.describe AttributeAsserter do
               ]
             end
 
-            # identity proofing enforces aal2, so that is what should be asserted
             it 'asserts the default value' do
+              # identity proofing enforces aal2, so that is what should be asserted
               expect(get_asserted_attribute(user, :aal)).to eq(
                 Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
               )
@@ -1136,7 +1057,7 @@ RSpec.describe AttributeAsserter do
         let(:options) do
           {
             authn_context: [
-              Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+              Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
             ],
             authn_context_comparison: 'minimum',
           }

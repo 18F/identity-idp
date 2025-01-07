@@ -152,7 +152,6 @@ module Proofing
           national_id_worst_score
           org_id
           policy
-          policy_details_api
           policy_engine_version
           policy_score
           page_time_on

@@ -34,11 +34,7 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
       'key_id' => 'foo',
     )
     allow(PivCacService).to receive(:decode_token).with('bad-token').and_return(
-      'uuid' => 'bad-uuid',
-      'subject' => bad_dn,
-      'issuer' => x509_issuer,
-      'nonce' => nonce,
-      'key_id' => 'foo',
+      'error' => 'token.bad',
     )
     allow(PivCacService).to receive(:decode_token).with('bad-nonce').and_return(
       'uuid' => user.piv_cac_configurations.first.x509_dn_uuid,
@@ -116,9 +112,9 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
         stub_analytics
         cfg = controller.current_user.piv_cac_configurations.first
 
-        expect(controller).to receive(:handle_valid_verification_for_authentication_context).
-          with(auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC).
-          and_call_original
+        expect(controller).to receive(:handle_valid_verification_for_authentication_context)
+          .with(auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC)
+          .and_call_original
 
         get :show, params: { token: 'good-token' }
 
@@ -135,6 +131,7 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
           piv_cac_configuration_id: cfg.id,
           piv_cac_configuration_dn_uuid: cfg.x509_dn_uuid,
           key_id: 'foo',
+          attempts: 1,
         )
         expect(@analytics).to have_logged_event(
           'User marked authenticated',
@@ -205,26 +202,50 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
     end
 
     context 'when the user presents a different piv/cac' do
+      subject(:response) { get :show, params: { token: 'good-other-token' } }
+
       before do
         stub_sign_in_before_2fa(user)
-
-        get :show, params: { token: 'good-other-token' }
       end
 
       it 'increments second_factor_attempts_count' do
-        expect(subject.current_user.reload.second_factor_attempts_count).to eq 1
+        response
+
+        expect(controller.current_user.reload.second_factor_attempts_count).to eq 1
       end
 
-      it 'redirects to the piv/cac entry screen' do
-        expect(response).to redirect_to login_two_factor_piv_cac_path
-      end
-
-      it 'displays flash error message' do
-        expect(flash[:error]).to eq t('two_factor_authentication.invalid_piv_cac')
+      it 'redirects to the piv/cac mismatch screen' do
+        expect(response).to redirect_to login_two_factor_piv_cac_mismatch_path
       end
 
       it 'resets the piv/cac session information' do
-        expect(subject.user_session[:decrypted_x509]).to be_nil
+        response
+
+        expect(controller.user_session[:decrypted_x509]).to be_nil
+      end
+
+      context 'when user session context is not authentication' do
+        before do
+          allow(UserSessionContext).to receive(:authentication_context?).and_return(false)
+        end
+
+        it 'redirects to authenticate again, including error message' do
+          expect(response).to redirect_to login_two_factor_piv_cac_path
+          expect(flash[:error]).to eq t('two_factor_authentication.invalid_piv_cac')
+        end
+      end
+
+      context 'when user has maximum number of piv/cac associated with their account' do
+        before do
+          while user.piv_cac_configurations.count < IdentityConfig.store.max_piv_cac_per_account
+            create(:piv_cac_configuration, user:)
+          end
+        end
+
+        it 'redirects to authenticate again, including error message' do
+          expect(response).to redirect_to login_two_factor_piv_cac_path
+          expect(flash[:error]).to eq t('two_factor_authentication.invalid_piv_cac')
+        end
       end
     end
 
@@ -239,10 +260,8 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
 
         stub_analytics
 
-        piv_cac_mismatch = { type: 'user.piv_cac_mismatch' }
-
-        expect(PushNotification::HttpPush).to receive(:deliver).
-          with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
+        expect(PushNotification::HttpPush).to receive(:deliver)
+          .with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
 
         get :show, params: { token: 'bad-token' }
 
@@ -250,13 +269,12 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
         expect(@analytics).to have_logged_event(
           'Multi-Factor Authentication',
           success: false,
-          errors: piv_cac_mismatch,
+          errors: { type: 'token.invalid' },
           context: 'authentication',
           multi_factor_auth_method: 'piv_cac',
           enabled_mfa_methods_count: 2,
           new_device: true,
-          key_id: 'foo',
-          piv_cac_configuration_dn_uuid: 'bad-uuid',
+          attempts: 1,
         )
         expect(@analytics).to have_logged_event('Multi-Factor Authentication: max attempts reached')
       end

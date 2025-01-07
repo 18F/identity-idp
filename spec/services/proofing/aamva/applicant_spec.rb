@@ -14,7 +14,7 @@ RSpec.describe Proofing::Aamva::Applicant do
   end
 
   describe '.from_proofer_applicant(applicant)' do
-    it 'should create an AAMVA applicant with necessary proofer applcant data' do
+    it 'should create an AAMVA applicant with necessary proofer applicant data' do
       aamva_applicant = described_class.from_proofer_applicant(proofer_applicant)
 
       expect(aamva_applicant.uuid).to eq(proofer_applicant[:uuid])
@@ -63,5 +63,13 @@ RSpec.describe Proofing::Aamva::Applicant do
     aamva_applicant = Proofing::Aamva::Applicant.from_proofer_applicant(proofer_applicant)
 
     expect(aamva_applicant[:dob]).to eq('')
+  end
+
+  it 'should format the height' do
+    proofer_applicant[:height] = 73
+    aamva_applicant = Proofing::Aamva::Applicant.from_proofer_applicant(proofer_applicant)
+
+    # This is intended to describe 6'1"
+    expect(aamva_applicant[:height]).to eq('61')
   end
 end

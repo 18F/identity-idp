@@ -21,6 +21,37 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
     it 'returns a valid StepInfo object' do
       expect(Idv::InPerson::VerifyInfoController.step_info).to be_valid
     end
+
+    describe '#undo_step' do
+      let(:idv_session) do
+        Idv::Session.new(
+          user_session: {},
+          current_user: user,
+          service_provider: nil,
+        ).tap do |idv_session|
+          idv_session.residential_resolution_vendor = 'ResidentialResolutionVendor'
+          idv_session.resolution_successful = true
+          idv_session.resolution_vendor = 'ResolutionVendor'
+          idv_session.verify_info_step_document_capture_session_uuid = 'abcd-1234'
+          idv_session.threatmetrix_review_status = 'pass'
+          idv_session.source_check_vendor = 'aamva'
+          idv_session.applicant = { first_name: 'Joe ' }
+        end
+      end
+
+      it 'resets relevant fields on idv_session to nil' do
+        described_class.step_info.undo_step.call(idv_session:, user:)
+        aggregate_failures do
+          expect(idv_session.applicant).to be(nil)
+          expect(idv_session.residential_resolution_vendor).to be(nil)
+          expect(idv_session.resolution_successful).to be(nil)
+          expect(idv_session.resolution_vendor).to be(nil)
+          expect(idv_session.source_check_vendor).to be(nil)
+          expect(idv_session.threatmetrix_review_status).to be(nil)
+          expect(idv_session.verify_info_step_document_capture_session_uuid).to be(nil)
+        end
+      end
+    end
   end
 
   describe 'before_actions' do
@@ -73,7 +104,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
           analytics_id: 'In Person Proofing',
           flow_path: 'standard',
           step: 'verify',
-          same_address_as_id: true,
         },
       )
     end
@@ -119,11 +149,13 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
         }
       end
 
-      it 'logs proofing results with analytics_id' do
+      before do
         allow(controller).to receive(:load_async_state).and_return(async_state)
         allow(async_state).to receive(:done?).and_return(true)
         allow(async_state).to receive(:result).and_return(adjudicated_result)
+      end
 
+      it 'logs proofing results with analytics_id' do
         get :show
 
         expect(@analytics).to have_logged_event(
@@ -134,7 +166,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
               analytics_id: 'In Person Proofing',
               flow_path: 'standard',
               step: 'verify',
-              same_address_as_id: true,
             },
           ),
         )
@@ -144,6 +175,20 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
             session_id: 'threatmetrix_session_id',
             tmx_summary_reason_code: ['Identity_Negative_History'],
           },
+        )
+      end
+
+      it 'logs the edit distance between SSNs' do
+        controller.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
+        controller.idv_session.previous_ssn = '900-66-1256'
+
+        get :show
+
+        expect(@analytics).to have_logged_event(
+          'IdV: doc auth verify proofing results',
+          hash_including(
+            previous_ssn_edit_distance: 2,
+          ),
         )
       end
     end
@@ -205,6 +250,65 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
         expect(response).to redirect_to(idv_path)
       end
     end
+
+    context 'when the resolution proofing job completed successfully' do
+      let(:document_capture_session) do
+        DocumentCaptureSession.create(user:)
+      end
+
+      let(:resolution_vendor_name) { 'ResolutionVendor' }
+
+      let(:residential_resolution_vendor_name) { 'ResidentialResolutionVendor' }
+
+      let(:async_state) do
+        # Here we're trying to match the store to redis -> read from redis flow this data travels
+        adjudicated_result = Proofing::Resolution::ResultAdjudicator.new(
+          state_id_result: Proofing::StateIdResult.new(
+            success: true,
+            errors: {},
+            exception: nil,
+            vendor_name: :aamva,
+            transaction_id: 'abc123',
+            verified_attributes: [],
+          ),
+          device_profiling_result: Proofing::DdpResult.new(success: true),
+          ipp_enrollment_in_progress: true,
+          residential_resolution_result: Proofing::Resolution::Result.new(
+            success: true,
+            vendor_name: residential_resolution_vendor_name,
+          ),
+          resolution_result: Proofing::Resolution::Result.new(
+            success: true,
+            vendor_name: resolution_vendor_name,
+          ),
+          same_address_as_id: true,
+          should_proof_state_id: true,
+          applicant_pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
+        ).adjudicated_result.to_h
+
+        document_capture_session.create_proofing_session
+
+        document_capture_session.store_proofing_result(adjudicated_result)
+
+        document_capture_session.load_proofing_result
+      end
+
+      before do
+        allow(controller).to receive(:load_async_state).and_return(async_state)
+      end
+
+      it 'sets resolution_vendor on idv_session' do
+        get :show
+        expect(controller.idv_session.resolution_vendor).to eql(resolution_vendor_name)
+      end
+
+      it 'sets residential_resolution_vendor on idv_session' do
+        get :show
+        expect(controller.idv_session.residential_resolution_vendor).to(
+          eql(residential_resolution_vendor_name),
+        )
+      end
+    end
   end
 
   describe '#update' do
@@ -220,22 +324,15 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
       allow(user).to receive(:establishing_in_person_enrollment).and_return(enrollment)
     end
 
-    it 'sets ssn and state_id_type on pii_from_user' do
+    it 'sets ssn on pii_from_user' do
       expect(Idv::Agent).to receive(:new).with(
         hash_including(
-          state_id_type: 'drivers_license',
           ssn: Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID[:ssn],
           consent_given_at: subject.idv_session.idv_consent_given_at,
         ),
       ).and_call_original
 
-      # our test data already has the expected value by default
-      subject.user_session['idv/in_person'][:pii_from_user].delete(:state_id_type)
-
       put :update
-
-      expect(subject.user_session['idv/in_person'][:pii_from_user][:state_id_type]).
-        to eq 'drivers_license'
     end
 
     context 'a user does not have an establishing in person enrollment associated with them' do
@@ -244,8 +341,8 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
       end
 
       it 'indicates to the IDV agent that an IPP enrollment is not in progress' do
-        expect_any_instance_of(Idv::Agent).to receive(:proof_resolution).
-          with(
+        expect_any_instance_of(Idv::Agent).to receive(:proof_resolution)
+          .with(
             kind_of(DocumentCaptureSession),
             trace_id: subject.send(:amzn_trace_id),
             threatmetrix_session_id: nil,
@@ -287,8 +384,8 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
     end
 
     it 'passes the X-Amzn-Trace-Id to the proofer' do
-      expect_any_instance_of(Idv::Agent).to receive(:proof_resolution).
-        with(
+      expect_any_instance_of(Idv::Agent).to receive(:proof_resolution)
+        .with(
           kind_of(DocumentCaptureSession),
           trace_id: subject.send(:amzn_trace_id),
           threatmetrix_session_id: nil,
@@ -320,8 +417,8 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
 
       before do
         allow(IdentityConfig.store).to receive(:proof_ssn_max_attempts).and_return(3)
-        allow(IdentityConfig.store).to receive(:proof_ssn_max_attempt_window_in_minutes).
-          and_return(10)
+        allow(IdentityConfig.store).to receive(:proof_ssn_max_attempt_window_in_minutes)
+          .and_return(10)
       end
 
       it 'rate limits them all' do

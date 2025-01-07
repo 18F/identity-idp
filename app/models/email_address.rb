@@ -42,16 +42,15 @@ class EmailAddress < ApplicationRecord
   end
 
   def fed_email?
-    if IdentityConfig.store.use_fed_domain_class
-      return false unless domain
-      FederalEmailDomain.fed_domain?(domain)
-    else
-      email.end_with?('.gov')
-    end
+    FederalEmailDomain.fed_domain?(domain)
   end
 
   def mil_email?
     email.end_with?('.mil')
+  end
+
+  def self.last_sign_in
+    order('last_sign_in_at DESC NULLS LAST').first
   end
 
   class << self

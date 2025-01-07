@@ -37,7 +37,7 @@ class SamlIdpController < ApplicationController
       return redirect_to reactivate_account_url if user_needs_to_reactivate_account?
       return redirect_to url_for_pending_profile_reason if user_has_pending_profile?
       return redirect_to idv_url if identity_needs_verification?
-      return redirect_to idv_url if biometric_comparison_needed?
+      return redirect_to idv_url if facial_match_needed?
     end
     return redirect_to sign_up_completed_url if needs_completion_screen_reason
     if auth_count == 1 && first_visit_for_sp?
@@ -61,7 +61,11 @@ class SamlIdpController < ApplicationController
 
     track_logout_event
 
-    return head(:bad_request) unless valid_saml_request?
+    unless valid_saml_request?
+      track_integration_errors(event: :saml_logout_request)
+
+      return head(:bad_request)
+    end
 
     handle_valid_sp_logout_request
   end
@@ -75,11 +79,21 @@ class SamlIdpController < ApplicationController
 
     track_remote_logout_event(issuer)
 
-    return head(:bad_request) unless valid_saml_request?
+    unless valid_saml_request?
+      track_integration_errors(event: :saml_remote_logout_request)
+
+      return head(:bad_request)
+    end
 
     user_id = find_user_from_session_index
 
-    return head(:bad_request) unless user_id.present?
+    unless user_id.present?
+      track_integration_errors(
+        event: :saml_remote_logout_request,
+        errors: [:no_user_found_from_session_index],
+      )
+      return head(:bad_request)
+    end
 
     handle_valid_sp_remote_logout_request(user_id: user_id, issuer: issuer)
   end
@@ -113,9 +127,9 @@ class SamlIdpController < ApplicationController
     redirect_to capture_password_url
   end
 
-  def biometric_comparison_needed?
-    resolved_authn_context_result.biometric_comparison? &&
-      !current_user.identity_verified_with_biometric_comparison?
+  def facial_match_needed?
+    resolved_authn_context_result.facial_match? &&
+      !current_user.identity_verified_with_facial_match?
   end
 
   def set_devise_failure_redirect_for_concurrent_session_logout
@@ -131,10 +145,18 @@ class SamlIdpController < ApplicationController
       request_signed: saml_request.signed?,
       matching_cert_serial:,
       requested_nameid_format: saml_request.name_id_format,
+      unknown_authn_contexts:,
     )
 
     if result.success? && saml_request.signed?
       analytics_payload[:cert_error_details] = saml_request.cert_errors
+
+      # analytics to determine if turning on SHA256 validation will break
+      # existing partners
+      if certs_different?
+        analytics_payload[:certs_different] = true
+        analytics_payload[:sha256_matching_cert] = sha256_alg_matching_cert_serial
+      end
     end
 
     analytics.saml_auth(**analytics_payload)
@@ -146,17 +168,35 @@ class SamlIdpController < ApplicationController
     nil
   end
 
+  def sha256_alg_matching_cert
+    # if sha256_alg_matching_cert is nil, fallback to the "first" cert
+    saml_request.sha256_validation_matching_cert ||
+      saml_request_service_provider&.ssl_certs&.first
+  rescue SamlIdp::XMLSecurity::SignedDocument::ValidationError
+  end
+
+  def sha256_alg_matching_cert_serial
+    sha256_alg_matching_cert&.serial&.to_s
+  end
+
+  def certs_different?
+    encryption_cert != sha256_alg_matching_cert
+  end
+
   def log_external_saml_auth_request
     return unless external_saml_request?
 
     analytics.saml_auth_request(
       requested_ial: requested_ial,
-      authn_context: saml_request&.requested_authn_contexts,
+      authn_context: requested_authn_contexts,
       requested_aal_authn_context: FederatedProtocols::Saml.new(saml_request).aal,
       requested_vtr_authn_contexts: saml_request&.requested_vtr_authn_contexts.presence,
       force_authn: saml_request&.force_authn?,
       final_auth_request: sp_session[:final_auth_request],
       service_provider: saml_request&.issuer,
+      request_signed: saml_request.signed?,
+      matching_cert_serial:,
+      unknown_authn_contexts:,
       user_fully_authenticated: user_fully_authenticated?,
     )
   end
@@ -226,5 +266,26 @@ class SamlIdpController < ApplicationController
 
   def require_path_year
     render_not_found if params[:path_year].blank?
+  end
+
+  def unknown_authn_contexts
+    return nil if saml_request.requested_vtr_authn_contexts.present?
+    return nil if requested_authn_contexts.blank?
+
+    unmatched_authn_contexts.reject do |authn_context|
+      authn_context.match(req_attrs_regexp)
+    end.join(' ').presence
+  end
+
+  def unmatched_authn_contexts
+    requested_authn_contexts - Saml::Idp::Constants::VALID_AUTHN_CONTEXTS
+  end
+
+  def requested_authn_contexts
+    @request_authn_contexts || saml_request&.requested_authn_contexts
+  end
+
+  def req_attrs_regexp
+    Regexp.escape(Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF)
   end
 end

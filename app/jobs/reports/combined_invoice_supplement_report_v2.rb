@@ -7,7 +7,9 @@ module Reports
     REPORT_NAME = 'combined-invoice-supplement-report-v2'
 
     def perform(_date)
-      csv = build_csv(IaaReportingHelper.iaas, IaaReportingHelper.partner_accounts)
+      # Exclude IAAs that ended more than 90 days ago
+      iaas = IaaReportingHelper.iaas.filter { |x| x.end_date > 90.days.ago }
+      csv = build_csv(iaas, IaaReportingHelper.partner_accounts)
       save_report(REPORT_NAME, csv, extension: 'csv')
     end
 
@@ -73,11 +75,11 @@ module Reports
         [result[:key], result[:year_month]]
       end
 
-      by_issuer_iaa_issuer_year_months = by_issuer_results.
-        group_by { |r| r[:iaa] }.
-        transform_values do |iaa|
-          iaa.group_by { |r| r[:issuer] }.
-            transform_values { |issuer| issuer.group_by { |r| r[:year_month] } }
+      by_issuer_iaa_issuer_year_months = by_issuer_results
+        .group_by { |r| r[:iaa] }
+        .transform_values do |iaa|
+          iaa.group_by { |r| r[:issuer] }
+            .transform_values { |issuer| issuer.group_by { |r| r[:year_month] } }
         end
 
       # rubocop:disable Metrics/BlockLength

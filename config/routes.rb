@@ -119,6 +119,9 @@ Rails.application.routes.draw do
       get '/login/two_factor/options' => 'two_factor_authentication/options#index'
       post '/login/two_factor/options' => 'two_factor_authentication/options#create'
 
+      get '/login/two_factor/piv_cac_mismatch' => 'two_factor_authentication/piv_cac_mismatch#show'
+      post '/login/two_factor/piv_cac_mismatch' => 'two_factor_authentication/piv_cac_mismatch#create'
+
       get '/login/two_factor/authenticator' => 'two_factor_authentication/totp_verification#show'
       post '/login/two_factor/authenticator' => 'two_factor_authentication/totp_verification#create'
       get '/login/two_factor/personal_key' => 'two_factor_authentication/personal_key_verification#show'
@@ -146,6 +149,9 @@ Rails.application.routes.draw do
 
     if IdentityConfig.store.enable_test_routes
       namespace :test do
+        get '/ipp' => 'ipp#index'
+        put '/ipp' => 'ipp#update'
+
         # Assertion granting test start + return.
         get '/saml/login' => 'saml_test#index'
         get '/saml' => 'saml_test#start'
@@ -232,6 +238,9 @@ Rails.application.routes.draw do
 
     get '/second_mfa_reminder' => 'users/second_mfa_reminder#new'
     post '/second_mfa_reminder' => 'users/second_mfa_reminder#create'
+
+    get '/webauthn_platform_recommended' => 'users/webauthn_platform_recommended#new'
+    post '/webauthn_platform_recommended' => 'users/webauthn_platform_recommended#create'
 
     get '/piv_cac' => 'users/piv_cac_authentication_setup#new', as: :setup_piv_cac
     get '/piv_cac_error' => 'users/piv_cac_authentication_setup#error', as: :setup_piv_cac_error
@@ -320,12 +329,15 @@ Rails.application.routes.draw do
     get '/sign_up/cancel/' => 'sign_up/cancellations#new', as: :sign_up_cancel
     delete '/sign_up/cancel' => 'sign_up/cancellations#destroy', as: :sign_up_destroy
 
+    get '/redirect/return_to_sp/account_verified_cta' => 'idv/account_verified_cta_visited#show', as: :account_verified_sign_in_redirect
+
     get '/redirect/return_to_sp/cancel' => 'redirect/return_to_sp#cancel', as: :return_to_sp_cancel
     get '/redirect/return_to_sp/failure_to_proof' => 'redirect/return_to_sp#failure_to_proof',
         as: :return_to_sp_failure_to_proof
     get '/redirect/help_center' => 'redirect/help_center#show', as: :help_center_redirect
     get '/redirect/contact/' => 'redirect/contact#show', as: :contact_redirect
     get '/redirect/policy/' => 'redirect/policy#show', as: :policy_redirect
+    get '/redirect/marketing' => 'redirect/marketing_site#show', as: :marketing_site_redirect
     get '/sign_up/completed/cancel/' => 'completions_cancellation#show'
 
     match '/sign_out' => 'sign_out#destroy', via: %i[get post delete]
@@ -350,12 +362,20 @@ Rails.application.routes.draw do
       put '/how_to_verify' => 'how_to_verify#update'
       get '/document_capture' => 'document_capture#show'
       put '/document_capture' => 'document_capture#update'
+      get '/in_person/direct' => 'document_capture#direct_in_person'
+      get '/socure/document_capture' => 'socure/document_capture#show'
+      get '/socure/document_capture_update' => 'socure/document_capture#update', as: :socure_document_capture_update
+      get '/socure/document_capture_errors' => 'socure/errors#show', as: :socure_document_capture_errors
+      get '/socure/errors/timeout' => 'socure/errors#timeout'
       # This route is included in SMS messages sent to users who start the IdV hybrid flow. It
       # should be kept short, and should not include underscores ("_").
       get '/documents' => 'hybrid_mobile/entry#show', as: :hybrid_mobile_entry
       get '/hybrid_mobile/document_capture' => 'hybrid_mobile/document_capture#show'
       put '/hybrid_mobile/document_capture' => 'hybrid_mobile/document_capture#update'
       get '/hybrid_mobile/capture_complete' => 'hybrid_mobile/capture_complete#show'
+      get '/hybrid_mobile/socure/document_capture' => 'hybrid_mobile/socure/document_capture#show'
+      get '/hybrid_mobile/socure/document_capture_update' => 'hybrid_mobile/socure/document_capture#update', as: :hybrid_mobile_socure_document_capture_update
+      get '/hybrid_mobile/socure/document_capture_errors' => 'hybrid_mobile/socure/document_capture#errors', as: :hybrid_mobile_socure_document_capture_errors
       get '/hybrid_handoff' => 'hybrid_handoff#show'
       put '/hybrid_handoff' => 'hybrid_handoff#update'
       get '/link_sent' => 'link_sent#show'
@@ -369,9 +389,10 @@ Rails.application.routes.draw do
       put '/welcome' => 'welcome#update'
       get '/phone' => 'phone#new'
       put '/phone' => 'phone#create'
-      get '/phone/errors/warning' => 'phone_errors#warning'
-      get '/phone/errors/jobfail' => 'phone_errors#jobfail'
       get '/phone/errors/failure' => 'phone_errors#failure'
+      get '/phone/errors/jobfail' => 'phone_errors#jobfail'
+      get '/phone/errors/timeout' => 'phone_errors#timeout'
+      get '/phone/errors/warning' => 'phone_errors#warning'
       post '/phone/resend_code' => 'resend_otp#create', as: :resend_otp
       get '/phone_confirmation' => 'otp_verification#show', as: :otp_verification
       put '/phone_confirmation' => 'otp_verification#update', as: :nil
@@ -379,7 +400,6 @@ Rails.application.routes.draw do
       put '/enter_password' => 'enter_password#create'
       get '/session/errors/warning' => 'session_errors#warning'
       get '/session/errors/state_id_warning' => 'session_errors#state_id_warning'
-      get '/phone/errors/timeout' => 'phone_errors#timeout'
       get '/session/errors/failure' => 'session_errors#failure'
       get '/session/errors/ssn_failure' => 'session_errors#ssn_failure'
       get '/session/errors/exception' => 'session_errors#exception'
@@ -396,15 +416,13 @@ Rails.application.routes.draw do
       get '/capture-doc' => 'hybrid_mobile/entry#show',
           # sometimes underscores get messed up when linked to via SMS
           as: :capture_doc_dashes
-
-      get '/in_person_proofing/state_id' => 'in_person/state_id#show'
-      put '/in_person_proofing/state_id' => 'in_person/state_id#update'
-
       get '/in_person' => 'in_person#index'
       get '/in_person/ready_to_verify' => 'in_person/ready_to_verify#show',
           as: :in_person_ready_to_verify
       post '/in_person/usps_locations' => 'in_person/usps_locations#index'
       put '/in_person/usps_locations' => 'in_person/usps_locations#update'
+      get '/in_person/state_id' => 'in_person/state_id#show'
+      put '/in_person/state_id' => 'in_person/state_id#update'
       get '/in_person/address' => 'in_person/address#show'
       put '/in_person/address' => 'in_person/address#update'
       get '/in_person/ssn' => 'in_person/ssn#show'
@@ -431,6 +449,9 @@ Rails.application.routes.draw do
       end
 
       get '/by_mail/letter_enqueued' => 'by_mail/letter_enqueued#show', as: :letter_enqueued
+      get '/by_mail/sp_follow_up' => 'by_mail/sp_follow_up#new', as: :sp_follow_up
+      get '/by_mail/sp_follow_up/connect' => 'by_mail/sp_follow_up#show', as: :sp_follow_up_connect
+      get '/by_mail/sp_follow_up/cancel' => 'by_mail/sp_follow_up#cancel', as: :sp_follow_up_cancel
 
       # We re-mapped `/verify/by_mail` to `/verify/by_mail/enter_code`. However, we sent emails to
       # users with a link to `/verify/by_mail?did_not_receive_letter=1`. We need to continue

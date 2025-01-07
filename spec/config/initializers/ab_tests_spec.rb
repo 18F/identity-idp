@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe AbTests do
-  include AbTestsHelper
-
   describe '#all' do
     it 'returns all registered A/B tests' do
       expect(AbTests.all.values).to all(be_kind_of(AbTest))
@@ -115,21 +113,21 @@ RSpec.describe AbTests do
 
     let(:enable_ab_test) do
       -> {
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).
-          and_return('vendor_a')
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_switching_enabled).
-          and_return(true)
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_socure_percent).
-          and_return(50)
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_lexis_nexis_percent).
-          and_return(30)
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_default)
+          .and_return('vendor_a')
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_switching_enabled)
+          .and_return(true)
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_socure_percent)
+          .and_return(50)
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_lexis_nexis_percent)
+          .and_return(30)
       }
     end
 
     let(:disable_ab_test) do
       -> {
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_switching_enabled).
-          and_return(false)
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_switching_enabled)
+          .and_return(false)
       }
     end
 
@@ -141,18 +139,18 @@ RSpec.describe AbTests do
 
     let(:disable_ab_test) do
       -> {
-        allow(IdentityConfig.store).to receive(:idv_acuant_sdk_upgrade_a_b_testing_enabled).
-          and_return(false)
+        allow(IdentityConfig.store).to receive(:idv_acuant_sdk_upgrade_a_b_testing_enabled)
+          .and_return(false)
       }
     end
 
     let(:enable_ab_test) do
       -> {
-        allow(IdentityConfig.store).to receive(:idv_acuant_sdk_upgrade_a_b_testing_enabled).
-          and_return(true)
+        allow(IdentityConfig.store).to receive(:idv_acuant_sdk_upgrade_a_b_testing_enabled)
+          .and_return(true)
 
-        allow(IdentityConfig.store).to receive(:idv_acuant_sdk_upgrade_a_b_testing_percent).
-          and_return(50)
+        allow(IdentityConfig.store).to receive(:idv_acuant_sdk_upgrade_a_b_testing_percent)
+          .and_return(50)
       }
     end
 
@@ -216,6 +214,133 @@ RSpec.describe AbTests do
             expect(bucket).to be_nil
           end
         end
+      end
+    end
+  end
+
+  describe 'RECOMMEND_WEBAUTHN_PLATFORM_FOR_SMS_USER' do
+    let(:user) { create(:user) }
+
+    subject(:bucket) do
+      AbTests::RECOMMEND_WEBAUTHN_PLATFORM_FOR_SMS_USER.bucket(
+        request: nil,
+        service_provider: nil,
+        session: nil,
+        user:,
+        user_session: nil,
+      )
+    end
+
+    before do
+      allow(IdentityConfig.store).to receive(
+        :recommend_webauthn_platform_for_sms_ab_test_account_creation_percent,
+      ).and_return(recommend_webauthn_platform_for_sms_ab_test_account_creation_percent)
+      allow(IdentityConfig.store).to receive(
+        :recommend_webauthn_platform_for_sms_ab_test_authentication_percent,
+      ).and_return(recommend_webauthn_platform_for_sms_ab_test_authentication_percent)
+      reload_ab_tests
+    end
+
+    context 'when A/B test is disabled' do
+      let(:recommend_webauthn_platform_for_sms_ab_test_account_creation_percent) { 0 }
+      let(:recommend_webauthn_platform_for_sms_ab_test_authentication_percent) { 0 }
+
+      it 'does not return a bucket' do
+        expect(bucket).to be_nil
+      end
+    end
+
+    context 'when A/B test is enabled' do
+      let(:recommend_webauthn_platform_for_sms_ab_test_account_creation_percent) { 1 }
+      let(:recommend_webauthn_platform_for_sms_ab_test_authentication_percent) { 1 }
+
+      it 'returns a bucket' do
+        expect(bucket).not_to be_nil
+      end
+    end
+  end
+
+  describe 'SOCURE_IDV_SHADOW_MODE' do
+    let(:user) { create(:user) }
+
+    subject(:bucket) do
+      AbTests::SOCURE_IDV_SHADOW_MODE.bucket(
+        request: nil,
+        service_provider: nil,
+        session: nil,
+        user:,
+        user_session: nil,
+      )
+    end
+
+    before do
+      allow(IdentityConfig.store).to receive(
+        :socure_idplus_shadow_mode_percent,
+      ).and_return(0)
+      reload_ab_tests
+    end
+
+    context 'when the A/B test is disabled' do
+      it 'does not return a bucket' do
+        expect(bucket).to be_nil
+      end
+    end
+
+    context 'when the A/B test is enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(
+          :socure_idplus_shadow_mode_percent,
+        ).and_return(100)
+        reload_ab_tests
+      end
+
+      it 'returns a bucket' do
+        expect(bucket).to eq :shadow_mode_enabled
+      end
+    end
+  end
+
+  describe 'DESKTOP_FT_UNLOCK_SETUP' do
+    let(:user) { nil }
+    let(:user_session) { {} }
+
+    subject(:bucket) do
+      AbTests::DESKTOP_FT_UNLOCK_SETUP.bucket(
+        request: nil,
+        service_provider: nil,
+        session: nil,
+        user:,
+        user_session:,
+      )
+    end
+
+    context 'when A/B test is disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:desktop_ft_unlock_setup_option_percent_tested)
+          .and_return(0)
+        reload_ab_tests
+      end
+
+      context 'when it would otherwise assign a bucket' do
+        let(:user) { build(:user) }
+
+        it 'does not return a bucket' do
+          expect(bucket).to be_nil
+        end
+      end
+    end
+
+    context 'when A/B test is enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:desktop_ft_unlock_setup_option_percent_tested)
+          .and_return(100)
+        reload_ab_tests
+      end
+
+      let(:user) { build(:user) }
+
+      it 'returns a bucket' do
+        expect(bucket).not_to be_nil
       end
     end
   end

@@ -22,25 +22,26 @@ RSpec.describe 'Account Reset Request: Delete Account', email: true do
       signin(user_email, user.password)
       click_link t('two_factor_authentication.login_options_link_text')
       click_link t('two_factor_authentication.account_reset.link')
-      expect(page).
-        to have_content strip_tags(
+      expect(page)
+        .to have_content strip_tags(
           t('account_reset.recovery_options.try_method_again'),
         )
       click_link t('account_reset.request.yes_continue')
-      expect(page).
-        to have_content strip_tags(
+      expect(page)
+        .to have_content strip_tags(
           t('account_reset.request.delete_account'),
         )
+
       click_button t('account_reset.request.yes_continue')
 
-      expect(page).
-        to have_content strip_tags(
+      expect(page)
+        .to have_content strip_tags(
           t('account_reset.confirm_request.instructions_start'),
         )
-      expect(page).
-        to have_content user_email
-      expect(page).
-        to have_content strip_tags(
+      expect(page)
+        .to have_content user_email
+      expect(page)
+        .to have_content strip_tags(
           t('account_reset.confirm_request.instructions_end'),
         )
       expect(page).to have_content t('account_reset.confirm_request.security_note')
@@ -48,7 +49,7 @@ RSpec.describe 'Account Reset Request: Delete Account', email: true do
 
       reset_email
 
-      travel_to(Time.zone.now + 2.days + 1) do
+      travel_to(Time.zone.now + 2.days + 2) do
         AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today)
         open_last_email
         click_email_link_matching(/delete_account\?token/)
@@ -89,28 +90,28 @@ RSpec.describe 'Account Reset Request: Delete Account', email: true do
       click_link t('two_factor_authentication.login_options_link_text')
       click_link t('two_factor_authentication.account_reset.link')
 
-      expect(page).
-        to have_content strip_tags(
+      expect(page)
+        .to have_content strip_tags(
           t('account_reset.recovery_options.try_method_again'),
         )
 
       click_link t('account_reset.request.yes_continue')
 
-      expect(page).
-        to have_content strip_tags(
+      expect(page)
+        .to have_content strip_tags(
           t('account_reset.request.delete_account'),
         )
 
       click_button t('account_reset.request.yes_continue')
 
-      expect(page).
-        to have_content strip_tags(
+      expect(page)
+        .to have_content strip_tags(
           t('account_reset.confirm_request.instructions_start'),
         )
-      expect(page).
-        to have_content user_email
-      expect(page).
-        to have_content strip_tags(
+      expect(page)
+        .to have_content user_email
+      expect(page)
+        .to have_content strip_tags(
           t('account_reset.confirm_request.instructions_end'),
         )
       expect(page).to have_content t('account_reset.confirm_request.security_note')
@@ -153,25 +154,25 @@ RSpec.describe 'Account Reset Request: Delete Account', email: true do
       signin(user_email, user.password)
       click_link t('two_factor_authentication.login_options_link_text')
       click_link t('two_factor_authentication.account_reset.link')
-      expect(page).
-        to have_content strip_tags(
+      expect(page)
+        .to have_content strip_tags(
           t('account_reset.recovery_options.try_method_again'),
         )
       click_link t('account_reset.request.yes_continue')
-      expect(page).
-        to have_content strip_tags(
+      expect(page)
+        .to have_content strip_tags(
           t('account_reset.request.delete_account'),
         )
       click_button t('account_reset.request.yes_continue')
 
-      expect(page).
-        to have_content strip_tags(
+      expect(page)
+        .to have_content strip_tags(
           t('account_reset.confirm_request.instructions_start'),
         )
-      expect(page).
-        to have_content user_email
-      expect(page).
-        to have_content strip_tags(
+      expect(page)
+        .to have_content user_email
+      expect(page)
+        .to have_content strip_tags(
           t('account_reset.confirm_request.instructions_end'),
         )
       expect(page).to_not have_content t('account_reset.confirm_request.security_note')

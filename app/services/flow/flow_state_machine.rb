@@ -13,7 +13,7 @@ module Flow
     attr_accessor :flow
 
     def index
-      redirect_to_step(next_step)
+      redirect_to idv_in_person_state_id_url
     end
 
     def show
@@ -169,17 +169,13 @@ module Flow
       redirect_to send(@final_url)
     end
 
-    def redirect_to_step(step)
+    def redirect_to_step(_step)
       flow_finish and return unless next_step
-      redirect_url(step)
+      redirect_url
     end
 
-    def redirect_url(step)
-      if IdentityConfig.store.in_person_state_id_controller_enabled
-        redirect_to idv_in_person_proofing_state_id_url
-      else
-        redirect_to send(@step_url, step: step)
-      end
+    def redirect_url
+      redirect_to idv_in_person_state_id_url
     end
 
     def analytics_properties
@@ -187,8 +183,8 @@ module Flow
         flow_path: flow.flow_path,
         step: current_step,
         analytics_id: @analytics_id,
-      }.merge(flow.extra_analytics_properties).
-        merge(**opt_in_analytics_properties)
+      }.merge(flow.extra_analytics_properties)
+        .merge(**opt_in_analytics_properties)
     end
 
     def current_step_name

@@ -13,7 +13,6 @@ module SignUp
     def new
       @register_user_email_form = RegisterUserEmailForm.new(analytics:)
       analytics.user_registration_enter_email_visit
-      render :new, formats: :html
     end
 
     def create
@@ -21,7 +20,7 @@ module SignUp
 
       result = @register_user_email_form.submit(permitted_params.merge(request_id:))
 
-      analytics.user_registration_email(**result.to_h)
+      analytics.user_registration_email(**result)
 
       if result.success?
         process_successful_creation
@@ -51,7 +50,6 @@ module SignUp
       session[:email] = @register_user_email_form.email
       session[:terms_accepted] = @register_user_email_form.terms_accepted
       session[:sign_in_flow] = :create_account
-
       redirect_to sign_up_verify_email_url(resend: resend_confirmation)
     end
 

@@ -51,7 +51,6 @@ RSpec.describe 'doc auth In person proofing residential address step', :js do
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
       expect(page).to have_current_path(idv_in_person_verify_info_url)
       expect(page).to have_text(InPersonHelper::GOOD_ADDRESS1)
-      expect(page).to have_text(InPersonHelper::GOOD_ADDRESS2)
       expect(page).to have_text(InPersonHelper::GOOD_CITY)
       expect(page).to have_text(InPersonHelper::GOOD_ZIPCODE)
       expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT_STATE)
@@ -72,7 +71,6 @@ RSpec.describe 'doc auth In person proofing residential address step', :js do
       # address page has fields that are pre-populated
       expect(page).to have_content(t('in_person_proofing.headings.update_address'))
       expect(page).to have_field(t('idv.form.address1'), with: InPersonHelper::GOOD_ADDRESS1)
-      expect(page).to have_field(t('idv.form.address2'), with: InPersonHelper::GOOD_ADDRESS2)
       expect(page).to have_field(t('idv.form.city'), with: InPersonHelper::GOOD_CITY)
       expect(page).to have_field(t('idv.form.zipcode'), with: InPersonHelper::GOOD_ZIPCODE)
       expect(page).to have_field(
@@ -82,10 +80,10 @@ RSpec.describe 'doc auth In person proofing residential address step', :js do
     end
   end
 
-  context 'Transliterable Validation' do
-    before(:each) do
-      allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled).
-        and_return(true)
+  context 'transliterable Validation' do
+    before do
+      allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled)
+        .and_return(true)
     end
 
     it 'shows validation errors',
@@ -134,7 +132,7 @@ RSpec.describe 'doc auth In person proofing residential address step', :js do
     end
   end
 
-  context 'Validation' do
+  context 'validation' do
     it 'validates zip code input', allow_browser_log: true do
       complete_idv_steps_before_address
 
@@ -156,7 +154,7 @@ RSpec.describe 'doc auth In person proofing residential address step', :js do
     end
   end
 
-  context 'State selection' do
+  context 'state selection' do
     it 'shows address hint when user selects state that has a specific hint',
        allow_browser_log: true do
       complete_idv_steps_before_address

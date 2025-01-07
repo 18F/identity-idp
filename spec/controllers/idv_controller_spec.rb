@@ -56,17 +56,31 @@ RSpec.describe IdvController do
         expect(response).to redirect_to idv_activated_url
       end
 
-      context 'but user needs to redo idv with biometric' do
+      context 'but user needs to redo idv with facial match' do
         let(:current_sp) { create(:service_provider) }
-
         before do
           session[:sp] =
-            { issuer: current_sp.issuer, vtr: ['C2.Pb'], biometric_comparison_required: true }
+            {
+              issuer: current_sp.issuer,
+              acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
+            }
         end
 
         it 'redirects to welcome' do
           get :index
           expect(response).to redirect_to idv_welcome_url
+        end
+
+        context 'using vectors of trust' do
+          before do
+            session[:sp] =
+              { issuer: current_sp.issuer, vtr: ['C2.Pb'] }
+          end
+
+          it 'redirects to welcome' do
+            get :index
+            expect(response).to redirect_to idv_welcome_url
+          end
         end
       end
     end
@@ -243,6 +257,27 @@ RSpec.describe IdvController do
             get :index
             expect(response).to redirect_to idv_welcome_url
           end
+
+          context 'when using semantic acr_values' do
+            let(:acr_values) { Saml::Idp::Constants::IAL_AUTH_ONLY_ACR }
+
+            before do
+              allow(IdentityConfig).to receive(
+                :allowed_valid_authn_context_semantic_providers,
+              ).and_return([current_sp])
+            end
+
+            it 'redirects back to the account page' do
+              get :index
+              expect(response).to redirect_to account_url
+            end
+
+            it 'begins the proofing process if the user has a profile' do
+              create(:profile, :verified, user: user)
+              get :index
+              expect(response).to redirect_to idv_welcome_url
+            end
+          end
         end
 
         context 'no SP required' do
@@ -252,6 +287,22 @@ RSpec.describe IdvController do
             get :index
 
             expect(response).to redirect_to idv_welcome_url
+          end
+
+          context 'when using semantic acr_values' do
+            let(:acr_values) { Saml::Idp::Constants::IAL_AUTH_ONLY_ACR }
+
+            before do
+              allow(IdentityConfig).to receive(
+                :allowed_valid_authn_context_semantic_providers,
+              ).and_return([current_sp])
+            end
+
+            it 'begins the identity proofing process' do
+              get :index
+
+              expect(response).to redirect_to idv_welcome_url
+            end
           end
         end
       end
@@ -266,6 +317,25 @@ RSpec.describe IdvController do
             get :index
             expect(response).to redirect_to idv_welcome_url
           end
+
+          context 'with semantic acr_values' do
+            let(:acr_values) { Saml::Idp::Constants::IAL_VERIFIED_ACR }
+
+            before do
+              allow(IdentityConfig).to receive(
+                :allowed_valid_authn_context_semantic_providers,
+              ).and_return([current_sp])
+            end
+
+            context 'when an SP is required' do
+              let(:idv_sp_required) { true }
+
+              it 'begins the identity proofing process' do
+                get :index
+                expect(response).to redirect_to idv_welcome_url
+              end
+            end
+          end
         end
 
         context 'no SP required' do
@@ -275,6 +345,22 @@ RSpec.describe IdvController do
             get :index
 
             expect(response).to redirect_to idv_welcome_url
+          end
+
+          context 'with semantic acr_values' do
+            let(:acr_values) { Saml::Idp::Constants::IAL_VERIFIED_ACR }
+
+            before do
+              allow(IdentityConfig).to receive(
+                :allowed_valid_authn_context_semantic_providers,
+              ).and_return([current_sp])
+            end
+
+            it 'begins the identity proofing process' do
+              get :index
+
+              expect(response).to redirect_to idv_welcome_url
+            end
           end
         end
       end

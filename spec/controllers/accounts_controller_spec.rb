@@ -80,6 +80,42 @@ RSpec.describe AccountsController do
       end
     end
 
+    context 'when user just added new email through select email flow' do
+      context 'when user is in select email form flow' do
+        before do
+          session[:from_select_email_flow] = true
+        end
+        it 'renders the proper flash message' do
+          flash_message = t(
+            'account.emails.confirmed_html',
+            url: account_connected_accounts_url,
+          )
+          user = create(:user, :fully_registered)
+          sign_in user
+
+          get :show
+
+          expect(response).to_not be_redirect
+          expect(flash[:success]).to eq(flash_message)
+          expect(session[:from_select_email_flow]).to be_nil
+        end
+      end
+
+      context 'when user is not in email form flow' do
+        before do
+          session[:from_select_email_flow] = false
+        end
+        it 'renders proper flash message' do
+          t('devise.confirmations.confirmed')
+          user = create(:user, :fully_registered)
+          sign_in user
+
+          get :show
+          expect(flash[:success]).to be_nil
+        end
+      end
+    end
+
     context 'when a profile has been deactivated by password reset' do
       it 'renders the profile and shows a deactivation banner' do
         user = create(

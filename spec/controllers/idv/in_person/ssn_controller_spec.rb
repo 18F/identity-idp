@@ -13,9 +13,9 @@ RSpec.describe Idv::InPerson::SsnController do
 
   before do
     stub_sign_in(user)
-    subject.user_session['idv/in_person'] = flow_session
+    controller.user_session['idv/in_person'] = flow_session
     stub_analytics
-    subject.idv_session.flow_path = 'standard'
+    controller.idv_session.flow_path = 'standard'
   end
 
   describe '#step_info' do
@@ -36,13 +36,14 @@ RSpec.describe Idv::InPerson::SsnController do
   end
 
   describe '#show' do
+    subject(:response) { get :show }
+
     let(:analytics_name) { 'IdV: doc auth ssn visited' }
     let(:analytics_args) do
       {
         analytics_id: 'In Person Proofing',
         flow_path: 'standard',
         step: 'ssn',
-        same_address_as_id: true,
       }
     end
 
@@ -67,18 +68,18 @@ RSpec.describe Idv::InPerson::SsnController do
     end
 
     it 'adds a threatmetrix session id to idv_session' do
-      expect { get :show }.to change { subject.idv_session.threatmetrix_session_id }.from(nil)
+      expect { get :show }.to change { controller.idv_session.threatmetrix_session_id }.from(nil)
     end
 
     it 'does not change threatmetrix_session_id when updating ssn' do
-      subject.idv_session.ssn = ssn
-      expect { get :show }.not_to change { subject.idv_session.threatmetrix_session_id }
+      controller.idv_session.ssn = ssn
+      expect { get :show }.not_to change { controller.idv_session.threatmetrix_session_id }
     end
 
     context 'with an ssn in idv_session' do
       let(:referer) { idv_in_person_address_url }
       before do
-        subject.idv_session.ssn = ssn
+        controller.idv_session.ssn = ssn
         request.env['HTTP_REFERER'] = referer
       end
 
@@ -99,6 +100,32 @@ RSpec.describe Idv::InPerson::SsnController do
         end
       end
     end
+
+    context 'with ThreatMetrix profiling disabled' do
+      before do
+        allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?)
+          .and_return(false)
+      end
+
+      it 'does not override CSPs for ThreatMetrix' do
+        expect(controller).not_to receive(:override_csp_for_threat_metrix)
+
+        response
+      end
+    end
+
+    context 'with ThreatMetrix profiling enabled' do
+      before do
+        allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?)
+          .and_return(true)
+      end
+
+      it 'overrides CSPs for ThreatMetrix' do
+        expect(controller).to receive(:override_csp_for_threat_metrix)
+
+        response
+      end
+    end
   end
 
   describe '#update' do
@@ -112,7 +139,6 @@ RSpec.describe Idv::InPerson::SsnController do
           step: 'ssn',
           success: true,
           errors: {},
-          same_address_as_id: true,
         }
       end
 
@@ -141,6 +167,27 @@ RSpec.describe Idv::InPerson::SsnController do
 
         expect(response).to redirect_to idv_in_person_verify_info_url
       end
+
+      context 'when the user has previously submitted an ssn' do
+        let(:analytics_args) do
+          {
+            analytics_id: 'In Person Proofing',
+            flow_path: 'standard',
+            step: 'ssn',
+            success: true,
+            previous_ssn_edit_distance: 6,
+            errors: {},
+          }
+        end
+
+        it 'updates idv_session.ssn' do
+          subject.idv_session.ssn = '900-95-7890'
+
+          expect { put :update, params: params }.to change { subject.idv_session.ssn }
+            .from('900-95-7890').to(ssn)
+          expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+        end
+      end
     end
 
     context 'invalid ssn' do
@@ -156,7 +203,6 @@ RSpec.describe Idv::InPerson::SsnController do
             ssn: ['Enter a nine-digit Social Security number'],
           },
           error_details: { ssn: { invalid: true } },
-          same_address_as_id: true,
         }
       end
 

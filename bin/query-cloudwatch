@@ -9,6 +9,7 @@ require 'aws-sdk-cloudwatchlogs'
 require 'concurrent-ruby'
 require 'csv'
 require 'json'
+require 'sqlite3'
 require 'optparse'
 require 'optparse/time'
 
@@ -33,8 +34,147 @@ class QueryCloudwatch
     :num_threads,
     :wait_duration,
     :count_distinct,
+    :sqlite_database_file,
     keyword_init: true,
   )
+
+  class JsonOutput
+    attr_reader :stdout
+    
+    def initialize(stdout:)
+      @stdout = stdout
+    end
+
+    def start
+      yield
+    end
+    
+    def handle_row(row)
+      stdout.puts row.to_json
+    end
+  end
+
+  class CsvOutput
+    attr_reader :stdout
+    
+    def initialize(stdout:)
+      @stdout = stdout
+    end
+
+    def start
+      yield
+    end
+    
+    def handle_row(row)
+      stdout.puts row.values.to_csv
+    end
+  end
+
+  class SqliteOutput
+    attr_reader :filename, :invalid_message_json_count, :stderr
+
+    def initialize(filename:, stderr:)
+      @filename = filename
+      @stderr = stderr
+      @invalid_message_json_count = 0
+    end
+
+    def start
+      create_tables_if_needed
+      db.transaction do
+        yield
+      end
+    rescue
+      db&.interrupt
+      raise
+    ensure
+      if db
+        if invalid_message_json_count > 0
+          stderr.puts <<~END
+            WARNING: For #{invalid_message_json_count} event#{invalid_message_json_count == 1 ? '' : 's'}, @message did not contain valid JSON
+          END
+        end
+        stderr.puts <<~END
+          Wrote #{db.total_changes.inspect} rows to the 'events' table in #{filename}
+        END
+      end
+      close_database
+    end
+
+    def handle_row(row)
+      message = row['@message']
+      raise "Query must include @message in output when using --sqlite" unless message
+
+      timestamp = row['@timestamp']
+      raise "Query must include @timestamp in output when using --sqlite" unless timestamp
+
+      json = begin 
+        JSON.parse(message)
+      rescue
+        @invalid_message_json_count += 1
+        nil
+      end
+
+      success = json&.dig('properties', 'event_properties', 'success')
+      success = success ? 1 : (success.nil? ? nil : 0)
+
+      # NOTE: Order matters here
+      row = {
+        id: json&.dig('id') || generate_id(timestamp:,message:),
+        timestamp:,
+        name:json&.dig('name'),
+        user_id: json&.dig('properties', 'user_id'),
+        success:,
+        message:,
+        log_stream: row.dig('@logStream'),
+        log: row.dig('@log'),
+      }
+
+      insert_statement.execute(row.values)
+    end
+
+    def insert_statement
+      @insert_statement ||= db.prepare(
+        <<~SQL
+          INSERT INTO 
+            events (id, timestamp, name, user_id, success, message, log_stream, log)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT (id) DO NOTHING
+        SQL
+      )
+    end
+
+    def db
+      @db ||= SQLite3::Database.new(filename)
+    end
+
+    def close_database
+      db&.close
+      @db = nil
+    end
+
+    def create_tables_if_needed
+      db.execute_batch(
+        <<~SQL
+          CREATE TABLE IF NOT EXISTS events (
+            id TEXT PRIMARY KEY NOT NULL,
+            timestamp TEXT NOT NULL,
+            name TEXT NULL,
+            user_id TEXT NULL,
+            success INTEGER NULL,
+            message TEXT NOT NULL,
+            log_stream TEXT NULL,
+            log TEXT NULL
+          );
+        SQL
+      )
+    end
+
+    def generate_id(timestamp:,message:)
+      hash = Digest::SHA256.hexdigest("#{timestamp}|#{message}")
+      "NOID-#{hash}"
+    end
+  end
 
   attr_reader :config
 
@@ -42,32 +182,25 @@ class QueryCloudwatch
     @config = config
   end
 
-  def run(stdout: STDOUT)
+  def run(stdout: STDOUT, stderr: STDERR)
     if config.count_distinct
       values = {}
       fetch { |row| values[row[config.count_distinct]] = true }
       stdout.puts values.size
-    else
-      fetch { |row| stdout.puts format_response(row) }
+      return
     end
+
+    output = create_output(stdout:, stderr:)
+
+    output.start do
+      fetch { |row| output.handle_row(row) }
+    end
+
   rescue Interrupt
     # catch interrupts (ctrl-c) and directly exit, this skips printing the backtrace
     exit 1
   end
 
-  # Relies on the fact that hashes preserve insertion order
-  # @param [Hash] row
-  # @return [String]
-  def format_response(row)
-    case config.format
-    when :csv
-      row.values.to_csv
-    when :json
-      row.to_json
-    else
-      raise "unknown format #{config.format}"
-    end
-  end
 
   def fetch(&block)
     cloudwatch_client.fetch(
@@ -88,6 +221,19 @@ class QueryCloudwatch
       num_threads: config.num_threads,
       **config.to_h.slice(:wait_duration).compact,
     )
+  end
+
+  def create_output(stdout:, stderr:)
+    case config.format
+    when :csv
+      CsvOutput.new(stdout:)
+    when :json
+      JsonOutput.new(stdout:)
+    when :sqlite
+      SqliteOutput.new(filename: config.sqlite_database_file, stderr:)
+    else
+      raise "unknown format #{config.format}"
+    end
   end
 
   # @return [Config]
@@ -235,6 +381,11 @@ class QueryCloudwatch
         config.format = :csv
       end
 
+      opts.on('--sqlite [FILENAME]', 'load output into the given Sqlite database (events.db by default). Output MUST include @message and @timestamp') do |filename|
+        config.format = :sqlite
+        config.sqlite_database_file = filename || 'events.db'
+      end
+
       opts.on(
         '--[no-]complete',
         'whether or not to split query slices if exactly 10k rows are returned, defaults to off',
@@ -278,6 +429,10 @@ class QueryCloudwatch
       else
         config.query = stdin.read
       end
+    end
+
+    if config.format == :sqlite
+      errors << "ERROR: can't do --count-distinct with --sqlite" if config.count_distinct
     end
 
     if config.count_distinct

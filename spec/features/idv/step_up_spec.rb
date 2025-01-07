@@ -12,7 +12,7 @@ RSpec.describe 'IdV step up flow' do
   end
 
   scenario 'User with active profile can redo idv when selfie required', js: true do
-    visit_idp_from_sp_with_ial2(sp, biometric_comparison_required: true)
+    visit_idp_from_sp_with_ial2(sp, facial_match_required: true)
     sign_in_live_with_2fa(user)
 
     expect(page).to have_current_path(idv_welcome_path)

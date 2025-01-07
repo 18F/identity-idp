@@ -2,15 +2,16 @@ require 'rails_helper'
 
 RSpec.describe UspsInPersonProofing::EnrollmentHelper do
   include UspsIppHelper
+  include UspsIppServiceHelper
 
   let(:usps_mock_fallback) { false }
   let(:user) { build(:user) }
   let(:current_address_matches_id) { false }
   let(:pii) do
     Pii::Attributes.new_from_hash(
-      Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_PHONE.
-        merge(same_address_as_id: current_address_matches_id ? 'true' : 'false').
-        transform_keys(&:to_s),
+      Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_PHONE
+        .merge(same_address_as_id: current_address_matches_id ? 'true' : 'false')
+        .transform_keys(&:to_s),
     )
   end
   subject(:subject) { described_class }
@@ -29,21 +30,21 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
     stub_request_token
     stub_request_enroll
     allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(usps_mock_fallback)
-    allow(IdentityConfig.store).to receive(:usps_ipp_enrollment_status_update_email_address).
-      and_return(usps_ipp_enrollment_status_update_email_address)
+    allow(IdentityConfig.store).to receive(:usps_ipp_enrollment_status_update_email_address)
+      .and_return(usps_ipp_enrollment_status_update_email_address)
     allow(subject).to receive(:transliterator).and_return(transliterator)
-    allow(transliterator).to receive(:transliterate).
-      with(anything) do |val|
+    allow(transliterator).to receive(:transliterate)
+      .with(anything) do |val|
         transliterated_without_change(val)
       end
     allow(subject).to receive(:analytics).and_return(subject_analytics)
-    allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled).
-      and_return(usps_ipp_transliteration_enabled)
+    allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled)
+      .and_return(usps_ipp_transliteration_enabled)
     allow(IdentityConfig.store).to receive(:usps_ipp_sponsor_id).and_return(usps_ipp_sponsor_id)
   end
 
   describe '#schedule_in_person_enrollment' do
-    context 'when the user does not have a establishing in person enrollment' do
+    context 'when the user does not have an establishing in person enrollment' do
       let(:user) { double('user', establishing_in_person_enrollment: nil) }
 
       it 'returns without error' do
@@ -117,10 +118,10 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
           context 'same address as id is false' do
             let(:pii) do
               Pii::Attributes.new_from_hash(
-                Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.
-                  merge(same_address_as_id: current_address_matches_id ? 'true' : 'false').
-                  merge(Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS).
-                  transform_keys(&:to_s),
+                Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE
+                  .merge(same_address_as_id: current_address_matches_id ? 'true' : 'false')
+                  .merge(Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS)
+                  .transform_keys(&:to_s),
               )
             end
 
@@ -154,14 +155,14 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
             address = Idp::Constants::MOCK_IDV_APPLICANT[:address1]
             city = Idp::Constants::MOCK_IDV_APPLICANT[:city]
 
-            expect(transliterator).to receive(:transliterate).
-              with(first_name).and_return(transliterated_without_change(first_name))
-            expect(transliterator).to receive(:transliterate).
-              with(last_name).and_return(transliterated(last_name))
-            expect(transliterator).to receive(:transliterate).
-              with(address).and_return(transliterated_with_failure(address))
-            expect(transliterator).to receive(:transliterate).
-              with(city).and_return(transliterated(city))
+            expect(transliterator).to receive(:transliterate)
+              .with(first_name).and_return(transliterated_without_change(first_name))
+            expect(transliterator).to receive(:transliterate)
+              .with(last_name).and_return(transliterated(last_name))
+            expect(transliterator).to receive(:transliterate)
+              .with(address).and_return(transliterated_with_failure(address))
+            expect(transliterator).to receive(:transliterate)
+              .with(city).and_return(transliterated(city))
 
             expect(proofer).to receive(:request_enroll) do |applicant|
               expect(applicant.first_name).to eq(first_name)
@@ -172,20 +173,6 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
               expect(applicant.zip_code).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:zipcode])
               expect(applicant.email).to eq(usps_ipp_enrollment_status_update_email_address)
               expect(applicant.unique_id).to eq(enrollment.unique_id)
-
-              UspsInPersonProofing::Mock::Proofer.new.request_enroll(applicant, is_enhanced_ipp)
-            end
-
-            subject.schedule_in_person_enrollment(user:, pii:, is_enhanced_ipp:)
-          end
-        end
-
-        context 'when the enrollment does not have a unique ID' do
-          it 'generates a usps_unique_id value to create the enrollment' do
-            enrollment.update(unique_id: nil)
-            expect(proofer).to receive(:request_enroll) do |applicant|
-              # The InPersonEnrollment#usps_unique_id method is deprecated
-              expect(applicant.unique_id).to eq(enrollment.usps_unique_id)
 
               UspsInPersonProofing::Mock::Proofer.new.request_enroll(applicant, is_enhanced_ipp)
             end
@@ -346,9 +333,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
 
   describe '#create_usps_enrollment' do
     let(:usps_mock_fallback) { true }
-    let(:enrollment) { create(:in_person_enrollment, :with_service_provider) }
     let(:usps_eipp_sponsor_id) { '314159265359' }
-    let(:is_enhanced_ipp) { true }
     let(:pii) do
       Pii::Attributes.new_from_hash(
         Idp::Constants::MOCK_IDV_APPLICANT,
@@ -367,8 +352,8 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
       )
     end
     before do
-      allow(IdentityConfig.store).to receive(:usps_eipp_sponsor_id).
-        and_return(usps_eipp_sponsor_id)
+      allow(IdentityConfig.store).to receive(:usps_eipp_sponsor_id)
+        .and_return(usps_eipp_sponsor_id)
       allow(UspsInPersonProofing::Mock::Proofer).to receive(:new).and_return(proofer)
       allow(proofer).to receive(:request_enroll).and_call_original
     end
@@ -383,6 +368,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
           profile: nil,
         )
       end
+      let(:is_enhanced_ipp) { true }
 
       it 'creates an enhanced ipp enrollment' do
         expect(proofer).to receive(:request_enroll).with(applicant, is_enhanced_ipp)
@@ -395,32 +381,5 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
         expect(user.in_person_enrollments.first.sponsor_id).to eq(usps_eipp_sponsor_id)
       end
     end
-  end
-
-  def transliterated_without_change(value)
-    UspsInPersonProofing::Transliterator::TransliterationResult.new(
-      changed?: false,
-      original: value,
-      transliterated: value,
-      unsupported_chars: [],
-    )
-  end
-
-  def transliterated(value)
-    UspsInPersonProofing::Transliterator::TransliterationResult.new(
-      changed?: true,
-      original: value,
-      transliterated: "transliterated_#{value}",
-      unsupported_chars: [],
-    )
-  end
-
-  def transliterated_with_failure(value)
-    UspsInPersonProofing::Transliterator::TransliterationResult.new(
-      changed?: true,
-      original: value,
-      transliterated: "transliterated_failed_#{value}",
-      unsupported_chars: [':'],
-    )
   end
 end

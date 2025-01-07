@@ -1,16 +1,13 @@
 #!/usr/bin/env node
 
 import assert from 'node:assert';
-import { readFile } from 'node:fs/promises';
-import { dirname, join } from 'node:path';
-import glob from 'fast-glob';
+import { readFile, glob } from 'node:fs/promises';
+import { dirname, relative, join } from 'node:path';
 
 // Do not add to this list! All new scripts should be written in TypeScript, so this list should
 // only ever shrink over time. Scripts which are loaded directly by Node.js should exist within
 // packages with a defined entrypoint.
 const LEGACY_FILE_EXCEPTIONS = [
-  'app/javascript/packages/compose-components/index.js',
-  'app/javascript/packages/compose-components/index.spec.jsx',
   'app/javascript/packages/device/index.js',
   'app/javascript/packages/document-capture/index.js',
   'app/javascript/packages/document-capture/components/acuant-capture-canvas.jsx',
@@ -72,15 +69,26 @@ const LEGACY_FILE_EXCEPTIONS = [
   'spec/javascript/packages/document-capture/services/upload-spec.js',
 ];
 
-const packagesWithEntrypoints = await glob('app/javascript/packages/*/package.json')
+const packagesWithEntrypoints = await Array.fromAsync(
+  glob('app/javascript/packages/*/package.json'),
+)
   .then((files) => Promise.all(files.map(async (file) => [file, await readFile(file, 'utf-8')])))
   .then((contents) => contents.map(([file, content]) => [file, JSON.parse(content)]))
   .then((manifests) => manifests.filter(([_file, manifest]) => manifest.exports || manifest.main))
   .then((manifests) => manifests.map(([file]) => dirname(file)));
 
-const jsFiles = await glob(
-  ['app/{javascript/packages,components}/**/*.{js,jsx}', 'spec/javascript/*/**/*.{js,jsx}'],
-  { ignore: packagesWithEntrypoints.map((path) => join(path, '**')) },
+const jsFileEntries = await Array.fromAsync(
+  glob(['app/{javascript/packages,components}/**/*.{js,jsx}', 'spec/javascript/*/**/*.{js,jsx}'], {
+    exclude: (fileName) =>
+      packagesWithEntrypoints.some((path) =>
+        relative(process.cwd(), fileName.parentPath).startsWith(path),
+      ),
+    withFileTypes: true,
+  }),
+);
+
+const jsFiles = jsFileEntries.map(({ parentPath, name }) =>
+  relative(process.cwd(), join(parentPath, name)),
 );
 
 const invalidExceptions = LEGACY_FILE_EXCEPTIONS.filter((file) => !jsFiles.includes(file));

@@ -7,13 +7,19 @@ module Idv
     class EntryController < ApplicationController
       include Idv::AvailabilityConcern
       include HybridMobileConcern
+      include DocAuthVendorConcern
 
       def show
         return handle_invalid_document_capture_session if !validate_document_capture_session_id
 
         return handle_invalid_document_capture_session if !validate_document_capture_user_id
 
-        redirect_to idv_hybrid_mobile_document_capture_url
+        case doc_auth_vendor
+        when Idp::Constants::Vendors::SOCURE
+          redirect_to idv_hybrid_mobile_socure_document_capture_url
+        when Idp::Constants::Vendors::MOCK, Idp::Constants::Vendors::LEXIS_NEXIS
+          redirect_to idv_hybrid_mobile_document_capture_url
+        end
       end
 
       private
@@ -46,13 +52,6 @@ module Idv
         end
 
         result = Idv::DocumentCaptureSessionForm.new(document_capture_session_uuid).submit
-
-        event_properties = result.to_h.tap do |properties|
-          # See LG-8890 for context
-          properties[:doc_capture_user_id?] = session[:doc_capture_user_id].present?
-        end
-
-        analytics.track_event 'Doc Auth', event_properties
 
         if result.success?
           reset_session

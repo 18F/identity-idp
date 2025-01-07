@@ -14,7 +14,13 @@
   <% end %>
 </div>
 
-<%= render 'shared/cancel', link: decorated_sp_session.cancel_link_url %>
+<% if @pending_completions_consent %>
+  <%= render PageFooterComponent.new do %>
+    <%= link_to t('forms.buttons.back'), sign_up_completed_url %>
+  <% end %>
+<% else %>
+  <%= render 'shared/cancel', link: decorated_sp_session.cancel_link_url %>
+<% end %>
 
 <p class="margin-top-2">
   <%= new_tab_link_to(

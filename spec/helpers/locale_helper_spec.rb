@@ -52,6 +52,7 @@ RSpec.describe LocaleHelper do
 
     context 'when the user has an email_language' do
       let(:email_language) { 'es' }
+      let(:url_options) { {} }
 
       it 'sets the language inside the block and yields' do
         subject
@@ -72,8 +73,8 @@ RSpec.describe LocaleHelper do
       end
 
       it 'warns about a bad email_language' do
-        expect(Rails.logger).to receive(:warn).
-          with("user_id=#{user.uuid} has bad email_language=#{user.email_language}")
+        expect(Rails.logger).to receive(:warn)
+          .with("user_id=#{user.uuid} has bad email_language=#{user.email_language}")
 
         subject
       end

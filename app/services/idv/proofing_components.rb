@@ -2,12 +2,7 @@
 
 module Idv
   class ProofingComponents
-    def initialize(
-      idv_session:,
-      session:,
-      user:,
-      user_session:
-    )
+    def initialize(idv_session:, session:, user:, user_session:)
       @idv_session = idv_session
       @session = session
       @user = user
@@ -33,11 +28,19 @@ module Idv
     end
 
     def source_check
-      Idp::Constants::Vendors::AAMVA if idv_session.verify_info_step_complete?
+      idv_session.source_check_vendor.presence ||
+        (idv_session.verify_info_step_complete? && Idp::Constants::Vendors::AAMVA)
+    end
+
+    def residential_resolution_check
+      idv_session.residential_resolution_vendor if idv_session.verify_info_step_complete?
     end
 
     def resolution_check
-      Idp::Constants::Vendors::LEXIS_NEXIS if idv_session.verify_info_step_complete?
+      if idv_session.verify_info_step_complete?
+        # NOTE: Fallback to LexisNexis to handle 50/50 state, will be removed later
+        idv_session.resolution_vendor || Idp::Constants::Vendors::LEXIS_NEXIS
+      end
     end
 
     def address_check
@@ -63,11 +66,11 @@ module Idv
         document_check:,
         document_type:,
         source_check:,
+        residential_resolution_check:,
         resolution_check:,
         address_check:,
         threatmetrix:,
         threatmetrix_review_status:,
-
       }.compact
     end
 

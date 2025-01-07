@@ -15,14 +15,14 @@ RSpec.describe GpoDailyTestSender do
   end
 
   before do
-    allow(IdentityConfig.store).to receive(:gpo_designated_receiver_pii).
-      and_return(designated_receiver_pii)
+    allow(IdentityConfig.store).to receive(:gpo_designated_receiver_pii)
+      .and_return(designated_receiver_pii)
   end
 
   describe '#run' do
     it 'creates a GPO confirmation and code for the current date' do
-      expect { sender.run }.
-        to(change { GpoConfirmation.count }.by(1).and(change { GpoConfirmationCode.count }.by(1)))
+      expect { sender.run }
+        .to(change { GpoConfirmation.count }.by(1).and(change { GpoConfirmationCode.count }.by(1)))
 
       gpo_confirmation_code = GpoConfirmationCode.find_by(
         otp_fingerprint: Pii::Fingerprinter.fingerprint(sender.otp_from_date),
@@ -35,9 +35,9 @@ RSpec.describe GpoDailyTestSender do
       let(:designated_receiver_pii) { {} }
 
       it 'does not create gpo records' do
-        expect { sender.run }.
-          to(change { GpoConfirmation.count }.by(0).
-            and(change { GpoConfirmationCode.count }.by(0)))
+        expect { sender.run }
+          .to(change { GpoConfirmation.count }.by(0)
+            .and(change { GpoConfirmationCode.count }.by(0)))
       end
 
       it 'warns and does not blow up (so the calling job can continue normally)' do

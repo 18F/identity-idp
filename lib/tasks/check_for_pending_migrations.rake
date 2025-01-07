@@ -12,7 +12,7 @@ namespace :db do
     )
       warn('Skipping pending migration check, idp_run_migrations=true')
     else
-      ActiveRecord::Migration.check_pending!(ActiveRecord::Base.connection)
+      ActiveRecord::Migration.check_all_pending!
     end
   end
 end

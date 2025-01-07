@@ -31,8 +31,8 @@ class WebauthnConfiguration < ApplicationRecord
 
   def selection_presenters
     if platform_authenticator?
-      [TwoFactorAuthentication::SignInWebauthnPlatformSelectionPresenter.
-        new(user:, configuration: self)]
+      [TwoFactorAuthentication::SignInWebauthnPlatformSelectionPresenter
+        .new(user:, configuration: self)]
     else
       [TwoFactorAuthentication::SignInWebauthnSelectionPresenter.new(user:, configuration: self)]
     end

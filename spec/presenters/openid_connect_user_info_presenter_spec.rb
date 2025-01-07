@@ -184,7 +184,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
           end
         end
 
-        context 'with biometric comparison' do
+        context 'with facial match comparison' do
           let(:acr_values) do
             [
               Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
@@ -385,8 +385,8 @@ RSpec.describe OpenidConnectUserInfoPresenter do
       end
 
       it 'defers to user alternate email' do
-        expect(identity.user.reload.email_addresses.first.id).
-          to_not eq(identity.email_address_id)
+        expect(identity.user.reload.email_addresses.first.id)
+          .to_not eq(identity.email_address_id)
         expect(identity.user.reload.email_addresses.count).to be 1
         expect(user_info[:email]).to eq(identity.user.email_addresses.last.email)
       end

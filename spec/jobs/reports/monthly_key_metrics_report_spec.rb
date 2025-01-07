@@ -49,8 +49,8 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
     allow(Identity::Hostdata).to receive(:env).and_return('int')
     allow(Identity::Hostdata).to receive(:aws_account_id).and_return('1234')
     allow(Identity::Hostdata).to receive(:aws_region).and_return('us-west-1')
-    allow(IdentityConfig.store).to receive(:s3_report_bucket_prefix).
-      and_return(s3_report_bucket_prefix)
+    allow(IdentityConfig.store).to receive(:s3_report_bucket_prefix)
+      .and_return(s3_report_bucket_prefix)
 
     Aws.config[:s3] = {
       stub_responses: {
@@ -58,15 +58,15 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
       },
     }
 
-    allow(report.proofing_rate_report).to receive(:as_csv).
-      and_return(mock_proofing_rate_data)
-    allow(report.monthly_idv_report).to receive(:as_csv).
-      and_return(mock_monthly_idv_data)
+    allow(report.proofing_rate_report).to receive(:as_csv)
+      .and_return(mock_proofing_rate_data)
+    allow(report.monthly_idv_report).to receive(:as_csv)
+      .and_return(mock_monthly_idv_data)
 
-    allow(IdentityConfig.store).to receive(:team_daily_reports_emails).
-      and_return(mock_daily_reports_emails)
-    allow(IdentityConfig.store).to receive(:team_all_login_emails).
-      and_return(mock_all_login_emails)
+    allow(IdentityConfig.store).to receive(:team_daily_reports_emails)
+      .and_return(mock_daily_reports_emails)
+    allow(IdentityConfig.store).to receive(:team_all_login_emails)
+      .and_return(mock_all_login_emails)
   end
 
   it 'sends out a report to just to team agnes' do

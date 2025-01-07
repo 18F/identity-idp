@@ -14,14 +14,26 @@ module ScriptHelper
       javascript_packs_tag_once(...)
       return if @scripts.blank?
       concat javascript_assets_tag
+      crossorigin = local_crossorigin_sources?.presence
       @scripts.each do |name, (url_params, attributes)|
         asset_sources.get_sources(name).each do |source|
-          concat javascript_include_tag(
-            UriService.add_params(source, url_params),
+          integrity = asset_sources.get_integrity(source)
+
+          if attributes[:preload_links_header] != false
+            AssetPreloadLinker.append(
+              headers: response.headers,
+              as: :script,
+              url: source,
+              crossorigin:,
+              integrity:,
+            )
+          end
+
+          concat tag.script(
+            src: UriService.add_params(source, url_params),
             **attributes,
-            crossorigin: local_crossorigin_sources? ? true : nil,
-            integrity: asset_sources.get_integrity(source),
-            nopush: false,
+            crossorigin:,
+            integrity:,
           )
         end
       end

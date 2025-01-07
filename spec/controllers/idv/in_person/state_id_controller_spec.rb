@@ -8,10 +8,8 @@ RSpec.describe Idv::InPerson::StateIdController do
   let(:enrollment) { InPersonEnrollment.new }
 
   before do
-    allow(IdentityConfig.store).to receive(:in_person_state_id_controller_enabled).
-      and_return(true)
-    allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled).
-      and_return(true)
+    allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled)
+      .and_return(true)
     stub_sign_in(user)
     stub_up_to(:hybrid_handoff, idv_session: subject.idv_session)
     allow(user).to receive(:establishing_in_person_enrollment).and_return(enrollment)
@@ -148,7 +146,6 @@ RSpec.describe Idv::InPerson::StateIdController do
           analytics_id: 'In Person Proofing',
           flow_path: 'standard',
           step: 'state_id',
-          same_address_as_id: true,
           birth_year: dob[:year],
           document_zip_code: identity_doc_zipcode&.slice(0, 5),
         }
@@ -228,15 +225,21 @@ RSpec.describe Idv::InPerson::StateIdController do
             expect(subject.user_session['idv/in_person'][:pii_from_user]).to_not have_key attr
           end
 
-          make_pii
+          build_pii_before_state_id_update
 
-          # pii includes address attrs on re-visiting state id pg
+          # since same_address_as_id was initially true, pii includes residential address attrs,
+          # which are the same as state id address attrs, on re-visiting state id pg
           expect(subject.user_session['idv/in_person'][:pii_from_user]).to include(
-            address1:,
-            address2:,
-            city:,
-            state:,
-            zipcode:,
+            identity_doc_address1:,
+            identity_doc_address2:,
+            identity_doc_city:,
+            identity_doc_address_state:,
+            identity_doc_zipcode:,
+            address1: identity_doc_address1,
+            address2: identity_doc_address2,
+            city: identity_doc_city,
+            state: identity_doc_address_state,
+            zipcode: identity_doc_zipcode,
           )
 
           # On Verify, user changes response from "Yes,..." to
@@ -288,7 +291,7 @@ RSpec.describe Idv::InPerson::StateIdController do
             expect(subject.user_session['idv/in_person'][:pii_from_user]).to_not have_key attr
           end
 
-          make_pii(same_address_as_id: 'false')
+          build_pii_before_state_id_update(same_address_as_id: 'false')
 
           # On Verify, user changes response from "No,..." to
           # "Yes, I live at the address on my state-issued ID
@@ -325,7 +328,7 @@ RSpec.describe Idv::InPerson::StateIdController do
           end
 
           # User picks "No, I live at a different address" on state ID
-          make_pii(same_address_as_id: 'false')
+          build_pii_before_state_id_update(same_address_as_id: 'false')
 
           # On Verify, user does not changes response "No,..."
           put :update, params: params

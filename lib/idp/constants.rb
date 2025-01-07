@@ -16,6 +16,9 @@ module Idp
       MOCK = 'mock'
       USPS = 'usps'
       AAMVA = 'aamva'
+      AAMVA_UNSUPPORTED_JURISDICTION = 'UnsupportedJurisdiction'
+      STATE_ID_MOCK = 'StateIdMock'
+      SOURCE_CHECK = [AAMVA, AAMVA_UNSUPPORTED_JURISDICTION, STATE_ID_MOCK].freeze
     end
 
     # US State and Territory codes are
@@ -91,23 +94,31 @@ module Idp
     AAL2 = 2
     AAL3 = 3
 
+    MOCK_IDV_APPLICANT_FULL_STATE = 'Montana'
+    MOCK_IDV_APPLICANT_FULL_STATE_ID_JURISDICTION = 'North Dakota'
     MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION = 'ND'
+    MOCK_IDV_APPLICANT_STATE = 'MT'
     MOCK_IDV_APPLICANT = {
       address1: '1 FAKE RD',
       address2: nil,
       city: 'GREAT FALLS',
       dob: '1938-10-06',
+      eye_color: nil,
       first_name: 'FAKEY',
+      height: 72,
+      issuing_country_code: 'US',
       last_name: 'MCFAKERSON',
       middle_name: nil,
-      state: 'MT',
+      name_suffix: 'JR',
+      state: MOCK_IDV_APPLICANT_STATE,
       state_id_expiration: '2099-12-31',
       state_id_issued: '2019-12-31',
       state_id_jurisdiction: MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION,
       state_id_number: '1111111111111',
       state_id_type: 'drivers_license',
+      sex: 'male',
+      weight: nil,
       zipcode: '59010-1234',
-      issuing_country_code: 'US',
     }.freeze
 
     MOCK_IPP_APPLICANT = {
@@ -130,6 +141,7 @@ module Idp
 
     MOCK_IDV_APPLICANT_WITH_SSN = MOCK_IDV_APPLICANT.merge(ssn: '900-66-1234').freeze
 
+    MOCK_IDV_APPLICANT_FULL_IDENTITY_DOC_ADDRESS_STATE = 'Virginia'
     MOCK_IDV_APPLICANT_STATE_ID_ADDRESS = MOCK_IDV_APPLICANT_WITH_SSN.merge(
       identity_doc_address1: '123 Way St',
       identity_doc_address2: '2nd Address Line',
@@ -162,10 +174,5 @@ module Idp
 
     MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_PHONE =
       MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.merge(phone: '12025551212').freeze
-
-    MOCK_IDV_APPLICANT_FULL_STATE_ID_JURISDICTION = 'North Dakota'
-    MOCK_IDV_APPLICANT_FULL_STATE = 'Montana'
-    MOCK_IDV_APPLICANT_FULL_IDENTITY_DOC_ADDRESS_STATE = 'Virginia'
-    MOCK_IDV_APPLICANT_STATE = 'MT'
   end
 end

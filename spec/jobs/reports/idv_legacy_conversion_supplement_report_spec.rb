@@ -56,7 +56,7 @@ RSpec.describe Reports::IdvLegacyConversionSupplementReport do
           )
           iaa_order1.save
           create(
-            :sp_upgraded_biometric_profile,
+            :sp_upgraded_facial_match_profile,
             issuer: iaa1_sp.issuer, user_id: user1.id, upgraded_at: inside_iaa1,
           )
         end
@@ -136,12 +136,12 @@ RSpec.describe Reports::IdvLegacyConversionSupplementReport do
           )
 
           create(
-            :sp_upgraded_biometric_profile,
+            :sp_upgraded_facial_match_profile,
             issuer: iaa2_sp1.issuer, user_id: user1.id, upgraded_at: inside_iaa2,
           )
 
           create(
-            :sp_upgraded_biometric_profile,
+            :sp_upgraded_facial_match_profile,
             issuer: iaa2_sp2.issuer, user_id: user2.id, upgraded_at: inside_iaa2,
           )
         end
@@ -234,11 +234,11 @@ RSpec.describe Reports::IdvLegacyConversionSupplementReport do
           iaa_order3.integrations << integration_1
 
           create(
-            :sp_upgraded_biometric_profile,
+            :sp_upgraded_facial_match_profile,
             issuer: iaa3_sp1.issuer, user_id: user1.id, upgraded_at: iaa3_range.begin + 1.day,
           )
           create(
-            :sp_upgraded_biometric_profile,
+            :sp_upgraded_facial_match_profile,
             issuer: iaa3_sp1.issuer, user_id: user2.id, upgraded_at: iaa3_range.begin + 1.month,
           )
         end

@@ -41,8 +41,8 @@ RSpec.describe Idv::SsnFormatForm do
 
     context 'when the form has invalid attributes' do
       it 'raises an error' do
-        expect { subject.submit(ssn: '111111111', foo: 1) }.
-          to raise_error(ArgumentError, 'foo is an invalid ssn attribute')
+        expect { subject.submit(ssn: '111111111', foo: 1) }
+          .to raise_error(ArgumentError, 'foo is an invalid ssn attribute')
       end
     end
   end

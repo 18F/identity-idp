@@ -142,7 +142,7 @@ module IdvHelper
     state: SecureRandom.hex,
     nonce: SecureRandom.hex,
     verified_within: nil,
-    biometric_comparison_required: nil
+    facial_match_required: nil
   )
     params = {
       client_id:,
@@ -155,10 +155,10 @@ module IdvHelper
       verified_within:,
     }
 
-    if biometric_comparison_required
-      params[:vtr] = ['C1.P1.Pb'].to_json
+    if facial_match_required
+      params[:acr_values] = Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR
     else
-      params[:acr_values] = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
+      params[:acr_values] = Saml::Idp::Constants::IAL_VERIFIED_ACR
     end
 
     visit openid_connect_authorize_path(params)
@@ -199,7 +199,7 @@ module IdvHelper
 
   def validate_idv_completed_page(user)
     expect(user.identity_verified?).to be(true)
-    expect(current_path).to eq sign_up_completed_path
+    expect(page).to have_current_path sign_up_completed_path
     expect(page).to have_content t(
       'titles.sign_up.completion_ial2',
       sp: 'Test SP',
@@ -207,6 +207,10 @@ module IdvHelper
   end
 
   def validate_return_to_sp
-    expect(current_url).to start_with('http://localhost:7654/auth/result')
+    expect(page).to have_current_path(
+      'http://localhost:7654/auth/result',
+      url: true,
+      ignore_query: true,
+    )
   end
 end

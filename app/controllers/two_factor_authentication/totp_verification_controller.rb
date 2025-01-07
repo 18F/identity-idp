@@ -5,7 +5,6 @@ module TwoFactorAuthentication
     include TwoFactorAuthenticatable
     include NewDeviceConcern
 
-    before_action :check_sp_required_mfa
     before_action :confirm_totp_enabled
 
     def show
@@ -26,7 +25,6 @@ module TwoFactorAuthentication
         result:,
         auth_method: TwoFactorAuthenticatable::AuthMethod::TOTP,
       )
-
       if result.success?
         handle_remember_device_preference(params[:remember_device])
         redirect_to after_sign_in_path_for(current_user)
@@ -56,10 +54,6 @@ module TwoFactorAuthentication
       {
         two_factor_authentication_method: 'authenticator',
       }.merge(generic_data)
-    end
-
-    def check_sp_required_mfa
-      check_sp_required_mfa_bypass(auth_method: 'authenticator')
     end
   end
 end

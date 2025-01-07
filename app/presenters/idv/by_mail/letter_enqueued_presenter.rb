@@ -23,20 +23,20 @@ module Idv
         ].compact
       end
 
-      def button_text
-        if sp
-          t('idv.cancel.actions.exit', app_name: APP_NAME)
-        else
-          t('idv.buttons.continue_plain')
-        end
-      end
-
       def button_destination
         if sp
           return_to_sp_cancel_path(step: :verify_address, location: :come_back_later)
         else
-          account_path
+          marketing_site_redirect_path
         end
+      end
+
+      def sp_name
+        sp&.friendly_name
+      end
+
+      def show_sp_contact_instructions?
+        sp_name.present?
       end
 
       private
@@ -57,8 +57,8 @@ module Idv
       end
 
       def pii_from_gpo_pending_profile
-        Pii::Cacher.new(current_user, user_session).
-          fetch(current_user&.gpo_verification_pending_profile&.id)
+        Pii::Cacher.new(current_user, user_session)
+          .fetch(current_user&.gpo_verification_pending_profile&.id)
       end
     end
   end

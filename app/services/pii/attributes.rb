@@ -23,9 +23,9 @@ module Pii
   ) do
     def self.new_from_hash(hash)
       attrs = new
-      hash.with_indifferent_access.
-        slice(*members).
-        each { |key, val| attrs[key] = val.is_a?(String) ? val.squish : val }
+      hash.with_indifferent_access
+        .slice(*members)
+        .each { |key, val| attrs[key] = val.is_a?(String) ? val.squish : val }
       attrs
     end
 

@@ -21,8 +21,8 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
       before do
         allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
         allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return(org)
-        allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
-          and_return(true)
+        allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled)
+          .and_return(true)
       end
 
       it 'allows the user to continue down the happy path selecting to opt in',
@@ -58,8 +58,12 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
         expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2).twice
         expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_CITY).twice
         expect(page).to have_text(
-          Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction],
-          count: 3,
+          Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION,
+          count: 1,
+        )
+        expect(page).to have_text(
+          Idp::Constants::MOCK_IDV_APPLICANT_STATE,
+          count: 2,
         )
         expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE).twice
         expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
@@ -98,9 +102,9 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
         freeze_time do
           acknowledge_and_confirm_personal_key
           deadline = (Time.zone.now +
-            IdentityConfig.store.in_person_enrollment_validity_in_days.days).
-            in_time_zone(Idv::InPerson::ReadyToVerifyPresenter::USPS_SERVER_TIMEZONE).
-            strftime(t('time.formats.event_date'))
+            IdentityConfig.store.in_person_enrollment_validity_in_days.days)
+            .in_time_zone(Idv::InPerson::ReadyToVerifyPresenter::USPS_SERVER_TIMEZONE)
+            .strftime(t('time.formats.event_date'))
         end
 
         # ready to verify page
@@ -175,14 +179,18 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
       expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2).twice
       expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_CITY).twice
       expect(page).to have_text(
-        Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction],
-        count: 3,
+        Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION,
+        count: 1,
+      )
+      expect(page).to have_text(
+        Idp::Constants::MOCK_IDV_APPLICANT_STATE,
+        count: 2,
       )
       expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE).twice
       expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
 
       # click update state ID button
-      click_button t('idv.buttons.change_state_id_label')
+      click_link t('idv.buttons.change_state_id_label')
       expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
       choose t('in_person_proofing.form.state_id.same_address_as_id_yes')
       click_button t('forms.buttons.submit.update')
@@ -236,9 +244,9 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
       freeze_time do
         acknowledge_and_confirm_personal_key
         deadline =
-          (Time.zone.now + IdentityConfig.store.in_person_enrollment_validity_in_days.days).
-            in_time_zone(Idv::InPerson::ReadyToVerifyPresenter::USPS_SERVER_TIMEZONE).
-            strftime(t('time.formats.event_date'))
+          (Time.zone.now + IdentityConfig.store.in_person_enrollment_validity_in_days.days)
+            .in_time_zone(Idv::InPerson::ReadyToVerifyPresenter::USPS_SERVER_TIMEZONE)
+            .strftime(t('time.formats.event_date'))
       end
 
       # ready to verify page
@@ -286,8 +294,8 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
       before do
         allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
         allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return(org)
-        allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
-          and_return(false)
+        allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled)
+          .and_return(false)
       end
 
       it 'skips how to verify and goes to hybrid_handoff' do
@@ -360,8 +368,12 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
       expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2).twice
       expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_CITY).twice
       expect(page).to have_text(
-        Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction],
-        count: 3,
+        Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION,
+        count: 1,
+      )
+      expect(page).to have_text(
+        Idp::Constants::MOCK_IDV_APPLICANT_STATE,
+        count: 2,
       )
       expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE).twice
       expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
@@ -398,9 +410,9 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
       freeze_time do
         acknowledge_and_confirm_personal_key
         deadline =
-          (Time.zone.now + IdentityConfig.store.in_person_enrollment_validity_in_days.days).
-            in_time_zone(Idv::InPerson::ReadyToVerifyPresenter::USPS_SERVER_TIMEZONE).
-            strftime(t('time.formats.event_date'))
+          (Time.zone.now + IdentityConfig.store.in_person_enrollment_validity_in_days.days)
+            .in_time_zone(Idv::InPerson::ReadyToVerifyPresenter::USPS_SERVER_TIMEZONE)
+            .strftime(t('time.formats.event_date'))
       end
 
       # ready to verify page
@@ -450,8 +462,8 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
     before do
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { false }
       allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
-      allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
-        and_return(true)
+      allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled)
+        .and_return(true)
     end
 
     it 'skips how to verify and continues along the normal path' do

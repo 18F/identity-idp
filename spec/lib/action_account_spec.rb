@@ -182,6 +182,26 @@ RSpec.describe ActionAccount do
           errors: { message: 'Error: Could not find user with that UUID' },
         )
       end
+
+      context 'when profile has initiating_service_provider_issuer' do
+        let(:user) do
+          create(
+            :profile,
+            :fraud_review_pending,
+            initiating_service_provider_issuer: 'test-issuer',
+          ).user
+        end
+
+        it 'attributes analytics events to the SP' do
+          expect(Analytics).to receive(:new)
+            .with(hash_including(sp: 'test-issuer'))
+            .and_return(analytics)
+
+          subtask.run(args:, config:)
+
+          expect(analytics).to have_logged_event('Fraud: Profile review rejected')
+        end
+      end
     end
   end
 
@@ -240,6 +260,26 @@ RSpec.describe ActionAccount do
           success: false,
           errors: { message: 'Error: Could not find user with that UUID' },
         )
+      end
+
+      context 'when profile has initiating_service_provider_issuer' do
+        let(:user) do
+          create(
+            :profile,
+            :fraud_review_pending,
+            initiating_service_provider_issuer: 'test-issuer',
+          ).user
+        end
+
+        it 'attributes analytics events to the SP' do
+          expect(Analytics).to receive(:new)
+            .with(hash_including(sp: 'test-issuer'))
+            .and_return(analytics)
+
+          subtask.run(args:, config:)
+
+          expect(analytics).to have_logged_event('Fraud: Profile review passed')
+        end
       end
     end
   end

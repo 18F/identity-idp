@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytics: [:*] do
+RSpec.feature 'hybrid_handoff step send link and errors', :js do
   include IdvStepHelper
   include DocAuthHelper
   include ActionView::Helpers::DateHelper
@@ -10,16 +10,16 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
   let(:idv_send_link_attempt_window_in_minutes) do
     IdentityConfig.store.idv_send_link_attempt_window_in_minutes
   end
-  let(:biometric_comparison_required) { false }
-
+  let(:facial_match_required) { false }
   before do
-    if biometric_comparison_required
-      visit_idp_from_oidc_sp_with_ial2(biometric_comparison_required: biometric_comparison_required)
+    if facial_match_required
+      visit_idp_from_oidc_sp_with_ial2(
+        facial_match_required: facial_match_required,
+      )
     end
     sign_in_and_2fa_user
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
   end
-
   context 'on a desktop device send link' do
     before do
       complete_doc_auth_steps_before_hybrid_handoff_step
@@ -44,9 +44,9 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
     end
 
     it 'proceeds to the next page with valid info', :js do
-      expect(Telephony).to receive(:send_doc_auth_link).
-        with(hash_including(to: '+1 415-555-0199')).
-        and_call_original
+      expect(Telephony).to receive(:send_doc_auth_link)
+        .with(hash_including(to: '+1 415-555-0199'))
+        .and_call_original
 
       expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
 
@@ -60,7 +60,7 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
       fill_in :doc_auth_phone, with: ''
       click_send_link
 
-      expect(page).to have_current_path(idv_hybrid_handoff_path, ignore_query: true)
+      expect(page).to have_current_path(idv_hybrid_handoff_path)
     end
 
     it 'sends a link that does not contain any underscores' do
@@ -82,7 +82,7 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
 
       click_send_link
 
-      expect(page).to have_current_path(idv_hybrid_handoff_path, ignore_query: true)
+      expect(page).to have_current_path(idv_hybrid_handoff_path)
       expect(page).to have_content I18n.t('telephony.error.friendly_message.generic')
     end
 
@@ -116,8 +116,8 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
       timeout = distance_of_time_in_words(
         RateLimiter.attempt_window_in_minutes(:idv_send_link).minutes,
       )
-      allow(IdentityConfig.store).to receive(:idv_send_link_max_attempts).
-        and_return(idv_send_link_max_attempts)
+      allow(IdentityConfig.store).to receive(:idv_send_link_max_attempts)
+        .and_return(idv_send_link_max_attempts)
 
       freeze_time do
         idv_send_link_max_attempts.times do
@@ -136,7 +136,7 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
         fill_in :doc_auth_phone, with: '415-555-0199'
 
         click_send_link
-        expect(page).to have_current_path(idv_hybrid_handoff_path, ignore_query: true)
+        expect(page).to have_current_path(idv_hybrid_handoff_path)
         expect(page).to have_content(
           I18n.t(
             'doc_auth.errors.send_link_limited',
@@ -175,18 +175,18 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
     end
 
     it 'sets requested_at on the capture session' do
-      document_capture_session_uuid = nil
+      doc_capture_session_uuid = nil
 
       expect(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
         params = Rack::Utils.parse_nested_query URI(config[:link]).query
-        document_capture_session_uuid = params['document-capture-session']
+        doc_capture_session_uuid = params['document-capture-session']
         impl.call(**config)
       end
 
       fill_in :doc_auth_phone, with: '415-555-0199'
       click_send_link
 
-      document_capture_session = DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
+      document_capture_session = DocumentCaptureSession.find_by(uuid: doc_capture_session_uuid)
       expect(document_capture_session).to be
       expect(document_capture_session).to have_attributes(requested_at: a_kind_of(Time))
     end
@@ -198,7 +198,7 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
     end
 
     describe 'when selfie is required by sp' do
-      let(:biometric_comparison_required) { true }
+      let(:facial_match_required) { true }
       it 'has expected UI elements' do
         mobile_form = find('#form-to-submit-photos-through-mobile')
         expect(mobile_form).to have_name(t('forms.buttons.send_link'))
@@ -208,10 +208,10 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
         let(:in_person_doc_auth_button_enabled) { true }
         let(:sp_ipp_enabled) { true }
         before do
-          allow(IdentityConfig.store).to receive(:in_person_doc_auth_button_enabled).
-            and_return(in_person_doc_auth_button_enabled)
-          allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).with(anything).
-            and_return(sp_ipp_enabled)
+          allow(IdentityConfig.store).to receive(:in_person_doc_auth_button_enabled)
+            .and_return(in_person_doc_auth_button_enabled)
+          allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).with(anything)
+            .and_return(sp_ipp_enabled)
           complete_doc_auth_steps_before_hybrid_handoff_step
         end
 
@@ -219,7 +219,8 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
           it 'proceeds to ipp if selected and can go back' do
             expect(page).to have_content(strip_tags(t('doc_auth.info.hybrid_handoff_ipp_html')))
             click_on t('in_person_proofing.headings.prepare')
-            expect(page).to have_current_path(idv_document_capture_path({ step: 'hybrid_handoff' }))
+            hybrid_step = { step: 'hybrid_handoff' }
+            expect(page).to have_current_path(idv_document_capture_path(hybrid_step))
             click_on t('forms.buttons.back')
             expect(page).to have_current_path(idv_hybrid_handoff_path)
           end
@@ -241,7 +242,7 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
     end
 
     describe 'when selfie is not required by sp' do
-      let(:biometric_comparison_required) { false }
+      let(:facial_match_required) { false }
       it 'has expected UI elements' do
         mobile_form = find('#form-to-submit-photos-through-mobile')
         desktop_form = find('#form-to-submit-photos-through-desktop')
@@ -252,8 +253,7 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
     end
   end
 end
-RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true,
-                                                               allowed_extra_analytics: [:*] do
+RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
   include IdvStepHelper
   include DocAuthHelper
   include InPersonHelper
@@ -308,18 +308,21 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true,
 
     click_link t('links.cancel')
     expect(page).to have_content(t('idv.cancel.headings.prompt.standard'))
-    expect(current_path).to eq(idv_cancel_path)
+    expect(page).to have_current_path(idv_cancel_path, ignore_query: true)
   end
 
   def verify_no_upload_photos_section_and_link(page)
     expect(page).to_not have_content(t('doc_auth.headings.upload_from_computer'))
   end
 
-  context 'on a desktop device with various ipp and selfie configuration' do
+  context 'on a desktop device with various ipp, socure, and selfie configuration' do
     let(:in_person_proofing_enabled) { true }
     let(:sp_ipp_enabled) { true }
     let(:in_person_proofing_opt_in_enabled) { true }
-    let(:biometric_comparison_required) { true }
+    let(:facial_match_required) { true }
+    let(:socure_docv_enabled) { false }
+    let(:doc_auth_vendor) { Idp::Constants::Vendors::MOCK }
+    let(:desktop_test_mode_enabled) { false }
     let(:user) { user_with_2fa }
 
     before do
@@ -328,24 +331,52 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true,
         service_provider.in_person_proofing_enabled = false
         service_provider.save!
       end
-      allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).and_return(false)
+      allow(IdentityConfig.store).to receive(:socure_docv_enabled).and_return(socure_docv_enabled)
+      allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(doc_auth_vendor)
+      allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
+        .and_return(desktop_test_mode_enabled)
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(
         in_person_proofing_enabled,
       )
       allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(
         in_person_proofing_opt_in_enabled,
       )
-      allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
-        and_return(sp_ipp_enabled)
+      allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled)
+        .and_return(sp_ipp_enabled)
       visit_idp_from_sp_with_ial2(
         :oidc,
         **{ client_id: service_provider.issuer,
-            biometric_comparison_required: biometric_comparison_required },
+            facial_match_required: facial_match_required },
       )
       sign_in_via_branded_page(user)
       complete_doc_auth_steps_before_agreement_step
       complete_agreement_step
     end
+
+    context 'when socure is the doc auth vendor' do
+      let(:facial_match_required) { false }
+      let(:in_person_proofing_opt_in_enabled) { false }
+      let(:sp_ipp_enabled) { false }
+      let(:socure_docv_enabled) { true }
+      let(:doc_auth_vendor) { Idp::Constants::Vendors::SOCURE }
+
+      context 'when socure desktop test mode is not enabled' do
+        it 'shows phone only top content no upload section' do
+          verify_handoff_page_non_selfie_version_content(page)
+          verify_no_upload_photos_section_and_link(page)
+        end
+      end
+
+      context 'when socure desktop test mode is enabled' do
+        let(:desktop_test_mode_enabled) { true }
+
+        it 'shows phone top content and desktop upload content' do
+          verify_handoff_page_non_selfie_version_content(page)
+          expect(page).to have_content(t('doc_auth.headings.upload_from_computer'))
+        end
+      end
+    end
+
     context 'when ipp is available system wide' do
       context 'when in person proofing opt in enabled' do
         context 'when sp ipp is available' do
@@ -354,7 +385,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true,
           end
           describe 'when selfie is required by sp' do
             before do
-              click_on t('forms.buttons.continue_remote_selfie')
+              click_on t('forms.buttons.continue_remote_mobile')
             end
             it 'shows selfie version of top content and ipp option section' do
               verify_handoff_page_selfie_version_content(page)
@@ -363,7 +394,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true,
             end
           end
           describe 'when selfie is not required by sp' do
-            let(:biometric_comparison_required) { false }
+            let(:facial_match_required) { false }
             before do
               click_on t('forms.buttons.continue_remote')
             end
@@ -378,7 +409,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true,
         context 'when sp ipp is not available' do
           let(:sp_ipp_enabled) { false }
           describe 'when selfie is required by sp' do
-            let(:biometric_comparison_required) { true }
+            let(:facial_match_required) { true }
             it 'shows selfie version of top content, no ipp option section,
                 no upload section' do
               verify_handoff_page_selfie_version_content(page)
@@ -387,7 +418,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true,
             end
           end
           describe 'when selfie is not required by sp' do
-            let(:biometric_comparison_required) { false }
+            let(:facial_match_required) { false }
             it 'shows non selfie version of top content and upload section,
                 no ipp option section' do
               verify_handoff_page_non_selfie_version_content(page)
@@ -404,7 +435,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true,
           let(:sp_ipp_enabled) { false }
 
           describe 'when selfie is required by sp' do
-            let(:biometric_comparison_required) { true }
+            let(:facial_match_required) { true }
             it 'shows selfie version of top content, no upload section,
                 no ipp option section' do
               verify_handoff_page_selfie_version_content(page)
@@ -413,7 +444,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true,
             end
           end
           describe 'when selfie is not required by sp' do
-            let(:biometric_comparison_required) { false }
+            let(:facial_match_required) { false }
             it 'shows non selfie version of top content and upload section,
                 no ipp option section' do
               verify_handoff_page_non_selfie_version_content(page)
@@ -426,7 +457,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true,
           let(:sp_ipp_enabled) { true }
           context 'when selfie is disabled system wide' do
             describe 'when selfie is not required by sp' do
-              let(:biometric_comparison_required) { false }
+              let(:facial_match_required) { false }
               it 'shows non selfie version of top content and upload section,
                   no ipp option section' do
                 verify_handoff_page_non_selfie_version_content(page)
@@ -446,7 +477,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true,
         context 'when sp ipp is available' do
           let(:sp_ipp_enabled) { true }
           describe 'when selfie is required by sp' do
-            let(:biometric_comparison_required) { true }
+            let(:facial_match_required) { true }
             it 'shows selfie version of top content, no upload section,
                 no ipp option section' do
               verify_handoff_page_selfie_version_content(page)
@@ -455,7 +486,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true,
             end
           end
           describe 'when selfie is not required by sp' do
-            let(:biometric_comparison_required) { false }
+            let(:facial_match_required) { false }
             it 'shows non selfie version of top content and upload section,
                 no ipp option section' do
               verify_handoff_page_non_selfie_version_content(page)
@@ -467,7 +498,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true,
         context 'when sp ipp is not available' do
           let(:sp_ipp_enabled) { false }
           describe 'when selfie is required by sp' do
-            let(:biometric_comparison_required) { true }
+            let(:facial_match_required) { true }
             it 'shows selfie version of top content, no upload section,
                 no ipp option section' do
               verify_handoff_page_selfie_version_content(page)
@@ -476,7 +507,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true,
             end
           end
           describe 'when selfie is not required by sp' do
-            let(:biometric_comparison_required) { false }
+            let(:facial_match_required) { false }
             it 'shows non selfie version of top content and upload section,
                 no ipp option section' do
               verify_handoff_page_non_selfie_version_content(page)
@@ -492,7 +523,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true,
         context 'when sp ipp is enabled' do
           let(:sp_ipp_enabled) { true }
           describe 'when selfie is required by sp' do
-            let(:biometric_comparison_required) { true }
+            let(:facial_match_required) { true }
             it 'shows selfie version of top content, no upload section,
                 no ipp option section' do
               verify_handoff_page_selfie_version_content(page)
@@ -501,7 +532,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true,
             end
           end
           describe 'when selfie is not required by sp' do
-            let(:biometric_comparison_required) { false }
+            let(:facial_match_required) { false }
             it 'shows non selfie version of top content and upload section,
                 no ipp option section' do
               verify_handoff_page_non_selfie_version_content(page)
@@ -513,7 +544,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true,
         context 'when sp ipp is not enabled' do
           let(:sp_ipp_enabled) { false }
           describe 'when selfie required by sp' do
-            let(:biometric_comparison_required) { true }
+            let(:facial_match_required) { true }
             it 'shows selfie version of top content, no upload section,
                 no ipp option section' do
               verify_handoff_page_selfie_version_content(page)
@@ -522,7 +553,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true,
             end
           end
           describe 'when selfie not required by sp' do
-            let(:biometric_comparison_required) { false }
+            let(:facial_match_required) { false }
             it 'shows non selfie version of top content and upload section,
                 no ipp option section' do
               verify_handoff_page_non_selfie_version_content(page)

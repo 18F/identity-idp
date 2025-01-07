@@ -7,7 +7,6 @@ module Idv
       include IdvStepConcern
 
       before_action :confirm_in_person_state_id_step_complete
-      ## before_action :confirm_step_allowed # pending FSM removal of state id step
       before_action :confirm_in_person_address_step_needed, only: :show
       before_action :set_usps_form_presenter
 
@@ -25,7 +24,7 @@ module Idv
         form_result = form.submit(flow_params)
 
         analytics.idv_in_person_proofing_residential_address_submitted(
-          **analytics_arguments.merge(**form_result.to_h),
+          **analytics_arguments.merge(**form_result),
         )
 
         if form_result.success?
@@ -95,8 +94,8 @@ module Idv
           flow_path: idv_session.flow_path,
           step: 'address',
           analytics_id: 'In Person Proofing',
-        }.merge(ab_test_analytics_buckets).
-          merge(extra_analytics_properties)
+        }.merge(ab_test_analytics_buckets)
+          .merge(extra_analytics_properties)
       end
 
       def redirect_to_next_page
@@ -109,11 +108,7 @@ module Idv
 
       def confirm_in_person_state_id_step_complete
         return if pii_from_user&.has_key?(:identity_doc_address1)
-        if IdentityConfig.store.in_person_state_id_controller_enabled
-          redirect_to idv_in_person_proofing_state_id_url
-        else
-          redirect_to idv_in_person_step_url(step: :state_id)
-        end
+        redirect_to idv_in_person_state_id_url
       end
 
       def confirm_in_person_address_step_needed

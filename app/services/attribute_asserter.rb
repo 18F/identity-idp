@@ -201,8 +201,7 @@ class AttributeAsserter
   def add_email(attrs)
     attrs[:email] = {
       getter: ->(principal) {
-        last_email_from_sp(principal) ||
-          EmailContext.new(principal).last_sign_in_email_address.email
+        principal.active_identity_for(service_provider).email_address_for_sharing.email
       },
       name_format: 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
       name_id_format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS,
@@ -215,13 +214,6 @@ class AttributeAsserter
       name_format: 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
       name_id_format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS,
     }
-  end
-
-  def last_email_from_sp(principal)
-    return nil unless IdentityConfig.store.feature_select_email_to_share_enabled
-    identity = principal.active_identity_for(service_provider)
-    email_id = identity&.email_address_id
-    principal.confirmed_email_addresses.find_by(id: email_id)&.email if email_id
   end
 
   def bundle

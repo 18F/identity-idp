@@ -36,6 +36,7 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
           multi_factor_auth_method: TwoFactorAuthenticatable::AuthMethod::REMEMBER_DEVICE,
           enabled_mfa_methods_count: 0,
           new_device: true,
+          attempts: 1,
         )
       end
 
@@ -157,8 +158,8 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
           end
 
           it 'sends the new device alert' do
-            expect(UserAlerts::AlertUserAboutNewDevice).to receive(:send_alert).
-              with(user:, disavowal_event: kind_of(Event), disavowal_token: kind_of(String))
+            expect(UserAlerts::AlertUserAboutNewDevice).to receive(:send_alert)
+              .with(user:, disavowal_event: kind_of(Event), disavowal_token: kind_of(String))
 
             result
           end
@@ -189,12 +190,41 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
           multi_factor_auth_method: TwoFactorAuthenticatable::AuthMethod::SMS,
           enabled_mfa_methods_count: 1,
           new_device: true,
+          attempts: 1,
         )
       end
 
       it 'records unsuccessful 2fa event' do
         expect { result }.to change { user.events.count }.by(1)
         expect(user.events.last.event_type).to eq('sign_in_unsuccessful_2fa')
+      end
+    end
+
+    context 'user switches mfa after unsuccessful attempt' do
+      let(:user) { create(:user, :fully_registered) }
+      let(:auth_method) { TwoFactorAuthenticatable::AuthMethod::SMS }
+      before do
+        allow(controller).to receive(:user_session).and_return(
+          mfa_attempts: {
+            auth_method: 'piv_cac', attempts: 2
+          },
+        )
+      end
+
+      it 'tracks multi-factor authentication event with the expected number of attempts' do
+        stub_analytics
+
+        result
+
+        expect(@analytics).to have_logged_event(
+          'Multi-Factor Authentication',
+          success: true,
+          errors: {},
+          multi_factor_auth_method: TwoFactorAuthenticatable::AuthMethod::SMS,
+          enabled_mfa_methods_count: 1,
+          new_device: true,
+          attempts: 1,
+        )
       end
     end
   end

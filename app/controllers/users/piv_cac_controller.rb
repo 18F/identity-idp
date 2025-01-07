@@ -16,7 +16,7 @@ module Users
     def update
       result = form.submit(name: params.dig(:form, :name))
 
-      analytics.piv_cac_update_name_submitted(**result.to_h)
+      analytics.piv_cac_update_name_submitted(**result)
 
       if result.success?
         flash[:success] = presenter.rename_success_alert_text
@@ -30,7 +30,7 @@ module Users
     def destroy
       result = form.submit
 
-      analytics.piv_cac_delete_submitted(**result.to_h)
+      analytics.piv_cac_delete_submitted(**result)
 
       if result.success?
         create_user_event(:piv_cac_disabled)

@@ -8,10 +8,10 @@ module Reports
 
     attr_accessor :report_date
 
-    def perform(report_date)
+    def perform(date = Time.zone.yesterday.end_of_day)
       return unless IdentityConfig.store.s3_reports_enabled
 
-      self.report_date = report_date
+      @report_date = date
       message = "Report: #{REPORT_NAME} #{report_date}"
       subject = "Weekly Protocols Report - #{report_date}"
 
@@ -33,10 +33,14 @@ module Reports
     private
 
     def weekly_protocols_emailable_reports
-      Reporting::ProtocolsReport.new(
+      report.as_emailable_reports
+    end
+
+    def report
+      @report ||= Reporting::ProtocolsReport.new(
         issuers: nil,
         time_range: report_date.all_week,
-      ).as_emailable_reports
+      )
     end
 
     def report_configs

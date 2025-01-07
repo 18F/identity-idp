@@ -24,6 +24,11 @@
         code_length: @otp_code_length,
         optional_prefix: '#',
         class: 'margin-bottom-5',
+        field_options: {
+          error_messages: {
+            patternMismatch: t('errors.messages.phone_otp_format'),
+          },
+        },
       ) %>
   <%= f.submit t('forms.buttons.submit.default'), class: 'margin-bottom-5' %>
 <% end %>

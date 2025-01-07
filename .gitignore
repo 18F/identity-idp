@@ -5,6 +5,7 @@
 #   git config --global core.excludesfile ~/.gitignore_global
 
 .generators
+*.db
 *.pyc
 *.rbc
 **.orig

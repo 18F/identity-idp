@@ -177,6 +177,7 @@ class ActionAccount
       messages = []
 
       users.each do |user|
+        profile = nil
         profile_fraud_review_pending_at = nil
         success = false
 
@@ -187,7 +188,6 @@ class ActionAccount
         elsif FraudReviewChecker.new(user).fraud_review_eligible?
           profile = user.fraud_review_pending_profile
           profile_fraud_review_pending_at = profile.fraud_review_pending_at
-          profile_age_in_seconds = profile.profile_age_in_seconds
           profile.reject_for_fraud(notify_user: true)
           success = true
 
@@ -211,18 +211,23 @@ class ActionAccount
         end
 
         Analytics.new(
-          user: user, request: nil, session: {}, sp: nil,
+          user: user,
+          request: nil,
+          session: {},
+          sp: profile&.initiating_service_provider_issuer,
         ).fraud_review_rejected(
           success:,
           errors: analytics_error_hash,
           exception: nil,
-          profile_fraud_review_pending_at: profile_fraud_review_pending_at,
-          profile_age_in_seconds: profile_age_in_seconds,
+          profile_fraud_review_pending_at:,
+          profile_age_in_seconds: profile&.profile_age_in_seconds,
         )
       end
 
-      if config.include_missing?
-        (uuids - users.map(&:uuid)).each do |missing_uuid|
+      missing_uuids = (uuids - users.map(&:uuid))
+
+      if config.include_missing? && !missing_uuids.empty?
+        missing_uuids.each do |missing_uuid|
           table, messages = log_message(
             uuid: missing_uuid,
             log: log_text[:missing_uuid],
@@ -264,6 +269,7 @@ class ActionAccount
 
       messages = []
       users.each do |user|
+        profile = nil
         profile_fraud_review_pending_at = nil
         success = false
 
@@ -273,13 +279,12 @@ class ActionAccount
         elsif FraudReviewChecker.new(user).fraud_review_eligible?
           profile = user.fraud_review_pending_profile
           profile_fraud_review_pending_at = profile.fraud_review_pending_at
-          profile_age_in_seconds = profile.profile_age_in_seconds
           profile.activate_after_passing_review
           success = true
 
           if profile.active?
-            UserEventCreator.new(current_user: user).
-              create_out_of_band_user_event(:account_verified)
+            UserEventCreator.new(current_user: user)
+              .create_out_of_band_user_event(:account_verified)
             UserAlerts::AlertUserAboutAccountVerified.call(profile: profile)
 
             log_texts << log_text[:profile_activated]
@@ -305,18 +310,22 @@ class ActionAccount
         end
 
         Analytics.new(
-          user: user, request: nil, session: {}, sp: nil,
+          user: user,
+          request: nil,
+          session: {},
+          sp: profile&.initiating_service_provider_issuer,
         ).fraud_review_passed(
           success:,
           errors: analytics_error_hash,
           exception: nil,
           profile_fraud_review_pending_at: profile_fraud_review_pending_at,
-          profile_age_in_seconds: profile_age_in_seconds,
+          profile_age_in_seconds: profile&.profile_age_in_seconds,
         )
       end
 
-      if config.include_missing?
-        (uuids - users.map(&:uuid)).each do |missing_uuid|
+      missing_uuids = (uuids - users.map(&:uuid))
+      if config.include_missing? && !missing_uuids.empty?
+        missing_uuids.each do |missing_uuid|
           table, messages = log_message(
             uuid: missing_uuid,
             log: log_text[:missing_uuid],

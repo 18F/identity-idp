@@ -5,15 +5,6 @@ module Idv
     class InPersonFlow < Flow::BaseFlow
       attr_reader :idv_session # this is used by DocAuthBaseStep
 
-      STEPS = {
-        state_id: Idv::Steps::InPerson::StateIdStep, # info from state id
-      }.freeze
-
-      ACTIONS = {
-        cancel_update_state_id: Idv::Actions::InPerson::CancelUpdateStateIdAction,
-        redo_state_id: Idv::Actions::InPerson::RedoStateIdAction,
-      }.freeze
-
       STEP_INDICATOR_STEPS = [
         { name: :find_a_post_office },
         { name: :verify_info },
@@ -32,7 +23,7 @@ module Idv
 
       def initialize(controller, session, name)
         @idv_session = self.class.session_idv(session)
-        super(controller, STEPS, ACTIONS, session[name])
+        super(controller, session[name])
         @flow_session ||= {}
         @flow_session[:pii_from_user] ||= { uuid: current_user.uuid }
         # there may be data in @idv_session to copy to @flow_session
@@ -45,17 +36,11 @@ module Idv
       end
 
       def extra_analytics_properties
-        extra = {
+        {
           pii_like_keypaths: [
-            [:same_address_as_id],
             [:proofing_results, :context, :stages, :state_id, :state_id_jurisdiction],
           ],
         }
-        unless @flow_session[:pii_from_user]&.[](:same_address_as_id).nil?
-          extra[:same_address_as_id] =
-            @flow_session[:pii_from_user][:same_address_as_id].to_s == 'true'
-        end
-        extra
       end
     end
   end

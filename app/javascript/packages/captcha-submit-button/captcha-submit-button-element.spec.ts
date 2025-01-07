@@ -1,12 +1,29 @@
+import quibble from 'quibble';
 import type { SinonStub } from 'sinon';
-import userEvent from '@testing-library/user-event';
+import baseUserEvent from '@testing-library/user-event';
 import { screen, waitFor, fireEvent } from '@testing-library/dom';
 import { useSandbox, useDefineProperty } from '@18f/identity-test-helpers';
 import '@18f/identity-spinner-button/spinner-button-element';
-import './captcha-submit-button-element';
 
 describe('CaptchaSubmitButtonElement', () => {
-  const sandbox = useSandbox();
+  let FAILED_LOAD_DELAY_MS: number;
+  const sandbox = useSandbox({ useFakeTimers: true });
+  const { clock } = sandbox;
+  const userEvent = baseUserEvent.setup({ advanceTimers: clock.tick });
+  const trackError = sandbox.stub();
+
+  before(async () => {
+    quibble('@18f/identity-analytics', { trackError });
+    ({ FAILED_LOAD_DELAY_MS } = await import('./captcha-submit-button-element'));
+  });
+
+  afterEach(() => {
+    trackError.reset();
+  });
+
+  after(() => {
+    quibble.reset();
+  });
 
   context('without ancestor form element', () => {
     beforeEach(() => {
@@ -103,12 +120,62 @@ describe('CaptchaSubmitButtonElement', () => {
         await userEvent.click(button);
         await waitFor(() => expect((form.submit as SinonStub).called).to.be.true());
 
-        expect(grecaptcha.ready).to.have.been.called();
         expect(grecaptcha.execute).to.have.been.calledWith(RECAPTCHA_SITE_KEY, {
           action: RECAPTCHA_ACTION_NAME,
         });
         expect(Object.fromEntries(new window.FormData(form))).to.deep.equal({
           recaptcha_token: RECAPTCHA_TOKEN_VALUE,
+        });
+      });
+
+      context('with recaptcha not loaded by time of submission', () => {
+        beforeEach(() => {
+          delete (global as any).grecaptcha;
+        });
+
+        it('enqueues the challenge callback to be run once recaptcha loads', async () => {
+          const button = screen.getByRole('button', { name: 'Submit' });
+          const form = document.querySelector('form')!;
+          sandbox.stub(form, 'submit');
+
+          await userEvent.click(button);
+
+          expect(form.submit).not.to.have.been.called();
+          /* eslint-disable no-underscore-dangle */
+          expect((globalThis as any).___grecaptcha_cfg).to.have.keys('fns');
+          expect((globalThis as any).___grecaptcha_cfg.fns)
+            .to.be.an('array')
+            .with.lengthOf.greaterThan(0);
+          (globalThis as any).___grecaptcha_cfg.fns.forEach((callback) => callback());
+          /* eslint-enable no-underscore-dangle */
+
+          await expect(form.submit).to.eventually.be.called();
+        });
+      });
+
+      context('with only recaptcha loader script loaded by time of submission', () => {
+        // The loader script will define the `grecaptcha` global and `ready` function, but it will
+        // not define `execute`.
+        beforeEach(() => {
+          delete (global as any).grecaptcha.execute;
+          delete (global as any).grecaptcha.enterprise.execute;
+        });
+
+        it('enqueues the challenge callback to be run once recaptcha loads', async () => {
+          const button = screen.getByRole('button', { name: 'Submit' });
+          const form = document.querySelector('form')!;
+          sandbox.stub(form, 'submit');
+
+          await userEvent.click(button);
+
+          expect(grecaptcha.ready).to.have.been.called();
+
+          // Simulate reCAPTCHA full script loaded
+          (global as any).grecaptcha.execute = sandbox.stub().resolves(RECAPTCHA_TOKEN_VALUE);
+          const callback = (grecaptcha.ready as SinonStub).getCall(0).args[0];
+          callback();
+
+          await expect(form.submit).to.eventually.be.called();
         });
       });
 
@@ -127,7 +194,6 @@ describe('CaptchaSubmitButtonElement', () => {
           await userEvent.click(button);
           await waitFor(() => expect((form.submit as SinonStub).called).to.be.true());
 
-          expect(grecaptcha.enterprise.ready).to.have.been.called();
           expect(grecaptcha.enterprise.execute).to.have.been.calledWith(RECAPTCHA_SITE_KEY, {
             action: RECAPTCHA_ACTION_NAME,
           });
@@ -142,19 +208,50 @@ describe('CaptchaSubmitButtonElement', () => {
           delete (global as any).grecaptcha;
         });
 
+        it('submits the form if recaptcha is still not loaded after reasonable delay', async () => {
+          const button = screen.getByRole('button', { name: 'Submit' });
+          const form = document.querySelector('form')!;
+          sandbox.stub(form, 'submit');
+
+          await userEvent.click(button);
+
+          expect(form.submit).not.to.have.been.called();
+          clock.tick(FAILED_LOAD_DELAY_MS - 1);
+          expect(form.submit).not.to.have.been.called();
+          clock.tick(1);
+          expect(form.submit).to.have.been.called();
+        });
+      });
+
+      context('when recaptcha fails to execute', () => {
+        let error: Error;
+
+        beforeEach(() => {
+          error = new Error('Invalid site key or not loaded in api.js: badkey');
+          ((global as any).grecaptcha.execute as SinonStub).throws(error);
+        });
+
         it('does not prevent default form submission', async () => {
           const button = screen.getByRole('button', { name: 'Submit' });
           const form = document.querySelector('form')!;
-
-          let didSubmit = false;
-          form.addEventListener('submit', (event) => {
-            expect(event.defaultPrevented).to.equal(false);
-            event.preventDefault();
-            didSubmit = true;
-          });
+          sandbox.stub(form, 'submit');
 
           await userEvent.click(button);
-          await waitFor(() => expect(didSubmit).to.be.true());
+
+          await expect(form.submit).to.eventually.be.called();
+          expect(Object.fromEntries(new window.FormData(form))).to.deep.equal({
+            recaptcha_token: '',
+          });
+        });
+
+        it('tracks error', async () => {
+          const button = screen.getByRole('button', { name: 'Submit' });
+          const form = document.querySelector('form')!;
+          sandbox.stub(form, 'submit');
+
+          await userEvent.click(button);
+
+          await expect(trackError).to.eventually.be.calledWith(error);
         });
       });
     });

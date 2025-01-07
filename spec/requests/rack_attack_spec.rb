@@ -98,15 +98,15 @@ RSpec.describe 'throttling requests' do
         end
 
         expect(response.status).to eq(429)
-        expect(response.body).
-          to include('Please wait a few minutes before you try again.')
+        expect(response.body)
+          .to include('Please wait a few minutes before you try again.')
         expect(response.header['Content-type']).to include('text/html')
         expect(analytics).to have_logged_event('Rate Limit Triggered', type: 'req/ip')
       end
 
       it 'does not throttle if the path is in the allowlist' do
-        allow(IdentityConfig.store).to receive(:requests_per_ip_path_prefixes_allowlist).
-          and_return(['/account'])
+        allow(IdentityConfig.store).to receive(:requests_per_ip_path_prefixes_allowlist)
+          .and_return(['/account'])
         analytics = FakeAnalytics.new
         allow(Analytics).to receive(:new).and_return(analytics)
 
@@ -115,8 +115,8 @@ RSpec.describe 'throttling requests' do
         end
 
         expect(response.status).to eq(302)
-        expect(response.body).
-          to_not include('Please wait a few minutes before you try again.')
+        expect(response.body)
+          .to_not include('Please wait a few minutes before you try again.')
         expect(analytics).to_not have_logged_event('Rate Limit Triggered')
       end
 
@@ -129,8 +129,8 @@ RSpec.describe 'throttling requests' do
         end
 
         expect(response.status).to eq(200)
-        expect(response.body).
-          to_not include('Please wait a few minutes before you try again.')
+        expect(response.body)
+          .to_not include('Please wait a few minutes before you try again.')
         expect(analytics).to_not have_logged_event('Rate Limit Triggered')
       end
     end
@@ -257,8 +257,8 @@ RSpec.describe 'throttling requests' do
 
           expect(analytics).to have_logged_event('Rate Limit Triggered', type: 'logins/ip')
           expect(response.status).to eq(429)
-          expect(response.body).
-            to include('Please wait a few minutes before you try again.')
+          expect(response.body)
+            .to include('Please wait a few minutes before you try again.')
           expect(response.header['Content-type']).to include('text/html')
           Rack::Attack.cache.store.clear
         end
@@ -316,8 +316,8 @@ RSpec.describe 'throttling requests' do
 
           expect(analytics).to have_logged_event('Rate Limit Triggered', type: 'logins/email+ip')
           expect(response.status).to eq(429)
-          expect(response.body).
-            to include('Please wait a few minutes before you try again.')
+          expect(response.body)
+            .to include('Please wait a few minutes before you try again.')
           expect(response.header['Content-type']).to include('text/html')
 
           Rack::Attack.cache.store.clear
@@ -385,8 +385,8 @@ RSpec.describe 'throttling requests' do
             type: 'email_registrations/ip',
           )
           expect(response.status).to eq(429)
-          expect(response.body).
-            to include('Please wait a few minutes before you try again.')
+          expect(response.body)
+            .to include('Please wait a few minutes before you try again.')
           expect(response.header['Content-type']).to include('text/html')
           Rack::Attack.cache.store.clear
         end
@@ -418,8 +418,8 @@ RSpec.describe 'throttling requests' do
         end
 
         expect(response.status).to eq(429)
-        expect(response.body).
-          to include('Please wait a few minutes before you try again.')
+        expect(response.body)
+          .to include('Please wait a few minutes before you try again.')
         expect(response.header['Content-type']).to include('text/html')
       end
     end
@@ -449,8 +449,8 @@ RSpec.describe 'throttling requests' do
         end
 
         expect(response.status).to eq(429)
-        expect(response.body).
-          to include('Please wait a few minutes before you try again.')
+        expect(response.body)
+          .to include('Please wait a few minutes before you try again.')
         expect(response.header['Content-type']).to include('text/html')
       end
     end

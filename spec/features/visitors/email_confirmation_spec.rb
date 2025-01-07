@@ -18,6 +18,7 @@ RSpec.feature 'Email confirmation during sign up' do
   end
 
   scenario 'confirms valid email and sets valid password' do
+    stub_analytics
     reset_email
     email = 'test@example.com'
     sign_up_with(email)
@@ -27,6 +28,9 @@ RSpec.feature 'Email confirmation during sign up' do
     expect(page).to have_content t('devise.confirmations.confirmed_but_must_set_password')
     expect(page).to have_title t('titles.confirmations.show')
     expect(page).to have_content t('forms.confirmation.show_hdr')
+
+    # Regression: Previously, this event had been logged multiple times per confirmation.
+    expect(@analytics).to have_logged_event('User Registration: Email Confirmation').once
 
     fill_in t('forms.password'), with: Features::SessionHelper::VALID_PASSWORD
     fill_in t('components.password_confirmation.confirm_label'),
@@ -42,14 +46,14 @@ RSpec.feature 'Email confirmation during sign up' do
     it 'sends the user the confirmation email again' do
       email = 'test@example.com'
 
-      expect { sign_up_with(email) }.
-        to change { ActionMailer::Base.deliveries.count }.by(1)
+      expect { sign_up_with(email) }
+        .to change { ActionMailer::Base.deliveries.count }.by(1)
       expect(last_email.html_part.body).to have_content(
         t('user_mailer.email_confirmation_instructions.subject'),
       )
 
-      expect { sign_up_with(email) }.
-        to change { ActionMailer::Base.deliveries.count }.by(1)
+      expect { sign_up_with(email) }
+        .to change { ActionMailer::Base.deliveries.count }.by(1)
       expect(last_email.html_part.body).to have_content(
         t('user_mailer.email_confirmation_instructions.subject'),
       )
@@ -60,8 +64,8 @@ RSpec.feature 'Email confirmation during sign up' do
     it 'sends the confirmation email again' do
       sign_up_with('test@example.com')
 
-      expect { click_on t('notices.signed_up_but_unconfirmed.resend_confirmation_email') }.
-        to change { ActionMailer::Base.deliveries.count }.by(1)
+      expect { click_on t('notices.signed_up_but_unconfirmed.resend_confirmation_email') }
+        .to change { ActionMailer::Base.deliveries.count }.by(1)
 
       expect(last_email.html_part.body).to have_content(
         t('user_mailer.email_confirmation_instructions.subject'),

@@ -133,9 +133,9 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
         end
 
         it 'tracks a valid submission' do
-          expect(controller).to receive(:handle_valid_verification_for_authentication_context).
-            with(auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN).
-            and_call_original
+          expect(controller).to receive(:handle_valid_verification_for_authentication_context)
+            .with(auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN)
+            .and_call_original
 
           freeze_time do
             patch :confirm, params: params
@@ -158,6 +158,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
             webauthn_configuration_id: webauthn_configuration.id,
             multi_factor_auth_method_created_at: webauthn_configuration.created_at.strftime('%s%L'),
             new_device: true,
+            attempts: 1,
           )
           expect(@analytics).to have_logged_event(
             'User marked authenticated',
@@ -215,9 +216,10 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
               success: true,
               enabled_mfa_methods_count: 1,
               webauthn_configuration_id: webauthn_configuration.id,
-              multi_factor_auth_method_created_at: webauthn_configuration.created_at.
-                strftime('%s%L'),
+              multi_factor_auth_method_created_at: webauthn_configuration.created_at
+                .strftime('%s%L'),
               new_device: true,
+              attempts: 1,
             )
             expect(@analytics).to have_logged_event(
               'User marked authenticated',
@@ -249,6 +251,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
           webauthn_configuration_id: webauthn_configuration.id,
           multi_factor_auth_method_created_at: webauthn_configuration.created_at.strftime('%s%L'),
           new_device: true,
+          attempts: 1,
         )
       end
 
@@ -315,6 +318,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
               second_webauthn_platform_configuration.created_at.strftime('%s%L'),
             new_device: true,
             frontend_error: webauthn_error,
+            attempts: 1,
           )
         end
       end

@@ -6,10 +6,13 @@ require 'idp/constants'
 module Saml
   module Idp
     module Constants
-      LOA1_AUTHN_CONTEXT_CLASSREF = 'http://idmanagement.gov/ns/assurance/loa/1'
-      LOA3_AUTHN_CONTEXT_CLASSREF = 'http://idmanagement.gov/ns/assurance/loa/3'
+      LEGACY_ACR_NS = 'http://idmanagement.gov/ns'
+      LEGACY_ACR_PREFIX = "#{LEGACY_ACR_NS}/assurance".freeze
 
-      IAL_AUTHN_CONTEXT_PREFIX = 'http://idmanagement.gov/ns/assurance/ial'
+      LOA1_AUTHN_CONTEXT_CLASSREF = "#{LEGACY_ACR_PREFIX}/loa/1".freeze
+      LOA3_AUTHN_CONTEXT_CLASSREF = "#{LEGACY_ACR_PREFIX}/loa/3".freeze
+
+      IAL_AUTHN_CONTEXT_PREFIX = "#{LEGACY_ACR_PREFIX}/ial".freeze
       IAL1_AUTHN_CONTEXT_CLASSREF = "#{IAL_AUTHN_CONTEXT_PREFIX}/1".freeze
       IAL2_AUTHN_CONTEXT_CLASSREF = "#{IAL_AUTHN_CONTEXT_PREFIX}/2".freeze
       IALMAX_AUTHN_CONTEXT_CLASSREF = "#{IAL_AUTHN_CONTEXT_PREFIX}/0".freeze
@@ -29,7 +32,7 @@ module Saml
       ].freeze
 
       DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF = 'urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo'
-      AAL_AUTHN_CONTEXT_PREFIX = 'http://idmanagement.gov/ns/assurance/aal'
+      AAL_AUTHN_CONTEXT_PREFIX = "#{LEGACY_ACR_PREFIX}/aal".freeze
       AAL1_AUTHN_CONTEXT_CLASSREF = "#{AAL_AUTHN_CONTEXT_PREFIX}/1".freeze
       AAL2_AUTHN_CONTEXT_CLASSREF = "#{AAL_AUTHN_CONTEXT_PREFIX}/2".freeze
       AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF = "#{AAL_AUTHN_CONTEXT_PREFIX}/2?phishing_resistant=true".freeze
@@ -42,28 +45,24 @@ module Saml
       NAME_ID_FORMAT_UNSPECIFIED = 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified'
       VALID_NAME_ID_FORMATS = [NAME_ID_FORMAT_PERSISTENT, NAME_ID_FORMAT_EMAIL].freeze
 
-      REQUESTED_ATTRIBUTES_CLASSREF = 'http://idmanagement.gov/ns/requested_attributes?ReqAttr='
+      REQUESTED_ATTRIBUTES_CLASSREF = "#{LEGACY_ACR_NS}/requested_attributes?ReqAttr=".freeze
 
-      VALID_AUTHN_CONTEXTS = (if FeatureManagement.use_semantic_authn_contexts?
-                                IdentityConfig.store.valid_authn_contexts_semantic
-                             else
-                               IdentityConfig.store.valid_authn_contexts
-                             end).freeze
+      VALID_AUTHN_CONTEXTS = IdentityConfig.store.valid_authn_contexts.freeze
 
-      BIOMETRIC_IAL_CONTEXTS = [
+      FACIAL_MATCH_IAL_CONTEXTS = [
         IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
         IAL_VERIFIED_FACIAL_MATCH_PREFERRED_ACR,
         IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
         IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF,
       ].freeze
 
-      BIOMETRIC_REQUIRED_IAL_CONTEXTS = [
+      FACIAL_MATCH_REQUIRED_IAL_CONTEXTS = [
         IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
         IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
       ].freeze
 
       IAL2_AUTHN_CONTEXTS = [
-        *BIOMETRIC_IAL_CONTEXTS,
+        *FACIAL_MATCH_IAL_CONTEXTS,
         IAL_VERIFIED_ACR,
         IAL2_AUTHN_CONTEXT_CLASSREF,
         LOA3_AUTHN_CONTEXT_CLASSREF,

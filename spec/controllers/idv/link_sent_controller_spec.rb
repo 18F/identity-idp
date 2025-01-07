@@ -153,6 +153,7 @@ RSpec.describe Idv::LinkSentController do
 
         allow(load_result).to receive(:success?).and_return(load_result_success)
         allow(load_result).to receive(:selfie_check_performed?).and_return(false)
+        allow(load_result).to receive(:errors).and_return({ message: 'an error message' })
 
         document_capture_session = DocumentCaptureSession.create!(
           user: user,
@@ -168,9 +169,14 @@ RSpec.describe Idv::LinkSentController do
 
           expect(response).to redirect_to(idv_ssn_url)
 
-          pc = ProofingComponent.find_by(user_id: user.id)
-          expect(pc.document_check).to eq('mock')
-          expect(pc.document_type).to eq('state_id')
+          proofing_components = Idv::ProofingComponents.new(
+            idv_session: subject.idv_session,
+            session: subject.session,
+            user_session: subject.user_session,
+            user:,
+          )
+          expect(proofing_components.document_check).to eq('mock')
+          expect(proofing_components.document_type).to eq('state_id')
         end
 
         context 'redo document capture' do
@@ -185,8 +191,8 @@ RSpec.describe Idv::LinkSentController do
 
         context 'selfie checks' do
           before do
-            expect(controller).to receive(:selfie_requirement_met?).
-              and_return(performed_if_needed)
+            expect(controller).to receive(:selfie_requirement_met?)
+              .and_return(performed_if_needed)
           end
 
           context 'not performed' do
@@ -195,7 +201,6 @@ RSpec.describe Idv::LinkSentController do
             it 'flashes an error and does not redirect' do
               put :update
 
-              expect(flash[:error]).to eq t('doc_auth.errors.phone_step_incomplete')
               expect(response.status).to eq(204)
             end
           end
@@ -218,8 +223,10 @@ RSpec.describe Idv::LinkSentController do
 
         before do
           expect(FormResponse).to receive(:new).with(
-            { success: false,
-              errors: { message: error_message } },
+            {
+              success: false,
+              errors: hash_including(message: error_message),
+            },
           )
         end
 
@@ -227,7 +234,6 @@ RSpec.describe Idv::LinkSentController do
           put :update
 
           expect(response).to redirect_to(idv_hybrid_handoff_url)
-          expect(flash[:error]).to eq(error_message)
         end
       end
 
@@ -238,7 +244,6 @@ RSpec.describe Idv::LinkSentController do
           put :update
 
           expect(response).to have_http_status(204)
-          expect(flash[:error]).to eq(t('doc_auth.errors.phone_step_incomplete'))
         end
       end
     end

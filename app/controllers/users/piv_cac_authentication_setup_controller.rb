@@ -18,6 +18,8 @@ module Users
     helper_method :in_multi_mfa_selection_flow?
 
     def new
+      @piv_cac_required = service_provider_mfa_policy.piv_cac_required?
+
       if params.key?(:token)
         process_piv_cac_setup
       else
@@ -35,7 +37,10 @@ module Users
     end
 
     def submit_new_piv_cac
-      if good_nickname
+      if skip?
+        user_session.delete(:add_piv_cac_after_2fa)
+        redirect_to after_sign_in_path_for(current_user)
+      elsif good_nickname?
         user_session[:piv_cac_nickname] = params[:name]
         create_piv_cac_nonce
         redirect_to piv_cac_service_url_with_redirect, allow_other_host: true
@@ -66,11 +71,13 @@ module Users
     end
 
     def process_piv_cac_setup
+      increment_mfa_selection_attempt_count(TwoFactorAuthenticatable::AuthMethod::PIV_CAC)
       result = user_piv_cac_form.submit
       properties = result.to_h.merge(analytics_properties)
       analytics.multi_factor_auth_setup(**properties)
       if result.success?
         process_valid_submission
+        user_session.delete(:mfa_attempts)
       else
         process_invalid_submission
       end
@@ -98,13 +105,14 @@ module Users
       )
       create_user_event(:piv_cac_enabled)
       track_mfa_method_added
+      user_session.delete(:add_piv_cac_after_2fa)
       session[:needs_to_setup_piv_cac_after_sign_in] = false
       redirect_to next_setup_path || after_sign_in_path_for(current_user)
     end
 
     def track_mfa_method_added
       analytics.multi_factor_auth_added_piv_cac(**analytics_properties)
-      Funnel::Registration::AddMfa.call(current_user.id, 'piv_cac', analytics)
+      Funnel::Registration::AddMfa.call(current_user.id, 'piv_cac', analytics, threatmetrix_attrs)
     end
 
     def process_invalid_submission
@@ -117,7 +125,11 @@ module Users
       end
     end
 
-    def good_nickname
+    def skip?
+      params[:skip] == 'true'
+    end
+
+    def good_nickname?
       name = params[:name]
       name.present? && !PivCacConfiguration.exists?(user_id: current_user.id, name: name)
     end
@@ -126,6 +138,7 @@ module Users
       {
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
         enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
+        attempts: mfa_attempts_count,
       }
     end
 

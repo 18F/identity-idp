@@ -56,7 +56,7 @@ Steps:
     1. Look at the [Testing Considerations](#testing-considerations) for other ideas on what you might want to test.
     1. Here is a sample plan:
         - For each combination of devices and browsers above:
-            1. Locally go to `/test/oidc/login` and choose `biometrics`
+            1. Locally go to `/test/oidc/login` and choose `facial match`
             1. First test document capture
                 1. On your phone, tap to photograph your state ID card
                 1. Point the camera at the card

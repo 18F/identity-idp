@@ -10,8 +10,8 @@ RSpec.describe InPersonEnrollment, type: :model do
 
   describe 'Status' do
     it 'defines enum correctly' do
-      should define_enum_for(:status).
-        with_values([:establishing, :pending, :passed, :failed, :expired, :cancelled])
+      should define_enum_for(:status)
+        .with_values([:establishing, :pending, :passed, :failed, :expired, :cancelled])
     end
   end
 
@@ -20,8 +20,8 @@ RSpec.describe InPersonEnrollment, type: :model do
       user1 = create(:user)
       user2 = create(:user)
       profile2 = create(:profile, gpo_verification_pending_at: 1.day.ago, user: user2)
-      expect { create(:in_person_enrollment, user: user1, profile: profile2) }.
-        to raise_error ActiveRecord::RecordInvalid
+      expect { create(:in_person_enrollment, user: user1, profile: profile2) }
+        .to raise_error ActiveRecord::RecordInvalid
       expect(InPersonEnrollment.count).to eq 0
     end
 
@@ -31,8 +31,8 @@ RSpec.describe InPersonEnrollment, type: :model do
       profile2 = create(:profile, gpo_verification_pending_at: 1.day.ago, user: user)
       create(:in_person_enrollment, user: user, profile: profile, status: :pending)
       expect(InPersonEnrollment.pending.count).to eq 1
-      expect { create(:in_person_enrollment, user: user, profile: profile2, status: :pending) }.
-        to raise_error ActiveRecord::RecordNotUnique
+      expect { create(:in_person_enrollment, user: user, profile: profile2, status: :pending) }
+        .to raise_error ActiveRecord::RecordNotUnique
       expect(InPersonEnrollment.pending.count).to eq 1
     end
 
@@ -41,8 +41,8 @@ RSpec.describe InPersonEnrollment, type: :model do
       profile = create(:profile, gpo_verification_pending_at: 1.day.ago, user: user)
       unique_id = InPersonEnrollment.generate_unique_id
       create(:in_person_enrollment, user: user, profile: profile, unique_id: unique_id)
-      expect { create(:in_person_enrollment, user: user, profile: profile, unique_id: unique_id) }.
-        to raise_error ActiveRecord::RecordNotUnique
+      expect { create(:in_person_enrollment, user: user, profile: profile, unique_id: unique_id) }
+        .to raise_error ActiveRecord::RecordNotUnique
       expect(InPersonEnrollment.count).to eq 1
     end
 
@@ -388,10 +388,10 @@ RSpec.describe InPersonEnrollment, type: :model do
     let(:validity_in_days) { 10 }
 
     before do
-      allow(IdentityConfig.store).
-        to(
-          receive(:in_person_enrollment_validity_in_days).
-          and_return(validity_in_days),
+      allow(IdentityConfig.store)
+        .to(
+          receive(:in_person_enrollment_validity_in_days)
+          .and_return(validity_in_days),
         )
     end
 
@@ -461,10 +461,10 @@ RSpec.describe InPersonEnrollment, type: :model do
     context 'eipp enrollment' do
       let(:eipp_validity_in_days) { 7 }
       before do
-        allow(IdentityConfig.store).
-          to(
-            receive(:in_person_eipp_enrollment_validity_in_days).
-            and_return(eipp_validity_in_days),
+        allow(IdentityConfig.store)
+          .to(
+            receive(:in_person_eipp_enrollment_validity_in_days)
+            .and_return(eipp_validity_in_days),
           )
       end
       it 'days_to_due_date returns the number of days left until the due date' do
@@ -530,6 +530,35 @@ RSpec.describe InPersonEnrollment, type: :model do
 
       it 'returns false' do
         expect(enrollment.enhanced_ipp?).to be false
+      end
+    end
+  end
+
+  describe '#profile_deactivation_reason' do
+    let(:profile) { create(:profile) }
+    let(:enrollment) { create(:in_person_enrollment, user: profile.user, profile: profile) }
+
+    context "when the enrollment's profile has a deactivation reason" do
+      before do
+        profile.update!(deactivation_reason: 'encryption_error')
+      end
+
+      it "returns the profile's deactivation reason" do
+        expect(enrollment.profile_deactivation_reason).to eq('encryption_error')
+      end
+    end
+
+    context 'when the profile does not have a deactivation reason' do
+      it 'returns nil' do
+        expect(enrollment.profile_deactivation_reason).to be_nil
+      end
+    end
+
+    context 'when the enrollment does not have a profile' do
+      let(:enrollment) { create(:in_person_enrollment, user: profile.user, profile: nil) }
+
+      it 'returns nil' do
+        expect(enrollment.profile_deactivation_reason).to be_nil
       end
     end
   end

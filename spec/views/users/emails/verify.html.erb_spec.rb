@@ -4,6 +4,7 @@ RSpec.describe 'users/emails/verify.html.erb' do
   let(:email) { 'foo@bar.com' }
   before do
     allow(view).to receive(:email).and_return(email)
+    allow(view).to receive(:in_select_email_flow).and_return(nil)
     @resend_email_confirmation_form = ResendEmailConfirmationForm.new
   end
 

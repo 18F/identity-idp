@@ -3,42 +3,42 @@
 module Proofing
   module Socure
     module IdPlus
-      class RequestError < StandardError
-        def initialize(wrapped)
-          @wrapped = wrapped
-          super(build_message)
-        end
-
-        def reference_id
-          return @reference_id if defined?(@reference_id)
-          @reference_id = response_body.is_a?(Hash) ?
-            response_body['referenceId'] :
-            nil
-        end
-
-        def response_body
-          return @response_body if defined?(@response_body)
-          @response_body = wrapped.try(:response_body)
-        end
-
-        def response_status
-          return @response_status if defined?(@response_status)
-          @response_status = wrapped.try(:response_status)
-        end
-
-        private
-
-        attr_reader :wrapped
-
-        def build_message
-          message = response_body.is_a?(Hash) ? response_body['msg'] : nil
-          message ||= wrapped.message
-          status = response_status ? " (#{response_status})" : ''
-          [message, status].join('')
-        end
-      end
-
       class Request
+        class Error < StandardError
+          def initialize(wrapped)
+            @wrapped = wrapped
+            super(build_message)
+          end
+
+          def reference_id
+            return @reference_id if defined?(@reference_id)
+            @reference_id = response_body.is_a?(Hash) ?
+              response_body['referenceId'] :
+              nil
+          end
+
+          def response_body
+            return @response_body if defined?(@response_body)
+            @response_body = wrapped.try(:response_body)
+          end
+
+          def response_status
+            return @response_status if defined?(@response_status)
+            @response_status = wrapped.try(:response_status)
+          end
+
+          private
+
+          attr_reader :wrapped
+
+          def build_message
+            message = response_body.is_a?(Hash) ? response_body['msg'] : nil
+            message ||= wrapped.message
+            status = response_status ? " (#{response_status})" : ''
+            [message, status].join('')
+          end
+        end
+
         attr_reader :config, :input
 
         SERVICE_NAME = 'socure_id_plus'
@@ -56,9 +56,6 @@ module Proofing
             f.response :raise_error
             f.response :json
             f.options.timeout = config.timeout
-            f.options.read_timeout = config.timeout
-            f.options.open_timeout = config.timeout
-            f.options.write_timeout = config.timeout
           end
 
           Response.new(
@@ -78,7 +75,7 @@ module Proofing
                   'Timed out waiting for verification response'
           end
 
-          raise RequestError, e
+          raise Error, e
         end
 
         def body

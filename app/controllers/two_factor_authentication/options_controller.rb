@@ -34,7 +34,7 @@ module TwoFactorAuthentication
     def create
       @two_factor_options_form = TwoFactorLoginOptionsForm.new(current_user)
       result = @two_factor_options_form.submit(two_factor_options_form_params)
-      analytics.multi_factor_auth_option_list(**result.to_h)
+      analytics.multi_factor_auth_option_list(**result)
 
       if result.success?
         process_valid_form
@@ -54,6 +54,7 @@ module TwoFactorAuthentication
         service_provider: current_sp,
         phishing_resistant_required: service_provider_mfa_policy.phishing_resistant_required?,
         piv_cac_required: service_provider_mfa_policy.piv_cac_required?,
+        add_piv_cac_after_2fa: user_session[:add_piv_cac_after_2fa].present?,
       )
     end
 

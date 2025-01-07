@@ -43,9 +43,9 @@ RSpec.describe Users::PivCacLoginController do
 
       context 'with a valid token' do
         let(:service_provider) { create(:service_provider) }
-        let(:sp_session) { { ial: 1, issuer: service_provider.issuer, vtr: vtr } }
+        let(:acr_values) { Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF }
+        let(:sp_session) { { ial: 1, issuer: service_provider.issuer, acr_values: } }
         let(:nonce) { SecureRandom.base64(20) }
-        let(:vtr) { ['C1'] }
         let(:data) do
           {
             nonce: nonce,
@@ -129,8 +129,8 @@ RSpec.describe Users::PivCacLoginController do
           it 'sets the session correctly' do
             response
 
-            expect(controller.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).
-              to eq false
+            expect(controller.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION])
+              .to eq false
             expect(controller.auth_methods_session.auth_events).to match(
               [
                 {
@@ -219,13 +219,6 @@ RSpec.describe Users::PivCacLoginController do
                     issuer: service_provider.issuer,
                   }
                 end
-                let(:sp_session) do
-                  {
-                    ial: Idp::Constants::IAL2,
-                    issuer: service_provider.issuer,
-                    vtr: vtr,
-                  }
-                end
 
                 it 'redirects to account' do
                   expect(response).to redirect_to(account_url)
@@ -234,7 +227,7 @@ RSpec.describe Users::PivCacLoginController do
 
               context 'ial_max service level' do
                 let(:sp_session) do
-                  { ial: Idp::Constants::IAL_MAX, issuer: service_provider.issuer, vtr: vtr }
+                  { ial: Idp::Constants::IAL_MAX, issuer: service_provider.issuer, acr_values: }
                 end
 
                 it 'redirects to the after_sign_in_path_for' do

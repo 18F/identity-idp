@@ -146,8 +146,8 @@ RSpec.describe 'Idv::FlowPolicy' do
 
   context 'each step in the flow' do
     before do
-      allow(Idv::PhoneConfirmationSession).to receive(:from_h).
-        with(user_phone_confirmation_session).and_return(user_phone_confirmation_session)
+      allow(Idv::PhoneConfirmationSession).to receive(:from_h)
+        .with(user_phone_confirmation_session).and_return(user_phone_confirmation_session)
       allow(user).to receive(:gpo_pending_profile?).and_return(has_gpo_pending_profile)
     end
     context 'empty session' do
@@ -227,8 +227,8 @@ RSpec.describe 'Idv::FlowPolicy' do
       it 'returns ipp_ssn' do
         expect(subject.info_for_latest_step.key).to eq(:ipp_ssn)
         expect(subject.controller_allowed?(controller: Idv::InPerson::SsnController)).to be
-        expect(subject.controller_allowed?(controller: Idv::InPerson::VerifyInfoController)).
-          not_to be
+        expect(subject.controller_allowed?(controller: Idv::InPerson::VerifyInfoController))
+          .not_to be
       end
     end
 
@@ -315,7 +315,9 @@ RSpec.describe 'Idv::FlowPolicy' do
         it 'returns personal_key' do
           stub_up_to(:request_letter, idv_session: idv_session)
           idv_session.gpo_code_verified = true
-          idv_session.create_profile_from_applicant_with_password('password', is_enhanced_ipp)
+          idv_session.create_profile_from_applicant_with_password(
+            'password', is_enhanced_ipp:, proofing_components: {}
+          )
 
           expect(subject.info_for_latest_step.key).to eq(:personal_key)
           expect(subject.controller_allowed?(controller: Idv::PersonalKeyController)).to be
@@ -326,7 +328,9 @@ RSpec.describe 'Idv::FlowPolicy' do
         let(:is_enhanced_ipp) { false }
         it 'returns personal_key' do
           stub_up_to(:otp_verification, idv_session: idv_session)
-          idv_session.create_profile_from_applicant_with_password('password', is_enhanced_ipp)
+          idv_session.create_profile_from_applicant_with_password(
+            'password', is_enhanced_ipp:, proofing_components: {}
+          )
 
           expect(subject.info_for_latest_step.key).to eq(:personal_key)
           expect(subject.controller_allowed?(controller: Idv::PersonalKeyController)).to be

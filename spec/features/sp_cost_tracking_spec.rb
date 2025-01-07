@@ -13,8 +13,8 @@ RSpec.feature 'SP Costing', :email do
   let(:password) { Features::SessionHelper::VALID_PASSWORD }
 
   before do
-    allow(IdentityConfig.store).to receive(:allowed_verified_within_providers).
-      and_return([issuer])
+    allow(IdentityConfig.store).to receive(:allowed_verified_within_providers)
+      .and_return([issuer])
   end
 
   it 'logs the correct costs for an ial2 user creation from sp with oidc', js: true do
@@ -45,7 +45,7 @@ RSpec.feature 'SP Costing', :email do
     user.active_profile.update!(verified_at: 60.days.ago)
 
     visit_idp_from_sp_with_ial2(:oidc, verified_within: '45d')
-    fill_in_credentials_and_submit(user.confirmed_email_addresses.first.email, password)
+    fill_in_credentials_and_submit(user.last_sign_in_email_address.email, password)
     fill_in_code_with_last_totp(user)
     click_submit_default
     complete_all_doc_auth_steps_before_password_step

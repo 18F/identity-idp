@@ -19,7 +19,7 @@ RSpec.describe AuthnContextResolver do
       expect(result.phishing_resistant?).to eq(false)
       expect(result.hspd12?).to eq(false)
       expect(result.identity_proofing?).to eq(true)
-      expect(result.biometric_comparison?).to eq(true)
+      expect(result.facial_match?).to eq(true)
       expect(result.ialmax?).to eq(false)
       expect(result.enhanced_ipp?).to eq(false)
     end
@@ -39,7 +39,7 @@ RSpec.describe AuthnContextResolver do
       expect(result.phishing_resistant?).to eq(false)
       expect(result.hspd12?).to eq(false)
       expect(result.identity_proofing?).to eq(true)
-      expect(result.biometric_comparison?).to eq(false)
+      expect(result.facial_match?).to eq(false)
       expect(result.ialmax?).to eq(false)
       expect(result.enhanced_ipp?).to eq(true)
     end
@@ -48,8 +48,8 @@ RSpec.describe AuthnContextResolver do
       vtr = ['C2.Pb']
 
       acr_values = [
-        'http://idmanagement.gov/ns/assurance/aal/2',
-        'http://idmanagement.gov/ns/assurance/ial/2',
+        Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+        Saml::Idp::Constants::IAL_VERIFIED_ACR,
       ].join(' ')
 
       result = AuthnContextResolver.new(
@@ -64,8 +64,8 @@ RSpec.describe AuthnContextResolver do
   end
 
   context 'when the user uses a vtr param with multiple vectors' do
-    context 'a biometric proofing vector and non-biometric proofing vector is present' do
-      it 'returns a biometric requirement if the user can satisfy it' do
+    context 'a facial match proofing vector and non-facial match proofing vector is present' do
+      it 'returns a facial match requirement if the user can satisfy it' do
         user = create(:user, :proofed)
         user.active_profile.update!(idv_level: 'unsupervised_with_selfie')
         vtr = ['C2.Pb', 'C2.P1']
@@ -78,11 +78,11 @@ RSpec.describe AuthnContextResolver do
         ).result
 
         expect(result.expanded_component_values).to eq('C1.C2.P1.Pb')
-        expect(result.biometric_comparison?).to eq(true)
+        expect(result.facial_match?).to eq(true)
         expect(result.identity_proofing?).to eq(true)
       end
 
-      it 'returns the non-biometric vector if the user has identity-proofed without biometric' do
+      it 'returns non-facial match vector if user has identity-proofed without facial match' do
         user = create(:user, :proofed)
         vtr = ['C2.Pb', 'C2.P1']
 
@@ -94,7 +94,7 @@ RSpec.describe AuthnContextResolver do
         ).result
 
         expect(result.expanded_component_values).to eq('C1.C2.P1')
-        expect(result.biometric_comparison?).to eq(false)
+        expect(result.facial_match?).to eq(false)
         expect(result.identity_proofing?).to eq(true)
       end
 
@@ -110,12 +110,12 @@ RSpec.describe AuthnContextResolver do
         ).result
 
         expect(result.expanded_component_values).to eq('C1.C2.P1.Pb')
-        expect(result.biometric_comparison?).to eq(true)
+        expect(result.facial_match?).to eq(true)
         expect(result.identity_proofing?).to eq(true)
       end
     end
 
-    context 'a non-biometric identity proofing vector is present' do
+    context 'a non-facial match identity proofing vector is present' do
       it 'returns the identity-proofing requirement if the user can satisfy it' do
         user = create(:user, :proofed)
         vtr = ['C2.P1', 'C2']
@@ -152,8 +152,8 @@ RSpec.describe AuthnContextResolver do
     context 'with no service provider' do
       it 'parses an ACR value into requirements' do
         acr_values = [
-          'http://idmanagement.gov/ns/assurance/aal/2',
-          'http://idmanagement.gov/ns/assurance/ial/1',
+          Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+          Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
         ].join(' ')
 
         result = AuthnContextResolver.new(
@@ -168,14 +168,14 @@ RSpec.describe AuthnContextResolver do
         expect(result.phishing_resistant?).to eq(false)
         expect(result.hspd12?).to eq(false)
         expect(result.identity_proofing?).to eq(false)
-        expect(result.biometric_comparison?).to eq(false)
+        expect(result.facial_match?).to eq(false)
         expect(result.ialmax?).to eq(false)
         expect(result.enhanced_ipp?).to eq(false)
       end
 
       it 'properly parses an ACR value without an AAL ACR' do
         acr_values = [
-          'http://idmanagement.gov/ns/assurance/ial/1',
+          Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
         ].join(' ')
 
         result = AuthnContextResolver.new(
@@ -190,14 +190,14 @@ RSpec.describe AuthnContextResolver do
         expect(result.phishing_resistant?).to eq(false)
         expect(result.hspd12?).to eq(false)
         expect(result.identity_proofing?).to eq(false)
-        expect(result.biometric_comparison?).to eq(false)
+        expect(result.facial_match?).to eq(false)
         expect(result.ialmax?).to eq(false)
         expect(result.enhanced_ipp?).to eq(false)
       end
 
       it 'properly parses an ACR value without an IAL ACR' do
         acr_values = [
-          'http://idmanagement.gov/ns/assurance/aal/2',
+          Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
         ].join(' ')
 
         result = AuthnContextResolver.new(
@@ -212,7 +212,7 @@ RSpec.describe AuthnContextResolver do
         expect(result.phishing_resistant?).to eq(false)
         expect(result.hspd12?).to eq(false)
         expect(result.identity_proofing?).to eq(false)
-        expect(result.biometric_comparison?).to eq(false)
+        expect(result.facial_match?).to eq(false)
         expect(result.ialmax?).to eq(false)
         expect(result.enhanced_ipp?).to eq(false)
       end
@@ -223,8 +223,8 @@ RSpec.describe AuthnContextResolver do
         service_provider = build(:service_provider, default_aal: 2)
 
         acr_values = [
-          'http://idmanagement.gov/ns/assurance/aal/1',
-          'http://idmanagement.gov/ns/assurance/ial/1',
+          Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+          Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
         ].join(' ')
 
         result = AuthnContextResolver.new(
@@ -241,7 +241,7 @@ RSpec.describe AuthnContextResolver do
         service_provider = build(:service_provider, default_aal: 2)
 
         acr_values = [
-          'http://idmanagement.gov/ns/assurance/ial/1',
+          Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
         ].join(' ')
 
         result = AuthnContextResolver.new(
@@ -259,7 +259,7 @@ RSpec.describe AuthnContextResolver do
         service_provider = build(:service_provider, default_aal: 3)
 
         acr_values = [
-          'http://idmanagement.gov/ns/assurance/ial/1',
+          Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
         ].join(' ')
 
         result = AuthnContextResolver.new(
@@ -295,10 +295,10 @@ RSpec.describe AuthnContextResolver do
       let(:service_provider) { build(:service_provider, ial: 2) }
       subject do
         AuthnContextResolver.new(
-          user: user,
-          service_provider: service_provider,
+          user:,
+          service_provider:,
           vtr: nil,
-          acr_values: acr_values,
+          acr_values:,
         )
       end
 
@@ -307,8 +307,8 @@ RSpec.describe AuthnContextResolver do
       context 'if IAL ACR value is present' do
         let(:acr_values) do
           [
-            'http://idmanagement.gov/ns/assurance/ial/1',
-            'http://idmanagement.gov/ns/assurance/aal/1',
+            Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
           ].join(' ')
         end
 
@@ -318,12 +318,12 @@ RSpec.describe AuthnContextResolver do
         end
       end
 
-      context 'if multiple IAL ACR values are present' do
+      context 'when multiple IAL ACR values are present' do
         let(:acr_values) do
           [
-            'http://idmanagement.gov/ns/assurance/ial/1',
-            'http://idmanagement.gov/ns/assurance/ial/2',
-            'http://idmanagement.gov/ns/assurance/aal/1',
+            Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
           ].join(' ')
         end
 
@@ -331,12 +331,28 @@ RSpec.describe AuthnContextResolver do
           expect(result.identity_proofing?).to be true
           expect(result.aal2?).to be true
         end
+
+        context 'when one of the acr values is unknown' do
+          let(:acr_values) do
+            [
+              Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+              Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+              Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+              'unknown-acr-value',
+            ].join(' ')
+          end
+
+          it 'ignores the unknown value and uses the highest IAL ACR' do
+            expect(result.identity_proofing?).to eq(true)
+            expect(result.aal2?).to eq(true)
+          end
+        end
       end
 
       context 'if No IAL ACR is present' do
         let(:acr_values) do
           [
-            'http://idmanagement.gov/ns/assurance/aal/1',
+            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
           ].join(' ')
         end
 
@@ -346,43 +362,54 @@ RSpec.describe AuthnContextResolver do
         end
       end
 
-      context 'if requesting biometric comparison' do
-        let(:bio_value) { 'required' }
+      context 'when the only ACR value is unknown' do
+        let(:acr_values) { 'unknown-acr-value' }
+
+        it 'errors out as if there were no values' do
+          expect { result }.to raise_error Vot::Parser::ParseException
+        end
+      end
+
+      context 'if requesting facial match comparison' do
+        let(:bio_acr_value) do
+          Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
+        end
+
         let(:acr_values) do
           [
-            "http://idmanagement.gov/ns/assurance/ial/2?bio=#{bio_value}",
-            'http://idmanagement.gov/ns/assurance/aal/1',
+            bio_acr_value,
+            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
           ].join(' ')
         end
 
-        context 'with biometric comparison is required' do
+        context 'with facial match comparison is required' do
           context 'when user is not verified' do
-            it 'sets biometric_comparison to true' do
+            it 'sets facial_match to true' do
               expect(result.identity_proofing?).to be true
-              expect(result.biometric_comparison?).to be true
+              expect(result.facial_match?).to be true
               expect(result.aal2?).to be true
               expect(result.two_pieces_of_fair_evidence?).to be true
             end
           end
 
           context 'when the user is already verified' do
-            context 'without biometric comparison' do
+            context 'without facial match comparison' do
               let(:user) { build(:user, :proofed) }
 
-              it 'asserts biometric_comparison as true' do
+              it 'asserts facial_match as true' do
                 expect(result.identity_proofing?).to be true
-                expect(result.biometric_comparison?).to be true
+                expect(result.facial_match?).to be true
                 expect(result.aal2?).to be true
                 expect(result.two_pieces_of_fair_evidence?).to be true
               end
             end
 
-            context 'with biometric comparison' do
+            context 'with facial match comparison' do
               let(:user) { build(:user, :proofed_with_selfie) }
 
-              it 'asserts biometric comparison' do
+              it 'asserts facial match comparison' do
                 expect(result.identity_proofing?).to be true
-                expect(result.biometric_comparison?).to be true
+                expect(result.facial_match?).to be true
                 expect(result.two_pieces_of_fair_evidence?).to be true
                 expect(result.aal2?).to be true
               end
@@ -390,27 +417,29 @@ RSpec.describe AuthnContextResolver do
           end
         end
 
-        context 'with biometric comparison is preferred' do
-          let(:bio_value) { 'preferred' }
+        context 'with facial match comparison is preferred' do
+          let(:bio_acr_value) do
+            Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF
+          end
 
           context 'when the user is already verified' do
-            context 'without biometric comparison' do
+            context 'without facial match comparison' do
               let(:user) { build(:user, :proofed) }
 
-              it 'falls back on proofing without biometric comparison' do
+              it 'falls back on proofing without facial match comparison' do
                 expect(result.identity_proofing?).to be true
-                expect(result.biometric_comparison?).to be false
+                expect(result.facial_match?).to be false
                 expect(result.two_pieces_of_fair_evidence?).to be false
                 expect(result.aal2?).to be true
               end
             end
 
-            context 'with biometric comparison' do
+            context 'with facial match comparison' do
               let(:user) { build(:user, :proofed_with_selfie) }
 
-              it 'asserts biometric comparison' do
+              it 'asserts facial match comparison' do
                 expect(result.identity_proofing?).to be true
-                expect(result.biometric_comparison?).to be true
+                expect(result.facial_match?).to be true
                 expect(result.aal2?).to be true
               end
             end
@@ -419,9 +448,9 @@ RSpec.describe AuthnContextResolver do
           context 'when the user has not yet been verified' do
             let(:user) { build(:user) }
 
-            it 'asserts biometric comparison' do
+            it 'asserts facial match comparison' do
               expect(result.identity_proofing?).to be true
-              expect(result.biometric_comparison?).to be true
+              expect(result.facial_match?).to be true
               expect(result.aal2?).to be true
             end
           end
@@ -431,20 +460,6 @@ RSpec.describe AuthnContextResolver do
   end
 
   context 'when resolving semantic acr_values' do
-    before do
-      allow(IdentityConfig.store).
-        to receive(:feature_valid_authn_contexts_semantic_enabled).
-        and_return(true)
-      allow_any_instance_of(ServiceProvider).
-        to receive(:semantic_authn_contexts_allowed?).
-        and_return(true)
-
-      stub_const(
-        'Saml::Idp::Constants::VALID_AUTHN_CONTEXTS',
-        IdentityConfig.store.valid_authn_contexts_semantic,
-      )
-    end
-
     context 'when no semantic ACR present' do
       let(:user) { build(:user) }
 
@@ -465,7 +480,7 @@ RSpec.describe AuthnContextResolver do
         expect(result.component_names).to eq(acr_values)
         expect(result.to_h).to include(
           aal2?: false,
-          biometric_comparison?: false,
+          facial_match?: false,
           enhanced_ipp?: false,
           hspd12?: false,
           ialmax?: false,
@@ -478,7 +493,7 @@ RSpec.describe AuthnContextResolver do
     context 'with no service provider' do
       it 'parses an ACR value into requirements' do
         acr_values = [
-          'http://idmanagement.gov/ns/assurance/aal/2',
+          Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
           Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
         ]
 
@@ -495,7 +510,7 @@ RSpec.describe AuthnContextResolver do
         expect(result.phishing_resistant?).to eq(false)
         expect(result.hspd12?).to eq(false)
         expect(result.identity_proofing?).to eq(false)
-        expect(result.biometric_comparison?).to eq(false)
+        expect(result.facial_match?).to eq(false)
         expect(result.ialmax?).to eq(false)
         expect(result.enhanced_ipp?).to eq(false)
       end
@@ -518,14 +533,14 @@ RSpec.describe AuthnContextResolver do
         expect(result.phishing_resistant?).to eq(false)
         expect(result.hspd12?).to eq(false)
         expect(result.identity_proofing?).to eq(false)
-        expect(result.biometric_comparison?).to eq(false)
+        expect(result.facial_match?).to eq(false)
         expect(result.ialmax?).to eq(false)
         expect(result.enhanced_ipp?).to eq(false)
       end
 
       it 'properly parses an ACR value without an IAL ACR' do
         acr_values = [
-          'http://idmanagement.gov/ns/assurance/aal/2',
+          Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
         ]
         resolver = AuthnContextResolver.new(
           user: user,
@@ -539,7 +554,7 @@ RSpec.describe AuthnContextResolver do
         expect(result.phishing_resistant?).to eq(false)
         expect(result.hspd12?).to eq(false)
         expect(result.identity_proofing?).to eq(false)
-        expect(result.biometric_comparison?).to eq(false)
+        expect(result.facial_match?).to eq(false)
         expect(result.ialmax?).to eq(false)
         expect(result.enhanced_ipp?).to eq(false)
       end
@@ -561,8 +576,8 @@ RSpec.describe AuthnContextResolver do
       context 'if IAL ACR value is present' do
         let(:acr_values) do
           [
-            'http://idmanagement.gov/ns/assurance/ial/1',
-            'http://idmanagement.gov/ns/assurance/aal/1',
+            Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
+            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
           ]
         end
 
@@ -572,12 +587,12 @@ RSpec.describe AuthnContextResolver do
         end
       end
 
-      context 'if multiple IAL ACR values are present' do
+      context 'when multiple IAL ACR values are present' do
         let(:acr_values) do
           [
-            'http://idmanagement.gov/ns/assurance/ial/1',
-            'urn:acr.login.gov:verified',
-            'http://idmanagement.gov/ns/assurance/aal/1',
+            Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
+            Saml::Idp::Constants::IAL_VERIFIED_ACR,
+            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
           ]
         end
 
@@ -585,12 +600,28 @@ RSpec.describe AuthnContextResolver do
           expect(result.identity_proofing?).to be true
           expect(result.aal2?).to be true
         end
+
+        context 'when one of the acr values is unknown' do
+          let(:acr_values) do
+            [
+              Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
+              Saml::Idp::Constants::IAL_VERIFIED_ACR,
+              Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+              'unknown-acr-value',
+            ]
+          end
+
+          it 'ignores the unknown value and uses the highest IAL ACR' do
+            expect(result.identity_proofing?).to eq(true)
+            expect(result.aal2?).to eq(true)
+          end
+        end
       end
 
       context 'if No IAL ACR is present' do
         let(:acr_values) do
           [
-            'http://idmanagement.gov/ns/assurance/aal/1',
+            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
           ]
         end
 
@@ -598,8 +629,8 @@ RSpec.describe AuthnContextResolver do
           let(:user) { build(:user, :fully_registered) }
 
           it "asserts #{Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF}" do
-            expect(subject.asserted_ial_acr).
-              to eq(Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF)
+            expect(subject.asserted_ial_acr)
+              .to eq(Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF)
             expect(result.identity_proofing?).to be true
             expect(result.aal2?).to be true
           end
@@ -609,37 +640,40 @@ RSpec.describe AuthnContextResolver do
           let(:user) { build(:user, :proofed) }
 
           it "asserts #{Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF}" do
-            expect(subject.asserted_ial_acr).
-              to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
+            expect(subject.asserted_ial_acr)
+              .to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
           end
         end
       end
 
-      context 'if requesting biometric comparison' do
-        let(:bio_value) { 'required' }
+      context 'if requesting facial match comparison' do
+        let(:bio_acr_value) do
+          Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR
+        end
+
         let(:acr_values) do
           [
-            "urn:acr.login.gov:verified-facial-match-#{bio_value}",
-            'http://idmanagement.gov/ns/assurance/aal/1',
+            bio_acr_value,
+            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
           ]
         end
 
         before do
-          allow_any_instance_of(ServiceProvider).
-            to receive(:biometric_ial_allowed?).
-            and_return(true)
+          allow_any_instance_of(ServiceProvider)
+            .to receive(:facial_match_ial_allowed?)
+            .and_return(true)
         end
 
-        context 'with biometric comparison is required' do
+        context 'with facial match comparison is required' do
           context 'when user is not verified' do
             it "asserts the resolved IAL as #{Saml::Idp::Constants::IAL_AUTH_ONLY_ACR}" do
-              expect(subject.asserted_ial_acr).
-                to eq(Saml::Idp::Constants::IAL_AUTH_ONLY_ACR)
+              expect(subject.asserted_ial_acr)
+                .to eq(Saml::Idp::Constants::IAL_AUTH_ONLY_ACR)
             end
 
-            it 'sets biometric_comparison to true' do
+            it 'sets facial_match to true' do
               expect(result.identity_proofing?).to be true
-              expect(result.biometric_comparison?).to be true
+              expect(result.facial_match?).to be true
               expect(result.aal2?).to be true
               expect(result.two_pieces_of_fair_evidence?).to be true
               expect(result.ialmax?).to be false
@@ -647,24 +681,24 @@ RSpec.describe AuthnContextResolver do
           end
 
           context 'when the user is already verified' do
-            context 'without biometric comparison' do
+            context 'without facial match comparison' do
               let(:user) { build(:user, :proofed) }
 
-              it 'asserts biometric_comparison as true' do
+              it 'asserts facial_match as true' do
                 expect(result.identity_proofing?).to be true
-                expect(result.biometric_comparison?).to be true
+                expect(result.facial_match?).to be true
                 expect(result.aal2?).to be true
                 expect(result.two_pieces_of_fair_evidence?).to be true
                 expect(result.ialmax?).to be false
               end
             end
 
-            context 'with biometric comparison' do
+            context 'with facial match comparison' do
               let(:user) { build(:user, :proofed_with_selfie) }
 
-              it 'asserts biometric comparison' do
+              it 'asserts facial match comparison' do
                 expect(result.identity_proofing?).to be true
-                expect(result.biometric_comparison?).to be true
+                expect(result.facial_match?).to be true
                 expect(result.two_pieces_of_fair_evidence?).to be true
                 expect(result.aal2?).to be true
                 expect(result.ialmax?).to be false
@@ -673,28 +707,30 @@ RSpec.describe AuthnContextResolver do
           end
         end
 
-        context 'with biometric comparison is preferred' do
-          let(:bio_value) { 'preferred' }
+        context 'with facial match comparison is preferred' do
+          let(:bio_acr_value) do
+            Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_PREFERRED_ACR
+          end
 
           context 'when the user is already verified' do
-            context 'without biometric comparison' do
+            context 'without facial match comparison' do
               let(:user) { build(:user, :proofed) }
 
-              it 'falls back on proofing without biometric comparison' do
+              it 'falls back on proofing without facial match comparison' do
                 expect(result.identity_proofing?).to be true
-                expect(result.biometric_comparison?).to be false
+                expect(result.facial_match?).to be false
                 expect(result.two_pieces_of_fair_evidence?).to be false
                 expect(result.aal2?).to be true
                 expect(result.ialmax?).to be false
               end
             end
 
-            context 'with biometric comparison' do
+            context 'with facial match comparison' do
               let(:user) { build(:user, :proofed_with_selfie) }
 
-              it 'asserts biometric comparison' do
+              it 'asserts facial match comparison' do
                 expect(result.identity_proofing?).to be true
-                expect(result.biometric_comparison?).to be true
+                expect(result.facial_match?).to be true
                 expect(result.two_pieces_of_fair_evidence?).to be true
                 expect(result.aal2?).to be true
                 expect(result.ialmax?).to be false
@@ -705,9 +741,9 @@ RSpec.describe AuthnContextResolver do
           context 'when the user has not yet been verified' do
             let(:user) { build(:user) }
 
-            it 'asserts biometric comparison' do
+            it 'asserts facial match comparison' do
               expect(result.identity_proofing?).to be true
-              expect(result.biometric_comparison?).to be true
+              expect(result.facial_match?).to be true
               expect(result.two_pieces_of_fair_evidence?).to be true
               expect(result.aal2?).to be true
               expect(result.ialmax?).to be false

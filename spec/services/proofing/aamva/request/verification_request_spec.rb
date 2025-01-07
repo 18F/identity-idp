@@ -33,7 +33,7 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
 
   describe '#body' do
     it 'should be a request body' do
-      expect(subject.body).to eq(AamvaFixtures.verification_request)
+      expect(subject.body).to match_xml(AamvaFixtures.verification_request)
     end
 
     it 'should escape XML in applicant data' do
@@ -88,6 +88,145 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
         '<aa:DriverLicenseExpirationDate>2030-01-02</aa:DriverLicenseExpirationDate>',
       )
     end
+
+    it 'includes height if it is present' do
+      applicant.height = '63'
+      expect(subject.body).to include(
+        '<aa:PersonHeightMeasure>63</aa:PersonHeightMeasure>',
+      )
+    end
+
+    it 'includes weight if it is present' do
+      applicant.weight = 190
+      expect(subject.body).to include(
+        '<aa:PersonWeightMeasure>190</aa:PersonWeightMeasure>',
+      )
+    end
+
+    it 'includes eye_color if it is present' do
+      applicant.eye_color = 'blu'
+      expect(subject.body).to include(
+        '<aa:PersonEyeColorCode>blu</aa:PersonEyeColorCode>',
+      )
+    end
+
+    it 'includes name_suffix if it is present' do
+      applicant.name_suffix = 'JR'
+      expect(subject.body).to include(
+        '<nc:PersonNameSuffixText>JR</nc:PersonNameSuffixText>',
+      )
+    end
+
+    context '#sex' do
+      context 'when the sex is male' do
+        it 'sends a sex code value of 1' do
+          applicant.sex = 'male'
+          expect(subject.body).to include(
+            '<aa:PersonSexCode>1</aa:PersonSexCode>',
+          )
+        end
+      end
+
+      context 'when the sex is female' do
+        it 'sends a sex code value of 2' do
+          applicant.sex = 'female'
+          expect(subject.body).to include(
+            '<aa:PersonSexCode>2</aa:PersonSexCode>',
+          )
+        end
+      end
+
+      context 'when the sex is blank' do
+        it 'does not send a sex code value' do
+          applicant.sex = nil
+          expect(subject.body).to_not include('<aa:PersonSexCode>')
+        end
+      end
+    end
+
+    context '#middle_name' do
+      context 'when the feature flag is off' do
+        before do
+          allow(IdentityConfig.store).to receive(:aamva_send_middle_name).and_return(false)
+        end
+
+        it 'does not add a PersonMiddleName node' do
+          applicant.middle_name = 'test_name'
+          expect(subject.body).to_not include('<nc:PersonMiddleName>')
+        end
+      end
+
+      context 'when the feature flag is on' do
+        before do
+          allow(IdentityConfig.store).to receive(:aamva_send_middle_name).and_return(true)
+        end
+
+        it 'does add a PersonMiddleName node' do
+          applicant.middle_name = 'test_name'
+          expect(subject.body).to include(
+            '<nc:PersonMiddleName>test_name</nc:PersonMiddleName>',
+          )
+        end
+      end
+    end
+
+    context '#state_id_type' do
+      context 'when the feature flag is off' do
+        before do
+          expect(IdentityConfig.store).to receive(:aamva_send_id_type).and_return(false)
+        end
+
+        it 'does not add a DocumentCategoryCode' do
+          applicant.state_id_data.state_id_type = 'drivers_license'
+          expect(subject.body).to_not include('<aa:DocumentCategoryCode>')
+        end
+      end
+
+      context 'when the feature flag is on' do
+        before do
+          expect(IdentityConfig.store).to receive(:aamva_send_id_type).and_return(true)
+        end
+
+        context 'when the type is a Drivers License' do
+          it 'includes DocumentCategoryCode=1' do
+            applicant.state_id_data.state_id_type = 'drivers_license'
+            expect(subject.body).to include(
+              '<aa:DocumentCategoryCode>1</aa:DocumentCategoryCode>',
+            )
+          end
+        end
+
+        context 'when the type is a learners permit' do
+          it 'includes DocumentCategoryCode=2' do
+            applicant.state_id_data.state_id_type = 'drivers_permit'
+            expect(subject.body).to include(
+              '<aa:DocumentCategoryCode>2</aa:DocumentCategoryCode>',
+            )
+          end
+        end
+
+        context 'when the type is an ID Card' do
+          it 'includes DocumentCategoryCode=3' do
+            applicant.state_id_data.state_id_type = 'state_id_card'
+            expect(subject.body).to include(
+              '<aa:DocumentCategoryCode>3</aa:DocumentCategoryCode>',
+            )
+          end
+        end
+
+        context 'when the type is something invalid' do
+          it 'does not add a DocumentCategoryCode for nil ID type' do
+            applicant.state_id_data.state_id_type = nil
+            expect(subject.body).to_not include('<aa:DocumentCategoryCode>')
+          end
+
+          it 'does not add a DocumentCategoryCode for invalid ID types' do
+            applicant.state_id_data.state_id_type = 'License to Keep an Alpaca'
+            expect(subject.body).to_not include('<aa:DocumentCategoryCode>')
+          end
+        end
+      end
+    end
   end
 
   describe '#headers' do
@@ -110,8 +249,8 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
   describe '#send' do
     context 'when the request is successful' do
       it 'returns a response object' do
-        stub_request(:post, config.verification_url).
-          to_return(body: AamvaFixtures.verification_response, status: 200)
+        stub_request(:post, config.verification_url)
+          .to_return(body: AamvaFixtures.verification_response, status: 200)
 
         response = subject.send
 
@@ -131,8 +270,8 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
     # rubocop:disable Layout/LineLength
     context 'when the request times out' do
       it 'raises an error' do
-        stub_request(:post, config.verification_url).
-          to_timeout
+        stub_request(:post, config.verification_url)
+          .to_timeout
 
         expect { subject.send }.to raise_error(
           ::Proofing::TimeoutError,
@@ -144,8 +283,8 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
 
     context 'when the connection fails' do
       it 'raises an error' do
-        stub_request(:post, config.verification_url).
-          to_raise(Faraday::ConnectionFailed.new('error'))
+        stub_request(:post, config.verification_url)
+          .to_raise(Faraday::ConnectionFailed.new('error'))
 
         expect { subject.send }.to raise_error(
           ::Proofing::TimeoutError,

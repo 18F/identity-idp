@@ -4,7 +4,7 @@
   </h2>
   <div class="grid-col-auto">
     <% if @presenter.active_profile_for_authn_context? %>
-      <%= render TooltipComponent.new(tooltip_text: @presenter.identity_verified_with_biometric_comparison? ? t('account.index.verification.verified_biometric_badge_tooltip') : t('account.index.verification.verified_badge_tooltip')) do %>
+      <%= render TooltipComponent.new(tooltip_text: @presenter.identity_verified_with_facial_match? ? t('account.index.verification.verified_facial_match_badge_tooltip') : t('account.index.verification.verified_badge_tooltip')) do %>
         <%= render BadgeComponent.new(icon: :check_circle).with_content(t('account.index.verification.verified_badge')) %>
       <% end %>
     <% elsif @presenter.pending_gpo? || @presenter.pending_ipp? %>
@@ -19,16 +19,27 @@
   </div>
 </div>
 
+<% if @presenter.active_profile? && !@presenter.connected_to_initiating_idv_sp? && @presenter.initiating_idv_sp_name %>
+  <%= render AlertComponent.new(type: :warning, class: 'margin-bottom-2') do %>
+    <%= t('account.index.verification.connect_idv_account.intro', sp_name: @presenter.initiating_idv_sp_name) %><br />
+    <% if @presenter.connect_to_initiating_idv_sp_url.present? %>
+      <%= link_to(t('account.index.verification.connect_idv_account.cta', sp_name: @presenter.initiating_idv_sp_name), @presenter.connect_to_initiating_idv_sp_url) %>
+    <% else %>
+      <%= t('account.index.verification.connect_idv_account.cta', sp_name: @presenter.initiating_idv_sp_name) %>
+    <% end %>
+  <% end %>
+<% end %>
+
 <% if @presenter.active_profile? || @presenter.pending_ipp? || @presenter.pending_gpo? %>
   <p>
     <% if @presenter.active_profile_for_authn_context? %>
-      <% if @presenter.identity_verified_with_biometric_comparison? %>
-        <%= t('account.index.verification.you_verified_your_biometric_identity', app_name: APP_NAME) %>
+      <% if @presenter.identity_verified_with_facial_match? %>
+        <%= t('account.index.verification.you_verified_your_facial_match_identity', app_name: APP_NAME) %>
       <% else %>
-        <%= t('account.index.verification.you_verified_your_identity_html', sp_name: @presenter.user.active_profile.initiating_service_provider&.friendly_name || APP_NAME) %>
+        <%= t('account.index.verification.you_verified_your_identity_html', sp_name: @presenter.initiating_idv_sp_name || APP_NAME) %>
       <% end %>
     <% elsif @presenter.active_profile? %>
-      <%= t('account.index.verification.nonbiometric_verified_html', app_name: APP_NAME, date: @presenter.formatted_nonbiometric_idv_date) %>
+      <%= t('account.index.verification.legacy_verified_html', app_name: APP_NAME, date: @presenter.formatted_legacy_idv_date) %>
     <% elsif @presenter.sp_name || @presenter.user.pending_profile.initiating_service_provider %>
       <%= t('account.index.verification.finish_verifying_html', sp_name: @presenter.sp_name || @presenter.user.pending_profile.initiating_service_provider.friendly_name) %>
     <% else %>
@@ -43,7 +54,7 @@
 
 <% if @presenter.active_profile? && !@presenter.active_profile_for_authn_context? %>
   <p>
-    <%= t('account.index.verification.verify_with_biometric_html', sp_name: @presenter.sp_name) %>
+    <%= t('account.index.verification.verify_with_facial_match_html', sp_name: @presenter.sp_name) %>
   </p>
   <p>
     <%= new_tab_link_to t('account.index.verification.learn_more_link'), help_center_redirect_path(category: 'verify-your-identity', article: 'overview', flow: :account_show, location: :idv) %>

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'phone otp rate limiting', :js, allowed_extra_analytics: [:*] do
+RSpec.feature 'phone otp rate limiting', :js do
   include IdvStepHelper
 
   let(:user) { user_with_2fa }
@@ -28,8 +28,8 @@ RSpec.feature 'phone otp rate limiting', :js, allowed_extra_analytics: [:*] do
     let(:max_attempts) { 2 }
 
     before do
-      allow(IdentityConfig.store).to receive(:login_otp_confirmation_max_attempts).
-        and_return(max_attempts)
+      allow(IdentityConfig.store).to receive(:login_otp_confirmation_max_attempts)
+        .and_return(max_attempts)
     end
 
     it 'rate limits otp attempts at the otp verification step' do
@@ -42,8 +42,8 @@ RSpec.feature 'phone otp rate limiting', :js, allowed_extra_analytics: [:*] do
       end
 
       expect(page).to have_content t('titles.account_locked')
-      expect(page).
-        to have_content t('two_factor_authentication.max_otp_login_attempts_reached')
+      expect(page)
+        .to have_content t('two_factor_authentication.max_otp_login_attempts_reached')
 
       expect_rate_limit_circumvention_to_be_disallowed(user)
       expect_rate_limit_to_expire(user)
@@ -78,7 +78,7 @@ RSpec.feature 'phone otp rate limiting', :js, allowed_extra_analytics: [:*] do
       click_submit_default
 
       expect(page).to have_content(t('idv.titles.session.enter_password', app_name: APP_NAME))
-      expect(current_path).to eq(idv_enter_password_path)
+      expect(page).to have_current_path(idv_enter_password_path)
     end
   end
 end

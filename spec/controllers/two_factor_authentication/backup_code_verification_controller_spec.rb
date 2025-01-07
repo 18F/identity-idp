@@ -28,9 +28,9 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
           sign_in_before_2fa(user)
           stub_analytics
 
-          expect(controller).to receive(:handle_valid_verification_for_authentication_context).
-            with(auth_method: TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE).
-            and_call_original
+          expect(controller).to receive(:handle_valid_verification_for_authentication_context)
+            .with(auth_method: TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE)
+            .and_call_original
 
           post :create, params: payload
 
@@ -41,6 +41,7 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
             multi_factor_auth_method_created_at: Time.zone.now.strftime('%s%L'),
             enabled_mfa_methods_count: 1,
             new_device: true,
+            attempts: 1,
           )
 
           expect(subject.user_session[:auth_events]).to eq(
@@ -97,6 +98,7 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
             multi_factor_auth_method_created_at: Time.zone.now.strftime('%s%L'),
             enabled_mfa_methods_count: 1,
             new_device: true,
+            attempts: 1,
           )
           expect(@analytics).to have_logged_event(
             'User marked authenticated',
@@ -163,8 +165,8 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
 
         stub_analytics
 
-        expect(PushNotification::HttpPush).to receive(:deliver).
-          with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
+        expect(PushNotification::HttpPush).to receive(:deliver)
+          .with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
 
         post :create, params: payload
 
@@ -175,6 +177,7 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
           multi_factor_auth_method: 'backup_code',
           enabled_mfa_methods_count: 1,
           new_device: true,
+          attempts: 1,
         )
         expect(@analytics).to have_logged_event('Multi-Factor Authentication: max attempts reached')
       end

@@ -132,9 +132,6 @@ module Idv
     def update_idv_session
       idv_session.applicant = applicant
       idv_session.mark_phone_step_started!
-
-      ProofingComponent.find_or_create_by(user: idv_session.current_user).
-        update(address_check: 'lexis_nexis_address')
     end
 
     def start_phone_confirmation_session

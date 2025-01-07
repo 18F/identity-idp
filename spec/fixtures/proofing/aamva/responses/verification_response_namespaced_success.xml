@@ -20,8 +20,14 @@
         <DriverLicenseExpirationDateMatchIndicator xmlns="http://aamva.org/niem/extensions/1.0">true</DriverLicenseExpirationDateMatchIndicator>
         <DocumentCategoryMatchIndicator xmlns="http://aamva.org/niem/extensions/1.0">true</DocumentCategoryMatchIndicator>
         <PersonBirthDateMatchIndicator xmlns="http://aamva.org/niem/extensions/1.0">true</PersonBirthDateMatchIndicator>
+        <PersonSexCodeMatchIndicator xmlns="http://aamva.org/niem/extensions/1.0">true</PersonSexCodeMatchIndicator>
+        <PersonHeightMatchIndicator xmlns="http://aamva.org/niem/extensions/1.0">true</PersonHeightMatchIndicator>
+        <PersonWeightMatchIndicator xmlns="http://aamva.org/niem/extensions/1.0">true</PersonWeightMatchIndicator>
+        <PersonEyeColorMatchIndicator xmlns="http://aamva.org/niem/extensions/1.0">true</PersonEyeColorMatchIndicator>
         <PersonLastNameExactMatchIndicator xmlns="http://aamva.org/niem/extensions/1.0">true</PersonLastNameExactMatchIndicator>
         <PersonFirstNameExactMatchIndicator xmlns="http://aamva.org/niem/extensions/1.0">true</PersonFirstNameExactMatchIndicator>
+        <PersonMiddleNameExactMatchIndicator xmlns="http://aamva.org/niem/extensions/1.0">true</PersonMiddleNameExactMatchIndicator>
+        <PersonNameSuffixMatchIndicator xmlns="http://aamva.org/niem/extensions/1.0">true</PersonNameSuffixMatchIndicator>
         <AddressLine1MatchIndicator xmlns="http://aamva.org/niem/extensions/1.0">true</AddressLine1MatchIndicator>
         <AddressLine2MatchIndicator xmlns="http://aamva.org/niem/extensions/1.0">true</AddressLine2MatchIndicator>
         <AddressCityMatchIndicator xmlns="http://aamva.org/niem/extensions/1.0">true</AddressCityMatchIndicator>

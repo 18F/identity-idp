@@ -125,6 +125,16 @@ class FeatureManagement
       IdentityConfig.store.recaptcha_enterprise_project_id.present?
   end
 
+  # Whether we collect device profiling as part of the account creation process
+  def self.account_creation_device_profiling_collecting_enabled?
+    case IdentityConfig.store.account_creation_device_profiling
+    when :enabled, :collect_only then true
+    when :disabled then false
+    else
+      raise 'Invalid value for account_creation_device_profiling'
+    end
+  end
+
   # Whether we collect device profiling information as part of the proofing process.
   def self.proofing_device_profiling_collecting_enabled?
     case IdentityConfig.store.proofing_device_profiling
@@ -158,11 +168,5 @@ class FeatureManagement
     IdentityConfig.store.feature_idv_force_gpo_verification_enabled ||
       outage_status.any_phone_vendor_outage? ||
       outage_status.phone_finder_outage?
-  end
-
-  # Whether to use the valid Authn Context Classrefs that include
-  # the newest ACR values
-  def self.use_semantic_authn_contexts?
-    IdentityConfig.store.dig(:feature_valid_authn_contexts_semantic_enabled) ? true : false
   end
 end

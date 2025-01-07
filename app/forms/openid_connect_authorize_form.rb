@@ -284,6 +284,7 @@ class OpenidConnectAuthorizeForm
       code_digest: code ? Digest::SHA256.hexdigest(code) : nil,
       code_challenge_present: code_challenge.present?,
       service_provider_pkce: service_provider&.pkce,
+      integration_errors:,
     }
   end
 
@@ -312,8 +313,7 @@ class OpenidConnectAuthorizeForm
   def validate_privileges
     if (identity_proofing_requested? && !identity_proofing_service_provider?) ||
        (ialmax_requested? && !ialmax_allowed_for_sp?) ||
-       (biometric_ial_requested? && !service_provider.biometric_ial_allowed?) ||
-       (semantic_authn_contexts_requested? && !service_provider.semantic_authn_contexts_allowed?)
+       (facial_match_ial_requested? && !service_provider.facial_match_ial_allowed?)
       errors.add(
         :acr_values, t('openid_connect.authorization.errors.no_auth'),
         type: :no_auth
@@ -351,8 +351,20 @@ class OpenidConnectAuthorizeForm
     Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[ial_values.sort.max] == 0
   end
 
-  def biometric_ial_requested?
-    ial_values.any? { |ial| Saml::Idp::Constants::BIOMETRIC_IAL_CONTEXTS.include? ial }
+  def integration_errors
+    return nil if @success || client_id.blank?
+
+    {
+      error_details: errors.full_messages,
+      error_types: errors.attribute_names,
+      event: :oidc_request_authorization,
+      integration_exists: service_provider.present?,
+      request_issuer: client_id,
+    }
+  end
+
+  def facial_match_ial_requested?
+    ial_values.any? { |ial| Saml::Idp::Constants::FACIAL_MATCH_IAL_CONTEXTS.include? ial }
   end
 
   def highest_level_aal(aal_values)
@@ -361,9 +373,5 @@ class OpenidConnectAuthorizeForm
 
   def verified_within_allowed?
     IdentityConfig.store.allowed_verified_within_providers.include?(client_id)
-  end
-
-  def semantic_authn_contexts_requested?
-    Saml::Idp::Constants::SEMANTIC_ACRS.intersect?(acr_values)
   end
 end

@@ -38,8 +38,8 @@ module Idv
       end
 
       def pii
-        Pii::Cacher.new(current_user, user_session).
-          fetch(current_user.gpo_verification_pending_profile.id)
+        Pii::Cacher.new(current_user, user_session)
+          .fetch(current_user.gpo_verification_pending_profile.id)
       end
 
       def create
@@ -53,7 +53,9 @@ module Idv
         @gpo_verify_form = build_gpo_verify_form
 
         result = @gpo_verify_form.submit(resolved_authn_context_result.enhanced_ipp?)
-        analytics.idv_verify_by_mail_enter_code_submitted(**result.to_h)
+        analytics.idv_verify_by_mail_enter_code_submitted(**result)
+
+        send_please_call_email_if_necessary(result:)
 
         if !result.success?
           if rate_limiter.limited?
@@ -120,6 +122,19 @@ module Idv
         )
       end
 
+      # @param [FormResponse] result GpoVerifyForm result
+      def send_please_call_email_if_necessary(result:)
+        return if !result.success?
+
+        return if result.extra[:pending_in_person_enrollment]
+
+        return if !result.extra[:fraud_check_failed]
+
+        return if !FeatureManagement.proofing_device_profiling_decisioning_enabled?
+
+        current_user.send_email_to_all_addresses(:idv_please_call)
+      end
+
       def build_gpo_verify_form
         GpoVerifyForm.new(
           user: current_user,
@@ -138,10 +153,6 @@ module Idv
         redirect_to account_url
       end
 
-      def threatmetrix_enabled?
-        FeatureManagement.proofing_device_profiling_decisioning_enabled?
-      end
-
       def pii_locked?
         !Pii::Cacher.new(current_user, user_session).exists_in_session?
       end
@@ -155,11 +166,11 @@ module Idv
       def last_date_letter_was_sent
         return @last_date_letter_was_sent if defined?(@last_date_letter_was_sent)
 
-        @last_date_letter_was_sent = current_user.
-          gpo_verification_pending_profile&.
-          gpo_confirmation_codes&.
-          pluck(:updated_at)&.
-          max
+        @last_date_letter_was_sent = current_user
+          .gpo_verification_pending_profile
+          &.gpo_confirmation_codes
+          &.pluck(:updated_at)
+          &.max
       end
     end
   end

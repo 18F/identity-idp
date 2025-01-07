@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'sqlite3'
 load Rails.root.join('bin/query-cloudwatch')
 
 RSpec.describe QueryCloudwatch do
@@ -165,6 +166,32 @@ RSpec.describe QueryCloudwatch do
       end
     end
 
+    context 'with --sqlite' do
+      let(:argv) { required_parameters + %w[--sqlite] }
+
+      it 'sets sqlite_database_file to events.db by default' do
+        config = parse!
+        expect(config.sqlite_database_file).to eql('events.db')
+      end
+
+      context 'with a database file' do
+        let(:argv) { required_parameters + %w[--sqlite foo.db] }
+        it 'sets sqlite_database_file appropriately' do
+          config = parse!
+          expect(config.sqlite_database_file).to eql('foo.db')
+        end
+      end
+
+      context 'with --count-distinct' do
+        let(:argv) { super() + %w[--count-distinct foo] }
+        it 'errors out' do
+          expect(QueryCloudwatch).to receive(:exit).with(1)
+          parse!
+          expect(stdout.string).to include("can't do --count-distinct with --sqlite")
+        end
+      end
+    end
+
     context 'with --slice' do
       let(:argv) { required_parameters + %w[--slice 3mon] }
 
@@ -239,13 +266,28 @@ RSpec.describe QueryCloudwatch do
         wait_duration: 0,
         query: 'fields @timestamp, @message',
         format: format,
+        sqlite_database_file: 'events.db',
         count_distinct: count_distinct,
         num_threads: Reporting::CloudwatchClient::DEFAULT_NUM_THREADS,
       )
     end
     let(:query_cloudwatch) { QueryCloudwatch.new(config) }
     let(:stdout) { StringIO.new }
-    subject(:run) { query_cloudwatch.run(stdout:) }
+    let(:stderr) { StringIO.new }
+    let(:query_results) do
+      [
+        [
+          { field: '@timestamp', value: 'timestamp-1' },
+          { field: '@message', value: 'message-1' },
+        ],
+        [
+          { field: '@timestamp', value: 'timestamp-2' },
+          { field: '@message', value: 'message-2' },
+        ],
+      ]
+    end
+
+    subject(:run) { query_cloudwatch.run(stdout:, stderr:) }
 
     before do
       Aws.config[:cloudwatchlogs] = {
@@ -256,16 +298,7 @@ RSpec.describe QueryCloudwatch do
           get_query_results: [
             {
               status: 'Complete',
-              results: [
-                [
-                  { field: '@timestamp', value: 'timestamp-1' },
-                  { field: '@message', value: 'message-1' },
-                ],
-                [
-                  { field: '@timestamp', value: 'timestamp-2' },
-                  { field: '@message', value: 'message-2' },
-                ],
-              ],
+              results: query_results,
             },
           ],
         },
@@ -289,6 +322,237 @@ RSpec.describe QueryCloudwatch do
           {"@timestamp":"timestamp-1","@message":"message-1"}
           {"@timestamp":"timestamp-2","@message":"message-2"}
         STR
+      end
+    end
+
+    context 'with sqlite format' do
+      let(:format) { :sqlite }
+
+      let(:db) do
+        SQLite3::Database.new(':memory:')
+      end
+
+      before do
+        allow_any_instance_of(QueryCloudwatch::SqliteOutput).to receive(:db)
+          .and_return(db)
+        allow_any_instance_of(QueryCloudwatch::SqliteOutput).to receive(:close_database)
+      end
+
+      it 'does not output on stdout' do
+        run
+        expect(stdout.string).to eql('')
+      end
+
+      context 'with invalid json in @message' do
+        let(:message_1) { 'message 1 here, not at all json' }
+        let(:message_2) { 'message 2 here, not at all json' }
+
+        let(:query_results) do
+          [
+            [
+              { field: '@timestamp', value: '2024-01-11 22:26:50.336' },
+              { field: '@message', value: message_1 },
+            ],
+            [
+              { field: '@timestamp', value: '"2024-01-02 03:42:50.451",' },
+              { field: '@message', value: message_2 },
+            ],
+          ]
+        end
+
+        it 'generates ids for events that start with NOID-' do
+          run
+          expect(db.get_first_value('SELECT COUNT(*) FROM events')).to eql(2)
+
+          actual_ids = db.query('SELECT id FROM events') do |results|
+            results.map do |row|
+              row.first
+            end
+          end
+
+          expect(actual_ids).to all(start_with('NOID-'))
+        end
+
+        it 'outputs warnings + summary on stderr' do
+          run
+          expect(stderr.string).to eql <<~STR
+            WARNING: For 2 events, @message did not contain valid JSON
+            Wrote 2 rows to the 'events' table in events.db
+          STR
+        end
+
+        context 'two messages are identitical' do
+          let(:query_results) do
+            [
+              [
+                { field: '@timestamp', value: '2024-01-11 22:26:50.336' },
+                { field: '@message', value: message_1 },
+              ],
+              [
+                { field: '@timestamp', value: '2024-01-11 22:26:50.336' },
+                { field: '@message', value: message_1 },
+              ],
+            ]
+          end
+          it 'only inserts 1 record' do
+            run
+            expect(db.get_first_value('SELECT COUNT(*) FROM events')).to eql(1)
+          end
+        end
+      end
+
+      context 'with valid JSON in @message' do
+        let(:message_1) do
+          JSON.parse(<<~JSON)
+            {
+              "id": "message_1",
+              "name": "IdV: doc auth image upload vendor submitted",
+              "properties": {
+                "event_properties": {
+                  "success": true,
+                  "errors": {},
+                  "exception": null
+                },
+                "user_id": "user_1"
+              }
+            }
+          JSON
+        end
+
+        let(:message_2) do
+          JSON.parse(<<~JSON)
+            {
+              "id": "message_2",
+              "name": "IdV: doc auth image upload vendor submitted",
+              "properties": {
+                "event_properties": {
+                  "success": false,
+                  "errors": {},
+                  "exception": null
+                },
+                "user_id": "user_2"
+              }
+            }
+          JSON
+        end
+
+        let(:query_results) do
+          [
+            [
+              { field: '@timestamp', value: '2024-01-11 22:26:50.336' },
+              { field: '@message', value: JSON.generate(message_1) },
+            ],
+            [
+              { field: '@timestamp', value: '"2024-01-02 03:42:50.451",' },
+              { field: '@message', value: JSON.generate(message_2) },
+            ],
+          ]
+        end
+
+        it 'inserts 2 rows in events table' do
+          run
+          expect(db.get_first_value('SELECT COUNT(*) FROM events')).to eql(2)
+        end
+
+        context 'when two messages have same id' do
+          let(:message_2) { message_1 }
+
+          it 'only inserts 1 row' do
+            run
+            expect(db.get_first_value('SELECT COUNT(*) FROM events')).to eql(1)
+          end
+        end
+      end
+
+      context 'when query does not return @timestamp' do
+        let(:query_results) do
+          [
+            [
+              { field: '@message', value: '{}' },
+            ],
+            [
+              { field: '@message', value: '{}' },
+            ],
+          ]
+        end
+
+        it 'errors out' do
+          expect do
+            run
+          end.to raise_error 'Query must include @timestamp in output when using --sqlite'
+        end
+      end
+
+      context 'when query does not return @message' do
+        let(:query_results) do
+          [
+            [
+              { field: '@timestamp', value: '2024-01-11 22:26:50.336' },
+            ],
+            [
+              { field: '@timestamp', value: '2024-01-11 22:26:50.336' },
+            ],
+          ]
+        end
+
+        it 'errors out' do
+          expect do
+            run
+          end.to raise_error 'Query must include @message in output when using --sqlite'
+        end
+      end
+
+      context 'when query returns @log' do
+        let(:query_results) do
+          [
+            [
+              { field: '@timestamp', value: '2024-01-11 22:26:50.336' },
+              { field: '@message', value: '{}' },
+              { field: '@log', value: 'my log' },
+            ],
+            [
+              { field: '@timestamp', value: '"2024-01-02 03:42:50.451",' },
+              { field: '@message', value: '{}' },
+              { field: '@log', value: 'my other log' },
+            ],
+          ]
+        end
+
+        it 'adds them to the log column' do
+          run
+          actual_log_values = db.query('SELECT log FROM events') do |results|
+            results.map(&:first)
+          end.sort
+
+          expect(actual_log_values).to eql(['my log', 'my other log'])
+        end
+      end
+
+      context 'when query returns @logStream' do
+        let(:query_results) do
+          [
+            [
+              { field: '@timestamp', value: '2024-01-11 22:26:50.336' },
+              { field: '@message', value: '{}' },
+              { field: '@logStream', value: 'my log stream' },
+            ],
+            [
+              { field: '@timestamp', value: '"2024-01-02 03:42:50.451",' },
+              { field: '@message', value: '{}' },
+              { field: '@logStream', value: 'my other log stream' },
+            ],
+          ]
+        end
+
+        it 'adds them to the log_stream column' do
+          run
+
+          actual_log_stream_values = db.query('SELECT log_stream FROM events') do |results|
+            results.map(&:first)
+          end.sort
+
+          expect(actual_log_stream_values).to eql(['my log stream', 'my other log stream'])
+        end
       end
     end
 

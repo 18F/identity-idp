@@ -7,8 +7,7 @@ import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import GeneralError from './general-error';
 import TipList from './tip-list';
 import { SelfieCaptureContext } from '../context';
-import { DocumentCaptureSubheaderOne } from './documents-and-selfie-step';
-import { DocumentsCaptureStep } from './documents-step';
+import { DocumentCaptureSubheaderOne, DocumentsCaptureStep } from './documents-step';
 import { SelfieCaptureStep } from './selfie-step';
 import type { ReviewIssuesStepValue } from './review-issues-step';
 
@@ -48,9 +47,7 @@ function DocumentCaptureReviewIssues({
   return (
     <>
       <PageHeading>{t('doc_auth.headings.review_issues')}</PageHeading>
-      {isSelfieCaptureEnabled && (
-        <DocumentCaptureSubheaderOne isSelfieCaptureEnabled={isSelfieCaptureEnabled} />
-      )}
+      {isSelfieCaptureEnabled && <DocumentCaptureSubheaderOne />}
       <GeneralError
         unknownFieldErrors={unknownFieldErrors}
         isFailedDocType={isFailedDocType}
@@ -79,9 +76,14 @@ function DocumentCaptureReviewIssues({
           ]}
         />
       )}
-      <DocumentsCaptureStep defaultSideProps={defaultSideProps} value={value} />
+      <DocumentsCaptureStep defaultSideProps={defaultSideProps} value={value} isReviewStep />
       {isSelfieCaptureEnabled && (
-        <SelfieCaptureStep defaultSideProps={defaultSideProps} selfieValue={value.selfie} />
+        <SelfieCaptureStep
+          defaultSideProps={defaultSideProps}
+          selfieValue={value.selfie}
+          isReviewStep
+          showHelp={false}
+        />
       )}
       <FormStepsButton.Submit />
       <Cancel />

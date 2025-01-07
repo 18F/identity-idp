@@ -44,9 +44,9 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
       it 'tracks the valid authentication event' do
         cfg = controller.current_user.auth_app_configurations.first
 
-        expect(controller).to receive(:handle_valid_verification_for_authentication_context).
-          with(auth_method: TwoFactorAuthenticatable::AuthMethod::TOTP).
-          and_call_original
+        expect(controller).to receive(:handle_valid_verification_for_authentication_context)
+          .with(auth_method: TwoFactorAuthenticatable::AuthMethod::TOTP)
+          .and_call_original
 
         post :create, params: { code: generate_totp_code(@secret) }
 
@@ -59,6 +59,7 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
           multi_factor_auth_method_created_at: cfg.created_at.strftime('%s%L'),
           new_device: true,
           auth_app_configuration_id: controller.current_user.auth_app_configurations.first.id,
+          attempts: 1,
         )
         expect(@analytics).to have_logged_event(
           'User marked authenticated',
@@ -165,8 +166,8 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
         @secret = user.generate_totp_secret
         Db::AuthAppConfiguration.create(user, @secret, nil, 'foo')
 
-        expect(PushNotification::HttpPush).to receive(:deliver).
-          with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
+        expect(PushNotification::HttpPush).to receive(:deliver)
+          .with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
 
         post :create, params: { code: '12345' }
 
@@ -177,6 +178,7 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
           enabled_mfa_methods_count: 2,
           multi_factor_auth_method: 'totp',
           new_device: true,
+          attempts: 1,
         )
         expect(@analytics).to have_logged_event('Multi-Factor Authentication: max attempts reached')
       end
@@ -213,13 +215,13 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
 
       describe 'when user submits an invalid form' do
         it 'fails with empty code' do
-          expect { post :create, params: { code: '' } }.
-            to raise_error(ActionController::ParameterMissing)
+          expect { post :create, params: { code: '' } }
+            .to raise_error(ActionController::ParameterMissing)
         end
 
         it 'fails with no code parameter' do
-          expect { post :create, params: { fake_code: 'abc123' } }.
-            to raise_error(ActionController::ParameterMissing)
+          expect { post :create, params: { fake_code: 'abc123' } }
+            .to raise_error(ActionController::ParameterMissing)
         end
       end
 

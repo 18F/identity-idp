@@ -4,8 +4,8 @@ RSpec.describe 'content security policy' do
   context 'on endpoints that will redirect to an SP' do
     context 'when using client side OIDC redirect' do
       before do
-        allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-          and_return('client_side')
+        allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+          .and_return('client_side')
       end
 
       context 'when openid_connect_content_security_form_action_enabled is enabled' do
@@ -70,9 +70,7 @@ RSpec.describe 'content security policy' do
           expect(content_security_policy['child-src']).to eq("'self'")
           expect(content_security_policy['connect-src']).to eq("'self'")
           expect(content_security_policy['font-src']).to eq("'self' data:")
-          expect(content_security_policy['form-action']).to eq(
-            "'self'",
-          )
+          expect(content_security_policy['form-action']).to eq("'self'")
           expect(content_security_policy['img-src']).to eq(
             "'self' data: login.gov https://s3.us-west-2.amazonaws.com",
           )
@@ -90,17 +88,15 @@ RSpec.describe 'content security policy' do
 
           content_security_policy = parse_content_security_policy
 
-          expect(content_security_policy['form-action']).to eq(
-            "'self'",
-          )
+          expect(content_security_policy['form-action']).to eq("'self'")
         end
       end
     end
 
     context 'when using server side OIDC redirect' do
       before do
-        allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-          and_return('server_side')
+        allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+          .and_return('server_side')
       end
 
       context 'when openid_connect_content_security_form_action_enabled is enabled' do

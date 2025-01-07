@@ -11,7 +11,7 @@ class IdentityCors
   ].freeze
 
   def self.allowed_origins_static_sites
-    return STATIC_SITE_ALLOWED_ORIGINS unless Rails.env.development? || Rails.env.test?
+    return STATIC_SITE_ALLOWED_ORIGINS unless Rails.env.local?
     allowed_origins = STATIC_SITE_ALLOWED_ORIGINS.dup
     allowed_origins << %r{https?://localhost(:\d+)?\z}
     allowed_origins << %r{https?://127\.0\.0\.1(:\d+)?\z}

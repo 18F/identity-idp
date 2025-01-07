@@ -13,6 +13,11 @@ RSpec.describe Idv::PersonalKeyController do
     # These keys are present in our applicant fixture but
     # are not actually supported in Pii::Attributes
     keys_to_ignore = %i[
+      name_suffix
+      sex
+      height
+      weight
+      eye_color
       state_id_expiration
       state_id_issued
       state_id_number
@@ -41,8 +46,6 @@ RSpec.describe Idv::PersonalKeyController do
 
   let(:address_verification_mechanism) { 'phone' }
 
-  let(:in_person_enrollment) { nil }
-
   let(:idv_session) { subject.idv_session }
 
   let(:threatmetrix_review_status) { nil }
@@ -69,7 +72,11 @@ RSpec.describe Idv::PersonalKeyController do
     idv_session.applicant = applicant
 
     if mint_profile_from_idv_session
-      idv_session.create_profile_from_applicant_with_password(password, is_enhanced_ipp)
+      idv_session.create_profile_from_applicant_with_password(
+        password,
+        is_enhanced_ipp:,
+        proofing_components: {},
+      )
     end
   end
 
@@ -414,14 +421,34 @@ RSpec.describe Idv::PersonalKeyController do
 
   describe '#update' do
     context 'user selected phone verification' do
-      it 'redirects to sign up completed for an sp' do
-        subject.session[:sp] = {
-          issuer: create(:service_provider).issuer,
-          vtr: ['C1'],
-        }
-        patch :update
+      context 'with an sp' do
+        let(:acr_values) { Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF }
+        let(:vtr) { nil }
 
-        expect(response).to redirect_to sign_up_completed_url
+        before do
+          subject.session[:sp] = {
+            issuer: create(:service_provider).issuer,
+            acr_values:,
+            vtr:,
+          }
+        end
+
+        it 'redirects to sign up completed for the sp' do
+          patch :update
+
+          expect(response).to redirect_to sign_up_completed_url
+        end
+
+        context 'with vtr values' do
+          let(:acr_values) { nil }
+          let(:vtr) { ['C1'] }
+
+          it 'redirects to sign up completed for the sp' do
+            patch :update
+
+            expect(response).to redirect_to sign_up_completed_url
+          end
+        end
       end
 
       it 'redirects to the account path when no sp present' do
@@ -454,26 +481,51 @@ RSpec.describe Idv::PersonalKeyController do
     context 'user selected gpo verification' do
       let(:address_verification_mechanism) { 'gpo' }
 
-      it 'redirects to correct url' do
-        patch :update
-        expect(response).to redirect_to idv_letter_enqueued_url
+      context 'when the user requested a letter this session' do
+        it 'redirects to correct url' do
+          patch :update
+          expect(response).to redirect_to idv_letter_enqueued_url
+        end
+
+        it 'does not log any events' do
+          expect(@analytics).not_to have_logged_event
+          patch :update
+        end
       end
 
-      it 'does not log any events' do
-        expect(@analytics).not_to have_logged_event
-        patch :update
+      context 'when the user entered a GPO code' do
+        before do
+          pending_profile = user.pending_profile
+          pending_profile.remove_gpo_deactivation_reason
+          pending_profile.activate
+        end
+
+        it 'redirects to correct url' do
+          patch :update
+          expect(response).to redirect_to idv_sp_follow_up_url
+        end
+
+        it 'logs analytics' do
+          patch :update
+
+          expect(@analytics).to have_logged_event(
+            'IdV: personal key submitted',
+            hash_including(
+              address_verification_method: 'gpo',
+              fraud_review_pending: false,
+              fraud_rejection: false,
+              in_person_verification_pending: false,
+            ),
+          )
+        end
       end
     end
 
     context 'with in person profile' do
-      let!(:in_person_enrollment) do
-        create(:in_person_enrollment, :pending, user: user).tap do
-          user.reload_pending_in_person_enrollment
-        end
-      end
+      let!(:profile) { create(:profile, :in_person_verification_pending, user: user) }
 
       before do
-        ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
+        user.reload_pending_in_person_enrollment
         allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
       end
 

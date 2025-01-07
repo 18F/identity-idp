@@ -6,7 +6,6 @@ module TwoFactorAuthentication
     include MfaSetupConcern
     include NewDeviceConcern
 
-    before_action :check_sp_required_mfa
     before_action :confirm_multiple_factors_enabled
     before_action :redirect_if_blank_phone, only: [:show]
     before_action :confirm_voice_capability, only: [:show]
@@ -21,8 +20,14 @@ module TwoFactorAuthentication
     end
 
     def create
+      if UserSessionContext.confirmation_context?(context)
+        increment_mfa_selection_attempt_count(otp_auth_method)
+      end
       result = otp_verification_form.submit
-      post_analytics(result)
+
+      if UserSessionContext.confirmation_context?(context)
+        log_confirmation_analytics(result)
+      end
 
       if UserSessionContext.authentication_or_reauthentication_context?(context)
         handle_verification_for_authentication_context(
@@ -42,12 +47,21 @@ module TwoFactorAuthentication
         end
 
         reset_otp_session_data
+        user_session.delete(:mfa_attempts)
       else
         handle_invalid_otp(type: 'otp')
       end
     end
 
     private
+
+    def otp_auth_method
+      if params[:otp_delivery_preference] == 'sms'
+        TwoFactorAuthenticatable::AuthMethod::SMS
+      else
+        TwoFactorAuthenticatable::AuthMethod::VOICE
+      end
+    end
 
     def handle_valid_confirmation_otp
       assign_phone
@@ -79,7 +93,7 @@ module TwoFactorAuthentication
           reason: RecaptchaAnnotator::AnnotationReasons::PASSED_TWO_FACTOR,
         ),
       )
-      Funnel::Registration::AddMfa.call(current_user.id, 'phone', analytics)
+      Funnel::Registration::AddMfa.call(current_user.id, 'phone', analytics, threatmetrix_attrs)
     end
 
     def confirm_multiple_factors_enabled
@@ -138,9 +152,9 @@ module TwoFactorAuthentication
       params.permit(:code)
     end
 
-    def post_analytics(result)
+    def log_confirmation_analytics(result)
       properties = result.to_h.merge(analytics_properties)
-      analytics.multi_factor_auth_setup(**properties) if context == 'confirmation'
+      analytics.multi_factor_auth_setup(**properties)
     end
 
     def analytics_properties
@@ -156,6 +170,7 @@ module TwoFactorAuthentication
         phone_configuration_id: phone_configuration&.id,
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
         enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
+        attempts: mfa_attempts_count,
       }
     end
 
@@ -195,10 +210,6 @@ module TwoFactorAuthentication
 
     def confirmation_for_add_phone?
       UserSessionContext.confirmation_context?(context) && user_fully_authenticated?
-    end
-
-    def check_sp_required_mfa
-      check_sp_required_mfa_bypass(auth_method: params[:otp_delivery_preference])
     end
 
     def assign_phone
@@ -241,8 +252,8 @@ module TwoFactorAuthentication
     def send_phone_added_email
       _event, disavowal_token = create_user_event_with_disavowal(:phone_added, current_user)
       current_user.confirmed_email_addresses.each do |email_address|
-        UserMailer.with(user: current_user, email_address: email_address).
-          phone_added(disavowal_token: disavowal_token).deliver_now_or_later
+        UserMailer.with(user: current_user, email_address: email_address)
+          .phone_added(disavowal_token: disavowal_token).deliver_now_or_later
       end
     end
 

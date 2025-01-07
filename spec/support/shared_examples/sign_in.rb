@@ -99,8 +99,8 @@ RSpec.shared_examples 'signing in as IAL2 with personal key' do |sp|
     fill_in_credentials_and_submit(user.email, user.password)
     click_link t('two_factor_authentication.login_options_link_text')
 
-    expect(page).
-      to_not have_selector("label[for='two_factor_options_form_selection_ personal_key']")
+    expect(page)
+      .to_not have_selector("label[for='two_factor_options_form_selection_ personal_key']")
   end
 end
 
@@ -130,12 +130,12 @@ RSpec.shared_examples 'signing in as IAL1 with personal key after resetting pass
 
     old_personal_key = PersonalKeyGenerator.new(user).generate!
     visit_idp_from_sp_with_ial1(sp)
-    trigger_reset_password_and_click_email_link(user.confirmed_email_addresses.first.email)
+    trigger_reset_password_and_click_email_link(user.last_sign_in_email_address.email)
     fill_in t('forms.passwords.edit.labels.password'), with: new_password
     fill_in t('components.password_confirmation.confirm_label'),
             with: new_password
     click_button t('forms.passwords.edit.buttons.submit')
-    fill_in_credentials_and_submit(user.confirmed_email_addresses.first.email, new_password)
+    fill_in_credentials_and_submit(user.last_sign_in_email_address.email, new_password)
     choose_another_security_option('personal_key')
     enter_personal_key(personal_key: old_personal_key)
     click_submit_default
@@ -164,7 +164,7 @@ RSpec.shared_examples 'signing in as IAL2 after resetting password' do |sp|
     click_submit_default
     click_submit_default if current_path == complete_saml_path
 
-    expect(current_path).to eq reactivate_account_path
+    expect(page).to have_current_path reactivate_account_path
 
     reactivate_profile(new_password, user.personal_key)
 
@@ -196,8 +196,8 @@ RSpec.shared_examples 'signing in with wrong credentials' do |sp|
       fill_in_credentials_and_submit('test@test.com', 'foo')
 
       link_url = new_user_password_url(locale: 'es', request_id: sp_request_id)
-      expect(page).
-        to have_link t('devise.failure.not_found_in_database_link_text', href: link_url)
+      expect(page)
+        .to have_link t('devise.failure.not_found_in_database_link_text', href: link_url)
     end
   end
 
@@ -211,8 +211,8 @@ RSpec.shared_examples 'signing in with wrong credentials' do |sp|
       fill_in_credentials_and_submit(user.email, 'password')
 
       link_url = new_user_password_url(locale: 'es', request_id: sp_request_id)
-      expect(page).
-        to have_link t('devise.failure.invalid_link_text', href: link_url)
+      expect(page)
+        .to have_link t('devise.failure.invalid_link_text', href: link_url)
     end
   end
 end
@@ -222,10 +222,10 @@ RSpec.shared_examples 'signing in as proofed account with broken personal key' d
   let(:window_end) { 1.day.ago }
 
   before do
-    allow(IdentityConfig.store).to receive(:broken_personal_key_window_start).
-      and_return(window_start)
-    allow(IdentityConfig.store).to receive(:broken_personal_key_window_finish).
-      and_return(window_end)
+    allow(IdentityConfig.store).to receive(:broken_personal_key_window_start)
+      .and_return(window_start)
+    allow(IdentityConfig.store).to receive(:broken_personal_key_window_finish)
+      .and_return(window_end)
   end
 
   def user_with_broken_personal_key(scenario)
@@ -316,6 +316,75 @@ RSpec.shared_examples 'signing in as proofed account with broken personal key' d
   end
 end
 
+RSpec.shared_examples 'logs reCAPTCHA event and redirects appropriately' do |successful_sign_in:|
+  it 'logs reCAPTCHA event and redirects to the correct location' do
+    visit new_user_session_path
+
+    asserted_expected_user = false
+    fake_analytics = FakeAnalytics.new
+    allow_any_instance_of(ApplicationController).to receive(:analytics)
+      .and_wrap_original do |original|
+        if original.receiver.instance_of?(Users::SessionsController) &&
+           original.receiver.action_name == 'create'
+          expect(original.call.user).to eq(user)
+          asserted_expected_user = true
+        end
+
+        fake_analytics
+      end
+
+    fill_in_credentials_and_submit(user.email, 'wrongpassword')
+    expect(asserted_expected_user).to eq(true)
+    expect(fake_analytics).to have_logged_event(
+      'reCAPTCHA verify result received',
+      recaptcha_result: {
+        assessment_id: kind_of(String),
+        success: true,
+        score: 1.0,
+        errors: [],
+        reasons: [],
+      },
+      evaluated_as_valid: true,
+      score_threshold: 0.2,
+      recaptcha_action: 'sign_in',
+      form_class: 'RecaptchaMockForm',
+    )
+    asserted_expected_user = false
+    fake_analytics.reset!
+
+    fill_in :user_recaptcha_mock_score, with: '0.1'
+    fill_in_credentials_and_submit(user.email, user.password)
+    expect(asserted_expected_user).to eq(true)
+    expect(fake_analytics).to have_logged_event(
+      'reCAPTCHA verify result received',
+      recaptcha_result: {
+        assessment_id: kind_of(String),
+        success: true,
+        score: 0.1,
+        errors: [],
+        reasons: [],
+      },
+      evaluated_as_valid: false,
+      score_threshold: 0.2,
+      recaptcha_action: 'sign_in',
+      form_class: 'RecaptchaMockForm',
+    )
+    expect(fake_analytics).to have_logged_event(
+      'Email and Password Authentication',
+      hash_including(
+        success: successful_sign_in,
+        valid_captcha_result: false,
+        captcha_validation_performed: true,
+      ),
+    )
+    if successful_sign_in
+      expect(page).to have_current_path login_two_factor_path(otp_delivery_preference: 'sms')
+    else
+      expect(page).to have_current_path sign_in_security_check_failed_path
+    end
+  end
+end
+
 def ial1_sign_in_with_personal_key_goes_to_sp(sp)
   user = create_ial1_account_go_back_to_sp_and_sign_out(sp)
   old_personal_key = PersonalKeyGenerator.new(user).generate!
@@ -323,7 +392,7 @@ def ial1_sign_in_with_personal_key_goes_to_sp(sp)
   Capybara.reset_sessions!
 
   visit_idp_from_sp_with_ial1(sp)
-  fill_in_credentials_and_submit(user.confirmed_email_addresses.first.email, 'Val!d Pass w0rd')
+  fill_in_credentials_and_submit(user.last_sign_in_email_address.email, 'Val!d Pass w0rd')
   choose_another_security_option('personal_key')
   enter_personal_key(personal_key: old_personal_key)
   click_submit_default

@@ -17,9 +17,8 @@ RSpec.feature 'signing into an SP with multiple emails enabled' do
         fill_in_code_with_last_phone_otp
         click_submit_default
         click_agree_and_continue if current_path == sign_up_completed_path
-        decoded_id_token = fetch_oidc_id_token_info
-        expect(decoded_id_token[:email]).to eq(emails.first)
-        expect(decoded_id_token[:all_emails]).to be_nil
+        expect(oidc_decoded_id_token[:email]).to eq(emails.first)
+        expect(oidc_decoded_id_token[:all_emails]).to be_nil
 
         Capybara.reset_session!
       end
@@ -37,12 +36,11 @@ RSpec.feature 'signing into an SP with multiple emails enabled' do
 
       choose emails.second
 
-      click_button(t('help_text.requested_attributes.change_email_link'))
+      click_button(t('help_text.requested_attributes.select_email_link'))
 
-      expect(current_path).to eq(sign_up_completed_path)
+      expect(page).to have_current_path(sign_up_completed_path)
       click_agree_and_continue
-      decoded_id_token = fetch_oidc_id_token_info
-      expect(decoded_id_token[:email]).to eq(emails.second)
+      expect(oidc_decoded_id_token[:email]).to eq(emails.second)
     end
 
     scenario 'signing in with OIDC after deleting email linked to identity' do
@@ -57,8 +55,8 @@ RSpec.feature 'signing into an SP with multiple emails enabled' do
       click_submit_default
       click_link(t('help_text.requested_attributes.change_email_link'))
       choose email2.email
-      click_button(t('help_text.requested_attributes.change_email_link'))
-      expect(current_path).to eq(sign_up_completed_path)
+      click_button(t('help_text.requested_attributes.select_email_link'))
+      expect(page).to have_current_path(sign_up_completed_path)
       click_agree_and_continue
       click_submit_default
 
@@ -69,8 +67,7 @@ RSpec.feature 'signing into an SP with multiple emails enabled' do
       # Sign in again to partner application
       visit_idp_from_oidc_sp(scope: 'openid email')
 
-      decoded_id_token = fetch_oidc_id_token_info
-      expect(decoded_id_token[:email]).to eq(email1.email)
+      expect(oidc_decoded_id_token[:email]).to eq(email1.email)
     end
 
     scenario 'signing in with SAML sends the email address used to sign in' do
@@ -106,9 +103,9 @@ RSpec.feature 'signing into an SP with multiple emails enabled' do
 
       click_link(t('help_text.requested_attributes.change_email_link'))
       choose emails.second
-      click_button(t('help_text.requested_attributes.change_email_link'))
+      click_button(t('help_text.requested_attributes.select_email_link'))
 
-      expect(current_path).to eq(sign_up_completed_path)
+      expect(page).to have_current_path(sign_up_completed_path)
 
       click_agree_and_continue
       click_submit_default
@@ -130,8 +127,8 @@ RSpec.feature 'signing into an SP with multiple emails enabled' do
       click_submit_default_twice
       click_link(t('help_text.requested_attributes.change_email_link'))
       choose email2.email
-      click_button(t('help_text.requested_attributes.change_email_link'))
-      expect(current_path).to eq(sign_up_completed_path)
+      click_button(t('help_text.requested_attributes.select_email_link'))
+      expect(page).to have_current_path(sign_up_completed_path)
       click_agree_and_continue
       click_submit_default
 
@@ -161,8 +158,7 @@ RSpec.feature 'signing into an SP with multiple emails enabled' do
       click_submit_default
       click_agree_and_continue
 
-      decoded_id_token = fetch_oidc_id_token_info
-      expect(decoded_id_token[:all_emails]).to match_array(emails)
+      expect(oidc_decoded_id_token[:all_emails]).to match_array(emails)
     end
 
     scenario 'signing in with SAML sends all emails' do
@@ -205,42 +201,5 @@ RSpec.feature 'signing into an SP with multiple emails enabled' do
       prompt: 'select_account',
       nonce: SecureRandom.hex,
     )
-  end
-
-  def fetch_oidc_id_token_info
-    redirect_uri = URI(oidc_redirect_url)
-    redirect_params = Rack::Utils.parse_query(redirect_uri.query).with_indifferent_access
-    code = redirect_params[:code]
-
-    jwt_payload = {
-      iss: 'urn:gov:gsa:openidconnect:sp:server',
-      sub: 'urn:gov:gsa:openidconnect:sp:server',
-      aud: api_openid_connect_token_url,
-      jti: SecureRandom.hex,
-      exp: 5.minutes.from_now.to_i,
-    }
-
-    client_assertion = JWT.encode(jwt_payload, client_private_key, 'RS256')
-    client_assertion_type = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer'
-
-    page.driver.post(
-      api_openid_connect_token_path,
-      grant_type: 'authorization_code',
-      code: code,
-      client_assertion_type: client_assertion_type,
-      client_assertion: client_assertion,
-    )
-
-    token_response = JSON.parse(page.body).with_indifferent_access
-    id_token = token_response[:id_token]
-    JWT.decode(id_token, nil, false).first.with_indifferent_access
-  end
-
-  def client_private_key
-    @client_private_key ||= begin
-      OpenSSL::PKey::RSA.new(
-        File.read(Rails.root.join('keys', 'saml_test_sp.key')),
-      )
-    end
   end
 end

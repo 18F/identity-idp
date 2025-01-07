@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Proofing::LexisNexis::Ddp::Proofer do
-  let(:applicant) do
+  let(:proofing_applicant) do
     {
       first_name: 'Testy',
       last_name: 'McTesterson',
@@ -22,10 +22,25 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofer do
     }
   end
 
-  let(:verification_request) do
+  let(:authentication_applicant) do
+    {
+      threatmetrix_session_id: '123456',
+      email: 'test@example.com',
+      request_ip: '127.0.0.1',
+    }
+  end
+
+  let(:proofing_verification_request) do
     Proofing::LexisNexis::Ddp::VerificationRequest.new(
-      applicant: applicant,
-      config: LexisNexisFixtures.example_config,
+      applicant: proofing_applicant,
+      config: LexisNexisFixtures.example_ddp_proofing_config,
+    )
+  end
+
+  let(:authentication_verification_request) do
+    Proofing::LexisNexis::Ddp::VerificationRequest.new(
+      applicant: authentication_applicant,
+      config: LexisNexisFixtures.example_ddp_authentication_config,
     )
   end
 
@@ -40,10 +55,10 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofer do
       it 'raises a timeout error' do
         stub_request(
           :post,
-          verification_request.url,
+          proofing_verification_request.url,
         ).to_timeout
 
-        expect { verification_request.send_request }.to raise_error(
+        expect { proofing_verification_request.send_request }.to raise_error(
           Proofing::TimeoutError,
           'LexisNexis timed out waiting for verification response',
         )
@@ -55,24 +70,24 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofer do
         request =
           stub_request(
             :post,
-            verification_request.url,
+            proofing_verification_request.url,
           ).with(
-            body: verification_request.body,
-            headers: verification_request.headers,
+            body: proofing_verification_request.body,
+            headers: proofing_verification_request.headers,
           ).to_return(
             body: LexisNexisFixtures.ddp_success_response_json,
             status: 200,
           )
 
-        verification_request.send_request
+        proofing_verification_request.send_request
 
         expect(request).to have_been_requested.once
       end
     end
   end
 
-  subject do
-    described_class.new(LexisNexisFixtures.example_config.to_h)
+  subject(:proofer) do
+    described_class.new(LexisNexisFixtures.example_ddp_proofing_config.to_h)
   end
 
   describe '#proof' do
@@ -84,56 +99,102 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofer do
       )
       stub_request(
         :post,
-        verification_request.url,
+        proofing_verification_request.url,
       ).to_return(
         body: response_body,
         status: 200,
       )
     end
 
-    context 'when the response is a full match' do
-      let(:response_body) { LexisNexisFixtures.ddp_success_response_json }
+    context 'when user is going through Idv' do
+      context 'when the response is a full match' do
+        let(:response_body) { LexisNexisFixtures.ddp_success_response_json }
 
-      it 'is a successful result' do
-        result = subject.proof(applicant)
+        it 'is a successful result' do
+          result = proofer.proof(proofing_applicant)
 
-        expect(result.success?).to eq(true)
-        expect(result.errors).to be_empty
-        expect(result.review_status).to eq('pass')
-        expect(result.session_id).to eq('super-cool-test-session-id')
-        expect(result.account_lex_id).to eq('super-cool-test-lex-id')
+          expect(result.success?).to eq(true)
+          expect(result.errors).to be_empty
+          expect(result.review_status).to eq('pass')
+          expect(result.session_id).to eq('super-cool-test-session-id')
+          expect(result.account_lex_id).to eq('super-cool-test-lex-id')
+        end
+      end
+
+      context 'when the response raises an exception' do
+        let(:response_body) { '' }
+
+        it 'returns an exception result' do
+          error = RuntimeError.new('hi')
+
+          expect(NewRelic::Agent).to receive(:notice_error).with(error)
+
+          stub_request(
+            :post,
+            proofing_verification_request.url,
+          ).to_raise(error)
+
+          result = proofer.proof(proofing_applicant)
+
+          expect(result.success?).to eq(false)
+          expect(result.errors).to be_empty
+          expect(result.exception).to eq(error)
+        end
+      end
+
+      context 'when the review status has an unexpected value' do
+        let(:response_body) { LexisNexisFixtures.ddp_unexpected_review_status_response_json }
+
+        it 'returns an exception result' do
+          result = proofer.proof(proofing_applicant)
+
+          expect(result.success?).to eq(false)
+          expect(result.exception.inspect)
+            .to include(LexisNexisFixtures.ddp_unexpected_review_status)
+        end
       end
     end
 
-    context 'when the response raises an exception' do
-      let(:response_body) { '' }
-
-      it 'returns an exception result' do
-        error = RuntimeError.new('hi')
-
-        expect(NewRelic::Agent).to receive(:notice_error).with(error)
-
-        stub_request(
-          :post,
-          verification_request.url,
-        ).to_raise(error)
-
-        result = subject.proof(applicant)
-
-        expect(result.success?).to eq(false)
-        expect(result.errors).to be_empty
-        expect(result.exception).to eq(error)
+    context 'when user is going through account creation' do
+      subject(:proofer) do
+        described_class.new(LexisNexisFixtures.example_ddp_authentication_config.to_h)
       end
-    end
 
-    context 'when the review status has an unexpected value' do
-      let(:response_body) { LexisNexisFixtures.ddp_unexpected_review_status_response_json }
+      before do
+        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_authentication_policy)
+          .and_return('test-authentication-policy')
+      end
+      context 'when the response is a full match' do
+        let(:response_body) { LexisNexisFixtures.ddp_success_response_json }
 
-      it 'returns an exception result' do
-        result = subject.proof(applicant)
+        it 'is a successful result' do
+          result = proofer.proof(authentication_applicant)
 
-        expect(result.success?).to eq(false)
-        expect(result.exception.inspect).to include(LexisNexisFixtures.ddp_unexpected_review_status)
+          expect(result.success?).to eq(true)
+          expect(result.errors).to be_empty
+          expect(result.review_status).to eq('pass')
+        end
+      end
+
+      context 'when the response raises an exception' do
+        let(:response_body) { '' }
+
+        it 'returns an exception result' do
+          error = RuntimeError.new('hi')
+
+          expect(NewRelic::Agent).to receive(:notice_error).with(error)
+
+          stub_request(
+            :post,
+            authentication_verification_request.url,
+          ).to_raise(error)
+
+          result = proofer.proof(authentication_applicant)
+
+          expect(result.success?).to eq(false)
+          expect(result.errors).to be_empty
+          expect(result.exception).to eq(error)
+        end
       end
     end
   end

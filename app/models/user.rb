@@ -25,9 +25,7 @@ class User < ApplicationRecord
   MAX_RECENT_EVENTS = 5
   MAX_RECENT_DEVICES = 5
 
-  BIOMETRIC_COMPARISON_IDV_LEVELS = %w[unsupervised_with_selfie in_person].to_set.freeze
-
-  enum otp_delivery_preference: { sms: 0, voice: 1 }
+  enum :otp_delivery_preference, { sms: 0, voice: 1 }
 
   # rubocop:disable Rails/HasManyOrHasOneDependent
   # identities need to be orphaned to prevent UUID reuse
@@ -46,7 +44,6 @@ class User < ApplicationRecord
   has_many :backup_code_configurations, dependent: :destroy
   has_many :document_capture_sessions, dependent: :destroy
   has_one :registration_log, dependent: :destroy
-  has_one :proofing_component, dependent: :destroy
   has_many :service_providers,
            through: :identities,
            source: :service_provider_record
@@ -68,7 +65,7 @@ class User < ApplicationRecord
   attr_accessor :asserted_attributes, :email
 
   def confirmed_email_addresses
-    email_addresses.where.not(confirmed_at: nil).order('last_sign_in_at DESC NULLS LAST')
+    email_addresses.confirmed
   end
 
   def fully_registered?
@@ -76,7 +73,7 @@ class User < ApplicationRecord
   end
 
   def confirmed?
-    email_addresses.where.not(confirmed_at: nil).any?
+    confirmed_email_addresses.any?
   end
 
   def has_fed_or_mil_email?
@@ -100,7 +97,7 @@ class User < ApplicationRecord
   end
 
   def active_identities
-    identities.where('session_uuid IS NOT ?', nil).order(last_authenticated_at: :asc) || []
+    identities.where.not(session_uuid: nil).order(last_authenticated_at: :asc) || []
   end
 
   def active_profile?
@@ -260,19 +257,19 @@ class User < ApplicationRecord
   # @return [Boolean] Whether the user should receive a survey for completing in-person proofing
   def should_receive_in_person_completion_survey?(issuer)
     Idv::InPersonConfig.enabled_for_issuer?(issuer) &&
-      in_person_enrollments.
-        where(issuer: issuer, status: :passed).order(created_at: :desc).
-        pick(:follow_up_survey_sent) == false
+      in_person_enrollments
+        .where(issuer: issuer, status: :passed).order(created_at: :desc)
+        .pick(:follow_up_survey_sent) == false
   end
 
   ##
   # Record that the in-person proofing survey was sent
   # @param [String] issuer
   def mark_in_person_completion_survey_sent(issuer)
-    enrollment_id, follow_up_survey_sent = in_person_enrollments.
-      where(issuer: issuer, status: :passed).
-      order(created_at: :desc).
-      pick(:id, :follow_up_survey_sent)
+    enrollment_id, follow_up_survey_sent = in_person_enrollments
+      .where(issuer: issuer, status: :passed)
+      .order(created_at: :desc)
+      .pick(:id, :follow_up_survey_sent)
 
     if follow_up_survey_sent == false
       # Enrollment record is present and survey was not previously sent
@@ -376,8 +373,8 @@ class User < ApplicationRecord
     active_profile.present?
   end
 
-  def identity_verified_with_biometric_comparison?
-    BIOMETRIC_COMPARISON_IDV_LEVELS.include?(active_profile&.idv_level)
+  def identity_verified_with_facial_match?
+    active_profile.present? && active_profile.facial_match?
   end
 
   # This user's most recently activated profile that has also been deactivated
@@ -395,7 +392,7 @@ class User < ApplicationRecord
       interval: IdentityConfig.store.totp_code_interval,
     }
     url = ROTP::TOTP.new(otp_secret_key, options).provisioning_uri(
-      EmailContext.new(self).last_sign_in_email_address.email,
+      last_sign_in_email_address.email,
     )
     qrcode = RQRCode::QRCode.new(url)
     qrcode.as_png(size: 240).to_data_url
@@ -410,8 +407,8 @@ class User < ApplicationRecord
   end
 
   def recent_events
-    events = Event.where(user_id: id).order('created_at DESC').limit(MAX_RECENT_EVENTS).
-      map(&:decorate)
+    events = Event.where(user_id: id).order('created_at DESC').limit(MAX_RECENT_EVENTS)
+      .map(&:decorate)
     (events + identity_events).sort_by(&:happened_at).reverse
   end
 
@@ -420,8 +417,8 @@ class User < ApplicationRecord
   end
 
   def recent_devices
-    @recent_devices ||= devices.order(last_used_at: :desc).limit(MAX_RECENT_DEVICES).
-      map(&:decorate)
+    @recent_devices ||= devices.order(last_used_at: :desc).limit(MAX_RECENT_DEVICES)
+      .map(&:decorate)
   end
 
   def has_devices?
@@ -444,12 +441,15 @@ class User < ApplicationRecord
   #
   # @param [ActiveSupport::TimeWithZone] since Time window to query user's events
   def sign_in_count(since:)
-    events.where(event_type: :sign_in_before_2fa).where(created_at: since..).count
+    events
+      .where(event_type: :sign_in_before_2fa).where(created_at: since..)
+      .count
   end
 
   def second_last_signed_in_at
-    events.where(event_type: 'sign_in_after_2fa').
-      order(created_at: :desc).limit(2).pluck(:created_at).second
+    events
+      .where(event_type: 'sign_in_after_2fa')
+      .order(created_at: :desc).limit(2).pluck(:created_at).second
   end
 
   def connected_apps
@@ -511,14 +511,18 @@ class User < ApplicationRecord
       UserMailer.with(
         user: self,
         email_address: email_address,
-      ).send(user_mailer_template).
-        deliver_now_or_later
+      ).send(user_mailer_template)
+        .deliver_now_or_later
     end
   end
 
   def reload(...)
     remove_instance_variable(:@pending_profile) if defined?(@pending_profile)
     super(...)
+  end
+
+  def last_sign_in_email_address
+    email_addresses.confirmed.last_sign_in
   end
 
   private

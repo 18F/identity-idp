@@ -6,14 +6,15 @@ module Idv
 
     include DocAuthVendorConcern
 
-    def save_proofing_components(user)
-      return unless user
-
-      component_attributes = {
-        document_check: doc_auth_vendor,
-        document_type: 'state_id',
-      }
-      ProofingComponent.create_or_find_by(user: user).update(component_attributes)
+    def handle_stored_result(user: current_user, store_in_session: true)
+      if stored_result&.success? && selfie_requirement_met?
+        extract_pii_from_doc(user, store_in_session: store_in_session)
+        flash[:success] = t('doc_auth.headings.capture_complete')
+        successful_response
+      else
+        extra = { stored_result_present: stored_result.present? }
+        failure(nil, extra)
+      end
     end
 
     def successful_response
@@ -21,11 +22,18 @@ module Idv
     end
 
     # copied from Flow::Failure module
-    def failure(message, extra = nil)
-      flash[:error] = message
-      form_response_params = { success: false, errors: { message: message } }
+    def failure(message = nil, extra = nil)
+      form_response_params = { success: false }
+      form_response_params[:errors] = error_hash(message)
       form_response_params[:extra] = extra unless extra.nil?
       FormResponse.new(**form_response_params)
+    end
+
+    def error_hash(message)
+      {
+        message: message || I18n.t('doc_auth.errors.general.network_error'),
+        socure: stored_result&.errors&.dig(:socure),
+      }
     end
 
     def extract_pii_from_doc(user, store_in_session: false)
@@ -46,8 +54,60 @@ module Idv
     end
 
     def selfie_requirement_met?
-      !resolved_authn_context_result.biometric_comparison? ||
+      !resolved_authn_context_result.facial_match? ||
         stored_result.selfie_check_performed?
+    end
+
+    def redirect_to_correct_vendor(vendor, in_hybrid_mobile)
+      expected_doc_auth_vendor = doc_auth_vendor
+      return if vendor == expected_doc_auth_vendor
+      return if vendor == Idp::Constants::Vendors::LEXIS_NEXIS &&
+                expected_doc_auth_vendor == Idp::Constants::Vendors::MOCK
+
+      correct_path = case expected_doc_auth_vendor
+        when Idp::Constants::Vendors::SOCURE
+          in_hybrid_mobile ? idv_hybrid_mobile_socure_document_capture_path
+                           : idv_socure_document_capture_path
+        when Idp::Constants::Vendors::LEXIS_NEXIS, Idp::Constants::Vendors::MOCK
+          in_hybrid_mobile ? idv_hybrid_mobile_document_capture_path
+                           : idv_document_capture_path
+        end
+
+      redirect_to correct_path
+    end
+
+    def fetch_test_verification_data
+      return unless IdentityConfig.store.socure_docv_verification_data_test_mode
+
+      docv_transaction_token_override = params.permit(:docv_token)[:docv_token]
+      return unless IdentityConfig.store.socure_docv_verification_data_test_mode_tokens
+        .include?(docv_transaction_token_override)
+
+      SocureDocvResultsJob.perform_now(
+        document_capture_session_uuid:,
+        docv_transaction_token_override:,
+        async: true,
+      )
+    end
+
+    def track_document_request_event(document_request:, document_response:, timer:)
+      document_request_body = JSON.parse(document_request.body, symbolize_names: true)[:config]
+      response_hash = document_response.to_h
+      log_extras = {
+        reference_id: response_hash[:referenceId],
+        vendor: 'Socure',
+        vendor_request_time_in_ms: timer.results['vendor_request'],
+        success: @url.present?,
+        document_type: document_request_body[:documentType],
+        docv_transaction_token: response_hash.dig(:data, :docvTransactionToken),
+      }
+      analytics_hash = log_extras
+        .merge(analytics_arguments)
+        .merge(document_request_body).except(
+          :documentType, # requested document type
+        )
+        .merge(response_body: document_response.to_h)
+      analytics.idv_socure_document_request_submitted(**analytics_hash)
     end
 
     private

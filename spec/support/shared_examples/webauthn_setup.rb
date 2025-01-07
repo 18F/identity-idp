@@ -3,7 +3,7 @@ RSpec.shared_examples 'webauthn setup' do
     mock_webauthn_setup_challenge
     visit_webauthn_setup
 
-    expect(current_path).to eq webauthn_setup_path
+    expect(page).to have_current_path webauthn_setup_path
 
     fill_in_nickname_and_click_continue
     mock_press_button_on_hardware_key_on_setup
@@ -32,7 +32,7 @@ RSpec.shared_examples 'webauthn setup' do
     mock_webauthn_setup_challenge
     visit_webauthn_setup
 
-    expect(current_path).to eq webauthn_setup_path
+    expect(page).to have_current_path webauthn_setup_path
 
     mock_submit_without_pressing_button_on_hardware_key_on_setup
 
@@ -44,9 +44,9 @@ RSpec.shared_examples 'webauthn setup' do
     let(:fake_analytics) { FakeAnalytics.new }
 
     before do
-      allow(IdentityConfig.store).
-        to receive(:show_unsupported_passkey_platform_authentication_setup).
-        and_return(true)
+      allow(IdentityConfig.store)
+        .to receive(:show_unsupported_passkey_platform_authentication_setup)
+        .and_return(true)
       allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
       allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
       mock_webauthn_setup_challenge
@@ -70,6 +70,7 @@ RSpec.shared_examples 'webauthn setup' do
             ),
           ] },
         platform_authenticator: false,
+        in_account_creation_flow: true,
         success: false,
       )
     end
@@ -83,6 +84,7 @@ RSpec.shared_examples 'webauthn setup' do
       expect(fake_analytics).to have_logged_event(
         :webauthn_setup_submitted,
         success: true,
+        in_account_creation_flow: true,
         platform_authenticator: false,
       )
     end

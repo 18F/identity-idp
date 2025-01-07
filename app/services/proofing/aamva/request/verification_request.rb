@@ -63,6 +63,45 @@ module Proofing
             REXML::XPath.first(document, xpath).add_text(data)
           end
 
+          if IdentityConfig.store.aamva_send_middle_name
+            add_optional_element(
+              'nc:PersonMiddleName',
+              value: applicant.middle_name,
+              document:,
+              inside: '//nc:PersonName',
+            )
+          end
+
+          add_optional_element(
+            'nc:PersonNameSuffixText',
+            value: applicant.name_suffix,
+            document:,
+            inside: '//nc:PersonName',
+          )
+
+          add_optional_element(
+            'aa:PersonHeightMeasure',
+            value: applicant.height,
+            document:,
+            inside: '//dldv:verifyDriverLicenseDataRequest',
+          )
+
+          add_optional_element(
+            'aa:PersonWeightMeasure',
+            value: applicant.weight,
+            document:,
+            inside: '//dldv:verifyDriverLicenseDataRequest',
+          )
+
+          add_optional_element(
+            'aa:PersonEyeColorCode',
+            value: applicant.eye_color,
+            document:,
+            inside: '//dldv:verifyDriverLicenseDataRequest',
+          )
+
+          add_sex_code(applicant.sex, document)
+
           add_optional_element(
             'nc:AddressDeliveryPointText',
             value: applicant.address2,
@@ -84,7 +123,52 @@ module Proofing
             inside: '//dldv:verifyDriverLicenseDataRequest',
           )
 
+          if IdentityConfig.store.aamva_send_id_type
+            add_state_id_type(
+              applicant.state_id_data.state_id_type,
+              document,
+            )
+          end
+
           @body = document.to_s
+        end
+
+        def add_state_id_type(id_type, document)
+          category_code = case id_type
+                          when 'drivers_license'
+                            1
+                          when 'drivers_permit'
+                            2
+                          when 'state_id_card'
+                            3
+                          end
+
+          if category_code
+            add_optional_element(
+              'aa:DocumentCategoryCode',
+              value: category_code,
+              document:,
+              inside: '//dldv:verifyDriverLicenseDataRequest',
+            )
+          end
+        end
+
+        def add_sex_code(sex_value, document)
+          sex_code = case sex_value
+                     when 'male'
+                       1
+                     when 'female'
+                       2
+                     end
+
+          if sex_code
+            add_optional_element(
+              'aa:PersonSexCode',
+              value: sex_code,
+              document:,
+              inside: '//dldv:verifyDriverLicenseDataRequest',
+            )
+          end
         end
 
         def add_optional_element(name, value:, document:, inside: nil, after: nil)

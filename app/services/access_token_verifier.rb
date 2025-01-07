@@ -21,6 +21,7 @@ class AccessTokenVerifier
       extra: {
         client_id: @identity&.service_provider,
         ial: @identity&.ial,
+        integration_errors:,
       },
     )
 
@@ -37,7 +38,7 @@ class AccessTokenVerifier
   end
 
   def load_identity(access_token)
-    identity = ServiceProviderIdentity.where(access_token: access_token).take
+    identity = ServiceProviderIdentity.find_by(access_token: access_token)
 
     if identity && OutOfBandSessionAccessor.new(identity.rails_session_id).ttl.positive?
       @identity = identity
@@ -68,5 +69,15 @@ class AccessTokenVerifier
     end
 
     access_token
+  end
+
+  def integration_errors
+    {
+      error_details: errors.full_messages,
+      error_types: errors.attribute_names,
+      event: :oidc_bearer_token_auth,
+      integration_exists: @identity&.service_provider.present?,
+      request_issuer: @identity&.service_provider,
+    }
   end
 end

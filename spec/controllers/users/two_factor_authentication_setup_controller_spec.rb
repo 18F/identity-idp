@@ -4,6 +4,8 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
   describe 'GET index' do
     let(:user) { create(:user) }
 
+    subject(:response) { get :index }
+
     before do
       stub_sign_in_before_2fa(user) if user
       stub_analytics
@@ -19,51 +21,71 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
       )
     end
 
-    context 'with user having gov or mil email and use_fed_domain_class set to false' do
-      let(:user) do
-        create(:user, email: 'example@example.gov', piv_cac_recommended_dismissed_at: Time.zone.now)
-      end
-      let!(:federal_domain) { create(:federal_email_domain, name: 'gsa.gov') }
+    it 'initializes presenter with false ab test bucket value' do
+      response
 
+      expect(assigns(:presenter).desktop_ft_ab_test).to be false
+    end
+
+    context 'with threatmetrix disabled' do
       before do
-        allow(IdentityConfig.store).to receive(:use_fed_domain_class).and_return(false)
+        allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?)
+          .and_return(false)
       end
 
-      context 'having already visited the PIV interstitial page' do
-        it 'tracks the visit in analytics' do
-          get :index
+      it 'does not override CSPs for ThreatMetrix' do
+        expect(controller).not_to receive(:override_csp_for_threat_metrix)
 
-          expect(@analytics).to have_logged_event(
-            'User Registration: 2FA Setup visited',
-            enabled_mfa_methods_count: 0,
-            gov_or_mil_email: true,
-          )
-        end
-      end
-
-      context 'directed to page without having visited PIV interstitial page' do
-        let(:user) do
-          create(:user, email: 'example@example.gov')
-        end
-
-        it 'redirects user to piv_recommended_path' do
-          get :index
-
-          expect(response).to redirect_to(login_piv_cac_recommended_url)
-        end
+        response
       end
     end
 
-    context 'with user having gov or mil email and use_fed_domain_class set to true' do
+    context 'with threatmetrix enabled' do
+      let(:tmx_session_id) { '1234' }
+
       before do
-        allow(IdentityConfig.store).to receive(:use_fed_domain_class).and_return(true)
+        allow(FeatureManagement).to receive(:account_creation_device_profiling_collecting_enabled?)
+          .and_return(true)
+        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('org1')
+        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled)
+          .and_return(false)
+        controller.user_session[:sign_up_threatmetrix_session_id] = tmx_session_id
       end
 
+      it 'renders new valid request' do
+        tmx_url = 'https://h.online-metrix.net/fp'
+        expect(controller).to receive(:render).with(
+          :index,
+          locals: { threatmetrix_session_id: tmx_session_id,
+                    threatmetrix_javascript_urls:
+                      ["#{tmx_url}/tags.js?org_id=org1&session_id=#{tmx_session_id}"],
+                    threatmetrix_iframe_url:
+                      "#{tmx_url}/tags?org_id=org1&session_id=#{tmx_session_id}" },
+        ).and_call_original
+
+        expect(response).to render_template(:index)
+      end
+
+      it 'overrides CSPs for ThreatMetrix' do
+        expect(controller).to receive(:override_csp_for_threat_metrix)
+
+        response
+      end
+    end
+
+    context 'with user having gov or mil email' do
       let!(:federal_domain) { create(:federal_email_domain, name: 'gsa.gov') }
       let(:user) do
-        create(:user, email: 'example@gsa.gov', piv_cac_recommended_dismissed_at: Time.zone.now)
+        create(
+          :user,
+          email: 'example@gsa.gov',
+          piv_cac_recommended_dismissed_at: interstitial_dismissed_at,
+        )
       end
+
       context 'having already visited the PIV interstitial page' do
+        let(:interstitial_dismissed_at) { Time.zone.now }
+
         it 'tracks the visit in analytics' do
           get :index
 
@@ -76,9 +98,7 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
       end
 
       context 'directed to page without having visited PIV interstitial page' do
-        let(:user) do
-          create(:user, email: 'example@gsa.gov')
-        end
+        let(:interstitial_dismissed_at) { nil }
 
         it 'redirects user to piv_recommended_path' do
           get :index
@@ -135,148 +155,134 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
         expect(response).to redirect_to(user_two_factor_authentication_url)
       end
     end
+
+    context 'with user opted in to desktop ft unlock setup ab test' do
+      before do
+        allow(controller).to receive(:ab_test_bucket).with(
+          :DESKTOP_FT_UNLOCK_SETUP,
+        ).and_return(:desktop_ft_unlock_option_shown)
+      end
+
+      it 'initializes presenter with ab test bucket value' do
+        response
+
+        expect(assigns(:presenter).desktop_ft_ab_test).to eq(true)
+      end
+    end
   end
 
-  describe 'PATCH create' do
-    it 'submits the TwoFactorOptionsForm' do
-      user = build(:user)
-      stub_sign_in_before_2fa(user)
-      stub_analytics
+  describe '#create' do
+    let(:params) { { two_factor_options_form: { selection: ['voice'] } } }
 
-      voice_params = {
-        two_factor_options_form: {
-          selection: ['voice'],
-        },
-      }
+    subject(:response) { patch :create, params: params }
 
-      expect(controller.two_factor_options_form).to receive(:submit).
-        with(hash_including(voice_params[:two_factor_options_form])).and_call_original
-
-      patch :create, params: voice_params
-
-      expect(@analytics).to have_logged_event(
-        'User Registration: 2FA Setup',
-        success: true,
-        errors: {},
-        enabled_mfa_methods_count: 0,
-        selected_mfa_count: 1,
-        selection: ['voice'],
-      )
+    before do
+      stub_sign_in_before_2fa
     end
 
     it 'tracks analytics event' do
-      stub_sign_in_before_2fa
       stub_analytics
 
-      patch :create, params: {
-        two_factor_options_form: {
-          selection: ['voice', 'auth_app'],
-        },
-      }
+      response
 
       expect(@analytics).to have_logged_event(
         'User Registration: 2FA Setup',
         enabled_mfa_methods_count: 0,
-        selection: ['voice', 'auth_app'],
+        selection: ['voice'],
         success: true,
-        selected_mfa_count: 2,
+        selected_mfa_count: 1,
         errors: {},
       )
     end
 
-    context 'when multi selection with phone first' do
-      it 'redirects properly' do
-        stub_sign_in_before_2fa
-        patch :create, params: {
-          two_factor_options_form: {
-            selection: ['phone', 'auth_app'],
-          },
-        }
+    it 'assigns platform_authenticator_available session value' do
+      expect { response }.to change { controller.user_session[:platform_authenticator_available] }
+        .from(nil)
+        .to(false)
+    end
 
-        expect(response).to redirect_to phone_setup_url
-      end
+    context 'when multi selection with phone first' do
+      let(:params) { { two_factor_options_form: { selection: ['phone', 'auth_app'] } } }
+
+      it { is_expected.to redirect_to phone_setup_url }
     end
 
     context 'when multi selection with auth app first' do
-      it 'redirects properly' do
-        stub_sign_in_before_2fa
-        patch :create, params: {
-          two_factor_options_form: {
-            selection: ['auth_app', 'phone', 'webauthn'],
-          },
-        }
+      let(:params) { { two_factor_options_form: { selection: ['auth_app', 'phone', 'webauthn'] } } }
 
-        expect(response).to redirect_to authenticator_setup_url
-      end
+      it { is_expected.to redirect_to authenticator_setup_url }
     end
 
     context 'when the selection is auth_app' do
-      it 'redirects to authentication app setup page' do
-        stub_sign_in_before_2fa
+      let(:params) { { two_factor_options_form: { selection: ['auth_app'] } } }
 
-        patch :create, params: {
-          two_factor_options_form: {
-            selection: ['auth_app'],
-          },
-        }
-
-        expect(response).to redirect_to authenticator_setup_url
-      end
+      it { is_expected.to redirect_to authenticator_setup_url }
     end
 
     context 'when the selection is webauthn' do
-      it 'redirects to webauthn setup page' do
-        stub_sign_in_before_2fa
+      let(:params) { { two_factor_options_form: { selection: ['webauthn'] } } }
 
-        patch :create, params: {
-          two_factor_options_form: {
-            selection: ['webauthn'],
-          },
-        }
-
-        expect(response).to redirect_to webauthn_setup_url
-      end
+      it { is_expected.to redirect_to webauthn_setup_url }
     end
 
     context 'when the selection is webauthn platform authenticator' do
-      it 'redirects to webauthn setup page with the platform param' do
-        stub_sign_in_before_2fa
+      let(:params) { { two_factor_options_form: { selection: ['webauthn_platform'] } } }
 
-        patch :create, params: {
-          two_factor_options_form: {
-            selection: ['webauthn_platform'],
-          },
-        }
-
-        expect(response).to redirect_to webauthn_setup_url(platform: true)
-      end
+      it { is_expected.to redirect_to webauthn_setup_url(platform: true) }
     end
 
     context 'when the selection is piv_cac' do
-      it 'redirects to piv/cac setup page' do
-        stub_sign_in_before_2fa
+      let(:params) { { two_factor_options_form: { selection: ['piv_cac'] } } }
 
-        patch :create, params: {
-          two_factor_options_form: {
-            selection: ['piv_cac'],
-          },
-        }
-
-        expect(response).to redirect_to setup_piv_cac_url
-      end
+      it { is_expected.to redirect_to setup_piv_cac_url }
     end
 
     context 'when the selection is not valid' do
-      it 'renders index page' do
-        stub_sign_in_before_2fa
+      let(:params) { { two_factor_options_form: { selection: ['foo'] } } }
 
-        patch :create, params: {
-          two_factor_options_form: {
-            selection: ['foo'],
-          },
-        }
-
+      it 'renders setup page with error message' do
         expect(response).to render_template(:index)
+        expect(flash[:error]).to eq(t('errors.messages.inclusion'))
+      end
+
+      context 'with threatmetrix enabled' do
+        let(:tmx_session_id) { '1234' }
+
+        before do
+          allow(FeatureManagement)
+            .to receive(:account_creation_device_profiling_collecting_enabled?)
+            .and_return(true)
+          allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('org1')
+          allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled)
+            .and_return(false)
+          controller.user_session[:sign_up_threatmetrix_session_id] = tmx_session_id
+        end
+
+        it 'renders new with invalid request' do
+          tmx_url = 'https://h.online-metrix.net/fp'
+          expect(controller).to receive(:render).with(
+            :index,
+            locals: { threatmetrix_session_id: tmx_session_id,
+                      threatmetrix_javascript_urls:
+                        ["#{tmx_url}/tags.js?org_id=org1&session_id=#{tmx_session_id}"],
+                      threatmetrix_iframe_url:
+                        "#{tmx_url}/tags?org_id=org1&session_id=#{tmx_session_id}" },
+          ).and_call_original
+
+          expect(response).to render_template(:index)
+        end
+      end
+    end
+
+    context 'with form value indicating platform authenticator support' do
+      let(:params) { super().merge(platform_authenticator_available: 'true') }
+
+      it 'assigns platform_authenticator_available session value' do
+        expect do
+          response
+        end.to change { controller.user_session[:platform_authenticator_available] }
+          .from(nil)
+          .to(true)
       end
     end
   end

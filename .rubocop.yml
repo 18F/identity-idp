@@ -7,6 +7,8 @@ require:
   - rubocop-rails
   - rubocop-rspec
   - rubocop-performance
+  - rubocop-capybara
+  - ./lib/linters/i18n_helper_html_linter.rb
   - ./lib/linters/analytics_event_name_linter.rb
   - ./lib/linters/localized_validation_message_linter.rb
   - ./lib/linters/image_size_linter.rb
@@ -28,7 +30,7 @@ AllCops:
     - 'vendor/**/*'
     - 'public/**/*'
   TargetRubyVersion: 3.2.0
-  TargetRailsVersion: 7.1
+  TargetRailsVersion: 7.2
   UseCache: true
   DisabledByDefault: true
   SuggestExtensions: false
@@ -42,8 +44,18 @@ Bundler/DuplicatedGem:
 Bundler/InsecureProtocolSource:
   Enabled: true
 
+Capybara/CurrentPathExpectation:
+  Enabled: true
+
 Gemspec/DuplicatedAssignment:
   Enabled: true
+
+IdentityIdp/I18nHelperHtmlLinter:
+  Enabled: true
+  Include:
+    - app/views/**/*.erb
+    - app/components/**/*.erb
+    - app/controllers/**/*.rb
 
 IdentityIdp/AnalyticsEventNameLinter:
   Enabled: true
@@ -119,7 +131,7 @@ Layout/DefEndAlignment:
 Layout/DotPosition:
   Description: Checks the position of the dot in multi-line method calls.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#consistent-multi-line-chains
-  EnforcedStyle: trailing
+  EnforcedStyle: leading
   SupportedStyles:
     - leading
     - trailing
@@ -795,6 +807,9 @@ Performance/Squeeze:
 Performance/StartWith:
   Enabled: true
 
+Performance/StringBytesize:
+  Enabled: true
+
 Performance/StringIdentifierArgument:
   Enabled: true
 
@@ -843,6 +858,9 @@ Rails/Blank:
 Rails/CompactBlank:
   Enabled: false
 
+Rails/DangerousColumnNames:
+  Enabled: true
+
 Rails/Delegate:
   Enabled: false
 
@@ -866,6 +884,12 @@ Rails/DynamicFindBy:
     - spec/features/**/*.rb
 
 Rails/EagerEvaluationLogMessage:
+  Enabled: true
+
+Rails/EnumSyntax:
+  Enabled: true
+
+Rails/EnvLocal:
   Enabled: true
 
 Rails/ExpandedDateRange:
@@ -932,6 +956,9 @@ Rails/PluckInWhere:
 Rails/Present:
   Enabled: false
 
+Rails/RedundantActiveRecordAllMethod:
+  Enabled: true
+
 Rails/RedundantPresenceValidationOnBelongsTo:
   Enabled: false
 
@@ -959,8 +986,16 @@ Rails/RootPathnameMethods:
 Rails/RootPublicPath:
   Enabled: true
 
+Rails/SelectMap:
+  Enabled: true
+
 Rails/ShortI18n:
   Enabled: true
+
+Rails/SkipsModelValidations:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*.rb'
 
 Rails/StripHeredoc:
   Enabled: false
@@ -998,6 +1033,9 @@ Rails/TransactionExitStatement:
 Rails/UnusedIgnoredColumns:
   Enabled: true
 
+Rails/UnusedRenderContent:
+  Enabled: true
+
 Rails/WhereEquals:
   Enabled: true
 
@@ -1013,7 +1051,16 @@ Rails/WhereNot:
 Rails/WhereNotWithMultipleConditions:
   Enabled: true
 
+Rails/WhereRange:
+  Enabled: false
+
 RSpec/LeakyConstantDeclaration:
+  Enabled: true
+
+RSpec/MissingExpectationTargetMethod:
+  Enabled: true
+
+RSpec/RedundantPredicateMatcher:
   Enabled: true
 
 Security/Eval:
@@ -1269,6 +1316,9 @@ Style/NumericLiteralPrefix:
   EnforcedOctalStyle: zero_with_o
 
 Style/OneLineConditional:
+  Enabled: true
+
+Style/OpenStructUse:
   Enabled: true
 
 Style/OptionalArguments:

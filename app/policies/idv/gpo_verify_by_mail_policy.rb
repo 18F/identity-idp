@@ -17,7 +17,7 @@ module Idv
 
     def send_letter_available?
       @send_letter_available ||= FeatureManagement.gpo_verification_enabled? &&
-                                 !disabled_for_biometric_comparison? &&
+                                 !disabled_for_facial_match? &&
                                  !disabled_for_ipp? &&
                                  !rate_limited?
     end
@@ -29,15 +29,15 @@ module Idv
     def profile_too_old?
       return false if !user.pending_profile
 
-      min_creation_date = IdentityConfig.store.
-        gpo_max_profile_age_to_send_letter_in_days.days.ago
+      min_creation_date = IdentityConfig.store
+        .gpo_max_profile_age_to_send_letter_in_days.days.ago
 
       user.pending_profile.created_at < min_creation_date
     end
 
     private
 
-    def disabled_for_biometric_comparison?
+    def disabled_for_facial_match?
       resolved_authn_context_result.two_pieces_of_fair_evidence?
     end
 

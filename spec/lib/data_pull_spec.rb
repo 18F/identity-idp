@@ -319,6 +319,26 @@ RSpec.describe DataPull do
         expect(result.subtask).to eq('ig-request')
         expect(result.uuids).to eq([user.uuid])
       end
+
+      context 'with SP UUID argument and no requesting issuer' do
+        let(:args) { [identity.uuid] }
+        let(:config) { ScriptBase::Config.new }
+
+        it 'runs the report with computed requesting issuer', aggregate_failures: true do
+          expect(result.table).to be_nil
+          expect(result.json.first.keys).to contain_exactly(
+            :user_id,
+            :login_uuid,
+            :requesting_issuer_uuid,
+            :email_addresses,
+            :mfa_configurations,
+            :user_events,
+          )
+
+          expect(result.subtask).to eq('ig-request')
+          expect(result.uuids).to eq([user.uuid])
+        end
+      end
     end
   end
 
@@ -458,8 +478,8 @@ RSpec.describe DataPull do
         expect(result.table).to match_array(
           [
             %w[uuid date events_count],
-            [user.uuid, '2023-01-02', 5],
-            [user.uuid, '2023-01-01', 1],
+            [user.uuid, Date.new(2023, 1, 2), 5],
+            [user.uuid, Date.new(2023, 1, 1), 1],
             ['uuid-does-not-exist', '[UUID NOT FOUND]', nil],
           ],
         )

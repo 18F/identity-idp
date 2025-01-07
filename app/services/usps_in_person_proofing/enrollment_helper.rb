@@ -20,8 +20,8 @@ module UspsInPersonProofing
         # Send state ID address to USPS
         pii = pii.to_h
         if !enrollment.current_address_matches_id?
-          pii = pii.except(*SECONDARY_ID_ADDRESS_MAP.values).
-            transform_keys(SECONDARY_ID_ADDRESS_MAP)
+          pii = pii.except(*SECONDARY_ID_ADDRESS_MAP.values)
+            .transform_keys(SECONDARY_ID_ADDRESS_MAP)
         end
 
         enrollment_code = create_usps_enrollment(enrollment, pii, is_enhanced_ipp)
@@ -62,13 +62,9 @@ module UspsInPersonProofing
       # @return [String] The enrollment code
       # @raise [Exception::RequestEnrollException] Raised with a problem creating the enrollment
       def create_usps_enrollment(enrollment, pii, is_enhanced_ipp)
-        # Use the enrollment's unique_id value if it exists, otherwise use the deprecated
-        # #usps_unique_id value in order to remain backwards-compatible. LG-7024 will remove this
-        unique_id = enrollment.unique_id || enrollment.usps_unique_id
-
         applicant = UspsInPersonProofing::Applicant.new(
           {
-            unique_id: unique_id,
+            unique_id: enrollment.unique_id,
             first_name: transliterate(pii[:first_name]),
             last_name: transliterate(pii[:last_name]),
             address: transliterate(pii[:address1]),
@@ -89,10 +85,10 @@ module UspsInPersonProofing
       end
 
       def cancel_stale_establishing_enrollments_for_user(user)
-        user.
-          in_person_enrollments.
-          where(status: :establishing).
-          each(&:cancelled!)
+        user
+          .in_person_enrollments
+          .where(status: :establishing)
+          .find_each(&:cancelled!)
       end
 
       def usps_proofer
@@ -115,7 +111,6 @@ module UspsInPersonProofing
           weekday_hours: EnrollmentHelper.localized_hours(location.weekday_hours),
           zip_code_4: location.zip_code_4,
           zip_code_5: location.zip_code_5,
-          is_pilot: location.is_pilot,
         }
       end
 
@@ -125,15 +120,15 @@ module UspsInPersonProofing
         if hours == 'Closed'
           I18n.t('in_person_proofing.body.barcode.retail_hours_closed')
         elsif hours.include?(' - ') # Hyphen
-          hours.
-            split(' - '). # Hyphen
-            map { |time| Time.zone.parse(time).strftime(I18n.t('time.formats.event_time')) }.
-            join(' – ') # Endash
+          hours
+            .split(' - ') # Hyphen
+            .map { |time| Time.zone.parse(time).strftime(I18n.t('time.formats.event_time')) }
+            .join(' – ') # Endash
         elsif hours.include?(' – ') # Endash
-          hours.
-            split(' – '). # Endash
-            map { |time| Time.zone.parse(time).strftime(I18n.t('time.formats.event_time')) }.
-            join(' – ') # Endash
+          hours
+            .split(' – ') # Endash
+            .map { |time| Time.zone.parse(time).strftime(I18n.t('time.formats.event_time')) }
+            .join(' – ') # Endash
         else
           hours
         end

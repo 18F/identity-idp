@@ -15,6 +15,7 @@ RSpec.describe Idv::DocumentCaptureController do
   let(:document_capture_session_uuid) { document_capture_session&.uuid }
 
   let(:user) { create(:user) }
+  let(:ab_test_args) { {} }
 
   # selfie related test flags
   let(:sp_selfie_enabled) { false }
@@ -29,9 +30,17 @@ RSpec.describe Idv::DocumentCaptureController do
     vot = sp_selfie_enabled ? 'Pb' : 'P1'
     resolved_authn_context = Vot::Parser.new(vector_of_trust: vot).parse
 
-    allow(controller).to receive(:resolved_authn_context_result).
-      and_return(resolved_authn_context)
+    allow(controller).to receive(:resolved_authn_context_result)
+      .and_return(resolved_authn_context)
     subject.idv_session.flow_path = flow_path
+    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
+
+    allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(
+      Idp::Constants::Vendors::LEXIS_NEXIS,
+    )
+    allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(
+      Idp::Constants::Vendors::LEXIS_NEXIS,
+    )
   end
 
   describe '#step_info' do
@@ -45,8 +54,8 @@ RSpec.describe Idv::DocumentCaptureController do
 
         it 'does not satisfy precondition' do
           expect(Idv::DocumentCaptureController.step_info.preconditions.is_a?(Proc))
-          expect(subject).to receive(:render).
-            with(:show, locals: an_instance_of(Hash)).and_call_original
+          expect(subject).to receive(:render)
+            .with(:show, locals: an_instance_of(Hash)).and_call_original
           get :show
           expect(response).to render_template :show
         end
@@ -56,8 +65,8 @@ RSpec.describe Idv::DocumentCaptureController do
         let(:sp_selfie_enabled) { true }
 
         before do
-          allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).
-            and_return(false)
+          allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
+            .and_return(false)
         end
 
         it 'does satisfy precondition' do
@@ -107,6 +116,21 @@ RSpec.describe Idv::DocumentCaptureController do
       }
     end
 
+    let(:idv_vendor) { Idp::Constants::Vendors::LEXIS_NEXIS }
+    let(:vendor_switching_enabled) { true }
+
+    before do
+      allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(
+        idv_vendor,
+      )
+      allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(
+        idv_vendor,
+      )
+      allow(IdentityConfig.store).to receive(:doc_auth_vendor_switching_enabled).and_return(
+        vendor_switching_enabled,
+      )
+    end
+
     it 'has non-nil presenter' do
       get :show
       expect(assigns(:presenter)).to be_kind_of(Idv::InPerson::UspsFormPresenter)
@@ -126,12 +150,53 @@ RSpec.describe Idv::DocumentCaptureController do
       expect(response).to render_template :show
     end
 
+    it 'sends analytics_visited event' do
+      get :show
+
+      expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+    end
+
+    it 'updates DocAuthLog document_capture_view_count' do
+      doc_auth_log = DocAuthLog.create(user_id: user.id)
+
+      expect { get :show }.to(
+        change { doc_auth_log.reload.document_capture_view_count }.from(0).to(1),
+      )
+    end
+
+    context 'when we try to use this controller but we should be using the Socure version' do
+      let(:idv_vendor) { Idp::Constants::Vendors::SOCURE }
+
+      it 'redirects to the Socure controller' do
+        get :show
+
+        expect(response).to redirect_to idv_socure_document_capture_url
+      end
+    end
+
+    context 'socure is the default vendor but facial match is required' do
+      let(:idv_vendor) { Idp::Constants::Vendors::SOCURE }
+      let(:vot) { 'Pb' }
+
+      before do
+        resolved_authn_context = Vot::Parser.new(vector_of_trust: vot).parse
+        allow(controller).to receive(:resolved_authn_context_result)
+          .and_return(resolved_authn_context)
+      end
+
+      it 'does not redirect to Socure controller' do
+        get :show
+
+        expect(response).to_not redirect_to idv_socure_document_capture_url
+      end
+    end
+
     context 'when a selfie is requested' do
       let(:sp_selfie_enabled) { true }
       let(:desktop_selfie_enabled) { false }
       before do
-        allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).
-          and_return(desktop_selfie_enabled)
+        allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
+          .and_return(desktop_selfie_enabled)
       end
       describe 'when desktop selfie disabled' do
         let(:desktop_selfie_enabled) { false }
@@ -167,12 +232,6 @@ RSpec.describe Idv::DocumentCaptureController do
       end
     end
 
-    it 'sends analytics_visited event' do
-      get :show
-
-      expect(@analytics).to have_logged_event(analytics_name, analytics_args)
-    end
-
     context 'redo_document_capture' do
       it 'adds redo_document_capture to analytics' do
         subject.idv_session.redo_document_capture = true
@@ -182,14 +241,6 @@ RSpec.describe Idv::DocumentCaptureController do
         analytics_args[:redo_document_capture] = true
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
       end
-    end
-
-    it 'updates DocAuthLog document_capture_view_count' do
-      doc_auth_log = DocAuthLog.create(user_id: user.id)
-
-      expect { get :show }.to(
-        change { doc_auth_log.reload.document_capture_view_count }.from(0).to(1),
-      )
     end
 
     context 'hybrid handoff step is not complete' do
@@ -332,9 +383,10 @@ RSpec.describe Idv::DocumentCaptureController do
 
     context 'selfie checks' do
       before do
-        expect(controller).to receive(:selfie_requirement_met?).
-          and_return(performed_if_needed)
+        expect(controller).to receive(:selfie_requirement_met?)
+          .and_return(performed_if_needed)
         allow(result).to receive(:success?).and_return(true)
+        allow(result).to receive(:errors).and_return(result[:errors])
         allow(subject).to receive(:stored_result).and_return(result)
         allow(subject).to receive(:extract_pii_from_doc)
       end
@@ -344,6 +396,7 @@ RSpec.describe Idv::DocumentCaptureController do
 
         it 'stays on document capture' do
           put :update
+
           expect(response).to redirect_to idv_document_capture_url
         end
       end
@@ -358,19 +411,6 @@ RSpec.describe Idv::DocumentCaptureController do
       end
     end
 
-    context 'user has an establishing in-person enrollment' do
-      let!(:enrollment) { create(:in_person_enrollment, :establishing, user: user, profile: nil) }
-
-      it 'cancels the establishing enrollment' do
-        expect(user.establishing_in_person_enrollment).to eq enrollment
-
-        put :update
-
-        expect(enrollment.reload.cancelled?).to eq(true)
-        expect(user.reload.establishing_in_person_enrollment).to be_nil
-      end
-    end
-
     context 'ocr confirmation pending' do
       before do
         subject.document_capture_session.ocr_confirmation_pending = true
@@ -380,6 +420,29 @@ RSpec.describe Idv::DocumentCaptureController do
         put :update
         expect(subject.document_capture_session.ocr_confirmation_pending).to be_falsey
       end
+    end
+  end
+
+  describe '#direct_in_person' do
+    let(:analytics_name) { :idv_in_person_direct_start }
+    let(:analytics_args) do
+      {
+        remaining_submit_attempts: 4,
+        skip_hybrid_handoff: nil,
+        opted_in_to_in_person_proofing: nil,
+      }
+    end
+
+    it 'sends analytics event' do
+      expect(@analytics).to receive(:track_event).with(analytics_name, analytics_args)
+
+      get :direct_in_person
+    end
+
+    it 'redirects to document capture' do
+      get :direct_in_person
+
+      expect(response).to redirect_to(idv_document_capture_url(step: :idv_doc_auth))
     end
   end
 end

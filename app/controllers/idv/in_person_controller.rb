@@ -12,7 +12,7 @@ module Idv
 
     include IdvSessionConcern
     include Flow::FlowStateMachine
-    include Idv::ThreatMetrixConcern
+    include ThreatMetrixConcern
 
     before_action :redirect_if_flow_completed
 
@@ -20,7 +20,7 @@ module Idv
 
     FLOW_STATE_MACHINE_SETTINGS = {
       step_url: :idv_in_person_step_url,
-      final_url: :idv_in_person_address_url,
+      final_url: :idv_in_person_state_id_url,
       flow: Idv::Flows::InPersonFlow,
       analytics_id: 'In Person Proofing',
     }.freeze

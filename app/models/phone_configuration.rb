@@ -8,7 +8,7 @@ class PhoneConfiguration < ApplicationRecord
 
   encrypted_attribute(name: :phone)
 
-  enum delivery_preference: { sms: 0, voice: 1 }
+  enum :delivery_preference, { sms: 0, voice: 1 }
 
   def formatted_phone
     PhoneFormatter.format(phone)
@@ -22,13 +22,13 @@ class PhoneConfiguration < ApplicationRecord
     options = []
 
     if capabilities.supports_sms?
-      options << TwoFactorAuthentication::SignInPhoneSelectionPresenter.
-        new(user:, configuration: self, delivery_method: :sms)
+      options << TwoFactorAuthentication::SignInPhoneSelectionPresenter
+        .new(user:, configuration: self, delivery_method: :sms)
     end
 
     if capabilities.supports_voice?
-      options << TwoFactorAuthentication::SignInPhoneSelectionPresenter.
-        new(user:, configuration: self, delivery_method: :voice)
+      options << TwoFactorAuthentication::SignInPhoneSelectionPresenter
+        .new(user:, configuration: self, delivery_method: :voice)
     end
 
     options

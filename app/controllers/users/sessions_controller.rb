@@ -19,6 +19,7 @@ module Users
     before_action :check_user_needs_redirect, only: [:new]
     before_action :apply_secure_headers_override, only: [:new, :create]
     before_action :clear_session_bad_password_count_if_window_expired, only: [:create]
+    before_action :set_analytics_user_from_params, only: :create
     before_action :allow_csp_recaptcha_src, if: :recaptcha_enabled?
 
     after_action :add_recaptcha_resource_hints, if: :recaptcha_enabled?
@@ -39,7 +40,7 @@ module Users
       return process_rate_limited if session_bad_password_count_max_exceeded?
       return process_locked_out_user if current_user && user_locked_out?(current_user)
       return process_rate_limited if rate_limited?
-      return process_failed_captcha if !valid_captcha_result?
+      return process_failed_captcha unless recaptcha_response.success? || log_captcha_failures_only?
 
       rate_limit_password_failure = true
       self.resource = warden.authenticate!(auth_options)
@@ -56,6 +57,10 @@ module Users
         analytics.logout_initiated(sp_initiated: false, oidc: false)
         super
       end
+    end
+
+    def analytics_user
+      @analytics_user || AnonymousUser.new
     end
 
     private
@@ -100,11 +105,10 @@ module Users
       distance_of_time_in_words(Time.zone.now, time_lockout_expires, true)
     end
 
-    def valid_captcha_result?
-      return @valid_captcha_result if defined?(@valid_captcha_result)
-      @valid_captcha_result = recaptcha_form.submit(
+    def recaptcha_response
+      @recaptcha_response ||= recaptcha_form.submit(
         recaptcha_token: params.require(:user)[:recaptcha_token],
-      ).success?
+      )
     end
 
     def recaptcha_form
@@ -169,6 +173,10 @@ module Users
       params.require(:user).permit(:email, :password)
     end
 
+    def set_analytics_user_from_params
+      @analytics_user = user_from_params
+    end
+
     def process_locked_out_user
       presenter = TwoFactorAuthCode::MaxAttemptsReachedPresenter.new(
         'generic_login_attempts',
@@ -204,14 +212,17 @@ module Users
     def track_authentication_attempt
       user = user_from_params || AnonymousUser.new
 
-      success = current_user.present? && !user_locked_out?(user) && valid_captcha_result?
+      success = current_user.present? &&
+                !user_locked_out?(user) &&
+                (recaptcha_response.success? || log_captcha_failures_only?)
+
       analytics.email_and_password_auth(
+        **recaptcha_response,
         success: success,
-        user_id: user.uuid,
         user_locked_out: user_locked_out?(user),
         rate_limited: rate_limited?,
         captcha_validation_performed: captcha_validation_performed?,
-        valid_captcha_result: valid_captcha_result?,
+        valid_captcha_result: recaptcha_response.success?,
         bad_password_count: session[:bad_password_count].to_i,
         sp_request_url_present: sp_session[:request_url].present?,
         remember_device: remember_device_cookie.present?,
@@ -261,9 +272,9 @@ module Users
     end
 
     def pending_account_reset_request
-      AccountReset::FindPendingRequestForUser.new(
+      AccountReset::PendingRequestForUser.new(
         current_user,
-      ).call
+      ).get_account_reset_request
     end
 
     def override_csp_for_google_analytics
@@ -307,6 +318,10 @@ module Users
     def randomize_check_password?
       SecureRandom.random_number(IdentityConfig.store.compromised_password_randomizer_value) >=
         IdentityConfig.store.compromised_password_randomizer_threshold
+    end
+
+    def log_captcha_failures_only?
+      IdentityConfig.store.sign_in_recaptcha_log_failures_only
     end
   end
 

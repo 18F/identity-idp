@@ -4,10 +4,16 @@ module Users
   class TwoFactorAuthenticationSetupController < ApplicationController
     include UserAuthenticator
     include MfaSetupConcern
+    include AbTestingConcern
+    include ApplicationHelper
+    include ThreatMetrixHelper
+    include ThreatMetrixConcern
 
     before_action :authenticate_user
     before_action :confirm_user_authenticated_for_2fa_setup
     before_action :check_if_possible_piv_user
+    before_action :override_csp_for_threat_metrix,
+                  if: -> { FeatureManagement.account_creation_device_profiling_collecting_enabled? }
 
     delegate :enabled_mfa_methods_count, to: :mfa_context
 
@@ -18,18 +24,21 @@ module Users
         enabled_mfa_methods_count:,
         gov_or_mil_email: fed_or_mil_email?,
       )
+      render :index, locals: threatmetrix_variables
     end
 
     def create
       result = submit_form
-      analytics.user_registration_2fa_setup(**result.to_h)
+      analytics.user_registration_2fa_setup(**result)
+      user_session[:platform_authenticator_available] =
+        params[:platform_authenticator_available] == 'true'
 
       if result.success?
         process_valid_form
       else
         flash.now[:error] = result.first_error_message
         @presenter = two_factor_options_presenter
-        render :index
+        render :index, locals: threatmetrix_variables
       end
     end
 
@@ -65,6 +74,7 @@ module Users
         show_skip_additional_mfa_link: show_skip_additional_mfa_link?,
         after_mfa_setup_path:,
         return_to_sp_cancel_path:,
+        desktop_ft_ab_test: in_ab_test_bucket?,
       )
     end
 
@@ -77,6 +87,25 @@ module Users
       params.require(:two_factor_options_form).permit(:selection, selection: [])
     rescue ActionController::ParameterMissing
       ActionController::Parameters.new(selection: [])
+    end
+
+    def in_ab_test_bucket?
+      ab_test_bucket(:DESKTOP_FT_UNLOCK_SETUP) == (:desktop_ft_unlock_option_shown)
+    end
+
+    def threatmetrix_variables
+      return {} unless FeatureManagement.account_creation_device_profiling_collecting_enabled?
+      session_id = generate_threatmetrix_session_id
+
+      {
+        threatmetrix_session_id: session_id,
+        threatmetrix_javascript_urls: threatmetrix_javascript_urls(session_id),
+        threatmetrix_iframe_url: threatmetrix_iframe_url(session_id),
+      }
+    end
+
+    def generate_threatmetrix_session_id
+      user_session[:sign_up_threatmetrix_session_id] ||= SecureRandom.uuid
     end
   end
 end

@@ -25,6 +25,13 @@ RSpec.describe 'idv/agreement/show' do
     expect(rendered).to have_css(selector)
   end
 
+  it 'renders a step indicator with Getting started as the current step' do
+    expect(view.content_for(:pre_flash_content)).to have_css(
+      '.step-indicator__step--current',
+      text: t('step_indicator.flows.idv.getting_started'),
+    )
+  end
+
   it 'renders a link to the privacy & security page' do
     expect(rendered).to have_link(
       t('doc_auth.instructions.learn_more'),

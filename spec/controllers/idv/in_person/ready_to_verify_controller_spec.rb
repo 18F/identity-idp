@@ -7,10 +7,10 @@ RSpec.describe Idv::InPerson::ReadyToVerifyController do
 
   before do
     stub_analytics
-    allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
-      and_return(in_person_proofing_enabled)
-    allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx).
-      and_return(in_person_proofing_enforce_tmx)
+    allow(IdentityConfig.store).to receive(:in_person_proofing_enabled)
+      .and_return(in_person_proofing_enabled)
+    allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx)
+      .and_return(in_person_proofing_enforce_tmx)
   end
 
   describe 'before_actions' do
@@ -32,6 +32,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyController do
 
     context 'with in person proofing enabled' do
       let(:in_person_proofing_enabled) { true }
+      let(:ipp_post_office_closed_alert_enabled) { false }
 
       context 'authenticated' do
         before do
@@ -44,7 +45,6 @@ RSpec.describe Idv::InPerson::ReadyToVerifyController do
 
         context 'with enrollment' do
           let(:user) { create(:user, :with_pending_in_person_enrollment) }
-          let(:profile) { create(:profile, :with_pii, user: user) }
 
           it 'renders show template' do
             expect(response).to render_template :show
@@ -103,8 +103,8 @@ RSpec.describe Idv::InPerson::ReadyToVerifyController do
             before do
               resolved_authn_context_result = Vot::Parser.new(vector_of_trust: 'Pb').parse
 
-              allow(controller).to receive(:resolved_authn_context_result).
-                and_return(resolved_authn_context_result)
+              allow(controller).to receive(:resolved_authn_context_result)
+                .and_return(resolved_authn_context_result)
             end
 
             it 'evaluates to In Person Proofing' do
@@ -118,14 +118,27 @@ RSpec.describe Idv::InPerson::ReadyToVerifyController do
             before do
               resolved_authn_context_result = Vot::Parser.new(vector_of_trust: 'Pe').parse
 
-              allow(controller).to receive(:resolved_authn_context_result).
-                and_return(resolved_authn_context_result)
+              allow(controller).to receive(:resolved_authn_context_result)
+                .and_return(resolved_authn_context_result)
             end
 
             it 'evaluates to Enhanced IPP' do
               response
 
               expect(assigns(:is_enhanced_ipp)).to be true
+            end
+          end
+
+          context 'with in_person_proofing_post_office_closed_alert_enabled' do
+            let(:ipp_post_office_closed_alert_enabled) { true }
+            before do
+              allow(IdentityConfig.store)
+                .to receive(:in_person_proofing_post_office_closed_alert_enabled)
+                .and_return(ipp_post_office_closed_alert_enabled)
+            end
+
+            it 'renders the show template' do
+              expect(response).to render_template :show
             end
           end
         end

@@ -130,8 +130,8 @@ RSpec.describe Idv::WelcomeController do
     end
 
     it 'creates a document capture session' do
-      expect { put :update }.
-        to change { subject.idv_session.document_capture_session_uuid }.from(nil)
+      expect { put :update }
+        .to change { subject.idv_session.document_capture_session_uuid }.from(nil)
     end
 
     context 'with previous establishing in-person enrollments' do

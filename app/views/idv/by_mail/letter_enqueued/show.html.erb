@@ -19,7 +19,7 @@
 
 <%= render PageHeadingComponent.new.with_content(t('idv.titles.come_back_later')) %>
 
-<p><%= t('idv.gpo.will_send_to') %></p>
+<p><%= t('idv.gpo.will_send_to', app_name: APP_NAME) %></p>
 
 <div class="padding-y-1">
   <% @presenter.address_lines.each do |address_line| %>
@@ -27,13 +27,27 @@
   <% end %>
 </div>
 
-<p class="padding-top-3 padding-bottom-3">
-  <%= t('idv.messages.come_back_later_html') %>
-</p>
+<% if @presenter.show_sp_contact_instructions? %>
+  <ul class="usa-list">
+    <li>
+      <%= t('idv.messages.come_back_later') %>
+    </li>
+    <li>
+      <%= t(
+            'idv.messages.contact_sp_html',
+            sp_link_html: link_to(@presenter.sp_name, @presenter.button_destination),
+          ) %>
+    </li>
+  </ul>
+<% else %>
+  <p class="margin-top-2">
+    <%= t('idv.messages.come_back_later') %>
+  </p>
+<% end %>
 
 <%= link_to(
-      @presenter.button_text,
+      t('idv.cancel.actions.exit', app_name: APP_NAME),
       @presenter.button_destination,
-      class: 'usa-button usa-button--big usa-button--wide',
+      class: 'usa-button usa-button--big usa-button--wide margin-top-2',
     )
 %>

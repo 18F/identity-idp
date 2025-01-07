@@ -228,28 +228,52 @@
   </section>
 <% end %>
 
+<%# Alert %>
+<% if @show_closed_post_office_banner %>
+  <%= render AlertComponent.new(type: :warning, class: 'margin-y-4', text_tag: :div) do %>
+    <p class="margin-bottom-1 margin-top-0 h3"><strong><%= t('in_person_proofing.post_office_closed.heading') %></strong></p>
+    <p><%= t('in_person_proofing.post_office_closed.body') %></p>
+  <% end %>
+<% end %>
+
+<% if !@is_enhanced_ipp %>
+  <h3><%= t('in_person_proofing.body.location.change_location_heading') %></h3>
+  <p class="margin-bottom-4">
+    <%= t(
+          'in_person_proofing.body.location.change_location_info_html',
+          find_other_locations_link_html: link_to(
+            t('in_person_proofing.body.location.change_location_find_other_locations'),
+            help_center_redirect_url(
+              category: 'verify-your-identity',
+              article: 'verify-your-identity-in-person/find-a-participating-post-office',
+            ),
+          ),
+        ) %>
+  </p>
+<% end %>
+
 <h2 class="margin-bottom-2"><%= t('in_person_proofing.body.expect.heading') %></h2>
 <p><%= t('in_person_proofing.body.expect.info') %></p>
 
 <p class="margin-top-3 margin-bottom-4">
-  <% if @presenter.service_provider_homepage_url.present? %>
-    <%= render ClickObserverComponent.new(event_name: 'IdV: user clicked sp link on ready to verify page') do %>
-      <%= t(
-            'in_person_proofing.body.barcode.return_to_partner_html',
-            link_html: link_to(
-              t(
-                'in_person_proofing.body.barcode.return_to_partner_link',
-                sp_name: @presenter.sp_name,
-              ),
-              @presenter.service_provider_homepage_url,
-            ),
-          ) %>
-    <% end %>
-  <% else %>
+  <% if @presenter.service_provider_homepage_url.blank? %>  
     <%= t('in_person_proofing.body.barcode.close_window') %>
   <% end %>
 </p>
 
 <%= render PageFooterComponent.new do %>
-  <%= link_to t('in_person_proofing.body.barcode.cancel_link_text'), idv_cancel_path(step: 'barcode') %>
+  <% if @presenter.service_provider_homepage_url.present? %>
+    <%= render ClickObserverComponent.new(event_name: 'IdV: user clicked sp link on ready to verify page') do %>
+      <%= link_to(
+            t(
+              'in_person_proofing.body.barcode.return_to_partner_link',
+              sp_name: @presenter.sp_name,
+            ),
+            @presenter.service_provider_homepage_url,
+            class: 'display-inline-block padding-bottom-1',
+          ) %>
+    <% end %>
+    <br />
+  <% end %>
+  <%= link_to t('in_person_proofing.body.barcode.cancel_link_text'), idv_cancel_path(step: 'barcode'), class: 'display-inline-block padding-top-1' %>
 <% end %>

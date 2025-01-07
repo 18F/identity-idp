@@ -53,8 +53,8 @@ RSpec.describe 'Setup PIV/CAC after sign-in' do
       http://localhost:7654 https://example.com
     STR
 
-    expect(page.response_headers['Content-Security-Policy']).
-      to(include(expected_form_action))
+    expect(page.response_headers['Content-Security-Policy'])
+      .to(include(expected_form_action))
   end
 
   scenario 'user opts to add piv/cac card and has to reauthenticate on remembered device' do
@@ -83,14 +83,14 @@ RSpec.describe 'Setup PIV/CAC after sign-in' do
     click_submit_default
 
     # Add PIV/CAC after sign-in
-    expect(current_path).to eq login_add_piv_cac_prompt_path
+    expect(page).to have_current_path login_add_piv_cac_prompt_path
     stub_piv_cac_service
     fill_in 'name', with: 'Card 1'
     click_on t('forms.piv_cac_setup.submit')
     follow_piv_cac_redirect
 
     expect(page).to have_content(t('notices.piv_cac_configured'))
-    expect(current_path).to eq sign_up_completed_path
+    expect(page).to have_current_path sign_up_completed_path
   end
 
   def perform_steps_to_get_to_add_piv_cac_during_sign_up(sp: :oidc)
@@ -100,7 +100,7 @@ RSpec.describe 'Setup PIV/CAC after sign-in' do
     fill_in_credentials_and_submit(user.email, user.password)
     fill_in_code_with_last_phone_otp
     click_submit_default
-    expect(current_path).to eq login_add_piv_cac_prompt_path
+    expect(page).to have_current_path login_add_piv_cac_prompt_path
     fill_in 'name', with: 'Card 1'
   end
 

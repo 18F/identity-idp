@@ -3,7 +3,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 ruby "~> #{File.read(File.join(__dir__, '.ruby-version')).strip}"
 
-gem 'rails', '~> 7.1.3'
+gem 'rails', '~> 7.2.1'
 
 gem 'ahoy_matey', '~> 3.0'
 # pod identity requires 3.188.0
@@ -34,9 +34,9 @@ gem 'faker'
 gem 'faraday-retry'
 gem 'fugit'
 gem 'foundation_emails'
-gem 'good_job', '~> 3.0'
+gem 'good_job', '~> 4.0'
 gem 'http_accept_language'
-gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v4.0.0'
+gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v4.4.1'
 gem 'identity-logging', github: '18F/identity-logging', tag: 'v0.1.1'
 gem 'identity_validations', github: '18F/identity-validations', tag: 'v0.7.2'
 gem 'jsbundling-rails', '~> 1.1.2'
@@ -66,7 +66,7 @@ gem 'rack-headers_filter'
 gem 'rack-timeout', require: false
 gem 'redacted_struct'
 gem 'redis', '>= 3.2.0'
-gem 'redis-session-store', github: '18F/redis-session-store', tag: 'v1.0.1-18f'
+gem 'redis-session-store', github: '18F/redis-session-store', tag: 'v1.0.2-18f'
 gem 'retries'
 gem 'rexml', '~> 3.3'
 gem 'rotp', '~> 6.3', '>= 6.3.0'
@@ -74,7 +74,7 @@ gem 'rqrcode'
 gem 'ruby-progressbar'
 gem 'ruby-saml'
 gem 'safe_target_blank', '>= 1.0.2'
-gem 'saml_idp', github: '18F/saml_idp', tag: '0.23.0-18f'
+gem 'saml_idp', github: '18F/saml_idp', tag: '0.23.4-18f'
 gem 'scrypt'
 gem 'simple_form', '>= 5.0.2'
 gem 'stringex', require: false
@@ -85,13 +85,13 @@ gem 'valid_email', '>= 0.1.3', github: 'hallelujah/valid_email', ref: '486b860'
 gem 'view_component', '~> 3.0'
 gem 'webauthn', '~> 2.5.2'
 gem 'xmldsig', '~> 0.6'
-gem 'xmlenc', '~> 0.7', '>= 0.7.1'
+gem 'xmlenc', '0.8.0'
 gem 'yard', require: false
 gem 'zlib', require: false
 
 # This version of the zxcvbn gem matches the data and behavior of the zxcvbn NPM package.
 # It should not be updated without verifying that the behavior still matches JS version 4.4.2.
-gem 'zxcvbn', '0.1.9'
+gem 'zxcvbn', '0.1.12'
 
 group :development do
   gem 'better_errors', '>= 2.5.1'
@@ -105,7 +105,7 @@ group :development, :test do
   gem 'brakeman', require: false
   gem 'bullet', '~> 7.0'
   gem 'capybara-webmock', git: 'https://github.com/hashrocket/capybara-webmock.git', ref: 'd3f3b7c'
-  gem 'erb_lint', '~> 0.5.0', require: false
+  gem 'erb_lint', '~> 0.7.0', require: false
   gem 'i18n-tasks', '~> 1.0'
   gem 'knapsack'
   gem 'listen'
@@ -117,11 +117,13 @@ group :development, :test do
   gem 'pry-rails'
   gem 'psych'
   gem 'rspec', '~> 3.13.0'
-  gem 'rspec-rails', '~> 6.0'
-  gem 'rubocop', '~> 1.62.0', require: false
-  gem 'rubocop-performance', '~> 1.20.2', require: false
-  gem 'rubocop-rails', '>= 2.5.2', require: false
-  gem 'rubocop-rspec', require: false
+  gem 'rspec-rails', '~> 7.0'
+  gem 'rubocop', '~> 1.69.1', require: false
+  gem 'rubocop-performance', '~> 1.23.0', require: false
+  gem 'rubocop-rails', '~> 2.27.0', require: false
+  gem 'rubocop-rspec', '~> 3.2.0', require: false
+  gem 'rubocop-capybara', require: false
+  gem 'sqlite3', require: false
 end
 
 group :test do

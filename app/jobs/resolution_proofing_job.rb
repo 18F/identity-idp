@@ -25,6 +25,7 @@ class ResolutionProofingJob < ApplicationJob
     service_provider_issuer: nil,
     threatmetrix_session_id: nil,
     request_ip: nil,
+    proofing_components: nil, # rubocop:disable Lint/UnusedMethodArgument
     # DEPRECATED ARGUMENTS
     should_proof_state_id: false # rubocop:disable Lint/UnusedMethodArgument
   )
@@ -74,15 +75,26 @@ class ResolutionProofingJob < ApplicationJob
       timing: timer.results,
     )
 
-    if IdentityConfig.store.idv_socure_shadow_mode_enabled
+    if use_shadow_mode?(user:)
       SocureShadowModeProofingJob.perform_later(
-        document_capture_session_result_id: document_capture_session.result_id,
+        document_capture_session_result_id: document_capture_session&.result_id,
         encrypted_arguments:,
         service_provider_issuer:,
         user_email: user_email_for_proofing(user),
         user_uuid: user.uuid,
       )
     end
+  end
+
+  def use_shadow_mode?(user:)
+    IdentityConfig.store.idv_socure_shadow_mode_enabled &&
+      AbTests::SOCURE_IDV_SHADOW_MODE.bucket(
+        request: nil,
+        service_provider: nil,
+        session: nil,
+        user:,
+        user_session: nil,
+      ) == :shadow_mode_enabled
   end
 
   private
@@ -108,7 +120,6 @@ class ResolutionProofingJob < ApplicationJob
     )
 
     log_threatmetrix_info(result.device_profiling_result, user)
-    add_threatmetrix_proofing_component(user.id, result.device_profiling_result) if user.present?
 
     CallbackLogData.new(
       device_profiling_success: result.device_profiling_result.success?,
@@ -120,7 +131,7 @@ class ResolutionProofingJob < ApplicationJob
   end
 
   def user_email_for_proofing(user)
-    user.confirmed_email_addresses.first.email
+    user.last_sign_in_email_address.email
   end
 
   def log_threatmetrix_info(threatmetrix_result, user)
@@ -138,12 +149,5 @@ class ResolutionProofingJob < ApplicationJob
 
   def progressive_proofer
     @progressive_proofer ||= Proofing::Resolution::ProgressiveProofer.new
-  end
-
-  def add_threatmetrix_proofing_component(user_id, threatmetrix_result)
-    ProofingComponent.
-      create_or_find_by(user_id: user_id).
-      update(threatmetrix: FeatureManagement.proofing_device_profiling_collecting_enabled?,
-             threatmetrix_review_status: threatmetrix_result.review_status)
   end
 end

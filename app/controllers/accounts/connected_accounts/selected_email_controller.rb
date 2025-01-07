@@ -12,7 +12,9 @@ module Accounts
       def edit
         @identity = identity
         @select_email_form = build_select_email_form
+        @can_add_email = EmailPolicy.new(current_user).can_add_email?
         analytics.sp_select_email_visited
+        @email_id = @identity.email_address_id || last_email
       end
 
       def update
@@ -20,9 +22,10 @@ module Accounts
 
         result = @select_email_form.submit(form_params)
 
-        analytics.sp_select_email_submitted(**result.to_h)
+        analytics.sp_select_email_submitted(**result)
 
         if result.success?
+          flash[:email_updated_identity_id] = identity.id
           redirect_to account_connected_accounts_path
         else
           flash[:error] = result.first_error_message
@@ -47,6 +50,10 @@ module Accounts
       def identity
         return @identity if defined?(@identity)
         @identity = current_user.identities.find_by(id: params[:identity_id])
+      end
+
+      def last_email
+        current_user.last_sign_in_email_address.id
       end
     end
   end

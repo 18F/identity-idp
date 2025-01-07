@@ -30,7 +30,7 @@ module Users
         result = personal_key_form.submit
 
         analytics.personal_key_reactivation_submitted(
-          **result.to_h,
+          **result,
           pii_like_keypaths: [
             [:errors, :personal_key],
             [:error_details, :personal_key],

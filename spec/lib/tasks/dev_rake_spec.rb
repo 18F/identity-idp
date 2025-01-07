@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'rake'
 
-RSpec.describe 'dev rake tasks', allowed_extra_analytics: [:*] do
+RSpec.describe 'dev rake tasks' do
   include UspsIppHelper
 
   let(:env) do
@@ -346,17 +346,17 @@ RSpec.describe 'dev rake tasks', allowed_extra_analytics: [:*] do
       stub_request(
         :post,
         %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant},
-      ).to_raise(Faraday::TimeoutError).times(2).then.
-        to_return(
+      ).to_raise(Faraday::TimeoutError).times(2).then
+        .to_return(
           status: 200,
           body: UspsInPersonProofing::Mock::Fixtures.request_enroll_response,
           headers: { 'content-type' => 'application/json' },
         ).times(1)
 
-      expect(UspsInPersonProofing::EnrollmentHelper).
-        to receive(:schedule_in_person_enrollment).and_call_original.exactly(3).times
-      expect(Rails.logger).to receive(:error).
-        with('Exception raised while enrolling user: Exception from WebMock').exactly(2).times
+      expect(UspsInPersonProofing::EnrollmentHelper)
+        .to receive(:schedule_in_person_enrollment).and_call_original.exactly(3).times
+      expect(Rails.logger).to receive(:error)
+        .with('Exception raised while enrolling user: Exception from WebMock').exactly(2).times
 
       Rake::Task['dev:random_in_person_users'].invoke
 
@@ -374,18 +374,18 @@ RSpec.describe 'dev rake tasks', allowed_extra_analytics: [:*] do
       stub_request(
         :post,
         %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant},
-      ).
-        to_return(
+      )
+        .to_return(
           status: 200,
           body: UspsInPersonProofing::Mock::Fixtures.request_enroll_response,
           headers: { 'content-type' => 'application/json' },
-        ).
-        then.to_raise(Faraday::TimeoutError).times(5)
+        )
+        .then.to_raise(Faraday::TimeoutError).times(5)
 
-      expect(UspsInPersonProofing::EnrollmentHelper).
-        to receive(:schedule_in_person_enrollment).and_call_original.exactly(6).times
-      expect(Rails.logger).to receive(:error).
-        with('Exception raised while enrolling user: Exception from WebMock').exactly(5).times
+      expect(UspsInPersonProofing::EnrollmentHelper)
+        .to receive(:schedule_in_person_enrollment).and_call_original.exactly(6).times
+      expect(Rails.logger).to receive(:error)
+        .with('Exception raised while enrolling user: Exception from WebMock').exactly(5).times
 
       expect do
         Rake::Task['dev:random_in_person_users'].invoke
@@ -404,18 +404,18 @@ RSpec.describe 'dev rake tasks', allowed_extra_analytics: [:*] do
       stub_request(
         :post,
         %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant},
-      ).
-        to_return(
+      )
+        .to_return(
           status: 200,
           body: UspsInPersonProofing::Mock::Fixtures.request_enroll_response,
           headers: { 'content-type' => 'application/json' },
-        ).
-        then.to_raise(Faraday::TimeoutError).times(3)
+        )
+        .then.to_raise(Faraday::TimeoutError).times(3)
 
-      expect(UspsInPersonProofing::EnrollmentHelper).
-        to receive(:schedule_in_person_enrollment).and_call_original.exactly(4).times
-      expect(Rails.logger).to receive(:error).
-        with('Exception raised while enrolling user: Exception from WebMock').exactly(3).times
+      expect(UspsInPersonProofing::EnrollmentHelper)
+        .to receive(:schedule_in_person_enrollment).and_call_original.exactly(4).times
+      expect(Rails.logger).to receive(:error)
+        .with('Exception raised while enrolling user: Exception from WebMock').exactly(3).times
 
       expect do
         Rake::Task['dev:random_in_person_users'].invoke
@@ -431,14 +431,14 @@ RSpec.describe 'dev rake tasks', allowed_extra_analytics: [:*] do
       stub_request(
         :post,
         %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant},
-      ).to_raise(Faraday::TimeoutError).times(2).then.
-        to_return(
+      ).to_raise(Faraday::TimeoutError).times(2).then
+        .to_return(
           status: 200,
           body: UspsInPersonProofing::Mock::Fixtures.request_enroll_response,
           headers: { 'content-type' => 'application/json' },
         ).times(1)
-      expect(UspsInPersonProofing::EnrollmentHelper).
-        to receive(:schedule_in_person_enrollment).and_call_original.exactly(3).times
+      expect(UspsInPersonProofing::EnrollmentHelper)
+        .to receive(:schedule_in_person_enrollment).and_call_original.exactly(3).times
       expect(Kernel).to receive(:sleep).exactly(3).times.with(0.2)
 
       Rake::Task['dev:random_in_person_users'].invoke

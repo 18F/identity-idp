@@ -15,9 +15,9 @@ RSpec.shared_examples 'a lexisnexis rdp proofer' do
     allow(response).to receive(:product_list).and_return([])
 
     allow(verification_request).to receive(:send_request).and_return(response)
-    allow(verification_request.class).to receive(:new).
-      with(applicant: applicant, config: kind_of(Proofing::LexisNexis::Config)).
-      and_return(verification_request)
+    allow(verification_request.class).to receive(:new)
+      .with(applicant: applicant, config: kind_of(Proofing::LexisNexis::Config))
+      .and_return(verification_request)
   end
 
   describe '#proof' do
@@ -66,19 +66,19 @@ RSpec.shared_examples 'a lexisnexis request' do |basic_auth: true|
         credentials = Base64.strict_encode64('test_username:test_password')
         expected_value = "Basic #{credentials}"
 
-        stub_request(:post, subject.url).
-          to_return(status: 200, body: response_body)
+        stub_request(:post, subject.url)
+          .to_return(status: 200, body: response_body)
 
         subject.send_request
 
-        expect(a_request(:post, subject.url).with(headers: { 'Authorization' => expected_value })).
-          to have_been_requested
+        expect(a_request(:post, subject.url).with(headers: { 'Authorization' => expected_value }))
+          .to have_been_requested
       end
     end
 
     it 'returns a response object initialized with the http response' do
-      stub_request(:post, subject.url).
-        to_return(status: 200, body: response_body)
+      stub_request(:post, subject.url)
+        .to_return(status: 200, body: response_body)
 
       ln_response = subject.send_request
       expect(ln_response).to be_a(Proofing::LexisNexis::Response)

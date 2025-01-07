@@ -43,8 +43,10 @@ module Users
       @need_to_set_up_additional_mfa = need_to_set_up_additional_mfa?
 
       if result.errors.present?
+        increment_mfa_selection_attempt_count(webauthn_auth_method)
         analytics.webauthn_setup_submitted(
           platform_authenticator: form.platform_authenticator?,
+          in_account_creation_flow: user_session[:in_account_creation_flow] || false,
           errors: result.errors,
           success: false,
         )
@@ -54,6 +56,7 @@ module Users
     end
 
     def confirm
+      increment_mfa_selection_attempt_count(webauthn_auth_method)
       form = WebauthnSetupForm.new(
         user: current_user,
         user_session: user_session,
@@ -71,9 +74,9 @@ module Users
       )
       properties = result.to_h.merge(analytics_properties)
       analytics.multi_factor_auth_setup(**properties)
-
       if result.success?
         process_valid_webauthn(form)
+        user_session.delete(:mfa_attempts)
       else
         flash.now[:error] = result.first_error_message
         render :new
@@ -86,7 +89,15 @@ module Users
       if platform_authenticator? && in_account_creation_flow? &&
          current_user.webauthn_configurations.platform_authenticators.present?
         redirect_to authentication_methods_setup_path
-     end
+      end
+    end
+
+    def webauthn_auth_method
+      if @platform_authenticator
+        TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM
+      else
+        TwoFactorAuthenticatable::AuthMethod::WEBAUTHN
+      end
     end
 
     def platform_authenticator?
@@ -119,6 +130,7 @@ module Users
       create_user_event(:webauthn_key_added)
       analytics.webauthn_setup_submitted(
         platform_authenticator: form.platform_authenticator?,
+        in_account_creation_flow: user_session[:in_account_creation_flow] || false,
         success: true,
       )
       handle_remember_device_preference(params[:remember_device])
@@ -126,13 +138,23 @@ module Users
         handle_valid_verification_for_confirmation_context(
           auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM,
         )
-        Funnel::Registration::AddMfa.call(current_user.id, 'webauthn_platform', analytics)
+        Funnel::Registration::AddMfa.call(
+          current_user.id,
+          'webauthn_platform',
+          analytics,
+          threatmetrix_attrs,
+        )
         flash[:success] = t('notices.webauthn_platform_configured')
       else
         handle_valid_verification_for_confirmation_context(
           auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN,
         )
-        Funnel::Registration::AddMfa.call(current_user.id, 'webauthn', analytics)
+        Funnel::Registration::AddMfa.call(
+          current_user.id,
+          'webauthn',
+          analytics,
+          threatmetrix_attrs,
+        )
         flash[:success] = t('notices.webauthn_configured')
       end
       redirect_to next_setup_path || after_mfa_setup_path
@@ -141,6 +163,8 @@ module Users
     def analytics_properties
       {
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
+        webauthn_platform_recommended: user_session[:webauthn_platform_recommended],
+        attempts: mfa_attempts_count,
       }
     end
 

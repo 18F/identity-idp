@@ -43,18 +43,18 @@ RSpec.describe DeleteUserEmailForm do
       end
 
       it 'notifies subscribers that the identifier was recycled and the email changed' do
-        expect(PushNotification::HttpPush).to receive(:deliver).once.
-          with(PushNotification::IdentifierRecycledEvent.new(
+        expect(PushNotification::HttpPush).to receive(:deliver).once
+          .with(PushNotification::IdentifierRecycledEvent.new(
             user: user,
             email: email_address.email,
           )).ordered
-        expect(PushNotification::HttpPush).to receive(:deliver).once.
-          with(PushNotification::EmailChangedEvent.new(
+        expect(PushNotification::HttpPush).to receive(:deliver).once
+          .with(PushNotification::EmailChangedEvent.new(
             user: user,
             email: email_address.email,
           )).ordered
-        expect(PushNotification::HttpPush).to receive(:deliver).once.
-          with(PushNotification::RecoveryInformationChangedEvent.new(
+        expect(PushNotification::HttpPush).to receive(:deliver).once
+          .with(PushNotification::RecoveryInformationChangedEvent.new(
             user: user,
           )).ordered
 

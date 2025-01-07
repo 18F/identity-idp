@@ -5,6 +5,7 @@ module Idv
     include Idv::AvailabilityConcern
     include IdvStepConcern
     include RenderConditionConcern
+    include DocAuthVendorConcern
 
     before_action :confirm_step_allowed
     before_action :set_how_to_verify_presenter
@@ -34,13 +35,11 @@ module Idv
       if result.success?
         if how_to_verify_form_params['selection'] == Idv::HowToVerifyForm::REMOTE
           idv_session.opted_in_to_in_person_proofing = false
-          idv_session.skip_doc_auth = false
           idv_session.skip_doc_auth_from_how_to_verify = false
           redirect_to idv_hybrid_handoff_url
         else
           idv_session.opted_in_to_in_person_proofing = true
           idv_session.flow_path = 'standard'
-          idv_session.skip_doc_auth = true
           idv_session.skip_doc_auth_from_how_to_verify = true
           redirect_to idv_document_capture_url
         end
@@ -65,7 +64,6 @@ module Idv
           idv_session.service_provider&.in_person_proofing_enabled
         end,
         undo_step: ->(idv_session:, user:) {
-                     idv_session.skip_doc_auth = nil
                      idv_session.skip_doc_auth_from_how_to_verify = nil
                      idv_session.opted_in_to_in_person_proofing = nil
                    },
@@ -89,8 +87,16 @@ module Idv
     end
 
     def set_how_to_verify_presenter
+      @mobile_required = mobile_required?
       @selfie_required = idv_session.selfie_check_required
-      @presenter = Idv::HowToVerifyPresenter.new(selfie_check_required: @selfie_required)
+      @presenter = Idv::HowToVerifyPresenter.new(
+        mobile_required: @mobile_required,
+        selfie_check_required: @selfie_required,
+      )
+    end
+
+    def mobile_required?
+      idv_session.selfie_check_required || doc_auth_vendor == Idp::Constants::Vendors::SOCURE
     end
   end
 end

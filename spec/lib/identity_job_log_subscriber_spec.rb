@@ -14,6 +14,8 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
       expect(json['job_class']).to eq('AddressProofingJob')
       expect(json.key?('trace_id'))
       expect(json.key?('duration_ms'))
+      expect(json.key?('cpu_time_ms'))
+      expect(json.key?('idle_time_ms'))
       expect(json.key?('job_id'))
       expect(json.key?('timestamp'))
     end
@@ -65,6 +67,8 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
         'RetryEvent',
         payload: { wait: 1, job: double('Job', job_id: '1', queue_name: 'Default', arguments: []) },
         duration: 1,
+        cpu_time: 1,
+        idle_time: 1,
         name: 'TestEvent',
       )
 
@@ -85,6 +89,8 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
           error: double('Exception'),
         },
         duration: 1,
+        cpu_time: 1,
+        idle_time: 1,
         name: 'TestEvent',
       )
 
@@ -120,6 +126,8 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
 
         expect(payload).to match(
           duration_ms: kind_of(Numeric),
+          cpu_time_ms: kind_of(Numeric),
+          idle_time_ms: kind_of(Numeric),
           exception_class_warn: 'ActiveRecord::RecordNotUnique',
           exception_message_warn: /(cron_key, cron_at)/,
           job_class: 'HeartbeatJob',
@@ -156,6 +164,8 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
 
         expect(payload).to match(
           duration_ms: kind_of(Float),
+          cpu_time_ms: kind_of(Numeric),
+          idle_time_ms: kind_of(Numeric),
           exception_class_warn: 'Errno::ECONNREFUSED',
           exception_message_warn: 'Connection refused',
           job_class: 'RiscDeliveryJob',
@@ -193,6 +203,8 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
 
         expect(payload).to match(
           duration_ms: kind_of(Float),
+          cpu_time_ms: kind_of(Numeric),
+          idle_time_ms: kind_of(Numeric),
           halted: true,
           job_class: 'RiscDeliveryJob',
           job_id: job.job_id,
@@ -229,6 +241,8 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
 
         expect(payload).to match(
           duration_ms: kind_of(Float),
+          cpu_time_ms: kind_of(Numeric),
+          idle_time_ms: kind_of(Numeric),
           timestamp: kind_of(String),
           name: 'enqueue.active_job',
           job_class: 'RiscDeliveryJob',
@@ -292,6 +306,8 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
 
         expect(payload).to match(
           duration_ms: kind_of(Float),
+          cpu_time_ms: kind_of(Numeric),
+          idle_time_ms: kind_of(Numeric),
           exception_class_warn: 'Errno::ECONNREFUSED',
           exception_message_warn: 'Connection refused',
           job_class: 'RiscDeliveryJob',
@@ -350,6 +366,8 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
 
         expect(payload).to match(
           duration_ms: kind_of(Float),
+          cpu_time_ms: kind_of(Numeric),
+          idle_time_ms: kind_of(Numeric),
           halted: true,
           job_class: 'RiscDeliveryJob',
           job_id: job.job_id,
@@ -386,6 +404,8 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
 
         expect(payload).to match(
           duration_ms: kind_of(Float),
+          cpu_time_ms: kind_of(Numeric),
+          idle_time_ms: kind_of(Numeric),
           timestamp: kind_of(String),
           name: 'enqueue.active_job',
           job_class: 'RiscDeliveryJob',
@@ -428,6 +448,8 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
 
         expect(payload).to match(
           duration_ms: kind_of(Float),
+          cpu_time_ms: kind_of(Numeric),
+          idle_time_ms: kind_of(Numeric),
           timestamp: kind_of(String),
           name: 'enqueue.active_job',
           job_class: 'RiscDeliveryJob',

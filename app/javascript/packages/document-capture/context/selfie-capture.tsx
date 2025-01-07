@@ -10,15 +10,21 @@ interface SelfieCaptureProps {
    */
   isSelfieDesktopTestMode: boolean;
   /**
-   * Specify whether to seperate seflie upload and document upload into seperate form steps/pages
+   * Specify whether to show help and an action button before showing
+   * the capture component.
    */
-  docAuthSeparatePagesEnabled: boolean;
+  showHelpInitially: boolean;
+  /**
+   * Specify whether we should try to capture using Acuant immediately
+   */
+  immediatelyBeginCapture: boolean;
 }
 
 const SelfieCaptureContext = createContext<SelfieCaptureProps>({
   isSelfieCaptureEnabled: false,
   isSelfieDesktopTestMode: false,
-  docAuthSeparatePagesEnabled: false,
+  showHelpInitially: true,
+  immediatelyBeginCapture: false,
 });
 
 SelfieCaptureContext.displayName = 'SelfieCaptureContext';

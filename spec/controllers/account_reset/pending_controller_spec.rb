@@ -34,8 +34,8 @@ RSpec.describe AccountReset::PendingController do
           true,
           accumulate_on: :hours,
         )
-        expect(controller.view_assigns['account_reset_deletion_period_interval']).
-          to eq(time_in_hours)
+        expect(controller.view_assigns['account_reset_deletion_period_interval'])
+          .to eq(time_in_hours)
       end
     end
 
@@ -43,8 +43,8 @@ RSpec.describe AccountReset::PendingController do
       let(:user) { create(:user, :fraud_review_pending) }
       context 'fraud wait period not set' do
         before do
-          allow(IdentityConfig.store).to receive(:account_reset_fraud_user_wait_period_days).
-            and_return(nil)
+          allow(IdentityConfig.store).to receive(:account_reset_fraud_user_wait_period_days)
+            .and_return(nil)
         end
 
         it 'should have @account_reset_deletion_period to match regular wait period' do
@@ -58,8 +58,8 @@ RSpec.describe AccountReset::PendingController do
             true,
             accumulate_on: :hours,
           )
-          expect(controller.view_assigns['account_reset_deletion_period_interval']).
-            to eq(time_in_hours)
+          expect(controller.view_assigns['account_reset_deletion_period_interval'])
+            .to eq(time_in_hours)
         end
       end
 
@@ -74,8 +74,8 @@ RSpec.describe AccountReset::PendingController do
           true,
           accumulate_on: :days,
         )
-        expect(controller.view_assigns['account_reset_deletion_period_interval']).
-          to eq(time_in_hours)
+        expect(controller.view_assigns['account_reset_deletion_period_interval'])
+          .to eq(time_in_hours)
       end
     end
   end
@@ -87,6 +87,10 @@ RSpec.describe AccountReset::PendingController do
       post :cancel
 
       expect(account_reset_request.reload.cancelled_at).to_not be_nil
+      expect_delivered_email(
+        to: [user.email_addresses.first.email],
+        subject: t('user_mailer.account_reset_cancel.subject'),
+      )
     end
 
     context 'when the account reset request does not exist' do

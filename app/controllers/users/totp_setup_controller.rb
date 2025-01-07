@@ -26,12 +26,13 @@ module Users
 
     def confirm
       result = totp_setup_form.submit
-
+      increment_mfa_selection_attempt_count(TwoFactorAuthenticatable::AuthMethod::TOTP)
       properties = result.to_h.merge(analytics_properties)
       analytics.multi_factor_auth_setup(**properties)
 
       if result.success?
         process_valid_code
+        user_session.delete(:mfa_attempts)
       else
         process_invalid_code
       end
@@ -89,7 +90,7 @@ module Users
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
         in_account_creation_flow: in_account_creation_flow?,
       )
-      Funnel::Registration::AddMfa.call(current_user.id, 'auth_app', analytics)
+      Funnel::Registration::AddMfa.call(current_user.id, 'auth_app', analytics, threatmetrix_attrs)
     end
 
     def process_invalid_code
@@ -118,6 +119,7 @@ module Users
       {
         in_account_creation_flow: in_account_creation_flow?,
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
+        attempts: mfa_attempts_count,
       }
     end
   end

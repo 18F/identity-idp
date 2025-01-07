@@ -1,19 +1,8 @@
 require 'rails_helper'
 
-def expect_facility_fields_to_be_present(facility)
-  expect(facility.address).to be_present
-  expect(facility.city).to be_present
-  expect(facility.name).to be_present
-  expect(facility.saturday_hours).to be_present
-  expect(facility.state).to be_present
-  expect(facility.sunday_hours).to be_present
-  expect(facility.weekday_hours).to be_present
-  expect(facility.zip_code_4).to be_present
-  expect(facility.zip_code_5).to be_present
-end
-
 RSpec.describe UspsInPersonProofing::Proofer do
   include UspsIppHelper
+  include UspsIppServiceHelper
 
   let(:subject) { UspsInPersonProofing::Proofer.new }
   let(:root_url) { 'http://my.root.url' }
@@ -47,19 +36,19 @@ RSpec.describe UspsInPersonProofing::Proofer do
       password = 'test password'
       client_id = 'test client id'
 
-      expect(IdentityConfig.store).to receive(:usps_ipp_root_url).
-        and_return(root_url)
-      expect(IdentityConfig.store).to receive(:usps_ipp_username).
-        and_return(username)
-      expect(IdentityConfig.store).to receive(:usps_ipp_password).
-        and_return(password)
-      expect(IdentityConfig.store).to receive(:usps_ipp_client_id).
-        and_return(client_id)
+      expect(IdentityConfig.store).to receive(:usps_ipp_root_url)
+        .and_return(root_url)
+      expect(IdentityConfig.store).to receive(:usps_ipp_username)
+        .and_return(username)
+      expect(IdentityConfig.store).to receive(:usps_ipp_password)
+        .and_return(password)
+      expect(IdentityConfig.store).to receive(:usps_ipp_client_id)
+        .and_return(client_id)
 
       subject.retrieve_token!
 
-      expect(WebMock).to have_requested(:post, "#{root_url}/oauth/authenticate").
-        with(
+      expect(WebMock).to have_requested(:post, "#{root_url}/oauth/authenticate")
+        .with(
           body: hash_including(
             {
               'username' => username,
@@ -180,8 +169,8 @@ RSpec.describe UspsInPersonProofing::Proofer do
       stub_request_facilities
       subject.request_facilities(location, is_enhanced_ipp)
 
-      expect(WebMock).to have_requested(:post, request_url).
-        with(
+      expect(WebMock).to have_requested(:post, request_url)
+        .with(
           body: hash_including(
             {
               sponsorID: usps_ipp_sponsor_id,
@@ -223,15 +212,15 @@ RSpec.describe UspsInPersonProofing::Proofer do
       let(:usps_eipp_sponsor_id) { '314159265359' }
       let(:is_enhanced_ipp) { true }
       before do
-        allow(IdentityConfig.store).to receive(:usps_eipp_sponsor_id).
-          and_return(usps_eipp_sponsor_id)
+        allow(IdentityConfig.store).to receive(:usps_eipp_sponsor_id)
+          .and_return(usps_eipp_sponsor_id)
       end
       it 'uses the usps_eipp_sponsor_id in calls to the USPS API' do
         stub_request_enhanced_ipp_facilities
         subject.request_facilities(location, is_enhanced_ipp)
 
-        expect(WebMock).to have_requested(:post, request_url).
-          with(
+        expect(WebMock).to have_requested(:post, request_url)
+          .with(
             body: hash_including(
               {
                 sponsorID: usps_eipp_sponsor_id.to_i,
@@ -297,13 +286,11 @@ RSpec.describe UspsInPersonProofing::Proofer do
     end
     let(:is_enhanced_ipp) { false }
     let(:request_url) { "#{root_url}/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant" }
-    let(:usps_ipp_sponsor_id) { '42' }
-    let(:ipp_assurance_level) { '1.5' }
 
     before do
       stub_request_token
-      allow(IdentityConfig.store).to receive(:usps_ipp_sponsor_id).
-        and_return(usps_ipp_sponsor_id)
+      allow(IdentityConfig.store).to receive(:usps_ipp_sponsor_id)
+        .and_return(usps_ipp_sponsor_id)
     end
 
     it 'returns enrollment information' do
@@ -318,8 +305,8 @@ RSpec.describe UspsInPersonProofing::Proofer do
       stub_request_enroll_bad_request_response
 
       expect { subject.request_enroll(applicant, is_enhanced_ipp) }.to raise_error(
-        an_instance_of(Faraday::BadRequestError).
-        and(having_attributes(
+        an_instance_of(Faraday::BadRequestError)
+        .and(having_attributes(
           response: include(
             body: include(
               'responseMessage' => 'Sponsor for sponsorID 5 not found',
@@ -333,8 +320,8 @@ RSpec.describe UspsInPersonProofing::Proofer do
       stub_request_enroll_internal_server_error_response
 
       expect { subject.request_enroll(applicant, is_enhanced_ipp) }.to raise_error(
-        an_instance_of(Faraday::ServerError).
-        and(having_attributes(
+        an_instance_of(Faraday::ServerError)
+        .and(having_attributes(
           response: include(
             body: include(
               'responseMessage' => 'An internal error occurred processing the request',
@@ -348,8 +335,8 @@ RSpec.describe UspsInPersonProofing::Proofer do
       stub_request_enroll
       subject.request_enroll(applicant, is_enhanced_ipp)
 
-      expect(WebMock).to have_requested(:post, request_url).
-        with(
+      expect(WebMock).to have_requested(:post, request_url)
+        .with(
           body: hash_including(
             {
               sponsorID: usps_ipp_sponsor_id.to_i,
@@ -391,15 +378,15 @@ RSpec.describe UspsInPersonProofing::Proofer do
       let(:ipp_assurance_level) { '2.0' }
       let(:is_enhanced_ipp) { true }
       before do
-        allow(IdentityConfig.store).to receive(:usps_eipp_sponsor_id).
-          and_return(usps_eipp_sponsor_id)
+        allow(IdentityConfig.store).to receive(:usps_eipp_sponsor_id)
+          .and_return(usps_eipp_sponsor_id)
       end
       it 'uses the enhanced ipp usps_eipp_sponsor_id & IPPAssuranceLevel in calls to USPS API' do
         stub_request_enroll
         subject.request_enroll(applicant, is_enhanced_ipp)
 
-        expect(WebMock).to have_requested(:post, request_url).
-          with(
+        expect(WebMock).to have_requested(:post, request_url)
+          .with(
             body: hash_including(
               {
                 sponsorID: usps_eipp_sponsor_id.to_i,
@@ -470,8 +457,8 @@ RSpec.describe UspsInPersonProofing::Proofer do
       expect do
         subject.request_proofing_results(applicant)
       end.to raise_error(
-        an_instance_of(Faraday::BadRequestError).
-        and(having_attributes(
+        an_instance_of(Faraday::BadRequestError)
+        .and(having_attributes(
           response: include(
             body: include(
               'responseMessage' => 'Customer has not been to a post office to complete IPP',

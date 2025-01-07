@@ -230,9 +230,13 @@ class ApplicationController < ActionController::Base
     return authentication_methods_setup_url if user_needs_sp_auth_method_setup?
     return fix_broken_personal_key_url if current_user.broken_personal_key?
     return user_session.delete(:stored_location) if user_session.key?(:stored_location)
+    return setup_piv_cac_url if user_session[:add_piv_cac_after_2fa]
     return login_add_piv_cac_prompt_url if session[:needs_to_setup_piv_cac_after_sign_in].present?
     return reactivate_account_url if user_needs_to_reactivate_account?
     return login_piv_cac_recommended_path if user_recommended_for_piv_cac?
+    return webauthn_platform_recommended_path if recommend_webauthn_platform_for_sms_user?(
+      :recommend_for_authentication,
+    )
     return second_mfa_reminder_url if user_needs_second_mfa_reminder?
     return sp_session_request_url_with_updated_params if sp_session.key?(:request_url)
     signed_in_url
@@ -454,6 +458,10 @@ class ApplicationController < ActionController::Base
 
   def render_not_acceptable
     render template: 'pages/not_acceptable', layout: false, status: :not_acceptable, formats: :html
+  end
+
+  def render_bad_request
+    render template: 'pages/bad_request', layout: false, status: :bad_request, formats: :html
   end
 
   def render_timeout(exception)

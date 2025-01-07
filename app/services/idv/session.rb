@@ -1,6 +1,47 @@
 # frozen_string_literal: true
 
 module Idv
+  # @attr address_edited [Boolean, nil]
+  # @attr address_verification_mechanism [String, nil]
+  # @attr applicant [Struct, nil]
+  # @attr document_capture_session_uuid [String, nil]
+  # @attr flow_path [String, nil]
+  # @attr go_back_path [String, nil]
+  # @attr gpo_code_verified [Boolean, nil]
+  # @attr had_barcode_attention_error [Boolean, nil]
+  # @attr had_barcode_read_failure [Boolean, nil]
+  # @attr idv_consent_given [Boolean, nil]
+  # @attr idv_consent_given_at [String, nil]
+  # @attr idv_phone_step_document_capture_session_uuid [String, nil]
+  # @attr mail_only_warning_shown [Boolean, nil]
+  # @attr opted_in_to_in_person_proofing [Boolean, nil]
+  # @attr personal_key [String, nil]
+  # @attr personal_key_acknowledged [Boolean, nil]
+  # @attr phone_for_mobile_flow [String, nil]
+  # @attr previous_phone_step_params [Array]
+  # @attr previous_ssn [String, nil]
+  # @attr profile_id [String, nil]
+  # @attr proofing_started_at [String, nil]
+  # @attr redo_document_capture [Boolean, nil]
+  # @attr residential_resolution_vendor [String, nil]
+  # @attr resolution_successful [Boolean, nil]
+  # @attr resolution_vendor [String,nil]
+  # @attr selfie_check_performed [Boolean, nil]
+  # @attr selfie_check_required [Boolean, nil]
+  # @attr skip_doc_auth_from_handoff [Boolean, nil]
+  # @attr skip_doc_auth_from_how_to_verify [Boolean, nil]
+  # @attr skip_hybrid_handoff [Boolean, nil]
+  # @attr source_check_vendor [String, nil]
+  # @attr ssn [String, nil]
+  # @attr threatmetrix_review_status [String, nil]
+  # @attr threatmetrix_session_id [String, nil]
+  # @attr user_phone_confirmation [Boolean, nil]
+  # @attr vendor_phone_confirmation [Boolean, nil]
+  # @attr verify_info_step_document_capture_session_uuid [String, nil]
+  # @attr welcome_visited [Boolean, nil]
+  # @attr_reader current_user [User]
+  # @attr_reader gpo_otp [String, nil]
+  # @attr_reader service_provider [ServiceProvider]
   class Session
     VALID_SESSION_ATTRIBUTES = %i[
       address_edited
@@ -21,16 +62,20 @@ module Idv
       personal_key_acknowledged
       phone_for_mobile_flow
       previous_phone_step_params
+      previous_ssn
       profile_id
       proofing_started_at
       redo_document_capture
+      source_check_vendor
+      residential_resolution_vendor
       resolution_successful
+      resolution_vendor
       selfie_check_performed
       selfie_check_required
-      skip_doc_auth
       skip_doc_auth_from_handoff
       skip_doc_auth_from_how_to_verify
       skip_hybrid_handoff
+      socure_docv_wait_polling_started_at
       ssn
       threatmetrix_review_status
       threatmetrix_session_id
@@ -64,7 +109,10 @@ module Idv
       VALID_SESSION_ATTRIBUTES.include?(attr_name_sym) || super
     end
 
-    def create_profile_from_applicant_with_password(user_password, is_enhanced_ipp)
+    # @return [Profile]
+    def create_profile_from_applicant_with_password(
+      user_password, is_enhanced_ipp:, proofing_components:
+    )
       if user_has_unscheduled_in_person_enrollment?
         UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
           user: current_user,
@@ -80,6 +128,7 @@ module Idv
         gpo_verification_needed: !phone_confirmed? || verify_by_mail?,
         in_person_verification_needed: current_user.has_in_person_enrollment?,
         selfie_check_performed: session[:selfie_check_performed],
+        proofing_components:,
       )
 
       profile.activate unless profile.reason_not_to_activate
@@ -97,6 +146,8 @@ module Idv
       if profile.gpo_verification_pending?
         create_gpo_entry(profile_maker.pii_attributes, profile)
       end
+
+      profile
     end
 
     def opt_in_param
@@ -184,7 +235,8 @@ module Idv
 
     def pii_from_doc
       return nil if session[:pii_from_doc].blank?
-      Pii::StateId.new(**session[:pii_from_doc].slice(*Pii::StateId.members))
+      state_id_data = Pii::StateId.members.index_with { |key| session[:pii_from_doc][key] }
+      Pii::StateId.new(**state_id_data)
     end
 
     def updated_user_address=(updated_user_address)
@@ -221,8 +273,6 @@ module Idv
     def invalidate_in_person_pii_from_user!
       if has_pii_from_user_in_flow_session?
         user_session['idv/in_person'][:pii_from_user] = nil
-        # Mark the FSM step as incomplete so that it can be re-entered.
-        user_session['idv/in_person'].delete('Idv::Steps::InPerson::StateIdStep')
       end
     end
 

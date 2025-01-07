@@ -17,30 +17,30 @@ RSpec.describe Health::HealthController do
 
     context 'when one resource is unhealthy' do
       it 'returns an unsuccessful JSON response' do
-        allow(DatabaseHealthChecker).to receive(:simple_query).
-          and_raise(RuntimeError.new('canceling statement due to statement timeout'))
+        allow(DatabaseHealthChecker).to receive(:simple_query)
+          .and_raise(RuntimeError.new('canceling statement due to statement timeout'))
 
         get :index
         json = JSON.parse(response.body, symbolize_names: true)
 
         expect(json[:healthy]).to eq(false)
-        expect(json[:statuses][:database][:result]).
-          to include('canceling statement due to statement timeout')
+        expect(json[:statuses][:database][:result])
+          .to include('canceling statement due to statement timeout')
         expect(response.status).to eq(500)
       end
     end
 
     context 'all resources are unhealthy' do
       it 'returns an unsuccessful JSON response' do
-        allow(DatabaseHealthChecker).to receive(:simple_query).
-          and_raise(RuntimeError.new('canceling statement due to statement timeout'))
+        allow(DatabaseHealthChecker).to receive(:simple_query)
+          .and_raise(RuntimeError.new('canceling statement due to statement timeout'))
 
         get :index
         json = JSON.parse(response.body, symbolize_names: true)
 
         expect(json[:healthy]).to eq(false)
-        expect(json[:statuses][:database][:result]).
-          to include('canceling statement due to statement timeout')
+        expect(json[:statuses][:database][:result])
+          .to include('canceling statement due to statement timeout')
         expect(response.status).to eq(500)
       end
     end

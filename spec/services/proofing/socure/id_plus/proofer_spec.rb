@@ -58,8 +58,8 @@ RSpec.describe Proofing::Socure::IdPlus::Proofer do
   before do
     using_json = !response_body.is_a?(String)
 
-    stub_request(:post, URI.join(base_url, '/api/3.0/EmailAuthScore').to_s).
-      to_return(
+    stub_request(:post, URI.join(base_url, '/api/3.0/EmailAuthScore').to_s)
+      .to_return(
         status: response_status,
         headers: {
           'Content-Type' => using_json ?
@@ -73,11 +73,9 @@ RSpec.describe Proofing::Socure::IdPlus::Proofer do
   it 'reports reason codes as errors' do
     expect(result.errors).to eql(
       {
-        reason_codes: [
-          'I905',
-          'I914',
-          'I919',
-        ],
+        'I905' => '[unknown]',
+        'I914' => '[unknown]',
+        'I919' => '[unknown]',
       },
     )
   end
@@ -174,10 +172,21 @@ RSpec.describe Proofing::Socure::IdPlus::Proofer do
     end
   end
 
+  context 'when applicant includes extra fields' do
+    let(:applicant) do
+      {
+        some_weird_field_the_proofer_is_not_expecting: ':ohno:',
+      }
+    end
+    it 'does not raise an error' do
+      expect { result }.not_to raise_error
+    end
+  end
+
   context 'when request times out' do
     before do
-      stub_request(:post, URI.join(base_url, '/api/3.0/EmailAuthScore').to_s).
-        to_timeout
+      stub_request(:post, URI.join(base_url, '/api/3.0/EmailAuthScore').to_s)
+        .to_timeout
     end
 
     describe 'the result' do
@@ -226,7 +235,7 @@ RSpec.describe Proofing::Socure::IdPlus::Proofer do
       end
 
       it 'includes exception details' do
-        expect(result.exception).to be_an_instance_of(Proofing::Socure::IdPlus::RequestError)
+        expect(result.exception).to be_an_instance_of(Proofing::Socure::IdPlus::Request::Error)
       end
     end
   end
@@ -255,7 +264,7 @@ RSpec.describe Proofing::Socure::IdPlus::Proofer do
       end
 
       it 'includes exception details' do
-        expect(result.exception).to be_an_instance_of(Proofing::Socure::IdPlus::RequestError)
+        expect(result.exception).to be_an_instance_of(Proofing::Socure::IdPlus::Request::Error)
       end
     end
   end
@@ -280,7 +289,7 @@ RSpec.describe Proofing::Socure::IdPlus::Proofer do
       end
 
       it 'includes exception details' do
-        expect(result.exception).to be_an_instance_of(Proofing::Socure::IdPlus::RequestError)
+        expect(result.exception).to be_an_instance_of(Proofing::Socure::IdPlus::Request::Error)
       end
     end
   end

@@ -28,8 +28,8 @@ RSpec.describe ServiceProviderIdentity do
       identity = create(:service_provider_identity)
       identity.uuid = nil
 
-      expect { identity.save }.
-        to raise_error(
+      expect { identity.save }
+        .to raise_error(
           ActiveRecord::NotNullViolation,
           /null value in column "uuid".*violates not-null constraint/,
         )
@@ -41,8 +41,8 @@ RSpec.describe ServiceProviderIdentity do
       identity2 = create(:service_provider_identity)
       identity2.uuid = identity1.uuid
 
-      expect { identity2.save }.
-        to raise_error(
+      expect { identity2.save }
+        .to raise_error(
           ActiveRecord::StatementInvalid,
           /duplicate key value violates unique constraint/,
         )
@@ -71,8 +71,8 @@ RSpec.describe ServiceProviderIdentity do
       it 'generates it via SecureRandom.uuid' do
         identity = build(:service_provider_identity)
 
-        expect(identity.generate_uuid).
-          to match(/[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}/)
+        expect(identity.generate_uuid)
+          .to match(/[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}/)
       end
     end
   end
@@ -123,14 +123,14 @@ RSpec.describe ServiceProviderIdentity do
   describe 'uniqueness validation for service provider per user' do
     it 'raises an error when uniqueness constraint is broken' do
       ServiceProviderIdentity.create(user_id: user.id, service_provider: 'externalapp')
-      expect { ServiceProviderIdentity.create(user_id: user.id, service_provider: 'externalapp') }.
-        to raise_error(ActiveRecord::RecordNotUnique)
+      expect { ServiceProviderIdentity.create(user_id: user.id, service_provider: 'externalapp') }
+        .to raise_error(ActiveRecord::RecordNotUnique)
     end
 
     it 'does not raise an error for a different service provider' do
       ServiceProviderIdentity.create(user_id: user.id, service_provider: 'externalapp')
-      expect { ServiceProviderIdentity.create(user_id: user.id, service_provider: 'externalapp2') }.
-        to_not raise_error
+      expect { ServiceProviderIdentity.create(user_id: user.id, service_provider: 'externalapp2') }
+        .to_not raise_error
     end
   end
 
@@ -178,6 +178,67 @@ RSpec.describe ServiceProviderIdentity do
 
       it 'returns nil' do
         expect(subject.failure_to_proof_url).to eq(nil)
+      end
+    end
+  end
+
+  describe '#email_address_for_sharing' do
+    let!(:last_login_email_address) do
+      create(
+        :email_address,
+        email: 'last_login@email.com',
+        user: user,
+        last_sign_in_at: 1.minute.ago,
+      )
+    end
+
+    let!(:shared_email_address) do
+      create(
+        :email_address,
+        email: 'shared@email.com',
+        user: user,
+        last_sign_in_at: 1.hour.ago,
+      )
+    end
+
+    let(:identity) do
+      create(:service_provider_identity, user: user, session_uuid: SecureRandom.uuid)
+    end
+
+    context 'when email sharing feature is enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
+          .and_return(true)
+      end
+
+      context 'when an email address for sharing has been set' do
+        before do
+          identity.email_address = shared_email_address
+        end
+
+        it 'returns the shared email' do
+          expect(identity.email_address_for_sharing).to eq(shared_email_address)
+        end
+      end
+
+      context 'when an email address for sharing has not been set' do
+        before do
+          identity.email_address = nil
+        end
+        it 'returns the last login email' do
+          expect(identity.email_address_for_sharing).to eq(last_login_email_address)
+        end
+      end
+    end
+
+    context 'when email sharing feature is disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
+          .and_return(true)
+      end
+
+      it 'returns the last login email' do
+        expect(identity.email_address_for_sharing).to eq(last_login_email_address)
       end
     end
   end

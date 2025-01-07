@@ -30,8 +30,8 @@ module Idv
       return if confirm_not_rate_limited_for_phone_address_verification
 
       if async_state.none?
-        Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
-          call(:verify_phone, :view, true)
+        Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer)
+          .call(:verify_phone, :view, true)
 
         analytics.idv_phone_of_record_visited(
           **ab_test_analytics_buckets,
@@ -52,10 +52,10 @@ module Idv
       clear_future_steps!
       idv_session.invalidate_phone_step!
       result = idv_form.submit(step_params)
-      Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
-        call(:verify_phone, :update, result.success?)
+      Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer)
+        .call(:verify_phone, :update, result.success?)
 
-      analytics.idv_phone_confirmation_form_submitted(**result.to_h, **ab_test_analytics_buckets)
+      analytics.idv_phone_confirmation_form_submitted(**result, **ab_test_analytics_buckets)
       if result.success?
         submit_proofing_attempt
         redirect_to idv_phone_path
@@ -204,7 +204,7 @@ module Idv
     end
 
     def verify_step_request?
-      request.referer == idv_verify_info_url
+      [idv_verify_info_url, idv_in_person_verify_info_url].include?(request.referer)
     end
 
     def should_keep_flash_success?

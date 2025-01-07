@@ -10,7 +10,6 @@ interface FormattedLocation {
   streetAddress: string;
   sundayHours: string;
   weekdayHours: string;
-  isPilot: boolean;
 }
 
 interface PostOffice {
@@ -24,7 +23,6 @@ interface PostOffice {
   weekday_hours: string;
   zip_code_4: string;
   zip_code_5: string;
-  is_pilot: boolean;
 }
 
 interface LocationQuery {
@@ -71,6 +69,7 @@ interface InPersonLocationsProps {
   noInPersonLocationsDisplay: ComponentType<{ address: string }>;
   onSelect;
   resultsHeaderComponent?: ComponentType;
+  resultsSectionHeading?: ComponentType;
 }
 
 interface LocationCollectionItemProps {
@@ -100,4 +99,5 @@ interface FullAddressSearchProps {
   registerField: RegisterFieldCallback;
   resultsHeaderComponent?: ComponentType;
   usStatesTerritories: string[][];
+  resultsSectionHeading?: ComponentType;
 }

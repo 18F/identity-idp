@@ -1,5 +1,4 @@
 import { render } from 'react-dom';
-import { composeComponents } from '@18f/identity-compose-components';
 import {
   DocumentCapture,
   DeviceContext,
@@ -34,14 +33,15 @@ interface AppRootData {
   idvInPersonUrl?: string;
   optedInToInPersonProofing: string;
   securityAndPrivacyHowItWorksUrl: string;
-  skipDocAuth: string;
+  skipDocAuthFromHowToVerify: string;
   skipDocAuthFromHandoff: string;
   howToVerifyURL: string;
   previousStepUrl: string;
   docAuthSelfieDesktopTestMode: string;
+  accountUrl: string;
   locationsUrl: string;
   addressSearchUrl: string;
-  docAuthSeparatePagesEnabled: string;
+  sessionsUrl: string;
 }
 
 const appRoot = document.getElementById('document-capture-form')!;
@@ -105,14 +105,14 @@ const {
   inPersonOutageExpectedUpdateDate,
   optedInToInPersonProofing,
   usStatesTerritories = '',
-  skipDocAuth,
+  skipDocAuthFromHowToVerify,
   skipDocAuthFromHandoff,
   howToVerifyUrl,
   previousStepUrl,
   docAuthSelfieDesktopTestMode,
-  docAuthSeparatePagesEnabled,
   locationsUrl: locationsURL,
   addressSearchUrl: addressSearchURL,
+  sessionsUrl: sessionsURL,
 } = appRoot.dataset as DOMStringMap & AppRootData;
 
 let parsedUsStatesTerritories = [];
@@ -120,94 +120,86 @@ try {
   parsedUsStatesTerritories = JSON.parse(usStatesTerritories);
 } catch (e) {}
 
-const App = composeComponents(
-  [MarketingSiteContextProvider, { helpCenterRedirectURL, securityAndPrivacyHowItWorksURL }],
-  [DeviceContext.Provider, { value: device }],
-  [
-    InPersonContext.Provider,
-    {
-      value: {
-        inPersonURL,
-        locationsURL,
-        addressSearchURL,
-        inPersonOutageMessageEnabled: inPersonOutageMessageEnabled === 'true',
-        inPersonOutageExpectedUpdateDate,
-        inPersonFullAddressEntryEnabled: inPersonFullAddressEntryEnabled === 'true',
-        optedInToInPersonProofing: optedInToInPersonProofing === 'true',
-        usStatesTerritories: parsedUsStatesTerritories,
-        skipDocAuth: skipDocAuth === 'true',
-        skipDocAuthFromHandoff: skipDocAuthFromHandoff === 'true',
-        howToVerifyURL: howToVerifyUrl,
-        previousStepURL: previousStepUrl,
-      },
-    },
-  ],
-  [AnalyticsContextProvider, { trackEvent }],
-  [
-    AcuantContextProvider,
-    {
-      sdkSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantJavascriptWebSdk.min.js`,
-      cameraSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantCamera.min.js`,
-      passiveLivenessOpenCVSrc: acuantVersion && `/acuant/${acuantVersion}/opencv.min.js`,
-      passiveLivenessSrc: getSelfieCaptureEnabled()
-        ? acuantVersion && `/acuant/${acuantVersion}/AcuantPassiveLiveness.min.js`
-        : undefined,
-      credentials: getMetaContent('acuant-sdk-initialization-creds'),
-      endpoint: getMetaContent('acuant-sdk-initialization-endpoint'),
-      glareThreshold,
-      sharpnessThreshold,
-    },
-  ],
-  [
-    UploadContextProvider,
-    {
-      endpoint: String(appRoot.getAttribute('data-endpoint')),
-      statusEndpoint: String(appRoot.getAttribute('data-status-endpoint')),
-      statusPollInterval: Number(appRoot.getAttribute('data-status-poll-interval-ms')),
-      isMockClient,
-      formData,
-      flowPath,
-    },
-  ],
-  [
-    FlowContext.Provider,
-    {
-      value: {
-        accountURL,
-        cancelURL,
-        currentStep: 'document_capture',
-      },
-    },
-  ],
-  [
-    ServiceProviderContextProvider,
-    {
-      value: getServiceProvider(),
-    },
-  ],
-  [
-    SelfieCaptureContext.Provider,
-    {
-      value: {
-        isSelfieCaptureEnabled: getSelfieCaptureEnabled(),
-        isSelfieDesktopTestMode: String(docAuthSelfieDesktopTestMode) === 'true',
-        docAuthSeparatePagesEnabled: String(docAuthSeparatePagesEnabled) === 'true',
-      },
-    },
-  ],
-  [
-    FailedCaptureAttemptsContextProvider,
-    {
-      maxCaptureAttemptsBeforeNativeCamera: Number(maxCaptureAttemptsBeforeNativeCamera),
-      maxSubmissionAttemptsBeforeNativeCamera: Number(maxSubmissionAttemptsBeforeNativeCamera),
-    },
-  ],
-  [
-    DocumentCapture,
-    {
-      onStepChange: extendSession,
-    },
-  ],
+render(
+  <MarketingSiteContextProvider
+    helpCenterRedirectURL={helpCenterRedirectURL}
+    securityAndPrivacyHowItWorksURL={securityAndPrivacyHowItWorksURL}
+  >
+    <DeviceContext.Provider value={device}>
+      <InPersonContext.Provider
+        value={{
+          inPersonURL,
+          locationsURL,
+          addressSearchURL,
+          inPersonOutageExpectedUpdateDate,
+          inPersonOutageMessageEnabled: inPersonOutageMessageEnabled === 'true',
+          inPersonFullAddressEntryEnabled: inPersonFullAddressEntryEnabled === 'true',
+          optedInToInPersonProofing: optedInToInPersonProofing === 'true',
+          usStatesTerritories: parsedUsStatesTerritories,
+          skipDocAuthFromHowToVerify: skipDocAuthFromHowToVerify === 'true',
+          skipDocAuthFromHandoff: skipDocAuthFromHandoff === 'true',
+          howToVerifyURL: howToVerifyUrl,
+          previousStepURL: previousStepUrl,
+        }}
+      >
+        <AnalyticsContextProvider trackEvent={trackEvent}>
+          <AcuantContextProvider
+            sdkSrc={acuantVersion && `/acuant/${acuantVersion}/AcuantJavascriptWebSdk.min.js`}
+            cameraSrc={acuantVersion && `/acuant/${acuantVersion}/AcuantCamera.min.js`}
+            passiveLivenessOpenCVSrc={acuantVersion && `/acuant/${acuantVersion}/opencv.min.js`}
+            passiveLivenessSrc={
+              getSelfieCaptureEnabled()
+                ? acuantVersion && `/acuant/${acuantVersion}/AcuantPassiveLiveness.min.js`
+                : undefined
+            }
+            credentials={getMetaContent('acuant-sdk-initialization-creds')}
+            endpoint={getMetaContent('acuant-sdk-initialization-endpoint')}
+            glareThreshold={glareThreshold}
+            sharpnessThreshold={sharpnessThreshold}
+          >
+            <UploadContextProvider
+              endpoint={String(appRoot.getAttribute('data-endpoint'))}
+              statusEndpoint={String(appRoot.getAttribute('data-status-endpoint'))}
+              statusPollInterval={Number(appRoot.getAttribute('data-status-poll-interval-ms'))}
+              isMockClient={isMockClient}
+              formData={formData}
+              flowPath={flowPath}
+            >
+              <FlowContext.Provider
+                value={{
+                  accountURL,
+                  cancelURL,
+                  currentStep: 'document_capture',
+                }}
+              >
+                <ServiceProviderContextProvider value={getServiceProvider()}>
+                  <SelfieCaptureContext.Provider
+                    value={{
+                      isSelfieCaptureEnabled: getSelfieCaptureEnabled(),
+                      isSelfieDesktopTestMode: String(docAuthSelfieDesktopTestMode) === 'true',
+                      showHelpInitially: true,
+                      immediatelyBeginCapture: false,
+                    }}
+                  >
+                    <FailedCaptureAttemptsContextProvider
+                      maxCaptureAttemptsBeforeNativeCamera={Number(
+                        maxCaptureAttemptsBeforeNativeCamera,
+                      )}
+                      maxSubmissionAttemptsBeforeNativeCamera={Number(
+                        maxSubmissionAttemptsBeforeNativeCamera,
+                      )}
+                      failedFingerprints={{ front: [], back: [] }}
+                    >
+                      <DocumentCapture onStepChange={() => extendSession(sessionsURL)} />
+                    </FailedCaptureAttemptsContextProvider>
+                  </SelfieCaptureContext.Provider>
+                </ServiceProviderContextProvider>
+              </FlowContext.Provider>
+            </UploadContextProvider>
+          </AcuantContextProvider>
+        </AnalyticsContextProvider>
+      </InPersonContext.Provider>
+    </DeviceContext.Provider>
+  </MarketingSiteContextProvider>,
+  appRoot,
 );
-
-render(<App />, appRoot);

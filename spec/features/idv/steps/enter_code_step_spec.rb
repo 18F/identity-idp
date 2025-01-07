@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'idv enter letter code step', allowed_extra_analytics: [:*] do
+RSpec.feature 'idv enter letter code step' do
   include IdvStepHelper
 
   let(:otp) { 'ABC123' }
@@ -28,8 +28,8 @@ RSpec.feature 'idv enter letter code step', allowed_extra_analytics: [:*] do
   let(:fraud_review_pending) { false }
 
   before do
-    allow(IdentityConfig.store).to receive(:proofing_device_profiling).
-      and_return(threatmetrix_enabled ? :enabled : :disabled)
+    allow(IdentityConfig.store).to receive(:proofing_device_profiling)
+      .and_return(threatmetrix_enabled ? :enabled : :disabled)
   end
 
   it_behaves_like 'verification code entry'
@@ -93,7 +93,7 @@ RSpec.feature 'idv enter letter code step', allowed_extra_analytics: [:*] do
     fill_in_code_with_last_phone_otp
     click_submit_default
 
-    expect(current_path).to eq idv_verify_by_mail_enter_code_path
+    expect(page).to have_current_path idv_verify_by_mail_enter_code_path
     expect(page).to have_css('h1', text: t('idv.gpo.title'))
 
     fill_in t('idv.gpo.form.otp_label'), with: 'incorrect1'
@@ -107,7 +107,7 @@ RSpec.feature 'idv enter letter code step', allowed_extra_analytics: [:*] do
     it 'renders an alternate ui that remains after failed submission', :js do
       visit idv_verify_by_mail_enter_code_url(did_not_receive_letter: 1)
       verify_no_rate_limit_banner
-      expect(current_path).to eql(new_user_session_path)
+      expect(page).to have_current_path(new_user_session_path)
 
       fill_in_credentials_and_submit(user.email, user.password)
       continue_as(user.email, user.password)
@@ -115,13 +115,13 @@ RSpec.feature 'idv enter letter code step', allowed_extra_analytics: [:*] do
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      expect(current_path).to eq idv_verify_by_mail_enter_code_path
+      expect(page).to have_current_path(idv_verify_by_mail_enter_code_path, ignore_query: true)
       expect(page).to have_css('h1', text: t('idv.gpo.did_not_receive_letter.title'))
 
       fill_in t('idv.gpo.form.otp_label'), with: 'incorrect1'
       click_button t('idv.gpo.form.submit')
 
-      expect(current_path).to eq idv_verify_by_mail_enter_code_path
+      expect(page).to have_current_path idv_verify_by_mail_enter_code_path
       expect(page).to have_css('h1', text: t('idv.gpo.did_not_receive_letter.title'))
       expect(page).to have_content(t('errors.messages.confirmation_code_incorrect'))
     end
@@ -135,7 +135,7 @@ RSpec.feature 'idv enter letter code step', allowed_extra_analytics: [:*] do
       it 'shows the user a personal key after verification' do
         sign_in_live_with_2fa(user)
 
-        expect(current_path).to eq idv_verify_by_mail_enter_code_path
+        expect(page).to have_current_path idv_verify_by_mail_enter_code_path
         verify_no_rate_limit_banner
         expect(page).to have_content t('idv.messages.gpo.resend')
 
@@ -163,7 +163,7 @@ RSpec.feature 'idv enter letter code step', allowed_extra_analytics: [:*] do
       it 'allows a user to verify their account for an existing pending profile' do
         sign_in_live_with_2fa(user)
 
-        expect(current_path).to eq idv_verify_by_mail_enter_code_path
+        expect(page).to have_current_path idv_verify_by_mail_enter_code_path
         expect(page).to have_content t('idv.messages.gpo.resend')
 
         verify_no_rate_limit_banner
@@ -178,7 +178,7 @@ RSpec.feature 'idv enter letter code step', allowed_extra_analytics: [:*] do
     it 'allows a user to cancel and start over within the banner' do
       sign_in_live_with_2fa(user)
 
-      expect(current_path).to eq idv_verify_by_mail_enter_code_path
+      expect(page).to have_current_path idv_verify_by_mail_enter_code_path
       expect(page).to have_content t('idv.gpo.intro')
       expect(page).to have_content(
         strip_tags(
@@ -193,11 +193,11 @@ RSpec.feature 'idv enter letter code step', allowed_extra_analytics: [:*] do
 
       click_on t('idv.gpo.address_accordion.cta_link')
 
-      expect(current_path).to eq idv_confirm_start_over_path
+      expect(page).to have_current_path idv_confirm_start_over_path
 
       click_idv_continue
 
-      expect(current_path).to eq idv_welcome_path
+      expect(page).to have_current_path idv_welcome_path
     end
   end
 
@@ -209,16 +209,16 @@ RSpec.feature 'idv enter letter code step', allowed_extra_analytics: [:*] do
     )
     sign_in_live_with_2fa(user)
 
-    expect(current_path).to eq idv_verify_by_mail_enter_code_path
+    expect(page).to have_current_path idv_verify_by_mail_enter_code_path
     verify_rate_limit_banner_present(another_gpo_confirmation_code.updated_at)
 
     click_on t('idv.gpo.address_accordion.cta_link')
 
-    expect(current_path).to eq idv_confirm_start_over_path
+    expect(page).to have_current_path idv_confirm_start_over_path
 
     click_idv_continue
 
-    expect(current_path).to eq idv_welcome_path
+    expect(page).to have_current_path idv_welcome_path
   end
 
   context 'user is rate limited', :js do
@@ -235,7 +235,7 @@ RSpec.feature 'idv enter letter code step', allowed_extra_analytics: [:*] do
       fill_in t('idv.gpo.form.otp_label'), with: wrong_otp
       click_button t('idv.gpo.form.submit')
 
-      expect(current_path).to eq(idv_enter_code_rate_limited_path)
+      expect(page).to have_current_path(idv_enter_code_rate_limited_path)
     end
   end
 
@@ -247,10 +247,10 @@ RSpec.feature 'idv enter letter code step', allowed_extra_analytics: [:*] do
 
       click_on t('idv.gpo.address_accordion.title')
       click_on t('idv.gpo.address_accordion.cta_link')
-      expect(current_path).to eq idv_confirm_start_over_path
+      expect(page).to have_current_path idv_confirm_start_over_path
       click_idv_continue
 
-      expect(current_path).to eq idv_welcome_path
+      expect(page).to have_current_path idv_welcome_path
     end
   end
 

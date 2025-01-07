@@ -12,16 +12,19 @@ module TwoFactorAuthenticatableMethods
   end
 
   def handle_verification_for_authentication_context(result:, auth_method:, extra_analytics: nil)
+    increment_mfa_selection_attempt_count(auth_method)
     analytics.multi_factor_auth(
-      **result.to_h,
+      **result,
       multi_factor_auth_method: auth_method,
       enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
       new_device: new_device?,
       **extra_analytics.to_h,
+      attempts: mfa_attempts_count,
     )
 
     if result.success?
       handle_valid_verification_for_authentication_context(auth_method:)
+      user_session.delete(:mfa_attempts)
     else
       handle_invalid_verification_for_authentication_context
     end
@@ -90,17 +93,6 @@ module TwoFactorAuthenticatableMethods
     redirect_to after_sign_in_path_for(current_user)
   end
 
-  def check_sp_required_mfa_bypass(auth_method:)
-    return unless service_provider_mfa_policy.user_needs_sp_auth_method_verification?
-    return if service_provider_mfa_policy.phishing_resistant_required? &&
-              TwoFactorAuthenticatable::AuthMethod.phishing_resistant?(auth_method)
-    if service_provider_mfa_policy.piv_cac_required? &&
-       auth_method == TwoFactorAuthenticatable::AuthMethod::PIV_CAC
-      return
-    end
-    prompt_to_verify_sp_required_mfa
-  end
-
   def reset_attempt_count_if_user_no_longer_locked_out
     return unless current_user.no_longer_locked_out?
 
@@ -114,14 +106,33 @@ module TwoFactorAuthenticatableMethods
     return @sign_in_notification_timeframe_expired_event if defined?(
       @sign_in_notification_timeframe_expired_event
     )
-    @sign_in_notification_timeframe_expired_event = current_user.events.where(
-      event_type: 'sign_in_notification_timeframe_expired',
-    ).order(created_at: :desc).limit(1).take
+    @sign_in_notification_timeframe_expired_event = current_user.events
+      .where(
+        event_type: 'sign_in_notification_timeframe_expired',
+        created_at: (IdentityConfig.store.session_total_duration_timeout_in_minutes.minutes.ago..),
+      )
+      .order(created_at: :desc)
+      .limit(1)
+      .take
   end
 
   def handle_remember_device_preference(remember_device_preference)
     save_user_opted_remember_device_pref(remember_device_preference)
     save_remember_device_preference(remember_device_preference)
+  end
+
+  def increment_mfa_selection_attempt_count(auth_method)
+    user_session[:mfa_attempts] ||= {}
+    user_session[:mfa_attempts][:attempts] ||= 0
+    if user_session[:mfa_attempts][:auth_method] != auth_method
+      user_session[:mfa_attempts][:attempts] = 0
+    end
+    user_session[:mfa_attempts][:attempts] += 1
+    user_session[:mfa_attempts][:auth_method] = auth_method
+  end
+
+  def mfa_attempts_count
+    user_session.dig(:mfa_attempts, :attempts)
   end
 
   # Method will be renamed in the next refactor.
@@ -148,8 +159,6 @@ module TwoFactorAuthenticatableMethods
       t('two_factor_authentication.invalid_otp')
     when 'personal_key'
       t('two_factor_authentication.invalid_personal_key')
-    when 'piv_cac'
-      t('two_factor_authentication.invalid_piv_cac')
     else
       raise "Unsupported otp method: #{type}"
     end

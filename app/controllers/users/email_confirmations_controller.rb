@@ -3,8 +3,9 @@
 module Users
   class EmailConfirmationsController < ApplicationController
     def create
+      store_from_select_email_flow_in_session
       result = email_confirmation_token_validator.submit
-      analytics.add_email_confirmation(**result.to_h)
+      analytics.add_email_confirmation(**result, from_select_email_flow: from_select_email_flow?)
       if result.success?
         process_successful_confirmation(email_address)
       else
@@ -28,12 +29,8 @@ module Users
     end
 
     def email_confirmation_token_validator
-      @email_confirmation_token_validator ||= begin
-        EmailConfirmationTokenValidator.new(
-          email_address,
-          current_user,
-        )
-      end
+      @email_confirmation_token_validator ||=
+        EmailConfirmationTokenValidator.new(email_address:, current_user:)
     end
 
     def email_address_already_confirmed?
@@ -44,18 +41,22 @@ module Users
       confirm_and_notify(email_address)
       if current_user
         flash[:success] = t('devise.confirmations.confirmed')
-        redirect_to account_url
+        if params[:request_id]
+          redirect_to sign_up_select_email_url
+        else
+          redirect_to account_url
+        end
       else
         flash[:success] = t('devise.confirmations.confirmed_but_sign_in')
-        redirect_to root_url
+        redirect_to root_url(request_id: params[:request_id])
       end
     end
 
     def confirm_and_notify(email_address)
       email_address.update!(confirmed_at: Time.zone.now)
       email_address.user.confirmed_email_addresses.each do |confirmed_email_address|
-        UserMailer.with(user: email_address.user, email_address: confirmed_email_address).
-          email_added.deliver_now_or_later
+        UserMailer.with(user: email_address.user, email_address: confirmed_email_address)
+          .email_added.deliver_now_or_later
       end
       notify_subscribers(email_address)
     end
@@ -97,6 +98,14 @@ module Users
 
     def confirmation_params
       params.permit(:confirmation_token)
+    end
+
+    def store_from_select_email_flow_in_session
+      session[:from_select_email_flow] = params[:from_select_email_flow].to_s == 'true'
+    end
+
+    def from_select_email_flow?
+      session[:from_select_email_flow] == true
     end
   end
 end

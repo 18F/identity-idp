@@ -1,15 +1,15 @@
 class UserMailerPreview < ActionMailer::Preview
   def email_confirmation_instructions
-    UserMailer.with(user: user, email_address: email_address_record).
-      email_confirmation_instructions(
+    UserMailer.with(user: user, email_address: email_address_record)
+      .email_confirmation_instructions(
         SecureRandom.hex,
         request_id: SecureRandom.uuid,
       )
   end
 
   def signup_with_your_email
-    UserMailer.with(user: user, email_address: email_address_record).
-      signup_with_your_email(request_id: SecureRandom.uuid)
+    UserMailer.with(user: user, email_address: email_address_record)
+      .signup_with_your_email(request_id: SecureRandom.uuid)
   end
 
   def reset_password_instructions
@@ -26,19 +26,27 @@ class UserMailerPreview < ActionMailer::Preview
     )
   end
 
+  def reset_password_instructions_with_pending_in_person_warning
+    UserMailer.with(
+      user: user_with_pending_in_person_profile, email_address: email_address_record,
+    ).reset_password_instructions(
+      token: SecureRandom.hex, request_id: SecureRandom.hex,
+    )
+  end
+
   def password_changed
-    UserMailer.with(user: user, email_address: email_address_record).
-      password_changed(disavowal_token: SecureRandom.hex)
+    UserMailer.with(user: user, email_address: email_address_record)
+      .password_changed(disavowal_token: SecureRandom.hex)
   end
 
   def phone_added
-    UserMailer.with(user: user, email_address: email_address_record).
-      phone_added(disavowal_token: SecureRandom.hex)
+    UserMailer.with(user: user, email_address: email_address_record)
+      .phone_added(disavowal_token: SecureRandom.hex)
   end
 
   def personal_key_sign_in
-    UserMailer.with(user: user, email_address: email_address_record).
-      personal_key_sign_in(disavowal_token: SecureRandom.hex)
+    UserMailer.with(user: user, email_address: email_address_record)
+      .personal_key_sign_in(disavowal_token: SecureRandom.hex)
   end
 
   def new_device_sign_in_after_2fa
@@ -124,11 +132,20 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def verify_by_mail_letter_requested
+    service_provider = unsaveable(
+      ServiceProvider.new(
+        friendly_name: 'Sample App SP',
+        return_to_sp_url: 'https://example.com',
+      ),
+    )
+    profile = Profile.new(initiating_service_provider: service_provider)
+    user.instance_variable_set(:@pending_profile, profile)
     UserMailer.with(user: user, email_address: email_address_record).verify_by_mail_letter_requested
   end
 
   def add_email
-    UserMailer.with(user: user, email_address: email_address_record).add_email(SecureRandom.hex)
+    UserMailer.with(user: user, email_address: email_address_record)
+      .add_email(token: SecureRandom.hex, request_id: nil)
   end
 
   def email_added
@@ -140,14 +157,25 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def add_email_associated_with_another_account
-    UserMailer.with(user: user, email_address: email_address_record).
-      add_email_associated_with_another_account
+    UserMailer.with(user: user, email_address: email_address_record)
+      .add_email_associated_with_another_account
   end
 
   def account_verified
+    service_provider = unsaveable(
+      ServiceProvider.new(
+        friendly_name: 'Example Sinatra App',
+        return_to_sp_url: 'http://example.com',
+      ),
+    )
     UserMailer.with(user: user, email_address: email_address_record).account_verified(
-      date_time: DateTime.now,
-      sp_name: 'Example App',
+      profile: unsaveable(
+        Profile.new(
+          user: user,
+          initiating_service_provider: service_provider,
+          verified_at: Time.zone.now,
+        ),
+      ),
     )
   end
 
@@ -158,6 +186,7 @@ class UserMailerPreview < ActionMailer::Preview
   def in_person_deadline_passed
     UserMailer.with(user: user, email_address: email_address_record).in_person_deadline_passed(
       enrollment: in_person_enrollment_id_ipp,
+      visited_location_name: in_person_visited_location_name,
     )
   end
 
@@ -196,25 +225,26 @@ class UserMailerPreview < ActionMailer::Preview
   def in_person_verified
     UserMailer.with(user: user, email_address: email_address_record).in_person_verified(
       enrollment: in_person_enrollment_id_ipp,
+      visited_location_name: in_person_visited_location_name,
     )
   end
 
   def in_person_failed
     UserMailer.with(user: user, email_address: email_address_record).in_person_failed(
       enrollment: in_person_enrollment_id_ipp,
+      visited_location_name: in_person_visited_location_name,
     )
   end
 
   def in_person_failed_fraud
     UserMailer.with(user: user, email_address: email_address_record).in_person_failed_fraud(
       enrollment: in_person_enrollment_id_ipp,
+      visited_location_name: in_person_visited_location_name,
     )
   end
 
-  def in_person_please_call
-    UserMailer.with(user: user, email_address: email_address_record).in_person_please_call(
-      enrollment: in_person_enrollment_id_ipp,
-    )
+  def idv_please_call
+    UserMailer.with(user: user, email_address: email_address_record).idv_please_call
   end
 
   def account_rejected
@@ -256,6 +286,10 @@ class UserMailerPreview < ActionMailer::Preview
     ).account_reinstated
   end
 
+  def in_person_post_office_closed
+    UserMailer.with(user: user, email_address: email_address_record).in_person_post_office_closed
+  end
+
   private
 
   def user
@@ -270,6 +304,7 @@ class UserMailerPreview < ActionMailer::Preview
             ),
           ),
         ],
+        email_language: params[:locale],
       ),
     )
   end
@@ -287,12 +322,29 @@ class UserMailerPreview < ActionMailer::Preview
     raw_user
   end
 
+  def user_with_pending_in_person_profile
+    raw_user = user
+    in_person_pending_profile = unsaveable(
+      Profile.new(
+        user: raw_user,
+        active: false,
+        in_person_verification_pending_at: Time.zone.now,
+      ),
+    )
+    raw_user.send(:instance_variable_set, :@pending_profile, in_person_pending_profile)
+    raw_user
+  end
+
   def email_address
     'email@example.com'
   end
 
   def email_address_record
     unsaveable(EmailAddress.new(email: email_address))
+  end
+
+  def in_person_visited_location_name
+    'ACQUAINTANCESHIP'
   end
 
   def in_person_enrollment_id_ipp

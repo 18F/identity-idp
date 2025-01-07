@@ -311,6 +311,7 @@ describe('document-capture/components/document-capture', () => {
 
     context('in person steps', () => {
       it('renders the step indicator', async () => {
+        const callback = sandbox.spy();
         const endpoint = '/upload';
         const { getByLabelText, getByText, queryByText, findByText } = render(
           <UploadContextProvider upload={httpUpload} endpoint={endpoint}>
@@ -326,7 +327,7 @@ describe('document-capture/components/document-capture', () => {
                     inPersonURL: '/in_person',
                   }}
                 >
-                  <DocumentCapture />
+                  <DocumentCapture onStepChange={callback} />
                 </InPersonContext.Provider>
               </FlowContext.Provider>
             </ServiceProviderContextProvider>
@@ -364,15 +365,14 @@ describe('document-capture/components/document-capture', () => {
 
         expect(step).to.be.ok();
         expect(step.closest('.step-indicator__step--current')).to.exist();
+        expect(callback).to.have.been.calledOnce();
       });
     });
   });
 
   it('does not show selfie on first page when doc auth seperated pages enabled', () => {
     const { queryByText } = render(
-      <SelfieCaptureContext.Provider
-        value={{ isSelfieCaptureEnabled: true, docAuthSeparatePagesEnabled: true }}
-      >
+      <SelfieCaptureContext.Provider value={{ isSelfieCaptureEnabled: true }}>
         <DocumentCapture />
       </SelfieCaptureContext.Provider>,
     );

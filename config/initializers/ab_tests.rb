@@ -81,4 +81,39 @@ module AbTests
       SecureRandom.alphanumeric(8)
     end
   end.freeze
+
+  RECOMMEND_WEBAUTHN_PLATFORM_FOR_SMS_USER = AbTest.new(
+    experiment_name: 'Recommend Face or Touch Unlock for SMS users',
+    should_log: [
+      :webauthn_platform_recommended_visited,
+      :webauthn_platform_recommended_submitted,
+      'Multi-Factor Authentication Setup',
+    ].to_set,
+    buckets: {
+      recommend_for_account_creation:
+        IdentityConfig.store.recommend_webauthn_platform_for_sms_ab_test_account_creation_percent,
+      recommend_for_authentication:
+        IdentityConfig.store.recommend_webauthn_platform_for_sms_ab_test_authentication_percent,
+    },
+  ).freeze
+
+  SOCURE_IDV_SHADOW_MODE = AbTest.new(
+    experiment_name: 'Socure shadow mode',
+    should_log: ['IdV: doc auth verify proofing results'].to_set,
+    buckets: {
+      shadow_mode_enabled: IdentityConfig.store.socure_idplus_shadow_mode_percent,
+    },
+  ).freeze
+
+  DESKTOP_FT_UNLOCK_SETUP = AbTest.new(
+    experiment_name: 'Desktop F/T unlock setup',
+    should_log: [
+      'User Registration: 2FA Setup visited',
+      'WebAuthn Setup Visited',
+      :webauthn_setup_submitted,
+      'Multi-Factor Authentication Setup',
+    ].to_set,
+    buckets: { desktop_ft_unlock_option_shown:
+        IdentityConfig.store.desktop_ft_unlock_setup_option_percent_tested },
+  ).freeze
 end

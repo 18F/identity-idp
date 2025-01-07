@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
+RSpec.describe Idv::ApiImageUploadForm do
   include DocPiiHelper
 
   subject(:form) do
@@ -110,8 +110,8 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
             { width: 40, height: 40, mimeType: 'image/png', source: 'acuant' }
           end
           before do
-            allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).
-              and_return(false)
+            allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
+              .and_return(false)
           end
 
           context 'id images are uploaded' do
@@ -330,10 +330,10 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
 
       context 'when acuant a/b test is enabled' do
         before do
-          allow(IdentityConfig.store).to receive(:idv_acuant_sdk_upgrade_a_b_testing_enabled).
-            and_return(true)
-          allow(IdentityConfig.store).to receive(:idv_acuant_sdk_upgrade_a_b_testing_percent).
-            and_return(50)
+          allow(IdentityConfig.store).to receive(:idv_acuant_sdk_upgrade_a_b_testing_enabled)
+            .and_return(true)
+          allow(IdentityConfig.store).to receive(:idv_acuant_sdk_upgrade_a_b_testing_percent)
+            .and_return(50)
         end
 
         it 'returns the expected response' do
@@ -541,8 +541,8 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
           expect(capture_result.failed_selfie_image_fingerprints.length).to eq(1)
           response = form.submit
           expect(response.errors).to have_key(:selfie)
-          expect(response.errors).
-            to have_value([I18n.t('doc_auth.errors.doc.resubmit_failed_image')])
+          expect(response.errors)
+            .to have_value([I18n.t('doc_auth.errors.doc.resubmit_failed_image')])
         end
       end
     end
@@ -617,8 +617,8 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
           response = form.submit
           expect(response.errors).to have_key(:front)
           expect(response.errors).to have_key(:back)
-          expect(response.errors).
-            to have_value([I18n.t('doc_auth.errors.doc.resubmit_failed_image')])
+          expect(response.errors)
+            .to have_value([I18n.t('doc_auth.errors.doc.resubmit_failed_image')])
           expect(fake_analytics).to have_logged_event(
             'IdV: failed doc image resubmitted',
             submit_attempts: 1,
@@ -645,10 +645,10 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
       let(:images_cropped) { false }
 
       before do
-        expect_any_instance_of(DocAuth::Mock::DocAuthMockClient).
-          to receive(:post_images).
-          with(hash_including(image_source: image_source, images_cropped: images_cropped)).
-          and_call_original
+        expect_any_instance_of(DocAuth::Mock::DocAuthMockClient)
+          .to receive(:post_images)
+          .with(hash_including(image_source: image_source, images_cropped: images_cropped))
+          .and_call_original
       end
 
       context 'manual uploads' do

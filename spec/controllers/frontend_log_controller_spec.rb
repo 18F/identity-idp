@@ -3,8 +3,8 @@ require 'rails_helper'
 RSpec.describe FrontendLogController do
   describe '.LEGACY_EVENT_MAP' do
     it 'has keys sorted alphabetically' do
-      expect(described_class::LEGACY_EVENT_MAP.keys).
-        to eq(described_class::LEGACY_EVENT_MAP.keys.sort_by(&:downcase))
+      expect(described_class::LEGACY_EVENT_MAP.keys)
+        .to eq(described_class::LEGACY_EVENT_MAP.keys.sort_by(&:downcase))
     end
   end
 
@@ -60,9 +60,11 @@ RSpec.describe FrontendLogController do
           let(:flow_path) { 'standard' }
           let(:event) { 'IdV: location submitted' }
           let(:payload) do
-            { 'selected_location' => selected_location,
+            {
+              'selected_location' => selected_location,
               'flow_path' => flow_path,
-              'opted_in_to_in_person_proofing' => nil }
+              'opted_in_to_in_person_proofing' => nil,
+            }
           end
 
           it 'succeeds' do
@@ -94,14 +96,16 @@ RSpec.describe FrontendLogController do
               { opt_in_analytics_properties: true }
             end
             let(:payload) do
-              { 'selected_location' => selected_location,
+              {
+                'selected_location' => selected_location,
                 'flow_path' => flow_path,
-                'opted_in_to_in_person_proofing' => true }
+                'opted_in_to_in_person_proofing' => true,
+              }
             end
 
             before do
-              allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).
-                and_return(true)
+              allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled)
+                .and_return(true)
             end
 
             it 'succeeds' do
@@ -197,8 +201,8 @@ RSpec.describe FrontendLogController do
         end
 
         it 'notices the error to NewRelic instead of analytics logger' do
-          allow_any_instance_of(FrontendErrorForm).to receive(:submit).
-            and_return(FormResponse.new(success: true))
+          allow_any_instance_of(FrontendErrorForm).to receive(:submit)
+            .and_return(FormResponse.new(success: true))
           expect(NewRelic::Agent).to receive(:notice_error).with(
             FrontendErrorLogger::FrontendError.new,
             custom_params: {
@@ -207,6 +211,7 @@ RSpec.describe FrontendLogController do
                 message: 'message',
                 stack: 'stack',
                 filename: 'filename',
+                error_id: nil,
               },
             },
             expected: true,

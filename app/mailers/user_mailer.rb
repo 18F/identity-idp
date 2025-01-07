@@ -22,11 +22,10 @@ class UserMailer < ActionMailer::Base
 
   class UserEmailAddressMismatchError < StandardError; end
 
-  attr_reader :user, :email_address
-
   before_action :validate_user_and_email_address
   before_action :attach_images
   after_action :add_metadata
+
   default(
     from: email_with_name(
       IdentityConfig.store.email_from,
@@ -39,24 +38,6 @@ class UserMailer < ActionMailer::Base
   )
 
   layout 'mailer'
-
-  def validate_user_and_email_address
-    @user = params.fetch(:user)
-    @email_address = params.fetch(:email_address)
-    if @user.id != @email_address.user_id
-      raise UserEmailAddressMismatchError.new(
-        "User ID #{@user.id} does not match EmailAddress ID #{@email_address.id}",
-      )
-    end
-  end
-
-  def add_metadata
-    message.instance_variable_set(
-      :@_metadata, {
-        user: user, email_address: email_address, action: action_name
-      }
-    )
-  end
 
   def email_confirmation_instructions(token, request_id:)
     with_user_locale(user) do
@@ -86,7 +67,8 @@ class UserMailer < ActionMailer::Base
       @token = token
       @request_id = request_id
       @gpo_verification_pending_profile = user.gpo_verification_pending_profile?
-      @hide_title = @gpo_verification_pending_profile
+      @in_person_verification_pending_profile = user.in_person_pending_profile?
+      @hide_title = @gpo_verification_pending_profile || @in_person_verification_pending_profile
       mail(to: email_address.email, subject: t('user_mailer.reset_password_instructions.subject'))
     end
   end
@@ -206,18 +188,28 @@ class UserMailer < ActionMailer::Base
 
   def verify_by_mail_letter_requested
     with_user_locale(user) do
-      mail(to: email_address.email, subject: t('user_mailer.letter_reminder.subject'))
+      @hide_title = true
+      @presenter = Idv::ByMail::LetterRequestedEmailPresenter.new(
+        current_user: user,
+        url_options:,
+      )
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.verify_by_mail_letter_requested.subject'),
+      )
     end
   end
 
-  def add_email(token)
+  def add_email(token:, request_id:, from_select_email_flow: nil)
     with_user_locale(user) do
       presenter = ConfirmationEmailPresenter.new(user, view_context)
       @first_sentence = presenter.first_sentence
       @confirmation_period = presenter.confirmation_period
       @add_email_url = add_email_confirmation_url(
         confirmation_token: token,
+        from_select_email_flow:,
         locale: locale_url_param,
+        request_id:,
       )
       mail(to: email_address.email, subject: t('user_mailer.add_email.subject'))
     end
@@ -242,13 +234,31 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def account_verified(date_time:, sp_name:)
+  def account_verified(profile:)
+    attachments.inline['verified.png'] =
+      Rails.root.join('app/assets/images/email/user-signup-ial2.png').read
     with_user_locale(user) do
-      @date = I18n.l(date_time, format: :event_date)
-      @sp_name = sp_name
+      @presenter = Idv::AccountVerifiedEmailPresenter.new(profile:, url_options:)
+      @hide_title = true
+      @date = I18n.l(profile.verified_at, format: :event_date)
       mail(
         to: email_address.email,
-        subject: t('user_mailer.account_verified.subject', sp_name: @sp_name),
+        subject: t('user_mailer.account_verified.subject', app_name: APP_NAME),
+      )
+    end
+  end
+
+  def idv_please_call(**)
+    attachments.inline['phone_icon.png'] =
+      Rails.root.join('app/assets/images/email/phone_icon.png').read
+
+    with_user_locale(user) do
+      @hide_title = true
+
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.idv_please_call.subject', app_name: APP_NAME),
+        template_name: 'idv_please_call',
       )
     end
   end
@@ -270,12 +280,13 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def in_person_deadline_passed(enrollment:)
+  def in_person_deadline_passed(enrollment:, visited_location_name: nil)
     with_user_locale(user) do
       @header = t('user_mailer.in_person_deadline_passed.header')
       @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
         enrollment: enrollment,
         url_options: url_options,
+        visited_location_name: visited_location_name,
       )
       mail(
         to: email_address.email,
@@ -301,6 +312,9 @@ class UserMailer < ActionMailer::Base
         is_enhanced_ipp: is_enhanced_ipp,
       )
       @is_enhanced_ipp = is_enhanced_ipp
+      @show_closed_post_office_banner =
+        IdentityConfig.store.in_person_proofing_post_office_closed_alert_enabled
+
       mail(
         to: email_address.email,
         subject: t('user_mailer.in_person_ready_to_verify.subject', app_name: APP_NAME),
@@ -314,6 +328,9 @@ class UserMailer < ActionMailer::Base
     ).image_data
 
     @is_enhanced_ipp = enrollment.enhanced_ipp?
+    @show_closed_post_office_banner =
+      IdentityConfig.store.in_person_proofing_post_office_closed_alert_enabled
+
     with_user_locale(user) do
       @presenter = Idv::InPerson::ReadyToVerifyPresenter.new(
         enrollment: enrollment,
@@ -334,12 +351,13 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def in_person_verified(enrollment:)
+  def in_person_verified(enrollment:, visited_location_name: nil)
     with_user_locale(user) do
       @hide_title = true
       @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
         enrollment: enrollment,
         url_options: url_options,
+        visited_location_name: visited_location_name,
       )
       mail(
         to: email_address.email,
@@ -348,11 +366,12 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def in_person_failed(enrollment:)
+  def in_person_failed(enrollment:, visited_location_name: nil)
     with_user_locale(user) do
       @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
         enrollment: enrollment,
         url_options: url_options,
+        visited_location_name: visited_location_name,
       )
       mail(
         to: email_address.email,
@@ -361,29 +380,16 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def in_person_failed_fraud(enrollment:)
+  def in_person_failed_fraud(enrollment:, visited_location_name: nil)
     with_user_locale(user) do
       @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
         enrollment: enrollment,
         url_options: url_options,
+        visited_location_name: visited_location_name,
       )
       mail(
         to: email_address.email,
         subject: t('user_mailer.in_person_failed_suspected_fraud.subject'),
-      )
-    end
-  end
-
-  def in_person_please_call(enrollment:)
-    with_user_locale(user) do
-      @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
-        enrollment: enrollment,
-        url_options: url_options,
-      )
-      @hide_title = true
-      mail(
-        to: email_address.email,
-        subject: t('user_mailer.in_person_please_call.subject', app_name: APP_NAME),
       )
     end
   end
@@ -433,7 +439,37 @@ class UserMailer < ActionMailer::Base
     end
   end
 
+  def in_person_post_office_closed
+    with_user_locale(user) do
+      @hide_title = true
+      mail(
+        to: email_address.email,
+        subject: t('in_person_proofing.post_office_closed.email.subject'),
+      )
+    end
+  end
+
   private
+
+  attr_reader :user, :email_address
+
+  def validate_user_and_email_address
+    @user = params.fetch(:user)
+    @email_address = params.fetch(:email_address)
+    if @user.id != @email_address.user_id
+      raise UserEmailAddressMismatchError.new(
+        "User ID #{@user.id} does not match EmailAddress ID #{@email_address.id}",
+      )
+    end
+  end
+
+  def add_metadata
+    message.instance_variable_set(
+      :@_metadata, {
+        user: user, email_address: email_address, action: action_name
+      }
+    )
+  end
 
   def account_reset_token_valid_period
     current_time = Time.zone.now

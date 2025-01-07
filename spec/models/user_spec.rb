@@ -10,16 +10,15 @@ RSpec.describe User do
     it { is_expected.to have_one(:account_reset_request) }
     it { is_expected.to have_many(:phone_configurations) }
     it { is_expected.to have_many(:webauthn_configurations) }
-    it { is_expected.to have_one(:proofing_component) }
     it { is_expected.to have_many(:in_person_enrollments).dependent(:destroy) }
     it {
-      is_expected.to have_one(:pending_in_person_enrollment).
-        conditions(status: :pending).
-        order(created_at: :desc).
-        class_name('InPersonEnrollment').
-        with_foreign_key(:user_id).
-        inverse_of(:user).
-        dependent(:destroy)
+      is_expected.to have_one(:pending_in_person_enrollment)
+        .conditions(status: :pending)
+        .order(created_at: :desc)
+        .class_name('InPersonEnrollment')
+        .with_foreign_key(:user_id)
+        .inverse_of(:user)
+        .dependent(:destroy)
     }
   end
 
@@ -50,8 +49,8 @@ RSpec.describe User do
       user = create(:user)
       user.uuid = nil
 
-      expect { user.save }.
-        to raise_error(
+      expect { user.save }
+        .to raise_error(
           ActiveRecord::NotNullViolation,
           /null value in column "uuid".*violates not-null constraint/,
         )
@@ -63,8 +62,8 @@ RSpec.describe User do
       user2 = create(:user, email: "mkuniqu.#{user1.email}")
       user2.uuid = user1.uuid
 
-      expect { user2.save }.
-        to raise_error(
+      expect { user2.save }
+        .to raise_error(
           ActiveRecord::StatementInvalid,
           /duplicate key value violates unique constraint/,
         )
@@ -93,8 +92,8 @@ RSpec.describe User do
       it 'generates it via SecureRandom.uuid' do
         user = build(:user)
 
-        expect(user.generate_uuid).
-          to match(/[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}/)
+        expect(user.generate_uuid)
+          .to match(/[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}/)
       end
     end
   end
@@ -333,9 +332,6 @@ RSpec.describe User do
 
     describe '#has_in_person_enrollment?' do
       it 'returns the establishing IPP enrollment that has an address' do
-        ProofingComponent.find_or_create_by(user: user).
-          update!(document_check: Idp::Constants::Vendors::USPS)
-
         expect(user.has_in_person_enrollment?).to eq(true)
       end
     end
@@ -590,10 +586,10 @@ RSpec.describe User do
     let(:accepted_terms_at) { nil }
     let(:user) { create(:user, :fully_registered, accepted_terms_at: accepted_terms_at) }
     before do
-      allow(IdentityConfig.store).to receive(:rules_of_use_horizon_years).
-        and_return(rules_of_use_horizon_years)
-      allow(IdentityConfig.store).to receive(:rules_of_use_updated_at).
-        and_return(rules_of_use_updated_at)
+      allow(IdentityConfig.store).to receive(:rules_of_use_horizon_years)
+        .and_return(rules_of_use_horizon_years)
+      allow(IdentityConfig.store).to receive(:rules_of_use_updated_at)
+        .and_return(rules_of_use_updated_at)
     end
 
     context 'when a user has not accepted rules of use yet' do
@@ -1006,8 +1002,8 @@ RSpec.describe User do
         end
 
         it 'send account disabled push event' do
-          expect(PushNotification::HttpPush).to receive(:deliver).once.
-            with(PushNotification::AccountDisabledEvent.new(
+          expect(PushNotification::HttpPush).to receive(:deliver).once
+            .with(PushNotification::AccountDisabledEvent.new(
               user: user,
             ))
           user.suspend!
@@ -1059,8 +1055,8 @@ RSpec.describe User do
         email_addresses = user.email_addresses
         email_address = email_addresses.last
         expect(email_addresses.count).to eq 1
-        expect { user.reinstate! }.
-          to(change { SuspendedEmail.find_with_email(email_address.email) }.to(nil))
+        expect { user.reinstate! }
+          .to(change { SuspendedEmail.find_with_email(email_address.email) }.to(nil))
         expect(user.email_addresses.reload.last).to be_present
       end
 
@@ -1076,8 +1072,8 @@ RSpec.describe User do
       end
 
       it 'send account enabled push event' do
-        expect(PushNotification::HttpPush).to receive(:deliver).once.
-          with(PushNotification::AccountEnabledEvent.new(
+        expect(PushNotification::HttpPush).to receive(:deliver).once
+          .with(PushNotification::AccountEnabledEvent.new(
             user: user,
           ))
         user.reinstate!
@@ -1102,8 +1098,8 @@ RSpec.describe User do
     let(:issuer) { service_provider.issuer }
 
     before do
-      allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).
-        and_return(true)
+      allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?)
+        .and_return(true)
     end
 
     def test_send_survey(should_send)
@@ -1186,8 +1182,8 @@ RSpec.describe User do
       end
 
       before do
-        allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).
-          and_return(false)
+        allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?)
+          .and_return(false)
       end
 
       it 'should not send survey' do
@@ -1210,10 +1206,10 @@ RSpec.describe User do
 
   describe '#broken_personal_key?' do
     before do
-      allow(IdentityConfig.store).to receive(:broken_personal_key_window_start).
-        and_return(3.days.ago)
-      allow(IdentityConfig.store).to receive(:broken_personal_key_window_finish).
-        and_return(1.day.ago)
+      allow(IdentityConfig.store).to receive(:broken_personal_key_window_start)
+        .and_return(3.days.ago)
+      allow(IdentityConfig.store).to receive(:broken_personal_key_window_finish)
+        .and_return(1.day.ago)
     end
 
     let(:user) { build(:user) }
@@ -1433,7 +1429,7 @@ RSpec.describe User do
     end
   end
 
-  describe '#identity_verified_with_biometric_comparison?' do
+  describe '#identity_verified_with_facial_match?' do
     let(:user) { create(:user) }
     let(:active_profile) do
       create(
@@ -1446,23 +1442,23 @@ RSpec.describe User do
     it 'returns true if user has an active profile with selfie' do
       active_profile.idv_level = :unsupervised_with_selfie
       active_profile.save
-      expect(user.identity_verified_with_biometric_comparison?).to eq true
+      expect(user.identity_verified_with_facial_match?).to eq true
     end
 
     it 'returns false if user has an active profile without selfie' do
-      expect(user.identity_verified_with_biometric_comparison?).to eq false
+      expect(user.identity_verified_with_facial_match?).to eq false
     end
 
     it 'return true if user has an active in-person profile' do
       active_profile.idv_level = :in_person
       active_profile.save
-      expect(user.identity_verified_with_biometric_comparison?).to eq true
+      expect(user.identity_verified_with_facial_match?).to eq true
     end
 
     context 'user does not have active profile' do
       let(:active_profile) { nil }
       it 'returns false' do
-        expect(user.identity_verified_with_biometric_comparison?).to eq false
+        expect(user.identity_verified_with_facial_match?).to eq false
       end
     end
   end
@@ -1536,8 +1532,8 @@ RSpec.describe User do
     end
 
     it 'interleaves identities and events, decorates events, and sorts them in descending order' do
-      expect(user.recent_events).
-        to eq [another_event.decorate, identity, event.decorate]
+      expect(user.recent_events)
+        .to eq [another_event.decorate, identity, event.decorate]
     end
   end
 
@@ -1644,14 +1640,14 @@ RSpec.describe User do
 
     it 'returns ial1 if identity is not verified' do
       allow(user).to receive(:identity_verified?).and_return(false)
-      expect(user.delete_account_bullet_key).
-        to eq t('users.delete.bullet_2_basic', app_name: APP_NAME)
+      expect(user.delete_account_bullet_key)
+        .to eq t('users.delete.bullet_2_basic', app_name: APP_NAME)
     end
 
     it 'returns ial2 if identity is verified' do
       allow(user).to receive(:identity_verified?).and_return(true)
-      expect(user.delete_account_bullet_key).
-        to eq t('users.delete.bullet_2_verified', app_name: APP_NAME)
+      expect(user.delete_account_bullet_key)
+        .to eq t('users.delete.bullet_2_verified', app_name: APP_NAME)
     end
   end
 
@@ -1695,24 +1691,19 @@ RSpec.describe User do
   end
 
   describe '#has_fed_or_mil_email?' do
-    before do
-      allow(IdentityConfig.store).to receive(:use_fed_domain_class).and_return(false)
-    end
+    let!(:federal_email_domain) { create(:federal_email_domain, name: 'gsa.gov') }
 
-    context 'with a valid fed email in domain file' do
-      let(:user) { create(:user, email: 'example@example.gov') }
+    context 'with an email in federal_email_domains' do
+      let(:user) { create(:user, email: 'example@gsa.gov') }
       it 'should return true' do
         expect(user.has_fed_or_mil_email?).to eq(true)
       end
     end
 
-    context 'with use_fed_domain_class set to false and random .gov email' do
+    context 'with an email not in federal_email_domains' do
       let(:user) { create(:user, email: 'example@example.gov') }
-      before do
-        allow(IdentityConfig.store).to receive(:use_fed_domain_class).and_return(false)
-      end
-      it 'should return true' do
-        expect(user.has_fed_or_mil_email?).to eq(true)
+      it 'should return false' do
+        expect(user.has_fed_or_mil_email?).to eq(false)
       end
     end
 
@@ -1728,6 +1719,41 @@ RSpec.describe User do
       it 'should return false' do
         expect(user.has_fed_or_mil_email?).to eq(false)
       end
+    end
+  end
+
+  describe '#last_sign_in_email_address' do
+    let(:user) { create(:user) }
+
+    let!(:last_sign_in_email_address) do
+      create(
+        :email_address,
+        email: 'last_sign_in@email.com',
+        user: user,
+        last_sign_in_at: 1.minute.ago,
+      )
+    end
+
+    let!(:older_sign_in_email_address) do
+      create(
+        :email_address,
+        email: 'older_sign_in@email.com',
+        user: user,
+        last_sign_in_at: 1.hour.ago,
+      )
+    end
+
+    let!(:never_signed_in_email_address) do
+      create(
+        :email_address,
+        email: 'never_signed_in@email.com',
+        user: user,
+        last_sign_in_at: nil,
+      )
+    end
+
+    it 'returns the last signed in email address' do
+      expect(user.last_sign_in_email_address).to eq(last_sign_in_email_address)
     end
   end
 end

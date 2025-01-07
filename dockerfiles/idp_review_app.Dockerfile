@@ -1,4 +1,4 @@
-FROM ruby:3.3.4-slim
+FROM ruby:3.3.6-slim
 
 # Set environment variables
 ENV RAILS_ROOT /app
@@ -10,7 +10,7 @@ ENV LOGIN_CONFIG_FILE $RAILS_ROOT/tmp/application.yml
 ENV RAILS_LOG_LEVEL debug
 ENV BUNDLE_PATH /usr/local/bundle
 ENV YARN_VERSION 1.22.5
-ENV NODE_VERSION 20.10.0
+ENV NODE_VERSION 22.11.0
 ENV BUNDLER_VERSION 2.5.6
 ENV POSTGRES_SSLMODE prefer
 ENV POSTGRES_NAME idp
@@ -22,6 +22,7 @@ ENV POSTGRES_WORKER_NAME idp-worker-jobs
 ENV POSTGRES_WORKER_HOST postgres-worker
 ENV POSTGRES_WORKER_USERNAME postgres
 ENV POSTGRES_WORKER_PASSWORD postgres
+ENV REDIS_IRS_ATTEMPTS_API_URL redis://redis:6379/2
 ENV REDIS_THROTTLE_URL redis://redis:6379/1
 ENV REDIS_URL redis://redis:6379
 ENV ASSET_HOST http://localhost:3000
@@ -129,7 +130,7 @@ COPY --chown=app:app pwned_passwords/pwned_passwords.txt.sample $RAILS_ROOT/pwne
 COPY --chown=app:app public/ban-robots.txt $RAILS_ROOT/public/robots.txt
 
 # Copy application.yml.default to application.yml
-COPY --chown=app:app ./config/application.yml.default.docker $RAILS_ROOT/config/application.yml
+COPY --chown=app:app ./config/application.yml.default.review_app $RAILS_ROOT/config/application.yml
 
 # Setup config files
 COPY --chown=app:app config/agencies.localdev.yml $RAILS_ROOT/config/agencies.yml

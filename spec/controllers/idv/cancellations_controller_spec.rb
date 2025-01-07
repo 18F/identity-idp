@@ -227,8 +227,7 @@ RSpec.describe Idv::CancellationsController do
         before do
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
           allow(controller).to receive(:user_session).and_return(
-            'idv/in_person' => { 'pii_from_user' => {},
-                                 'Idv::Steps::InPerson::StateIdStep' => true },
+            'idv/in_person' => { 'pii_from_user' => {} },
           )
           delete :destroy
           enrollment.reload
@@ -251,8 +250,7 @@ RSpec.describe Idv::CancellationsController do
         before do
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
           allow(controller).to receive(:user_session).and_return(
-            'idv/in_person' => { 'pii_from_user' => {},
-                                 'Idv::Steps::InPerson::StateIdStep' => true },
+            'idv/in_person' => { 'pii_from_user' => {} },
           )
 
           delete :destroy

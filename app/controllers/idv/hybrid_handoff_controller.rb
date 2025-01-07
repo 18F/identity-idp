@@ -5,6 +5,7 @@ module Idv
     include Idv::AvailabilityConcern
     include ActionView::Helpers::DateHelper
     include IdvStepConcern
+    include DocAuthVendorConcern
     include StepIndicatorConcern
 
     before_action :confirm_not_rate_limited
@@ -12,8 +13,7 @@ module Idv
     before_action :confirm_hybrid_handoff_needed, only: :show
 
     def show
-      @upload_disabled = idv_session.selfie_check_required &&
-                         !idv_session.desktop_selfie_test_mode_enabled?
+      @upload_disabled = upload_disabled?
 
       @direct_ipp_with_selfie_enabled = IdentityConfig.store.in_person_doc_auth_button_enabled &&
                                         Idv::InPersonConfig.enabled_for_issuer?(
@@ -22,15 +22,14 @@ module Idv
 
       @selfie_required = idv_session.selfie_check_required
 
-      analytics.idv_doc_auth_hybrid_handoff_visited(**analytics_arguments)
-
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).call(
         'upload', :view,
         true
       )
-
+      analytics.idv_doc_auth_hybrid_handoff_visited(**analytics_arguments)
       # reset if we visit or come back
       idv_session.skip_doc_auth_from_handoff = nil
+
       render :show, locals: extra_view_variables
     end
 
@@ -48,10 +47,10 @@ module Idv
       if IdentityConfig.store.in_person_proofing_opt_in_enabled &&
          IdentityConfig.store.in_person_proofing_enabled &&
          idv_session.service_provider&.in_person_proofing_enabled
-        idv_session.skip_doc_auth == false
+        idv_session.skip_doc_auth_from_how_to_verify == false
       else
-        idv_session.skip_doc_auth.nil? ||
-          idv_session.skip_doc_auth == false
+        idv_session.skip_doc_auth_from_how_to_verify.nil? ||
+          idv_session.skip_doc_auth_from_how_to_verify == false
       end
     end
 
@@ -59,7 +58,7 @@ module Idv
       Idv::StepInfo.new(
         key: :hybrid_handoff,
         controller: self,
-        next_steps: [:link_sent, :document_capture],
+        next_steps: [:link_sent, :document_capture, :socure_document_capture],
         preconditions: ->(idv_session:, user:) {
                          idv_session.idv_consent_given? &&
                            (self.selected_remote(idv_session: idv_session) || # from opt-in screen
@@ -72,6 +71,8 @@ module Idv
         end,
       )
     end
+
+    private
 
     def handle_phone_submission
       return rate_limited_failure if rate_limiter.limited?
@@ -117,6 +118,11 @@ module Idv
 
     def sp_or_app_name
       current_sp&.friendly_name.presence || APP_NAME
+    end
+
+    def upload_disabled?
+      (doc_auth_vendor == Idp::Constants::Vendors::SOCURE || idv_session.selfie_check_required) &&
+        !idv_session.desktop_selfie_test_mode_enabled?
     end
 
     def build_telephony_form_response(telephony_result)

@@ -46,6 +46,13 @@ RSpec.describe SamlIdpController do
         'Logout Initiated',
         hash_including(sp_initiated: true, oidc: false, saml_request_valid: false),
       )
+      expect(@analytics).to have_logged_event(
+        :sp_integration_errors_present,
+        error_details: [:issuer_missing_or_invald, :no_auth_or_logout_request, :invalid_signature],
+        error_types: { saml_request_errors: true },
+        event: :saml_logout_request,
+        integration_exists: false,
+      )
     end
 
     let(:service_provider) do
@@ -112,12 +119,35 @@ RSpec.describe SamlIdpController do
       expect(response).to be_ok
     end
 
-    it 'rejects requests from a wrong cert' do
-      delete :logout, params: UriService.params(
-        OneLogin::RubySaml::Logoutrequest.new.create(wrong_cert_settings),
-      ).merge(path_year: path_year)
+    context 'when the cert is not registered' do
+      it 'rejects requests from a wrong cert' do
+        delete :logout, params: UriService.params(
+          OneLogin::RubySaml::Logoutrequest.new.create(wrong_cert_settings),
+        ).merge(path_year: path_year)
 
-      expect(response).to be_bad_request
+        expect(response).to be_bad_request
+      end
+
+      it 'tracks the request' do
+        stub_analytics
+
+        delete :logout, params: UriService.params(
+          OneLogin::RubySaml::Logoutrequest.new.create(wrong_cert_settings),
+        ).merge(path_year: path_year)
+
+        expect(@analytics).to have_logged_event(
+          'Logout Initiated',
+          hash_including(sp_initiated: true, oidc: false, saml_request_valid: false),
+        )
+        expect(@analytics).to have_logged_event(
+          :sp_integration_errors_present,
+          error_details: [:invalid_signature],
+          error_types: { saml_request_errors: true },
+          event: :saml_logout_request,
+          integration_exists: true,
+          request_issuer: service_provider.issuer,
+        )
+      end
     end
 
     context 'cert element in SAML request is blank' do
@@ -183,6 +213,13 @@ RSpec.describe SamlIdpController do
       post :remotelogout, params: { SAMLRequest: 'foo', path_year: path_year }
 
       expect(@analytics).to have_logged_event('Remote Logout initiated', saml_request_valid: false)
+      expect(@analytics).to have_logged_event(
+        :sp_integration_errors_present,
+        error_details: [:issuer_missing_or_invald, :no_auth_or_logout_request, :invalid_signature],
+        error_types: { saml_request_errors: true },
+        event: :saml_remote_logout_request,
+        integration_exists: false,
+      )
     end
 
     let(:agency) { create(:agency) }
@@ -351,12 +388,21 @@ RSpec.describe SamlIdpController do
         ),
       ).to eq(true)
 
+      stub_analytics
       post :remotelogout, params: payload.to_h.merge(
         Signature: Base64.encode64(signature),
         path_year: path_year,
       )
 
       expect(response).to be_bad_request
+      expect(@analytics).to have_logged_event(
+        :sp_integration_errors_present,
+        error_details: [:no_user_found_from_session_index],
+        error_types: { saml_request_errors: true },
+        event: :saml_remote_logout_request,
+        integration_exists: true,
+        request_issuer: service_provider.issuer,
+      )
     end
 
     it 'rejects requests from a correct cert but bad session index' do
@@ -385,12 +431,21 @@ RSpec.describe SamlIdpController do
         ),
       ).to eq(true)
 
+      stub_analytics
       post :remotelogout, params: payload.to_h.merge(
         Signature: Base64.encode64(signature),
         path_year: path_year,
       )
 
       expect(response).to be_bad_request
+      expect(@analytics).to have_logged_event(
+        :sp_integration_errors_present,
+        error_details: [:no_user_found_from_session_index],
+        error_types: { saml_request_errors: true },
+        event: :saml_remote_logout_request,
+        integration_exists: true,
+        request_issuer: service_provider.issuer,
+      )
     end
 
     it 'rejects requests from a correct cert but a non-associated user' do
@@ -419,20 +474,38 @@ RSpec.describe SamlIdpController do
         ),
       ).to eq(true)
 
+      stub_analytics
       post :remotelogout, params: payload.to_h.merge(
         Signature: Base64.encode64(signature),
         path_year: path_year,
       )
 
       expect(response).to be_bad_request
+      expect(@analytics).to have_logged_event(
+        :sp_integration_errors_present,
+        error_details: [:no_user_found_from_session_index],
+        error_types: { saml_request_errors: true },
+        event: :saml_remote_logout_request,
+        integration_exists: true,
+        request_issuer: service_provider.issuer,
+      )
     end
 
     it 'rejects requests from a wrong cert' do
+      stub_analytics
       post :remotelogout, params: UriService.params(
         OneLogin::RubySaml::Logoutrequest.new.create(wrong_cert_settings),
       ).merge(path_year: path_year)
 
       expect(response).to be_bad_request
+      expect(@analytics).to have_logged_event(
+        :sp_integration_errors_present,
+        error_details: [:invalid_signature],
+        error_types: { saml_request_errors: true },
+        event: :saml_remote_logout_request,
+        integration_exists: true,
+        request_issuer: service_provider.issuer,
+      )
     end
   end
 
@@ -465,35 +538,35 @@ RSpec.describe SamlIdpController do
     it 'contains a signature method nodeset with SHA256 algorithm' do
       expect(xmldoc.signature_method_nodeset.length).to eq(1)
 
-      expect(xmldoc.signature_method_nodeset[0].attr('Algorithm')).
-        to eq('http://www.w3.org/2001/04/xmldsig-more#rsa-sha256')
+      expect(xmldoc.signature_method_nodeset[0].attr('Algorithm'))
+        .to eq('http://www.w3.org/2001/04/xmldsig-more#rsa-sha256')
     end
 
     it 'contains a digest method nodeset with SHA256 algorithm' do
       expect(xmldoc.digest_method_nodeset.length).to eq(1)
 
-      expect(xmldoc.digest_method_nodeset[0].attr('Algorithm')).
-        to eq('http://www.w3.org/2001/04/xmlenc#sha256')
+      expect(xmldoc.digest_method_nodeset[0].attr('Algorithm'))
+        .to eq('http://www.w3.org/2001/04/xmlenc#sha256')
     end
 
     it 'contains the organization name under AttributeAuthorityDescriptor' do
-      expect(xmldoc.attribute_authority_organization_name).
-        to eq org_name
+      expect(xmldoc.attribute_authority_organization_name)
+        .to eq org_name
     end
 
     it 'contains the org display name under AttributeAuthorityDescriptor' do
-      expect(xmldoc.attribute_authority_organization_display_name).
-        to eq org_name
+      expect(xmldoc.attribute_authority_organization_display_name)
+        .to eq org_name
     end
 
     it 'contains the organization name' do
-      expect(xmldoc.organization_name).
-        to eq org_name
+      expect(xmldoc.organization_name)
+        .to eq org_name
     end
 
     it 'contains the organization display name' do
-      expect(xmldoc.organization_display_name).
-        to eq org_name
+      expect(xmldoc.organization_display_name)
+        .to eq org_name
     end
 
     it 'disables caching' do
@@ -570,7 +643,7 @@ RSpec.describe SamlIdpController do
         end
       end
 
-      context 'the request requires identity proofing with a biometric' do
+      context 'the request requires identity proofing with a facial match' do
         let(:vtr_settings) do
           saml_settings(
             overrides: {
@@ -595,18 +668,18 @@ RSpec.describe SamlIdpController do
           )
         end
 
-        context 'the user has proofed without a biometric check' do
+        context 'the user has proofed without a facial match check' do
           before do
             user.active_profile.update!(idv_level: :legacy_unsupervised)
           end
 
-          it 'redirects to identity proofing for a user who is verified without a biometric' do
+          it 'redirects to identity proofing for a user who is verified without a facial match' do
             saml_get_auth(vtr_settings)
             expect(response).to redirect_to(idv_url)
             expect(controller.session[:sp][:vtr]).to eq(['C1.C2.P1.Pb'])
           end
 
-          context 'user has a pending biometric profile' do
+          context 'user has a pending facial match profile' do
             let(:vtr_settings) do
               saml_settings(
                 overrides: {
@@ -616,7 +689,7 @@ RSpec.describe SamlIdpController do
               )
             end
 
-            it 'does not redirect to proofing if sp does not request biometrics' do
+            it 'does not redirect to proofing if sp does not request facial match' do
               create(
                 :profile,
                 :verify_by_mail_pending,
@@ -645,7 +718,7 @@ RSpec.describe SamlIdpController do
           end
         end
 
-        context 'the user has proofed with a biometric check remotely' do
+        context 'the user has proofed with a facial match check remotely' do
           before do
             user.active_profile.update!(idv_level: :unsupervised_with_selfie)
           end
@@ -657,7 +730,7 @@ RSpec.describe SamlIdpController do
           end
         end
 
-        context 'the user has proofed with a biometric check in-person' do
+        context 'the user has proofed with a facial match check in-person' do
           before do
             user.active_profile.update!(idv_level: :in_person)
           end
@@ -779,6 +852,8 @@ RSpec.describe SamlIdpController do
             requested_ial: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
             service_provider: sp1_issuer,
             force_authn: false,
+            request_signed: true,
+            matching_cert_serial: saml_test_sp_cert_serial,
             user_fully_authenticated: true,
           }
         )
@@ -930,6 +1005,8 @@ RSpec.describe SamlIdpController do
             requested_ial: 'ialmax',
             service_provider: sp1_issuer,
             force_authn: false,
+            request_signed: true,
+            matching_cert_serial: saml_test_sp_cert_serial,
             user_fully_authenticated: true,
           }
         )
@@ -970,15 +1047,22 @@ RSpec.describe SamlIdpController do
     end
 
     context 'authn_context is invalid' do
-      it 'renders an error page' do
+      let(:unknown_value) do
+        'http://idmanagement.gov/ns/assurance/loa/5'
+      end
+      let(:authn_context) { unknown_value }
+
+      before do
         stub_analytics
 
         saml_get_auth(
           saml_settings(
-            overrides: { authn_context: 'http://idmanagement.gov/ns/assurance/loa/5' },
+            overrides: { authn_context: },
           ),
         )
+      end
 
+      it 'renders an error page' do
         expect(controller).to render_template('saml_idp/auth/error')
         expect(response.status).to eq(400)
         expect(response.body).to include(t('errors.messages.unauthorized_authn_context'))
@@ -989,7 +1073,7 @@ RSpec.describe SamlIdpController do
             errors: { authn_context: [t('errors.messages.unauthorized_authn_context')] },
             error_details: { authn_context: { unauthorized_authn_context: true } },
             nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-            authn_context: ['http://idmanagement.gov/ns/assurance/loa/5'],
+            authn_context: [unknown_value],
             authn_context_comparison: 'exact',
             service_provider: 'http://localhost:3000',
             request_signed: true,
@@ -998,8 +1082,59 @@ RSpec.describe SamlIdpController do
             idv: false,
             finish_profile: false,
             matching_cert_serial: saml_test_sp_cert_serial,
+            unknown_authn_contexts: unknown_value,
           ),
         )
+        expect(@analytics).to have_logged_event(
+          :sp_integration_errors_present,
+          error_details: ['Unauthorized authentication context'],
+          error_types: { saml_request_errors: true },
+          event: :saml_auth_request,
+          integration_exists: true,
+          request_issuer: saml_settings.issuer,
+        )
+      end
+
+      context 'there is also a valid authn_context' do
+        let(:authn_context) do
+          [
+            Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            unknown_value,
+          ]
+        end
+
+        it 'logs the unknown authn_context value' do
+          expect(response.status).to eq(302)
+          expect(@analytics).to have_logged_event(
+            'SAML Auth Request',
+            hash_including(
+              unknown_authn_contexts: unknown_value,
+            ),
+          )
+          expect(@analytics).to_not have_logged_event(
+            :sp_integration_errors_present,
+          )
+        end
+
+        context 'when it includes the ReqAttributes AuthnContext' do
+          let(:authn_context) do
+            [
+              Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF,
+              Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+              unknown_value,
+            ]
+          end
+
+          it 'logs the unknown authn_context value' do
+            expect(response.status).to eq(302)
+            expect(@analytics).to have_logged_event(
+              'SAML Auth Request',
+              hash_including(
+                unknown_authn_contexts: unknown_value,
+              ),
+            )
+          end
+        end
       end
     end
 
@@ -1014,8 +1149,8 @@ RSpec.describe SamlIdpController do
           authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
 
           expect(response.status).to eq(200)
-          expect(authn_context_class_ref).
-            to eq(Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF)
+          expect(authn_context_class_ref)
+            .to eq(Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF)
         end
       end
 
@@ -1028,8 +1163,8 @@ RSpec.describe SamlIdpController do
           authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
 
           expect(response.status).to eq(200)
-          expect(authn_context_class_ref).
-            to eq(Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF)
+          expect(authn_context_class_ref)
+            .to eq(Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF)
         end
 
         it 'returns default AAL authn_context when IAL1 is requested' do
@@ -1040,8 +1175,8 @@ RSpec.describe SamlIdpController do
           authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
 
           expect(response.status).to eq(200)
-          expect(authn_context_class_ref).
-            to eq(Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF)
+          expect(authn_context_class_ref)
+            .to eq(Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF)
         end
 
         it 'returns AAL2 authn_context when AAL2 is requested' do
@@ -1174,6 +1309,8 @@ RSpec.describe SamlIdpController do
             requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
             service_provider: 'http://localhost:3000',
             requested_aal_authn_context: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+            request_signed: true,
+            matching_cert_serial: saml_test_sp_cert_serial,
             force_authn: true,
             user_fully_authenticated: false,
           }
@@ -1223,6 +1360,14 @@ RSpec.describe SamlIdpController do
             finish_profile: false,
           ),
         )
+        expect(@analytics).to have_logged_event(
+          :sp_integration_errors_present,
+          error_details: ['Unauthorized Service Provider'],
+          error_types: { saml_request_errors: true },
+          event: :saml_auth_request,
+          integration_exists: false,
+          request_issuer: 'invalid_provider',
+        )
       end
     end
 
@@ -1268,6 +1413,14 @@ RSpec.describe SamlIdpController do
             finish_profile: false,
           ),
         )
+        expect(@analytics).to have_logged_event(
+          :sp_integration_errors_present,
+          error_details: ['Unauthorized Service Provider', 'Unauthorized authentication context'],
+          error_types: { saml_request_errors: true },
+          event: :saml_auth_request,
+          integration_exists: false,
+          request_issuer: 'invalid_provider',
+        )
       end
     end
 
@@ -1278,6 +1431,69 @@ RSpec.describe SamlIdpController do
         settings.private_key = OpenSSL::PKey::RSA.new(
           File.read(Rails.root + 'keys/saml_test_sp2.key'),
         ).to_pem
+      end
+    end
+
+    context 'when service provider has no certs' do
+      let(:service_provider) do
+        create(
+          :service_provider,
+          certs: [],
+          active: true,
+        )
+      end
+
+      let(:settings) do
+        saml_settings.tap do |settings|
+          settings.issuer = service_provider.issuer
+        end
+      end
+
+      it 'returns an error page' do
+        user = create(:user, :fully_registered)
+        stub_analytics
+
+        generate_saml_response(user, settings)
+
+        expect(response.body).to include(t('errors.messages.no_cert_registered'))
+        expect(@analytics).to have_logged_event(
+          'SAML Auth',
+          hash_including(
+            success: false,
+            errors: { service_provider: [t('errors.messages.no_cert_registered')] },
+            error_details: { service_provider: { no_cert_registered: true } },
+          ),
+        )
+
+        expect(@analytics).to have_logged_event(
+          :sp_integration_errors_present,
+          error_details: ['Your service provider does not have a certificate registered.'],
+          error_types: { saml_request_errors: true },
+          event: :saml_auth_request,
+          integration_exists: true,
+          request_issuer: service_provider.issuer,
+        )
+      end
+
+      context 'when service provider has block_encryption set to none' do
+        before do
+          service_provider.update!(block_encryption: 'none')
+        end
+
+        it 'is succesful' do
+          user = create(:user, :fully_registered)
+          stub_analytics
+
+          generate_saml_response(user, settings)
+
+          expect(response.body).to_not include(t('errors.messages.no_cert_registered'))
+          expect(@analytics).to have_logged_event(
+            'SAML Auth',
+            hash_including(
+              success: true,
+            ),
+          )
+        end
       end
     end
 
@@ -1476,6 +1692,93 @@ RSpec.describe SamlIdpController do
                 matching_cert_serial: saml_test_sp_cert_serial,
               )
             )
+          end
+
+          context 'when request is using SHA1 as the signature method algorithm' do
+            let(:auth_settings) do
+              saml_settings(
+                overrides: {
+                  security: {
+                    authn_requests_signed:,
+                    signature_method: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha1',
+                  },
+                },
+              )
+            end
+
+            context 'when the certificate matches' do
+              it 'does not note that certs are different in the event' do
+                user.identities.last.update!(verified_attributes: ['email'])
+                generate_saml_response(user, auth_settings)
+
+                expect(response.status).to eq(200)
+                expect(@analytics).to have_logged_event(
+                  'SAML Auth', hash_not_including(
+                    certs_different: true,
+                    sha256_matching_cert: matching_cert_serial,
+                  )
+                )
+              end
+            end
+
+            context 'when the certificate does not match' do
+              let(:wrong_cert) do
+                OpenSSL::X509::Certificate.new(
+                  Rails.root.join('certs', 'sp', 'saml_test_sp2.crt').read,
+                )
+              end
+
+              before do
+                service_provider.update!(certs: [wrong_cert, saml_test_sp_cert])
+              end
+
+              it 'notes that certs are different in the event' do
+                user.identities.last.update!(verified_attributes: ['email'])
+                generate_saml_response(user, auth_settings)
+
+                expect(response.status).to eq(200)
+                expect(@analytics).to have_logged_event(
+                  'SAML Auth', hash_including(
+                    certs_different: true,
+                    sha256_matching_cert: wrong_cert.serial.to_s,
+                  )
+                )
+              end
+            end
+          end
+
+          context 'when request is using SHA1 as the digest method algorithm' do
+            let(:auth_settings) do
+              saml_settings(
+                overrides: {
+                  security: {
+                    authn_requests_signed:,
+                    digest_method: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha1',
+                  },
+                },
+              )
+            end
+
+            it 'notes an error in the event' do
+              user.identities.last.update!(verified_attributes: ['email'])
+              generate_saml_response(user, auth_settings)
+
+              expect(response.status).to eq(200)
+              expect(@analytics).to have_logged_event(
+                'SAML Auth', hash_including(
+                  request_signed: authn_requests_signed,
+                  cert_error_details: [
+                    {
+                      cert: '16692258094164984098',
+                      error_code: :fingerprint_mismatch,
+                    },
+                    {
+                      cert: '14834808178619537243', error_code: :fingerprint_mismatch
+                    },
+                  ],
+                )
+              )
+            end
           end
 
           context 'Certificate sig validation fails because of namespace bug' do
@@ -1697,8 +2000,8 @@ RSpec.describe SamlIdpController do
           generate_saml_response(user, auth_settings)
 
           expect(response.status).to eq(200)
-          expect(name_id.attributes['Format'].value).
-            to eq(Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT)
+          expect(name_id.attributes['Format'].value)
+            .to eq(Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT)
           expect(name_id.children.first.to_s).to eq(user.last_identity.uuid)
           expect(@analytics).to have_logged_event(
             'SAML Auth',
@@ -1718,8 +2021,8 @@ RSpec.describe SamlIdpController do
           generate_saml_response(user, auth_settings)
 
           expect(response.status).to eq(200)
-          expect(name_id.attributes['Format'].value).
-            to eq(Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL)
+          expect(name_id.attributes['Format'].value)
+            .to eq(Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL)
           expect(name_id.children.first.to_s).to eq(user.email)
           expect(@analytics).to have_logged_event(
             'SAML Auth',
@@ -1767,8 +2070,8 @@ RSpec.describe SamlIdpController do
 
             expect(response.status).to eq(200)
 
-            expect(name_id.attributes['Format'].value).
-              to eq(Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT)
+            expect(name_id.attributes['Format'].value)
+              .to eq(Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT)
 
             expect(name_id.children.first.to_s).to eq(user.id.to_s)
           end
@@ -1844,8 +2147,8 @@ RSpec.describe SamlIdpController do
 
             expect(response.status).to eq(200)
 
-            expect(name_id.attributes['Format'].value).
-              to eq(Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT)
+            expect(name_id.attributes['Format'].value)
+              .to eq(Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT)
 
             expect(name_id.children.first.to_s).to eq(user.id.to_s)
           end
@@ -1896,6 +2199,8 @@ RSpec.describe SamlIdpController do
             requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
             service_provider: 'http://localhost:3000',
             requested_aal_authn_context: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+            request_signed: true,
+            matching_cert_serial: saml_test_sp_cert_serial,
             force_authn: false,
             user_fully_authenticated: false,
           }
@@ -2140,8 +2445,8 @@ RSpec.describe SamlIdpController do
           end
 
           it 'has a format attribute specifying the email format' do
-            expect(name_id.attributes['Format'].value).
-              to eq('urn:oasis:names:tc:SAML:2.0:nameid-format:persistent')
+            expect(name_id.attributes['Format'].value)
+              .to eq('urn:oasis:names:tc:SAML:2.0:nameid-format:persistent')
           end
 
           it 'has the UUID of the user making the AuthN Request' do
@@ -2314,8 +2619,8 @@ RSpec.describe SamlIdpController do
         allow(controller).to receive(:remember_device_expired_for_sp?).and_return(false)
         allow(controller).to receive(:identity_needs_verification?).and_return(true)
         allow(controller).to receive(:saml_request).and_return(FakeSamlRequest.new)
-        allow(controller).to receive(:saml_request_id).
-          and_return(SecureRandom.uuid)
+        allow(controller).to receive(:saml_request_id)
+          .and_return(SecureRandom.uuid)
         stub_requested_attributes
 
         get :auth, params: { path_year: path_year }
@@ -2330,6 +2635,7 @@ RSpec.describe SamlIdpController do
             service_provider: 'http://localhost:3000',
             requested_aal_authn_context: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
             force_authn: false,
+            request_signed: false,
             user_fully_authenticated: true,
           }
         )
@@ -2360,8 +2666,8 @@ RSpec.describe SamlIdpController do
       service_provider.ial = 2
       service_provider.save
       request_parser = instance_double(SamlRequestParser)
-      expect(SamlRequestParser).to receive(:new).
-        and_return(request_parser)
+      expect(SamlRequestParser).to receive(:new)
+        .and_return(request_parser)
       allow(request_parser).to receive(:requested_attributes).and_return([:email])
     end
 
@@ -2381,6 +2687,8 @@ RSpec.describe SamlIdpController do
             service_provider: 'http://localhost:3000',
             requested_aal_authn_context: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
             force_authn: false,
+            request_signed: true,
+            matching_cert_serial: saml_test_sp_cert_serial,
             user_fully_authenticated: true,
           }
         )
@@ -2431,6 +2739,8 @@ RSpec.describe SamlIdpController do
             service_provider: 'http://localhost:3000',
             requested_aal_authn_context: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
             force_authn: false,
+            request_signed: true,
+            matching_cert_serial: saml_test_sp_cert_serial,
             user_fully_authenticated: true,
           }
         )

@@ -20,12 +20,12 @@ class GpoConfirmation < ApplicationRecord
   def entry=(entry_hash)
     @entry = nil
     self[:entry] = encryptor.encrypt(
-      entry_hash.
-        dup.
-        tap do |h|
+      entry_hash
+        .dup
+        .tap do |h|
           h[:zipcode] = self.class.normalize_zipcode(h[:zipcode]) if h[:zipcode].present?
-        end.
-        to_json,
+        end
+        .to_json,
     )
   end
 

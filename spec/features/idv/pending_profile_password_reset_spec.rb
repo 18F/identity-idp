@@ -5,8 +5,8 @@ RSpec.describe 'Resetting password with a pending profile' do
 
   let(:sp_name) { 'Test SP' }
   before do
-    allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).
-      and_return(sp_name)
+    allow_any_instance_of(ServiceProviderSession).to receive(:sp_name)
+      .and_return(sp_name)
   end
 
   scenario 'while GPO pending requires the user to reproof' do
@@ -26,7 +26,7 @@ RSpec.describe 'Resetting password with a pending profile' do
     sign_in_live_with_2fa(user)
 
     expect(page).to have_content t('doc_auth.headings.welcome', sp_name: sp_name)
-    expect(current_path).to eq(idv_welcome_path)
+    expect(page).to have_current_path(idv_welcome_path)
 
     expect(user.reload.active_or_pending_profile).to be_nil
   end
@@ -50,7 +50,7 @@ RSpec.describe 'Resetting password with a pending profile' do
     sign_in_live_with_2fa(user)
 
     expect(page).to have_content(t('doc_auth.headings.welcome', sp_name: sp_name))
-    expect(current_path).to eq(idv_welcome_path)
+    expect(page).to have_current_path(idv_welcome_path)
 
     expect(user.reload.active_or_pending_profile).to be_nil
   end
@@ -72,7 +72,7 @@ RSpec.describe 'Resetting password with a pending profile' do
     sign_in_live_with_2fa(user)
 
     expect(page).to have_content(t('doc_auth.headings.welcome', sp_name: sp_name))
-    expect(current_path).to eq(idv_welcome_path)
+    expect(page).to have_current_path(idv_welcome_path)
 
     expect(user.reload.active_or_pending_profile).to be_nil
   end

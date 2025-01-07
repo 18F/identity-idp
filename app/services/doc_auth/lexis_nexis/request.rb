@@ -109,9 +109,6 @@ module DocAuth
           conn.request :authorization, :basic, username, password unless hmac_auth_enabled?
           conn.adapter :net_http
           conn.options.timeout = timeout
-          conn.options.read_timeout = timeout
-          conn.options.open_timeout = timeout
-          conn.options.write_timeout = timeout
         end
       end
 
