@@ -12,7 +12,7 @@ RSpec.describe EncryptedDocStorage::DocWriter do
       result = subject.write(image:)
 
       key = Base64.strict_decode64(result.encryption_key)
-      aes_cipher = Encryption::AesCipher.new
+      aes_cipher = Encryption::AesCipherV2.new
 
       written_image = aes_cipher.decrypt(
         File.read(file_path(result.name)),
