@@ -25,7 +25,7 @@ module SignUp
       analytics.sp_select_email_submitted(**result, needs_completion_screen_reason:)
 
       if result.success?
-        user_session[:selected_email_id_for_linked_identity] = form_params[:selected_email_id]
+        user_session[:selected_email_id_for_linked_identity] = selected_email_id
         redirect_to sign_up_completed_path
       else
         flash[:error] = result.first_error_message
@@ -52,6 +52,14 @@ module SignUp
         user_emails.find(user_session[:selected_email_id_for_linked_identity]).email
       else
         current_user.last_sign_in_email_address.email
+      end
+    end
+
+    def selected_email_id
+      if current_sp.present? && current_sp.metadata[:all_emails] && current_sp.metadata[:emails]
+        current_user.last_sign_in_email_address.email.id
+      else
+        form_params[:selected_email_id]
       end
     end
 

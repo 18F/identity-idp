@@ -20,7 +20,7 @@ module Accounts
       def update
         @select_email_form = build_select_email_form
 
-        result = @select_email_form.submit(form_params)
+        result = @select_email_form.submit(selected_email_id: selected_email_id)
 
         analytics.sp_select_email_submitted(**result)
 
@@ -52,7 +52,15 @@ module Accounts
         @identity = current_user.identities.find_by(id: params[:identity_id])
       end
 
-      def last_email
+      def selected_email_id
+        if current_sp.present? && current_sp.metadata[:all_emails] && current_sp.metadata[:emails]
+          last_email_id
+        else
+          form_params[:selected_email_id]
+        end
+      end
+
+      def last_email_id
         current_user.last_sign_in_email_address.id
       end
     end
