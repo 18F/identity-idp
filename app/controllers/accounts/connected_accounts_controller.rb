@@ -25,7 +25,7 @@ module Accounts
     def all_emails_requested?
       if decorated_sp_session.requested_attributes.present?
         decorated_sp_session.requested_attributes.map(&:to_sym).include?('all_emails') ||
-          decorated_sp_session.requested_attributes.map(&:to_sym).include?('email')
+          !decorated_sp_session.requested_attributes.map(&:to_sym).include?('email')
       end
     end
   end

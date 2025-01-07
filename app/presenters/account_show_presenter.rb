@@ -143,7 +143,7 @@ class AccountShowPresenter
     user.connected_apps.includes([:service_provider_record, :email_address])
   end
 
-  def hide_change_option
+  def show_change_option
     @all_emails_requested
   end
 
