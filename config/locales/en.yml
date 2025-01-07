@@ -1327,6 +1327,11 @@ in_person_proofing.headings.state_id_milestone_2: Enter the information on your 
 in_person_proofing.headings.switch_back: Switch back to your computer to prepare to verify your identity in person
 in_person_proofing.headings.update_address: Update your current address
 in_person_proofing.headings.update_state_id: Update the information on your ID
+in_person_proofing.post_office_closed.body: Post Office locations will resume regular hours on Friday, January 10, 2025.
+in_person_proofing.post_office_closed.email.body_html: <strong>You will not be able to visit a Post Office on Thursday, January 9, 2025 to finish verifying your identity.</strong> Post Office locations will resume regular hours on Friday, January 10, 2025.
+in_person_proofing.post_office_closed.email.heading: All Post Offices will be closed on January 9, 2025 to honor former President Jimmy Carter
+in_person_proofing.post_office_closed.email.subject: All Post Offices will be closed on Thursday, January 9, 2025
+in_person_proofing.post_office_closed.heading: All Post Offices will be closed on Thursday, January 9, 2025 to honor former President Jimmy Carter.
 in_person_proofing.process.barcode.caption_label: Enrollment code
 in_person_proofing.process.barcode.heading: Show your %{app_name} barcode
 in_person_proofing.process.barcode.info: The retail associate needs to scan your barcode at the top of this page. You can print this page or show it on your mobile device.

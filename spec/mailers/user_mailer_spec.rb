@@ -934,6 +934,50 @@ RSpec.describe UserMailer, type: :mailer do
         end
       end
 
+      context 'post office closed alert' do
+        context 'when the post office closed alert flag is disabled' do
+          before do
+            allow(IdentityConfig.store)
+              .to receive(:in_person_proofing_post_office_closed_alert_enabled)
+              .and_return(false)
+          end
+
+          it 'does not render the post office closed alert' do
+            aggregate_failures do
+              [
+                t('in_person_proofing.post_office_closed.heading'),
+                t('in_person_proofing.post_office_closed.body'),
+              ].each do |copy|
+                Array(copy).each do |part|
+                  expect(mail.html_part.body).to_not have_content(part)
+                end
+              end
+            end
+          end
+        end
+
+        context 'when the post office closed alert flag is enabled' do
+          before do
+            allow(IdentityConfig.store)
+              .to receive(:in_person_proofing_post_office_closed_alert_enabled)
+              .and_return(true)
+          end
+
+          it 'renders the post office closed alert' do
+            aggregate_failures do
+              [
+                t('in_person_proofing.post_office_closed.heading'),
+                t('in_person_proofing.post_office_closed.body'),
+              ].each do |copy|
+                Array(copy).each do |part|
+                  expect(mail.html_part.body).to have_content(part)
+                end
+              end
+            end
+          end
+        end
+      end
+
       context 'Need to change location section' do
         context 'when Enhanced IPP is not enabled' do
           let(:is_enhanced_ipp) { false }
@@ -1319,37 +1363,6 @@ RSpec.describe UserMailer, type: :mailer do
       end
     end
 
-    describe '#in_person_please_call' do
-      let(:mail) do
-        UserMailer.with(user: user, email_address: email_address).in_person_please_call(
-          enrollment: enrollment,
-          visited_location_name: visited_location_name,
-        )
-      end
-
-      it_behaves_like 'a system email'
-      it_behaves_like 'an email that respects user email locale preference'
-
-      it 'renders the idv_please_call template' do
-        expect_any_instance_of(ActionMailer::Base).to receive(:mail)
-          .with(hash_including(template_name: 'idv_please_call'))
-          .and_call_original
-
-        mail.deliver_later
-      end
-
-      context 'when the keyword argument visited_location_name is missing' do
-        let(:mail) do
-          UserMailer.with(user: user, email_address: email_address).in_person_please_call(
-            enrollment: enrollment,
-          )
-        end
-        it 'sends the email successfully' do
-          mail.deliver_later
-        end
-      end
-    end
-
     describe '#in_person_completion_survey' do
       let(:mail) do
         UserMailer.with(user: user, email_address: email_address).in_person_completion_survey
@@ -1609,5 +1622,24 @@ RSpec.describe UserMailer, type: :mailer do
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
+  end
+
+  describe '#in_person_post_office_closed' do
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).in_person_post_office_closed
+    end
+
+    it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
+
+    it 'includes a translated header' do
+      expect(mail.html_part.body)
+        .to include(t('in_person_proofing.post_office_closed.email.heading', locale: :en))
+    end
+
+    it 'includes a translated body' do
+      expect(mail.html_part.body)
+        .to include(t('in_person_proofing.post_office_closed.email.body_html', locale: :en))
+    end
   end
 end

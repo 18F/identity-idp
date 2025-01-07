@@ -109,6 +109,7 @@ module AbTests
     experiment_name: 'Desktop F/T unlock setup',
     should_log: [
       'User Registration: 2FA Setup visited',
+      'WebAuthn Setup Visited',
       :webauthn_setup_submitted,
       'Multi-Factor Authentication Setup',
     ].to_set,

@@ -21,7 +21,7 @@ aamva_private_key: ''
 aamva_public_key: ''
 aamva_send_id_type: true
 aamva_send_middle_name: true
-aamva_supported_jurisdictions: '["AL","AR","AZ","CO","CT","DC","DE","FL","GA","HI","IA","ID","IL","IN","KS","KY","MA","MD","ME","MI","MO","MS","MT","NC","ND","NE","NJ","NM","NV","OH","OR","PA","RI","SC","SD","TN","TX","VA","VT","WA","WI","WV","WY"]'
+aamva_supported_jurisdictions: '["AL","AR","AZ","CO","CT","DC","DE","FL","GA","HI","IA","ID","IL","IN","KS","KY","MA","MD","ME","MI","MO","MS","MT","NC","ND","NE","NH","NJ","NM","NV","OH","OK","OR","PA","RI","SC","SD","TN","TX","VA","VT","WA","WI","WV","WY"]'
 aamva_verification_request_timeout: 5.0
 aamva_verification_url: https://example.org:12345/verification/url
 account_creation_device_profiling: disabled
@@ -40,6 +40,7 @@ allowed_verified_within_providers: '[]'
 asset_host: ''
 async_stale_job_timeout_seconds: 300
 async_wait_timeout_seconds: 60
+attempts_api_event_ttl_seconds: 3_600
 attribute_encryption_key:
 attribute_encryption_key_queue: '[]'
 available_locales: 'en,es,fr,zh'
@@ -192,6 +193,7 @@ in_person_outage_message_enabled: false
 in_person_proofing_enabled: false
 in_person_proofing_enforce_tmx: false
 in_person_proofing_opt_in_enabled: false
+in_person_proofing_post_office_closed_alert_enabled: true
 in_person_results_delay_in_hours: 1
 in_person_send_proofing_notifications_enabled: false
 in_person_stop_expiring_enrollments: false
@@ -321,6 +323,8 @@ recaptcha_site_key: ''
 recommend_webauthn_platform_for_sms_ab_test_account_creation_percent: 0
 recommend_webauthn_platform_for_sms_ab_test_authentication_percent: 0
 recovery_code_length: 4
+redis_attempts_api_pool_size: 1
+redis_attempts_api_url: redis://localhost:6379/2
 redis_pool_size: 10
 redis_throttle_pool_size: 5
 redis_throttle_url: redis://localhost:6379/1
@@ -557,6 +561,7 @@ test:
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
   identity_pki_disabled: true
+  in_person_proofing_post_office_closed_alert_enabled: false
   lexisnexis_trueid_account_id: 'test_account'
   lockout_period_in_minutes: 5
   logins_per_email_and_ip_limit: 2
