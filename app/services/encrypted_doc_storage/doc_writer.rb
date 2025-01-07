@@ -25,7 +25,7 @@ module EncryptedDocStorage
     private
 
     def aes_cipher
-      @aes_cipher ||= Encryption::AesCipher.new
+      @aes_cipher ||= Encryption::AesCipherV2.new
     end
 
     def key
