@@ -286,14 +286,9 @@ RSpec.describe 'state id controller enabled', :js do
     it 'shows error for dob under minimum age', allow_browser_log: true do
       complete_steps_before_state_id_controller
 
-      buffer_to_avoid_test_flakiness = 2.days
-
-      less_than_13_years_ago = Time.zone.now - (13.years - buffer_to_avoid_test_flakiness)
-
-      fill_in t('components.memorable_date.month'), with: less_than_13_years_ago.month
-      fill_in t('components.memorable_date.day'), with: less_than_13_years_ago.day
-      fill_in t('components.memorable_date.year'), with: less_than_13_years_ago.year
-
+      fill_in t('components.memorable_date.month'), with: '1'
+      fill_in t('components.memorable_date.day'), with: '1'
+      fill_in t('components.memorable_date.year'), with: Time.zone.now.strftime('%Y')
       click_idv_continue
       expect(page).to have_content(
         t(
@@ -302,11 +297,8 @@ RSpec.describe 'state id controller enabled', :js do
         ),
       )
 
-      thirteenish_years_ago = Time.zone.now - (13.years + buffer_to_avoid_test_flakiness)
-      fill_in t('components.memorable_date.month'), with: thirteenish_years_ago.month
-      fill_in t('components.memorable_date.day'), with: thirteenish_years_ago.day
-      fill_in t('components.memorable_date.year'), with: thirteenish_years_ago.year
-
+      year = (Time.zone.now - 13.years).strftime('%Y')
+      fill_in t('components.memorable_date.year'), with: year
       click_idv_continue
       expect(page).not_to have_content(
         t(

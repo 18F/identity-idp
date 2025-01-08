@@ -38,7 +38,6 @@ export interface ReviewIssuesStepValue {
 
 interface ReviewIssuesStepProps extends FormStepComponentProps<ReviewIssuesStepValue> {
   remainingSubmitAttempts?: number;
-  submitAttempts?: number;
   isResultCodeInvalid?: boolean;
   isFailedResult?: boolean;
   isFailedSelfie?: boolean;
@@ -58,7 +57,6 @@ function ReviewIssuesStep({
   registerField = () => undefined,
   toPreviousStep = () => undefined,
   remainingSubmitAttempts = Infinity,
-  submitAttempts,
   isResultCodeInvalid = false,
   isFailedResult = false,
   isFailedDocType = false,
@@ -108,7 +106,6 @@ function ReviewIssuesStep({
   function onWarningPageDismissed() {
     trackEvent('IdV: Capture troubleshooting dismissed', {
       liveness_checking_required: isSelfieCaptureEnabled,
-      submit_attempts: submitAttempts,
     });
 
     setHasDismissed(true);

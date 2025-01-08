@@ -77,7 +77,6 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
       submissionError instanceof UploadFormEntriesError
         ? withProps({
             remainingSubmitAttempts: submissionError.remainingSubmitAttempts,
-            submitAttempts: submissionError.submitAttempts,
             isResultCodeInvalid: submissionError.isResultCodeInvalid,
             isFailedResult: submissionError.isFailedResult,
             isFailedDocType: submissionError.isFailedDocType,

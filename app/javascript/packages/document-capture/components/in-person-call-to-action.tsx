@@ -3,12 +3,10 @@ import { Button } from '@18f/identity-components';
 import { useInstanceId } from '@18f/identity-react-hooks';
 import { t } from '@18f/identity-i18n';
 import AnalyticsContext from '../context/analytics';
-import UploadContext from '../context/upload';
 
 function InPersonCallToAction() {
   const instanceId = useInstanceId();
   const { trackEvent } = useContext(AnalyticsContext);
-  const { submitAttempts } = useContext(UploadContext);
 
   return (
     <section
@@ -27,9 +25,7 @@ function InPersonCallToAction() {
         isWide
         className="margin-top-3 margin-bottom-1"
         onClick={() => {
-          trackEvent('IdV: verify in person troubleshooting option clicked', {
-            submit_attempts: submitAttempts,
-          });
+          trackEvent('IdV: verify in person troubleshooting option clicked');
         }}
       >
         {t('in_person_proofing.body.cta.button')}

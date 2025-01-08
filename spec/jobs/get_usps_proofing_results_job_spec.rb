@@ -130,7 +130,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
           )
           allow(UserMailer).to receive(:with).with(
             user: enrollment.user,
-            email_address: enrollment.user.last_sign_in_email_address,
+            email_address: enrollment.user.confirmed_email_addresses.first,
           ).and_return(user_mailer)
           allow(mail_deliverer).to receive(:deliver_later)
           allow(InPerson::SendProofingNotificationJob).to receive(:set).and_return(
@@ -366,7 +366,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                       )
                       allow(UserMailer).to receive(:with).with(
                         user: enrollment.user,
-                        email_address: enrollment.user.last_sign_in_email_address,
+                        email_address: enrollment.user.confirmed_email_addresses.first,
                       ).and_raise(StandardError)
                       subject.perform(current_time)
                     end

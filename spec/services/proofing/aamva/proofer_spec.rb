@@ -737,18 +737,6 @@ RSpec.describe Proofing::Aamva::Proofer do
           expect(result.mva_timeout?).to eq(true)
           expect(result.mva_exception?).to eq(true)
         end
-
-        context 'when the DMV is in a defined maintenance window' do
-          before do
-            expect(Idv::AamvaStateMaintenanceWindow).to receive(:in_maintenance_window?)
-              .and_return(true)
-          end
-
-          it 'sets jurisdiction_in_maintenance_window to true' do
-            result = subject.proof(state_id_data)
-            expect(result.jurisdiction_in_maintenance_window?).to eq(true)
-          end
-        end
       end
     end
 

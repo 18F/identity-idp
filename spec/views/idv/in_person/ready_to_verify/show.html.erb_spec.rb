@@ -122,6 +122,8 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
         let(:in_person_outage_expected_update_date) { 'October 31, 2023' }
 
         before do
+          allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled)
+            .and_return(true)
           allow(IdentityConfig.store).to receive(:in_person_outage_emailed_by_date)
             .and_return(in_person_outage_emailed_by_date)
           allow(IdentityConfig.store).to receive(:in_person_outage_expected_update_date)
@@ -172,50 +174,6 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
         expect(rendered).not_to have_content(
           t('idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title'),
         )
-      end
-    end
-  end
-
-  context 'post office warning' do
-    context 'when the show closed post office banner is disabled' do
-      before do
-        @show_closed_post_office_banner = false
-      end
-
-      it 'does not render the post office closed alert' do
-        render
-
-        aggregate_failures do
-          [
-            t('in_person_proofing.post_office_closed.heading'),
-            t('in_person_proofing.post_office_closed.body'),
-          ].each do |copy|
-            Array(copy).each do |part|
-              expect(rendered).to_not have_content(part)
-            end
-          end
-        end
-      end
-    end
-
-    context 'when the show closed post office banner is enabled' do
-      before do
-        @show_closed_post_office_banner = true
-      end
-
-      it 'renders the post office closed alert' do
-        render
-
-        aggregate_failures do
-          [
-            t('in_person_proofing.post_office_closed.heading'),
-            t('in_person_proofing.post_office_closed.body'),
-          ].each do |copy|
-            Array(copy).each do |part|
-              expect(rendered).to have_content(part)
-            end
-          end
-        end
       end
     end
   end

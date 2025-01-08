@@ -70,7 +70,6 @@ RSpec.shared_examples 'webauthn setup' do
             ),
           ] },
         platform_authenticator: false,
-        in_account_creation_flow: true,
         success: false,
       )
     end
@@ -84,7 +83,6 @@ RSpec.shared_examples 'webauthn setup' do
       expect(fake_analytics).to have_logged_event(
         :webauthn_setup_submitted,
         success: true,
-        in_account_creation_flow: true,
         platform_authenticator: false,
       )
     end

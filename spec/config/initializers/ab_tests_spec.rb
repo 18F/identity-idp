@@ -1,6 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe AbTests do
+  include AbTestsHelper
+
+  after :suite do
+    reload_ab_tests
+  end
+
   describe '#all' do
     it 'returns all registered A/B tests' do
       expect(AbTests.all.values).to all(be_kind_of(AbTest))

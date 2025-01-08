@@ -1198,14 +1198,12 @@ module AnalyticsEvents
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] use_alternate_sdk
   # @param [Boolean] liveness_checking_required
-  # @param [Integer] submit_attempts Times that user has tried submitting document capture
   def idv_capture_troubleshooting_dismissed(
     acuant_sdk_upgrade_a_b_testing_enabled:,
     acuant_version:,
     flow_path:,
     use_alternate_sdk:,
     liveness_checking_required:,
-    submit_attempts:,
     **extra
   )
     track_event(
@@ -1215,7 +1213,6 @@ module AnalyticsEvents
       flow_path: flow_path,
       use_alternate_sdk: use_alternate_sdk,
       liveness_checking_required: liveness_checking_required,
-      submit_attempts: submit_attempts,
       **extra,
     )
   end
@@ -5312,19 +5309,16 @@ module AnalyticsEvents
 
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
-  # @param [Integer] submit_attempts Times that user has tried submitting document capture
   # The user clicked the troubleshooting option to start in-person proofing
   def idv_verify_in_person_troubleshooting_option_clicked(
     flow_path:,
     opted_in_to_in_person_proofing:,
-    submit_attempts:,
     **extra
   )
     track_event(
       'IdV: verify in person troubleshooting option clicked',
       flow_path: flow_path,
       opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
-      submit_attempts: submit_attempts,
       **extra,
     )
   end
@@ -7698,20 +7692,12 @@ module AnalyticsEvents
   # @param [Hash] platform_authenticator
   # @param [Boolean] success
   # @param [Hash, nil] errors
-  # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
   # Tracks whether or not Webauthn setup was successful
-  def webauthn_setup_submitted(
-    platform_authenticator:,
-    success:,
-    in_account_creation_flow: nil,
-    errors: nil,
-    **extra
-  )
+  def webauthn_setup_submitted(platform_authenticator:, success:, errors: nil, **extra)
     track_event(
       :webauthn_setup_submitted,
       platform_authenticator: platform_authenticator,
       success: success,
-      in_account_creation_flow:,
       errors: errors,
       **extra,
     )

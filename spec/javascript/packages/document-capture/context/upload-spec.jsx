@@ -19,7 +19,6 @@ describe('document-capture/context/upload', () => {
       'getStatus',
       'flowPath',
       'formData',
-      'submitAttempts',
     ]);
 
     expect(result.current.upload).to.equal(defaultUpload);
@@ -27,7 +26,6 @@ describe('document-capture/context/upload', () => {
     expect(result.current.statusPollInterval).to.be.undefined();
     expect(result.current.isMockClient).to.be.false();
     expect(await result.current.getStatus()).to.deep.equal({});
-    expect(result.current.submitAttempts).to.equal(0);
   });
 
   it('can be overridden with custom upload behavior', async () => {

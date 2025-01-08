@@ -1338,11 +1338,6 @@ in_person_proofing.headings.state_id_milestone_2: Ingrese la información de su 
 in_person_proofing.headings.switch_back: Vuelva a su computadora para preparar la verificación de su identidad en persona
 in_person_proofing.headings.update_address: Actualice su dirección actual
 in_person_proofing.headings.update_state_id: Actualice la información de su identificación
-in_person_proofing.post_office_closed.body: Las oficinas de correos reanudarán su horario habitual el viernes 10 de enero de 2025.
-in_person_proofing.post_office_closed.email.body_html: <strong>No podrás visitar una Oficina de Correos el jueves 9 de enero de 2025 para terminar de verificar tu identidad.</strong> Las oficinas de correos reanudarán su horario habitual el viernes 10 de enero de 2025.
-in_person_proofing.post_office_closed.email.heading: Todas las oficinas de correos estarán cerradas el 9 de enero de 2025 en honor al expresidente Jimmy Carter
-in_person_proofing.post_office_closed.email.subject: Todas las oficinas de correos estarán cerradas el jueves 9 de enero de 2025
-in_person_proofing.post_office_closed.heading: Todas las oficinas de correos estarán cerradas el jueves 9 de enero de 2025 en honor al ex presidente Jimmy Carter.
 in_person_proofing.process.barcode.caption_label: Código de registro
 in_person_proofing.process.barcode.heading: Muestre su código de barras de %{app_name}
 in_person_proofing.process.barcode.info: El empleado debe escanear el código de barras que aparece en la parte superior de esta página. Puede imprimir esta página o mostrarla en su dispositivo móvil.

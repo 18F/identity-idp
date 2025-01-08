@@ -13,9 +13,9 @@ RSpec.describe Idv::InPerson::SsnController do
 
   before do
     stub_sign_in(user)
-    controller.user_session['idv/in_person'] = flow_session
+    subject.user_session['idv/in_person'] = flow_session
     stub_analytics
-    controller.idv_session.flow_path = 'standard'
+    subject.idv_session.flow_path = 'standard'
   end
 
   describe '#step_info' do
@@ -36,8 +36,6 @@ RSpec.describe Idv::InPerson::SsnController do
   end
 
   describe '#show' do
-    subject(:response) { get :show }
-
     let(:analytics_name) { 'IdV: doc auth ssn visited' }
     let(:analytics_args) do
       {
@@ -68,18 +66,18 @@ RSpec.describe Idv::InPerson::SsnController do
     end
 
     it 'adds a threatmetrix session id to idv_session' do
-      expect { get :show }.to change { controller.idv_session.threatmetrix_session_id }.from(nil)
+      expect { get :show }.to change { subject.idv_session.threatmetrix_session_id }.from(nil)
     end
 
     it 'does not change threatmetrix_session_id when updating ssn' do
-      controller.idv_session.ssn = ssn
-      expect { get :show }.not_to change { controller.idv_session.threatmetrix_session_id }
+      subject.idv_session.ssn = ssn
+      expect { get :show }.not_to change { subject.idv_session.threatmetrix_session_id }
     end
 
     context 'with an ssn in idv_session' do
       let(:referer) { idv_in_person_address_url }
       before do
-        controller.idv_session.ssn = ssn
+        subject.idv_session.ssn = ssn
         request.env['HTTP_REFERER'] = referer
       end
 
@@ -98,32 +96,6 @@ RSpec.describe Idv::InPerson::SsnController do
 
           expect(response).to render_template 'idv/shared/ssn'
         end
-      end
-    end
-
-    context 'with ThreatMetrix profiling disabled' do
-      before do
-        allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?)
-          .and_return(false)
-      end
-
-      it 'does not override CSPs for ThreatMetrix' do
-        expect(controller).not_to receive(:override_csp_for_threat_metrix)
-
-        response
-      end
-    end
-
-    context 'with ThreatMetrix profiling enabled' do
-      before do
-        allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?)
-          .and_return(true)
-      end
-
-      it 'overrides CSPs for ThreatMetrix' do
-        expect(controller).to receive(:override_csp_for_threat_metrix)
-
-        response
       end
     end
   end

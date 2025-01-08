@@ -24,10 +24,6 @@ class ImageUploadResponsePresenter
     @form_response.to_h[:remaining_submit_attempts]
   end
 
-  def submit_attempts
-    @form_response.to_h[:submit_attempts]
-  end
-
   def status
     if success?
       :ok
@@ -45,7 +41,6 @@ class ImageUploadResponsePresenter
       json = { success: false,
                errors: errors,
                remaining_submit_attempts: remaining_submit_attempts,
-               submit_attempts: submit_attempts,
                doc_type_supported: doc_type_supported? }
       if remaining_submit_attempts&.zero?
         if @form_response.extra[:flow_path] == 'standard'
