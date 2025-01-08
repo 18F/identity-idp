@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe EncryptedDocStorage::LocalStorage do
-  let(:img_path) { Rails.root.join('app', 'assets', 'images', 'logo.svg')}
+  let(:img_path) { Rails.root.join('app', 'assets', 'images', 'logo.svg') }
   let(:image) { File.read(img_path) }
   let(:encrypted_image) do
     Encryption::AesCipherV2.new.encrypt(image, SecureRandom.bytes(32))
@@ -20,10 +20,10 @@ RSpec.describe EncryptedDocStorage::LocalStorage do
       f = File.new(path, 'rb')
       result = f.read
       f.close
-    
+
       # cleanup
       File.delete(path)
-      
+
       expect(result).to eq(encrypted_image)
     end
   end

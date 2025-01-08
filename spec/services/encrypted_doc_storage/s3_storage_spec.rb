@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe EncryptedDocStorage::S3Storage do
   subject { EncryptedDocStorage::S3Storage.new }
-  let(:img_path) { Rails.root.join('app', 'assets', 'images', 'logo.svg')}
+  let(:img_path) { Rails.root.join('app', 'assets', 'images', 'logo.svg') }
   let(:image) { File.read(img_path) }
   let(:encrypted_image) do
     Encryption::AesCipherV2.new.encrypt(image, SecureRandom.bytes(32))
