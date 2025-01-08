@@ -58,7 +58,8 @@ class ServiceProviderIdentity < ApplicationRecord
   end
 
   def all_email_and_single_email_requested?
-    current_sp.metadata[:all_emails] && current_sp.metadata[:emails]
+    sp_metadata[:attribute_bundle].include?('all_email') &&
+      sp_metadata[:attribute_bundle].include?('email')
   end
 
   def service_provider_id

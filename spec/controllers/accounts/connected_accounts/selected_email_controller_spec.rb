@@ -89,8 +89,8 @@ RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
 
   describe '#update' do
     let(:identity_id) { user.identities.take.id }
-    let(:selected_email) { user.confirmed_email_addresses.sample }
-    let(:params) { { identity_id:, select_email_form: { selected_email_id: selected_email.id } } }
+    let(:selected_email_id) { user.confirmed_email_addresses.sample }
+    let(:params) { { identity_id:, select_email_form: { selected_email_id: selected_email_id } } }
     subject(:response) { patch :update, params: }
 
     it 'redirects to connected accounts path with the appropriate flash message' do
@@ -106,8 +106,36 @@ RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
       expect(@analytics).to have_logged_event(
         :sp_select_email_submitted,
         success: true,
-        selected_email_id: selected_email.id,
+        selected_email_id: selected_email_id,
       )
+    end
+
+    context ' with all_email and emails requested' do
+      let(:service_provider_attribute_bundle) { %w[email all_email] }
+
+      let(:sp) do
+        create(
+          :service_provider,
+          attribute_bundle: service_provider_attribute_bundle,
+        )
+      end
+      let(:identity) do
+        create(:service_provider_identity, :active, service_provider: sp.issuer, user: user)
+      end
+
+      let(:last_sign_in_email_id) { user.last_sign_in_email_address.id }
+      let(:available_email_ids) { user.confirmed_email_addresses.map(&:id) }
+      let(:selected_email_id) do
+        (available_email_ids - [last_sign_in_email_id]).sample
+      end
+
+      it 'returns last sign in email' do
+        response
+
+        expect(
+          controller.user_session[:selected_email_id_for_linked_identity],
+        ).to eq(last_sign_in_email_id)
+      end
     end
 
     context 'with invalid submission' do
