@@ -135,6 +135,8 @@ RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
         expect(
           controller.user_session[:selected_email_id_for_linked_identity],
         ).to eq(last_sign_in_email_id)
+        identity.reload
+        expect(identity.email_address_id).to eq(last_sign_in_email_id)
       end
     end
 
