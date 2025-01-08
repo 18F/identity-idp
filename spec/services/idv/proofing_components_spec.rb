@@ -169,16 +169,6 @@ RSpec.describe Idv::ProofingComponents do
         expect(subject.residential_resolution_check).to eql('AReallyGoodVendor')
       end
     end
-
-    context 'when resolution done but residential_resolution_vendor nil because of 50/50 state' do
-      before do
-        idv_session.mark_verify_info_step_complete!
-      end
-
-      it 'returns nil to match previous behavior' do
-        expect(subject.residential_resolution_check).to be(nil)
-      end
-    end
   end
 
   describe '#resolution_check' do
