@@ -107,7 +107,6 @@ module Idv
       ],
       'MT' => [
         # Third Saturday of odd numbered months from 12:00 am to 6:00 am ET
-        # MW FIXME: I need to test if this is valid, or if the month has to be 1,3,5,7,9,11
         { cron: '0 2 * /2 Sat#3', duration_minutes: 6 * 60 },
       ],
       'NC' => [
@@ -125,7 +124,6 @@ module Idv
       ],
       'NV' => [
         # Tuesdays to Sundays: 2:00 am. to 3:15 am. ET
-        # MW FIXME: This wraps around, does Tue-Sun get parsed correctly?
         { cron: '0 2 * * Tue-Sun', duration_minutes: 1.25 * 60 },
       ],
       'NY' => [
@@ -155,8 +153,7 @@ module Idv
       ],
       'TN' => [
         # Last Sunday of every month from 11:00 pm Sunday to 2:00 am. Monday ET
-        { cron: '0 23 * * Sun#4', duration: 3 * 60 },
-        { cron: '0 23 * * Sun#5', duration: 3 * 60 },
+        { cron: '0 23 * * Sun#last', duration: 3 * 60 },
       ],
       'TX' => [
         # Saturday 9:00 pm. to Sunday 7:00 am. ET.
