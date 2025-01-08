@@ -22,9 +22,9 @@
     </strong>
     <% if @presenter.show_change_option %>
         <%= link_to(
-          t('help_text.requested_attributes.change_email_link'),
-          edit_connected_account_selected_email_path(identity_id: identity.id),
-        ) %>
+              t('help_text.requested_attributes.change_email_link'),
+              edit_connected_account_selected_email_path(identity_id: identity.id),
+            ) %>
     <% end %>
   <% else %>
     <%= t(
