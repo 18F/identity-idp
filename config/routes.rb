@@ -373,6 +373,7 @@ Rails.application.routes.draw do
       get '/documents' => 'hybrid_mobile/entry#show', as: :hybrid_mobile_entry
       get '/hybrid_mobile/document_capture' => 'hybrid_mobile/document_capture#show'
       put '/hybrid_mobile/document_capture' => 'hybrid_mobile/document_capture#update'
+      get '/hybrid_mobile/in_person/direct' => 'hybrid_mobile/document_capture#direct_in_person'
       get '/hybrid_mobile/capture_complete' => 'hybrid_mobile/capture_complete#show'
       get '/hybrid_mobile/socure/document_capture' => 'hybrid_mobile/socure/document_capture#show'
       get '/hybrid_mobile/socure/document_capture_update' => 'hybrid_mobile/socure/document_capture#update', as: :hybrid_mobile_socure_document_capture_update

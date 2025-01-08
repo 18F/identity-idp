@@ -12,8 +12,9 @@ module Idv
     before_action :confirm_step_allowed, unless: -> { allow_direct_ipp? }
     before_action :override_csp_to_allow_acuant
     before_action :set_usps_form_presenter
-    before_action -> { redirect_to_correct_vendor(Idp::Constants::Vendors::LEXIS_NEXIS, false) },
-                  only: [:show], unless: -> { allow_direct_ipp? }
+    before_action -> do
+      redirect_to_correct_vendor(Idp::Constants::Vendors::LEXIS_NEXIS, in_hybrid_mobile: false)
+    end, only: [:show], unless: -> { allow_direct_ipp? }
 
     def show
       analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)
@@ -48,6 +49,7 @@ module Idv
     def direct_in_person
       attributes = {
         remaining_submit_attempts: rate_limiter.remaining_count,
+        flow_path: :standard,
       }.merge(ab_test_analytics_buckets)
       analytics.idv_in_person_direct_start(**attributes)
 

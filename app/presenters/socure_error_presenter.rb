@@ -51,10 +51,13 @@ class SocureErrorPresenter
   end
 
   def secondary_action
+    url = flow_path == :hybrid ? idv_hybrid_mobile_in_person_direct_url :
+                                  idv_in_person_direct_url
+
     if in_person_enabled?
       {
         text: I18n.t('in_person_proofing.body.cta.button'),
-        url: idv_in_person_direct_url,
+        url:,
       }
     end
   end

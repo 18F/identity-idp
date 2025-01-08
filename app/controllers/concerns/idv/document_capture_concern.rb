@@ -58,7 +58,7 @@ module Idv
         stored_result.selfie_check_performed?
     end
 
-    def redirect_to_correct_vendor(vendor, in_hybrid_mobile)
+    def redirect_to_correct_vendor(vendor, in_hybrid_mobile: false)
       return if IdentityConfig.store.doc_auth_redirect_to_correct_vendor_disabled
 
       expected_doc_auth_vendor = doc_auth_vendor
