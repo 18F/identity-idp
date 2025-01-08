@@ -57,8 +57,8 @@ module SignUp
 
     def selected_email_id
       if current_sp.present? &&
-         current_sp.metadata[:attribute_bundle].include?('all_email') &&
-         current_sp.metadata[:attribute_bundle].include?('email')
+         current_sp.attribute_bundle&.include?('all_email') &&
+         current_sp.attribute_bundle.include?('email')
         current_user.last_sign_in_email_address.id
       else
         form_params[:selected_email_id]

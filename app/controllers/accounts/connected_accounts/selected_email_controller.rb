@@ -53,7 +53,7 @@ module Accounts
       end
 
       def selected_email_id
-        if current_sp.present? && current_sp.metadata[:all_emails] && current_sp.metadata[:emails]
+        if identity.all_email_and_single_email_requested?
           last_email_id
         else
           form_params[:selected_email_id]

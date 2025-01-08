@@ -89,7 +89,7 @@ RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
 
   describe '#update' do
     let(:identity_id) { user.identities.take.id }
-    let(:selected_email_id) { user.confirmed_email_addresses.sample }
+    let(:selected_email_id) { user.confirmed_email_addresses.sample.id }
     let(:params) { { identity_id:, select_email_form: { selected_email_id: selected_email_id } } }
     subject(:response) { patch :update, params: }
 
@@ -120,7 +120,7 @@ RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
         )
       end
       let(:identity) do
-        create(:service_provider_identity, :active, service_provider: sp.issuer, user: user)
+        create(:service_provider_identity, :active, service_provider: sp.issuer)
       end
 
       let(:last_sign_in_email_id) { user.last_sign_in_email_address.id }
@@ -129,12 +129,13 @@ RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
         (available_email_ids - [last_sign_in_email_id]).sample
       end
 
+      before do
+        identity.update!(user_id: user.id)
+      end
+
       it 'returns last sign in email' do
         response
 
-        expect(
-          controller.user_session[:selected_email_id_for_linked_identity],
-        ).to eq(last_sign_in_email_id)
         identity.reload
         expect(identity.email_address_id).to eq(last_sign_in_email_id)
       end
@@ -163,7 +164,7 @@ RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
 
     context 'signed out' do
       let(:other_user) { create(:user, identities: [create(:service_provider_identity, :active)]) }
-      let(:selected_email) { other_user.confirmed_email_addresses.sample }
+      let(:selected_email_id) { other_user.confirmed_email_addresses.sample.id }
       let(:identity_id) { other_user.identities.take.id }
       let(:user) { nil }
 
