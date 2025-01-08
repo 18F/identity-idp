@@ -27,7 +27,7 @@
       },
     ) do |f| %>
   <%= hidden_field_tag :user_id, current_user.id, id: 'user_id' %>
-  <%= hidden_field_tag :user_email, current_user.last_sign_in_email_address.email, id: 'user_email' %>
+  <%= hidden_field_tag :user_email, current_user.confirmed_email_addresses.first.email, id: 'user_email' %>
   <%= hidden_field_tag :user_challenge, user_session[:webauthn_challenge].to_json, id: 'user_challenge' %>
   <%= hidden_field_tag :exclude_credentials, @exclude_credentials&.join(','), id: 'exclude_credentials' %>
   <%= hidden_field_tag :webauthn_id, '', id: 'webauthn_id' %>

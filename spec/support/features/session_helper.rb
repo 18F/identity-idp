@@ -537,7 +537,7 @@ module Features
     end
 
     def sign_in_via_branded_page(user)
-      fill_in_credentials_and_submit(user.last_sign_in_email_address.email, user.password)
+      fill_in_credentials_and_submit(user.confirmed_email_addresses.first.email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default
     end

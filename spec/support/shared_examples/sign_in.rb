@@ -130,12 +130,12 @@ RSpec.shared_examples 'signing in as IAL1 with personal key after resetting pass
 
     old_personal_key = PersonalKeyGenerator.new(user).generate!
     visit_idp_from_sp_with_ial1(sp)
-    trigger_reset_password_and_click_email_link(user.last_sign_in_email_address.email)
+    trigger_reset_password_and_click_email_link(user.confirmed_email_addresses.first.email)
     fill_in t('forms.passwords.edit.labels.password'), with: new_password
     fill_in t('components.password_confirmation.confirm_label'),
             with: new_password
     click_button t('forms.passwords.edit.buttons.submit')
-    fill_in_credentials_and_submit(user.last_sign_in_email_address.email, new_password)
+    fill_in_credentials_and_submit(user.confirmed_email_addresses.first.email, new_password)
     choose_another_security_option('personal_key')
     enter_personal_key(personal_key: old_personal_key)
     click_submit_default
@@ -392,7 +392,7 @@ def ial1_sign_in_with_personal_key_goes_to_sp(sp)
   Capybara.reset_sessions!
 
   visit_idp_from_sp_with_ial1(sp)
-  fill_in_credentials_and_submit(user.last_sign_in_email_address.email, 'Val!d Pass w0rd')
+  fill_in_credentials_and_submit(user.confirmed_email_addresses.first.email, 'Val!d Pass w0rd')
   choose_another_security_option('personal_key')
   enter_personal_key(personal_key: old_personal_key)
   click_submit_default

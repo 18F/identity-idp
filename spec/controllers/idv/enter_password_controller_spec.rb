@@ -416,7 +416,7 @@ RSpec.describe Idv::EnterPasswordController do
         it 'sends the idv_please_call email' do
           put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
           expect_delivered_email(
-            to: user.last_sign_in_email_address.email,
+            to: user.confirmed_email_addresses.first.email,
             subject: t('user_mailer.idv_please_call.subject', app_name: APP_NAME),
           )
         end

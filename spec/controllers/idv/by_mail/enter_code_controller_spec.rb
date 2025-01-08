@@ -289,7 +289,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
           it 'does not send the "Please Call" email' do
             action
             expect_email_not_delivered(
-              to: user.last_sign_in_email_address.email,
+              to: user.confirmed_email_addresses.first.email,
               subject: t('user_mailer.idv_please_call.subject', app_name: APP_NAME),
             )
           end
@@ -335,7 +335,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
           it 'sends the "Please Call" email' do
             action
             expect_delivered_email(
-              to: user.last_sign_in_email_address.email,
+              to: user.confirmed_email_addresses.first.email,
               subject: t('user_mailer.idv_please_call.subject', app_name: APP_NAME),
             )
           end
