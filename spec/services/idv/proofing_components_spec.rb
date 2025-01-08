@@ -39,6 +39,7 @@ RSpec.describe Idv::ProofingComponents do
         .and_return(true)
       idv_session.threatmetrix_review_status = 'pass'
       idv_session.source_check_vendor = 'aamva'
+      idv_session.resolution_vendor = 'lexis_nexis'
     end
 
     it 'returns expected result' do
@@ -193,16 +194,6 @@ RSpec.describe Idv::ProofingComponents do
 
       it 'returns the vendor we set' do
         expect(subject.resolution_check).to eql('AReallyGoodVendor')
-      end
-    end
-
-    context 'when resolution done but resolution_vendor nil because of 50/50 state' do
-      before do
-        idv_session.mark_verify_info_step_complete!
-      end
-
-      it 'returns LexisNexis to match previous behavior' do
-        expect(subject.resolution_check).to eql('lexis_nexis')
       end
     end
   end

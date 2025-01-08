@@ -37,10 +37,7 @@ module Idv
     end
 
     def resolution_check
-      if idv_session.verify_info_step_complete?
-        # NOTE: Fallback to LexisNexis to handle 50/50 state, will be removed later
-        idv_session.resolution_vendor || Idp::Constants::Vendors::LEXIS_NEXIS
-      end
+      idv_session.resolution_vendor if idv_session.verify_info_step_complete?
     end
 
     def address_check
