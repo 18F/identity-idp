@@ -2,7 +2,8 @@ require 'rails_helper'
 
 RSpec.describe EncryptedDocStorage::DocWriter do
   describe '#write' do
-    let(:image) { 'image' }
+    let(:img_path) { Rails.root.join('app', 'assets', 'images', 'logo.svg')}
+    let(:image) { File.read(img_path) }
 
     subject do
       EncryptedDocStorage::DocWriter.new
@@ -18,6 +19,9 @@ RSpec.describe EncryptedDocStorage::DocWriter do
         File.read(file_path(result.name)),
         key,
       )
+
+      # cleanup
+      File.delete(file_path(result.name))
 
       expect(written_image).to eq(image)
     end

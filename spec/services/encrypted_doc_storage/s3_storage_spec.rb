@@ -2,6 +2,11 @@ require 'rails_helper'
 
 RSpec.describe EncryptedDocStorage::S3Storage do
   subject { EncryptedDocStorage::S3Storage.new }
+  let(:img_path) { Rails.root.join('app', 'assets', 'images', 'logo.svg')}
+  let(:image) { File.read(img_path) }
+  let(:encrypted_image) do
+    Encryption::AesCipherV2.new.encrypt(image, SecureRandom.bytes(32))
+  end
 
   describe '#write_image' do
     let(:stubbed_s3_client) { Aws::S3::Client.new(stub_responses: true) }
@@ -12,7 +17,6 @@ RSpec.describe EncryptedDocStorage::S3Storage do
     end
 
     it 'writes the document to S3' do
-      encrypted_image = 'encrypted document.'
       name = '123abc'
 
       subject.write_image(encrypted_image:, name:)

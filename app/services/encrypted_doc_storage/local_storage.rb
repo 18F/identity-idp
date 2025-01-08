@@ -5,7 +5,9 @@ module EncryptedDocStorage
     def write_image(encrypted_image:, name:)
       FileUtils.mkdir_p(tmp_document_storage_dir)
 
-      File.write(tmp_document_storage_dir.join(name), encrypted_image)
+      File.open(tmp_document_storage_dir.join(name), 'wb') do |f|
+        f.write(encrypted_image)
+      end
     end
 
     private
