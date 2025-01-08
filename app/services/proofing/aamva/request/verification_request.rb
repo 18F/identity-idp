@@ -63,14 +63,12 @@ module Proofing
             REXML::XPath.first(document, xpath).add_text(data)
           end
 
-          if IdentityConfig.store.aamva_send_middle_name
-            add_optional_element(
-              'nc:PersonMiddleName',
-              value: applicant.middle_name,
-              document:,
-              inside: '//nc:PersonName',
-            )
-          end
+          add_optional_element(
+            'nc:PersonMiddleName',
+            value: applicant.middle_name,
+            document:,
+            inside: '//nc:PersonName',
+          )
 
           add_optional_element(
             'nc:PersonNameSuffixText',
@@ -123,12 +121,10 @@ module Proofing
             inside: '//dldv:verifyDriverLicenseDataRequest',
           )
 
-          if IdentityConfig.store.aamva_send_id_type
-            add_state_id_type(
-              applicant.state_id_data.state_id_type,
-              document,
-            )
-          end
+          add_state_id_type(
+            applicant.state_id_data.state_id_type,
+            document,
+          )
 
           @body = document.to_s
         end

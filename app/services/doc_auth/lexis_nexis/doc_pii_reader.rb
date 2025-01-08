@@ -27,11 +27,11 @@ module DocAuth
         state_id_type_slug = id_auth_field_data['Fields_DocumentClassName']
         state_id_type = DocAuth::Response::ID_TYPE_SLUGS[state_id_type_slug]
 
-        state_id_data = Pii::StateId.new(
+        Pii::StateId.new(
           first_name: id_auth_field_data['Fields_FirstName'],
           last_name: id_auth_field_data['Fields_Surname'],
           middle_name: id_auth_field_data['Fields_MiddleName'],
-          name_suffix: nil,
+          name_suffix: id_auth_field_data['Fields_NameSuffix'],
           address1: id_auth_field_data['Fields_AddressLine1'],
           address2: id_auth_field_data['Fields_AddressLine2'],
           city: id_auth_field_data['Fields_City'],
@@ -42,8 +42,8 @@ module DocAuth
             month: id_auth_field_data['Fields_DOB_Month'],
             day: id_auth_field_data['Fields_DOB_Day'],
           ),
-          sex: nil,
-          height: nil,
+          sex: parse_sex_value(id_auth_field_data['Fields_Sex']),
+          height: parse_height_value(id_auth_field_data['Fields_Height']),
           weight: nil,
           eye_color: nil,
           state_id_expiration: parse_date(
@@ -61,16 +61,6 @@ module DocAuth
           state_id_type: state_id_type,
           issuing_country_code: id_auth_field_data['Fields_CountryCode'],
         )
-
-        if IdentityConfig.store.doc_auth_read_additional_pii_attributes_enabled
-          state_id_data = state_id_data.with(
-            name_suffix: id_auth_field_data['Fields_NameSuffix'],
-            sex: parse_sex_value(id_auth_field_data['Fields_Sex']),
-            height: parse_height_value(id_auth_field_data['Fields_Height']),
-          )
-        end
-
-        state_id_data
       end
 
       def parse_date(year:, month:, day:)
