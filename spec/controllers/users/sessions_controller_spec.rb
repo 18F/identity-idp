@@ -385,6 +385,37 @@ RSpec.describe Users::SessionsController, devise: true do
           expect(response).to redirect_to sign_in_security_check_failed_url
         end
       end
+
+      context 'recpatcha lock out' do
+        let(:locked_at) { Time.zone.now }
+        let(:sign_in_failure_window) { IdentityConfig.store.max_sign_in_failures_window_in_seconds }
+        it 'prevents attempt and logs after exceeding maximum rate limit' do
+          allow(IdentityConfig.store).to receive(:max_sign_in_failures).and_return(5)
+
+          user = create(:user, :fully_registered)
+          freeze_time do
+            current_time = Time.zone.now
+            time_in_hours = distance_of_time_in_words(
+              current_time,
+              (locked_at + sign_in_failure_window.seconds),
+              true,
+            )
+            6.times do
+              post :create, params: {
+                user: { email: user.email, password: user.password, score: 0.1 },
+              }
+            end
+
+            expect(response).to redirect_to root_url
+            expect(flash[:error]).to eq(
+              t(
+                'errors.sign_in.sign_in_failure_limit',
+                time_left: time_in_hours,
+              ),
+            )
+          end
+        end
+      end
     end
 
     it 'tracks count of multiple unsuccessful authentication attempts' do
