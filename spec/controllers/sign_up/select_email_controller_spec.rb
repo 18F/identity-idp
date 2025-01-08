@@ -126,7 +126,7 @@ RSpec.describe SignUp::SelectEmailController do
 
     context 'with a corrupted email selected_email_id form' do
       let(:other_user) { create(:user) }
-      let(:selected_email) { other_user.confirmed_email_addresses.sample }
+      let(:selected_email_id) { other_user.confirmed_email_addresses.sample.id }
 
       it 'rejects email not belonging to the user' do
         expect(response).to redirect_to(sign_up_select_email_path)
