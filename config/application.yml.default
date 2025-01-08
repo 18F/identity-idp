@@ -40,7 +40,6 @@ allowed_verified_within_providers: '[]'
 asset_host: ''
 async_stale_job_timeout_seconds: 300
 async_wait_timeout_seconds: 60
-attempts_api_event_ttl_seconds: 3_600
 attribute_encryption_key:
 attribute_encryption_key_queue: '[]'
 available_locales: 'en,es,fr,zh'
@@ -323,8 +322,6 @@ recaptcha_site_key: ''
 recommend_webauthn_platform_for_sms_ab_test_account_creation_percent: 0
 recommend_webauthn_platform_for_sms_ab_test_authentication_percent: 0
 recovery_code_length: 4
-redis_attempts_api_pool_size: 1
-redis_attempts_api_url: redis://localhost:6379/2
 redis_pool_size: 10
 redis_throttle_pool_size: 5
 redis_throttle_url: redis://localhost:6379/1

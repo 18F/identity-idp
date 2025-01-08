@@ -112,7 +112,6 @@ RSpec.configure do |config|
     Telephony::Test::Call.clear_calls
     PushNotification::LocalEventQueue.clear!
     REDIS_THROTTLE_POOL.with { |client| client.flushdb } if Identity::Hostdata.config
-    REDIS_ATTEMPTS_API_POOL.with { |client| client.flushdb } if Identity::Hostdata.config
   end
 
   config.before(:each) do
