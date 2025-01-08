@@ -109,7 +109,7 @@ RSpec.describe 'accounts/connected_accounts/show.html.erb' do
     end
   end
 
-  context 'when the service provider requests all emails' do
+  context 'when the partner requests all emails' do
     before do
       assign(
         :presenter,
