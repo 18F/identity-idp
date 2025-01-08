@@ -131,7 +131,7 @@ class ResolutionProofingJob < ApplicationJob
   end
 
   def user_email_for_proofing(user)
-    user.last_sign_in_email_address.email
+    user.confirmed_email_addresses.first.email
   end
 
   def log_threatmetrix_info(threatmetrix_result, user)
