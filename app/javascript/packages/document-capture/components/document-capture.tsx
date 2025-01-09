@@ -38,8 +38,12 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   const { flowPath } = useContext(UploadContext);
   const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
   const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
-  const { inPersonURL, skipDocAuthFromHandoff, skipDocAuthFromHowToVerify } =
-    useContext(InPersonContext);
+  const {
+    inPersonURL,
+    skipDocAuthFromHandoff,
+    skipDocAuthFromHowToVerify,
+    skipDocAuthFromSocureHybrid,
+  } = useContext(InPersonContext);
   useDidUpdateEffect(onStepChange, [stepName]);
   useEffect(() => {
     if (stepName) {
@@ -135,7 +139,8 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   }
   // If the user got here by opting-in to in-person proofing, when skipDocAuthFromHowToVerify === true
   // then set steps to inPersonSteps
-  const isInPersonStepEnabled = skipDocAuthFromHowToVerify || skipDocAuthFromHandoff;
+  const isInPersonStepEnabled =
+    skipDocAuthFromHowToVerify || skipDocAuthFromHandoff || skipDocAuthFromSocureHybrid;
   const inPersonSteps: FormStep[] =
     inPersonURL === undefined
       ? []
@@ -150,13 +155,13 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
     steps = [reviewFormStep, ...inPersonSteps];
   }
   // If the user got here by opting-in to in-person proofing, when skipDocAuthFromHowToVerify === true
-  // or opting-in ipp from handoff page, and selfie is required, when skipDocAuthFromHandoff === true
+  // or opting-in ipp from handoff page, and selfie is required, when skipDocAuthFromHandoff === true,
+  // or opting-in ipp from socure hybrid, when skipDocAuthFromSocureHybrid === true,
   // then set stepIndicatorPath to VerifyFlowPath.IN_PERSON
   const stepIndicatorPath =
     (stepName && ['location', 'prepare', 'switch_back'].includes(stepName)) || isInPersonStepEnabled
       ? VerifyFlowPath.IN_PERSON
       : VerifyFlowPath.DEFAULT;
-
   return (
     <>
       <VerifyFlowStepIndicator currentStep="document_capture" path={stepIndicatorPath} />

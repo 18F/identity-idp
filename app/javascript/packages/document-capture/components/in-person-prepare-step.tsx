@@ -21,6 +21,7 @@ function InPersonPrepareStep({ toPreviousStep }) {
     inPersonOutageExpectedUpdateDate,
     skipDocAuthFromHowToVerify,
     skipDocAuthFromHandoff,
+    skipDocAuthFromSocureHybrid,
     howToVerifyURL,
     previousStepURL,
   } = useContext(InPersonContext);
@@ -31,6 +32,9 @@ function InPersonPrepareStep({ toPreviousStep }) {
       forceRedirect(previousStepURL);
     } else if (skipDocAuthFromHowToVerify && howToVerifyURL) {
       forceRedirect(howToVerifyURL);
+    } else if (skipDocAuthFromSocureHybrid) {
+      // directly from Socure Hybrid page
+      forceRedirect('https://google.com');
     } else {
       toPreviousStep();
     }

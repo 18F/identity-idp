@@ -434,6 +434,7 @@ RSpec.describe Idv::DocumentCaptureController do
     let(:analytics_args) do
       {
         remaining_submit_attempts: 4,
+        flow_path: :standard,
         skip_hybrid_handoff: nil,
         opted_in_to_in_person_proofing: nil,
       }

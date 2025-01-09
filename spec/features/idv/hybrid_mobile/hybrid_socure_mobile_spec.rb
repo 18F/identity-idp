@@ -181,7 +181,7 @@ RSpec.describe 'Hybrid Flow' do
           .and_return(0)
       end
 
-      it 'proofs and hands off to mobile', js: true do
+      it 'presents options to try again or try in person', js: true do
         perform_in_browser(:desktop) do
           visit_idp_from_sp_with_ial2(sp)
           sign_up_and_2fa_ial1_user
@@ -364,7 +364,7 @@ RSpec.describe 'Hybrid Flow' do
       end
 
       context 'when a valid test token is used' do
-        it 'fetches verificationdata using override docvToken in request',
+        it 'fetches verification data using override docvToken in request',
            js: true, allow_browser_log: true do
           user = nil
 
@@ -409,7 +409,7 @@ RSpec.describe 'Hybrid Flow' do
             .to receive(:send_http_post_request).and_raise('doh')
         end
 
-        it 'waits to fetch verificationdata using docv capture session token', js: true do
+        it 'waits to fetch verification data using docv capture session token', js: true do
           expect(SocureDocvRepeatWebhookJob).to receive(:perform_later)
             .exactly(6 * socure_docv_webhook_repeat_endpoints.length).times.and_call_original
 
