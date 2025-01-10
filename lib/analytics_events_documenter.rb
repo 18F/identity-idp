@@ -131,7 +131,12 @@ class AnalyticsEventsDocumenter
 
       description = method_description(method_object)
       if description.present? && !method_object.docstring.match?(/\A[A-Z]/)
-        errors << "#{error_prefix} method description starts with lowercase, check indentation"
+        indented_descrip = description.lines.map { |line| "  #{line.chomp}" }.join("\n")
+
+        errors << <<~MSG
+          #{error_prefix} method description starts with lowercase, check indentation:
+          #{indented_descrip}"
+        MSG
       end
 
       errors
