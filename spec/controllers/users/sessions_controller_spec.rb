@@ -386,16 +386,16 @@ RSpec.describe Users::SessionsController, devise: true do
         end
       end
 
-      context 'recpatcha lock out' do
+      context 'recaptcha lock out' do
         let(:locked_at) { Time.zone.now }
         let(:sign_in_failure_window) { IdentityConfig.store.max_sign_in_failures_window_in_seconds }
-        it 'prevents attempt and logs after exceeding maximum rate limit' do
+        it 'prevents attempt after exceeding maximum rate limit' do
           allow(IdentityConfig.store).to receive(:max_sign_in_failures).and_return(5)
 
           user = create(:user, :fully_registered)
           freeze_time do
             current_time = Time.zone.now
-            time_in_hours = distance_of_time_in_words(
+            rate_limit_time_left = distance_of_time_in_words(
               current_time,
               (locked_at + sign_in_failure_window.seconds),
               true,
@@ -410,7 +410,7 @@ RSpec.describe Users::SessionsController, devise: true do
             expect(flash[:error]).to eq(
               t(
                 'errors.sign_in.sign_in_failure_limit',
-                time_left: time_in_hours,
+                time_left: rate_limit_time_left,
               ),
             )
           end
