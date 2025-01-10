@@ -17,7 +17,7 @@ RSpec.describe 'accounts/connected_accounts/show.html.erb' do
         authn_context: nil,
         sp_name: nil,
         locked_for_session: false,
-        all_emails_requested: false,
+        change_email_available: false,
       ),
     )
   end
@@ -120,7 +120,7 @@ RSpec.describe 'accounts/connected_accounts/show.html.erb' do
           authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
-          all_emails_requested: true,
+          change_email_available: true,
         ),
       )
     end
