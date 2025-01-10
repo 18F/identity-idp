@@ -1223,7 +1223,7 @@ image_description.warning: Yellow caution sign
 in_person_proofing.body.barcode.cancel_link_text: Cancel your barcode
 in_person_proofing.body.barcode.close_window: You may now close this window.
 in_person_proofing.body.barcode.deadline: You must visit any participating Post Office by %{deadline}.
-in_person_proofing.body.barcode.deadline_restart: If you go after this deadline, your information will not be saved and you will need to restart the process.
+in_person_proofing.body.barcode.deadline_restart: If you go after this deadline, your barcode will not work. You will need to restart the process.
 in_person_proofing.body.barcode.eipp_tag: GSA Enhanced Pilot Barcode
 in_person_proofing.body.barcode.eipp_what_to_bring: 'Depending on your ID, you may need to show supporting documents. Review the following options carefully:'
 in_person_proofing.body.barcode.email_sent: We have sent your barcode and the information below to the email you used to sign in
@@ -1233,11 +1233,11 @@ in_person_proofing.body.barcode.questions: Questions?
 in_person_proofing.body.barcode.retail_hours: Retail hours
 in_person_proofing.body.barcode.retail_hours_closed: Closed
 in_person_proofing.body.barcode.return_to_partner_link: Return to %{sp_name}
-in_person_proofing.body.barcode.what_to_expect: What to expect at the Post Office
+in_person_proofing.body.barcode.what_to_expect: What to do at the Post Office
 in_person_proofing.body.cta.button: Try in person
 in_person_proofing.body.cta.prompt_detail: Most people who are unable to complete this step online are successful in verifying their identity at a participating Post Office. No appointment needed. Locations are available nationwide.
 in_person_proofing.body.expect.heading: What to expect after your visit
-in_person_proofing.body.expect.info: We’ll send you an email to let you know if your identity verification was successful or unsuccessful within 24 hours of your visit to the Post Office.
+in_person_proofing.body.expect.info: You’ll get an email within 24 hours of visiting a Post Office. We’ll tell you if your identity verification was successful or unsuccessful. Check your email for a message from no-reply@login.gov.
 in_person_proofing.body.location.change_location_find_other_locations: Find other participating Post Office locations.
 in_person_proofing.body.location.change_location_heading: Need to change your Post Office location?
 in_person_proofing.body.location.change_location_info_html: You don’t need to create a new barcode, you can bring this barcode to any participating Post Office location. %{find_other_locations_link_html}
@@ -1316,7 +1316,7 @@ in_person_proofing.form.state_id.state_id_number_hint_spaces: spaces
 in_person_proofing.form.state_id.state_id_number_texas_hint: This is the 8-digit number on your ID. Enter only numbers in this field.
 in_person_proofing.form.state_id.zipcode: ZIP Code
 in_person_proofing.headings.address: Enter your current residential address
-in_person_proofing.headings.barcode: Show this barcode and your state‑issued ID at a Post Office to finish verifying your identity
+in_person_proofing.headings.barcode: Show this barcode and your state ID at a Post Office to finish verifying your identity
 in_person_proofing.headings.barcode_eipp: Bring this barcode and supporting documents to a Post Office to finish verifying your identity
 in_person_proofing.headings.barcode_what_to_bring: What to bring to the Post Office
 in_person_proofing.headings.cta: Try verifying your ID in person
@@ -1366,7 +1366,7 @@ in_person_proofing.process.state_id.heading_eipp: Show your ID and supporting do
 in_person_proofing.process.state_id.info: This must not be expired. We do not currently accept any other forms of identification, such as passports and military IDs.
 in_person_proofing.process.state_id.info_eipp: The retail associate will scan your ID. This must not be expired. Depending on the type of ID that you present, you may need to show supporting documents. See the requirements in the “What to bring to the Post Office” section.
 in_person_proofing.process.what_to_do.heading: Stand in any line
-in_person_proofing.process.what_to_do.info: Tell the Post Office retail associate you are here to verify your identity with %{app_name}.
+in_person_proofing.process.what_to_do.info: Tell the Post Office retail associate you are here to verify your identity. If they don’t know how to proceed, ask for a supervisor to help you.
 instructions.account.reactivate.begin: Let’s get started.
 instructions.account.reactivate.explanation: 'When you created your account, we gave you a list of words and asked you to store them in a safe place. It looked similar to this:'
 instructions.account.reactivate.intro: We take extra steps to keep your personal information secure and private, so resetting your password takes a little extra effort.
