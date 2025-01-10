@@ -125,7 +125,7 @@ module AnalyticsEvents
   # @param [String] user_id
   # @param [Integer, nil] account_age_in_days number of days since the account was confirmed
   # @param [Time] account_confirmed_at date that account creation was confirmed
-  # (rounded) or nil if the account was not confirmed
+  #   (rounded) or nil if the account was not confirmed
   # @param [Hash] mfa_method_counts Hash of MFA method with the number of that method on the account
   # @param [Boolean] identity_verified if the deletion occurs on a verified account
   # @param [Hash] errors Errors resulting from form validation
@@ -244,7 +244,7 @@ module AnalyticsEvents
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] user_id User the email is linked to
   # @param [Boolean] from_select_email_flow Whether email was added as part of partner email
-  # selection.
+  #   selection.
   # A user has clicked the confirmation link in an email
   def add_email_confirmation(
     user_id:,
@@ -270,7 +270,7 @@ module AnalyticsEvents
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] domain_name Domain name of email address submitted
   # @param [Boolean] in_select_email_flow Whether email is being added as part of partner email
-  # selection.
+  #   selection.
   # Tracks request for adding new emails to an account
   def add_email_request(
     success:,
@@ -1086,7 +1086,7 @@ module AnalyticsEvents
 
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Array] camera_info Information on the users cameras max resolution
-  # as  captured by the browser
+  #   as captured by the browser
   def idv_camera_info_logged(flow_path:, camera_info:, **_extra)
     track_event(
       :idv_camera_info_logged, flow_path: flow_path, camera_info: camera_info
@@ -1454,7 +1454,7 @@ module AnalyticsEvents
 
   # @param [String] side the side of the image submission
   # @param [Integer] submit_attempts Times that user has tried submitting (previously called
-  # "attempts")
+  #   "attempts")
   # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] liveness_checking_required Whether or not the selfie is required
@@ -2984,7 +2984,7 @@ module AnalyticsEvents
   # @param [String] analytics_id
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
-  # address page visited
+  #   address page visited
   def idv_in_person_proofing_address_visited(
     flow_path:,
     step:,
@@ -6442,7 +6442,7 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Integer] phone_configuration_id
-  # tracks a phone number deletion event
+  # Tracks a phone number deletion event
   def phone_deletion(success:, phone_configuration_id:, **extra)
     track_event(
       'Phone Number Deletion: Submitted',
@@ -6485,7 +6485,7 @@ module AnalyticsEvents
   # @param [Hash] errors Errors resulting from form validation
   # @param [String, nil] key_id PIV/CAC key_id from PKI service
   # @param [Boolean] new_device Whether the user is authenticating from a new device
-  # tracks piv cac login event
+  # Tracks piv cac login event
   def piv_cac_login(success:, errors:, key_id:, new_device:, **extra)
     track_event(
       :piv_cac_login,
@@ -7043,17 +7043,17 @@ module AnalyticsEvents
     )
   end
 
-  # tracks if the session is kept alive
+  # Tracks if the session is kept alive
   def session_kept_alive
     track_event('Session Kept Alive')
   end
 
-  # tracks if the session timed out
+  # Tracks if the session timed out
   def session_timed_out
     track_event('Session Timed Out')
   end
 
-  # tracks when a user's session is timed out
+  # Tracks when a user's session is timed out
   def session_total_duration_timeout
     track_event('User Maximum Session Length Exceeded')
   end
@@ -7064,7 +7064,7 @@ module AnalyticsEvents
   end
 
   # @param [String] flash
-  # tracks when a user visits the sign in page
+  # Tracks when a user visits the sign in page
   def sign_in_page_visit(flash:, **extra)
     track_event('Sign in page visited', flash:, **extra)
   end
@@ -7080,7 +7080,7 @@ module AnalyticsEvents
   # @param [Boolean] new_user Whether this is an incomplete user (no associated MFA methods)
   # @param [Boolean] has_other_auth_methods Whether the user has other authentication methods
   # @param [Integer] phone_configuration_id Phone configuration associated with request
-  # tracks when a user opts into SMS
+  # Tracks when a user opts into SMS
   def sms_opt_in_submitted(
     success:,
     errors:,
@@ -7105,7 +7105,7 @@ module AnalyticsEvents
   # @param [Boolean] new_user
   # @param [Boolean] has_other_auth_methods
   # @param [Integer] phone_configuration_id
-  # tracks when a user visits the sms opt in page
+  # Tracks when a user visits the sms opt in page
   def sms_opt_in_visit(
     new_user:,
     has_other_auth_methods:,
