@@ -74,7 +74,7 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
               .to receive(:doc_auth_redirect_to_correct_vendor_disabled).and_return(true)
           end
 
-          it 'redirects to the Socure controller' do
+          it 'allows the user to use this controller' do
             get :show
 
             expect(response).to render_template :show
