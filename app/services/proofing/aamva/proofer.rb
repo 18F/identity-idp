@@ -58,11 +58,14 @@ module Proofing
           applicant: aamva_applicant,
         )
 
-        build_result_from_response(response, applicant[:state])
+        build_result_from_response(response, applicant[:state_id_jurisdiction])
       rescue => exception
         failed_result = Proofing::StateIdResult.new(
           success: false, errors: {}, exception: exception, vendor_name: 'aamva:state_id',
-          transaction_id: nil, verified_attributes: []
+          transaction_id: nil, verified_attributes: [],
+          jurisdiction_in_maintenance_window: jurisdiction_in_maintenance_window?(
+            applicant[:state_id_jurisdiction],
+          )
         )
         send_to_new_relic(failed_result)
         failed_result

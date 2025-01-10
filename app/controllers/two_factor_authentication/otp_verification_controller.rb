@@ -24,7 +24,10 @@ module TwoFactorAuthentication
         increment_mfa_selection_attempt_count(otp_auth_method)
       end
       result = otp_verification_form.submit
-      post_analytics(result)
+
+      if UserSessionContext.confirmation_context?(context)
+        log_confirmation_analytics(result)
+      end
 
       if UserSessionContext.authentication_or_reauthentication_context?(context)
         handle_verification_for_authentication_context(
@@ -149,9 +152,9 @@ module TwoFactorAuthentication
       params.permit(:code)
     end
 
-    def post_analytics(result)
+    def log_confirmation_analytics(result)
       properties = result.to_h.merge(analytics_properties)
-      analytics.multi_factor_auth_setup(**properties) if context == 'confirmation'
+      analytics.multi_factor_auth_setup(**properties)
     end
 
     def analytics_properties

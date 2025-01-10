@@ -46,6 +46,7 @@ module Users
         increment_mfa_selection_attempt_count(webauthn_auth_method)
         analytics.webauthn_setup_submitted(
           platform_authenticator: form.platform_authenticator?,
+          in_account_creation_flow: user_session[:in_account_creation_flow] || false,
           errors: result.errors,
           success: false,
         )
@@ -129,6 +130,7 @@ module Users
       create_user_event(:webauthn_key_added)
       analytics.webauthn_setup_submitted(
         platform_authenticator: form.platform_authenticator?,
+        in_account_creation_flow: user_session[:in_account_creation_flow] || false,
         success: true,
       )
       handle_remember_device_preference(params[:remember_device])

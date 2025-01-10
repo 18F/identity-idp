@@ -33,19 +33,48 @@ RSpec.feature 'SAML Authorization Confirmation' do
       user1
     end
 
-    it 'it confirms the user wants to continue to SP with signin email after signing in again' do
-      second_email = create(:email_address, user: user1)
-      sign_in_user(user1, second_email.email)
+    context 'when the user is already signed in with an email different from the one shared' do
+      context 'when email sharing feature is enabled' do
+        before do
+          allow(IdentityConfig.store)
+            .to receive(:feature_select_email_to_share_enabled).and_return(true)
+        end
 
-      visit request_url
-      expect(current_url).to match(user_authorization_confirmation_path)
-      expect(page).to have_content second_email.email
+        it 'confirms the user wants to continue to SP with the shared email' do
+          shared_email = user1.identities.first.email_address.email
+          second_email = create(:email_address, user: user1)
+          sign_in_user(user1, second_email.email)
 
-      continue_as(second_email.email)
-      expect(current_url).to eq(complete_saml_url)
+          visit request_url
+          expect(current_url).to match(user_authorization_confirmation_path)
+          expect(page).to have_content shared_email
+
+          continue_as(shared_email)
+          expect(current_url).to eq(complete_saml_url)
+        end
+      end
+
+      context 'when email sharing feature is disabled' do
+        before do
+          allow(IdentityConfig.store)
+            .to receive(:feature_select_email_to_share_enabled).and_return(false)
+        end
+
+        it 'confirms the user wants to continue to SP with the signed in email' do
+          second_email = create(:email_address, user: user1)
+          sign_in_user(user1, second_email.email)
+
+          visit request_url
+          expect(current_url).to match(user_authorization_confirmation_path)
+          expect(page).to have_content second_email.email
+
+          continue_as(second_email.email)
+          expect(current_url).to eq(complete_saml_url)
+        end
+      end
     end
 
-    it 'it allows the user to switch accounts prior to continuing to the SP' do
+    it 'allows the user to switch accounts prior to continuing to the SP' do
       sign_in_user(user1)
 
       visit request_url

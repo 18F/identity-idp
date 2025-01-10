@@ -569,7 +569,7 @@ RSpec.feature 'Analytics Regression', :js do
       },
       'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'standard', attention_with_barcode: true, doc_auth_result: 'Attention', liveness_checking_required: boolean),
       'IdV: verify in person troubleshooting option clicked' => {
-        flow_path: 'standard', opted_in_to_in_person_proofing: false
+        flow_path: 'standard', opted_in_to_in_person_proofing: false, submit_attempts: 1
       },
       'IdV: in person proofing location visited' => {
         flow_path: 'standard', opted_in_to_in_person_proofing: false

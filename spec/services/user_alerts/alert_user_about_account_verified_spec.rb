@@ -36,7 +36,7 @@ RSpec.describe UserAlerts::AlertUserAboutAccountVerified do
         described_class.call(profile: profile)
 
         expect_delivered_email(
-          to: [user.confirmed_email_addresses.first.email],
+          to: [user.last_sign_in_email_address.email],
           subject: t('user_mailer.account_verified.subject', app_name: APP_NAME),
           body: [
             'http://www.example.com/redirect/return_to_sp/account_verified_cta',
@@ -71,7 +71,7 @@ RSpec.describe UserAlerts::AlertUserAboutAccountVerified do
         described_class.call(profile: profile)
 
         expect_delivered_email(
-          to: [user.confirmed_email_addresses.first.email],
+          to: [user.last_sign_in_email_address.email],
           subject: t('user_mailer.account_verified.subject', app_name: APP_NAME),
           body: ['http://example.com'],
         )

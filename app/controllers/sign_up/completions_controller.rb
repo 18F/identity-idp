@@ -22,7 +22,7 @@ module SignUp
       update_verified_attributes
       send_in_person_completion_survey
       if user_session[:selected_email_id_for_linked_identity].nil?
-        user_session[:selected_email_id_for_linked_identity] = EmailContext.new(current_user)
+        user_session[:selected_email_id_for_linked_identity] = current_user
           .last_sign_in_email_address.id
       end
       if decider.go_back_to_mobile_app?

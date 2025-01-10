@@ -135,6 +135,7 @@ RSpec.describe Users::WebauthnSetupController do
         expect(@analytics).to have_logged_event(
           :webauthn_setup_submitted,
           platform_authenticator: false,
+          in_account_creation_flow: false,
           success: true,
         )
       end
@@ -288,6 +289,7 @@ RSpec.describe Users::WebauthnSetupController do
           expect(@analytics).to have_logged_event(
             :webauthn_setup_submitted,
             platform_authenticator: false,
+            in_account_creation_flow: true,
             success: true,
           )
         end
@@ -325,6 +327,7 @@ RSpec.describe Users::WebauthnSetupController do
           expect(@analytics).to have_logged_event(
             :webauthn_setup_submitted,
             platform_authenticator: true,
+            in_account_creation_flow: true,
             success: true,
           )
           expect(@analytics).to have_logged_event(
@@ -453,6 +456,7 @@ RSpec.describe Users::WebauthnSetupController do
         expect(@analytics).to have_logged_event(
           :webauthn_setup_submitted,
           platform_authenticator: false,
+          in_account_creation_flow: true,
           success: true,
         )
       end

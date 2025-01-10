@@ -25,6 +25,7 @@ class ResolutionProofingJob < ApplicationJob
     service_provider_issuer: nil,
     threatmetrix_session_id: nil,
     request_ip: nil,
+    proofing_components: nil,
     # DEPRECATED ARGUMENTS
     should_proof_state_id: false # rubocop:disable Lint/UnusedMethodArgument
   )
@@ -74,7 +75,7 @@ class ResolutionProofingJob < ApplicationJob
       timing: timer.results,
     )
 
-    if use_shadow_mode?(user:)
+    if use_shadow_mode?(user:, proofing_components:)
       SocureShadowModeProofingJob.perform_later(
         document_capture_session_result_id: document_capture_session&.result_id,
         encrypted_arguments:,
@@ -85,15 +86,22 @@ class ResolutionProofingJob < ApplicationJob
     end
   end
 
-  def use_shadow_mode?(user:)
-    IdentityConfig.store.idv_socure_shadow_mode_enabled &&
-      AbTests::SOCURE_IDV_SHADOW_MODE.bucket(
-        request: nil,
-        service_provider: nil,
-        session: nil,
-        user:,
-        user_session: nil,
-      ) == :shadow_mode_enabled
+  # @param user [User]
+  # @param proofing_components [Hash,nil]
+  def use_shadow_mode?(user:, proofing_components:)
+    # Let idv_socure_shadow_mode_enabled setting control shadow mode globally
+    disabled_globally = !IdentityConfig.store.idv_socure_shadow_mode_enabled
+    return false if disabled_globally
+
+    # If the user went through Socure docv, they are already a Socure user and
+    # are thus eligible for shadow mode.
+    enabled_for_docv_users =
+      IdentityConfig.store.idv_socure_shadow_mode_enabled_for_docv_users
+    is_docv_user = proofing_components&.dig(:document_check) == Idp::Constants::Vendors::SOCURE
+    return true if enabled_for_docv_users && is_docv_user
+
+    # Otherwise fall back to A/B test
+    shadow_mode_ab_test_bucket(user:) == :socure_shadow_mode_for_non_docv_users
   end
 
   private
@@ -130,7 +138,7 @@ class ResolutionProofingJob < ApplicationJob
   end
 
   def user_email_for_proofing(user)
-    user.confirmed_email_addresses.first.email
+    user.last_sign_in_email_address.email
   end
 
   def log_threatmetrix_info(threatmetrix_result, user)
@@ -148,5 +156,15 @@ class ResolutionProofingJob < ApplicationJob
 
   def progressive_proofer
     @progressive_proofer ||= Proofing::Resolution::ProgressiveProofer.new
+  end
+
+  def shadow_mode_ab_test_bucket(user:)
+    AbTests::SOCURE_IDV_SHADOW_MODE_FOR_NON_DOCV_USERS.bucket(
+      request: nil,
+      service_provider: nil,
+      session: nil,
+      user:,
+      user_session: nil,
+    )
   end
 end

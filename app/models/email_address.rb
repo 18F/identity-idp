@@ -49,6 +49,10 @@ class EmailAddress < ApplicationRecord
     email.end_with?('.mil')
   end
 
+  def self.last_sign_in
+    order('last_sign_in_at DESC NULLS LAST').first
+  end
+
   class << self
     def find_with_email(email)
       return nil if !email.is_a?(String) || email.empty?

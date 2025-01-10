@@ -92,7 +92,7 @@ RSpec.feature 'Two Factor Authentication' do
 
       scenario 'allows a user to recreate their account after account reset' do
         sign_in_before_2fa(user)
-        email = user.confirmed_email_addresses.first.email
+        email = user.last_sign_in_email_address.email
 
         expect(page).to have_content(t('two_factor_authentication.opt_in.title'))
 

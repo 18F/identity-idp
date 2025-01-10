@@ -145,7 +145,7 @@ RSpec.shared_examples 'sp handoff after identity verification' do |sp|
       expect(decoded_id_token[:aud]).to eq(@client_id)
       expect(decoded_id_token[:acr]).to eq(Saml::Idp::Constants::IAL_VERIFIED_ACR)
       expect(decoded_id_token[:iss]).to eq(root_url)
-      expect(decoded_id_token[:email]).to eq(user.confirmed_email_addresses.first.email)
+      expect(decoded_id_token[:email]).to eq(user.last_sign_in_email_address.email)
       expect(decoded_id_token[:given_name]).to eq('FAKEY')
       expect(decoded_id_token[:social_security_number]).to eq(DocAuthHelper::GOOD_SSN)
 
@@ -159,7 +159,7 @@ RSpec.shared_examples 'sp handoff after identity verification' do |sp|
       userinfo_response = JSON.parse(page.body).with_indifferent_access
       expect(userinfo_response[:sub]).to eq(sub)
       expect(AgencyIdentity.where(user_id: user.id, agency_id: 2).first.uuid).to eq(sub)
-      expect(userinfo_response[:email]).to eq(user.confirmed_email_addresses.first.email)
+      expect(userinfo_response[:email]).to eq(user.last_sign_in_email_address.email)
       expect(userinfo_response[:given_name]).to eq('FAKEY')
       expect(userinfo_response[:social_security_number]).to eq(DocAuthHelper::GOOD_SSN)
     end
