@@ -12,7 +12,7 @@ RSpec.describe 'accounts/_badges.html.erb' do
       sp_name: nil,
       user:,
       locked_for_session: false,
-      all_emails_requested: false,
+      change_email_available: false,
     )
   end
 

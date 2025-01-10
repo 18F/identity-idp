@@ -18,7 +18,7 @@ class AccountShowPresenter
     sp_name:,
     user:,
     locked_for_session:,
-    all_emails_requested: false
+    change_email_available: false
   )
     @decrypted_pii = decrypted_pii
     @user = user
@@ -26,7 +26,7 @@ class AccountShowPresenter
     @sp_session_request_url = sp_session_request_url
     @authn_context = authn_context
     @locked_for_session = locked_for_session
-    @all_emails_requested = all_emails_requested
+    @change_email_available = change_email_available
     @pii = determine_pii
   end
 
@@ -144,7 +144,7 @@ class AccountShowPresenter
   end
 
   def hide_change_option
-    @all_emails_requested
+    @change_email_available
   end
 
   delegate :recent_events, :recent_devices, to: :user
