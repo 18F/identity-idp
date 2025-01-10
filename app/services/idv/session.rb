@@ -21,7 +21,7 @@ module Idv
   # @attr phone_for_mobile_flow [String, nil]
   # @attr previous_phone_step_params [Array]
   # @attr previous_ssn [String, nil]
-  # @attr profile_id [String, nil]
+  # @attr profile_id [Integer, nil]
   # @attr proofing_started_at [String, nil]
   # @attr redo_document_capture [Boolean, nil]
   # @attr residential_resolution_vendor [String, nil]
