@@ -130,6 +130,7 @@ enable_load_testing_mode: false
 enable_rate_limiting: true
 enable_test_routes: true
 enable_usps_verification: true
+encrypted_document_storage_s3_bucket: 'test-bucket'
 event_disavowal_expiration_hours: 240
 facial_match_general_availability_enabled: true
 feature_idv_force_gpo_verification_enabled: false
@@ -523,6 +524,7 @@ production:
   email_registrations_per_ip_track_only_mode: true
   enable_test_routes: false
   enable_usps_verification: false
+  encrypted_document_storage_s3_bucket: ''
   facial_match_general_availability_enabled: false
   feature_select_email_to_share_enabled: false
   idv_sp_required: true
