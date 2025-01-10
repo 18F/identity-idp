@@ -204,6 +204,24 @@ RSpec.describe AnalyticsEventsDocumenter do
     end
   end
 
+  context 'param description gets munged into method descripion' do
+    let(:source_code) { <<~RUBY }
+      class AnalyticsEvents
+        # @param val [String] some value that
+        # does things and this should be part of the param
+        # Some Event
+        def some_event(val:, **extra)
+          track_event('Some Event', val:, **extra)
+        end
+      end
+    RUBY
+
+    it 'errors' do
+      expect(documenter.missing_documentation.first)
+        .to include('method description starts with lowercase, check indentation')
+    end
+  end
+
   describe '#as_json' do
     let(:source_code) { <<~RUBY }
       class AnalyticsEvents

@@ -129,6 +129,12 @@ class AnalyticsEventsDocumenter
         errors << "#{error_prefix} #{tag.name} missing types" if !tag.types
       end
 
+      if method_object.docstring&.strip.present?
+        if !method_object.docstring.match?(/\A[A-Z]/)
+          errors << "#{error_prefix} method description starts with lowercase, check indentation"
+        end
+      end
+
       errors
     end
   end
