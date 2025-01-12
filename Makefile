@@ -9,6 +9,8 @@ HOST ?= localhost
 PORT ?= 3000
 GZIP_COMMAND ?= gzip
 ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
+OS := $(shell uname)
+IS_NIXOS := $(shell grep -q NixOS /etc/os-release && echo true)
 
 .PHONY: \
 	analytics_events \
@@ -219,8 +221,18 @@ tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt: ## Self-signed cert for local H
 		-keyout tmp/$(HOST)-$(PORT).key \
 		-out tmp/$(HOST)-$(PORT).crt
 
+ifeq ($(OS), Darwin)
 run: browsers.json ## Runs the development server
 	foreman start -p $(PORT)
+else ifeq ($(OS), Linux)
+ifeq ($(IS_NIXOS), true)
+run: browsers.json
+	goreman start
+else
+run: browsers.json
+	foreman start -p $(PORT)
+endif
+endif
 
 urn:
 	@echo "⚱️"
