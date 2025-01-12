@@ -50,17 +50,22 @@ Dir.chdir APP_ROOT do
   run "cp pwned_passwords/pwned_passwords.txt.sample pwned_passwords/pwned_passwords.txt"
 
   puts "\n== Installing dependencies =="
-  brew_installed = system "brew -v 2>&1"
+  brew_installed = system "brew -v >/dev/null 2>&1"
   run "brew bundle" if brew_installed
   run "gem install bundler --conservative"
   run 'gem install foreman --conservative && gem update foreman'
   run "bundle check || bundle install --without deploy production"
   run "yarn install"
 
+  is_nixos = system "grep -q NixOS /etc/os-release && echo true"
+  puts "\n== NixOS detected ==" if is_nixos
+  puts "Please add Redis to your NixOS configuration" if is_nixos
+  puts "  services.redis.enable = true;" if is_nixos
+
   puts "\n== Stopping running services to ensure clean start =="
   run "brew services stop --all" if brew_installed
 
-  puts "\n== Starting services =="
+  puts "\n== Starting services ==" if brew_installed
   run "brew services start redis" if brew_installed
   run "brew services start postgresql@14" if brew_installed
 
