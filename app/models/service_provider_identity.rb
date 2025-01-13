@@ -58,8 +58,7 @@ class ServiceProviderIdentity < ApplicationRecord
   end
 
   def all_email_and_single_email_requested?
-    service_provider_record&.attribute_bundle&.include?('all_emails') &&
-      service_provider_record&.attribute_bundle.include?('email')
+    service_provider_record&.attribute_bundle&.include?('all_emails')
   end
 
   def service_provider_id
