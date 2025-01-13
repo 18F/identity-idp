@@ -218,7 +218,6 @@ module IdentityConfig
     config.add(:in_person_proofing_enabled, type: :boolean)
     config.add(:in_person_proofing_enforce_tmx, type: :boolean)
     config.add(:in_person_proofing_opt_in_enabled, type: :boolean)
-    config.add(:in_person_proofing_post_office_closed_alert_enabled, type: :boolean)
     config.add(:in_person_results_delay_in_hours, type: :integer)
     config.add(:in_person_send_proofing_notifications_enabled, type: :boolean)
     config.add(:in_person_stop_expiring_enrollments, type: :boolean)

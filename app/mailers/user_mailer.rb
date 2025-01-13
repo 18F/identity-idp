@@ -312,8 +312,6 @@ class UserMailer < ActionMailer::Base
         is_enhanced_ipp: is_enhanced_ipp,
       )
       @is_enhanced_ipp = is_enhanced_ipp
-      @show_closed_post_office_banner =
-        IdentityConfig.store.in_person_proofing_post_office_closed_alert_enabled
 
       mail(
         to: email_address.email,
@@ -328,8 +326,6 @@ class UserMailer < ActionMailer::Base
     ).image_data
 
     @is_enhanced_ipp = enrollment.enhanced_ipp?
-    @show_closed_post_office_banner =
-      IdentityConfig.store.in_person_proofing_post_office_closed_alert_enabled
 
     with_user_locale(user) do
       @presenter = Idv::InPerson::ReadyToVerifyPresenter.new(
