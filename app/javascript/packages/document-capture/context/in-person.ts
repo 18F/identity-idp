@@ -61,6 +61,11 @@ export interface InPersonContextProps {
   howToVerifyURL?: string;
 
   /**
+   * URL to return back to the Socure timeout page from Opt-in IPP
+   */
+  socureErrorsTimeoutURL?: string;
+
+  /**
    * URL for going back to previous steps in Doc Auth, like handoff and howToVerify
    */
   previousStepURL?: string;

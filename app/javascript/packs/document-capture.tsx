@@ -37,6 +37,7 @@ interface AppRootData {
   skipDocAuthFromHandoff: string;
   skipDocAuthFromSocure: string;
   howToVerifyURL: string;
+  socureErrorsTimeoutURL: string;
   previousStepUrl: string;
   docAuthSelfieDesktopTestMode: string;
   accountUrl: string;
@@ -109,6 +110,7 @@ const {
   skipDocAuthFromHandoff,
   skipDocAuthFromSocure,
   howToVerifyUrl,
+  socureErrorsTimeoutUrl,
   previousStepUrl,
   docAuthSelfieDesktopTestMode,
   locationsUrl: locationsURL,
@@ -140,6 +142,7 @@ render(
           skipDocAuthFromHandoff: skipDocAuthFromHandoff === 'true',
           skipDocAuthFromSocure: skipDocAuthFromSocure === 'true',
           howToVerifyURL: howToVerifyUrl,
+          socureErrorsTimeoutURL: socureErrorsTimeoutUrl,
           previousStepURL: previousStepUrl,
         }}
       >
