@@ -1580,22 +1580,4 @@ RSpec.describe UserMailer, type: :mailer do
     it_behaves_like 'an email that respects user email locale preference'
   end
 
-  describe '#in_person_post_office_closed' do
-    let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).in_person_post_office_closed
-    end
-
-    it_behaves_like 'a system email'
-    it_behaves_like 'an email that respects user email locale preference'
-
-    it 'includes a translated header' do
-      expect(mail.html_part.body)
-        .to include(t('in_person_proofing.post_office_closed.email.heading', locale: :en))
-    end
-
-    it 'includes a translated body' do
-      expect(mail.html_part.body)
-        .to include(t('in_person_proofing.post_office_closed.email.body_html', locale: :en))
-    end
-  end
 end

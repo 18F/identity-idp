@@ -32,7 +32,6 @@ RSpec.describe Idv::InPerson::ReadyToVerifyController do
 
     context 'with in person proofing enabled' do
       let(:in_person_proofing_enabled) { true }
-      let(:ipp_post_office_closed_alert_enabled) { false }
 
       context 'authenticated' do
         before do
