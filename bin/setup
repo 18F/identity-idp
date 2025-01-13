@@ -60,7 +60,7 @@ Dir.chdir APP_ROOT do
   is_nixos = system "grep -q NixOS /etc/os-release && echo true"
   puts "\n== NixOS detected ==" if is_nixos
   puts "Please add Redis to your NixOS configuration" if is_nixos
-  puts "  services.redis.enable = true;" if is_nixos
+  puts "  services.redis.servers.\"\".enable = true;" if is_nixos
 
   puts "\n== Stopping running services to ensure clean start =="
   run "brew services stop --all" if brew_installed
