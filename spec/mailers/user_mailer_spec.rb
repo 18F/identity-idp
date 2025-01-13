@@ -1579,5 +1579,4 @@ RSpec.describe UserMailer, type: :mailer do
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
   end
-
 end
