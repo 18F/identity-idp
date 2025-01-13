@@ -390,6 +390,19 @@ module AnalyticsEvents
     track_event('Backup Code Regenerate Visited', in_account_creation_flow:, **extra)
   end
 
+  # Tracks when the user is prompted to confirm that they still have access to their backup codes
+  # when signing in for the first time in at least 6 months.
+  def backup_code_reminder_visited
+    track_event(:backup_code_reminder_visited)
+  end
+
+  # @param [Boolean] has_codes Whether the user still has access to their backup codes.
+  # Tracks when the user submits to confirm whether they still have access to their backup codes
+  # when signing in for the first time in at least 6 months.
+  def backup_code_reminder_submitted(has_codes:, **extra)
+    track_event(:backup_code_reminder_submitted, has_codes:, **extra)
+  end
+
   # Track user creating new BackupCodeSetupForm, record form submission Hash
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] mfa_method_counts Hash of MFA method with the number of that method on the account

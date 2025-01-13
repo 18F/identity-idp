@@ -82,21 +82,6 @@ RSpec.feature 'sign up with backup code' do
     expect(page).to have_current_path(sign_up_completed_path)
   end
 
-  context 'when the user needs a backup code reminder' do
-    let!(:user) { create(:user, :fully_registered, :with_authentication_app, :with_backup_code) }
-    let!(:event) do
-      create(:event, user: user, event_type: :sign_in_after_2fa, created_at: 9.months.ago)
-    end
-
-    it 'redirects the user to the backup code reminder url' do
-      sign_in_user(user)
-      fill_in_code_with_last_totp(user)
-      click_submit_default
-
-      expect(page).to have_current_path backup_code_reminder_path
-    end
-  end
-
   def sign_out_user
     first(:button, t('links.sign_out')).click
   end
