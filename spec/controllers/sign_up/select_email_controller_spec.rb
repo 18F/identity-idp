@@ -108,7 +108,7 @@ RSpec.describe SignUp::SelectEmailController do
     end
 
     context ' with all_email and emails requested' do
-      let(:service_provider_attribute_bundle) { %w[email all_email] }
+      let(:service_provider_attribute_bundle) { %w[email all_emails] }
       let(:last_sign_in_email_id) { user.last_sign_in_email_address.id }
       let(:available_email_ids) { user.confirmed_email_addresses.map(&:id) }
       let(:selected_email_id) do

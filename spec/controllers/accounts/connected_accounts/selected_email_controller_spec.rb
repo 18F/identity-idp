@@ -110,8 +110,8 @@ RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
       )
     end
 
-    context ' with all_email and emails requested' do
-      let(:service_provider_attribute_bundle) { %w[email all_email] }
+    context ' with all_emails and emails requested' do
+      let(:service_provider_attribute_bundle) { %w[email all_emails] }
 
       let(:sp) do
         create(
