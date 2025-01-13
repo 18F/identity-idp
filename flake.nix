@@ -30,7 +30,7 @@
               libyaml.dev
               zlib.dev
               goreman # Use goreman since nginx launch will fail gracefully and launch Puma, as opposed to when using foreman
-             ];
+            ];
 
             shellHook = ''
               export PKG_CONFIG_PATH="${pkgs.openssl.dev}/lib/pkgconfig:${pkgs.postgresql.dev}/lib/pkgconfig:${pkgs.libyaml.dev}/lib/pkgconfig:${pkgs.zlib.dev}/lib/pkgconfig:$PKG_CONFIG_PATH";

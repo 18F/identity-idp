@@ -227,7 +227,7 @@ run: browsers.json ## Runs the development server
 else ifeq ($(OS), Linux)
 ifeq ($(IS_NIXOS), true)
 run: browsers.json
-	goreman start
+	goreman -b $(PORT) start
 else
 run: browsers.json
 	foreman start -p $(PORT)
