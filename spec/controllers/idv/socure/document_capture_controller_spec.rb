@@ -376,6 +376,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
     end
 
     it 'returns FOUND (302) and redirects to SSN' do
+      expect(subject.idv_session.doc_auth_vendor).to_not be_nil
       expect(response).to redirect_to(idv_ssn_path)
       expect(@analytics).to have_logged_event('IdV: doc auth document_capture submitted')
     end
