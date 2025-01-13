@@ -6903,12 +6903,8 @@ module AnalyticsEvents
   # @param [Boolean] request_signed
   # @param [String] matching_cert_serial matches the request certificate in a successful, signed
   #   request
-  # @param [Boolean] certs_different Whether the matching cert changes when SHA256 validations
-  #   are turned on in the saml_idp gem
   # @param [Hash] cert_error_details Details for errors that occurred because of an invalid
   #   signature
-  # @param [String] sha256_matching_cert serial of the cert that matches when sha256 validations
-  #   are turned on
   # @param [String] unknown_authn_contexts space separated list of unknown contexts
   def saml_auth(
     success:,
@@ -6926,8 +6922,6 @@ module AnalyticsEvents
     matching_cert_serial:,
     error_details: nil,
     cert_error_details: nil,
-    certs_different: nil,
-    sha256_matching_cert: nil,
     unknown_authn_contexts: nil,
     **extra
   )
@@ -6948,8 +6942,6 @@ module AnalyticsEvents
       request_signed:,
       matching_cert_serial:,
       cert_error_details:,
-      certs_different:,
-      sha256_matching_cert:,
       unknown_authn_contexts:,
       **extra,
     )
