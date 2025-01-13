@@ -13,6 +13,7 @@ module BackupCodeReminderConcern
   end
 
   def user_last_signed_in_more_than_5_months_ago?
-    current_user.second_last_signed_in_at(since: 5.months.ago).blank?
+    current_user.created_at < 5.months.ago &&
+      current_user.second_last_signed_in_at(since: 5.months.ago).blank?
   end
 end

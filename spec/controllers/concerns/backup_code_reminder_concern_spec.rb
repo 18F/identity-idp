@@ -29,24 +29,48 @@ RSpec.describe BackupCodeReminderConcern do
     end
 
     context 'if the user has backup codes' do
-      let(:user) { create(:user, :fully_registered, :with_phone, :with_backup_code) }
+      context 'if the user account is less than 5 months old' do
+        let(:user) do
+          create(:user, :fully_registered, :with_phone, :with_backup_code, created_at: 1.day.ago)
+        end
 
-      context 'if the user has signed in more recently than 5 months ago' do
         before do
-          create(:event, user:, event_type: :sign_in_after_2fa, created_at: 4.months.ago)
           create(:event, user:, event_type: :sign_in_after_2fa, created_at: 1.minute.ago)
         end
 
         it { is_expected.to eq(false) }
       end
 
-      context 'if the user not signed in within the past 5 months' do
-        before do
-          create(:event, user:, event_type: :sign_in_after_2fa, created_at: 6.months.ago)
-          create(:event, user:, event_type: :sign_in_after_2fa, created_at: 1.minute.ago)
+      context 'if the user account is more than 5 months old' do
+        let(:user) do
+          create(:user, :fully_registered, :with_phone, :with_backup_code, created_at: 7.months.ago)
         end
 
-        it { is_expected.to eq(true) }
+        context 'if the user has signed in more recently than 5 months ago' do
+          before do
+            create(:event, user:, event_type: :sign_in_after_2fa, created_at: 4.months.ago)
+            create(:event, user:, event_type: :sign_in_after_2fa, created_at: 1.minute.ago)
+          end
+
+          it { is_expected.to eq(false) }
+        end
+
+        context 'if the user not signed in within the past 5 months' do
+          before do
+            create(:event, user:, event_type: :sign_in_after_2fa, created_at: 6.months.ago)
+            create(:event, user:, event_type: :sign_in_after_2fa, created_at: 1.minute.ago)
+          end
+
+          it { is_expected.to eq(true) }
+        end
+
+        context 'if the user is fully authenticating for the first time' do
+          before do
+            create(:event, user:, event_type: :sign_in_after_2fa, created_at: 1.minute.ago)
+          end
+
+          it { is_expected.to eq(true) }
+        end
       end
     end
   end
