@@ -799,7 +799,7 @@ errors.messages.wrong_length.one: n’est pas de la bonne longueur (devrait êtr
 errors.messages.wrong_length.other: n’est pas de la bonne longueur (devrait être de %{count} caractères)
 errors.piv_cac_setup.unique_name: Ce nom est déjà pris. Veuillez choisir un autre nom.
 errors.registration.terms: Avant de pouvoir continuer, vous devez nous donner la permission. Veuillez cocher la case ci-dessous, puis cliquez sur Suite.
-errors.sign_in.bad_password_limit: Vous avez dépassé le nombre maximal de tentatives de connexion. Vous devez attendre %{time_left} avant de réessayer.
+errors.sign_in.sign_in_failure_limit: Vous avez dépassé le nombre maximal de tentatives de connexion. Vous devez attendre %{time_left} avant de réessayer.
 errors.two_factor_auth_setup.must_select_additional_option: Sélectionnez une méthode d’authentification supplémentaire.
 errors.two_factor_auth_setup.must_select_option: Sélectionnez une méthode d’authentification.
 errors.verify_personal_key.rate_limited: Vous avez essayé trop de fois, veuillez réessayer dans %{timeout}.

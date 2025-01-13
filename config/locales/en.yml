@@ -799,7 +799,7 @@ errors.messages.wrong_length.one: is the wrong length (should be 1 character)
 errors.messages.wrong_length.other: is the wrong length (should be %{count} characters)
 errors.piv_cac_setup.unique_name: That name is already taken. Please choose a different name.
 errors.registration.terms: Before you can continue, you must give us permission. Please check the box below and then click continue.
-errors.sign_in.bad_password_limit: You have exceeded the maximum sign in attempts. You must wait %{time_left} before trying again.
+errors.sign_in.sign_in_failure_limit: You have exceeded the maximum sign in attempts. You must wait %{time_left} before trying again.
 errors.two_factor_auth_setup.must_select_additional_option: Select an additional authentication method.
 errors.two_factor_auth_setup.must_select_option: Select an authentication method.
 errors.verify_personal_key.rate_limited: You tried too many times, please try again in %{timeout}.
