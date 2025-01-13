@@ -28,7 +28,7 @@ RSpec.describe 'SAML requests', type: :request do
     let(:cookie_regex) { /\A(?<cookie>\w+)=/ }
 
     it 'renders a form for the SAML year that was requested' do
-      path_year = '2023'
+      path_year = '2024'
 
       overridden_saml_settings = saml_settings(
         overrides: {
