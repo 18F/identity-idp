@@ -35,7 +35,7 @@ interface AppRootData {
   securityAndPrivacyHowItWorksUrl: string;
   skipDocAuthFromHowToVerify: string;
   skipDocAuthFromHandoff: string;
-  skipDocAuthFromSocureHybrid: string;
+  skipDocAuthFromSocure: string;
   howToVerifyURL: string;
   previousStepUrl: string;
   docAuthSelfieDesktopTestMode: string;
@@ -107,7 +107,7 @@ const {
   usStatesTerritories = '',
   skipDocAuthFromHowToVerify,
   skipDocAuthFromHandoff,
-  skipDocAuthFromSocureHybrid,
+  skipDocAuthFromSocure,
   howToVerifyUrl,
   previousStepUrl,
   docAuthSelfieDesktopTestMode,
@@ -138,7 +138,7 @@ render(
           usStatesTerritories: parsedUsStatesTerritories,
           skipDocAuthFromHowToVerify: skipDocAuthFromHowToVerify === 'true',
           skipDocAuthFromHandoff: skipDocAuthFromHandoff === 'true',
-          skipDocAuthFromSocureHybrid: skipDocAuthFromSocureHybrid === 'true',
+          skipDocAuthFromSocure: skipDocAuthFromSocure === 'true',
           howToVerifyURL: howToVerifyUrl,
           previousStepURL: previousStepUrl,
         }}

@@ -38,12 +38,8 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   const { flowPath } = useContext(UploadContext);
   const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
   const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
-  const {
-    inPersonURL,
-    skipDocAuthFromHandoff,
-    skipDocAuthFromHowToVerify,
-    skipDocAuthFromSocureHybrid,
-  } = useContext(InPersonContext);
+  const { inPersonURL, skipDocAuthFromHandoff, skipDocAuthFromHowToVerify, skipDocAuthFromSocure } =
+    useContext(InPersonContext);
   useDidUpdateEffect(onStepChange, [stepName]);
   useEffect(() => {
     if (stepName) {
@@ -140,7 +136,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   // If the user got here by opting-in to in-person proofing, when skipDocAuthFromHowToVerify === true
   // then set steps to inPersonSteps
   const isInPersonStepEnabled =
-    skipDocAuthFromHowToVerify || skipDocAuthFromHandoff || skipDocAuthFromSocureHybrid;
+    skipDocAuthFromHowToVerify || skipDocAuthFromHandoff || skipDocAuthFromSocure;
   const inPersonSteps: FormStep[] =
     inPersonURL === undefined
       ? []
@@ -156,7 +152,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   }
   // If the user got here by opting-in to in-person proofing, when skipDocAuthFromHowToVerify === true
   // or opting-in ipp from handoff page, and selfie is required, when skipDocAuthFromHandoff === true,
-  // or opting-in ipp from socure hybrid, when skipDocAuthFromSocureHybrid === true,
+  // or opting-in ipp from socure hybrid, when skipDocAuthFromSocure === true,
   // then set stepIndicatorPath to VerifyFlowPath.IN_PERSON
   const stepIndicatorPath =
     (stepName && ['location', 'prepare', 'switch_back'].includes(stepName)) || isInPersonStepEnabled

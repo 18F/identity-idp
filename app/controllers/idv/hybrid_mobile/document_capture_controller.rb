@@ -63,7 +63,7 @@ module Idv
           document_capture_session_uuid: document_capture_session_uuid,
           failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
           doc_auth_selfie_capture: resolved_authn_context_result.facial_match?,
-          skip_doc_auth_from_socure_hybrid: @skip_doc_auth_from_socure_hybrid,
+          skip_doc_auth_from_socure: @skip_doc_auth_from_socure,
         }.merge(
           acuant_sdk_upgrade_a_b_testing_variables,
         )
@@ -92,7 +92,7 @@ module Idv
 
         # allow
         @previous_step_url = params[:step] == 'hybrid_handoff' ? idv_hybrid_handoff_path : nil
-        @skip_doc_auth_from_socure_hybrid = true
+        @skip_doc_auth_from_socure = true
         true
       end
 
