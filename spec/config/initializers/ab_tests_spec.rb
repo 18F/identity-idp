@@ -53,21 +53,17 @@ RSpec.describe AbTests do
               },
             }
           end
-
           it 'returns a bucket' do
             expect(bucket).not_to be_nil
           end
         end
-
         context 'and the user does not have an Idv::Session' do
           let(:user_session) do
             {}
           end
-
           it 'does not return a bucket' do
             expect(bucket).to be_nil
           end
-
           it 'does not write :idv key in user_session' do
             expect { bucket }.not_to change { user_session }
           end
@@ -79,7 +75,6 @@ RSpec.describe AbTests do
           let(:session) do
             { document_capture_session_uuid: 'a-random-uuid' }
           end
-
           it 'returns a bucket' do
             expect(bucket).not_to be_nil
           end
@@ -95,7 +90,6 @@ RSpec.describe AbTests do
 
     context 'when A/B test is disabled and it would otherwise assign a bucket' do
       let(:user) { build(:user) }
-
       let(:user_session) do
         {
           idv: {
@@ -108,7 +102,6 @@ RSpec.describe AbTests do
         disable_ab_test.call
         reload_ab_tests
       end
-
       it 'does not assign a bucket' do
         expect(bucket).to be_nil
       end
@@ -267,11 +260,11 @@ RSpec.describe AbTests do
     end
   end
 
-  describe 'SOCURE_IDV_SHADOW_MODE_FOR_NON_DOCV_USERS' do
+  describe 'SOCURE_IDV_SHADOW_MODE' do
     let(:user) { create(:user) }
 
     subject(:bucket) do
-      AbTests::SOCURE_IDV_SHADOW_MODE_FOR_NON_DOCV_USERS.bucket(
+      AbTests::SOCURE_IDV_SHADOW_MODE.bucket(
         request: nil,
         service_provider: nil,
         session: nil,
@@ -302,7 +295,7 @@ RSpec.describe AbTests do
       end
 
       it 'returns a bucket' do
-        expect(bucket).to eq :socure_shadow_mode_for_non_docv_users
+        expect(bucket).to eq :shadow_mode_enabled
       end
     end
   end

@@ -118,7 +118,7 @@ RSpec.shared_examples 'signing in as IAL2 with piv/cac' do |sp|
   end
 
   it 'gets bad password error' do
-    ial2_sign_in_with_piv_cac_gets_sign_in_failure_error(sp)
+    ial2_sign_in_with_piv_cac_gets_bad_password_error(sp)
   end
 end
 
@@ -487,7 +487,7 @@ def no_authn_context_sign_in_with_piv_cac_goes_to_sp(sp)
   )
 end
 
-def ial2_sign_in_with_piv_cac_gets_sign_in_failure_error(sp)
+def ial2_sign_in_with_piv_cac_gets_bad_password_error(sp)
   user = create(:user, :proofed, :with_piv_or_cac)
 
   visit_idp_from_sp_with_ial2(sp)

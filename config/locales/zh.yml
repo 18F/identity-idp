@@ -64,7 +64,7 @@ account.index.continue_to_service_provider: 继续到 %{service_provider}
 account.index.default: 默认
 account.index.device: 在 %{os}的 %{browser}
 account.index.email: 电邮地址
-account.index.email_add: 添加新电邮
+account.index.email_add: 添加新电邮地址
 account.index.email_addresses: 电邮地址
 account.index.email_preferences: 电邮选择
 account.index.password: 密码
@@ -810,7 +810,7 @@ errors.messages.wrong_length.one: 长度不对（应当是 1 个字符）
 errors.messages.wrong_length.other: 长度不对（应当是 %{count} 个字符）
 errors.piv_cac_setup.unique_name: 这个名字已被使用。请选择一个不同的名字。
 errors.registration.terms: 在你能继续之前，你必须授予我们你的同意。请在下面的框打勾然后点击继续。
-errors.sign_in.sign_in_failure_limit: 你已超出登录尝试允许最多次数。你必须等待 %{time_left} 才能重试。
+errors.sign_in.bad_password_limit: 你已超出登录尝试允许最多次数。你必须等待 %{time_left} 才能重试。
 errors.two_factor_auth_setup.must_select_additional_option: 请选择一个额外的身份证实方法。
 errors.two_factor_auth_setup.must_select_option: 选择一个身份证实方法。
 errors.verify_personal_key.rate_limited: 你尝试了太多次。请在 %{timeout}后再试。
@@ -1236,7 +1236,7 @@ image_description.warning: 黄色警告标志
 in_person_proofing.body.barcode.cancel_link_text: 取消你的条形码
 in_person_proofing.body.barcode.close_window: 你现在可以关闭这一窗口。
 in_person_proofing.body.barcode.deadline: 你必须在 %{deadline}之前去任何参与邮局。
-in_person_proofing.body.barcode.deadline_restart: 如果你过了截止日期才去邮局，那你的条形码将无法使用。你将需要重新开始这一流程。
+in_person_proofing.body.barcode.deadline_restart: 如果你在截止日期后才去邮局，你的信息不会被存储，你又得从头开始这一过程。
 in_person_proofing.body.barcode.eipp_tag: GSA 增强型试行条形码
 in_person_proofing.body.barcode.eipp_what_to_bring: 取决于您身份证件类型，您也许需要显示支持文件。请仔细阅读以下选项：
 in_person_proofing.body.barcode.email_sent: 我们已将条形码和以下信息发到了您用来登录的电邮地址
@@ -1246,11 +1246,11 @@ in_person_proofing.body.barcode.questions: 有问题吗？
 in_person_proofing.body.barcode.retail_hours: 营业时间
 in_person_proofing.body.barcode.retail_hours_closed: 关闭
 in_person_proofing.body.barcode.return_to_partner_link: 返回 %{sp_name}
-in_person_proofing.body.barcode.what_to_expect: 到了邮局做什么
+in_person_proofing.body.barcode.what_to_expect: 在邮局会发生什么
 in_person_proofing.body.cta.button: 尝试亲身去
 in_person_proofing.body.cta.prompt_detail: 无法在网上完成这一步骤的大多数人都能在一个参与本项目的邮局成功地证实身份。去邮局无需预约。全国各地都有参与本项目的邮局。
 in_person_proofing.body.expect.heading: 去邮局后会发生什么
-in_person_proofing.body.expect.info: 你去邮局后24小时内会收到一封电邮。我们会告诉你你身份验证是否成功。检查你的电邮中是否有来自no-reply@login.gov的一则信息。
+in_person_proofing.body.expect.info: 你去邮局后 24 小时内，我们会给你发电邮，告诉你是否成功验证了身份。
 in_person_proofing.body.location.change_location_find_other_locations: 查找其他参与本项目的邮局地点。
 in_person_proofing.body.location.change_location_heading: 需要更改你的邮局地点吗？
 in_person_proofing.body.location.change_location_info_html: 你不需要创建新的条形码，你可以将这个条形码带到任何参与本项目的邮局。 %{find_other_locations_link_html}
@@ -1329,7 +1329,7 @@ in_person_proofing.form.state_id.state_id_number_hint_spaces: 空格
 in_person_proofing.form.state_id.state_id_number_texas_hint: 这是你身份证件上的8位数在这一字段中只输入数字
 in_person_proofing.form.state_id.zipcode: 邮编
 in_person_proofing.headings.address: 输入你当前住宅地址
-in_person_proofing.headings.barcode: 到邮局出示这一条形码和你政府颁发的身份证件来完成验证身份。
+in_person_proofing.headings.barcode: 到邮局出示这一条形码和你州政府颁发的身份证件来完成验证身份。
 in_person_proofing.headings.barcode_eipp: 携带该条形码和支持性文件到邮局去完成验证身份。
 in_person_proofing.headings.barcode_what_to_bring: 到邮局要带什么
 in_person_proofing.headings.cta: 尝试亲身去验证身份证件
@@ -1379,7 +1379,7 @@ in_person_proofing.process.state_id.heading_eipp: 出示你的身份证件以及
 in_person_proofing.process.state_id.info: 该证件必须在有效期内。我们目前不接受任何其他形式的身份证件，比如护照和军队身份证件。
 in_person_proofing.process.state_id.info_eipp: 邮局工作人员会扫描你的身份证件。该证件必须在有效期内。取决于您出示的身份证件类型，您也许需要显示支持文件。参见“到邮局要带什么”部分中的规定。
 in_person_proofing.process.what_to_do.heading: 请排在任何一队里
-in_person_proofing.process.what_to_do.info: 告诉邮局工作人员你是来验证身份的。如果他们不知道如何处理，要求让一位主管来帮你。
+in_person_proofing.process.what_to_do.info: 告诉邮局工作人员你是为了%{app_name}验证你的身份。
 instructions.account.reactivate.begin: 我们开始吧。
 instructions.account.reactivate.explanation: 你设立账户时，我们给了你一个单词清单并请你将其存放在一个安全的地方。清单像这样：
 instructions.account.reactivate.intro: 我们采取额外步骤来保护你个人信息的安全和私密，所以重设密码需要多花点精力。
@@ -1666,7 +1666,7 @@ titles.reactivate_account: 重新激活你账户
 titles.registrations.new: 设立账户
 titles.revoke_consent: 撤销同意
 titles.rules_of_use: 使用规则
-titles.select_email: 选择你想用的电邮
+titles.select_email: 选择你比较愿意分享的电邮
 titles.sign_up.completion_consent_expired_ial1: 从你上次授权我们分享你的信息已经一年了。
 titles.sign_up.completion_consent_expired_ial2: 从你上次授权我们分享你验证过的身份已经一年了。
 titles.sign_up.completion_first_sign_in: 继续到 %{sp}

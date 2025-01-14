@@ -106,7 +106,7 @@ module DocAuth
       end
 
       def parse_height_value(height_attribute)
-        height_match_data = height_attribute&.match(/(?<feet>\d)' ?(?<inches>\d{1,2})"/)
+        height_match_data = height_attribute&.match(/(?<feet>\d)'(?<inches>\d{1,2})"/)
 
         return unless height_match_data
 

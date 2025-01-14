@@ -49,7 +49,6 @@ class GpoVerifyForm
         pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         pending_in_person_enrollment: !!pending_profile&.in_person_enrollment&.pending?,
         fraud_check_failed: fraud_check_failed,
-        initiating_service_provider: pending_profile&.initiating_service_provider_issuer,
       },
     )
   end

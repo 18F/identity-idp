@@ -251,31 +251,18 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
 
     context 'when doc_auth_read_additional_pii_attributes_enabled is enabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:doc_auth_read_additional_pii_attributes_enabled)
-          .and_return(true)
-      end
-
       let(:success_response_body) { LexisNexisFixtures.true_id_response_success }
 
       it 'reads the additional PII attributes' do
+        allow(IdentityConfig.store).to receive(:doc_auth_read_additional_pii_attributes_enabled)
+          .and_return(true)
+
         pii_from_doc = response.pii_from_doc
 
         expect(pii_from_doc.first_name).to eq('LICENSE')
         expect(pii_from_doc.name_suffix).to eq('JR')
         expect(pii_from_doc.sex).to eq('male')
         expect(pii_from_doc.height).to eq(68)
-      end
-
-      context 'when the height has a space in it' do
-        # This fixture has the height returns as "5' 9\""
-        let(:success_response_body) { LexisNexisFixtures.true_id_response_success_3 }
-
-        it 'reads parses the height correctly' do
-          pii_from_doc = response.pii_from_doc
-
-          expect(pii_from_doc.height).to eq(69)
-        end
       end
     end
   end

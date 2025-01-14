@@ -92,5 +92,9 @@
     "swr": "^2.0.0",
     "typescript": "^5.7.2",
     "yarn-deduplicate": "^6.0.2"
+  },
+  "resolutions": {
+    "minimist": "1.2.6",
+    "postcss": "8.4.31"
   }
 }

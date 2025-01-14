@@ -87,11 +87,10 @@ module Proofing
         return if height.nil?
 
         # From the AAMVA DLDV guide regarding formatting the height:
-        # > Height data should be 3 characters (i.e. 5 foot 7 inches is submitted as 507)
-        feet = (height / 12).floor
-        inches = (height % 12).floor
-
-        "#{feet}#{format('%02d', inches)}"
+        #
+        #     The height is provided in feet-inches (i.e. 5 foot 10 inches is presented as "510").
+        #
+        [(height / 12).to_s, (height % 12).to_s].join('')
       end
     end.freeze
   end
