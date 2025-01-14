@@ -10,10 +10,16 @@
 
 <div class="margin-top-5 margin-bottom-2">
   <%= render ButtonComponent.new(
-        url: account_path,
+        url: backup_code_reminder_path,
+        method: :post,
+        params: { has_codes: true },
         big: true,
         wide: true,
       ).with_content(t('forms.backup_code_reminder.have_codes')) %>
 </div>
 
-<%= link_to t('forms.backup_code_reminder.need_new_codes'), backup_code_regenerate_path %>
+<%= render ButtonComponent.new(
+      url: backup_code_reminder_path,
+      method: :post,
+      unstyled: true,
+    ).with_content(t('forms.backup_code_reminder.need_new_codes')) %>

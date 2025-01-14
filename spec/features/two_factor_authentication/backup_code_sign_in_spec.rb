@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.feature 'sign in with backup code' do
+  include SamlAuthHelper
   include InteractionHelper
 
   let(:user) { create(:user) }
@@ -76,6 +77,38 @@ RSpec.feature 'sign in with backup code' do
       click_on t('forms.backup_code_reminder.need_new_codes')
 
       expect(page).to have_current_path(backup_code_regenerate_path)
+    end
+
+    context 'when signing in to partner application' do
+      before do
+        visit_idp_from_sp_with_ial1(:oidc)
+      end
+
+      it 'redirects the user to backup code reminder url and allows user to confirm possession' do
+        fill_in t('forms.two_factor.backup_code'), with: codes.sample
+        click_submit_default
+
+        expect(page).to have_current_path(backup_code_reminder_path)
+
+        click_on t('forms.backup_code_reminder.have_codes')
+
+        expect(page).to have_current_path(sign_up_completed_path)
+      end
+
+      it 'redirects the user to the backup code reminder url and allows user to create new codes' do
+        fill_in t('forms.two_factor.backup_code'), with: codes.sample
+        click_submit_default
+
+        expect(page).to have_current_path(backup_code_reminder_path)
+        click_on t('forms.backup_code_reminder.need_new_codes')
+
+        expect(page).to have_current_path(backup_code_regenerate_path)
+        click_on t('account.index.backup_code_confirm_regenerate')
+
+        click_continue
+
+        expect(page).to have_current_path(sign_up_completed_path)
+      end
     end
   end
 end

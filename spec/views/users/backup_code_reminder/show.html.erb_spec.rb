@@ -22,15 +22,12 @@ RSpec.describe 'users/backup_code_reminder/show.html.erb' do
   it 'has a cancel link to account path' do
     render
 
-    expect(rendered).to have_link(t('forms.backup_code_reminder.have_codes'))
+    expect(rendered).to have_button(t('forms.backup_code_reminder.have_codes'))
   end
 
   it 'has a regenerate backup code link' do
     render
 
-    expect(rendered).to have_link(
-      t('forms.backup_code_reminder.need_new_codes'),
-      href: backup_code_regenerate_path,
-    )
+    expect(rendered).to have_button(t('forms.backup_code_reminder.need_new_codes'))
   end
 end
