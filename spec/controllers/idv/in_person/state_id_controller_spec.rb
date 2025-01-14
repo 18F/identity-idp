@@ -28,6 +28,7 @@ RSpec.describe Idv::InPerson::StateIdController do
 
     context '#confirm_establishing_enrollment' do
       let(:enrollment) { nil }
+
       it 'redirects to document capture if not complete' do
         get :show
 
@@ -38,6 +39,7 @@ RSpec.describe Idv::InPerson::StateIdController do
 
   describe '#show' do
     let(:analytics_name) { 'IdV: in person proofing state_id visited' }
+
     let(:analytics_args) do
       {
         analytics_id: 'In Person Proofing',
@@ -88,12 +90,14 @@ RSpec.describe Idv::InPerson::StateIdController do
     let(:first_name) { 'Natalya' }
     let(:last_name) { 'Rostova' }
     let(:formatted_dob) { InPersonHelper::GOOD_DOB }
+
     let(:dob) do
       parsed_dob = Date.parse(formatted_dob)
       { month: parsed_dob.month.to_s,
         day: parsed_dob.day.to_s,
         year: parsed_dob.year.to_s }
     end
+
     # residential
     let(:address1) { InPersonHelper::GOOD_ADDRESS1 }
     let(:address2) { InPersonHelper::GOOD_ADDRESS2 }
@@ -107,6 +111,7 @@ RSpec.describe Idv::InPerson::StateIdController do
     let(:identity_doc_city) { InPersonHelper::GOOD_IDENTITY_DOC_CITY }
     let(:identity_doc_address_state) { InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS_STATE }
     let(:identity_doc_zipcode) { InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE }
+
     context 'with values submitted' do
       let(:invalid_params) do
         { identity_doc: {
@@ -123,6 +128,7 @@ RSpec.describe Idv::InPerson::StateIdController do
           dob:,
         } }
       end
+
       let(:params) do
         { identity_doc: {
           first_name:,
@@ -138,7 +144,9 @@ RSpec.describe Idv::InPerson::StateIdController do
           dob:,
         } }
       end
+
       let(:analytics_name) { 'IdV: in person proofing state_id submitted' }
+
       let(:analytics_args) do
         {
           success: true,
@@ -329,6 +337,7 @@ RSpec.describe Idv::InPerson::StateIdController do
             identity_doc_zipcode:,
           } }
         end
+
         it 'retains identity_doc_ and addr attrs/value in flow session' do
           Idv::StateIdForm::ATTRIBUTES.each do |attr|
             expect(subject.user_session['idv/in_person'][:pii_from_user]).to_not have_key attr

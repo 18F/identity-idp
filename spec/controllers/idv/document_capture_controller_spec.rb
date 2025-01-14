@@ -353,10 +353,9 @@ RSpec.describe Idv::DocumentCaptureController do
         flow_path: 'standard',
         step: 'document_capture',
         liveness_checking_required: false,
-        selfie_check_required: sp_selfie_enabled,
+        selfie_check_required: facial_match_required,
       }
     end
-    let(:result) { { success: true, errors: {} } }
 
     it 'invalidates future steps' do
       subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT
@@ -364,12 +363,10 @@ RSpec.describe Idv::DocumentCaptureController do
 
       put :update
       expect(subject.idv_session.applicant).to be_nil
+      expect(subject.idv_session.doc_auth_vendor).to match(idv_vendor)
     end
 
     it 'sends analytics_submitted event' do
-      allow(result).to receive(:success?).and_return(true)
-      allow(subject).to receive(:handle_stored_result).and_return(result)
-
       put :update
 
       expect(@analytics).to have_logged_event(analytics_name, analytics_args)
@@ -392,10 +389,6 @@ RSpec.describe Idv::DocumentCaptureController do
       before do
         expect(controller).to receive(:selfie_requirement_met?)
           .and_return(performed_if_needed)
-        allow(result).to receive(:success?).and_return(true)
-        allow(result).to receive(:errors).and_return(result[:errors])
-        allow(subject).to receive(:stored_result).and_return(result)
-        allow(subject).to receive(:extract_pii_from_doc)
       end
 
       context 'not performed' do
@@ -440,6 +433,7 @@ RSpec.describe Idv::DocumentCaptureController do
 
   describe '#direct_in_person' do
     let(:analytics_name) { :idv_in_person_direct_start }
+
     let(:analytics_args) do
       {
         remaining_submit_attempts: 4,

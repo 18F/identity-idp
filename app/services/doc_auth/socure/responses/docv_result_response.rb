@@ -81,7 +81,7 @@ module DocAuth
             liveness_checking_required: @biometric_comparison_required,
             issue_year: state_id_issued&.year,
             doc_auth_success: successful_result?,
-            vendor: 'Socure',
+            vendor: 'Socure', # TODO: Replace with Idp::Constants::Vendors::SOCURE
             address_line2_present: address2.present?,
             zip_code: zipcode,
             birth_year: dob&.year,

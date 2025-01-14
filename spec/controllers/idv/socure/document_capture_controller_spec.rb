@@ -8,6 +8,9 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
   let(:fake_socure_endpoint) { 'https://fake-socure.test' }
   let(:user) { create(:user) }
   let(:doc_auth_success) { true }
+  let(:socure_docv_enabled) { true }
+  let(:socure_docv_verification_data_test_mode) { false }
+
   let(:stored_result) do
     DocumentCaptureSessionResult.new(
       id: SecureRandom.uuid,
@@ -18,7 +21,6 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       attention_with_barcode: false,
     )
   end
-  let(:socure_docv_enabled) { true }
 
   let(:document_capture_session) do
     DocumentCaptureSession.create(
@@ -26,8 +28,6 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       requested_at: Time.zone.now,
     )
   end
-
-  let(:socure_docv_verification_data_test_mode) { false }
 
   before do
     allow(IdentityConfig.store).to receive(:socure_docv_enabled)
@@ -128,6 +128,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
             Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
           ].join(' ')
         end
+
         before do
           resolved_authn_context = AuthnContextResolver.new(
             user: user,
@@ -149,6 +150,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
     context 'happy path' do
       let(:socure_capture_app_url) { 'https://verify.socure.test/' }
       let(:docv_transaction_token) { '176dnc45d-2e34-46f3-82217-6f540ae90673' }
+
       let(:response_body) do
         {
           referenceId: '123ab45d-2e34-46f3-8d17-6f540ae90303',
@@ -260,6 +262,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
 
     context 'when socure is disabled' do
       let(:socure_docv_enabled) { false }
+
       it 'the webhook route does not exist' do
         get(:show)
 
@@ -269,12 +272,14 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
 
     context 'when socure error encountered' do
       let(:fake_socure_endpoint) { 'https://fake-socure.test/' }
+
       let(:failed_response_body) do
         { 'status' => 'Error',
           'referenceId' => '1cff6d33-1cc0-4205-b740-c9a9e6b8bd66',
           'data' => {},
           'msg' => 'No active account is associated with this request' }
       end
+
       let(:response_body_401) do
         {
           status: 'Error',
@@ -282,6 +287,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           msg: 'string',
         }
       end
+
       let(:no_doc_found_response_body) do
         {
           referenceId: '0dc21b0d-04df-4dd5-8533-ec9ecdafe0f4',
@@ -291,10 +297,12 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           },
         }
       end
+
       before do
         allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint)
           .and_return(fake_socure_endpoint)
       end
+
       it 'connection timeout still responds to user' do
         stub_request(:post, fake_socure_endpoint).to_raise(Faraday::ConnectionFailed)
         get(:show)
@@ -309,6 +317,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         get(:show)
         expect(response).to redirect_to(idv_socure_document_capture_errors_url)
       end
+
       it 'socure nil response still gives a result to user' do
         stub_request(:post, fake_socure_endpoint).to_return(
           status: 500,
@@ -317,6 +326,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         get(:show)
         expect(response).to redirect_to(idv_socure_document_capture_errors_url)
       end
+
       it 'socure nil response still gives a result to user' do
         stub_request(:post, fake_socure_endpoint).to_return(
           status: 401,
@@ -325,6 +335,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         get(:show)
         expect(response).to redirect_to(idv_socure_document_capture_errors_url)
       end
+
       it 'socure nil response still gives a result to user' do
         stub_request(:post, fake_socure_endpoint).to_return(
           status: 401,
@@ -339,6 +350,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       let(:fake_capture_app_url) { 'https://verify.socure.test/fake_capture_app' }
       let(:socure_capture_app_url) { 'https://verify.socure.test/' }
       let(:docv_transaction_token) { '176dnc45d-2e34-46f3-82217-6f540ae90673' }
+
       let(:response_body) do
         {
           referenceId: '123ab45d-2e34-46f3-8d17-6f540ae90303',
