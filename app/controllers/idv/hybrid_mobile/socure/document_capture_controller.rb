@@ -42,7 +42,9 @@ module Idv
 
           # placeholder until we get an error page for url not being present
           if @url.nil?
-            redirect_to idv_hybrid_mobile_socure_document_capture_errors_url
+            redirect_to idv_hybrid_mobile_socure_document_capture_errors_url(
+              error_code: :url_not_found,
+            )
             return
           end
 
@@ -76,8 +78,14 @@ module Idv
           end
         end
 
-        def errors
-          @presenter = socure_errors_presenter(handle_stored_result)
+        def errors(error_code: nil)
+          @presenter = nil
+          if error_code.nil?
+            @presenter = socure_errors_presenter(handle_stored_result)
+          else
+            @presenter = socure_errors_presenter(error_code)
+          end
+          @presenter
         end
 
         private
