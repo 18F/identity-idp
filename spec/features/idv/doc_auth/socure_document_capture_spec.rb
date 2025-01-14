@@ -79,7 +79,8 @@ RSpec.feature 'document capture step', :js do
 
           # Timeout
           visit idv_socure_document_capture_update_path
-          expect(page).to have_current_path(idv_socure_errors_timeout_path)
+          # expect(page).to have_current_path(idv_socure_errors_timeout_path)
+          expect(page).to have_current_path(idv_socure_document_capture_errors_url)
           expect(page).to have_content(I18n.t('idv.errors.try_again_later'))
 
           # Try in person
@@ -89,7 +90,7 @@ RSpec.feature 'document capture step', :js do
 
           # Go back
           click_on t('forms.buttons.back')
-          expect(page).to have_current_path(idv_socure_errors_timeout_path)
+          expect(page).to have_current_path(idv_socure_document_capture_errors_url)
 
           # Try Socure again
           click_on t('idv.failure.button.warning')

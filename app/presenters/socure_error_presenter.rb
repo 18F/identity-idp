@@ -26,6 +26,8 @@ class SocureErrorPresenter
   end
 
   def rate_limit_text
+    return if error_code == :url_not_found # Not showing rate limit if capture app url not found
+  
     if remaining_attempts == 1
       t('doc_auth.rate_limit_warning.singular_html')
     else
@@ -67,7 +69,7 @@ class SocureErrorPresenter
   end
 
   def options
-    return [] if error_code == :timeout
+    return [] if error_code == :timeout || error_code == :url_not_found
 
     [
       {
@@ -144,7 +146,7 @@ class SocureErrorPresenter
     case error_code
     when :network
       t('doc_auth.headers.general.network_error')
-    when :timeout
+    when :timeout, :url_not_found
       t('idv.errors.technical_difficulties')
     else
       # i18n-tasks-use t('doc_auth.headers.unreadable_id')
@@ -161,7 +163,7 @@ class SocureErrorPresenter
     case error_code
     when :network
       t('doc_auth.errors.general.new_network_error')
-    when :timeout
+    when :timeout, :url_not_found
       t('idv.errors.try_again_later')
     else
       if remapped_error(error_code) == 'underage' # special handling because it says 'Login.gov'
