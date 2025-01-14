@@ -201,8 +201,21 @@ RSpec.describe ServiceProviderIdentity do
       )
     end
 
+    let(:service_provider_attribute_bundle) { %w[email] }
+    let(:service_provider) do
+      create(
+        :service_provider,
+        attribute_bundle: service_provider_attribute_bundle,
+      )
+    end
+
     let(:identity) do
-      create(:service_provider_identity, user: user, session_uuid: SecureRandom.uuid)
+      create(
+        :service_provider_identity,
+        user: user,
+        session_uuid: SecureRandom.uuid,
+        service_provider: service_provider.issuer,
+      )
     end
 
     context 'when email sharing feature is enabled' do
@@ -211,13 +224,38 @@ RSpec.describe ServiceProviderIdentity do
           .and_return(true)
       end
 
-      context 'when an email address for sharing has been set' do
+      context 'when an email address is set and service provider has email attribute' do
+        let(:service_provider_attribute_bundle) { %w[email] }
         before do
           identity.email_address = shared_email_address
         end
 
         it 'returns the shared email' do
           expect(identity.email_address_for_sharing).to eq(shared_email_address)
+        end
+      end
+
+      context 'when service provider has both email and all_emails attribute' do
+        let(:service_provider_attribute_bundle) { %w[email all_emails] }
+
+        before do
+          identity.email_address = shared_email_address
+        end
+
+        it 'returns the last sign in email' do
+          expect(identity.email_address_for_sharing).to eq(last_login_email_address)
+        end
+      end
+
+      context 'when service provider has no email attributes' do
+        let(:service_provider_attribute_bundle) { %w[first_name last_name] }
+
+        before do
+          identity.email_address = shared_email_address
+        end
+
+        it 'returns the last sign in email' do
+          expect(identity.email_address_for_sharing).to eq(last_login_email_address)
         end
       end
 
