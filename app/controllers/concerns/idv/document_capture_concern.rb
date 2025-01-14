@@ -39,7 +39,8 @@ module Idv
     def extract_pii_from_doc(user, store_in_session: false)
       if defined?(idv_session) # hybrid mobile does not have idv_session
         idv_session.had_barcode_read_failure = stored_result.attention_with_barcode?
-        idv_session.doc_auth_vendor = resolve_doc_auth_vendor(user)
+        # See also Idv::InPerson::StateIdController#update
+        idv_session.doc_auth_vendor = doc_auth_vendor
         if store_in_session
           idv_session.pii_from_doc = stored_result.pii_from_doc
           idv_session.selfie_check_performed = stored_result.selfie_check_performed?
@@ -57,14 +58,6 @@ module Idv
     def selfie_requirement_met?
       !resolved_authn_context_result.facial_match? ||
         stored_result.selfie_check_performed?
-    end
-
-    def resolve_doc_auth_vendor(user)
-      if user.establishing_in_person_enrollment || user.pending_in_person_enrollment
-        Idp::Constants::Vendors::USPS
-      else
-        doc_auth_vendor
-      end
     end
 
     def redirect_to_correct_vendor(vendor, in_hybrid_mobile)
