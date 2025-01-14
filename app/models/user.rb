@@ -446,10 +446,17 @@ class User < ApplicationRecord
       .count
   end
 
-  def second_last_signed_in_at
+  # Returns the date of the last fully-authenticated sign-in before the most recent.
+  #
+  # A `since` time argument is required, to optimize performance based on database indices for
+  # querying a user's events.
+  def second_last_signed_in_at(since:)
     events
-      .where(event_type: 'sign_in_after_2fa')
-      .order(created_at: :desc).limit(2).pluck(:created_at).second
+      .where(event_type: :sign_in_after_2fa, created_at: since..)
+      .order(created_at: :desc)
+      .limit(2)
+      .pluck(:created_at)
+      .second
   end
 
   def connected_apps
