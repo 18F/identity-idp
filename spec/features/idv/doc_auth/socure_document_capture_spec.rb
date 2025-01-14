@@ -80,7 +80,6 @@ RSpec.feature 'document capture step', :js do
 
           # Timeout
           visit idv_socure_document_capture_update_path
-          # expect(page).to have_current_path(idv_socure_errors_timeout_path)
           expect(page).to have_current_path(socure_timeout_url)
           expect(page).to have_content(I18n.t('idv.errors.try_again_later'))
 

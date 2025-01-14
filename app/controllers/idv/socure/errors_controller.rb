@@ -19,17 +19,11 @@ module Idv
         @presenter = socure_errors_presenter(error_code)
       end
 
-      def timeout
-        track_event(error_code: :timeout)
-        @presenter = socure_errors_presenter(:timeout)
-        render :show
-      end
-
       def self.step_info
         Idv::StepInfo.new(
           key: :socure_errors,
           controller: self,
-          action: :timeout, # TODO: ask doug if this needs to change
+          action: :show, # TODO: ask doug if this needs to change
           next_steps: [FlowPolicy::FINAL],
           preconditions: ->(idv_session:, user:) do
             true

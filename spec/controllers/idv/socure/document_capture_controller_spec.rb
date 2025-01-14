@@ -409,7 +409,6 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
 
         it 'redirect to a Try again page' do
           get(:update)
-          # expect(response).to redirect_to(idv_socure_errors_timeout_path)
           expect(response).to redirect_to(socure_timeout_url)
         end
       end
