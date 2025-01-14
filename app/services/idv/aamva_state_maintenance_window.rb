@@ -5,10 +5,10 @@ module Idv
     # All AAMVA maintenance windows are expressed in 'ET' (LG-14028),
     TZ = 'America/New_York'
 
-    Window = Struct.new(
+    Window = Data.define(
       :cron,
       :duration_minutes,
-    )
+    ).freeze
 
     MAINTENANCE_WINDOWS = {
       'AL' => [
@@ -203,7 +203,7 @@ module Idv
       Time.use_zone(TZ) do
         windows.map do |window|
           cron = Fugit.parse_cron(window.cron)
-          Window.new(cron: cron, duration_minutes: window[:duration_minutes])
+          Window.new(cron: cron, duration_minutes: window.duration_minutes)
         end
       end
     end.freeze
