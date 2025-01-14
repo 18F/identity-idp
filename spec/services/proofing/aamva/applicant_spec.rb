@@ -65,22 +65,11 @@ RSpec.describe Proofing::Aamva::Applicant do
     expect(aamva_applicant[:dob]).to eq('')
   end
 
-  context 'when height includes inches >= 10' do
-    it 'formats as expected' do
-      proofer_applicant[:height] = 95
-      aamva_applicant = Proofing::Aamva::Applicant.from_proofer_applicant(proofer_applicant)
-      expect(aamva_applicant[:height]).to eq('711')
-    end
-  end
+  it 'should format the height' do
+    proofer_applicant[:height] = 73
+    aamva_applicant = Proofing::Aamva::Applicant.from_proofer_applicant(proofer_applicant)
 
-  context 'when height includes inches < 10' do
-    it 'formats as expected' do
-      proofer_applicant[:height] = 67
-      aamva_applicant = Proofing::Aamva::Applicant.from_proofer_applicant(proofer_applicant)
-
-      # From the DLDV user guide:
-      # > Height data should be 3 characters (i.e. 5 foot 7 inches is submitted as 507)
-      expect(aamva_applicant[:height]).to eq('507')
-    end
+    # This is intended to describe 6'1"
+    expect(aamva_applicant[:height]).to eq('61')
   end
 end

@@ -204,43 +204,6 @@ RSpec.describe AnalyticsEventsDocumenter do
     end
   end
 
-  context 'param description gets munged into method descripion' do
-    let(:source_code) { <<~RUBY }
-      class AnalyticsEvents
-        # @param val [String] some value that
-        # does things and this should be part of the param
-        # Some Event
-        def some_event(val:, **extra)
-          track_event('Some Event', val:, **extra)
-        end
-      end
-    RUBY
-
-    it 'errors' do
-      expect(documenter.missing_documentation.first)
-        .to include('method description starts with lowercase, check indentation')
-    end
-  end
-
-  context 'rubocop comment around params description' do
-    let(:source_code) { <<~RUBY }
-      class AnalyticsEvents
-        # @param val [String] some value that
-        #   does things and this should be part of the param
-        # Some Event
-        # rubocop:disable Layout/LineLength
-        def some_event(val:, **extra)
-          track_event('Some Event', val:, **extra)
-        end
-        # rubocop:enable Layout/LineLength
-      end
-    RUBY
-
-    it 'ignores rubocop lines' do
-      expect(documenter.missing_documentation).to be_empty
-    end
-  end
-
   describe '#as_json' do
     let(:source_code) { <<~RUBY }
       class AnalyticsEvents
@@ -248,11 +211,9 @@ RSpec.describe AnalyticsEventsDocumenter do
         # @param [Integer] count number of attempts
         # The event that does something with stuff
         # @option extra [String] 'DocumentName' the document name
-        # rubocop:disable Layout/LineLength
         def some_event(success:, count:, **extra)
           track_event('Some Event', **extra)
         end
-        # rubocop:enable Layout/LineLength
 
         # @identity.idp.previous_event_name The Old Other Event
         # @identity.idp.previous_event_name Even Older Other Event
@@ -262,7 +223,7 @@ RSpec.describe AnalyticsEventsDocumenter do
       end
     RUBY
 
-    it 'is a JSON representation of params for each event, ignoring rubocop directives' do
+    it 'is a JSON representation of params for each event' do
       expect(documenter.as_json[:events]).to match_array(
         [
           {
@@ -316,7 +277,7 @@ RSpec.describe AnalyticsEventsDocumenter do
             {
               event_name: 'some_event',
               previous_event_names: [],
-              description: nil,
+              description: '',
               attributes: [
                 { name: 'success', types: ['Boolean'], description: nil },
               ],

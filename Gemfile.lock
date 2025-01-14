@@ -36,10 +36,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: bdf8e1f93707e413ecbd0f48d803e18812e19f90
-  tag: 0.23.5-18f
+  revision: e5d876cf10ce9b39bba0cc523d06c4dda1af5124
+  tag: 0.23.4-18f
   specs:
-    saml_idp (0.23.5.pre.18f)
+    saml_idp (0.23.4.pre.18f)
       activesupport
       builder
       faraday
@@ -477,7 +477,7 @@ GEM
     pg (1.5.9)
     pg_query (5.1.0)
       google-protobuf (>= 3.22.3)
-    phonelib (0.10.3)
+    phonelib (0.9.1)
     pkcs11 (0.3.4)
     premailer (1.27.0)
       addressable
