@@ -89,8 +89,22 @@ RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
 
   describe '#update' do
     let(:identity_id) { user.identities.take.id }
+    let(:service_provider_attribute_bundle) { %w[email] }
     let(:selected_email_id) { user.confirmed_email_addresses.sample.id }
     let(:params) { { identity_id:, select_email_form: { selected_email_id: selected_email_id } } }
+    let(:sp) do
+      create(
+        :service_provider,
+        attribute_bundle: service_provider_attribute_bundle,
+      )
+    end
+    before do
+      identity = ServiceProviderIdentity.find(identity_id)
+      identity.user_id = user&.id
+      identity.service_provider = sp.issuer
+      identity.save!
+    end
+
     subject(:response) { patch :update, params: }
 
     it 'redirects to connected accounts path with the appropriate flash message' do
@@ -113,31 +127,19 @@ RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
     context ' with all_emails and emails requested' do
       let(:service_provider_attribute_bundle) { %w[email all_emails] }
 
-      let(:sp) do
-        create(
-          :service_provider,
-          attribute_bundle: service_provider_attribute_bundle,
-        )
-      end
       let(:identity) do
         create(:service_provider_identity, :active, service_provider: sp.issuer)
-      end
-
-      let(:last_sign_in_email_id) { user.last_sign_in_email_address.id }
-      let(:available_email_ids) { user.confirmed_email_addresses.map(&:id) }
-      let(:selected_email_id) do
-        (available_email_ids - [last_sign_in_email_id]).sample
       end
 
       before do
         identity.update!(user_id: user.id)
       end
 
-      it 'returns last sign in email' do
+      it 'returns nil' do
         response
 
         identity.reload
-        expect(identity.email_address_id).to eq(last_sign_in_email_id)
+        expect(identity.email_address_id).to eq(nil)
       end
     end
 
@@ -154,21 +156,15 @@ RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
         create(:service_provider_identity, :active, service_provider: sp.issuer)
       end
 
-      let(:last_sign_in_email_id) { user.last_sign_in_email_address.id }
-      let(:available_email_ids) { user.confirmed_email_addresses.map(&:id) }
-      let(:selected_email_id) do
-        (available_email_ids - [last_sign_in_email_id]).sample
-      end
-
       before do
         identity.update!(user_id: user.id)
       end
 
-      it 'returns last sign in email' do
+      it 'returns nil' do
         response
 
         identity.reload
-        expect(identity.email_address_id).to eq(last_sign_in_email_id)
+        expect(identity.email_address_id).to eq(nil)
       end
     end
 

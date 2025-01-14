@@ -109,35 +109,25 @@ RSpec.describe SignUp::SelectEmailController do
 
     context ' with all_email and emails requested for SP' do
       let(:service_provider_attribute_bundle) { %w[email all_emails] }
-      let(:last_sign_in_email_id) { user.last_sign_in_email_address.id }
-      let(:available_email_ids) { user.confirmed_email_addresses.map(&:id) }
-      let(:selected_email_id) do
-        (available_email_ids - [last_sign_in_email_id]).sample
-      end
 
-      it 'returns last sign in email' do
+      it 'returns nil' do
         response
 
         expect(
           controller.user_session[:selected_email_id_for_linked_identity],
-        ).to eq(last_sign_in_email_id)
+        ).to eq(nil)
       end
     end
 
     context ' with all_emails requested for SP' do
       let(:service_provider_attribute_bundle) { %w[all_emails] }
-      let(:last_sign_in_email_id) { user.last_sign_in_email_address.id }
-      let(:available_email_ids) { user.confirmed_email_addresses.map(&:id) }
-      let(:selected_email_id) do
-        (available_email_ids - [last_sign_in_email_id]).sample
-      end
 
-      it 'returns last sign in email' do
+      it 'returns nil' do
         response
 
         expect(
           controller.user_session[:selected_email_id_for_linked_identity],
-        ).to eq(last_sign_in_email_id)
+        ).to eq(nil)
       end
     end
 
