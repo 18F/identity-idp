@@ -65,7 +65,7 @@ class User < ApplicationRecord
   attr_accessor :asserted_attributes, :email
 
   def confirmed_email_addresses
-    email_addresses.confirmed.order('last_sign_in_at DESC NULLS LAST')
+    email_addresses.confirmed
   end
 
   def fully_registered?

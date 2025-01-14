@@ -1694,59 +1694,6 @@ RSpec.describe SamlIdpController do
             )
           end
 
-          context 'when request is using SHA1 as the signature method algorithm' do
-            let(:auth_settings) do
-              saml_settings(
-                overrides: {
-                  security: {
-                    authn_requests_signed:,
-                    signature_method: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha1',
-                  },
-                },
-              )
-            end
-
-            context 'when the certificate matches' do
-              it 'does not note that certs are different in the event' do
-                user.identities.last.update!(verified_attributes: ['email'])
-                generate_saml_response(user, auth_settings)
-
-                expect(response.status).to eq(200)
-                expect(@analytics).to have_logged_event(
-                  'SAML Auth', hash_not_including(
-                    certs_different: true,
-                    sha256_matching_cert: matching_cert_serial,
-                  )
-                )
-              end
-            end
-
-            context 'when the certificate does not match' do
-              let(:wrong_cert) do
-                OpenSSL::X509::Certificate.new(
-                  Rails.root.join('certs', 'sp', 'saml_test_sp2.crt').read,
-                )
-              end
-
-              before do
-                service_provider.update!(certs: [wrong_cert, saml_test_sp_cert])
-              end
-
-              it 'notes that certs are different in the event' do
-                user.identities.last.update!(verified_attributes: ['email'])
-                generate_saml_response(user, auth_settings)
-
-                expect(response.status).to eq(200)
-                expect(@analytics).to have_logged_event(
-                  'SAML Auth', hash_including(
-                    certs_different: true,
-                    sha256_matching_cert: wrong_cert.serial.to_s,
-                  )
-                )
-              end
-            end
-          end
-
           context 'when request is using SHA1 as the digest method algorithm' do
             let(:auth_settings) do
               saml_settings(
@@ -1754,30 +1701,56 @@ RSpec.describe SamlIdpController do
                   security: {
                     authn_requests_signed:,
                     digest_method: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha1',
+                    signature_method:,
                   },
                 },
               )
             end
 
-            it 'notes an error in the event' do
-              user.identities.last.update!(verified_attributes: ['email'])
-              generate_saml_response(user, auth_settings)
+            context 'when request is using SHA256 as the signature method algorithm' do
+              let(:signature_method) do
+                'http://www.w3.org/2001/04/xmldsig-more#rsa-sha1'
+              end
 
-              expect(response.status).to eq(200)
-              expect(@analytics).to have_logged_event(
-                'SAML Auth', hash_including(
-                  request_signed: authn_requests_signed,
-                  cert_error_details: [
-                    {
-                      cert: '16692258094164984098',
-                      error_code: :fingerprint_mismatch,
-                    },
-                    {
-                      cert: '14834808178619537243', error_code: :fingerprint_mismatch
-                    },
-                  ],
+              it 'notes an error in the event' do
+                user.identities.last.update!(verified_attributes: ['email'])
+                generate_saml_response(user, auth_settings)
+
+                expect(response.status).to eq(200)
+                expect(@analytics).to have_logged_event(
+                  'SAML Auth', hash_including(
+                    request_signed: authn_requests_signed,
+                    cert_error_details: [
+                      {
+                        cert: '16692258094164984098',
+                        error_code: :wrong_sig_algorithm,
+                      },
+                      {
+                        cert: '14834808178619537243',
+                        error_code: :request_cert_not_registered,
+                      },
+                    ],
+                  )
                 )
-              )
+              end
+            end
+
+            context 'when request is using SHA1 as the signature method algorithm' do
+              let(:signature_method) do
+                'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256'
+              end
+
+              it 'notes an error in the event' do
+                user.identities.last.update!(verified_attributes: ['email'])
+                generate_saml_response(user, auth_settings)
+
+                expect(response.status).to eq(200)
+                expect(@analytics).to have_logged_event(
+                  'SAML Auth', hash_not_including(
+                    :cert_error_details,
+                  )
+                )
+              end
             end
           end
 
@@ -1836,7 +1809,7 @@ RSpec.describe SamlIdpController do
             cert_error_details = [
               {
                 cert: saml_test_sp_cert_serial,
-                error_code: :fingerprint_mismatch,
+                error_code: :request_cert_not_registered,
               },
             ]
 
@@ -2384,7 +2357,8 @@ RSpec.describe SamlIdpController do
         end
 
         it 'has valid signature' do
-          expect(xmldoc.saml_document.valid_signature?(idp_fingerprint)).to eq(true)
+          cert = OpenSSL::X509::Certificate.new(saml_test_idp_cert)
+          expect(xmldoc.saml_document.valid_signature?(cert)).to eq(true)
         end
 
         context 'Reference' do

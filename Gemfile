@@ -74,7 +74,7 @@ gem 'rqrcode'
 gem 'ruby-progressbar'
 gem 'ruby-saml'
 gem 'safe_target_blank', '>= 1.0.2'
-gem 'saml_idp', github: '18F/saml_idp', tag: '0.23.4-18f'
+gem 'saml_idp', github: '18F/saml_idp', tag: '0.23.5-18f'
 gem 'scrypt'
 gem 'simple_form', '>= 5.0.2'
 gem 'stringex', require: false
@@ -118,7 +118,7 @@ group :development, :test do
   gem 'psych'
   gem 'rspec', '~> 3.13.0'
   gem 'rspec-rails', '~> 7.0'
-  gem 'rubocop', '~> 1.69.1', require: false
+  gem 'rubocop', '~> 1.70.0', require: false
   gem 'rubocop-performance', '~> 1.23.0', require: false
   gem 'rubocop-rails', '~> 2.27.0', require: false
   gem 'rubocop-rspec', '~> 3.2.0', require: false
