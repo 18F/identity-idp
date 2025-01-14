@@ -67,6 +67,19 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
 
           expect(response).to redirect_to idv_hybrid_mobile_socure_document_capture_url
         end
+
+        context 'when redirect to correct vendor is disabled' do
+          before do
+            allow(IdentityConfig.store)
+              .to receive(:doc_auth_redirect_to_correct_vendor_disabled).and_return(true)
+          end
+
+          it 'allows the user to use this controller' do
+            get :show
+
+            expect(response).to render_template :show
+          end
+        end
       end
 
       it 'renders the show template' do
