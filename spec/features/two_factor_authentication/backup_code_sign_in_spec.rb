@@ -45,4 +45,37 @@ RSpec.feature 'sign in with backup code' do
       assert_navigation { click_submit_default }
     end
   end
+
+  context 'when the user needs a backup code reminder' do
+    let(:user) do
+      create(:user, created_at: 10.months.ago, second_mfa_reminder_dismissed_at: 8.months.ago)
+    end
+
+    let!(:event) do
+      create(:event, user:, event_type: :sign_in_after_2fa, created_at: 9.months.ago)
+      create(:event, user:, event_type: :sign_in_after_2fa, created_at: 8.months.ago)
+    end
+
+    it 'redirects the user to the backup code reminder url and allows user to confirm possession' do
+      fill_in t('forms.two_factor.backup_code'), with: codes.sample
+      click_submit_default
+
+      expect(page).to have_current_path(backup_code_reminder_path)
+
+      click_on t('forms.backup_code_reminder.have_codes')
+
+      expect(page).to have_current_path(account_path)
+    end
+
+    it 'redirects the user to the backup code reminder url and allows user to create new codes' do
+      fill_in t('forms.two_factor.backup_code'), with: codes.sample
+      click_submit_default
+
+      expect(page).to have_current_path(backup_code_reminder_path)
+
+      click_on t('forms.backup_code_reminder.need_new_codes')
+
+      expect(page).to have_current_path(backup_code_regenerate_path)
+    end
+  end
 end

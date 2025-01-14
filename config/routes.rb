@@ -299,7 +299,8 @@ Rails.application.routes.draw do
     get '/users/two_factor_authentication' => 'users/two_factor_authentication#show',
         as: :user_two_factor_authentication # route name is used by two_factor_authentication gem
     get '/backup_code_refreshed' => 'users/backup_code_setup#refreshed'
-    get '/backup_code_reminder' => 'users/backup_code_setup#reminder'
+    get '/backup_code_reminder' => 'users/backup_code_reminder#show'
+    post '/backup_code_reminder' => 'users/backup_code_reminder#update'
     get '/backup_code_confirm_setup' => 'users/backup_code_setup#new'
     post '/backup_code_setup' => 'users/backup_code_setup#create'
     get '/backup_code_setup' => 'users/backup_code_setup#index'
