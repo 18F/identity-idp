@@ -89,7 +89,7 @@ RSpec.shared_examples 'phone rate limiting' do |delivery_method|
 
     visit root_path
     signin(
-      user.confirmed_email_addresses.first.email,
+      user.last_sign_in_email_address.email,
       user.password || Features::SessionHelper::VALID_PASSWORD,
     )
 
@@ -101,7 +101,7 @@ RSpec.shared_examples 'phone rate limiting' do |delivery_method|
       visit root_path
 
       signin(
-        user.confirmed_email_addresses.first.email,
+        user.last_sign_in_email_address.email,
         user.password || Features::SessionHelper::VALID_PASSWORD,
       )
 

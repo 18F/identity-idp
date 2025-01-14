@@ -40,7 +40,7 @@ RSpec.feature 'managing email address' do
   context 'allows deletion of email address' do
     it 'does not allow last confirmed email to be deleted' do
       user = create(:user, :fully_registered, email: 'test@example.com ')
-      confirmed_email = user.confirmed_email_addresses.first
+      confirmed_email = user.last_sign_in_email_address
       unconfirmed_email = create(:email_address, user: user, confirmed_at: nil)
       user.email_addresses.reload
 
@@ -56,7 +56,7 @@ RSpec.feature 'managing email address' do
 
     it 'Allows delete when more than one confirmed email exists' do
       user = create(:user, :fully_registered, email: 'test@example.com ')
-      confirmed_email1 = user.confirmed_email_addresses.first
+      confirmed_email1 = user.last_sign_in_email_address
       confirmed_email2 = create(
         :email_address, user: user,
                         confirmed_at: Time.zone.now
@@ -74,7 +74,7 @@ RSpec.feature 'managing email address' do
 
     it 'sends notification to all confirmed emails when email address is deleted' do
       user = create(:user, :fully_registered, email: 'test@example.com ')
-      confirmed_email1 = user.confirmed_email_addresses.first
+      confirmed_email1 = user.last_sign_in_email_address
       confirmed_email2 = create(:email_address, user: user, confirmed_at: Time.zone.now)
 
       sign_in_and_2fa_user(user)
