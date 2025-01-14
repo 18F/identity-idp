@@ -56,9 +56,8 @@ module SignUp
     end
 
     def selected_email_id
-      if current_sp&.attribute_bundle&.include?('all_emails')
-        current_user.last_sign_in_email_address.id
-      else
+      if current_sp&.attribute_bundle&.include?('email') &&
+         !current_sp&.attribute_bundle&.include?('all_emails')
         form_params[:selected_email_id]
       end
     end

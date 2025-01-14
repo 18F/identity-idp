@@ -53,9 +53,7 @@ module Accounts
       end
 
       def selected_email_id
-        if identity.all_email_and_single_email_requested?
-          last_email_id
-        else
+        if identity.sp_only_single_email_requested?
           form_params[:selected_email_id]
         end
       end

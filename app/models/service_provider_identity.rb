@@ -57,8 +57,9 @@ class ServiceProviderIdentity < ApplicationRecord
     sp_metadata[:friendly_name]
   end
 
-  def all_email_and_single_email_requested?
-    service_provider_record&.attribute_bundle&.include?('all_emails')
+  def sp_only_single_email_requested?
+    service_provider_record&.attribute_bundle&.include?('email') &&
+      !service_provider_record&.attribute_bundle&.include?('all_emails')
   end
 
   def service_provider_id
@@ -70,9 +71,15 @@ class ServiceProviderIdentity < ApplicationRecord
   end
 
   def email_address_for_sharing
-    if IdentityConfig.store.feature_select_email_to_share_enabled && email_address
+    if use_stored_email_address?
       return email_address
     end
     user.last_sign_in_email_address
+  end
+
+  def use_stored_email_address?
+    IdentityConfig.store.feature_select_email_to_share_enabled &&
+      email_address &&
+      sp_only_single_email_requested?
   end
 end
