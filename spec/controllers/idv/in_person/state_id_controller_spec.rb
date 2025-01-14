@@ -161,6 +161,7 @@ RSpec.describe Idv::InPerson::StateIdController do
         put :update, params: invalid_params
 
         expect(subject.idv_session.ssn).to eq(nil)
+        expect(subject.idv_session.doc_auth_vendor).to eq(nil)
         expect(subject.extra_view_variables[:updating_state_id]).to eq(false)
         expect(response).to render_template :show
       end
@@ -195,6 +196,12 @@ RSpec.describe Idv::InPerson::StateIdController do
         expect(pii_from_user[:identity_doc_address_state]).to eq identity_doc_address_state
         # param from form as id_number but is renamed to state_id_number on update
         expect(pii_from_user[:state_id_number]).to eq id_number
+      end
+
+      it 'sets values in Idv::Session' do
+        put :update, params: params
+
+        expect(subject.idv_session.doc_auth_vendor).to eq(Idp::Constants::Vendors::USPS)
       end
     end
 

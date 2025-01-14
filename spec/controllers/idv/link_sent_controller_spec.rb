@@ -42,6 +42,7 @@ RSpec.describe Idv::LinkSentController do
 
   describe '#show' do
     let(:analytics_name) { 'IdV: doc auth link_sent visited' }
+
     let(:analytics_args) do
       {
         analytics_id: 'Doc Auth',
@@ -104,6 +105,7 @@ RSpec.describe Idv::LinkSentController do
 
   describe '#update' do
     let(:analytics_name) { 'IdV: doc auth link_sent submitted' }
+
     let(:analytics_args) do
       {
         analytics_id: 'Doc Auth',
@@ -143,6 +145,7 @@ RSpec.describe Idv::LinkSentController do
     end
 
     context 'check results' do
+      let(:idv_vendor) { Idp::Constants::Vendors::MOCK }
       let(:load_result) { double('load result') }
       let(:session_canceled_at) { nil }
       let(:load_result_success) { true }
@@ -167,6 +170,8 @@ RSpec.describe Idv::LinkSentController do
         it 'redirects to ssn page' do
           put :update
 
+          expect(subject.idv_session.doc_auth_vendor).to_not be_nil
+          expect(subject.idv_session.doc_auth_vendor).to eq(idv_vendor)
           expect(response).to redirect_to(idv_ssn_url)
 
           proofing_components = Idv::ProofingComponents.new(
@@ -183,9 +188,11 @@ RSpec.describe Idv::LinkSentController do
           before do
             subject.idv_session.redo_document_capture = true
           end
+
           it 'resets redo_document capture to nil in idv_session' do
             put :update
             expect(subject.idv_session.redo_document_capture).to be_nil
+            expect(subject.idv_session.doc_auth_vendor).to eq(idv_vendor)
           end
         end
 
@@ -202,6 +209,7 @@ RSpec.describe Idv::LinkSentController do
               put :update
 
               expect(response.status).to eq(204)
+              expect(subject.idv_session.doc_auth_vendor).to be_nil
             end
           end
 
@@ -211,6 +219,7 @@ RSpec.describe Idv::LinkSentController do
             it 'redirects to ssn' do
               put :update
               expect(flash[:error]).to eq nil
+              expect(subject.idv_session.doc_auth_vendor).to eq(idv_vendor)
               expect(response).to redirect_to idv_ssn_url
             end
           end
@@ -233,6 +242,7 @@ RSpec.describe Idv::LinkSentController do
         it 'redirects to hybrid_handoff page' do
           put :update
 
+          expect(subject.idv_session.doc_auth_vendor).to be_nil
           expect(response).to redirect_to(idv_hybrid_handoff_url)
         end
       end
@@ -244,6 +254,7 @@ RSpec.describe Idv::LinkSentController do
           put :update
 
           expect(response).to have_http_status(204)
+          expect(subject.idv_session.doc_auth_vendor).to be_nil
         end
       end
     end
