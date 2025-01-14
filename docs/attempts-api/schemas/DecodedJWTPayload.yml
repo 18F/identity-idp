@@ -1,17 +1,17 @@
 type: object
 title: 'Decoded JWT Payload'
 description: |
-  Default payload body for each event
+  Default payload body for each event.
 properties: 
   aud:
     type: string
-    description: Event audience
+    description: Event audience, ie the issuer of the RP's integration.
     example: https://serviceprovider.com
   iat:
     type: integer
     format: int64
     description: |
-      “Issued at” timestamp for when the SET was created. occurred_at within the event may be a more reliable indicator of when the user action occurred, though in practical terms the two will typically be identical.
+      Issued at timestamp for when the SET was created. `occurred_at` within the event may be a more reliable indicator of when the user action occurred, though in practical terms the two will typically be identical.
     example: 1657920726
   iss:
     type: string

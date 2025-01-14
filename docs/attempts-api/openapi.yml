@@ -6,9 +6,11 @@ info:
     name: CC0 1.0 Universal
     url: https://creativecommons.org/publicdomain/zero/1.0/legalcode
   description: |
-    This API can be used by
-    Event Receivers to query the Event Stream configuration and
-    status, to add and remove subjects, and to trigger verification.
+    This document contains specifications for the Login.gov Attempts API, a new standards-based polling API based on the Shared Signals Framework (SSF) and the RISC poll-based SET delivery specification (RFC 8936).
+
+    The Attempts API securely transmits integration-specific identity verification event summary data to Relying Parties (RP) for the purposes of fraud prevention and mitigation.
+    
+    To ensure the security of data transmission, all endpoints will utilize Bearer Tokens. The format of these Bearer Tokens will be <RP-ISSUER> <SHARED-SECRET>. To ensure the security of individual Security Event Tokens (SETs), each one will be encrypted with a public key provided from the RP.
 servers: 
   - url: https://secure.login.gov 
     description: Production server (uses live data)
@@ -33,5 +35,5 @@ components:
     BearerAuth:
       type: http
       scheme: bearer
-      bearerFormat: csp-id JWT
-      description: <csp-id> <token>
+      bearerFormat: rp-issuer JWT
+      description: <rp-issuer> <token>

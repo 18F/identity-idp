@@ -2,23 +2,19 @@ type: object
 title: Transmitter Configuration Response
 description: |
   Metadata describing the Login.gov transmitter configuration.
-required:
-  - issuer
-  - jwks_uri
 properties:
   issuer:
     type: string
     description: |
-      URL using the https scheme with no query or fragment component that the Transmitter asserts as its
-      Issuer Identifier.
+      Event issuer, which will be a Login.gov URL indicating the environment in which the event occurred.
+
       This MUST be identical to the iss claim value in Security Event Tokens issued from this Transmitter.
     format: uri
     example: https://secure.login.gov
   jwks_uri:
     type: string
     description: |
-      URL of the Transmitter's [JSON Web Key Set](https://openid.net/specs/openid-sharedsignals-framework-1_0-ID3.html#section-6.1-10)
-      document. This contains the signing key(s) the Receiver uses to validate signatures from the Transmitter.
+      URL of the Transmitter's JSON Web Key Set
     format: uri
     example: https://secure.login.gov/api/openid_connect/certs
   delivery:
@@ -29,7 +25,10 @@ properties:
         type: string
         format: uri
         description: |
+          The URL of the polling endpoint
+
           prod: `https://secure.login.gov/api/attempts/poll`
+
           sandbox: `https://idp.int.identitysandbox.gov/attempts/poll`
         example: https://secure.login.gov/api/attempts/poll
       method:
@@ -50,7 +49,9 @@ properties:
     format: uri
     description: |
       The URL of the Status Endpoint.
+
       prod: `https://secure.login.gov/api/attempts/status`
+
       sandbox: `https://idp.int.identitysandbox.gov/attempts/status`
     example: https://secure.login.gov/api/attempts/status
   verification_endpoint:
@@ -58,6 +59,8 @@ properties:
     format: uri
     description: |
       The URL of the Verification Endpoint.
+
       prod: `https://secure.login.gov/api/attempts/verification`
+
       sandbox: `https://idp.int.identitysandbox.gov/attempts/verification`
     example: https://secure.login.gov/api/attempts/verification

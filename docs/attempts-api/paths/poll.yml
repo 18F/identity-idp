@@ -1,13 +1,16 @@
 post:
   summary: Request for queued events to be returned.
   description: |-
-    [Spec](https://www.rfc-editor.org/rfc/rfc8936.html#name-polling-http-request)
+    A Relying Party will POST this endpoint in order to receive Poll-Based Security Event Tokens (SET). These Sets will be the queued identity verification events.
+    
+    The structure of this endpoint is based on the [RISC Specification](https://www.rfc-editor.org/rfc/rfc8936.html#name-polling-http-request) for polling 
   operationId: poll_events
   security:
     - BearerAuth: [ ]
   requestBody:
     description: |
-      As detailed in the [RISC spec](https://www.rfc-editor.org/rfc/rfc8936.html#name-polling-http-request):
+      The request is detailed in the RISC spec (https://www.rfc-editor.org/rfc/rfc8936.html#name-polling-http-request):
+      
       When initiating a poll request, the SET Recipient constructs a JSON document that consists of
       polling request parameters and SET acknowledgement parameters in the form of JSON objects.
     required: false
@@ -19,8 +22,31 @@ post:
     200:
       description: |
         As detailed in the [RISC Spec](https://www.rfc-editor.org/rfc/rfc8936.html#name-polling-http-response):
-        In response to a poll request, the SET Transmitter checks for available SETs and responds with a JSON
-        document.
+        In response to a poll request, the SET Transmitter checks for available SETs and responds with a JSON document containing the list of SETs.
+
+        A decoded SET looks like:
+
+        ```
+        "6454bc0b-00fc-4404-885c-7f07bef243ce": {
+          "aud": "https://serviceprovider.com",
+          "iat": 1657920726,
+          "iss": "https://secure.login.gov",
+          "jti": "6454bc0b-00fc-4404-885c-7f07bef243ce",
+          "events": {
+            "https://schemas.login.gov/secevent/attempts-api/event-type/mfa-enroll-backup-code": {
+            "application_url": "string",
+            "occurred_at": 1657920726,
+            "subject": {
+              "subject_type": "session",
+              "session_id": "12345"
+              },
+            "user_ip_address": "string",
+            "user_uuid": "string",
+            "unique_session_id": "string",
+            "success": true
+          }
+        }
+        ```
       content:
         application/json:
           schema:
