@@ -18,6 +18,8 @@ module Idv
         before_action :fetch_test_verification_data, only: [:update]
 
         def show
+          session[:socure_docv_wait_polling_started_at] = nil
+
           Funnel::DocAuth::RegisterStep.new(document_capture_user.id, sp_session[:issuer])
             .call('hybrid_mobile_socure_document_capture', :view, true)
 
