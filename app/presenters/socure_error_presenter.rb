@@ -27,7 +27,7 @@ class SocureErrorPresenter
 
   def rate_limit_text
     return if error_code == :url_not_found # Not showing rate limit if capture app url not found
-  
+
     if remaining_attempts == 1
       t('doc_auth.rate_limit_warning.singular_html')
     else
