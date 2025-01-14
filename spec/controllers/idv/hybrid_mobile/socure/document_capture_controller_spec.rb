@@ -9,7 +9,9 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
   let(:user) { create(:user) }
   let(:stored_result) { nil }
   let(:socure_docv_enabled) { true }
-  let(:no_url_socure_route) { idv_hybrid_mobile_socure_document_capture_errors_url(error_code: :url_not_found) }
+  let(:no_url_socure_route) do
+    idv_hybrid_mobile_socure_document_capture_errors_url(error_code: :url_not_found)
+  end
 
   let(:document_capture_session) do
     DocumentCaptureSession.create(
