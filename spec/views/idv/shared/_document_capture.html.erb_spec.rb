@@ -18,6 +18,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
   let(:skip_doc_auth_from_how_to_verify) { false }
   let(:skip_doc_auth_from_handoff) { false }
   let(:skip_doc_auth_from_socure) { false }
+  let(:socure_errors_timeout_url) { idv_socure_errors_timeout_url }
   let(:opted_in_to_in_person_proofing) { false }
   let(:presenter) { Idv::InPerson::UspsFormPresenter.new }
   let(:mock_client) { false }
@@ -55,6 +56,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
       skip_doc_auth_from_how_to_verify: skip_doc_auth_from_how_to_verify,
       skip_doc_auth_from_handoff: skip_doc_auth_from_handoff,
       skip_doc_auth_from_socure: skip_doc_auth_from_socure,
+      socure_errors_timeout_url: socure_errors_timeout_url,
       opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
       mock_client: mock_client,
     }
@@ -131,7 +133,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
     it 'sends skip_doc_auth_from_socure to in the frontend' do
       render_partial
       expect(rendered).to have_css(
-        "#document-capture-form[data-skip-doc-auth-from-socure-hybrid='false']",
+        "#document-capture-form[data-skip-doc-auth-from-socure='false']",
       )
     end
 
