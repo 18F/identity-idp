@@ -226,7 +226,7 @@ RSpec.describe 'Hybrid Flow' do
           expect(page).to have_content(t('in_person_proofing.headings.prepare'))
 
           # Go back
-          visit idv_hybrid_mobile_socure_document_capture_update_url
+          click_on t('forms.buttons.back')
           expect(page).to have_current_path(idv_hybrid_mobile_socure_errors_timeout_path)
 
           # Try Socure again

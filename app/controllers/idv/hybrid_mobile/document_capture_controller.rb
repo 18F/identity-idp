@@ -64,6 +64,7 @@ module Idv
           failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
           doc_auth_selfie_capture: resolved_authn_context_result.facial_match?,
           skip_doc_auth_from_socure: @skip_doc_auth_from_socure,
+          socure_errors_timeout_url: idv_hybrid_mobile_socure_errors_timeout_url,
         }.merge(
           acuant_sdk_upgrade_a_b_testing_variables,
         )

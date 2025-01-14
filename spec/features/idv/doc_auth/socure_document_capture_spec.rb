@@ -88,7 +88,7 @@ RSpec.feature 'document capture step', :js do
           expect(page).to have_content(t('in_person_proofing.headings.prepare'))
 
           # Go back
-          visit idv_socure_document_capture_update_path
+          click_on t('forms.buttons.back')
           expect(page).to have_current_path(idv_socure_errors_timeout_path)
 
           # Try Socure again

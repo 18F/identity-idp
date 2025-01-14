@@ -92,8 +92,10 @@ module Idv
         failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
         skip_doc_auth_from_how_to_verify: idv_session.skip_doc_auth_from_how_to_verify,
         skip_doc_auth_from_handoff: idv_session.skip_doc_auth_from_handoff,
+        skip_doc_auth_from_socure: idv_session.skip_doc_auth_from_socure,
         opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing,
         doc_auth_selfie_capture: resolved_authn_context_result.facial_match?,
+        socure_errors_timeout_url: idv_socure_errors_timeout_url,
       }.merge(
         acuant_sdk_upgrade_a_b_testing_variables,
       )
