@@ -29,7 +29,7 @@ AllCops:
     - 'tmp/**/*'
     - 'vendor/**/*'
     - 'public/**/*'
-  TargetRubyVersion: 3.2.0
+  TargetRubyVersion: 3.3.0
   TargetRailsVersion: 7.2
   UseCache: true
   DisabledByDefault: true
@@ -389,6 +389,9 @@ Lint/BooleanSymbol:
   Enabled: true
 
 Lint/CircularArgumentReference:
+  Enabled: true
+
+Lint/ConstantReassignment:
   Enabled: true
 
 Lint/Debugger:
