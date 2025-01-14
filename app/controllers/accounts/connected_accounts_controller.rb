@@ -18,15 +18,7 @@ module Accounts
         sp_name: decorated_sp_session.sp_name,
         user: current_user,
         locked_for_session: pii_locked_for_session?(current_user),
-        change_email_available: change_email_available?,
       )
-    end
-
-    def change_email_available?
-      if decorated_sp_session.requested_attributes.present?
-        decorated_sp_session.requested_attributes.include?('all_emails') ||
-          !decorated_sp_session.requested_attributes.include?('email')
-      end
     end
   end
 end

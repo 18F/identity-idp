@@ -24,7 +24,6 @@ RSpec.describe 'accounts/show.html.erb' do
         authn_context:,
         sp_name: nil,
         locked_for_session: false,
-        change_email_available: false,
       ),
     )
   end
@@ -256,7 +255,6 @@ RSpec.describe 'accounts/show.html.erb' do
           authn_context:,
           sp_name: sp.friendly_name,
           locked_for_session: false,
-          change_email_available: false,
         ),
       )
     end
