@@ -129,6 +129,16 @@ class AnalyticsEventsDocumenter
         errors << "#{error_prefix} #{tag.name} missing types" if !tag.types
       end
 
+      description = method_description(method_object)
+      if description.present? && !method_object.docstring.match?(/\A[A-Z]/)
+        indented_description = description.lines.map { |line| "  #{line.chomp}" }.join("\n")
+
+        errors << <<~MSG
+          #{error_prefix} method description starts with lowercase, check indentation:
+          #{indented_description}
+        MSG
+      end
+
       errors
     end
   end
@@ -156,7 +166,7 @@ class AnalyticsEventsDocumenter
       {
         event_name: extract_event_name(method_object),
         previous_event_names: method_object.tags(PREVIOUS_EVENT_NAME_TAG).map(&:text),
-        description: method_object.docstring.presence,
+        description: method_description(method_object),
         attributes: attributes,
         method_name: method_object.name,
         source_line: method_object.line,
@@ -166,6 +176,12 @@ class AnalyticsEventsDocumenter
     end
 
     { events: events_json_summary }
+  end
+
+  # Strips Rubocop directives from description text
+  # @return [String, nil]
+  def method_description(method_object)
+    method_object.docstring.to_s.gsub(/^rubocop.+$/, '').presence&.chomp
   end
 
   private

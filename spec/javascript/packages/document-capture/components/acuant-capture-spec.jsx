@@ -74,6 +74,29 @@ describe('document-capture/components/acuant-capture', () => {
     });
   }
 
+  /**
+   * Mimics Drag Drop a file to the given input. Unlike `@testing-library/user-event`,
+   *  this does not call any click handlers associated with the input.
+   *
+   * @param {HTMLInputElement} input
+   * @param {File} value
+   */
+  function dragDropFile(input, value) {
+    fireEvent(
+      input,
+      createEvent('input', input, {
+        target: { files: [value] },
+        bubbles: true,
+        cancelable: false,
+        composed: true,
+      }),
+    );
+
+    fireEvent.drop(input, {
+      target: { files: [value] },
+    });
+  }
+
   describe('getNormalizedAcuantCaptureFailureMessage', () => {
     beforeEach(() => {
       window.AcuantJavascriptWebSdk = {
@@ -608,6 +631,23 @@ describe('document-capture/components/acuant-capture', () => {
           width: sinon.match.number,
         }),
       );
+    });
+
+    it('onChange not called if allowUpload is false and user drags drops file', () => {
+      const onChange = sinon.stub();
+      const { getByLabelText } = render(
+        <DeviceContext.Provider value={{ isMobile: true }}>
+          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+            <AcuantCapture label="Image" onChange={onChange} allowUpload={false} />
+          </AcuantContextProvider>
+        </DeviceContext.Provider>,
+      );
+
+      initialize({ isCameraSupported: false });
+
+      const input = getByLabelText('Image');
+      dragDropFile(input, validUpload);
+      expect(onChange).not.to.have.been.called();
     });
 
     it('renders error message and logs metadata if capture succeeds but the document type identified is unsupported', async () => {

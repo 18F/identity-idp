@@ -15,6 +15,25 @@ RSpec.describe Idv::Agent do
       Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN
     end
     let(:document_capture_session) { DocumentCaptureSession.new(result_id: SecureRandom.hex) }
+    let(:session) { {} }
+    let(:user_session) { {} }
+    let(:idv_session) do
+      Idv::Session.new(
+        user_session:,
+        current_user: user,
+        service_provider: issuer,
+      ).tap do |idv_session|
+        idv_session.pii_from_doc = applicant
+      end
+    end
+    let(:proofing_components) do
+      Idv::ProofingComponents.new(
+        idv_session:,
+        session:,
+        user:,
+        user_session:,
+      )
+    end
 
     subject(:agent) { Idv::Agent.new(applicant) }
 
@@ -35,6 +54,7 @@ RSpec.describe Idv::Agent do
           threatmetrix_session_id: nil,
           request_ip: request_ip,
           ipp_enrollment_in_progress: ipp_enrollment_in_progress,
+          proofing_components:,
         )
       end
 
@@ -120,6 +140,18 @@ RSpec.describe Idv::Agent do
           ),
         )
 
+        proof_resolution
+      end
+
+      it 'passes proofing components to ResolutionProofingJob' do
+        expect(ResolutionProofingJob).to receive(:perform_later).with(
+          hash_including(
+            proofing_components: {
+              document_check: 'mock',
+              document_type: 'state_id',
+            },
+          ),
+        )
         proof_resolution
       end
 
