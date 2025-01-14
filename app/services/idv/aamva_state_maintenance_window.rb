@@ -153,7 +153,7 @@ module Idv
       ],
       'TN' => [
         # Last Sunday of every month from 11:00 pm Sunday to 2:00 am. Monday ET
-        { cron: '0 23 * * Sun#last', duration: 3 * 60 },
+        { cron: '0 23 * * Sun#last', duration_minutes: 3 * 60 },
       ],
       'TX' => [
         # Saturday 9:00 pm. to Sunday 7:00 am. ET.
