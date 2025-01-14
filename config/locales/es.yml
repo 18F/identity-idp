@@ -810,7 +810,7 @@ errors.messages.wrong_length.one: tiene la longitud incorrecta (debe ser de 1 c
 errors.messages.wrong_length.other: tiene la longitud incorrecta (debe ser de %{count} caracteres)
 errors.piv_cac_setup.unique_name: Ese nombre ya fue seleccionado. Elija un nombre diferente.
 errors.registration.terms: Antes de continuar, debe darnos permiso. Marque la casilla a continuación y luego haga clic en continuar.
-errors.sign_in.bad_password_limit: Superó el número máximo de intentos de inicio de sesión. Debe esperar %{time_left} antes de volver a intentarlo.
+errors.sign_in.sign_in_failure_limit: Superó el número máximo de intentos de inicio de sesión. Debe esperar %{time_left} antes de volver a intentarlo.
 errors.two_factor_auth_setup.must_select_additional_option: Seleccione un método de autenticación adicional.
 errors.two_factor_auth_setup.must_select_option: Seleccione un método de autenticación.
 errors.verify_personal_key.rate_limited: Lo intentó demasiadas veces; vuelva a intentarlo en %{timeout}.
@@ -1233,8 +1233,8 @@ image_description.us_flag: Bandera de los EE. UU.
 image_description.warning: Señal amarilla de precaución
 in_person_proofing.body.barcode.cancel_link_text: Cancele su código de barras
 in_person_proofing.body.barcode.close_window: Ya puede cerrar esta ventana.
-in_person_proofing.body.barcode.deadline: Debe acudir a cualquier oficina de correos participante antes del %{deadline}
-in_person_proofing.body.barcode.deadline_restart: Si acude después del plazo, su información no se guardará y tendrá que reiniciar el proceso.
+in_person_proofing.body.barcode.deadline: Debe acudir a cualquier oficina de correos participante antes del %{deadline}.
+in_person_proofing.body.barcode.deadline_restart: Si acude después de esta fecha límite, su código de barras ya no funcionará y tendrá que reiniciar el proceso.
 in_person_proofing.body.barcode.eipp_tag: Código de barras piloto mejorado GSA
 in_person_proofing.body.barcode.eipp_what_to_bring: 'Según el tipo de identificación que tenga, es posible que deba presentar documentos comprobatorios. Lea con atención las opciones siguientes:'
 in_person_proofing.body.barcode.email_sent: Enviamos el código de barras y la información más abajo al correo electrónico que usó para iniciar sesión
@@ -1244,11 +1244,11 @@ in_person_proofing.body.barcode.questions: '¿Tiene alguna pregunta?'
 in_person_proofing.body.barcode.retail_hours: Horario de atención al público
 in_person_proofing.body.barcode.retail_hours_closed: Cerrado
 in_person_proofing.body.barcode.return_to_partner_link: Volver a %{sp_name}
-in_person_proofing.body.barcode.what_to_expect: Qué esperar en la oficina de correos
+in_person_proofing.body.barcode.what_to_expect: Qué hacer en la oficina de correos
 in_person_proofing.body.cta.button: Intentar en persona
 in_person_proofing.body.cta.prompt_detail: La mayoría de las personas que no pueden hacer la verificación de su identidad en línea logran verificarla en una oficina de correos participante. No es necesario hacer cita para ello, y hay oficinas en todo el país.
 in_person_proofing.body.expect.heading: Qué esperar después de la visita
-in_person_proofing.body.expect.info: En las 24 horas siguientes a su visita a la oficina de correos, recibirá un correo electrónico para informarle si se logró o no su verificación de identidad.
+in_person_proofing.body.expect.info: En las 24 horas siguientes a su visita a la oficina de correos, recibirá un correo electrónico para informarle si se logró o no su verificación de identidad. Busque un mensaje de no-reply@login.gov en su correo electrónico.
 in_person_proofing.body.location.change_location_find_other_locations: Busque otras oficinas de correos participantes.
 in_person_proofing.body.location.change_location_heading: ¿Necesita cambiar su oficina de correos?
 in_person_proofing.body.location.change_location_info_html: No necesita crear un nuevo código de barras, puede llevar este código de barras a cualquier oficina de correos participante. %{find_other_locations_link_html}
@@ -1327,7 +1327,7 @@ in_person_proofing.form.state_id.state_id_number_hint_spaces: espacios
 in_person_proofing.form.state_id.state_id_number_texas_hint: Este es el número de 8 dígitos de su identificación. Ingrese únicamente números en este campo.
 in_person_proofing.form.state_id.zipcode: Código postal
 in_person_proofing.headings.address: Ingrese su domicilio actual
-in_person_proofing.headings.barcode: Muestre este código de barras y su identificación emitida por el estado en una oficina de correos para terminar de verificar su identidad.
+in_person_proofing.headings.barcode: Muestre este código de barras y su identificación el estado en una oficina de correos para terminar de verificar su identidad.
 in_person_proofing.headings.barcode_eipp: Lleve este código de barras y los documentos comprobatorios a una oficina de correos para terminar de verificar su identidad
 in_person_proofing.headings.barcode_what_to_bring: Lo que debe llevar a la oficina de correos
 in_person_proofing.headings.cta: Intente verificar su identidad en persona
@@ -1377,7 +1377,7 @@ in_person_proofing.process.state_id.heading_eipp: Muestre su identificación y l
 in_person_proofing.process.state_id.info: No debe estar vencida. Actualmente no aceptamos otras formas de identificación, como pasaportes o identificaciones militares.
 in_person_proofing.process.state_id.info_eipp: El empleado escaneará su identificación. No debe estar vencida. Según el tipo de identificación que presente, es posible que deba mostrar documentos comprobatorios. Consulte los requisitos en la sección “Lo que debe llevar a la oficina de correos”.
 in_person_proofing.process.what_to_do.heading: Colóquese en cualquier fila
-in_person_proofing.process.what_to_do.info: Diga al empleado de la oficina de correos que desea verificar su identidad con %{app_name}.
+in_person_proofing.process.what_to_do.info: Diga al empleado de la oficina de correos que desea verificar su identidad. Si el empleado no sabe qué hacer, pida la ayuda de un supervisor.
 instructions.account.reactivate.begin: Empecemos.
 instructions.account.reactivate.explanation: 'Cuando creó su cuenta, le dimos una lista de palabras y le pedimos que las guardara en un lugar seguro. Era similar a esto:'
 instructions.account.reactivate.intro: Adoptamos medidas adicionales para mantener su información personal segura y privada, por lo que restablecer su contraseña requiere un poco más de trabajo.

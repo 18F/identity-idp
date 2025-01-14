@@ -129,6 +129,7 @@ enable_load_testing_mode: false
 enable_rate_limiting: true
 enable_test_routes: true
 enable_usps_verification: true
+encrypted_document_storage_s3_bucket: 'test-bucket'
 event_disavowal_expiration_hours: 240
 facial_match_general_availability_enabled: true
 feature_idv_force_gpo_verification_enabled: false
@@ -167,6 +168,7 @@ idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 idv_socure_reason_code_download_enabled: false
 idv_socure_shadow_mode_enabled: false
+idv_socure_shadow_mode_enabled_for_docv_users: true
 idv_sp_required: false
 in_person_completion_survey_url: 'https://login.gov'
 in_person_doc_auth_button_enabled: true
@@ -246,13 +248,13 @@ logins_per_ip_track_only_mode: false
 logo_upload_enabled: false
 mailer_domain_name: http://localhost:3000
 max_auth_apps_per_account: 2
-max_bad_passwords: 5
-max_bad_passwords_window_in_seconds: 60
 max_emails_per_account: 12
 max_mail_events: 4
 max_mail_events_window_in_days: 30
 max_phone_numbers_per_account: 5
 max_piv_cac_per_account: 2
+max_sign_in_failures: 5
+max_sign_in_failures_window_in_seconds: 60
 mfa_report_config: '[]'
 min_password_score: 3
 minimum_wait_before_another_usps_letter_in_hours: 24
@@ -519,6 +521,7 @@ production:
   email_registrations_per_ip_track_only_mode: true
   enable_test_routes: false
   enable_usps_verification: false
+  encrypted_document_storage_s3_bucket: ''
   facial_match_general_availability_enabled: false
   feature_select_email_to_share_enabled: false
   idv_sp_required: true
