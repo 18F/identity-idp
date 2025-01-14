@@ -161,7 +161,7 @@ module Idv
       ],
       'UT' => [
         # 3rd Sunday of every month 1:00 am. to 9:00 am. ET
-        { cron: '0 1 0 0 Sun#3', duration_minutes: 8 * 60 },
+        { cron: '0 1 * * Sun#3', duration_minutes: 8 * 60 },
       ],
       'VA' => [
         # Daily 5:00 am. to 5:30 am. ET
