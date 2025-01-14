@@ -134,7 +134,6 @@ RSpec.describe AccountsController do
           sp_name: nil,
           user: user,
           locked_for_session: false,
-          change_email_available: false,
         )
         allow(subject).to receive(:presenter).and_return(presenter)
 
@@ -173,7 +172,6 @@ RSpec.describe AccountsController do
             sp_name: nil,
             user: user,
             locked_for_session: false,
-            change_email_available: false,
           )
           allow(subject).to receive(:presenter).and_return(presenter)
 
