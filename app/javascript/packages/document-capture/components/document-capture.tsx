@@ -10,7 +10,6 @@ import { UploadFormEntriesError } from '../services/upload';
 import SelfieStep from './selfie-step';
 import DocumentsStep from './documents-step';
 import InPersonPrepareStep from './in-person-prepare-step';
-import InPersonLocationPostOfficeSearchStep from './in-person-location-post-office-search-step';
 import InPersonLocationFullAddressEntryPostOfficeSearchStep from './in-person-location-full-address-entry-post-office-search-step';
 import InPersonSwitchBackStep from './in-person-switch-back-step';
 import ReviewIssuesStep from './review-issues-step';
@@ -39,12 +38,8 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   const { flowPath } = useContext(UploadContext);
   const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
   const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
-  const {
-    inPersonFullAddressEntryEnabled,
-    inPersonURL,
-    skipDocAuthFromHandoff,
-    skipDocAuthFromHowToVerify,
-  } = useContext(InPersonContext);
+  const { inPersonURL, skipDocAuthFromHandoff, skipDocAuthFromHowToVerify } =
+    useContext(InPersonContext);
   useDidUpdateEffect(onStepChange, [stepName]);
   useEffect(() => {
     if (stepName) {
@@ -52,9 +47,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
     }
   }, [stepName]);
   const appName = getConfigValue('appName');
-  const inPersonLocationPostOfficeSearchForm = inPersonFullAddressEntryEnabled
-    ? InPersonLocationFullAddressEntryPostOfficeSearchStep
-    : InPersonLocationPostOfficeSearchStep;
+  const inPersonLocationPostOfficeSearchForm = InPersonLocationFullAddressEntryPostOfficeSearchStep;
 
   // Define different states to be used in human readable array declaration
   const documentFormStep: FormStep = {
