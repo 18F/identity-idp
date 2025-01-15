@@ -10,7 +10,6 @@ module OpenidConnect
                   only: [:show, :create]
     before_action :confirm_two_factor_authenticated, only: [:delete]
     skip_before_action :verify_authenticity_token, only: [:create]
-    skip_before_action :store_ui_locale
 
     # +GET+ Handle logout (with confirmation if initiated by relying partner)
     # @see {OpenID Connect RP-Initiated Logout 1.0 Specification}[https://openid.net/specs/openid-connect-rpinitiated-1_0.html#RPLogout]  # rubocop:disable Layout/LineLength

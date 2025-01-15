@@ -23,7 +23,6 @@ class SamlIdpController < ApplicationController
   prepend_before_action :skip_session_expiration, only: [:metadata, :remotelogout]
 
   skip_before_action :verify_authenticity_token
-  skip_before_action :store_ui_locale, only: [:auth, :logout]
   before_action :require_path_year
   before_action :handle_banned_user
   before_action :bump_auth_count, only: :auth

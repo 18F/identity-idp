@@ -31,9 +31,9 @@ class ApplicationController < ActionController::Base
   prepend_before_action :add_new_relic_trace_attributes
   prepend_before_action :session_expires_at
   prepend_before_action :set_locale
-  before_action :store_ui_locale
   before_action :disable_caching
   before_action :cache_issuer_in_cookie
+  after_action :store_user_locale
 
   def session_expires_at
     return if @skip_session_expiration || @skip_session_load
@@ -401,7 +401,7 @@ class ApplicationController < ActionController::Base
     I18n.locale = LocaleChooser.new(params[:locale], request).locale
   end
 
-  def store_ui_locale
+  def store_user_locale
     return unless user_signed_in?
 
     current_user.update!(ui_locale: I18n.locale.to_s) if current_user.ui_locale != I18n.locale.to_s
