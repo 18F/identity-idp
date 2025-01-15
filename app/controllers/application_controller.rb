@@ -402,7 +402,7 @@ class ApplicationController < ActionController::Base
   end
 
   def store_ui_locale
-    return if current_user.nil?
+    return unless user_signed_in?
 
     current_user.update!(ui_locale: I18n.locale.to_s) if current_user.ui_locale != I18n.locale.to_s
   end
