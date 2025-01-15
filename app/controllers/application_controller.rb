@@ -33,7 +33,7 @@ class ApplicationController < ActionController::Base
   prepend_before_action :set_locale
   before_action :disable_caching
   before_action :cache_issuer_in_cookie
-  after_action :store_web_locale_in_sessions
+  after_action :store_web_locale_in_session
 
   def session_expires_at
     return if @skip_session_expiration || @skip_session_load
@@ -401,7 +401,7 @@ class ApplicationController < ActionController::Base
     I18n.locale = LocaleChooser.new(params[:locale], request).locale
   end
 
-  def store_web_locale_in_sessions
+  def store_web_locale_in_session
     return unless user_signed_in?
 
     user_session[:web_locale] = I18n.locale.to_s
