@@ -228,14 +228,6 @@
   </section>
 <% end %>
 
-<%# Alert %>
-<% if @show_closed_post_office_banner %>
-  <%= render AlertComponent.new(type: :warning, class: 'margin-y-4', text_tag: :div) do %>
-    <p class="margin-bottom-1 margin-top-0 h3"><strong><%= t('in_person_proofing.post_office_closed.heading') %></strong></p>
-    <p><%= t('in_person_proofing.post_office_closed.body') %></p>
-  <% end %>
-<% end %>
-
 <% if !@is_enhanced_ipp %>
   <h3><%= t('in_person_proofing.body.location.change_location_heading') %></h3>
   <p class="margin-bottom-4">
