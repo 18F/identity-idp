@@ -1633,6 +1633,27 @@ RSpec.describe User do
         end
       end
     end
+
+    context 'with a pending in person profile' do
+      let(:pending_in_person_enrollment) { create(:in_person_enrollment, :pending, user: user) }
+      let(:pending_profile) { pending_in_person_enrollment.profile }
+
+      context 'when the pending in person profile has a "password_reset deactivation reason"' do
+        before do
+          pending_profile.update!(deactivation_reason: 'password_reset')
+        end
+
+        it 'returns the pending profile' do
+          expect(user.password_reset_profile).to eq(pending_profile)
+        end
+      end
+
+      context 'when the pending in person profile does not have a deactivation reason' do
+        it 'returns nil' do
+          expect(user.password_reset_profile).to be_nil
+        end
+      end
+    end
   end
 
   describe '#delete_account_bullet_key' do

@@ -562,4 +562,40 @@ RSpec.describe InPersonEnrollment, type: :model do
       end
     end
   end
+
+  describe '#cancel' do
+    context 'when the enrollment has a profile' do
+      let(:profile) { create(:profile) }
+      let(:enrollment) do
+        create(:in_person_enrollment, :pending, user: profile.user, profile: profile)
+      end
+
+      before do
+        enrollment.cancel
+      end
+
+      it 'updates the enrollment status to "cancelled"' do
+        expect(enrollment.status).to eq('cancelled')
+      end
+
+      it 'deactivates the profile' do
+        expect(profile).to have_attributes(
+          deactivation_reason: 'verification_cancelled',
+          in_person_verification_pending_at: nil,
+        )
+      end
+    end
+
+    context 'when the enrollment does not have a profile' do
+      let(:enrollment) { create(:in_person_enrollment, :establishing) }
+
+      before do
+        enrollment.cancel
+      end
+
+      it 'updates the enrollment status to "cancelled"' do
+        expect(enrollment.status).to eq('cancelled')
+      end
+    end
+  end
 end

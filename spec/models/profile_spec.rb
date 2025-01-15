@@ -859,6 +859,60 @@ RSpec.describe Profile do
     end
   end
 
+  describe '#clear_password_reset_deactivation_reason' do
+    context 'when the profile has the password_reset deactivation reason' do
+      context 'when the profile was previously active' do
+        subject { create(:profile, :active, user: user) }
+
+        before do
+          subject.deactivate(:password_reset)
+          subject.clear_password_reset_deactivation_reason
+        end
+
+        it 'removes "password_reset" deactivation reason from the profile' do
+          expect(subject.deactivation_reason).to be_nil
+        end
+
+        it 'activates the profile' do
+          expect(subject.active?).to be(true)
+        end
+      end
+
+      context 'when the profile was not previously active' do
+        subject { create(:profile, :in_person_verification_pending, user: user) }
+
+        before do
+          subject.deactivate(:password_reset)
+          subject.clear_password_reset_deactivation_reason
+        end
+
+        it 'removes "password_reset" deactivation reason from the profile' do
+          expect(subject.deactivation_reason).to be_nil
+        end
+
+        it 'does not activate the profile' do
+          expect(subject.active?).to be(false)
+        end
+      end
+    end
+
+    context 'when the profile does not have the password_reset deactivation reason' do
+      subject { create(:profile, :encryption_error, user: user) }
+
+      before do
+        subject.clear_password_reset_deactivation_reason
+      end
+
+      it 'does not remove the deactivation reason from the profile' do
+        expect(subject.deactivation_reason).to eq('encryption_error')
+      end
+
+      it 'does not activate the profile' do
+        expect(subject.active?).to be(false)
+      end
+    end
+  end
+
   describe '#activate_after_passing_in_person' do
     let(:current_time) { Time.zone.now }
 

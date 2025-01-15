@@ -43,7 +43,7 @@ class ResetPasswordForm
 
   def handle_valid_password
     update_user
-    mark_profile_inactive
+    mark_profile_as_password_reset
   end
 
   def update_user
@@ -60,11 +60,16 @@ class ResetPasswordForm
     user.update!(attributes)
   end
 
-  def mark_profile_inactive
-    return if active_profile.blank?
+  def mark_profile_as_password_reset
+    profile = find_active_or_pending_in_person_profile
+    return if profile.blank?
 
-    active_profile.deactivate(:password_reset)
+    profile.deactivate(:password_reset)
     Funnel::DocAuth::ResetSteps.call(user.id)
+  end
+
+  def find_active_or_pending_in_person_profile
+    active_profile || user.pending_in_person_enrollment&.profile
   end
 
   # It is possible for an account that is resetting their password to be "invalid".

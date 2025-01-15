@@ -153,15 +153,49 @@ RSpec.describe ResetPasswordForm, type: :model do
     end
 
     context 'when the user has a pending profile' do
-      let(:profile) { create(:profile, :verify_by_mail_pending, :in_person_verification_pending) }
-      let(:user) { create(:user, reset_password_sent_at: Time.zone.now, profiles: [profile]) }
+      context 'when the profile is pending gpo verification' do
+        let!(:user) { create(:user, reset_password_sent_at: Time.zone.now) }
+        let!(:profile) do
+          create(:profile, :verify_by_mail_pending, :in_person_verification_pending, user: user)
+        end
 
-      it 'includes that the profile was not deactivated in the form response' do
-        expect(result.success?).to eq(true)
-        expect(result.extra[:pending_profile_invalidated]).to eq(true)
-        expect(result.extra[:pending_profile_pending_reasons]).to eq(
-          'gpo_verification_pending,in_person_verification_pending',
-        )
+        before do
+          @result = form.submit(params)
+          profile.reload
+        end
+
+        it 'includes that the profile was not deactivated in the form response' do
+          expect(result.success?).to eq(true)
+          expect(result.extra[:pending_profile_invalidated]).to eq(true)
+          expect(result.extra[:pending_profile_pending_reasons]).to eq(
+            'gpo_verification_pending,in_person_verification_pending',
+          )
+        end
+      end
+
+      context 'when the profile is pending in person verification' do
+        let!(:user) { create(:user, reset_password_sent_at: Time.zone.now) }
+        let!(:profile) { create(:profile, :in_person_verification_pending, user: user) }
+
+        before do
+          @result = form.submit(params)
+          profile.reload
+        end
+
+        it 'returns a successful response' do
+          expect(@result.success?).to eq(true)
+        end
+
+        it 'includes that the profile was not deactivated in the form response' do
+          expect(@result.extra).to include(
+            pending_profile_invalidated: true,
+            pending_profile_pending_reasons: 'in_person_verification_pending',
+          )
+        end
+
+        it 'updates the profile to have a "password reset" deactivation reason' do
+          expect(profile.deactivation_reason).to eq('password_reset')
+        end
       end
     end
 
