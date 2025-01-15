@@ -69,14 +69,12 @@ RSpec.describe Idv::AamvaStateMaintenanceWindow do
   describe 'MAINTENANCE_WINDOWS' do
     described_class::MAINTENANCE_WINDOWS.each do |state, windows|
       windows.each do |window|
-        it "consists of a valid cron expression and numeric duration (#{state})" do
+        it "consists of a valid cron expression and duration (#{state})" do
           expect(window).to be_an(Idv::AamvaStateMaintenanceWindow::Window)
 
-          # parse_cron returns nil if the expression is invalid
-          cron = Fugit.parse_cron(window.cron)
-          expect(cron).to be_a(Fugit::Cron)
+          expect(window.cron_val).to be_a(Fugit::Cron)
 
-          expect(window.duration_minutes).to be_a(Numeric)
+          expect(window.duration).to be_an(ActiveSupport::Duration)
         end
       end
     end
