@@ -155,6 +155,13 @@ class InPersonEnrollment < ApplicationRecord
     profile&.deactivation_reason
   end
 
+  # Updates the in-person enrollment to status cancelled and deactivates the
+  # associated profile with reason "in_person_verification_cancelled".
+  def cancel
+    cancelled!
+    profile&.deactivate_due_to_in_person_verification_cancelled
+  end
+
   private
 
   def days_to_expire

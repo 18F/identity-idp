@@ -3370,6 +3370,7 @@ module AnalyticsEvents
   # @param [Integer] enrollments_failed number of enrollments which failed identity proofing
   # @param [Integer] enrollments_in_progress number of enrollments which did not have any change
   # @param [Integer] enrollments_passed number of enrollments which passed identity proofing
+  # @param [Integer] enrollments_skipped number of enrollments skipped
   # @param [Integer] enrollments_network_error
   # @param [Integer] enrollments_cancelled
   # @param [Float] percent_enrollments_errored
@@ -3383,6 +3384,7 @@ module AnalyticsEvents
     enrollments_failed:,
     enrollments_in_progress:,
     enrollments_passed:,
+    enrollments_skipped:,
     enrollments_network_error:,
     enrollments_cancelled:,
     percent_enrollments_errored:,
@@ -3399,6 +3401,7 @@ module AnalyticsEvents
       enrollments_failed:,
       enrollments_in_progress:,
       enrollments_passed:,
+      enrollments_skipped:,
       enrollments_network_error:,
       enrollments_cancelled:,
       percent_enrollments_errored:,
@@ -3501,6 +3504,29 @@ module AnalyticsEvents
       enrollment_id: enrollment_id,
       minutes_since_established: minutes_since_established,
       response_message: response_message,
+      **extra,
+    )
+  end
+
+  # Tracks skipped enrollments during the execution of the GetUspsProofingResultsJob
+  #
+  # @param [String] enrollment_code The in-person enrollment code.
+  # @param [String] enrollment_id The in-person enrollment ID.
+  # @param [String] reason The reason for skipping the enrollment.
+  # @param [String] job_name The class name of the job.
+  def idv_in_person_usps_proofing_results_job_enrollment_skipped(
+    enrollment_code:,
+    enrollment_id:,
+    reason:,
+    job_name:,
+    **extra
+  )
+    track_event(
+      :idv_in_person_usps_proofing_results_job_enrollment_skipped,
+      enrollment_code:,
+      enrollment_id:,
+      reason:,
+      job_name:,
       **extra,
     )
   end
