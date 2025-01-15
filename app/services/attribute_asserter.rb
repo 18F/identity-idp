@@ -36,6 +36,7 @@ class AttributeAsserter
     attrs = default_attrs
     add_email(attrs) if bundle.include? :email
     add_all_emails(attrs) if bundle.include? :all_emails
+    add_ui_locale(attrs) if bundle.include? :ui_locale
     add_bundle(attrs) if should_add_proofed_attributes?
     add_verified_at(attrs) if bundle.include?(:verified_at) && ial2_service_provider?
     if authn_request.requested_vtr_authn_contexts.present?
@@ -206,6 +207,10 @@ class AttributeAsserter
       name_format: 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
       name_id_format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS,
     }
+  end
+
+  def add_ui_locale(attrs)
+    attrs[:ui_locale] = { getter: ->(principal) { principal.ui_locale } }
   end
 
   def add_all_emails(attrs)

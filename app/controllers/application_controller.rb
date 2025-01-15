@@ -31,6 +31,7 @@ class ApplicationController < ActionController::Base
   prepend_before_action :add_new_relic_trace_attributes
   prepend_before_action :session_expires_at
   prepend_before_action :set_locale
+  before_action :store_ui_locale
   before_action :disable_caching
   before_action :cache_issuer_in_cookie
 
@@ -398,6 +399,12 @@ class ApplicationController < ActionController::Base
 
   def set_locale
     I18n.locale = LocaleChooser.new(params[:locale], request).locale
+  end
+
+  def store_ui_locale
+    return if current_user.nil?
+
+    current_user.update!(ui_locale: I18n.locale.to_s) if current_user.ui_locale != I18n.locale.to_s
   end
 
   def pii_requested_but_locked?

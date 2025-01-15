@@ -123,4 +123,25 @@ RSpec.feature 'Internationalization' do
       expect(page.document.find('html')['lang']).to eq('es')
     end
   end
+
+  context 'updating the ui_locale on the user record' do
+    it 'updates the ui_locale when the user changes the language', js: true do
+      user = user_with_2fa
+
+      visit root_url
+      fill_in_credentials_and_submit(user.email, user.password)
+
+      expect(user.reload.ui_locale).to eq('en')
+
+      click_button t('i18n.language', locale: 'en')
+      click_link t('i18n.locale.es')
+
+      expect(user.reload.ui_locale).to eq('es')
+
+      click_button t('i18n.language', locale: 'es')
+      click_link t('i18n.locale.fr')
+
+      expect(user.reload.ui_locale).to eq('fr')
+    end
+  end
 end
