@@ -8,7 +8,7 @@ class AccountShowPresenter
               :sp_session_request_url,
               :authn_context,
               :sp_name,
-              :identity
+              :change_email_available
 
   delegate :identity_verified_with_facial_match?, to: :user
 
