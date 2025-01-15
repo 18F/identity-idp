@@ -117,6 +117,13 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
       )
     end
 
+    it 'includes middle_name if it is present' do
+      applicant.middle_name = 'test_name'
+      expect(subject.body).to include(
+        '<nc:PersonMiddleName>test_name</nc:PersonMiddleName>',
+      )
+    end
+
     context '#sex' do
       context 'when the sex is male' do
         it 'sends a sex code value of 1' do
@@ -144,86 +151,43 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
       end
     end
 
-    context '#middle_name' do
-      context 'when the feature flag is off' do
-        before do
-          allow(IdentityConfig.store).to receive(:aamva_send_middle_name).and_return(false)
-        end
-
-        it 'does not add a PersonMiddleName node' do
-          applicant.middle_name = 'test_name'
-          expect(subject.body).to_not include('<nc:PersonMiddleName>')
-        end
-      end
-
-      context 'when the feature flag is on' do
-        before do
-          allow(IdentityConfig.store).to receive(:aamva_send_middle_name).and_return(true)
-        end
-
-        it 'does add a PersonMiddleName node' do
-          applicant.middle_name = 'test_name'
+    context '#state_id_type' do
+      context 'when the type is a Drivers License' do
+        it 'includes DocumentCategoryCode=1' do
+          applicant.state_id_data.state_id_type = 'drivers_license'
           expect(subject.body).to include(
-            '<nc:PersonMiddleName>test_name</nc:PersonMiddleName>',
+            '<aa:DocumentCategoryCode>1</aa:DocumentCategoryCode>',
           )
         end
       end
-    end
 
-    context '#state_id_type' do
-      context 'when the feature flag is off' do
-        before do
-          expect(IdentityConfig.store).to receive(:aamva_send_id_type).and_return(false)
-        end
-
-        it 'does not add a DocumentCategoryCode' do
-          applicant.state_id_data.state_id_type = 'drivers_license'
-          expect(subject.body).to_not include('<aa:DocumentCategoryCode>')
+      context 'when the type is a learners permit' do
+        it 'includes DocumentCategoryCode=2' do
+          applicant.state_id_data.state_id_type = 'drivers_permit'
+          expect(subject.body).to include(
+            '<aa:DocumentCategoryCode>2</aa:DocumentCategoryCode>',
+          )
         end
       end
 
-      context 'when the feature flag is on' do
-        before do
-          expect(IdentityConfig.store).to receive(:aamva_send_id_type).and_return(true)
+      context 'when the type is an ID Card' do
+        it 'includes DocumentCategoryCode=3' do
+          applicant.state_id_data.state_id_type = 'state_id_card'
+          expect(subject.body).to include(
+            '<aa:DocumentCategoryCode>3</aa:DocumentCategoryCode>',
+          )
+        end
+      end
+
+      context 'when the type is something invalid' do
+        it 'does not add a DocumentCategoryCode for nil ID type' do
+          applicant.state_id_data.state_id_type = nil
+          expect(subject.body).to_not include('<aa:DocumentCategoryCode>')
         end
 
-        context 'when the type is a Drivers License' do
-          it 'includes DocumentCategoryCode=1' do
-            applicant.state_id_data.state_id_type = 'drivers_license'
-            expect(subject.body).to include(
-              '<aa:DocumentCategoryCode>1</aa:DocumentCategoryCode>',
-            )
-          end
-        end
-
-        context 'when the type is a learners permit' do
-          it 'includes DocumentCategoryCode=2' do
-            applicant.state_id_data.state_id_type = 'drivers_permit'
-            expect(subject.body).to include(
-              '<aa:DocumentCategoryCode>2</aa:DocumentCategoryCode>',
-            )
-          end
-        end
-
-        context 'when the type is an ID Card' do
-          it 'includes DocumentCategoryCode=3' do
-            applicant.state_id_data.state_id_type = 'state_id_card'
-            expect(subject.body).to include(
-              '<aa:DocumentCategoryCode>3</aa:DocumentCategoryCode>',
-            )
-          end
-        end
-
-        context 'when the type is something invalid' do
-          it 'does not add a DocumentCategoryCode for nil ID type' do
-            applicant.state_id_data.state_id_type = nil
-            expect(subject.body).to_not include('<aa:DocumentCategoryCode>')
-          end
-
-          it 'does not add a DocumentCategoryCode for invalid ID types' do
-            applicant.state_id_data.state_id_type = 'License to Keep an Alpaca'
-            expect(subject.body).to_not include('<aa:DocumentCategoryCode>')
-          end
+        it 'does not add a DocumentCategoryCode for invalid ID types' do
+          applicant.state_id_data.state_id_type = 'License to Keep an Alpaca'
+          expect(subject.body).to_not include('<aa:DocumentCategoryCode>')
         end
       end
     end

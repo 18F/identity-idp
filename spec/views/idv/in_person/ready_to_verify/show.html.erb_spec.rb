@@ -176,50 +176,6 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
     end
   end
 
-  context 'post office warning' do
-    context 'when the show closed post office banner is disabled' do
-      before do
-        @show_closed_post_office_banner = false
-      end
-
-      it 'does not render the post office closed alert' do
-        render
-
-        aggregate_failures do
-          [
-            t('in_person_proofing.post_office_closed.heading'),
-            t('in_person_proofing.post_office_closed.body'),
-          ].each do |copy|
-            Array(copy).each do |part|
-              expect(rendered).to_not have_content(part)
-            end
-          end
-        end
-      end
-    end
-
-    context 'when the show closed post office banner is enabled' do
-      before do
-        @show_closed_post_office_banner = true
-      end
-
-      it 'renders the post office closed alert' do
-        render
-
-        aggregate_failures do
-          [
-            t('in_person_proofing.post_office_closed.heading'),
-            t('in_person_proofing.post_office_closed.body'),
-          ].each do |copy|
-            Array(copy).each do |part|
-              expect(rendered).to have_content(part)
-            end
-          end
-        end
-      end
-    end
-  end
-
   context 'what to expect section' do
     context 'when Enhanced IPP is not enabled' do
       let(:is_enhanced_ipp) { false }
