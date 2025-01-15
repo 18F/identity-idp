@@ -630,7 +630,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_15_145923) do
     t.datetime "sign_in_new_device_at", comment: "sensitive=false"
     t.datetime "password_compromised_checked_at", comment: "sensitive=false"
     t.datetime "webauthn_platform_recommended_dismissed_at", comment: "sensitive=false"
-    t.string "locale", comment: "sensitive=false"
+    t.string "web_language", comment: "sensitive=false"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["sign_in_new_device_at"], name: "index_users_on_sign_in_new_device_at"
     t.index ["uuid"], name: "index_users_on_uuid", unique: true

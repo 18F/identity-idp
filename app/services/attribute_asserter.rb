@@ -210,7 +210,7 @@ class AttributeAsserter
   end
 
   def add_locale(attrs)
-    attrs[:locale] = { getter: ->(principal) { principal.locale } }
+    attrs[:locale] = { getter: ->(principal) { principal.web_language } }
   end
 
   def add_all_emails(attrs)
