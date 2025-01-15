@@ -1154,7 +1154,6 @@ RSpec.describe 'OpenID Connect' do
       sign_in_live_with_2fa(user)
     end
 
-
     proofing_steps&.call
     handoff_page_steps&.call
 
