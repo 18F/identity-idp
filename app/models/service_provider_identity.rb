@@ -58,8 +58,8 @@ class ServiceProviderIdentity < ApplicationRecord
   end
 
   def sp_only_single_email_requested?
-    service_provider_record&.attribute_bundle&.include?('email') &&
-      !service_provider_record&.attribute_bundle&.include?('all_emails')
+    verified_attributes&.include?('email') &&
+      !verified_attributes.include?('all_emails')
   end
 
   def service_provider_id

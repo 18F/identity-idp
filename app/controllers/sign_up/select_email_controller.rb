@@ -56,8 +56,8 @@ module SignUp
     end
 
     def selected_email_id
-      if current_sp&.attribute_bundle&.include?('email') &&
-         !current_sp&.attribute_bundle&.include?('all_emails')
+      if decorated_sp_session&.requested_attributes&.include?('email') &&
+         !decorated_sp_session&.requested_attributes&.include?('all_emails')
         form_params[:selected_email_id]
       end
     end
