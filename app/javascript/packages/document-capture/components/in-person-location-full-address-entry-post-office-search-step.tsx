@@ -43,7 +43,7 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
       if (flowPath !== 'hybrid') {
         e.preventDefault();
       } else {
-        setSubmitEventMetadata({selected_location: selectedLocationAddress });
+        setSubmitEventMetadata({ selected_location: selectedLocationAddress });
       }
 
       onChange({ selectedLocationAddress });
