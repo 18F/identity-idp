@@ -253,6 +253,7 @@ RSpec.feature 'IAL1 Single Sign On' do
       )
 
       visit saml_authn_request
+      visit root_url(locale: 'es')
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default
@@ -265,7 +266,7 @@ RSpec.feature 'IAL1 Single Sign On' do
       xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
 
       expect(xmldoc.attribute_node_for('locale')).to be_present
-      expect(xmldoc.attribute_value_for('locale')).to eq('en')
+      expect(xmldoc.attribute_value_for('locale')).to eq('es')
     end
   end
 end
