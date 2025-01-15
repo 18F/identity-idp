@@ -72,7 +72,7 @@ RSpec.describe Idv::AamvaStateMaintenanceWindow do
         it "consists of a valid cron expression and duration (#{state})" do
           expect(window).to be_an(Idv::AamvaStateMaintenanceWindow::Window)
 
-          expect(window.cron_val).to be_a(Fugit::Cron)
+          expect(window.cron).to be_a(Fugit::Cron)
 
           expect(window.duration).to be_an(ActiveSupport::Duration)
         end

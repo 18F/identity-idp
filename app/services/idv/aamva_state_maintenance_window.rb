@@ -6,8 +6,11 @@ module Idv
     TZ = 'America/New_York'
 
     Window = Data.define(:cron, :duration) do
-      def cron_val
-        Time.use_zone(TZ) { Fugit.parse_cron(cron) }
+      def initialize(cron:, duration:)
+        super(
+          cron: Time.use_zone(TZ) { Fugit.parse_cron(cron) },
+          duration:,
+        )
       end
     end.freeze
 
@@ -210,7 +213,7 @@ module Idv
       def windows_for_state(state)
         Time.use_zone(TZ) do
           MAINTENANCE_WINDOWS.fetch(state, []).map do |window|
-            previous = window.cron_val.previous_time.to_t
+            previous = window.cron.previous_time.to_t
             (previous..(previous + window.duration))
           end
         end
