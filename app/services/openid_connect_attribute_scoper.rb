@@ -20,7 +20,7 @@ class OpenidConnectAttributeScoper
   VALID_SCOPES = (%w[
     email
     all_emails
-    ui_locale
+    locale
     openid
     profile:verified_at
   ] + X509_SCOPES + IAL2_SCOPES).freeze
@@ -28,7 +28,7 @@ class OpenidConnectAttributeScoper
   VALID_IAL1_SCOPES = (%w[
     email
     all_emails
-    ui_locale
+    locale
     openid
     profile:verified_at
   ] + X509_SCOPES).freeze
@@ -37,7 +37,7 @@ class OpenidConnectAttributeScoper
     email: %w[email],
     email_verified: %w[email],
     all_emails: %w[all_emails],
-    ui_locale: %w[ui_locale],
+    locale: %w[locale],
     address: %w[address],
     phone: %w[phone],
     phone_verified: %w[phone],

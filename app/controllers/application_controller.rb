@@ -404,7 +404,7 @@ class ApplicationController < ActionController::Base
   def store_user_locale
     return unless user_signed_in?
 
-    current_user.update!(ui_locale: I18n.locale.to_s) if current_user.ui_locale != I18n.locale.to_s
+    current_user.update!(locale: I18n.locale.to_s) if current_user.locale != I18n.locale.to_s
   end
 
   def pii_requested_but_locked?

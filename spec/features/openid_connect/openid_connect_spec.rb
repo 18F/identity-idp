@@ -569,12 +569,12 @@ RSpec.describe 'OpenID Connect' do
     expect(userinfo_response[:verified_at]).to be_nil
   end
 
-  it 'returns the ui_locale if requested', driver: :mobile_rack_test do
+  it 'returns the locale if requested', driver: :mobile_rack_test do
     user = user_with_2fa
 
     token_response = sign_in_get_token_response(
       user: user,
-      scope: 'openid email ui_locale',
+      scope: 'openid email locale',
       handoff_page_steps: proc do
         click_agree_and_continue
       end,
@@ -589,7 +589,7 @@ RSpec.describe 'OpenID Connect' do
 
     userinfo_response = JSON.parse(page.body).with_indifferent_access
     expect(userinfo_response[:email]).to eq(user.email)
-    expect(userinfo_response[:ui_locale]).to eq('en')
+    expect(userinfo_response[:locale]).to eq('en')
   end
 
   it 'errors if verified_within param is too recent', driver: :mobile_rack_test do

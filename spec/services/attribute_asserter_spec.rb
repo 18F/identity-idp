@@ -615,16 +615,16 @@ RSpec.describe AttributeAsserter do
         end
       end
 
-      context 'custom bundle includes ui_locale' do
-        let(:attribute_bundle) { %w[ui_locale] }
+      context 'custom bundle includes locale' do
+        let(:attribute_bundle) { %w[locale] }
         before do
           subject.build
         end
 
-        it 'includes the user ui_locale' do
-          ui_locale_getter = user.asserted_attributes[:ui_locale][:getter]
-          ui_locale = ui_locale_getter.call(user)
-          expect(ui_locale).to eq('en')
+        it 'includes the user locale' do
+          locale_getter = user.asserted_attributes[:locale][:getter]
+          locale = locale_getter.call(user)
+          expect(locale).to eq('en')
         end
       end
 

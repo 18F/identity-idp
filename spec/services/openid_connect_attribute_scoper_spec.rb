@@ -35,7 +35,7 @@ RSpec.describe OpenidConnectAttributeScoper do
         email: 'foo@example.com',
         email_verified: true,
         all_emails: ['foo@example.com', 'bar@example.com'],
-        ui_locale: 'es',
+        locale: 'es',
         given_name: 'John',
         family_name: 'Jones',
         birthdate: '1970-01-01',
@@ -90,11 +90,11 @@ RSpec.describe OpenidConnectAttributeScoper do
       end
     end
 
-    context 'with the ui_locale scope' do
-      let(:scope) { 'openid ui_locale' }
+    context 'with the locale scope' do
+      let(:scope) { 'openid locale' }
 
-      it 'includes the ui_locale attribute' do
-        expect(filtered[:ui_locale]).to eq('es')
+      it 'includes the locale attribute' do
+        expect(filtered[:locale]).to eq('es')
       end
     end
 

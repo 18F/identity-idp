@@ -5,7 +5,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
 
   let(:rails_session_id) { SecureRandom.uuid }
   let(:scope) do
-    'openid email all_emails ui_locale address phone profile social_security_number x509'
+    'openid email all_emails locale address phone profile social_security_number x509'
   end
   let(:service_provider_ial) { 2 }
   let(:service_provider) { create(:service_provider, ial: service_provider_ial) }
@@ -61,7 +61,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
 
       context 'no identity proofing' do
         let(:vtr) { ['C1.C2'] }
-        let(:scope) { 'openid email all_emails ui_locale' }
+        let(:scope) { 'openid email all_emails locale' }
 
         it 'includes the correct attributes' do
           aggregate_failures do
@@ -70,7 +70,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
             expect(user_info[:email]).to eq(identity.user.email_addresses.first.email)
             expect(user_info[:email_verified]).to eq(true)
             expect(user_info[:all_emails]).to eq([identity.user.email_addresses.first.email])
-            expect(user_info[:ui_locale]).to eq(identity.user.ui_locale)
+            expect(user_info[:locale]).to eq(identity.user.locale)
             expect(user_info).to_not have_key(:ial)
             expect(user_info).to_not have_key(:aal)
             expect(user_info[:vot]).to eq('C1.C2')
@@ -81,7 +81,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
       context 'identity proofing' do
         let(:vtr) { ['C1.C2.P1'] }
         let(:scope) do
-          'openid email all_emails ui_locale address phone profile social_security_number'
+          'openid email all_emails locale address phone profile social_security_number'
         end
 
         it 'includes the correct non-proofed attributes' do
@@ -91,7 +91,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
             expect(user_info[:email]).to eq(identity.user.email_addresses.first.email)
             expect(user_info[:email_verified]).to eq(true)
             expect(user_info[:all_emails]).to eq([identity.user.email_addresses.first.email])
-            expect(user_info[:ui_locale]).to eq(identity.user.ui_locale)
+            expect(user_info[:locale]).to eq(identity.user.locale)
             expect(user_info).to_not have_key(:ial)
             expect(user_info).to_not have_key(:aal)
             expect(user_info[:vot]).to eq('C1.C2.P1')
@@ -130,7 +130,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
           ].join(' ')
         end
         let(:requested_aal_value) { Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF }
-        let(:scope) { 'openid email all_emails ui_locale' }
+        let(:scope) { 'openid email all_emails locale' }
 
         it 'includes the correct attributes' do
           aggregate_failures do
@@ -139,7 +139,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
             expect(user_info[:email]).to eq(identity.user.email_addresses.first.email)
             expect(user_info[:email_verified]).to eq(true)
             expect(user_info[:all_emails]).to eq([identity.user.email_addresses.first.email])
-            expect(user_info[:ui_locale]).to eq(identity.user.ui_locale)
+            expect(user_info[:locale]).to eq(identity.user.locale)
             expect(user_info[:ial]).to eq(Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF)
             expect(user_info[:aal]).to eq(Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF)
             expect(user_info).to_not have_key(:vot)
@@ -156,7 +156,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
         end
         let(:requested_aal_value) { Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF }
         let(:scope) do
-          'openid email all_emails ui_locale address phone profile social_security_number'
+          'openid email all_emails locale address phone profile social_security_number'
         end
 
         it 'includes the correct non-proofed attributes' do
@@ -166,7 +166,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
             expect(user_info[:email]).to eq(identity.user.email_addresses.first.email)
             expect(user_info[:email_verified]).to eq(true)
             expect(user_info[:all_emails]).to eq([identity.user.email_addresses.first.email])
-            expect(user_info[:ui_locale]).to eq(identity.user.ui_locale)
+            expect(user_info[:locale]).to eq(identity.user.locale)
             expect(user_info[:ial]).to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
             expect(user_info[:aal]).to eq(Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF)
             expect(user_info).to_not have_key(:vot)
@@ -207,7 +207,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
               expect(user_info[:email]).to eq(identity.user.email_addresses.first.email)
               expect(user_info[:email_verified]).to eq(true)
               expect(user_info[:all_emails]).to eq([identity.user.email_addresses.first.email])
-              expect(user_info[:ui_locale]).to eq(identity.user.ui_locale)
+              expect(user_info[:locale]).to eq(identity.user.locale)
               expect(user_info[:ial]).to eq(
                 Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
               )
@@ -246,7 +246,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
         end
         let(:requested_aal_value) { Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF }
         let(:scope) do
-          'openid email all_emails ui_locale address phone profile social_security_number'
+          'openid email all_emails locale address phone profile social_security_number'
         end
 
         context 'the user has verified their identity' do
@@ -297,7 +297,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
 
     context 'when minimal scopes are requested for proofed attributes' do
       let(:scope) do
-        'openid email all_emails ui_locale profile'
+        'openid email all_emails locale profile'
       end
 
       it 'only returns the requested attributes' do

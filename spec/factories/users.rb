@@ -15,7 +15,7 @@ FactoryBot.define do
 
     created_at { Time.zone.now }
     accepted_terms_at { Time.zone.now if email }
-    ui_locale { 'en' }
+    locale { 'en' }
 
     after(:build) do |user, evaluator|
       next if !evaluator.email.present?

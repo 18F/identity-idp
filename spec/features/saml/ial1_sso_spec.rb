@@ -239,15 +239,15 @@ RSpec.feature 'IAL1 Single Sign On' do
     end
   end
 
-  context 'requesting ui_locale' do
-    it 'includes ui_locale in the response' do
+  context 'requesting locale' do
+    it 'includes locale in the response' do
       user = create(:user, :fully_registered)
       saml_authn_request = saml_authn_request_url(
         overrides: {
           issuer: sp1_issuer,
           authn_context: [
             Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-            "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}email,ui_locale",
+            "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}email,locale",
           ],
         },
       )
@@ -264,8 +264,8 @@ RSpec.feature 'IAL1 Single Sign On' do
 
       xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
 
-      expect(xmldoc.attribute_node_for('ui_locale')).to be_present
-      expect(xmldoc.attribute_value_for('ui_locale')).to eq('en')
+      expect(xmldoc.attribute_node_for('locale')).to be_present
+      expect(xmldoc.attribute_value_for('locale')).to eq('en')
     end
   end
 end

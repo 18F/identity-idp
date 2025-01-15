@@ -17,7 +17,7 @@ class OpenidConnectUserInfoPresenter
       iss: root_url,
       email: identity.email_address_for_sharing.email,
       email_verified: true,
-      ui_locale: identity.user.ui_locale,
+      locale: identity.user.locale,
     }
 
     info[:all_emails] = all_emails_from_sp_identity(identity) if scoper.all_emails_requested?

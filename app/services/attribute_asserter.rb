@@ -36,7 +36,7 @@ class AttributeAsserter
     attrs = default_attrs
     add_email(attrs) if bundle.include? :email
     add_all_emails(attrs) if bundle.include? :all_emails
-    add_ui_locale(attrs) if bundle.include? :ui_locale
+    add_locale(attrs) if bundle.include? :locale
     add_bundle(attrs) if should_add_proofed_attributes?
     add_verified_at(attrs) if bundle.include?(:verified_at) && ial2_service_provider?
     if authn_request.requested_vtr_authn_contexts.present?
@@ -209,8 +209,8 @@ class AttributeAsserter
     }
   end
 
-  def add_ui_locale(attrs)
-    attrs[:ui_locale] = { getter: ->(principal) { principal.ui_locale } }
+  def add_locale(attrs)
+    attrs[:locale] = { getter: ->(principal) { principal.locale } }
   end
 
   def add_all_emails(attrs)
