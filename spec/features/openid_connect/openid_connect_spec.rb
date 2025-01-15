@@ -572,8 +572,6 @@ RSpec.describe 'OpenID Connect' do
   it 'returns the locale if requested', driver: :mobile_rack_test do
     user = user_with_2fa
 
-
-
     token_response = sign_in_get_token_response(
       user: user,
       scope: 'openid email locale',
