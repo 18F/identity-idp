@@ -572,9 +572,24 @@ RSpec.describe 'OpenID Connect' do
   it 'returns the locale if requested', driver: :mobile_rack_test do
     user = user_with_2fa
 
+
+
     token_response = sign_in_get_token_response(
       user: user,
       scope: 'openid email locale',
+      sign_in_steps: proc do
+        visit root_path(locale: 'es')
+
+        fill_in_credentials_and_submit(
+          user.confirmed_email_addresses.first.email,
+          user.password,
+        )
+        fill_in_code_with_last_phone_otp
+        click_submit_default
+      end,
+      handoff_page_steps: proc do
+        click_agree_and_continue
+      end,
     )
 
     access_token = token_response[:access_token]
@@ -586,7 +601,7 @@ RSpec.describe 'OpenID Connect' do
 
     userinfo_response = JSON.parse(page.body).with_indifferent_access
     expect(userinfo_response[:email]).to eq(user.email)
-    expect(userinfo_response[:locale]).to eq('en')
+    expect(userinfo_response[:locale]).to eq('es')
   end
 
   it 'errors if verified_within param is too recent', driver: :mobile_rack_test do
@@ -1107,6 +1122,7 @@ RSpec.describe 'OpenID Connect' do
     acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
     scope: 'openid email',
     redirect_uri: 'gov.gsa.openidconnect.test://result',
+    sign_in_steps: nil,
     handoff_page_steps: nil,
     proofing_steps: nil,
     verified_within: nil,
@@ -1134,7 +1150,12 @@ RSpec.describe 'OpenID Connect' do
       verified_within: verified_within,
     )
 
-    _user = sign_in_live_with_2fa(user)
+    if sign_in_steps.present?
+      sign_in_steps.call
+    else
+      sign_in_live_with_2fa(user)
+    end
+
 
     proofing_steps&.call
     handoff_page_steps&.call
