@@ -16,7 +16,7 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
   const { inPersonURL, locationsURL, usStatesTerritories } = useContext(InPersonContext);
   const [inProgress, setInProgress] = useState<boolean>(false);
   const [autoSubmit, setAutoSubmit] = useState<boolean>(false);
-  const { trackEvent } = useContext(AnalyticsContext);
+  const { trackEvent, setSubmitEventMetadata } = useContext(AnalyticsContext);
   const [locationResults, setLocationResults] = useState<FormattedLocation[] | null | undefined>(
     null,
   );
@@ -36,12 +36,16 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
   // useCallBack here prevents unnecessary rerenders due to changing function identity
   const handleLocationSelect = useCallback(
     async (e: any, id: number) => {
-      if (flowPath !== 'hybrid') {
-        e.preventDefault();
-      }
       const selectedLocation = locationResults![id]!;
       const { streetAddress, formattedCityStateZip } = selectedLocation;
       const selectedLocationAddress = `${streetAddress}, ${formattedCityStateZip}`;
+
+      if (flowPath !== 'hybrid') {
+        e.preventDefault();
+      } else {
+        setSubmitEventMetadata({selected_location: selectedLocationAddress });
+      }
+
       onChange({ selectedLocationAddress });
       if (autoSubmit) {
         setDisabledAddressSearch(true);
