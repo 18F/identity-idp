@@ -569,6 +569,26 @@ RSpec.describe 'OpenID Connect' do
     expect(userinfo_response[:verified_at]).to be_nil
   end
 
+  it 'returns the locale if requested', driver: :mobile_rack_test do
+    user = user_with_2fa
+
+    token_response = sign_in_get_token_response(
+      user: user,
+      scope: 'openid email locale',
+    )
+
+    access_token = token_response[:access_token]
+    expect(access_token).to be_present
+
+    page.driver.get api_openid_connect_userinfo_path,
+                    {},
+                    'HTTP_AUTHORIZATION' => "Bearer #{access_token}"
+
+    userinfo_response = JSON.parse(page.body).with_indifferent_access
+    expect(userinfo_response[:email]).to eq(user.email)
+    expect(userinfo_response[:locale]).to eq('en')
+  end
+
   it 'errors if verified_within param is too recent', driver: :mobile_rack_test do
     client_id = 'urn:gov:gsa:openidconnect:test'
     allow(IdentityConfig.store).to receive(:allowed_verified_within_providers)
