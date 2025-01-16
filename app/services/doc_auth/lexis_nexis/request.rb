@@ -62,7 +62,6 @@ module DocAuth
       end
 
       def handle_connection_error(exception:, status_code: nil, status_message: nil)
-        NewRelic::Agent.notice_error(exception)
         DocAuth::Response.new(
           success: false,
           errors: { network: true },
