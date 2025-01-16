@@ -40,7 +40,7 @@ module AbTests
   DOC_AUTH_VENDOR = AbTest.new(
     experiment_name: 'Doc Auth Vendor',
     should_log: /^idv/i,
-    default_bucket: :lexis_nexis,
+    default_bucket: IdentityConfig.store.doc_auth_vendor_default.to_sym,
     buckets: {
       socure: IdentityConfig.store.doc_auth_vendor_switching_enabled ?
         IdentityConfig.store.doc_auth_vendor_socure_percent : 0,
