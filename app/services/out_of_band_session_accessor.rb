@@ -39,6 +39,11 @@ class OutOfBandSessionAccessor
     Pii::Cacher.new(nil, session).fetch(profile_id) if session
   end
 
+  # @return [String, nil]
+  def load_web_locale
+    session_data.dig('warden.user.user.session', :web_locale)
+  end
+
   # @return [X509::Attributes]
   def load_x509
     X509::Attributes.new_from_json(session_data.dig('warden.user.user.session', :decrypted_x509))
@@ -85,6 +90,13 @@ class OutOfBandSessionAccessor
 
   # @api private
   # Only used for convenience in tests
+  # @param [String] locale
+  def put_locale(locale, expiration = 5.minutes)
+    put({ web_locale: locale }, expiration)
+  end
+
+  # @api private
+  # Only used for convenience in tests
   def exists?
     session_data.present?
   end
@@ -92,15 +104,16 @@ class OutOfBandSessionAccessor
   private
 
   def put(data, expiration = 5.minutes)
-    session_data = {
-      'warden.user.user.session' => data.to_h,
+    existing_user_session = session_data.dig('warden.user.user.session')
+    new_session_data = {
+      'warden.user.user.session' => data.to_h.merge(existing_user_session.to_h),
     }
 
     session_store.send(
       :write_session,
       PLACEHOLDER_REQUEST,
       Rack::Session::SessionId.new(session_uuid),
-      session_data,
+      new_session_data,
       expire_after: expiration.to_i,
     )
   end
