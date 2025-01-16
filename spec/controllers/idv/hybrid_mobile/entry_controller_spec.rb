@@ -146,6 +146,36 @@ RSpec.describe Idv::HybridMobile::EntryController do
         end
       end
 
+      context 'AB vendor percentages are 0' do
+        context 'when default bucket it mock' do
+          let(:lexis_nexis_percent) { 0 }
+          let(:idv_vendor) { Idp::Constants::Vendors::MOCK }
+
+          before do
+            allow(IdentityConfig.store).to receive(:doc_auth_vendor_socure_percent)
+              .and_return(0)
+          end
+
+          it 'redirects to the default vendor' do
+            expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
+          end
+        end
+
+        context 'when default bucket it socure' do
+          let(:lexis_nexis_percent) { 0 }
+          let(:idv_vendor) { Idp::Constants::Vendors::SOCURE }
+
+          before do
+            allow(IdentityConfig.store).to receive(:doc_auth_vendor_socure_percent)
+              .and_return(0)
+          end
+
+          it 'redirects to the default vendor' do
+            expect(response).to redirect_to idv_hybrid_mobile_socure_document_capture_url
+          end
+        end
+      end
+
       context 'but we already had a session' do
         let!(:different_document_capture_session) do
           DocumentCaptureSession.create!(
