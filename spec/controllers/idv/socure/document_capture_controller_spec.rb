@@ -39,7 +39,6 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
     allow(IdentityConfig.store).to receive(:doc_auth_vendor_switching_enabled)
       .and_return(vendor_switching_enabled)
     allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
-
     allow(subject).to receive(:stored_result).and_return(stored_result)
 
     user_session = {}
@@ -97,6 +96,28 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         it 'redirects to the LN/mock controller' do
           get :show
           expect(response).to redirect_to idv_document_capture_url
+        end
+
+        context 'when redirect to correct vendor is disabled' do
+          let(:socure_capture_app_url) { 'https://verify.socure.test/' }
+          let(:response_body) do
+            {
+              data: {
+                docvTransactionToken: SecureRandom.hex(6),
+                url: socure_capture_app_url,
+              },
+            }
+          end
+          before do
+            allow(IdentityConfig.store)
+              .to receive(:doc_auth_redirect_to_correct_vendor_disabled).and_return(true)
+          end
+
+          it 'redirects to the Socure controller' do
+            get :show
+
+            expect(response).to have_http_status 200
+          end
         end
       end
 

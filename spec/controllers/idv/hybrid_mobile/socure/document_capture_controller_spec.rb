@@ -211,6 +211,30 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
           expect(document_capture_session.socure_docv_transaction_token)
             .to eq(docv_transaction_token)
         end
+
+        context 'when we try to use this controller but we should be using the LN/mock version' do
+          let(:idv_vendor) { Idp::Constants::Vendors::LEXIS_NEXIS }
+
+          it 'redirects to the LN/Mock controller' do
+            get :show
+
+            expect(response).to redirect_to(idv_hybrid_mobile_document_capture_url)
+          end
+
+          context 'when redirect to correct vendor is disabled' do
+            before do
+              allow(IdentityConfig.store)
+                .to receive(:doc_auth_redirect_to_correct_vendor_disabled).and_return(true)
+            end
+
+            it 'renders to the Socure controller' do
+              get :show
+
+              expect(response).to have_http_status 200
+              expect(response.body).to have_link(href: socure_capture_app_url)
+            end
+          end
+        end
       end
     end
 

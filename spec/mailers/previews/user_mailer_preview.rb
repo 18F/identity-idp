@@ -286,10 +286,6 @@ class UserMailerPreview < ActionMailer::Preview
     ).account_reinstated
   end
 
-  def in_person_post_office_closed
-    UserMailer.with(user: user, email_address: email_address_record).in_person_post_office_closed
-  end
-
   private
 
   def user
