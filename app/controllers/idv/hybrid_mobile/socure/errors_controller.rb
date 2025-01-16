@@ -22,7 +22,7 @@ module Idv
           Idv::StepInfo.new(
             key: :hybrid_socure_errors,
             controller: self,
-            action: :timeout,
+            action: :show,
             next_steps: [FlowPolicy::FINAL],
             preconditions: ->(idv_session:, user:) do
               true
