@@ -109,7 +109,7 @@ RSpec.describe 'accounts/connected_accounts/show.html.erb' do
     end
   end
 
-  context 'when the partner requests all emails' do
+  context 'when the partner requests all_emails' do
     before do
       assign(
         :presenter,
@@ -136,7 +136,7 @@ RSpec.describe 'accounts/connected_accounts/show.html.erb' do
     end
   end
 
-  context 'when the partner does not request an email' do
+  context 'when the partner does not request email' do
     before do
       assign(
         :presenter,
@@ -153,10 +153,10 @@ RSpec.describe 'accounts/connected_accounts/show.html.erb' do
     end
     let!(:identity) { create(:service_provider_identity, user:) }
 
-    it 'does not show the change link' do
+    it 'shows the change link' do
       render
 
-      expect(rendered).not_to have_link(
+      expect(rendered).to have_link(
         t('help_text.requested_attributes.change_email_link'),
         href: edit_connected_account_selected_email_path(identity_id: identity.id),
       )
