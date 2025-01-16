@@ -106,7 +106,10 @@ module Idv
           # If the stored_result is nil, the job fetching the results has not completed.
           analytics.idv_doc_auth_document_capture_polling_wait_visited(**analytics_arguments)
           if wait_timed_out?
-            redirect_to idv_hybrid_mobile_socure_errors_timeout_path
+            # redirect_to idv_hybrid_mobile_socure_errors_timeout_path
+            redirect_to idv_hybrid_mobile_socure_document_capture_errors_url(
+              error_code: :timeout,
+            )
           else
             @refresh_interval =
               IdentityConfig.store.doc_auth_socure_wait_polling_refresh_max_seconds

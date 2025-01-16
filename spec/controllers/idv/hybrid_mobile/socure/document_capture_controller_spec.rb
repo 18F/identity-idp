@@ -430,7 +430,11 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
 
         it 'redirects to the hybrid mobile socure errors timeout page' do
           get(:update)
-          expect(response).to redirect_to(idv_hybrid_mobile_socure_errors_timeout_url)
+          expect(response).to redirect_to(
+            idv_hybrid_mobile_socure_document_capture_errors_url(
+              error_code: :timeout,
+            ),
+          )
         end
       end
     end
