@@ -1,10 +1,20 @@
 # frozen_string_literal: true
 
 class SamlEndpoint
+  SAML_YEARS = AppArtifacts.store.members.map(&:to_s).map do |key|
+    regex = /saml_(?<year>\d{4})_(?<key_cert>key|cert)/
+    matches = regex.match(key)
+    matches && matches[:year]
+  end.compact.uniq.freeze
+
   attr_reader :year
 
   def initialize(year)
     @year = year
+  end
+
+  def self.valid_year?(year)
+    SAML_YEARS.include?(year)
   end
 
   def self.suffixes
