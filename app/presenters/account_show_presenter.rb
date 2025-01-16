@@ -8,7 +8,7 @@ class AccountShowPresenter
               :sp_session_request_url,
               :authn_context,
               :sp_name,
-              :change_option_available
+              :requested_attributes
 
   delegate :identity_verified_with_facial_match?, to: :user
 
@@ -19,7 +19,7 @@ class AccountShowPresenter
     sp_name:,
     user:,
     locked_for_session:,
-    change_option_available:
+    requested_attributes:
   )
     @decrypted_pii = decrypted_pii
     @user = user
@@ -27,7 +27,7 @@ class AccountShowPresenter
     @sp_session_request_url = sp_session_request_url
     @authn_context = authn_context
     @locked_for_session = locked_for_session
-    @change_option_available = change_option_available
+    @requested_attributes = requested_attributes
     @pii = determine_pii
   end
 
@@ -144,10 +144,10 @@ class AccountShowPresenter
     user.connected_apps.includes([:service_provider_record, :email_address])
   end
 
-  def hide_change_option
-    if change_option_available
-      decorated_sp_session.requested_attributes.include?('all_emails') ||
-        !decorated_sp_session.requested_attributes.include?('email')
+  def show_change_option
+    if requested_attributes
+      requested_attributes.include?('all_emails') ||
+        !requested_attributes.include?('email')
     end
   end
 
