@@ -810,7 +810,7 @@ errors.messages.wrong_length.one: tiene la longitud incorrecta (debe ser de 1 c
 errors.messages.wrong_length.other: tiene la longitud incorrecta (debe ser de %{count} caracteres)
 errors.piv_cac_setup.unique_name: Ese nombre ya fue seleccionado. Elija un nombre diferente.
 errors.registration.terms: Antes de continuar, debe darnos permiso. Marque la casilla a continuación y luego haga clic en continuar.
-errors.sign_in.bad_password_limit: Superó el número máximo de intentos de inicio de sesión. Debe esperar %{time_left} antes de volver a intentarlo.
+errors.sign_in.sign_in_failure_limit: Superó el número máximo de intentos de inicio de sesión. Debe esperar %{time_left} antes de volver a intentarlo.
 errors.two_factor_auth_setup.must_select_additional_option: Seleccione un método de autenticación adicional.
 errors.two_factor_auth_setup.must_select_option: Seleccione un método de autenticación.
 errors.verify_personal_key.rate_limited: Lo intentó demasiadas veces; vuelva a intentarlo en %{timeout}.
@@ -906,12 +906,12 @@ forms.personal_key.instructions: Confirme que tiene una copia de su clave person
 forms.personal_key.required_checkbox: Guardé mi clave personal en un lugar seguro.
 forms.personal_key.title: Ingrese su clave personal
 forms.phone.buttons.delete: Eliminar teléfono
-forms.piv_cac_login.submit: Inserte su tarjeta PIV o CAC.
-forms.piv_cac_mfa.submit: Inserte su tarjeta PIV o CAC.
+forms.piv_cac_login.submit: Inserte su tarjeta PIV o CAC
+forms.piv_cac_mfa.submit: Inserte su tarjeta PIV o CAC
 forms.piv_cac_setup.nickname: Alias de la tarjeta PIV o CAC
 forms.piv_cac_setup.no_thanks: No, gracias
 forms.piv_cac_setup.piv_cac_intro_html: Le pediremos que presente su tarjeta PIV o CAC <strong>cada vez que inicie sesión</strong> como parte de la autenticación de dos factores.<br><br>Después de hacer clic en “Agregar tarjeta PIV o CAC”, su navegador le pedirá el PIN de su tarjeta PIV o CAC y que seleccione un certificado.
-forms.piv_cac_setup.submit: Inserte su tarjeta PIV o CAC.
+forms.piv_cac_setup.submit: Inserte su tarjeta PIV o CAC
 forms.piv_cac_setup.try_again: Vuelva a intentarlo
 forms.registration.labels.email: Ingrese su dirección de correo electrónico
 forms.registration.labels.email_language: Seleccione su preferencia de idioma del correo electrónico
@@ -1233,8 +1233,8 @@ image_description.us_flag: Bandera de los EE. UU.
 image_description.warning: Señal amarilla de precaución
 in_person_proofing.body.barcode.cancel_link_text: Cancele su código de barras
 in_person_proofing.body.barcode.close_window: Ya puede cerrar esta ventana.
-in_person_proofing.body.barcode.deadline: Debe acudir a cualquier oficina de correos participante antes del %{deadline}
-in_person_proofing.body.barcode.deadline_restart: Si acude después del plazo, su información no se guardará y tendrá que reiniciar el proceso.
+in_person_proofing.body.barcode.deadline: Debe acudir a cualquier oficina de correos participante antes del %{deadline}.
+in_person_proofing.body.barcode.deadline_restart: Si acude después de esta fecha límite, su código de barras ya no funcionará y tendrá que reiniciar el proceso.
 in_person_proofing.body.barcode.eipp_tag: Código de barras piloto mejorado GSA
 in_person_proofing.body.barcode.eipp_what_to_bring: 'Según el tipo de identificación que tenga, es posible que deba presentar documentos comprobatorios. Lea con atención las opciones siguientes:'
 in_person_proofing.body.barcode.email_sent: Enviamos el código de barras y la información más abajo al correo electrónico que usó para iniciar sesión
@@ -1244,11 +1244,11 @@ in_person_proofing.body.barcode.questions: '¿Tiene alguna pregunta?'
 in_person_proofing.body.barcode.retail_hours: Horario de atención al público
 in_person_proofing.body.barcode.retail_hours_closed: Cerrado
 in_person_proofing.body.barcode.return_to_partner_link: Volver a %{sp_name}
-in_person_proofing.body.barcode.what_to_expect: Qué esperar en la oficina de correos
+in_person_proofing.body.barcode.what_to_expect: Qué hacer en la oficina de correos
 in_person_proofing.body.cta.button: Intentar en persona
 in_person_proofing.body.cta.prompt_detail: La mayoría de las personas que no pueden hacer la verificación de su identidad en línea logran verificarla en una oficina de correos participante. No es necesario hacer cita para ello, y hay oficinas en todo el país.
 in_person_proofing.body.expect.heading: Qué esperar después de la visita
-in_person_proofing.body.expect.info: En las 24 horas siguientes a su visita a la oficina de correos, recibirá un correo electrónico para informarle si se logró o no su verificación de identidad.
+in_person_proofing.body.expect.info: En las 24 horas siguientes a su visita a la oficina de correos, recibirá un correo electrónico para informarle si se logró o no su verificación de identidad. Busque un mensaje de no-reply@login.gov en su correo electrónico.
 in_person_proofing.body.location.change_location_find_other_locations: Busque otras oficinas de correos participantes.
 in_person_proofing.body.location.change_location_heading: ¿Necesita cambiar su oficina de correos?
 in_person_proofing.body.location.change_location_info_html: No necesita crear un nuevo código de barras, puede llevar este código de barras a cualquier oficina de correos participante. %{find_other_locations_link_html}
@@ -1327,7 +1327,7 @@ in_person_proofing.form.state_id.state_id_number_hint_spaces: espacios
 in_person_proofing.form.state_id.state_id_number_texas_hint: Este es el número de 8 dígitos de su identificación. Ingrese únicamente números en este campo.
 in_person_proofing.form.state_id.zipcode: Código postal
 in_person_proofing.headings.address: Ingrese su domicilio actual
-in_person_proofing.headings.barcode: Muestre este código de barras y su identificación emitida por el estado en una oficina de correos para terminar de verificar su identidad.
+in_person_proofing.headings.barcode: Muestre este código de barras y su identificación el estado en una oficina de correos para terminar de verificar su identidad.
 in_person_proofing.headings.barcode_eipp: Lleve este código de barras y los documentos comprobatorios a una oficina de correos para terminar de verificar su identidad
 in_person_proofing.headings.barcode_what_to_bring: Lo que debe llevar a la oficina de correos
 in_person_proofing.headings.cta: Intente verificar su identidad en persona
@@ -1372,7 +1372,7 @@ in_person_proofing.process.state_id.heading_eipp: Muestre su identificación y l
 in_person_proofing.process.state_id.info: No debe estar vencida. Actualmente no aceptamos otras formas de identificación, como pasaportes o identificaciones militares.
 in_person_proofing.process.state_id.info_eipp: El empleado escaneará su identificación. No debe estar vencida. Según el tipo de identificación que presente, es posible que deba mostrar documentos comprobatorios. Consulte los requisitos en la sección “Lo que debe llevar a la oficina de correos”.
 in_person_proofing.process.what_to_do.heading: Colóquese en cualquier fila
-in_person_proofing.process.what_to_do.info: Diga al empleado de la oficina de correos que desea verificar su identidad con %{app_name}.
+in_person_proofing.process.what_to_do.info: Diga al empleado de la oficina de correos que desea verificar su identidad. Si el empleado no sabe qué hacer, pida la ayuda de un supervisor.
 instructions.account.reactivate.begin: Empecemos.
 instructions.account.reactivate.explanation: 'Cuando creó su cuenta, le dimos una lista de palabras y le pedimos que las guardara en un lugar seguro. Era similar a esto:'
 instructions.account.reactivate.intro: Adoptamos medidas adicionales para mantener su información personal segura y privada, por lo que restablecer su contraseña requiere un poco más de trabajo.
@@ -1384,7 +1384,7 @@ instructions.go_back_to_mobile_app: Para continuar, vuelva a la aplicación %{fr
 instructions.mfa.authenticator.confirm_code_html: Ingrese el código de su aplicación de autenticación. Si tiene varias cuentas configuradas en su aplicación, ingrese el código correspondiente a %{app_name_html}.
 instructions.mfa.authenticator.manual_entry: O ingrese este código manualmente en su aplicación de autenticación
 instructions.mfa.piv_cac.account_not_found_html: '<p>%{sign_in} con su dirección de correo electrónico y su contraseña. Luego, agregue su tarjeta PIV o CAC a su cuenta.</p><p>¿No tiene una cuenta de %{app_name}? %{create_account}</p>'
-instructions.mfa.piv_cac.add_from_sign_in_html: '<strong> Instrucciones:</strong> Inserte su tarjeta PIV o CAC en <strong> “AGREGAR TARJETA PIV O CAC” </strong>. Tendrá que <strong> elegir un certificado </strong> (es probable que el correcto tenga su nombre) e <strong> ingrese su PIN </strong> (su PIN se creó cuando configuró su tarjeta PIV o CAC).'
+instructions.mfa.piv_cac.add_from_sign_in_html: '<strong> Instrucciones:</strong> Inserte su tarjeta PIV o CAC en <strong> “AGREGAR TARJETA PIV O CAC” </strong>. Tendrá que <strong> elegir un certificado </strong> (es probable que el correcto tenga su nombre) e <strong> ingresar su PIN </strong> (su PIN se creó cuando configuró su tarjeta PIV o CAC).'
 instructions.mfa.piv_cac.already_associated_html: Elija un certificado de una tarjeta PIV o CAC diferente y contacte con el administrador para confirmar que su tarjeta PIV o CAC está al día. Si cree que se trata de un error, %{try_again_html}.
 instructions.mfa.piv_cac.back_to_sign_in: Vuelva a iniciar sesión
 instructions.mfa.piv_cac.confirm_piv_cac: Inserte la tarjeta PIV o CAC asociada con su cuenta en un lector de tarjetas inteligente.
@@ -1398,7 +1398,7 @@ instructions.mfa.piv_cac.step_1: Asígnele un alias.
 instructions.mfa.piv_cac.step_1_info: Si agrega más de una tarjeta PIV o CAC, podrá distinguirlas.
 instructions.mfa.piv_cac.step_2: Inserte su tarjeta PIV o CAC en su lector de tarjetas.
 instructions.mfa.piv_cac.step_3: Agregue su tarjeta PIV o CAC.
-instructions.mfa.piv_cac.step_3_info_html: Tendrá que <strong> elegir un certificado </strong> (es probable que el correcto tenga su nombre) e <strong> ingrese su PIN </strong> (su PIN se creó cuando configuró su tarjeta PIV o CAC)
+instructions.mfa.piv_cac.step_3_info_html: Tendrá que <strong> elegir un certificado </strong> (es probable que el correcto tenga su nombre) e <strong> ingresar su PIN </strong> (su PIN se creó cuando configuró su tarjeta PIV o CAC)
 instructions.mfa.piv_cac.try_again: vuelva a intentarlo
 instructions.mfa.sms.number_message_html: Enviamos un mensaje de texto (SMS) con un código de un solo uso al %{number_html}. Este código vence en %{expiration} minutos.
 instructions.mfa.voice.number_message_html: Hicimos una llamada con un código de un solo uso al %{number_html}. Este código vence en %{expiration} minutos.
@@ -1680,7 +1680,7 @@ two_factor_authentication.account_reset.cancel_link: Cancelar su solicitud
 two_factor_authentication.account_reset.link: eliminando su cuenta
 two_factor_authentication.account_reset.pending: Actualmente tiene una solicitud pendiente para eliminar su cuenta. Se necesitan %{interval} desde el momento en que realizó la solicitud para completar el proceso. Por favor, vuelva más tarde.
 two_factor_authentication.account_reset.successful_cancel: Gracias. Su solicitud para eliminar su cuenta de %{app_name} ha sido cancelada.
-two_factor_authentication.account_reset.text_html: Si no puede usar ninguno de los métodos de autenticación anteriores, puede restablecer sus preferencias en %{link_html}.
+two_factor_authentication.account_reset.text_html: Si no puede usar ninguno de los métodos de autenticación anteriores, puede restablecer sus preferencias %{link_html}.
 two_factor_authentication.attempt_remaining_warning_html.one: Le queda <strong>%{count} intento</strong>.
 two_factor_authentication.attempt_remaining_warning_html.other: Le quedan <strong>%{count} intentos</strong>.
 two_factor_authentication.auth_app.change_nickname: Cambiar apodo
@@ -1769,7 +1769,7 @@ two_factor_authentication.piv_cac_mismatch.cta: Autenticar y añadir tarjeta PIV
 two_factor_authentication.piv_cac_mismatch.delete_account: Eliminar su cuenta
 two_factor_authentication.piv_cac_mismatch.instructions: Haga clic en “Autenticar y añadir tarjeta PIV o CAC” más abajo para autenticar con otro método antes de añadir esta tarjeta PIV o CAC a su cuenta.
 two_factor_authentication.piv_cac_mismatch.instructions_no_other_method: Si se le emitió una nueva tarjeta PIV o CAC, para poder usarla, deberá eliminar su cuenta de %{app_name} y crear una cuenta nueva.
-two_factor_authentication.piv_cac_mismatch.skip: Saltar añadir tarjeta PIV o CAC
+two_factor_authentication.piv_cac_mismatch.skip: Omitir añadir tarjeta PIV o CAC
 two_factor_authentication.piv_cac_mismatch.title: Esta tarjeta de identificación de empleado del gobierno no está conectada a su cuenta
 two_factor_authentication.piv_cac_upsell.add_piv: Agregar tarjeta PIV/CAC
 two_factor_authentication.piv_cac_upsell.choose_other_method: Elegir otros métodos

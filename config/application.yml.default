@@ -19,9 +19,7 @@ aamva_auth_url: 'https://example.org:12345/auth/url'
 aamva_cert_enabled: true
 aamva_private_key: ''
 aamva_public_key: ''
-aamva_send_id_type: true
-aamva_send_middle_name: true
-aamva_supported_jurisdictions: '["AL","AR","AZ","CO","CT","DC","DE","FL","GA","HI","IA","ID","IL","IN","KS","KY","MA","MD","ME","MI","MO","MS","MT","NC","ND","NE","NJ","NM","NV","OH","OR","PA","RI","SC","SD","TN","TX","VA","VT","WA","WI","WV","WY"]'
+aamva_supported_jurisdictions: '["AL","AR","AZ","CO","CT","DC","DE","FL","GA","HI","IA","ID","IL","IN","KS","KY","MA","MD","ME","MI","MO","MS","MT","NC","ND","NE","NH","NJ","NM","NV","OH","OK","OR","PA","RI","SC","SD","TN","TX","VA","VT","WA","WI","WV","WY"]'
 aamva_verification_request_timeout: 5.0
 aamva_verification_url: https://example.org:12345/verification/url
 account_creation_device_profiling: disabled
@@ -106,8 +104,9 @@ doc_auth_error_sharpness_threshold: 40
 doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 3
-doc_auth_read_additional_pii_attributes_enabled: false
+doc_auth_redirect_to_correct_vendor_disabled: false
 doc_auth_selfie_desktop_test_mode: false
+doc_auth_socure_max_allowed_users: 10_000
 doc_auth_socure_wait_polling_refresh_max_seconds: 15
 doc_auth_socure_wait_polling_timeout_minutes: 2
 doc_auth_supported_country_codes: '["US", "GU", "VI", "AS", "MP", "PR", "USA" ,"GUM", "VIR", "ASM", "MNP", "PRI"]'
@@ -130,6 +129,7 @@ enable_load_testing_mode: false
 enable_rate_limiting: true
 enable_test_routes: true
 enable_usps_verification: true
+encrypted_document_storage_s3_bucket: 'test-bucket'
 event_disavowal_expiration_hours: 240
 facial_match_general_availability_enabled: true
 feature_idv_force_gpo_verification_enabled: false
@@ -168,6 +168,7 @@ idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 idv_socure_reason_code_download_enabled: false
 idv_socure_shadow_mode_enabled: false
+idv_socure_shadow_mode_enabled_for_docv_users: true
 idv_sp_required: false
 in_person_completion_survey_url: 'https://login.gov'
 in_person_doc_auth_button_enabled: true
@@ -246,13 +247,13 @@ logins_per_ip_track_only_mode: false
 logo_upload_enabled: false
 mailer_domain_name: http://localhost:3000
 max_auth_apps_per_account: 2
-max_bad_passwords: 5
-max_bad_passwords_window_in_seconds: 60
 max_emails_per_account: 12
 max_mail_events: 4
 max_mail_events_window_in_days: 30
 max_phone_numbers_per_account: 5
 max_piv_cac_per_account: 2
+max_sign_in_failures: 5
+max_sign_in_failures_window_in_seconds: 60
 mfa_report_config: '[]'
 min_password_score: 3
 minimum_wait_before_another_usps_letter_in_hours: 24
@@ -513,14 +514,13 @@ development:
 #
 production:
   aamva_auth_url: 'https://authentication-cert.aamva.org/Authentication/Authenticate.svc'
-  aamva_send_id_type: false
-  aamva_send_middle_name: false
   aamva_verification_url: 'https://verificationservices-cert.aamva.org:18449/dldv/2.1/online'
   disable_email_sending: false
   disable_logout_get_request: false
   email_registrations_per_ip_track_only_mode: true
   enable_test_routes: false
   enable_usps_verification: false
+  encrypted_document_storage_s3_bucket: ''
   facial_match_general_availability_enabled: false
   feature_select_email_to_share_enabled: false
   idv_sp_required: true

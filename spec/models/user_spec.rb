@@ -1680,13 +1680,32 @@ RSpec.describe User do
   end
 
   describe '#second_last_signed_in_at' do
-    it 'returns second most recent full authentication event' do
-      user = create(:user)
-      _event1 = create(:event, user: user, event_type: 'sign_in_after_2fa')
-      event2 = create(:event, user: user, event_type: 'sign_in_after_2fa')
-      _event3 = create(:event, user: user, event_type: 'sign_in_after_2fa')
+    subject(:second_last_signed_in_at) { user.second_last_signed_in_at(since: 3.months.ago) }
+    let(:user) { create(:user) }
 
-      expect(user.second_last_signed_in_at).to eq(event2.reload.created_at)
+    around do |example|
+      freeze_time { example.run }
+    end
+
+    context 'in timeframe with multiple matched sign-in events' do
+      before do
+        create(:event, user:, event_type: :sign_in_after_2fa, created_at: 1.month.ago)
+        create(:event, user:, event_type: :sign_in_after_2fa, created_at: 2.months.ago)
+        create(:event, user:, event_type: :sign_in_after_2fa, created_at: 4.months.ago)
+      end
+
+      it 'returns date of second most recent full authentication event' do
+        expect(second_last_signed_in_at).to eq(2.months.ago)
+      end
+    end
+
+    context 'in timeframe with one or fewer matched sign-in events' do
+      before do
+        create(:event, user:, event_type: :sign_in_after_2fa, created_at: 1.month.ago)
+        create(:event, user:, event_type: :sign_in_after_2fa, created_at: 4.months.ago)
+      end
+
+      it { is_expected.to be_nil }
     end
   end
 

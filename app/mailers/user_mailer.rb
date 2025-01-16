@@ -263,8 +263,6 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  alias_method :in_person_please_call, :idv_please_call
-
   def in_person_completion_survey
     with_user_locale(user) do
       @header = t('user_mailer.in_person_completion_survey.header')
@@ -314,6 +312,7 @@ class UserMailer < ActionMailer::Base
         is_enhanced_ipp: is_enhanced_ipp,
       )
       @is_enhanced_ipp = is_enhanced_ipp
+
       mail(
         to: email_address.email,
         subject: t('user_mailer.in_person_ready_to_verify.subject', app_name: APP_NAME),
@@ -327,6 +326,7 @@ class UserMailer < ActionMailer::Base
     ).image_data
 
     @is_enhanced_ipp = enrollment.enhanced_ipp?
+
     with_user_locale(user) do
       @presenter = Idv::InPerson::ReadyToVerifyPresenter.new(
         enrollment: enrollment,

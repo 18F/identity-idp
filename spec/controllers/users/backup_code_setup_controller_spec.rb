@@ -8,7 +8,7 @@ RSpec.describe Users::BackupCodeSetupController do
         :authenticate_user!,
         :confirm_user_authenticated_for_2fa_setup,
         :apply_secure_headers_override,
-        [:confirm_recently_authenticated_2fa, except: ['reminder', 'continue']],
+        [:confirm_recently_authenticated_2fa, except: ['continue']],
         :validate_multi_mfa_selection,
       )
     end

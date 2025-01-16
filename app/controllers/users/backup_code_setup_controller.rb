@@ -13,7 +13,7 @@ module Users
     before_action :set_backup_code_setup_presenter
     before_action :apply_secure_headers_override
     before_action :authorize_backup_code_disable, only: [:delete]
-    before_action :confirm_recently_authenticated_2fa, except: [:reminder, :continue]
+    before_action :confirm_recently_authenticated_2fa, except: [:continue]
     before_action :validate_multi_mfa_selection, only: [:index]
 
     helper_method :in_multi_mfa_selection_flow?
@@ -67,10 +67,6 @@ module Users
       else
         redirect_to account_two_factor_authentication_path
       end
-    end
-
-    def reminder
-      flash.now[:success] = t('notices.authenticated_successfully')
     end
 
     def confirm_backup_codes; end

@@ -134,7 +134,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         state: 'MD',
         dob: '1986-07-01',
         sex: nil,
-        height: nil,
+        height: 69,
         weight: nil,
         eye_color: nil,
         state_id_expiration: '2099-10-15',
@@ -146,7 +146,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         issuing_country_code: 'USA',
       )
 
-      expect(response.pii_from_doc).to eq(expected_state_id_pii)
+      expect(response.pii_from_doc.to_h).to eq(expected_state_id_pii.to_h)
     end
 
     it 'excludes pii fields from logging' do
@@ -250,19 +250,23 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       end
     end
 
-    context 'when doc_auth_read_additional_pii_attributes_enabled is enabled' do
+    context 'when height is present' do
       let(:success_response_body) { LexisNexisFixtures.true_id_response_success }
 
-      it 'reads the additional PII attributes' do
-        allow(IdentityConfig.store).to receive(:doc_auth_read_additional_pii_attributes_enabled)
-          .and_return(true)
-
+      it 'properly converts the height to inches' do
         pii_from_doc = response.pii_from_doc
-
-        expect(pii_from_doc.first_name).to eq('LICENSE')
-        expect(pii_from_doc.name_suffix).to eq('JR')
-        expect(pii_from_doc.sex).to eq('male')
         expect(pii_from_doc.height).to eq(68)
+      end
+
+      context 'when the height has a space in it' do
+        # This fixture has the height returns as "5' 9\""
+        let(:success_response_body) { LexisNexisFixtures.true_id_response_success_3 }
+
+        it 'reads parses the height correctly' do
+          pii_from_doc = response.pii_from_doc
+
+          expect(pii_from_doc.height).to eq(69)
+        end
       end
     end
   end
@@ -353,8 +357,8 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         city: 'ANYTOWN',
         state: 'MD',
         dob: '1986-10-13',
-        sex: nil,
-        height: nil,
+        sex: 'male',
+        height: 70,
         weight: nil,
         eye_color: nil,
         state_id_expiration: '2099-10-15',
@@ -366,7 +370,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         issuing_country_code: nil,
       )
 
-      expect(response.pii_from_doc).to eq(expected_state_id_pii)
+      expect(response.pii_from_doc.to_h).to eq(expected_state_id_pii.to_h)
     end
   end
 

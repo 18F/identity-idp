@@ -1,7 +1,7 @@
-import { createContext } from 'react';
+import { createContext, useState } from 'react';
 import { useObjectMemo } from '@18f/identity-react-hooks';
 import type { ReactNode } from 'react';
-import defaultUpload from '../services/upload';
+import defaultUpload, { UploadFormEntriesError } from '../services/upload';
 import type { PII } from '../services/upload';
 
 const UploadContext = createContext({
@@ -11,6 +11,7 @@ const UploadContext = createContext({
   isMockClient: false,
   flowPath: 'standard' as FlowPath,
   formData: {} as Record<string, any>,
+  submitAttempts: 0,
 });
 
 UploadContext.displayName = 'UploadContext';
@@ -79,6 +80,11 @@ export interface UploadErrorResponse {
    * Number of remaining doc capture attempts for user.
    */
   remaining_submit_attempts?: number;
+
+  /**
+   * Number of submitted doc capture attempts for user
+   */
+  submit_attempts?: number;
 
   /**
    * Boolean to decide if capture hints should be shown with error.
@@ -189,7 +195,19 @@ function UploadContextProvider({
   flowPath,
   children,
 }: UploadContextProviderProps) {
-  const uploadWithFormData = (payload) => upload({ ...payload, ...formData }, { endpoint });
+  const [submitAttempts, setSubmitAttempts] = useState(0);
+
+  const uploadWithFormData = async (payload) => {
+    try {
+      const result = await upload({ ...payload, ...formData }, { endpoint });
+      return result;
+    } catch (error) {
+      if (error instanceof UploadFormEntriesError && error.submitAttempts !== undefined) {
+        setSubmitAttempts(error.submitAttempts);
+      }
+      throw error;
+    }
+  };
 
   const getStatus = () =>
     statusEndpoint
@@ -203,6 +221,7 @@ function UploadContextProvider({
     isMockClient,
     flowPath,
     formData,
+    submitAttempts,
   });
 
   return <UploadContext.Provider value={value}>{children}</UploadContext.Provider>;

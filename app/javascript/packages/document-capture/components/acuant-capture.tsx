@@ -141,11 +141,6 @@ interface AcuantCaptureProps {
 const NBSP_UNICODE = '\u00A0';
 
 /**
- * A noop function.
- */
-const noop = () => {};
-
-/**
  * Returns true if the given Acuant capture failure was caused by the user declining access to the
  * camera, or false otherwise.
  */
@@ -492,6 +487,16 @@ function AcuantCapture(
   }
 
   /**
+   * Responds to a drag and drop file upload by either preventing the default action
+   * or allowing the file to be uploaded
+   */
+  function startDragDropUpload(event) {
+    if (!allowUpload) {
+      event.preventDefault();
+    }
+  }
+
+  /**
    * Responds to a click by starting capture if supported in the environment, or triggering the
    * default file picker prompt. The click event may originate from the file input itself, or
    * another element which aims to trigger the prompt of the file input.
@@ -759,7 +764,7 @@ function AcuantCapture(
         >
           <FullScreen
             ref={fullScreenRef}
-            label={t('doc_auth.accessible_labels.document_capture_dialog')}
+            label={t('doc_auth.headings.selfie_capture')}
             hideCloseButton
           >
             <AcuantSelfieCaptureCanvas
@@ -783,7 +788,7 @@ function AcuantCapture(
         errorMessage={ownErrorMessage ?? errorMessage}
         isValuePending={hasStartedCropping}
         onClick={withLoggedClick('placeholder')(startCaptureOrTriggerUpload)}
-        onDrop={withLoggedClick('placeholder', { isDrop: true })(noop)}
+        onDrop={withLoggedClick('placeholder', { isDrop: true })(startDragDropUpload)}
         onChange={onUpload}
         onError={() => setOwnErrorMessage(null)}
       />
