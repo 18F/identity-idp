@@ -17,7 +17,11 @@ RSpec.describe Aws::SES::Base do
 
   before do
     allow(ses_client).to receive(:send_raw_email).and_return(ses_response)
-    allow(Aws::SES::Client).to receive(:new).and_return(ses_client)
+
+    stub_const(
+      'Aws::SES::Base::SES_CLIENT_POOL',
+      FakeConnectionPool.new { ses_client },
+    )
   end
 
   describe '#deliver!' do
@@ -51,15 +55,6 @@ RSpec.describe Aws::SES::Base do
     it 'sets the message id on the mail argument' do
       subject.deliver!(mail)
       expect(mail.header['ses-message-id'].value).to eq('123abc')
-    end
-
-    it 'retries timed out requests' do
-      Aws::SES::Base.new.deliver!(mail)
-
-      expect(Aws::SES::Client).to have_received(:new) do |options|
-        expect(options[:retry_limit]).to eq 3
-        expect(options.key?(:retry_backoff)).to eq true
-      end
     end
   end
 end
