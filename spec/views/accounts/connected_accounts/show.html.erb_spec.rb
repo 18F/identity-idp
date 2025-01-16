@@ -135,4 +135,31 @@ RSpec.describe 'accounts/connected_accounts/show.html.erb' do
       )
     end
   end
+
+  context 'when the partner does not request an email' do
+    before do
+      assign(
+        :presenter,
+        AccountShowPresenter.new(
+          decrypted_pii: nil,
+          user: user,
+          sp_session_request_url: nil,
+          authn_context: nil,
+          sp_name: nil,
+          locked_for_session: false,
+          requested_attributes: ['ssn'],
+        ),
+      )
+    end
+    let!(:identity) { create(:service_provider_identity, user:) }
+
+    it 'does not show the change link' do
+      render
+
+      expect(rendered).not_to have_link(
+        t('help_text.requested_attributes.change_email_link'),
+        href: edit_connected_account_selected_email_path(identity_id: identity.id),
+      )
+    end
+  end
 end
