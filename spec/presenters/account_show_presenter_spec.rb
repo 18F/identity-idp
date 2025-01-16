@@ -679,7 +679,7 @@ RSpec.describe AccountShowPresenter do
     end
   end
 
-  describe '#hide_change_option' do
+  describe '#show_change_option' do
     let(:view_context) { ActionController::Base.new.view_context }
     let(:service_provider) { create(:service_provider) }
     let(:view_context) { ActionController::Base.new.view_context }
@@ -693,7 +693,7 @@ RSpec.describe AccountShowPresenter do
       )
     end
 
-    it 'returns false if option is not available' do
+    it 'returns false when option should be shown' do
       user = User.new
       account_show = AccountShowPresenter.new(
         decrypted_pii: {},
@@ -702,10 +702,25 @@ RSpec.describe AccountShowPresenter do
         sp_name: nil,
         user: user,
         locked_for_session: false,
-        requested_attributes: false,
+        requested_attributes: ['ssn'],
       )
 
-      expect(account_show.requested_attributes).to eq(false)
+      expect(account_show.hide_change_option).to eq(false)
+    end
+
+    it 'returns true when option should be hidden' do
+      user = User.new
+      account_show = AccountShowPresenter.new(
+        decrypted_pii: {},
+        sp_session_request_url: nil,
+        authn_context: nil,
+        sp_name: nil,
+        user: user,
+        locked_for_session: false,
+        requested_attributes: ['all_emails'],
+      )
+
+      expect(account_show.hide_change_option).to eq(true)
     end
   end
 end
