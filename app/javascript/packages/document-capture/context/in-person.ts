@@ -51,9 +51,19 @@ export interface InPersonContextProps {
   skipDocAuthFromHandoff?: boolean;
 
   /**
+   * Flag set when user select IPP from the Socure Hybrid page when IPP is available
+   */
+  skipDocAuthFromSocure?: boolean;
+
+  /**
    * URL for Opt-in IPP, used when in_person_proofing_opt_in_enabled is enabled
    */
   howToVerifyURL?: string;
+
+  /**
+   * URL to return back to the Socure timeout page from Opt-in IPP
+   */
+  socureErrorsTimeoutURL?: string;
 
   /**
    * URL for going back to previous steps in Doc Auth, like handoff and howToVerify

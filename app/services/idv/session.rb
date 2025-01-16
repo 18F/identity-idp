@@ -74,6 +74,7 @@ module Idv
       selfie_check_required
       skip_doc_auth_from_handoff
       skip_doc_auth_from_how_to_verify
+      skip_doc_auth_from_socure
       skip_hybrid_handoff
       socure_docv_wait_polling_started_at
       ssn

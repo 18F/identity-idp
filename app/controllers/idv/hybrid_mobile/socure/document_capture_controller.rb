@@ -12,8 +12,9 @@ module Idv
 
         check_or_render_not_found -> { IdentityConfig.store.socure_docv_enabled }
         before_action :check_valid_document_capture_session, except: [:update]
-        before_action -> { redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, true) },
-                      only: :show
+        before_action -> do
+          redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, in_hybrid_mobile: true)
+        end, only: :show
         before_action :fetch_test_verification_data, only: [:update]
 
         def show
@@ -97,9 +98,7 @@ module Idv
           # If the stored_result is nil, the job fetching the results has not completed.
           analytics.idv_doc_auth_document_capture_polling_wait_visited(**analytics_arguments)
           if wait_timed_out?
-            # flash[:error] = I18n.t('errors.doc_auth.polling_timeout')
-            # TODO: redirect to try again page LG-14873/14952/15059
-            render plain: 'Technical difficulties!!!', status: :ok
+            redirect_to idv_hybrid_mobile_socure_errors_timeout_path
           else
             @refresh_interval =
               IdentityConfig.store.doc_auth_socure_wait_polling_refresh_max_seconds

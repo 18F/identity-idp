@@ -11,8 +11,9 @@ module Idv
       check_or_render_not_found -> { IdentityConfig.store.socure_docv_enabled }
       before_action :confirm_not_rate_limited
       before_action :confirm_step_allowed
-      before_action -> { redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, false) },
-                    only: :show
+      before_action -> do
+        redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, in_hybrid_mobile: false)
+      end, only: :show
       before_action :fetch_test_verification_data, only: [:update]
 
       # reconsider and maybe remove these when implementing the real
