@@ -470,7 +470,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_06_232958) do
     t.index ["user_id", "active"], name: "index_profiles_on_user_id_and_active", unique: true, where: "(active = true)"
     t.index ["user_id"], name: "index_profiles_on_user_id"
   end
-  
+
   create_table "registration_logs", force: :cascade do |t|
     t.integer "user_id", null: false, comment: "sensitive=false"
     t.datetime "registered_at", precision: nil, comment: "sensitive=false"
