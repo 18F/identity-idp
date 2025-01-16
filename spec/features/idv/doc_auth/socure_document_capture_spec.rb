@@ -459,6 +459,29 @@ RSpec.feature 'document capture step', :js do
     it_behaves_like 'a properly categorized Socure error', 'I856', 'doc_auth.headers.id_not_found'
   end
 
+  context 'Pii validation fails' do
+    before do
+      allow_any_instance_of(Idv::DocPiiForm).to receive(:zipcode).and_return(:invalid_junk)
+    end
+
+    it 'presents as a type 1 error' do
+      stub_docv_verification_data_pass(docv_transaction_token: @docv_transaction_token)
+
+      visit_idp_from_oidc_sp_with_ial2
+      @user = sign_in_and_2fa_user
+
+      complete_doc_auth_steps_before_document_capture_step
+      click_idv_continue
+
+      socure_docv_upload_documents(
+        docv_transaction_token: @docv_transaction_token,
+      )
+      visit idv_socure_document_capture_update_path
+
+      expect(page).to have_content(t('doc_auth.headers.unreadable_id'))
+    end
+  end
+
   def expect_rate_limited_header(expected_to_be_present)
     review_issues_h1_heading = strip_tags(t('doc_auth.errors.rate_limited_heading'))
     if expected_to_be_present

@@ -96,11 +96,13 @@ module DocAuth
         end
 
         def error_messages
-          return {} if successful_result?
-
-          {
-            socure: { reason_codes: get_data(DATA_PATHS[:reason_codes]) },
-          }
+          if !successful_result?
+            { socure: { reason_codes: get_data(DATA_PATHS[:reason_codes]) } }
+          elsif !pii_valid?
+            { pii_validation: 'failed' }
+          else
+            {}
+          end
         end
 
         def read_pii

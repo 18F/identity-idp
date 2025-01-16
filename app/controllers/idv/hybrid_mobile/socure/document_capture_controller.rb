@@ -126,6 +126,7 @@ module Idv
             analytics_id: 'Doc Auth',
             liveness_checking_required: false,
             selfie_check_required: false,
+            pii_like_keypaths: [[:pii]],
           }
         end
       end

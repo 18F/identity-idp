@@ -149,6 +149,7 @@ module Idv
           skip_hybrid_handoff: idv_session.skip_hybrid_handoff,
           liveness_checking_required: resolved_authn_context_result.facial_match?,
           selfie_check_required: resolved_authn_context_result.facial_match?,
+          pii_like_keypaths: [[:pii]],
         }.merge(ab_test_analytics_buckets)
       end
     end

@@ -79,6 +79,7 @@ module Idv
           analytics_id: 'Doc Auth',
           liveness_checking_required: resolved_authn_context_result.facial_match?,
           selfie_check_required: resolved_authn_context_result.facial_match?,
+          pii_like_keypaths: [[:pii]],
         }.merge(
           ab_test_analytics_buckets,
         )

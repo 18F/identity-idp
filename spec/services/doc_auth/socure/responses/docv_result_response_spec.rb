@@ -20,5 +20,9 @@ RSpec.describe DocAuth::Socure::Responses::DocvResultResponse do
     it 'fails' do
       expect(docv_response.success?).to be(false)
     end
+
+    it 'with a pii failure error' do
+      expect(docv_response.errors).to eq({ pii_validation: 'failed' })
+    end
   end
 end
