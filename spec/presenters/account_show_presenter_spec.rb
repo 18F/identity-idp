@@ -25,7 +25,7 @@ RSpec.describe AccountShowPresenter do
       sp_name:,
       user:,
       locked_for_session:,
-      change_email_available:,
+      change_option_available: false,
     )
   end
 
@@ -295,7 +295,7 @@ RSpec.describe AccountShowPresenter do
           sp_name: nil,
           user: user,
           locked_for_session: false,
-          change_email_available: false,
+          change_option_available: false,
         )
 
         expect(account_show.pending_ipp?).to be(false)
@@ -329,7 +329,7 @@ RSpec.describe AccountShowPresenter do
           sp_name: nil,
           user: user,
           locked_for_session: false,
-          change_email_available: false,
+          change_option_available: false,
         )
 
         expect(account_show.pending_ipp?).to be(false)
@@ -457,7 +457,7 @@ RSpec.describe AccountShowPresenter do
           authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
-          change_email_available: false,
+          change_option_available: false,
         )
 
         expect(profile_index.header_personalization).to eq first_name
@@ -476,7 +476,7 @@ RSpec.describe AccountShowPresenter do
           authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
-          change_email_available: false,
+          change_option_available: false,
         )
 
         expect(profile_index.header_personalization).to eq email_address.email
@@ -499,7 +499,7 @@ RSpec.describe AccountShowPresenter do
           authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
-          change_email_available: false,
+          change_option_available: false,
         )
 
         expect(profile_index.totp_content).to eq t('account.index.auth_app_enabled')
@@ -519,7 +519,7 @@ RSpec.describe AccountShowPresenter do
           authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
-          change_email_available: false,
+          change_option_available: false,
         )
 
         expect(profile_index.totp_content).to eq t('account.index.auth_app_disabled')
@@ -557,7 +557,7 @@ RSpec.describe AccountShowPresenter do
         sp_name: nil,
         user: user.reload,
         locked_for_session: false,
-        change_email_available: false,
+        change_option_available: false,
       )
 
       expect(account_show.backup_codes_generated_at).to be_within(
@@ -577,7 +577,7 @@ RSpec.describe AccountShowPresenter do
         sp_name: nil,
         user: user.reload,
         locked_for_session: false,
-        change_email_available: false,
+        change_option_available: false,
       )
 
       expect(account_show.backup_codes_generated_at).to be_nil
@@ -626,7 +626,7 @@ RSpec.describe AccountShowPresenter do
           authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
-          change_email_available: false,
+          change_option_available: false,
         )
 
         expect(
@@ -651,7 +651,7 @@ RSpec.describe AccountShowPresenter do
           authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
-          change_email_available: false,
+          change_option_available: false,
         )
 
         expect(
@@ -671,10 +671,52 @@ RSpec.describe AccountShowPresenter do
           authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
-          change_email_available: false,
+          change_option_available: false,
         )
 
         expect(profile_index.personal_key_generated_at).to be_nil
+      end
+    end
+  end
+
+  describe '#hide_change_option' do
+    let(:view_context) { ActionController::Base.new.view_context }
+    let(:service_provider) { create(:service_provider) }
+    let(:view_context) { ActionController::Base.new.view_context }
+
+    let(:decorated_sp_session) do
+      ServiceProviderSession.new(
+        sp: service_provider,
+        view_context: view_context,
+        sp_session: {},
+        service_provider_request: ServiceProviderRequestProxy.new,
+      )
+    end
+
+    it 'returns false if option is not available' do
+      user = User.new
+      account_show = AccountShowPresenter.new(
+        decrypted_pii: {},
+        sp_session_request_url: nil,
+        authn_context: nil,
+        sp_name: nil,
+        user: user,
+        locked_for_session: false,
+        change_option_available: false,
+      )
+
+      expect(account_show.change_option_available).to eq(false)
+    end
+
+    context 'all_emails' do
+      subject(:pii) { presenter.pii }
+
+      it 'returns true if all_emails is present' do
+        let(:requested_attributes) { [:all_emails] }
+
+      end
+
+      context 'email' do
       end
     end
   end
