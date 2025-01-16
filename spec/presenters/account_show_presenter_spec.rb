@@ -707,17 +707,5 @@ RSpec.describe AccountShowPresenter do
 
       expect(account_show.change_option_available).to eq(false)
     end
-
-    context 'all_emails' do
-      subject(:pii) { presenter.pii }
-
-      it 'returns true if all_emails is present' do
-        let(:requested_attributes) { [:all_emails] }
-
-      end
-
-      context 'email' do
-      end
-    end
   end
 end
