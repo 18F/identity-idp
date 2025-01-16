@@ -2,17 +2,15 @@ require 'rails_helper'
 
 RSpec.describe SignUp::SelectEmailController do
   let(:user) { create(:user, :with_multiple_emails) }
-  let(:service_provider_attribute_bundle) { %w[email] }
   let(:sp) do
-    create(
-      :service_provider,
-      attribute_bundle: service_provider_attribute_bundle,
-    )
+    create(:service_provider)
   end
+  let(:sp_session) { { requested_attributes: %w[email] } }
 
   before do
     stub_sign_in(user)
     allow(controller).to receive(:current_sp).and_return(sp)
+    allow(controller).to receive(:sp_session).and_return(sp_session)
     allow(controller).to receive(:needs_completion_screen_reason).and_return(:new_attributes)
   end
 
@@ -108,7 +106,7 @@ RSpec.describe SignUp::SelectEmailController do
     end
 
     context ' with all_email and emails requested for SP' do
-      let(:service_provider_attribute_bundle) { %w[email all_emails] }
+      let(:sp_session) { { requested_attributes: %w[email all_emails] } }
 
       it 'returns nil' do
         response
@@ -120,8 +118,7 @@ RSpec.describe SignUp::SelectEmailController do
     end
 
     context ' with all_emails requested for SP' do
-      let(:service_provider_attribute_bundle) { %w[all_emails] }
-
+      let(:sp_session) { { requested_attributes: %w[all_emails] } }
       it 'returns nil' do
         response
 

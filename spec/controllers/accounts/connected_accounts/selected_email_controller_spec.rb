@@ -89,19 +89,15 @@ RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
 
   describe '#update' do
     let(:identity_id) { user.identities.take.id }
-    let(:service_provider_attribute_bundle) { %w[email] }
+    let(:verified_attributes) { %w[email] }
     let(:selected_email_id) { user.confirmed_email_addresses.sample.id }
     let(:params) { { identity_id:, select_email_form: { selected_email_id: selected_email_id } } }
-    let(:sp) do
-      create(
-        :service_provider,
-        attribute_bundle: service_provider_attribute_bundle,
-      )
-    end
+    let(:sp) { create(:service_provider) }
     before do
       identity = ServiceProviderIdentity.find(identity_id)
       identity.user_id = user&.id
       identity.service_provider = sp.issuer
+      identity.verified_attributes = verified_attributes
       identity.save!
     end
 
@@ -125,15 +121,7 @@ RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
     end
 
     context ' with all_emails and emails requested' do
-      let(:service_provider_attribute_bundle) { %w[email all_emails] }
-
-      let(:identity) do
-        create(:service_provider_identity, :active, service_provider: sp.issuer)
-      end
-
-      before do
-        identity.update!(user_id: user.id)
-      end
+      let(:verified_attributes) { %w[email all_emails] }
 
       it 'returns nil' do
         response
@@ -144,21 +132,7 @@ RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
     end
 
     context ' with all_emails requested' do
-      let(:service_provider_attribute_bundle) { %w[all_emails] }
-
-      let(:sp) do
-        create(
-          :service_provider,
-          attribute_bundle: service_provider_attribute_bundle,
-        )
-      end
-      let(:identity) do
-        create(:service_provider_identity, :active, service_provider: sp.issuer)
-      end
-
-      before do
-        identity.update!(user_id: user.id)
-      end
+      let(:verified_attributes) { %w[all_emails] }
 
       it 'returns nil' do
         response
