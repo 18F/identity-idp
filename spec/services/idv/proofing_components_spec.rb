@@ -21,9 +21,6 @@ RSpec.describe Idv::ProofingComponents do
 
   subject do
     described_class.new(
-      session:,
-      user:,
-      user_session:,
       idv_session:,
     )
   end
