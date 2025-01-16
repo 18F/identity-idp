@@ -70,7 +70,6 @@ describe('InPersonLocationPostOfficeSearchStep', () => {
         addressSearchURL,
         inPersonOutageMessageEnabled: false,
         inPersonOutageExpectedUpdateDate: 'January 1, 2024',
-        inPersonFullAddressEntryEnabled: true,
         optedInToInPersonProofing: false,
         usStatesTerritories,
       }}

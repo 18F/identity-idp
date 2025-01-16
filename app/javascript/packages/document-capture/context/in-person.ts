@@ -27,11 +27,6 @@ export interface InPersonContextProps {
   inPersonOutageExpectedUpdateDate?: string;
 
   /**
-   * When true users must enter a full address when searching for a Post Office location
-   */
-  inPersonFullAddressEntryEnabled: boolean;
-
-  /**
    * When true a user has entered ipp by opting in
    */
   optedInToInPersonProofing: boolean;
@@ -70,7 +65,6 @@ const InPersonContext = createContext<InPersonContextProps>({
   locationsURL: '',
   addressSearchURL: '',
   inPersonOutageMessageEnabled: false,
-  inPersonFullAddressEntryEnabled: false,
   optedInToInPersonProofing: false,
   usStatesTerritories: [],
 });

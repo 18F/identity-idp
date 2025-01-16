@@ -184,7 +184,6 @@ in_person_enrollments_ready_job_max_number_of_messages: 10
 in_person_enrollments_ready_job_queue_url: ''
 in_person_enrollments_ready_job_visibility_timeout_seconds: 30
 in_person_enrollments_ready_job_wait_time_seconds: 20
-in_person_full_address_entry_enabled: true
 in_person_opt_in_available_completion_survey_url: 'https://handbook.login.gov'
 in_person_outage_emailed_by_date: 'November 1, 2024'
 # in_person_outage_expected_update_date and in_person_outage_emailed_by_date below
