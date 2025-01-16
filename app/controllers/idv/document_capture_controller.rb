@@ -95,7 +95,7 @@ module Idv
         skip_doc_auth_from_socure: idv_session.skip_doc_auth_from_socure,
         opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing,
         doc_auth_selfie_capture: resolved_authn_context_result.facial_match?,
-        socure_errors_timeout_url: idv_socure_errors_timeout_url,
+        socure_errors_timeout_url: idv_socure_document_capture_errors_url(error_code: :timeout),
       }.merge(
         acuant_sdk_upgrade_a_b_testing_variables,
       )
