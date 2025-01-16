@@ -17,7 +17,7 @@
           timestamp_html: render(TimeComponent.new(time: identity.created_at)),
         ) %>
     <br />
-    <% if !@presenter.hide_change_option %>
+    <% if @presenter.show_change_option %>
       <strong>
         <%= identity.email_address&.email || t('account.connected_apps.email_not_selected') %>
       </strong>
