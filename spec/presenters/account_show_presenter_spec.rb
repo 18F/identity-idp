@@ -705,7 +705,7 @@ RSpec.describe AccountShowPresenter do
         requested_attributes: ['ssn'],
       )
 
-      expect(account_show.hide_change_option).to eq(false)
+      expect(account_show.show_change_option).to eq(false)
     end
 
     it 'returns true when option should be hidden' do
@@ -720,7 +720,7 @@ RSpec.describe AccountShowPresenter do
         requested_attributes: ['all_emails'],
       )
 
-      expect(account_show.hide_change_option).to eq(true)
+      expect(account_show.show_change_option).to eq(true)
     end
   end
 end

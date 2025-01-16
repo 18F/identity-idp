@@ -144,7 +144,7 @@ class AccountShowPresenter
     user.connected_apps.includes([:service_provider_record, :email_address])
   end
 
-  def hide_change_option
+  def show_change_option
     if requested_attributes
       requested_attributes.include?('all_emails') ||
         requested_attributes.include?('email')
