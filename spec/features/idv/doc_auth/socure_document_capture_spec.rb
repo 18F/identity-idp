@@ -13,6 +13,7 @@ RSpec.feature 'document capture step', :js do
   let(:fake_socure_document_capture_app_url) { 'https://verify.fake-socure.test/something' }
   let(:socure_docv_verification_data_test_mode) { false }
   let(:socure_docv_webhook_repeat_endpoints) { [] }
+  let(:timeout_socure_route) { idv_socure_document_capture_errors_url(error_code: :timeout) }
 
   before(:each) do
     allow(IdentityConfig.store).to receive(:socure_docv_enabled).and_return(true)
@@ -79,7 +80,7 @@ RSpec.feature 'document capture step', :js do
 
           # Timeout
           visit idv_socure_document_capture_update_path
-          expect(page).to have_current_path(idv_socure_errors_timeout_path)
+          expect(page).to have_current_path(timeout_socure_route)
           expect(page).to have_content(I18n.t('idv.errors.try_again_later'))
 
           # Try in person
@@ -89,7 +90,7 @@ RSpec.feature 'document capture step', :js do
 
           # Go back
           click_on t('forms.buttons.back')
-          expect(page).to have_current_path(idv_socure_errors_timeout_path)
+          expect(page).to have_current_path(timeout_socure_route)
 
           # Try Socure again
           click_on t('idv.failure.button.warning')

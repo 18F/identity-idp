@@ -18,7 +18,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
   let(:skip_doc_auth_from_how_to_verify) { false }
   let(:skip_doc_auth_from_handoff) { false }
   let(:skip_doc_auth_from_socure) { false }
-  let(:socure_errors_timeout_url) { idv_socure_errors_timeout_url }
+  let(:socure_errors_timeout_url) { idv_socure_document_capture_errors_url(error_code: :timeout) }
   let(:opted_in_to_in_person_proofing) { false }
   let(:presenter) { Idv::InPerson::UspsFormPresenter.new }
   let(:mock_client) { false }

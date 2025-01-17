@@ -11,23 +11,19 @@ module Idv
 
       before_action :confirm_step_allowed
 
-      def show
-        error_code = error_code_for(handle_stored_result)
+      def show(error_code: nil)
+        if error_code.nil?
+          error_code = error_code_for(handle_stored_result)
+        end
         track_event(error_code: error_code)
         @presenter = socure_errors_presenter(error_code)
-      end
-
-      def timeout
-        track_event(error_code: :timeout)
-        @presenter = socure_errors_presenter(:timeout)
-        render :show
       end
 
       def self.step_info
         Idv::StepInfo.new(
           key: :socure_errors,
           controller: self,
-          action: :timeout,
+          action: :show,
           next_steps: [FlowPolicy::FINAL],
           preconditions: ->(idv_session:, user:) do
             true

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'idv/socure/errors/timeout.html.erb' do
+RSpec.describe 'idv/socure/errors/show.html.erb' do
   include Devise::Test::ControllerHelpers
 
   let(:remaining_submit_attempts) { 5 }
