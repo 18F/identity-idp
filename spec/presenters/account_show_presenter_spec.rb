@@ -693,7 +693,7 @@ RSpec.describe AccountShowPresenter do
       )
     end
 
-    it 'returns false when option should be shown' do
+    it 'returns true if email is not a requested attribute' do
       user = User.new
       account_show = AccountShowPresenter.new(
         decrypted_pii: {},
@@ -705,10 +705,10 @@ RSpec.describe AccountShowPresenter do
         requested_attributes: ['ssn'],
       )
 
-      expect(account_show.show_change_option).to eq(false)
+      expect(account_show.show_change_option).to eq(true)
     end
 
-    it 'returns true when option should be hidden' do
+    it 'returns true if all_emails is a requested attribute' do
       user = User.new
       account_show = AccountShowPresenter.new(
         decrypted_pii: {},
@@ -721,6 +721,21 @@ RSpec.describe AccountShowPresenter do
       )
 
       expect(account_show.show_change_option).to eq(true)
+    end
+
+    it 'returns false if email is a requested attribute' do
+      user = User.new
+      account_show = AccountShowPresenter.new(
+        decrypted_pii: {},
+        sp_session_request_url: nil,
+        authn_context: nil,
+        sp_name: nil,
+        user: user,
+        locked_for_session: false,
+        requested_attributes: ['email'],
+      )
+
+      expect(account_show.show_change_option).to eq(false)
     end
   end
 end
