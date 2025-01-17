@@ -34,7 +34,9 @@ class FeatureManagement
   end
 
   def self.prefill_otp_codes_allowed_in_sandbox?
-    Identity::Hostdata.domain.end_with?('identitysandbox.gov') && telephony_test_adapter?
+    (Identity::Hostdata.domain == ('identitysandbox.gov')
+      || Identity::Hostdata.domain.end_with? ('.identitysandbox.gov'))
+      && telephony_test_adapter?
   end
 
   def self.enable_load_testing_mode?
