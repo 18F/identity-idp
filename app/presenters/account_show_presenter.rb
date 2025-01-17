@@ -140,14 +140,16 @@ class AccountShowPresenter
     end
   end
 
-  def connected_apps
-    user.connected_apps.includes([:service_provider_record, :email_address])
-  end
-
   def show_change_option
     if requested_attributes
       requested_attributes.include?('all_emails') || !requested_attributes.include?('email')
     end
+  end
+
+  def connected_apps
+    includes_relations = [:service_provider_record]
+    includes_relations << :email_address if show_change_option
+    user.connected_apps.includes(includes_relations)
   end
 
   delegate :recent_events, :recent_devices, to: :user
