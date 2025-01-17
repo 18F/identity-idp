@@ -7,7 +7,7 @@ AD:
 AE:
   country_code: '971'
   name: United Arab Emirates (UAE)
-  supports_sms: false
+  supports_sms: true
   supports_voice: false
 AF:
   country_code: '93'
@@ -428,7 +428,7 @@ HU:
   country_code: '36'
   name: Hungary
   supports_sms: true
-  supports_voice: true
+  supports_voice: false
 ID:
   country_code: '62'
   name: Indonesia
@@ -522,7 +522,7 @@ KR:
 KW:
   country_code: '965'
   name: Kuwait
-  supports_sms: false
+  supports_sms: true
   supports_voice: false
 KY:
   country_code: '1345'
@@ -557,7 +557,7 @@ LI:
 LK:
   country_code: '94'
   name: Sri Lanka
-  supports_sms: false
+  supports_sms: true
   supports_voice: false
 LR:
   country_code: '231'
@@ -728,7 +728,7 @@ NL:
   country_code: '47'
   name: Norway
   supports_sms: true
-  supports_voice: true
+  supports_voice: false
 NP:
   country_code: '977'
   name: Nepal
@@ -807,7 +807,7 @@ PY:
 QA:
   country_code: '974'
   name: Qatar
-  supports_sms: false
+  supports_sms: true
   supports_voice: false
 RE:
   country_code: '262'
@@ -827,7 +827,7 @@ RS:
 RU:
   country_code: '7'
   name: Russia
-  supports_sms: false
+  supports_sms: true
   supports_voice: false
 RW:
   country_code: '250'
@@ -837,7 +837,7 @@ RW:
 SA:
   country_code: '966'
   name: Saudi Arabia
-  supports_sms: false
+  supports_sms: true
   supports_voice: false
 SB:
   country_code: '677'
@@ -962,7 +962,7 @@ TO:
 TR:
   country_code: '90'
   name: Turkey
-  supports_sms: false
+  supports_sms: true
   supports_voice: false
 TT:
   country_code: '1868'
@@ -1027,7 +1027,7 @@ VI:
 VN:
   country_code: '84'
   name: Vietnam
-  supports_sms: false
+  supports_sms: true
   supports_voice: true
 VU:
   country_code: '678'
