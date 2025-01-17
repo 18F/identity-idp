@@ -146,8 +146,7 @@ class AccountShowPresenter
 
   def show_change_option
     if requested_attributes
-      requested_attributes.include?('all_emails') ||
-        !requested_attributes.include?('email')
+      requested_attributes.include?('all_emails') || !requested_attributes.include?('email')
     end
   end
 
