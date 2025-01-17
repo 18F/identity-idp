@@ -207,7 +207,7 @@ test_serial: export RAILS_ENV := test
 test_serial: $(CONFIG) ## Runs RSpec and yarn tests serially
 	bundle exec rake spec && yarn test
 
-tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt: ## Self-signed cert for local HTTPS development
+tmp/$(HOST).key tmp/$(HOST).crt: ## Self-signed cert for local HTTPS development
 	mkdir -p tmp
 	openssl req \
 		-newkey rsa:2048 \
@@ -217,8 +217,8 @@ tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt: ## Self-signed cert for local H
 		-days 365 \
 		-subj "/C=US/ST=District of Columbia/L=Washington/O=GSA/OU=Login.gov/CN=$(HOST)"  \
 		-addext "subjectAltName=IP:$(HOST)" \
-		-keyout tmp/$(HOST)-$(PORT).key \
-		-out tmp/$(HOST)-$(PORT).crt
+		-keyout tmp/$(HOST).key \
+		-out tmp/$(HOST).crt
 
 run: browsers.json ## Runs the development server
 	foreman start -p $(PORT)
@@ -227,8 +227,8 @@ urn:
 	@echo "⚱️"
 	make run
 
-run-https: tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt ## Runs the development server with HTTPS
-	HTTPS=on FOREMAN_HOST="ssl://$(HOST):$(PORT)?key=tmp/$(HOST)-$(PORT).key&cert=tmp/$(HOST)-$(PORT).crt" foreman start -p $(PORT)
+run-https: tmp/$(HOST).key tmp/$(HOST).crt ## Runs the development server with HTTPS
+	HTTPS=on FOREMAN_HOST="ssl://$(HOST):$(PORT)?key=tmp/$(HOST).key&cert=tmp/$(HOST).crt" foreman start -p $(PORT)
 
 normalize_yaml: ## Normalizes YAML files (alphabetizes keys, fixes line length, smart quotes)
 	yarn normalize-yaml .rubocop.yml --disable-sort-keys --disable-smart-punctuation
