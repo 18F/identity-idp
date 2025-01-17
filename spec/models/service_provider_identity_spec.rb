@@ -200,14 +200,9 @@ RSpec.describe ServiceProviderIdentity do
         last_sign_in_at: 1.hour.ago,
       )
     end
+    let(:verified_attributes) { %w[email] }
 
-    let(:service_provider_attribute_bundle) { %w[email] }
-    let(:service_provider) do
-      create(
-        :service_provider,
-        attribute_bundle: service_provider_attribute_bundle,
-      )
-    end
+    let(:service_provider) { create(:service_provider) }
 
     let(:identity) do
       create(
@@ -215,6 +210,7 @@ RSpec.describe ServiceProviderIdentity do
         user: user,
         session_uuid: SecureRandom.uuid,
         service_provider: service_provider.issuer,
+        verified_attributes: verified_attributes,
       )
     end
 
@@ -225,7 +221,6 @@ RSpec.describe ServiceProviderIdentity do
       end
 
       context 'when an email address is set and service provider has email attribute' do
-        let(:service_provider_attribute_bundle) { %w[email] }
         before do
           identity.email_address = shared_email_address
         end
@@ -236,7 +231,7 @@ RSpec.describe ServiceProviderIdentity do
       end
 
       context 'when service provider has both email and all_emails attribute' do
-        let(:service_provider_attribute_bundle) { %w[email all_emails] }
+        let(:verified_attributes) { %w[email all_emails] }
 
         before do
           identity.email_address = shared_email_address
@@ -248,7 +243,7 @@ RSpec.describe ServiceProviderIdentity do
       end
 
       context 'when service provider has no email attributes' do
-        let(:service_provider_attribute_bundle) { %w[first_name last_name] }
+        let(:verified_attributes) { %w[first_name last_name] }
 
         before do
           identity.email_address = shared_email_address
@@ -259,7 +254,7 @@ RSpec.describe ServiceProviderIdentity do
         end
       end
 
-      context 'when an email address for sharing has not been set' do
+      context 'when an email address for sharing has not been set and email is set' do
         before do
           identity.email_address = nil
         end
