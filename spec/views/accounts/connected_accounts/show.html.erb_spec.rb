@@ -153,10 +153,10 @@ RSpec.describe 'accounts/connected_accounts/show.html.erb' do
     end
     let!(:identity) { create(:service_provider_identity, user:) }
 
-    it 'shows the change link' do
+    it 'hides the change link' do
       render
 
-      expect(rendered).to have_link(
+      expect(rendered).to_not have_link(
         t('help_text.requested_attributes.change_email_link'),
         href: edit_connected_account_selected_email_path(identity_id: identity.id),
       )
