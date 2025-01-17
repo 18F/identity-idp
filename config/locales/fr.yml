@@ -2041,9 +2041,8 @@ vendor_outage.get_updates: Obtenir les dernières informations
 vendor_outage.get_updates_on_status_page: Obtenir les dernières informations sur notre page d’état des systèmes.
 vendor_outage.working: Nous travaillons à la résolution d’une erreur
 webauthn_platform_recommended.cta: Set up face or touch unlock
-webauthn_platform_recommended.description_private_html: Face or touch unlock is %{phishing_resistant_link_html} and we don’t store any recordings of your face or fingerprint, so your information stays private.
-webauthn_platform_recommended.description_secure_account: Secure your sign in with face or touch unlock. Use your face, fingerprint, password, or another method to keep your account safer.
-webauthn_platform_recommended.heading: Set up face or touch unlock for a more secure sign in
+webauthn_platform_recommended.description_save_time: Save time by using your face, fingerprint, password, or another method to access your account. This method is faster than receiving a one-time code through text or voice message.
+webauthn_platform_recommended.heading: Set up face or touch unlock for a quick and easy sign in
 webauthn_platform_recommended.phishing_resistant: phishing-resistant
 webauthn_platform_recommended.skip: Skip
 zxcvbn.feedback.a_word_by_itself_is_easy_to_guess: Un mot seul est facile à deviner
