@@ -3,6 +3,8 @@ require 'rails_helper'
 RSpec.describe 'Account connected applications' do
   include NavigationHelper
 
+  let(:verified_attributes) { %w[email] }
+
   let(:user) do
     create(
       :user,
@@ -18,6 +20,7 @@ RSpec.describe 'Account connected applications' do
       user: user,
       created_at: Time.zone.now - 80.days,
       service_provider: 'http://localhost:3000',
+      verified_attributes: verified_attributes,
     )
   end
   let(:identity_without_link) do
