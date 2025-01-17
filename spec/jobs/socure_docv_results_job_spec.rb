@@ -137,11 +137,11 @@ RSpec.describe SocureDocvResultsJob do
       )
     end
 
-    xit 'logs an idv_doc_auth_submitted_pii_validation event' do
+    it 'logs an idv_doc_auth_submitted_pii_validation event' do
       perform
       expect(fake_analytics).to have_logged_event(
-        :idv_doc_auth_submitted_pii_validation,
-        hash,
+        'IdV: doc auth image upload vendor pii validation',
+        kind_of(Hash),
       )
     end
 

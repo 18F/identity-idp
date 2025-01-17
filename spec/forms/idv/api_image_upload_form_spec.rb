@@ -97,11 +97,14 @@ RSpec.describe Idv::ApiImageUploadForm do
 
     context 'when liveness check is required' do
       let(:liveness_checking_required) { true }
+
       it 'is not valid without selfie' do
         expect(form.valid?).to eq(false)
       end
+
       context 'with valid selfie' do
         let(:selfie_image) { DocAuthImageFixtures.selfie_image_multipart }
+
         it 'is valid' do
           expect(form.valid?).to eq(true)
         end
@@ -110,6 +113,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           let(:selfie_image_metadata) do
             { width: 40, height: 40, mimeType: 'image/png', source: 'acuant' }
           end
+
           before do
             allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
               .and_return(false)
@@ -131,6 +135,7 @@ RSpec.describe Idv::ApiImageUploadForm do
                 fileName: front_image_file_name,
               }
             end
+
             let(:back_image_metadata) do
               {
                 width: 20,
@@ -140,6 +145,7 @@ RSpec.describe Idv::ApiImageUploadForm do
                 fileName: back_image_file_name,
               }
             end
+
             it 'is valid' do
               expect(form.valid?).to eq(true)
             end
@@ -154,6 +160,7 @@ RSpec.describe Idv::ApiImageUploadForm do
                   fileName: selfie_image_file_name,
                 }
               end
+
               it 'is invalid' do
                 expect(form.valid?).to eq(false)
               end
@@ -608,6 +615,7 @@ RSpec.describe Idv::ApiImageUploadForm do
       context 'when selfie is checked for liveness' do
         let(:selfie_image) { DocAuthImageFixtures.selfie_image_multipart }
         let(:back_image) { DocAuthImageFixtures.portrait_match_success_yaml }
+
         it 'keeps fingerprints of failed image and triggers error when submit same image' do
           form.submit
           session = DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
@@ -692,6 +700,7 @@ RSpec.describe Idv::ApiImageUploadForm do
         context 'selfie is submitted' do
           let(:liveness_checking_required) { true }
           let(:selfie_image) { DocAuthImageFixtures.selfie_image_multipart }
+
           context 'captured with acuant sdk' do
             let(:selfie_image_metadata) do
               { width: 10, height: 10, mimeType: 'image/png', source: source }
@@ -737,9 +746,11 @@ RSpec.describe Idv::ApiImageUploadForm do
   describe '#store_failed_images' do
     let(:doc_pii_response) { instance_double(Idv::DocAuthFormResponse) }
     let(:client_response) { instance_double(DocAuth::Response) }
+
     context 'when client_response is not success and not network error' do
       context 'when both sides error message missing' do
         let(:errors) { {} }
+
         it 'stores both sides as failed' do
           allow(client_response).to receive(:success?).and_return(false)
           allow(client_response).to receive(:network_error?).and_return(false)
@@ -752,8 +763,10 @@ RSpec.describe Idv::ApiImageUploadForm do
           expect(capture_result[:back]).not_to be_empty
         end
       end
+
       context 'when both sides error message exist' do
         let(:errors) { { front: 'blurry', back: 'dpi' } }
+
         it 'stores both sides as failed' do
           allow(client_response).to receive(:success?).and_return(false)
           allow(client_response).to receive(:network_error?).and_return(false)
@@ -766,8 +779,10 @@ RSpec.describe Idv::ApiImageUploadForm do
           expect(capture_result[:back]).not_to be_empty
         end
       end
+
       context 'when one sides error message exists' do
         let(:errors) { { front: 'blurry', back: nil } }
+
         it 'stores only the error side as failed' do
           allow(client_response).to receive(:success?).and_return(false)
           allow(client_response).to receive(:network_error?).and_return(false)
@@ -784,6 +799,7 @@ RSpec.describe Idv::ApiImageUploadForm do
 
     context 'when client_response is not success and is network error' do
       let(:errors) { {} }
+
       context 'when doc_pii_response is success' do
         it 'stores neither of the side as failed' do
           allow(client_response).to receive(:success?).and_return(false)
@@ -796,6 +812,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           expect(capture_result[:back]).to be_empty
         end
       end
+
       context 'when doc_pii_response is failure' do
         it 'stores both sides as failed' do
           allow(client_response).to receive(:success?).and_return(false)
