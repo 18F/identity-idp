@@ -67,6 +67,13 @@ RSpec.describe PinpointSupportedCountries do
            </td>
            <td>Yes</td>
         </tr>
+        <tr>
+           <td>Zambia</td>
+           <td>ZM</td>
+           <td>Registration required<sup><a href="#sms-support-note-9">9</a></sup>
+           </td>
+           <td>No</td>
+        </tr>
       </table>
     HTML
   end
@@ -128,6 +135,11 @@ RSpec.describe PinpointSupportedCountries do
           name: India
           supports_sms: true
           supports_voice: false
+        ZM:
+          country_code: '260'
+          name: Zambia
+          supports_sms: false
+          supports_voice: false
       STR
     end
   end
@@ -141,6 +153,7 @@ RSpec.describe PinpointSupportedCountries do
         PinpointSupportedCountries::CountrySupport.new(iso_code: 'BY', name: 'Belarus', supports_sms: true),
         PinpointSupportedCountries::CountrySupport.new(iso_code: 'KY', name: 'Cayman Islands', supports_sms: true),
         PinpointSupportedCountries::CountrySupport.new(iso_code: 'IN', name: 'India', supports_sms: true),
+        PinpointSupportedCountries::CountrySupport.new(iso_code: 'ZM', name: 'Zambia', supports_sms: false),
       ]
     end
     # rubocop:enable Layout/LineLength
@@ -189,6 +202,7 @@ RSpec.describe PinpointSupportedCountries do
         PinpointSupportedCountries::CountryDialingCode.new(country_code: '375', iso_code: 'BY', name: 'Belarus', supports_sms: true, supports_voice: false),
         PinpointSupportedCountries::CountryDialingCode.new(country_code: '1345', iso_code: 'KY', name: 'Cayman Islands', supports_sms: true, supports_voice: true),
         PinpointSupportedCountries::CountryDialingCode.new(country_code: '91', iso_code: 'IN', name: 'India', supports_sms: true, supports_voice: false),
+        PinpointSupportedCountries::CountryDialingCode.new(country_code: '260', iso_code: 'ZM', name: 'Zambia', supports_sms: false, supports_voice: false),
       ]
     end
     # rubocop:enable Layout/LineLength
