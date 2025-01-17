@@ -34,6 +34,7 @@ class FeatureManagement
   end
 
   def self.prefill_otp_codes_allowed_in_sandbox?
+    ! Identity::Hostdata.domain.nil? &&
     (Identity::Hostdata.domain == 'identitysandbox.gov' ||
       Identity::Hostdata.domain.end_with?('.identitysandbox.gov')) &&
       telephony_test_adapter?
@@ -65,8 +66,9 @@ class FeatureManagement
   end
 
   def self.current_env_allowed_to_see_gpo_code?
-    Identity::Hostdata.domain == 'identitysandbox.gov' ||
-      Identity::Hostdata.domain.end_with?('.identitysandbox.gov')
+    ! Identity::Hostdata.domain.nil? &&
+    (Identity::Hostdata.domain == 'identitysandbox.gov' ||
+      Identity::Hostdata.domain.end_with?('.identitysandbox.gov'))
   end
 
   def self.show_demo_banner?
