@@ -50,6 +50,9 @@ describe('getTranslationKeys', () => {
     // 2. https://babeljs.io/repl#?browsers=ie%2011&code_lz=C4CgBgZg9gTgtgZwHQBIDeBrApgTwL5JQB2WYAlEA
     t("forms.".concat(key, ".one"));
     t(["forms.".concat(key, ".one")]);
+
+    // Emulate Webpack function renaming
+    i18n_t('item.4')
   `;
 
   it('returns keys', () => {
@@ -61,6 +64,7 @@ describe('getTranslationKeys', () => {
       'item.1',
       'item.2',
       'item.3',
+      'item.4',
     ]);
   });
 });
