@@ -18,7 +18,7 @@ const PLUGIN = 'ExtractKeysWebpackPlugin';
  *
  * @type {RegExp}
  */
-const TRANSLATE_CALL = /(?:^|[^\w'-])t\)?\(\[?(['"][a-z\d\s_.,'"]+['"])]?[,\s)]/g;
+const TRANSLATE_CALL = /(?:^|[^\w'-]|i18n_)t\)?\(\[?(['"][a-z\d\s_.,'"]+['"])]?[,\s)]/g;
 
 /**
  * Given an original file name and locale, returns a modified file name with the locale injected
