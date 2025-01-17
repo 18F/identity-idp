@@ -56,6 +56,7 @@ module Idv
             redirect_url = idv_in_person_ssn_url
           end
 
+          idv_session.doc_auth_vendor = Idp::Constants::Vendors::USPS
           redirect_to redirect_url
         else
           render :show, locals: extra_view_variables
@@ -85,6 +86,7 @@ module Idv
             pii_from_user[:identity_doc_city] = nil
             pii_from_user[:identity_doc_zipcode] = nil
             pii_from_user[:identity_doc_state] = nil
+            idv_session.doc_auth_vendor = nil
           end,
         )
       end
