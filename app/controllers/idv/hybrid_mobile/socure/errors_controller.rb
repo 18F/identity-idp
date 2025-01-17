@@ -10,8 +10,7 @@ module Idv
         include StepIndicatorConcern
         include SocureErrorsConcern
 
-        def show
-          error_code = params[:error_code]
+        def show(error_code: nil)
           if error_code.nil?
             error_code = error_code_for(handle_stored_result)
           end
