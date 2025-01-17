@@ -63,15 +63,13 @@ RSpec.describe PinpointSupportedCountries do
         <tr>
            <td>India</td>
            <td>IN</td>
-           <td>Registration required<sup><a href="#sms-support-note-3">3</a></sup>
-           </td>
+           <td>Registration required<sup><a href="#sms-support-note-3">3</a></sup></td>
            <td>Yes</td>
         </tr>
         <tr>
            <td>Zambia</td>
            <td>ZM</td>
-           <td>Registration required<sup><a href="#sms-support-note-9">9</a></sup>
-           </td>
+           <td>Registration required<sup><a href="#sms-support-note-9">9</a></sup></td>
            <td>No</td>
         </tr>
       </table>
