@@ -66,7 +66,7 @@ class FeatureManagement
 
   def self.current_env_allowed_to_see_gpo_code?
     (Identity::Hostdata.domain == ('identitysandbox.gov') ||
-      Identity::Hostdata.domain.end_with? ('.identitysandbox.gov'))
+      Identity::Hostdata.domain.end_with?('.identitysandbox.gov'))
   end
 
   def self.show_demo_banner?
