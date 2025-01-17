@@ -2,7 +2,6 @@
 
 module Idv
   class SocureUser
-
     attr_reader :redis_pool
 
     def initialize(redis_pool: REDIS_SOCURE_USERS_POOL)
@@ -28,9 +27,9 @@ module Idv
     def maxed_users?
       count >= IdentityConfig.store.doc_auth_socure_max_allowed_users
     end
-    
+
     def key
-      "idv:socure:users"
+      'idv:socure:users'
     end
   end
 end

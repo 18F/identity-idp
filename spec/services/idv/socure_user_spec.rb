@@ -8,16 +8,15 @@ RSpec.describe Idv::SocureUser do
   end
 
   let(:socure_user_set) { Idv::SocureUser.new }
-  let(:dummy_uuid_1) { 001 }
-  let(:dummy_uuid_2) { 002 }
-  let(:dummy_uuid_3) { 003 }
-
+  let(:dummy_uuid_1) { 'ABC0001' }
+  let(:dummy_uuid_2) { 'ABC0002' }
+  let(:dummy_uuid_3) { 'ABC0003' }
 
   describe '#add_user!' do
     before do
       allow(IdentityConfig.store).to receive(:doc_auth_socure_max_allowed_users).and_return(2)
     end
-    
+
     it 'correctly adds user and tracks count' do
       socure_user_set.add_user!(user_uuid: dummy_uuid_1)
       expect(socure_user_set.count).to eq(1)
@@ -49,8 +48,8 @@ RSpec.describe Idv::SocureUser do
     end
 
     it 'gives the user count' do
-      10.times.each_with_index do |index|
-        socure_user_set.add_user!(user_uuid: "000#{index}")
+      10.times.each do |index|
+        socure_user_set.add_user!(user_uuid: "ABC000#{index}")
       end
 
       expect(socure_user_set.count).to eq(10)
