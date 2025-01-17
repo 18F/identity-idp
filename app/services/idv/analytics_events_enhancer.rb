@@ -161,12 +161,7 @@ module Idv
         service_provider: sp,
       )
 
-      proofing_components_hash = ProofingComponents.new(
-        idv_session:,
-        session:,
-        user:,
-        user_session:,
-      ).to_h
+      proofing_components_hash = ProofingComponents.new(idv_session:).to_h
 
       proofing_components_hash.empty? ? nil : proofing_components_hash
     end
