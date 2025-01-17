@@ -7,6 +7,7 @@ RSpec.describe 'idv/socure/errors/show.html.erb' do
   let(:in_person_url) { nil }
   let(:flow_path) { :standard }
   let(:sp) { create(:service_provider) }
+  let(:error_code) { nil }
   let(:decorated_sp_session) do
     ServiceProviderSession.new(
       sp:,
@@ -15,18 +16,19 @@ RSpec.describe 'idv/socure/errors/show.html.erb' do
       service_provider_request: nil,
     )
   end
+  let(:presenter) do
+    SocureErrorPresenter.new(
+      error_code:,
+      remaining_attempts: remaining_submit_attempts,
+      sp_name: decorated_sp_session&.sp_name || APP_NAME,
+      issuer: decorated_sp_session&.sp_issuer,
+      flow_path:,
+    )
+  end
 
   context 'timeout error' do
     let(:error_code) { :timeout }
-    let(:presenter) do
-      SocureErrorPresenter.new(
-        error_code:,
-        remaining_attempts: remaining_submit_attempts,
-        sp_name: decorated_sp_session&.sp_name || APP_NAME,
-        issuer: decorated_sp_session&.sp_issuer,
-        flow_path:,
-      )
-    end
+
     before do
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
       assign(:presenter, presenter)
@@ -97,15 +99,7 @@ RSpec.describe 'idv/socure/errors/show.html.erb' do
 
   context 'no capture app url' do
     let(:error_code) { :url_not_found }
-    let(:presenter) do
-      SocureErrorPresenter.new(
-        error_code:,
-        remaining_attempts: remaining_submit_attempts,
-        sp_name: decorated_sp_session&.sp_name || APP_NAME,
-        issuer: decorated_sp_session&.sp_issuer,
-        flow_path:,
-      )
-    end
+
     before do
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
       assign(:presenter, presenter)

@@ -10,6 +10,8 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
   let(:doc_auth_success) { true }
   let(:socure_docv_enabled) { true }
   let(:socure_docv_verification_data_test_mode) { false }
+  let(:no_url_socure_route) { idv_socure_document_capture_errors_url(error_code: :url_not_found) }
+  let(:timeout_socure_route) { idv_socure_document_capture_errors_url(error_code: :timeout) }
 
   let(:stored_result) do
     DocumentCaptureSessionResult.new(
@@ -28,10 +30,6 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       requested_at: Time.zone.now,
     )
   end
-
-  let(:socure_docv_verification_data_test_mode) { false }
-  let(:no_url_socure_route) { idv_socure_document_capture_errors_url(error_code: :url_not_found) }
-  let(:timeout_socure_route) { idv_socure_document_capture_errors_url(error_code: :timeout) }
 
   before do
     allow(IdentityConfig.store).to receive(:socure_docv_enabled)

@@ -11,7 +11,8 @@ module Idv
 
       before_action :confirm_step_allowed
 
-      def show(error_code: nil)
+      def show
+        error_code = params[:error_code]
         if error_code.nil?
           error_code = error_code_for(handle_stored_result)
         end
