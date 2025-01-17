@@ -70,6 +70,7 @@ module IdentityConfig
     config.add(:aws_kms_session_key_id, type: :string)
     config.add(:aws_logo_bucket, type: :string)
     config.add(:aws_region, type: :string)
+    config.add(:aws_ses_client_pool_size, type: :integer)
     config.add(:backup_code_cost, type: :string)
     config.add(:backup_code_user_id_per_ip_attempt_window_exponential_factor, type: :float)
     config.add(:backup_code_user_id_per_ip_attempt_window_in_minutes, type: :integer)
