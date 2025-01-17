@@ -65,4 +65,18 @@ RSpec.describe Idv::AamvaStateMaintenanceWindow do
       end
     end
   end
+
+  describe 'MAINTENANCE_WINDOWS' do
+    described_class::MAINTENANCE_WINDOWS.each do |state, windows|
+      windows.each do |window|
+        it "consists of a valid cron expression and duration (#{state})" do
+          expect(window).to be_an(Idv::AamvaStateMaintenanceWindow::Window)
+
+          expect(window.cron).to be_a(Fugit::Cron)
+
+          expect(window.duration).to be_an(ActiveSupport::Duration)
+        end
+      end
+    end
+  end
 end

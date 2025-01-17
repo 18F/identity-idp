@@ -30,7 +30,6 @@ module Idv
           action: :timeout,
           next_steps: [FlowPolicy::FINAL],
           preconditions: ->(idv_session:, user:) do
-            # idv_session.socure_docv_wait_polling_started_at.present?
             true
           end,
           undo_step: ->(idv_session:, user:) {},
@@ -55,6 +54,9 @@ module Idv
       end
 
       def socure_errors_presenter(error_code)
+        # There really isn't a good place to set this
+        idv_session.skip_doc_auth_from_socure = true if flow_path == 'standard'
+
         SocureErrorPresenter.new(
           error_code:,
           remaining_attempts: remaining_submit_attempts,

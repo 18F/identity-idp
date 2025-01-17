@@ -4,6 +4,7 @@ module Idv
   # @attr address_edited [Boolean, nil]
   # @attr address_verification_mechanism [String, nil]
   # @attr applicant [Struct, nil]
+  # @attr doc_auth_vendor [String, nil]
   # @attr document_capture_session_uuid [String, nil]
   # @attr flow_path [String, nil]
   # @attr go_back_path [String, nil]
@@ -20,7 +21,7 @@ module Idv
   # @attr phone_for_mobile_flow [String, nil]
   # @attr previous_phone_step_params [Array]
   # @attr previous_ssn [String, nil]
-  # @attr profile_id [String, nil]
+  # @attr profile_id [Integer, nil]
   # @attr proofing_started_at [String, nil]
   # @attr redo_document_capture [Boolean, nil]
   # @attr residential_resolution_vendor [String, nil]
@@ -47,6 +48,7 @@ module Idv
       address_edited
       address_verification_mechanism
       applicant
+      doc_auth_vendor
       document_capture_session_uuid
       flow_path
       go_back_path
@@ -66,7 +68,6 @@ module Idv
       profile_id
       proofing_started_at
       redo_document_capture
-      source_check_vendor
       residential_resolution_vendor
       resolution_successful
       resolution_vendor
@@ -74,8 +75,10 @@ module Idv
       selfie_check_required
       skip_doc_auth_from_handoff
       skip_doc_auth_from_how_to_verify
+      skip_doc_auth_from_socure
       skip_hybrid_handoff
       socure_docv_wait_polling_started_at
+      source_check_vendor
       ssn
       threatmetrix_review_status
       threatmetrix_session_id
