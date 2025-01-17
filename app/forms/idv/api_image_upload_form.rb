@@ -1,6 +1,27 @@
 # frozen_string_literal: true
 
 module Idv
+  class ResponseSet
+    def initialize(form_response:)
+      @form_response = form_response
+      @client_response = nil
+      @doc_pii_response = nil
+    end
+
+    def determine_response
+      # image validation failed
+      return form_response unless form_response.success?
+
+      # doc_pii validation failed
+      return doc_pii_response if doc_pii_response.present? && !doc_pii_response.success?
+
+      client_response
+    end
+
+    attr_reader :form_response
+    attr_accessor :client_response, :doc_pii_response
+  end
+
   class ApiImageUploadForm
     include ActiveModel::Model
     include ActionView::Helpers::TranslationHelper
@@ -34,30 +55,23 @@ module Idv
     end
 
     def submit
-      form_response = validate_form
+      response_set = ResponseSet.new(form_response: validate_form)
 
-      client_response = nil
-      doc_pii_response = nil
-
-      if form_response.success?
-        client_response = post_images_to_client
+      if response_set.form_response.success?
+        response_set.client_response = post_images_to_client
 
         document_capture_session.update!(
-          last_doc_auth_result: client_response.extra[:doc_auth_result],
+          last_doc_auth_result: response_set.client_response.extra[:doc_auth_result],
         )
 
-        if client_response.success?
-          doc_pii_response = validate_pii_from_doc(client_response)
+        if response_set.client_response.success?
+          response_set.doc_pii_response = validate_pii_from_doc(response_set.client_response)
         end
       end
 
-      response = determine_response(
-        form_response: form_response,
-        client_response: client_response,
-        doc_pii_response: doc_pii_response,
-      )
+      response = response_set.determine_response
 
-      failed_fingerprints = store_failed_images(client_response, doc_pii_response)
+      failed_fingerprints = store_failed_images(response_set.client_response, response_set.doc_pii_response)
       response.extra[:failed_image_fingerprints] = failed_fingerprints
       response
     end
@@ -134,7 +148,7 @@ module Idv
       )
 
       if pii_validator.client_and_pii_both_succeeded?
-        store_pii(client_response)
+        document_capture_session.store_result_from_response(client_response)
       end
 
       pii_validator.doc_auth_form_response
@@ -199,16 +213,6 @@ module Idv
       processed_selfie_count = selfie_image_fingerprint ? 1 : 0
       past_selfie_count = (captured_result&.failed_selfie_image_fingerprints || []).length
       { selfie_attempts: past_selfie_count + processed_selfie_count }
-    end
-
-    def determine_response(form_response:, client_response:, doc_pii_response:)
-      # image validation failed
-      return form_response unless form_response.success?
-
-      # doc_pii validation failed
-      return doc_pii_response if doc_pii_response.present? && !doc_pii_response.success?
-
-      client_response
     end
 
     def image_source
@@ -416,10 +420,6 @@ module Idv
         Funnel::DocAuth::RegisterStep.new(user_id, service_provider&.issuer)
           .call(step.to_s, :update, client_response.success?)
       end
-    end
-
-    def store_pii(client_response)
-      document_capture_session.store_result_from_response(client_response)
     end
 
     def user_id
