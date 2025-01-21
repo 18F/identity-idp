@@ -1,7 +1,8 @@
 /* eslint-disable no-console */
 
+import { format } from 'node:util';
 import sinon from 'sinon';
-import { format } from 'util';
+import type Chai from 'chai';
 
 declare global {
   namespace Chai {
@@ -20,10 +21,10 @@ let unverifiedCalls: string[] = [];
  * @see https://www.chaijs.com/guide/plugins/
  * @see https://www.chaijs.com/api/plugins/
  *
- * @param {import('chai')}                chai  Chai object.
- * @param {import('chai/lib/chai/utils')} utils Chai plugin utilities.
+ * @param chai Chai object.
+ * @param utils Chai plugin utilities.
  */
-export function chaiConsoleSpy(chai, utils) {
+export const chaiConsoleSpy: Chai.ChaiPlugin = (chai, utils) => {
   utils.addChainableMethod(
     chai.Assertion.prototype,
     'loggedError',
@@ -46,7 +47,7 @@ export function chaiConsoleSpy(chai, utils) {
     },
     undefined,
   );
-}
+};
 
 /**
  * Test lifecycle helper which stubs `console.error` and verifies that any logging which occurs to
@@ -54,7 +55,7 @@ export function chaiConsoleSpy(chai, utils) {
  * `chaiConsoleSpy` Chai plugin.
  */
 export function useConsoleLogSpy() {
-  let originalConsoleError;
+  let originalConsoleError: Console['error'];
   before(() => {
     originalConsoleError = console.error;
     console.error = sinon.stub().callsFake((message, ...args) => {
