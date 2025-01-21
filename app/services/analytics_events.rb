@@ -2829,10 +2829,12 @@ module AnalyticsEvents
 
   # User chooses to try In Person, e.g. from a doc_auth timeout error page
   # @param [Integer] remaining_submit_attempts The number of remaining attempts to submit
+  # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Boolean] skip_hybrid_handoff Whether the user skipped the hybrid handoff A/B test
   # @param [Boolean] opted_in_to_in_person_proofing Whether the user opted into in-person proofing
   def idv_in_person_direct_start(
     remaining_submit_attempts:,
+    flow_path:,
     skip_hybrid_handoff: nil,
     opted_in_to_in_person_proofing: nil,
     **extra
@@ -2840,6 +2842,7 @@ module AnalyticsEvents
     track_event(
       :idv_in_person_direct_start,
       remaining_submit_attempts:,
+      flow_path:,
       skip_hybrid_handoff:,
       opted_in_to_in_person_proofing:,
       **extra,

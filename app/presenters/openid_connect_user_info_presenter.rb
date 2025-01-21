@@ -20,6 +20,7 @@ class OpenidConnectUserInfoPresenter
     }
 
     info[:all_emails] = all_emails_from_sp_identity(identity) if scoper.all_emails_requested?
+    info[:locale] = web_locale if scoper.locale_requested?
     info.merge!(ial2_attributes) if identity_proofing_requested_for_verified_user?
     info.merge!(x509_attributes) if scoper.x509_scopes_requested?
     info[:verified_at] = verified_at if scoper.verified_at_requested?
@@ -55,6 +56,10 @@ class OpenidConnectUserInfoPresenter
 
   def all_emails_from_sp_identity(identity)
     identity.user.confirmed_email_addresses.map(&:email)
+  end
+
+  def web_locale
+    out_of_band_session_accessor.load_web_locale
   end
 
   def ial2_attributes

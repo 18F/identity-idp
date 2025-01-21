@@ -30,7 +30,6 @@ gem 'cssbundling-rails'
 gem 'devise', '~> 4.8'
 gem 'dotiw', '>= 4.0.1'
 gem 'faraday', '~> 2'
-gem 'faker'
 gem 'faraday-retry'
 gem 'fugit'
 gem 'foundation_emails'
@@ -129,6 +128,7 @@ end
 group :test do
   gem 'axe-core-rspec', '~> 4.2'
   gem 'bundler-audit', require: false
+  gem 'faker'
   gem 'simplecov', '~> 0.22.0', require: false
   gem 'simplecov-cobertura'
   gem 'simplecov_json_formatter'

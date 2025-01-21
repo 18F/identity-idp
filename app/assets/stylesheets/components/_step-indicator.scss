@@ -85,8 +85,18 @@ lg-step-indicator {
   position: relative;
   text-align: center;
 
+  // In cases when browser text zoom is very high (i.e. the root font-size has
+  // been drastically increased), the step indicator will overflow the viewport
+  // by _a lot_. In those cases, 33% of the viewport will not be wide enough to
+  // keep the individual steps from crowding each other.
+  //
+  // This min-width takes effect under those circumstances, keeping individual
+  // steps far enough apart to remain legible.
+  min-width: 4rem;
+
   @include at-media('tablet') {
     flex: 1 1 0%;
+    min-width: auto;
   }
 }
 

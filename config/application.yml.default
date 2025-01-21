@@ -52,6 +52,7 @@ aws_kms_multi_region_key_id: alias/login-dot-gov-keymaker-multi-region
 aws_kms_session_key_id: alias/login-dot-gov-test-keymaker
 aws_logo_bucket: ''
 aws_region: 'us-west-2'
+aws_ses_client_pool_size: 5
 backup_code_cost: '2000$8$1$'
 backup_code_user_id_per_ip_attempt_window_exponential_factor: 1.1
 backup_code_user_id_per_ip_attempt_window_in_minutes: 720
@@ -106,6 +107,7 @@ doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 3
 doc_auth_redirect_to_correct_vendor_disabled: false
 doc_auth_selfie_desktop_test_mode: false
+doc_auth_socure_max_allowed_users: 10_000
 doc_auth_socure_wait_polling_refresh_max_seconds: 15
 doc_auth_socure_wait_polling_timeout_minutes: 2
 doc_auth_supported_country_codes: '["US", "GU", "VI", "AS", "MP", "PR", "USA" ,"GUM", "VIR", "ASM", "MNP", "PRI"]'
@@ -183,7 +185,6 @@ in_person_enrollments_ready_job_max_number_of_messages: 10
 in_person_enrollments_ready_job_queue_url: ''
 in_person_enrollments_ready_job_visibility_timeout_seconds: 30
 in_person_enrollments_ready_job_wait_time_seconds: 20
-in_person_full_address_entry_enabled: true
 in_person_opt_in_available_completion_survey_url: 'https://handbook.login.gov'
 in_person_outage_emailed_by_date: 'November 1, 2024'
 # in_person_outage_expected_update_date and in_person_outage_emailed_by_date below
