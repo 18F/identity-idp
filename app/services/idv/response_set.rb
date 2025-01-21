@@ -41,8 +41,8 @@ module Idv
     # Store failed image fingerprints in document_capture_session_result
     # when client_response is not successful and not a network error
     # ( http status except handled status 438, 439, 440 ) or doc_pii_response is not successful.
-    # @param [Object] client_response
-    # @param [Object] doc_pii_response
+    # @param [DocumentCaptureSession] document_capture_session
+    # @param [Hash] extra_attributes
     # @return [Object] latest failed fingerprints
     def store_failed_images(document_capture_session, extra_attributes)
       unless image_resubmission_check?
