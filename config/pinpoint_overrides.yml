@@ -54,7 +54,7 @@ BO:
 BR:
   supports_voice: false
 BY:
-  supports_sms: false
+  supports_sms: true
   supports_sms_unconfirmed: false
   supports_voice: true
   supports_voice_unconfirmed: false
@@ -128,7 +128,7 @@ IT:
 JM:
   supports_voice: false
 JO:
-  supports_sms: false
+  supports_sms: true
   supports_sms_unconfirmed: false
   supports_voice: true
   supports_voice_unconfirmed: false
@@ -235,6 +235,7 @@ RU:
 RW:
   supports_sms_unconfirmed: false
 SA:
+  supports_sms: false
   supports_voice: true
   supports_voice_unconfirmed: false
 SI:
