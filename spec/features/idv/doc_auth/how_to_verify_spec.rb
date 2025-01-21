@@ -87,6 +87,8 @@ RSpec.feature 'how to verify step', js: true do
 
   context 'when both ipp and opt-in ipp are enabled' do
     context 'and when sp has opted into ipp' do
+      include InPersonHelper
+
       let(:in_person_proofing_opt_in_enabled) { true }
 
       it 'displays expected content and navigates to choice' do
@@ -99,19 +101,57 @@ RSpec.feature 'how to verify step', js: true do
         # go back and choose in person option
         page.go_back
         click_on t('forms.buttons.continue_ipp')
-        expect(page).to have_current_path(idv_document_capture_path)
+        expect(page).to have_current_path(idv_document_capture_path(step: :how_to_verify))
       end
 
       context 'when selfie is enabled' do
-        include InPersonHelper
-
-        let(:facial_match_required) { false }
+        let(:facial_match_required) { true }
 
         it 'goes to direct IPP if selected and can come back' do
           expect(page).to have_current_path(idv_how_to_verify_path)
           expect(page).to have_content(t('doc_auth.headings.how_to_verify'))
           click_on t('forms.buttons.continue_ipp')
-          expect(page).to have_current_path(idv_document_capture_path)
+          expect(page).to have_current_path(idv_document_capture_path(step: :how_to_verify))
+          expect_in_person_step_indicator_current_step(
+            t('step_indicator.flows.idv.find_a_post_office'),
+          )
+          expect(page).to have_content(t('headings.verify'))
+          click_on t('forms.buttons.back')
+          expect(page).to have_current_path(idv_how_to_verify_path)
+        end
+
+        context 'when the user is bucketed for Socure doc_auth' do
+          before do
+            allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return('socure')
+            allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return('socure')
+          end
+
+          it 'goes to direct IPP if selected and can come back' do
+            expect(page).to have_current_path(idv_how_to_verify_path)
+            expect(page).to have_content(t('doc_auth.headings.how_to_verify'))
+            click_on t('forms.buttons.continue_ipp')
+            expect(page).to have_current_path(idv_document_capture_path(step: :how_to_verify))
+            expect_in_person_step_indicator_current_step(
+              t('step_indicator.flows.idv.find_a_post_office'),
+            )
+            expect(page).to have_content(t('headings.verify'))
+            click_on t('forms.buttons.back')
+            expect(page).to have_current_path(idv_how_to_verify_path)
+          end
+        end
+      end
+
+      context 'when the user is bucketed for Socure doc_auth' do
+        before do
+          allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return('socure')
+          allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return('socure')
+        end
+
+        it 'goes to direct IPP if selected and can come back' do
+          expect(page).to have_current_path(idv_how_to_verify_path)
+          expect(page).to have_content(t('doc_auth.headings.how_to_verify'))
+          click_on t('forms.buttons.continue_ipp')
+          expect(page).to have_current_path(idv_document_capture_path(step: :how_to_verify))
           expect_in_person_step_indicator_current_step(
             t('step_indicator.flows.idv.find_a_post_office'),
           )
@@ -207,7 +247,7 @@ RSpec.feature 'how to verify step', js: true do
       end
 
       it 'should not be bounced back to How to Verify with opt in disabled midstream' do
-        expect(page).to have_current_path(idv_document_capture_path)
+        expect(page).to have_current_path(idv_document_capture_path(step: :how_to_verify))
         allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { false }
         page.go_back
         expect(page).to have_current_path(idv_document_capture_path)
@@ -236,7 +276,7 @@ RSpec.feature 'how to verify step', js: true do
       end
 
       it 'should be bounced back to How to Verify' do
-        expect(page).to have_current_path(idv_document_capture_path)
+        expect(page).to have_current_path(idv_document_capture_path(step: :how_to_verify))
         page.go_back
         expect(page).to have_current_path(idv_how_to_verify_url)
       end
