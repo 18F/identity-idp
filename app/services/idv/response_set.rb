@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module Idv
-  class ResponseSet
+  class   DocumentResponseValidator
+
     def initialize(form_response:)
       @form_response = form_response
       @client_response = nil
