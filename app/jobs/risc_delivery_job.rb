@@ -41,7 +41,7 @@ class RiscDeliveryJob < ApplicationJob
            end
 
   def self.warning_error_classes
-    NETWORK_ERRORS + [RedisRateLimiter::LimitError]
+    [DeliveryError, RedisRateLimiter::LimitError]
   end
 
   def perform(
@@ -52,7 +52,6 @@ class RiscDeliveryJob < ApplicationJob
     now: Time.zone.now,
     user: nil
   )
-    sleep(rand(5) + 2)
     response = rate_limiter(push_notification_url).attempt!(now) do
       faraday.post(
         push_notification_url,

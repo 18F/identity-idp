@@ -106,6 +106,7 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     error_or_warn(
       event: event,
       extra_attributes: { attempts: job.executions },
+      include_exception_message: true,
     )
   end
 
