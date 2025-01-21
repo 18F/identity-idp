@@ -172,7 +172,7 @@ BW:
 BY:
   country_code: '375'
   name: Belarus
-  supports_sms: false
+  supports_sms: true
   supports_sms_unconfirmed: false
   supports_voice: true
   supports_voice_unconfirmed: false
@@ -520,7 +520,7 @@ JM:
 JO:
   country_code: '962'
   name: Jordan
-  supports_sms: false
+  supports_sms: true
   supports_sms_unconfirmed: false
   supports_voice: true
   supports_voice_unconfirmed: false
@@ -913,7 +913,7 @@ RW:
 SA:
   country_code: '966'
   name: Saudi Arabia
-  supports_sms: true
+  supports_sms: false
   supports_voice: true
   supports_voice_unconfirmed: false
 SB:
