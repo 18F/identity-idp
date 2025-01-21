@@ -12,6 +12,9 @@ RSpec.describe 'Hybrid Flow' do
   let(:socure_docv_verification_data_test_mode) { false }
   let(:fake_analytics) { FakeAnalytics.new }
   let(:socure_docv_webhook_repeat_endpoints) { [] }
+  let(:timeout_socure_route) do
+    idv_hybrid_mobile_socure_document_capture_errors_url(error_code: :timeout)
+  end
 
   before do
     allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(true)
@@ -215,7 +218,7 @@ RSpec.describe 'Hybrid Flow' do
 
           # Timeout
           visit idv_hybrid_mobile_socure_document_capture_update_url
-          expect(page).to have_current_path(idv_hybrid_mobile_socure_errors_timeout_path)
+          expect(page).to have_current_path(timeout_socure_route)
           expect(page).to have_content(I18n.t('idv.errors.try_again_later'))
 
           # Try in person
@@ -227,7 +230,7 @@ RSpec.describe 'Hybrid Flow' do
 
           # Go back
           click_on t('forms.buttons.back')
-          expect(page).to have_current_path(idv_hybrid_mobile_socure_errors_timeout_path)
+          expect(page).to have_current_path(timeout_socure_route)
 
           # Try Socure again
           click_on t('idv.failure.button.warning')
@@ -449,7 +452,7 @@ RSpec.describe 'Hybrid Flow' do
   end
 
   shared_examples 'a properly categorized Socure error' do |socure_error_code, expected_header_key|
-    it 'shows the correct error page', js: true do
+    it 'shows the correct error page', allow_browser_log: true, js: true do
       user = nil
 
       perform_in_browser(:desktop) do

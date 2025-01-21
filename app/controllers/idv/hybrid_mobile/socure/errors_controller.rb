@@ -11,22 +11,19 @@ module Idv
         include SocureErrorsConcern
 
         def show
-          error_code = error_code_for(handle_stored_result)
+          error_code = error_params[:error_code]
+          if error_code.nil?
+            error_code = error_code_for(handle_stored_result)
+          end
           track_event(error_code: error_code)
           @presenter = socure_errors_presenter(error_code)
-        end
-
-        def timeout
-          track_event(error_code: :timeout)
-          @presenter = socure_errors_presenter(:timeout)
-          render :show
         end
 
         def self.step_info
           Idv::StepInfo.new(
             key: :hybrid_socure_errors,
             controller: self,
-            action: :timeout,
+            action: :show,
             next_steps: [FlowPolicy::FINAL],
             preconditions: ->(idv_session:, user:) do
               true
@@ -36,6 +33,10 @@ module Idv
         end
 
         private
+
+        def error_params
+          params.permit(:error_code)
+        end
 
         def rate_limiter
           RateLimiter.new(user: document_capture_session&.user, rate_limit_type: :idv_doc_auth)

@@ -9,9 +9,9 @@ RSpec.describe Idv::Socure::ErrorsController do
     subject.idv_session.socure_docv_wait_polling_started_at = Time.zone.now
   end
 
-  describe '#timeout' do
+  describe '#show' do
     it 'logs an event' do
-      get(:timeout)
+      get(:show)
 
       expect(@analytics).to have_logged_event(:idv_doc_auth_socure_error_visited)
     end
