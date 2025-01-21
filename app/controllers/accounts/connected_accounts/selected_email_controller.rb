@@ -20,7 +20,7 @@ module Accounts
       def update
         @select_email_form = build_select_email_form
 
-        result = @select_email_form.submit(selected_email_id: selected_email_id)
+        result = @select_email_form.submit(forms_params)
 
         analytics.sp_select_email_submitted(**result)
 
@@ -50,12 +50,6 @@ module Accounts
       def identity
         return @identity if defined?(@identity)
         @identity = current_user.identities.find_by(id: params[:identity_id])
-      end
-
-      def selected_email_id
-        if identity.sp_only_single_email_requested?
-          form_params[:selected_email_id]
-        end
       end
 
       def last_email_id

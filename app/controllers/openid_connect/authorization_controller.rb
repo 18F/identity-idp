@@ -94,7 +94,9 @@ module OpenidConnect
         return user_session[:selected_email_id_for_linked_identity]
       end
       identity = current_user.identities.find_by(service_provider: sp_session[:issuer])
-      identity&.email_address_for_sharing&.id
+      if identity&.sp_only_single_email_requested?
+        identity&.email_address_id
+      end
     end
 
     def ial_context
