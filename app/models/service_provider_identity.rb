@@ -78,14 +78,9 @@ class ServiceProviderIdentity < ApplicationRecord
   end
 
   def email_address_for_sharing
-    if use_stored_email_address?
+    if IdentityConfig.store.feature_select_email_to_share_enabled && email_address
       return email_address
     end
     user.last_sign_in_email_address
-  end
-
-  def use_stored_email_address?
-    IdentityConfig.store.feature_select_email_to_share_enabled &&
-      email_address
   end
 end
