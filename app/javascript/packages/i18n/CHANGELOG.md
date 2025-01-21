@@ -1,6 +1,6 @@
 ## Unreleased
 
-- Output console message when translation data missing for requested key.
+- Output console error message when translation data missing for requested key.
 
 ## 1.0.1
 
