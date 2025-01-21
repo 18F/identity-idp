@@ -28,7 +28,7 @@ export const chaiConsoleSpy: Chai.ChaiPlugin = (chai, utils) => {
   utils.addChainableMethod(
     chai.Assertion.prototype,
     'loggedError',
-    (message) => {
+    (message: string | RegExp) => {
       if (message) {
         const index = unverifiedCalls.findIndex((calledMessage) =>
           message instanceof RegExp ? message.test(calledMessage) : message === calledMessage,
