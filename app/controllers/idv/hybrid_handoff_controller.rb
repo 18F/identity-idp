@@ -15,12 +15,12 @@ module Idv
     def show
       @upload_disabled = upload_disabled?
 
-      @direct_ipp_with_selfie_enabled = IdentityConfig.store.in_person_doc_auth_button_enabled &&
-                                        Idv::InPersonConfig.enabled_for_issuer?(
-                                          decorated_sp_session.sp_issuer,
-                                        )
+      @direct_ipp_with_selfie_enabled = IdentityConfig.store.in_person_doc_auth_button_enabled # &&
+                                        # Idv::InPersonConfig.enabled_for_issuer?(
+                                        #   decorated_sp_session.sp_issuer,
+                                        # )
 
-      @selfie_required = idv_session.selfie_check_required
+      @selfie_required = true # idv_session.selfie_check_required
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).call(
         'upload', :view,

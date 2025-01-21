@@ -40,8 +40,10 @@ module Idv
 
         if IdentityConfig.store.in_person_proofing_opt_in_enabled &&
            IdentityConfig.store.in_person_proofing_enabled
+          puts "\n#{'='*50}\nREDIRECT_TO_HOW_TO_VERIFY\n#{'='*50}\n"
           redirect_to idv_how_to_verify_url
         else
+          puts "\n#{'='*50}\nREDIRECT_TO_HYBRID_HANDOFF\n#{'='*50}\n"
           redirect_to idv_hybrid_handoff_url
         end
       else
