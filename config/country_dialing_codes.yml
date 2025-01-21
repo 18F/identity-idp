@@ -11,7 +11,7 @@ AD:
 AE:
   country_code: '971'
   name: United Arab Emirates (UAE)
-  supports_sms: false
+  supports_sms: true
   supports_voice: true
   supports_voice_unconfirmed: false
 AF:
@@ -172,7 +172,7 @@ BW:
 BY:
   country_code: '375'
   name: Belarus
-  supports_sms: true
+  supports_sms: false
   supports_sms_unconfirmed: false
   supports_voice: true
   supports_voice_unconfirmed: false
@@ -467,7 +467,7 @@ HU:
 ID:
   country_code: '62'
   name: Indonesia
-  supports_sms: false
+  supports_sms: true
   supports_sms_unconfirmed: false
   supports_voice: false
 IE:
@@ -520,7 +520,7 @@ JM:
 JO:
   country_code: '962'
   name: Jordan
-  supports_sms: true
+  supports_sms: false
   supports_sms_unconfirmed: false
   supports_voice: true
   supports_voice_unconfirmed: false
@@ -532,7 +532,7 @@ JP:
 KE:
   country_code: '254'
   name: Kenya
-  supports_sms: false
+  supports_sms: true
   supports_voice: false
 KG:
   country_code: '996'
@@ -569,7 +569,7 @@ KR:
 KW:
   country_code: '965'
   name: Kuwait
-  supports_sms: false
+  supports_sms: true
   supports_voice: true
   supports_voice_unconfirmed: false
 KY:
@@ -580,7 +580,7 @@ KY:
 KZ:
   country_code: '7'
   name: Kazakhstan
-  supports_sms: false
+  supports_sms: true
   supports_sms_unconfirmed: false
   supports_voice: false
 LA:
@@ -606,7 +606,7 @@ LI:
 LK:
   country_code: '94'
   name: Sri Lanka
-  supports_sms: false
+  supports_sms: true
   supports_voice: false
 LR:
   country_code: '231'
@@ -836,7 +836,7 @@ PG:
 PH:
   country_code: '63'
   name: Philippines
-  supports_sms: true
+  supports_sms: false
   supports_voice: true
   supports_voice_unconfirmed: false
 PK:
@@ -879,7 +879,7 @@ PY:
 QA:
   country_code: '974'
   name: Qatar
-  supports_sms: false
+  supports_sms: true
   supports_voice: true
   supports_voice_unconfirmed: false
 RE:
@@ -901,7 +901,7 @@ RS:
 RU:
   country_code: '7'
   name: Russia
-  supports_sms: false
+  supports_sms: true
   supports_voice: true
   supports_voice_unconfirmed: false
 RW:
@@ -913,7 +913,7 @@ RW:
 SA:
   country_code: '966'
   name: Saudi Arabia
-  supports_sms: false
+  supports_sms: true
   supports_voice: true
   supports_voice_unconfirmed: false
 SB:
@@ -1011,7 +1011,7 @@ TG:
 TH:
   country_code: '66'
   name: Thailand
-  supports_sms: true
+  supports_sms: false
   supports_voice: true
   supports_voice_unconfirmed: false
 TJ:
@@ -1045,7 +1045,7 @@ TO:
 TR:
   country_code: '90'
   name: Turkey
-  supports_sms: false
+  supports_sms: true
   supports_voice: false
 TT:
   country_code: '1868'
@@ -1118,7 +1118,7 @@ VI:
 VN:
   country_code: '84'
   name: Vietnam
-  supports_sms: false
+  supports_sms: true
   supports_voice: true
   supports_voice_unconfirmed: false
 VU:
@@ -1155,7 +1155,7 @@ ZA:
 ZM:
   country_code: '260'
   name: Zambia
-  supports_sms: false
+  supports_sms: true
   supports_sms_unconfirmed: false
   supports_voice: false
 ZW:
