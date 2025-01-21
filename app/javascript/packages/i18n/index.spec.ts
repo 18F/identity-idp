@@ -33,8 +33,9 @@ describe('I18n', () => {
       expect(t(['known', 'known'])).to.deep.equal(['translation', 'translation']);
     });
 
-    it('falls back to key value', () => {
+    it('falls back to key value and logs to console', () => {
       expect(t('unknown')).to.equal('unknown');
+      expect(console).to.have.loggedError('Missing translation for key `unknown`.');
     });
 
     describe('pluralization', () => {

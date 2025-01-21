@@ -3,6 +3,16 @@
 import sinon from 'sinon';
 import { format } from 'util';
 
+declare global {
+  namespace Chai {
+    interface Assertion {
+      loggedError: (message: string | RegExp) => Chai.Assertion;
+    }
+  }
+}
+
+type ExtendedConsole = typeof console & { unverifiedCalls: string[] };
+
 /**
  * Chai plugin which adds chainable `logged` method, to be used in combination with
  * `useConsoleLogSpy` test helper to validate expected console logging.
@@ -19,19 +29,19 @@ export function chaiConsoleSpy(chai, utils) {
     'loggedError',
     (message) => {
       if (message) {
-        const index = console.unverifiedCalls.findIndex((calledMessage) =>
+        const index = (console as ExtendedConsole).unverifiedCalls.findIndex((calledMessage) =>
           message instanceof RegExp ? message.test(calledMessage) : message === calledMessage,
         );
         let error = `Expected console to have logged: ${message}. `;
-        error += console.unverifiedCalls
-          ? `Console logged with: ${console.unverifiedCalls.join(', ')}`
+        error += (console as ExtendedConsole).unverifiedCalls
+          ? `Console logged with: ${(console as ExtendedConsole).unverifiedCalls.join(', ')}`
           : 'Console did not log.';
 
         expect(index).to.not.equal(-1, error);
 
-        console.unverifiedCalls.splice(index, 1);
+        (console as ExtendedConsole).unverifiedCalls.splice(index, 1);
       } else {
-        console.unverifiedCalls = [];
+        (console as ExtendedConsole).unverifiedCalls = [];
       }
     },
     undefined,
@@ -46,17 +56,19 @@ export function chaiConsoleSpy(chai, utils) {
 export function useConsoleLogSpy() {
   let originalConsoleError;
   beforeEach(() => {
-    console.unverifiedCalls = [];
+    (console as ExtendedConsole).unverifiedCalls = [];
     originalConsoleError = console.error;
     console.error = sinon.stub().callsFake((message, ...args) => {
-      console.unverifiedCalls = console.unverifiedCalls.concat(format(message, ...args));
+      (console as ExtendedConsole).unverifiedCalls = (
+        console as ExtendedConsole
+      ).unverifiedCalls.concat(format(message, ...args));
     });
   });
 
   afterEach(() => {
     console.error = originalConsoleError;
-    expect(console.unverifiedCalls).to.be.empty(
-      `Unexpected console logging: ${console.unverifiedCalls.join(', ')}`,
+    expect((console as ExtendedConsole).unverifiedCalls).to.be.empty(
+      `Unexpected console logging: ${(console as ExtendedConsole).unverifiedCalls.join(', ')}`,
     );
   });
 }
