@@ -34,8 +34,13 @@ function getEntry(strings: Entries, key: string): Entry {
     return strings[key];
   }
 
-  // eslint-disable-next-line no-console
-  console.error(`Missing translation for key \`${key}\`.`);
+  if (process.env.NODE_ENV !== 'test') {
+    // String data is not populated in JavaScript tests, so falling back to the key is the expected
+    // behavior. In all other environments this is an unexpected behavior, so log accordingly.
+
+    // eslint-disable-next-line no-console
+    console.error(`Missing translation for key \`${key}\`.`);
+  }
 
   return key;
 }
