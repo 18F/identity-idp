@@ -528,19 +528,37 @@ RSpec.describe AccountShowPresenter do
   end
 
   describe '#connected_apps' do
-    let(:user) { create(:user, identities: [create(:service_provider_identity)]) }
+    context 'without email_address loaded' do
+      let(:user) { create(:user, identities: [create(:service_provider_identity)]) }
 
-    subject(:connected_apps) { presenter.connected_apps }
+      subject(:connected_apps) { presenter.connected_apps }
 
-    it 'delegates to user, eager-loading view-specific relations' do
-      expect(connected_apps).to be_present
-        .and eq(user.connected_apps)
-        .and all(
-          satisfy do |app|
-            app.association(:service_provider_record).loaded? &&
-              app.association(:email_address).loaded?
-          end,
-        )
+      it 'does not attempt eager-loading' do
+        expect(connected_apps).to be_present
+          .and eq(user.connected_apps)
+          .and all(
+            satisfy do |app|
+              app.association(:service_provider_record).loaded?
+            end,
+          )
+      end
+    end
+
+    context 'with email_address loaded' do
+      let(:user) { create(:user, identities: [create(:service_provider_identity)]) }
+      let(:show_change_option) { true }
+      subject(:connected_apps) { presenter.connected_apps }
+
+      it 'delegates to user, eager-loading view-specific relations' do
+        expect(connected_apps).to be_present
+          .and eq(user.connected_apps)
+          .and all(
+            satisfy do |app|
+              app.association(:service_provider_record).loaded? &&
+                app.association(:email_address).loaded?
+            end,
+          )
+      end
     end
   end
 
