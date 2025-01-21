@@ -1,7 +1,7 @@
 AE:
+  supports_sms: false
   supports_voice: true
   supports_voice_unconfirmed: false
-  supports_sms: false
 AF:
   supports_sms_unconfirmed: false
 AO:
@@ -264,12 +264,12 @@ TM:
   supports_sms_unconfirmed: false
 TN:
   supports_sms_unconfirmed: false
+TR:
+  supports_sms: false
 TT:
   supports_voice: false
 TW:
   supports_voice: false
-TR:
-  supports_sms: false
 UA:
   supports_sms_unconfirmed: false
 UG:
