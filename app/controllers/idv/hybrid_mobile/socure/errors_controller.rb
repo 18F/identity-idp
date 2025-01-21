@@ -10,7 +10,8 @@ module Idv
         include StepIndicatorConcern
         include SocureErrorsConcern
 
-        def show(error_code: nil)
+        def show
+          error_code = error_params[:error_code]
           if error_code.nil?
             error_code = error_code_for(handle_stored_result)
           end
@@ -32,6 +33,10 @@ module Idv
         end
 
         private
+
+        def error_params
+          params.permit(:error_code)
+        end
 
         def rate_limiter
           RateLimiter.new(user: document_capture_session&.user, rate_limit_type: :idv_doc_auth)

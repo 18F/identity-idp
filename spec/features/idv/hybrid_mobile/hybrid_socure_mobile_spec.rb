@@ -452,7 +452,7 @@ RSpec.describe 'Hybrid Flow' do
   end
 
   shared_examples 'a properly categorized Socure error' do |socure_error_code, expected_header_key|
-    it 'shows the correct error page', js: true do
+    it 'shows the correct error page', allow_browser_log: true, js: true do
       user = nil
 
       perform_in_browser(:desktop) do

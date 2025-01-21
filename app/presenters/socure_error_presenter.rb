@@ -143,7 +143,7 @@ class SocureErrorPresenter
   end
 
   def heading_string_for(error_code)
-    case error_code
+    case error_code.to_sym
     when :network
       t('doc_auth.headers.general.network_error')
     when :timeout, :url_not_found
@@ -160,7 +160,7 @@ class SocureErrorPresenter
   end
 
   def error_string_for(error_code)
-    case error_code
+    case error_code.to_sym
     when :network
       t('doc_auth.errors.general.new_network_error')
     when :timeout, :url_not_found
