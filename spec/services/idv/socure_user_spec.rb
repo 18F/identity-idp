@@ -1,12 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Idv::SocureUser do
-  around do |ex|
-    REDIS_THROTTLE_POOL.with { |client| client.flushdb }
-    ex.run
-    REDIS_THROTTLE_POOL.with { |client| client.flushdb }
-  end
-
   let(:socure_user_set) { Idv::SocureUser.new }
   let(:dummy_uuid_1) { 'ABC0001' }
   let(:dummy_uuid_2) { 'ABC0002' }
