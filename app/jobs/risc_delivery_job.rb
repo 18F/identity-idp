@@ -52,7 +52,6 @@ class RiscDeliveryJob < ApplicationJob
     now: Time.zone.now,
     user: nil
   )
-    sleep(rand(5) + 2)
     response = rate_limiter(push_notification_url).attempt!(now) do
       faraday.post(
         push_notification_url,
