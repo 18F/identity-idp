@@ -14,8 +14,3 @@ REDIS_ATTEMPTS_API_POOL =
   ConnectionPool.new(size: IdentityConfig.store.redis_attempts_api_pool_size) do
     Redis.new(url: IdentityConfig.store.redis_attempts_api_url)
   end.freeze
-
-REDIS_SOCURE_USERS_POOL =
-  ConnectionPool.new(size: IdentityConfig.store.redis_throttle_pool_size) do
-    Redis.new(url: IdentityConfig.store.redis_throttle_url)
-  end.freeze

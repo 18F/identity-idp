@@ -4,7 +4,7 @@ module Idv
   class SocureUser
     attr_reader :redis_pool
 
-    def initialize(redis_pool: REDIS_SOCURE_USERS_POOL)
+    def initialize(redis_pool: REDIS_THROTTLE_POOL)
       @redis_pool = redis_pool
     end
 
