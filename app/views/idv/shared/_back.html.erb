@@ -5,8 +5,6 @@ path can be passed in case the HTTP header is not specified or is invalid. If no
 yield a useable URL, nothing will be rendered.
 
 locals:
-* step_url: (Optional) Base target for flow step URL calls, falls back to @step_url.
-* action: (Optional) Flow action to call to return to the previous step.
 * step: (Optional) Name of step to which user should be returned.
 * fallback_path: (Optional) Path to redirect absent action, step, and HTTP referer.
 %>
