@@ -61,11 +61,17 @@ class ResetPasswordForm
   end
 
   def mark_profile_as_password_reset
-    profile = find_active_or_pending_in_person_profile
+    profile = password_reset_profile
     return if profile.blank?
 
     profile.deactivate(:password_reset)
     Funnel::DocAuth::ResetSteps.call(user.id)
+  end
+
+  def password_reset_profile
+    FeatureManagement.pending_in_person_password_reset_enabled? ?
+      find_active_or_pending_in_person_profile :
+      active_profile
   end
 
   def find_active_or_pending_in_person_profile
