@@ -89,12 +89,6 @@ module DocAuth
           }
         end
 
-        # ToDo: Horrible override of things in our parent. Extract to parent.
-        def fail(errors)
-          @success = false
-          @errors.merge!(errors)
-        end
-
         private
 
         def successful_result?

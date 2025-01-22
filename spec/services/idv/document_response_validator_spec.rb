@@ -90,4 +90,8 @@ RSpec.describe Idv::DocumentResponseValidator do
       end
     end
   end
+
+  describe '#validate_pii_from_doc' do
+    
+  end
 end

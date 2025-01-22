@@ -65,7 +65,7 @@ class SocureDocvResultsJob < ApplicationJob
       analytics,
     )
 
-    if !pii_validator.doc_auth_form_response.success?
+    if !pii_validator.success?
       client_response.fail(pii_validation: 'failed')
     end
   end
