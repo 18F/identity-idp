@@ -10,7 +10,7 @@ module Idv
 
     def response
       # image validation failed
-      return form_response unless form_response.success?
+      return form_response if !form_response.success?
 
       # doc_pii validation failed
       return doc_pii_response if doc_pii_response.present? && !doc_pii_response.success?
