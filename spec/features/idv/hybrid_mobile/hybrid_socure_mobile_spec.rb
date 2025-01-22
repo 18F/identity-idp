@@ -101,10 +101,11 @@ RSpec.describe 'Hybrid Flow' do
         expect(page).to have_text(t('doc_auth.instructions.switch_back'))
         expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
 
-        # To be fixed in app:
         # Confirm app disallows jumping back to DocumentCapture page
-        # visit idv_hybrid_mobile_socure_document_capture_url
-        # expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
+        visit idv_hybrid_mobile_socure_document_capture_url
+        expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
+        visit idv_hybrid_mobile_socure_document_capture_update_url
+        expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
       end
 
       perform_in_browser(:desktop) do

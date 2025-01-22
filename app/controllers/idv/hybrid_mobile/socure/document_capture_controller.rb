@@ -18,6 +18,11 @@ module Idv
         before_action :fetch_test_verification_data, only: [:update]
 
         def show
+          if stored_result&.success?
+            redirect_to idv_hybrid_mobile_capture_complete_url
+            return
+          end
+
           Funnel::DocAuth::RegisterStep.new(document_capture_user.id, sp_session[:issuer])
             .call('hybrid_mobile_socure_document_capture', :view, true)
 
