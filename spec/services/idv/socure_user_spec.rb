@@ -6,6 +6,12 @@ RSpec.describe Idv::SocureUser do
   let(:dummy_uuid_2) { 'ABC0002' }
   let(:dummy_uuid_3) { 'ABC0003' }
 
+  around do |ex|
+    REDIS_POOL.with { |client| client.flushdb }
+    ex.run
+    REDIS_POOL.with { |client| client.flushdb }
+  end
+
   describe '#add_user!' do
     before do
       allow(IdentityConfig.store).to receive(:doc_auth_socure_max_allowed_users).and_return(2)
