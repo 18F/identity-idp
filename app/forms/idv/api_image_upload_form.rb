@@ -48,7 +48,7 @@ module Idv
         )
       end
 
-      response = response_set.determine_response
+      response = response_set.response
       response.extra[:failed_image_fingerprints] = store_failed_images
       response
     end
@@ -85,8 +85,7 @@ module Idv
 
       analytics.idv_doc_auth_submitted_image_upload_form(**form_response)
 
-      @response_set =   DocumentResponseValidator
-.new(form_response:)
+      @response_set =   DocumentResponseValidator.new(form_response:)
 
       form_response
     end

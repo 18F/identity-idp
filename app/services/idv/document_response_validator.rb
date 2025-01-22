@@ -8,7 +8,7 @@ module Idv
       @doc_pii_response = nil
     end
 
-    def determine_response
+    def response
       # image validation failed
       return form_response unless form_response.success?
 
