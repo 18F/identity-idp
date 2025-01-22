@@ -4,12 +4,13 @@ require_relative './script_base'
 
 # rubocop:disable Metrics/BlockLength
 class ActionAccount
-  attr_reader :argv, :stdout, :stderr
+  attr_reader :argv, :stdout, :stderr, :rails_env
 
-  def initialize(argv:, stdout:, stderr:)
+  def initialize(argv:, stdout:, stderr:, rails_env: Rails.env)
     @argv = argv
     @stdout = stdout
     @stderr = stderr
+    @rails_env = rails_env
   end
 
   def script_base
@@ -20,6 +21,7 @@ class ActionAccount
       subtask_class: subtask(argv.shift),
       banner: banner,
       reason_arg: true,
+      rails_env:,
     )
   end
 
