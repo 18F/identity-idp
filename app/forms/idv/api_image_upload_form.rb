@@ -85,7 +85,7 @@ module Idv
 
       analytics.idv_doc_auth_submitted_image_upload_form(**form_response)
 
-      @response_set =   DocumentResponseValidator.new(form_response:)
+      @response_set = DocumentResponseValidator.new(form_response:)
 
       form_response
     end

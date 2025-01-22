@@ -15,17 +15,39 @@ class SocureDocvResultsJob < ApplicationJob
       document_capture_session
 
     timer = JobHelpers::Timer.new
-    response = timer.time('vendor_request') do
+    client_response = timer.time('vendor_request') do
       socure_document_verification_result
     end
 
-    validate_pii_from_doc(response)
+    document_response_validator = Idv::DocumentResponseValidator.new(
+      form_response: Idv::DocAuthFormResponse.new(
+        success: socure_document_verification_result.success?,
+        errors: socure_document_verification_result.errors,
+        extra: {},
+      ),
+    )
+    document_response_validator.client_response = client_response
+    document_response_validator.validate_pii_from_doc(
+      document_capture_session:,
+      extra_attributes: {
+        remaining_submit_attempts: rate_limiter&.remaining_count,
+        flow_path: nil,
+        liveness_checking_required: client_response.biometric_comparison_required,
+        submit_attempts: rate_limiter&.attempts,
+      },
+      analytics:,
+    )
+
+    document_response_validator.response.extra[:failed_image_fingerprints] =
+      document_response_validator.store_failed_images(
+        document_capture_session,
+        {},
+      )
 
     log_verification_request(
-      docv_result_response: response,
+      docv_result_response: client_response,
       vendor_request_time_in_ms: timer.results['vendor_request'],
     )
-    document_capture_session.store_result_from_response(response)
   end
 
   private
@@ -49,25 +71,8 @@ class SocureDocvResultsJob < ApplicationJob
         async:,
         pii_like_keypaths: [[:pii]],
       ).except(:attention_with_barcode, :selfie_live, :selfie_quality_good,
-               :selfie_status),
+               :selfie_status, :failed_image_fingerprints),
     )
-  end
-
-  def validate_pii_from_doc(client_response)
-    pii_validator = Idv::PiiValidator.new(
-      client_response,
-      {
-        remaining_submit_attempts: rate_limiter&.remaining_count,
-        flow_path: nil,
-        liveness_checking_required: client_response.biometric_comparison_required,
-        submit_attempts: rate_limiter&.attempts,
-      },
-      analytics,
-    )
-
-    if !pii_validator.success?
-      client_response.fail(pii_validation: 'failed')
-    end
   end
 
   def socure_document_verification_result
