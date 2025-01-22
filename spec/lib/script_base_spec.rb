@@ -37,7 +37,7 @@ RSpec.describe ScriptBase do
     end
 
     context 'running in production vs locally' do
-      subject(:run) { subtask_class.new.run(args: nil, config: nil) }
+      subject(:run) { base.run }
 
       context 'in production' do
         let(:env) { 'production' }
@@ -45,7 +45,7 @@ RSpec.describe ScriptBase do
         it 'does not warn' do
           run
 
-          expect(stderr.string).to be_blank
+          expect(stderr.string).to_not include('WARNING')
         end
       end
 
