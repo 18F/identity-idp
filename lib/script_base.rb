@@ -3,15 +3,24 @@
 require 'optparse'
 
 class ScriptBase
-  attr_reader :argv, :stdout, :stderr, :subtask_class, :banner
+  attr_reader :argv, :stdout, :stderr, :subtask_class, :banner, :rails_env
 
-  def initialize(argv:, stdout:, stderr:, subtask_class:, banner:, reason_arg:)
+  def initialize(
+    argv:,
+    stdout:,
+    stderr:,
+    subtask_class:,
+    banner:,
+    reason_arg:,
+    rails_env: Rails.env
+  )
     @argv = argv
     @stdout = stdout
     @stderr = stderr
     @subtask_class = subtask_class
     @banner = banner
     @reason_arg = reason_arg
+    @rails_env = rails_env
   end
 
   def reason_arg?
@@ -55,6 +64,10 @@ class ScriptBase
 
   def run
     option_parser.parse!(argv)
+
+    if rails_env.local?
+      stderr.puts "⚠️ WARNING: returning local data for #{File.basename($PROGRAM_NAME)}"
+    end
 
     if config.show_help? || !subtask_class
       stderr.puts '*Task*: `help`'
