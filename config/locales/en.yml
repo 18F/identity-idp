@@ -2043,7 +2043,6 @@ vendor_outage.working: We are working to resolve an error
 webauthn_platform_recommended.cta: Set up face or touch unlock
 webauthn_platform_recommended.description_save_time: Save time by using your face, fingerprint, password, or another method to access your account. This method is faster than receiving a one-time code through text or voice message.
 webauthn_platform_recommended.heading: Set up face or touch unlock for a quick and easy sign in
-webauthn_platform_recommended.phishing_resistant: phishing-resistant
 webauthn_platform_recommended.skip: Skip
 zxcvbn.feedback.a_word_by_itself_is_easy_to_guess: A word by itself is easy to guess
 zxcvbn.feedback.add_another_word_or_two_uncommon_words_are_better: Add another word or two. Uncommon words are better

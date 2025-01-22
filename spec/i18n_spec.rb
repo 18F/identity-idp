@@ -77,7 +77,6 @@ module I18n
         { key: 'webauthn_platform_recommended.cta' }, # English-only A/B test
         { key: 'webauthn_platform_recommended.description_save_time' }, # English-only A/B test
         { key: 'webauthn_platform_recommended.heading' }, # English-only A/B test
-        { key: 'webauthn_platform_recommended.phishing_resistant' }, # English-only A/B test
         { key: 'webauthn_platform_recommended.skip' }, # English-only A/B test
       ].freeze
       # rubocop:enable Layout/LineLength
