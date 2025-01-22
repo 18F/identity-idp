@@ -5,12 +5,10 @@ RSpec.describe SignUp::SelectEmailController do
   let(:sp) do
     create(:service_provider)
   end
-  let(:sp_session) { { requested_attributes: %w[email] } }
 
   before do
     stub_sign_in(user)
     allow(controller).to receive(:current_sp).and_return(sp)
-    allow(controller).to receive(:sp_session).and_return(sp_session)
     allow(controller).to receive(:needs_completion_screen_reason).and_return(:new_attributes)
   end
 
@@ -103,29 +101,6 @@ RSpec.describe SignUp::SelectEmailController do
         needs_completion_screen_reason: :new_attributes,
         selected_email_id: selected_email_id,
       )
-    end
-
-    context ' with all_email and emails requested for SP' do
-      let(:sp_session) { { requested_attributes: %w[email all_emails] } }
-
-      it 'returns nil' do
-        response
-
-        expect(
-          controller.user_session[:selected_email_id_for_linked_identity],
-        ).to eq(nil)
-      end
-    end
-
-    context ' with all_emails requested for SP' do
-      let(:sp_session) { { requested_attributes: %w[all_emails] } }
-      it 'returns nil' do
-        response
-
-        expect(
-          controller.user_session[:selected_email_id_for_linked_identity],
-        ).to eq(nil)
-      end
     end
 
     context 'with a corrupted email selected_email_id form' do

@@ -120,28 +120,6 @@ RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
       )
     end
 
-    context ' with all_emails and emails requested' do
-      let(:verified_attributes) { %w[email all_emails] }
-
-      it 'returns nil' do
-        response
-
-        identity.reload
-        expect(identity.email_address_id).to eq(nil)
-      end
-    end
-
-    context ' with all_emails requested' do
-      let(:verified_attributes) { %w[all_emails] }
-
-      it 'returns nil' do
-        response
-
-        identity.reload
-        expect(identity.email_address_id).to eq(nil)
-      end
-    end
-
     context 'with invalid submission' do
       let(:params) { super().merge(select_email_form: { selected_email_id: '' }) }
 

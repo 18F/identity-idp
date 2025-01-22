@@ -20,7 +20,7 @@ module Accounts
       def update
         @select_email_form = build_select_email_form
 
-        result = @select_email_form.submit(forms_params)
+        result = @select_email_form.submit(form_params)
 
         analytics.sp_select_email_submitted(**result)
 
