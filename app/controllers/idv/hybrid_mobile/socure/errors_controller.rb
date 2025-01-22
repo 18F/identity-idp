@@ -50,6 +50,7 @@ module Idv
           attributes = {
             error_code:,
             remaining_submit_attempts:,
+            pii_like_keypaths: [[:pii]],
           }
 
           analytics.idv_doc_auth_socure_error_visited(**attributes)

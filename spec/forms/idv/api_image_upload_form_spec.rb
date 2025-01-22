@@ -40,6 +40,7 @@ RSpec.describe Idv::ApiImageUploadForm do
       fileName: front_image_file_name,
     }
   end
+
   let(:back_image_metadata) do
     {
       width: 20,
@@ -732,6 +733,7 @@ RSpec.describe Idv::ApiImageUploadForm do
       end
     end
   end
+
   describe '#store_failed_images' do
     let(:doc_pii_response) { instance_double(Idv::DocAuthFormResponse) }
     let(:client_response) { instance_double(DocAuth::Response) }
