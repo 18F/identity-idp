@@ -176,17 +176,6 @@ class Profile < ApplicationRecord
     end
   end
 
-  def activate_after_password_reset
-    if password_reset?
-      transaction do
-        update!(
-          deactivation_reason: nil,
-        )
-        activate(reason_deactivated: :password_reset)
-      end
-    end
-  end
-
   # Removes the deactivation reason from the profile if it had a password_reset
   # deactiation reason. If the profile was activated previously it will be
   # reactivated.
