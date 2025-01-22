@@ -106,7 +106,7 @@ RSpec.describe Reporting::SpProofingEventsByUuid do
   end
 
   describe '#as_emailable_reports' do
-    it 'returns an emailable report' do
+    it 'returns an array with an emailable report' do
       expect(report.as_emailable_reports).to eq(
         [
           Reporting::EmailableReport.new(
