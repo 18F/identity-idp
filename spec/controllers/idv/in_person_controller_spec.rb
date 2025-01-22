@@ -55,7 +55,9 @@ RSpec.describe Idv::InPersonController do
 
           it 'initializes the in-person session' do
             get :index
-            expect(controller.user_session['idv/in_person']).to include(pii_from_user: { uuid: user.uuid })
+            expect(controller.user_session['idv/in_person']).to include(
+              pii_from_user: { uuid: user.uuid },
+            )
           end
 
           it 'redirects to the first step' do
