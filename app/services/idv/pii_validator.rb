@@ -23,8 +23,8 @@ module Idv
       @doc_auth_form_response
     end
 
-    def client_and_pii_both_succeeded?
-      client_response.success? && doc_auth_form_response.success?
+    def success?
+      doc_auth_form_response.success?
     end
 
     private

@@ -30,7 +30,7 @@ module Idv
         analytics,
       )
 
-      if pii_validator.client_and_pii_both_succeeded?
+      if pii_validator.success?
         document_capture_session.store_result_from_response(client_response)
       end
 
