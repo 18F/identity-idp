@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'reporting/sp_proofing_events_by_uuid'
 
 RSpec.describe Reporting::SpProofingEventsByUuid do
-  let(:issuer) { 'super_cool_test_issuer' }
+  let(:issuer) { 'super:cool:test:issuer' }
   let(:agency_abbreviation) { 'DOL' }
   let(:agency) { Agency.find_by(abbreviation: agency_abbreviation) }
 
@@ -21,10 +21,56 @@ RSpec.describe Reporting::SpProofingEventsByUuid do
     ]
   end
 
+  let(:expect_csv_result) do
+    [
+      ['Date Range', '2024-12-01 - 2024-12-07'],
+      [
+        'UUID',
+        'Workflow Started',
+        'Documnet Capture Started',
+        'Document Captured',
+        'Selfie Captured',
+        'Document Authentication Passed',
+        'SSN Submitted',
+        'Personal Information Submitted',
+        'Personal Information Verified',
+        'Phone Submitted',
+        'Phone Verified',
+        'Verification Workflow Complete',
+        'Identity Verified for In-Band Users',
+        'Identity Verified for Verify-By-Mail Users',
+        'Identity Verified for Fraud Review Users',
+        'Out-of-Band Verification Pending Seconds',
+        'Agency Handoff Visited',
+        'Agency Handoff Submitted',
+      ],
+      [
+        agency_user_agency_uuid,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        0,
+        false,
+        false,
+      ],
+    ]
+  end
+
   before do
     create(:user, uuid: non_agency_user_uuid)
     agency_user = create(:user, uuid: agency_user_login_uuid)
-    create(:agency_identity, user: agency_user, uuid: agency_user_agency_uuid)
+    create(:agency_identity, user: agency_user, agency:, uuid: agency_user_agency_uuid)
 
     stub_cloudwatch_logs(cloudwatch_logs)
   end
@@ -37,51 +83,8 @@ RSpec.describe Reporting::SpProofingEventsByUuid do
 
   describe 'as_csv' do
     it 'renders a CSV report with converted UUIDs' do
-      expected_csv = [
-        ['Date Range', '2024-12-01 - 2024-12-07'],
-        [
-          'UUID',
-          'Workflow Started',
-          'Documnet Capture Started',
-          'Document Captured',
-          'Selfie Captured',
-          'Document Authentication Passed',
-          'SSN Submitted',
-          'Personal Information Submitted',
-          'Personal Information Verified',
-          'Phone Submitted',
-          'Phone Verified',
-          'Verification Workflow Complete',
-          'Identity Verified for In-Band Users',
-          'Identity Verified for Verify-By-Mail Users',
-          'Identity Verified for Fraud Review Users',
-          'Out-of-Band Verification Pending Seconds',
-          'Agency Handoff Visited',
-          'Agency Handoff Submitted',
-        ],
-        [
-          agency_user_login_uuid,
-          true,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          0,
-          false,
-          false,
-        ],
-      ]
       aggregate_failures do
-        report.as_csv.zip(expected_csv).each do |actual, expected|
+        expect_csv_result.zip(report.as_csv).each do |actual, expected|
           expect(actual).to eq(expected)
         end
       end
@@ -92,52 +95,10 @@ RSpec.describe Reporting::SpProofingEventsByUuid do
     it 'generates a csv' do
       csv = CSV.parse(report.to_csv, headers: false)
 
-      expected_csv = [
-        ['Date Range', '2024-12-01 - 2024-12-07'],
-        [
-          'UUID',
-          'Workflow Started',
-          'Documnet Capture Started',
-          'Document Captured',
-          'Selfie Captured',
-          'Document Authentication Passed',
-          'SSN Submitted',
-          'Personal Information Submitted',
-          'Personal Information Verified',
-          'Phone Submitted',
-          'Phone Verified',
-          'Verification Workflow Complete',
-          'Identity Verified for In-Band Users',
-          'Identity Verified for Verify-By-Mail Users',
-          'Identity Verified for Fraud Review Users',
-          'Out-of-Band Verification Pending Seconds',
-          'Agency Handoff Visited',
-          'Agency Handoff Submitted',
-        ],
-        [
-          agency_user_login_uuid,
-          'true',
-          'false',
-          'false',
-          'false',
-          'false',
-          'false',
-          'false',
-          'false',
-          'false',
-          'false',
-          'false',
-          'false',
-          'false',
-          'false',
-          '0',
-          'false',
-          'false',
-        ],
-      ]
+      stringified_csv = expect_csv_result.map { |row| row.map(&:to_s) }
 
       aggregate_failures do
-        csv.map(&:to_a).zip(expected_csv).each do |actual, expected|
+        csv.map(&:to_a).zip(stringified_csv).each do |actual, expected|
           expect(actual).to eq(expected)
         end
       end
@@ -145,6 +106,16 @@ RSpec.describe Reporting::SpProofingEventsByUuid do
   end
 
   describe '#as_emailable_reports' do
-    it 'returns an emailable report'
+    it 'returns an emailable report' do
+      expect(report.as_emailable_reports).to eq(
+        [
+          Reporting::EmailableReport.new(
+            title: 'DOL Proofing Events By UUID',
+            table: expect_csv_result,
+            filename: 'dol_proofing_events_by_uuid',
+          ),
+        ],
+      )
+    end
   end
 end

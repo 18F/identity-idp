@@ -110,7 +110,7 @@ module Reporting
       [
         EmailableReport.new(
           title: "#{agency_abbreviation} Proofing Events By UUID",
-          table: report_maker.as_csv,
+          table: as_csv,
           filename: "#{agency_abbreviation.downcase}_proofing_events_by_uuid",
         ),
       ]
