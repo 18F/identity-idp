@@ -105,6 +105,7 @@ group :development, :test do
   gem 'bullet', '~> 7.0'
   gem 'capybara-webmock', git: 'https://github.com/hashrocket/capybara-webmock.git', ref: 'd3f3b7c'
   gem 'erb_lint', '~> 0.7.0', require: false
+  gem 'faker'
   gem 'i18n-tasks', '~> 1.0'
   gem 'knapsack'
   gem 'listen'
@@ -123,7 +124,6 @@ group :development, :test do
   gem 'rubocop-rspec', '~> 3.2.0', require: false
   gem 'rubocop-capybara', require: false
   gem 'sqlite3', require: false
-  gem 'faker'
 end
 
 group :test do
