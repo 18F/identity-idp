@@ -376,9 +376,6 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
       it 'updates proofing component vendor' do
         proofing_components = Idv::ProofingComponents.new(
           idv_session: controller.idv_session,
-          session: controller.session,
-          user_session: controller.user_session,
-          user:,
         )
 
         expect(proofing_components.document_check).to be_nil
@@ -415,9 +412,6 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
       it 'updates proofing component vendor' do
         proofing_components = Idv::ProofingComponents.new(
           idv_session: controller.idv_session,
-          session: controller.session,
-          user_session: controller.user_session,
-          user:,
         )
 
         expect(proofing_components.document_check).to be_nil

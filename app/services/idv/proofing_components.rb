@@ -2,25 +2,12 @@
 
 module Idv
   class ProofingComponents
-    def initialize(idv_session:, session:, user:, user_session:)
+    def initialize(idv_session:)
       @idv_session = idv_session
-      @session = session
-      @user = user
-      @user_session = user_session
     end
 
     def document_check
-      if user.establishing_in_person_enrollment || user.pending_in_person_enrollment
-        Idp::Constants::Vendors::USPS
-      elsif idv_session.remote_document_capture_complete?
-        DocAuthRouter.doc_auth_vendor(
-          request: nil,
-          service_provider: idv_session.service_provider,
-          session:,
-          user_session:,
-          user:,
-        )
-      end
+      idv_session.doc_auth_vendor
     end
 
     def document_type
@@ -73,6 +60,6 @@ module Idv
 
     private
 
-    attr_reader :idv_session, :session, :user, :user_session
+    attr_reader :idv_session
   end
 end

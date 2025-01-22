@@ -176,9 +176,6 @@ RSpec.describe Idv::LinkSentController do
 
           proofing_components = Idv::ProofingComponents.new(
             idv_session: subject.idv_session,
-            session: subject.session,
-            user_session: subject.user_session,
-            user:,
           )
           expect(proofing_components.document_check).to eq('mock')
           expect(proofing_components.document_type).to eq('state_id')

@@ -21,9 +21,6 @@ RSpec.describe Idv::ProofingComponents do
 
   subject do
     described_class.new(
-      session:,
-      user:,
-      user_session:,
       idv_session:,
     )
   end
@@ -40,12 +37,13 @@ RSpec.describe Idv::ProofingComponents do
       idv_session.threatmetrix_review_status = 'pass'
       idv_session.source_check_vendor = 'aamva'
       idv_session.resolution_vendor = 'lexis_nexis'
+      idv_session.doc_auth_vendor = 'feedabee'
     end
 
     it 'returns expected result' do
       expect(subject.to_h).to eql(
         {
-          document_check: 'test_vendor',
+          document_check: 'feedabee',
           document_type: 'state_id',
           source_check: 'aamva',
           resolution_check: 'lexis_nexis',
@@ -58,46 +56,10 @@ RSpec.describe Idv::ProofingComponents do
   end
 
   describe '#document_check' do
-    it 'returns nil by default' do
-      expect(subject.document_check).to be_nil
-    end
+    before { idv_session.doc_auth_vendor = 'feedabee' }
 
-    context 'in-person proofing' do
-      context 'establishing' do
-        let!(:enrollment) { create(:in_person_enrollment, :establishing, user:) }
-
-        it 'returns USPS' do
-          expect(subject.document_check).to eql(Idp::Constants::Vendors::USPS)
-        end
-      end
-
-      context 'pending' do
-        let!(:enrollment) { create(:in_person_enrollment, :pending, user:) }
-
-        it 'returns USPS' do
-          expect(subject.document_check).to eql(Idp::Constants::Vendors::USPS)
-        end
-      end
-    end
-
-    context 'doc auth' do
-      before do
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return('test_vendor')
-      end
-
-      context 'before doc auth complete' do
-        it 'returns nil' do
-          expect(subject.document_check).to be_nil
-        end
-      end
-
-      context 'after doc auth completed successfully' do
-        let(:pii_from_doc) { Idp::Constants::MOCK_IDV_APPLICANT }
-
-        it 'returns doc auth vendor' do
-          expect(subject.document_check).to eql('test_vendor')
-        end
-      end
+    it 'returns doc_auth_vendor' do
+      expect(subject.document_check).to eql('feedabee')
     end
   end
 
