@@ -123,12 +123,12 @@ group :development, :test do
   gem 'rubocop-rspec', '~> 3.2.0', require: false
   gem 'rubocop-capybara', require: false
   gem 'sqlite3', require: false
+  gem 'faker'
 end
 
 group :test do
   gem 'axe-core-rspec', '~> 4.2'
   gem 'bundler-audit', require: false
-  gem 'faker'
   gem 'simplecov', '~> 0.22.0', require: false
   gem 'simplecov-cobertura'
   gem 'simplecov_json_formatter'
