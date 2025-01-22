@@ -45,8 +45,6 @@ module Idv
         }
       end
 
-      # update Idv::DocumentCaptureController.step_info.next_steps to include
-      # :ipp_address instead of :ipp_ssn in delete PR
       def self.step_info
         Idv::StepInfo.new(
           key: :ipp_address,
