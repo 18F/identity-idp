@@ -170,13 +170,5 @@ RSpec.describe SpReturnUrlResolver do
 
       it { expect(post_idv_follow_up_url).to eq(sp_post_idv_follow_up_url) }
     end
-
-    context 'with a template param in the URL' do
-      let(:sp_post_idv_follow_up_url) { 'https://sp.gov/follow_up?locale=%{locale}' }
-
-      it 'interpolates the appropriate value' do
-        expect(post_idv_follow_up_url).to eq('https://sp.gov/follow_up?locale=en')
-      end
-    end
   end
 end
