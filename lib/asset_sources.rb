@@ -23,7 +23,7 @@ class AssetSources
 
     locale_sources, sources = names.flat_map do |name|
       manifest&.dig('entrypoints', name, 'assets', 'js').presence || begin
-        [name] if name.match?(URI::DEFAULT_PARSER.regexp[:ABS_URI])
+        [name] if name.match?(URI::ABS_URI)
       end
     end.uniq.compact.partition { |source| @regexp_locale_suffix.match?(source) }
 
