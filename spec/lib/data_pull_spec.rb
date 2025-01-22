@@ -293,6 +293,33 @@ RSpec.describe DataPull do
     end
   end
 
+  describe DataPull::MfaReport do
+    subject(:subtask) { DataPull::MfaReport.new }
+
+    describe '#run' do
+      let(:user) { create(:user) }
+      let(:args) { [user.uuid] }
+      let(:config) { ScriptBase::Config.new }
+
+      subject(:result) { subtask.run(args:, config:) }
+
+      it 'runs the MFA report, has a JSON-only response', aggregate_failures: true do
+        expect(result.table).to be_nil
+        expect(result.json.first.keys).to contain_exactly(
+          :uuid,
+          :phone_configurations,
+          :auth_app_configurations,
+          :webauthn_configurations,
+          :piv_cac_configurations,
+          :backup_code_configurations,
+        )
+
+        expect(result.subtask).to eq('mfa-report')
+        expect(result.uuids).to eq([user.uuid])
+      end
+    end
+  end
+
   describe DataPull::InspectorGeneralRequest do
     subject(:subtask) { DataPull::InspectorGeneralRequest.new }
 
