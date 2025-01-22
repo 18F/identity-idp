@@ -381,7 +381,7 @@ class User < ApplicationRecord
   # that has also been deactivated due to a password reset, or nil if there is
   # no such profile
   def password_reset_profile
-    profile = find_active_or_pending_in_person_profile
+    profile = find_password_reset_profile
     profile if profile&.password_reset?
   end
 
@@ -534,6 +534,16 @@ class User < ApplicationRecord
   end
 
   private
+
+  def find_password_reset_profile
+    FeatureManagement.pending_in_person_password_reset_enabled? ?
+      find_active_or_pending_in_person_profile :
+      find_active_profile
+  end
+
+  def find_active_profile
+    profiles.where.not(activated_at: nil).order(activated_at: :desc).first
+  end
 
   def find_active_or_pending_in_person_profile
     profiles.where.not(activated_at: nil).order(activated_at: :desc).first ||

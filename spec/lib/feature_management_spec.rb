@@ -537,4 +537,30 @@ RSpec.describe 'FeatureManagement' do
       end
     end
   end
+
+  describe '#pending_in_person_password_reset_enabled?' do
+    context 'when feature_pending_in_person_password_enabled is true' do
+      before do
+        allow(IdentityConfig.store).to receive(
+          :feature_pending_in_person_password_reset_enabled,
+        ).and_return(true)
+      end
+
+      it 'returns true' do
+        expect(FeatureManagement.pending_in_person_password_reset_enabled?).to be(true)
+      end
+    end
+
+    context 'when feature_pending_in_person_password_enabled is false' do
+      before do
+        allow(IdentityConfig.store).to receive(
+          :feature_pending_in_person_password_reset_enabled,
+        ).and_return(false)
+      end
+
+      it 'returns false' do
+        expect(FeatureManagement.pending_in_person_password_reset_enabled?).to be(false)
+      end
+    end
+  end
 end
