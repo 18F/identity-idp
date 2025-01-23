@@ -11,6 +11,7 @@ module Idv
         include SocureErrorsConcern
 
         check_or_render_not_found -> { IdentityConfig.store.socure_docv_enabled }
+        before_action :validate_step_not_completed, only: [:show]
         before_action :check_valid_document_capture_session, except: [:update]
         before_action -> do
           redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, in_hybrid_mobile: true)
@@ -18,11 +19,6 @@ module Idv
         before_action :fetch_test_verification_data, only: [:update]
 
         def show
-          if stored_result&.success?
-            redirect_to idv_hybrid_mobile_capture_complete_url
-            return
-          end
-
           Funnel::DocAuth::RegisterStep.new(document_capture_user.id, sp_session[:issuer])
             .call('hybrid_mobile_socure_document_capture', :view, true)
 
@@ -88,6 +84,11 @@ module Idv
         end
 
         private
+
+        def validate_step_not_completed
+          return if stored_result.blank? || !stored_result.success?
+          redirect_to idv_hybrid_mobile_capture_complete_url
+        end
 
         def socure_errors_presenter(result)
           SocureErrorPresenter.new(
