@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::SocureUser do
+RSpec.describe Idv::SocureUserSet do
   let(:socure_user_set) { Idv::SocureUser.new }
   let(:dummy_uuid_1) { 'ABC0001' }
   let(:dummy_uuid_2) { 'ABC0002' }

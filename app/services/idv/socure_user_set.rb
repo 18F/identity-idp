@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Idv
-  class SocureUser
+  class SocureUserSet
     attr_reader :redis_pool
 
     def initialize(redis_pool: REDIS_POOL)
