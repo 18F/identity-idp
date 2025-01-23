@@ -15,7 +15,7 @@ module BackupCodeReminderConcern
     auth_methods_session.auth_events.none? do |auth_event|
       # If the user authenticated using remembered device, they have signed in more recently than
       # 5 months ago. Remembered device authentications do not produce `after_sign_in_2fa` events,
-      # which is what's used to consider whether used signed in more than 5 months ago.
+      # which is what's used to consider whether user signed in more than 5 months ago.
       auth_event[:auth_method] == TwoFactorAuthenticatable::AuthMethod::REMEMBER_DEVICE ||
         # If the user authenticated using backup code in the same session, it can be inferred that
         # they still have possession of their backup codes
