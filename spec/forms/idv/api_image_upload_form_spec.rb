@@ -758,8 +758,8 @@ RSpec.describe Idv::ApiImageUploadForm do
           allow(client_response).to receive(:doc_auth_success?).and_return(false)
           allow(client_response).to receive(:selfie_status).and_return(:not_processed)
           form.send(:validate_form)
-          form.response_set.client_response = client_response
-          form.response_set.doc_pii_response = doc_pii_response
+          form.document_response_validator.client_response = client_response
+          form.document_response_validator.doc_pii_response = doc_pii_response
           capture_result = form.send(:store_failed_images)
           expect(capture_result[:front]).not_to be_empty
           expect(capture_result[:back]).not_to be_empty
@@ -776,8 +776,8 @@ RSpec.describe Idv::ApiImageUploadForm do
           allow(client_response).to receive(:doc_auth_success?).and_return(false)
           allow(client_response).to receive(:selfie_status).and_return(:not_processed)
           form.send(:validate_form)
-          form.response_set.client_response = client_response
-          form.response_set.doc_pii_response = doc_pii_response
+          form.document_response_validator.client_response = client_response
+          form.document_response_validator.doc_pii_response = doc_pii_response
           capture_result = form.send(:store_failed_images)
           expect(capture_result[:front]).not_to be_empty
           expect(capture_result[:back]).not_to be_empty
@@ -794,8 +794,8 @@ RSpec.describe Idv::ApiImageUploadForm do
           allow(client_response).to receive(:doc_auth_success?).and_return(false)
           allow(client_response).to receive(:selfie_status).and_return(:not_processed)
           form.send(:validate_form)
-          form.response_set.client_response = client_response
-          form.response_set.doc_pii_response = doc_pii_response
+          form.document_response_validator.client_response = client_response
+          form.document_response_validator.doc_pii_response = doc_pii_response
           capture_result = form.send(:store_failed_images)
           expect(capture_result[:front]).not_to be_empty
           expect(capture_result[:back]).to be_empty
@@ -813,8 +813,8 @@ RSpec.describe Idv::ApiImageUploadForm do
           allow(client_response).to receive(:errors).and_return(errors)
           allow(doc_pii_response).to receive(:success?).and_return(true)
           form.send(:validate_form)
-          form.response_set.client_response = client_response
-          form.response_set.doc_pii_response = doc_pii_response
+          form.document_response_validator.client_response = client_response
+          form.document_response_validator.doc_pii_response = doc_pii_response
           capture_result = form.send(:store_failed_images)
           expect(capture_result[:front]).to be_empty
           expect(capture_result[:back]).to be_empty
@@ -830,8 +830,8 @@ RSpec.describe Idv::ApiImageUploadForm do
           allow(doc_pii_response).to receive(:success?).and_return(false)
           allow(client_response).to receive(:selfie_status).and_return(:not_processed)
           form.send(:validate_form)
-          form.response_set.client_response = client_response
-          form.response_set.doc_pii_response = doc_pii_response
+          form.document_response_validator.client_response = client_response
+          form.document_response_validator.doc_pii_response = doc_pii_response
           capture_result = form.send(:store_failed_images)
           expect(capture_result[:front]).not_to be_empty
           expect(capture_result[:back]).not_to be_empty

@@ -35,25 +35,25 @@ module Idv
 
     def submit
       if validate_form.success?
-        response_set.client_response = post_images_to_client
+        document_response_validator.client_response = post_images_to_client
 
         document_capture_session.update!(
-          last_doc_auth_result: response_set.client_response.extra[:doc_auth_result],
+          last_doc_auth_result: document_response_validator.client_response.extra[:doc_auth_result],
         )
 
-        response_set.validate_pii_from_doc(
+        document_response_validator.validate_pii_from_doc(
           document_capture_session:,
           extra_attributes:,
           analytics:,
         )
       end
 
-      response = response_set.response
+      response = document_response_validator.response
       response.extra[:failed_image_fingerprints] = store_failed_images
       response
     end
 
-    attr_reader :response_set
+    attr_reader :document_response_validator
 
     private
 
@@ -61,7 +61,7 @@ module Idv
                 :liveness_checking_required, :acuant_sdk_upgrade_ab_test_bucket
 
     def store_failed_images
-      response_set.store_failed_images(
+      document_response_validator.store_failed_images(
         document_capture_session,
         extra_attributes,
       )
@@ -85,7 +85,7 @@ module Idv
 
       analytics.idv_doc_auth_submitted_image_upload_form(**form_response)
 
-      @response_set = DocumentResponseValidator.new(form_response:)
+      @document_response_validator = DocumentResponseValidator.new(form_response:)
 
       form_response
     end
