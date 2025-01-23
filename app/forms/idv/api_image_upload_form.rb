@@ -36,12 +36,12 @@ module Idv
     def submit
       validate_form
 
-      if form_response.success?
-        @document_response_validator = DocumentResponseValidator.new(
-          form_response:,
-          client_response: post_images_to_client,
-        )
+      @document_response_validator = DocumentResponseValidator.new(
+        form_response:,
+        client_response: form_response.success? ? post_images_to_client : nil,
+      )
 
+      if form_response.success?
         document_capture_session.update!(
           last_doc_auth_result: document_response_validator.client_response.extra[:doc_auth_result],
         )
@@ -50,11 +50,6 @@ module Idv
           document_capture_session:,
           extra_attributes:,
           analytics:,
-        )
-      else
-        @document_response_validator = DocumentResponseValidator.new(
-          form_response:,
-          client_response: nil,
         )
       end
 
