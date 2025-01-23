@@ -30,7 +30,7 @@ AllCops:
     - 'vendor/**/*'
     - 'public/**/*'
   TargetRubyVersion: 3.3.0
-  TargetRailsVersion: 7.2
+  TargetRailsVersion: 8.0
   UseCache: true
   DisabledByDefault: true
   SuggestExtensions: false
