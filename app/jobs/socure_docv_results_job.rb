@@ -39,10 +39,7 @@ class SocureDocvResultsJob < ApplicationJob
     )
 
     document_response_validator.response.extra[:failed_image_fingerprints] =
-      document_response_validator.store_failed_images(
-        document_capture_session,
-        {},
-      )
+      document_response_validator.store_failed_images(document_capture_session, {})
 
     log_verification_request(
       docv_result_response: client_response,
