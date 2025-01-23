@@ -45,7 +45,7 @@ end
 
   let(:client_response) do
     DocAuth::Response.new(
-      success: success,
+      success:,
       pii_from_doc: pii_from_doc,
       errors: client_response_errors,
     )
@@ -79,8 +79,7 @@ end
       end
 
       context 'and there is no doc_pii_response' do
-        context 'and there is no client_response' do
-          # shouldn't happen
+        context 'and there is no client_response' do # shouldn't happen
           it 'returns nil' do
             expect(validator.response).to eq(nil)
           end
@@ -107,8 +106,7 @@ end
             allow(doc_pii_response).to receive(:success?).and_return(true)
           end
 
-          context 'and there is no client_response' do
-            # shouldn't happen
+          context 'and there is no client_response' do # shouldn't happen
             it 'returns nil' do
               expect(validator.response).to eq(nil)
             end
@@ -161,32 +159,45 @@ end
         expect(subject.doc_pii_response).not_to be_nil
       end
     end
+
+    context 'when we have a failed client response' do
+      let(:success) { false }
+
+      it 'does not store the client response' do
+        expect(document_capture_session).not_to(
+          have_received(:store_result_from_response)
+            .with(client_response),
+        )
+      end
+
+      it 'does not set the doc_pii_response' do
+        expect(subject.doc_pii_response).to be_nil
+      end
+    end
   end
 
   describe '#store_failed_images' do
-    let(:extra_attributes) { {} }
+    let(:extra) { {} }
     let(:success) { false }
 
     before do
       allow(document_capture_session).to receive(:store_failed_auth_data)
       allow(document_capture_session).to receive(:load_result)
+
       subject.client_response = client_response
-      subject.store_failed_images(
-        document_capture_session,
-        extra_attributes,
-      )
+      subject.store_failed_images(document_capture_session, extra)
     end
 
     context 'if there is a front image error' do
       let(:front_image_fingerprint) { 'front fingerprint' }
-      let(:extra_attributes) { { front_image_fingerprint: } }
+      let(:extra) { { front_image_fingerprint: } }
       let(:client_response_errors) { { front: 'bad' } }
 
       it 'saves the front image fingerprint' do
         expect(document_capture_session).to(
           have_received(:store_failed_auth_data)
             .with(
-              front_image_fingerprint: front_image_fingerprint,
+              front_image_fingerprint:,
               back_image_fingerprint: nil,
               doc_auth_success: success,
               selfie_image_fingerprint: nil,
@@ -198,7 +209,7 @@ end
 
     context 'if there is a back image error' do
       let(:back_image_fingerprint) { 'back fingerprint' }
-      let(:extra_attributes) { { back_image_fingerprint: } }
+      let(:extra) { { back_image_fingerprint: } }
       let(:client_response_errors) { { back: 'bad' } }
 
       it 'saves the back image fingerprint' do
@@ -206,7 +217,7 @@ end
           have_received(:store_failed_auth_data)
             .with(
               front_image_fingerprint: nil,
-              back_image_fingerprint: back_image_fingerprint,
+              back_image_fingerprint:,
               doc_auth_success: success,
               selfie_image_fingerprint: nil,
               selfie_status: :not_processed,
