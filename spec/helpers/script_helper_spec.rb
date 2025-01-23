@@ -112,6 +112,17 @@ RSpec.describe ScriptHelper do
           javascript_packs_tag_once('application', preload_links_header: false)
         end
 
+        it 'prints tags with expected attributes' do
+          output = render_javascript_pack_once_tags
+
+          expect(output).to have_css(
+            "script:not([preload_links_header]):not([crossorigin])[src^='/application.js'] ~ \
+            script:not([preload_links_header]):not([crossorigin])[src^='/document-capture.js']",
+            count: 1,
+            visible: :all,
+          )
+        end
+
         it 'does not append preload header' do
           render_javascript_pack_once_tags
 
