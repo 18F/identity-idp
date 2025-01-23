@@ -36,6 +36,8 @@ module Idv
     def submit
       validate_form
 
+      @document_response_validator = DocumentResponseValidator.new(form_response:)
+
       if form_response.success?
         document_response_validator.client_response = post_images_to_client
 
@@ -55,11 +57,12 @@ module Idv
       response
     end
 
-    attr_reader :document_response_validator
+    attr_accessor :document_response_validator
+    attr_reader :form_response
 
     private
 
-    attr_reader :params, :analytics, :service_provider, :form_response, :uuid_prefix,
+    attr_reader :params, :analytics, :service_provider, :uuid_prefix,
                 :liveness_checking_required, :acuant_sdk_upgrade_ab_test_bucket
 
     def store_failed_images
@@ -84,8 +87,6 @@ module Idv
         errors: errors,
         extra: extra_attributes,
       )
-
-      @document_response_validator = DocumentResponseValidator.new(form_response:)
 
       analytics.idv_doc_auth_submitted_image_upload_form(**form_response)
     end
