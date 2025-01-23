@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
-  let(:identity) { create(:service_provider_identity, :active) }
+  let(:identity) { create(:service_provider_identity, :active, verified_attributes: ['email']) }
   let(:user) { create(:user, :with_multiple_emails, identities: [identity]) }
 
   before do

@@ -31,7 +31,14 @@ RSpec.describe 'accounts/connected_accounts/show.html.erb' do
   end
 
   context 'with a connected app' do
-    let!(:identity) { create(:service_provider_identity, user:) }
+    let(:verified_attributes) { %w[email] }
+    let!(:identity) do
+      create(
+        :service_provider_identity,
+        user:,
+        verified_attributes: verified_attributes,
+      )
+    end
 
     it 'lists applications with link to revoke' do
       render
@@ -70,8 +77,14 @@ RSpec.describe 'accounts/connected_accounts/show.html.erb' do
 
     context 'with connected app having linked email' do
       let(:email_address) { user.confirmed_email_addresses.take }
+      let(:verified_attributes) { %w[email] }
       let!(:identity) do
-        create(:service_provider_identity, user:, email_address_id: email_address.id)
+        create(
+          :service_provider_identity,
+          user:,
+          email_address_id: email_address.id,
+          verified_attributes: verified_attributes,
+        )
       end
 
       it 'renders associated email with option to change' do
