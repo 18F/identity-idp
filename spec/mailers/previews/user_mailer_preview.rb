@@ -1,3 +1,5 @@
+require 'faker'
+
 class UserMailerPreview < ActionMailer::Preview
   def email_confirmation_instructions
     UserMailer.with(user: user, email_address: email_address_record)

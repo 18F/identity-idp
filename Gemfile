@@ -105,7 +105,7 @@ group :development, :test do
   gem 'bullet', '~> 7.0'
   gem 'capybara-webmock', git: 'https://github.com/hashrocket/capybara-webmock.git', ref: 'd3f3b7c'
   gem 'erb_lint', '~> 0.7.0', require: false
-  gem 'faker'
+  gem 'faker', require: false # used in mailer previews
   gem 'i18n-tasks', '~> 1.0'
   gem 'knapsack'
   gem 'listen'
