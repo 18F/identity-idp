@@ -21,8 +21,8 @@ class SocureDocvResultsJob < ApplicationJob
 
     document_response_validator = Idv::DocumentResponseValidator.new(
       form_response: Idv::DocAuthFormResponse.new(
-        success: socure_document_verification_result.success?,
-        errors: socure_document_verification_result.errors,
+        success: true,
+        errors: {},
         extra: {},
       ),
       client_response:,
