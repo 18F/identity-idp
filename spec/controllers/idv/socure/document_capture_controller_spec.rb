@@ -10,6 +10,8 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
   let(:doc_auth_success) { true }
   let(:socure_docv_enabled) { true }
   let(:socure_docv_verification_data_test_mode) { false }
+  let(:no_url_socure_route) { idv_socure_document_capture_errors_url(error_code: :url_not_found) }
+  let(:timeout_socure_route) { idv_socure_document_capture_errors_url(error_code: :timeout) }
 
   let(:stored_result) do
     DocumentCaptureSessionResult.new(
@@ -255,7 +257,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       it 'redirects to the errors page' do
         get(:show)
 
-        expect(response).to redirect_to(idv_socure_document_capture_errors_url)
+        expect(response).to redirect_to(no_url_socure_route)
         expect(controller.send(:instance_variable_get, :@url)).not_to be
       end
     end
@@ -306,7 +308,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       it 'connection timeout still responds to user' do
         stub_request(:post, fake_socure_endpoint).to_raise(Faraday::ConnectionFailed)
         get(:show)
-        expect(response).to redirect_to(idv_socure_document_capture_errors_url)
+        expect(response).to redirect_to(no_url_socure_route)
       end
 
       it 'socure error response still gives a result to user' do
@@ -315,7 +317,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           body: JSON.generate(failed_response_body),
         )
         get(:show)
-        expect(response).to redirect_to(idv_socure_document_capture_errors_url)
+        expect(response).to redirect_to(no_url_socure_route)
       end
 
       it 'socure nil response still gives a result to user' do
@@ -324,7 +326,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           body: nil,
         )
         get(:show)
-        expect(response).to redirect_to(idv_socure_document_capture_errors_url)
+        expect(response).to redirect_to(no_url_socure_route)
       end
 
       it 'socure nil response still gives a result to user' do
@@ -333,7 +335,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           body: JSON.generate(response_body_401),
         )
         get(:show)
-        expect(response).to redirect_to(idv_socure_document_capture_errors_url)
+        expect(response).to redirect_to(no_url_socure_route)
       end
 
       it 'socure nil response still gives a result to user' do
@@ -342,7 +344,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           body: JSON.generate(no_doc_found_response_body),
         )
         get(:show)
-        expect(response).to redirect_to(idv_socure_document_capture_errors_url)
+        expect(response).to redirect_to(no_url_socure_route)
       end
     end
 
@@ -426,7 +428,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
 
         it 'redirect to a Try again page' do
           get(:update)
-          expect(response).to redirect_to(idv_socure_errors_timeout_path)
+          expect(response).to redirect_to(timeout_socure_route)
         end
       end
 

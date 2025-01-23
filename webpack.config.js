@@ -11,7 +11,6 @@ const env = process.env.NODE_ENV || process.env.RAILS_ENV || 'development';
 const host = process.env.HOST || 'localhost';
 const isLocalhost = host === 'localhost';
 const isProductionEnv = env === 'production';
-const isTestEnv = env === 'test';
 const mode = isProductionEnv ? 'production' : 'development';
 const hashSuffix = isProductionEnv ? '-[chunkhash:8].digested' : '';
 const devServerPort = process.env.WEBPACK_PORT;
@@ -88,9 +87,7 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
     }),
     new RailsI18nWebpackPlugin({
       onMissingString(key, locale) {
-        if (isTestEnv) {
-          throw new Error(`Unexpected missing string for locale '${locale}': '${key}'`);
-        }
+        throw new Error(`Unexpected missing string for locale '${locale}': '${key}'`);
       },
     }),
     new RailsAssetsWebpackPlugin(),

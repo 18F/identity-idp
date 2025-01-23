@@ -26,7 +26,6 @@ const LEGACY_FILE_EXCEPTIONS = [
   'spec/javascript/packs/form-steps-wait-spec.js',
   'spec/javascript/packs/state-guidance-spec.js',
   'spec/javascript/packs/webauthn-setup-spec.js',
-  'spec/javascript/support/console.js',
   'spec/javascript/support/document-capture.jsx',
   'spec/javascript/support/dom.js',
   'spec/javascript/support/file.js',
