@@ -11,8 +11,9 @@ module Idv
       check_or_render_not_found -> { IdentityConfig.store.socure_docv_enabled }
       before_action :confirm_not_rate_limited
       before_action :confirm_step_allowed
-      before_action -> { redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, false) },
-                    only: :show
+      before_action -> do
+        redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, in_hybrid_mobile: false)
+      end, only: :show
       before_action :fetch_test_verification_data, only: [:update]
 
       # reconsider and maybe remove these when implementing the real
@@ -50,7 +51,7 @@ module Idv
 
         # placeholder until we get an error page for url not being present
         if @url.nil?
-          redirect_to idv_socure_document_capture_errors_url
+          redirect_to idv_socure_document_capture_errors_url(error_code: :url_not_found)
           return
         end
 
@@ -105,6 +106,7 @@ module Idv
             idv_session.pii_from_doc = nil
             idv_session.socure_docv_wait_polling_started_at = nil
             idv_session.invalidate_in_person_pii_from_user!
+            idv_session.doc_auth_vendor = nil
           end,
         )
       end
@@ -117,7 +119,7 @@ module Idv
         # If the stored_result is nil, the job fetching the results has not completed.
         analytics.idv_doc_auth_document_capture_polling_wait_visited(**analytics_arguments)
         if wait_timed_out?
-          redirect_to idv_socure_errors_timeout_path
+          redirect_to idv_socure_document_capture_errors_url(error_code: :timeout)
         else
           @refresh_interval =
             IdentityConfig.store.doc_auth_socure_wait_polling_refresh_max_seconds
@@ -147,6 +149,7 @@ module Idv
           skip_hybrid_handoff: idv_session.skip_hybrid_handoff,
           liveness_checking_required: resolved_authn_context_result.facial_match?,
           selfie_check_required: resolved_authn_context_result.facial_match?,
+          pii_like_keypaths: [[:pii]],
         }.merge(ab_test_analytics_buckets)
       end
     end

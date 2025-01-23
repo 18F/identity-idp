@@ -33,12 +33,15 @@ module Idv
       {
         message: message || I18n.t('doc_auth.errors.general.network_error'),
         socure: stored_result&.errors&.dig(:socure),
+        pii_validation: stored_result&.errors&.dig(:pii_validation),
       }
     end
 
     def extract_pii_from_doc(user, store_in_session: false)
       if defined?(idv_session) # hybrid mobile does not have idv_session
         idv_session.had_barcode_read_failure = stored_result.attention_with_barcode?
+        # See also Idv::InPerson::StateIdController#update
+        idv_session.doc_auth_vendor = doc_auth_vendor
         if store_in_session
           idv_session.pii_from_doc = stored_result.pii_from_doc
           idv_session.selfie_check_performed = stored_result.selfie_check_performed?
@@ -58,7 +61,7 @@ module Idv
         stored_result.selfie_check_performed?
     end
 
-    def redirect_to_correct_vendor(vendor, in_hybrid_mobile)
+    def redirect_to_correct_vendor(vendor, in_hybrid_mobile:)
       return if IdentityConfig.store.doc_auth_redirect_to_correct_vendor_disabled
 
       expected_doc_auth_vendor = doc_auth_vendor

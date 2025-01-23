@@ -8,6 +8,36 @@ RSpec.describe SamlIdpController do
   let(:path_year) { SamlAuthHelper::PATH_YEAR }
 
   describe '/api/saml/logout' do
+    let(:service_provider) do
+      create(
+        :service_provider,
+        certs: ['sp_sinatra_demo', 'saml_test_sp'],
+        active: true,
+        assertion_consumer_logout_service_url: 'https://example.com',
+      )
+    end
+
+    let(:right_cert_settings) do
+      saml_settings(
+        overrides: {
+          issuer: service_provider.issuer,
+          assertion_consumer_logout_service_url: 'https://example.com',
+        },
+      )
+    end
+
+    let(:wrong_cert_settings) do
+      saml_settings(
+        overrides: {
+          issuer: service_provider.issuer,
+          certificate: File.read(Rails.root.join('certs', 'sp', 'saml_test_sp2.crt')),
+          private_key: OpenSSL::PKey::RSA.new(
+            File.read(Rails.root + 'keys/saml_test_sp2.key'),
+          ).to_pem,
+        },
+      )
+    end
+
     it 'assigns devise session limited failure redirect url' do
       delete :logout, params: { path_year: path_year }
 
@@ -23,6 +53,17 @@ RSpec.describe SamlIdpController do
         'Logout Initiated',
         hash_including(sp_initiated: false, oidc: false, saml_request_valid: true),
       )
+    end
+
+    context 'with invalid year' do
+      let(:path_year) { 1999 }
+
+      it 'returns bad request error' do
+        delete :logout, params: { SAMLRequest: 'foo', path_year: path_year }
+
+        expect(response).to be_bad_request
+        expect(response.body).to eq('Invalid Year')
+      end
     end
 
     it 'tracks the event when sp initiated' do
@@ -52,36 +93,6 @@ RSpec.describe SamlIdpController do
         error_types: { saml_request_errors: true },
         event: :saml_logout_request,
         integration_exists: false,
-      )
-    end
-
-    let(:service_provider) do
-      create(
-        :service_provider,
-        certs: ['sp_sinatra_demo', 'saml_test_sp'],
-        active: true,
-        assertion_consumer_logout_service_url: 'https://example.com',
-      )
-    end
-
-    let(:right_cert_settings) do
-      saml_settings(
-        overrides: {
-          issuer: service_provider.issuer,
-          assertion_consumer_logout_service_url: 'https://example.com',
-        },
-      )
-    end
-
-    let(:wrong_cert_settings) do
-      saml_settings(
-        overrides: {
-          issuer: service_provider.issuer,
-          certificate: File.read(Rails.root.join('certs', 'sp', 'saml_test_sp2.crt')),
-          private_key: OpenSSL::PKey::RSA.new(
-            File.read(Rails.root + 'keys/saml_test_sp2.key'),
-          ).to_pem,
-        },
       )
     end
 
@@ -159,7 +170,7 @@ RSpec.describe SamlIdpController do
       let(:blank_cert_element_req) do
         <<-XML.gsub(/^[\s]+|[\s]+\n/, '')
           <?xml version="1.0"?>
-          <samlp:LogoutRequest xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" Destination="http://www.example.com/api/saml/logout2024" ID="_223d186c-35a0-4d1f-b81a-c473ad496415" IssueInstant="2024-01-11T18:22:03Z" Version="2.0">
+          <samlp:LogoutRequest xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" Destination="http://www.example.com/api/saml/logout2025" ID="_223d186c-35a0-4d1f-b81a-c473ad496415" IssueInstant="2024-01-11T18:22:03Z" Version="2.0">
             <saml:Issuer>http://localhost:3000</saml:Issuer>
             <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
               <ds:SignedInfo>
@@ -207,21 +218,6 @@ RSpec.describe SamlIdpController do
   end
 
   describe '/api/saml/remotelogout' do
-    it 'tracks the event when the saml request is invalid' do
-      stub_analytics
-
-      post :remotelogout, params: { SAMLRequest: 'foo', path_year: path_year }
-
-      expect(@analytics).to have_logged_event('Remote Logout initiated', saml_request_valid: false)
-      expect(@analytics).to have_logged_event(
-        :sp_integration_errors_present,
-        error_details: [:issuer_missing_or_invald, :no_auth_or_logout_request, :invalid_signature],
-        error_types: { saml_request_errors: true },
-        event: :saml_remote_logout_request,
-        integration_exists: false,
-      )
-    end
-
     let(:agency) { create(:agency) }
     let(:service_provider) do
       create(
@@ -315,6 +311,21 @@ RSpec.describe SamlIdpController do
             File.read(Rails.root + 'keys/saml_test_sp2.key'),
           ).to_pem,
         },
+      )
+    end
+
+    it 'tracks the event when the saml request is invalid' do
+      stub_analytics
+
+      post :remotelogout, params: { SAMLRequest: 'foo', path_year: path_year }
+
+      expect(@analytics).to have_logged_event('Remote Logout initiated', saml_request_valid: false)
+      expect(@analytics).to have_logged_event(
+        :sp_integration_errors_present,
+        error_details: [:issuer_missing_or_invald, :no_auth_or_logout_request, :invalid_signature],
+        error_types: { saml_request_errors: true },
+        event: :saml_remote_logout_request,
+        integration_exists: false,
       )
     end
 
@@ -519,6 +530,15 @@ RSpec.describe SamlIdpController do
 
     it 'renders XML inline' do
       expect(response.media_type).to eq 'text/xml'
+    end
+
+    context 'with invalid year' do
+      let(:path_year) { 1999 }
+
+      it 'returns bad request error' do
+        expect(response).to be_bad_request
+        expect(response.body).to eq('Invalid Year')
+      end
     end
 
     it 'contains an EntityDescriptor nodeset' do
@@ -1910,7 +1930,7 @@ RSpec.describe SamlIdpController do
       let(:blank_cert_element_req) do
         <<-XML.gsub(/^[\s]+|[\s]+\n/, '')
           <?xml version="1.0"?>
-          <samlp:AuthnRequest xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" AssertionConsumerServiceURL="http://localhost:3000/test/saml/decode_assertion" Destination="http://www.example.com/api/saml/auth2024" ID="_6b15011e-abfe-4c55-925f-6a5b3872a64c" IssueInstant="2024-01-11T18:03:38Z" Version="2.0">
+          <samlp:AuthnRequest xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" AssertionConsumerServiceURL="http://localhost:3000/test/saml/decode_assertion" Destination="http://www.example.com/api/saml/auth2025" ID="_6b15011e-abfe-4c55-925f-6a5b3872a64c" IssueInstant="2024-01-11T18:03:38Z" Version="2.0">
             <saml:Issuer>http://localhost:3000</saml:Issuer>
             <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
               <ds:SignedInfo>
@@ -2203,7 +2223,7 @@ RSpec.describe SamlIdpController do
 
     describe 'HEAD /api/saml/auth', type: :request do
       it 'responds with "403 Forbidden"' do
-        head '/api/saml/auth2024?SAMLRequest=bang!'
+        head '/api/saml/auth2025?SAMLRequest=bang!'
 
         expect(response.status).to eq(403)
       end
@@ -2211,7 +2231,7 @@ RSpec.describe SamlIdpController do
 
     context 'with missing SAMLRequest params' do
       it 'responds with "403 Forbidden"' do
-        get :auth
+        get :auth, params: { path_year: path_year }
 
         expect(response.status).to eq(403)
       end
@@ -2219,7 +2239,7 @@ RSpec.describe SamlIdpController do
 
     context 'with invalid SAMLRequest param' do
       it 'responds with "403 Forbidden"' do
-        get :auth
+        get :auth, params: { path_year: path_year }
 
         expect(response.status).to eq(403)
       end
@@ -2384,7 +2404,7 @@ RSpec.describe SamlIdpController do
             ds: Saml::XML::Namespaces::SIGNATURE,
           )
 
-          crt = AppArtifacts.store.saml_2024_cert
+          crt = AppArtifacts.store.saml_2025_cert
           expect(element.text).to eq(crt.split("\n")[1...-1].join("\n").delete("\n"))
         end
 

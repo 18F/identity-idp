@@ -7,7 +7,7 @@ RSpec.describe AttributeAsserter do
   let(:facial_match_verified_user) do
     create(:profile, :active, :verified, idv_level: :in_person).user
   end
-  let(:user_session) { {} }
+  let(:user_session) { { web_locale: 'en' } }
   let(:identity) do
     build(
       :service_provider_identity,
@@ -612,6 +612,19 @@ RSpec.describe AttributeAsserter do
           emails = all_emails_getter.call(user)
           expect(emails.length).to eq(2)
           expect(emails).to match_array(user.confirmed_email_addresses.map(&:email))
+        end
+      end
+
+      context 'custom bundle includes locale' do
+        let(:attribute_bundle) { %w[locale] }
+        before do
+          subject.build
+        end
+
+        it 'includes the user locale' do
+          locale_getter = user.asserted_attributes[:locale][:getter]
+          locale = locale_getter.call(user)
+          expect(locale).to eq('en')
         end
       end
 

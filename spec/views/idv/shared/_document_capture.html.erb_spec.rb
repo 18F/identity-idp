@@ -17,6 +17,8 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
   let(:acuant_version) { '1.3.3.7' }
   let(:skip_doc_auth_from_how_to_verify) { false }
   let(:skip_doc_auth_from_handoff) { false }
+  let(:skip_doc_auth_from_socure) { false }
+  let(:socure_errors_timeout_url) { idv_socure_document_capture_errors_url(error_code: :timeout) }
   let(:opted_in_to_in_person_proofing) { false }
   let(:presenter) { Idv::InPerson::UspsFormPresenter.new }
   let(:mock_client) { false }
@@ -53,6 +55,8 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
       doc_auth_selfie_capture: selfie_capture_enabled,
       skip_doc_auth_from_how_to_verify: skip_doc_auth_from_how_to_verify,
       skip_doc_auth_from_handoff: skip_doc_auth_from_handoff,
+      skip_doc_auth_from_socure: skip_doc_auth_from_socure,
+      socure_errors_timeout_url: socure_errors_timeout_url,
       opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
       mock_client: mock_client,
     }
@@ -112,10 +116,24 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
       )
     end
 
+    it 'sends skip_doc_auth_from_how_to_verify to in the frontend' do
+      render_partial
+      expect(rendered).to have_css(
+        "#document-capture-form[data-skip-doc-auth-from-how-to-verify='false']",
+      )
+    end
+
     it 'sends skip_doc_auth_from_handoff to in the frontend' do
       render_partial
       expect(rendered).to have_css(
         "#document-capture-form[data-skip-doc-auth-from-handoff='false']",
+      )
+    end
+
+    it 'sends skip_doc_auth_from_socure to in the frontend' do
+      render_partial
+      expect(rendered).to have_css(
+        "#document-capture-form[data-skip-doc-auth-from-socure='false']",
       )
     end
 

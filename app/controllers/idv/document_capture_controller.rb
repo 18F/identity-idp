@@ -12,8 +12,9 @@ module Idv
     before_action :confirm_step_allowed, unless: -> { allow_direct_ipp? }
     before_action :override_csp_to_allow_acuant
     before_action :set_usps_form_presenter
-    before_action -> { redirect_to_correct_vendor(Idp::Constants::Vendors::LEXIS_NEXIS, false) },
-                  only: [:show], unless: -> { allow_direct_ipp? }
+    before_action -> do
+      redirect_to_correct_vendor(Idp::Constants::Vendors::LEXIS_NEXIS, in_hybrid_mobile: false)
+    end, only: [:show], unless: -> { allow_direct_ipp? }
 
     def show
       analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)
@@ -48,6 +49,7 @@ module Idv
     def direct_in_person
       attributes = {
         remaining_submit_attempts: rate_limiter.remaining_count,
+        flow_path: :standard,
       }.merge(ab_test_analytics_buckets)
       analytics.idv_in_person_direct_start(**attributes)
 
@@ -75,6 +77,7 @@ module Idv
           idv_session.had_barcode_attention_error = nil
           idv_session.had_barcode_read_failure = nil
           idv_session.selfie_check_performed = nil
+          idv_session.doc_auth_vendor = nil
         end,
       )
     end
@@ -90,8 +93,10 @@ module Idv
         failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
         skip_doc_auth_from_how_to_verify: idv_session.skip_doc_auth_from_how_to_verify,
         skip_doc_auth_from_handoff: idv_session.skip_doc_auth_from_handoff,
+        skip_doc_auth_from_socure: idv_session.skip_doc_auth_from_socure,
         opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing,
         doc_auth_selfie_capture: resolved_authn_context_result.facial_match?,
+        socure_errors_timeout_url: idv_socure_document_capture_errors_url(error_code: :timeout),
       }.merge(
         acuant_sdk_upgrade_a_b_testing_variables,
       )
@@ -106,6 +111,7 @@ module Idv
         skip_hybrid_handoff: idv_session.skip_hybrid_handoff,
         liveness_checking_required: resolved_authn_context_result.facial_match?,
         selfie_check_required: resolved_authn_context_result.facial_match?,
+        pii_like_keypaths: [[:pii]],
       }.merge(ab_test_analytics_buckets)
     end
 

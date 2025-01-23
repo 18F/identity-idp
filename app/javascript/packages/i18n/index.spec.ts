@@ -1,3 +1,4 @@
+import { useDefineProperty } from '@18f/identity-test-helpers';
 import { I18n, replaceVariables } from './index';
 
 describe('replaceVariables', () => {
@@ -35,6 +36,23 @@ describe('I18n', () => {
 
     it('falls back to key value', () => {
       expect(t('unknown')).to.equal('unknown');
+    });
+
+    context('in non-test environment', () => {
+      const defineProperty = useDefineProperty();
+      beforeEach(() => {
+        defineProperty(process.env, 'NODE_ENV', {
+          value: 'production',
+          configurable: true,
+          writable: true,
+          enumerable: true,
+        });
+      });
+
+      it('falls back to key value and logs to console', () => {
+        expect(t('unknown')).to.equal('unknown');
+        expect(console).to.have.loggedError('Missing translation for key `unknown`.');
+      });
     });
 
     describe('pluralization', () => {

@@ -13,6 +13,7 @@ RSpec.feature 'document capture step', :js do
   let(:fake_socure_document_capture_app_url) { 'https://verify.fake-socure.test/something' }
   let(:socure_docv_verification_data_test_mode) { false }
   let(:socure_docv_webhook_repeat_endpoints) { [] }
+  let(:timeout_socure_route) { idv_socure_document_capture_errors_url(error_code: :timeout) }
 
   before(:each) do
     allow(IdentityConfig.store).to receive(:socure_docv_enabled).and_return(true)
@@ -63,14 +64,15 @@ RSpec.feature 'document capture step', :js do
           expect(page).to have_current_path(fake_socure_document_capture_app_url)
           visit idv_socure_document_capture_path
           expect(page).to have_current_path(idv_socure_document_capture_path)
-          %w[
-            WAITING_FOR_USER_TO_REDIRECT,
-            APP_OPENED,
-            DOCUMENT_FRONT_UPLOADED,
-            DOCUMENT_BACK_UPLOADED,
-          ].each do |event_type|
-            socure_docv_send_webhook(docv_transaction_token: @docv_transaction_token, event_type:)
-          end
+          socure_docv_upload_documents(
+            docv_transaction_token: @docv_transaction_token,
+            webhooks: %w[
+              WAITING_FOR_USER_TO_REDIRECT,
+              APP_OPENED,
+              DOCUMENT_FRONT_UPLOADED,
+              DOCUMENT_BACK_UPLOADED,
+            ],
+          )
 
           # Go to the wait page
           visit idv_socure_document_capture_update_path
@@ -78,7 +80,7 @@ RSpec.feature 'document capture step', :js do
 
           # Timeout
           visit idv_socure_document_capture_update_path
-          expect(page).to have_current_path(idv_socure_errors_timeout_path)
+          expect(page).to have_current_path(timeout_socure_route)
           expect(page).to have_content(I18n.t('idv.errors.try_again_later'))
 
           # Try in person
@@ -87,8 +89,8 @@ RSpec.feature 'document capture step', :js do
           expect(page).to have_content(t('in_person_proofing.headings.prepare'))
 
           # Go back
-          visit idv_socure_document_capture_update_path
-          expect(page).to have_current_path(idv_socure_errors_timeout_path)
+          click_on t('forms.buttons.back')
+          expect(page).to have_current_path(timeout_socure_route)
 
           # Try Socure again
           click_on t('idv.failure.button.warning')
@@ -456,6 +458,29 @@ RSpec.feature 'document capture step', :js do
 
   context 'a type 6 error' do
     it_behaves_like 'a properly categorized Socure error', 'I856', 'doc_auth.headers.id_not_found'
+  end
+
+  context 'Pii validation fails' do
+    before do
+      allow_any_instance_of(Idv::DocPiiForm).to receive(:zipcode).and_return(:invalid_junk)
+    end
+
+    it 'presents as a type 1 error' do
+      stub_docv_verification_data_pass(docv_transaction_token: @docv_transaction_token)
+
+      visit_idp_from_oidc_sp_with_ial2
+      @user = sign_in_and_2fa_user
+
+      complete_doc_auth_steps_before_document_capture_step
+      click_idv_continue
+
+      socure_docv_upload_documents(
+        docv_transaction_token: @docv_transaction_token,
+      )
+      visit idv_socure_document_capture_update_path
+
+      expect(page).to have_content(t('doc_auth.headers.unreadable_id'))
+    end
   end
 
   def expect_rate_limited_header(expected_to_be_present)

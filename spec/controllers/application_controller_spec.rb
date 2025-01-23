@@ -564,7 +564,7 @@ RSpec.describe ApplicationController do
     end
 
     context 'with a SAML request' do
-      let(:sp_session_request_url) { '/api/saml/auth2024' }
+      let(:sp_session_request_url) { '/api/saml/auth2025' }
       it 'returns the saml completion url' do
         expect(url_with_updated_params).to eq complete_saml_url
       end

@@ -393,12 +393,8 @@ RSpec.describe 'In Person Proofing', js: true do
     end
   end
 
-  context 'when full form address entry is enabled for post office search' do
+  context 'when full form address post office search' do
     let(:user) { user_with_2fa }
-
-    before do
-      allow(IdentityConfig.store).to receive(:in_person_full_address_entry_enabled).and_return(true)
-    end
 
     it 'allows the user to search by full address', allow_browser_log: true do
       sign_in_and_2fa_user(user)

@@ -94,6 +94,7 @@ RSpec.describe SignUp::PasswordsController do
           'last_request_at' => kind_of(Numeric),
           new_device: false,
           in_account_creation_flow: true,
+          web_locale: 'en',
         )
       end
     end
