@@ -34,7 +34,9 @@ module Idv
     end
 
     def submit
-      if validate_form.success?
+      validate_form
+
+      if form_response.success?
         document_response_validator.client_response = post_images_to_client
 
         document_capture_session.update!(
@@ -77,17 +79,15 @@ module Idv
       increment_rate_limiter!
       track_rate_limited if rate_limited?
 
-      form_response = Idv::DocAuthFormResponse.new(
+      @form_response = Idv::DocAuthFormResponse.new(
         success: success,
         errors: errors,
         extra: extra_attributes,
       )
 
-      analytics.idv_doc_auth_submitted_image_upload_form(**form_response)
-
       @document_response_validator = DocumentResponseValidator.new(form_response:)
 
-      form_response
+      analytics.idv_doc_auth_submitted_image_upload_form(**form_response)
     end
 
     def post_images_to_client
