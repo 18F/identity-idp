@@ -8,6 +8,12 @@ class WebauthnConfiguration < ApplicationRecord
   validate :valid_transports
 
   # https://w3c.github.io/webauthn/#enum-transport
+  PLATFORM_AUTHENTICATOR_TRANSPORTS = %w[
+    hybrid
+    internal
+  ].to_set.freeze
+
+  # https://w3c.github.io/webauthn/#enum-transport
   VALID_TRANSPORTS = %w[
     usb
     nfc
