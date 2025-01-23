@@ -243,7 +243,7 @@ RSpec.feature 'Sign in' do
         .and_return(Devise.timeout_in)
 
       user = create(:user, :fully_registered)
-      sign_in_user(user)
+      sign_in_before_2fa(user)
       visit user_two_factor_authentication_path
 
       expect(page).to have_css('.usa-js-modal--active', wait: 5)
@@ -254,16 +254,16 @@ RSpec.feature 'Sign in' do
 
   context 'signed out' do
     it 'refreshes the current page after session expires', js: true do
-      allow(Devise).to receive(:timeout_in).and_return(1)
+      allow(IdentityConfig.store).to receive(:session_check_frequency).and_return(1)
+      allow(IdentityConfig.store).to receive(:session_check_delay).and_return(1)
+      allow(IdentityConfig.store).to receive(:session_timeout_warning_seconds)
+        .and_return(Devise.timeout_in)
 
       visit sign_up_email_path(request_id: '123abc')
       fill_in t('forms.registration.labels.email'), with: 'test@example.com'
 
-      expect(page).to have_content(
-        t('notices.session_cleared', minutes: IdentityConfig.store.session_timeout_in_minutes),
-        wait: 5,
-      )
-      expect(page).to have_field(t('forms.registration.labels.email'), with: '')
+      expect(page).to have_css('.usa-js-modal--active', wait: 5)
+      expect(page).to have_field(t('forms.registration.labels.email'), with: 'test@example.com')
       expect(current_url).to match Regexp.escape(sign_up_email_path(request_id: '123abc'))
     end
   end
@@ -296,19 +296,29 @@ RSpec.feature 'Sign in' do
       end
     end
 
-    it 'refreshes the page (which clears the form) and notifies the user', js: true do
-      allow(Devise).to receive(:timeout_in).and_return(1)
+    it 'shows a modal after session timeout', js: true do
+      allow(IdentityConfig.store).to receive(:session_check_frequency).and_return(1)
+      allow(IdentityConfig.store).to receive(:session_check_delay).and_return(1)
+      allow(IdentityConfig.store).to receive(:session_timeout_warning_seconds)
+        .and_return(Devise.timeout_in)
+
       user = create(:user)
       visit root_path
       fill_in t('account.index.email'), with: user.email
       fill_in 'Password', with: user.password
 
-      expect(page).to have_content(
-        t('notices.session_cleared', minutes: IdentityConfig.store.session_timeout_in_minutes),
-        wait: 5,
-      )
-      expect(find_field('Email').value).to be_blank
-      expect(find_field('Password').value).to be_blank
+      expect(page).to have_css('.usa-js-modal--active', wait: 5)
+
+      click_button t('notices.timeout_warning.partially_signed_in.continue')
+
+      expect(find_field('Email').value).to_not be_blank
+      expect(find_field('Password').value).to_not be_blank
+
+      expect(page).to have_css('.usa-js-modal--active', wait: 5)
+
+      click_button t('notices.timeout_warning.partially_signed_in.sign_out')
+
+      expect(page).to have_content 'Signed out successfully'
     end
   end
 
