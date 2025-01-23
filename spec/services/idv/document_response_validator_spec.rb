@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Idv::DocumentResponseValidator do
-  subject(:validator) { described_class.new(form_response:) }
+  subject(:validator) { described_class.new(form_response:, client_response:) }
 
   let(:success) { true }
   let(:errors) { {} }
@@ -79,20 +79,8 @@ end
       end
 
       context 'and there is no doc_pii_response' do
-        context 'and there is no client_response' do # shouldn't happen
-          it 'returns nil' do
-            expect(validator.response).to eq(nil)
-          end
-        end
-
-        context 'and there is a client response' do
-          before do
-            validator.client_response = client_response
-          end
-
-          it 'returns the client_response' do
-            expect(validator.response).to eq(client_response)
-          end
+        it 'returns the client_response' do
+          expect(validator.response).to eq(client_response)
         end
       end
 
@@ -106,20 +94,8 @@ end
             allow(doc_pii_response).to receive(:success?).and_return(true)
           end
 
-          context 'and there is no client_response' do # shouldn't happen
-            it 'returns nil' do
-              expect(validator.response).to eq(nil)
-            end
-          end
-
-          context 'and there is a client response' do
-            before do
-              validator.client_response = client_response
-            end
-
-            it 'returns the client_response' do
-              expect(validator.response).to eq(client_response)
-            end
+          it 'returns the client_response' do
+            expect(validator.response).to eq(client_response)
           end
         end
 
@@ -139,7 +115,6 @@ end
   describe '#validate_pii_from_doc' do
     before do
       allow(document_capture_session).to receive(:store_result_from_response)
-      subject.client_response = client_response
       subject.validate_pii_from_doc(
         document_capture_session:,
         extra_attributes: extra,
@@ -184,7 +159,6 @@ end
       allow(document_capture_session).to receive(:store_failed_auth_data)
       allow(document_capture_session).to receive(:load_result)
 
-      subject.client_response = client_response
       subject.store_failed_images(document_capture_session, extra)
     end
 

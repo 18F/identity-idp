@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 module Idv
-  class  DocumentResponseValidator
-    def initialize(form_response:)
+  class DocumentResponseValidator
+    def initialize(form_response:, client_response:)
       @form_response = form_response
-      @client_response = nil
+      @client_response = client_response
       @doc_pii_response = nil
     end
 
@@ -18,8 +18,8 @@ module Idv
       client_response
     end
 
-    attr_reader :form_response
-    attr_accessor :client_response, :doc_pii_response
+    attr_reader :form_response, :client_response
+    attr_accessor :doc_pii_response
 
     def validate_pii_from_doc(document_capture_session:, extra_attributes:, analytics:)
       return unless client_response.success?

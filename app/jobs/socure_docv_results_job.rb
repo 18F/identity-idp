@@ -25,8 +25,8 @@ class SocureDocvResultsJob < ApplicationJob
         errors: socure_document_verification_result.errors,
         extra: {},
       ),
+      client_response:,
     )
-    document_response_validator.client_response = client_response
     document_response_validator.validate_pii_from_doc(
       document_capture_session:,
       extra_attributes: {
