@@ -130,7 +130,6 @@ RSpec.describe Users::PivCacAuthenticationSetupController do
               expect(@analytics).to have_logged_event(
                 'Multi-Factor Authentication Setup',
                 enabled_mfa_methods_count: 1,
-                errors: {},
                 multi_factor_auth_method: 'piv_cac',
                 in_account_creation_flow: false,
                 success: true,
@@ -147,7 +146,6 @@ RSpec.describe Users::PivCacAuthenticationSetupController do
               expect(@analytics).to have_logged_event(
                 'Multi-Factor Authentication Setup',
                 enabled_mfa_methods_count: 1,
-                errors: {},
                 multi_factor_auth_method: 'piv_cac',
                 in_account_creation_flow: false,
                 success: true,

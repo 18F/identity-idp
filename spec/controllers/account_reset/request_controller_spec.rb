@@ -107,7 +107,6 @@ RSpec.describe AccountReset::RequestController do
         totp: true,
         piv_cac: false,
         email_addresses: 1,
-        errors: {},
       )
     end
 
@@ -127,7 +126,6 @@ RSpec.describe AccountReset::RequestController do
         email_addresses: 1,
         request_id: 'fake-message-request-id',
         message_id: 'fake-message-id',
-        errors: {},
       )
     end
 
@@ -145,7 +143,6 @@ RSpec.describe AccountReset::RequestController do
         totp: false,
         piv_cac: true,
         email_addresses: 1,
-        errors: {},
       )
     end
 
