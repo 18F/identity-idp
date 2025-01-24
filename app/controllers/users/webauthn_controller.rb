@@ -3,6 +3,7 @@
 module Users
   class WebauthnController < ApplicationController
     include ReauthenticationRequiredConcern
+    include MfaDeletionConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_recently_authenticated_2fa
@@ -33,10 +34,7 @@ module Users
 
       if result.success?
         flash[:success] = presenter.delete_success_alert_text
-        create_user_event(:webauthn_key_removed)
-        revoke_remember_device(current_user)
-        event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
-        PushNotification::HttpPush.deliver(event)
+        handle_successful_mfa_deletion(event_type: :webauthn_key_removed)
         redirect_to account_path
       else
         flash[:error] = result.first_error_message

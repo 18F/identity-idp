@@ -7,6 +7,7 @@ module Api
         include CsrfTokenConcern
         include ReauthenticationRequiredConcern
         include PivCacConcern
+        include MfaDeletionConcern
 
         before_action :render_unauthorized, unless: :recently_authenticated_2fa?
 
@@ -38,9 +39,7 @@ module Api
           analytics.piv_cac_delete_submitted(**result)
 
           if result.success?
-            create_user_event(:piv_cac_disabled)
-            revoke_remember_device(current_user)
-            deliver_push_notification
+            handle_successful_mfa_deletion(event_type: :piv_cac_disabled)
             clear_piv_cac_information
             render json: { success: true }
           else
@@ -49,11 +48,6 @@ module Api
         end
 
         private
-
-        def deliver_push_notification
-          event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
-          PushNotification::HttpPush.deliver(event)
-        end
 
         def render_unauthorized
           render json: { error: 'Unauthorized' }, status: :unauthorized

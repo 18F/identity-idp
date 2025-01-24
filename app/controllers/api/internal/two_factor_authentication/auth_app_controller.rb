@@ -6,6 +6,7 @@ module Api
       class AuthAppController < ApplicationController
         include CsrfTokenConcern
         include ReauthenticationRequiredConcern
+        include MfaDeletionConcern
 
         before_action :render_unauthorized, unless: :recently_authenticated_2fa?
 
@@ -37,10 +38,7 @@ module Api
           analytics.auth_app_delete_submitted(**result)
 
           if result.success?
-            create_user_event(:authenticator_disabled)
-            revoke_remember_device(current_user)
-            event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
-            PushNotification::HttpPush.deliver(event)
+            handle_successful_mfa_deletion(event_type: :authenticator_disabled)
             render json: { success: true }
           else
             render json: { success: false, error: result.first_error_message }, status: :bad_request
