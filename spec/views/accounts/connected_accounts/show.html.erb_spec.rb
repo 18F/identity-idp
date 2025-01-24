@@ -109,20 +109,9 @@ RSpec.describe 'accounts/connected_accounts/show.html.erb' do
   end
 
   context 'when the partner requests all_emails' do
-    before do
-      assign(
-        :presenter,
-        AccountShowPresenter.new(
-          decrypted_pii: nil,
-          user: user,
-          sp_session_request_url: nil,
-          authn_context: nil,
-          sp_name: nil,
-          locked_for_session: false,
-        ),
-      )
+    let!(:identity) do
+      create(:service_provider_identity, deleted_at: nil, verified_attributes: ['all_emails'])
     end
-    let!(:identity) { create(:service_provider_identity, user:) }
 
     it 'does not show the change link' do
       render
@@ -135,20 +124,9 @@ RSpec.describe 'accounts/connected_accounts/show.html.erb' do
   end
 
   context 'when the partner does not request email' do
-    before do
-      assign(
-        :presenter,
-        AccountShowPresenter.new(
-          decrypted_pii: nil,
-          user: user,
-          sp_session_request_url: nil,
-          authn_context: nil,
-          sp_name: nil,
-          locked_for_session: false,
-        ),
-      )
+    let!(:identity) do
+      create(:service_provider_identity, deleted_at: nil, verified_attributes: ['ssn'])
     end
-    let!(:identity) { create(:service_provider_identity, user:) }
 
     it 'hides the change link' do
       render
