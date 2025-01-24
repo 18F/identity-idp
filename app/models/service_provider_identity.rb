@@ -66,7 +66,7 @@ class ServiceProviderIdentity < ApplicationRecord
   end
 
   def supports_email_change?
-    verified_attributes&.include('all_emails') && !verified_attributes.include('email')
+    verified_attributes&.include?('all_emails') && !verified_attributes.include?('email')
   end
 
   def email_address_for_sharing
