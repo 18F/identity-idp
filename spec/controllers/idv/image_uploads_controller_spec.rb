@@ -346,7 +346,6 @@ RSpec.describe Idv::ImageUploadsController do
         expect(@analytics).to have_logged_event(
           'IdV: doc auth image upload form submitted',
           success: true,
-          errors: {},
           user_id: user.uuid,
           submit_attempts: 1,
           remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -392,7 +391,6 @@ RSpec.describe Idv::ImageUploadsController do
         expect(@analytics).to have_logged_event(
           'IdV: doc auth image upload vendor pii validation',
           success: true,
-          errors: {},
           attention_with_barcode: false,
           user_id: user.uuid,
           submit_attempts: 1,
@@ -479,7 +477,6 @@ RSpec.describe Idv::ImageUploadsController do
             expect(@analytics).to have_logged_event(
               'IdV: doc auth image upload form submitted',
               success: true,
-              errors: {},
               user_id: user.uuid,
               submit_attempts: 1,
               remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -558,7 +555,6 @@ RSpec.describe Idv::ImageUploadsController do
             expect(@analytics).to have_logged_event(
               'IdV: doc auth image upload form submitted',
               success: true,
-              errors: {},
               user_id: user.uuid,
               submit_attempts: 1,
               remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -637,7 +633,6 @@ RSpec.describe Idv::ImageUploadsController do
             expect(@analytics).to have_logged_event(
               'IdV: doc auth image upload form submitted',
               success: true,
-              errors: {},
               user_id: user.uuid,
               submit_attempts: 1,
               remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -713,7 +708,6 @@ RSpec.describe Idv::ImageUploadsController do
             expect(@analytics).to have_logged_event(
               'IdV: doc auth image upload form submitted',
               success: true,
-              errors: {},
               user_id: user.uuid,
               submit_attempts: 1,
               remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -788,7 +782,6 @@ RSpec.describe Idv::ImageUploadsController do
             expect(@analytics).to have_logged_event(
               'IdV: doc auth image upload form submitted',
               success: true,
-              errors: {},
               user_id: user.uuid,
               submit_attempts: 1,
               remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -890,7 +883,6 @@ RSpec.describe Idv::ImageUploadsController do
         expect(@analytics).to have_logged_event(
           'IdV: doc auth image upload form submitted',
           success: true,
-          errors: {},
           user_id: user.uuid,
           submit_attempts: 1,
           remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -957,7 +949,6 @@ RSpec.describe Idv::ImageUploadsController do
         expect(@analytics).to have_logged_event(
           'IdV: doc auth image upload form submitted',
           success: true,
-          errors: {},
           user_id: user.uuid,
           submit_attempts: 1,
           remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,

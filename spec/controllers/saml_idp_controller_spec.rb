@@ -881,7 +881,6 @@ RSpec.describe SamlIdpController do
           'SAML Auth',
           hash_including(
             success: true,
-            errors: {},
             nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
             authn_context: [Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF],
             authn_context_comparison: 'exact',
@@ -1034,7 +1033,6 @@ RSpec.describe SamlIdpController do
           'SAML Auth',
           hash_including(
             success: true,
-            errors: {},
             nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
             authn_context: ['http://idmanagement.gov/ns/assurance/ial/1'],
             authn_context_comparison: 'minimum',
@@ -1953,7 +1951,6 @@ RSpec.describe SamlIdpController do
           'SAML Auth',
           hash_including(
             success: true,
-            errors: {},
             nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
             authn_context: [Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF],
             authn_context_comparison: 'exact',
@@ -2637,7 +2634,6 @@ RSpec.describe SamlIdpController do
           'SAML Auth',
           hash_including(
             success: true,
-            errors: {},
             nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
             authn_context: [
               Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
@@ -2690,7 +2686,6 @@ RSpec.describe SamlIdpController do
           'SAML Auth',
           hash_including(
             success: true,
-            errors: {},
             nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
             authn_context: request_authn_contexts,
             authn_context_comparison: 'exact',
@@ -2742,7 +2737,6 @@ RSpec.describe SamlIdpController do
           'SAML Auth',
           hash_including(
             success: true,
-            errors: {},
             nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
             authn_context: request_authn_contexts,
             authn_context_comparison: 'exact',

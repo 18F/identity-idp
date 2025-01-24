@@ -214,7 +214,7 @@ RSpec.describe FormResponse do
         response = FormResponse.new(success: true, errors: errors)
         response_hash = {
           success: true,
-          errors: {},
+          errors: nil,
         }
 
         expect(response.to_h).to eq response_hash
@@ -227,7 +227,7 @@ RSpec.describe FormResponse do
         combined_response = response1.merge(response2)
         response_hash = {
           success: true,
-          errors: {},
+          errors: nil,
         }
 
         expect(combined_response.to_h).to eq response_hash

@@ -71,7 +71,6 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
         expect(@analytics).to have_logged_event(
           'Multi-Factor Authentication',
           success: true,
-          errors: {},
           enabled_mfa_methods_count: 1,
           multi_factor_auth_method: 'personal-key',
           multi_factor_auth_method_created_at:,

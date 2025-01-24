@@ -100,7 +100,6 @@ RSpec.describe Idv::AgreementController do
     let(:analytics_args) do
       {
         success: true,
-        errors: {},
         step: 'agreement',
         analytics_id: 'Doc Auth',
       }

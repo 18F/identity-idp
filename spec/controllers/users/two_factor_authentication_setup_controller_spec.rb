@@ -191,7 +191,6 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
         selection: ['voice'],
         success: true,
         selected_mfa_count: 1,
-        errors: {},
       )
     end
 

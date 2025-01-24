@@ -49,7 +49,6 @@ RSpec.describe Users::PasswordsController do
         expect(@analytics).to have_logged_event(
           'Password Changed',
           success: true,
-          errors: {},
           pending_profile_present: false,
           active_profile_present: false,
           user_id: subject.current_user.uuid,
@@ -152,7 +151,6 @@ RSpec.describe Users::PasswordsController do
           expect(@analytics).to have_logged_event(
             'Password Changed',
             success: true,
-            errors: {},
             pending_profile_present: false,
             active_profile_present: false,
             user_id: subject.current_user.uuid,

@@ -172,7 +172,7 @@ RSpec.describe EventDisavowalController do
     end
   end
 
-  def build_analytics_hash(success: true, errors: {}, user_id: nil)
+  def build_analytics_hash(success: true, errors: nil, user_id: nil)
     hash_including(
       {
         event_created_at: event.created_at,
