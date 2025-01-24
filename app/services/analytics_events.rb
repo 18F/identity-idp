@@ -2077,7 +2077,7 @@ module AnalyticsEvents
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
     selfie_image_fingerprint: nil,
-    classification_info: {},
+    classification_info: nil,
     **extra
   )
     track_event(
@@ -6282,7 +6282,7 @@ module AnalyticsEvents
     errors:,
     confirmed:,
     active_profile:,
-    error_details: {},
+    error_details: nil,
     **extra
   )
     track_event(
@@ -6312,7 +6312,7 @@ module AnalyticsEvents
     profile_deactivated:,
     pending_profile_invalidated:,
     pending_profile_pending_reasons:,
-    error_details: {},
+    error_details: nil,
     **extra
   )
     track_event(
