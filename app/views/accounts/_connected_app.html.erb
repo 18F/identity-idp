@@ -12,7 +12,7 @@
   </h2>
 
   <% if IdentityConfig.store.feature_select_email_to_share_enabled %>
-    <% if !identity.supports_email_change? %>
+    <% if !identity.hide_change_email? %>
         <%= t(
               'account.connected_apps.associated_attributes_html',
               timestamp_html: render(TimeComponent.new(time: identity.created_at)),

@@ -65,7 +65,7 @@ class ServiceProviderIdentity < ApplicationRecord
     last_authenticated_at.in_time_zone('UTC')
   end
 
-  def supports_email_change?
+  def hide_change_email?
     verified_attributes&.include?('all_emails') && !verified_attributes.include?('email')
   end
 
