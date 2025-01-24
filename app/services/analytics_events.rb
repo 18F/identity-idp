@@ -7706,7 +7706,54 @@ module AnalyticsEvents
     track_event(:webauthn_platform_recommended_visited)
   end
 
-  # @param [Hash] platform_authenticator
+  # @param [Boolean] platform_authenticator Whether authentication method was registered as platform
+  #   authenticator
+  # @param [Number] configuration_id Database ID of WebAuthn configuration
+  # @param [Boolean] confirmed_mismatch Whether user chose to confirm and continue with interpreted
+  #   platform attachment
+  # @param [Boolean] success Whether the deletion was successful, if user chose to undo interpreted
+  #   platform attachment
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful deletion
+  # User submitted confirmation screen after setting up WebAuthn with transports mismatched with the
+  # expected platform attachment
+  def webauthn_setup_mismatch_submitted(
+    configuration_id:,
+    platform_authenticator:,
+    confirmed_mismatch:,
+    success: nil,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      :webauthn_setup_mismatch_submitted,
+      configuration_id:,
+      platform_authenticator:,
+      confirmed_mismatch:,
+      success:,
+      error_details:,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] platform_authenticator Whether authentication method was registered as platform
+  #   authenticator
+  # @param [Number] configuration_id Database ID of WebAuthn configuration
+  # User visited confirmation screen after setting up WebAuthn with transports mismatched with the
+  # expected platform attachment
+  def webauthn_setup_mismatch_visited(
+    configuration_id:,
+    platform_authenticator:,
+    **extra
+  )
+    track_event(
+      :webauthn_setup_mismatch_visited,
+      configuration_id:,
+      platform_authenticator:,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] platform_authenticator
   # @param [Boolean] success
   # @param [Hash, nil] errors
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow

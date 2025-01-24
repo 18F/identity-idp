@@ -1,0 +1,42 @@
+<% self.title = @presenter.heading %>
+
+<div class="display-flex flex-align-center margin-bottom-4">
+  <%= image_tag(
+        @presenter.correct_image_path,
+        width: 104,
+        height: 116,
+        alt: '',
+        aria: { hidden: true },
+      ) %>
+  <%= image_tag(
+        @presenter.incorrect_image_path,
+        width: 64,
+        height: 71,
+        class: 'margin-left-2',
+        alt: '',
+        aria: { hidden: true },
+      ) %>
+</div>
+
+<%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
+
+<p><%= @presenter.description %></p>
+
+<p><%= t('webauthn_setup_mismatch.description_undo') %>
+
+<div class="margin-top-5 margin-bottom-2">
+  <%= render ButtonComponent.new(
+        url: webauthn_setup_mismatch_url,
+        method: :patch,
+        big: true,
+        wide: true,
+      ).with_content(t('forms.buttons.continue')) %>
+</div>
+
+<%= render ButtonComponent.new(
+      url: webauthn_setup_mismatch_url,
+      method: :delete,
+      big: true,
+      wide: true,
+      outline: true,
+    ).with_content(t('webauthn_setup_mismatch.undo')) %>

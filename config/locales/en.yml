@@ -2044,6 +2044,12 @@ webauthn_platform_recommended.cta: Set up face or touch unlock
 webauthn_platform_recommended.description_save_time: Save time by using your face, fingerprint, password, or another method to access your account. This method is faster than receiving a one-time code through text or voice message.
 webauthn_platform_recommended.heading: Set up face or touch unlock for a quick and easy sign in
 webauthn_platform_recommended.skip: Skip
+webauthn_setup_mismatch.description_undo: Click “Undo” to remove this option.
+webauthn_setup_mismatch.description.webauthn: We noticed you’re using a security key instead of face or touch unlock. Click “Continue” to use your security key to sign in from now on.
+webauthn_setup_mismatch.description.webauthn_platform: We noticed you’re using face or touch unlock instead of a security key. Click “Continue” to use face or touch unlock to sign in from now on.
+webauthn_setup_mismatch.heading.webauthn: Security key detected
+webauthn_setup_mismatch.heading.webauthn_platform: Face or touch unlock detected
+webauthn_setup_mismatch.undo: Undo
 zxcvbn.feedback.a_word_by_itself_is_easy_to_guess: A word by itself is easy to guess
 zxcvbn.feedback.add_another_word_or_two_uncommon_words_are_better: Add another word or two. Uncommon words are better
 zxcvbn.feedback.all_uppercase_is_almost_as_easy_to_guess_as_all_lowercase: All-uppercase is almost as easy to guess as all-lowercase
