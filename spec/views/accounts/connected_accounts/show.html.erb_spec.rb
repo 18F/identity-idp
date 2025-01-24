@@ -107,4 +107,34 @@ RSpec.describe 'accounts/connected_accounts/show.html.erb' do
       expect(rendered).to_not include('&lt;')
     end
   end
+
+  context 'when the partner requests all_emails' do
+    let!(:identity) do
+      create(:service_provider_identity, deleted_at: nil, verified_attributes: ['all_emails'])
+    end
+
+    it 'does not show the change link' do
+      render
+
+      expect(rendered).not_to have_link(
+        t('help_text.requested_attributes.change_email_link'),
+        href: edit_connected_account_selected_email_path(identity_id: identity.id),
+      )
+    end
+  end
+
+  context 'when the partner does not request email' do
+    let!(:identity) do
+      create(:service_provider_identity, deleted_at: nil, verified_attributes: ['ssn'])
+    end
+
+    it 'hides the change link' do
+      render
+
+      expect(rendered).to_not have_link(
+        t('help_text.requested_attributes.change_email_link'),
+        href: edit_connected_account_selected_email_path(identity_id: identity.id),
+      )
+    end
+  end
 end
