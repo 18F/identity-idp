@@ -49,7 +49,7 @@ account.email_language.languages_list: Recibirá mensajes de correo electrónico
 account.email_language.name.en: English
 account.email_language.name.es: Español
 account.email_language.name.fr: Français
-account.email_language.name.zh: 中文（简体）
+account.email_language.name.zh: 中文 (简体)
 account.email_language.updated: Se actualizó su preferencia de idioma del correo electrónico.
 account.emails.confirmed_html: Usted confirmó su dirección de correo electrónico. Vaya a <a href="%{url}">Sus cuentas conectadas</a> para actualizar el correo electrónico que proporcionó a las agencias conectadas.
 account.forget_all_browsers.longer_description: Una vez que elija “Olvidar todos los navegadores”, necesitaremos más información para saber que realmente es usted quien está iniciando sesión en su cuenta. Le pediremos un método de autenticación multifactor (como código de texto o de SMS, o una clave de seguridad) cada vez que desee acceder a su cuenta.
@@ -1018,7 +1018,7 @@ i18n.language: Idioma
 i18n.locale.en: English
 i18n.locale.es: Español
 i18n.locale.fr: Français
-i18n.locale.zh: 中文（简体）
+i18n.locale.zh: 中文 (简体)
 idv.accessible_labels.masked_ssn: texto seguro, a partir de %{first_number} y hasta %{last_number}
 idv.buttons.change_address_label: Actualizar dirección
 idv.buttons.change_label: Actualizar
@@ -2056,6 +2056,12 @@ webauthn_platform_recommended.cta: Set up face or touch unlock
 webauthn_platform_recommended.description_save_time: Save time by using your face, fingerprint, password, or another method to access your account. This method is faster than receiving a one-time code through text or voice message.
 webauthn_platform_recommended.heading: Set up face or touch unlock for a quick and easy sign in
 webauthn_platform_recommended.skip: Skip
+webauthn_setup_mismatch.description_undo: Haga clic en “Deshacer” para quitar esta opción.
+webauthn_setup_mismatch.description.webauthn: Sabemos que está usando una clave de seguridad en lugar de desbloqueo facial o táctil. Haga clic en “Continuar” para iniciar sesión con su clave de seguridad de aquí en adelante.
+webauthn_setup_mismatch.description.webauthn_platform: Sabemos que está usando desbloqueo facial o táctil en lugar de una clave de seguridad. Haga clic en “Continuar” para iniciar sesión con desbloqueo facial o táctil de aquí en adelante.
+webauthn_setup_mismatch.heading.webauthn: Se detectó clave de seguridad
+webauthn_setup_mismatch.heading.webauthn_platform: Se detectó desbloqueo facial o táctil
+webauthn_setup_mismatch.undo: Deshacer
 zxcvbn.feedback.a_word_by_itself_is_easy_to_guess: Una sola palabra es fácil de adivinar.
 zxcvbn.feedback.add_another_word_or_two_uncommon_words_are_better: Añada otra palabra o dos. Es mejor usar palabras poco comunes.
 zxcvbn.feedback.all_uppercase_is_almost_as_easy_to_guess_as_all_lowercase: Todo en mayúsculas es casi tan fácil de adivinar como todo en minúsculas.

@@ -10,9 +10,10 @@ module TwoFactorAuthentication
     validate :validate_configuration_exists
     validate :validate_has_multiple_mfa
 
-    def initialize(user:, configuration_id:)
+    def initialize(user:, configuration_id:, skip_multiple_mfa_validation: false)
       @user = user
       @configuration_id = configuration_id
+      @skip_multiple_mfa_validation = skip_multiple_mfa_validation
     end
 
     def submit
@@ -34,6 +35,10 @@ module TwoFactorAuthentication
 
     private
 
+    attr_reader :skip_multiple_mfa_validation
+
+    alias_method :skip_multiple_mfa_validation?, :skip_multiple_mfa_validation
+
     def validate_configuration_exists
       return if configuration.present?
       errors.add(
@@ -44,7 +49,10 @@ module TwoFactorAuthentication
     end
 
     def validate_has_multiple_mfa
-      return if !configuration || MfaPolicy.new(user).multiple_factors_enabled?
+      return if skip_multiple_mfa_validation? ||
+                !configuration ||
+                MfaPolicy.new(user).multiple_factors_enabled?
+
       errors.add(
         :configuration_id,
         :only_method,
