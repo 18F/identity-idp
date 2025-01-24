@@ -98,7 +98,7 @@ RSpec.describe Users::SessionsController, devise: true do
           rate_limited: false,
           valid_captcha_result: true,
           captcha_validation_performed: false,
-          bad_password_count: 0,
+          sign_in_failure_count: 0,
           sp_request_url_present: false,
           remember_device: false,
           new_device: true,
@@ -171,7 +171,7 @@ RSpec.describe Users::SessionsController, devise: true do
             rate_limited: false,
             valid_captcha_result: true,
             captcha_validation_performed: false,
-            bad_password_count: 0,
+            sign_in_failure_count: 0,
             sp_request_url_present: false,
             remember_device: false,
             new_device: false,
@@ -183,11 +183,11 @@ RSpec.describe Users::SessionsController, devise: true do
     context 'locked out session' do
       let(:locked_at) { Time.zone.now }
       let(:user) { create(:user, :fully_registered) }
-      let(:bad_password_window) { IdentityConfig.store.max_bad_passwords_window_in_seconds }
+      let(:sign_in_failure_window) { IdentityConfig.store.max_sign_in_failures_window_in_seconds }
 
       before do
-        session[:bad_password_count] = IdentityConfig.store.max_bad_passwords + 1
-        session[:max_bad_passwords_at] = locked_at.to_i
+        session[:sign_in_failure_count] = IdentityConfig.store.max_sign_in_failures + 1
+        session[:max_sign_in_failures_at] = locked_at.to_i
       end
 
       it 'renders an error letting user know they are locked out for a period of time',
@@ -196,14 +196,14 @@ RSpec.describe Users::SessionsController, devise: true do
         current_time = Time.zone.now
         time_in_hours = distance_of_time_in_words(
           current_time,
-          (locked_at + bad_password_window.seconds),
+          (locked_at + sign_in_failure_window.seconds),
           true,
         )
 
         expect(response).to redirect_to root_url
         expect(flash[:error]).to eq(
           t(
-            'errors.sign_in.bad_password_limit',
+            'errors.sign_in.sign_in_failure_limit',
             time_left: time_in_hours,
           ),
         )
@@ -211,7 +211,7 @@ RSpec.describe Users::SessionsController, devise: true do
     end
 
     it 'prevents attempt and logs after exceeding maximum rate limit' do
-      allow(IdentityConfig.store).to receive(:max_bad_passwords).and_return(10_000)
+      allow(IdentityConfig.store).to receive(:max_sign_in_failures).and_return(10_000)
       allow(RateLimiter).to receive(:rate_limit_config).and_return(
         sign_in_user_id_per_ip: {
           max_attempts: 6,
@@ -243,7 +243,7 @@ RSpec.describe Users::SessionsController, devise: true do
         post :create, params: { user: { email: user.email, password: 'incorrect' } }
         expect(flash[:error]).to eq(
           t(
-            'errors.sign_in.bad_password_limit',
+            'errors.sign_in.sign_in_failure_limit',
             time_left: distance_of_time_in_words(12.hours),
           ),
         )
@@ -254,7 +254,7 @@ RSpec.describe Users::SessionsController, devise: true do
           rate_limited: true,
           valid_captcha_result: true,
           captcha_validation_performed: false,
-          bad_password_count: 8,
+          sign_in_failure_count: 8,
           sp_request_url_present: false,
           remember_device: false,
         )
@@ -276,7 +276,7 @@ RSpec.describe Users::SessionsController, devise: true do
         rate_limited: false,
         valid_captcha_result: true,
         captcha_validation_performed: false,
-        bad_password_count: 1,
+        sign_in_failure_count: 1,
         sp_request_url_present: false,
         remember_device: false,
       )
@@ -296,7 +296,7 @@ RSpec.describe Users::SessionsController, devise: true do
         rate_limited: false,
         valid_captcha_result: true,
         captcha_validation_performed: false,
-        bad_password_count: 1,
+        sign_in_failure_count: 1,
         sp_request_url_present: false,
         remember_device: false,
       )
@@ -320,7 +320,7 @@ RSpec.describe Users::SessionsController, devise: true do
         rate_limited: false,
         valid_captcha_result: true,
         captcha_validation_performed: false,
-        bad_password_count: 0,
+        sign_in_failure_count: 0,
         sp_request_url_present: false,
         remember_device: false,
       )
@@ -371,7 +371,7 @@ RSpec.describe Users::SessionsController, devise: true do
             rate_limited: false,
             valid_captcha_result: false,
             captcha_validation_performed: true,
-            bad_password_count: 0,
+            sign_in_failure_count: 1,
             remember_device: false,
             sp_request_url_present: false,
           )
@@ -383,6 +383,37 @@ RSpec.describe Users::SessionsController, devise: true do
           post :create, params: { user: { email: user.email, password: user.password, score: 0.1 } }
 
           expect(response).to redirect_to sign_in_security_check_failed_url
+        end
+      end
+
+      context 'recaptcha lock out' do
+        let(:locked_at) { Time.zone.now }
+        let(:sign_in_failure_window) { IdentityConfig.store.max_sign_in_failures_window_in_seconds }
+        it 'prevents attempt after exceeding maximum rate limit' do
+          allow(IdentityConfig.store).to receive(:max_sign_in_failures).and_return(5)
+
+          user = create(:user, :fully_registered)
+          freeze_time do
+            current_time = Time.zone.now
+            rate_limit_time_left = distance_of_time_in_words(
+              current_time,
+              (locked_at + sign_in_failure_window.seconds),
+              true,
+            )
+            6.times do
+              post :create, params: {
+                user: { email: user.email, password: user.password, score: 0.1 },
+              }
+            end
+
+            expect(response).to redirect_to root_url
+            expect(flash[:error]).to eq(
+              t(
+                'errors.sign_in.sign_in_failure_limit',
+                time_left: rate_limit_time_left,
+              ),
+            )
+          end
         end
       end
     end
@@ -404,7 +435,7 @@ RSpec.describe Users::SessionsController, devise: true do
         rate_limited: false,
         valid_captcha_result: true,
         captcha_validation_performed: false,
-        bad_password_count: 2,
+        sign_in_failure_count: 2,
         sp_request_url_present: false,
         remember_device: false,
       )
@@ -423,7 +454,7 @@ RSpec.describe Users::SessionsController, devise: true do
         rate_limited: false,
         valid_captcha_result: true,
         captcha_validation_performed: false,
-        bad_password_count: 1,
+        sign_in_failure_count: 1,
         sp_request_url_present: true,
         remember_device: false,
       )
@@ -594,7 +625,7 @@ RSpec.describe Users::SessionsController, devise: true do
           rate_limited: false,
           valid_captcha_result: true,
           captcha_validation_performed: false,
-          bad_password_count: 0,
+          sign_in_failure_count: 0,
           sp_request_url_present: false,
           remember_device: false,
           new_device: true,
@@ -719,7 +750,7 @@ RSpec.describe Users::SessionsController, devise: true do
           rate_limited: false,
           valid_captcha_result: true,
           captcha_validation_performed: false,
-          bad_password_count: 0,
+          sign_in_failure_count: 0,
           sp_request_url_present: false,
           remember_device: true,
           new_device: true,
@@ -746,7 +777,7 @@ RSpec.describe Users::SessionsController, devise: true do
           rate_limited: false,
           valid_captcha_result: true,
           captcha_validation_performed: false,
-          bad_password_count: 0,
+          sign_in_failure_count: 0,
           sp_request_url_present: false,
           remember_device: true,
           new_device: true,

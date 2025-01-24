@@ -4,6 +4,7 @@ class SamlRequestedAttributesPresenter
   ATTRIBUTE_TO_FRIENDLY_NAME_MAP = {
     email: :email,
     all_emails: :all_emails,
+    locale: :locale,
     first_name: :given_name,
     last_name: :family_name,
     dob: :birthdate,
@@ -30,6 +31,7 @@ class SamlRequestedAttributesPresenter
     else
       attrs = [:email]
       attrs << :all_emails if bundle.include?(:all_emails)
+      attrs << :locale if bundle.include?(:locale)
       attrs << :verified_at if bundle.include?(:verified_at)
       attrs
     end

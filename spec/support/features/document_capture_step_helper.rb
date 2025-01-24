@@ -72,15 +72,19 @@ module DocumentCaptureStepHelper
     click_spinner_button_and_wait t('idv.failure.button.warning')
   end
 
-  def socure_docv_upload_documents(docv_transaction_token:)
-    [
-      'WAITING_FOR_USER_TO_REDIRECT',
-      'APP_OPENED',
-      'DOCUMENT_FRONT_UPLOADED',
-      'DOCUMENT_BACK_UPLOADED',
-      'DOCUMENTS_UPLOADED',
-      'SESSION_COMPLETE',
-    ].each { |event_type| socure_docv_send_webhook(docv_transaction_token:, event_type:) }
+  def socure_docv_upload_documents(docv_transaction_token:, webhooks: default_webhook_list)
+    webhooks.each { |event_type| socure_docv_send_webhook(docv_transaction_token:, event_type:) }
+  end
+
+  def default_webhook_list
+    %w[
+      WAITING_FOR_USER_TO_REDIRECT
+      APP_OPENED
+      DOCUMENT_FRONT_UPLOADED
+      DOCUMENT_BACK_UPLOADED
+      DOCUMENTS_UPLOADED
+      SESSION_COMPLETE
+    ]
   end
 
   def socure_docv_send_webhook(

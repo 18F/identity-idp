@@ -1,0 +1,25 @@
+<% self.title = t('forms.backup_code_reminder.heading') %>
+
+<%= image_tag asset_url('user-signup.svg'), width: 107, height: 119, alt: '', class: 'margin-bottom-4', aria: { hidden: true } %>
+
+<%= render PageHeadingComponent.new.with_content(t('forms.backup_code_reminder.heading')) %>
+
+<p>
+  <%= t('forms.backup_code_reminder.body_info') %>
+</p>
+
+<div class="margin-top-5 margin-bottom-2">
+  <%= render ButtonComponent.new(
+        url: backup_code_reminder_path,
+        method: :post,
+        params: { has_codes: true },
+        big: true,
+        wide: true,
+      ).with_content(t('forms.backup_code_reminder.have_codes')) %>
+</div>
+
+<%= render ButtonComponent.new(
+      url: backup_code_reminder_path,
+      method: :post,
+      unstyled: true,
+    ).with_content(t('forms.backup_code_reminder.need_new_codes')) %>

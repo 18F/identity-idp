@@ -18,7 +18,7 @@ module Users
     before_action :store_sp_metadata_in_session, only: [:new]
     before_action :check_user_needs_redirect, only: [:new]
     before_action :apply_secure_headers_override, only: [:new, :create]
-    before_action :clear_session_bad_password_count_if_window_expired, only: [:create]
+    before_action :clear_session_sign_in_failure_count_if_window_expired, only: [:create]
     before_action :set_analytics_user_from_params, only: :create
     before_action :allow_csp_recaptcha_src, if: :recaptcha_enabled?
 
@@ -37,12 +37,14 @@ module Users
 
     def create
       session[:sign_in_flow] = :sign_in
-      return process_rate_limited if session_bad_password_count_max_exceeded?
+      return process_rate_limited if session_sign_in_failure_count_max_exceeded?
       return process_locked_out_user if current_user && user_locked_out?(current_user)
       return process_rate_limited if rate_limited?
-      return process_failed_captcha unless recaptcha_response.success? || log_captcha_failures_only?
 
       rate_limit_password_failure = true
+
+      return process_failed_captcha unless recaptcha_response.success? || log_captcha_failures_only?
+
       self.resource = warden.authenticate!(auth_options)
       handle_valid_authentication
     ensure
@@ -65,21 +67,21 @@ module Users
 
     private
 
-    def clear_session_bad_password_count_if_window_expired
-      locked_at = session[:max_bad_passwords_at]
-      window = IdentityConfig.store.max_bad_passwords_window_in_seconds
+    def clear_session_sign_in_failure_count_if_window_expired
+      locked_at = session[:max_sign_in_failures_at]
+      window = IdentityConfig.store.max_sign_in_failures_window_in_seconds
       return if locked_at.nil? || (locked_at + window) > Time.zone.now.to_i
-      [:max_bad_passwords_at, :bad_password_count].each { |x| session.delete(x) }
+      [:max_sign_in_failures_at, :sign_in_failure_count].each { |x| session.delete(x) }
     end
 
-    def session_bad_password_count_max_exceeded?
-      session[:bad_password_count].to_i >= IdentityConfig.store.max_bad_passwords
+    def session_sign_in_failure_count_max_exceeded?
+      session[:sign_in_failure_count].to_i >= IdentityConfig.store.max_sign_in_failures
     end
 
-    def increment_session_bad_password_count
-      session[:bad_password_count] = session[:bad_password_count].to_i + 1
-      return unless session_bad_password_count_max_exceeded?
-      session[:max_bad_passwords_at] ||= Time.zone.now.to_i
+    def increment_session_sign_in_failure_count
+      session[:sign_in_failure_count] = session[:sign_in_failure_count].to_i + 1
+      return unless session_sign_in_failure_count_max_exceeded?
+      session[:max_sign_in_failures_at] ||= Time.zone.now.to_i
     end
 
     def process_rate_limited
@@ -87,16 +89,16 @@ module Users
       warden.lock!
 
       flash[:error] = t(
-        'errors.sign_in.bad_password_limit',
+        'errors.sign_in.sign_in_failure_limit',
         time_left: locked_out_time_remaining,
       )
       redirect_to root_url
     end
 
     def locked_out_time_remaining
-      if session[:max_bad_passwords_at]
-        locked_at = session[:max_bad_passwords_at]
-        window = IdentityConfig.store.max_bad_passwords_window_in_seconds.seconds
+      if session[:max_sign_in_failures_at]
+        locked_at = session[:max_sign_in_failures_at]
+        window = IdentityConfig.store.max_sign_in_failures_window_in_seconds.seconds
         time_lockout_expires = Time.zone.at(locked_at) + window
       else
         time_lockout_expires = rate_limiter&.expires_at || Time.zone.now
@@ -188,7 +190,7 @@ module Users
 
     def handle_invalid_authentication
       rate_limiter&.increment!
-      increment_session_bad_password_count
+      increment_session_sign_in_failure_count
     end
 
     def handle_valid_authentication
@@ -223,7 +225,7 @@ module Users
         rate_limited: rate_limited?,
         captcha_validation_performed: captcha_validation_performed?,
         valid_captcha_result: recaptcha_response.success?,
-        bad_password_count: session[:bad_password_count].to_i,
+        sign_in_failure_count: session[:sign_in_failure_count].to_i,
         sp_request_url_present: sp_session[:request_url].present?,
         remember_device: remember_device_cookie.present?,
         new_device: success ? new_device? : nil,

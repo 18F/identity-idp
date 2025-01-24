@@ -7,6 +7,7 @@ module SamlIdpAuthConcern
 
   included do
     # rubocop:disable Rails/LexicallyScopedActionFilter
+    before_action :validate_year
     before_action :validate_and_create_saml_request_object, only: :auth
     before_action :validate_service_provider_and_authn_context, only: :auth
     before_action :check_sp_active, only: :auth
@@ -20,6 +21,12 @@ module SamlIdpAuthConcern
   end
 
   private
+
+  def validate_year
+    if !SamlEndpoint.valid_year?(params[:path_year])
+      render plain: 'Invalid Year', status: :bad_request
+    end
+  end
 
   def sign_out_if_forceauthn_is_true_and_user_is_signed_in
     if !saml_request.force_authn?
@@ -230,7 +237,12 @@ module SamlIdpAuthConcern
 
   def saml_request_service_provider
     return @saml_request_service_provider if defined?(@saml_request_service_provider)
-    @saml_request_service_provider = ServiceProvider.find_by(issuer: current_issuer)
+    @saml_request_service_provider =
+      if current_issuer.blank?
+        nil
+      else
+        ServiceProvider.find_by(issuer: current_issuer)
+      end
   end
 
   def current_issuer

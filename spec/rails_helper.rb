@@ -32,6 +32,7 @@ RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
 
   config.include ActiveSupport::Testing::TimeHelpers
+  config.include AbTestsHelper
   config.include EmailSpec::Helpers
   config.include EmailSpec::Matchers
   config.include AbstractController::Translation
@@ -76,7 +77,7 @@ RSpec.configure do |config|
       # rubocop:enable Style/GlobalVars
       # rubocop:disable Rails/Output
       print '                       Bundling JavaScript and stylesheets... '
-      system 'yarn concurrently "yarn:build:*" > /dev/null 2>&1'
+      system 'NODE_ENV=production yarn concurrently "yarn:build:*" > /dev/null 2>&1'
       puts '✨ Done!'
       # rubocop:enable Rails/Output
 
@@ -111,6 +112,7 @@ RSpec.configure do |config|
     Telephony::Test::Call.clear_calls
     PushNotification::LocalEventQueue.clear!
     REDIS_THROTTLE_POOL.with { |client| client.flushdb } if Identity::Hostdata.config
+    REDIS_ATTEMPTS_API_POOL.with { |client| client.flushdb } if Identity::Hostdata.config
   end
 
   config.before(:each) do
@@ -164,5 +166,9 @@ RSpec.configure do |config|
         /chromedriver\.storage\.googleapis\.com/, # For fetching a chromedriver binary
       ],
     )
+  end
+
+  config.after(:context) do
+    reload_ab_tests
   end
 end

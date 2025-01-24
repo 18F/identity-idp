@@ -2,6 +2,7 @@
 
 class SamlRequestParser
   URI_PATTERN = Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF
+  ESCAPED_URI_PATTERN = /#{Regexp.escape(URI_PATTERN)}/
 
   def initialize(request)
     @request = request
@@ -24,7 +25,7 @@ class SamlRequestParser
         samlp: Saml::XML::Namespaces::PROTOCOL,
         saml: Saml::XML::Namespaces::ASSERTION,
       ).select do |node|
-        node.content =~ /#{Regexp.escape(URI_PATTERN)}/
+        node.content =~ ESCAPED_URI_PATTERN
       end
     end
   end

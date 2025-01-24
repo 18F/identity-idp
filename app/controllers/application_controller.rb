@@ -33,6 +33,7 @@ class ApplicationController < ActionController::Base
   prepend_before_action :set_locale
   before_action :disable_caching
   before_action :cache_issuer_in_cookie
+  after_action :store_web_locale_in_session
 
   def session_expires_at
     return if @skip_session_expiration || @skip_session_load
@@ -238,13 +239,13 @@ class ApplicationController < ActionController::Base
       :recommend_for_authentication,
     )
     return second_mfa_reminder_url if user_needs_second_mfa_reminder?
+    return backup_code_reminder_url if user_needs_backup_code_reminder?
     return sp_session_request_url_with_updated_params if sp_session.key?(:request_url)
     signed_in_url
   end
 
   def signed_in_url
     return idv_verify_by_mail_enter_code_url if current_user.gpo_verification_pending_profile?
-    return backup_code_reminder_url if user_needs_backup_code_reminder?
     account_path
   end
 
@@ -398,6 +399,12 @@ class ApplicationController < ActionController::Base
 
   def set_locale
     I18n.locale = LocaleChooser.new(params[:locale], request).locale
+  end
+
+  def store_web_locale_in_session
+    return unless user_signed_in?
+
+    user_session[:web_locale] = I18n.locale.to_s
   end
 
   def pii_requested_but_locked?

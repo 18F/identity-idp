@@ -11,9 +11,11 @@ module Idv
         include SocureErrorsConcern
 
         check_or_render_not_found -> { IdentityConfig.store.socure_docv_enabled }
+        before_action :validate_step_not_completed, only: [:show]
         before_action :check_valid_document_capture_session, except: [:update]
-        before_action -> { redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, true) },
-                      only: :show
+        before_action -> do
+          redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, in_hybrid_mobile: true)
+        end, only: :show
         before_action :fetch_test_verification_data, only: [:update]
 
         def show
@@ -41,7 +43,9 @@ module Idv
 
           # placeholder until we get an error page for url not being present
           if @url.nil?
-            redirect_to idv_hybrid_mobile_socure_document_capture_errors_url
+            redirect_to idv_hybrid_mobile_socure_document_capture_errors_url(
+              error_code: :url_not_found,
+            )
             return
           end
 
@@ -81,6 +85,11 @@ module Idv
 
         private
 
+        def validate_step_not_completed
+          return if stored_result.blank? || !stored_result.success?
+          redirect_to idv_hybrid_mobile_capture_complete_url
+        end
+
         def socure_errors_presenter(result)
           SocureErrorPresenter.new(
             error_code: error_code_for(result),
@@ -97,9 +106,9 @@ module Idv
           # If the stored_result is nil, the job fetching the results has not completed.
           analytics.idv_doc_auth_document_capture_polling_wait_visited(**analytics_arguments)
           if wait_timed_out?
-            # flash[:error] = I18n.t('errors.doc_auth.polling_timeout')
-            # TODO: redirect to try again page LG-14873/14952/15059
-            render plain: 'Technical difficulties!!!', status: :ok
+            redirect_to idv_hybrid_mobile_socure_document_capture_errors_url(
+              error_code: :timeout,
+            )
           else
             @refresh_interval =
               IdentityConfig.store.doc_auth_socure_wait_polling_refresh_max_seconds
@@ -127,6 +136,7 @@ module Idv
             analytics_id: 'Doc Auth',
             liveness_checking_required: false,
             selfie_check_required: false,
+            pii_like_keypaths: [[:pii]],
           }
         end
       end

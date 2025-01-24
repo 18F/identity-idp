@@ -35,7 +35,9 @@ interface AppRootData {
   securityAndPrivacyHowItWorksUrl: string;
   skipDocAuthFromHowToVerify: string;
   skipDocAuthFromHandoff: string;
+  skipDocAuthFromSocure: string;
   howToVerifyURL: string;
+  socureErrorsTimeoutURL: string;
   previousStepUrl: string;
   docAuthSelfieDesktopTestMode: string;
   accountUrl: string;
@@ -100,14 +102,15 @@ const {
   accountUrl: accountURL,
   idvInPersonUrl: inPersonURL,
   securityAndPrivacyHowItWorksUrl: securityAndPrivacyHowItWorksURL,
-  inPersonFullAddressEntryEnabled,
   inPersonOutageMessageEnabled,
   inPersonOutageExpectedUpdateDate,
   optedInToInPersonProofing,
   usStatesTerritories = '',
   skipDocAuthFromHowToVerify,
   skipDocAuthFromHandoff,
+  skipDocAuthFromSocure,
   howToVerifyUrl,
+  socureErrorsTimeoutUrl,
   previousStepUrl,
   docAuthSelfieDesktopTestMode,
   locationsUrl: locationsURL,
@@ -133,12 +136,13 @@ render(
           addressSearchURL,
           inPersonOutageExpectedUpdateDate,
           inPersonOutageMessageEnabled: inPersonOutageMessageEnabled === 'true',
-          inPersonFullAddressEntryEnabled: inPersonFullAddressEntryEnabled === 'true',
           optedInToInPersonProofing: optedInToInPersonProofing === 'true',
           usStatesTerritories: parsedUsStatesTerritories,
           skipDocAuthFromHowToVerify: skipDocAuthFromHowToVerify === 'true',
           skipDocAuthFromHandoff: skipDocAuthFromHandoff === 'true',
+          skipDocAuthFromSocure: skipDocAuthFromSocure === 'true',
           howToVerifyURL: howToVerifyUrl,
+          socureErrorsTimeoutURL: socureErrorsTimeoutUrl,
           previousStepURL: previousStepUrl,
         }}
       >

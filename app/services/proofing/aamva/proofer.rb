@@ -58,14 +58,15 @@ module Proofing
           applicant: aamva_applicant,
         )
 
-        build_result_from_response(response, applicant[:state])
+        build_result_from_response(response, applicant[:state_id_jurisdiction])
       rescue => exception
-        failed_result = Proofing::StateIdResult.new(
+        Proofing::StateIdResult.new(
           success: false, errors: {}, exception: exception, vendor_name: 'aamva:state_id',
-          transaction_id: nil, verified_attributes: []
+          transaction_id: nil, verified_attributes: [],
+          jurisdiction_in_maintenance_window: jurisdiction_in_maintenance_window?(
+            applicant[:state_id_jurisdiction],
+          )
         )
-        send_to_new_relic(failed_result)
-        failed_result
       end
 
       private
@@ -121,13 +122,6 @@ module Proofing
         (attribute_set - ADDRESS_ATTRIBUTES).tap do |result|
           result.add(:address) if all_present
         end
-      end
-
-      def send_to_new_relic(result)
-        if result.mva_timeout?
-          return # noop
-        end
-        NewRelic::Agent.notice_error(result.exception)
       end
 
       def successful?(verification_response)

@@ -3,7 +3,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 ruby "~> #{File.read(File.join(__dir__, '.ruby-version')).strip}"
 
-gem 'rails', '~> 7.2.1'
+gem 'rails', '~> 8.0.0'
 
 gem 'ahoy_matey', '~> 3.0'
 # pod identity requires 3.188.0
@@ -30,7 +30,6 @@ gem 'cssbundling-rails'
 gem 'devise', '~> 4.8'
 gem 'dotiw', '>= 4.0.1'
 gem 'faraday', '~> 2'
-gem 'faker'
 gem 'faraday-retry'
 gem 'fugit'
 gem 'foundation_emails'
@@ -74,7 +73,7 @@ gem 'rqrcode'
 gem 'ruby-progressbar'
 gem 'ruby-saml'
 gem 'safe_target_blank', '>= 1.0.2'
-gem 'saml_idp', github: '18F/saml_idp', tag: '0.23.4-18f'
+gem 'saml_idp', github: '18F/saml_idp', tag: '0.23.5-18f'
 gem 'scrypt'
 gem 'simple_form', '>= 5.0.2'
 gem 'stringex', require: false
@@ -103,7 +102,7 @@ end
 
 group :development, :test do
   gem 'brakeman', require: false
-  gem 'bullet', '~> 7.0'
+  gem 'bullet', '~> 8.0'
   gem 'capybara-webmock', git: 'https://github.com/hashrocket/capybara-webmock.git', ref: 'd3f3b7c'
   gem 'erb_lint', '~> 0.7.0', require: false
   gem 'i18n-tasks', '~> 1.0'
@@ -118,7 +117,7 @@ group :development, :test do
   gem 'psych'
   gem 'rspec', '~> 3.13.0'
   gem 'rspec-rails', '~> 7.0'
-  gem 'rubocop', '~> 1.69.1', require: false
+  gem 'rubocop', '~> 1.70.0', require: false
   gem 'rubocop-performance', '~> 1.23.0', require: false
   gem 'rubocop-rails', '~> 2.27.0', require: false
   gem 'rubocop-rspec', '~> 3.2.0', require: false
@@ -129,6 +128,7 @@ end
 group :test do
   gem 'axe-core-rspec', '~> 4.2'
   gem 'bundler-audit', require: false
+  gem 'faker'
   gem 'simplecov', '~> 0.22.0', require: false
   gem 'simplecov-cobertura'
   gem 'simplecov_json_formatter'

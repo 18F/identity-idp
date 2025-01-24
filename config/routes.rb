@@ -250,6 +250,10 @@ Rails.application.routes.draw do
     get '/webauthn_setup' => 'users/webauthn_setup#new', as: :webauthn_setup
     patch '/webauthn_setup' => 'users/webauthn_setup#confirm'
 
+    get '/webauthn_setup_mismatch' => 'users/webauthn_setup_mismatch#show'
+    patch '/webauthn_setup_mismatch' => 'users/webauthn_setup_mismatch#update'
+    delete '/webauthn_setup_mismatch' => 'users/webauthn_setup_mismatch#destroy'
+
     get '/authenticator_setup' => 'users/totp_setup#new'
     patch '/authenticator_setup' => 'users/totp_setup#confirm'
 
@@ -299,7 +303,8 @@ Rails.application.routes.draw do
     get '/users/two_factor_authentication' => 'users/two_factor_authentication#show',
         as: :user_two_factor_authentication # route name is used by two_factor_authentication gem
     get '/backup_code_refreshed' => 'users/backup_code_setup#refreshed'
-    get '/backup_code_reminder' => 'users/backup_code_setup#reminder'
+    get '/backup_code_reminder' => 'users/backup_code_reminder#show'
+    post '/backup_code_reminder' => 'users/backup_code_reminder#update'
     get '/backup_code_confirm_setup' => 'users/backup_code_setup#new'
     post '/backup_code_setup' => 'users/backup_code_setup#create'
     get '/backup_code_setup' => 'users/backup_code_setup#index'
@@ -366,16 +371,16 @@ Rails.application.routes.draw do
       get '/socure/document_capture' => 'socure/document_capture#show'
       get '/socure/document_capture_update' => 'socure/document_capture#update', as: :socure_document_capture_update
       get '/socure/document_capture_errors' => 'socure/errors#show', as: :socure_document_capture_errors
-      get '/socure/errors/timeout' => 'socure/errors#timeout'
       # This route is included in SMS messages sent to users who start the IdV hybrid flow. It
       # should be kept short, and should not include underscores ("_").
       get '/documents' => 'hybrid_mobile/entry#show', as: :hybrid_mobile_entry
       get '/hybrid_mobile/document_capture' => 'hybrid_mobile/document_capture#show'
       put '/hybrid_mobile/document_capture' => 'hybrid_mobile/document_capture#update'
+      get '/hybrid_mobile/in_person/direct' => 'hybrid_mobile/document_capture#direct_in_person'
       get '/hybrid_mobile/capture_complete' => 'hybrid_mobile/capture_complete#show'
       get '/hybrid_mobile/socure/document_capture' => 'hybrid_mobile/socure/document_capture#show'
       get '/hybrid_mobile/socure/document_capture_update' => 'hybrid_mobile/socure/document_capture#update', as: :hybrid_mobile_socure_document_capture_update
-      get '/hybrid_mobile/socure/document_capture_errors' => 'hybrid_mobile/socure/document_capture#errors', as: :hybrid_mobile_socure_document_capture_errors
+      get '/hybrid_mobile/socure/document_capture_errors' => 'hybrid_mobile/socure/errors#show', as: :hybrid_mobile_socure_document_capture_errors
       get '/hybrid_handoff' => 'hybrid_handoff#show'
       put '/hybrid_handoff' => 'hybrid_handoff#update'
       get '/link_sent' => 'link_sent#show'
@@ -417,6 +422,7 @@ Rails.application.routes.draw do
           # sometimes underscores get messed up when linked to via SMS
           as: :capture_doc_dashes
       get '/in_person' => 'in_person#index'
+      put '/in_person' => 'in_person#update'
       get '/in_person/ready_to_verify' => 'in_person/ready_to_verify#show',
           as: :in_person_ready_to_verify
       post '/in_person/usps_locations' => 'in_person/usps_locations#index'
@@ -429,8 +435,6 @@ Rails.application.routes.draw do
       put '/in_person/ssn' => 'in_person/ssn#update'
       get '/in_person/verify_info' => 'in_person/verify_info#show'
       put '/in_person/verify_info' => 'in_person/verify_info#update'
-      get '/in_person/:step' => 'in_person#show', as: :in_person_step
-      put '/in_person/:step' => 'in_person#update'
 
       get '/by_mail/enter_code' => 'by_mail/enter_code#index', as: :verify_by_mail_enter_code
       post '/by_mail/enter_code' => 'by_mail/enter_code#create'

@@ -49,7 +49,7 @@ account.email_language.languages_list: You will receive emails from %{app_name} 
 account.email_language.name.en: English
 account.email_language.name.es: Español
 account.email_language.name.fr: Français
-account.email_language.name.zh: 中文 (简体)
+account.email_language.name.zh: 中文（简体）
 account.email_language.updated: Your email language preference has been updated.
 account.emails.confirmed_html: You have confirmed your email address. Go to <a href="%{url}">your connected accounts</a> to update the email you share with connected agencies.
 account.forget_all_browsers.longer_description: Once you choose to ‘forget all browsers,’ we’ll need additional information to know that it’s actually you signing in to your account. We’ll ask for a multi-factor authentication method (such as text/SMS code or a security key) each time you want to access your account.
@@ -799,7 +799,7 @@ errors.messages.wrong_length.one: is the wrong length (should be 1 character)
 errors.messages.wrong_length.other: is the wrong length (should be %{count} characters)
 errors.piv_cac_setup.unique_name: That name is already taken. Please choose a different name.
 errors.registration.terms: Before you can continue, you must give us permission. Please check the box below and then click continue.
-errors.sign_in.bad_password_limit: You have exceeded the maximum sign in attempts. You must wait %{time_left} before trying again.
+errors.sign_in.sign_in_failure_limit: You have exceeded the maximum sign in attempts. You must wait %{time_left} before trying again.
 errors.two_factor_auth_setup.must_select_additional_option: Select an additional authentication method.
 errors.two_factor_auth_setup.must_select_option: Select an authentication method.
 errors.verify_personal_key.rate_limited: You tried too many times, please try again in %{timeout}.
@@ -1007,7 +1007,7 @@ i18n.language: Language
 i18n.locale.en: English
 i18n.locale.es: Español
 i18n.locale.fr: Français
-i18n.locale.zh: 中文 (简体)
+i18n.locale.zh: 中文（简体）
 idv.accessible_labels.masked_ssn: secure text, starting with %{first_number} and ending with %{last_number}
 idv.buttons.change_address_label: Update address
 idv.buttons.change_label: Update
@@ -1223,7 +1223,7 @@ image_description.warning: Yellow caution sign
 in_person_proofing.body.barcode.cancel_link_text: Cancel your barcode
 in_person_proofing.body.barcode.close_window: You may now close this window.
 in_person_proofing.body.barcode.deadline: You must visit any participating Post Office by %{deadline}.
-in_person_proofing.body.barcode.deadline_restart: If you go after this deadline, your information will not be saved and you will need to restart the process.
+in_person_proofing.body.barcode.deadline_restart: If you go after this deadline, your barcode will not work. You will need to restart the process.
 in_person_proofing.body.barcode.eipp_tag: GSA Enhanced Pilot Barcode
 in_person_proofing.body.barcode.eipp_what_to_bring: 'Depending on your ID, you may need to show supporting documents. Review the following options carefully:'
 in_person_proofing.body.barcode.email_sent: We have sent your barcode and the information below to the email you used to sign in
@@ -1233,11 +1233,11 @@ in_person_proofing.body.barcode.questions: Questions?
 in_person_proofing.body.barcode.retail_hours: Retail hours
 in_person_proofing.body.barcode.retail_hours_closed: Closed
 in_person_proofing.body.barcode.return_to_partner_link: Return to %{sp_name}
-in_person_proofing.body.barcode.what_to_expect: What to expect at the Post Office
+in_person_proofing.body.barcode.what_to_expect: What to do at the Post Office
 in_person_proofing.body.cta.button: Try in person
 in_person_proofing.body.cta.prompt_detail: Most people who are unable to complete this step online are successful in verifying their identity at a participating Post Office. No appointment needed. Locations are available nationwide.
 in_person_proofing.body.expect.heading: What to expect after your visit
-in_person_proofing.body.expect.info: We’ll send you an email to let you know if your identity verification was successful or unsuccessful within 24 hours of your visit to the Post Office.
+in_person_proofing.body.expect.info: You’ll get an email within 24 hours of visiting a Post Office. We’ll tell you if your identity verification was successful or unsuccessful. Check your email for a message from no-reply@login.gov.
 in_person_proofing.body.location.change_location_find_other_locations: Find other participating Post Office locations.
 in_person_proofing.body.location.change_location_heading: Need to change your Post Office location?
 in_person_proofing.body.location.change_location_info_html: You don’t need to create a new barcode, you can bring this barcode to any participating Post Office location. %{find_other_locations_link_html}
@@ -1316,7 +1316,7 @@ in_person_proofing.form.state_id.state_id_number_hint_spaces: spaces
 in_person_proofing.form.state_id.state_id_number_texas_hint: This is the 8-digit number on your ID. Enter only numbers in this field.
 in_person_proofing.form.state_id.zipcode: ZIP Code
 in_person_proofing.headings.address: Enter your current residential address
-in_person_proofing.headings.barcode: Show this barcode and your state‑issued ID at a Post Office to finish verifying your identity
+in_person_proofing.headings.barcode: Show this barcode and your state ID at a Post Office to finish verifying your identity
 in_person_proofing.headings.barcode_eipp: Bring this barcode and supporting documents to a Post Office to finish verifying your identity
 in_person_proofing.headings.barcode_what_to_bring: What to bring to the Post Office
 in_person_proofing.headings.cta: Try verifying your ID in person
@@ -1361,7 +1361,7 @@ in_person_proofing.process.state_id.heading_eipp: Show your ID and supporting do
 in_person_proofing.process.state_id.info: This must not be expired. We do not currently accept any other forms of identification, such as passports and military IDs.
 in_person_proofing.process.state_id.info_eipp: The retail associate will scan your ID. This must not be expired. Depending on the type of ID that you present, you may need to show supporting documents. See the requirements in the “What to bring to the Post Office” section.
 in_person_proofing.process.what_to_do.heading: Stand in any line
-in_person_proofing.process.what_to_do.info: Tell the Post Office retail associate you are here to verify your identity with %{app_name}.
+in_person_proofing.process.what_to_do.info: Tell the Post Office retail associate you are here to verify your identity. If they don’t know how to proceed, ask for a supervisor to help you.
 instructions.account.reactivate.begin: Let’s get started.
 instructions.account.reactivate.explanation: 'When you created your account, we gave you a list of words and asked you to store them in a safe place. It looked similar to this:'
 instructions.account.reactivate.intro: We take extra steps to keep your personal information secure and private, so resetting your password takes a little extra effort.
@@ -2041,11 +2041,15 @@ vendor_outage.get_updates: Get updates
 vendor_outage.get_updates_on_status_page: Get updates on our status page
 vendor_outage.working: We are working to resolve an error
 webauthn_platform_recommended.cta: Set up face or touch unlock
-webauthn_platform_recommended.description_private_html: Face or touch unlock is %{phishing_resistant_link_html} and we don’t store any recordings of your face or fingerprint, so your information stays private.
-webauthn_platform_recommended.description_secure_account: Secure your sign in with face or touch unlock. Use your face, fingerprint, password, or another method to keep your account safer.
-webauthn_platform_recommended.heading: Set up face or touch unlock for a more secure sign in
-webauthn_platform_recommended.phishing_resistant: phishing-resistant
+webauthn_platform_recommended.description_save_time: Save time by using your face, fingerprint, password, or another method to access your account. This method is faster than receiving a one-time code through text or voice message.
+webauthn_platform_recommended.heading: Set up face or touch unlock for a quick and easy sign in
 webauthn_platform_recommended.skip: Skip
+webauthn_setup_mismatch.description_undo: Click “Undo” to remove this option.
+webauthn_setup_mismatch.description.webauthn: We noticed you’re using a security key instead of face or touch unlock. Click “Continue” to use your security key to sign in from now on.
+webauthn_setup_mismatch.description.webauthn_platform: We noticed you’re using face or touch unlock instead of a security key. Click “Continue” to use face or touch unlock to sign in from now on.
+webauthn_setup_mismatch.heading.webauthn: Security key detected
+webauthn_setup_mismatch.heading.webauthn_platform: Face or touch unlock detected
+webauthn_setup_mismatch.undo: Undo
 zxcvbn.feedback.a_word_by_itself_is_easy_to_guess: A word by itself is easy to guess
 zxcvbn.feedback.add_another_word_or_two_uncommon_words_are_better: Add another word or two. Uncommon words are better
 zxcvbn.feedback.all_uppercase_is_almost_as_easy_to_guess_as_all_lowercase: All-uppercase is almost as easy to guess as all-lowercase

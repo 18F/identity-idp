@@ -122,8 +122,6 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
         let(:in_person_outage_expected_update_date) { 'October 31, 2023' }
 
         before do
-          allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled)
-            .and_return(true)
           allow(IdentityConfig.store).to receive(:in_person_outage_emailed_by_date)
             .and_return(in_person_outage_emailed_by_date)
           allow(IdentityConfig.store).to receive(:in_person_outage_expected_update_date)

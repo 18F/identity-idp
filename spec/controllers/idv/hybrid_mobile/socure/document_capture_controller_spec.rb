@@ -9,6 +9,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
   let(:user) { create(:user) }
   let(:stored_result) { nil }
   let(:socure_docv_enabled) { true }
+  let(:socure_docv_verification_data_test_mode) { false }
 
   let(:document_capture_session) do
     DocumentCaptureSession.create(
@@ -17,8 +18,12 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
     )
   end
   let(:document_capture_session_uuid) { document_capture_session&.uuid }
-
-  let(:socure_docv_verification_data_test_mode) { false }
+  let(:no_url_socure_route) do
+    idv_hybrid_mobile_socure_document_capture_errors_url(error_code: :url_not_found)
+  end
+  let(:timeout_socure_route) do
+    idv_hybrid_mobile_socure_document_capture_errors_url(error_code: :timeout)
+  end
 
   before do
     allow(IdentityConfig.store).to receive(:socure_docv_enabled)
@@ -211,6 +216,30 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
           expect(document_capture_session.socure_docv_transaction_token)
             .to eq(docv_transaction_token)
         end
+
+        context 'when we try to use this controller but we should be using the LN/mock version' do
+          let(:idv_vendor) { Idp::Constants::Vendors::LEXIS_NEXIS }
+
+          it 'redirects to the LN/Mock controller' do
+            get :show
+
+            expect(response).to redirect_to(idv_hybrid_mobile_document_capture_url)
+          end
+
+          context 'when redirect to correct vendor is disabled' do
+            before do
+              allow(IdentityConfig.store)
+                .to receive(:doc_auth_redirect_to_correct_vendor_disabled).and_return(true)
+            end
+
+            it 'renders to the Socure controller' do
+              get :show
+
+              expect(response).to have_http_status 200
+              expect(response.body).to have_link(href: socure_capture_app_url)
+            end
+          end
+        end
       end
     end
 
@@ -220,7 +249,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
       it 'redirects to idv unavailable url' do
         get(:show)
 
-        expect(response).to redirect_to(idv_hybrid_mobile_socure_document_capture_errors_url)
+        expect(response).to redirect_to(no_url_socure_route)
         expect(controller.send(:instance_variable_get, :@url)).not_to be
       end
     end
@@ -265,7 +294,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
       it 'connection timeout still responds to user' do
         stub_request(:post, fake_socure_endpoint).to_raise(Faraday::ConnectionFailed)
         get(:show)
-        expect(response).to redirect_to(idv_hybrid_mobile_socure_document_capture_errors_url)
+        expect(response).to redirect_to(no_url_socure_route)
       end
 
       it 'socure error response still gives a result to user' do
@@ -274,7 +303,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
           body: JSON.generate(failed_response_body),
         )
         get(:show)
-        expect(response).to redirect_to(idv_hybrid_mobile_socure_document_capture_errors_url)
+        expect(response).to redirect_to(no_url_socure_route)
       end
 
       it 'socure nil response still gives a result to user' do
@@ -283,7 +312,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
           body: nil,
         )
         get(:show)
-        expect(response).to redirect_to(idv_hybrid_mobile_socure_document_capture_errors_url)
+        expect(response).to redirect_to(no_url_socure_route)
       end
 
       it 'socure nil response still gives a result to user' do
@@ -292,7 +321,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
           body: JSON.generate(response_body_401),
         )
         get(:show)
-        expect(response).to redirect_to(idv_hybrid_mobile_socure_document_capture_errors_url)
+        expect(response).to redirect_to(no_url_socure_route)
       end
 
       it 'socure nil response still gives a result to user' do
@@ -301,7 +330,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
           body: JSON.generate(no_doc_found_response_body),
         )
         get(:show)
-        expect(response).to redirect_to(idv_hybrid_mobile_socure_document_capture_errors_url)
+        expect(response).to redirect_to(no_url_socure_route)
       end
     end
     context 'reuse of valid capture app urls when appropriate' do
@@ -401,10 +430,9 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
           allow(subject).to receive(:wait_timed_out?).and_return(true)
         end
 
-        it 'renders a technical difficulties message' do
+        it 'redirects to the hybrid mobile socure errors timeout page' do
           get(:update)
-          expect(response).to have_http_status(:ok)
-          expect(response.body).to eq('Technical difficulties!!!')
+          expect(response).to redirect_to(timeout_socure_route)
         end
       end
     end

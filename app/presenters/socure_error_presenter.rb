@@ -26,6 +26,8 @@ class SocureErrorPresenter
   end
 
   def rate_limit_text
+    return if error_code == :url_not_found
+
     if remaining_attempts == 1
       t('doc_auth.rate_limit_warning.singular_html')
     else
@@ -51,10 +53,13 @@ class SocureErrorPresenter
   end
 
   def secondary_action
+    url = flow_path == :hybrid ? idv_hybrid_mobile_in_person_direct_url :
+                                  idv_in_person_direct_url
+
     if in_person_enabled?
       {
         text: I18n.t('in_person_proofing.body.cta.button'),
-        url: idv_in_person_direct_url,
+        url:,
       }
     end
   end
@@ -64,7 +69,7 @@ class SocureErrorPresenter
   end
 
   def options
-    return [] if error_code == :timeout
+    return [] if error_code == :timeout || error_code == :url_not_found
 
     [
       {
@@ -138,10 +143,10 @@ class SocureErrorPresenter
   end
 
   def heading_string_for(error_code)
-    case error_code
+    case error_code.to_sym
     when :network
       t('doc_auth.headers.general.network_error')
-    when :timeout
+    when :timeout, :url_not_found
       t('idv.errors.technical_difficulties')
     else
       # i18n-tasks-use t('doc_auth.headers.unreadable_id')
@@ -155,10 +160,10 @@ class SocureErrorPresenter
   end
 
   def error_string_for(error_code)
-    case error_code
+    case error_code.to_sym
     when :network
       t('doc_auth.errors.general.new_network_error')
-    when :timeout
+    when :timeout, :url_not_found
       t('idv.errors.try_again_later')
     else
       if remapped_error(error_code) == 'underage' # special handling because it says 'Login.gov'
@@ -176,7 +181,6 @@ class SocureErrorPresenter
 
   def in_person_enabled?
     IdentityConfig.store.in_person_doc_auth_button_enabled &&
-      Idv::InPersonConfig.enabled_for_issuer?(issuer) &&
-      flow_path.to_s == 'standard'
+      Idv::InPersonConfig.enabled_for_issuer?(issuer)
   end
 end

@@ -649,9 +649,7 @@ RSpec.describe Proofing::Aamva::Proofer do
           .to receive(:send).and_raise(exception)
       end
 
-      it 'logs to NewRelic' do
-        expect(NewRelic::Agent).to receive(:notice_error)
-
+      it 'includes exception in result' do
         result = subject.proof(state_id_data)
 
         expect(result.success?).to eq(false)
@@ -662,9 +660,7 @@ RSpec.describe Proofing::Aamva::Proofer do
       context 'the exception is a timeout error' do
         let(:exception) { Proofing::TimeoutError.new }
 
-        it 'logs to NewRelic' do
-          expect(NewRelic::Agent).to receive(:notice_error)
-
+        it 'returns false for mva exception attributes in result' do
           result = subject.proof(state_id_data)
 
           expect(result.success?).to eq(false)
@@ -683,9 +679,7 @@ RSpec.describe Proofing::Aamva::Proofer do
           )
         end
 
-        it 'logs to NewRelic' do
-          expect(NewRelic::Agent).to receive(:notice_error)
-
+        it 'returns true for mva_unavailable?' do
           result = subject.proof(state_id_data)
 
           expect(result.success?).to eq(false)
@@ -704,9 +698,7 @@ RSpec.describe Proofing::Aamva::Proofer do
           )
         end
 
-        it 'logs to NewRelic' do
-          expect(NewRelic::Agent).to receive(:notice_error)
-
+        it 'returns true for mva_system_error?' do
           result = subject.proof(state_id_data)
 
           expect(result.success?).to eq(false)
@@ -725,9 +717,7 @@ RSpec.describe Proofing::Aamva::Proofer do
           )
         end
 
-        it 'does not log to NewRelic' do
-          expect(NewRelic::Agent).not_to receive(:notice_error)
-
+        it 'returns true for mva_timeout?' do
           result = subject.proof(state_id_data)
 
           expect(result.success?).to eq(false)
@@ -736,6 +726,18 @@ RSpec.describe Proofing::Aamva::Proofer do
           expect(result.mva_system_error?).to eq(false)
           expect(result.mva_timeout?).to eq(true)
           expect(result.mva_exception?).to eq(true)
+        end
+
+        context 'when the DMV is in a defined maintenance window' do
+          before do
+            expect(Idv::AamvaStateMaintenanceWindow).to receive(:in_maintenance_window?)
+              .and_return(true)
+          end
+
+          it 'sets jurisdiction_in_maintenance_window to true' do
+            result = subject.proof(state_id_data)
+            expect(result.jurisdiction_in_maintenance_window?).to eq(true)
+          end
         end
       end
     end

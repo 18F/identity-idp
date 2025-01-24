@@ -40,7 +40,7 @@ module AbTests
   DOC_AUTH_VENDOR = AbTest.new(
     experiment_name: 'Doc Auth Vendor',
     should_log: /^idv/i,
-    default_bucket: :lexis_nexis,
+    default_bucket: IdentityConfig.store.doc_auth_vendor_default.to_sym,
     buckets: {
       socure: IdentityConfig.store.doc_auth_vendor_switching_enabled ?
         IdentityConfig.store.doc_auth_vendor_socure_percent : 0,
@@ -97,11 +97,11 @@ module AbTests
     },
   ).freeze
 
-  SOCURE_IDV_SHADOW_MODE = AbTest.new(
+  SOCURE_IDV_SHADOW_MODE_FOR_NON_DOCV_USERS = AbTest.new(
     experiment_name: 'Socure shadow mode',
     should_log: ['IdV: doc auth verify proofing results'].to_set,
     buckets: {
-      shadow_mode_enabled: IdentityConfig.store.socure_idplus_shadow_mode_percent,
+      socure_shadow_mode_for_non_docv_users: IdentityConfig.store.socure_idplus_shadow_mode_percent,
     },
   ).freeze
 
@@ -109,6 +109,7 @@ module AbTests
     experiment_name: 'Desktop F/T unlock setup',
     should_log: [
       'User Registration: 2FA Setup visited',
+      'WebAuthn Setup Visited',
       :webauthn_setup_submitted,
       'Multi-Factor Authentication Setup',
     ].to_set,

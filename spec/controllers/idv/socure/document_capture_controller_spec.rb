@@ -8,6 +8,11 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
   let(:fake_socure_endpoint) { 'https://fake-socure.test' }
   let(:user) { create(:user) }
   let(:doc_auth_success) { true }
+  let(:socure_docv_enabled) { true }
+  let(:socure_docv_verification_data_test_mode) { false }
+  let(:no_url_socure_route) { idv_socure_document_capture_errors_url(error_code: :url_not_found) }
+  let(:timeout_socure_route) { idv_socure_document_capture_errors_url(error_code: :timeout) }
+
   let(:stored_result) do
     DocumentCaptureSessionResult.new(
       id: SecureRandom.uuid,
@@ -18,7 +23,6 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       attention_with_barcode: false,
     )
   end
-  let(:socure_docv_enabled) { true }
 
   let(:document_capture_session) do
     DocumentCaptureSession.create(
@@ -26,8 +30,6 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       requested_at: Time.zone.now,
     )
   end
-
-  let(:socure_docv_verification_data_test_mode) { false }
 
   before do
     allow(IdentityConfig.store).to receive(:socure_docv_enabled)
@@ -39,7 +41,6 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
     allow(IdentityConfig.store).to receive(:doc_auth_vendor_switching_enabled)
       .and_return(vendor_switching_enabled)
     allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
-
     allow(subject).to receive(:stored_result).and_return(stored_result)
 
     user_session = {}
@@ -98,6 +99,28 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           get :show
           expect(response).to redirect_to idv_document_capture_url
         end
+
+        context 'when redirect to correct vendor is disabled' do
+          let(:socure_capture_app_url) { 'https://verify.socure.test/' }
+          let(:response_body) do
+            {
+              data: {
+                docvTransactionToken: SecureRandom.hex(6),
+                url: socure_capture_app_url,
+              },
+            }
+          end
+          before do
+            allow(IdentityConfig.store)
+              .to receive(:doc_auth_redirect_to_correct_vendor_disabled).and_return(true)
+          end
+
+          it 'redirects to the Socure controller' do
+            get :show
+
+            expect(response).to have_http_status 200
+          end
+        end
       end
 
       context 'when facial match is required' do
@@ -107,6 +130,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
             Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
           ].join(' ')
         end
+
         before do
           resolved_authn_context = AuthnContextResolver.new(
             user: user,
@@ -128,6 +152,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
     context 'happy path' do
       let(:socure_capture_app_url) { 'https://verify.socure.test/' }
       let(:docv_transaction_token) { '176dnc45d-2e34-46f3-82217-6f540ae90673' }
+
       let(:response_body) do
         {
           referenceId: '123ab45d-2e34-46f3-8d17-6f540ae90303',
@@ -232,13 +257,14 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       it 'redirects to the errors page' do
         get(:show)
 
-        expect(response).to redirect_to(idv_socure_document_capture_errors_url)
+        expect(response).to redirect_to(no_url_socure_route)
         expect(controller.send(:instance_variable_get, :@url)).not_to be
       end
     end
 
     context 'when socure is disabled' do
       let(:socure_docv_enabled) { false }
+
       it 'the webhook route does not exist' do
         get(:show)
 
@@ -248,12 +274,14 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
 
     context 'when socure error encountered' do
       let(:fake_socure_endpoint) { 'https://fake-socure.test/' }
+
       let(:failed_response_body) do
         { 'status' => 'Error',
           'referenceId' => '1cff6d33-1cc0-4205-b740-c9a9e6b8bd66',
           'data' => {},
           'msg' => 'No active account is associated with this request' }
       end
+
       let(:response_body_401) do
         {
           status: 'Error',
@@ -261,6 +289,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           msg: 'string',
         }
       end
+
       let(:no_doc_found_response_body) do
         {
           referenceId: '0dc21b0d-04df-4dd5-8533-ec9ecdafe0f4',
@@ -270,14 +299,16 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           },
         }
       end
+
       before do
         allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint)
           .and_return(fake_socure_endpoint)
       end
+
       it 'connection timeout still responds to user' do
         stub_request(:post, fake_socure_endpoint).to_raise(Faraday::ConnectionFailed)
         get(:show)
-        expect(response).to redirect_to(idv_socure_document_capture_errors_url)
+        expect(response).to redirect_to(no_url_socure_route)
       end
 
       it 'socure error response still gives a result to user' do
@@ -286,31 +317,34 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           body: JSON.generate(failed_response_body),
         )
         get(:show)
-        expect(response).to redirect_to(idv_socure_document_capture_errors_url)
+        expect(response).to redirect_to(no_url_socure_route)
       end
+
       it 'socure nil response still gives a result to user' do
         stub_request(:post, fake_socure_endpoint).to_return(
           status: 500,
           body: nil,
         )
         get(:show)
-        expect(response).to redirect_to(idv_socure_document_capture_errors_url)
+        expect(response).to redirect_to(no_url_socure_route)
       end
+
       it 'socure nil response still gives a result to user' do
         stub_request(:post, fake_socure_endpoint).to_return(
           status: 401,
           body: JSON.generate(response_body_401),
         )
         get(:show)
-        expect(response).to redirect_to(idv_socure_document_capture_errors_url)
+        expect(response).to redirect_to(no_url_socure_route)
       end
+
       it 'socure nil response still gives a result to user' do
         stub_request(:post, fake_socure_endpoint).to_return(
           status: 401,
           body: JSON.generate(no_doc_found_response_body),
         )
         get(:show)
-        expect(response).to redirect_to(idv_socure_document_capture_errors_url)
+        expect(response).to redirect_to(no_url_socure_route)
       end
     end
 
@@ -318,6 +352,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       let(:fake_capture_app_url) { 'https://verify.socure.test/fake_capture_app' }
       let(:socure_capture_app_url) { 'https://verify.socure.test/' }
       let(:docv_transaction_token) { '176dnc45d-2e34-46f3-82217-6f540ae90673' }
+
       let(:response_body) do
         {
           referenceId: '123ab45d-2e34-46f3-8d17-6f540ae90303',
@@ -354,9 +389,16 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       get :update
     end
 
-    it 'returns FOUND (302) and redirects to SSN' do
-      expect(response).to redirect_to(idv_ssn_path)
-      expect(@analytics).to have_logged_event('IdV: doc auth document_capture submitted')
+    context 'when doc auth succeeds' do
+      it 'correctly stores doc_auth_vendor in Idv::Session' do
+        expect(subject.idv_session.doc_auth_vendor).to_not be_nil
+        expect(subject.idv_session.doc_auth_vendor).to match(idv_vendor)
+      end
+
+      it 'returns FOUND (302) and redirects to SSN' do
+        expect(response).to redirect_to(idv_ssn_path)
+        expect(@analytics).to have_logged_event('IdV: doc auth document_capture submitted')
+      end
     end
 
     context 'when doc auth fails' do
@@ -386,7 +428,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
 
         it 'redirect to a Try again page' do
           get(:update)
-          expect(response).to redirect_to(idv_socure_errors_timeout_path)
+          expect(response).to redirect_to(timeout_socure_route)
         end
       end
 

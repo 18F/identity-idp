@@ -12,6 +12,9 @@ RSpec.describe 'Hybrid Flow' do
   let(:socure_docv_verification_data_test_mode) { false }
   let(:fake_analytics) { FakeAnalytics.new }
   let(:socure_docv_webhook_repeat_endpoints) { [] }
+  let(:timeout_socure_route) do
+    idv_hybrid_mobile_socure_document_capture_errors_url(error_code: :timeout)
+  end
 
   before do
     allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(true)
@@ -68,9 +71,9 @@ RSpec.describe 'Hybrid Flow' do
         visit idv_link_sent_url
         expect(page).to have_current_path(root_url)
 
-        # Confirm that we end up on the LN / Mock page even if we try to
-        # go to the Socure one.
-        visit idv_hybrid_mobile_socure_document_capture_url
+        # Confirm that we end up on the Socure page even if we try to
+        # go to the LN / Mock one.
+        visit idv_hybrid_mobile_document_capture_url
         expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_url)
 
         # Confirm that clicking cancel and then coming back doesn't cause errors
@@ -98,10 +101,11 @@ RSpec.describe 'Hybrid Flow' do
         expect(page).to have_text(t('doc_auth.instructions.switch_back'))
         expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
 
-        # To be fixed in app:
         # Confirm app disallows jumping back to DocumentCapture page
-        # visit idv_hybrid_mobile_socure_document_capture_url
-        # expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
+        visit idv_hybrid_mobile_socure_document_capture_url
+        expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
+        visit idv_hybrid_mobile_socure_document_capture_update_url
+        expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
       end
 
       perform_in_browser(:desktop) do
@@ -166,6 +170,74 @@ RSpec.describe 'Hybrid Flow' do
         click_send_link
 
         expect(page).to have_content(t('doc_auth.headings.text_message'))
+      end
+    end
+
+    context 'user times out waiting for result' do
+      before do
+        DocAuth::Mock::DocAuthMockClient.reset!
+        allow(IdentityConfig.store)
+          .to receive(:in_person_proofing_enabled).and_return(true)
+        allow(IdentityConfig.store)
+          .to receive(:in_person_doc_auth_button_enabled).and_return(true)
+        allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).and_return(true)
+        allow(IdentityConfig.store).to receive(:doc_auth_socure_wait_polling_timeout_minutes)
+          .and_return(0)
+      end
+
+      it 'presents options to try again or try in person', js: true do
+        perform_in_browser(:desktop) do
+          visit_idp_from_sp_with_ial2(sp)
+          sign_up_and_2fa_ial1_user
+
+          complete_doc_auth_steps_before_hybrid_handoff_step
+          clear_and_fill_in(:doc_auth_phone, phone_number)
+          click_send_link
+        end
+
+        perform_in_browser(:mobile) do
+          visit @sms_link
+          expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_url)
+
+          click_idv_continue
+          expect(page).to have_current_path(fake_socure_document_capture_app_url)
+
+          # Fail to receive the DOCUMENTS_UPLOADED and SESSION_COMPLETE webhooks
+          socure_docv_upload_documents(
+            docv_transaction_token: @docv_transaction_token,
+            webhooks: %w[
+              WAITING_FOR_USER_TO_REDIRECT,
+              APP_OPENED,
+              DOCUMENT_FRONT_UPLOADED,
+              DOCUMENT_BACK_UPLOADED,
+            ],
+          )
+
+          # Go to the wait page
+          visit idv_hybrid_mobile_socure_document_capture_update_url
+          expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_update_path)
+
+          # Timeout
+          visit idv_hybrid_mobile_socure_document_capture_update_url
+          expect(page).to have_current_path(timeout_socure_route)
+          expect(page).to have_content(I18n.t('idv.errors.try_again_later'))
+
+          # Try in person
+          click_on t('in_person_proofing.body.cta.button')
+          expect(page).to have_current_path(
+            idv_hybrid_mobile_document_capture_path(step: :idv_doc_auth),
+          )
+          expect(page).to have_content(t('in_person_proofing.headings.prepare'))
+
+          # Go back
+          click_on t('forms.buttons.back')
+          expect(page).to have_current_path(timeout_socure_route)
+
+          # Try Socure again
+          click_on t('idv.failure.button.warning')
+          expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_path)
+          expect(page).to have_content(t('doc_auth.headings.verify_with_phone'))
+        end
       end
     end
 
@@ -296,7 +368,7 @@ RSpec.describe 'Hybrid Flow' do
       end
 
       context 'when a valid test token is used' do
-        it 'fetches verificationdata using override docvToken in request',
+        it 'fetches verification data using override docvToken in request',
            js: true, allow_browser_log: true do
           user = nil
 
@@ -341,7 +413,7 @@ RSpec.describe 'Hybrid Flow' do
             .to receive(:send_http_post_request).and_raise('doh')
         end
 
-        it 'waits to fetch verificationdata using docv capture session token', js: true do
+        it 'waits to fetch verification data using docv capture session token', js: true do
           expect(SocureDocvRepeatWebhookJob).to receive(:perform_later)
             .exactly(6 * socure_docv_webhook_repeat_endpoints.length).times.and_call_original
 
@@ -381,7 +453,7 @@ RSpec.describe 'Hybrid Flow' do
   end
 
   shared_examples 'a properly categorized Socure error' do |socure_error_code, expected_header_key|
-    it 'shows the correct error page', js: true do
+    it 'shows the correct error page', allow_browser_log: true, js: true do
       user = nil
 
       perform_in_browser(:desktop) do
@@ -459,55 +531,92 @@ RSpec.describe 'Hybrid Flow' do
   end
 
   context 'with a network error requesting the capture app url' do
-    before do
-      allow_any_instance_of(Faraday::Connection).to receive(:post)
-        .and_raise(Faraday::ConnectionFailed)
-    end
+    shared_examples 'document request API failure' do
+      it 'shows the network error page on the phone and the link sent page on the desktop',
+         js: true do
+        perform_in_browser(:desktop) do
+          visit_idp_from_sp_with_ial2(sp)
+          sign_up_and_2fa_ial1_user
 
-    it 'shows the network error page on the phone and the link sent page on the desktop',
-       js: true do
-      user = nil
+          complete_doc_auth_steps_before_hybrid_handoff_step
+          clear_and_fill_in(:doc_auth_phone, phone_number)
+          click_send_link
+        end
 
-      perform_in_browser(:desktop) do
-        visit_idp_from_sp_with_ial2(sp)
-        user = sign_up_and_2fa_ial1_user
+        perform_in_browser(:mobile) do
+          visit @sms_link
 
-        complete_doc_auth_steps_before_hybrid_handoff_step
-        clear_and_fill_in(:doc_auth_phone, phone_number)
-        click_send_link
-      end
+          expect(page).to have_text(t('doc_auth.headers.general.network_error'))
+          expect(page).to have_text(t('doc_auth.errors.general.new_network_error'))
+          expect(@analytics).to have_logged_event(:idv_socure_document_request_submitted)
+        end
 
-      perform_in_browser(:mobile) do
-        visit @sms_link
-
-        expect(page).to have_text(t('doc_auth.headers.general.network_error'))
-        expect(page).to have_text(t('doc_auth.errors.general.new_network_error'))
-        expect(@analytics).to have_logged_event(:idv_socure_document_request_submitted)
-      end
-
-      perform_in_browser(:desktop) do
-        expect(page).to have_current_path(idv_link_sent_path)
+        perform_in_browser(:desktop) do
+          expect(page).to have_current_path(idv_link_sent_path)
+        end
       end
     end
-  end
 
-  context 'invalid request', allow_browser_log: true do
-    context 'getting the capture path w wrong api key' do
+    context 'Faraday connection error' do
       before do
-        user = user_with_2fa
-        visit_idp_from_oidc_sp_with_ial2
-        sign_in_and_2fa_user(user)
-        complete_doc_auth_steps_before_document_capture_step
-        click_idv_continue
+        allow_any_instance_of(Faraday::Connection).to receive(:post)
+          .and_raise(Faraday::ConnectionFailed)
+      end
+
+      it_behaves_like 'document request API failure'
+    end
+
+    context 'invalid request (ie: wrong api key)', allow_browser_log: true do
+      before do
         DocAuth::Mock::DocAuthMockClient.reset!
         stub_docv_document_request(status: 401)
       end
 
-      it 'correctly logs event', js: true do
-        visit idv_socure_document_capture_path
-        expect(@analytics).to have_logged_event(
-          :idv_socure_document_request_submitted,
-        )
+      it_behaves_like 'document request API failure'
+    end
+
+    context 'Pii validation fails' do
+      before do
+        allow_any_instance_of(Idv::DocPiiForm).to receive(:zipcode).and_return(:invalid_junk)
+      end
+
+      it 'presents as a type 1 error', js: true do
+        user = nil
+
+        perform_in_browser(:desktop) do
+          visit_idp_from_sp_with_ial2(sp)
+          user = sign_up_and_2fa_ial1_user
+
+          complete_doc_auth_steps_before_hybrid_handoff_step
+          clear_and_fill_in(:doc_auth_phone, phone_number)
+          click_send_link
+
+          expect(page).to have_content(t('doc_auth.headings.text_message'))
+          expect(page).to have_content(t('doc_auth.info.you_entered'))
+          expect(page).to have_content('+1 415-555-0199')
+
+          # Confirm that Continue button is not shown when polling is enabled
+          expect(page).not_to have_content(t('doc_auth.buttons.continue'))
+        end
+
+        expect(@sms_link).to be_present
+
+        perform_in_browser(:mobile) do
+          visit @sms_link
+
+          stub_docv_verification_data_pass(docv_transaction_token: @docv_transaction_token)
+
+          click_idv_continue
+
+          socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
+          visit idv_hybrid_mobile_socure_document_capture_update_url
+
+          expect(page).to have_content(t('doc_auth.headers.unreadable_id'))
+        end
+
+        perform_in_browser(:desktop) do
+          expect(page).to have_current_path(idv_link_sent_path)
+        end
       end
     end
   end

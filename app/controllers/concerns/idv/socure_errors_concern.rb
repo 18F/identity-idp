@@ -16,6 +16,8 @@ module Idv
         result.errors.dig(:socure, :reason_codes).first
       elsif result.errors[:network]
         :network
+      elsif result.errors[:pii_validation]
+        :pii_validation
       else
         # No error information available (shouldn't happen). Default
         # to :network if it does.

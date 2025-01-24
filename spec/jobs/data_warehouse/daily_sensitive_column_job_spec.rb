@@ -5,7 +5,7 @@ RSpec.describe DataWarehouse::DailySensitiveColumnJob do
 
   let(:timestamp) { Date.new(2024, 10, 15).in_time_zone('UTC') }
   let(:job) { described_class.new }
-  let(:expected_bucket) { 'login-gov-ipd-dw-tasks-test-1234-us-west-2' }
+  let(:expected_bucket) { "#{IdentityConfig.store.s3_idp_dw_tasks}-test-1234-us-west-2" }
   let(:tables) { ['auth_app_configurations'] }
   let(:s3_idp_dw_tasks) { 'login-gov-idp-dw-tasks' }
 
@@ -81,7 +81,20 @@ RSpec.describe DataWarehouse::DailySensitiveColumnJob do
       allow(ActiveRecord::Base.connection).to receive(:tables).and_return(tables)
     end
 
-    context 'when uploading to S3' do
+    context 'when bucket name is blank' do
+      before do
+        allow(IdentityConfig.store).to(
+          receive(:s3_idp_dw_tasks),
+        ).and_return('')
+      end
+
+      it 'skips trying to upload to S3' do
+        expect(job).to_not receive(:upload_file_to_s3_bucket)
+        job.perform(timestamp)
+      end
+    end
+
+    context 'when bucket name is present' do
       it 'uploads a file to S3 based on the report date' do
         expect(job).to receive(:upload_file_to_s3_bucket).with(
           path: 'daily-sensitive-column-job/2024/2024-10-15_daily-sensitive-column-job.json',

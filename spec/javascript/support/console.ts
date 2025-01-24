@@ -1,7 +1,18 @@
 /* eslint-disable no-console */
 
+import { format } from 'node:util';
 import sinon from 'sinon';
-import { format } from 'util';
+import type Chai from 'chai';
+
+declare global {
+  namespace Chai {
+    interface Assertion {
+      loggedError: (message: string | RegExp) => Chai.Assertion;
+    }
+  }
+}
+
+let unverifiedCalls: string[] = [];
 
 /**
  * Chai plugin which adds chainable `logged` method, to be used in combination with
@@ -10,33 +21,33 @@ import { format } from 'util';
  * @see https://www.chaijs.com/guide/plugins/
  * @see https://www.chaijs.com/api/plugins/
  *
- * @param {import('chai')}                chai  Chai object.
- * @param {import('chai/lib/chai/utils')} utils Chai plugin utilities.
+ * @param chai Chai object.
+ * @param utils Chai plugin utilities.
  */
-export function chaiConsoleSpy(chai, utils) {
+export const chaiConsoleSpy: Chai.ChaiPlugin = (chai, utils) => {
   utils.addChainableMethod(
     chai.Assertion.prototype,
     'loggedError',
-    (message) => {
+    (message: string | RegExp) => {
       if (message) {
-        const index = console.unverifiedCalls.findIndex((calledMessage) =>
+        const index = unverifiedCalls.findIndex((calledMessage) =>
           message instanceof RegExp ? message.test(calledMessage) : message === calledMessage,
         );
         let error = `Expected console to have logged: ${message}. `;
-        error += console.unverifiedCalls
-          ? `Console logged with: ${console.unverifiedCalls.join(', ')}`
+        error += unverifiedCalls
+          ? `Console logged with: ${unverifiedCalls.join(', ')}`
           : 'Console did not log.';
 
         expect(index).to.not.equal(-1, error);
 
-        console.unverifiedCalls.splice(index, 1);
+        unverifiedCalls.splice(index, 1);
       } else {
-        console.unverifiedCalls = [];
+        unverifiedCalls = [];
       }
     },
     undefined,
   );
-}
+};
 
 /**
  * Test lifecycle helper which stubs `console.error` and verifies that any logging which occurs to
@@ -44,19 +55,25 @@ export function chaiConsoleSpy(chai, utils) {
  * `chaiConsoleSpy` Chai plugin.
  */
 export function useConsoleLogSpy() {
-  let originalConsoleError;
-  beforeEach(() => {
-    console.unverifiedCalls = [];
+  let originalConsoleError: Console['error'];
+  before(() => {
     originalConsoleError = console.error;
     console.error = sinon.stub().callsFake((message, ...args) => {
-      console.unverifiedCalls = console.unverifiedCalls.concat(format(message, ...args));
+      unverifiedCalls.push(format(message, ...args));
     });
   });
 
+  beforeEach(() => {
+    unverifiedCalls = [];
+  });
+
   afterEach(() => {
-    console.error = originalConsoleError;
-    expect(console.unverifiedCalls).to.be.empty(
-      `Unexpected console logging: ${console.unverifiedCalls.join(', ')}`,
+    expect(unverifiedCalls).to.be.empty(
+      `Unexpected console logging: ${unverifiedCalls.join(', ')}`,
     );
+  });
+
+  after(() => {
+    console.error = originalConsoleError;
   });
 }

@@ -12,7 +12,6 @@ describe('InPersonOutageAlert', () => {
           addressSearchURL: 'https://localhost:3000/unused',
           inPersonOutageExpectedUpdateDate: 'January 1, 2024',
           inPersonOutageMessageEnabled: true,
-          inPersonFullAddressEntryEnabled: false,
           optedInToInPersonProofing: false,
           usStatesTerritories: [],
         }}

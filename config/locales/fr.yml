@@ -49,7 +49,7 @@ account.email_language.languages_list: Vous recevrez des e-mails de %{app_name} 
 account.email_language.name.en: English
 account.email_language.name.es: Español
 account.email_language.name.fr: Français
-account.email_language.name.zh: 中文 (简体)
+account.email_language.name.zh: 中文（简体）
 account.email_language.updated: Votre langue de préférence pour les e-mails a été mise à jour.
 account.emails.confirmed_html: Vous avez confirmé votre adresse e-mail. Rendez-vous sur <a href="%{url}">vos comptes connectés</a> pour actualiser l’adresse e-mail que vous communiquez aux organismes connectés.
 account.forget_all_browsers.longer_description: Une fois que vous aurez choisi d’« oublier tous les navigateurs », nous aurons besoin d’informations supplémentaires pour savoir que c’est bien vous qui vous connectez à votre compte. Nous vous demanderons une méthode d’authentification multi-facteurs (comme un code SMS/texto ou une clé de sécurité) chaque fois que vous souhaiterez accéder à votre compte.
@@ -799,7 +799,7 @@ errors.messages.wrong_length.one: n’est pas de la bonne longueur (devrait êtr
 errors.messages.wrong_length.other: n’est pas de la bonne longueur (devrait être de %{count} caractères)
 errors.piv_cac_setup.unique_name: Ce nom est déjà pris. Veuillez choisir un autre nom.
 errors.registration.terms: Avant de pouvoir continuer, vous devez nous donner la permission. Veuillez cocher la case ci-dessous, puis cliquez sur Suite.
-errors.sign_in.bad_password_limit: Vous avez dépassé le nombre maximal de tentatives de connexion. Vous devez attendre %{time_left} avant de réessayer.
+errors.sign_in.sign_in_failure_limit: Vous avez dépassé le nombre maximal de tentatives de connexion. Vous devez attendre %{time_left} avant de réessayer.
 errors.two_factor_auth_setup.must_select_additional_option: Sélectionnez une méthode d’authentification supplémentaire.
 errors.two_factor_auth_setup.must_select_option: Sélectionnez une méthode d’authentification.
 errors.verify_personal_key.rate_limited: Vous avez essayé trop de fois, veuillez réessayer dans %{timeout}.
@@ -899,7 +899,7 @@ forms.piv_cac_login.submit: Insérer la carte PIV/CAC
 forms.piv_cac_mfa.submit: Insérer la carte PIV/CAC
 forms.piv_cac_setup.nickname: Surnom de la carte PIV/CAC
 forms.piv_cac_setup.no_thanks: Non, merci
-forms.piv_cac_setup.piv_cac_intro_html: Nous vous demanderons de présenter votre carte PIV/CAC <strong>chaque fois que vous vous connecterez sur</strong> dans le cadre de l’authentification à deux facteurs.<br><br>Après avoir cliqué sur « Ajouter une carte PIV/CAC », votre navigateur vous demandera de saisir le NIP de votre PIV/CAC et de choisir un certificat.
+forms.piv_cac_setup.piv_cac_intro_html: Nous vous demanderons de présenter votre carte PIV/CAC <strong>chaque fois que vous vous connecterez sur</strong> dans le cadre de l’authentification à deux facteurs.<br><br>Après avoir cliqué sur « Ajouter une carte PIV/CAC », votre navigateur vous demandera de saisir le PIN de votre PIV/CAC et de choisir un certificat.
 forms.piv_cac_setup.submit: Insérer la carte PIV/CAC
 forms.piv_cac_setup.try_again: Réessayer
 forms.registration.labels.email: Saisissez votre adresse e-mail
@@ -997,7 +997,7 @@ help_text.requested_attributes.full_name: Nom complet
 help_text.requested_attributes.ial2_reverified_consent_info_html: 'Étant donné que vous avez revérifié votre identité, nous avons besoin de votre autorisation pour partager ces informations avec %{sp_html} :'
 help_text.requested_attributes.intro_html: 'Nous partagerons ces informations avec %{sp_html}:'
 help_text.requested_attributes.phone: Numéro de téléphone
-help_text.requested_attributes.select_email_link: Sélectionner l’e-mail
+help_text.requested_attributes.select_email_link: Sélectionner l’adresse e-mail
 help_text.requested_attributes.social_security_number: Numéro de sécurité sociale
 help_text.requested_attributes.verified_at: Mis à jour le
 help_text.requested_attributes.x509_issuer: Émetteur PIV/CAC
@@ -1007,7 +1007,7 @@ i18n.language: Langue
 i18n.locale.en: English
 i18n.locale.es: Español
 i18n.locale.fr: Français
-i18n.locale.zh: 中文 (简体)
+i18n.locale.zh: 中文（简体）
 idv.accessible_labels.masked_ssn: SMS sécurisé, commençant par %{first_number} et finissant par %{last_number}
 idv.buttons.change_address_label: Mettre à jour votre adresse
 idv.buttons.change_label: Mettre à jour
@@ -1222,8 +1222,8 @@ image_description.us_flag: Drapeau des États-Unis
 image_description.warning: Panneau d’avertissement jaune
 in_person_proofing.body.barcode.cancel_link_text: Annuler votre code-barres
 in_person_proofing.body.barcode.close_window: Vous pouvez maintenant fermer cette fenêtre
-in_person_proofing.body.barcode.deadline: Vous devez vous rendre dans un bureau de poste participant avant le %{deadline}
-in_person_proofing.body.barcode.deadline_restart: Si vous y allez après cette date limite, vos informations ne seront pas sauvegardées et vous devrez recommencer le processus.
+in_person_proofing.body.barcode.deadline: Vous devez vous rendre dans un bureau de poste participant avant le %{deadline}.
+in_person_proofing.body.barcode.deadline_restart: Si vous laissez passer la date limite, votre code-barres ne fonctionnera pas. Vous devrez recommencer toute la procédure.
 in_person_proofing.body.barcode.eipp_tag: Code-barres pilote amélioré de la GSA
 in_person_proofing.body.barcode.eipp_what_to_bring: 'Selon la pièce d’identité dont vous disposez, il pourra vous être demandé de présenter des documents complémentaires. Étudiez attentivement les options suivantes:'
 in_person_proofing.body.barcode.email_sent: Nous avons envoyé votre code-barre et les informations ci-dessous à l’adresse e-mail que vous avez utilisée pour vous connecter
@@ -1233,11 +1233,11 @@ in_person_proofing.body.barcode.questions: Des questions ?
 in_person_proofing.body.barcode.retail_hours: Heures d’ouverture
 in_person_proofing.body.barcode.retail_hours_closed: Fermé
 in_person_proofing.body.barcode.return_to_partner_link: Retourner à %{sp_name}
-in_person_proofing.body.barcode.what_to_expect: À quoi s’attendre au bureau de poste
+in_person_proofing.body.barcode.what_to_expect: Que faire au bureau de poste
 in_person_proofing.body.cta.button: Essayer en personne
 in_person_proofing.body.cta.prompt_detail: La plupart des personnes qui ne parviennent pas à effectuer cette étape en ligne réussissent à confirmer leur identité dans un bureau de poste participant. Sans rendez-vous. Il existe des sites dans l’ensemble du pays.
 in_person_proofing.body.expect.heading: Que faire après votre visite
-in_person_proofing.body.expect.info: Nous vous enverrons un e-mail pour vous informer de la réussite ou de l’échec de la vérification de votre identité dans les 24 heures suivant votre visite au bureau de poste.
+in_person_proofing.body.expect.info: Vous recevrez un e-mail dans les 24 heures suivant votre visite dans un bureau de poste. Nous vous informerons si la vérification de votre identité a réussi ou échoué. Vérifiez si vous avez reçu un message de no-reply@login.gov dans votre messagerie.
 in_person_proofing.body.location.change_location_find_other_locations: Trouvez d’autres bureaux de poste participants.
 in_person_proofing.body.location.change_location_heading: Vous devez changer de bureau de poste ?
 in_person_proofing.body.location.change_location_info_html: Pas besoin de créer un nouveau code-barres. Vous pouvez apporter le vôtre à n’importe quel bureau de poste participant. %{find_other_locations_link_html}
@@ -1316,7 +1316,7 @@ in_person_proofing.form.state_id.state_id_number_hint_spaces: des espaces
 in_person_proofing.form.state_id.state_id_number_texas_hint: Il s’agit du numéro à huit chiffres figurant sur votre pièce d’identité. Dans ce champ, ne saisissez que des chiffres.
 in_person_proofing.form.state_id.zipcode: Code postal
 in_person_proofing.headings.address: Saisissez votre adresse résidentielle actuelle
-in_person_proofing.headings.barcode: Présentez ce code-barres et votre pièce d’identité délivrée par l’État à un bureau de poste pour terminer la vérification de votre identité
+in_person_proofing.headings.barcode: Présentez ce code-barres et votre pièce d’identité l’État à un bureau de poste pour terminer la vérification de votre identité
 in_person_proofing.headings.barcode_eipp: Présenter ce code-barres et les documents complémentaires à un bureau de poste pour terminer la vérification de votre identité
 in_person_proofing.headings.barcode_what_to_bring: À apporter au bureau de poste
 in_person_proofing.headings.cta: Essayez de confirmer votre identité en personne
@@ -1361,7 +1361,7 @@ in_person_proofing.process.state_id.heading_eipp: Présenter votre pièce d’id
 in_person_proofing.process.state_id.info: Ce document ne doit pas être périmé. Nous n’acceptons actuellement aucune autre pièce d’identité, comme les passeports et les cartes d’identité militaires.
 in_person_proofing.process.state_id.info_eipp: Le préposé numérisera votre pièce d’identité. Ce document ne doit pas être périmé. Selon le type de pièce d’identité que vous présentez, il pourra vous être demandé de produire des documents complémentaires. Vous trouverez les exigences à respecter dans la section « Qu’apporter au bureau de poste ».
 in_person_proofing.process.what_to_do.heading: Faites la queue
-in_person_proofing.process.what_to_do.info: Dites au préposé du bureau de poste que vous êtes là pour confirmer votre identité auprès de %{app_name}.
+in_person_proofing.process.what_to_do.info: Dites à l’employé que vous venez pour une vérification d’identité. Si la personne ne sait pas comment procéder, demandez qu’un responsable vienne vous aider.
 instructions.account.reactivate.begin: Commençons.
 instructions.account.reactivate.explanation: 'Lorsque vous avez créé votre compte, nous vous avons donné une liste de mots et vous avons demandé de les placer en lieu sûr. La liste ressemblait à ceci :'
 instructions.account.reactivate.intro: Comme nous prenons des mesures supplémentaires pour maintenir vos informations sécurisées et confidentielles, la réinitialisation de votre mot de passe est un peu plus fastidieuse.
@@ -1373,7 +1373,7 @@ instructions.go_back_to_mobile_app: Pour continuer, veuillez retourner à l’ap
 instructions.mfa.authenticator.confirm_code_html: Saisissez le code à partir de votre appli d’authentification. Si vous avez plusieurs comptes configurés dans votre appli, saisissez le code correspondant à %{app_name_html}.
 instructions.mfa.authenticator.manual_entry: Ou saisissez ce code manuellement dans votre appli d’authentification
 instructions.mfa.piv_cac.account_not_found_html: '<p>%{sign_in} à l’aide de votre adresse e-mail et de votre mot de passe. Introduisez ensuite la carte PIV/CAC dans un lecteur de carte à puce pour l’ajouter à votre compte.</p><p>Vous n’avez pas de compte %{app_name}? %{create_account}</p>'
-instructions.mfa.piv_cac.add_from_sign_in_html: '<strong> Instructions : </strong> Insérez votre carte PIV ou CAC dans <strong>AJOUTER PIV/CAC</strong>. Vous devrez <strong>choisir un certificat</strong> (le bon a probablement le nom que vous lui avez donné) et <strong>saisir votre NIP</strong> (votre NIP a été créé lors de la configuration de votre carte PIV/CAC).'
+instructions.mfa.piv_cac.add_from_sign_in_html: '<strong> Instructions : </strong> Insérez votre carte PIV ou CAC dans <strong>AJOUTER PIV/CAC</strong>. Vous devrez <strong>choisir un certificat</strong> (le bon a probablement le nom que vous lui avez donné) et <strong>saisir votre PIN</strong> (votre PIN a été créé lors de la configuration de votre carte PIV/CAC).'
 instructions.mfa.piv_cac.already_associated_html: Veuillez choisir un certificat associé à une autre carte PIV/CAC ; contactez votre administrateur afin de vérifier que votre carte PIV/CAC est bien à jour. Si vous pensez qu’il s’agit d’une erreur, veuillez %{try_again_html}.
 instructions.mfa.piv_cac.back_to_sign_in: Retourner vous connecter
 instructions.mfa.piv_cac.confirm_piv_cac: Introduisez la carte PIV/CAC que vous avez associée à votre compte dans un lecteur de carte à puce.
@@ -1387,7 +1387,7 @@ instructions.mfa.piv_cac.step_1: Donnez-lui un surnom
 instructions.mfa.piv_cac.step_1_info: Si vous ajoutez plus d’une carte PIV/CAC, vous saurez laquelle.
 instructions.mfa.piv_cac.step_2: Insérez votre PIV/CAC dans votre lecteur de carte
 instructions.mfa.piv_cac.step_3: Ajoutez votre carte PIV/CAC
-instructions.mfa.piv_cac.step_3_info_html: Vous devrez <strong>choisir un certificat</strong> (le bon a probablement votre nom) et <strong>saisir votre NIP</strong> (votre NIP a été créé lors de la configuration de votre carte PIV/CAC).
+instructions.mfa.piv_cac.step_3_info_html: Vous devrez <strong>choisir un certificat</strong> (le bon a probablement votre nom) et <strong>saisir votre PIN</strong> (votre PIN a été créé lors de la configuration de votre carte PIV/CAC).
 instructions.mfa.piv_cac.try_again: réessayer
 instructions.mfa.sms.number_message_html: Nous avons envoyé un SMS (texto) avec un code à usage unique au %{number_html}. Ce code expirera dans %{expiration} minutes.
 instructions.mfa.voice.number_message_html: Nous avons passé un appel avec un code à usage unique au %{number_html}. Ce code expirera dans %{expiration} minutes.
@@ -1693,7 +1693,7 @@ two_factor_authentication.important_alert_icon: icône d’alerte importante
 two_factor_authentication.invalid_backup_code: Ce code de sauvegarde n’est pas valide.
 two_factor_authentication.invalid_otp: Ce code à usage unique n’est pas valide. Veuillez réessayer ou demander un nouveau code.
 two_factor_authentication.invalid_personal_key: Cette clé personnelle n’est pas valide.
-two_factor_authentication.invalid_piv_cac: Cette carte PIV/CAC n’a pas fonctionné. Assurez-vous qu’il s’agit de la bonne carte PIV/CAC pour ce compte. Si c’est le cas, il se peut qu’il y ait un problème avec votre carte PIV/CAC ou votre NIP ou qu’un problème soit survenu de notre côté. Réessayez ou choisissez une autre méthode d’authentification.
+two_factor_authentication.invalid_piv_cac: Cette carte PIV/CAC n’a pas fonctionné. Assurez-vous qu’il s’agit de la bonne carte PIV/CAC pour ce compte. Si c’est le cas, il se peut qu’il y ait un problème avec votre carte PIV/CAC ou votre PIN ou qu’un problème soit survenu de notre côté. Réessayez ou choisissez une autre méthode d’authentification.
 two_factor_authentication.learn_more: En savoir plus sur les options d’authentification
 two_factor_authentication.login_intro: Vous les avez configurées lorsque vous avez créé votre compte.
 two_factor_authentication.login_intro_reauthentication: Avant que vous puissiez apporter des modifications à votre compte, nous devons nous assurer qu’il s’agit bien de vous en utilisant l’une de vos méthodes d’authentification.
@@ -2041,11 +2041,15 @@ vendor_outage.get_updates: Obtenir les dernières informations
 vendor_outage.get_updates_on_status_page: Obtenir les dernières informations sur notre page d’état des systèmes.
 vendor_outage.working: Nous travaillons à la résolution d’une erreur
 webauthn_platform_recommended.cta: Set up face or touch unlock
-webauthn_platform_recommended.description_private_html: Face or touch unlock is %{phishing_resistant_link_html} and we don’t store any recordings of your face or fingerprint, so your information stays private.
-webauthn_platform_recommended.description_secure_account: Secure your sign in with face or touch unlock. Use your face, fingerprint, password, or another method to keep your account safer.
-webauthn_platform_recommended.heading: Set up face or touch unlock for a more secure sign in
-webauthn_platform_recommended.phishing_resistant: phishing-resistant
+webauthn_platform_recommended.description_save_time: Save time by using your face, fingerprint, password, or another method to access your account. This method is faster than receiving a one-time code through text or voice message.
+webauthn_platform_recommended.heading: Set up face or touch unlock for a quick and easy sign in
 webauthn_platform_recommended.skip: Skip
+webauthn_setup_mismatch.description_undo: Cliquez sur « Annuler » pour supprimer cette option.
+webauthn_setup_mismatch.description.webauthn: Nous avons remarqué que vous utilisiez une clé de sécurité au lieu du déverrouillage facial ou tactile. Cliquez sur « Suite » pour utiliser votre clé de sécurité afin de vous connecter à partir de maintenant.
+webauthn_setup_mismatch.description.webauthn_platform: Nous avons remarqué que vous utilisiez le déverrouillage facial ou tactile au lieu d’une clé de sécurité. Cliquez sur « Suite » pour utiliser le déverrouillage facial ou tactile afin de vous connecter à partir de maintenant.
+webauthn_setup_mismatch.heading.webauthn: Clé de sécurité détectée
+webauthn_setup_mismatch.heading.webauthn_platform: Déverrouillage facial ou tactile détecté
+webauthn_setup_mismatch.undo: Annuler
 zxcvbn.feedback.a_word_by_itself_is_easy_to_guess: Un mot seul est facile à deviner
 zxcvbn.feedback.add_another_word_or_two_uncommon_words_are_better: Ajoutez un ou deux autres mots. Il est préférable d’utiliser des mots peu communs.
 zxcvbn.feedback.all_uppercase_is_almost_as_easy_to_guess_as_all_lowercase: Tout en majuscules est presque aussi facile à deviner que tout en minuscules.

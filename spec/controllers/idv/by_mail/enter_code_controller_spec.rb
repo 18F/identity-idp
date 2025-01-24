@@ -181,7 +181,10 @@ RSpec.describe Idv::ByMail::EnterCodeController do
 
       let(:user) { create(:user, :with_pending_gpo_profile, created_at: 2.days.ago) }
       let!(:pending_profile) { user.gpo_verification_pending_profile }
+      let(:initiating_service_provider) { create(:service_provider) }
       let(:success) { true }
+
+      before { pending_profile.update!(initiating_service_provider:) }
 
       it 'uses the PII from the pending profile' do
         # action will make the profile active, so grab the ID here.
@@ -202,6 +205,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
           fraud_check_failed: false,
           enqueued_at: pending_profile.gpo_confirmation_codes.last.code_sent_at,
           profile_age_in_seconds: instance_of(Integer),
+          initiating_service_provider: initiating_service_provider.issuer,
           which_letter: 1,
           letter_count: 1,
           submit_attempts: 1,
@@ -247,6 +251,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
             fraud_check_failed: false,
             enqueued_at: pending_profile.gpo_confirmation_codes.last.code_sent_at,
             profile_age_in_seconds: instance_of(Integer),
+            initiating_service_provider: initiating_service_provider.issuer,
             which_letter: 1,
             letter_count: 1,
             submit_attempts: 1,
@@ -276,6 +281,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
               fraud_check_failed: true,
               enqueued_at: pending_profile.gpo_confirmation_codes.last.code_sent_at,
               profile_age_in_seconds: instance_of(Integer),
+              initiating_service_provider: initiating_service_provider.issuer,
               which_letter: 1,
               letter_count: 1,
               submit_attempts: 1,
@@ -289,7 +295,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
           it 'does not send the "Please Call" email' do
             action
             expect_email_not_delivered(
-              to: user.confirmed_email_addresses.first.email,
+              to: user.last_sign_in_email_address.email,
               subject: t('user_mailer.idv_please_call.subject', app_name: APP_NAME),
             )
           end
@@ -313,6 +319,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
               fraud_check_failed: true,
               enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
               profile_age_in_seconds: instance_of(Integer),
+              initiating_service_provider: initiating_service_provider.issuer,
               which_letter: 1,
               letter_count: 1,
               submit_attempts: 1,
@@ -335,7 +342,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
           it 'sends the "Please Call" email' do
             action
             expect_delivered_email(
-              to: user.confirmed_email_addresses.first.email,
+              to: user.last_sign_in_email_address.email,
               subject: t('user_mailer.idv_please_call.subject', app_name: APP_NAME),
             )
           end
@@ -355,6 +362,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
               fraud_check_failed: true,
               enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
               profile_age_in_seconds: instance_of(Integer),
+              initiating_service_provider: initiating_service_provider.issuer,
               which_letter: 1,
               letter_count: 1,
               submit_attempts: 1,

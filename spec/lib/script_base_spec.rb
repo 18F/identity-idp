@@ -22,6 +22,7 @@ RSpec.describe ScriptBase do
 
   describe '#run' do
     let(:argv) { [] }
+    let(:env) { 'production' }
 
     subject(:base) do
       ScriptBase.new(
@@ -31,7 +32,32 @@ RSpec.describe ScriptBase do
         subtask_class:,
         banner: '',
         reason_arg: false,
+        rails_env: ActiveSupport::EnvironmentInquirer.new(env),
       )
+    end
+
+    context 'running in production vs locally' do
+      subject(:run) { base.run }
+
+      context 'in production' do
+        let(:env) { 'production' }
+
+        it 'does not warn' do
+          run
+
+          expect(stderr.string).to_not include('WARNING')
+        end
+      end
+
+      context 'in development' do
+        let(:env) { 'development' }
+
+        it 'warns that it is in development' do
+          run
+
+          expect(stderr.string).to include('WARNING: returning local data')
+        end
+      end
     end
 
     context 'with --deflate' do
