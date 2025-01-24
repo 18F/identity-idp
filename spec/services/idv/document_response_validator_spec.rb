@@ -230,58 +230,60 @@ RSpec.context 'old ApiImageUploadForm specs' do
     )
   end
 
-  let(:capture_result)  { form.send(:store_failed_images) }
-
   let(:front_image) { DocAuthImageFixtures.document_front_image_multipart }
-  let(:back_image) { DocAuthImageFixtures.document_back_image_multipart }
-  let(:selfie_image) { nil }
-  let(:liveness_checking_required) { false }
-  let(:front_image_file_name) { 'front.jpg' }
-  let(:back_image_file_name) { 'back.jpg' }
-  let(:selfie_image_file_name) { 'selfie.jpg' }
   let(:front_image_metadata) do
     {
       width: 40,
       height: 40,
       mimeType: 'image/png',
       source: 'upload',
-      fileName: front_image_file_name,
+      fileName: 'front.jpg',
     }
   end
 
+  let(:back_image) { DocAuthImageFixtures.document_back_image_multipart }
   let(:back_image_metadata) do
     {
       width: 20,
       height: 20,
       mimeType: 'image/png',
       source: 'upload',
-      fileName: back_image_file_name,
+      fileName: 'back.jpg',
     }
   end
 
+  let(:selfie_image) { nil }
   let(:selfie_image_metadata) { nil }
+
   let(:document_capture_session) { DocumentCaptureSession.create!(user: create(:user)) }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:fake_analytics) { FakeAnalytics.new }
+  let(:liveness_checking_required) { false }
   let(:acuant_sdk_upgrade_ab_test_bucket) {}
 
-  let(:doc_pii_response) { instance_double(Idv::DocAuthFormResponse) }
-  let(:client_response) { instance_double(DocAuth::Response) }
-  let(:network_error) { false }
+  let(:doc_pii_response) do
+    instance_double(
+      Idv::DocAuthFormResponse,
+      success?: doc_pii_success,
+    )
+  end
   let(:doc_pii_success) { true }
-  let(:client_success) { false }
 
+  let(:client_response) do
+    instance_double(
+      DocAuth::Response,
+      success?: client_success,
+      errors: errors,
+      selfie_status: :not_processed,
+      network_error?: network_error,
+      doc_auth_success?: doc_pii_success,
+    )
+  end
+  let(:client_success) { false }
   let(:errors) { {} }
+  let(:network_error) { false }
 
   before do
-    allow(client_response).to receive(:success?).and_return(client_success)
-    allow(client_response).to receive(:errors).and_return(errors)
-    allow(client_response).to receive(:selfie_status).and_return(:not_processed)
-    allow(client_response).to receive(:network_error?).and_return(network_error)
-    allow(client_response).to receive(:doc_auth_success?).and_return(doc_pii_success)
-
-    allow(doc_pii_response).to receive(:success?).and_return(doc_pii_success)
-
     form.send(:validate_form)
 
     form.document_response_validator = Idv::DocumentResponseValidator.new(
@@ -292,6 +294,8 @@ RSpec.context 'old ApiImageUploadForm specs' do
   end
 
   describe '#store_failed_images' do
+    let(:capture_result) { form.send(:store_failed_images) }
+
     context 'when client_response is not success and not network error' do
       let(:doc_pii_success) { false }
 
