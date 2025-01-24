@@ -101,7 +101,12 @@ class OpenidConnectAuthorizeForm
 
   def service_provider
     return @service_provider if defined?(@service_provider)
-    @service_provider = ServiceProvider.find_by(issuer: client_id)
+    @service_provider =
+      if client_id.blank?
+        nil
+      else
+        ServiceProvider.find_by(issuer: client_id)
+      end
   end
 
   def link_identity_to_service_provider(
