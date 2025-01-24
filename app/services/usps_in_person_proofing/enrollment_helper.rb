@@ -91,6 +91,16 @@ module UspsInPersonProofing
           .find_each(&:cancelled!)
       end
 
+      # Cancel a user's associated establishing and pending in-person enrollments.
+      #
+      # @param user [User] The user model
+      def cancel_establishing_and_pending_enrollments(user)
+        user
+          .in_person_enrollments
+          .where(status: [:establishing, :pending])
+          .find_each(&:cancel)
+      end
+
       def usps_proofer
         if IdentityConfig.store.usps_mock_fallback
           UspsInPersonProofing::Mock::Proofer.new
