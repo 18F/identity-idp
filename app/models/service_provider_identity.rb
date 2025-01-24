@@ -65,6 +65,10 @@ class ServiceProviderIdentity < ApplicationRecord
     last_authenticated_at.in_time_zone('UTC')
   end
 
+  def supports_email_change?
+    verified_attributes&.include('all_emails') && !verified_attributes.include('email')
+  end
+
   def email_address_for_sharing
     if IdentityConfig.store.feature_select_email_to_share_enabled && email_address
       return email_address

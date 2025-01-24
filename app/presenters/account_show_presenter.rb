@@ -18,8 +18,7 @@ class AccountShowPresenter
     authn_context:,
     sp_name:,
     user:,
-    locked_for_session:,
-    requested_attributes:
+    locked_for_session:
   )
     @decrypted_pii = decrypted_pii
     @user = user
@@ -27,7 +26,6 @@ class AccountShowPresenter
     @sp_session_request_url = sp_session_request_url
     @authn_context = authn_context
     @locked_for_session = locked_for_session
-    @requested_attributes = requested_attributes
     @pii = determine_pii
   end
 
@@ -137,12 +135,6 @@ class AccountShowPresenter
       I18n.t('account.index.auth_app_enabled')
     else
       I18n.t('account.index.auth_app_disabled')
-    end
-  end
-
-  def show_change_option
-    if requested_attributes
-      requested_attributes.include?('all_emails') || !requested_attributes.include?('email')
     end
   end
 
