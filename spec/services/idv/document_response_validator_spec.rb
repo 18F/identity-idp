@@ -256,36 +256,48 @@ RSpec.context 'old ApiImageUploadForm specs' do
       fileName: back_image_file_name,
     }
   end
+
   let(:selfie_image_metadata) { nil }
   let!(:document_capture_session) { DocumentCaptureSession.create!(user: create(:user)) }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:fake_analytics) { FakeAnalytics.new }
   let(:acuant_sdk_upgrade_ab_test_bucket) {}
 
-  describe '#store_failed_images' do
-    let(:doc_pii_response) { instance_double(Idv::DocAuthFormResponse) }
-    let(:client_response) { instance_double(DocAuth::Response) }
+  let(:doc_pii_response) { instance_double(Idv::DocAuthFormResponse) }
+  let(:client_response) { instance_double(DocAuth::Response) }
+  let(:capture_result)  { form.send(:store_failed_images) }
+  let(:network_error) { 'network_error_not_set' }
+  let(:doc_pii_success) { 'doc_pii_success_not_set' }
 
+  let(:errors) { {} }
+
+  before do
+    allow(client_response).to receive(:success?).and_return(false)
+    allow(client_response).to receive(:errors).and_return(errors)
+    allow(client_response).to receive(:selfie_status).and_return(:not_processed)
+    allow(client_response).to receive(:network_error?).and_return(network_error)
+    allow(client_response).to receive(:doc_auth_success?).and_return(doc_pii_success)
+
+    allow(doc_pii_response).to receive(:success?).and_return(doc_pii_success)
+
+    form.send(:validate_form)
+
+    form.document_response_validator = Idv::DocumentResponseValidator.new(
+      form_response: form.form_response,
+      client_response:,
+    )
+    form.document_response_validator.doc_pii_response = doc_pii_response
+  end
+
+  describe '#store_failed_images' do
     context 'when client_response is not success and not network error' do
+      let(:network_error) { false }
+      let(:doc_pii_success) { false }
+
       context 'when both sides error message missing' do
         let(:errors) { {} }
 
         it 'stores both sides as failed' do
-          allow(client_response).to receive(:success?).and_return(false)
-          allow(client_response).to receive(:network_error?).and_return(false)
-          allow(client_response).to receive(:errors).and_return(errors)
-          allow(client_response).to receive(:doc_auth_success?).and_return(false)
-          allow(client_response).to receive(:selfie_status).and_return(:not_processed)
-
-          form.send(:validate_form)
-
-          form.document_response_validator = Idv::DocumentResponseValidator.new(
-            form_response: form.form_response,
-            client_response:,
-          )
-          form.document_response_validator.doc_pii_response = doc_pii_response
-
-          capture_result = form.send(:store_failed_images)
           expect(capture_result[:front]).not_to be_empty
           expect(capture_result[:back]).not_to be_empty
         end
@@ -295,18 +307,6 @@ RSpec.context 'old ApiImageUploadForm specs' do
         let(:errors) { { front: 'blurry', back: 'dpi' } }
 
         it 'stores both sides as failed' do
-          allow(client_response).to receive(:success?).and_return(false)
-          allow(client_response).to receive(:network_error?).and_return(false)
-          allow(client_response).to receive(:errors).and_return(errors)
-          allow(client_response).to receive(:doc_auth_success?).and_return(false)
-          allow(client_response).to receive(:selfie_status).and_return(:not_processed)
-          form.send(:validate_form)
-          form.document_response_validator = Idv::DocumentResponseValidator.new(
-            form_response: form.form_response,
-            client_response:
-          )
-          form.document_response_validator.doc_pii_response = doc_pii_response
-          capture_result = form.send(:store_failed_images)
           expect(capture_result[:front]).not_to be_empty
           expect(capture_result[:back]).not_to be_empty
         end
@@ -316,18 +316,6 @@ RSpec.context 'old ApiImageUploadForm specs' do
         let(:errors) { { front: 'blurry', back: nil } }
 
         it 'stores only the error side as failed' do
-          allow(client_response).to receive(:success?).and_return(false)
-          allow(client_response).to receive(:network_error?).and_return(false)
-          allow(client_response).to receive(:errors).and_return(errors)
-          allow(client_response).to receive(:doc_auth_success?).and_return(false)
-          allow(client_response).to receive(:selfie_status).and_return(:not_processed)
-          form.send(:validate_form)
-          form.document_response_validator = Idv::DocumentResponseValidator.new(
-            form_response: form.form_response,
-            client_response:,
-          )
-          form.document_response_validator.doc_pii_response = doc_pii_response
-          capture_result = form.send(:store_failed_images)
           expect(capture_result[:front]).not_to be_empty
           expect(capture_result[:back]).to be_empty
         end
@@ -335,41 +323,21 @@ RSpec.context 'old ApiImageUploadForm specs' do
     end
 
     context 'when client_response is not success and is network error' do
-      let(:errors) { {} }
+      let(:network_error) { true }
 
       context 'when doc_pii_response is success' do
+        let(:doc_pii_success) { true }
+
         it 'stores neither of the side as failed' do
-          allow(client_response).to receive(:success?).and_return(false)
-          allow(client_response).to receive(:network_error?).and_return(true)
-          allow(client_response).to receive(:errors).and_return(errors)
-          allow(doc_pii_response).to receive(:success?).and_return(true)
-          form.send(:validate_form)
-          form.document_response_validator = Idv::DocumentResponseValidator.new(
-            form_response: form.form_response,
-            client_response:,
-          )
-          form.document_response_validator.doc_pii_response = doc_pii_response
-          capture_result = form.send(:store_failed_images)
           expect(capture_result[:front]).to be_empty
           expect(capture_result[:back]).to be_empty
         end
       end
 
       context 'when doc_pii_response is failure' do
+        let(:doc_pii_success) { false }
+
         it 'stores both sides as failed' do
-          allow(client_response).to receive(:success?).and_return(false)
-          allow(client_response).to receive(:network_error?).and_return(true)
-          allow(client_response).to receive(:errors).and_return(errors)
-          allow(client_response).to receive(:doc_auth_success?).and_return(false)
-          allow(doc_pii_response).to receive(:success?).and_return(false)
-          allow(client_response).to receive(:selfie_status).and_return(:not_processed)
-          form.send(:validate_form)
-          form.document_response_validator = Idv::DocumentResponseValidator.new(
-            form_response: form.form_response,
-            client_response:,
-          )
-          form.document_response_validator.doc_pii_response = doc_pii_response
-          capture_result = form.send(:store_failed_images)
           expect(capture_result[:front]).not_to be_empty
           expect(capture_result[:back]).not_to be_empty
         end
