@@ -8,6 +8,7 @@ class ServiceProviderIdentity < ApplicationRecord
 
   belongs_to :user
   validates :service_provider, presence: true
+  before_save :clear_email_address_id_if_not_supported
 
   # rubocop:disable Rails/InverseOf
   belongs_to :deleted_user, foreign_key: 'user_id', primary_key: 'user_id'
@@ -57,12 +58,24 @@ class ServiceProviderIdentity < ApplicationRecord
     sp_metadata[:friendly_name]
   end
 
+  def sp_only_single_email_requested?
+    verified_attributes&.include?('email') &&
+      !verified_attributes.include?('all_emails')
+  end
+
   def service_provider_id
     service_provider_record&.id
   end
 
   def happened_at
     last_authenticated_at.in_time_zone('UTC')
+  end
+
+  def clear_email_address_id_if_not_supported
+    if !sp_only_single_email_requested? &&
+       IdentityConfig.store.feature_select_email_to_share_enabled
+      self.email_address_id = nil
+    end
   end
 
   def email_address_for_sharing

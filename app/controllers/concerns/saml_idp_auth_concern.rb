@@ -157,8 +157,11 @@ module SamlIdpAuthConcern
     if user_session[:selected_email_id_for_linked_identity].present?
       return user_session[:selected_email_id_for_linked_identity]
     end
-    identity = current_user.identities.find_by(service_provider: sp_session['issuer'])
-    email_id = identity&.email_address_id
+    identity = current_user.identities.find_by(service_provider: sp_session[:issuer])
+    email_id = nil
+    if identity.sp_only_single_email_requested?
+      email_id = identity&.email_address_id
+    end
     return email_id if email_id.is_a? Integer
   end
 

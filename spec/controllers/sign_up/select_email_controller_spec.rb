@@ -2,7 +2,9 @@ require 'rails_helper'
 
 RSpec.describe SignUp::SelectEmailController do
   let(:user) { create(:user, :with_multiple_emails) }
-  let(:sp) { create(:service_provider) }
+  let(:sp) do
+    create(:service_provider)
+  end
 
   before do
     stub_sign_in(user)
@@ -75,8 +77,8 @@ RSpec.describe SignUp::SelectEmailController do
   end
 
   describe '#create' do
-    let(:selected_email) { user.confirmed_email_addresses.sample }
-    let(:params) { { select_email_form: { selected_email_id: selected_email.id } } }
+    let(:selected_email_id) { user.confirmed_email_addresses.sample.id }
+    let(:params) { { select_email_form: { selected_email_id: selected_email_id } } }
 
     subject(:response) { post :create, params: params }
 
@@ -85,7 +87,7 @@ RSpec.describe SignUp::SelectEmailController do
 
       expect(
         controller.user_session[:selected_email_id_for_linked_identity],
-      ).to eq(selected_email.id.to_s)
+      ).to eq(selected_email_id.to_s)
     end
 
     it 'logs analytics event' do
@@ -97,13 +99,13 @@ RSpec.describe SignUp::SelectEmailController do
         :sp_select_email_submitted,
         success: true,
         needs_completion_screen_reason: :new_attributes,
-        selected_email_id: selected_email.id,
+        selected_email_id: selected_email_id,
       )
     end
 
     context 'with a corrupted email selected_email_id form' do
       let(:other_user) { create(:user) }
-      let(:selected_email) { other_user.confirmed_email_addresses.sample }
+      let(:selected_email_id) { other_user.confirmed_email_addresses.sample.id }
 
       it 'rejects email not belonging to the user' do
         expect(response).to redirect_to(sign_up_select_email_path)
@@ -122,7 +124,7 @@ RSpec.describe SignUp::SelectEmailController do
           success: false,
           error_details: { selected_email_id: { not_found: true } },
           needs_completion_screen_reason: :new_attributes,
-          selected_email_id: selected_email.id,
+          selected_email_id: selected_email_id,
         )
       end
     end
