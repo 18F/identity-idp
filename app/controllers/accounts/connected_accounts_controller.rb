@@ -18,7 +18,7 @@ module Accounts
         sp_name: decorated_sp_session.sp_name,
         user: current_user,
         locked_for_session: pii_locked_for_session?(current_user),
-        requested_attributes: decorated_sp_session.requested_attributes,
+        requested_attributes: current_user.identities.pluck(:verified_attributes).flatten,
       )
     end
   end
