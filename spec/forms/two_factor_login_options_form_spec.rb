@@ -19,7 +19,7 @@ RSpec.describe TwoFactorLoginOptionsForm do
 
         expect(subject.submit(selection: 'sms').to_h).to eq(
           success: true,
-          errors: {},
+          errors: nil,
           **extra,
         )
       end
