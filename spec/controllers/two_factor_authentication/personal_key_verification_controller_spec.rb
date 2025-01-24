@@ -28,6 +28,34 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
       )
     end
 
+    context 'when there is a sign_in_recaptcha_assessment_id in the session' do
+      let(:assessment_id) { 'projects/project-id/assessments/assessment-id' }
+
+      it 'annotates the assessment with INITIATED_TWO_FACTOR and logs the annotation' do
+        user = build(:user, :with_personal_key, password: ControllerHelper::VALID_PASSWORD)
+        recaptcha_annotation = {
+          assessment_id:,
+          reason: RecaptchaAnnotator::AnnotationReasons::INITIATED_TWO_FACTOR,
+        }
+
+        controller.session[:sign_in_recaptcha_assessment_id] = assessment_id
+
+        expect(RecaptchaAnnotator).to receive(:annotate)
+          .with(**recaptcha_annotation)
+          .and_return(recaptcha_annotation)
+
+        stub_sign_in_before_2fa(user)
+        stub_analytics
+
+        get :show
+
+        expect(@analytics).to have_logged_event(
+          'Multi-Factor Authentication: enter personal key visited',
+          hash_including(recaptcha_annotation:),
+        )
+      end
+    end
+
     it 'redirects to the two_factor_options page if user is IAL2' do
       profile = create(:profile, :active, :verified, pii: { ssn: '1234' })
       user = profile.user

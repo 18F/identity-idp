@@ -13,7 +13,10 @@ module TwoFactorAuthentication
     helper_method :in_multi_mfa_selection_flow?
 
     def show
-      analytics.multi_factor_auth_enter_otp_visit(**analytics_properties)
+      recaptcha_annotation = annotate_recaptcha(
+        RecaptchaAnnotator::AnnotationReasons::INITIATED_TWO_FACTOR,
+      )
+      analytics.multi_factor_auth_enter_otp_visit(recaptcha_annotation:, **analytics_properties)
 
       @landline_alert = landline_warning?
       @presenter = presenter_for_two_factor_authentication_method
