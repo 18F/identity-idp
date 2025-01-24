@@ -198,6 +198,8 @@ RSpec.describe ResetPasswordForm, type: :model do
 
           it 'includes that the profile was not deactivated in the form response' do
             expect(@result.extra).to include(
+              user_id: user.uuid,
+              profile_deactivated: false,
               pending_profile_invalidated: true,
               pending_profile_pending_reasons: 'in_person_verification_pending',
             )
@@ -205,6 +207,39 @@ RSpec.describe ResetPasswordForm, type: :model do
 
           it 'updates the profile to have a "password reset" deactivation reason' do
             expect(profile.deactivation_reason).to eq('password_reset')
+          end
+        end
+
+        context 'when the user has an active and a pending in-person verification profile' do
+          let!(:user) { create(:user, reset_password_sent_at: Time.zone.now) }
+          let!(:pending_profile) { create(:profile, :in_person_verification_pending, user: user) }
+          let!(:active_profile) { create(:profile, :active, user: user) }
+
+          before do
+            @result = form.submit(params)
+            pending_profile.reload
+            active_profile.reload
+          end
+
+          it 'returns a successful response' do
+            expect(@result.success?).to eq(true)
+          end
+
+          it 'includes that the profile was not deactivated in the form response' do
+            expect(@result.extra).to include(
+              user_id: user.uuid,
+              profile_deactivated: true,
+              pending_profile_invalidated: false,
+              pending_profile_pending_reasons: '',
+            )
+          end
+
+          it 'updates the pending profile to have a "password reset" deactivation reason' do
+            expect(pending_profile.deactivation_reason).to eq('password_reset')
+          end
+
+          it 'does not update the active profile to have a "password reset" deactivation reason' do
+            expect(active_profile.deactivation_reason).to be_nil
           end
         end
       end

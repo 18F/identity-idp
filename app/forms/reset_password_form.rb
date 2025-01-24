@@ -70,12 +70,12 @@ class ResetPasswordForm
 
   def password_reset_profile
     FeatureManagement.pending_in_person_password_reset_enabled? ?
-      find_active_or_pending_in_person_profile :
+      find_pending_in_person_or_active_profile :
       active_profile
   end
 
-  def find_active_or_pending_in_person_profile
-    active_profile || user.pending_in_person_enrollment&.profile
+  def find_pending_in_person_or_active_profile
+    user.pending_in_person_enrollment&.profile || active_profile
   end
 
   # It is possible for an account that is resetting their password to be "invalid".
@@ -94,6 +94,7 @@ class ResetPasswordForm
   end
 
   def extra_analytics_attributes
+    binding.pry
     {
       user_id: user.uuid,
       profile_deactivated: active_profile.present?,
