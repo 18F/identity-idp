@@ -34,38 +34,44 @@ module Idv
     end
 
     def submit
-      form_response = validate_form
+      validate_form
 
-      client_response = nil
-      doc_pii_response = nil
-
-      if form_response.success?
-        client_response = post_images_to_client
-
-        document_capture_session.update!(
-          last_doc_auth_result: client_response.extra[:doc_auth_result],
-        )
-
-        if client_response.success?
-          doc_pii_response = validate_pii_from_doc(client_response)
-        end
-      end
-
-      response = determine_response(
-        form_response: form_response,
-        client_response: client_response,
-        doc_pii_response: doc_pii_response,
+      self.document_response_validator = DocumentResponseValidator.new(
+        form_response:,
+        client_response: form_response.success? ? post_images_to_client : nil,
       )
 
-      failed_fingerprints = store_failed_images(client_response, doc_pii_response)
-      response.extra[:failed_image_fingerprints] = failed_fingerprints
+      if form_response.success?
+        document_capture_session.update!(
+          last_doc_auth_result: document_response_validator.client_response.extra[:doc_auth_result],
+        )
+
+        document_response_validator.validate_pii_from_doc(
+          document_capture_session:,
+          extra_attributes:,
+          analytics:,
+        )
+      end
+
+      response = document_response_validator.response
+      response.extra[:failed_image_fingerprints] = store_failed_images
       response
     end
 
+    attr_accessor :document_response_validator
+    attr_reader :form_response
+
     private
 
-    attr_reader :params, :analytics, :service_provider, :form_response, :uuid_prefix,
+    attr_reader :params, :analytics, :service_provider, :uuid_prefix,
                 :liveness_checking_required, :acuant_sdk_upgrade_ab_test_bucket
+
+    def store_failed_images
+      document_response_validator.store_failed_images(
+        document_capture_session,
+        extra_attributes,
+      )
+    end
 
     def increment_rate_limiter!
       return unless document_capture_session
@@ -77,14 +83,13 @@ module Idv
       increment_rate_limiter!
       track_rate_limited if rate_limited?
 
-      response = Idv::DocAuthFormResponse.new(
+      @form_response = Idv::DocAuthFormResponse.new(
         success: success,
         errors: errors,
         extra: extra_attributes,
       )
 
-      analytics.idv_doc_auth_submitted_image_upload_form(**response)
-      response
+      analytics.idv_doc_auth_submitted_image_upload_form(**form_response)
     end
 
     def post_images_to_client
@@ -124,33 +129,6 @@ module Idv
 
     def selfie_image_bytes
       @selfie_image_bytes ||= selfie.read
-    end
-
-    def validate_pii_from_doc(client_response)
-      response = Idv::DocPiiForm.new(
-        pii: client_response.pii_from_doc.to_h,
-        attention_with_barcode: client_response.attention_with_barcode?,
-      ).submit
-      response.extra.merge!(extra_attributes)
-      side_classification = doc_side_classification(client_response)
-      response_with_classification =
-        response.to_h.merge(side_classification)
-
-      analytics.idv_doc_auth_submitted_pii_validation(**response_with_classification)
-
-      if client_response.success? && response.success?
-        store_pii(client_response)
-      end
-
-      response
-    end
-
-    def doc_side_classification(client_response)
-      side_info = {}.merge(client_response&.extra&.[](:classification_info) || {})
-      side_info.transform_keys(&:downcase).symbolize_keys
-      {
-        classification_info: side_info,
-      }
     end
 
     def extra_attributes
@@ -212,16 +190,6 @@ module Idv
       processed_selfie_count = selfie_image_fingerprint ? 1 : 0
       past_selfie_count = (captured_result&.failed_selfie_image_fingerprints || []).length
       { selfie_attempts: past_selfie_count + processed_selfie_count }
-    end
-
-    def determine_response(form_response:, client_response:, doc_pii_response:)
-      # image validation failed
-      return form_response unless form_response.success?
-
-      # doc_pii validation failed
-      return doc_pii_response if doc_pii_response.present? && !doc_pii_response.success?
-
-      client_response
     end
 
     def image_source
@@ -431,10 +399,6 @@ module Idv
       end
     end
 
-    def store_pii(client_response)
-      document_capture_session.store_result_from_response(client_response)
-    end
-
     def user_id
       document_capture_session&.user&.id
     end
@@ -452,62 +416,6 @@ module Idv
 
     def rate_limited?
       rate_limiter.limited? if document_capture_session
-    end
-
-    ##
-    # Store failed image fingerprints in document_capture_session_result
-    # when client_response is not successful and not a network error
-    # ( http status except handled status 438, 439, 440 ) or doc_pii_response is not successful.
-    # @param [Object] client_response
-    # @param [Object] doc_pii_response
-    # @return [Object] latest failed fingerprints
-    def store_failed_images(client_response, doc_pii_response)
-      unless image_resubmission_check?
-        return {
-          front: [],
-          back: [],
-          selfie: [],
-        }
-      end
-      # doc auth failed due to non network error or doc_pii is not valid
-      if client_response && !client_response.success? && !client_response.network_error?
-        errors_hash = client_response.errors&.to_h || {}
-        failed_front_fingerprint = nil
-        failed_back_fingerprint = nil
-        if errors_hash[:front] || errors_hash[:back]
-          if errors_hash[:front]
-            failed_front_fingerprint = extra_attributes[:front_image_fingerprint]
-          end
-          if errors_hash[:back]
-            failed_back_fingerprint = extra_attributes[:back_image_fingerprint]
-          end
-        elsif !client_response.doc_auth_success?
-          failed_front_fingerprint = extra_attributes[:front_image_fingerprint]
-          failed_back_fingerprint = extra_attributes[:back_image_fingerprint]
-        end
-        document_capture_session.store_failed_auth_data(
-          front_image_fingerprint: failed_front_fingerprint,
-          back_image_fingerprint: failed_back_fingerprint,
-          selfie_image_fingerprint: extra_attributes[:selfie_image_fingerprint],
-          doc_auth_success: client_response.doc_auth_success?,
-          selfie_status: client_response.selfie_status,
-        )
-      elsif doc_pii_response && !doc_pii_response.success?
-        document_capture_session.store_failed_auth_data(
-          front_image_fingerprint: extra_attributes[:front_image_fingerprint],
-          back_image_fingerprint: extra_attributes[:back_image_fingerprint],
-          selfie_image_fingerprint: extra_attributes[:selfie_image_fingerprint],
-          doc_auth_success: client_response.doc_auth_success?,
-          selfie_status: client_response.selfie_status,
-        )
-      end
-      # retrieve updated data from session
-      captured_result = document_capture_session&.load_result
-      {
-        front: captured_result&.failed_front_image_fingerprints || [],
-        back: captured_result&.failed_back_image_fingerprints || [],
-        selfie: captured_result&.failed_selfie_image_fingerprints || [],
-      }
     end
 
     def image_resubmission_check?

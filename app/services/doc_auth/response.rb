@@ -96,5 +96,10 @@ module DocAuth
       # to be implemented by concrete subclass
       :not_processed
     end
+
+    def fail(errors)
+      @success = false
+      @errors.merge!(errors)
+    end
   end
 end
