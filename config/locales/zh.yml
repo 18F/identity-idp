@@ -503,6 +503,7 @@ devise.passwords.updated: 你的密码已更改。你现在已登入。
 devise.passwords.updated_not_active: 你的密码已更改。请用你的新密码登录。
 devise.registrations.close_window: 完成后可以关闭这一窗口。
 devise.registrations.destroyed: 你的账户已成功删除。
+devise.sessions.already_signed_out: 你现在已登出。
 devise.sessions.signed_in: ''
 devise.sessions.signed_out: 你现在已登出。
 doc_auth.accessible_labels.camera_video_capture_instructions: 我们会自动拍张照片。
