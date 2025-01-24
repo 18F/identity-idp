@@ -230,6 +230,8 @@ RSpec.context 'old ApiImageUploadForm specs' do
     )
   end
 
+  let(:capture_result)  { form.send(:store_failed_images) }
+
   let(:front_image) { DocAuthImageFixtures.document_front_image_multipart }
   let(:back_image) { DocAuthImageFixtures.document_back_image_multipart }
   let(:selfie_image) { nil }
@@ -258,21 +260,21 @@ RSpec.context 'old ApiImageUploadForm specs' do
   end
 
   let(:selfie_image_metadata) { nil }
-  let!(:document_capture_session) { DocumentCaptureSession.create!(user: create(:user)) }
+  let(:document_capture_session) { DocumentCaptureSession.create!(user: create(:user)) }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:fake_analytics) { FakeAnalytics.new }
   let(:acuant_sdk_upgrade_ab_test_bucket) {}
 
   let(:doc_pii_response) { instance_double(Idv::DocAuthFormResponse) }
   let(:client_response) { instance_double(DocAuth::Response) }
-  let(:capture_result)  { form.send(:store_failed_images) }
-  let(:network_error) { 'network_error_not_set' }
-  let(:doc_pii_success) { 'doc_pii_success_not_set' }
+  let(:network_error) { false }
+  let(:doc_pii_success) { true }
+  let(:client_success) { false }
 
   let(:errors) { {} }
 
   before do
-    allow(client_response).to receive(:success?).and_return(false)
+    allow(client_response).to receive(:success?).and_return(client_success)
     allow(client_response).to receive(:errors).and_return(errors)
     allow(client_response).to receive(:selfie_status).and_return(:not_processed)
     allow(client_response).to receive(:network_error?).and_return(network_error)
@@ -291,7 +293,6 @@ RSpec.context 'old ApiImageUploadForm specs' do
 
   describe '#store_failed_images' do
     context 'when client_response is not success and not network error' do
-      let(:network_error) { false }
       let(:doc_pii_success) { false }
 
       context 'when both sides error message missing' do
@@ -326,8 +327,6 @@ RSpec.context 'old ApiImageUploadForm specs' do
       let(:network_error) { true }
 
       context 'when doc_pii_response is success' do
-        let(:doc_pii_success) { true }
-
         it 'stores neither of the side as failed' do
           expect(capture_result[:front]).to be_empty
           expect(capture_result[:back]).to be_empty
