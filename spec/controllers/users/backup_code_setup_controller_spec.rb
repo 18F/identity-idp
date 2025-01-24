@@ -214,7 +214,7 @@ RSpec.describe Users::BackupCodeSetupController do
       get :edit
       expect(@analytics).to have_logged_event(
         'Backup Code Regenerate Visited',
-        hash_including(in_account_creation_flow: false),
+        in_account_creation_flow: false,
       )
     end
   end
