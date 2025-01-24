@@ -492,7 +492,6 @@ devise.passwords.updated: Votre mot de passe a été modifié. Vous êtes mainte
 devise.passwords.updated_not_active: Votre mot de passe a été modifié. Veuillez vous connecter avec votre nouveau mot de passe.
 devise.registrations.close_window: Vous pouvez fermer cette fenêtre si vous avez terminé.
 devise.registrations.destroyed: Votre compte a bien été supprimé.
-devise.sessions.already_signed_out: Vous êtes maintenant déconnecté.
 devise.sessions.signed_in: ''
 devise.sessions.signed_out: Vous êtes maintenant déconnecté.
 doc_auth.accessible_labels.camera_video_capture_instructions: Nous prendrons automatiquement la photo

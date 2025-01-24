@@ -492,7 +492,6 @@ devise.passwords.updated: Your password has been changed. You are now signed in.
 devise.passwords.updated_not_active: Your password has been changed. Please sign in with your new password.
 devise.registrations.close_window: You can close this window if you’re done.
 devise.registrations.destroyed: Your account has been successfully deleted.
-devise.sessions.already_signed_out: You are now signed out.
 devise.sessions.signed_in: ''
 devise.sessions.signed_out: You are now signed out.
 doc_auth.accessible_labels.camera_video_capture_instructions: We will automatically take the picture

@@ -319,6 +319,9 @@ RSpec.feature 'Sign in' do
       click_button t('notices.timeout_warning.partially_signed_in.sign_out')
 
       expect(page).to have_content t('devise.sessions.already_signed_out')
+
+      expect(find_field('Email').value).to be_blank
+      expect(find_field('Password').value).to be_blank
     end
   end
 
