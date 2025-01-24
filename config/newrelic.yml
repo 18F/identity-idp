@@ -29,6 +29,7 @@ production:
       ActionDispatch::Http::MimeNegotiation::InvalidType
       ActionDispatch::Http::Parameters::ParseError
       GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError
+      RiscDeliveryJob::DeliveryError
     ].join(',') %>"
   license_key: <%= IdentityConfig.store.newrelic_license_key %>
   log_level: info

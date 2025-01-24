@@ -70,7 +70,7 @@ RSpec.describe RiscDeliveryJob do
 
       context 'when the job fails for the 1st time' do
         it 'raises and retries via ActiveJob' do
-          expect { perform }.to raise_error(Faraday::SSLError)
+          expect { perform }.to raise_error(RiscDeliveryJob::DeliveryError)
 
           expect(job_analytics).not_to have_logged_event(
             :risc_security_event_pushed,
@@ -111,7 +111,7 @@ RSpec.describe RiscDeliveryJob do
 
       context 'when the job fails for the 1st time' do
         it 'raises and retries via ActiveJob' do
-          expect { perform }.to raise_error(Faraday::ConnectionFailed)
+          expect { perform }.to raise_error(RiscDeliveryJob::DeliveryError)
 
           expect(job_analytics).not_to have_logged_event(
             :risc_security_event_pushed,
@@ -156,7 +156,7 @@ RSpec.describe RiscDeliveryJob do
 
       context 'when the job fails for the 1st time' do
         it 'raises and retries via ActiveJob' do
-          expect { perform }.to raise_error(Errno::ECONNREFUSED)
+          expect { perform }.to raise_error(RiscDeliveryJob::DeliveryError)
 
           expect(job_analytics).not_to have_logged_event(
             :risc_security_event_pushed,
@@ -300,7 +300,7 @@ RSpec.describe RiscDeliveryJob do
   describe '.warning_error_classes' do
     it 'is all the network errors and rate limiting errors' do
       expect(described_class.warning_error_classes).to match_array(
-        [*described_class::NETWORK_ERRORS, RedisRateLimiter::LimitError],
+        [RiscDeliveryJob::DeliveryError, RedisRateLimiter::LimitError],
       )
     end
   end
