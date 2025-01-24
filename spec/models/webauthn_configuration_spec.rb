@@ -10,6 +10,24 @@ RSpec.describe WebauthnConfiguration do
 
   let(:subject) { create(:webauthn_configuration) }
 
+  describe '.PLATFORM_AUTHENTICATOR_TRANSPORTS' do
+    subject(:transports) { WebauthnConfiguration::PLATFORM_AUTHENTICATOR_TRANSPORTS }
+
+    it 'is a frozen array of strings' do
+      expect(transports).to all be_a(String)
+      expect(transports.frozen?).to eq(true)
+    end
+  end
+
+  describe '.VALID_TRANSPORTS' do
+    subject(:transports) { WebauthnConfiguration::VALID_TRANSPORTS }
+
+    it 'is a frozen array of strings' do
+      expect(transports).to all be_a(String)
+      expect(transports.frozen?).to eq(true)
+    end
+  end
+
   describe '#selection_presenters' do
     context 'for a roaming authenticator' do
       it 'returns a WebauthnSelectionPresenter in an array' do

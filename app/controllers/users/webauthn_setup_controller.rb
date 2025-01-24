@@ -134,7 +134,7 @@ module Users
         success: true,
       )
       handle_remember_device_preference(params[:remember_device])
-      if form.platform_authenticator?
+      if form.setup_as_platform_authenticator?
         handle_valid_verification_for_confirmation_context(
           auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM,
         )
@@ -144,7 +144,7 @@ module Users
           analytics,
           threatmetrix_attrs,
         )
-        flash[:success] = t('notices.webauthn_platform_configured')
+        flash[:success] = t('notices.webauthn_platform_configured') if !form.transports_mismatch?
       else
         handle_valid_verification_for_confirmation_context(
           auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN,
@@ -155,9 +155,15 @@ module Users
           analytics,
           threatmetrix_attrs,
         )
-        flash[:success] = t('notices.webauthn_configured')
+        flash[:success] = t('notices.webauthn_configured') if !form.transports_mismatch?
       end
-      redirect_to next_setup_path || after_mfa_setup_path
+
+      if form.transports_mismatch?
+        user_session[:webauthn_mismatch_id] = form.webauthn_configuration.id
+        redirect_to webauthn_setup_mismatch_path
+      else
+        redirect_to next_setup_path || after_mfa_setup_path
+      end
     end
 
     def analytics_properties
