@@ -75,7 +75,7 @@ RSpec.describe Idv::StateIdForm do
       let(:form_response) do
         FormResponse.new(
           success: true,
-          errors: {},
+          errors: nil,
           extra: { birth_year: valid_dob[:year],
                    document_zip_code: params[:identity_doc_zipcode].slice(0, 5) },
         )

@@ -172,7 +172,6 @@ RSpec.describe Idv::ApiImageUploadForm do
         expect(fake_analytics).to have_logged_event(
           'IdV: doc auth image upload form submitted',
           success: true,
-          errors: {},
           submit_attempts: 1,
           remaining_submit_attempts: 3,
           user_id: document_capture_session.user.uuid,
@@ -204,7 +203,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             },
           },
           doc_auth_result: 'Passed',
-          errors: {},
+          errors: nil,
           remaining_submit_attempts: 3,
           state: 'MT',
           state_id_type: 'drivers_license',
@@ -252,7 +251,6 @@ RSpec.describe Idv::ApiImageUploadForm do
           expect(fake_analytics).to have_logged_event(
             'IdV: doc auth image upload form submitted',
             success: true,
-            errors: {},
             submit_attempts: 1,
             remaining_submit_attempts: 3,
             user_id: document_capture_session.user.uuid,
@@ -291,7 +289,7 @@ RSpec.describe Idv::ApiImageUploadForm do
               },
             },
             doc_auth_result: 'Passed',
-            errors: {},
+            errors: nil,
             liveness_checking_required: boolean,
             portrait_match_results: anything,
             remaining_submit_attempts: 3,
@@ -393,7 +391,6 @@ RSpec.describe Idv::ApiImageUploadForm do
         expect(fake_analytics).to have_logged_event(
           'IdV: doc auth image upload form submitted',
           success: true,
-          errors: {},
           submit_attempts: 1,
           remaining_submit_attempts: 3,
           user_id: document_capture_session.user.uuid,

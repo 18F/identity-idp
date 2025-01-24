@@ -86,7 +86,6 @@ RSpec.describe TwoFactorAuthentication::OptionsController do
         'Multi-Factor Authentication: option list',
         selection: 'sms',
         success: true,
-        errors: {},
         enabled_mfa_methods_count: 2,
         mfa_method_counts: { phone: 1, piv_cac: 1 },
       )

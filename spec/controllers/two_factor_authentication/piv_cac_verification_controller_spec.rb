@@ -122,7 +122,6 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
         expect(@analytics).to have_logged_event(
           'Multi-Factor Authentication',
           success: true,
-          errors: {},
           context: 'authentication',
           multi_factor_auth_method: 'piv_cac',
           new_device: true,

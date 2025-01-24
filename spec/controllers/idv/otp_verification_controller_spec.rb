@@ -160,7 +160,6 @@ RSpec.describe Idv::OtpVerificationController do
         'IdV: phone confirmation otp submitted',
         hash_including(
           success: true,
-          errors: {},
           code_expired: false,
           code_matches: true,
           otp_delivery_preference: :sms,

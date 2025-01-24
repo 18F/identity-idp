@@ -54,7 +54,6 @@ RSpec.describe Risc::SecurityEventsController do
         'RISC: Security event received',
         client_id: service_provider.issuer,
         event_type: event_type,
-        errors: {},
         jti: jti,
         success: true,
         user_id: user.uuid,

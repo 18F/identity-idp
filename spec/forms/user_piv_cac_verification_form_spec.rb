@@ -69,7 +69,7 @@ RSpec.describe UserPivCacVerificationForm do
           result = form.submit
           expect(result.to_h).to eq(
             success: true,
-            errors: {},
+            errors: nil,
             piv_cac_configuration_id: piv_cac_configuration.id,
             multi_factor_auth_method_created_at: piv_cac_configuration.created_at.strftime('%s%L'),
             key_id: 'foo',
@@ -130,7 +130,7 @@ RSpec.describe UserPivCacVerificationForm do
 
         expect(result.to_h).to eq(
           success: false,
-          errors: {},
+          errors: nil,
           multi_factor_auth_method_created_at: nil,
           piv_cac_configuration_id: nil,
           piv_cac_configuration_dn_uuid: nil,

@@ -154,7 +154,6 @@ RSpec.describe Users::PhoneSetupController do
         expect(@analytics).to have_logged_event(
           'Multi-Factor Authentication: phone setup',
           success: true,
-          errors: {},
           otp_delivery_preference: 'voice',
           area_code: '703',
           carrier: 'Test Mobile Carrier',
@@ -188,7 +187,6 @@ RSpec.describe Users::PhoneSetupController do
         expect(@analytics).to have_logged_event(
           'Multi-Factor Authentication: phone setup',
           success: true,
-          errors: {},
           otp_delivery_preference: 'sms',
           area_code: '703',
           carrier: 'Test Mobile Carrier',
@@ -222,7 +220,6 @@ RSpec.describe Users::PhoneSetupController do
         expect(@analytics).to have_logged_event(
           'Multi-Factor Authentication: phone setup',
           success: true,
-          errors: {},
           otp_delivery_preference: 'sms',
           area_code: '703',
           carrier: 'Test Mobile Carrier',
