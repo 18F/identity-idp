@@ -7,8 +7,7 @@ class AccountShowPresenter
               :pii,
               :sp_session_request_url,
               :authn_context,
-              :sp_name,
-              :requested_attributes
+              :sp_name
 
   delegate :identity_verified_with_facial_match?, to: :user
 
