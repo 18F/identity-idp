@@ -51,7 +51,9 @@ RSpec.describe SamlIdpController do
 
       expect(@analytics).to have_logged_event(
         'Logout Initiated',
-        hash_including(sp_initiated: false, oidc: false, saml_request_valid: true),
+        sp_initiated: false,
+        oidc: false,
+        saml_request_valid: true,
       )
     end
 
@@ -74,7 +76,9 @@ RSpec.describe SamlIdpController do
 
       expect(@analytics).to have_logged_event(
         'Logout Initiated',
-        hash_including(sp_initiated: true, oidc: false, saml_request_valid: true),
+        sp_initiated: true,
+        oidc: false,
+        saml_request_valid: true,
       )
     end
 
@@ -85,7 +89,9 @@ RSpec.describe SamlIdpController do
 
       expect(@analytics).to have_logged_event(
         'Logout Initiated',
-        hash_including(sp_initiated: true, oidc: false, saml_request_valid: false),
+        sp_initiated: true,
+        oidc: false,
+        saml_request_valid: false,
       )
       expect(@analytics).to have_logged_event(
         :sp_integration_errors_present,
@@ -148,7 +154,9 @@ RSpec.describe SamlIdpController do
 
         expect(@analytics).to have_logged_event(
           'Logout Initiated',
-          hash_including(sp_initiated: true, oidc: false, saml_request_valid: false),
+          sp_initiated: true,
+          oidc: false,
+          saml_request_valid: false,
         )
         expect(@analytics).to have_logged_event(
           :sp_integration_errors_present,
