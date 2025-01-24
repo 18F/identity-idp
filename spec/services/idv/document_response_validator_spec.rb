@@ -41,7 +41,7 @@ RSpec.describe Idv::DocumentResponseValidator do
       state_id_jurisdiction: 'WI',
       issuing_country_code: 'issuing_country_code',
     }
-end
+  end
 
   let(:client_response) do
     DocAuth::Response.new(
@@ -202,6 +202,178 @@ end
 
     it 'reloads the document capture session result' do
       expect(document_capture_session).to have_received(:load_result)
+    end
+  end
+end
+
+RSpec.context 'old ApiImageUploadForm specs' do
+  include DocPiiHelper
+
+  subject(:form) do
+    Idv::ApiImageUploadForm.new(
+      ActionController::Parameters.new(
+        {
+          front: front_image,
+          front_image_metadata: front_image_metadata.to_json,
+          back: back_image,
+          back_image_metadata: back_image_metadata.to_json,
+          selfie: selfie_image,
+          selfie_image_metadata: selfie_image_metadata.to_json,
+          document_capture_session_uuid: document_capture_session_uuid,
+        }.compact,
+      ),
+      service_provider: build(:service_provider, issuer: 'test_issuer'),
+      analytics: fake_analytics,
+      liveness_checking_required: liveness_checking_required,
+      doc_auth_vendor: 'mock',
+      acuant_sdk_upgrade_ab_test_bucket:,
+    )
+  end
+
+  let(:front_image) { DocAuthImageFixtures.document_front_image_multipart }
+  let(:back_image) { DocAuthImageFixtures.document_back_image_multipart }
+  let(:selfie_image) { nil }
+  let(:liveness_checking_required) { false }
+  let(:front_image_file_name) { 'front.jpg' }
+  let(:back_image_file_name) { 'back.jpg' }
+  let(:selfie_image_file_name) { 'selfie.jpg' }
+  let(:front_image_metadata) do
+    {
+      width: 40,
+      height: 40,
+      mimeType: 'image/png',
+      source: 'upload',
+      fileName: front_image_file_name,
+    }
+  end
+
+  let(:back_image_metadata) do
+    {
+      width: 20,
+      height: 20,
+      mimeType: 'image/png',
+      source: 'upload',
+      fileName: back_image_file_name,
+    }
+  end
+  let(:selfie_image_metadata) { nil }
+  let!(:document_capture_session) { DocumentCaptureSession.create!(user: create(:user)) }
+  let(:document_capture_session_uuid) { document_capture_session.uuid }
+  let(:fake_analytics) { FakeAnalytics.new }
+  let(:acuant_sdk_upgrade_ab_test_bucket) {}
+
+  describe '#store_failed_images' do
+    let(:doc_pii_response) { instance_double(Idv::DocAuthFormResponse) }
+    let(:client_response) { instance_double(DocAuth::Response) }
+
+    context 'when client_response is not success and not network error' do
+      context 'when both sides error message missing' do
+        let(:errors) { {} }
+
+        it 'stores both sides as failed' do
+          allow(client_response).to receive(:success?).and_return(false)
+          allow(client_response).to receive(:network_error?).and_return(false)
+          allow(client_response).to receive(:errors).and_return(errors)
+          allow(client_response).to receive(:doc_auth_success?).and_return(false)
+          allow(client_response).to receive(:selfie_status).and_return(:not_processed)
+
+          form.send(:validate_form)
+
+          form.document_response_validator = Idv::DocumentResponseValidator.new(
+            form_response: form.form_response,
+            client_response:,
+          )
+          form.document_response_validator.doc_pii_response = doc_pii_response
+
+          capture_result = form.send(:store_failed_images)
+          expect(capture_result[:front]).not_to be_empty
+          expect(capture_result[:back]).not_to be_empty
+        end
+      end
+
+      context 'when both sides error message exist' do
+        let(:errors) { { front: 'blurry', back: 'dpi' } }
+
+        it 'stores both sides as failed' do
+          allow(client_response).to receive(:success?).and_return(false)
+          allow(client_response).to receive(:network_error?).and_return(false)
+          allow(client_response).to receive(:errors).and_return(errors)
+          allow(client_response).to receive(:doc_auth_success?).and_return(false)
+          allow(client_response).to receive(:selfie_status).and_return(:not_processed)
+          form.send(:validate_form)
+          form.document_response_validator = Idv::DocumentResponseValidator.new(
+            form_response: form.form_response,
+            client_response:
+          )
+          form.document_response_validator.doc_pii_response = doc_pii_response
+          capture_result = form.send(:store_failed_images)
+          expect(capture_result[:front]).not_to be_empty
+          expect(capture_result[:back]).not_to be_empty
+        end
+      end
+
+      context 'when one sides error message exists' do
+        let(:errors) { { front: 'blurry', back: nil } }
+
+        it 'stores only the error side as failed' do
+          allow(client_response).to receive(:success?).and_return(false)
+          allow(client_response).to receive(:network_error?).and_return(false)
+          allow(client_response).to receive(:errors).and_return(errors)
+          allow(client_response).to receive(:doc_auth_success?).and_return(false)
+          allow(client_response).to receive(:selfie_status).and_return(:not_processed)
+          form.send(:validate_form)
+          form.document_response_validator = Idv::DocumentResponseValidator.new(
+            form_response: form.form_response,
+            client_response:,
+          )
+          form.document_response_validator.doc_pii_response = doc_pii_response
+          capture_result = form.send(:store_failed_images)
+          expect(capture_result[:front]).not_to be_empty
+          expect(capture_result[:back]).to be_empty
+        end
+      end
+    end
+
+    context 'when client_response is not success and is network error' do
+      let(:errors) { {} }
+
+      context 'when doc_pii_response is success' do
+        it 'stores neither of the side as failed' do
+          allow(client_response).to receive(:success?).and_return(false)
+          allow(client_response).to receive(:network_error?).and_return(true)
+          allow(client_response).to receive(:errors).and_return(errors)
+          allow(doc_pii_response).to receive(:success?).and_return(true)
+          form.send(:validate_form)
+          form.document_response_validator = Idv::DocumentResponseValidator.new(
+            form_response: form.form_response,
+            client_response:,
+          )
+          form.document_response_validator.doc_pii_response = doc_pii_response
+          capture_result = form.send(:store_failed_images)
+          expect(capture_result[:front]).to be_empty
+          expect(capture_result[:back]).to be_empty
+        end
+      end
+
+      context 'when doc_pii_response is failure' do
+        it 'stores both sides as failed' do
+          allow(client_response).to receive(:success?).and_return(false)
+          allow(client_response).to receive(:network_error?).and_return(true)
+          allow(client_response).to receive(:errors).and_return(errors)
+          allow(client_response).to receive(:doc_auth_success?).and_return(false)
+          allow(doc_pii_response).to receive(:success?).and_return(false)
+          allow(client_response).to receive(:selfie_status).and_return(:not_processed)
+          form.send(:validate_form)
+          form.document_response_validator = Idv::DocumentResponseValidator.new(
+            form_response: form.form_response,
+            client_response:,
+          )
+          form.document_response_validator.doc_pii_response = doc_pii_response
+          capture_result = form.send(:store_failed_images)
+          expect(capture_result[:front]).not_to be_empty
+          expect(capture_result[:back]).not_to be_empty
+        end
+      end
     end
   end
 end
