@@ -94,11 +94,9 @@ RSpec.describe Idv::ByMail::RequestLetterController do
 
       expect(@analytics).to have_logged_event(
         'IdV: USPS address letter requested',
-        hash_including(
-          resend: false,
-          phone_step_attempts: 1,
-          hours_since_first_letter: 0,
-        ),
+        resend: false,
+        phone_step_attempts: 1,
+        hours_since_first_letter: 0,
       )
     end
 

@@ -43,7 +43,7 @@ RSpec.describe 'cancel IdV' do
     expect(page).to have_current_path(original_path)
     expect(fake_analytics).to have_logged_event(
       'IdV: cancellation go back',
-      hash_including(step: 'agreement'),
+      step: 'agreement',
     )
   end
 
@@ -93,7 +93,7 @@ RSpec.describe 'cancel IdV' do
     expect(page).to have_current_path(account_path)
     expect(fake_analytics).to have_logged_event(
       'IdV: cancellation confirmed',
-      hash_including(step: 'agreement'),
+      step: 'agreement',
     )
 
     # After visiting /verify, expect to redirect to the first step in the IdV flow.
@@ -113,11 +113,9 @@ RSpec.describe 'cancel IdV' do
 
       expect(fake_analytics).to have_logged_event(
         'IdV: cancellation visited',
-        hash_including(
-          proofing_components: { document_check: 'mock', document_type: 'state_id' },
-          request_came_from: 'idv/ssn#show',
-          step: 'ssn',
-        ),
+        proofing_components: { document_check: 'mock', document_type: 'state_id' },
+        request_came_from: 'idv/ssn#show',
+        step: 'ssn',
       )
 
       expect(page).to have_unique_form_landmark_labels
@@ -130,10 +128,8 @@ RSpec.describe 'cancel IdV' do
 
       expect(fake_analytics).to have_logged_event(
         'IdV: cancellation go back',
-        hash_including(
-          proofing_components: { document_check: 'mock', document_type: 'state_id' },
-          step: 'ssn',
-        ),
+        proofing_components: { document_check: 'mock', document_type: 'state_id' },
+        step: 'ssn',
       )
 
       click_link t('links.cancel')
@@ -176,7 +172,7 @@ RSpec.describe 'cancel IdV' do
       expect(page).to have_current_path(idv_cancel_path, ignore_query: true)
       expect(fake_analytics).to have_logged_event(
         'IdV: cancellation visited',
-        hash_including(step: 'agreement'),
+        step: 'agreement',
       )
 
       expect(page).to have_button(t('idv.cancel.actions.start_over'))
@@ -195,7 +191,7 @@ RSpec.describe 'cancel IdV' do
       expect(current_url).to start_with('http://localhost:7654/auth/result?error=access_denied')
       expect(fake_analytics).to have_logged_event(
         'IdV: cancellation confirmed',
-        hash_including(step: 'agreement'),
+        step: 'agreement',
       )
 
       start_idv_from_sp(sp)

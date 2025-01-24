@@ -67,10 +67,8 @@ RSpec.describe Users::SessionsController, devise: true do
 
       expect(@analytics).to have_logged_event(
         'Logout Initiated',
-        hash_including(
-          sp_initiated: false,
-          oidc: false,
-        ),
+        sp_initiated: false,
+        oidc: false,
       )
       expect(controller.current_user).to be nil
     end
