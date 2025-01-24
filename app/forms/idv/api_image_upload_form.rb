@@ -36,7 +36,7 @@ module Idv
     def submit
       validate_form
 
-      @document_response_validator = DocumentResponseValidator.new(
+      self.document_response_validator = DocumentResponseValidator.new(
         form_response:,
         client_response: form_response.success? ? post_images_to_client : nil,
       )
