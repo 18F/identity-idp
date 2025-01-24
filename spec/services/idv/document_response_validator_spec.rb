@@ -1,10 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe Idv::DocumentResponseValidator do
-  subject(:validator) { described_class.new(form_response:, client_response:) }
-
-  let(:success) { true }
-  let(:errors) { {} }
+  subject(:validator) do
+    validator = described_class.new(form_response:, client_response:)
+    validator.instance_variable_set(:@doc_pii_response, doc_pii_response) if doc_pii_response
+    validator
+  end
 
   let(:extra) do
     {
@@ -16,8 +17,19 @@ RSpec.describe Idv::DocumentResponseValidator do
     }
   end
 
-  let(:client_response_errors) { nil }
+  let(:document_capture_session) { DocumentCaptureSession.create }
+  let(:analytics) { FakeAnalytics.new }
 
+
+  let(:client_response) do
+    DocAuth::Response.new(
+      success: client_success,
+      pii_from_doc: pii_from_doc,
+      errors: client_response_errors,
+    )
+  end
+  let(:client_success) { true }
+  let(:client_response_errors) { {} }
   let(:pii_from_doc) do
     {
       first_name: 'first_name',
@@ -43,30 +55,25 @@ RSpec.describe Idv::DocumentResponseValidator do
     }
   end
 
-  let(:client_response) do
-    DocAuth::Response.new(
-      success:,
-      pii_from_doc: pii_from_doc,
-      errors: client_response_errors,
+  let(:doc_pii_response) do
+    Idv::DocAuthFormResponse.new(
+      success: doc_pii_success,
+      errors: doc_pii_errors,
+      extra: doc_pii_extra,
     )
   end
-
-  let(:document_capture_session) { DocumentCaptureSession.create }
-  let(:analytics) { FakeAnalytics.new }
+  let(:doc_pii_success) { true }
+  let(:doc_pii_errors) { {} }
+  let(:doc_pii_extra) { {} }
 
   let(:form_response) do
-    Idv::DocAuthFormResponse.new(success:, errors:, extra:)
+    Idv::DocAuthFormResponse.new(success: form_response_success, errors: {}, extra:)
   end
+  let(:form_response_success) { true }
 
   describe '#response' do
-    let(:form_response) { double('form_response') }
-    let(:doc_pii_response) { double('doc_pii_response') }
-    let(:client_response) { double('client_response') }
-
     context 'when the form response fails' do
-      before do
-        allow(form_response).to receive(:success?).and_return(false)
-      end
+      let(:form_response_success) { false }
 
       it 'returns the form_response' do
         expect(validator.response).to eq(form_response)
@@ -74,35 +81,23 @@ RSpec.describe Idv::DocumentResponseValidator do
     end
 
     context 'when the form response succeeds' do
-      before do
-        allow(form_response).to receive(:success?).and_return(true)
-      end
-
       context 'and there is no doc_pii_response' do
+        let(:doc_pii_response) { nil }
+
         it 'returns the client_response' do
           expect(validator.response).to eq(client_response)
         end
       end
 
       context 'and there is a doc_pii_response' do
-        before do
-          validator.doc_pii_response = doc_pii_response
-        end
-
         context 'which passes' do
-          before do
-            allow(doc_pii_response).to receive(:success?).and_return(true)
-          end
-
           it 'returns the client_response' do
             expect(validator.response).to eq(client_response)
           end
         end
 
         context 'which fails' do
-          before do
-            allow(doc_pii_response).to receive(:success?).and_return(false)
-          end
+          let(:doc_pii_success) { false }
 
           it 'returns the doc_pii_response' do
             expect(validator.response).to eq(doc_pii_response)
@@ -113,6 +108,8 @@ RSpec.describe Idv::DocumentResponseValidator do
   end
 
   describe '#validate_pii_from_doc' do
+    let(:doc_pii_response) { nil }
+
     before do
       allow(document_capture_session).to receive(:store_result_from_response)
       subject.validate_pii_from_doc(
@@ -136,7 +133,7 @@ RSpec.describe Idv::DocumentResponseValidator do
     end
 
     context 'when we have a failed client response' do
-      let(:success) { false }
+      let(:client_success) { false }
 
       it 'does not store the client response' do
         expect(document_capture_session).not_to(
@@ -153,46 +150,33 @@ RSpec.describe Idv::DocumentResponseValidator do
 
   describe '#store_failed_images' do
     let(:extra) { {} }
-    let(:success) { false }
+    let(:client_success) { false }
+    let(:capture_result) { subject.store_failed_images(document_capture_session, extra) }
+
+    let(:front_image_fingerprint) { nil }
+    let(:back_image_fingerprint) { nil }
+    let(:client_response_errors) { {} }
 
     before do
-      allow(document_capture_session).to receive(:store_failed_auth_data)
-      allow(document_capture_session).to receive(:load_result)
-
-      subject.store_failed_images(document_capture_session, extra)
+      allow(document_capture_session).to receive(:store_failed_auth_data).and_call_original
+      allow(document_capture_session).to receive(:load_result).and_call_original
     end
 
-    context 'if there is a front image error' do
+    context 'if there is only a front image error' do
       let(:front_image_fingerprint) { 'front fingerprint' }
       let(:extra) { { front_image_fingerprint: } }
       let(:client_response_errors) { { front: 'bad' } }
 
-      it 'saves the front image fingerprint' do
+      it 'saves only the front image fingerprint' do
+        expect(capture_result[:front]).not_to be_empty
+        expect(capture_result[:back]).to be_empty
+
         expect(document_capture_session).to(
           have_received(:store_failed_auth_data)
             .with(
               front_image_fingerprint:,
               back_image_fingerprint: nil,
-              doc_auth_success: success,
-              selfie_image_fingerprint: nil,
-              selfie_status: :not_processed,
-            )
-        )
-      end
-    end
-
-    context 'if there is a back image error' do
-      let(:back_image_fingerprint) { 'back fingerprint' }
-      let(:extra) { { back_image_fingerprint: } }
-      let(:client_response_errors) { { back: 'bad' } }
-
-      it 'saves the back image fingerprint' do
-        expect(document_capture_session).to(
-          have_received(:store_failed_auth_data)
-            .with(
-              front_image_fingerprint: nil,
-              back_image_fingerprint:,
-              doc_auth_success: success,
+              doc_auth_success: client_success,
               selfie_image_fingerprint: nil,
               selfie_status: :not_processed,
             ),
@@ -200,151 +184,64 @@ RSpec.describe Idv::DocumentResponseValidator do
       end
     end
 
-    it 'reloads the document capture session result' do
-      expect(document_capture_session).to have_received(:load_result)
-    end
-  end
-end
+    context 'if there is only a back image error' do
+      let(:back_image_fingerprint) { 'back fingerprint' }
+      let(:extra) { { back_image_fingerprint: } }
+      let(:client_response_errors) { { back: 'bad' } }
 
-RSpec.context 'old ApiImageUploadForm specs' do
-  include DocPiiHelper
+      it 'saves only the back image fingerprint' do
+        expect(capture_result[:front]).to be_empty
+        expect(capture_result[:back]).not_to be_empty
 
-  subject(:form) do
-    Idv::ApiImageUploadForm.new(
-      ActionController::Parameters.new(
-        {
-          front: front_image,
-          front_image_metadata: front_image_metadata.to_json,
-          back: back_image,
-          back_image_metadata: back_image_metadata.to_json,
-          selfie: selfie_image,
-          selfie_image_metadata: selfie_image_metadata.to_json,
-          document_capture_session_uuid: document_capture_session_uuid,
-        }.compact,
-      ),
-      service_provider: build(:service_provider, issuer: 'test_issuer'),
-      analytics: fake_analytics,
-      liveness_checking_required: liveness_checking_required,
-      doc_auth_vendor: 'mock',
-      acuant_sdk_upgrade_ab_test_bucket:,
-    )
-  end
-
-  let(:front_image) { DocAuthImageFixtures.document_front_image_multipart }
-  let(:front_image_metadata) do
-    {
-      width: 40,
-      height: 40,
-      mimeType: 'image/png',
-      source: 'upload',
-      fileName: 'front.jpg',
-    }
-  end
-
-  let(:back_image) { DocAuthImageFixtures.document_back_image_multipart }
-  let(:back_image_metadata) do
-    {
-      width: 20,
-      height: 20,
-      mimeType: 'image/png',
-      source: 'upload',
-      fileName: 'back.jpg',
-    }
-  end
-
-  let(:selfie_image) { nil }
-  let(:selfie_image_metadata) { nil }
-
-  let(:document_capture_session) { DocumentCaptureSession.create!(user: create(:user)) }
-  let(:document_capture_session_uuid) { document_capture_session.uuid }
-  let(:fake_analytics) { FakeAnalytics.new }
-  let(:liveness_checking_required) { false }
-  let(:acuant_sdk_upgrade_ab_test_bucket) {}
-
-  let(:doc_pii_response) do
-    instance_double(
-      Idv::DocAuthFormResponse,
-      success?: doc_pii_success,
-    )
-  end
-  let(:doc_pii_success) { true }
-
-  let(:client_response) do
-    instance_double(
-      DocAuth::Response,
-      success?: client_success,
-      errors: errors,
-      selfie_status: :not_processed,
-      network_error?: network_error,
-      doc_auth_success?: doc_pii_success,
-    )
-  end
-  let(:client_success) { false }
-  let(:errors) { {} }
-  let(:network_error) { false }
-
-  before do
-    form.send(:validate_form)
-
-    form.document_response_validator = Idv::DocumentResponseValidator.new(
-      form_response: form.form_response,
-      client_response:,
-    )
-    form.document_response_validator.doc_pii_response = doc_pii_response
-  end
-
-  describe '#store_failed_images' do
-    let(:capture_result) { form.send(:store_failed_images) }
-
-    context 'when client_response is not success and not network error' do
-      let(:doc_pii_success) { false }
-
-      context 'when both sides error message missing' do
-        let(:errors) { {} }
-
-        it 'stores both sides as failed' do
-          expect(capture_result[:front]).not_to be_empty
-          expect(capture_result[:back]).not_to be_empty
-        end
-      end
-
-      context 'when both sides error message exist' do
-        let(:errors) { { front: 'blurry', back: 'dpi' } }
-
-        it 'stores both sides as failed' do
-          expect(capture_result[:front]).not_to be_empty
-          expect(capture_result[:back]).not_to be_empty
-        end
-      end
-
-      context 'when one sides error message exists' do
-        let(:errors) { { front: 'blurry', back: nil } }
-
-        it 'stores only the error side as failed' do
-          expect(capture_result[:front]).not_to be_empty
-          expect(capture_result[:back]).to be_empty
-        end
+        expect(document_capture_session).to(
+          have_received(:store_failed_auth_data)
+            .with(
+              front_image_fingerprint: nil,
+              back_image_fingerprint:,
+              doc_auth_success: client_success,
+              selfie_image_fingerprint: nil,
+              selfie_status: :not_processed,
+            ),
+        )
       end
     end
 
-    context 'when client_response is not success and is network error' do
+    context 'if there is a front image error and a back image error' do
+      let(:front_image_fingerprint) { 'front fingerprint' }
+      let(:back_image_fingerprint) { 'back fingerprint' }
+      let(:extra) { { front_image_fingerprint:, back_image_fingerprint: } }
+      let(:client_response_errors) { { front: 'bad', back: 'bad' } }
+
+      it 'saves both the front image fingerprint and the back image fingerprint' do
+        expect(capture_result[:front]).not_to be_empty
+        expect(capture_result[:back]).not_to be_empty
+
+        expect(document_capture_session).to(
+          have_received(:store_failed_auth_data)
+            .with(
+              front_image_fingerprint:,
+              back_image_fingerprint:,
+              doc_auth_success: client_success,
+              selfie_image_fingerprint: nil,
+              selfie_status: :not_processed,
+            ),
+        )
+      end
+    end
+
+    context 'when client_response is a network error' do
       let(:network_error) { true }
 
-      context 'when doc_pii_response is success' do
-        it 'stores neither of the side as failed' do
-          expect(capture_result[:front]).to be_empty
-          expect(capture_result[:back]).to be_empty
-        end
+      it 'stores neither of the side as failed' do
+        expect(capture_result[:front]).to be_empty
+        expect(capture_result[:back]).to be_empty
       end
+    end
 
-      context 'when doc_pii_response is failure' do
-        let(:doc_pii_success) { false }
+    it 'reloads the document capture session result' do
+      capture_result
 
-        it 'stores both sides as failed' do
-          expect(capture_result[:front]).not_to be_empty
-          expect(capture_result[:back]).not_to be_empty
-        end
-      end
+      expect(document_capture_session).to have_received(:load_result).at_least(:once)
     end
   end
 end

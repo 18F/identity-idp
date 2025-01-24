@@ -2,6 +2,8 @@
 
 module Idv
   class DocumentResponseValidator
+    attr_reader :form_response, :client_response, :doc_pii_response
+
     def initialize(form_response:, client_response:)
       @form_response = form_response
       @client_response = client_response
@@ -18,9 +20,6 @@ module Idv
       client_response
     end
 
-    attr_reader :form_response, :client_response
-    attr_accessor :doc_pii_response
-
     def validate_pii_from_doc(document_capture_session:, extra_attributes:, analytics:)
       return unless client_response.success?
 
@@ -34,7 +33,7 @@ module Idv
         document_capture_session.store_result_from_response(client_response)
       end
 
-      self.doc_pii_response = pii_validator.doc_auth_form_response
+      @doc_pii_response = pii_validator.doc_auth_form_response
     end
 
     ##
@@ -96,6 +95,8 @@ module Idv
         selfie: captured_result&.failed_selfie_image_fingerprints || [],
       }
     end
+
+    private
 
     def image_resubmission_check?
       IdentityConfig.store.doc_auth_check_failed_image_resubmission_enabled
