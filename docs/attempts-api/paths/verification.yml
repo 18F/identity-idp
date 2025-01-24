@@ -1,0 +1,27 @@
+post:
+  summary: Request that a verification event be sent over an Event Stream
+  operationId: verification_request
+  security:
+    - BearerAuth: [ ]
+  responses:
+    204:
+      description: |
+        Request for verification event was successfully received. 
+    400:
+      description: |
+        The 400 (Bad Request) status code indicates that the server cannot or
+        will not process the request due to something that is perceived to be
+        a client error (e.g., malformed request syntax, invalid request
+        message framing, or deceptive request routing).
+    401:
+      description: |
+        The 401 (Unauthorized) status code indicates that the request has not
+        been applied because it lacks valid authentication credentials for
+        the target resource. Please ensure that the request includes a valid Bearer token.
+    403: 
+      description: |
+        The 403 (Forbidden) status code indicates that the server understood
+        the request but refuses to authorize it. Please reach out to your account manager
+        if you think this is a mistake.
+    '5XX':
+      description: Unexpected error.

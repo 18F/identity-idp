@@ -1,0 +1,43 @@
+properties:
+  idv-document-upload-method-selected:
+    $ref: './identity-proofing/IdvDocumentUploadMethodSelected.yml'
+  idv-document-upload-submitted:
+    $ref: './identity-proofing/IdvDocumentUploadSubmitted.yml'
+  idv-document-upload-rate-limited:
+    $ref: './identity-proofing/IdvDocumentUploadRateLimited.yml'
+  idv-gpo-letter-requested:
+    $ref: './identity-proofing/IdvGpoLetterRequested.yml'
+  idv-gpo-verification-submitted:
+    $ref: './identity-proofing/IdvGpoVerificationSubmitted.yml'
+  idv-gpo-verification-rate-limited:
+    $ref: './identity-proofing/IdvGpoVerificationRateLimited.yml'
+  idv-password-entered:
+    $ref: './identity-proofing/IdvPasswordEntered.yml'
+  idv-personal-key-generated:
+    $ref: './identity-proofing/IdvPersonalKeyGenerated.yml'
+  idv-phone-otp-sent:
+    $ref: './identity-proofing/IdvPhoneOtpSent.yml'
+  idv-phone-otp-submitted:
+    $ref: './identity-proofing/IdvPhoneOtpSubmitted.yml'
+  idv-phone-otp-submitted-rate-limited:
+    $ref: './identity-proofing/IdvPhoneOtpSubmittedRateLimited.yml'
+  idv-phone-otp-sent-rate-limited:
+    $ref: './identity-proofing/IdvPhoneOtpSentRateLimited.yml'
+  idv-phone-send-link-rate-limited:
+    $ref: './identity-proofing/IdvPhoneSendLinkRateLimited.yml'
+  idv-phone-submitted:
+    $ref: './identity-proofing/IdvPhoneSubmitted.yml'
+  idv-phone-upload-link-sent:
+    $ref: './identity-proofing/IdvPhoneUploadLinkSent.yml'
+  idv-phone-upload-link-used:
+    $ref: './identity-proofing/IdvPhoneUploadLinkUsed.yml'
+  idv-reproof:
+    $ref: './identity-proofing/IdvReproof.yml'
+  idv-ssn-submitted:
+    $ref: './identity-proofing/IdvSsnSubmitted.yml'
+  idv-tmx-fraud-check:
+    $ref: './identity-proofing/IdvTmxFraudCheck.yml'
+  idv-verification-submitted:
+    $ref: './identity-proofing/IdvVerificationSubmitted.yml'
+  idv-verification-rate-limited:
+    $ref: './identity-proofing/IdvVerificationRateLimited.yml'

@@ -1,0 +1,39 @@
+openapi: '3.0.3'
+info:
+  version: 1.0.0
+  title: Attempts Stream API for Login.gov
+  license:
+    name: CC0 1.0 Universal
+    url: https://creativecommons.org/publicdomain/zero/1.0/legalcode
+  description: |
+    This document contains specifications for the Login.gov Attempts API, a new standards-based polling API based on the Shared Signals Framework (SSF) and the RISC poll-based SET delivery specification (RFC 8936).
+
+    The Attempts API securely transmits integration-specific identity verification event summary data to Relying Parties (RP) for the purposes of fraud prevention and mitigation.
+    
+    To ensure the security of data transmission, all endpoints will utilize Bearer Tokens. The format of these Bearer Tokens will be <RP-ISSUER> <SHARED-SECRET>. To ensure the security of individual Security Event Tokens (SETs), each one will be encrypted with a public key provided from the RP.
+servers: 
+  - url: https://secure.login.gov 
+    description: Production server (uses live data)
+  - url: https://idp.int.identitysandbox.gov
+    description: Sandbox server (uses test data)
+paths:
+  /.well-known/ssf-configuration:
+    $ref: './paths/transmitter-configuration.yml'
+  /api/attempts/poll:
+    $ref: './paths/poll.yml'
+  /api/attempts/status:
+    $ref: './paths/status.yml'
+  /api/attempts/verification:
+    $ref: './paths/verification.yml'
+
+
+components:
+  schemas:
+    DecodedJWTPayload:
+      $ref: './schemas/DecodedJWTPayload.yml'
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: rp-issuer JWT
+      description: <rp-issuer> <token>

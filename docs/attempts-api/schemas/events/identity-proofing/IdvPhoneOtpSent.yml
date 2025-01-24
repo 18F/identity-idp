@@ -1,0 +1,41 @@
+description: |
+  When a security code is sent to the phone number provided by the user to verify the phone number belongs to them. The user can choose to receive the code via text message/SMS or phone call. 
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      phone_number:
+        type: string
+      opt_delivery_method:
+        type: string
+        enum:
+          - sms
+          - voice
+      failure_reason:
+        type: object
+        description: |
+          An OPTIONAL object. An associative array of attributes and errors if success is false
+        properties:
+          telephony_errors:
+            type: array
+            description: Errors that describe the failure   
+            items: 
+              type: string
+              enum: 
+                - daily_voice_limit_reached
+                - duplicate_endpoint
+                - generic
+                - invalid_calling_area
+                - invalid_phone_number
+                - opt_out
+                - permanent_failure
+                - sms_unsupported
+                - temporary_failure
+                - throttled
+                - timeout
+                - unknown_failure
+                - voice_unsupported
+      success:
+        type: boolean
+        description: |
+          Indicates whether the backup codes were successfully generated

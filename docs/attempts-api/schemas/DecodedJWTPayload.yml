@@ -1,0 +1,26 @@
+type: object
+title: 'Decoded JWT Payload'
+description: |
+  Default payload body for each event.
+properties: 
+  aud:
+    type: string
+    description: Event audience, ie the issuer of the RP's integration.
+    example: https://serviceprovider.com
+  iat:
+    type: integer
+    format: int64
+    description: |
+      Issued at timestamp for when the SET was created. `occurred_at` within the event may be a more reliable indicator of when the user action occurred, though in practical terms the two will typically be identical.
+    example: 1657920726
+  iss:
+    type: string
+    description: Event issuer, which will be a Login.gov URL indicating the environment in which the event occurred.
+    example: https://secure.login.gov
+  jti:
+    type: string
+    description: | 
+      Transaction ID, a unique identifier for the SET. This functions as the CSP transaction ID.
+    example: 6454bc0b-00fc-4404-885c-7f07bef243ce
+  events:
+    $ref: './AllEvents.yml'
