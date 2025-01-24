@@ -25,7 +25,6 @@ RSpec.describe AccountShowPresenter do
       sp_name:,
       user:,
       locked_for_session:,
-      requested_attributes: false,
     )
   end
 
@@ -295,7 +294,6 @@ RSpec.describe AccountShowPresenter do
           sp_name: nil,
           user: user,
           locked_for_session: false,
-          requested_attributes: false,
         )
 
         expect(account_show.pending_ipp?).to be(false)
@@ -329,7 +327,6 @@ RSpec.describe AccountShowPresenter do
           sp_name: nil,
           user: user,
           locked_for_session: false,
-          requested_attributes: false,
         )
 
         expect(account_show.pending_ipp?).to be(false)
@@ -457,7 +454,6 @@ RSpec.describe AccountShowPresenter do
           authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
-          requested_attributes: false,
         )
 
         expect(profile_index.header_personalization).to eq first_name
@@ -476,7 +472,6 @@ RSpec.describe AccountShowPresenter do
           authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
-          requested_attributes: false,
         )
 
         expect(profile_index.header_personalization).to eq email_address.email
@@ -499,7 +494,6 @@ RSpec.describe AccountShowPresenter do
           authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
-          requested_attributes: false,
         )
 
         expect(profile_index.totp_content).to eq t('account.index.auth_app_enabled')
@@ -519,7 +513,6 @@ RSpec.describe AccountShowPresenter do
           authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
-          requested_attributes: false,
         )
 
         expect(profile_index.totp_content).to eq t('account.index.auth_app_disabled')
@@ -575,7 +568,6 @@ RSpec.describe AccountShowPresenter do
         sp_name: nil,
         user: user.reload,
         locked_for_session: false,
-        requested_attributes: false,
       )
 
       expect(account_show.backup_codes_generated_at).to be_within(
@@ -595,7 +587,6 @@ RSpec.describe AccountShowPresenter do
         sp_name: nil,
         user: user.reload,
         locked_for_session: false,
-        requested_attributes: false,
       )
 
       expect(account_show.backup_codes_generated_at).to be_nil
@@ -644,7 +635,6 @@ RSpec.describe AccountShowPresenter do
           authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
-          requested_attributes: false,
         )
 
         expect(
@@ -669,7 +659,6 @@ RSpec.describe AccountShowPresenter do
           authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
-          requested_attributes: false,
         )
 
         expect(
@@ -689,7 +678,6 @@ RSpec.describe AccountShowPresenter do
           authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
-          requested_attributes: false,
         )
 
         expect(profile_index.personal_key_generated_at).to be_nil
@@ -709,51 +697,6 @@ RSpec.describe AccountShowPresenter do
         sp_session: {},
         service_provider_request: ServiceProviderRequestProxy.new,
       )
-    end
-
-    it 'returns true if email is not a requested attribute' do
-      user = User.new
-      account_show = AccountShowPresenter.new(
-        decrypted_pii: {},
-        sp_session_request_url: nil,
-        authn_context: nil,
-        sp_name: nil,
-        user: user,
-        locked_for_session: false,
-        requested_attributes: ['ssn'],
-      )
-
-      expect(account_show.show_change_option).to eq(true)
-    end
-
-    it 'returns true if all_emails is a requested attribute' do
-      user = User.new
-      account_show = AccountShowPresenter.new(
-        decrypted_pii: {},
-        sp_session_request_url: nil,
-        authn_context: nil,
-        sp_name: nil,
-        user: user,
-        locked_for_session: false,
-        requested_attributes: ['all_emails'],
-      )
-
-      expect(account_show.show_change_option).to eq(true)
-    end
-
-    it 'returns false if email is a requested attribute' do
-      user = User.new
-      account_show = AccountShowPresenter.new(
-        decrypted_pii: {},
-        sp_session_request_url: nil,
-        authn_context: nil,
-        sp_name: nil,
-        user: user,
-        locked_for_session: false,
-        requested_attributes: ['email'],
-      )
-
-      expect(account_show.show_change_option).to eq(false)
     end
   end
 end
