@@ -13,6 +13,11 @@ module TwoFactorAuthenticatableMethods
 
   def handle_verification_for_authentication_context(result:, auth_method:, extra_analytics: nil)
     increment_mfa_selection_attempt_count(auth_method)
+    recaptcha_annotation = RecaptchaAnnotator.annotate(
+      assessment_id: session[:recaptcha_assessment_id],
+      reason: result.success? ? RecaptchaAnnotator::AnnotationReasons::PASSED_TWO_FACTOR
+                                : RecaptchaAnnotator::AnnotationReasons::FAILED_TWO_FACTOR,
+    )
     analytics.multi_factor_auth(
       **result,
       multi_factor_auth_method: auth_method,
@@ -20,8 +25,8 @@ module TwoFactorAuthenticatableMethods
       new_device: new_device?,
       **extra_analytics.to_h,
       attempts: mfa_attempts_count,
+      recaptcha_annotation:,
     )
-
     if result.success?
       handle_valid_verification_for_authentication_context(auth_method:)
       user_session.delete(:mfa_attempts)
