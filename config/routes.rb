@@ -19,6 +19,11 @@ Rails.application.routes.draw do
   post '/api/webhooks/socure/event' => 'socure_webhook#create'
 
   namespace :api do
+    namespace :attempts do
+      post '/poll' => 'events#poll', as: :poll
+      get '/status' => 'events#status', as: :status
+    end
+
     namespace :internal do
       get '/sessions' => 'sessions#show'
       put '/sessions' => 'sessions#update'
@@ -33,6 +38,9 @@ Rails.application.routes.draw do
       end
     end
   end
+
+  # Attempts API
+  get '/.well-known/ssf-configuration' => 'api/attempts/configuration#index'
 
   # SAML secret rotation paths
   constraints(path_year: SamlEndpoint.suffixes) do
