@@ -77,7 +77,7 @@ RSpec.configure do |config|
       # rubocop:enable Style/GlobalVars
       # rubocop:disable Rails/Output
       print '                       Bundling JavaScript and stylesheets... '
-      system 'yarn concurrently "yarn:build:*" > /dev/null 2>&1'
+      system 'NODE_ENV=production yarn concurrently "yarn:build:*" > /dev/null 2>&1'
       puts '✨ Done!'
       # rubocop:enable Rails/Output
 

@@ -706,7 +706,7 @@ pinpoint_check_scheduled:
           --channel "#login-appdev" \
           --webhook "${SLACK_WEBHOOK}" \
           --raise \
-          --text "$(printf "Pinpoint supported countries check in GitLab failed.\nBuild Results: ${CI_JOB_URL}.\nCheck results locally with 'make lint_country_dialing_codes'")""
+          --text "$(printf "Pinpoint supported countries check in GitLab failed.\nBuild Results: ${CI_JOB_URL}.\nCheck results locally with 'make lint_country_dialing_codes'")"
       fi
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"

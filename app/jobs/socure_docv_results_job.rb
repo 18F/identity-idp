@@ -44,6 +44,7 @@ class SocureDocvResultsJob < ApplicationJob
         remaining_submit_attempts: rate_limiter&.remaining_count,
         vendor_request_time_in_ms:,
         async:,
+        pii_like_keypaths: [[:pii]],
       ).except(:attention_with_barcode, :selfie_live, :selfie_quality_good,
                :selfie_status),
     )

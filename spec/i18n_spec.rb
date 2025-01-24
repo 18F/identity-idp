@@ -35,6 +35,14 @@ LOCALE_SPECIFIC_CONTENT = {
   es: /¿|ó/,
 }.freeze
 
+# Set of patterns which violate content conventions for a specific locale, including suggested
+# alternatives.
+LOCALE_BANNED_CONTENT = {
+  zh: [
+    { pattern: /[()]/, suggestion: 'Use full-width parentheses （ or ） instead of ( or )' },
+  ],
+}.freeze
+
 # Regex patterns for commonly misspelled words by locale. Match on word boundaries ignoring case.
 # The current design should be adequate for a small number of words in each language.
 # If we encounter false positives we should come up with a scheme to ignore those cases.
@@ -75,10 +83,8 @@ module I18n
         { key: 'time.formats.full_date', locales: %i[es] }, # format is the same in Spanish and English
         { key: 'time.formats.sms_date' }, # for us date format
         { key: 'webauthn_platform_recommended.cta' }, # English-only A/B test
-        { key: 'webauthn_platform_recommended.description_private_html' }, # English-only A/B test
-        { key: 'webauthn_platform_recommended.description_secure_account' }, # English-only A/B test
+        { key: 'webauthn_platform_recommended.description_save_time' }, # English-only A/B test
         { key: 'webauthn_platform_recommended.heading' }, # English-only A/B test
-        { key: 'webauthn_platform_recommended.phishing_resistant' }, # English-only A/B test
         { key: 'webauthn_platform_recommended.skip' }, # English-only A/B test
       ].freeze
       # rubocop:enable Layout/LineLength
@@ -384,6 +390,16 @@ RSpec.describe 'I18n' do
       it 'does not contain common misspellings', if: COMMONLY_MISSPELLED_WORDS.key?(locale) do
         flattened_yaml_data.each do |_key, value|
           expect(value).not_to match(COMMONLY_MISSPELLED_WORDS[locale])
+        end
+      end
+
+      it 'does not contain banned content', if: LOCALE_BANNED_CONTENT.key?(locale) do
+        bans = LOCALE_BANNED_CONTENT[locale]
+        flattened_yaml_data.each do |key, value|
+          bans.each do |ban|
+            expect(value).not_to match(ban[:pattern]),
+                                 "Key `#{key}` contains unexpected content. #{ban[:suggestion]}."
+          end
         end
       end
     end

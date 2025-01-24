@@ -13,13 +13,13 @@ RSpec.describe Idv::InPersonController do
   end
 
   describe 'before_actions' do
-    it 'includes corrects before_actions' do
+    it 'includes correct before_actions' do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
-        :initialize_flow_state_machine,
-        :ensure_correct_step,
         :set_usps_form_presenter,
+        :redirect_unless_enrollment,
+        :initialize_in_person_session,
       )
     end
   end
@@ -51,6 +51,13 @@ RSpec.describe Idv::InPersonController do
         context 'with establishing in-person enrollment' do
           before do
             create(:in_person_enrollment, :establishing, user: user, profile: nil)
+          end
+
+          it 'initializes the in-person session' do
+            get :index
+            expect(controller.user_session['idv/in_person']).to include(
+              pii_from_user: { uuid: user.uuid },
+            )
           end
 
           it 'redirects to the first step' do
@@ -99,7 +106,7 @@ RSpec.describe Idv::InPersonController do
             end
 
             it 'finishes the flow' do
-              put :update, params: { step: 'state_id' }
+              put :update
 
               expect(response).to redirect_to idv_in_person_state_id_path
             end

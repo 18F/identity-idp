@@ -6,8 +6,9 @@ RSpec.describe ActionAccount do
   let(:stdout) { StringIO.new }
   let(:stderr) { StringIO.new }
   let(:argv) { [] }
+  let(:rails_env) { ActiveSupport::EnvironmentInquirer.new('production') }
 
-  subject(:action_account) { ActionAccount.new(argv:, stdout:, stderr:) }
+  subject(:action_account) { ActionAccount.new(argv:, stdout:, stderr:, rails_env:) }
 
   describe 'command line run' do
     let(:argv) { ['review-pass', user.uuid, '--reason', 'INV1234'] }

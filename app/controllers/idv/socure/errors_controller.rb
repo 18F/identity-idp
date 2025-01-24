@@ -12,22 +12,19 @@ module Idv
       before_action :confirm_step_allowed
 
       def show
-        error_code = error_code_for(handle_stored_result)
+        error_code = error_params[:error_code]
+        if error_code.nil?
+          error_code = error_code_for(handle_stored_result)
+        end
         track_event(error_code: error_code)
         @presenter = socure_errors_presenter(error_code)
-      end
-
-      def timeout
-        track_event(error_code: :timeout)
-        @presenter = socure_errors_presenter(:timeout)
-        render :show
       end
 
       def self.step_info
         Idv::StepInfo.new(
           key: :socure_errors,
           controller: self,
-          action: :timeout,
+          action: :show,
           next_steps: [FlowPolicy::FINAL],
           preconditions: ->(idv_session:, user:) do
             true
@@ -37,6 +34,10 @@ module Idv
       end
 
       private
+
+      def error_params
+        params.permit(:error_code)
+      end
 
       def rate_limiter
         RateLimiter.new(user: idv_session.current_user, rate_limit_type: :idv_doc_auth)
@@ -49,6 +50,7 @@ module Idv
       def track_event(error_code:)
         attributes = { error_code: }.merge(ab_test_analytics_buckets)
         attributes[:remaining_submit_attempts] = remaining_submit_attempts
+        attributes[:pii_like_keypaths] = [[:pii]]
 
         analytics.idv_doc_auth_socure_error_visited(**attributes)
       end
@@ -71,6 +73,8 @@ module Idv
           result.errors.dig(:socure, :reason_codes).first
         elsif result.errors[:network]
           :network
+        elsif result.errors[:pii_validation]
+          :pii_validation
         else
           # No error information available (shouldn't happen). Default
           # to :network if it does.
