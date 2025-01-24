@@ -503,7 +503,6 @@ devise.passwords.updated: Su contraseña cambió. Inició su sesión.
 devise.passwords.updated_not_active: Su contraseña cambió. Inicie sesión con su contraseña nueva.
 devise.registrations.close_window: Puede cerrar esta ventana si ya terminó.
 devise.registrations.destroyed: Su cuenta fue eliminada.
-devise.sessions.already_signed_out: Cerró su sesión.
 devise.sessions.signed_in: ''
 devise.sessions.signed_out: Cerró su sesión.
 doc_auth.accessible_labels.camera_video_capture_instructions: Tomaremos la foto automáticamente
