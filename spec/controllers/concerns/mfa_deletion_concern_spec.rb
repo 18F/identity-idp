@@ -38,5 +38,15 @@ RSpec.describe MfaDeletionConcern do
 
       result
     end
+
+    context 'with nil event_type argument' do
+      let(:event_type) { nil }
+
+      it 'does not create user event' do
+        expect(controller).not_to receive(:create_user_event)
+
+        result
+      end
+    end
   end
 end
