@@ -537,7 +537,7 @@ class User < ApplicationRecord
 
   def find_password_reset_profile
     FeatureManagement.pending_in_person_password_reset_enabled? ?
-      find_active_or_pending_in_person_profile :
+      find_pending_in_person_or_active_profile :
       find_active_profile
   end
 
@@ -545,9 +545,9 @@ class User < ApplicationRecord
     profiles.where.not(activated_at: nil).order(activated_at: :desc).first
   end
 
-  def find_active_or_pending_in_person_profile
-    profiles.where.not(activated_at: nil).order(activated_at: :desc).first ||
-      pending_in_person_enrollment&.profile
+  def find_pending_in_person_or_active_profile
+    pending_in_person_enrollment&.profile ||
+      profiles.where.not(activated_at: nil).order(activated_at: :desc).first
   end
 
   def lockout_period
