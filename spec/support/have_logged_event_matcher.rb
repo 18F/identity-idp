@@ -72,7 +72,8 @@ class HaveLoggedEventMatcher
 
   def hash_including_equals(expected_attributes, actual_attributes)
     if expected_attributes.instance_of?(RSpec::Mocks::ArgumentMatchers::HashIncludingMatcher) &&
-       expected_attributes.instance_variable_get(:@expected) == actual_attributes
+       expected_attributes.instance_variable_get(:@expected) == actual_attributes &&
+       !in_shared_example?
       @hash_including_equals_failure_message = <<~STR
         Unexpected use of hash_including when included attributes are exactly equal to actual attributes
 
@@ -85,6 +86,14 @@ class HaveLoggedEventMatcher
     else
       false
     end
+  end
+
+  def in_shared_example?
+    example_group = RSpec.current_example.metadata.dig(:example_group)
+    while (example_group = example_group.dig(:parent_example_group))
+      return true if example_group[:shared_group_name]
+    end
+    false
   end
 
   def fake_analytics_missing_failure_message
