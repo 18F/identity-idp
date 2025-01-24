@@ -76,8 +76,9 @@ module Idv
         when Idp::Constants::Vendors::LEXIS_NEXIS, Idp::Constants::Vendors::MOCK
           in_hybrid_mobile ? idv_hybrid_mobile_document_capture_path
                            : idv_document_capture_path
+        else
+          return
         end
-
       redirect_to correct_path
     end
 
