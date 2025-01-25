@@ -5494,6 +5494,7 @@ module AnalyticsEvents
   # @param [String] frontend_error Name of error that occurred in frontend during submission
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
+  # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
   # Multi-Factor Authentication
   def multi_factor_auth(
     success:,
@@ -5518,6 +5519,7 @@ module AnalyticsEvents
     phone_fingerprint: nil,
     frontend_error: nil,
     in_account_creation_flow: nil,
+    recaptcha_annotation: nil,
     **extra
   )
     track_event(
@@ -5544,6 +5546,7 @@ module AnalyticsEvents
       frontend_error:,
       in_account_creation_flow:,
       enabled_mfa_methods_count:,
+      recaptcha_annotation:,
       **extra,
     )
   end

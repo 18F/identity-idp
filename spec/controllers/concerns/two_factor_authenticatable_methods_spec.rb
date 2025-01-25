@@ -165,6 +165,36 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
           end
         end
       end
+
+      context 'when there is a recaptcha_assessment_id in the session' do
+        let(:assessment_id) { 'projects/project-id/assessments/assessment-id' }
+
+        before do
+          controller.session[:recaptcha_assessment_id] = assessment_id
+        end
+
+        it 'annotates the assessment with PASSED_TWO_FACTOR and logs the annotation' do
+          recaptcha_annotation = {
+            assessment_id:,
+            reason: RecaptchaAnnotator::AnnotationReasons::PASSED_TWO_FACTOR,
+          }
+
+          controller.user_session[:phone_recaptcha_assessment_id] = assessment_id
+
+          expect(RecaptchaAnnotator).to receive(:annotate)
+            .with(**recaptcha_annotation)
+            .and_return(recaptcha_annotation)
+
+          stub_analytics
+
+          result
+
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication',
+            hash_including(recaptcha_annotation:),
+          )
+        end
+      end
     end
 
     context 'failed verification' do
@@ -197,6 +227,36 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
       it 'records unsuccessful 2fa event' do
         expect { result }.to change { user.events.count }.by(1)
         expect(user.events.last.event_type).to eq('sign_in_unsuccessful_2fa')
+      end
+
+      context 'when there is a recaptcha_assessment_id in the session' do
+        let(:assessment_id) { 'projects/project-id/assessments/assessment-id' }
+
+        before do
+          controller.session[:recaptcha_assessment_id] = assessment_id
+        end
+
+        it 'annotates the assessment with FAILED_TWO_FACTOR and logs the annotation' do
+          recaptcha_annotation = {
+            assessment_id:,
+            reason: RecaptchaAnnotator::AnnotationReasons::FAILED_TWO_FACTOR,
+          }
+
+          controller.user_session[:phone_recaptcha_assessment_id] = assessment_id
+
+          expect(RecaptchaAnnotator).to receive(:annotate)
+            .with(**recaptcha_annotation)
+            .and_return(recaptcha_annotation)
+
+          stub_analytics
+
+          result
+
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication',
+            hash_including(recaptcha_annotation:),
+          )
+        end
       end
     end
 
