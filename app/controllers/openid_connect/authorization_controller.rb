@@ -90,11 +90,12 @@ module OpenidConnect
 
     def email_address_id
       return nil unless IdentityConfig.store.feature_select_email_to_share_enabled
+      identity = current_user.identities.find_by(service_provider: sp_session[:issuer])
       return nil if !identity&.sp_only_single_email_requested?
       if user_session[:selected_email_id_for_linked_identity].present?
         return user_session[:selected_email_id_for_linked_identity]
       end
-      identity = current_user.identities.find_by(service_provider: sp_session[:issuer])
+
       identity&.email_address_id
     end
 

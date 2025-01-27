@@ -28,6 +28,7 @@ module VerifySpAttributesConcern
       verified_attributes: sp_session[:requested_attributes],
       last_consented_at: Time.zone.now,
       clear_deleted_at: true,
+      email_address_id:,
     )
   end
 
@@ -42,6 +43,17 @@ module VerifySpAttributesConcern
   def consent_was_revoked?(sp_session_identity)
     return false unless sp_session_identity
     sp_session_identity.deleted_at.present?
+  end
+
+  def email_address_id
+    return nil unless IdentityConfig.store.feature_select_email_to_share_enabled
+    identity = current_user.identities.find_by(service_provider: sp_session[:issuer])
+    return nil if !identity&.sp_only_single_email_requested?
+    if user_session[:selected_email_id_for_linked_identity].present?
+      return user_session[:selected_email_id_for_linked_identity]
+    end
+
+    identity&.email_address_id
   end
 
   def reverified_after_consent?(sp_session_identity)
