@@ -215,6 +215,7 @@ RSpec.describe Idv::DocumentCaptureController do
           allow(IdentityConfig.store).to receive(:doc_auth_socure_max_allowed_users).and_return(1)
           Idv::SocureUserSet.new.add_user!(user_uuid: '001')
         end
+
         it 'does not redirect to Socure controller' do
           get :show
 
