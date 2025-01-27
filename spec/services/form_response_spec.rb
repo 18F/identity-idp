@@ -179,9 +179,7 @@ RSpec.describe FormResponse do
         response = FormResponse.new(success: false, errors: errors)
         response_hash = {
           success: false,
-          errors: {
-            email_language: ['Language cannot be blank'],
-          },
+          errors: nil,
           error_details: {
             email_language: { blank: true },
           },
@@ -197,9 +195,7 @@ RSpec.describe FormResponse do
           response = FormResponse.new(success: false, errors: errors)
           response_hash = {
             success: false,
-            errors: {
-              email_language: [t('errors.messages.blank')],
-            },
+            errors: nil,
             error_details: {
               email_language: { blank: true },
             },
@@ -240,9 +236,7 @@ RSpec.describe FormResponse do
           response = FormResponse.new(success: false, errors: errors)
           response_hash = {
             success: false,
-            errors: {
-              email_language: ['Language cannot be blank'],
-            },
+            errors: nil,
             error_details: {
               email_language: { blank: true },
             },
