@@ -94,7 +94,6 @@ class ResetPasswordForm
   end
 
   def extra_analytics_attributes
-    binding.pry
     {
       user_id: user.uuid,
       profile_deactivated: active_profile.present?,
