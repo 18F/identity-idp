@@ -521,37 +521,19 @@ RSpec.describe AccountShowPresenter do
   end
 
   describe '#connected_apps' do
-    context 'without email_address loaded' do
-      let(:user) { create(:user, identities: [create(:service_provider_identity)]) }
+    let(:user) { create(:user, identities: [create(:service_provider_identity)]) }
 
-      subject(:connected_apps) { presenter.connected_apps }
+    subject(:connected_apps) { presenter.connected_apps }
 
-      it 'does not attempt eager-loading' do
-        expect(connected_apps).to be_present
-          .and eq(user.connected_apps)
-          .and all(
-            satisfy do |app|
-              app.association(:service_provider_record).loaded?
-            end,
-          )
-      end
-    end
-
-    context 'with email_address loaded' do
-      let(:user) { create(:user, identities: [create(:service_provider_identity)]) }
-      let(:show_change_option) { true }
-      subject(:connected_apps) { presenter.connected_apps }
-
-      it 'delegates to user, eager-loading view-specific relations' do
-        expect(connected_apps).to be_present
-          .and eq(user.connected_apps)
-          .and all(
-            satisfy do |app|
-              app.association(:service_provider_record).loaded? &&
-                app.association(:email_address).loaded?
-            end,
-          )
-      end
+    it 'delegates to user, eager-loading view-specific relations' do
+      expect(connected_apps).to be_present
+        .and eq(user.connected_apps)
+        .and all(
+          satisfy do |app|
+            app.association(:service_provider_record).loaded? &&
+              app.association(:email_address).loaded?
+          end,
+        )
     end
   end
 
@@ -682,21 +664,6 @@ RSpec.describe AccountShowPresenter do
 
         expect(profile_index.personal_key_generated_at).to be_nil
       end
-    end
-  end
-
-  describe '#show_change_option' do
-    let(:view_context) { ActionController::Base.new.view_context }
-    let(:service_provider) { create(:service_provider) }
-    let(:view_context) { ActionController::Base.new.view_context }
-
-    let(:decorated_sp_session) do
-      ServiceProviderSession.new(
-        sp: service_provider,
-        view_context: view_context,
-        sp_session: {},
-        service_provider_request: ServiceProviderRequestProxy.new,
-      )
     end
   end
 end

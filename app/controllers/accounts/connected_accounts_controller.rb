@@ -3,8 +3,6 @@
 module Accounts
   class ConnectedAccountsController < ApplicationController
     include RememberDeviceConcern
-    include ApplicationHelper
-
     before_action :confirm_two_factor_authenticated
 
     layout 'account_side_nav'
