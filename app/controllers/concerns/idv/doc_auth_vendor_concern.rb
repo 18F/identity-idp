@@ -6,7 +6,7 @@ module Idv
 
     # @returns[String] String identifying the vendor to use for doc auth.
     def doc_auth_vendor
-      if resolved_authn_context_result.facial_match? || Idv::SocureUserSet.new.maxed_users?
+      if resolved_authn_context_result.facial_match? || socure_user_set.maxed_users?
         if doc_auth_vendor_enabled?(Idp::Constants::Vendors::LEXIS_NEXIS)
           bucket = :lexis_nexis
         elsif doc_auth_vendor_enabled?(Idp::Constants::Vendors::MOCK)
@@ -32,6 +32,10 @@ module Idv
       else
         false
       end
+    end
+
+    def socure_user_set
+      @socure_user_set ||= SocureUserSet.new
     end
   end
 end
