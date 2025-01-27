@@ -24,7 +24,7 @@ let now = new Date();
 let sessionTime = new Date(now.getTime() + sessionTimeout);
 
 function success({ isLive, timeout }: SessionStatus) {
-  if (!isLive && timeout) {
+  if (!isLive && timeoutURL) {
     if (timeoutURL) {
       forceRedirect(timeoutURL);
     }
