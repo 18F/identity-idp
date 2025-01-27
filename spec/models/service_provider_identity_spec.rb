@@ -187,6 +187,12 @@ RSpec.describe ServiceProviderIdentity do
   describe '#verified_single_email_attribute?' do
     subject(:verified_single_email_attribute?) { identity.verified_single_email_attribute? }
 
+    context 'with attributes nil' do
+      let(:verified_attributes) { nil }
+
+      it { is_expected.to be false }
+    end
+
     context 'with no attributes verified' do
       let(:verified_attributes) { [] }
 

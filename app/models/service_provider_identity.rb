@@ -66,7 +66,9 @@ class ServiceProviderIdentity < ApplicationRecord
   end
 
   def verified_single_email_attribute?
-    verified_attributes.include?('email') && !verified_attributes.include?('all_emails')
+    verified_attributes.present? &&
+      verified_attributes.include?('email') &&
+      !verified_attributes.include?('all_emails')
   end
 
   def email_address_for_sharing
