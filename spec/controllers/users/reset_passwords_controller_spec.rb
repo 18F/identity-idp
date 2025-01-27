@@ -344,7 +344,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           expect(@analytics).to have_logged_event(
             'Password Reset: Password Submitted',
             success: true,
-            error_details: {},
             user_id: user.uuid,
             profile_deactivated: false,
             pending_profile_invalidated: false,
@@ -391,7 +390,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         expect(@analytics).to have_logged_event(
           'Password Reset: Password Submitted',
           success: true,
-          error_details: {},
           user_id: user.uuid,
           profile_deactivated: true,
           pending_profile_invalidated: false,
@@ -435,7 +433,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         expect(@analytics).to have_logged_event(
           'Password Reset: Password Submitted',
           success: true,
-          error_details: {},
           user_id: user.uuid,
           profile_deactivated: false,
           pending_profile_invalidated: false,
@@ -465,7 +462,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         expect(@analytics).to have_logged_event(
           'Password Reset: Email Submitted',
           success: true,
-          error_details: {},
           user_id: 'nonexistent-uuid',
           confirmed: false,
           active_profile: false,
@@ -491,7 +487,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         expect(@analytics).to have_logged_event(
           'Password Reset: Email Submitted',
           success: true,
-          error_details: {},
           user_id: user.uuid,
           confirmed: true,
           active_profile: false,
@@ -521,7 +516,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         expect(@analytics).to have_logged_event(
           'Password Reset: Email Submitted',
           success: true,
-          error_details: {},
           user_id: user.uuid,
           confirmed: false,
           active_profile: false,
@@ -545,7 +539,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         expect(@analytics).to have_logged_event(
           'Password Reset: Email Submitted',
           success: true,
-          error_details: {},
           user_id: user.uuid,
           confirmed: true,
           active_profile: true,
