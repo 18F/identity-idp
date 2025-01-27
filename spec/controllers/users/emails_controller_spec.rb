@@ -89,10 +89,62 @@ RSpec.describe Users::EmailsController do
   end
 
   describe '#verify' do
+    subject(:response) { get :verify, params: params }
+    let(:email) { Faker::Internet.email }
+    let(:params) { {} }
+
+    before do
+      stub_sign_in
+      session[:email] = email
+    end
+
+    it 'assigns instance variables for view' do
+      response
+
+      expect(assigns(:email)).to eq(email)
+      expect(assigns(:in_select_email_flow)).to be_nil
+      expect(assigns(:pending_completions_consent)).to eq(false)
+    end
+
+    context 'in email select flow' do
+      let(:params) { super().merge(in_select_email_flow: true) }
+
+      it 'assigns instance variables for view' do
+        response
+
+        expect(assigns(:email)).to eq(email)
+        expect(assigns(:in_select_email_flow)).to eq(true)
+        expect(assigns(:pending_completions_consent)).to eq(false)
+      end
+    end
+
+    context 'with pending completions consent' do
+      before do
+        allow(controller).to receive(:needs_completion_screen_reason).and_return(:new_sp)
+      end
+
+      it 'assigns instance variables for view' do
+        response
+
+        expect(assigns(:email)).to eq(email)
+        expect(assigns(:in_select_email_flow)).to be_nil
+        expect(assigns(:pending_completions_consent)).to eq(true)
+      end
+    end
+
+    context 'without session email' do
+      let(:email) { nil }
+
+      it 'redirects to add email page' do
+        expect(response).to redirect_to add_email_url
+      end
+    end
+
     context 'with malformed payload' do
+      let(:params) { super().merge(request_id: { foo: 'bar' }) }
+
       it 'does not blow up' do
-        expect { get :verify, params: { request_id: { foo: 'bar' } } }
-          .to_not raise_error
+        expect { response }.to_not raise_error
       end
     end
   end
@@ -158,52 +210,53 @@ RSpec.describe Users::EmailsController do
   end
 
   describe '#resend' do
+    subject(:response) { post :resend, params: params }
+    let(:params) { {} }
+    let(:email) { create(:email_address, :unconfirmed, user:).email }
     let(:user) { create(:user) }
+
     before do
       stub_sign_in(user)
       stub_analytics
+      session[:email] = email
     end
 
-    context 'valid email exists in session' do
-      it 'sends email' do
-        email = Faker::Internet.email
+    it 'sends email' do
+      response
 
-        post :add, params: { user: { email: email } }
+      expect(@analytics).to have_logged_event('Resend Add Email Requested', success: true)
+      expect(last_email_sent).to have_subject(
+        t('user_mailer.email_confirmation_instructions.subject'),
+      )
 
-        expect(@analytics).to have_logged_event(
-          'Add Email Requested',
-          success: true,
-          user_id: user.uuid,
-          domain_name: email.split('@').last,
-          in_select_email_flow: false,
-        )
+      expect(response).to redirect_to(add_email_verify_email_url)
+      expect(last_email_sent).to have_subject(
+        t('user_mailer.email_confirmation_instructions.subject'),
+      )
+      expect(ActionMailer::Base.deliveries.count).to eq 1
+    end
 
-        post :resend
+    it 'flashes success message' do
+      response
 
-        expect(@analytics).to have_logged_event(
-          'Resend Add Email Requested',
-          { success: true },
-        )
-        expect(last_email_sent).to have_subject(
-          t('user_mailer.email_confirmation_instructions.subject'),
-        )
+      expect(flash[:success]).to eq(t('notices.resend_confirmation_email.success'))
+    end
 
-        expect(response).to redirect_to(add_email_verify_email_url)
-        expect(last_email_sent).to have_subject(
-          t('user_mailer.email_confirmation_instructions.subject'),
-        )
-        expect(ActionMailer::Base.deliveries.count).to eq 2
+    context 'in select email flow' do
+      let(:params) { super().merge(in_select_email_flow: true) }
+
+      it 'includes select email parameter in redirect url' do
+        expect(response).to redirect_to add_email_verify_email_url(in_select_email_flow: true)
       end
     end
 
     context 'no valid email exists in session' do
-      it 'shows an error and redirects to add email page' do
-        post :resend
+      let(:email) { nil }
 
-        expect(@analytics).to have_logged_event(
-          'Resend Add Email Requested',
-          { success: false },
-        )
+      it 'shows an error and redirects to add email page' do
+        response
+
+        expect(@analytics).to have_logged_event('Resend Add Email Requested', success: false)
         expect(flash[:error]).to eq t('errors.general')
         expect(response).to redirect_to(add_email_url)
         expect(ActionMailer::Base.deliveries.count).to eq 0
