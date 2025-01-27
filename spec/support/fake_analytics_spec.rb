@@ -467,6 +467,19 @@ RSpec.describe FakeAnalytics do
           end
       end
 
+      shared_examples 'a track event call within shared examples' do
+        it 'does not raise if hash_including match has exact properties in shared examples' do
+          track_event.call
+
+          expect(&code_under_test)
+            .not_to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
+              expect(err.message).to match(/Unexpected use of hash_including/)
+            end
+        end
+      end
+
+      it_behaves_like 'a track event call within shared examples'
+
       it 'does not raise if matching + non-matching event logged' do
         track_matching_event_with_more_args.call
         track_event_with_different_args.call

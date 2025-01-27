@@ -89,11 +89,7 @@ class HaveLoggedEventMatcher
   end
 
   def in_shared_example?
-    example_group = RSpec.current_example.metadata.dig(:example_group)
-    while (example_group = example_group.dig(:parent_example_group))
-      return true if example_group[:shared_group_name]
-    end
-    false
+    RSpec.current_example.metadata[:shared_group_inclusion_backtrace].present?
   end
 
   def fake_analytics_missing_failure_message
