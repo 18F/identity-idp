@@ -1,16 +1,20 @@
+import { forceRedirect } from '@18f/identity-url';
 import { requestSessionStatus, extendSession } from '@18f/identity-session';
+import type { SessionStatus } from '@18f/identity-session';
 import type { CountdownElement } from '@18f/identity-countdown/countdown-element';
 import type { ModalElement } from '@18f/identity-modal';
 
-const expireConfig = document.getElementById('js-expire-session');
+const warningEl = document.getElementById('session-timeout-cntnr');
 
 const defaultTime = '60';
 
-const frequency = parseInt(expireConfig?.dataset.frequency || defaultTime, 10) * 1000;
-const warning = parseInt(expireConfig?.dataset.warning || defaultTime, 10) * 1000;
-const start = parseInt(expireConfig?.dataset.start || defaultTime, 10) * 1000;
-const sessionsURL = expireConfig?.dataset.sessionsUrl!;
-const sessionTimeout = parseInt(expireConfig?.dataset.sessionTimeoutIn || defaultTime, 10) * 1000;
+const frequency = parseInt(warningEl?.dataset.frequency || defaultTime, 10) * 1000;
+const warning = parseInt(warningEl?.dataset.warning || defaultTime, 10) * 1000;
+const start = parseInt(warningEl?.dataset.start || defaultTime, 10) * 1000;
+const timeoutURL = warningEl?.dataset.timeoutUrl!;
+const sessionsURL = warningEl?.dataset.sessionsUrl!;
+const sessionTimeout = parseInt(warningEl?.dataset.sessionTimeoutIn || defaultTime, 10) * 1000;
+
 const modal = document.querySelector<ModalElement>('lg-modal.session-timeout-modal')!;
 const keepaliveEl = document.getElementById('session-keepalive-btn');
 const countdownEls: NodeListOf<CountdownElement> = modal.querySelectorAll('lg-countdown');
@@ -19,13 +23,22 @@ let now = new Date();
 
 let sessionTime = new Date(now.getTime() + sessionTimeout);
 
-function success() {
-  const timeRemaining = sessionTime.valueOf() - Date.now();
+function success({ isLive, timeout }: SessionStatus) {
+  if (!isLive && timeout) {
+    if (timeoutURL) {
+      forceRedirect(timeoutURL);
+    }
+    return;
+  }
+
+  const timeRemaining = timeout
+    ? timeout.valueOf() - Date.now()
+    : sessionTime.valueOf() - Date.now();
   const showWarning = timeRemaining < warning;
   if (showWarning) {
     modal.show();
     countdownEls.forEach((countdownEl) => {
-      countdownEl.expiration = sessionTime;
+      countdownEl.expiration = timeout || sessionTime;
       countdownEl.start();
     });
   }
