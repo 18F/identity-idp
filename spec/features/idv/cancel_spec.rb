@@ -68,7 +68,7 @@ RSpec.describe 'cancel IdV' do
     expect(page).to have_current_path(idv_welcome_path)
     expect(fake_analytics).to have_logged_event(
       'IdV: start over',
-      hash_including(step: 'agreement'),
+      step: 'agreement',
     )
   end
 
@@ -148,10 +148,8 @@ RSpec.describe 'cancel IdV' do
 
       expect(fake_analytics).to have_logged_event(
         'IdV: cancellation confirmed',
-        hash_including(
-          step: 'ssn',
-          proofing_components: { document_check: 'mock', document_type: 'state_id' },
-        ),
+        step: 'ssn',
+        proofing_components: { document_check: 'mock', document_type: 'state_id' },
       )
     end
   end
