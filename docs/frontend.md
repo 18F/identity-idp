@@ -1,5 +1,44 @@
 # Front-end Architecture
 
+While the Login.gov application is architected as a Ruby on Rails project and most of its pages are
+fully rendered by the backend server, the front end is set up to use modern best-practices to suit
+the needs of interactivity and consistency in the user experience, and to ensure a maintainable and
+convenient developer experience.
+
+As a high-level overview, the front end consists of:
+
+- [Propshaft](https://github.com/rails/propshaft) is used as an asset pipeline library for Ruby on
+  Rails, in combination with [cssbundling-rails](https://github.com/rails/cssbundling-rails) and
+  [jsbundling-rails](https://github.com/rails/jsbundling-rails) for compiling stylesheets and
+  scripts.
+- JavaScript is written as [TypeScript](https://www.typescriptlang.org/), bundled using [Webpack](https://webpack.js.org/)
+  with syntax transformation applied by [Babel](https://babeljs.io/).
+   - For highly-interactive pages, we use [React](https://react.dev/)
+   - For all other JavaScript interaction, we use native [web components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components)
+     (custom elements)
+- Stylesheets are written as [Sass](https://sass-lang.com/), and builds upon the [Login.gov Design System](https://github.com/18F/identity-design-system),
+  which in turn builds upon the [U.S. Web Design System (USWDS)](https://designsystem.digital.gov/).
+- HTML reuse is facilitated by the [ViewComponent](https://viewcomponent.org/) gem, enhanced with
+  support for per-component JavaScript and stylesheet "sidecar" assets.
+
+The general folder structure for front-end assets includes:
+
+```
+app/
+├─ assets/
+│  ├─ builds/      # Source location for compiled stylesheets used by Propshaft in asset compilation
+│  ├─ fonts/       # Source font assets
+│  ├─ images/      # Source image assets
+│  └─ stylesheets/ # Source Sass files
+├─ components/     # ViewComponent implementations
+└─ javascript/
+   ├─ packages/    # JavaScript workspace NPM packages
+   └─ packs/       # JavaScript entrypoints referenced by pages
+public/
+├─ assets/         # Compiled images, fonts, and stylesheets
+└─ packs/          # Compiled JavaScript
+```
+
 ## CSS + HTML
 
 ### At a Glance
