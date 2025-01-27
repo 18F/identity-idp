@@ -31,7 +31,7 @@ RSpec.describe 'accounts/connected_accounts/show.html.erb' do
   end
 
   context 'with a connected app' do
-    let!(:identity) { create(:service_provider_identity, user:) }
+    let!(:identity) { create(:service_provider_identity, user:, verified_attributes: ['email']) }
 
     it 'lists applications with link to revoke' do
       render
@@ -68,10 +68,43 @@ RSpec.describe 'accounts/connected_accounts/show.html.erb' do
       end
     end
 
+    context 'when the partner requests all_emails' do
+      before { identity.update(verified_attributes: ['all_emails']) }
+
+      it 'does not show the change link' do
+        render
+
+        expect(rendered).not_to have_content(t('account.connected_apps.email_not_selected'))
+        expect(rendered).not_to have_link(
+          t('help_text.requested_attributes.change_email_link'),
+          href: edit_connected_account_selected_email_path(identity_id: identity.id),
+        )
+      end
+    end
+
+    context 'when the partner does not request email' do
+      before { identity.update(verified_attributes: ['ssn']) }
+
+      it 'hides the change link' do
+        render
+
+        expect(rendered).not_to have_content(t('account.connected_apps.email_not_selected'))
+        expect(rendered).to_not have_link(
+          t('help_text.requested_attributes.change_email_link'),
+          href: edit_connected_account_selected_email_path(identity_id: identity.id),
+        )
+      end
+    end
+
     context 'with connected app having linked email' do
       let(:email_address) { user.confirmed_email_addresses.take }
       let!(:identity) do
-        create(:service_provider_identity, user:, email_address_id: email_address.id)
+        create(
+          :service_provider_identity,
+          user:,
+          email_address_id: email_address.id,
+          verified_attributes: ['email'],
+        )
       end
 
       it 'renders associated email with option to change' do
@@ -105,36 +138,6 @@ RSpec.describe 'accounts/connected_accounts/show.html.erb' do
       expect { render }.to_not raise_error
       expect(rendered).to match '</lg-time>'
       expect(rendered).to_not include('&lt;')
-    end
-  end
-
-  context 'when the partner requests all_emails' do
-    let!(:identity) do
-      create(:service_provider_identity, deleted_at: nil, verified_attributes: ['all_emails'])
-    end
-
-    it 'does not show the change link' do
-      render
-
-      expect(rendered).not_to have_link(
-        t('help_text.requested_attributes.change_email_link'),
-        href: edit_connected_account_selected_email_path(identity_id: identity.id),
-      )
-    end
-  end
-
-  context 'when the partner does not request email' do
-    let!(:identity) do
-      create(:service_provider_identity, deleted_at: nil, verified_attributes: ['ssn'])
-    end
-
-    it 'hides the change link' do
-      render
-
-      expect(rendered).to_not have_link(
-        t('help_text.requested_attributes.change_email_link'),
-        href: edit_connected_account_selected_email_path(identity_id: identity.id),
-      )
     end
   end
 end
