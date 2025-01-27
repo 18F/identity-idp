@@ -172,7 +172,6 @@ RSpec.describe Idv::ApiImageUploadForm do
         expect(fake_analytics).to have_logged_event(
           'IdV: doc auth image upload form submitted',
           success: true,
-          errors: {},
           submit_attempts: 1,
           remaining_submit_attempts: 3,
           user_id: document_capture_session.user.uuid,
@@ -252,7 +251,6 @@ RSpec.describe Idv::ApiImageUploadForm do
           expect(fake_analytics).to have_logged_event(
             'IdV: doc auth image upload form submitted',
             success: true,
-            errors: {},
             submit_attempts: 1,
             remaining_submit_attempts: 3,
             user_id: document_capture_session.user.uuid,
@@ -393,7 +391,6 @@ RSpec.describe Idv::ApiImageUploadForm do
         expect(fake_analytics).to have_logged_event(
           'IdV: doc auth image upload form submitted',
           success: true,
-          errors: {},
           submit_attempts: 1,
           remaining_submit_attempts: 3,
           user_id: document_capture_session.user.uuid,

@@ -344,7 +344,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           expect(@analytics).to have_logged_event(
             'Password Reset: Password Submitted',
             success: true,
-            errors: {},
             error_details: {},
             user_id: user.uuid,
             profile_deactivated: false,
@@ -392,7 +391,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         expect(@analytics).to have_logged_event(
           'Password Reset: Password Submitted',
           success: true,
-          errors: {},
           error_details: {},
           user_id: user.uuid,
           profile_deactivated: true,
@@ -437,7 +435,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         expect(@analytics).to have_logged_event(
           'Password Reset: Password Submitted',
           success: true,
-          errors: {},
           error_details: {},
           user_id: user.uuid,
           profile_deactivated: false,
@@ -468,7 +465,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         expect(@analytics).to have_logged_event(
           'Password Reset: Email Submitted',
           success: true,
-          errors: {},
           error_details: {},
           user_id: 'nonexistent-uuid',
           confirmed: false,
@@ -495,7 +491,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         expect(@analytics).to have_logged_event(
           'Password Reset: Email Submitted',
           success: true,
-          errors: {},
           error_details: {},
           user_id: user.uuid,
           confirmed: true,
@@ -526,7 +521,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         expect(@analytics).to have_logged_event(
           'Password Reset: Email Submitted',
           success: true,
-          errors: {},
           error_details: {},
           user_id: user.uuid,
           confirmed: false,
@@ -551,7 +545,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         expect(@analytics).to have_logged_event(
           'Password Reset: Email Submitted',
           success: true,
-          errors: {},
           error_details: {},
           user_id: user.uuid,
           confirmed: true,

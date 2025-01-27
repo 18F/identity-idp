@@ -21,7 +21,6 @@ RSpec.describe Users::EditPhoneController do
         expect(@analytics).to have_logged_event(
           'Phone Number Change: Form submitted',
           success: true,
-          errors: {},
           delivery_preference: 'voice',
           make_default_number: true,
           phone_configuration_id: phone_configuration.id,

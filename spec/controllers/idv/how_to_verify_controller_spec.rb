@@ -205,7 +205,6 @@ RSpec.describe Idv::HowToVerifyController do
         {
           analytics_id: 'Doc Auth',
           step: 'how_to_verify',
-          errors: {},
           success: true,
           selection:,
         }
@@ -230,7 +229,6 @@ RSpec.describe Idv::HowToVerifyController do
         {
           analytics_id: 'Doc Auth',
           step: 'how_to_verify',
-          errors: {},
           success: true,
           selection:,
         }
