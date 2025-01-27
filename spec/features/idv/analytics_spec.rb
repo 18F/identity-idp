@@ -197,13 +197,13 @@ RSpec.feature 'Analytics Regression', :js do
         checked: true,
       },
       'IdV: doc auth agreement submitted' => {
-        success: true, errors: {}, step: 'agreement', analytics_id: 'Doc Auth'
+        success: true, step: 'agreement', analytics_id: 'Doc Auth'
       },
       'IdV: doc auth hybrid handoff visited' => {
         step: 'hybrid_handoff', analytics_id: 'Doc Auth', selfie_check_required: boolean
       },
       'IdV: doc auth hybrid handoff submitted' => {
-        success: true, errors: {}, destination: :document_capture, flow_path: 'standard', step: 'hybrid_handoff', analytics_id: 'Doc Auth', selfie_check_required: boolean
+        success: true, destination: :document_capture, flow_path: 'standard', step: 'hybrid_handoff', analytics_id: 'Doc Auth', selfie_check_required: boolean
       },
       'IdV: doc auth document_capture visited' => {
         flow_path: 'standard', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean
@@ -215,14 +215,14 @@ RSpec.feature 'Analytics Regression', :js do
         width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, captureAttempts: 1, flow_path: 'standard', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: kind_of(String), fingerprint: anything, failedImageResubmission: boolean, liveness_checking_required: boolean
       },
       'IdV: doc auth image upload form submitted' => {
-        success: true, errors: {}, submit_attempts: 1, remaining_submit_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean
+        success: true, submit_attempts: 1, remaining_submit_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean
       },
       'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'standard', attention_with_barcode: false, doc_auth_result: 'Passed', liveness_checking_required: boolean),
       'IdV: doc auth image upload vendor pii validation' => {
-        success: true, errors: {}, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present'
+        success: true, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present'
       },
       'IdV: doc auth document_capture submitted' => {
-        success: true, errors: {}, flow_path: 'standard', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean,
+        success: true, flow_path: 'standard', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean,
         proofing_components: { document_check: 'mock', document_type: 'state_id' }
       },
       'IdV: doc auth ssn visited' => {
@@ -230,7 +230,7 @@ RSpec.feature 'Analytics Regression', :js do
         proofing_components: { document_check: 'mock', document_type: 'state_id' }
       },
       'IdV: doc auth ssn submitted' => {
-        success: true, errors: {}, flow_path: 'standard', step: 'ssn', analytics_id: 'Doc Auth',
+        success: true, flow_path: 'standard', step: 'ssn', analytics_id: 'Doc Auth',
         proofing_components: { document_check: 'mock', document_type: 'state_id' }
       },
       'IdV: doc auth verify visited' => {
@@ -247,7 +247,7 @@ RSpec.feature 'Analytics Regression', :js do
         end
       ),
       'IdV: doc auth verify proofing results' => {
-        success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', step: 'verify',
+        success: true, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', step: 'verify',
         proofing_results: doc_auth_verify_proofing_results,
         proofing_components: base_proofing_components
       },
@@ -255,22 +255,22 @@ RSpec.feature 'Analytics Regression', :js do
         proofing_components: base_proofing_components,
       },
       'IdV: phone confirmation form' => {
-        success: true, errors: {}, phone_type: :mobile, types: [:fixed_or_mobile], carrier: 'Test Mobile Carrier', country_code: 'US', area_code: '202', otp_delivery_preference: 'sms',
+        success: true, phone_type: :mobile, types: [:fixed_or_mobile], carrier: 'Test Mobile Carrier', country_code: 'US', area_code: '202', otp_delivery_preference: 'sms',
         proofing_components: base_proofing_components
       },
       'IdV: phone confirmation vendor' => {
-        success: true, errors: {}, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '' }, new_phone_added: false, hybrid_handoff_phone_used: false, area_code: '202', country_code: 'US', phone_fingerprint: anything,
+        success: true, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '' }, new_phone_added: false, hybrid_handoff_phone_used: false, area_code: '202', country_code: 'US', phone_fingerprint: anything,
         proofing_components: lexis_nexis_address_proofing_components
       },
       'IdV: phone confirmation otp sent' => {
-        success: true, otp_delivery_preference: :sms, country_code: 'US', area_code: '202', adapter: :test, errors: {}, phone_fingerprint: anything, rate_limit_exceeded: false, telephony_response: anything,
+        success: true, otp_delivery_preference: :sms, country_code: 'US', area_code: '202', adapter: :test, phone_fingerprint: anything, rate_limit_exceeded: false, telephony_response: anything,
         proofing_components: lexis_nexis_address_proofing_components
       },
       'IdV: phone confirmation otp visited' => {
         proofing_components: lexis_nexis_address_proofing_components,
       },
       'IdV: phone confirmation otp submitted' => {
-        success: true, code_expired: false, code_matches: true, otp_delivery_preference: :sms, second_factor_attempts_count: 0, errors: {},
+        success: true, code_expired: false, code_matches: true, otp_delivery_preference: :sms, second_factor_attempts_count: 0,
         proofing_components: lexis_nexis_address_proofing_components
       },
       :idv_enter_password_visited => {
@@ -323,7 +323,7 @@ RSpec.feature 'Analytics Regression', :js do
         checked: true,
       },
       'IdV: doc auth agreement submitted' => {
-        success: true, errors: {}, step: 'agreement', analytics_id: 'Doc Auth'
+        success: true, step: 'agreement', analytics_id: 'Doc Auth'
       },
       'IdV: doc auth hybrid handoff visited' => {
         step: 'hybrid_handoff', analytics_id: 'Doc Auth', selfie_check_required: boolean
@@ -341,21 +341,21 @@ RSpec.feature 'Analytics Regression', :js do
         width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, captureAttempts: 1, flow_path: 'hybrid', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: kind_of(String), fingerprint: anything, failedImageResubmission: boolean, liveness_checking_required: boolean
       },
       'IdV: doc auth image upload form submitted' => {
-        success: true, errors: {}, submit_attempts: 1, remaining_submit_attempts: 3, user_id: user.uuid, flow_path: 'hybrid', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean
+        success: true, submit_attempts: 1, remaining_submit_attempts: 3, user_id: user.uuid, flow_path: 'hybrid', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean
       },
       'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'hybrid', attention_with_barcode: false, doc_auth_result: 'Passed', liveness_checking_required: boolean),
       'IdV: doc auth image upload vendor pii validation' => {
-        success: true, errors: {}, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'hybrid', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present'
+        success: true, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'hybrid', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present'
       },
       'IdV: doc auth document_capture submitted' => {
-        success: true, errors: {}, flow_path: 'hybrid', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean
+        success: true, flow_path: 'hybrid', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean
       },
       'IdV: doc auth ssn visited' => {
         flow_path: 'hybrid', step: 'ssn', analytics_id: 'Doc Auth',
         proofing_components: { document_check: 'mock', document_type: 'state_id' }
       },
       'IdV: doc auth ssn submitted' => {
-        success: true, errors: {}, flow_path: 'hybrid', step: 'ssn', analytics_id: 'Doc Auth',
+        success: true, flow_path: 'hybrid', step: 'ssn', analytics_id: 'Doc Auth',
         proofing_components: { document_check: 'mock', document_type: 'state_id' }
       },
       'IdV: doc auth verify visited' => {
@@ -372,7 +372,7 @@ RSpec.feature 'Analytics Regression', :js do
         end
       ),
       'IdV: doc auth verify proofing results' => {
-        success: true, errors: {}, flow_path: 'hybrid', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', step: 'verify',
+        success: true, flow_path: 'hybrid', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', step: 'verify',
         proofing_results: doc_auth_verify_proofing_results,
         proofing_components: base_proofing_components
       },
@@ -380,22 +380,22 @@ RSpec.feature 'Analytics Regression', :js do
         proofing_components: base_proofing_components,
       },
       'IdV: phone confirmation form' => {
-        success: true, errors: {}, phone_type: :mobile, types: [:fixed_or_mobile], carrier: 'Test Mobile Carrier', country_code: 'US', area_code: '202', otp_delivery_preference: 'sms',
+        success: true, phone_type: :mobile, types: [:fixed_or_mobile], carrier: 'Test Mobile Carrier', country_code: 'US', area_code: '202', otp_delivery_preference: 'sms',
         proofing_components: base_proofing_components
       },
       'IdV: phone confirmation vendor' => {
-        success: true, errors: {}, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '' }, new_phone_added: false, hybrid_handoff_phone_used: true, area_code: '202', country_code: 'US', phone_fingerprint: anything,
+        success: true, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '' }, new_phone_added: false, hybrid_handoff_phone_used: true, area_code: '202', country_code: 'US', phone_fingerprint: anything,
         proofing_components: lexis_nexis_address_proofing_components
       },
       'IdV: phone confirmation otp sent' => {
-        success: true, otp_delivery_preference: :sms, country_code: 'US', area_code: '202', adapter: :test, errors: {}, phone_fingerprint: anything, rate_limit_exceeded: false, telephony_response: anything,
+        success: true, otp_delivery_preference: :sms, country_code: 'US', area_code: '202', adapter: :test, phone_fingerprint: anything, rate_limit_exceeded: false, telephony_response: anything,
         proofing_components: lexis_nexis_address_proofing_components
       },
       'IdV: phone confirmation otp visited' => {
         proofing_components: lexis_nexis_address_proofing_components,
       },
       'IdV: phone confirmation otp submitted' => {
-        success: true, code_expired: false, code_matches: true, otp_delivery_preference: :sms, second_factor_attempts_count: 0, errors: {},
+        success: true, code_expired: false, code_matches: true, otp_delivery_preference: :sms, second_factor_attempts_count: 0,
         proofing_components: lexis_nexis_address_proofing_components
       },
       :idv_enter_password_visited => {
@@ -445,13 +445,13 @@ RSpec.feature 'Analytics Regression', :js do
         step: 'agreement', analytics_id: 'Doc Auth'
       },
       'IdV: doc auth agreement submitted' => {
-        success: true, errors: {}, step: 'agreement', analytics_id: 'Doc Auth'
+        success: true, step: 'agreement', analytics_id: 'Doc Auth'
       },
       'IdV: doc auth hybrid handoff visited' => {
         step: 'hybrid_handoff', analytics_id: 'Doc Auth', selfie_check_required: boolean
       },
       'IdV: doc auth hybrid handoff submitted' => {
-        success: true, errors: {}, destination: :document_capture, flow_path: 'standard', step: 'hybrid_handoff', analytics_id: 'Doc Auth', selfie_check_required: boolean
+        success: true, destination: :document_capture, flow_path: 'standard', step: 'hybrid_handoff', analytics_id: 'Doc Auth', selfie_check_required: boolean
       },
       'IdV: doc auth document_capture visited' => {
         flow_path: 'standard', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean
@@ -463,14 +463,14 @@ RSpec.feature 'Analytics Regression', :js do
         width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, captureAttempts: 1, flow_path: 'standard', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: kind_of(String), fingerprint: anything, failedImageResubmission: boolean, liveness_checking_required: boolean
       },
       'IdV: doc auth image upload form submitted' => {
-        success: true, errors: {}, submit_attempts: 1, remaining_submit_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean
+        success: true, submit_attempts: 1, remaining_submit_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean
       },
       'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'standard', attention_with_barcode: false, doc_auth_result: 'Passed', liveness_checking_required: boolean),
       'IdV: doc auth image upload vendor pii validation' => {
-        success: true, errors: {}, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present'
+        success: true, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present'
       },
       'IdV: doc auth document_capture submitted' => {
-        success: true, errors: {}, flow_path: 'standard', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean,
+        success: true, flow_path: 'standard', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean,
         proofing_components: { document_check: 'mock', document_type: 'state_id' }
       },
       'IdV: doc auth ssn visited' => {
@@ -478,7 +478,7 @@ RSpec.feature 'Analytics Regression', :js do
         proofing_components: { document_check: 'mock', document_type: 'state_id' }
       },
       'IdV: doc auth ssn submitted' => {
-        success: true, errors: {}, flow_path: 'standard', step: 'ssn', analytics_id: 'Doc Auth',
+        success: true, flow_path: 'standard', step: 'ssn', analytics_id: 'Doc Auth',
         proofing_components: { document_check: 'mock', document_type: 'state_id' }
       },
       'IdV: doc auth verify visited' => {
@@ -495,7 +495,7 @@ RSpec.feature 'Analytics Regression', :js do
         end
       ),
       'IdV: doc auth verify proofing results' => {
-        success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', step: 'verify',
+        success: true, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', step: 'verify',
         proofing_results: doc_auth_verify_proofing_results,
         proofing_components: base_proofing_components
       },
@@ -547,13 +547,13 @@ RSpec.feature 'Analytics Regression', :js do
         step: 'agreement', analytics_id: 'Doc Auth'
       },
       'IdV: doc auth agreement submitted' => {
-        success: true, errors: {}, step: 'agreement', analytics_id: 'Doc Auth'
+        success: true, step: 'agreement', analytics_id: 'Doc Auth'
       },
       'IdV: doc auth hybrid handoff visited' => {
         step: 'hybrid_handoff', analytics_id: 'Doc Auth', selfie_check_required: boolean
       },
       'IdV: doc auth hybrid handoff submitted' => {
-        success: true, errors: {}, destination: :document_capture, flow_path: 'standard', step: 'hybrid_handoff', analytics_id: 'Doc Auth', selfie_check_required: boolean
+        success: true, destination: :document_capture, flow_path: 'standard', step: 'hybrid_handoff', analytics_id: 'Doc Auth', selfie_check_required: boolean
       },
       'IdV: doc auth document_capture visited' => {
         flow_path: 'standard', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean
@@ -565,7 +565,7 @@ RSpec.feature 'Analytics Regression', :js do
         width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, captureAttempts: 1, flow_path: 'standard', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: kind_of(String), fingerprint: anything, failedImageResubmission: boolean, liveness_checking_required: boolean
       },
       'IdV: doc auth image upload form submitted' => {
-        success: true, errors: {}, submit_attempts: 1, remaining_submit_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean
+        success: true, submit_attempts: 1, remaining_submit_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean
       },
       'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'standard', attention_with_barcode: true, doc_auth_result: 'Attention', liveness_checking_required: boolean),
       'IdV: verify in person troubleshooting option clicked' => {
@@ -587,19 +587,19 @@ RSpec.feature 'Analytics Regression', :js do
         step: 'state_id', flow_path: 'standard', analytics_id: 'In Person Proofing', proofing_components: { document_check: 'usps' }
       },
       'IdV: in person proofing state_id submitted' => {
-        success: true, flow_path: 'standard', step: 'state_id', analytics_id: 'In Person Proofing', errors: {}, birth_year: '1938', document_zip_code: '12345', proofing_components: { document_check: 'usps' }
+        success: true, flow_path: 'standard', step: 'state_id', analytics_id: 'In Person Proofing', birth_year: '1938', document_zip_code: '12345', proofing_components: { document_check: 'usps' }
       },
       'IdV: in person proofing address visited' => {
         step: 'address', flow_path: 'standard', analytics_id: 'In Person Proofing', proofing_components: { document_check: 'usps' }
       },
       'IdV: in person proofing residential address submitted' => {
-        success: true, step: 'address', flow_path: 'standard', analytics_id: 'In Person Proofing', errors: {}, current_address_zip_code: '59010', proofing_components: { document_check: 'usps' }
+        success: true, step: 'address', flow_path: 'standard', analytics_id: 'In Person Proofing', current_address_zip_code: '59010', proofing_components: { document_check: 'usps' }
       },
       'IdV: doc auth ssn visited' => {
         analytics_id: 'In Person Proofing', step: 'ssn', flow_path: 'standard', proofing_components: { document_check: 'usps' }
       },
       'IdV: doc auth ssn submitted' => {
-        analytics_id: 'In Person Proofing', success: true, step: 'ssn', flow_path: 'standard', errors: {}, proofing_components: { document_check: 'usps' }
+        analytics_id: 'In Person Proofing', success: true, step: 'ssn', flow_path: 'standard', proofing_components: { document_check: 'usps' }
       },
       'IdV: doc auth verify visited' => {
         analytics_id: 'In Person Proofing', step: 'verify', flow_path: 'standard', proofing_components: { document_check: 'usps' }
@@ -613,27 +613,27 @@ RSpec.feature 'Analytics Regression', :js do
         end
       ),
       'IdV: doc auth verify proofing results' => {
-        success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'In Person Proofing', step: 'verify',
+        success: true, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'In Person Proofing', step: 'verify',
         proofing_results: in_person_path_proofing_results,
         proofing_components: { document_check: 'usps', resolution_check: 'ResolutionMock', residential_resolution_check: 'ResolutionMock', source_check: 'StateIdMock', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass' }
       },
       'IdV: phone confirmation form' => {
-        success: true, errors: {}, phone_type: :mobile, types: [:fixed_or_mobile], carrier: 'Test Mobile Carrier', country_code: 'US', area_code: '202', otp_delivery_preference: 'sms',
+        success: true, phone_type: :mobile, types: [:fixed_or_mobile], carrier: 'Test Mobile Carrier', country_code: 'US', area_code: '202', otp_delivery_preference: 'sms',
         proofing_components: { document_check: 'usps', resolution_check: 'ResolutionMock', residential_resolution_check: 'ResolutionMock', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', source_check: 'StateIdMock' }
       },
       'IdV: phone confirmation vendor' => {
-        success: true, errors: {}, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '' }, new_phone_added: false, hybrid_handoff_phone_used: false, area_code: '202', country_code: 'US', phone_fingerprint: anything,
+        success: true, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '' }, new_phone_added: false, hybrid_handoff_phone_used: false, area_code: '202', country_code: 'US', phone_fingerprint: anything,
         proofing_components: { address_check: 'lexis_nexis_address', document_check: 'usps', resolution_check: 'ResolutionMock', residential_resolution_check: 'ResolutionMock', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', source_check: 'StateIdMock' }
       },
       'IdV: phone confirmation otp sent' => {
-        success: true, otp_delivery_preference: :sms, country_code: 'US', area_code: '202', adapter: :test, errors: {}, phone_fingerprint: anything, rate_limit_exceeded: false, telephony_response: anything,
+        success: true, otp_delivery_preference: :sms, country_code: 'US', area_code: '202', adapter: :test, phone_fingerprint: anything, rate_limit_exceeded: false, telephony_response: anything,
         proofing_components: { address_check: 'lexis_nexis_address', document_check: 'usps', resolution_check: 'ResolutionMock', residential_resolution_check: 'ResolutionMock', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', source_check: 'StateIdMock' }
       },
       'IdV: phone confirmation otp visited' => {
         proofing_components: { address_check: 'lexis_nexis_address', document_check: 'usps', resolution_check: 'ResolutionMock', residential_resolution_check: 'ResolutionMock', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', source_check: 'StateIdMock' },
       },
       'IdV: phone confirmation otp submitted' => {
-        success: true, code_expired: false, code_matches: true, otp_delivery_preference: :sms, second_factor_attempts_count: 0, errors: {},
+        success: true, code_expired: false, code_matches: true, otp_delivery_preference: :sms, second_factor_attempts_count: 0,
         proofing_components: { document_check: 'usps', source_check: 'StateIdMock', resolution_check: 'ResolutionMock', residential_resolution_check: 'ResolutionMock', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
       },
       :idv_enter_password_visited => {
@@ -689,13 +689,13 @@ RSpec.feature 'Analytics Regression', :js do
         checked: true,
       },
       'IdV: doc auth agreement submitted' => {
-        success: true, errors: {}, step: 'agreement', analytics_id: 'Doc Auth'
+        success: true, step: 'agreement', analytics_id: 'Doc Auth'
       },
       'IdV: doc auth hybrid handoff visited' => {
         step: 'hybrid_handoff', analytics_id: 'Doc Auth', selfie_check_required: boolean
       },
       'IdV: doc auth hybrid handoff submitted' => {
-        success: true, errors: {}, destination: :document_capture, flow_path: 'standard', step: 'hybrid_handoff', analytics_id: 'Doc Auth', selfie_check_required: boolean
+        success: true, destination: :document_capture, flow_path: 'standard', step: 'hybrid_handoff', analytics_id: 'Doc Auth', selfie_check_required: boolean
       },
       'IdV: doc auth document_capture visited' => {
         flow_path: 'standard', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: true
@@ -707,14 +707,14 @@ RSpec.feature 'Analytics Regression', :js do
         width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, captureAttempts: 1, flow_path: 'standard', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: kind_of(String), fingerprint: anything, failedImageResubmission: boolean, liveness_checking_required: boolean
       },
       'IdV: doc auth image upload form submitted' => {
-        success: true, errors: {}, submit_attempts: 1, remaining_submit_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean
+        success: true, submit_attempts: 1, remaining_submit_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean
       },
       'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'standard', attention_with_barcode: false, doc_auth_result: 'Passed'),
       'IdV: doc auth image upload vendor pii validation' => {
-        success: true, errors: {}, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present'
+        success: true, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present'
       },
       'IdV: doc auth document_capture submitted' => {
-        success: true, errors: {}, flow_path: 'standard', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: true,
+        success: true, flow_path: 'standard', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: true,
         proofing_components: { document_check: 'mock', document_type: 'state_id' }
       },
       :idv_selfie_image_added => {
@@ -725,7 +725,7 @@ RSpec.feature 'Analytics Regression', :js do
         proofing_components: { document_check: 'mock', document_type: 'state_id' }
       },
       'IdV: doc auth ssn submitted' => {
-        success: true, errors: {}, flow_path: 'standard', step: 'ssn', analytics_id: 'Doc Auth',
+        success: true, flow_path: 'standard', step: 'ssn', analytics_id: 'Doc Auth',
         proofing_components: { document_check: 'mock', document_type: 'state_id' }
       },
       'IdV: doc auth verify visited' => {
@@ -742,7 +742,7 @@ RSpec.feature 'Analytics Regression', :js do
         end
       ),
       'IdV: doc auth verify proofing results' => {
-        success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', step: 'verify',
+        success: true, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', step: 'verify',
         proofing_results: doc_auth_verify_proofing_results,
         proofing_components: base_proofing_components
       },
@@ -750,22 +750,22 @@ RSpec.feature 'Analytics Regression', :js do
         proofing_components: base_proofing_components,
       },
       'IdV: phone confirmation form' => {
-        success: true, errors: {}, phone_type: :mobile, types: [:fixed_or_mobile], carrier: 'Test Mobile Carrier', country_code: 'US', area_code: '202', otp_delivery_preference: 'sms',
+        success: true, phone_type: :mobile, types: [:fixed_or_mobile], carrier: 'Test Mobile Carrier', country_code: 'US', area_code: '202', otp_delivery_preference: 'sms',
         proofing_components: base_proofing_components
       },
       'IdV: phone confirmation vendor' => {
-        success: true, errors: {}, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '' }, new_phone_added: false, hybrid_handoff_phone_used: false, area_code: '202', country_code: 'US', phone_fingerprint: anything,
+        success: true, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '' }, new_phone_added: false, hybrid_handoff_phone_used: false, area_code: '202', country_code: 'US', phone_fingerprint: anything,
         proofing_components: lexis_nexis_address_proofing_components
       },
       'IdV: phone confirmation otp sent' => {
-        success: true, otp_delivery_preference: :sms, country_code: 'US', area_code: '202', adapter: :test, errors: {}, phone_fingerprint: anything, rate_limit_exceeded: false, telephony_response: anything,
+        success: true, otp_delivery_preference: :sms, country_code: 'US', area_code: '202', adapter: :test, phone_fingerprint: anything, rate_limit_exceeded: false, telephony_response: anything,
         proofing_components: lexis_nexis_address_proofing_components
       },
       'IdV: phone confirmation otp visited' => {
         proofing_components: lexis_nexis_address_proofing_components,
       },
       'IdV: phone confirmation otp submitted' => {
-        success: true, code_expired: false, code_matches: true, otp_delivery_preference: :sms, second_factor_attempts_count: 0, errors: {},
+        success: true, code_expired: false, code_matches: true, otp_delivery_preference: :sms, second_factor_attempts_count: 0,
         proofing_components: lexis_nexis_address_proofing_components
       },
       :idv_enter_password_visited => {

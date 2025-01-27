@@ -29,7 +29,6 @@ RSpec.describe Users::EmailConfirmationsController do
         expect(@analytics).to have_logged_event(
           'Add Email: Email Confirmation',
           success: true,
-          errors: {},
           from_select_email_flow: false,
           user_id: user.uuid,
         )
@@ -151,7 +150,6 @@ RSpec.describe Users::EmailConfirmationsController do
           expect(@analytics).to have_logged_event(
             'Add Email: Email Confirmation',
             success: true,
-            errors: {},
             from_select_email_flow: true,
             user_id: user.uuid,
           )

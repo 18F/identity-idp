@@ -103,7 +103,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
           expect(@analytics).to have_logged_event(
             'Multi-Factor Authentication Setup',
             success: false,
-            errors: {},
             totp_secret_present: true,
             multi_factor_auth_method: 'totp',
             enabled_mfa_methods_count: 0,
@@ -131,7 +130,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
           expect(@analytics).to have_logged_event(
             'Multi-Factor Authentication Setup',
             success: true,
-            errors: {},
             totp_secret_present: true,
             multi_factor_auth_method: 'totp',
             auth_app_configuration_id: next_auth_app_id,
@@ -162,7 +160,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
           expect(@analytics).to have_logged_event(
             'Multi-Factor Authentication Setup',
             success: true,
-            errors: {},
             totp_secret_present: true,
             multi_factor_auth_method: 'totp',
             auth_app_configuration_id: next_auth_app_id,
@@ -192,7 +189,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
           expect(@analytics).to have_logged_event(
             'Multi-Factor Authentication Setup',
             success: false,
-            errors: {},
             totp_secret_present: true,
             multi_factor_auth_method: 'totp',
             enabled_mfa_methods_count: 1,
@@ -251,7 +247,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
           expect(@analytics).to have_logged_event(
             'Multi-Factor Authentication Setup',
             success: false,
-            errors: {},
             totp_secret_present: true,
             multi_factor_auth_method: 'totp',
             enabled_mfa_methods_count: 0,
@@ -282,7 +277,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
             expect(@analytics).to have_logged_event(
               'Multi-Factor Authentication Setup',
               success: true,
-              errors: {},
               totp_secret_present: true,
               multi_factor_auth_method: 'totp',
               auth_app_configuration_id: next_auth_app_id,
@@ -302,7 +296,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
             expect(@analytics).to have_logged_event(
               'Multi-Factor Authentication Setup',
               success: true,
-              errors: {},
               totp_secret_present: true,
               multi_factor_auth_method: 'totp',
               auth_app_configuration_id: next_auth_app_id,
@@ -330,7 +323,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
           expect(@analytics).to have_logged_event(
             'Multi-Factor Authentication Setup',
             success: false,
-            errors: {},
             totp_secret_present: false,
             multi_factor_auth_method: 'totp',
             enabled_mfa_methods_count: 0,

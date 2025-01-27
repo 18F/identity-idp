@@ -199,7 +199,7 @@ RSpec.describe SocureShadowModeProofingJob do
           user_id: user.uuid,
           resolution_result: {
             success: true,
-            errors: {},
+            errors: nil,
             context: {
               device_profiling_adjudication_reason: 'device_profiling_result_pass',
               resolution_adjudication_reason: 'pass_resolution_and_state_id',

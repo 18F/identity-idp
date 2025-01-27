@@ -337,7 +337,6 @@ RSpec.describe Idv::PhoneController do
           'IdV: phone confirmation form',
           hash_including(
             success: true,
-            errors: {},
             area_code: '703',
             country_code: 'US',
             carrier: 'Test Mobile Carrier',
@@ -441,7 +440,6 @@ RSpec.describe Idv::PhoneController do
             success: true,
             new_phone_added: true,
             hybrid_handoff_phone_used: false,
-            errors: {},
             phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
             country_code: proofing_phone.country,
             area_code: proofing_phone.area_code,
