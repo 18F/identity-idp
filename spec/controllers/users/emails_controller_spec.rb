@@ -64,7 +64,6 @@ RSpec.describe Users::EmailsController do
       expect(@analytics).to have_logged_event(
         'Add Email Requested',
         success: true,
-        errors: {},
         domain_name: 'example.com',
         in_select_email_flow: false,
         user_id: user.uuid,
@@ -174,7 +173,6 @@ RSpec.describe Users::EmailsController do
         expect(@analytics).to have_logged_event(
           'Add Email Requested',
           success: true,
-          errors: {},
           user_id: user.uuid,
           domain_name: email.split('@').last,
           in_select_email_flow: false,
@@ -237,7 +235,6 @@ RSpec.describe Users::EmailsController do
         expect(@analytics).to have_logged_event(
           'Email Deletion Requested',
           success: false,
-          errors: {},
         )
       end
 
@@ -257,7 +254,6 @@ RSpec.describe Users::EmailsController do
         expect(@analytics).to have_logged_event(
           'Email Deletion Requested',
           success: true,
-          errors: {},
         )
       end
 

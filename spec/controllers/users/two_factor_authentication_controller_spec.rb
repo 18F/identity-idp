@@ -344,7 +344,6 @@ RSpec.describe Users::TwoFactorAuthenticationController do
         expect(@analytics).to have_logged_event(
           'OTP: Delivery Selection',
           success: true,
-          errors: {},
           **otp_preference_sms,
           resend: true,
           context: 'authentication',
@@ -510,7 +509,6 @@ RSpec.describe Users::TwoFactorAuthenticationController do
         expect(@analytics).to have_logged_event(
           'OTP: Delivery Selection',
           success: true,
-          errors: {},
           otp_delivery_preference: 'voice',
           resend: false,
           context: 'authentication',

@@ -138,7 +138,6 @@ RSpec.describe Idv::InPerson::SsnController do
           flow_path: 'standard',
           step: 'ssn',
           success: true,
-          errors: {},
         }
       end
 
@@ -176,7 +175,6 @@ RSpec.describe Idv::InPerson::SsnController do
             step: 'ssn',
             success: true,
             previous_ssn_edit_distance: 6,
-            errors: {},
           }
         end
 

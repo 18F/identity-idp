@@ -342,7 +342,6 @@ RSpec.describe Idv::HybridHandoffController do
       let(:analytics_args) do
         {
           success: true,
-          errors: {},
           destination: :document_capture,
           flow_path: 'standard',
           step: 'hybrid_handoff',

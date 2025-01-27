@@ -348,7 +348,6 @@ RSpec.describe Idv::DocumentCaptureController do
     let(:analytics_args) do
       {
         success: true,
-        errors: {},
         analytics_id: 'Doc Auth',
         flow_path: 'standard',
         step: 'document_capture',

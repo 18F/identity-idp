@@ -31,7 +31,6 @@ RSpec.describe Users::PivCacLoginController do
 
           expect(@analytics).to have_logged_event(
             :piv_cac_login,
-            errors: {},
             success: false,
           )
         end
@@ -120,7 +119,6 @@ RSpec.describe Users::PivCacLoginController do
 
             expect(@analytics).to have_logged_event(
               :piv_cac_login,
-              errors: {},
               success: true,
               new_device: true,
             )
@@ -180,7 +178,6 @@ RSpec.describe Users::PivCacLoginController do
 
               expect(@analytics).to have_logged_event(
                 :piv_cac_login,
-                errors: {},
                 success: true,
                 new_device: false,
               )

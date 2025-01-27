@@ -375,7 +375,7 @@ RSpec.describe OpenidConnectTokenForm do
 
         expect(submission.to_h).to eq(
           success: true,
-          errors: {},
+          errors: nil,
           client_id: client_id,
           user_id: user.uuid,
           code_digest: Digest::SHA256.hexdigest(code),

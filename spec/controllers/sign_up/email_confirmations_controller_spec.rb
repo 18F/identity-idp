@@ -174,7 +174,6 @@ RSpec.describe SignUp::EmailConfirmationsController do
       expect(@analytics).to have_logged_event(
         'User Registration: Email Confirmation',
         success: true,
-        errors: {},
         user_id: user.uuid,
       )
     end
