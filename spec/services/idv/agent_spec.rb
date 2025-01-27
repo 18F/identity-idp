@@ -142,7 +142,6 @@ RSpec.describe Idv::Agent do
         expect(ResolutionProofingJob).to receive(:perform_later).with(
           hash_including(
             proofing_components: {
-              document_check: 'mock',
               document_type: 'state_id',
             },
           ),

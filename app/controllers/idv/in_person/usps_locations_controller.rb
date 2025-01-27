@@ -63,6 +63,8 @@ module Idv
           sponsor_id: enrollment_sponsor_id,
         )
 
+        idv_session.doc_auth_vendor = Idp::Constants::Vendors::USPS
+
         render json: { success: true }, status: :ok
       end
 
