@@ -65,8 +65,8 @@ class ServiceProviderIdentity < ApplicationRecord
     last_authenticated_at.in_time_zone('UTC')
   end
 
-  def hide_change_email?
-    verified_attributes&.include?('all_emails') && !verified_attributes.include?('email')
+  def verified_single_email_attribute?
+    verified_attributes.include?('email') && !verified_attributes.include?('all_emails')
   end
 
   def email_address_for_sharing

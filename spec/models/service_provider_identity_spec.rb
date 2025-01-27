@@ -2,10 +2,12 @@ require 'rails_helper'
 
 RSpec.describe ServiceProviderIdentity do
   let(:user) { create(:user, :fully_registered) }
+  let(:verified_attributes) { [] }
   let(:identity) do
     ServiceProviderIdentity.create(
       user_id: user.id,
       service_provider: 'externalapp',
+      verified_attributes:,
     )
   end
   subject { identity }
@@ -178,6 +180,40 @@ RSpec.describe ServiceProviderIdentity do
 
       it 'returns nil' do
         expect(subject.failure_to_proof_url).to eq(nil)
+      end
+    end
+  end
+
+  describe '#verified_single_email_attribute?' do
+    subject(:verified_single_email_attribute?) { identity.verified_single_email_attribute? }
+
+    context 'with no attributes verified' do
+      let(:verified_attributes) { [] }
+
+      it { is_expected.to be false }
+    end
+
+    context 'with a non-email attribute verified' do
+      let(:verified_attributes) { ['openid'] }
+
+      it { is_expected.to be false }
+    end
+
+    context 'with all_emails attribute verified' do
+      let(:verified_attributes) { ['all_emails'] }
+
+      it { is_expected.to be false }
+    end
+
+    context 'with email attribute verified' do
+      let(:verified_attributes) { ['email'] }
+
+      it { is_expected.to be true }
+
+      context 'with all_emails attribute verified' do
+        let(:verified_attributes) { ['email', 'all_emails'] }
+
+        it { is_expected.to be false }
       end
     end
   end
