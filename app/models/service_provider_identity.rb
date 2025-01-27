@@ -58,11 +58,6 @@ class ServiceProviderIdentity < ApplicationRecord
     sp_metadata[:friendly_name]
   end
 
-  def sp_only_single_email_requested?
-    verified_attributes&.include?('email') &&
-      !verified_attributes.include?('all_emails')
-  end
-
   def service_provider_id
     service_provider_record&.id
   end
@@ -71,8 +66,14 @@ class ServiceProviderIdentity < ApplicationRecord
     last_authenticated_at.in_time_zone('UTC')
   end
 
+  def verified_single_email_attribute?
+    verified_attributes.present? &&
+      verified_attributes.include?('email') &&
+      !verified_attributes.include?('all_emails')
+  end
+
   def clear_email_address_id_if_not_supported
-    if !sp_only_single_email_requested? &&
+    if !verified_single_email_attribute? &&
        IdentityConfig.store.feature_select_email_to_share_enabled
       self.email_address_id = nil
     end
