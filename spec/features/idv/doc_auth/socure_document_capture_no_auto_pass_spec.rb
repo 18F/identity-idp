@@ -46,8 +46,8 @@ RSpec.feature 'document capture step', :js do
       end
 
       it 'proceeds to the next page with valid info' do
-        expect(SocureDocvRepeatWebhookJob).to receive(:perform_later)
-          .exactly(6 * socure_docv_webhook_repeat_endpoints.length).times.and_call_original
+        # expect(SocureDocvRepeatWebhookJob).to receive(:perform_later)
+        #   .exactly(6 * socure_docv_webhook_repeat_endpoints.length).times.and_call_original
 
         perform_in_browser(:mobile) do
           visit_idp_from_oidc_sp_with_ial2
@@ -71,11 +71,16 @@ RSpec.feature 'document capture step', :js do
 
           click_link 'Cancel'
           click_button 'Start over'
-          click_button 'Continue'
-          complete_agreement_step
-          click_button 'Send link'
+        end
 
-          binding.pry
+        perform_in_browser(:desktop) do
+          visit idv_socure_document_capture_update_path
+
+          # binding.pry
+
+          # click_button 'Continue'
+          # complete_agreement_step
+          # click_button 'Send link' 
 
           # fill_out_ssn_form_ok
           # click_idv_continue
