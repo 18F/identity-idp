@@ -115,14 +115,6 @@ RSpec.describe SignUp::PasswordsController do
           expect(@analytics).to have_logged_event(
             'Password Creation',
             success: false,
-            errors: {
-              password: [
-                t('errors.attributes.password.too_short', count: Devise.password_length.first),
-              ],
-              password_confirmation: [
-                t('errors.messages.too_short', count: Devise.password_length.first),
-              ],
-            },
             error_details: {
               password: { too_short: true },
               password_confirmation: { too_short: true },
@@ -143,9 +135,6 @@ RSpec.describe SignUp::PasswordsController do
           expect(@analytics).to have_logged_event(
             'Password Creation',
             success: false,
-            errors: {
-              password_confirmation: [t('errors.messages.password_mismatch')],
-            },
             error_details: {
               password_confirmation: { mismatch: true },
             },

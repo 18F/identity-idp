@@ -1096,7 +1096,6 @@ RSpec.describe SamlIdpController do
           'SAML Auth',
           hash_including(
             success: false,
-            errors: { authn_context: [t('errors.messages.unauthorized_authn_context')] },
             error_details: { authn_context: { unauthorized_authn_context: true } },
             nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
             authn_context: [unknown_value],
@@ -1374,7 +1373,6 @@ RSpec.describe SamlIdpController do
           'SAML Auth',
           hash_including(
             success: false,
-            errors: { service_provider: [t('errors.messages.unauthorized_service_provider')] },
             error_details: { service_provider: { unauthorized_service_provider: true } },
             nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
             authn_context: request_authn_contexts,
@@ -1421,10 +1419,6 @@ RSpec.describe SamlIdpController do
           'SAML Auth',
           hash_including(
             success: false,
-            errors: {
-              service_provider: [t('errors.messages.unauthorized_service_provider')],
-              authn_context: [t('errors.messages.unauthorized_authn_context')],
-            },
             error_details: {
               authn_context: { unauthorized_authn_context: true },
               service_provider: { unauthorized_service_provider: true },
@@ -1486,7 +1480,6 @@ RSpec.describe SamlIdpController do
           'SAML Auth',
           hash_including(
             success: false,
-            errors: { service_provider: [t('errors.messages.no_cert_registered')] },
             error_details: { service_provider: { no_cert_registered: true } },
           ),
         )
@@ -1984,7 +1977,6 @@ RSpec.describe SamlIdpController do
           'SAML Auth',
           hash_including(
             success: false,
-            errors: { service_provider: ['We cannot detect a certificate in your request.'] },
             error_details: { service_provider: { blank_cert_element_req: true } },
             nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
             authn_context: [Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF],

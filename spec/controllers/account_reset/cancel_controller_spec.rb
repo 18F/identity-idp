@@ -32,7 +32,6 @@ RSpec.describe AccountReset::CancelController do
       expect(@analytics).to have_logged_event(
         'Account Reset: cancel',
         success: false,
-        errors: { token: [t('errors.account_reset.cancel_token_invalid', app_name: APP_NAME)] },
         error_details: {
           token: { cancel_token_invalid: true },
         },
@@ -48,7 +47,6 @@ RSpec.describe AccountReset::CancelController do
       expect(@analytics).to have_logged_event(
         'Account Reset: cancel',
         success: false,
-        errors: { token: [t('errors.account_reset.cancel_token_missing', app_name: APP_NAME)] },
         error_details: { token: { blank: true } },
         user_id: 'anonymous-uuid',
       )
@@ -92,7 +90,6 @@ RSpec.describe AccountReset::CancelController do
         'Account Reset: cancel token validation',
         user_id: 'anonymous-uuid',
         success: false,
-        errors: { token: [t('errors.account_reset.cancel_token_invalid', app_name: APP_NAME)] },
         error_details: {
           token: { cancel_token_invalid: true },
         },

@@ -6,7 +6,6 @@ RSpec.describe SignUp::EmailConfirmationsController do
       {
         success: false,
         error_details: { confirmation_token: { not_found: true } },
-        errors: { confirmation_token: ['not found'] },
       }
     end
 
@@ -87,7 +86,6 @@ RSpec.describe SignUp::EmailConfirmationsController do
       expect(@analytics).to have_logged_event(
         'User Registration: Email Confirmation',
         success: false,
-        errors: { confirmation_token: [t('errors.messages.expired')] },
         error_details: { confirmation_token: { expired: true } },
         user_id: email_address.user.uuid,
       )
@@ -110,7 +108,6 @@ RSpec.describe SignUp::EmailConfirmationsController do
       expect(@analytics).to have_logged_event(
         'User Registration: Email Confirmation',
         success: false,
-        errors: { confirmation_token: [t('errors.messages.expired')] },
         error_details: { confirmation_token: { expired: true } },
         user_id: user.uuid,
       )

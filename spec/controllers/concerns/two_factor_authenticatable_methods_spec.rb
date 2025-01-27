@@ -184,7 +184,6 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
         expect(@analytics).to have_logged_event(
           'Multi-Factor Authentication',
           success: false,
-          errors: { code: ['pattern_mismatch'] },
           error_details: { code: { pattern_mismatch: true } },
           multi_factor_auth_method: TwoFactorAuthenticatable::AuthMethod::SMS,
           enabled_mfa_methods_count: 1,

@@ -39,12 +39,10 @@ RSpec.describe PasswordResetEmailForm do
       it 'returns hash with properties about the event and the nonexistent user' do
         subject = PasswordResetEmailForm.new('invalid')
 
-        errors = { email: [t('valid_email.validations.email.invalid')] }
-
         expect(subject.submit.to_h).to include(
           success: false,
-          errors: errors,
-          error_details: hash_including(*errors.keys),
+          errors: nil,
+          error_details: { email: { invalid: true } },
           user_id: 'nonexistent-uuid',
           confirmed: false,
           active_profile: false,
@@ -53,12 +51,11 @@ RSpec.describe PasswordResetEmailForm do
 
       it 'returns false and adds errors to the form object when domain is invalid' do
         subject = PasswordResetEmailForm.new('test@çà.com')
-        errors = { email: [t('valid_email.validations.email.invalid')] }
 
         expect(subject.submit.to_h).to include(
           success: false,
-          errors: errors,
-          error_details: hash_including(*errors.keys),
+          errors: nil,
+          error_details: { email: { domain: true } },
           user_id: 'nonexistent-uuid',
           confirmed: false,
           active_profile: false,

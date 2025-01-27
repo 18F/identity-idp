@@ -44,85 +44,61 @@ RSpec.describe WebauthnVisitForm do
     context 'when there are errors' do
       it 'returns FormResponse with success: false with InvalidStateError' do
         params = { error: 'InvalidStateError' }
-        errors = { InvalidStateError: [I18n.t('errors.webauthn_setup.already_registered')] }
 
         expect(subject.submit(params).to_h).to include(
           success: false,
-          errors: errors,
-          error_details: hash_including(*errors.keys),
+          errors: nil,
+          error_details: { InvalidStateError: { invalid: true } },
         )
       end
 
       it 'returns FormResponse with success: false with NotSupportedError' do
         params = { error: 'NotSupportedError' }
-        errors = { NotSupportedError: [I18n.t('errors.webauthn_setup.not_supported')] }
 
         expect(subject.submit(params).to_h).to include(
           success: false,
-          errors: errors,
-          error_details: hash_including(*errors.keys),
+          errors: nil,
+          error_details: { NotSupportedError: { invalid: true } },
         )
       end
 
       it 'returns FormResponse with success: false with an unrecognized error' do
         params = { error: 'foo' }
-        general_error = t(
-          'errors.webauthn_setup.general_error_html',
-          link_html: link_to(
-            t('errors.webauthn_setup.additional_methods_link'),
-            authentication_methods_setup_path,
-          ),
-        )
-        errors = {
-          foo: [general_error],
-        }
 
         expect(subject.submit(params).to_h).to include(
           success: false,
-          errors: errors,
-          error_details: hash_including(*errors.keys),
+          error_details: { foo: { invalid: true } },
         )
       end
 
       context 'with platform authenticator' do
         it 'returns FormResponse with success: false with InvalidStateError' do
           params = { error: 'InvalidStateError', platform: 'true' }
-          errors = {
-            InvalidStateError: [I18n.t('errors.webauthn_platform_setup.already_registered')],
-          }
 
           expect(subject.submit(params).to_h).to include(
             success: false,
-            errors: errors,
-            error_details: hash_including(*errors.keys),
+            errors: nil,
+            error_details: { InvalidStateError: { invalid: true } },
           )
         end
 
         it 'returns FormResponse with success: false with NotSupportedError' do
           params = { error: 'NotSupportedError', platform: 'true' }
-          errors = { NotSupportedError: [I18n.t('errors.webauthn_platform_setup.not_supported')] }
 
           expect(subject.submit(params).to_h).to include(
             success: false,
-            errors: errors,
-            error_details: hash_including(*errors.keys),
+            errors: nil,
+            error_details: { NotSupportedError: { invalid: true } },
           )
         end
 
         it 'returns FormResponse with success: false with an unrecognized error' do
           params = { error: 'foo', platform: 'true' }
-          errors = { foo: [I18n.t(
-            'errors.webauthn_platform_setup.account_setup_error',
-            link: link_to(
-              I18n.t('errors.webauthn_platform_setup.choose_another_method'),
-              authentication_methods_setup_path,
-            ),
-          )] }
 
           expect(subject.submit(params).to_h).to include(
             success: false,
-            errors: errors,
-            error_details: hash_including(*errors.keys),
+            errors: nil,
+            error_details: { foo: { invalid: true } },
           )
         end
 
@@ -132,15 +108,11 @@ RSpec.describe WebauthnVisitForm do
 
           it 'returns FormResponse with success: false with an unrecognized error' do
             params = { error: 'foo', platform: 'true' }
-            errors = { foo: [I18n.t(
-              'errors.webauthn_platform_setup.account_setup_error',
-              link: I18n.t('errors.webauthn_platform_setup.choose_another_method'),
-            )] }
 
             expect(subject.submit(params).to_h).to include(
               success: false,
-              errors: errors,
-              error_details: hash_including(*errors.keys),
+              errors: nil,
+              error_details: { foo: { invalid: true } },
             )
           end
         end

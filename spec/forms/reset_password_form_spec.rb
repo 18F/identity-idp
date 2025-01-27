@@ -33,7 +33,7 @@ RSpec.describe ResetPasswordForm, type: :model do
         it 'returns a hash with errors' do
           expect(result.to_h).to eq(
             success: false,
-            errors: { reset_password_token: ['token_expired'] },
+            errors: nil,
             error_details: { reset_password_token: { token_expired: true } },
             user_id: '123',
             profile_deactivated: false,
@@ -53,14 +53,7 @@ RSpec.describe ResetPasswordForm, type: :model do
         it 'returns a hash with errors' do
           expect(result.to_h).to eq(
             success: false,
-            errors: {
-              password:
-                ["Password must be at least #{Devise.password_length.first} characters long"],
-              password_confirmation: [I18n.t(
-                'errors.messages.too_short',
-                count: Devise.password_length.first,
-              )],
-            },
+            errors: nil,
             error_details: {
               password: { too_short: true },
               password_confirmation: { too_short: true },
@@ -102,18 +95,7 @@ RSpec.describe ResetPasswordForm, type: :model do
         it 'returns a hash with errors' do
           expect(result.to_h).to eq(
             success: false,
-            errors: {
-              password: [
-                t(
-                  'errors.attributes.password.too_short.other',
-                  count: Devise.password_length.first,
-                ),
-              ],
-              password_confirmation: [
-                t('errors.messages.too_short', count: Devise.password_length.first),
-              ],
-              reset_password_token: ['token_expired'],
-            },
+            errors: nil,
             error_details: {
               password: { too_short: true },
               password_confirmation: { too_short: true },
@@ -133,7 +115,7 @@ RSpec.describe ResetPasswordForm, type: :model do
         it 'returns a hash with errors' do
           expect(result.to_h).to eq(
             success: false,
-            errors: { reset_password_token: ['invalid_token'] },
+            errors: nil,
             error_details: { reset_password_token: { invalid_token: true } },
             user_id: nil,
             profile_deactivated: false,
@@ -288,7 +270,7 @@ RSpec.describe ResetPasswordForm, type: :model do
         it 'returns a hash with errors' do
           expect(result.to_h).to eq(
             success: false,
-            errors: { reset_password_token: ['token_expired'] },
+            errors: nil,
             error_details: { reset_password_token: { token_expired: true } },
             user_id: '123',
             profile_deactivated: false,
@@ -308,14 +290,7 @@ RSpec.describe ResetPasswordForm, type: :model do
         it 'returns a hash with errors' do
           expect(result.to_h).to eq(
             success: false,
-            errors: {
-              password:
-                ["Password must be at least #{Devise.password_length.first} characters long"],
-              password_confirmation: [I18n.t(
-                'errors.messages.too_short',
-                count: Devise.password_length.first,
-              )],
-            },
+            errors: nil,
             error_details: {
               password: { too_short: true },
               password_confirmation: { too_short: true },
@@ -357,18 +332,7 @@ RSpec.describe ResetPasswordForm, type: :model do
         it 'returns a hash with errors' do
           expect(result.to_h).to eq(
             success: false,
-            errors: {
-              password: [
-                t(
-                  'errors.attributes.password.too_short.other',
-                  count: Devise.password_length.first,
-                ),
-              ],
-              password_confirmation: [
-                t('errors.messages.too_short', count: Devise.password_length.first),
-              ],
-              reset_password_token: ['token_expired'],
-            },
+            errors: nil,
             error_details: {
               password: { too_short: true },
               password_confirmation: { too_short: true },
@@ -388,7 +352,7 @@ RSpec.describe ResetPasswordForm, type: :model do
         it 'returns a hash with errors' do
           expect(result.to_h).to eq(
             success: false,
-            errors: { reset_password_token: ['invalid_token'] },
+            errors: nil,
             error_details: { reset_password_token: { invalid_token: true } },
             user_id: nil,
             profile_deactivated: false,

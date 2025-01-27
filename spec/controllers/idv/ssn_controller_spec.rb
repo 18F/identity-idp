@@ -234,9 +234,6 @@ RSpec.describe Idv::SsnController do
           flow_path: 'standard',
           step: 'ssn',
           success: false,
-          errors: {
-            ssn: [t('idv.errors.pattern_mismatch.ssn')],
-          },
           error_details: { ssn: { invalid: true } },
         }
       end

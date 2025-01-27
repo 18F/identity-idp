@@ -25,7 +25,6 @@ RSpec.describe OpenidConnect::UserInfoController do
         expect(@analytics).to have_logged_event(
           'OpenID Connect: bearer token authentication',
           success: false,
-          errors: hash_including(:access_token),
           error_details: hash_including(:access_token),
         )
 
@@ -59,7 +58,6 @@ RSpec.describe OpenidConnect::UserInfoController do
         expect(@analytics).to have_logged_event(
           'OpenID Connect: bearer token authentication',
           success: false,
-          errors: hash_including(:access_token),
           error_details: hash_including(:access_token),
         )
 
@@ -92,7 +90,6 @@ RSpec.describe OpenidConnect::UserInfoController do
         expect(@analytics).to have_logged_event(
           'OpenID Connect: bearer token authentication',
           success: false,
-          errors: hash_including(:access_token),
           error_details: hash_including(:access_token),
         )
 
@@ -129,7 +126,6 @@ RSpec.describe OpenidConnect::UserInfoController do
         expect(@analytics).to have_logged_event(
           'OpenID Connect: bearer token authentication',
           success: false,
-          errors: { access_token: [t('openid_connect.user_info.errors.not_found')] },
           error_details: { access_token: { not_found: true } },
         )
       end

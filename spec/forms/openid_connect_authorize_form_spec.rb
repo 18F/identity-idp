@@ -66,7 +66,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
         it 'is unsuccessful and has error messages' do
           expect(result.to_h).to eq(
             success: false,
-            errors: { response_type: ['is not included in the list'] },
+            errors: nil,
             error_details: { response_type: { inclusion: true } },
             client_id: client_id,
             prompt: 'select_account',
