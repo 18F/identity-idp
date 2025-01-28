@@ -62,6 +62,36 @@ margins or borders.
 
 - [U.S. Web Design System utilities](https://designsystem.digital.gov/utilities/)
 
+### CSS Build Tooling
+
+Stylesheets are compiled from Sass source files using our [`@18f/identity-build-sass` NPM package](../app/javascript/packages/build-sass/README.md)
+`build-sass` command-line utility.
+
+`@18f/identity-build-sass` is a wrapper of the official Sass [`sass-embedded` NPM package](https://www.npmjs.com/package/sass-embedded),
+with a few additional features:
+
+- Minifies stylesheets in production environments.
+- Downgrades stylesheets to use browser vendor prefixes where necessary.
+- Adds load paths for the [Login.gov Design System](https://github.com/18f/identity-design-system)
+  and [U.S. Web Design System](https://designsystem.digital.gov/).
+
+Sass source files are automatically compiled from:
+
+- `app/assets/stylesheets/`: Application-wide stylesheets to be included in every page.
+- `app/components/`: Stylesheets which are loaded automatically whenever the corresponding
+  ViewComponent component implementation is used in a page.
+
+Compiled files are output to the `app/assets/builds/` directory, which is where [Propshaft](https://github.com/rails/propshaft)
+looks for assets referenced by asset URL helpers like `stylesheet_path` and others.
+
+In deployed environments, we rely on Propshaft to append a [fingerprint](https://en.wikipedia.org/wiki/Fingerprint_(computing))
+suffix to invalidate caches for previous versions of the stylesheet.
+
+The [`cssbundling-rails` gem](https://github.com/rails/cssbundling-rails) is a dependency of the
+project, which enhances `rake assets:precompile` to invoke `yarn build:css` as part of
+[assets precompilation](https://guides.rubyonrails.org/asset_pipeline.html#precompiling-assets)
+during application deployment.
+
 ## JavaScript
 
 ### At a Glance
@@ -194,6 +224,54 @@ how [`Idv::AnalyticsEventEnhancer`][analytics_events_enhancer.rb] is implemented
 [analytics_events.rb]: https://github.com/18F/identity-idp/blob/main/app/services/analytics_events.rb
 [data_attributes]: https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes
 [analytics_events_enhancer.rb]: https://github.com/18F/identity-idp/blob/main/app/services/idv/analytics_events_enhancer.rb
+
+### JavaScript Build Tooling
+
+JavaScript is bundled using [Webpack](https://webpack.js.org/) with syntax transformation applied by
+[Babel](https://babeljs.io/).
+
+Webpack is configured to look for entrypoints in:
+
+- `app/javascript/packs/`: JavaScript bundles that are loaded in Ruby on Rails view files using the
+  `javascript_packs_tag_once` script helper.
+- `app/components/`: JavaScript bundles which are loaded automatically whenever the corresponding
+  ViewComponent component implementation is used in a page.
+
+Compiled files are output to the `public/packs/` directory, along with a manifest file. The manifest
+file is used by the Ruby on Rails backend to determine all of the assets associated with a given
+pack to be included when the script is referenced:
+
+- The exact file name of the compiled script, which may include a [fingerprint](https://en.wikipedia.org/wiki/Fingerprint_(computing))
+  suffix to invalidate caches for previous versions of the script in deployed environments.
+- A list of images and other assets referenced in a script using [`@18f/identity-assets` package](../app/javascript/packages/assets/README.md)
+  utilities.
+- A reference to additional JavaScript file for each locale containing translations, if the script
+  uses [`@18f/identity-i18n` package](../app/javascript/packages/i18n/README.md)
+  translation functions.
+- SHA256 checksums of compiled scripts, used for [subresource integrity attributes](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity).
+
+As an example, see [the manifest file for current production JavaScript assets](https://secure.login.gov/packs/manifest.json).
+
+The manifest is generated using [WebpackManifestPlugin](https://github.com/shellscape/webpack-manifest-plugin),
+enhanced with custom Webpack plugins:
+
+- [`RailsAssetsWebpackPlugin`][rails-assets-webpack-plugin-readme]: Detects calls to `getAssetPath`
+  to enhance the manifest to include the set of assets referenced by a script bundle.
+- [`RailsI18nWebpackPlugin`][rails-i18n-webpack-plugin-readme]: Detects calls to `t` translation
+  function to generate new script files for every supported locale containing translations data for
+  keys referenced by a script bundle, enhancing the manifest to add those new script files as
+  additional assets of the script.
+
+The JavaScript manifest is parsed by the [`AssetSources` class](../lib/asset_sources.rb) when the
+[`render_javascript_pack_once_tags` script helper method](../app/helpers/script_helper.rb) is called
+in the application's view layout.
+
+The [`jsbundling-rails` gem](https://github.com/rails/jsbundling-rails) is a dependency of the
+project, which enhances `rake assets:precompile` to invoke `yarn build` as part of [assets precompilation](https://guides.rubyonrails.org/asset_pipeline.html#precompiling-assets)
+during application deployment.
+
+[rails-assets-webpack-plugin-readme]: ../app/javascript/packages/assets/README.md
+[rails-i18n-webpack-plugin-readme]: ../app/javascript/packages/rails-i18n-webpack-plugin/README.md
 
 ## Image Assets
 
