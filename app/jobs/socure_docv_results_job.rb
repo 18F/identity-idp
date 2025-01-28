@@ -38,7 +38,7 @@ class SocureDocvResultsJob < ApplicationJob
         return
       end
     end
-    document_capture_session.store_result_from_response(response)
+    document_capture_session.store_result_from_response(docv_result_response)
   end
 
   private
