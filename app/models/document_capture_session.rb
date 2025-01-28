@@ -46,6 +46,8 @@ class DocumentCaptureSession < ApplicationRecord
     session_result.add_failed_back_image!(back_image_fingerprint)
     session_result.add_failed_selfie_image!(selfie_image_fingerprint) if selfie_status == :fail
 
+    session_result.errors = errors
+
     EncryptedRedisStructStorage.store(
       session_result,
       expires_in: IdentityConfig.store.doc_capture_request_valid_for_minutes.minutes.in_seconds,

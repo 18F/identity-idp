@@ -27,7 +27,7 @@ class SocureDocvResultsJob < ApplicationJob
       doc_pii_response = Idv::DocPiiForm.new(pii: docv_result_response.pii_from_doc.to_h).submit
       # TODO: analytics event here
       unless doc_pii_response&.success?
-        store_failed_auth_data(
+        document_capture_session.store_failed_auth_data(
           doc_auth_success: true,
           selfie_status: docv_result_response.selfie_status,
           errors: { pii_validation: 'failed' },
