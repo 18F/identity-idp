@@ -283,6 +283,25 @@ RSpec.describe Idv::DocPiiForm do
         )
       end
 
+      context 'expiration date is 2020-01-01' do # test 2020-01-01 fails outside socure test mode
+        let(:pii) { state_id_expired_error_pii.merge(state_id_expiration: '2020-01-01') }
+        it 'returns a single state ID expiration error' do
+          result = subject.submit
+
+          expect(result).to be_kind_of(FormResponse)
+          expect(result.success?).to eq(false)
+          expect(result.errors[:state_id_expiration]).to eq [
+            t('doc_auth.errors.general.no_liveness'),
+          ]
+          expect(result.extra).to eq(
+            attention_with_barcode: false,
+            pii_like_keypaths: pii_like_keypaths,
+            id_issued_status: 'present',
+            id_expiration_status: 'present',
+          )
+        end
+      end
+
       context 'when in socure_test_mode' do
         before do
           allow(IdentityConfig.store).to receive(:socure_docv_verification_data_test_mode)
