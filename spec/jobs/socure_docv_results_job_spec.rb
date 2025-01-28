@@ -123,6 +123,8 @@ RSpec.describe SocureDocvResultsJob do
         document_capture_session.reload
         document_capture_session_result = document_capture_session.load_result
         expect(document_capture_session_result.success).to eq(false)
+        expect(document_capture_session_result.doc_auth_success).to eq(true)
+        expect(document_capture_session_result.errors).to eq({ pii_validation: 'failed' })
       end
     end
 
