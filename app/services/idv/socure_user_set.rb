@@ -9,11 +9,12 @@ module Idv
     end
 
     def add_user!(user_uuid:)
-      return if maxed_users?
+      return false if maxed_users?
 
       redis_pool.with do |client|
         client.sadd(key, user_uuid)
       end
+      true
     end
 
     def count
