@@ -74,7 +74,7 @@ class SocureDocvResultsJob < ApplicationJob
         remaining_submit_attempts: rate_limiter&.remaining_count,
         flow_path: nil,
         liveness_checking_required: nil,
-      )
+      ),
     )
   end
 
