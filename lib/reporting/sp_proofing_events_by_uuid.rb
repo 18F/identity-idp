@@ -140,17 +140,22 @@ module Reporting
     def data
       return @data if defined? @data
 
-      @data ||= fetch_results.map do |result_row|
+      login_uuid_data ||= fetch_results.map do |result_row|
         process_result_row(result_row)
       end
+      login_uuid_to_agency_uuid_map = build_uuid_map(login_uuid_data.map(&:first))
+
+      @data = login_uuid_data.map do |row|
+        login_uuid, *row_data = row
+        agency_uuid = login_uuid_to_agency_uuid_map[login_uuid]
+        next if agency_uuid.nil?
+        [agency_uuid, *row_data]
+      end.compact
     end
 
     def process_result_row(result_row)
-      login_uuid = result_row['login_uuid']
-      agency_uuid = convert_uuid(login_uuid)
-      return unless agency_uuid.present?
       [
-        agency_uuid,
+        result_row['login_uuid'],
         result_row['workflow_started'] == '1',
         result_row['doc_auth_started'] == '1',
         result_row['document_captured'] == '1',
@@ -171,10 +176,24 @@ module Reporting
       ]
     end
 
-    def convert_uuid(uuid)
-      user = User.find_by(uuid: uuid)
-      user&.agency_identities&.find_by(agency:)&.uuid
+    # rubocop:disable Rails/FindEach
+    # Use of `find` instead of `find_each` here is safe since we are already batching the UUIDs
+    # that go into the query
+    def build_uuid_map(uuids)
+      uuid_map = Hash.new
+
+      uuids.each_slice(1000) do |uuid_slice|
+        AgencyIdentity.joins(:user).where(
+          agency:,
+          users: { uuid: uuid_slice },
+        ).each do |agency_identity|
+          uuid_map[agency_identity.user.uuid] = agency_identity.uuid
+        end
+      end
+
+      uuid_map
     end
+    # rubocop:enable Rails/FindEach
 
     def agency
       @agency ||= begin
