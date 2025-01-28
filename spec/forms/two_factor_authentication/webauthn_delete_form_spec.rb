@@ -4,7 +4,10 @@ RSpec.describe TwoFactorAuthentication::WebauthnDeleteForm do
   let(:user) { create(:user) }
   let(:configuration) { create(:webauthn_configuration, user:) }
   let(:configuration_id) { configuration&.id }
-  let(:form) { described_class.new(user:, configuration_id:) }
+  let(:skip_multiple_mfa_validation) {}
+  let(:form) do
+    described_class.new(user:, configuration_id:, **{ skip_multiple_mfa_validation: }.compact)
+  end
 
   describe '#submit' do
     let(:result) { form.submit }
@@ -93,6 +96,19 @@ RSpec.describe TwoFactorAuthentication::WebauthnDeleteForm do
           configuration_id:,
           platform_authenticator: false,
         )
+      end
+
+      context 'with skipped multiple mfa validation' do
+        let(:skip_multiple_mfa_validation) { true }
+
+        it 'returns a successful result' do
+          expect(result.success?).to eq(true)
+          expect(result.to_h).to eq(
+            success: true,
+            configuration_id:,
+            platform_authenticator: false,
+          )
+        end
       end
 
       context 'with platform authenticator' do

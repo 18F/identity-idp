@@ -3,6 +3,8 @@
 class RiscDeliveryJob < ApplicationJob
   queue_as :low
 
+  class DeliveryError < StandardError; end
+
   NETWORK_ERRORS = [
     Faraday::TimeoutError,
     Faraday::ConnectionFailed,
@@ -11,7 +13,7 @@ class RiscDeliveryJob < ApplicationJob
   ].freeze
 
   retry_on(
-    *NETWORK_ERRORS,
+    DeliveryError,
     wait: :polynomially_longer,
     attempts: 2,
   ) do |job, exception|
@@ -39,7 +41,7 @@ class RiscDeliveryJob < ApplicationJob
            end
 
   def self.warning_error_classes
-    NETWORK_ERRORS + [RedisRateLimiter::LimitError]
+    [DeliveryError, RedisRateLimiter::LimitError]
   end
 
   def perform(
@@ -71,6 +73,8 @@ class RiscDeliveryJob < ApplicationJob
       success: response.success?,
       user:,
     )
+  rescue *NETWORK_ERRORS => e
+    raise DeliveryError.new(e.message)
   end
 
   def rate_limiter(url)

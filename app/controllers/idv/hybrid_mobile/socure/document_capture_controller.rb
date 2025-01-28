@@ -11,6 +11,7 @@ module Idv
         include SocureErrorsConcern
 
         check_or_render_not_found -> { IdentityConfig.store.socure_docv_enabled }
+        before_action :validate_step_not_completed, only: [:show]
         before_action :check_valid_document_capture_session, except: [:update]
         before_action -> do
           redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, in_hybrid_mobile: true)
@@ -84,6 +85,11 @@ module Idv
 
         private
 
+        def validate_step_not_completed
+          return if stored_result.blank? || !stored_result.success?
+          redirect_to idv_hybrid_mobile_capture_complete_url
+        end
+
         def socure_errors_presenter(result)
           SocureErrorPresenter.new(
             error_code: error_code_for(result),
@@ -130,6 +136,7 @@ module Idv
             analytics_id: 'Doc Auth',
             liveness_checking_required: false,
             selfie_check_required: false,
+            pii_like_keypaths: [[:pii]],
           }
         end
       end

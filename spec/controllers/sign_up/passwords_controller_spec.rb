@@ -72,7 +72,6 @@ RSpec.describe SignUp::PasswordsController do
         expect(@analytics).to have_logged_event(
           'Password Creation',
           success: true,
-          errors: {},
           user_id: user.uuid,
           request_id_present: false,
         )

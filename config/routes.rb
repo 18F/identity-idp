@@ -250,6 +250,10 @@ Rails.application.routes.draw do
     get '/webauthn_setup' => 'users/webauthn_setup#new', as: :webauthn_setup
     patch '/webauthn_setup' => 'users/webauthn_setup#confirm'
 
+    get '/webauthn_setup_mismatch' => 'users/webauthn_setup_mismatch#show'
+    patch '/webauthn_setup_mismatch' => 'users/webauthn_setup_mismatch#update'
+    delete '/webauthn_setup_mismatch' => 'users/webauthn_setup_mismatch#destroy'
+
     get '/authenticator_setup' => 'users/totp_setup#new'
     patch '/authenticator_setup' => 'users/totp_setup#confirm'
 

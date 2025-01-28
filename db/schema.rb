@@ -10,11 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_01_06_232958) do
+ActiveRecord::Schema[8.0].define(version: 2025_01_06_232958) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
+  enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
-  enable_extension "plpgsql"
 
   create_table "account_reset_requests", force: :cascade do |t|
     t.integer "user_id", null: false, comment: "sensitive=false"

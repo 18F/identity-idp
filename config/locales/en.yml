@@ -49,7 +49,7 @@ account.email_language.languages_list: You will receive emails from %{app_name} 
 account.email_language.name.en: English
 account.email_language.name.es: Español
 account.email_language.name.fr: Français
-account.email_language.name.zh: 中文 (简体)
+account.email_language.name.zh: 中文（简体）
 account.email_language.updated: Your email language preference has been updated.
 account.emails.confirmed_html: You have confirmed your email address. Go to <a href="%{url}">your connected accounts</a> to update the email you share with connected agencies.
 account.forget_all_browsers.longer_description: Once you choose to ‘forget all browsers,’ we’ll need additional information to know that it’s actually you signing in to your account. We’ll ask for a multi-factor authentication method (such as text/SMS code or a security key) each time you want to access your account.
@@ -1007,7 +1007,7 @@ i18n.language: Language
 i18n.locale.en: English
 i18n.locale.es: Español
 i18n.locale.fr: Français
-i18n.locale.zh: 中文 (简体)
+i18n.locale.zh: 中文（简体）
 idv.accessible_labels.masked_ssn: secure text, starting with %{first_number} and ending with %{last_number}
 idv.buttons.change_address_label: Update address
 idv.buttons.change_label: Update
@@ -2044,6 +2044,12 @@ webauthn_platform_recommended.cta: Set up face or touch unlock
 webauthn_platform_recommended.description_save_time: Save time by using your face, fingerprint, password, or another method to access your account. This method is faster than receiving a one-time code through text or voice message.
 webauthn_platform_recommended.heading: Set up face or touch unlock for a quick and easy sign in
 webauthn_platform_recommended.skip: Skip
+webauthn_setup_mismatch.description_undo: Click “Undo” to remove this option.
+webauthn_setup_mismatch.description.webauthn: We noticed you’re using a security key instead of face or touch unlock. Click “Continue” to use your security key to sign in from now on.
+webauthn_setup_mismatch.description.webauthn_platform: We noticed you’re using face or touch unlock instead of a security key. Click “Continue” to use face or touch unlock to sign in from now on.
+webauthn_setup_mismatch.heading.webauthn: Security key detected
+webauthn_setup_mismatch.heading.webauthn_platform: Face or touch unlock detected
+webauthn_setup_mismatch.undo: Undo
 zxcvbn.feedback.a_word_by_itself_is_easy_to_guess: A word by itself is easy to guess
 zxcvbn.feedback.add_another_word_or_two_uncommon_words_are_better: Add another word or two. Uncommon words are better
 zxcvbn.feedback.all_uppercase_is_almost_as_easy_to_guess_as_all_lowercase: All-uppercase is almost as easy to guess as all-lowercase

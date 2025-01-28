@@ -43,13 +43,13 @@ account.connected_apps.associated_html: 已连接 %{timestamp_html}
 account.connected_apps.description: 使用你的 %{app_name} 账户，你可以安全地连接到网上多个政府账户。以下列出了你目前已连接的所有账户。
 account.connected_apps.email_not_selected: 尚未选择电邮
 account.connected_apps.email_update_success_html: 你给<strong>%{sp_name}</strong>的电邮更新成功了。
-account.email_language.default: '%{language} （默认）'
+account.email_language.default: '%{language}（默认）'
 account.email_language.edit_title: 编辑电邮语言选择
 account.email_language.languages_list: 您将收到%{app_name}用您选择的语言发送的电子邮件。
 account.email_language.name.en: English
 account.email_language.name.es: Español
 account.email_language.name.fr: Français
-account.email_language.name.zh: 中文 (简体)
+account.email_language.name.zh: 中文（简体）
 account.email_language.updated: 你的电邮语言选择已更新。
 account.emails.confirmed_html: 你已确认了你的电邮地址。请到<a href="%{url}">你已连接的账户</a>来更新你与已连接机构所分享的电邮。
 account.forget_all_browsers.longer_description: 你选择“忘掉所有浏览器”后，我们将需要额外信息来知道的确是你在登录你自己的账户。每次你要访问自己的账户时，我们都会向你要一个多因素身份证实方法（比如短信/SMS 代码或安全密钥）
@@ -158,7 +158,7 @@ banned_user.title: 访问受限。
 components.barcode.image_alt: 条形码
 components.captcha_submit_button.action_message: 验证中
 components.captcha_submit_button.mock_score_disclaimer: 只针对内部
-components.captcha_submit_button.mock_score_label: reCAPTCHA 分数： (0.0 - 1.0)
+components.captcha_submit_button.mock_score_label: reCAPTCHA 分数：（0.0 - 1.0）
 components.clipboard_button.label: 复制
 components.clipboard_button.tooltip: 复制了！
 components.countdown_alert.time_remaining_html: 余下 %{countdown_html}
@@ -735,7 +735,7 @@ doc_auth.tips.review_issues_id_text4: 是否所有细节都清晰可见？
 email_address.not_found: 未找到电子邮件
 email_addresses.add.duplicate: 该电邮地址已注册到你的账户。
 email_addresses.add.limit: 你添加的电邮地址数目已达最多。
-email_addresses.delete.bullet1: 使用该电邮地址你无法登录进入 %{app_name} （或任何其他与你账户关联的政府应用程序）。
+email_addresses.delete.bullet1: 使用该电邮地址你无法登录进入 %{app_name}（或任何其他与你账户关联的政府应用程序）。
 email_addresses.delete.bullet2: 你不会在该电邮地址得到账户通知。
 email_addresses.delete.confirm: 你确定要删除 %{email}吗？
 email_addresses.delete.failure: 无法删除这一电邮地址。
@@ -836,7 +836,7 @@ event_types.authenticated_at_html: 已在 %{service_provider_link_html}登录
 event_types.authenticator_disabled: 身份证实器应用程序已去掉
 event_types.authenticator_enabled: 身份证实器应用程序已添加
 event_types.backup_codes_added: 备用代码已添加
-event_types.eastern_timestamp: '%{timestamp} （东部）'
+event_types.eastern_timestamp: '%{timestamp}（东部）'
 event_types.email_changed: 电邮地址已更改
 event_types.email_deleted: 电邮地址已删除
 event_types.gpo_mail_sent: 信已发送
@@ -969,7 +969,7 @@ headings.passwords.confirm: 确认你目前密码以继续
 headings.passwords.confirm_for_personal_key: 输入密码并获得一个新个人密钥
 headings.passwords.forgot: 忘了你的密码?
 headings.piv_cac_login.account_not_found: 您的政府雇员ID未与帐户连接
-headings.piv_cac_login.add: 使用智能卡读卡器设置你的个人身份验证 (PIV) 或通用访问卡 (CAC)。你可以使用其中任何一种作为双因素身份证实方法来登录。
+headings.piv_cac_login.add: 使用智能卡读卡器设置你的个人身份验证（PIV）或通用访问卡（CAC）。你可以使用其中任何一种作为双因素身份证实方法来登录。
 headings.piv_cac_login.new: 插入您的政府雇员ID
 headings.piv_cac_login.success: 你已成功把 PIV/CAC 设为一个身份证实方法
 headings.piv_cac_setup.already_associated: 你提供的 PIV/CAC 与另外一个用户相关。
@@ -1020,7 +1020,7 @@ i18n.language: 语言
 i18n.locale.en: English
 i18n.locale.es: Español
 i18n.locale.fr: Français
-i18n.locale.zh: 中文 (简体)
+i18n.locale.zh: 中文（简体）
 idv.accessible_labels.masked_ssn: 保护文本安全，从 %{first_number} 开始，到 %{last_number}结束
 idv.buttons.change_address_label: 更新地址
 idv.buttons.change_label: 更新
@@ -1183,7 +1183,7 @@ idv.messages.phone.rules:
   - 你的主要号码（或者你最常用的号码）
 idv.messages.return_to_profile: '‹ 返回你的 %{app_name} 用户资料'
 idv.messages.sessions.enter_password_message: 你重新输入密码时， %{app_name} 会保护你给我们的信息，这样只有你能访问这些信息。
-idv.messages.sessions.no_pii: 测试站点 - 请勿使用真实个人信息（仅为演示目的） - 测试站点
+idv.messages.sessions.no_pii: 测试站点 - 请勿使用真实个人信息（仅为演示目的）- 测试站点
 idv.messages.verify_info: 我们从你的身份证件上读取你的信息。提交进行验证之前请检查一下并做出必要更新。
 idv.messages.verifying: 验证中。。。
 idv.titles.activated: 你的身份已验证
@@ -1386,7 +1386,7 @@ instructions.go_back_to_mobile_app: 要继续的话，请回到 %{friendly_name}
 instructions.mfa.authenticator.confirm_code_html: 输入来自你身份证实应用程序的代码。如果你在应用程序中设了几个账户，请输入与在 %{app_name_html}对应的代码。
 instructions.mfa.authenticator.manual_entry: 或者动手将这个密码输入你的身份证实应用程序。
 instructions.mfa.piv_cac.account_not_found_html: '<p>使用您的电子邮件地址和密码 %{sign_in}。然后将您的 PIV/CAC 插入智能卡读卡器以添加到您的帐户。</p><p>没有 %{app_name} 帐户？%{create_account}</p>'
-instructions.mfa.piv_cac.add_from_sign_in_html: '<strong>说明:</strong> 看到<strong>“添加 PIV/CAC”</strong>时插入你的 PIV or CAC 。你将需要<strong>选择一个证书</strong> （恰当的证书可能会有你的名字）而且<strong>输入你的 PIN </strong> （你的 PIN 是在设置 PIV/CAC 时设立的）。'
+instructions.mfa.piv_cac.add_from_sign_in_html: '<strong>说明:</strong> 看到<strong>“添加 PIV/CAC”</strong>时插入你的 PIV or CAC 。你将需要<strong>选择一个证书</strong>（恰当的证书可能会有你的名字）而且<strong>输入你的 PIN </strong>（你的 PIN 是在设置 PIV/CAC 时设立的）。'
 instructions.mfa.piv_cac.already_associated_html: 请从另一个 PIV/CAC 选择证书，联系管理员以保证你的 PIV/CAC 是最新的。如果你认为这是一个错误， %{try_again_html}。
 instructions.mfa.piv_cac.back_to_sign_in: 返回去登录
 instructions.mfa.piv_cac.confirm_piv_cac: 将与您的帐户关联的 PIV/CAC 插入智能卡读卡器。
@@ -1395,12 +1395,12 @@ instructions.mfa.piv_cac.http_failure: 服务器反应时间过长。请再试�
 instructions.mfa.piv_cac.no_certificate_html: 请确保您的 PIV/CAC 已正确插入智能卡读卡器，%{try_again_html}。如果这个问题持续存在，请联系您机构的管理员。
 instructions.mfa.piv_cac.not_auth_cert_html: 你选择的证书对这个账户无效。请用另外一个证书 %{please_try_again_html}。如果这一问题持续的话，请联系你机构的管理员。
 instructions.mfa.piv_cac.please_try_again: 再试一次
-instructions.mfa.piv_cac.sign_in: 确保您有 %{app_name} 帐户并且已设置个人身份验证 (PIV) 或通用访问卡 (CAC) 作为双因素身份证实方法。
+instructions.mfa.piv_cac.sign_in: 确保您有 %{app_name} 帐户并且已设置个人身份验证（PIV）或通用访问卡（CAC）作为双因素身份证实方法。
 instructions.mfa.piv_cac.step_1: 给它一个昵称
 instructions.mfa.piv_cac.step_1_info: 这样如果你添加了一个以上 PIV/CAC 话，你就能把它们分辨开来。
 instructions.mfa.piv_cac.step_2: 把 PIV/CAC 插入读卡器
 instructions.mfa.piv_cac.step_3: 添加 PIV/CAC
-instructions.mfa.piv_cac.step_3_info_html: 你将需要<strong>选择一个证书</strong> （恰当的证书可能会有你的名字）而且<strong>输入你的 PIN </strong> （你的 PIN 是在设置 PIV/CAC 时设立的）。
+instructions.mfa.piv_cac.step_3_info_html: 你将需要<strong>选择一个证书</strong>（恰当的证书可能会有你的名字）而且<strong>输入你的 PIN </strong>（你的 PIN 是在设置 PIV/CAC 时设立的）。
 instructions.mfa.piv_cac.try_again: 再试一次
 instructions.mfa.sms.number_message_html: 我们把带有一次性代码的短信发到了 %{number_html}。这一代码 %{expiration} 分钟后会作废。
 instructions.mfa.voice.number_message_html: 我们给 %{number_html}打了电话告知一次性代码。这一代码 %{expiration} 分钟后会作废。
@@ -1572,7 +1572,7 @@ shared.banner.how: 这里告诉你如何知道
 shared.banner.landmark_label: 官方政府网站
 shared.banner.lock_description: 锁上的锁头
 shared.banner.official_site: 美国政府的一个官方网站
-shared.banner.secure_description_html: 一把 <strong>锁</strong> ( %{lock_icon} )或者 <strong>https://</strong> 意味着你已安全连接到 .gov 网站。只在官方、安全的网站上分享敏感信息。
+shared.banner.secure_description_html: 一把 <strong>锁</strong>（ %{lock_icon} ）或者 <strong>https://</strong> 意味着你已安全连接到 .gov 网站。只在官方、安全的网站上分享敏感信息。
 shared.banner.secure_heading: 安全的 .gov 网站使用 HTTPS
 shared.footer_lite.gsa: 美国联邦总务管理局
 shared.skip_link: 跳到主要内容
@@ -1793,7 +1793,7 @@ two_factor_authentication.recaptcha.login_tos_link: 移动使用条款
 two_factor_authentication.recommended: 建议
 two_factor_authentication.totp_header_text: 输入你的身份证实应用程序代码
 two_factor_authentication.two_factor_aal3_choice: 要求额外的身份证实
-two_factor_authentication.two_factor_aal3_choice_intro: 该应用程序要求更高的安全级别。要访问你信息，你需要使用一个实体设备 - 比如安全密钥或政府雇员身份证件(PIV 或 CAC) - 来验证你的身份。
+two_factor_authentication.two_factor_aal3_choice_intro: 该应用程序要求更高的安全级别。要访问你信息，你需要使用一个实体设备 - 比如安全密钥或政府雇员身份证件（PIV 或 CAC）- 来验证你的身份。
 two_factor_authentication.two_factor_choice: 身份证实方法设置
 two_factor_authentication.two_factor_choice_options.auth_app: 身份证实应用程序
 two_factor_authentication.two_factor_choice_options.auth_app_info: 下载或使用你选择的身份证实应用程序来生成安全代码。
@@ -1812,7 +1812,7 @@ two_factor_authentication.two_factor_choice_options.webauthn_info: 将您的实�
 two_factor_authentication.two_factor_choice_options.webauthn_platform: 人脸或触摸解锁
 two_factor_authentication.two_factor_choice_options.webauthn_platform_info: 不用一次性代码，而是用你的面孔或指纹来访问你的账户。
 two_factor_authentication.two_factor_hspd12_choice: 要求额外的身份证实
-two_factor_authentication.two_factor_hspd12_choice_intro: 该应用程序要求更高的安全级别。要访问你的信息，你需要使用政府雇员身份证件 (PIV/CAC) 来验证身份。
+two_factor_authentication.two_factor_hspd12_choice_intro: 该应用程序要求更高的安全级别。要访问你的信息，你需要使用政府雇员身份证件（PIV/CAC）来验证身份。
 two_factor_authentication.webauthn_authenticating: 正在证实你的凭据…
 two_factor_authentication.webauthn_error.additional_methods_link: 选择另一个身份证实方法
 two_factor_authentication.webauthn_error.connect_html: 我们无法连接安全密钥。请再试一次或者 %{link_html}。
@@ -2057,6 +2057,12 @@ webauthn_platform_recommended.cta: Set up face or touch unlock
 webauthn_platform_recommended.description_save_time: Save time by using your face, fingerprint, password, or another method to access your account. This method is faster than receiving a one-time code through text or voice message.
 webauthn_platform_recommended.heading: Set up face or touch unlock for a quick and easy sign in
 webauthn_platform_recommended.skip: Skip
+webauthn_setup_mismatch.description_undo: 点击“撤消”可删除此选项。
+webauthn_setup_mismatch.description.webauthn: 我们注意到您正在使用安全密钥而不是人脸或触摸解锁。点击“继续”即可从现在开始使用您的安全密钥登录。
+webauthn_setup_mismatch.description.webauthn_platform: 我们注意到您正在使用人脸或触摸解锁，而不是安全密钥。点击“继续”即可从现在开始使用人脸或触摸解锁登录。
+webauthn_setup_mismatch.heading.webauthn: 发现安全密钥
+webauthn_setup_mismatch.heading.webauthn_platform: 发现人脸或触摸解锁
+webauthn_setup_mismatch.undo: 撤消
 zxcvbn.feedback.a_word_by_itself_is_easy_to_guess: 单字容易被人猜出
 zxcvbn.feedback.add_another_word_or_two_uncommon_words_are_better: 再加一两个字不常见的字更好
 zxcvbn.feedback.all_uppercase_is_almost_as_easy_to_guess_as_all_lowercase: 都是大写几乎和都是小写一样容易被人猜出

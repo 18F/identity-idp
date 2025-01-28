@@ -15,7 +15,7 @@ RSpec.describe AddUserEmailForm do
     it 'returns a successful result' do
       expect(submit.to_h).to eq(
         success: true,
-        errors: {},
+        errors: nil,
         domain_name: 'example.com',
         in_select_email_flow: false,
         user_id: user.uuid,
@@ -109,7 +109,7 @@ RSpec.describe AddUserEmailForm do
       it 'includes extra analytics in result for flow value' do
         expect(submit.to_h).to eq(
           success: true,
-          errors: {},
+          errors: nil,
           domain_name: 'example.com',
           in_select_email_flow: true,
           user_id: user.uuid,

@@ -47,7 +47,7 @@ RSpec.describe DeletedAccountsReport do
         :service_provider_identity,
         service_provider: service_provider,
         user: user,
-        last_authenticated_at: days_ago + 1,
+        last_authenticated_at: (days_ago + 1).days.ago,
       )
       user.destroy!
       rows = DeletedAccountsReport.call(service_provider, days_ago)

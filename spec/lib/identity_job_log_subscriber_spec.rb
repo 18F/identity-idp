@@ -152,7 +152,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
         now,
         event_uuid,
         job: job,
-        exception_object: Errno::ECONNREFUSED.new,
+        exception_object: RedisRateLimiter::LimitError.new('message'),
       )
 
       expect(subscriber).to_not receive(:error)
@@ -166,8 +166,8 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
           duration_ms: kind_of(Float),
           cpu_time_ms: kind_of(Numeric),
           idle_time_ms: kind_of(Numeric),
-          exception_class_warn: 'Errno::ECONNREFUSED',
-          exception_message_warn: 'Connection refused',
+          exception_class_warn: 'RedisRateLimiter::LimitError',
+          exception_message_warn: 'message',
           job_class: 'RiscDeliveryJob',
           job_id: job.job_id,
           name: 'enqueue.active_job',
@@ -294,7 +294,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
         now,
         event_uuid,
         job: job,
-        exception_object: Errno::ECONNREFUSED.new,
+        exception_object: RedisRateLimiter::LimitError.new('message'),
       )
 
       expect(subscriber).to_not receive(:error)
@@ -308,8 +308,8 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
           duration_ms: kind_of(Float),
           cpu_time_ms: kind_of(Numeric),
           idle_time_ms: kind_of(Numeric),
-          exception_class_warn: 'Errno::ECONNREFUSED',
-          exception_message_warn: 'Connection refused',
+          exception_class_warn: 'RedisRateLimiter::LimitError',
+          exception_message_warn: 'message',
           job_class: 'RiscDeliveryJob',
           job_id: job.job_id,
           name: 'enqueue.active_job',
@@ -338,7 +338,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
         now,
         event_uuid,
         job: job,
-        exception_object: Errno::ECONNREFUSED.new,
+        exception_object: RedisRateLimiter::LimitError.new,
       )
 
       subscriber.enqueue_at(event)
@@ -436,7 +436,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
         now,
         event_uuid,
         job: job,
-        error: Errno::ECONNREFUSED.new,
+        error: RedisRateLimiter::LimitError.new,
       )
 
       expect(subscriber).to_not receive(:error)
@@ -456,7 +456,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
           trace_id: nil,
           queue_name: kind_of(String),
           job_id: job.job_id,
-          exception_class_warn: 'Errno::ECONNREFUSED',
+          exception_class_warn: 'RedisRateLimiter::LimitError',
           log_filename: Idp::Constants::WORKER_LOG_FILENAME,
         )
       end
