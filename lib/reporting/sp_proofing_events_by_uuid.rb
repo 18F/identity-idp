@@ -74,7 +74,7 @@ module Reporting
                 sum(name = "Fraud: Profile review passed" and properties.event_properties.success) > 0 as verified_fraud_review,
                 max(profile_age_in_seconds) as out_of_band_verification_pending_seconds,
                 sum(name = "User registration: agency handoff visited" and properties.event_properties.ial2) > 0 as agency_handoff,
-                sum(name = "SP redirect initiated" and properties.event_properties.ial == 2) > 0 as sp_redirect
+                sum(name = "SP redirect initiated" and properties.event_properties.ial == 2) > 0 as sp_redirect,
                 toMillis(min(@timestamp)) as first_event
                 by properties.user_id as login_uuid
         | filter workflow_started > 0 or verified_by_mail > 0 or verified_fraud_review > 0
