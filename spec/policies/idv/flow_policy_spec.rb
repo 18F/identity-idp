@@ -223,7 +223,8 @@ RSpec.describe 'Idv::FlowPolicy' do
 
     context 'preconditions for in_person ssn are present' do
       before do
-        stub_up_to(:hybrid_handoff, idv_session: idv_session)
+        stub_up_to(:ipp_address, idv_session: idv_session)
+        allow(user).to receive(:has_establishing_in_person_enrollment?).and_return(true)
         idv_session.send(:user_session)['idv/in_person'] = {
           pii_from_user: Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.dup,
         }
@@ -249,7 +250,7 @@ RSpec.describe 'Idv::FlowPolicy' do
     context 'preconditions for in_person verify_info are present' do
       it 'returns ipp_verify_info' do
         stub_up_to(:ipp_ssn, idv_session: idv_session)
-
+        allow(user).to receive(:has_establishing_in_person_enrollment?).and_return(true)
         expect(subject.info_for_latest_step.key).to eq(:ipp_verify_info)
         expect(subject.controller_allowed?(controller: Idv::InPerson::VerifyInfoController)).to be
         expect(subject.controller_allowed?(controller: Idv::PhoneController)).not_to be

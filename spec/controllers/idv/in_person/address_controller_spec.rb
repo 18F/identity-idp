@@ -15,6 +15,7 @@ RSpec.describe Idv::InPerson::AddressController do
       .and_return(true)
     stub_sign_in(user)
     stub_up_to(:hybrid_handoff, idv_session: subject.idv_session)
+    allow(user).to receive(:establishing_in_person_enrollment).and_return(enrollment)
     subject.user_session['idv/in_person'] = {
       pii_from_user: pii_from_user,
     }
