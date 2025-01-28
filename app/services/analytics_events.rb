@@ -3514,11 +3514,23 @@ module AnalyticsEvents
   # @param [String] enrollment_id The in-person enrollment ID.
   # @param [String] reason The reason for skipping the enrollment.
   # @param [String] job_name The class name of the job.
+  # @param [Float] minutes_since_established
+  # @param [Float] minutes_since_last_status_check
+  # @param [Float] minutes_since_last_status_check_completed
+  # @param [Float] minutes_since_last_status_update
+  # @param [Float] minutes_to_completion
+  # @param [String] issuer
   def idv_in_person_usps_proofing_results_job_enrollment_skipped(
     enrollment_code:,
     enrollment_id:,
     reason:,
     job_name:,
+    minutes_since_established:,
+    minutes_since_last_status_check:,
+    minutes_since_last_status_check_completed:,
+    minutes_since_last_status_update:,
+    minutes_to_completion:,
+    issuer:,
     **extra
   )
     track_event(
@@ -3527,6 +3539,12 @@ module AnalyticsEvents
       enrollment_id:,
       reason:,
       job_name:,
+      minutes_since_established:,
+      minutes_since_last_status_check:,
+      minutes_since_last_status_check_completed:,
+      minutes_since_last_status_update:,
+      minutes_to_completion:,
+      issuer:,
       **extra,
     )
   end

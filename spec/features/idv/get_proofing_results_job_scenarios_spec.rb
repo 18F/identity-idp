@@ -284,7 +284,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
       )
     end
 
-    ['failed', 'cancelled', 'expired'].each do |status|
+    ['failed'].each do |status|
       scenario "User resets password without logging in before USPS proofing \"#{status}\"" do
         # Given the user has an InPersonEnrollment with status "pending"
         expect(@user.in_person_enrollments.first).to have_attributes(
@@ -377,6 +377,69 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
         expect(@user.in_person_enrollments.first.profile).to have_attributes(
           active: false,
           deactivation_reason: 'verification_cancelled',
+          in_person_verification_pending_at: nil,
+        )
+      end
+    end
+
+    ['cancelled', 'expired'].each do |status|
+      scenario "User resets password without logging in before USPS proofing \"#{status}\"" do
+        # Given the user has an InPersonEnrollment with status "pending"
+        expect(@user.in_person_enrollments.first).to have_attributes(
+          status: 'pending',
+        )
+        # And the user has a Profile that is deactivated pending in person verification
+        expect(@user.in_person_enrollments.first.profile).to have_attributes(
+          active: false,
+          deactivation_reason: nil,
+          in_person_verification_pending_at: be_kind_of(Time),
+        )
+
+        # When the user resets their password
+        reset_password(@user, @new_password)
+
+        # Then the user has an InPersonEnrollment with status "pending"
+        expect(@user.in_person_enrollments.first).to have_attributes(
+          status: 'pending',
+        )
+        # And the user has a Profile that is deactivated with reason "password_reset"
+        expect(@user.in_person_enrollments.first.profile).to have_attributes(
+          active: false,
+          deactivation_reason: 'password_reset',
+          in_person_verification_pending_at: be_kind_of(Time),
+        )
+
+        # And the user visits USPS to complete their enrollment
+        # And USPS enrollment "failed|cancelled|expired"
+        stub_request_proofing_results(status, @user.in_person_enrollments.first.enrollment_code)
+        # And GetUspsProofingResultsJob is performed
+        perform_get_usps_proofing_results_job(@user)
+
+        # Then the user has an InPersonEnrollment with status "cancelled|expired"
+        expect(@user.in_person_enrollments.first).to have_attributes(
+          status: status,
+        )
+        # And the user has a Profile that is deactivated with reason "password_reset"
+        expect(@user.in_person_enrollments.first.profile).to have_attributes(
+          active: false,
+          deactivation_reason: 'password_reset',
+          in_person_verification_pending_at: nil,
+        )
+
+        # When the user logs in
+        login(@user, @new_password)
+
+        # Then the user is taken to the /verify/welcome path
+        expect(page).to have_current_path(idv_welcome_path)
+
+        # Then the user has an InPersonEnrollment with status "cancelled|expired"
+        expect(@user.in_person_enrollments.first).to have_attributes(
+          status: status,
+        )
+        # And the user has a Profile that is deactivated with reason "password_reset"
+        expect(@user.in_person_enrollments.first.profile).to have_attributes(
+          active: false,
+          deactivation_reason: 'password_reset',
           in_person_verification_pending_at: nil,
         )
       end
