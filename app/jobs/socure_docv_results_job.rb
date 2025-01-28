@@ -32,9 +32,9 @@ class SocureDocvResultsJob < ApplicationJob
           doc_auth_success: true,
           selfie_status: docv_result_response.selfie_status,
           errors: { pii_validation: 'failed' },
-          front_image_fingerprint: nil, # can be defaulted to nil in method
-          back_image_fingerprint: nil, # can be defaulted to nil in method
-          selfie_image_fingerprint: nil, # can be defaulted to nil in method
+          front_image_fingerprint: nil,
+          back_image_fingerprint: nil,
+          selfie_image_fingerprint: nil,
         )
         return
       end
