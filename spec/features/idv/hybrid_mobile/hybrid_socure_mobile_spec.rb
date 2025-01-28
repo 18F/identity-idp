@@ -113,6 +113,7 @@ RSpec.describe 'Hybrid Flow' do
         expect(page).to_not have_content(t('doc_auth.headings.text_message'), wait: 10)
         expect(page).to have_current_path(idv_ssn_path)
         expect(@analytics).to have_logged_event(:idv_socure_document_request_submitted)
+        expect(@analytics).to have_logged_event(:idv_socure_verification_data_requested)
         expect(@analytics).to have_logged_event(
           'IdV: doc auth image upload vendor pii validation',
         )
