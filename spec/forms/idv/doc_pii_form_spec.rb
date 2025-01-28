@@ -285,7 +285,8 @@ RSpec.describe Idv::DocPiiForm do
 
       context 'when in socure_test_mode' do
         before do
-          allow(IdentityConfig.store).to receive(:socure_docv_verification_data_test_mode).and_return(true)
+          allow(IdentityConfig.store).to receive(:socure_docv_verification_data_test_mode)
+            .and_return(true)
         end
 
         it 'returns a single state ID expiration error' do
