@@ -119,6 +119,12 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.yesterday] },
       },
+      # Send the SP IdV Weekly Dropoff Report
+      sp_idv_weekly_dropoff: {
+        class: 'Reports::SpProofingEventsByUuid',
+        cron: cron_every_monday_2am,
+        args: -> { [Time.zone.today] },
+      },
       # Sync opted out phone numbers from AWS
       phone_number_opt_out_sync_job: {
         class: 'PhoneNumberOptOutSyncJob',
