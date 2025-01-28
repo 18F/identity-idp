@@ -143,6 +143,10 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
           )
       end
 
+      it 'sets any docv timeouts to nil' do
+        expect(session[:socure_docv_wait_polling_started_at]).to eq nil
+      end
+
       it 'logs correct info' do
         expect(@analytics).to have_logged_event(
           :idv_socure_document_request_submitted,
