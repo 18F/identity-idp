@@ -26,8 +26,7 @@ RSpec.describe SignOutController do
 
       get :destroy
 
-      expect(@analytics)
-        .to have_logged_event('Logout Initiated', hash_including(method: 'cancel link'))
+      expect(@analytics).to have_logged_event('Logout Initiated', method: 'cancel link')
     end
   end
 end

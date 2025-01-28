@@ -34,7 +34,7 @@ RSpec.describe Users::WebauthnSetupController do
     end
   end
 
-  describe 'when signed in and not account creation' do
+  context 'when signed in and not account creation' do
     let(:user) { create(:user, :fully_registered, :with_authentication_app) }
 
     before do
@@ -42,7 +42,7 @@ RSpec.describe Users::WebauthnSetupController do
       stub_sign_in(user)
     end
 
-    describe 'GET new' do
+    describe '#new' do
       it 'tracks page visit' do
         stub_sign_in
         stub_analytics
@@ -77,7 +77,9 @@ RSpec.describe Users::WebauthnSetupController do
       end
     end
 
-    describe 'patch confirm' do
+    describe '#confirm' do
+      subject(:response) { patch :confirm, params: params }
+
       let(:params) do
         {
           attestation_object: attestation_object,
@@ -101,6 +103,16 @@ RSpec.describe Users::WebauthnSetupController do
         allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
         request.host = 'localhost:3000'
         controller.user_session[:webauthn_challenge] = webauthn_challenge
+      end
+
+      it 'should flash a success message after successfully creating' do
+        response
+
+        expect(flash[:success]).to eq(t('notices.webauthn_configured'))
+      end
+
+      it 'redirects to next setup path' do
+        expect(response).to redirect_to(account_url)
       end
 
       it 'tracks the submission' do
@@ -130,6 +142,8 @@ RSpec.describe Users::WebauthnSetupController do
             ed: false,
           },
           attempts: 1,
+          transports: ['usb'],
+          transports_mismatch: false,
         )
         expect(@analytics).to have_logged_event(
           :webauthn_setup_submitted,
@@ -137,6 +151,74 @@ RSpec.describe Users::WebauthnSetupController do
           in_account_creation_flow: false,
           success: true,
         )
+      end
+
+      context 'with transports mismatch' do
+        let(:params) { super().merge(transports: 'internal') }
+
+        it 'handles as successful setup for platform authenticator' do
+          expect(controller).to receive(:handle_valid_verification_for_confirmation_context).with(
+            auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM,
+          )
+
+          response
+        end
+
+        it 'does not flash success message' do
+          response
+
+          expect(flash[:success]).to be_nil
+        end
+
+        it 'redirects to mismatch confirmation' do
+          expect(response).to redirect_to(webauthn_setup_mismatch_url)
+        end
+
+        it 'sets session value for mismatched configuration id' do
+          response
+
+          expect(controller.user_session[:webauthn_mismatch_id])
+            .to eq(user.webauthn_configurations.last.id)
+        end
+      end
+
+      context 'with platform authenticator set up' do
+        let(:params) { super().merge(platform_authenticator: true, transports: 'internal') }
+
+        it 'should flash a success message after successfully creating' do
+          response
+
+          expect(flash[:success]).to eq(t('notices.webauthn_platform_configured'))
+        end
+
+        context 'with transports mismatch' do
+          let(:params) { super().merge(transports: 'usb') }
+
+          it 'handles as successful setup for cross-platform authenticator' do
+            expect(controller).to receive(:handle_valid_verification_for_confirmation_context).with(
+              auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN,
+            )
+
+            response
+          end
+
+          it 'does not flash success message' do
+            response
+
+            expect(flash[:success]).to be_nil
+          end
+
+          it 'redirects to mismatch confirmation' do
+            expect(response).to redirect_to(webauthn_setup_mismatch_url)
+          end
+
+          it 'sets session value for mismatched configuration id' do
+            response
+
+            expect(controller.user_session[:webauthn_mismatch_id])
+              .to eq(user.webauthn_configurations.last.id)
+          end
+        end
       end
 
       context 'with setup from sms recommendation' do
@@ -283,6 +365,8 @@ RSpec.describe Users::WebauthnSetupController do
             multi_factor_auth_method: 'webauthn',
             success: true,
             attempts: 1,
+            transports: ['usb'],
+            transports_mismatch: false,
           )
           expect(@analytics).to have_logged_event(
             :webauthn_setup_submitted,
@@ -344,6 +428,8 @@ RSpec.describe Users::WebauthnSetupController do
             multi_factor_auth_method: 'webauthn_platform',
             success: true,
             attempts: 1,
+            transports: ['internal', 'hybrid'],
+            transports_mismatch: false,
           )
         end
 
@@ -380,18 +466,18 @@ RSpec.describe Users::WebauthnSetupController do
 
           expect(@analytics).to have_logged_event(
             'Multi-Factor Authentication Setup',
-            {
-              enabled_mfa_methods_count: 0,
-              errors: {
-                attestation_object: [I18n.t('errors.webauthn_platform_setup.general_error')],
-              },
-              error_details: { attestation_object: { invalid: true } },
-              in_account_creation_flow: false,
-              mfa_method_counts: {},
-              multi_factor_auth_method: 'webauthn_platform',
-              success: false,
-              attempts: 1,
+            enabled_mfa_methods_count: 0,
+            errors: {
+              attestation_object: [I18n.t('errors.webauthn_platform_setup.general_error')],
             },
+            error_details: { attestation_object: { invalid: true } },
+            in_account_creation_flow: false,
+            mfa_method_counts: {},
+            multi_factor_auth_method: 'webauthn_platform',
+            success: false,
+            attempts: 1,
+            transports: ['internal', 'hybrid'],
+            transports_mismatch: false,
           )
         end
       end
@@ -448,6 +534,8 @@ RSpec.describe Users::WebauthnSetupController do
             ed: false,
           },
           attempts: 2,
+          transports: ['usb'],
+          transports_mismatch: false,
         )
         expect(@analytics).to have_logged_event(
           :webauthn_setup_submitted,

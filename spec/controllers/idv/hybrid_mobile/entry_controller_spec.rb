@@ -14,6 +14,12 @@ RSpec.describe Idv::HybridMobile::EntryController do
     let(:session_uuid) { document_capture_session.uuid }
     let(:idv_vendor) { Idp::Constants::Vendors::MOCK }
 
+    around do |ex|
+      REDIS_POOL.with { |client| client.flushdb }
+      ex.run
+      REDIS_POOL.with { |client| client.flushdb }
+    end
+
     before do
       allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(idv_vendor)
       allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(idv_vendor)
@@ -58,6 +64,7 @@ RSpec.describe Idv::HybridMobile::EntryController do
       let(:idv_vendor) { Idp::Constants::Vendors::MOCK }
       let(:vendor_switching_enabled) { true }
       let(:lexis_nexis_percent) { 100 }
+      let(:socure_user_limit) { 10 }
       let(:acr_values) do
         [
           Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
@@ -79,6 +86,8 @@ RSpec.describe Idv::HybridMobile::EntryController do
           .and_return(vendor_switching_enabled)
         allow(IdentityConfig.store).to receive(:doc_auth_vendor_lexis_nexis_percent)
           .and_return(lexis_nexis_percent)
+        allow(IdentityConfig.store).to receive(:doc_auth_socure_max_allowed_users)
+          .and_return(socure_user_limit)
         get :show, params: { 'document-capture-session': session_uuid }
       end
 
@@ -87,6 +96,15 @@ RSpec.describe Idv::HybridMobile::EntryController do
 
         it 'redirects to the first step' do
           expect(response).to redirect_to idv_hybrid_mobile_socure_document_capture_url
+        end
+      end
+
+      context 'doc auth vendor is socure with socure user limit reached' do
+        let(:idv_vendor) { Idp::Constants::Vendors::SOCURE }
+        let(:socure_user_limit) { 0 }
+
+        it 'redirects to the lexis nexis first step' do
+          expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
         end
       end
 
