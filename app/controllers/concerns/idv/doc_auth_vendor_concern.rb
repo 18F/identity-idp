@@ -17,6 +17,8 @@ module Idv
       else
         bucket = ab_test_bucket(:DOC_AUTH_VENDOR)
       end
+
+      add_user_to_socure_set if bucket == :socure
       DocAuthRouter.doc_auth_vendor_for_bucket(bucket)
     end
 
@@ -32,6 +34,16 @@ module Idv
       else
         false
       end
+    end
+
+    private
+
+    def socure_user_set
+      @socure_user_set ||= SocureUserSet.new
+    end
+
+    def add_user_to_socure_set
+      socure_user_set.add_user!(user_uuid: current_user.uuid)
     end
   end
 end
