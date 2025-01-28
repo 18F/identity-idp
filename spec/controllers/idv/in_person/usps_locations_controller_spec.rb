@@ -373,7 +373,6 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
         expect(enrollment.service_provider).to eq(sp)
       end
 
-      # MAW: Does this make sense? Is selecting a Post Office really doc auth at all?
       it 'updates proofing component vendor' do
         proofing_components = Idv::ProofingComponents.new(
           idv_session: controller.idv_session,
