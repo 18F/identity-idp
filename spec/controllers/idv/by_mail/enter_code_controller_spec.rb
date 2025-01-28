@@ -447,11 +447,11 @@ RSpec.describe Idv::ByMail::EnterCodeController do
 
           failed_gpo_submission_events =
             @analytics.events['IdV: enter verify by mail code submitted']
-              .reject { |event_attributes| event_attributes[:errors].blank? }
+              .reject { |event_attributes| event_attributes[:error_details].blank? }
 
           successful_gpo_submission_events =
             @analytics.events['IdV: enter verify by mail code submitted']
-              .select { |event_attributes| event_attributes[:errors].blank? }
+              .select { |event_attributes| event_attributes[:error_details].blank? }
 
           expect(failed_gpo_submission_events.count).to eq(max_attempts - 1)
           expect(successful_gpo_submission_events.count).to eq(1)
