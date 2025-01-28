@@ -28,7 +28,7 @@ module Reports
       report_maker = build_report_maker(
         issuers:,
         agency_abbreviation:,
-        time_range: report_date.to_date.all_week(:sunday),
+        time_range: report_date.to_date.weeks_ago(1).all_week(:sunday),
       )
 
       csv = report_maker.to_csv

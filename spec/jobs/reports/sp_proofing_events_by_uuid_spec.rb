@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Reports::SpProofingEventsByUuid do
-  let(:report_date) { Date.new(2024, 12, 1).in_time_zone('UTC') }
+  let(:report_date) { Date.new(2024, 12, 9) }
   let(:agency_abbreviation) { 'ABC' }
   let(:report_emails) { ['test@example.com'] }
   let(:issuers) { ['super:cool:test:issuer'] }
@@ -61,7 +61,7 @@ RSpec.describe Reports::SpProofingEventsByUuid do
 
       expect(ReportMailer).to receive(:tables_report).once.with(
         email: 'test@example.com',
-        subject: 'ABC Proofing Events By UUID - 2024-12-01',
+        subject: 'ABC Proofing Events By UUID - 2024-12-09',
         reports: emailable_reports,
         message: anything,
         attachment_format: :csv,
