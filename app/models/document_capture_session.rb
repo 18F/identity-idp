@@ -33,7 +33,7 @@ class DocumentCaptureSession < ApplicationRecord
   end
 
   def store_failed_auth_data(front_image_fingerprint:, back_image_fingerprint:,
-                             selfie_image_fingerprint:, doc_auth_success:, selfie_status:)
+                             selfie_image_fingerprint:, doc_auth_success:, selfie_status:, errors: nil)
     session_result = load_result || DocumentCaptureSessionResult.new(
       id: generate_result_id,
     )
