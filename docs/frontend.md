@@ -37,8 +37,8 @@ The general folder structure for front-end assets includes:
   - `packs/`: Compiled JavaScript
 
 [components-readme]: ../app/components/README.md
-[packages-readme]: ../app/packages/README.md
-[packs-readme]: ../app/packs/README.md
+[packages-readme]: ../app/javascript/packages/README.md
+[packs-readme]: ../app/javascript/packs/README.md
 
 ## CSS + HTML
 
