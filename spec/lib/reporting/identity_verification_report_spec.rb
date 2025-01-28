@@ -616,8 +616,10 @@ RSpec.describe Reporting::IdentityVerificationReport do
     describe '#verified_user_count' do
       let!(:profile) do
         create(
-          :profile, :active, created_at: time_range.end.end_of_day,
-                             verified_at: time_range.end.end_of_day
+          :profile,
+          :active,
+          created_at: time_range.end.end_of_day,
+          verified_at: time_range.end.end_of_day,
         )
       end
       it 'counts users through end of day' do
