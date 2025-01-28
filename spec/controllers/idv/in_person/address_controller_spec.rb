@@ -5,6 +5,9 @@ RSpec.describe Idv::InPerson::AddressController do
   include InPersonHelper
 
   let(:user) { build(:user) }
+  let(:enrollment) do
+    create(:in_person_enrollment, :establishing, user: user)
+  end
   let(:pii_from_user) { Idp::Constants::MOCK_IPP_APPLICANT_SAME_ADDRESS_AS_ID_FALSE }
 
   before do
@@ -20,6 +23,20 @@ RSpec.describe Idv::InPerson::AddressController do
   end
 
   describe '#step_info' do
+    let(:address1) { Idp::Constants::MOCK_IDV_APPLICANT[:address1] }
+    let(:address2) { 'APT 1B' }
+    let(:city) { Idp::Constants::MOCK_IDV_APPLICANT[:city] }
+    let(:zipcode) { Idp::Constants::MOCK_IDV_APPLICANT[:zipcode] }
+    let(:state) { 'Montana' }
+    let(:params) do
+      { in_person_address: {
+        address1: address1,
+        address2: address2,
+        city: city,
+        zipcode: zipcode,
+        state: state,
+      } }
+    end
     it 'returns a valid StepInfo object' do
       expect(Idv::InPerson::AddressController.step_info).to be_valid
     end
@@ -33,17 +50,17 @@ RSpec.describe Idv::InPerson::AddressController do
       )
       expect(subject).to have_actions(
         :before,
-        :confirm_in_person_state_id_step_complete,
-      )
-      expect(subject).to have_actions(
-        :before,
         :confirm_in_person_address_step_needed,
       )
     end
 
-    context '#confirm_in_person_state_id_step_complete' do
+    context '#step_info preconditions check if state id is complete' do
       before do
         subject.user_session['idv/in_person'][:pii_from_user].delete(:identity_doc_address1)
+        subject.user_session['idv/in_person'][:pii_from_user].delete(:identity_doc_address2)
+        subject.user_session['idv/in_person'][:pii_from_user].delete(:identity_doc_city)
+        subject.user_session['idv/in_person'][:pii_from_user].delete(:identity_doc_zipcode)
+        subject.user_session['idv/in_person'][:pii_from_user].delete(:identity_doc_state)
       end
 
       it 'redirects to state id page if not complete' do

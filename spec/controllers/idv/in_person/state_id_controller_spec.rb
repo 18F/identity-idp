@@ -26,7 +26,7 @@ RSpec.describe Idv::InPerson::StateIdController do
       )
     end
 
-    context '#confirm_establishing_enrollment' do
+    context '#step_info preconditions check if enrollment exists' do
       let(:enrollment) { nil }
 
       it 'redirects to document capture if not complete' do
@@ -371,6 +371,53 @@ RSpec.describe Idv::InPerson::StateIdController do
           expect(pii_from_user[:zipcode]).to_not eq identity_doc_zipcode
         end
       end
+    end
+  end
+
+  describe '#step_info' do
+    let(:first_name) { 'Natalya' }
+    let(:last_name) { 'Rostova' }
+    let(:formatted_dob) { InPersonHelper::GOOD_DOB }
+
+    let(:dob) do
+      parsed_dob = Date.parse(formatted_dob)
+      { month: parsed_dob.month.to_s,
+        day: parsed_dob.day.to_s,
+        year: parsed_dob.year.to_s }
+    end
+
+    # residential
+    let(:address1) { InPersonHelper::GOOD_ADDRESS1 }
+    let(:address2) { InPersonHelper::GOOD_ADDRESS2 }
+    let(:city) { InPersonHelper::GOOD_CITY }
+    let(:state) { InPersonHelper::GOOD_STATE }
+    let(:zipcode) { InPersonHelper::GOOD_ZIPCODE }
+    let(:id_number) { 'ABC123234' }
+    let(:state_id_jurisdiction) { 'AL' }
+    let(:identity_doc_address1) { InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1 }
+    let(:identity_doc_address2) { InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2 }
+    let(:identity_doc_city) { InPersonHelper::GOOD_IDENTITY_DOC_CITY }
+    let(:identity_doc_address_state) { InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS_STATE }
+    let(:identity_doc_zipcode) { InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE }
+
+    let(:params) do
+      { identity_doc: {
+        first_name:,
+        last_name:,
+        same_address_as_id: 'true', # value on submission
+        identity_doc_address1:,
+        identity_doc_address2:,
+        identity_doc_city:,
+        state_id_jurisdiction:,
+        id_number:,
+        identity_doc_address_state:,
+        identity_doc_zipcode:,
+        dob:,
+      } }
+    end
+
+    it 'returns a valid StepInfo object' do
+      expect(Idv::InPerson::StateIdController.step_info).to be_valid
     end
   end
 end
