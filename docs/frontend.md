@@ -18,8 +18,7 @@ As a high-level overview, the front end consists of:
      (custom elements)
 - Stylesheets are written as [Sass](https://sass-lang.com/), and builds upon the [Login.gov Design System](https://github.com/18F/identity-design-system),
   which in turn builds upon the [U.S. Web Design System (USWDS)](https://designsystem.digital.gov/).
-- HTML reuse is facilitated by the [ViewComponent](https://viewcomponent.org/) gem, enhanced with
-  support for per-component JavaScript and stylesheet "sidecar" assets.
+- HTML reuse is facilitated by the [ViewComponent](https://viewcomponent.org/) gem.
 
 The general folder structure for front-end assets includes:
 
