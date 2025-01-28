@@ -42,7 +42,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
       it 'is successful' do
         expect(result.to_h).to eq(
           success: true,
-          errors: {},
+          errors: nil,
           client_id: client_id,
           prompt: 'select_account',
           allow_prompt_login: true,
@@ -781,6 +781,18 @@ RSpec.describe OpenidConnectAuthorizeForm do
     context 'when the identity has not been linked' do
       it 'returns nil' do
         expect(form.success_redirect_uri).to be_nil
+      end
+    end
+  end
+
+  describe '#service_provider' do
+    context 'empty client_id' do
+      let(:client_id) { '' }
+
+      it 'does not query the database' do
+        expect(ServiceProvider).to_not receive(:find_by)
+
+        expect(form.service_provider).to be_nil
       end
     end
   end

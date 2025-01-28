@@ -66,11 +66,10 @@ RSpec.describe Idv::ByMail::ResendLetterController do
 
       expect(@analytics).to have_logged_event(
         'IdV: USPS address letter requested',
-        hash_including(
-          resend: true,
-          first_letter_requested_at: user.pending_profile.gpo_verification_pending_at,
-          hours_since_first_letter: 24,
-        ),
+        resend: true,
+        first_letter_requested_at: user.pending_profile.gpo_verification_pending_at,
+        hours_since_first_letter: 24,
+        phone_step_attempts: 0,
       )
 
       expect(@analytics).to have_logged_event(
@@ -90,11 +89,10 @@ RSpec.describe Idv::ByMail::ResendLetterController do
 
         expect(@analytics).to have_logged_event(
           'IdV: USPS address letter requested',
-          hash_including(
-            resend: true,
-            first_letter_requested_at: user.pending_profile.gpo_verification_pending_at,
-            hours_since_first_letter: 24,
-          ),
+          resend: true,
+          first_letter_requested_at: user.pending_profile.gpo_verification_pending_at,
+          hours_since_first_letter: 24,
+          phone_step_attempts: 0,
         )
 
         expect(@analytics).to have_logged_event(

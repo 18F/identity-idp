@@ -22,11 +22,11 @@ module Idv
       end
     end
 
-    private
-
     def maxed_users?
       count >= IdentityConfig.store.doc_auth_socure_max_allowed_users
     end
+
+    private
 
     def key
       'idv:socure:users'

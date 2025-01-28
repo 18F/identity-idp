@@ -14,7 +14,7 @@ RSpec.describe Redirect::MarketingSiteController do
       response
       expect(@analytics).to have_logged_event(
         'External Redirect',
-        hash_including(redirect_url: MarketingSite.base_url),
+        redirect_url: MarketingSite.base_url,
       )
     end
   end

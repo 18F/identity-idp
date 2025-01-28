@@ -158,14 +158,11 @@ RSpec.describe Idv::OtpVerificationController do
 
       expect(@analytics).to have_logged_event(
         'IdV: phone confirmation otp submitted',
-        hash_including(
-          success: true,
-          errors: {},
-          code_expired: false,
-          code_matches: true,
-          otp_delivery_preference: :sms,
-          second_factor_attempts_count: 0,
-        ),
+        success: true,
+        code_expired: false,
+        code_matches: true,
+        otp_delivery_preference: :sms,
+        second_factor_attempts_count: 0,
       )
     end
   end

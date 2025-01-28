@@ -205,7 +205,6 @@ RSpec.describe Idv::HowToVerifyController do
         {
           analytics_id: 'Doc Auth',
           step: 'how_to_verify',
-          errors: {},
           success: true,
           selection:,
         }
@@ -230,7 +229,6 @@ RSpec.describe Idv::HowToVerifyController do
         {
           analytics_id: 'Doc Auth',
           step: 'how_to_verify',
-          errors: {},
           success: true,
           selection:,
         }
@@ -239,7 +237,7 @@ RSpec.describe Idv::HowToVerifyController do
         put :update, params: params
 
         expect(subject.idv_session.skip_doc_auth_from_how_to_verify).to be true
-        expect(response).to redirect_to(idv_document_capture_url)
+        expect(response).to redirect_to(idv_document_capture_url(step: :how_to_verify))
       end
 
       it 'sends analytics_submitted event when remote proofing is selected' do

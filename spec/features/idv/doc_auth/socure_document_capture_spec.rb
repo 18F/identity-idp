@@ -532,6 +532,8 @@ RSpec.feature 'direct access to IPP on desktop', :js do
     end
 
     context 'when selfie is enabled' do
+      let(:facial_match_required) { true }
+
       it 'redirects back to agreement page' do
         expect(page).to have_current_path(idv_agreement_path)
       end

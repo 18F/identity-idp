@@ -304,7 +304,7 @@ module Reporting
 
     def verified_user_count
       @verified_user_count ||= Reports::BaseReport.transaction_with_timeout do
-        Profile.where(active: true).where('verified_at <= ?', time_range.end).count
+        Profile.where(active: true).where('verified_at <= ?', time_range.end.end_of_day).count
       end
     end
 

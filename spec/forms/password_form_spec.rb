@@ -113,7 +113,7 @@ RSpec.describe PasswordForm, type: :model do
       let(:expected_response) do
         {
           success: true,
-          errors: {},
+          errors: nil,
           user_id: user.uuid,
           request_id_present: true,
         }
@@ -134,7 +134,7 @@ RSpec.describe PasswordForm, type: :model do
         let(:expected_response) do
           {
             success: true,
-            errors: {},
+            errors: nil,
             user_id: user.uuid,
             request_id_present: true,
           }

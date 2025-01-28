@@ -120,7 +120,7 @@ RSpec.describe FakeAnalytics do
     context 'event name + hash' do
       let(:track_event) { -> { analytics.track_event :my_event, arg1: 42 } }
       let(:track_event_with_different_args) { -> { analytics.track_event :my_event, arg1: 43 } }
-      let(:track_event_with_extra_args) do
+      let(:track_matching_event_with_more_args) do
         -> {
           analytics.track_event :my_event, arg1: 42, arg2: 43
         }
@@ -175,7 +175,7 @@ RSpec.describe FakeAnalytics do
       end
 
       it 'raises if an event that matches but has additional args has been logged' do
-        track_event_with_extra_args.call
+        track_matching_event_with_more_args.call
 
         expect(&code_under_test)
           .to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
@@ -326,28 +326,28 @@ RSpec.describe FakeAnalytics do
       end
 
       it 'does not raise if matching + non-matching event logged' do
-        track_event.call
-        track_event_with_different_args.call
+        track_matching_event_with_more_args.call
+        track_other_event.call
 
         expect(&code_under_test)
           .not_to raise_error(RSpec::Expectations::ExpectationNotMetError)
       end
 
       it 'does not raise if event was logged 1x' do
-        track_event.call
+        track_matching_event_with_more_args.call
         expect(&code_under_test)
           .not_to raise_error(RSpec::Expectations::ExpectationNotMetError)
       end
 
       it 'does not raise if event was logged 1x' do
-        track_event.call
+        track_matching_event_with_more_args.call
         expect(&code_under_test)
           .not_to raise_error(RSpec::Expectations::ExpectationNotMetError)
       end
 
       it 'does not raise if event was logged 2x' do
-        track_event.call
-        track_event.call
+        track_matching_event_with_more_args.call
+        track_matching_event_with_more_args.call
 
         expect(&code_under_test)
           .not_to raise_error(RSpec::Expectations::ExpectationNotMetError)
@@ -458,8 +458,30 @@ RSpec.describe FakeAnalytics do
           end
       end
 
-      it 'does not raise if matching + non-matching event logged' do
+      it 'raises if hash_including match has exact properties' do
         track_event.call
+
+        expect(&code_under_test)
+          .to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
+            expect(err.message).to match(/Unexpected use of hash_including/)
+          end
+      end
+
+      shared_examples 'a track event call within shared examples' do
+        it 'does not raise if hash_including match has exact properties in shared examples' do
+          track_event.call
+
+          expect(&code_under_test)
+            .not_to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
+              expect(err.message).to match(/Unexpected use of hash_including/)
+            end
+        end
+      end
+
+      it_behaves_like 'a track event call within shared examples'
+
+      it 'does not raise if matching + non-matching event logged' do
+        track_matching_event_with_more_args.call
         track_event_with_different_args.call
 
         expect(&code_under_test)
@@ -467,20 +489,20 @@ RSpec.describe FakeAnalytics do
       end
 
       it 'does not raise if event was logged 1x' do
-        track_event.call
+        track_matching_event_with_more_args.call
         expect(&code_under_test)
           .not_to raise_error(RSpec::Expectations::ExpectationNotMetError)
       end
 
       it 'does not raise if event was logged 1x' do
-        track_event.call
+        track_matching_event_with_more_args.call
         expect(&code_under_test)
           .not_to raise_error(RSpec::Expectations::ExpectationNotMetError)
       end
 
       it 'does not raise if event was logged 2x' do
-        track_event.call
-        track_event.call
+        track_matching_event_with_more_args.call
+        track_matching_event_with_more_args.call
 
         expect(&code_under_test)
           .not_to raise_error(RSpec::Expectations::ExpectationNotMetError)
@@ -507,14 +529,14 @@ RSpec.describe FakeAnalytics do
         end
 
         it 'does not raise if event was logged 1x' do
-          track_event.call
+          track_matching_event_with_more_args.call
           expect(&code_under_test)
             .not_to raise_error(RSpec::Expectations::ExpectationNotMetError)
         end
 
         it 'raises if event was logged 2x' do
-          track_event.call
-          track_event.call
+          track_matching_event_with_more_args.call
+          track_matching_event_with_more_args.call
 
           expect(&code_under_test)
             .to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
@@ -523,7 +545,7 @@ RSpec.describe FakeAnalytics do
               with hash_including(arg1: 42)
 
               Events received:
-              {:my_event=>[{:arg1=>42}, {:arg1=>42}]}
+              {:my_event=>[{:arg1=>42, :arg2=>43}, {:arg1=>42, :arg2=>43}]}
             MESSAGE
           end
         end
