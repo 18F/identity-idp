@@ -9,9 +9,10 @@ module Users
     before_action :check_max_emails_per_account, only: %i[show add]
     before_action :retain_confirmed_emails, only: %i[delete]
     before_action :confirm_recently_authenticated_2fa
+    before_action :validate_session_email, only: [:verify]
 
     def show
-      session[:in_select_email_flow] = true if params[:in_select_email_flow]
+      session[:in_select_email_flow] = in_select_email_flow_param
       analytics.add_email_visit(in_select_email_flow: in_select_email_flow?)
       @add_user_email_form = AddUserEmailForm.new
       @pending_completions_consent = pending_completions_consent?
@@ -42,11 +43,11 @@ module Users
         analytics.resend_add_email_request(success: true)
         SendAddEmailConfirmation.new(current_user).call(email_address:, request_id:)
         flash[:success] = t('notices.resend_confirmation_email.success')
-        redirect_to add_email_verify_email_url
+        redirect_to add_email_verify_email_url(in_select_email_flow: in_select_email_flow_param)
       else
         analytics.resend_add_email_request(success: false)
         flash[:error] = t('errors.general')
-        redirect_to add_email_url
+        redirect_to add_email_url(in_select_email_flow: in_select_email_flow_param)
       end
     end
 
@@ -71,15 +72,21 @@ module Users
     end
 
     def verify
-      if session_email.blank?
-        redirect_to add_email_url
-      else
-        render :verify,
-               locals: { email: session_email, in_select_email_flow: params[:in_select_email_flow] }
-      end
+      @email = session_email
+      @in_select_email_flow = in_select_email_flow_param
+      @pending_completions_consent = pending_completions_consent?
     end
 
     private
+
+    def validate_session_email
+      return if session_email.present?
+      redirect_to add_email_url
+    end
+
+    def in_select_email_flow_param
+      true if params[:in_select_email_flow].present?
+    end
 
     def in_select_email_flow?
       session[:in_select_email_flow] == true

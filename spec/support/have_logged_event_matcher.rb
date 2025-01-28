@@ -4,6 +4,8 @@ class HaveLoggedEventMatcher
   include RSpec::Matchers::Composable
   include RSpec::Matchers::BuiltIn::CountExpectation
 
+  attr_reader :hash_including_equals_failure_message
+
   def initialize(
     expected_event_name: nil,
     expected_attributes: nil
@@ -13,6 +15,7 @@ class HaveLoggedEventMatcher
   end
 
   def failure_message
+    return hash_including_equals_failure_message if hash_including_equals_failure_message.present?
     return fake_analytics_missing_failure_message if fake_analytics_missing?
 
     matching_events = events[expected_event_name]
@@ -47,7 +50,8 @@ class HaveLoggedEventMatcher
         events[expected_event_name] || []
       else
         (events[expected_event_name] || []).filter do |actual_attributes|
-          values_match?(expected_attributes, actual_attributes)
+          values_match?(expected_attributes, actual_attributes) &&
+            !hash_including_equals(expected_attributes, actual_attributes)
         end
       end
 
@@ -64,6 +68,28 @@ class HaveLoggedEventMatcher
 
   def fake_analytics_missing?
     !@actual.is_a?(FakeAnalytics)
+  end
+
+  def hash_including_equals(expected_attributes, actual_attributes)
+    if expected_attributes.instance_of?(RSpec::Mocks::ArgumentMatchers::HashIncludingMatcher) &&
+       expected_attributes.instance_variable_get(:@expected) == actual_attributes &&
+       !in_shared_example?
+      @hash_including_equals_failure_message = <<~STR
+        Unexpected use of hash_including when included attributes are exactly equal to actual attributes
+
+        Strict equality is preferred over hash_including except when intentionally testing a hash including more than properties than what's asserted
+
+        Expected: #{expected_attributes.instance_variable_get(:@expected)}
+        Actual:   #{actual_attributes}
+      STR
+      true
+    else
+      false
+    end
+  end
+
+  def in_shared_example?
+    RSpec.current_example.metadata[:shared_group_inclusion_backtrace].present?
   end
 
   def fake_analytics_missing_failure_message
