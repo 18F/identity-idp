@@ -111,7 +111,7 @@ module Idv
     def state_id_expired?
       # temporary fix
       return if IdentityConfig.store.socure_docv_verification_data_test_mode &&
-        state_id_expiration == Date.parse('2020-01-01')
+                state_id_expiration == Date.parse('2020-01-01')
 
       if state_id_expiration && DateParser.parse_legacy(state_id_expiration).past?
         errors.add(:state_id_expiration, generic_error, type: :state_id_expiration)
