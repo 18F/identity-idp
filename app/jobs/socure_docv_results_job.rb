@@ -25,7 +25,8 @@ class SocureDocvResultsJob < ApplicationJob
 
     if docv_result_response.success?
       doc_pii_response = Idv::DocPiiForm.new(pii: docv_result_response.pii_from_doc.to_h).submit
-      # TODO: analytics event here
+      log_pii_validation(doc_pii_response:)
+
       unless doc_pii_response&.success?
         document_capture_session.store_failed_auth_data(
           doc_auth_success: true,
@@ -63,6 +64,17 @@ class SocureDocvResultsJob < ApplicationJob
         pii_like_keypaths: [[:pii]],
       ).except(:attention_with_barcode, :selfie_live, :selfie_quality_good,
                :selfie_status),
+    )
+  end
+
+  def log_pii_validation(doc_pii_response:)
+    analytics.idv_doc_auth_submitted_pii_validation(
+      **doc_pii_response.to_h.merge(
+        submit_attempts: rate_limiter&.attempts,
+        remaining_submit_attempts: rate_limiter&.remaining_count,
+        flow_path: nil,
+        liveness_checking_required: nil,
+      )
     )
   end
 
