@@ -32,6 +32,18 @@ class AuthnContextResolver
     end
   end
 
+  def asserted_aal_acr
+    if result.hspd12?
+      Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF
+    elsif result.phishing_resistant?
+      Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF
+    elsif result.aal2?
+      Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
+    else
+      Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
+    end
+  end
+
   private
 
   def selected_vtr_parser_result_from_vtr_list

@@ -149,20 +149,27 @@ RSpec.describe AuthnContextResolver do
   end
 
   context 'when resolving acr_values' do
+    let(:service_provider) { nil }
+    subject do
+      AuthnContextResolver.new(
+        user: user,
+        service_provider:,
+        vtr: nil,
+        acr_values: acr_values,
+      )
+    end
+
+    let(:result) { subject.result }
+
     context 'with no service provider' do
+      let(:acr_values) do
+        [
+          Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+          Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
+        ].join(' ')
+      end
+
       it 'parses an ACR value into requirements' do
-        acr_values = [
-          Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
-          Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
-        ].join(' ')
-
-        result = AuthnContextResolver.new(
-          user: user,
-          service_provider: nil,
-          vtr: nil,
-          acr_values: acr_values,
-        ).result
-
         expect(result.component_values.map(&:name).join(' ')).to eq(acr_values)
         expect(result.aal2?).to eq(true)
         expect(result.phishing_resistant?).to eq(false)
@@ -173,136 +180,135 @@ RSpec.describe AuthnContextResolver do
         expect(result.enhanced_ipp?).to eq(false)
       end
 
-      it 'properly parses an ACR value without an AAL ACR' do
-        acr_values = [
-          Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
-        ].join(' ')
-
-        result = AuthnContextResolver.new(
-          user: user,
-          service_provider: nil,
-          vtr: nil,
-          acr_values: acr_values,
-        ).result
-
-        expect(result.component_values.map(&:name).join(' ')).to eq(acr_values)
-        expect(result.aal2?).to eq(false)
-        expect(result.phishing_resistant?).to eq(false)
-        expect(result.hspd12?).to eq(false)
-        expect(result.identity_proofing?).to eq(false)
-        expect(result.facial_match?).to eq(false)
-        expect(result.ialmax?).to eq(false)
-        expect(result.enhanced_ipp?).to eq(false)
+      it 'returns the AAL value asserted' do
+        expect(subject.asserted_aal_acr).to eq Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
       end
 
-      it 'properly parses an ACR value without an IAL ACR' do
-        acr_values = [
-          Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
-        ].join(' ')
+      context 'without an AAL ACR value' do
+        let(:acr_values) do
+          [
+            Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
+          ].join(' ')
+        end
 
-        result = AuthnContextResolver.new(
-          user: user,
-          service_provider: nil,
-          vtr: nil,
-          acr_values: acr_values,
-        ).result
+        it 'properly parses the ACR value ' do
+          expect(result.component_values.map(&:name).join(' ')).to eq(acr_values)
+          expect(result.aal2?).to eq(false)
+          expect(result.phishing_resistant?).to eq(false)
+          expect(result.hspd12?).to eq(false)
+          expect(result.identity_proofing?).to eq(false)
+          expect(result.facial_match?).to eq(false)
+          expect(result.ialmax?).to eq(false)
+          expect(result.enhanced_ipp?).to eq(false)
+        end
+      end
 
-        expect(result.component_values.map(&:name).join(' ')).to eq(acr_values)
-        expect(result.aal2?).to eq(true)
-        expect(result.phishing_resistant?).to eq(false)
-        expect(result.hspd12?).to eq(false)
-        expect(result.identity_proofing?).to eq(false)
-        expect(result.facial_match?).to eq(false)
-        expect(result.ialmax?).to eq(false)
-        expect(result.enhanced_ipp?).to eq(false)
+      context 'without an IAL ACR value' do
+        let(:acr_values) do
+          [
+            Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+          ].join(' ')
+        end
+
+        it 'properly parses an ACR value without an IAL ACR' do
+          expect(result.component_values.map(&:name).join(' ')).to eq(acr_values)
+          expect(result.aal2?).to eq(true)
+          expect(result.phishing_resistant?).to eq(false)
+          expect(result.hspd12?).to eq(false)
+          expect(result.identity_proofing?).to eq(false)
+          expect(result.facial_match?).to eq(false)
+          expect(result.ialmax?).to eq(false)
+          expect(result.enhanced_ipp?).to eq(false)
+        end
+
+        it 'returns the AAL value asserted' do
+          expect(subject.asserted_aal_acr).to eq Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
+        end
       end
     end
 
     context 'with an AAL2 service provider' do
-      it 'uses the AAL ACR if one is present' do
-        service_provider = build(:service_provider, default_aal: 2)
+      let(:service_provider) { build(:service_provider, default_aal: 2) }
 
-        acr_values = [
-          Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
-          Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
-        ].join(' ')
+      context 'an AAL value is present' do
+        let(:acr_values) do
+          [
+            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+            Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
+          ].join(' ')
+        end
 
-        result = AuthnContextResolver.new(
-          user: user,
-          service_provider: service_provider,
-          vtr: nil,
-          acr_values: acr_values,
-        ).result
+        it 'uses the AAL ACR value' do
+          expect(result.aal2?).to eq(false)
+        end
 
-        expect(result.aal2?).to eq(false)
+        it 'returns the asserted aal value' do
+          aal_value = Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
+          expect(subject.asserted_aal_acr).to eq aal_value
+        end
       end
 
-      it 'uses the default AAL at AAL 2 if no AAL ACR is present' do
-        service_provider = build(:service_provider, default_aal: 2)
+      context 'with no AAL ACR present' do
+        let(:acr_values) do
+          [
+            Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
+          ].join(' ')
+        end
 
-        acr_values = [
-          Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
-        ].join(' ')
+        it 'uses the default AAL2' do
+          expect(result.aal2?).to eq(true)
+          expect(result.phishing_resistant?).to eq(false)
+        end
 
-        result = AuthnContextResolver.new(
-          user: user,
-          service_provider: service_provider,
-          vtr: nil,
-          acr_values: acr_values,
-        ).result
+        it 'returns the asserted AAL2 value' do
+          expect(subject.asserted_aal_acr).to eq Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
+        end
+      end
+    end
 
-        expect(result.aal2?).to eq(true)
-        expect(result.phishing_resistant?).to eq(false)
+    context 'with an AAL3 service provider' do
+      let(:service_provider) { build(:service_provider, default_aal: 3) }
+
+      context 'with no AAL ACR present' do
+        let(:acr_values) do
+          [
+            Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
+          ].join(' ')
+        end
+
+        it 'uses the default AAL at AAL 2 with phishing_resistance' do
+          expect(result.aal2?).to eq(true)
+          expect(result.phishing_resistant?).to eq(true)
+        end
+
+        it 'returns the asserted AAL2 value' do
+          expect(subject.asserted_aal_acr).to eq(
+            Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
+          )
+        end
       end
 
-      it 'uses the default AAL at AAL 3 if no AAL ACR is present' do
-        service_provider = build(:service_provider, default_aal: 3)
+      context 'with an AAL ACR value present' do
+        let(:acr_values) do
+          [
+            'urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo',
+          ].join(' ')
+        end
 
-        acr_values = [
-          Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
-        ].join(' ')
+        it 'does not use the default_aal value' do
+          result = subject.result
 
-        result = AuthnContextResolver.new(
-          user: user,
-          service_provider: service_provider,
-          vtr: nil,
-          acr_values: acr_values,
-        ).result
+          expect(result.aal2?).to eq(false)
+        end
 
-        expect(result.aal2?).to eq(true)
-        expect(result.phishing_resistant?).to eq(true)
-      end
-
-      it 'does not use the default AAL if the default AAL ACR value is present' do
-        service_provider = build(:service_provider, default_aal: 2)
-
-        acr_values = [
-          'urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo',
-        ].join(' ')
-
-        result = AuthnContextResolver.new(
-          user: user,
-          service_provider: service_provider,
-          vtr: nil,
-          acr_values: acr_values,
-        ).result
-
-        expect(result.aal2?).to eq(false)
+        it 'returns the asserted default AAL value' do
+          expect(subject.asserted_aal_acr).to eq Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
+        end
       end
     end
 
     context 'with an IAL2 service provider' do
       let(:service_provider) { build(:service_provider, ial: 2) }
-      subject do
-        AuthnContextResolver.new(
-          user:,
-          service_provider:,
-          vtr: nil,
-          acr_values:,
-        )
-      end
-
-      let(:result) { subject.result }
 
       context 'if IAL ACR value is present' do
         let(:acr_values) do
@@ -315,6 +321,12 @@ RSpec.describe AuthnContextResolver do
         it 'uses the IAL ACR if one is present' do
           expect(result.identity_proofing?).to be false
           expect(result.aal2?).to be false
+        end
+
+        it 'asserts the default AAL value' do
+          expect(subject.asserted_aal_acr).to eq(
+            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+          )
         end
       end
 
@@ -332,6 +344,10 @@ RSpec.describe AuthnContextResolver do
           expect(result.aal2?).to be true
         end
 
+        it 'asserts the AAL2 value, even though the ddefault aal value was passed in' do
+          expect(subject.asserted_aal_acr).to eq Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
+        end
+
         context 'when one of the acr values is unknown' do
           let(:acr_values) do
             [
@@ -345,6 +361,10 @@ RSpec.describe AuthnContextResolver do
           it 'ignores the unknown value and uses the highest IAL ACR' do
             expect(result.identity_proofing?).to eq(true)
             expect(result.aal2?).to eq(true)
+          end
+
+          it 'asserts the AAL2 value, even though the ddefault aal value was passed in' do
+            expect(subject.asserted_aal_acr).to eq Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
           end
         end
       end
@@ -360,6 +380,10 @@ RSpec.describe AuthnContextResolver do
           expect(result.identity_proofing?).to be true
           expect(result.aal2?).to be true
         end
+
+        it 'asserts the AAL2 value, even though the ddefault aal value was passed in' do
+          expect(subject.asserted_aal_acr).to eq Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
+        end
       end
 
       context 'when the only ACR value is unknown' do
@@ -370,7 +394,7 @@ RSpec.describe AuthnContextResolver do
         end
       end
 
-      context 'if requesting facial match comparison' do
+      context 'when requesting facial match comparison' do
         let(:bio_acr_value) do
           Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
         end
@@ -380,6 +404,10 @@ RSpec.describe AuthnContextResolver do
             bio_acr_value,
             Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
           ].join(' ')
+        end
+
+        it 'asserts the AAL2 value, even though the ddefault aal value was passed in' do
+          expect(subject.asserted_aal_acr).to eq Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
         end
 
         context 'with facial match comparison is required' do
