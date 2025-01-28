@@ -31,8 +31,8 @@ module Reporting
       @progress
     end
 
-    def query
-      <<~QUERY
+    def query(after_row:)
+      base_query = <<~QUERY
         filter properties.service_provider in #{issuers.inspect} or
               (name = "IdV: enter verify by mail code submitted" and properties.event_properties.initiating_service_provider in #{issuers.inspect})
         | filter name in [
@@ -75,10 +75,15 @@ module Reporting
                 max(profile_age_in_seconds) as out_of_band_verification_pending_seconds,
                 sum(name = "User registration: agency handoff visited" and properties.event_properties.ial2) > 0 as agency_handoff,
                 sum(name = "SP redirect initiated" and properties.event_properties.ial == 2) > 0 as sp_redirect
+                toMillis(min(@timestamp)) as first_event
                 by properties.user_id as login_uuid
         | filter workflow_started > 0 or verified_by_mail > 0 or verified_fraud_review > 0
         | limit 10000
+        | sort first_event asc
       QUERY
+      return base_query if after_row.nil?
+
+      base_query + " | filter first_event > #{after_row['first_event']}"
     end
 
     def as_csv
@@ -133,6 +138,8 @@ module Reporting
     end
 
     def data
+      return @data if defined? @data
+
       @data ||= fetch_results.map do |result_row|
         process_result_row(result_row)
       end
@@ -177,12 +184,14 @@ module Reporting
       end
     end
 
-    def fetch_results
-      cloudwatch_client.fetch(
-        query:,
+    def fetch_results(after_row: nil)
+      results = cloudwatch_client.fetch(
+        query: query(after_row:),
         from: time_range.begin.beginning_of_day,
         to: time_range.end.end_of_day,
       )
+      return results if results.count < 10000
+      results + fetch_results(after_row: results.last)
     end
 
     def cloudwatch_client

@@ -15,9 +15,21 @@ RSpec.describe Reporting::SpProofingEventsByUuid do
 
   let(:cloudwatch_logs) do
     [
-      { 'login_uuid' => deleted_user_uuid, 'workflow_started' => '1' },
-      { 'login_uuid' => non_agency_user_uuid, 'workflow_started' => '1' },
-      { 'login_uuid' => agency_user_login_uuid, 'workflow_started' => '1' },
+      {
+        'login_uuid' => deleted_user_uuid,
+        'workflow_started' => '1',
+        'first_event' => '1.735275676123E12',
+      },
+      {
+        'login_uuid' => non_agency_user_uuid,
+        'workflow_started' => '1',
+        'first_event' => '1.735275676456E12',
+      },
+      {
+        'login_uuid' => agency_user_login_uuid,
+        'workflow_started' => '1',
+        'first_event' => '1.735275676789E12',
+      },
     ]
   end
 
@@ -81,7 +93,7 @@ RSpec.describe Reporting::SpProofingEventsByUuid do
     )
   end
 
-  describe 'as_csv' do
+  describe '#as_csv' do
     it 'renders a CSV report with converted UUIDs' do
       aggregate_failures do
         expect_csv_result.zip(report.as_csv).each do |actual, expected|
@@ -116,6 +128,35 @@ RSpec.describe Reporting::SpProofingEventsByUuid do
           ),
         ],
       )
+    end
+  end
+
+  describe '#data' do
+    it 'fetches additional results if 10k results are returned' do
+      cloudwatch_client = double(Reporting::CloudwatchClient)
+      expect(cloudwatch_client).to receive(:fetch).ordered do |args|
+        expect(args[:query]).to_not include('| filter first_event')
+        [
+          {
+            'login_uuid' => agency_user_login_uuid,
+            'workflow_started' => '1',
+            'first_event' => '1.123456E12',
+          },
+        ] * 10000
+      end
+      expect(cloudwatch_client).to receive(:fetch).ordered do |args|
+        expect(args[:query]).to include('| filter first_event > 1.123456E12')
+        [
+          {
+            'login_uuid' => agency_user_login_uuid,
+            'workflow_started' => '1',
+            'first_event' => '1.123456E12',
+          },
+        ]
+      end
+      allow(report).to receive(:cloudwatch_client).and_return(cloudwatch_client)
+
+      expect(report.data.count).to eq(10_001)
     end
   end
 end
