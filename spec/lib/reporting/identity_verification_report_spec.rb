@@ -612,5 +612,17 @@ RSpec.describe Reporting::IdentityVerificationReport do
         subject.cloudwatch_client
       end
     end
+
+    describe '#verified_user_count' do
+      let!(:profile) do
+        create(
+          :profile, :active, created_at: time_range.end.end_of_day,
+                             verified_at: time_range.end.end_of_day
+        )
+      end
+      it 'counts users through end of day' do
+        expect(report.verified_user_count).to eq(1)
+      end
+    end
   end
 end
