@@ -23,21 +23,23 @@ As a high-level overview, the front end consists of:
 
 The general folder structure for front-end assets includes:
 
-```
-app/
-├─ assets/
-│  ├─ builds/      # Source location for compiled stylesheets used by Propshaft in asset compilation
-│  ├─ fonts/       # Source font assets
-│  ├─ images/      # Source image assets
-│  └─ stylesheets/ # Source Sass files
-├─ components/     # ViewComponent implementations
-└─ javascript/
-   ├─ packages/    # JavaScript workspace NPM packages
-   └─ packs/       # JavaScript entrypoints referenced by pages
-public/
-├─ assets/         # Compiled images, fonts, and stylesheets
-└─ packs/          # Compiled JavaScript
-```
+- `app/`
+  - `assets/`
+    - `builds/`: Source location for compiled stylesheets used by Propshaft in asset compilation
+    - `fonts/`: Source font assets
+    - `images/`: Source image assets
+    - `stylesheets/`: Source Sass files
+  - [`components/`][components-readme]: ViewComponent implementations
+  - `javascript/`
+    - [`packages/`][packages-readme]: JavaScript workspace NPM packages
+    - [`packs/`][packs-readme]: JavaScript entrypoints referenced by pages
+- `public/`
+  - `assets/`: Compiled images, fonts, and stylesheets
+  - `packs/`: Compiled JavaScript
+
+[components-readme]: ../app/components/README.md
+[packages-readme]: ../app/packages/README.md
+[packs-readme]: ../app/packs/README.md
 
 ## CSS + HTML
 
