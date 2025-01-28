@@ -15,13 +15,29 @@ class SocureDocvResultsJob < ApplicationJob
       document_capture_session
 
     timer = JobHelpers::Timer.new
-    response = timer.time('vendor_request') do
+    docv_result_response = timer.time('vendor_request') do
       socure_document_verification_result
     end
     log_verification_request(
-      docv_result_response: response,
+      docv_result_response:,
       vendor_request_time_in_ms: timer.results['vendor_request'],
     )
+
+    if docv_result_response.success?
+      doc_pii_response = Idv::DocPiiForm.new(pii: docv_result_response.pii_from_doc.to_h).submit
+      # TODO: analytics event here
+      unless doc_pii_response&.success?
+        document_capture_session.store_failed_auth_data(
+          doc_auth_success: true,
+          selfie_status: docv_result_response.selfie_status,
+          errors: { pii_validation: 'failed' },
+          front_image_fingerprint: nil, # can be defaulted to nil in method
+          back_image_fingerprint: nil, # can be defaulted to nil in method
+          selfie_image_fingerprint: nil, # can be defaulted to nil in method
+        )
+        return
+      end
+    end
     document_capture_session.store_result_from_response(response)
   end
 
