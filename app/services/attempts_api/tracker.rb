@@ -21,11 +21,13 @@ module AttemptsApi
     def track_event(event_type, metadata = {})
       return unless enabled?
 
-      if metadata.has_key?(:failure_reason) &&
-         (metadata[:failure_reason].blank? ||
-          metadata[:success].present?)
-        metadata.delete(:failure_reason)
-      end
+      extra_metadata =
+        if metadata.has_key?(:failure_reason) &&
+           (metadata[:failure_reason].blank? || metadata[:success].present?)
+          metadata.except(:failure_reason)
+        else
+          metadata
+        end
 
       event_metadata = {
         user_agent: request&.user_agent,
@@ -37,7 +39,7 @@ module AttemptsApi
         client_port: CloudFrontHeaderParser.new(request).client_port,
       }
 
-      event_metadata.merge!(metadata)
+      event_metadata.merge!(extra_metadata)
 
       event = AttemptEvent.new(
         event_type: event_type,
