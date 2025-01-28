@@ -59,6 +59,10 @@ class AttributeAsserter
                 :decrypted_pii,
                 :user_session
 
+  def analytics
+    Analytics.new(user:, request: nil, session: {}, sp: nil)
+  end
+
   def should_add_proofed_attributes?
     return false if !user.active_profile.present?
     resolved_authn_context_result.identity_proofing_or_ialmax?
@@ -150,7 +154,20 @@ class AttributeAsserter
     requested_aal_level = Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_AAL[requested_context]
     aal_level = requested_aal_level || service_provider.default_aal || ::Idp::Constants::DEFAULT_AAL
     context = Saml::Idp::Constants::AUTHN_CONTEXT_AAL_TO_CLASSREF[aal_level]
+
+    if context != asserted_aal_value
+      analytics.asserted_aal_different_from_response_aal(
+        asserted_aal_value:,
+        client_id: service_provider.issuer,
+        response_aal_value: context,
+      )
+    end
+
     attrs[:aal] = { getter: aal_getter_function(context) } if context
+  end
+
+  def asserted_aal_value
+    authn_context_resolver.asserted_aal_acr
   end
 
   def add_ial(attrs)

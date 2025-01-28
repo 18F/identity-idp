@@ -305,6 +305,27 @@ module AnalyticsEvents
     )
   end
 
+  # Temporary event:
+  # Tracks when the AAL value that we are returning to the integration
+  # is different from the actual asserted value
+  # @param [String] asserted_aal_value The actual AAL value the IdP asserts
+  # @param [String] client_id
+  # @param [String] response_aal_value The AAL value the IdP returns via attributes
+  def asserted_aal_different_from_response_aal(
+    asserted_aal_value:,
+    client_id:,
+    response_aal_value:,
+    **extra
+  )
+    track_event(
+      :asserted_aal_different_from_response_aal,
+      asserted_aal_value:,
+      client_id:,
+      response_aal_value:,
+      **extra,
+    )
+  end
+
   # @identity.idp.previous_event_name TOTP: User Disabled
   # Tracks when a user deletes their auth app from account
   # @param [Boolean] success
