@@ -2389,7 +2389,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
               end
 
               context 'when the USPS proofing results has a failed status' do
-                context 'when he USPS proofing results does not have fraud suspected' do
+                context 'when the USPS proofing results does not have fraud suspected' do
                   before do
                     response_body[:status] = 'In-person failed'
                     response_body[:failureReason] = 'Address does not match source data.'

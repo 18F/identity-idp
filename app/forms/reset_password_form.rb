@@ -97,8 +97,16 @@ class ResetPasswordForm
     {
       user_id: user.uuid,
       profile_deactivated: active_profile.present?,
-      pending_profile_invalidated: pending_profile.present?,
+      pending_profile_invalidated: pending_profile_invalidated?,
       pending_profile_pending_reasons: (pending_profile&.pending_reasons || [])&.join(','),
     }
+  end
+
+  def pending_profile_invalidated?
+    if FeatureManagement.pending_in_person_password_reset_enabled?
+      pending_profile.present? && !pending_profile.in_person_verification_pending?
+    else
+      pending_profile.present?
+    end
   end
 end

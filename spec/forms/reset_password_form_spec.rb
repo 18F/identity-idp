@@ -166,7 +166,7 @@ RSpec.describe ResetPasswordForm, type: :model do
         context 'when the profile is pending gpo verification' do
           let!(:user) { create(:user, reset_password_sent_at: Time.zone.now) }
           let!(:profile) do
-            create(:profile, :verify_by_mail_pending, :in_person_verification_pending, user: user)
+            create(:profile, :verify_by_mail_pending, user: user)
           end
 
           before do
@@ -178,7 +178,7 @@ RSpec.describe ResetPasswordForm, type: :model do
             expect(result.success?).to eq(true)
             expect(result.extra[:pending_profile_invalidated]).to eq(true)
             expect(result.extra[:pending_profile_pending_reasons]).to eq(
-              'gpo_verification_pending,in_person_verification_pending',
+              'gpo_verification_pending',
             )
           end
         end
@@ -200,7 +200,7 @@ RSpec.describe ResetPasswordForm, type: :model do
             expect(@result.extra).to include(
               user_id: user.uuid,
               profile_deactivated: false,
-              pending_profile_invalidated: true,
+              pending_profile_invalidated: false,
               pending_profile_pending_reasons: 'in_person_verification_pending',
             )
           end
