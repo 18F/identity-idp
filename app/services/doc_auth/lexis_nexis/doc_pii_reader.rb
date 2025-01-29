@@ -22,6 +22,7 @@ module DocAuth
       # @return [Pii::StateId, nil]
       def read_pii(true_id_product)
         id_auth_field_data = true_id_product&.dig(:IDAUTH_FIELD_DATA)
+        authentication_result_field_data = true_id_product&.dig(:AUTHENTICATION_RESULT)
         return nil unless id_auth_field_data.present?
 
         state_id_type_slug = id_auth_field_data['Fields_DocumentClassName']
@@ -42,7 +43,7 @@ module DocAuth
             month: id_auth_field_data['Fields_DOB_Month'],
             day: id_auth_field_data['Fields_DOB_Day'],
           ),
-          sex: parse_sex_value(id_auth_field_data['Fields_Sex']),
+          sex: parse_sex_value(authentication_result_field_data&.[]('Sex')),
           height: parse_height_value(id_auth_field_data['Fields_Height']),
           weight: nil,
           eye_color: nil,
@@ -87,10 +88,10 @@ module DocAuth
         # This code will return `nil` for those cases with the intent that they will not be verified
         # against the DLDV where they will not be recognized
         #
-        case sex_attribute&.upcase
-        when 'M'
+        case sex_attribute
+        when 'Male'
           'male'
-        when 'F'
+        when 'Female'
           'female'
         end
       end
