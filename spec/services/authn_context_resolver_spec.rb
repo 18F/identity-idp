@@ -302,7 +302,9 @@ RSpec.describe AuthnContextResolver do
         end
 
         it 'returns the asserted default AAL value' do
-          expect(subject.asserted_aal_acr).to eq Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
+          expect(subject.asserted_aal_acr).to eq(
+            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+          )
         end
       end
     end

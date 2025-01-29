@@ -441,7 +441,8 @@ RSpec.describe AttributeAsserter do
         it 'tracks the mismatch' do
           expect(fake_analytics).to have_logged_event(
             :asserted_aal_different_from_response_aal,
-            asserted_aal_value: Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
+            asserted_aal_value:
+              Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
             client_id: service_provider.issuer,
             response_aal_value: Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
           )
@@ -465,7 +466,8 @@ RSpec.describe AttributeAsserter do
         it 'tracks the mismatch' do
           expect(@analytics).to have_logged_event(
             :asserted_aal_different_from_response_aal,
-            asserted_aal_value: Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
+            asserted_aal_value:
+              Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
             client_id: service_provider.issuer,
             response_aal_value: Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
           )
@@ -888,7 +890,8 @@ RSpec.describe AttributeAsserter do
         it 'tracks the mismatch' do
           expect(@analytics).to have_logged_event(
             :asserted_aal_different_from_response_aal,
-            asserted_aal_value: Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
+            asserted_aal_value:
+              Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
             client_id: service_provider.issuer,
             response_aal_value: Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
           )
@@ -947,7 +950,8 @@ RSpec.describe AttributeAsserter do
         it 'tracks the mismatch' do
           expect(@analytics).to have_logged_event(
             :asserted_aal_different_from_response_aal,
-            asserted_aal_value: Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
+            asserted_aal_value:
+              Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
             client_id: service_provider.issuer,
             response_aal_value: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
           )
@@ -989,7 +993,8 @@ RSpec.describe AttributeAsserter do
         it 'tracks the mismatch' do
           expect(@analytics).to have_logged_event(
             :asserted_aal_different_from_response_aal,
-            asserted_aal_value: Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
+            asserted_aal_value:
+              Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
             client_id: service_provider.issuer,
             response_aal_value: Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
           )
@@ -1157,7 +1162,8 @@ RSpec.describe AttributeAsserter do
             it 'tracks the mismatch' do
               expect(@analytics).to have_logged_event(
                 :asserted_aal_different_from_response_aal,
-                asserted_aal_value: Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
+                asserted_aal_value:
+                  Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
                 client_id: service_provider.issuer,
                 response_aal_value: Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
               )
@@ -1237,7 +1243,8 @@ RSpec.describe AttributeAsserter do
             it 'tracks the mismatch' do
               expect(@analytics).to have_logged_event(
                 :asserted_aal_different_from_response_aal,
-                asserted_aal_value: Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
+                asserted_aal_value:
+                  Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
                 client_id: service_provider.issuer,
                 response_aal_value: Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
               )
@@ -1359,7 +1366,8 @@ RSpec.describe AttributeAsserter do
               it 'tracks the mismatch' do
                 expect(@analytics).to have_logged_event(
                   :asserted_aal_different_from_response_aal,
-                  asserted_aal_value: Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
+                  asserted_aal_value:
+                    Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
                   client_id: service_provider.issuer,
                   response_aal_value: Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
                 )
@@ -1433,7 +1441,8 @@ RSpec.describe AttributeAsserter do
               it 'tracks the mismatch' do
                 expect(@analytics).to have_logged_event(
                   :asserted_aal_different_from_response_aal,
-                  asserted_aal_value: Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
+                  asserted_aal_value:
+                    Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
                   client_id: service_provider.issuer,
                   response_aal_value: Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
                 )
