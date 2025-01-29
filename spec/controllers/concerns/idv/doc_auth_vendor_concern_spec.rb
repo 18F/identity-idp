@@ -90,7 +90,7 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
           expect(controller.doc_auth_vendor).to eq(Idp::Constants::Vendors::MOCK)
         end
       end
-      
+
       context 'Lexis Nexis is disabled' do
         before do
           allow(IdentityConfig.store)
