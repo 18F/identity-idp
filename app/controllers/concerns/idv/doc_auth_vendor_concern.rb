@@ -20,16 +20,6 @@ module Idv
       DocAuthRouter.doc_auth_vendor_for_bucket(bucket)
     end
 
-    def choose_non_socure_bucket
-      if doc_auth_vendor_enabled?(Idp::Constants::Vendors::LEXIS_NEXIS)
-        return :lexis_nexis
-      elsif doc_auth_vendor_enabled?(Idp::Constants::Vendors::MOCK)
-        return :mock
-      else
-        return nil
-      end
-    end
-
     def doc_auth_vendor_enabled?(vendor)
       return true if IdentityConfig.store.doc_auth_vendor_default == vendor
       return false unless IdentityConfig.store.doc_auth_vendor_switching_enabled
@@ -45,6 +35,14 @@ module Idv
     end
 
     private
+
+    def choose_non_socure_bucket
+      if doc_auth_vendor_enabled?(Idp::Constants::Vendors::LEXIS_NEXIS)
+        return :lexis_nexis
+      elsif doc_auth_vendor_enabled?(Idp::Constants::Vendors::MOCK)
+        return :mock
+      end
+    end
 
     def socure_user_set
       @socure_user_set ||= SocureUserSet.new
