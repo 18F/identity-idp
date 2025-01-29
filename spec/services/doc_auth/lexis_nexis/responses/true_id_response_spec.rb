@@ -133,7 +133,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         city: 'ANYTOWN',
         state: 'MD',
         dob: '1986-07-01',
-        sex: nil,
+        sex: 'male',
         height: 69,
         weight: nil,
         eye_color: nil,
