@@ -238,7 +238,12 @@ module SamlIdpAuthConcern
 
   def saml_request_service_provider
     return @saml_request_service_provider if defined?(@saml_request_service_provider)
-    @saml_request_service_provider = ServiceProvider.find_by(issuer: current_issuer)
+    @saml_request_service_provider =
+      if current_issuer.blank?
+        nil
+      else
+        ServiceProvider.find_by(issuer: current_issuer)
+      end
   end
 
   def current_issuer

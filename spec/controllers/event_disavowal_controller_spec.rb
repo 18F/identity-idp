@@ -46,8 +46,10 @@ RSpec.describe EventDisavowalController do
         expect(@analytics).to have_logged_event(
           'Event disavowal token invalid',
           build_analytics_hash(
+            user_id: event.user.uuid,
             success: false,
             errors: { event: [t('event_disavowals.errors.event_already_disavowed')] },
+            error_details: { event: { event_already_disavowed: true } },
           ),
         )
       end
@@ -60,8 +62,10 @@ RSpec.describe EventDisavowalController do
         expect(@analytics).to have_logged_event(
           'Event disavowal token invalid',
           build_analytics_hash(
+            user_id: event.user.uuid,
             success: false,
             errors: { event: [t('event_disavowals.errors.event_already_disavowed')] },
+            error_details: { event: { event_already_disavowed: true } },
           ),
         )
         expect(assigns(:forbidden_passwords)).to be_nil
@@ -96,6 +100,7 @@ RSpec.describe EventDisavowalController do
         expect(@analytics).to have_logged_event(
           'Event disavowal password reset',
           build_analytics_hash(
+            user_id: event.user.uuid,
             success: false,
             errors: {
               password: [
@@ -104,6 +109,7 @@ RSpec.describe EventDisavowalController do
                 ),
               ],
             },
+            error_details: { password: { too_short: true } },
           ),
         )
       end
@@ -119,8 +125,10 @@ RSpec.describe EventDisavowalController do
         expect(@analytics).to have_logged_event(
           'Event disavowal password reset',
           build_analytics_hash(
+            user_id: event.user.uuid,
             success: false,
             errors: { password: ['Password must be at least 12 characters long'] },
+            error_details: { password: { too_short: true } },
           ),
         )
         expect(assigns(:forbidden_passwords)).to all(be_a(String))
@@ -141,8 +149,10 @@ RSpec.describe EventDisavowalController do
         expect(@analytics).to have_logged_event(
           'Event disavowal token invalid',
           build_analytics_hash(
+            user_id: event.user.uuid,
             success: false,
             errors: { event: [t('event_disavowals.errors.event_already_disavowed')] },
+            error_details: { event: { event_already_disavowed: true } },
           ),
         )
       end
@@ -166,26 +176,28 @@ RSpec.describe EventDisavowalController do
             errors: {
               user: [t('event_disavowals.errors.no_account')],
             },
+            error_details: {
+              user: { blank: true },
+            },
           ),
         )
       end
     end
   end
 
-  def build_analytics_hash(success: true, errors: {}, user_id: nil)
-    hash_including(
-      {
-        event_created_at: event.created_at,
-        disavowed_device_last_used_at: event.device&.last_used_at,
-        success: success,
-        errors: errors,
-        event_id: event.id,
-        event_type: event.event_type,
-        event_ip: event.ip,
-        disavowed_device_user_agent: event.device.user_agent,
-        disavowed_device_last_ip: event.device.last_ip,
-        user_id: user_id,
-      }.compact,
-    )
+  def build_analytics_hash(success: true, errors: nil, error_details: nil, user_id: nil)
+    {
+      event_created_at: event.created_at,
+      disavowed_device_last_used_at: event.device&.last_used_at,
+      success:,
+      errors:,
+      error_details:,
+      event_id: event.id,
+      event_type: event.event_type,
+      event_ip: event.ip,
+      disavowed_device_user_agent: event.device.user_agent,
+      disavowed_device_last_ip: event.device.last_ip,
+      user_id:,
+    }.compact
   end
 end

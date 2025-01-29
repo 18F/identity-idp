@@ -3,7 +3,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 ruby "~> #{File.read(File.join(__dir__, '.ruby-version')).strip}"
 
-gem 'rails', '~> 7.2.1'
+gem 'rails', '~> 8.0.0'
 
 gem 'ahoy_matey', '~> 3.0'
 # pod identity requires 3.188.0
@@ -102,7 +102,7 @@ end
 
 group :development, :test do
   gem 'brakeman', require: false
-  gem 'bullet', '~> 7.0'
+  gem 'bullet', '~> 8.0'
   gem 'capybara-webmock', git: 'https://github.com/hashrocket/capybara-webmock.git', ref: 'd3f3b7c'
   gem 'erb_lint', '~> 0.7.0', require: false
   gem 'i18n-tasks', '~> 1.0'

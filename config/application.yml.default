@@ -402,7 +402,9 @@ socure_reason_code_api_key: ''
 socure_reason_code_base_url: ''
 socure_reason_code_timeout_in_seconds: 5
 sp_handoff_bounce_max_seconds: 2
+sp_idv_weekly_dropoff_report_configs: '[]'
 sp_issuer_user_counts_report_configs: '[]'
+sp_proofing_events_by_uuid_report_configs: '[]'
 state_tracking_enabled: true
 team_ada_email: ''
 team_all_login_emails: '[]'

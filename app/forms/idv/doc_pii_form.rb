@@ -109,6 +109,10 @@ module Idv
     end
 
     def state_id_expired?
+      # temporary fix, tracked for removal in LG-15600
+      return if IdentityConfig.store.socure_docv_verification_data_test_mode &&
+                DateParser.parse_legacy(state_id_expiration) == Date.parse('2020-01-01')
+
       if state_id_expiration && DateParser.parse_legacy(state_id_expiration).past?
         errors.add(:state_id_expiration, generic_error, type: :state_id_expiration)
       end

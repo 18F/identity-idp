@@ -36,6 +36,7 @@ RSpec.describe 'Hybrid Flow' do
       .and_return(socure_docv_verification_data_test_mode)
     @docv_transaction_token = stub_docv_document_request
     stub_analytics
+    allow_any_instance_of(SocureDocvResultsJob).to receive(:analytics).and_return(@analytics)
   end
 
   context 'happy path', allow_browser_log: true do
@@ -101,16 +102,21 @@ RSpec.describe 'Hybrid Flow' do
         expect(page).to have_text(t('doc_auth.instructions.switch_back'))
         expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
 
-        # To be fixed in app:
         # Confirm app disallows jumping back to DocumentCapture page
-        # visit idv_hybrid_mobile_socure_document_capture_url
-        # expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
+        visit idv_hybrid_mobile_socure_document_capture_url
+        expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
+        visit idv_hybrid_mobile_socure_document_capture_update_url
+        expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
       end
 
       perform_in_browser(:desktop) do
         expect(page).to_not have_content(t('doc_auth.headings.text_message'), wait: 10)
         expect(page).to have_current_path(idv_ssn_path)
         expect(@analytics).to have_logged_event(:idv_socure_document_request_submitted)
+        expect(@analytics).to have_logged_event(:idv_socure_verification_data_requested)
+        expect(@analytics).to have_logged_event(
+          'IdV: doc auth image upload vendor pii validation',
+        )
         fill_out_ssn_form_ok
         click_idv_continue
 
@@ -548,6 +554,9 @@ RSpec.describe 'Hybrid Flow' do
           expect(page).to have_text(t('doc_auth.headers.general.network_error'))
           expect(page).to have_text(t('doc_auth.errors.general.new_network_error'))
           expect(@analytics).to have_logged_event(:idv_socure_document_request_submitted)
+          expect(@analytics).not_to have_logged_event(
+            'IdV: doc auth image upload vendor pii validation',
+          )
         end
 
         perform_in_browser(:desktop) do

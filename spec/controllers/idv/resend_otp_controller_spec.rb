@@ -57,7 +57,6 @@ RSpec.describe Idv::ResendOtpController do
         hash_including(
           success: true,
           phone_fingerprint: Pii::Fingerprinter.fingerprint(Phonelib.parse(phone).e164),
-          errors: {},
           otp_delivery_preference: :sms,
           country_code: 'US',
           area_code: '225',

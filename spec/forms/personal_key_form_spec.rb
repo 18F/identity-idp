@@ -12,7 +12,7 @@ RSpec.describe PersonalKeyForm do
 
         expect(form.submit.to_h).to eq(
           success: true,
-          errors: {},
+          errors: nil,
         )
         expect(user.reload.encrypted_recovery_code_digest).to eq old_code
       end

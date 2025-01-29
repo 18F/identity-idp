@@ -43,7 +43,7 @@ RSpec.describe SamlRequestValidator do
         it 'returns FormResponse with success: true' do
           expect(response.to_h).to include(
             success: true,
-            errors: {},
+            errors: nil,
             **extra,
           )
         end
@@ -79,7 +79,7 @@ RSpec.describe SamlRequestValidator do
           it 'is valid' do
             expect(response.to_h).to include(
               success: true,
-              errors: {},
+              errors: nil,
               **extra,
             )
           end
@@ -96,7 +96,7 @@ RSpec.describe SamlRequestValidator do
         it 'returns FormResponse with success: true' do
           expect(response.to_h).to include(
             success: true,
-            errors: {},
+            errors: nil,
             **extra,
           )
         end
@@ -108,7 +108,7 @@ RSpec.describe SamlRequestValidator do
       it 'returns FormResponse with success: true' do
         expect(response.to_h).to include(
           success: true,
-          errors: {},
+          errors: nil,
           **extra,
         )
       end
@@ -157,7 +157,7 @@ RSpec.describe SamlRequestValidator do
       it 'returns FormResponse with success: true' do
         expect(response.to_h).to include(
           success: true,
-          errors: {},
+          errors: nil,
           **extra,
         )
       end
@@ -170,7 +170,7 @@ RSpec.describe SamlRequestValidator do
         it 'returns FormResponse with success: true for ial2 on ial:2 sp' do
           expect(response.to_h).to include(
             success: true,
-            errors: {},
+            errors: nil,
             **extra,
           )
         end
@@ -191,7 +191,7 @@ RSpec.describe SamlRequestValidator do
 
           expect(response.to_h).to include(
             success: true,
-            errors: {},
+            errors: nil,
             **extra,
           )
         end
@@ -210,7 +210,7 @@ RSpec.describe SamlRequestValidator do
 
           expect(response.to_h).to include(
             success: true,
-            errors: {},
+            errors: nil,
             **extra,
           )
         end
@@ -258,7 +258,7 @@ RSpec.describe SamlRequestValidator do
           it 'returns FormResponse with success: true' do
             expect(response.to_h).to include(
               success: true,
-              errors: {},
+              errors: nil,
               **extra,
             )
           end
@@ -318,7 +318,7 @@ RSpec.describe SamlRequestValidator do
             it 'returns a successful response' do
               expect(response.to_h).to include(
                 success: true,
-                errors: {},
+                errors: nil,
                 **extra,
               )
             end
@@ -370,7 +370,7 @@ RSpec.describe SamlRequestValidator do
             it 'returns a successful response' do
               expect(response.to_h).to include(
                 success: true,
-                errors: {},
+                errors: nil,
                 **extra,
               )
             end
@@ -427,7 +427,7 @@ RSpec.describe SamlRequestValidator do
       it 'returns FormResponse with success true' do
         expect(response.to_h).to include(
           success: true,
-          errors: {},
+          errors: nil,
           **extra,
         )
       end
@@ -441,7 +441,7 @@ RSpec.describe SamlRequestValidator do
       it 'returns FormResponse with success true' do
         expect(response.to_h).to include(
           success: true,
-          errors: {},
+          errors: nil,
           **extra,
         )
       end

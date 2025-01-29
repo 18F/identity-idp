@@ -2077,7 +2077,7 @@ module AnalyticsEvents
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
     selfie_image_fingerprint: nil,
-    classification_info: {},
+    classification_info: nil,
     **extra
   )
     track_event(
@@ -5834,6 +5834,10 @@ module AnalyticsEvents
   # @param [String, nil] aaguid AAGUID value of WebAuthn device
   # @param [String[], nil] unknown_transports Array of unrecognized WebAuthn transports, intended to
   #   be used in case of future specification changes.
+  # @param [String[], nil] transports WebAuthn transports associated with registration.
+  # @param [Boolean, nil] transports_mismatch Whether the WebAuthn transports associated with
+  #   registration contradict the authenticator attachment for user setup. For example, a user can
+  #   set up a platform authenticator through the Security Key setup flow.
   # @param [:authentication, :account_creation, nil] webauthn_platform_recommended A/B test for
   # recommended Face or Touch Unlock setup, if applicable.
   def multi_factor_auth_setup(
@@ -5859,6 +5863,8 @@ module AnalyticsEvents
     attempts: nil,
     aaguid: nil,
     unknown_transports: nil,
+    transports: nil,
+    transports_mismatch: nil,
     webauthn_platform_recommended: nil,
     **extra
   )
@@ -5886,6 +5892,8 @@ module AnalyticsEvents
       attempts:,
       aaguid:,
       unknown_transports:,
+      transports:,
+      transports_mismatch:,
       webauthn_platform_recommended:,
       **extra,
     )
@@ -6282,7 +6290,7 @@ module AnalyticsEvents
     errors:,
     confirmed:,
     active_profile:,
-    error_details: {},
+    error_details: nil,
     **extra
   )
     track_event(
@@ -6312,7 +6320,7 @@ module AnalyticsEvents
     profile_deactivated:,
     pending_profile_invalidated:,
     pending_profile_pending_reasons:,
-    error_details: {},
+    error_details: nil,
     **extra
   )
     track_event(
@@ -7706,9 +7714,59 @@ module AnalyticsEvents
     track_event(:webauthn_platform_recommended_visited)
   end
 
-  # @param [Hash] platform_authenticator
-  # @param [Boolean] success
-  # @param [Hash, nil] errors
+  # @param [Boolean] platform_authenticator Whether authentication method was registered as platform
+  #   authenticator
+  # @param [Number] configuration_id Database ID of WebAuthn configuration
+  # @param [Boolean] confirmed_mismatch Whether user chose to confirm and continue with interpreted
+  #   platform attachment
+  # @param [Boolean] success Whether the deletion was successful, if user chose to undo interpreted
+  #   platform attachment
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful deletion
+  # User submitted confirmation screen after setting up WebAuthn with transports mismatched with the
+  # expected platform attachment
+  def webauthn_setup_mismatch_submitted(
+    configuration_id:,
+    platform_authenticator:,
+    confirmed_mismatch:,
+    success: nil,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      :webauthn_setup_mismatch_submitted,
+      configuration_id:,
+      platform_authenticator:,
+      confirmed_mismatch:,
+      success:,
+      error_details:,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] platform_authenticator Whether authentication method was registered as platform
+  #   authenticator
+  # @param [Number] configuration_id Database ID of WebAuthn configuration
+  # User visited confirmation screen after setting up WebAuthn with transports mismatched with the
+  # expected platform attachment
+  def webauthn_setup_mismatch_visited(
+    configuration_id:,
+    platform_authenticator:,
+    **extra
+  )
+    track_event(
+      :webauthn_setup_mismatch_visited,
+      configuration_id:,
+      platform_authenticator:,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] platform_authenticator Whether submission is for setting up a platform
+  #   authenticator. This aligns to what the user experienced in setting up the authenticator.
+  #   However, if `transports_mismatch` is true, the authentication method is created as the
+  #   opposite of this value.
+  # @param [Boolean] success Whether the submission was successful
+  # @param [Hash, nil] errors Errors resulting from form validation, or nil if successful.
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
   # Tracks whether or not Webauthn setup was successful
   def webauthn_setup_submitted(
@@ -7720,10 +7778,10 @@ module AnalyticsEvents
   )
     track_event(
       :webauthn_setup_submitted,
-      platform_authenticator: platform_authenticator,
-      success: success,
+      platform_authenticator:,
+      success:,
+      errors:,
       in_account_creation_flow:,
-      errors: errors,
       **extra,
     )
   end

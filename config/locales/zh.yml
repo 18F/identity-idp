@@ -2057,6 +2057,12 @@ webauthn_platform_recommended.cta: Set up face or touch unlock
 webauthn_platform_recommended.description_save_time: Save time by using your face, fingerprint, password, or another method to access your account. This method is faster than receiving a one-time code through text or voice message.
 webauthn_platform_recommended.heading: Set up face or touch unlock for a quick and easy sign in
 webauthn_platform_recommended.skip: Skip
+webauthn_setup_mismatch.description_undo: 点击“撤消”可删除此选项。
+webauthn_setup_mismatch.description.webauthn: 我们注意到您正在使用安全密钥而不是人脸或触摸解锁。点击“继续”即可从现在开始使用您的安全密钥登录。
+webauthn_setup_mismatch.description.webauthn_platform: 我们注意到您正在使用人脸或触摸解锁，而不是安全密钥。点击“继续”即可从现在开始使用人脸或触摸解锁登录。
+webauthn_setup_mismatch.heading.webauthn: 发现安全密钥
+webauthn_setup_mismatch.heading.webauthn_platform: 发现人脸或触摸解锁
+webauthn_setup_mismatch.undo: 撤消
 zxcvbn.feedback.a_word_by_itself_is_easy_to_guess: 单字容易被人猜出
 zxcvbn.feedback.add_another_word_or_two_uncommon_words_are_better: 再加一两个字不常见的字更好
 zxcvbn.feedback.all_uppercase_is_almost_as_easy_to_guess_as_all_lowercase: 都是大写几乎和都是小写一样容易被人猜出

@@ -2044,6 +2044,12 @@ webauthn_platform_recommended.cta: Set up face or touch unlock
 webauthn_platform_recommended.description_save_time: Save time by using your face, fingerprint, password, or another method to access your account. This method is faster than receiving a one-time code through text or voice message.
 webauthn_platform_recommended.heading: Set up face or touch unlock for a quick and easy sign in
 webauthn_platform_recommended.skip: Skip
+webauthn_setup_mismatch.description_undo: Cliquez sur « Annuler » pour supprimer cette option.
+webauthn_setup_mismatch.description.webauthn: Nous avons remarqué que vous utilisiez une clé de sécurité au lieu du déverrouillage facial ou tactile. Cliquez sur « Suite » pour utiliser votre clé de sécurité afin de vous connecter à partir de maintenant.
+webauthn_setup_mismatch.description.webauthn_platform: Nous avons remarqué que vous utilisiez le déverrouillage facial ou tactile au lieu d’une clé de sécurité. Cliquez sur « Suite » pour utiliser le déverrouillage facial ou tactile afin de vous connecter à partir de maintenant.
+webauthn_setup_mismatch.heading.webauthn: Clé de sécurité détectée
+webauthn_setup_mismatch.heading.webauthn_platform: Déverrouillage facial ou tactile détecté
+webauthn_setup_mismatch.undo: Annuler
 zxcvbn.feedback.a_word_by_itself_is_easy_to_guess: Un mot seul est facile à deviner
 zxcvbn.feedback.add_another_word_or_two_uncommon_words_are_better: Ajoutez un ou deux autres mots. Il est préférable d’utiliser des mots peu communs.
 zxcvbn.feedback.all_uppercase_is_almost_as_easy_to_guess_as_all_lowercase: Tout en majuscules est presque aussi facile à deviner que tout en minuscules.

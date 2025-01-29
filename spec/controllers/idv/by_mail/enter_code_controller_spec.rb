@@ -200,7 +200,6 @@ RSpec.describe Idv::ByMail::EnterCodeController do
         expect(@analytics).to have_logged_event(
           'IdV: enter verify by mail code submitted',
           success: true,
-          errors: {},
           pending_in_person_enrollment: false,
           fraud_check_failed: false,
           enqueued_at: pending_profile.gpo_confirmation_codes.last.code_sent_at,
@@ -246,7 +245,6 @@ RSpec.describe Idv::ByMail::EnterCodeController do
           expect(@analytics).to have_logged_event(
             'IdV: enter verify by mail code submitted',
             success: true,
-            errors: {},
             pending_in_person_enrollment: true,
             fraud_check_failed: false,
             enqueued_at: pending_profile.gpo_confirmation_codes.last.code_sent_at,
@@ -276,7 +274,6 @@ RSpec.describe Idv::ByMail::EnterCodeController do
             expect(@analytics).to have_logged_event(
               'IdV: enter verify by mail code submitted',
               success: true,
-              errors: {},
               pending_in_person_enrollment: false,
               fraud_check_failed: true,
               enqueued_at: pending_profile.gpo_confirmation_codes.last.code_sent_at,
@@ -314,7 +311,6 @@ RSpec.describe Idv::ByMail::EnterCodeController do
             expect(@analytics).to have_logged_event(
               'IdV: enter verify by mail code submitted',
               success: true,
-              errors: {},
               pending_in_person_enrollment: false,
               fraud_check_failed: true,
               enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
@@ -357,7 +353,6 @@ RSpec.describe Idv::ByMail::EnterCodeController do
             expect(@analytics).to have_logged_event(
               'IdV: enter verify by mail code submitted',
               success: true,
-              errors: {},
               pending_in_person_enrollment: false,
               fraud_check_failed: true,
               enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
@@ -455,11 +450,11 @@ RSpec.describe Idv::ByMail::EnterCodeController do
 
           failed_gpo_submission_events =
             @analytics.events['IdV: enter verify by mail code submitted']
-              .reject { |event_attributes| event_attributes[:errors].empty? }
+              .reject { |event_attributes| event_attributes[:errors].blank? }
 
           successful_gpo_submission_events =
             @analytics.events['IdV: enter verify by mail code submitted']
-              .select { |event_attributes| event_attributes[:errors].empty? }
+              .select { |event_attributes| event_attributes[:errors].blank? }
 
           expect(failed_gpo_submission_events.count).to eq(max_attempts - 1)
           expect(successful_gpo_submission_events.count).to eq(1)

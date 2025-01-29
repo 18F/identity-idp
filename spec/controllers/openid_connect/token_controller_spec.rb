@@ -60,7 +60,6 @@ RSpec.describe OpenidConnect::TokenController do
             success: true,
             client_id: client_id,
             user_id: user.uuid,
-            errors: {},
             code_digest: kind_of(String),
             code_verifier_present: false,
             expires_in: 0,

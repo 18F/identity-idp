@@ -41,7 +41,6 @@ RSpec.describe Users::BackupCodeSetupController do
       expect(@analytics).to have_logged_event(
         'Backup Code Setup Visited',
         success: true,
-        errors: {},
         mfa_method_counts: { phone: 1 },
         enabled_mfa_methods_count: 1,
         in_account_creation_flow: false,
@@ -215,7 +214,7 @@ RSpec.describe Users::BackupCodeSetupController do
       get :edit
       expect(@analytics).to have_logged_event(
         'Backup Code Regenerate Visited',
-        hash_including(in_account_creation_flow: false),
+        in_account_creation_flow: false,
       )
     end
   end

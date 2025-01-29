@@ -62,6 +62,26 @@ RSpec.describe BackupCodeReminderConcern do
           end
 
           it { is_expected.to eq(true) }
+
+          context 'if the user authenticated with backup codes' do
+            before do
+              controller.auth_methods_session.authenticate!(
+                TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE,
+              )
+            end
+
+            it { is_expected.to eq(false) }
+          end
+
+          context 'if the user authenticated with remember device' do
+            before do
+              controller.auth_methods_session.authenticate!(
+                TwoFactorAuthenticatable::AuthMethod::REMEMBER_DEVICE,
+              )
+            end
+
+            it { is_expected.to eq(false) }
+          end
         end
 
         context 'if the user is fully authenticating for the first time' do
@@ -70,6 +90,16 @@ RSpec.describe BackupCodeReminderConcern do
           end
 
           it { is_expected.to eq(true) }
+
+          context 'if the user authenticated with backup codes' do
+            before do
+              controller.auth_methods_session.authenticate!(
+                TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE,
+              )
+            end
+
+            it { is_expected.to eq(false) }
+          end
         end
       end
     end
