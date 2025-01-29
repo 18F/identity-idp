@@ -27,10 +27,10 @@ module Idv
       script_args = [user_uuid.to_s, IdentityConfig.store.doc_auth_socure_max_allowed_users.to_i]
       redis_pool.with do |client|
         begin
-          return client.evalsha(ADD_USER_SCRIPT_SHA1, [key], script_args)
+          client.evalsha(ADD_USER_SCRIPT_SHA1, [key], script_args)
         rescue Redis::CommandError => error
           raise error unless error.message.start_with?('NOSCRIPT')
-          return client.eval(ADD_USER_SCRIPT, [key], script_args)
+          client.eval(ADD_USER_SCRIPT, [key], script_args)
         end
       end
     end
