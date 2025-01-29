@@ -438,6 +438,7 @@ module IdentityConfig
     config.add(:socure_reason_code_base_url, type: :string)
     config.add(:socure_reason_code_timeout_in_seconds, type: :integer)
     config.add(:sp_handoff_bounce_max_seconds, type: :integer)
+    config.add(:sp_idv_weekly_dropoff_report_configs, type: :json)
     config.add(:sp_issuer_user_counts_report_configs, type: :json)
     config.add(:sp_proofing_events_by_uuid_report_configs, type: :json)
     config.add(:state_tracking_enabled, type: :boolean)
