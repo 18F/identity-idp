@@ -38,9 +38,9 @@ module Idv
 
     def choose_non_socure_bucket
       if doc_auth_vendor_enabled?(Idp::Constants::Vendors::LEXIS_NEXIS)
-        return :lexis_nexis
+        :lexis_nexis
       elsif doc_auth_vendor_enabled?(Idp::Constants::Vendors::MOCK)
-        return :mock
+        :mock
       end
     end
 
