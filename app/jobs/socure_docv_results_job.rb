@@ -15,14 +15,31 @@ class SocureDocvResultsJob < ApplicationJob
       document_capture_session
 
     timer = JobHelpers::Timer.new
-    response = timer.time('vendor_request') do
+    docv_result_response = timer.time('vendor_request') do
       socure_document_verification_result
     end
     log_verification_request(
-      docv_result_response: response,
+      docv_result_response:,
       vendor_request_time_in_ms: timer.results['vendor_request'],
     )
-    document_capture_session.store_result_from_response(response)
+
+    if docv_result_response.success?
+      doc_pii_response = Idv::DocPiiForm.new(pii: docv_result_response.pii_from_doc.to_h).submit
+      log_pii_validation(doc_pii_response:)
+
+      unless doc_pii_response&.success?
+        document_capture_session.store_failed_auth_data(
+          doc_auth_success: true,
+          selfie_status: docv_result_response.selfie_status,
+          errors: { pii_validation: 'failed' },
+          front_image_fingerprint: nil,
+          back_image_fingerprint: nil,
+          selfie_image_fingerprint: nil,
+        )
+        return
+      end
+    end
+    document_capture_session.store_result_from_response(docv_result_response)
   end
 
   private
@@ -47,6 +64,17 @@ class SocureDocvResultsJob < ApplicationJob
         pii_like_keypaths: [[:pii]],
       ).except(:attention_with_barcode, :selfie_live, :selfie_quality_good,
                :selfie_status),
+    )
+  end
+
+  def log_pii_validation(doc_pii_response:)
+    analytics.idv_doc_auth_submitted_pii_validation(
+      **doc_pii_response.to_h.merge(
+        submit_attempts: rate_limiter&.attempts,
+        remaining_submit_attempts: rate_limiter&.remaining_count,
+        flow_path: nil,
+        liveness_checking_required: nil,
+      ),
     )
   end
 
