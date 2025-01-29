@@ -223,6 +223,19 @@ RSpec.describe Idv::DocumentCaptureController do
         end
       end
 
+      describe 'socure user limit reached but user already in socure user set' do
+        before do
+          allow(IdentityConfig.store).to receive(:doc_auth_socure_max_allowed_users).and_return(1)
+          Idv::SocureUserSet.new.add_user!(user_uuid: user.uuid)
+        end
+
+        it 'does redirect to Socure controller' do
+          get :show
+
+          expect(response).to redirect_to idv_socure_document_capture_url
+        end
+      end
+
       describe 'facial match not required and socure user limit not reached' do
         before do
           allow(IdentityConfig.store).to receive(:doc_auth_socure_max_allowed_users).and_return(2)

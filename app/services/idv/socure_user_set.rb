@@ -14,7 +14,7 @@ module Idv
         return false
       end
       redis.call('SADD', key, user_uuid)
-      return true
+      return redis.call('SISMEMBER', key, user_uuid)
     LUA_EOF
 
     ADD_USER_SCRIPT_SHA1 = Digest::SHA1.hexdigest(ADD_USER_SCRIPT).freeze
@@ -24,6 +24,8 @@ module Idv
     end
 
     def add_user!(user_uuid:)
+      return false if user_uuid.nil?
+
       script_args = [user_uuid.to_s, IdentityConfig.store.doc_auth_socure_max_allowed_users.to_i]
       redis_pool.with do |client|
         begin
@@ -41,8 +43,17 @@ module Idv
       end
     end
 
-    def maxed_users?
-      count >= IdentityConfig.store.doc_auth_socure_max_allowed_users
+    def maxed_users?(uuid:)
+      if count < IdentityConfig.store.doc_auth_socure_max_allowed_users
+        return false
+      end
+      if uuid.nil?
+        return true
+      end
+      redis_pool.with do |client|
+        return !client.sismember(key, uuid) # returns true if uuid already in set
+      end
+      true # defaults to true if redis_pool connection refused
     end
 
     private
