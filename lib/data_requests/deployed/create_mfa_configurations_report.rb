@@ -63,6 +63,7 @@ module DataRequests
         user.webauthn_configurations.map do |webauthn_configuration|
           {
             name: webauthn_configuration.name,
+            platform_authenticator: webauthn_configuration.platform_authenticator,
             created_at: webauthn_configuration.created_at,
           }
         end
