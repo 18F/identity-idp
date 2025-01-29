@@ -9,12 +9,16 @@ module Idv
     end
 
     def add_user!(user_uuid:)
-      return false if maxed_users?
-
       redis_pool.with do |client|
-        client.sadd(key, user_uuid)
+        client.eval(
+          lua_script,
+          [
+            key,
+            user_uuid,
+            IdentityConfig.store.doc_auth_socure_max_allowed_users,
+          ],
+        )
       end
-      true
     end
 
     def count
@@ -23,14 +27,25 @@ module Idv
       end
     end
 
-    def maxed_users?
-      count >= IdentityConfig.store.doc_auth_socure_max_allowed_users
-    end
-
     private
 
     def key
       'idv:socure:users'
+    end
+
+    def lua_script
+      <<~LUA_EOF
+        local key = ARGV[1]
+        local user_uuid = ARGV[2]
+        local max_allowed_users = ARGV[3]
+
+        number_of_socure_users = redis.call('SCARD', key)
+        if number_of_socure_users >= max_allowed_users then
+          return false
+        end
+        redis.call('SADD', key, user_uuid)
+        return true
+      LUA_EOF
     end
   end
 end
