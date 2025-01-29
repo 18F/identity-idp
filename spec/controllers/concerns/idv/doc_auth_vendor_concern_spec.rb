@@ -79,6 +79,17 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
       it 'returns Lexis Nexis as the vendor' do
         expect(controller.doc_auth_vendor).to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
       end
+
+      context 'Lexis Nexis is disabled' do
+        before do
+          allow(IdentityConfig.store)
+            .to receive(:doc_auth_vendor_lexis_nexis_percent).and_return(0)
+        end
+
+        it 'returns mock vendor' do
+          expect(controller.doc_auth_vendor).to eq(Idp::Constants::Vendors::MOCK)
+        end
+      end
     end
   end
 
