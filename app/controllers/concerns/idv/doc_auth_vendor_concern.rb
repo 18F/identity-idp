@@ -3,6 +3,7 @@
 module Idv
   module DocAuthVendorConcern
     include AbTestingConcern
+    include HybridMobile::HybridMobileConcern
 
     # @returns[String] String identifying the vendor to use for doc auth.
     def doc_auth_vendor
