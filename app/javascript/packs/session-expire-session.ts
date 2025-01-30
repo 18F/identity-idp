@@ -17,9 +17,11 @@ const ping = () => {
   requestSessionStatus(sessionsURL);
 };
 
+const intervalPing = setInterval(ping, warning / 2);
+
 function showModal() {
   modal.show();
-  setInterval(ping, warning / 2);
+  intervalPing;
   countdownEls.forEach((countdownEl) => {
     countdownEl.expiration = sessionExpiration;
     countdownEl.start();
@@ -28,6 +30,7 @@ function showModal() {
 
 function keepalive() {
   modal.hide();
+  clearInterval(intervalPing);
   requestSessionStatus(sessionsURL);
   sessionExpiration = new Date(Date.now() + sessionTimeout);
   setTimeout(showModal, sessionTimeout - warning);
