@@ -18,7 +18,9 @@ RSpec.describe SelectEmailForm do
       end
 
       context 'with associated identity' do
-        let(:identity) { create(:service_provider_identity, :consented, user:) }
+        let(:identity) do
+          create(:service_provider_identity, :consented, user:, verified_attributes: %w[email])
+        end
 
         it 'updates linked email address' do
           expect { response }.to change { identity.reload.email_address_id }
