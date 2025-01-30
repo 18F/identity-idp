@@ -49,7 +49,16 @@ module Idv
     end
 
     def add_user_to_socure_set
-      socure_user_set.add_user!(user_uuid: current_user.uuid)
+      uuid = current_user&.uuid
+      if uuid.nil? && is_defined?(document_capture_user)
+        uuid = document_capture_user.uuid
+      end
+
+      if uuid
+        return socure_user_set.add_user!(user_uuid: uuid)
+      end
+
+      false
     end
   end
 end
