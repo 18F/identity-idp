@@ -218,7 +218,7 @@ RSpec.describe Idv::LinkSentPollController do
         get :show
 
         expect(response.status).to eq(200)
-        expect(JSON.parse(response.body)).to include('redirect' => idv_in_person_url)
+        expect(JSON.parse(response.body)).not_to include('redirect' => idv_in_person_url)
       end
     end
   end

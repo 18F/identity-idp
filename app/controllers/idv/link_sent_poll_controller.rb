@@ -48,8 +48,6 @@ module Idv
 
       if rate_limiter.limited? && !session_result_passed?
         idv_session_errors_rate_limited_url
-      elsif user_has_establishing_in_person_enrollment?
-        idv_in_person_url
       end
     end
 
