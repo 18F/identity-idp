@@ -2,6 +2,9 @@ require 'rails_helper'
 
 RSpec.describe Idv::DocAuthVendorConcern, :controller do
   let(:user) { create(:user) }
+  let(:document_capture_session) do
+    create(:document_capture_session, user: user)
+  end
   let(:socure_user_set) { Idv::SocureUserSet.new }
   let(:bucket) { :mock }
 
@@ -42,12 +45,31 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
     context 'bucket is Socure' do
       let(:bucket) { :socure }
 
-      it 'returns socure as the vendor' do
-        expect(controller.doc_auth_vendor).to eq(Idp::Constants::Vendors::SOCURE)
+      context 'current user is undefined so use document_capture_session user' do
+        before do
+          allow(DocumentCaptureSession).to receive(:find_by).and_return(document_capture_session)
+          allow(User).to receive(:find_by).and_return(user)
+          allow(controller).to receive(:current_user).and_return(nil)
+          allow(controller).to receive(:document_capture_user).and_return(user)
+        end
+
+        it 'returns socure as the vendor' do
+          expect(controller.doc_auth_vendor).to eq(Idp::Constants::Vendors::SOCURE)
+        end
+
+        it 'adds a user to the socure redis set' do
+          expect { controller.doc_auth_vendor }.to change { socure_user_set.count }.by(1)
+        end
       end
 
-      it 'adds a user to the socure redis set' do
-        expect { controller.doc_auth_vendor }.to change { socure_user_set.count }.by(1)
+      context 'current user is defined' do
+        it 'returns socure as the vendor' do
+          expect(controller.doc_auth_vendor).to eq(Idp::Constants::Vendors::SOCURE)
+        end
+
+        it 'adds a user to the socure redis set' do
+          expect { controller.doc_auth_vendor }.to change { socure_user_set.count }.by(1)
+        end
       end
     end
 
