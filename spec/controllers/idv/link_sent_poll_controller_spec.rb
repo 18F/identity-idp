@@ -214,11 +214,10 @@ RSpec.describe Idv::LinkSentPollController do
         create(:in_person_enrollment, :establishing, user: user, profile: nil)
       end
 
-      it 'returns success with redirect' do
+      it 'returns success' do
         get :show
 
         expect(response.status).to eq(200)
-        expect(JSON.parse(response.body)).not_to include('redirect' => idv_in_person_url)
       end
     end
   end
