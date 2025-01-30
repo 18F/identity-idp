@@ -36,6 +36,12 @@ RSpec.describe Idv::DocumentCaptureController do
     )
   end
 
+  around do |ex|
+    REDIS_POOL.with { |client| client.flushdb }
+    ex.run
+    REDIS_POOL.with { |client| client.flushdb }
+  end
+
   before do
     stub_sign_in(user)
     stub_up_to(:hybrid_handoff, idv_session: subject.idv_session)
@@ -191,14 +197,42 @@ RSpec.describe Idv::DocumentCaptureController do
       end
     end
 
-    context 'socure is the default vendor but facial match is required' do
+    context 'socure is the default vendor' do
       let(:idv_vendor) { Idp::Constants::Vendors::SOCURE }
-      let(:facial_match_required) { true }
 
-      it 'does not redirect to Socure controller' do
-        get :show
+      describe 'facial match is required' do
+        let(:facial_match_required) { true }
 
-        expect(response).to_not redirect_to idv_socure_document_capture_url
+        it 'does not redirect to Socure controller' do
+          get :show
+
+          expect(response).to_not redirect_to idv_socure_document_capture_url
+        end
+      end
+
+      describe 'facial match not required but socure user limit reached' do
+        before do
+          allow(IdentityConfig.store).to receive(:doc_auth_socure_max_allowed_users).and_return(1)
+          Idv::SocureUserSet.new.add_user!(user_uuid: '001')
+        end
+
+        it 'does not redirect to Socure controller' do
+          get :show
+
+          expect(response).to_not redirect_to idv_socure_document_capture_url
+        end
+      end
+
+      describe 'facial match not required and socure user limit not reached' do
+        before do
+          allow(IdentityConfig.store).to receive(:doc_auth_socure_max_allowed_users).and_return(2)
+          Idv::SocureUserSet.new.add_user!(user_uuid: '001')
+        end
+        it 'does redirect to Socure controller' do
+          get :show
+
+          expect(response).to redirect_to idv_socure_document_capture_url
+        end
       end
     end
 

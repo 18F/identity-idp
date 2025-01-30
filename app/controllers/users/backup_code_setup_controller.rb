@@ -4,6 +4,7 @@ module Users
   class BackupCodeSetupController < ApplicationController
     include TwoFactorAuthenticatableMethods
     include MfaSetupConcern
+    include MfaDeletionConcern
     include SecureHeadersConcern
     include ReauthenticationRequiredConcern
 
@@ -58,10 +59,8 @@ module Users
 
     def delete
       current_user.backup_code_configurations.destroy_all
-      event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
-      PushNotification::HttpPush.deliver(event)
+      handle_successful_mfa_deletion(event_type: nil)
       flash[:success] = t('notices.backup_codes_deleted')
-      revoke_remember_device(current_user)
       if in_multi_mfa_selection_flow?
         redirect_to authentication_methods_setup_path
       else

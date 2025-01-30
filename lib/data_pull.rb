@@ -39,6 +39,8 @@ class DataPull
 
         * #{basename} ig-request uuid1 uuid2 --requesting-issuer=ABC:DEF:GHI
 
+        * #{basename} mfa-report uuid1 uuid2
+
         * #{basename} profile-summary uuid1 uuid2
 
         * #{basename} uuid-convert partner-uuid1 partner-uuid2
@@ -59,6 +61,7 @@ class DataPull
       'email-lookup' => EmailLookup,
       'events-summary' => EventsSummary,
       'ig-request' => InspectorGeneralRequest,
+      'mfa-report' => MfaReport,
       'profile-summary' => ProfileSummary,
       'uuid-convert' => UuidConvert,
       'uuid-export' => UuidExport,
@@ -152,6 +155,44 @@ class DataPull
         subtask: 'email-lookup',
         uuids: users.map(&:uuid),
         table:,
+      )
+    end
+  end
+
+  class MfaReport
+    def run(args:, config:)
+      require 'data_requests/deployed'
+      uuids = args
+
+      users, missing_uuids = uuids.map do |uuid|
+        DataRequests::Deployed::LookupUserByUuid.new(uuid).call || uuid
+      end.partition { |u| u.is_a?(User) }
+
+      output = users.map do |user|
+        output = DataRequests::Deployed::CreateMfaConfigurationsReport.new(user).call
+        output[:uuid] = user.uuid
+
+        output
+      end
+
+      if config.include_missing?
+        output += missing_uuids.map do |uuid|
+          {
+            uuid: uuid,
+            phone_configurations: [],
+            auth_app_configurations: [],
+            webauthn_configurations: [],
+            piv_cac_configurations: [],
+            backup_code_configurations: [],
+            not_found: true,
+          }
+        end
+      end
+
+      ScriptBase::Result.new(
+        subtask: 'mfa-report',
+        uuids: uuids,
+        json: output,
       )
     end
   end

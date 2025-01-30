@@ -33,7 +33,8 @@ class DocumentCaptureSession < ApplicationRecord
   end
 
   def store_failed_auth_data(front_image_fingerprint:, back_image_fingerprint:,
-                             selfie_image_fingerprint:, doc_auth_success:, selfie_status:)
+                             selfie_image_fingerprint:, doc_auth_success:, selfie_status:,
+                             errors: nil)
     session_result = load_result || DocumentCaptureSessionResult.new(
       id: generate_result_id,
     )
@@ -45,6 +46,8 @@ class DocumentCaptureSession < ApplicationRecord
     session_result.add_failed_front_image!(front_image_fingerprint)
     session_result.add_failed_back_image!(back_image_fingerprint)
     session_result.add_failed_selfie_image!(selfie_image_fingerprint) if selfie_status == :fail
+
+    session_result.errors = errors
 
     EncryptedRedisStructStorage.store(
       session_result,
