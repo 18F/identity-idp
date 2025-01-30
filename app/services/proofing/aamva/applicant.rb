@@ -32,6 +32,27 @@ module Proofing
         keyword_init: true,
       ).freeze
 
+      # @param applicant [Hash, Struct]
+      # @option applicant [String, nil] :uuid
+      # @option applicant [String, nil] :first_name
+      # @option applicant [String, nil] :middle_name
+      # @option applicant [String, nil] :last_name
+      # @option applicant [String, nil] :name_suffix
+      # @option applicant [String, nil] :dob
+      # @option applicant [String, nil] :sex
+      # @option applicant [Integer, nil] :height
+      # @option applicant [String, nil] :weight
+      # @option applicant [String, nil] :eye_color
+      # @option applicant [String, nil] :address1
+      # @option applicant [String, nil] :address2
+      # @option applicant [String, nil] :city
+      # @option applicant [String, nil] :state
+      # @option applicant [String, nil] :zipcode
+      # @option applicant [String, nil] :state_id_number
+      # @option applicant [String, nil] :state_id_jurisdiction
+      # @option applicant [String, nil] :state_id_type
+      # @option applicant [String, nil] :state_id_issued
+      # @option applicant [String, nil] :state_id_expiration
       # @return [Applicant]
       def self.from_proofer_applicant(applicant)
         new(
