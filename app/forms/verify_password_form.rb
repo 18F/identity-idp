@@ -36,7 +36,7 @@ class VerifyPasswordForm
 
   def reencrypt_pii
     personal_key = profile.encrypt_pii(decrypted_pii, password)
-    profile.activate_after_password_reset
+    profile.clear_password_reset_deactivation_reason
     personal_key
   end
 
