@@ -24,6 +24,8 @@ module Idv
     end
 
     def add_user!(user_uuid:)
+      raise ArgumentError.new("nil UUID: #{user_uuid}") if user_uuid.nil?
+
       script_args = [user_uuid.to_s, IdentityConfig.store.doc_auth_socure_max_allowed_users.to_i]
       redis_pool.with do |client|
         begin
