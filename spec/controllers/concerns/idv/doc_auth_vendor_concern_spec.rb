@@ -50,6 +50,7 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
           allow(DocumentCaptureSession).to receive(:find_by).and_return(document_capture_session)
           allow(User).to receive(:find_by).and_return(user)
           allow(controller).to receive(:current_user).and_return(nil)
+          allow(controller).to receive(:document_capture_user).and_return(user)
         end
 
         it 'returns socure as the vendor' do
