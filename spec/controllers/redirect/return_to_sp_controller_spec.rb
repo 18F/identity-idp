@@ -36,7 +36,7 @@ RSpec.describe Redirect::ReturnToSpController do
         expect(response).to redirect_to(expected_redirect_uri)
         expect(@analytics).to have_logged_event(
           'Return to SP: Cancelled',
-          hash_including(redirect_url: expected_redirect_uri),
+          redirect_url: expected_redirect_uri,
         )
       end
     end
@@ -59,7 +59,7 @@ RSpec.describe Redirect::ReturnToSpController do
         expect(response).to redirect_to(expected_redirect_uri)
         expect(@analytics).to have_logged_event(
           'Return to SP: Cancelled',
-          hash_including(redirect_url: expected_redirect_uri),
+          redirect_url: expected_redirect_uri,
         )
       end
     end
@@ -73,7 +73,7 @@ RSpec.describe Redirect::ReturnToSpController do
         expect(response).to redirect_to('https://sp.gov/return_to_sp')
         expect(@analytics).to have_logged_event(
           'Return to SP: Cancelled',
-          hash_including(redirect_url: 'https://sp.gov/return_to_sp'),
+          redirect_url: 'https://sp.gov/return_to_sp',
         )
       end
     end
@@ -99,7 +99,7 @@ RSpec.describe Redirect::ReturnToSpController do
         expect(response).to redirect_to('https://sp.gov/failure_to_proof')
         expect(@analytics).to have_logged_event(
           'Return to SP: Failed to proof',
-          hash_including(redirect_url: 'https://sp.gov/failure_to_proof'),
+          redirect_url: 'https://sp.gov/failure_to_proof',
         )
       end
     end
@@ -110,11 +110,9 @@ RSpec.describe Redirect::ReturnToSpController do
 
         expect(@analytics).to have_logged_event(
           'Return to SP: Failed to proof',
-          hash_including(
-            redirect_url: a_kind_of(String),
-            step: 'first',
-            location: 'bottom',
-          ),
+          redirect_url: a_kind_of(String),
+          step: 'first',
+          location: 'bottom',
         )
       end
     end

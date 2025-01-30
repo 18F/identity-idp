@@ -4,6 +4,7 @@ module Users
   class EditPhoneController < ApplicationController
     include RememberDeviceConcern
     include ReauthenticationRequiredConcern
+    include MfaDeletionConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_user_can_edit_phone
@@ -29,9 +30,7 @@ module Users
     def destroy
       track_deletion_analytics_event
       phone_configuration.destroy!
-      event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
-      PushNotification::HttpPush.deliver(event)
-      revoke_remember_device(current_user)
+      handle_successful_mfa_deletion(event_type: :phone_removed)
       flash[:success] = t('two_factor_authentication.phone.delete.success')
       redirect_to account_url
     end
@@ -55,7 +54,6 @@ module Users
         success: true,
         phone_configuration_id: phone_configuration.id,
       )
-      create_user_event(:phone_removed)
     end
 
     def phone_configuration

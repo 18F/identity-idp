@@ -123,7 +123,7 @@ RSpec.describe Users::RulesOfUseController do
 
         expect(@analytics).to have_logged_event(
           'Rules of Use Submitted',
-          hash_including(success: true),
+          success: true,
         )
       end
 

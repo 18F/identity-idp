@@ -29,6 +29,7 @@ RSpec.feature 'document capture step', :js do
     socure_docv_webhook_repeat_endpoints.each { |endpoint| stub_request(:post, endpoint) }
     allow(IdentityConfig.store).to receive(:ruby_workers_idv_enabled).and_return(false)
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+    allow_any_instance_of(SocureDocvResultsJob).to receive(:analytics).and_return(fake_analytics)
     @docv_transaction_token = stub_docv_document_request
     allow(IdentityConfig.store).to receive(:socure_docv_verification_data_test_mode)
       .and_return(socure_docv_verification_data_test_mode)
@@ -153,6 +154,9 @@ RSpec.feature 'document capture step', :js do
             visit idv_socure_document_capture_path
 
             expect(page).to have_current_path(idv_session_errors_rate_limited_path)
+            expect(fake_analytics).to have_logged_event(
+              :idv_socure_verification_data_requested,
+            )
           end
         end
       end
@@ -263,6 +267,9 @@ RSpec.feature 'document capture step', :js do
             expect(fake_analytics).to have_logged_event(
               :idv_socure_document_request_submitted,
             )
+            expect(fake_analytics).not_to have_logged_event(
+              'IdV: doc auth image upload vendor pii validation',
+            )
           end
         end
 
@@ -284,6 +291,9 @@ RSpec.feature 'document capture step', :js do
             visit idv_socure_document_capture_path
             expect(fake_analytics).to have_logged_event(
               :idv_socure_document_request_submitted,
+            )
+            expect(fake_analytics).not_to have_logged_event(
+              'IdV: doc auth image upload vendor pii validation',
             )
           end
         end
@@ -333,6 +343,9 @@ RSpec.feature 'document capture step', :js do
             expect(page).to have_current_path(idv_ssn_url)
 
             expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('NY')
+            expect(fake_analytics).to have_logged_event(
+              :idv_socure_verification_data_requested,
+            )
 
             fill_out_ssn_form_ok
             click_idv_continue
@@ -357,6 +370,9 @@ RSpec.feature 'document capture step', :js do
             expect(page).to have_current_path(idv_ssn_url)
 
             expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('NY')
+            expect(fake_analytics).to have_logged_event(
+              :idv_socure_verification_data_requested,
+            )
 
             fill_out_ssn_form_ok
             click_idv_continue
@@ -394,6 +410,12 @@ RSpec.feature 'document capture step', :js do
           expect(fake_analytics).to have_logged_event(
             :idv_socure_document_request_submitted,
           )
+          expect(fake_analytics).to have_logged_event(
+            :idv_socure_verification_data_requested,
+          )
+          expect(fake_analytics).to have_logged_event(
+            'IdV: doc auth image upload vendor pii validation',
+          )
 
           fill_out_ssn_form_ok
           click_idv_continue
@@ -426,6 +448,9 @@ RSpec.feature 'document capture step', :js do
       expect(page).to have_content(t(expected_header_key))
       expect(fake_analytics).to have_logged_event(
         :idv_socure_document_request_submitted,
+      )
+      expect(fake_analytics).not_to have_logged_event(
+        :idv_doc_auth_submitted_pii_validation,
       )
     end
   end
@@ -532,6 +557,8 @@ RSpec.feature 'direct access to IPP on desktop', :js do
     end
 
     context 'when selfie is enabled' do
+      let(:facial_match_required) { true }
+
       it 'redirects back to agreement page' do
         expect(page).to have_current_path(idv_agreement_path)
       end

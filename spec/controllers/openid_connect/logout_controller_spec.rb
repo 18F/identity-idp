@@ -165,14 +165,12 @@ RSpec.describe OpenidConnect::LogoutController do
             )
             expect(@analytics).to have_logged_event(
               'Logout Initiated',
-              hash_including(
-                success: true,
-                client_id: service_provider.issuer,
-                client_id_parameter_present: false,
-                id_token_hint_parameter_present: true,
-                sp_initiated: true,
-                oidc: true,
-              ),
+              success: true,
+              client_id: service_provider.issuer,
+              client_id_parameter_present: false,
+              id_token_hint_parameter_present: true,
+              sp_initiated: true,
+              oidc: true,
             )
 
             expect(@analytics).to_not have_logged_event(
@@ -329,14 +327,12 @@ RSpec.describe OpenidConnect::LogoutController do
             )
             expect(@analytics).to have_logged_event(
               'OIDC Logout Page Visited',
-              hash_including(
-                success: true,
-                client_id: service_provider.issuer,
-                client_id_parameter_present: true,
-                id_token_hint_parameter_present: false,
-                sp_initiated: true,
-                oidc: true,
-              ),
+              success: true,
+              client_id: service_provider.issuer,
+              client_id_parameter_present: true,
+              id_token_hint_parameter_present: false,
+              sp_initiated: true,
+              oidc: true,
             )
             expect(@analytics).to_not have_logged_event(
               :sp_integration_errors_present,
@@ -468,14 +464,12 @@ RSpec.describe OpenidConnect::LogoutController do
           )
           expect(@analytics).to have_logged_event(
             'OIDC Logout Page Visited',
-            hash_including(
-              success: true,
-              client_id: service_provider.issuer,
-              client_id_parameter_present: true,
-              id_token_hint_parameter_present: false,
-              sp_initiated: true,
-              oidc: true,
-            ),
+            success: true,
+            client_id: service_provider.issuer,
+            client_id_parameter_present: true,
+            id_token_hint_parameter_present: false,
+            sp_initiated: true,
+            oidc: true,
           )
 
           expect(@analytics).to_not have_logged_event(
