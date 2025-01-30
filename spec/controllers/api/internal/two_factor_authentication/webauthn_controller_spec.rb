@@ -215,5 +215,13 @@ RSpec.describe Api::Internal::TwoFactorAuthentication::WebauthnController do
         expect(response.status).to eq(400)
       end
     end
+
+    context 'with a platform authenticator' do
+      let(:configuration) { create(:webauthn_configuration, :platform_authenticator, user:) }
+
+      it 'logs a user event for the removed credential' do
+        expect { response }.to change { user.events.webauthn_platform_removed.size }.by 1
+      end
+    end
   end
 end

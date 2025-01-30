@@ -226,6 +226,13 @@ RSpec.describe Users::WebauthnSetupMismatchController do
           confirmed_mismatch: false,
         )
       end
+
+      it 'invalidates deleted authenticator' do
+        expect(controller).to receive(:handle_successful_mfa_deletion)
+          .with(event_type: :webauthn_platform_removed)
+
+        response
+      end
     end
   end
 end
