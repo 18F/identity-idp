@@ -50,7 +50,6 @@ describe('DocumentCaptureReviewIssues', () => {
           value={{
             inPersonURL: '/verify/doc_capture',
             locationsURL: '',
-            addressSearchURL: '',
             inPersonOutageMessageEnabled: false,
             optedInToInPersonProofing: false,
             usStatesTerritories: [['Los Angeles', 'NY']],
@@ -123,7 +122,6 @@ describe('DocumentCaptureReviewIssues', () => {
           value={{
             inPersonURL: '/verify/doc_capture',
             locationsURL: '',
-            addressSearchURL: '',
             inPersonOutageMessageEnabled: false,
             optedInToInPersonProofing: false,
             usStatesTerritories: [['Los Angeles', 'NY']],

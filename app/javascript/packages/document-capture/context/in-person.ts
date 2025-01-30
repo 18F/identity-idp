@@ -12,11 +12,6 @@ export interface InPersonContextProps {
   locationsURL: string;
 
   /**
-   * Address search endpoint URL
-   */
-  addressSearchURL: string;
-
-  /**
    * Whether the message indicating an outage should be displayed
    */
   inPersonOutageMessageEnabled: boolean;
@@ -73,7 +68,6 @@ export interface InPersonContextProps {
 
 const InPersonContext = createContext<InPersonContextProps>({
   locationsURL: '',
-  addressSearchURL: '',
   inPersonOutageMessageEnabled: false,
   optedInToInPersonProofing: false,
   usStatesTerritories: [],

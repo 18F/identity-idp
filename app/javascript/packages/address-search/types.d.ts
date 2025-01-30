@@ -41,28 +41,6 @@ interface Location {
   address: string;
 }
 
-interface AddressInputProps {
-  registerField?: RegisterFieldCallback;
-  onFoundAddress?: (address: LocationQuery | null) => void;
-  onFoundLocations?: (locations: FormattedLocation[] | null | undefined) => void;
-  onLoadingLocations?: (isLoading: boolean) => void;
-  onError?: (error: Error | null) => void;
-  disabled?: boolean;
-  addressSearchURL: string;
-  locationsURL: string;
-}
-
-interface AddressSearchProps {
-  addressSearchURL: string;
-  disabled: boolean;
-  handleLocationSelect: ((e: any, id: number) => Promise<void>) | null | undefined;
-  locationsURL: string;
-  noInPersonLocationsDisplay?: ComponentType<{ address: string }>;
-  onFoundLocations: Dispatch<SetStateAction<FormattedLocation[] | null | undefined>>;
-  registerField: RegisterFieldCallback;
-  resultsHeaderComponent?: ComponentType;
-}
-
 interface InPersonLocationsProps {
   address: string;
   locations: FormattedLocation[] | null | undefined;

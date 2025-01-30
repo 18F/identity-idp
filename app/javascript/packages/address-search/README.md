@@ -27,8 +27,7 @@ import AddressSearch from '@18f/identity-address-search';
 
 return(
     <>
-    <AddressSearch
-            addressSearchURL={addressSearchURL}
+    <FullAddressSearch
             disabled={disabledAddressSearchCallback}
             handleLocationSelect={handleLocationSelect}
             locationsURL={LOCATIONS_URL}

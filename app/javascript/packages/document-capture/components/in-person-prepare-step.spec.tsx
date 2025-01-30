@@ -38,7 +38,6 @@ describe('InPersonPrepareStep', () => {
         <InPersonContext.Provider
           value={{
             locationsURL: 'https://localhost:3000/unused',
-            addressSearchURL: 'https://localhost:3000/unused',
             inPersonOutageMessageEnabled: true,
             inPersonOutageExpectedUpdateDate: 'January 1, 2024',
             optedInToInPersonProofing: false,
@@ -57,7 +56,6 @@ describe('InPersonPrepareStep', () => {
         <InPersonContext.Provider
           value={{
             locationsURL: 'https://localhost:3000/unused',
-            addressSearchURL: 'https://localhost:3000/unused',
             inPersonOutageMessageEnabled: false,
             optedInToInPersonProofing: false,
             usStatesTerritories: [],
