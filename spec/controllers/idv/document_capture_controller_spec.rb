@@ -390,13 +390,22 @@ RSpec.describe Idv::DocumentCaptureController do
       }
     end
 
-    it 'invalidates future steps' do
-      subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT
-      expect(subject).to receive(:clear_future_steps!).and_call_original
+    context 'invalidates future steps' do
+      it 'invalidates in person pii data' do
+        stub_up_to(:ipp_state_id, idv_session: subject.idv_session)
+        expect(subject).to receive(:clear_future_steps!).and_call_original
+        put :update
+        expect(subject.idv_session.has_pii_from_user_in_session?).to eq(false)
+      end
 
-      put :update
-      expect(subject.idv_session.applicant).to be_nil
-      expect(subject.idv_session.doc_auth_vendor).to match(idv_vendor)
+      it 'invalidates applicant' do
+        subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT
+        expect(subject).to receive(:clear_future_steps!).and_call_original
+
+        put :update
+        expect(subject.idv_session.applicant).to be_nil
+        expect(subject.idv_session.doc_auth_vendor).to match(idv_vendor)
+      end
     end
 
     it 'sends analytics_submitted event' do
