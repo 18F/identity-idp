@@ -36,15 +36,36 @@ module Proofing
               applicant_pii
             end
 
-          timer.time('state_id') do
+          first_result = timer.time('state_id') do
             proofer.proof(applicant_pii_with_state_id_address)
-          end.tap do |result|
-            if result.exception.blank?
-              Db::SpCost::AddSpCost.call(
-                current_sp,
-                :aamva,
-                transaction_id: result.transaction_id,
-              )
+          end
+
+          if first_result.exception.blank?
+            Db::SpCost::AddSpCost.call(
+              current_sp,
+              :aamva,
+              transaction_id: first_result.transaction_id,
+            )
+          end
+
+          if !first_result.success? && first_result.errors[:first_name] == 'UNVERIFIED'
+            names = applicant_pii_with_state_id_address[:first_name].split(' ')
+            if names.size == 2
+              modified_applicant = applicant_pii_with_state_id_address.dup
+              modified_applicant[:first_name] = names.first
+              modified_applicant[:middle_name] = names.second
+
+              second_result = timer.time('state_id') do
+                proofer.proof(modified_applicant)
+              end
+
+              if second_result.exception.blank?
+                Db::SpCost::AddSpCost.call(
+                  current_sp,
+                  :aamva,
+                  transaction_id: second_result.transaction_id,
+                )
+              end
             end
           end
         end
