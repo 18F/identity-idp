@@ -22,7 +22,6 @@ module Idv
       clear_future_steps!
       analytics.idv_doc_auth_welcome_submitted(**analytics_arguments)
 
-      delete_old_capture_session_if_present
       create_document_capture_session
       cancel_previous_in_person_enrollments
 
@@ -51,13 +50,6 @@ module Idv
         step: 'welcome',
         analytics_id: 'Doc Auth',
       }.merge(ab_test_analytics_buckets)
-    end
-
-    def delete_old_capture_session_if_present
-      DocumentCaptureSession.find_by(
-        user_id: current_user.id,
-        issuer: sp_session[:issuer],
-      )&.delete
     end
 
     def create_document_capture_session

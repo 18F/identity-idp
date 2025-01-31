@@ -86,7 +86,9 @@ module Idv
     end
 
     def cancel_document_capture_session
-      document_capture_session&.update(cancelled_at: Time.zone.now)
+      document_capture_session&.update(
+        cancelled_at: Time.zone.now,
+        result_id: nil)
     end
 
     def document_capture_session_uuid
