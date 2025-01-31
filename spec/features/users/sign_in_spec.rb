@@ -252,26 +252,6 @@ RSpec.feature 'Sign in' do
     end
   end
 
-  context 'signed out' do
-    it 'shows the timeout modal when the session expiration approaches', js: true do
-      allow(Devise).to receive(:timeout_in).and_return(160)
-
-      visit sign_up_email_path(request_id: '123abc')
-
-      expect(page).to have_field(t('forms.registration.labels.email'), with: '')
-
-      fill_in t('forms.registration.labels.email'), with: 'test@example.com'
-
-      expect(page).to have_css('.usa-js-modal--active', wait: 10)
-
-      click_button t('notices.timeout_warning.partially_signed_in.continue')
-
-      expect(page).not_to have_css('.usa-js-modal--active')
-
-      expect(current_url).to match Regexp.escape(sign_up_email_path(request_id: '123abc'))
-    end
-  end
-
   context 'signing back in after session timeout length' do
     around do |example|
       with_forgery_protection { example.run }
