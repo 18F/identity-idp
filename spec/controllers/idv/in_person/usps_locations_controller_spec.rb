@@ -372,20 +372,6 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
         )
         expect(enrollment.service_provider).to eq(sp)
       end
-
-      it 'updates proofing component vendor' do
-        proofing_components = Idv::ProofingComponents.new(
-          idv_session: controller.idv_session,
-        )
-
-        expect(proofing_components.document_check).to be_nil
-
-        response
-
-        user.reload
-
-        expect(proofing_components.document_check).to eq Idp::Constants::Vendors::USPS
-      end
     end
 
     context 'when the user is going through EIPP' do
@@ -407,20 +393,6 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
           selected_location[:usps_location].as_json,
         )
         expect(enrollment.service_provider).to eq(sp)
-      end
-
-      it 'updates proofing component vendor' do
-        proofing_components = Idv::ProofingComponents.new(
-          idv_session: controller.idv_session,
-        )
-
-        expect(proofing_components.document_check).to be_nil
-
-        response
-
-        user.reload
-
-        expect(proofing_components.document_check).to eq Idp::Constants::Vendors::USPS
       end
     end
 
