@@ -178,13 +178,27 @@ RSpec.feature 'document capture step', :js, :allow_browser_log do
 
         complete_agreement_step
 
+        click_send_link
+      end
+
+      perform_in_browser(:mobile, driver: :headless_chrome_mobile) do
+        visit sms_link
+        click_idv_continue
         visit idv_hybrid_mobile_socure_document_capture_update_url
 
         expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_update_url)
 
-        visit idv_ssn_url
+        socure_docv_upload_documents(docv_transaction_token: 'docv_transaction_token')
+        document_capture_session_uuid = DocumentCaptureSession.find_by(user_id: user.id).uuid
+        SocureDocvResultsJob.new.perform(document_capture_session_uuid:)
 
-        expect(page).to have_current_path(idv_hybrid_handoff_url)
+        expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url, wait: 20)
+      end
+
+      perform_in_browser(:desktop, driver: :headless_chrome) do
+        click_continue
+
+        expect(page).to have_current_path(idv_ssn_url)
       end
     end
   end
