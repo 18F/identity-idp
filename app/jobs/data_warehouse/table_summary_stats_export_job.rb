@@ -8,6 +8,11 @@ module DataWarehouse
       agency_identities
     ].freeze
 
+    TIMESTAMP_OVERRIDE = {
+      'sp_return_logs' => 'requested_at',
+      'registration_logs' => 'registered_at',
+    }.freeze
+
     def perform(timestamp)
       return if data_warehouse_disabled?
 
@@ -54,11 +59,9 @@ module DataWarehouse
       end
 
       result = ActiveRecord::Base.connection.execute(query).first
-      if table_has_column?(table, 'created_at')
-        result['timestamp_column'] = 'created_at'
-      else
-        result['timestamp_column'] = nil
-      end
+      result['timestamp_column'] = nil
+      result['timestamp_column'] = 'created_at' if table_has_column?(table, 'created_at')
+      result['timestamp_column'] = TIMESTAMP_OVERRIDE[table] if TIMESTAMP_OVERRIDE.key?(table)
 
       result
     end

@@ -108,13 +108,18 @@ RSpec.describe DataWarehouse::TableSummaryStatsExportJob, type: :job do
       end
     end
 
-    context 'when tables are missing the timestamp column' do
+    context 'pulls correct timestamp column value' do
       let(:expected_json) do
         {
           'users' => {
             'max_id' => 2,
             'row_count' => 2,
             'timestamp_column' => 'created_at',
+          },
+          'sp_return_logs' => {
+            'max_id' => 1,
+            'row_count' => 1,
+            'timestamp_column' => 'requested_at',
           },
           'agencies' => {
             'max_id' => 19,
@@ -125,7 +130,10 @@ RSpec.describe DataWarehouse::TableSummaryStatsExportJob, type: :job do
       end
 
       before do
-        allow(ActiveRecord::Base.connection).to receive(:tables).and_return(['users', 'agencies'])
+        allow(ActiveRecord::Base.connection).to receive(:tables).and_return(
+          ['users',
+           'sp_return_logs', 'agencies'],
+        )
       end
 
       it 'generates correct values without timestamp column' do
@@ -174,5 +182,8 @@ RSpec.describe DataWarehouse::TableSummaryStatsExportJob, type: :job do
   def add_data_to_tables
     User.create!(id: 1, created_at: (timestamp - 1.hour))
     User.create!(id: 2, created_at: (timestamp - 1.day))
+    SpReturnLog.create!(
+      id: 1, requested_at: (timestamp - 1.day), request_id: 1, ial: 1, issuer: 'foo',
+    )
   end
 end
