@@ -12,6 +12,14 @@ RSpec.describe 'GoodJob.cron' do
     end
   end
 
+  it 'has a consistent class name' do
+    aggregate_failures do
+      Rails.application.config.good_job.cron.each do |_key, config|
+        expect(config[:class]).to match(/Job\z|Report/)
+      end
+    end
+  end
+
   describe 'weekly reporting' do
     %w[drop_off_report authentication_report protocols_report].each do |job_name|
       it "schedules the #{job_name} to run after the end of the week with yesterday's date" do
