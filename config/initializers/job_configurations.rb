@@ -32,7 +32,7 @@ else
       },
       # Send new device alert notifications
       create_new_device_alert_send_emails: {
-        class: 'CreateNewDeviceAlert',
+        class: 'CreateNewDeviceAlertJob',
         cron: cron_5m,
         args: -> { [Time.zone.now] },
       },
