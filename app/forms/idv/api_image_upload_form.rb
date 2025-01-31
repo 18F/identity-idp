@@ -74,8 +74,6 @@ module Idv
 
     def validate_form
       success = valid?
-      increment_rate_limiter!
-      track_rate_limited if rate_limited?
 
       response = Idv::DocAuthFormResponse.new(
         success: success,
@@ -102,6 +100,9 @@ module Idv
           liveness_checking_required: liveness_checking_required,
         )
       end
+
+      increment_rate_limiter! unless response.success?
+      track_rate_limited if rate_limited?
 
       response.extra.merge!(extra_attributes)
       response.extra[:state] = response.pii_from_doc.to_h[:state]
