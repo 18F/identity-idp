@@ -2,6 +2,7 @@ require 'rails_helper'
 require 'axe-rspec'
 
 RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
+  include PersonalKeyHelper
   include OidcAuthHelper
   include UspsIppHelper
   include ActiveJob::TestHelper
@@ -14,9 +15,24 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
     ActiveJob::Base.queue_adapter = :test
   end
 
+  let(:pii) do
+    Pii::Attributes.new_from_hash(
+      {
+        ssn: '666-66-1234',
+        dob: '1920-01-01',
+        first_name: 'solaire',
+      },
+    )
+  end
+  let(:initial_password) { 'p@assword!' }
+
   feature 'before/after password reset:' do
     background do
-      @user = create(:user, :with_phone, :with_pending_in_person_enrollment)
+      @user = create(
+        :user, :with_phone, :with_pending_in_person_enrollment, password: initial_password
+      )
+      @personal_key = @user.pending_in_person_enrollment.profile.encrypt_pii(pii, initial_password)
+      @user.pending_in_person_enrollment.profile.save!
       @new_password = '$alty pickles'
     end
 
@@ -39,28 +55,35 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
       expect(@user.in_person_enrollments.first).to have_attributes(
         status: 'pending',
       )
-      # And the user has a Profile that is deactivated pending in person verification
+      # And the user has a Profile that is deactivated with reason "password_reset"
       expect(@user.in_person_enrollments.first.profile).to have_attributes(
         active: false,
-        deactivation_reason: nil,
+        deactivation_reason: 'password_reset',
         in_person_verification_pending_at: be_kind_of(Time),
       )
 
       # When the user logs in
       login(@user, @new_password)
 
-      # Then the user is taken to the /verify/welcome page
-      expect(page).to have_current_path(idv_welcome_path)
-      # And the user has an InPersonEnrollment with status "cancelled"
+      # Then the user is taken to the /reactivate/account path
+      expect(page).to have_current_path(reactivate_account_path)
+
+      # And the user has an InPersonEnrollment with status "pending"
       expect(@user.in_person_enrollments.first).to have_attributes(
-        status: 'cancelled',
+        status: 'pending',
       )
-      # And the user has a Profile that is deactivated with reason "encryption_error"
+      # And the user has a Profile that is deactivated with reason "password_reset"
       expect(@user.in_person_enrollments.first.profile).to have_attributes(
         active: false,
-        deactivation_reason: 'encryption_error',
+        deactivation_reason: 'password_reset',
         in_person_verification_pending_at: be_kind_of(Time),
       )
+
+      # When the user reactivates their profile with a personal key
+      reactivate_profile(@new_password, @personal_key)
+
+      # Then the user is taken to the /verify/in_person/ready_to_verify path
+      expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
 
       # When the user logs out
       logout(@user)
@@ -70,32 +93,22 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
       # And GetUspsProofingResultsJob is performed
       perform_get_usps_proofing_results_job(@user)
 
-      # Then the user has an InPersonEnrollment with status "cancelled"
+      # Then the user has an InPersonEnrollment with status "passed"
       expect(@user.in_person_enrollments.first).to have_attributes(
-        status: 'cancelled',
+        status: 'passed',
       )
-      # And the user has a Profile that is deactivated with reason "encryption_error"
+      # And the user has a Profile that is activated
       expect(@user.in_person_enrollments.first.profile).to have_attributes(
-        active: false,
-        deactivation_reason: 'encryption_error',
-        in_person_verification_pending_at: be_kind_of(Time),
+        active: true,
+        deactivation_reason: nil,
+        in_person_verification_pending_at: nil,
       )
 
       # When the user logs in
       login(@user, @new_password)
 
-      # Then the user is taken to the /verify/welcome page
-      expect(page).to have_current_path(idv_welcome_path)
-      # And the user has an InPersonEnrollment with status "cancelled"
-      expect(@user.in_person_enrollments.first).to have_attributes(
-        status: 'cancelled',
-      )
-      # And the user has a Profile that is deactivated with reason "encryption_error"
-      expect(@user.in_person_enrollments.first.profile).to have_attributes(
-        active: false,
-        deactivation_reason: 'encryption_error',
-        in_person_verification_pending_at: be_kind_of(Time),
-      )
+      # Then the user is taken to the /sign_up/completed path
+      expect(page).to have_current_path(sign_up_completed_path)
     end
 
     ['failed', 'cancelled', 'expired'].each do |status|
@@ -118,28 +131,35 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
         expect(@user.in_person_enrollments.first).to have_attributes(
           status: 'pending',
         )
-        # And the user has a deactivated profile due to in person verification
+        # And the user has a Profile that is deactivated with reason "password_reset"
         expect(@user.in_person_enrollments.first.profile).to have_attributes(
           active: false,
-          deactivation_reason: nil,
+          deactivation_reason: 'password_reset',
           in_person_verification_pending_at: be_kind_of(Time),
         )
 
         # When the user logs in
         login(@user, @new_password)
 
-        # Then the user is taken to the /verify/welcome page
-        expect(page).to have_current_path(idv_welcome_path)
-        # And the user has an InPersonEnrollment with status "cancelled"
+        # Then the user is taken to the /reactivate/account path
+        expect(page).to have_current_path(reactivate_account_path)
+
+        # And the user has an InPersonEnrollment with status "pending"
         expect(@user.in_person_enrollments.first).to have_attributes(
-          status: 'cancelled',
+          status: 'pending',
         )
-        # And the user has a Profile that is deactivated with reason "encryption_error"
+        # And the user has a Profile that is deactivated with reason "password_reset"
         expect(@user.in_person_enrollments.first.profile).to have_attributes(
           active: false,
-          deactivation_reason: 'encryption_error',
+          deactivation_reason: 'password_reset',
           in_person_verification_pending_at: be_kind_of(Time),
         )
+
+        # When the user reactivates their profile with a personal key
+        reactivate_profile(@new_password, @personal_key)
+
+        # Then the user is taken to the /verify/in_person/ready_to_verify path
+        expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
 
         # When the user logs out
         logout(@user)
@@ -149,15 +169,15 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
         # And GetUspsProofingResultsJob is performed
         perform_get_usps_proofing_results_job(@user)
 
-        # Then the user has an InPersonEnrollment with status "cancelled"
+        # Then the user has an InPersonEnrollment with status "passed"
         expect(@user.in_person_enrollments.first).to have_attributes(
-          status: 'cancelled',
+          status: status,
         )
-        # And the user has a Profile that is deactivated with reason "encryption_error"
+        # And the user has a Profile that is deactivated
         expect(@user.in_person_enrollments.first.profile).to have_attributes(
           active: false,
-          deactivation_reason: 'encryption_error',
-          in_person_verification_pending_at: be_kind_of(Time),
+          deactivation_reason: 'verification_cancelled',
+          in_person_verification_pending_at: nil,
         )
 
         # When the user logs in
@@ -165,16 +185,6 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
 
         # Then the user is taken to the /verify/welcome page
         expect(page).to have_current_path(idv_welcome_path)
-        # And the user has an InPersonEnrollment with status "cancelled"
-        expect(@user.in_person_enrollments.first).to have_attributes(
-          status: 'cancelled',
-        )
-        # And the user has a Profile that is deactivated with reason "encryption_error"
-        expect(@user.in_person_enrollments.first.profile).to have_attributes(
-          active: false,
-          deactivation_reason: 'encryption_error',
-          in_person_verification_pending_at: be_kind_of(Time),
-        )
       end
     end
 
@@ -197,10 +207,10 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
       expect(@user.in_person_enrollments.first).to have_attributes(
         status: 'pending',
       )
-      # And the user has a deactivated profile due to in person verification
+      # And the user has a Profile that is deactivated with reason "password_reset"
       expect(@user.in_person_enrollments.first.profile).to have_attributes(
         active: false,
-        deactivation_reason: nil,
+        deactivation_reason: 'password_reset',
         in_person_verification_pending_at: be_kind_of(Time),
       )
 
@@ -210,35 +220,71 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
       # And GetUspsProofingResultsJob is performed
       perform_get_usps_proofing_results_job(@user)
 
-      # Then the user has an InPersonEnrollment with status "passed"
+      # Then the user has an InPersonEnrollment with status "pending"
       expect(@user.in_person_enrollments.first).to have_attributes(
-        status: 'passed',
+        status: 'pending',
       )
-      # And the user has a Profile that is active
+      # And the user has a Profile that is deactivated with reason "password_reset"
       expect(@user.in_person_enrollments.first.profile).to have_attributes(
-        active: true,
-        deactivation_reason: nil,
-        in_person_verification_pending_at: nil,
+        active: false,
+        deactivation_reason: 'password_reset',
+        in_person_verification_pending_at: be_kind_of(Time),
       )
 
       # When the user logs in
       login(@user, @new_password)
 
-      # Then the user is taken to the /verify/welcome page
-      expect(page).to have_current_path(idv_welcome_path)
-      # And the user has an InPersonEnrollment with status "passed"
+      # Then the user is taken to the /reactivate/account path
+      expect(page).to have_current_path(reactivate_account_path)
+
+      # And the user has an InPersonEnrollment with status "pending"
+      expect(@user.in_person_enrollments.first).to have_attributes(
+        status: 'pending',
+      )
+      # And the user has a Profile that is deactivated with reason "password_reset"
+      expect(@user.in_person_enrollments.first.profile).to have_attributes(
+        active: false,
+        deactivation_reason: 'password_reset',
+        in_person_verification_pending_at: be_kind_of(Time),
+      )
+
+      # When the user reactivates their profile with a personal key
+      reactivate_profile(@new_password, @personal_key)
+
+      # Then the user is taken to the /verify/in_person/ready_to_verify path
+      expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
+
+      # And the user has an InPersonEnrollment with status "pending"
+      expect(@user.in_person_enrollments.first).to have_attributes(
+        status: 'pending',
+      )
+      # And the user has a Profile that is deactivated with reason "password_reset"
+      expect(@user.in_person_enrollments.first.profile).to have_attributes(
+        active: false,
+        deactivation_reason: nil,
+        in_person_verification_pending_at: be_kind_of(Time),
+      )
+
+      # When the enrollment is ready to be picked by the GetUspsProofingResultsJob
+      @user.in_person_enrollments.first.update!(last_batch_claimed_at: nil)
+      # And USPS enrollment "passed"
+      stub_request_passed_proofing_results
+      # And GetUspsProofingResultsJob is performed
+      perform_get_usps_proofing_results_job(@user)
+
+      # Then the user has an InPersonEnrollment with status "passed"
       expect(@user.in_person_enrollments.first).to have_attributes(
         status: 'passed',
       )
-      # And the user has a Profile that is deactivated with reason "encryption_error"
+      # And the user has a Profile that is activated
       expect(@user.in_person_enrollments.first.profile).to have_attributes(
-        active: false,
-        deactivation_reason: 'encryption_error',
+        active: true,
+        deactivation_reason: nil,
         in_person_verification_pending_at: nil,
       )
     end
 
-    ['failed', 'cancelled', 'expired'].each do |status|
+    ['failed'].each do |status|
       scenario "User resets password without logging in before USPS proofing \"#{status}\"" do
         # Given the user has an InPersonEnrollment with status "pending"
         expect(@user.in_person_enrollments.first).to have_attributes(
@@ -258,10 +304,10 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
         expect(@user.in_person_enrollments.first).to have_attributes(
           status: 'pending',
         )
-        # And the user has a Profile that is deactivated pending in person verification
+        # And the user has a Profile that is deactivated with reason "password_reset"
         expect(@user.in_person_enrollments.first.profile).to have_attributes(
           active: false,
-          deactivation_reason: nil,
+          deactivation_reason: 'password_reset',
           in_person_verification_pending_at: be_kind_of(Time),
         )
 
@@ -271,7 +317,59 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
         # And GetUspsProofingResultsJob is performed
         perform_get_usps_proofing_results_job(@user)
 
-        # Then the user has an InPersonEnrollment with status "failed|cancelled|expired"
+        # Then the user has an InPersonEnrollment with status "pending"
+        expect(@user.in_person_enrollments.first).to have_attributes(
+          status: 'pending',
+        )
+        # And the user has a Profile that is deactivated with reason "password_reset"
+        expect(@user.in_person_enrollments.first.profile).to have_attributes(
+          active: false,
+          deactivation_reason: 'password_reset',
+          in_person_verification_pending_at: be_kind_of(Time),
+        )
+
+        # When the user logs in
+        login(@user, @new_password)
+
+        # Then the user is taken to the /reactivate/account path
+        expect(page).to have_current_path(reactivate_account_path)
+
+        # And the user has an InPersonEnrollment with status "pending"
+        expect(@user.in_person_enrollments.first).to have_attributes(
+          status: 'pending',
+        )
+        # And the user has a Profile that is deactivated with reason "password_reset"
+        expect(@user.in_person_enrollments.first.profile).to have_attributes(
+          active: false,
+          deactivation_reason: 'password_reset',
+          in_person_verification_pending_at: be_kind_of(Time),
+        )
+
+        # When the user reactivates their profile with a personal key
+        reactivate_profile(@new_password, @personal_key)
+
+        # Then the user is taken to the /verify/in_person/ready_to_verify path
+        expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
+
+        # And the user has an InPersonEnrollment with status "pending"
+        expect(@user.in_person_enrollments.first).to have_attributes(
+          status: 'pending',
+        )
+        # And the user has a Profile that is deactivated with reason "password_reset"
+        expect(@user.in_person_enrollments.first.profile).to have_attributes(
+          active: false,
+          deactivation_reason: nil,
+          in_person_verification_pending_at: be_kind_of(Time),
+        )
+
+        # When the enrollment is ready to be picked by the GetUspsProofingResultsJob
+        @user.in_person_enrollments.first.update!(last_batch_claimed_at: nil)
+        # And USPS enrollment "failed|cancelled|expired"
+        stub_request_proofing_results(status, @user.in_person_enrollments.first.enrollment_code)
+        # And GetUspsProofingResultsJob is performed
+        perform_get_usps_proofing_results_job(@user)
+
+        # And the user has an InPersonEnrollment with status "pending"
         expect(@user.in_person_enrollments.first).to have_attributes(
           status: status,
         )
@@ -281,20 +379,67 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
           deactivation_reason: 'verification_cancelled',
           in_person_verification_pending_at: nil,
         )
+      end
+    end
+
+    ['cancelled', 'expired'].each do |status|
+      scenario "User resets password without logging in before USPS proofing \"#{status}\"" do
+        # Given the user has an InPersonEnrollment with status "pending"
+        expect(@user.in_person_enrollments.first).to have_attributes(
+          status: 'pending',
+        )
+        # And the user has a Profile that is deactivated pending in person verification
+        expect(@user.in_person_enrollments.first.profile).to have_attributes(
+          active: false,
+          deactivation_reason: nil,
+          in_person_verification_pending_at: be_kind_of(Time),
+        )
+
+        # When the user resets their password
+        reset_password(@user, @new_password)
+
+        # Then the user has an InPersonEnrollment with status "pending"
+        expect(@user.in_person_enrollments.first).to have_attributes(
+          status: 'pending',
+        )
+        # And the user has a Profile that is deactivated with reason "password_reset"
+        expect(@user.in_person_enrollments.first.profile).to have_attributes(
+          active: false,
+          deactivation_reason: 'password_reset',
+          in_person_verification_pending_at: be_kind_of(Time),
+        )
+
+        # And the user visits USPS to complete their enrollment
+        # And USPS enrollment "failed|cancelled|expired"
+        stub_request_proofing_results(status, @user.in_person_enrollments.first.enrollment_code)
+        # And GetUspsProofingResultsJob is performed
+        perform_get_usps_proofing_results_job(@user)
+
+        # Then the user has an InPersonEnrollment with status "cancelled|expired"
+        expect(@user.in_person_enrollments.first).to have_attributes(
+          status: status,
+        )
+        # And the user has a Profile that is deactivated with reason "password_reset"
+        expect(@user.in_person_enrollments.first.profile).to have_attributes(
+          active: false,
+          deactivation_reason: 'password_reset',
+          in_person_verification_pending_at: nil,
+        )
 
         # When the user logs in
         login(@user, @new_password)
 
-        # Then the user is taken to the /verify/welcome page
+        # Then the user is taken to the /verify/welcome path
         expect(page).to have_current_path(idv_welcome_path)
-        # And the user has an InPersonEnrollment with status "failed|cancelled|expired"
+
+        # Then the user has an InPersonEnrollment with status "cancelled|expired"
         expect(@user.in_person_enrollments.first).to have_attributes(
           status: status,
         )
-        # And the user has a Profile that is deactivated with reason "verification_cancelled"
+        # And the user has a Profile that is deactivated with reason "password_reset"
         expect(@user.in_person_enrollments.first.profile).to have_attributes(
           active: false,
-          deactivation_reason: 'verification_cancelled',
+          deactivation_reason: 'password_reset',
           in_person_verification_pending_at: nil,
         )
       end
@@ -348,8 +493,8 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
       # Then the user is taken to the /account/reactivate/start page
       expect(page).to have_current_path(reactivate_account_path)
 
-      # When the user attempts to reactivate account without their personal key
-      account_reactivation_with_personal_key(@user, @new_password)
+      # When the user reactivates their profile with a personal key
+      reactivate_profile(@new_password, @personal_key)
 
       # Then the user is taken to the /sign_up/completed page
       expect(page).to have_current_path(sign_up_completed_path)
@@ -496,7 +641,6 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
       User resets password and logs in before USPS proofing "passed" with fraud review pending
     EOS
       @user.in_person_enrollments.first.profile.update(
-        fraud_review_pending_at: 1.day.ago,
         fraud_pending_reason: 'threatmetrix_review',
         proofing_components: { threatmetrix_review_status: 'review' },
       )
@@ -512,7 +656,6 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
         deactivation_reason: nil,
         in_person_verification_pending_at: be_kind_of(Time),
         fraud_pending_reason: 'threatmetrix_review',
-        fraud_review_pending_at: be_kind_of(Time),
       )
 
       # When the user resets their password
@@ -526,29 +669,33 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
       # fraud review
       expect(@user.in_person_enrollments.first.profile).to have_attributes(
         active: false,
-        deactivation_reason: nil,
+        deactivation_reason: 'password_reset',
         in_person_verification_pending_at: be_kind_of(Time),
         fraud_pending_reason: 'threatmetrix_review',
-        fraud_review_pending_at: be_kind_of(Time),
       )
 
       # When the user logs in
       login(@user, @new_password)
 
-      # Then the user is taken to the /verify/welcome page
-      expect(page).to have_current_path(idv_welcome_path)
-      # And the user has an InPersonEnrollment with status "cancelled"
+      # Then the user is taken to the /reactivate/account path
+      expect(page).to have_current_path(reactivate_account_path)
+
+      # When the user reactivates their profile with a personal key
+      reactivate_profile(@new_password, @personal_key)
+
+      # Then the user is taken to the /verify/in_person/ready_to_verify
+      expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
+      # And the user has an InPersonEnrollment with status "pending"
       expect(@user.in_person_enrollments.first).to have_attributes(
-        status: 'cancelled',
+        status: 'pending',
       )
       # And the user has a Profile that is deactivated with reason "encryption_error" and
       # pending in person verification and fraud review
       expect(@user.in_person_enrollments.first.profile).to have_attributes(
         active: false,
-        deactivation_reason: 'encryption_error',
+        deactivation_reason: nil,
         in_person_verification_pending_at: be_kind_of(Time),
         fraud_pending_reason: 'threatmetrix_review',
-        fraud_review_pending_at: be_kind_of(Time),
       )
 
       # When the user logs out
@@ -561,14 +708,15 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
 
       # Then the user has an InPersonEnrollment with status "cancelled"
       expect(@user.in_person_enrollments.first).to have_attributes(
-        status: 'cancelled',
+        status: 'passed',
       )
+
       # And the user has a Profile that is deactivated with reason "encryption_error" and
       # pending fraud review
       expect(@user.in_person_enrollments.first.profile).to have_attributes(
         active: false,
-        deactivation_reason: 'encryption_error',
-        in_person_verification_pending_at: be_kind_of(Time),
+        deactivation_reason: nil,
+        in_person_verification_pending_at: nil,
         fraud_pending_reason: 'threatmetrix_review',
         fraud_review_pending_at: be_kind_of(Time),
       )
@@ -576,18 +724,17 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
       # When the user logs in
       login(@user, @new_password)
 
-      # Then the user is taken to the /verify/welcome page
-      expect(page).to have_current_path(idv_welcome_path)
+      # Then the user is taken to the /verify/please_call page
+      expect(page).to have_current_path(idv_please_call_path)
       # And the user has an InPersonEnrollment with status "cancelled"
       expect(@user.in_person_enrollments.first).to have_attributes(
-        status: 'cancelled',
+        status: 'passed',
       )
-      # And the user has a Profile that is deactivated with reason "encryption_error" and
-      # pending fraud review
+      # And the user has a Profile that is pending fraud review
       expect(@user.in_person_enrollments.first.profile).to have_attributes(
         active: false,
-        deactivation_reason: 'encryption_error',
-        in_person_verification_pending_at: be_kind_of(Time),
+        deactivation_reason: nil,
+        in_person_verification_pending_at: nil,
         fraud_pending_reason: 'threatmetrix_review',
         fraud_review_pending_at: be_kind_of(Time),
       )
@@ -597,7 +744,6 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
       User resets password without logging in before USPS proofing "passed" with fraud review pending
     EOS
       @user.in_person_enrollments.first.profile.update(
-        fraud_review_pending_at: 1.day.ago,
         fraud_pending_reason: 'threatmetrix_review',
         proofing_components: { threatmetrix_review_status: 'review' },
       )
@@ -613,7 +759,6 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
         deactivation_reason: nil,
         in_person_verification_pending_at: be_kind_of(Time),
         fraud_pending_reason: 'threatmetrix_review',
-        fraud_review_pending_at: be_kind_of(Time),
       )
 
       # When the user resets their password
@@ -627,10 +772,9 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
       # fraud review
       expect(@user.in_person_enrollments.first.profile).to have_attributes(
         active: false,
-        deactivation_reason: nil,
+        deactivation_reason: 'password_reset',
         in_person_verification_pending_at: be_kind_of(Time),
         fraud_pending_reason: 'threatmetrix_review',
-        fraud_review_pending_at: be_kind_of(Time),
       )
 
       # And the user visits USPS to complete their enrollment
@@ -641,9 +785,53 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
 
       # Then the user has an InPersonEnrollment with status "passed"
       expect(@user.in_person_enrollments.first).to have_attributes(
+        status: 'pending',
+      )
+      # And the user has a Profile that is deactivated pending in person verification and
+      # fraud review
+      expect(@user.in_person_enrollments.first.profile).to have_attributes(
+        active: false,
+        deactivation_reason: 'password_reset',
+        in_person_verification_pending_at: be_kind_of(Time),
+        fraud_pending_reason: 'threatmetrix_review',
+      )
+
+      # When the user logs in
+      login(@user, @new_password)
+
+      # Then the user is taken to the /reactivate/account path
+      expect(page).to have_current_path(reactivate_account_path)
+
+      # When the user reactivates their profile with a personal key
+      reactivate_profile(@new_password, @personal_key)
+
+      # Then the user is taken to the /verify/in_person/ready_to_verify
+      expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
+      # And the user has an InPersonEnrollment with status "pending"
+      expect(@user.in_person_enrollments.first).to have_attributes(
+        status: 'pending',
+      )
+      # And the user has a Profile that is deactivated with reason "encryption_error" and
+      # pending in person verification and fraud review
+      expect(@user.in_person_enrollments.first.profile).to have_attributes(
+        active: false,
+        deactivation_reason: nil,
+        in_person_verification_pending_at: be_kind_of(Time),
+        fraud_pending_reason: 'threatmetrix_review',
+      )
+
+      # When the enrollment is ready to be picked by the GetUspsProofingResultsJob
+      @user.in_person_enrollments.first.update!(last_batch_claimed_at: nil)
+      # And USPS enrollment "passed"
+      stub_request_passed_proofing_results
+      # And GetUspsProofingResultsJob is performed
+      perform_get_usps_proofing_results_job(@user)
+
+      # Then the user has an InPersonEnrollment with status "cancelled"
+      expect(@user.in_person_enrollments.first).to have_attributes(
         status: 'passed',
       )
-      # And the user has a Profile that is deactivated pending fraud review
+      # And the user has a Profile that is pending fraud review
       expect(@user.in_person_enrollments.first.profile).to have_attributes(
         active: false,
         deactivation_reason: nil,
@@ -652,24 +840,11 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
         fraud_review_pending_at: be_kind_of(Time),
       )
 
-      # When the user logs in
-      login(@user, @new_password)
+      # When the page is refreshed
+      page.refresh
 
-      # Then the user is taken to the /verify/welcome page
-      expect(page).to have_current_path(idv_welcome_path)
-      # And the user has an InPersonEnrollment with status "passed"
-      expect(@user.in_person_enrollments.first).to have_attributes(
-        status: 'passed',
-      )
-      # And the user has a Profile that is deactivated with reason "encryption_error" and
-      # pending fraud review
-      expect(@user.in_person_enrollments.first.profile).to have_attributes(
-        active: false,
-        deactivation_reason: 'encryption_error',
-        in_person_verification_pending_at: nil,
-        fraud_pending_reason: 'threatmetrix_review',
-        fraud_review_pending_at: be_kind_of(Time),
-      )
+      # Then the user is taken to the /verify/please_call page
+      expect(page).to have_current_path(idv_please_call_path)
     end
   end
 
@@ -689,17 +864,6 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
 
   def account_reactivation_without_personal_key
     click_on t('links.account.reactivate.without_key')
-    click_on t('forms.buttons.continue')
-  end
-
-  def account_reactivation_with_personal_key(user, password)
-    personal_key = user.personal_key.gsub(/\W/, '')
-    click_on t('links.account.reactivate.with_key')
-    fill_in t('forms.personal_key.confirmation_label'), with: personal_key
-    click_on t('forms.buttons.continue')
-    fill_in t('idv.form.password'), with: password
-    click_on t('forms.buttons.continue')
-    check t('forms.personal_key.required_checkbox')
     click_on t('forms.buttons.continue')
   end
 
@@ -735,5 +899,25 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
     else
       throw "Status: #{status} not configured"
     end
+  end
+
+  def reactivate_profile(password, personal_key)
+    click_on t('links.account.reactivate.with_key')
+
+    expect(page).to have_current_path verify_personal_key_path
+
+    fill_in 'personal_key', with: personal_key
+    click_continue
+
+    expect(page).to have_current_path verify_password_path
+
+    fill_in 'Password', with: password
+    click_continue
+
+    expect(page).to have_current_path(manage_personal_key_path)
+    click_continue
+
+    check t('forms.personal_key.required_checkbox')
+    click_continue
   end
 end

@@ -2324,6 +2324,107 @@ RSpec.describe OpenidConnect::AuthorizationController do
           expect(@analytics).to_not have_logged_event('SP redirect initiated')
         end
       end
+
+      context 'with SP requesting a single email' do
+        let(:acr_values) { Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF }
+        let(:vtr) { nil }
+        let(:verified_attributes) { %w[email] }
+        let(:shared_email_address) do
+          create(
+            :email_address,
+            email: 'shared2@email.com',
+            user: user,
+            last_sign_in_at: 1.hour.ago,
+          )
+        end
+        let!(:identity) do
+          create(
+            :service_provider_identity,
+            user: user,
+            session_uuid: SecureRandom.uuid,
+            service_provider: service_provider.issuer,
+            verified_attributes: verified_attributes,
+          )
+        end
+        before do
+          allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
+            .and_return(true)
+          controller.user_session[:selected_email_id_for_linked_identity] = shared_email_address.id
+        end
+
+        it 'updates identity to be the value in session' do
+          identity = user.identities.find_by(service_provider: service_provider.issuer)
+          action
+          identity.reload
+          expect(identity.email_address_id).to eq(shared_email_address.id)
+        end
+      end
+
+      context 'with SP requesting a single email and all emails' do
+        let(:verified_attributes) { %w[email all_emails] }
+        let(:shared_email_address) do
+          create(
+            :email_address,
+            email: 'shared2@email.com',
+            user: user,
+            last_sign_in_at: 1.hour.ago,
+          )
+        end
+        let!(:identity) do
+          create(
+            :service_provider_identity,
+            user: user,
+            session_uuid: SecureRandom.uuid,
+            service_provider: service_provider.issuer,
+            verified_attributes: verified_attributes,
+            email_address_id: shared_email_address.id,
+          )
+        end
+        before do
+          allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
+            .and_return(true)
+        end
+
+        it 'updates identity email_address to be nil' do
+          identity = user.identities.find_by(service_provider: service_provider.issuer)
+          action
+          identity.reload
+          expect(identity.email_address_id).to eq(nil)
+        end
+      end
+
+      context 'with SP requesting no emails' do
+        let(:verified_attributes) { %w[first_name last_name] }
+        let(:shared_email_address) do
+          create(
+            :email_address,
+            email: 'shared2@email.com',
+            user: user,
+            last_sign_in_at: 1.hour.ago,
+          )
+        end
+        let!(:identity) do
+          create(
+            :service_provider_identity,
+            user: user,
+            session_uuid: SecureRandom.uuid,
+            service_provider: service_provider.issuer,
+            verified_attributes: verified_attributes,
+            email_address_id: shared_email_address.id,
+          )
+        end
+        before do
+          allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
+            .and_return(true)
+        end
+
+        it 'updates identity email_address to be nil' do
+          identity = user.identities.find_by(service_provider: service_provider.issuer)
+          action
+          identity.reload
+          expect(identity.email_address_id).to eq(nil)
+        end
+      end
     end
 
     context 'user is not signed in' do

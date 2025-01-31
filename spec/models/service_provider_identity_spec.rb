@@ -243,8 +243,15 @@ RSpec.describe ServiceProviderIdentity do
       )
     end
 
+    let(:service_provider) { create(:service_provider) }
+
     let(:identity) do
-      create(:service_provider_identity, user: user, session_uuid: SecureRandom.uuid)
+      create(
+        :service_provider_identity,
+        user: user,
+        session_uuid: SecureRandom.uuid,
+        service_provider: service_provider.issuer,
+      )
     end
 
     context 'when email sharing feature is enabled' do
@@ -253,7 +260,7 @@ RSpec.describe ServiceProviderIdentity do
           .and_return(true)
       end
 
-      context 'when an email address for sharing has been set' do
+      context 'when an email address is set' do
         before do
           identity.email_address = shared_email_address
         end
@@ -281,6 +288,69 @@ RSpec.describe ServiceProviderIdentity do
 
       it 'returns the last login email' do
         expect(identity.email_address_for_sharing).to eq(last_login_email_address)
+      end
+    end
+  end
+
+  describe '#clear_email_address_id_if_not_supported' do
+    let(:verified_attributes) { %w[email] }
+    let!(:shared_email_address) do
+      create(
+        :email_address,
+        email: 'shared@email.com',
+        user: user,
+        last_sign_in_at: 1.hour.ago,
+      )
+    end
+    let(:identity) do
+      create(
+        :service_provider_identity,
+        user: user,
+        session_uuid: SecureRandom.uuid,
+        service_provider: service_provider.issuer,
+        verified_attributes: verified_attributes,
+        email_address_id: shared_email_address.id,
+      )
+    end
+
+    context 'when user has only email as the verified attribute attribute' do
+      let(:new_shared_email_address) do
+        create(
+          :email_address,
+          email: 'shared2@email.com',
+          user: user,
+          last_sign_in_at: 1.hour.ago,
+        )
+      end
+      before do
+        allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
+          .and_return(true)
+      end
+
+      it 'should save the new email properly on update' do
+        identity.update!(email_address_id: new_shared_email_address.id)
+        expect(identity.email_address).to eq(new_shared_email_address)
+      end
+    end
+
+    context 'when user has all_emails as the verified attribute' do
+      let(:verified_attributes) { %w[all_emails] }
+      let(:new_shared_email_address) do
+        create(
+          :email_address,
+          email: 'shared2@email.com',
+          user: user,
+          last_sign_in_at: 1.hour.ago,
+        )
+      end
+      before do
+        allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
+          .and_return(true)
+      end
+
+      it 'should make the email address to nil' do
+        identity.update!(email_address_id: new_shared_email_address.id)
+        expect(identity.email_address).to eq(nil)
       end
     end
   end

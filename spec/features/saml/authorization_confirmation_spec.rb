@@ -52,6 +52,46 @@ RSpec.feature 'SAML Authorization Confirmation' do
           continue_as(shared_email)
           expect(current_url).to eq(complete_saml_url)
         end
+
+        context 'with requested attributes contains only email' do
+          it ' creates an identity with proper email_address_id' do
+            user = user_with_2fa
+
+            sign_in_user(user)
+            check t('forms.messages.remember_device')
+            fill_in_code_with_last_phone_otp
+            click_submit_default
+            visit request_url
+            click_agree_and_continue
+            click_submit_default
+            visit sign_out_url
+            identity = user.identities.find_by(service_provider: SamlAuthHelper::SP_ISSUER)
+            email_id = user.email_addresses.first.id
+            expect(identity.email_address_id).to eq(email_id)
+          end
+        end
+
+        context 'with requested attributes contains is emails and all_emails' do
+          before do
+            allow_any_instance_of(ServiceProviderIdentity).to receive(:verified_attributes)
+              .and_return(%w[email all_emails])
+          end
+          it 'creates an identity with no email_address_id saved' do
+            user = user_with_2fa
+
+            sign_in_user(user)
+            check t('forms.messages.remember_device')
+            fill_in_code_with_last_phone_otp
+            click_submit_default
+            visit request_url
+            click_agree_and_continue
+            click_submit_default
+            visit sign_out_url
+
+            identity = user.identities.find_by(service_provider: SamlAuthHelper::SP_ISSUER)
+            expect(identity.email_address_id).to eq(nil)
+          end
+        end
       end
 
       context 'when email sharing feature is disabled' do

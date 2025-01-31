@@ -18,7 +18,7 @@ RSpec.describe 'Account connected applications' do
       user: user,
       created_at: Time.zone.now - 80.days,
       service_provider: 'http://localhost:3000',
-      verified_attributes: ['email'],
+      verified_attributes: %w[email],
     )
   end
   let(:identity_without_link) do
