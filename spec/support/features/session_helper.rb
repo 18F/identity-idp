@@ -290,8 +290,8 @@ module Features
     def perform_in_browser(name, driver: nil)
       old_session = Capybara.session_name
       Capybara.session_name = name
+
       old_driver = Capybara.current_driver
-      
       Capybara.current_driver = driver if driver
 
       yield

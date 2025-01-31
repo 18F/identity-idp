@@ -5,7 +5,8 @@ RSpec.feature 'document capture step', :js, :allow_browser_log do
 
   before(:each) do
     allow(IdentityConfig.store).to receive(:socure_docv_enabled).and_return(true)
-    allow(DocAuthRouter).to receive(:doc_auth_vendor_for_bucket).and_return(Idp::Constants::Vendors::SOCURE)
+    allow(DocAuthRouter).to receive(:doc_auth_vendor_for_bucket)
+      .and_return(Idp::Constants::Vendors::SOCURE)
 
     stub_request(
       :post,
