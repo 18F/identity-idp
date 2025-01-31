@@ -287,10 +287,16 @@ module Features
       click_button t('sign_up.agree_and_continue')
     end
 
-    def perform_in_browser(name)
+    def perform_in_browser(name, driver: nil)
       old_session = Capybara.session_name
       Capybara.session_name = name
+      old_driver = Capybara.current_driver
+      
+      Capybara.current_driver = driver if driver
+
       yield
+
+      Capybara.current_driver = old_driver if driver
       Capybara.session_name = old_session
     end
 

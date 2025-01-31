@@ -1,94 +1,77 @@
 require 'rails_helper'
 
-RSpec.feature 'document capture step', :js do
+RSpec.feature 'document capture step', :js, :allow_browser_log do
   include IdvStepHelper
-  include DocAuthHelper
-  include DocCaptureHelper
-  include ActionView::Helpers::DateHelper
-
-  let(:max_attempts) { 3 }
-  let(:fake_analytics) { FakeAnalytics.new }
-  let(:socure_docv_webhook_secret_key) { 'socure_docv_webhook_secret_key' }
-  let(:fake_socure_docv_document_request_endpoint) { 'https://fake-socure.test/document-request' }
-  let(:fake_socure_document_capture_app_url) { 'https://verify.fake-socure.test/something' }
-  let(:socure_docv_verification_data_test_mode) { false }
-  let(:socure_docv_webhook_repeat_endpoints) { [] }
-  let(:timeout_socure_route) { idv_socure_document_capture_errors_url(error_code: :timeout) }
 
   before(:each) do
     allow(IdentityConfig.store).to receive(:socure_docv_enabled).and_return(true)
-    allow(DocAuthRouter).to receive(:doc_auth_vendor_for_bucket)
-      .and_return(Idp::Constants::Vendors::SOCURE)
-    allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return('Test SP')
-    allow(IdentityConfig.store).to receive(:socure_docv_webhook_secret_key)
-      .and_return(socure_docv_webhook_secret_key)
-    allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint)
-      .and_return(fake_socure_docv_document_request_endpoint)
-    allow(IdentityConfig.store).to receive(:socure_docv_webhook_repeat_endpoints)
-      .and_return(socure_docv_webhook_repeat_endpoints)
-    socure_docv_webhook_repeat_endpoints.each { |endpoint| stub_request(:post, endpoint) }
-    allow(IdentityConfig.store).to receive(:ruby_workers_idv_enabled).and_return(false)
-    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
-    @docv_transaction_token = stub_docv_document_request
-    allow(IdentityConfig.store).to receive(:socure_docv_verification_data_test_mode)
-      .and_return(socure_docv_verification_data_test_mode)
-    allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
+    allow(DocAuthRouter).to receive(:doc_auth_vendor_for_bucket).and_return(Idp::Constants::Vendors::SOCURE)
+
+    stub_request(
+      :post,
+      IdentityConfig.store.socure_docv_document_request_endpoint,
+    ).to_return(
+      status: 200,
+      headers: {},
+      body: {
+        referenceId: 'socure-reference-id',
+        data: {
+          eventId: 'socure-event-id',
+          docvTransactionToken: 'docv-transaction-token',
+          qrCode: 'qr-code',
+          url: 'fake-socure-capture-app',
+        },
+      }.to_json,
+    )
+
+    stub_request(
+      :post,
+      "#{IdentityConfig.store.socure_idplus_base_url}/api/3.0/EmailAuthScore",
+    ).to_return(
+      status: 200,
+      headers: {},
+      body: SocureDocvFixtures.pass_json,
+    )
   end
 
-  context 'happy path', allow_browser_log: true do
-    before do
-      @pass_stub = stub_docv_verification_data_pass(docv_transaction_token: @docv_transaction_token)
-    end
+  describe 'normal flow', driver: :headless_chrome_mobile do
+    it 'succeeds' do
+      visit_idp_from_oidc_sp_with_ial2
+      @user = sign_in_and_2fa_user
+      complete_doc_auth_steps_before_hybrid_handoff_step
 
-    context 'standard mobile flow' do
-      let(:socure_docv_webhook_repeat_endpoints) do # repeat webhooks
-        ['https://1.example.test/thepath', 'https://2.example.test/thepath']
-      end
+      click_idv_continue
 
-      it 'proceeds to the next page with valid info' do
-        # expect(SocureDocvRepeatWebhookJob).to receive(:perform_later)
-        #   .exactly(6 * socure_docv_webhook_repeat_endpoints.length).times.and_call_original
+      socure_docv_upload_documents(
+        docv_transaction_token: 'docv-transaction-token',
+      )
 
-        perform_in_browser(:mobile) do
-          visit_idp_from_oidc_sp_with_ial2
-          @user = sign_in_and_2fa_user
-          complete_doc_auth_steps_before_document_capture_step
+      visit idv_socure_document_capture_update_path
 
-          expect(page).to have_current_path(idv_socure_document_capture_url)
-          expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+      document_capture_session_uuid = DocumentCaptureSession.find_by(user_id: @user.id).uuid
+      SocureDocvResultsJob.new.perform(document_capture_session_uuid:)
 
-          click_idv_continue
-          socure_docv_upload_documents(
-            docv_transaction_token: @docv_transaction_token,
-          )
-          visit idv_socure_document_capture_update_path
-          expect(page).to have_current_path(idv_ssn_url)
+      expect(page).to have_current_path(idv_ssn_url)
 
-          expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('NY')
-          expect(fake_analytics).to have_logged_event(
-            :idv_socure_document_request_submitted,
-          )
+      complete_ssn_step
 
-          click_link 'Cancel'
-          click_button 'Start over'
-        end
+      click_submit_default
 
-        perform_in_browser(:desktop) do
-          visit idv_socure_document_capture_update_path
+      fill_in('idv_phone_form_phone', with: '', wait: 10)
 
-          # binding.pry
+      fill_out_phone_form_ok(MfaContext.new(@user).phone_configurations.first.phone)
+      click_idv_send_security_code
 
-          # click_button 'Continue'
-          # complete_agreement_step
-          # click_button 'Send link' 
+      fill_in_code_with_last_phone_otp
+      click_submit_default
 
-          # fill_out_ssn_form_ok
-          # click_idv_continue
-          # complete_verify_step
-          # expect(page).to have_current_path(idv_phone_url)
-        end
-      end
+      complete_enter_password_step(@user)
+
+      acknowledge_and_confirm_personal_key
+
+      validate_idv_completed_page(@user)
+
+      click_agree_and_continue
     end
   end
 end
-
