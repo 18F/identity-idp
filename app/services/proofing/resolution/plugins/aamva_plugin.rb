@@ -3,7 +3,8 @@
 module Proofing
   module Resolution
     module Plugins
-      class SECONDARY_ID_ADDRESS_MAP = {
+      class AamvaPlugin
+        SECONDARY_ID_ADDRESS_MAP = {
           identity_doc_address1: :address1,
           identity_doc_address2: :address2,
           identity_doc_city: :city,
@@ -39,7 +40,7 @@ module Proofing
             proofer.proof(applicant_pii_with_state_id_address)
           end
 
-          if result.exception.blank?
+          if first_result.exception.blank?
             Db::SpCost::AddSpCost.call(
               current_sp,
               :aamva,
@@ -47,8 +48,9 @@ module Proofing
             )
           end
 
-          puts "applicant: #{applicant_pii_with_state_id_address}"
-          puts "first_result: #{first_result.inspect}"
+          Rails.logger.info "\n\n#{'*' * 20} AAMVA PROOFING #{'*' * 20}"
+          Rails.logger.info "applicant: #{applicant_pii_with_state_id_address}"
+          Rails.logger.info "first_result: #{first_result.inspect}"
 
           if !first_result.success? && first_result.errors[:first_name] == 'UNVERIFIED'
             names = applicant_pii_with_state_id_address[:first_name].split(' ')
@@ -56,16 +58,16 @@ module Proofing
               modified_applicant = applicant_pii_with_state_id_address.dup
               modified_applicant[:first_name] = names.first
               modified_applicant[:middle_name] = names.second
-              
-              puts "modified_applicant: #{modified_applicant}"
+
+              Rails.logger.info "modified_applicant: #{modified_applicant}"
 
               second_result = timer.time('state_id') do
                 proofer.proof(modified_applicant)
               end
 
-              puts "second_result: #{second_result.inspect}"
+              Rails.logger.info "second_result: #{second_result.inspect}"
 
-              if result.exception.blank?
+              if second_result.exception.blank?
                 Db::SpCost::AddSpCost.call(
                   current_sp,
                   :aamva,
