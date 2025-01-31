@@ -3,8 +3,7 @@
 module Proofing
   module Resolution
     module Plugins
-      class AamvaPlugin
-        SECONDARY_ID_ADDRESS_MAP = {
+      class SECONDARY_ID_ADDRESS_MAP = {
           identity_doc_address1: :address1,
           identity_doc_address2: :address2,
           identity_doc_city: :city,
@@ -36,15 +35,43 @@ module Proofing
               applicant_pii
             end
 
-          timer.time('state_id') do
+          first_result = timer.time('state_id') do
             proofer.proof(applicant_pii_with_state_id_address)
-          end.tap do |result|
-            if result.exception.blank?
-              Db::SpCost::AddSpCost.call(
-                current_sp,
-                :aamva,
-                transaction_id: result.transaction_id,
-              )
+          end
+
+          if result.exception.blank?
+            Db::SpCost::AddSpCost.call(
+              current_sp,
+              :aamva,
+              transaction_id: result.transaction_id,
+            )
+          end
+
+          puts "applicant: #{applicant_pii_with_state_id_address}"
+          puts "first_result: #{first_result.inspect}"
+
+          if !first_result.success? && first_result.errors[:first_name] == 'UNVERIFIED'
+            names = applicant_pii_with_state_id_address[:first_name].split(' ')
+            if names.size == 2
+              modified_applicant = applicant_pii_with_state_id_address.dup
+              modified_applicant[:first_name] = names.first
+              modified_applicant[:middle_name] = names.second
+              
+              puts "modified_applicant: #{modified_applicant}"
+
+              second_result = timer.time('state_id') do
+                proofer.proof(modified_applicant)
+              end
+
+              puts "second_result: #{second_result.inspect}"
+
+              if result.exception.blank?
+                Db::SpCost::AddSpCost.call(
+                  current_sp,
+                  :aamva,
+                  transaction_id: result.transaction_id,
+                )
+              end
             end
           end
         end
