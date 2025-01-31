@@ -26,7 +26,7 @@ else
       },
       # Send account deletion confirmation notifications
       account_reset_grant_requests_send_emails: {
-        class: 'AccountReset::GrantRequestsAndSendEmails',
+        class: 'GrantAccountResetRequestsAndSendEmailsJob',
         cron: cron_5m,
         args: -> { [Time.zone.now] },
       },

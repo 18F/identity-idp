@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe AccountReset::GrantRequestsAndSendEmails do
+RSpec.describe GrantAccountResetRequestsAndSendEmailsJob do
   include AccountResetHelper
 
   let(:user) { create(:user) }
@@ -16,8 +16,8 @@ RSpec.describe AccountReset::GrantRequestsAndSendEmails do
             create_account_reset_request_for(user)
           end
 
-          AccountReset::GrantRequestsAndSendEmails.new.perform(now)
-          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
+          GrantAccountResetRequestsAndSendEmailsJob.new.perform(now)
+          notifications_sent = GrantAccountResetRequestsAndSendEmailsJob.new.perform(now)
           expect(notifications_sent).to eq(0)
         end
 
@@ -27,7 +27,7 @@ RSpec.describe AccountReset::GrantRequestsAndSendEmails do
             cancel_request_for(user)
           end
 
-          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
+          notifications_sent = GrantAccountResetRequestsAndSendEmailsJob.new.perform(now)
           expect(notifications_sent).to eq(0)
         end
 
@@ -36,7 +36,7 @@ RSpec.describe AccountReset::GrantRequestsAndSendEmails do
             create_account_reset_request_for(user)
           end
 
-          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
+          notifications_sent = GrantAccountResetRequestsAndSendEmailsJob.new.perform(now)
 
           expect(notifications_sent).to eq(1)
         end
@@ -47,7 +47,7 @@ RSpec.describe AccountReset::GrantRequestsAndSendEmails do
             create_account_reset_request_for(user2)
           end
 
-          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
+          notifications_sent = GrantAccountResetRequestsAndSendEmailsJob.new.perform(now)
 
           expect(notifications_sent).to eq(2)
         end
@@ -65,8 +65,8 @@ RSpec.describe AccountReset::GrantRequestsAndSendEmails do
             create_account_reset_request_for(user)
           end
 
-          AccountReset::GrantRequestsAndSendEmails.new.perform(now)
-          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
+          GrantAccountResetRequestsAndSendEmailsJob.new.perform(now)
+          notifications_sent = GrantAccountResetRequestsAndSendEmailsJob.new.perform(now)
           expect(notifications_sent).to eq(0)
         end
 
@@ -76,7 +76,7 @@ RSpec.describe AccountReset::GrantRequestsAndSendEmails do
             cancel_request_for(user)
           end
 
-          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
+          notifications_sent = GrantAccountResetRequestsAndSendEmailsJob.new.perform(now)
           expect(notifications_sent).to eq(0)
         end
 
@@ -85,7 +85,7 @@ RSpec.describe AccountReset::GrantRequestsAndSendEmails do
             create_account_reset_request_for(user)
           end
 
-          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
+          notifications_sent = GrantAccountResetRequestsAndSendEmailsJob.new.perform(now)
 
           expect(notifications_sent).to eq(1)
         end
@@ -96,7 +96,7 @@ RSpec.describe AccountReset::GrantRequestsAndSendEmails do
             create_account_reset_request_for(user2)
           end
 
-          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
+          notifications_sent = GrantAccountResetRequestsAndSendEmailsJob.new.perform(now)
 
           expect(notifications_sent).to eq(2)
         end
@@ -108,7 +108,7 @@ RSpec.describe AccountReset::GrantRequestsAndSendEmails do
         it 'does not send notifications before a request wait period is done' do
           create_account_reset_request_for(user)
 
-          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
+          notifications_sent = GrantAccountResetRequestsAndSendEmailsJob.new.perform(now)
           expect(notifications_sent).to eq(0)
         end
 
@@ -116,7 +116,7 @@ RSpec.describe AccountReset::GrantRequestsAndSendEmails do
           create_account_reset_request_for(user)
           cancel_request_for(user)
 
-          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
+          notifications_sent = GrantAccountResetRequestsAndSendEmailsJob.new.perform(now)
           expect(notifications_sent).to eq(0)
         end
       end
@@ -128,7 +128,7 @@ RSpec.describe AccountReset::GrantRequestsAndSendEmails do
           it 'does not send notifications before a request wait period is done' do
             create_account_reset_request_for(user)
 
-            notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
+            notifications_sent = GrantAccountResetRequestsAndSendEmailsJob.new.perform(now)
             expect(notifications_sent).to eq(0)
           end
 
@@ -136,7 +136,7 @@ RSpec.describe AccountReset::GrantRequestsAndSendEmails do
             create_account_reset_request_for(user)
             cancel_request_for(user)
 
-            notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
+            notifications_sent = GrantAccountResetRequestsAndSendEmailsJob.new.perform(now)
             expect(notifications_sent).to eq(0)
           end
 
@@ -146,7 +146,7 @@ RSpec.describe AccountReset::GrantRequestsAndSendEmails do
               create_account_reset_request_for(user2)
             end
 
-            notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
+            notifications_sent = GrantAccountResetRequestsAndSendEmailsJob.new.perform(now)
 
             expect(notifications_sent).to eq(0)
           end
@@ -160,7 +160,7 @@ RSpec.describe AccountReset::GrantRequestsAndSendEmails do
           it 'does not send notifications before a request wait period is done' do
             create_account_reset_request_for(user)
 
-            notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
+            notifications_sent = GrantAccountResetRequestsAndSendEmailsJob.new.perform(now)
             expect(notifications_sent).to eq(0)
           end
 
@@ -168,7 +168,7 @@ RSpec.describe AccountReset::GrantRequestsAndSendEmails do
             create_account_reset_request_for(user)
             cancel_request_for(user)
 
-            notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
+            notifications_sent = GrantAccountResetRequestsAndSendEmailsJob.new.perform(now)
             expect(notifications_sent).to eq(0)
           end
 
@@ -178,7 +178,7 @@ RSpec.describe AccountReset::GrantRequestsAndSendEmails do
               create_account_reset_request_for(user2)
             end
 
-            notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
+            notifications_sent = GrantAccountResetRequestsAndSendEmailsJob.new.perform(now)
 
             expect(notifications_sent).to eq(2)
           end

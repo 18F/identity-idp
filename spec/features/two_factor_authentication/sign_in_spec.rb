@@ -104,7 +104,7 @@ RSpec.feature 'Two Factor Authentication' do
         reset_email
 
         travel_to (IdentityConfig.store.account_reset_wait_period_days + 1).days.from_now do
-          AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today)
+          GrantAccountResetRequestsAndSendEmailsJob.new.perform(Time.zone.today)
           open_last_email
           click_email_link_matching(/delete_account\?token/)
           click_button t('account_reset.request.yes_continue')
