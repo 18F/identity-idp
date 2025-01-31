@@ -308,6 +308,18 @@ RSpec.feature 'Sign in' do
         click_button t('notices.timeout_warning.partially_signed_in.continue')
         expect(find_field('Email').value).not_to be_blank
       end
+
+      it 'reloads the sign in page when cancel is clicked', js: true do
+        allow(Devise).to receive(:timeout_in).and_return(160)
+
+        visit root_path
+        fill_in t('account.index.email'), with: 'test@example.com'
+
+        expect(page).to have_css('.usa-js-modal--active', wait: 10)
+
+        click_button t('notices.timeout_warning.partially_signed_in.sign_out')
+        expect(find_field('Email').value).to be_blank
+      end
     end
   end
 
