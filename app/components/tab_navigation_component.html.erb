@@ -7,6 +7,7 @@
               big: true,
               outline: !current_path?(route[:path]),
               aria: { current: current_path?(route[:path]) ? 'page' : nil },
+              id: route[:id],
             ).with_content(route[:text]) %>
       </li>
     <% end %>
