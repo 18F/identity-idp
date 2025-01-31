@@ -37,7 +37,7 @@ RSpec.feature 'document capture step', :js, :allow_browser_log do
   describe 'normal flow', driver: :headless_chrome_mobile do
     it 'succeeds' do
       visit_idp_from_oidc_sp_with_ial2
-      @user = sign_in_and_2fa_user
+      user = sign_in_and_2fa_user
       complete_doc_auth_steps_before_hybrid_handoff_step
 
       click_idv_continue
@@ -48,7 +48,7 @@ RSpec.feature 'document capture step', :js, :allow_browser_log do
 
       visit idv_socure_document_capture_update_path
 
-      document_capture_session_uuid = DocumentCaptureSession.find_by(user_id: @user.id).uuid
+      document_capture_session_uuid = DocumentCaptureSession.find_by(user_id: user.id).uuid
       SocureDocvResultsJob.new.perform(document_capture_session_uuid:)
 
       expect(page).to have_current_path(idv_ssn_url)
@@ -59,46 +59,50 @@ RSpec.feature 'document capture step', :js, :allow_browser_log do
 
       fill_in('idv_phone_form_phone', with: '', wait: 10)
 
-      fill_out_phone_form_ok(MfaContext.new(@user).phone_configurations.first.phone)
+      fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
       click_idv_send_security_code
 
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      complete_enter_password_step(@user)
+      complete_enter_password_step(user)
 
       acknowledge_and_confirm_personal_key
 
-      validate_idv_completed_page(@user)
+      validate_idv_completed_page(user)
 
       click_agree_and_continue
     end
   end
 
   describe 'hybrid handoff' do
+    attr_accessor :sms_link
+
     before do
       allow(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
-        @sms_link = config[:link]
+        self.sms_link = config[:link]
         impl.call(**config)
       end
     end
 
     it 'succeeds' do
+      user = nil
+
       perform_in_browser(:desktop, driver: :headless_chrome) do
         visit_idp_from_oidc_sp_with_ial2
-        @user = sign_in_and_2fa_user
+        user = sign_in_and_2fa_user
         complete_doc_auth_steps_before_hybrid_handoff_step
         click_send_link
       end
 
       perform_in_browser(:mobile, driver: :headless_chrome_mobile) do
-        visit @sms_link
+        visit sms_link
         click_idv_continue
         socure_docv_upload_documents(docv_transaction_token: 'docv_transaction_token')
         visit idv_hybrid_mobile_socure_document_capture_update_url
       end
 
-      document_capture_session_uuid = DocumentCaptureSession.find_by(user_id: @user.id).uuid
+      document_capture_session_uuid = DocumentCaptureSession.find_by(user_id: user.id).uuid
       SocureDocvResultsJob.new.perform(document_capture_session_uuid:)
 
       perform_in_browser(:desktop, driver: :headless_chrome) do
@@ -112,17 +116,17 @@ RSpec.feature 'document capture step', :js, :allow_browser_log do
 
         fill_in('idv_phone_form_phone', with: '', wait: 10)
 
-        fill_out_phone_form_ok(MfaContext.new(@user).phone_configurations.first.phone)
+        fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
         click_idv_send_security_code
 
         fill_in_code_with_last_phone_otp
         click_submit_default
 
-        complete_enter_password_step(@user)
+        complete_enter_password_step(user)
 
         acknowledge_and_confirm_personal_key
 
-        validate_idv_completed_page(@user)
+        validate_idv_completed_page(user)
 
         click_agree_and_continue
       end
