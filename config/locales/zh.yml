@@ -856,6 +856,8 @@ event_types.sign_in_notification_timeframe_expired: 从新设备登录的通知�
 event_types.sign_in_unsuccessful_2fa: 身份证实失败
 event_types.webauthn_key_added: 硬件安全密钥已添加
 event_types.webauthn_key_removed: 硬件安全密钥已去掉
+event_types.webauthn_platform_added: 人脸或触摸解锁已添加。
+event_types.webauthn_platform_removed: 人脸或触摸解锁已去掉。
 forms.backup_code_regenerate.caution: 如果你重新生成备用代码，会收到新的一套备用代码。你原来的备用代码就会失效。
 forms.backup_code_regenerate.confirm: 你确定要重新生成备用代码吗？
 forms.backup_code_reminder.body_info: 如果你无法使用自己的主要身份证实方法，可以使用备用代码重新获得对账户的访问权。
