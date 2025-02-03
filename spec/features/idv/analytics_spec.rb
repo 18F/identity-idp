@@ -584,7 +584,7 @@ RSpec.feature 'Analytics Regression', :js do
         flow_path: 'standard', opted_in_to_in_person_proofing: false
       },
       'IdV: in person proofing state_id visited' => {
-        step: 'state_id', flow_path: 'standard', analytics_id: 'In Person Proofing', proofing_components: { document_check: 'usps' }
+        step: 'state_id', flow_path: 'standard', analytics_id: 'In Person Proofing'
       },
       'IdV: in person proofing state_id submitted' => {
         success: true, flow_path: 'standard', step: 'state_id', analytics_id: 'In Person Proofing', birth_year: '1938', document_zip_code: '12345', proofing_components: { document_check: 'usps' }
