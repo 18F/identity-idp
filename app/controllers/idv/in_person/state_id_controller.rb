@@ -8,10 +8,9 @@ module Idv
 
       before_action :set_usps_form_presenter
       before_action :confirm_step_allowed
-      before_action :initialize_pii_from_user
+      before_action :initialize_pii_from_user, only: [:show]
 
       def show
-        pii_from_user
         analytics.idv_in_person_proofing_state_id_visited(**analytics_arguments)
 
         render :show, locals: extra_view_variables
