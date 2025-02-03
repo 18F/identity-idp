@@ -41,7 +41,6 @@ module Idv
 
       if form_response.success?
         client_response = post_images_to_client
-
         document_capture_session.update!(
           last_doc_auth_result: client_response.extra[:doc_auth_result],
         )
@@ -49,7 +48,13 @@ module Idv
         if client_response.success?
           doc_pii_response = validate_pii_from_doc(client_response)
         end
+      else
+        increment_rate_limiter!
+        track_rate_limited if rate_limited?
       end
+
+      form_response = update_form_response(form_response)
+      analytics.idv_doc_auth_submitted_image_upload_form(**form_response)
 
       response = determine_response(
         form_response: form_response,
@@ -75,14 +80,19 @@ module Idv
     def validate_form
       success = valid?
 
-      response = Idv::DocAuthFormResponse.new(
+      Idv::DocAuthFormResponse.new(
         success: success,
         errors: errors,
         extra: extra_attributes,
       )
+    end
 
-      analytics.idv_doc_auth_submitted_image_upload_form(**response)
-      response
+    def update_form_response(form_response)
+      Idv::DocAuthFormResponse.new(
+        success: form_response.success?,
+        errors: errors,
+        extra: extra_attributes,
+      )
     end
 
     def post_images_to_client
@@ -100,8 +110,7 @@ module Idv
           liveness_checking_required: liveness_checking_required,
         )
       end
-
-      increment_rate_limiter! unless response.success?
+      increment_rate_limiter! unless response.success? && remaining_submit_attempts == 0
       track_rate_limited if rate_limited?
 
       response.extra.merge!(extra_attributes)
