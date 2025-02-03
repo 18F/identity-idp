@@ -218,7 +218,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
             'Multi-Factor Authentication Setup',
             success: false,
             error_details: { name: { blank: true } },
-            errors: { name: [t('errors.messages.blank')] },
             totp_secret_present: true,
             multi_factor_auth_method: 'totp',
             enabled_mfa_methods_count: 1,

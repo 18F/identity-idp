@@ -203,14 +203,7 @@ RSpec.describe WebauthnSetupForm do
 
         expect(result.to_h).to eq(
           success: false,
-          errors: {
-            attestation_object: [
-              I18n.t(
-                'errors.webauthn_setup.general_error_html',
-                link_html: I18n.t('errors.webauthn_setup.additional_methods_link'),
-              ),
-            ],
-          },
+          errors: nil,
           error_details: { attestation_object: { invalid: true } },
           transports: ['usb'],
           transports_mismatch: false,
@@ -257,14 +250,7 @@ RSpec.describe WebauthnSetupForm do
 
         expect(result.to_h).to eq(
           success: false,
-          errors: {
-            attestation_object: [
-              I18n.t(
-                'errors.webauthn_setup.general_error_html',
-                link_html: I18n.t('errors.webauthn_setup.additional_methods_link'),
-              ),
-            ],
-          },
+          errors: nil,
           error_details: { attestation_object: { invalid: true } },
           transports: ['usb'],
           transports_mismatch: false,

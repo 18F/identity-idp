@@ -93,7 +93,6 @@ RSpec.describe OpenidConnect::TokenController do
             success: false,
             client_id: client_id,
             user_id: user.uuid,
-            errors: hash_including(:grant_type),
             code_digest: kind_of(String),
             code_verifier_present: false,
             error_details: hash_including(:grant_type),

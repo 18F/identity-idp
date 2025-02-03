@@ -133,7 +133,6 @@ RSpec.describe Users::VerifyPersonalKeyController do
 
         expect(@analytics).to have_logged_event(
           'Personal key reactivation: Personal key form submitted',
-          errors: { personal_key: ['Please fill in this field.', error_text] },
           error_details: { personal_key: { blank: true, personal_key: true } },
           success: false,
         )

@@ -163,7 +163,6 @@ RSpec.describe Idv::ByMail::EnterCodeController do
   end
 
   describe '#create' do
-    let(:otp_code_error_message) { { otp: [t('errors.messages.confirmation_code_incorrect')] } }
     let(:success_properties) { { success: true } }
 
     context 'user does not have a pending profile' do
@@ -382,7 +381,6 @@ RSpec.describe Idv::ByMail::EnterCodeController do
         expect(@analytics).to have_logged_event(
           'IdV: enter verify by mail code submitted',
           success: false,
-          errors: otp_code_error_message,
           pending_in_person_enrollment: false,
           fraud_check_failed: false,
           letter_count: 1,
@@ -416,7 +414,6 @@ RSpec.describe Idv::ByMail::EnterCodeController do
         it 'redirects to the rate limited index page to show errors' do
           analytics_args = {
             success: false,
-            errors: otp_code_error_message,
             pending_in_person_enrollment: false,
             fraud_check_failed: false,
             letter_count: 1,
@@ -450,11 +447,11 @@ RSpec.describe Idv::ByMail::EnterCodeController do
 
           failed_gpo_submission_events =
             @analytics.events['IdV: enter verify by mail code submitted']
-              .reject { |event_attributes| event_attributes[:errors].blank? }
+              .reject { |event_attributes| event_attributes[:error_details].blank? }
 
           successful_gpo_submission_events =
             @analytics.events['IdV: enter verify by mail code submitted']
-              .select { |event_attributes| event_attributes[:errors].blank? }
+              .select { |event_attributes| event_attributes[:error_details].blank? }
 
           expect(failed_gpo_submission_events.count).to eq(max_attempts - 1)
           expect(successful_gpo_submission_events.count).to eq(1)

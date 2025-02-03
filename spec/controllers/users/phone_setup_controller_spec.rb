@@ -71,12 +71,6 @@ RSpec.describe Users::PhoneSetupController do
       expect(@analytics).to have_logged_event(
         'Multi-Factor Authentication: phone setup',
         success: false,
-        errors: {
-          phone: [
-            t('errors.messages.improbable_phone'),
-            t('two_factor_authentication.otp_delivery_preference.voice_unsupported', location: ''),
-          ],
-        },
         error_details: {
           phone: {
             improbable_phone: true,

@@ -199,9 +199,6 @@ RSpec.describe OpenidConnect::LogoutController do
 
             action
 
-            errors = {
-              redirect_uri: [t('openid_connect.authorization.errors.redirect_uri_no_match')],
-            }
             expect(@analytics).to have_logged_event(
               'OIDC Logout Requested',
               hash_including(
@@ -209,8 +206,9 @@ RSpec.describe OpenidConnect::LogoutController do
                 client_id: service_provider.issuer,
                 client_id_parameter_present: false,
                 id_token_hint_parameter_present: true,
-                errors: errors,
-                error_details: hash_including(*errors.keys),
+                error_details: {
+                  redirect_uri: { redirect_uri_no_match: true },
+                },
                 sp_initiated: true,
                 oidc: true,
               ),
@@ -243,7 +241,6 @@ RSpec.describe OpenidConnect::LogoutController do
                 success: false,
                 client_id_parameter_present: false,
                 id_token_hint_parameter_present: true,
-                errors: hash_including(*errors_keys),
                 error_details: hash_including(*errors_keys),
                 sp_initiated: true,
                 oidc: true,
@@ -362,9 +359,6 @@ RSpec.describe OpenidConnect::LogoutController do
 
             action
 
-            errors = {
-              redirect_uri: [t('openid_connect.authorization.errors.redirect_uri_no_match')],
-            }
             expect(@analytics).to have_logged_event(
               'OIDC Logout Requested',
               hash_including(
@@ -372,8 +366,9 @@ RSpec.describe OpenidConnect::LogoutController do
                 client_id: service_provider.issuer,
                 client_id_parameter_present: true,
                 id_token_hint_parameter_present: false,
-                errors: errors,
-                error_details: hash_including(*errors.keys),
+                error_details: {
+                  redirect_uri: { redirect_uri_no_match: true },
+                },
                 sp_initiated: true,
                 oidc: true,
               ),
@@ -498,9 +493,6 @@ RSpec.describe OpenidConnect::LogoutController do
 
           action
 
-          errors = {
-            id_token_hint: [t('openid_connect.logout.errors.id_token_hint_present')],
-          }
           expect(@analytics).to have_logged_event(
             'OIDC Logout Requested',
             hash_including(
@@ -508,8 +500,9 @@ RSpec.describe OpenidConnect::LogoutController do
               client_id: service_provider.issuer,
               client_id_parameter_present: true,
               id_token_hint_parameter_present: true,
-              errors: errors,
-              error_details: hash_including(*errors.keys),
+              error_details: {
+                id_token_hint: { present: true },
+              },
               sp_initiated: true,
               oidc: true,
             ),
@@ -549,9 +542,6 @@ RSpec.describe OpenidConnect::LogoutController do
 
           action
 
-          errors = {
-            redirect_uri: [t('openid_connect.authorization.errors.redirect_uri_no_match')],
-          }
           expect(@analytics).to have_logged_event(
             'OIDC Logout Requested',
             hash_including(
@@ -559,8 +549,9 @@ RSpec.describe OpenidConnect::LogoutController do
               client_id: service_provider.issuer,
               client_id_parameter_present: true,
               id_token_hint_parameter_present: false,
-              errors: errors,
-              error_details: hash_including(*errors.keys),
+              error_details: {
+                redirect_uri: { redirect_uri_no_match: true },
+              },
               sp_initiated: true,
               oidc: true,
             ),
