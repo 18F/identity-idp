@@ -27,7 +27,7 @@ RSpec.describe 'New device tracking' do
 
       # Notified after expired delay for successful email password, but incomplete MFA
       travel_to 6.minutes.from_now do
-        CreateNewDeviceAlert.new.perform(Time.zone.now)
+        CreateNewDeviceAlertJob.new.perform(Time.zone.now)
         open_last_email
         email_page = Capybara::Node::Simple.new(current_email.default_part_body)
         expect(email_page).to have_css(
@@ -47,7 +47,7 @@ RSpec.describe 'New device tracking' do
 
       # Notified after session expired, user returned for another successful email password, no MFA
       travel_to 22.minutes.from_now do
-        CreateNewDeviceAlert.new.perform(Time.zone.now)
+        CreateNewDeviceAlertJob.new.perform(Time.zone.now)
         open_last_email
         email_page = Capybara::Node::Simple.new(current_email.default_part_body)
         expect(email_page).to have_css(

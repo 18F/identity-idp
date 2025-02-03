@@ -467,9 +467,6 @@ RSpec.describe Users::WebauthnSetupController do
           expect(@analytics).to have_logged_event(
             'Multi-Factor Authentication Setup',
             enabled_mfa_methods_count: 0,
-            errors: {
-              attestation_object: [I18n.t('errors.webauthn_platform_setup.general_error')],
-            },
             error_details: { attestation_object: { invalid: true } },
             in_account_creation_flow: false,
             mfa_method_counts: {},

@@ -197,9 +197,6 @@ RSpec.describe Idv::InPerson::SsnController do
           flow_path: 'standard',
           step: 'ssn',
           success: false,
-          errors: {
-            ssn: ['Enter a nine-digit Social Security number'],
-          },
           error_details: { ssn: { invalid: true } },
         }
       end

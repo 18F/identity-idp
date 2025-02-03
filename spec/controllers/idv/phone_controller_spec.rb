@@ -290,10 +290,6 @@ RSpec.describe Idv::PhoneController do
         expect(@analytics).to have_logged_event(
           'IdV: phone confirmation form',
           success: false,
-          errors: {
-            phone: [improbable_phone_message],
-            otp_delivery_preference: [improbable_otp_message],
-          },
           error_details: {
             phone: { improbable_phone: true },
             otp_delivery_preference: { inclusion: true },

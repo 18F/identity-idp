@@ -48,7 +48,6 @@ RSpec.describe EventDisavowalController do
           build_analytics_hash(
             user_id: event.user.uuid,
             success: false,
-            errors: { event: [t('event_disavowals.errors.event_already_disavowed')] },
             error_details: { event: { event_already_disavowed: true } },
           ),
         )
@@ -64,7 +63,6 @@ RSpec.describe EventDisavowalController do
           build_analytics_hash(
             user_id: event.user.uuid,
             success: false,
-            errors: { event: [t('event_disavowals.errors.event_already_disavowed')] },
             error_details: { event: { event_already_disavowed: true } },
           ),
         )
@@ -102,13 +100,6 @@ RSpec.describe EventDisavowalController do
           build_analytics_hash(
             user_id: event.user.uuid,
             success: false,
-            errors: {
-              password: [
-                t(
-                  'errors.attributes.password.too_short.other', count: Devise.password_length.first
-                ),
-              ],
-            },
             error_details: { password: { too_short: true } },
           ),
         )
@@ -127,7 +118,6 @@ RSpec.describe EventDisavowalController do
           build_analytics_hash(
             user_id: event.user.uuid,
             success: false,
-            errors: { password: ['Password must be at least 12 characters long'] },
             error_details: { password: { too_short: true } },
           ),
         )
@@ -151,7 +141,6 @@ RSpec.describe EventDisavowalController do
           build_analytics_hash(
             user_id: event.user.uuid,
             success: false,
-            errors: { event: [t('event_disavowals.errors.event_already_disavowed')] },
             error_details: { event: { event_already_disavowed: true } },
           ),
         )
@@ -173,9 +162,6 @@ RSpec.describe EventDisavowalController do
           'Event disavowal token invalid',
           build_analytics_hash(
             success: false,
-            errors: {
-              user: [t('event_disavowals.errors.no_account')],
-            },
             error_details: {
               user: { blank: true },
             },
@@ -185,12 +171,11 @@ RSpec.describe EventDisavowalController do
     end
   end
 
-  def build_analytics_hash(success: true, errors: nil, error_details: nil, user_id: nil)
+  def build_analytics_hash(success: true, error_details: nil, user_id: nil)
     {
       event_created_at: event.created_at,
       disavowed_device_last_used_at: event.device&.last_used_at,
       success:,
-      errors:,
       error_details:,
       event_id: event.id,
       event_type: event.event_type,

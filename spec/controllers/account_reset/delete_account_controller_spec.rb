@@ -6,7 +6,6 @@ RSpec.describe AccountReset::DeleteAccountController do
   let(:invalid_token_message) do
     t('errors.account_reset.granted_token_invalid', app_name: APP_NAME)
   end
-  let(:invalid_token_error) { { token: [invalid_token_message] } }
 
   before { stub_analytics }
   describe '#delete' do
@@ -45,7 +44,6 @@ RSpec.describe AccountReset::DeleteAccountController do
         'Account Reset: delete',
         user_id: 'anonymous-uuid',
         success: false,
-        errors: invalid_token_error,
         error_details: { token: { granted_token_invalid: true } },
         mfa_method_counts: {},
         identity_verified: false,
@@ -63,7 +61,6 @@ RSpec.describe AccountReset::DeleteAccountController do
         'Account Reset: delete',
         user_id: 'anonymous-uuid',
         success: false,
-        errors: { token: [t('errors.account_reset.granted_token_missing', app_name: APP_NAME)] },
         error_details: { token: { blank: true } },
         mfa_method_counts: {},
         identity_verified: false,
@@ -91,7 +88,6 @@ RSpec.describe AccountReset::DeleteAccountController do
         'Account Reset: delete',
         user_id: user.uuid,
         success: false,
-        errors: { token: [t('errors.account_reset.granted_token_expired', app_name: APP_NAME)] },
         error_details: { token: { granted_token_expired: true } },
         mfa_method_counts: {},
         identity_verified: false,
@@ -179,7 +175,6 @@ RSpec.describe AccountReset::DeleteAccountController do
         'Account Reset: granted token validation',
         user_id: 'anonymous-uuid',
         success: false,
-        errors: invalid_token_error,
         error_details: { token: { granted_token_invalid: true } },
       )
       expect(response).to redirect_to(root_url)
@@ -199,7 +194,6 @@ RSpec.describe AccountReset::DeleteAccountController do
         'Account Reset: granted token validation',
         user_id: user.uuid,
         success: false,
-        errors: { token: [t('errors.account_reset.granted_token_expired', app_name: APP_NAME)] },
         error_details: { token: { granted_token_expired: true } },
       )
       expect(response).to redirect_to(root_url)

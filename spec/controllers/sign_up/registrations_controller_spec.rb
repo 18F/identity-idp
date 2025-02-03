@@ -144,7 +144,6 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
         'User Registration: Email Submitted',
         success: false,
         rate_limited: false,
-        errors: { email: [t('valid_email.validations.email.invalid')] },
         error_details: { email: { invalid: true } },
         email_already_exists: false,
         user_id: 'anonymous-uuid',

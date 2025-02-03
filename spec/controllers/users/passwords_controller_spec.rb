@@ -216,18 +216,6 @@ RSpec.describe Users::PasswordsController do
           expect(@analytics).to have_logged_event(
             'Password Changed',
             success: false,
-            errors: {
-              password: [
-                t(
-                  'errors.attributes.password.too_short.other',
-                  count: Devise.password_length.first,
-                ),
-              ],
-              password_confirmation: [t(
-                'errors.messages.too_short.other',
-                count: Devise.password_length.first,
-              )],
-            },
             error_details: {
               password: { too_short: true },
               password_confirmation: { too_short: true },
@@ -254,18 +242,6 @@ RSpec.describe Users::PasswordsController do
           expect(@analytics).to have_logged_event(
             'Password Changed',
             success: false,
-            errors: {
-              password: [
-                t(
-                  'errors.attributes.password.too_short.other',
-                  count: Devise.password_length.first,
-                ),
-              ],
-              password_confirmation: [t(
-                'errors.messages.too_short.other',
-                count: Devise.password_length.first,
-              )],
-            },
             error_details: {
               password: { too_short: true },
               password_confirmation: { too_short: true },
@@ -302,9 +278,6 @@ RSpec.describe Users::PasswordsController do
           expect(@analytics).to have_logged_event(
             'Password Changed',
             success: false,
-            errors: {
-              password_confirmation: [t('errors.messages.password_mismatch')],
-            },
             error_details: {
               password_confirmation: { mismatch: true },
             },
