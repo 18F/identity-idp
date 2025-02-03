@@ -92,6 +92,38 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
             expect { call }.to_not change { sp_cost_count_for_issuer }
           end
         end
+
+        context 'middle name is not included in first name' do
+          let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(first_name: 'FAKEY MIDDLE') }
+          let(:failing_result) do
+            Proofing::StateIdResult.new(
+              success: false,
+              vendor_name: 'state_id:aamva',
+              transaction_id: proofer_transaction_id,
+              errors: { first_name: 'UNVERIFIED' },
+            )
+          end
+
+          before do
+            original_proof = plugin.proofer.method(:proof)
+            allow(plugin.proofer).to receive(:proof).and_call_original
+            # do |args|
+            #   if args[:first_name] == 'FAKEY MIDDLE'
+            #     puts 'RETURNING: failing_result'
+            #     failing_result
+            #   else
+            #     puts 'RETURNING: proofer_result'
+            #     proofer_result
+            #   end
+            #   original_proof.call(args)
+            # end
+          end
+
+          it 'calls the AAMVA proofer with the middle name removed from the first name field' do
+            call
+            expect(plugin.proofer).to have_received(:proof).with(hash_including(first_name: 'FAKEY', middle_name: ''))
+          end
+        end
       end
 
       context 'InstantVerify failed' do
