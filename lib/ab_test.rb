@@ -3,7 +3,7 @@
 class AbTest
   include ::NewRelic::Agent::MethodTracer
 
-  attr_reader :buckets, :experiment_name, :default_bucket, :should_log
+  attr_reader :buckets, :experiment_name, :default_bucket, :should_log, :report
 
   MAX_SHA = (16 ** 64) - 1
 
@@ -20,6 +20,7 @@ class AbTest
     buckets: {},
     should_log: nil,
     default_bucket: :default,
+    report: nil,
     &discriminator
   )
     @buckets = buckets
@@ -27,6 +28,7 @@ class AbTest
     @experiment_name = experiment_name
     @default_bucket = default_bucket
     @should_log = should_log
+    @report = report
     raise 'invalid bucket data structure' unless valid_bucket_data_structure?
     ensure_numeric_percentages
     raise 'bucket percentages exceed 100' unless within_100_percent?
@@ -39,7 +41,7 @@ class AbTest
   # @param [User] user
   # @param [Hash] user_session
   def bucket(request:, service_provider:, session:, user:, user_session:)
-    return nil if no_percentages?
+    return nil if !active?
 
     discriminator = resolve_discriminator(
       request:, service_provider:, session:, user:,
@@ -71,6 +73,11 @@ class AbTest
     end
   end
 
+  def active?
+    return @active if defined?(@active)
+    @active = buckets.present? && buckets.values.any?(&:positive?)
+  end
+
   private
 
   def resolve_discriminator(user:, **)
@@ -79,10 +86,6 @@ class AbTest
     elsif !user.is_a?(AnonymousUser)
       user&.uuid
     end
-  end
-
-  def no_percentages?
-    buckets.empty? || buckets.values.all? { |pct| pct == 0 }
   end
 
   def percent(discriminator)

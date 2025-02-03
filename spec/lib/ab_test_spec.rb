@@ -2,12 +2,15 @@ require 'rails_helper'
 
 RSpec.describe AbTest do
   subject(:ab_test) do
-    AbTest.new(
+    AbTest.new(**options, &discriminator)
+  end
+
+  let(:options) do
+    {
       experiment_name: 'test',
       buckets:,
       should_log:,
-      &discriminator
-    )
+    }
   end
 
   let(:discriminator) do
@@ -226,6 +229,38 @@ RSpec.describe AbTest do
       it 'raises' do
         expect { return_value }.to raise_error
       end
+    end
+  end
+
+  describe '#report' do
+    subject(:report) { ab_test.report }
+    let(:options) { super().merge(report: report_option) }
+    let(:report_option) { {} }
+
+    it 'reflects value provided from initializer' do
+      expect(report).to eq(report_option)
+    end
+  end
+
+  describe '#active?' do
+    subject(:active) { ab_test.active? }
+
+    context 'with non-zero buckets' do
+      let(:buckets) { { foo: 0, bar: 30, baz: 0 } }
+
+      it { is_expected.to be true }
+    end
+
+    context 'with all zero buckets' do
+      let(:buckets) { { foo: 0, bar: 0, baz: 0 } }
+
+      it { is_expected.to be false }
+    end
+
+    context 'with empty buckets' do
+      let(:buckets) { {} }
+
+      it { is_expected.to be false }
     end
   end
 end

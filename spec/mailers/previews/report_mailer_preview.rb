@@ -21,6 +21,39 @@ class ReportMailerPreview < ActionMailer::Preview
     )
   end
 
+  def ab_tests_report
+    report = Reports::AbTestsReport.new(Time.zone.now).ab_tests_report(
+      queries: [
+        {
+          title: 'Sign in success rate by CAPTCHA validation performed',
+          query: <<~QUERY,
+            fields properties.event_properties.captcha_validation_performed as `Captcha Validation Performed`
+            | filter name = 'Email and Password Authentication'
+            | stats avg(properties.event_properties.success)*100 as `Success Percent` by `Captcha Validation Performed`
+            | sort `Captcha Validation Performed` asc
+          QUERY
+          row_labels: ['Validation Not Performed', 'Validation Performed'],
+        },
+      ],
+    )
+
+    stub_cloudwatch_client(
+      report,
+      data: [
+        { 'Captcha Validation Performed' => '0', 'Success Percent' => '90.18501' },
+        { 'Captcha Validation Performed' => '1', 'Success Percent' => '85.68103' },
+      ],
+    )
+
+    ReportMailer.tables_report(
+      email: 'email@example.com',
+      subject: "A/B Tests Report - reCAPTCHA at Sign-In - #{Time.zone.now.to_date}",
+      message: "A/B Tests Report - reCAPTCHA at Sign-In - #{Time.zone.now.to_date}",
+      reports: report.as_emailable_reports,
+      attachment_format: :csv,
+    )
+  end
+
   def monthly_key_metrics_report
     monthly_key_metrics_report = Reports::MonthlyKeyMetricsReport.new(Time.zone.yesterday)
 
@@ -102,16 +135,24 @@ class ReportMailerPreview < ActionMailer::Preview
   private
 
   class FakeCloudwatchClient
+    def initialize(data:)
+      @data = data
+    end
+
     def fetch(**)
-      []
+      @data
     end
   end
 
-  def stub_cloudwatch_client(report)
+  def stub_cloudwatch_client(report, data: [])
     class << report
+      attr_accessor :data
+
       def cloudwatch_client
-        FakeCloudwatchClient.new
+        FakeCloudwatchClient.new(data: @data)
       end
     end
+    report.data = data
+    report
   end
 end
