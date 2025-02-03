@@ -29,6 +29,8 @@ class Event < ApplicationRecord
     password_invalidated: 22,
     sign_in_unsuccessful_2fa: 23,
     sign_in_notification_timeframe_expired: 24,
+    webauthn_platform_added: 25,
+    webauthn_platform_removed: 26,
   }
 
   validates :event_type, presence: true
