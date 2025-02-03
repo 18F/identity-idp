@@ -59,10 +59,6 @@ module Idv
 
       private
 
-      def pii_from_user
-        user_session.dig('idv/in_person', :pii_from_user)
-      end
-
       def updating_address?
         pii_from_user.has_key?(:address1) && user_session[:idv].has_key?(:ssn)
       end
