@@ -48,10 +48,6 @@ module Proofing
             )
           end
 
-          Rails.logger.info "\n\n#{'*' * 20} AAMVA PROOFING #{'*' * 20}"
-          Rails.logger.info "applicant: #{applicant_pii_with_state_id_address}"
-          Rails.logger.info "first_result: #{first_result.inspect}"
-
           if !first_result.success? && first_result.errors[:first_name] == 'UNVERIFIED'
             names = applicant_pii_with_state_id_address[:first_name].split(' ')
             if names.size == 2
@@ -59,13 +55,9 @@ module Proofing
               modified_applicant[:first_name] = names.first
               modified_applicant[:middle_name] = names.second
 
-              Rails.logger.info "modified_applicant: #{modified_applicant}"
-
               second_result = timer.time('state_id') do
                 proofer.proof(modified_applicant)
               end
-
-              Rails.logger.info "second_result: #{second_result.inspect}"
 
               if second_result.exception.blank?
                 Db::SpCost::AddSpCost.call(

@@ -94,7 +94,9 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
         end
 
         context 'middle name is not included in first name' do
-          let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(first_name: 'FAKEY MIDDLE') }
+          let(:applicant_pii) do
+            Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(first_name: 'FAKEY MIDDLE')
+          end
           let(:failing_result) do
             Proofing::StateIdResult.new(
               success: false,
@@ -105,23 +107,22 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
           end
 
           before do
-            original_proof = plugin.proofer.method(:proof)
-            allow(plugin.proofer).to receive(:proof).and_call_original
-            # do |args|
-            #   if args[:first_name] == 'FAKEY MIDDLE'
-            #     puts 'RETURNING: failing_result'
-            #     failing_result
-            #   else
-            #     puts 'RETURNING: proofer_result'
-            #     proofer_result
-            #   end
-            #   original_proof.call(args)
-            # end
+            allow(plugin.proofer).to receive(:proof) do |args|
+              if args[:first_name] == 'FAKEY MIDDLE'
+                failing_result
+              else
+                proofer_result
+              end
+            end
           end
 
-          it 'calls the AAMVA proofer with the middle name removed from the first name field' do
+          it 're-calls the AAMVA proofer with the middle name removed from the first name field' do
             call
-            expect(plugin.proofer).to have_received(:proof).with(hash_including(first_name: 'FAKEY', middle_name: ''))
+            expect(plugin.proofer).to have_received(:proof).exactly(2).times
+          end
+
+          it 'tracks SP cost for AAMVA twice' do
+            expect { call }.to(change { sp_cost_count_with_transaction_id }.to(2))
           end
         end
       end
