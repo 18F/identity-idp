@@ -31,6 +31,7 @@ module Idv
       @readable = {}
       @uuid_prefix = uuid_prefix
       @liveness_checking_required = liveness_checking_required
+      @postpone_rate_limiter = false
     end
 
     def submit
@@ -61,7 +62,10 @@ module Idv
         client_response: client_response,
         doc_pii_response: doc_pii_response,
       )
-
+      if @postpone_rate_limiter && params[:flow_path] != 'hybrid'
+        increment_rate_limiter!
+        track_rate_limited if rate_limited?
+      end
       failed_fingerprints = store_failed_images(client_response, doc_pii_response)
       response.extra[:failed_image_fingerprints] = failed_fingerprints
       response
@@ -110,8 +114,12 @@ module Idv
           liveness_checking_required: liveness_checking_required,
         )
       end
-      increment_rate_limiter! unless response.success? && remaining_submit_attempts == 0
-      track_rate_limited if rate_limited?
+      if response.success? && remaining_submit_attempts == 1
+        @postpone_rate_limiter = true
+      else
+        increment_rate_limiter!
+        track_rate_limited if rate_limited?
+      end
 
       response.extra.merge!(extra_attributes)
       response.extra[:state] = response.pii_from_doc.to_h[:state]
