@@ -30,7 +30,7 @@ module RateLimitConcern
 
   def final_hybrid_submission_passed
     doc_session_idv = user_session.to_h['idv']
-    return false if doc_session_idv.nil?
+    return false if doc_session_idv.blank?
 
     doc_session_uuid = doc_session_idv['document_capture_session_uuid']
     return false if doc_session_uuid.blank?
