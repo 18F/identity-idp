@@ -37,7 +37,7 @@ class AbTest
     @experiment_name = experiment_name
     @default_bucket = default_bucket
     @should_log = should_log
-    @report = ReportConfig.new(experiment_name:, **report.to_h)
+    @report = ReportConfig.new(experiment_name:, **report.to_h) if report
     raise 'invalid bucket data structure' unless valid_bucket_data_structure?
     ensure_numeric_percentages
     raise 'bucket percentages exceed 100' unless within_100_percent?

@@ -248,6 +248,12 @@ RSpec.describe AbTest do
       expect(report.queries.first.query).to eq('limit 1')
     end
 
+    context 'with nil report option' do
+      let(:report_option) { nil }
+
+      it { is_expected.to be_nil }
+    end
+
     context 'with blank options' do
       let(:report_option) { {} }
 
