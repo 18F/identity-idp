@@ -2,6 +2,8 @@ require 'rails_helper'
 
 RSpec.describe SignUp::RegistrationsController, devise: true do
   describe '#new' do
+    subject(:response) { get :new }
+
     it 'allows user to visit the sign up page' do
       get :new
 
@@ -12,7 +14,7 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
     it 'cannot be viewed by signed in users' do
       stub_sign_in
 
-      subject.session[:sp] = { request_url: 'http://test.com' }
+      controller.session[:sp] = { request_url: 'http://test.com' }
 
       get :new
 
@@ -56,9 +58,58 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
         )
       end
     end
+
+    context 'with threatmetrix disabled' do
+      before do
+        allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?)
+          .and_return(false)
+      end
+
+      it 'does not override CSPs for ThreatMetrix' do
+        expect(controller).not_to receive(:override_csp_for_threat_metrix)
+
+        response
+      end
+    end
+
+    context 'with threatmetrix enabled' do
+      let(:tmx_session_id) { '1234' }
+
+      before do
+        allow(FeatureManagement).to receive(:account_creation_device_profiling_collecting_enabled?)
+          .and_return(true)
+        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('org1')
+        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled)
+          .and_return(false)
+        controller.session[:sign_up_threatmetrix_session_id] = tmx_session_id
+      end
+
+      it 'renders new valid request' do
+        tmx_url = 'https://h.online-metrix.net/fp'
+        expect(controller).to receive(:render).with(
+          :new,
+          locals: {
+            threatmetrix_session_id: tmx_session_id,
+            threatmetrix_javascript_urls: [
+              "#{tmx_url}/tags.js?org_id=org1&session_id=#{tmx_session_id}",
+            ],
+            threatmetrix_iframe_url: "#{tmx_url}/tags?org_id=org1&session_id=#{tmx_session_id}",
+          },
+        ).and_call_original
+
+        expect(response).to render_template(:new)
+      end
+
+      it 'overrides CSPs for ThreatMetrix' do
+        expect(controller).to receive(:override_csp_for_threat_metrix)
+
+        response
+      end
+    end
   end
 
   describe '#create' do
+    subject(:response) { post :create, params: params }
     let(:email) { 'new@example.com' }
     let(:email_language) { 'es' }
     let(:params) { { user: { email:, terms_accepted: '1', email_language: } } }
@@ -67,7 +118,7 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
       it 'tracks successful user registration' do
         stub_analytics
 
-        allow(subject).to receive(:create_user_event)
+        allow(controller).to receive(:create_user_event)
 
         post :create, params: params
 
@@ -83,7 +134,7 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
           email_language:,
         )
 
-        expect(subject).to have_received(:create_user_event).with(:account_created, user)
+        expect(controller).to have_received(:create_user_event).with(:account_created, user)
       end
 
       it 'sets the users preferred email locale and sends an email in that locale' do
@@ -119,11 +170,11 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
 
       stub_analytics
 
-      expect(subject).to_not receive(:create_user_event)
+      expect(controller).to_not receive(:create_user_event)
 
       post :create, params: params.deep_merge(user: { email: 'test@example.com' })
 
-      expect(subject.session[:sign_in_flow]).to eq(:create_account)
+      expect(controller.session[:sign_in_flow]).to eq(:create_account)
       expect(@analytics).to have_logged_event(
         'User Registration: Email Submitted',
         success: true,
@@ -152,22 +203,40 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
       )
     end
 
-    it 'renders new if email is nil' do
-      post :create, params: params.deep_merge(user: { email: nil })
+    context 'with invalid submission' do
+      let(:params) { { user: { email: } } }
 
-      expect(response).to render_template(:new)
-    end
+      it { is_expected.to render_template(:new) }
 
-    it 'renders new if email is a Hash' do
-      put :create, params: params.deep_merge(user: { email: { foo: 'bar' } })
+      context 'with threatmetrix enabled' do
+        let(:tmx_session_id) { '1234' }
 
-      expect(response).to render_template(:new)
-    end
+        before do
+          allow(FeatureManagement)
+            .to receive(:account_creation_device_profiling_collecting_enabled?)
+            .and_return(true)
+          allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('org1')
+          allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled)
+            .and_return(false)
+          controller.session[:sign_up_threatmetrix_session_id] = tmx_session_id
+        end
 
-    it 'renders new if request_id is blank' do
-      post :create, params: params.deep_merge(user: { email: 'invalid@' })
+        it 'renders new with invalid request' do
+          tmx_url = 'https://h.online-metrix.net/fp'
+          expect(controller).to receive(:render).with(
+            :new,
+            locals: {
+              threatmetrix_session_id: tmx_session_id,
+              threatmetrix_javascript_urls: [
+                "#{tmx_url}/tags.js?org_id=org1&session_id=#{tmx_session_id}",
+              ],
+              threatmetrix_iframe_url: "#{tmx_url}/tags?org_id=org1&session_id=#{tmx_session_id}",
+            },
+          ).and_call_original
 
-      expect(response).to render_template(:new)
+          expect(response).to render_template(:new)
+        end
+      end
     end
   end
 end
