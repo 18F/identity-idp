@@ -7074,6 +7074,11 @@ module AnalyticsEvents
     track_event('User Maximum Session Length Exceeded')
   end
 
+  # Tracks when user clicks on sign in nav button
+  def sign_in_nav_button_clicked
+    track_event(:sign_in_nav_button_clicked)
+  end
+
   # User events missing sign_in_notification_timeframe_expired
   def sign_in_notification_timeframe_expired_absent
     track_event(:sign_in_notification_timeframe_expired_absent)
@@ -7088,6 +7093,11 @@ module AnalyticsEvents
   # User lands on security check failed page
   def sign_in_security_check_failed_visited
     track_event(:sign_in_security_check_failed_visited)
+  end
+
+  # Tracks when user clicks on sign up nav button
+  def sign_up_nav_button_clicked
+    track_event(:sign_up_nav_button_clicked)
   end
 
   # @param [Boolean] success Whether form validation was successful
