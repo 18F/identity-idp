@@ -41,6 +41,7 @@ module Idv
 
       if form_response.success?
         client_response = post_images_to_client
+
         document_capture_session.update!(
           last_doc_auth_result: client_response.extra[:doc_auth_result],
         )
@@ -73,7 +74,6 @@ module Idv
 
     def validate_form
       success = valid?
-
       increment_rate_limiter!
       track_rate_limited if rate_limited?
 
