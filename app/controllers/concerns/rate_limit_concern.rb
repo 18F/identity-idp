@@ -7,7 +7,7 @@ module RateLimitConcern
 
   def confirm_not_rate_limited(rate_limiters = ALL_IDV_RATE_LIMITERS)
     exceeded_rate_limits = check_for_exceeded_rate_limits(rate_limiters)
-    if exceeded_rate_limits.any? && !final_hybrid_submission_passed
+    if exceeded_rate_limits.any? && !final_hybrid_submission_passed?
       rate_limit_redirect!(exceeded_rate_limits.first)
       return true
     end
@@ -28,7 +28,7 @@ module RateLimitConcern
 
   private
 
-  def final_hybrid_submission_passed
+  def final_hybrid_submission_passed?
     doc_session_idv = user_session.to_h['idv']
     return false if doc_session_idv.blank?
 
