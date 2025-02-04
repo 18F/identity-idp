@@ -148,13 +148,13 @@ class ReportMailerPreview < ActionMailer::Preview
 
   def stub_cloudwatch_client(report, data: [])
     class << report
-      attr_accessor :data
+      attr_accessor :_stubbed_cloudwatch_data
 
       def cloudwatch_client
-        FakeCloudwatchClient.new(data: @data)
+        FakeCloudwatchClient.new(data: @_stubbed_cloudwatch_data)
       end
     end
-    report.data = data
+    report._stubbed_cloudwatch_data = data
     report
   end
 end
