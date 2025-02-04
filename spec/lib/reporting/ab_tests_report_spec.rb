@@ -67,6 +67,7 @@ RSpec.describe Reporting::AbTestsReport do
       {
         ensure_complete_logs: false,
         logger: nil,
+        progress: false,
       }
     end
 
