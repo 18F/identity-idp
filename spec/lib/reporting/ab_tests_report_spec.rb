@@ -8,7 +8,7 @@ RSpec.describe Reporting::AbTestsReport do
   subject(:report) do
     Reporting::AbTestsReport.new(
       queries: [
-        {
+        AbTest::ReportQueryConfig.new(
           title: 'Sign in success rate by CAPTCHA validation performed',
           query: <<~QUERY,
             fields properties.event_properties.captcha_validation_performed as `Captcha Validation Performed`
@@ -17,7 +17,7 @@ RSpec.describe Reporting::AbTestsReport do
             | sort `Captcha Validation Performed` asc
           QUERY
           row_labels: ['Validation Not Performed', 'Validation Performed'],
-        },
+        ),
       ],
       time_range:,
       **options,

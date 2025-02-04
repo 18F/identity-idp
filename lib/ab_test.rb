@@ -7,6 +7,15 @@ class AbTest
 
   MAX_SHA = (16 ** 64) - 1
 
+  ReportQueryConfig = Struct.new(:title, :query, :row_labels, keyword_init: true).freeze
+
+  ReportConfig = Struct.new(:experiment_name, :email, :queries, keyword_init: true) do
+    def initialize(queries: [], **)
+      super
+      self.queries.map!(&ReportQueryConfig.method(:new))
+    end
+  end.freeze
+
   # @param [Proc<String>,Regexp,string,Boolean,nil] should_log Controls whether bucket data for this
   #                                                            A/B test is logged with specific
   #                                                            events.
@@ -28,7 +37,7 @@ class AbTest
     @experiment_name = experiment_name
     @default_bucket = default_bucket
     @should_log = should_log
-    @report = report
+    @report = ReportConfig.new(experiment_name:, **report.to_h)
     raise 'invalid bucket data structure' unless valid_bucket_data_structure?
     ensure_numeric_percentages
     raise 'bucket percentages exceed 100' unless within_100_percent?

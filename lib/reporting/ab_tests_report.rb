@@ -36,20 +36,20 @@ module Reporting
     def as_emailable_reports
       queries.map do |query|
         Reporting::EmailableReport.new(
-          title: query[:title],
+          title: query.title,
           table: table_for_query(query),
         )
       end
     end
 
     def table_for_query(query)
-      query_data = fetch_results(query: query[:query])
+      query_data = fetch_results(query: query.query)
       headers = column_labels(query_data.first)
       rows = query_data.map(&:values)
 
       [
         headers,
-        *format_rows(rows, headers, query[:row_labels]),
+        *format_rows(rows, headers, query.row_labels),
       ]
     end
 

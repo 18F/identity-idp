@@ -21,12 +21,12 @@ module Reports
     end
 
     def tables_report(config)
-      experiment_name = config[:experiment_name]
+      experiment_name = config.experiment_name
       subject = "A/B Tests Report - #{experiment_name} - #{report_date}"
       reports = ab_tests_report(config).as_emailable_reports
 
       ReportMailer.tables_report(
-        email: config[:email],
+        email: config.email,
         subject:,
         message: subject,
         reports:,
@@ -36,7 +36,7 @@ module Reports
 
     def ab_tests_report(config)
       Reporting::AbTestsReport.new(
-        queries: config[:queries],
+        queries: config.queries,
         time_range: report_date.yesterday..report_date,
       )
     end
@@ -47,8 +47,8 @@ module Reports
       AbTests
         .all
         .values
-        .select { |ab_test| ab_test.report&.[](:email)&.present? && ab_test.active? }
-        .map { |ab_test| ab_test.report.merge(experiment_name: ab_test.experiment_name) }
+        .select { |ab_test| ab_test.report&.email&.present? && ab_test.active? }
+        .map(&:report)
     end
   end
 end

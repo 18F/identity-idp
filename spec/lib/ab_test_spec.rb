@@ -235,10 +235,28 @@ RSpec.describe AbTest do
   describe '#report' do
     subject(:report) { ab_test.report }
     let(:options) { super().merge(report: report_option) }
-    let(:report_option) { {} }
+    let(:report_option) do
+      { email: 'email@example.com', queries: [{ title: 'Example Query', query: 'limit 1' }] }
+    end
 
-    it 'reflects value provided from initializer' do
-      expect(report).to eq(report_option)
+    it 'builds struct value from given hash option' do
+      expect(report).to be_a(AbTest::ReportConfig)
+      expect(report.experiment_name).to eq('test')
+      expect(report.email).to eq('email@example.com')
+      expect(report.queries).to all be_a(AbTest::ReportQueryConfig)
+      expect(report.queries.first.title).to eq('Example Query')
+      expect(report.queries.first.query).to eq('limit 1')
+    end
+
+    context 'with blank options' do
+      let(:report_option) { {} }
+
+      it 'gracefully builds an empty struct value' do
+        expect(report).to be_a(AbTest::ReportConfig)
+        expect(report.experiment_name).to eq('test')
+        expect(report.email).to be_nil
+        expect(report.queries).to eq([])
+      end
     end
   end
 
