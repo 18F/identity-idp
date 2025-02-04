@@ -41,6 +41,7 @@ class AbTest
     raise 'invalid bucket data structure' unless valid_bucket_data_structure?
     ensure_numeric_percentages
     raise 'bucket percentages exceed 100' unless within_100_percent?
+    @active = buckets.present? && buckets.values.any?(&:positive?)
   end
 
   # @param [ActionDispatch::Request] request
@@ -83,8 +84,7 @@ class AbTest
   end
 
   def active?
-    return @active if defined?(@active)
-    @active = buckets.present? && buckets.values.any?(&:positive?)
+    @active
   end
 
   private
