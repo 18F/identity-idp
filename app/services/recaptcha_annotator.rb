@@ -7,6 +7,7 @@ class RecaptchaAnnotator
   module AnnotationReasons
     INITIATED_TWO_FACTOR = :INITIATED_TWO_FACTOR
     PASSED_TWO_FACTOR = :PASSED_TWO_FACTOR
+    FAILED_TWO_FACTOR = :FAILED_TWO_FACTOR
   end
 
   # See: https://cloud.google.com/recaptcha-enterprise/docs/reference/rest/v1/projects.assessments/annotate#annotation

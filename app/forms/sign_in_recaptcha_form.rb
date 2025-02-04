@@ -5,7 +5,8 @@ class SignInRecaptchaForm
 
   RECAPTCHA_ACTION = 'sign_in'
 
-  attr_reader :form_class, :form_args, :email, :recaptcha_token, :device_cookie, :ab_test_bucket
+  attr_reader :form_class, :form_args, :email, :recaptcha_token, :device_cookie, :ab_test_bucket,
+              :assessment_id
 
   validate :validate_recaptcha_result
 
@@ -39,7 +40,7 @@ class SignInRecaptchaForm
   private
 
   def validate_recaptcha_result
-    recaptcha_response, _assessment_id = recaptcha_form.submit(recaptcha_token)
+    recaptcha_response, @assessment_id = recaptcha_form.submit(recaptcha_token)
     errors.merge!(recaptcha_form) if !recaptcha_response.success?
   end
 

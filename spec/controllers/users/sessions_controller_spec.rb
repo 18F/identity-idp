@@ -333,6 +333,17 @@ RSpec.describe Users::SessionsController, devise: true do
           .and_return(:sign_in_recaptcha)
       end
 
+      it 'stores the reCAPTCHA assessment id in the session' do
+        user = create(:user, :fully_registered)
+
+        post :create, params: { user: { email: user.email,
+                                        password: user.password,
+                                        score: 0.1,
+                                        recaptcha_token: 'token' } }
+
+        expect(controller.session[:sign_in_recaptcha_assessment_id]).to be_kind_of(String)
+      end
+
       context 'when configured to log failures only' do
         before do
           allow(IdentityConfig.store).to receive(:sign_in_recaptcha_log_failures_only)
@@ -342,7 +353,10 @@ RSpec.describe Users::SessionsController, devise: true do
         it 'redirects unsuccessful authentication for failed reCAPTCHA to failed page' do
           user = create(:user, :fully_registered)
 
-          post :create, params: { user: { email: user.email, password: user.password, score: 0.1 } }
+          post :create, params: { user: { email: user.email,
+                                          password: user.password,
+                                          score: 0.1,
+                                          recaptcha_token: 'token' } }
 
           expect(response).to redirect_to user_two_factor_authentication_url
         end

@@ -13,6 +13,10 @@ module TwoFactorAuthenticatableMethods
 
   def handle_verification_for_authentication_context(result:, auth_method:, extra_analytics: nil)
     increment_mfa_selection_attempt_count(auth_method)
+    recaptcha_annotation = annotate_recaptcha(
+      result.success? ? RecaptchaAnnotator::AnnotationReasons::PASSED_TWO_FACTOR
+                      : RecaptchaAnnotator::AnnotationReasons::FAILED_TWO_FACTOR,
+    )
     analytics.multi_factor_auth(
       **result,
       multi_factor_auth_method: auth_method,
@@ -20,17 +24,28 @@ module TwoFactorAuthenticatableMethods
       new_device: new_device?,
       **extra_analytics.to_h,
       attempts: mfa_attempts_count,
+      recaptcha_annotation:,
     )
-
     if result.success?
       handle_valid_verification_for_authentication_context(auth_method:)
       user_session.delete(:mfa_attempts)
+      session.delete(:sign_in_recaptcha_assessment_id) if sign_in_recaptcha_annotation_enabled?
     else
       handle_invalid_verification_for_authentication_context
     end
   end
 
+  def annotate_recaptcha(reason)
+    if sign_in_recaptcha_annotation_enabled?
+      RecaptchaAnnotator.annotate(assessment_id: session[:sign_in_recaptcha_assessment_id], reason:)
+    end
+  end
+
   private
+
+  def sign_in_recaptcha_annotation_enabled?
+    IdentityConfig.store.sign_in_recaptcha_annotation_enabled
+  end
 
   def handle_valid_verification_for_authentication_context(auth_method:)
     mark_user_session_authenticated(auth_method:, authentication_type: :valid_2fa)

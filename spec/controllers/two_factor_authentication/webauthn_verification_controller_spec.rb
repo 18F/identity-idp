@@ -66,6 +66,30 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
           )
         end
 
+        context 'when there is a sign_in_recaptcha_assessment_id in the session' do
+          let(:assessment_id) { 'projects/project-id/assessments/assessment-id' }
+
+          it 'annotates the assessment with INITIATED_TWO_FACTOR and logs the annotation' do
+            recaptcha_annotation = {
+              assessment_id:,
+              reason: RecaptchaAnnotator::AnnotationReasons::INITIATED_TWO_FACTOR,
+            }
+
+            controller.session[:sign_in_recaptcha_assessment_id] = assessment_id
+
+            expect(RecaptchaAnnotator).to receive(:annotate)
+              .with(**recaptcha_annotation)
+              .and_return(recaptcha_annotation)
+
+            get :show
+
+            expect(@analytics).to have_logged_event(
+              'Multi-Factor Authentication: enter webAuthn authentication visited',
+              hash_including(recaptcha_annotation:),
+            )
+          end
+        end
+
         context 'with multiple webauthn configured' do
           let!(:first_webauthn_platform_configuration) do
             create(:webauthn_configuration, :platform_authenticator, user:, created_at: 2.days.ago)
