@@ -23,7 +23,7 @@ function showModal() {
 }
 
 function keepalive() {
-  const isExpired = new Date(Date.now()) > sessionExpiration;
+  const isExpired = new Date() > sessionExpiration;
   if (isExpired) {
     document.location.href = timeoutRefreshPath;
   } else {

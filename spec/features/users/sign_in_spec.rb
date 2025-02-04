@@ -292,7 +292,7 @@ RSpec.feature 'Sign in' do
         click_button t('notices.timeout_warning.partially_signed_in.continue')
 
         expect(page).not_to have_css('.usa-js-modal--active')
-        expect(find_field('Enter your email address').value).not_to be_blank
+        expect(find_field(t('forms.registration.labels.email')).value).not_to be_blank
       end
     end
 
