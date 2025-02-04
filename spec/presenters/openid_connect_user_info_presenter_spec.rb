@@ -27,8 +27,12 @@ RSpec.describe OpenidConnectUserInfoPresenter do
     )
   end
 
+  let(:fake_analytics) { FakeAnalytics.new(user: identity.user) }
+
   before do
     OutOfBandSessionAccessor.new(rails_session_id).put_locale(locale, 5.minutes.in_seconds)
+    allow(Analytics).to receive(:new).and_return(fake_analytics)
+    stub_analytics
   end
 
   subject(:presenter) { OpenidConnectUserInfoPresenter.new(identity) }
@@ -127,27 +131,64 @@ RSpec.describe OpenidConnectUserInfoPresenter do
     context 'with ACR values' do
       let(:vtr) { nil }
 
-      context 'no identity proofing' do
-        let(:acr_values) do
-          [
-            Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
-            Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-          ].join(' ')
-        end
-        let(:requested_aal_value) { Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF }
-        let(:scope) { 'openid email all_emails locale' }
+      context 'without identity proofing' do
+        context 'with an AAL value requested' do
+          let(:acr_values) do
+            [
+              Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+              Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            ].join(' ')
+          end
+          let(:requested_aal_value) { Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF }
+          let(:scope) { 'openid email all_emails locale' }
 
-        it 'includes the correct attributes' do
-          aggregate_failures do
-            expect(user_info[:sub]).to eq(identity.uuid)
-            expect(user_info[:iss]).to eq(root_url)
-            expect(user_info[:email]).to eq(identity.user.email_addresses.first.email)
-            expect(user_info[:email_verified]).to eq(true)
-            expect(user_info[:all_emails]).to eq([identity.user.email_addresses.first.email])
-            expect(user_info[:locale]).to eq(locale)
-            expect(user_info[:ial]).to eq(Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF)
-            expect(user_info[:aal]).to eq(Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF)
-            expect(user_info).to_not have_key(:vot)
+          it 'includes the correct attributes' do
+            aggregate_failures do
+              expect(user_info[:sub]).to eq(identity.uuid)
+              expect(user_info[:iss]).to eq(root_url)
+              expect(user_info[:email]).to eq(identity.user.email_addresses.first.email)
+              expect(user_info[:email_verified]).to eq(true)
+              expect(user_info[:all_emails]).to eq([identity.user.email_addresses.first.email])
+              expect(user_info[:locale]).to eq(locale)
+              expect(user_info[:ial]).to eq(Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF)
+              expect(user_info[:aal]).to eq(Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF)
+              expect(user_info).to_not have_key(:vot)
+            end
+          end
+
+          it 'does not track an AAL mismatch' do
+            user_info
+
+            expect(@analytics).to_not have_logged_event(
+              :asserted_aal_different_from_response_aal,
+            )
+          end
+        end
+
+        context 'without an AAL value requested' do
+          let(:acr_values) do
+            [
+              Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+            ].join(' ')
+          end
+          let(:requested_aal_value) { Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF }
+
+          context 'with a requested_aal_value that does not match the request' do
+            it 'includes an aal value based on ' do
+              expect(user_info[:aal]).to eq(
+                Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+              )
+            end
+
+            it 'tracks an AAL mismatch' do
+              user_info
+              expect(@analytics).to have_logged_event(
+                :asserted_aal_different_from_response_aal,
+                asserted_aal_value: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+                client_id: service_provider.issuer,
+                response_aal_value: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+              )
+            end
           end
         end
       end
@@ -328,16 +369,25 @@ RSpec.describe OpenidConnectUserInfoPresenter do
         )
       end
 
+      let(:acr_values) do
+        [
+          Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+          Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+        ].join(' ')
+      end
+
       let(:scope) do
         'openid email x509'
       end
+      let(:user) { create(:user, :with_piv_or_cac) }
 
       let(:identity) do
         build(
           :service_provider_identity,
-          rails_session_id: rails_session_id,
-          user: create(:user, :with_piv_or_cac),
-          scope: scope,
+          rails_session_id:,
+          user:,
+          scope:,
+          acr_values:,
         )
       end
 
@@ -366,14 +416,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
       end
 
       context 'when the user does not have an associated piv/cac' do
-        let(:identity) do
-          build(
-            :service_provider_identity,
-            rails_session_id: rails_session_id,
-            user: create(:user, :fully_registered),
-            scope: scope,
-          )
-        end
+        let(:user) { create(:user, :fully_registered) }
 
         it 'includes blank x509 claims' do
           aggregate_failures do
@@ -386,12 +429,20 @@ RSpec.describe OpenidConnectUserInfoPresenter do
     end
 
     context 'with a deleted email' do
+      let(:acr_values) do
+        [
+          Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+          Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+        ].join(' ')
+      end
+
       let(:identity) do
         build(
           :service_provider_identity,
-          rails_session_id: rails_session_id,
+          rails_session_id:,
           user: create(:user, :fully_registered, :with_multiple_emails),
-          scope: scope,
+          scope:,
+          acr_values:,
         )
       end
 
@@ -409,15 +460,6 @@ RSpec.describe OpenidConnectUserInfoPresenter do
     end
 
     context 'with nil email id' do
-      let(:identity) do
-        build(
-          :service_provider_identity,
-          rails_session_id: rails_session_id,
-          user: create(:user, :fully_registered),
-          scope: scope,
-        )
-      end
-
       before do
         identity.email_address_id = nil
       end

@@ -26,7 +26,7 @@ class OpenidConnectUserInfoPresenter
     info[:verified_at] = verified_at if scoper.verified_at_requested?
     if identity.vtr.nil?
       info[:ial] = authn_context_resolver.asserted_ial_acr
-      info[:aal] = identity.requested_aal_value
+      info[:aal] = requested_aal_value
     else
       info[:vot] = vot_values
       info[:vtm] = IdentityConfig.store.vtm_url
@@ -40,6 +40,22 @@ class OpenidConnectUserInfoPresenter
   end
 
   private
+
+  def analytics
+    Analytics.new(user: identity.user, request: nil, session: {}, sp: nil)
+  end
+
+  def requested_aal_value
+    if identity.requested_aal_value != authn_context_resolver.asserted_aal_acr
+      analytics.asserted_aal_different_from_response_aal(
+        asserted_aal_value: authn_context_resolver.asserted_aal_acr,
+        client_id: identity&.service_provider_record&.issuer,
+        response_aal_value: identity.requested_aal_value,
+      )
+    end
+
+    identity.requested_aal_value
+  end
 
   def vot_values
     AuthnContextResolver.new(
