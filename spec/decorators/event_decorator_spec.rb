@@ -5,6 +5,8 @@ RSpec.describe EventDecorator do
   subject(:decorator) { EventDecorator.new(event) }
 
   describe '#event_type' do
+    subject(:event_type) { decorator.event_type }
+
     it 'returns the localized event_type' do
       expect(decorator.event_type).to eq t('event_types.email_changed')
     end
@@ -16,6 +18,18 @@ RSpec.describe EventDecorator do
         expect(decorator.event_type).to eq t('event_types.password_invalidated', app_name: APP_NAME)
         expect(decorator.event_type).to include(APP_NAME)
       end
+    end
+
+    context 'for a blank event type' do
+      # If the database has an event type value which isn't known to the application, it will be
+      # parsed as nil, which can result in unexpected behavior for retrieving a string label. This
+      # can happen during deployment of a new event type, where old servers aren't yet aware of the
+      # new event type, or it can happen if values are erroneously removed from the model enum while
+      # existing database records still use the value.
+
+      let(:event) { build_stubbed(:event, event_type: nil) }
+
+      it { is_expected.to be_nil }
     end
   end
 
