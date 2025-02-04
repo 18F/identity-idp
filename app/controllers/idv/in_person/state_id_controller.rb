@@ -30,9 +30,6 @@ module Idv
             pii_from_user[attr] = flow_params[attr]
           end
 
-          analytics.idv_in_person_proofing_state_id_submitted(
-            **analytics_arguments.merge(**form_result),
-          )
           # Accept Date of Birth from both memorable date and input date components
           formatted_dob = MemorableDateComponent.extract_date_param flow_params&.[](:dob)
           pii_from_user[:dob] = formatted_dob if formatted_dob
@@ -57,6 +54,11 @@ module Idv
           end
 
           idv_session.doc_auth_vendor = Idp::Constants::Vendors::USPS
+
+          analytics.idv_in_person_proofing_state_id_submitted(
+            **analytics_arguments.merge(**form_result),
+          )
+
           redirect_to redirect_url
         else
           render :show, locals: extra_view_variables
