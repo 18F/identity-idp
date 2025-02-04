@@ -7,7 +7,7 @@ module RateLimitConcern
 
   def confirm_not_rate_limited(rate_limiters = ALL_IDV_RATE_LIMITERS)
     exceeded_rate_limits = check_for_exceeded_rate_limits(rate_limiters)
-    if exceeded_rate_limits.any?
+    if exceeded_rate_limits.any? && !final_hybrid_submission_passed
       rate_limit_redirect!(exceeded_rate_limits.first)
       return true
     end
@@ -27,6 +27,24 @@ module RateLimitConcern
   end
 
   private
+
+  def final_hybrid_submission_passed
+    doc_session_idv = user_session.to_h['idv']
+    return false if doc_session_idv.nil?
+
+    doc_session_uuid = doc_session_idv['document_capture_session_uuid']
+    return false if doc_session_uuid.blank?
+
+    flow_path = doc_session_idv['flow_path']
+    return false if flow_path.blank?
+
+    return false if flow_path != 'hybrid'
+
+    document_capture_session = DocumentCaptureSession.find_by(uuid: doc_session_uuid)
+    return false if document_capture_session.nil?
+
+    document_capture_session.last_doc_auth_result == 'Passed'
+  end
 
   def confirm_not_rate_limited_for_phone_and_letter_address_verification
     if idv_attempter_rate_limited?(:proof_address) && gpo_verify_by_mail_policy.rate_limited?

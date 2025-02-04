@@ -325,7 +325,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
     end
   end
 
-  context 'barcode read error on mobile (redo document capture)' do
+  context 'barcode read error on mobile (redo document capture)', allow_browser_log: true do
     it 'continues to ssn on desktop when user selects Continue', js: true do
       user = nil
 

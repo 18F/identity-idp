@@ -48,13 +48,7 @@ module Idv
         if client_response.success?
           doc_pii_response = validate_pii_from_doc(client_response)
         end
-      else
-        increment_rate_limiter!
-        track_rate_limited if rate_limited?
       end
-
-      form_response = update_form_response(form_response)
-      analytics.idv_doc_auth_submitted_image_upload_form(**form_response)
 
       response = determine_response(
         form_response: form_response,
@@ -80,19 +74,17 @@ module Idv
     def validate_form
       success = valid?
 
-      Idv::DocAuthFormResponse.new(
+      increment_rate_limiter!
+      track_rate_limited if rate_limited?
+
+      response = Idv::DocAuthFormResponse.new(
         success: success,
         errors: errors,
         extra: extra_attributes,
       )
-    end
 
-    def update_form_response(form_response)
-      Idv::DocAuthFormResponse.new(
-        success: form_response.success?,
-        errors: errors,
-        extra: extra_attributes,
-      )
+      analytics.idv_doc_auth_submitted_image_upload_form(**response)
+      response
     end
 
     def post_images_to_client
@@ -110,11 +102,6 @@ module Idv
           liveness_checking_required: liveness_checking_required,
         )
       end
-
-      increment_rate_limiter! unless response.success? &&
-                                     remaining_submit_attempts == 1 &&
-                                     params[:flow_path] == 'hybrid'
-      track_rate_limited if rate_limited?
 
       response.extra.merge!(extra_attributes)
       response.extra[:state] = response.pii_from_doc.to_h[:state]
