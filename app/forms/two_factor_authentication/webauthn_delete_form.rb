@@ -7,6 +7,8 @@ module TwoFactorAuthentication
 
     attr_reader :user, :configuration_id
 
+    delegate :platform_authenticator?, to: :configuration, allow_nil: true
+
     validate :validate_configuration_exists
     validate :validate_has_multiple_mfa
 
@@ -31,6 +33,14 @@ module TwoFactorAuthentication
 
     def configuration
       @configuration ||= user.webauthn_configurations.find_by(id: configuration_id)
+    end
+
+    def event_type
+      if platform_authenticator?
+        :webauthn_platform_removed
+      else
+        :webauthn_key_removed
+      end
     end
 
     private
@@ -63,7 +73,7 @@ module TwoFactorAuthentication
     def extra_analytics_attributes
       {
         configuration_id:,
-        platform_authenticator: configuration&.platform_authenticator?,
+        platform_authenticator: platform_authenticator?,
       }
     end
   end

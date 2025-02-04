@@ -34,7 +34,7 @@ module Users
 
       if result.success?
         flash[:success] = presenter.delete_success_alert_text
-        handle_successful_mfa_deletion(event_type: :webauthn_key_removed)
+        handle_successful_mfa_deletion(event_type: form.event_type)
         redirect_to account_path
       else
         flash[:error] = result.first_error_message

@@ -375,6 +375,25 @@ RSpec.describe WebauthnSetupForm do
     end
   end
 
+  describe '#event_type' do
+    subject(:event_type) { form.event_type }
+
+    before do
+      form.submit(params)
+    end
+
+    it { is_expected.to eq(:webauthn_key_added) }
+
+    context 'with platform authenticator' do
+      let(:attestation) { platform_auth_attestation_object }
+      let(:params) do
+        super().merge(platform_authenticator: true, transports: 'internal,hybrid')
+      end
+
+      it { is_expected.to eq(:webauthn_platform_added) }
+    end
+  end
+
   describe '.name_is_unique' do
     context 'webauthn' do
       let(:user) do

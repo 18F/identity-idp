@@ -130,4 +130,38 @@ RSpec.describe TwoFactorAuthentication::WebauthnDeleteForm do
       expect(form_configuration).to eq(configuration)
     end
   end
+
+  describe '#platform_authenticator?' do
+    subject(:platform_authenticator?) { form.platform_authenticator? }
+
+    context 'without configuration' do
+      let(:configuration) { nil }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'with configuration' do
+      let(:configuration) { create(:webauthn_configuration, user:) }
+
+      it 'delegates to configuration' do
+        expect(platform_authenticator?).to eq(configuration.platform_authenticator?)
+      end
+    end
+  end
+
+  describe '#event_type' do
+    subject(:event_type) { form.event_type }
+
+    context 'with security key' do
+      let(:configuration) { create(:webauthn_configuration, user:) }
+
+      it { is_expected.to eq(:webauthn_key_removed) }
+    end
+
+    context 'with platform authenticator' do
+      let(:configuration) { create(:webauthn_configuration, :platform_authenticator, user:) }
+
+      it { is_expected.to eq(:webauthn_platform_removed) }
+    end
+  end
 end
