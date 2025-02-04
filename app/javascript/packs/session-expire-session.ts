@@ -23,15 +23,17 @@ function showModal() {
 }
 
 function keepalive() {
-  modal.hide();
-  if (new Date(Date.now()) > sessionExpiration) {
+  const isExpired = new Date(Date.now()) > sessionExpiration;
+  if (isExpired) {
     document.location.href = timeoutRefreshPath;
-  }
-  sessionExpiration = new Date(Date.now() + sessionTimeout);
+  } else {
+    modal.hide();
+    sessionExpiration = new Date(Date.now() + sessionTimeout);
 
-  setTimeout(showModal, sessionTimeout - warning);
-  countdownEls.forEach((countdownEl) => countdownEl.stop());
-  extendSession(sessionsURL);
+    setTimeout(showModal, sessionTimeout - warning);
+    countdownEls.forEach((countdownEl) => countdownEl.stop());
+    extendSession(sessionsURL);
+  }
 }
 
 keepaliveEl?.addEventListener('click', keepalive, false);

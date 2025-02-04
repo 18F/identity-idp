@@ -3,8 +3,6 @@
               session_timeout_in: session_timeout_in,
               warning: warning,
               sessions_url: api_internal_sessions_path,
-              frequency: frequency,
-              start: start,
             } %>
 <%= render(partial: 'session_timeout/warning', locals: { modal_presenter: modal }) %>
 <%= javascript_packs_tag_once 'session-expire-session', preload_links_header: false %>
