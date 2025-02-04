@@ -35,8 +35,9 @@ RSpec.describe OpenidConnect::TokenController do
 
     let!(:identity) do
       IdentityLinker.new(user, service_provider).link_identity(
-        rails_session_id: SecureRandom.hex,
+        acr_values: Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
         ial: 1,
+        rails_session_id: SecureRandom.hex,
       )
     end
 
