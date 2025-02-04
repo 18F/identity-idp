@@ -390,6 +390,45 @@ RSpec.describe User do
     end
   end
 
+  describe '#ipp_enrollment_status_not_passed_or_in_fraud_review?' do
+    let(:user) { create(:user, :fully_registered) }
+
+    context 'when the user has an in-person enrollment' do
+      context 'when the in-person enrollment has a status of passed' do
+        let!(:profile) { create(:profile, :fraud_review_pending, user:) }
+        let!(:enrollment) { create(:in_person_enrollment, :passed, user:, profile:) }
+
+        it 'returns false' do
+          expect(user.ipp_enrollment_status_not_passed_or_in_fraud_review?).to be(false)
+        end
+      end
+
+      context 'when the in-person enrollment has a status of in_fraud_review' do
+        let!(:profile) { create(:profile, :fraud_review_pending, user:) }
+        let!(:enrollment) { create(:in_person_enrollment, :in_fraud_review, user:, profile:) }
+
+        it 'returns false' do
+          expect(user.ipp_enrollment_status_not_passed_or_in_fraud_review?).to be(false)
+        end
+      end
+
+      context 'when the in-person enrollment does not have a status of passed or in_fraud_review' do
+        let!(:profile) { create(:profile, :fraud_review_pending, user:) }
+        let!(:enrollment) { create(:in_person_enrollment, :pending, user:, profile:) }
+
+        it 'returns true' do
+          expect(user.ipp_enrollment_status_not_passed_or_in_fraud_review?).to be(true)
+        end
+      end
+    end
+
+    context 'when the user does not have an in-person enrollment' do
+      it 'returns false' do
+        expect(user.ipp_enrollment_status_not_passed_or_in_fraud_review?).to be(false)
+      end
+    end
+  end
+
   describe '#has_establishing_in_person_enrollment?' do
     context 'when the user has an establishing in person enrollment' do
       before do
@@ -1656,6 +1695,27 @@ RSpec.describe User do
         end
 
         context 'when the pending in person profile does not have a deactivation reason' do
+          it 'returns nil' do
+            expect(user.password_reset_profile).to be_nil
+          end
+        end
+      end
+
+      context 'with a fraud review in person profile' do
+        let(:enrollment) { create(:in_person_enrollment, :in_fraud_review, user: user) }
+        let(:profile) { enrollment.profile }
+
+        context 'when the profile has a "password_reset deactivation reason"' do
+          before do
+            profile.update!(deactivation_reason: 'password_reset')
+          end
+
+          it 'returns the profile' do
+            expect(user.password_reset_profile).to eq(profile)
+          end
+        end
+
+        context 'when the profile does not have a deactivation reason' do
           it 'returns nil' do
             expect(user.password_reset_profile).to be_nil
           end

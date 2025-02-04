@@ -184,6 +184,29 @@ RSpec.describe ActionAccount do
         )
       end
 
+      context 'when the user has a pending review from an IPP enrollment' do
+        let!(:user) { create(:user) }
+        let!(:enrollment) { create(:in_person_enrollment, :in_fraud_review, user: user) }
+        let!(:profile) { enrollment.profile }
+
+        before do
+          subtask.run(args:, config:)
+          enrollment.reload
+          profile.reload
+        end
+
+        it 'fails the enrollment and rejects the profile' do
+          expect(enrollment.status).to eq('failed')
+          expect(profile).to have_attributes(
+            {
+              active: false,
+              fraud_review_pending_at: nil,
+              fraud_rejection_at: be_a(Time),
+            },
+          )
+        end
+      end
+
       context 'when profile has initiating_service_provider_issuer' do
         let(:user) do
           create(
@@ -261,6 +284,32 @@ RSpec.describe ActionAccount do
           success: false,
           errors: { message: 'Error: Could not find user with that UUID' },
         )
+      end
+
+      context 'when the user has a pending review from an IPP enrollment' do
+        let!(:user) { create(:user) }
+        let!(:enrollment) { create(:in_person_enrollment, :in_fraud_review, user: user) }
+        let!(:profile) { enrollment.profile }
+
+        before do
+          subtask.run(args:, config:)
+          enrollment.reload
+          profile.reload
+        end
+
+        it 'passes the enrollment and activates the profile' do
+          expect(enrollment.status).to eq('passed')
+          expect(profile).to have_attributes(
+            {
+              active: true,
+              activated_at: be_a(Time),
+              verified_at: be_a(Time),
+              fraud_review_pending_at: nil,
+              fraud_rejection_at: nil,
+              fraud_pending_reason: nil,
+            },
+          )
+        end
       end
 
       context 'when profile has initiating_service_provider_issuer' do

@@ -18,6 +18,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
       enrollments_cancelled: 0,
       enrollments_in_progress: 0,
       enrollments_passed: 0,
+      enrollments_in_fraud_review: 0,
       enrollments_skipped: 0,
       duration_seconds: 0.0,
       percent_enrollments_errored: 0.0,
@@ -1604,9 +1605,9 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                   )
                 end
 
-                it 'passes the enrollment' do
+                it 'updates the enrollment with "in_fraud_review" status' do
                   expect(enrollment.reload).to have_attributes(
-                    status: 'passed',
+                    status: 'in_fraud_review',
                     proofed_at: usps_enrollment_end_date.getlocal('UTC'),
                     status_check_attempted_at: current_time,
                     status_check_completed_at: current_time,
@@ -1645,7 +1646,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                   ).with(
                     **default_job_completion_analytics,
                     enrollments_checked: 1,
-                    enrollments_passed: 1,
+                    enrollments_in_fraud_review: 1,
                   )
                 end
               end

@@ -34,6 +34,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       enrollments_cancelled: 0,
       enrollments_in_progress: 0,
       enrollments_passed: 0,
+      enrollments_in_fraud_review: 0,
       enrollments_skipped: 0,
     }
 
@@ -484,7 +485,7 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   def handle_passed_with_fraud_review_pending(enrollment, response)
     proofed_at = parse_usps_timestamp(response['transactionEndDateTime'])
-    enrollment_outcomes[:enrollments_passed] += 1
+    enrollment_outcomes[:enrollments_in_fraud_review] += 1
     log_enrollment_updated_analytics(
       enrollment: enrollment,
       enrollment_passed: true,
@@ -493,7 +494,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       reason: 'Passed with fraud pending',
     )
     enrollment.update(
-      status: :passed,
+      status: :in_fraud_review,
       proofed_at: proofed_at,
       status_check_completed_at: Time.zone.now,
     )
@@ -641,7 +642,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def notification_delivery_params(enrollment)
-    return {} unless enrollment.passed? || enrollment.failed?
+    return {} unless enrollment.passed? || enrollment.failed? || enrollment.in_fraud_review?
 
     wait_until = enrollment.status_check_completed_at + (
       IdentityConfig.store.in_person_results_delay_in_hours || DEFAULT_EMAIL_DELAY_IN_HOURS

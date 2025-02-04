@@ -223,9 +223,9 @@ class User < ApplicationRecord
     pending_profile&.in_person_enrollment&.status
   end
 
-  def ipp_enrollment_status_not_passed?
+  def ipp_enrollment_status_not_passed_or_in_fraud_review?
     !in_person_enrollment_status.blank? &&
-      in_person_enrollment_status != 'passed'
+      ['passed', 'in_fraud_review'].exclude?(in_person_enrollment_status)
   end
 
   def has_in_person_enrollment?
@@ -533,6 +533,10 @@ class User < ApplicationRecord
     email_addresses.confirmed.last_sign_in
   end
 
+  def in_fraud_review_in_person_enrollments
+    in_person_enrollments.where(status: 'in_fraud_review').order(created_at: :desc)
+  end
+
   private
 
   def find_password_reset_profile
@@ -547,6 +551,7 @@ class User < ApplicationRecord
 
   def find_pending_in_person_or_active_profile
     pending_in_person_enrollment&.profile ||
+      in_fraud_review_in_person_enrollments.first&.profile ||
       profiles.where.not(activated_at: nil).order(activated_at: :desc).first
   end
 

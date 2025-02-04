@@ -11,7 +11,8 @@ RSpec.describe InPersonEnrollment, type: :model do
   describe 'Status' do
     it 'defines enum correctly' do
       should define_enum_for(:status)
-        .with_values([:establishing, :pending, :passed, :failed, :expired, :cancelled])
+        .with_values([:establishing, :pending, :passed, :failed, :expired, :cancelled,
+                      :in_fraud_review])
     end
   end
 
@@ -256,6 +257,9 @@ RSpec.describe InPersonEnrollment, type: :model do
         ready_for_status_check: true,
       )
     end
+    let!(:fraud_review_enrollment) do
+      create(:in_person_enrollment, :in_fraud_review, ready_for_status_check: true)
+    end
     let!(:ready_enrollments) do
       create_list(:in_person_enrollment, 4, :pending, ready_for_status_check: true)
     end
@@ -264,7 +268,7 @@ RSpec.describe InPersonEnrollment, type: :model do
     end
 
     it 'needs_status_check_on_ready_enrollments returns only ready pending enrollments' do
-      expect(InPersonEnrollment.count).to eq(12)
+      expect(InPersonEnrollment.count).to eq(13)
       ready_results = InPersonEnrollment.needs_status_check_on_ready_enrollments(check_interval)
       expect(ready_results.pluck(:id)).to match_array ready_enrollments.pluck(:id)
       expect(ready_results.pluck(:id)).not_to match_array needy_enrollments.pluck(:id)
@@ -277,6 +281,7 @@ RSpec.describe InPersonEnrollment, type: :model do
         failed_enrollment,
         expired_enrollment,
         checked_pending_enrollment,
+        fraud_review_enrollment,
       ]
 
       (other_enrollments + needy_enrollments).each do |enrollment|
@@ -289,7 +294,7 @@ RSpec.describe InPersonEnrollment, type: :model do
     end
 
     it 'needs_status_check_on_waiting_enrollments returns only not ready pending enrollments' do
-      expect(InPersonEnrollment.count).to eq(12)
+      expect(InPersonEnrollment.count).to eq(13)
       waiting_results = InPersonEnrollment.needs_status_check_on_waiting_enrollments(check_interval)
       expect(waiting_results.pluck(:id)).to match_array needy_enrollments.pluck(:id)
       expect(waiting_results.pluck(:id)).not_to match_array ready_enrollments.pluck(:id)
@@ -302,6 +307,7 @@ RSpec.describe InPersonEnrollment, type: :model do
         failed_enrollment,
         expired_enrollment,
         checked_pending_enrollment,
+        fraud_review_enrollment,
       ]
 
       (other_enrollments + ready_enrollments).each do |enrollment|
@@ -498,6 +504,9 @@ RSpec.describe InPersonEnrollment, type: :model do
     let(:failed_enrollment_without_notification) do
       create(:in_person_enrollment, :failed)
     end
+    let(:in_fraud_review_enrollment) do
+      create(:in_person_enrollment, :in_fraud_review)
+    end
 
     it 'returns true when status of passed/failed/expired and with notification configuration' do
       expect(passed_enrollment.eligible_for_notification?).to eq(true)
@@ -509,6 +518,7 @@ RSpec.describe InPersonEnrollment, type: :model do
       expect(expired_enrollment.eligible_for_notification?).to eq(false)
       expect(passed_enrollment_without_notification.eligible_for_notification?).to eq(false)
       expect(failed_enrollment_without_notification.eligible_for_notification?).to eq(false)
+      expect(in_fraud_review_enrollment.eligible_for_notification?).to eq(false)
     end
   end
 
