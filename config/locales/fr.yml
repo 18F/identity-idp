@@ -845,6 +845,8 @@ event_types.sign_in_notification_timeframe_expired: Expiration du délai de noti
 event_types.sign_in_unsuccessful_2fa: Échec de l’authentification
 event_types.webauthn_key_added: Clé de sécurité physique ajoutée
 event_types.webauthn_key_removed: Clé de sécurité physique supprimée
+event_types.webauthn_platform_added: Déverrouillage facial ou tactile ajouté
+event_types.webauthn_platform_removed: Déverrouillage facial ou tactile supprimé
 forms.backup_code_regenerate.caution: Si vous régénérez vos codes de sauvegarde, vous recevrez un nouvel ensemble de codes de sauvegarde. Vos codes de sauvegarde d’origine ne seront plus valides.
 forms.backup_code_regenerate.confirm: Êtes-vous sûr de vouloir régénérer vos codes de sauvegarde ?
 forms.backup_code_reminder.body_info: Si vous perdez l’accès à votre méthode d’authentification principale, vous pouvez utiliser des codes de sauvegarde pour accéder à nouveau à votre compte.

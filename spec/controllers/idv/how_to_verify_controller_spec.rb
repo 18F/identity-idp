@@ -171,7 +171,6 @@ RSpec.describe Idv::HowToVerifyController do
           step: 'how_to_verify',
           analytics_id: 'Doc Auth',
           error_details: { selection: { blank: true } },
-          errors: { selection: ['Select a way to verify your identity.'] },
           success: false,
         }
       end
@@ -191,7 +190,6 @@ RSpec.describe Idv::HowToVerifyController do
           analytics_id: 'Doc Auth',
           selection:,
           error_details: { selection: { inclusion: true } },
-          errors: { selection: ['Select a way to verify your identity.'] },
           success: false,
         }
       end

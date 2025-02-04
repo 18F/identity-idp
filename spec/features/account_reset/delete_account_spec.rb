@@ -50,7 +50,7 @@ RSpec.describe 'Account Reset Request: Delete Account', email: true do
       reset_email
 
       travel_to(Time.zone.now + 2.days + 2) do
-        AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today)
+        GrantAccountResetRequestsAndSendEmailsJob.new.perform(Time.zone.today)
         open_last_email
         click_email_link_matching(/delete_account\?token/)
 
@@ -133,7 +133,7 @@ RSpec.describe 'Account Reset Request: Delete Account', email: true do
           },
         )
 
-        AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today)
+        GrantAccountResetRequestsAndSendEmailsJob.new.perform(Time.zone.today)
         open_last_email
         click_email_link_matching(/delete_account\?token/)
 

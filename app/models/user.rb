@@ -377,10 +377,11 @@ class User < ApplicationRecord
     active_profile.present? && active_profile.facial_match?
   end
 
-  # This user's most recently activated profile that has also been deactivated
-  # due to a password reset, or nil if there is no such profile
+  # The users most recently activated or pending in person enrollment profile
+  # that has also been deactivated due to a password reset, or nil if there is
+  # no such profile
   def password_reset_profile
-    profile = profiles.where.not(activated_at: nil).order(activated_at: :desc).first
+    profile = find_password_reset_profile
     profile if profile&.password_reset?
   end
 
@@ -533,6 +534,21 @@ class User < ApplicationRecord
   end
 
   private
+
+  def find_password_reset_profile
+    FeatureManagement.pending_in_person_password_reset_enabled? ?
+      find_pending_in_person_or_active_profile :
+      find_active_profile
+  end
+
+  def find_active_profile
+    profiles.where.not(activated_at: nil).order(activated_at: :desc).first
+  end
+
+  def find_pending_in_person_or_active_profile
+    pending_in_person_enrollment&.profile ||
+      profiles.where.not(activated_at: nil).order(activated_at: :desc).first
+  end
 
   def lockout_period
     IdentityConfig.store.lockout_period_in_minutes.minutes

@@ -34,6 +34,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       enrollments_cancelled: 0,
       enrollments_in_progress: 0,
       enrollments_passed: 0,
+      enrollments_skipped: 0,
     }
 
     started_at = Time.zone.now
@@ -106,7 +107,7 @@ class GetUspsProofingResultsJob < ApplicationJob
 
     profile_deactivation_reason = enrollment.profile_deactivation_reason
 
-    if profile_deactivation_reason.present?
+    if profile_deactivation_reason.present? && profile_deactivation_reason != 'password_reset'
       log_enrollment_updated_analytics(
         enrollment: enrollment,
         enrollment_passed: false,
@@ -118,9 +119,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       return
     end
 
-    response = proofer.request_proofing_results(
-      enrollment,
-    )
+    response = proofer.request_proofing_results(enrollment)
   rescue Faraday::BadRequestError => err
     # 400 status code. This is used for some status updates and some common client errors
     handle_bad_request_error(err, enrollment)
@@ -131,7 +130,11 @@ class GetUspsProofingResultsJob < ApplicationJob
   rescue StandardError => err
     handle_standard_error(err, enrollment)
   else
-    process_enrollment_response(enrollment, response)
+    if profile_deactivation_reason == 'password_reset'
+      skip_enrollment(enrollment, profile_deactivation_reason)
+    else
+      process_enrollment_response(enrollment, response)
+    end
   ensure
     # Record the attempt to update the enrollment
     enrollment.update(status_check_attempted_at: status_check_attempted_at)
@@ -141,6 +144,15 @@ class GetUspsProofingResultsJob < ApplicationJob
     enrollment_outcomes[:enrollments_cancelled] += 1
     enrollment.cancelled!
     enrollment.profile.deactivate_due_to_in_person_verification_cancelled
+  end
+
+  def skip_enrollment(enrollment, profile_deactivation_reason)
+    analytics.idv_in_person_usps_proofing_results_job_enrollment_skipped(
+      **enrollment_analytics_attributes(enrollment, complete: false),
+      reason: "Profile has a deactivation reason of #{profile_deactivation_reason}",
+      job_name: self.class.name,
+    )
+    enrollment_outcomes[:enrollments_skipped] += 1
   end
 
   def passed_with_unsupported_secondary_id_type?(enrollment, response)

@@ -43,7 +43,7 @@ class ResetPasswordForm
 
   def handle_valid_password
     update_user
-    mark_profile_inactive
+    mark_profile_as_password_reset
   end
 
   def update_user
@@ -60,11 +60,22 @@ class ResetPasswordForm
     user.update!(attributes)
   end
 
-  def mark_profile_inactive
-    return if active_profile.blank?
+  def mark_profile_as_password_reset
+    profile = password_reset_profile
+    return if profile.blank?
 
-    active_profile.deactivate(:password_reset)
+    profile.deactivate(:password_reset)
     Funnel::DocAuth::ResetSteps.call(user.id)
+  end
+
+  def password_reset_profile
+    FeatureManagement.pending_in_person_password_reset_enabled? ?
+      find_pending_in_person_or_active_profile :
+      active_profile
+  end
+
+  def find_pending_in_person_or_active_profile
+    user.pending_in_person_enrollment&.profile || active_profile
   end
 
   # It is possible for an account that is resetting their password to be "invalid".
@@ -86,8 +97,16 @@ class ResetPasswordForm
     {
       user_id: user.uuid,
       profile_deactivated: active_profile.present?,
-      pending_profile_invalidated: pending_profile.present?,
+      pending_profile_invalidated: pending_profile_invalidated?,
       pending_profile_pending_reasons: (pending_profile&.pending_reasons || [])&.join(','),
     }
+  end
+
+  def pending_profile_invalidated?
+    if FeatureManagement.pending_in_person_password_reset_enabled?
+      pending_profile.present? && !pending_profile.in_person_verification_pending?
+    else
+      pending_profile.present?
+    end
   end
 end

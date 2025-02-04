@@ -32,7 +32,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         expect(@analytics).to have_logged_event(
           'Password Reset: Token Submitted',
           success: false,
-          errors: { user: ['invalid_token'] },
           error_details: { user: { blank: true } },
         )
         expect(response).to redirect_to new_user_password_path
@@ -64,7 +63,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           expect(@analytics).to have_logged_event(
             'Password Reset: Token Submitted',
             success: false,
-            errors: { user: ['invalid_token'] },
             error_details: { user: { blank: true } },
           )
           expect(response).to redirect_to new_user_password_path
@@ -86,7 +84,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           expect(@analytics).to have_logged_event(
             'Password Reset: Token Submitted',
             success: false,
-            errors: { user: ['token_expired'] },
             error_details: { user: { token_expired: true } },
             user_id: '123',
           )
@@ -170,14 +167,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         expect(@analytics).to have_logged_event(
           'Password Reset: Password Submitted',
           success: false,
-          errors: {
-            password: [password_error_message],
-            password_confirmation: [t(
-              'errors.messages.too_short.other',
-              count: Devise.password_length.first,
-            )],
-            reset_password_token: ['token_expired'],
-          },
           error_details: {
             password: { too_short: true },
             password_confirmation: { too_short: true },
@@ -219,13 +208,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         expect(@analytics).to have_logged_event(
           'Password Reset: Password Submitted',
           success: false,
-          errors: {
-            password: [password_error_message],
-            password_confirmation: [t(
-              'errors.messages.too_short.other',
-              count: Devise.password_length.first,
-            )],
-          },
           error_details: {
             password: { too_short: true },
             password_confirmation: { too_short: true },
@@ -266,9 +248,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         expect(@analytics).to have_logged_event(
           'Password Reset: Password Submitted',
           success: false,
-          errors: {
-            password_confirmation: [t('errors.messages.password_mismatch')],
-          },
           error_details: {
             password_confirmation: { mismatch: true },
           },
@@ -557,7 +536,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         expect(@analytics).to have_logged_event(
           'Password Reset: Email Submitted',
           success: false,
-          errors: { email: [t('valid_email.validations.email.invalid')] },
           error_details: { email: { invalid: true } },
           user_id: 'nonexistent-uuid',
           confirmed: false,

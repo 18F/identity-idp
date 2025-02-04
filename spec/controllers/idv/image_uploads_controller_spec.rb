@@ -103,9 +103,6 @@ RSpec.describe Idv::ImageUploadsController do
         expect(@analytics).to have_logged_event(
           'IdV: doc auth image upload form submitted',
           success: false,
-          errors: {
-            front: [I18n.t('doc_auth.errors.not_a_file')],
-          },
           error_details: {
             front: { not_a_file: true },
           },
@@ -219,9 +216,6 @@ RSpec.describe Idv::ImageUploadsController do
         expect(@analytics).to have_logged_event(
           'IdV: doc auth image upload form submitted',
           success: false,
-          errors: {
-            limit: [I18n.t('doc_auth.errors.rate_limited_heading')],
-          },
           error_details: {
             limit: { rate_limited: true },
           },
@@ -520,9 +514,6 @@ RSpec.describe Idv::ImageUploadsController do
             expect(@analytics).to have_logged_event(
               'IdV: doc auth image upload vendor pii validation',
               success: false,
-              errors: {
-                name: [I18n.t('doc_auth.errors.alerts.full_name_check')],
-              },
               error_details: {
                 name: { name: true },
               },
@@ -598,9 +589,6 @@ RSpec.describe Idv::ImageUploadsController do
             expect(@analytics).to have_logged_event(
               'IdV: doc auth image upload vendor pii validation',
               success: false,
-              errors: {
-                state: [I18n.t('doc_auth.errors.general.no_liveness')],
-              },
               error_details: {
                 state: { inclusion: true },
               },
@@ -676,9 +664,6 @@ RSpec.describe Idv::ImageUploadsController do
             expect(@analytics).to have_logged_event(
               'IdV: doc auth image upload vendor pii validation',
               success: false,
-              errors: {
-                state_id_number: [I18n.t('doc_auth.errors.general.no_liveness')],
-              },
               error_details: {
                 state_id_number: { blank: true },
               },
@@ -750,9 +735,6 @@ RSpec.describe Idv::ImageUploadsController do
             expect(@analytics).to have_logged_event(
               'IdV: doc auth image upload vendor pii validation',
               success: false,
-              errors: {
-                dob: [I18n.t('doc_auth.errors.alerts.birth_date_checks')],
-              },
               error_details: {
                 dob: { dob: true },
               },
@@ -825,11 +807,6 @@ RSpec.describe Idv::ImageUploadsController do
             expect(@analytics).to have_logged_event(
               'IdV: doc auth image upload vendor pii validation',
               success: false,
-              errors: {
-                state_id_expiration: [
-                  'Try taking new pictures.',
-                ],
-              },
               error_details: {
                 state_id_expiration: { state_id_expiration: true },
               },

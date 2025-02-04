@@ -41,11 +41,6 @@ RSpec.describe OtpDeliverySelectionForm do
 
     context 'when the form is invalid' do
       it 'returns false for success? and includes errors' do
-        errors = {
-          otp_delivery_preference: ['is not included in the list'],
-          phone: ['Please fill in this field.'],
-        }
-
         extra = {
           otp_delivery_preference: 'foo',
           resend: false,
@@ -62,8 +57,11 @@ RSpec.describe OtpDeliverySelectionForm do
 
         expect(subject.submit(otp_delivery_preference: 'foo').to_h).to include(
           success: false,
-          errors: errors,
-          error_details: hash_including(*errors.keys),
+          errors: nil,
+          error_details: {
+            otp_delivery_preference: { inclusion: true },
+            phone: { blank: true },
+          },
           **extra,
         )
       end
