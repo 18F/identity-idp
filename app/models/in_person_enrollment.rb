@@ -13,12 +13,15 @@ class InPersonEnrollment < ApplicationRecord
 
   has_one :notification_phone_configuration, dependent: :destroy, inverse_of: :in_person_enrollment
 
+  IN_PROGRESS_ENROLLMENT_STATUSES = %w[pending in_fraud_review].to_set.freeze
+
   STATUS_ESTABLISHING = 'establishing'
   STATUS_PENDING = 'pending'
   STATUS_PASSED = 'passed'
   STATUS_FAILED = 'failed'
   STATUS_EXPIRED = 'expired'
   STATUS_CANCELLED = 'cancelled'
+  STATUS_IN_FRAUD_REVIEW = 'in_fraud_review'
 
   enum :status, {
     STATUS_ESTABLISHING.to_sym => 0,
@@ -27,6 +30,7 @@ class InPersonEnrollment < ApplicationRecord
     STATUS_FAILED.to_sym => 3,
     STATUS_EXPIRED.to_sym => 4,
     STATUS_CANCELLED.to_sym => 5,
+    STATUS_IN_FRAUD_REVIEW.to_sym => 6,
   }
 
   validate :profile_belongs_to_user

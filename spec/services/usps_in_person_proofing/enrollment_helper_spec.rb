@@ -383,28 +383,18 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
     end
   end
 
-  describe '#cancel_establishing_and_pending_enrollments' do
-    context 'when the user has an establishing in-person enrollment' do
-      let!(:enrollment) { create(:in_person_enrollment, :establishing, user: user) }
+  describe '#cancel_establishing_and_in_progress_enrollments' do
+    [:establishing, :pending, :in_fraud_review].each do |status|
+      context "when the user has an '#{status}' in-person enrollment" do
+        let!(:enrollment) { create(:in_person_enrollment, status, user: user) }
 
-      before do
-        subject.cancel_establishing_and_pending_enrollments(user)
-      end
+        before do
+          subject.cancel_establishing_and_in_progress_enrollments(user)
+        end
 
-      it "cancels the user's establishing in-person enrollment" do
-        expect(enrollment.reload.status).to eq('cancelled')
-      end
-    end
-
-    context 'when the user has a pending in-person enrollment' do
-      let!(:enrollment) { create(:in_person_enrollment, :pending, user: user) }
-
-      before do
-        subject.cancel_establishing_and_pending_enrollments(user)
-      end
-
-      it "cancels the user's pending in-person enrollment" do
-        expect(enrollment.reload.status).to eq('cancelled')
+        it "cancels the user's in-person enrollment" do
+          expect(enrollment.reload.status).to eq('cancelled')
+        end
       end
     end
 
@@ -413,7 +403,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
       let!(:pending_enrollment) { create(:in_person_enrollment, :pending, user: user) }
 
       before do
-        subject.cancel_establishing_and_pending_enrollments(user)
+        subject.cancel_establishing_and_in_progress_enrollments(user)
       end
 
       it "cancels the user's establishing in-person enrollment" do
@@ -425,9 +415,9 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
       end
     end
 
-    context 'when the user has no establishing and pending in-person enrollments' do
+    context 'when the user has no establishing or in-progress in-person enrollments' do
       it 'does not throw an error' do
-        expect { subject.cancel_establishing_and_pending_enrollments(user) }.not_to raise_error
+        expect { subject.cancel_establishing_and_in_progress_enrollments(user) }.not_to raise_error
       end
     end
   end
