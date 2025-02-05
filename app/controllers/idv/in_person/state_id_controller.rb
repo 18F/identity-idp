@@ -168,7 +168,7 @@ module Idv
 
       def initialize_pii_from_user
         user_session['idv/in_person'] ||= {}
-        user_session['idv/in_person']['pii_from_user'] ||= {}
+        user_session['idv/in_person']['pii_from_user'] ||= { uuid: current_user.uuid }
       end
     end
   end
