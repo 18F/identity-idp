@@ -12,6 +12,11 @@ class ClickObserverElement extends HTMLElement {
     return this.getAttribute('event-name');
   }
 
+  get payload(): object {
+    const stringPayload = this.getAttribute('data-payload') || '{}';
+    return JSON.parse(stringPayload);
+  }
+
   /**
    * Whether event handling should handle target as a checkbox.
    */
@@ -27,7 +32,7 @@ class ClickObserverElement extends HTMLElement {
     if (event.type === 'change' && this.isHandledAsCheckbox) {
       this.trackEvent(this.eventName, { checked: (event.target as HTMLInputElement).checked });
     } else if (event.type === 'click' && !this.isHandledAsCheckbox) {
-      this.trackEvent(this.eventName);
+      this.trackEvent(this.eventName, this.payload);
     }
   }
 }
