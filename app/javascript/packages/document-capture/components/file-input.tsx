@@ -315,7 +315,7 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
         status={Status.SUCCESS}
         className={
           successMessage === fileLoadingText || successMessage === fileLoadedText
-            ? 'usa-sr-only'
+            ? 'usa-sr-only display-none'
             : undefined
         }
       >
@@ -375,6 +375,7 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
           <div className="usa-file-input__box">
             {isValuePending && <SpinnerDots isCentered className="text-base" />}
           </div>
+
           <input
             ref={inputRef}
             id={inputId}
