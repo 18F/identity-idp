@@ -313,12 +313,13 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
         {shownErrorMessage}
       </StatusMessage>
 
-      <span className={
-        successMessage === fileLoadingText || successMessage === fileLoadedText
-          ? 'usa-sr-only'
-          : undefined
-      }>
-
+      <span
+        className={
+          successMessage === fileLoadingText || successMessage === fileLoadedText
+            ? 'usa-sr-only'
+            : undefined
+        }
+      >
         <StatusMessage
           id={successId}
           status={Status.SUCCESS}
@@ -330,7 +331,7 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
         >
           {!shownErrorMessage && successMessage}
         </StatusMessage>
-      </span>        
+      </span>
 
       <div
         className={[
