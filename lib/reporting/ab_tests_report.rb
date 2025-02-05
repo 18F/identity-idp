@@ -30,6 +30,8 @@ module Reporting
       end
     end
 
+    private
+
     def table_for_query(query)
       query_data = fetch_results(query: query.query)
       headers = column_labels(query_data.first)
