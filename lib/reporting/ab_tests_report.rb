@@ -1,13 +1,7 @@
 # frozen_string_literal: true
 
-begin
-  require 'reporting/cloudwatch_client'
-  require 'reporting/cloudwatch_query_quoting'
-  require 'reporting/command_line_options'
-rescue LoadError => e
-  warn 'could not load paths, try running with "bundle exec rails runner"'
-  raise e
-end
+require 'reporting/cloudwatch_client'
+require 'reporting/cloudwatch_query_quoting'
 
 module Reporting
   class AbTestsReport
