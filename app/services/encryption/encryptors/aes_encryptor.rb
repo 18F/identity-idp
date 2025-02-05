@@ -23,8 +23,9 @@ module Encryption
       end
 
       def decrypt(ciphertext, cek)
-        raise EncryptionError, 'ciphertext is invalid' unless sane_payload?(ciphertext)
         decrypt_and_test_payload(decode(ciphertext), cek)
+      rescue ArgumentError
+        raise EncryptionError, 'ciphertext is invalid'
       end
 
       private
@@ -42,15 +43,8 @@ module Encryption
         rescue OpenSSL::Cipher::CipherError => err
           raise EncryptionError, err.inspect
         end
-        raise EncryptionError, 'payload is invalid' unless sane_payload?(payload)
         plaintext, fingerprint = split_into_segments(payload)
         return plaintext if Pii::Fingerprinter.verify(plaintext, fingerprint)
-      end
-
-      def sane_payload?(payload)
-        payload.split(DELIMITER).each do |segment|
-          return false unless valid_base64_encoding?(segment)
-        end
       end
 
       def join_segments(*segments)
@@ -59,6 +53,8 @@ module Encryption
 
       def split_into_segments(string)
         string.split(DELIMITER).map { |segment| decode(segment) }
+      rescue ArgumentError
+        raise EncryptionError, 'payload is invalid'
       end
     end
   end
