@@ -122,9 +122,9 @@ RSpec.describe ReportMailer, type: :mailer do
       expect(percent_cell.text.strip).to eq('50.00%')
       expect(percent_cell['class']).to eq('table-number')
 
-      percent_float_outside_range_cell = percent_table.at_css('tbody tr:nth-child(2) td:last-child')
-      expect(percent_float_outside_range_cell.text.strip).to eq('1.5')
-      expect(percent_float_outside_range_cell['class']).to eq('table-number')
+      percent_exceeding_100_cell = percent_table.at_css('tbody tr:nth-child(2) td:last-child')
+      expect(percent_exceeding_100_cell.text.strip).to eq('150.00%')
+      expect(percent_exceeding_100_cell['class']).to eq('table-number')
 
       percent_float_nan_cell = percent_table.at_css('tbody tr:nth-child(3) td:last-child')
       expect(percent_float_nan_cell.text.strip).to eq('NaN')
