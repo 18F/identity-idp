@@ -89,7 +89,7 @@ module Reporting
 
     # @return [String]
     def format_as_percent(number)
-      '%.2f%%' % number
+      format('%.2f%%', number)
     end
   end
 end
