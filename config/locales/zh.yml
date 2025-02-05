@@ -1260,10 +1260,8 @@ in_person_proofing.body.location.distance.one: 距离你 %{count} 英里
 in_person_proofing.body.location.distance.other: 距离你 %{count} 英里
 in_person_proofing.body.location.heading: 邮局信息
 in_person_proofing.body.location.info: 验证你的身份无需做预约。
-in_person_proofing.body.location.inline_error: 请输入正确地址，包括城市、州和邮编
 in_person_proofing.body.location.location_button: 选择
 in_person_proofing.body.location.po_search.address_label: 地址
-in_person_proofing.body.location.po_search.address_search_hint: 举例：1234 N Example St., Allentown, PA 12345
 in_person_proofing.body.location.po_search.address_search_label: 输入地址来寻找你附件的邮局。
 in_person_proofing.body.location.po_search.city_label: 城市
 in_person_proofing.body.location.po_search.is_searching_message: 正在寻找邮局。。。

@@ -42,7 +42,6 @@ interface AppRootData {
   docAuthSelfieDesktopTestMode: string;
   accountUrl: string;
   locationsUrl: string;
-  addressSearchUrl: string;
   sessionsUrl: string;
 }
 
@@ -114,7 +113,6 @@ const {
   previousStepUrl,
   docAuthSelfieDesktopTestMode,
   locationsUrl: locationsURL,
-  addressSearchUrl: addressSearchURL,
   sessionsUrl: sessionsURL,
 } = appRoot.dataset as DOMStringMap & AppRootData;
 
@@ -133,7 +131,6 @@ render(
         value={{
           inPersonURL,
           locationsURL,
-          addressSearchURL,
           inPersonOutageExpectedUpdateDate,
           inPersonOutageMessageEnabled: inPersonOutageMessageEnabled === 'true',
           optedInToInPersonProofing: optedInToInPersonProofing === 'true',
