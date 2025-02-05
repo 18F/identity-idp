@@ -71,6 +71,7 @@ RSpec.describe ReportMailer, type: :mailer do
         ['Float', 'Int', 'Float'],
         ['Row 1', 1, 0.5],
         ['Row 2', 1, 1.5],
+        ['Row 2', 1, Float::NAN],
       ]
     end
 
@@ -124,6 +125,10 @@ RSpec.describe ReportMailer, type: :mailer do
       percent_float_outside_range_cell = percent_table.at_css('tbody tr:nth-child(2) td:last-child')
       expect(percent_float_outside_range_cell.text.strip).to eq('1.5')
       expect(percent_float_outside_range_cell['class']).to eq('table-number')
+
+      percent_float_nan_cell = percent_table.at_css('tbody tr:nth-child(3) td:last-child')
+      expect(percent_float_nan_cell.text.strip).to eq('NaN')
+      expect(percent_float_nan_cell['class']).to eq('table-number')
 
       float_cell = float_table.at_css('tbody tr:nth-child(1) td:last-child')
       expect(float_cell.text.strip).to eq('1.0')
