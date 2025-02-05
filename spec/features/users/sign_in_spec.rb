@@ -282,7 +282,7 @@ RSpec.feature 'Sign in' do
 
     context 'create account' do
       it 'shows the timeout modal when the session expiration approaches', js: true do
-        allow(Devise).to receive(:timeout_in).and_return(160)
+        allow(Devise).to receive(:timeout_in).and_return(151)
 
         visit sign_up_email_path
         fill_in t('forms.registration.labels.email'), with: 'test@example.com'
@@ -298,7 +298,7 @@ RSpec.feature 'Sign in' do
 
     context 'sign in' do
       it 'shows the timeout modal when the session expiration approaches', js: true do
-        allow(Devise).to receive(:timeout_in).and_return(160)
+        allow(Devise).to receive(:timeout_in).and_return(151)
 
         visit root_path
         fill_in t('account.index.email'), with: 'test@example.com'
@@ -310,7 +310,7 @@ RSpec.feature 'Sign in' do
       end
 
       it 'reloads the sign in page when cancel is clicked', js: true do
-        allow(Devise).to receive(:timeout_in).and_return(160)
+        allow(Devise).to receive(:timeout_in).and_return(151)
 
         visit root_path
         fill_in t('account.index.email'), with: 'test@example.com'
