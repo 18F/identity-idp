@@ -7,7 +7,7 @@ module Reporting
   class AbTestsReport
     attr_reader :queries, :time_range
 
-    # @param [Array<String>] queries
+    # @param [Array<AbTest::ReportQueryConfig>] queries
     # @param [Range<Time>] time_range
     def initialize(
       queries:,
