@@ -9,8 +9,8 @@ module Idv
       include Steps::ThreatMetrixStepHelper
       include ThreatMetrixConcern
 
+      before_action :confirm_step_allowed
       before_action :confirm_not_rate_limited_after_doc_auth
-      before_action :confirm_in_person_address_step_complete
       before_action :confirm_repeat_ssn, only: :show
       before_action :override_csp_for_threat_metrix,
                     if: -> { FeatureManagement.proofing_device_profiling_collecting_enabled? }
@@ -66,16 +66,16 @@ module Idv
           key: :ipp_ssn,
           controller: self,
           next_steps: [:ipp_verify_info],
-          preconditions: ->(idv_session:, user:) { idv_session.ipp_document_capture_complete? },
-          undo_step: ->(idv_session:, user:) { idv_session.ssn = nil },
+          preconditions: ->(idv_session:, user:) {
+            idv_session.ipp_document_capture_complete?
+          },
+          undo_step: ->(idv_session:, user:) {
+            idv_session.invalidate_ssn_step!
+          },
         )
       end
 
       private
-
-      def flow_session
-        user_session.fetch('idv/in_person', {})
-      end
 
       def confirm_repeat_ssn
         return if !idv_session.ssn
@@ -95,11 +95,6 @@ module Idv
           previous_ssn_edit_distance: previous_ssn_edit_distance,
         }.merge(ab_test_analytics_buckets)
           .merge(**extra_analytics_properties)
-      end
-
-      def confirm_in_person_address_step_complete
-        return if flow_session[:pii_from_user] && flow_session[:pii_from_user][:address1].present?
-        redirect_to idv_in_person_address_url
       end
     end
   end

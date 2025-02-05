@@ -25,13 +25,18 @@ RSpec.describe Idv::InPerson::SsnController do
   end
 
   describe 'before_actions' do
-    context '#confirm_in_person_address_step_complete' do
-      it 'redirects if address page not completed' do
-        subject.user_session['idv/in_person'][:pii_from_user].delete(:address1)
-        get :show
+    it 'redirects if address page not completed' do
+      subject.user_session['idv/in_person'][:pii_from_user].delete(:address1)
+      get :show
 
-        expect(response).to redirect_to idv_in_person_address_url
-      end
+      expect(response).to redirect_to idv_in_person_address_url
+    end
+
+    it 'checks that step is allowed' do
+      expect(subject).to have_actions(
+        :before,
+        :confirm_step_allowed,
+      )
     end
   end
 

@@ -302,6 +302,10 @@ module Idv
       ssn.present?
     end
 
+    def invalidate_ssn_step!
+      session[:ssn] = nil
+    end
+
     def verify_info_step_complete?
       resolution_successful
     end

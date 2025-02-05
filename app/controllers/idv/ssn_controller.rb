@@ -65,7 +65,7 @@ module Idv
         controller: self,
         next_steps: [:verify_info],
         preconditions: ->(idv_session:, user:) { idv_session.remote_document_capture_complete? },
-        undo_step: ->(idv_session:, user:) { idv_session.ssn = nil },
+        undo_step: ->(idv_session:, user:) { idv_session.invalidate_ssn_step! },
       )
     end
 
