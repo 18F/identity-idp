@@ -60,35 +60,4 @@ RSpec.describe Reporting::AbTestsReport do
       end
     end
   end
-
-  describe '#cloudwatch_client' do
-    subject(:cloudwatch_client) { report.cloudwatch_client }
-    let(:default_args) do
-      {
-        ensure_complete_logs: false,
-        logger: nil,
-        progress: false,
-      }
-    end
-
-    describe 'when all args are default' do
-      it 'creates a client with the default options' do
-        expect(Reporting::CloudwatchClient).to receive(:new).with(default_args)
-
-        cloudwatch_client
-      end
-    end
-
-    describe 'when verbose is passed in' do
-      let(:options) { { verbose: true } }
-      let(:logger) { double(Logger) }
-
-      it 'creates a client with the expected logger' do
-        expect(Logger).to receive(:new).with(STDERR).and_return(logger)
-        expect(Reporting::CloudwatchClient).to receive(:new).with({ **default_args, logger: })
-
-        cloudwatch_client
-      end
-    end
-  end
 end

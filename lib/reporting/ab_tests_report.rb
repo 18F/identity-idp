@@ -11,16 +11,10 @@ module Reporting
     # @param [Range<Time>] time_range
     def initialize(
       queries:,
-      time_range:,
-      verbose: false
+      time_range:
     )
       @queries = queries
       @time_range = time_range
-      @verbose = verbose
-    end
-
-    def verbose?
-      @verbose
     end
 
     def as_tables
@@ -73,12 +67,7 @@ module Reporting
       @cloudwatch_client ||= Reporting::CloudwatchClient.new(
         progress: false,
         ensure_complete_logs: false,
-        logger:,
       )
-    end
-
-    def logger
-      Logger.new(STDERR) if verbose?
     end
 
     # @return [String]
