@@ -2,11 +2,12 @@
   <ul class="usa-button-group usa-button-group--segmented">
     <% routes.each do |route| %>
         <% if  current_path?(route[:path]) %>
-
-          <%=  render ClickObserverComponent.new(event_name: 'tab_navigation_current_page_clicked', 
-          payload: { path: route[:path] }, 
-          role: 'list-item',
-          class: "usa-button-group__item display-list-item") do %>
+          <%=  render ClickObserverComponent.new(
+                      event_name: 'tab_navigation_current_page_clicked', 
+                      payload: { path: route[:path] },
+                      role: "listitem",
+                      class: "usa-button-group__item display-list-item",
+                    ) do %>
             <%= render ButtonComponent.new(
                   url: route[:path],
                   big: true,
