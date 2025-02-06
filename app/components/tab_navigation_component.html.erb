@@ -2,12 +2,12 @@
   <ul class="usa-button-group usa-button-group--segmented">
     <% routes.each do |route| %>
         <% if  current_path?(route[:path]) %>
-          <%=  render ClickObserverComponent.new(
-                      event_name: 'tab_navigation_current_page_clicked', 
-                      payload: { path: route[:path] },
-                      role: "listitem",
-                      class: "usa-button-group__item display-list-item",
-                    ) do %>
+          <%= render ClickObserverComponent.new(
+                event_name: 'tab_navigation_current_page_clicked',
+                payload: { path: route[:path] },
+                role: 'listitem',
+                class: 'usa-button-group__item display-list-item',
+              ) do %>
             <%= render ButtonComponent.new(
                   url: route[:path],
                   big: true,
@@ -18,11 +18,11 @@
         <% else %>
         <li class="usa-button-group__item">
           <%= render ButtonComponent.new(
-                  url: route[:path],
-                  big: true,
-                  outline: !current_path?(route[:path]),
-                  aria: { current: current_path?(route[:path]) ? 'page' : nil },
-                ).with_content(route[:text]) %>
+                url: route[:path],
+                big: true,
+                outline: !current_path?(route[:path]),
+                aria: { current: current_path?(route[:path]) ? 'page' : nil },
+              ).with_content(route[:text]) %>
                 </li>
         <% end %>
       
