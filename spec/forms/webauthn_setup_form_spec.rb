@@ -66,7 +66,6 @@ RSpec.describe WebauthnSetupForm do
 
           expect(result.to_h).to eq(
             success: true,
-            errors: nil,
             transports: ['usb'],
             transports_mismatch: false,
             **extra_attributes,
@@ -158,7 +157,6 @@ RSpec.describe WebauthnSetupForm do
         it 'includes unknown transports in extra analytics' do
           expect(result.to_h).to eq(
             success: true,
-            errors: nil,
             enabled_mfa_methods_count: 1,
             mfa_method_counts: { webauthn: 1 },
             multi_factor_auth_method: 'webauthn',
@@ -203,7 +201,6 @@ RSpec.describe WebauthnSetupForm do
 
         expect(result.to_h).to eq(
           success: false,
-          errors: nil,
           error_details: { attestation_object: { invalid: true } },
           transports: ['usb'],
           transports_mismatch: false,
@@ -250,7 +247,6 @@ RSpec.describe WebauthnSetupForm do
 
         expect(result.to_h).to eq(
           success: false,
-          errors: nil,
           error_details: { attestation_object: { invalid: true } },
           transports: ['usb'],
           transports_mismatch: false,
@@ -265,7 +261,6 @@ RSpec.describe WebauthnSetupForm do
       it 'returns setup as mismatched type' do
         expect(result.to_h).to eq(
           success: true,
-          errors: nil,
           enabled_mfa_methods_count: 1,
           mfa_method_counts: { webauthn_platform: 1 },
           multi_factor_auth_method: 'webauthn_platform',

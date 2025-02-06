@@ -19,7 +19,6 @@ RSpec.describe TotpSetupForm do
 
         expect(form.submit.to_h).to eq(
           success: true,
-          errors: nil,
           **extra,
         )
         expect(user.auth_app_configurations.any?).to eq true
@@ -45,7 +44,6 @@ RSpec.describe TotpSetupForm do
 
         expect(form.submit.to_h).to include(
           success: false,
-          errors: nil,
           **extra,
         )
         expect(user.auth_app_configurations.any?).to eq false
@@ -65,7 +63,6 @@ RSpec.describe TotpSetupForm do
 
         expect(form.submit.to_h).to include(
           success: false,
-          errors: nil,
           **extra,
         )
         expect(user.auth_app_configurations.any?).to eq false
@@ -80,7 +77,6 @@ RSpec.describe TotpSetupForm do
 
         expect(form.submit.to_h).to include(
           success: false,
-          errors: nil,
           error_details: { name: { blank: true } },
         )
         expect(user.auth_app_configurations.any?).to eq false
@@ -95,7 +91,6 @@ RSpec.describe TotpSetupForm do
 
         expect(form2.submit.to_h).to include(
           success: false,
-          errors: nil,
           error_details: { name: { unique_name: true } },
         )
       end

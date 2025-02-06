@@ -33,7 +33,6 @@ RSpec.describe OtpDeliverySelectionForm do
 
         expect(subject.submit(otp_delivery_preference: 'sms', resend: 'true').to_h).to eq(
           success: true,
-          errors: nil,
           **extra,
         )
       end
@@ -57,7 +56,6 @@ RSpec.describe OtpDeliverySelectionForm do
 
         expect(subject.submit(otp_delivery_preference: 'foo').to_h).to include(
           success: false,
-          errors: nil,
           error_details: {
             otp_delivery_preference: { inclusion: true },
             phone: { blank: true },

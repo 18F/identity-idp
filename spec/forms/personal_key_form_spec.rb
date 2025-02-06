@@ -12,7 +12,6 @@ RSpec.describe PersonalKeyForm do
 
         expect(form.submit.to_h).to eq(
           success: true,
-          errors: nil,
         )
         expect(user.reload.encrypted_recovery_code_digest).to eq old_code
       end
@@ -26,7 +25,6 @@ RSpec.describe PersonalKeyForm do
 
         expect(form.submit.to_h).to include(
           success: false,
-          errors: nil,
           error_details: { personal_key: { personal_key_incorrect: true } },
         )
         expect(user.encrypted_recovery_code_digest).to_not be_nil

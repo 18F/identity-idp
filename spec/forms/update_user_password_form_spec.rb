@@ -32,7 +32,6 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
 
         expect(result).to include(
           success: false,
-          errors: nil,
           error_details: hash_including(:password, :password_confirmation),
         )
       end
@@ -42,7 +41,6 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
       it 'returns FormResponse with success: true' do
         expect(subject.submit(params).to_h).to eq(
           success: true,
-          errors: nil,
           active_profile_present: false,
           pending_profile_present: false,
           user_id: user.uuid,

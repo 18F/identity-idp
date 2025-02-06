@@ -33,7 +33,6 @@ RSpec.describe ResetPasswordForm, type: :model do
         it 'returns a hash with errors' do
           expect(result.to_h).to eq(
             success: false,
-            errors: nil,
             error_details: { reset_password_token: { token_expired: true } },
             user_id: '123',
             profile_deactivated: false,
@@ -53,7 +52,6 @@ RSpec.describe ResetPasswordForm, type: :model do
         it 'returns a hash with errors' do
           expect(result.to_h).to eq(
             success: false,
-            errors: nil,
             error_details: {
               password: { too_short: true },
               password_confirmation: { too_short: true },
@@ -76,7 +74,6 @@ RSpec.describe ResetPasswordForm, type: :model do
 
           expect(result.to_h).to eq(
             success: true,
-            errors: nil,
             user_id: '123',
             profile_deactivated: false,
             pending_profile_invalidated: false,
@@ -95,7 +92,6 @@ RSpec.describe ResetPasswordForm, type: :model do
         it 'returns a hash with errors' do
           expect(result.to_h).to eq(
             success: false,
-            errors: nil,
             error_details: {
               password: { too_short: true },
               password_confirmation: { too_short: true },
@@ -115,7 +111,6 @@ RSpec.describe ResetPasswordForm, type: :model do
         it 'returns a hash with errors' do
           expect(result.to_h).to eq(
             success: false,
-            errors: nil,
             error_details: { reset_password_token: { invalid_token: true } },
             user_id: nil,
             profile_deactivated: false,
@@ -270,7 +265,6 @@ RSpec.describe ResetPasswordForm, type: :model do
         it 'returns a hash with errors' do
           expect(result.to_h).to eq(
             success: false,
-            errors: nil,
             error_details: { reset_password_token: { token_expired: true } },
             user_id: '123',
             profile_deactivated: false,
@@ -290,7 +284,6 @@ RSpec.describe ResetPasswordForm, type: :model do
         it 'returns a hash with errors' do
           expect(result.to_h).to eq(
             success: false,
-            errors: nil,
             error_details: {
               password: { too_short: true },
               password_confirmation: { too_short: true },
@@ -313,7 +306,6 @@ RSpec.describe ResetPasswordForm, type: :model do
 
           expect(result.to_h).to eq(
             success: true,
-            errors: nil,
             user_id: '123',
             profile_deactivated: false,
             pending_profile_invalidated: false,
@@ -332,7 +324,6 @@ RSpec.describe ResetPasswordForm, type: :model do
         it 'returns a hash with errors' do
           expect(result.to_h).to eq(
             success: false,
-            errors: nil,
             error_details: {
               password: { too_short: true },
               password_confirmation: { too_short: true },
@@ -352,7 +343,6 @@ RSpec.describe ResetPasswordForm, type: :model do
         it 'returns a hash with errors' do
           expect(result.to_h).to eq(
             success: false,
-            errors: nil,
             error_details: { reset_password_token: { invalid_token: true } },
             user_id: nil,
             profile_deactivated: false,
