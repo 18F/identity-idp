@@ -5174,6 +5174,9 @@ module AnalyticsEvents
   # @param [String] birth_year Birth year from document
   # @param [Integer] issue_year Year document was issued
   # @param [Boolean] biometric_comparison_required does doc auth require biometirc
+  # @param [String] socure_status Socure's request status (used for errors)
+  # @param [String] socure_msg socure's error message (used for errors)
+
   # The request for socure verification was sent
   def idv_socure_verification_data_requested(
     success:,
@@ -5204,6 +5207,8 @@ module AnalyticsEvents
     exception: nil,
     flow_path: nil,
     billed: nil,
+    socure_status: nil,
+    socure_msg: nil,
     **extra
   )
     track_event(
@@ -5236,6 +5241,8 @@ module AnalyticsEvents
       issue_year:,
       liveness_enabled:,
       biometric_comparison_required:,
+      socure_status:,
+      socure_msg:,
       **extra,
     )
   end

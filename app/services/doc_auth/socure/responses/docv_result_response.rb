@@ -8,6 +8,8 @@ module DocAuth
 
         DATA_PATHS = {
           reference_id: %w[referenceId],
+          status: %w[status],
+          msg: %w[msg],
           document_verification: %w[documentVerification],
           reason_codes: %w[documentVerification reasonCodes],
           document_type: %w[documentVerification documentType],
@@ -70,6 +72,8 @@ module DocAuth
         def extra_attributes
           {
             reference_id: get_data(DATA_PATHS[:reference_id]),
+            socure_status: get_data(DATA_PATHS[:status]),
+            socure_msg: get_data(DATA_PATHS[:msg]),
             decision: get_data(DATA_PATHS[:decision]),
             biometric_comparison_required: biometric_comparison_required,
             customer_profile: get_data(DATA_PATHS[:customer_profile]),

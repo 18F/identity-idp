@@ -112,6 +112,28 @@ RSpec.describe SocureDocvResultsJob do
       expect(document_capture_session_result.selfie_status).to eq(:not_processed)
     end
 
+    context 'We contact Socure OK, but they return an error' do
+      let(:status) { 'Error' }
+      let(:referenceId) { '360ae43f-123f-47ab-8e05-6af79752e76c' }
+      let(:msg) { 'InternalServerException' }
+      let(:socure_response_body) {
+        { status:, referenceId:, msg: }
+      }
+
+      it 'logs the status, reference_id, and message' do
+        perform
+
+        expect(fake_analytics).to have_logged_event(
+          :idv_socure_verification_data_requested,
+          hash_including(
+            :socure_status,
+            :reference_id,
+            :socure_msg,
+          ),
+        )
+      end
+    end
+
     context 'Pii validation fails' do
       before do
         allow_any_instance_of(Idv::DocPiiForm).to receive(:zipcode).and_return(:invalid_junk)
