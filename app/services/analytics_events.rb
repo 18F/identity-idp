@@ -5067,6 +5067,8 @@ module AnalyticsEvents
     document_type: nil,
     docv_transaction_token: nil,
     flow_path: nil,
+    socure_status: nil,
+    socure_msg: nil,
     **extra
   )
     track_event(
@@ -5091,6 +5093,8 @@ module AnalyticsEvents
       document_type:,
       docv_transaction_token:,
       flow_path:,
+      socure_status:,
+      socure_msg:,
       **extra,
     )
   end
