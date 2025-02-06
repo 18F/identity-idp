@@ -116,7 +116,6 @@ RSpec.describe Idv::InPerson::StateIdController do
         :address1,
       )
     end
-
   end
 
   describe '#update' do
