@@ -19,8 +19,8 @@ module Proofing
           '"http://aamva.org/dldv/wsdl/2.1/IDLDVService21/VerifyDriverLicenseData"'
 
         VERIFICATION_REQUESTED_ATTRS = {
-          first_name: RequestAttribute.new('//nc:PersonGivenName', true),
-          middle_name: RequestAttribute.new('//nc:PersonMiddleName', false),
+          first_name: RequestAttribute.new(xpath: '//nc:PersonGivenName', required: true),
+          middle_name: RequestAttribute.new(xpath: '//nc:PersonMiddleName', required: false),
           last_name: RequestAttribute.new('//nc:PersonSurName', true),
           name_suffix: RequestAttribute.new('//nc:PersonNameSuffixText', false),
           dob: RequestAttribute.new('//aa:PersonBirthDate', true),

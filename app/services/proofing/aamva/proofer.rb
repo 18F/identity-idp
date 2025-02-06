@@ -79,7 +79,7 @@ module Proofing
           .build_verification_request(applicant:)
       end
 
-      def build_result(verification_request, verification_response, jurisdiction)
+      def build_result(verification_request:, verification_response:, jurisdiction:)
         Proofing::StateIdResult.new(
           success: successful?(verification_response),
           errors: parse_verification_errors(verification_response),

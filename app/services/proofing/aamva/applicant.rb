@@ -40,7 +40,7 @@ module Proofing
       # @option applicant [String, nil] :name_suffix
       # @option applicant [String, nil] :dob
       # @option applicant [String, nil] :sex
-      # @option applicant [Integer, nil] :height
+      # @option applicant [Integer, nil] :height in inches
       # @option applicant [String, nil] :weight
       # @option applicant [String, nil] :eye_color
       # @option applicant [String, nil] :address1
