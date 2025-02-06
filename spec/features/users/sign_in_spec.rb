@@ -285,7 +285,6 @@ RSpec.feature 'Sign in' do
         allow(Devise).to receive(:timeout_in)
           .and_return(IdentityConfig.store.session_timeout_warning_seconds + 1)
 
-        expect(IdentityConfig.store).to receive(:session_timeout_warning_seconds).and_return(150)
         visit sign_up_email_path
         fill_in t('forms.registration.labels.email'), with: 'test@example.com'
 
@@ -303,8 +302,6 @@ RSpec.feature 'Sign in' do
         allow(Devise).to receive(:timeout_in)
           .and_return(IdentityConfig.store.session_timeout_warning_seconds + 1)
 
-        expect(IdentityConfig.store).to receive(:session_timeout_warning_seconds).and_return(150)
-
         visit root_path
         fill_in t('account.index.email'), with: 'test@example.com'
 
@@ -321,7 +318,6 @@ RSpec.feature 'Sign in' do
         visit root_path
         fill_in t('account.index.email'), with: 'test@example.com'
 
-        expect(IdentityConfig.store).to receive(:session_timeout_warning_seconds).and_return(150)
         expect(page).to have_css('.usa-js-modal--active', wait: 10)
 
         click_button t('notices.timeout_warning.partially_signed_in.sign_out')
