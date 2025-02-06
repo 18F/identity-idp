@@ -5,7 +5,11 @@ class ClickObserverComponent < BaseComponent
 
   def initialize(event_name:, payload: {}, **tag_options)
     @event_name = event_name
-    @payload = payload
+    if payload.is_a?(Hash)
+      @payload = payload
+    else
+      @payload = {}
+    end
     @tag_options = tag_options
   end
 
