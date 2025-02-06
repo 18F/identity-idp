@@ -47,7 +47,6 @@ module Proofing
       # Instance methods
       def initialize(config)
         @config = Config.new(config)
-        @client = Aamva::VerificationClient.new(config)
       end
 
       # @param applicant [Hash]
