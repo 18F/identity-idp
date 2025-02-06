@@ -15,6 +15,7 @@ RSpec.describe 'layouts/application.html.erb' do
       ).create_session,
     )
     allow(view.request).to receive(:original_fullpath).and_return('/foobar')
+    allow(view).to receive(:user_fully_authenticated?).and_return(false)
     view.title = title_content if title_content
   end
 
@@ -123,7 +124,6 @@ RSpec.describe 'layouts/application.html.erb' do
 
   context 'session expiration' do
     it 'renders a javascript page refresh' do
-      allow(view).to receive(:user_fully_authenticated?).and_return(false)
       allow(view).to receive(:current_user).and_return(false)
       allow(view).to receive(:decorated_sp_session).and_return(NullServiceProviderSession.new)
       render

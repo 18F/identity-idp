@@ -241,6 +241,8 @@ RSpec.feature 'Sign in' do
       allow(IdentityConfig.store).to receive(:session_check_delay).and_return(0)
       allow(IdentityConfig.store).to receive(:session_timeout_warning_seconds)
         .and_return(Devise.timeout_in)
+      allow(Devise).to receive(:timeout_in)
+        .and_return(IdentityConfig.store.session_timeout_warning_seconds + 1)
 
       user = create(:user, :fully_registered)
       sign_in_user(user)
@@ -249,22 +251,6 @@ RSpec.feature 'Sign in' do
       expect(page).to have_css('.usa-js-modal--active', wait: 5)
       expect(page).to have_content(t('notices.timeout_warning.partially_signed_in.continue'))
       expect(page).to have_content(t('notices.timeout_warning.partially_signed_in.sign_out'))
-    end
-  end
-
-  context 'signed out' do
-    it 'refreshes the current page after session expires', js: true do
-      allow(Devise).to receive(:timeout_in).and_return(1)
-
-      visit sign_up_email_path(request_id: '123abc')
-      fill_in t('forms.registration.labels.email'), with: 'test@example.com'
-
-      expect(page).to have_content(
-        t('notices.session_cleared', minutes: IdentityConfig.store.session_timeout_in_minutes),
-        wait: 5,
-      )
-      expect(page).to have_field(t('forms.registration.labels.email'), with: '')
-      expect(current_url).to match Regexp.escape(sign_up_email_path(request_id: '123abc'))
     end
   end
 
@@ -296,19 +282,49 @@ RSpec.feature 'Sign in' do
       end
     end
 
-    it 'refreshes the page (which clears the form) and notifies the user', js: true do
-      allow(Devise).to receive(:timeout_in).and_return(1)
-      user = create(:user)
-      visit root_path
-      fill_in t('account.index.email'), with: user.email
-      fill_in 'Password', with: user.password
+    context 'create account' do
+      it 'shows the timeout modal when the session expiration approaches', js: true do
+        allow(Devise).to receive(:timeout_in)
+          .and_return(IdentityConfig.store.session_timeout_warning_seconds + 1)
 
-      expect(page).to have_content(
-        t('notices.session_cleared', minutes: IdentityConfig.store.session_timeout_in_minutes),
-        wait: 5,
-      )
-      expect(find_field('Email').value).to be_blank
-      expect(find_field('Password').value).to be_blank
+        visit sign_up_email_path
+        fill_in t('forms.registration.labels.email'), with: 'test@example.com'
+
+        expect(page).to have_css('.usa-js-modal--active', wait: 10)
+
+        click_button t('notices.timeout_warning.partially_signed_in.continue')
+
+        expect(page).not_to have_css('.usa-js-modal--active')
+        expect(find_field(t('forms.registration.labels.email')).value).not_to be_blank
+      end
+    end
+
+    context 'sign in' do
+      it 'shows the timeout modal when the session expiration approaches', js: true do
+        allow(Devise).to receive(:timeout_in)
+          .and_return(IdentityConfig.store.session_timeout_warning_seconds + 1)
+
+        visit root_path
+        fill_in t('account.index.email'), with: 'test@example.com'
+
+        expect(page).to have_css('.usa-js-modal--active', wait: 10)
+
+        click_button t('notices.timeout_warning.partially_signed_in.continue')
+        expect(find_field(t('account.index.email')).value).not_to be_blank
+      end
+
+      it 'reloads the sign in page when cancel is clicked', js: true do
+        allow(Devise).to receive(:timeout_in)
+          .and_return(IdentityConfig.store.session_timeout_warning_seconds + 1)
+
+        visit root_path
+        fill_in t('account.index.email'), with: 'test@example.com'
+
+        expect(page).to have_css('.usa-js-modal--active', wait: 10)
+
+        click_button t('notices.timeout_warning.partially_signed_in.sign_out')
+        expect(find_field(t('account.index.email')).value).to be_blank
+      end
     end
   end
 
