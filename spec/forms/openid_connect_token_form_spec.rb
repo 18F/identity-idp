@@ -376,7 +376,6 @@ RSpec.describe OpenidConnectTokenForm do
 
         expect(submission.to_h).to eq(
           success: true,
-          errors: nil,
           client_id: client_id,
           user_id: user.uuid,
           code_digest: Digest::SHA256.hexdigest(code),
@@ -396,7 +395,6 @@ RSpec.describe OpenidConnectTokenForm do
 
         expect(submission.to_h).to include(
           success: false,
-          errors: nil,
           error_details: hash_including(*form.errors.attribute_names),
           client_id: nil,
           user_id: nil,
@@ -413,7 +411,6 @@ RSpec.describe OpenidConnectTokenForm do
 
         expect(submission.to_h).to include(
           success: false,
-          errors: nil,
           error_details: hash_including(:grant_type),
           client_id: client_id,
           user_id: user.uuid,

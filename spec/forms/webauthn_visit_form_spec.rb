@@ -22,7 +22,6 @@ RSpec.describe WebauthnVisitForm do
 
       expect(subject.submit(params).to_h).to eq(
         success: true,
-        errors: nil,
         platform_authenticator: false,
         enabled_mfa_methods_count: 0,
       )
@@ -34,7 +33,6 @@ RSpec.describe WebauthnVisitForm do
 
         expect(subject.submit(params).to_h).to eq(
           success: true,
-          errors: nil,
           platform_authenticator: true,
           enabled_mfa_methods_count: 0,
         )
@@ -47,7 +45,6 @@ RSpec.describe WebauthnVisitForm do
 
         expect(subject.submit(params).to_h).to include(
           success: false,
-          errors: nil,
           error_details: { InvalidStateError: { invalid: true } },
         )
       end
@@ -57,7 +54,6 @@ RSpec.describe WebauthnVisitForm do
 
         expect(subject.submit(params).to_h).to include(
           success: false,
-          errors: nil,
           error_details: { NotSupportedError: { invalid: true } },
         )
       end
@@ -77,7 +73,6 @@ RSpec.describe WebauthnVisitForm do
 
           expect(subject.submit(params).to_h).to include(
             success: false,
-            errors: nil,
             error_details: { InvalidStateError: { invalid: true } },
           )
         end
@@ -87,7 +82,6 @@ RSpec.describe WebauthnVisitForm do
 
           expect(subject.submit(params).to_h).to include(
             success: false,
-            errors: nil,
             error_details: { NotSupportedError: { invalid: true } },
           )
         end
@@ -97,7 +91,6 @@ RSpec.describe WebauthnVisitForm do
 
           expect(subject.submit(params).to_h).to include(
             success: false,
-            errors: nil,
             error_details: { foo: { invalid: true } },
           )
         end
@@ -111,7 +104,6 @@ RSpec.describe WebauthnVisitForm do
 
             expect(subject.submit(params).to_h).to include(
               success: false,
-              errors: nil,
               error_details: { foo: { invalid: true } },
             )
           end

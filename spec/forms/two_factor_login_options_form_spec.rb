@@ -19,7 +19,6 @@ RSpec.describe TwoFactorLoginOptionsForm do
 
         expect(subject.submit(selection: 'sms').to_h).to eq(
           success: true,
-          errors: nil,
           **extra,
         )
       end
@@ -36,7 +35,6 @@ RSpec.describe TwoFactorLoginOptionsForm do
 
         expect(subject.submit(selection: 'foo').to_h).to include(
           success: false,
-          errors: nil,
           error_details: { selection: { inclusion: true } },
           **extra,
         )
