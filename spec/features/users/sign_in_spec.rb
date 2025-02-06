@@ -306,7 +306,7 @@ RSpec.feature 'Sign in' do
         expect(page).to have_css('.usa-js-modal--active', wait: 10)
 
         click_button t('notices.timeout_warning.partially_signed_in.continue')
-        expect(find_field('Email').value).not_to be_blank
+        expect(find_field(t('account.index.email')).value).not_to be_blank
       end
 
       it 'reloads the sign in page when cancel is clicked', js: true do
@@ -318,7 +318,7 @@ RSpec.feature 'Sign in' do
         expect(page).to have_css('.usa-js-modal--active', wait: 10)
 
         click_button t('notices.timeout_warning.partially_signed_in.sign_out')
-        expect(find_field('Email').value).to be_blank
+        expect(find_field(t('account.index.email')).value).to be_blank
       end
     end
   end
