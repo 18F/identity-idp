@@ -53,7 +53,7 @@ module Proofing
       def proof(applicant)
         aamva_applicant = Aamva::Applicant.from_proofer_applicant(applicant)
         request = build_verification_request(aamva_applicant)
-        response = request&.send
+        response = request.send
 
         build_result(request, response, applicant[:state_id_jurisdiction])
       rescue => exception
