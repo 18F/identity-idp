@@ -71,7 +71,7 @@ RSpec.describe ReportMailer, type: :mailer do
         ['Float', 'Int', 'Float'],
         ['Row 1', 1, 0.5],
         ['Row 2', 1, 1.5],
-        ['Row 2', 1, Float::NAN],
+        ['Row 3', 1, Float::NAN],
       ]
     end
 
