@@ -119,7 +119,7 @@ RSpec.describe DataWarehouse::TableSummaryStatsExportJob, type: :job do
           'sp_return_logs' => {
             'max_id' => 1,
             'row_count' => 1,
-            'timestamp_column' => 'requested_at',
+            'timestamp_column' => 'returned_at',
           },
           'agencies' => {
             'max_id' => 19,
@@ -183,7 +183,10 @@ RSpec.describe DataWarehouse::TableSummaryStatsExportJob, type: :job do
     User.create!(id: 1, created_at: (timestamp - 1.hour))
     User.create!(id: 2, created_at: (timestamp - 1.day))
     SpReturnLog.create!(
-      id: 1, requested_at: (timestamp - 1.day), request_id: 1, ial: 1, issuer: 'foo',
+      id: 1,
+      requested_at: (timestamp - 1.day),
+      returned_at: (timestamp - 1.day),
+      request_id: 1, ial: 1, issuer: 'foo'
     )
   end
 end
