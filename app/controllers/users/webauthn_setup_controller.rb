@@ -127,7 +127,7 @@ module Users
     end
 
     def process_valid_webauthn(form)
-      create_user_event(:webauthn_key_added)
+      create_user_event(form.event_type)
       analytics.webauthn_setup_submitted(
         platform_authenticator: form.platform_authenticator?,
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,

@@ -305,6 +305,27 @@ module AnalyticsEvents
     )
   end
 
+  # Temporary event:
+  # Tracks when the AAL value that we are returning to the integration
+  # is different from the actual asserted value
+  # @param [String] asserted_aal_value The actual AAL value the IdP asserts
+  # @param [String] client_id
+  # @param [String] response_aal_value The AAL value the IdP returns via attributes
+  def asserted_aal_different_from_response_aal(
+    asserted_aal_value:,
+    client_id:,
+    response_aal_value:,
+    **extra
+  )
+    track_event(
+      :asserted_aal_different_from_response_aal,
+      asserted_aal_value:,
+      client_id:,
+      response_aal_value:,
+      **extra,
+    )
+  end
+
   # @identity.idp.previous_event_name TOTP: User Disabled
   # Tracks when a user deletes their auth app from account
   # @param [Boolean] success
@@ -5538,6 +5559,7 @@ module AnalyticsEvents
   # @param [String] frontend_error Name of error that occurred in frontend during submission
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
+  # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
   # Multi-Factor Authentication
   def multi_factor_auth(
     success:,
@@ -5562,6 +5584,7 @@ module AnalyticsEvents
     phone_fingerprint: nil,
     frontend_error: nil,
     in_account_creation_flow: nil,
+    recaptcha_annotation: nil,
     **extra
   )
     track_event(
@@ -5588,6 +5611,7 @@ module AnalyticsEvents
       frontend_error:,
       in_account_creation_flow:,
       enabled_mfa_methods_count:,
+      recaptcha_annotation:,
       **extra,
     )
   end
@@ -5662,11 +5686,13 @@ module AnalyticsEvents
   end
 
   # @param ["authentication", "reauthentication", "confirmation"] context User session context
+  # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
   # User visited the page to enter a backup code as their MFA
-  def multi_factor_auth_enter_backup_code_visit(context:, **extra)
+  def multi_factor_auth_enter_backup_code_visit(context:, recaptcha_annotation: nil, **extra)
     track_event(
       'Multi-Factor Authentication: enter backup code visited',
       context: context,
+      recaptcha_annotation:,
       **extra,
     )
   end
@@ -5681,6 +5707,7 @@ module AnalyticsEvents
   # @param [String] phone_fingerprint HMAC fingerprint of the phone number formatted as E.164
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
+  # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
   # Multi-Factor Authentication enter OTP visited
   def multi_factor_auth_enter_otp_visit(
     context:,
@@ -5693,6 +5720,7 @@ module AnalyticsEvents
     in_account_creation_flow:,
     enabled_mfa_methods_count:,
     attempts: nil,
+    recaptcha_annotation: nil,
     **extra
   )
     track_event(
@@ -5707,16 +5735,19 @@ module AnalyticsEvents
       phone_fingerprint:,
       in_account_creation_flow:,
       enabled_mfa_methods_count:,
+      recaptcha_annotation:,
       **extra,
     )
   end
 
   # @param ["authentication", "reauthentication", "confirmation"] context User session context
+  # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
   # User visited the page to enter a personal key as their mfa (legacy flow)
-  def multi_factor_auth_enter_personal_key_visit(context:, **extra)
+  def multi_factor_auth_enter_personal_key_visit(context:, recaptcha_annotation:, **extra)
     track_event(
       'Multi-Factor Authentication: enter personal key visited',
       context: context,
+      recaptcha_annotation:,
       **extra,
     )
   end
@@ -5726,12 +5757,14 @@ module AnalyticsEvents
   # @param ["piv_cac"] multi_factor_auth_method
   # @param [Integer, nil] piv_cac_configuration_id PIV/CAC configuration database ID
   # @param [Boolean] new_device Whether the user is authenticating from a new device
+  # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
   # User used a PIV/CAC as their mfa
   def multi_factor_auth_enter_piv_cac(
     context:,
     multi_factor_auth_method:,
     piv_cac_configuration_id:,
     new_device:,
+    recaptcha_annotation: nil,
     **extra
   )
     track_event(
@@ -5740,14 +5773,21 @@ module AnalyticsEvents
       multi_factor_auth_method: multi_factor_auth_method,
       piv_cac_configuration_id: piv_cac_configuration_id,
       new_device:,
+      recaptcha_annotation:,
       **extra,
     )
   end
 
   # @param ["authentication", "reauthentication", "confirmation"] context User session context
+  # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
   # User visited the page to enter a TOTP as their mfa
-  def multi_factor_auth_enter_totp_visit(context:, **extra)
-    track_event('Multi-Factor Authentication: enter TOTP visited', context: context, **extra)
+  def multi_factor_auth_enter_totp_visit(context:, recaptcha_annotation: nil, **extra)
+    track_event(
+      'Multi-Factor Authentication: enter TOTP visited',
+      context: context,
+      recaptcha_annotation:,
+      **extra,
+    )
   end
 
   # @param ["authentication", "reauthentication", "confirmation"] context User session context
@@ -5756,12 +5796,14 @@ module AnalyticsEvents
   #   authenticator like face or touch ID
   # @param [Integer, nil] webauthn_configuration_id webauthn database ID
   # @param [String] multi_factor_auth_method_created_at When the authentication method was created
+  # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
   # User visited the page to authenticate with webauthn (yubikey, face ID or touch ID)
   def multi_factor_auth_enter_webauthn_visit(
     context:,
     multi_factor_auth_method:,
     webauthn_configuration_id:,
     multi_factor_auth_method_created_at:,
+    recaptcha_annotation: nil,
     **extra
   )
     track_event(
@@ -5770,6 +5812,7 @@ module AnalyticsEvents
       multi_factor_auth_method:,
       webauthn_configuration_id:,
       multi_factor_auth_method_created_at:,
+      recaptcha_annotation:,
       **extra,
     )
   end

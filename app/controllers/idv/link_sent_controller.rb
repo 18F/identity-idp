@@ -24,6 +24,16 @@ module Idv
       analytics.idv_doc_auth_link_sent_submitted(**analytics_arguments)
 
       return render_document_capture_cancelled if document_capture_session&.cancelled_at
+
+      # If the user opted into in-person proofing in the hybrid session,
+      # we should be able to find an establishing IPP enrollment
+      if current_user.has_establishing_in_person_enrollment?
+        redirect_to idv_in_person_url
+        return
+      end
+
+      # Otherwise, we assume the user is still in the remote doc auth flow.
+
       return render_step_incomplete_error unless take_photo_with_phone_successful?
 
       # The doc capture flow will have fetched the results already. We need

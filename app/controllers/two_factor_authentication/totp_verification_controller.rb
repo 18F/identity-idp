@@ -8,7 +8,10 @@ module TwoFactorAuthentication
     before_action :confirm_totp_enabled
 
     def show
-      analytics.multi_factor_auth_enter_totp_visit(context: context)
+      recaptcha_annotation = annotate_recaptcha(
+        RecaptchaAnnotator::AnnotationReasons::INITIATED_TWO_FACTOR,
+      )
+      analytics.multi_factor_auth_enter_totp_visit(context: context, recaptcha_annotation:)
 
       @presenter = presenter_for_two_factor_authentication_method
       return unless FeatureManagement.prefill_otp_codes?

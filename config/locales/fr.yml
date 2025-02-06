@@ -1247,10 +1247,8 @@ in_person_proofing.body.location.distance.one: à %{count} mile
 in_person_proofing.body.location.distance.other: à %{count} miles
 in_person_proofing.body.location.heading: Informations sur les bureaux de poste
 in_person_proofing.body.location.info: Aucun rendez-vous n’est nécessaire pour vérifier votre identité.
-in_person_proofing.body.location.inline_error: Saisissez une adresse valide avec la ville, l’État et le code postal
 in_person_proofing.body.location.location_button: Sélectionner
 in_person_proofing.body.location.po_search.address_label: Adresse
-in_person_proofing.body.location.po_search.address_search_hint: 'Exemple : 1234 N Example St., Allentown, PA 12345'
 in_person_proofing.body.location.po_search.address_search_label: Saisissez une adresse pour trouver un bureau de poste près de chez vous.
 in_person_proofing.body.location.po_search.city_label: Ville
 in_person_proofing.body.location.po_search.is_searching_message: Recherche des bureaux de poste en cours…

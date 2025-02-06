@@ -40,12 +40,7 @@ module Idv
         threatmetrix_session_id: idv_session.threatmetrix_session_id,
         request_ip: request.remote_ip,
         ipp_enrollment_in_progress: ipp_enrollment_in_progress?,
-        proofing_components: ProofingComponents.new(
-          user: current_user,
-          idv_session:,
-          session:,
-          user_session:,
-        ),
+        proofing_components: ProofingComponents.new(idv_session:),
       )
 
       return true

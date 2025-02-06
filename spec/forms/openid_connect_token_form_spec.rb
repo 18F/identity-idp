@@ -53,6 +53,7 @@ RSpec.describe OpenidConnectTokenForm do
   let!(:identity) do
     IdentityLinker.new(user, service_provider)
       .link_identity(
+        acr_values: Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
         nonce: nonce,
         rails_session_id: SecureRandom.hex,
         ial: 1,

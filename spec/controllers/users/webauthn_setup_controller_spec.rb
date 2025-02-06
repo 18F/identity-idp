@@ -153,6 +153,12 @@ RSpec.describe Users::WebauthnSetupController do
         )
       end
 
+      it 'creates user event' do
+        expect(controller).to receive(:create_user_event).with(:webauthn_key_added)
+
+        response
+      end
+
       context 'with transports mismatch' do
         let(:params) { super().merge(transports: 'internal') }
 
@@ -189,6 +195,12 @@ RSpec.describe Users::WebauthnSetupController do
           response
 
           expect(flash[:success]).to eq(t('notices.webauthn_platform_configured'))
+        end
+
+        it 'creates user event' do
+          expect(controller).to receive(:create_user_event).with(:webauthn_platform_added)
+
+          response
         end
 
         context 'with transports mismatch' do

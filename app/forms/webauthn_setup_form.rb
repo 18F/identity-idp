@@ -71,6 +71,14 @@ class WebauthnSetupForm
     end
   end
 
+  def event_type
+    if setup_as_platform_authenticator?
+      :webauthn_platform_added
+    else
+      :webauthn_key_added
+    end
+  end
+
   private
 
   attr_reader :success, :transports, :invalid_transports, :protocol

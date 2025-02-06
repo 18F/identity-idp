@@ -113,6 +113,10 @@ module Users
       )
     end
 
+    def recaptcha_assessment_id
+      recaptcha_form.assessment_id
+    end
+
     def recaptcha_form
       @recaptcha_form ||= SignInRecaptchaForm.new(
         email: auth_params[:email],
@@ -217,6 +221,7 @@ module Users
       success = current_user.present? &&
                 !user_locked_out?(user) &&
                 (recaptcha_response.success? || log_captcha_failures_only?)
+      session[:sign_in_recaptcha_assessment_id] = recaptcha_assessment_id if recaptcha_assessment_id
 
       analytics.email_and_password_auth(
         **recaptcha_response,

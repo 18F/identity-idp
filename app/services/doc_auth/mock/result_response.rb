@@ -185,6 +185,7 @@ module DocAuth
       end
 
       def parse_uri
+        return nil if !uploaded_file || !uploaded_file.ascii_only?
         uri = URI.parse(uploaded_file.chomp)
         if uri.scheme == 'data'
           {}

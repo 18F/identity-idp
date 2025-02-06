@@ -266,6 +266,40 @@ RSpec.describe 'In Person Proofing', js: true do
       perform_mobile_hybrid_steps
       perform_desktop_hybrid_steps(user, same_address_as_id: false)
     end
+
+    context 'when polling times out and the user has to click the "Continue" button' do
+      before do
+        # When polling times out on the client, the "Continue" button is displayed to the user
+        # We can simulate that by just completely disabling polling.
+        allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(false)
+      end
+
+      it 'redirects the user to the in-person proofing path',
+         allow_browser_log: true do
+        user = nil
+        perform_in_browser(:desktop) do
+          user = sign_in_and_2fa_user
+          complete_doc_auth_steps_before_hybrid_handoff_step
+          clear_and_fill_in(:doc_auth_phone, '415-555-0199')
+          click_send_link
+
+          expect(page).to have_content(t('doc_auth.headings.text_message'))
+        end
+
+        expect(@sms_link).to be_present
+
+        perform_mobile_hybrid_steps
+
+        perform_in_browser(:desktop) do
+          expect(page).to have_current_path(idv_link_sent_path)
+
+          # Click the "Continue" button on the link sent page since we're not polling
+          click_idv_continue
+        end
+
+        perform_desktop_hybrid_steps(user)
+      end
+    end
   end
 
   context 'verify by mail not allowed for in-person' do

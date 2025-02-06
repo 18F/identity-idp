@@ -32,16 +32,17 @@ module Users
     end
 
     def destroy
-      result = ::TwoFactorAuthentication::WebauthnDeleteForm.new(
+      form = ::TwoFactorAuthentication::WebauthnDeleteForm.new(
         user: current_user,
         configuration_id: webauthn_mismatch_id,
         skip_multiple_mfa_validation: in_multi_mfa_selection_flow?,
-      ).submit
+      )
+      result = form.submit
 
       analytics.webauthn_setup_mismatch_submitted(**result.to_h, confirmed_mismatch: false)
 
       if result.success?
-        handle_successful_mfa_deletion(event_type: :webauthn_key_removed)
+        handle_successful_mfa_deletion(event_type: form.event_type)
         redirect_to retry_setup_url
       else
         flash.now[:error] = result.first_error_message

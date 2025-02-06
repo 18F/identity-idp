@@ -27,12 +27,7 @@ RSpec.describe Idv::Agent do
       end
     end
     let(:proofing_components) do
-      Idv::ProofingComponents.new(
-        idv_session:,
-        session:,
-        user:,
-        user_session:,
-      )
+      Idv::ProofingComponents.new(idv_session:)
     end
 
     subject(:agent) { Idv::Agent.new(applicant) }
@@ -147,7 +142,6 @@ RSpec.describe Idv::Agent do
         expect(ResolutionProofingJob).to receive(:perform_later).with(
           hash_including(
             proofing_components: {
-              document_check: 'mock',
               document_type: 'state_id',
             },
           ),

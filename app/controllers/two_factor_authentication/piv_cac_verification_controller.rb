@@ -13,7 +13,10 @@ module TwoFactorAuthentication
       if params[:token]
         process_token
       else
-        analytics.multi_factor_auth_enter_piv_cac(**analytics_properties)
+        recaptcha_annotation = annotate_recaptcha(
+          RecaptchaAnnotator::AnnotationReasons::INITIATED_TWO_FACTOR,
+        )
+        analytics.multi_factor_auth_enter_piv_cac(**analytics_properties, recaptcha_annotation:)
         @presenter = presenter_for_two_factor_authentication_method
       end
     end
