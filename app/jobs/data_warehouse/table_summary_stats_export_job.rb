@@ -9,7 +9,7 @@ module DataWarehouse
     ].freeze
 
     TIMESTAMP_OVERRIDE = {
-      'sp_return_logs' => 'requested_at',
+      'sp_return_logs' => 'returned_at',
       'registration_logs' => 'registered_at',
     }.freeze
 
@@ -53,9 +53,12 @@ module DataWarehouse
       SELECT COALESCE(MAX(id), 0) AS max_id, COUNT(*) AS row_count
       FROM #{quoted_table}
       SQL
-      if table_has_column?(table, 'created_at')
+      timestamp_column = 'created_at'
+      timestamp_column = TIMESTAMP_OVERRIDE[table] if TIMESTAMP_OVERRIDE.key?(table)
+
+      if table_has_column?(table, timestamp_column)
         quoted_timestamp = ActiveRecord::Base.connection.quote(timestamp)
-        query += " WHERE created_at <= #{quoted_timestamp}"
+        query += " WHERE #{timestamp_column} <= #{quoted_timestamp}"
       end
 
       result = ActiveRecord::Base.connection.execute(query).first
