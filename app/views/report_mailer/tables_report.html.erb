@@ -35,7 +35,7 @@
         <tr>
           <% row.each do |cell| %>
             <td <%= cell.is_a?(Numeric) ? 'class=table-number' : nil %> >
-              <% if cell.is_a?(Float) && report.float_as_percent? %>
+              <% if cell.is_a?(Float) && report.float_as_percent? && cell.finite? %>
                 <%= number_to_percentage(cell * 100, precision: report.precision || 2) %>
               <% else %>
                 <%= number_with_delimiter(cell) %>

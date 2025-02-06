@@ -2,12 +2,15 @@ require 'rails_helper'
 
 RSpec.describe AbTest do
   subject(:ab_test) do
-    AbTest.new(
+    AbTest.new(**options, &discriminator)
+  end
+
+  let(:options) do
+    {
       experiment_name: 'test',
       buckets:,
       should_log:,
-      &discriminator
-    )
+    }
   end
 
   let(:discriminator) do
@@ -226,6 +229,62 @@ RSpec.describe AbTest do
       it 'raises' do
         expect { return_value }.to raise_error
       end
+    end
+  end
+
+  describe '#report' do
+    subject(:report) { ab_test.report }
+    let(:options) { super().merge(report: report_option) }
+    let(:report_option) do
+      { email: 'email@example.com', queries: [{ title: 'Example Query', query: 'limit 1' }] }
+    end
+
+    it 'builds struct value from given hash option' do
+      expect(report).to be_a(AbTest::ReportConfig)
+      expect(report.experiment_name).to eq('test')
+      expect(report.email).to eq('email@example.com')
+      expect(report.queries).to all be_a(AbTest::ReportQueryConfig)
+      expect(report.queries.first.title).to eq('Example Query')
+      expect(report.queries.first.query).to eq('limit 1')
+    end
+
+    context 'with nil report option' do
+      let(:report_option) { nil }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'with blank options' do
+      let(:report_option) { {} }
+
+      it 'gracefully builds an empty struct value' do
+        expect(report).to be_a(AbTest::ReportConfig)
+        expect(report.experiment_name).to eq('test')
+        expect(report.email).to be_nil
+        expect(report.queries).to eq([])
+      end
+    end
+  end
+
+  describe '#active?' do
+    subject(:active) { ab_test.active? }
+
+    context 'with non-zero buckets' do
+      let(:buckets) { { foo: 0, bar: 30, baz: 0 } }
+
+      it { is_expected.to be true }
+    end
+
+    context 'with all zero buckets' do
+      let(:buckets) { { foo: 0, bar: 0, baz: 0 } }
+
+      it { is_expected.to be false }
+    end
+
+    context 'with empty buckets' do
+      let(:buckets) { {} }
+
+      it { is_expected.to be false }
     end
   end
 end
