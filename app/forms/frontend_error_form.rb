@@ -13,7 +13,7 @@ class FrontendErrorForm
     @filename = filename
     @error_id = error_id
 
-    FormResponse.new(success: valid?, errors:, serialize_error_details_only: true)
+    FormResponse.new(success: valid?, errors:)
   end
 
   private
