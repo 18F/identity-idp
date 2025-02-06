@@ -206,12 +206,8 @@ RSpec.describe FormResponse do
       it 'omits details if errors are empty' do
         errors = ActiveModel::Errors.new(build_stubbed(:user))
         response = FormResponse.new(success: true, errors: errors)
-        response_hash = {
-          success: true,
-          errors: nil,
-        }
 
-        expect(response.to_h).to eq response_hash
+        expect(response.to_h).to eq(success: true)
       end
 
       it 'omits details if merged errors are empty' do
@@ -219,12 +215,8 @@ RSpec.describe FormResponse do
         response1 = FormResponse.new(success: true, errors: errors)
         response2 = FormResponse.new(success: true, errors: errors)
         combined_response = response1.merge(response2)
-        response_hash = {
-          success: true,
-          errors: nil,
-        }
 
-        expect(combined_response.to_h).to eq response_hash
+        expect(combined_response.to_h).to eq(success: true)
       end
 
       context 'with error detail symbol defined as type option on error' do
